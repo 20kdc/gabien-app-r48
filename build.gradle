@@ -1,0 +1,16 @@
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "application"
+
+dependencies {
+      compile files('../gabien-common/build/libs/gabien-common.jar')
+      compile files('../gabien-javase/build/libs/gabien-javase.jar')
+}
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+group = "gabien"
+archivesBaseName = "gabien-app-r48"
+mainClassName = "gabien.Main"

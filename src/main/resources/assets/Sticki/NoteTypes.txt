@@ -1,0 +1,28 @@
+000:$
+p text string
+
+990: Need!
+p text string
+
+991: Want!
+p text string
+
+992: Nb.$
+p text string
+
+993: Consider$ (
+p text string
+i0
+I1
+
+994: )
+i-1
+I0
+
+995: Long-term Plan$
+p name string
+p plan Plan
+
+996: Long Note
+p desc string
+p contents zlibBlobEditor

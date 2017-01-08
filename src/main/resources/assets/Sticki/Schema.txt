@@ -1,0 +1,17 @@
+C allowIndentControl
+C defineIndent
+
+.NoteEditor_Most
+@indent indent
+@parameters array 0 OPAQUE
+
+: Note
+@code int
+@indent indent
+@parameters array 0 OPAQUE
+
+> Plan subwindow NoteList
+
+> NoteEditor RPGCS Sticki/NoteTypes.txt Note NoteEditor_Most
+> NoteList array 0 NoteEditor
+> File.Notes NoteList
