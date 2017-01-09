@@ -10,6 +10,9 @@ import gabien.IGrInDriver;
 import gabien.ui.*;
 import gabienapp.*;
 
+import java.util.Comparator;
+import java.util.LinkedList;
+
 /**
  * Note: this class will slightly draw out of bounds.
  * Created on 12/27/16.
@@ -157,7 +160,20 @@ public class UIMapView extends UIElement implements IWindowElement {
             // Event Enable
             // Having it here is more efficient than having it as a tool overlay,
             // and sometimes the user might want to see events when using other tools.
-            for (RubyIO evI : map.getInstVarBySymbol("@events").hashVal.values()) {
+            LinkedList<RubyIO> ev = new LinkedList<RubyIO>(map.getInstVarBySymbol("@events").hashVal.values());
+            ev.sort(new Comparator<RubyIO>() {
+                @Override
+                public int compare(RubyIO a, RubyIO b) {
+                    int yA = (int) a.getInstVarBySymbol("@y").fixnumVal;
+                    int yB = (int) b.getInstVarBySymbol("@y").fixnumVal;
+                    if (yA < yB)
+                        return -1;
+                    if (yA > yB)
+                        return 1;
+                    return 0;
+                }
+            });
+            for (RubyIO evI : ev) {
                 int x = (int) evI.getInstVarBySymbol("@x").fixnumVal;
                 int y = (int) evI.getInstVarBySymbol("@y").fixnumVal;
                 if (x < camTX)

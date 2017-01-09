@@ -11,6 +11,8 @@ import gabien.ui.UILabel;
 import gabienapp.dbs.ATDB;
 import gabienapp.schema.util.SchemaPath;
 
+import java.util.HashMap;
+
 /**
  * First class of the new year. What does it do?
  * It's a grouping of stuff in other classes which has to go indirectly for sanity reasons.
@@ -23,10 +25,7 @@ public class StuffRenderer {
 
     public static final int tileSize = 32;
 
-    // you would not believe your eyes
-    // if ten million fireflies
-    // broke all your assumptions about system drawing...
-    private IGrInDriver.IImage jarlightHax;
+    private HashMap<String, IGrInDriver.IImage> additiveBlending = new HashMap<String, IGrInDriver.IImage>();
 
     private final RubyIO tileset;
     public final IGrInDriver.IImage[] tilesetMaps = new IGrInDriver.IImage[8];
@@ -136,32 +135,38 @@ public class StuffRenderer {
             // lower centre of tile, the reference point for characters
             ox += 16;
             oy += 32;
-            IGrInDriver.IImage i = GaBIEn.getImage(Application.rootPath + "Graphics/Characters/" + cName.decString() + ".png", 0, 0, 0);
+            String s = cName.decString();
+            IGrInDriver.IImage i = GaBIEn.getImage(Application.rootPath + "Graphics/Characters/" + s + ".png", 0, 0, 0);
             int sprW = i.getWidth() / 4;
             int sprH = i.getHeight() / 4;
             // Direction 2, pattern 0 == 0, ? (safe @ cliffs, page 0)
             // Direction 2, pattern 2 == 2, ? (safe @ cliffs, page 1)
             int tx = pat;
             int ty = dir;
-            // you'll understand this if playing something that needs it.
-            if (cName.decString().equals("jars_light")) {
+            if (target.getInstVarBySymbol("@blend_type").fixnumVal == 1) {
                 // firstly, let's edit the image
-                if (jarlightHax == null) {
+                if (!additiveBlending.containsKey(s)) {
                     int[] rpg = i.getPixels();
                     for (int j = 0; j < rpg.length; j++) {
+                        // backup alpha, then remove it
+                        int alD = ((rpg[j] & 0xFF000000) >> 24) & 0xFF;
                         rpg[j] &= 0xFFFFFF;
+
+                        // extract components to try to work out something that looks OK
                         int alA = (rpg[j] & 0xFF);
                         int alB = (rpg[j] & 0xFF00) >> 8;
                         int alC = (rpg[j] & 0xFF0000) >> 16;
-                        if (alB > alA)
-                            alA = alB;
-                        if (alC > alA)
-                            alA = alC;
-                        rpg[j] |= alA << 24;
+                        // This needs to simulate additive blending with mixing.
+                        // Somehow.
+                        int r = (alA + alB + alC) / 3;
+                        r *= alD;
+                        r /= 256;
+                        // put in new alpha
+                        rpg[j] |= r << 24;
                     }
-                    jarlightHax = GaBIEn.createImage(rpg, i.getWidth(), i.getHeight());
+                    additiveBlending.put(s, GaBIEn.createImage(rpg, i.getWidth(), i.getHeight()));
                 }
-                igd.blitImage(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, jarlightHax);
+                igd.blitImage(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, additiveBlending.get(s));
             } else {
                 igd.blitImage(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, i);
             }
