@@ -156,7 +156,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             }
         }
 
-        if (!layerInvisible[mapTable.planeCount + 1]) {
+        if ((!layerInvisible[mapTable.planeCount + 1]) && (!minimap)) {
             // Event Enable
             // Having it here is more efficient than having it as a tool overlay,
             // and sometimes the user might want to see events when using other tools.
