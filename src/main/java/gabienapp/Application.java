@@ -12,14 +12,12 @@ import gabienapp.dbs.*;
 import gabienapp.map.UIMapView;
 import gabienapp.map.UIMapViewContainer;
 import gabienapp.maptools.UIMTEventPicker;
+import gabienapp.musicality.Musicality;
 import gabienapp.schema.ISchemaElement;
 import gabienapp.schema.util.ISchemaHost;
 import gabienapp.schema.util.SchemaHostImpl;
 import gabienapp.schema.util.SchemaPath;
-import gabienapp.ui.UIGrid;
-import gabienapp.ui.UIHHalfsplit;
-import gabienapp.ui.UINSVertLayout;
-import gabienapp.ui.UITextPrompt;
+import gabienapp.ui.*;
 
 import java.io.*;
 import java.util.Iterator;
@@ -276,6 +274,7 @@ public class Application {
                 "Use normal in-built fonts",
                 "Make larger text look better",
                 "Make text N.I.Z.X.-compatible",
+                "Toggle calming sound",
         }, new Runnable[]{
                 new Runnable() {
                     @Override
@@ -364,15 +363,49 @@ public class Application {
                         UILabel.iDislikeTheFont = true;
                         UILabel.iAmAbsolutelySureIHateTheFont = true;
                     }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!Musicality.initialized)
+                            Musicality.initialize();
+                        if (Musicality.running) {
+                            Musicality.kill();
+                        } else {
+                            Musicality.boot();
+                        }
+                    }
                 }
         }, false, false));
         UILabel uiStatusLabel = new UILabel("Loading...", false);
-        rootView.backing = new UINSVertLayout(new UIHHalfsplit(5, 8, uiStatusLabel, new UITextButton(false, "Save All Modified Files", new Runnable() {
+        rootView.backing = new UINSVertLayout(new UIHHalfsplit(5, 8, uiStatusLabel, new UIAppendButton("Help?", new UITextButton(false, "Save All Modified Files", new Runnable() {
             @Override
             public void run() {
                 objectDB.ensureAllSaved();
             }
-        })), new UITabPane(tabNames.toArray(new String[0]), tabElems.toArray(new UIElement[0])));
+        }), new Runnable() {
+            @Override
+            public void run() {
+                // exception to the rule
+                UILabel uil = new UILabel("Blank Help Window", false);
+                final UIHelpSystem uis = new UIHelpSystem(uil, null);
+                final UIUnscissoredScroller uus = new UIUnscissoredScroller(uis);
+                UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton("Index", uil, new Runnable() {
+                    @Override
+                    public void run() {
+                        uis.loadPage(0);
+                    }
+                }, false), uus);
+                uis.onLoad = new Runnable() {
+                    @Override
+                    public void run() {
+                        uis.setBounds(new Rect(0, 0, 640, 480));
+                    }
+                };
+                uis.loadPage(0);
+                uiTicker.accept(topbar);
+            }
+        }, false)), new UITabPane(tabNames.toArray(new String[0]), tabElems.toArray(new UIElement[0])));
 
         // everything ready, start main window
         uiTicker.accept(rootView);
@@ -390,6 +423,8 @@ public class Application {
                 dT = GaBIEn.timeDelta(false);
             }
             dT = GaBIEn.timeDelta(true);
+            if (Musicality.running)
+                Musicality.update(dT);
             uiTicker.runTick(dT);
         }
         GaBIEn.ensureQuit();

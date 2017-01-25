@@ -1,0 +1,182 @@
+ The help file, though it could easily serve as a Twine-like engine if you so chose.
+
+0: Index
+i HelpImg/0.demo.png
+. Greetings. I, am 20kdc.
+. This is your guide to R48.
+. Firstly, keep in mind that text fields
+. will revert unless you press enter.
+. The same goes for number fields.
+. This is critical to several operations.
+. Moving this help window out of the way,
+. the picture on the right should match.
+. If this is incorrect, and the MapInfos
+.  tab is non-visible, you need to
+.  report a type 0x7E9A7 error to me.
+. The tab names should describe what they
+. do, but in any case, for further detail,
+. see the below pages:
+> 1 Map
+> 2 MapInfos
+> 3 Tools
+> 4 System Objects
+> 5 ObjectDB Monitor
+> 6 System Tools
+. Note that to ensure your work is saved,
+. you should remember to press the button
+. at the top-right to save your work,
+. and of course, remember to keep backups.
+> 999 License
+
+1: Map
+i HelpImg/1.diagram.png
+. 'Map' is the map editor.
+. From this, you can do many things.
+. However, first, you need to know controls.
+. Dragging with the Right Mouse Button allows
+. panning about the map. This is crucial for
+. even basic datamining operations.
+. Clicking with the Left Mouse Button will use
+. the current tool, or if no tool is running,
+. will bring up a dialogue box to select one.
+> 7 Map Tools
+. Pressing the "m" button will toggle a minimap.
+. This allows faster navigation of the map,
+. or reading messages written with tiles.
+. At the bottom-left, there are the Layer Tabs.
+. These allow the selection of a tile layer,
+. and hiding/showing layers.
+. To hide/show a layer, right click on it's tab.
+. To select a layer, left-click on it's tab,
+. so long as it's a tile layer.
+. The selected tile layer only matters to the tools which need to know it.
+. The "E" and "P" layers are not tile layers, but instead are placeholders.
+. These layers allow hiding/showing Events and the Panorama, respectively.
+> 0 Back to the Index.
+
+2: MapInfos
+. This is the grand list of maps for editing.
+. Keep in mind that some "maps" may not actually be maps,
+. but may be dummy entries for organization.
+. These maps are structured in a hierarchy.
+. To select a map, click on it's name.
+. When a map is selected, buttons will appear to the right for movement.
+. Maps can be created and deleted with this tool.
+. Be careful.
+> 0 Back to the Index.
+
+3: Tools
+. Like System Tools later, this contains debugging functions.
+. They should not need to be used under normal circumstances,
+. and have the potential to cause havoc.
+. However, these functions are less... generic, than the ones in System Tools.
+> 0 Back to the Index.
+
+4: System Objects
+. If there is a tab to edit an object,
+. it is safer to edit it using that tab.
+. But failing that:
+. This allows editing the various bits and pieces that nobody would ever
+. write a dedicated editor for, so the generic layout system was used.
+. (At least you can edit it, right?)
+. A description of each object would take forever to write.
+. This, however, gives some general details.
+> 12 Object Editing Details
+> 0 Back to the Index.
+
+5: ObjectDB Monitor
+. This keeps track of what files are loaded in memory.
+. Not much more can be said, since that's all it does.
+> 0 Back to the Index.
+
+6: System Tools
+. This contains various functions for debugging, testing,
+. and sanity maintenance.
+. They're here because I may need them, more than anything else.
+> 0 Back to the Index.
+
+7: Map Tools
+. This would not be very much of an editor if maps were not editable.
+. The "Map Tools" dialogue box exists to help you achieve this.
+i HelpImg/7.example.png
+. As you can see, several tools exist.
+. For general usage, "Tiles", and
+. "Event List", should be enough.
+. For access to the BGS/BGM, map resize,
+. and other map pieces, use Edit Direct.
+> 8 Tiles
+> 9 Event List
+> 10 How To Resize A Map
+> 1 Back to the Map.
+
+8: Tiles
+i HelpImg/need-image.png
+. This allows the editing of the map's tiles.
+. The "stride" of the tileset depends on the window's width.
+. Clicking on a tile in the map will paste it in.
+. An area of the tileset can be selected,
+. and it will be interpreted based on the window's width,
+. when the tiles are pasted in.
+> 7 Back to the Map Tools.
+
+9: Event List
+. This is a rather simple tool to use.
+. Opening it will show circles at the positions of events.
+. Clicking a tile will report all events at that position,
+. and give the option to create a new event there,
+. delete one of the existing events, or move an event.
+> 11 Event Editing Details
+i HelpImg/9.usage.png
+> 7 Back to the Map Tools.
+
+10: How To Resize A Map
+. Note before continuing:
+. All tile data is destroyed by this operation.
+. If you save afterwards, the data can only be restored from backup.
+. Step 1. Click "Edit Direct.".
+. Step 2. Select "@data".
+. Step 3. Edit the width/height to the right (Below the 3 target tile numbers).
+. Step 4. Click "Resize".
+> 7 Back to the Map Tools.
+
+11: Event Editing Details
+i HelpImg/need-image.png
+. This still needs work.
+> 12 Object Editing Details
+> 9 Back to the Event List guide.
+
+12: Object Editing Details
+. The "Schema" system for editing objects is meant to be usable.
+. However, it does not make things easy.
+.
+. Beforehand, a reminder.
+. Text fields will revert unless you press enter.
+. The same goes for number fields.
+.
+. Now that emphasis is over, here's the notes.
+.
+. Firstly:
+. To the left is generally the field name,
+. to the right is generally the field data.
+. They are split by a line which should be visible between them.
+. The field name is not usually editable.
+.
+. Secondly, the top (not the title) bar does many things.
+. It shows the object you're currently using.
+. You can use "Insp." for raw inspection.
+. ".." lets you go back a level, and "Save" does what you'd expect.
+. The "Cp." and "Ps." buttons allow copying and pasting a part,
+. so long as it's relatively valid, from one place to another.
+. The system will try to correct any obviously wrong details.
+. The copy and paste applies to the object being viewed,
+. not the currently selected field or any details.
+.
+. Thirdly, if an object ends with a bunch of one-letter buttons, this means it
+. can be one of several types, and clicking those buttons resets it with a type.
+.
+. I hope this is enough information to work with.
+
+999: License
+. This is released into the public domain.
+. No warranty is provided, implied or otherwise.
+> 0 Back to the Index.

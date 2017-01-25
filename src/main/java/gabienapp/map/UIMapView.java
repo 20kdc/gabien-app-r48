@@ -218,7 +218,7 @@ public class UIMapView extends UIElement implements IWindowElement {
                 text = "P";
             if (i == mapTable.planeCount + 1)
                 text = "E";
-            UILabel.drawString(igd, ox + l.x + 1, oy + l.y + 1, text, true, true);
+            UILabel.drawString(igd, ox + l.x + 1, oy + l.y + 1, text, true, false);
         }
         UILabel.drawLabel(igd, 0, ox, oy, "Map" + mapId + ";" + mouseXT + ", " + mouseYT, false);
     }
