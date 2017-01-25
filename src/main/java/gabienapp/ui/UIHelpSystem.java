@@ -100,19 +100,24 @@ public class UIHelpSystem extends UIPanel {
                         }
                         if (c == 'i') {
                             final IGrInDriver.IImage r = GaBIEn.getImage(args[0], 0, 0, 0);
+                            boolean extended = args.length > 1;
+                            final int xx = extended ? Integer.parseInt(args[1]) : 0;
+                            final int yy = extended ? Integer.parseInt(args[2]) : 0;
+                            final int w = extended ? Integer.parseInt(args[3]) : r.getWidth();
+                            final int h = extended ? Integer.parseInt(args[4]) : r.getHeight();
                             UIElement uie = new UIElement() {
                                 @Override
                                 public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-                                    igd.blitImage(0, 0, r.getWidth(), r.getHeight(), ox, oy, r);
+                                    igd.blitImage(xx, yy, w, h, ox, oy, r);
                                 }
 
                                 @Override
                                 public void handleClick(int x, int y, int button) {
                                 }
                             };
-                            uie.setBounds(new Rect(640 - r.getWidth(), y, r.getWidth(), r.getHeight()));
-                            imgSize = r.getWidth();
-                            imgEndY = y + r.getHeight();
+                            uie.setBounds(new Rect(640 - w, y, w, h));
+                            imgSize = w;
+                            imgEndY = y + h;
                             allElements.add(uie);
                         }
                     }

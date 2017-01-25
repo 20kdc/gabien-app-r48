@@ -177,6 +177,8 @@ i HelpImg/need-image.png
 . I hope this is enough information to work with.
 
 999: License
+i layertab.png 0 52 16 4
+. You are using the following version of R48:
 . This is released into the public domain.
 . No warranty is provided, implied or otherwise.
 > 0 Back to the Index.
