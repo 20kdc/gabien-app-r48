@@ -284,6 +284,8 @@ public class SDB {
                         schemaTrueDatabase.put("indent", schemaDatabase.get("indent"));
                     }
                     if (args[0].equals("objectDB"))
+                        AppMain.odbBackend = args[1];
+                    if (args[0].equals("dataPath"))
                         AppMain.dataPath = args[1];
                     if (args[0].equals("dataExt"))
                         AppMain.dataExt = args[1];

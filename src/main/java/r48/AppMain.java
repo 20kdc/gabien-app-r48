@@ -62,6 +62,8 @@ public class AppMain {
     public static String rootPath = null;
     public static String dataPath = "";
     public static String dataExt = ".rxdata";
+    public static String odbBackend = "r48";
+
     public static ObjectDB objectDB = null;
     // rootPath must be above the others
     // 053: Cafe
@@ -76,7 +78,7 @@ public class AppMain {
     // Images
     public static IGrInDriver.IImage layerTabs = GaBIEn.getImage("layertab.png", 0, 0, 0);
 
-    public static void initializeAndRun(String gamepack) throws IOException {
+    public static IConsumer<Double> initializeAndRun(final IConsumer<UIElement> uiTicker, String gamepack) throws IOException {
         rootPath = "";
 
         // initialize core resources
@@ -89,7 +91,11 @@ public class AppMain {
 
         // initialize everything else that needs initializing, starting with ObjectDB
 
-        objectDB = new ObjectDB(new R48ObjectBackend(rootPath + dataPath, dataExt));
+        if (odbBackend.equals("r48")) {
+            objectDB = new ObjectDB(new R48ObjectBackend(rootPath + dataPath, dataExt));
+        } else {
+            throw new IOException("Unknown backend " + odbBackend);
+        }
 
         // Final internal consistency checks and reading in dictionaries from target
         //  before starting the UI, which can cause external consistency checks
@@ -101,7 +107,7 @@ public class AppMain {
         tilesets = objectDB.getObject("Tilesets");
 
         // initialize UI
-        final WindowCreatingUIElementConsumer uiTicker = new WindowCreatingUIElementConsumer();
+        final UILabel uiStatusLabel = new UILabel("Loading...", false);
         final UIWindowView rootView = new UIWindowView();
         windowMaker = rootView;
         rootView.setBounds(new Rect(0, 0, 640, 480));
@@ -380,7 +386,6 @@ public class AppMain {
                     }
                 }
         }, false, false));
-        UILabel uiStatusLabel = new UILabel("Loading...", false);
         rootView.backing = new UINSVertLayout(new UIHHalfsplit(5, 8, uiStatusLabel, new UIAppendButton("Help?", new UITextButton(false, "Save All Modified Files", new Runnable() {
             @Override
             public void run() {
@@ -413,24 +418,15 @@ public class AppMain {
         // everything ready, start main window
         uiTicker.accept(rootView);
 
-        while (uiTicker.runningWindows() > 0) {
-            uiStatusLabel.Text = objectDB.modifiedObjects.size() + " modified.";
-            schemas.updateDictionaries();
-            double dT = GaBIEn.timeDelta(false);
-            while (dT < 0.02d) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                dT = GaBIEn.timeDelta(false);
+        return new IConsumer<Double>() {
+            @Override
+            public void accept(Double deltaTime) {
+                uiStatusLabel.Text = objectDB.modifiedObjects.size() + " modified.";
+                schemas.updateDictionaries();
+                if (Musicality.running)
+                    Musicality.update(deltaTime);
             }
-            dT = GaBIEn.timeDelta(true);
-            if (Musicality.running)
-                Musicality.update(dT);
-            uiTicker.runTick(dT);
-        }
-        GaBIEn.ensureQuit();
+        };
     }
 
     private static UIElement makeFileList() {

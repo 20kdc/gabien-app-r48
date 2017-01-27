@@ -1,3 +1,7 @@
+
+ * This, and the associated images if at all possible, are released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
  The help file, though it could easily serve as a Twine-like engine if you so chose.
 
 0: Index

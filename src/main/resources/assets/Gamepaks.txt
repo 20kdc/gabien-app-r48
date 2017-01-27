@@ -1,0 +1,8 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+0: RXP
+2: RVXA
+0: Sticki
+. 'Sticky Note' Test

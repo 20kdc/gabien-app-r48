@@ -1,3 +1,10 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+C objectDB r48
+C dataExt .rxdata
+
 C allowIndentControl
 C defineIndent
 
