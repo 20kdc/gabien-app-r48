@@ -140,8 +140,8 @@ public class IkaObjectBackend implements IObjectBackend {
                     n.exists = true;
                     n.posX = r2.getInstVarBySymbol("@x").fixnumVal;
                     n.posY = r2.getInstVarBySymbol("@y").fixnumVal;
-                    n.ofsX = n.posX + r2.getInstVarBySymbol("@x").fixnumVal;
-                    n.ofsY = n.posY + r2.getInstVarBySymbol("@y").fixnumVal;
+                    n.ofsX = n.posX + r2.getInstVarBySymbol("@tOX").fixnumVal;
+                    n.ofsY = n.posY + r2.getInstVarBySymbol("@tOY").fixnumVal;
                     n.collisionType = (int) r2.getInstVarBySymbol("@collisionType").fixnumVal;
                     n.entityStatus = (int) r2.getInstVarBySymbol("@status").fixnumVal;
                     n.entityType = (int) r2.getInstVarBySymbol("@type").fixnumVal;
