@@ -164,12 +164,13 @@ public class RubyIO {
         // This specifies their encoding.
         return new String(strVal, Charset.forName("UTF-8"));
     }
-    public void encString(String text) {
+    public RubyIO encString(String text) {
         try {
             strVal = text.getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        return this;
     }
 
     public RubyIO getInstVarBySymbol(String cmd) {

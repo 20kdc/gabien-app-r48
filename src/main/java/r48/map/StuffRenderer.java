@@ -9,11 +9,8 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
 import r48.AppMain;
-import r48.map.tiles.ITileRenderer;
+import r48.map.tiles.*;
 import r48.RubyIO;
-import r48.map.tiles.NullTileRenderer;
-import r48.map.tiles.VXATileRenderer;
-import r48.map.tiles.XPTileRenderer;
 
 import java.util.HashMap;
 
@@ -42,6 +39,8 @@ public class StuffRenderer {
             if (map.getInstVarBySymbol("@parallax_show").type != 'T')
                 vxaPano = "";
         }
+        if (versionId.equals("Ika"))
+            return new StuffRenderer(null, null);
         return new StuffRenderer(tsoFromMap(map), vxaPano);
     }
 
@@ -57,6 +56,10 @@ public class StuffRenderer {
     }
 
     public StuffRenderer(RubyIO tso, String vxaPano) {
+        if (versionId.equals("Ika")) {
+            tileRenderer = new IkaTileRenderer();
+            return;
+        }
         if (versionId.equals("XP")) {
             tileRenderer = new XPTileRenderer(tso);
             return;
@@ -93,7 +96,7 @@ public class StuffRenderer {
         RubyIO cName = target.getInstVarBySymbol("@character_name");
         short tId = (short) target.getInstVarBySymbol("@tile_id").fixnumVal;
         if (cName.strVal.length == 0) {
-            tileRenderer.drawTile(tId, ox, oy, igd, ITileRenderer.tileSize);
+            tileRenderer.drawTile(tId, ox, oy, igd, tileRenderer.getTileSize());
         } else {
             // lower centre of tile, the reference point for characters
             ox += 16;

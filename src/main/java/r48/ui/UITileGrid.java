@@ -19,7 +19,7 @@ public class UITileGrid extends UIGrid {
     public final UIMapView map;
     private final boolean autoTile;
     public UITileGrid(UIMapView mv, int tStart, int tileCount, boolean aTile) {
-        super(ITileRenderer.tileSize, tileCount);
+        super(mv.tileSize, tileCount);
         autoTile = aTile;
         map = mv;
         tileStart = tStart;
@@ -40,6 +40,6 @@ public class UITileGrid extends UIGrid {
                 return;
             }
         }
-        AppMain.stuffRenderer.tileRenderer.drawTile((short) (t + tileStart), x, y, igd, ITileRenderer.tileSize);
+        AppMain.stuffRenderer.tileRenderer.drawTile((short) (t + tileStart), x, y, igd, AppMain.stuffRenderer.tileRenderer.getTileSize());
     }
 }

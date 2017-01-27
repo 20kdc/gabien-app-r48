@@ -29,6 +29,9 @@ public class UIMapView extends UIElement implements IWindowElement {
     public RubyTable mapTable;
     public boolean minimap = false;
     public IMapViewCallbacks callbacks;
+
+    public final int tileSize;
+
     private Runnable listener = new Runnable() {
         @Override
         public void run() {
@@ -50,12 +53,13 @@ public class UIMapView extends UIElement implements IWindowElement {
         layerInvisible = new boolean[mapTable.planeCount + 2];
 
         AppMain.stuffRenderer = StuffRenderer.rendererFromMap(map);
+        tileSize = AppMain.stuffRenderer.tileRenderer.getTileSize();
 
-        camX = ITileRenderer.tileSize * (mapTable.width / 2);
-        camY = ITileRenderer.tileSize * (mapTable.height / 2);
+        camX = tileSize * (mapTable.width / 2);
+        camY = tileSize * (mapTable.height / 2);
         if (minimap) {
-            camX /= (ITileRenderer.tileSize / 2);
-            camY /= (ITileRenderer.tileSize / 2);
+            camX /= (tileSize / 2);
+            camY /= (tileSize / 2);
         }
         camX -= i / 2;
         camY -= i1 / 2;
@@ -78,7 +82,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         int w = mapTable.width;
         int h = mapTable.height;
         boolean debug = false;
-        int eTileSize = ITileRenderer.tileSize;
+        int eTileSize = tileSize;
         if (minimap)
             eTileSize = 2;
 
@@ -98,7 +102,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             // Panorama Enable
             String panorama = AppMain.stuffRenderer.tileRenderer.getPanorama();
             if (panorama.length() > 0) {
-                IGrInDriver.IImage im = GaBIEn.getImage(AppMain.rootPath + "Graphics/" + panorama + ".png", 0, 0, 0);
+                IGrInDriver.IImage im = GaBIEn.getImage(AppMain.rootPath + panorama, 0, 0, 0);
                 // Need to tile the area with the image.
                 // I give up, this is what I've got now.
                 // It works better this way than the other way under some cases.
@@ -183,8 +187,8 @@ public class UIMapView extends UIElement implements IWindowElement {
                     continue;
                 if (y >= camTB)
                     continue;
-                int px = ox + ((x * ITileRenderer.tileSize) - camX);
-                int py = oy + ((y * ITileRenderer.tileSize) - camY);
+                int px = ox + ((x * tileSize) - camX);
+                int py = oy + ((y * tileSize) - camY);
                 AppMain.stuffRenderer.drawEventGraphic(evI.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@graphic"), px, py, igd);
             }
         }
@@ -199,9 +203,9 @@ public class UIMapView extends UIElement implements IWindowElement {
                     py = (oy + py) - camY;
                     // Keeping in mind px/py is the TL corner...
                     px += eTileSize / 2;
-                    px -= ITileRenderer.tileSize / 2;
+                    px -= tileSize / 2;
                     py += eTileSize / 2;
-                    py -= ITileRenderer.tileSize / 2;
+                    py -= tileSize / 2;
                     callbacks.performOverlay(i, j, igd, px, py, l, minimap);
                 }
             }
@@ -241,8 +245,8 @@ public class UIMapView extends UIElement implements IWindowElement {
         } else {
             if (button == 1) {
                 if (!minimap) {
-                    int mouseXT = (x + camX) / ITileRenderer.tileSize;
-                    int mouseYT = (y + camY) / ITileRenderer.tileSize;
+                    int mouseXT = (x + camX) / tileSize;
+                    int mouseYT = (y + camY) / tileSize;
                     callbacks.confirmAt(mouseXT, mouseYT, currentLayer);
                 }
             }
@@ -273,11 +277,11 @@ public class UIMapView extends UIElement implements IWindowElement {
         camX += camW / 2;
         camY += camH / 2;
         if (minimap) {
-            camX *= ITileRenderer.tileSize / 2;
-            camY *= ITileRenderer.tileSize / 2;
+            camX *= tileSize / 2;
+            camY *= tileSize / 2;
         } else {
-            camX /= ITileRenderer.tileSize / 2;
-            camY /= ITileRenderer.tileSize / 2;
+            camX /= tileSize / 2;
+            camY /= tileSize / 2;
         }
         camX -= camW / 2;
         camY -= camH / 2;

@@ -13,7 +13,8 @@ import r48.ui.UITileGrid;
  * Created on 1/27/17.
  */
 public interface ITileRenderer {
-    static final int tileSize = 32;
+    int getTileSize();
+
     void drawTile(short tidx, int px, int py, IGrInDriver igd, int ets);
     String getPanorama();
 

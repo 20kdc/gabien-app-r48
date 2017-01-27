@@ -9,6 +9,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.dbs.*;
+import r48.io.IkaObjectBackend;
 import r48.io.R48ObjectBackend;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
@@ -61,8 +62,8 @@ public class AppMain {
 
     public static String rootPath = null;
     public static String dataPath = "";
-    public static String dataExt = ".rxdata";
-    public static String odbBackend = "r48";
+    public static String dataExt = "";
+    public static String odbBackend = "<you forgot to select a backend>";
 
     public static ObjectDB objectDB = null;
     // rootPath must be above the others
@@ -93,6 +94,8 @@ public class AppMain {
 
         if (odbBackend.equals("r48")) {
             objectDB = new ObjectDB(new R48ObjectBackend(rootPath + dataPath, dataExt));
+        } else if (odbBackend.equals("ika")) {
+            objectDB = new ObjectDB(new IkaObjectBackend(rootPath));
         } else {
             throw new IOException("Unknown backend " + odbBackend);
         }
