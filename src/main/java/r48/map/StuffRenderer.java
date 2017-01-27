@@ -11,6 +11,7 @@ import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.IkaEventGraphicRenderer;
+import r48.map.events.NullEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.tiles.*;
 import r48.RubyIO;
@@ -72,8 +73,7 @@ public class StuffRenderer {
             return;
         }
         tileRenderer = new NullTileRenderer();
-        // This is the safest renderer.
-        eventRenderer = new IkaEventGraphicRenderer();
+        eventRenderer = new NullEventGraphicRenderer();
     }
 
 }
