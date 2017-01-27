@@ -9,6 +9,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import gabienapp.dbs.*;
+import gabienapp.io.R48ObjectBackend;
 import gabienapp.map.StuffRenderer;
 import gabienapp.map.UIMapView;
 import gabienapp.map.UIMapViewContainer;
@@ -88,7 +89,7 @@ public class Application {
 
         // initialize everything else that needs initializing, starting with ObjectDB
 
-        objectDB = new ObjectDB(rootPath + dataPath, dataExt);
+        objectDB = new ObjectDB(new R48ObjectBackend(rootPath + dataPath, dataExt));
 
         // Final internal consistency checks and reading in dictionaries from target
         //  before starting the UI, which can cause external consistency checks

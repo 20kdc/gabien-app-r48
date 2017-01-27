@@ -7,6 +7,7 @@ package gabienapp.dbs;
 
 import gabienapp.Application;
 import gabienapp.RubyIO;
+import gabienapp.io.IObjectBackend;
 import gabienapp.schema.ISchemaElement;
 import gabienapp.schema.util.SchemaPath;
 
@@ -20,11 +21,9 @@ import java.util.WeakHashMap;
  * Created on 12/29/16.
  */
 public class ObjectDB {
-    private final String path;
-    private final String ext;
-    public ObjectDB(String p, String extension) {
-        path = p;
-        ext = extension;
+    private final IObjectBackend backend;
+    public ObjectDB(IObjectBackend b) {
+        backend = b;
     }
 
     public HashMap<String, WeakReference<RubyIO>> objectMap = new HashMap<String, WeakReference<RubyIO>>();
@@ -46,7 +45,7 @@ public class ObjectDB {
             if (r != null)
                 return r;
         }
-        RubyIO rio = RubyIO.loadObjectFromFile(path + id + ext);
+        RubyIO rio = backend.loadObjectFromFile(id);
         if (rio == null) {
             if (!Application.schemas.hasSDBEntry(backupSchema)) {
                 System.err.println("Could not find backup schema for object " + id);
@@ -84,7 +83,7 @@ public class ObjectDB {
                 }
             }
         }
-        RubyIO.saveObjectToFile(path + id + ext, rio);
+        backend.saveObjectToFile(id, rio);
         objectMap.put(id, new WeakReference<RubyIO>(rio));
         reverseObjectMap.put(rio, id);
         modifiedObjects.remove(rio);
