@@ -10,6 +10,7 @@ import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import gabienapp.Application;
 import gabienapp.DictionaryUpdaterRunnable;
+import gabienapp.map.StuffRenderer;
 import gabienapp.schema.specialized.*;
 import gabienapp.RubyIO;
 import gabienapp.schema.*;
@@ -284,6 +285,10 @@ public class SDB {
                     }
                     if (args[0].equals("objectDB"))
                         Application.dataPath = args[1];
+                    if (args[0].equals("dataExt"))
+                        Application.dataExt = args[1];
+                    if (args[0].equals("versionId"))
+                        StuffRenderer.versionId = args[1];
                 }
             }
         });

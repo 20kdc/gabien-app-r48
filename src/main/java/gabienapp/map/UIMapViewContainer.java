@@ -9,12 +9,9 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import gabienapp.Application;
-import gabienapp.StuffRenderer;
 import gabienapp.UITest;
 import gabienapp.maptools.UIMTAutotile;
 import gabienapp.maptools.UIMTEventPicker;
-
-import java.util.Random;
 
 /**
  * WARNING: May Contain Minigame.

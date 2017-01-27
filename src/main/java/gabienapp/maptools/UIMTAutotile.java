@@ -25,32 +25,9 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
 
     public UIMTAutotile(UIMapView mv) {
         map = mv;
-        IGrInDriver.IImage tm0 = Application.stuffRenderer.tilesetMaps[0];
-        int tileCount = 48;
-        if (tm0 != null)
-            tileCount = ((tm0.getHeight() / 32) * 8);
-        tileMaps = new UITileGrid[] {
-                new UITileGrid(mv, 0, 49, true),
-                new UITileGrid(mv, 48, 49, true),
-                new UITileGrid(mv, 48 * 2, 49, true),
-                new UITileGrid(mv, 48 * 3, 49, true),
-                new UITileGrid(mv, 48 * 4, 49, true),
-                new UITileGrid(mv, 48 * 5, 49, true),
-                new UITileGrid(mv, 48 * 6, 49, true),
-                new UITileGrid(mv, 48 * 7, 49, true),
-                new UITileGrid(mv, 48 * 8, tileCount, false),
-        };
-        tabPane = new UITabPane(new String[] {
-                "A0", // yes, I know this is blank. Oh well.
-                "A1",
-                "A2",
-                "A3",
-                "A4",
-                "A5",
-                "A6",
-                "A7",
-                "TM"
-        }, tileMaps);
+        // may not be right at all, work on this!
+        tileMaps = Application.stuffRenderer.tileRenderer.createATUIPlanes(mv);
+        tabPane = new UITabPane(Application.stuffRenderer.tileRenderer.getPlaneNames(), tileMaps);
         allElements.add(tabPane);
         setBounds(new Rect(0, 0, 320, 200));
     }

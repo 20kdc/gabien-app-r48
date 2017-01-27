@@ -6,8 +6,7 @@
 package gabienapp.schema.util;
 
 import gabien.ui.UIElement;
-import gabienapp.StuffRenderer;
-import gabienapp.UITest;
+import gabienapp.map.StuffRenderer;
 
 /**
  * Used to make the Schema interface slightly saner to use

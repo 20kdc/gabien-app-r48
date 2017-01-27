@@ -9,6 +9,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import gabienapp.*;
+import gabienapp.map.tiles.ITileRenderer;
 
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -50,11 +51,11 @@ public class UIMapView extends UIElement implements IWindowElement {
 
         Application.stuffRenderer = StuffRenderer.rendererFromMap(map);
 
-        camX = StuffRenderer.tileSize * (mapTable.width / 2);
-        camY = StuffRenderer.tileSize * (mapTable.height / 2);
+        camX = ITileRenderer.tileSize * (mapTable.width / 2);
+        camY = ITileRenderer.tileSize * (mapTable.height / 2);
         if (minimap) {
-            camX /= (StuffRenderer.tileSize / 2);
-            camY /= (StuffRenderer.tileSize / 2);
+            camX /= (ITileRenderer.tileSize / 2);
+            camY /= (ITileRenderer.tileSize / 2);
         }
         camX -= i / 2;
         camY -= i1 / 2;
@@ -77,7 +78,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         int w = mapTable.width;
         int h = mapTable.height;
         boolean debug = false;
-        int eTileSize = StuffRenderer.tileSize;
+        int eTileSize = ITileRenderer.tileSize;
         if (minimap)
             eTileSize = 2;
 
@@ -95,18 +96,16 @@ public class UIMapView extends UIElement implements IWindowElement {
 
         if (!layerInvisible[mapTable.planeCount]) {
             // Panorama Enable
-            String panorama = Application.stuffRenderer.getPanorama();
+            String panorama = Application.stuffRenderer.tileRenderer.getPanorama();
             if (panorama.length() > 0) {
-                IGrInDriver.IImage im = GaBIEn.getImage(Application.rootPath + "Graphics/Panoramas/" + panorama + ".png", 0, 0, 0);
-                double ratioX = (mapTable.width * eTileSize) / (double) im.getWidth();
-                double ratioY = (mapTable.height * eTileSize) / (double) im.getHeight();
+                IGrInDriver.IImage im = GaBIEn.getImage(Application.rootPath + "Graphics/" + panorama + ".png", 0, 0, 0);
                 // Need to tile the area with the image.
-                // This is nowhere NEAR exact, but I'm not going to risk peeking at the panorama code to find out.
-                // Though I am tempted to have Niko walk around the apartments a bit and count the exact ratio out.
-                int eCamX = (int) ((camX + (camW / 2)) / ratioX);
-                int eCamY = (int) ((camY + (camH / 2)) / ratioY);
-                eCamX += im.getWidth() / 2;
-                eCamY += im.getHeight() / 2;
+                // I give up, this is what I've got now.
+                // It works better this way than the other way under some cases.
+                int eCamX = camX;
+                int eCamY = camY;
+                //eCamX -= im.getWidth() / 4;
+                //eCamY -= im.getHeight() / 4;
                 int camOTX = (eCamX / im.getWidth());
                 int camOTY = (eCamY / im.getHeight());
                 int camOTeX = ((eCamX + camW) / im.getWidth()) + 1;
@@ -149,7 +148,7 @@ public class UIMapView extends UIElement implements IWindowElement {
                             if (i == mouseXT)
                                 if (j == mouseYT)
                                     tidx = callbacks.shouldDrawAtCursor(tidx, l, currentLayer);
-                            Application.stuffRenderer.drawTile(tidx, px, py, igd, eTileSize);
+                            Application.stuffRenderer.tileRenderer.drawTile(tidx, px, py, igd, eTileSize);
                         }
                     }
                 }
@@ -184,8 +183,8 @@ public class UIMapView extends UIElement implements IWindowElement {
                     continue;
                 if (y >= camTB)
                     continue;
-                int px = ox + ((x * StuffRenderer.tileSize) - camX);
-                int py = oy + ((y * StuffRenderer.tileSize) - camY);
+                int px = ox + ((x * ITileRenderer.tileSize) - camX);
+                int py = oy + ((y * ITileRenderer.tileSize) - camY);
                 Application.stuffRenderer.drawEventGraphic(evI.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@graphic"), px, py, igd);
             }
         }
@@ -200,9 +199,9 @@ public class UIMapView extends UIElement implements IWindowElement {
                     py = (oy + py) - camY;
                     // Keeping in mind px/py is the TL corner...
                     px += eTileSize / 2;
-                    px -= StuffRenderer.tileSize / 2;
+                    px -= ITileRenderer.tileSize / 2;
                     py += eTileSize / 2;
-                    py -= StuffRenderer.tileSize / 2;
+                    py -= ITileRenderer.tileSize / 2;
                     callbacks.performOverlay(i, j, igd, px, py, l, minimap);
                 }
             }
@@ -242,8 +241,8 @@ public class UIMapView extends UIElement implements IWindowElement {
         } else {
             if (button == 1) {
                 if (!minimap) {
-                    int mouseXT = (x + camX) / StuffRenderer.tileSize;
-                    int mouseYT = (y + camY) / StuffRenderer.tileSize;
+                    int mouseXT = (x + camX) / ITileRenderer.tileSize;
+                    int mouseYT = (y + camY) / ITileRenderer.tileSize;
                     callbacks.confirmAt(mouseXT, mouseYT, currentLayer);
                 }
             }
@@ -274,11 +273,11 @@ public class UIMapView extends UIElement implements IWindowElement {
         camX += camW / 2;
         camY += camH / 2;
         if (minimap) {
-            camX *= StuffRenderer.tileSize / 2;
-            camY *= StuffRenderer.tileSize / 2;
+            camX *= ITileRenderer.tileSize / 2;
+            camY *= ITileRenderer.tileSize / 2;
         } else {
-            camX /= StuffRenderer.tileSize / 2;
-            camY /= StuffRenderer.tileSize / 2;
+            camX /= ITileRenderer.tileSize / 2;
+            camY /= ITileRenderer.tileSize / 2;
         }
         camX -= camW / 2;
         camY -= camH / 2;

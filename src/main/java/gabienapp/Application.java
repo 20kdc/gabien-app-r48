@@ -9,6 +9,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import gabienapp.dbs.*;
+import gabienapp.map.StuffRenderer;
 import gabienapp.map.UIMapView;
 import gabienapp.map.UIMapViewContainer;
 import gabienapp.maptools.UIMTEventPicker;
@@ -59,6 +60,7 @@ public class Application {
 
     public static String rootPath = null;
     public static String dataPath = "";
+    public static String dataExt = ".rxdata";
     public static ObjectDB objectDB = null;
     // rootPath must be above the others
     // 053: Cafe
@@ -86,7 +88,7 @@ public class Application {
 
         // initialize everything else that needs initializing, starting with ObjectDB
 
-        objectDB = new ObjectDB(rootPath + dataPath, ".rxdata");
+        objectDB = new ObjectDB(rootPath + dataPath, dataExt);
 
         // Final internal consistency checks and reading in dictionaries from target
         //  before starting the UI, which can cause external consistency checks
@@ -104,7 +106,7 @@ public class Application {
         rootView.setBounds(new Rect(0, 0, 640, 480));
 
         // Set up a default stuffRenderer for things to use.
-        stuffRenderer = new StuffRenderer(null);
+        stuffRenderer = new StuffRenderer(null, "");
 
         ISupplier<IConsumer<UIElement>> wmg = new ISupplier<IConsumer<UIElement>>() {
             @Override

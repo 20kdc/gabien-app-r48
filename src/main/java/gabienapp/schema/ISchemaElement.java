@@ -6,7 +6,6 @@
 package gabienapp.schema;
 
 import gabien.ui.UIElement;
-import gabienapp.StuffRenderer;
 import gabienapp.schema.util.ISchemaHost;
 import gabienapp.RubyIO;
 import gabienapp.schema.util.SchemaPath;

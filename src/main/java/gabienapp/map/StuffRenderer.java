@@ -3,13 +3,17 @@
  * No warranty is provided, implied or otherwise.
  */
 
-package gabienapp;
+package gabienapp.map;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
-import gabienapp.dbs.ATDB;
-import gabienapp.schema.util.SchemaPath;
+import gabienapp.Application;
+import gabienapp.map.tiles.ITileRenderer;
+import gabienapp.RubyIO;
+import gabienapp.map.tiles.NullTileRenderer;
+import gabienapp.map.tiles.VXATileRenderer;
+import gabienapp.map.tiles.XPTileRenderer;
 
 import java.util.HashMap;
 
@@ -22,15 +26,26 @@ import java.util.HashMap;
  * Created on 1/1/17.
  */
 public class StuffRenderer {
-
-    public static final int tileSize = 32;
+    // can be set by SDB
+    public static String versionId = "XP";
+    private int patternCount = 4;
+    private boolean useVXAExtensionScheme = false;
 
     private HashMap<String, IGrInDriver.IImage> additiveBlending = new HashMap<String, IGrInDriver.IImage>();
 
-    private final RubyIO tileset;
-    public final IGrInDriver.IImage[] tilesetMaps = new IGrInDriver.IImage[8];
+    public final ITileRenderer tileRenderer;
 
     public static StuffRenderer rendererFromMap(RubyIO map) {
+        String vxaPano = "";
+        if (versionId.equals("VXA")) {
+            vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
+            if (map.getInstVarBySymbol("@parallax_show").type != 'T')
+                vxaPano = "";
+        }
+        return new StuffRenderer(tsoFromMap(map), vxaPano);
+    }
+
+    private static RubyIO tsoFromMap(RubyIO map) {
         RubyIO tileset = null;
         int tid = (int) map.getInstVarBySymbol("@tileset_id").fixnumVal;
         if ((tid >= 0) && (tid < Application.tilesets.arrVal.length))
@@ -38,73 +53,21 @@ public class StuffRenderer {
         if (tileset != null)
             if (tileset.type == '0')
                 tileset = null;
-        return new StuffRenderer(tileset);
+        return tileset;
     }
 
-    public StuffRenderer(RubyIO tileset) {
-        this.tileset = tileset;
-        // If the tileset's null, then just give up.
-        // The tileset being/not being null is an implementation detail anyway.
-        if (tileset != null) {
-            String expectedTS = tileset.getInstVarBySymbol("@tileset_name").decString();
-            if (expectedTS.length() != 0)
-                tilesetMaps[0] = GaBIEn.getImage(Application.rootPath + "Graphics/Tilesets/" + expectedTS + ".png", 0, 0, 0);
-            RubyIO[] amNames = tileset.getInstVarBySymbol("@autotile_names").arrVal;
-            for (int i = 0; i < 7; i++) {
-                RubyIO rio = amNames[i];
-                if (rio.strVal.length != 0) {
-                    String expectedAT = rio.decString();
-                    tilesetMaps[i + 1] = GaBIEn.getImage(Application.rootPath + "Graphics/Autotiles/" + expectedAT + ".png", 0, 0, 0);
-                }
-            }
-        }
-    }
-
-    public void drawTile(short tidx, int px, int py, IGrInDriver igd, int ets) {
-        // The logic here is only documented in the mkxp repository, in tilemap.cpp.
-        // I really hope it doesn't count as stealing here,
-        //  if I would've had to have typed this code ANYWAY
-        //  after an age trying to figure it out.
-        if (tidx < (48 * 8)) {
-            // Autotile
-            int atMap = tidx / 48;
-            if (atMap == 0)
-                return;
-            tidx %= 48;
-            boolean didDraw = false;
-            if (tilesetMaps[atMap] != null) {
-                if (ets == tileSize) {
-                    ATDB.Autotile at = Application.autoTiles.entries[tidx];
-                    if (at != null){
-                        int cSize = tileSize / 2;
-                        for (int sA = 0; sA < 2; sA++)
-                            for (int sB = 0; sB < 2; sB++) {
-                                int ti = at.corners[sA + (sB * 2)];
-                                int tx = ti % 3;
-                                int ty = ti / 3;
-                                int sX = (sA * cSize);
-                                int sY = (sB * cSize);
-                                igd.blitImage((tx * tileSize) + sX, (ty * tileSize) + sY, cSize, cSize, px + sX, py + sY, tilesetMaps[atMap]);
-                            }
-                        didDraw = true;
-                    }
-                } else {
-                    igd.blitImage(tileSize, 2 * tileSize, ets, ets, px, py, tilesetMaps[atMap]);
-                    didDraw = true; // Close enough
-                }
-            } else {
-                didDraw = true; // It's invisible, so it should just be considered drawn no matter what
-            }
-            if (!didDraw)
-                UILabel.drawString(igd, px, py, ":" + tidx, false, false);
+    public StuffRenderer(RubyIO tso, String vxaPano) {
+        if (versionId.equals("XP")) {
+            tileRenderer = new XPTileRenderer(tso);
             return;
         }
-        tidx -= 48 * 8;
-        int tsh = 8;
-        int tx = tidx % tsh;
-        int ty = tidx / tsh;
-        if (tilesetMaps[0] != null)
-            igd.blitImage(tx * tileSize, ty * tileSize, ets, ets, px, py, tilesetMaps[0]);
+        if (versionId.equals("VXA")) {
+            patternCount = 3;
+            useVXAExtensionScheme = true;
+            tileRenderer = new VXATileRenderer(tso, vxaPano);
+            return;
+        }
+        tileRenderer = new NullTileRenderer();
     }
 
     private int lookupDirection(int dir) {
@@ -130,20 +93,37 @@ public class StuffRenderer {
         RubyIO cName = target.getInstVarBySymbol("@character_name");
         short tId = (short) target.getInstVarBySymbol("@tile_id").fixnumVal;
         if (cName.strVal.length == 0) {
-            drawTile(tId, ox, oy, igd, 32);
+            tileRenderer.drawTile(tId, ox, oy, igd, ITileRenderer.tileSize);
         } else {
             // lower centre of tile, the reference point for characters
             ox += 16;
             oy += 32;
             String s = cName.decString();
             IGrInDriver.IImage i = GaBIEn.getImage(Application.rootPath + "Graphics/Characters/" + s + ".png", 0, 0, 0);
-            int sprW = i.getWidth() / 4;
+            int sprW = i.getWidth() / patternCount;
             int sprH = i.getHeight() / 4;
             // Direction 2, pattern 0 == 0, ? (safe @ cliffs, page 0)
             // Direction 2, pattern 2 == 2, ? (safe @ cliffs, page 1)
             int tx = pat;
             int ty = dir;
-            if (target.getInstVarBySymbol("@blend_type").fixnumVal == 1) {
+
+            if (useVXAExtensionScheme) {
+                if (!s.startsWith("!$")) {
+                    sprW = 32;
+                    sprH = 32;
+                    int idx = (int) target.getInstVarBySymbol("@character_index").fixnumVal;
+                    // NOTE: still unsure on how segmentation works.
+                    // for now, things work out?
+                    ty += (idx / 4) * 4;
+                    tx += (idx % 4) * 3;
+                }
+            }
+
+            boolean doBlend = false;
+            RubyIO blendData = target.getInstVarBySymbol("@blend_type");
+            if (blendData != null)
+                doBlend = target.getInstVarBySymbol("@blend_type").fixnumVal == 1;
+            if (doBlend) {
                 // firstly, let's edit the image
                 if (!additiveBlending.containsKey(s)) {
                     int[] rpg = i.getPixels();
@@ -171,11 +151,5 @@ public class StuffRenderer {
                 igd.blitImage(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, i);
             }
         }
-    }
-
-    public String getPanorama() {
-        if (tileset != null)
-            return tileset.getInstVarBySymbol("@panorama_name").decString();
-        return "";
     }
 }

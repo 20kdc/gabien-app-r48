@@ -6,9 +6,9 @@
 package gabienapp.schema.specialized;
 
 import gabien.IGrInDriver;
-import gabienapp.Application;
+import gabienapp.map.tiles.ITileRenderer;
 import gabienapp.RubyIO;
-import gabienapp.StuffRenderer;
+import gabienapp.map.StuffRenderer;
 
 /**
  * Tables, now with a tileset background!
@@ -23,8 +23,8 @@ public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRende
     public StuffRenderer baseTileDraw(RubyIO target, int t, int x, int y, IGrInDriver igd, StuffRenderer osr) {
         // The whole "variable in, variable out" thing is a safe leak-proof way of caching the helper object.
         if (osr == null)
-            osr = new StuffRenderer(target);
-        osr.drawTile((short) t, x, y, igd, StuffRenderer.tileSize);
+            osr = new StuffRenderer(target, "");
+        osr.tileRenderer.drawTile((short) t, x, y, igd, ITileRenderer.tileSize);
         return osr;
     }
 }

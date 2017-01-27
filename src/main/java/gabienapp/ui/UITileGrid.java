@@ -7,7 +7,7 @@ package gabienapp.ui;
 
 import gabien.IGrInDriver;
 import gabienapp.Application;
-import gabienapp.StuffRenderer;
+import gabienapp.map.tiles.ITileRenderer;
 import gabienapp.map.UIMapView;
 
 /**
@@ -19,7 +19,7 @@ public class UITileGrid extends UIGrid {
     public final UIMapView map;
     private final boolean autoTile;
     public UITileGrid(UIMapView mv, int tStart, int tileCount, boolean aTile) {
-        super(StuffRenderer.tileSize, tileCount);
+        super(ITileRenderer.tileSize, tileCount);
         autoTile = aTile;
         map = mv;
         tileStart = tStart;
@@ -40,6 +40,6 @@ public class UITileGrid extends UIGrid {
                 return;
             }
         }
-        Application.stuffRenderer.drawTile((short) (t + tileStart), x, y, igd, StuffRenderer.tileSize);
+        Application.stuffRenderer.tileRenderer.drawTile((short) (t + tileStart), x, y, igd, ITileRenderer.tileSize);
     }
 }

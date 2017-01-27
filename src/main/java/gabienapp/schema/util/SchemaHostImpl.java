@@ -8,6 +8,7 @@ package gabienapp.schema.util;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import gabienapp.*;
+import gabienapp.map.StuffRenderer;
 import gabienapp.ui.UIAppendButton;
 import gabienapp.ui.UIScrollVertLayout;
 
