@@ -1,0 +1,12 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+C objectDB ika
+C versionId Ika
+C mapinfosInert
+
+: IkaMap
++table @data . . 160 120 1
+
+> File.Map001 IkaMap

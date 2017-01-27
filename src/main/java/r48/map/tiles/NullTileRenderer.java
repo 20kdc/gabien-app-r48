@@ -13,6 +13,11 @@ import r48.ui.UITileGrid;
  */
 public class NullTileRenderer implements ITileRenderer {
     @Override
+    public int getTileSize() {
+        return 32;
+    }
+
+    @Override
     public void drawTile(short tidx, int px, int py, IGrInDriver igd, int ets) {
 
     }

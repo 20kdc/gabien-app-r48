@@ -22,6 +22,9 @@ import java.util.Map;
  * Created on 1/1/17.
  */
 public class UIMapInfos extends UIPanel {
+    public static boolean mapSequenceInert = false;
+    private final RubyIO mapInfos;
+    private final ISupplier<IConsumer<UIElement>> windowMakerGetter;
     private UIScrollVertLayout uiSVL;
     private int selectedOrder = 0;
     private boolean deleteConfirmation = false;
@@ -32,9 +35,6 @@ public class UIMapInfos extends UIPanel {
             rebuildList();
         }
     };
-    private final RubyIO mapInfos;
-
-    private final ISupplier<IConsumer<UIElement>> windowMakerGetter;
 
     public UIMapInfos(ISupplier<IConsumer<UIElement>> wmg) {
         mapInfos = AppMain.objectDB.getObject("MapInfos");
@@ -109,127 +109,131 @@ public class UIMapInfos extends UIPanel {
                     rebuildList();
                 }
             });
-            if (selectedOrder != order) {
-                if (selectedOrder != 0)
-                    if (!wouldRelocatingInOrderFail(selectedOrder, order + 1)) {
-                        elm = new UIAppendButton(">>", elm, new Runnable() {
+            if (!mapSequenceInert) {
+                if (selectedOrder != order) {
+                    if (selectedOrder != 0)
+                        if (!wouldRelocatingInOrderFail(selectedOrder, order + 1)) {
+                            elm = new UIAppendButton(">>", elm, new Runnable() {
+                                @Override
+                                public void run() {
+                                    selectedOrder = relocateInOrder(selectedOrder, order + 1);
+                                    AppMain.objectDB.objectRootModified(mapInfos);
+                                    rebuildList();
+                                }
+                            }, false);
+                        }
+                } else {
+                    if (parent != 0) {
+                        // This used to be two operations, but, eh.
+                        elm = new UIAppendButton("Move Out ", elm, new Runnable() {
                             @Override
                             public void run() {
-                                selectedOrder = relocateInOrder(selectedOrder, order + 1);
+                                final int parentLastOrder = findChildrenLastOrder(parent, getMapByOrder(parent).getValue());
+                                // Does it need to be moved to the bottom
+                                if (!mapInPath(k, (int) getMapByOrder(parentLastOrder).getKey().fixnumVal))
+                                    selectedOrder = relocateInOrder(selectedOrder, parentLastOrder + 1);
+                                map.getInstVarBySymbol("@parent_id").fixnumVal = mapInfos.getHashVal(new RubyIO().setFX(parent)).getInstVarBySymbol("@parent_id").fixnumVal;
                                 AppMain.objectDB.objectRootModified(mapInfos);
                                 rebuildList();
                             }
                         }, false);
                     }
-            } else {
-                if (parent != 0) {
-                    // This used to be two operations, but, eh.
-                    elm = new UIAppendButton("Move Out ", elm, new Runnable() {
+                    elm = new UIAppendButton("Edit Info. ", elm, new Runnable() {
                         @Override
                         public void run() {
-                            final int parentLastOrder = findChildrenLastOrder(parent, getMapByOrder(parent).getValue());
-                            // Does it need to be moved to the bottom
-                            if (!mapInPath(k, (int) getMapByOrder(parentLastOrder).getKey().fixnumVal))
-                                selectedOrder = relocateInOrder(selectedOrder, parentLastOrder + 1);
-                            map.getInstVarBySymbol("@parent_id").fixnumVal = mapInfos.getHashVal(new RubyIO().setFX(parent)).getInstVarBySymbol("@parent_id").fixnumVal;
-                            AppMain.objectDB.objectRootModified(mapInfos);
-                            rebuildList();
+                            AppMain.launchNonRootSchema(mapInfos, "File.MapInfos", mapInfos, "File.MapInfos", new RubyIO().setFX(k), map, "RPG::MapInfo", "M" + k);
                         }
                     }, false);
-                }
-                elm = new UIAppendButton("Edit Info. ", elm, new Runnable() {
-                    @Override
-                    public void run() {
-                        AppMain.launchNonRootSchema(mapInfos, "File.MapInfos", mapInfos, "File.MapInfos", new RubyIO().setFX(k), map, "RPG::MapInfo", "M" + k);
+                    if (deleteConfirmation) {
+                        elm = new UIAppendButton("Delete!", elm, new Runnable() {
+                            @Override
+                            public void run() {
+                                // Deal with child nodes first so that last order WILL equal first order
+                                for (RubyIO rio : mapInfos.hashVal.values())
+                                    if (rio.getInstVarBySymbol("@parent_id").fixnumVal == k)
+                                        rio.getInstVarBySymbol("@parent_id").fixnumVal = parent;
+                                // Remove this map
+                                mapInfos.hashVal.remove(intToKey.get(k));
+                                // And shift the orders.
+                                performOrderShift(order, -1, -1);
+                                AppMain.objectDB.objectRootModified(mapInfos);
+                                rebuildList();
+                            }
+                        }, false);
+                    } else {
+                        elm = new UIAppendButton("Delete?", elm, new Runnable() {
+                            @Override
+                            public void run() {
+                                deleteConfirmation = true;
+                                rebuildList();
+                            }
+                        }, false);
                     }
-                }, false);
-                if (deleteConfirmation) {
-                    elm = new UIAppendButton("Delete!", elm, new Runnable() {
-                        @Override
-                        public void run() {
-                            // Deal with child nodes first so that last order WILL equal first order
-                            for (RubyIO rio : mapInfos.hashVal.values())
-                                if (rio.getInstVarBySymbol("@parent_id").fixnumVal == k)
-                                    rio.getInstVarBySymbol("@parent_id").fixnumVal = parent;
-                            // Remove this map
-                            mapInfos.hashVal.remove(intToKey.get(k));
-                            // And shift the orders.
-                            performOrderShift(order, -1, -1);
-                            AppMain.objectDB.objectRootModified(mapInfos);
-                            rebuildList();
-                        }
-                    }, false);
-                } else {
-                    elm = new UIAppendButton("Delete?", elm, new Runnable() {
-                        @Override
-                        public void run() {
-                            deleteConfirmation = true;
-                            rebuildList();
-                        }
-                    }, false);
                 }
             }
             uiSVL.panels.add(elm);
         }
-        final int fLastOrder = lastOrder;
-        uiSVL.panels.add(new UITextButton(false, "<Insert New Map>", new Runnable() {
-            @Override
-            public void run() {
-                windowMakerGetter.get().accept(new UITextPrompt("Map ID?", new IConsumer<String>() {
-                    @Override
-                    public void accept(String s) {
-                        int i = Integer.parseInt(s);
-                        RubyIO key = new RubyIO().setFX(i);
-                        if (mapInfos.getHashVal(key) != null) {
-                            windowMakerGetter.get().accept(new UILabel("That ID is already in use.", false));
-                            return;
+        if (!mapSequenceInert) {
+            final int fLastOrder = lastOrder;
+            uiSVL.panels.add(new UITextButton(false, "<Insert New Map>", new Runnable() {
+                @Override
+                public void run() {
+                    windowMakerGetter.get().accept(new UITextPrompt("Map ID?", new IConsumer<String>() {
+                        @Override
+                        public void accept(String s) {
+                            int i = Integer.parseInt(s);
+                            RubyIO key = new RubyIO().setFX(i);
+                            if (mapInfos.getHashVal(key) != null) {
+                                windowMakerGetter.get().accept(new UILabel("That ID is already in use.", false));
+                                return;
+                            }
+                            RubyIO mi = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), key);
+                            mi.getInstVarBySymbol("@order").fixnumVal = fLastOrder + 1;
+                            mapInfos.hashVal.put(key, mi);
+                            AppMain.objectDB.objectRootModified(mapInfos);
+                            rebuildList();
                         }
-                        RubyIO mi = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), key);
-                        mi.getInstVarBySymbol("@order").fixnumVal = fLastOrder + 1;
-                        mapInfos.hashVal.put(key, mi);
-                        AppMain.objectDB.objectRootModified(mapInfos);
-                        rebuildList();
-                    }
-                }));
-            }
-        }));
-        uiSVL.panels.add(new UITextButton(false, "<Test Sequence Consistency>", new Runnable() {
-            @Override
-            public void run() {
-                LinkedList<Integer> orders = new LinkedList<Integer>();
-                for (RubyIO map : mapInfos.hashVal.values())
-                    orders.add((int) map.getInstVarBySymbol("@order").fixnumVal);
-                orders.sort(new Comparator<Integer>() {
-                    @Override
-                    public int compare(Integer a, Integer b) {
-                        // Really? I have to implement this myself?
-                        if (a < b)
-                            return -1;
-                        if (a > b)
-                            return 1;
-                        return 0;
-                    }
-                });
-                String message = "The MapInfos database is sequential.";
-                int lastOrder = 0;
-                for (int i : orders) {
-                    if (i != (lastOrder + 1)) {
-                        if (i <= lastOrder) {
-                            message = "The entries in the MapInfos database contain duplicates. (@" + i + ")";
-                            enableOrderHoleDebug = true;
-                            break;
-                        } else {
-                            message = "The entries in the MapInfos database contain holes. (@" + i + ")";
-                            enableOrderHoleDebug = true;
-                            break;
-                        }
-                    }
-                    lastOrder = i;
+                    }));
                 }
-                windowMakerGetter.get().accept(new UILabel(message, false));
-                rebuildList();
-            }
-        }));
+            }));
+            uiSVL.panels.add(new UITextButton(false, "<Test Sequence Consistency>", new Runnable() {
+                @Override
+                public void run() {
+                    LinkedList<Integer> orders = new LinkedList<Integer>();
+                    for (RubyIO map : mapInfos.hashVal.values())
+                        orders.add((int) map.getInstVarBySymbol("@order").fixnumVal);
+                    orders.sort(new Comparator<Integer>() {
+                        @Override
+                        public int compare(Integer a, Integer b) {
+                            // Really? I have to implement this myself?
+                            if (a < b)
+                                return -1;
+                            if (a > b)
+                                return 1;
+                            return 0;
+                        }
+                    });
+                    String message = "The MapInfos database is sequential.";
+                    int lastOrder = 0;
+                    for (int i : orders) {
+                        if (i != (lastOrder + 1)) {
+                            if (i <= lastOrder) {
+                                message = "The entries in the MapInfos database contain duplicates. (@" + i + ")";
+                                enableOrderHoleDebug = true;
+                                break;
+                            } else {
+                                message = "The entries in the MapInfos database contain holes. (@" + i + ")";
+                                enableOrderHoleDebug = true;
+                                break;
+                            }
+                        }
+                        lastOrder = i;
+                    }
+                    windowMakerGetter.get().accept(new UILabel(message, false));
+                    rebuildList();
+                }
+            }));
+        }
         deleteConfirmation = false;
     }
 
@@ -252,7 +256,7 @@ public class UIMapInfos extends UIPanel {
             RubyIO order = v.getInstVarBySymbol("@order");
             if (order.fixnumVal >= shiftStart)
                 if ((shiftAmount == -1) || (order.fixnumVal < (shiftStart + shiftAmount)))
-                order.fixnumVal += shiftDir;
+                    order.fixnumVal += shiftDir;
         }
     }
 

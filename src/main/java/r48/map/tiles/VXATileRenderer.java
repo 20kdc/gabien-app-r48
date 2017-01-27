@@ -17,6 +17,14 @@ import r48.ui.UITileGrid;
  * Created on 1/27/17.
  */
 public class VXATileRenderer implements ITileRenderer {
+
+    public static final int tileSize = 32;
+
+    @Override
+    public int getTileSize() {
+        return tileSize;
+    }
+
     public final IGrInDriver.IImage[] tilesetMaps = new IGrInDriver.IImage[9];
     private final RubyIO tileset;
 
@@ -65,7 +73,7 @@ public class VXATileRenderer implements ITileRenderer {
                 if (planeImage != null) {
                     int tgtX = t % 8;
                     int tgtY = t / 8;
-                    igd.blitImage(tgtX * ITileRenderer.tileSize, tgtY * ITileRenderer.tileSize, ets, ets, px, py, planeImage);
+                    igd.blitImage(tgtX * tileSize, tgtY * tileSize, ets, ets, px, py, planeImage);
                     return;
                 }
             }
@@ -91,7 +99,7 @@ public class VXATileRenderer implements ITileRenderer {
                 // Only makes sense with a baseline of 8 but that leads to 'corrupted'-looking data in parts hm.
                 int tgtX = t % 8;
                 int tgtY = t / 8;
-                igd.blitImage(tgtX * ITileRenderer.tileSize, tgtY * ITileRenderer.tileSize, ets, ets, px, py, planeImage);
+                igd.blitImage(tgtX * tileSize, tgtY * tileSize, ets, ets, px, py, planeImage);
                 return;
             }
         }
@@ -105,8 +113,8 @@ public class VXATileRenderer implements ITileRenderer {
         int apid = tin / 48;
         int pox = apid % 8;
         int poy = apid / 8;
-        pox *= (ITileRenderer.tileSize * 2);
-        poy *= (ITileRenderer.tileSize * 3);
+        pox *= tileSize * 2;
+        poy *= tileSize * 3;
         IGrInDriver.IImage planeImg = tilesetMaps[tm];
         if (planeImg != null) {
             if (ets == tileSize) {
@@ -116,15 +124,15 @@ public class VXATileRenderer implements ITileRenderer {
                     for (int sA = 0; sA < 2; sA++)
                         for (int sB = 0; sB < 2; sB++) {
                             int ti = at.corners[sA + (sB * 2)];
-                            int tx = (ti % 3) * ITileRenderer.tileSize;
-                            int ty = (ti / 3) * ITileRenderer.tileSize;
+                            int tx = (ti % 3) * tileSize;
+                            int ty = (ti / 3) * tileSize;
                             if (ti == 2) {
-                                tx = ITileRenderer.tileSize;
+                                tx = tileSize;
                             } else if (ti > 2) {
-                                ty -= ITileRenderer.tileSize;
+                                ty -= tileSize;
                                 tx /= 2;
                                 ty /= 2;
-                                ty += ITileRenderer.tileSize;
+                                ty += tileSize;
                             }
                             int sX = (sA * cSize);
                             int sY = (sB * cSize);
@@ -144,7 +152,7 @@ public class VXATileRenderer implements ITileRenderer {
     public String getPanorama() {
         if (panoramaSetup.length() == 0)
             return "";
-        return "Parallaxes/" + panoramaSetup;
+        return "Graphics/Parallaxes/" + panoramaSetup + ".png";
     }
 
     @Override

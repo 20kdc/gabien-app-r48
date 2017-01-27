@@ -21,6 +21,13 @@ public class XPTileRenderer implements ITileRenderer {
     private final RubyIO tileset;
     public final IGrInDriver.IImage[] tilesetMaps = new IGrInDriver.IImage[8];
 
+    public static final int tileSize = 32;
+
+    @Override
+    public int getTileSize() {
+        return tileSize;
+    }
+
     public XPTileRenderer(RubyIO tileset) {
         this.tileset = tileset;
         // If the tileset's null, then just give up.
@@ -98,7 +105,7 @@ public class XPTileRenderer implements ITileRenderer {
             RubyIO rio = tileset.getInstVarBySymbol("@panorama_name");
             if (rio != null)
                 if (rio.strVal.length > 0)
-                    return "Panoramas/" + rio.decString();
+                    return "Graphics/Panoramas/" + rio.decString() + ".png";
         }
         return "";
     }

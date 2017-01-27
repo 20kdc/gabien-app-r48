@@ -10,6 +10,7 @@ import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.DictionaryUpdaterRunnable;
+import r48.UIMapInfos;
 import r48.map.StuffRenderer;
 import r48.schema.specialized.*;
 import r48.RubyIO;
@@ -289,6 +290,8 @@ public class SDB {
                         AppMain.dataPath = args[1];
                     if (args[0].equals("dataExt"))
                         AppMain.dataExt = args[1];
+                    if (args[0].equals("mapinfosInert"))
+                        UIMapInfos.mapSequenceInert = true;
                     if (args[0].equals("versionId"))
                         StuffRenderer.versionId = args[1];
                 }
