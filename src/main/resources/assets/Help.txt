@@ -8,15 +8,22 @@
 i HelpImg/0.demo.png
 . Greetings. I, am 20kdc.
 . This is your guide to R48.
+.
 . Firstly, keep in mind that text fields
 . will revert unless you press enter.
 . The same goes for number fields.
 . This is critical to several operations.
+.
+. Secondly, make sure you ran this program
+. from the same directory as the game,
+. that you want to edit.
+.
+. Third, make sure you selected that game,
+. at the screen you will most likely have
+. passed to get to this point.
+.
 . Moving this help window out of the way,
 . the picture on the right should match.
-. If this is incorrect, and the MapInfos
-.  tab is non-visible, you need to
-.  report a type 0x7E9A7 error to me.
 . The tab names should describe what they
 . do, but in any case, for further detail,
 . see the below pages:
@@ -26,10 +33,8 @@ i HelpImg/0.demo.png
 > 4 System Objects
 > 5 ObjectDB Monitor
 > 6 System Tools
-. Note that to ensure your work is saved,
-. you should remember to press the button
-. at the top-right to save your work,
-. and of course, remember to keep backups.
+. Note that to ensure your work is saved, remember to press the button
+. at the top-right to save your work, and of course, keep backups.
 > 999 License
 
 1: Map

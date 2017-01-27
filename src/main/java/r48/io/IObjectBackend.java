@@ -6,6 +6,8 @@ package r48.io;
 
 import r48.RubyIO;
 
+import java.io.IOException;
+
 /**
  * Allows for the creation of non-standard backends which don't use the normal Ruby marshal format.
  * Presumably for "flat binary file" formats, some emulation is involved.
@@ -14,5 +16,5 @@ import r48.RubyIO;
  */
 public interface IObjectBackend {
     RubyIO loadObjectFromFile(String filename);
-    void saveObjectToFile(String filename, RubyIO object);
+    void saveObjectToFile(String filename, RubyIO object) throws IOException;
 }

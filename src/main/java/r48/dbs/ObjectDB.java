@@ -11,6 +11,7 @@ import r48.io.IObjectBackend;
 import r48.schema.ISchemaElement;
 import r48.schema.util.SchemaPath;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -83,10 +84,16 @@ public class ObjectDB {
                 }
             }
         }
-        backend.saveObjectToFile(id, rio);
-        objectMap.put(id, new WeakReference<RubyIO>(rio));
-        reverseObjectMap.put(rio, id);
-        modifiedObjects.remove(rio);
+        try {
+            backend.saveObjectToFile(id, rio);
+            objectMap.put(id, new WeakReference<RubyIO>(rio));
+            reverseObjectMap.put(rio, id);
+            modifiedObjects.remove(rio);
+        } catch (IOException ioe) {
+            // ERROR!
+            AppMain.launchDialog("Error: " + ioe.getMessage());
+            ioe.printStackTrace();
+        }
     }
 
     public boolean getObjectModified(String id) {

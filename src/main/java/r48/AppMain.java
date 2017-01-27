@@ -179,7 +179,7 @@ public class AppMain {
                                             }
                                         }
                                     }
-                                    windowMaker.accept(new UILabel("nnnope", true));
+                                    launchDialog("nnnope");
                                 }
                             }));
                         }
@@ -212,7 +212,7 @@ public class AppMain {
                                 sp.editor.modifyVal(map, sp, false);
                                 objectDB.deregisterModificationHandler(map, modListen);
                             }
-                            windowMaker.accept(new UILabel("nnnope", true));
+                            launchDialog("nnnope");
                         }
                     },
                     new Runnable() {
@@ -233,7 +233,7 @@ public class AppMain {
                                     }
                                 }
                             }
-                            windowMaker.accept(new UILabel("nnnope", true));
+                            launchDialog("nnnope");
                         }
                     },
                     new Runnable() {
@@ -251,7 +251,7 @@ public class AppMain {
                                     }
                                 }
                             }
-                            windowMaker.accept(new UILabel("nnnope", true));
+                            launchDialog("nnnope");
                         }
                     },
                     new Runnable() {
@@ -473,5 +473,9 @@ public class AppMain {
 
     public static void loadMap(int k) {
         mapBox.loadMap(k);
+    }
+
+    public static void launchDialog(String s) {
+        windowMaker.accept(new UILabel(s, true));
     }
 }

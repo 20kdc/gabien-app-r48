@@ -108,6 +108,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
                 newEvent.getInstVarBySymbol("@x").fixnumVal = x;
                 newEvent.getInstVarBySymbol("@y").fixnumVal = y;
                 evtHash.hashVal.put(k, newEvent);
+                mapView.passModificationNotification();
                 showEvent(unusedIndex, mapView.map, newEvent);
             }
         }));

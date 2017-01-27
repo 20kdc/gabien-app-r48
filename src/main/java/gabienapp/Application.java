@@ -12,6 +12,7 @@ import gabien.ui.WindowCreatingUIElementConsumer;
 import r48.AppMain;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
+import r48.map.UIMapToolWrapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -71,6 +72,18 @@ public class Application {
         final String[] gamepakNames = gamepakNameList.toArray(new String[0]);
         Runnable[] gamepakButtons = new Runnable[gamepakNames.length];
 
+        // this can't be good
+        final IConsumer<Runnable> closeHelper = new IConsumer<Runnable>() {
+            private Runnable r;
+            @Override
+            public void accept(Runnable runnable) {
+                if (runnable != null) {
+                    r = runnable;
+                } else {
+                    r.run();
+                }
+            }
+        };
         for (int i = 0; i < gamepakButtons.length; i++) {
             final int ie = i;
             gamepakButtons[i] = new Runnable() {
@@ -85,11 +98,18 @@ public class Application {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                    closeHelper.accept(null);
                 }
             };
         }
-
-        uiTicker.accept(new UIPopupMenu(gamepakNames, gamepakButtons, true, true));
+        final UIMapToolWrapper uimtw = new UIMapToolWrapper(new UIPopupMenu(gamepakNames, gamepakButtons, true, true));
+        closeHelper.accept(new Runnable() {
+            @Override
+            public void run() {
+                uimtw.selfClose = true;
+            }
+        });
+        uiTicker.accept(uimtw);
 
         while (uiTicker.runningWindows() > 0) {
             double dT = GaBIEn.timeDelta(false);

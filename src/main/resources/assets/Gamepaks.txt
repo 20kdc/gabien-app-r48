@@ -4,7 +4,7 @@
 
 0: RXP
 2: RVXA
-2: Ika
+0: Ika
 . Ikachan
 0: Sticki
 . 'Sticky Note' Test

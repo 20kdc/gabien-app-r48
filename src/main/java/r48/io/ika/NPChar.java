@@ -7,6 +7,7 @@ package r48.io.ika;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Handler for the NPChar file.
@@ -22,7 +23,7 @@ public class NPChar {
     }
 
     // Apparently, negative values actually do work in this function!
-    private static void doubleToFixedPoint(double d, FileOutputStream fos) throws IOException {
+    private static void doubleToFixedPoint(double d, OutputStream fos) throws IOException {
         int dd = (int) Math.floor(d);
         dd = dd << 14;
         double fractional = d - Math.floor(d);
@@ -60,7 +61,7 @@ public class NPChar {
         }
     }
 
-    public void save(FileOutputStream fos) throws IOException {
+    public void save(OutputStream fos) throws IOException {
         for (int p = 0; p < npcTable.length; p++) {
             NPCCharacter nc = npcTable[p];
             if (nc.exists) {

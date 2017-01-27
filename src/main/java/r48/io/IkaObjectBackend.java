@@ -13,8 +13,7 @@ import r48.RubyTable;
 import r48.io.ika.BM8I;
 import r48.io.ika.NPChar;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.HashMap;
 
 /**
@@ -52,7 +51,7 @@ public class IkaObjectBackend implements IObjectBackend {
             bm.height = 120;
             bm.data = new int[160 * 120];
             try {
-                InputStream inp = GaBIEn.getFile(root + "Pbm/Map1.pbm");
+                InputStream inp = new FileInputStream(root + "Pbm/Map1.pbm");
                 bm.loadBitmap(inp);
                 inp.close();
             } catch (IOException ioe) {
@@ -79,7 +78,7 @@ public class IkaObjectBackend implements IObjectBackend {
 
             NPChar np = new NPChar();
             try {
-                InputStream inp = GaBIEn.getFile(root + "NPChar.dat");
+                InputStream inp = new FileInputStream(root + "NPChar.dat");
                 np.load(inp);
                 inp.close();
             } catch (IOException ioe) {
@@ -117,7 +116,44 @@ public class IkaObjectBackend implements IObjectBackend {
     }
 
     @Override
-    public void saveObjectToFile(String filename, RubyIO object) {
+    public void saveObjectToFile(String filename, RubyIO object) throws IOException {
+        if (filename.equals("Map001")) {
+            // allow saving
+            BM8I bm8 = new BM8I();
+            RubyTable rt = new RubyTable(object.getInstVarBySymbol("@data").userVal);
+            bm8.width = rt.width;
+            bm8.height = rt.height;
+            bm8.data = new int[bm8.width * bm8.height];
+            for (int i = 0; i < rt.width; i++)
+                for (int j = 0; j < rt.height; j++)
+                    bm8.data[i + (j * rt.width)] = (int) rt.getTiletype(i, j, 0);
+            OutputStream fio = new FileOutputStream(root + "Pbm/Map1.pbm");
+            bm8.saveBitmap(fio);
+            fio.close();
 
+            NPChar npc = new NPChar();
+            RubyIO r = object.getInstVarBySymbol("@events");
+            for (int i = 0; i < npc.npcTable.length; i++) {
+                RubyIO r2 = r.getHashVal(new RubyIO().setFX(i));
+                if (r2 != null) {
+                    NPChar.NPCCharacter n = npc.npcTable[i];
+                    n.exists = true;
+                    n.posX = r2.getInstVarBySymbol("@x").fixnumVal;
+                    n.posY = r2.getInstVarBySymbol("@y").fixnumVal;
+                    n.ofsX = n.posX + r2.getInstVarBySymbol("@x").fixnumVal;
+                    n.ofsY = n.posY + r2.getInstVarBySymbol("@y").fixnumVal;
+                    n.collisionType = (int) r2.getInstVarBySymbol("@collisionType").fixnumVal;
+                    n.entityStatus = (int) r2.getInstVarBySymbol("@status").fixnumVal;
+                    n.entityType = (int) r2.getInstVarBySymbol("@type").fixnumVal;
+                    n.eventID = (int) r2.getInstVarBySymbol("@scriptId").fixnumVal;
+                }
+            }
+            fio = new FileOutputStream(root + "NPChar.dat");
+            npc.save(fio);
+            fio.close();
+            return;
+        }
+        // do nothing, usually
+        throw new IOException("Can't save " + filename);
     }
 }
