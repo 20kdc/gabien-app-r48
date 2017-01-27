@@ -11,6 +11,7 @@ import r48.RubyCT;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.io.ika.BM8I;
+import r48.io.ika.NPChar;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +45,7 @@ public class IkaObjectBackend implements IObjectBackend {
         if (filename.equals("Map001")) {
             RubyIO rio = new RubyIO();
             rio.type = 'o';
-            rio.symVal = "IkaMap";
+            rio.symVal = "RPG::Map";
 
             BM8I bm = new BM8I();
             bm.width = 160;
@@ -76,9 +77,43 @@ public class IkaObjectBackend implements IObjectBackend {
             evTbl.hashVal = new HashMap<RubyIO, RubyIO>();
             rio.iVars.put("@events", evTbl);
 
+            NPChar np = new NPChar();
+            try {
+                InputStream inp = GaBIEn.getFile(root + "NPChar.dat");
+                np.load(inp);
+                inp.close();
+            } catch (IOException ioe) {
+                // Oh well
+                ioe.printStackTrace();
+            }
+            for (int i = 0; i < np.npcTable.length; i++)
+                if (np.npcTable[i].exists)
+                    evTbl.hashVal.put(new RubyIO().setFX(i), convertEventToRuby(np.npcTable[i]));
+
             return rio;
         }
         return null;
+    }
+
+    private RubyIO convertEventToRuby(NPChar.NPCCharacter io) {
+        RubyIO res = new RubyIO();
+        res.type = 'o';
+        res.symVal = "RPG::Event";
+        int px = rounder(io.posX);
+        int py = rounder(io.posY);
+        res.iVars.put("@x", new RubyIO().setFX(px));
+        res.iVars.put("@y", new RubyIO().setFX(py));
+        res.iVars.put("@tOX", new RubyIO().setFX(rounder(io.ofsX) - px));
+        res.iVars.put("@tOY", new RubyIO().setFX(rounder(io.ofsY) - py));
+        res.iVars.put("@type", new RubyIO().setFX(io.entityType));
+        res.iVars.put("@status", new RubyIO().setFX(io.entityStatus));
+        res.iVars.put("@scriptId", new RubyIO().setFX(io.eventID));
+        res.iVars.put("@collisionType", new RubyIO().setFX(io.collisionType));
+        return res;
+    }
+
+    private int rounder(double pos) {
+        return (int) (pos + 0.5);
     }
 
     @Override

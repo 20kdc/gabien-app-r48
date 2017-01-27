@@ -7,6 +7,7 @@ package r48.map.tiles;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import r48.AppMain;
 import r48.map.UIMapView;
 import r48.ui.UITileGrid;
 
@@ -37,7 +38,7 @@ public class IkaTileRenderer implements ITileRenderer {
             return;
         if (blockTypes[plane] == null)
             return;
-        IGrInDriver.IImage i = GaBIEn.getImage("Pbm/Prt" + blockTypes[plane] + ".pbm", 0, 0, 0);
+        IGrInDriver.IImage i = GaBIEn.getImage(AppMain.rootPath + "Pbm/Prt" + blockTypes[plane] + ".pbm", 0, 0, 0);
         if (plane != 6) {
             igd.blitBCKImage(16 * block, 0, 16, 16, px, py, i);
         } else {

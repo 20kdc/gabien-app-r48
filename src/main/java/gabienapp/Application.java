@@ -35,7 +35,7 @@ public class Application {
         gamepakList.add("");
         gamepakNameList.add("Choose Game");
 
-        DBLoader dbl = new DBLoader(new BufferedReader(new InputStreamReader(GaBIEn.getFile("Gamepaks.txt"))), new IDatabase() {
+        new DBLoader(new BufferedReader(new InputStreamReader(GaBIEn.getFile("Gamepaks.txt"))), new IDatabase() {
             @Override
             public void newObj(int objId, String objName) throws IOException {
                 InputStream tester = GaBIEn.getFile(objName + "/Schema.txt");
