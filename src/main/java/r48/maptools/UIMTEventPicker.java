@@ -57,7 +57,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
     @Override
     public void performOverlay(int tx, int ty, IGrInDriver igd, int px, int py, int ol, boolean minimap) {
         if (eventCache.containsKey(tx + ";" + ty))
-            igd.blitBCKImage(0, 36, 16, 16, px + 8, py + 8, AppMain.layerTabs);
+            igd.blitBCKImage(0, 36, 16, 16, px + (ol / 2), py + (ol / 2), AppMain.layerTabs);
     }
 
     @Override
@@ -68,7 +68,10 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
             final RubyIO evI = evE.getValue();
             if (evI.getInstVarBySymbol("@x").fixnumVal == x)
                 if (evI.getInstVarBySymbol("@y").fixnumVal == y) {
-                    UIElement button = new UITextButton(true, evI.getInstVarBySymbol("@name").decString(), new Runnable() {
+                    String nam = "event" + evK.toString();
+                    if (evI.getInstVarBySymbol("@name") != null)
+                        nam = evI.getInstVarBySymbol("@name").decString();
+                    UIElement button = new UITextButton(true, nam, new Runnable() {
                         @Override
                         public void run() {
                             showEvent(evK.fixnumVal, mapView.map, evI);

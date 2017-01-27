@@ -189,7 +189,7 @@ public class UIMapView extends UIElement implements IWindowElement {
                     continue;
                 int px = ox + ((x * tileSize) - camX);
                 int py = oy + ((y * tileSize) - camY);
-                AppMain.stuffRenderer.drawEventGraphic(evI.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@graphic"), px, py, igd);
+                AppMain.stuffRenderer.eventRenderer.drawEventGraphic(AppMain.stuffRenderer.eventRenderer.extractEventGraphic(evI), px, py, igd);
             }
         }
 

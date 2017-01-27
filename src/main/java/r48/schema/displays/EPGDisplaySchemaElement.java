@@ -25,7 +25,7 @@ public class EPGDisplaySchemaElement implements ISchemaElement {
             public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
                 Rect bounds = getBounds();
                 igd.clearRect(255, 0, 255, ox, oy, bounds.width, bounds.height);
-                launcher.getContextRenderer().drawEventGraphic(target, ox + (bounds.width / 2) - 16, oy + (bounds.height / 2) - 16, igd);
+                launcher.getContextRenderer().eventRenderer.drawEventGraphic(target, ox + (bounds.width / 2) - 16, oy + (bounds.height / 2) - 16, igd);
             }
 
             @Override
