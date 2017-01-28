@@ -24,6 +24,7 @@ public class Musicality {
         couplingTrack = new Instrument(GaBIEn.getSound().createChannel());
         secondaryTrack = new Instrument(GaBIEn.getSound().createChannel());
         secondaryTrack.mul = 1;
+        secondaryTrack.div = 5;
         primaryTrackController = null;
         running = false;
         initialized = true;
@@ -34,7 +35,7 @@ public class Musicality {
         couplingTrack.update();
         secondaryTrack.update();
         metatick++;
-        if (metatick == 15) {
+        if (metatick == 38) {
             metatick = 0;
             performMetatick();
         }
@@ -48,9 +49,9 @@ public class Musicality {
 
     public static void update(double dT) {
         collectedTime += dT;
-        if (collectedTime > 0.05d) {
+        while (collectedTime > 0.02d) {
             tick();
-            collectedTime -= 0.05d;
+            collectedTime -= 0.02d;
         }
     }
 

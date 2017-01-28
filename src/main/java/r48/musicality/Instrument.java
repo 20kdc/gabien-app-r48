@@ -16,7 +16,8 @@ public class Instrument {
     private ISoundDriver.IChannel myChannel;
     private short[] data = new short[2205];
     private int adsrProgress = 0;
-    public int mul = 4;
+    public int mul = 2;
+    public int div = 1;
 
     public static double[] noteO8Hertz = {
             4186.01,
@@ -49,7 +50,7 @@ public class Instrument {
         int[] tbl = {
                 1, 2, 3, 4, 5, 6, 7, 8, 8, 8, 8, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0, 0, 0
         };
-        int idx = adsrProgress * mul;
+        int idx = (adsrProgress * mul) / div;
         if (idx < tbl.length)
             myChannel.setVolume(tbl[idx] / 16.0d, tbl[idx] / 16.0d);
         adsrProgress++;

@@ -222,16 +222,13 @@ public class BM8I {
             ry = height - (1 + ry);
             os.write(data[rx + (ry * width)]);
         }
-
     }
 
     public void loadBitmap(InputStream ids) throws IOException {
-        if (ids.read() != ((int) 'B')) {
+        if (ids.read() != ((int) 'B'))
             throw new IOException("Not a WINBMP");
-        }
-        if (ids.read() != ((int) 'M')) {
+        if (ids.read() != ((int) 'M'))
             throw new IOException("Not a WINBMP");
-        }
         ids.skip(8);//10
         int ofs = ids.read();
         ofs |= ids.read() << 8;
