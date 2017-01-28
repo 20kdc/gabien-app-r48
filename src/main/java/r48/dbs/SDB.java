@@ -242,6 +242,7 @@ public class SDB {
                     workingObj.aggregate.add(new ArrayElementSchemaElement(Integer.parseInt(args[0]), args[1], handleChain(args, 2)));
                 if (c == 'i') {
                     try {
+                        System.out.println("Including " + args[0]);
                         readFile(new BufferedReader(new InputStreamReader(GaBIEn.getFile(args[0]))));
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -310,6 +311,7 @@ public class SDB {
             fr.close();
             return r;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
