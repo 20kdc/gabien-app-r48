@@ -29,7 +29,7 @@ public class UIAppendButton extends UIPanel {
         int h = holder.getBounds().height;
         if (bgb.height > h)
             h = bgb.height;
-        setBounds(new Rect(0, 0, bgb.width, h));
+        setBounds(new Rect(0, 0, holder.getBounds().width + bgb.width, h));
     }
 
     @Override

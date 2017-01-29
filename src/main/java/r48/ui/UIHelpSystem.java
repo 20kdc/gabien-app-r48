@@ -14,6 +14,7 @@ import r48.dbs.IDatabase;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
 
 /**
  * Helping things along where needed.
@@ -24,17 +25,107 @@ public class UIHelpSystem extends UIPanel {
     private UILabel pageName;
     public Runnable onLoad;
 
-    public int desiredHeight = 320;
+    private LinkedList<HelpElement> page = new LinkedList<HelpElement>();
 
     public UIHelpSystem(UILabel uil, Runnable ol) {
-        super.setBounds(new Rect(0, 0, 640, desiredHeight));
+        super.setBounds(new Rect(0, 0, 640, 320));
         onLoad = ol;
         pageName = uil;
     }
 
+    private UIElement[] handleThing(char c, String[] args, int availableWidth) {
+        if (c == '.') {
+            String t = "";
+            LinkedList<UIElement> results = new LinkedList<UIElement>();
+            UILabel working = new UILabel("", FontSizes.helpParagraphStartHeight);
+            for (String s : args) {
+                String rt = t + s + " ";
+                if (UILabel.getRecommendedSize(rt, working.textHeight).width > availableWidth) {
+                    working.Text = t;
+                    results.add(working);
+                    working = new UILabel("", FontSizes.helpTextHeight);
+                    rt = s + " ";
+                }
+                t = rt;
+            }
+            working.Text = t;
+            results.add(working);
+            return results.toArray(new UIElement[0]);
+        }
+        if (c == '>') {
+            String t = "";
+            boolean first = true;
+            for (String s : args) {
+                if (first) {
+                    first = false;
+                } else {
+                    t += s + " ";
+                }
+            }
+            final int index = Integer.parseInt(args[0]);
+            return new UIElement[] {new UITextButton(FontSizes.helpLinkHeight, t, new Runnable() {
+                @Override
+                public void run() {
+                    loadPage(index);
+                }
+            })};
+        }
+        return null;
+    }
+
     @Override
-    public void setBounds(Rect r) {
-        super.setBounds(new Rect(r.x, r.y, r.width, desiredHeight));
+    public void setBounds(Rect rect) {
+        // Commence layout
+        int y = 0;
+        int imgSize = 0;
+        int imgEndY = 0;
+
+        allElements.clear();
+
+        for (HelpElement hc : page) {
+            if ((hc.c == '.') || (hc.c == '>')) {
+                int vlen = rect.width - imgSize;
+                if (vlen < (imgSize / 2)) {
+                    y = imgEndY;
+                    imgSize = 0;
+                }
+                vlen = rect.width - imgSize;
+                for (UIElement uil : handleThing(hc.c, hc.args, vlen)) {
+                    int eh = uil.getBounds().height;
+                    uil.setBounds(new Rect(0, y, vlen, eh));
+                    allElements.add(uil);
+                    y += eh;
+                    if (y >= imgEndY)
+                        imgSize = 0;
+                }
+            }
+            if ((hc.c == 'i') || (hc.c == 'I')) {
+                boolean left = hc.c == 'I';
+                final IGrInDriver.IImage r = GaBIEn.getImage(hc.args[0], 0, 0, 0);
+                boolean extended = hc.args.length > 1;
+                final int xx = extended ? Integer.parseInt(hc.args[1]) : 0;
+                final int yy = extended ? Integer.parseInt(hc.args[2]) : 0;
+                final int w = extended ? Integer.parseInt(hc.args[3]) : r.getWidth();
+                final int h = extended ? Integer.parseInt(hc.args[4]) : r.getHeight();
+                UIPanel uie = new UIPanel();
+                uie.baseImage = r;
+                uie.imageX = xx;
+                uie.imageY = yy;
+                if (left) {
+                    uie.setBounds(new Rect((rect.width / 2) - (w / 2), y, w, h));
+                    y += h;
+                } else {
+                    uie.setBounds(new Rect(rect.width - w, y, w, h));
+                    imgSize = w;
+                    imgEndY = y + h;
+                }
+                allElements.add(uie);
+            }
+            if (hc.c == 'p')
+                y += Integer.parseInt(hc.args[0]);
+        }
+
+        super.setBounds(new Rect(rect.x, rect.y, rect.width, Math.max(imgEndY, y)));
     }
 
     @Override
@@ -43,14 +134,10 @@ public class UIHelpSystem extends UIPanel {
     }
 
     public void loadPage(final int i) {
-        desiredHeight = 1;
         try {
-            allElements.clear();
+            page.clear();
             new DBLoader(new BufferedReader(new InputStreamReader(GaBIEn.getResource("Help.txt"))), new IDatabase() {
                 boolean working = false;
-                int y = 0;
-                int imgSize = 0;
-                int imgEndY = 0;
                 @Override
                 public void newObj(int objId, String objName) throws IOException {
                     if (objId == i) {
@@ -61,66 +148,10 @@ public class UIHelpSystem extends UIPanel {
                     }
                 }
 
-                private UIElement handleThing(char c, String[] args) {
-                    if (c == '.') {
-                        String t = "";
-                        for (String s : args)
-                            t += s + " ";
-                        return new UILabel(t, FontSizes.helpTextHeight);
-                    }
-                    if (c == '>') {
-                        String t = "";
-                        boolean first = true;
-                        for (String s : args) {
-                            if (first) {
-                                first = false;
-                            } else {
-                                t += s + " ";
-                            }
-                        }
-                        final int index = Integer.parseInt(args[0]);
-                        return new UITextButton(FontSizes.helpLinkHeight, t, new Runnable() {
-                            @Override
-                            public void run() {
-                                loadPage(index);
-                            }
-                        });
-                    }
-                    return null;
-                }
-
                 @Override
                 public void execCmd(char c, String[] args) throws IOException {
-                    if (working) {
-                        if ((c == '.') || (c == '>')) {
-                            int vlen = 640 - imgSize;
-                            UIElement uil = handleThing(c, args);
-                            int eh = uil.getBounds().height;
-                            uil.setBounds(new Rect(0, y, vlen, eh));
-                            allElements.add(uil);
-                            y += eh;
-                            desiredHeight = Math.max(desiredHeight, y);
-                            if (y >= imgEndY)
-                                imgSize = 0;
-                        }
-                        if (c == 'i') {
-                            final IGrInDriver.IImage r = GaBIEn.getImage(args[0], 0, 0, 0);
-                            boolean extended = args.length > 1;
-                            final int xx = extended ? Integer.parseInt(args[1]) : 0;
-                            final int yy = extended ? Integer.parseInt(args[2]) : 0;
-                            final int w = extended ? Integer.parseInt(args[3]) : r.getWidth();
-                            final int h = extended ? Integer.parseInt(args[4]) : r.getHeight();
-                            UIPanel uie = new UIPanel();
-                            uie.baseImage = r;
-                            uie.imageX = xx;
-                            uie.imageY = yy;
-                            uie.setBounds(new Rect(640 - w, y, w, h));
-                            imgSize = w;
-                            imgEndY = y + h;
-                            desiredHeight = Math.max(desiredHeight, imgEndY);
-                            allElements.add(uie);
-                        }
-                    }
+                    if (working)
+                        page.add(new HelpElement(c, args));
                 }
             });
         } catch (IOException e) {
@@ -128,5 +159,15 @@ public class UIHelpSystem extends UIPanel {
         }
         setBounds(getBounds());
         onLoad.run();
+    }
+
+    private class HelpElement {
+        char c;
+        String[] args;
+
+        public HelpElement(char c, String[] args) {
+            this.c = c;
+            this.args = args;
+        }
     }
 }
