@@ -20,7 +20,7 @@ public class UIFontSizeConfigurator extends UIPanel {
         try {
             for (final Field field : FontSizes.class.getFields()) {
                 if (field.getType() == int.class) {
-                    UIAdjuster tb = new UIAdjuster(false, new ISupplier<String>() {
+                    UIAdjuster tb = new UIAdjuster(FontSizes.fontSizerTextHeight, new ISupplier<String>() {
                         @Override
                         public String get() {
                             try {

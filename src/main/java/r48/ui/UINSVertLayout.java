@@ -24,9 +24,8 @@ public class UINSVertLayout extends UIPanel {
         upper = a;
         lower = b;
         setBounds(new Rect(0, 0, w, h));
-        // The reason for this ordering is simulated cropping of the lower section.
-        allElements.add(lower);
         allElements.add(upper);
+        allElements.add(lower);
     }
     @Override
     public void setBounds(Rect r) {

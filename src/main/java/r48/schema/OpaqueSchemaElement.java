@@ -6,6 +6,7 @@
 package r48.schema;
 
 import gabien.ui.*;
+import r48.FontSizes;
 import r48.UITest;
 import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
@@ -22,7 +23,7 @@ public class OpaqueSchemaElement implements ISchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(false, getMessage() + target, new Runnable() {
+        return new UITextButton(FontSizes.schemaButtonTextHeight, getMessage() + target, new Runnable() {
             @Override
             public void run() {
                 launcher.launchOther(new UITest(target));
@@ -32,7 +33,7 @@ public class OpaqueSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        return UITextButton.getRecommendedSize("", false).height;
+        return UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height;
     }
 
     @Override

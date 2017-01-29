@@ -7,6 +7,7 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
+import r48.FontSizes;
 import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -21,7 +22,7 @@ public class BooleanSchemaElement implements ISchemaElement {
     }
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        final UITextButton utb = new UITextButton(false, determineTruth(target) ? "True" : "False", null).togglable();
+        final UITextButton utb = new UITextButton(FontSizes.schemaButtonTextHeight, determineTruth(target) ? "True" : "False", null).togglable();
         utb.state = determineTruth(target);
         utb.OnClick = new Runnable() {
             @Override
@@ -52,7 +53,7 @@ public class BooleanSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        return UITextButton.getRecommendedSize("", false).height;
+        return UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height;
     }
 
     @Override
