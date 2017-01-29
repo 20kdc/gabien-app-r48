@@ -150,7 +150,7 @@ public class UIMapView extends UIElement implements IWindowElement {
                             if (i == mouseXT)
                                 if (j == mouseYT)
                                     tidx = callbacks.shouldDrawAtCursor(tidx, l, currentLayer);
-                            AppMain.stuffRenderer.tileRenderer.drawTile(tidx, px, py, igd, eTileSize);
+                            AppMain.stuffRenderer.tileRenderer.drawTile(l, tidx, px, py, igd, eTileSize);
                         }
                     }
                 }
@@ -301,5 +301,9 @@ public class UIMapView extends UIElement implements IWindowElement {
     // Basically a convenience method.
     public void passModificationNotification() {
         AppMain.objectDB.objectRootModified(map);
+    }
+
+    public int getCurrentLayer() {
+        return currentLayer;
     }
 }

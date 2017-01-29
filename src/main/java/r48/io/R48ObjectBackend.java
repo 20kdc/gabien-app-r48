@@ -223,6 +223,11 @@ public class R48ObjectBackend implements IObjectBackend {
             dis.write(rio.strVal);
             okay = true;
         }
+        if (b == 'f') {
+            save32(dis, rio.strVal.length);
+            dis.write(rio.strVal);
+            okay = true;
+        }
         if (b == 'u') {
             shouldWriteObjCacheLate = true;
             saveSymbol(dis, rio.symVal, strCache);
@@ -330,6 +335,12 @@ public class R48ObjectBackend implements IObjectBackend {
         } else if (b == '"') {
             // 1715, nocareivar, just runs entry.
             objs.add(rio);
+            long len = load32(dis);
+            byte[] data = new byte[(int) len];
+            if (dis.read(data) != len)
+                throw new IOException("Didn't read all of data");
+            rio.strVal = data;
+        } else if (b == 'f') {
             long len = load32(dis);
             byte[] data = new byte[(int) len];
             if (dis.read(data) != len)

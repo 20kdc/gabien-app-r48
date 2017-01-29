@@ -53,7 +53,7 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(short tidx, int px, int py, IGrInDriver igd, int ets) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets) {
         // The logic here is only documented in the mkxp repository, in tilemap.cpp.
         // I really hope it doesn't count as stealing here,
         //  if I would've had to have typed this code ANYWAY

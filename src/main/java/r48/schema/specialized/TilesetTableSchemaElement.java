@@ -24,7 +24,7 @@ public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRende
         // The whole "variable in, variable out" thing is a safe leak-proof way of caching the helper object.
         if (osr == null)
             osr = new StuffRenderer(target, "");
-        osr.tileRenderer.drawTile((short) t, x, y, igd, osr.tileRenderer.getTileSize());
+        osr.tileRenderer.drawTile(0, (short) t, x, y, igd, osr.tileRenderer.getTileSize());
         return osr;
     }
 }
