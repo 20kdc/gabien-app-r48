@@ -33,6 +33,7 @@ public class UIScrollVertLayout extends UIPanel {
         scrollLength = 0;
         for (UIElement p : panels)
             scrollLength += p.getBounds().height;
+        useScissoring = true;
     }
 
     @Override
@@ -54,9 +55,9 @@ public class UIScrollVertLayout extends UIPanel {
             p.setBounds(new Rect(0, rY, bounds.width - appliedScrollbarWidth, b.height));
             int oRY = rY;
             rY += b.height;
-            if (oRY < 0)
+            if (oRY <= -b.height)
                 continue;
-            if (rY > bounds.height)
+            if (oRY >= bounds.height)
                 continue;
             allElements.add(p);
         }
