@@ -42,7 +42,7 @@ public class IntegerSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        return 9;
+        return UINumberBox.getRecommendedSize(false).height;
     }
 
     // For lack of a better place.

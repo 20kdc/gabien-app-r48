@@ -33,7 +33,7 @@ public class ArrayElementSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        return Math.max(9, subSchema.maxHoldingHeight());
+        return Math.max(UILabel.getRecommendedSize("", false).height, subSchema.maxHoldingHeight());
     }
 
     @Override

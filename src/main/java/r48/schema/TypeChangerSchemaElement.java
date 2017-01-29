@@ -92,7 +92,7 @@ public class TypeChangerSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        int holdHeight = 10;
+        int holdHeight = UITextButton.getRecommendedSize("", false).height;
         for (ISchemaElement ise : targets) {
             int nextHeight = ise.maxHoldingHeight();
             if (holdHeight < nextHeight)

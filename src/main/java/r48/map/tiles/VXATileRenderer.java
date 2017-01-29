@@ -12,6 +12,8 @@ import r48.dbs.ATDB;
 import r48.map.UIMapView;
 import r48.ui.UITileGrid;
 
+import java.util.LinkedList;
+
 /**
  * This uses a totally different system from XP, based around 5 AT sheets and 4 primary sheets.
  * Created on 1/27/17.
@@ -94,6 +96,8 @@ public class VXATileRenderer implements ITileRenderer {
 
         if (plane == 6) {
             int t = tidx & 0xFF;
+            if (t >= 0x7F)
+                return;
             IGrInDriver.IImage planeImage = tilesetMaps[4];
             if (planeImage != null) {
                 // Only makes sense with a baseline of 8 but that leads to 'corrupted'-looking data in parts hm.
@@ -158,14 +162,37 @@ public class VXATileRenderer implements ITileRenderer {
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv) {
         return new UITileGrid[] {
-                new UITileGrid(mv, 0, 0x1000, false),
+                new UITileGrid(mv, 0x67F, 1, false),
+                new UITileGrid(mv, 0x600, 0x7F, false),
+                new UITileGrid(mv, 0x800, 0x300, true),
+                new UITileGrid(mv, 0xB00, 0x600, true),
         };
     }
 
     @Override
     public String[] getPlaneNames() {
         return new String[] {
-                "TM"
+                "NIL",
+                "6+",
+                "8+",
+                "B+",
         };
+    }
+
+    @Override
+    public int[] indicateATs() {
+        LinkedList<Integer> atFields = new LinkedList<Integer>();
+        for (int i = 0; i < 32; i++) {
+            int resultingAddr = i * 48;
+            int resultingEndAddr = resultingAddr + 47;
+            if (resultingEndAddr < 0x300)
+                atFields.add(0x800 + resultingAddr);
+            if (resultingEndAddr < 0x600)
+                atFields.add(0xB00 + resultingAddr);
+        }
+        int[] r = new int[atFields.size()];
+        for (int i = 0; i < r.length; i++)
+            r[i] = atFields.get(i);
+        return r;
     }
 }

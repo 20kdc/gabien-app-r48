@@ -21,4 +21,6 @@ public interface ITileRenderer {
     UITileGrid[] createATUIPlanes(UIMapView mv);
 
     String[] getPlaneNames();
+
+    int[] indicateATs();
 }

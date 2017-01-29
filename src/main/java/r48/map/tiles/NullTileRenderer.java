@@ -40,4 +40,9 @@ public class NullTileRenderer implements ITileRenderer {
                 "Tiles Unsupported"
         };
     }
+
+    @Override
+    public int[] indicateATs() {
+        return new int[0];
+    }
 }

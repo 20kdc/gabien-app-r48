@@ -74,7 +74,7 @@ public class ZLibBlobSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        return 10;
+        return UITextButton.getRecommendedSize("", false).height;
     }
 
     @Override

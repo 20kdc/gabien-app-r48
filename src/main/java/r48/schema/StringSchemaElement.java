@@ -41,7 +41,7 @@ public class StringSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        return 9;
+        return UITextBox.getRecommendedSize(false).height;
     }
 
     @Override
