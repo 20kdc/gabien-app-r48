@@ -9,6 +9,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.AppMain;
+import r48.FontSizes;
 import r48.UITest;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTEventPicker;
@@ -81,7 +82,7 @@ public class UIMapViewContainer extends UIPanel {
                                 AppMain.stuffRenderer = StuffRenderer.rendererFromMap(view.map);
                         }
                     }
-            }, true, true);
+            }, FontSizes.mapToolSelectorTextHeight, true);
         }
     };
 

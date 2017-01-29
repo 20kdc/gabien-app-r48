@@ -108,7 +108,7 @@ public class Application {
             };
         }
         while (true) {
-            final UIMapToolWrapper uimtw = new UIMapToolWrapper(new UIPopupMenu(gamepakNames, gamepakButtons, true, true));
+            final UIMapToolWrapper uimtw = new UIMapToolWrapper(new UIPopupMenu(gamepakNames, gamepakButtons, 12, true));
             closeHelper.accept(new Runnable() {
                 @Override
                 public void run() {

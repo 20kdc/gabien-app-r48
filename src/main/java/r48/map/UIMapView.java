@@ -86,17 +86,17 @@ public class UIMapView extends UIElement implements IWindowElement {
         if (minimap)
             eTileSize = 2;
 
-        int mouseXT = ((igd.getMouseX() - ox) + camX) / eTileSize;
-        int mouseYT = ((igd.getMouseY() - oy) + camY) / eTileSize;
+        int mouseXT = UIElement.sensibleCellDiv((igd.getMouseX() - ox) + camX, eTileSize);
+        int mouseYT = UIElement.sensibleCellDiv((igd.getMouseY() - oy) + camY, eTileSize);
 
         Rect camR = getBounds();
         int camW = camR.width;
         int camH = camR.height;
 
-        int camTR = ((camX + camW) / eTileSize) + 1;
-        int camTB = ((camY + camH) / eTileSize) + 1;
-        int camTX = (camX / eTileSize);
-        int camTY = (camY / eTileSize);
+        int camTR = UIElement.sensibleCellDiv((camX + camW), eTileSize) + 1;
+        int camTB = UIElement.sensibleCellDiv((camY + camH), eTileSize) + 1;
+        int camTX = UIElement.sensibleCellDiv(camX, eTileSize);
+        int camTY = UIElement.sensibleCellDiv(camY, eTileSize);
 
         if (!layerInvisible[mapTable.planeCount]) {
             // Panorama Enable
@@ -110,10 +110,10 @@ public class UIMapView extends UIElement implements IWindowElement {
                 int eCamY = camY;
                 //eCamX -= im.getWidth() / 4;
                 //eCamY -= im.getHeight() / 4;
-                int camOTX = (eCamX / im.getWidth());
-                int camOTY = (eCamY / im.getHeight());
-                int camOTeX = ((eCamX + camW) / im.getWidth()) + 1;
-                int camOTeY = ((eCamY + camH) / im.getHeight()) + 1;
+                int camOTX = sensibleCellDiv(eCamX, im.getWidth());
+                int camOTY = sensibleCellDiv(eCamY, im.getHeight());
+                int camOTeX = sensibleCellDiv(eCamX + camW, im.getWidth()) + 1;
+                int camOTeY = sensibleCellDiv(eCamY + camH, im.getHeight()) + 1;
                 for (int i = camOTX; i <= camOTeX; i++)
                     for (int j = camOTY; j <= camOTeY; j++)
                         igd.blitImage(0, 0, im.getWidth(), im.getHeight(), ox + (i * im.getWidth()) - eCamX, oy + (j * im.getHeight()) - eCamY, im);
