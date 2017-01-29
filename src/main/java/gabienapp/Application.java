@@ -90,8 +90,10 @@ public class Application {
                 @Override
                 public void run() {
                     String id = gamepakList.get(ie);
-                    if (id.length() == 0)
+                    if (id.length() == 0) {
+                        uiTicker.createScale = 2;
                         return;
+                    }
                     if (appTicker == null)
                         try {
                             appTicker = AppMain.initializeAndRun(uiTicker, id + "/");

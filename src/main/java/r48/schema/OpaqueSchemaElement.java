@@ -32,7 +32,7 @@ public class OpaqueSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        return 9;
+        return UITextButton.getRecommendedSize("", false).height;
     }
 
     @Override

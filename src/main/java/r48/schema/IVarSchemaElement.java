@@ -51,7 +51,7 @@ public class IVarSchemaElement implements ISchemaElement {
     }
 
     public int getDefaultFieldWidth() {
-        return new UILabel(iVar, false).getBounds().width;
+        return UILabel.getRecommendedSize(iVar, false).width;
     }
 
     public void setFieldWidthOverride(int w) {
@@ -61,9 +61,10 @@ public class IVarSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        if (subElem.maxHoldingHeight() > 9)
+        int h = UILabel.getRecommendedSize("", false).height;
+        if (subElem.maxHoldingHeight() > h)
             return subElem.maxHoldingHeight();
-        return 9;
+        return h;
     }
 
     @Override

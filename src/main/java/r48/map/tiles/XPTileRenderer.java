@@ -143,4 +143,18 @@ public class XPTileRenderer implements ITileRenderer {
                 "TM"
         };
     }
+
+    @Override
+    public int[] indicateATs() {
+        return new int[] {
+            0,
+            48,
+            48 * 2,
+            48 * 3,
+            48 * 4,
+            48 * 5,
+            48 * 6,
+            48 * 7
+        };
+    }
 }

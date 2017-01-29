@@ -78,4 +78,10 @@ public class IkaTileRenderer implements ITileRenderer {
                 "Tiles"
         };
     }
+
+    @Override
+    public int[] indicateATs() {
+        // simple enough: Ikachan doesn't have ATs.
+        return new int[0];
+    }
 }

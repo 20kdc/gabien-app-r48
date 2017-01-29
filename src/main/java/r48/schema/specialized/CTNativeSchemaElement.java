@@ -35,7 +35,7 @@ public class CTNativeSchemaElement implements ISchemaElement {
         addField(uiSVL, "G", 4, rct, path);
         addField(uiSVL, "B", 8, rct, path);
         addField(uiSVL, "A/L", 12, rct, path);
-        uiSVL.setBounds(new Rect(0, 0, 128, 9 * 4));
+        uiSVL.setBounds(new Rect(0, 0, 128, UINumberBox.getRecommendedSize(false).height * 4));
         return uiSVL;
     }
 
@@ -63,7 +63,7 @@ public class CTNativeSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        return 9 * 4;
+        return UINumberBox.getRecommendedSize(false).height * 4;
     }
 
     @Override

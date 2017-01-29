@@ -25,7 +25,6 @@ public class UIAppendButton extends UIPanel {
         // This specific order was chosen because labels on the left can overflow and get in the way of the button.
         allElements.add(subElement);
         allElements.add(button);
-        button.setRecommendedSize();
         Rect bgb = button.getBounds();
         int h = holder.getBounds().height;
         if (bgb.height > h)
@@ -36,7 +35,7 @@ public class UIAppendButton extends UIPanel {
     @Override
     public void setBounds(Rect r) {
         super.setBounds(r);
-        button.setRecommendedSize();
+        button.setBounds(UITextButton.getRecommendedSize(button.Text, button.x2));
         Rect bgb = button.getBounds();
         button.setBounds(new Rect(r.width - bgb.width, 0, bgb.width, bgb.height));
         subElement.setBounds(new Rect(0, 0, r.width - bgb.width, r.height));

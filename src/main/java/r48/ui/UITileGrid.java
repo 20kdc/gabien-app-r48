@@ -17,7 +17,7 @@ import r48.map.UIMapView;
 public class UITileGrid extends UIGrid {
     public final int tileStart;
     public final UIMapView map;
-    private final boolean autoTile;
+    public final boolean autoTile;
     public UITileGrid(UIMapView mv, int tStart, int tileCount, boolean aTile) {
         super(mv.tileSize, tileCount);
         autoTile = aTile;
@@ -29,17 +29,30 @@ public class UITileGrid extends UIGrid {
 
     @Override
     public int getSelected() {
-        return super.getSelected() + tileStart;
+        int r = super.getSelected();
+        if (autoTile)
+            r -= r / 49;
+        return r + tileStart;
+    }
+
+    private boolean isAutoTile(int t) {
+        if (!autoTile)
+            return false;
+        return (t % 49) == 48;
     }
 
     @Override
     protected void drawTile(int t, int x, int y, IGrInDriver igd) {
-        if (t == tileCount - 1) {
-            if (autoTile) {
-                igd.blitImage(16, 36, 20, 20, x + 6, y + 6, AppMain.layerTabs);
-                return;
-            }
+        if (isAutoTile(t)) {
+            igd.blitImage(16, 36, 20, 20, x + 6, y + 6, AppMain.layerTabs);
+            return;
         }
+        if (autoTile)
+            t -= t / 49;
         AppMain.stuffRenderer.tileRenderer.drawTile((short) (t + tileStart), x, y, igd, AppMain.stuffRenderer.tileRenderer.getTileSize());
+    }
+
+    public boolean selectedATB() {
+        return isAutoTile(super.getSelected());
     }
 }
