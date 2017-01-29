@@ -7,6 +7,7 @@ package r48.ui;
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.*;
+import r48.FontSizes;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 
@@ -62,7 +63,7 @@ public class UIHelpSystem extends UIPanel {
                         String t = "";
                         for (String s : args)
                             t += s + " ";
-                        return new UILabel(t, false);
+                        return new UILabel(t, FontSizes.helpTextHeight);
                     }
                     if (c == '>') {
                         String t = "";
@@ -75,7 +76,7 @@ public class UIHelpSystem extends UIPanel {
                             }
                         }
                         final int index = Integer.parseInt(args[0]);
-                        return new UITextButton(false, t, new Runnable() {
+                        return new UITextButton(FontSizes.helpLinkHeight, t, new Runnable() {
                             @Override
                             public void run() {
                                 loadPage(index);

@@ -10,6 +10,7 @@ import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import gabien.ui.UIPanel;
 import r48.AppMain;
+import r48.FontSizes;
 
 /**
  * Created on 12/28/16.
@@ -82,7 +83,7 @@ public class UIGrid extends UIPanel {
     }
 
     protected void drawTile(int t, int x, int y, IGrInDriver igd) {
-        UILabel.drawString(igd, x, y, Integer.toHexString(t), false, false);
+        UILabel.drawString(igd, x, y, Integer.toHexString(t), false, FontSizes.gridTextHeight);
     }
 
     @Override

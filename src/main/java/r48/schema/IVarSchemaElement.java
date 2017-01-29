@@ -6,6 +6,7 @@
 package r48.schema;
 
 import gabien.ui.*;
+import r48.FontSizes;
 import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -26,7 +27,7 @@ public class IVarSchemaElement implements ISchemaElement {
     }
     @Override
     public UIElement buildHoldingEditor(RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UILabel uil = new UILabel(iVar, false);
+        final UILabel uil = new UILabel(iVar, FontSizes.schemaFieldTextHeight);
         if (fieldWidthOverride) {
             uil.setBounds(new Rect(0, 0, fieldWidth, uil.getBounds().height));
             fieldWidthOverride = false;
@@ -51,7 +52,7 @@ public class IVarSchemaElement implements ISchemaElement {
     }
 
     public int getDefaultFieldWidth() {
-        return UILabel.getRecommendedSize(iVar, false).width;
+        return UILabel.getRecommendedSize(iVar, FontSizes.schemaFieldTextHeight).width;
     }
 
     public void setFieldWidthOverride(int w) {
@@ -61,7 +62,7 @@ public class IVarSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        int h = UILabel.getRecommendedSize("", false).height;
+        int h = UILabel.getRecommendedSize("", FontSizes.schemaFieldTextHeight).height;
         if (subElem.maxHoldingHeight() > h)
             return subElem.maxHoldingHeight();
         return h;

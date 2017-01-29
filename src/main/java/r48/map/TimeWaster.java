@@ -9,6 +9,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
+import r48.FontSizes;
 
 import java.util.Random;
 
@@ -67,7 +68,7 @@ public class TimeWaster {
             }
         igd.blitImage(type * 64, 0, 64, 64, ox + iconPlanX, oy + iconPlanY, GaBIEn.getImage("nomad.png", 0, 0, 0));
         if (points > 1) {
-            UILabel.drawString(igd, ox, oy, "You have " + points + " absolutely worthless points.", false, false);
+            UILabel.drawString(igd, ox, oy, "You have " + points + " absolutely worthless points.", false, FontSizes.timeWasterTextHeight);
             String[] pointMsgs = new String[] {
                     "Now, get back to work!",
                     "Seriously? What are you doing?",
@@ -84,7 +85,7 @@ public class TimeWaster {
             if (points - 2 == pointMsgs.length)
                 points = 2;
             // Any GitHub issues on this will be disregarded.
-            UILabel.drawString(igd, ox, oy + 8, pointMsgs[points - 2], false, false);
+            UILabel.drawString(igd, ox, oy + FontSizes.timeWasterTextHeight, pointMsgs[points - 2], false, FontSizes.timeWasterTextHeight);
         }
     }
 

@@ -22,7 +22,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
 
     public StuffRenderer stuffRenderer = AppMain.stuffRenderer;
 
-    public UILabel pathLabel = new UILabel("", false);
+    public UILabel pathLabel = new UILabel("", FontSizes.schemaPathTextHeight);
     public UIAppendButton toolbarP = new UIAppendButton("..", pathLabel, new Runnable() {
         @Override
         public void run() {
@@ -40,7 +40,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
         @Override
         public void run() {
             if (AppMain.theClipboard == null) {
-                hostWindows.accept(new UILabel("nothing in clipboard", true));
+                AppMain.launchDialog("nothing in clipboard");
             } else {
                 if (RubyIO.rubyTypeEquals(innerElem.targetElement, AppMain.theClipboard)) {
                     innerElem.targetElement.setDeepClone(AppMain.theClipboard);
@@ -51,7 +51,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
                     innerElem.changeOccurred(false);
                     switchObject(innerElem);
                 } else {
-                    hostWindows.accept(new UILabel("incompatible", true));
+                    AppMain.launchDialog("incompatible");
                 }
             }
         }

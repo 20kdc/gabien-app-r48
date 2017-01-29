@@ -7,6 +7,7 @@ package r48.schema.specialized;
 
 import gabien.ui.*;
 import r48.AppMain;
+import r48.FontSizes;
 import r48.dbs.CMDB;
 import r48.schema.*;
 import r48.schema.util.ISchemaHost;
@@ -109,13 +110,13 @@ public class RPGCommandSchemaElement implements ISchemaElement {
                     SchemaPath parameterPath = path.arrayEntry(param, new ArraySchemaElement(new OpaqueSchemaElement(), 0, false));
                     for (int i = 0; i < param.arrVal.length; i++) {
                         if (param.arrVal.length <= i) {
-                            uiSVL.panels.add(new UILabel("WARNING: Missing E" + i + ".", false));
+                            uiSVL.panels.add(new UILabel("WARNING: Missing E" + i + ".", FontSizes.schemaFieldTextHeight));
                             continue;
                         }
                         ISchemaElement ise = rc.getParameterSchema(i);
                         height += ise.maxHoldingHeight();
                         UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, parameterPath.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
-                        uiSVL.panels.add(new UIHHalfsplit(1, 3, new UILabel(rc.getParameterName(i), false), uie));
+                        uiSVL.panels.add(new UIHHalfsplit(1, 3, new UILabel(rc.getParameterName(i), FontSizes.schemaFieldTextHeight), uie));
                     }
                     uiSVL.setBounds(new Rect(0, 0, 128, height));
                     return uiSVL;

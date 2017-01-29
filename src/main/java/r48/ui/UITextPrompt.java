@@ -6,17 +6,18 @@
 package r48.ui;
 
 import gabien.ui.*;
+import r48.FontSizes;
 
 /**
  * Created on 12/31/16.
  */
 public class UITextPrompt extends UIPanel implements IWindowElement {
-    public UITextBox utb = new UITextBox(true);
+    public UITextBox utb = new UITextBox(FontSizes.textDialogFieldTextHeight);
     public UIScrollVertLayout uiSVL = new UIScrollVertLayout();
     public boolean wantClose = false;
     public UITextPrompt(final String s, final IConsumer<String> iConsumer) {
         allElements.add(uiSVL);
-        uiSVL.panels.add(new UILabel(s, true));
+        uiSVL.panels.add(new UILabel(s, FontSizes.textDialogDescTextHeight));
         uiSVL.panels.add(new UIHHalfsplit(4, 5, utb, new UITextButton(true, "OK", new Runnable() {
             @Override
             public void run() {

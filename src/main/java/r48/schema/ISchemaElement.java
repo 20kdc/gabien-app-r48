@@ -46,7 +46,7 @@ public interface ISchemaElement {
     // Probably best not to break them.
     UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path);
 
-    // Maximum height of the element out of buildHoldingEditor.
+    // Maximum textHeight of the element out of buildHoldingEditor.
     // Can throw an error, in which case this should be encapsulated with a SubwindowSchemaElement.
     int maxHoldingHeight();
 

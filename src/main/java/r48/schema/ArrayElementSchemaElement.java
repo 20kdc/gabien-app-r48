@@ -7,6 +7,7 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
+import r48.FontSizes;
 import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -28,12 +29,12 @@ public class ArrayElementSchemaElement implements ISchemaElement {
     }
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-        return new UIHHalfsplit(1, 3, new UILabel(name, false), subSchema.buildHoldingEditor(target.arrVal[index], launcher, path.arrayHashIndex(new RubyIO().setFX(index), "." + name)));
+        return new UIHHalfsplit(1, 3, new UILabel(name, FontSizes.schemaFieldTextHeight), subSchema.buildHoldingEditor(target.arrVal[index], launcher, path.arrayHashIndex(new RubyIO().setFX(index), "." + name)));
     }
 
     @Override
     public int maxHoldingHeight() {
-        return Math.max(UILabel.getRecommendedSize("", false).height, subSchema.maxHoldingHeight());
+        return Math.max(UILabel.getRecommendedSize("", FontSizes.schemaFieldTextHeight).height, subSchema.maxHoldingHeight());
     }
 
     @Override

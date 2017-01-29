@@ -6,6 +6,7 @@
 package r48.ui;
 
 import gabien.ui.*;
+import r48.FontSizes;
 import r48.UITest;
 
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class UIEnumChoice extends UIPanel implements IWindowElement {
                 }
             }));
         }
-        nb = new UINumberBox(true);
+        nb = new UINumberBox(FontSizes.schemaFieldTextHeight);
         finalSplit = new UIHHalfsplit(1, 3, nb, new UITextButton(true, buttonText, new Runnable() {
             @Override
             public void run() {

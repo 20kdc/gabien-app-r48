@@ -87,7 +87,7 @@ public class UIMapInfos extends UIPanel {
                     while (parentStack.getLast() != parent)
                         parentStack.removeLast();
                 } else {
-                    windowMakerGetter.get().accept(new UILabel("Parent Inconsistency Warning @ " + k + " o " + order, false));
+                    AppMain.launchDialog("Parent Inconsistency Warning @ " + k + " o " + order);
                     enableOrderHoleDebug = true;
                 }
             }
@@ -184,7 +184,7 @@ public class UIMapInfos extends UIPanel {
                             int i = Integer.parseInt(s);
                             RubyIO key = new RubyIO().setFX(i);
                             if (mapInfos.getHashVal(key) != null) {
-                                windowMakerGetter.get().accept(new UILabel("That ID is already in use.", false));
+                                AppMain.launchDialog("That ID is already in use.");
                                 return;
                             }
                             RubyIO mi = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), key);
@@ -229,7 +229,7 @@ public class UIMapInfos extends UIPanel {
                         }
                         lastOrder = i;
                     }
-                    windowMakerGetter.get().accept(new UILabel(message, false));
+                    AppMain.launchDialog(message);
                     rebuildList();
                 }
             }));

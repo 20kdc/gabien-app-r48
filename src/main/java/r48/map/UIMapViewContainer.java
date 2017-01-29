@@ -99,7 +99,7 @@ public class UIMapViewContainer extends UIPanel {
     public void setBounds(Rect r) {
         super.setBounds(r);
         //iconPlanX = (r.width / 2) - 32;
-        //iconPlanY = (r.height / 2) - 32;
+        //iconPlanY = (r.textHeight / 2) - 32;
         if (view != null)
             view.setBounds(new Rect(0, 0, r.width, r.height));
     }

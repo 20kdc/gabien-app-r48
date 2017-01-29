@@ -110,7 +110,7 @@ public class AppMain {
         tilesets = objectDB.getObject("Tilesets");
 
         // initialize UI
-        final UILabel uiStatusLabel = new UILabel("Loading...", false);
+        final UILabel uiStatusLabel = new UILabel("Loading...", FontSizes.statusBarTextHeight);
         final UIWindowView rootView = new UIWindowView();
         windowMaker = rootView;
         rootView.setBounds(new Rect(0, 0, 640, 480));
@@ -245,7 +245,7 @@ public class AppMain {
                                         if (!commandsEvent.knownCommands.containsKey((int) cmd.getInstVarBySymbol("@code").fixnumVal)) {
                                             System.out.println(rio.getInstVarBySymbol("@id").fixnumVal);
                                             System.out.println(cmd.getInstVarBySymbol("@code").fixnumVal);
-                                            windowMaker.accept(new UILabel("yup (chk.console)", true));
+                                            launchDialog("yup (chk.console)");
                                             return;
                                         }
                                     }
@@ -284,7 +284,6 @@ public class AppMain {
                 "Set Internal Windows (good)",
                 "Set External Windows (bad)",
                 "Use normal in-built fonts",
-                "Make larger text look better",
                 "Make text N.I.Z.X.-compatible",
                 "Toggle calming sound",
         }, new Runnable[]{
@@ -315,7 +314,7 @@ public class AppMain {
                                         }
                                     }));
                                 } else {
-                                    windowMaker.accept(new UILabel("No file, or schema to create it.", false));
+                                    launchDialog("No file, or schema to create it.");
                                 }
                             }
                         }));
@@ -358,21 +357,12 @@ public class AppMain {
                 new Runnable() {
                     @Override
                     public void run() {
-                        UILabel.iDislikeTheFont = false;
                         UILabel.iAmAbsolutelySureIHateTheFont = false;
                     }
                 },
                 new Runnable() {
                     @Override
                     public void run() {
-                        UILabel.iDislikeTheFont = true;
-                        UILabel.iAmAbsolutelySureIHateTheFont = false;
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        UILabel.iDislikeTheFont = true;
                         UILabel.iAmAbsolutelySureIHateTheFont = true;
                     }
                 },
@@ -398,7 +388,7 @@ public class AppMain {
             @Override
             public void run() {
                 // exception to the rule
-                UILabel uil = new UILabel("Blank Help Window", false);
+                UILabel uil = new UILabel("Blank Help Window", FontSizes.helpPathHeight);
                 final UIHelpSystem uis = new UIHelpSystem(uil, null);
                 final UIUnscissoredScroller uus = new UIUnscissoredScroller(uis);
                 UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton("Index", uil, new Runnable() {
@@ -476,6 +466,6 @@ public class AppMain {
     }
 
     public static void launchDialog(String s) {
-        windowMaker.accept(new UILabel(s, true));
+        windowMaker.accept(new UILabel(s, FontSizes.dialogWindowTextHeight));
     }
 }

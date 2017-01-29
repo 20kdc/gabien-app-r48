@@ -9,6 +9,7 @@ import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UINumberBox;
+import r48.FontSizes;
 import r48.RubyCT;
 import r48.RubyIO;
 import r48.schema.ISchemaElement;
@@ -35,12 +36,12 @@ public class CTNativeSchemaElement implements ISchemaElement {
         addField(uiSVL, "G", 4, rct, path);
         addField(uiSVL, "B", 8, rct, path);
         addField(uiSVL, "A/L", 12, rct, path);
-        uiSVL.setBounds(new Rect(0, 0, 128, UINumberBox.getRecommendedSize(false).height * 4));
+        uiSVL.setBounds(new Rect(0, 0, 128, UINumberBox.getRecommendedSize(FontSizes.schemaFieldTextHeight).height * 4));
         return uiSVL;
     }
 
     private void addField(UIScrollVertLayout uiSVL, String r, final int i, final RubyCT targ, final SchemaPath sp) {
-        final UINumberBox uinb = new UINumberBox(false);
+        final UINumberBox uinb = new UINumberBox(FontSizes.schemaFieldTextHeight);
         uinb.number = (int) targ.innerTable.getDouble(i);
         uinb.onEdit = new Runnable() {
             @Override
@@ -58,12 +59,12 @@ public class CTNativeSchemaElement implements ISchemaElement {
                 sp.changeOccurred(false);
             }
         };
-        uiSVL.panels.add(new UIHHalfsplit(1, 3, new UILabel(r, false), uinb));
+        uiSVL.panels.add(new UIHHalfsplit(1, 3, new UILabel(r, FontSizes.schemaFieldTextHeight), uinb));
     }
 
     @Override
     public int maxHoldingHeight() {
-        return UINumberBox.getRecommendedSize(false).height * 4;
+        return UINumberBox.getRecommendedSize(FontSizes.schemaFieldTextHeight).height * 4;
     }
 
     @Override

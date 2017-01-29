@@ -139,12 +139,10 @@ public class UIMapView extends UIElement implements IWindowElement {
                 // 39 in binary is 00111001.
                 // Possible offset of 1?
                 if (debug) {
-                    String t = Integer.toString(mapTable.getTiletype(i, j, 0), 16);
-                    String t2 = Integer.toString(mapTable.getTiletype(i, j, 1), 16);
-                    String t3 = Integer.toString(mapTable.getTiletype(i, j, 2), 16);
-                    UILabel.drawString(igd, px, py, t, false, false);
-                    UILabel.drawString(igd, px, py + 8, t2, false, false);
-                    UILabel.drawString(igd, px, py + 16, t3, false, false);
+                    for (int l = 0; l < mapTable.planeCount; l++) {
+                        String t = Integer.toString(mapTable.getTiletype(i, j, l), 16);
+                        UILabel.drawString(igd, px, py + (l * FontSizes.mapDebugTextHeight), t, false, FontSizes.mapDebugTextHeight);
+                    }
                 } else {
                     for (int l = 0; l < mapTable.planeCount; l++) {
                         if (!layerInvisible[l]) {
@@ -221,9 +219,10 @@ public class UIMapView extends UIElement implements IWindowElement {
                 text = "P";
             if (i == mapTable.planeCount + 1)
                 text = "E";
-            UILabel.drawString(igd, ox + l.x + 1, oy + l.y + 1, text, true, false);
+            // Notably, this gets to cheat because it fits into an image
+            UILabel.drawString(igd, ox + l.x + 1, oy + l.y + 1, text, true, 8);
         }
-        UILabel.drawLabel(igd, 0, ox, oy, "Map" + mapId + ";" + mouseXT + ", " + mouseYT, false);
+        UILabel.drawLabel(igd, 0, ox, oy, "Map" + mapId + ";" + mouseXT + ", " + mouseYT, false, FontSizes.mapPositionTextHeight);
     }
 
     @Override
