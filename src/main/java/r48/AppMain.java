@@ -79,7 +79,7 @@ public class AppMain {
     // Images
     public static IGrInDriver.IImage layerTabs = GaBIEn.getImage("layertab.png", 0, 0, 0);
 
-    public static IConsumer<Double> initializeAndRun(final IConsumer<UIElement> uiTicker, String gamepack) throws IOException {
+    public static void initialize(String gamepack) throws IOException {
         rootPath = "";
 
         // initialize core resources
@@ -108,6 +108,9 @@ public class AppMain {
         schemas.confirmAllExpectationsMet();
 
         tilesets = objectDB.getObject("Tilesets");
+    }
+
+    public static IConsumer<Double> initializeAndRun(final IConsumer<UIElement> uiTicker) {
 
         // initialize UI
         final UILabel uiStatusLabel = new UILabel("Loading...", FontSizes.statusBarTextHeight);
@@ -286,6 +289,7 @@ public class AppMain {
                 "Use normal in-built fonts",
                 "Make text N.I.Z.X.-compatible",
                 "Toggle calming sound",
+                "Configure font sizes",
         }, new Runnable[]{
                 new Runnable() {
                     @Override
@@ -377,8 +381,15 @@ public class AppMain {
                             Musicality.boot();
                         }
                     }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        windowMaker.accept(new UIFontSizeConfigurator());
+                    }
                 }
         }, false, false));
+
         rootView.backing = new UINSVertLayout(new UIHHalfsplit(5, 8, uiStatusLabel, new UIAppendButton("Help?", new UITextButton(false, "Save All Modified Files", new Runnable() {
             @Override
             public void run() {

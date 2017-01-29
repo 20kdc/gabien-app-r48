@@ -81,6 +81,7 @@ public class Application {
                     r = runnable;
                 } else {
                     r.run();
+                    runnable = null;
                 }
             }
         };
@@ -94,39 +95,46 @@ public class Application {
                         uiTicker.createScale = 2;
                         return;
                     }
-                    if (appTicker == null)
+                    if (appTicker == null) {
                         try {
-                            appTicker = AppMain.initializeAndRun(uiTicker, id + "/");
+                            AppMain.initialize(id + "/");
+                            appTicker = AppMain.initializeAndRun(uiTicker);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                    }
                     closeHelper.accept(null);
                 }
             };
         }
-        final UIMapToolWrapper uimtw = new UIMapToolWrapper(new UIPopupMenu(gamepakNames, gamepakButtons, true, true));
-        closeHelper.accept(new Runnable() {
-            @Override
-            public void run() {
-                uimtw.selfClose = true;
-            }
-        });
-        uiTicker.accept(uimtw);
-
-        while (uiTicker.runningWindows() > 0) {
-            double dT = GaBIEn.timeDelta(false);
-            while (dT < 0.02d) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        while (true) {
+            final UIMapToolWrapper uimtw = new UIMapToolWrapper(new UIPopupMenu(gamepakNames, gamepakButtons, true, true));
+            closeHelper.accept(new Runnable() {
+                @Override
+                public void run() {
+                    uimtw.selfClose = true;
                 }
-                dT = GaBIEn.timeDelta(false);
+            });
+            uiTicker.accept(uimtw);
+
+            while (uiTicker.runningWindows() > 0) {
+                double dT = GaBIEn.timeDelta(false);
+                while (dT < 0.02d) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    dT = GaBIEn.timeDelta(false);
+                }
+                dT = GaBIEn.timeDelta(true);
+                if (appTicker != null)
+                    appTicker.accept(dT);
+                uiTicker.runTick(dT);
             }
-            dT = GaBIEn.timeDelta(true);
-            if (appTicker != null)
-                appTicker.accept(dT);
-            uiTicker.runTick(dT);
+            if (!uimtw.selfClose)
+                break;
+            appTicker = null;
         }
         GaBIEn.ensureQuit();
     }

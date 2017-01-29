@@ -127,6 +127,8 @@ public class RubyIO {
             return a.fixnumVal == b.fixnumVal;
         if (a.type == '\"')
             return a.decString().equals(b.decString());
+        if (a.type == 'f')
+            return a.decString().equals(b.decString());
         if (a.type == ':')
             return a.symVal.equals(b.symVal);
         if (a.type == 'T')
@@ -151,6 +153,8 @@ public class RubyIO {
             data = symVal;
         if (type == '"')
             return "\"" + decString() + "\"";
+        if (type == 'f')
+            return decString() + "f";
         if (type == 'i')
             return Long.toString(fixnumVal);
         return ((char) type) + data;

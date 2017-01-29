@@ -8,6 +8,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
 import r48.AppMain;
+import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.ATDB;
 import r48.map.UIMapView;
@@ -64,7 +65,7 @@ public class VXATileRenderer implements ITileRenderer {
 
         // 0xBE1 == 3041, horizontal line on L1 of Map047, RS2.
         if (layer == 3) {
-            UILabel.drawString(igd, px, py, Integer.toHexString(tidx), false, 8);
+            UILabel.drawString(igd, px, py, Integer.toHexString(tidx), false, FontSizes.mapDebugTextHeight);
             return;
         }
 
@@ -114,7 +115,7 @@ public class VXATileRenderer implements ITileRenderer {
             }
         }
 
-        UILabel.drawString(igd, px, py, Integer.toHexString(tidx), false, 8);
+        UILabel.drawString(igd, px, py, Integer.toHexString(tidx), false, FontSizes.mapDebugTextHeight);
     }
 
     private boolean handleATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrInDriver igd) {
