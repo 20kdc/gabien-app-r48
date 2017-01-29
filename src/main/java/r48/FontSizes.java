@@ -27,7 +27,7 @@ public class FontSizes {
     public static int mapInfosTextHeight = 8;
 
     public static int mapToolSelectorTextHeight = 16;
-    public static int eventPickerEntryTextHeight = 8;
+    public static int eventPickerEntryTextHeight = 16;
 
     public static int dialogWindowTextHeight = 16;
     public static int textDialogFieldTextHeight = 16;
@@ -43,10 +43,13 @@ public class FontSizes {
 
     public static int windowFrameHeight = 16;
     public static int statusBarTextHeight = 8;
+    public static int tabTextHeight = 8;
 
     public static int objectDBMonitorTextHeight = 8;
+    public static int menuTextHeight = 16;
+
     public static int fontSizerTextHeight = 8;
     public static int timeWasterTextHeight = 8;
-    public static int menuTextHeight = 16;
-    public static int tabTextHeight = 8;
+
+    public static int launcherTextHeight = 16;
 }
