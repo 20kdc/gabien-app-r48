@@ -8,6 +8,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
 import r48.AppMain;
+import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.ATDB;
 import r48.map.UIMapView;
@@ -88,7 +89,7 @@ public class XPTileRenderer implements ITileRenderer {
                 didDraw = true; // It's invisible, so it should just be considered drawn no matter what
             }
             if (!didDraw)
-                UILabel.drawString(igd, px, py, ":" + tidx, false, false);
+                UILabel.drawString(igd, px, py, ":" + tidx, false, FontSizes.mapDebugTextHeight);
             return;
         }
         tidx -= 48 * 8;

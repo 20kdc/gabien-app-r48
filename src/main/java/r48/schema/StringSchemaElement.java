@@ -8,6 +8,7 @@ package r48.schema;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
+import r48.FontSizes;
 import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -26,7 +27,7 @@ public class StringSchemaElement implements ISchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UITextBox tb = new UITextBox(false);
+        final UITextBox tb = new UITextBox(FontSizes.schemaFieldTextHeight);
         tb.text = target.decString();
         tb.onEdit = new Runnable() {
             @Override
@@ -41,7 +42,7 @@ public class StringSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        return UITextBox.getRecommendedSize(false).height;
+        return UITextBox.getRecommendedSize(FontSizes.schemaFieldTextHeight).height;
     }
 
     @Override

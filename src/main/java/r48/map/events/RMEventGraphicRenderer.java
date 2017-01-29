@@ -8,6 +8,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
 import r48.AppMain;
+import r48.FontSizes;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
 
@@ -56,7 +57,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         int dir = lookupDirection(coreDir);
         if (dir == -1) {
             dir = 0;
-            UILabel.drawString(igd, ox, oy, "D" + coreDir, false, false);
+            UILabel.drawString(igd, ox, oy, "D" + coreDir, false, FontSizes.mapDebugTextHeight);
         }
         RubyIO cName = target.getInstVarBySymbol("@character_name");
         short tId = (short) target.getInstVarBySymbol("@tile_id").fixnumVal;

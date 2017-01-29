@@ -7,6 +7,7 @@ package r48.schema.specialized;
 
 import gabien.IGrInDriver;
 import gabien.ui.*;
+import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.schema.ISchemaElement;
@@ -57,12 +58,12 @@ public class RubyTableSchemaElement<TileHelper> implements ISchemaElement {
                     return;
                 tileHelper = baseTileDraw(target, t, x, y, igd, tileHelper);
                 for (int i = 0; i < targ.planeCount; i++)
-                    UILabel.drawString(igd, x, y + (i * 8), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, false);
+                    UILabel.drawString(igd, x, y + (i * 8), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, FontSizes.gridTextHeight);
             }
         };
         final UINumberBox[] boxes = new UINumberBox[targ.planeCount];
         for (int i = 0; i < boxes.length; i++) {
-            boxes[i] = new UINumberBox(false);
+            boxes[i] = new UINumberBox(FontSizes.tableElementTextHeight);
             boxes[i].number = targ.getTiletype(0, 0, i);
             boxes[i].onEdit = createOnEdit(targ, path, 0, 0, i, boxes[i]);
             uiSVL.panels.add(boxes[i]);
@@ -91,9 +92,9 @@ public class RubyTableSchemaElement<TileHelper> implements ISchemaElement {
                 }
             }
         };
-        final UINumberBox wNB = new UINumberBox(false);
+        final UINumberBox wNB = new UINumberBox(FontSizes.tableSizeTextHeight);
         wNB.number = targ.width;
-        final UINumberBox hNB = new UINumberBox(false);
+        final UINumberBox hNB = new UINumberBox(FontSizes.tableSizeTextHeight);
         hNB.number = targ.height;
         UIElement uie = new UIHHalfsplit(1, 2, wNB, hNB);
         uie.setBounds(new Rect(0, 0, 128, 9));

@@ -40,7 +40,7 @@ public class RubyTable {
     // inline notes on Table format:
     // first 4 bytes match plane count later on. giving up and checking mkxp gives no further detail.
     // next 4 bytes are a LE32-bit width
-    // further 4 bytes are a LE32-bit height
+    // further 4 bytes are a LE32-bit textHeight
     // LE32-bit "depth" (plane count).
     // 4 bytes which seems to be w * h * d.
     // It seems to be consistent enough between files for now, in any case.

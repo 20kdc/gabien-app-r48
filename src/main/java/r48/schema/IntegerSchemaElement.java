@@ -8,6 +8,7 @@ package r48.schema;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UINumberBox;
+import r48.FontSizes;
 import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -22,7 +23,7 @@ public class IntegerSchemaElement implements ISchemaElement {
     }
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UINumberBox unb = new UINumberBox(false);
+        final UINumberBox unb = new UINumberBox(FontSizes.schemaFieldTextHeight);
         unb.number = (int) target.fixnumVal;
         unb.readOnly = isReadOnly();
         unb.onEdit = new Runnable() {
@@ -42,7 +43,7 @@ public class IntegerSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        return UINumberBox.getRecommendedSize(false).height;
+        return UINumberBox.getRecommendedSize(FontSizes.schemaFieldTextHeight).height;
     }
 
     // For lack of a better place.
