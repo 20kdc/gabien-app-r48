@@ -56,6 +56,8 @@ public class AppMain {
     //  so it's easy enough to pass a tileset and give yourself an alternative rendering context.
     // Or, as I'm intending, have the ISchemaHost hold the StuffRenderer from the correct context.
     private static UIMapViewContainer mapBox;
+    private static UILabel uiStatusLabel;
+
     public static StuffRenderer stuffRenderer;
 
     public static UIElement nextMapTool = null;
@@ -113,7 +115,6 @@ public class AppMain {
     public static IConsumer<Double> initializeAndRun(final IConsumer<UIElement> uiTicker) {
 
         // initialize UI
-        final UILabel uiStatusLabel = new UILabel("Loading...", FontSizes.statusBarTextHeight);
         final UIWindowView rootView = new UIWindowView();
         rootView.windowTextHeight = FontSizes.windowFrameHeight;
         windowMaker = rootView;
@@ -122,6 +123,23 @@ public class AppMain {
         // Set up a default stuffRenderer for things to use.
         stuffRenderer = new StuffRenderer(null, "");
 
+        rebuildInnerUI(rootView, uiTicker);
+
+        // everything ready, start main window
+        uiTicker.accept(rootView);
+
+        return new IConsumer<Double>() {
+            @Override
+            public void accept(Double deltaTime) {
+                uiStatusLabel.Text = objectDB.modifiedObjects.size() + " modified.";
+                schemas.updateDictionaries();
+                if (Musicality.running)
+                    Musicality.update(deltaTime);
+            }
+        };
+    }
+
+    private static UITabPane initializeTabs(final UIWindowView rootView, final IConsumer<UIElement> uiTicker) {
         ISupplier<IConsumer<UIElement>> wmg = new ISupplier<IConsumer<UIElement>>() {
             @Override
             public IConsumer<UIElement> get() {
@@ -144,7 +162,7 @@ public class AppMain {
             tabNames.add("MapInfos");
             tabElems.add(mapInfoEl);
 
-            final CMDB commandsEvent = schemas.getCMDB("RXP/Commands.txt");
+            final CMDB commandsEvent = schemas.getCMDB("R" + StuffRenderer.versionId + "/Commands.txt");
             final ISchemaElement commandEvent = schemas.getSDBEntry("EventCommandEditor");
 
             tabNames.add("Tools");
@@ -271,7 +289,7 @@ public class AppMain {
                             }
                         }
                     }
-            }, true, false));
+            }, FontSizes.menuTextHeight, false));
         } catch (Exception e) {
             System.err.println("Can't use MapInfos & such");
             e.printStackTrace();
@@ -291,6 +309,7 @@ public class AppMain {
                 "Make text N.I.Z.X.-compatible",
                 "Toggle calming sound",
                 "Configure font sizes",
+                "Rebuild UI",
         }, new Runnable[]{
                 new Runnable() {
                     @Override
@@ -388,8 +407,19 @@ public class AppMain {
                     public void run() {
                         windowMaker.accept(new UIFontSizeConfigurator());
                     }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        rebuildInnerUI(rootView, uiTicker);
+                    }
                 }
-        }, false, false));
+        }, FontSizes.menuTextHeight, false));
+        return new UITabPane(tabNames.toArray(new String[0]), tabElems.toArray(new UIElement[0]), FontSizes.tabTextHeight);
+    }
+
+    private static void rebuildInnerUI(final UIWindowView rootView, final IConsumer<UIElement> uiTicker) {
+        uiStatusLabel = new UILabel("Loading...", FontSizes.statusBarTextHeight);
 
         UIAppendButton workspace = new UIAppendButton("Save All Modified Files", uiStatusLabel, new Runnable() {
             @Override
@@ -417,24 +447,10 @@ public class AppMain {
                     }
                 };
                 uis.loadPage(0);
-                uiTicker.accept(topbar);
+                windowMaker.accept(topbar);
             }
         }, FontSizes.statusBarTextHeight);
-
-        rootView.backing = new UINSVertLayout(workspace, new UITabPane(tabNames.toArray(new String[0]), tabElems.toArray(new UIElement[0])));
-
-        // everything ready, start main window
-        uiTicker.accept(rootView);
-
-        return new IConsumer<Double>() {
-            @Override
-            public void accept(Double deltaTime) {
-                uiStatusLabel.Text = objectDB.modifiedObjects.size() + " modified.";
-                schemas.updateDictionaries();
-                if (Musicality.running)
-                    Musicality.update(deltaTime);
-            }
-        };
+        rootView.backing = new UINSVertLayout(workspace, initializeTabs(rootView, uiTicker));
     }
 
     private static UIElement makeFileList() {
@@ -447,7 +463,7 @@ public class AppMain {
                     launchSchema("File." + s2, objectDB.getObject(s2));
                 }
             });
-        return new UIPopupMenu(s.toArray(new String[0]), r.toArray(new Runnable[0]), true, false);
+        return new UIPopupMenu(s.toArray(new String[0]), r.toArray(new Runnable[0]), FontSizes.menuTextHeight, false);
     }
 
     // this includes objects whose existence is defined by objects (maps)
