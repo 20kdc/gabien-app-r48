@@ -433,7 +433,8 @@ public class AppMain {
                 // exception to the rule
                 UILabel uil = new UILabel("Blank Help Window", FontSizes.helpPathHeight);
                 final UIHelpSystem uis = new UIHelpSystem(uil, null);
-                final UIUnscissoredScroller uus = new UIUnscissoredScroller(uis);
+                final UIScrollVertLayout uus = new UIScrollVertLayout();
+                uus.panels.add(uis);
                 UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton("Index", uil, new Runnable() {
                     @Override
                     public void run() {
