@@ -10,6 +10,7 @@ import gabien.ui.Rect;
 import gabien.ui.UIPanel;
 import gabien.ui.UITabPane;
 import r48.AppMain;
+import r48.FontSizes;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.ui.UITileGrid;
@@ -27,7 +28,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         map = mv;
         // may not be right at all, work on this!
         tileMaps = AppMain.stuffRenderer.tileRenderer.createATUIPlanes(mv);
-        tabPane = new UITabPane(AppMain.stuffRenderer.tileRenderer.getPlaneNames(), tileMaps, 8);
+        tabPane = new UITabPane(AppMain.stuffRenderer.tileRenderer.getPlaneNames(), tileMaps, FontSizes.tabTextHeight);
         atBases = AppMain.stuffRenderer.tileRenderer.indicateATs();
         allElements.add(tabPane);
         setBounds(new Rect(0, 0, 320, 200));
