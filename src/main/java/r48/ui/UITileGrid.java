@@ -49,7 +49,7 @@ public class UITileGrid extends UIGrid {
         }
         if (autoTile)
             t -= t / 49;
-        AppMain.stuffRenderer.tileRenderer.drawTile((short) (t + tileStart), x, y, igd, AppMain.stuffRenderer.tileRenderer.getTileSize());
+        AppMain.stuffRenderer.tileRenderer.drawTile(map.getCurrentLayer(), (short) (t + tileStart), x, y, igd, AppMain.stuffRenderer.tileRenderer.getTileSize());
     }
 
     public boolean selectedATB() {

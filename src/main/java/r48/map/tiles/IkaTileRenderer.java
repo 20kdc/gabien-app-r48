@@ -22,7 +22,7 @@ public class IkaTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(short tidx, int px, int py, IGrInDriver igd, int ets) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets) {
         String[] blockTypes = new String[16];
         blockTypes[2] = "filt";
         blockTypes[4] = "Item";

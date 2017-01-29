@@ -6,6 +6,7 @@ package r48.map.tiles;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.ATDB;
@@ -51,7 +52,7 @@ public class VXATileRenderer implements ITileRenderer {
 
 
     @Override
-    public void drawTile(short tidx, int px, int py, IGrInDriver igd, int ets) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets) {
         // MKXP repository links to http://www.tktkgame.com/tkool/memo/vx/tile_id.html
         // It's in Japanese but via translation at least explains that:
         // 1. Autotiles are different. Very different.
@@ -62,6 +63,11 @@ public class VXATileRenderer implements ITileRenderer {
         //  0x600-0x67F seems to be the closest thing I could find to "normal".
 
         // 0xBE1 == 3041, horizontal line on L1 of Map047, RS2.
+        if (layer == 3) {
+            UILabel.drawString(igd, px, py, Integer.toHexString(tidx), false, 8);
+            return;
+        }
+
         if (tidx == 0)
             return; // magical exception
 
@@ -108,7 +114,7 @@ public class VXATileRenderer implements ITileRenderer {
             }
         }
 
-        igd.drawText(px, py, 255, 255, 255, 8, ":" + tidx);
+        UILabel.drawString(igd, px, py, Integer.toHexString(tidx), false, 8);
     }
 
     private boolean handleATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrInDriver igd) {
@@ -163,6 +169,7 @@ public class VXATileRenderer implements ITileRenderer {
     public UITileGrid[] createATUIPlanes(UIMapView mv) {
         return new UITileGrid[] {
                 new UITileGrid(mv, 0x67F, 1, false),
+                new UITileGrid(mv, 0x000, 0x400, false),
                 new UITileGrid(mv, 0x600, 0x7F, false),
                 new UITileGrid(mv, 0x800, 0x300, true),
                 new UITileGrid(mv, 0xB00, 0x600, true),
@@ -173,6 +180,7 @@ public class VXATileRenderer implements ITileRenderer {
     public String[] getPlaneNames() {
         return new String[] {
                 "NIL",
+                "pABCD",
                 "6+",
                 "8+",
                 "B+",

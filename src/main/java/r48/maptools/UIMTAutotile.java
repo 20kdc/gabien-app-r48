@@ -75,7 +75,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         int sel = tileMaps[tabPane.tab].getSelected();
         if (tabPane.tab != 8) {
             if (tileMaps[tabPane.tab].selectedATB()) {
-                map.mapTable.setTiletype(x, y, layer, (short) tileMaps[tabPane.tab].tileStart);
+                map.mapTable.setTiletype(x, y, layer, (short) (sel - 47));
                 for (int i = -1; i < 2; i++)
                     for (int j = -1; j < 2; j++)
                         updateAutotile(x + i, y + j, layer);
