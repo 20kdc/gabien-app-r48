@@ -6,35 +6,27 @@
 
 0: Index
 i HelpImg/0.demo.png
-. Greetings. I, am 20kdc.
-. This is your guide to R48.
+. Greetings. I, am 20kdc. This is your guide to R48.
 .
-. Firstly, keep in mind that text fields
-. will revert unless you press enter.
+. Firstly, keep in mind that text fields will revert unless you press enter.
 . The same goes for number fields.
 . This is critical to several operations.
 .
-. Secondly, make sure you ran this program
-. from the same directory as the game,
-. that you want to edit.
+. Secondly, make sure you ran this program from the same directory as the game that you want to edit.
 .
-. Third, make sure you selected that game,
-. at the screen you will most likely have
-. passed to get to this point.
+. Third, make sure that you've selected that game at the first menu.
+. If not, closing both this help window and the main window should bring you back there.
 .
-. Moving this help window out of the way,
-. the picture on the right should match.
-. The tab names should describe what they
-. do, but in any case, for further detail,
-. see the below pages:
+. Moving this help window out of the way, the picture on the right should match.
+. The tab names should describe what they do, but in any case, for further detail, see the below pages:
 > 1 Map
 > 2 MapInfos
 > 3 Tools
 > 4 System Objects
 > 5 ObjectDB Monitor
 > 6 System Tools
-. Note that to ensure your work is saved, remember to press the button
-. at the top-right to save your work, and of course, keep backups.
+. Note that to ensure your work is saved, remember to press the button at the top-right to save your work.
+. Furthermore, keep backups. :)
 > 999 License
 
 1: Map
@@ -42,22 +34,16 @@ i HelpImg/1.diagram.png
 . 'Map' is the map editor.
 . From this, you can do many things.
 . However, first, you need to know controls.
-. Dragging with the Right Mouse Button allows
-. panning about the map. This is crucial for
-. even basic datamining operations.
-. Clicking with the Left Mouse Button will use
-. the current tool, or if no tool is running,
-. will bring up a dialogue box to select one.
+. Dragging with the Right Mouse Button allows panning about the map.
+. This is crucial for even basic datamining operations.
+. Clicking with the Left Mouse Button will use the current tool, or if no tool is running, will bring up a dialogue box to select one.
 > 7 Map Tools
 . Pressing the "m" button will toggle a minimap.
-. This allows faster navigation of the map,
-. or reading messages written with tiles.
+. This allows faster navigation of the map, or reading messages written with tiles.
 . At the bottom-left, there are the Layer Tabs.
-. These allow the selection of a tile layer,
-. and hiding/showing layers.
+. These allow the selection of a tile layer, and hiding/showing layers.
 . To hide/show a layer, right click on it's tab.
-. To select a layer, left-click on it's tab,
-. so long as it's a tile layer.
+. To select a layer, left-click on it's tab, so long as it's a tile layer.
 . The selected tile layer only matters to the tools which need to know it.
 . The "E" and "P" layers are not tile layers, but instead are placeholders.
 . These layers allow hiding/showing Events and the Panorama, respectively.
@@ -82,11 +68,9 @@ i HelpImg/1.diagram.png
 > 0 Back to the Index.
 
 4: System Objects
-. If there is a tab to edit an object,
-. it is safer to edit it using that tab.
+. If there is a tab to edit an object, it is safer to edit it using that tab.
 . But failing that:
-. This allows editing the various bits and pieces that nobody would ever
-. write a dedicated editor for, so the generic layout system was used.
+. This allows editing the various bits and pieces that nobody would ever write a dedicated editor for, so the generic layout system was used.
 . (At least you can edit it, right?)
 . A description of each object would take forever to write.
 . This, however, gives some general details.
@@ -99,8 +83,7 @@ i HelpImg/1.diagram.png
 > 0 Back to the Index.
 
 6: System Tools
-. This contains various functions for debugging, testing,
-. and sanity maintenance.
+. This contains various functions for debugging, testing, and sanity maintenance.
 . They're here because I may need them, more than anything else.
 > 0 Back to the Index.
 
@@ -109,10 +92,8 @@ i HelpImg/1.diagram.png
 . The "Map Tools" dialogue box exists to help you achieve this.
 i HelpImg/7.example.png
 . As you can see, several tools exist.
-. For general usage, "Tiles", and
-. "Event List", should be enough.
-. For access to the BGS/BGM, map resize,
-. and other map pieces, use Edit Direct.
+. For general usage, "Tiles", and "Event List", should be enough.
+. For access to the BGS/BGM, map resize, and other map pieces, use Edit Direct.
 > 8 Tiles
 > 9 Event List
 > 10 How To Resize A Map
@@ -123,17 +104,13 @@ i HelpImg/need-image.png
 . This allows the editing of the map's tiles.
 . The "stride" of the tileset depends on the window's width.
 . Clicking on a tile in the map will paste it in.
-. An area of the tileset can be selected,
-. and it will be interpreted based on the window's width,
-. when the tiles are pasted in.
+. An area of the tileset can be selected, and it will be interpreted based on the window's width, when the tiles are pasted in.
 > 7 Back to the Map Tools.
 
 9: Event List
 . This is a rather simple tool to use.
 . Opening it will show circles at the positions of events.
-. Clicking a tile will report all events at that position,
-. and give the option to create a new event there,
-. delete one of the existing events, or move an event.
+. Clicking a tile will report all events at that position, and give the option to create a new event there, delete one of the existing events, or move an event.
 > 11 Event Editing Details
 i HelpImg/9.usage.png
 > 7 Back to the Map Tools.
@@ -151,6 +128,10 @@ i HelpImg/9.usage.png
 11: Event Editing Details
 i HelpImg/need-image.png
 . This still needs work.
+. Furthermore, it is game-dependent.
+. For Ikachan, the properties aren't well-described enough anyway, so work them out from comparison.
+. For RGSS-based systems, the properties are rather complicated and include their own sub-scripting language.
+. Assuming there are schemas for all the commands (RVXA users take note), you should be able to use them by looking at the Ruby interpreter scripts as documentation.
 > 12 Object Editing Details
 > 9 Back to the Event List guide.
 
@@ -165,29 +146,29 @@ i HelpImg/need-image.png
 . Now that emphasis is over, here's the notes.
 .
 . Firstly:
-. To the left is generally the field name,
-. to the right is generally the field data.
+. To the left is generally the field name, to the right is generally the field data.
 . They are split by a line which should be visible between them.
 . The field name is not usually editable.
 .
 . Secondly, the top (not the title) bar does many things.
 . It shows the object you're currently using.
 . You can use "Insp." for raw inspection.
+. This is usually useless on backends other than 'r48' (RGSS).
 . ".." lets you go back a level, and "Save" does what you'd expect.
-. The "Cp." and "Ps." buttons allow copying and pasting a part,
-. so long as it's relatively valid, from one place to another.
+. The "Cp." and "Ps." buttons allow copying and pasting a part, so long as it's relatively valid, from one place to another.
 . The system will try to correct any obviously wrong details.
-. The copy and paste applies to the object being viewed,
-. not the currently selected field or any details.
+. The copy and paste applies to the object being viewed, not the currently selected field or any details.
 .
-. Thirdly, if an object ends with a bunch of one-letter buttons, this means it
-. can be one of several types, and clicking those buttons resets it with a type.
+. Thirdly, if an object ends with a bunch of one-letter buttons, this means it can be one of several types, and clicking those buttons resets it with a type.
 .
 . I hope this is enough information to work with.
 
 999: License
-i layertab.png 0 52 16 4
+.
 . You are using the following version of R48:
+p 4
+I layertab.png 0 52 16 4
+p 4
 . This is released into the public domain.
 . No warranty is provided, implied or otherwise.
 > 0 Back to the Index.

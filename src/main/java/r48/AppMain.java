@@ -435,7 +435,8 @@ public class AppMain {
                 final UIHelpSystem uis = new UIHelpSystem(uil, null);
                 final UIScrollVertLayout uus = new UIScrollVertLayout();
                 uus.panels.add(uis);
-                UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton("Index", uil, new Runnable() {
+                uus.setBounds(new Rect(0, 0, 560, 240));
+                final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton("Index", uil, new Runnable() {
                     @Override
                     public void run() {
                         uis.loadPage(0);
@@ -444,7 +445,7 @@ public class AppMain {
                 uis.onLoad = new Runnable() {
                     @Override
                     public void run() {
-                        uis.setBounds(new Rect(0, 0, 640, 480));
+                        topbar.setBounds(topbar.getBounds());
                     }
                 };
                 uis.loadPage(0);

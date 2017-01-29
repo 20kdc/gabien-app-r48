@@ -33,6 +33,7 @@ public class FontSizes {
     public static int textDialogFieldTextHeight = 16;
     public static int textDialogDescTextHeight = 16;
 
+    public static int helpParagraphStartHeight = 8;
     public static int helpTextHeight = 8;
     public static int helpLinkHeight = 8;
     public static int helpPathHeight = 8;
