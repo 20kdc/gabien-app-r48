@@ -24,15 +24,17 @@ public class UIHelpSystem extends UIPanel {
     private UILabel pageName;
     public Runnable onLoad;
 
+    public int desiredHeight = 320;
+
     public UIHelpSystem(UILabel uil, Runnable ol) {
-        super.setBounds(new Rect(0, 0, 640, 480));
+        super.setBounds(new Rect(0, 0, 640, desiredHeight));
         onLoad = ol;
         pageName = uil;
     }
 
     @Override
     public void setBounds(Rect r) {
-        super.setBounds(new Rect(r.x, r.y, 640, 480));
+        super.setBounds(new Rect(r.x, r.y, r.width, desiredHeight));
     }
 
     @Override
@@ -41,6 +43,7 @@ public class UIHelpSystem extends UIPanel {
     }
 
     public void loadPage(final int i) {
+        desiredHeight = 1;
         try {
             allElements.clear();
             new DBLoader(new BufferedReader(new InputStreamReader(GaBIEn.getResource("Help.txt"))), new IDatabase() {
@@ -96,6 +99,7 @@ public class UIHelpSystem extends UIPanel {
                             uil.setBounds(new Rect(0, y, vlen, eh));
                             allElements.add(uil);
                             y += eh;
+                            desiredHeight = Math.max(desiredHeight, y);
                             if (y >= imgEndY)
                                 imgSize = 0;
                         }
@@ -106,19 +110,14 @@ public class UIHelpSystem extends UIPanel {
                             final int yy = extended ? Integer.parseInt(args[2]) : 0;
                             final int w = extended ? Integer.parseInt(args[3]) : r.getWidth();
                             final int h = extended ? Integer.parseInt(args[4]) : r.getHeight();
-                            UIElement uie = new UIElement() {
-                                @Override
-                                public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-                                    igd.blitImage(xx, yy, w, h, ox, oy, r);
-                                }
-
-                                @Override
-                                public void handleClick(int x, int y, int button) {
-                                }
-                            };
+                            UIPanel uie = new UIPanel();
+                            uie.baseImage = r;
+                            uie.imageX = xx;
+                            uie.imageY = yy;
                             uie.setBounds(new Rect(640 - w, y, w, h));
                             imgSize = w;
                             imgEndY = y + h;
+                            desiredHeight = Math.max(desiredHeight, imgEndY);
                             allElements.add(uie);
                         }
                     }
@@ -127,6 +126,7 @@ public class UIHelpSystem extends UIPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        setBounds(getBounds());
         onLoad.run();
     }
 }
