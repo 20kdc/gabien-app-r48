@@ -9,6 +9,7 @@ import gabien.ui.*;
 import r48.FontSizes;
 
 import java.lang.reflect.Field;
+import java.util.LinkedList;
 
 /**
  * Created on 1/29/17.
@@ -17,9 +18,40 @@ public class UIFontSizeConfigurator extends UIPanel {
     private UIScrollVertLayout outerLayout;
     public UIFontSizeConfigurator() {
         outerLayout = new UIScrollVertLayout();
+        final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
+        final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();
+        outerLayout.panels.add(new UIHHalfsplit(1, 2, new UITextButton(FontSizes.fontSizerTextHeight, "*2", new Runnable() {
+            @Override
+            public void run() {
+                for (Runnable r : doubleAll)
+                    r.run();
+            }
+        }), new UITextButton(FontSizes.fontSizerTextHeight, "/2", new Runnable() {
+            @Override
+            public void run() {
+                for (Runnable r : halfAll)
+                    r.run();
+            }
+        })));
         try {
             for (final Field field : FontSizes.class.getFields()) {
                 if (field.getType() == int.class) {
+                    doubleAll.add(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                field.setInt(null, field.getInt(null) * 2);
+                            } catch (Exception e) {}
+                        }
+                    });
+                    halfAll.add(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                field.setInt(null, field.getInt(null) / 2);
+                            } catch (Exception e) {}
+                        }
+                    });
                     UIAdjuster tb = new UIAdjuster(FontSizes.fontSizerTextHeight, new ISupplier<String>() {
                         @Override
                         public String get() {

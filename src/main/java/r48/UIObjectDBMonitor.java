@@ -18,6 +18,7 @@ public class UIObjectDBMonitor extends UIElement {
     @Override
     public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
         System.gc();
+        int step = UILabel.getRecommendedSize("", FontSizes.objectDBMonitorTextHeight).height;
         for (String s : UITest.sortedKeysStr(AppMain.objectDB.objectMap.keySet())) {
             String status = " [disposed]";
             RubyIO rio = AppMain.objectDB.objectMap.get(s).get();
@@ -33,7 +34,7 @@ public class UIObjectDBMonitor extends UIElement {
                 }
             }
             UILabel.drawLabel(igd, getBounds().width, ox, oy, s + status, false, FontSizes.objectDBMonitorTextHeight);
-            oy += 9;
+            oy += step;
         }
     }
 
