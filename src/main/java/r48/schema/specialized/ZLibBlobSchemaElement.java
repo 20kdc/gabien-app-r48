@@ -8,6 +8,7 @@ package r48.schema.specialized;
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
+import r48.FontSizes;
 import r48.RubyIO;
 import r48.schema.ISchemaElement;
 import r48.schema.IntegerSchemaElement;
@@ -29,7 +30,7 @@ import java.util.zip.InflaterInputStream;
 public class ZLibBlobSchemaElement implements ISchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        return new UIHHalfsplit(1, 2, new UITextButton(false, "Export/Edit", new Runnable() {
+        return new UIHHalfsplit(1, 2, new UITextButton(FontSizes.blobTextHeight, "Export/Edit", new Runnable() {
             @Override
             public void run() {
                 try {
@@ -49,7 +50,7 @@ public class ZLibBlobSchemaElement implements ISchemaElement {
                     ioe.printStackTrace();
                 }
             }
-        }), new UITextButton(false, "Import", new Runnable() {
+        }), new UITextButton(FontSizes.blobTextHeight, "Import", new Runnable() {
             @Override
             public void run() {
                 try {
@@ -74,7 +75,7 @@ public class ZLibBlobSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        return UITextButton.getRecommendedSize("", false).height;
+        return UITextButton.getRecommendedSize("", FontSizes.blobTextHeight).height;
     }
 
     @Override

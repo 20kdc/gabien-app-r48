@@ -115,6 +115,7 @@ public class AppMain {
         // initialize UI
         final UILabel uiStatusLabel = new UILabel("Loading...", FontSizes.statusBarTextHeight);
         final UIWindowView rootView = new UIWindowView();
+        rootView.windowTextHeight = FontSizes.windowFrameHeight;
         windowMaker = rootView;
         rootView.setBounds(new Rect(0, 0, 640, 480));
 
@@ -390,12 +391,13 @@ public class AppMain {
                 }
         }, false, false));
 
-        rootView.backing = new UINSVertLayout(new UIHHalfsplit(5, 8, uiStatusLabel, new UIAppendButton("Help?", new UITextButton(false, "Save All Modified Files", new Runnable() {
+        UIAppendButton workspace = new UIAppendButton("Save All Modified Files", uiStatusLabel, new Runnable() {
             @Override
             public void run() {
                 objectDB.ensureAllSaved();
             }
-        }), new Runnable() {
+        }, FontSizes.statusBarTextHeight);
+        workspace = new UIAppendButton(" Help", workspace, new Runnable() {
             @Override
             public void run() {
                 // exception to the rule
@@ -407,7 +409,7 @@ public class AppMain {
                     public void run() {
                         uis.loadPage(0);
                     }
-                }, false), uus);
+                }, FontSizes.helpPathHeight), uus);
                 uis.onLoad = new Runnable() {
                     @Override
                     public void run() {
@@ -417,7 +419,9 @@ public class AppMain {
                 uis.loadPage(0);
                 uiTicker.accept(topbar);
             }
-        }, false)), new UITabPane(tabNames.toArray(new String[0]), tabElems.toArray(new UIElement[0])));
+        }, FontSizes.statusBarTextHeight);
+
+        rootView.backing = new UINSVertLayout(workspace, new UITabPane(tabNames.toArray(new String[0]), tabElems.toArray(new UIElement[0])));
 
         // everything ready, start main window
         uiTicker.accept(rootView);

@@ -18,7 +18,7 @@ public class UITextPrompt extends UIPanel implements IWindowElement {
     public UITextPrompt(final String s, final IConsumer<String> iConsumer) {
         allElements.add(uiSVL);
         uiSVL.panels.add(new UILabel(s, FontSizes.textDialogDescTextHeight));
-        uiSVL.panels.add(new UIHHalfsplit(4, 5, utb, new UITextButton(true, "OK", new Runnable() {
+        uiSVL.panels.add(new UIHHalfsplit(4, 5, utb, new UITextButton(FontSizes.textDialogFieldTextHeight, "OK", new Runnable() {
             @Override
             public void run() {
                 iConsumer.accept(utb.text);

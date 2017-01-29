@@ -8,6 +8,7 @@ package r48.schema;
 import gabien.ui.IConsumer;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
+import r48.FontSizes;
 import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -32,7 +33,7 @@ public class EnumSchemaElement implements ISchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(false, viewValue((int) target.fixnumVal), new Runnable() {
+        return new UITextButton(FontSizes.schemaButtonTextHeight, viewValue((int) target.fixnumVal), new Runnable() {
             @Override
             public void run() {
                 launcher.switchObject(path.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<Integer>() {
@@ -58,7 +59,7 @@ public class EnumSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        return UITextButton.getRecommendedSize("", false).height;
+        return UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height;
     }
 
     @Override

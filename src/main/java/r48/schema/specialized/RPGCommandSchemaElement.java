@@ -47,7 +47,7 @@ public class RPGCommandSchemaElement implements ISchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIPanel uip = new UIPanel() {
-            UITextButton chooseCode = new UITextButton(false, database.buildCodename(target), new Runnable() {
+            UITextButton chooseCode = new UITextButton(FontSizes.schemaButtonTextHeight, database.buildCodename(target), new Runnable() {
                 @Override
                 public void run() {
                     HashMap<String, Integer> rvi = new HashMap<String, Integer>();

@@ -29,13 +29,13 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
             if (innerElem.parent != null)
                 switchObject(innerElem.findBack());
         }
-    }, false);
+    }, FontSizes.schemaPathTextHeight);
     public UIAppendButton toolbarCp = new UIAppendButton("Cp.", toolbarP, new Runnable() {
         @Override
         public void run() {
             AppMain.theClipboard = new RubyIO().setDeepClone(innerElem.targetElement);
         }
-    }, false);
+    }, FontSizes.schemaPathTextHeight);
     public UIAppendButton toolbarPs = new UIAppendButton("Ps.", toolbarCp, new Runnable() {
         @Override
         public void run() {
@@ -55,7 +55,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
                 }
             }
         }
-    }, false);
+    }, FontSizes.schemaPathTextHeight);
     public UIAppendButton toolbarS = new UIAppendButton("Save", toolbarPs, new Runnable() {
         @Override
         public void run() {
@@ -64,13 +64,13 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
             root.editor.modifyVal(root.targetElement, root, false);
             AppMain.objectDB.ensureSaved(root.hrIndex, root.lastArrayIndex);
         }
-    }, false);
+    }, FontSizes.schemaPathTextHeight);
     public UIAppendButton toolbarI = new UIAppendButton("Insp", toolbarS, new Runnable() {
         @Override
         public void run() {
             hostWindows.accept(new UITest(innerElem.targetElement));
         }
-    }, false);
+    }, FontSizes.schemaPathTextHeight);
 
     private Runnable nudgeRunnable = new Runnable() {
         @Override

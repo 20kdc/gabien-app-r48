@@ -62,7 +62,7 @@ public class UITest extends UIPanel {
         masterPanel.panels.clear();
         for (int i = 0; i < navigaList.length; i++) {
             final int j = i;
-            UITextButton button = new UITextButton(i == 0, navigaList[i], new Runnable() {
+            UITextButton button = new UITextButton(i == 0 ? FontSizes.inspectorBackTextHeight : FontSizes.inspectorTextHeight, navigaList[i], new Runnable() {
                 @Override
                 public void run() {
                     if (objectList[j] == null) {

@@ -71,7 +71,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
                     String nam = "event" + evK.toString();
                     if (evI.getInstVarBySymbol("@name") != null)
                         nam = evI.getInstVarBySymbol("@name").decString();
-                    UIElement button = new UITextButton(true, nam, new Runnable() {
+                    UIElement button = new UITextButton(FontSizes.eventPickerEntryTextHeight, nam, new Runnable() {
                         @Override
                         public void run() {
                             showEvent(evK.fixnumVal, mapView.map, evI);
@@ -82,7 +82,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
                         public void run() {
                             AppMain.nextMapTool = new UIMTEventMover(evI, mapView);
                         }
-                    }, true);
+                    }, FontSizes.eventPickerEntryTextHeight);
                     button = new UIAppendButton("DEL", button, new Runnable() {
                         @Override
                         public void run() {
@@ -90,11 +90,11 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
                             mapView.passModificationNotification();
                             confirmAt(x, y, layer);
                         }
-                    }, true);
+                    }, FontSizes.eventPickerEntryTextHeight);
                     svl.panels.add(button);
                 }
         }
-        svl.panels.add(new UITextButton(true, "+ Add Event", new Runnable() {
+        svl.panels.add(new UITextButton(FontSizes.eventPickerEntryTextHeight, "+ Add Event", new Runnable() {
             @Override
             public void run() {
                 int unusedIndex = 1;

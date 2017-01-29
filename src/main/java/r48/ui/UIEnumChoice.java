@@ -27,7 +27,7 @@ public class UIEnumChoice extends UIPanel implements IWindowElement {
     public UIEnumChoice(final IConsumer<Integer> result, final HashMap<String, Integer> options, final LinkedList<String> order, String buttonText) {
         for (String key : order) {
             final int r = options.get(key);
-            uiSVL.panels.add(new UITextButton(false, key, new Runnable() {
+            uiSVL.panels.add(new UITextButton(FontSizes.enumChoiceTextHeight, key, new Runnable() {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
@@ -37,7 +37,7 @@ public class UIEnumChoice extends UIPanel implements IWindowElement {
             }));
         }
         nb = new UINumberBox(FontSizes.schemaFieldTextHeight);
-        finalSplit = new UIHHalfsplit(1, 3, nb, new UITextButton(true, buttonText, new Runnable() {
+        finalSplit = new UIHHalfsplit(1, 3, nb, new UITextButton(FontSizes.schemaButtonTextHeight, buttonText, new Runnable() {
             @Override
             public void run() {
                 if (!wantsSelfClose)

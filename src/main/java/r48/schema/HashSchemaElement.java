@@ -8,6 +8,7 @@ package r48.schema;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
+import r48.FontSizes;
 import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -56,12 +57,12 @@ public class HashSchemaElement implements ISchemaElement {
                             path.changeOccurred(false);
                             me.run();
                         }
-                    }, false));
+                    }, FontSizes.schemaButtonTextHeight));
                 }
                 // pre-emptively set up a default key workspace
                 final RubyIO rio = SchemaPath.createDefaultValue(keyElem, null);
                 UIElement workspace = keyElem.buildHoldingEditor(rio, launcher, path.otherIndex("KEY"));
-                UIHHalfsplit workspaceHS = new UIHHalfsplit(2, 3, workspace, new UITextButton(false, "Add This Key", new Runnable() {
+                UIHHalfsplit workspaceHS = new UIHHalfsplit(2, 3, workspace, new UITextButton(FontSizes.schemaButtonTextHeight, "Add This Key", new Runnable() {
                     @Override
                     public void run() {
                         if (target.getHashVal(rio) == null) {

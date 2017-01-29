@@ -6,6 +6,7 @@
 package r48.schema;
 
 import gabien.ui.*;
+import r48.FontSizes;
 import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -53,7 +54,7 @@ public class TypeChangerSchemaElement implements ISchemaElement {
                     path.changeOccurred(false);
                     initializeHoldingPanel(innerHoldingPanel, targetValue, launcher, path);
                 }
-            }, false);
+            }, FontSizes.schemaButtonTextHeight);
         }
         return holder;
     }
@@ -92,7 +93,7 @@ public class TypeChangerSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        int holdHeight = UITextButton.getRecommendedSize("", false).height;
+        int holdHeight = UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height;
         for (ISchemaElement ise : targets) {
             int nextHeight = ise.maxHoldingHeight();
             if (holdHeight < nextHeight)

@@ -6,6 +6,7 @@
 package r48.schema;
 
 import gabien.ui.*;
+import r48.FontSizes;
 import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -63,7 +64,7 @@ public class ArraySchemaElement implements ISchemaElement {
                                 path.changeOccurred(false);
                                 me.run();
                             }
-                        }, false);
+                        }, FontSizes.schemaButtonTextHeight);
                     }
                     int sz = subelems.maxHoldingHeight();
                     uie.setBounds(new Rect(0, 0, 128, sz));
@@ -76,7 +77,7 @@ public class ArraySchemaElement implements ISchemaElement {
                 if (sizeFixed != 0)
                     return;
                 final Runnable me = this;
-                uiSVL.panels.add(new UITextButton(false, "Add @ " + i, new Runnable() {
+                uiSVL.panels.add(new UITextButton(FontSizes.schemaArrayAddTextHeight, "Add @ " + i, new Runnable() {
                     @Override
                     public void run() {
                         RubyIO[] old = target.arrVal;

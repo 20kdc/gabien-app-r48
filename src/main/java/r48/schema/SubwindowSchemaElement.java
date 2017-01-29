@@ -8,6 +8,7 @@ package r48.schema;
 import gabien.ui.IFunction;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
+import r48.FontSizes;
 import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -36,7 +37,7 @@ public class SubwindowSchemaElement implements ISchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(false, nameGetter.apply(target), new Runnable() {
+        return new UITextButton(FontSizes.schemaButtonTextHeight, nameGetter.apply(target), new Runnable() {
             @Override
             public void run() {
                 launcher.switchObject(path.newWindow(heldElement, target, launcher));
@@ -46,7 +47,7 @@ public class SubwindowSchemaElement implements ISchemaElement {
 
     @Override
     public int maxHoldingHeight() {
-        return UITextButton.getRecommendedSize("", false).height;
+        return UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height;
     }
 
     @Override

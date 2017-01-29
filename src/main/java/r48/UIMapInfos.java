@@ -101,7 +101,7 @@ public class UIMapInfos extends UIPanel {
             }
             if (enableOrderHoleDebug)
                 spc = order + spc;
-            UIElement elm = new UITextButton(false, spc + k + ":" + name + " P" + parent, new Runnable() {
+            UIElement elm = new UITextButton(FontSizes.mapInfosTextHeight, spc + k + ":" + name + " P" + parent, new Runnable() {
                 @Override
                 public void run() {
                     selectedOrder = order;
@@ -120,7 +120,7 @@ public class UIMapInfos extends UIPanel {
                                     AppMain.objectDB.objectRootModified(mapInfos);
                                     rebuildList();
                                 }
-                            }, false);
+                            }, FontSizes.mapInfosTextHeight);
                         }
                 } else {
                     if (parent != 0) {
@@ -136,14 +136,14 @@ public class UIMapInfos extends UIPanel {
                                 AppMain.objectDB.objectRootModified(mapInfos);
                                 rebuildList();
                             }
-                        }, false);
+                        }, FontSizes.mapInfosTextHeight);
                     }
                     elm = new UIAppendButton("Edit Info. ", elm, new Runnable() {
                         @Override
                         public void run() {
                             AppMain.launchNonRootSchema(mapInfos, "File.MapInfos", mapInfos, "File.MapInfos", new RubyIO().setFX(k), map, "RPG::MapInfo", "M" + k);
                         }
-                    }, false);
+                    }, FontSizes.mapInfosTextHeight);
                     if (deleteConfirmation) {
                         elm = new UIAppendButton("Delete!", elm, new Runnable() {
                             @Override
@@ -159,7 +159,7 @@ public class UIMapInfos extends UIPanel {
                                 AppMain.objectDB.objectRootModified(mapInfos);
                                 rebuildList();
                             }
-                        }, false);
+                        }, FontSizes.mapInfosTextHeight);
                     } else {
                         elm = new UIAppendButton("Delete?", elm, new Runnable() {
                             @Override
@@ -167,7 +167,7 @@ public class UIMapInfos extends UIPanel {
                                 deleteConfirmation = true;
                                 rebuildList();
                             }
-                        }, false);
+                        }, FontSizes.mapInfosTextHeight);
                     }
                 }
             }
@@ -175,7 +175,7 @@ public class UIMapInfos extends UIPanel {
         }
         if (!mapSequenceInert) {
             final int fLastOrder = lastOrder;
-            uiSVL.panels.add(new UITextButton(false, "<Insert New Map>", new Runnable() {
+            uiSVL.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, "<Insert New Map>", new Runnable() {
                 @Override
                 public void run() {
                     windowMakerGetter.get().accept(new UITextPrompt("Map ID?", new IConsumer<String>() {
@@ -196,7 +196,7 @@ public class UIMapInfos extends UIPanel {
                     }));
                 }
             }));
-            uiSVL.panels.add(new UITextButton(false, "<Test Sequence Consistency>", new Runnable() {
+            uiSVL.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, "<Test Sequence Consistency>", new Runnable() {
                 @Override
                 public void run() {
                     LinkedList<Integer> orders = new LinkedList<Integer>();
