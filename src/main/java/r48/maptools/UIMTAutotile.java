@@ -45,8 +45,8 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
     public short shouldDrawAtCursor(short there, int layer, int currentLayer) {
         if (layer == currentLayer) {
             int selected = tileMaps[tabPane.tab].getSelected();
-            if (selected == (tileMaps[tabPane.tab].tileStart + 48))
-                return (short) tileMaps[tabPane.tab].tileStart;
+            if (tileMaps[tabPane.tab].selectedATB())
+                return (short) (selected - 2);
             return (short) selected;
         }
         return there;
@@ -75,6 +75,8 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         int sel = tileMaps[tabPane.tab].getSelected();
         if (tabPane.tab != 8) {
             if (tileMaps[tabPane.tab].selectedATB()) {
+                if (map.mapTable.outOfBounds(x, y))
+                    return;
                 map.mapTable.setTiletype(x, y, layer, (short) (sel - 47));
                 for (int i = -1; i < 2; i++)
                     for (int j = -1; j < 2; j++)
@@ -100,13 +102,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
     }
 
     private int getAutotileType(int x, int y, int layer, int preferred) {
-        if (x < 0)
-            return preferred;
-        if (y < 0)
-            return preferred;
-        if (x >= map.mapTable.width)
-            return preferred;
-        if (y >= map.mapTable.height)
+        if (map.mapTable.outOfBounds(x, y))
             return preferred;
         int m = map.mapTable.getTiletype(x, y, layer);
         for (int i = 0; i < atBases.length; i++)
@@ -116,7 +112,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         return -1;
     }
     private void updateAutotile(int x, int y, int layer) {
-        int myAT = getAutotileType(x, y, layer, 8);
+        int myAT = getAutotileType(x, y, layer, -1);
         if (myAT == -1)
             return;
 
