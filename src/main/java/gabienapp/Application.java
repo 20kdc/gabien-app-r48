@@ -16,10 +16,7 @@ import r48.ui.UIFontSizeConfigurator;
 import r48.ui.UIHHalfsplit;
 import r48.ui.UIScrollVertLayout;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.LinkedList;
 
 /**
@@ -82,12 +79,6 @@ public class Application {
 
             @Override
             public void newObj(int objId, final String objName) throws IOException {
-                InputStream tester = GaBIEn.getFile(objName + "/Schema.txt");
-                if (tester != null) {
-                    tester.close();
-                } else {
-                    return;
-                }
                 String status = "?";
                 if (objId == 0)
                     status = "Working";
@@ -111,7 +102,11 @@ public class Application {
                         closeHelper.accept(null);
                     }
                 });
-                gamepaks.panels.add(lastButton);
+                InputStream tester = GaBIEn.getFile(objName + "/Schema.txt");
+                if (tester != null) {
+                    gamepaks.panels.add(lastButton);
+                    tester.close();
+                }
             }
 
             @Override
@@ -122,6 +117,11 @@ public class Application {
                         rn += s + " ";
                     lastButton.Text = rn;
                 }
+                if (c == 'f')
+                    if (!new File(args[0]).exists()) {
+                        System.out.println("Can't use " + lastButton.Text + ": " + args[0] + " missing");
+                        gamepaks.panels.remove(lastButton);
+                    }
             }
         });
 

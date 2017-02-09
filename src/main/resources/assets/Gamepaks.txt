@@ -3,8 +3,11 @@
  * No warranty is provided, implied or otherwise.
 
 0: RXP
+f Data/MapInfos.rxdata
 2: RVXA
+f Data/MapInfos.rvdata2
 0: Ika
+f Pbm/Map1.pbm
 . Ikachan
 0: Sticki
-. 'Sticky Note' Test
+. 'Sticky Notes' (for testing)
