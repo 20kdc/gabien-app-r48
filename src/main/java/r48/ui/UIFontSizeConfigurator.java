@@ -16,7 +16,17 @@ import java.util.LinkedList;
  */
 public class UIFontSizeConfigurator extends UIPanel {
     private UIScrollVertLayout outerLayout;
+    private int lastFontSizerSize = -1;
     public UIFontSizeConfigurator() {
+        refreshLayout();
+        setBounds(new Rect(0, 0, 320, 200));
+    }
+
+    public void refreshLayout() {
+        if (lastFontSizerSize == FontSizes.fontSizerTextHeight)
+            return;
+        lastFontSizerSize = FontSizes.fontSizerTextHeight;
+        allElements.clear();
         outerLayout = new UIScrollVertLayout();
         final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
         final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();
@@ -25,12 +35,14 @@ public class UIFontSizeConfigurator extends UIPanel {
             public void run() {
                 for (Runnable r : doubleAll)
                     r.run();
+                refreshLayout();
             }
         }), new UITextButton(FontSizes.fontSizerTextHeight, "/2", new Runnable() {
             @Override
             public void run() {
                 for (Runnable r : halfAll)
                     r.run();
+                refreshLayout();
             }
         })));
         try {
@@ -58,6 +70,7 @@ public class UIFontSizeConfigurator extends UIPanel {
                             try {
                                 int nv = field.getInt(null) + 1;
                                 field.setInt(null, nv);
+                                refreshLayout();
                                 return Integer.toString(nv);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -72,6 +85,7 @@ public class UIFontSizeConfigurator extends UIPanel {
                                 if (nv < 1)
                                     nv = 1;
                                 field.setInt(null, nv);
+                                refreshLayout();
                                 return Integer.toString(nv);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -87,7 +101,8 @@ public class UIFontSizeConfigurator extends UIPanel {
             e.printStackTrace();
         }
         allElements.add(outerLayout);
-        setBounds(new Rect(0, 0, 320, 200));
+        Rect r = getBounds();
+        outerLayout.setBounds(new Rect(0, 0, r.width, r.height));
     }
 
     @Override

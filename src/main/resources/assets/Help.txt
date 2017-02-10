@@ -167,8 +167,13 @@ i HelpImg/need-image.png
 .
 . You are using the following version of R48:
 p 4
-I layertab.png 0 52 16 4
+I layertab.png 36 48 32 16
 p 4
+ don't show version codename "Are you a cat?"
+ . This version has the codename:
+ p 4
+ I layertab.png 0 52 36 12
+ p 4
 . This is released into the public domain.
 . No warranty is provided, implied or otherwise.
 > 0 Back to the Index.
