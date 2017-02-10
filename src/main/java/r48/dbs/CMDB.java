@@ -69,22 +69,8 @@ public class CMDB {
         int cid = (int) target.getInstVarBySymbol("@code").fixnumVal;
         if (knownCommands.containsKey(cid)) {
             RPGCommand cmd = knownCommands.get(cid);
-            String[] s = new String[cmd.paramType.size()];
             RubyIO params = target.getInstVarBySymbol("@parameters");
-            for (int i = 0; i < s.length; i++) {
-                if (params.arrVal.length <= i)
-                    continue;
-                ISchemaElement ise = cmd.getParameterSchema(i);
-                if (params.arrVal[i] == null)
-                    System.out.println("It seems CMDB.buildCodename got called on something that hasn't finished being built yet.");
-                while (ise instanceof ProxySchemaElement)
-                    ise = ((ProxySchemaElement) ise).getEntry();
-                if (ise instanceof EnumSchemaElement)
-                    s[i] = ((EnumSchemaElement) ise).viewValue((int) params.arrVal[i].fixnumVal);
-                if (s[i] == null)
-                    s[i] = params.arrVal[i].toString();
-            }
-            ext = cmd.formatName(s);
+            ext = cmd.formatName(params.arrVal);
         }
         String spc = cid + " ";
         while (spc.length() < 4)

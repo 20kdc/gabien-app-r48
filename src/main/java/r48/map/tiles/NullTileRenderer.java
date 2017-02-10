@@ -35,7 +35,7 @@ public class NullTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public String[] getPlaneNames() {
+    public String[] getPlaneNames(int layer) {
         return new String[] {
                 "Tiles Unsupported"
         };

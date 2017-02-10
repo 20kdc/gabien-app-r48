@@ -36,7 +36,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
         if (actNow) {
             actNow = false;
             // actually update
-            HashMap<String, Integer> finalMap = new HashMap<String, Integer>();
+            HashMap<Integer, String> finalMap = new HashMap<Integer, String>();
             RubyIO target = AppMain.objectDB.getObject(targ);
             if (fieldA != null)
                 target = fieldA.apply(target);
@@ -55,12 +55,12 @@ public class DictionaryUpdaterRunnable implements Runnable {
         }
     }
 
-    private void handleVal(HashMap<String, Integer> finalMap, RubyIO rio, int fixnumVal) {
+    private void handleVal(HashMap<Integer, String> finalMap, RubyIO rio, int fixnumVal) {
         if (rio.type != '0') {
             if (iVar == null) {
-                finalMap.put(fixnumVal + ":" + rio.decString(), fixnumVal);
+                finalMap.put(fixnumVal, rio.decString());
             } else {
-                finalMap.put(fixnumVal + ":" + rio.getInstVarBySymbol(iVar).decString(), fixnumVal);
+                finalMap.put(fixnumVal, rio.getInstVarBySymbol(iVar).decString());
             }
         }
     }

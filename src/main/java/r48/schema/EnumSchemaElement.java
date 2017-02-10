@@ -24,16 +24,20 @@ import java.util.Map;
  * Created on 12/30/16.
  */
 public class EnumSchemaElement implements ISchemaElement {
-    public HashMap<String, Integer> options;
+    public HashMap<Integer, String> options;
+    public HashMap<String, Integer> viewOptions;
     public String buttonText;
-    public EnumSchemaElement(HashMap<String, Integer> o, String bt) {
+    public EnumSchemaElement(HashMap<Integer, String> o, String bt) {
         options = o;
+        viewOptions = new HashMap<String, Integer>();
+        for (Integer si : options.keySet())
+            viewOptions.put(viewValue(si, true), si);
         buttonText = bt;
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(FontSizes.schemaButtonTextHeight, viewValue((int) target.fixnumVal), new Runnable() {
+        return new UITextButton(FontSizes.schemaButtonTextHeight, viewValue((int) target.fixnumVal, true), new Runnable() {
             @Override
             public void run() {
                 launcher.switchObject(path.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<Integer>() {
@@ -44,17 +48,18 @@ public class EnumSchemaElement implements ISchemaElement {
                         // Enums can affect parent format, so deal with that now.
                         launcher.switchObject(path.findBack());
                     }
-                }, options, buttonText), path), target, launcher));
+                }, viewOptions, buttonText), path), target, launcher));
             }
         });
     }
 
-    public String viewValue(int fixnumVal) {
-        for (Map.Entry<String, Integer> e : options.entrySet()) {
-            if (e.getValue() == fixnumVal)
-                return e.getKey();
-        }
-        return "int: " + fixnumVal;
+    public String viewValue(int fixnumVal, boolean prefix) {
+        String st = options.get(fixnumVal);
+        if (st == null)
+            return "int:" + fixnumVal;
+        if (!prefix)
+            return st;
+        return fixnumVal + ":" + st;
     }
 
     @Override
@@ -65,7 +70,7 @@ public class EnumSchemaElement implements ISchemaElement {
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (IntegerSchemaElement.ensureType(target, 'i', setDefault)) {
-            target.fixnumVal = options.values().iterator().next();
+            target.fixnumVal = options.keySet().iterator().next();
             path.changeOccurred(true);
         }
     }

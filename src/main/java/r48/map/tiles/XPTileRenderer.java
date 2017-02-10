@@ -131,7 +131,7 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public String[] getPlaneNames() {
+    public String[] getPlaneNames(int layer) {
         return new String[] {
                 "NULL",
                 "A1",

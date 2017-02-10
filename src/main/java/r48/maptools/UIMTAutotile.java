@@ -19,25 +19,39 @@ import r48.ui.UITileGrid;
  * Created on 12/29/16.
  */
 public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
-    private final UITabPane tabPane;
-    private final UITileGrid[] tileMaps;
+    private UITabPane tabPane;
+    private UITileGrid[] tileMaps;
     private final UIMapView map;
-    private final int[] atBases;
+    private int[] atBases;
+    private int lastSelectedLayer = 0;
 
     public UIMTAutotile(UIMapView mv) {
         map = mv;
-        // may not be right at all, work on this!
-        tileMaps = AppMain.stuffRenderer.tileRenderer.createATUIPlanes(mv);
-        tabPane = new UITabPane(AppMain.stuffRenderer.tileRenderer.getPlaneNames(), tileMaps, FontSizes.tabTextHeight);
+        setupView();
+        setBounds(new Rect(0, 0, 320, 200));
+    }
+
+    private void setupView() {
+        allElements.clear();
+        int layer = map.getCurrentLayer();
+        tileMaps = AppMain.stuffRenderer.tileRenderer.createATUIPlanes(map);
+        tabPane = new UITabPane(AppMain.stuffRenderer.tileRenderer.getPlaneNames(layer), tileMaps, FontSizes.tabTextHeight);
         atBases = AppMain.stuffRenderer.tileRenderer.indicateATs();
         allElements.add(tabPane);
-        setBounds(new Rect(0, 0, 320, 200));
+        lastSelectedLayer = layer;
     }
 
     @Override
     public void setBounds(Rect r) {
         super.setBounds(r);
         tabPane.setBounds(new Rect(0, 0, r.width, r.height));
+    }
+
+    @Override
+    public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
+        if (lastSelectedLayer != map.getCurrentLayer())
+            setupView();
+        super.updateAndRender(ox, oy, deltaTime, select, igd);
     }
 
     // -- Tool stuff --

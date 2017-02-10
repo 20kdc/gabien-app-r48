@@ -21,8 +21,10 @@ public class DBLoader {
                 String[] ll = l.substring(1).trim().split(" ");
                 if (cmd >= '0')
                     if (cmd <= '9') {
-                        String[] ll2 = l.split(":");
-                        db.newObj(Integer.parseInt(ll2[0]), ll2[1].trim());
+                        int a = l.indexOf(':');
+                        if (a == -1)
+                            throw new RuntimeException("Bad DB entry");
+                        db.newObj(Integer.parseInt(l.substring(0, a)), l.substring(a + 1).trim());
                         continue;
                     }
                 db.execCmd(cmd, ll);
