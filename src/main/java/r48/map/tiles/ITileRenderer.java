@@ -20,7 +20,7 @@ public interface ITileRenderer {
 
     UITileGrid[] createATUIPlanes(UIMapView mv);
 
-    String[] getPlaneNames();
+    String[] getPlaneNames(int layer);
 
     int[] indicateATs();
 }

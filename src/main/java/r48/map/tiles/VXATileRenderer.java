@@ -168,17 +168,41 @@ public class VXATileRenderer implements ITileRenderer {
 
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv) {
-        return new UITileGrid[] {
-                new UITileGrid(mv, 0x67F, 1, false),
-                new UITileGrid(mv, 0x000, 0x400, false),
-                new UITileGrid(mv, 0x600, 0x7F, false),
-                new UITileGrid(mv, 0x800, 0x300, true),
-                new UITileGrid(mv, 0xB00, 0x600, true),
-        };
+        if (mv.getCurrentLayer() == 3) {
+            return new UITileGrid[] {
+                    new UITileGrid(mv, 0x000, 0x100, false),
+                    new UITileGrid(mv, 0x100, 0x100, false),
+                    new UITileGrid(mv, 0x200, 0x100, false),
+                    new UITileGrid(mv, 0x300, 0x100, false),
+                    new UITileGrid(mv, 0x400, 0x100, false),
+                    new UITileGrid(mv, 0x500, 0x100, false),
+                    new UITileGrid(mv, 0x600, 0x100, false),
+                    new UITileGrid(mv, 0x700, 0x100, false),
+            };
+        } else {
+            return new UITileGrid[] {
+                    new UITileGrid(mv, 0x67F, 1, false),
+                    new UITileGrid(mv, 0x000, 0x400, false),
+                    new UITileGrid(mv, 0x600, 0x7F, false),
+                    new UITileGrid(mv, 0x800, 0x300, true),
+                    new UITileGrid(mv, 0xB00, 0x600, true),
+            };
+        }
     }
 
     @Override
-    public String[] getPlaneNames() {
+    public String[] getPlaneNames(int layer) {
+        if (layer == 3)
+            return new String[] {
+                    "R0",
+                    "R1",
+                    "R2",
+                    "R3",
+                    "R4",
+                    "R5",
+                    "R6",
+                    "R7",
+            };
         return new String[] {
                 "NIL",
                 "pABCD",

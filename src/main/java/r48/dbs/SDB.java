@@ -221,19 +221,19 @@ public class SDB {
                 if (c == '>')
                     setSDBEntry(args[0], handleChain(args, 1));
                 if (c == 'e') {
-                    HashMap<String, Integer> options = new HashMap<String, Integer>();
+                    HashMap<Integer, String> options = new HashMap<Integer, String>();
                     for (int i = 1; i < args.length; i += 2) {
                         int k = Integer.parseInt(args[i]);
-                        options.put(k + ":" + args[i + 1], k);
+                        options.put(k, args[i + 1]);
                     }
                     EnumSchemaElement e = new EnumSchemaElement(options, "Integer");
                     setSDBEntry(args[0], e);
                 }
                 if (c == 'E') {
-                    HashMap<String, Integer> options = new HashMap<String, Integer>();
+                    HashMap<Integer, String> options = new HashMap<Integer, String>();
                     for (int i = 2; i < args.length; i += 2) {
                         int k = Integer.parseInt(args[i]);
-                        options.put(k + ":" + args[i + 1], k);
+                        options.put(k, args[i + 1]);
                     }
                     EnumSchemaElement e = new EnumSchemaElement(options, args[1]);
                     setSDBEntry(args[0], e);
