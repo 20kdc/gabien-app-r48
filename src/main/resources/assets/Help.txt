@@ -126,13 +126,18 @@ i HelpImg/9.usage.png
 > 7 Back to the Map Tools.
 
 11: Event Editing Details
-i HelpImg/need-image.png
-. This still needs work.
-. Furthermore, it is game-dependent.
-. For Ikachan, the properties aren't well-described enough anyway, so work them out from comparison.
-. For RGSS-based systems, the properties are rather complicated and include their own sub-scripting language.
-. Assuming there are schemas for all the commands (RVXA users take note), you should be able to use them by looking at the Ruby interpreter scripts as documentation.
+. Before I note anything else, this depends on the game.
+. However, all events have two fields in common: @x and @y.
+. These fields are used to specify the position of the event in the map.
+. No matter how the specific engine does things, the toolset relies on these fields being in place.
+.
+. The general structure of objects should always be kept in mind when editing.
 > 12 Object Editing Details
+.
+. Game-specific documentation files:
+> 13 Ikachan Events
+> 14 RGSS (RXP, RVXA) Events Overview
+. Assuming there are schemas for all the commands (RVXA users take note), you should be able to use them by looking at the Ruby interpreter scripts as documentation.
 > 9 Back to the Event List guide.
 
 12: Object Editing Details
@@ -162,6 +167,65 @@ i HelpImg/need-image.png
 . Thirdly, if an object ends with a bunch of one-letter buttons, this means it can be one of several types, and clicking those buttons resets it with a type.
 .
 . I hope this is enough information to work with.
+.
+> 11 Event Editing Details
+> 4 System Objects
+
+13: Ikachan Events
+. There is only one thing to note about Ikachan events:
+. Ikachan events are best learned by experimentation, as the meanings of, say, the target offset parameters, aren't consistent between NPC types.
+> 11 Event Editing Details
+
+14: RGSS Events (Overview)
+. RGSS, or the 'Ruby Game Scripting System', is. in essence a generic 2D game engine that uses Ruby.
+. Nothing much about it - it leaves a lot up to the Ruby scripts, short of some tilemap rendering details and such.
+. In practice, RPG Maker itself follows specific patterns, and for users, these patterns are law.
+.
+. Firstly, @name is a useless field.
+. @id is just a reference to the parent ID and cannot be used.
+. @x and @y are the position.
+. @pages is the array of pages - each page is a possible state for the event to be in.
+.
+. A page has, among other things:
+. A @condition, which specifies when this page should be shown.
+. I am unsure which page "wins" if more than one is valid - I would presume it is the last.
+. A @through flag, which specifies if the event can be walked through.
+. A @move_route, which specifies the sequence of movements the event performs in this page.
+> 15 RGSS Events (Moveroutes)
+. A @move_type, @move_frequency and @move_speed, which specify how the event moves.
+. @step_anime and @walk_anime flags, which enable/disable step/walk animations.
+. A @priority_type, which sets a setting I don't quite understand. (VXA)
+. A @direction_fix flag - if true, the event will NOT face towards the player on interaction.
+. A @trigger, dictating what causes the page code to execute.
+> 16 A @list of commands.
+> 17 A @graphic to show the event in-world.
+> 11 Index Page Of Event Editing Details
+
+15: RGSS Events (Moveroutes)
+. Like EventCommands, except without indentation.
+> 14 Back to RGSS Events (Overview)
+
+16: RGSS Events (EventCommands)
+. EventCommands are the bread and butter of how you actually write any dialogue into a RPG Maker game.
+. They also change so much between versions that to describe them all in here would be ridiculously complicated.
+. You'll just have to guess.
+.
+. To change the type, click on the command, then click on the command type at the top.
+.
+. A consistent thing to note is that "MoveRoute Editor Helper NOP" or such are absolutely ignored in-game.
+. The 'Insert Point' is also ignored in-game.
+.
+> 14 Back to RGSS Events (Overview)
+
+17: RGSS Events (Graphics)
+. Graphics are used to display an Event in the world.
+. Interestingly, RVXA has less features than RXP in this regard - it has no support for hue modulation.
+. Graphics have a @pattern, indicating the X position within the event.
+. Graphics have a @tile_id, which should be 0 unless you want the graphic to be from the map tileset.
+. Graphics have a @direction, which indicates the direction of the event. (This is linked to the Y position.)
+. Finally, graphics have a @character_name (and @character_index or @character_hue depending on version).
+. This specifies the actual image to get the character from.
+> 14 Back to RGSS Events (Overview)
 
 999: License
 .
@@ -169,11 +233,13 @@ i HelpImg/need-image.png
 p 4
 I layertab.png 36 48 32 16
 p 4
+
  don't show version codename "Are you a cat?"
  . This version has the codename:
  p 4
  I layertab.png 0 52 36 12
  p 4
+
 . This is released into the public domain.
 . No warranty is provided, implied or otherwise.
 > 0 Back to the Index.
