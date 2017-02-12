@@ -48,8 +48,9 @@ public class StuffRenderer {
     private static RubyIO tsoFromMap(RubyIO map) {
         RubyIO tileset = null;
         int tid = (int) map.getInstVarBySymbol("@tileset_id").fixnumVal;
-        if ((tid >= 0) && (tid < AppMain.tilesets.arrVal.length))
-            tileset = AppMain.tilesets.arrVal[tid];
+        RubyIO tilesets = AppMain.objectDB.getObject("Tilesets");
+        if ((tid >= 0) && (tid < tilesets.arrVal.length))
+            tileset = tilesets.arrVal[tid];
         if (tileset != null)
             if (tileset.type == '0')
                 tileset = null;

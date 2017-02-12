@@ -25,6 +25,7 @@ public class UIMapInfos extends UIPanel {
     public static boolean mapSequenceInert = false;
     private final RubyIO mapInfos;
     private final ISupplier<IConsumer<UIElement>> windowMakerGetter;
+    private final IConsumer<Integer> mapLoader;
     private UIScrollVertLayout uiSVL;
     private int selectedOrder = 0;
     private boolean deleteConfirmation = false;
@@ -36,9 +37,10 @@ public class UIMapInfos extends UIPanel {
         }
     };
 
-    public UIMapInfos(ISupplier<IConsumer<UIElement>> wmg) {
+    public UIMapInfos(ISupplier<IConsumer<UIElement>> wmg, IConsumer<Integer> ml) {
         mapInfos = AppMain.objectDB.getObject("MapInfos");
         windowMakerGetter = wmg;
+        mapLoader = ml;
         uiSVL = new UIScrollVertLayout();
         rebuildList();
         allElements.add(uiSVL);
@@ -105,7 +107,7 @@ public class UIMapInfos extends UIPanel {
                 @Override
                 public void run() {
                     selectedOrder = order;
-                    AppMain.loadMap(k);
+                    mapLoader.accept(k);
                     rebuildList();
                 }
             });
