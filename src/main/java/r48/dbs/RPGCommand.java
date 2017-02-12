@@ -132,13 +132,13 @@ public class RPGCommand {
                         disables++;
                         continue;
                     }
-                    wantedVal = interpretParameter(parameters[pidB], parameterSchemas[pidB], true);
+                    wantedVal = interpretParameter(parameters[pidB], getParameterSchemaFromArray(parameterSchemas, pidB), true);
                     prefixComparisonVar = true;
                 }
                 if (parameters.length <= pidA) {
                     disables++;
                 } else {
-                    if (!interpretParameter(parameters[pidA], parameterSchemas[pidA], prefixComparisonVar).equals(wantedVal))
+                    if (!interpretParameter(parameters[pidA], getParameterSchemaFromArray(parameterSchemas, pidA), prefixComparisonVar).equals(wantedVal))
                         disables++;
                 }
             } else if (data[i] == '|') {
@@ -151,7 +151,7 @@ public class RPGCommand {
                 if (disables > 0)
                     disables--;
             } else if (data[i] == '@') {
-                if (disables > 0)
+                if (disables == 0)
                     prefixNext = true;
             } else if (data[i] == '[') {
                 if (disables > 0)
@@ -160,11 +160,10 @@ public class RPGCommand {
                 String type = "";
                 while (data[++i] != ']')
                     type += data[i];
-                i++;
                 int ss = type.indexOf('@');
                 if (parameters != null) {
                     if (ss != 0) {
-                        RubyIO p = parameters[data[i] - 'A'];
+                        RubyIO p = parameters[data[++i] - 'A'];
                         ISchemaElement ise = AppMain.schemas.getSDBEntry(type);
                         r += interpretParameter(p, ise, prefixNext);
                     } else {
@@ -178,7 +177,7 @@ public class RPGCommand {
                 if (parameters != null)
                     if (disables == 0) {
                         int pid = data[++i] - 'A';
-                        r += interpretParameter(parameters[pid], parameterSchemas[pid], prefixNext);
+                        r += interpretParameter(parameters[pid], getParameterSchemaFromArray(parameterSchemas, pid), prefixNext);
                         prefixNext = false;
                     }
             } else {
@@ -187,6 +186,14 @@ public class RPGCommand {
             }
         }
         return r;
+    }
+
+    public static ISchemaElement getParameterSchemaFromArray(ISchemaElement[] ise, int i) {
+        if (ise == null)
+            return AppMain.schemas.getSDBEntry("genericScriptParameter");
+        if (ise.length <= i)
+            return AppMain.schemas.getSDBEntry("genericScriptParameter");
+        return ise[i];
     }
 
     public ISchemaElement getParameterSchema(int i) {

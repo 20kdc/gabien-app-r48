@@ -95,7 +95,7 @@ public class AppMain {
         // initialize everything else that needs initializing, starting with ObjectDB
 
         if (odbBackend.equals("r48")) {
-            objectDB = new ObjectDB(new R48ObjectBackend(rootPath + dataPath, dataExt));
+            objectDB = new ObjectDB(new R48ObjectBackend(rootPath + dataPath, dataExt, true));
         } else if (odbBackend.equals("ika")) {
             objectDB = new ObjectDB(new IkaObjectBackend(rootPath));
         } else {
@@ -445,7 +445,9 @@ public class AppMain {
                 uis.onLoad = new Runnable() {
                     @Override
                     public void run() {
-                        topbar.setBounds(topbar.getBounds());
+                        Rect b = topbar.getBounds();
+                        topbar.setBounds(new Rect(0, 0, 16, 16));
+                        topbar.setBounds(b);
                     }
                 };
                 uis.loadPage(0);

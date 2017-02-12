@@ -34,10 +34,11 @@ public class UIScrollVertLayout extends UIPanel {
         for (UIElement p : panels)
             scrollLength += p.getBounds().height;
         useScissoring = true;
+        layoutScrollbounds();
     }
 
-    @Override
-    public void updateAndRender(int ox, int oy, double DeltaTime, boolean select, IGrInDriver igd) {
+    // Lays out the elements with the current parameters.
+    private void layoutScrollbounds() {
         allElements.clear();
         Rect bounds = getBounds();
         int scrollHeight = scrollLength - bounds.height;
@@ -61,6 +62,11 @@ public class UIScrollVertLayout extends UIPanel {
                 continue;
             allElements.add(p);
         }
+    }
+
+    @Override
+    public void updateAndRender(int ox, int oy, double DeltaTime, boolean select, IGrInDriver igd) {
+        layoutScrollbounds();
         super.updateAndRender(ox, oy, DeltaTime, select, igd);
     }
 
