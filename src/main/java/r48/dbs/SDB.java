@@ -43,6 +43,7 @@ public class SDB {
     private LinkedList<DictionaryUpdaterRunnable> dictionaryUpdaterRunnables = new LinkedList<DictionaryUpdaterRunnable>();
     private LinkedList<String> remainingExpected = new LinkedList<String>();
     private HashMap<String, CMDB> cmdbs = new HashMap<String, CMDB>();
+    public HashMap<String, IFunction<RubyIO, String>> nameDB = new HashMap<String, IFunction<RubyIO, String>>();
 
     public SDB() {
         schemaDatabase.put("nil", new OpaqueSchemaElement());
@@ -202,7 +203,7 @@ public class SDB {
             }
 
             @Override
-            public void execCmd(char c, String[] args) throws IOException {
+            public void execCmd(char c, final String[] args) throws IOException {
                 if (c == 'a')
                     if (!schemaDatabase.containsKey(args[0]))
                         throw new RuntimeException("Bad Schema Database: 'a' used to expect item " + args[0] + " that didn't exist.");
@@ -295,6 +296,44 @@ public class SDB {
                         UIMapInfos.mapSequenceInert = true;
                     if (args[0].equals("versionId"))
                         StuffRenderer.versionId = args[1];
+                    if (args[0].equals("name")) {
+                        final LinkedList<String> arguments = new LinkedList<String>();
+                        String text = "";
+                        boolean nextState = false;
+                        for (int i = 2; i < args.length; i++) {
+                            if (nextState) {
+                                if (text.length() > 0)
+                                    text += " ";
+                                text += args[i];
+                            } else {
+                                if (!args[i].equals("|")) {
+                                    arguments.add(args[i]);
+                                } else {
+                                    nextState = true;
+                                }
+                            }
+                        }
+                        final String textF = text;
+
+                        nameDB.put(args[1], new IFunction<RubyIO, String>() {
+                            @Override
+                            public String apply(RubyIO rubyIO) {
+                                RubyIO[] params = new RubyIO[arguments.size()];
+                                for (int i = 0; i < params.length; i++) {
+                                    RubyIO res = null;
+                                    String arg = arguments.get(i);
+                                    if (arg.equals("$"))
+                                        res = rubyIO;
+                                    if (arg.startsWith("@"))
+                                        res = rubyIO.getInstVarBySymbol(arg);
+                                    if (arg.startsWith("]"))
+                                        res = rubyIO.arrVal[Integer.parseInt(arg.substring(1))];
+                                    params[i] = res;
+                                }
+                                return RPGCommand.formatNameExtended(textF, rubyIO, params, null);
+                            }
+                        });
+                    }
                 }
             }
         });

@@ -70,7 +70,7 @@ public class CMDB {
         if (knownCommands.containsKey(cid)) {
             RPGCommand cmd = knownCommands.get(cid);
             RubyIO params = target.getInstVarBySymbol("@parameters");
-            ext = cmd.formatName(params.arrVal);
+            ext = cmd.formatName(params, params.arrVal);
         }
         String spc = cid + " ";
         while (spc.length() < 4)
