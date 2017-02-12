@@ -204,24 +204,22 @@ public class SDB {
 
             @Override
             public void execCmd(char c, final String[] args) throws IOException {
-                if (c == 'a')
+                if (c == 'a') {
                     if (!schemaDatabase.containsKey(args[0]))
                         throw new RuntimeException("Bad Schema Database: 'a' used to expect item " + args[0] + " that didn't exist.");
-                if (c == ':') {
+                } else if (c == ':') {
                     workingObj = new AggregateSchemaElement(new ISchemaElement[]{});
                     setSDBEntry(args[0], new ObjectClassSchemaElement(args[0], workingObj, 'o'));
-                }
-                if (c == '.') {
+                } else if (c == '.') {
                     workingObj = new AggregateSchemaElement(new ISchemaElement[]{});
                     setSDBEntry(args[0], workingObj);
-                }
-                if (c == '@')
+                } else if (c == '@') {
                     workingObj.aggregate.add(new IVarSchemaElement("@" + args[0], handleChain(args, 1)));
-                if (c == '+')
+                } else if (c == '+') {
                     workingObj.aggregate.add(handleChain(args, 0));
-                if (c == '>')
+                } else if (c == '>') {
                     setSDBEntry(args[0], handleChain(args, 1));
-                if (c == 'e') {
+                } else if (c == 'e') {
                     HashMap<Integer, String> options = new HashMap<Integer, String>();
                     for (int i = 1; i < args.length; i += 2) {
                         int k = Integer.parseInt(args[i]);
@@ -229,8 +227,7 @@ public class SDB {
                     }
                     EnumSchemaElement e = new EnumSchemaElement(options, "Integer");
                     setSDBEntry(args[0], e);
-                }
-                if (c == 'E') {
+                } else if (c == 'E') {
                     HashMap<Integer, String> options = new HashMap<Integer, String>();
                     for (int i = 2; i < args.length; i += 2) {
                         int k = Integer.parseInt(args[i]);
@@ -238,20 +235,19 @@ public class SDB {
                     }
                     EnumSchemaElement e = new EnumSchemaElement(options, args[1]);
                     setSDBEntry(args[0], e);
-                }
-                if (c == ']')
+                } else if (c == ']') {
                     workingObj.aggregate.add(new ArrayElementSchemaElement(Integer.parseInt(args[0]), args[1], handleChain(args, 2)));
-                if (c == 'i') {
+                } else if (c == 'i') {
                     try {
-                        System.out.println("Including " + args[0]);
+                        System.out.println(">>" + args[0]);
                         readFile(new BufferedReader(new InputStreamReader(GaBIEn.getFile(args[0]))));
+                        System.out.println("<<" + args[0]);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
-                if (c == 'D')
+                } else if (c == 'D') {
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[1], null, args[2].equals("1"), args[3]));
-                if (c == 'd') {
+                } else if (c == 'd') {
                     final String a2 = args[2];
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[1], new IFunction<RubyIO, RubyIO>() {
                         @Override
@@ -259,8 +255,7 @@ public class SDB {
                             return rubyIO.getInstVarBySymbol(a2);
                         }
                     }, false, null));
-                }
-                if (c == 'A') {
+                } else if (c == 'A') {
                     // This is needed so the engine actually understands which autotiles map to what
                     InputStreamReader fr = new InputStreamReader(GaBIEn.getFile(args[0]));
                     AppMain.autoTiles = new ATDB(new BufferedReader(fr));
@@ -274,8 +269,7 @@ public class SDB {
                         AppMain.autoTiles.calculateInverseMap(new BufferedReader(fr));
                         fr.close();
                     }
-                }
-                if (c == 'C') {
+                } else if (c == 'C') {
                     if (args[0].equals("allowIndentControl"))
                         allowControlOfEventCommandIndent = true;
                     if (args[0].equals("defineIndent")) {
@@ -334,6 +328,12 @@ public class SDB {
                             }
                         });
                     }
+                } else if (c == ' ') {
+                    // Comment
+                } else {
+                    for (int i = 0; i < args.length; i++)
+                        System.err.print(args[i] + " ");
+                    System.err.println("(The command " + c + " in the SDB is not supported.)");
                 }
             }
         });
