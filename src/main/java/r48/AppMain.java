@@ -20,6 +20,9 @@ import r48.schema.ISchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
+import r48.toolsets.IToolset;
+import r48.toolsets.MapToolset;
+import r48.toolsets.RMToolsToolset;
 import r48.ui.*;
 
 import java.io.*;
@@ -51,11 +54,6 @@ public class AppMain {
     // Where new windows go
     private static IConsumer<UIElement> windowMaker;
 
-    // mapBox creates the stuffRenderer,
-    //  and lots of rendering logic is there rather than in mapBox,
-    //  so it's easy enough to pass a tileset and give yourself an alternative rendering context.
-    // Or, as I'm intending, have the ISchemaHost hold the StuffRenderer from the correct context.
-    private static UIMapViewContainer mapBox;
     private static UILabel uiStatusLabel;
 
     public static StuffRenderer stuffRenderer;
@@ -68,14 +66,12 @@ public class AppMain {
     public static String odbBackend = "<you forgot to select a backend>";
 
     public static ObjectDB objectDB = null;
-    // rootPath must be above the others
-    // 053: Cafe
-    public static RubyIO tilesets = null;
 
     // Databases
     public static ATDB autoTiles = null;
     public static SDB schemas = null;
 
+    // State for in-system copy/paste
     public static RubyIO theClipboard = null;
 
     // Images
@@ -108,8 +104,6 @@ public class AppMain {
 
         schemas.updateDictionaries();
         schemas.confirmAllExpectationsMet();
-
-        tilesets = objectDB.getObject("Tilesets");
     }
 
     public static IConsumer<Double> initializeAndRun(final IConsumer<UIElement> uiTicker) {
@@ -140,164 +134,41 @@ public class AppMain {
     }
 
     private static UITabPane initializeTabs(final UIWindowView rootView, final IConsumer<UIElement> uiTicker) {
+        LinkedList<String> tabNames = new LinkedList<String>();
+        LinkedList<UIElement> tabElems = new LinkedList<UIElement>();
+
+        LinkedList<IToolset> toolsets = new LinkedList<IToolset>();
+        // Until a future time, this is hard-coded as the classname of a map being created via MapInfos.
+        // Probably simple enough to create a special alias, but meh.
+        if (AppMain.schemas.hasSDBEntry("RPG::Map"))
+            toolsets.add(new MapToolset());
+        try {
+            toolsets.add(new RMToolsToolset());
+        } catch (Exception e) {
+            System.err.println("RMTools are missing!");
+            e.printStackTrace();
+        }
+
+        // Initialize toolsets.
         ISupplier<IConsumer<UIElement>> wmg = new ISupplier<IConsumer<UIElement>>() {
             @Override
             public IConsumer<UIElement> get() {
                 return windowMaker;
             }
         };
-        LinkedList<String> tabNames = new LinkedList<String>();
-        LinkedList<UIElement> tabElems = new LinkedList<UIElement>();
-
-        // Try to find out if this is a glorified sticky note editor,
-        //  or if it's been configured correctly.
-        try {
-
-            // Note: ensure the things a tab depends on exist and won't error before the tab itself is put in.
-            // At the first exception, this bails out.
-            mapBox = new UIMapViewContainer(wmg);
-            UIMapInfos mapInfoEl = new UIMapInfos(wmg);
-            tabNames.add("Map");
-            tabElems.add(mapBox);
-            tabNames.add("MapInfos");
-            tabElems.add(mapInfoEl);
-
-            final CMDB commandsEvent = schemas.getCMDB("R" + StuffRenderer.versionId + "/Commands.txt");
-            final ISchemaElement commandEvent = schemas.getSDBEntry("EventCommandEditor");
-
-            tabNames.add("Tools");
-            tabElems.add(new UIPopupMenu(new String[]{
-                    "Locate EventCommand in all Pages",
-                    "See If Autocorrect Modifies Anything",
-                    // 3:24 PM, third day of 2017.
-                    // This is now a viable option.
-                    // 3:37 PM, same day.
-                    // All EventCommands found in the maps of the test subject seem completed.
-                    // Still need to see to the CommonEvents.
-                    // next day, um, these tools aren't really doable post-further-modularization (stickynote)
-                    // 5th January 2017. Here we go.
-                    "Locate incomplete ECs",
-                    "Locate incomplete ECs (CommonEvents)",
-                    "Run EC Creation Sanity Check",
-            }, new Runnable[]{
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            windowMaker.accept(new UITextPrompt("Code?", new IConsumer<String>() {
-                                @Override
-                                public void accept(String s) {
-                                    int i = Integer.parseInt(s);
-                                    for (RubyIO rio : objectDB.getObject("MapInfos").hashVal.keySet()) {
-                                        RubyIO map = objectDB.getObject(UIMapView.getMapName((int) rio.fixnumVal));
-                                        // Find event!
-                                        for (RubyIO event : map.getInstVarBySymbol("@events").hashVal.values()) {
-                                            for (RubyIO page : event.getInstVarBySymbol("@pages").arrVal) {
-                                                for (RubyIO cmd : page.getInstVarBySymbol("@list").arrVal) {
-                                                    if (cmd.getInstVarBySymbol("@code").fixnumVal == i) {
-                                                        UIMTEventPicker.showEvent(event.getInstVarBySymbol("@id").fixnumVal, map, event);
-                                                        return;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    launchDialog("nnnope");
-                                }
-                            }));
-                        }
-                    },
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            LinkedList<String> objects = new LinkedList<String>();
-                            LinkedList<String> objectSchemas = new LinkedList<String>();
-                            for (String s : schemas.listFileDefs()) {
-                                objects.add(s);
-                                objectSchemas.add("File." + s);
-                            }
-                            for (RubyIO rio : objectDB.getObject("MapInfos").hashVal.keySet()) {
-                                objects.add(UIMapView.getMapName((int) rio.fixnumVal));
-                                objectSchemas.add("RPG::Map");
-                            }
-                            Iterator<String> schemaIt = objectSchemas.iterator();
-                            for (final String obj : objects) {
-                                RubyIO map = objectDB.getObject(obj);
-                                Runnable modListen = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        // yup, and throw an exception to give the user an idea of the tree
-                                        throw new RuntimeException("MODIFY" + obj);
-                                    }
-                                };
-                                objectDB.registerModificationHandler(map, modListen);
-                                SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(schemaIt.next()), map, null);
-                                sp.editor.modifyVal(map, sp, false);
-                                objectDB.deregisterModificationHandler(map, modListen);
-                            }
-                            launchDialog("nnnope");
-                        }
-                    },
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            for (RubyIO rio : objectDB.getObject("MapInfos").hashVal.keySet()) {
-                                RubyIO map = objectDB.getObject(UIMapView.getMapName((int) rio.fixnumVal));
-                                // Find event!
-                                for (RubyIO event : map.getInstVarBySymbol("@events").hashVal.values()) {
-                                    for (RubyIO page : event.getInstVarBySymbol("@pages").arrVal) {
-                                        for (RubyIO cmd : page.getInstVarBySymbol("@list").arrVal) {
-                                            if (!commandsEvent.knownCommands.containsKey((int) cmd.getInstVarBySymbol("@code").fixnumVal)) {
-                                                System.out.println(cmd.getInstVarBySymbol("@code").fixnumVal);
-                                                UIMTEventPicker.showEvent(event.getInstVarBySymbol("@id").fixnumVal, map, event);
-                                                return;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            launchDialog("nnnope");
-                        }
-                    },
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            for (RubyIO rio : objectDB.getObject("CommonEvents").arrVal) {
-                                if (rio.type != '0') {
-                                    for (RubyIO cmd : rio.getInstVarBySymbol("@list").arrVal) {
-                                        if (!commandsEvent.knownCommands.containsKey((int) cmd.getInstVarBySymbol("@code").fixnumVal)) {
-                                            System.out.println(rio.getInstVarBySymbol("@id").fixnumVal);
-                                            System.out.println(cmd.getInstVarBySymbol("@code").fixnumVal);
-                                            launchDialog("yup (chk.console)");
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
-                            launchDialog("nnnope");
-                        }
-                    },
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            // This won't deal with the really complicated disambiguator events, but it's something.
-                            for (int cc : commandsEvent.knownCommands.keySet()) {
-                                RubyIO r = SchemaPath.createDefaultValue(commandEvent, new RubyIO().setFX(0));
-                                SchemaPath sp = new SchemaPath(commandEvent, r, null).arrayHashIndex(new RubyIO().setFX(0), "BLAH");
-                                // this is bad, but it works well enough
-                                r.getInstVarBySymbol("@code").fixnumVal = cc;
-                                commandEvent.modifyVal(r, sp, false);
-                            }
-                        }
-                    }
-            }, FontSizes.menuTextHeight, false));
-        } catch (Exception e) {
-            System.err.println("Can't use MapInfos & such");
-            e.printStackTrace();
+        for (IToolset its : toolsets) {
+            String[] tabs = its.tabNames();
+            UIElement[] tabContents = its.generateTabs(wmg);
+            for (int i = 0; i < tabs.length; i++) {
+                tabNames.add(tabs[i]);
+                tabElems.add(tabContents[i]);
+            }
         }
-        tabNames.add("System Objects");
-        tabElems.add(makeFileList());
+
         tabNames.add("ObjectDB Monitor");
         tabElems.add(new UIObjectDBMonitor());
+        tabNames.add("System Objects");
+        tabElems.add(makeFileList());
         tabNames.add("System Tools");
         tabElems.add(new UIPopupMenu(new String[] {
                 "Edit Object",
@@ -494,10 +365,6 @@ public class AppMain {
         sp = sp.arrayHashIndex(arrayIndex, indexText);
         shi.switchObject(sp.newWindow(AppMain.schemas.getSDBEntry(elementSchema), element, shi));
         return shi;
-    }
-
-    public static void loadMap(int k) {
-        mapBox.loadMap(k);
     }
 
     public static void launchDialog(String s) {
