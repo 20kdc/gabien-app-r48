@@ -30,8 +30,11 @@ public class UINSVertLayout extends UIPanel {
     @Override
     public void setBounds(Rect r) {
         super.setBounds(r);
-        int uh = upper.getBounds().height;
-        upper.setBounds(new Rect(0, 0, r.width, uh));
-        lower.setBounds(new Rect(0, uh, r.width, r.height - uh));
+        // Run this twice to let upper stabilize
+        for (int i = 0; i < 2; i++) {
+            int uh = upper.getBounds().height;
+            upper.setBounds(new Rect(0, 0, r.width, uh));
+            lower.setBounds(new Rect(0, uh, r.width, r.height - uh));
+        }
     }
 }

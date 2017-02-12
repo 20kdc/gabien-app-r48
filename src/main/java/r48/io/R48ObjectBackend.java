@@ -18,10 +18,13 @@ import java.util.Set;
  */
 public class R48ObjectBackend implements IObjectBackend {
     private final String prefix, postfix;
+    // should be true unless otherwise needed
+    public final boolean assumeDAG;
 
-    public R48ObjectBackend(String s, String dataExt) {
+    public R48ObjectBackend(String s, String dataExt, boolean aDAG) {
         prefix = s;
         postfix = dataExt;
+        assumeDAG = aDAG;
     }
 
     public static long load32(DataInputStream dis) throws IOException {
@@ -274,7 +277,7 @@ public class R48ObjectBackend implements IObjectBackend {
         }
     }
 
-    private static RubyIO loadValue(DataInputStream dis, LinkedList<RubyIO> objs, LinkedList<String> syms) throws IOException {
+    private RubyIO loadValue(DataInputStream dis, LinkedList<RubyIO> objs, LinkedList<String> syms) throws IOException {
         int b = dis.readUnsignedByte();
         RubyIO rio = new RubyIO();
         // r_entry0 is responsible for adding into the object cache.
@@ -297,7 +300,16 @@ public class R48ObjectBackend implements IObjectBackend {
         } else if (b == '@') {
             // 1574: No special handling at all. No entry, nocareivar.
             // THE DOCUMENTS LIED, NO -1
-            rio = objs.get((int) load32(dis));
+            // additional note:
+            // Yes I am breaking spec by automatically cloning things,
+            //  in context this actually makes more sense than NOT,
+            //  because of some assumptions made by the Schema system.
+            // How did I not think of this EARLIER?
+            if (assumeDAG) {
+                rio.setDeepClone(objs.get((int) load32(dis)));
+            } else {
+                rio = objs.get((int) load32(dis));
+            }
         } else if ((b == '{') || (b == '}')) {
             // 1772: Runs entry first thing after creating the hash, nocareivar
             objs.add(rio);

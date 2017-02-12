@@ -32,7 +32,6 @@
 > 999 License
 
 1: Map
-i HelpImg/1.diagram.png
 . 'Map' is the map editor.
 . From this, you can do many things.
 . However, first, you need to know controls.
@@ -92,8 +91,6 @@ i HelpImg/1.diagram.png
 7: Map Tools
 . This would not be very much of an editor if maps were not editable.
 . The "Map Tools" dialogue box exists to help you achieve this.
-i HelpImg/7.example.png
-. As you can see, several tools exist.
 . For general usage, "Tiles", and "Event List", should be enough.
 . For access to the BGS/BGM, map resize, and other map pieces, use Edit Direct.
 > 8 Tiles
@@ -102,7 +99,6 @@ i HelpImg/7.example.png
 > 1 Back to the Map.
 
 8: Tiles
-i HelpImg/need-image.png
 . This allows the editing of the map's tiles.
 . The "stride" of the tileset depends on the window's width.
 . Clicking on a tile in the map will paste it in.
