@@ -53,7 +53,7 @@ public class RPGCommandSchemaElement implements ISchemaElement {
                     HashMap<String, Integer> rvi = new HashMap<String, Integer>();
                     HashMap<Integer, String> rvs = new HashMap<Integer, String>();
                     for (Map.Entry<Integer, RPGCommand> me : database.knownCommands.entrySet()) {
-                        String text = me.getKey() + ";" + me.getValue().formatName(null);
+                        String text = me.getKey() + ";" + me.getValue().formatName(null, null);
                         rvs.put(me.getKey(), text);
                         rvi.put(text, me.getKey());
                     }

@@ -2,6 +2,8 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
 
+ - THESE DO NOT EXIST -
+
 0: RXP
 f Data/MapInfos.rxdata
 2: RVXA
@@ -9,5 +11,8 @@ f Data/MapInfos.rvdata2
 0: Ika
 f Pbm/Map1.pbm
 . Ikachan
+
+ ----------------------
+
 0: Sticki
-. 'Sticky Notes' (for testing)
+. Launch Sticky Note Editor
