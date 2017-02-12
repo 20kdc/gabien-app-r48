@@ -30,3 +30,7 @@ p plan Plan
 996: Long Note
 p desc string
 p contents zlibBlobEditor
+
+997: Table$
+p of string
+p table NoteTable
