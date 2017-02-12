@@ -8,6 +8,8 @@ C dataExt .rxdata
 C allowIndentControl
 C defineIndent
 
+> NoteTable subwindow hash string string
+
 .NoteEditor_Most
 @indent indent
 @parameters array 0 OPAQUE

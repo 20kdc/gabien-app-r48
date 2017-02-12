@@ -61,7 +61,7 @@ public class HashSchemaElement implements ISchemaElement {
                 }
                 // pre-emptively set up a default key workspace
                 final RubyIO rio = SchemaPath.createDefaultValue(keyElem, null);
-                UIElement workspace = keyElem.buildHoldingEditor(rio, launcher, path.otherIndex("KEY"));
+                UIElement workspace = keyElem.buildHoldingEditor(rio, launcher, new SchemaPath(keyElem, rio, launcher));
                 UIHHalfsplit workspaceHS = new UIHHalfsplit(2, 3, workspace, new UITextButton(FontSizes.schemaButtonTextHeight, "Add This Key", new Runnable() {
                     @Override
                     public void run() {
