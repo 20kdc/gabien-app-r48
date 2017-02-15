@@ -77,6 +77,8 @@ public class RPGCommand {
             }
             return sn;
         } catch (IndexOutOfBoundsException e) {
+            System.err.println("While processing name " + name + ", an IndexOutOfBounds exception occurred. This suggests badly checked parameters.");
+            e.printStackTrace();
             if (parameters != null)
                 return formatName(root, null);
             throw e;
@@ -164,11 +166,19 @@ public class RPGCommand {
                 if (parameters != null) {
                     if (ss != 0) {
                         RubyIO p = parameters[data[++i] - 'A'];
-                        ISchemaElement ise = AppMain.schemas.getSDBEntry(type);
-                        r += interpretParameter(p, ise, prefixNext);
+                        IFunction<RubyIO, String> handler = AppMain.schemas.nameDB.get("Interp." + type);
+                        if (handler != null) {
+                            r += handler.apply(p);
+                        } else {
+                            ISchemaElement ise = AppMain.schemas.getSDBEntry(type);
+                            r += interpretParameter(p, ise, prefixNext);
+                        }
                     } else {
                         // Meta-interpretation syntax
-                        IFunction<RubyIO, String> n = AppMain.schemas.nameDB.get(type.substring(1));
+                        String tp = type.substring(1);
+                        IFunction<RubyIO, String> n = AppMain.schemas.nameDB.get(tp);
+                        if (n == null)
+                            throw new RuntimeException("Expected NDB " + tp);
                         r += n.apply(root);
                     }
                 }
