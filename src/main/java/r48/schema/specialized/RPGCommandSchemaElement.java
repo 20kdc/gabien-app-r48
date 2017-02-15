@@ -74,7 +74,7 @@ public class RPGCommandSchemaElement implements ISchemaElement {
                                     param.arrVal = new RubyIO[rc.paramType.size()];
                                     for (int i = 0; i < param.arrVal.length; i++) {
                                         RubyIO rio = new RubyIO();
-                                        ISchemaElement ise = rc.getParameterSchema(i);
+                                        ISchemaElement ise = rc.getParameterSchema(param, i);
                                         ise.modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), false);
                                         param.arrVal[i] = rio;
                                     }
@@ -113,7 +113,7 @@ public class RPGCommandSchemaElement implements ISchemaElement {
                             uiSVL.panels.add(new UILabel("WARNING: Missing E" + i + ".", FontSizes.schemaFieldTextHeight));
                             continue;
                         }
-                        ISchemaElement ise = rc.getParameterSchema(i);
+                        ISchemaElement ise = rc.getParameterSchema(param, i);
                         height += ise.maxHoldingHeight();
                         UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, parameterPath.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
                         uiSVL.panels.add(new UIHHalfsplit(1, 3, new UILabel(rc.getParameterName(i), FontSizes.schemaFieldTextHeight), uie));
@@ -159,7 +159,7 @@ public class RPGCommandSchemaElement implements ISchemaElement {
                 for (int i = 0; i < param.arrVal.length; i++) {
                     if (param.arrVal.length <= i)
                         continue;
-                    ISchemaElement ise = rc.getParameterSchema(i);
+                    ISchemaElement ise = rc.getParameterSchema(param, i);
                     ise.modifyVal(param.arrVal[i], parameterPath.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), setDefault);
                 }
             }

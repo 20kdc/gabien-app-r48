@@ -22,7 +22,7 @@ public class RPGCommand {
 
     public String specialSchemaName;
 
-    public LinkedList<ISchemaElement> paramType = new LinkedList<ISchemaElement>();
+    public LinkedList<IFunction<RubyIO, ISchemaElement>> paramType = new LinkedList<IFunction<RubyIO, ISchemaElement>>();
     public LinkedList<String> paramName = new LinkedList<String>();
     public int indentPre;
     public int indentPost;
@@ -35,7 +35,7 @@ public class RPGCommand {
     public String formatName(RubyIO root, RubyIO[] parameters) {
         try {
             if (name.startsWith("@@"))
-                return formatNameExtended(name.substring(2), root, parameters, paramType.toArray(new ISchemaElement[0]));
+                return formatNameExtended(name.substring(2), root, parameters, paramType.toArray(new IFunction[0]));
             boolean prefixes = true;
             if (name.startsWith("@P")) {
                 prefixes = false;
@@ -46,23 +46,23 @@ public class RPGCommand {
             for (char c : name.toCharArray()) {
                 if (c == '!') {
                     if (parameters != null) {
-                        sn += " to " + interpretLocalParameter(pi, parameters[pi], prefixes);
+                        sn += " to " + interpretLocalParameter(root, pi, parameters[pi], prefixes);
                         pi++;
                     }
                     continue;
                 }
                 if (c == '$') {
                     if (parameters != null) {
-                        sn += " " + interpretLocalParameter(pi, parameters[pi], prefixes);
+                        sn += " " + interpretLocalParameter(root, pi, parameters[pi], prefixes);
                         pi++;
                     }
                     continue;
                 }
                 if (c == '#') {
                     if (parameters != null) {
-                        String beginning = interpretLocalParameter(pi, parameters[pi], true);
+                        String beginning = interpretLocalParameter(root, pi, parameters[pi], true);
                         pi++;
-                        String end = interpretLocalParameter(pi, parameters[pi], true);
+                        String end = interpretLocalParameter(root, pi, parameters[pi], true);
                         pi++;
                         if (beginning.equals(end)) {
                             sn += " " + beginning;
@@ -83,13 +83,13 @@ public class RPGCommand {
         }
     }
 
-    private String interpretLocalParameter(int pi, RubyIO parameter, boolean prefixEnums) {
-        return interpretParameter(parameter, getParameterSchema(pi), prefixEnums);
+    private String interpretLocalParameter(RubyIO root, int pi, RubyIO parameter, boolean prefixEnums) {
+        return interpretParameter(parameter, getParameterSchema(root, pi), prefixEnums);
     }
 
     // The new format allows for more precise setups,
     // but isn't as neat
-    public static String formatNameExtended(String name, RubyIO root, RubyIO[] parameters, ISchemaElement[] parameterSchemas) {
+    public static String formatNameExtended(String name, RubyIO root, RubyIO[] parameters, IFunction<RubyIO, ISchemaElement>[] parameterSchemas) {
         String r = "";
         char[] data = name.toCharArray();
         int disables = 0;
@@ -132,13 +132,13 @@ public class RPGCommand {
                         disables++;
                         continue;
                     }
-                    wantedVal = interpretParameter(parameters[pidB], getParameterSchemaFromArray(parameterSchemas, pidB), true);
+                    wantedVal = interpretParameter(parameters[pidB], getParameterSchemaFromArray(root, parameterSchemas, pidB), true);
                     prefixComparisonVar = true;
                 }
                 if (parameters.length <= pidA) {
                     disables++;
                 } else {
-                    if (!interpretParameter(parameters[pidA], getParameterSchemaFromArray(parameterSchemas, pidA), prefixComparisonVar).equals(wantedVal))
+                    if (!interpretParameter(parameters[pidA], getParameterSchemaFromArray(root, parameterSchemas, pidA), prefixComparisonVar).equals(wantedVal))
                         disables++;
                 }
             } else if (data[i] == '|') {
@@ -178,7 +178,7 @@ public class RPGCommand {
                     if (disables == 0) {
                         int pid = data[++i] - 'A';
                         if ((pid >= 0) && (pid < parameters.length)) {
-                            r += interpretParameter(parameters[pid], getParameterSchemaFromArray(parameterSchemas, pid), prefixNext);
+                            r += interpretParameter(parameters[pid], getParameterSchemaFromArray(root, parameterSchemas, pid), prefixNext);
                         } else {
                             r += data[i];
                         }
@@ -192,18 +192,18 @@ public class RPGCommand {
         return r;
     }
 
-    public static ISchemaElement getParameterSchemaFromArray(ISchemaElement[] ise, int i) {
+    public static ISchemaElement getParameterSchemaFromArray(RubyIO root, IFunction<RubyIO, ISchemaElement>[] ise, int i) {
         if (ise == null)
             return AppMain.schemas.getSDBEntry("genericScriptParameter");
         if (ise.length <= i)
             return AppMain.schemas.getSDBEntry("genericScriptParameter");
-        return ise[i];
+        return ise[i].apply(root);
     }
 
-    public ISchemaElement getParameterSchema(int i) {
+    public ISchemaElement getParameterSchema(RubyIO root, int i) {
         if (paramType.size() <= i)
             return AppMain.schemas.getSDBEntry("genericScriptParameter");
-        return paramType.get(i);
+        return paramType.get(i).apply(root);
     }
 
     public String getParameterName(int i) {
