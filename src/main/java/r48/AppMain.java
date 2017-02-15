@@ -142,12 +142,8 @@ public class AppMain {
         // Probably simple enough to create a special alias, but meh.
         if (AppMain.schemas.hasSDBEntry("RPG::Map"))
             toolsets.add(new MapToolset());
-        try {
+        if (AppMain.schemas.hasSDBEntry("EventCommandEditor"))
             toolsets.add(new RMToolsToolset());
-        } catch (Exception e) {
-            System.err.println("RMTools are missing!");
-            e.printStackTrace();
-        }
 
         // Initialize toolsets.
         ISupplier<IConsumer<UIElement>> wmg = new ISupplier<IConsumer<UIElement>>() {

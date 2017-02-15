@@ -45,7 +45,8 @@ public class UIEnumChoice extends UIPanel implements IWindowElement {
                 wantsSelfClose = true;
             }
         }));
-        uiSVL.panels.add(finalSplit);
+        if (buttonText.length() != 0)
+            uiSVL.panels.add(finalSplit);
         allElements.add(uiSVL);
     }
 

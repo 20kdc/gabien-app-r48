@@ -227,6 +227,12 @@ public class SDB {
                     }
                     EnumSchemaElement e = new EnumSchemaElement(options, "Integer");
                     setSDBEntry(args[0], e);
+                } else if (c == 's') {
+                    // Symbols
+                    String[] syms = new String[args.length - 1];
+                    for (int i = 0; i < syms.length; i++)
+                        syms[i] = args[i + 1];
+                    setSDBEntry(args[0], new SymEnumSchemaElement(syms));
                 } else if (c == 'E') {
                     HashMap<Integer, String> options = new HashMap<Integer, String>();
                     for (int i = 2; i < args.length; i += 2) {
