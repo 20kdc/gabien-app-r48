@@ -25,6 +25,7 @@ I0
 
 995: Long-term Plan$
 p name string
+p planType ltp_type
 p plan Plan
 
 996: Long Note

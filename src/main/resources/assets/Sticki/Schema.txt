@@ -10,6 +10,8 @@ C defineIndent
 
 > NoteTable subwindow hash string string
 
+s ltp_type concurrent waitOn
+
 .NoteEditor_Most
 @indent indent
 @parameters array 0 OPAQUE
