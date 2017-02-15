@@ -318,19 +318,26 @@ public class SDB {
                         nameDB.put(args[1], new IFunction<RubyIO, String>() {
                             @Override
                             public String apply(RubyIO rubyIO) {
-                                RubyIO[] params = new RubyIO[arguments.size()];
-                                for (int i = 0; i < params.length; i++) {
+                                LinkedList<RubyIO> parameters = new LinkedList<RubyIO>();
+                                for (String arg : arguments) {
                                     RubyIO res = null;
-                                    String arg = arguments.get(i);
                                     if (arg.equals("$"))
                                         res = rubyIO;
                                     if (arg.startsWith("@"))
                                         res = rubyIO.getInstVarBySymbol(arg);
-                                    if (arg.startsWith("]"))
-                                        res = rubyIO.arrVal[Integer.parseInt(arg.substring(1))];
-                                    params[i] = res;
+                                    if (arg.startsWith("]")) {
+                                        // Stops at the first non-existing parameter
+                                        int atl = Integer.parseInt(arg.substring(1));
+                                        if (atl < 0) {
+                                            break;
+                                        } else if (atl >= rubyIO.arrVal.length) {
+                                            break;
+                                        }
+                                        res = rubyIO.arrVal[atl];
+                                    }
+                                    parameters.add(res);
                                 }
-                                return RPGCommand.formatNameExtended(textF, rubyIO, params, null);
+                                return RPGCommand.formatNameExtended(textF, rubyIO, parameters.toArray(new RubyIO[0]), null);
                             }
                         });
                     }
