@@ -64,7 +64,7 @@ public class CMDB {
         });
     }
 
-    public String buildCodename(RubyIO target) {
+    public String buildCodename(RubyIO target, boolean indent) {
         String ext = "";
         int cid = (int) target.getInstVarBySymbol("@code").fixnumVal;
         if (knownCommands.containsKey(cid)) {
@@ -76,7 +76,7 @@ public class CMDB {
         while (spc.length() < 4)
             spc = "0" + spc;
         RubyIO indentValue = target.getInstVarBySymbol("@indent");
-        if (indentValue != null) {
+        if ((indentValue != null) && indent) {
             int len = (int) target.getInstVarBySymbol("@indent").fixnumVal;
             if (len < 0) {
                 spc += "(INDTERR" + len + ")";
