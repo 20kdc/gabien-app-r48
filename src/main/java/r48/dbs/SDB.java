@@ -107,7 +107,7 @@ public class SDB {
                             return new SubwindowSchemaElement(new RPGCommandSchemaElement(a, get(), database, allowControlOfEventCommandIndent), new IFunction<RubyIO, String>() {
                                 @Override
                                 public String apply(RubyIO rubyIO) {
-                                    return database.buildCodename(rubyIO);
+                                    return database.buildCodename(rubyIO, true);
                                 }
                             });
                         }
@@ -117,7 +117,7 @@ public class SDB {
                             return new SubwindowSchemaElement(new RPGCommandSchemaElement(a, get(), database, false), new IFunction<RubyIO, String>() {
                                 @Override
                                 public String apply(RubyIO rubyIO) {
-                                    return database.buildCodename(rubyIO);
+                                    return database.buildCodename(rubyIO, true);
                                 }
                             });
                         }

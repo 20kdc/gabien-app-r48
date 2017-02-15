@@ -177,9 +177,13 @@ public class RPGCommand {
                 if (parameters != null)
                     if (disables == 0) {
                         int pid = data[++i] - 'A';
-                        r += interpretParameter(parameters[pid], getParameterSchemaFromArray(parameterSchemas, pid), prefixNext);
-                        prefixNext = false;
+                        if ((pid >= 0) && (pid < parameters.length)) {
+                            r += interpretParameter(parameters[pid], getParameterSchemaFromArray(parameterSchemas, pid), prefixNext);
+                        } else {
+                            r += data[i];
+                        }
                     }
+                prefixNext = false;
             } else {
                 if (disables == 0)
                     r += data[i];

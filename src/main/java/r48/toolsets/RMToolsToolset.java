@@ -194,6 +194,17 @@ public class RMToolsToolset implements IToolset {
                             }
                             dumper.endFile();
                         }
+                        dumper.startFile("Items", "The list of items in the game.");
+                        LinkedList<String> lls = new LinkedList<String>();
+                        for (RubyIO page : AppMain.objectDB.getObject("Items").arrVal) {
+                            if (page.type != '0') {
+                                lls.add(page.getInstVarBySymbol("@name").decString());
+                            } else {
+                                lls.add("<NULL>");
+                            }
+                        }
+                        dumper.dumpBasicList("Names", lls.toArray(new String[0]), 0);
+                        dumper.endFile();
                         dumper.end();
                         ps.close();
                     }
