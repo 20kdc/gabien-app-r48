@@ -6,7 +6,7 @@
 
 0: RXP
 f Data/MapInfos.rxdata
-2: RVXA
+1: RVXA
 f Data/MapInfos.rvdata2
 0: Ika
 f Pbm/Map1.pbm

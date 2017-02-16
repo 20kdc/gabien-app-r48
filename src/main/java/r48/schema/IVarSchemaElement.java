@@ -30,7 +30,7 @@ public class IVarSchemaElement implements ISchemaElement {
     }
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UILabel uil = new UILabel(iVar, FontSizes.schemaFieldTextHeight);
+        final UILabel uil = new UILabel(iVar + " ", FontSizes.schemaFieldTextHeight);
         if (fieldWidthOverride) {
             uil.setBounds(new Rect(0, 0, fieldWidth, uil.getBounds().height));
             fieldWidthOverride = false;
@@ -78,7 +78,7 @@ public class IVarSchemaElement implements ISchemaElement {
     }
 
     public int getDefaultFieldWidth() {
-        return UILabel.getRecommendedSize(iVar, FontSizes.schemaFieldTextHeight).width;
+        return UILabel.getRecommendedSize(iVar + " ", FontSizes.schemaFieldTextHeight).width;
     }
 
     public void setFieldWidthOverride(int w) {

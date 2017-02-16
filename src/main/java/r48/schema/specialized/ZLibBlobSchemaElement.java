@@ -27,65 +27,16 @@ import java.util.zip.InflaterInputStream;
  *  and certainly better to use the user's editor than whatever abomination I could've cooked up.
  * Created on 1/5/17.
  */
-public class ZLibBlobSchemaElement implements ISchemaElement {
+public class ZLibBlobSchemaElement extends StringBlobSchemaElement {
+
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        return new UIHHalfsplit(1, 2, new UITextButton(FontSizes.blobTextHeight, "Export/Edit", new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    OutputStream os = GaBIEn.getOutFile("edit.rb");
-                    InflaterInputStream dis = new InflaterInputStream(new ByteArrayInputStream(target.strVal));
-                    byte[] block = new byte[512];
-                    while (true) {
-                        int r = dis.read(block);
-                        if (r <= 0)
-                            break;
-                        os.write(block, 0, r);
-                    }
-                    dis.close();
-                    os.close();
-                    Desktop.getDesktop().open(new File("edit.rb"));
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
-            }
-        }), new UITextButton(FontSizes.blobTextHeight, "Import", new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    DeflaterInputStream dis = new DeflaterInputStream(GaBIEn.getFile("edit.rb"));
-                    byte[] block = new byte[512];
-                    while (true) {
-                        int r = dis.read(block);
-                        if (r <= 0)
-                            break;
-                        baos.write(block, 0, r);
-                    }
-                    dis.close();
-                    target.strVal = baos.toByteArray();
-                    path.changeOccurred(false);
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
-            }
-        }));
+    protected InputStream getCompressionInputStream(InputStream file) {
+        return new DeflaterInputStream(file);
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return UITextButton.getRecommendedSize("", FontSizes.blobTextHeight).height;
+    protected InputStream getDecompressionInputStream(byte[] b) {
+        return new DeflaterInputStream(new ByteArrayInputStream(b));
     }
 
-    @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (IntegerSchemaElement.ensureType(target, '\"', setDefault)) {
-            target.strVal = new byte[0];
-            path.changeOccurred(true);
-        } else if (target.strVal == null) {
-            target.strVal = new byte[0];
-            path.changeOccurred(true);
-        }
-    }
 }
