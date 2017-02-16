@@ -83,7 +83,7 @@ public class Application {
                 if (objId == 0)
                     status = "Working";
                 if (objId == 1)
-                    status = "Mostly OK";
+                    status = "Missing Parts";
                 if (objId == 2)
                     status = "Minimal/Useless";
                 if (objId == 3)

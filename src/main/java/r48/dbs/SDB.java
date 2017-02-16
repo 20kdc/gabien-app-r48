@@ -52,7 +52,7 @@ public class SDB {
         schemaDatabase.put("nil", new OpaqueSchemaElement());
         schemaDatabase.put("int", new IntegerSchemaElement(0));
         schemaDatabase.put("index", new AMAISchemaElement());
-        schemaDatabase.put("float", new FloatSchemaElement(""));
+        schemaDatabase.put("float", new FloatSchemaElement("0"));
         schemaDatabase.put("string", new StringSchemaElement("", '\"'));
         schemaDatabase.put("boolean", new BooleanSchemaElement(false));
         schemaDatabase.put("booleanDefTrue", new BooleanSchemaElement(true));
@@ -61,6 +61,7 @@ public class SDB {
         schemaDatabase.put("OPAQUE", new OpaqueSchemaElement());
 
         schemaDatabase.put("zlibBlobEditor", new ZLibBlobSchemaElement());
+        schemaDatabase.put("stringBlobEditor", new StringBlobSchemaElement());
 
         schemaDatabase.put("internal_EPGD", new EPGDisplaySchemaElement());
 
