@@ -12,6 +12,23 @@ C defineIndent
 
 s ltp_type concurrent waitOn
 
+ -- CMDBUF TEST --
+ notably this brings up warnings, because of the different iVar names
+ in practice that could be resolved via opt.ivars or such
+
+ 0:MarsShip
+ @playAllDay boolean
+
+ 1:MoonShip
+ @daytype string= Saturday
+
+ :RocketShip
+  someday I'd really like to get away...
+ @kind rocketship_kind
+ +flushCommandBuffer @kind rocketship_kind
+
+ -- /CMDBUF TEST --
+
 .NoteEditor_Most
 @indent indent
 @parameters array 0 OPAQUE
