@@ -105,6 +105,10 @@ public class SDB {
                             String a = args[point++];
                             return new HWNDSchemaElement(a, args[point++]);
                         }
+                        if (text.equals("optIV")) {
+                            String a = args[point++];
+                            return new IVarSchemaElement(a, get(), true);
+                        }
 
                         // CS means "control indent if allowed"
                         // MS means "never control indent"
@@ -221,7 +225,7 @@ public class SDB {
                     workingObj = new AggregateSchemaElement(new ISchemaElement[]{});
                     setSDBEntry(args[0], workingObj);
                 } else if (c == '@') {
-                    workingObj.aggregate.add(new IVarSchemaElement("@" + args[0], handleChain(args, 1)));
+                    workingObj.aggregate.add(new IVarSchemaElement("@" + args[0], handleChain(args, 1), false));
                 } else if (c == '+') {
                     workingObj.aggregate.add(handleChain(args, 0));
                 } else if (c == '>') {
