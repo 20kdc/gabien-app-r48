@@ -20,9 +20,11 @@ import java.io.UnsupportedEncodingException;
  */
 public class StringSchemaElement implements ISchemaElement {
     public String defaultStr = "";
+    public final char type;
 
-    public StringSchemaElement(String arg) {
+    public StringSchemaElement(String arg, char t) {
         defaultStr = arg;
+        type = t;
     }
 
     @Override
@@ -32,12 +34,20 @@ public class StringSchemaElement implements ISchemaElement {
         tb.onEdit = new Runnable() {
             @Override
             public void run() {
-                target.encString(tb.text);
-                path.changeOccurred(false);
+                if (verifier(tb.text)) {
+                    target.encString(tb.text);
+                    path.changeOccurred(false);
+                } else {
+                    tb.text = target.decString();
+                }
             }
         };
         tb.setBounds(new Rect(0, 0, 9, 9));
         return tb;
+    }
+
+    public boolean verifier(String text) {
+        return true;
     }
 
     @Override
@@ -47,7 +57,7 @@ public class StringSchemaElement implements ISchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (IntegerSchemaElement.ensureType(target, '\"', setDefault)) {
+        if (IntegerSchemaElement.ensureType(target, type, setDefault)) {
             try {
                 target.strVal = defaultStr.getBytes("UTF-8");
             } catch (UnsupportedEncodingException e) {

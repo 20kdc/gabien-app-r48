@@ -49,11 +49,13 @@ public class SDB {
         schemaDatabase.put("nil", new OpaqueSchemaElement());
         schemaDatabase.put("int", new IntegerSchemaElement(0));
         schemaDatabase.put("index", new AMAISchemaElement());
-        schemaDatabase.put("string", new StringSchemaElement(""));
+        schemaDatabase.put("float", new FloatSchemaElement(""));
+        schemaDatabase.put("string", new StringSchemaElement("", '\"'));
         schemaDatabase.put("boolean", new BooleanSchemaElement(false));
         schemaDatabase.put("booleanDefTrue", new BooleanSchemaElement(true));
         schemaDatabase.put("int_boolean", new IntBooleanSchemaElement(false));
         schemaDatabase.put("int_booleanDefTrue", new IntBooleanSchemaElement(true));
+        schemaDatabase.put("OPAQUE", new OpaqueSchemaElement());
 
         schemaDatabase.put("zlibBlobEditor", new ZLibBlobSchemaElement());
 
@@ -72,12 +74,11 @@ public class SDB {
     }
 
     public void readFile(BufferedReader bufferedReader) throws IOException {
-        schemaDatabase.put("OPAQUE", new OpaqueSchemaElement());
         new DBLoader(bufferedReader, new IDatabase() {
             AggregateSchemaElement workingObj;
             @Override
             public void newObj(int objId, String objName) {
-
+                System.out.println("Array definition when inappropriate: " + objName);
             }
 
             public ISchemaElement handleChain(final String[] args, final int start) {
@@ -96,8 +97,14 @@ public class SDB {
                             int n = Integer.parseInt(args[point++]);
                             return new IntegerSchemaElement(n);
                         }
+                        if (text.equals("float="))
+                            return new FloatSchemaElement(args[point++]);
                         if (text.equals("string="))
-                            return new StringSchemaElement(args[point++]);
+                            return new StringSchemaElement(args[point++], '\"');
+                        if (text.equals("hwnd")) {
+                            String a = args[point++];
+                            return new HWNDSchemaElement(a, args[point++]);
+                        }
 
                         // CS means "control indent if allowed"
                         // MS means "never control indent"

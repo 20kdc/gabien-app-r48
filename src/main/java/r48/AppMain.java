@@ -299,7 +299,7 @@ public class AppMain {
             public void run() {
                 // exception to the rule
                 UILabel uil = new UILabel("Blank Help Window", FontSizes.helpPathHeight);
-                final UIHelpSystem uis = new UIHelpSystem(uil, null);
+                final UIHelpSystem uis = new UIHelpSystem(uil, null, null);
                 final UIScrollVertLayout uus = new UIScrollVertLayout();
                 uus.panels.add(uis);
                 uus.setBounds(new Rect(0, 0, 560, 240));
