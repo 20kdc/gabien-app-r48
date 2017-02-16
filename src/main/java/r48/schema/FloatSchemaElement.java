@@ -14,6 +14,7 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 /**
  * Basically a copy of StringSchemaElement with some modifications
@@ -22,6 +23,29 @@ import java.io.UnsupportedEncodingException;
 public class FloatSchemaElement extends StringSchemaElement {
     public FloatSchemaElement(String arg) {
         super(arg, 'f');
+    }
+
+    // Notably, there's still extra mantissa bit nonsense in there that really shouldn't be.
+    // However, it seems always bordered with a 0 byte?
+    @Override
+    protected void encodeVal(String text, RubyIO target) {
+        // Encode normally...
+        super.encodeVal(text, target);
+    }
+
+    @Override
+    protected String decodeVal(RubyIO target) {
+        // Stop at the first null byte.
+        int firstNull = 0;
+        for (int i = 0; i < target.strVal.length; i++) {
+            if (target.strVal[i] == 0)
+                break;
+            firstNull = i + 1;
+        }
+        byte[] text = new byte[firstNull];
+        for (int i = 0; i < text.length; i++)
+            text[i] = target.strVal[i];
+        return new String(text, Charset.forName("UTF-8"));
     }
 
     @Override
