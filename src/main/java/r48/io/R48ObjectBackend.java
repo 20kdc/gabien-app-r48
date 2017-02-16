@@ -227,6 +227,7 @@ public class R48ObjectBackend implements IObjectBackend {
             okay = true;
         }
         if (b == 'f') {
+            objCache.add(rio);
             save32(dis, rio.strVal.length);
             dis.write(rio.strVal);
             okay = true;
@@ -353,6 +354,7 @@ public class R48ObjectBackend implements IObjectBackend {
                 throw new IOException("Didn't read all of data");
             rio.strVal = data;
         } else if (b == 'f') {
+            objs.add(rio);
             long len = load32(dis);
             byte[] data = new byte[(int) len];
             if (dis.read(data) != len)

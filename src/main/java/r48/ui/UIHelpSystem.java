@@ -13,6 +13,7 @@ import r48.dbs.IDatabase;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 
@@ -24,13 +25,15 @@ public class UIHelpSystem extends UIPanel {
 
     private UILabel pageName;
     public Runnable onLoad;
+    private String helpFile;
 
     private LinkedList<HelpElement> page = new LinkedList<HelpElement>();
 
-    public UIHelpSystem(UILabel uil, Runnable ol) {
+    public UIHelpSystem(UILabel uil, Runnable ol, String file) {
         super.setBounds(new Rect(0, 0, 640, 320));
         onLoad = ol;
         pageName = uil;
+        helpFile = file;
     }
 
     private UIElement[] handleThing(char c, String[] args, int availableWidth) {
@@ -136,12 +139,13 @@ public class UIHelpSystem extends UIPanel {
     public void loadPage(final int i) {
         try {
             page.clear();
-            new DBLoader(new BufferedReader(new InputStreamReader(GaBIEn.getResource("Help.txt"))), new IDatabase() {
+            new DBLoader(new BufferedReader(new InputStreamReader(getHelpStream())), new IDatabase() {
                 boolean working = false;
                 @Override
                 public void newObj(int objId, String objName) throws IOException {
                     if (objId == i) {
-                        pageName.Text = objName;
+                        if (pageName != null)
+                            pageName.Text = objName;
                         working = true;
                     } else {
                         working = false;
@@ -158,7 +162,14 @@ public class UIHelpSystem extends UIPanel {
             e.printStackTrace();
         }
         setBounds(getBounds());
-        onLoad.run();
+        if (onLoad != null)
+            onLoad.run();
+    }
+
+    private InputStream getHelpStream() {
+        if (helpFile == null)
+            return GaBIEn.getResource("Help.txt");
+        return GaBIEn.getFile(helpFile);
     }
 
     private class HelpElement {
