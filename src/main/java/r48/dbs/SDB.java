@@ -332,6 +332,10 @@ public class SDB {
                         UIMapInfos.mapSequenceInert = true;
                     if (args[0].equals("versionId"))
                         StuffRenderer.versionId = args[1];
+                    if (args[0].equals("defaultCB")) {
+                        workingObj = new AggregateSchemaElement(new ISchemaElement[] {});
+                        commandBufferSchemas.put(-1, workingObj);
+                    }
                     if (args[0].equals("name")) {
                         final LinkedList<String> arguments = new LinkedList<String>();
                         String text = "";

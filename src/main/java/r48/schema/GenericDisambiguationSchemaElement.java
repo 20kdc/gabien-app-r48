@@ -24,7 +24,10 @@ public class GenericDisambiguationSchemaElement implements ISchemaElement {
     }
 
     public ISchemaElement getDisambiguation(RubyIO target) {
-        return mapping.get((int) (target.getInstVarBySymbol(iVar).fixnumVal));
+        ISchemaElement ise = mapping.get((int) (target.getInstVarBySymbol(iVar).fixnumVal));
+        if (ise == null)
+            return mapping.get(-1);
+        return ise;
     }
 
     @Override

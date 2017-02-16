@@ -30,15 +30,15 @@ public class StringSchemaElement implements ISchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UITextBox tb = new UITextBox(FontSizes.schemaFieldTextHeight);
-        tb.text = target.decString();
+        tb.text = decodeVal(target);
         tb.onEdit = new Runnable() {
             @Override
             public void run() {
                 if (verifier(tb.text)) {
-                    target.encString(tb.text);
+                    encodeVal(tb.text, target);
                     path.changeOccurred(false);
                 } else {
-                    tb.text = target.decString();
+                    tb.text = decodeVal(target);
                 }
             }
         };
@@ -46,8 +46,15 @@ public class StringSchemaElement implements ISchemaElement {
         return tb;
     }
 
-    public boolean verifier(String text) {
+
+    protected void encodeVal(String text, RubyIO target) {
+        target.encString(text);
+    }
+    protected boolean verifier(String text) {
         return true;
+    }
+    protected String decodeVal(RubyIO target) {
+        return target.decString();
     }
 
     @Override
@@ -58,20 +65,10 @@ public class StringSchemaElement implements ISchemaElement {
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (IntegerSchemaElement.ensureType(target, type, setDefault)) {
-            try {
-                target.strVal = defaultStr.getBytes("UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                target.strVal = new byte[0];
-                e.printStackTrace();
-            }
+            encodeVal(defaultStr, target);
             path.changeOccurred(true);
         } else if (target.strVal == null) {
-            try {
-                target.strVal = defaultStr.getBytes("UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                target.strVal = new byte[0];
-                e.printStackTrace();
-            }
+            encodeVal(defaultStr, target);
             path.changeOccurred(true);
         }
     }
