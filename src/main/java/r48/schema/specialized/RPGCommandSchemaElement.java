@@ -101,9 +101,9 @@ public class RPGCommandSchemaElement implements ISchemaElement {
 
                     int height = 0;
                     if (target.getInstVarBySymbol("@indent") != null) {
-                        ISchemaElement ise = new IVarSchemaElement("@indent", new ROIntegerSchemaElement(0));
+                        ISchemaElement ise = new IVarSchemaElement("@indent", new ROIntegerSchemaElement(0), false);
                         if (!allowControlOfIndent)
-                            ise = new IVarSchemaElement("@indent", new IntegerSchemaElement(0));
+                            ise = new IVarSchemaElement("@indent", new IntegerSchemaElement(0), false);
                         height += ise.maxHoldingHeight();
                         uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
                     }
