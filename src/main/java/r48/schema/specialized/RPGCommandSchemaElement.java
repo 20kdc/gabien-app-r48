@@ -10,6 +10,8 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.CMDB;
 import r48.schema.*;
+import r48.schema.arrays.ArraySchemaElement;
+import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -107,7 +109,7 @@ public class RPGCommandSchemaElement implements ISchemaElement {
                         height += ise.maxHoldingHeight();
                         uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
                     }
-                    SchemaPath parameterPath = path.arrayEntry(param, new ArraySchemaElement(new OpaqueSchemaElement(), 0, false));
+                    SchemaPath parameterPath = path.arrayEntry(param, new StandardArraySchemaElement(new OpaqueSchemaElement(), 0, false));
                     for (int i = 0; i < param.arrVal.length; i++) {
                         if (param.arrVal.length <= i) {
                             uiSVL.panels.add(new UILabel("WARNING: Missing E" + i + ".", FontSizes.schemaFieldTextHeight));
@@ -153,7 +155,7 @@ public class RPGCommandSchemaElement implements ISchemaElement {
                 AppMain.schemas.getSDBEntry(rc.specialSchemaName).modifyVal(target, path, setDefault);
             } else {
                 RubyIO param = target.getInstVarBySymbol("@parameters");
-                ISchemaElement parametersSanitySchema = new ArraySchemaElement(new OpaqueSchemaElement(), rc.paramName.size(), false);
+                ISchemaElement parametersSanitySchema = new StandardArraySchemaElement(new OpaqueSchemaElement(), rc.paramName.size(), false);
                 parametersSanitySchema.modifyVal(param, path, setDefault);
                 SchemaPath parameterPath = path.arrayEntry(param, parametersSanitySchema);
                 for (int i = 0; i < param.arrVal.length; i++) {

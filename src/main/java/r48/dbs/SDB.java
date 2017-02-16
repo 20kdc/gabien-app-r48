@@ -12,6 +12,9 @@ import r48.AppMain;
 import r48.DictionaryUpdaterRunnable;
 import r48.UIMapInfos;
 import r48.map.StuffRenderer;
+import r48.schema.arrays.ArraySchemaElement;
+import r48.schema.arrays.OneIndexedArraySchemaElement;
+import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.specialized.*;
 import r48.RubyIO;
 import r48.schema.*;
@@ -135,7 +138,7 @@ public class SDB {
 
                         if (text.equals("array")) {
                             int n = Integer.parseInt(args[point++]);
-                            return new ArraySchemaElement(get(), n, false);
+                            return new StandardArraySchemaElement(get(), n, false);
                         }
                         if (text.equals("table") || text.equals("tableTS")) {
                             String iV = args[point++];
@@ -160,7 +163,9 @@ public class SDB {
                             return new EventCommandArraySchemaElement(ise, getCMDB(a));
                         }
                         if (text.equals("arrayAL1"))
-                            return new ArraySchemaElement(get(), 0, true);
+                            return new StandardArraySchemaElement(get(), 0, true);
+                        if (text.equals("arrayIx1"))
+                            return new OneIndexedArraySchemaElement(get(), 0);
                         if (text.equals("arrayDAM")) {
                             int disambiguatorIndex = Integer.parseInt(args[point++]);
                             ISchemaElement disambiguatorType = get();
@@ -265,11 +270,12 @@ public class SDB {
                 } else if (c == 'D') {
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[1], null, args[2].equals("1"), args[3]));
                 } else if (c == 'd') {
-                    final String a2 = args[2];
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[1], new IFunction<RubyIO, RubyIO>() {
                         @Override
                         public RubyIO apply(RubyIO rubyIO) {
-                            return rubyIO.getInstVarBySymbol(a2);
+                            for (int i = 2; i < args.length; i++)
+                                rubyIO = rubyIO.getInstVarBySymbol(args[i]);
+                            return rubyIO;
                         }
                     }, false, null));
                 } else if (c == 'A') {

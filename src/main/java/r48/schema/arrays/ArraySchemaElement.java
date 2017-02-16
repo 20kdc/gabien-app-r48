@@ -3,10 +3,12 @@
  * No warranty is provided, implied or otherwise.
  */
 
-package r48.schema;
+package r48.schema.arrays;
 
 import gabien.ui.*;
 import r48.FontSizes;
+import r48.schema.ISchemaElement;
+import r48.schema.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -14,14 +16,13 @@ import r48.ui.UIAppendButton;
 import r48.ui.UIScrollVertLayout;
 
 /**
- * Created on 12/28/16.
+ * Notably, abstracting away sizeFixed and atLeastOne would just be an overcomplication.
+ * Created on 12/28/16. Abstractified 16 Feb 2017.
  */
-public class ArraySchemaElement implements ISchemaElement {
-    public ISchemaElement subelems;
+public abstract class ArraySchemaElement implements ISchemaElement {
     public int sizeFixed;
     public boolean atLeastOne;
-    public ArraySchemaElement(ISchemaElement elems, int fixedSize, boolean al1) {
-        subelems = elems;
+    public ArraySchemaElement(int fixedSize, boolean al1) {
         sizeFixed = fixedSize;
         atLeastOne = al1;
     }
@@ -42,11 +43,15 @@ public class ArraySchemaElement implements ISchemaElement {
                 uiSVL.panels.clear();
                 final Runnable me = this;
                 for (int i = 0; i < target.arrVal.length; i++) {
+                    int pLevel = elementPermissionsLevel(i, target);
+                    if (pLevel < 1)
+                        continue;
                     SchemaPath ind = path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]");
                     addAdditionButton(i, ind);
-                    UIElement uie = subelems.buildHoldingEditor(target.arrVal[i], launcher, ind);
+                    ISchemaElement subelem = getElementSchema(i);
+                    UIElement uie = subelem.buildHoldingEditor(target.arrVal[i], launcher, ind);
                     final int mi = i;
-                    if ((sizeFixed == 0) && (!(atLeastOne && (target.arrVal.length <= 1)))) {
+                    if (pLevel >= 2) {
                         uie = new UIAppendButton("-", uie, new Runnable() {
                             @Override
                             public void run() {
@@ -56,7 +61,6 @@ public class ArraySchemaElement implements ISchemaElement {
                                     newArr[j] = old[j];
                                 for (int j = mi + 1; j < old.length; j++)
                                     newArr[j - 1] = old[j];
-                                newArr = correctShift(newArr, mi, old.length - mi, -1);
                                 target.arrVal = newArr;
                                 // fixup array indices!
                                 modifyVal(target, path, false);
@@ -66,7 +70,7 @@ public class ArraySchemaElement implements ISchemaElement {
                             }
                         }, FontSizes.schemaButtonTextHeight);
                     }
-                    int sz = subelems.maxHoldingHeight();
+                    int sz = subelem.maxHoldingHeight();
                     uie.setBounds(new Rect(0, 0, 128, sz));
                     uiSVL.panels.add(uie);
                 }
@@ -85,11 +89,11 @@ public class ArraySchemaElement implements ISchemaElement {
                         for (int j = 0; j < i; j++)
                             newArr[j] = old[j];
                         RubyIO rio = new RubyIO();
-                        subelems.modifyVal(rio, ind, true);
+                        ISchemaElement subelem = getElementSchema(i);
+                        subelem.modifyVal(rio, ind, true);
                         newArr[i] = rio;
                         for (int j = i; j < old.length; j++)
                             newArr[j + 1] = old[j];
-                        newArr = correctShift(newArr, i, old.length - i, 1);
                         target.arrVal = newArr;
                         // fixup array indices!
                         modifyVal(target, path, false);
@@ -102,14 +106,6 @@ public class ArraySchemaElement implements ISchemaElement {
         };
         runCompleteRelayout.run();
         return uiSVL;
-    }
-
-    @Override
-    public int maxHoldingHeight() {
-        if (sizeFixed != 0)
-            return subelems.maxHoldingHeight() * sizeFixed;
-        // *gulp* guess, and hope the guess is correct.
-        return subelems.maxHoldingHeight() * 16;
     }
 
     @Override
@@ -142,7 +138,7 @@ public class ArraySchemaElement implements ISchemaElement {
                 //  it will lead to an infinite loop!
                 // So it has to be able to see it's own object for the loop to terminate.
                 target.arrVal[j] = rio;
-                subelems.modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(j), "[" + j + "]"), tempSetDefault);
+                getElementSchema(j).modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(j), "[" + j + "]"), tempSetDefault);
             }
             boolean aca = autoCorrectArray(target, path);
             modified = modified || aca;
@@ -154,18 +150,6 @@ public class ArraySchemaElement implements ISchemaElement {
             path.changeOccurred(true);
     }
 
-    // Function to be overridden by subclasses to shift references
-    //  in some parts of an array to account for changes in others.
-    // (Think RPG Script jumps)
-    // start and len are in the pre-shift array's indices, because those are the references you're looking for.
-    // The condition is if ((ref >= start) && ((ref < start + len)).
-    // Now, the reason this thing returns a value is because a specific subclass might need to
-    //  treat "delete the last line" as "don't actually delete the last line, but instead reset it" or some other logic.
-    // You never know!
-    public RubyIO[] correctShift(RubyIO[] newArr, int start, int len, int shift) {
-        return newArr;
-    }
-
     // Allows performing automatic correction of structural issues,
     //  after any data issues have been cleaned up.
     // path is already in the array entry.
@@ -174,7 +158,17 @@ public class ArraySchemaElement implements ISchemaElement {
     //  and don't bother to call super if setDefault is true,
     //  instead doing whatever you need yourself.
     // Also note that if a modification is performed, another check is done so that things like indent processing can run.
-    public boolean autoCorrectArray(RubyIO array, SchemaPath path) {
-        return false;
+    protected abstract boolean autoCorrectArray(RubyIO array, SchemaPath path);
+
+    // Allows using a custom schema for specific elements in subclasses.
+    protected abstract ISchemaElement getElementSchema(int j);
+
+    // 0: Do not even show this element.
+    // 1: Show & allow editing of this element, but disallow deletion.
+    // 2: All permissions.
+    // (Used to prevent a user shooting themselves in the foot - should not be considered a serious mechanism.)
+    protected int elementPermissionsLevel(int i, RubyIO target) {
+        boolean canDelete = (sizeFixed == 0) && (!(atLeastOne && target.arrVal.length <= 1));
+        return canDelete ? 2 : 1;
     }
 }

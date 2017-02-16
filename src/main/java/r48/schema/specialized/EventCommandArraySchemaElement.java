@@ -9,8 +9,9 @@ import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.dbs.SDB;
-import r48.schema.ArraySchemaElement;
+import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.ISchemaElement;
+import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.util.SchemaPath;
 
 import java.util.LinkedList;
@@ -19,7 +20,7 @@ import java.util.LinkedList;
  * ArraySchemaElement + some eventcommand specific stuff to automatically correct issues.
  * Created on 1/2/17.
  */
-public class EventCommandArraySchemaElement extends ArraySchemaElement {
+public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
     private final CMDB database;
     public EventCommandArraySchemaElement(ISchemaElement eventCommand, CMDB db) {
         super(eventCommand, 0, false);
