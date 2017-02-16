@@ -15,6 +15,8 @@ import r48.schema.ISchemaElement;
  * Used to create dialogs within the system.
  * The older system was arguably cleaner, but UIElements couldn't be refreshed,
  *  which left things like button texts stale.
+ * (The point of this object is that objects creating temporary dialogs create one of these as an excuse to launch a new panel,
+ *   and this forwards modifyVal requests back to the panel... I think.)
  * Created on 12/30/16.
  */
 public class TempDialogSchemaChoice implements ISchemaElement {

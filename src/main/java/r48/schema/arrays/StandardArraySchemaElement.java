@@ -1,3 +1,7 @@
+/*
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+ */
 package r48.schema.arrays;
 
 import r48.RubyIO;

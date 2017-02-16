@@ -79,9 +79,15 @@ public class SDB {
     public void readFile(BufferedReader bufferedReader) throws IOException {
         new DBLoader(bufferedReader, new IDatabase() {
             AggregateSchemaElement workingObj;
+
+            HashMap<Integer, String> commandBufferNames = new HashMap<Integer, String>();
+            HashMap<Integer, ISchemaElement> commandBufferSchemas = new HashMap<Integer, ISchemaElement>();
             @Override
             public void newObj(int objId, String objName) {
-                System.out.println("Array definition when inappropriate: " + objName);
+                commandBufferNames.put(objId, objName);
+                workingObj = new AggregateSchemaElement(new ISchemaElement[] {});
+                commandBufferSchemas.put(objId, workingObj);
+                //System.out.println("Array definition when inappropriate: " + objName);
             }
 
             public ISchemaElement handleChain(final String[] args, final int start) {
@@ -113,54 +119,9 @@ public class SDB {
                             return new IVarSchemaElement(a, get(), true);
                         }
 
-                        // CS means "control indent if allowed"
-                        // MS means "never control indent"
-                        if (text.equals("RPGCS")) {
-                            final CMDB database = getCMDB(args[point++]);
-                            ISchemaElement a = get();
-                            return new SubwindowSchemaElement(new RPGCommandSchemaElement(a, get(), database, allowControlOfEventCommandIndent), new IFunction<RubyIO, String>() {
-                                @Override
-                                public String apply(RubyIO rubyIO) {
-                                    return database.buildCodename(rubyIO, true);
-                                }
-                            });
-                        }
-                        if (text.equals("RPGMS")) {
-                            final CMDB database = getCMDB(args[point++]);
-                            ISchemaElement a = get();
-                            return new SubwindowSchemaElement(new RPGCommandSchemaElement(a, get(), database, false), new IFunction<RubyIO, String>() {
-                                @Override
-                                public String apply(RubyIO rubyIO) {
-                                    return database.buildCodename(rubyIO, true);
-                                }
-                            });
-                        }
-
                         if (text.equals("array")) {
                             int n = Integer.parseInt(args[point++]);
                             return new StandardArraySchemaElement(get(), n, false);
-                        }
-                        if (text.equals("table") || text.equals("tableTS")) {
-                            String iV = args[point++];
-                            String wV = args[point++];
-                            if (wV.equals("."))
-                                wV = null;
-                            String hV = args[point++];
-                            if (hV.equals("."))
-                                hV = null;
-                            int aW = Integer.parseInt(args[point++]);
-                            int aH = Integer.parseInt(args[point++]);
-                            int aI = Integer.parseInt(args[point++]);
-                            if (text.equals("tableTS"))
-                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI), getFunctionToReturn(iV));
-                            return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI), getFunctionToReturn(iV));
-                        }
-                        if (text.equals("CTNative"))
-                            return new CTNativeSchemaElement(args[point++]);
-                        if (text.equals("arrayCS")) {
-                            String a = args[point++];
-                            ISchemaElement ise = get();
-                            return new EventCommandArraySchemaElement(ise, getCMDB(a));
                         }
                         if (text.equals("arrayAL1"))
                             return new StandardArraySchemaElement(get(), 0, true);
@@ -177,12 +138,22 @@ public class SDB {
                             }
                             return new ArrayDisambiguatorSchemaElement(disambiguatorIndex, disambiguatorType, backup, disambiguations);
                         }
+                        if (text.equals("flushCommandBuffer")) {
+                            // time to flush it!
+                            String disambiguationIVar = args[point++];
+                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, "Code.Int."));
+                            HashMap<Integer, ISchemaElement> baseSE = commandBufferSchemas;
+                            commandBufferNames = new HashMap<Integer, String>();
+                            commandBufferSchemas = new HashMap<Integer, ISchemaElement>();
+                            return new GenericDisambiguationSchemaElement(disambiguationIVar, baseSE);
+                        }
                         if (text.equals("hash")) {
                             ISchemaElement k = get();
                             return new HashSchemaElement(k, get());
                         }
                         if (text.equals("subwindow"))
                             return new SubwindowSchemaElement(get());
+
                         if (text.equals("{")) {
                             // Aggregate
                             AggregateSchemaElement subag = new AggregateSchemaElement(new ISchemaElement[] {});
@@ -212,6 +183,54 @@ public class SDB {
 
                         if (text.equals("}"))
                             return null;
+
+                        // Specialized stuff starts here.
+                        // This includes anything of type 'u'.
+
+                        // CS means "control indent if allowed"
+                        // MS means "never control indent"
+                        if (text.equals("RPGCS")) {
+                            final CMDB database = getCMDB(args[point++]);
+                            ISchemaElement a = get();
+                            return new SubwindowSchemaElement(new RPGCommandSchemaElement(a, get(), database, allowControlOfEventCommandIndent), new IFunction<RubyIO, String>() {
+                                @Override
+                                public String apply(RubyIO rubyIO) {
+                                    return database.buildCodename(rubyIO, true);
+                                }
+                            });
+                        }
+                        if (text.equals("RPGMS")) {
+                            final CMDB database = getCMDB(args[point++]);
+                            ISchemaElement a = get();
+                            return new SubwindowSchemaElement(new RPGCommandSchemaElement(a, get(), database, false), new IFunction<RubyIO, String>() {
+                                @Override
+                                public String apply(RubyIO rubyIO) {
+                                    return database.buildCodename(rubyIO, true);
+                                }
+                            });
+                        }
+                        if (text.equals("table") || text.equals("tableTS")) {
+                            String iV = args[point++];
+                            String wV = args[point++];
+                            if (wV.equals("."))
+                                wV = null;
+                            String hV = args[point++];
+                            if (hV.equals("."))
+                                hV = null;
+                            int aW = Integer.parseInt(args[point++]);
+                            int aH = Integer.parseInt(args[point++]);
+                            int aI = Integer.parseInt(args[point++]);
+                            if (text.equals("tableTS"))
+                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI), getFunctionToReturn(iV));
+                            return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI), getFunctionToReturn(iV));
+                        }
+                        if (text.equals("CTNative"))
+                            return new CTNativeSchemaElement(args[point++]);
+                        if (text.equals("arrayCS")) {
+                            String a = args[point++];
+                            ISchemaElement ise = get();
+                            return new EventCommandArraySchemaElement(ise, getCMDB(a));
+                        }
                         // -- If all else fails, it's an ID to be looked up. --
                         return getSDBEntry(text);
                     }

@@ -5,6 +5,10 @@
 000:$
 p text string
 
+ CMDBUF test.
+ 123: TEST OBJECT ROCKETSHIP
+ p team RocketShip
+
 990: Need!
 p text string
 
