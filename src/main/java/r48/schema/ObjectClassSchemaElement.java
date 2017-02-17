@@ -51,6 +51,25 @@ public class ObjectClassSchemaElement implements ISchemaElement {
                 while (ise instanceof ProxySchemaElement)
                     ise = ((ProxySchemaElement) ise).getEntry();
 
+                if (ise instanceof GenericDisambiguationSchemaElement) {
+                    ISchemaElement sub = ((GenericDisambiguationSchemaElement) ise).getDisambiguation(target);
+                    if (sub instanceof AggregateSchemaElement) {
+                        for (ISchemaElement ise2 : ((AggregateSchemaElement) sub).aggregate) {
+                            while (ise2 instanceof ProxySchemaElement)
+                                ise2 = ((ProxySchemaElement) ise2).getEntry();
+                            while (ise2 instanceof SubwindowSchemaElement)
+                                ise2 = ((SubwindowSchemaElement) ise2).heldElement;
+                            while (ise2 instanceof ProxySchemaElement)
+                                ise2 = ((ProxySchemaElement) ise2).getEntry();
+                            if (ise2 instanceof IVarSchemaElement)
+                                iVars.add(((IVarSchemaElement) ise2).iVar);
+                        }
+                    } else {
+                        // sure, you probably know what you're doing
+                        continue;
+                    }
+                }
+
                 if (ise instanceof IVarSchemaElement) {
                     enableIVarCheck = true;
                     iVars.add(((IVarSchemaElement) ise).iVar);
