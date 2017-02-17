@@ -337,6 +337,10 @@ public class SDB {
                         workingObj = new AggregateSchemaElement(new ISchemaElement[] {});
                         commandBufferSchemas.put(-1, workingObj);
                     }
+                    if (args[0].equals("toWinAGameThatHasNoEnd")) {
+                        // Really special schema
+                        workingObj.aggregate.add(new RMAnimSchemaElement(args[1], args[2]));
+                    }
                     if (args[0].equals("name")) {
                         final LinkedList<String> arguments = new LinkedList<String>();
                         String text = "";

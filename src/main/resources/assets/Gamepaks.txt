@@ -6,7 +6,8 @@
 
 0: RXP
 f Data/MapInfos.rxdata
-1: RVXA
+ YES! Moved from Class 1 to Class 0 support at 1:21:00 17 Feb GMT.
+0: RVXA
 f Data/MapInfos.rvdata2
 0: Ika
 f Pbm/Map1.pbm
