@@ -19,6 +19,8 @@ import r48.schema.specialized.*;
 import r48.RubyIO;
 import r48.schema.*;
 import r48.schema.displays.EPGDisplaySchemaElement;
+import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
+import r48.schema.specialized.tbleditors.DefaultTableCellEditor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -210,7 +212,7 @@ public class SDB {
                                 }
                             });
                         }
-                        if (text.equals("table") || text.equals("tableTS")) {
+                        if (text.equals("table") || text.equals("tableTS") || text.equals("tableTSF")) {
                             String iV = args[point++];
                             String wV = args[point++];
                             if (wV.equals("."))
@@ -221,9 +223,16 @@ public class SDB {
                             int aW = Integer.parseInt(args[point++]);
                             int aH = Integer.parseInt(args[point++]);
                             int aI = Integer.parseInt(args[point++]);
+                            if (text.equals("tableTSF")) {
+                                // Flags which are marked with "." are hidden. Starts with 1, then 2, then 4...
+                                LinkedList<String> flags = new LinkedList<String>();
+                                while (point < args.length)
+                                    flags.add(args[point++]);
+                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, new BitfieldTableCellEditor(flags.toArray(new String[0]))), getFunctionToReturn(iV));
+                            }
                             if (text.equals("tableTS"))
-                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI), getFunctionToReturn(iV));
-                            return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI), getFunctionToReturn(iV));
+                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, new DefaultTableCellEditor()), getFunctionToReturn(iV));
+                            return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, new DefaultTableCellEditor()), getFunctionToReturn(iV));
                         }
                         if (text.equals("CTNative"))
                             return new CTNativeSchemaElement(args[point++]);

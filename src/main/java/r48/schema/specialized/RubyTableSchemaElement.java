@@ -12,6 +12,7 @@ import r48.RubyIO;
 import r48.RubyTable;
 import r48.schema.ISchemaElement;
 import r48.schema.IntegerSchemaElement;
+import r48.schema.specialized.tbleditors.ITableCellEditor;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIGrid;
@@ -26,28 +27,35 @@ import r48.ui.UIScrollVertLayout;
  * Kind of finished
  * Worked on at 01/03/16, comment rewritten very, very early technically the next day,
  *  after AutoTileRules was added
+ * NEWER: Abstractified at midnight. That is, 0:00 February 18th 2017, where I count 8 hours after that as being the same day.
  */
 public class RubyTableSchemaElement<TileHelper> implements ISchemaElement {
     public final int defW;
     public final int defH;
     public final int planes;
     public final String iVar, widthVar, heightVar;
-    public RubyTableSchemaElement(String iVar, String wVar, String hVar, int dw, int dh, int defL) {
+    public final ITableCellEditor tableCellEditor;
+
+    // This is imperfect but should do the job.
+    private int lastSelectionCache;
+    private double lastScrollCache;
+
+    public RubyTableSchemaElement(String iVar, String wVar, String hVar, int dw, int dh, int defL, ITableCellEditor tcl) {
         this.iVar = iVar;
         widthVar = wVar;
         heightVar = hVar;
         defW = dw;
         defH = dh;
         planes = defL;
+        tableCellEditor = tcl;
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        final RubyIO width = widthVar == null ? null : target.getInstVarBySymbol(widthVar);
-        final RubyIO height = heightVar == null ? null : target.getInstVarBySymbol(heightVar);
         final RubyIO targV = target.getInstVarBySymbol(iVar);
         final RubyTable targ = new RubyTable(targV.userVal);
-        final UIScrollVertLayout uiSVL = new UIScrollVertLayout();
+        final RubyIO width = widthVar == null ? null : target.getInstVarBySymbol(widthVar);
+        final RubyIO height = heightVar == null ? null : target.getInstVarBySymbol(heightVar);
         final UIGrid uig = new UIGrid(32, targ.width * targ.height) {
             private TileHelper tileHelper;
             @Override
@@ -57,41 +65,32 @@ public class RubyTableSchemaElement<TileHelper> implements ISchemaElement {
                 if (targ.outOfBounds(tX, tY))
                     return;
                 tileHelper = baseTileDraw(target, t, x, y, igd, tileHelper);
+                igd.clearRect(0, 0, 0, x, y, tileSize, FontSizes.gridTextHeight);
                 for (int i = 0; i < targ.planeCount; i++)
-                    UILabel.drawString(igd, x, y + (i * 8), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, FontSizes.gridTextHeight);
+                    UILabel.drawString(igd, x, y + (i * FontSizes.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, FontSizes.gridTextHeight);
             }
         };
-        final UINumberBox[] boxes = new UINumberBox[targ.planeCount];
-        for (int i = 0; i < boxes.length; i++) {
-            boxes[i] = new UINumberBox(FontSizes.tableElementTextHeight);
-            boxes[i].number = targ.getTiletype(0, 0, i);
-            boxes[i].onEdit = createOnEdit(targ, path, 0, 0, i, boxes[i]);
-            uiSVL.panels.add(boxes[i]);
-        }
+
+        UIScrollVertLayout uiSVL = new UIScrollVertLayout();
+        final Runnable editorOnSelChange = tableCellEditor.createEditor(uiSVL, targV, uig, new Runnable() {
+            @Override
+            public void run() {
+                path.changeOccurred(false);
+            }
+        });
         uig.onSelectionChange = new Runnable() {
             @Override
             public void run() {
-                int sel = uig.getSelected();
-                int selX = sel % targ.width;
-                int selY = sel / targ.width;
-                boolean oob = targ.outOfBounds(selX, selY);
-                for (int i = 0; i < boxes.length; i++) {
-                    if (oob) {
-                        boxes[i].number = 0;
-                        boxes[i].onEdit = new Runnable() {
-                            @Override
-                            public void run() {
-                            }
-                        };
-                        boxes[i].readOnly = true;
-                        continue;
-                    }
-                    boxes[i].number = targ.getTiletype(selX, selY, i);
-                    boxes[i].onEdit = createOnEdit(targ, path, selX, selY, i, boxes[i]);
-                    boxes[i].readOnly = false;
-                }
+                lastScrollCache = uig.uivScrollbar.scrollPoint;
+                lastSelectionCache = uig.getSelected();
+                editorOnSelChange.run();
             }
         };
+
+        uig.uivScrollbar.scrollPoint = lastScrollCache;
+        uig.setSelected(lastSelectionCache);
+        uig.onSelectionChange.run();
+
         final UINumberBox wNB = new UINumberBox(FontSizes.tableSizeTextHeight);
         wNB.number = targ.width;
         final UINumberBox hNB = new UINumberBox(FontSizes.tableSizeTextHeight);
@@ -111,7 +110,8 @@ public class RubyTableSchemaElement<TileHelper> implements ISchemaElement {
                 path.changeOccurred(false);
             }
         }));
-        UIElement r = new UIHHalfsplit(7, 8, uig, uiSVL);
+
+        UIElement r = new UIHHalfsplit(6, 8, uig, uiSVL);
         r.setBounds(new Rect(0, 0, 128, 128));
         return r;
     }
@@ -121,17 +121,6 @@ public class RubyTableSchemaElement<TileHelper> implements ISchemaElement {
     public TileHelper baseTileDraw(RubyIO target, int t, int x, int y, IGrInDriver igd, TileHelper th) {
         return null;
     }
-
-    private Runnable createOnEdit(final RubyTable targ, final SchemaPath path, final int x, final int y, final int p, final UINumberBox unb) {
-        return new Runnable() {
-            @Override
-            public void run() {
-                targ.setTiletype(x, y, p, (short) unb.number);
-                path.changeOccurred(false);
-            }
-        };
-    }
-
 
     @Override
     public int maxHoldingHeight() {

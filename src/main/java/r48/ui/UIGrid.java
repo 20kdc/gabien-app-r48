@@ -24,6 +24,7 @@ public class UIGrid extends UIPanel {
     public int bkgB = 0;
 
     // Region selection.
+    public boolean canMultiSelect = false;
     private int selTile = 0;
     public int selWidth = 1;
     public int selHeight = 1;
@@ -128,6 +129,8 @@ public class UIGrid extends UIPanel {
     @Override
     public void handleDrag(int x, int y) {
         if (x < tileSize * tmWidth) {
+            if (!canMultiSelect)
+                return;
             int tx = x / tileSize;
             int ty = (y / tileSize) + (getScrollOffset() / tmWidth);
             int ox = selTile % tmWidth;
@@ -154,5 +157,15 @@ public class UIGrid extends UIPanel {
 
     public int getSelected() {
         return selTile;
+    }
+
+    public void setSelected(int i) {
+        if (i < 0)
+            return;
+        if (i >= tileCount)
+            return;
+        selTile = i;
+        selWidth = 1;
+        selHeight = 1;
     }
 }
