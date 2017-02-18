@@ -76,6 +76,7 @@ public class UITest extends UIPanel {
             });
             masterPanel.panels.add(button);
         }
+        masterPanel.setBounds(masterPanel.getBounds());
     }
 
     @Override

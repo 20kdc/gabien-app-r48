@@ -28,6 +28,8 @@ public class FontSizes {
 
     public static int mapToolSelectorTextHeight = 16;
     public static int eventPickerEntryTextHeight = 16;
+    public static int rmaTimeframeFontSize = 8;
+    public static int rmaPropertyFontSize = 8;
 
     public static int dialogWindowTextHeight = 16;
     public static int textDialogFieldTextHeight = 16;

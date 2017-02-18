@@ -20,6 +20,7 @@ public class UITileGrid extends UIGrid {
     public final boolean autoTile;
     public UITileGrid(UIMapView mv, int tStart, int tileCount, boolean aTile) {
         super(mv.tileSize, tileCount);
+        canMultiSelect = true;
         autoTile = aTile;
         map = mv;
         tileStart = tStart;
@@ -33,6 +34,14 @@ public class UITileGrid extends UIGrid {
         if (autoTile)
             r -= r / 49;
         return r + tileStart;
+    }
+
+    @Override
+    public void setSelected(int i) {
+        i -= tileStart;
+        if (autoTile)
+            i += i / 48;
+        super.setSelected(i);
     }
 
     private boolean isAutoTile(int t) {

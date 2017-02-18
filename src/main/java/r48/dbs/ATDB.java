@@ -54,6 +54,8 @@ public class ATDB {
     public ATDB(BufferedReader br) throws IOException {
         new DBLoader(br, new IDatabase() {
             Autotile current = null;
+            // for 'x'-type one-line-space-delimited entries
+            int autoIncrementingId = 0;
             @Override
             public void newObj(int objId, String objName) {
                 current = new Autotile();
@@ -63,6 +65,16 @@ public class ATDB {
 
             @Override
             public void execCmd(char cmd, String[] args) {
+                if (cmd == 'x') {
+                    current = new Autotile();
+                    current.name = "X" + autoIncrementingId;
+                    entries[autoIncrementingId++] = current;
+                    int[] cornerMapping = new int[] {
+                            0, 2, 3, 5, 9, 11
+                    };
+                    for (int i = 0; i < 4; i++)
+                        current.corners[i] = cornerMapping[Integer.parseInt(args[i])];
+                }
                 if (cmd == 'd') {
                     current.corners[0] = nameFromWord(args[0]);
                     current.corners[1] = nameFromWord(args[1]);
@@ -115,8 +127,10 @@ public class ATDB {
             area[6] = (i & 64) != 0;
             area[7] = (i & 128) != 0;
             inverseMap[i] = getMostSuitableAutotile(area);
-            if (inverseMap[i] == 47)
+            if (inverseMap[i] == -1) {
                 issues++;
+                inverseMap[i] = 47;
+            }
         }
         if (issues > 0)
             System.out.println("There are " + issues + " situations in which the AutoTiles code may fail.");
@@ -163,8 +177,15 @@ public class ATDB {
                 }
             }
         }
-        if (multiplePossible)
-            return 47;
+        if (multiplePossible) {
+            // It seems 47 is actually the correct response in some cases.
+            /*
+            String s = "";
+            for (int k = 0; k < 8; k++)
+                s += area[k] ? "1" : "0";
+            System.out.println("Situation code " + s);*/
+            return -1;
+        }
         return bestAT;
     }
 

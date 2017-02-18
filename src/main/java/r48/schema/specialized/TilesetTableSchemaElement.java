@@ -9,14 +9,15 @@ import gabien.IGrInDriver;
 import r48.map.tiles.ITileRenderer;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
+import r48.schema.specialized.tbleditors.ITableCellEditor;
 
 /**
  * Tables, now with a tileset background!
  * Created on 1/4/17.
  */
 public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRenderer> {
-    public TilesetTableSchemaElement(String iVar, String wVar, String hVar, int dw, int dh, int defL) {
-        super(iVar, wVar, hVar, dw, dh, defL);
+    public TilesetTableSchemaElement(String iVar, String wVar, String hVar, int dw, int dh, int defL, ITableCellEditor itce) {
+        super(iVar, wVar, hVar, dw, dh, defL, itce);
     }
 
     @Override
