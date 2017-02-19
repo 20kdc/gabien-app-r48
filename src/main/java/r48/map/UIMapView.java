@@ -81,7 +81,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         // Ok, decode Table
         int w = mapTable.width;
         int h = mapTable.height;
-        boolean debug = false;
+        boolean debug = igd.isKeyDown(IGrInDriver.VK_D);
         int eTileSize = tileSize;
         if (minimap)
             eTileSize = 2;
@@ -144,7 +144,9 @@ public class UIMapView extends UIElement implements IWindowElement {
                         UILabel.drawString(igd, px, py + (l * FontSizes.mapDebugTextHeight), t, false, FontSizes.mapDebugTextHeight);
                     }
                 } else {
-                    for (int l = 0; l < mapTable.planeCount; l++) {
+                    int[] layerOrder = AppMain.stuffRenderer.tileRenderer.tileLayerDrawOrder();
+                    for (int li = 0; li < layerOrder.length; li++) {
+                        int l = layerOrder[li];
                         if (!layerInvisible[l]) {
                             short tidx = mapTable.getTiletype(i, j, l);
                             if (i == mouseXT)

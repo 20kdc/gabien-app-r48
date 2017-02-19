@@ -309,17 +309,22 @@ public class SDB {
                     }, false, null));
                 } else if (c == 'A') {
                     // This is needed so the engine actually understands which autotiles map to what
-                    InputStreamReader fr = new InputStreamReader(GaBIEn.getFile(args[0]));
-                    AppMain.autoTiles = new ATDB(new BufferedReader(fr));
-                    fr.close();
-                    // This is needed to make actual autotile *placement* work.
-                    // In theory, it's independent of the AutoTiles setup,
-                    //  so long as the AutoTiles setup's using the same sprite-sheets.
-                    // In practice, it's only been tested with the default AutoTiles.txt setup.
-                    if (args.length > 1) {
-                        fr = new InputStreamReader(GaBIEn.getFile(args[1]));
-                        AppMain.autoTiles.calculateInverseMap(new BufferedReader(fr));
+                    int p = 0;
+                    AppMain.autoTiles = new ATDB[args.length / 2];
+                    for (int i = 0; i < args.length; i += 2) {
+                        InputStreamReader fr = new InputStreamReader(GaBIEn.getFile(args[i]));
+                        AppMain.autoTiles[p] = new ATDB(new BufferedReader(fr));
                         fr.close();
+                        // This is needed to make actual autotile *placement* work.
+                        // In theory, it's independent of the AutoTiles setup,
+                        //  so long as the AutoTiles setup's using the same sprite-sheets.
+                        // In practice, it's only been tested with the default AutoTiles.txt setup.
+                        if (!args[i + 1].equals(".")) {
+                            fr = new InputStreamReader(GaBIEn.getFile(args[i + 1]));
+                            AppMain.autoTiles[p].calculateInverseMap(new BufferedReader(fr));
+                            fr.close();
+                        }
+                        p++;
                     }
                 } else if (c == 'C') {
                     if (args[0].equals("allowIndentControl"))

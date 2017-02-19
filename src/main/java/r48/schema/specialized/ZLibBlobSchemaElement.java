@@ -36,7 +36,7 @@ public class ZLibBlobSchemaElement extends StringBlobSchemaElement {
 
     @Override
     protected InputStream getDecompressionInputStream(byte[] b) {
-        return new DeflaterInputStream(new ByteArrayInputStream(b));
+        return new InflaterInputStream(new ByteArrayInputStream(b));
     }
 
 }

@@ -18,6 +18,11 @@ public class NullTileRenderer implements ITileRenderer {
     }
 
     @Override
+    public int[] tileLayerDrawOrder() {
+        return new int[0];
+    }
+
+    @Override
     public void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets) {
 
     }
@@ -42,7 +47,7 @@ public class NullTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public int[] indicateATs() {
-        return new int[0];
+    public AutoTileTypeField[] indicateATs() {
+        return new AutoTileTypeField[0];
     }
 }
