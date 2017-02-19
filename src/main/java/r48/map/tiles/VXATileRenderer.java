@@ -77,6 +77,8 @@ public class VXATileRenderer implements ITileRenderer {
         // I don't understand the following planes:
         // - 8 seems to act differently to 9 and A while BEING ON THE SAME TILEMAP.
         //   WTF???
+        //    0x8F0-0x920 is an AT 'over the border', too (currently gets splifflicated)
+        //    Make sure to split the 0x800 region in whatever way makes sense
         // - Some tiles (Crysalis :: Limenas Inn, counter) can warp reality.
         //   Yes. You read that right. THEY CAN WARP REALITY.
         // - Shadow layer values.
@@ -183,17 +185,11 @@ public class VXATileRenderer implements ITileRenderer {
         if (mode == 0) {
 
         } else if (mode == 1) {
-            // 15B3: Wall used outside a house (Unsure about the rest of it).
-            // 1C12: Another wall used inside a house.
-            // 1C42: Wall of a castle-like thing??
-            // 1DC0: Dungeon_A4 sector 20, swampedT.
-            // 1F48: Dungeon_A4 sector 20, LL.
-
             /**
              * THE EXTRA SUPER IMPORTANT NOTES ON Tilemap 3.
              * [EPC] (use this to find other bits of documentation)
              *
-             * After much screwing around, I've come to the conclusion this is organized in "sheets" of 0x180 tiles.
+             * After much orderly and totally not insanity-causing investigation, I've come to the conclusion this is organized in "sheets" of 0x180 tiles.
              * The sheets are interleaved.
              * The naming convention I put in place for them is random, but:
              * A-type sheets are wall sheets, and have lots of invalid tiles.
@@ -335,9 +331,11 @@ public class VXATileRenderer implements ITileRenderer {
             return new UITileGrid[]{
                     new UITileGrid(mv, 0x000, 1, false),
                     new UITileGrid(mv, 0x000, 0x400, false),
-                    new UITileGrid(mv, 0x600, 0x7F, false),
+                    new UITileGrid(mv, 0x600, 0x100, false),
                     new UITileGrid(mv, 0x800, 0x300, true),
                     new UITileGrid(mv, 0xB00, 0x600, true),
+                    new UITileGrid(mv, 0x1100, 0x600, true),
+                    new UITileGrid(mv, 0x1700, 0x900, true),
             };
         }
     }
@@ -352,10 +350,12 @@ public class VXATileRenderer implements ITileRenderer {
             };
         return new String[]{
                 "NIL",
-                "pABCD",
-                "6+",
-                "8+",
-                "B+",
+                "G1", // General 1
+                "G2", // General 2
+                "AT1", // AT Layers
+                "AT2",
+                "AT3",
+                "AT4",
         };
     }
 
@@ -378,9 +378,10 @@ public class VXATileRenderer implements ITileRenderer {
                 atWFields.add(resultingAddr + 0x1E80);
             }
             // T.M. 2 AT fields!
-            atWFields.add(0x1100);
-            // -- LEGACY AT FIELD DEFINITIONS, MAY NEED UPDATE --
+            atWFields.add(resultingAddr + 0x1100);
+            // The rest
             int resultingEndAddr = resultingAddr + 47;
+            // May need update in future.
             if (resultingEndAddr < 0x300)
                 atFields.add(0x800 + resultingAddr);
             if (resultingEndAddr < 0x600)

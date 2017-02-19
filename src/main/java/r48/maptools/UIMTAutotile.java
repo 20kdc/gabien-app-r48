@@ -50,8 +50,10 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
 
     @Override
     public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
-        if (lastSelectedLayer != map.getCurrentLayer())
+        if (lastSelectedLayer != map.getCurrentLayer()) {
             setupView();
+            setBounds(getBounds());
+        }
         super.updateAndRender(ox, oy, deltaTime, select, igd);
     }
 
@@ -62,7 +64,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         if (layer == currentLayer) {
             int selected = tileMaps[tabPane.tab].getSelected();
             if (tileMaps[tabPane.tab].selectedATB())
-                return (short) (selected - 2);
+                return (short) (selected - 47);
             return (short) selected;
         }
         return there;
