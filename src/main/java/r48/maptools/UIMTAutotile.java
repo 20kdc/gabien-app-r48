@@ -13,6 +13,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
+import r48.map.tiles.AutoTileTypeField;
 import r48.ui.UITileGrid;
 
 /**
@@ -22,7 +23,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
     private UITabPane tabPane;
     private UITileGrid[] tileMaps;
     private final UIMapView map;
-    private int[] atBases;
+    private AutoTileTypeField[] atBases;
     private int lastSelectedLayer = 0;
 
     public UIMTAutotile(UIMapView mv) {
@@ -116,19 +117,19 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         }
     }
 
-    private int getAutotileType(int x, int y, int layer, int preferred) {
+    private AutoTileTypeField getAutotileType(int x, int y, int layer, AutoTileTypeField preferred) {
         if (map.mapTable.outOfBounds(x, y))
             return preferred;
         int m = map.mapTable.getTiletype(x, y, layer);
         for (int i = 0; i < atBases.length; i++)
-            if (atBases[i] <= m)
-                if ((atBases[i] + 48) > m)
+            if (atBases[i].start <= m)
+                if ((atBases[i].start + atBases[i].length) > m)
                     return atBases[i];
-        return -1;
+        return null;
     }
     private void updateAutotile(int x, int y, int layer) {
-        int myAT = getAutotileType(x, y, layer, -1);
-        if (myAT == -1)
+        AutoTileTypeField myAT = getAutotileType(x, y, layer, null);
+        if (myAT == null)
             return;
 
         int index = 0;
@@ -142,7 +143,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
                     index |= power;
                 power <<= 1;
             }
-        int recommendedTile = AppMain.autoTiles.inverseMap[index] + myAT;
+        int recommendedTile = AppMain.autoTiles[myAT.databaseId].inverseMap[index] + myAT.start;
         map.mapTable.setTiletype(x, y, layer, (short) recommendedTile);
         map.passModificationNotification();
     }

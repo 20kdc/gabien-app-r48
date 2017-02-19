@@ -68,7 +68,7 @@ public class AppMain {
     public static ObjectDB objectDB = null;
 
     // Databases
-    public static ATDB autoTiles = null;
+    public static ATDB[] autoTiles = new ATDB[0];
     public static SDB schemas = null;
 
     // State for in-system copy/paste

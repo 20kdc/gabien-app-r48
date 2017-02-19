@@ -11,17 +11,20 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.UITest;
+import r48.map.tiles.VXATileRenderer;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTEventPicker;
+import r48.maptools.UIMTShadowLayer;
+
+import java.util.LinkedList;
 
 /**
  * WARNING: May Contain Minigame.
  * Created on 1/1/17.
  */
 public class UIMapViewContainer extends UIPanel {
-    public UIMapView view;
     private final ISupplier<IConsumer<UIElement>> windowMakerSupplier;
-
+    public UIMapView view;
     private final IMapViewCallbacks nullMapTool = new IMapViewCallbacks() {
         @Override
         public short shouldDrawAtCursor(short there, int layer, int currentLayer) {
@@ -39,50 +42,63 @@ public class UIMapViewContainer extends UIPanel {
 
         @Override
         public void confirmAt(int x, int y, int layer) {
-            AppMain.nextMapTool = new UIPopupMenu(new String[]{
-                    "Tiles",
-                    "Inspect",
-                    "Edit Direct.",
-                    "Event List",
-                    "Reload Tileset",
-            }, new Runnable[]{
-                    new Runnable() {
+            LinkedList<String> toolNames = new LinkedList<String>();
+            LinkedList<Runnable> toolRunnables = new LinkedList<Runnable>();
+
+            toolNames.add("Tiles");
+            toolRunnables.add(new Runnable() {
+                                  @Override
+                                  public void run() {
+                                      if (view != null)
+                                          AppMain.nextMapTool = new UIMTAutotile(view);
+                                  }
+                              });
+            if (AppMain.stuffRenderer != null) {
+                if (AppMain.stuffRenderer.tileRenderer instanceof VXATileRenderer) {
+                    toolNames.add("Shadow/Region");
+                    toolRunnables.add(new Runnable() {
                         @Override
                         public void run() {
                             if (view != null)
-                                AppMain.nextMapTool = new UIMTAutotile(view);
+                                AppMain.nextMapTool = new UIMTShadowLayer(view);
                         }
-                    },
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            if (view != null)
-                                windowMakerSupplier.get().accept(new UITest(view.map));
-                        }
-                    },
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            if (view != null)
-                                AppMain.launchSchema("RPG::Map", view.map);
-                        }
-                    },
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            if (view != null)
-                                AppMain.nextMapTool = new UIMTEventPicker(windowMakerSupplier.get(), view);
-                        }
-                    },
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            GaBIEn.hintFlushAllTheCaches();
-                            if (view != null)
-                                AppMain.stuffRenderer = StuffRenderer.rendererFromMap(view.map);
-                        }
-                    }
-            }, FontSizes.mapToolSelectorTextHeight, true);
+                    });
+                }
+            }
+            toolNames.add("Edit Direct.");
+            toolRunnables.add(new Runnable() {
+                                  @Override
+                                  public void run() {
+                                      if (view != null)
+                                          AppMain.launchSchema("RPG::Map", view.map);
+                                  }
+                              });
+            toolNames.add("Event List");
+            toolRunnables.add(new Runnable() {
+                @Override
+                public void run() {
+                    if (view != null)
+                        AppMain.nextMapTool = new UIMTEventPicker(windowMakerSupplier.get(), view);
+                }
+            });
+            toolNames.add("Reload Tileset");
+            toolRunnables.add(new Runnable() {
+                @Override
+                public void run() {
+                    GaBIEn.hintFlushAllTheCaches();
+                    if (view != null)
+                        AppMain.stuffRenderer = StuffRenderer.rendererFromMap(view.map);
+                }
+            });
+            toolNames.add("<for dev only>");
+            toolRunnables.add(new Runnable() {
+                @Override
+                public void run() {
+                    if (view != null)
+                        windowMakerSupplier.get().accept(new UITest(view.map));
+                }
+            });
+            AppMain.nextMapTool = new UIPopupMenu(toolNames.toArray(new String[0]), toolRunnables.toArray(new Runnable[0]), FontSizes.mapToolSelectorTextHeight, true);
         }
     };
 

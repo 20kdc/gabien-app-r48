@@ -77,7 +77,18 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
             int ty = dir;
 
             if (useVXAExtensionScheme) {
-                if (!s.startsWith("!$")) {
+                if (s.startsWith("!$")) {
+                    // Character index doesn't work on these
+                } else if (s.startsWith("!")) {
+                    // Character index works, width is 32
+                    sprW = 32;
+                    sprH = i.getHeight() / 8;
+                    int idx = (int) target.getInstVarBySymbol("@character_index").fixnumVal;
+                    // NOTE: still unsure on how segmentation works.
+                    // for now, things work out?
+                    ty += (idx / 4) * 4;
+                    tx += (idx % 4) * 3;
+                } else {
                     sprW = 32;
                     sprH = 32;
                     int idx = (int) target.getInstVarBySymbol("@character_index").fixnumVal;

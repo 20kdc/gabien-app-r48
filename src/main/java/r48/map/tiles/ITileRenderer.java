@@ -15,6 +15,7 @@ import r48.ui.UITileGrid;
 public interface ITileRenderer {
     int getTileSize();
 
+    int[] tileLayerDrawOrder();
     void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets);
     String getPanorama();
 
@@ -22,5 +23,5 @@ public interface ITileRenderer {
 
     String[] getPlaneNames(int layer);
 
-    int[] indicateATs();
+    AutoTileTypeField[] indicateATs();
 }

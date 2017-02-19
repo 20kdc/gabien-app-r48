@@ -53,6 +53,12 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     @Override
+    public int[] tileLayerDrawOrder() {
+        // Standard draw order.
+        return new int[] {0, 1, 2};
+    }
+
+    @Override
     public void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets) {
         // The logic here is only documented in the mkxp repository, in tilemap.cpp.
         // I really hope it doesn't count as stealing here,
@@ -66,8 +72,8 @@ public class XPTileRenderer implements ITileRenderer {
             tidx %= 48;
             boolean didDraw = false;
             if (tilesetMaps[atMap] != null) {
-                if (ets == tileSize) {
-                    ATDB.Autotile at = AppMain.autoTiles.entries[tidx];
+                if ((ets == tileSize) && (AppMain.autoTiles[0] != null)) {
+                    ATDB.Autotile at = AppMain.autoTiles[0].entries[tidx];
                     if (at != null){
                         int cSize = tileSize / 2;
                         for (int sA = 0; sA < 2; sA++)
@@ -146,16 +152,16 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public int[] indicateATs() {
-        return new int[] {
-            0,
-            48,
-            48 * 2,
-            48 * 3,
-            48 * 4,
-            48 * 5,
-            48 * 6,
-            48 * 7
+    public AutoTileTypeField[] indicateATs() {
+        return new AutoTileTypeField[] {
+                new AutoTileTypeField(0, 48, 0),
+                new AutoTileTypeField(48, 48, 0),
+                new AutoTileTypeField(48 * 2, 48, 0),
+                new AutoTileTypeField(48 * 3, 48, 0),
+                new AutoTileTypeField(48 * 4, 48, 0),
+                new AutoTileTypeField(48 * 5, 48, 0),
+                new AutoTileTypeField(48 * 6, 48, 0),
+                new AutoTileTypeField(48 * 7, 48, 0),
         };
     }
 }

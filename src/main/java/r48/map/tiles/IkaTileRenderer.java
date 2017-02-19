@@ -22,6 +22,12 @@ public class IkaTileRenderer implements ITileRenderer {
     }
 
     @Override
+    public int[] tileLayerDrawOrder() {
+        // Standard draw order.
+        return new int[] {0};
+    }
+
+    @Override
     public void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets) {
         String[] blockTypes = new String[16];
         blockTypes[2] = "filt";
@@ -80,8 +86,8 @@ public class IkaTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public int[] indicateATs() {
+    public AutoTileTypeField[] indicateATs() {
         // simple enough: Ikachan doesn't have ATs.
-        return new int[0];
+        return new AutoTileTypeField[0];
     }
 }
