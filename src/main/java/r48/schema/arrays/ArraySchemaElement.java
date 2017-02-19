@@ -6,6 +6,7 @@
 package r48.schema.arrays;
 
 import gabien.ui.*;
+import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.schema.ISchemaElement;
 import r48.schema.IntegerSchemaElement;
@@ -55,13 +56,7 @@ public abstract class ArraySchemaElement implements ISchemaElement {
                         uie = new UIAppendButton("-", uie, new Runnable() {
                             @Override
                             public void run() {
-                                RubyIO[] old = target.arrVal;
-                                RubyIO[] newArr = new RubyIO[old.length - 1];
-                                for (int j = 0; j < mi; j++)
-                                    newArr[j] = old[j];
-                                for (int j = mi + 1; j < old.length; j++)
-                                    newArr[j - 1] = old[j];
-                                target.arrVal = newArr;
+                                ArrayUtils.removeRioElement(target, mi);
                                 // fixup array indices!
                                 modifyVal(target, path, false);
                                 // whack the UI
@@ -84,17 +79,11 @@ public abstract class ArraySchemaElement implements ISchemaElement {
                 uiSVL.panels.add(new UITextButton(FontSizes.schemaArrayAddTextHeight, "Add @ " + i, new Runnable() {
                     @Override
                     public void run() {
-                        RubyIO[] old = target.arrVal;
-                        RubyIO[] newArr = new RubyIO[old.length + 1];
-                        for (int j = 0; j < i; j++)
-                            newArr[j] = old[j];
                         RubyIO rio = new RubyIO();
                         ISchemaElement subelem = getElementSchema(i);
                         subelem.modifyVal(rio, ind, true);
-                        newArr[i] = rio;
-                        for (int j = i; j < old.length; j++)
-                            newArr[j + 1] = old[j];
-                        target.arrVal = newArr;
+
+                        ArrayUtils.insertRioElement(target, rio, i);
                         // fixup array indices!
                         modifyVal(target, path, false);
                         // whack the UI

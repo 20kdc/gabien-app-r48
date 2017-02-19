@@ -22,9 +22,11 @@ import r48.schema.util.SchemaPath;
  */
 public class RMAnimSchemaElement implements ISchemaElement {
     private String a, b;
-    public RMAnimSchemaElement(String arg, String arg1) {
+    private int framerate;
+    public RMAnimSchemaElement(String arg, String arg1, int fps) {
         a = arg;
         b = arg1;
+        framerate = fps;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class RMAnimSchemaElement implements ISchemaElement {
                     public void run() {
                         path.changeOccurred(false);
                     }
-                }, a, b);
+                }, a, b, framerate);
                 rmarp.setBounds(new Rect(0, 0, 320, 200));
                 launcher.launchOther(rmarp);
             }
