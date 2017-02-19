@@ -33,6 +33,7 @@ public class UICellEditingPanel extends UIPanel {
                 "yPos",
                 "scale",
                 "angle",
+                "mirror",
                 "opacity",
                 "blendType"
         };

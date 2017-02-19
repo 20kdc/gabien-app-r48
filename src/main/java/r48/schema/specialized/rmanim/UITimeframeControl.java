@@ -19,7 +19,9 @@ import r48.ui.UIAppendButton;
  */
 public class UITimeframeControl extends UIPanel {
     public RMAnimRootPanel rootPanel;
-    public double playTimer = 0;
+    private double playTimer = 0;
+    public int recommendedFramerate;
+
     public UILabel currentFrame = new UILabel("loading... 20kdc technologies.", FontSizes.rmaTimeframeFontSize);
     public UIAppendButton playController = new UIAppendButton("Play", currentFrame, new Runnable() {
         @Override
@@ -30,8 +32,9 @@ public class UITimeframeControl extends UIPanel {
     // The rest of the toolbar is constructed in the constructor
     public UIElement toolbar = playController;
 
-    public UITimeframeControl(RMAnimRootPanel rp) {
+    public UITimeframeControl(RMAnimRootPanel rp, int framerate) {
         rootPanel = rp;
+        recommendedFramerate = framerate;
 
         toolbar = new UIAppendButton("<", toolbar, new Runnable() {
             @Override
@@ -68,7 +71,7 @@ public class UITimeframeControl extends UIPanel {
         toolbar = new UIAppendButton("+", toolbar, new Runnable() {
             @Override
             public void run() {
-                rootPanel.insertFrameCopy();
+                rootPanel.insertFrame(new RubyIO().setDeepClone(rootPanel.getFrame()));
             }
         }, FontSizes.rmaTimeframeFontSize);
         toolbar = new UIAppendButton("-", toolbar, new Runnable() {
@@ -92,8 +95,9 @@ public class UITimeframeControl extends UIPanel {
     public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
         if (playControllerButton.state) {
             playTimer += deltaTime;
-            if (playTimer >= 0.05d) {
-                playTimer -= 0.05;
+            double frameTime = 1.0d / recommendedFramerate;
+            if (playTimer >= frameTime) {
+                playTimer -= frameTime;
                 rootPanel.frameIdx++;
                 rootPanel.frameChanged();
             }

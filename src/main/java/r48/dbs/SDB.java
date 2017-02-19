@@ -353,7 +353,7 @@ public class SDB {
                     }
                     if (args[0].equals("toWinAGameThatHasNoEnd")) {
                         // Really special schema
-                        workingObj.aggregate.add(new RMAnimSchemaElement(args[1], args[2]));
+                        workingObj.aggregate.add(new RMAnimSchemaElement(args[1], args[2], Integer.parseInt(args[3])));
                     }
                     if (args[0].equals("name")) {
                         final LinkedList<String> arguments = new LinkedList<String>();
