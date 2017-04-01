@@ -2,18 +2,26 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
 
- - THESE DO NOT EXIST -
-
 0: RXP
 f Data/MapInfos.rxdata
+
  YES! Moved from Class 1 to Class 0 support at 1:21:00 17 Feb GMT.
+ (In retrospect, it was moved too early, perhaps. Oh well. Things SHOULD be... within boundaries, now,
+   or I wouldn't have moved this out of secretService.)
+
 0: RVXA
 f Data/MapInfos.rvdata2
+
+ The support for the Studio Pixel "Ikachan" engine is partially a test to ensure
+  that the program is sufficiently modular for any further work.
+ (Think 'MV'.)
+
 0: Ika
 f Pbm/Map1.pbm
 . Ikachan
 
- ----------------------
+ Mostly useless - but maybe move the syntax docs in RXP here.
+ Serves as a simple example.
 
 0: Sticki
 . Launch Sticky Note Editor

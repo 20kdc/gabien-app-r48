@@ -120,34 +120,32 @@ public class UIMapView extends UIElement implements IWindowElement {
             }
         }
 
-        for (int i = camTX; i < camTR; i++) {
-            if (i < 0)
-                continue;
-            if (i >= w)
-                continue;
-            for (int j = camTY; j < camTB; j++) {
-                if (j < 0)
-                    continue;
-                if (j >= h)
-                    continue;
-                int px = i * eTileSize;
-                int py = j * eTileSize;
-                px = (ox + px) - camX;
-                py = (oy + py) - camY;
-                // 5, 26-29: cafe main bar. In DEBUG, shows as 255, 25d, 25d, ???, I think.
-                // 1c8 >> 3 == 39.
-                // 39 in binary is 00111001.
-                // Possible offset of 1?
-                if (debug) {
-                    for (int l = 0; l < mapTable.planeCount; l++) {
-                        String t = Integer.toString(mapTable.getTiletype(i, j, l), 16);
-                        UILabel.drawString(igd, px, py + (l * FontSizes.mapDebugTextHeight), t, false, FontSizes.mapDebugTextHeight);
-                    }
-                } else {
-                    int[] layerOrder = AppMain.stuffRenderer.tileRenderer.tileLayerDrawOrder();
-                    for (int li = 0; li < layerOrder.length; li++) {
-                        int l = layerOrder[li];
-                        if (!layerInvisible[l]) {
+        int[] layerOrder = AppMain.stuffRenderer.tileRenderer.tileLayerDrawOrder();
+        for (int li = 0; li < layerOrder.length; li++) {
+            int l = layerOrder[li];
+            if (!layerInvisible[l]) {
+                for (int i = camTX; i < camTR; i++) {
+                    if (i < 0)
+                        continue;
+                    if (i >= w)
+                        continue;
+                    for (int j = camTY; j < camTB; j++) {
+                        if (j < 0)
+                            continue;
+                        if (j >= h)
+                            continue;
+                        int px = i * eTileSize;
+                        int py = j * eTileSize;
+                        px = (ox + px) - camX;
+                        py = (oy + py) - camY;
+                        // 5, 26-29: cafe main bar. In DEBUG, shows as 255, 25d, 25d, ???, I think.
+                        // 1c8 >> 3 == 39.
+                        // 39 in binary is 00111001.
+                        // Possible offset of 1?
+                        if (debug) {
+                            String t = Integer.toString(mapTable.getTiletype(i, j, li), 16);
+                            UILabel.drawString(igd, px, py + (li * FontSizes.mapDebugTextHeight), t, false, FontSizes.mapDebugTextHeight);
+                        } else {
                             short tidx = mapTable.getTiletype(i, j, l);
                             if (i == mouseXT)
                                 if (j == mouseYT)
@@ -157,40 +155,7 @@ public class UIMapView extends UIElement implements IWindowElement {
                     }
                 }
             }
-        }
-
-        if ((!layerInvisible[mapTable.planeCount + 1]) && (!minimap)) {
-            // Event Enable
-            // Having it here is more efficient than having it as a tool overlay,
-            // and sometimes the user might want to see events when using other tools.
-            LinkedList<RubyIO> ev = new LinkedList<RubyIO>(map.getInstVarBySymbol("@events").hashVal.values());
-            ev.sort(new Comparator<RubyIO>() {
-                @Override
-                public int compare(RubyIO a, RubyIO b) {
-                    int yA = (int) a.getInstVarBySymbol("@y").fixnumVal;
-                    int yB = (int) b.getInstVarBySymbol("@y").fixnumVal;
-                    if (yA < yB)
-                        return -1;
-                    if (yA > yB)
-                        return 1;
-                    return 0;
-                }
-            });
-            for (RubyIO evI : ev) {
-                int x = (int) evI.getInstVarBySymbol("@x").fixnumVal;
-                int y = (int) evI.getInstVarBySymbol("@y").fixnumVal;
-                if (x < camTX)
-                    continue;
-                if (y < camTY)
-                    continue;
-                if (x >= camTR)
-                    continue;
-                if (y >= camTB)
-                    continue;
-                int px = ox + ((x * tileSize) - camX);
-                int py = oy + ((y * tileSize) - camY);
-                AppMain.stuffRenderer.eventRenderer.drawEventGraphic(AppMain.stuffRenderer.eventRenderer.extractEventGraphic(evI), px, py, igd);
-            }
+            drawEventLayer(ox, oy, igd, camTX, camTY, camTR, camTB, li);
         }
 
         int layers = callbacks.wantOverlay(minimap);
@@ -225,6 +190,44 @@ public class UIMapView extends UIElement implements IWindowElement {
             UILabel.drawString(igd, ox + l.x + 1, oy + l.y + 1, text, true, 8);
         }
         UILabel.drawLabel(igd, 0, ox, oy, "Map" + mapId + ";" + mouseXT + ", " + mouseYT, false, FontSizes.mapPositionTextHeight);
+    }
+
+    private void drawEventLayer(int ox, int oy, IGrInDriver igd, int camTX, int camTY, int camTR, int camTB, int l) {
+        if ((!layerInvisible[mapTable.planeCount + 1]) && (!minimap)) {
+            // Event Enable
+            // Having it here is more efficient than having it as a tool overlay,
+            // and sometimes the user might want to see events when using other tools.
+            LinkedList<RubyIO> ev = new LinkedList<RubyIO>(map.getInstVarBySymbol("@events").hashVal.values());
+            ev.sort(new Comparator<RubyIO>() {
+                @Override
+                public int compare(RubyIO a, RubyIO b) {
+                    int yA = (int) a.getInstVarBySymbol("@y").fixnumVal;
+                    int yB = (int) b.getInstVarBySymbol("@y").fixnumVal;
+                    if (yA < yB)
+                        return -1;
+                    if (yA > yB)
+                        return 1;
+                    return 0;
+                }
+            });
+            for (RubyIO evI : ev) {
+                if (AppMain.stuffRenderer.eventRenderer.determineEventLayer(evI) != l)
+                    continue;
+                int x = (int) evI.getInstVarBySymbol("@x").fixnumVal;
+                int y = (int) evI.getInstVarBySymbol("@y").fixnumVal;
+                if (x < camTX)
+                    continue;
+                if (y < camTY)
+                    continue;
+                if (x >= camTR)
+                    continue;
+                if (y >= camTB)
+                    continue;
+                int px = ox + ((x * tileSize) - camX);
+                int py = oy + ((y * tileSize) - camY);
+                AppMain.stuffRenderer.eventRenderer.drawEventGraphic(AppMain.stuffRenderer.eventRenderer.extractEventGraphic(evI), px, py, igd);
+            }
+        }
     }
 
     @Override

@@ -14,6 +14,11 @@ import r48.RubyIO;
  */
 public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
     @Override
+    public int determineEventLayer(RubyIO event) {
+        return 0;
+    }
+
+    @Override
     public RubyIO extractEventGraphic(RubyIO event) {
         return event;
     }
