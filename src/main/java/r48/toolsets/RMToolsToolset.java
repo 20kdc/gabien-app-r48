@@ -15,16 +15,13 @@ import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
-import r48.map.UIMapViewContainer;
 import r48.maptools.UIMTEventPicker;
 import r48.schema.ISchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.UITextPrompt;
 
 import java.io.PrintStream;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created on 2/12/17.
@@ -180,12 +177,22 @@ public class RMToolsToolset implements IToolset {
                             if (rio.type != '0')
                                 dumper.dump(rio.getInstVarBySymbol("@name").decString(), rio.getInstVarBySymbol("@list").arrVal, commandsEvent);
                         dumper.endFile();
-                        for (Map.Entry<RubyIO, RubyIO> rio2 : AppMain.objectDB.getObject("MapInfos").hashVal.entrySet()) {
-                            String name = UIMapView.getMapName((int) rio2.getKey().fixnumVal);
-                            dumper.startFile(name, "Map:\"" + rio2.getValue().getInstVarBySymbol("@name").decString() + "\"");
+                        // Order the maps so that it comes out coherently for valid diffs (OSER Equinox Comparison Project)
+                        LinkedList<Integer> orderedMapInfos = new LinkedList<Integer>();
+                        for (Map.Entry<RubyIO, RubyIO> rio2 : AppMain.objectDB.getObject("MapInfos").hashVal.entrySet())
+                            orderedMapInfos.add((int) rio2.getKey().fixnumVal);
+                        Collections.sort(orderedMapInfos);
+                        for (int id : orderedMapInfos) {
+                            String name = UIMapView.getMapName(id);
+                            dumper.startFile(name, "Map:\"" + AppMain.objectDB.getObject("MapInfos").getHashVal(new RubyIO().setFX(id)).getInstVarBySymbol("@name").decString() + "\"");
                             RubyIO map = AppMain.objectDB.getObject(name);
-                            for (RubyIO event : map.getInstVarBySymbol("@events").hashVal.values()) {
-                                String evp = "Ev." + event.getInstVarBySymbol("@id").fixnumVal + " (" + event.getInstVarBySymbol("@name").decString() + "), Page ";
+                            LinkedList<Integer> orderedEVN = new LinkedList<Integer>();
+                            for (RubyIO i : map.getInstVarBySymbol("@events").hashVal.keySet())
+                                orderedEVN.add((int) i.fixnumVal);
+                            Collections.sort(orderedEVN);
+                            for (int k : orderedEVN) {
+                                RubyIO event = map.getInstVarBySymbol("@events").getHashVal(new RubyIO().setFX(k));
+                                String evp = "Ev." + k + " (" + event.getInstVarBySymbol("@name").decString() + "), Page ";
                                 int pageId = 1;
                                 for (RubyIO page : event.getInstVarBySymbol("@pages").arrVal) {
                                     dumper.dump(evp + pageId, page.getInstVarBySymbol("@list").arrVal, commandsEvent);
@@ -194,6 +201,7 @@ public class RMToolsToolset implements IToolset {
                             }
                             dumper.endFile();
                         }
+
                         dumper.startFile("Items", "The list of items in the game.");
                         LinkedList<String> lls = new LinkedList<String>();
                         for (RubyIO page : AppMain.objectDB.getObject("Items").arrVal) {
@@ -205,6 +213,18 @@ public class RMToolsToolset implements IToolset {
                         }
                         dumper.dumpBasicList("Names", lls.toArray(new String[0]), 0);
                         dumper.endFile();
+
+                        dumper.startFile("System", "System data (of any importance, anyway).");
+                        RubyIO sys = AppMain.objectDB.getObject("System");
+
+                        dumper.dumpHTML("Notably, switch and variable lists have a 0th index, but only indexes starting from 1 are actually allowed to be used.<br/>");
+                        dumper.dumpHTML("Magic number is " + sys.getInstVarBySymbol("@magic_number").toString() + "<br/>");
+                        dumper.dumpHTML("Magic number II is " + sys.getInstVarBySymbol("@_").toString() + "<br/>");
+
+                        dumper.dumpSVList("@switches", sys.getInstVarBySymbol("@switches").arrVal, 0);
+                        dumper.dumpSVList("@variables", sys.getInstVarBySymbol("@variables").arrVal, 0);
+                        dumper.endFile();
+
                         dumper.end();
                         ps.close();
                     }
