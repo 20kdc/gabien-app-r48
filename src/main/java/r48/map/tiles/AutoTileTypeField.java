@@ -10,6 +10,7 @@ package r48.map.tiles;
  */
 public class AutoTileTypeField {
     public final int start, length, databaseId;
+
     public AutoTileTypeField(int a, int b, int c) {
         start = a;
         length = b;

@@ -4,16 +4,12 @@
  */
 package r48.schema.specialized.rmanim;
 
-import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ScissorGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import gabien.ui.UIPanel;
-import r48.AppMain;
 import r48.RubyIO;
 import r48.RubyTable;
-import r48.ui.UINSVertLayout;
 
 /**
  * Handles drawing for a single-frame editor.

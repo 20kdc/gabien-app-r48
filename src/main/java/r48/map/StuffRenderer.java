@@ -5,24 +5,19 @@
 
 package r48.map;
 
-import gabien.GaBIEn;
-import gabien.IGrInDriver;
-import gabien.ui.UILabel;
 import r48.AppMain;
+import r48.RubyIO;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.IkaEventGraphicRenderer;
 import r48.map.events.NullEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.tiles.*;
-import r48.RubyIO;
-
-import java.util.HashMap;
 
 /**
  * First class of the new year. What does it do?
  * It's a grouping of stuff in other classes which has to go indirectly for sanity reasons.
  * (Example: UIMapView has to be the one /rendering/ tiles, but EPGDisplaySchemaElement
- *   has absolutely no other reason to be in contact with the current UIMapView at all.)
+ * has absolutely no other reason to be in contact with the current UIMapView at all.)
  * This also has the nice effect of keeping the jarlightHax stuff out of some random UI code.
  * Created on 1/1/17.
  */

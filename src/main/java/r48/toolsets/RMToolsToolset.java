@@ -21,7 +21,10 @@ import r48.schema.util.SchemaPath;
 import r48.ui.UITextPrompt;
 
 import java.io.PrintStream;
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * Created on 2/12/17.
@@ -37,12 +40,12 @@ public class RMToolsToolset implements IToolset {
 
     @Override
     public String[] tabNames() {
-        return new String[]{"Tools"};
+        return new String[] {"Tools"};
     }
 
     @Override
     public UIElement[] generateTabs(final ISupplier<IConsumer<UIElement>> windowMaker) {
-        return new UIElement[]{new UIPopupMenu(new String[]{
+        return new UIElement[] {new UIPopupMenu(new String[] {
                 "Locate EventCommand in all Pages",
                 "See If Autocorrect Modifies Anything",
                 // 3:24 PM, third day of 2017.
@@ -56,7 +59,7 @@ public class RMToolsToolset implements IToolset {
                 "Locate incomplete ECs (CommonEvents)",
                 "Run EC Creation Sanity Check",
                 "MEV/CEV Transcript Dump (no Troop/Item/etc.)",
-        }, new Runnable[]{
+        }, new Runnable[] {
                 new Runnable() {
                     @Override
                     public void run() {

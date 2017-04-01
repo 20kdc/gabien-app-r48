@@ -8,8 +8,8 @@ package r48.schema;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UIPanel;
-import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
+import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 import java.util.HashMap;
@@ -39,6 +39,7 @@ public class ArrayDisambiguatorSchemaElement implements ISchemaElement {
         final SchemaPath path = path2.arrayEntry(target, this);
         UIPanel p = new UIPanel() {
             public UIElement subElem = rebuildSubElem();
+
             public UIElement rebuildSubElem() {
                 int iv = getDisambigIndex(target);
                 try {
@@ -52,6 +53,7 @@ public class ArrayDisambiguatorSchemaElement implements ISchemaElement {
                     throw e;
                 }
             }
+
             @Override
             public void setBounds(Rect r) {
                 super.setBounds(r);
@@ -70,6 +72,7 @@ public class ArrayDisambiguatorSchemaElement implements ISchemaElement {
         int dVal = (int) target.arrVal[dIndex].fixnumVal;
         return dVal;
     }
+
     private ISchemaElement getSchemaElement(int dVal) {
         ISchemaElement r = dTable.get(dVal);
         if (r == null)

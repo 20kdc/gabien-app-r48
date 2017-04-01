@@ -23,6 +23,7 @@ import java.util.WeakHashMap;
  */
 public class ObjectDB {
     private final IObjectBackend backend;
+
     public ObjectDB(IObjectBackend b) {
         backend = b;
     }
@@ -70,9 +71,11 @@ public class ObjectDB {
         reverseObjectMap.put(rio, id);
         return rio;
     }
+
     public RubyIO getObject(String id) {
         return getObject(id, "File." + id);
     }
+
     public void ensureSaved(String id, RubyIO rio) {
         if (objectMap.containsKey(id)) {
             RubyIO rio2 = objectMap.get(id).get();
@@ -118,6 +121,7 @@ public class ObjectDB {
     public void registerModificationHandler(RubyIO root, Runnable handler) {
         getOrCreateModificationHandlers(root).add(handler);
     }
+
     public void deregisterModificationHandler(RubyIO root, Runnable handler) {
         getOrCreateModificationHandlers(root).remove(handler);
     }

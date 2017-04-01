@@ -7,8 +7,8 @@ package r48.schema;
 
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
+import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIScrollVertLayout;
 
@@ -20,6 +20,7 @@ import java.util.LinkedList;
  */
 public class AggregateSchemaElement implements ISchemaElement {
     public LinkedList<ISchemaElement> aggregate = new LinkedList<ISchemaElement>();
+
     public AggregateSchemaElement(ISchemaElement[] ag) {
         for (ISchemaElement ise : ag)
             aggregate.add(ise);

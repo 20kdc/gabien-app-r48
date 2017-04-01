@@ -18,6 +18,7 @@ import java.util.HashMap;
 public class GenericDisambiguationSchemaElement implements ISchemaElement {
     public String iVar;
     public HashMap<Integer, ISchemaElement> mapping;
+
     public GenericDisambiguationSchemaElement(String disambiguationIVar, HashMap<Integer, ISchemaElement> baseSE) {
         iVar = disambiguationIVar;
         mapping = baseSE;

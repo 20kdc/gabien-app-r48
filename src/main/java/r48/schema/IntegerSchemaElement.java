@@ -9,8 +9,8 @@ import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UINumberBox;
 import r48.FontSizes;
-import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
+import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 /**
@@ -18,9 +18,11 @@ import r48.schema.util.SchemaPath;
  */
 public class IntegerSchemaElement implements ISchemaElement {
     public int defaultInt;
+
     public IntegerSchemaElement(int i) {
         defaultInt = i;
     }
+
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UINumberBox unb = new UINumberBox(FontSizes.schemaFieldTextHeight);

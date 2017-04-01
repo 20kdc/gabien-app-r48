@@ -14,6 +14,7 @@ import r48.map.StuffRenderer;
  */
 public interface ISchemaHost {
     void switchObject(SchemaPath nextObject);
+
     void launchOther(UIElement uiTest);
 
     // The StuffRenderer applicable to this window.

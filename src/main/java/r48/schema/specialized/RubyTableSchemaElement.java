@@ -26,7 +26,7 @@ import r48.ui.UIScrollVertLayout;
  * NEW:
  * Kind of finished
  * Worked on at 01/03/16, comment rewritten very, very early technically the next day,
- *  after AutoTileRules was added
+ * after AutoTileRules was added
  * NEWER: Abstractified at midnight. That is, 0:00 February 18th 2017, where I count 8 hours after that as being the same day.
  */
 public class RubyTableSchemaElement<TileHelper> implements ISchemaElement {
@@ -58,6 +58,7 @@ public class RubyTableSchemaElement<TileHelper> implements ISchemaElement {
         final RubyIO height = heightVar == null ? null : target.getInstVarBySymbol(heightVar);
         final UIGrid uig = new UIGrid(32, targ.width * targ.height) {
             private TileHelper tileHelper;
+
             @Override
             protected void drawTile(int t, int x, int y, IGrInDriver igd) {
                 int tX = t % targ.width;

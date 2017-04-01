@@ -17,7 +17,6 @@ import r48.ui.UIHHalfsplit;
 import r48.ui.UIScrollVertLayout;
 
 import java.io.*;
-import java.util.LinkedList;
 
 /**
  * Created on 1/27/17.
@@ -34,6 +33,7 @@ public class Application {
         // this can't be good
         final IConsumer<Runnable> closeHelper = new IConsumer<Runnable>() {
             private Runnable r;
+
             @Override
             public void accept(Runnable runnable) {
                 if (runnable != null) {

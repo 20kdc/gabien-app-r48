@@ -7,7 +7,10 @@ package r48.schema.util;
 
 import gabien.IGrInDriver;
 import gabien.ui.*;
-import r48.*;
+import r48.AppMain;
+import r48.FontSizes;
+import r48.RubyIO;
+import r48.UITest;
 import r48.map.StuffRenderer;
 import r48.ui.UIAppendButton;
 import r48.ui.UIScrollVertLayout;

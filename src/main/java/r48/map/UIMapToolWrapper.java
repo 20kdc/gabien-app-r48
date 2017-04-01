@@ -12,13 +12,14 @@ import gabien.ui.UIElement;
 
 /**
  * Keeps the application informed about what happens to UI Tool Windows,
- *  without getting in their way.
+ * without getting in their way.
  * Created on 12/30/16.
  */
 public class UIMapToolWrapper extends UIElement implements IWindowElement {
     public UIElement pattern;
     public boolean selfClose = false;
     public boolean hasClosed = false;
+
     public UIMapToolWrapper(UIElement uie) {
         pattern = uie;
     }

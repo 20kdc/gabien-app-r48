@@ -129,6 +129,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
                     return atBases[i];
         return null;
     }
+
     private void updateAutotile(int x, int y, int layer) {
         AutoTileTypeField myAT = getAutotileType(x, y, layer, null);
         if (myAT == null)

@@ -13,5 +13,6 @@ import java.io.IOException;
  */
 public interface IDatabase {
     void newObj(int objId, String objName) throws IOException;
+
     void execCmd(char c, String[] args) throws IOException;
 }

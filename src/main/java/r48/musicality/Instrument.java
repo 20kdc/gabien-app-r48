@@ -35,6 +35,7 @@ public class Instrument {
             res /= 2;
         return res;
     }
+
     public static double getNoteHertz(int note) {
         return getNOHertz(note / 7, note % 7);
     }

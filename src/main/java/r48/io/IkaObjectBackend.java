@@ -5,9 +5,6 @@
 
 package r48.io;
 
-import gabien.GaBIEn;
-import gabienapp.Application;
-import r48.RubyCT;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.io.ika.BM8I;

@@ -13,7 +13,10 @@ import gabien.IGrInDriver;
  */
 public interface IMapViewCallbacks {
     short shouldDrawAtCursor(short there, int layer, int currentLayer);
+
     int wantOverlay(boolean minimap);
+
     void performOverlay(int tx, int ty, IGrInDriver igd, int px, int py, int ol, boolean minimap);
+
     void confirmAt(int x, int y, int layer);
 }

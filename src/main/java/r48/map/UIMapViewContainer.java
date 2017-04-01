@@ -47,12 +47,12 @@ public class UIMapViewContainer extends UIPanel {
 
             toolNames.add("Tiles");
             toolRunnables.add(new Runnable() {
-                                  @Override
-                                  public void run() {
-                                      if (view != null)
-                                          AppMain.nextMapTool = new UIMTAutotile(view);
-                                  }
-                              });
+                @Override
+                public void run() {
+                    if (view != null)
+                        AppMain.nextMapTool = new UIMTAutotile(view);
+                }
+            });
             if (AppMain.stuffRenderer != null) {
                 if (AppMain.stuffRenderer.tileRenderer instanceof VXATileRenderer) {
                     toolNames.add("Shadow/Region");
@@ -67,12 +67,12 @@ public class UIMapViewContainer extends UIPanel {
             }
             toolNames.add("Edit Direct.");
             toolRunnables.add(new Runnable() {
-                                  @Override
-                                  public void run() {
-                                      if (view != null)
-                                          AppMain.launchSchema("RPG::Map", view.map);
-                                  }
-                              });
+                @Override
+                public void run() {
+                    if (view != null)
+                        AppMain.launchSchema("RPG::Map", view.map);
+                }
+            });
             toolNames.add("Event List");
             toolRunnables.add(new Runnable() {
                 @Override

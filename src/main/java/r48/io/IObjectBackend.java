@@ -16,5 +16,6 @@ import java.io.IOException;
  */
 public interface IObjectBackend {
     RubyIO loadObjectFromFile(String filename);
+
     void saveObjectToFile(String filename, RubyIO object) throws IOException;
 }

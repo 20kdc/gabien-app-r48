@@ -4,7 +4,6 @@
  */
 package r48.ui;
 
-import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.FontSizes;
 
@@ -17,6 +16,7 @@ import java.util.LinkedList;
 public class UIFontSizeConfigurator extends UIPanel {
     private UIScrollVertLayout outerLayout;
     private int lastFontSizerSize = -1;
+
     public UIFontSizeConfigurator() {
         refreshLayout();
         setBounds(new Rect(0, 0, 320, 200));
@@ -53,7 +53,8 @@ public class UIFontSizeConfigurator extends UIPanel {
                         public void run() {
                             try {
                                 field.setInt(null, field.getInt(null) * 2);
-                            } catch (Exception e) {}
+                            } catch (Exception e) {
+                            }
                         }
                     });
                     halfAll.add(new Runnable() {
@@ -61,7 +62,8 @@ public class UIFontSizeConfigurator extends UIPanel {
                         public void run() {
                             try {
                                 field.setInt(null, field.getInt(null) / 2);
-                            } catch (Exception e) {}
+                            } catch (Exception e) {
+                            }
                         }
                     });
                     UIAdjuster tb = new UIAdjuster(FontSizes.fontSizerTextHeight, new ISupplier<String>() {

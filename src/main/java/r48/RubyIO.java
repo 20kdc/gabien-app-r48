@@ -5,17 +5,17 @@
 
 package r48;
 
-import java.io.*;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 'Dear [REDACTED].
- *  I have recently learned a valuable lesson about friendship.
- *  Specifically, that if you are friends with someone who uses Ruby Marshal
- *  as anything but a temporary serialization mechanism, and I emphasize TEMPORARY,
- *  maybe reconsidering your friendships is a good idea.'
+ * I have recently learned a valuable lesson about friendship.
+ * Specifically, that if you are friends with someone who uses Ruby Marshal
+ * as anything but a temporary serialization mechanism, and I emphasize TEMPORARY,
+ * maybe reconsidering your friendships is a good idea.'
  * Thankfully, I wasn't ever friends with [REDACTED] to begin with, since they're a company.
  * Not a person.
  * I pity the fool who downloads the first poisoned [NAME HERE] savefile.
@@ -144,7 +144,7 @@ public class RubyIO {
     public String toString() {
         String data = "";
         if (type == 'u')
-            return symVal + ";" +  userVal.length + "b";
+            return symVal + ";" + userVal.length + "b";
         if (type == 'o')
             return symVal;
         if (type == '[')
@@ -168,6 +168,7 @@ public class RubyIO {
         // This specifies their encoding.
         return new String(strVal, Charset.forName("UTF-8"));
     }
+
     public RubyIO encString(String text) {
         try {
             strVal = text.getBytes("UTF-8");

@@ -9,11 +9,9 @@ import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
 import r48.FontSizes;
-import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
+import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-
-import java.io.UnsupportedEncodingException;
 
 /**
  * Created on 12/29/16.
@@ -50,9 +48,11 @@ public class StringSchemaElement implements ISchemaElement {
     protected void encodeVal(String text, RubyIO target) {
         target.encString(text);
     }
+
     protected boolean verifier(String text) {
         return true;
     }
+
     protected String decodeVal(RubyIO target) {
         return target.decString();
     }

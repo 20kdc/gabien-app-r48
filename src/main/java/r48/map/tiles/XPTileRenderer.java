@@ -15,7 +15,6 @@ import r48.map.UIMapView;
 import r48.ui.UITileGrid;
 
 /**
- *
  * Created on 1/27/17.
  */
 public class XPTileRenderer implements ITileRenderer {
@@ -74,7 +73,7 @@ public class XPTileRenderer implements ITileRenderer {
             if (tilesetMaps[atMap] != null) {
                 if ((ets == tileSize) && (AppMain.autoTiles[0] != null)) {
                     ATDB.Autotile at = AppMain.autoTiles[0].entries[tidx];
-                    if (at != null){
+                    if (at != null) {
                         int cSize = tileSize / 2;
                         for (int sA = 0; sA < 2; sA++)
                             for (int sB = 0; sB < 2; sB++) {

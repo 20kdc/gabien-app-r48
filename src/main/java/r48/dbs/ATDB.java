@@ -10,11 +10,11 @@ import java.io.IOException;
 
 /**
  * Autotile Database, used to deal with those pesky AutoTile issues
- *
+ * <p/>
  * corners are:
  * 01
  * 23
- *
+ * <p/>
  * Created on 12/28/16.
  */
 public class ATDB {
@@ -23,6 +23,7 @@ public class ATDB {
     public int[] inverseMap = new int[256];
     private boolean[] rulesEngineMustTrue = new boolean[10000];
     private boolean[] rulesEngineMustFalse = new boolean[10000];
+
     public int nameFromWord(String w) {
         if (w.equals("A"))
             return 0;
@@ -52,12 +53,14 @@ public class ATDB {
             return 11;
         return 0;
     }
+
     public ATDB(String name, BufferedReader br) throws IOException {
         loadFile = name;
         new DBLoader(br, new IDatabase() {
             Autotile current = null;
             // for 'x'-type one-line-space-delimited entries
             int autoIncrementingId = 0;
+
             @Override
             public void newObj(int objId, String objName) {
                 current = new Autotile();
@@ -146,6 +149,7 @@ public class ATDB {
             System.out.println("(In the default RXP dataset, 16 situations is normal, and the default value of AT47 will work.)");
         }
     }
+
     private int getMostSuitableAutotile(boolean[] area) {
         int bestAT = 47;
         int bestATReq = 0;

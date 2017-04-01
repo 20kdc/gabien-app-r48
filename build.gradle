@@ -4,8 +4,8 @@ apply plugin: "idea"
 apply plugin: "application"
 
 dependencies {
-      compile files('../gabien-common/build/libs/gabien-common.jar')
-      compile files('../gabien-javase/build/libs/gabien-javase.jar')
+    compile files('../gabien-common/build/libs/gabien-common.jar')
+    compile files('../gabien-javase/build/libs/gabien-javase.jar')
 }
 
 sourceCompatibility = 1.6

@@ -7,8 +7,8 @@ package r48.schema;
 
 import gabien.ui.*;
 import r48.FontSizes;
-import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
+import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 
@@ -28,6 +28,7 @@ public class IVarSchemaElement implements ISchemaElement {
         subElem = sub;
         optional = opt;
     }
+
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UILabel uil = new UILabel(iVar + " ", FontSizes.schemaFieldTextHeight);

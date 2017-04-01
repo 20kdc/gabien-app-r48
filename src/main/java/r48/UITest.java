@@ -5,7 +5,9 @@
 
 package r48;
 
-import gabien.ui.*;
+import gabien.ui.Rect;
+import gabien.ui.UIPanel;
+import gabien.ui.UITextButton;
 import r48.ui.UIScrollVertLayout;
 
 import java.util.Comparator;
@@ -16,7 +18,7 @@ import java.util.Set;
  * At first was a break-into-console - now a proper window, if crude.
  * Does the job better than the previous solution, in any case.
  * Got an update (12/31/16) to use UIScrollVertLayout...
- *  ...which is why it's now missing the useful left/right scroll control and the "DS" (save currently viewed object) button.
+ * ...which is why it's now missing the useful left/right scroll control and the "DS" (save currently viewed object) button.
  * Created on 12/27/16.
  */
 public class UITest extends UIPanel {
@@ -26,11 +28,13 @@ public class UITest extends UIPanel {
     int offset = 0;
     public LinkedList<RubyIO> back = new LinkedList<RubyIO>();
     public UIScrollVertLayout masterPanel = new UIScrollVertLayout();
+
     public UITest(RubyIO obj) {
         loadObject(obj);
         allElements.add(masterPanel);
         setBounds(new Rect(0, 0, 320, 200));
     }
+
     public void loadObject(final RubyIO obj) {
         offset = 0;
         currentObj = obj;

@@ -20,6 +20,7 @@ import r48.ui.UIHelpSystem;
  */
 public class HWNDSchemaElement implements ISchemaElement {
     public final String ivar, file;
+
     public HWNDSchemaElement(String iv, String f) {
         ivar = iv;
         file = f;

@@ -25,6 +25,7 @@ import java.util.HashMap;
 public class SymEnumSchemaElement implements ISchemaElement {
     public String[] options;
     public HashMap<String, Integer> viewOptions;
+
     public SymEnumSchemaElement(String[] o) {
         options = o;
         viewOptions = new HashMap<String, Integer>();

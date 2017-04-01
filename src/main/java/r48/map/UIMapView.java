@@ -7,9 +7,14 @@ package r48.map;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
-import gabien.ui.*;
-import r48.*;
-import r48.map.tiles.ITileRenderer;
+import gabien.ui.IWindowElement;
+import gabien.ui.Rect;
+import gabien.ui.UIElement;
+import gabien.ui.UILabel;
+import r48.AppMain;
+import r48.FontSizes;
+import r48.RubyIO;
+import r48.RubyTable;
 
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -75,6 +80,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     public Rect getLayerTabRect(int i) {
         return new Rect(i * 18, getBounds().height - 18, 18, 18);
     }
+
     @Override
     public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
         // This assumes it's the background element for now - no cropping... :(
