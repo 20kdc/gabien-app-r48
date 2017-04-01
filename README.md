@@ -1,5 +1,5 @@
 # gabien-app-r48
-## "an attempt at the world's most complicated sticky note program"
+## "An editor for RPG Maker XP, RPG Maker VX Ace, and Ikachan. Also a sticky note program."
 
 Firstly.
 
