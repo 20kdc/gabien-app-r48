@@ -13,6 +13,11 @@ import r48.RubyIO;
  */
 public class NullEventGraphicRenderer implements IEventGraphicRenderer {
     @Override
+    public int determineEventLayer(RubyIO event) {
+        return 0;
+    }
+
+    @Override
     public RubyIO extractEventGraphic(RubyIO event) {
         return event;
     }

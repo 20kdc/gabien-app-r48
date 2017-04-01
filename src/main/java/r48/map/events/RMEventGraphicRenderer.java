@@ -46,6 +46,14 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
+    public int determineEventLayer(RubyIO event) {
+        if (useVXAExtensionScheme)
+            return (int) event.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@priority_type").fixnumVal;
+        // Assume RXP
+        return 2;
+    }
+
+    @Override
     public RubyIO extractEventGraphic(RubyIO evI) {
         return evI.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@graphic");
     }
@@ -61,13 +69,16 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         }
         RubyIO cName = target.getInstVarBySymbol("@character_name");
         short tId = (short) target.getInstVarBySymbol("@tile_id").fixnumVal;
-        if (cName.strVal.length == 0) {
+        if (tId != 0) {
             host.tileRenderer.drawTile(0, tId, ox, oy, igd, host.tileRenderer.getTileSize());
-        } else {
+        } else if (cName.strVal.length > 0) {
             // lower centre of tile, the reference point for characters
             ox += 16;
             oy += 32;
             String s = cName.decString();
+            if (useVXAExtensionScheme)
+                if (!s.startsWith("!"))
+                    oy -= 4;
             IGrInDriver.IImage i = GaBIEn.getImage(AppMain.rootPath + "Graphics/Characters/" + s + ".png", 0, 0, 0);
             int sprW = i.getWidth() / patternCount;
             int sprH = i.getHeight() / 4;
@@ -77,23 +88,14 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
             int ty = dir;
 
             if (useVXAExtensionScheme) {
-                if (s.startsWith("!$")) {
+                sprW = i.getWidth() / 12;
+                sprH = i.getHeight() / 8;
+                int idx = (int) target.getInstVarBySymbol("@character_index").fixnumVal;
+                if (s.startsWith("!$") || s.startsWith("$")) {
                     // Character index doesn't work on these
-                } else if (s.startsWith("!")) {
-                    // Character index works, width is 32
-                    sprW = 32;
-                    sprH = i.getHeight() / 8;
-                    int idx = (int) target.getInstVarBySymbol("@character_index").fixnumVal;
-                    // NOTE: still unsure on how segmentation works.
-                    // for now, things work out?
-                    ty += (idx / 4) * 4;
-                    tx += (idx % 4) * 3;
+                    sprW = i.getWidth() / 3;
+                    sprH = i.getHeight() / 4;
                 } else {
-                    sprW = 32;
-                    sprH = 32;
-                    int idx = (int) target.getInstVarBySymbol("@character_index").fixnumVal;
-                    // NOTE: still unsure on how segmentation works.
-                    // for now, things work out?
                     ty += (idx / 4) * 4;
                     tx += (idx % 4) * 3;
                 }
@@ -132,5 +134,4 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
             }
         }
     }
-
 }
