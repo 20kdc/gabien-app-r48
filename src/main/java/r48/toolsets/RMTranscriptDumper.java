@@ -18,6 +18,7 @@ public class RMTranscriptDumper {
     private final PrintStream output;
 
     private LinkedList<String> tableOfContents = new LinkedList<String>();
+    private LinkedList<String> tableOfContentsIID = new LinkedList<String>();
 
     public RMTranscriptDumper(PrintStream ps) {
         output = ps;
@@ -25,6 +26,7 @@ public class RMTranscriptDumper {
 
     public void start() {
         tableOfContents.clear();
+        tableOfContentsIID.clear();
         output.println("<html><head><title>Exported Transcript</title></head><body><a href=\"#toc\">to table of contents</a>");
     }
 
@@ -33,7 +35,7 @@ public class RMTranscriptDumper {
         int hIndex = 0;
         for (String s : tableOfContents) {
             if (s != null) {
-                output.println("<li><a href=\"#p" + hIndex + "\">" + escapeHtml(s) + "</a><ol>");
+                output.println("<li><a href=\"#p" + tableOfContentsIID.get(hIndex) + "\">" + escapeHtml(s) + "</a><ol>");
             } else {
                 output.println("</ol></li>");
             }
@@ -42,20 +44,22 @@ public class RMTranscriptDumper {
         output.println("</ol></body></html>");
     }
 
-    private void anchor(String s) {
+    private void anchor(String s, String name) {
         if (s != null)
-            output.println("<a name=\"p" + tableOfContents.size() + "\"/>");
+            output.println("<a name=\"p" + name + "\"/>");
         tableOfContents.add(s);
+        tableOfContentsIID.add(name);
     }
 
+    // NOTE: File names must be unique, and are used as IDs, so keep them sane - I recommend using, well, file names.
     public void startFile(String name, String desc) {
-        anchor(name + " (" + desc + ")");
+        anchor(name + " (" + desc + ")", name);
         output.println("<h1>" + name + "</h1>");
         output.println("<h2>" + desc + "</h2>");
     }
 
     public void endFile() {
-        anchor(null);
+        anchor(null, null);
     }
 
     public void dump(String name, RubyIO[] code, CMDB database) {
@@ -119,5 +123,16 @@ public class RMTranscriptDumper {
             }
         }
         return r;
+    }
+
+    public void dumpSVList(String n, RubyIO[] arrVal, int st) {
+        String[] s = new String[arrVal.length];
+        for (int i = 0; i < arrVal.length; i++)
+            s[i] = arrVal[i].toString();
+        dumpBasicList(n, s, st);
+    }
+
+    public void dumpHTML(String s) {
+        output.println(s);
     }
 }
