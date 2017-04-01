@@ -10,15 +10,14 @@ import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.DictionaryUpdaterRunnable;
+import r48.RubyIO;
 import r48.UIMapInfos;
 import r48.map.StuffRenderer;
-import r48.schema.arrays.ArraySchemaElement;
+import r48.schema.*;
 import r48.schema.arrays.OneIndexedArraySchemaElement;
 import r48.schema.arrays.StandardArraySchemaElement;
-import r48.schema.specialized.*;
-import r48.RubyIO;
-import r48.schema.*;
 import r48.schema.displays.EPGDisplaySchemaElement;
+import r48.schema.specialized.*;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 import r48.schema.specialized.tbleditors.DefaultTableCellEditor;
 
@@ -85,6 +84,7 @@ public class SDB {
 
             HashMap<Integer, String> commandBufferNames = new HashMap<Integer, String>();
             HashMap<Integer, ISchemaElement> commandBufferSchemas = new HashMap<Integer, ISchemaElement>();
+
             @Override
             public void newObj(int objId, String objName) {
                 commandBufferNames.put(objId, objName);
@@ -98,6 +98,7 @@ public class SDB {
                     // This function is recursive but needs state to be kept around after exit.
                     // Kind of a pain, *unless* you have a surrounding instance.
                     public int point = start;
+
                     @Override
                     public ISchemaElement get() {
                         final String text = args[point++];
@@ -253,10 +254,10 @@ public class SDB {
                     if (!schemaDatabase.containsKey(args[0]))
                         throw new RuntimeException("Bad Schema Database: 'a' used to expect item " + args[0] + " that didn't exist.");
                 } else if (c == ':') {
-                    workingObj = new AggregateSchemaElement(new ISchemaElement[]{});
+                    workingObj = new AggregateSchemaElement(new ISchemaElement[] {});
                     setSDBEntry(args[0], new ObjectClassSchemaElement(args[0], workingObj, 'o'));
                 } else if (c == '.') {
-                    workingObj = new AggregateSchemaElement(new ISchemaElement[]{});
+                    workingObj = new AggregateSchemaElement(new ISchemaElement[] {});
                     setSDBEntry(args[0], workingObj);
                 } else if (c == '@') {
                     workingObj.aggregate.add(new IVarSchemaElement("@" + args[0], handleChain(args, 1), false));
@@ -435,6 +436,7 @@ public class SDB {
     public boolean hasSDBEntry(String text) {
         return schemaDatabase.containsKey(text);
     }
+
     public void setSDBEntry(final String text, ISchemaElement ise) {
         remainingExpected.remove(text);
         // If a placeholder exists, keep using that
@@ -442,6 +444,7 @@ public class SDB {
             schemaDatabase.put(text, ise);
         schemaTrueDatabase.put(text, ise);
     }
+
     public ISchemaElement getSDBEntry(final String text) {
         if (schemaDatabase.containsKey(text))
             return schemaDatabase.get(text);

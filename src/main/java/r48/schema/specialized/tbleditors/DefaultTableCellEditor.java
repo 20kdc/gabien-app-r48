@@ -4,15 +4,11 @@
  */
 package r48.schema.specialized.tbleditors;
 
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
 import gabien.ui.UINumberBox;
-import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.ui.UIGrid;
-import r48.ui.UIHHalfsplit;
 import r48.ui.UIScrollVertLayout;
 
 /**
@@ -54,6 +50,7 @@ public class DefaultTableCellEditor implements ITableCellEditor {
             }
         };
     }
+
     private Runnable createOnEdit(final RubyTable targ, final Runnable changeOccurred, final int x, final int y, final int p, final UINumberBox unb) {
         return new Runnable() {
             @Override

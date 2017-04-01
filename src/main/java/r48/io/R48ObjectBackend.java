@@ -146,7 +146,7 @@ public class R48ObjectBackend implements IObjectBackend {
     public void saveObjectToFile(String filename, RubyIO object) throws IOException {
         DataOutputStream dis = new DataOutputStream(new FileOutputStream(prefix + filename + postfix));
         // Marshal v4.8
-        dis.write(new byte[]{4, 8});
+        dis.write(new byte[] {4, 8});
         LinkedList<RubyIO> objCache = new LinkedList<RubyIO>();
         LinkedList<String> strCache = new LinkedList<String>();
         saveValue(dis, object, objCache, strCache);

@@ -7,7 +7,6 @@ package r48.schema.specialized;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.schema.ISchemaElement;
@@ -17,12 +16,13 @@ import r48.schema.util.SchemaPath;
 
 /**
  * This starts a UI-framework-based special editing package,
- *  which calls back to this for edit notifications.
+ * which calls back to this for edit notifications.
  * Created on 2/17/17.
  */
 public class RMAnimSchemaElement implements ISchemaElement {
     private String a, b;
     private int framerate;
+
     public RMAnimSchemaElement(String arg, String arg1, int fps) {
         a = arg;
         b = arg1;

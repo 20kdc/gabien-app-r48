@@ -15,6 +15,7 @@ public class UITextPrompt extends UIPanel implements IWindowElement {
     public UITextBox utb = new UITextBox(FontSizes.textDialogFieldTextHeight);
     public UIScrollVertLayout uiSVL = new UIScrollVertLayout();
     public boolean wantClose = false;
+
     public UITextPrompt(final String s, final IConsumer<String> iConsumer) {
         allElements.add(uiSVL);
         uiSVL.panels.add(new UILabel(s, FontSizes.textDialogDescTextHeight));

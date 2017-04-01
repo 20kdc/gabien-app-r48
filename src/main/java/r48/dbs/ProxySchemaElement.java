@@ -20,9 +20,11 @@ import r48.schema.util.SchemaPath;
 public class ProxySchemaElement implements ISchemaElement {
     private final String tx;
     ISchemaElement cache = null;
+
     public ProxySchemaElement(String text) {
         tx = text;
     }
+
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
         return getEntry().buildHoldingEditor(target, launcher, path);

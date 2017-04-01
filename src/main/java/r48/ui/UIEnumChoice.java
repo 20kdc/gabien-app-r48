@@ -21,9 +21,11 @@ public class UIEnumChoice extends UIPanel implements IWindowElement {
     UIHHalfsplit finalSplit;
     UINumberBox nb;
     boolean wantsSelfClose = false;
+
     public UIEnumChoice(final IConsumer<Integer> result, final HashMap<String, Integer> options, String buttonText) {
         this(result, options, UITest.sortedKeysStr(options.keySet()), buttonText);
     }
+
     public UIEnumChoice(final IConsumer<Integer> result, final HashMap<String, Integer> options, final LinkedList<String> order, String buttonText) {
         for (String key : order) {
             final int r = options.get(key);

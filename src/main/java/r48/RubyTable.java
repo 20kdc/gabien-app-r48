@@ -17,6 +17,7 @@ public class RubyTable {
     public final byte[] innerBytes;
     public final ByteBuffer innerTable;
     public final int width, height, planeCount;
+
     public RubyTable(byte[] data) {
         innerBytes = data;
         innerTable = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);

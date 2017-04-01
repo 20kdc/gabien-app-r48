@@ -23,6 +23,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
     // Responsible for removing any initial wrapping
     public final IFunction<RubyIO, RubyIO> fieldA;
     public final boolean hash;
+
     public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<RubyIO, RubyIO> iFunction, boolean b, String ivar) {
         dict = targetDictionary;
         targ = target;

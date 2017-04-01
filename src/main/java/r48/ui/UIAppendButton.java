@@ -18,6 +18,7 @@ public class UIAppendButton extends UIPanel {
     public UITextButton button;
     public UIElement subElement;
     public int textHeight;
+
     public UIAppendButton(String s, UIElement holder, Runnable runnable, int h2) {
         textHeight = h2;
         button = new UITextButton(h2, s, runnable);

@@ -6,8 +6,8 @@
 package r48.schema;
 
 import gabien.ui.UIElement;
-import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
+import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 /**

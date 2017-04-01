@@ -7,7 +7,9 @@ package r48.maptools;
 
 import gabien.IGrInDriver;
 import gabien.ui.*;
-import r48.*;
+import r48.AppMain;
+import r48.FontSizes;
+import r48.RubyIO;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.schema.util.SchemaPath;
@@ -39,7 +41,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
         svl.setBounds(new Rect(0, 0, r.width, r.height));
     }
 
-// -- Tool things --
+    // -- Tool things --
     @Override
     public short shouldDrawAtCursor(short there, int layer, int currentLayer) {
         return there;

@@ -8,7 +8,6 @@ package r48.dbs;
 import gabien.ui.IFunction;
 import r48.AppMain;
 import r48.RubyIO;
-import r48.schema.EnumSchemaElement;
 import r48.schema.ISchemaElement;
 
 import java.io.BufferedReader;
@@ -27,6 +26,7 @@ public class CMDB {
         new DBLoader(br, new IDatabase() {
             RPGCommand rc;
             HashMap<String, ISchemaElement> localAliasing = new HashMap<String, ISchemaElement>();
+
             @Override
             public void newObj(int objId, String objName) {
                 rc = new RPGCommand();

@@ -8,7 +8,6 @@ package r48.schema.arrays;
 import r48.RubyIO;
 import r48.schema.ISchemaElement;
 import r48.schema.OpaqueSchemaElement;
-import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.util.SchemaPath;
 
 /**

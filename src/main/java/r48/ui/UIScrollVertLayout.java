@@ -22,9 +22,11 @@ public class UIScrollVertLayout extends UIPanel {
     public UIVScrollbar scrollbar;
     public LinkedList<UIElement> panels = new LinkedList<UIElement>();
     public int scrollLength = 0;
+
     public UIScrollVertLayout() {
         scrollbar = new UIVScrollbar();
     }
+
     public void runLayout() {
         Rect r = getBounds();
         allElements.clear();

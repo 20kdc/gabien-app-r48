@@ -9,10 +9,10 @@ import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
-import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
-import r48.schema.util.SchemaPath;
 import r48.UITest;
+import r48.schema.util.ISchemaHost;
+import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 import r48.ui.UIHHalfsplit;
 import r48.ui.UIScrollVertLayout;
@@ -25,6 +25,7 @@ import java.util.Map;
  */
 public class HashSchemaElement implements ISchemaElement {
     public ISchemaElement keyElem, valElem;
+
     public HashSchemaElement(ISchemaElement keySE, ISchemaElement opaqueSE) {
         keyElem = keySE;
         valElem = opaqueSE;

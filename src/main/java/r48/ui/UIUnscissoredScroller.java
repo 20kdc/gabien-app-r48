@@ -16,6 +16,7 @@ public class UIUnscissoredScroller extends UIPanel {
     private UIElement target;
     private boolean dragging = false;
     private int lastX, lastY;
+
     public UIUnscissoredScroller(UIElement inner) {
         target = inner;
         allElements.add(target);

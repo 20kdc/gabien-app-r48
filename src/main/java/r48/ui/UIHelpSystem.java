@@ -141,6 +141,7 @@ public class UIHelpSystem extends UIPanel {
             page.clear();
             new DBLoader(new BufferedReader(new InputStreamReader(getHelpStream())), new IDatabase() {
                 boolean working = false;
+
                 @Override
                 public void newObj(int objId, String objName) throws IOException {
                     if (objId == i) {

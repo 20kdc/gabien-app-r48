@@ -11,8 +11,8 @@ import gabien.ui.UILabel;
 import gabien.ui.UIPanel;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.map.IMapViewCallbacks;
 import r48.RubyIO;
+import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 
 /**
@@ -22,6 +22,7 @@ public class UIMTEventMover extends UIPanel implements IMapViewCallbacks {
     private RubyIO targetEvent;
     private UILabel uil;
     private UIMapView mapView;
+
     public UIMTEventMover(RubyIO evI, UIMapView mv) {
         mapView = mv;
         targetEvent = evI;

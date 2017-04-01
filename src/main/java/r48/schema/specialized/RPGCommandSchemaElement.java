@@ -8,14 +8,13 @@ package r48.schema.specialized;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
+import r48.RubyIO;
 import r48.dbs.CMDB;
+import r48.dbs.RPGCommand;
 import r48.schema.*;
-import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.util.ISchemaHost;
-import r48.RubyIO;
 import r48.schema.util.SchemaPath;
-import r48.dbs.RPGCommand;
 import r48.ui.UIEnumChoice;
 import r48.ui.UIHHalfsplit;
 import r48.ui.UIScrollVertLayout;
@@ -27,7 +26,7 @@ import java.util.Map;
 /**
  * Used to make RPGCommands bearable.
  * (Essentially a version of the ArrayDisambiguatorSchema logic,
- *   but if the schema system was used to build commands... yeah, no, that ain't happening.)
+ * but if the schema system was used to build commands... yeah, no, that ain't happening.)
  * Created on 12/30/16.
  */
 public class RPGCommandSchemaElement implements ISchemaElement {

@@ -9,14 +9,13 @@ import gabien.ui.IConsumer;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
-import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
-import r48.schema.util.SchemaPath;
 import r48.schema.specialized.TempDialogSchemaChoice;
+import r48.schema.util.ISchemaHost;
+import r48.schema.util.SchemaPath;
 import r48.ui.UIEnumChoice;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Enum. Note that it is critical to implementation of many things that this explicitly switch into a new view.
@@ -27,6 +26,7 @@ public class EnumSchemaElement implements ISchemaElement {
     public HashMap<Integer, String> options;
     public HashMap<String, Integer> viewOptions;
     public String buttonText;
+
     public EnumSchemaElement(HashMap<Integer, String> o, String bt) {
         options = o;
         viewOptions = new HashMap<String, Integer>();

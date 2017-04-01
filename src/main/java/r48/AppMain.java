@@ -8,15 +8,14 @@ package r48;
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.*;
-import r48.dbs.*;
+import r48.dbs.ATDB;
+import r48.dbs.ObjectDB;
+import r48.dbs.SDB;
 import r48.io.IkaObjectBackend;
 import r48.io.R48ObjectBackend;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
-import r48.map.UIMapViewContainer;
-import r48.maptools.UIMTEventPicker;
 import r48.musicality.Musicality;
-import r48.schema.ISchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
@@ -25,8 +24,9 @@ import r48.toolsets.MapToolset;
 import r48.toolsets.RMToolsToolset;
 import r48.ui.*;
 
-import java.io.*;
-import java.util.Iterator;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 
 /**
@@ -39,15 +39,15 @@ import java.util.LinkedList;
  * Hopefully the system is flexible enough to support everything now, at least more or less.
  * In any case, if you're reading this you're examining the code.
  * This class holds the static members for several critical databases,
- *  needed to keep the system running.
+ * needed to keep the system running.
  * So, uh, don't lose it.
- *
+ * <p/>
  * -- NOTE: This is a 2017 version of the code,
- *          since I decided to actually finish it.
- *          If I do get around to releasing it,
- *           well, you'll find the new features yourself,
- *           I'm sure of it. --
- *
+ * since I decided to actually finish it.
+ * If I do get around to releasing it,
+ * well, you'll find the new features yourself,
+ * I'm sure of it. --
+ * <p/>
  * Created on 12/27/16.
  */
 public class AppMain {
@@ -177,7 +177,7 @@ public class AppMain {
                 "Toggle calming sound",
                 "Configure font sizes",
                 "Rebuild UI",
-        }, new Runnable[]{
+        }, new Runnable[] {
                 new Runnable() {
                     @Override
                     public void run() {

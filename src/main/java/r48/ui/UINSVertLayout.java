@@ -16,6 +16,7 @@ import gabien.ui.UIPanel;
 public class UINSVertLayout extends UIPanel {
     public UIElement upper;
     public UIElement lower;
+
     public UINSVertLayout(UIElement a, UIElement b) {
         Rect ab = a.getBounds();
         Rect bb = b.getBounds();
@@ -27,6 +28,7 @@ public class UINSVertLayout extends UIPanel {
         allElements.add(upper);
         allElements.add(lower);
     }
+
     @Override
     public void setBounds(Rect r) {
         super.setBounds(r);

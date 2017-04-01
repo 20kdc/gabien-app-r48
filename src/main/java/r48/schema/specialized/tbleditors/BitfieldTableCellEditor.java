@@ -4,11 +4,13 @@
  */
 package r48.schema.specialized.tbleditors;
 
-import gabien.ui.*;
+import gabien.ui.IConsumer;
+import gabien.ui.UILabel;
+import gabien.ui.UINumberBox;
+import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
-import r48.schema.specialized.RubyTableSchemaElement;
 import r48.ui.UIGrid;
 import r48.ui.UIHHalfsplit;
 import r48.ui.UIScrollVertLayout;
@@ -22,6 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class BitfieldTableCellEditor implements ITableCellEditor {
     public final String[] flags;
+
     public BitfieldTableCellEditor(String[] strings) {
         flags = strings;
     }

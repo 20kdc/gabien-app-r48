@@ -16,7 +16,9 @@ public interface ITileRenderer {
     int getTileSize();
 
     int[] tileLayerDrawOrder();
+
     void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets);
+
     String getPanorama();
 
     UITileGrid[] createATUIPlanes(UIMapView mv);

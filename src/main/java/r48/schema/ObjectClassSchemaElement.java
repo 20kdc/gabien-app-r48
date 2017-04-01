@@ -6,10 +6,10 @@
 package r48.schema;
 
 import gabien.ui.UIElement;
+import r48.RubyIO;
 import r48.dbs.ProxySchemaElement;
 import r48.schema.specialized.RubyTableSchemaElement;
 import r48.schema.util.ISchemaHost;
-import r48.RubyIO;
 import r48.schema.util.SchemaPath;
 
 import java.util.LinkedList;
@@ -25,11 +25,13 @@ public class ObjectClassSchemaElement implements ISchemaElement {
     public ISchemaElement backing;
     public String symbol;
     public char type;
+
     public ObjectClassSchemaElement(String clsSym, ISchemaElement back, char typ) {
         symbol = clsSym;
         backing = back;
         type = typ;
     }
+
     @Override
     public UIElement buildHoldingEditor(RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         if (target.type != type)

@@ -25,9 +25,11 @@ import r48.ui.UIScrollVertLayout;
  */
 public class CTNativeSchemaElement implements ISchemaElement {
     public final String cls;
+
     public CTNativeSchemaElement(String c) {
         cls = c;
     }
+
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
         UIScrollVertLayout uiSVL = new UIScrollVertLayout();

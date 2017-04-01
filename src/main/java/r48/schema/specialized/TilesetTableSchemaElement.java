@@ -6,7 +6,6 @@
 package r48.schema.specialized;
 
 import gabien.IGrInDriver;
-import r48.map.tiles.ITileRenderer;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
 import r48.schema.specialized.tbleditors.ITableCellEditor;

@@ -11,7 +11,6 @@ package r48.toolsets;
 import gabien.ui.IConsumer;
 import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
-import r48.AppMain;
 import r48.UIMapInfos;
 import r48.map.UIMapViewContainer;
 

@@ -8,10 +8,10 @@ package r48.schema.displays;
 import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import r48.schema.util.ISchemaHost;
 import r48.RubyIO;
-import r48.schema.util.SchemaPath;
 import r48.schema.ISchemaElement;
+import r48.schema.util.ISchemaHost;
+import r48.schema.util.SchemaPath;
 
 /**
  * Solely for the express purpose of Event::Page::Graphic schemas
@@ -19,7 +19,7 @@ import r48.schema.ISchemaElement;
  */
 public class EPGDisplaySchemaElement implements ISchemaElement {
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target,final ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, SchemaPath path) {
         UIElement display = new UIElement() {
             @Override
             public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {

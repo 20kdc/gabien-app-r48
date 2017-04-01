@@ -58,7 +58,7 @@ public class VXATileRenderer implements ITileRenderer {
     @Override
     public int[] tileLayerDrawOrder() {
         // Shadows go under sufficiently foreground objects for some reason.
-        return new int[]{0, 1, 3, 2};
+        return new int[] {0, 1, 3, 2};
     }
 
     @Override
@@ -314,11 +314,11 @@ public class VXATileRenderer implements ITileRenderer {
     public UITileGrid[] createATUIPlanes(UIMapView mv) {
         if (mv.getCurrentLayer() == 3) {
             // Shadow Layer
-            return new UITileGrid[]{
+            return new UITileGrid[] {
                     new UITileGrid(mv, 0x000, 0x100, false)
             };
         } else {
-            return new UITileGrid[]{
+            return new UITileGrid[] {
                     new UITileGrid(mv, 0x000, 1, false),
                     new UITileGrid(mv, 0x000, 0x400, false),
                     new UITileGrid(mv, 0x600, 0x100, false),
@@ -334,11 +334,11 @@ public class VXATileRenderer implements ITileRenderer {
     public String[] getPlaneNames(int layer) {
         if (layer == 3)
             // Shadow Layer
-            return new String[]{
+            return new String[] {
                     // some friendly advice
                     "USE SHADOWREGION TOOL",
             };
-        return new String[]{
+        return new String[] {
                 "NIL",
                 "G1", // General 1
                 "G2", // General 2

@@ -6,7 +6,6 @@ package r48.maptools;
 
 import gabien.IGrInDriver;
 import gabien.ui.*;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
@@ -22,6 +21,7 @@ public class UIMTShadowLayer extends UIPanel implements IMapViewCallbacks {
     private UIScrollVertLayout uiSVL;
     private UINumberBox regionId;
     private int flags = 0;
+
     public UIMTShadowLayer(UIMapView mv) {
         map = mv;
         uiSVL = new UIScrollVertLayout();

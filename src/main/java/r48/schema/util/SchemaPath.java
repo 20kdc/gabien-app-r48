@@ -13,15 +13,15 @@ import java.util.LinkedList;
 
 /**
  * Generic schema path object used to keep references to things being edited in play,
- *  and allow "go to the parent object" functionality.
- *
+ * and allow "go to the parent object" functionality.
+ * <p/>
  * These have a dual purpose, and due to that,
- *  the paths created can differ for, say, SubwindowSchemaElement
- *  (...which has no reason to create a newWindow element for modifyDefaultVal, but has to for actual editing UI building)
- *
+ * the paths created can differ for, say, SubwindowSchemaElement
+ * (...which has no reason to create a newWindow element for modifyDefaultVal, but has to for actual editing UI building)
+ * <p/>
  * One of these should be created on array indexes, or when a navigation event occurs.
  * If it's solely for the array index data purpose, then the editor element should be null -
- *  this makes navigation slightly more user-friendly.
+ * this makes navigation slightly more user-friendly.
  * Created on 12/29/16.
  */
 public class SchemaPath {
@@ -48,7 +48,8 @@ public class SchemaPath {
     //  to save scroll values.
     protected double scrollValue = 0.0d;
 
-    private SchemaPath() {}
+    private SchemaPath() {
+    }
 
     // The basic constructor.
     public SchemaPath(ISchemaElement heldElement, RubyIO target, ISchemaHost launcher) {

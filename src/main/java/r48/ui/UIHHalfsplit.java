@@ -11,14 +11,15 @@ import gabien.ui.UIPanel;
 
 /**
  * Fractions, for users of all ages!*
- *
+ * <p/>
  * * And all everything else, for that matter.
- *   If a cat knows fractions, then sure, they can use this class.
+ * If a cat knows fractions, then sure, they can use this class.
  * Created on 12/29/16.
  */
 public class UIHHalfsplit extends UIPanel {
     public UIElement left, right;
     public int lP, lD;
+
     public UIHHalfsplit(int fP, int fD, UIElement l, UIElement r) {
         lP = fP;
         lD = fD;

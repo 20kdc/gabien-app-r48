@@ -5,13 +5,15 @@
 
 package r48.schema.arrays;
 
-import gabien.ui.*;
+import gabien.ui.Rect;
+import gabien.ui.UIElement;
+import gabien.ui.UITextButton;
 import r48.ArrayUtils;
 import r48.FontSizes;
+import r48.RubyIO;
 import r48.schema.ISchemaElement;
 import r48.schema.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
-import r48.RubyIO;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 import r48.ui.UIScrollVertLayout;
@@ -23,6 +25,7 @@ import r48.ui.UIScrollVertLayout;
 public abstract class ArraySchemaElement implements ISchemaElement {
     public int sizeFixed;
     public boolean atLeastOne;
+
     public ArraySchemaElement(int fixedSize, boolean al1) {
         sizeFixed = fixedSize;
         atLeastOne = al1;
