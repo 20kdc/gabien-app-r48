@@ -18,6 +18,7 @@ import java.io.IOException;
  * Created on 12/28/16.
  */
 public class ATDB {
+    public final String loadFile;
     public Autotile[] entries = new Autotile[48];
     public int[] inverseMap = new int[256];
     private boolean[] rulesEngineMustTrue = new boolean[10000];
@@ -51,7 +52,8 @@ public class ATDB {
             return 11;
         return 0;
     }
-    public ATDB(BufferedReader br) throws IOException {
+    public ATDB(String name, BufferedReader br) throws IOException {
+        loadFile = name;
         new DBLoader(br, new IDatabase() {
             Autotile current = null;
             // for 'x'-type one-line-space-delimited entries
@@ -128,12 +130,21 @@ public class ATDB {
             area[7] = (i & 128) != 0;
             inverseMap[i] = getMostSuitableAutotile(area);
             if (inverseMap[i] == -1) {
+                String nano = "";
+                for (int j = 0; j < area.length; j++) {
+                    nano += area[j] ? "1" : "0";
+                }
+                System.out.println("ATR: " + nano);
                 issues++;
                 inverseMap[i] = 47;
             }
         }
-        if (issues > 0)
-            System.out.println("There are " + issues + " situations in which the AutoTiles code may fail.");
+        if (issues > 0) {
+            System.out.println("     NNNWESSS");
+            System.out.println("     W E  W E");
+            System.out.println("There are " + issues + " situations in which placing " + loadFile + " ATs leads to an ambiguous result.");
+            System.out.println("(In the default RXP dataset, 16 situations is normal, and the default value of AT47 will work.)");
+        }
     }
     private int getMostSuitableAutotile(boolean[] area) {
         int bestAT = 47;

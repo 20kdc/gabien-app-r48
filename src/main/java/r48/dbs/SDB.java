@@ -313,7 +313,7 @@ public class SDB {
                     AppMain.autoTiles = new ATDB[args.length / 2];
                     for (int i = 0; i < args.length; i += 2) {
                         InputStreamReader fr = new InputStreamReader(GaBIEn.getFile(args[i]));
-                        AppMain.autoTiles[p] = new ATDB(new BufferedReader(fr));
+                        AppMain.autoTiles[p] = new ATDB(args[i], new BufferedReader(fr));
                         fr.close();
                         // This is needed to make actual autotile *placement* work.
                         // In theory, it's independent of the AutoTiles setup,
