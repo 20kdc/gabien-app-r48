@@ -1,0 +1,115 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ VX Ace Schema.
+
+C objectDB r48
+C dataPath Data/
+C dataExt .rvdata2
+C versionId VXA
+
+A RVXA/AutoTiles.txt RVXA/AutoTileRules.txt RVXA/WallAT.txt RVXA/WallATRules.txt
+C allowIndentControl
+C defineIndent
+
+D internal_tilesetDictionary Tilesets 0 @name
+D internal_mapDictionary MapInfos 1 @name
+D internal_itemDictionary Items 0 @name
+D internal_commevDictionary CommonEvents 0 @name
+D internal_animationDictionary Animations 0 @name
+d internal_elementDictionary System @elements
+d internal_variableDictionary System @variables
+d internal_switchDictionary System @switches
+
+D internal_actorDictionary Actors 0 @name
+D internal_skillDictionary Skills 0 @name
+D internal_stateDictionary States 0 @name
+D internal_weaponDictionary Weapons 0 @name
+D internal_armourDictionary Armors 0 @name
+D internal_troopDictionary Troops 0 @name
+D internal_classDictionary Classes 0 @name
+
+D internal_enemyDictionary Enemies 0 @name
+
+d internal_atypeDictionary System @armor_types
+d internal_wtypeDictionary System @weapon_types
+d internal_etypeDictionary System @terms @etypes
+d internal_stypeDictionary System @skill_types
+
+> string_array subwindow array 0 string
+
+> tileset_id internal_tilesetDictionary
+> map_id internal_mapDictionary
+> item_id internal_itemDictionary
+> commonevent_id internal_commevDictionary
+> actor_id internal_actorDictionary
+> state_id internal_stateDictionary
+> animation_id internal_animationDictionary
+> element_id internal_elementDictionary
+ not sure if there is any dictionary for this
+> balloon_id int
+> weapon_id internal_weaponDictionary
+> armour_id internal_armourDictionary
+> skill_id internal_skillDictionary
+> troop_id internal_troopDictionary
+> class_id internal_classDictionary
+> var_id internal_variableDictionary
+> switch_id internal_switchDictionary
+
+ Not to be confused with troop_enemy_id (which is used 99.9% of the time)
+> enemy_id internal_enemyDictionary
+
+ the AWESomeTypes
+> atype_id internal_atypeDictionary
+> wtype_id internal_wtypeDictionary
+> etype_id internal_etypeDictionary
+> stype_id internal_stypeDictionary
+
+> selfswitch_id string= A
+
+e vehicle_id 0 boat 1 ship 2 airship
+
+> int_or_var int
+> opacity int= 255
+> scale int= 100
+E troop_enemy_id TroopEnemyIndex -1 All
+
+E character_id EventID -1 Player 0 This
+E iterate_actor_id ActorID 0 All
+E iterate_actor_index ActorIdx -1 All
+E iterate_enemy_index EnemyIdx -1 All
+
+e blend_type -1 KeepDestAlpha 0 Normal 1 Add 2 Sub
+
+ yay native objects
+> Color CTNative Color
+> Tone CTNative Tone
+
+: RPG::ME
+C name Class.RPG::ME @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|}
+@name string
+@pitch int= 100
+@volume int= 100
+
+: RPG::SE
+C name Class.RPG::SE @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|}
+@name string
+@pitch int= 100
+@volume int= 100
+
+: RPG::BGM
+C name Class.RPG::BGM @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|}
+@name string
+@pitch int= 100
+@volume int= 100
+
+: RPG::BGS
+C name Class.RPG::BGS @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|}
+@name string
+@pitch int= 100
+@volume int= 100
+
+i RVXA/SchemaCommandHelpers.txt
+i RVXA/SchemaEditing.txt
+i RVXA/SchemaFiles.txt

@@ -1,0 +1,121 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ Jan 3. 2017. Tuesday. LATE.
+ Ok, so I tried implementing this logic sanely,
+  but it didn't work out.
+ So I reimplemented it using a set of rules.
+ But the rules right now are non-configurable.
+ Time to fix that.
+ Format of numbers is CCi, where C is the actual display index (what AutoTiles corner IDs get mapped to),
+  and i is the 0-3 index used in rendering.
+
+ So, essentially: TileNumber on CornerIndex implies <true ANums> and <false ANums>.
+
+ Essentially, this is a table that lets you work out
+  what surrounds an AutoTile from how it's composited.
+ (For a primer on that, see AutoTiles.txt)
+ That is then brute-force-translated with the aid of the main ATDB,
+  in order to get a simple surroundings -> autotile index table.
+
+ If there are multiple valid outcomes, the tile will be 47'd.
+ This usually means you need to add more rules.
+ Or the database broke.
+
+ (NOTE: Despite this file being way bigger than a binary table, it's also easier to understand. Kinda.
+  I keep copies of the reference charts on every section for a reason.)
+
+ Just some basic rules for tiles 0, 2 and 7.
+ 1. Tile 0 always means that the orthogonal directions it's pointing at aren't connected.
+    (Diagonal directions are ignored, for obvious enough reasons.)
+ 2. Tile 2 means that the orthogonal directions *are* connected,
+     and furthermore, due to the "notch" it is certain the diagonal is NOT connected.
+ 3. Tile 7 means both orthogonals and diagonal are connected.
+
+000:TF1364
+001:TF1364
+002:TF1364
+003:TF1364
+
+020:T13F0
+021:T14F2
+022:T36F5
+023:T46F7
+
+ .ANums
+ 012
+ 3 4
+ 567
+
+ .Tiles
+ Cr Cut.
+ 0.2
+ 345
+ 678
+ 9**
+
+ .CIs
+ 01
+ 23
+
+030:TF13
+033:T476F
+
+051:TF14
+052:T356F
+
+ .ANums
+ 012
+ 3 4
+ 567
+
+ .Tiles
+ Cr Cut.
+ 0.2
+ 345
+ 678
+ 9**
+
+ .CIs
+ 01
+ 23
+
+092:TF36
+091:T124F
+
+113:TF46
+110:T301F
+
+
+ VX-Ace Straight-Line Rules
+
+ .ANums
+ 012
+ 3 4
+ 567
+
+ .Tiles
+ Cr Cut.
+ 0.2
+ 3X5
+ XXX
+ 9X*
+
+ .CIs
+ 01
+ 23
+
+ Format is CCI.
+
+090:TF3
+093:TF6
+
+111:TF4
+112:TF6
+
+031:TF1
+032:TF3
+
+050:TF1
+053:TF4

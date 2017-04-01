@@ -1,0 +1,101 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ the VX Ace SchemaEditing file
+
+> genericScriptParameter typeChanger{ genericScriptParametersSW [ RPG::MoveRoute oRPG::MoveRoute MoveCommandEditor oRPG::MoveCommand RPG::BGM oRPG::BGM RPG::BGS oRPG::BGS string " boolean T boolean F int i }
+
+i RCOM/SchemaScript.txt
+
+> EventListEditor subwindow arrayCS RVXA/Commands.txt EventCommandEditor
+> EventCommandEditor RPGCS RVXA/Commands.txt RPG::EventCommand EventCommandEditor_Most
+> MoveCommandEditor RPGMS RVXA/CommandsMove.txt RPG::MoveCommand MoveCommandEditor_Most
+
+: RPG::MoveRoute
+@list MoveListEditor
+@wait boolean
+@repeat boolean
+@skippable booleanDefTrue
+
+: RPG::Event::Page::Graphic
+@pattern int= 1
+@tile_id int= 0
+@direction direction
+@character_name string
+@character_index int
++internal_EPGD
+
+e event_trigger 0 onInteract 1 onPlayerWalkAgainst 2 onEventWalkAgainst 3 autorun 4 parallel
+e event_movetype 0 fixed 1 random 2 approachPlayer 3 moveRoute
+e event_pritype 0 floor 1 character 2 flying
+
+: RPG::Event::Page::Condition
+@item_valid boolean
+@item_id item_id
+@actor_valid boolean
+@actor_id actor_id
+@variable_valid boolean
+@variable_id var_id
+@variable_value int
+@switch1_valid boolean
+@switch1_id switch_id
+@switch2_valid boolean
+@switch2_id switch_id
+@self_switch_ch string= A
+@self_switch_valid boolean
+
+: RPG::Event::Page
+@condition subwindow RPG::Event::Page::Condition
+@through boolean
+@move_type event_movetype
+@move_route RPG::MoveRoute
+@move_frequency int= 3
+@move_speed int
+@step_anime boolean
+@walk_anime boolean
+@priority_type event_pritype
+@direction_fix boolean
+@trigger event_trigger
+@list EventListEditor
+@graphic { subwindow RPG::Event::Page::Graphic internal_EPGD }
+
+: RPG::Event
+@name string
+@id index
+@x int
+@y int
+@pages subwindow arrayAL1 subwindow RPG::Event::Page
+
+: RPG::Map::Encounter
+@troop_id troop_id
+@weight int
+@region_set subwindow array 0 int
+
+: RPG::Map
+@autoplay_bgm boolean
+@bgm RPG::BGM
+@autoplay_bgs boolean
+@bgs RPG::BGS
++table @data @width @height 17 13 4
+@events subwindow hash int= 1 subwindow RPG::Event
+@note string
+@width roint= 17
+@height roint= 13
+@tileset_id tileset_id
+@parallax_name string
+@parallax_sx int
+@parallax_sy int
+ Lies, I tell you! Lies!
+@parallax_show boolean
+@parallax_loop_x boolean
+@parallax_loop_y boolean
+e map_scroll_type 0 none 1 vertical 2 horizontal 3 both
+@scroll_type map_scroll_type
+@display_name string
+@encounter_list subwindow array 0 RPG::Map::Encounter
+@encounter_step int= 30
+@disable_dashing boolean
+@battleback1_name string
+@battleback2_name string
+@specify_battleback boolean

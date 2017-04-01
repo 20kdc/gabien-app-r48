@@ -1,0 +1,668 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ CommandDB
+
+ NOTE TO POTENTIAL TRANSLATORS: Really sorry
+  (if only because the way I wrote it stabs me in the back as much as anyone else),
+  but this was meant to be written *quickly*.
+ Translation was never considered at any point.
+ There's also the fact that the text will probably be written too small
+  to be usable for non-Latin alphabets anyway,
+  because the fact of the matter is otherwise you won't have enough screen room to edit a long script.
+  (Consider the fact that the array insertion points take up half the total size,
+   add in the original RPG Maker insertion points?)
+ I wrote this note after pretty much finishing the DB (for my purposes).
+
+ NEW NOTE FOR TRANSLATORS.
+
+ As of v0.3, the Extended Format now exists, and can be used with '@@'.
+ Both formats should be used where applicable (it's a per-command setting).
+
+ Furthermore, '@P' is the Original Format -
+  but enumeration prefixes are not applied, like with the Extended Format.
+
+ The bug in v0.2 that prevented the use of ':' in a command name has been fixed,
+  and applies to Original Format and Extended Format command names.
+
+ The Original Format is as follows.
+
+ Note that '$' is replaced with " <nice looking string>",
+  while '!' is replaced with " to <nice looking string>".
+  '#' defines a range, for "A through B" commands.
+ Both are replaced with nothing if just entering the command name.
+
+  an example: 108: Comment$
+  a more advanced example: 103: Input Number!$ digits
+   (As this format is crude, this shows as Input Number digits in the selection box.)
+
+ The Extended Format is as follows.
+
+  Parameters are referred to by A through Z for simplicity of implementation.
+  Most characters are interpreted as-is.
+
+  #A outputs Parameter A.
+  However, if Parameter A does not exist, then it will literally output 'A'.
+  This behavior is also fully usable as an escaping mechanism.
+  In either case, the prefixNext flag is disabled afterwards (see '@')
+
+  @ causes the next outputted value to be prefixed if it's an enumeration.
+
+  {|} are used to open/'else-branch'/close blocks.
+  Blocks are used for conditional text writing.
+
+  [] is used to perform a specific parameter interpretation,
+   as opposed to # (only capable of interpreting using the default interpretation)
+  If no interpretation exists, it fails completely,
+   and will result in a no-variables-interpretation (a second error will lead to a crash)
+  However, in cases such as set_variables, this would lead to a choice,
+   between adding an interpretation only valid in some cases as the default,
+   or not interpreting it at all.
+  If the character '@' prefixes the interpretation type, [] becomes a subname call.
+  The schema database may contain name-routine definitions,
+   usually used for handling classes like AudioFile.
+  These name routines define *sources* relative to the parameter.
+  This case is similar.
+
+  An example usage:
+   [int]C
+
+  An example call:
+  [@Class.RPG::AudioFile]A
+
+  All blocks use '{' to start, '|' will invert the condition mid-way, and '}' terminates.
+
+  There are three formats for blocks.
+  If a parameter mentioned is unavailable, the false branch is taken.
+  Blocks are never entirely skipped unless they have no false-branch.
+
+  The first checks if a parameter is *available* - that it exists.
+   {A:Previous attempts to listen to this tape will have found it blank.}
+   {A:(with parameter)|(without parameter)}
+
+  The second checks if a parameter is the same as another.
+  This can be used for range specification.
+   {AB:#A|@#A..@#B}
+
+  The third checks if a parameter is equal to a literal text string.
+  Note that this is the human-readable text string,
+   which may be a little painful under some circumstances.
+  This can be used as a nicer way to output int_booleans...
+  {A=1=:(enable)|(disable)}
+  ... or as a way to handle "invert" options. (Note the inverted order of the text.)
+  {A=1=:OFF|ON}
+
+ Here are some examples of the Extended Format in use.
+ These examples show all block times in use for their purposes.
+
+  an example: 108:@@Comment{A: #A}
+  a more advanced example: 103:@@Input Number {A: to @#A}{B: of #B digits}
+  another example: 122:@@Set Variables{A: {AB:@#A|@#A..@#B} #C {D=int=int: [int]E|{D=var=var: @[var_id]E|#D}}}
+
+ ----------------------------------
+
+ Subcomms:
+  '<number>:' defines a command
+  'p' defines a parameter
+  'L' defines this as a block leave command.
+      This is only valid in two places:
+      1. Immediately before an 'l'-type command
+      2. At the end of the list.
+      However, this can't be deleted due to Map29, E315 (ram nomming moss)
+  'l' defines this as requiring a block leave before it, for correct indentation.
+      This can be safely enforced without 100% knowledge of the command set.
+      The parameter should be the thing that starts the block.
+  'K' can go after a Leave Block OR something else (number specified)
+  'i' defines entry indent offset
+  'I' defines exit indent offset
+      (ex. Else is l,i-1,I1.)
+  'X' defines this as using a custom schema for indent & parameters.
+
+ Confirmed Types (incomplete nowadays because of major usability work adding paramassist types):
+
+  int
+  string
+  string_array
+  int_boolean
+  int_or_var (alias for int, but the int can have meaning)
+  <the gazillion _id types>
+  direction (alias for int, but an enum. 2: Down, 4: Left, 6: Right, 8: Up)
+  animation_id (alias for int blah blah blah)
+  iterate_actor (0 means all, otherwise integer ID.)
+  iterate_battler0 (int, complicated)
+  iterate_battler1 (int, complicated)
+
+  selfswitch_id (a string with a set default value of "A")
+
+  opacity (int= 255)
+
+  enemy_action_kind (0 Basic 1 Skill 2 Item)
+  enemy_action_basic (0 Attack 1 Guard 2 Escape 3 Rest)
+  force_action_target (Actor/TroopEnemyID -2 Last -1 Random)
+
+  cms_type (0: panorama, 1: fog, 2: battleback)
+  change_text_options_position (0: up 1: middle 2: down)
+
+  conditional_branch_parameters
+  change_map_settings_parameters
+
+  weather_type (0: none, 1: rain, 2: storm, 3: snow)
+
+  <fully qualified object classname, "RPG::AudioFile" for example>
+
+ notes:
+  operate_value(int_boolean:negate, int_boolean:isVariable, int_or_var:value)
+
+ Basic aliasing is here for convenience (just within the file, and no fancy SchemaDB constructs)
+
+ Completed pages:
+  (1-2 are base pages, no commands)
+  3, 4, 5, 6, 7.
+  (7 is the last page)
+ In theory, it's complete.
+ Course, there'll probably be schema bugs with all the commands.
+ Automated tests are passing for the commands in <test subject name here>.fON
+
+ [Early codes]
+
+0: >> insert point
+L
+
+ Comments
+
+108: //*$
+p note string
+
+408: //$
+p note string
+
+ [Interpreter Part 3]
+
+101: Say$
+p text string
+
+401: Say(Cont.)$
+p text string
+
+102:@@Show Choices: {A:[choice_array]A {B=1=(can cancel)}|(c.402/403/404)}
+p choices string_array
+p cancellable int_boolean
+I1
+
+ NOTE: I'm leaving this documentation here,
+        for lack of a better place.
+       The structure of a Show Choices, from indent 0, is:
+       i0 Show Choices
+       i0 When Choice = 0
+       i1 <code...>
+       i1 Leave Block
+       i0 When Choice = 1
+       i1 <code...>
+       i1 Leave Block
+       i0 End Choice
+
+402: When Choice =$
+p choice int
+i-1
+I1
+K102
+
+403: When cancelled (idx 4)
+i-1
+I1
+K102
+
+404: End Choice
+i-1
+l
+
+103: Input Number!
+p varId var_id
+p digitCount int
+
+104:@@Change Text Options{A::#A, {B=1=in}visible bkg.}
+p position change_text_options_position
+p frameTransparent int_boolean
+
+105: Button Input!
+p varId var_id
+
+106: Wait$
+p time int
+
+111:@@Conditional{A::[@conditional_branch_parameters]| Branch (c.411/412)}
+ The parameter exists so the A: detect works
+p type conditional_branch_types
+I1
+
+411: Else
+i-1
+I1
+l
+
+412: End Conditional
+i-1
+l
+
+112: Start Loop (c.113/413)
+ this is a blank 'placeholder' command
+I1
+
+113: Break Loop
+ This command breaks to the next Repeat Above it finds with a lesser indent,
+  this proves the indent of Repeat Above is i-1 I0, OR it has a leave block before it.
+ The answer in actual fact (I wrote the "find EventCommand by code" button to find this)
+  is that End Loop is indeed preceded by a Leave Block.
+
+413: End Loop/Repeat Above
+i-1
+l
+
+ There quite literally is no command here.
+ It could be an indentation NOP, but a scan of the only reference code I have
+  suggests it simply does not exist.
+
+115: Exit Event Processing
+
+116: Erase Self Event
+
+ This isn't very well-explained, so:
+  A common event is a subroutine loaded from a file called "CommonEvents.rxdata".
+117: Call Common Event$
+p eventId commonevent_id
+
+118: Label$
+p labelName string
+
+119: Unreliable Jump!
+p labelName string
+
+ [Interpreter Part 4]
+
+121:@@Control Switch{A:{AB: @#A|es @#A..@#B} = {C=1=OFF|ON}|es}
+p firstSwitch switch_id
+p lastSwitch switch_id
+p turnOff int_boolean
+
+122:@@Set Variables{A: {AB:@#A|@#A..@#B} #C [@set_variables_parameters]}
+ note: the parameters given here are for formatting reasons, since the X overrides any actual use.
+p firstVar var_id
+p lastVar var_id
+p op set_variables_operation
+p src set_variables_source
+X set_variables_parameters
+
+123:@@Control Selfswitch{A: #A{B: = {B=1=OFF|ON}}}
+p selfSwitch selfswitch_id
+p turnOff int_boolean
+
+ I think the timer counts up?
+ In any case if running is false, seconds is irrelevant.
+124: Set timer1
+p running int_boolean
+p seconds int
+
+125:@@Modify Gold{A: by [@operate_value_0]}
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 1 int 0 int 1 var_id
+
+126:@@Modify Item{A: @#A by [@operate_value_1]}
+p item item_id
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+
+127:@@Modify Weapon{A: @#A by [@operate_value_1]}
+p weapon weapon_id
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+
+128:@@Modify Armour{A: @#A by [@operate_value_1]}
+p armour armour_id
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+
+129:@@{A:{B=0=Remove actor @#A from party|Add actor @#A to party{C=0= without} resetting}|Add/remove actor to party}
+p actor actor_id
+p add int_boolean
+p addInitialize int_boolean
+
+ Command 130 was skipped?
+
+131: Change Windowskin
+p file string
+
+132: Change Battle BGM!
+ May not actually work in middle of battle.
+ Or the variable change is auto-detected...
+p audio RPG::AudioFile
+
+133: Change Battle End ME!
+p audio RPG::AudioFile
+
+134: Enable/Disable Saving:$
+p enabled int_boolean
+
+135: Enable/Disable Menu:$
+p enabled int_boolean
+
+136: Enable/Disable Encounters:$
+p enabled int_boolean
+
+ [Interpreter Part 5]
+
+201:@@{A:[@transfer_player_paramassist]|Transfer Player}
+p useVariables int_boolean
+D map 0 int 0 map_id 1 var_id
+D x 0 int 0 int 1 var_id
+D y 0 int 0 int 1 var_id
+p playerDir direction_disable
+p fadeType transfer_player_fadetype
+
+202:@@{A:[@set_event_location_paramassist]|Set Event Location}
+X set_event_location_paramassist
+
+203: Scroll map
+p direction direction
+p distance int
+p speed int
+
+204:@PChange Map$ Settings
+p type cms_type
+X change_map_settings_parameters
+
+205: Fog Colour Tone
+p colour Tone
+p duration int
+
+206: Fog Opacity Change
+p opacity opacity
+p duration int
+
+207: Show Animation!.$
+p event character_id
+p anim animation_id
+
+208: Set Player Opacity
+p opaque int_boolean
+
+209: Set event$ route$
+p eID character_id
+p route RPG::MoveRoute
+
+ NOTE: This apparently does nothing (not even defined),
+       it seems to be solely an assist for RPG Maker XP itself
+       the structure is, firstly the 209, which counts it's own first command,
+       then one 509 for each *additional* command.
+       The first 509 contains the entire MoveRoute list.
+       From a screenshot, the editor apparently looks like this:
+
+       Set event route: This event
+                        Turn Left
+                        Turn Right
+                        Do a dance
+       >>
+
+       the actual truth of the matter, and the terminating NOP, being abstracted away.
+
+509: MoveRoute Editor Helper NOP
+p ex genericScriptParameter
+
+210: Wait for move end
+
+ Yes, there is a gap here.
+
+221: Prepare for transition
+
+222: Transition
+p transition string
+
+223: Change Screen Tone
+p tone Tone
+p duration int
+
+224: Screen flash
+p colour Color
+p duration int
+
+225: Screen shake
+p power int
+p speed int
+p duration int
+
+231: Set/show picture$!
+p pictureId int
+p image string
+p centred int_boolean
+p useVariables int_boolean
+D x|I|V 3 int 0 int 1 var_id
+D y|I|V 3 int 0 int 1 var_id
+p zoom_x int
+p zoom_y int
+p opacity opacity
+p blendType blend_type
+
+232: Move picture$
+p pictureId int
+p duration int
+p centred int_boolean
+p useVariables int_boolean
+D x|I|V 3 int 0 int 1 var_id
+D y|I|V 3 int 0 int 1 var_id
+p zoom_x int
+p zoom_y int
+p opacity opacity
+p blendType blend_type
+
+233: Rotate picture$
+p pictureId int
+p speed int
+
+234: Change picture$ tone!$
+p pictureId int
+p picTone1 Tone
+p picTone2 int
+
+235: Erase picture$
+p pictureId int
+
+236: Weather set!
+p type weather_type
+p power int
+p fadeDuration int
+
+241: Set BGM!
+p track RPG::AudioFile
+
+242: Fade out BGM
+p duration int
+
+ [ gap here, perfectly fine ]
+
+245: Set BGS!
+p track RPG::AudioFile
+
+246: Fade out BGS over$ seconds
+p seconds int
+
+247: Backup BGM/BGS
+
+248: Start BGM/BGS from backup
+
+249: Play ME$
+p track RPG::AudioFile
+
+250: Play SE$
+p track RPG::AudioFile
+
+251: Stop Last SE
+
+ [Interpreter Part 6]
+
+301: Start Battle (c.601/602/603)
+p troop troop_id
+p canEscape boolean
+p canLose boolean
+
+ Notably, these 4 are optional, but they always show up in a group of 4.
+
+601: Battle Result Branches Start: If Win
+I1
+602: Battle Result Branch: If Escape
+i-1
+I1
+603: Battle Result Branch: If Lose
+i-1
+I1
+604: Battle Result Branches End
+i-1
+
+ These 2 have identical schemas
+302: Shop Items (c.605)
+X shop_items_parameters
+605: Additional Item
+X shop_items_parameters
+
+303: User gives name!
+p actor actor_id
+
+ [ Gap here between 303 to 311 ]
+
+311:@@Change Actor{A: #A} HP{A: by [@operate_value_1]{E=T= (can kill)| (never kills)}}
+p actor iterate_actor
+ operate_value
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+p canKill boolean
+
+312:@@Change Actor{A: #A} SP{A: by [@operate_value_1]}
+p actor iterate_actor
+ operate_value
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+
+313: Change Actor$ State (remove$,state$)
+p actor iterate_actor
+p remove int_boolean
+p state state_id
+
+314: Full recovery!
+p actor iterate_actor
+
+315:@@Change Actor{A: #A} EXP{A: by [@operate_value_1]}
+p actor iterate_actor
+ operate_value
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+
+316:@@Change Actor{A: #A} Level{A: by [@operate_value_1]}
+p actor iterate_actor
+ operate_value
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+
+317:@@Change Actor{A: #A} Parameter{A: #B by [@operate_value_2]}
+p actor actor_id
+p param cap_type
+ operate_value
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 3 int 0 int 1 var_id
+
+318: Actor$ (Un =$)learn Skill$
+p actor actor_id
+p unlearn boolean
+p skill skill_id
+
+319: Actor equips$$
+p type actor_equip_type
+D equip|WId|AId 0 int 0 weapon_id 1 armour_id 2 armour_id 3 armour_id 4 armour_id
+
+320: Rename Actor$!
+p actor actor_id
+p newName string
+
+321: Reclass Actor$!
+p actor actor_id
+p newClass class_id
+
+322: Change Actor$ Graphic!
+p actor actor_id
+p charName string
+p charHue int
+p battleName string
+p bettleHue int
+
+ [Interpreter Part 7]
+
+331:@@Change Enemy{A: #A} HP{A: by [@operate_value_1]{E=T= (can kill)| (never kills)}}
+p enemyType iterate_enemy
+ operate_value
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+p canKill boolean
+
+332:@@Change Enemy{A: #A} SP{A: by [@operate_value_1]}
+p enemyType iterate_enemy
+ operate_value
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+
+333: Change Enemy$ State (remove$,state$)
+p enemyType iterate_enemy
+p remove int_boolean
+p enemyState state_id
+
+334: Enemy$ recovers all
+     ("recover_all", for the enemy, is typically a boss cheating
+      and going into a 'second stage'. Hmph.)
+p enemyType iterate_enemy
+
+335: Show Enemy$
+p enemy troop_enemy_id
+
+336: Transform Enemy$!
+p changeling troop_enemy_id
+p transform enemy_id
+
+337: Show$$ Battle Animation$
+p ib0 iterate_battler0
+p ib1 iterate_battler1
+p animId animation_id
+
+338: Deal$$ damage
+p ib0 iterate_battler0
+p ib1 iterate_battler1
+p damageOperandVariable int_boolean
+D damageOperand 2 int 0 int 1 var_id
+
+ NB. Need to figure this whole thing out, and switch to EF-mode.
+339: Force Action!$->kind$ act$ target$ run-now$
+p ib0 iterate_battler0
+p ib1 iterate_battler1
+p kind enemy_action_kind
+D act 2 int 0 enemy_action_basic 1 skill_id 2 item_id
+p target force_action_target
+p runNow int_boolean
+
+340: Abort Battle
+351: 'Call Menu Screen' (aborts battle?)
+352: 'Call Save Screen' (aborts battle?)
+353: Game Over
+354: Title Screen
+
+355: Ruby$
+p code string
+
+655: Ruby(Cont.)$
+p code string

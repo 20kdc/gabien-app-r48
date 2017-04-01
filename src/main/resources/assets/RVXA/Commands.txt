@@ -1,0 +1,525 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ Event commands for VX Ace.
+
+0: >> insert point
+L
+
+ LINE 251
+
+101:@@Start Text {A:w/face #A:#B ({C=1=no }bkg, #D)|(c.401/102/103/104)}
+p faces string
+p faceIndex int
+p backInvisible int_boolean
+p position change_text_options_position
+
+401: Tx.$
+p text string
+
+102:@@Show Choices {A:: [choice_array]A {B=1=(can cancel)}|(c.402/403/404)}
+p choices string_array
+p cancellable int_boolean
+I1
+
+ See RXP for indentation logic docs.
+
+402: When Choice =$
+p choice int
+p textRef string
+i-1
+I1
+K102
+
+403: When cancelled (idx 4)
+i-1
+I1
+K102
+
+404: End Choice
+i-1
+l
+
+ LINE 305
+
+103: Input Number!
+p var var_id
+p digits int
+
+104: Input Item!
+p var var_id
+
+105: Show Scrolling Text (c.405)
+p speed int
+p notFast boolean
+
+405: Scrtx.$
+p text string
+
+108: //*$
+p text string
+
+408: //$
+p text string
+
+
+111:@@Conditional{A::[@conditional_branch_parameters]| Branch (c.411/412)}
+ The parameter exists so the A: detect works
+p type conditional_branch_types
+X conditional_branch_parameters
+I1
+
+411: Else
+i-1
+I1
+l
+
+412: End Conditional
+i-1
+l
+
+112: Start Loop (c.113/413)
+ this is a blank 'placeholder' command
+I1
+
+113: Break Loop
+ This command breaks to the next Repeat Above it finds with a lesser indent,
+  this proves the indent of Repeat Above is i-1 I0, OR it has a leave block before it.
+ The answer in actual fact (I wrote the "find EventCommand by code" button to find this)
+  is that End Loop is indeed preceded by a Leave Block.
+
+413: End Loop/Repeat Above
+i-1
+l
+
+115: Exit Event Processing
+
+117: Common Event$
+p CEV commonevent_id
+
+ They still rely on indent for stuff,
+ so this is just as unreliable as before.
+
+118: Label$
+p text string
+
+119: Unreliable Jump!
+p text string
+
+121:@@Control Switch{AB: @#A|es @#A..@#B}{C:->{C=1=OFF|ON}}
+p first switch_id
+p last switch_id
+p disable int_boolean
+
+122:@@Set Variable{A:{AB: @#A|s @#A..@#B} #C [@set_variables_parameters]}
+ note: the parameters given here are for formatting reasons, since the X overrides any actual use.
+p firstVar var_id
+p lastVar var_id
+p op set_variables_operation
+p src set_variables_source
+X set_variables_parameters
+
+123:@@Control Selfswitch{A: #A{B: = {B=1=OFF|ON}}}
+p ch selfswitch_id
+p turnOff int_boolean
+
+124:@@{A:{A=1=Stop Timer|Start Timer at #B seconds}|Start/Stop Timer}
+p stop int_boolean
+p startSecs int
+
+ operate_value has 3 parameters: Negate, const/var (int_boolean), operand (int_or_var)
+
+125:@@Gold{A: += [@operate_value_0]}
+p negate int_boolean
+p sourceVar int_boolean
+D source 1 int 0 int 1 var_id
+
+126:@@Item{A: #A += [@operate_value_1]}
+p item item_id
+p negate int_boolean
+p sourceVar int_boolean
+D source 2 int 0 int 1 var_id
+
+127:@@Weapon{A: #A += [@operate_value_1]}
+p item weapon_id
+p negate int_boolean
+p sourceVar int_boolean
+D source 2 int 0 int 1 var_id
+
+128:@@Armour{A: #A += [@operate_value_1]}
+p item armour_id
+p negate int_boolean
+p sourceVar int_boolean
+D source 2 int 0 int 1 var_id
+
+129:@@{A:{B=0=Remove actor @#A from party|Add actor @#A to party{C=0= without} resetting}|Add/remove actor to party}
+p actor actor_id
+p add int_boolean
+p addInitialize int_boolean
+
+132: Set Battle BGM$
+p bgm RPG::BGM
+
+133: Set Battle End ME$
+p me RPG::ME
+
+134: Set Save Accessible!
+p canSave int_boolean
+
+135: Set Menu Accessible!
+p canMenu int_boolean
+
+136: Set Encounters!
+p canEncounter int_boolean
+
+137: Set Formation Accessible!
+p canFormation int_boolean
+
+138: Change Window Colour!
+p tone Tone
+
+ Why are there *THREE* of these in a row?!??
+ (EDIT LATER: At least I've removed the custom schema requirement for two of them.)
+
+201:@@{A:[@transfer_player_paramassist]|Transfer Player}
+p useVariables int_boolean
+D map 0 int 0 map_id 1 var_id
+D x 0 int 0 int 1 var_id
+D y 0 int 0 int 1 var_id
+p playerDir direction_disable
+p fadeType transfer_player_fadetype
+
+202:@@{A:[@transfer_vehicle_paramassist]|Transfer Vehicle}
+p vehicle vehicle_id
+p useVariables int_boolean
+D map 1 int 0 map_id 1 var_id
+D x 1 int 0 int 1 var_id
+D y 1 int 0 int 1 var_id
+
+203:@@{A:[@set_event_location_paramassist]|Set Event Location}
+X set_event_location_paramassist
+
+204: Scroll Map
+p dir direction
+p length int
+p speed int
+
+205: MoveRoute Set On$
+p target character_id
+p route RPG::MoveRoute
+
+505: (MoveRoute Editing Helper)
+p command RPG::MoveCommand
+
+206: Player Gets On/Off Vehicle
+
+211: Player Opacity!
+p opaque int_boolean
+
+212: Show$ Anim.$ (wait?$)
+p char character_id
+p anim animation_id
+p wait boolean
+
+213: Show$ Balloon.$ (wait?$)
+p char character_id
+p b balloon_id
+p wait boolean
+
+214: Temp. Erase This Event
+
+216: Player Followers Inv.?$
+p invisible int_boolean
+
+217: Gather Followers
+
+221: Fadeout Screen
+
+222: Fadein Screen
+
+223: Start Tone Change
+p tone Tone
+p time int
+p wait boolean
+
+224: Flash Screen
+p colour Color
+p duration int
+p wait boolean
+
+225: Shake Screen
+p power int
+p speed int
+p duration int
+p wait boolean
+
+
+230: Wait$
+p time int
+
+231: Set Picture$!
+p id int
+p image string
+p centred int_boolean
+p useVars int_boolean
+D x 3 int 0 int 1 var_id
+D y 3 int 0 int 1 var_id
+p scaleX scale
+p scaleY scale
+p opacity opacity
+p blend blend_type
+
+232: Move Picture$
+p id int
+ what on earth
+ This is actually NIL.
+p ignoredParam OPAQUE
+p centred int_boolean
+p useVars int_boolean
+D x 3 int 0 int 1 var_id
+D y 3 int 0 int 1 var_id
+p scaleX scale
+p scaleY scale
+p opacity opacity
+p blend blend_type
+p duration int
+p wait boolean
+
+233: Picture$ Rotation Speed!
+p id int
+p speedHDF int
+
+234: Picture$ Tone Change
+p id int
+p tone Tone
+p duration int
+p wait boolean
+
+235: Erase Picture$
+p id int
+
+236: Set Weather!
+p type weather_type
+p power int
+p duration int
+p wait boolean
+
+241: Play BGM$
+p bgm RPG::BGM
+
+242: Fadeout BGM over$ seconds
+p seconds int
+
+243: Save BGM
+
+244: Resume BGM
+
+245: Play BGS$
+p bgs RPG::BGS
+
+246: Fadeout BGS over$ seconds
+p seconds int
+
+249: Play ME$
+p me RPG::ME
+
+250: Play SE$
+p se RPG::SE
+
+251: Stop SE
+
+261: Play Movie$
+p movie string
+
+281: Map Name Inv.?$
+p invisible int_boolean
+
+282: Switch Tileset!
+p tileset tileset_id
+
+283: Switch Battleback!$
+p back1 string
+p back2 string
+
+284: Switch Parallax!
+p parallax string
+p loop_x boolean
+p loop_y boolean
+p sx int
+p sy int
+
+285: Get Info On Location
+p resultVar var_id
+p infoType get_location_info_type
+p posVars int_boolean
+D posX 1 int 0 int 1 var_id
+D posY 1 int 0 int 1 var_id
+
+301: Start Battle (c.601/602/603/604)
+p type battle_processing_type
+D troopId 0 int 0 troop_id 1 var_id
+p canEscape boolean
+p canLose boolean
+
+ Notably, these 4 are optional, but they always show up in a group of 4.
+
+601: Battle Result Branches Start: If Win
+I1
+602: Battle Result Branch: If Escape
+i-1
+I1
+603: Battle Result Branch: If Lose
+i-1
+I1
+604: Battle Result Branches End
+i-1
+
+302: Shop Processing (c.605)
+p itemType shop_item_type
+D item 0 int 0 item_id 1 weapon_id 2 armour_id
+p itemPriceEx int_boolean
+p priceEx int
+p purchaseOnly boolean
+
+605: Additional Shop Item
+p itemType shop_item_type
+D item 0 int 0 item_id 1 weapon_id 2 armour_id
+p itemPriceEx int_boolean
+p priceEx int
+
+303: Input Name For Actor$
+p actor actor_id
+p maxLetters int
+
+311:@@Actor{A: [@iterate_actor_var] HP += [@operate_value_2]| HP +=...}
+p actorVar int_boolean
+D actor 0 int 0 iterate_actor_id 1 var_id
+p negateMod int_boolean
+p modVar int_boolean
+D mod 3 int 0 int 1 var_id
+
+312:@@Actor{A: [@iterate_actor_var] MP += [@operate_value_2]| MP +=...}
+p actorVar int_boolean
+D actor 0 int 0 iterate_actor_id 1 var_id
+p negateMod int_boolean
+p modVar int_boolean
+D mod 3 int 0 int 1 var_id
+
+313:@@{A:{C=0=Add|Remove}|Change} State{A: @#D} on actor{A: [@iterate_actor_var]}
+p actorVar int_boolean
+D actor 0 int 0 iterate_actor_id 1 var_id
+p remove int_boolean
+p state state_id
+
+314:@@Full recover on actor{A: [@iterate_actor_var]}
+p actorVar int_boolean
+D actor 0 int 0 iterate_actor_id 1 var_id
+
+315:@@EXP of actor{A: [@iterate_actor_var] += [@operate_value_2]}
+p actorVar int_boolean
+D actor 0 int 0 iterate_actor_id 1 var_id
+p negateMod int_boolean
+p modVar int_boolean
+D mod 3 int 0 int 1 var_id
+
+316:@@LVL of actor{A: [@iterate_actor_var] += [@operate_value_2]}
+p actorVar int_boolean
+D actor 0 int 0 iterate_actor_id 1 var_id
+p negateMod int_boolean
+p modVar int_boolean
+D mod 3 int 0 int 1 var_id
+
+317:@@Modify parameter{C: @#C} in actor{A: [@iterate_actor_var] by [@operate_value_3]}
+p actorVar int_boolean
+D actor 0 int 0 iterate_actor_id 1 var_id
+p paramIdx parameter_id
+p negateMod int_boolean
+p modVar int_boolean
+D mod 4 int 0 int 1 var_id
+
+318:@@{A:{C=0=Add|Remove}|Change} Skill{A: @#D} on actor{A: [@iterate_actor_var]}
+p actorVar int_boolean
+D actor 0 int 0 iterate_actor_id 1 var_id
+p remove int_boolean
+p skill skill_id
+
+319:@@Change Equipment on actor{A: @#A}
+p actor actor_id
+p slot equipment_slot
+p weaponId|armourId equipment_id
+
+320:Rename Actor$!
+p actor actor_id
+p name string
+
+321:Change Actor$ Class!
+p actor actor_id
+p class class_id
+
+322: Change Actor$ Sprites
+p actor actor_id
+p charName string
+p charIdx int
+p faceName string
+p faceIdx int
+
+323: Change Vehicle$ Graphic
+p vehicle vehicle_id
+p charName string
+p charIdx int
+
+324: Change$ Nickname!
+p actor actor_id
+p nickname string
+
+331:@@HP of enemy{A: @#A += [@operate_value_1]}
+p enemy iterate_enemy_index
+p negateMod int_boolean
+p modVar int_boolean
+D mod 2 int 0 int 1 var_id
+
+332:@@MP of enemy{A: @#A += [@operate_value_1]}
+p enemy iterate_enemy_index
+p negateMod int_boolean
+p modVar int_boolean
+D mod 2 int 0 int 1 var_id
+
+333:@@{A:{B=0=Add|Remove}|Change} enemy{A: @#A state @#C| state}
+p enemy iterate_enemy_index
+p remove int_boolean
+p state state_id
+
+334: Enemy$ recovers all
+p enemy iterate_enemy_index
+
+335: Enemy$ Appears
+p enemy iterate_enemy_index
+
+336: Enemy$ transforms!
+p enemy iterate_enemy_index
+p transform enemy_id
+
+337: Enemy$ uses animation$
+p enemy iterate_enemy_index
+p animation animation_id
+
+339: Force Battle Action
+p battlerEnemy int_boolean
+D battler 0 iterate_actor_id 0 iterate_enemy_index 1 iterate_actor_id
+p skill skill_id
+p target force_action_target
+
+340: Abort Battle
+351: Open Menuscreen
+352: Open Savescreen
+353: Game Over
+354: Return to Title
+
+355: Ruby>$
+p ruby string
+
+655: Ruby.$
+p rubyContin. string
+
+ Completion Notes: COMPLETE (I think)

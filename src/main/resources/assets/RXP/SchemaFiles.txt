@@ -1,0 +1,451 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ This is not a critical file for basic operations,
+  but for full usage it is.
+ Defining files.
+ Keep in mind that when typeChanger{ is involved,
+  the first element is always null (0 is a special value)
+
+: RPG::Actor
+C name Class.RPG::Actor @id @name | Actor #A: #B
+@id index
+@name string
+@class_id class_id
+@weapon_id weapon_id
+@weapon_fix boolean
+@armor1_id armour_id
+@armor1_fix boolean
+@armor2_id armour_id
+@armor2_fix boolean
+@armor3_id armour_id
+@armor3_fix boolean
+@armor4_id armour_id
+@armor4_fix boolean
+@exp_basis int= 30
+ oh, you have GOT to be kidding me.
+ Judging by the steady increase,
+  this is PROBABLY an EXP table.
+ In any case, it's not actually used?
+ (Could actually be a stats table? IDK.)
++table @parameters . . 6 100 1
+@final_level int= 1
+@battler_name string
+@battler_hue int
+@exp_inflation int= 30
+@initial_level int= 1
+ If you don't know why I set the default to this, shame on you.
+ (If you do know, shame on me.)
+@character_name string= JeremiahOrange
+@character_hue int
+
+> File.Actors arrayIx1 subwindow RPG::Actor
+
+: RPG::Animation::Frame
+@cell_max roint= 1
++table @cell_data @cell_max . 1 8 1
+
+e animation_timing_condition 0 always 1 whenHit 2 whenNotHit
+e animation_flashscope 0 none 1 target 2 screen 3 hideTarget
+: RPG::Animation::Timing
+@frame int
+@se RPG::AudioFile
+@flash_scope animation_flashscope
+@flash_color Color
+@flash_duration int
+@condition animation_timing_condition
+
+e animation_position 0 targetLower 1 targetMiddle 2 targetUpper 3 screenCentre
+
+: RPG::Animation
+C name Class.RPG::Animation @id @name | Animation #A: #B
+@id index
+@name string
+@animation_name string
+@animation_hue int
+@frame_max int= 1
+@position animation_position
+@frames subwindow arrayAL1 RPG::Animation::Frame
+@timings subwindow array 0 RPG::Animation::Timing
+C toWinAGameThatHasNoEnd @animation_name @animation_name 10
+
+> File.Animations arrayIx1 subwindow RPG::Animation
+
+: RPG::Armor
+C name Class.RPG::Armor @id @name | Armor #A: #B
+@id index
+@name string
+@icon_name string
+@description string
+@kind int
+@auto_state_id state_id
+@price int
+@pdef int
+@mdef int
+@eva int
+@str_plus int
+@dex_plus int
+@agi_plus int
+@int_plus int
+@guard_element_set subwindow array 0 element_id
+@guard_state_set subwindow array 0 state_id
+
+> File.Armors arrayIx1 subwindow RPG::Armor
+
+: RPG::Class::Learning
+@level int
+@skill_id skill_id
+
+: RPG::Class
+C name Class.RPG::Class @id @name | Class #A: #B
+@id index
+@name string
+@position int
+@weapon_set subwindow array 0 weapon_id
+@armor_set subwindow array 0 armour_id
++table @element_ranks . . 1 1 1
++table @state_ranks . . 1 1 1
+@learnings subwindow array 0 RPG::Class::Learning
+
+> File.Classes arrayIx1 subwindow RPG::Class
+
+e commonevent_trigger 0 static 1 autorunOnSwitch 2 autorunOnSwitchParallel
+: RPG::CommonEvent
+C name Class.RPG::CommonEvent @id @name @trigger @switch_id | CommonEvent #A: #B{C=0=| (autorun{C=2=| parallel} on switch @[switch_id]D)}
+@id index
+@name string
+@trigger commonevent_trigger
+@switch_id switch_id
+@list EventListEditor
+
+> File.CommonEvents array 0 typeChanger{ subwindow RPG::CommonEvent oRPG::CommonEvent nil 0 }
+
+: RPG::Enemy::Action
+@kind enemy_action_kind
+@basic enemy_action_basic
+@skill_id skill_id
+@condition_turn_a int
+@condition_turn_b int
+@condition_hp int
+@condition_level int
+@condition_switch_id switch_id
+@rating int
+
+: RPG::Enemy
+C name Class.RPG::Enemy @id @name | Enemy #A: #B
+@id index
+@name string
+@battler_name string
+@battler_hue int
+@maxhp int
+@maxsp int
+@str int
+@dex int
+@agi int
+@int int
+@atk int
+@pdef int
+@mdef int
+@eva int
+@animation1_id animation_id
+@animation2_id animation_id
++table @element_ranks . . 1 1 1
++table @state_ranks . . 1 1 1
+@actions subwindow array 0 subwindow RPG::Enemy::Action
+@exp int
+@gold int
+@item_id item_id
+@weapon_id weapon_id
+@armor_id armour_id
+@treasure_prob int
+
+> File.Enemies arrayIx1 subwindow RPG::Enemy
+
+: RPG::Item
+C name Class.RPG::Item @id @name | Item #A: #B
+@id index
+@name string
+@icon_name string
+@description string
+@scope int
+@occasion int
+@animation1_id animation_id
+@animation2_id animation_id
+@menu_se subwindow RPG::AudioFile
+@common_event_id commonevent_id
+@price int
+@consumable boolean
+@parameter_type int
+@parameter_points int
+@recover_hp_rate int
+@recover_hp int
+@recover_sp_rate int
+@recover_sp int
+@hit int= 100
+@pdef_f int
+@mdef_f int
+@variance int
+@element_set subwindow array 0 element_id
+@plus_state_set subwindow array 0 state_id
+@minus_state_set subwindow array 0 state_id
+
+> File.Items array 0 typeChanger{ subwindow RPG::Item oRPG::Item nil 0 }
+
+: RPG::MapInfo
+C name Class.RPG::MapInfo @order @name | MapInfo: #B (order #A)
+@name string
+@order int
+@parent_id int
+ These three mean nothing
+@expanded boolean
+@scroll_x int= 320
+@scroll_y int= 240
+
+> File.MapInfos hash int subwindow RPG::MapInfo
+
+.scriptBlob
+]0 loadOrder int
+]1 name string
+]2 zlibBlob zlibBlobEditor
+
+> File.Scripts array 0 arrayDAM -1 nil scriptBlob
+
+: RPG::Skill
+C name Class.RPG::Skill @id @name | Skill #A: #B
+@id index
+@name string
+@icon_name string
+@description string
+@scope int
+@occasion int= 1
+@animation1_id animation_id
+@animation2_id animation_id
+@menu_se subwindow RPG::AudioFile
+@common_event_id commonevent_id
+@sp_cost int
+@power int
+@atk_f int
+@eva_f int
+@str_f int
+@dex_f int
+@agi_f int
+@int_f int
+@hit int= 100
+@pdef_f int
+@mdef_f int
+@variance int
+@element_set subwindow array 0 element_id
+@plus_state_set subwindow array 0 state_id
+@minus_state_set subwindow array 0 state_id
+
+> File.Skills arrayIx1 subwindow RPG::Skill
+
+: RPG::State
+C name Class.RPG::State @id @name | State #A: #B
+@id index
+@name string
+@animation_id animation_id
+@restriction int
+@nonresistance boolean
+@zero_hp boolean
+@cant_get_exp boolean
+@cant_evade boolean
+@slip_damage boolean
+@rating int= 5
+@hit_rate int= 100
+@maxhp_rate int= 100
+@maxsp_rate int= 100
+@str_rate int= 100
+@dex_rate int= 100
+@agi_rate int= 100
+@int_rate int= 100
+@atk_rate int= 100
+@pdef_rate int= 100
+@mdef_rate int= 100
+@eva int
+@battle_only booleanDefTrue
+@hold_turn int
+@auto_release_prob int
+@shock_release_prob int
+@guard_element_set subwindow array 0 element_id
+@plus_state_set subwindow array 0 state_id
+@minus_state_set subwindow array 0 state_id
+
+> File.States arrayIx1 subwindow RPG::State
+
+: RPG::System::Words
+@hp string
+@sp string
+@agi string
+@atk string
+@dex string
+@int string
+@str string
+@gold string
+@item string
+@mdef string
+@pdef string
+@equip string
+@guard string
+@skill string
+@armor1 string
+@armor2 string
+@armor3 string
+@armor4 string
+@attack string
+@weapon string
+
+: RPG::System::TestBattler
+@level int
+@actor_id actor_id
+@armor1_id int
+@armor2_id int
+@armor3_id int
+@armor4_id int
+@weapon_id int
+
+: RPG::System
+
+ these two are Magic (tm)
+ and do magic things. what more to say?
+
+@_ int
+@magic_number int
+
+
+@words subwindow RPG::System::Words
+@load_se RPG::AudioFile
+@save_se RPG::AudioFile
+@shop_se RPG::AudioFile
+@equip_se RPG::AudioFile
+@buzzer_se RPG::AudioFile
+@cancel_se RPG::AudioFile
+@cursor_se RPG::AudioFile
+@escape_se RPG::AudioFile
+@decision_se RPG::AudioFile
+@actor_collapse_se RPG::AudioFile
+@enemy_collapse_se RPG::AudioFile
+@battle_start_se RPG::AudioFile
+@battle_end_me RPG::AudioFile
+@battle_bgm RPG::AudioFile
+@title_name string
+@title_bgm RPG::AudioFile
+@windowskin_name string
+@battleback_name string
+@gameover_name string
+@gameover_me RPG::AudioFile
+@battler_name string
+@battler_hue int
+@party_members subwindow array 0 OPAQUE
+@battle_transition string
+@test_battlers subwindow array 0 subwindow RPG::System::TestBattler
+@test_troop_id int
+@elements subwindow arrayIx1 string
+@switches subwindow arrayIx1 string
+@variables subwindow arrayIx1 string
+@start_x int= 1
+@start_y int= 1
+@start_map_id int= 1
+@edit_map_id int= 1
+
+> File.System RPG::System
+
+: RPG::Tileset
+C name Class.RPG::Tileset @id @name | Tileset #A: #B
+@id index
+@name string
+@tileset_name string
+@autotile_names array 7 string
+@panorama_name string
+@panorama_hue int
++tableTSF @passages . . 8 1 1 blockDown blockLeft blockRight blockUp UNK. UNK. submerge 'counter'
++tableTS @priorities . . 8 1 1
++tableTS @terrain_tags . . 8 1 1
+@fog_name string
+@fog_zoom int
+@fog_sx int
+@fog_sy int
+@fog_opacity int
+@fog_hue int
+@fog_blend_type blend_type
+@battleback_name string
+
+> File.Tilesets arrayIx1 subwindow RPG::Tileset
+
+: RPG::Troop::Member
+@enemy_id enemy_id
+@x int
+@y int
+@hidden boolean
+@immortal boolean
+
+: RPG::Troop::Page::Condition
+@turn_valid boolean
+@turn_a int
+@turn_b int
+@enemy_valid boolean
+@enemy_index troop_enemy_id
+@enemy_hp int
+@actor_valid boolean
+@actor_id actor_id
+@actor_hp int
+@switch_valid boolean
+@switch_id switch_id
+
+: RPG::Troop::Page
+@condition subwindow RPG::Troop::Page::Condition
+@span int
+@list EventListEditor
+
+: RPG::Troop
+C name Class.RPG::Troop @id @name | Troop #A: #B
+@id index
+@name string
+@pages subwindow arrayAL1 RPG::Troop::Page
+@members subwindow array 0 RPG::Troop::Member
+
+> File.Troops arrayIx1 subwindow RPG::Troop
+
+: RPG::Weapon
+C name Class.RPG::Weapon @id @name | Weapon #A: #B
+@id index
+@atk int
+@mdef int
+@name string
+@pdef int
+@price int
+@agi_plus int
+@dex_plus int
+@int_plus int
+@str_plus int
+@icon_name string
+@description string
+@animation1_id animation_id
+@animation2_id animation_id
+@element_set subwindow array 0 element_id
+@plus_state_set subwindow array 0 state_id
+@minus_state_set subwindow array 0 state_id
+
+> File.Weapons arrayIx1 subwindow RPG::Weapon
+> File.xScripts File.Scripts
+
+ The List Of Files That Need Schemas
+ Map*** [Of course it's OK, it's a core component. But it's in SchemaEditing.txt, not here,
+          because those files don't have simple-to-recognize names, for one.]
+ Actors [OK]
+ Animations [OK]
+ Armors [OK]
+ Classes [OK]
+ CommonEvents [OK]
+ Enemies [OK]
+ Items [OK]
+ MapInfos [OK]
+ Scripts [OK]
+ Skills [OK]
+ States [OK]
+ System [OK]
+ Tilesets [OK]
+ Troops [OK]
+ Weapons [OK]
+ xScripts [OK]

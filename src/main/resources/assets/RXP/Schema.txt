@@ -1,0 +1,130 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ XP Schema.
+
+C objectDB r48
+C dataPath Data/
+C dataExt .rxdata
+C versionId XP
+
+A RXP/AutoTiles.txt RXP/AutoTileRules.txt
+C allowIndentControl
+C defineIndent
+
+ THE GLOBAL SCHEMA FILE
+ commands:
+  (NOTE: 'a' has been removed.)
+  ']' Use only if this object is an array - indexes the array.
+      Only use inside an arrayDAM schema disambiguator.
+  '@' Instance var.
+  '.' Define substructure.
+  ':' Define object class.
+  '>' Alias.
+  'e' Enum.
+  'E' Enum with text on the int-entry button.
+  '+' Append directly to aggregate.
+  'D', 'd': Dictionary definitions (moved from hardcoding to make inter-engine porting potentially easier.)
+  'i' include file
+  'A' Install AutoTiles files
+  'C' Random stuff (allowIndentControl, name definitions...)
+  <The actual chaining language is complicated - see SDB.java for details.>
+
+ defining internal dictionaries
+
+D internal_tilesetDictionary Tilesets 0 @name
+D internal_mapDictionary MapInfos 1 @name
+D internal_itemDictionary Items 0 @name
+D internal_animationDictionary Animations 0 @name
+D internal_actorDictionary Actors 0 @name
+D internal_commevDictionary CommonEvents 0 @name
+D internal_skillDictionary Skills 0 @name
+D internal_stateDictionary States 0 @name
+D internal_weaponDictionary Weapons 0 @name
+D internal_armourDictionary Armors 0 @name
+D internal_troopDictionary Troops 0 @name
+D internal_classDictionary Classes 0 @name
+d internal_elementDictionary System @elements
+d internal_variableDictionary System @variables
+d internal_switchDictionary System @switches
+
+D internal_enemyDictionary Enemies 0 @name
+
+ Defining the basic aliases...
+ Note that if you're unsure where to put it, put it here.
+
+> int_or_var int
+> selfswitch_id string= A
+> opacity int= 255
+> troop_enemy_id int
+
+ Defining dictionaries...
+ If it's an ID in any game-global dictionary, put it here.
+
+> tileset_id internal_tilesetDictionary
+> map_id internal_mapDictionary
+> item_id internal_itemDictionary
+> animation_id internal_animationDictionary
+> actor_id internal_actorDictionary
+> commonevent_id internal_commevDictionary
+> skill_id internal_skillDictionary
+> state_id internal_stateDictionary
+> weapon_id internal_weaponDictionary
+> armour_id internal_armourDictionary
+> troop_id internal_troopDictionary
+> class_id internal_classDictionary
+> element_id internal_elementDictionary
+> var_id internal_variableDictionary
+> switch_id internal_switchDictionary
+
+ NOTE: Do not get confused with troop_enemy_id.
+       This is an entry in the Enemies table.
+> enemy_id internal_enemyDictionary
+
+ Defining the enums.
+ In most cases these are global, so just don't move them from here.
+
+E character_id EventID -1 player 0 thisEvent
+e comparison_type 0 == 1 >= 2 <= 3 > 4 < 5 !=
+e change_text_options_position 0 top 1 middle 2 bottom
+E iterate_actor ActorID 0 All
+E iterate_enemy EnemyID -1 All
+e iterate_battler0 0 EnemyIx 1 ActorIx
+E iterate_battler1 ID -1 All
+e weather_type 0 none 1 rain 2 storm 3 snow
+e blend_type -1 KeepDestAlpha 0 Normal 1 Add 2 Sub
+
+ ---- not quite sure about this bit
+e enemy_action_kind 0 Basic 1 Skill 2 Item
+e enemy_action_basic 0 Attack 1 Guard 2 Escape 3 Rest
+> enemy_action_basic_skill_item_id int
+E force_action_target Actor/TroopEnemyID -2 Last -1 Random
+ ----
+
+ event_trigger NOTE. 4 is used for West exit of LP,
+  which acts as a vertical trigger via a Ruby sub.
+ Meanwhile, 3 is used for *both* pages of the Map Events in the RV map.
+
+ Defining bits and pieces...
+
+ This is actually a native serialized object
+> Color CTNative Color
+> Tone CTNative Tone
+
+: RPG::AudioFile
+C name Class.RPG::AudioFile @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|RPG::AudioFile}
+@name string
+@pitch int= 100
+@volume int= 100
+
+ Everything needed for map editing.
+
+i RXP/SchemaEditing.txt
+i RXP/SchemaCommandHelpers.txt
+
+ Defining 'non-essential' bits & pieces, that the system could conceivably survive without.
+ Though in some cases they may be used to attempt to create stand-ins for missing files,
+  and in this case they are required.
+
+i RXP/SchemaFiles.txt
