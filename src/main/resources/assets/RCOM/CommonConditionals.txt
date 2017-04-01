@@ -1,0 +1,116 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ Common Conditional Branch helpers between RXP and RVXA.
+
+.conditional_branch_switch
+C name conditional_branch_switch ]1 ]2 | Switch @[switch_id]A {B=1=OFF|ON}
+]0 type conditional_branch_types
+]1 switch switch_id
+]2 invert int_boolean
+
+.conditional_branch_variable
+C name conditional_branch_variable ]1 ]2 ]3 ]4 | Var @[var_id]A [comparison_type]D {B=1=var @[var_id]C|[int]C}
+]0 type conditional_branch_types
+]1 var var_id
+]4 cond comparison_type
+]2 targetIsVar int_boolean
++arrayDAM 2 int_boolean conditional_branch_variable_bn 0 conditional_branch_variable_bn 1 conditional_branch_variable_by
+
+.conditional_branch_variable_bn
+]3 target int
+.conditional_branch_variable_by
+]3 target var_id
+
+.conditional_branch_selfSwitch
+C name conditional_branch_selfSwitch ]1 ]2 | Self Switch [selfswitch_id]A is {B=1=OFF|ON}
+]0 type conditional_branch_types
+]1 switch selfswitch_id
+]2 invert int_boolean
+
+e conditional_branch_timer_conditional 0 > 1 <
+.conditional_branch_timer
+C name conditional_branch_timer ]1 ]2 | Timer [conditional_branch_timer_conditional]B [int]A seconds
+]0 type conditional_branch_types
+]1 timeSecs int
+]2 timerCond conditional_branch_timer_conditional
+
+ -- Actor def. isn't completely common but some parts are
+
+.conditional_branch_actor_unknown
+.conditional_branch_actor_inParty
+
+.conditional_branch_actor_name
+C name conditional_branch_actor_name ]3 |named [string]A
+]3 name string
+
+.conditional_branch_actor_skill
+C name conditional_branch_actor_skill ]3 |skill @[skill_id]A
+]3 skill skill_id
+
+.conditional_branch_actor_weapon
+C name conditional_branch_actor_weapon ]3 |weapon @[weapon_id]A
+]3 weapon weapon_id
+
+.conditional_branch_actor_armourIdWorn
+C name conditional_branch_actor_armourIdWorn ]3 |wears armour @[armour_id]A
+]3 armour armour_id
+
+.conditional_branch_actor_hasState
+C name conditional_branch_actor_hasState ]3 |has state @[state_id]A
+]3 state state_id
+
+ ---
+
+.conditional_branch_enemy
+C name conditional_branch_enemy ]1 ]2 ]3 | Enemy [troop_enemy_id]A {B=1=has state @[state_id]C|alive}
+]0 type conditional_branch_types
+]1 enemy troop_enemy_id
+]2 checkState int_boolean
+]3 state state_id
+
+.conditional_branch_character
+C name conditional_branch_character ]1 ]2 | Character @[character_id]A facing [direction]B
+]0 type conditional_branch_types
+]1 event character_id
+]2 direction direction
+
+ NOTE THAT CBR_GOLD_COMPARISON_TYPE IS NOT DEFINED!
+ The available comparison types are different between engines.
+
+.conditional_branch_gold
+C name conditional_branch_gold ]1 ]2 | Gold [cbr_gold_comparison_type]B [int]A
+]0 type conditional_branch_types
+]1 gold int
+]2 comparision cbr_gold_comparison_type
+
+.conditional_branch_item
+C name conditional_branch_item ]1 | Item: [item_id]A
+]0 type conditional_branch_types
+]1 itemNum item_id
+
+.conditional_branch_weapon
+C name conditional_branch_weapon ]1 | Weapon: [weapon_id]A
+]0 type conditional_branch_types
+]1 weaponNum weapon_id
+
+.conditional_branch_armour
+C name conditional_branch_armour ]1 | Armour: [armour_id]A
+]0 type conditional_branch_types
+]1 armourNum armour_id
+
+.conditional_branch_button
+C name conditional_branch_button ]1 | Button: [int]A
+]0 type conditional_branch_types
+]1 buttonId int
+
+.conditional_branch_script
+C name conditional_branch_script ]1 | Script: [string]A
+]0 type conditional_branch_types
+]1 ruby string
+
+ Vehicle is VXA-only
+
+.conditional_branch_unknown
+]0 type conditional_branch_types

@@ -1,0 +1,28 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ VX Ace Wall AutoTiles file.
+
+ VX Ace has a special kind of AutoTile: Wall AutoTiles.
+ I received a file which - with some processing - comes out to this:
+
+x3 2 1 0
+x2 2 0 0
+x1 0 1 0
+x0 0 0 0
+
+x3 3 1 1
+x2 3 0 1
+x1 1 1 1
+x0 1 0 1
+
+x3 2 3 2
+x2 2 2 2
+x1 0 3 2
+x0 0 2 2
+
+x3 3 3 3
+x2 3 2 3
+x1 1 3 3
+x0 1 2 3

@@ -1,0 +1,76 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ VX Ace Enemy Battle Actions Helpfile
+ "The Bat Theme Continues" (this is the 3rd Batfile)
+
+0: None
+.
+. No condition applies!
+. For lack of a better place, I'll explain the rating system here, to my understanding.
+. Imagine there is a line, with the rating of highest *valid* rated action at the top, and that number minus 3 at the bottom.
+. For rating purposes, the highest rating minus 3 is considered "0", so the variance is between "0" (max minus 3) and "3" (max).
+. Furthermore, all actions with a rating <= "0" are culled early.
+. So, to force an action, it would simply have to have a rating 3 more than any other action.
+. This is important if you want an action to always be performed under certain conditions without a random chance of anything else.
+.
+. @param1: Useless.
+. @param2: Also useless.
+.
+
+1: Turns Passed
+.
+. If @param2 is 0, this is simple:
+. On turn @param1, run this action.
+.
+. If @param2 isn't 0, this becomes more complicated.
+. Essentially, the battle is divided into blocks of @param2 turns.
+. @param1 should be between 0 and (@param2 - 1).
+. Also, this will never happen if the turn count is 0.
+.
+. @param1: Turn number.
+. @param2: Turn block size (or 0 for this to only happen once)
+.
+
+2: HP Check
+.
+. This checks if the HP, divided by the max HP, is between param1 and param2.
+. Note that they should be decimals ('f') between 0.0 and 1.0.
+.
+. @param1: Lower bound
+. @param2: Upper bound
+.
+
+3: MP Check
+.
+. This checks if the MP, divided by the max MP, is between param1 and param2.
+. Note that they should be decimals between 0.0 and 1.0.
+.
+. @param1: Lower bound
+. @param2: Upper bound
+.
+
+4: State Check
+.
+. This checks if the enemy has a given state.
+.
+. @param1: State ID.
+. @param2: No meaning.
+.
+
+5: Highest level in party is >=...
+.
+. This checks if the player's party has any members above a level.
+.
+. @param1: Level.
+. @param2: No meaning.
+.
+
+6: Switch On
+.
+. This checks if a switch is on.
+.
+. @param1: Switch ID
+. @param2: No meaning.
+.

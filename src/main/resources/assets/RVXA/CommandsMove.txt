@@ -1,0 +1,84 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ Movement commands for VX Ace.
+
+0: Terminate
+L
+
+1: Move South
+2: Move West
+3: Move East
+4: Move North
+
+5: Move S-W
+6: Move S-E
+7: Move N-W
+8: Move N-E
+
+9: Move Randomly
+10: Move towards Player
+11: Move away from Player
+
+12: 1 Step forward
+13: 1 Step back
+
+14: Jump relatively!$
+p xOfs int
+p yOfs int
+
+15: Wait$ frames
+p frames int
+
+16: Turn South
+17: Turn West
+18: Turn East
+19: Turn North
+
+20: Turn clockwise 90d (Right)
+21: Turn anticlockwise 90d (Left)
+
+22: Turn 180d (Opposite direction)
+
+23: Turn either left or right (random)
+24: Turn to any direction (random)
+25: Turn towards player
+26: Turn away from player
+
+27: Enable switch$
+p switch switch_id
+28: Disable switch$
+p switch switch_id
+29: Set speed!
+p speed int
+30: Set frequency!
+p frequency int
+
+31: Enable walk animation
+32: Disable walk animation
+33: Enable step animation
+34: Disable step animation
+35: Enable fixed direction
+36: Disable fixed direction
+
+37: Disable collision
+38: Enable collision
+39: Enable transparency
+40: Disable transparency
+
+41: Set graphic!$
+p characterName string
+p characterIndex int
+
+42: Change Opacity!
+p opacity opacity
+
+43: Change BlendType
+p blendType blend_type
+
+44: Play SE$
+p se RPG::SE
+
+45: Ruby$
+p script string

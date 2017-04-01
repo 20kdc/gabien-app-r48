@@ -1,0 +1,88 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ Defining the script commands...
+
+> genericScriptParameter typeChanger{ genericScriptParametersSW [ RPG::MoveRoute oRPG::MoveRoute MoveCommandEditor oRPG::MoveCommand RPG::AudioFile oRPG::AudioFile string " boolean T boolean F int i }
+
+i RCOM/SchemaScript.txt
+
+> EventListEditor subwindow arrayCS RXP/Commands.txt EventCommandEditor
+> EventCommandEditor RPGCS RXP/Commands.txt RPG::EventCommand EventCommandEditor_Most
+> MoveCommandEditor RPGMS RXP/CommandsMove.txt RPG::MoveCommand MoveCommandEditor_Most
+
+ Defining MoveRoute down here since it depends on things above
+
+: RPG::MoveRoute
+@list MoveListEditor
+@repeat booleanDefTrue
+@skippable boolean
+
+ Defining Events...
+
+: RPG::Event::Page::Condition
+@switch1_valid boolean
+@switch1_id switch_id
+@switch2_valid boolean
+@switch2_id switch_id
+@variable_valid boolean
+@variable_id var_id
+@variable_value int
+@self_switch_valid boolean
+@self_switch_ch selfswitch_id
+
+: RPG::Event::Page::Graphic
+@opacity int= 255
+@pattern int
+@tile_id int
+@direction direction
+@blend_type blend_type
+@character_name string
+@character_hue int
++internal_EPGD
+
+e event_trigger 0 onInteract 1 onPlayerWalkAgainst 2 onEventWalkAgainst 3 autorun 4 parallel
+e event_movetype 0 fixed 1 random 2 approachPlayer 3 moveRoute
+
+: RPG::Event::Page
+@condition subwindow RPG::Event::Page::Condition
+@through boolean
+@move_type event_movetype
+@move_route RPG::MoveRoute
+@move_speed int= 3
+@move_frequency int= 3
+@step_anime boolean
+@walk_anime boolean
+@always_on_top boolean
+@direction_fix boolean
+@trigger event_trigger
+@list EventListEditor
+@graphic { subwindow RPG::Event::Page::Graphic internal_EPGD }
+
+: RPG::Event
+@id index
+@x int
+@y int
+@name string
+@pages subwindow arrayAL1 subwindow RPG::Event::Page
+
+ Defining Map.
+
+ "mapEvents" is relied upon by showEvent in order to produce the proper chain
+> mapEvents hash int= 1 subwindow RPG::Event
+
+: RPG::Map
+@bgm RPG::AudioFile
+@bgs RPG::AudioFile
+@width roint= 20
+@height roint= 15
++table @data @width @height 20 15 3
+@events subwindow mapEvents
+@tileset_id tileset_id
+@autoplay_bgm boolean
+@autoplay_bgs boolean
+
+ Limited information here. Pretty sure this is it.
+@encounter_list subwindow array 0 troop_id
+@encounter_step int= 30

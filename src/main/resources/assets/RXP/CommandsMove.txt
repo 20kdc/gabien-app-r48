@@ -1,0 +1,72 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ MoveCommands stuff.
+
+0: Insert Point
+L
+
+1: Move S
+2: Move W
+3: Move E
+4: Move N
+5: Move SW
+6: Move SE
+7: Move NW
+8: Move NE
+9: Move randomly
+10: Approach player
+11: Flee player
+12: Step forward
+13: Step backward
+14: Jump To Ofs.$
+p ofsX int
+p ofsY int
+15: Wait$
+p time int
+16: Turn to S
+17: Turn to W
+18: Turn to E
+19: Turn to N
+20: Turn 90-deg right
+21: Turn 90-deg left
+22: Turn 180-deg around
+23: Turn 90-deg left/right(?)
+24: Turn randomly
+25: Turn to approach player
+26: Turn to flee player
+
+ I am now very glad I reused the EventCommand code for this
+
+27: Switch$ on
+p switch switch_id
+28: Switch$ off
+p switch switch_id
+29: Set Speed$
+p newSpeed int
+30: Set Freq.$
+p newFreq int
+31: Animate movement
+32: Don't animate movement
+33: Step animation(?)
+34: No step animation
+35: Fixed direction
+36: Disable fixed direction
+37: No collision
+38: Collision On
+39: Ignore Z Depth On
+40: Ignore Z Depth Off
+41:@@Set Graphic{A: to #A:#D, facing #C}
+p name string
+p hue int
+p dir direction
+p pattern int
+42: Set Opacity!
+p opacity int
+43: Change blend_type!
+p blendType blend_type
+44: Play SE$
+p audio RPG::AudioFile
+45: Ruby$
+p code string

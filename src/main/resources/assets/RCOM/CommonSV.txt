@@ -1,0 +1,32 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ Common Set Variables helpers between RXP and RVXA.
+
+e set_variables_operation 0 = 1 += 2 -= 3 *= 4 /= 5 %=
+
+ Setup a default.
+C name set_variables_parameters ]3 ]4 ]5 | {A=0=int: [int]B|{A=1=var: @[var_id]B|{A=2=random: [int]B through [int]C|[@set_variables_parameters_ext]}}}
+
+ Notably, this gets overridden later if the schema allows for Set Variables full naming.
+C name set_variables_parameters_ext ]3 | [set_variables_source]A
+
+.set_variables_base
+]0 firstVar var_id
+]1 lastVar var_id
+]2 op set_variables_operation
+]3 source set_variables_source
+
+.set_variables_int
++set_variables_base
+]4 value int
+
+.set_variables_var
++set_variables_base
+]4 sourceVar var_id
+
+.set_variables_random
++set_variables_base
+]4 minimum int
+]5 maximum int
