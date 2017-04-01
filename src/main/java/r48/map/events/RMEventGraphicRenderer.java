@@ -49,8 +49,8 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
     public int determineEventLayer(RubyIO event) {
         if (useVXAExtensionScheme)
             return (int) event.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@priority_type").fixnumVal;
-        // Assume RXP
-        return 2;
+        // Assume RXP. R.Q.U suggests this is 0, see "31 Hall 1" in Maintenance, specifically the pipework in front of the door at the top right.
+        return 0;
     }
 
     @Override
