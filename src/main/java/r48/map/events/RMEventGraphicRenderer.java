@@ -50,7 +50,13 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         if (useVXAExtensionScheme)
             return (int) event.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@priority_type").fixnumVal;
         // Assume RXP. R.Q.U suggests this is 0, see "31 Hall 1" in Maintenance, specifically the pipework in front of the door at the top right.
-        return 0;
+        // But O.S suggests this is 2, or 1.
+        // Current guess is that Y position means more than layer???
+        // Basically: R.Q.U stuff says this MUST be 0. No matter what.
+        // O.S suggests it's 2 (230: Ground 2)
+        // For now I'm assuming a glitch in R.Q.U for lack of any better ideas.
+        // (Also the fact that O.S. "258: Memory" doesn't show up right compared to in-game. Odds are against us.)
+        return 2;
     }
 
     @Override
