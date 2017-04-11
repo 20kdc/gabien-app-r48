@@ -101,7 +101,9 @@ public class UISingleFrameView extends UIElement {
                 int ofsY = y - lastMY;
                 rt.setTiletype(basePanelAccess.cellSelection.cellNumber, 1, 0, (short) (rt.getTiletype(basePanelAccess.cellSelection.cellNumber, 1, 0) + ofsX));
                 rt.setTiletype(basePanelAccess.cellSelection.cellNumber, 2, 0, (short) (rt.getTiletype(basePanelAccess.cellSelection.cellNumber, 2, 0) + ofsY));
+                // Need to whack the other components into accepting this
                 basePanelAccess.updateNotify.run();
+                basePanelAccess.frameChanged();
             }
         } else if (dragging == 3) {
             camX -= x - lastMX;

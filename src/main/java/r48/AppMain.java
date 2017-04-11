@@ -16,6 +16,7 @@ import r48.io.R48ObjectBackend;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.musicality.Musicality;
+import r48.schema.ISchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
@@ -169,6 +170,7 @@ public class AppMain {
         tabElems.add(new UIPopupMenu(new String[] {
                 "Edit Object",
                 "New Object via Schema, ODB'AnonObject'",
+                "Autocorrect Object By Name And Schema",
                 "Inspect Object (no Schema needed)",
                 "Set Internal Windows (good)",
                 "Set External Windows (bad)",
@@ -218,6 +220,25 @@ public class AppMain {
                             @Override
                             public void accept(String s) {
                                 launchSchema(s, SchemaPath.createDefaultValue(schemas.getSDBEntry(s), new RubyIO().setFX(0)));
+                            }
+                        }));
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        windowMaker.accept(new UITextPrompt("Object Name?", new IConsumer<String>() {
+                            @Override
+                            public void accept(String s) {
+                                final RubyIO rio = objectDB.getObject(s);
+                                windowMaker.accept(new UITextPrompt("Schema ID?", new IConsumer<String>() {
+                                        @Override
+                                        public void accept(String s) {
+                                            ISchemaElement ise = schemas.getSDBEntry(s);
+                                            ise.modifyVal(rio, new SchemaPath(ise, rio, null), false);
+                                            launchDialog("OK!");
+                                        }
+                                    }));
                             }
                         }));
                     }

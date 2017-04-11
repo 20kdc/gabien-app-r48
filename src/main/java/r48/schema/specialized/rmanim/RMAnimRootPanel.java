@@ -63,6 +63,8 @@ public class RMAnimRootPanel extends UIPanel {
 
         // uhoh.
         prepareFramesetCache();
+
+        frameChanged();
     }
 
     @Override
@@ -196,7 +198,7 @@ public class RMAnimRootPanel extends UIPanel {
     }
 
     // This alerts everything to rebuild, but doesn't run the updateNotify.
-    // Use for things like advancing through frames.
+    // Use alone for things like advancing through frames.
     public void frameChanged() {
         // This does bounds checks
         getFrame();
