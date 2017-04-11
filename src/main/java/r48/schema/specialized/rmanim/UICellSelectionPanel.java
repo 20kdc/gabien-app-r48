@@ -38,11 +38,13 @@ public class UICellSelectionPanel extends UIPanel {
         for (int i = 0; i < table.width; i++) {
             final int i2 = i;
             addAdditionButton(table, selectionPanel.panels, i2);
-            UIElement button = new UITextButton(FontSizes.rmaPropertyFontSize, "Cell " + i2, new Runnable() {
+            String prefix = cellNumber == i2 ? ">" : " ";
+            UIElement button = new UITextButton(FontSizes.rmaPropertyFontSize, prefix + "Cell " + i2, new Runnable() {
                 @Override
                 public void run() {
                     cellNumber = i2;
                     cellChangeNotificationNumber++;
+                    rebuildSelectionPanel(table);
                 }
             });
             selectionPanel.panels.add(new UIAppendButton("-", button, new Runnable() {
