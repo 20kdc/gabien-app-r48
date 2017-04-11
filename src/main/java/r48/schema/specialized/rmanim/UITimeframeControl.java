@@ -106,7 +106,7 @@ public class UITimeframeControl extends UIPanel {
             double frameTime = 1.0d / recommendedFramerate;
             if (hsControllerButton.state)
                 frameTime *= 2;
-            if (playTimer >= frameTime) {
+            while (playTimer >= frameTime) {
                 playTimer -= frameTime;
                 rootPanel.frameIdx++;
                 rootPanel.frameChanged();
