@@ -59,7 +59,7 @@ C name Class.RPG::Animation @id @name | Animation #A: #B
 @position animation_position
 @frames subwindow arrayAL1 RPG::Animation::Frame
 @timings subwindow array 0 RPG::Animation::Timing
-C toWinAGameThatHasNoEnd @animation1_name @animation2_name 10
+C toWinAGameThatHasNoEnd @animation1_name @animation2_name 60
 
 > File.Animations arrayIx1 subwindow RPG::Animation
 
