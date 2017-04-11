@@ -22,20 +22,28 @@ public class UITimeframeControl extends UIPanel {
     private double playTimer = 0;
     public int recommendedFramerate;
 
-    public UILabel currentFrame = new UILabel("loading... 20kdc technologies.", FontSizes.rmaTimeframeFontSize);
+    public UILabel currentFrame = new UILabel("loading...", FontSizes.rmaTimeframeFontSize);
+
     public UIAppendButton playController = new UIAppendButton("Play", currentFrame, new Runnable() {
         @Override
         public void run() {
         }
     }, FontSizes.rmaTimeframeFontSize);
     public UITextButton playControllerButton = playController.button.togglable();
+
+    public UIAppendButton hsController = new UIAppendButton("HS", playController, new Runnable() {
+        @Override
+        public void run() {
+        }
+    }, FontSizes.rmaTimeframeFontSize);
+    public UITextButton hsControllerButton = hsController.button.togglable();
+
     // The rest of the toolbar is constructed in the constructor
-    public UIElement toolbar = playController;
+    public UIElement toolbar = hsController;
 
     public UITimeframeControl(RMAnimRootPanel rp, int framerate) {
         rootPanel = rp;
         recommendedFramerate = framerate;
-
         toolbar = new UIAppendButton("<", toolbar, new Runnable() {
             @Override
             public void run() {
@@ -96,6 +104,8 @@ public class UITimeframeControl extends UIPanel {
         if (playControllerButton.state) {
             playTimer += deltaTime;
             double frameTime = 1.0d / recommendedFramerate;
+            if (hsControllerButton.state)
+                frameTime *= 2;
             if (playTimer >= frameTime) {
                 playTimer -= frameTime;
                 rootPanel.frameIdx++;

@@ -234,6 +234,7 @@ p time int
 111:@@Conditional{A::[@conditional_branch_parameters]| Branch (c.411/412)}
  The parameter exists so the A: detect works
 p type conditional_branch_types
+X conditional_branch_parameters
 I1
 
 411: Else
