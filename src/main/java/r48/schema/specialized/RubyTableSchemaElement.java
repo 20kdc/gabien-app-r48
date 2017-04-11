@@ -102,7 +102,7 @@ public class RubyTableSchemaElement<TileHelper> implements ISchemaElement {
         uiSVL.panels.add(new UITextButton(FontSizes.tableResizeTextHeight, "Resize", new Runnable() {
             @Override
             public void run() {
-                RubyTable r2 = new RubyTable(wNB.number, hNB.number, targ.planeCount);
+                RubyTable r2 = targ.resize(wNB.number, hNB.number);
                 if (width != null)
                     width.fixnumVal = wNB.number;
                 if (height != null)

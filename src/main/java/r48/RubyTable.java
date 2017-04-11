@@ -70,4 +70,19 @@ public class RubyTable {
             return true;
         return false;
     }
+
+    public RubyTable resize(int w, int h) {
+        RubyTable n = new RubyTable(w, h, planeCount);
+        for (int i = 0; i < width; i++) {
+            if (w <= i)
+                break;
+            for (int j = 0; j < height; j++) {
+                if (h <= j)
+                    break;
+                for (int k = 0; k < planeCount; k++)
+                    n.setTiletype(i, j, k, getTiletype(i, j, k));
+            }
+        }
+        return n;
+    }
 }
