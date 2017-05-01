@@ -38,8 +38,15 @@ public class UITimeframeControl extends UIPanel {
     }, FontSizes.rmaTimeframeFontSize);
     public UITextButton hsControllerButton = hsController.button.togglable();
 
+    public UIAppendButton tsController = new UIAppendButton("TS", hsController, new Runnable() {
+        @Override
+        public void run() {
+        }
+    }, FontSizes.rmaTimeframeFontSize);
+    public UITextButton tsControllerButton = tsController.button.togglable();
+
     // The rest of the toolbar is constructed in the constructor
-    public UIElement toolbar = hsController;
+    public UIElement toolbar = tsController;
 
     public UITimeframeControl(RMAnimRootPanel rp, int framerate) {
         rootPanel = rp;
@@ -106,6 +113,8 @@ public class UITimeframeControl extends UIPanel {
             double frameTime = 1.0d / recommendedFramerate;
             if (hsControllerButton.state)
                 frameTime *= 2;
+            if (tsControllerButton.state)
+                frameTime *= 3;
             while (playTimer >= frameTime) {
                 playTimer -= frameTime;
                 rootPanel.frameIdx++;
