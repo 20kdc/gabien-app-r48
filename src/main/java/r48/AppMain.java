@@ -57,8 +57,6 @@ public class AppMain {
 
     private static UILabel uiStatusLabel;
 
-    public static StuffRenderer stuffRenderer;
-
     public static UIElement nextMapTool = null;
 
     public static String rootPath = null;
@@ -66,17 +64,21 @@ public class AppMain {
     public static String dataExt = "";
     public static String odbBackend = "<you forgot to select a backend>";
 
-    public static ObjectDB objectDB = null;
-
     // Databases
+    public static ObjectDB objectDB = null;
     public static ATDB[] autoTiles = new ATDB[0];
     public static SDB schemas = null;
+
+    // Backend Service (these are dealt with in StuffRenderer, since they're all really it's responsibility)
+
+    public static StuffRenderer stuffRenderer;
 
     // State for in-system copy/paste
     public static RubyIO theClipboard = null;
 
     // Images
     public static IGrInDriver.IImage layerTabs = GaBIEn.getImage("layertab.png", 0, 0, 0);
+    public static IGrInDriver.IImage noMap = GaBIEn.getImage("nomad.png", 0, 0, 0);
 
     public static void initialize(String gamepack) throws IOException {
         rootPath = "";
@@ -175,7 +177,7 @@ public class AppMain {
                 "Set Internal Windows (good)",
                 "Set External Windows (bad)",
                 "Use normal in-built fonts",
-                "Make text N.I.Z.X.-compatible",
+                "Use system fonts for everything",
                 "Toggle calming sound",
                 "Configure font sizes",
                 "Rebuild UI",

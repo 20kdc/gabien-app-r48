@@ -4,15 +4,22 @@
  */
 package r48.map.events;
 
-import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import r48.RubyIO;
+import r48.map.imaging.IImageLoader;
 
 /**
  * Ikachan's event graphic renderer
  * Created on 1/27/17.
  */
 public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
+
+    private final IImageLoader imageLoader;
+
+    public IkaEventGraphicRenderer(IImageLoader il) {
+        imageLoader = il;
+    }
+
     @Override
     public int determineEventLayer(RubyIO event) {
         return 0;
@@ -25,7 +32,7 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
 
     @Override
     public void drawEventGraphic(RubyIO target, int ox, int oy, IGrInDriver igd) {
-        String[] graphics = new String[] {"Pbm/Hari.pbm", "Pbm/Isogin.pbm", "Pbm/Kani.pbm", "Pbm/Sleep.pbm", "Pbm/Chibi.pbm", "Pbm/Hoshi.pbm", "Pbm/Dum.pbm", "Pbm/Carry.pbm", "Pbm/Juel.pbm", "Pbm/Ufo.pbm"};
+        String[] graphics = new String[] {"Hari", "Isogin", "Kani", "Sleep", "Chibi", "Hoshi", "Dum", "Carry", "Juel", "Ufo"};
         int dsX = 16;
         int dsY = 16;
         int dfX = 0;
@@ -64,7 +71,7 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
             fail = true;
         if (!fail) {
             String r = graphics[type];
-            IGrInDriver.IImage im = GaBIEn.getImage(r, 0, 0, 0);
+            IGrInDriver.IImage im = imageLoader.getImage(r, 0, 0, 0);
             igd.blitBCKImage(dfX * dsX, dfY * dsY, dsX, dsY, ox + doX, oy + doY, im);
             fail = false;
         }

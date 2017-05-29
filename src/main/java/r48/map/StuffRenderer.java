@@ -7,6 +7,8 @@ package r48.map;
 
 import r48.AppMain;
 import r48.RubyIO;
+import r48.map.imaging.GabienImageLoader;
+import r48.map.imaging.IImageLoader;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.IkaEventGraphicRenderer;
 import r48.map.events.NullEventGraphicRenderer;
@@ -19,6 +21,19 @@ import r48.map.tiles.*;
  * (Example: UIMapView has to be the one /rendering/ tiles, but EPGDisplaySchemaElement
  * has absolutely no other reason to be in contact with the current UIMapView at all.)
  * This also has the nice effect of keeping the jarlightHax stuff out of some random UI code.
+ *
+ * -- May 29th, 2017 retrospective:
+ * Basically, all of the version-specific IFDEF-like stuff that had to exist for maps went into here.
+ * Better here than anywhere else, really.
+ * (I suppose a StuffRenderer interface could've worked?)
+ * The point is that ObjectBackend is independent of what the objects actually mean.
+ * A JSONObjectBackend could serve a variety of purposes, all handling JSON objects with different map formats.
+ * The Schemas and the StuffRenderer give *meaning* to that.
+ *
+ * Another thing to note is that the StuffRenderer is swapped about a lot. Specifically whenever the map changes.
+ * There's also a magical "default" StuffRenderer which acts without a map context.
+ * Parameters are (null, "").
+ *
  * Created on 1/1/17.
  */
 public class StuffRenderer {
@@ -27,6 +42,7 @@ public class StuffRenderer {
 
     public final ITileRenderer tileRenderer;
     public final IEventGraphicRenderer eventRenderer;
+    public final IImageLoader imageLoader;
 
     public static StuffRenderer rendererFromMap(RubyIO map) {
         String vxaPano = "";
@@ -54,22 +70,26 @@ public class StuffRenderer {
 
     public StuffRenderer(RubyIO tso, String vxaPano) {
         if (versionId.equals("Ika")) {
-            tileRenderer = new IkaTileRenderer();
-            eventRenderer = new IkaEventGraphicRenderer();
+            imageLoader = new GabienImageLoader(AppMain.rootPath + "Pbm/", ".pbm");
+            tileRenderer = new IkaTileRenderer(imageLoader);
+            eventRenderer = new IkaEventGraphicRenderer(imageLoader);
             return;
         }
         if (versionId.equals("XP")) {
-            tileRenderer = new XPTileRenderer(tso);
+            imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png");
+            tileRenderer = new XPTileRenderer(imageLoader, tso);
             eventRenderer = new RMEventGraphicRenderer(this);
             return;
         }
         if (versionId.equals("VXA")) {
-            tileRenderer = new VXATileRenderer(tso, vxaPano);
+            imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png");
+            tileRenderer = new VXATileRenderer(imageLoader, tso, vxaPano);
             eventRenderer = new RMEventGraphicRenderer(this);
             return;
         }
         tileRenderer = new NullTileRenderer();
         eventRenderer = new NullEventGraphicRenderer();
+        imageLoader = new GabienImageLoader(AppMain.rootPath, "");
     }
 
 }

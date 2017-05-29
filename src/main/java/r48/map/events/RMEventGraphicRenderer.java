@@ -85,7 +85,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
             if (useVXAExtensionScheme)
                 if (!s.startsWith("!"))
                     oy -= 4;
-            IGrInDriver.IImage i = GaBIEn.getImage(AppMain.rootPath + "Graphics/Characters/" + s + ".png", 0, 0, 0);
+            IGrInDriver.IImage i = host.imageLoader.getImage("Characters/" + s, 0, 0, 0);
             int sprW = i.getWidth() / patternCount;
             int sprH = i.getHeight() / 4;
             // Direction 2, pattern 0 == 0, ? (safe @ cliffs, page 0)

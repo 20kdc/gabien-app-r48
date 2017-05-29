@@ -11,6 +11,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.ATDB;
+import r48.map.imaging.IImageLoader;
 import r48.map.UIMapView;
 import r48.ui.UITileGrid;
 
@@ -26,10 +27,10 @@ public class VXATileRenderer implements ITileRenderer {
     public final IGrInDriver.IImage[] tilesetMaps = new IGrInDriver.IImage[9];
     private final RubyIO tileset;
     public String panoramaSetup = "";
-    // Shadow,
+    // Generated image the size of one shadow 'block'.
     public IGrInDriver.IImage shadowImage;
 
-    public VXATileRenderer(RubyIO tileset, String vxaPano) {
+    public VXATileRenderer(IImageLoader il, RubyIO tileset, String vxaPano) {
         this.tileset = tileset;
         panoramaSetup = vxaPano;
         int[] tinyTile = new int[256];
@@ -44,7 +45,7 @@ public class VXATileRenderer implements ITileRenderer {
                 RubyIO rio = amNames[i];
                 if (rio.strVal.length != 0) {
                     String expectedAT = rio.decString();
-                    tilesetMaps[i] = GaBIEn.getImage(AppMain.rootPath + "Graphics/Tilesets/" + expectedAT + ".png", 0, 0, 0);
+                    tilesetMaps[i] = il.getImage("Tilesets/" + expectedAT, 0, 0, 0);
                 }
             }
         }
@@ -307,7 +308,7 @@ public class VXATileRenderer implements ITileRenderer {
     public String getPanorama() {
         if (panoramaSetup.length() == 0)
             return "";
-        return "Graphics/Parallaxes/" + panoramaSetup + ".png";
+        return "Parallaxes/" + panoramaSetup;
     }
 
     @Override

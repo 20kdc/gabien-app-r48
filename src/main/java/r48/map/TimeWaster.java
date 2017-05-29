@@ -9,6 +9,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
+import r48.AppMain;
 import r48.FontSizes;
 
 import java.util.Random;
@@ -66,7 +67,7 @@ public class TimeWaster {
                 moveTime = 8;
                 points++;
             }
-        igd.blitImage(type * 64, 0, 64, 64, ox + iconPlanX, oy + iconPlanY, GaBIEn.getImage("nomad.png", 0, 0, 0));
+        igd.blitImage(type * 64, 0, 64, 64, ox + iconPlanX, oy + iconPlanY, AppMain.noMap);
         if (points > 1) {
             UILabel.drawString(igd, ox, oy, "You have " + points + " absolutely worthless points.", false, FontSizes.timeWasterTextHeight);
             String[] pointMsgs = new String[] {

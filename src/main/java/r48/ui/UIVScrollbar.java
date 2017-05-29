@@ -9,6 +9,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
+import r48.AppMain;
 
 /**
  * Created on 12/28/16.
@@ -19,7 +20,7 @@ public class UIVScrollbar extends UIElement {
 
     @Override
     public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-        IGrInDriver.IImage lt = GaBIEn.getImage("layertab.png", 0, 0, 0);
+        IGrInDriver.IImage lt = AppMain.layerTabs;
         Rect bounds = getBounds();
         for (int i = 0; i < bounds.height; i += 4) {
             int seg = 2;

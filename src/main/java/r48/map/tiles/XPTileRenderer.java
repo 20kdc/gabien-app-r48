@@ -12,6 +12,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.ATDB;
 import r48.map.UIMapView;
+import r48.map.imaging.IImageLoader;
 import r48.ui.UITileGrid;
 
 /**
@@ -28,7 +29,7 @@ public class XPTileRenderer implements ITileRenderer {
         return tileSize;
     }
 
-    public XPTileRenderer(RubyIO tileset) {
+    public XPTileRenderer(IImageLoader imageLoader, RubyIO tileset) {
         this.tileset = tileset;
         // If the tileset's null, then just give up.
         // The tileset being/not being null is an implementation detail anyway.
@@ -38,13 +39,13 @@ public class XPTileRenderer implements ITileRenderer {
                 // XP
                 String expectedTS = tn.decString();
                 if (expectedTS.length() != 0)
-                    tilesetMaps[0] = GaBIEn.getImage(AppMain.rootPath + "Graphics/Tilesets/" + expectedTS + ".png", 0, 0, 0);
+                    tilesetMaps[0] = imageLoader.getImage("Tilesets/" + expectedTS, 0, 0, 0);
                 RubyIO[] amNames = tileset.getInstVarBySymbol("@autotile_names").arrVal;
                 for (int i = 0; i < 7; i++) {
                     RubyIO rio = amNames[i];
                     if (rio.strVal.length != 0) {
                         String expectedAT = rio.decString();
-                        tilesetMaps[i + 1] = GaBIEn.getImage(AppMain.rootPath + "Graphics/Autotiles/" + expectedAT + ".png", 0, 0, 0);
+                        tilesetMaps[i + 1] = imageLoader.getImage("Autotiles/" + expectedAT, 0, 0, 0);
                     }
                 }
             }
@@ -111,7 +112,7 @@ public class XPTileRenderer implements ITileRenderer {
             RubyIO rio = tileset.getInstVarBySymbol("@panorama_name");
             if (rio != null)
                 if (rio.strVal.length > 0)
-                    return "Graphics/Panoramas/" + rio.decString() + ".png";
+                    return "Panoramas/" + rio.decString();
         }
         return "";
     }
