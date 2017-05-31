@@ -12,9 +12,9 @@ import r48.dbs.ATDB;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
 import r48.io.IkaObjectBackend;
+import r48.io.R2kObjectBackend;
 import r48.io.R48ObjectBackend;
 import r48.map.StuffRenderer;
-import r48.map.UIMapView;
 import r48.musicality.Musicality;
 import r48.schema.ISchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -97,6 +97,8 @@ public class AppMain {
             objectDB = new ObjectDB(new R48ObjectBackend(rootPath + dataPath, dataExt, true));
         } else if (odbBackend.equals("ika")) {
             objectDB = new ObjectDB(new IkaObjectBackend(rootPath));
+        } else if (odbBackend.equals("lcf2000")) {
+            objectDB = new ObjectDB(new R2kObjectBackend(rootPath));
         } else {
             throw new IOException("Unknown backend " + odbBackend);
         }
@@ -158,7 +160,8 @@ public class AppMain {
         for (IToolset its : toolsets) {
             String[] tabs = its.tabNames();
             UIElement[] tabContents = its.generateTabs(wmg);
-            for (int i = 0; i < tabs.length; i++) {
+            // NOTE: This allows skipping out on actually generating tabs at the end, if you dare.
+            for (int i = 0; i < tabContents.length; i++) {
                 tabNames.add(tabs[i]);
                 tabElems.add(tabContents[i]);
             }
@@ -358,14 +361,6 @@ public class AppMain {
                 }
             });
         return new UIPopupMenu(s.toArray(new String[0]), r.toArray(new Runnable[0]), FontSizes.menuTextHeight, false);
-    }
-
-    // this includes objects whose existence is defined by objects (maps)
-    public static LinkedList<String> listAllObjects() {
-        LinkedList<String> base = schemas.listFileDefs();
-        for (RubyIO k : objectDB.getObject("MapInfos").hashVal.keySet())
-            base.add(UIMapView.getMapName((int) k.fixnumVal));
-        return base;
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.

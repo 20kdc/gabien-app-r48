@@ -85,9 +85,10 @@ public class UIMapViewContainer extends UIPanel {
             toolRunnables.add(new Runnable() {
                 @Override
                 public void run() {
-                    GaBIEn.hintFlushAllTheCaches();
+                    AppMain.stuffRenderer.imageLoader.flushCache();
                     if (view != null)
                         AppMain.stuffRenderer = StuffRenderer.rendererFromMap(view.map);
+                    AppMain.stuffRenderer.imageLoader.flushCache();
                 }
             });
             toolNames.add("<for dev only>");
@@ -160,7 +161,7 @@ public class UIMapViewContainer extends UIPanel {
         timeWaster.draw(igd, ox, oy, deltaTime, r.width, r.height);
     }
 
-    public void loadMap(int k) {
+    public void loadMap(String k) {
         wantsToolHide = true;
         allElements.clear();
         if (view != null)

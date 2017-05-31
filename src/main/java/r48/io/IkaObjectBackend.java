@@ -26,22 +26,8 @@ public class IkaObjectBackend implements IObjectBackend {
 
     @Override
     public RubyIO loadObjectFromFile(String filename) {
-        if (filename.equals("MapInfos")) {
-            RubyIO map = new RubyIO();
-            map.iVars.put("@name", new RubyIO().encString("Map1.pbm"));
-            map.iVars.put("@order", new RubyIO().setFX(1));
-            map.iVars.put("@parent_id", new RubyIO().setFX(0));
-
-            RubyIO rio = new RubyIO();
-            rio.type = '{';
-            rio.hashVal = new HashMap<RubyIO, RubyIO>();
-            rio.hashVal.put(new RubyIO().setFX(1), map);
-            return rio;
-        }
-        if (filename.equals("Map001")) {
-            RubyIO rio = new RubyIO();
-            rio.type = 'o';
-            rio.symVal = "RPG::Map";
+        if (filename.equals("Map")) {
+            RubyIO rio = new RubyIO().setSymlike("RPG::Map", true);
 
             BM8I bm = new BM8I();
             bm.width = 160;
@@ -56,11 +42,8 @@ public class IkaObjectBackend implements IObjectBackend {
                 ioe.printStackTrace();
             }
 
-            RubyIO mapTbl = new RubyIO();
-            mapTbl.type = 'u';
-            mapTbl.symVal = "Table";
             RubyTable tbl = new RubyTable(bm.width, bm.height, 1);
-            mapTbl.userVal = tbl.innerBytes;
+            RubyIO mapTbl = new RubyIO().setUser("Table", tbl.innerBytes);
 
             for (int i = 0; i < bm.width; i++)
                 for (int j = 0; j < bm.height; j++)
@@ -68,9 +51,7 @@ public class IkaObjectBackend implements IObjectBackend {
 
             rio.iVars.put("@data", mapTbl);
 
-            RubyIO evTbl = new RubyIO();
-            evTbl.type = '{';
-            evTbl.hashVal = new HashMap<RubyIO, RubyIO>();
+            RubyIO evTbl = new RubyIO().setHash();
             rio.iVars.put("@events", evTbl);
 
             NPChar np = new NPChar();
@@ -92,9 +73,7 @@ public class IkaObjectBackend implements IObjectBackend {
     }
 
     private RubyIO convertEventToRuby(NPChar.NPCCharacter io) {
-        RubyIO res = new RubyIO();
-        res.type = 'o';
-        res.symVal = "RPG::Event";
+        RubyIO res = new RubyIO().setSymlike("RPG::Event", true);
         int px = rounder(io.posX);
         int py = rounder(io.posY);
         res.iVars.put("@x", new RubyIO().setFX(px));
@@ -114,7 +93,7 @@ public class IkaObjectBackend implements IObjectBackend {
 
     @Override
     public void saveObjectToFile(String filename, RubyIO object) throws IOException {
-        if (filename.equals("Map001")) {
+        if (filename.equals("Map")) {
             // allow saving
             BM8I bm8 = new BM8I();
             RubyTable rt = new RubyTable(object.getInstVarBySymbol("@data").userVal);

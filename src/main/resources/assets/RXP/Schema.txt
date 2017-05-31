@@ -9,7 +9,7 @@ C dataPath Data/
 C dataExt .rxdata
 C versionId XP
 
-A RXP/AutoTiles.txt RXP/AutoTileRules.txt
+A R2KXPCOM/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
 C allowIndentControl
 C defineIndent
 

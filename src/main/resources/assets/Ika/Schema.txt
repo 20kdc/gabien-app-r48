@@ -4,7 +4,6 @@
 
 C objectDB ika
 C versionId Ika
-C mapinfosInert
 
 e eventType 0 Globefish 1 Isogin 2 Crab 3 Sleep 4 NiceStar 5 AttackStar 6 Dum 7 Carry 8 Juel 9 Ufo
 e collisionType 0 Null 1 Block 2 Enemy 3 Event
@@ -24,4 +23,4 @@ e collisionType 0 Null 1 Block 2 Enemy 3 Event
 @events subwindow hash int subwindow RPG::Event
 +table @data . . 160 120 1
 
-> File.Map001 RPG::Map
+> File.Map RPG::Map

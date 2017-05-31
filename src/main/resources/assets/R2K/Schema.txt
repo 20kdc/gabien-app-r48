@@ -1,0 +1,23 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ The R2k Schema.
+
+C objectDB lcf2000
+C versionId lcf2000
+
+ * "borrow" the RXP AT rules
+A R2KXPCOM/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
+
+ * right now this will only load a given map
+
+: RPG::Event
+@x int
+@y int
+
+: RPG::Map
+@events subwindow hash int subwindow RPG::Event
++table @data . . 160 120 1
+
+> File.Map RPG::Map

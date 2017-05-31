@@ -15,6 +15,7 @@ import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
+import r48.map.mapinfos.UIRMMapInfos;
 import r48.maptools.UIMTEventPicker;
 import r48.schema.ISchemaElement;
 import r48.schema.util.SchemaPath;
@@ -68,7 +69,7 @@ public class RMToolsToolset implements IToolset {
                             public void accept(String s) {
                                 int i = Integer.parseInt(s);
                                 for (RubyIO rio : AppMain.objectDB.getObject("MapInfos").hashVal.keySet()) {
-                                    RubyIO map = AppMain.objectDB.getObject(UIMapView.getMapName((int) rio.fixnumVal));
+                                    RubyIO map = AppMain.objectDB.getObject(UIRMMapInfos.nameFromInt((int) rio.fixnumVal));
                                     // Find event!
                                     for (RubyIO event : map.getInstVarBySymbol("@events").hashVal.values()) {
                                         for (RubyIO page : event.getInstVarBySymbol("@pages").arrVal) {
@@ -96,7 +97,7 @@ public class RMToolsToolset implements IToolset {
                             objectSchemas.add("File." + s);
                         }
                         for (RubyIO rio : AppMain.objectDB.getObject("MapInfos").hashVal.keySet()) {
-                            objects.add(UIMapView.getMapName((int) rio.fixnumVal));
+                            objects.add(UIRMMapInfos.nameFromInt((int) rio.fixnumVal));
                             objectSchemas.add("RPG::Map");
                         }
                         Iterator<String> schemaIt = objectSchemas.iterator();
@@ -121,7 +122,7 @@ public class RMToolsToolset implements IToolset {
                     @Override
                     public void run() {
                         for (RubyIO rio : AppMain.objectDB.getObject("MapInfos").hashVal.keySet()) {
-                            RubyIO map = AppMain.objectDB.getObject(UIMapView.getMapName((int) rio.fixnumVal));
+                            RubyIO map = AppMain.objectDB.getObject(UIRMMapInfos.nameFromInt((int) rio.fixnumVal));
                             // Find event!
                             for (RubyIO event : map.getInstVarBySymbol("@events").hashVal.values()) {
                                 for (RubyIO page : event.getInstVarBySymbol("@pages").arrVal) {
@@ -186,7 +187,7 @@ public class RMToolsToolset implements IToolset {
                             orderedMapInfos.add((int) rio2.getKey().fixnumVal);
                         Collections.sort(orderedMapInfos);
                         for (int id : orderedMapInfos) {
-                            String name = UIMapView.getMapName(id);
+                            String name = UIRMMapInfos.nameFromInt(id);
                             dumper.startFile(name, "Map:\"" + AppMain.objectDB.getObject("MapInfos").getHashVal(new RubyIO().setFX(id)).getInstVarBySymbol("@name").decString() + "\"");
                             RubyIO map = AppMain.objectDB.getObject(name);
                             LinkedList<Integer> orderedEVN = new LinkedList<Integer>();

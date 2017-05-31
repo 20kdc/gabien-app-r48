@@ -29,7 +29,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     private boolean[] layerInvisible;
     private boolean dragging = false;
     public final RubyIO map;
-    public final int mapId;
+    public final String mapId;
     // This needs to be interchangable in case a table update happens...
     public RubyTable mapTable;
     public boolean minimap = false;
@@ -47,12 +47,12 @@ public class UIMapView extends UIElement implements IWindowElement {
         }
     };
 
-    public UIMapView(int mapN, int i, int i1) {
+    public UIMapView(String mapN, int i, int i1) {
         // This makes it load in the right spot.
         setBounds(new Rect(0, 0, i, i1));
 
         mapId = mapN;
-        map = AppMain.objectDB.getObject(getMapName(mapN), "RPG::Map");
+        map = AppMain.objectDB.getObject(mapN, "RPG::Map");
         AppMain.objectDB.registerModificationHandler(map, listener);
         listener.run();
         layerInvisible = new boolean[mapTable.planeCount + 2];
@@ -68,13 +68,6 @@ public class UIMapView extends UIElement implements IWindowElement {
         }
         camX -= i / 2;
         camY -= i1 / 2;
-    }
-
-    public static String getMapName(int mapN) {
-        String mapStr = Integer.toString(mapN);
-        while (mapStr.length() < 3)
-            mapStr = "0" + mapStr;
-        return "Map" + mapStr;
     }
 
     public Rect getLayerTabRect(int i) {

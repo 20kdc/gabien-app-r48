@@ -36,6 +36,8 @@ public class RubyIO {
 
     }
 
+    // ---- Value creators ----
+
     public RubyIO setNull() {
         type = '0';
         strVal = null;
@@ -55,6 +57,41 @@ public class RubyIO {
         fixnumVal = fx;
         return this;
     }
+
+    public RubyIO setBool(boolean b) {
+        setNull();
+        type = b ? 'T' : 'F';
+        return this;
+    }
+
+    public RubyIO setString(String s) {
+        setNull();
+        type = '"';
+        encString(s);
+        return this;
+    }
+    public RubyIO setSymlike(String s, boolean object) {
+        setNull();
+        type = object ? 'o' : ':';
+        symVal = s;
+        return this;
+    }
+    public RubyIO setUser(String s, byte[] data) {
+        setNull();
+        type = 'u';
+        symVal = s;
+        userVal = data;
+        return this;
+    }
+
+    public RubyIO setHash() {
+        setNull();
+        type = '{';
+        hashVal = new HashMap<RubyIO, RubyIO>();
+        return this;
+    }
+
+    // ----
 
     public RubyIO setShallowClone(RubyIO clone) {
         type = clone.type;

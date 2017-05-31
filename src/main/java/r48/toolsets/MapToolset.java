@@ -11,7 +11,7 @@ package r48.toolsets;
 import gabien.ui.IConsumer;
 import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
-import r48.UIMapInfos;
+import r48.map.StuffRenderer;
 import r48.map.UIMapViewContainer;
 
 /**
@@ -29,14 +29,14 @@ public class MapToolset implements IToolset {
     @Override
     public UIElement[] generateTabs(ISupplier<IConsumer<UIElement>> windowMaker) {
         final UIMapViewContainer mapBox = new UIMapViewContainer(windowMaker);
-        final UIMapInfos mapInfoEl = new UIMapInfos(windowMaker, new IConsumer<Integer>() {
-            @Override
-            public void accept(Integer integer) {
-                mapBox.loadMap(integer);
-            }
-        });
+        final UIElement mapInfoEl = StuffRenderer.createMapExplorer(windowMaker, mapBox);
+        if (mapInfoEl != null) {
+            return new UIElement[] {
+                    mapBox, mapInfoEl
+            };
+        }
         return new UIElement[] {
-                mapBox, mapInfoEl
+                mapBox
         };
     }
 }

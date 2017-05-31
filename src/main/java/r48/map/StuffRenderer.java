@@ -5,14 +5,19 @@
 
 package r48.map;
 
+import gabien.ui.*;
 import r48.AppMain;
+import r48.FontSizes;
 import r48.RubyIO;
+import r48.map.imaging.CacheImageLoader;
 import r48.map.imaging.GabienImageLoader;
 import r48.map.imaging.IImageLoader;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.IkaEventGraphicRenderer;
 import r48.map.events.NullEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
+import r48.map.imaging.XYZImageLoader;
+import r48.map.mapinfos.UIRMMapInfos;
 import r48.map.tiles.*;
 
 /**
@@ -44,16 +49,31 @@ public class StuffRenderer {
     public final IEventGraphicRenderer eventRenderer;
     public final IImageLoader imageLoader;
 
+    public static UIElement createMapExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final UIMapViewContainer mapBox) {
+        if (versionId.equals("VXA") || versionId.equals("RXP"))
+            return new UIRMMapInfos(windowMaker, mapBox);
+        return new UIPopupMenu(new String[] {
+                "Load Map"
+        }, new Runnable[] {
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        mapBox.loadMap("Map");
+                    }
+                }
+        }, FontSizes.menuTextHeight, false);
+    }
+
     public static StuffRenderer rendererFromMap(RubyIO map) {
-        String vxaPano = "";
         if (versionId.equals("VXA")) {
-            vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
+            String vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
             if (map.getInstVarBySymbol("@parallax_show").type != 'T')
                 vxaPano = "";
+            return new StuffRenderer(tsoFromMap(map), vxaPano);
         }
-        if (versionId.equals("Ika"))
-            return new StuffRenderer(null, null);
-        return new StuffRenderer(tsoFromMap(map), vxaPano);
+        if (versionId.equals("RXP"))
+            return new StuffRenderer(tsoFromMap(map), "");
+        return new StuffRenderer(null, null);
     }
 
     private static RubyIO tsoFromMap(RubyIO map) {
@@ -75,6 +95,12 @@ public class StuffRenderer {
             eventRenderer = new IkaEventGraphicRenderer(imageLoader);
             return;
         }
+        if (versionId.equals("lcf2000")) {
+            imageLoader = new CacheImageLoader(new XYZImageLoader(AppMain.rootPath));
+            tileRenderer = new LcfTileRenderer(imageLoader);
+            eventRenderer = new NullEventGraphicRenderer();
+            return;
+        }
         if (versionId.equals("XP")) {
             imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png");
             tileRenderer = new XPTileRenderer(imageLoader, tso);
@@ -91,5 +117,4 @@ public class StuffRenderer {
         eventRenderer = new NullEventGraphicRenderer();
         imageLoader = new GabienImageLoader(AppMain.rootPath, "");
     }
-
 }

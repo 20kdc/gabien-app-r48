@@ -72,25 +72,7 @@ public class XPTileRenderer implements ITileRenderer {
             tidx %= 48;
             boolean didDraw = false;
             if (tilesetMaps[atMap] != null) {
-                if ((ets == tileSize) && (AppMain.autoTiles[0] != null)) {
-                    ATDB.Autotile at = AppMain.autoTiles[0].entries[tidx];
-                    if (at != null) {
-                        int cSize = tileSize / 2;
-                        for (int sA = 0; sA < 2; sA++)
-                            for (int sB = 0; sB < 2; sB++) {
-                                int ti = at.corners[sA + (sB * 2)];
-                                int tx = ti % 3;
-                                int ty = ti / 3;
-                                int sX = (sA * cSize);
-                                int sY = (sB * cSize);
-                                igd.blitImage((tx * tileSize) + sX, (ty * tileSize) + sY, cSize, cSize, px + sX, py + sY, tilesetMaps[atMap]);
-                            }
-                        didDraw = true;
-                    }
-                } else {
-                    igd.blitImage(tileSize, 2 * tileSize, ets, ets, px, py, tilesetMaps[atMap]);
-                    didDraw = true; // Close enough
-                }
+                didDraw = didDraw || generalOldRMATField(0, 0, tidx, 0, tileSize, ets, px, py, igd, tilesetMaps[atMap]);
             } else {
                 didDraw = true; // It's invisible, so it should just be considered drawn no matter what
             }
@@ -104,6 +86,30 @@ public class XPTileRenderer implements ITileRenderer {
         int ty = tidx / tsh;
         if (tilesetMaps[0] != null)
             igd.blitImage(tx * tileSize, ty * tileSize, ets, ets, px, py, tilesetMaps[0]);
+    }
+
+    // Used by 2k3 support too, since it follows the same AT design
+    public static boolean generalOldRMATField(int tox, int toy, int subfield, int atFieldType, int fTileSize, int ets, int px, int py, IGrInDriver igd, IGrInDriver.IImage img) {
+        if ((ets == fTileSize) && (AppMain.autoTiles[atFieldType] != null)) {
+            ATDB.Autotile at = AppMain.autoTiles[atFieldType].entries[subfield];
+            if (at != null) {
+                int cSize = fTileSize / 2;
+                for (int sA = 0; sA < 2; sA++)
+                    for (int sB = 0; sB < 2; sB++) {
+                        int ti = at.corners[sA + (sB * 2)];
+                        int tx = ti % 3;
+                        int ty = ti / 3;
+                        int sX = (sA * cSize);
+                        int sY = (sB * cSize);
+                        igd.blitImage((tx * fTileSize) + sX + tox, (ty * fTileSize) + sY + toy, cSize, cSize, px + sX, py + sY, img);
+                    }
+                return true;
+            }
+        } else {
+            igd.blitImage(fTileSize, 2 * fTileSize, ets, ets, px, py, img);
+            return true;
+        }
+        return false;
     }
 
     @Override

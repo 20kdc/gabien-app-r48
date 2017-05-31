@@ -2,6 +2,15 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
 
+3: R2K
+f RPG_RT.ldb
+. R2K Japanese Version 1.50/1.51
+ I don't even know if I'll go through with this yet.
+ Also note that the information given is because I don't know how much the routines will cover yet,
+  so I'm giving the detected engine version of the game used for testing.
+ In other news, I'm going to have to institute a 'Shift-JIS at all times' policy on handling this game's files,
+  to prevent corruption...
+
 0: RXP
 f Data/MapInfos.rxdata
 
