@@ -4,6 +4,7 @@
  */
 package r48.map.imaging;
 
+import gabien.GaBIEn;
 import gabien.IGrInDriver;
 
 import java.util.HashMap;
@@ -27,6 +28,8 @@ public class CacheImageLoader implements IImageLoader {
         if (loadedImages.containsKey(ki))
             return loadedImages.get(ki);
         IGrInDriver.IImage i = root.getImage(a, tr, tg, tb);
+        if (i == null)
+            i = GaBIEn.getImage("__error__", tr, tg, tb);
         loadedImages.put(ki, i);
         return i;
     }

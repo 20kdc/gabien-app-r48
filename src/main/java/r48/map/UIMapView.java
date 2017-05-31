@@ -224,7 +224,9 @@ public class UIMapView extends UIElement implements IWindowElement {
                     continue;
                 int px = ox + ((x * tileSize) - camX);
                 int py = oy + ((y * tileSize) - camY);
-                AppMain.stuffRenderer.eventRenderer.drawEventGraphic(AppMain.stuffRenderer.eventRenderer.extractEventGraphic(evI), px, py, igd);
+                RubyIO g = AppMain.stuffRenderer.eventRenderer.extractEventGraphic(evI);
+                if (g != null)
+                    AppMain.stuffRenderer.eventRenderer.drawEventGraphic(g, px, py, igd);
             }
         }
     }

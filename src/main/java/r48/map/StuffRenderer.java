@@ -9,13 +9,10 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.map.events.*;
 import r48.map.imaging.CacheImageLoader;
 import r48.map.imaging.GabienImageLoader;
 import r48.map.imaging.IImageLoader;
-import r48.map.events.IEventGraphicRenderer;
-import r48.map.events.IkaEventGraphicRenderer;
-import r48.map.events.NullEventGraphicRenderer;
-import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.XYZImageLoader;
 import r48.map.mapinfos.UIRMMapInfos;
 import r48.map.tiles.*;
@@ -98,7 +95,7 @@ public class StuffRenderer {
         if (versionId.equals("lcf2000")) {
             imageLoader = new CacheImageLoader(new XYZImageLoader(AppMain.rootPath));
             tileRenderer = new LcfTileRenderer(imageLoader);
-            eventRenderer = new NullEventGraphicRenderer();
+            eventRenderer = new R2kEventGraphicRenderer(imageLoader);
             return;
         }
         if (versionId.equals("XP")) {

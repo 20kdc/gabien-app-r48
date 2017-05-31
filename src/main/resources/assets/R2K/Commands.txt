@@ -15,29 +15,25 @@ L
 10110: Say$
 d Begins a message to show to the player.
 p text string
-d The text.
 
 20110: Say (cont.)$
 d Continues a 10110 'Say'.
 p text string
-d The text.
 
 10140: @@Show Choices{B: {B=0=no cancel|cancel choice: #B}} (20140/20141 follows)
-d Shows a set of choices to the player.
+d Shows a set of choices to the player. (editorChoices is for editor display purposes only.)
 p editorChoices string
-d For editor display only. The choices separated by forward slashes.
 p 0|cancelChoice+1 int
-d 0 for 'no cancel', otherwise the choice number (1 being first) to use.
 I1
 
 20140: ... Choice:$
 d A choice. If the player selects this choice, the code between this and the next choice runs.
 p text string
-d Text of the choice.
 i-1
 I1
 
 20141: ... End Choices
+d The end of a set of choices.
 p _ string
 i-1
 l
@@ -46,43 +42,29 @@ l
 d Shows a numeric input to the player, with a set amount of digits, and stores the result in a variable.
 p _ string
 p digits int
-d The amount of digits. Should be at least 1.
 p var var_id
-d The target variable for the result.
 
 10120: @@Message Options{E:{B=0=opaque|transparent},#C,{D=0=fixed|unfixed},events{E=0= don't} continue}
-d Sets some options relating to the text box.
+d Sets if the text box is transparent, where it is, if it will move to avoid hiding the player, and if events can move about (I think).
 p _ string
 p transparent int_boolean
-d Should the text box be transparent?
 p position message_options_position
-d What position should the text box occupy?
-p fixedPosition int_boolean
-d Is the text box 'fixed'. If so, the text box will *not* move for the player.
+p positionLocked int_boolean
 p continueEvents int_boolean
-d Should events continue to move while the text box is active?
 
 10130: @@Change Face{D: to #A:#B, {C=0=left|right}, {D=0=|flipped}}
 d Change the face in the text box to a given face, including some details.
 p faceImage string
-d The image filename (no .xyz) in FaceSet from which the face is taken.
 p faceIndex int
-d The index of the face. FaceSets are 192x192, with 48x48 faces. (Index is probably from 0 to 16.)
 p faceAtRight int_boolean
-d Should the face be located at the right of the text box?
 p faceFlipped int_boolean
-d Should the face be flipped?
 
  Control Switches follows. Uhoh.
 
 10210: Control Switches
-d Control switches in various ways.
+d Control switches in various ways. Single alters one switch. Range alters a group of switches. Indirect alters one switch, numbered by a variable.
 p _ string
 p type control_switches_type
-d Changes the way in which the switches change. Single alters one switch. Range alters a group of switches. Indirect alters one switch, numbered by a variable.
 D target 1 int 0 switch_id 1 switch_id 2 var_id
-d The target switch, or variable pointing to it. In a Range, this is the first switch.
-p last switch_id
-d The last switch in a Range. Otherwise, ignored.
+p rangeLast switch_id
 p changeMode control_switches_change_mode
-d How the switches changes. The values should describe themselves.
