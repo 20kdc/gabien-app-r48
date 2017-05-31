@@ -9,6 +9,7 @@ import gabien.GaBIEn;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
+import r48.RubyIO;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.map.UIMapToolWrapper;
@@ -17,6 +18,7 @@ import r48.ui.UIHHalfsplit;
 import r48.ui.UIScrollVertLayout;
 
 import java.io.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created on 1/27/17.
@@ -71,11 +73,12 @@ public class Application {
         })));
         gamepaks.panels.add(new UIHHalfsplit(3, 5, new UILabel("Scale:", FontSizes.launcherTextHeight), scaleAdjust));
 
-        gamepaks.panels.add(new UILabel("Choose Gamepak:", FontSizes.launcherTextHeight));
+        gamepaks.panels.add(new UILabel("Choose Target Engine:", FontSizes.launcherTextHeight));
 
         new DBLoader(new BufferedReader(new InputStreamReader(GaBIEn.getFile("Gamepaks.txt"))), new IDatabase() {
 
             UITextButton lastButton;
+            AtomicReference<String> boxedEncoding; // it's a boxed object, so...
 
             @Override
             public void newObj(int objId, final String objName) throws IOException {
@@ -88,11 +91,14 @@ public class Application {
                     status = "Minimal/Useless";
                 if (objId == 3)
                     status = "Non-existent";
+                final AtomicReference<String> box = new AtomicReference<String>();
+                boxedEncoding = box;
                 lastButton = new UITextButton(FontSizes.enumChoiceTextHeight, objName + " (" + status + ")", new Runnable() {
                     @Override
                     public void run() {
                         if (appTicker == null) {
                             try {
+                                RubyIO.encoding = box.get();
                                 AppMain.initialize(objName + "/");
                                 appTicker = AppMain.initializeAndRun(uiTicker);
                             } catch (IOException e) {
@@ -117,6 +123,9 @@ public class Application {
                         rn += s + " ";
                     lastButton.Text = rn;
                 }
+                if (c == 'e')
+                    boxedEncoding.set(args[0]);
+
                 if (c == 'f')
                     if (!new File(args[0]).exists()) {
                         System.out.println("Can't use " + lastButton.Text + ": " + args[0] + " missing");

@@ -1,0 +1,53 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+: RPG::EventPage
+@condition subwindow OPAQUE
+@character_name string
+@character_index int
+ actually an enum
+@character_direction int
+ actually an enum???
+@character_pattern int
+ actually an enum
+@character_blend_mode int
+ actually an enum
+@move_type int
+@move_freq int
+ actually an enum
+@trigger int
+ actually an enum
+@layer int
+ maybe this is the collision flag
+@blocking boolean
+ actually an enum
+@anim_type int
+@move_speed int
+@move_route subwindow OPAQUE
+@list EventListEditor
+
+: RPG::Event
+@name string
+@x int
+@y int
+@pages subwindow arrayIx1 subwindow RPG::EventPage
+
+: RPG::Map
+@tileset_id int
+@width roint= 20
+@height roint= 15
+ actually an enum
+@scroll_type int
+@parallax_flag boolean
+@parallax_name string
+@parallax_loop_x boolean
+@parallax_loop_y boolean
+@parallax_autoloop_x boolean
+@parallax_autoloop_y boolean
+@parallax_sx int
+@parallax_sy int
+@events subwindow hash int subwindow RPG::Event
+@top_level boolean
+@magic_number int
++table @data @width @height 20 15 2

@@ -16,6 +16,7 @@ import r48.map.imaging.IImageLoader;
 import r48.map.imaging.XYZImageLoader;
 import r48.map.mapinfos.UIRMMapInfos;
 import r48.map.tiles.*;
+import r48.ui.UIScrollVertLayout;
 
 /**
  * First class of the new year. What does it do?
@@ -47,8 +48,30 @@ public class StuffRenderer {
     public final IImageLoader imageLoader;
 
     public static UIElement createMapExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final UIMapViewContainer mapBox) {
-        if (versionId.equals("VXA") || versionId.equals("RXP"))
+        if (versionId.equals("VXA") || versionId.equals("XP"))
             return new UIRMMapInfos(windowMaker, mapBox);
+        if (versionId.equals("lcf2000")) {
+            // not great, but it at least allows selection
+            RubyIO rio = AppMain.objectDB.getObject("RPG_RT.lmt");
+            RubyIO order = rio.iVars.get("@map_order");
+            UIScrollVertLayout svl = new UIScrollVertLayout();
+            for (RubyIO ri : order.arrVal) {
+                RubyIO mi = rio.getInstVarBySymbol("@map_infos").getHashVal(ri);
+                final int currentIdx = (int) ri.fixnumVal;
+                UITextButton utb = new UITextButton(FontSizes.menuTextHeight, mi.getInstVarBySymbol("@name").decString(),
+                        new Runnable() {
+                    @Override
+                    public void run() {
+                        String m = Integer.toString(currentIdx);
+                        while (m.length() < 4)
+                            m = "0" + m;
+                        mapBox.loadMap("Map" + m + ".lmu");
+                    }
+                });
+                svl.panels.add(utb);
+            }
+            return svl;
+        }
         return new UIPopupMenu(new String[] {
                 "Load Map"
         }, new Runnable[] {
@@ -68,7 +91,7 @@ public class StuffRenderer {
                 vxaPano = "";
             return new StuffRenderer(tsoFromMap(map), vxaPano);
         }
-        if (versionId.equals("RXP"))
+        if (versionId.equals("XP"))
             return new StuffRenderer(tsoFromMap(map), "");
         return new StuffRenderer(null, null);
     }

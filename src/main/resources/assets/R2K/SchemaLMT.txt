@@ -1,0 +1,34 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+e mapinfo_musictype 0 Inherit 1 Event 2 Specified
+e mapinfo_backtype 0 Inherit 1 TerrainLDB 2 Specified
+e mapinfo_inheritflag 0 Inherit 1 True 2 False
+
+: RPG::MapInfo
+@name string
+@parent int
+@indent int
+ actually an enum
+@type int
+@edit_pos_x int
+@edit_pos_y int
+@expanded boolean
+@music_type mapinfo_musictype
+@music RPG::Music
+@background_type mapinfo_backtype
+@background_name string
+@teleport_state mapinfo_inheritflag
+@escape_state mapinfo_inheritflag
+@save_state mapinfo_inheritflag
+@encounters subwindow OPAQUE
+@area_rect Rect
+
+> RPG::Start OPAQUE
+
+: RPG::MapTree
+@map_infos subwindow hash int subwindow RPG::MapInfo
+@map_order subwindow array 0 int
+@active_node int
+@start RPG::Start

@@ -4,6 +4,7 @@
  */
 package r48.io.r2k.chunks;
 
+import r48.RubyIO;
 import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
@@ -13,11 +14,9 @@ import java.io.IOException;
  * Created on 31/05/17.
  */
 public class StringR2kProp implements IR2kProp {
+    public byte[] data = new byte[0];
 
-    public String text;
-
-    public StringR2kProp(String s) {
-        text = s;
+    public StringR2kProp() {
     }
 
     @Override
@@ -26,7 +25,7 @@ public class StringR2kProp implements IR2kProp {
     }
 
     @Override
-    public void importData(byte[] data) throws IOException {
-        text = R2kUtil.decodeLcfString(data);
+    public void importData(byte[] ndata) throws IOException {
+        data = ndata;
     }
 }

@@ -2,12 +2,14 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-package r48.io.r2k.obj;
+package r48.io.r2k.files;
 
 import r48.RubyIO;
 import r48.io.r2k.chunks.BlobR2kProp;
 import r48.io.r2k.chunks.IR2kInterpretable;
 import r48.io.r2k.chunks.IntegerR2kProp;
+import r48.io.r2k.obj.MapInfo;
+import r48.io.r2k.obj.MapTreeStart;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -8,98 +8,38 @@ C objectDB lcf2000
 C versionId lcf2000
 C defineIndent
 
+ -COM-
+
  * "borrow" the RXP AT rules
+
 A R2KXPCOM/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
 
-> genericScriptParameter typeChanger{ string " int i }
-
- -Scripting stuff-
 > var_id int
 > switch_id int
 > item_id int
 
-e control_switches_type 0 Single 1 Range 2 Indirect
-e control_switches_change_mode 0 On 1 Off 2 Toggle
+i R2K/SchemaScripting.txt
 
-e message_options_position 0 Top 1 Centre 2 Bottom
+: Rect
+@left int
+@up int
+@right int
+@down int
 
- --
-
-: RPG::EventCommand
-@code int= 115
-@indent int
-@parameters arrayAL1 genericScriptParameter
-
-.LcfEventCommandEditor_Most
-@indent indent
-@parameters arrayAL1 genericScriptParameter
-
- Defining EventCommandEditor triggers RMTools, DO NOT DO THAT!
-
-> EventListEditor subwindow arrayCS R2K/Commands.txt LcfEventCommandEditor
-> LcfEventCommandEditor RPGCS R2K/Commands.txt RPG::EventCommand LcfEventCommandEditor_Most
-
- * right now this will only load a given map
-
-: RPG::EventPage
-@condition subwindow OPAQUE
-@character_name string
-@character_index int
- actually an enum
-@character_direction int
- actually an enum???
-@character_pattern int
- actually an enum
-@character_blend_mode int
- actually an enum
-@move_type int
-@move_freq int
- actually an enum
-@trigger int
- actually an enum
-@layer int
- maybe this is the collision flag
-@blocking boolean
- actually an enum
-@anim_type int
-@move_speed int
-@move_route subwindow OPAQUE
-@list EventListEditor
-
-: RPG::Event
+: RPG::Music
 @name string
-@x int
-@y int
-@pages subwindow arrayIx1 subwindow RPG::EventPage
+@fade int
+@volume int= 100
+@tempo int= 100
+@balance int= 50
 
-: RPG::Map
-@tileset_id int
-@width roint= 20
-@height roint= 15
- actually an enum
-@scroll_type int
-@parallax_flag boolean
-@parallax_name string
-@parallax_loop_x boolean
-@parallax_loop_y boolean
-@parallax_autoloop_x boolean
-@parallax_autoloop_y boolean
-@parallax_sx int
-@parallax_sy int
-@events subwindow hash int subwindow RPG::Event
-@top_level boolean
-@magic_number int
-+table @data @width @height 20 15 2
+ -LMU-
 
-> File.Map RPG::Map
+i R2K/SchemaLMU.txt
 
-> RPG::MapInfo OPAQUE
-> RPG::Start OPAQUE
+ -LMT-
 
-: RPG::MapTree
-@map_infos subwindow hash int subwindow RPG::MapInfo
-@map_order subwindow array 0 int
-@active_node int
-@start RPG::Start
+i R2K/SchemaLMT.txt
+> File.RPG_RT.lmt RPG::MapTree
 
-> File.MapTree RPG::MapTree
+ -LDB-

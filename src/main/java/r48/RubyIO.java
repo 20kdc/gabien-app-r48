@@ -22,6 +22,7 @@ import java.util.Map;
  * Created on 12/27/16.
  */
 public class RubyIO {
+    public static String encoding;
     public int type;
     public byte[] strVal; // actual meaning depends on iVars. Should be treated as immutable - replace strVal on change
     public String symVal;
@@ -70,6 +71,14 @@ public class RubyIO {
         encString(s);
         return this;
     }
+
+    public RubyIO setString(byte[] s) {
+        setNull();
+        type = '"';
+        strVal = copyByteArray(s);
+        return this;
+    }
+
     public RubyIO setSymlike(String s, boolean object) {
         setNull();
         type = object ? 'o' : ':';
@@ -203,12 +212,12 @@ public class RubyIO {
         // the specific details are that:
         // SOME (not all) strings, are tagged with an ":encoding" iVar.
         // This specifies their encoding.
-        return new String(strVal, Charset.forName("UTF-8"));
+        return new String(strVal, Charset.forName(encoding));
     }
 
     public RubyIO encString(String text) {
         try {
-            strVal = text.getBytes("UTF-8");
+            strVal = text.getBytes(encoding);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -227,5 +236,11 @@ public class RubyIO {
             if (rubyEquals(e.getKey(), rio))
                 return e.getValue();
         return null;
+    }
+
+    public static byte[] copyByteArray(byte[] s) {
+        byte[] t = new byte[s.length];
+        System.arraycopy(s, 0, t, 0, t.length);
+        return t;
     }
 }

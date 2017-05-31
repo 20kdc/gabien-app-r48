@@ -7,9 +7,7 @@ package r48.io.r2k.files;
 import r48.RubyIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.obj.MapInfo;
-import r48.io.r2k.obj.MapTree;
 import r48.io.r2k.obj.MapTreeStart;
-import r48.io.r2k.obj.MapUnit;
 
 import java.io.IOException;
 import java.io.InputStream;

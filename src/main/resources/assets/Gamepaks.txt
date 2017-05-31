@@ -4,6 +4,7 @@
 
 3: R2K
 f RPG_RT.ldb
+e SJIS
 . R2K Japanese Version 1.50/1.51
  I don't even know if I'll go through with this yet.
  Also note that the information given is because I don't know how much the routines will cover yet,
@@ -13,6 +14,7 @@ f RPG_RT.ldb
 
 0: RXP
 f Data/MapInfos.rxdata
+e UTF-8
 
  YES! Moved from Class 1 to Class 0 support at 1:21:00 17 Feb GMT.
  (In retrospect, it was moved too early, perhaps. Oh well. Things SHOULD be... within boundaries, now,
@@ -20,6 +22,7 @@ f Data/MapInfos.rxdata
 
 0: RVXA
 f Data/MapInfos.rvdata2
+e UTF-8
 
  The support for the Studio Pixel "Ikachan" engine is partially a test to ensure
   that the program is sufficiently modular for any further work.
@@ -27,10 +30,12 @@ f Data/MapInfos.rvdata2
 
 0: Ika
 f Pbm/Map1.pbm
+e UTF-8
 . Ikachan
 
  Mostly useless - but maybe move the syntax docs in RXP here.
  Serves as a simple example.
 
 0: Sticki
+e UTF-8
 . Launch Sticky Note Editor

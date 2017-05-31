@@ -1,0 +1,23 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+e control_switches_type 0 Single 1 Range 2 Indirect
+e control_switches_change_mode 0 On 1 Off 2 Toggle
+
+e message_options_position 0 Top 1 Centre 2 Bottom
+> genericScriptParameter typeChanger{ string " int i }
+
+: RPG::EventCommand
+@code int= 115
+@indent int
+@parameters arrayAL1 genericScriptParameter
+
+.LcfEventCommandEditor_Most
+@indent indent
+@parameters arrayAL1 genericScriptParameter
+
+ Defining EventCommandEditor triggers RMTools, DO NOT DO THAT!
+
+> EventListEditor subwindow arrayCS R2K/Commands.txt LcfEventCommandEditor
+> LcfEventCommandEditor RPGCS R2K/Commands.txt RPG::EventCommand LcfEventCommandEditor_Most

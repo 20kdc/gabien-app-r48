@@ -4,19 +4,19 @@
  */
 package r48.io.r2k.obj;
 
-import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.*;
+import r48.io.r2k.struct.EventCommand;
 
 /**
  * Created on 31/05/17.
  */
 public class EventPage extends R2kObject {
     public BlobR2kProp condition = new BlobR2kProp();
-    public StringR2kProp graphicCName = new StringR2kProp("");
+    public StringR2kProp graphicCName = new StringR2kProp();
     public IntegerR2kProp graphicCIndex = new IntegerR2kProp(0);
     public IntegerR2kProp graphicCDirection = new IntegerR2kProp(2);
     public IntegerR2kProp graphicCPattern = new IntegerR2kProp(1);
@@ -63,7 +63,7 @@ public class EventPage extends R2kObject {
     public RubyIO asRIO() {
         RubyIO mt = new RubyIO().setSymlike("RPG::EventPage", true);
         mt.iVars.put("@condition", new RubyIO().setUser("Blob", condition.dat));
-        mt.iVars.put("@character_name", new RubyIO().setString(graphicCName.text));
+        mt.iVars.put("@character_name", new RubyIO().setString(graphicCName.data));
         mt.iVars.put("@character_index", new RubyIO().setFX(graphicCIndex.i));
         mt.iVars.put("@character_direction", new RubyIO().setFX(graphicCDirection.i));
         mt.iVars.put("@character_pattern", new RubyIO().setFX(graphicCPattern.i));

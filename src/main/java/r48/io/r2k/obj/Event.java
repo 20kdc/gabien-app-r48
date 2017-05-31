@@ -19,7 +19,7 @@ import java.util.HashMap;
  * Created on 31/05/17.
  */
 public class Event extends R2kObject {
-    public StringR2kProp name = new StringR2kProp("");
+    public StringR2kProp name = new StringR2kProp();
     public IntegerR2kProp x = new IntegerR2kProp(0);
     public IntegerR2kProp y = new IntegerR2kProp(0);
     public SparseArrayR2kProp<EventPage> pages = new SparseArrayR2kProp<EventPage>(new ISupplier<EventPage>() {
@@ -41,7 +41,7 @@ public class Event extends R2kObject {
     @Override
     public RubyIO asRIO() {
         RubyIO mt = new RubyIO().setSymlike("RPG::Event", true);
-        mt.iVars.put("@name", new RubyIO().setString(name.text));
+        mt.iVars.put("@name", new RubyIO().setString(name.data));
         mt.iVars.put("@x", new RubyIO().setFX(x.i));
         mt.iVars.put("@y", new RubyIO().setFX(y.i));
         // Pages... prepare!

@@ -23,9 +23,9 @@ public class R2kObjectBackend implements IObjectBackend {
 
     @Override
     public RubyIO loadObjectFromFile(String filename) {
-        if (filename.equals("Map")) {
+        if (filename.endsWith(".lmu")) {
             try {
-                FileInputStream fis = new FileInputStream(root + "Map0004.lmu");
+                FileInputStream fis = new FileInputStream(root + filename);
                 RubyIO r = MapIO.readLmu(fis);
                 fis.close();
                 return r;
@@ -34,9 +34,9 @@ public class R2kObjectBackend implements IObjectBackend {
                 return null;
             }
         }
-        if (filename.equals("MapTree")) {
+        if (filename.endsWith(".lmt")) {
             try {
-                FileInputStream fis = new FileInputStream(root + "RPG_RT.lmt");
+                FileInputStream fis = new FileInputStream(root + filename);
                 RubyIO r = MapTreeIO.readLmt(fis);
                 fis.close();
                 return r;

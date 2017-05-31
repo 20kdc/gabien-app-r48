@@ -27,7 +27,7 @@ public class MapUnit extends R2kObject {
     public IntegerR2kProp height = new IntegerR2kProp(15);
     public IntegerR2kProp scrollType = new IntegerR2kProp(0);
     public IntegerR2kProp parallaxFlag = new IntegerR2kProp(0);
-    public StringR2kProp parallaxName = new StringR2kProp("");
+    public StringR2kProp parallaxName = new StringR2kProp();
     public IntegerR2kProp parallaxLoopX = new IntegerR2kProp(0); // B
     public IntegerR2kProp parallaxLoopY = new IntegerR2kProp(0); // B
     public IntegerR2kProp parallaxAutoloopX = new IntegerR2kProp(0); // B
@@ -77,7 +77,7 @@ public class MapUnit extends R2kObject {
         map.iVars.put("@height", new RubyIO().setFX(height.i));
         map.iVars.put("@scroll_type", new RubyIO().setFX(scrollType.i));
         map.iVars.put("@parallax_flag", new RubyIO().setBool(parallaxFlag.i != 0));
-        map.iVars.put("@parallax_name", new RubyIO().setString(parallaxName.text));
+        map.iVars.put("@parallax_name", new RubyIO().setString(parallaxName.data));
         map.iVars.put("@parallax_loop_x", new RubyIO().setBool(parallaxLoopX.i != 0));
         map.iVars.put("@parallax_loop_y", new RubyIO().setBool(parallaxLoopY.i != 0));
         map.iVars.put("@parallax_autoloop_x", new RubyIO().setBool(parallaxAutoloopX.i != 0));
