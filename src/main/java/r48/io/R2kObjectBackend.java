@@ -5,7 +5,7 @@
 package r48.io;
 
 import r48.RubyIO;
-import r48.io.r2k.MapIO;
+import r48.io.r2k.files.MapIO;
 
 import java.io.FileInputStream;
 import java.io.IOException;

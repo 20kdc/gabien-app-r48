@@ -2,10 +2,15 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-package r48.io.r2k;
+package r48.io.r2k.obj;
 
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.io.r2k.Index;
+import r48.io.r2k.R2kUtil;
+import r48.io.r2k.chunks.BlobR2kProp;
+import r48.io.r2k.chunks.IntegerR2kProp;
+import r48.io.r2k.chunks.StringR2kProp;
 
 import java.util.HashMap;
 
@@ -17,23 +22,23 @@ import java.util.HashMap;
  * Created on 31/05/17.
  */
 public class MapUnit {
-    public IntegerR2kChunk tilesetId = new IntegerR2kChunk(1);
-    public IntegerR2kChunk width = new IntegerR2kChunk(20);
-    public IntegerR2kChunk height = new IntegerR2kChunk(15);
-    public IntegerR2kChunk scrollType = new IntegerR2kChunk(0);
-    public IntegerR2kChunk parallaxFlag = new IntegerR2kChunk(0);
-    public StringR2kChunk parallaxName = new StringR2kChunk("");
-    public IntegerR2kChunk parallaxLoopX = new IntegerR2kChunk(0); // B
-    public IntegerR2kChunk parallaxLoopY = new IntegerR2kChunk(0); // B
-    public IntegerR2kChunk parallaxAutoloopX = new IntegerR2kChunk(0); // B
-    public IntegerR2kChunk parallaxAutoloopY = new IntegerR2kChunk(0); // B
-    public IntegerR2kChunk parallaxSX = new IntegerR2kChunk(0);
-    public IntegerR2kChunk parallaxSY = new IntegerR2kChunk(0);
-    public IntegerR2kChunk topLevel = new IntegerR2kChunk(0);
+    public IntegerR2kProp tilesetId = new IntegerR2kProp(1);
+    public IntegerR2kProp width = new IntegerR2kProp(20);
+    public IntegerR2kProp height = new IntegerR2kProp(15);
+    public IntegerR2kProp scrollType = new IntegerR2kProp(0);
+    public IntegerR2kProp parallaxFlag = new IntegerR2kProp(0);
+    public StringR2kProp parallaxName = new StringR2kProp("");
+    public IntegerR2kProp parallaxLoopX = new IntegerR2kProp(0); // B
+    public IntegerR2kProp parallaxLoopY = new IntegerR2kProp(0); // B
+    public IntegerR2kProp parallaxAutoloopX = new IntegerR2kProp(0); // B
+    public IntegerR2kProp parallaxAutoloopY = new IntegerR2kProp(0); // B
+    public IntegerR2kProp parallaxSX = new IntegerR2kProp(0);
+    public IntegerR2kProp parallaxSY = new IntegerR2kProp(0);
+    public IntegerR2kProp topLevel = new IntegerR2kProp(0);
     public BlobR2kProp layer0 = new BlobR2kProp();
     public BlobR2kProp layer1 = new BlobR2kProp();
     public BlobR2kProp events = new BlobR2kProp();
-    public IntegerR2kChunk magicNumber = new IntegerR2kChunk(0);
+    public IntegerR2kProp magicNumber = new IntegerR2kProp(0);
 
     public final Index[] indices = new Index[] {
             new Index(0x01, tilesetId),
@@ -62,6 +67,7 @@ public class MapUnit {
 
         RubyIO ev = new RubyIO().setHash();
 
+        map.iVars.put("@tileset_id", new RubyIO().setFX(tilesetId.i));
         map.iVars.put("@width", new RubyIO().setFX(width.i));
         map.iVars.put("@height", new RubyIO().setFX(height.i));
         map.iVars.put("@scroll_type", new RubyIO().setFX(scrollType.i));

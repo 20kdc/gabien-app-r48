@@ -2,7 +2,9 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-package r48.io.r2k;
+package r48.io.r2k.chunks;
+
+import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
 
@@ -10,10 +12,10 @@ import java.io.IOException;
  * yay, an integer!
  * Created on 31/05/17.
  */
-public class IntegerR2kChunk implements IR2kProp {
+public class IntegerR2kProp implements IR2kProp {
     public int i;
 
-    public IntegerR2kChunk(int i2) {
+    public IntegerR2kProp(int i2) {
         i = i2;
     }
 

@@ -2,7 +2,9 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-package r48.io.r2k;
+package r48.io.r2k.chunks;
+
+import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
 
@@ -10,11 +12,11 @@ import java.io.IOException;
  * the difficulty is getting this stuff into memory...
  * Created on 31/05/17.
  */
-public class StringR2kChunk implements IR2kProp {
+public class StringR2kProp implements IR2kProp {
 
     public String text;
 
-    public StringR2kChunk(String s) {
+    public StringR2kProp(String s) {
         text = s;
     }
 

@@ -2,9 +2,11 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-package r48.io.r2k;
+package r48.io.r2k.files;
 
 import r48.RubyIO;
+import r48.io.r2k.R2kUtil;
+import r48.io.r2k.obj.MapUnit;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,5 +35,4 @@ public class MapIO {
         R2kUtil.readLcfObj(mu.indices, mu.unknownChunks, fis);
         return mu.asRIO();
     }
-
 }

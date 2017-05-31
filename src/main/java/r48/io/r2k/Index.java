@@ -4,6 +4,8 @@
  */
 package r48.io.r2k;
 
+import r48.io.r2k.chunks.IR2kProp;
+
 /**
  * Created on 31/05/17.
  */
