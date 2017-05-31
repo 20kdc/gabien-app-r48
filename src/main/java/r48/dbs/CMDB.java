@@ -19,6 +19,7 @@ import java.util.LinkedList;
  * Created on 12/30/16.
  */
 public class CMDB {
+    public int digitCount = 3;
     public HashMap<Integer, RPGCommand> knownCommands = new HashMap<Integer, RPGCommand>();
     public LinkedList<Integer> knownCommandOrder = new LinkedList<Integer>();
 
@@ -91,6 +92,10 @@ public class CMDB {
                     localAliasing.put(args[0], AppMain.schemas.getSDBEntry(args[1]));
                 if (c == 'X')
                     rc.specialSchemaName = args[0];
+                if (c == 'C') {
+                    if (args[0].equals("digitCount"))
+                        digitCount = Integer.parseInt(args[1]);
+                }
             }
 
             private ISchemaElement aliasingAwareSG(String s) {
@@ -111,7 +116,7 @@ public class CMDB {
             ext = cmd.formatName(params, params.arrVal);
         }
         String spc = cid + " ";
-        while (spc.length() < 4)
+        while (spc.length() < (digitCount + 1))
             spc = "0" + spc;
         RubyIO indentValue = target.getInstVarBySymbol("@indent");
         if ((indentValue != null) && indent) {

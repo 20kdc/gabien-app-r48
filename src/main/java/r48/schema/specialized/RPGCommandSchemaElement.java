@@ -114,10 +114,14 @@ public class RPGCommandSchemaElement implements ISchemaElement {
                             uiSVL.panels.add(new UILabel("WARNING: Missing E" + i + ".", FontSizes.schemaFieldTextHeight));
                             continue;
                         }
-                        ISchemaElement ise = rc.getParameterSchema(param, i);
-                        height += ise.maxHoldingHeight();
-                        UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, parameterPath.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
-                        uiSVL.panels.add(new UIHHalfsplit(1, 3, new UILabel(rc.getParameterName(i), FontSizes.schemaFieldTextHeight), uie));
+                        String paramName = rc.getParameterName(i);
+                        // Hidden parameters, introduced to deal with the "text" thing brought about by R2k
+                        if (!paramName.equals("_")) {
+                            ISchemaElement ise = rc.getParameterSchema(param, i);
+                            height += ise.maxHoldingHeight();
+                            UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, parameterPath.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
+                            uiSVL.panels.add(new UIHHalfsplit(1, 3, new UILabel(rc.getParameterName(i), FontSizes.schemaFieldTextHeight), uie));
+                        }
                     }
                     uiSVL.setBounds(new Rect(0, 0, 128, height));
                     return uiSVL;

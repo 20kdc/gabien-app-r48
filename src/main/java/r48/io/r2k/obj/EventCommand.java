@@ -37,10 +37,10 @@ public class EventCommand implements IR2kInterpretable {
         RubyIO mt = new RubyIO().setSymlike("RPG::EventCommand", true);
         mt.iVars.put("@code", new RubyIO().setFX(code));
         mt.iVars.put("@indent", new RubyIO().setFX(indent));
-        mt.iVars.put("@text", new RubyIO().setString(text));
-        RubyIO[] params = new RubyIO[parameters.length];
-        for (int i = 0; i < params.length; i++)
-            params[i] = new RubyIO().setFX(parameters[i]);
+        RubyIO[] params = new RubyIO[parameters.length + 1];
+        params[0] = new RubyIO().setString(text);
+        for (int i = 0; i < parameters.length; i++)
+            params[i + 1] = new RubyIO().setFX(parameters[i]);
         RubyIO paramArr = new RubyIO();
         paramArr.type = '[';
         paramArr.arrVal = params;
