@@ -184,6 +184,7 @@ public class AppMain {
                 "Toggle calming sound",
                 "Configure font sizes",
                 "Rebuild UI",
+                "Test Fonts"
         }, new Runnable[] {
                 new Runnable() {
                     @Override
@@ -305,6 +306,22 @@ public class AppMain {
                     @Override
                     public void run() {
                         rebuildInnerUI(rootView, uiTicker);
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        windowMaker.accept(new UITextPrompt("Font Size?", new IConsumer<String>() {
+                            @Override
+                            public void accept(String s) {
+                                int fs = Integer.parseInt(s);
+                                UIScrollVertLayout svl = new UIScrollVertLayout();
+                                for (int i = 0; i < 128; i++)
+                                    svl.panels.add(new UITextBox(fs));
+                                svl.setBounds(new Rect(0, 0, 320, 240));
+                                windowMaker.accept(svl);
+                            }
+                        }));
                     }
                 }
         }, FontSizes.menuTextHeight, false));
