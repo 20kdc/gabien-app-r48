@@ -6,6 +6,7 @@ package r48.io;
 
 import r48.RubyIO;
 import r48.io.r2k.files.MapIO;
+import r48.io.r2k.files.MapTreeIO;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,6 +27,17 @@ public class R2kObjectBackend implements IObjectBackend {
             try {
                 FileInputStream fis = new FileInputStream(root + "Map0004.lmu");
                 RubyIO r = MapIO.readLmu(fis);
+                fis.close();
+                return r;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        if (filename.equals("MapTree")) {
+            try {
+                FileInputStream fis = new FileInputStream(root + "RPG_RT.lmt");
+                RubyIO r = MapTreeIO.readLmt(fis);
                 fis.close();
                 return r;
             } catch (Exception e) {

@@ -32,7 +32,7 @@ public class MapIO {
             throw new IOException("Not an LcfMapUnit");
         // Try to follow the standard...
         MapUnit mu = new MapUnit();
-        R2kUtil.readLcfObj(mu.indices, mu.unknownChunks, fis);
+        mu.importData(fis);
         return mu.asRIO();
     }
 }

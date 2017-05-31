@@ -113,27 +113,6 @@ public class R2kUtil {
 
     // --
 
-    public static void readLcfObj(Index[] t, HashMap<Integer, byte[]> unknown, InputStream src) throws IOException {
-        while (true) {
-            int cid = readLcfVLI(src);
-            if (cid == 0)
-                break;
-            int len = readLcfVLI(src);
-            byte[] data = readLcfBytes(src, len);
-            boolean handled = false;
-            for (int i = 0; i < t.length; i++)
-                if (cid == t[i].index) {
-                    t[i].chunk.importData(data);
-                    handled = true;
-                    break;
-                }
-            if (!handled)
-                unknown.put(cid, data);
-        }
-    }
-
-    // --
-
     public static byte[] readLcfBytes(InputStream src, int l) throws IOException {
         byte[] data = new byte[l];
         int o = src.read(data);
@@ -143,6 +122,7 @@ public class R2kUtil {
     }
 
     // For now, assume SHIFT-JIS on all.
+    // -- VERIFIED! This is definitely the encoding, check ib event names
     public static String decodeLcfString(byte[] data) {
         try {
             return new String(data, "SJIS");
@@ -154,6 +134,8 @@ public class R2kUtil {
     // --
 
     public static void unkToRio(RubyIO map, HashMap<Integer, byte[]> unknownChunks) {
+        if (unknownChunks.isEmpty())
+            return;
         RubyIO hash = new RubyIO();
         hash.setHash();
         for (Map.Entry<Integer, byte[]> e : unknownChunks.entrySet())
