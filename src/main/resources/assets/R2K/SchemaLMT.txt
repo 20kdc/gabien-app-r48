@@ -6,9 +6,13 @@ e mapinfo_musictype 0 Inherit 1 Event 2 Specified
 e mapinfo_backtype 0 Inherit 1 TerrainLDB 2 Specified
 e mapinfo_inheritflag 0 Inherit 1 True 2 False
 
+: RPG::Encounter
+@troop troop_id
+
 : RPG::MapInfo
+C name Class.RPG::MapInfo @name | MapInfo: #A
 @name string
-@parent int
+@parent map_id
 @indent int
  actually an enum
 @type int
@@ -22,10 +26,22 @@ e mapinfo_inheritflag 0 Inherit 1 True 2 False
 @teleport_state mapinfo_inheritflag
 @escape_state mapinfo_inheritflag
 @save_state mapinfo_inheritflag
-@encounters subwindow OPAQUE
+@encounters subwindow array 0 RPG::Encounter
 @area_rect Rect
 
-> RPG::Start OPAQUE
+: RPG::Start
+@player_map map_id
+@player_x int
+@player_y int
+@boat_map map_id
+@boat_x int
+@boat_y int
+@ship_map map_id
+@ship_x int
+@ship_y int
+@airship_map map_id
+@airship_x int
+@airship_y int
 
 : RPG::MapTree
 @map_infos subwindow hash int subwindow RPG::MapInfo

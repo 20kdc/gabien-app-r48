@@ -68,3 +68,6 @@ p type control_switches_type
 D target 1 int 0 switch_id 1 switch_id 2 var_id
 p rangeLast switch_id
 p changeMode control_switches_change_mode
+
+10220: Control Vars
+d Control variables in various ways.

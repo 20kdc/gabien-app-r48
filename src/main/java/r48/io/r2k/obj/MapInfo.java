@@ -35,7 +35,12 @@ public class MapInfo extends R2kObject {
     public IntegerR2kProp teleportState = new IntegerR2kProp(0);
     public IntegerR2kProp escapeState = new IntegerR2kProp(0);
     public IntegerR2kProp saveState = new IntegerR2kProp(0);
-    public BlobR2kProp encounters = new BlobR2kProp();
+    public SparseArrayR2kProp<Encounter> encounters = new SparseArrayR2kProp<Encounter>(new ISupplier<Encounter>() {
+        @Override
+        public Encounter get() {
+            return new Encounter();
+        }
+    });
     public IntegerR2kProp encounterSteps = new IntegerR2kProp(0);
     public InterpretableR2kProp<TRect> areaRect = new InterpretableR2kProp<TRect>(new ISupplier<TRect>() {
         @Override
@@ -84,7 +89,7 @@ public class MapInfo extends R2kObject {
         mt.iVars.put("@teleport_state", new RubyIO().setFX(teleportState.i));
         mt.iVars.put("@escape_state", new RubyIO().setFX(escapeState.i));
         mt.iVars.put("@save_state", new RubyIO().setFX(saveState.i));
-        mt.iVars.put("@encounters", new RubyIO().setUser("Blob", encounters.dat));
+        mt.iVars.put("@encounters", encounters.toRIOArray());
         mt.iVars.put("@area_rect", areaRect.instance.asRIO());
         R2kUtil.unkToRio(mt, unknownChunks);
         return mt;

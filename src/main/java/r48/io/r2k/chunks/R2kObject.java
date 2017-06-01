@@ -19,9 +19,17 @@ import java.util.HashMap;
 public abstract class R2kObject implements IR2kInterpretable {
     public final HashMap<Integer, byte[]> unknownChunks = new HashMap<Integer, byte[]>();
     public abstract Index[] getIndices();
+
+    public boolean terminatable() {
+        return false;
+    }
+
     public void importData(InputStream src) throws IOException {
         Index[] t = getIndices();
         while (true) {
+            if (src.available() == 0)
+                if (terminatable())
+                    break;
             int cid = R2kUtil.readLcfVLI(src);
             if (cid == 0)
                 break;

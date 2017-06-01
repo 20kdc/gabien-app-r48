@@ -5,7 +5,7 @@
 3: R2K
 f RPG_RT.ldb
 e SJIS
-. R2K Japanese Version 1.50/1.51
+. R2K[3?] (Shift-JIS)
  I don't even know if I'll go through with this yet.
  Also note that the information given is because I don't know how much the routines will cover yet,
   so I'm giving the detected engine version of the game used for testing.

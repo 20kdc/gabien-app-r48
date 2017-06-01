@@ -25,7 +25,7 @@ public class XYZImageLoader implements IImageLoader {
     @Override
     public IGrInDriver.IImage getImage(String name, int cR, int cG, int cB) {
         try {
-            FileInputStream fis = new FileInputStream(root + name);
+            FileInputStream fis = new FileInputStream(root + name + ".xyz");
             if (fis.read() != 'X')
                 throw new IOException("Bad magic");
             if (fis.read() != 'Y')

@@ -36,7 +36,7 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
     public void drawEventGraphic(RubyIO target, int ox, int oy, IGrInDriver igd) {
         String cName = target.getInstVarBySymbol("@character_name").decString();
         if (!cName.equals("")) {
-            IGrInDriver.IImage i = imageLoader.getImage("CharSet/" + cName + ".xyz", 0, 0, 0);
+            IGrInDriver.IImage i = imageLoader.getImage("CharSet/" + cName, 0, 0, 0);
             int sx = i.getWidth() / 12;
             int sy = i.getHeight() / 8;
             int idx = ((int) target.getInstVarBySymbol("@character_index").fixnumVal);
@@ -44,7 +44,7 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
             int pat = ((int) target.getInstVarBySymbol("@character_pattern").fixnumVal);
             int px = ((idx % 4) * 3) + pat;
             int py = ((idx / 4) * 4) + dir;
-            igd.blitImage(sx * px, sy * py, sx, sy, (ox + 8) - (sx / 2), (oy - sy) + 8, i);
+            igd.blitImage(sx * px, sy * py, sx, sy, (ox + 8) - (sx / 2), (oy - sy) + 16, i);
         }
     }
 }

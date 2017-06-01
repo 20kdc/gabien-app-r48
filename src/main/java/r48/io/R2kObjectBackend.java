@@ -5,6 +5,7 @@
 package r48.io;
 
 import r48.RubyIO;
+import r48.io.r2k.files.DatabaseIO;
 import r48.io.r2k.files.MapIO;
 import r48.io.r2k.files.MapTreeIO;
 
@@ -38,6 +39,17 @@ public class R2kObjectBackend implements IObjectBackend {
             try {
                 FileInputStream fis = new FileInputStream(root + filename);
                 RubyIO r = MapTreeIO.readLmt(fis);
+                fis.close();
+                return r;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        if (filename.endsWith(".ldb")) {
+            try {
+                FileInputStream fis = new FileInputStream(root + filename);
+                RubyIO r = DatabaseIO.readLdb(fis);
                 fis.close();
                 return r;
             } catch (Exception e) {

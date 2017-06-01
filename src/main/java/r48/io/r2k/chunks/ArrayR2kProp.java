@@ -20,7 +20,8 @@ public class ArrayR2kProp<T extends IR2kInterpretable> implements IR2kProp {
     public final ISupplier<T> cons;
     public ArrayR2kProp(ArraySizeR2kProp<T> other, ISupplier<T> c) {
         cons = c;
-        other.target = this;
+        if (other != null)
+            other.target = this;
     }
     @Override
     public byte[] getData() throws IOException {

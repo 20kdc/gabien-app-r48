@@ -10,10 +10,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.map.events.*;
-import r48.map.imaging.CacheImageLoader;
-import r48.map.imaging.GabienImageLoader;
-import r48.map.imaging.IImageLoader;
-import r48.map.imaging.XYZImageLoader;
+import r48.map.imaging.*;
 import r48.map.mapinfos.UIRMMapInfos;
 import r48.map.tiles.*;
 import r48.ui.UIScrollVertLayout;
@@ -93,6 +90,12 @@ public class StuffRenderer {
         }
         if (versionId.equals("XP"))
             return new StuffRenderer(tsoFromMap(map), "");
+        if (versionId.equals("lcf2000")) {
+            String vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
+            if (map.getInstVarBySymbol("@parallax_flag").type != 'T')
+                vxaPano = "";
+            return new StuffRenderer(tsoFromMap2000(map), vxaPano);
+        }
         return new StuffRenderer(null, null);
     }
 
@@ -108,6 +111,10 @@ public class StuffRenderer {
         return tileset;
     }
 
+    private static RubyIO tsoFromMap2000(RubyIO map) {
+        return AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@tilesets").arrVal[(int) map.getInstVarBySymbol("@tileset_id").fixnumVal];
+    }
+
     public StuffRenderer(RubyIO tso, String vxaPano) {
         if (versionId.equals("Ika")) {
             imageLoader = new GabienImageLoader(AppMain.rootPath + "Pbm/", ".pbm");
@@ -116,8 +123,8 @@ public class StuffRenderer {
             return;
         }
         if (versionId.equals("lcf2000")) {
-            imageLoader = new CacheImageLoader(new XYZImageLoader(AppMain.rootPath));
-            tileRenderer = new LcfTileRenderer(imageLoader);
+            imageLoader = new CacheImageLoader(new XYZOrPNGImageLoader(AppMain.rootPath));
+            tileRenderer = new LcfTileRenderer(imageLoader, tso, vxaPano);
             eventRenderer = new R2kEventGraphicRenderer(imageLoader);
             return;
         }

@@ -298,7 +298,15 @@ public class SDB {
                         e.printStackTrace();
                     }
                 } else if (c == 'D') {
-                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[1], null, args[2].equals("1"), args[3]));
+                    final String[] split = args[1].split("@");
+                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], split[0], new IFunction<RubyIO, RubyIO>() {
+                        @Override
+                        public RubyIO apply(RubyIO rubyIO) {
+                            for (int i = 1; i < split.length; i++)
+                                rubyIO = rubyIO.getInstVarBySymbol("@" + split[i]);
+                            return rubyIO;
+                        }
+                    }, args[2].equals("1"), args[3]));
                 } else if (c == 'd') {
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[1], new IFunction<RubyIO, RubyIO>() {
                         @Override

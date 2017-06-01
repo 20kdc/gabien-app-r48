@@ -14,9 +14,13 @@ C defineIndent
 
 A R2KXPCOM/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
 
+D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
+
 > var_id int
 > switch_id int
 > item_id int
+> map_id internal_mapDictionary
+> troop_id int
 
 i R2K/SchemaScripting.txt
 

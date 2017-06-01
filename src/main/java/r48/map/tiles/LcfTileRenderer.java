@@ -6,6 +6,7 @@ package r48.map.tiles;
 
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
+import r48.RubyIO;
 import r48.map.UIMapView;
 import r48.map.imaging.IImageLoader;
 import r48.ui.UITileGrid;
@@ -15,10 +16,20 @@ import r48.ui.UITileGrid;
  * Created on 31/05/17.
  */
 public class LcfTileRenderer implements ITileRenderer {
-    public final IImageLoader imLoad;
+    public final IGrInDriver.IImage chipset;
+    public final String panorama;
 
-    public LcfTileRenderer(IImageLoader imageLoader) {
-        imLoad = imageLoader;
+    public LcfTileRenderer(IImageLoader imageLoader, RubyIO tso, String vxaPano) {
+        if (vxaPano.equals("")) {
+            panorama = "";
+        } else {
+            panorama = "Panorama/" + vxaPano;
+        }
+        if (tso != null) {
+            chipset = imageLoader.getImage("ChipSet/" + tso.getInstVarBySymbol("@tileset_name").decString(), 0, 0, 0);
+        } else {
+            chipset = null;
+        }
     }
 
     @Override
@@ -35,11 +46,12 @@ public class LcfTileRenderer implements ITileRenderer {
 
     @Override
     public void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets) {
+        if (chipset == null)
+            return;
         // There are 288 "Common Tiles" (non-AT) divided into upper and lower layer tiles.
         // On the CS, they start at X 192.
         // Two pages of 144 each.
         // Everything here makes more sense in decimal.
-        IGrInDriver.IImage chipset = imLoad.getImage("ChipSet/art_m.xyz", 0, 0, 0);
         if ((tidx >= 5000) && (tidx < 5144))
             handleCommonPage(5000, 0, tidx, px, py, igd, chipset, ets);
         if ((tidx >= 10000) && (tidx < 10144))
@@ -76,7 +88,7 @@ public class LcfTileRenderer implements ITileRenderer {
 
     @Override
     public String getPanorama() {
-        return "";
+        return panorama;
     }
 
     @Override
