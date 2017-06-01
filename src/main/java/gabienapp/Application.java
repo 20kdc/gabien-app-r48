@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Created on 1/27/17.
  */
 public class Application {
-
+    public static int globalMS = 20;
     private static IConsumer<Double> appTicker = null;
 
     public static void gabienmain() throws IOException {
@@ -60,6 +60,22 @@ public class Application {
                 return Integer.toString(--uiTicker.createScale);
             }
         });
+
+        UIAdjuster msAdjust = new UIAdjuster(FontSizes.launcherTextHeight, new ISupplier<String>() {
+            @Override
+            public String get() {
+                return Integer.toString(++globalMS);
+            }
+        }, new ISupplier<String>() {
+            @Override
+            public String get() {
+                if (globalMS == 1)
+                    return Integer.toString(globalMS);
+                return Integer.toString(--globalMS);
+            }
+        });
+        msAdjust.accept(Integer.toString(globalMS));
+
         gamepaks.panels.add(new UIHHalfsplit(1, 2, new UITextButton(FontSizes.launcherTextHeight, "Quit", new Runnable() {
             @Override
             public void run() {
@@ -71,7 +87,10 @@ public class Application {
                 uiTicker.accept(new UIFontSizeConfigurator());
             }
         })));
+
         gamepaks.panels.add(new UIHHalfsplit(3, 5, new UILabel("Scale:", FontSizes.launcherTextHeight), scaleAdjust));
+
+        gamepaks.panels.add(new UIHHalfsplit(3, 5, new UILabel("msPerFrame:", FontSizes.launcherTextHeight), msAdjust));
 
         gamepaks.panels.add(new UILabel("Choose Target Engine:", FontSizes.launcherTextHeight));
 
@@ -148,9 +167,9 @@ public class Application {
 
             while (uiTicker.runningWindows() > 0) {
                 double dT = GaBIEn.timeDelta(false);
-                while (dT < 0.02d) {
+                while (dT < (globalMS / 1000d)) {
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(globalMS);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
