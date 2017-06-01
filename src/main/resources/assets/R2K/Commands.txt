@@ -12,6 +12,11 @@ d A placeholder that allows for insertion.
 p _ string
 L
 
+10: >> E.O.B. insert point
+d A placeholder that allows for insertion.
+p _ string
+Lblock
+
 10110: Say$
 d Begins a message to show to the player.
 p text string
@@ -44,7 +49,7 @@ p _ string
 p digits int
 p var var_id
 
-10120: @@Message Options{E:{B=0=opaque|transparent},#C,{D=0=fixed|unfixed},events{E=0= don't} continue}
+10120: @@Message Options{E: {B=0=opaque|transparent},#C,{D=0=fixed|unfixed},events{E=0= don't} continue}
 d Sets if the text box is transparent, where it is, if it will move to avoid hiding the player, and if events can move about (I think).
 p _ string
 p transparent int_boolean
@@ -52,7 +57,7 @@ p position message_options_position
 p positionLocked int_boolean
 p continueEvents int_boolean
 
-10130: @@Change Face{D: to #A:#B, {C=0=left|right}, {D=0=|flipped}}
+10130: @@Change Face{D: to #A:#B, {C=0=left|right} {D=0=|, flipped}}
 d Change the face in the text box to a given face, including some details.
 p faceImage string
 p faceIndex int
@@ -65,9 +70,33 @@ p faceFlipped int_boolean
 d Control switches in various ways. Single alters one switch. Range alters a group of switches. Indirect alters one switch, numbered by a variable.
 p _ string
 p type control_switches_type
-D target 1 int 0 switch_id 1 switch_id 2 var_id
+D target|Sw.|Var 1 int 0 switch_id 1 switch_id 2 var_id
 p rangeLast switch_id
 p changeMode control_switches_change_mode
 
-10220: Control Vars
-d Control variables in various ways.
+10220: Set Variables
+d Modify a variable or range of variables in various ways dependent on a given value.
+X set_variables_parameters
+
+ GAP
+
+12010: Conditional Branch
+d Runs the following code if a condition is true. Otherwise, runs the code at the Else Branch inside, or if one does not exist, goes to the end of the branch.
+X cbranch_parameters
+I1
+
+22010: Else Branch
+d Indicates that if the containing branch was false, the following code should be executed. (Otherwise, the previous code will be executed, and this will not.)
+i-1
+I1
+l
+
+22011: End Branch
+d Indicates the end of a conditional branch.
+i-1
+l
+
+22210: End Loop
+d Indicates the end of a loop.
+i-1
+l

@@ -46,7 +46,7 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
         if (needsEndingBlock) {
             // 0 so that the code won't combust from lacking an array
             RubyIO c = SchemaPath.createDefaultValue(subelems, new RubyIO().setFX(0));
-            c.getInstVarBySymbol("@code").fixnumVal = 0;
+            c.getInstVarBySymbol("@code").fixnumVal = database.listLeaveCmd;
             arr.add(c);
         }
 
@@ -68,7 +68,8 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
                             arr.add(i, c);
                             // About to re-handle the same code.
                             lastWasBlockLeave = true;
-                            lastCode = 0;
+                            // What to do here depends on a few things. They'll be handled in CMDB.
+                            lastCode = database.blockLeaveCmd;
                             modified = true;
                             continue;
                         }

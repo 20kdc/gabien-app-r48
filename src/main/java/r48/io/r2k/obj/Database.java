@@ -39,7 +39,7 @@ public class Database extends R2kObject {
     @Override
     public RubyIO asRIO() {
         RubyIO mt = new RubyIO().setSymlike("RPG::Database", true);
-        mt.iVars.put("@tilesets", tilesets.toRIOArray());
+        mt.iVars.put("@tilesets", tilesets.toRIOHash());
         R2kUtil.unkToRio(mt, unknownChunks);
         return mt;
     }

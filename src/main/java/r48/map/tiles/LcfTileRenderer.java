@@ -52,9 +52,9 @@ public class LcfTileRenderer implements ITileRenderer {
         // On the CS, they start at X 192.
         // Two pages of 144 each.
         // Everything here makes more sense in decimal.
-        if ((tidx >= 5000) && (tidx < 5144))
+        if ((tidx >= 5000) && (tidx < 6000))
             handleCommonPage(5000, 0, tidx, px, py, igd, chipset, ets);
-        if ((tidx >= 10000) && (tidx < 10144))
+        if ((tidx >= 10000) && (tidx < 11000))
             handleCommonPage(10000, 1, tidx, px, py, igd, chipset, ets);
         // This is a possible *50-wide AT Field!!!!!* Well, 12 of them.
         // Terrain ATs are laid out as follows:

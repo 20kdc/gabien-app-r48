@@ -23,7 +23,7 @@ p choices string_array
 p cancellable int_boolean
 I1
 
- See RXP for indentation logic docs.
+ See RXP for indentation logic docs, and the 'K command'.
 
 402: When Choice =$
 p choice int
@@ -39,7 +39,7 @@ K102
 
 404: End Choice
 i-1
-l
+K102
 
  LINE 305
 

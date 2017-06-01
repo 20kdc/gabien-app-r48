@@ -201,6 +201,9 @@ I1
        i1 <code...>
        i1 Leave Block
        i0 End Choice
+ (Later)
+ Er, right, to myself who might have thought up a solution to the conundrum,
+  it got resolved with the introduction of the 'K' command, which acts as 'l' but adds an exception.
 
 402: When Choice =$
 p choice int
@@ -215,7 +218,7 @@ K102
 
 404: End Choice
 i-1
-l
+K102
 
 103: Input Number!
 p varId var_id

@@ -19,8 +19,14 @@ D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
 > var_id int
 > switch_id int
 > item_id int
+> skill_id int
+> state_id int
 > map_id internal_mapDictionary
 > troop_id int
+
+> actor_id int
+
+E character_id EventID 10001 Player 10002 Boat 10003 Ship 10004 Airship 10005 RunningEvent
 
 i R2K/SchemaScripting.txt
 
@@ -47,3 +53,6 @@ i R2K/SchemaLMT.txt
 > File.RPG_RT.lmt RPG::MapTree
 
  -LDB-
+
+i R2K/SchemaLDB.txt
+> File.RPG_RT.ldb RPG::Database

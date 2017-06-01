@@ -21,6 +21,21 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
 
     @Override
     public int determineEventLayer(RubyIO event) {
+        if (event.getInstVarBySymbol("@pages").arrVal.length <= 1)
+            return 0;
+        int ld = (int) event.getInstVarBySymbol("@pages").arrVal[1].getInstVarBySymbol("@layer").fixnumVal;
+        if (ld == 0)
+            return 0;
+        if (ld == 1)
+            return 1;
+        // something else???
+        if (ld == 2)
+            return 2;
+        return 1;
+    }
+
+    @Override
+    public int extraEventLayers() {
         return 1;
     }
 
@@ -40,10 +55,13 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
             int sx = i.getWidth() / 12;
             int sy = i.getHeight() / 8;
             int idx = ((int) target.getInstVarBySymbol("@character_index").fixnumVal);
+            // Direction is apparently in a 0123 format???
             int dir = ((int) target.getInstVarBySymbol("@character_direction").fixnumVal);
             int pat = ((int) target.getInstVarBySymbol("@character_pattern").fixnumVal);
             int px = ((idx % 4) * 3) + pat;
             int py = ((idx / 4) * 4) + dir;
+            // The vertical offset is either 12 or 16?
+            // 16 causes papers to be weirdly offset, 12 causes lift doors to be out of place
             igd.blitImage(sx * px, sy * py, sx, sy, (ox + 8) - (sx / 2), (oy - sy) + 16, i);
         }
     }

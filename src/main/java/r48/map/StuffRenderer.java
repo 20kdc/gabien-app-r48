@@ -112,7 +112,7 @@ public class StuffRenderer {
     }
 
     private static RubyIO tsoFromMap2000(RubyIO map) {
-        return AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@tilesets").arrVal[(int) map.getInstVarBySymbol("@tileset_id").fixnumVal];
+        return AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@tilesets").getHashVal(map.getInstVarBySymbol("@tileset_id"));
     }
 
     public StuffRenderer(RubyIO tso, String vxaPano) {

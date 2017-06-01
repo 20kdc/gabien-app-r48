@@ -26,6 +26,11 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
+    public int extraEventLayers() {
+        return 0;
+    }
+
+    @Override
     public RubyIO extractEventGraphic(RubyIO event) {
         return event;
     }

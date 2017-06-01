@@ -1,0 +1,11 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ (highly incomplete) database schema
+
+: RPG::Tileset
+@tileset_name string
+
+: RPG::Database
+@tilesets subwindow hash int subwindow RPG::Tileset

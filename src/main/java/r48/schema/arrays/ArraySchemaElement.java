@@ -97,6 +97,7 @@ public abstract class ArraySchemaElement implements ISchemaElement {
             }
         };
         runCompleteRelayout.run();
+        uiSVL.setBounds(new Rect(0, 0, 32, maxHoldingHeight()));
         return uiSVL;
     }
 

@@ -2,22 +2,49 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
 
+ -- bits and bobs
+
 e control_switches_type 0 Single 1 Range 2 Indirect
 e control_switches_change_mode 0 On 1 Off 2 Toggle
 
 e message_options_position 0 Top 1 Centre 2 Bottom
-> genericScriptParameter typeChanger{ string " int i }
+
+ ---
+
+i R2K/SchemaScriptingMonolith.txt
+
+ ---
+
+ Defining EventCommandEditor triggers RMTools, DO NOT DO THAT!
+ Now for an explaination.
+ LcfEventCommandEditor is a full schema element which acts as RPG::EventCommand.
+ LcfEventCommandEditor_Most is what the user will see if no command is defined.
+ RPG::EventCommand is the *conveniently completely invisible* schema being used for modifyVal.
+ Which means it can do whatever it likes, including, say, slight misuse of a 1-based indexer.
+ arrayIx1 DOES NOT CARE about element 0, outside of making it nil if it would otherwise be a VM-incompatible value (Actual Java NULL).
+ Next, ]0 text string will reinitialize it and make sure the first is a string.
+ arrayIx1 will ensure the rest are all ints.
+ Thus, it should be impossible to generate unserializable data.
+ ...Meanwhile, LcfEventCommandEditor_Most gets it the other way around, since it's for user display, so text should be at the top.
+
+> genericScriptParameter int
+
+.LcfEventCommandParams
++arrayIx1 genericScriptParameter
+]0 text string
+
+.LcfEventCommandParams_DisplayHelper
+]0 text string
++arrayIx1 genericScriptParameter
 
 : RPG::EventCommand
-@code int= 115
+@code int= 12310
 @indent int
-@parameters arrayAL1 genericScriptParameter
+@parameters LcfEventCommandParams
 
 .LcfEventCommandEditor_Most
 @indent indent
-@parameters arrayAL1 genericScriptParameter
-
- Defining EventCommandEditor triggers RMTools, DO NOT DO THAT!
+@parameters LcfEventCommandParams_DisplayHelper
 
 > EventListEditor subwindow arrayCS R2K/Commands.txt LcfEventCommandEditor
 > LcfEventCommandEditor RPGCS R2K/Commands.txt RPG::EventCommand LcfEventCommandEditor_Most

@@ -119,6 +119,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             }
         }
 
+        drawEventLayer(ox, oy, igd, camTX, camTY, camTR, camTB, -1);
         int[] layerOrder = AppMain.stuffRenderer.tileRenderer.tileLayerDrawOrder();
         for (int li = 0; li < layerOrder.length; li++) {
             int l = layerOrder[li];
@@ -156,6 +157,9 @@ public class UIMapView extends UIElement implements IWindowElement {
             }
             drawEventLayer(ox, oy, igd, camTX, camTY, camTR, camTB, li);
         }
+        int extra = AppMain.stuffRenderer.eventRenderer.extraEventLayers();
+        for (int i = 0; i < extra; i++)
+            drawEventLayer(ox, oy, igd, camTX, camTY, camTR, camTB, layerOrder.length + i);
 
         int layers = callbacks.wantOverlay(minimap);
         for (int l = 0; l < layers; l++) {

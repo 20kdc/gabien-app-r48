@@ -22,10 +22,13 @@ public class CMDB {
     public int digitCount = 3;
     public HashMap<Integer, RPGCommand> knownCommands = new HashMap<Integer, RPGCommand>();
     public LinkedList<Integer> knownCommandOrder = new LinkedList<Integer>();
+    public int listLeaveCmd = 0;
+    public int blockLeaveCmd = 0; // This is 10 on R2k, but that is controlled via Lblock
 
     public CMDB(BufferedReader br) throws IOException {
         new DBLoader(br, new IDatabase() {
             RPGCommand rc;
+            int workingCmdId = 0;
             HashMap<String, ISchemaElement> localAliasing = new HashMap<String, ISchemaElement>();
 
             @Override
@@ -34,6 +37,7 @@ public class CMDB {
                 rc.name = objName;
                 knownCommands.put(objId, rc);
                 knownCommandOrder.add(objId);
+                workingCmdId = objId;
             }
 
             @Override
@@ -86,8 +90,17 @@ public class CMDB {
                 }
                 if (c == 'l')
                     rc.needsBlockLeavePre = true;
-                if (c == 'L')
+                if (c == 'L') {
                     rc.typeBlockLeave = true;
+                    if (args[0].equals("block")) {
+                        // block context only
+                        blockLeaveCmd = workingCmdId;
+                    } else {
+                        // default context: all
+                        listLeaveCmd = workingCmdId;
+                        blockLeaveCmd = workingCmdId;
+                    }
+                }
                 if (c == '>')
                     localAliasing.put(args[0], AppMain.schemas.getSDBEntry(args[1]));
                 if (c == 'X')

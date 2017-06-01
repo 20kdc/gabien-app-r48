@@ -33,7 +33,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
 
     private HashMap<String, IGrInDriver.IImage> additiveBlending = new HashMap<String, IGrInDriver.IImage>();
 
-    private int lookupDirection(int dir) {
+    public static int lookupDirection(int dir) {
         if (dir == 2)
             return 0;
         if (dir == 4)
@@ -42,7 +42,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
             return 2;
         if (dir == 8)
             return 3;
-        return -1;
+        return 0;
     }
 
     @Override
@@ -57,6 +57,11 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         // For now I'm assuming a glitch in R.Q.U for lack of any better ideas.
         // (Also the fact that O.S. "258: Memory" doesn't show up right compared to in-game. Odds are against us.)
         return 2;
+    }
+
+    @Override
+    public int extraEventLayers() {
+        return 0;
     }
 
     @Override
