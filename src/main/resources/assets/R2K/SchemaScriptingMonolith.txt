@@ -125,7 +125,7 @@ e cbranch_actorprop_e 0 InParty 1 Name= 2 Level>= 3 HP>= 4 KnowsSkill 5 Equipped
 .cbranch_timer1
 +cbranch_base
 ]3 comparison cbranch_gele
-]2 valueFrames int
+]2 valueSeconds int
 
 .cbranch_goldcomp
 +cbranch_base
@@ -177,7 +177,7 @@ e cbranch_actorprop_e 0 InParty 1 Name= 2 Level>= 3 HP>= 4 KnowsSkill 5 Equipped
 .cbranch_timer2
 +cbranch_base
 ]3 comparison cbranch_gele
-]2 valueFrames int
+]2 valueSeconds int
 
 .cbranch_cherry
 +cbranch_base

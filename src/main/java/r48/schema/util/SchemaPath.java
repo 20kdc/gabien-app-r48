@@ -7,7 +7,7 @@ package r48.schema.util;
 
 import r48.AppMain;
 import r48.RubyIO;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 
 import java.util.LinkedList;
 
@@ -28,7 +28,7 @@ public class SchemaPath {
     public SchemaPath parent, lastArray;
 
     // If editor is null, targetElement must be null, and vice versa.
-    public ISchemaElement editor;
+    public SchemaElement editor;
     public ISchemaHost host;
     public RubyIO targetElement;
     // At the root object, this is guaranteed to be the object itself.
@@ -52,7 +52,7 @@ public class SchemaPath {
     }
 
     // The basic constructor.
-    public SchemaPath(ISchemaElement heldElement, RubyIO target, ISchemaHost launcher) {
+    public SchemaPath(SchemaElement heldElement, RubyIO target, ISchemaHost launcher) {
         lastArrayIndex = target;
         hrIndex = AppMain.objectDB.getIdByObject(target);
         if (hrIndex == null)
@@ -70,7 +70,7 @@ public class SchemaPath {
             hrIndex = "AnonObject";
     }
 
-    public static RubyIO createDefaultValue(ISchemaElement ise, RubyIO arrayIndex) {
+    public static RubyIO createDefaultValue(SchemaElement ise, RubyIO arrayIndex) {
         RubyIO rio = new RubyIO();
         ise.modifyVal(rio, new SchemaPath(rio, arrayIndex), true);
         return rio;
@@ -112,6 +112,18 @@ public class SchemaPath {
         return root;
     }
 
+    public SchemaPath findHighestSubwatcher() {
+        SchemaPath mod = this;
+        SchemaPath root = this;
+        while (root.parent != null) {
+            root = root.parent;
+            if (root.editor != null)
+                if (root.editor.monitorsSubelements())
+                    mod = root;
+        }
+        return mod;
+    }
+
     // Cheat used to trace 'back' properly.
     // Used by Enum too, again to trace 'back'.
     public SchemaPath findBack() {
@@ -137,7 +149,7 @@ public class SchemaPath {
 
     // -- Display Stuff (used in buildHoldingEditor) --
 
-    public SchemaPath newWindow(ISchemaElement heldElement, RubyIO target, ISchemaHost launcher) {
+    public SchemaPath newWindow(SchemaElement heldElement, RubyIO target, ISchemaHost launcher) {
         SchemaPath sp = new SchemaPath();
         sp.parent = this;
         sp.lastArrayIndex = lastArrayIndex;
@@ -160,7 +172,7 @@ public class SchemaPath {
     }
 
     // Always used at the beginning of array/hash to make absolutely sure there is an object arrayHashIndex can latch onto.
-    public SchemaPath arrayEntry(RubyIO target, ISchemaElement monitor) {
+    public SchemaPath arrayEntry(RubyIO target, SchemaElement monitor) {
         SchemaPath sp = new SchemaPath();
         sp.parent = this;
         sp.editor = monitor;
@@ -186,8 +198,13 @@ public class SchemaPath {
         // Could cause a lagspike, but this is *after* modification anyway,
         //  and worth it for the consistency benefits.
         // Not having a broken game > lag.
-        if (!modifyVal)
-            if (p.editor != null)
-                p.editor.modifyVal(p.targetElement, p, false);
+        // --Later-- HAHA NO I WAS WRONG THIS IS LAGGY.
+        // Unfortunately it's still laggy no matter what I do.
+        // I suspect this is related to whatever is making IDEA LAG SO FLIPPING MUCH at present.
+        if (!modifyVal) {
+            SchemaPath sw = findHighestSubwatcher();
+            if (sw.editor != null)
+                sw.editor.modifyVal(sw.targetElement, sw, false);
+        }
     }
 }

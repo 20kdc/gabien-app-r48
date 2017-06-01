@@ -17,8 +17,8 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 12/29/16.
  */
-public class SubwindowSchemaElement implements ISchemaElement {
-    public ISchemaElement heldElement;
+public class SubwindowSchemaElement extends SchemaElement {
+    public SchemaElement heldElement;
     public IFunction<RubyIO, String> nameGetter = new IFunction<RubyIO, String>() {
         @Override
         public String apply(RubyIO rubyIO) {
@@ -26,12 +26,12 @@ public class SubwindowSchemaElement implements ISchemaElement {
         }
     };
 
-    public SubwindowSchemaElement(ISchemaElement encap) {
+    public SubwindowSchemaElement(SchemaElement encap) {
         heldElement = encap;
 
     }
 
-    public SubwindowSchemaElement(ISchemaElement encap, IFunction<RubyIO, String> naming) {
+    public SubwindowSchemaElement(SchemaElement encap, IFunction<RubyIO, String> naming) {
         heldElement = encap;
         nameGetter = naming;
     }

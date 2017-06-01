@@ -9,7 +9,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.specialized.rmanim.RMAnimRootPanel;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -19,7 +19,7 @@ import r48.schema.util.SchemaPath;
  * which calls back to this for edit notifications.
  * Created on 2/17/17.
  */
-public class RMAnimSchemaElement implements ISchemaElement {
+public class RMAnimSchemaElement extends SchemaElement {
     private String a, b;
     private int framerate;
 

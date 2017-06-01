@@ -11,7 +11,6 @@ import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.DictionaryUpdaterRunnable;
 import r48.RubyIO;
-import r48.map.mapinfos.UIRMMapInfos;
 import r48.map.StuffRenderer;
 import r48.schema.*;
 import r48.schema.arrays.OneIndexedArraySchemaElement;
@@ -42,8 +41,8 @@ public class SDB {
     // I have no idea how this was managed.
 
     public static boolean allowControlOfEventCommandIndent = false;
-    private HashMap<String, ISchemaElement> schemaDatabase = new HashMap<String, ISchemaElement>();
-    protected HashMap<String, ISchemaElement> schemaTrueDatabase = new HashMap<String, ISchemaElement>();
+    private HashMap<String, SchemaElement> schemaDatabase = new HashMap<String, SchemaElement>();
+    protected HashMap<String, SchemaElement> schemaTrueDatabase = new HashMap<String, SchemaElement>();
     private LinkedList<DictionaryUpdaterRunnable> dictionaryUpdaterRunnables = new LinkedList<DictionaryUpdaterRunnable>();
     private LinkedList<String> remainingExpected = new LinkedList<String>();
     private HashMap<String, CMDB> cmdbs = new HashMap<String, CMDB>();
@@ -83,24 +82,24 @@ public class SDB {
             AggregateSchemaElement workingObj;
 
             HashMap<Integer, String> commandBufferNames = new HashMap<Integer, String>();
-            HashMap<Integer, ISchemaElement> commandBufferSchemas = new HashMap<Integer, ISchemaElement>();
+            HashMap<Integer, SchemaElement> commandBufferSchemas = new HashMap<Integer, SchemaElement>();
 
             @Override
             public void newObj(int objId, String objName) {
                 commandBufferNames.put(objId, objName);
-                workingObj = new AggregateSchemaElement(new ISchemaElement[] {});
+                workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                 commandBufferSchemas.put(objId, workingObj);
                 //System.out.println("Array definition when inappropriate: " + objName);
             }
 
-            public ISchemaElement handleChain(final String[] args, final int start) {
-                return new ISupplier<ISchemaElement>() {
+            public SchemaElement handleChain(final String[] args, final int start) {
+                return new ISupplier<SchemaElement>() {
                     // This function is recursive but needs state to be kept around after exit.
                     // Kind of a pain, *unless* you have a surrounding instance.
                     public int point = start;
 
                     @Override
-                    public ISchemaElement get() {
+                    public SchemaElement get() {
                         final String text = args[point++];
                         if (text.equals("roint=")) {
                             int n = Integer.parseInt(args[point++]);
@@ -133,9 +132,9 @@ public class SDB {
                             return new OneIndexedArraySchemaElement(get(), 0);
                         if (text.equals("arrayDAM")) {
                             int disambiguatorIndex = Integer.parseInt(args[point++]);
-                            ISchemaElement disambiguatorType = get();
-                            ISchemaElement backup = get();
-                            HashMap<Integer, ISchemaElement> disambiguations = new HashMap<Integer, ISchemaElement>();
+                            SchemaElement disambiguatorType = get();
+                            SchemaElement backup = get();
+                            HashMap<Integer, SchemaElement> disambiguations = new HashMap<Integer, SchemaElement>();
                             while (point < args.length) {
                                 int ind = Integer.parseInt(args[point++]);
                                 disambiguations.put(ind, get());
@@ -146,13 +145,13 @@ public class SDB {
                             // time to flush it!
                             String disambiguationIVar = args[point++];
                             setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, "Code.Int."));
-                            HashMap<Integer, ISchemaElement> baseSE = commandBufferSchemas;
+                            HashMap<Integer, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<Integer, String>();
-                            commandBufferSchemas = new HashMap<Integer, ISchemaElement>();
+                            commandBufferSchemas = new HashMap<Integer, SchemaElement>();
                             return new GenericDisambiguationSchemaElement(disambiguationIVar, baseSE);
                         }
                         if (text.equals("hash")) {
-                            ISchemaElement k = get();
+                            SchemaElement k = get();
                             return new HashSchemaElement(k, get());
                         }
                         if (text.equals("subwindow"))
@@ -160,8 +159,8 @@ public class SDB {
 
                         if (text.equals("{")) {
                             // Aggregate
-                            AggregateSchemaElement subag = new AggregateSchemaElement(new ISchemaElement[] {});
-                            ISchemaElement ise = get();
+                            AggregateSchemaElement subag = new AggregateSchemaElement(new SchemaElement[] {});
+                            SchemaElement ise = get();
                             while (ise != null) {
                                 subag.aggregate.add(ise);
                                 ise = get();
@@ -172,16 +171,16 @@ public class SDB {
                         if (text.equals("typeChanger{")) {
                             // Type Changer
                             LinkedList<String> strs = new LinkedList<String>();
-                            LinkedList<ISchemaElement> scms = new LinkedList<ISchemaElement>();
+                            LinkedList<SchemaElement> scms = new LinkedList<SchemaElement>();
                             while (true) {
-                                ISchemaElement a = get();
+                                SchemaElement a = get();
                                 if (a == null)
                                     break;
                                 String b = args[point++];
                                 strs.add(b);
                                 scms.add(a);
                             }
-                            TypeChangerSchemaElement subag = new TypeChangerSchemaElement(strs.toArray(new String[0]), scms.toArray(new ISchemaElement[0]));
+                            TypeChangerSchemaElement subag = new TypeChangerSchemaElement(strs.toArray(new String[0]), scms.toArray(new SchemaElement[0]));
                             return subag;
                         }
 
@@ -195,7 +194,7 @@ public class SDB {
                         // MS means "never control indent"
                         if (text.equals("RPGCS")) {
                             final CMDB database = getCMDB(args[point++]);
-                            ISchemaElement a = get();
+                            SchemaElement a = get();
                             return new SubwindowSchemaElement(new RPGCommandSchemaElement(a, get(), database, allowControlOfEventCommandIndent), new IFunction<RubyIO, String>() {
                                 @Override
                                 public String apply(RubyIO rubyIO) {
@@ -205,7 +204,7 @@ public class SDB {
                         }
                         if (text.equals("RPGMS")) {
                             final CMDB database = getCMDB(args[point++]);
-                            ISchemaElement a = get();
+                            SchemaElement a = get();
                             return new SubwindowSchemaElement(new RPGCommandSchemaElement(a, get(), database, false), new IFunction<RubyIO, String>() {
                                 @Override
                                 public String apply(RubyIO rubyIO) {
@@ -239,7 +238,7 @@ public class SDB {
                             return new CTNativeSchemaElement(args[point++]);
                         if (text.equals("arrayCS")) {
                             String a = args[point++];
-                            ISchemaElement ise = get();
+                            SchemaElement ise = get();
                             return new EventCommandArraySchemaElement(ise, getCMDB(a));
                         }
                         // -- If all else fails, it's an ID to be looked up. --
@@ -254,10 +253,10 @@ public class SDB {
                     if (!schemaDatabase.containsKey(args[0]))
                         throw new RuntimeException("Bad Schema Database: 'a' used to expect item " + args[0] + " that didn't exist.");
                 } else if (c == ':') {
-                    workingObj = new AggregateSchemaElement(new ISchemaElement[] {});
+                    workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                     setSDBEntry(args[0], new ObjectClassSchemaElement(args[0], workingObj, 'o'));
                 } else if (c == '.') {
-                    workingObj = new AggregateSchemaElement(new ISchemaElement[] {});
+                    workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                     setSDBEntry(args[0], workingObj);
                 } else if (c == '@') {
                     workingObj.aggregate.add(new IVarSchemaElement("@" + args[0], handleChain(args, 1), false));
@@ -355,7 +354,7 @@ public class SDB {
                     if (args[0].equals("versionId"))
                         StuffRenderer.versionId = args[1];
                     if (args[0].equals("defaultCB")) {
-                        workingObj = new AggregateSchemaElement(new ISchemaElement[] {});
+                        workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                         commandBufferSchemas.put(-1, workingObj);
                     }
                     if (args[0].equals("toWinAGameThatHasNoEnd")) {
@@ -443,7 +442,7 @@ public class SDB {
         return schemaDatabase.containsKey(text);
     }
 
-    public void setSDBEntry(final String text, ISchemaElement ise) {
+    public void setSDBEntry(final String text, SchemaElement ise) {
         remainingExpected.remove(text);
         // If a placeholder exists, keep using that
         if (!schemaDatabase.containsKey(text))
@@ -451,12 +450,12 @@ public class SDB {
         schemaTrueDatabase.put(text, ise);
     }
 
-    public ISchemaElement getSDBEntry(final String text) {
+    public SchemaElement getSDBEntry(final String text) {
         if (schemaDatabase.containsKey(text))
             return schemaDatabase.get(text);
         // Notably, the proxy is put in the database so the expectation is only added once.
         remainingExpected.add(text);
-        ISchemaElement ise = new ProxySchemaElement(text);
+        SchemaElement ise = new ProxySchemaElement(text);
         schemaDatabase.put(text, ise);
         return ise;
     }

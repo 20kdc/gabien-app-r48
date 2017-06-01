@@ -8,7 +8,7 @@ package r48.dbs;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.RubyIO;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -17,9 +17,9 @@ import r48.schema.util.SchemaPath;
  * Has to be a separate class so RPGCommand stuff can 'see through it'.
  * Created on 1/3/17.
  */
-public class ProxySchemaElement implements ISchemaElement {
+public class ProxySchemaElement extends SchemaElement {
     private final String tx;
-    ISchemaElement cache = null;
+    SchemaElement cache = null;
 
     public ProxySchemaElement(String text) {
         tx = text;
@@ -30,10 +30,10 @@ public class ProxySchemaElement implements ISchemaElement {
         return getEntry().buildHoldingEditor(target, launcher, path);
     }
 
-    public ISchemaElement getEntry() {
+    public SchemaElement getEntry() {
         if (cache != null)
             return cache;
-        ISchemaElement r = AppMain.schemas.schemaTrueDatabase.get(tx);
+        SchemaElement r = AppMain.schemas.schemaTrueDatabase.get(tx);
         if (r == null)
             throw new RuntimeException("Schema used " + tx + ", but it didn't exist when invoked.");
         cache = r;

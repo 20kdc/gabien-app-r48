@@ -21,12 +21,12 @@ import java.util.LinkedList;
  * and will report warnings to console if IVars are not dealt with.
  * Created on 12/29/16.
  */
-public class ObjectClassSchemaElement implements ISchemaElement {
-    public ISchemaElement backing;
+public class ObjectClassSchemaElement extends SchemaElement {
+    public SchemaElement backing;
     public String symbol;
     public char type;
 
-    public ObjectClassSchemaElement(String clsSym, ISchemaElement back, char typ) {
+    public ObjectClassSchemaElement(String clsSym, SchemaElement back, char typ) {
         symbol = clsSym;
         backing = back;
         type = typ;
@@ -43,7 +43,7 @@ public class ObjectClassSchemaElement implements ISchemaElement {
             AggregateSchemaElement ace = (AggregateSchemaElement) backing;
             LinkedList<String> iVars = new LinkedList<String>();
             boolean enableIVarCheck = false;
-            for (ISchemaElement ise : ace.aggregate) {
+            for (SchemaElement ise : ace.aggregate) {
 
                 // Deal with all likely proxy sandwiches
                 while (ise instanceof ProxySchemaElement)
@@ -54,9 +54,9 @@ public class ObjectClassSchemaElement implements ISchemaElement {
                     ise = ((ProxySchemaElement) ise).getEntry();
 
                 if (ise instanceof GenericDisambiguationSchemaElement) {
-                    ISchemaElement sub = ((GenericDisambiguationSchemaElement) ise).getDisambiguation(target);
+                    SchemaElement sub = ((GenericDisambiguationSchemaElement) ise).getDisambiguation(target);
                     if (sub instanceof AggregateSchemaElement) {
-                        for (ISchemaElement ise2 : ((AggregateSchemaElement) sub).aggregate) {
+                        for (SchemaElement ise2 : ((AggregateSchemaElement) sub).aggregate) {
                             while (ise2 instanceof ProxySchemaElement)
                                 ise2 = ((ProxySchemaElement) ise2).getEntry();
                             while (ise2 instanceof SubwindowSchemaElement)

@@ -33,6 +33,7 @@
 @y int
 @pages subwindow arrayIx1 subwindow RPG::EventPage
 
+> mapEvents hash int subwindow RPG::Event
 : RPG::Map
 @tileset_id int
 @width roint= 20
@@ -47,7 +48,7 @@
 @parallax_autoloop_y boolean
 @parallax_sx int
 @parallax_sy int
-@events subwindow hash int subwindow RPG::Event
+@events subwindow mapEvents
 @top_level boolean
 @magic_number int
 +table @data @width @height 20 15 2

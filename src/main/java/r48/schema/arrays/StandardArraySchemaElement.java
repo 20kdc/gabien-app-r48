@@ -5,16 +5,16 @@
 package r48.schema.arrays;
 
 import r48.RubyIO;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
 /**
  * Created on 2/16/17.
  */
 public class StandardArraySchemaElement extends ArraySchemaElement {
-    public ISchemaElement subelems;
+    public SchemaElement subelems;
 
-    public StandardArraySchemaElement(ISchemaElement s, int fixedSize, boolean al1) {
+    public StandardArraySchemaElement(SchemaElement s, int fixedSize, boolean al1) {
         super(fixedSize, al1);
         subelems = s;
     }
@@ -25,7 +25,7 @@ public class StandardArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    protected ISchemaElement getElementSchema(int j) {
+    protected SchemaElement getElementSchema(int j) {
         return subelems;
     }
 

@@ -8,7 +8,7 @@ package r48.dbs;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.io.IObjectBackend;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class ObjectDB {
                 System.err.println("Could not find backup schema for object " + id);
                 return null;
             }
-            ISchemaElement ise = AppMain.schemas.getSDBEntry(backupSchema);
+            SchemaElement ise = AppMain.schemas.getSDBEntry(backupSchema);
             if (backupSchema != null) {
                 if (ise != null) {
                     try {

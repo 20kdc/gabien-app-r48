@@ -19,8 +19,9 @@ e collisionType 0 Null 1 Block 2 Enemy 3 Event
 @status int
 @collisionType collisionType
 
+> mapEvents hash int subwindow RPG::Event
 : RPG::Map
-@events subwindow hash int subwindow RPG::Event
+@events subwindow mapEvents
 +table @data . . 160 120 1
 
 > File.Map RPG::Map

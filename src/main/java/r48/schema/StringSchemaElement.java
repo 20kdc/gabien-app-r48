@@ -16,7 +16,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 12/29/16.
  */
-public class StringSchemaElement implements ISchemaElement {
+public class StringSchemaElement extends SchemaElement {
     public String defaultStr = "";
     public final char type;
 

@@ -72,13 +72,15 @@ e event_pritype 0 floor 1 character 2 flying
 @weight int
 @region_set subwindow array 0 int
 
+ Expected by internals apparently, but didn't get added. Oops.
+> mapEvents hash int= 1 subwindow RPG::Event
 : RPG::Map
 @autoplay_bgm boolean
 @bgm RPG::BGM
 @autoplay_bgs boolean
 @bgs RPG::BGS
 +table @data @width @height 17 13 4
-@events subwindow hash int= 1 subwindow RPG::Event
+@events subwindow mapEvents
 @note string
 @width roint= 17
 @height roint= 13

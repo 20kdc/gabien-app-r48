@@ -15,17 +15,17 @@ import java.util.HashMap;
  * Hopefully It's Generic Enough This Time (tm)
  * Created on 2/16/17.
  */
-public class GenericDisambiguationSchemaElement implements ISchemaElement {
+public class GenericDisambiguationSchemaElement extends SchemaElement {
     public String iVar;
-    public HashMap<Integer, ISchemaElement> mapping;
+    public HashMap<Integer, SchemaElement> mapping;
 
-    public GenericDisambiguationSchemaElement(String disambiguationIVar, HashMap<Integer, ISchemaElement> baseSE) {
+    public GenericDisambiguationSchemaElement(String disambiguationIVar, HashMap<Integer, SchemaElement> baseSE) {
         iVar = disambiguationIVar;
         mapping = baseSE;
     }
 
-    public ISchemaElement getDisambiguation(RubyIO target) {
-        ISchemaElement ise = mapping.get((int) (target.getInstVarBySymbol(iVar).fixnumVal));
+    public SchemaElement getDisambiguation(RubyIO target) {
+        SchemaElement ise = mapping.get((int) (target.getInstVarBySymbol(iVar).fixnumVal));
         if (ise == null)
             return mapping.get(-1);
         return ise;
@@ -39,7 +39,7 @@ public class GenericDisambiguationSchemaElement implements ISchemaElement {
     @Override
     public int maxHoldingHeight() {
         int r = 0;
-        for (ISchemaElement ise : mapping.values())
+        for (SchemaElement ise : mapping.values())
             r = Math.max(r, ise.maxHoldingHeight());
         return r;
     }

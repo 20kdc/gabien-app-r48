@@ -12,7 +12,7 @@ import gabien.ui.UINumberBox;
 import r48.FontSizes;
 import r48.RubyCT;
 import r48.RubyIO;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -23,7 +23,7 @@ import r48.ui.UIScrollVertLayout;
  * Colours, tones, same thing
  * Created on 1/3/17.
  */
-public class CTNativeSchemaElement implements ISchemaElement {
+public class CTNativeSchemaElement extends SchemaElement {
     public final String cls;
 
     public CTNativeSchemaElement(String c) {

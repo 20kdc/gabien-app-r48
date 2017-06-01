@@ -10,7 +10,7 @@ import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.IntegerSchemaElement;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
 import r48.schema.util.ISchemaHost;
@@ -28,8 +28,11 @@ import r48.ui.UIScrollVertLayout;
  * Worked on at 01/03/16, comment rewritten very, very early technically the next day,
  * after AutoTileRules was added
  * NEWER: Abstractified at midnight. That is, 0:00 February 18th 2017, where I count 8 hours after that as being the same day.
+ * ---LATER STILL---
+ * Checking for the monitorsSubelements requirement...
+ * no, the resize does the correct corrections, I believe.
  */
-public class RubyTableSchemaElement<TileHelper> implements ISchemaElement {
+public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     public final int defW;
     public final int defH;
     public final int planes;
@@ -97,7 +100,7 @@ public class RubyTableSchemaElement<TileHelper> implements ISchemaElement {
         final UINumberBox hNB = new UINumberBox(FontSizes.tableSizeTextHeight);
         hNB.number = targ.height;
         UIElement uie = new UIHHalfsplit(1, 2, wNB, hNB);
-        uie.setBounds(new Rect(0, 0, 128, 9));
+        uie.setBounds(new Rect(0, 0, 128, uie.getBounds().height));
         uiSVL.panels.add(uie);
         uiSVL.panels.add(new UITextButton(FontSizes.tableResizeTextHeight, "Resize", new Runnable() {
             @Override

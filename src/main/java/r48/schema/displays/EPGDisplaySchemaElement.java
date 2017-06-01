@@ -9,7 +9,7 @@ import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import r48.RubyIO;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -17,7 +17,7 @@ import r48.schema.util.SchemaPath;
  * Solely for the express purpose of Event::Page::Graphic schemas
  * Created on 12/29/16.
  */
-public class EPGDisplaySchemaElement implements ISchemaElement {
+public class EPGDisplaySchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, SchemaPath path) {
         UIElement display = new UIElement() {

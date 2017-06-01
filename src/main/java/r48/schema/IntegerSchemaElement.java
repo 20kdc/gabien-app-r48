@@ -16,7 +16,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 12/29/16.
  */
-public class IntegerSchemaElement implements ISchemaElement {
+public class IntegerSchemaElement extends SchemaElement {
     public int defaultInt;
 
     public IntegerSchemaElement(int i) {

@@ -78,6 +78,10 @@ p changeMode control_switches_change_mode
 d Modify a variable or range of variables in various ways dependent on a given value.
 X set_variables_parameters
 
+10230: Timer Operation
+d Alters the settings on either timer ID 0 (if unspecified) or a given timer. Can set the timer, change it's visibility + if it counts in bettle, or stop it.
+X timer_operation_parameters
+
  GAP
 
 12010: Conditional Branch

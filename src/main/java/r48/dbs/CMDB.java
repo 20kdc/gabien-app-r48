@@ -8,7 +8,7 @@ package r48.dbs;
 import gabien.ui.IFunction;
 import r48.AppMain;
 import r48.RubyIO;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class CMDB {
         new DBLoader(br, new IDatabase() {
             RPGCommand rc;
             int workingCmdId = 0;
-            HashMap<String, ISchemaElement> localAliasing = new HashMap<String, ISchemaElement>();
+            HashMap<String, SchemaElement> localAliasing = new HashMap<String, SchemaElement>();
 
             @Override
             public void newObj(int objId, String objName) {
@@ -45,10 +45,10 @@ public class CMDB {
                 if (c == 'p') {
                     rc.paramName.add(args[0].trim());
                     String s = args[1].trim();
-                    final ISchemaElement se = aliasingAwareSG(s);
-                    rc.paramType.add(new IFunction<RubyIO, ISchemaElement>() {
+                    final SchemaElement se = aliasingAwareSG(s);
+                    rc.paramType.add(new IFunction<RubyIO, SchemaElement>() {
                         @Override
-                        public ISchemaElement apply(RubyIO rubyIO) {
+                        public SchemaElement apply(RubyIO rubyIO) {
                             return se;
                         }
                     });
@@ -56,16 +56,16 @@ public class CMDB {
                 if (c == 'D') {
                     rc.paramName.add(args[0].trim());
                     final int arrayDI = Integer.parseInt(args[1]);
-                    final ISchemaElement defaultSE = aliasingAwareSG(args[2]);
-                    final HashMap<Integer, ISchemaElement> h = new HashMap<Integer, ISchemaElement>();
+                    final SchemaElement defaultSE = aliasingAwareSG(args[2]);
+                    final HashMap<Integer, SchemaElement> h = new HashMap<Integer, SchemaElement>();
                     for (int i = 3; i < args.length; i += 2) {
                         int ind = Integer.parseInt(args[i]);
-                        ISchemaElement se = aliasingAwareSG(args[i + 1]);
+                        SchemaElement se = aliasingAwareSG(args[i + 1]);
                         h.put(ind, se);
                     }
-                    rc.paramType.add(new IFunction<RubyIO, ISchemaElement>() {
+                    rc.paramType.add(new IFunction<RubyIO, SchemaElement>() {
                         @Override
-                        public ISchemaElement apply(RubyIO rubyIO) {
+                        public SchemaElement apply(RubyIO rubyIO) {
                             if (rubyIO == null)
                                 return defaultSE;
                             if (rubyIO.arrVal == null)
@@ -73,7 +73,7 @@ public class CMDB {
                             if (rubyIO.arrVal.length <= arrayDI)
                                 return defaultSE;
                             int p = (int) rubyIO.arrVal[arrayDI].fixnumVal;
-                            ISchemaElement ise = h.get(p);
+                            SchemaElement ise = h.get(p);
                             if (ise != null)
                                 return ise;
                             return defaultSE;
@@ -111,8 +111,8 @@ public class CMDB {
                 }
             }
 
-            private ISchemaElement aliasingAwareSG(String s) {
-                ISchemaElement se = localAliasing.get(s);
+            private SchemaElement aliasingAwareSG(String s) {
+                SchemaElement se = localAliasing.get(s);
                 if (se == null)
                     se = AppMain.schemas.getSDBEntry(s);
                 return se;

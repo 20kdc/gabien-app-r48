@@ -14,10 +14,9 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.map.StuffRenderer;
-import r48.map.UIMapView;
 import r48.map.mapinfos.UIRMMapInfos;
 import r48.maptools.UIMTEventPicker;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.UITextPrompt;
 
@@ -32,7 +31,7 @@ import java.util.Map;
  */
 public class RMToolsToolset implements IToolset {
     final CMDB commandsEvent;
-    final ISchemaElement commandEvent;
+    final SchemaElement commandEvent;
 
     public RMToolsToolset() {
         commandsEvent = AppMain.schemas.getCMDB("R" + StuffRenderer.versionId + "/Commands.txt");

@@ -19,15 +19,15 @@ import java.util.HashMap;
  * Note that the element MUST be an enum - enums trigger a UI rebuild when they're set.
  * Created on 12/31/16.
  */
-public class ArrayDisambiguatorSchemaElement implements ISchemaElement {
+public class ArrayDisambiguatorSchemaElement extends SchemaElement {
     // If -1, then this is just a container for an array structure
     // #hastilyAddedFeatures
     public int dIndex;
-    public ISchemaElement dType;
-    public ISchemaElement defaultType;
-    public HashMap<Integer, ISchemaElement> dTable;
+    public SchemaElement dType;
+    public SchemaElement defaultType;
+    public HashMap<Integer, SchemaElement> dTable;
 
-    public ArrayDisambiguatorSchemaElement(int disambiguatorIndex, ISchemaElement disambiguatorType, ISchemaElement backup, HashMap<Integer, ISchemaElement> disambiguations) {
+    public ArrayDisambiguatorSchemaElement(int disambiguatorIndex, SchemaElement disambiguatorType, SchemaElement backup, HashMap<Integer, SchemaElement> disambiguations) {
         dIndex = disambiguatorIndex;
         dType = disambiguatorType;
         defaultType = backup;
@@ -43,7 +43,7 @@ public class ArrayDisambiguatorSchemaElement implements ISchemaElement {
             public UIElement rebuildSubElem() {
                 int iv = getDisambigIndex(target);
                 try {
-                    ISchemaElement ise = getSchemaElement(iv);
+                    SchemaElement ise = getSchemaElement(iv);
                     UIElement se = ise.buildHoldingEditor(target, launcher, path);
                     allElements.add(se);
                     return se;
@@ -73,8 +73,8 @@ public class ArrayDisambiguatorSchemaElement implements ISchemaElement {
         return dVal;
     }
 
-    private ISchemaElement getSchemaElement(int dVal) {
-        ISchemaElement r = dTable.get(dVal);
+    private SchemaElement getSchemaElement(int dVal) {
+        SchemaElement r = dTable.get(dVal);
         if (r == null)
             r = defaultType;
         return r;
@@ -83,7 +83,7 @@ public class ArrayDisambiguatorSchemaElement implements ISchemaElement {
     @Override
     public int maxHoldingHeight() {
         int height = defaultType.maxHoldingHeight();
-        for (ISchemaElement possible : dTable.values())
+        for (SchemaElement possible : dTable.values())
             height = Math.max(possible.maxHoldingHeight(), height);
         return height;
     }
@@ -106,7 +106,7 @@ public class ArrayDisambiguatorSchemaElement implements ISchemaElement {
         if (iv == 0x7FFFFFFF)
             System.out.println("Warning: Disambiguator working off of nothing here, this CANNOT GO WELL");
         try {
-            ISchemaElement ise = getSchemaElement(iv);
+            SchemaElement ise = getSchemaElement(iv);
             ise.modifyVal(target, path, setDefault);
         } catch (RuntimeException e) {
             e.printStackTrace(System.out);

@@ -18,11 +18,11 @@ import java.util.LinkedList;
  * Basically a UI element masquerading as a schema element.
  * Created on 12/29/16.
  */
-public class AggregateSchemaElement implements ISchemaElement {
-    public LinkedList<ISchemaElement> aggregate = new LinkedList<ISchemaElement>();
+public class AggregateSchemaElement extends SchemaElement {
+    public LinkedList<SchemaElement> aggregate = new LinkedList<SchemaElement>();
 
-    public AggregateSchemaElement(ISchemaElement[] ag) {
-        for (ISchemaElement ise : ag)
+    public AggregateSchemaElement(SchemaElement[] ag) {
+        for (SchemaElement ise : ag)
             aggregate.add(ise);
     }
 
@@ -36,14 +36,14 @@ public class AggregateSchemaElement implements ISchemaElement {
         };
         // Help IVarSchemaElements along a little
         int maxFW = 1;
-        for (ISchemaElement ise : aggregate) {
+        for (SchemaElement ise : aggregate) {
             if (ise instanceof IVarSchemaElement) {
                 int dfw = ((IVarSchemaElement) ise).getDefaultFieldWidth();
                 if (maxFW < dfw)
                     maxFW = dfw;
             }
         }
-        for (ISchemaElement ise : aggregate) {
+        for (SchemaElement ise : aggregate) {
             if (ise instanceof IVarSchemaElement)
                 ((IVarSchemaElement) ise).setFieldWidthOverride(maxFW);
             uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
@@ -56,14 +56,14 @@ public class AggregateSchemaElement implements ISchemaElement {
     public int maxHoldingHeight() {
         // Give a value which won't result in a scroller.
         int i = 0;
-        for (ISchemaElement ise : aggregate)
+        for (SchemaElement ise : aggregate)
             i += ise.maxHoldingHeight();
         return i;
     }
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath i, boolean setDefault) {
-        for (ISchemaElement ise : aggregate)
+        for (SchemaElement ise : aggregate)
             ise.modifyVal(target, i, setDefault);
     }
 }

@@ -7,7 +7,7 @@ package r48;
 
 import gabien.ui.IFunction;
 import r48.schema.EnumSchemaElement;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
                     handleVal(finalMap, rio, i);
                 }
             }
-            ISchemaElement ise = new EnumSchemaElement(finalMap, "ID.");
+            SchemaElement ise = new EnumSchemaElement(finalMap, "ID.");
             AppMain.schemas.setSDBEntry(dict, ise);
         }
     }

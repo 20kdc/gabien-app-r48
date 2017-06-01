@@ -18,12 +18,12 @@ import r48.ui.UIHHalfsplit;
  * This is because ArrayElementSchemaElement should only exist inside arrayDAM.
  * Created on 12/31/16.
  */
-public class ArrayElementSchemaElement implements ISchemaElement {
+public class ArrayElementSchemaElement extends SchemaElement {
     public int index;
     public String name;
-    public ISchemaElement subSchema;
+    public SchemaElement subSchema;
 
-    public ArrayElementSchemaElement(int ind, String niceName, ISchemaElement ise) {
+    public ArrayElementSchemaElement(int ind, String niceName, SchemaElement ise) {
         index = ind;
         name = niceName;
         subSchema = ise;

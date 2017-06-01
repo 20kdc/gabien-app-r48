@@ -16,7 +16,7 @@ import r48.io.R2kObjectBackend;
 import r48.io.R48ObjectBackend;
 import r48.map.StuffRenderer;
 import r48.musicality.Musicality;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
@@ -240,7 +240,7 @@ public class AppMain {
                                 windowMaker.accept(new UITextPrompt("Schema ID?", new IConsumer<String>() {
                                         @Override
                                         public void accept(String s) {
-                                            ISchemaElement ise = schemas.getSDBEntry(s);
+                                            SchemaElement ise = schemas.getSDBEntry(s);
                                             ise.modifyVal(rio, new SchemaPath(ise, rio, null), false);
                                             launchDialog("OK!");
                                         }

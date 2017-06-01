@@ -29,20 +29,25 @@ import java.util.Map;
  * but if the schema system was used to build commands... yeah, no, that ain't happening.)
  * Created on 12/30/16.
  */
-public class RPGCommandSchemaElement implements ISchemaElement {
+public class RPGCommandSchemaElement extends SchemaElement {
     public boolean allowControlOfIndent = false;
 
     // actualSchema is used for modifyVal,
     // while mostOfSchema is used for display.
-    public ISchemaElement actualSchema, mostOfSchema;
+    public SchemaElement actualSchema, mostOfSchema;
 
     public CMDB database;
 
-    public RPGCommandSchemaElement(ISchemaElement ise, ISchemaElement mos, CMDB db, boolean allowIndentControl) {
+    public RPGCommandSchemaElement(SchemaElement ise, SchemaElement mos, CMDB db, boolean allowIndentControl) {
         actualSchema = ise;
         mostOfSchema = mos;
         database = db;
         allowControlOfIndent = allowIndentControl;
+    }
+
+    @Override
+    public boolean monitorsSubelements() {
+        return true;
     }
 
     @Override
@@ -69,13 +74,13 @@ public class RPGCommandSchemaElement implements ISchemaElement {
                             RubyIO param = target.getInstVarBySymbol("@parameters");
                             if (rc != null) {
                                 if (rc.specialSchemaName != null) {
-                                    ISchemaElement schemaElement = AppMain.schemas.getSDBEntry(rc.specialSchemaName);
+                                    SchemaElement schemaElement = AppMain.schemas.getSDBEntry(rc.specialSchemaName);
                                     schemaElement.modifyVal(target, path, true);
                                 } else {
                                     param.arrVal = new RubyIO[rc.paramType.size()];
                                     for (int i = 0; i < param.arrVal.length; i++) {
                                         RubyIO rio = new RubyIO();
-                                        ISchemaElement ise = rc.getParameterSchema(param, i);
+                                        SchemaElement ise = rc.getParameterSchema(param, i);
                                         ise.modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), false);
                                         param.arrVal[i] = rio;
                                     }
@@ -102,7 +107,7 @@ public class RPGCommandSchemaElement implements ISchemaElement {
 
                     int height = 0;
                     if (target.getInstVarBySymbol("@indent") != null) {
-                        ISchemaElement ise = new IVarSchemaElement("@indent", new ROIntegerSchemaElement(0), false);
+                        SchemaElement ise = new IVarSchemaElement("@indent", new ROIntegerSchemaElement(0), false);
                         if (!allowControlOfIndent)
                             ise = new IVarSchemaElement("@indent", new IntegerSchemaElement(0), false);
                         height += ise.maxHoldingHeight();
@@ -117,7 +122,7 @@ public class RPGCommandSchemaElement implements ISchemaElement {
                         String paramName = rc.getParameterName(i);
                         // Hidden parameters, introduced to deal with the "text" thing brought about by R2k
                         if (!paramName.equals("_")) {
-                            ISchemaElement ise = rc.getParameterSchema(param, i);
+                            SchemaElement ise = rc.getParameterSchema(param, i);
                             height += ise.maxHoldingHeight();
                             UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, parameterPath.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
                             uiSVL.panels.add(new UIHHalfsplit(1, 3, new UILabel(rc.getParameterName(i), FontSizes.schemaFieldTextHeight), uie));
@@ -158,13 +163,13 @@ public class RPGCommandSchemaElement implements ISchemaElement {
                 AppMain.schemas.getSDBEntry(rc.specialSchemaName).modifyVal(target, path, setDefault);
             } else {
                 RubyIO param = target.getInstVarBySymbol("@parameters");
-                ISchemaElement parametersSanitySchema = new StandardArraySchemaElement(new OpaqueSchemaElement(), rc.paramName.size(), false);
+                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(new OpaqueSchemaElement(), rc.paramName.size(), false);
                 parametersSanitySchema.modifyVal(param, path, setDefault);
                 SchemaPath parameterPath = path.arrayEntry(param, parametersSanitySchema);
                 for (int i = 0; i < param.arrVal.length; i++) {
                     if (param.arrVal.length <= i)
                         continue;
-                    ISchemaElement ise = rc.getParameterSchema(param, i);
+                    SchemaElement ise = rc.getParameterSchema(param, i);
                     ise.modifyVal(param.arrVal[i], parameterPath.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), setDefault);
                 }
             }

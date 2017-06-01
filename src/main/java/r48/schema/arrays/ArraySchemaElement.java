@@ -11,7 +11,7 @@ import gabien.ui.UITextButton;
 import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -22,7 +22,7 @@ import r48.ui.UIScrollVertLayout;
  * Notably, abstracting away sizeFixed and atLeastOne would just be an overcomplication.
  * Created on 12/28/16. Abstractified 16 Feb 2017.
  */
-public abstract class ArraySchemaElement implements ISchemaElement {
+public abstract class ArraySchemaElement extends SchemaElement {
     public int sizeFixed;
     public boolean atLeastOne;
 
@@ -52,7 +52,7 @@ public abstract class ArraySchemaElement implements ISchemaElement {
                         continue;
                     SchemaPath ind = path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]");
                     addAdditionButton(i, ind);
-                    ISchemaElement subelem = getElementSchema(i);
+                    SchemaElement subelem = getElementSchema(i);
                     UIElement uie = subelem.buildHoldingEditor(target.arrVal[i], launcher, ind);
                     final int mi = i;
                     if (pLevel >= 2) {
@@ -83,7 +83,7 @@ public abstract class ArraySchemaElement implements ISchemaElement {
                     @Override
                     public void run() {
                         RubyIO rio = new RubyIO();
-                        ISchemaElement subelem = getElementSchema(i);
+                        SchemaElement subelem = getElementSchema(i);
                         subelem.modifyVal(rio, ind, true);
 
                         ArrayUtils.insertRioElement(target, rio, i);
@@ -154,7 +154,7 @@ public abstract class ArraySchemaElement implements ISchemaElement {
     protected abstract boolean autoCorrectArray(RubyIO array, SchemaPath path);
 
     // Allows using a custom schema for specific elements in subclasses.
-    protected abstract ISchemaElement getElementSchema(int j);
+    protected abstract SchemaElement getElementSchema(int j);
 
     // 0: Do not even show this element.
     // 1: Show & allow editing of this element, but disallow deletion.

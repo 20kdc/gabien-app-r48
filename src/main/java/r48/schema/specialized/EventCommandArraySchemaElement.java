@@ -9,7 +9,7 @@ import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.dbs.SDB;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -22,9 +22,14 @@ import java.util.LinkedList;
 public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
     private final CMDB database;
 
-    public EventCommandArraySchemaElement(ISchemaElement eventCommand, CMDB db) {
+    public EventCommandArraySchemaElement(SchemaElement eventCommand, CMDB db) {
         super(eventCommand, 0, false);
         database = db;
+    }
+
+    @Override
+    public boolean monitorsSubelements() {
+        return true;
     }
 
     @Override

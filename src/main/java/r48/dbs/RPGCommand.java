@@ -9,7 +9,7 @@ import gabien.ui.IFunction;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.EnumSchemaElement;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 
 import java.util.LinkedList;
 
@@ -22,7 +22,7 @@ public class RPGCommand {
 
     public String specialSchemaName;
 
-    public LinkedList<IFunction<RubyIO, ISchemaElement>> paramType = new LinkedList<IFunction<RubyIO, ISchemaElement>>();
+    public LinkedList<IFunction<RubyIO, SchemaElement>> paramType = new LinkedList<IFunction<RubyIO, SchemaElement>>();
     public LinkedList<String> paramName = new LinkedList<String>();
     public int indentPre;
     public int indentPost;
@@ -91,7 +91,7 @@ public class RPGCommand {
 
     // The new format allows for more precise setups,
     // but isn't as neat
-    public static String formatNameExtended(String name, RubyIO root, RubyIO[] parameters, IFunction<RubyIO, ISchemaElement>[] parameterSchemas) {
+    public static String formatNameExtended(String name, RubyIO root, RubyIO[] parameters, IFunction<RubyIO, SchemaElement>[] parameterSchemas) {
         String r = "";
         char[] data = name.toCharArray();
         int disables = 0;
@@ -170,7 +170,7 @@ public class RPGCommand {
                         if (handler != null) {
                             r += handler.apply(p);
                         } else {
-                            ISchemaElement ise = AppMain.schemas.getSDBEntry(type);
+                            SchemaElement ise = AppMain.schemas.getSDBEntry(type);
                             r += interpretParameter(p, ise, prefixNext);
                         }
                     } else {
@@ -202,7 +202,7 @@ public class RPGCommand {
         return r;
     }
 
-    public static ISchemaElement getParameterSchemaFromArray(RubyIO root, IFunction<RubyIO, ISchemaElement>[] ise, int i) {
+    public static SchemaElement getParameterSchemaFromArray(RubyIO root, IFunction<RubyIO, SchemaElement>[] ise, int i) {
         if (ise == null)
             return AppMain.schemas.getSDBEntry("genericScriptParameter");
         if (ise.length <= i)
@@ -210,7 +210,7 @@ public class RPGCommand {
         return ise[i].apply(root);
     }
 
-    public ISchemaElement getParameterSchema(RubyIO root, int i) {
+    public SchemaElement getParameterSchema(RubyIO root, int i) {
         if (paramType.size() <= i)
             return AppMain.schemas.getSDBEntry("genericScriptParameter");
         return paramType.get(i).apply(root);
@@ -222,7 +222,7 @@ public class RPGCommand {
         return paramName.get(i);
     }
 
-    public static String interpretParameter(RubyIO rubyIO, ISchemaElement ise, boolean prefixEnums) {
+    public static String interpretParameter(RubyIO rubyIO, SchemaElement ise, boolean prefixEnums) {
         while (ise instanceof ProxySchemaElement)
             ise = ((ProxySchemaElement) ise).getEntry();
         String r = null;

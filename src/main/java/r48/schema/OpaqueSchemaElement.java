@@ -16,7 +16,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 12/28/16.
  */
-public class OpaqueSchemaElement implements ISchemaElement {
+public class OpaqueSchemaElement extends SchemaElement {
 
     public String getMessage() {
         return "Can't edit:";

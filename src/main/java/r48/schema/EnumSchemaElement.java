@@ -22,7 +22,7 @@ import java.util.HashMap;
  * Specifically, the switch will cause a UI rebuild upon return, which is required to keep data consistency.
  * Created on 12/30/16.
  */
-public class EnumSchemaElement implements ISchemaElement {
+public class EnumSchemaElement extends SchemaElement {
     public HashMap<Integer, String> options;
     public HashMap<String, Integer> viewOptions;
     public String buttonText;

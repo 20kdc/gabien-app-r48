@@ -15,15 +15,15 @@ import r48.ui.UIAppendButton;
 /**
  * Created on 12/29/16.
  */
-public class IVarSchemaElement implements ISchemaElement {
+public class IVarSchemaElement extends SchemaElement {
     public String iVar;
-    public ISchemaElement subElem;
+    public SchemaElement subElem;
     public boolean optional = false;
 
     public boolean fieldWidthOverride = false;
     public int fieldWidth;
 
-    public IVarSchemaElement(String iv, ISchemaElement sub, boolean opt) {
+    public IVarSchemaElement(String iv, SchemaElement sub, boolean opt) {
         iVar = iv;
         subElem = sub;
         optional = opt;

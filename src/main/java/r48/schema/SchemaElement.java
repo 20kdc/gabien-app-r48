@@ -17,7 +17,7 @@ import r48.schema.util.SchemaPath;
  * This is a similar case, except we don't have a repository of objects to work with, just a single non-recursive tree.
  * Created on 12/28/16.
  */
-public interface ISchemaElement {
+public abstract class SchemaElement {
     // Creates the editor control.
     // Ground rules:
     // 1. If the control changes the value, path.changeOccurred(false) MUST be called.
@@ -44,11 +44,18 @@ public interface ISchemaElement {
     // These rules were determined by trial and error over 5 and a half days.
     // Before the system was even *completed.*
     // Probably best not to break them.
-    UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path);
+    public abstract UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path);
 
     // Maximum textHeight of the element out of buildHoldingEditor.
     // Can throw an error, in which case this should be encapsulated with a SubwindowSchemaElement.
-    int maxHoldingHeight();
+    public abstract int maxHoldingHeight();
+
+    // If this monitors it's subelements.
+    // Used to try and pessimistically limit modification checks.
+    // All ArraySchemaElements that use autoCorrectArray, for example, must have this as true.
+    public boolean monitorsSubelements() {
+        return false;
+    }
 
     // Modify target to approach the default value, or to correct errors.
     // The type starts as 0 (not '0', but actual numeric 0) and needs to be modified by something to result in a valid object.
@@ -57,5 +64,5 @@ public interface ISchemaElement {
     // "Primary" types will completely wipe the slate if they're invalid.
     // This means any "annotations" (IVars) will be destroyed, so ensure those are *after* the primary in an aggregate.
     // Hopefully this situation should never affect anything.
-    void modifyVal(RubyIO target, SchemaPath path, boolean setDefault);
+    public abstract void modifyVal(RubyIO target, SchemaPath path, boolean setDefault);
 }

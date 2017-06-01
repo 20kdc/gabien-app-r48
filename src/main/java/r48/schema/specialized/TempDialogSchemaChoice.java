@@ -7,7 +7,7 @@ package r48.schema.specialized;
 
 import gabien.ui.UIElement;
 import r48.RubyIO;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -19,7 +19,7 @@ import r48.schema.util.SchemaPath;
  * and this forwards modifyVal requests back to the panel... I think.)
  * Created on 12/30/16.
  */
-public class TempDialogSchemaChoice implements ISchemaElement {
+public class TempDialogSchemaChoice extends SchemaElement {
     public UIElement heldDialog;
     public SchemaPath hPar;
 

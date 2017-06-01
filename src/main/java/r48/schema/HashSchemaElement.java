@@ -23,10 +23,10 @@ import java.util.Map;
 /**
  * Created on 12/29/16.
  */
-public class HashSchemaElement implements ISchemaElement {
-    public ISchemaElement keyElem, valElem;
+public class HashSchemaElement extends SchemaElement {
+    public SchemaElement keyElem, valElem;
 
-    public HashSchemaElement(ISchemaElement keySE, ISchemaElement opaqueSE) {
+    public HashSchemaElement(SchemaElement keySE, SchemaElement opaqueSE) {
         keyElem = keySE;
         valElem = opaqueSE;
     }

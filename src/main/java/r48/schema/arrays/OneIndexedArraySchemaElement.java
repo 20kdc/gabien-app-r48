@@ -6,7 +6,7 @@
 package r48.schema.arrays;
 
 import r48.RubyIO;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -15,9 +15,9 @@ import r48.schema.util.SchemaPath;
  * Created on 2/16/17.
  */
 public class OneIndexedArraySchemaElement extends ArraySchemaElement {
-    public ISchemaElement subelems;
+    public SchemaElement subelems;
 
-    public OneIndexedArraySchemaElement(ISchemaElement s, int fixedSize) {
+    public OneIndexedArraySchemaElement(SchemaElement s, int fixedSize) {
         super(fixedSize, true);
         subelems = s;
     }
@@ -28,7 +28,7 @@ public class OneIndexedArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    protected ISchemaElement getElementSchema(int j) {
+    protected SchemaElement getElementSchema(int j) {
         // Opaque will always *default* to NIL if the result would otherwise be completely invalid data.
         if (j == 0)
             return new OpaqueSchemaElement();

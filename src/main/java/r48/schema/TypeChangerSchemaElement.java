@@ -18,11 +18,11 @@ import r48.ui.UIAppendButton;
 /**
  * Created on 12/28/16.
  */
-public class TypeChangerSchemaElement implements ISchemaElement {
-    public ISchemaElement[] targets;
+public class TypeChangerSchemaElement extends SchemaElement {
+    public SchemaElement[] targets;
     public String[] typeString;
 
-    public TypeChangerSchemaElement(String[] types, ISchemaElement[] tgt) {
+    public TypeChangerSchemaElement(String[] types, SchemaElement[] tgt) {
         typeString = types;
         targets = tgt;
     }
@@ -84,7 +84,7 @@ public class TypeChangerSchemaElement implements ISchemaElement {
 
     private void initializeHoldingPanel(UIPanel innerHoldingPanel, RubyIO targetValue, ISchemaHost l, SchemaPath path) {
         int rei = getRelevantElementId(targetValue);
-        ISchemaElement targetS = new OpaqueSchemaElement();
+        SchemaElement targetS = new OpaqueSchemaElement();
         if (rei != -1)
             targetS = targets[rei];
         Rect b = innerHoldingPanel.getBounds();
@@ -97,7 +97,7 @@ public class TypeChangerSchemaElement implements ISchemaElement {
     @Override
     public int maxHoldingHeight() {
         int holdHeight = UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height;
-        for (ISchemaElement ise : targets) {
+        for (SchemaElement ise : targets) {
             int nextHeight = ise.maxHoldingHeight();
             if (holdHeight < nextHeight)
                 holdHeight = nextHeight;
@@ -110,7 +110,7 @@ public class TypeChangerSchemaElement implements ISchemaElement {
         int rei = getRelevantElementId(target);
         if (rei == -1)
             rei = targets.length - 1;
-        ISchemaElement targetS = targets[rei];
+        SchemaElement targetS = targets[rei];
 
         boolean modified = false;
         int wantedType = typeString[rei].charAt(0);

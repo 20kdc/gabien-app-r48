@@ -9,7 +9,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.schema.ISchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -22,7 +22,7 @@ import java.io.*;
  * Generic string blob (no compression on this one)
  * Created on 2/16/17.
  */
-public class StringBlobSchemaElement implements ISchemaElement {
+public class StringBlobSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
         return new UIHHalfsplit(1, 2, new UITextButton(FontSizes.blobTextHeight, "Export/Edit", new Runnable() {
