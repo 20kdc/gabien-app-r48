@@ -45,7 +45,7 @@ public class VXATileRenderer implements ITileRenderer {
                 RubyIO rio = amNames[i];
                 if (rio.strVal.length != 0) {
                     String expectedAT = rio.decString();
-                    tilesetMaps[i] = il.getImage("Tilesets/" + expectedAT, 0, 0, 0);
+                    tilesetMaps[i] = il.getImage("Tilesets/" + expectedAT, false);
                 }
             }
         }

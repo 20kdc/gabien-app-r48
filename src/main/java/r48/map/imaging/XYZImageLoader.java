@@ -23,7 +23,7 @@ public class XYZImageLoader implements IImageLoader {
     }
 
     @Override
-    public IGrInDriver.IImage getImage(String name, int cR, int cG, int cB) {
+    public IGrInDriver.IImage getImage(String name, boolean panorama) {
         try {
             FileInputStream fis = new FileInputStream(root + name + ".xyz");
             if (fis.read() != 'X')
@@ -44,7 +44,7 @@ public class XYZImageLoader implements IImageLoader {
                 int g = R2kUtil.readLcfU8(iis);
                 int b = R2kUtil.readLcfU8(iis);
                 pal[i] = ((r << 16) | (g << 8) | b);
-                if (i != 0)
+                if ((i != 0) | panorama)
                     pal[i] |= 0xFF000000;
             }
             int[] img = new int[w * h];

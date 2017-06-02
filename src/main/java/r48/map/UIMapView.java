@@ -101,7 +101,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             // Panorama Enable
             String panorama = AppMain.stuffRenderer.tileRenderer.getPanorama();
             if (panorama.length() > 0) {
-                IGrInDriver.IImage im = AppMain.stuffRenderer.imageLoader.getImage(panorama, 0, 0, 0);
+                IGrInDriver.IImage im = AppMain.stuffRenderer.imageLoader.getImage(panorama, true);
                 // Need to tile the area with the image.
                 // I give up, this is what I've got now.
                 // It works better this way than the other way under some cases.

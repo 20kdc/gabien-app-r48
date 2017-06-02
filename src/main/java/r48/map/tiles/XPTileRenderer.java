@@ -39,13 +39,13 @@ public class XPTileRenderer implements ITileRenderer {
                 // XP
                 String expectedTS = tn.decString();
                 if (expectedTS.length() != 0)
-                    tilesetMaps[0] = imageLoader.getImage("Tilesets/" + expectedTS, 0, 0, 0);
+                    tilesetMaps[0] = imageLoader.getImage("Tilesets/" + expectedTS, false);
                 RubyIO[] amNames = tileset.getInstVarBySymbol("@autotile_names").arrVal;
                 for (int i = 0; i < 7; i++) {
                     RubyIO rio = amNames[i];
                     if (rio.strVal.length != 0) {
                         String expectedAT = rio.decString();
-                        tilesetMaps[i + 1] = imageLoader.getImage("Autotiles/" + expectedAT, 0, 0, 0);
+                        tilesetMaps[i + 1] = imageLoader.getImage("Autotiles/" + expectedAT, false);
                     }
                 }
             }

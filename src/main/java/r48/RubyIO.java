@@ -268,6 +268,15 @@ public class RubyIO {
         return null;
     }
 
+    public void removeHashVal(RubyIO rubyIO) {
+        for (Map.Entry<RubyIO, RubyIO> e : hashVal.entrySet())
+            if (rubyEquals(e.getKey(), rubyIO)) {
+                hashVal.remove(e.getKey());
+                // hopefully don't trigger a CME
+                return;
+            }
+    }
+
     public static byte[] copyByteArray(byte[] s) {
         byte[] t = new byte[s.length];
         System.arraycopy(s, 0, t, 0, t.length);

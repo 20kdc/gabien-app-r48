@@ -23,13 +23,13 @@ public class CacheImageLoader implements IImageLoader {
     }
 
     @Override
-    public IGrInDriver.IImage getImage(String a, int tr, int tg, int tb) {
-        String ki = a + "_" + tr + "_" + tg + "_" + tb;
+    public IGrInDriver.IImage getImage(String a, boolean t) {
+        String ki = a + "_" + (t ? "pano" : "geni");
         if (loadedImages.containsKey(ki))
             return loadedImages.get(ki);
-        IGrInDriver.IImage i = root.getImage(a, tr, tg, tb);
+        IGrInDriver.IImage i = root.getImage(a, t);
         if (i == null)
-            i = GaBIEn.getImage("__error__", tr, tg, tb);
+            i = GaBIEn.getImage("__error__", 0, 0, 0);
         loadedImages.put(ki, i);
         return i;
     }

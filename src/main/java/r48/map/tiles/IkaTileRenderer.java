@@ -50,7 +50,7 @@ public class IkaTileRenderer implements ITileRenderer {
             return;
         if (blockTypes[plane] == null)
             return;
-        IGrInDriver.IImage i = imageLoader.getImage("Prt" + blockTypes[plane], 0, 0, 0);
+        IGrInDriver.IImage i = imageLoader.getImage("Prt" + blockTypes[plane], false);
         if (plane != 6) {
             igd.blitBCKImage(16 * block, 0, 16, 16, px, py, i);
         } else {

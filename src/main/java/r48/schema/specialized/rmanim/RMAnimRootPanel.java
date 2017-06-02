@@ -116,11 +116,11 @@ public class RMAnimRootPanel extends UIPanel {
         framesetCacheAMirror = new IGrInDriver.IImage[16];
         framesetCacheBMirror = new IGrInDriver.IImage[16];
         if (nameA.length() != 0) {
-            framesetCacheA[15] = AppMain.stuffRenderer.imageLoader.getImage("Animations/" + nameA, 0, 0, 0);
+            framesetCacheA[15] = AppMain.stuffRenderer.imageLoader.getImage("Animations/" + nameA, false);
             framesetCacheAMirror[15] = mirrorFrameset(framesetCacheA[15]);
         }
         if (nameB.length() != 0) {
-            framesetCacheB[15] = AppMain.stuffRenderer.imageLoader.getImage("Animations/" + nameB, 0, 0, 0);
+            framesetCacheB[15] = AppMain.stuffRenderer.imageLoader.getImage("Animations/" + nameB, false);
             framesetCacheBMirror[15] = mirrorFrameset(framesetCacheB[15]);
         }
     }

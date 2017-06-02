@@ -25,6 +25,9 @@ import java.util.LinkedList;
  * Created on 12/29/16.
  */
 public class SchemaPath {
+    // NOTE: Figure out how to remove lastArray, it's only used by RPGCommandSchemaElement for calculateIndent,
+    //        which should be a list-wide thing anyway. Fix this mess after mapInfo work, then start removing all the warnings
+    //        about needing an array disambiguator of type -1 because that'll be completely false.
     public SchemaPath parent, lastArray;
 
     // If editor is null, targetElement must be null, and vice versa.

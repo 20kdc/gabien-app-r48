@@ -11,7 +11,9 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.map.events.*;
 import r48.map.imaging.*;
-import r48.map.mapinfos.UIRMMapInfos;
+import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
+import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
+import r48.map.mapinfos.UIGRMMapInfos;
 import r48.map.tiles.*;
 import r48.ui.UIScrollVertLayout;
 
@@ -46,29 +48,9 @@ public class StuffRenderer {
 
     public static UIElement createMapExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final UIMapViewContainer mapBox) {
         if (versionId.equals("VXA") || versionId.equals("XP"))
-            return new UIRMMapInfos(windowMaker, mapBox);
-        if (versionId.equals("lcf2000")) {
-            // not great, but it at least allows selection
-            RubyIO rio = AppMain.objectDB.getObject("RPG_RT.lmt");
-            RubyIO order = rio.iVars.get("@map_order");
-            UIScrollVertLayout svl = new UIScrollVertLayout();
-            for (RubyIO ri : order.arrVal) {
-                RubyIO mi = rio.getInstVarBySymbol("@map_infos").getHashVal(ri);
-                final int currentIdx = (int) ri.fixnumVal;
-                UITextButton utb = new UITextButton(FontSizes.menuTextHeight, mi.getInstVarBySymbol("@name").decString(),
-                        new Runnable() {
-                    @Override
-                    public void run() {
-                        String m = Integer.toString(currentIdx);
-                        while (m.length() < 4)
-                            m = "0" + m;
-                        mapBox.loadMap("Map" + m + ".lmu");
-                    }
-                });
-                svl.panels.add(utb);
-            }
-            return svl;
-        }
+            return new UIGRMMapInfos(windowMaker, mapBox, new RXPRMLikeMapInfoBackend());
+        if (versionId.equals("lcf2000"))
+            return new UIGRMMapInfos(windowMaker, mapBox, new R2kRMLikeMapInfoBackend());
         return new UIPopupMenu(new String[] {
                 "Load Map"
         }, new Runnable[] {
@@ -117,7 +99,7 @@ public class StuffRenderer {
 
     public StuffRenderer(RubyIO tso, String vxaPano) {
         if (versionId.equals("Ika")) {
-            imageLoader = new GabienImageLoader(AppMain.rootPath + "Pbm/", ".pbm");
+            imageLoader = new GabienImageLoader(AppMain.rootPath + "Pbm/", ".pbm", 0, 0, 0);
             tileRenderer = new IkaTileRenderer(imageLoader);
             eventRenderer = new IkaEventGraphicRenderer(imageLoader);
             return;
@@ -129,19 +111,19 @@ public class StuffRenderer {
             return;
         }
         if (versionId.equals("XP")) {
-            imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png");
+            imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png", 0, 0, 0);
             tileRenderer = new XPTileRenderer(imageLoader, tso);
             eventRenderer = new RMEventGraphicRenderer(this);
             return;
         }
         if (versionId.equals("VXA")) {
-            imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png");
+            imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png", 0, 0, 0);
             tileRenderer = new VXATileRenderer(imageLoader, tso, vxaPano);
             eventRenderer = new RMEventGraphicRenderer(this);
             return;
         }
         tileRenderer = new NullTileRenderer();
         eventRenderer = new NullEventGraphicRenderer();
-        imageLoader = new GabienImageLoader(AppMain.rootPath, "");
+        imageLoader = new GabienImageLoader(AppMain.rootPath, "", 0, 0, 0);
     }
 }

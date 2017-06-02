@@ -26,7 +26,7 @@ public class LcfTileRenderer implements ITileRenderer {
             panorama = "Panorama/" + vxaPano;
         }
         if (tso != null) {
-            chipset = imageLoader.getImage("ChipSet/" + tso.getInstVarBySymbol("@tileset_name").decString(), 0, 0, 0);
+            chipset = imageLoader.getImage("ChipSet/" + tso.getInstVarBySymbol("@tileset_name").decString(), false);
         } else {
             chipset = null;
         }

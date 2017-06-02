@@ -43,7 +43,7 @@ public class MapInfo extends R2kObject {
     public Index[] getIndices() {
         return new Index[] {
                 new Index(0x01, name, "@name"),
-                new Index(0x02, parent, "@parent"),
+                new Index(0x02, parent, "@parent_id"),
                 new Index(0x03, indent, "@indent"),
                 new Index(0x04, type, "@type"),
                 new Index(0x05, editPosX, "@edit_pos_x"),

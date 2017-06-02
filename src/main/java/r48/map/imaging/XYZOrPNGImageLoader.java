@@ -8,23 +8,29 @@ import gabien.IGrInDriver;
 
 /**
  * Might not handle transparency as well as it should on the PNGs if they don't do alpha properly.
+ * (later) ...they don't.
  * Created on 01/06/17.
  */
 public class XYZOrPNGImageLoader implements IImageLoader {
     public final String rootPath;
-    public final IImageLoader gImageLoader;
     public final IImageLoader xImageLoader;
+    public final IImageLoader pImageLoader;
+    public final IImageLoader gImageLoader;
 
     public XYZOrPNGImageLoader(String root) {
         rootPath = root;
         xImageLoader = new XYZImageLoader(rootPath);
-        gImageLoader = new GabienImageLoader(rootPath, ".png");
+        pImageLoader = new PNG8IImageLoader(rootPath);
+        gImageLoader = new GabienImageLoader(rootPath, ".png", 0, 0, 0);
     }
     @Override
-    public IGrInDriver.IImage getImage(String name, int cR, int cG, int cB) {
-        IGrInDriver.IImage d = xImageLoader.getImage(name, cR, cG, cB);
+    public IGrInDriver.IImage getImage(String name, boolean panorama) {
+        //
+        IGrInDriver.IImage d = xImageLoader.getImage(name, panorama);
         if (d == null)
-            return gImageLoader.getImage(name, cR, cG, cB);
+            d = pImageLoader.getImage(name, panorama);
+        if (d == null)
+            return gImageLoader.getImage(name, panorama);
         return d;
     }
 
