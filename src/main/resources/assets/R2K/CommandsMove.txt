@@ -1,0 +1,109 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ The R2k Move Command List.
+
+C digitCount 2
+
+0: Move North 1 Tile
+X movecommand_default_nothing
+1: Move East 1 Tile
+X movecommand_default_nothing
+2: Move South 1 Tile
+X movecommand_default_nothing
+3: Move West 1 Tile
+X movecommand_default_nothing
+4: Move North-East 1 Tile
+X movecommand_default_nothing
+5: Move South-East 1 Tile
+X movecommand_default_nothing
+6: Move South-West 1 Tile
+X movecommand_default_nothing
+7: Move North-West 1 Tile
+X movecommand_default_nothing
+8: Move Randomly 1 Tile
+X movecommand_default_nothing
+9: Move Towards Player 1 Tile
+X movecommand_default_nothing
+10: Move Away From Player 1 Tile
+X movecommand_default_nothing
+11: Move Forward 1 Tile
+X movecommand_default_nothing
+12: Face North
+X movecommand_default_nothing
+13: Face East
+X movecommand_default_nothing
+14: Face South
+X movecommand_default_nothing
+15: Face West
+X movecommand_default_nothing
+16: Turn Right
+X movecommand_default_nothing
+17: Turn Left
+X movecommand_default_nothing
+18: Turn To Opposite Direction
+X movecommand_default_nothing
+19: Turn Left Or Right (random)
+X movecommand_default_nothing
+20: Face Random Direction
+X movecommand_default_nothing
+21: Face Player
+X movecommand_default_nothing
+22: Face Away From Player
+X movecommand_default_nothing
+23: Wait 20 Frames
+X movecommand_default_nothing
+24: Begin Jump...
+X movecommand_default_nothing
+25: End Jump
+X movecommand_default_nothing
+26: Lock Faced Direction
+X movecommand_default_nothing
+27: Unlock Faced Direction
+X movecommand_default_nothing
+28: Speed Up (Speed)
+X movecommand_default_nothing
+29: Slow Down (Speed)
+X movecommand_default_nothing
+30: Speed Up (Freq.)
+X movecommand_default_nothing
+31: Slow Down (Freq.)
+X movecommand_default_nothing
+
+32: Switch On
+p _ string
+p switch switch_id
+p _ int
+p _ int
+
+33: Switch Off
+p _ string
+p switch switch_id
+p _ int
+p _ int
+
+34: Set Graphic
+p graphic string
+p index int
+p _ int
+p _ int
+
+35: Play Sound Effect$
+p sound string
+p volume int
+p tempo int
+p balance int
+
+36: Disable Collision
+X movecommand_default_nothing
+37: Enable Collision
+X movecommand_default_nothing
+38: Disable Animation
+X movecommand_default_nothing
+39: Enable Animation
+X movecommand_default_nothing
+40: Decrease Opacity
+X movecommand_default_nothing
+41: Increase Opacity
+X movecommand_default_nothing

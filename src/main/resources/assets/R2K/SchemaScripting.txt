@@ -31,6 +31,8 @@ i R2K/SchemaScriptingMonolith.txt
 
 > genericScriptParameter int
 
+ -Event Commands-
+
  Technically the arrayDAM isn't needed,
   but it's SUPPOSED to be there to ensure array parent stuff is all in order.
  (Ok, fixed, now it's needed. Allowing inconsistency causes inconsistency causes bugs.)
@@ -43,12 +45,12 @@ i R2K/SchemaScriptingMonolith.txt
 @code int= 12310
 @indent int
 @parameters LcfEventCommandParams
-+optIV @move_commands array 0 RPG::MoveCommand
++optIV @move_commands array 0 LcfMoveCommandEditor
 
 .LcfEventCommandEditor_Most
 @indent indent
 @parameters LcfEventCommandParams
-+optIV @move_commands array 0 RPG::MoveCommand
++optIV @move_commands array 0 LcfMoveCommandEditor
 
 > EventListEditor subwindow arrayCS R2K/Commands.txt LcfEventCommandEditor
 > LcfEventCommandEditor RPGCS R2K/Commands.txt RPG::EventCommand LcfEventCommandEditor_Most
@@ -57,103 +59,16 @@ i R2K/SchemaScriptingMonolith.txt
  Note that this introduces new and interesting problems, but I claim it's worth it,
   as movecommand_code is used elsewhere(!)
 
- Move Commands
+ -Move Commands-
 
-.LcfMoveCommandEditor_Most
-+arrayDAM -1 nil { ]0 _ string ]1 _ int ]2 _ int ]3 _ int }
+ Used by the move commands to avoid tons of redundant paramspecs
 
-C defaultCB
-+arrayDAM -1 nil { ]0 text string ]1 A int ]2 B int ]3 C int }
-
-0: Move North 1 Tile
-+LcfMoveCommandEditor_Most
-1: Move East 1 Tile
-+LcfMoveCommandEditor_Most
-2: Move South 1 Tile
-+LcfMoveCommandEditor_Most
-3: Move West 1 Tile
-+LcfMoveCommandEditor_Most
-4: Move North-East 1 Tile
-+LcfMoveCommandEditor_Most
-5: Move South-East 1 Tile
-+LcfMoveCommandEditor_Most
-6: Move South-West 1 Tile
-+LcfMoveCommandEditor_Most
-7: Move North-West 1 Tile
-+LcfMoveCommandEditor_Most
-8: Move Randomly 1 Tile
-+LcfMoveCommandEditor_Most
-9: Move Towards Player 1 Tile
-+LcfMoveCommandEditor_Most
-10: Move Away From Player 1 Tile
-+LcfMoveCommandEditor_Most
-11: Move Forward 1 Tile
-+LcfMoveCommandEditor_Most
-12: Face North
-+LcfMoveCommandEditor_Most
-13: Face East
-+LcfMoveCommandEditor_Most
-14: Face South
-+LcfMoveCommandEditor_Most
-15: Face West
-+LcfMoveCommandEditor_Most
-16: Turn Right
-+LcfMoveCommandEditor_Most
-17: Turn Left
-+LcfMoveCommandEditor_Most
-18: Turn To Opposite Direction
-+LcfMoveCommandEditor_Most
-19: Turn Left Or Right (random)
-+LcfMoveCommandEditor_Most
-20: Face Random Direction
-+LcfMoveCommandEditor_Most
-21: Face Player
-+LcfMoveCommandEditor_Most
-22: Face Away From Player
-+LcfMoveCommandEditor_Most
-23: Wait 20 Frames
-+LcfMoveCommandEditor_Most
-24: Begin Jump...
-+LcfMoveCommandEditor_Most
-25: End Jump
-+LcfMoveCommandEditor_Most
-26: Lock Faced Direction
-+LcfMoveCommandEditor_Most
-27: Unlock Faced Direction
-+LcfMoveCommandEditor_Most
-28: Speed Up (Speed)
-+LcfMoveCommandEditor_Most
-29: Slow Down (Speed)
-+LcfMoveCommandEditor_Most
-30: Speed Up (Freq.)
-+LcfMoveCommandEditor_Most
-31: Slow Down (Freq.)
-+LcfMoveCommandEditor_Most
-32: Switch On
-+arrayDAM -1 nil { ]0 _ string ]1 switch switch_id ]2 _ int ]3 _ int }
-33: Switch Off
-+arrayDAM -1 nil { ]0 _ string ]1 switch switch_id ]2 _ int ]3 _ int }
-34: Set Graphic
-+arrayDAM -1 nil { ]0 graphic string ]1 index int ]2 _ int ]3 _ int }
-35: Play Sound Effect
-+arrayDAM -1 nil { ]0 file string ]1 volume int ]2 tempo int ]3 balance int }
-36: Disable Collision
-+LcfMoveCommandEditor_Most
-37: Enable Collision
-+LcfMoveCommandEditor_Most
-38: Disable Animation
-+LcfMoveCommandEditor_Most
-39: Enable Animation
-+LcfMoveCommandEditor_Most
-40: Decrease Opacity
-+LcfMoveCommandEditor_Most
-41: Increase Opacity
-+LcfMoveCommandEditor_Most
-
- ----
+.movecommand_default_nothing
+@parameters arrayDAM -1 nil { ]0 _ string ]1 _ int ]2 _ int ]3 _ int }
 
 : RPG::MoveCommand
-@code movecommand_code
-+flushCommandBuffer @code movecommand_code
+@code int
+@parameters arrayDAM -1 nil { ]0 _ string ]1 _ int ]2 _ int ]3 _ int }
 
+> LcfMoveCommandEditor RPGMS R2K/CommandsMove.txt RPG::MoveCommand movecommand_default_nothing
 > MoveListEditor subwindow array 0 RPG::MoveCommand

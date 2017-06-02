@@ -234,7 +234,7 @@ e timer_operation_type 0 SetTime 1 SetFlagsAndStart 2 Stop
 .move_event_parameters
 @indent indent
 @parameters arrayDAM -1 nil move_event_array
-+optIV @move_commands array 0 RPG::MoveCommand
++optIV @move_commands subwindow[ Route... ] array 0 LcfMoveCommandEditor
 
 .move_event_array
 ]1 char character_id

@@ -90,7 +90,7 @@ X timer_operation_parameters
 
  GAP
 
-11330: Move Event$
+11330: @@Move Event{B: @#B}
 d Sends a list of MoveCommands to an event.
 p _ string
 X move_event_parameters
@@ -101,6 +101,15 @@ X move_event_parameters
 d Plays some background music.
 p music string
 p fadeTime int
+p volume int
+p tempo int
+p balance int
+
+ GAP
+
+11550: Play Sound$
+d Plays a sound effect.
+p sound string
 p volume int
 p tempo int
 p balance int

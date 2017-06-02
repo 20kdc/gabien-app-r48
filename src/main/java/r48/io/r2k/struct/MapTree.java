@@ -43,7 +43,7 @@ public class MapTree implements IR2kStruct {
             int key = R2kUtil.readLcfVLI(fis);
             MapInfo target = new MapInfo();
             target.importData(fis);
-            System.out.println(R2kUtil.decodeLcfString(target.name.data));
+            //System.out.println(R2kUtil.decodeLcfString(target.name.data));
             mapInfos.map.put(key, target);
         }
         // Non-sparse list
