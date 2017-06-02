@@ -65,7 +65,7 @@ public class UIGrid extends UIPanel {
                 break;
             drawTile(p, ox + px, oy + py, igd);
             if (p == selTile)
-                igd.blitBCKImage(36, 0, tileSize, tileSize, ox + px, oy + py, AppMain.layerTabs);
+                igd.blitImage(36, 0, tileSize, tileSize, ox + px, oy + py, AppMain.layerTabs);
             pi++;
         }
         for (int ty = 0; ty < selHeight; ty++) {
@@ -77,7 +77,7 @@ public class UIGrid extends UIPanel {
                     continue;
                 if (py >= r.height)
                     continue;
-                igd.blitBCKImage(36, 0, tileSize, tileSize, ox + px, oy + py, AppMain.layerTabs);
+                igd.blitImage(36, 0, tileSize, tileSize, ox + px, oy + py, AppMain.layerTabs);
                 pi++;
             }
         }

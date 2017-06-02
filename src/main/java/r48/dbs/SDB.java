@@ -460,13 +460,17 @@ public class SDB {
                                             case ']':
                                                 int atl = Integer.parseInt(subcom);
                                                 if (atl < 0) {
+                                                    res = null;
                                                     break;
                                                 } else if (atl >= res.arrVal.length) {
+                                                    res = null;
                                                     break;
                                                 }
                                                 res = res.arrVal[atl];
                                                 break;
                                         }
+                                        if (res == null)
+                                            break; // Cannot go further.
                                     }
                                     parameters.add(res);
                                 }

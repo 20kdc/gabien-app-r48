@@ -59,7 +59,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
     @Override
     public void performOverlay(int tx, int ty, IGrInDriver igd, int px, int py, int ol, boolean minimap) {
         if (eventCache.containsKey(tx + ";" + ty))
-            igd.blitBCKImage(0, 36, 16, 16, (px + (mapView.tileSize / 2)) - 8, (py + (mapView.tileSize / 2)) - 8, AppMain.layerTabs);
+            igd.blitImage(0, 36, 16, 16, (px + (mapView.tileSize / 2)) - 8, (py + (mapView.tileSize / 2)) - 8, AppMain.layerTabs);
     }
 
     @Override

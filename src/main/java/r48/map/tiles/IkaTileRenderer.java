@@ -52,23 +52,23 @@ public class IkaTileRenderer implements ITileRenderer {
             return;
         IGrInDriver.IImage i = imageLoader.getImage("Prt" + blockTypes[plane], false);
         if (plane != 6) {
-            igd.blitBCKImage(16 * block, 0, 16, 16, px, py, i);
+            igd.blitImage(16 * block, 0, 16, 16, px, py, i);
         } else {
             // fun fact, this was probably the most loved feature of IkachanMapEdit.
             // I would be in for a *lynching* if I got rid of it.
             double time = GaBIEn.getTime();
             if (block == 0)
-                igd.blitBCKImage((int) ((time - Math.floor(time)) * 64) % 16, 0, 16,
+                igd.blitImage((int) ((time - Math.floor(time)) * 64) % 16, 0, 16,
                         16, px, py, i);
             if (block == 1)
-                igd.blitBCKImage(
+                igd.blitImage(
                         ((int) (1.0 - (time - Math.floor(time)) * 64) % 16) + 16,
                         0, 16, 16, px, py, i);
             if (block == 2)
-                igd.blitBCKImage(0, (int) ((time - Math.floor(time)) * 64) % 16, 16,
+                igd.blitImage(0, (int) ((time - Math.floor(time)) * 64) % 16, 16,
                         16, px, py, i);
             if (block == 3)
-                igd.blitBCKImage(0,
+                igd.blitImage(0,
                         ((int) (1.0 - (time - Math.floor(time)) * 64) % 16) + 16,
                         16, 16, px, py, i);
         }

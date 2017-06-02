@@ -7,10 +7,7 @@ package r48.io.r2k.obj;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.chunks.ArrayR2kStruct;
-import r48.io.r2k.chunks.ArraySizeR2kInterpretable;
-import r48.io.r2k.chunks.BooleanR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
+import r48.io.r2k.chunks.*;
 import r48.io.r2k.struct.MoveCommand;
 
 /**
@@ -20,12 +17,20 @@ import r48.io.r2k.struct.MoveCommand;
  */
 public class MoveRoute extends R2kObject {
     public ArraySizeR2kInterpretable<MoveCommand> listSize = new ArraySizeR2kInterpretable<MoveCommand>();
+    /*
     public ArrayR2kStruct<MoveCommand> list = new ArrayR2kStruct<MoveCommand>(listSize, new ISupplier<MoveCommand>() {
         @Override
         public MoveCommand get() {
             return new MoveCommand();
         }
+    });*/
+    public BlobR2kStruct list = new BlobR2kStruct(new ISupplier<byte[]>() {
+        @Override
+        public byte[] get() {
+            return new byte[0];
+        }
     });
+
     public BooleanR2kStruct repeat = new BooleanR2kStruct(true);
     public BooleanR2kStruct skippable = new BooleanR2kStruct(false);
 

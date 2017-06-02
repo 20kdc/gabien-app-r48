@@ -81,8 +81,8 @@ public class AppMain {
     public static RubyIO theClipboard = null;
 
     // Images
-    public static IGrInDriver.IImage layerTabs = GaBIEn.getImage("layertab.png", 0, 0, 0);
-    public static IGrInDriver.IImage noMap = GaBIEn.getImage("nomad.png", 0, 0, 0);
+    public static IGrInDriver.IImage layerTabs = GaBIEn.getImageCK("layertab.png", 0, 0, 0);
+    public static IGrInDriver.IImage noMap = GaBIEn.getImageCK("nomad.png", 0, 0, 0);
 
     public static void initialize(String gamepack) throws IOException {
         rootPath = "";

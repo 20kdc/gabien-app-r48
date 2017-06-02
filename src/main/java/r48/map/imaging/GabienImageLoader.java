@@ -16,18 +16,33 @@ import r48.map.imaging.IImageLoader;
  */
 public class GabienImageLoader implements IImageLoader {
     public final String prefix, postfix;
+    public final boolean ck;
     public final int r, g, b;
+
     public GabienImageLoader(String pf, String pp, int cr, int cg, int cb) {
         prefix = pf;
         postfix = pp;
+        ck = true;
         r = cr;
         g = cg;
         b = cb;
     }
+    public GabienImageLoader(String pf, String pp) {
+        prefix = pf;
+        postfix = pp;
+        ck = false;
+        r = 0;
+        g = 0;
+        b = 0;
+    }
 
     @Override
     public IGrInDriver.IImage getImage(String name, boolean panorama) {
-        return GaBIEn.getImage(prefix + name + postfix, r, g, b);
+        if (ck) {
+            return GaBIEn.getImageCK(prefix + name + postfix, r, g, b);
+        } else {
+            return GaBIEn.getImage(prefix + name + postfix);
+        }
     }
 
     @Override

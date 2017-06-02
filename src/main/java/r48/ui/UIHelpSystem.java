@@ -104,7 +104,7 @@ public class UIHelpSystem extends UIPanel {
             }
             if ((hc.c == 'i') || (hc.c == 'I')) {
                 boolean left = hc.c == 'I';
-                final IGrInDriver.IImage r = GaBIEn.getImage(hc.args[0], 0, 0, 0);
+                final IGrInDriver.IImage r = GaBIEn.getImage(hc.args[0]);
                 boolean extended = hc.args.length > 1;
                 final int xx = extended ? Integer.parseInt(hc.args[1]) : 0;
                 final int yy = extended ? Integer.parseInt(hc.args[2]) : 0;

@@ -77,7 +77,7 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
         if (!fail) {
             String r = graphics[type];
             IGrInDriver.IImage im = imageLoader.getImage(r, false);
-            igd.blitBCKImage(dfX * dsX, dfY * dsY, dsX, dsY, ox + doX, oy + doY, im);
+            igd.blitImage(dfX * dsX, dfY * dsY, dsX, dsY, ox + doX, oy + doY, im);
             fail = false;
         }
         if (fail)

@@ -29,7 +29,7 @@ public class CacheImageLoader implements IImageLoader {
             return loadedImages.get(ki);
         IGrInDriver.IImage i = root.getImage(a, t);
         if (i == null)
-            i = GaBIEn.getImage("__error__", 0, 0, 0);
+            i = GaBIEn.getImage("__error__");
         loadedImages.put(ki, i);
         return i;
     }
