@@ -5,16 +5,21 @@
 package r48.io.r2k.struct;
 
 import r48.RubyIO;
+import r48.io.r2k.R2kUtil;
+import r48.io.r2k.chunks.IR2kStruct;
 import r48.io.r2k.chunks.R2kObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.Stack;
 
 /**
- * Just a holder class for now to get MoveEvent up
+ * A MoveCommand! It lets stuff move.
  * Created on 02/06/17.
  */
-public class MoveCommand {
+public class MoveCommand implements IR2kStruct {
     public int code;
     public byte[] text;
     public int a, b, c;
@@ -78,7 +83,8 @@ public class MoveCommand {
         c = (int) p[3].fixnumVal;
     }
 
-    public RubyIO toRIO() {
+    @Override
+    public RubyIO asRIO() {
         RubyIO rio = new RubyIO().setSymlike("RPG::MoveCommand", true);
         RubyIO[] p = new RubyIO[4];
         p[0] = new RubyIO().setString(text);
@@ -91,5 +97,25 @@ public class MoveCommand {
         rio.iVars.put("@code", new RubyIO().setFX(code));
         rio.iVars.put("@parameters", params);
         return rio;
+    }
+
+    @Override
+    public void importData(InputStream bais) throws IOException {
+        code = R2kUtil.readLcfVLI(bais);
+        text = R2kUtil.readLcfBytes(bais, R2kUtil.readLcfVLI(bais));
+        a = R2kUtil.readLcfVLI(bais);
+        b = R2kUtil.readLcfVLI(bais);
+        c = R2kUtil.readLcfVLI(bais);
+    }
+
+    @Override
+    public boolean exportData(OutputStream baos) throws IOException {
+        R2kUtil.writeLcfVLI(baos, code);
+        R2kUtil.writeLcfVLI(baos, text.length);
+        baos.write(text);
+        R2kUtil.writeLcfVLI(baos, a);
+        R2kUtil.writeLcfVLI(baos, b);
+        R2kUtil.writeLcfVLI(baos, c);
+        return false;
     }
 }

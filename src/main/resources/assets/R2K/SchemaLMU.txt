@@ -5,7 +5,7 @@
 .EventPage_Condition_Flags
 @switch_a boolean
 @switch_b boolean
-@var_>=_or_r2kop boolean
+@var_>=_or_2k3op boolean
 @item boolean
 @actor boolean
 @timer_1 boolean

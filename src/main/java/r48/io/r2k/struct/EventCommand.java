@@ -84,7 +84,7 @@ public class EventCommand implements IR2kStruct {
         if (code == 11330) {
             RubyIO[] params2 = new RubyIO[moveCommands.length];
             for (int i = 0; i < params2.length; i++)
-                params2[i] = moveCommands[i].toRIO();
+                params2[i] = moveCommands[i].asRIO();
             RubyIO param2Arr = new RubyIO();
             param2Arr.type = '[';
             param2Arr.arrVal = params2;
