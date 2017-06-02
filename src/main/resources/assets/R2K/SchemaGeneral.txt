@@ -1,7 +1,8 @@
 
- * "borrow" the RXP AT rules
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
 
-A R2KXPCOM/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
+A R2K/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
 
 D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
 

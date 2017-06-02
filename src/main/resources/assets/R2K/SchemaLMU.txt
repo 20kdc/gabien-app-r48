@@ -71,7 +71,6 @@ e eventpage_trigger 0 ActKey 1 PlayerWalks 2 EitherWalks 3 Autorun 4 Parallel
 @y int
 @pages subwindow arrayIx1 subwindow RPG::EventPage
 
-> mapEvents hash int+1 subwindow RPG::Event
 : RPG::Map
 @tileset_id int
 @width roint= 20
@@ -86,7 +85,7 @@ e eventpage_trigger 0 ActKey 1 PlayerWalks 2 EitherWalks 3 Autorun 4 Parallel
 @parallax_autoloop_y boolean
 @parallax_sx int
 @parallax_sy int
-@events subwindow mapEvents
+@events subwindow hash int+1 subwindow RPG::Event
 @top_level boolean
 @magic_number int
 +table @data @width @height 20 15 2

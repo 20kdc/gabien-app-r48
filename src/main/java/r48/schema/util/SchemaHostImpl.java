@@ -47,9 +47,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
             } else {
                 if (RubyIO.rubyTypeEquals(innerElem.targetElement, AppMain.theClipboard)) {
                     innerElem.targetElement.setDeepClone(AppMain.theClipboard);
-                    SchemaPath sp = innerElem.lastArray;
-                    if (sp == null)
-                        sp = innerElem.findRoot();
+                    SchemaPath sp = innerElem.findHighestSubwatcher();
                     sp.editor.modifyVal(sp.targetElement, sp, false);
                     innerElem.changeOccurred(false);
                     switchObject(innerElem);

@@ -19,8 +19,10 @@ import java.io.IOException;
  */
 public class ATDB {
     public final String loadFile;
-    public Autotile[] entries = new Autotile[48];
+    // 50 is the biggest seen so far.
+    public Autotile[] entries = new Autotile[50];
     public int[] inverseMap = new int[256];
+    // objId is the first 3 digits, then bit ID is the 4th
     private boolean[] rulesEngineMustTrue = new boolean[10000];
     private boolean[] rulesEngineMustFalse = new boolean[10000];
 

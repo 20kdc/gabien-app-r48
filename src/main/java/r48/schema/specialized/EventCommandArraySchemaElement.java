@@ -17,6 +17,9 @@ import java.util.LinkedList;
 
 /**
  * ArraySchemaElement + some eventcommand specific stuff to automatically correct issues.
+ * (On top of it's previous behaviors, this is now responsible for indent. It monitors subelements *anyway*,
+ *  and moving the logic here allows me to cut off some of SchemaPath's rube-goldberg-iness.
+ *  Anything to simplify that thing. Jun 2, 2017.)
  * Created on 1/2/17.
  */
 public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
@@ -56,13 +59,26 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
         }
 
         boolean modified = needsEndingBlock;
+
         // NOTE: This method is deliberately awkward to allow for the concurrent modification...
         // Attempting to 'fix' it will only make it worse.
         boolean lastWasBlockLeave = false;
         int lastCode = -1;
+
+        // Indent tracking
+        int indent = 0;
+
         for (int i = 0; i < arr.size(); i++) {
             int code = (int) arr.get(i).getInstVarBySymbol("@code").fixnumVal;
             RPGCommand rc = database.knownCommands.get(code);
+            // Indent stuff
+            indent += rc.indentPre;
+            if (indent != arr.get(i).getInstVarBySymbol("@indent").fixnumVal) {
+                arr.get(i).getInstVarBySymbol("@indent").fixnumVal = indent;
+                modified = true;
+            }
+            indent += rc.indentPost;
+            // Block leave/code stuff
             if (rc != null) {
                 if (rc.needsBlockLeavePre) {
                     if (!lastWasBlockLeave) {

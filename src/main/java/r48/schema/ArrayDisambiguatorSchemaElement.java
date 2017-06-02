@@ -42,8 +42,7 @@ public class ArrayDisambiguatorSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, SchemaPath path2) {
-        final SchemaPath path = path2.arrayEntry(target, this);
+    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         UIPanel p = new UIPanel() {
             public UIElement subElem = rebuildSubElem();
 
@@ -97,8 +96,6 @@ public class ArrayDisambiguatorSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        path = path.arrayEntry(target, this);
-
         // ensure target is an array (and that's about it, since this is defined by array elements)
         setDefault = IntegerSchemaElement.ensureType(target, '[', setDefault);
         boolean modified = false;

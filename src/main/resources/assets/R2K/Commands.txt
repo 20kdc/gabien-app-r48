@@ -88,6 +88,16 @@ d Alters the settings on either timer ID 0 (if unspecified) or a given timer. Ca
 p _ string
 X timer_operation_parameters
 
+
+ GAP
+
+10810: @@Teleport Player{D: to @#B : @#C, @#D}
+d Teleports the player to a given map and position.
+p _ string
+p map map_id
+p x int
+p y int
+
  GAP
 
 11330: @@Move Event{B: @#B}

@@ -129,6 +129,6 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
     }
 
     public static void showEvent(long fixnumVal, RubyIO map, RubyIO event) {
-        AppMain.launchNonRootSchema(map, "RPG::Map", map.getInstVarBySymbol("@events"), "mapEvents", new RubyIO().setFX(fixnumVal), event, "RPG::Event", "E" + fixnumVal);
+        AppMain.launchNonRootSchema(map, "RPG::Map", new RubyIO().setFX(fixnumVal), event, "RPG::Event", "E" + fixnumVal);
     }
 }

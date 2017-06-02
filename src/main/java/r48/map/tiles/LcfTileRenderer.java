@@ -96,19 +96,7 @@ public class LcfTileRenderer implements ITileRenderer {
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv) {
         return new UITileGrid[] {
-                new UITileGrid(mv, 4000, 49, true, 48),
-                new UITileGrid(mv, 4050, 49, true, 48),
-                new UITileGrid(mv, 4100, 49, true, 48),
-                new UITileGrid(mv, 4150, 49, true, 48),
-                new UITileGrid(mv, 4200, 49, true, 48),
-                new UITileGrid(mv, 4250, 49, true, 48),
-                new UITileGrid(mv, 4300, 49, true, 48),
-                new UITileGrid(mv, 4350, 49, true, 48),
-                new UITileGrid(mv, 4400, 49, true, 48),
-                new UITileGrid(mv, 4450, 49, true, 48),
-                new UITileGrid(mv, 4500, 49, true, 48),
-                new UITileGrid(mv, 4550, 49, true, 48),
-
+                new UITileGrid(mv, 4000, 612, true, 50),
                 new UITileGrid(mv, 5000, 144, false, 0),
                 new UITileGrid(mv, 10000, 144, false, 0),
         };
@@ -117,38 +105,27 @@ public class LcfTileRenderer implements ITileRenderer {
     @Override
     public String[] getPlaneNames(int layer) {
         return new String[] {
-                "a0",
-                "a1",
-                "a2",
-                "a3",
-                "a4",
-                "a5",
-                "a6",
-                "a7",
-                "a8",
-                "a9",
-                "aA",
-                "aB",
-                "LT",
-                "UT",
+                "D Block",
+                "'Lower Tiles'",
+                "'Upper Tiles' / Event Tile Indexes + 10000",
         };
     }
 
     @Override
     public AutoTileTypeField[] indicateATs() {
         return new AutoTileTypeField[] {
-                new AutoTileTypeField(4000, 48, 0),
-                new AutoTileTypeField(4050, 48, 0),
-                new AutoTileTypeField(4100, 48, 0),
-                new AutoTileTypeField(4150, 48, 0),
-                new AutoTileTypeField(4200, 48, 0),
-                new AutoTileTypeField(4250, 48, 0),
-                new AutoTileTypeField(4300, 48, 0),
-                new AutoTileTypeField(4350, 48, 0),
-                new AutoTileTypeField(4400, 48, 0),
-                new AutoTileTypeField(4450, 48, 0),
-                new AutoTileTypeField(4500, 48, 0),
-                new AutoTileTypeField(4550, 48, 0),
+                new AutoTileTypeField(4000, 50, 0),
+                new AutoTileTypeField(4050, 50, 0),
+                new AutoTileTypeField(4100, 50, 0),
+                new AutoTileTypeField(4150, 50, 0),
+                new AutoTileTypeField(4200, 50, 0),
+                new AutoTileTypeField(4250, 50, 0),
+                new AutoTileTypeField(4300, 50, 0),
+                new AutoTileTypeField(4350, 50, 0),
+                new AutoTileTypeField(4400, 50, 0),
+                new AutoTileTypeField(4450, 50, 0),
+                new AutoTileTypeField(4500, 50, 0),
+                new AutoTileTypeField(4550, 50, 0),
         };
     }
 }

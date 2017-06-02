@@ -25,10 +25,7 @@ import java.util.LinkedList;
  * Created on 12/29/16.
  */
 public class SchemaPath {
-    // NOTE: Figure out how to remove lastArray, it's only used by RPGCommandSchemaElement for calculateIndent,
-    //        which should be a list-wide thing anyway. Fix this mess after mapInfo work, then start removing all the warnings
-    //        about needing an array disambiguator of type -1 because that'll be completely false.
-    public SchemaPath parent, lastArray;
+    public SchemaPath parent;
 
     // If editor is null, targetElement must be null, and vice versa.
     public SchemaElement editor;
@@ -145,7 +142,6 @@ public class SchemaPath {
         SchemaPath sp = new SchemaPath();
         sp.parent = this;
         sp.lastArrayIndex = index;
-        sp.lastArray = lastArray;
         sp.hrIndex = indexS;
         return sp;
     }
@@ -156,7 +152,6 @@ public class SchemaPath {
         SchemaPath sp = new SchemaPath();
         sp.parent = this;
         sp.lastArrayIndex = lastArrayIndex;
-        sp.lastArray = lastArray;
         sp.editor = heldElement;
         sp.host = launcher;
         sp.targetElement = target;
@@ -169,20 +164,7 @@ public class SchemaPath {
         SchemaPath sp = new SchemaPath();
         sp.parent = this;
         sp.lastArrayIndex = lastArrayIndex;
-        sp.lastArray = lastArray;
         sp.hrIndex = index;
-        return sp;
-    }
-
-    // Always used at the beginning of array/hash to make absolutely sure there is an object arrayHashIndex can latch onto.
-    public SchemaPath arrayEntry(RubyIO target, SchemaElement monitor) {
-        SchemaPath sp = new SchemaPath();
-        sp.parent = this;
-        sp.editor = monitor;
-        sp.lastArrayIndex = target;
-        sp.lastArray = sp;
-        sp.targetElement = target;
-        sp.hrIndex = null;
         return sp;
     }
 

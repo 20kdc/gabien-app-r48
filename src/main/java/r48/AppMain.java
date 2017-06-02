@@ -398,11 +398,10 @@ public class AppMain {
         return watcher;
     }
 
-    public static ISchemaHost launchNonRootSchema(RubyIO root, String rootSchema, RubyIO array, String arraySchema, RubyIO arrayIndex, RubyIO element, String elementSchema, String indexText) {
+    public static ISchemaHost launchNonRootSchema(RubyIO root, String rootSchema, RubyIO arrayIndex, RubyIO element, String elementSchema, String indexText) {
         // produce a valid (and false) parent chain, that handles all required guarantees.
         ISchemaHost shi = launchSchema(rootSchema, root);
         SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(rootSchema), root, shi);
-        sp = sp.arrayEntry(array, AppMain.schemas.getSDBEntry(arraySchema));
         sp = sp.arrayHashIndex(arrayIndex, indexText);
         shi.switchObject(sp.newWindow(AppMain.schemas.getSDBEntry(elementSchema), element, shi));
         return shi;

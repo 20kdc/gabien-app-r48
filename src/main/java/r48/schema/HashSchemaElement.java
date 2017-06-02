@@ -33,8 +33,7 @@ public class HashSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
-        final SchemaPath path = path2.arrayEntry(target, this);
+    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIScrollVertLayout uiSV = new UIScrollVertLayout();
         int vertSz = keyElem.maxHoldingHeight();
         if (valElem.maxHoldingHeight() > keyElem.maxHoldingHeight())
@@ -92,7 +91,6 @@ public class HashSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        path = path.arrayEntry(target, this);
         setDefault = IntegerSchemaElement.ensureType(target, '{', setDefault);
         if (setDefault) {
             target.hashVal = new HashMap<RubyIO, RubyIO>();

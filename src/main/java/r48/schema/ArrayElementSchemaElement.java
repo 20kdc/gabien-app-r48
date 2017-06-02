@@ -36,8 +36,6 @@ public class ArrayElementSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        if (path.lastArray.targetElement != target)
-            throw new RuntimeException("Array elements must be in the array that they are targetting.");
         if (name.equals("_")) {
             UIPanel panel = new UIPanel();
             panel.setBounds(new Rect(0, 0, 0, 0));
@@ -84,8 +82,6 @@ public class ArrayElementSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (path.lastArray.targetElement != target)
-            throw new RuntimeException("Array elements must be in the array that they are targetting.");
         // Resize array if required?
         if (target.arrVal.length <= index) {
             if (optional == null) {

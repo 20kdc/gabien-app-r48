@@ -5,7 +5,8 @@
  THE GLOBAL SCHEMA FILE (this text moved from RXP schema)
  commands:
   ']' Use only if this object is an array - indexes the array.
-      Only use inside an arrayDAM schema disambiguator.
+      Use in any context that happens to also be an array, lastArray isn't a thing anymore.
+      This will ensure the target is an array if it isn't already.
   ':' Define object class.
   '.' Define substructure.
   '@' Instance var.

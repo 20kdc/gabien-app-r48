@@ -91,6 +91,8 @@ public class XPTileRenderer implements ITileRenderer {
     // Used by 2k3 support too, since it follows the same AT design
     public static boolean generalOldRMATField(int tox, int toy, int subfield, int atFieldType, int fTileSize, int ets, int px, int py, IGrInDriver igd, IGrInDriver.IImage img) {
         if ((ets == fTileSize) && (AppMain.autoTiles[atFieldType] != null)) {
+            if (subfield >= AppMain.autoTiles[atFieldType].entries.length)
+                return false;
             ATDB.Autotile at = AppMain.autoTiles[atFieldType].entries[subfield];
             if (at != null) {
                 int cSize = fTileSize / 2;

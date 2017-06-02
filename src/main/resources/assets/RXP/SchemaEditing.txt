@@ -69,16 +69,13 @@ e event_movetype 0 fixed 1 random 2 approachPlayer 3 moveRoute
 
  Defining Map.
 
- "mapEvents" is relied upon by showEvent in order to produce the proper chain
-> mapEvents hash int+1 subwindow RPG::Event
-
 : RPG::Map
 @bgm RPG::AudioFile
 @bgs RPG::AudioFile
 @width roint= 20
 @height roint= 15
 +table @data @width @height 20 15 3
-@events subwindow mapEvents
+@events subwindow hash int+1 subwindow RPG::Event
 @tileset_id tileset_id
 @autoplay_bgm boolean
 @autoplay_bgs boolean

@@ -116,7 +116,6 @@ public class RPGCommandSchemaElement extends SchemaElement {
                         height += ise.maxHoldingHeight();
                         uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
                     }
-                    SchemaPath parameterPath = path.arrayEntry(param, new StandardArraySchemaElement(new OpaqueSchemaElement(), 0, false));
                     for (int i = 0; i < param.arrVal.length; i++) {
                         if (param.arrVal.length <= i) {
                             uiSVL.panels.add(new UILabel("WARNING: Missing E" + i + ".", FontSizes.schemaFieldTextHeight));
@@ -127,7 +126,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                         if (!paramName.equals("_")) {
                             SchemaElement ise = rc.getParameterSchema(param, i);
                             height += ise.maxHoldingHeight();
-                            UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, parameterPath.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
+                            UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
                             uiSVL.panels.add(new UIHHalfsplit(1, 3, new UILabel(rc.getParameterName(i), FontSizes.schemaFieldTextHeight), uie));
                         }
                     }
@@ -171,46 +170,11 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 // All parameters are described, and the SASE will ensure length is precisely equal
                 SchemaElement parametersSanitySchema = new StandardArraySchemaElement(new OpaqueSchemaElement(), rc.paramName.size(), false);
                 parametersSanitySchema.modifyVal(param, path, setDefault);
-                SchemaPath parameterPath = path.arrayEntry(param, parametersSanitySchema);
                 for (int i = 0; i < param.arrVal.length; i++) {
                     SchemaElement ise = rc.getParameterSchema(param, i);
-                    ise.modifyVal(param.arrVal[i], parameterPath.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), setDefault);
+                    ise.modifyVal(param.arrVal[i], path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), setDefault);
                 }
             }
         }
-        if (allowControlOfIndent) {
-            RubyIO rio = target.getInstVarBySymbol("@indent");
-            // If it passed actualSchema and @indent doesn't exist, let's just leave it alone
-            if (rio != null) {
-                long targetIndent = calculateIndent(target, path);
-                if (targetIndent != rio.fixnumVal) {
-                    rio.fixnumVal = targetIndent;
-                    path.changeOccurred(true);
-                }
-            }
-        }
-    }
-
-    private long calculateIndent(RubyIO targ, SchemaPath path) {
-        // Calculate indent
-        SchemaPath array = path.lastArray;
-        long targetIndex = path.lastArrayIndex.fixnumVal;
-
-        long indent = 0;
-        for (int i = 0; i <= targetIndex; i++) {
-            RubyIO cmd = targ;
-            // used to deal with arrays which are still in the process of adding this command,
-            //  or cases where this value is just being created via a method which doesn't pass the array parameter.
-            if (i != targetIndex)
-                cmd = array.targetElement.arrVal[i];
-            int code = (int) cmd.getInstVarBySymbol("@code").fixnumVal;
-            RPGCommand rc = database.knownCommands.get(code);
-            if (rc != null) {
-                indent += rc.indentPre;
-                if (i != targetIndex)
-                    indent += rc.indentPost;
-            }
-        }
-        return indent;
     }
 }
