@@ -33,8 +33,7 @@ e var_compare_op_2k3 0 == 1 >= 2 <= 3 > 4 < 5 !=
 @timer_2_secs_2k3 int
 
 : RPG::MoveRoute
-@list OPAQUE
- @list MoveListEditor
+@list MoveListEditor
 @repeat booleanDefTrue
 @skippable boolean
 

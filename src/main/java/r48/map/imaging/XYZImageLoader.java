@@ -53,7 +53,8 @@ public class XYZImageLoader implements IImageLoader {
                 img[ind++] = pal[R2kUtil.readLcfU8(iis)];
             return GaBIEn.createImage(img, w, h);
         } catch (Exception e) {
-            e.printStackTrace();
+            // Exceptions here are, frankly, accepted behavior.
+            // e.printStackTrace();
             return null;
         }
     }

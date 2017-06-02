@@ -50,7 +50,7 @@ public class PNG8IImageLoader implements IImageLoader {
                 return null;
             return GaBIEn.getImageCK(root + name + ".png", pal[0] & 0xFF, pal[1] & 0xFF, pal[2] & 0xFF);
         } catch (Exception ioe) {
-            ioe.printStackTrace();
+            // Exceptions here are, frankly, accepted behavior.
             return null;
         }
     }

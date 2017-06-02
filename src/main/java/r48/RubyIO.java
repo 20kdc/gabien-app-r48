@@ -233,6 +233,16 @@ public class RubyIO {
             }
             return s;
         }
+        if (type == 'u') {
+            String hex = "";
+            for (byte n : userVal) {
+                String t = Integer.toHexString(n & 0xFF);
+                if (t.length() == 1)
+                    t = "0" + t;
+                hex += " " + t.toUpperCase();
+            }
+            return indent + toString() + hex + "\n";
+        }
         return indent + toString() + "\n";
     }
 
