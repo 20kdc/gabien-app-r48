@@ -43,9 +43,8 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 +optIV @airship_x int
 +optIV @airship_y int
 
-> RPG::MapTree::Hash hash int+0 subwindow RPG::MapInfo
 : RPG::MapTree
-@map_infos subwindow RPG::MapTree::Hash
+@map_infos subwindow hash int+0 subwindow RPG::MapInfo
 @map_order subwindow array 0 int+0
 @active_node int+0
 @start RPG::Start

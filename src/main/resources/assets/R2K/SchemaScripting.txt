@@ -36,9 +36,13 @@ i R2K/SchemaScriptingMonolith.txt
  Technically the arrayDAM isn't needed,
   but it's SUPPOSED to be there to ensure array parent stuff is all in order.
  (Ok, fixed, now it's needed. Allowing inconsistency causes inconsistency causes bugs.)
+ (Ok, so it turns out inconsistency wasn't really a factor, and it was just a stupid mess going back to RPGCommandSchemaElement's original implementation.
+  Long story short, arrayDAM isn't needed, and if you feel like lastArray should be brought back, try moving the logic into the array class.
+  Suddenly, you'll question why on earth you decided lastArray might be a good idea, and think about all the complexity it brought LAST TIME.
+  This being a message to myself, in case I ever decide to bring it back.)
 
 .LcfEventCommandParams
-+arrayDAM -1 nil ]0 text string
+]0 text string
 +arrayIx1 genericScriptParameter
 
 : RPG::EventCommand
@@ -64,11 +68,11 @@ i R2K/SchemaScriptingMonolith.txt
  Used by the move commands to avoid tons of redundant paramspecs
 
 .movecommand_default_nothing
-@parameters arrayDAM -1 nil { ]0 _ string ]1 _ int ]2 _ int ]3 _ int }
+@parameters { ]0 _ string ]1 _ int ]2 _ int ]3 _ int }
 
 : RPG::MoveCommand
 @code int
-@parameters arrayDAM -1 nil { ]0 _ string ]1 _ int ]2 _ int ]3 _ int }
+@parameters { ]0 _ string ]1 _ int ]2 _ int ]3 _ int }
 
 > LcfMoveCommandEditor RPGMS R2K/CommandsMove.txt RPG::MoveCommand movecommand_default_nothing
 > MoveListEditor subwindow array 0 RPG::MoveCommand
