@@ -90,6 +90,13 @@ X timer_operation_parameters
 
  GAP
 
+11330: Move Event$
+d Sends a list of MoveCommands to an event.
+p _ string
+X move_event_parameters
+
+ GAP
+
 11510: Play BGM$
 d Plays some background music.
 p music string

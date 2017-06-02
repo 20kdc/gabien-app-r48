@@ -13,7 +13,7 @@ import r48.FontSizes;
 import r48.RubyCT;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
-import r48.schema.IntegerSchemaElement;
+import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIHHalfsplit;

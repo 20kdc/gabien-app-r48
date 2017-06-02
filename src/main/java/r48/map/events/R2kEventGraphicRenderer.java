@@ -65,4 +65,9 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
             igd.blitImage(sx * px, sy * py, sx, sy, (ox + 8) - (sx / 2), (oy - sy) + 16, i);
         }
     }
+
+    @Override
+    public int eventIdBase() {
+        return 1;
+    }
 }

@@ -13,6 +13,8 @@ import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.schema.*;
 import r48.schema.arrays.StandardArraySchemaElement;
+import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.integers.ROIntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIEnumChoice;

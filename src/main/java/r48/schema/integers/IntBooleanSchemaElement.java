@@ -3,9 +3,11 @@
  * No warranty is provided, implied or otherwise.
  */
 
-package r48.schema;
+package r48.schema.integers;
 
 import r48.RubyIO;
+import r48.schema.BooleanSchemaElement;
+import r48.schema.integers.IntegerSchemaElement;
 
 /**
  * 0 is false, anything else is true,

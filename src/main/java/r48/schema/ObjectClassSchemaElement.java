@@ -39,57 +39,56 @@ public class ObjectClassSchemaElement extends SchemaElement {
         if (!target.symVal.equals(symbol))
             throw new RuntimeException("Classable of type " + target.symVal + " passed to OCSE of type " + symbol);
 
-        if (backing instanceof AggregateSchemaElement) {
-            AggregateSchemaElement ace = (AggregateSchemaElement) backing;
-            LinkedList<String> iVars = new LinkedList<String>();
-            boolean enableIVarCheck = false;
-            for (SchemaElement ise : ace.aggregate) {
-
-                // Deal with all likely proxy sandwiches
-                while (ise instanceof ProxySchemaElement)
-                    ise = ((ProxySchemaElement) ise).getEntry();
-                while (ise instanceof SubwindowSchemaElement)
-                    ise = ((SubwindowSchemaElement) ise).heldElement;
-                while (ise instanceof ProxySchemaElement)
-                    ise = ((ProxySchemaElement) ise).getEntry();
-
-                if (ise instanceof GenericDisambiguationSchemaElement) {
-                    SchemaElement sub = ((GenericDisambiguationSchemaElement) ise).getDisambiguation(target);
-                    if (sub instanceof AggregateSchemaElement) {
-                        for (SchemaElement ise2 : ((AggregateSchemaElement) sub).aggregate) {
-                            while (ise2 instanceof ProxySchemaElement)
-                                ise2 = ((ProxySchemaElement) ise2).getEntry();
-                            while (ise2 instanceof SubwindowSchemaElement)
-                                ise2 = ((SubwindowSchemaElement) ise2).heldElement;
-                            while (ise2 instanceof ProxySchemaElement)
-                                ise2 = ((ProxySchemaElement) ise2).getEntry();
-                            if (ise2 instanceof IVarSchemaElement)
-                                iVars.add(((IVarSchemaElement) ise2).iVar);
-                        }
-                    } else {
-                        // sure, you probably know what you're doing
-                        continue;
-                    }
-                }
-
-                if (ise instanceof IVarSchemaElement) {
-                    enableIVarCheck = true;
-                    iVars.add(((IVarSchemaElement) ise).iVar);
-                }
-                if (ise instanceof RubyTableSchemaElement)
-                    iVars.add(((RubyTableSchemaElement) ise).iVar);
-            }
-            if (enableIVarCheck) {
-                for (String s : target.iVars.keySet()) {
-                    if (!iVars.contains(s)) {
-                        System.out.println("WARNING: iVar " + s + " of " + symbol + " wasn't handled.");
-                        System.out.println("This usually means your schema is incomplete.");
-                    }
+        LinkedList<String> iVars = new LinkedList<String>();
+        boolean enableIVarCheck = findAndAddIVars(backing, target, iVars);
+        if (enableIVarCheck) {
+            for (String s : target.iVars.keySet()) {
+                if (!iVars.contains(s)) {
+                    System.out.println("WARNING: iVar " + s + " of " + symbol + " wasn't handled.");
+                    System.out.println("This usually means your schema is incomplete.");
                 }
             }
         }
 
         return backing.buildHoldingEditor(target, launcher, path);
+    }
+
+    private boolean findAndAddIVars(SchemaElement ise, RubyIO target, LinkedList<String> iVars) {
+        // Deal with proxies
+        boolean proxyHandling = true;
+        while (proxyHandling) {
+            proxyHandling = false;
+            if (ise instanceof ProxySchemaElement) {
+                ise = ((ProxySchemaElement) ise).getEntry();
+                proxyHandling = true;
+            }
+            if (ise instanceof SubwindowSchemaElement) {
+                ise = ((SubwindowSchemaElement) ise).heldElement;
+                proxyHandling = true;
+            }
+            if (ise instanceof GenericDisambiguationSchemaElement) {
+                ise = ((GenericDisambiguationSchemaElement) ise).getDisambiguation(target);
+                proxyHandling = true;
+            }
+        }
+        // Final type disambiguation
+        if (ise instanceof IVarSchemaElement) {
+            iVars.add(((IVarSchemaElement) ise).iVar);
+            return true;
+        }
+        if (ise instanceof RubyTableSchemaElement) {
+            iVars.add(((RubyTableSchemaElement) ise).iVar);
+            return true;
+        }
+        if (ise instanceof AggregateSchemaElement) {
+            boolean r = false;
+            for (SchemaElement se : ((AggregateSchemaElement) ise).aggregate) {
+                if (findAndAddIVars(se, target, iVars))
+                    r = true;
+            }
+            return r;
+        }
+        return false;
     }
 
     @Override

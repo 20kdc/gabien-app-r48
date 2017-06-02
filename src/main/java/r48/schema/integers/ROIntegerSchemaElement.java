@@ -3,7 +3,9 @@
  * No warranty is provided, implied or otherwise.
  */
 
-package r48.schema;
+package r48.schema.integers;
+
+import r48.schema.integers.IntegerSchemaElement;
 
 /**
  * Created on 12/29/16.

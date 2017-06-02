@@ -16,6 +16,10 @@ import r48.schema.*;
 import r48.schema.arrays.OneIndexedArraySchemaElement;
 import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.displays.EPGDisplaySchemaElement;
+import r48.schema.integers.IntBooleanSchemaElement;
+import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.integers.LowerBoundIntegerSchemaElement;
+import r48.schema.integers.ROIntegerSchemaElement;
 import r48.schema.specialized.*;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 import r48.schema.specialized.tbleditors.DefaultTableCellEditor;
@@ -51,6 +55,8 @@ public class SDB {
     public SDB() {
         schemaDatabase.put("nil", new OpaqueSchemaElement());
         schemaDatabase.put("int", new IntegerSchemaElement(0));
+        schemaDatabase.put("int+0", new LowerBoundIntegerSchemaElement(0, 0));
+        schemaDatabase.put("int+1", new LowerBoundIntegerSchemaElement(1, 1));
         schemaDatabase.put("index", new AMAISchemaElement());
         schemaDatabase.put("float", new FloatSchemaElement("0"));
         schemaDatabase.put("string", new StringSchemaElement("", '\"'));
@@ -109,6 +115,14 @@ public class SDB {
                             int n = Integer.parseInt(args[point++]);
                             return new IntegerSchemaElement(n);
                         }
+                        if (text.equals("int+0=")) {
+                            int n = Integer.parseInt(args[point++]);
+                            return new LowerBoundIntegerSchemaElement(0, n);
+                        }
+                        if (text.equals("int+1=")) {
+                            int n = Integer.parseInt(args[point++]);
+                            return new LowerBoundIntegerSchemaElement(1, n);
+                        }
                         if (text.equals("float="))
                             return new FloatSchemaElement(args[point++]);
                         if (text.equals("string="))
@@ -156,6 +170,14 @@ public class SDB {
                         }
                         if (text.equals("subwindow"))
                             return new SubwindowSchemaElement(get());
+                        // subwindow[ This Is A Test ]
+                        if (text.equals("subwindow[")) {
+                            String text2 = args[point++];
+                            while (!args[point].equals("]"))
+                                text2 += " " + args[point++];
+                            point++;
+                            return new SubwindowSchemaElement(get(), getFunctionToReturn(text2));
+                        }
 
                         if (text.equals("{")) {
                             // Aggregate

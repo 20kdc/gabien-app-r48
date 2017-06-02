@@ -31,4 +31,9 @@ public class NullEventGraphicRenderer implements IEventGraphicRenderer {
     public void drawEventGraphic(RubyIO target, int ox, int oy, IGrInDriver igd) {
 
     }
+
+    @Override
+    public int eventIdBase() {
+        return 0;
+    }
 }

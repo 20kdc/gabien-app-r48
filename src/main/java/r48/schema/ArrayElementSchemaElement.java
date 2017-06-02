@@ -5,9 +5,7 @@
 
 package r48.schema;
 
-import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.schema.util.ISchemaHost;
@@ -19,6 +17,8 @@ import r48.ui.UIHHalfsplit;
  * NOTE: This doesn't provide the array entry object!!!
  * This is because ArrayElementSchemaElement should only exist inside arrayDAM.
  * (Well THAT didn't end up happening. fixing R2k schemascripting...)
+ * Also note that since this is meant to emulate the RPGCommand system where that is not usable,
+ *  among other things, '_' as a name will act to make a given parameter invisible.
  * Created on 12/31/16.
  */
 public class ArrayElementSchemaElement extends SchemaElement {
@@ -38,6 +38,11 @@ public class ArrayElementSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
         if (path.lastArray.targetElement != target)
             throw new RuntimeException("Array elements must be in the array that they are targetting.");
+        if (name.equals("_")) {
+            UIPanel panel = new UIPanel();
+            panel.setBounds(new Rect(0, 0, 0, 0));
+            return panel;
+        }
         if ((target.arrVal.length <= index) && (optional != null)) {
             return new UITextButton(FontSizes.schemaButtonTextHeight, "Field " + name + " doesn't exist (default " + optional + ")", new Runnable() {
                 @Override
@@ -72,6 +77,8 @@ public class ArrayElementSchemaElement extends SchemaElement {
 
     @Override
     public int maxHoldingHeight() {
+        if (name.equals("_"))
+            return 0;
         return Math.max(UILabel.getRecommendedSize("", FontSizes.schemaFieldTextHeight).height, subSchema.maxHoldingHeight());
     }
 

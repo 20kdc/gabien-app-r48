@@ -6,6 +6,7 @@
 package r48.schema;
 
 import r48.RubyIO;
+import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.SchemaPath;
 
 /**

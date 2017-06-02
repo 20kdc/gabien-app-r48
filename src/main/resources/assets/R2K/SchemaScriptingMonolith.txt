@@ -93,7 +93,6 @@ e cbranch_type 0 Switch 1 Var.Compare 2 Timer1 3 Gold.Compare 4 Item.Compare 5 A
 e cbranch_gele 0 >= 1 <=
 e cbranch_varcomp_e 0 == 1 >= 2 <= 3 > 4 < 5 !=
 e cbranch_cherry_e 0 HasSave 1 TestPlay 2 ATBWait 3 Fullscreen
-e cbranch_dir 0 Up 1 Right 2 Down 3 Left
 e cbranch_vehicletype 0 Boat 1 Ship 2 Airship
 e cbranch_itemcomp_e 0 PartyHasItem 1 PartyDoesn'tHaveItem
 e cbranch_actorprop_e 0 InParty 1 Name= 2 Level>= 3 HP>= 4 KnowsSkill 5 Equipped 6 HasState
@@ -168,7 +167,7 @@ e cbranch_actorprop_e 0 InParty 1 Name= 2 Level>= 3 HP>= 4 KnowsSkill 5 Equipped
 .cbranch_chardir
 +cbranch_base
 ]2 char character_id
-]3 direction cbranch_dir
+]3 direction sprite_direction
 
 .cbranch_vehicle
 +cbranch_base
@@ -220,3 +219,25 @@ e timer_operation_type 0 SetTime 1 SetFlagsAndStart 2 Stop
 +timer_operation_base
 ]4 visible int_boolean
 ]5 battle int_boolean
+
+     __
+ ___ |_
+ ||| |_
+
+ Move Event
+ This one involves some hackery in the EventCommand decoder,
+  to give the schema something useful.
+ Rules are:
+ If, and only if, the code is 11330, moveCommands is considered.
+ Otherwise it basically doesn't exist.
+
+.move_event_parameters
+@indent indent
+@parameters arrayDAM -1 nil move_event_array
++optIV @move_commands array 0 RPG::MoveCommand
+
+.move_event_array
+]1 char character_id
+]2 moveFreq int
+]3 repeat int_boolean
+]4 skippable int_boolean

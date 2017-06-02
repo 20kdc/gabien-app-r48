@@ -27,7 +27,7 @@ public class EventPage extends R2kObject {
     public IntegerR2kStruct layer = new IntegerR2kStruct(0);
     public IntegerR2kStruct blocking = new IntegerR2kStruct(0);
     public IntegerR2kStruct animType = new IntegerR2kStruct(0);
-    public IntegerR2kStruct moveSpeed = new IntegerR2kStruct(0);
+    public IntegerR2kStruct moveSpeed = new IntegerR2kStruct(3);
     public BlobR2kStruct moveRoute = new BlobR2kStruct(R2kUtil.supplyBlank(0, (byte) 0));
     public ArraySizeR2kInterpretable<EventCommand> listSize = new ArraySizeR2kInterpretable<EventCommand>();
     public ArrayR2kStruct<EventCommand> list = new ArrayR2kStruct<EventCommand>(listSize, new ISupplier<EventCommand>() {

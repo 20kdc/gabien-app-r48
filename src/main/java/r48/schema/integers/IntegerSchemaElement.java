@@ -3,13 +3,14 @@
  * No warranty is provided, implied or otherwise.
  */
 
-package r48.schema;
+package r48.schema.integers;
 
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UINumberBox;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -31,8 +32,8 @@ public class IntegerSchemaElement extends SchemaElement {
         unb.onEdit = new Runnable() {
             @Override
             public void run() {
-                target.fixnumVal = unb.number;
-                path.changeOccurred(false);
+                target.fixnumVal = filter(unb.number);
+                path.changeOccurred(false); // does UI update, yadayadayada
             }
         };
         unb.setBounds(new Rect(0, 0, 9, 9));
@@ -41,6 +42,10 @@ public class IntegerSchemaElement extends SchemaElement {
 
     public boolean isReadOnly() {
         return false;
+    }
+
+    public int filter(int i) {
+        return i;
     }
 
     @Override

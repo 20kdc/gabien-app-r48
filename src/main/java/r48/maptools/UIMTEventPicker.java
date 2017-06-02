@@ -99,7 +99,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
         svl.panels.add(new UITextButton(FontSizes.eventPickerEntryTextHeight, "+ Add Event", new Runnable() {
             @Override
             public void run() {
-                int unusedIndex = 1;
+                int unusedIndex = AppMain.stuffRenderer.eventRenderer.eventIdBase();
                 RubyIO evtHash = mapView.map.getInstVarBySymbol("@events");
                 while (evtHash.getHashVal(new RubyIO().setFX(unusedIndex)) != null)
                     unusedIndex++;

@@ -83,4 +83,9 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
         if (fail)
             igd.drawText(ox, oy, 255, 255, 255, 8, "EV" + type);
     }
+
+    @Override
+    public int eventIdBase() {
+        return 0;
+    }
 }
