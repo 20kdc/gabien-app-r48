@@ -15,7 +15,7 @@ import r48.io.r2k.struct.EventCommand;
  * Created on 31/05/17.
  */
 public class EventPage extends R2kObject {
-    public BlobR2kStruct condition = new BlobR2kStruct(R2kUtil.supplyBlank(0, (byte) 0));
+    public EventPageCondition condition = new EventPageCondition();
     public StringR2kStruct graphicCName = new StringR2kStruct();
     public IntegerR2kStruct graphicCIndex = new IntegerR2kStruct(0);
     public IntegerR2kStruct graphicCDirection = new IntegerR2kStruct(2);

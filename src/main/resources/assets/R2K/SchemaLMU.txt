@@ -2,8 +2,30 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
 
+.EventPage_Condition_Flags
+@switch_a boolean
+@switch_b boolean
+@var_>=_or_r2kop boolean
+@item boolean
+@actor boolean
+@timer_1 boolean
+@timer_2 boolean
+
+: RPG::EventPage::Condition
+@valid EventPage_Condition_Flags
+@switch_a switch_id
+@switch_b switch_id
+@var_id var_id
+e var_compare_operator_2k3 0 == 1 >= 2 <= 3 > 4 < 5 !=
+@var_compare_op_2k3 var_compare_operator_r2k3
+@var_value int
+@item_id item_id
+@actor_id actor_id
+@timer_1_secs int
+@timer_2_secs_2k3 int
+
 : RPG::EventPage
-@condition subwindow OPAQUE
+@condition subwindow RPG::EventPage::Condition
 @character_name string
 @character_index int
  actually an enum
