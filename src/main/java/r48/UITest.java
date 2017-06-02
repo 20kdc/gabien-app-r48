@@ -8,8 +8,12 @@ package r48;
 import gabien.ui.Rect;
 import gabien.ui.UIPanel;
 import gabien.ui.UITextButton;
+import r48.ui.UIAppendButton;
+import r48.ui.UINSVertLayout;
 import r48.ui.UIScrollVertLayout;
 
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Set;
@@ -27,11 +31,34 @@ public class UITest extends UIPanel {
     public RubyIO[] objectList;
     int offset = 0;
     public LinkedList<RubyIO> back = new LinkedList<RubyIO>();
+    // the naming got screwed up with the Nth layout redesign.
+    // UITest -> outerPanel -> Back/PRINT
+    //                      -> masterPanel
     public UIScrollVertLayout masterPanel = new UIScrollVertLayout();
+    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton("PRINT", new UITextButton(FontSizes.inspectorBackTextHeight, "Back...", new Runnable() {
+        @Override
+        public void run() {
+            if (back.size() > 0)
+                loadObject(back.removeLast());
+        }
+    }), new Runnable() {
+        @Override
+        public void run() {
+            try {
+                FileOutputStream fos = new FileOutputStream("PRINT.txt");
+                PrintStream ps = new PrintStream(fos);
+                ps.print(currentObj.toStringLong(""));
+                fos.close();
+                AppMain.launchDialog("PRINT.txt written!");
+            } catch (Exception e) {
+                AppMain.launchDialog("Could not print: " + e);
+            }
+        }
+    }, FontSizes.inspectorBackTextHeight), masterPanel);
 
     public UITest(RubyIO obj) {
         loadObject(obj);
-        allElements.add(masterPanel);
+        allElements.add(outerPanel);
         setBounds(new Rect(0, 0, 320, 200));
     }
 
@@ -41,8 +68,6 @@ public class UITest extends UIPanel {
         LinkedList<String> strings = new LinkedList<String>();
         LinkedList<RubyIO> targs = new LinkedList<RubyIO>();
         // -- Actually collate things
-        strings.add("Back from " + obj);
-        targs.add(null);
         for (String s : sortedKeysStr(obj.iVars.keySet())) {
             strings.add("IVar " + s + " -> " + obj.iVars.get(s));
             targs.add(obj.iVars.get(s));
@@ -66,16 +91,11 @@ public class UITest extends UIPanel {
         masterPanel.panels.clear();
         for (int i = 0; i < navigaList.length; i++) {
             final int j = i;
-            UITextButton button = new UITextButton(i == 0 ? FontSizes.inspectorBackTextHeight : FontSizes.inspectorTextHeight, navigaList[i], new Runnable() {
+            UITextButton button = new UITextButton(FontSizes.inspectorTextHeight, navigaList[i], new Runnable() {
                 @Override
                 public void run() {
-                    if (objectList[j] == null) {
-                        if (back.size() > 0)
-                            loadObject(back.removeLast());
-                    } else {
-                        back.addLast(obj);
-                        loadObject(objectList[j]);
-                    }
+                    back.addLast(obj);
+                    loadObject(objectList[j]);
                 }
             });
             masterPanel.panels.add(button);
@@ -86,7 +106,7 @@ public class UITest extends UIPanel {
     @Override
     public void setBounds(Rect r) {
         super.setBounds(r);
-        masterPanel.setBounds(new Rect(0, 0, r.width, r.height));
+        outerPanel.setBounds(new Rect(0, 0, r.width, r.height));
     }
 
     public static int natStrComp(String s, String s1) {

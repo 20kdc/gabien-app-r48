@@ -1,0 +1,7 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+from highest priority to lowest:
++ finish full 2k3 editor
++ eventually turn editor into huge gelatinous monstrosity

@@ -1,0 +1,127 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ -- MOVED FROM THE RXP CMDB, cleaned up --
+
+ Original Format (no prefix)
+
+  A very simple format for cases when you can get away with it.
+
+  Note that '$' is replaced with " <nice looking string>",
+   while '!' is replaced with " to <nice looking string>".
+   '#' defines a range, for "A through B" commands.
+  Both are replaced with nothing if just entering the command name.
+
+  an example: 108: Comment$
+  a more advanced example: 103: Input Number!$ digits
+   (As this format is crude, this shows as "Input Number digits" in the selection box.)
+
+ Semi-original Format (prefix '@P')
+
+ '@P' is the Original Format -
+  but enumeration prefixes are not applied, like with the Extended Format.
+
+ Extended Format (prefix '@@')
+
+  A format which has grown to be used in quite a lot of things (SDB can use it, for example)
+
+  Parameters are referred to by A through Z for simplicity of implementation.
+  Most characters are interpreted as-is.
+
+  #A outputs Parameter A.
+  However, if Parameter A does not exist, then it will literally output 'A'.
+  This behavior is also fully usable as an escaping mechanism. That is, '##' will output '#' reliably.
+  In either case, the prefixNext flag is disabled afterwards (see '@')
+
+  @ causes the next outputted value to be prefixed if it's an enumeration.
+  This is more-or-less always used as the "command" "@#A" or "@#B" or such, for "output prefixed enumeration".
+
+  {|} are used to open/'else-branch'/close blocks.
+  Blocks are used for conditional text writing.
+
+  [] is used to perform a specific parameter interpretation,
+   as opposed to # (only capable of interpreting using the default interpretation).
+
+   --- INTERPRETATIONS ---
+
+  The schema database may contain name-routine definitions,
+   usually used for handling classes like AudioFile.
+  These name routines define *sources* relative to the parameter.
+  If the context has a bad default interpretation, you will probably want to force a given interpretation.
+  Or if you've broken up your name-routine into pieces, you may want to call the sub-components.
+
+  The rules of interpretations are:
+   By default, the type name is looked up in the "Interp." prefixed name set.
+   Failing this, the schema is looked up, in case it is an enum.
+
+  If the character '@' prefixes the interpretation type, the type name is considered to be the full name routine's ID.
+  For example, [@Interp.choice_array] would be the same as [choice_array] if Interp.choice_array existed in the name routine database.
+
+  If no interpretation exists for the type given, it fails completely,
+   and will result in a no-variables-interpretation (An error in a case where no variables are allowed causes an exception.)
+
+  An example usage:
+   [int]C
+
+  An example call:
+   [@Class.RPG::AudioFile]A
+
+  Another example call, equally valid
+   [RPG::AudioFile]A
+
+   --- CONDITIONAL BLOCKS ---
+
+  All blocks use '{' to start, '|' will invert the condition mid-way, and '}' terminates.
+
+  There are three formats for blocks.
+  If a parameter mentioned is unavailable, the false branch is taken.
+  Blocks are never entirely skipped unless they have no false-branch.
+
+  The first checks if a parameter is *available* - that it exists.
+   {A:Previous attempts to listen to this tape will have found it blank.}
+   {A:(with parameter)|(without parameter)}
+
+  The second checks if a parameter is the same as another.
+  This can be used for range specification (emulating # in the Original Format):
+   {AB:#A|@#A..@#B}
+
+  The third checks if a parameter, using the default interpretation (dumb as that may be), is equal to a literal text string.
+  Note that this is the human-readable text string,
+   which may be a little painful under some circumstances.
+  This can be used as a nicer way to output int_booleans...
+  {A=1=(enable)|(disable)}
+  ... or as a way to handle "invert" options. (Note the inverted order of the text.)
+  {A=1=OFF|ON}
+
+ Here are some examples of the Extended Format in use.
+ These examples show all block types in use for their purposes.
+
+  an example: 108:@@Comment{A: #A}
+  a more advanced example: 103:@@Input Number {A: to @#A}{B: of #B digits}
+  another example: 122:@@Set Variables{A: {AB:@#A|@#A..@#B} #C {D=int=int: [int]E|{D=var=var: @[var_id]E|#D}}}
+
+ ----------------------------------
+
+ Subcomms:
+  '<number>:<name>' defines a command and it's name-routine.
+  'p' defines a parameter. The parameter can only be a type name, chaining language is restricted to SDB.
+  'd' defines the description of the command. You will be warned for omitting this.
+  'L' defines this as a block and list leave command.
+      Commands with this are only valid in two places:
+      1. Immediately before an 'l'-type command
+      2. At the end of the list.
+      However, this can't be deleted due to Map29, E315 (ram nomming moss)
+
+      Note that usually nothing goes after this, but in specific cases that rule is incorrect.
+      If 'block' follows this, then this is solely defined as a block leave command.
+      (This is due to RM2000/2003 oddities that make it different from the later iterations the R48 system was developed for.)
+
+  'l' defines this as requiring a block leave before it, for correct indentation.
+      This can be safely enforced without 100% knowledge of the command set.
+      The parameter should be the thing that starts the block.
+  'K' is similar to 'l', but defines an additional code which makes it "not count".
+  'i' defines entry indent offset
+  'I' defines exit indent offset
+      (ex. Else is l,i-1,I1.)
+  'X' defines this as using a custom schema for indent & parameters.

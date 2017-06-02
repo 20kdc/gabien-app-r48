@@ -206,6 +206,36 @@ public class RubyIO {
         return ((char) type) + data;
     }
 
+    // NOTE: THIS IS NOT COMPLETE, nor is it properly machine-readable.
+    // This is just a nice pretty-printer.
+    public String toStringLong(String indent) {
+        if (type == '[') {
+            String s = indent + "[\n";
+            for (RubyIO rio : arrVal)
+                s += rio.toStringLong(indent + " ");
+            s += indent + "]\n";
+            return s;
+        }
+        if (type == '{') {
+            String s = indent + "{\n";
+            for (Map.Entry<RubyIO, RubyIO> e : hashVal.entrySet()) {
+                s += e.getKey().toStringLong(indent + " ");
+                s += e.getValue().toStringLong(indent + " ");
+            }
+            s += indent + "}\n";
+            return s;
+        }
+        if (type == 'o') {
+            String s = indent + "o" + symVal + "\n";
+            for (Map.Entry<String, RubyIO> e : iVars.entrySet()) {
+                s += indent + " " + e.getKey() + "\n";
+                s += e.getValue().toStringLong(indent + " ");
+            }
+            return s;
+        }
+        return indent + toString() + "\n";
+    }
+
     public String decString() {
         // ignore the CP-setting madness for now
         // however, if it is to be implemented,

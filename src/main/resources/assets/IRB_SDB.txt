@@ -1,0 +1,50 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ THE GLOBAL SCHEMA FILE (this text moved from RXP schema)
+ commands:
+  ']' Use only if this object is an array - indexes the array.
+      Only use inside an arrayDAM schema disambiguator.
+  ':' Define object class.
+  '.' Define substructure.
+  '@' Instance var.
+  '+' Append directly to aggregate. (Needed for some less often-used things that need to be attached, see table*)
+  '>' Alias.
+  'e' Enum. First argument is type ID, then alternating integer and text-word.
+   e blah 1 Box 2 Circle 3 Rectangle
+  's' Symbolic Enum. (enum using Ruby Symbols). First argument is type ID, rest of the arguments are symbols.
+   s blah :box :circle :rectangle
+  'E' Enum with text on the int-entry button. First argument is type ID, second is button text-word, then the alternating integer and text-word.
+   E level LevelID 0 Zombies 1 Piranhas 2 FourHorsemenOfThePocalips
+  ']' Array index (shorthand for "+]<index>", basically)
+      Use only in a proper array context (it will check!!!)
+  'i' include file
+  'D', 'd': Dictionary definitions (moved from hardcoding to make inter-engine porting potentially easier.)
+   'D' refers to a dictionary where elements contain names.
+   'd' refers to a dictionary where elements directly equal names.
+    Examples are probably the simplest thing at this point...
+
+    Firstly, Tilesets here is an ObjectDB array. Nothing around it, just a raw array referred to by a file,
+     containing objects with the instance variable "@name".
+
+     D internal_tilesetDictionary Tilesets 0 @name
+
+    Note that "Tilesets" could be extended with instance variables, like this R2K example referring to "@map_infos", a hash (hence 1) in RPG_RT.lmt:
+
+     D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
+
+    Applied to the existing example, that would be:
+
+     D internal_tilesetDictionary Tilesets@some_array 0 @name
+
+    And now for 'd'-syntax, which is different and always refers to arrays.
+
+     d internal_elementDictionary System @elements
+
+     This refers to the instance variable @elements of System, as an array of strings.
+
+  'A' Install AutoTiles files.
+   The autotiles system works with a set of autotiles definitions, which must be installed.
+  'C' Random stuff (allowIndentControl, name definitions..., access to the super special schema that only works for a given structure...)
+  <The actual chaining language is complicated - see SDB.java for details.>

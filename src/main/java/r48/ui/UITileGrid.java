@@ -17,11 +17,12 @@ public class UITileGrid extends UIGrid {
     public final int tileStart;
     public final UIMapView map;
     public final boolean autoTile;
-
-    public UITileGrid(UIMapView mv, int tStart, int tileCount, boolean aTile) {
+    public final int autoTileSpacing;
+    public UITileGrid(UIMapView mv, int tStart, int tileCount, boolean aTile, int aTileSpacing) {
         super(mv.tileSize, tileCount);
         canMultiSelect = true;
         autoTile = aTile;
+        autoTileSpacing = aTileSpacing;
         map = mv;
         tileStart = tStart;
         bkgR = 255;
@@ -32,7 +33,7 @@ public class UITileGrid extends UIGrid {
     public int getSelected() {
         int r = super.getSelected();
         if (autoTile)
-            r -= r / 49;
+            r -= r / (autoTileSpacing + 1);
         return r + tileStart;
     }
 
@@ -40,25 +41,29 @@ public class UITileGrid extends UIGrid {
     public void setSelected(int i) {
         i -= tileStart;
         if (autoTile)
-            i += i / 48;
+            i += i / autoTileSpacing;
         super.setSelected(i);
     }
 
     private boolean isAutoTile(int t) {
         if (!autoTile)
             return false;
-        return (t % 49) == 48;
+        return (t % (autoTileSpacing + 1)) == autoTileSpacing;
     }
 
     @Override
     protected void drawTile(int t, int x, int y, IGrInDriver igd) {
         if (isAutoTile(t)) {
-            igd.blitImage(16, 36, 20, 20, x + 6, y + 6, AppMain.layerTabs);
+            int sz = 20;
+            if (tileSize < sz)
+                sz = tileSize;
+            int margin = ((tileSize - sz) / 2);
+            igd.blitImage(16, 36, sz, sz, x + margin, y + margin, AppMain.layerTabs);
             return;
         }
         if (autoTile)
-            t -= t / 49;
-        AppMain.stuffRenderer.tileRenderer.drawTile(map.getCurrentLayer(), (short) (t + tileStart), x, y, igd, AppMain.stuffRenderer.tileRenderer.getTileSize());
+            t -= t / (autoTileSpacing + 1);
+        AppMain.stuffRenderer.tileRenderer.drawTile(map.getCurrentLayer(), (short) (t + tileStart), x, y, igd, tileSize);
     }
 
     public boolean selectedATB() {

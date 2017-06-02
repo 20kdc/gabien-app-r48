@@ -125,7 +125,7 @@ public class StuffRenderer {
         if (versionId.equals("lcf2000")) {
             imageLoader = new CacheImageLoader(new XYZOrPNGImageLoader(AppMain.rootPath));
             tileRenderer = new LcfTileRenderer(imageLoader, tso, vxaPano);
-            eventRenderer = new R2kEventGraphicRenderer(imageLoader);
+            eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
             return;
         }
         if (versionId.equals("XP")) {

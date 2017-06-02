@@ -23,11 +23,14 @@ public class FontSizes {
     public static int tableResizeTextHeight = 16;
 
     public static int mapPositionTextHeight = 16;
-    public static int mapDebugTextHeight = 8;
+    public static int mapDebugTextHeight = 6;
     public static int mapInfosTextHeight = 16; // separate tab!
+    public static int mapLayertabTextHeight = 8; // Maybe set to 6, if you dare
 
     public static int mapToolSelectorTextHeight = 16;
     public static int eventPickerEntryTextHeight = 16;
+    public static int tilesTabTextHeight = 6;
+
     public static int rmaTimeframeFontSize = 8;
     public static int rmaPropertyFontSize = 8;
 

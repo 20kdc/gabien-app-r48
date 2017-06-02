@@ -13,23 +13,8 @@ A R2KXPCOM/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
 C allowIndentControl
 C defineIndent
 
- THE GLOBAL SCHEMA FILE
- commands:
-  (NOTE: 'a' has been removed.)
-  ']' Use only if this object is an array - indexes the array.
-      Only use inside an arrayDAM schema disambiguator.
-  '@' Instance var.
-  '.' Define substructure.
-  ':' Define object class.
-  '>' Alias.
-  'e' Enum.
-  'E' Enum with text on the int-entry button.
-  '+' Append directly to aggregate.
-  'D', 'd': Dictionary definitions (moved from hardcoding to make inter-engine porting potentially easier.)
-  'i' include file
-  'A' Install AutoTiles files
-  'C' Random stuff (allowIndentControl, name definitions...)
-  <The actual chaining language is complicated - see SDB.java for details.>
+ THE RXP SCHEMA FILE
+ <Documentation moved to IRB_SDB.txt
 
  defining internal dictionaries
 

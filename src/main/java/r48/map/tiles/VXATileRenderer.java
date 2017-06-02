@@ -316,17 +316,17 @@ public class VXATileRenderer implements ITileRenderer {
         if (mv.getCurrentLayer() == 3) {
             // Shadow Layer
             return new UITileGrid[] {
-                    new UITileGrid(mv, 0x000, 0x100, false)
+                    new UITileGrid(mv, 0x000, 0x100, false, 0)
             };
         } else {
             return new UITileGrid[] {
-                    new UITileGrid(mv, 0x000, 1, false),
-                    new UITileGrid(mv, 0x000, 0x400, false),
-                    new UITileGrid(mv, 0x600, 0x100, false),
-                    new UITileGrid(mv, 0x800, 0x300, true),
-                    new UITileGrid(mv, 0xB00, 0x600, true),
-                    new UITileGrid(mv, 0x1100, 0x600, true),
-                    new UITileGrid(mv, 0x1700, 0x900, true),
+                    new UITileGrid(mv, 0x000, 1, false, 0),
+                    new UITileGrid(mv, 0x000, 0x400, false, 0),
+                    new UITileGrid(mv, 0x600, 0x100, false, 0),
+                    new UITileGrid(mv, 0x800, 0x300, true, 48),
+                    new UITileGrid(mv, 0xB00, 0x600, true, 48),
+                    new UITileGrid(mv, 0x1100, 0x600, true, 48),
+                    new UITileGrid(mv, 0x1700, 0x900, true, 48),
             };
         }
     }

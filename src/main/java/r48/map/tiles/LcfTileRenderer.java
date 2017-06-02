@@ -63,11 +63,13 @@ public class LcfTileRenderer implements ITileRenderer {
         // 0189
         // 23AB
         if ((tidx >= 4000) && (tidx < 4600)) {
+            // 4150 : 3, OS-Legacy
+            // 50 * 12 = 600
             int field = ((tidx - 4000) / 50) + 4;
             int subfield = (tidx - 4000) % 50;
 
             int fx = ((field % 2) * 3) + ((field / 8) * 6);
-            int fy = (field / 2) % 4;
+            int fy = ((field / 2) % 4) * 4;
             handleATField(subfield, fx, fy, px, py, igd, chipset, ets);
             // igd.drawText(px, py, 255, 255, 255, 8, Integer.toString(field));
         }
@@ -94,19 +96,59 @@ public class LcfTileRenderer implements ITileRenderer {
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv) {
         return new UITileGrid[] {
-                new UITileGrid(mv, 0, 16, false)
+                new UITileGrid(mv, 4000, 49, true, 48),
+                new UITileGrid(mv, 4050, 49, true, 48),
+                new UITileGrid(mv, 4100, 49, true, 48),
+                new UITileGrid(mv, 4150, 49, true, 48),
+                new UITileGrid(mv, 4200, 49, true, 48),
+                new UITileGrid(mv, 4250, 49, true, 48),
+                new UITileGrid(mv, 4300, 49, true, 48),
+                new UITileGrid(mv, 4350, 49, true, 48),
+                new UITileGrid(mv, 4400, 49, true, 48),
+                new UITileGrid(mv, 4450, 49, true, 48),
+                new UITileGrid(mv, 4500, 49, true, 48),
+                new UITileGrid(mv, 4550, 49, true, 48),
+
+                new UITileGrid(mv, 5000, 144, false, 0),
+                new UITileGrid(mv, 10000, 144, false, 0),
         };
     }
 
     @Override
     public String[] getPlaneNames(int layer) {
         return new String[] {
-            "Primary Plane"
+                "a0",
+                "a1",
+                "a2",
+                "a3",
+                "a4",
+                "a5",
+                "a6",
+                "a7",
+                "a8",
+                "a9",
+                "aA",
+                "aB",
+                "LT",
+                "UT",
         };
     }
 
     @Override
     public AutoTileTypeField[] indicateATs() {
-        return new AutoTileTypeField[0];
+        return new AutoTileTypeField[] {
+                new AutoTileTypeField(4000, 48, 0),
+                new AutoTileTypeField(4050, 48, 0),
+                new AutoTileTypeField(4100, 48, 0),
+                new AutoTileTypeField(4150, 48, 0),
+                new AutoTileTypeField(4200, 48, 0),
+                new AutoTileTypeField(4250, 48, 0),
+                new AutoTileTypeField(4300, 48, 0),
+                new AutoTileTypeField(4350, 48, 0),
+                new AutoTileTypeField(4400, 48, 0),
+                new AutoTileTypeField(4450, 48, 0),
+                new AutoTileTypeField(4500, 48, 0),
+                new AutoTileTypeField(4550, 48, 0),
+        };
     }
 }

@@ -81,7 +81,7 @@ public class IkaTileRenderer implements ITileRenderer {
 
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv) {
-        return new UITileGrid[] {new UITileGrid(mv, 0, 256, false)};
+        return new UITileGrid[] {new UITileGrid(mv, 0, 256, false, 0)};
     }
 
     @Override

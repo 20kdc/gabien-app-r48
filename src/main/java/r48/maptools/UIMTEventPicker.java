@@ -106,7 +106,13 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
 
                 RubyIO k = new RubyIO().setFX(unusedIndex);
                 RubyIO newEvent = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Event"), k);
-
+                RubyIO evName = newEvent.getInstVarBySymbol("@name");
+                if (evName != null) {
+                    String n = Integer.toString(unusedIndex);
+                    while (n.length() < 4)
+                        n = "0" + n;
+                    evName.encString("EV" + n);
+                }
                 newEvent.getInstVarBySymbol("@x").fixnumVal = x;
                 newEvent.getInstVarBySymbol("@y").fixnumVal = y;
                 evtHash.hashVal.put(k, newEvent);

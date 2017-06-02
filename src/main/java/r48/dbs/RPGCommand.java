@@ -225,16 +225,17 @@ public class RPGCommand {
     }
 
     public static String interpretParameter(RubyIO rubyIO, SchemaElement ise, boolean prefixEnums) {
+        // Basically, Class. overrides go first, then everything else comes after.
+        if (rubyIO.type == 'o') {
+            IFunction<RubyIO, String> handler = AppMain.schemas.nameDB.get("Class." + rubyIO.symVal);
+            if (handler != null)
+                return handler.apply(rubyIO);
+        }
         while (ise instanceof ProxySchemaElement)
             ise = ((ProxySchemaElement) ise).getEntry();
         String r = null;
         if (ise instanceof EnumSchemaElement)
             r = ((EnumSchemaElement) ise).viewValue((int) rubyIO.fixnumVal, prefixEnums);
-        if (rubyIO.type == 'o') {
-            IFunction<RubyIO, String> handler = AppMain.schemas.nameDB.get("Class." + rubyIO.symVal);
-            if (handler != null)
-                r = handler.apply(rubyIO);
-        }
         if (r == null)
             r = rubyIO.toString();
         return r;

@@ -435,20 +435,38 @@ public class SDB {
                             public String apply(RubyIO rubyIO) {
                                 LinkedList<RubyIO> parameters = new LinkedList<RubyIO>();
                                 for (String arg : arguments) {
-                                    RubyIO res = null;
-                                    if (arg.equals("$"))
-                                        res = rubyIO;
-                                    if (arg.startsWith("@"))
-                                        res = rubyIO.getInstVarBySymbol(arg);
-                                    if (arg.startsWith("]")) {
-                                        // Stops at the first non-existing parameter
-                                        int atl = Integer.parseInt(arg.substring(1));
-                                        if (atl < 0) {
-                                            break;
-                                        } else if (atl >= rubyIO.arrVal.length) {
-                                            break;
+                                    RubyIO res = rubyIO;
+                                    String breakers = "$@]";
+                                    String workingArg = arg;
+                                    while (workingArg.length() > 0) {
+                                        int plannedIdx = workingArg.length();
+                                        for (char c : breakers.toCharArray()) {
+                                            int idx = workingArg.indexOf(c, 1);
+                                            if (idx >= 0)
+                                                if (idx < plannedIdx)
+                                                    plannedIdx = idx;
                                         }
-                                        res = rubyIO.arrVal[atl];
+                                        String subcom = workingArg.substring(1, plannedIdx);
+                                        char f = workingArg.charAt(0);
+                                        workingArg = workingArg.substring(plannedIdx);
+                                        switch (f) {
+                                            case '$':
+                                                if (subcom.length() != 0)
+                                                    throw new RuntimeException("unsure what to do here, $ doesn't accept additional");
+                                                break;
+                                            case '@':
+                                                res = res.getInstVarBySymbol("@" + subcom);
+                                                break;
+                                            case ']':
+                                                int atl = Integer.parseInt(subcom);
+                                                if (atl < 0) {
+                                                    break;
+                                                } else if (atl >= res.arrVal.length) {
+                                                    break;
+                                                }
+                                                res = res.arrVal[atl];
+                                                break;
+                                        }
                                     }
                                     parameters.add(res);
                                 }

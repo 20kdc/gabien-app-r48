@@ -12,6 +12,14 @@
 @timer_2 boolean
 
 : RPG::EventPage::Condition
+C name Class.RPG::EventPage::Condition $ | Condition[RPG::EventPage::Condition.switchA]A[RPG::EventPage::Condition.switchB]A[RPG::EventPage::Condition.var]A[RPG::EventPage::Condition.item]A[RPG::EventPage::Condition.actor]A[RPG::EventPage::Condition.timer1]A[RPG::EventPage::Condition.timer2]A
+C name Interp.RPG::EventPage::Condition.switchA @valid@switch_a @switch_a | {A=T=, Switch #B}
+C name Interp.RPG::EventPage::Condition.switchB @valid@switch_b @switch_b | {A=T=, Switch #B}
+C name Interp.RPG::EventPage::Condition.var @valid@var_>=_or_2k3op @var_id @var_compare_op_2k3 @var_value | {A=T=, Var @[var_id]B [var_compare_op_2k3]C #D}
+C name Interp.RPG::EventPage::Condition.item @valid@item @item_id | {A=T=, Party Has Item @[item_id]B}
+C name Interp.RPG::EventPage::Condition.actor @valid@actor @actor_id | {A=T=, Party Has Actor @[actor_id]B}
+C name Interp.RPG::EventPage::Condition.timer1 @valid@timer_1 @timer_1_secs | {A=T=, Timer1 <= #B}
+C name Interp.RPG::EventPage::Condition.timer2 @valid@timer_2 @timer_2_secs_2k3 | {A=T=, Timer2 <= #B}
 @valid EventPage_Condition_Flags
 @switch_a switch_id
 @switch_b switch_id
@@ -41,6 +49,7 @@ e eventpage_layer 0 BelowPlayer 1 WithPlayer 2 AbovePlayer
 +internal_EPGD
 
 : RPG::EventPage
+C name Class.RPG::EventPage @condition | [RPG::EventPage::Condition]A
 @condition subwindow RPG::EventPage::Condition
 +subwindow[ Graphics ] eventpage_graphics
 e eventpage_movetype 0 Don't 1 Random 2 GuardVLine 3 GuardHLine 4 ChasePlayer 5 FleePlayer 6 Custom

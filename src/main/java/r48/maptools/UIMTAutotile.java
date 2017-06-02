@@ -36,7 +36,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         allElements.clear();
         int layer = map.getCurrentLayer();
         tileMaps = AppMain.stuffRenderer.tileRenderer.createATUIPlanes(map);
-        tabPane = new UITabPane(AppMain.stuffRenderer.tileRenderer.getPlaneNames(layer), tileMaps, FontSizes.tabTextHeight);
+        tabPane = new UITabPane(AppMain.stuffRenderer.tileRenderer.getPlaneNames(layer), tileMaps, FontSizes.tilesTabTextHeight);
         atBases = AppMain.stuffRenderer.tileRenderer.indicateATs();
         allElements.add(tabPane);
         lastSelectedLayer = layer;

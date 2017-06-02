@@ -189,8 +189,7 @@ public class UIMapView extends UIElement implements IWindowElement {
                 text = "P";
             if (i == mapTable.planeCount + 1)
                 text = "E";
-            // Notably, this gets to cheat because it fits into an image
-            UILabel.drawString(igd, ox + l.x + 1, oy + l.y + 1, text, true, 8);
+            UILabel.drawString(igd, ox + l.x + 1, oy + l.y + 1, text, true, FontSizes.mapLayertabTextHeight);
         }
         UILabel.drawLabel(igd, 0, ox, oy, mapId + ";" + mouseXT + ", " + mouseYT, false, FontSizes.mapPositionTextHeight);
     }

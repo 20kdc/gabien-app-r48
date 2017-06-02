@@ -7,6 +7,7 @@ package r48.map.events;
 import gabien.IGrInDriver;
 import r48.RubyIO;
 import r48.map.imaging.IImageLoader;
+import r48.map.tiles.ITileRenderer;
 
 /**
  * An interlude.
@@ -14,8 +15,10 @@ import r48.map.imaging.IImageLoader;
  */
 public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
     public final IImageLoader imageLoader;
+    public final ITileRenderer tileRenderer;
 
-    public R2kEventGraphicRenderer(IImageLoader imageLoad) {
+    public R2kEventGraphicRenderer(IImageLoader imageLoad, ITileRenderer tr) {
+        tileRenderer = tr;
         imageLoader = imageLoad;
     }
 
@@ -63,6 +66,9 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
             // The vertical offset is either 12 or 16?
             // 16 causes papers to be weirdly offset, 12 causes lift doors to be out of place
             igd.blitImage(sx * px, sy * py, sx, sy, (ox + 8) - (sx / 2), (oy - sy) + 16, i);
+        } else {
+            // ok, so in this case it's a tile. In the index field.
+            tileRenderer.drawTile(0, (short) (target.getInstVarBySymbol("@character_index").fixnumVal + 10000), ox, oy, igd, 16);
         }
     }
 
