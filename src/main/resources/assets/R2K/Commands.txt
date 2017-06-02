@@ -4,6 +4,10 @@
 
  The R2k Command List.
  Highly incomplete.
+ AS THIS IS R2K, THE p _ string PARAMETER (or something like it for stuff that does have text) MUST ALWAYS EXIST!
+ Even for X-codes!
+ Yes, the system *should* recover via LcfEventCommandEditor_Most if you screw up.
+ You shouldn't be relying on it.
 
 C digitCount 5
 
@@ -76,31 +80,51 @@ p changeMode control_switches_change_mode
 
 10220: Set Variables
 d Modify a variable or range of variables in various ways dependent on a given value.
+p _ string
 X set_variables_parameters
 
 10230: Timer Operation
 d Alters the settings on either timer ID 0 (if unspecified) or a given timer. Can set the timer, change it's visibility + if it counts in bettle, or stop it.
+p _ string
 X timer_operation_parameters
+
+ GAP
+
+11510: Play BGM$
+d Plays some background music.
+p music string
+p fadeTime int
+p volume int
+p tempo int
+p balance int
 
  GAP
 
 12010: Conditional Branch
 d Runs the following code if a condition is true. Otherwise, runs the code at the Else Branch inside, or if one does not exist, goes to the end of the branch.
+p _ string
 X cbranch_parameters
 I1
 
 22010: Else Branch
 d Indicates that if the containing branch was false, the following code should be executed. (Otherwise, the previous code will be executed, and this will not.)
+p _ string
 i-1
 I1
 l
 
 22011: End Branch
 d Indicates the end of a conditional branch.
+p _ string
 i-1
 l
 
 22210: End Loop
 d Indicates the end of a loop.
+p _ string
 i-1
 l
+
+12320: Temp. Erase This Event
+d Attempts to temporarily erase this event (if this is, in fact, a map event)
+p _ string

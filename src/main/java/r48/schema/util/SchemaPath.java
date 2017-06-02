@@ -201,6 +201,18 @@ public class SchemaPath {
         // --Later-- HAHA NO I WAS WRONG THIS IS LAGGY.
         // Unfortunately it's still laggy no matter what I do.
         // I suspect this is related to whatever is making IDEA LAG SO FLIPPING MUCH at present.
+        // --Later Still--
+        // Ok, so it's somehow a bit laggy even when contained.
+        // Something to do with it being exponential on new objects.
+        // runs through -> object changes -> begins running through again?
+        // Ok, no, that's not it either...?
+        // It's not even recursion. At all.
+        // -- EVEN LATER --
+        // Ok, so what was going wrong was that the notification handlers were kind of...
+        // ...massively performance-draining when spammed over and over again. Oops.
+        // As it is, notification handlers are always stuff that can be delayed until later,
+        // so it's being delayed to EOF. Using a HashSet.
+
         if (!modifyVal) {
             SchemaPath sw = findHighestSubwatcher();
             if (sw.editor != null)

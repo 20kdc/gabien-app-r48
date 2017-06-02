@@ -184,6 +184,22 @@ public class SDB {
                             return subag;
                         }
 
+                        // -- These two must be in this order.
+                        if (text.startsWith("]?")) {
+                            // yay for... well, semi-consistency!
+                            String a = text.substring(2);
+                            String b = args[point++];
+                            String o = args[point++];
+                            return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), o);
+                        }
+                        if (text.startsWith("]")) {
+                            // yay for consistency!
+                            String a = text.substring(1);
+                            String b = args[point++];
+                            return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), null);
+                        }
+                        // --
+
                         if (text.equals("}"))
                             return null;
 
@@ -212,14 +228,19 @@ public class SDB {
                                 }
                             });
                         }
-                        if (text.equals("table") || text.equals("tableTS") || text.equals("tableTSF")) {
+                        if (text.equals("table") || text.equals("tableF") || text.equals("tableTS") || text.equals("tableTSF")) {
                             String iV = args[point++];
+                            if (iV.equals("."))
+                                iV = null;
                             String wV = args[point++];
                             if (wV.equals("."))
                                 wV = null;
                             String hV = args[point++];
                             if (hV.equals("."))
                                 hV = null;
+
+                            IFunction<RubyIO, String> iVT = getFunctionToReturn(iV == null ? "Open Table..." : iV);
+
                             int aW = Integer.parseInt(args[point++]);
                             int aH = Integer.parseInt(args[point++]);
                             int aI = Integer.parseInt(args[point++]);
@@ -228,11 +249,18 @@ public class SDB {
                                 LinkedList<String> flags = new LinkedList<String>();
                                 while (point < args.length)
                                     flags.add(args[point++]);
-                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, new BitfieldTableCellEditor(flags.toArray(new String[0]))), getFunctionToReturn(iV));
+                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, new BitfieldTableCellEditor(flags.toArray(new String[0]))), iVT);
                             }
                             if (text.equals("tableTS"))
-                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, new DefaultTableCellEditor()), getFunctionToReturn(iV));
-                            return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, new DefaultTableCellEditor()), getFunctionToReturn(iV));
+                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, new DefaultTableCellEditor()), iVT);
+                            if (text.equals("tableF")) {
+                                // Flags which are marked with "." are hidden. Starts with 1, then 2, then 4...
+                                LinkedList<String> flags = new LinkedList<String>();
+                                while (point < args.length)
+                                    flags.add(args[point++]);
+                                return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, new BitfieldTableCellEditor(flags.toArray(new String[0]))), iVT);
+                            }
+                            return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, new DefaultTableCellEditor()), iVT);
                         }
                         if (text.equals("CTNative"))
                             return new CTNativeSchemaElement(args[point++]);
@@ -287,7 +315,7 @@ public class SDB {
                     EnumSchemaElement e = new EnumSchemaElement(options, args[1]);
                     setSDBEntry(args[0], e);
                 } else if (c == ']') {
-                    workingObj.aggregate.add(new ArrayElementSchemaElement(Integer.parseInt(args[0]), args[1], handleChain(args, 2)));
+                    workingObj.aggregate.add(new ArrayElementSchemaElement(Integer.parseInt(args[0]), args[1], handleChain(args, 2), null));
                 } else if (c == 'i') {
                     try {
                         System.out.println(">>" + args[0]);

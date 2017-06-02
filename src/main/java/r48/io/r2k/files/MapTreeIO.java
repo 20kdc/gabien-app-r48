@@ -6,12 +6,11 @@ package r48.io.r2k.files;
 
 import r48.RubyIO;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.obj.MapInfo;
-import r48.io.r2k.obj.MapTreeStart;
+import r48.io.r2k.struct.MapTree;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.io.OutputStream;
 
 /**
  * It's like MapIO, but not!
@@ -24,22 +23,16 @@ public class MapTreeIO {
             throw new IOException("Not an LcfMapTree");
         // Try to follow the standard...
         MapTree mu = new MapTree();
-        // Sparse list
-        mu.mapInfos = new HashMap<Integer, MapInfo>();
-        int len = R2kUtil.readLcfVLI(fis);
-        for (int i = 0; i < len; i++) {
-            int key = R2kUtil.readLcfVLI(fis);
-            MapInfo target = new MapInfo();
-            target.importData(fis);
-            mu.mapInfos.put(key, target);
-        }
-        // Non-sparse list
-        mu.mapOrder = new int[R2kUtil.readLcfVLI(fis)];
-        for (int i = 0; i < mu.mapOrder.length; i++)
-            mu.mapOrder[i] = R2kUtil.readLcfVLI(fis);
-        mu.activeNode = R2kUtil.readLcfVLI(fis);
-        mu.start = new MapTreeStart();
-        mu.start.importData(fis);
+        mu.importData(fis);
         return mu.asRIO();
+    }
+
+    public static void writeLmt(OutputStream fos, RubyIO rio) throws IOException {
+        byte[] d = R2kUtil.encodeLcfString("LcfMapTree");
+        R2kUtil.writeLcfVLI(fos, d.length);
+        fos.write(d);
+        MapTree db = new MapTree();
+        db.fromRIO(rio);
+        db.exportData(fos);
     }
 }

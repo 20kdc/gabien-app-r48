@@ -31,6 +31,8 @@ public class RPGCommand {
     public boolean needsBlockLeavePre;
     public boolean typeBlockLeave;
 
+    public String description = null;
+
     // Pass null for parameters if this is for combobox display.
     public String formatName(RubyIO root, RubyIO[] parameters) {
         try {

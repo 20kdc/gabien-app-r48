@@ -5,6 +5,7 @@
 
 package r48.dbs;
 
+import gabienapp.Application;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.io.IObjectBackend;
@@ -92,7 +93,7 @@ public class ObjectDB {
             objectMap.put(id, new WeakReference<RubyIO>(rio));
             reverseObjectMap.put(rio, id);
             modifiedObjects.remove(rio);
-        } catch (IOException ioe) {
+        } catch (Exception ioe) {
             // ERROR!
             AppMain.launchDialog("Error: " + ioe.getMessage());
             ioe.printStackTrace();
@@ -118,6 +119,9 @@ public class ObjectDB {
         return notifyObjectModified;
     }
 
+    // Note that these are run at the end of frame,
+    //  because there appears to be a performance issue with these being spammed over and over again. Oops.
+
     public void registerModificationHandler(RubyIO root, Runnable handler) {
         getOrCreateModificationHandlers(root).add(handler);
     }
@@ -137,7 +141,7 @@ public class ObjectDB {
         LinkedList<Runnable> notifyObjectModified = objectListenersMap.get(p);
         if (notifyObjectModified != null)
             for (Runnable r : new LinkedList<Runnable>(notifyObjectModified))
-                r.run();
+                AppMain.pendingRunnables.add(r);
     }
 
     public int countModificationListeners(RubyIO p) {

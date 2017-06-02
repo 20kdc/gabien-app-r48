@@ -8,8 +8,11 @@ import r48.RubyIO;
 import r48.io.r2k.files.DatabaseIO;
 import r48.io.r2k.files.MapIO;
 import r48.io.r2k.files.MapTreeIO;
+import r48.io.r2k.obj.MapUnit;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -62,6 +65,29 @@ public class R2kObjectBackend implements IObjectBackend {
 
     @Override
     public void saveObjectToFile(String filename, RubyIO object) throws IOException {
-
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        // Note the write occurs before the F.O.S is created for safety
+        if (filename.endsWith(".lmu")) {
+            MapIO.writeLmu(baos, object);
+            FileOutputStream fos = new FileOutputStream(root + filename + "-MOD");
+            baos.writeTo(fos);
+            fos.close();
+            return;
+        }
+        if (filename.endsWith(".lmt")) {
+            MapTreeIO.writeLmt(baos, object);
+            FileOutputStream fos = new FileOutputStream(root + filename + "-MOD");
+            baos.writeTo(fos);
+            fos.close();
+            return;
+        }
+        if (filename.endsWith(".ldb")) {
+            DatabaseIO.writeLdb(baos, object);
+            FileOutputStream fos = new FileOutputStream(root + filename + "-MOD");
+            baos.writeTo(fos);
+            fos.close();
+            return;
+        }
+        throw new IOException("Unknown how to save " + filename + " (lmu/lmt/ldb)");
     }
 }

@@ -33,15 +33,15 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 @player_map map_id
 @player_x int
 @player_y int
-@boat_map map_id
-@boat_x int
-@boat_y int
-@ship_map map_id
-@ship_x int
-@ship_y int
-@airship_map map_id
-@airship_x int
-@airship_y int
++optIV @boat_map map_id
++optIV @boat_x int
++optIV @boat_y int
++optIV @ship_map map_id
++optIV @ship_x int
++optIV @ship_y int
++optIV @airship_map map_id
++optIV @airship_x int
++optIV @airship_y int
 
 : RPG::MapTree
 @map_infos subwindow hash int subwindow RPG::MapInfo

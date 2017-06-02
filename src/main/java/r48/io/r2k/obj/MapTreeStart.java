@@ -4,72 +4,69 @@
  */
 package r48.io.r2k.obj;
 
+import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.IntegerR2kProp;
+import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.chunks.OptionalR2kStruct;
 import r48.io.r2k.chunks.R2kObject;
-
-import java.util.HashMap;
 
 /**
  * Just boring stuff, really...
  * Created on 31/05/17.
  */
 public class MapTreeStart extends R2kObject {
-    public IntegerR2kProp playerMap = new IntegerR2kProp(0);
-    public IntegerR2kProp playerX = new IntegerR2kProp(0);
-    public IntegerR2kProp playerY = new IntegerR2kProp(0);
+    public IntegerR2kStruct playerMap = new IntegerR2kStruct(0);
+    public IntegerR2kStruct playerX = new IntegerR2kStruct(0);
+    public IntegerR2kStruct playerY = new IntegerR2kStruct(0);
 
-    public IntegerR2kProp boatMap = new IntegerR2kProp(0);
-    public IntegerR2kProp boatX = new IntegerR2kProp(0);
-    public IntegerR2kProp boatY = new IntegerR2kProp(0);
+    private ISupplier<IntegerR2kStruct> intX = new ISupplier<IntegerR2kStruct>() {
+        @Override
+        public IntegerR2kStruct get() {
+            return new IntegerR2kStruct(0);
+        }
+    };
 
-    public IntegerR2kProp shipMap = new IntegerR2kProp(0);
-    public IntegerR2kProp shipX = new IntegerR2kProp(0);
-    public IntegerR2kProp shipY = new IntegerR2kProp(0);
+    public OptionalR2kStruct<IntegerR2kStruct> boatMap = new OptionalR2kStruct<IntegerR2kStruct>(intX);
+    public OptionalR2kStruct<IntegerR2kStruct> boatX = new OptionalR2kStruct<IntegerR2kStruct>(intX);
+    public OptionalR2kStruct<IntegerR2kStruct> boatY = new OptionalR2kStruct<IntegerR2kStruct>(intX);
 
-    public IntegerR2kProp airshipMap = new IntegerR2kProp(0);
-    public IntegerR2kProp airshipX = new IntegerR2kProp(0);
-    public IntegerR2kProp airshipY = new IntegerR2kProp(0);
+    public OptionalR2kStruct<IntegerR2kStruct> shipMap = new OptionalR2kStruct<IntegerR2kStruct>(intX);
+    public OptionalR2kStruct<IntegerR2kStruct> shipX = new OptionalR2kStruct<IntegerR2kStruct>(intX);
+    public OptionalR2kStruct<IntegerR2kStruct> shipY = new OptionalR2kStruct<IntegerR2kStruct>(intX);
+
+    public OptionalR2kStruct<IntegerR2kStruct> airshipMap = new OptionalR2kStruct<IntegerR2kStruct>(intX);
+    public OptionalR2kStruct<IntegerR2kStruct> airshipX = new OptionalR2kStruct<IntegerR2kStruct>(intX);
+    public OptionalR2kStruct<IntegerR2kStruct> airshipY = new OptionalR2kStruct<IntegerR2kStruct>(intX);
 
     @Override
     public Index[] getIndices() {
         return new Index[] {
-                new Index(0x01, playerMap),
-                new Index(0x02, playerX),
-                new Index(0x03, playerY),
-                new Index(0x0B, boatMap),
-                new Index(0x0C, boatX),
-                new Index(0x0D, boatY),
-                new Index(0x15, shipMap),
-                new Index(0x16, shipX),
-                new Index(0x17, shipY),
-                new Index(0x1F, airshipMap),
-                new Index(0x20, airshipX),
-                new Index(0x21, airshipY),
+                new Index(0x01, playerMap, "@player_map"),
+                new Index(0x02, playerX, "@player_x"),
+                new Index(0x03, playerY, "@player_y"),
+                new Index(0x0B, boatMap, "@boat_map"),
+                new Index(0x0C, boatX, "@boat_x"),
+                new Index(0x0D, boatY, "@boat_y"),
+                new Index(0x15, shipMap, "@ship_map"),
+                new Index(0x16, shipX, "@ship_x"),
+                new Index(0x17, shipY, "@ship_y"),
+                new Index(0x1F, airshipMap, "@airship_map"),
+                new Index(0x20, airshipX, "@airship_x"),
+                new Index(0x21, airshipY, "@airship_y"),
         };
     }
 
     @Override
     public RubyIO asRIO() {
         RubyIO mt = new RubyIO().setSymlike("RPG::Start", true);
-        mt.iVars.put("@player_map", new RubyIO().setFX(playerMap.i));
-        mt.iVars.put("@player_x", new RubyIO().setFX(playerX.i));
-        mt.iVars.put("@player_y", new RubyIO().setFX(playerY.i));
-
-        mt.iVars.put("@boat_map", new RubyIO().setFX(boatMap.i));
-        mt.iVars.put("@boat_x", new RubyIO().setFX(boatX.i));
-        mt.iVars.put("@boat_y", new RubyIO().setFX(boatY.i));
-
-        mt.iVars.put("@ship_map", new RubyIO().setFX(shipMap.i));
-        mt.iVars.put("@ship_x", new RubyIO().setFX(shipX.i));
-        mt.iVars.put("@ship_y", new RubyIO().setFX(shipY.i));
-
-        mt.iVars.put("@airship_map", new RubyIO().setFX(airshipMap.i));
-        mt.iVars.put("@airship_x", new RubyIO().setFX(airshipX.i));
-        mt.iVars.put("@airship_y", new RubyIO().setFX(airshipY.i));
-        R2kUtil.unkToRio(mt, unknownChunks);
+        asRIOISF(mt);
         return mt;
+    }
+
+    @Override
+    public void fromRIO(RubyIO src) {
+        fromRIOISF(src);
     }
 }

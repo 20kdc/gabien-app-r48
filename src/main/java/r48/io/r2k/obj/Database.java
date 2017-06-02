@@ -8,16 +8,16 @@ import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.ArrayR2kProp;
 import r48.io.r2k.chunks.R2kObject;
-import r48.io.r2k.chunks.SparseArrayR2kProp;
+import r48.io.r2k.chunks.SparseArrayHR2kStruct;
+import r48.io.r2k.chunks.SparseArrayR2kInterpretable;
 
 /**
  * Bare minimum needed to get ChipSet data out for now
  * Created on 01/06/17.
  */
 public class Database extends R2kObject {
-    public SparseArrayR2kProp<Tileset> tilesets = new SparseArrayR2kProp<Tileset>(new ISupplier<Tileset>() {
+    public SparseArrayHR2kStruct<Tileset> tilesets = new SparseArrayHR2kStruct<Tileset>(new ISupplier<Tileset>() {
         @Override
         public Tileset get() {
             return new Tileset();
@@ -32,15 +32,19 @@ public class Database extends R2kObject {
     @Override
     public Index[] getIndices() {
         return new Index[] {
-                new Index(0x14, tilesets)
+                new Index(0x14, tilesets, "@tilesets")
         };
     }
 
     @Override
     public RubyIO asRIO() {
         RubyIO mt = new RubyIO().setSymlike("RPG::Database", true);
-        mt.iVars.put("@tilesets", tilesets.toRIOHash());
-        R2kUtil.unkToRio(mt, unknownChunks);
+        asRIOISF(mt);
         return mt;
+    }
+
+    @Override
+    public void fromRIO(RubyIO src) {
+        fromRIOISF(src);
     }
 }

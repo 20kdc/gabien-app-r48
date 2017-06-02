@@ -8,15 +8,16 @@ import r48.RubyIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.R2kUtil;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * Needed for SparseArrayblahblahblah to exist.
  * Created on 31/05/17.
  */
-public abstract class R2kObject implements IR2kInterpretable {
+public abstract class R2kObject implements IR2kStruct {
     public final HashMap<Integer, byte[]> unknownChunks = new HashMap<Integer, byte[]>();
     public abstract Index[] getIndices();
 
@@ -34,16 +35,64 @@ public abstract class R2kObject implements IR2kInterpretable {
             if (cid == 0)
                 break;
             int len = R2kUtil.readLcfVLI(src);
+            // System.out.println(cid);
             byte[] data = R2kUtil.readLcfBytes(src, len);
             boolean handled = false;
             for (int i = 0; i < t.length; i++)
                 if (cid == t[i].index) {
-                    t[i].chunk.importData(data);
+                    ByteArrayInputStream bais = new ByteArrayInputStream(data);
+                    t[i].chunk.importData(bais);
+                    if (bais.available() != 0)
+                        throw new IOException("Not all of the chunk interpreted by " + t[i].chunk + " in " + this);
                     handled = true;
                     break;
                 }
             if (!handled)
                 unknownChunks.put(cid, data);
+            // System.out.println("<<");
         }
+    }
+
+    public boolean exportData(OutputStream baos2) throws IOException {
+        // Collate all chunks
+        HashMap<Integer, byte[]> chunks = new HashMap<Integer, byte[]>();
+        chunks.putAll(unknownChunks);
+        for (Index i : getIndices()) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            if (!i.chunk.exportData(baos)) {
+                byte[] r = baos.toByteArray();
+                chunks.put(i.index, r);
+            }
+        }
+        LinkedList<Integer> keys = new LinkedList<Integer>(chunks.keySet());
+        Collections.sort(keys);
+        for (Integer i : keys) {
+            byte[] data = chunks.get(i);
+            R2kUtil.writeLcfVLI(baos2, i);
+            R2kUtil.writeLcfVLI(baos2, data.length);
+            baos2.write(data);
+        }
+        if (!terminatable())
+            baos2.write(0);
+        return false;
+    }
+
+    protected void asRIOISF(RubyIO mt) {
+        for (Index i : getIndices())
+            if (i.rioHelperName != null) {
+                // Could be actually null for optionals.
+                RubyIO rio = ((IR2kStruct) i.chunk).asRIO();
+                if (rio != null)
+                    mt.iVars.put(i.rioHelperName, rio);
+            }
+        R2kUtil.unkToRio(mt, unknownChunks);
+    }
+
+    protected void fromRIOISF(RubyIO mt) {
+        for (Index i : getIndices())
+            if (i.rioHelperName != null) {
+                ((IR2kStruct) i.chunk).fromRIO(mt.getInstVarBySymbol(i.rioHelperName));
+            }
+        R2kUtil.rioToUnk(mt, unknownChunks);
     }
 }

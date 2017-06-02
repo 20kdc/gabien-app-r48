@@ -55,7 +55,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        final RubyIO targV = target.getInstVarBySymbol(iVar);
+        final RubyIO targV = iVar == null ? target : target.getInstVarBySymbol(iVar);
         final RubyTable targ = new RubyTable(targV.userVal);
         final RubyIO width = widthVar == null ? null : target.getInstVarBySymbol(widthVar);
         final RubyIO height = heightVar == null ? null : target.getInstVarBySymbol(heightVar);
@@ -133,12 +133,14 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath index, boolean setDefault) {
-        RubyIO st = target.getInstVarBySymbol(iVar);
-        if (st == null) {
-            st = new RubyIO();
-            target.iVars.put(iVar, st);
+        if (iVar != null) {
+            RubyIO st = target.getInstVarBySymbol(iVar);
+            if (st == null) {
+                st = new RubyIO();
+                target.iVars.put(iVar, st);
+            }
+            target = st;
         }
-        target = st;
         // Not a clue, so re-initialize if all else fails.
         // (This will definitely trigger if the iVar was missing)
         if (IntegerSchemaElement.ensureType(target, 'u', setDefault)) {

@@ -186,3 +186,37 @@ e cbranch_actorprop_e 0 InParty 1 Name= 2 Level>= 3 HP>= 4 KnowsSkill 5 Equipped
 .cbranch_parameters
 @indent indent
 @parameters arrayDAM 1 cbranch_type cbranch_base 0 cbranch_switch 1 cbranch_varcomp 2 cbranch_timer1 3 cbranch_goldcomp 4 cbranch_itemcomp 5 cbranch_actorprop 6 cbranch_chardir 7 cbranch_vehicle 8 cbranch_base 9 cbranch_base 10 cbranch_timer2 11 cbranch_cherry
+
+ --- /-\
+  |  | |
+  |  \_/
+
+ Timer Options
+ This can be 4 or 5 array elements in size. *sigh*
+ Not visible: the additional SDB/AESE hackery required to make this happen
+
+e timer_operation_type 0 SetTime 1 SetFlagsAndStart 2 Stop
+
+.timer_operation_parameters
+@indent indent
+@parameters arrayDAM 1 timer_operation_type timer_operation_base 0 timer_operation_set 1 timer_operation_start
+
+.timer_operation_base
++]?6 timerId Timer1 timer_id
+]1 operation timer_operation_type
+
+.timer_operation_set
++timer_operation_base
+]2 secondsIsVar int_boolean
++arrayDAM 2 int_boolean timer_operation_set_var 0 timer_operation_set_int
+
+.timer_operation_set_var
+]3 secondsVar var_id
+
+.timer_operation_set_int
+]3 secondsVal int
+
+.timer_operation_start
++timer_operation_base
+]4 visible int_boolean
+]5 battle int_boolean

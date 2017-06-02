@@ -4,16 +4,26 @@
  */
 package r48.io.r2k;
 
-import r48.io.r2k.chunks.IR2kProp;
+import r48.io.r2k.chunks.IR2kInterpretable;
+import r48.io.r2k.chunks.IR2kStruct;
 
 /**
  * Created on 31/05/17.
  */
 public class Index {
     public final int index;
-    public final IR2kProp chunk;
-    public Index(int i, IR2kProp c) {
+    public final IR2kInterpretable chunk;
+    public final String rioHelperName;
+
+    public Index(int i, IR2kInterpretable c) {
         index = i;
         chunk = c;
+        rioHelperName = null;
+    }
+
+    public Index(int i, IR2kStruct c, String rhn) {
+        index = i;
+        chunk = c;
+        rioHelperName = rhn;
     }
 }

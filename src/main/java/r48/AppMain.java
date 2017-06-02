@@ -28,6 +28,7 @@ import r48.ui.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 /**
@@ -54,6 +55,9 @@ import java.util.LinkedList;
 public class AppMain {
     // Where new windows go
     private static IConsumer<UIElement> windowMaker;
+
+    // Scheduled tasks
+    public static HashSet<Runnable> pendingRunnables = new HashSet<Runnable>();
 
     private static UILabel uiStatusLabel;
 
@@ -134,6 +138,12 @@ public class AppMain {
                 schemas.updateDictionaries();
                 if (Musicality.running)
                     Musicality.update(deltaTime);
+
+                LinkedList<Runnable> runs = new LinkedList<Runnable>();
+                runs.addAll(pendingRunnables);
+                pendingRunnables.clear();
+                for (Runnable r : runs)
+                    r.run();
             }
         };
     }

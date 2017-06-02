@@ -20,7 +20,8 @@ import java.util.HashMap;
  * Created on 12/31/16.
  */
 public class ArrayDisambiguatorSchemaElement extends SchemaElement {
-    // If -1, then this is just a container for an array structure
+    // Special values:
+    // -1: There is no disambiguator (value is assumed to be 0). You should use a disambiguatorType of nil here.
     // #hastilyAddedFeatures
     public int dIndex;
     public SchemaElement dType;
@@ -32,6 +33,11 @@ public class ArrayDisambiguatorSchemaElement extends SchemaElement {
         dType = disambiguatorType;
         defaultType = backup;
         dTable = disambiguations;
+    }
+
+    @Override
+    public boolean monitorsSubelements() {
+        return true;
     }
 
     @Override

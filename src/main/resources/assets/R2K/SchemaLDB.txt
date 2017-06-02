@@ -5,7 +5,12 @@
  (highly incomplete) database schema
 
 : RPG::Tileset
+C name Class.RPG::Tileset @name | Tileset: #A
+@name string
 @tileset_name string
-
-: RPG::Database
-@tilesets subwindow hash int subwindow RPG::Tileset
+@terrain_id_data table . . . 162 1 1
+@lowpass_data table . . . 162 1 1
+@highpass_data table . . . 144 1 1
+ actually enum
+@anim_type int
+@anim_speed int

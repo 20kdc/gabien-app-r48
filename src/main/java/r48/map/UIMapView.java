@@ -192,7 +192,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             // Notably, this gets to cheat because it fits into an image
             UILabel.drawString(igd, ox + l.x + 1, oy + l.y + 1, text, true, 8);
         }
-        UILabel.drawLabel(igd, 0, ox, oy, "Map" + mapId + ";" + mouseXT + ", " + mouseYT, false, FontSizes.mapPositionTextHeight);
+        UILabel.drawLabel(igd, 0, ox, oy, mapId + ";" + mouseXT + ", " + mouseYT, false, FontSizes.mapPositionTextHeight);
     }
 
     private void drawEventLayer(int ox, int oy, IGrInDriver igd, int camTX, int camTY, int camTR, int camTB, int l) {

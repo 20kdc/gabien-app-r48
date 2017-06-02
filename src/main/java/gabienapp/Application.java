@@ -18,6 +18,8 @@ import r48.ui.UIHHalfsplit;
 import r48.ui.UIScrollVertLayout;
 
 import java.io.*;
+import java.util.ArrayDeque;
+import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -42,7 +44,7 @@ public class Application {
                     r = runnable;
                 } else {
                     r.run();
-                    runnable = null;
+                    runnable = null; // uhoh, what was this meant to do? *gulp*
                 }
             }
         };

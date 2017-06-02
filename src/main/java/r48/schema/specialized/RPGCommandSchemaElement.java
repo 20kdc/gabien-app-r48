@@ -73,17 +73,18 @@ public class RPGCommandSchemaElement extends SchemaElement {
                             target.getInstVarBySymbol("@code").fixnumVal = integer;
                             RubyIO param = target.getInstVarBySymbol("@parameters");
                             if (rc != null) {
+                                // Notice: Both are used!
+                                // Firstly nuke it to whatever the command says for array-len-reduce, then use the X-code to fill in details
+                                param.arrVal = new RubyIO[rc.paramType.size()];
+                                for (int i = 0; i < param.arrVal.length; i++) {
+                                    RubyIO rio = new RubyIO();
+                                    SchemaElement ise = rc.getParameterSchema(param, i);
+                                    ise.modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), true);
+                                    param.arrVal[i] = rio;
+                                }
                                 if (rc.specialSchemaName != null) {
                                     SchemaElement schemaElement = AppMain.schemas.getSDBEntry(rc.specialSchemaName);
                                     schemaElement.modifyVal(target, path, true);
-                                } else {
-                                    param.arrVal = new RubyIO[rc.paramType.size()];
-                                    for (int i = 0; i < param.arrVal.length; i++) {
-                                        RubyIO rio = new RubyIO();
-                                        SchemaElement ise = rc.getParameterSchema(param, i);
-                                        ise.modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), false);
-                                        param.arrVal[i] = rio;
-                                    }
                                 }
                             }
                             // Indent recalculation, and such.
@@ -160,15 +161,16 @@ public class RPGCommandSchemaElement extends SchemaElement {
         RPGCommand rc = database.knownCommands.get((int) target.getInstVarBySymbol("@code").fixnumVal);
         if (rc != null) {
             if (rc.specialSchemaName != null) {
+                // The amount of parameters isn't always fully described.
+                // Cutting down on length is done when the command code is set - That's as good as it gets.
                 AppMain.schemas.getSDBEntry(rc.specialSchemaName).modifyVal(target, path, setDefault);
             } else {
                 RubyIO param = target.getInstVarBySymbol("@parameters");
+                // All parameters are described, and the SASE will ensure length is precisely equal
                 SchemaElement parametersSanitySchema = new StandardArraySchemaElement(new OpaqueSchemaElement(), rc.paramName.size(), false);
                 parametersSanitySchema.modifyVal(param, path, setDefault);
                 SchemaPath parameterPath = path.arrayEntry(param, parametersSanitySchema);
                 for (int i = 0; i < param.arrVal.length; i++) {
-                    if (param.arrVal.length <= i)
-                        continue;
                     SchemaElement ise = rc.getParameterSchema(param, i);
                     ise.modifyVal(param.arrVal[i], parameterPath.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), setDefault);
                 }

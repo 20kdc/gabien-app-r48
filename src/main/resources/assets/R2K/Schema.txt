@@ -2,7 +2,8 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
 
- The R2k Schema.
+ The R2k/R2k3 Schema. It acts as both, it's your job to figure out what gets ignored or errors if on 2k.
+ Things postfixed with _2k3 were marked as such in the file format information I got.
 
 C objectDB lcf2000
 C versionId lcf2000
@@ -10,39 +11,7 @@ C defineIndent
 
  -COM-
 
- * "borrow" the RXP AT rules
-
-A R2KXPCOM/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
-
-D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
-
-> var_id int
-> switch_id int
-> item_id int
-> skill_id int
-> state_id int
-> map_id internal_mapDictionary
-> troop_id int
-
-> actor_id int
-
-E character_id EventID 10001 Player 10002 Boat 10003 Ship 10004 Airship 10005 RunningEvent
-e timer_id 0 Timer1 1 Timer2
-
-i R2K/SchemaScripting.txt
-
-: Rect
-@left int
-@up int
-@right int
-@down int
-
-: RPG::Music
-@name string
-@fade int
-@volume int= 100
-@tempo int= 100
-@balance int= 50
+i R2K/SchemaGeneral.txt
 
  -LMU-
 
@@ -56,4 +25,10 @@ i R2K/SchemaLMT.txt
  -LDB-
 
 i R2K/SchemaLDB.txt
+
+ Define this here, it's different between 2k and 2k3.
+ Need to be at least TRYING to deal with the differences
+
+: RPG::Database
+@tilesets subwindow hash int subwindow RPG::Tileset
 > File.RPG_RT.ldb RPG::Database

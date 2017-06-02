@@ -7,7 +7,7 @@ package r48.io.r2k.obj;
 import r48.RubyIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.IntegerR2kProp;
+import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.chunks.R2kObject;
 
 /**
@@ -16,20 +16,24 @@ import r48.io.r2k.chunks.R2kObject;
  */
 public class Encounter extends R2kObject {
 
-    public IntegerR2kProp troop = new IntegerR2kProp(0);
+    public IntegerR2kStruct troop = new IntegerR2kStruct(0);
 
     @Override
     public Index[] getIndices() {
         return new Index[] {
-                new Index(0x01, troop)
+                new Index(0x01, troop, "@troop")
         };
     }
 
     @Override
     public RubyIO asRIO() {
         RubyIO mt = new RubyIO().setSymlike("RPG::Encounter", true);
-        mt.iVars.put("@troop", new RubyIO().setFX(troop.i));
-        R2kUtil.unkToRio(mt, unknownChunks);
+        asRIOISF(mt);
         return mt;
+    }
+
+    @Override
+    public void fromRIO(RubyIO src) {
+        fromRIOISF(src);
     }
 }

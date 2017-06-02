@@ -6,10 +6,13 @@ package r48.io.r2k.files;
 
 import r48.RubyIO;
 import r48.io.r2k.R2kUtil;
+import r48.io.r2k.obj.Database;
 import r48.io.r2k.obj.MapUnit;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Just a namespace-like for map IO functions.
@@ -34,5 +37,14 @@ public class MapIO {
         MapUnit mu = new MapUnit();
         mu.importData(fis);
         return mu.asRIO();
+    }
+
+    public static void writeLmu(OutputStream fos, RubyIO rio) throws IOException {
+        byte[] d = R2kUtil.encodeLcfString("LcfMapUnit");
+        R2kUtil.writeLcfVLI(fos, d.length);
+        fos.write(d);
+        MapUnit db = new MapUnit();
+        db.fromRIO(rio);
+        db.exportData(fos);
     }
 }

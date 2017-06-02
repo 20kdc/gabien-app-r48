@@ -1,0 +1,34 @@
+
+ * "borrow" the RXP AT rules
+
+A R2KXPCOM/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
+
+D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
+
+> var_id int
+> switch_id int
+> item_id int
+> skill_id int
+> state_id int
+> map_id internal_mapDictionary
+> troop_id int
+
+> actor_id int
+
+E character_id EventID 10001 Player 10002 Boat 10003 Ship 10004 Airship 10005 RunningEvent
+e timer_id 0 Timer1 1 Timer2
+
+i R2K/SchemaScripting.txt
+
+: Rect
+@left int
+@up int
+@right int
+@down int
+
+: RPG::Music
+@name string= (OFF)
+@fadeTime int
+@volume int= 100
+@tempo int= 100
+@balance int= 50

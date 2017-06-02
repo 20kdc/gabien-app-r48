@@ -26,15 +26,17 @@ i R2K/SchemaScriptingMonolith.txt
  arrayIx1 will ensure the rest are all ints.
  Thus, it should be impossible to generate unserializable data.
  ...Meanwhile, LcfEventCommandEditor_Most gets it the other way around, since it's for user display, so text should be at the top.
+ (Or something. Hang on. Fixing stuff R/N. This added later. I've unified the display/nondisplay LcfEventCommandParams.
+  Advice: HAVE A DEBUGGER HANDY IF YOU ARE WRITING SCHEMA STUFF AND GET A ARRAYELEMENTSCHEMAELEMENT ERROR!!!!)
 
 > genericScriptParameter int
 
-.LcfEventCommandParams
-+arrayIx1 genericScriptParameter
-]0 text string
+ Technically the arrayDAM isn't needed,
+  but it's SUPPOSED to be there to ensure array parent stuff is all in order.
+ (Ok, fixed, now it's needed. Allowing inconsistency causes inconsistency causes bugs.)
 
-.LcfEventCommandParams_DisplayHelper
-]0 text string
+.LcfEventCommandParams
++arrayDAM -1 nil ]0 text string
 +arrayIx1 genericScriptParameter
 
 : RPG::EventCommand
@@ -44,7 +46,7 @@ i R2K/SchemaScriptingMonolith.txt
 
 .LcfEventCommandEditor_Most
 @indent indent
-@parameters LcfEventCommandParams_DisplayHelper
+@parameters LcfEventCommandParams
 
 > EventListEditor subwindow arrayCS R2K/Commands.txt LcfEventCommandEditor
 > LcfEventCommandEditor RPGCS R2K/Commands.txt RPG::EventCommand LcfEventCommandEditor_Most

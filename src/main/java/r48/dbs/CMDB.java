@@ -80,6 +80,12 @@ public class CMDB {
                         }
                     });
                 }
+                if (c == 'd') {
+                    String desc = "";
+                    for (String s : args)
+                        desc += " " + s;
+                    rc.description = desc.trim();
+                }
                 if (c == 'i')
                     rc.indentPre = Integer.parseInt(args[0]);
                 if (c == 'I')
@@ -118,6 +124,13 @@ public class CMDB {
                 return se;
             }
         });
+        // see if I need to be informed that the schema doesn't support the latest and greatest features
+        int fails1 = 0;
+        for (RPGCommand rc : knownCommands.values())
+            if (rc.description == null)
+                fails1++;
+        if (fails1 > 0)
+            System.err.println(fails1 + " commands do not have descriptions.");
     }
 
     public String buildCodename(RubyIO target, boolean indent) {

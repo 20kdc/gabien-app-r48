@@ -4,12 +4,12 @@
  */
 package r48.io.r2k;
 
+import gabien.ui.ISupplier;
 import r48.RubyIO;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,13 +29,6 @@ public class R2kUtil {
 
     // --
 
-    public static int readLcfU8(byte[] data) throws IOException {
-        ByteArrayInputStream a = baos(data);
-        int r = readLcfU8(a);
-        baosCleanup(a);
-        return r;
-    }
-
     public static int readLcfU8(InputStream src) throws IOException {
         int i = src.read();
         if (i < 0)
@@ -45,13 +38,6 @@ public class R2kUtil {
 
     // --
 
-    public static int readLcfS32(byte[] data) throws IOException {
-        ByteArrayInputStream a = baos(data);
-        int r = readLcfS32(a);
-        baosCleanup(a);
-        return r;
-    }
-
     public static int readLcfS32(InputStream src) throws IOException {
         int b1 = readLcfU8(src);
         int b2 = readLcfU8(src);
@@ -60,14 +46,14 @@ public class R2kUtil {
         return (b4 << 24) | (b3 << 16) | (b2 << 8) | b1;
     }
 
-    // --
-
-    public static int readLcfU16(byte[] data) throws IOException {
-        ByteArrayInputStream a = baos(data);
-        int r = readLcfU16(a);
-        baosCleanup(a);
-        return r;
+    public static void writeLcfS32(OutputStream os, int i) throws IOException {
+        ByteBuffer t = ByteBuffer.wrap(new byte[4]);
+        t.order(ByteOrder.LITTLE_ENDIAN);
+        t.putInt(i);
+        os.write(t.array());
     }
+
+    // --
 
     public static int readLcfU16(InputStream src) throws IOException {
         int b1 = readLcfU8(src);
@@ -75,19 +61,11 @@ public class R2kUtil {
         return (b2 << 8) | b1;
     }
 
-    // --
-
-    public static short readLcfS16(byte[] data) throws IOException {
-        ByteArrayInputStream a = baos(data);
-        short r = readLcfS16(a);
-        baosCleanup(a);
-        return r;
-    }
-
-    public static short readLcfS16(InputStream src) throws IOException {
-        int b1 = readLcfU8(src);
-        int b2 = readLcfU8(src);
-        return (short) ((b2 << 8) | b1);
+    public static void writeLcfU16(OutputStream os, int i) throws IOException {
+        ByteBuffer t = ByteBuffer.wrap(new byte[2]);
+        t.order(ByteOrder.LITTLE_ENDIAN);
+        t.putShort((short) i);
+        os.write(t.array());
     }
 
     // --
@@ -111,21 +89,43 @@ public class R2kUtil {
         return v;
     }
 
+    public static void writeLcfVLI(OutputStream os, int i) throws IOException {
+        // Convert to unsigned so this makes sense
+        long r = i & 0xFFFFFFFFL;
+        while (r > 0x7F) {
+            os.write((int) ((r & 0x7F) | 0x80));
+            r >>= 7;
+        }
+        os.write((int) (r & 0x7F));
+    }
+
     // --
 
     public static byte[] readLcfBytes(InputStream src, int l) throws IOException {
         byte[] data = new byte[l];
-        int o = src.read(data);
-        while (o < data.length)
-            o += src.read(data, o, data.length - o);
+        int o = 0;
+        while (o < l)
+            o += src.read(data, o, l - o);
         return data;
     }
 
     // For now, assume SHIFT-JIS on all.
-    // -- VERIFIED! This is definitely the encoding, check ib event names
+    // -- VERIFIED! This is definitely the encoding, check Ib event names
+    // Note that this is just for the xIO classes to decode magics.
+    // You should NEVER, EVER, *EVER* be decoding these otherwise,
+    //  instead passing the binary data directly to RIO
     public static String decodeLcfString(byte[] data) {
         try {
-            return new String(data, "SJIS");
+            return new String(data, RubyIO.encoding);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // See above for when to use this
+    public static byte[] encodeLcfString(String text) {
+        try {
+            return text.getBytes(RubyIO.encoding);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -141,5 +141,24 @@ public class R2kUtil {
         for (Map.Entry<Integer, byte[]> e : unknownChunks.entrySet())
             hash.hashVal.put(new RubyIO().setFX(e.getKey()), new RubyIO().setUser("Blob", e.getValue()));
         map.iVars.put("@__LCF__unknown", hash);
+    }
+
+    public static void rioToUnk(RubyIO mt, HashMap<Integer, byte[]> unknownChunks) {
+        mt = mt.getInstVarBySymbol("@__LCF__unknown");
+        if (mt != null)
+            for (Map.Entry<RubyIO, RubyIO> e : mt.hashVal.entrySet())
+                unknownChunks.put((int) e.getKey().fixnumVal, e.getValue().userVal);
+    }
+
+    public static ISupplier<byte[]> supplyBlank(final int i, final byte i1) {
+        return new ISupplier<byte[]>() {
+            @Override
+            public byte[] get() {
+                byte[] data = new byte[i];
+                for (int j = 0; j < i; j++)
+                    data[j] = i1;
+                return data;
+            }
+        };
     }
 }
