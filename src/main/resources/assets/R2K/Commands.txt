@@ -155,7 +155,7 @@ p targetMode get_actors_mode
 D target|ActorID|Var 1 int 2 var_id
 p removeSkill int_boolean
 p skillIsVar int_boolean
-p skill|SkillID|Var 4 var_id 0 skill_id
+D skill|SkillID|Var 4 var_id 0 skill_id
 
  GAP
 

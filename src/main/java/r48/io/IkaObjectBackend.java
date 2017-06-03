@@ -32,6 +32,7 @@ public class IkaObjectBackend implements IObjectBackend {
             bm.width = 160;
             bm.height = 120;
             bm.data = new int[160 * 120];
+            bm.palette = new int[256];
             try {
                 InputStream inp = new FileInputStream(root + "Pbm/Map1.pbm");
                 bm.loadBitmap(inp);
@@ -41,6 +42,16 @@ public class IkaObjectBackend implements IObjectBackend {
                 ioe.printStackTrace();
             }
 
+            RubyTable pal = new RubyTable(256, 1, 4);
+            for (int i = 0; i < 256; i++) {
+                int rgba = bm.palette[i];
+                pal.setTiletype(i, 0, 0, (short) ((rgba >> 24) & 0xFF));
+                pal.setTiletype(i, 0, 1, (short) ((rgba >> 16) & 0xFF));
+                pal.setTiletype(i, 0, 2, (short) ((rgba >> 8) & 0xFF));
+                pal.setTiletype(i, 0, 3, (short) (rgba & 0xFF));
+            }
+            RubyIO palTbl = new RubyIO().setUser("Table", pal.innerBytes);
+
             RubyTable tbl = new RubyTable(bm.width, bm.height, 1);
             RubyIO mapTbl = new RubyIO().setUser("Table", tbl.innerBytes);
 
@@ -49,6 +60,7 @@ public class IkaObjectBackend implements IObjectBackend {
                     tbl.setTiletype(i, j, 0, (short) bm.data[i + (j * bm.width)]);
 
             rio.iVars.put("@data", mapTbl);
+            rio.iVars.put("@palette", palTbl);
 
             RubyIO evTbl = new RubyIO().setHash();
             rio.iVars.put("@events", evTbl);
@@ -99,9 +111,18 @@ public class IkaObjectBackend implements IObjectBackend {
             bm8.width = rt.width;
             bm8.height = rt.height;
             bm8.data = new int[bm8.width * bm8.height];
+            bm8.palette = new int[256];
             for (int i = 0; i < rt.width; i++)
                 for (int j = 0; j < rt.height; j++)
                     bm8.data[i + (j * rt.width)] = (int) rt.getTiletype(i, j, 0);
+            RubyTable rt2 = new RubyTable(object.getInstVarBySymbol("@palette").userVal);
+            for (int i = 0; i < 256; i++) {
+                int a = rt2.getTiletype(i, 0, 0) & 0xFF;
+                int r = rt2.getTiletype(i, 0, 1) & 0xFF;
+                int g = rt2.getTiletype(i, 0, 2) & 0xFF;
+                int b = rt2.getTiletype(i, 0, 3) & 0xFF;
+                bm8.palette[i] = (a << 24) | (r << 16) | (g << 8) | b;
+            }
             OutputStream fio = new FileOutputStream(root + "Pbm/Map1.pbm");
             bm8.saveBitmap(fio);
             fio.close();

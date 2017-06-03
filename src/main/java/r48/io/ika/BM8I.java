@@ -15,13 +15,18 @@ import java.io.OutputStream;
 public class BM8I {
 
     public int width, height;
-    public int[] data;
+    public int[] data, palette = new int[256];
 
     /* Header of Ikachan's Map1.pbm,
-       StartOffset: Length: 0x36 */
+       Length: 0x36 */
     // This is the exact same data as any other relatively space-efficient winbmp
-    //  with the same parameters and colourmap.
-    // Please don't sue me.
+    //  with the same parameters and colourmap size.
+    // Please don't sue me, because TBH, this is the header. And only the header, now.
+    // Not even the palette. Generate any other BMP with the same header version, 256 colours + no RLE,
+    //  and you'll most likely have this stuck at the start of it.
+    // If you even *can* sue me for this, I give up at life.
+    // <This sentence shows I have not been legally challenged for any iteration of this excerpt yet.
+    //  May it stay ad infinitum.>
     private static byte normalPbmHeader[] = {
             (byte) 0x42, (byte) 0x4D, (byte) 0x36, (byte) 0x4F, (byte) 0x00, (byte) 0x00,
             (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x36, (byte) 0x04,
@@ -51,10 +56,11 @@ public class BM8I {
         os.write(normalPbmHeader, 26, normalPbmHeader.length - 26);
         // dump palette
         for (int i = 0; i < 256; i++) {
-            os.write(0);
-            os.write(0);
-            os.write(0);
-            os.write(0);
+            int p = palette[i];
+            os.write(p & 0xFF);
+            os.write((p & 0xFF00) >> 8);
+            os.write((p & 0xFF0000) >> 16);
+            os.write((p & 0xFF000000) >> 24);
         }
         for (int x = 0; x < width * height; x++) {
             int rx = x % width;
@@ -76,7 +82,6 @@ public class BM8I {
         ofs |= ids.read() << 24;
         //14
         ids.skip(4);//18
-        ofs -= 18;
         width = ids.read();
         width |= ids.read() << 8;
         width |= ids.read() << 16;
@@ -86,7 +91,17 @@ public class BM8I {
         height |= ids.read() << 8;
         height |= ids.read() << 16;
         height |= ids.read() << 24;
-        ofs -= 8;
+        // 26
+        ids.skip(normalPbmHeader.length - 26); // End of normal header
+        // Read palette
+        for (int i = 0; i < 256; i++) {
+            int p = ids.read();
+            p |= ids.read() << 8;
+            p |= ids.read() << 16;
+            p |= ids.read() << 24;
+            palette[i] = p;
+        }
+        ofs -= normalPbmHeader.length + 0x400;
         System.out.println("Loading Pixel's BMP header ok," + width + "x" + height + " - if it's not the right bit depth prepare for spectacular fireworks");
         data = new int[width * height];
         ids.skip(ofs);

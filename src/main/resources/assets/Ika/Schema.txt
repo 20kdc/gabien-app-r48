@@ -23,5 +23,10 @@ e collisionType 0 Null 1 Block 2 Enemy 3 Event
 : RPG::Map
 @events subwindow mapEvents
 +table @data . . 160 120 1
+ There. Now I'm shipping only 0x36 bytes which is the standard BMP header.
+ Basically uncopyrightable.
+  I had to GET A FLIPPING TIME MACHINE to do it (thanks Git),
+  but I've finally dealt with the one potentially license-wobbly part of the Ika backend.
++table @palette . . 256 1 4
 
 > File.Map RPG::Map
