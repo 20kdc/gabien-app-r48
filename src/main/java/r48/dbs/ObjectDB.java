@@ -5,14 +5,12 @@
 
 package r48.dbs;
 
-import gabienapp.Application;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.io.IObjectBackend;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.LinkedList;

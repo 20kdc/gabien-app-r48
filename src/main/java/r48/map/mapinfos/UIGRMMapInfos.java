@@ -20,7 +20,7 @@ import java.util.LinkedList;
  * Helps jump between maps.
  * Should eventually replace the arrow-keys system.
  * Note that as this is a tab, it will not self-deregister.
- *
+ * <p/>
  * Created on 1/1/17. Copied for Generic RM Map Infos on Jun 2 2017.
  */
 public class UIGRMMapInfos extends UIPanel {

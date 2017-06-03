@@ -8,7 +8,6 @@ package r48.schema;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -20,7 +19,7 @@ import r48.ui.UIHHalfsplit;
  * This is because ArrayElementSchemaElement should only exist inside arrayDAM.
  * (Well THAT didn't end up happening. fixing R2k schemascripting...)
  * Also note that since this is meant to emulate the RPGCommand system where that is not usable,
- *  among other things, '_' as a name will act to make a given parameter invisible.
+ * among other things, '_' as a name will act to make a given parameter invisible.
  * Created on 12/31/16.
  */
 public class ArrayElementSchemaElement extends SchemaElement {
@@ -59,7 +58,8 @@ public class ArrayElementSchemaElement extends SchemaElement {
                 }
             });
         }
-        UIElement core = new UIHHalfsplit(1, 3, new UILabel(name, FontSizes.schemaFieldTextHeight), subSchema.buildHoldingEditor(target.arrVal[index], launcher, path.arrayHashIndex(new RubyIO().setFX(index), "." + name)));;
+        UIElement core = new UIHHalfsplit(1, 3, new UILabel(name, FontSizes.schemaFieldTextHeight), subSchema.buildHoldingEditor(target.arrVal[index], launcher, path.arrayHashIndex(new RubyIO().setFX(index), "." + name)));
+        ;
         if (optional != null)
             return new UIAppendButton("-", core, new Runnable() {
                 @Override

@@ -18,6 +18,7 @@ public class UITileGrid extends UIGrid {
     public final UIMapView map;
     public final boolean autoTile;
     public final int autoTileSpacing;
+
     public UITileGrid(UIMapView mv, int tStart, int tileCount, boolean aTile, int aTileSpacing) {
         super(mv.tileSize, tileCount);
         canMultiSelect = true;

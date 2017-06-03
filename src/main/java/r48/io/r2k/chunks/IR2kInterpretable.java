@@ -14,6 +14,7 @@ import java.io.OutputStream;
  */
 public interface IR2kInterpretable {
     void importData(InputStream bais) throws IOException;
+
     // If this returns true, nothing is supposed to be omitted
     boolean exportData(OutputStream baos) throws IOException;
 }

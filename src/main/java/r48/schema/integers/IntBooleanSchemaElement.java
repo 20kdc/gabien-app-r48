@@ -7,7 +7,6 @@ package r48.schema.integers;
 
 import r48.RubyIO;
 import r48.schema.BooleanSchemaElement;
-import r48.schema.integers.IntegerSchemaElement;
 
 /**
  * 0 is false, anything else is true,

@@ -10,6 +10,7 @@ package r48.map.mapinfos;
  */
 public interface IRMLikeMapInfoBackendWPriv extends IRMLikeMapInfoBackend {
     void swapOrders(int orderA, int orderB);
+
     // Returns 0 if there are no maps, 1 if there is one map...
     int getLastOrder();
 }

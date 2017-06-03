@@ -85,6 +85,7 @@ public class RubyIO {
         symVal = s;
         return this;
     }
+
     public RubyIO setUser(String s, byte[] data) {
         setNull();
         type = 'u';

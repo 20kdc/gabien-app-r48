@@ -7,8 +7,8 @@ package r48.map.tiles;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
-import r48.map.imaging.IImageLoader;
 import r48.map.UIMapView;
+import r48.map.imaging.IImageLoader;
 import r48.ui.UITileGrid;
 
 /**

@@ -8,7 +8,6 @@ import r48.RubyIO;
 import r48.io.r2k.files.DatabaseIO;
 import r48.io.r2k.files.MapIO;
 import r48.io.r2k.files.MapTreeIO;
-import r48.io.r2k.obj.MapUnit;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -21,6 +20,7 @@ import java.io.IOException;
  */
 public class R2kObjectBackend implements IObjectBackend {
     public final String root;
+
     public R2kObjectBackend(String rootPath) {
         root = rootPath;
     }

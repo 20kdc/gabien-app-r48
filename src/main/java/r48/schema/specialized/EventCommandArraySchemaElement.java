@@ -18,8 +18,8 @@ import java.util.LinkedList;
 /**
  * ArraySchemaElement + some eventcommand specific stuff to automatically correct issues.
  * (On top of it's previous behaviors, this is now responsible for indent. It monitors subelements *anyway*,
- *  and moving the logic here allows me to cut off some of SchemaPath's rube-goldberg-iness.
- *  Anything to simplify that thing. Jun 2, 2017.)
+ * and moving the logic here allows me to cut off some of SchemaPath's rube-goldberg-iness.
+ * Anything to simplify that thing. Jun 2, 2017.)
  * Created on 1/2/17.
  */
 public class EventCommandArraySchemaElement extends StandardArraySchemaElement {

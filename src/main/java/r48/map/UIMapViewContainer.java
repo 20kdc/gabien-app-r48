@@ -5,7 +5,6 @@
 
 package r48.map;
 
-import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.AppMain;

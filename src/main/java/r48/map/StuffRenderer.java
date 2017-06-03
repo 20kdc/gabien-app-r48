@@ -4,9 +4,6 @@
  */
 package r48.map;
 
-import gabien.ui.IConsumer;
-import gabien.ui.ISupplier;
-import gabien.ui.UIElement;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
@@ -19,6 +16,7 @@ public class StuffRenderer {
     public final ITileRenderer tileRenderer;
     public final IEventGraphicRenderer eventRenderer;
     public final IImageLoader imageLoader;
+
     public StuffRenderer(IImageLoader l, ITileRenderer t, IEventGraphicRenderer e) {
         tileRenderer = t;
         eventRenderer = e;

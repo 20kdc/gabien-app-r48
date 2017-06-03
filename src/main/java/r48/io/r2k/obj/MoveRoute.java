@@ -7,7 +7,10 @@ package r48.io.r2k.obj;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.chunks.*;
+import r48.io.r2k.chunks.ArrayR2kStruct;
+import r48.io.r2k.chunks.ArraySizeR2kInterpretable;
+import r48.io.r2k.chunks.BooleanR2kStruct;
+import r48.io.r2k.chunks.R2kObject;
 import r48.io.r2k.struct.MoveCommand;
 
 /**

@@ -7,9 +7,7 @@ package r48.io.r2k.files;
 import r48.RubyIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.obj.Database;
-import r48.io.r2k.obj.MapUnit;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

@@ -7,12 +7,10 @@ package r48.io.r2k.obj;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.*;
 import r48.io.r2k.struct.TRect;
 
 /**
- *
  * Created on 31/05/17.
  */
 public class MapInfo extends R2kObject {

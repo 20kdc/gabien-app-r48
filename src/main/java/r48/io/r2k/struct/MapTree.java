@@ -9,15 +9,12 @@ import r48.RubyIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
 import r48.io.r2k.chunks.SparseArrayHR2kStruct;
-import r48.io.r2k.chunks.SparseArrayR2kInterpretable;
 import r48.io.r2k.obj.MapInfo;
 import r48.io.r2k.obj.MapTreeStart;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This isn't even standard LCF madness. This is something *else*.

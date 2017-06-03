@@ -14,8 +14,8 @@ import r48.io.r2k.chunks.*;
 /**
  * First test of the new system for figuring out what the hell to do with this alien format
  * Writing this here for lack of a better place:
- *  Unknown attributes are going to get stuffed into some "@unknownMeta" place,
- *   containing raw blobs of whatever.
+ * Unknown attributes are going to get stuffed into some "@unknownMeta" place,
+ * containing raw blobs of whatever.
  * Created on 31/05/17.
  */
 public class MapUnit extends R2kObject {

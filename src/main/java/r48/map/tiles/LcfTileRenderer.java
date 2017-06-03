@@ -6,7 +6,6 @@ package r48.map.tiles;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
-import gabien.ui.UILabel;
 import r48.RubyIO;
 import r48.map.UIMapView;
 import r48.map.imaging.IImageLoader;

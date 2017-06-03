@@ -7,10 +7,8 @@ package r48.map.events;
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.map.StuffRenderer;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
 

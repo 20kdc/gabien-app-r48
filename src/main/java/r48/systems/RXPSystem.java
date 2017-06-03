@@ -21,7 +21,6 @@ import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.XPTileRenderer;
 
 /**
- *
  * Created on 03/06/17.
  */
 public class RXPSystem extends MapSystem {

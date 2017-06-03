@@ -13,7 +13,6 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
-import r48.map.StuffRenderer;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.maptools.UIMTEventPicker;
 import r48.schema.SchemaElement;

@@ -34,6 +34,7 @@ public abstract class MapSystem {
                 }
         }, FontSizes.menuTextHeight, false);
     }
+
     // The map can be null. This is used by the map view and on initial system startup.
     public abstract StuffRenderer rendererFromMap(RubyIO map);
 }

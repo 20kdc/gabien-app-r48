@@ -7,7 +7,6 @@ package r48.io.r2k.struct;
 import r48.RubyIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
 
 import java.io.IOException;
 import java.io.InputStream;

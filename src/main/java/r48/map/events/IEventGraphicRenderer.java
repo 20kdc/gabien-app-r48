@@ -16,6 +16,7 @@ public interface IEventGraphicRenderer {
     // The event is drawn after the map layer is.
     // -1 is before any map layers.
     int determineEventLayer(RubyIO event);
+
     // This adds layers after the tile layers. tileLayerCount == first extra layer.
     int extraEventLayers();
 

@@ -12,7 +12,6 @@ import gabien.ui.IConsumer;
 import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import r48.AppMain;
-import r48.map.StuffRenderer;
 import r48.map.UIMapViewContainer;
 
 /**

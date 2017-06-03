@@ -10,6 +10,7 @@ package r48.schema.integers;
  */
 public class LowerBoundIntegerSchemaElement extends IntegerSchemaElement {
     public int lowerBound;
+
     public LowerBoundIntegerSchemaElement(int bound, int i) {
         super(i);
         lowerBound = bound;

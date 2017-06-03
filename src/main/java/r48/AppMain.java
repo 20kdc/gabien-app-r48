@@ -266,13 +266,13 @@ public class AppMain {
                             public void accept(String s) {
                                 final RubyIO rio = objectDB.getObject(s);
                                 windowMaker.accept(new UITextPrompt("Schema ID?", new IConsumer<String>() {
-                                        @Override
-                                        public void accept(String s) {
-                                            SchemaElement ise = schemas.getSDBEntry(s);
-                                            ise.modifyVal(rio, new SchemaPath(ise, rio, null), false);
-                                            launchDialog("OK!");
-                                        }
-                                    }));
+                                    @Override
+                                    public void accept(String s) {
+                                        SchemaElement ise = schemas.getSDBEntry(s);
+                                        ise.modifyVal(rio, new SchemaPath(ise, rio, null), false);
+                                        launchDialog("OK!");
+                                    }
+                                }));
                             }
                         }));
                     }

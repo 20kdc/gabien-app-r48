@@ -11,7 +11,6 @@ import r48.io.ika.BM8I;
 import r48.io.ika.NPChar;
 
 import java.io.*;
-import java.util.HashMap;
 
 /**
  * Created on 1/27/17.

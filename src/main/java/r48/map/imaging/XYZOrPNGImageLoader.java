@@ -23,6 +23,7 @@ public class XYZOrPNGImageLoader implements IImageLoader {
         pImageLoader = new PNG8IImageLoader(rootPath);
         gImageLoader = new GabienImageLoader(rootPath, ".png", 0, 0, 0);
     }
+
     @Override
     public IGrInDriver.IImage getImage(String name, boolean panorama) {
         //

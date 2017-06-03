@@ -6,12 +6,11 @@ package r48.map.imaging;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
-import r48.map.imaging.IImageLoader;
 
 /**
  * Does whatever the default can.
  * Basically, if it happens to not support something in a given case, *then* bring explicit support into Gabien,
- *  unless it's an obscure format (XYZ), then in which case do something else.
+ * unless it's an obscure format (XYZ), then in which case do something else.
  * Created on 29/05/17.
  */
 public class GabienImageLoader implements IImageLoader {
@@ -27,6 +26,7 @@ public class GabienImageLoader implements IImageLoader {
         g = cg;
         b = cb;
     }
+
     public GabienImageLoader(String pf, String pp) {
         prefix = pf;
         postfix = pp;

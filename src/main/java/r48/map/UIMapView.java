@@ -5,7 +5,6 @@
 
 package r48.map;
 
-import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.IWindowElement;
 import gabien.ui.Rect;

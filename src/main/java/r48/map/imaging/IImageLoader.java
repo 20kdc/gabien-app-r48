@@ -11,7 +11,7 @@ import gabien.IGrInDriver;
  * Or other things.
  * It is assumed the image loader has a cache.
  * Note that everything going here comes from the Map group.
- *
+ * <p/>
  * -- Ok, the update on how this is meant to go:
  * In general, do not use BCK.
  * At all. Just bury it. Don't use it, don't touch it.
@@ -20,12 +20,13 @@ import gabien.IGrInDriver;
  * ...UNLESS, of course, you can't do that because differing BCKs for different tasks.
  * In which case, pass metadata in the image names.
  * (...At some point I am really going to have to cede all rendering control to the backend, aren't I?)
- *
+ * <p/>
  * Created on 29/05/17.
  */
 public interface IImageLoader {
     // Similar to getImage in the old system.
     // "panorama" indicates if *index-based* transparency should be disabled (R2k panoramas)
     IGrInDriver.IImage getImage(String name, boolean panorama);
+
     void flushCache();
 }

@@ -6,10 +6,6 @@ package r48.io.r2k.chunks;
 
 import r48.RubyIO;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 /**
  * Created on 02/06/17.
  */

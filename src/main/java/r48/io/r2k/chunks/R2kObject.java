@@ -19,6 +19,7 @@ import java.util.LinkedList;
  */
 public abstract class R2kObject implements IR2kStruct {
     public final HashMap<Integer, byte[]> unknownChunks = new HashMap<Integer, byte[]>();
+
     public abstract Index[] getIndices();
 
     public boolean terminatable() {

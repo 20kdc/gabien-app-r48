@@ -8,8 +8,6 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 
 import java.io.*;
-import java.util.LinkedList;
-import java.util.zip.DeflaterInputStream;
 
 /**
  * You know what I mentioned previously about "Here goes nothing"?
@@ -22,6 +20,7 @@ import java.util.zip.DeflaterInputStream;
  */
 public class PNG8IImageLoader implements IImageLoader {
     public final String root;
+
     public PNG8IImageLoader(String rootPath) {
         root = rootPath;
     }

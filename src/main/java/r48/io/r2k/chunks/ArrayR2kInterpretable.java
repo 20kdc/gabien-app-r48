@@ -19,6 +19,7 @@ public class ArrayR2kInterpretable<T extends IR2kInterpretable> implements IR2kI
     public LinkedList<T> array = new LinkedList<T>();
     public final ISupplier<T> cons;
     public final boolean trustData;
+
     public ArrayR2kInterpretable(ArraySizeR2kInterpretable<T> other, ISupplier<T> c, boolean trust) {
         cons = c;
         if (other != null)

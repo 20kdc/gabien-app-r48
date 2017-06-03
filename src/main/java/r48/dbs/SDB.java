@@ -11,7 +11,6 @@ import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.DictionaryUpdaterRunnable;
 import r48.RubyIO;
-import r48.map.StuffRenderer;
 import r48.schema.*;
 import r48.schema.arrays.OneIndexedArraySchemaElement;
 import r48.schema.arrays.StandardArraySchemaElement;

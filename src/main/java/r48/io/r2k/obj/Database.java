@@ -7,10 +7,8 @@ package r48.io.r2k.obj;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.R2kObject;
 import r48.io.r2k.chunks.SparseArrayHR2kStruct;
-import r48.io.r2k.chunks.SparseArrayR2kInterpretable;
 
 /**
  * Bare minimum needed to get ChipSet data out for now

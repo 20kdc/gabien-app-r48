@@ -7,7 +7,6 @@ package r48.io.r2k.obj;
 import r48.RubyIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.chunks.BitfieldR2kStruct;
-import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.chunks.R2kObject;
 
@@ -33,6 +32,7 @@ public class EventPageCondition extends R2kObject {
     public IntegerR2kStruct timer1Sec = new IntegerR2kStruct(0);
     public IntegerR2kStruct timer2Sec = new IntegerR2kStruct(0);
     public IntegerR2kStruct compareOp = new IntegerR2kStruct(0);
+
     @Override
     public Index[] getIndices() {
         return new Index[] {

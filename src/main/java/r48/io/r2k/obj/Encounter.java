@@ -6,7 +6,6 @@ package r48.io.r2k.obj;
 
 import r48.RubyIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.chunks.R2kObject;
 

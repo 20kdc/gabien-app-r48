@@ -4,10 +4,6 @@
  */
 package r48.map.mapinfos;
 
-import r48.RubyIO;
-
-import java.util.Map;
-
 /**
  * Holds a few functions and their implementations.
  * Created on 02/06/17.

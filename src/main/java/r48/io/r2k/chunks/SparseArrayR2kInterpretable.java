@@ -5,17 +5,14 @@
 package r48.io.r2k.chunks;
 
 import gabien.ui.ISupplier;
-import r48.RubyIO;
 import r48.io.r2k.R2kUtil;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * Let's just hope this all works out.
@@ -24,6 +21,7 @@ import java.util.Map;
 public class SparseArrayR2kInterpretable<T extends IR2kStruct> implements IR2kInterpretable {
     public final ISupplier<T> constructor;
     public final HashMap<Integer, T> map = new HashMap<Integer, T>();
+
     public SparseArrayR2kInterpretable(ISupplier<T> call) {
         constructor = call;
     }

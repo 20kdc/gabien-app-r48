@@ -11,8 +11,8 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.ATDB;
-import r48.map.imaging.IImageLoader;
 import r48.map.UIMapView;
+import r48.map.imaging.IImageLoader;
 import r48.ui.UITileGrid;
 
 import java.util.LinkedList;

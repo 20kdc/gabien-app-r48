@@ -18,6 +18,7 @@ import java.util.zip.InflaterInputStream;
  */
 public class XYZImageLoader implements IImageLoader {
     public final String root;
+
     public XYZImageLoader(String rootPath) {
         root = rootPath;
     }
