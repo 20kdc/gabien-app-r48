@@ -72,7 +72,7 @@ public class XPTileRenderer implements ITileRenderer {
             tidx %= 48;
             boolean didDraw = false;
             if (tilesetMaps[atMap] != null) {
-                didDraw = didDraw || generalOldRMATField(0, 0, tidx, 0, tileSize, ets, px, py, igd, tilesetMaps[atMap]);
+                didDraw = didDraw || generalOldRMATField(0, 0, tidx, 0, tileSize, ets, px, py, igd, tilesetMaps[atMap], 1, 2);
             } else {
                 didDraw = true; // It's invisible, so it should just be considered drawn no matter what
             }
@@ -89,7 +89,7 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     // Used by 2k3 support too, since it follows the same AT design
-    public static boolean generalOldRMATField(int tox, int toy, int subfield, int atFieldType, int fTileSize, int ets, int px, int py, IGrInDriver igd, IGrInDriver.IImage img) {
+    public static boolean generalOldRMATField(int tox, int toy, int subfield, int atFieldType, int fTileSize, int ets, int px, int py, IGrInDriver igd, IGrInDriver.IImage img, int failureX, int failureY) {
         if ((ets == fTileSize) && (AppMain.autoTiles[atFieldType] != null)) {
             if (subfield >= AppMain.autoTiles[atFieldType].entries.length)
                 return false;
@@ -108,7 +108,7 @@ public class XPTileRenderer implements ITileRenderer {
                 return true;
             }
         } else {
-            igd.blitImage(fTileSize, 2 * fTileSize, ets, ets, px, py, img);
+            igd.blitImage(tox + (failureX * fTileSize), toy + (failureY * fTileSize), ets, ets, px, py, img);
             return true;
         }
         return false;
