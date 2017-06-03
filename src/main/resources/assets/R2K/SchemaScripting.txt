@@ -9,6 +9,9 @@ e control_switches_change_mode 0 On 1 Off 2 Toggle
 
 e message_options_position 0 Top 1 Centre 2 Bottom
 
+e get_actors_mode 0 WholeParty(ign.target) 1 Actor 2 Var.Actor
+e change_battle_parameter 0 MaxHP 1 MaxMP 2 ATK 3 DEF 4 SPI 5 AGI
+
  ---
 
 i R2K/SchemaScriptingMonolith.txt

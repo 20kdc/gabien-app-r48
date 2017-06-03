@@ -4,6 +4,8 @@
 
  The R2k Command List.
  Highly incomplete.
+ Stuff marked with EXX is actually not in G.I, but hasn't been moved yet.
+
  AS THIS IS R2K, THE p _ string PARAMETER (or something like it for stuff that does have text) MUST ALWAYS EXIST!
  Even for X-codes!
  Yes, the system *should* recover via LcfEventCommandEditor_Most if you screw up.
@@ -88,15 +90,72 @@ d Alters the settings on either timer ID 0 (if unspecified) or a given timer. Ca
 p _ string
 X timer_operation_parameters
 
-
- GAP
-
-10810: @@Teleport Player{D: to @#B : @#C, @#D}
-d Teleports the player to a given map and position.
+10310: @@{B:{B=0=Give|Take From}|Give/Take From} Player:{D: {C=0=#D|Var(@[var_id]D)}} Gold
+d Adds or removes gold by a constant amount or the value in a variable.
 p _ string
-p map map_id
-p x int
-p y int
+p takeGold int_boolean
+p goldIsVar int_boolean
+D gold|Int|Var 2 var_id 0 int
+
+10320: Modify Items
+d Adds or removes the amount of an item (selected by ID or the value in a variable) by a constant amount or the value in a variable.
+p _ string
+p remove int_boolean
+p itemIsVar int_boolean
+D item|Item|Var 2 var_id 0 item_id
+p countIsVar int_boolean
+D count|Int|Var 4 var_id 0 int
+
+10330: Change Party Member
+d Adds or removes a party member, selected by ID or the value in a variable.
+p _ string
+p remove int_boolean
+p actorIsVar int_boolean
+D actor|ActorID|Var 4 var_id 0 actor_id
+
+10410: Change EXP
+d Modifies the amount of experience a given set of party members has.
+p _ string
+p targetMode get_actors_mode
+D target|ActorID|Var 1 int 2 var_id
+
+p removeExp int_boolean
+p expIsVar int_boolean
+D exp|Int|Var 4 var_id 0 int
+
+d showLvlUp int_boolean
+
+10420: Change Exp.Level
+d Modifies the levels a given set of party members have.
+p _ string
+p targetMode get_actors_mode
+D target|ActorID|Var 1 int 2 var_id
+
+p removeLvl int_boolean
+p lvlIsVar int_boolean
+D lvl|Int|Var 4 var_id 0 int
+
+d showLvlUp int_boolean
+
+10430: Change Battle Parameters
+d Modifies the parameters a given set of party members have.
+p _ string
+p targetMode get_actors_mode
+D target|ActorID|Var 1 int 2 var_id
+
+p removePL int_boolean
+p targetParam change_battle_parameter
+p plIsVar int_boolean
+D pl|Int|Var 5 var_id 0 int
+
+10440: Change Skills
+d Adds or removes skills a given set of party members have.
+p _ string
+p targetMode get_actors_mode
+D target|ActorID|Var 1 int 2 var_id
+p removeSkill int_boolean
+p skillIsVar int_boolean
+p skill|SkillID|Var 4 var_id 0 skill_id
 
  GAP
 
@@ -124,6 +183,22 @@ p volume int
 p tempo int
 p balance int
 
+12310: End Event Processing
+d Jump to the end of the code, thus, stop running it.
+p _ string
+
+12410: //* $
+d A comment.
+p text string
+
+22410: //. $
+d A continuation of a comment.
+p text string
+
+12420: Game Over
+d Show the game over screen, and such.
+p _ string
+
  GAP
 
 12010: Conditional Branch
@@ -145,8 +220,27 @@ p _ string
 i-1
 l
 
+12110: @@Label #B
+d A label. See JumpToLabel.
+p _ string
+p labelId int
+
+12120: @@Jump To Label #B
+d Jump to a label.
+p _ string
+p labelId int
+
+12210: Start Loop
+d Begins a loop, which will run forever unless broken.
+p _ string
+I1
+
+12210: Break Loop
+d Leaves the loop.
+p _ string
+
 22210: End Loop
-d Indicates the end of a loop.
+d Indicates the end of a loop - will go back to the start.
 p _ string
 i-1
 l
@@ -154,3 +248,14 @@ l
 12320: Temp. Erase This Event
 d Attempts to temporarily erase this event (if this is, in fact, a map event)
 p _ string
+
+ GAP
+
+ EXX
+
+10810: @@Teleport Player{D: to @#B : @#C, @#D}
+d Teleports the player to a given map and position.
+p _ string
+p map map_id
+p x int
+p y int

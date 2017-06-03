@@ -50,7 +50,7 @@ public class EventPage extends R2kObject {
                 new Index(0x20, moveFreq, "@move_freq"),
                 new Index(0x21, trigger, "@trigger"),
                 new Index(0x22, layer, "@layer"),
-                new Index(0x23, blocking, "@blocking"),
+                new Index(0x23, blocking, "@block_other_events"),
                 new Index(0x24, animType, "@anim_type"),
                 new Index(0x25, moveSpeed, "@move_speed"),
                 new Index(0x29, moveRoute, "@move_route"),

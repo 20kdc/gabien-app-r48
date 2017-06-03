@@ -44,21 +44,20 @@ C name eventpage_graphics
 @character_direction sprite_direction
 @character_pattern int
 @character_blend_mode int_boolean
-e eventpage_layer 0 BelowPlayer 1 WithPlayer 2 AbovePlayer
-@layer eventpage_layer
 +internal_EPGD
 
 : RPG::EventPage
 C name Class.RPG::EventPage @condition | [RPG::EventPage::Condition]A
 @condition subwindow RPG::EventPage::Condition
 +subwindow[ Graphics ] eventpage_graphics
+e eventpage_layer 0 BelowPlayer 1 WithPlayer(Collide) 2 AbovePlayer
+@layer eventpage_layer
 e eventpage_movetype 0 Don't 1 Random 2 GuardVLine 3 GuardHLine 4 ChasePlayer 5 FleePlayer 6 Custom
 @move_type eventpage_movetype
 @move_freq int= 3
 @move_speed int= 3
 @move_route subwindow RPG::MoveRoute
- maybe this is the collision flag
-@blocking boolean
+@block_other_events boolean
 e eventpage_animtype 0 OnlyWhenMoving 1 Always 2 NoActDirchange+OnlyWhenMoving 3 NoActDirchange+Always 4 NoActDirchange+Never 5 GetDizzy
 @anim_type eventpage_animtype
 e eventpage_trigger 0 ActKey 1 PlayerWalks 2 EitherWalks 3 Autorun 4 Parallel

@@ -8,6 +8,8 @@ package r48.schema;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -82,6 +84,16 @@ public class ArrayElementSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+        boolean changed = false;
+        // Just in case.
+        // Turns out there was a reason, if not a good one, for array encapsulation - it ensured the object was actually an array.
+        // Oops. Well, this resolves it.
+        if (IntegerSchemaElement.ensureType(target, '[', false)) {
+            target.arrVal = new RubyIO[index + 1];
+            for (int i = 0; i < target.arrVal.length; i++)
+                target.arrVal[i] = new RubyIO().setNull();
+            changed = true;
+        }
         // Resize array if required?
         if (target.arrVal.length <= index) {
             if (optional == null) {
@@ -91,11 +103,15 @@ public class ArrayElementSchemaElement extends SchemaElement {
                 for (int i = target.arrVal.length; i < newArr.length; i++)
                     newArr[i] = new RubyIO().setNull();
                 target.arrVal = newArr;
-                path.changeOccurred(true);
+                changed = true;
             } else {
+                if (changed)
+                    path.changeOccurred(true);
                 return;
             }
         }
         subSchema.modifyVal(target.arrVal[index], path.arrayHashIndex(new RubyIO().setFX(index), "." + name), setDefault);
+        if (changed)
+            path.changeOccurred(true);
     }
 }
