@@ -13,6 +13,7 @@ import r48.schema.SchemaElement;
 import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.util.SchemaPath;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 /**
@@ -48,8 +49,7 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
         }
 
         LinkedList<RubyIO> arr = new LinkedList<RubyIO>();
-        for (RubyIO rio : array.arrVal)
-            arr.add(rio);
+        Collections.addAll(arr, array.arrVal);
 
         if (needsEndingBlock) {
             // 0 so that the code won't combust from lacking an array
@@ -71,15 +71,15 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
         for (int i = 0; i < arr.size(); i++) {
             int code = (int) arr.get(i).getInstVarBySymbol("@code").fixnumVal;
             RPGCommand rc = database.knownCommands.get(code);
-            // Indent stuff
-            indent += rc.indentPre;
-            if (indent != arr.get(i).getInstVarBySymbol("@indent").fixnumVal) {
-                arr.get(i).getInstVarBySymbol("@indent").fixnumVal = indent;
-                modified = true;
-            }
-            indent += rc.indentPost;
-            // Block leave/code stuff
             if (rc != null) {
+                // Indent stuff
+                indent += rc.indentPre;
+                if (indent != arr.get(i).getInstVarBySymbol("@indent").fixnumVal) {
+                    arr.get(i).getInstVarBySymbol("@indent").fixnumVal = indent;
+                    modified = true;
+                }
+                indent += rc.indentPost;
+
                 if (rc.needsBlockLeavePre) {
                     if (!lastWasBlockLeave) {
                         if (rc.blockLeaveReplacement != lastCode) {

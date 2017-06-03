@@ -69,8 +69,7 @@ public class Tileset extends R2kObject {
 
         // 162 = 144 (selective) + 18 (AT Field????)
         RubyTable rt = new RubyTable(162, 1, 1);
-        for (int i = 0; i < terrainTbl.dat.length; i++)
-            rt.innerBytes[i + 20] = terrainTbl.dat[i];
+        System.arraycopy(terrainTbl.dat, 0, rt.innerBytes, 20, terrainTbl.dat.length);
         mt.iVars.put("@terrain_id_data", new RubyIO().setUser("Table", rt.innerBytes));
 
         mt.iVars.put("@lowpass_data", bitfieldTable(lowPassTbl.dat));
@@ -83,8 +82,7 @@ public class Tileset extends R2kObject {
         fromRIOISF(src);
         RubyIO c = src.getInstVarBySymbol("@terrain_id_data");
         terrainTbl.dat = new byte[324];
-        for (int i = 0; i < terrainTbl.dat.length; i++)
-            terrainTbl.dat[i] = c.userVal[i + 20];
+        System.arraycopy(c.userVal, 20, terrainTbl.dat, 0, terrainTbl.dat.length);
         lowPassTbl.dat = bitfieldTableRV(src.getInstVarBySymbol("@lowpass_data"));
         highPassTbl.dat = bitfieldTableRV(src.getInstVarBySymbol("@highpass_data"));
     }

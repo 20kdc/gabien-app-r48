@@ -12,6 +12,7 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIScrollVertLayout;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 /**
@@ -22,8 +23,7 @@ public class AggregateSchemaElement extends SchemaElement {
     public LinkedList<SchemaElement> aggregate = new LinkedList<SchemaElement>();
 
     public AggregateSchemaElement(SchemaElement[] ag) {
-        for (SchemaElement ise : ag)
-            aggregate.add(ise);
+        Collections.addAll(aggregate, ag);
     }
 
     @Override

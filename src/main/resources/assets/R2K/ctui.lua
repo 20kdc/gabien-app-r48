@@ -26,7 +26,7 @@
 --   selector-type on a line (type, see unconditional types)
 --   selector-control on a line (ID of the control)
 
-local current_file = nil
+local current_file
 local current_conns = {}
 
 local aliases = {}

@@ -70,16 +70,14 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         MapInfoReparentUtil.removeMapHelperSALT(k, this);
         // Remove last from array
         RubyIO[] resArray = new RubyIO[mapTreeOrders.arrVal.length - 1];
-        for (int i = 0; i < resArray.length; i++)
-            resArray[i] = mapTreeOrders.arrVal[i];
+        System.arraycopy(mapTreeOrders.arrVal, 0, resArray, 0, resArray.length);
         mapTreeOrders.arrVal = resArray;
     }
 
     @Override
     public int createNewMap(int k) {
         RubyIO[] resArray = new RubyIO[mapTreeOrders.arrVal.length + 1];
-        for (int i = 0; i < mapTreeOrders.arrVal.length; i++)
-            resArray[i] = mapTreeOrders.arrVal[i];
+        System.arraycopy(mapTreeOrders.arrVal, 0, resArray, 0, mapTreeOrders.arrVal.length);
         resArray[resArray.length - 1] = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
         mapTreeOrders.arrVal = resArray;
         return k;

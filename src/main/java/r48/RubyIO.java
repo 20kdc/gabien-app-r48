@@ -118,15 +118,13 @@ public class RubyIO {
         hashDefVal = clone.hashDefVal;
         if (clone.arrVal != null) {
             arrVal = new RubyIO[clone.arrVal.length];
-            for (int i = 0; i < arrVal.length; i++)
-                arrVal[i] = clone.arrVal[i];
+            System.arraycopy(clone.arrVal, 0, arrVal, 0, arrVal.length);
         } else {
             arrVal = null;
         }
         if (clone.userVal != null) {
             userVal = new byte[clone.userVal.length];
-            for (int i = 0; i < userVal.length; i++)
-                userVal[i] = clone.userVal[i];
+            System.arraycopy(clone.userVal, 0, userVal, 0, userVal.length);
         } else {
             userVal = null;
         }

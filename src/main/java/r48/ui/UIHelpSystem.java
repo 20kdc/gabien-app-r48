@@ -73,7 +73,19 @@ public class UIHelpSystem extends UIPanel {
                 }
             })};
         }
-        return null;
+        // I'm running analysis tools just for the sake of it. It's complaining about this returning null.
+        // Then again, it also complained that UIMapView's update & render was too complicated.
+        // And complained about a useless OR which I did for code understandability reasons (this flag is always set to true, never false)
+        // What good is optimization if I'm not allowed to write easier to understand code and have the optimizer get rid of the odd bits!
+        // Then again, it also complained about FloatSchemaElement, about R48ObjectBackend
+        // (oh sure so you can totally avoid if empty bodies and also not use a switch because they can't have local variables)...
+        // Finally, it complains about .toArray(new Whatever[0]);, which is necessitated by Java generics.
+        // (C# is worse due to portability concerns + Mono sometimes acts screwy + DO I NEED TO SAY MORE, but that doesn't mean I like Java.)
+        // ...you know, oddly enough, I'm distrusting the code inspector. Perf. concerns or otherwise, I don't care.
+        // Manual array copy you can annoy me for though, since the IDE handles this.
+        // Here's a help-line just for me in case I have to read said code later and forget.
+        // System.arraycopy(src, base, dst, base, len);
+        throw new RuntimeException("That character " + c + " shouldn't even GO here.");
     }
 
     @Override

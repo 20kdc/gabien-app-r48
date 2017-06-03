@@ -10,6 +10,8 @@ import r48.FontSizes;
 import r48.RubyTable;
 import r48.ui.UIHHalfsplit;
 
+import java.util.Collections;
+
 /**
  * The system for editing a given cell.
  * Created on 2/17/17.
@@ -96,8 +98,7 @@ public class UICellEditingPanel extends UIPanel {
             lastCCN = n;
             allElements.clear();
             if (cell != -1) {
-                for (UIHHalfsplit h : halfsplits)
-                    allElements.add(h);
+                Collections.addAll(allElements, halfsplits);
                 for (Runnable r : cellChangeNotificationHandlers)
                     r.run();
             }

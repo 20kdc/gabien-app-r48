@@ -36,8 +36,7 @@ public class FloatSchemaElement extends StringSchemaElement {
             firstNull = i + 1;
         }
         byte[] text = new byte[firstNull];
-        for (int i = 0; i < text.length; i++)
-            text[i] = target.strVal[i];
+        System.arraycopy(target.strVal, 0, text, 0, text.length);
         return new String(text, Charset.forName("UTF-8"));
     }
 

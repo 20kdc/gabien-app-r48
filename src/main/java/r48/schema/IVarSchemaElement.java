@@ -37,7 +37,7 @@ public class IVarSchemaElement extends SchemaElement {
             fieldWidthOverride = false;
         }
         RubyIO tgo = target.getInstVarBySymbol(iVar);
-        UIElement e2 = null;
+        UIElement e2;
         if (tgo == null) {
             if (!optional)
                 throw new RuntimeException("Error: Made it to IVarSchemaElement.buildHoldingEditor when the actual IVar in question was missing, " + iVar);

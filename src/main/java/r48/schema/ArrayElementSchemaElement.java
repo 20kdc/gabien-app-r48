@@ -6,6 +6,7 @@
 package r48.schema;
 
 import gabien.ui.*;
+import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.schema.integers.IntegerSchemaElement;
@@ -48,8 +49,7 @@ public class ArrayElementSchemaElement extends SchemaElement {
                 public void run() {
                     // resize to include and set default
                     RubyIO[] newArr = new RubyIO[index + 1];
-                    for (int i = 0; i < target.arrVal.length; i++)
-                        newArr[i] = target.arrVal[i];
+                    System.arraycopy(target.arrVal, 0, newArr, 0, target.arrVal.length);
                     for (int i = target.arrVal.length; i < newArr.length; i++)
                         newArr[i] = new RubyIO().setNull();
                     subSchema.modifyVal(newArr[index], path.arrayHashIndex(new RubyIO().setFX(index), "." + name), true);
@@ -59,15 +59,14 @@ public class ArrayElementSchemaElement extends SchemaElement {
             });
         }
         UIElement core = new UIHHalfsplit(1, 3, new UILabel(name, FontSizes.schemaFieldTextHeight), subSchema.buildHoldingEditor(target.arrVal[index], launcher, path.arrayHashIndex(new RubyIO().setFX(index), "." + name)));
-        ;
+
         if (optional != null)
             return new UIAppendButton("-", core, new Runnable() {
                 @Override
                 public void run() {
                     // Cut array and call modification alerter.
                     RubyIO[] newArr = new RubyIO[index];
-                    for (int i = 0; i < newArr.length; i++)
-                        newArr[i] = target.arrVal[i];
+                    System.arraycopy(target.arrVal, 0, newArr, 0, newArr.length);
                     target.arrVal = newArr;
                     path.changeOccurred(false);
                 }
@@ -98,8 +97,7 @@ public class ArrayElementSchemaElement extends SchemaElement {
         if (target.arrVal.length <= index) {
             if (optional == null) {
                 RubyIO[] newArr = new RubyIO[index + 1];
-                for (int i = 0; i < target.arrVal.length; i++)
-                    newArr[i] = target.arrVal[i];
+                System.arraycopy(target.arrVal, 0, newArr, 0, target.arrVal.length);
                 for (int i = target.arrVal.length; i < newArr.length; i++)
                     newArr[i] = new RubyIO().setNull();
                 target.arrVal = newArr;

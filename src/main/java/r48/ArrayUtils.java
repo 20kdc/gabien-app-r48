@@ -12,21 +12,17 @@ public class ArrayUtils {
     public static void removeRioElement(RubyIO target, int mi) {
         RubyIO[] old = target.arrVal;
         RubyIO[] newArr = new RubyIO[old.length - 1];
-        for (int j = 0; j < mi; j++)
-            newArr[j] = old[j];
-        for (int j = mi + 1; j < old.length; j++)
-            newArr[j - 1] = old[j];
+        System.arraycopy(old, 0, newArr, 0, mi);
+        System.arraycopy(old, mi + 1, newArr, mi + 1 - 1, old.length - (mi + 1));
         target.arrVal = newArr;
     }
 
     public static void insertRioElement(RubyIO target, RubyIO rio, int i) {
         RubyIO[] old = target.arrVal;
         RubyIO[] newArr = new RubyIO[old.length + 1];
-        for (int j = 0; j < i; j++)
-            newArr[j] = old[j];
+        System.arraycopy(old, 0, newArr, 0, i);
         newArr[i] = rio;
-        for (int j = i; j < old.length; j++)
-            newArr[j + 1] = old[j];
+        System.arraycopy(old, i, newArr, i + 1, old.length - i);
         target.arrVal = newArr;
     }
 }

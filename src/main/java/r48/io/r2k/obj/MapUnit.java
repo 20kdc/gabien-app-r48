@@ -84,19 +84,15 @@ public class MapUnit extends R2kObject {
         layer0.dat = new byte[width.i * height.i * 2];
         layer1.dat = new byte[width.i * height.i * 2];
         byte[] innerBytes = instVarBySymbol.userVal;
-        for (int i = 0; i < layer0.dat.length; i++)
-            layer0.dat[i] = innerBytes[20 + i];
-        for (int i = 0; i < layer1.dat.length; i++)
-            layer1.dat[i] = innerBytes[20 + i + (width.i * height.i * 2)];
+        System.arraycopy(innerBytes, 20, layer0.dat, 0, layer0.dat.length);
+        System.arraycopy(innerBytes, 20 + (width.i * height.i * 2), layer1.dat, 0, layer1.dat.length);
     }
 
     private RubyIO makeLmuData() {
         // -- transform the lower-layer and upper-layer data...
         RubyTable rt = new RubyTable(width.i, height.i, 2);
-        for (int i = 0; i < layer0.dat.length; i++)
-            rt.innerBytes[20 + i] = layer0.dat[i];
-        for (int i = 0; i < layer1.dat.length; i++)
-            rt.innerBytes[20 + i + (width.i * height.i * 2)] = layer1.dat[i];
+        System.arraycopy(layer0.dat, 0, rt.innerBytes, 20, layer0.dat.length);
+        System.arraycopy(layer1.dat, 0, rt.innerBytes, 20 + (width.i * height.i * 2), layer1.dat.length);
         RubyIO encap = new RubyIO();
         encap.type = 'u';
         encap.symVal = "Table";

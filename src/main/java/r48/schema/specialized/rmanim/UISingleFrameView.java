@@ -59,7 +59,7 @@ public class UISingleFrameView extends UIElement {
             int opacity = Math.min(Math.max(rt.getTiletype(i, 6, 0), 0), 255);
             if (opacity == 0)
                 continue;
-            IGrInDriver.IImage scaleImage = null;
+            IGrInDriver.IImage scaleImage;
             if (cell >= 100) {
                 cell -= 100;
                 scaleImage = basePanelAccess.getFramesetCache(true, mirror, opacity);
