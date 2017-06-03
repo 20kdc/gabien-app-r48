@@ -85,7 +85,8 @@ public class LcfTileRenderer implements ITileRenderer {
         if ((tidx >= 3000) && (tidx < 4000)) {
             int field = (tidx - 3000) / 50; // this is all that matters
             // Unsure what the timing is on frames. Assuming 1/4 sec, will check later
-            double s = GaBIEn.getTime();
+            // It's 1/8th second.
+            double s = GaBIEn.getTime() * 2;
             s -= Math.floor(s);
             s *= 4;
             s = Math.floor(s);

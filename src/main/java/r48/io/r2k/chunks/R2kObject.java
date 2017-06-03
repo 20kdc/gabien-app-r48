@@ -35,13 +35,19 @@ public abstract class R2kObject implements IR2kStruct {
             if (cid == 0)
                 break;
             int len = R2kUtil.readLcfVLI(src);
-            // System.out.println(cid);
+            // System.out.println(this + " -> 0x" + Integer.toHexString(cid) + " [" + len + "]");
             byte[] data = R2kUtil.readLcfBytes(src, len);
             boolean handled = false;
             for (int i = 0; i < t.length; i++)
                 if (cid == t[i].index) {
                     ByteArrayInputStream bais = new ByteArrayInputStream(data);
-                    t[i].chunk.importData(bais);
+                    try {
+                        t[i].chunk.importData(bais);
+                    } catch (IOException e) {
+                        throw new IOException("In " + t[i] + " of " + this, e);
+                    } catch (RuntimeException e) {
+                        throw new RuntimeException("In " + t[i] + " of " + this, e);
+                    }
                     if (bais.available() != 0)
                         throw new IOException("Not all of the chunk interpreted by " + t[i].chunk + " in " + this);
                     handled = true;

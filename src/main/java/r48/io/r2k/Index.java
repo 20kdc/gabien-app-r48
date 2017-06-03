@@ -26,4 +26,11 @@ public class Index {
         chunk = c;
         rioHelperName = rhn;
     }
+
+    @Override
+    public String toString() {
+        if (rioHelperName != null)
+            return index + " -> " + rioHelperName;
+        return "0x" + Integer.toHexString(index);
+    }
 }

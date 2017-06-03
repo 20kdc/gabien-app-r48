@@ -10,7 +10,9 @@ import r48.RubyIO;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -92,11 +94,24 @@ public class R2kUtil {
     public static void writeLcfVLI(OutputStream os, int i) throws IOException {
         // Convert to unsigned so this makes sense
         long r = i & 0xFFFFFFFFL;
+
+        LinkedList<Integer> bytes = new LinkedList<Integer>();
+        // Get it in reverse (little-endian)...
         while (r > 0x7F) {
-            os.write((int) ((r & 0x7F) | 0x80));
+            bytes.add((int) (r & 0x7F));
             r >>= 7;
         }
-        os.write((int) (r & 0x7F));
+        bytes.add((int) (r & 0x7F));
+        Collections.reverse(bytes);
+        int bc = bytes.size();
+        for (int ib : bytes) {
+            if (bc > 1) {
+                os.write(ib | 0x80);
+                bc--;
+            } else {
+                os.write(ib);
+            }
+        }
     }
 
     // --
