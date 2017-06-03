@@ -2,128 +2,26 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-
 package r48.map;
 
-import gabien.ui.*;
-import r48.AppMain;
-import r48.FontSizes;
-import r48.RubyIO;
-import r48.map.events.*;
-import r48.map.imaging.*;
-import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
-import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
-import r48.map.mapinfos.UIGRMMapInfos;
-import r48.map.tiles.*;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.IConsumer;
+import gabien.ui.ISupplier;
+import gabien.ui.UIElement;
+import r48.map.events.IEventGraphicRenderer;
+import r48.map.imaging.IImageLoader;
+import r48.map.tiles.ITileRenderer;
 
 /**
- * First class of the new year. What does it do?
- * It's a grouping of stuff in other classes which has to go indirectly for sanity reasons.
- * (Example: UIMapView has to be the one /rendering/ tiles, but EPGDisplaySchemaElement
- * has absolutely no other reason to be in contact with the current UIMapView at all.)
- * This also has the nice effect of keeping the jarlightHax stuff out of some random UI code.
- *
- * -- May 29th, 2017 retrospective:
- * Basically, all of the version-specific IFDEF-like stuff that had to exist for maps went into here.
- * Better here than anywhere else, really.
- * (I suppose a StuffRenderer interface could've worked?)
- * The point is that ObjectBackend is independent of what the objects actually mean.
- * A JSONObjectBackend could serve a variety of purposes, all handling JSON objects with different map formats.
- * The Schemas and the StuffRenderer give *meaning* to that.
- *
- * Another thing to note is that the StuffRenderer is swapped about a lot. Specifically whenever the map changes.
- * There's also a magical "default" StuffRenderer which acts without a map context.
- * Parameters are (null, "").
- *
- * Created on 1/1/17.
+ * A replacement for (the old) StuffRenderer.
+ * Created on 03/06/17.
  */
 public class StuffRenderer {
-    // can be set by SDB
-    public static String versionId = "XP";
-
     public final ITileRenderer tileRenderer;
     public final IEventGraphicRenderer eventRenderer;
     public final IImageLoader imageLoader;
-
-    public static UIElement createMapExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final UIMapViewContainer mapBox) {
-        if (versionId.equals("VXA") || versionId.equals("XP"))
-            return new UIGRMMapInfos(windowMaker, mapBox, new RXPRMLikeMapInfoBackend());
-        if (versionId.equals("lcf2000"))
-            return new UIGRMMapInfos(windowMaker, mapBox, new R2kRMLikeMapInfoBackend());
-        return new UIPopupMenu(new String[] {
-                "Load Map"
-        }, new Runnable[] {
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        mapBox.loadMap("Map");
-                    }
-                }
-        }, FontSizes.menuTextHeight, false);
-    }
-
-    public static StuffRenderer rendererFromMap(RubyIO map) {
-        if (versionId.equals("VXA")) {
-            String vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
-            if (map.getInstVarBySymbol("@parallax_show").type != 'T')
-                vxaPano = "";
-            return new StuffRenderer(tsoFromMap(map), vxaPano);
-        }
-        if (versionId.equals("XP"))
-            return new StuffRenderer(tsoFromMap(map), "");
-        if (versionId.equals("lcf2000")) {
-            String vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
-            if (map.getInstVarBySymbol("@parallax_flag").type != 'T')
-                vxaPano = "";
-            return new StuffRenderer(tsoFromMap2000(map), vxaPano);
-        }
-        return new StuffRenderer(null, null);
-    }
-
-    private static RubyIO tsoFromMap(RubyIO map) {
-        RubyIO tileset = null;
-        int tid = (int) map.getInstVarBySymbol("@tileset_id").fixnumVal;
-        RubyIO tilesets = AppMain.objectDB.getObject("Tilesets");
-        if ((tid >= 0) && (tid < tilesets.arrVal.length))
-            tileset = tilesets.arrVal[tid];
-        if (tileset != null)
-            if (tileset.type == '0')
-                tileset = null;
-        return tileset;
-    }
-
-    private static RubyIO tsoFromMap2000(RubyIO map) {
-        return AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@tilesets").getHashVal(map.getInstVarBySymbol("@tileset_id"));
-    }
-
-    public StuffRenderer(RubyIO tso, String vxaPano) {
-        if (versionId.equals("Ika")) {
-            imageLoader = new GabienImageLoader(AppMain.rootPath + "Pbm/", ".pbm", 0, 0, 0);
-            tileRenderer = new IkaTileRenderer(imageLoader);
-            eventRenderer = new IkaEventGraphicRenderer(imageLoader);
-            return;
-        }
-        if (versionId.equals("lcf2000")) {
-            imageLoader = new CacheImageLoader(new XYZOrPNGImageLoader(AppMain.rootPath));
-            tileRenderer = new LcfTileRenderer(imageLoader, tso, vxaPano);
-            eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
-            return;
-        }
-        if (versionId.equals("XP")) {
-            imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png", 0, 0, 0);
-            tileRenderer = new XPTileRenderer(imageLoader, tso);
-            eventRenderer = new RMEventGraphicRenderer(this);
-            return;
-        }
-        if (versionId.equals("VXA")) {
-            imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png", 0, 0, 0);
-            tileRenderer = new VXATileRenderer(imageLoader, tso, vxaPano);
-            eventRenderer = new RMEventGraphicRenderer(this);
-            return;
-        }
-        tileRenderer = new NullTileRenderer();
-        eventRenderer = new NullEventGraphicRenderer();
-        imageLoader = new GabienImageLoader(AppMain.rootPath, "", 0, 0, 0);
+    public StuffRenderer(IImageLoader l, ITileRenderer t, IEventGraphicRenderer e) {
+        tileRenderer = t;
+        eventRenderer = e;
+        imageLoader = l;
     }
 }

@@ -11,6 +11,8 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
+import r48.map.imaging.IImageLoader;
+import r48.map.tiles.ITileRenderer;
 
 import java.util.HashMap;
 
@@ -21,11 +23,13 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
 
     private int patternCount = 4;
     private boolean useVXAExtensionScheme = false;
-    private StuffRenderer host;
+    private final IImageLoader imageLoader;
+    private final ITileRenderer tileRenderer;
 
-    public RMEventGraphicRenderer(StuffRenderer h) {
-        host = h;
-        if (StuffRenderer.versionId.equals("VXA")) {
+    public RMEventGraphicRenderer(IImageLoader img, ITileRenderer tile, boolean vxa) {
+        imageLoader = img;
+        tileRenderer = tile;
+        if (vxa) {
             patternCount = 3;
             useVXAExtensionScheme = true;
         }
@@ -81,7 +85,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         RubyIO cName = target.getInstVarBySymbol("@character_name");
         short tId = (short) target.getInstVarBySymbol("@tile_id").fixnumVal;
         if (tId != 0) {
-            host.tileRenderer.drawTile(0, tId, ox, oy, igd, host.tileRenderer.getTileSize());
+            tileRenderer.drawTile(0, tId, ox, oy, igd, tileRenderer.getTileSize());
         } else if (cName.strVal.length > 0) {
             // lower centre of tile, the reference point for characters
             ox += 16;
@@ -90,7 +94,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
             if (useVXAExtensionScheme)
                 if (!s.startsWith("!"))
                     oy -= 4;
-            IGrInDriver.IImage i = host.imageLoader.getImage("Characters/" + s, false);
+            IGrInDriver.IImage i = imageLoader.getImage("Characters/" + s, false);
             int sprW = i.getWidth() / patternCount;
             int sprH = i.getHeight() / 4;
             // Direction 2, pattern 0 == 0, ? (safe @ cliffs, page 0)

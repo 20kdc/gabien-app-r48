@@ -7,7 +7,7 @@
 C objectDB r48
 C dataPath Data/
 C dataExt .rvdata2
-C versionId VXA
+C versionId RVXA
 
 A RVXA/AutoTiles.txt RVXA/AutoTileRules.txt RVXA/WallAT.txt RVXA/WallATRules.txt
 C allowIndentControl

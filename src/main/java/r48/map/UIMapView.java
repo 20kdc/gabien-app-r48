@@ -43,7 +43,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             // Not an incredibly high-cost operation, thankfully,
             //  since it'll have to run on any edits.
             mapTable = new RubyTable(map.getInstVarBySymbol("@data").userVal);
-            AppMain.stuffRenderer = StuffRenderer.rendererFromMap(map);
+            AppMain.stuffRenderer = AppMain.system.rendererFromMap(map);
         }
     };
 
@@ -57,7 +57,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         listener.run();
         layerInvisible = new boolean[mapTable.planeCount + 2];
 
-        AppMain.stuffRenderer = StuffRenderer.rendererFromMap(map);
+        AppMain.stuffRenderer = AppMain.system.rendererFromMap(map);
         tileSize = AppMain.stuffRenderer.tileRenderer.getTileSize();
 
         camX = tileSize * (mapTable.width / 2);

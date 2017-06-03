@@ -95,7 +95,7 @@ public class SDB {
                 commandBufferNames.put(objId, objName);
                 workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                 commandBufferSchemas.put(objId, workingObj);
-                //System.out.println("Array definition when inappropriate: " + objName);
+                //MapSystem.out.println("Array definition when inappropriate: " + objName);
             }
 
             public SchemaElement handleChain(final String[] args, final int start) {
@@ -402,7 +402,7 @@ public class SDB {
                     if (args[0].equals("dataExt"))
                         AppMain.dataExt = args[1];
                     if (args[0].equals("versionId"))
-                        StuffRenderer.versionId = args[1];
+                        AppMain.sysBackend = args[1];
                     if (args[0].equals("defaultCB")) {
                         workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                         commandBufferSchemas.put(-1, workingObj);

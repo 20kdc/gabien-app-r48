@@ -7,7 +7,7 @@
 C objectDB r48
 C dataPath Data/
 C dataExt .rxdata
-C versionId XP
+C versionId RXP
 
 A RXP/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
 C allowIndentControl

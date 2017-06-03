@@ -4,13 +4,13 @@
 
 3: R2K
 f RPG_RT.ldb
+e UTF-8
+. R2K[3?] (UTF-8) (CURRENTLY CORRUPTS)
+
+3: R2K
+f RPG_RT.ldb
 e SJIS
-. R2K[3?] (Shift-JIS)
- I don't even know if I'll go through with this yet.
- Also note that the information given is because I don't know how much the routines will cover yet,
-  so I'm giving the detected engine version of the game used for testing.
- In other news, I'm going to have to institute a 'Shift-JIS at all times' policy on handling this game's files,
-  to prevent corruption...
+. R2K[3?] (Shift-JIS) (CURRENTLY CORRUPTS)
 
 0: RXP
 f Data/MapInfos.rxdata

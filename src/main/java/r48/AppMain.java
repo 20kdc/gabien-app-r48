@@ -20,6 +20,7 @@ import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
+import r48.systems.*;
 import r48.toolsets.IToolset;
 import r48.toolsets.MapToolset;
 import r48.toolsets.RMToolsToolset;
@@ -67,6 +68,8 @@ public class AppMain {
     public static String dataPath = "";
     public static String dataExt = "";
     public static String odbBackend = "<you forgot to select a backend>";
+    // Null system backend will always "work"
+    public static String sysBackend = "null";
 
     // Databases
     public static ObjectDB objectDB = null;
@@ -76,6 +79,7 @@ public class AppMain {
     // Backend Service (these are dealt with in StuffRenderer, since they're all really it's responsibility)
 
     public static StuffRenderer stuffRenderer;
+    public static MapSystem system;
 
     // State for in-system copy/paste
     public static RubyIO theClipboard = null;
@@ -104,7 +108,21 @@ public class AppMain {
         } else if (odbBackend.equals("lcf2000")) {
             objectDB = new ObjectDB(new R2kObjectBackend(rootPath));
         } else {
-            throw new IOException("Unknown backend " + odbBackend);
+            throw new IOException("Unknown ODB backend " + odbBackend);
+        }
+
+        if (sysBackend.equals("null")) {
+            system = new NullSystem();
+        } else if (sysBackend.equals("RXP")) {
+            system = new RXPSystem();
+        } else if (sysBackend.equals("RVXA")) {
+            system = new RVXASystem();
+        } else if (sysBackend.equals("Ika")) {
+            system = new IkaSystem();
+        } else if (sysBackend.equals("R2k")) {
+            system = new R2kSystem();
+        } else {
+            throw new IOException("Unknown MapSystem backend " + sysBackend);
         }
 
         // Final internal consistency checks and reading in dictionaries from target
@@ -124,7 +142,7 @@ public class AppMain {
         rootView.setBounds(new Rect(0, 0, 640, 480));
 
         // Set up a default stuffRenderer for things to use.
-        stuffRenderer = new StuffRenderer(null, "");
+        stuffRenderer = system.rendererFromMap(null);
 
         rebuildInnerUI(rootView, uiTicker);
 

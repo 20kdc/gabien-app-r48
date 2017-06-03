@@ -82,7 +82,17 @@ public class LcfTileRenderer implements ITileRenderer {
         // 050-099 is field 2.
         // 100-149 is field 3.
         // (Further fields presumably run off the right side or something)
-
+        if ((tidx >= 3000) && (tidx < 4000)) {
+            int field = (tidx - 3000) / 50; // this is all that matters
+            // Unsure what the timing is on frames. Assuming 1/4 sec, will check later
+            double s = GaBIEn.getTime();
+            s -= Math.floor(s);
+            s *= 4;
+            s = Math.floor(s);
+            int f = (int) s;
+            f %= 4;
+            igd.blitImage(48 + (field * 16), 64 + (f * 16), ets, ets, px, py, chipset);
+        }
 
         // Water tiles are yet another 50-entry AT field, seemingly of a different type.
         // Or possibly with some serious corner remapping.
@@ -225,6 +235,9 @@ public class LcfTileRenderer implements ITileRenderer {
                 new UITileGrid(mv, 1000, 1000, false, 0),
                 new UITileGrid(mv, 2000, 1000, false, 0),
                 new UITileGrid(mv, 4000, 612, true, 50),
+                new UITileGrid(mv, 3000, 1, false, 0),
+                new UITileGrid(mv, 3050, 1, false, 0),
+                new UITileGrid(mv, 3100, 1, false, 0),
                 new UITileGrid(mv, 5000, 144, false, 0),
                 new UITileGrid(mv, 10000, 144, false, 0),
         };
@@ -237,8 +250,11 @@ public class LcfTileRenderer implements ITileRenderer {
                 "WAT2",
                 "WAT3",
                 "TER.",
+                "ANI1",
+                "ANI2",
+                "ANI3",
                 "LOW",
-                "HIGH / Event Tile Indexes + 10000",
+                "HIGH/EV.TileIndexes+10000",
         };
     }
 

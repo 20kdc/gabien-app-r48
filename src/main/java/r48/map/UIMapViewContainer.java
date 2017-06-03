@@ -87,7 +87,7 @@ public class UIMapViewContainer extends UIPanel {
                 public void run() {
                     AppMain.stuffRenderer.imageLoader.flushCache();
                     if (view != null)
-                        AppMain.stuffRenderer = StuffRenderer.rendererFromMap(view.map);
+                        AppMain.stuffRenderer = AppMain.system.rendererFromMap(view.map);
                     AppMain.stuffRenderer.imageLoader.flushCache();
                 }
             });

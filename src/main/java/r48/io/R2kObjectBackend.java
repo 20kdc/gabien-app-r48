@@ -69,21 +69,21 @@ public class R2kObjectBackend implements IObjectBackend {
         // Note the write occurs before the F.O.S is created for safety
         if (filename.endsWith(".lmu")) {
             MapIO.writeLmu(baos, object);
-            FileOutputStream fos = new FileOutputStream(root + filename + "-MOD");
+            FileOutputStream fos = new FileOutputStream(root + filename);
             baos.writeTo(fos);
             fos.close();
             return;
         }
         if (filename.endsWith(".lmt")) {
             MapTreeIO.writeLmt(baos, object);
-            FileOutputStream fos = new FileOutputStream(root + filename + "-MOD");
+            FileOutputStream fos = new FileOutputStream(root + filename);
             baos.writeTo(fos);
             fos.close();
             return;
         }
         if (filename.endsWith(".ldb")) {
             DatabaseIO.writeLdb(baos, object);
-            FileOutputStream fos = new FileOutputStream(root + filename + "-MOD");
+            FileOutputStream fos = new FileOutputStream(root + filename);
             baos.writeTo(fos);
             fos.close();
             return;

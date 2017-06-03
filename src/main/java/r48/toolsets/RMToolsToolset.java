@@ -37,7 +37,7 @@ public class RMToolsToolset implements IToolset {
     final SchemaElement commandEvent;
 
     public RMToolsToolset() {
-        commandsEvent = AppMain.schemas.getCMDB("R" + StuffRenderer.versionId + "/Commands.txt");
+        commandsEvent = AppMain.schemas.getCMDB(AppMain.sysBackend + "/Commands.txt");
         commandEvent = AppMain.schemas.getSDBEntry("EventCommandEditor");
     }
 

@@ -6,7 +6,7 @@
  Things postfixed with _2k3 were marked as such in the file format information I got.
 
 C objectDB lcf2000
-C versionId lcf2000
+C versionId R2k
 C defineIndent
 
  -COM-
