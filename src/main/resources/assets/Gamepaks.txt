@@ -5,12 +5,12 @@
 3: R2K
 f RPG_RT.ldb
 e UTF-8
-. R2K[3?] (UTF-8) (CURRENTLY CORRUPTS)
+. R2K[3?] (UTF-8) (might corrupt)
 
 3: R2K
 f RPG_RT.ldb
 e SJIS
-. R2K[3?] (Shift-JIS) (CURRENTLY CORRUPTS)
+. R2K[3?] (Shift-JIS) (might corrupt)
 
 0: RXP
 f Data/MapInfos.rxdata

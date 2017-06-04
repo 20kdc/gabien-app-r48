@@ -25,11 +25,15 @@ public class CMDB {
     public int listLeaveCmd = 0;
     public int blockLeaveCmd = 0; // This is 10 on R2k, but that is controlled via Lblock
 
+    public int dUsers = 0;
+
     public CMDB(String baseFile) {
         DBLoader.readFile(baseFile, new IDatabase() {
             RPGCommand rc;
             int workingCmdId = 0;
             HashMap<String, SchemaElement> localAliasing = new HashMap<String, SchemaElement>();
+            HashMap<Integer, SchemaElement> currentPvH = new HashMap<Integer, SchemaElement>();
+            HashMap<Integer, String> currentPvH2 = new HashMap<Integer, String>();
 
             @Override
             public void newObj(int objId, String objName) {
@@ -43,7 +47,13 @@ public class CMDB {
             @Override
             public void execCmd(char c, String[] args) {
                 if (c == 'p') {
-                    rc.paramName.add(args[0].trim());
+                    final String fv = args[0].trim();
+                    rc.paramName.add(new IFunction<RubyIO, String>() {
+                        @Override
+                        public String apply(RubyIO rubyIO) {
+                            return fv;
+                        }
+                    });
                     String s = args[1].trim();
                     final SchemaElement se = aliasingAwareSG(s);
                     rc.paramType.add(new IFunction<RubyIO, SchemaElement>() {
@@ -52,15 +62,33 @@ public class CMDB {
                             return se;
                         }
                     });
-                } else if (c == 'D') {
-                    rc.paramName.add(args[0].trim());
-                    final int arrayDI = Integer.parseInt(args[1]);
-                    final SchemaElement defaultSE = aliasingAwareSG(args[2]);
+                } else if ((c == 'D') || (c == 'P')) {
                     final HashMap<Integer, SchemaElement> h = new HashMap<Integer, SchemaElement>();
-                    for (int i = 3; i < args.length; i += 2) {
-                        int ind = Integer.parseInt(args[i]);
-                        SchemaElement se = aliasingAwareSG(args[i + 1]);
-                        h.put(ind, se);
+                    currentPvH = h;
+                    final HashMap<Integer, String> h2 = new HashMap<Integer, String>();
+                    currentPvH2 = h2;
+                    // Pv-syntax:
+                    // P arrayDI defaultName defaultType
+                    // v specificVal name type
+                    int adi;
+                    String defName2;
+                    if (c == 'D') {
+                        defName2 = args[0].trim();
+                        adi = Integer.parseInt(args[1]);
+                    } else {
+                        defName2 = args[1].trim();
+                        adi = Integer.parseInt(args[0]);
+                    }
+                    final String defName = defName2;
+                    final int arrayDI = adi;
+                    final SchemaElement defaultSE = aliasingAwareSG(args[2]);
+                    if (c == 'D') {
+                        for (int i = 3; i < args.length; i += 2) {
+                            int ind = Integer.parseInt(args[i]);
+                            SchemaElement se = aliasingAwareSG(args[i + 1]);
+                            h.put(ind, se);
+                        }
+                        dUsers++;
                     }
                     rc.paramType.add(new IFunction<RubyIO, SchemaElement>() {
                         @Override
@@ -78,6 +106,27 @@ public class CMDB {
                             return defaultSE;
                         }
                     });
+                    rc.paramName.add(new IFunction<RubyIO, String>() {
+                        @Override
+                        public String apply(RubyIO rubyIO) {
+                            if (rubyIO == null)
+                                return defName;
+                            if (rubyIO.arrVal == null)
+                                return defName;
+                            if (rubyIO.arrVal.length <= arrayDI)
+                                return defName;
+                            int p = (int) rubyIO.arrVal[arrayDI].fixnumVal;
+                            String ise = h2.get(p);
+                            if (ise != null)
+                                return ise;
+                            return defName;
+                        }
+                    });
+                } else if (c == 'v') {
+                    // v specificVal name type
+                    int idx = Integer.parseInt(args[0]);
+                    currentPvH.put(idx, aliasingAwareSG(args[2]));
+                    currentPvH2.put(idx, args[1]);
                 } else if (c == 'd') {
                     String desc = "";
                     for (String s : args)
@@ -105,7 +154,7 @@ public class CMDB {
                 } else if (c == '>') {
                     localAliasing.put(args[0], AppMain.schemas.getSDBEntry(args[1]));
                 } else if (c == 'X') {
-                    rc.specialSchemaName = args[0];
+                    rc.specialSchema = AppMain.schemas.getSDBEntry(args[0]);
                 } else if (c == 'C') {
                     if (args[0].equals("digitCount"))
                         digitCount = Integer.parseInt(args[1]);
@@ -133,6 +182,8 @@ public class CMDB {
             }
         if (fails1 > 0)
             System.err.println(fails1 + " commands do not have descriptions.");
+        if (dUsers > 0)
+            System.err.println(dUsers + " commands use D-syntax. This is deprecated in favour of Pv-syntax, which changes the parameter name accordingly and is easier to read.");
     }
 
     public String buildCodename(RubyIO target, boolean indent) {

@@ -75,7 +75,11 @@ p faceFlipped int_boolean
 d Control switches in various ways. Single alters one switch. Range alters a group of switches. Indirect alters one switch, numbered by a variable.
 p _ string
 p type control_switches_type
-D target|Sw.|Var 1 int 0 switch_id 1 switch_id 2 var_id
+P 1 target? int
+v 0 target switch_id
+v 1 rangeFirst switch_id
+v 2 targIndVar var_id
+
 p rangeLast switch_id
 p changeMode control_switches_change_mode
 
@@ -94,33 +98,40 @@ d Adds or removes gold by a constant amount or the value in a variable.
 p _ string
 p takeGold int_boolean
 p goldIsVar int_boolean
-D gold|Int|Var 2 var_id 0 int
+P 2 goldVar var_id
+v 0 gold int
 
 10320: Modify Items
 d Adds or removes the amount of an item (selected by ID or the value in a variable) by a constant amount or the value in a variable.
 p _ string
 p remove int_boolean
 p itemIsVar int_boolean
-D item|Item|Var 2 var_id 0 item_id
+P 2 itemVar var_id
+v 0 item item_id
 p countIsVar int_boolean
-D count|Int|Var 4 var_id 0 int
+P 4 countVar var_id
+v 0 count int
 
 10330: Change Party Member
 d Adds or removes a party member, selected by ID or the value in a variable.
 p _ string
 p remove int_boolean
 p actorIsVar int_boolean
-D actor|ActorID|Var 4 var_id 0 actor_id
+P 2 actorVar var_id
+v 0 actor actor_id
 
 10410: Change EXP
 d Modifies the amount of experience a given set of party members has.
 p _ string
 p targetMode get_actors_mode
-D target|ActorID|Var 1 int 2 var_id
+P 1 _ int
+v 1 target actor_id
+v 2 targetVar var_id
 
 p removeExp int_boolean
 p expIsVar int_boolean
-D exp|Int|Var 4 var_id 0 int
+P 4 expVar var_id
+v 0 exp int
 
 d showLvlUp int_boolean
 
@@ -128,11 +139,14 @@ d showLvlUp int_boolean
 d Modifies the levels a given set of party members have.
 p _ string
 p targetMode get_actors_mode
-D target|ActorID|Var 1 int 2 var_id
+P 1 _ int
+v 1 target actor_id
+v 2 targetVar var_id
 
 p removeLvl int_boolean
 p lvlIsVar int_boolean
-D lvl|Int|Var 4 var_id 0 int
+P 4 lvlVar var_id
+v 0 lvl int
 
 d showLvlUp int_boolean
 
@@ -140,21 +154,28 @@ d showLvlUp int_boolean
 d Modifies the parameters a given set of party members have.
 p _ string
 p targetMode get_actors_mode
-D target|ActorID|Var 1 int 2 var_id
+P 1 _ int
+v 1 target actor_id
+v 2 targetVar var_id
 
 p removePL int_boolean
 p targetParam change_battle_parameter
 p plIsVar int_boolean
-D pl|Int|Var 5 var_id 0 int
+P 5 plVar var_id
+v 0 pl int
 
 10440: Change Skills
 d Adds or removes skills a given set of party members have.
 p _ string
 p targetMode get_actors_mode
-D target|ActorID|Var 1 int 2 var_id
+P 1 _ int
+v 1 target actor_id
+v 2 targetVar var_id
+
 p removeSkill int_boolean
 p skillIsVar int_boolean
-D skill|SkillID|Var 4 var_id 0 skill_id
+P 4 skillVar var_id
+v 0 skill skill_id
 
 10450: Change Equipment
 d Equips a given piece of equipment to, or unequips all equipment from a given set of party members
@@ -165,27 +186,39 @@ X change_equipment_parameters
 d Heals or hurts a given set of party members. Can trigger Game Over if allowed to.
 p _ string
 p targetMode get_actors_mode
-D target|ActorID|Var 1 int 2 var_id
+P 1 _ int
+v 1 target actor_id
+v 2 targetVar var_id
+
  would be 'negate' but this is more obvious
 p hurtTarget int_boolean
 p amountIsVar int_boolean
-D amount|Int|Var 4 var_id 0 int
+P 4 amountVar var_id
+v 0 amount int
+
 p allowDeath int_boolean
 
 10470: Change SP
 d Gives or takes SP from a given set of party members.
 p _ string
 p targetMode get_actors_mode
-D target|ActorID|Var 1 int 2 var_id
+P 1 _ int
+v 1 target actor_id
+v 2 targetVar var_id
+
 p takeSp int_boolean
 p amountIsVar int_boolean
-D amount|Int|Var 4 var_id 0 int
+P 4 amountVar var_id
+v 0 amount int
 
 10480: Add/Remove State
 d Adds to or removes a State from a given set of party members.
 p _ string
 p targetMode get_actors_mode
-D target|ActorID|Var 1 int 2 var_id
+P 1 _ int
+v 1 target actor_id
+v 2 targetVar var_id
+
 p remove int_boolean
 p state state_id
 
@@ -193,14 +226,19 @@ p state state_id
 d Fills HP and SP to maximum possible for a given set of party members.
 p _ string
 p targetMode get_actors_mode
-D target|ActorID|Var 1 int 2 var_id
+P 1 _ int
+v 1 target actor_id
+v 2 targetVar var_id
 
 10500: Simulate Attack
  On Titan
 d Causes an attack of damage atk - (((actor.def * defMod) / 400) + ((actor.spi * spiMod) / 800)), with the result being varied by *up to, in either direction* (variance * 5) / 100.
 p _ string
 p targetMode get_actors_mode
-D target|ActorID|Var 1 int 2 var_id
+P 1 _ int
+v 1 target actor_id
+v 2 targetVar var_id
+
 p atk int
 p defMod int
 p spiMod int
@@ -261,8 +299,7 @@ p title string
 p actor actor_id
 
 10630: Change Actor G/I/T
-d Change how a party member appars.
- (TODO:in the battle display?, or in-world as the primary member?)
+d Change how a party member appears in battle.
 p graphic string
 p actor actor_id
 p index int
@@ -274,7 +311,72 @@ p faceset string
 p actor actor_id
 p index int
 
- GAP (C.V.G to W.E)
+10650: Change Vehicle Appearance
+d Change the appearance of a vehicle.
+p graphic string
+p vehicle scripting_vehicletype
+p index int
+
+10660: Change System BGM
+d Change a System BGM.
+p bgm string
+p bgmId change_sys_bgm_id
+p fadein int
+p volume int
+p tempo int
+p balance int
+
+ NT. OS uses below for hax, so it gets priority on the "should we name this right today" roulette wheel
+
+10670: @@Change Sys.SFX{E: @#B to #A}
+d Change a sound effect used by the system.
+p sfx string
+p sfxId change_sys_sfx_id
+p volume int
+p tempo int
+p balance int
+
+10680: Change Sys.GFX
+d Change the current set of graphics used by the system.
+p systemGfx string
+p useTiling int_boolean
+p font change_sys_gfx_font
+
+10690: Change Transition
+d Change a transition used by the system.
+p _ string
+p situation change_transition_situation
+p transition change_transition_type
+
+ GAP (M.L to S.E.I)
+
+11010: Hide Map
+d Hides the map.
+p _ string
+p transition transition_type
+
+11020: Show Map
+d Shows the map.
+p _ string
+p transition transition_type
+
+11030: Tint Screen
+d Tints the screen with given parameters.
+p _ string
+p red int
+p green int
+p blue int
+p rotation int
+p fadeTime int
+p waitForFade int_boolean
+
+ GAP (F.S to S.S)
+
+11070: Weather Control
+d Controls the weather. Your forecast today: Rain. Which is good, because the clouds will protect you from the burning, uncaring sun.
+p _ string
+p weather weather_control_type
+p strength weather_control_strength
 
 11310: @@{B:{B=1=Show Player|Hide Player}|Change Player Visibility}
 d Show or hide the player on the map.

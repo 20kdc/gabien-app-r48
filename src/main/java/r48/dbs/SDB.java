@@ -22,6 +22,7 @@ import r48.schema.integers.ROIntegerSchemaElement;
 import r48.schema.specialized.*;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 import r48.schema.specialized.tbleditors.DefaultTableCellEditor;
+import r48.schema.util.SchemaPath;
 
 import java.io.BufferedReader;
 import java.io.IOException;

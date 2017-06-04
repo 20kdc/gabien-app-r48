@@ -88,8 +88,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
                                     ise.modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), true);
                                     param.arrVal[i] = rio;
                                 }
-                                if (rc.specialSchemaName != null) {
-                                    SchemaElement schemaElement = AppMain.schemas.getSDBEntry(rc.specialSchemaName);
+                                if (rc.specialSchema != null) {
+                                    SchemaElement schemaElement = rc.specialSchema;
                                     schemaElement.modifyVal(target, path, true);
                                 }
                             }
@@ -129,8 +129,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
             private UIElement buildSubElem() {
                 RPGCommand rc = database.knownCommands.get((int) target.getInstVarBySymbol("@code").fixnumVal);
                 if (rc != null) {
-                    if (rc.specialSchemaName != null)
-                        return AppMain.schemas.getSDBEntry(rc.specialSchemaName).buildHoldingEditor(target, launcher, path);
+                    if (rc.specialSchema != null)
+                        return rc.specialSchema.buildHoldingEditor(target, launcher, path);
                     RubyIO param = target.getInstVarBySymbol("@parameters");
                     UIScrollVertLayout uiSVL = new UIScrollVertLayout();
 
@@ -147,13 +147,13 @@ public class RPGCommandSchemaElement extends SchemaElement {
                             uiSVL.panels.add(new UILabel("WARNING: Missing E" + i + ".", FontSizes.schemaFieldTextHeight));
                             continue;
                         }
-                        String paramName = rc.getParameterName(i);
+                        String paramName = rc.getParameterName(param, i);
                         // Hidden parameters, introduced to deal with the "text" thing brought about by R2k
                         if (!paramName.equals("_")) {
                             SchemaElement ise = rc.getParameterSchema(param, i);
                             height += ise.maxHoldingHeight();
                             UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
-                            uiSVL.panels.add(new UIHHalfsplit(1, 3, new UILabel(rc.getParameterName(i), FontSizes.schemaFieldTextHeight), uie));
+                            uiSVL.panels.add(new UIHHalfsplit(1, 3, new UILabel(paramName, FontSizes.schemaFieldTextHeight), uie));
                         }
                     }
                     uiSVL.setBounds(new Rect(0, 0, 128, height));
@@ -187,10 +187,10 @@ public class RPGCommandSchemaElement extends SchemaElement {
         actualSchema.modifyVal(target, path, setDefault);
         RPGCommand rc = database.knownCommands.get((int) target.getInstVarBySymbol("@code").fixnumVal);
         if (rc != null) {
-            if (rc.specialSchemaName != null) {
+            if (rc.specialSchema != null) {
                 // The amount of parameters isn't always fully described.
                 // Cutting down on length is done when the command code is set - That's as good as it gets.
-                AppMain.schemas.getSDBEntry(rc.specialSchemaName).modifyVal(target, path, setDefault);
+                rc.specialSchema.modifyVal(target, path, setDefault);
             } else {
                 RubyIO param = target.getInstVarBySymbol("@parameters");
                 // All parameters are described, and the SASE will ensure length is precisely equal

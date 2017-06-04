@@ -13,14 +13,14 @@
 
  Set Variables
 
-e set_variables_target 0 Single 1 Range 2 Indirect
+e set_variables_target 0 single 1 range 2 indirect
 e set_variables_op 0 = 1 += 2 -= 3 *= 4 /= 5 %=
-e set_variables_source 0 Constant 1 Variable 2 IndirectVar 3 Random 4 Item 5 Actor 6 Event 7 GameInfo 8 BattleEnemy
-e set_variables_itemprop 0 Amount 1 Equip.Count
-e set_variables_actorprop 0 Lvl. 1 Exp. 2 HP. 3 MP. 4 HP.max 5 MP.max 6 ATK 7 DEF 8 INT 9 AGI 10 Weapon.ID 11 Shield.ID 12 Armour.ID 13 Helmet.ID 14 Accessory.ID
-e set_variables_charprop 0 MapID 1 X 2 Y 3 Direction 4 ScreenX 5 ScreenY
-e set_variables_giprop 0 Gold 1 Timer1 2 ActorsInParty 3 SaveCount 4 BattleCount 5 WinCount 6 DefeatCount 7 EscapeCount 8 MIDIPosition 9 Timer2
-e set_variables_enemyprop 0 HP. 1 SP. 2 HP.max 3 SP.max 4 ATK 5 DEF 6 SPI 7 AGI
+e set_variables_source 0 constant 1 variable 2 indirectVar 3 random 4 item 5 actor 6 event 7 gameInfo 8 battleEnemy
+e set_variables_itemprop 0 amount 1 equippedAmount
+e set_variables_actorprop 0 lvl 1 exp 2 hp 3 sp 4 maxHp 5 maxSp 6 atk 7 def 8 spi 9 agi 10 weaponId 11 shieldId 12 armourId 13 helmetId 14 accessoryId
+e set_variables_charprop 0 mapID 1 x 2 y 3 direction 4 screenX 5 screenY
+e set_variables_giprop 0 gold 1 timer1 2 actorsInParty 3 saveCount 4 battleCount 5 winCount 6 defeatCount 7 escapeCount 8 midiPosition 9 timer2
+e set_variables_enemyprop 0 hp 1 sp 2 maxHp 3 maxSp 4 atk 5 def 6 spi 7 agi
 
 .set_variables_base_targ
 ]2 varTarg var_id
@@ -89,13 +89,12 @@ e set_variables_enemyprop 0 HP. 1 SP. 2 HP.max 3 SP.max 4 ATK 5 DEF 6 SPI 7 AGI
 
  Conditional Branch
 
-e cbranch_type 0 Switch 1 Var.Compare 2 Timer1 3 Gold.Compare 4 Item.Compare 5 Actor... 6 Char.Dir 7 UsingVehicle 8 Init.ByActKey 9 BGMLooped 10 Timer2 11 RPGMaker2003v1.11.Cherry.'Other'.Tab
+e cbranch_type 0 switch 1 varCompare 2 timer1 3 goldCompare 4 itemCompare 5 actorInfo 6 charDir 7 usingVehicle 8 initByActKey 9 bgmLooped 10 timer2 11 rpgMaker2003v1.11.Cherry.other
 e cbranch_gele 0 >= 1 <=
 e cbranch_varcomp_e 0 == 1 >= 2 <= 3 > 4 < 5 !=
-e cbranch_cherry_e 0 HasSave 1 TestPlay 2 ATBWait 3 Fullscreen
-e cbranch_vehicletype 0 Boat 1 Ship 2 Airship
-e cbranch_itemcomp_e 0 PartyHasItem 1 PartyDoesn'tHaveItem
-e cbranch_actorprop_e 0 InParty 1 Name= 2 Level>= 3 HP>= 4 KnowsSkill 5 Equipped 6 HasState
+e cbranch_cherry_e 0 hasSave 1 testPlay 2 atbWait 3 fullScreen
+e cbranch_itemcomp_e 0 partyHasItem 1 partyDoesntHaveItem
+e cbranch_actorprop_e 0 inParty 1 name= 2 level>= 3 hp>= 4 knowsSkill 5 hasEquipped 6 hasState
 
 .cbranch_base
 ]0 _ string
@@ -172,7 +171,7 @@ e cbranch_actorprop_e 0 InParty 1 Name= 2 Level>= 3 HP>= 4 KnowsSkill 5 Equipped
 
 .cbranch_vehicle
 +cbranch_base
-]2 vehicle cbranch_vehicletype
+]2 vehicle scripting_vehicletype
 
 .cbranch_timer2
 +cbranch_base
@@ -195,7 +194,7 @@ e cbranch_actorprop_e 0 InParty 1 Name= 2 Level>= 3 HP>= 4 KnowsSkill 5 Equipped
  This can be 4 or 5 array elements in size. *sigh*
  Not visible: the additional SDB/AESE hackery required to make this happen
 
-e timer_operation_type 0 SetTime 1 SetFlagsAndStart 2 Stop
+e timer_operation_type 0 setTime 1 setFlagsAndStart 2 stop
 
 .timer_operation_parameters
 @indent indent
@@ -267,8 +266,8 @@ e timer_operation_type 0 SetTime 1 SetFlagsAndStart 2 Stop
  this hopefully mirrors what user is "supposed" to see,
   without potentially breaking any rules.
 
-e wait_button_id 0 Act
-E wait_framecount Frames 0 WaitForCondition
+e wait_button_id 0 actKey
+E wait_framecount frames 0 waitForCondition
 
 .wait_illogical_nowfc
 > wait_illogical_wfc ]?2 wfcCondType None wait_button_id
@@ -280,3 +279,29 @@ E wait_framecount Frames 0 WaitForCondition
 ]0 _ string
 ]1 frames wait_framecount
 +arrayDAM 1 int wait_illogical_nowfc 0 wait_illogical_wfc
+
+ /- +-
+ |  +-
+ \- +-
+
+ Change Equipment
+
+e change_equipment_slot_id 0 weapon 1 shield 2 armour 3 helmet 4 accessory
+
+.change_equipment_parameters
+@indent indent
+@parameters arrayDAM 3 int change_equipment_base 0 change_equipment_add 1 change_equipment_remove
+.change_equipment_base
+]0 _ string
+]1 targetMode get_actors_mode
++arrayDAM 1 int ]2 _ int 1 ]2 actor actor_id 2 ]2 actorVar var_id
+]3 remove int_boolean
+
+.change_equipment_add
++change_equipment_base
+]4 itemIsVar int_boolean
++arrayDAM 4 int ]5 itemVar var_id 0 ]5 item item_id
+
+.change_equipment_remove
++change_equipment_base
+]4 slot change_equipment_slot_id

@@ -4,13 +4,28 @@
 
  -- bits and bobs
 
-e control_switches_type 0 Single 1 Range 2 Indirect
-e control_switches_change_mode 0 On 1 Off 2 Toggle
+e control_switches_type 0 single 1 range 2 indirect
+e control_switches_change_mode 0 on 1 off 2 toggle
 
-e message_options_position 0 Top 1 Centre 2 Bottom
+e message_options_position 0 top 1 centre 2 bottom
 
-e get_actors_mode 0 WholeParty(ign.target) 1 Actor 2 Var.Actor
-e change_battle_parameter 0 MaxHP 1 MaxMP 2 ATK 3 DEF 4 SPI 5 AGI
+e get_actors_mode 0 wholeParty(ign.target) 1 actor 2 varActor
+
+e change_battle_parameter 0 maxHP 1 maxMP 2 atk 3 def 4 spi 5 agi
+
+e scripting_vehicletype 0 boat 1 ship 2 airShip
+
+e change_sys_bgm_id 0 battle 1 victory 2 inn 3 boat 4 ship 5 airShip 6 gameOver
+e change_sys_sfx_id 0 changeChoice 1 act 2 cancel 3 error 4 enterBattle 5 fleeBattle 6 enemyAttackBattle 7 enemyHurtBattle 8 allyHurtBattle 9 evadeInBattle 10 enemyDeadBattle 11 useItem
+e change_sys_gfx_font 0 msGothic 1 msMincho
+
+e change_transition_situation 0 mapChangePre 1 mapChangePost 2 enterBattlePre 3 enterBattlePost 4 leaveBattlePre 5 leaveBattlePost
+e change_transition_type 0 default 1 fade 2 blocks 3 dwDown 4 dwUp 5 blindsA 6 blindsB 7 blindsC 8 scalingSquareI 9 scalingSquareO 10 moveScrUpDown 11 moveScrDownUp 12 moveScrLeftRight 13 moveScrRightLeft 14 verticalOverlap 15 horizontalOverlap 16 quads 17 zoom 18 pieces 19 haze 20 null 21 none
+e transition_type -1 default 0 fade 1 blocks 2 dwDown 3 dwUp 4 blindsA 5 blindsB 6 blindsC 7 scalingSquareI 8 scalingSquareO 9 moveScrUpDown 10 moveScrDownUp 11 moveScrLeftRight 12 moveScrRightLeft 13 verticalOverlap 14 horizontalOverlap 15 quads 16 zoom 17 pieces 18 haze 19 null 20 none
+
+ (Pretty sure fog and sandstorm are 2k3, anyway)
+e weather_control_type 0 none 1 rain 2 snow 3 fog2k3 4 sandstorm2k3
+e weather_control_strength 0 little 1 medium 2 lots
 
  ---
 

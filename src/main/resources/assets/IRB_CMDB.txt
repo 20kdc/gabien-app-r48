@@ -107,6 +107,12 @@
   '<number>:<name>' defines a command and it's name-routine.
   'p' defines a parameter. The parameter can only be a type name, chaining language is restricted to SDB.
   'd' defines the description of the command. You will be warned for omitting this.
+  'D' is deprecated, replaced by P.
+  'P''s format is "disambiguationIndex defaultName defaultType".
+  'v' defines a disambiguation "disValue name type".
+   P 1 _ int
+   v 1 actor actor_id
+   v 2 actorVar var_id
   'L' defines this as a block and list leave command.
       Commands with this are only valid in two places:
       1. Immediately before an 'l'-type command

@@ -20,10 +20,10 @@ import java.util.LinkedList;
 public class RPGCommand {
     public String name;
 
-    public String specialSchemaName;
+    public SchemaElement specialSchema;
 
     public LinkedList<IFunction<RubyIO, SchemaElement>> paramType = new LinkedList<IFunction<RubyIO, SchemaElement>>();
-    public LinkedList<String> paramName = new LinkedList<String>();
+    public LinkedList<IFunction<RubyIO, String>> paramName = new LinkedList<IFunction<RubyIO, String>>();
     public int indentPre;
     public int indentPost;
     // Something that can also go before this command instead of a block leave
@@ -218,10 +218,10 @@ public class RPGCommand {
         return paramType.get(i).apply(root);
     }
 
-    public String getParameterName(int i) {
+    public String getParameterName(RubyIO root, int i) {
         if (paramName.size() <= i)
             return "UNK.";
-        return paramName.get(i);
+        return paramName.get(i).apply(root);
     }
 
     public static String interpretParameter(RubyIO rubyIO, SchemaElement ise, boolean prefixEnums) {
