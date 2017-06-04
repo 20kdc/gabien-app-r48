@@ -4,6 +4,7 @@
  */
 package r48.map.events;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import r48.RubyIO;
 import r48.map.imaging.IImageLoader;
@@ -51,7 +52,7 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrInDriver igd) {
+    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd) {
         String cName = target.getInstVarBySymbol("@character_name").decString();
         if (!cName.equals("")) {
             IGrInDriver.IImage i = imageLoader.getImage("CharSet/" + cName, false);

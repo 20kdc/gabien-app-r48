@@ -5,7 +5,7 @@
 
 package r48.maptools;
 
-import gabien.IGrInDriver;
+import gabien.IGrDriver;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import gabien.ui.UIPanel;
@@ -50,7 +50,7 @@ public class UIMTEventMover extends UIPanel implements IMapViewCallbacks {
     }
 
     @Override
-    public void performOverlay(int tx, int ty, IGrInDriver igd, int px, int py, int ol, boolean minimap) {
+    public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
     }
 
     @Override

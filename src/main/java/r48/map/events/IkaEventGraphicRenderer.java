@@ -4,6 +4,7 @@
  */
 package r48.map.events;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import r48.RubyIO;
 import r48.map.imaging.IImageLoader;
@@ -36,7 +37,7 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrInDriver igd) {
+    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd) {
         String[] graphics = new String[] {"Hari", "Isogin", "Kani", "Sleep", "Chibi", "Hoshi", "Dum", "Carry", "Juel", "Ufo"};
         int dsX = 16;
         int dsY = 16;

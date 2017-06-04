@@ -4,6 +4,7 @@
  */
 package r48.map.tiles;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
 import r48.AppMain;
@@ -58,7 +59,7 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
         // The logic here is only documented in the mkxp repository, in tilemap.cpp.
         // I really hope it doesn't count as stealing here,
         //  if I would've had to have typed this code ANYWAY
@@ -88,7 +89,7 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     // Used by 2k3 support too, since it follows the same AT design
-    public static boolean generalOldRMATField(int tox, int toy, int subfield, int atFieldType, int fTileSize, int ets, int px, int py, IGrInDriver igd, IGrInDriver.IImage img) {
+    public static boolean generalOldRMATField(int tox, int toy, int subfield, int atFieldType, int fTileSize, int ets, int px, int py, IGrDriver igd, IGrInDriver.IImage img) {
         if ((ets == fTileSize) && (AppMain.autoTiles[atFieldType] != null)) {
             if (subfield >= AppMain.autoTiles[atFieldType].entries.length)
                 return false;
@@ -170,5 +171,10 @@ public class XPTileRenderer implements ITileRenderer {
                 new AutoTileTypeField(48 * 6, 48, 0),
                 new AutoTileTypeField(48 * 7, 48, 0),
         };
+    }
+
+    @Override
+    public int getFrame() {
+        return 0;
     }
 }

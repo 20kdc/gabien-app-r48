@@ -5,6 +5,7 @@
 package r48.map.events;
 
 import gabien.GaBIEn;
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
 import r48.FontSizes;
@@ -72,7 +73,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrInDriver igd) {
+    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd) {
         int pat = (int) target.getInstVarBySymbol("@pattern").fixnumVal;
         int coreDir = (int) target.getInstVarBySymbol("@direction").fixnumVal;
         int dir = lookupDirection(coreDir);

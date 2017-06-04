@@ -4,7 +4,7 @@
  */
 package r48.maptools;
 
-import gabien.IGrInDriver;
+import gabien.IGrDriver;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.map.IMapViewCallbacks;
@@ -68,7 +68,7 @@ public class UIMTShadowLayer extends UIPanel implements IMapViewCallbacks {
     }
 
     @Override
-    public void performOverlay(int tx, int ty, IGrInDriver igd, int px, int py, int ol, boolean minimap) {
+    public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
         if (map.mapTable.outOfBounds(tx, ty))
             return;
         int regionId = (map.mapTable.getTiletype(tx, ty, 3) & 0xFF00) >> 8;

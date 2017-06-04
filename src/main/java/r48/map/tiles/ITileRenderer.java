@@ -4,6 +4,7 @@
  */
 package r48.map.tiles;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import r48.map.UIMapView;
 import r48.ui.UITileGrid;
@@ -17,7 +18,7 @@ public interface ITileRenderer {
 
     int[] tileLayerDrawOrder();
 
-    void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets);
+    void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets);
 
     String getPanorama();
 
@@ -26,4 +27,7 @@ public interface ITileRenderer {
     String[] getPlaneNames(int layer);
 
     AutoTileTypeField[] indicateATs();
+
+    // Used to sync the map view and playing animations.
+    int getFrame();
 }

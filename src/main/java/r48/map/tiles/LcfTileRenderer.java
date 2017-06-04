@@ -5,6 +5,7 @@
 package r48.map.tiles;
 
 import gabien.GaBIEn;
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import r48.RubyIO;
 import r48.map.UIMapView;
@@ -45,7 +46,7 @@ public class LcfTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
         if (chipset == null)
             return;
         // There are 288 "Common Tiles" (non-AT) divided into upper and lower layer tiles.
@@ -134,7 +135,7 @@ public class LcfTileRenderer implements ITileRenderer {
             int tField = tidx / 1000;
             int tSubfield = tidx % 1000;
 
-            // 1 second per 3 frames
+            // 1/3rd of a second
             double t = GaBIEn.getTime();
             t = Math.floor(t * 3);
             int f = ((int) t) % 4;
@@ -158,7 +159,7 @@ public class LcfTileRenderer implements ITileRenderer {
         }
     }
 
-    private void handleWATField(int tSubfield, String upper, String lower, int px, int py, IGrInDriver igd, IGrInDriver.IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int ets) {
+    private void handleWATField(int tSubfield, String upper, String lower, int px, int py, IGrDriver igd, IGrInDriver.IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int ets) {
 
         int innerSubfield = tSubfield % 50;
         int outerSubfield = tSubfield / 50;
@@ -177,7 +178,7 @@ public class LcfTileRenderer implements ITileRenderer {
         }
     }
 
-    private void handleWATCorner(int cx, int cy, char c, int px, int py, IGrInDriver igd, IGrInDriver.IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int etc) {
+    private void handleWATCorner(int cx, int cy, char c, int px, int py, IGrDriver igd, IGrInDriver.IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int etc) {
         int tox = 0;
         int toy = 0;
         switch (c) {
@@ -209,7 +210,7 @@ public class LcfTileRenderer implements ITileRenderer {
         igd.blitImage(tox + cx, toy + cy, etc, etc, px + cx, py + cy, chipset);
     }
 
-    private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrInDriver igd, IGrInDriver.IImage chipset, int ets) {
+    private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrDriver igd, IGrInDriver.IImage chipset, int ets) {
         // Divided into 6-wide columns, 96 tiles per column.
         int ti = tidx - base;
         ti += ofsPage * 144;
@@ -218,7 +219,7 @@ public class LcfTileRenderer implements ITileRenderer {
         igd.blitImage(192 + (tx * 16), ty * 16, ets, ets, px, py, chipset);
     }
 
-    private void handleATField(int subfield, int fx, int fy, int px, int py, IGrInDriver igd, IGrInDriver.IImage chipset, int ets) {
+    private void handleATField(int subfield, int fx, int fy, int px, int py, IGrDriver igd, IGrInDriver.IImage chipset, int ets) {
         XPTileRenderer.generalOldRMATField(fx * 16, fy * 16, subfield, 0, 16, ets, px, py, igd, chipset);
     }
 
@@ -273,5 +274,12 @@ public class LcfTileRenderer implements ITileRenderer {
                 new AutoTileTypeField(4500, 50, 0),
                 new AutoTileTypeField(4550, 50, 0),
         };
+    }
+
+    @Override
+    public int getFrame() {
+        // 1/3rd * 1/8th = 1/24th
+        double t = GaBIEn.getTime();
+        return ((int) (t * 24)) % 24;
     }
 }

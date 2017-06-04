@@ -5,7 +5,10 @@
 
 package r48.map;
 
+import gabien.GaBIEn;
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IOsbDriver;
 import gabien.ui.IWindowElement;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
@@ -36,6 +39,9 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     public final int tileSize;
 
+    private MapViewUpdateScheduler scheduler = new MapViewUpdateScheduler();
+    private IOsbDriver offscreenBuf;
+
     private Runnable listener = new Runnable() {
         @Override
         public void run() {
@@ -43,6 +49,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             //  since it'll have to run on any edits.
             mapTable = new RubyTable(map.getInstVarBySymbol("@data").userVal);
             AppMain.stuffRenderer = AppMain.system.rendererFromMap(map);
+            scheduler.forceNextUpdate = true;
         }
     };
 
@@ -75,21 +82,40 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     @Override
     public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-        // This assumes it's the background element for now - no cropping... :(
-        // Ok, decode Table
-        int w = mapTable.width;
-        int h = mapTable.height;
         boolean debug = igd.isKeyDown(IGrInDriver.VK_D);
+
+        if (selected)
+            if (igd.isKeyJustPressed(IGrInDriver.VK_M))
+                toggleMinimap();
+
         int eTileSize = tileSize;
         if (minimap)
             eTileSize = 2;
 
         int mouseXT = UIElement.sensibleCellDiv((igd.getMouseX() - ox) + camX, eTileSize);
         int mouseYT = UIElement.sensibleCellDiv((igd.getMouseY() - oy) + camY, eTileSize);
-
         Rect camR = getBounds();
-        int camW = camR.width;
-        int camH = camR.height;
+        // Stuff any possible important information...
+        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + eTileSize + "_" + debug + "_" + AppMain.stuffRenderer.tileRenderer.getFrame() + "_" + AppMain.stuffRenderer.hashCode();
+        if (scheduler.needsUpdate(config)) {
+            boolean remakeBuf = true;
+            if (offscreenBuf != null)
+                if ((offscreenBuf.getWidth() == camR.width) && (offscreenBuf.getHeight() == camR.height))
+                    remakeBuf = false;
+            if (remakeBuf)
+                offscreenBuf = GaBIEn.makeOffscreenBuffer(camR.width, camR.height);
+            render(camR.width, camR.height, mouseXT, mouseYT, eTileSize, debug, offscreenBuf);
+        }
+        if (offscreenBuf != null)
+            igd.blitImage(0, 0, camR.width, camR.height, ox, oy, offscreenBuf);
+    }
+
+    public void render(int camW, int camH, int mouseXT, int mouseYT, int eTileSize, boolean debug, IGrDriver igd) {
+        // The offscreen image implicitly crops.
+        igd.clearAll(0, 0, 0);
+        // Ok, decode Table
+        int w = mapTable.width;
+        int h = mapTable.height;
 
         int camTR = UIElement.sensibleCellDiv((camX + camW), eTileSize) + 1;
         int camTB = UIElement.sensibleCellDiv((camY + camH), eTileSize) + 1;
@@ -114,11 +140,11 @@ public class UIMapView extends UIElement implements IWindowElement {
                 int camOTeY = sensibleCellDiv(eCamY + camH, im.getHeight()) + 1;
                 for (int i = camOTX; i <= camOTeX; i++)
                     for (int j = camOTY; j <= camOTeY; j++)
-                        igd.blitImage(0, 0, im.getWidth(), im.getHeight(), ox + (i * im.getWidth()) - eCamX, oy + (j * im.getHeight()) - eCamY, im);
+                        igd.blitImage(0, 0, im.getWidth(), im.getHeight(), (i * im.getWidth()) - eCamX, (j * im.getHeight()) - eCamY, im);
             }
         }
 
-        drawEventLayer(ox, oy, igd, camTX, camTY, camTR, camTB, -1);
+        drawEventLayer(igd, camTX, camTY, camTR, camTB, -1);
         int[] layerOrder = AppMain.stuffRenderer.tileRenderer.tileLayerDrawOrder();
         for (int li = 0; li < layerOrder.length; li++) {
             int l = layerOrder[li];
@@ -135,8 +161,8 @@ public class UIMapView extends UIElement implements IWindowElement {
                             continue;
                         int px = i * eTileSize;
                         int py = j * eTileSize;
-                        px = (ox + px) - camX;
-                        py = (oy + py) - camY;
+                        px -= camX;
+                        py -= camY;
                         // 5, 26-29: cafe main bar. In DEBUG, shows as 255, 25d, 25d, ???, I think.
                         // 1c8 >> 3 == 39.
                         // 39 in binary is 00111001.
@@ -154,11 +180,11 @@ public class UIMapView extends UIElement implements IWindowElement {
                     }
                 }
             }
-            drawEventLayer(ox, oy, igd, camTX, camTY, camTR, camTB, li);
+            drawEventLayer(igd, camTX, camTY, camTR, camTB, li);
         }
         int extra = AppMain.stuffRenderer.eventRenderer.extraEventLayers();
         for (int i = 0; i < extra; i++)
-            drawEventLayer(ox, oy, igd, camTX, camTY, camTR, camTB, layerOrder.length + i);
+            drawEventLayer(igd, camTX, camTY, camTR, camTB, layerOrder.length + i);
 
         int layers = callbacks.wantOverlay(minimap);
         for (int l = 0; l < layers; l++) {
@@ -166,8 +192,8 @@ public class UIMapView extends UIElement implements IWindowElement {
                 for (int j = camTY; j < camTB; j++) {
                     int px = i * eTileSize;
                     int py = j * eTileSize;
-                    px = (ox + px) - camX;
-                    py = (oy + py) - camY;
+                    px -= camX;
+                    py -= camY;
                     // Keeping in mind px/py is the TL corner...
                     px += eTileSize / 2;
                     px -= tileSize / 2;
@@ -177,23 +203,20 @@ public class UIMapView extends UIElement implements IWindowElement {
                 }
             }
         }
-        if (selected)
-            if (igd.isKeyJustPressed(IGrInDriver.VK_M))
-                toggleMinimap();
         for (int i = 0; i < layerInvisible.length; i++) {
             Rect l = getLayerTabRect(i);
-            igd.blitImage((i == currentLayer) ? 0 : 18, layerInvisible[i] ? 0 : 18, 18, 18, ox + l.x, oy + l.y, AppMain.layerTabs);
+            igd.blitImage((i == currentLayer) ? 0 : 18, layerInvisible[i] ? 0 : 18, 18, 18, l.x, l.y, AppMain.layerTabs);
             String text = Integer.toString(i);
             if (i == mapTable.planeCount)
                 text = "P";
             if (i == mapTable.planeCount + 1)
                 text = "E";
-            UILabel.drawString(igd, ox + l.x + 1, oy + l.y + 1, text, true, FontSizes.mapLayertabTextHeight);
+            UILabel.drawString(igd, l.x + 1, l.y + 1, text, true, FontSizes.mapLayertabTextHeight);
         }
-        UILabel.drawLabel(igd, 0, ox, oy, mapId + ";" + mouseXT + ", " + mouseYT, false, FontSizes.mapPositionTextHeight);
+        UILabel.drawLabel(igd, 0, 0, 0, mapId + ";" + mouseXT + ", " + mouseYT, false, FontSizes.mapPositionTextHeight);
     }
 
-    private void drawEventLayer(int ox, int oy, IGrInDriver igd, int camTX, int camTY, int camTR, int camTB, int l) {
+    private void drawEventLayer(IGrDriver igd, int camTX, int camTY, int camTR, int camTB, int l) {
         if ((!layerInvisible[mapTable.planeCount + 1]) && (!minimap)) {
             // Event Enable
             // Having it here is more efficient than having it as a tool overlay,
@@ -224,8 +247,8 @@ public class UIMapView extends UIElement implements IWindowElement {
                     continue;
                 if (y >= camTB)
                     continue;
-                int px = ox + ((x * tileSize) - camX);
-                int py = oy + ((y * tileSize) - camY);
+                int px = (x * tileSize) - camX;
+                int py = (y * tileSize) - camY;
                 RubyIO g = AppMain.stuffRenderer.eventRenderer.extractEventGraphic(evI);
                 if (g != null)
                     AppMain.stuffRenderer.eventRenderer.drawEventGraphic(g, px, py, igd);

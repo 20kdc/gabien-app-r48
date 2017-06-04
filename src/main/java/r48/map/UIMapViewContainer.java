@@ -5,6 +5,7 @@
 
 package r48.map;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.AppMain;
@@ -36,7 +37,7 @@ public class UIMapViewContainer extends UIPanel {
         }
 
         @Override
-        public void performOverlay(int tx, int ty, IGrInDriver igd, int px, int py, int ol, boolean minimap) {
+        public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
         }
 
         @Override

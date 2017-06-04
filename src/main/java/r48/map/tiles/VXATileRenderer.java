@@ -5,6 +5,7 @@
 package r48.map.tiles;
 
 import gabien.GaBIEn;
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
 import r48.AppMain;
@@ -63,7 +64,7 @@ public class VXATileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
         // MKXP repository links to http://www.tktkgame.com/tkool/memo/vx/tile_id.html
         // It's in Japanese but via translation at least explains that:
         // 1. Autotiles are different. Very different.
@@ -145,12 +146,12 @@ public class VXATileRenderer implements ITileRenderer {
         UILabel.drawString(igd, px, py, Integer.toHexString(tidx), false, FontSizes.mapDebugTextHeight);
     }
 
-    private void drawShadowTileFlag(short tidx, int i, int i1, int i2, IGrInDriver igd, int st) {
+    private void drawShadowTileFlag(short tidx, int i, int i1, int i2, IGrDriver igd, int st) {
         if ((tidx & i) != 0)
             igd.blitImage(0, 0, st, st, i1, i2, shadowImage);
     }
 
-    private boolean handleMTLayer(short tidx, int ets, int px, int py, int tm, IGrInDriver igd) {
+    private boolean handleMTLayer(short tidx, int ets, int px, int py, int tm, IGrDriver igd) {
         int t = tidx & 0xFF;
         IGrInDriver.IImage planeImage = tilesetMaps[tm];
         if (planeImage != null) {
@@ -169,7 +170,7 @@ public class VXATileRenderer implements ITileRenderer {
         return false;
     }
 
-    private boolean handleSATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrInDriver igd, int mode) {
+    private boolean handleSATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrDriver igd, int mode) {
         int atField = 0;
         int atCW = 2;
         int atCH = 3;
@@ -259,7 +260,7 @@ public class VXATileRenderer implements ITileRenderer {
         return handleATLayer(tidx, base, ets, px, py, tm, igd, atField, atCW, atCH, atOX, atOY, 48);
     }
 
-    private boolean handleATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrInDriver igd, int atF, int atCW, int atCH, int atOX, int atOY, int div) {
+    private boolean handleATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrDriver igd, int atF, int atCW, int atCH, int atOX, int atOY, int div) {
         int tin = tidx - base;
         if (tin < 0)
             return false;
@@ -384,5 +385,10 @@ public class VXATileRenderer implements ITileRenderer {
         for (int i = 0; i < atWFields.size(); i++)
             r[i + atFields.size()] = new AutoTileTypeField(atWFields.get(i), 48, 1);
         return r;
+    }
+
+    @Override
+    public int getFrame() {
+        return 0;
     }
 }

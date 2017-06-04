@@ -4,6 +4,7 @@
  */
 package r48.map.events;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import r48.RubyIO;
 
@@ -23,7 +24,7 @@ public interface IEventGraphicRenderer {
     RubyIO extractEventGraphic(RubyIO event);
 
     // while this handles event graphics
-    void drawEventGraphic(RubyIO target, int ox, int oy, IGrInDriver igd);
+    void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd);
 
     int eventIdBase();
 }

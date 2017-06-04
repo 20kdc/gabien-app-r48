@@ -4,6 +4,7 @@
  */
 package r48.map.events;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import r48.RubyIO;
 
@@ -28,7 +29,7 @@ public class NullEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrInDriver igd) {
+    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd) {
 
     }
 

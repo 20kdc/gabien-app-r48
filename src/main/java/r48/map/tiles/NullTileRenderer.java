@@ -4,6 +4,7 @@
  */
 package r48.map.tiles;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import r48.map.UIMapView;
 import r48.ui.UITileGrid;
@@ -23,7 +24,7 @@ public class NullTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
 
     }
 
@@ -49,5 +50,10 @@ public class NullTileRenderer implements ITileRenderer {
     @Override
     public AutoTileTypeField[] indicateATs() {
         return new AutoTileTypeField[0];
+    }
+
+    @Override
+    public int getFrame() {
+        return 0;
     }
 }

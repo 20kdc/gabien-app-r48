@@ -6,6 +6,7 @@
 package r48.map.tiles;
 
 import gabien.GaBIEn;
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import r48.map.UIMapView;
 import r48.map.imaging.IImageLoader;
@@ -34,7 +35,7 @@ public class IkaTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrInDriver igd, int ets) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
         String[] blockTypes = new String[16];
         blockTypes[2] = "filt";
         blockTypes[4] = "Item";
@@ -52,25 +53,19 @@ public class IkaTileRenderer implements ITileRenderer {
             return;
         IGrInDriver.IImage i = imageLoader.getImage("Prt" + blockTypes[plane], false);
         if (plane != 6) {
-            igd.blitImage(16 * block, 0, 16, 16, px, py, i);
+            igd.blitImage(16 * block, 0, ets, ets, px, py, i);
         } else {
             // fun fact, this was probably the most loved feature of IkachanMapEdit.
             // I would be in for a *lynching* if I got rid of it.
-            double time = GaBIEn.getTime();
+            int frame = getFrame();
             if (block == 0)
-                igd.blitImage((int) ((time - Math.floor(time)) * 64) % 16, 0, 16,
-                        16, px, py, i);
+                igd.blitImage(frame, 0, ets, ets, px, py, i);
             if (block == 1)
-                igd.blitImage(
-                        ((int) (1.0 - (time - Math.floor(time)) * 64) % 16) + 16,
-                        0, 16, 16, px, py, i);
+                igd.blitImage((15 - frame) + 16, 0, ets, ets, px, py, i);
             if (block == 2)
-                igd.blitImage(0, (int) ((time - Math.floor(time)) * 64) % 16, 16,
-                        16, px, py, i);
+                igd.blitImage(0, frame, ets, ets, px, py, i);
             if (block == 3)
-                igd.blitImage(0,
-                        ((int) (1.0 - (time - Math.floor(time)) * 64) % 16) + 16,
-                        16, 16, px, py, i);
+                igd.blitImage(0, (15 - frame) + 16, ets, ets, px, py, i);
         }
     }
 
@@ -95,5 +90,11 @@ public class IkaTileRenderer implements ITileRenderer {
     public AutoTileTypeField[] indicateATs() {
         // simple enough: Ikachan doesn't have ATs.
         return new AutoTileTypeField[0];
+    }
+
+    @Override
+    public int getFrame() {
+        double time = GaBIEn.getTime();
+        return (int) ((time - Math.floor(time)) * 64) % 16;
     }
 }

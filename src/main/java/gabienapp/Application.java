@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Created on 1/27/17.
  */
 public class Application {
-    public static int globalMS = 20;
+    public static int globalMS = 33;
     private static IConsumer<Double> appTicker = null;
 
     public static void gabienmain() throws IOException {

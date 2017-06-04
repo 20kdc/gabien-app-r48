@@ -5,6 +5,7 @@
 package r48.musicality;
 
 import gabien.GaBIEn;
+import gabien.SimpleMixer;
 import gabien.ui.ISupplier;
 
 /**
@@ -16,13 +17,16 @@ public class Musicality {
     private static Instrument primaryTrack, couplingTrack, secondaryTrack;
     private static ISupplier<Integer> primaryTrackController;
     private static int metatick = 0;
+    private static SimpleMixer mixer;
     public static boolean initialized = false;
     public static boolean running = false;
 
     public static void initialize() {
-        primaryTrack = new Instrument(GaBIEn.getSound().createChannel());
-        couplingTrack = new Instrument(GaBIEn.getSound().createChannel());
-        secondaryTrack = new Instrument(GaBIEn.getSound().createChannel());
+        mixer = new SimpleMixer();
+        GaBIEn.getRawAudio().setRawAudioSource(mixer);
+        primaryTrack = new Instrument(mixer.createChannel());
+        couplingTrack = new Instrument(mixer.createChannel());
+        secondaryTrack = new Instrument(mixer.createChannel());
         secondaryTrack.mul = 1;
         secondaryTrack.div = 5;
         primaryTrackController = null;
@@ -64,6 +68,7 @@ public class Musicality {
         primaryTrack.kill();
         couplingTrack.kill();
         secondaryTrack.kill();
+        GaBIEn.hintShutdownRawAudio();
         running = false;
     }
 }

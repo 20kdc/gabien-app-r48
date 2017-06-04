@@ -5,7 +5,7 @@
 
 package r48.musicality;
 
-import gabien.ISoundDriver;
+import gabien.SimpleMixer;
 
 /**
  * Used to keep developers content as they work.
@@ -13,7 +13,7 @@ import gabien.ISoundDriver;
  * Created on 1/25/17.
  */
 public class Instrument {
-    private ISoundDriver.IChannel myChannel;
+    private SimpleMixer.Channel myChannel;
     private short[] data = new short[2205];
     private int adsrProgress = 0;
     public int mul = 2;
@@ -40,7 +40,7 @@ public class Instrument {
         return getNOHertz(note / 7, note % 7);
     }
 
-    public Instrument(ISoundDriver.IChannel channel) {
+    public Instrument(SimpleMixer.Channel channel) {
         for (int i = 0; i < 2205; i++)
             data[i] = (short) (Math.sin((i / 2205.0d) * 6.242d) * 16384);
         myChannel = channel;
