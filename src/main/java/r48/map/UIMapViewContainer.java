@@ -164,6 +164,7 @@ public class UIMapViewContainer extends UIPanel {
                 if (mapTool != null) {
                     mapTool.selfClose = true;
                     mapTool = null;
+                    view.callbacks = nullMapTool;
                 }
             }
         }

@@ -280,6 +280,6 @@ public class LcfTileRenderer implements ITileRenderer {
     public int getFrame() {
         // 1/3rd * 1/8th = 1/24th
         double t = GaBIEn.getTime();
-        return ((int) (t * 24)) % 24;
+        return ((int) Math.floor(t * 24)) % 24;
     }
 }
