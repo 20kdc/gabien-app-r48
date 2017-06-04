@@ -165,7 +165,8 @@ public class UIMapViewContainer extends UIPanel {
         allElements.clear();
         if (view != null)
             view.windowClosed();
-        view = new UIMapView(k, 640, 480);
+        Rect b = getBounds();
+        view = new UIMapView(k, b.width, b.height);
         view.callbacks = nullMapTool;
         allElements.add(view);
     }

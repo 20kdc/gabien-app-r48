@@ -93,10 +93,6 @@ public class MapUnit extends R2kObject {
         RubyTable rt = new RubyTable(width.i, height.i, 2);
         System.arraycopy(layer0.dat, 0, rt.innerBytes, 20, layer0.dat.length);
         System.arraycopy(layer1.dat, 0, rt.innerBytes, 20 + (width.i * height.i * 2), layer1.dat.length);
-        RubyIO encap = new RubyIO();
-        encap.type = 'u';
-        encap.symVal = "Table";
-        encap.userVal = rt.innerBytes;
-        return encap;
+        return new RubyIO().setUser("Table", rt.innerBytes);
     }
 }

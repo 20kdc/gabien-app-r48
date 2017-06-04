@@ -105,6 +105,10 @@ local function gen(k, uid)
     end
 end
 
+-- The code inspector is lying to you. I mean, it's not WRONG, but it doesn't have the data to say why.
+-- It doesn't have any way from this information to get that cdef will be non-nil at some point.
+-- If I followed it's suggestion, a first line of 'p<something>' would error.
+-- While this would be fine behavior, WHY IS THE CODE INSPECTOR ASKING?
 local idx = 0
 
 while true do

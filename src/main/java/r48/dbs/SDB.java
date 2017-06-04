@@ -201,8 +201,7 @@ public class SDB {
                                 strs.add(b);
                                 scms.add(a);
                             }
-                            TypeChangerSchemaElement subag = new TypeChangerSchemaElement(strs.toArray(new String[0]), scms.toArray(new SchemaElement[0]));
-                            return subag;
+                            return new TypeChangerSchemaElement(strs.toArray(new String[0]), scms.toArray(new SchemaElement[0]));
                         }
 
                         // -- These two must be in this order.

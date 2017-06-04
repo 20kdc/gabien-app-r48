@@ -99,7 +99,7 @@ public class ObjectClassSchemaElement extends SchemaElement {
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         boolean modified = false;
-        if (target.type == 0) {
+        if (target.type != type) {
             target.type = type;
             modified = true;
         }

@@ -143,9 +143,8 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         }
         // Not a clue, so re-initialize if all else fails.
         // (This will definitely trigger if the iVar was missing)
-        if (IntegerSchemaElement.ensureType(target, 'u', setDefault)) {
-            target.userVal = new RubyTable(defW, defH, planes).innerBytes;
-            target.symVal = "Table";
+        if (target.type != 'u') {
+            target.setUser("Table", new RubyTable(defW, defH, planes).innerBytes);
             index.changeOccurred(true);
         }
     }

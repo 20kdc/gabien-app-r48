@@ -73,10 +73,10 @@ public class ArrayDisambiguatorSchemaElement extends SchemaElement {
     private int getDisambigIndex(RubyIO target) {
         if (dIndex == -1)
             return 0;
+        // This means bad news.
         if (target.arrVal.length <= dIndex)
             return 0x7FFFFFFF;
-        int dVal = (int) target.arrVal[dIndex].fixnumVal;
-        return dVal;
+        return (int) target.arrVal[dIndex].fixnumVal;
     }
 
     private SchemaElement getSchemaElement(int dVal) {

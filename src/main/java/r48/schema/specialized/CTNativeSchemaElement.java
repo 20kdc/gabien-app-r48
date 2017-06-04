@@ -71,9 +71,8 @@ public class CTNativeSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (IntegerSchemaElement.ensureType(target, 'u', setDefault)) {
-            target.symVal = cls;
-            target.userVal = new byte[32];
+        if (target.type != 'u') {
+            target.setUser(cls, new byte[32]);
             RubyCT rct = new RubyCT(target.userVal);
             rct.innerTable.putDouble(0, 0);
             rct.innerTable.putDouble(4, 0);

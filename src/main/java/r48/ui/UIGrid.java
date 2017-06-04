@@ -48,8 +48,7 @@ public class UIGrid extends UIPanel {
         totalRows /= tmWidth;
         int screenRows = getBounds().height / tileSize;
         int extraRows = totalRows - screenRows;
-        int ofs = ((int) Math.floor(uivScrollbar.scrollPoint * extraRows)) * tmWidth;
-        return ofs;
+        return ((int) Math.floor(uivScrollbar.scrollPoint * extraRows)) * tmWidth;
     }
 
     @Override
@@ -89,8 +88,6 @@ public class UIGrid extends UIPanel {
 
     @Override
     public void setBounds(Rect r) {
-        Rect nr = new Rect(r.x, r.y, r.width, r.height);
-        r = nr;
         int tiles = r.width / tileSize;
         if (tiles < 2)
             tiles = 2;
