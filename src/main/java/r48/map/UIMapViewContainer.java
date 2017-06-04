@@ -130,6 +130,8 @@ public class UIMapViewContainer extends UIPanel {
             if (wantsToolHide)
                 mapTool.selfClose = true;
             if (mapTool.hasClosed) {
+                if (AppMain.nextMapTool == mapTool.pattern)
+                    AppMain.nextMapTool = null;
                 mapTool = null;
                 if (view != null)
                     view.callbacks = nullMapTool;
@@ -139,17 +141,29 @@ public class UIMapViewContainer extends UIPanel {
         // switch to next tool
         if (view != null) {
             if (AppMain.nextMapTool != null) {
+                boolean sameAsBefore = true;
                 if (mapTool != null) {
-                    // let's just hope the user doesn't do anything in a frame
-                    // that would actually somehow lead to an inconsistent state
-                    mapTool.selfClose = true;
+                    if (mapTool.pattern != AppMain.nextMapTool) {
+                        // let's just hope the user doesn't do anything in a frame
+                        // that would actually somehow lead to an inconsistent state
+                        mapTool.selfClose = true;
+                        sameAsBefore = false;
+                    }
+                } else {
+                    sameAsBefore = false;
                 }
-                view.callbacks = nullMapTool;
-                if (AppMain.nextMapTool instanceof IMapViewCallbacks)
-                    view.callbacks = (IMapViewCallbacks) AppMain.nextMapTool;
-                mapTool = new UIMapToolWrapper(AppMain.nextMapTool);
-                AppMain.nextMapTool = null;
-                windowMakerSupplier.get().accept(mapTool);
+                if (!sameAsBefore) {
+                    view.callbacks = nullMapTool;
+                    if (AppMain.nextMapTool instanceof IMapViewCallbacks)
+                        view.callbacks = (IMapViewCallbacks) AppMain.nextMapTool;
+                    mapTool = new UIMapToolWrapper(AppMain.nextMapTool);
+                    windowMakerSupplier.get().accept(mapTool);
+                }
+            } else {
+                if (mapTool != null) {
+                    mapTool.selfClose = true;
+                    mapTool = null;
+                }
             }
         }
 

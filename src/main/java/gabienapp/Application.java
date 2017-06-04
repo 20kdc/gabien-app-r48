@@ -31,7 +31,7 @@ public class Application {
         final WindowCreatingUIElementConsumer uiTicker = new WindowCreatingUIElementConsumer();
 
         final UIScrollVertLayout gamepaks = new UIScrollVertLayout();
-        gamepaks.setBounds(new Rect(0, 0, 320, 200));
+        gamepaks.setBounds(new Rect(0, 0, 400, 200));
         // this can't be good
         // Ok, explaination for this. Giving it a runnable, it will hold it until calld again, and then it will run it and remove it.
         final IConsumer<Runnable> closeHelper = new IConsumer<Runnable>() {

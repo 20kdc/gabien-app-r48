@@ -21,14 +21,15 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
 import r48.systems.*;
+import r48.toolsets.BasicToolset;
 import r48.toolsets.IToolset;
 import r48.toolsets.MapToolset;
 import r48.toolsets.RMToolsToolset;
 import r48.ui.*;
+import r48.ui.help.HelpSystemController;
+import r48.ui.help.UIHelpSystem;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -137,7 +138,7 @@ public class AppMain {
         final UIWindowView rootView = new UIWindowView();
         rootView.windowTextHeight = FontSizes.windowFrameHeight;
         windowMaker = rootView;
-        rootView.setBounds(new Rect(0, 0, 640, 480));
+        rootView.setBounds(new Rect(0, 0, 800, 600));
 
         // Set up a default stuffRenderer for things to use.
         stuffRenderer = system.rendererFromMap(null);
@@ -175,6 +176,17 @@ public class AppMain {
             toolsets.add(new MapToolset());
         if (AppMain.schemas.hasSDBEntry("EventCommandEditor"))
             toolsets.add(new RMToolsToolset());
+        toolsets.add(new BasicToolset(rootView, uiTicker, new IConsumer<IConsumer<UIElement>>() {
+            @Override
+            public void accept(IConsumer<UIElement> uiElementIConsumer) {
+                windowMaker = uiElementIConsumer;
+            }
+        }, new Runnable() {
+            @Override
+            public void run() {
+                rebuildInnerUI(rootView, uiTicker);
+            }
+        }));
 
         // Initialize toolsets.
         ISupplier<IConsumer<UIElement>> wmg = new ISupplier<IConsumer<UIElement>>() {
@@ -193,164 +205,6 @@ public class AppMain {
             }
         }
 
-        tabNames.add("ObjectDB Monitor");
-        tabElems.add(new UIObjectDBMonitor());
-        tabNames.add("System Objects");
-        tabElems.add(makeFileList());
-        tabNames.add("System Tools");
-        tabElems.add(new UIPopupMenu(new String[] {
-                "Edit Object",
-                "New Object via Schema, ODB'AnonObject'",
-                "Autocorrect Object By Name And Schema",
-                "Inspect Object (no Schema needed)",
-                "Set Internal Windows (good)",
-                "Set External Windows (bad)",
-                "Use normal in-built fonts",
-                "Use system fonts for everything",
-                "Toggle calming sound",
-                "Configure font sizes",
-                "Rebuild UI",
-                "Test Fonts"
-        }, new Runnable[] {
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        windowMaker.accept(new UITextPrompt("Object Name?", new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                final RubyIO rio = objectDB.getObject(s);
-                                if (schemas.hasSDBEntry("File." + s)) {
-                                    launchSchema("File." + s, rio);
-                                    return;
-                                }
-                                if (rio != null) {
-                                    if (rio.type == 'o') {
-                                        if (rio.symVal != null) {
-                                            if (schemas.hasSDBEntry(rio.symVal)) {
-                                                launchSchema(rio.symVal, rio);
-                                                return;
-                                            }
-                                        }
-                                    }
-                                    windowMaker.accept(new UITextPrompt("Schema ID?", new IConsumer<String>() {
-                                        @Override
-                                        public void accept(String s) {
-                                            launchSchema(s, rio);
-                                        }
-                                    }));
-                                } else {
-                                    launchDialog("No file, or schema to create it.");
-                                }
-                            }
-                        }));
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        windowMaker.accept(new UITextPrompt("Schema ID?", new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                launchSchema(s, SchemaPath.createDefaultValue(schemas.getSDBEntry(s), new RubyIO().setFX(0)));
-                            }
-                        }));
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        windowMaker.accept(new UITextPrompt("Object Name?", new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                final RubyIO rio = objectDB.getObject(s);
-                                windowMaker.accept(new UITextPrompt("Schema ID?", new IConsumer<String>() {
-                                    @Override
-                                    public void accept(String s) {
-                                        SchemaElement ise = schemas.getSDBEntry(s);
-                                        ise.modifyVal(rio, new SchemaPath(ise, rio, null), false);
-                                        launchDialog("OK!");
-                                    }
-                                }));
-                            }
-                        }));
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        windowMaker.accept(new UITextPrompt("Object Name?", new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                windowMaker.accept(new UITest(objectDB.getObject(s)));
-                            }
-                        }));
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        windowMaker = rootView;
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        windowMaker = uiTicker;
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        UILabel.iAmAbsolutelySureIHateTheFont = false;
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        UILabel.iAmAbsolutelySureIHateTheFont = true;
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!Musicality.initialized)
-                            Musicality.initialize();
-                        if (Musicality.running) {
-                            Musicality.kill();
-                        } else {
-                            Musicality.boot();
-                        }
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        windowMaker.accept(new UIFontSizeConfigurator());
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        rebuildInnerUI(rootView, uiTicker);
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        windowMaker.accept(new UITextPrompt("Font Size?", new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                int fs = Integer.parseInt(s);
-                                UIScrollVertLayout svl = new UIScrollVertLayout();
-                                for (int i = 0; i < 128; i++)
-                                    svl.panels.add(new UITextBox(fs));
-                                svl.setBounds(new Rect(0, 0, 320, 240));
-                                windowMaker.accept(svl);
-                            }
-                        }));
-                    }
-                }
-        }, FontSizes.menuTextHeight, false));
         return new UITabPane(tabNames.toArray(new String[0]), tabElems.toArray(new UIElement[0]), FontSizes.tabTextHeight);
     }
 
@@ -368,17 +222,24 @@ public class AppMain {
             public void run() {
                 // exception to the rule
                 UILabel uil = new UILabel("Blank Help Window", FontSizes.helpPathHeight);
-                final UIHelpSystem uis = new UIHelpSystem(uil, null, null);
+                final UIHelpSystem uis = new UIHelpSystem();
+                final HelpSystemController hsc = new HelpSystemController(uil, null, uis);
+                uis.onLinkClick = new IConsumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) {
+                        hsc.loadPage(integer);
+                    }
+                };
                 final UIScrollVertLayout uus = new UIScrollVertLayout();
                 uus.panels.add(uis);
                 uus.setBounds(new Rect(0, 0, 560, 240));
                 final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton("Index", uil, new Runnable() {
                     @Override
                     public void run() {
-                        uis.loadPage(0);
+                        hsc.loadPage(0);
                     }
                 }, FontSizes.helpPathHeight), uus);
-                uis.onLoad = new Runnable() {
+                hsc.onLoad = new Runnable() {
                     @Override
                     public void run() {
                         uus.scrollbar.scrollPoint = 0;
@@ -387,24 +248,11 @@ public class AppMain {
                         topbar.setBounds(b);
                     }
                 };
-                uis.loadPage(0);
+                hsc.loadPage(0);
                 windowMaker.accept(topbar);
             }
         }, FontSizes.statusBarTextHeight);
         rootView.backing = new UINSVertLayout(workspace, initializeTabs(rootView, uiTicker));
-    }
-
-    private static UIElement makeFileList() {
-        LinkedList<String> s = schemas.listFileDefs();
-        LinkedList<Runnable> r = new LinkedList<Runnable>();
-        for (final String s2 : s)
-            r.add(new Runnable() {
-                @Override
-                public void run() {
-                    launchSchema("File." + s2, objectDB.getObject(s2));
-                }
-            });
-        return new UIPopupMenu(s.toArray(new String[0]), r.toArray(new Runnable[0]), FontSizes.menuTextHeight, false);
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.

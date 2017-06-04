@@ -14,6 +14,7 @@ import r48.io.r2k.struct.EventCommand;
  * Created on 31/05/17.
  */
 public class EventPage extends R2kObject {
+    // NOTE TO SELF. YOU HAVE CHECKED THIS AT LEAST THRICE ALREADY. STOP CHECKING THE DEF.VALS.
     public EventPageCondition condition = new EventPageCondition();
     public StringR2kStruct graphicCName = new StringR2kStruct();
     public IntegerR2kStruct graphicCIndex = new IntegerR2kStruct(0);

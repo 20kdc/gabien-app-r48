@@ -76,7 +76,9 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
                     UIElement button = new UITextButton(FontSizes.eventPickerEntryTextHeight, nam, new Runnable() {
                         @Override
                         public void run() {
+                            // In practice I have seen that this should always go away after selection.
                             showEvent(evK.fixnumVal, mapView.map, evI);
+                            AppMain.nextMapTool = null;
                         }
                     });
                     button = new UIAppendButton("MOV", button, new Runnable() {

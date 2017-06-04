@@ -2,7 +2,7 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-package r48.ui;
+package r48.ui.help;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
@@ -21,17 +21,11 @@ import java.util.LinkedList;
  */
 public class UIHelpSystem extends UIPanel {
 
-    public Runnable onLoad;
-    private UILabel pageName;
-    private String helpFile;
+    public IConsumer<Integer> onLinkClick;
+    public LinkedList<HelpElement> page = new LinkedList<HelpElement>();
 
-    private LinkedList<HelpElement> page = new LinkedList<HelpElement>();
-
-    public UIHelpSystem(UILabel uil, Runnable ol, String file) {
+    public UIHelpSystem() {
         super.setBounds(new Rect(0, 0, 640, 320));
-        onLoad = ol;
-        pageName = uil;
-        helpFile = file;
     }
 
     private UIElement[] handleThing(char c, String[] args, int availableWidth) {
@@ -67,7 +61,7 @@ public class UIHelpSystem extends UIPanel {
             return new UIElement[] {new UITextButton(FontSizes.helpLinkHeight, t, new Runnable() {
                 @Override
                 public void run() {
-                    loadPage(index);
+                    onLinkClick.accept(index);
                 }
             })};
         }
@@ -141,46 +135,7 @@ public class UIHelpSystem extends UIPanel {
         super.setBounds(new Rect(rect.x, rect.y, rect.width, Math.max(imgEndY, y)));
     }
 
-    @Override
-    public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-        super.updateAndRender(ox, oy, deltaTime, selected, igd);
-    }
-
-    public void loadPage(final int i) {
-        page.clear();
-        DBLoader.readFile(getHelpStream(), new IDatabase() {
-            boolean working = false;
-
-            @Override
-            public void newObj(int objId, String objName) throws IOException {
-                if (objId == i) {
-                    if (pageName != null)
-                        pageName.Text = objName;
-                    working = true;
-                } else {
-                    working = false;
-                }
-            }
-
-            @Override
-            public void execCmd(char c, String[] args) throws IOException {
-                if (working)
-                    page.add(new HelpElement(c, args));
-            }
-        });
-
-        setBounds(getBounds());
-        if (onLoad != null)
-            onLoad.run();
-    }
-
-    private InputStream getHelpStream() {
-        if (helpFile == null)
-            return GaBIEn.getResource("Help.txt");
-        return GaBIEn.getFile(helpFile);
-    }
-
-    private class HelpElement {
+    public static class HelpElement {
         char c;
         String[] args;
 

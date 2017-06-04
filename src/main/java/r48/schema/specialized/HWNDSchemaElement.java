@@ -5,12 +5,14 @@
 
 package r48.schema.specialized;
 
+import gabien.ui.IConsumer;
 import gabien.ui.UIElement;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.ui.UIHelpSystem;
+import r48.ui.help.HelpSystemController;
+import r48.ui.help.UIHelpSystem;
 
 /**
  * Help Window Schema Element.
@@ -28,8 +30,15 @@ public class HWNDSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-        UIHelpSystem uhs = new UIHelpSystem(null, null, file);
-        uhs.loadPage((int) target.getInstVarBySymbol(ivar).fixnumVal);
+        UIHelpSystem uhs = new UIHelpSystem();
+        final HelpSystemController hsc = new HelpSystemController(null, null, uhs);
+        uhs.onLinkClick = new IConsumer<Integer>() {
+            @Override
+            public void accept(Integer integer) {
+                hsc.loadPage(integer);
+            }
+        };
+        hsc.loadPage((int) target.getInstVarBySymbol(ivar).fixnumVal);
         return uhs;
     }
 

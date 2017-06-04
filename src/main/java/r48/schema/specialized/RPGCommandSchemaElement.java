@@ -23,6 +23,7 @@ import r48.ui.UIAppendButton;
 import r48.ui.UIEnumChoice;
 import r48.ui.UIHHalfsplit;
 import r48.ui.UIScrollVertLayout;
+import r48.ui.help.UIHelpSystem;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -103,7 +104,9 @@ public class RPGCommandSchemaElement extends SchemaElement {
             }), new Runnable() {
                 @Override
                 public void run() {
-                    RPGCommand rc = database.knownCommands.get((int) target.getInstVarBySymbol("@code").fixnumVal);
+                    int code = (int) target.getInstVarBySymbol("@code").fixnumVal;
+                    RPGCommand rc = database.knownCommands.get(code);
+                    String title = code + " : " + rc.formatName(null, null);
                     String result = "This command isn't known by the schema's CMDB.";
                     if (rc != null) {
                         if (rc.description == null) {
@@ -111,8 +114,14 @@ public class RPGCommandSchemaElement extends SchemaElement {
                         } else {
                             result = rc.description;
                         }
+                    } else {
+                        title += "unknown";
                     }
-                    launcher.launchOther(new UILabel(result, FontSizes.helpTextHeight));
+                    UIHelpSystem uis = new UIHelpSystem();
+                    uis.page.add(new UIHelpSystem.HelpElement('.', title.split(" ")));
+                    uis.page.add(new UIHelpSystem.HelpElement('.', result.split(" ")));
+                    uis.setBounds(new Rect(0, 0, 320, 200));
+                    launcher.launchOther(uis);
                 }
             }, FontSizes.schemaButtonTextHeight);
             UIElement subElem = buildSubElem();
