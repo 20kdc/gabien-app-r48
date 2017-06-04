@@ -479,6 +479,8 @@ public class SDB {
                                         if (res == null)
                                             break; // Cannot go further.
                                     }
+                                    if (res == null)
+                                        break; // Can't poison the thing with a null
                                     parameters.add(res);
                                 }
                                 return RPGCommand.formatNameExtended(textF, rubyIO, parameters.toArray(new RubyIO[0]), null);

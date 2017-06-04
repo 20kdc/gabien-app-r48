@@ -103,6 +103,7 @@ public class RMToolsToolset implements IToolset {
                         }
                         Iterator<String> schemaIt = objectSchemas.iterator();
                         for (final String obj : objects) {
+                            System.out.println(obj + "...");
                             RubyIO map = AppMain.objectDB.getObject(obj);
                             Runnable modListen = new Runnable() {
                                 @Override
@@ -115,6 +116,7 @@ public class RMToolsToolset implements IToolset {
                             SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(schemaIt.next()), map, null);
                             sp.editor.modifyVal(map, sp, false);
                             AppMain.objectDB.deregisterModificationHandler(map, modListen);
+                            System.out.println(obj + " done.");
                         }
                         AppMain.launchDialog("nnnope");
                     }

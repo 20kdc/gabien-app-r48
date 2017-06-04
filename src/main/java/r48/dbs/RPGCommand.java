@@ -26,7 +26,12 @@ public class RPGCommand {
     public LinkedList<IFunction<RubyIO, String>> paramName = new LinkedList<IFunction<RubyIO, String>>();
     public int indentPre;
     // This is conditional solely because of Show Inn (R2k).
-    public IFunction<RubyIO, Integer> indentPost;
+    public IFunction<RubyIO, Integer> indentPost = new IFunction<RubyIO, Integer>() {
+        @Override
+        public Integer apply(RubyIO rubyIO) {
+            return 0;
+        }
+    };
     // Something that can also go before this command instead of a block leave
     public int blockLeaveReplacement = -1;
     public boolean needsBlockLeavePre;
@@ -93,7 +98,7 @@ public class RPGCommand {
     }
 
     // The new format allows for more precise setups,
-    // but isn't as neat
+    // but isn't as neat.
     public static String formatNameExtended(String name, RubyIO root, RubyIO[] parameters, IFunction<RubyIO, SchemaElement>[] parameterSchemas) {
         String r = "";
         char[] data = name.toCharArray();

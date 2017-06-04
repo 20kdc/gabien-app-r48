@@ -68,24 +68,26 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
         // Indent tracking
         int indent = 0;
 
+        // Note that this array can grow as it's being searched.
         for (int i = 0; i < arr.size(); i++) {
-            int code = (int) arr.get(i).getInstVarBySymbol("@code").fixnumVal;
+            RubyIO commandTarg = arr.get(i);
+            int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
             RPGCommand rc = database.knownCommands.get(code);
             if (rc != null) {
                 // Indent stuff
                 indent += rc.indentPre;
-                if (indent != arr.get(i).getInstVarBySymbol("@indent").fixnumVal) {
-                    arr.get(i).getInstVarBySymbol("@indent").fixnumVal = indent;
+                if (indent != commandTarg.getInstVarBySymbol("@indent").fixnumVal) {
+                    commandTarg.getInstVarBySymbol("@indent").fixnumVal = indent;
                     modified = true;
                 }
-                indent += rc.indentPost.apply(arr.get(i).getInstVarBySymbol("@parameters"));
+                indent += rc.indentPost.apply(commandTarg.getInstVarBySymbol("@parameters"));
 
                 if (rc.needsBlockLeavePre) {
                     if (!lastWasBlockLeave) {
                         if (rc.blockLeaveReplacement != lastCode) {
                             RubyIO c = SchemaPath.createDefaultValue(subelems, new RubyIO().setFX(0));
                             c.getInstVarBySymbol("@code").fixnumVal = 0;
-                            c.getInstVarBySymbol("@indent").fixnumVal = arr.get(i).getInstVarBySymbol("@indent").fixnumVal + 1;
+                            c.getInstVarBySymbol("@indent").fixnumVal = commandTarg.getInstVarBySymbol("@indent").fixnumVal + 1;
                             arr.add(i, c);
                             // About to re-handle the same code.
                             lastWasBlockLeave = true;

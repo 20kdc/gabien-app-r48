@@ -36,6 +36,8 @@ d internal_switchDictionary System @switches
 
 D internal_enemyDictionary Enemies 0 @name
 
+D internal_eventDictionary __MAP__@events 1 @name
+
  Defining the basic aliases...
  Note that if you're unsure where to put it, put it here.
 
@@ -70,7 +72,9 @@ D internal_enemyDictionary Enemies 0 @name
  Defining the enums.
  In most cases these are global, so just don't move them from here.
 
-E character_id EventID -1 player 0 thisEvent
+E character_id_base EventID -1 player 0 thisEvent
+M internal_eventDictionary character_id_base character_id
+
 e comparison_type 0 == 1 >= 2 <= 3 > 4 < 5 !=
 e change_text_options_position 0 top 1 middle 2 bottom
 E iterate_actor ActorID 0 All
