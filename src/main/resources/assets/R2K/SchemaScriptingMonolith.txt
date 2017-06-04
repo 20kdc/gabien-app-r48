@@ -98,6 +98,7 @@ e cbranch_itemcomp_e 0 PartyHasItem 1 PartyDoesn'tHaveItem
 e cbranch_actorprop_e 0 InParty 1 Name= 2 Level>= 3 HP>= 4 KnowsSkill 5 Equipped 6 HasState
 
 .cbranch_base
+]0 _ string
 ]1 type cbranch_type
 
 .cbranch_switch
@@ -201,6 +202,7 @@ e timer_operation_type 0 SetTime 1 SetFlagsAndStart 2 Stop
 @parameters arrayDAM 1 timer_operation_type timer_operation_base 0 timer_operation_set 1 timer_operation_start
 
 .timer_operation_base
+]0 _ string
 +]?6 timerId Timer1 timer_id
 ]1 operation timer_operation_type
 
@@ -237,7 +239,44 @@ e timer_operation_type 0 SetTime 1 SetFlagsAndStart 2 Stop
 +optIV @move_commands subwindow[ Route... ] array 0 LcfMoveCommandEditor
 
 .move_event_array
+]0 _ string
 ]1 char character_id
 ]2 moveFreq int
 ]3 repeat int_boolean
 ]4 skippable int_boolean
+
+ ||| /\
+ ---/--\
+
+ Wait (YES REALLY.)
+
+ dummy enum to give user illusion of sensibility.
+ in the case of framecount 0, but no button Id,
+  it will say:
+   WaitForCondition
+   doesn't exist, default: None
+ in the case of framecount 0, w/ button ID:
+   WaitForCondition
+   Act
+ in the case of framecount nonzero, but button ID:
+   8 frames
+   <wfcCondType doesn't show up>
+ in the case of framecount nonzero, with no button ID:
+   8 frames
+   <wfcCondType doesn't show up>
+ this hopefully mirrors what user is "supposed" to see,
+  without potentially breaking any rules.
+
+e wait_button_id 0 Act
+E wait_framecount Frames 0 WaitForCondition
+
+.wait_illogical_nowfc
+> wait_illogical_wfc ]?2 wfcCondType None wait_button_id
+
+.wait_illogical_parameters
+@indent indent
+@parameters arrayDAM -1 nil wait_array
+.wait_array
+]0 _ string
+]1 frames wait_framecount
++arrayDAM 1 int wait_illogical_nowfc 0 wait_illogical_wfc

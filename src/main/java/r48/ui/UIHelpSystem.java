@@ -11,10 +11,8 @@ import r48.FontSizes;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.LinkedList;
 
 /**
@@ -23,8 +21,8 @@ import java.util.LinkedList;
  */
 public class UIHelpSystem extends UIPanel {
 
-    private UILabel pageName;
     public Runnable onLoad;
+    private UILabel pageName;
     private String helpFile;
 
     private LinkedList<HelpElement> page = new LinkedList<HelpElement>();
@@ -149,31 +147,28 @@ public class UIHelpSystem extends UIPanel {
     }
 
     public void loadPage(final int i) {
-        try {
-            page.clear();
-            new DBLoader(new BufferedReader(new InputStreamReader(getHelpStream())), new IDatabase() {
-                boolean working = false;
+        page.clear();
+        DBLoader.readFile(getHelpStream(), new IDatabase() {
+            boolean working = false;
 
-                @Override
-                public void newObj(int objId, String objName) throws IOException {
-                    if (objId == i) {
-                        if (pageName != null)
-                            pageName.Text = objName;
-                        working = true;
-                    } else {
-                        working = false;
-                    }
+            @Override
+            public void newObj(int objId, String objName) throws IOException {
+                if (objId == i) {
+                    if (pageName != null)
+                        pageName.Text = objName;
+                    working = true;
+                } else {
+                    working = false;
                 }
+            }
 
-                @Override
-                public void execCmd(char c, String[] args) throws IOException {
-                    if (working)
-                        page.add(new HelpElement(c, args));
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            @Override
+            public void execCmd(char c, String[] args) throws IOException {
+                if (working)
+                    page.add(new HelpElement(c, args));
+            }
+        });
+
         setBounds(getBounds());
         if (onLoad != null)
             onLoad.run();

@@ -82,8 +82,8 @@ public class SDB {
         };
     }
 
-    public void readFile(BufferedReader bufferedReader) throws IOException {
-        new DBLoader(bufferedReader, new IDatabase() {
+    public void readFile(String s) {
+        DBLoader.readFile(s, new IDatabase() {
             AggregateSchemaElement workingObj;
 
             HashMap<Integer, String> commandBufferNames = new HashMap<Integer, String>();
@@ -336,13 +336,7 @@ public class SDB {
                 } else if (c == ']') {
                     workingObj.aggregate.add(new ArrayElementSchemaElement(Integer.parseInt(args[0]), args[1], handleChain(args, 2), null));
                 } else if (c == 'i') {
-                    try {
-                        System.out.println(">>" + args[0]);
-                        readFile(new BufferedReader(new InputStreamReader(GaBIEn.getFile(args[0]))));
-                        System.out.println("<<" + args[0]);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    readFile(args[0]);
                 } else if (c == 'D') {
                     final String[] split = args[1].split("@");
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], split[0], new IFunction<RubyIO, RubyIO>() {
@@ -367,18 +361,13 @@ public class SDB {
                     int p = 0;
                     AppMain.autoTiles = new ATDB[args.length / 2];
                     for (int i = 0; i < args.length; i += 2) {
-                        InputStreamReader fr = new InputStreamReader(GaBIEn.getFile(args[i]));
-                        AppMain.autoTiles[p] = new ATDB(args[i], new BufferedReader(fr));
-                        fr.close();
+                        AppMain.autoTiles[p] = new ATDB(args[i]);
                         // This is needed to make actual autotile *placement* work.
                         // In theory, it's independent of the AutoTiles setup,
                         //  so long as the AutoTiles setup's using the same sprite-sheets.
                         // In practice, it's only been tested with the default AutoTiles.txt setup.
-                        if (!args[i + 1].equals(".")) {
-                            fr = new InputStreamReader(GaBIEn.getFile(args[i + 1]));
-                            AppMain.autoTiles[p].calculateInverseMap(new BufferedReader(fr));
-                            fr.close();
-                        }
+                        if (!args[i + 1].equals("."))
+                            AppMain.autoTiles[p].calculateInverseMap(args[i + 1]);
                         p++;
                     }
                 } else if (c == 'C') {
@@ -475,11 +464,9 @@ public class SDB {
                             }
                         });
                     }
-                } else if (c == ' ') {
-                    // Comment
-                } else {
-                    for (int i = 0; i < args.length; i++)
-                        System.err.print(args[i] + " ");
+                } else if (c != ' ') {
+                    for (String arg : args)
+                        System.err.print(arg + " ");
                     System.err.println("(The command " + c + " in the SDB is not supported.)");
                 }
             }
@@ -490,16 +477,9 @@ public class SDB {
         CMDB cm = cmdbs.get(arg);
         if (cm != null)
             return cm;
-        try {
-            InputStreamReader fr = new InputStreamReader(GaBIEn.getFile(arg));
-            CMDB r = new CMDB(new BufferedReader(fr));
-            cmdbs.put(arg, r);
-            fr.close();
-            return r;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        CMDB r = new CMDB(arg);
+        cmdbs.put(arg, r);
+        return r;
     }
 
     public void confirmAllExpectationsMet() {

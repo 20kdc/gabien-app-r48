@@ -2,9 +2,10 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
 
-e mapinfo_musictype 0 Inherit 1 Event 2 Specified
-e mapinfo_backtype 0 Inherit 1 TerrainLDB 2 Specified
-e mapinfo_inheritflag 0 Inherit 1 True 2 False
+e mapinfo_musictype 0 inherit 1 event 2 specified
+e mapinfo_backtype 0 inherit 1 terrainLDB 2 specified
+e mapinfo_inheritflag 0 inheritParent 1 true 2 false
+e mapinfo_type 0 root 1 map 2 area
 
 : RPG::Encounter
 @troop troop_id
@@ -14,8 +15,7 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 @name string
 @parent_id map_id
 @indent int
- actually an enum
-@type int
+@type mapinfo_type
 @edit_pos_x int
 @edit_pos_y int
 @expanded boolean

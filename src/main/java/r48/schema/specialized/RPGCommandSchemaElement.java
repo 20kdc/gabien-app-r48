@@ -19,6 +19,7 @@ import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.ROIntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.UIAppendButton;
 import r48.ui.UIEnumChoice;
 import r48.ui.UIHHalfsplit;
 import r48.ui.UIScrollVertLayout;
@@ -57,7 +58,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIPanel uip = new UIPanel() {
-            UITextButton chooseCode = new UITextButton(FontSizes.schemaButtonTextHeight, database.buildCodename(target, true), new Runnable() {
+            UIElement chooseCode = new UIAppendButton(" ? ", new UITextButton(FontSizes.schemaButtonTextHeight, database.buildCodename(target, true), new Runnable() {
                 @Override
                 public void run() {
                     HashMap<String, Integer> rvi = new HashMap<String, Integer>();
@@ -99,7 +100,21 @@ public class RPGCommandSchemaElement extends SchemaElement {
                         }
                     }, rvi, order, "Code"), path), target, launcher));
                 }
-            });
+            }), new Runnable() {
+                @Override
+                public void run() {
+                    RPGCommand rc = database.knownCommands.get((int) target.getInstVarBySymbol("@code").fixnumVal);
+                    String result = "This command isn't known by the schema's CMDB.";
+                    if (rc != null) {
+                        if (rc.description == null) {
+                            result = "This command is known, but no description exists.";
+                        } else {
+                            result = rc.description;
+                        }
+                    }
+                    launcher.launchOther(new UILabel(result, FontSizes.helpTextHeight));
+                }
+            }, FontSizes.schemaButtonTextHeight);
             UIElement subElem = buildSubElem();
 
             private UIElement buildSubElem() {

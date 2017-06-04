@@ -56,9 +56,9 @@ public class ATDB {
         return 0;
     }
 
-    public ATDB(String name, BufferedReader br) throws IOException {
-        loadFile = name;
-        new DBLoader(br, new IDatabase() {
+    public ATDB(String file) throws IOException {
+        loadFile = file;
+        DBLoader.readFile(file, new IDatabase() {
             Autotile current = null;
             // for 'x'-type one-line-space-delimited entries
             int autoIncrementingId = 0;
@@ -94,8 +94,8 @@ public class ATDB {
         });
     }
 
-    public void calculateInverseMap(BufferedReader br2) throws IOException {
-        new DBLoader(br2, new IDatabase() {
+    public void calculateInverseMap(String file) throws IOException {
+        DBLoader.readFile(file, new IDatabase() {
             @Override
             public void newObj(int objId, String objName) {
                 boolean[] mustTrue = new boolean[8];

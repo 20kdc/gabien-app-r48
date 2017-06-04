@@ -42,7 +42,7 @@ C name eventpage_graphics
 @character_name string
 @character_index int
 @character_direction sprite_direction
-@character_pattern int
+@character_pattern int= 1
 @character_blend_mode int_boolean
 +internal_EPGD
 
@@ -50,17 +50,17 @@ C name eventpage_graphics
 C name Class.RPG::EventPage @condition | [RPG::EventPage::Condition]A
 @condition subwindow RPG::EventPage::Condition
 +subwindow[ Graphics ] eventpage_graphics
-e eventpage_layer 0 BelowPlayer 1 WithPlayer(Collide) 2 AbovePlayer
+e eventpage_layer 0 belowPlayer 1 withPlayer+collide 2 abovePlayer
 @layer eventpage_layer
-e eventpage_movetype 0 Don't 1 Random 2 GuardVLine 3 GuardHLine 4 ChasePlayer 5 FleePlayer 6 Custom
+e eventpage_movetype 0 don't 1 random 2 guardVLine 3 guardHLine 4 chasePlayer 5 fleePlayer 6 custom
 @move_type eventpage_movetype
 @move_freq int= 3
 @move_speed int= 3
 @move_route subwindow RPG::MoveRoute
 @block_other_events boolean
-e eventpage_animtype 0 OnlyWhenMoving 1 Always 2 NoActDirchange+OnlyWhenMoving 3 NoActDirchange+Always 4 NoActDirchange+Never 5 GetDizzy
+e eventpage_animtype 0 onlyWhenMoving 1 always 2 noActDirchange+onlyWhenMoving 3 noActDirchange+always 4 noActDirchange+never 5 spin
 @anim_type eventpage_animtype
-e eventpage_trigger 0 ActKey 1 PlayerWalks 2 EitherWalks 3 Autorun 4 Parallel
+e eventpage_trigger 0 playerInteract 1 playerCollide 2 playerOrEventCollide 3 autorun 4 parallel
 @trigger eventpage_trigger
 @list EventListEditor
 

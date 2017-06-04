@@ -25,8 +25,8 @@ public class CMDB {
     public int listLeaveCmd = 0;
     public int blockLeaveCmd = 0; // This is 10 on R2k, but that is controlled via Lblock
 
-    public CMDB(BufferedReader br) throws IOException {
-        new DBLoader(br, new IDatabase() {
+    public CMDB(String baseFile) {
+        DBLoader.readFile(baseFile, new IDatabase() {
             RPGCommand rc;
             int workingCmdId = 0;
             HashMap<String, SchemaElement> localAliasing = new HashMap<String, SchemaElement>();
@@ -52,8 +52,7 @@ public class CMDB {
                             return se;
                         }
                     });
-                }
-                if (c == 'D') {
+                } else if (c == 'D') {
                     rc.paramName.add(args[0].trim());
                     final int arrayDI = Integer.parseInt(args[1]);
                     final SchemaElement defaultSE = aliasingAwareSG(args[2]);
@@ -79,24 +78,21 @@ public class CMDB {
                             return defaultSE;
                         }
                     });
-                }
-                if (c == 'd') {
+                } else if (c == 'd') {
                     String desc = "";
                     for (String s : args)
                         desc += " " + s;
                     rc.description = desc.trim();
-                }
-                if (c == 'i')
+                } else if (c == 'i') {
                     rc.indentPre = Integer.parseInt(args[0]);
-                if (c == 'I')
+                } else if (c == 'I') {
                     rc.indentPost = Integer.parseInt(args[0]);
-                if (c == 'K') {
+                } else if (c == 'K') {
                     rc.needsBlockLeavePre = true;
                     rc.blockLeaveReplacement = Integer.parseInt(args[0]);
-                }
-                if (c == 'l')
+                } else if (c == 'l') {
                     rc.needsBlockLeavePre = true;
-                if (c == 'L') {
+                } else if (c == 'L') {
                     rc.typeBlockLeave = true;
                     if (args[0].equals("block")) {
                         // block context only
@@ -106,14 +102,18 @@ public class CMDB {
                         listLeaveCmd = workingCmdId;
                         blockLeaveCmd = workingCmdId;
                     }
-                }
-                if (c == '>')
+                } else if (c == '>') {
                     localAliasing.put(args[0], AppMain.schemas.getSDBEntry(args[1]));
-                if (c == 'X')
+                } else if (c == 'X') {
                     rc.specialSchemaName = args[0];
-                if (c == 'C') {
+                } else if (c == 'C') {
                     if (args[0].equals("digitCount"))
                         digitCount = Integer.parseInt(args[1]);
+                } else if (c == '#') {
+                    DBLoader.readFile(args[0], this);
+                } else if (c != ' ') {
+                    // Aha! Defining comments as a != ought to shut up the warnings!
+                    throw new RuntimeException("Unknown command '" + c + "'.");
                 }
             }
 
@@ -127,8 +127,10 @@ public class CMDB {
         // see if I need to be informed that the schema doesn't support the latest and greatest features
         int fails1 = 0;
         for (RPGCommand rc : knownCommands.values())
-            if (rc.description == null)
+            if (rc.description == null) {
+                System.err.print(rc.name + " ");
                 fails1++;
+            }
         if (fails1 > 0)
             System.err.println(fails1 + " commands do not have descriptions.");
     }

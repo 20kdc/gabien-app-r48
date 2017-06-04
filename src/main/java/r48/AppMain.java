@@ -95,9 +95,7 @@ public class AppMain {
 
         schemas = new SDB();
 
-        InputStreamReader fr = new InputStreamReader(GaBIEn.getFile(gamepack + "Schema.txt"));
-        schemas.readFile(new BufferedReader(fr));
-        fr.close();
+        schemas.readFile(gamepack + "Schema.txt"); // This does a lot of IO, for one line.
 
         // initialize everything else that needs initializing, starting with ObjectDB
 
@@ -383,6 +381,7 @@ public class AppMain {
                 uis.onLoad = new Runnable() {
                     @Override
                     public void run() {
+                        uus.scrollbar.scrollPoint = 0;
                         Rect b = topbar.getBounds();
                         topbar.setBounds(new Rect(0, 0, 16, 16));
                         topbar.setBounds(b);

@@ -117,11 +117,11 @@ i HelpImg/9.usage.png
 
 10: How To Resize A Map
 . Note before continuing:
-. All tile data is destroyed by this operation.
-. If you save afterwards, the data can only be restored from backup.
+. In older versions of R48, all tile data was destroyed by this.
+. It isn't the case anymore.
 . Step 1. Click "Edit Direct.".
 . Step 2. Select "@data".
-. Step 3. Edit the width/height to the right (Below the 3 target tile numbers).
+. Step 3. Edit the width/height to the right. (The two numbers next to each other, below the tile number values.)
 . Step 4. Click "Resize".
 > 7 Back to the Map Tools.
 
@@ -135,6 +135,7 @@ i HelpImg/9.usage.png
 > 12 Object Editing Details
 .
 . Game-specific documentation files:
+> 18 RPG Maker 2000/2003 (R2K[3]) Events Overview
 > 14 RGSS (RXP, RVXA) Events Overview
 > 13 Ikachan Events
 . Assuming there are schemas for all the commands (RVXA users take note), you should be able to use them by looking at the Ruby interpreter scripts as documentation.
@@ -264,6 +265,70 @@ i HelpImg/9.usage.png
 . 
 > 14 Back to RGSS Events (Overview)
 
+18: RPG Maker 2000/2003 Events Overview
+. RPG Maker 2000/2003 (hereon referred to as R2k) Events are different in some ways, and the same in others, to later RPG Maker events.
+.
+. The primary things to note:
+.
+. Events are split into pages. First page with all matching conditions "wins" AFAIK.
+.
+. The @condition controls when the page applies.
+. The @trigger controls when the code in the event page runs.
+. The @list is the code of the event.
+.
+. The @move_type controls movement first and foremost, like in RGSS.
+. The @move_route only applies if the @move_type is "custom".
+. The @layer an event is on affects it's collision with the player.
+. The @block_other_events flag indicates this blocks any other event from entering where this event is - and this event from entering any other.
+.
+> 19 The Graphics panel controls how an event looks.
+.
+> 11 Index Page Of Event Editing Details
+
+19: R2k Event Graphics
+. Event graphics are quite important in R2k, given the limited abilities of tile graphics there.
+. Event graphics are still not entirely flexible, but they stay stuck on the map, which is useful.
+.
+. There are two kinds of event graphics. Tile event graphics and character event graphics.
+.
+. If the @character_name is blank, tile event graphics are used. The @character_index + 10000 is the tile ID displayed.
+. This is why the 10000-10143 tile range is marked 'EV.TileIndexes+10000'.
+. Getting a tile index from there and subtracting 10000 gives you a @character_index.
+. Contrary to the name, event graphics can allow (for example) crossing bridges, at least on the belowPlayer layer.
+. (The EasyRPG Test Game 2000 demonstrates this. It also has several rendering tests I found useful during R48 development.)
+.
+. If the @character_name is not blank, character event graphics are used.
+.
+p 4
+I HelpImg/19.sheet.png 0 0 96 64
+p 4
+. Above: a somewhat atypical example.
+. The two characters on the left are close to what you will normally see.
+. The rest are designed more around special use of MoveRoutes.
+.
+. Character event graphics use a spritesheet of any size, divided into 8 characters.
+. This division, which the character index refers to, is 4 columns, 2 rows, of the form:
+.
+. 0123
+. 4567
+.
+. (Hopefully the above text shows up correctly.)
+. The characters are in turn divided into 3 columns, 4 rows.
+. This makes for a total of 12 columns, 16 rows.
+.
+. In any case, each character has 3 patterns, 0, 1 and 2, each being a column.
+. 1 is considered the "standing" pose of a character, and you should typically set the pattern to 1 when using open-source replacement RTPs.
+. (I do not believe using non-open-source non-replacement RTPs with R48 is a good idea.)
+. Note that the pattern will continually "walk" if @anim_type is set to "always".
+.
+. Each character also has 4 directions, this being the row.
+. The directions are up, right, down, left.
+. Note that if the @anim_type does NOT say "noActDirchange", the character will temporarily change direction to face the player when 'talking'.
+. This appears to mean "interaction triggered by the player on the event somehow."
+. If the @anim_type is "spin", the direction will always change. All the time. In a continuous loop.
+.
+> 11 Index Page Of Event Editing Details
+
 800: Help Page On Help Page Allocations
 . 0: The first page.
 . 1-799: Documentation, not referred to by code.
@@ -298,7 +363,6 @@ i HelpImg/9.usage.png
 . The solstice was missed, I wanted to release this then but chickened out.
 . But hey, they needed more time too, so whatever - here I am, typing these words.
 . I wonder what will happen if THEY find me out? Well. Let's just hope that doesn't happen.
-. And tell P.S. & Vic they're right about me, I am a dick. Too bad I don't care.
 .
 > 800 back
 

@@ -32,8 +32,8 @@ public class UINSVertLayout extends UIPanel {
     @Override
     public void setBounds(Rect r) {
         super.setBounds(r);
-        // Run this twice to let upper stabilize
-        for (int i = 0; i < 2; i++) {
+        // Run this a while to let upper stabilize. UIHelpSystem should be considered "notorious" for this kind of problem-causing.
+        for (int i = 0; i < 4; i++) {
             int uh = upper.getBounds().height;
             upper.setBounds(new Rect(0, 0, r.width, uh));
             lower.setBounds(new Rect(0, uh, r.width, r.height - uh));

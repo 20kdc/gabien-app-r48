@@ -95,7 +95,7 @@ public class Application {
 
         gamepaks.panels.add(new UILabel("Choose Target Engine:", FontSizes.launcherTextHeight));
 
-        new DBLoader(new BufferedReader(new InputStreamReader(GaBIEn.getFile("Gamepaks.txt"))), new IDatabase() {
+        DBLoader.readFile("Gamepaks.txt", new IDatabase() {
 
             UITextButton lastButton;
             AtomicReference<String> boxedEncoding; // it's a boxed object, so...
