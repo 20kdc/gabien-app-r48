@@ -15,6 +15,7 @@ D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
 > troop_id int
 > tileset_id int
 > terrain_id int
+> animation_id int
 
 > actor_id int+0
 

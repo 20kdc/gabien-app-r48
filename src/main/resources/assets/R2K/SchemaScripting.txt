@@ -34,6 +34,9 @@ e change_actor_class_statsfx 0 noChange 1 halfStats 2 lvl1Stats 3 currentLevelSt
 
 e camera_pan_control_mode 0 lockCamera 1 unlockCamera 2 linearMoveCamera 3 linearFocusOnPlayer
 
+e forceescape_mode 0 escape 1 instaKillEnemiesAndWin 2 instaKillSingleEnemyAndWin
+e change_enemy_hp_mode 0 direct 1 variable 2 currentHp%
+
  BEFORE ADDING A "mysteriously set to 1" type for a parameter just before an actor_id,
   have you considered it could be GetActors? - 20kdc to themselves
  ...of course, if it has no relation...

@@ -264,9 +264,9 @@ X wait_illogical_parameters
 d Plays some background music.
 p music string
 p fadeTime int
-p volume int
-p tempo int
-p balance int
+p volume int_default_100
+p tempo int_default_100
+p balance int_default_50
 
 11520: Fade Out BGM
 d Fades out the background music.
@@ -276,9 +276,9 @@ p fadeTime int
 11550: Play Sound$
 d Plays a sound effect.
 p sound string
-p volume int
-p tempo int
-p balance int
+p volume int_default_100
+p tempo int_default_100
+p balance int_default_50
 
 12310: End Event Processing
 d Jump to the end of the code, thus, stop running it.
@@ -324,9 +324,9 @@ d Change a System BGM.
 p bgm string
 p bgmId change_sys_bgm_id
 p fadein int
-p volume int
-p tempo int
-p balance int
+p volume int_default_100
+p tempo int_default_100
+p balance int_default_50
 
  NT. OS uses below for hax, so it gets priority on the "should we name this right today" roulette wheel
 
@@ -334,9 +334,9 @@ p balance int
 d Change a sound effect used by the system.
 p sfx string
 p sfxId change_sys_sfx_id
-p volume int
-p tempo int
-p balance int
+p volume int_default_100
+p tempo int_default_100
+p balance int_default_50
 
 10680: Change Sys.GFX
 d Change the current set of graphics used by the system.

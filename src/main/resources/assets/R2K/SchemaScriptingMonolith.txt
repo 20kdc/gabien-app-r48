@@ -92,6 +92,7 @@ e set_variables_enemyprop 0 hp 1 sp 2 maxHp 3 maxSp 4 atk 5 def 6 spi 7 agi
 
 e cbranch_type 0 switch 1 varCompare 2 timer1 3 goldCompare 4 itemCompare 5 actorInfo 6 charDir 7 usingVehicle 8 initByActKey 9 bgmLooped 10 timer2 11 rpgMaker2003v1.11.Cherry.other
 e cbranch_gele 0 >= 1 <=
+ borrowed by battle varcomp
 e cbranch_varcomp_e 0 == 1 >= 2 <= 3 > 4 < 5 !=
 e cbranch_cherry_e 0 hasSave 1 testPlay 2 atbWait 3 fullScreen
 e cbranch_itemcomp_e 0 partyHasItem 1 partyDoesntHaveItem
