@@ -5,14 +5,13 @@
 
 package r48.dbs;
 
-import gabien.GaBIEn;
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.DictionaryUpdaterRunnable;
 import r48.RubyIO;
 import r48.schema.*;
-import r48.schema.arrays.OneIndexedArraySchemaElement;
+import r48.schema.arrays.ArbIndexedArraySchemaElement;
 import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.displays.EPGDisplaySchemaElement;
 import r48.schema.integers.IntBooleanSchemaElement;
@@ -23,11 +22,8 @@ import r48.schema.specialized.*;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 import r48.schema.specialized.tbleditors.DefaultTableCellEditor;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
-import r48.schema.util.SchemaPath;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -146,7 +142,11 @@ public class SDB {
                         if (text.equals("arrayAL1"))
                             return new StandardArraySchemaElement(get(), 0, true);
                         if (text.equals("arrayIx1"))
-                            return new OneIndexedArraySchemaElement(get(), 0);
+                            return new ArbIndexedArraySchemaElement(get(), 1, 0);
+                        if (text.equals("arrayIxN")) {
+                            int ofx = Integer.parseInt(args[point++]);
+                            return new ArbIndexedArraySchemaElement(get(), ofx, 0);
+                        }
                         if (text.equals("arrayDAM")) {
                             int disambiguatorIndex = Integer.parseInt(args[point++]);
                             SchemaElement disambiguatorType = get();

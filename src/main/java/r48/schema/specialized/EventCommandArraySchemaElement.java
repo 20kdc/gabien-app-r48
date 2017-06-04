@@ -78,7 +78,7 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
                     arr.get(i).getInstVarBySymbol("@indent").fixnumVal = indent;
                     modified = true;
                 }
-                indent += rc.indentPost;
+                indent += rc.indentPost.apply(arr.get(i).getInstVarBySymbol("@parameters"));
 
                 if (rc.needsBlockLeavePre) {
                     if (!lastWasBlockLeave) {

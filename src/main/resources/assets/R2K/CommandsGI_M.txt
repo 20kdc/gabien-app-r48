@@ -4,13 +4,186 @@
 
  GI-M Command List
 
- GAP
+10830: @@Teleport Player By Vars{D: @#B, @#C, @#D}
+d Like Teleport Player, except more complicated.
+p _ string
+p mapVar var_id
+p xVar var_id
+p yVar var_id
 
-10810: @@Teleport Player{D: to @#B : @#C, @#D}
-d Teleports the player to a given map and position.
+10710: Begin Encounter
+d Begin a battle between the player and an enemy!
+p _ string
+X begin_encounter_parameters
+I 1
+
+20710: ... Victory:
+p _ string
+K10710
+i-1
+I1
+20711: ... Escape:
+p _ string
+K10710
+i-1
+I1
+20712: ... Defeat:
+p _ string
+K10710
+i-1
+I1
+
+20713: End Encounter
+d Ends an Encounter Block.
+p _ string
+i-1
+l
+
+10720: Show Shop
+d Shows a shop. Note that this only acts as a block if hasInnerCode is enabled.
+p _ string
+X show_shop_parameters
+C commandIndentConditionalIB 3
+
+20720: ... Transaction:
+d Begins the code for when the player does business of some form with the Shop.
+p _ string
+K10720
+i-1
+I1
+
+20721: ... Refuse Transaction:
+d Begins the code for when the player chooses not to do business with the Shop.
+p _ string
+K10720
+i-1
+I1
+
+20722: End Shop
+d Ends a Shop Block.
+p _ string
+i-1
+l
+
+10730: Show Inn
+d Shows an Inn's screen. Note that this only acts as a block if hasInnerCode is enabled.
+p _ string
+p innType2 int_boolean
+p price int
+p hasInnerCode int_boolean
+C commandIndentConditionalIB 4
+
+20730: ... Stay:
+d Begins the code for when the player chooses to stay at the Inn.
+p _ string
+K10730
+i-1
+I1
+
+20731: ... Refuse Stay:
+d Begins the code for when the player chooses not to stay at the Inn.
+p _ string
+K10730
+i-1
+I1
+
+20732: End Inn
+d Ends an Inn Block.
+p _ string
+i-1
+l
+
+10740: Enter Party Member Name
+d For changing the name of a party member. Because players really don't care about Crono's parents or their naming decisions.
+p _ string
+p target actor_id
+p useCharset2 int_boolean
+p showOldName int_boolean
+
+10810: @@Teleport Player{D: to @#B : #C, #D{E: dir @#E}}
+d Teleports the player to a given map and position. If in a parallel event, continue running (orphaned from character), otherwise, terminate.
 p _ string
 p map map_id
 p x int
 p y int
+X teleport_player_r2k_escapehatch
 
- GAP
+10840: Player Enters Or Leaves Vehicle
+d Enters or leaves an airship occupying the same space as the player, or a ship/boat directly in front of the player. It is extremely picky about this.
+p _ string
+
+11060: Camera Pan Control
+d Controls where the 'camera' is looking.
+p _ string
+ Unfortunately for humanity, Pv-Syntax is powerful enough to represent this, which means I'm obligated to do it rather than just X-trap.
+p mode camera_pan_control_mode
+P 1 _ int
+v 2 direction direction
+P 1 _ int
+v 2 distPixels int
+P 1 _ int
+v 2 speed int
+v 3 speed int
+P 1 _ int
+v 2 wait int_boolean
+v 3 wait int_boolean
+
+# R2K/CommandsGI_MP.txt
+
+11210: Show Animation
+d Show an animation on an event/the player.
+p _ string
+p anim int
+p char character_id
+p wait int_boolean
+p global int_boolean
+
+11320: Flash Character
+d Make an event/the player flash. Useful for pain indicators, and demoni ###25982public UIScrollVertLayout masterPanel = new UIScrollVertLayout();95182### c transformations.
+p _ string
+p char character_id
+p red int
+p green int
+p blue int
+p saturation int
+p time int
+p wait int_boolean
+
+11340: Wait Until All MoveRoutes Complete
+d Exactly what it says on the tin.
+p _ string
+
+11350: Stop All Pending MoveRoutes
+d I assume there's some good reason for this thing's existence - perhaps if you had to chase down a fleeing NPC - but...
+p _ string
+
+11560: Play Movie$
+d Plays a movie, if that's possible.
+p movie string
+p usePosVars int_boolean
+P 1 xVar var_id
+v 0 x int
+P 1 yVar var_id
+v 0 y int
+p width int
+p height int
+
+11910: Open Save Menu
+d Opens the Save menu.
+p _ string
+
+11950: Open Main Menu
+d Opens the Main menu, which is, I assume, the menu that shows up when you press the menu key.
+p _ string
+
+5001: Open Load Menu
+d Opens the Load menu.
+p _ string
+
+5003: Toggle ATB Mode
+d Toggles the ATB battle system.
+p _ string
+
+5005: Open Video Options
+d Does absolutely nothing, or, alternatively, opens the video options.
+p _ string

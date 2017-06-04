@@ -14,15 +14,22 @@ D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
 > map_id internal_mapDictionary
 > troop_id int
 > tileset_id int
-> battlecommand_id int
+> terrain_id int
 
 > actor_id int+0
- If you even see this mentioned at all, it is 2k3 only. *Always*.
+
+ If you even see either of these mentioned at all, it is 2k3 only. *Always*.
 > class_id int
+> battlecommand_id int
+
 > commonevent_id int
 
 E character_id EventID 10001 player 10002 boat 10003 ship 10004 airShip 10005 runningEvent
 e timer_id 0 timer1 1 timer2
+
+ NOTE: This is barely ever used, in contrast to RGSS. In general stuff uses sprite_direction
+e direction 2 down 4 left 6 right 8 up
+
 e sprite_direction 0 up 1 right 2 down 3 left
 
 i R2K/SchemaScripting.txt

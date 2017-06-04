@@ -1,0 +1,9 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ GI-M Command List // Pictures
+
+ NOTE: WHEN WRITING PICTURE STUFF, consider the PPP to be non-existent. It's not part of R2K for the purposes of this file.
+
+ GAP (S.P to E.P)

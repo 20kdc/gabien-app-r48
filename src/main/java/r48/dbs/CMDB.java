@@ -6,6 +6,7 @@
 package r48.dbs;
 
 import gabien.ui.IFunction;
+import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
@@ -135,7 +136,13 @@ public class CMDB {
                 } else if (c == 'i') {
                     rc.indentPre = Integer.parseInt(args[0]);
                 } else if (c == 'I') {
-                    rc.indentPost = Integer.parseInt(args[0]);
+                    final int s = Integer.parseInt(args[0]);
+                    rc.indentPost = new IFunction<RubyIO, Integer>() {
+                        @Override
+                        public Integer apply(RubyIO rubyIO) {
+                            return s;
+                        }
+                    };
                 } else if (c == 'K') {
                     rc.needsBlockLeavePre = true;
                     rc.blockLeaveReplacement = Integer.parseInt(args[0]);
@@ -158,6 +165,19 @@ public class CMDB {
                 } else if (c == 'C') {
                     if (args[0].equals("digitCount"))
                         digitCount = Integer.parseInt(args[1]);
+                    if (args[0].equals("commandIndentConditionalIB")) {
+                        final int target = Integer.parseInt(args[1]);
+                        rc.indentPost = new IFunction<RubyIO, Integer>() {
+                            @Override
+                            public Integer apply(RubyIO rubyIO) {
+                                if (rubyIO.arrVal.length <= target)
+                                    return 0;
+                                if (rubyIO.arrVal[target].fixnumVal == 0)
+                                    return 0;
+                                return 1;
+                            }
+                        };
+                    }
                 } else if (c == '#') {
                     DBLoader.readFile(args[0], this);
                 } else if (c != ' ') {

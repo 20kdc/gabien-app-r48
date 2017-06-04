@@ -14,12 +14,14 @@ import r48.schema.util.SchemaPath;
  * Because sometimes you get curve balls thrown at you like "one-indexed arrays that aren't".
  * Created on 2/16/17.
  */
-public class OneIndexedArraySchemaElement extends ArraySchemaElement {
+public class ArbIndexedArraySchemaElement extends ArraySchemaElement {
     public SchemaElement subelems;
+    public int indexOffset;
 
-    public OneIndexedArraySchemaElement(SchemaElement s, int fixedSize) {
+    public ArbIndexedArraySchemaElement(SchemaElement s, int io, int fixedSize) {
         super(fixedSize, true);
         subelems = s;
+        indexOffset = io;
     }
 
     @Override
@@ -30,7 +32,7 @@ public class OneIndexedArraySchemaElement extends ArraySchemaElement {
     @Override
     protected SchemaElement getElementSchema(int j) {
         // Opaque will always *default* to NIL if the result would otherwise be completely invalid data.
-        if (j == 0)
+        if (j < indexOffset)
             return new OpaqueSchemaElement();
         return subelems;
     }
@@ -38,14 +40,14 @@ public class OneIndexedArraySchemaElement extends ArraySchemaElement {
     @Override
     public int maxHoldingHeight() {
         if (sizeFixed != 0)
-            return subelems.maxHoldingHeight() * sizeFixed;
+            return subelems.maxHoldingHeight() * (sizeFixed - indexOffset);
         // *gulp* guess, and hope the guess is correct.
         return subelems.maxHoldingHeight() * 16;
     }
 
     @Override
     protected int elementPermissionsLevel(int i, RubyIO target) {
-        if (i == 0)
+        if (i < indexOffset)
             return 0;
         return super.elementPermissionsLevel(i, target);
     }

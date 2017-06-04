@@ -312,6 +312,7 @@ e change_equipment_slot_id 0 weapon 1 shield 2 armour 3 helmet 4 accessory
 
  Teleport Event
 
+ also used by teleport_player_r2k_escapehatch
 e teleport_event_dir 0 ignored 1 up 2 right 3 down 4 left
 
 .teleport_event_parameters
@@ -424,3 +425,83 @@ e flashshake_screen_mode 0 temporary 1 begin 2 end
 ]3 time int
 ]4 wait int_boolean
 +]?5 mode2k3 temporary flashshake_screen_mode
+
+ --- ---
+ ^-. ^-.
+ --- ---
+
+ Show Shop, not to be confused with Shake Screen
+
+e show_shop_bstype 0 buysAndSells 1 buys 2 sells
+e show_shop_type 0 shopA 1 shopB 2 shopC
+
+.show_shop_parameters
+@indent indent
+@parameters show_shop_array
+
+.show_shop_array
+]0 _ string
+]1 buySell show_shop_bstype
+]2 shopType show_shop_type
+]3 hasInnerCode int_boolean
+ Always zero in EasyRPG Test Game - 2000
+]4 unknown int
++arrayIxN 5 item_id
+
+ -+- --\
+  |  |-/
+  |  |
+
+ Teleport Player
+
+.teleport_player_r2k_escapehatch
+@indent indent
+@parameters teleport_player_r2k_escapehatch_array
+
+.teleport_player_r2k_escapehatch_array
+]0 _ string
+]1 map map_id
+]2 x int
+]3 y int
++]?4 direction ignored teleport_event_dir
+
+ BE
+ Begin Encounter
+
+e begin_encounter_battletype 0 fromMap 1 fromString 2 byTerrainId
+e begin_encounter_battlemode 0 normal 1 initiative 2 surround 3 backAttack 4 pincerAttack
+e begin_encounter_escape 0 refuse 1 endEvent 2 executeEscapeCode
+e begin_encounter_defeat 0 gameOver 1 executeDefeatCode
+
+.begin_encounter_parameters
+@indent indent
+@parameters arrayDAM 1 int begin_encounter_vars 0 begin_encounter_novars
+
+.begin_encounter_vars
+]1 troopIsVar int_boolean
+]2 troopVar var_id
++begin_encounter_general
+
+.begin_encounter_novars
+]1 troopIsVar int_boolean
+]2 troop int
++begin_encounter_general
+
+.begin_encounter_general
+]3 setupType begin_encounter_battletype
+]4 escapeMode begin_encounter_escape
+]5 defeatMode begin_encounter_defeat
+]6 playerAttacksFirst int_boolean
+]7 battleMode_2k3 begin_encounter_battlemode
++arrayDAM 3 int begin_encounter_0 1 begin_encounter_1 2 begin_encounter_2
+
+.begin_encounter_0
+]0 _ string
+
+.begin_encounter_1
+]0 bkg string
+ this means nothing?!?!?!
++]?8 formation_2k3 none int
+
+.begin_encounter_2
+]9 terrainId terrain_id

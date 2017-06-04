@@ -25,7 +25,8 @@ public class RPGCommand {
     public LinkedList<IFunction<RubyIO, SchemaElement>> paramType = new LinkedList<IFunction<RubyIO, SchemaElement>>();
     public LinkedList<IFunction<RubyIO, String>> paramName = new LinkedList<IFunction<RubyIO, String>>();
     public int indentPre;
-    public int indentPost;
+    // This is conditional solely because of Show Inn (R2k).
+    public IFunction<RubyIO, Integer> indentPost;
     // Something that can also go before this command instead of a block leave
     public int blockLeaveReplacement = -1;
     public boolean needsBlockLeavePre;
