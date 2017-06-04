@@ -159,10 +159,6 @@ public class LcfTileRenderer implements ITileRenderer {
     }
 
     private void handleWATField(int tSubfield, String upper, String lower, int px, int py, IGrInDriver igd, IGrInDriver.IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int ets) {
-        if (ets != 16) {
-            igd.blitImage(ovlX, 0, ets, ets, px, py, chipset);
-            return;
-        }
 
         int innerSubfield = tSubfield % 50;
         int outerSubfield = tSubfield / 50;
@@ -172,13 +168,16 @@ public class LcfTileRenderer implements ITileRenderer {
         char ll = lower.charAt(innerSubfield * 2);
         char lr = lower.charAt((innerSubfield * 2) + 1);
 
-        handleWATCorner(0, 0, ((outerSubfield & 1) != 0) ? 'D' : ul, px, py, igd, chipset, aniX, baseY, diamondY, ovlX);
-        handleWATCorner(8, 0, ((outerSubfield & 2) != 0) ? 'D' : ur, px, py, igd, chipset, aniX, baseY, diamondY, ovlX);
-        handleWATCorner(0, 8, ((outerSubfield & 4) != 0) ? 'D' : ll, px, py, igd, chipset, aniX, baseY, diamondY, ovlX);
-        handleWATCorner(8, 8, ((outerSubfield & 8) != 0) ? 'D' : lr, px, py, igd, chipset, aniX, baseY, diamondY, ovlX);
+        int etc = ets / 2;
+        handleWATCorner(0, 0, ((outerSubfield & 1) != 0) ? 'D' : ul, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc);
+        if ((etc * 2) == ets) {
+            handleWATCorner(etc, 0, ((outerSubfield & 2) != 0) ? 'D' : ur, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc);
+            handleWATCorner(0, etc, ((outerSubfield & 4) != 0) ? 'D' : ll, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc);
+            handleWATCorner(etc, etc, ((outerSubfield & 8) != 0) ? 'D' : lr, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc);
+        }
     }
 
-    private void handleWATCorner(int cx, int cy, char c, int px, int py, IGrInDriver igd, IGrInDriver.IImage chipset, int aniX, int baseY, int diamondY, int ovlX) {
+    private void handleWATCorner(int cx, int cy, char c, int px, int py, IGrInDriver igd, IGrInDriver.IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int etc) {
         int tox = 0;
         int toy = 0;
         switch (c) {
@@ -207,7 +206,7 @@ public class LcfTileRenderer implements ITileRenderer {
                 toy = 48;
                 break;
         }
-        igd.blitImage(tox + cx, toy + cy, 8, 8, px + cx, py + cy, chipset);
+        igd.blitImage(tox + cx, toy + cy, etc, etc, px + cx, py + cy, chipset);
     }
 
     private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrInDriver igd, IGrInDriver.IImage chipset, int ets) {
@@ -220,7 +219,7 @@ public class LcfTileRenderer implements ITileRenderer {
     }
 
     private void handleATField(int subfield, int fx, int fy, int px, int py, IGrInDriver igd, IGrInDriver.IImage chipset, int ets) {
-        XPTileRenderer.generalOldRMATField(fx * 16, fy * 16, subfield, 0, 16, ets, px, py, igd, chipset, 1, 2);
+        XPTileRenderer.generalOldRMATField(fx * 16, fy * 16, subfield, 0, 16, ets, px, py, igd, chipset);
     }
 
     @Override
