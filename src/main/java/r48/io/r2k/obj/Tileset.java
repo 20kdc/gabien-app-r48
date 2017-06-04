@@ -9,10 +9,7 @@ import r48.RubyIO;
 import r48.RubyTable;
 import r48.io.r2k.Index;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.BlobR2kStruct;
-import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
-import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.chunks.*;
 
 /**
  * Another bare-minimum for now
@@ -46,7 +43,7 @@ public class Tileset extends R2kObject {
         }
     });
 
-    public IntegerR2kStruct animType = new IntegerR2kStruct(0);
+    public BooleanR2kStruct animCyclic = new BooleanR2kStruct(false);
     public IntegerR2kStruct animSpeed = new IntegerR2kStruct(0);
 
     @Override
@@ -57,7 +54,7 @@ public class Tileset extends R2kObject {
                 new Index(0x03, terrainTbl),
                 new Index(0x04, lowPassTbl),
                 new Index(0x05, highPassTbl),
-                new Index(0x0B, animType, "@anim_type"),
+                new Index(0x0B, animCyclic, "@anim_cyclic"),
                 new Index(0x0C, animSpeed, "@anim_speed")
         };
     }

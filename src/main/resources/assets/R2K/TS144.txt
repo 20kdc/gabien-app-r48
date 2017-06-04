@@ -1,0 +1,8 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ Tileset specification stuff for aiding collision adj. and such
+
+t 144
+r 0 10000 144

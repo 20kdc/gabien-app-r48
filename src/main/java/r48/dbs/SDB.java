@@ -22,6 +22,7 @@ import r48.schema.integers.ROIntegerSchemaElement;
 import r48.schema.specialized.*;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 import r48.schema.specialized.tbleditors.DefaultTableCellEditor;
+import r48.schema.specialized.tbleditors.ITableCellEditor;
 import r48.schema.util.SchemaPath;
 
 import java.io.BufferedReader;
@@ -129,6 +130,8 @@ public class SDB {
                             return new StringSchemaElement(args[point++], '\"');
                         if (text.equals("hwnd")) {
                             String a = args[point++];
+                            if (a.equals("."))
+                                a = null;
                             return new HWNDSchemaElement(a, args[point++]);
                         }
                         if (text.equals("optIV")) {
@@ -249,7 +252,10 @@ public class SDB {
                                 }
                             });
                         }
-                        if (text.equals("table") || text.equals("tableF") || text.equals("tableTS") || text.equals("tableTSF")) {
+                        if (text.equals("table") || text.equals("tableF") || text.equals("tableTS") || text.equals("tableTSF") || text.equals("tableSTA") || text.equals("tableSTAF")) {
+                            TSDB tilesetAllocations = null;
+                            if (text.equals("tableSTA") || text.equals("tableSTAF"))
+                                tilesetAllocations = new TSDB(args[point++]);
                             String iV = args[point++];
                             if (iV.equals("."))
                                 iV = null;
@@ -265,23 +271,21 @@ public class SDB {
                             int aW = Integer.parseInt(args[point++]);
                             int aH = Integer.parseInt(args[point++]);
                             int aI = Integer.parseInt(args[point++]);
-                            if (text.equals("tableTSF")) {
-                                // Flags which are marked with "." are hidden. Starts with 1, then 2, then 4...
+                            // Flags which are marked with "." are hidden. Starts with 1, then 2, then 4...
+                            ITableCellEditor tcf = new DefaultTableCellEditor();
+                            if (text.equals("tableTSF") || text.equals("tableF") || text.equals("tableSTAF")) {
                                 LinkedList<String> flags = new LinkedList<String>();
                                 while (point < args.length)
                                     flags.add(args[point++]);
-                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, new BitfieldTableCellEditor(flags.toArray(new String[0]))), iVT);
+                                tcf = new BitfieldTableCellEditor(flags.toArray(new String[0]));
                             }
-                            if (text.equals("tableTS"))
-                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, new DefaultTableCellEditor()), iVT);
-                            if (text.equals("tableF")) {
-                                // Flags which are marked with "." are hidden. Starts with 1, then 2, then 4...
-                                LinkedList<String> flags = new LinkedList<String>();
-                                while (point < args.length)
-                                    flags.add(args[point++]);
-                                return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, new BitfieldTableCellEditor(flags.toArray(new String[0]))), iVT);
-                            }
-                            return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, new DefaultTableCellEditor()), iVT);
+                            if (text.equals("tableSTA") || text.equals("tableSTAF"))
+                                return new SubwindowSchemaElement(new TilesetAllocTableSchemaElement(tilesetAllocations, iV, wV, hV, aW, aH, aI, tcf), iVT);
+                            if (text.equals("tableTS") || text.equals("tableTSF"))
+                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf), iVT);
+                            if (text.equals("table") || text.equals("tableF"))
+                                return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf), iVT);
+                            throw new RuntimeException("Unknown table type " + text);
                         }
                         if (text.equals("CTNative"))
                             return new CTNativeSchemaElement(args[point++]);

@@ -50,4 +50,12 @@ public class RXPSystem extends MapSystem {
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
     }
+
+    @Override
+    public StuffRenderer rendererFromTso(RubyIO tso) {
+        IImageLoader imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png");
+        ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tso);
+        IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
+    }
 }

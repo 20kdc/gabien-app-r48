@@ -348,7 +348,40 @@ p _ string
 p situation change_transition_situation
 p transition change_transition_type
 
- GAP (M.L to S.E.I)
+10820: Store Player Location
+d Stores the player's location.
+p _ string
+p mapVar var_id
+p xVar var_id
+p yVar var_id
+
+10850: Teleport Vehicle
+d Teleports a vehicle.
+p _ string
+p vehicle scripting_vehicletype
+p positionVars int_boolean
+
+P 2 mapVar var_id
+v 0 map map_id
+P 2 xVar var_id
+v 0 x int
+P 2 yVar var_id
+v 0 y int
+
+10860: Teleport Event
+d Teleports an event. (Can set direction on 2k3.)
+p _ string
+X teleport_event_parameters
+
+10870: Swap Events
+d Swaps the positions of two events.
+p _ string
+p eventA character_id
+p eventB character_id
+
+ GAP (S.T.I to S.E.I, 2c)
+10820: Store Terrain Tag
+d Stores the terrain tag of a given point on the map. This is stored in Tileset/@terrain_data.
 
 11010: Hide Map
 d Hides the map.
@@ -370,7 +403,7 @@ p rotation int
 p fadeTime int
 p waitForFade int_boolean
 
- GAP (F.S to S.S)
+ GAP (F.S to S.S, 2c)
 
 11070: Weather Control
 d Controls the weather. Your forecast today: Rain. Which is good, because the clouds will protect you from the burning, uncaring sun.
@@ -388,7 +421,81 @@ d Sends a list of MoveCommands to an event.
 p _ string
 X move_event_parameters
 
- GAP (M.BGM to C.M.M.A)
+11530: Copy Current BGM
+d Copies the current BGM for future use.
+p _ string
+
+11540: Use Copied BGM
+d Uses a previously-made BGM copy.
+p _ string
+
+11610: Key Input Information
+d Gets (and possibly waits for) a keypress, returning the result in a variable. Has a gazillion options varying by version.
+p _ string
+ Injects a help window, does opt.param stuff
+X key_input_information_parameters
+
+11710: Set Map Tileset
+d Sets the map's tileset. Hopefully you've designed the map and tilesets with this in mind.
+p _ string
+p tilesetId tileset_id
+
+11720: Change Parallax Setup
+d Change the parallax on the map.
+p parallax string
+p scrollH int_boolean
+p scrollV int_boolean
+p scrollHAuto int_boolean
+p scrollHSpeed int
+p scrollVAuto int_boolean
+p scrollVSpeed int
+
+11740: Change Encounter Rate
+d Change the encounter rate on the map.
+p _ string
+p newRate int
+
+11750: Substitute Tiles
+d Change all tiles of one ID for another. Note that these IDs are *relative* to the tile plane. That is, 5000 for the Lower Layer, 10000 for the Upper Layer.
+p _ string
+p upperLayer int_boolean
+p tileA int
+p tileB int
+
+11810: Add/Remove Teleport Target
+d Adds a teleport target to, or removes a teleport target from, the menu.
+p _ string
+X ar_teleport_target_parameters
+
+11820: Enable/Disable Teleport
+d Enable or disable the teleportation menu.
+p _ string
+p enable int_boolean
+
+11830: Set Escape Target
+d Set the target position to escape to for a given map.
+p _ string
+p map map_id
+p x int
+p y int
+p useSwitch int_boolean
+P 4 switch switch_id
+v 0 _ int
+
+11840: Enable/Disable Escape
+d Enables or disables escaping.
+p _ string
+p enable int_boolean
+
+11930: Enable/Disable Save
+d Enables or disables saving.
+p _ string
+p enable int_boolean
+
+11960: Enable/Disable Main Menu
+d Enables or disables the ability to return to the main menu.
+p _ string
+p enable int_boolean
 
 12010: Conditional Branch
 d Runs the following code if a condition is true. Otherwise, runs the code at the Else Branch inside, or if one does not exist, goes to the end of the branch.
@@ -438,7 +545,50 @@ l
 d Attempts to temporarily erase this event (if this is, in fact, a map event)
 p _ string
 
- GAP (C.E to C.B.C)
+12330: Call Event
+d Calls a page in another event, or calls a common event.
+p _ string
+p callType callevent_type
+P 1 unk. int
+
+v 0 _ commonevent_id
+v 1 char character_id
+v 2 charVar var_id
+
+P 1 unk. int
+
+v 0 _ int
+v 1 page int
+v 2 pageVar var_id
+
+12510: Return To Title
+d Returns to the title screen.
+p _ string
+
+1008: Change Actor Class (2K3 Only)
+d Changes a party member's class. (EasyRPG only supports Single Actor at time of writing - the GetActors usage is only a suspicion)
+p _ string
+p targetMode get_actors_mode
+P 1 _ int
+v 1 target actor_id
+v 2 targetVar var_id
+
+p class class_id
+p downToLevel1 int_boolean
+p skillEffect change_actor_class_skillfx
+p statsEffect change_actor_class_statsfx
+p showClassChange int_boolean
+
+1009: Add/Remove Actor Battle Command
+d Adds or removes a battle command from a party member. (EasyRPG only supports Single Actor at time of writing - the GetActors usage is only a suspicion)
+p _ string
+p targetMode get_actors_mode
+P 1 _ int
+v 1 target actor_id
+v 2 targetVar var_id
+
+p command battlecommand_id
+p add int_boolean
 
 5002: Shutdown RPG_RT
 d Goodnight.

@@ -1,0 +1,28 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ Tileset specification stuff for aiding collision adj. and such
+
+t 162
+i 0 0
+i 1 1000
+i 2 2000
+i 3 3000
+i 4 3050
+i 5 3100
+
+i 6 4000
+i 7 4050
+i 8 4100
+i 9 4150
+i 10 4200
+i 11 4250
+i 12 4300
+i 13 4350
+i 14 4400
+i 15 4450
+i 16 4500
+i 17 4550
+
+r 18 5000 144

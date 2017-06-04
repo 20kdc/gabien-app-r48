@@ -305,3 +305,82 @@ e change_equipment_slot_id 0 weapon 1 shield 2 armour 3 helmet 4 accessory
 .change_equipment_remove
 +change_equipment_base
 ]4 slot change_equipment_slot_id
+
+ -+- +-
+  |  +-
+  |  +-
+
+ Teleport Event
+
+e teleport_event_dir 0 ignored 1 up 2 right 3 down 4 left
+
+.teleport_event_parameters
+@indent indent
+@parameters arrayDAM 1 int teleport_event 0 teleport_event_novars
+
+.teleport_event
+]0 _ string
+]1 target character_id
+]2 useVars int_boolean
+]3 xVar var_id
+]4 yVar var_id
+
+.teleport_event_novars
+]0 _ string
+]1 target character_id
+]2 useVars int_boolean
+]3 x int
+]4 y int
++]?5 dir2k3 ignored teleport_event_dir
+
+ -+- -+-
+  |   |
+  |   |
+
+ Teleport Target
+
+.ar_teleport_target_parameters
+@indent indent
+@parameters arrayDAM 1 int ar_teleport_target_remove 0 ar_teleport_target_add
+
+.ar_teleport_target_remove
+]0 _ string
+]1 remove int_boolean
+]2 map map_id
+
+.ar_teleport_target_add
+]0 _ string
+]1 remove int_boolean
+]2 map map_id
+]3 x int
+]4 y int
+]5 requireSwitch int_boolean
++arrayDAM 5 int ]6 switch switch_id 0 ]6 _ int
+
+ |
+ |/
+ |\ II
+
+ Key input information
+
+.key_input_information_parameters
+@indent indent
+@parameters key_input_information_base
+
+.key_input_information_base
++hwnd . R2K/KII_Launchpad.txt
+]0 _ string
+]1 var var_id
+]2 wait int_boolean
+]4 checkDesc int_boolean
+]5 checkCancel int_boolean
+]3 p3 int
++]?6 p6 ? int
++]?7 p7 ? int
++]?8 p8 ? int
++]?9 p9 ? int
++]?10 p10 ? int
++]?11 p11 ? int
++]?12 p12 ? int
++]?13 p13 ? int
++]?14 p14 ? int

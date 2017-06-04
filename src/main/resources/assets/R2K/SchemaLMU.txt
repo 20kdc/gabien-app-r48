@@ -18,8 +18,8 @@ C name Interp.RPG::EventPage::Condition.switchB @valid@switch_b @switch_b | {A=T
 C name Interp.RPG::EventPage::Condition.var @valid@var_>=_or_2k3op @var_id @var_compare_op_2k3 @var_value | {A=T=, Var @[var_id]B [var_compare_op_2k3]C #D}
 C name Interp.RPG::EventPage::Condition.item @valid@item @item_id | {A=T=, Party Has Item @[item_id]B}
 C name Interp.RPG::EventPage::Condition.actor @valid@actor @actor_id | {A=T=, Party Has Actor @[actor_id]B}
-C name Interp.RPG::EventPage::Condition.timer1 @valid@timer_1 @timer_1_secs | {A=T=, Timer1 <= #B}
-C name Interp.RPG::EventPage::Condition.timer2 @valid@timer_2 @timer_2_secs_2k3 | {A=T=, Timer2 <= #B}
+C name Interp.RPG::EventPage::Condition.timer1 @valid@timer_1 @timer_1_secs | {A=T=, Timer1 <= #Bs}
+C name Interp.RPG::EventPage::Condition.timer2 @valid@timer_2 @timer_2_secs_2k3 | {A=T=, Timer2 <= #Bs}
 @valid EventPage_Condition_Flags
 @switch_a switch_id
 @switch_b switch_id
@@ -71,7 +71,7 @@ e eventpage_trigger 0 playerInteract 1 playerCollide 2 playerOrEventCollide 3 au
 @pages subwindow arrayIx1 subwindow RPG::EventPage
 
 : RPG::Map
-@tileset_id int
+@tileset_id tileset_id
 @width roint= 20
 @height roint= 15
  actually an enum

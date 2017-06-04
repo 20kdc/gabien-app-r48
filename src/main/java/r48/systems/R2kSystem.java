@@ -51,4 +51,12 @@ public class R2kSystem extends MapSystem {
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
     }
+
+    @Override
+    public StuffRenderer rendererFromTso(RubyIO tso) {
+        IImageLoader imageLoader = new CacheImageLoader(new XYZOrPNGImageLoader(AppMain.rootPath));
+        ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tso, "");
+        IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
+    }
 }

@@ -8,9 +8,28 @@
 C name Class.RPG::Tileset @name | Tileset: #A
 @name string
 @tileset_name string
-@terrain_id_data table . . . 162 1 1
-@lowpass_data table . . . 162 1 1
-@highpass_data table . . . 144 1 1
- actually enum
-@anim_type int
-@anim_speed int
+ This is kind of important:
+ The highpass data is obvious, lowpass/TID not so much.
+ Lowpass/TID allocation is:
+
+ 0 through 17 is the special bunch, divided into these groups:
+
+ 0-3:
+  0: 0-999 set.
+  1: 1000-1999 set.
+  2: 2000-2999 set.
+  3: 3000-3049 set.
+ 4-5:
+  4: 3050-3099 set.
+  5: 3100-3149 set.
+  (With out of range IDs this could extend further)
+ 6-17: 4000-4599 set, divided into 50s, I think
+  (With out of range IDs this could extend further)
+
+ 18-161 is the 5000-5143 set.
+
++tableSTA R2K/TS162.txt @terrain_id_data . . 162 1 1
++tableSTAF R2K/TS162.txt @lowpass_data . . 162 1 1 down left right up upper wall counter
++tableSTAF R2K/TS144.txt @highpass_data . . 144 1 1 down left right up upper wall counter
+@anim_cycles boolean
+@anim_speed int= 0

@@ -13,8 +13,13 @@ D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
 > state_id int
 > map_id internal_mapDictionary
 > troop_id int
+> tileset_id int
+> battlecommand_id int
 
 > actor_id int+0
+ If you even see this mentioned at all, it is 2k3 only. *Always*.
+> class_id int
+> commonevent_id int
 
 E character_id EventID 10001 player 10002 boat 10003 ship 10004 airShip 10005 runningEvent
 e timer_id 0 timer1 1 timer2

@@ -27,6 +27,14 @@ e transition_type -1 default 0 fade 1 blocks 2 dwDown 3 dwUp 4 blindsA 5 blindsB
 e weather_control_type 0 none 1 rain 2 snow 3 fog2k3 4 sandstorm2k3
 e weather_control_strength 0 little 1 medium 2 lots
 
+e callevent_type 0 commonEvent 1 mapEvent 2 indirectMapEvent
+
+e change_actor_class_skillfx 0 noChange 1 replaceSkills 2 addSkills
+e change_actor_class_statsfx 0 noChange 1 halfStats 2 lvl1Stats 3 currentLevelStats
+
+ BEFORE ADDING A "mysteriously set to 1" type for a parameter just before an actor_id,
+  have you considered it could be GetActors? - 20kdc to themselves
+
  ---
 
 i R2K/SchemaScriptingMonolith.txt

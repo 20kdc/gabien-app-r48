@@ -13,6 +13,7 @@ import r48.map.imaging.GabienImageLoader;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.VXATileRenderer;
+import r48.map.tiles.XPTileRenderer;
 
 /**
  * Created on 03/06/17.
@@ -29,6 +30,14 @@ public class RVXASystem extends RXPSystem {
 
         IImageLoader imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png");
         ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tsoFromMap(map), vxaPano);
+        IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
+    }
+
+    @Override
+    public StuffRenderer rendererFromTso(RubyIO tso) {
+        IImageLoader imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png");
+        ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tso, "");
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
     }

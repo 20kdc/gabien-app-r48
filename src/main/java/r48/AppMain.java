@@ -220,36 +220,7 @@ public class AppMain {
         workspace = new UIAppendButton(" Help", workspace, new Runnable() {
             @Override
             public void run() {
-                // exception to the rule
-                UILabel uil = new UILabel("Blank Help Window", FontSizes.helpPathHeight);
-                final UIHelpSystem uis = new UIHelpSystem();
-                final HelpSystemController hsc = new HelpSystemController(uil, null, uis);
-                uis.onLinkClick = new IConsumer<Integer>() {
-                    @Override
-                    public void accept(Integer integer) {
-                        hsc.loadPage(integer);
-                    }
-                };
-                final UIScrollVertLayout uus = new UIScrollVertLayout();
-                uus.panels.add(uis);
-                uus.setBounds(new Rect(0, 0, 560, 240));
-                final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton("Index", uil, new Runnable() {
-                    @Override
-                    public void run() {
-                        hsc.loadPage(0);
-                    }
-                }, FontSizes.helpPathHeight), uus);
-                hsc.onLoad = new Runnable() {
-                    @Override
-                    public void run() {
-                        uus.scrollbar.scrollPoint = 0;
-                        Rect b = topbar.getBounds();
-                        topbar.setBounds(new Rect(0, 0, 16, 16));
-                        topbar.setBounds(b);
-                    }
-                };
-                hsc.loadPage(0);
-                windowMaker.accept(topbar);
+                startHelp(0);
             }
         }, FontSizes.statusBarTextHeight);
         rootView.backing = new UINSVertLayout(workspace, initializeTabs(rootView, uiTicker));
@@ -274,5 +245,38 @@ public class AppMain {
 
     public static void launchDialog(String s) {
         windowMaker.accept(new UILabel(s, FontSizes.dialogWindowTextHeight));
+    }
+
+    public static void startHelp(Integer integer) {
+        // exception to the rule
+        UILabel uil = new UILabel("Blank Help Window", FontSizes.helpPathHeight);
+        final UIHelpSystem uis = new UIHelpSystem();
+        final HelpSystemController hsc = new HelpSystemController(uil, null, uis);
+        uis.onLinkClick = new IConsumer<Integer>() {
+            @Override
+            public void accept(Integer integer) {
+                hsc.loadPage(integer);
+            }
+        };
+        final UIScrollVertLayout uus = new UIScrollVertLayout();
+        uus.panels.add(uis);
+        uus.setBounds(new Rect(0, 0, 560, 240));
+        final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton("Index", uil, new Runnable() {
+            @Override
+            public void run() {
+                hsc.loadPage(0);
+            }
+        }, FontSizes.helpPathHeight), uus);
+        hsc.onLoad = new Runnable() {
+            @Override
+            public void run() {
+                uus.scrollbar.scrollPoint = 0;
+                Rect b = topbar.getBounds();
+                topbar.setBounds(new Rect(0, 0, 16, 16));
+                topbar.setBounds(b);
+            }
+        };
+        hsc.loadPage(integer);
+        windowMaker.accept(topbar);
     }
 }
