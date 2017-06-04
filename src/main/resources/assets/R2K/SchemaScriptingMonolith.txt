@@ -384,3 +384,43 @@ e teleport_event_dir 0 ignored 1 up 2 right 3 down 4 left
 +]?12 p12 ? int
 +]?13 p13 ? int
 +]?14 p14 ? int
+
+ --- ---
+ --  ^ .
+ -   ---
+
+ Flash Screen
+
+e flashshake_screen_mode 0 temporary 1 begin 2 end
+
+.flash_screen_parameters
+@indent indent
+@parameters flash_screen_array
+
+.flash_screen_array
+]0 _ string
+]1 red int
+]2 green int
+]3 blue int
+]4 saturation int
+]5 time int
+]6 wait int_boolean
++]?7 mode2k3 temporary flashshake_screen_mode
+
+ --- ---
+ ^ . ^ .
+ --- ---
+
+ Shake Screen
+
+.shake_screen_parameters
+@indent indent
+@parameters shake_screen_array
+
+.shake_screen_array
+]0 _ string
+]1 strength int
+]2 speed int
+]3 time int
+]4 wait int_boolean
++]?5 mode2k3 temporary flashshake_screen_mode

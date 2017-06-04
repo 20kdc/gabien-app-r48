@@ -379,9 +379,25 @@ p _ string
 p eventA character_id
 p eventB character_id
 
- GAP (S.T.I to S.E.I, 2c)
 10820: Store Terrain Tag
-d Stores the terrain tag of a given point on the map. This is stored in Tileset/@terrain_data.
+d Stores the terrain tag of a given point on the map. These come from Tileset/@terrain_id_data.
+p _ string
+p useVars int_boolean
+P 1 xVar var_id
+v 0 x int
+P 1 yVar var_id
+v 0 y int
+p resultVar var_id
+
+10920: Store Event ID
+d Stores the event ID of whatever event is on a given point on the map, or 0 if none exists there.
+p _ string
+p useVars int_boolean
+P 1 xVar var_id
+v 0 x int
+P 1 yVar var_id
+v 0 y int
+p resultVar var_id
 
 11010: Hide Map
 d Hides the map.
@@ -399,11 +415,19 @@ p _ string
 p red int
 p green int
 p blue int
-p rotation int
+p saturation int
 p fadeTime int
 p waitForFade int_boolean
 
- GAP (F.S to S.S, 2c)
+11040: Flash Screen
+d Flashes the screen with a temporary tint. Please ensure the correct warnings are attached when using this.
+p _ string
+X flash_screen_parameters
+
+11050: Shake Screen
+d Shakes the screen.
+p _ string
+X shake_screen_parameters
 
 11070: Weather Control
 d Controls the weather. Your forecast today: Rain. Which is good, because the clouds will protect you from the burning, uncaring sun.
