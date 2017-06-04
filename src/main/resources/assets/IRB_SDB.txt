@@ -18,6 +18,9 @@
    s blah :box :circle :rectangle
   'E' Enum with text on the int-entry button. First argument is type ID, second is button text-word, then the alternating integer and text-word.
    E level LevelID 0 Zombies 1 Piranhas 2 FourHorsemenOfThePocalips
+  'M' Merges two enums at the end of each frame (after dictionaries).
+      This is useful for cases where you have a dictionary, and then some special values.
+      (character_id)
   ']' Array index (shorthand for "+]<index>", basically)
       Use only in a proper array context (it will check!!!)
   'i' include file

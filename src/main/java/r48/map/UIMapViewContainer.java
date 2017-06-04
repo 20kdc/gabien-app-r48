@@ -182,8 +182,11 @@ public class UIMapViewContainer extends UIPanel {
         if (view != null)
             view.windowClosed();
         Rect b = getBounds();
+        // Creating the MapView and such causes quite a few side-effects (specifically global StuffRenderer kick-in-the-pants).
+        // Also kick the dictionaries because of the event dictionary.
         view = new UIMapView(k, b.width, b.height);
         view.callbacks = nullMapTool;
         allElements.add(view);
+        AppMain.schemas.kickAllDictionariesForMapChange();
     }
 }

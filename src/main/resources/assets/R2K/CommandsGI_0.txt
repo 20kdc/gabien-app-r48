@@ -442,7 +442,7 @@ d Show or hide the player on the map.
 p _ string
 p visible int_boolean
 
-11330: @@Move Event{B: @#B}
+11330: @@Move Event{B: @[character_id]B}
 d Sends a list of MoveCommands to an event.
 p _ string
 X move_event_parameters

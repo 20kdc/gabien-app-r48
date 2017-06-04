@@ -5,6 +5,7 @@
 A R2K/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
 
 D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
+D internal_eventDictionary __MAP__@events 1 @name
 
 > var_id int
 > switch_id int
@@ -25,7 +26,9 @@ D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
 
 > commonevent_id int
 
-E character_id EventID 10001 player 10002 boat 10003 ship 10004 airShip 10005 runningEvent
+E character_id_base EventID 10001 player 10002 boat 10003 ship 10004 airShip 10005 runningEvent
+M internal_eventDictionary character_id_base character_id
+
 e timer_id 0 timer1 1 timer2
 
  NOTE: This is barely ever used, in contrast to RGSS. In general stuff uses sprite_direction

@@ -42,7 +42,7 @@ p _ string
 i-1
 l
 
-10720: Show Shop
+10720: @@Show Shop{D:: [show_shop_bstype]B, message set [show_shop_type]C}
 d Shows a shop. Note that this only acts as a block if hasInnerCode is enabled.
 p _ string
 X show_shop_parameters
@@ -68,7 +68,7 @@ p _ string
 i-1
 l
 
-10730: Show Inn
+10730: @@Show Inn{D: typeB: #B, price: #C {D=0=| (result branch follows)}}
 d Shows an Inn's screen. Note that this only acts as a block if hasInnerCode is enabled.
 p _ string
 p innType2 int_boolean
@@ -96,7 +96,7 @@ p _ string
 i-1
 l
 
-10740: Enter Party Member Name
+10740: @@Enter Party Member{B: @#B's} Name
 d For changing the name of a party member. Because players really don't care about Crono's parents or their naming decisions.
 p _ string
 p target actor_id
@@ -115,7 +115,7 @@ X teleport_player_r2k_escapehatch
 d Enters or leaves an airship occupying the same space as the player, or a ship/boat directly in front of the player. It is extremely picky about this.
 p _ string
 
-11060: Camera Pan Control
+11060: @@Camera Pan{F: {B=linearMoveCamera=[direction]C #D tiles speed #E|#B}{B=linearFocusOnPlayer= speed #E} ({F=0=no }wait)| Control}
 d Controls where the 'camera' is looking.
 p _ string
  Unfortunately for humanity, Pv-Syntax is powerful enough to represent this, which means I'm obligated to do it rather than just X-trap.
@@ -123,7 +123,7 @@ p mode camera_pan_control_mode
 P 1 _ int
 v 2 direction direction
 P 1 _ int
-v 2 distPixels int
+v 2 distTiles int
 P 1 _ int
 v 2 speed int
 v 3 speed int

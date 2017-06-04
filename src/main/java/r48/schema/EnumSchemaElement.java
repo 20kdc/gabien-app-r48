@@ -71,7 +71,11 @@ public class EnumSchemaElement extends SchemaElement {
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (IntegerSchemaElement.ensureType(target, 'i', setDefault)) {
-            target.fixnumVal = options.keySet().iterator().next();
+            if (!options.isEmpty()) {
+                target.fixnumVal = options.keySet().iterator().next();
+            } else {
+                target.fixnumVal = 0;
+            }
             path.changeOccurred(true);
         }
     }

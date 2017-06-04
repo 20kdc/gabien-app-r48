@@ -67,7 +67,7 @@ public class MoveCommand implements IR2kStruct {
         }
         int[] r = new int[res.size()];
         int idx = 0;
-        for (Integer i : r)
+        for (Integer i : res)
             r[idx++] = i;
         return r;
     }

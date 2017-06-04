@@ -59,7 +59,7 @@ public class EventCommand implements IR2kStruct {
         } else {
             int[] encoded = MoveCommand.toEmbeddedData(moveCommands);
             R2kUtil.writeLcfVLI(baos, encoded.length + 4);
-            for (int i = 0; i < parameters.length; i++)
+            for (int i = 0; i < 4; i++)
                 R2kUtil.writeLcfVLI(baos, parameters[i]);
             for (int i = 0; i < encoded.length; i++)
                 R2kUtil.writeLcfVLI(baos, encoded[i]);

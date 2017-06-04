@@ -26,6 +26,7 @@ import r48.schema.specialized.tbleditors.ITableCellEditor;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * The ultimate database, more or less, since this houses the data definitions needed to do things like edit Events.
@@ -45,6 +46,7 @@ public class SDB {
     private HashMap<String, SchemaElement> schemaDatabase = new HashMap<String, SchemaElement>();
     protected HashMap<String, SchemaElement> schemaTrueDatabase = new HashMap<String, SchemaElement>();
     private LinkedList<DictionaryUpdaterRunnable> dictionaryUpdaterRunnables = new LinkedList<DictionaryUpdaterRunnable>();
+    private LinkedList<Runnable> mergeRunnables = new LinkedList<Runnable>();
     private LinkedList<String> remainingExpected = new LinkedList<String>();
     private HashMap<String, CMDB> cmdbs = new HashMap<String, CMDB>();
     public HashMap<String, IFunction<RubyIO, String>> nameDB = new HashMap<String, IFunction<RubyIO, String>>();
@@ -338,6 +340,20 @@ public class SDB {
                     }
                     EnumSchemaElement e = new EnumSchemaElement(options, args[1]);
                     setSDBEntry(args[0], e);
+                } else if (c == 'M') {
+                    mergeRunnables.add(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Proxies are bad for this.
+                            EnumSchemaElement mergeA = (EnumSchemaElement) schemaTrueDatabase.get(args[0]);
+                            EnumSchemaElement mergeB = (EnumSchemaElement) schemaTrueDatabase.get(args[1]);
+                            HashMap<Integer, String> finalMap = new HashMap<Integer, String>();
+                            finalMap.putAll(mergeA.options);
+                            finalMap.putAll(mergeB.options);
+                            SchemaElement ise = new EnumSchemaElement(finalMap, mergeB.buttonText);
+                            AppMain.schemas.setSDBEntry(args[2], ise);
+                        }
+                    });
                 } else if (c == ']') {
                     workingObj.aggregate.add(new ArrayElementSchemaElement(Integer.parseInt(args[0]), args[1], handleChain(args, 2), null));
                 } else if (c == 'i') {
@@ -522,8 +538,15 @@ public class SDB {
         return fd;
     }
 
-    public void updateDictionaries() {
+    public void updateDictionaries(RubyIO map) {
         for (DictionaryUpdaterRunnable dur : dictionaryUpdaterRunnables)
-            dur.actIfRequired();
+            dur.actIfRequired(map);
+        for (Runnable merge : mergeRunnables)
+            merge.run();
+    }
+
+    public void kickAllDictionariesForMapChange() {
+        for (DictionaryUpdaterRunnable dur : dictionaryUpdaterRunnables)
+            dur.run();
     }
 }

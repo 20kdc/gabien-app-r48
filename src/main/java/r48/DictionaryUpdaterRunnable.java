@@ -8,6 +8,7 @@ package r48;
 import gabien.ui.IFunction;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
+import r48.toolsets.MapToolset;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,8 @@ public class DictionaryUpdaterRunnable implements Runnable {
     // Responsible for removing any initial wrapping
     public final IFunction<RubyIO, RubyIO> fieldA;
     public final boolean hash;
+    private RubyIO lastTarget = null;
+    private Runnable kickMe;
 
     public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<RubyIO, RubyIO> iFunction, boolean b, String ivar) {
         dict = targetDictionary;
@@ -30,26 +33,48 @@ public class DictionaryUpdaterRunnable implements Runnable {
         fieldA = iFunction;
         hash = b;
         iVar = ivar;
+        // Cause a proxy to be generated.
         AppMain.schemas.getSDBEntry(targetDictionary);
+        kickMe = new Runnable() {
+            @Override
+            public void run() {
+                actNow = true;
+            }
+        };
     }
 
-    public void actIfRequired() {
+    public void actIfRequired(RubyIO map) {
         if (actNow) {
             actNow = false;
             // actually update
             HashMap<Integer, String> finalMap = new HashMap<Integer, String>();
-            RubyIO target = AppMain.objectDB.getObject(targ);
-            if (fieldA != null)
-                target = fieldA.apply(target);
-            if (hash) {
-                for (Map.Entry<RubyIO, RubyIO> rio : target.hashVal.entrySet()) {
-                    handleVal(finalMap, rio.getValue(), (int) rio.getKey().fixnumVal);
+            RubyIO target;
+            if (targ.equals("__MAP__")) {
+                target = map;
+            } else {
+                target = AppMain.objectDB.getObject(targ);
+            }
+            if (target != null) {
+                if (lastTarget != target) {
+                    if (lastTarget != null)
+                        AppMain.objectDB.deregisterModificationHandler(lastTarget, kickMe);
+                    AppMain.objectDB.registerModificationHandler(target, kickMe);
+                }
+                lastTarget = target;
+                if (fieldA != null)
+                    target = fieldA.apply(target);
+                if (hash) {
+                    for (Map.Entry<RubyIO, RubyIO> rio : target.hashVal.entrySet()) {
+                        handleVal(finalMap, rio.getValue(), (int) rio.getKey().fixnumVal);
+                    }
+                } else {
+                    for (int i = 0; i < target.arrVal.length; i++) {
+                        RubyIO rio = target.arrVal[i];
+                        handleVal(finalMap, rio, i);
+                    }
                 }
             } else {
-                for (int i = 0; i < target.arrVal.length; i++) {
-                    RubyIO rio = target.arrVal[i];
-                    handleVal(finalMap, rio, i);
-                }
+                actNow = true;
             }
             SchemaElement ise = new EnumSchemaElement(finalMap, "ID.");
             AppMain.schemas.setSDBEntry(dict, ise);

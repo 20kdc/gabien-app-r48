@@ -62,6 +62,7 @@ public class AppMain {
     public static HashSet<Runnable> pendingRunnables = new HashSet<Runnable>();
 
     private static UILabel uiStatusLabel;
+    private static MapToolset mapController;
 
     public static UIElement nextMapTool = null;
 
@@ -128,7 +129,7 @@ public class AppMain {
         //  before starting the UI, which can cause external consistency checks
         //  (...and potentially cause havoc in the process)
 
-        schemas.updateDictionaries();
+        schemas.updateDictionaries(null);
         schemas.confirmAllExpectationsMet();
     }
 
@@ -152,7 +153,7 @@ public class AppMain {
             @Override
             public void accept(Double deltaTime) {
                 uiStatusLabel.Text = objectDB.modifiedObjects.size() + " modified.";
-                schemas.updateDictionaries();
+                schemas.updateDictionaries(mapController.getCurrentMap());
                 if (Musicality.running)
                     Musicality.update(deltaTime);
 
@@ -172,8 +173,12 @@ public class AppMain {
         LinkedList<IToolset> toolsets = new LinkedList<IToolset>();
         // Until a future time, this is hard-coded as the classname of a map being created via MapInfos.
         // Probably simple enough to create a special alias, but meh.
-        if (AppMain.schemas.hasSDBEntry("RPG::Map"))
-            toolsets.add(new MapToolset());
+        if (AppMain.schemas.hasSDBEntry("RPG::Map")) {
+            mapController = new MapToolset();
+            toolsets.add(mapController);
+        } else {
+            mapController = null;
+        }
         if (AppMain.schemas.hasSDBEntry("EventCommandEditor"))
             toolsets.add(new RMToolsToolset());
         toolsets.add(new BasicToolset(rootView, uiTicker, new IConsumer<IConsumer<UIElement>>() {
