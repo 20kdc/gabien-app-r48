@@ -1,0 +1,78 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ ___
+ | |
+ | |
+ --- 2
+ the second monolith
+ for picture commands only
+
+.show_picture_parameters
+@indent indent
+@parameters arrayDAM 2 int show_picture_array_yv 0 show_picture_array_nv
+
+.show_picture_array_yv
++comm_picture_array_head_yv
+]0 img string
++comm_picture_array_foot
++show_picture_array_foot
+
+.show_picture_array_nv
++comm_picture_array_head_nv
+]0 img string
++comm_picture_array_foot
++show_picture_array_foot
+
+.move_picture_parameters
+@indent indent
+@parameters arrayDAM 2 int move_picture_array_yv 0 move_picture_array_nv
+
+.move_picture_array_yv
++comm_picture_array_head_yv
+]0 _ string
++comm_picture_array_foot
++move_picture_array_foot
+
+.move_picture_array_nv
++comm_picture_array_head_nv
+]0 _ string
++comm_picture_array_foot
++move_picture_array_foot
+
+ --- Components
+
+e comm_picture_effectmode 0 none 1 rotate 2 waver
+
+.comm_picture_array_head_yv
+]1 pictureId int
+]2 posVars int_boolean
+]3 xVar var_id
+]4 yVar var_id
+
+.comm_picture_array_head_nv
+]1 pictureId int
+]2 posVars int_boolean
+]3 x int
+]4 y int
+
+.comm_picture_array_foot
+]5 mapAttach int_boolean
+]6 magnify int_default_100
+]7 transparency int
+]8 topTransparency int
+]9 tintRed int
+]10 tintGreen int
+]11 tintBlue int
+]12 tintSat int
+]13 effectMode comm_picture_effectmode
+]14 effectPower int
+
+.show_picture_array_foot
++]?15 bottomTransparency_2k3 topTransparency int
+
+.move_picture_array_foot
+]15 moveDuration int
+]16 wait int_boolean
++]?17 bottomTransparency_2k3 topTransparency int

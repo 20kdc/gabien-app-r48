@@ -18,16 +18,19 @@ X begin_encounter_parameters
 I 1
 
 20710: ... Victory:
+d The code called in an Encounter when the player wins.
 p _ string
 K10710
 i-1
 I1
 20711: ... Escape:
+d The code called in an Encounter when the player escapes.
 p _ string
 K10710
 i-1
 I1
 20712: ... Defeat:
+d The code called in an Encounter when the player is defeated.
 p _ string
 K10710
 i-1

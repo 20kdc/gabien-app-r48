@@ -38,10 +38,14 @@ e camera_pan_control_mode 0 lockCamera 1 unlockCamera 2 linearMoveCamera 3 linea
   have you considered it could be GetActors? - 20kdc to themselves
  ...of course, if it has no relation...
 > int_default_1 int= 1
+> int_default_50 int= 50
+> int_default_100 int= 100
 
  ---
 
 i R2K/SchemaScriptingMonolith.txt
+i R2K/SchemaScriptingMonolith2.txt
+i R2K/SchemaScriptingMonolith3.txt
 
  ---
 

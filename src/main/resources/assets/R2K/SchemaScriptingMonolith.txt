@@ -5,7 +5,8 @@
  ___
  | |
  | |
- ---
+ --- 1
+ the first monolith
 
   __
   \  | |

@@ -2,7 +2,9 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
 
- GI-B Command List
- Monoliths here go into Monolith3.
-
- GAP
+ ___
+ | |
+ | |
+ --- 3
+ the third monolith
+ for battle commands only
