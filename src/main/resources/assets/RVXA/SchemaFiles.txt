@@ -114,7 +114,7 @@ C name Class.RPG::CommonEvent @id @name @trigger @switch_id | CommonEvent #A: #B
 @switch_id switch_id
 @list EventListEditor
 
-> File.CommonEvents array 0 typeChanger{ subwindow RPG::CommonEvent oRPG::CommonEvent nil 0 }
+> File.CommonEvents arrayIx1 subwindow RPG::CommonEvent
 
 : RPG::Enemy
 C name Class.RPG::Enemy @id @name | Enemy #A: #B
@@ -179,7 +179,7 @@ C name Class.RPG::MapInfo @order @name | MapInfo: #B (order #A)
 ]1 name string
 ]2 zlibBlob zlibBlobEditor
 
-> File.Scripts array 0 arrayDAM -1 nil scriptBlob
+> File.Scripts array 0 scriptBlob
 
 : RPG::Skill
 C name Class.RPG::Skill @id @name | Skill #A: #B

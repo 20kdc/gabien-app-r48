@@ -228,9 +228,12 @@ p tone Tone
 201:@@{A:[@transfer_player_paramassist]|Transfer Player}
 d Teleports the player to someplace.
 p useVariables int_boolean
-D map 0 int 0 map_id 1 var_id
-D x 0 int 0 int 1 var_id
-D y 0 int 0 int 1 var_id
+P 0 mapVar var_id
+v 0 map map_id
+P 0 xVar var_id
+v 0 x int
+P 0 yVar var_id
+v 0 y int
 p playerDir direction_disable
 p fadeType transfer_player_fadetype
 
@@ -238,9 +241,12 @@ p fadeType transfer_player_fadetype
 d Teleports a vehicle to someplace.
 p vehicle vehicle_id
 p useVariables int_boolean
-D map 1 int 0 map_id 1 var_id
-D x 1 int 0 int 1 var_id
-D y 1 int 0 int 1 var_id
+P 1 mapVar var_id
+v 0 map map_id
+P 1 xVar var_id
+v 0 x int
+P 1 yVar var_id
+v 0 y int
 
 203:@@{A:[@set_event_location_paramassist]|Set Event Location}
 d Teleports an event to someplace.
@@ -325,8 +331,10 @@ p id int
 p image string
 p centred int_boolean
 p useVars int_boolean
-D x 3 int 0 int 1 var_id
-D y 3 int 0 int 1 var_id
+P 3 xVar var_id
+v 0 x int
+P 3 yVar var_id
+v 0 y int
 p scaleX scale
 p scaleY scale
 p opacity opacity
@@ -340,8 +348,10 @@ p id int
 p _ OPAQUE
 p centred int_boolean
 p useVars int_boolean
-D x 3 int 0 int 1 var_id
-D y 3 int 0 int 1 var_id
+P 3 xVar var_id
+v 0 x int
+P 3 yVar var_id
+v 0 y int
 p scaleX scale
 p scaleY scale
 p opacity opacity
@@ -435,13 +445,18 @@ d Note down a specific attribute about a given tile in a variable.
 p resultVar var_id
 p infoType get_location_info_type
 p posVars int_boolean
-D posX 1 int 0 int 1 var_id
-D posY 1 int 0 int 1 var_id
+P 2 xVar var_id
+v 0 x int
+P 2 yVar var_id
+v 0 y int
+
 
 301: Start Battle (c.601/602/603/604)
 d Begin a battle.
 p type battle_processing_type
-D troopId 0 int 0 troop_id 1 var_id
+P 0 _ int
+v 0 troop troop_id
+v 1 troopVar var_id
 p canEscape boolean
 p canLose boolean
 
@@ -468,7 +483,10 @@ i-1
 302: Shop Processing (c.605)
 d The start of a shop. This describes a single item - 605 describes an additional item, repeat as desired.
 p itemType shop_item_type
-D item 0 int 0 item_id 1 weapon_id 2 armour_id
+P 0 thing int
+v 0 item item_id
+v 1 weapon weapon_id
+v 2 armour armour_id
 p itemPriceEx int_boolean
 P 2 priceEx int
 v 0 _ int
@@ -477,7 +495,10 @@ p purchaseOnly boolean
 605: Additional Shop Item
 d An additional shop item.
 p itemType shop_item_type
-D item 0 int 0 item_id 1 weapon_id 2 armour_id
+P 0 thing int
+v 0 item item_id
+v 1 weapon weapon_id
+v 2 armour armour_id
 p itemPriceEx int_boolean
 P 2 priceEx int
 v 0 _ int
@@ -489,66 +510,79 @@ p maxLetters int
 
 311:@@Actor{A: [@iterate_actor_var] HP += [@operate_value_2]| HP +=...}
 d Heal or harm a party member.
-p actorVar int_boolean
-D actor 0 int 0 iterate_actor_id 1 var_id
+p actorIsVar int_boolean
+P 0 actorVar var_id
+v 0 actor iterate_actor_id
 p negateMod int_boolean
-p modVar int_boolean
-D mod 3 int 0 int 1 var_id
+p modIsVar int_boolean
+P 3 modVar var_id
+v 0 mod int
 
 312:@@Actor{A: [@iterate_actor_var] MP += [@operate_value_2]| MP +=...}
 d Heal or harm a party member's magical talents.
-p actorVar int_boolean
-D actor 0 int 0 iterate_actor_id 1 var_id
+p actorIsVar int_boolean
+P 0 actorVar var_id
+v 0 actor iterate_actor_id
 p negateMod int_boolean
-p modVar int_boolean
-D mod 3 int 0 int 1 var_id
+p modIsVar int_boolean
+P 3 modVar var_id
+v 0 mod int
 
 313:@@{A:{C=0=Add|Remove}|Change} State{A: @#D} on actor{A: [@iterate_actor_var]}
 d Heal or harm a party member by giving them a state.
-p actorVar int_boolean
-D actor 0 int 0 iterate_actor_id 1 var_id
+p actorIsVar int_boolean
+P 0 actorVar var_id
+v 0 actor iterate_actor_id
 p remove int_boolean
 p state state_id
 
 314:@@Full recover on actor{A: [@iterate_actor_var]}
 d Heal a party member to full health.
-p actorVar int_boolean
-D actor 0 int 0 iterate_actor_id 1 var_id
+p actorIsVar int_boolean
+P 0 actorVar var_id
+v 0 actor iterate_actor_id
 
 315:@@EXP of actor{A: [@iterate_actor_var] += [@operate_value_2]}
 d Give a party member free EXP!
-p actorVar int_boolean
-D actor 0 int 0 iterate_actor_id 1 var_id
+p actorIsVar int_boolean
+P 0 actorVar var_id
+v 0 actor iterate_actor_id
 p negateMod int_boolean
-p modVar int_boolean
-D mod 3 int 0 int 1 var_id
+p modIsVar int_boolean
+P 3 modVar var_id
+v 0 mod int
 
 316:@@LVL of actor{A: [@iterate_actor_var] += [@operate_value_2]}
 d Give a party member free levels!
-p actorVar int_boolean
-D actor 0 int 0 iterate_actor_id 1 var_id
+p actorIsVar int_boolean
+P 0 actorVar var_id
+v 0 actor iterate_actor_id
 p negateMod int_boolean
-p modVar int_boolean
-D mod 3 int 0 int 1 var_id
+p modIsVar int_boolean
+P 3 modVar var_id
+v 0 mod int
 
 317:@@Modify parameter{C: @#C} in actor{A: [@iterate_actor_var] by [@operate_value_3]}
 d Modify a party member in confusing battle-related ways.
-p actorVar int_boolean
-D actor 0 int 0 iterate_actor_id 1 var_id
+p actorIsVar int_boolean
+P 0 actorVar var_id
+v 0 actor iterate_actor_id
 p paramIdx parameter_id
 p negateMod int_boolean
-p modVar int_boolean
-D mod 4 int 0 int 1 var_id
+p modIsVar int_boolean
+P 4 modVar var_id
+v 0 mod int
 
 318:@@{A:{C=0=Add|Remove}|Change} Skill{A: @#D} on actor{A: [@iterate_actor_var]}
 d Add or remove a skill from/to a party member.
-p actorVar int_boolean
-D actor 0 int 0 iterate_actor_id 1 var_id
+p actorIsVar int_boolean
+P 0 actorVar var_id
+v 0 actor iterate_actor_id
 p remove int_boolean
 p skill skill_id
 
 319:@@Change Equipment on actor{A: @#A}
-d Change what a party member has equipped.
+d Change what a party member has equipped. Note that one of the slots can vary between weapon and armour, so you will have to enter the ID manually.
 p actor actor_id
 p slot equipment_slot
 p weaponId|armourId equipment_id
@@ -586,15 +620,17 @@ p nickname string
 d Heal or harm an enemy.
 p enemy iterate_enemy_index
 p negateMod int_boolean
-p modVar int_boolean
-D mod 2 int 0 int 1 var_id
+p modIsVar int_boolean
+P 2 modVar var_id
+v 0 mod int
 
 332:@@MP of enemy{A: @#A += [@operate_value_1]}
 d Heal or harm an enemy's magical abilities.
 p enemy iterate_enemy_index
 p negateMod int_boolean
-p modVar int_boolean
-D mod 2 int 0 int 1 var_id
+p modIsVar int_boolean
+P 2 modVar var_id
+v 0 mod int
 
 333:@@{A:{B=0=Add|Remove}|Change} enemy{A: @#A state @#C| state}
 d Heal or harm an enemy by giving them a state.
@@ -622,8 +658,9 @@ p animation animation_id
 
 339: Force Battle Action
 d Force something in the battle to do something. Not very specific.
-p battlerEnemy int_boolean
-D battler 0 iterate_actor_id 0 iterate_enemy_index 1 iterate_actor_id
+p userIsEnemy int_boolean
+P 0 userEnemy iterate_enemy_index
+v 0 userActor iterate_actor_id
 p skill skill_id
 p target force_action_target
 

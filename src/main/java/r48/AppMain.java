@@ -90,9 +90,8 @@ public class AppMain {
     public static IGrInDriver.IImage layerTabs = GaBIEn.getImageCK("layertab.png", 0, 0, 0);
     public static IGrInDriver.IImage noMap = GaBIEn.getImageCK("nomad.png", 0, 0, 0);
 
-    public static void initialize(String gamepack) throws IOException {
-        rootPath = "";
-
+    public static void initialize(String rp, String gamepack) throws IOException {
+        rootPath = rp;
         // initialize core resources
 
         schemas = new SDB();

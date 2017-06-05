@@ -93,6 +93,11 @@ public class Application {
 
         gamepaks.panels.add(new UIHHalfsplit(3, 5, new UILabel("msPerFrame:", FontSizes.launcherTextHeight), msAdjust));
 
+        gamepaks.panels.add(new UILabel("Root Path:", FontSizes.launcherTextHeight));
+
+        final UITextBox rootBox = new UITextBox(FontSizes.launcherTextHeight);
+        gamepaks.panels.add(rootBox);
+
         gamepaks.panels.add(new UILabel("Choose Target Engine:", FontSizes.launcherTextHeight));
 
         DBLoader.readFile("Gamepaks.txt", new IDatabase() {
@@ -119,7 +124,12 @@ public class Application {
                         if (appTicker == null) {
                             try {
                                 RubyIO.encoding = box.get();
-                                AppMain.initialize(objName + "/");
+                                String rootPath = rootBox.text;
+                                if (!rootPath.equals(""))
+                                    if (!rootPath.endsWith("/"))
+                                        if (!rootPath.endsWith("\\"))
+                                            rootPath += "/";
+                                AppMain.initialize(rootPath, objName + "/");
                                 appTicker = AppMain.initializeAndRun(uiTicker);
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -146,11 +156,13 @@ public class Application {
                 if (c == 'e')
                     boxedEncoding.set(args[0]);
 
-                if (c == 'f')
-                    if (!new File(args[0]).exists()) {
-                        System.out.println("Can't use " + lastButton.Text + ": " + args[0] + " missing");
-                        gamepaks.panels.remove(lastButton);
-                    }
+                /*
+                 * if (c == 'f')
+                 *     if (!new File(args[0]).exists()) {
+                 *         System.out.println("Can't use " + lastButton.Text + ": " + args[0] + " missing");
+                 *         gamepaks.panels.remove(lastButton);
+                 *     }
+                 */
             }
         });
 
