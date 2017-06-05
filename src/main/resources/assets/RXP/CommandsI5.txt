@@ -5,10 +5,13 @@
  [Interpreter Part 5]
 
 201:@@{A:[@transfer_player_paramassist]|Transfer Player}
-p useVariables int_boolean
-D map 0 int 0 map_id 1 var_id
-D x 0 int 0 int 1 var_id
-D y 0 int 0 int 1 var_id
+p useVars int_boolean
+P 0 mapVar var_id
+v 0 map map_id
+P 0 xVar var_id
+v 0 x int
+P 0 yVar var_id
+v 0 y int
 p playerDir direction_disable
 p fadeType transfer_player_fadetype
 
@@ -87,9 +90,11 @@ p duration int
 p pictureId int
 p image string
 p centred int_boolean
-p useVariables int_boolean
-D x|I|V 3 int 0 int 1 var_id
-D y|I|V 3 int 0 int 1 var_id
+p posVars int_boolean
+P 3 xVar var_id
+v 0 x int
+P 3 yVar var_id
+v 0 y int
 p zoom_x int
 p zoom_y int
 p opacity opacity
@@ -99,9 +104,11 @@ p blendType blend_type
 p pictureId int
 p duration int
 p centred int_boolean
-p useVariables int_boolean
-D x|I|V 3 int 0 int 1 var_id
-D y|I|V 3 int 0 int 1 var_id
+p posVars int_boolean
+P 3 xVar var_id
+v 0 x int
+P 3 yVar var_id
+v 0 y int
 p zoom_x int
 p zoom_y int
 p opacity opacity

@@ -29,26 +29,30 @@ p seconds int
 
 125:@@Modify Gold{A: by [@operate_value_0]}
 p modNegate int_boolean
-p modVariable int_boolean
-D mod 1 int 0 int 1 var_id
+p modIsVar int_boolean
+P 1 modVar var_id
+v 0 mod int
 
 126:@@Modify Item{A: @#A by [@operate_value_1]}
 p item item_id
 p modNegate int_boolean
-p modVariable int_boolean
-D mod 2 int 0 int 1 var_id
+p modIsVar int_boolean
+P 2 modVar var_id
+v 0 mod int
 
 127:@@Modify Weapon{A: @#A by [@operate_value_1]}
 p weapon weapon_id
 p modNegate int_boolean
-p modVariable int_boolean
-D mod 2 int 0 int 1 var_id
+p modIsVar int_boolean
+P 2 modVar var_id
+v 0 mod int
 
 128:@@Modify Armour{A: @#A by [@operate_value_1]}
 p armour armour_id
 p modNegate int_boolean
-p modVariable int_boolean
-D mod 2 int 0 int 1 var_id
+p modIsVar int_boolean
+P 2 modVar var_id
+v 0 mod int
 
 129:@@{A:{B=0=Remove actor @#A from party|Add actor @#A to party{C=0= without} resetting}|Add/remove actor to party}
 p actor actor_id

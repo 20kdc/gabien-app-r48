@@ -37,16 +37,18 @@ p actor actor_id
 p actor iterate_actor
  operate_value
 p modNegate int_boolean
-p modVariable int_boolean
-D mod 2 int 0 int 1 var_id
+p modIsVar int_boolean
+P 2 modVar var_id
+v 0 mod int
 p canKill boolean
 
 312:@@Change Actor{A: #A} SP{A: by [@operate_value_1]}
 p actor iterate_actor
  operate_value
 p modNegate int_boolean
-p modVariable int_boolean
-D mod 2 int 0 int 1 var_id
+p modIsVar int_boolean
+P 2 modVar var_id
+v 0 mod int
 
 313: Change Actor$ State (remove$,state$)
 p actor iterate_actor
@@ -60,23 +62,26 @@ p actor iterate_actor
 p actor iterate_actor
  operate_value
 p modNegate int_boolean
-p modVariable int_boolean
-D mod 2 int 0 int 1 var_id
+p modIsVar int_boolean
+P 2 modVar var_id
+v 0 mod int
 
 316:@@Change Actor{A: #A} Level{A: by [@operate_value_1]}
 p actor iterate_actor
  operate_value
 p modNegate int_boolean
-p modVariable int_boolean
-D mod 2 int 0 int 1 var_id
+p modIsVar int_boolean
+P 2 modVar var_id
+v 0 mod int
 
 317:@@Change Actor{A: #A} Parameter{A: #B by [@operate_value_2]}
 p actor actor_id
 p param cap_type
  operate_value
 p modNegate int_boolean
-p modVariable int_boolean
-D mod 3 int 0 int 1 var_id
+p modIsVar int_boolean
+P 3 modVar var_id
+v 0 mod int
 
 318: Actor$ (Un =$)learn Skill$
 p actor actor_id
@@ -85,7 +90,12 @@ p skill skill_id
 
 319: Actor equips$$
 p type actor_equip_type
-D equip|WId|AId 0 int 0 weapon_id 1 armour_id 2 armour_id 3 armour_id 4 armour_id
+P 0 equip int
+v 0 equipWeapon weapon_id
+v 1 equipArmour armour_id
+v 2 equipArmour armour_id
+v 3 equipArmour armour_id
+v 4 equipArmour armour_id
 
 320: Rename Actor$!
 p actor actor_id
