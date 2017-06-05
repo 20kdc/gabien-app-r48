@@ -80,7 +80,7 @@ p faceFlipped int_boolean
 
  Control Switches follows. Uhoh.
 
-10210: @@Control Switch{E:{B=1=es @#C through @#D| @#C} = #E|es}
+10210: @@Control Switch{E:{B=range=es @#C through @#D| @#C} = #E|es}
 d Control switches in various ways. Single alters one switch. Range alters a group of switches. Indirect alters one switch, numbered by a variable.
 p _ string
 p type control_switches_type
@@ -92,7 +92,7 @@ v 2 targIndVar var_id
 p rangeLast switch_id
 p changeMode control_switches_change_mode
 
-10220: Set Variables
+10220: @@Set {A:Vars[@set_variables_parameters]|Variables}
 d Modify a variable or range of variables in various ways dependent on a given value.
 p _ string
 X set_variables_parameters

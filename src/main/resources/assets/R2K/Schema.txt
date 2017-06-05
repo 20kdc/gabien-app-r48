@@ -25,10 +25,4 @@ i R2K/SchemaLMT.txt
  -LDB-
 
 i R2K/SchemaLDB.txt
-
- Define this here, it's different between 2k and 2k3.
- Need to be at least TRYING to deal with the differences
-
-: RPG::Database
-@tilesets subwindow hash int subwindow RPG::Tileset
 > File.RPG_RT.ldb RPG::Database

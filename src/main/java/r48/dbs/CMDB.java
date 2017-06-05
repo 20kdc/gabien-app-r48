@@ -63,7 +63,7 @@ public class CMDB {
                             return se;
                         }
                     });
-                } else if ((c == 'D') || (c == 'P')) {
+                } else if (c == 'P') {
                     final HashMap<Integer, SchemaElement> h = new HashMap<Integer, SchemaElement>();
                     currentPvH = h;
                     final HashMap<Integer, String> h2 = new HashMap<Integer, String>();
@@ -71,26 +71,9 @@ public class CMDB {
                     // Pv-syntax:
                     // P arrayDI defaultName defaultType
                     // v specificVal name type
-                    int adi;
-                    String defName2;
-                    if (c == 'D') {
-                        defName2 = args[0].trim();
-                        adi = Integer.parseInt(args[1]);
-                    } else {
-                        defName2 = args[1].trim();
-                        adi = Integer.parseInt(args[0]);
-                    }
-                    final String defName = defName2;
-                    final int arrayDI = adi;
+                    final String defName = args[1].trim();
+                    final int arrayDI = Integer.parseInt(args[0]);
                     final SchemaElement defaultSE = aliasingAwareSG(args[2]);
-                    if (c == 'D') {
-                        for (int i = 3; i < args.length; i += 2) {
-                            int ind = Integer.parseInt(args[i]);
-                            SchemaElement se = aliasingAwareSG(args[i + 1]);
-                            h.put(ind, se);
-                        }
-                        dUsers++;
-                    }
                     rc.paramType.add(new IFunction<RubyIO, SchemaElement>() {
                         @Override
                         public SchemaElement apply(RubyIO rubyIO) {

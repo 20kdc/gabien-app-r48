@@ -33,3 +33,76 @@ C name Class.RPG::Tileset @name | Tileset: #A
 +tableSTAF R2K/TS144.txt @highpass_data . . 144 1 1 down left right up upper wall counter
 @anim_cycles boolean
 @anim_speed int= 0
+
+.rpg_actor_equipment_block
+]0 weapon item_id
+]1 shield item_id
+]2 armour item_id
+]3 helmet item_id
+]4 accessory item_id
+
+.rpg_actor_parameter_block
+]0 maxHp int
+]1 maxMp int
+]2 atk int
+]3 def int
+]4 spi int
+]5 agi int
+
+: RPG::Learning
+@level int= 1
+@skill skill_id
+
+: RPG::Actor
+@name string
+@title string
+@character_name string
+@character_index int
+@face_name string
+@face_index int
+@transparent boolean
+@init_level int
+@init_level_exp int
+@each_level_exp_p int
+@each_level_exp_modc int
+@final_level int
+@battle_auto boolean
+@battle_super_guard boolean
+@battle_parameters rpg_actor_parameter_block
+@battle_skillspanel_name string
+@battle_posx_2k3 int
+@battle_posy_2k3 int
+@battler_anim_2k3 battleranimation_id
+@can_crit boolean
+@crit_percent boolean
+@dual_wield boolean
+@lock_equipment boolean
+@equipment rpg_actor_equipment_block
+@no_weapon_attack_anim animation_id
+@class_2k3 class_id
+@learn_skills subwindow array 0 RPG::Learning
+@rename_allow boolean
+@state_ranks subwindow array 0 int
+@attribute_ranks subwindow array 0 int
+@battle_commands_2k3 subwindow array 0 battlecommand_id
+
+: RPG::Database
+@actors subwindow hash int+1 subwindow RPG::Actor
+@skills subwindow hash int+1 OPAQUE
+@items subwindow hash int+1 OPAQUE
+@enemies OPAQUE
+@troops OPAQUE
+@terrains OPAQUE
+@attributes OPAQUE
+@states OPAQUE
+@animations OPAQUE
+@tilesets subwindow hash int subwindow RPG::Tileset
+@terms OPAQUE
+@system OPAQUE
+@switches subwindow arrayIx1 string
+@variables subwindow arrayIx1 string
+@common_events OPAQUE
+@db_version int
+@battle_commands_2k3 OPAQUE
+@classes_2k3 OPAQUE
+@battler_anims_2k3 OPAQUE

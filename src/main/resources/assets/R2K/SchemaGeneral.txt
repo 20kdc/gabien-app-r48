@@ -6,9 +6,11 @@ A R2K/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
 
 D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
 D internal_eventDictionary __MAP__@events 1 @name
+d internal_variableDictionary RPG_RT.ldb @variables
+d internal_switchDictionary RPG_RT.ldb @switches
 
-> var_id int
-> switch_id int
+> var_id internal_variableDictionary
+> switch_id internal_switchDictionary
 > item_id int
 > skill_id int
 > state_id int
@@ -20,7 +22,8 @@ D internal_eventDictionary __MAP__@events 1 @name
 
 > actor_id int+0
 
- If you even see either of these mentioned at all, it is 2k3 only. *Always*.
+ If you even see any of these mentioned at all, it is 2k3 only. *Always*.
+> battleranimation_id int
 > class_id int
 > battlecommand_id int
 

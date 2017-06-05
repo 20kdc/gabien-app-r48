@@ -25,6 +25,9 @@ public abstract class R2kObject implements IR2kStruct {
     public boolean terminatable() {
         return false;
     }
+    public boolean disableSanity() {
+        return false;
+    }
 
     public void importData(InputStream src) throws IOException {
         Index[] t = getIndices();
@@ -49,8 +52,9 @@ public abstract class R2kObject implements IR2kStruct {
                     } catch (RuntimeException e) {
                         throw new RuntimeException("In " + t[i] + " of " + this, e);
                     }
-                    if (bais.available() != 0)
-                        throw new IOException("Not all of the chunk interpreted by " + t[i].chunk + " in " + this);
+                    if (!disableSanity())
+                        if (bais.available() != 0)
+                            throw new IOException("Not all of the chunk interpreted by " + t[i].chunk + " in " + this);
                     handled = true;
                     break;
                 }

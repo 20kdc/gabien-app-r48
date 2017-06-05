@@ -2,7 +2,7 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-package r48.io.r2k.obj;
+package r48.io.r2k.obj.ldb;
 
 import gabien.ui.ISupplier;
 import r48.RubyIO;
