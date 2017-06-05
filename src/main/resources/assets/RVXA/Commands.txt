@@ -5,27 +5,32 @@
  Event commands for VX Ace.
 
 0: >> insert point
+d Inserter. This is how Macrotons enter the system, where they move about, charging as they go. Wait, wrong manual. Insert point. Totally useless.
 L
 
  LINE 251
 
 101:@@Start Text {A:w/face #A:#B ({C=1=no }bkg, #D)|(c.401/102/103/104)}
+d Begins a segment of text.
 p faces string
 p faceIndex int
 p backInvisible int_boolean
 p position change_text_options_position
 
 401: Tx.$
+d Continues the text.
 p text string
 
 102:@@Show Choices {A:: [choice_array]A {B=1=(can cancel)}|(c.402/403/404)}
+d Show a set of choices to the user, potentially allowing the cancel button.
 p choices string_array
 p cancellable int_boolean
 I1
 
- See RXP for indentation logic docs, and the 'K command'.
+ See IRB_CMDB.txt for indentation logic docs, and the 'K command'.
 
 402: When Choice =$
+d When a given choice index is chosen...
 p choice int
 p textRef string
 i-1
@@ -33,86 +38,106 @@ I1
 K102
 
 403: When cancelled (idx 4)
+d When choice index 4 (cancel) is chosen...
 i-1
 I1
 K102
 
 404: End Choice
+d The end of a choice block.
 i-1
 K102
 
  LINE 305
 
 103: Input Number!
+d Gets a number from the player, and puts it into a variable.
 p var var_id
 p digits int
 
 104: Input Item!
+d Lets the player choose an item... for some reason.
 p var var_id
 
 105: Show Scrolling Text (c.405)
+d Begins some scrolling text.
 p speed int
 p notFast boolean
 
 405: Scrtx.$
+d Continue some scrolling text.
 p text string
 
 108: //*$
+d The beginning of a comment.
 p text string
 
 408: //$
+d The continuation of a comment.
 p text string
 
 
 111:@@Conditional{A::[@conditional_branch_parameters]| Branch (c.411/412)}
+d A conditional branch, allowing you to run different code depending on the state of things.
  The parameter exists so the A: detect works
 p type conditional_branch_types
 X conditional_branch_parameters
 I1
 
 411: Else
+d A conditional branch will go here if the answer is 'false'. Otherwise, this is skipped entirely.
 i-1
 I1
 l
 
 412: End Conditional
+d Ends a conditional branch.
 i-1
 l
 
 112: Start Loop (c.113/413)
+d Begins a loop.
  this is a blank 'placeholder' command
 I1
 
 113: Break Loop
+d Leave a loop formed between a Start Loop and End Loop.
  This command breaks to the next Repeat Above it finds with a lesser indent,
   this proves the indent of Repeat Above is i-1 I0, OR it has a leave block before it.
  The answer in actual fact (I wrote the "find EventCommand by code" button to find this)
   is that End Loop is indeed preceded by a Leave Block.
 
 413: End Loop/Repeat Above
+d The end of a loop (goes back to the start)
 i-1
 l
 
 115: Exit Event Processing
+d Stop running the code in this page.
 
 117: Common Event$
+d Call a Common Event.
 p CEV commonevent_id
 
  They still rely on indent for stuff,
  so this is just as unreliable as before.
 
 118: Label$
+d A label, to be jumped to.
 p text string
 
 119: Unreliable Jump!
+d A (somewhat quirky) way to jump to a label.
 p text string
 
 121:@@Control Switch{AB: @#A|es @#A..@#B}{C:->{C=1=OFF|ON}}
+d Enable or disable a given range of switches.
 p first switch_id
 p last switch_id
 p disable int_boolean
 
 122:@@Set Variable{A:{AB: @#A|s @#A..@#B} #C [@set_variables_parameters]}
+d Modify a given range of variables in a given way.
  note: the parameters given here are for formatting reasons, since the X overrides any actual use.
 p firstVar var_id
 p lastVar var_id
@@ -121,68 +146,87 @@ p src set_variables_source
 X set_variables_parameters
 
 123:@@Control Selfswitch{A: #A{B: = {B=1=OFF|ON}}}
+d Enables or disables an event's SelfSwitch.
 p ch selfswitch_id
 p turnOff int_boolean
 
 124:@@{A:{A=1=Stop Timer|Start Timer at #B seconds}|Start/Stop Timer}
+d Stop or start a timer.
 p stop int_boolean
 p startSecs int
 
  operate_value has 3 parameters: Negate, const/var (int_boolean), operand (int_or_var)
 
 125:@@Gold{A: += [@operate_value_0]}
+d Give or take gold from the player.
 p negate int_boolean
-p sourceVar int_boolean
-D source 1 int 0 int 1 var_id
+p amountIsVar int_boolean
+P 1 amountVar var_id
+v 0 amount int
 
 126:@@Item{A: #A += [@operate_value_1]}
+d Give or take items from the player.
 p item item_id
 p negate int_boolean
-p sourceVar int_boolean
-D source 2 int 0 int 1 var_id
+p amountIsVar int_boolean
+P 2 amountVar var_id
+v 0 amount int
 
 127:@@Weapon{A: #A += [@operate_value_1]}
+d Give or take weapons from the player.
 p item weapon_id
 p negate int_boolean
-p sourceVar int_boolean
-D source 2 int 0 int 1 var_id
+p amountIsVar int_boolean
+P 2 amountVar var_id
+v 0 amount int
 
 128:@@Armour{A: #A += [@operate_value_1]}
+d Give or take armour from the player.
 p item armour_id
 p negate int_boolean
-p sourceVar int_boolean
-D source 2 int 0 int 1 var_id
+p amountIsVar int_boolean
+P 2 amountVar var_id
+v 0 amount int
 
 129:@@{A:{B=0=Remove actor @#A from party|Add actor @#A to party{C=0= without} resetting}|Add/remove actor to party}
+d Adds or removes a party member from/to the player's party.
 p actor actor_id
 p add int_boolean
 p addInitialize int_boolean
 
 132: Set Battle BGM$
+d Changes the battle music.
 p bgm RPG::BGM
 
 133: Set Battle End ME$
+d Changes the musical snippet for the end of the battle.
 p me RPG::ME
 
 134: Set Save Accessible!
+d Controls if the player can save or not.
 p canSave int_boolean
 
 135: Set Menu Accessible!
+d Controls if the player can access the menu.
 p canMenu int_boolean
 
 136: Set Encounters!
+d Controls if the player can be encountered by enemies.
 p canEncounter int_boolean
 
 137: Set Formation Accessible!
+d Controls if the player can control their formation.
 p canFormation int_boolean
 
 138: Change Window Colour!
+d Changes the colour of system windows.
 p tone Tone
 
  Why are there *THREE* of these in a row?!??
  (EDIT LATER: At least I've removed the custom schema requirement for two of them.)
 
 201:@@{A:[@transfer_player_paramassist]|Transfer Player}
+d Teleports the player to someplace.
 p useVariables int_boolean
 D map 0 int 0 map_id 1 var_id
 D x 0 int 0 int 1 var_id
@@ -191,6 +235,7 @@ p playerDir direction_disable
 p fadeType transfer_player_fadetype
 
 202:@@{A:[@transfer_vehicle_paramassist]|Transfer Vehicle}
+d Teleports a vehicle to someplace.
 p vehicle vehicle_id
 p useVariables int_boolean
 D map 1 int 0 map_id 1 var_id
@@ -198,67 +243,84 @@ D x 1 int 0 int 1 var_id
 D y 1 int 0 int 1 var_id
 
 203:@@{A:[@set_event_location_paramassist]|Set Event Location}
+d Teleports an event to someplace.
 X set_event_location_paramassist
 
 204: Scroll Map
+d Scrolls the player's view of the map in a specific way.
 p dir direction
 p length int
 p speed int
 
 205: MoveRoute Set On$
+d Takes control of a character (event or player)'s MoveRoute.
 p target character_id
 p route RPG::MoveRoute
 
 505: (MoveRoute Editing Helper)
+d Totally useless outside of the VX Ace editor itself - displays the command.
 p command RPG::MoveCommand
 
 206: Player Gets On/Off Vehicle
+d If the player's character is in the right situation to get on or off a vehicle (standing on airship/facing ship or boat...), the character will do so.
 
 211: Player Opacity!
+d Controls if the player is completely invisible or not.
 p opaque int_boolean
 
 212: Show$ Anim.$ (wait?$)
+d Shows a battle animation, usually useful for reactions.
 p char character_id
 p anim animation_id
 p wait boolean
 
 213: Show$ Balloon.$ (wait?$)
+d Shows a reaction balloon, a feature previously implemented with battle animations.
 p char character_id
 p b balloon_id
 p wait boolean
 
 214: Temp. Erase This Event
+d Temporarily (until next map load?) erases this event from reality.
 
 216: Player Followers Inv.?$
+d Make characters following the player visible or invisible.
 p invisible int_boolean
 
 217: Gather Followers
+d Presumably, this makes characters following the player "merge into the player".
 
 221: Fadeout Screen
+d And goodbye.
 
 222: Fadein Screen
+d And hello.
 
 223: Start Tone Change
+d Because it wouldn't be Autumn without the Instagram filter to make it obvious. (Yes, I know it's not Autumn. That's the point.)
 p tone Tone
 p time int
 p wait boolean
 
 224: Flash Screen
+d Light up the screen with a temporary burst of colour! Ensure legal liability warnings are posted before use.
 p colour Color
 p duration int
 p wait boolean
 
 225: Shake Screen
+d Shake things. What more to say?
 p power int
 p speed int
 p duration int
 p wait boolean
 
-
 230: Wait$
+d Wait some amount of time.
 p time int
 
 231: Set Picture$!
+d Create and show a picture on the screen.
 p id int
 p image string
 p centred int_boolean
@@ -271,10 +333,11 @@ p opacity opacity
 p blend blend_type
 
 232: Move Picture$
+d Move a previously shown picture around the screen.
 p id int
  what on earth
  This is actually NIL.
-p ignoredParam OPAQUE
+p _ OPAQUE
 p centred int_boolean
 p useVars int_boolean
 D x 3 int 0 int 1 var_id
@@ -287,62 +350,80 @@ p duration int
 p wait boolean
 
 233: Picture$ Rotation Speed!
+d Control the rotation speed of a picture, in half-degrees per frame.
 p id int
 p speedHDF int
 
 234: Picture$ Tone Change
+d Change the tone of a picture, just in case you hadn't had enough of those Instagram filters. (What do you mean, this joke is getting old fast)
 p id int
 p tone Tone
 p duration int
 p wait boolean
 
 235: Erase Picture$
+d Get rid of a picture.
 p id int
 
 236: Set Weather!
+d Change the weather! This explains why it's never right according to the forecasters.
 p type weather_type
 p power int
 p duration int
 p wait boolean
 
 241: Play BGM$
+d Immediately play a music track.
 p bgm RPG::BGM
 
 242: Fadeout BGM over$ seconds
+d Fade out the current music track over some amount of time.
 p seconds int
 
 243: Save BGM
+d Note down the current music track so you can play something else without worrying about what you were playing before.
 
 244: Resume BGM
+d Play the last noted-down music track (see 243)
 
 245: Play BGS$
+d Begin to play a background sound, generally meaning 'streams and environmental stuff'
 p bgs RPG::BGS
 
 246: Fadeout BGS over$ seconds
+d Fade out the background sound over some amount of time, just to help make things silent for The Curb-Stomping.
 p seconds int
 
 249: Play ME$
+d Play a... musical effect.
 p me RPG::ME
 
 250: Play SE$
+d Play a sound effect.
 p se RPG::SE
 
 251: Stop SE
+d Stop any playing sound effect.
 
 261: Play Movie$
+d Play a movie! (May break for any reason at any time.)
 p movie string
 
 281: Map Name Inv.?$
+d Control if the map name is visible or invisible.
 p invisible int_boolean
 
 282: Switch Tileset!
+d CHange the current tileset used for the map. I would suggest making sure they are at least reasonably 'compatible' first.
 p tileset tileset_id
 
 283: Switch Battleback!$
+d Change the backgrounds used for battle purposes.
 p back1 string
 p back2 string
 
 284: Switch Parallax!
+d Change the parallax settings.
 p parallax string
 p loop_x boolean
 p loop_y boolean
@@ -350,6 +431,7 @@ p sx int
 p sy int
 
 285: Get Info On Location
+d Note down a specific attribute about a given tile in a variable.
 p resultVar var_id
 p infoType get_location_info_type
 p posVars int_boolean
@@ -357,6 +439,7 @@ D posX 1 int 0 int 1 var_id
 D posY 1 int 0 int 1 var_id
 
 301: Start Battle (c.601/602/603/604)
+d Begin a battle.
 p type battle_processing_type
 D troopId 0 int 0 troop_id 1 var_id
 p canEscape boolean
@@ -365,34 +448,47 @@ p canLose boolean
  Notably, these 4 are optional, but they always show up in a group of 4.
 
 601: Battle Result Branches Start: If Win
+d Always use these in the full group of 4.
 I1
+
 602: Battle Result Branch: If Escape
+d Always use these in the full group of 4.
 i-1
 I1
+
 603: Battle Result Branch: If Lose
+d Always use these in the full group of 4.
 i-1
 I1
+
 604: Battle Result Branches End
+d Always use these in the full group of 4.
 i-1
 
 302: Shop Processing (c.605)
+d The start of a shop. This describes a single item - 605 describes an additional item, repeat as desired.
 p itemType shop_item_type
 D item 0 int 0 item_id 1 weapon_id 2 armour_id
 p itemPriceEx int_boolean
-p priceEx int
+P 2 priceEx int
+v 0 _ int
 p purchaseOnly boolean
 
 605: Additional Shop Item
+d An additional shop item.
 p itemType shop_item_type
 D item 0 int 0 item_id 1 weapon_id 2 armour_id
 p itemPriceEx int_boolean
-p priceEx int
+P 2 priceEx int
+v 0 _ int
 
 303: Input Name For Actor$
+d Let the user give a party member a name. (Warning: There are no filters.)
 p actor actor_id
 p maxLetters int
 
 311:@@Actor{A: [@iterate_actor_var] HP += [@operate_value_2]| HP +=...}
+d Heal or harm a party member.
 p actorVar int_boolean
 D actor 0 int 0 iterate_actor_id 1 var_id
 p negateMod int_boolean
@@ -400,6 +496,7 @@ p modVar int_boolean
 D mod 3 int 0 int 1 var_id
 
 312:@@Actor{A: [@iterate_actor_var] MP += [@operate_value_2]| MP +=...}
+d Heal or harm a party member's magical talents.
 p actorVar int_boolean
 D actor 0 int 0 iterate_actor_id 1 var_id
 p negateMod int_boolean
@@ -407,16 +504,19 @@ p modVar int_boolean
 D mod 3 int 0 int 1 var_id
 
 313:@@{A:{C=0=Add|Remove}|Change} State{A: @#D} on actor{A: [@iterate_actor_var]}
+d Heal or harm a party member by giving them a state.
 p actorVar int_boolean
 D actor 0 int 0 iterate_actor_id 1 var_id
 p remove int_boolean
 p state state_id
 
 314:@@Full recover on actor{A: [@iterate_actor_var]}
+d Heal a party member to full health.
 p actorVar int_boolean
 D actor 0 int 0 iterate_actor_id 1 var_id
 
 315:@@EXP of actor{A: [@iterate_actor_var] += [@operate_value_2]}
+d Give a party member free EXP!
 p actorVar int_boolean
 D actor 0 int 0 iterate_actor_id 1 var_id
 p negateMod int_boolean
@@ -424,6 +524,7 @@ p modVar int_boolean
 D mod 3 int 0 int 1 var_id
 
 316:@@LVL of actor{A: [@iterate_actor_var] += [@operate_value_2]}
+d Give a party member free levels!
 p actorVar int_boolean
 D actor 0 int 0 iterate_actor_id 1 var_id
 p negateMod int_boolean
@@ -431,6 +532,7 @@ p modVar int_boolean
 D mod 3 int 0 int 1 var_id
 
 317:@@Modify parameter{C: @#C} in actor{A: [@iterate_actor_var] by [@operate_value_3]}
+d Modify a party member in confusing battle-related ways.
 p actorVar int_boolean
 D actor 0 int 0 iterate_actor_id 1 var_id
 p paramIdx parameter_id
@@ -439,25 +541,30 @@ p modVar int_boolean
 D mod 4 int 0 int 1 var_id
 
 318:@@{A:{C=0=Add|Remove}|Change} Skill{A: @#D} on actor{A: [@iterate_actor_var]}
+d Add or remove a skill from/to a party member.
 p actorVar int_boolean
 D actor 0 int 0 iterate_actor_id 1 var_id
 p remove int_boolean
 p skill skill_id
 
 319:@@Change Equipment on actor{A: @#A}
+d Change what a party member has equipped.
 p actor actor_id
 p slot equipment_slot
 p weaponId|armourId equipment_id
 
 320:Rename Actor$!
+d Rename a party member in a way the player can't abuse.
 p actor actor_id
 p name string
 
 321:Change Actor$ Class!
+d Change a party member's class.
 p actor actor_id
 p class class_id
 
 322: Change Actor$ Sprites
+d Change the sprites used by a party member.
 p actor actor_id
 p charName string
 p charIdx int
@@ -465,61 +572,82 @@ p faceName string
 p faceIdx int
 
 323: Change Vehicle$ Graphic
+d Change the sprites used by a vehicle.
 p vehicle vehicle_id
 p charName string
 p charIdx int
 
 324: Change$ Nickname!
+d Change the nickname of a party member. Why they have nicknames, I do not know...
 p actor actor_id
 p nickname string
 
 331:@@HP of enemy{A: @#A += [@operate_value_1]}
+d Heal or harm an enemy.
 p enemy iterate_enemy_index
 p negateMod int_boolean
 p modVar int_boolean
 D mod 2 int 0 int 1 var_id
 
 332:@@MP of enemy{A: @#A += [@operate_value_1]}
+d Heal or harm an enemy's magical abilities.
 p enemy iterate_enemy_index
 p negateMod int_boolean
 p modVar int_boolean
 D mod 2 int 0 int 1 var_id
 
 333:@@{A:{B=0=Add|Remove}|Change} enemy{A: @#A state @#C| state}
+d Heal or harm an enemy by giving them a state.
 p enemy iterate_enemy_index
 p remove int_boolean
 p state state_id
 
 334: Enemy$ recovers all
+d Yeah, because we haven't seen *that* one before. Enemy recovers everything and then gets swapped out with *cough see 335*
 p enemy iterate_enemy_index
 
 335: Enemy$ Appears
+d *cough 334* some entirely new enemy from nowhere, "An enemy shows up! Where they were before, IDK.", or just *cough 336*
 p enemy iterate_enemy_index
 
 336: Enemy$ transforms!
+d *cough 335* transform into another enemy that'll curb stomp you. Flipping changelings. And they even *cough see 337*
 p enemy iterate_enemy_index
 p transform enemy_id
 
 337: Enemy$ uses animation$
+d *cough 336* let the enemy look awesome while doing the transformation/whatever!, because of animations.
 p enemy iterate_enemy_index
 p animation animation_id
 
 339: Force Battle Action
+d Force something in the battle to do something. Not very specific.
 p battlerEnemy int_boolean
 D battler 0 iterate_actor_id 0 iterate_enemy_index 1 iterate_actor_id
 p skill skill_id
 p target force_action_target
 
 340: Abort Battle
+d Simply refuse to let the battle continue.
+
 351: Open Menuscreen
+d Opens the menu screen.
+
 352: Open Savescreen
+d Opens the save screen.
+
 353: Game Over
+d Instantly causes a game over.
+
 354: Return to Title
+d Return to the title screen.
 
 355: Ruby>$
+d Run some Ruby.
 p ruby string
 
 655: Ruby.$
+d Continuation of embedded Ruby.
 p rubyContin. string
 
  Completion Notes: COMPLETE (I think)
