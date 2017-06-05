@@ -23,8 +23,8 @@ public class CMDB {
     public int digitCount = 3;
     public HashMap<Integer, RPGCommand> knownCommands = new HashMap<Integer, RPGCommand>();
     public LinkedList<Integer> knownCommandOrder = new LinkedList<Integer>();
-    public int listLeaveCmd = 0;
-    public int blockLeaveCmd = 0; // This is 10 on R2k, but that is controlled via Lblock
+    public int listLeaveCmd = -1; // -1 means "no list leave command actually exists".
+    public int blockLeaveCmd = 0; // This is 10 on R2k, but that is controlled via Lblock.
 
     public int dUsers = 0;
 

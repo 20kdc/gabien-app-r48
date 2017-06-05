@@ -32,7 +32,8 @@ public abstract class ArraySchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
+        final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this) : path2;
         final UIScrollVertLayout uiSVL = new UIScrollVertLayout() {
             @Override
             public String toString() {
@@ -101,7 +102,8 @@ public abstract class ArraySchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(RubyIO target, SchemaPath path2, boolean setDefault) {
+        final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this) : path2;
         setDefault = IntegerSchemaElement.ensureType(target, '[', setDefault);
         if (target.arrVal == null) {
             setDefault = true;
@@ -139,6 +141,11 @@ public abstract class ArraySchemaElement extends SchemaElement {
         }
         if (modified)
             path.changeOccurred(true);
+    }
+
+    // Used to do the correct tagging so that updates to children will affect the parent
+    public boolean monitorsSubelements() {
+        return false;
     }
 
     // Allows performing automatic correction of structural issues,

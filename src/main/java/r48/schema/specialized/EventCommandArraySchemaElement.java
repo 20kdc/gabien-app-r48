@@ -42,10 +42,10 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
             return false;
         boolean needsEndingBlock = false;
         if (array.arrVal.length == 0) {
-            needsEndingBlock = true;
+            needsEndingBlock = database.listLeaveCmd != -1;
         } else {
-            if (array.arrVal[array.arrVal.length - 1].getInstVarBySymbol("@code").fixnumVal != 0)
-                needsEndingBlock = true;
+            if (array.arrVal[array.arrVal.length - 1].getInstVarBySymbol("@code").fixnumVal != database.listLeaveCmd)
+                needsEndingBlock = database.listLeaveCmd != -1;
         }
 
         LinkedList<RubyIO> arr = new LinkedList<RubyIO>();
@@ -53,7 +53,7 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
 
         if (needsEndingBlock) {
             // 0 so that the code won't combust from lacking an array
-            RubyIO c = SchemaPath.createDefaultValue(subelems, new RubyIO().setFX(0));
+            RubyIO c = SchemaPath.createDefaultValue(subelems, new RubyIO().setFX(database.listLeaveCmd));
             c.getInstVarBySymbol("@code").fixnumVal = database.listLeaveCmd;
             arr.add(c);
         }
@@ -86,7 +86,7 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
                     if (!lastWasBlockLeave) {
                         if (rc.blockLeaveReplacement != lastCode) {
                             RubyIO c = SchemaPath.createDefaultValue(subelems, new RubyIO().setFX(0));
-                            c.getInstVarBySymbol("@code").fixnumVal = 0;
+                            c.getInstVarBySymbol("@code").fixnumVal = database.blockLeaveCmd;
                             c.getInstVarBySymbol("@indent").fixnumVal = commandTarg.getInstVarBySymbol("@indent").fixnumVal + 1;
                             arr.add(i, c);
                             // About to re-handle the same code.

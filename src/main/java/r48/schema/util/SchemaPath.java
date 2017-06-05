@@ -31,6 +31,10 @@ public class SchemaPath {
     public SchemaElement editor;
     public ISchemaHost host;
     public RubyIO targetElement;
+
+    // Should only ever be set to true by tagSEMonitor. Implies editor and target.
+    public boolean monitorsSubelements = false;
+
     // At the root object, this is guaranteed to be the object itself.
     // Otherwise, it should propagate whenever unchanged.
     // lastArray does a similar thing, except it points to the object whose targetElement is the array/hash itself.
@@ -117,9 +121,8 @@ public class SchemaPath {
         SchemaPath root = this;
         while (root.parent != null) {
             root = root.parent;
-            if (root.editor != null)
-                if (root.editor.monitorsSubelements())
-                    mod = root;
+            if (root.monitorsSubelements)
+                mod = root;
         }
         return mod;
     }
@@ -165,6 +168,15 @@ public class SchemaPath {
         sp.parent = this;
         sp.lastArrayIndex = lastArrayIndex;
         sp.hrIndex = index;
+        return sp;
+    }
+
+    public SchemaPath tagSEMonitor(RubyIO target, SchemaElement ise) {
+        SchemaPath sp = new SchemaPath();
+        sp.parent = this;
+        sp.targetElement = target;
+        sp.editor = ise;
+        sp.monitorsSubelements = true;
         return sp;
     }
 

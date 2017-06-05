@@ -15,6 +15,7 @@ import r48.schema.util.SchemaPath;
  * In a way, inspired by a game from Reflexive Entertainment (Rebound : Lost Worlds), of all things.
  * In that game, the editor seemed to use some sort of internal reflection data to allow editing all sorts of game objects.
  * This is a similar case, except we don't have a repository of objects to work with, just a single non-recursive tree.
+ *
  * Created on 12/28/16.
  */
 public abstract class SchemaElement {
@@ -24,9 +25,7 @@ public abstract class SchemaElement {
     //    However, it must NOT be called if the value does not change.
     //    (This also applies to modifyVal, but true should be passed, not false.)
     //    Ordering is Modify Value/path.changeOccurred/Update UI (just in case)
-    // 2. If this element directly represents an Array/Hash,
-    //     then the first thing that must be done is
-    //     to wrap path with a path.arrayEntry call.
+    // 2. If this element monitors subelements, use the tagSEMonitor!
     //    (This also applies to modifyVal.)
     // 3. If you do any error checking at all,
     //     make it fail fast.
@@ -49,13 +48,6 @@ public abstract class SchemaElement {
     // Maximum textHeight of the element out of buildHoldingEditor.
     // Can throw an error, in which case this should be encapsulated with a SubwindowSchemaElement.
     public abstract int maxHoldingHeight();
-
-    // If this monitors it's subelements.
-    // Used to try and pessimistically limit modification checks.
-    // All ArraySchemaElements that use autoCorrectArray, for example, must have this as true.
-    public boolean monitorsSubelements() {
-        return false;
-    }
 
     // Modify target to approach the default value, or to correct errors.
     // The type starts as 0 (not '0', but actual numeric 0) and needs to be modified by something to result in a valid object.

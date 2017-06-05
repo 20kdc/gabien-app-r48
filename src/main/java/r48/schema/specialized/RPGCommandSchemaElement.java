@@ -52,12 +52,15 @@ public class RPGCommandSchemaElement extends SchemaElement {
     }
 
     @Override
-    public boolean monitorsSubelements() {
-        return true;
-    }
+    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
+        // A note here:
+        // Using newWindow on path will cause a growing stack issue:
+        //  newWindow always returns DIRECTLY to the path, subwindows use Back which 
+        //  skips past anything which hasn't been called upon for UI.
+        // Basically, don't use newWindow directly on a tagSEMonitor, don't switchObject to a tagSEMonitor.
+        // They're tags for stuff done inside the schema, not part of the schema itself.
 
-    @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+        final SchemaPath path = path2.tagSEMonitor(target, this);
         final UIPanel uip = new UIPanel() {
             UIElement chooseCode = new UIAppendButton(" ? ", new UITextButton(FontSizes.schemaButtonTextHeight, database.buildCodename(target, true), new Runnable() {
                 @Override
@@ -72,7 +75,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     LinkedList<String> order = new LinkedList<String>();
                     for (Integer i : database.knownCommandOrder)
                         order.add(rvs.get(i));
-                    launcher.switchObject(path.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<Integer>() {
+                    launcher.switchObject(path2.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<Integer>() {
                         @Override
                         public void accept(Integer integer) {
                             RPGCommand rc = database.knownCommands.get(integer);
@@ -97,7 +100,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                             path.changeOccurred(false);
                             // On the one hand, the elements are stale.
                             // On the other hand, the elements will be obliterated anyway before reaching the user.
-                            launcher.switchObject(path);
+                            launcher.switchObject(path2);
                         }
                     }, rvi, order, "Code"), path), target, launcher));
                 }
@@ -184,6 +187,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+        path = path.tagSEMonitor(target, this);
         actualSchema.modifyVal(target, path, setDefault);
         RPGCommand rc = database.knownCommands.get((int) target.getInstVarBySymbol("@code").fixnumVal);
         if (rc != null) {
