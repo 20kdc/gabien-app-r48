@@ -1,0 +1,104 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ [Interpreter Part 6]
+
+301: Start Battle (c.601/602/603)
+p troop troop_id
+p canEscape boolean
+p canLose boolean
+
+ Notably, these 4 are optional, but they always show up in a group of 4.
+
+601: Battle Result Branches Start: If Win
+I1
+602: Battle Result Branch: If Escape
+i-1
+I1
+603: Battle Result Branch: If Lose
+i-1
+I1
+604: Battle Result Branches End
+i-1
+
+ These 2 have identical schemas
+302: Shop Items (c.605)
+X shop_items_parameters
+605: Additional Item
+X shop_items_parameters
+
+303: User gives name!
+p actor actor_id
+
+ [ Gap here between 303 to 311 ]
+
+311:@@Change Actor{A: #A} HP{A: by [@operate_value_1]{E=T= (can kill)| (never kills)}}
+p actor iterate_actor
+ operate_value
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+p canKill boolean
+
+312:@@Change Actor{A: #A} SP{A: by [@operate_value_1]}
+p actor iterate_actor
+ operate_value
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+
+313: Change Actor$ State (remove$,state$)
+p actor iterate_actor
+p remove int_boolean
+p state state_id
+
+314: Full recovery!
+p actor iterate_actor
+
+315:@@Change Actor{A: #A} EXP{A: by [@operate_value_1]}
+p actor iterate_actor
+ operate_value
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+
+316:@@Change Actor{A: #A} Level{A: by [@operate_value_1]}
+p actor iterate_actor
+ operate_value
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+
+317:@@Change Actor{A: #A} Parameter{A: #B by [@operate_value_2]}
+p actor actor_id
+p param cap_type
+ operate_value
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 3 int 0 int 1 var_id
+
+318: Actor$ (Un =$)learn Skill$
+p actor actor_id
+p unlearn boolean
+p skill skill_id
+
+319: Actor equips$$
+p type actor_equip_type
+D equip|WId|AId 0 int 0 weapon_id 1 armour_id 2 armour_id 3 armour_id 4 armour_id
+
+320: Rename Actor$!
+p actor actor_id
+p newName string
+
+321: Reclass Actor$!
+p actor actor_id
+p newClass class_id
+
+322: Change Actor$ Graphic!
+p actor actor_id
+p charName string
+p charHue int
+p battleName string
+p bettleHue int
+

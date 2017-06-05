@@ -55,8 +55,8 @@
    By default, the type name is looked up in the "Interp." prefixed name set.
    Failing this, the schema is looked up, in case it is an enum.
 
-  If the character '@' prefixes the interpretation type, the type name is considered to be the full name routine's ID.
-  For example, [@Interp.choice_array] would be the same as [choice_array] if Interp.choice_array existed in the name routine database.
+  If the character '@' prefixes the interpretation type, the type name is considered to be the full name routine's ID,
+   and the parameters are given to the new name routine.
 
   If no interpretation exists for the type given, it fails completely,
    and will result in a no-variables-interpretation (An error in a case where no variables are allowed causes an exception.)
@@ -64,8 +64,8 @@
   An example usage:
    [int]C
 
-  An example call:
-   [@Class.RPG::AudioFile]A
+  An example call treating the *current structure* as a Class.RPG::AudioFile:
+   [@Class.RPG::AudioFile]
 
   Another example call, equally valid
    [RPG::AudioFile]A

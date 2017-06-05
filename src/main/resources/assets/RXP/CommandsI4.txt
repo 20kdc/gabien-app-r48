@@ -1,0 +1,79 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ [Interpreter Part 4]
+
+121:@@Control Switch{A:{AB: @#A|es @#A..@#B} = {C=1=OFF|ON}|es}
+p firstSwitch switch_id
+p lastSwitch switch_id
+p turnOff int_boolean
+
+122:@@Set Variables{A: {AB:@#A|@#A..@#B} #C [@set_variables_parameters]}
+ note: the parameters given here are for formatting reasons, since the X overrides any actual use.
+p firstVar var_id
+p lastVar var_id
+p op set_variables_operation
+p src set_variables_source
+X set_variables_parameters
+
+123:@@Control Selfswitch{A: #A{B: = {B=1=OFF|ON}}}
+p selfSwitch selfswitch_id
+p turnOff int_boolean
+
+ I think the timer counts up?
+ In any case if running is false, seconds is irrelevant.
+124: Set timer1
+p running int_boolean
+p seconds int
+
+125:@@Modify Gold{A: by [@operate_value_0]}
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 1 int 0 int 1 var_id
+
+126:@@Modify Item{A: @#A by [@operate_value_1]}
+p item item_id
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+
+127:@@Modify Weapon{A: @#A by [@operate_value_1]}
+p weapon weapon_id
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+
+128:@@Modify Armour{A: @#A by [@operate_value_1]}
+p armour armour_id
+p modNegate int_boolean
+p modVariable int_boolean
+D mod 2 int 0 int 1 var_id
+
+129:@@{A:{B=0=Remove actor @#A from party|Add actor @#A to party{C=0= without} resetting}|Add/remove actor to party}
+p actor actor_id
+p add int_boolean
+p addInitialize int_boolean
+
+ Command 130 was skipped?
+
+131: Change Windowskin
+p file string
+
+132: Change Battle BGM!
+ May not actually work in middle of battle.
+ Or the variable change is auto-detected...
+p audio RPG::AudioFile
+
+133: Change Battle End ME!
+p audio RPG::AudioFile
+
+134: Enable/Disable Saving:$
+p enabled int_boolean
+
+135: Enable/Disable Menu:$
+p enabled int_boolean
+
+136: Enable/Disable Encounters:$
+p enabled int_boolean
+

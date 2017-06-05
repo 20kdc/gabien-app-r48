@@ -1,0 +1,152 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ [Interpreter Part 5]
+
+201:@@{A:[@transfer_player_paramassist]|Transfer Player}
+p useVariables int_boolean
+D map 0 int 0 map_id 1 var_id
+D x 0 int 0 int 1 var_id
+D y 0 int 0 int 1 var_id
+p playerDir direction_disable
+p fadeType transfer_player_fadetype
+
+202:@@{A:[@set_event_location_paramassist]|Set Event Location}
+X set_event_location_paramassist
+
+203: Scroll map
+p direction direction
+p distance int
+p speed int
+
+204:@PChange Map$ Settings
+p type cms_type
+X change_map_settings_parameters
+
+205: Fog Colour Tone
+p colour Tone
+p duration int
+
+206: Fog Opacity Change
+p opacity opacity
+p duration int
+
+207: Show Animation!.$
+p event character_id
+p anim animation_id
+
+208: Set Player Opacity
+p opaque int_boolean
+
+209: Set event$ route$
+p eID character_id
+p route RPG::MoveRoute
+
+ NOTE: This apparently does nothing (not even defined),
+       it seems to be solely an assist for RPG Maker XP itself
+       the structure is, firstly the 209, which counts it's own first command,
+       then one 509 for each *additional* command.
+       The first 509 contains the entire MoveRoute list.
+       From a screenshot, the editor apparently looks like this:
+
+       Set event route: This event
+                        Turn Left
+                        Turn Right
+                        Do a dance
+       >>
+
+       the actual truth of the matter, and the terminating NOP, being abstracted away.
+
+509: MoveRoute Editor Helper NOP
+p ex genericScriptParameter
+
+210: Wait for move end
+
+ Yes, there is a gap here.
+
+221: Prepare for transition
+
+222: Transition
+p transition string
+
+223: Change Screen Tone
+p tone Tone
+p duration int
+
+224: Screen flash
+p colour Color
+p duration int
+
+225: Screen shake
+p power int
+p speed int
+p duration int
+
+231: Set/show picture$!
+p pictureId int
+p image string
+p centred int_boolean
+p useVariables int_boolean
+D x|I|V 3 int 0 int 1 var_id
+D y|I|V 3 int 0 int 1 var_id
+p zoom_x int
+p zoom_y int
+p opacity opacity
+p blendType blend_type
+
+232: Move picture$
+p pictureId int
+p duration int
+p centred int_boolean
+p useVariables int_boolean
+D x|I|V 3 int 0 int 1 var_id
+D y|I|V 3 int 0 int 1 var_id
+p zoom_x int
+p zoom_y int
+p opacity opacity
+p blendType blend_type
+
+233: Rotate picture$
+p pictureId int
+p speed int
+
+234: Change picture$ tone!$
+p pictureId int
+p picTone1 Tone
+p picTone2 int
+
+235: Erase picture$
+p pictureId int
+
+236: Weather set!
+p type weather_type
+p power int
+p fadeDuration int
+
+241: Set BGM!
+p track RPG::AudioFile
+
+242: Fade out BGM
+p duration int
+
+ [ gap here, perfectly fine ]
+
+245: Set BGS!
+p track RPG::AudioFile
+
+246: Fade out BGS over$ seconds
+p seconds int
+
+247: Backup BGM/BGS
+
+248: Start BGM/BGS from backup
+
+249: Play ME$
+p track RPG::AudioFile
+
+250: Play SE$
+p track RPG::AudioFile
+
+251: Stop Last SE
+
