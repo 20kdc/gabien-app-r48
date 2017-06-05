@@ -96,7 +96,9 @@ public class UIMapView extends UIElement implements IWindowElement {
         int mouseYT = UIElement.sensibleCellDiv((igd.getMouseY() - oy) + camY, eTileSize);
         Rect camR = getBounds();
         // Stuff any possible important information...
-        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + eTileSize + "_" + debug + "_" + AppMain.stuffRenderer.tileRenderer.getFrame() + "_" + AppMain.stuffRenderer.hashCode();
+        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + eTileSize + "_" + debug + "_" + AppMain.stuffRenderer.tileRenderer.getFrame() + "_" + AppMain.stuffRenderer.hashCode() + "_" + currentLayer + "_";
+        for (int i = 0; i < layerInvisible.length; i++)
+            config += layerInvisible[i] ? 'y' : 'n';
         if (scheduler.needsUpdate(config)) {
             boolean remakeBuf = true;
             if (offscreenBuf != null)
