@@ -153,7 +153,11 @@ public class AppMain {
             @Override
             public void accept(Double deltaTime) {
                 uiStatusLabel.Text = objectDB.modifiedObjects.size() + " modified.";
-                schemas.updateDictionaries(mapController.getCurrentMap());
+                if (mapController != null) {
+                    schemas.updateDictionaries(mapController.getCurrentMap());
+                } else {
+                    schemas.updateDictionaries(null);
+                }
                 if (Musicality.running)
                     Musicality.update(deltaTime);
 

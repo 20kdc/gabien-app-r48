@@ -41,5 +41,5 @@ s ltp_type concurrent waitOn
 > Plan subwindow NoteList
 
 > NoteEditor RPGCS Sticki/NoteTypes.txt Note NoteEditor_Most
-> NoteList array 0 NoteEditor
+> NoteList arrayCS Sticki/NoteTypes.txt NoteEditor
 > File.Notes NoteList
