@@ -2,7 +2,7 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
 
-A R2K/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
+A R2K/AutoTiles.txt R2KXPCOM/AutoTileRules.txt R2K/WaterATs.txt R2K/WaterATRules.txt
 
 D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
 D internal_eventDictionary __MAP__@events 1 @name

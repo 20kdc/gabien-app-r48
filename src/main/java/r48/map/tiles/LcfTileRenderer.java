@@ -7,7 +7,9 @@ package r48.map.tiles;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import r48.AppMain;
 import r48.RubyIO;
+import r48.dbs.ATDB;
 import r48.map.UIMapView;
 import r48.map.imaging.IImageLoader;
 import r48.ui.UITileGrid;
@@ -123,14 +125,6 @@ public class LcfTileRenderer implements ITileRenderer {
             // Current implementation planning notes:
             // I'm using the AB Field Test as a visual reference to construct these tables.
             // It's a lot easier to understand and see.
-            String ug1 = "  +  +++  +  +++  +  +++  +  +++"; // First 16
-            String lg1 = "         + + + ++ + + + ++++++++";
-            //            --      --      --      --
-            String ug2 = "| |+| |+-------- | |+|+|  +  +++"; // Second 16
-            String lg2 = "| | |+|+   ++ ++ |+| |+|--------";
-            //            --  1   2   3   4   5 6 7 8 v PAD. v
-            String ug3 = "||--O-O--O-O |+|| |+OOO-||-OOOOOOOOO"; // Third 16 to make 48, then 2 pad
-            String lg3 = "||--| |+ |+|-O-OO-O-||O-OO-OOOOOOOOO";
 
             int tField = tidx / 1000;
             int tSubfield = tidx % 1000;
@@ -155,19 +149,22 @@ public class LcfTileRenderer implements ITileRenderer {
                 baseY += 48;
             }
 
-            handleWATField(tSubfield, ug1 + ug2 + ug3, lg1 + lg2 + lg3, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, ets);
+            handleWATField(tSubfield, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, ets);
         }
     }
 
-    private void handleWATField(int tSubfield, String upper, String lower, int px, int py, IGrDriver igd, IGrInDriver.IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int ets) {
+    private void handleWATField(int tSubfield, int px, int py, IGrDriver igd, IGrInDriver.IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int ets) {
 
         int innerSubfield = tSubfield % 50;
         int outerSubfield = tSubfield / 50;
 
-        char ul = upper.charAt(innerSubfield * 2);
-        char ur = upper.charAt((innerSubfield * 2) + 1);
-        char ll = lower.charAt(innerSubfield * 2);
-        char lr = lower.charAt((innerSubfield * 2) + 1);
+        char[] charTbl = {' ', '+', 'O', '|', '-'};
+
+        ATDB adb = AppMain.autoTiles[1];
+        char ul = charTbl[adb.entries[innerSubfield].corners[0]];
+        char ur = charTbl[adb.entries[innerSubfield].corners[1]];
+        char ll = charTbl[adb.entries[innerSubfield].corners[2]];
+        char lr = charTbl[adb.entries[innerSubfield].corners[3]];
 
         int etc = ets / 2;
         handleWATCorner(0, 0, ((outerSubfield & 1) != 0) ? 'D' : ul, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc);
@@ -231,13 +228,13 @@ public class LcfTileRenderer implements ITileRenderer {
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv) {
         return new UITileGrid[] {
-                new UITileGrid(mv, 0, 1000, false, 0),
-                new UITileGrid(mv, 1000, 1000, false, 0),
-                new UITileGrid(mv, 2000, 1000, false, 0),
-                new UITileGrid(mv, 4000, 612, true, 50),
+                new UITileGrid(mv, 0, 1000, true, 50),
+                new UITileGrid(mv, 1000, 1000, true, 50),
+                new UITileGrid(mv, 2000, 1000, true, 50),
                 new UITileGrid(mv, 3000, 1, false, 0),
                 new UITileGrid(mv, 3050, 1, false, 0),
                 new UITileGrid(mv, 3100, 1, false, 0),
+                new UITileGrid(mv, 4000, 612, true, 50),
                 new UITileGrid(mv, 5000, 144, false, 0),
                 new UITileGrid(mv, 10000, 144, false, 0),
         };
@@ -249,10 +246,10 @@ public class LcfTileRenderer implements ITileRenderer {
                 "WAT1",
                 "WAT2",
                 "WAT3",
-                "TER.",
                 "ANI1",
                 "ANI2",
                 "ANI3",
+                "TER.",
                 "LOW",
                 "HIGH/EV.TileIndexes+10000",
         };
@@ -261,6 +258,9 @@ public class LcfTileRenderer implements ITileRenderer {
     @Override
     public AutoTileTypeField[] indicateATs() {
         return new AutoTileTypeField[] {
+                // Water ATs.
+                new AutoTileTypeField(0, 3000, 1),
+                //
                 new AutoTileTypeField(4000, 50, 0),
                 new AutoTileTypeField(4050, 50, 0),
                 new AutoTileTypeField(4100, 50, 0),

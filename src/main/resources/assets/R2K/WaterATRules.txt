@@ -1,0 +1,50 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ .ANums
+ 012
+ 3 4
+ 567
+
+ .Tiles
+ 0: Base
+ 1: +
+ 2: O
+ 3: |
+ 4; -
+
+ .CIs
+ 01
+ 23
+
+ Format:
+ TTC (tile, corner) : T<implied true ANums>F<implied false ANums>
+
+ vertical
+
+030:T1F3
+032:T6F3
+031:T1F4
+033:T6F4
+
+ horizontal
+
+040:T3F1
+041:T4F1
+042:T3F6
+043:T4F6
+
+ corner nubs
+
+010:T13F0
+011:T14F2
+012:T36F5
+013:T64F7
+
+ full corners
+
+ 020:TF301
+ 021:TF124
+ 022:TF356
+ 023:TF674

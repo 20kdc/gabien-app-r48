@@ -26,33 +26,28 @@ public class ATDB {
     private boolean[] rulesEngineMustTrue = new boolean[10000];
     private boolean[] rulesEngineMustFalse = new boolean[10000];
 
+    public String[] wordMap = {
+            "A",
+            "_",
+            "B",
+
+            "UL",
+            "U",
+            "UR",
+
+            "L",
+            "C",
+            "R",
+
+            "LL",
+            "D",
+            "LR"
+    };
+
     public int nameFromWord(String w) {
-        if (w.equals("A"))
-            return 0;
-        if (w.equals("B"))
-            return 2;
-
-        if (w.equals("UL"))
-            return 3;
-        if (w.equals("U"))
-            return 4;
-        if (w.equals("UR"))
-            return 5;
-
-
-        if (w.equals("L"))
-            return 6;
-        if (w.equals("C"))
-            return 7;
-        if (w.equals("R"))
-            return 8;
-
-        if (w.equals("LL"))
-            return 9;
-        if (w.equals("D"))
-            return 10;
-        if (w.equals("LR"))
-            return 11;
+        for (int i = 0; i < wordMap.length; i++)
+            if (wordMap[i].equals(w))
+                return i;
         return 0;
     }
 
@@ -72,6 +67,10 @@ public class ATDB {
 
             @Override
             public void execCmd(char cmd, String[] args) {
+                // Import a new word-map.
+                if (cmd == 'w')
+                    wordMap = args;
+                // "x" format for wall ATs (used to help import Ancurio's table)
                 if (cmd == 'x') {
                     current = new Autotile();
                     current.name = "X" + autoIncrementingId;
@@ -82,6 +81,7 @@ public class ATDB {
                     for (int i = 0; i < 4; i++)
                         current.corners[i] = cornerMapping[Integer.parseInt(args[i])];
                 }
+                // "Standard" format for RXP
                 if (cmd == 'd') {
                     current.corners[0] = nameFromWord(args[0]);
                     current.corners[1] = nameFromWord(args[1]);
