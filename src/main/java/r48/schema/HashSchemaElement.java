@@ -48,7 +48,12 @@ public class HashSchemaElement extends SchemaElement {
                 for (RubyIO key : UITest.sortedKeys(target.hashVal.keySet())) {
                     final RubyIO kss = key;
                     // keys are opaque - this prevents MANY issues
-                    UIHHalfsplit hs = new UIHHalfsplit(1, 3, new OpaqueSchemaElement().buildHoldingEditor(key, launcher, path), valElem.buildHoldingEditor(target.hashVal.get(key), launcher, path.arrayHashIndex(key, "{" + key.toString() + "}")));
+                    UIHHalfsplit hs = new UIHHalfsplit(1, 4, (new OpaqueSchemaElement() {
+                        @Override
+                        public String getMessage() {
+                            return "Key ";
+                        }
+                    }).buildHoldingEditor(key, launcher, path), valElem.buildHoldingEditor(target.hashVal.get(key), launcher, path.arrayHashIndex(key, "{" + key.toString() + "}")));
                     hs.setBounds(new Rect(0, 0, 100, vertSzF));
                     uiSV.panels.add(new UIAppendButton("-", hs, new Runnable() {
                         @Override

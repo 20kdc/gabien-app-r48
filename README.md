@@ -1,7 +1,22 @@
 # gabien-app-r48
-## "An editor for RPG Maker XP, RPG Maker VX Ace, and Ikachan. Also a sticky note program."
 
-Firstly.
+An editor for RPG Maker 2000/2003 (support incomplete), RPG Maker XP, RPG Maker VX Ace, and Ikachan. Also a sticky note program.
+
+Support for these was gained by the following:
+
+RPG Maker 2000/2003 (incomplete): Reading the format documentation in EasyRPG's (liblcf)[https://github.com/EasyRPG/liblcf]
+ (I have checked, this use is fine and doesn't require a PD-breaking MIT header, which would have resulted in me splitting the repository),
+ some guesswork, and checking the results against OneShot (legacy), Ib v1.07 and the EasyRPG Test Game.
+
+RPG Maker XP: Developed by examining OneShot (remake) and Ruby Quest : Undertow. The rendering code may thus be incomplete.
+
+RPG Maker VX Ace: Same, but examined games were Rave Story 2 (note - there are two versions out there. The real one is Polar's, and it's VX Ace-based.) and Crysalis.
+
+Ikachan: Ancient knowledge passed down from our elders.
+
+Sticky Note Program: This is really just an ancient testbed for the simpler elements of R48, don't use seriously ;)
+
+## Licensing and disclaimer:
 
 This is released into the public domain.
 

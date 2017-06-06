@@ -46,14 +46,14 @@ public class Skill extends R2kObject {
 
     // Uhoh it's Array Sizes. But at least it's near the end
     public ArraySizeR2kInterpretable<BooleanR2kStruct> basSE = new ArraySizeR2kInterpretable<BooleanR2kStruct>();
-    public ArrayR2kStruct<BooleanR2kStruct> sEfx = new ArrayR2kStruct<BooleanR2kStruct>(basSE, new ISupplier<BooleanR2kStruct>() {
+    public ArraySetR2kStruct<BooleanR2kStruct> sEfx = new ArraySetR2kStruct<BooleanR2kStruct>(basSE, new ISupplier<BooleanR2kStruct>() {
         @Override
         public BooleanR2kStruct get() {
             return new BooleanR2kStruct(false);
         }
     }, true);
     public ArraySizeR2kInterpretable<BooleanR2kStruct> basAE = new ArraySizeR2kInterpretable<BooleanR2kStruct>();
-    public ArrayR2kStruct<BooleanR2kStruct> aEfx = new ArrayR2kStruct<BooleanR2kStruct>(basAE, new ISupplier<BooleanR2kStruct>() {
+    public ArraySetR2kStruct<BooleanR2kStruct> aEfx = new ArraySetR2kStruct<BooleanR2kStruct>(basAE, new ISupplier<BooleanR2kStruct>() {
         @Override
         public BooleanR2kStruct get() {
             return new BooleanR2kStruct(false);
@@ -105,8 +105,8 @@ public class Skill extends R2kObject {
                 new Index(0x29, basSE),
                 new Index(0x2A, sEfx, "@mod_states"),
                 new Index(0x2B, basAE),
-                new Index(0x2C, aEfx, "@mod_attrs"),
-                new Index(0x2D, afAtDef, "@mod_attr_further"),
+                new Index(0x2C, aEfx, "@required_attrs"),
+                new Index(0x2D, afAtDef, "@affect_target_attr_defence"),
                 new Index(0x31, defBattlerAnim, "@battler_anim_default"),
                 new Index(0x32, battlerAnimMap, "@battler_anim_data"),
         };

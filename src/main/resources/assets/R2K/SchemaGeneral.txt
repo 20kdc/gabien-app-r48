@@ -6,13 +6,21 @@ A R2K/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
 
 D internal_mapDictionary RPG_RT.lmt@map_infos 1 @name
 D internal_eventDictionary __MAP__@events 1 @name
+
 d internal_variableDictionary RPG_RT.ldb @variables
 d internal_switchDictionary RPG_RT.ldb @switches
 
+D internal_itemDictionary RPG_RT.ldb@items 1 @name
+D internal_skillDictionary RPG_RT.ldb@skills 1 @name
+
 > var_id internal_variableDictionary
 > switch_id internal_switchDictionary
-> item_id int
-> skill_id int
+
+> item_id internal_itemDictionary
+E item_or_none_id__ Item.ID 0 None
+M internal_itemDictionary item_or_none_id__ item_or_none_id
+
+> skill_id internal_skillDictionary
 > state_id int
 > map_id internal_mapDictionary
 > troop_id int
@@ -21,6 +29,7 @@ d internal_switchDictionary RPG_RT.ldb @switches
 > animation_id int
 
 > actor_id int+0
+> attribute_id int+0
 
  If you even see any of these mentioned at all, it is 2k3 only. *Always*.
 > battleranimation_id int

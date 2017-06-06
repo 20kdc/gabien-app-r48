@@ -5,7 +5,7 @@
 e mapinfo_musictype 0 inherit 1 event 2 specified
 e mapinfo_backtype 0 inherit 1 terrainLDB 2 specified
 e mapinfo_inheritflag 0 inheritParent 1 true 2 false
-e mapinfo_type 0 root 1 map 2 area
+e mapinfo_type 1 map 2 area 0 root
 
 : RPG::Encounter
 @troop troop_id

@@ -302,11 +302,12 @@ i HelpImg/9.usage.png
 p 4
 I HelpImg/19.sheet.png 0 0 96 64
 p 4
-. Above: a somewhat atypical example.
+. Above: a somewhat atypical example, including a non-standard spritesheet size.
 . The two characters on the left are close to what you will normally see.
 . The rest are designed more around special use of MoveRoutes.
 .
-. Character event graphics use a spritesheet of any size, divided into 8 characters.
+.
+. Character event graphics use a spritesheet of 288x256 (If prefixed with a '$', the spritesheet can be any size.), divided into 8 characters.
 . This division, which the character index refers to, is 4 columns, 2 rows, of the form:
 .
 . 0123

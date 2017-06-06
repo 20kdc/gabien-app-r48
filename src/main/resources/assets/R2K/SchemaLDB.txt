@@ -11,20 +11,20 @@
  ---
 
 .rpg_actor_equipment_block
-]0 weapon item_id
-]1 shield item_id
-]2 armour item_id
-]3 helmet item_id
-]4 accessory item_id
+]0 weapon item_or_none_id
+]1 shield item_or_none_id
+]2 armour item_or_none_id
+]3 helmet item_or_none_id
+]4 accessory item_or_none_id
 
  Actors apparently have a second unused equip set
  I'm ignoring this for now
 
-]5 _ item_id
-]6 _ item_id
-]7 _ item_id
-]8 _ item_id
-]9 _ item_id
+]5 _ item_or_none_id
+]6 _ item_or_none_id
+]7 _ item_or_none_id
+]8 _ item_or_none_id
+]9 _ item_or_none_id
 
 
 .rpg_actor_parameter_block
@@ -83,8 +83,8 @@ C name Class.RPG::Actor @name | #A
 > rpg_skill_mod_attributes array 0 boolean
 
 : RPG::BattlerAnimationData
-e rpg_bad_movetype 0 none 1 step 2 jump 3 move
-@move_type rpg_bad_movetype
+e rpg_badia_movetype 0 none 1 step 2 jump 3 move
+@move_type rpg_badia_movetype
 @afterimage_type int_boolean
 @pose int
 
@@ -98,13 +98,14 @@ C name Class.RPG::Skill @name | #A
 .rpg_skill_sect0
 @name string
 @description string
-e rpg_skill_type 0 normal 1 transporter 2 battleEscape 3 switchControl 4 subSkill
+e rpg_skill_type 0 normal 1 transporter 2 battleEscape 3 switchControl 4 subSkill2k3
 @type rpg_skill_type
 e rpg_skill_scope 0 hurtEnemy 1 hurtAllEnemies 2 healUserActor 3 healAnyActor 4 healAllActors
 @scope_n_healing rpg_skill_scope
 @switch_control_target switch_id
 @usable_in_battle boolean
 @usable_outside_battle boolean
+@required_attrs subwindow rpg_skill_mod_attributes
 
 .rpg_skill_sect2
 @animation animation_id
@@ -137,12 +138,98 @@ e rpg_skill_fm 0 A 1 B 2 C 3 dodge
 @req_target_sp_nz boolean
 @add_states_2k3 boolean
 @mod_states subwindow array 0 boolean
-@mod_attrs subwindow rpg_skill_mod_attributes
-@mod_attr_further boolean
+@affect_target_attr_defence boolean
 
+ ---
+
+ Is this even used???
+: RPG::ItemAnimation
+@type int
+@movement rpg_badia_movetype
+@battle_anim animation_id
+@after_image int_boolean
+@attacks int
+@weapon_anim_idx int
+@ranged boolean
+@ranged_anim_idx int
+e rpg_ia_speed 0 fast 1 medium 2 slow
+@ranged_speed rpg_ia_speed
+
+e rpg_item_type 0 normal 1 weapon 2 shield 3 armour 4 helmet 5 accessory 6 medicine 7 skillLearn2k3 8 material 9 special 10 switch
+e rpg_item_rtarget 0 single 1 centre 2 allAtSameTime 3 allInSequence
+E rpg_item_usecount Uses 0 Unlimited
 : RPG::Item
 C name Class.RPG::Item @name | #A
 @name string
+@description string
+@animation animation_id
+@type rpg_item_type
+@price int
++subwindow[ Equip Stats ] rpg_item_sect0
+@use_count rpg_item_usecount
+@use_sp_cost int
+@actors_allowed subwindow[ If unlisted, default 'true' ] hash actor_id boolean
++subwindow[ Use: 2k3 Skill (weapon/shield/armour/helmet/accessory/skillLearn2k3) ] rpg_item_sect1
++subwindow[ Use: Medicine ] rpg_item_sect2
++subwindow[ Use: Material ] rpg_item_sect3
++subwindow[ Use: Switch ] rpg_item_sect4
++subwindow[ Weapon Data ] rpg_item_sect-1
+@state_set subwindow[ weapon adds / medicine removes ] hash state_id boolean
+
+.rpg_item_sect-1
+@dead_only boolean
+@sit_map_2 boolean
+@hit_chance int= 90
+@crit_chance int
+@attack_preemptive boolean
+@dual_attack boolean
+@attack_all boolean
+@ignore_evasion boolean
+@prevent_crit boolean
+@raise_evasion boolean
+@attr_set subwindow hash attribute_id boolean
+@class_set_2k3 subwindow hash class_id boolean
+@state_chance int
+@state_effect boolean
+@weapon_anim_def_2k3 actor_id
+@weapon_anim_data_2k3 subwindow hash actor_id RPG::ItemAnimation
+@ranged_target rpg_item_rtarget
+@ranged_return int_boolean
+@two_handed boolean
+
+.rpg_item_sect0
+@equipbuff_atk int
+@equipbuff_def int
+@equipbuff_spi int
+@equipbuff_agi int
+@no_terrain_damage boolean
+@cursed_2k3 boolean
+@half_sp_cost boolean
+
+.rpg_item_sect1
+@use_skill_2k3 boolean
+@skill_use_item_msg_2k3 int_boolean
+@skill_id_2k3 skill_id
+
+.rpg_item_sect2
+@entire_party boolean
+@recover_hp_rate int
+@recover_hp int
+@recover_sp_rate int
+@recover_sp int
+@medicine_only_on_map boolean
+
+.rpg_item_sect3
+@usebuff_maxhp int
+@usebuff_maxsp int
+@usebuff_atk int
+@usebuff_def int
+@usebuff_spi int
+@usebuff_agi int
+
+.rpg_item_sect4
+@switch_only_in_battle boolean
+@switch_id switch_id
 
 : RPG::Enemy
 : RPG::Troop
