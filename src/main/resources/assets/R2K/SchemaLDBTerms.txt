@@ -1,0 +1,95 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+.rpg_terms
++subwindow array 127 string
++subwindow[ Labelled (WIP) ] rpg_terms_labels
+
+.rpg_terms_labels
+]0 annXEncounter string
+]1 preemptiveAttack string
+]2 ranAwaySafely string
+]3 failedToEscape string
+]4 wonACombat string
+]5 partyDead string
+]6 experience string
+]7 youFound string
+]8 xMoney string
+]9 xReceived string
+]10 annXAttacksTheEnemy string
+]11 annCritEnemyHurt string
+]12 annCritPlayersHurt string
+]13 annXGuarding string
+]14 annXCowardice1 string
+]15 annXCowardice2 string
+]16 annXPounces string
+]17 annXRunsAway string
+]18 annXTransforms string
+]19 annEHurtForXHP string
+]20 annXMissedE string
+]21 annPHurtForXHP string
+]22 annXMissedP string
+]23 annXFloppedSkillA string
+]24 annXFloppedSkillB string
+]25 annXFloppedSkillC string
+]26 annXDodged string
+]27 annUsesItem string
+]28 annXRecovered string
+]29 paramInc string
+]30 paramDec string
+]31 annXHPAbsorbedFromE string
+]32 annXHPAbsorbedFromP string
+]33 resistInc string
+]34 resistDec string
+]35 levelUp string
+]36 annLearnedX string
+]37 battleStart string
+]38 FTXMiss2k3 string
+
+]39 shop1Greet string
+]40 shop1Impatient string
+]41 shop1Buy string
+]42 shop1Sell string
+]43 shop1Leave string
+]44 shop1WTBQuestion string
+]45 shop1ICoBQuestion string
+]46 shop1Done string
+]47 shop1WTSQuestion string
+]48 shop1ICoSQuestion string
+]49 shop1Thanks string
+
+]50 shop2Greet string
+]51 shop2Impatient string
+]52 shop2Buy string
+]53 shop2Sell string
+]54 shop2Leave string
+]55 shop2WTBQuestion string
+]56 shop2ICoBQuestion string
+]57 shop2Done string
+]58 shop2WTSQuestion string
+]59 shop2ICoSQuestion string
+]60 shop2Thanks string
+
+]61 shop3Greet string
+]62 shop3Impatient string
+]63 shop3Buy string
+]64 shop3Sell string
+]65 shop3Leave string
+]66 shop3WTBQuestion string
+]67 shop3ICoBQuestion string
+]68 shop3Done string
+]69 shop3WTSQuestion string
+]70 shop3ICoSQuestion string
+]71 shop3Thanks string
+
+ still got to add the rest
+
+ supply defaults for the critical strings
+
+]121 saveSlot string= Save...
+]122 loadSlot string= Load...
+]123 file string= File
+]124 exitGame string= Exit?
+]125 yes string= Yes
+]126 no string= No

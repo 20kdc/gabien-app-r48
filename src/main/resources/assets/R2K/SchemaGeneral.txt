@@ -12,6 +12,7 @@ d internal_switchDictionary RPG_RT.ldb @switches
 
 D internal_itemDictionary RPG_RT.ldb@items 1 @name
 D internal_skillDictionary RPG_RT.ldb@skills 1 @name
+D internal_stateDictionary RPG_RT.ldb@states 1 @name
 
 > var_id internal_variableDictionary
 > switch_id internal_switchDictionary
@@ -21,7 +22,7 @@ E item_or_none_id__ Item.ID 0 None
 M internal_itemDictionary item_or_none_id__ item_or_none_id
 
 > skill_id internal_skillDictionary
-> state_id int
+> state_id internal_stateDictionary
 > map_id internal_mapDictionary
 > troop_id int
 > tileset_id int

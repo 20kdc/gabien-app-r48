@@ -26,4 +26,5 @@ i R2K/SchemaLMT.txt
  -LDB-
 
 i R2K/SchemaLDB.txt
+i R2K/SchemaLDBTerms.txt
 > File.RPG_RT.ldb RPG::Database

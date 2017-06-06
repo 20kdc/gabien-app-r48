@@ -231,11 +231,64 @@ C name Class.RPG::Item @name | #A
 @switch_only_in_battle boolean
 @switch_id switch_id
 
+ ---
+
 : RPG::Enemy
 : RPG::Troop
 : RPG::Terrain
 : RPG::Attribute
+
+ ---
+
+e rpg_state_restriction 0 noRestrict 1 cannotAct 2 onlyAttackEnemy 3 onlyAttackAlly
+e rpg_state_affecttype 0 halfParams 1 doubleParams 2 leaveParamsAlone
+e rpg_state_changetype 0 lose 1 gain 2 nothing
 : RPG::State
+C name Class.RPG::State @name | #A
+@name string
+@persists int_boolean
+@colour int
+@priority int
+@restriction rpg_state_restriction
+@a_rate int
+@b_rate int
+@c_rate int
+@d_rate int
+@e_rate int
+@hold_turn int
+@auto_release_prob int
+@release_by_damage int
+@affect_type_2k3 rpg_state_affecttype
+@affect_atk boolean
+@affect_def boolean
+@affect_spi boolean
+@affect_agi boolean
+@reduce_hit_ratio int
+@avoid_attacks_2k3 boolean
+@reflect_magic_2k3 boolean
+@cursed_2k3 boolean
+@battler_animation_id_2k3 animation_id
+@restrict_skill boolean
+@restrict_skill_level int
+@restrict_magic boolean
+@restrict_magic_level int
+@hp_change_type rpg_state_changetype
+@hp_change_max int
+@hp_change_val int
+@hp_change_map_val int
+@hp_change_map_steps int
+@sp_change_type rpg_state_changetype
+@sp_change_max int
+@sp_change_val int
+@sp_change_map_val int
+@sp_change_map_steps int
+@msg_actor string
+@msg_enemy string
+@msg_already string
+@msg_affected string
+@msg_recovery string
+ ---
+
 : RPG::Animation
 
  ---
@@ -272,8 +325,10 @@ C name Class.RPG::Tileset @name | #A
 
  ---
 
-: RPG::Terms
 : RPG::System
+
+ ---
+
 : RPG::CommonEvent
 C name Class.RPG::CommonEvent @name @trigger | #A (@[rpg_cev_trigger]B)
  deliberately ordered to make startOnCallBlocking default
@@ -284,6 +339,8 @@ e rpg_cev_trigger 5 startOnCall 3 startOnCondition 4 startOnConditionParallel
 @condition_switch_id switch_id
 @list EventListEditor
 
+ ---
+
 : RPG::BattleCommands
 : RPG::Class
 : RPG::BattlerAnimation
@@ -291,7 +348,7 @@ e rpg_cev_trigger 5 startOnCall 3 startOnCondition 4 startOnConditionParallel
  ---
 
 : RPG::Database
- completion status: 6 against 12.
+ completion status: 10 against 9.
 @actors subwindow hash int+1 subwindow RPG::Actor
 @skills subwindow hash int+1 subwindow RPG::Skill
 @items subwindow hash int+1 subwindow RPG::Item
@@ -302,12 +359,12 @@ e rpg_cev_trigger 5 startOnCall 3 startOnCondition 4 startOnConditionParallel
 @states subwindow hash int+1 subwindow RPG::State
 @animations subwindow hash int+1 subwindow RPG::Animation
 @tilesets subwindow hash int+1 subwindow RPG::Tileset
-@terms subwindow RPG::Terms
+@terms subwindow rpg_terms
 @system subwindow RPG::System
 @switches subwindow arrayIx1 string
 @variables subwindow arrayIx1 string
 @common_events subwindow hash int+1 subwindow RPG::CommonEvent
 @db_version int
 @battle_commands_2k3 subwindow RPG::BattleCommands
-@classes_2k3 subwindow hash int+1 subwindow RPG::CommonEvent
+@classes_2k3 subwindow hash int+1 subwindow RPG::Class
 @battler_anims_2k3 subwindow hash int+1 subwindow RPG::BattlerAnimation
