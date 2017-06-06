@@ -17,6 +17,16 @@
 ]3 helmet item_id
 ]4 accessory item_id
 
+ Actors apparently have a second unused equip set
+ I'm ignoring this for now
+
+]5 _ item_id
+]6 _ item_id
+]7 _ item_id
+]8 _ item_id
+]9 _ item_id
+
+
 .rpg_actor_parameter_block
 C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C DEF:#D SPI:#E AGI:#F
 ]0 maxHp int
@@ -37,6 +47,7 @@ C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C D
 +internal_EPGD
 
 : RPG::Actor
+C name Class.RPG::Actor @name | #A
 @name string
 @title string
 +subwindow[ Graphics ] actorpage_graphics
@@ -69,8 +80,70 @@ C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C D
 
  ---
 
+> rpg_skill_mod_attributes array 0 boolean
+
+: RPG::BattlerAnimationData
+ FILL IN LATER
+@move_type int
+@afterimage_type int
+@pose int
+
 : RPG::Skill
+C name Class.RPG::Skill @name | #A
++rpg_skill_sect0
++subwindow[ User Feedback ] rpg_skill_sect2
++subwindow[ Cost / Chance ] rpg_skill_sect3
++subwindow[ Result ] rpg_skill_sect4
+
+.rpg_skill_sect0
+@name string
+@description string
+e rpg_skill_type 0 normal 1 transporter 2 battleEscape 3 switchControl 4 subSkill
+@type rpg_skill_type
+e rpg_skill_scope 0 hurtEnemy 1 hurtAllEnemies 2 healUserActor 3 healAnyActor 4 healAllActors
+@scope_n_healing rpg_skill_scope
+@switch_control_target switch_id
+@usable_in_battle boolean
+@usable_outside_battle boolean
+
+.rpg_skill_sect2
+@animation animation_id
+@sound RPG::Sound
+@use_text_1_2KO string
+@use_text_2_2KO string
+e rpg_skill_fm 0 A 1 B 2 C 3 dodge
+@failure_message_2KO rpg_skill_fm
+@battler_anim_default actor_id
+@battler_anim_data subwindow hash actor_id RPG::BattlerAnimationData
+
+.rpg_skill_sect3
+@sp_cost_percent boolean
+@sp_cost_val_percent int
+@sp_cost_val_normal int
+@hit_chance int= 100
+@base_dmg int
+@phys_dmg_frac20 int
+@mag_dmg_frac20 int
+@ignore_def boolean
+@variance int
+
+.rpg_skill_sect4
+@mod_hp boolean
+@mod_sp boolean
+@mod_atk boolean
+@mod_def boolean
+@mod_spi boolean
+@mod_agi boolean
+@req_target_sp_nz boolean
+@add_states_2k3 boolean
+@mod_states subwindow array 0 boolean
+@mod_attrs subwindow rpg_skill_mod_attributes
+@mod_attr_further boolean
+
 : RPG::Item
+C name Class.RPG::Item @name | #A
+@name string
+
 : RPG::Enemy
 : RPG::Troop
 : RPG::Terrain
@@ -81,7 +154,7 @@ C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C D
  ---
 
 : RPG::Tileset
-C name Class.RPG::Tileset @name | Tileset: #A
+C name Class.RPG::Tileset @name | #A
 @name string
 @tileset_name string
  This is kind of important:

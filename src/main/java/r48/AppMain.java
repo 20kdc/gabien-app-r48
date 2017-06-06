@@ -252,7 +252,22 @@ public class AppMain {
     }
 
     public static void launchDialog(String s) {
-        windowMaker.accept(new UILabel(s, FontSizes.dialogWindowTextHeight));
+        UIHelpSystem uhs = new UIHelpSystem();
+        for (String st : s.split("\n"))
+            uhs.page.add(new UIHelpSystem.HelpElement('.', st.split(" ")));
+        UIScrollVertLayout svl = new UIScrollVertLayout() {
+            @Override
+            public String toString() {
+                return "Information";
+            }
+        };
+        svl.panels.add(uhs);
+        uhs.setBounds(uhs.getBounds());
+        int h = uhs.getBounds().height;
+        if (h > 500)
+            h = 500;
+        svl.setBounds(new Rect(0, 0, uhs.getBounds().width, h));
+        windowMaker.accept(svl);
     }
 
     public static void startHelp(Integer integer) {
@@ -274,7 +289,12 @@ public class AppMain {
             public void run() {
                 hsc.loadPage(0);
             }
-        }, FontSizes.helpPathHeight), uus);
+        }, FontSizes.helpPathHeight), uus) {
+            @Override
+            public String toString() {
+                return "Help";
+            }
+        };
         hsc.onLoad = new Runnable() {
             @Override
             public void run() {

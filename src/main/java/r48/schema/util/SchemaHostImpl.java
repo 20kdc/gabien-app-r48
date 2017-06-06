@@ -66,10 +66,18 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
             AppMain.objectDB.ensureSaved(root.hrIndex, root.lastArrayIndex);
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarI = new UIAppendButton("Insp", toolbarS, new Runnable() {
+    public UIAppendButton toolbarI = new UIAppendButton("I", toolbarS, new Runnable() {
         @Override
         public void run() {
             hostWindows.accept(new UITest(innerElem.targetElement));
+        }
+    }, FontSizes.schemaPathTextHeight);
+    public UIAppendButton toolbarC = new UIAppendButton("C", toolbarI, new Runnable() {
+        @Override
+        public void run() {
+            SchemaHostImpl next = new SchemaHostImpl(hostWindows);
+            next.switchObject(innerElem);
+            hostWindows.accept(next);
         }
     }, FontSizes.schemaPathTextHeight);
 
@@ -92,8 +100,8 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     @Override
     public void setBounds(Rect r) {
         super.setBounds(r);
-        int h = toolbarI.getBounds().height;
-        toolbarI.setBounds(new Rect(0, 0, r.width, h));
+        int h = toolbarC.getBounds().height;
+        toolbarC.setBounds(new Rect(0, 0, r.width, h));
         if (innerElem != null)
             innerElemEditor.setBounds(new Rect(0, h, r.width, r.height - h));
     }
@@ -118,7 +126,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
         AppMain.objectDB.registerModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
 
         allElements.clear();
-        allElements.add(toolbarI);
+        allElements.add(toolbarC);
         allElements.add(innerElemEditor);
 
         pathLabel.Text = innerElem.toStringMissingRoot();

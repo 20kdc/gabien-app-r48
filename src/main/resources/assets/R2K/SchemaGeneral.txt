@@ -53,3 +53,9 @@ i R2K/SchemaScripting.txt
 @volume int= 100
 @tempo int= 100
 @balance int= 50
+
+: RPG::Sound
+@name string= (OFF)
+@volume int= 100
+@tempo int= 100
+@balance int= 50

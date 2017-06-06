@@ -35,7 +35,7 @@ public class UITest extends UIPanel {
     // UITest -> outerPanel -> Back/PRINT
     //                      -> masterPanel
     public UIScrollVertLayout masterPanel = new UIScrollVertLayout();
-    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton("PRINT", new UITextButton(FontSizes.inspectorBackTextHeight, "Back...", new Runnable() {
+    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton("PTS", new UIAppendButton("PTF", new UITextButton(FontSizes.inspectorBackTextHeight, "Back...", new Runnable() {
         @Override
         public void run() {
             if (back.size() > 0)
@@ -53,6 +53,11 @@ public class UITest extends UIPanel {
             } catch (Exception e) {
                 AppMain.launchDialog("Could not print: " + e);
             }
+        }
+    }, FontSizes.inspectorBackTextHeight), new Runnable() {
+        @Override
+        public void run() {
+            AppMain.launchDialog(currentObj.toStringLong(""));
         }
     }, FontSizes.inspectorBackTextHeight), masterPanel);
 

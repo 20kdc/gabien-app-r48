@@ -77,6 +77,8 @@ public class ObjectClassSchemaElement extends SchemaElement {
             return true;
         }
         if (ise instanceof RubyTableSchemaElement) {
+            if (((RubyTableSchemaElement) ise).iVar.equals("."))
+                return false;
             iVars.add(((RubyTableSchemaElement) ise).iVar);
             return true;
         }
