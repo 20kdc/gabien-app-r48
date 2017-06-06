@@ -15,6 +15,7 @@ import r48.io.r2k.obj.ldb.Tileset;
 
 /**
  * Bare minimum needed to get ChipSet data out for now
+ * (Later, Jun 6 2017) Ok, THIS class is complete. The others aren't at T.O.W
  * Created on 01/06/17.
  */
 public class Database extends R2kObject {
@@ -37,22 +38,50 @@ public class Database extends R2kObject {
         }
     });
 
-    public BlobR2kStruct enemies = new BlobR2kStruct(R2kUtil.supplyBlank(1, (byte) 0));
-    public BlobR2kStruct troops = new BlobR2kStruct(R2kUtil.supplyBlank(1, (byte) 0));
-    public BlobR2kStruct terrains = new BlobR2kStruct(R2kUtil.supplyBlank(1, (byte) 0));
-    public BlobR2kStruct attributes = new BlobR2kStruct(R2kUtil.supplyBlank(1, (byte) 0));
-    public BlobR2kStruct states = new BlobR2kStruct(R2kUtil.supplyBlank(1, (byte) 0));
-    public BlobR2kStruct animations = new BlobR2kStruct(R2kUtil.supplyBlank(1, (byte) 0));
-
+    public SparseArrayHR2kStruct<Enemy> enemies = new SparseArrayHR2kStruct<Enemy>(new ISupplier<Enemy>() {
+        @Override
+        public Enemy get() {
+            return new Enemy();
+        }
+    });
+    public SparseArrayHR2kStruct<Troop> troops = new SparseArrayHR2kStruct<Troop>(new ISupplier<Troop>() {
+        @Override
+        public Troop get() {
+            return new Troop();
+        }
+    });
+    public SparseArrayHR2kStruct<Terrain> terrains = new SparseArrayHR2kStruct<Terrain>(new ISupplier<Terrain>() {
+        @Override
+        public Terrain get() {
+            return new Terrain();
+        }
+    });
+    public SparseArrayHR2kStruct<Attribute> attributes = new SparseArrayHR2kStruct<Attribute>(new ISupplier<Attribute>() {
+        @Override
+        public Attribute get() {
+            return new Attribute();
+        }
+    });
+    public SparseArrayHR2kStruct<State> states = new SparseArrayHR2kStruct<State>(new ISupplier<State>() {
+        @Override
+        public State get() {
+            return new State();
+        }
+    });
+    public SparseArrayHR2kStruct<Animation> animations = new SparseArrayHR2kStruct<Animation>(new ISupplier<Animation>() {
+        @Override
+        public Animation get() {
+            return new Animation();
+        }
+    });
     public SparseArrayHR2kStruct<Tileset> tilesets = new SparseArrayHR2kStruct<Tileset>(new ISupplier<Tileset>() {
         @Override
         public Tileset get() {
             return new Tileset();
         }
     });
-
-    public BlobR2kStruct terms = new BlobR2kStruct(R2kUtil.supplyBlank(1, (byte) 0));
-    public BlobR2kStruct system = new BlobR2kStruct(R2kUtil.supplyBlank(1, (byte) 0));
+    public Terms terms = new Terms();
+    public System system = new System();
     public SparseArrayAR2kStruct<SVStore> switches = new SparseArrayAR2kStruct<SVStore>(new ISupplier<SVStore>() {
         @Override
         public SVStore get() {
@@ -65,11 +94,26 @@ public class Database extends R2kObject {
             return new SVStore();
         }
     });
-    public BlobR2kStruct commonEvents = new BlobR2kStruct(R2kUtil.supplyBlank(1, (byte) 0));
+    public SparseArrayHR2kStruct<CommonEvent> commonEvents = new SparseArrayHR2kStruct<CommonEvent>(new ISupplier<CommonEvent>() {
+        @Override
+        public CommonEvent get() {
+            return new CommonEvent();
+        }
+    });
     public IntegerR2kStruct dbVersion = new IntegerR2kStruct(0);
-    public BlobR2kStruct battleCommands2k3 = new BlobR2kStruct(R2kUtil.supplyBlank(1, (byte) 0));
-    public BlobR2kStruct classes2k3 = new BlobR2kStruct(R2kUtil.supplyBlank(1, (byte) 0));
-    public BlobR2kStruct battlerAnimation2k3 = new BlobR2kStruct(R2kUtil.supplyBlank(1, (byte) 0));
+    public BattleCommands battleCommands2k3 = new BattleCommands();
+    public SparseArrayHR2kStruct<ActorClass> classes2k3 = new SparseArrayHR2kStruct<ActorClass>(new ISupplier<ActorClass>() {
+        @Override
+        public ActorClass get() {
+            return new ActorClass();
+        }
+    });
+    public SparseArrayHR2kStruct<BattlerAnimation> battlerAnimation2k3 = new SparseArrayHR2kStruct<BattlerAnimation>(new ISupplier<BattlerAnimation>() {
+        @Override
+        public BattlerAnimation get() {
+            return new BattlerAnimation();
+        }
+    });
 
     @Override
     public boolean terminatable() {

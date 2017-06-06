@@ -181,7 +181,17 @@ public class SDB {
                             while (!args[point].equals("]"))
                                 text2 += " " + args[point++];
                             point++;
-                            return new SubwindowSchemaElement(get(), getFunctionToReturn(text2));
+                            if (text2.startsWith("@")) {
+                                final String textFinal = text2.substring(1);
+                                return new SubwindowSchemaElement(get(), new IFunction<RubyIO, String>() {
+                                    @Override
+                                    public String apply(RubyIO rubyIO) {
+                                        return nameDB.get("Interp." + textFinal).apply(rubyIO);
+                                    }
+                                });
+                            } else {
+                                return new SubwindowSchemaElement(get(), getFunctionToReturn(text2));
+                            }
                         }
 
                         if (text.equals("{")) {

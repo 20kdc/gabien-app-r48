@@ -20,12 +20,12 @@ public class EventPage extends R2kObject {
     public IntegerR2kStruct graphicCIndex = new IntegerR2kStruct(0);
     public IntegerR2kStruct graphicCDirection = new IntegerR2kStruct(2);
     public IntegerR2kStruct graphicCPattern = new IntegerR2kStruct(1);
-    public IntegerR2kStruct graphicCBlendMode = new IntegerR2kStruct(0);
+    public BooleanR2kStruct graphicCBlendMode = new BooleanR2kStruct(false);
     public IntegerR2kStruct moveType = new IntegerR2kStruct(1);
     public IntegerR2kStruct moveFreq = new IntegerR2kStruct(3);
     public IntegerR2kStruct trigger = new IntegerR2kStruct(0);
     public IntegerR2kStruct layer = new IntegerR2kStruct(0);
-    public IntegerR2kStruct blocking = new IntegerR2kStruct(0);
+    public BooleanR2kStruct blocking = new BooleanR2kStruct(false);
     public IntegerR2kStruct animType = new IntegerR2kStruct(0);
     public IntegerR2kStruct moveSpeed = new IntegerR2kStruct(3);
     public MoveRoute moveRoute = new MoveRoute();

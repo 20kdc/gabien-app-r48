@@ -28,7 +28,6 @@ public class SubwindowSchemaElement extends SchemaElement {
 
     public SubwindowSchemaElement(SchemaElement encap) {
         heldElement = encap;
-
     }
 
     public SubwindowSchemaElement(SchemaElement encap, IFunction<RubyIO, String> naming) {

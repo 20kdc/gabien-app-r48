@@ -4,6 +4,82 @@
 
  (highly incomplete) database schema
 
+ LIST OF THINGS TO PERFORM WHEN DONE
+ Dictionary unification
+ 'MapContext'
+
+ ---
+
+.rpg_actor_equipment_block
+]0 weapon item_id
+]1 shield item_id
+]2 armour item_id
+]3 helmet item_id
+]4 accessory item_id
+
+.rpg_actor_parameter_block
+C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C DEF:#D SPI:#E AGI:#F
+]0 maxHp int
+]1 maxMp int
+]2 atk int
+]3 def int
+]4 spi int
+]5 agi int
+
+: RPG::Learning
+@level int= 1
+@skill skill_id
+
+.actorpage_graphics
+@character_name string
+@character_index int
+@character_blend_mode boolean
++internal_EPGD
+
+: RPG::Actor
+@name string
+@title string
++subwindow[ Graphics ] actorpage_graphics
+@face_name string
+@face_index int
+@init_level int
+@init_level_exp int
+@each_level_exp_p int
+@each_level_exp_modc int
+@final_level int
+@battle_auto boolean
+@battle_super_guard boolean
+@battle_parameters subwindow array 0 subwindow[ @rpg_actor_parameter_block ] rpg_actor_parameter_block
+@battle_skillspanel_name string
+@battle_posx_2k3 int
+@battle_posy_2k3 int
+@battler_anim_2k3 battleranimation_id
+@can_crit boolean
+@crit_percent boolean
+@dual_wield boolean
+@lock_equipment boolean
+@equipment rpg_actor_equipment_block
+@no_weapon_attack_anim animation_id
+@class_2k3 class_id
+@learn_skills subwindow array 0 RPG::Learning
+@rename_allow boolean
+@state_ranks subwindow array 0 int
+@attribute_ranks subwindow array 0 int
+@battle_commands_2k3 subwindow array 0 battlecommand_id
+
+ ---
+
+: RPG::Skill
+: RPG::Item
+: RPG::Enemy
+: RPG::Troop
+: RPG::Terrain
+: RPG::Attribute
+: RPG::State
+: RPG::Animation
+
+ ---
+
 : RPG::Tileset
 C name Class.RPG::Tileset @name | Tileset: #A
 @name string
@@ -34,75 +110,34 @@ C name Class.RPG::Tileset @name | Tileset: #A
 @anim_cycles boolean
 @anim_speed int= 0
 
-.rpg_actor_equipment_block
-]0 weapon item_id
-]1 shield item_id
-]2 armour item_id
-]3 helmet item_id
-]4 accessory item_id
+ ---
 
-.rpg_actor_parameter_block
-]0 maxHp int
-]1 maxMp int
-]2 atk int
-]3 def int
-]4 spi int
-]5 agi int
+: RPG::Terms
+: RPG::System
+: RPG::CommonEvent
+: RPG::BattleCommands
+: RPG::Class
+: RPG::BattlerAnimation
 
-: RPG::Learning
-@level int= 1
-@skill skill_id
-
-: RPG::Actor
-@name string
-@title string
-@character_name string
-@character_index int
-@face_name string
-@face_index int
-@transparent boolean
-@init_level int
-@init_level_exp int
-@each_level_exp_p int
-@each_level_exp_modc int
-@final_level int
-@battle_auto boolean
-@battle_super_guard boolean
-@battle_parameters rpg_actor_parameter_block
-@battle_skillspanel_name string
-@battle_posx_2k3 int
-@battle_posy_2k3 int
-@battler_anim_2k3 battleranimation_id
-@can_crit boolean
-@crit_percent boolean
-@dual_wield boolean
-@lock_equipment boolean
-@equipment rpg_actor_equipment_block
-@no_weapon_attack_anim animation_id
-@class_2k3 class_id
-@learn_skills subwindow array 0 RPG::Learning
-@rename_allow boolean
-@state_ranks subwindow array 0 int
-@attribute_ranks subwindow array 0 int
-@battle_commands_2k3 subwindow array 0 battlecommand_id
+ ---
 
 : RPG::Database
 @actors subwindow hash int+1 subwindow RPG::Actor
-@skills subwindow hash int+1 OPAQUE
-@items subwindow hash int+1 OPAQUE
-@enemies OPAQUE
-@troops OPAQUE
-@terrains OPAQUE
-@attributes OPAQUE
-@states OPAQUE
-@animations OPAQUE
-@tilesets subwindow hash int subwindow RPG::Tileset
-@terms OPAQUE
-@system OPAQUE
+@skills subwindow hash int+1 subwindow RPG::Skill
+@items subwindow hash int+1 subwindow RPG::Item
+@enemies subwindow hash int+1 subwindow RPG::Enemy
+@troops subwindow hash int+1 subwindow RPG::Troop
+@terrains subwindow hash int+1 subwindow RPG::Terrain
+@attributes subwindow hash int+1 subwindow RPG::Attribute
+@states subwindow hash int+1 subwindow RPG::State
+@animations subwindow hash int+1 subwindow RPG::Animation
+@tilesets subwindow hash int+1 subwindow RPG::Tileset
+@terms subwindow RPG::Terms
+@system subwindow RPG::System
 @switches subwindow arrayIx1 string
 @variables subwindow arrayIx1 string
-@common_events OPAQUE
+@common_events subwindow hash int+1 subwindow RPG::CommonEvent
 @db_version int
-@battle_commands_2k3 OPAQUE
-@classes_2k3 OPAQUE
-@battler_anims_2k3 OPAQUE
+@battle_commands_2k3 subwindow RPG::BattleCommands
+@classes_2k3 subwindow hash int+1 subwindow RPG::CommonEvent
+@battler_anims_2k3 subwindow hash int+1 subwindow RPG::BattlerAnimation

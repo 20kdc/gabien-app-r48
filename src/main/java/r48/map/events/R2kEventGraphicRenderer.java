@@ -60,8 +60,14 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
             int sy = i.getHeight() / 8;
             int idx = ((int) target.getInstVarBySymbol("@character_index").fixnumVal);
             // Direction is apparently in a 0123 format???
-            int dir = ((int) target.getInstVarBySymbol("@character_direction").fixnumVal);
-            int pat = ((int) target.getInstVarBySymbol("@character_pattern").fixnumVal);
+            int dir = 2;
+            RubyIO dirVal = target.getInstVarBySymbol("@character_direction");
+            if (dirVal != null)
+                dir = ((int) dirVal.fixnumVal);
+            int pat = 1;
+            RubyIO patVal = target.getInstVarBySymbol("@character_pattern");
+            if (patVal != null)
+                pat = ((int) patVal.fixnumVal);
             int px = ((idx % 4) * 3) + pat;
             int py = ((idx / 4) * 4) + dir;
             // The vertical offset is either 12 or 16?

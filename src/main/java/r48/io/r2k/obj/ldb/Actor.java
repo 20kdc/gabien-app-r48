@@ -9,6 +9,7 @@ import r48.RubyIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.*;
+import r48.io.r2k.struct.BattleParamBlock;
 
 /**
  * Created on 05/06/17.
@@ -29,10 +30,10 @@ public class Actor extends R2kObject {
     public BooleanR2kStruct lockEquipment = new BooleanR2kStruct(false);
     public BooleanR2kStruct autoBattle = new BooleanR2kStruct(false);
     public BooleanR2kStruct superGuard = new BooleanR2kStruct(false);
-    public ArrayR2kStruct<ShortR2kStruct> parameters = new ArrayR2kStruct<ShortR2kStruct>(null, new ISupplier<ShortR2kStruct>() {
+    public ArrayR2kStruct<BattleParamBlock> parameters = new ArrayR2kStruct<BattleParamBlock>(null, new ISupplier<BattleParamBlock>() {
         @Override
-        public ShortR2kStruct get() {
-            return new ShortR2kStruct(0);
+        public BattleParamBlock get() {
+            return new BattleParamBlock();
         }
     }, true);
     public IntegerR2kStruct initLevelExp = new IntegerR2kStruct(300);
@@ -85,7 +86,7 @@ public class Actor extends R2kObject {
                 new Index(0x02, title, "@title"),
                 new Index(0x03, charName, "@character_name"),
                 new Index(0x04, charIdx, "@character_index"),
-                new Index(0x05, transparent, "@transparent"),
+                new Index(0x05, transparent, "@character_blend_mode"),
                 new Index(0x07, initLevel, "@init_level"),
                 new Index(0x08, finalLevel, "@final_level"),
                 new Index(0x09, canCrit, "@can_crit"),
