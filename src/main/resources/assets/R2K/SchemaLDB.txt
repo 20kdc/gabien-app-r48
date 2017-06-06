@@ -98,7 +98,7 @@ C name Class.RPG::Skill @name | #A
 .rpg_skill_sect0
 @name string
 @description string
-e rpg_skill_type 0 normal 1 transporter 2 battleEscape 3 switchControl 4 subSkill2k3
+e rpg_skill_type 0 normal 1 teleportMenu 2 battleEscape 3 switchControl 4 subSkill2k3
 @type rpg_skill_type
 e rpg_skill_scope 0 hurtEnemy 1 hurtAllEnemies 2 healUserActor 3 healAnyActor 4 healAllActors
 @scope_n_healing rpg_skill_scope
@@ -233,7 +233,52 @@ C name Class.RPG::Item @name | #A
 
  ---
 
+e rpg_enemyaction_kind 0 basic 1 skill 2 transformToNewEnemy
+e rpg_enemyaction_basic 0 attack 1 dualAttack 2 defense 3 observe 4 charge 5 selfDestruct 6 escape 7 nothing
+
+e rpg_enemyaction_conditiontype 0 always 1 switchActive 2 turnCountInRange 3 livingPartySizeInRange 4 enemyHpInRange 5 enemySpInRange 6 partyLevelInRange 7 partyFatigueInRange
+
+: RPG::EnemyAction
+@rating int= 50
+@condition_type rpg_enemyaction_conditiontype
+@condition_range_low int
+@condition_range_high int
+@condition_opt_switch_id switch_id
+@act_kind rpg_enemyaction_kind
+@act_basic rpg_enemyaction_basic
+@act_skill skill_id
+@act_transform_enemy enemy_id
+@switch_on boolean
+@switch_on_id switch_id
+@switch_off boolean
+@switch_off_id switch_id
+
 : RPG::Enemy
+C name Class.RPG::Enemy @name | #A
+@name string
+@battler_name string
+@battler_hue int
+@battler_blend_mode boolean
+@max_hp int= 10
+@max_sp int= 10
+@atk int= 10
+@def int= 10
+@spi int= 10
+@agi int= 10
+@exp int
+@gold int
+@drop_item item_or_none_id
+@drop_percent int
+@can_crit boolean
+@crit_chance int
+@miss boolean
+@levitate boolean
+@state_ranks subwindow array 0 int
+@attribute_ranks subwindow array 0 int
+@actions subwindow arrayIx1 subwindow RPG::EnemyAction
+
+ ---
+
 : RPG::Troop
 : RPG::Terrain
 : RPG::Attribute
@@ -348,23 +393,42 @@ e rpg_cev_trigger 5 startOnCall 3 startOnCondition 4 startOnConditionParallel
  ---
 
 : RPG::Database
- completion status: 10 against 9.
+ completion status listed. 11 OK. 8 NO. Progress is being made.
+ OK
 @actors subwindow hash int+1 subwindow RPG::Actor
+ OK
 @skills subwindow hash int+1 subwindow RPG::Skill
+ OK
 @items subwindow hash int+1 subwindow RPG::Item
+ OK
 @enemies subwindow hash int+1 subwindow RPG::Enemy
+ NO
 @troops subwindow hash int+1 subwindow RPG::Troop
+ NO
 @terrains subwindow hash int+1 subwindow RPG::Terrain
+ NO
 @attributes subwindow hash int+1 subwindow RPG::Attribute
+ OK
 @states subwindow hash int+1 subwindow RPG::State
+ NO
 @animations subwindow hash int+1 subwindow RPG::Animation
+ OK
 @tilesets subwindow hash int+1 subwindow RPG::Tileset
+ OK
 @terms subwindow rpg_terms
+ NO
 @system subwindow RPG::System
+ OK
 @switches subwindow arrayIx1 string
+ OK
 @variables subwindow arrayIx1 string
+ OK
 @common_events subwindow hash int+1 subwindow RPG::CommonEvent
+ OK
 @db_version int
+ NO
 @battle_commands_2k3 subwindow RPG::BattleCommands
+ NO
 @classes_2k3 subwindow hash int+1 subwindow RPG::Class
+ NO
 @battler_anims_2k3 subwindow hash int+1 subwindow RPG::BattlerAnimation

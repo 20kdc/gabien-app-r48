@@ -15,7 +15,7 @@ d Forces an escape or victory. Note: Assuming ignoreChecks is false, Mode 0 fail
 p _ string
 p mode forceescape_mode
 P 1 _ int
-v 2 enemyId int
+v 2 troopEnemyIdx int
 p ignoreChecks int_boolean
 
 1007: Setup Battle Combo (2k3?)
@@ -28,7 +28,7 @@ p uses int_default_1
 13110: Change Enemy HP
 d Changes an enemy's HP by some amount. This can kill it.
 p _ string
-p enemyId int
+p troopEnemyIdx int
 p negative int_boolean
 p modAmount change_enemy_hp_mode
 P 3 amount int
@@ -37,7 +37,7 @@ v 1 amountVar var_id
 13120: Change Enemy SP
 d Changes an enemy's SP by some amount.
 p _ string
-p enemyId int
+p troopEnemyIdx int
 p negative int_boolean
 p amountIsVar int_boolean
 P 3 amount int
@@ -46,14 +46,14 @@ v 1 amountVar var_id
 13130: Change Enemy Condition
 d A state is given/taken from/to an enemy.
 p _ string
-p enemyId int
+p troopEnemyIdx int
 p remove int_boolean
 p state state_id
 
 13150: Unhide Enemy
 d A previously hidden enemy comes out of the shadows!
 p _ string
-p enemyId int
+p troopEnemyIdx int
 
 13210: Change Battle Background!
 d Change the background of the battle.

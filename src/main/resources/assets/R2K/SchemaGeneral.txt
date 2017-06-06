@@ -25,6 +25,8 @@ M internal_itemDictionary item_or_none_id__ item_or_none_id
 > state_id internal_stateDictionary
 > map_id internal_mapDictionary
 > troop_id int
+ not to be confused with an enemy within a troop
+> enemy_id int
 > tileset_id int
 > terrain_id int
 > animation_id int
