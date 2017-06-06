@@ -83,9 +83,9 @@ C name Class.RPG::Actor @name | #A
 > rpg_skill_mod_attributes array 0 boolean
 
 : RPG::BattlerAnimationData
- FILL IN LATER
-@move_type int
-@afterimage_type int
+e rpg_bad_movetype 0 none 1 step 2 jump 3 move
+@move_type rpg_bad_movetype
+@afterimage_type int_boolean
 @pose int
 
 : RPG::Skill
@@ -188,6 +188,15 @@ C name Class.RPG::Tileset @name | #A
 : RPG::Terms
 : RPG::System
 : RPG::CommonEvent
+C name Class.RPG::CommonEvent @name @trigger | #A (@[rpg_cev_trigger]B)
+ deliberately ordered to make startOnCallBlocking default
+e rpg_cev_trigger 5 startOnCall 3 startOnCondition 4 startOnConditionParallel
+@name string
+@trigger rpg_cev_trigger
+@condition_switch boolean
+@condition_switch_id switch_id
+@list EventListEditor
+
 : RPG::BattleCommands
 : RPG::Class
 : RPG::BattlerAnimation
@@ -195,6 +204,7 @@ C name Class.RPG::Tileset @name | #A
  ---
 
 : RPG::Database
+ completion status: 6 against 12.
 @actors subwindow hash int+1 subwindow RPG::Actor
 @skills subwindow hash int+1 subwindow RPG::Skill
 @items subwindow hash int+1 subwindow RPG::Item

@@ -13,6 +13,7 @@ import r48.schema.util.SchemaPath;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.WeakHashMap;
 
@@ -31,7 +32,8 @@ public class ObjectDB {
     public WeakHashMap<RubyIO, String> reverseObjectMap = new WeakHashMap<RubyIO, String>();
     // The values don't actually matter -
     //  this locks the object into memory for as long as it's modified.
-    public LinkedList<RubyIO> modifiedObjects = new LinkedList<RubyIO>();
+    public HashSet<RubyIO> modifiedObjects = new HashSet<RubyIO>();
+    public HashSet<RubyIO> newlyCreatedObjects = new HashSet<RubyIO>();
     public WeakHashMap<RubyIO, LinkedList<Runnable>> objectListenersMap = new WeakHashMap<RubyIO, LinkedList<Runnable>>();
 
     public String getIdByObject(RubyIO obj) {
@@ -61,6 +63,8 @@ public class ObjectDB {
                         e.printStackTrace();
                         return null;
                     }
+                    modifiedObjects.add(rio);
+                    newlyCreatedObjects.add(rio);
                 } else {
                     return null;
                 }
@@ -83,6 +87,7 @@ public class ObjectDB {
                     // Overwriting - clean up.
                     System.out.println("WARNING: Overwriting shouldn't really ever happen.");
                     modifiedObjects.remove(rio2);
+                    newlyCreatedObjects.remove(rio2);
                 }
             }
         }
@@ -91,6 +96,7 @@ public class ObjectDB {
             objectMap.put(id, new WeakReference<RubyIO>(rio));
             reverseObjectMap.put(rio, id);
             modifiedObjects.remove(rio);
+            newlyCreatedObjects.remove(rio);
         } catch (Exception ioe) {
             // ERROR!
             AppMain.launchDialog("Error: " + ioe.getMessage());
@@ -105,6 +111,15 @@ public class ObjectDB {
         RubyIO potentiallyModified = riow.get();
         if (potentiallyModified != null)
             return modifiedObjects.contains(potentiallyModified);
+        return false;
+    }
+    public boolean getObjectNewlyCreated(String id) {
+        WeakReference<RubyIO> riow = objectMap.get(id);
+        if (riow == null)
+            return false;
+        RubyIO potentiallyModified = riow.get();
+        if (potentiallyModified != null)
+            return newlyCreatedObjects.contains(potentiallyModified);
         return false;
     }
 
@@ -134,8 +149,7 @@ public class ObjectDB {
         //  and the required root modification message will come later.
         if (!reverseObjectMap.containsKey(p))
             return;
-        if (!modifiedObjects.contains(p))
-            modifiedObjects.add(p);
+        modifiedObjects.add(p);
         LinkedList<Runnable> notifyObjectModified = objectListenersMap.get(p);
         if (notifyObjectModified != null)
             for (Runnable r : new LinkedList<Runnable>(notifyObjectModified))

@@ -78,9 +78,10 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     public int createNewMap(int k) {
         RubyIO[] resArray = new RubyIO[mapTreeOrders.arrVal.length + 1];
         System.arraycopy(mapTreeOrders.arrVal, 0, resArray, 0, mapTreeOrders.arrVal.length);
-        resArray[resArray.length - 1] = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
+        resArray[resArray.length - 1] = new RubyIO().setFX(k);
+        mapTreeHash.hashVal.put(new RubyIO().setFX(k), SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k)));
         mapTreeOrders.arrVal = resArray;
-        return k;
+        return resArray.length - 1;
     }
 
     @Override

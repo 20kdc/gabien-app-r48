@@ -24,8 +24,11 @@ public class UIObjectDBMonitor extends UIElement {
             RubyIO rio = AppMain.objectDB.objectMap.get(s).get();
             if (rio != null) {
                 status = " [" + AppMain.objectDB.countModificationListeners(rio) + "ML]";
-                if (AppMain.objectDB.getObjectModified(s))
+                if (AppMain.objectDB.getObjectNewlyCreated(s)) {
+                    status += " [Created]";
+                } else if (AppMain.objectDB.getObjectModified(s)) {
                     status += " [Modified]";
+                }
             } else {
                 if (AppMain.objectDB.getObjectModified(s)) {
                     status += " [Modifications lost]";

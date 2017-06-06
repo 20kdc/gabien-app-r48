@@ -214,6 +214,8 @@ public class UIGRMMapInfos extends UIPanel {
                         }
                         selectedOrder = operators.createNewMap(i);
                         operators.complete();
+                        mapLoader.accept(i);
+                        rebuildList();
                     }
                 }));
             }
