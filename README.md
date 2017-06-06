@@ -10,7 +10,7 @@ RPG Maker 2000/2003 (incomplete): Reading the format documentation in EasyRPG's 
 
 RPG Maker XP: Developed by examining OneShot (remake) and Ruby Quest : Undertow. The rendering code may thus be incomplete.
 
-RPG Maker VX Ace: Same, but examined games were Rave Story 2 (note - there are two versions out there. The real one is Polar's, and it's VX Ace-based.) and Crysalis.
+RPG Maker VX Ace: Same, plus a table given by Ancurio for the wall ATs, but examined games were Rave Story 2 (note - there are two versions out there. The real one is Polar's, and it's VX Ace-based.) and Crysalis.
 
 Ikachan: Ancient knowledge passed down from our elders.
 
