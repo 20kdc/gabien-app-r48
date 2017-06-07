@@ -334,7 +334,44 @@ C name Class.RPG::State @name | #A
 @msg_recovery string
  ---
 
+: RPG::AnimationTiming
+@frame int
+@sound RPG::Sound
+e rpg_animationtiming_flashscope 0 noFlash 1 target 2 screen
+@flash_scope rpg_animationtiming_flashscope
+@flash_red int= 31
+@flash_green int= 31
+@flash_blue int= 31
+@flash_power int= 31
+e rpg_animationtiming_screenshake 0 noShake 1 target 2 screen
+@screen_shake rpg_animationtiming_screenshake
+
+: RPG::AnimationCellData
+@valid int= 1
+@cell_id int= 0
+@x int= 0
+@y int= 0
+@zoom int= 100
+@tone_red int= 100
+@tone_green int= 100
+@tone_blue int= 100
+@tone_gray int= 100
+@transparency int= 0
+
+: RPG::AnimationFrame
+ @cells subwindow array 0 RPG::AnimationCellData
+
+e rpg_animation_scope 0 target 1 screen
+e rpg_animation_position 0 up 1 middle 2 down
+
 : RPG::Animation
+@name string
+@animation_name string
+@unknown_03 int= -1
+@scope rpg_animation_scope
+@position rpg_animation_position
+@frames subwindow arrayIx1 subwindow RPG::AnimationFrame
+@timings subwindow arrayIx1 subwindow RPG::AnimationTiming
 
  ---
 
@@ -410,7 +447,7 @@ e rpg_cev_trigger 5 startOnCall 3 startOnCondition 4 startOnConditionParallel
 @attributes subwindow hash int+1 subwindow RPG::Attribute
  OK
 @states subwindow hash int+1 subwindow RPG::State
- NO
+ OK
 @animations subwindow hash int+1 subwindow RPG::Animation
  OK
 @tilesets subwindow hash int+1 subwindow RPG::Tileset
