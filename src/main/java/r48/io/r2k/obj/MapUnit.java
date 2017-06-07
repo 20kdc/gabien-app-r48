@@ -90,7 +90,7 @@ public class MapUnit extends R2kObject {
 
     private RubyIO makeLmuData() {
         // -- transform the lower-layer and upper-layer data...
-        RubyTable rt = new RubyTable(width.i, height.i, 2);
+        RubyTable rt = new RubyTable(width.i, height.i, 2, new int[] {0, 0});
         System.arraycopy(layer0.dat, 0, rt.innerBytes, 20, layer0.dat.length);
         System.arraycopy(layer1.dat, 0, rt.innerBytes, 20 + (width.i * height.i * 2), layer1.dat.length);
         return new RubyIO().setUser("Table", rt.innerBytes);

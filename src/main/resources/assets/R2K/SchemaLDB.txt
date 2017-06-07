@@ -320,7 +320,7 @@ C name Class.RPG::Tileset @name | #A
 +tableSTA R2K/TS162.txt @terrain_id_data . . 162 1 1
 +tableSTAF R2K/TS162.txt @lowpass_data . . 162 1 1 down left right up upper wall counter
 +tableSTAF R2K/TS144.txt @highpass_data . . 144 1 1 down left right up upper wall counter
-@anim_cycles boolean
+@anim_cyclic boolean
 @anim_speed int= 0
 
  ---

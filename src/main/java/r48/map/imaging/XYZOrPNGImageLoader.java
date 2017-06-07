@@ -21,7 +21,7 @@ public class XYZOrPNGImageLoader implements IImageLoader {
         rootPath = root;
         xImageLoader = new XYZImageLoader(rootPath);
         pImageLoader = new PNG8IImageLoader(rootPath);
-        gImageLoader = new GabienImageLoader(rootPath, ".png", 0, 0, 0);
+        gImageLoader = new GabienImageLoader(rootPath, ".png");
     }
 
     @Override

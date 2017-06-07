@@ -26,7 +26,7 @@ public class RubyTable {
         height = innerTable.getInt(8);
     }
 
-    public RubyTable(int w, int h, int i) {
+    public RubyTable(int w, int h, int i, int[] defVals) {
         innerBytes = new byte[20 + (w * h * i * 2)];
         innerTable = ByteBuffer.wrap(innerBytes).order(ByteOrder.LITTLE_ENDIAN);
         width = w;
@@ -37,6 +37,9 @@ public class RubyTable {
         innerTable.putInt(8, h);
         innerTable.putInt(12, i);
         innerTable.putInt(16, w * h * i);
+        for (int j = 0; j < (w * h); j++)
+            for (int l = 0; l < i; l++)
+                innerTable.putShort(20 + ((j + (l * (w * h))) * 2), (short) defVals[l]);
     }
     // inline notes on Table format:
     // first 4 bytes match plane count later on. giving up and checking mkxp gives no further detail.
@@ -71,8 +74,8 @@ public class RubyTable {
         return false;
     }
 
-    public RubyTable resize(int w, int h) {
-        RubyTable n = new RubyTable(w, h, planeCount);
+    public RubyTable resize(int w, int h, int[] defVals) {
+        RubyTable n = new RubyTable(w, h, planeCount, defVals);
         for (int i = 0; i < width; i++) {
             if (w <= i)
                 break;

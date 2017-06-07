@@ -264,9 +264,17 @@ public class SDB {
                                 }
                             });
                         }
-                        if (text.equals("table") || text.equals("tableF") || text.equals("tableTS") || text.equals("tableTSF") || text.equals("tableSTA") || text.equals("tableSTAF")) {
+                        if (text.startsWith("table")) {
+                            String eText = text;
+                            boolean hasFlags = eText.endsWith("F");
+                            if (hasFlags)
+                                eText = eText.substring(0, eText.length() - 1);
+                            boolean hasDefault = eText.endsWith("D");
+                            if (hasDefault)
+                                eText = eText.substring(0, eText.length() - 1);
+
                             TSDB tilesetAllocations = null;
-                            if (text.equals("tableSTA") || text.equals("tableSTAF"))
+                            if (eText.equals("tableSTA"))
                                 tilesetAllocations = new TSDB(args[point++]);
                             String iV = args[point++];
                             if (iV.equals("."))
@@ -283,20 +291,24 @@ public class SDB {
                             int aW = Integer.parseInt(args[point++]);
                             int aH = Integer.parseInt(args[point++]);
                             int aI = Integer.parseInt(args[point++]);
-                            // Flags which are marked with "." are hidden. Starts with 1, then 2, then 4...
+                            int[] defVals = new int[aI];
                             ITableCellEditor tcf = new DefaultTableCellEditor();
-                            if (text.equals("tableTSF") || text.equals("tableF") || text.equals("tableSTAF")) {
+                            if (hasDefault)
+                                for (int i = 0; i < defVals.length; i++)
+                                    defVals[i] = Integer.parseInt(args[point++]);
+                            // Flags which are marked with "." are hidden. Starts with 1, then 2, then 4...
+                            if (hasFlags) {
                                 LinkedList<String> flags = new LinkedList<String>();
                                 while (point < args.length)
                                     flags.add(args[point++]);
                                 tcf = new BitfieldTableCellEditor(flags.toArray(new String[0]));
                             }
-                            if (text.equals("tableSTA") || text.equals("tableSTAF"))
-                                return new SubwindowSchemaElement(new TilesetAllocTableSchemaElement(tilesetAllocations, iV, wV, hV, aW, aH, aI, tcf), iVT);
-                            if (text.equals("tableTS") || text.equals("tableTSF"))
-                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf), iVT);
-                            if (text.equals("table") || text.equals("tableF"))
-                                return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf), iVT);
+                            if (eText.equals("tableSTA"))
+                                return new SubwindowSchemaElement(new TilesetAllocTableSchemaElement(tilesetAllocations, iV, wV, hV, aW, aH, aI, tcf, defVals), iVT);
+                            if (eText.equals("tableTS"))
+                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf, defVals), iVT);
+                            if (eText.equals("table"))
+                                return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf, defVals), iVT);
                             throw new RuntimeException("Unknown table type " + text);
                         }
                         if (text.equals("CTNative"))

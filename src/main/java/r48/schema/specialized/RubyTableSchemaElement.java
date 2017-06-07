@@ -43,7 +43,9 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     private int lastSelectionCache;
     private double lastScrollCache;
 
-    public RubyTableSchemaElement(String iVar, String wVar, String hVar, int dw, int dh, int defL, ITableCellEditor tcl) {
+    public final int[] defVals;
+
+    public RubyTableSchemaElement(String iVar, String wVar, String hVar, int dw, int dh, int defL, ITableCellEditor tcl, int[] defV) {
         this.iVar = iVar;
         widthVar = wVar;
         heightVar = hVar;
@@ -51,6 +53,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         defH = dh;
         planes = defL;
         tableCellEditor = tcl;
+        defVals = defV;
     }
 
     @Override
@@ -105,7 +108,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         uiSVL.panels.add(new UITextButton(FontSizes.tableResizeTextHeight, "Resize", new Runnable() {
             @Override
             public void run() {
-                RubyTable r2 = targ.resize(wNB.number, hNB.number);
+                RubyTable r2 = targ.resize(wNB.number, hNB.number, defVals);
                 if (width != null)
                     width.fixnumVal = wNB.number;
                 if (height != null)
@@ -144,7 +147,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         // Not a clue, so re-initialize if all else fails.
         // (This will definitely trigger if the iVar was missing)
         if (target.type != 'u') {
-            target.setUser("Table", new RubyTable(defW, defH, planes).innerBytes);
+            target.setUser("Table", new RubyTable(defW, defH, planes, defVals).innerBytes);
             index.changeOccurred(true);
         }
     }

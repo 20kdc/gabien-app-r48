@@ -86,4 +86,4 @@ e eventpage_trigger 0 playerInteract 1 playerCollide 2 playerOrEventCollide 3 au
 @events subwindow hash int+1 subwindow RPG::Event
 @top_level boolean
 @magic_number int
-+table @data @width @height 20 15 2
++tableD @data @width @height 20 15 2 0 10000
