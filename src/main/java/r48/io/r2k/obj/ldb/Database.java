@@ -7,6 +7,7 @@ package r48.io.r2k.obj.ldb;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
+import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.*;
 
 /**
@@ -96,7 +97,7 @@ public class Database extends R2kObject {
             return new CommonEvent();
         }
     });
-    public IntegerR2kStruct dbVersion = new IntegerR2kStruct(0);
+    public BlobR2kStruct dbVersion = new BlobR2kStruct(R2kUtil.supplyBlank(0, (byte) 0));
     public BattleCommands battleCommands2k3 = new BattleCommands();
     public SparseArrayHR2kStruct<ActorClass> classes2k3 = new SparseArrayHR2kStruct<ActorClass>(new ISupplier<ActorClass>() {
         @Override

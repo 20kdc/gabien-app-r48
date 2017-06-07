@@ -71,7 +71,7 @@ C name Class.RPG::Actor @name | #A
 @lock_equipment boolean
 @equipment rpg_actor_equipment_block
 @no_weapon_attack_anim animation_id
-@class_2k3 class_id
+@class_2k3 class_or_none_id
 @learn_skills subwindow array 0 RPG::Learning
 @rename_allow boolean
 @state_ranks subwindow array 0 int
@@ -425,13 +425,34 @@ e rpg_cev_trigger 5 startOnCall 3 startOnCondition 4 startOnConditionParallel
  ---
 
 : RPG::BattleCommands
+
+ ---
+
 : RPG::Class
+C name Class.RPG::Class @name | #A
+@name string
+@dual_wield boolean
+@lock_equipment boolean
+@battle_auto boolean
+@battle_super_guard boolean
+@battle_parameters subwindow array 0 subwindow[ @rpg_actor_parameter_block ] rpg_actor_parameter_block
+@battler_animation battleranimation_id
+@init_level_exp int
+@each_level_exp_p int
+@each_level_exp_modc int
+@learn_skills subwindow array 0 RPG::Learning
+@state_ranks subwindow array 0 int
+@attribute_ranks subwindow array 0 int
+@battle_commands subwindow array 0 battlecommand_id
+
+ ---
+
 : RPG::BattlerAnimation
 
  ---
 
 : RPG::Database
- completion status listed. 12 OK. 7 NO. Progress is being made.
+ completion status listed. 13 OK. 6 NO. Progress is being made.
  OK
 @actors subwindow hash int+1 subwindow RPG::Actor
  OK
@@ -462,11 +483,11 @@ e rpg_cev_trigger 5 startOnCall 3 startOnCondition 4 startOnConditionParallel
 @variables subwindow arrayIx1 string
  OK
 @common_events subwindow hash int+1 subwindow RPG::CommonEvent
- OK
-@db_version int
+ OK Supposedly an integer. Supposedly.
+@db_version OPAQUE
  NO
 @battle_commands_2k3 subwindow RPG::BattleCommands
- NO
+ OK
 @classes_2k3 subwindow hash int+1 subwindow RPG::Class
  NO
 @battler_anims_2k3 subwindow hash int+1 subwindow RPG::BattlerAnimation

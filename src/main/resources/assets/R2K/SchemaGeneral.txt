@@ -13,6 +13,10 @@ d internal_switchDictionary RPG_RT.ldb @switches
 D internal_itemDictionary RPG_RT.ldb@items 1 @name
 D internal_skillDictionary RPG_RT.ldb@skills 1 @name
 D internal_stateDictionary RPG_RT.ldb@states 1 @name
+D internal_cevDictionary RPG_RT.ldb@common_events 1 @name
+D internal_classDictionary RPG_RT.ldb@classes_2k3 1 @name
+D internal_animDictionary RPG_RT.ldb@animations 1 @name
+D internal_enemyDictionary RPG_RT.ldb@enemies 1 @name
 
 > var_id internal_variableDictionary
 > switch_id internal_switchDictionary
@@ -26,20 +30,24 @@ M internal_itemDictionary item_or_none_id__ item_or_none_id
 > map_id internal_mapDictionary
 > troop_id int
  not to be confused with an enemy within a troop
-> enemy_id int
+> enemy_id internal_enemyDictionary
 > tileset_id int
 > terrain_id int
-> animation_id int
+> animation_id internal_animDictionary
 
 > actor_id int+0
 > attribute_id int+0
 
  If you even see any of these mentioned at all, it is 2k3 only. *Always*.
 > battleranimation_id int
-> class_id int
+
+> class_id internal_classDictionary
+E class_or_none_id__ Class.ID 0 None
+M internal_classDictionary class_or_none_id__ class_or_none_id
+
 > battlecommand_id int
 
-> commonevent_id int
+> commonevent_id internal_cevDictionary
 
 E character_id_base EventID 10001 player 10002 boat 10003 ship 10004 airShip 10005 runningEvent
 M internal_eventDictionary character_id_base character_id
