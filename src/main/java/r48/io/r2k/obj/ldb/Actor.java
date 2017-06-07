@@ -50,12 +50,12 @@ public class Actor extends R2kObject {
     public IntegerR2kStruct batPosX = new IntegerR2kStruct(220);
     public IntegerR2kStruct batPosY = new IntegerR2kStruct(120);
     public IntegerR2kStruct battlerAnim = new IntegerR2kStruct(1);
-    public ArrayR2kStruct<Learning> learnSkills = new ArrayR2kStruct<Learning>(null, new ISupplier<Learning>() {
+    public SparseArrayAR2kStruct<Learning> learnSkills = new SparseArrayAR2kStruct<Learning>(new ISupplier<Learning>() {
         @Override
         public Learning get() {
             return new Learning();
         }
-    }, true);
+    });
     public IntegerR2kStruct canRename = new IntegerR2kStruct(0);
     public StringR2kStruct renameResult = new StringR2kStruct();
     public ArraySizeR2kInterpretable<ByteR2kStruct> stateRanksSz = new ArraySizeR2kInterpretable<ByteR2kStruct>();
@@ -82,6 +82,7 @@ public class Actor extends R2kObject {
     @Override
     public Index[] getIndices() {
         return new Index[] {
+
                 new Index(0x01, name, "@name"),
                 new Index(0x02, title, "@title"),
                 new Index(0x03, charName, "@character_name"),

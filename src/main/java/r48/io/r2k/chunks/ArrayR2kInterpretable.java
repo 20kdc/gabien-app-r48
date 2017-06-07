@@ -19,9 +19,11 @@ public class ArrayR2kInterpretable<T extends IR2kInterpretable> implements IR2kI
     public LinkedList<T> array = new LinkedList<T>();
     public final ISupplier<T> cons;
     public final boolean trustData;
+    public final ArraySizeR2kInterpretable<T> linked;
 
     public ArrayR2kInterpretable(ArraySizeR2kInterpretable<T> other, ISupplier<T> c, boolean trust) {
         cons = c;
+        linked = other;
         if (other != null)
             other.target = this;
         trustData = trust;
@@ -47,6 +49,11 @@ public class ArrayR2kInterpretable<T extends IR2kInterpretable> implements IR2kI
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
+        if (linked != null)
+            if (linked.resultBytes != null) {
+                baos.write(linked.resultBytes);
+                return false;
+            }
         for (T v : array)
             v.exportData(baos);
         return false;

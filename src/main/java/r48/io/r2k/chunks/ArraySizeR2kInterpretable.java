@@ -18,6 +18,8 @@ import java.io.OutputStream;
 public class ArraySizeR2kInterpretable<T extends IR2kInterpretable> implements IR2kInterpretable {
     public ArrayR2kInterpretable<T> target;
     public int bytes = 0;
+    // Buffer used to ensure consistency
+    public byte[] resultBytes = null;
     public ArraySizeR2kInterpretable() {
 
     }
@@ -43,9 +45,10 @@ public class ArraySizeR2kInterpretable<T extends IR2kInterpretable> implements I
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
-        // currently relies on the output being consistent :(
         ByteArrayOutputStream b2 = new ByteArrayOutputStream();
+        resultBytes = null;
         target.exportData(b2);
+        resultBytes = b2.toByteArray();
         switch (bytes) {
             case 0:
                 R2kUtil.writeLcfVLI(baos, b2.size());

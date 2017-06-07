@@ -80,8 +80,6 @@ C name Class.RPG::Actor @name | #A
 
  ---
 
-> rpg_skill_mod_attributes array 0 boolean
-
 : RPG::BattlerAnimationData
 e rpg_badia_movetype 0 none 1 step 2 jump 3 move
 @move_type rpg_badia_movetype
@@ -105,7 +103,7 @@ e rpg_skill_scope 0 hurtEnemy 1 hurtAllEnemies 2 healUserActor 3 healAnyActor 4 
 @switch_control_target switch_id
 @usable_in_battle boolean
 @usable_outside_battle boolean
-@required_attrs subwindow rpg_skill_mod_attributes
+@required_attrs subwindow hash attribute_id boolean
 
 .rpg_skill_sect2
 @animation animation_id
@@ -137,7 +135,7 @@ e rpg_skill_fm 0 A 1 B 2 C 3 dodge
 @mod_agi boolean
 @req_target_sp_nz boolean
 @add_states_2k3 boolean
-@mod_states subwindow array 0 boolean
+@mod_states subwindow hash state_id boolean
 @affect_target_attr_defence boolean
 
  ---

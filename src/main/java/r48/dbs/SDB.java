@@ -381,13 +381,12 @@ public class SDB {
                 } else if (c == 'i') {
                     readFile(args[0]);
                 } else if (c == 'D') {
-                    final String[] split = args[1].split("@");
-                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], split[0], new IFunction<RubyIO, RubyIO>() {
+                    String root = PathSyntax.breakToken(args[1]);
+                    final String remainder = args[1].substring(root.length());
+                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root, new IFunction<RubyIO, RubyIO>() {
                         @Override
                         public RubyIO apply(RubyIO rubyIO) {
-                            for (int i = 1; i < split.length; i++)
-                                rubyIO = rubyIO.getInstVarBySymbol("@" + split[i]);
-                            return rubyIO;
+                            return PathSyntax.parse(rubyIO, remainder);
                         }
                     }, args[2].equals("1"), args[3]));
                 } else if (c == 'd') {
@@ -464,45 +463,9 @@ public class SDB {
                             public String apply(RubyIO rubyIO) {
                                 LinkedList<RubyIO> parameters = new LinkedList<RubyIO>();
                                 for (String arg : arguments) {
-                                    RubyIO res = rubyIO;
-                                    String breakers = "$@]";
-                                    String workingArg = arg;
-                                    while (workingArg.length() > 0) {
-                                        int plannedIdx = workingArg.length();
-                                        for (char c : breakers.toCharArray()) {
-                                            int idx = workingArg.indexOf(c, 1);
-                                            if (idx >= 0)
-                                                if (idx < plannedIdx)
-                                                    plannedIdx = idx;
-                                        }
-                                        String subcom = workingArg.substring(1, plannedIdx);
-                                        char f = workingArg.charAt(0);
-                                        workingArg = workingArg.substring(plannedIdx);
-                                        switch (f) {
-                                            case '$':
-                                                if (subcom.length() != 0)
-                                                    throw new RuntimeException("unsure what to do here, $ doesn't accept additional");
-                                                break;
-                                            case '@':
-                                                res = res.getInstVarBySymbol("@" + subcom);
-                                                break;
-                                            case ']':
-                                                int atl = Integer.parseInt(subcom);
-                                                if (atl < 0) {
-                                                    res = null;
-                                                    break;
-                                                } else if (atl >= res.arrVal.length) {
-                                                    res = null;
-                                                    break;
-                                                }
-                                                res = res.arrVal[atl];
-                                                break;
-                                        }
-                                        if (res == null)
-                                            break; // Cannot go further.
-                                    }
+                                    RubyIO res = PathSyntax.parse(rubyIO, arg);
                                     if (res == null)
-                                        break; // Can't poison the thing with a null
+                                        break;
                                     parameters.add(res);
                                 }
                                 return RPGCommand.formatNameExtended(textF, rubyIO, parameters.toArray(new RubyIO[0]), null);

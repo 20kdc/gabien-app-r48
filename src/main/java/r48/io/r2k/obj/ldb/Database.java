@@ -120,21 +120,20 @@ public class Database extends R2kObject {
     @Override
     public Index[] getIndices() {
         return new Index[] {
-                new Index(0x0B, actors, "@actors"),
+                // ONE OF THESE 3
+                new Index(0x0B, actors, "@actors"), // <---
                 new Index(0x0C, skills, "@skills"),
                 new Index(0x0D, items, "@items"),
-                // --
                 new Index(0x0E, enemies, "@enemies"),
                 new Index(0x0F, troops, "@troops"),
                 new Index(0x10, terrains, "@terrains"),
                 new Index(0x11, attributes, "@attributes"),
                 new Index(0x12, states, "@states"),
                 new Index(0x13, animations, "@animations"),
-                // --
                 new Index(0x14, tilesets, "@tilesets"),
-                // --
                 new Index(0x15, terms, "@terms"),
                 new Index(0x16, system, "@system"),
+
                 new Index(0x17, switches, "@switches"),
                 new Index(0x18, variables, "@variables"),
                 new Index(0x19, commonEvents, "@common_events"),

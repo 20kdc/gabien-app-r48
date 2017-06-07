@@ -63,6 +63,8 @@ public class DictionaryUpdaterRunnable implements Runnable {
                 lastTarget = target;
                 if (fieldA != null)
                     target = fieldA.apply(target);
+                if (target == null)
+                    return; // :(
                 if (hash) {
                     for (Map.Entry<RubyIO, RubyIO> rio : target.hashVal.entrySet()) {
                         handleVal(finalMap, rio.getValue(), (int) rio.getKey().fixnumVal);
