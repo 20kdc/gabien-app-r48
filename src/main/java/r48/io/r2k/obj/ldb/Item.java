@@ -87,10 +87,10 @@ public class Item extends R2kObject {
     public BooleanR2kStruct stateEffect = new BooleanR2kStruct(false);
 
     public IntegerR2kStruct weaponAnimation = new IntegerR2kStruct(1);
-    public SparseArrayHR2kStruct<BAD> weaponAnimationData = new SparseArrayHR2kStruct<BAD>(new ISupplier<BAD>() {
+    public SparseArrayHR2kStruct<ItemAnimation> weaponAnimationData = new SparseArrayHR2kStruct<ItemAnimation>(new ISupplier<ItemAnimation>() {
         @Override
-        public BAD get() {
-            return new BAD();
+        public ItemAnimation get() {
+            return new ItemAnimation();
         }
     });
 

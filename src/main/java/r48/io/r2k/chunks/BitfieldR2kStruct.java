@@ -9,7 +9,7 @@ import r48.RubyIO;
 /**
  * Created on 02/06/17.
  */
-public class BitfieldR2kStruct extends IntegerR2kStruct {
+public class BitfieldR2kStruct extends ByteR2kStruct {
 
     // Ascending
     public final String[] flags;
@@ -24,7 +24,7 @@ public class BitfieldR2kStruct extends IntegerR2kStruct {
         RubyIO r = new RubyIO().setSymlike("__bitfield__", true);
         int pwr = 1;
         for (String s : flags) {
-            r.iVars.put(s, new RubyIO().setBool((pwr & i) != 0));
+            r.iVars.put(s, new RubyIO().setBool((pwr & value) != 0));
             pwr <<= 1;
         }
         return r;
@@ -33,9 +33,10 @@ public class BitfieldR2kStruct extends IntegerR2kStruct {
     @Override
     public void fromRIO(RubyIO src) {
         int pwr = 1;
+        value = 0;
         for (String s : flags) {
             if (src.getInstVarBySymbol(s).type == 'T')
-                i |= pwr;
+                value |= pwr;
             pwr <<= 1;
         }
     }

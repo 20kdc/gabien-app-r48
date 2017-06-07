@@ -279,7 +279,67 @@ C name Class.RPG::Enemy @name | #A
 
  ---
 
+.rpg_troop_pagecondition_flags_a
+@switch_a boolean
+@switch_b boolean
+@variable_>=_val boolean
+@turn boolean
+@fatigue boolean
+@enemy_hp boolean
+@actor_hp boolean
+@turn_enemy boolean
+
+.rpg_troop_pagecondition_flags_b
+@turn_actor boolean
+@command_actor boolean
+
+: RPG::Troop::PageCondition
+@flags_a subwindow rpg_troop_pagecondition_flags_a
+@flags_b_r2k subwindow rpg_troop_pagecondition_flags_b
+@switch_a_id switch_id
+@switch_b_id switch_id
+@variable_id var_id
+@variable_value int
+@turn_a int
+@turn_b int
+@fatigue_min int
+@fatigue_max int= 100
+@enemy_index int
+@enemy_hp%_min int
+@enemy_hp%_max int= 100
+@actor_id actor_id
+@actor_hp%_min int
+@actor_hp%_max int= 100
+@turn_enemy_index_2k3 int
+@turn_enemy_a_2k3 int
+@turn_enemy_b_2k3 int
+@turn_actor_id_2k3 actor_id
+@turn_actor_a_2k3 int
+@turn_actor_b_2k3 int
+@command_actor_id_2k3 actor_id
+@command_id_2k3 battlecommand_id
+
+: RPG::Troop::Page
+@condition RPG::Troop::PageCondition
+@list EventListEditor
+
+: RPG::Troop::Member
+@enemy enemy_id
+@x int
+@y int
+@invisible boolean
+
 : RPG::Troop
+C name Class.RPG::Troop @name | #A
+@name string
+@members subwindow arrayIx1 RPG::Troop::Member
+@terrain_set subwindow hash terrain_id boolean
+@pages subwindow arrayIx1 subwindow RPG::Troop::Page
+@OFED_auto_position boolean
+@OFED_appear_randomly boolean
+
+ ---
+
 : RPG::Terrain
 : RPG::Attribute
 
@@ -452,7 +512,11 @@ C name Class.RPG::Class @name | #A
  ---
 
 : RPG::Database
- completion status listed. 13 OK. 6 NO. Progress is being made.
+ completion status listed. 14 OK. 5 NO. Progress is being made.
+ SCHEDULE:
+  7 JUN: Troop, BattleCommands(Need to do)
+  8 JUN: Terrain, BattlerAnimation, Attribute
+  9 JUN: System ### PLANNED RELEASE DATE FOR v0.6!!!!
  OK
 @actors subwindow hash int+1 subwindow RPG::Actor
  OK
@@ -461,7 +525,7 @@ C name Class.RPG::Class @name | #A
 @items subwindow hash int+1 subwindow RPG::Item
  OK
 @enemies subwindow hash int+1 subwindow RPG::Enemy
- NO
+ OK
 @troops subwindow hash int+1 subwindow RPG::Troop
  NO
 @terrains subwindow hash int+1 subwindow RPG::Terrain
