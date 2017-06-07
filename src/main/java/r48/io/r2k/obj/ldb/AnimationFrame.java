@@ -4,18 +4,27 @@
  */
 package r48.io.r2k.obj.ldb;
 
+import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.chunks.R2kObject;
-import r48.io.r2k.chunks.SparseArrayHR2kStruct;
+import r48.io.r2k.chunks.SparseArrayAR2kStruct;
 
 /**
  * Created on 07/06/17.
  */
 public class AnimationFrame extends R2kObject {
+    public SparseArrayAR2kStruct<AnimationCell> cells = new SparseArrayAR2kStruct<AnimationCell>(new ISupplier<AnimationCell>() {
+        @Override
+        public AnimationCell get() {
+            return new AnimationCell();
+        }
+    });
     @Override
     public Index[] getIndices() {
-        return new Index[0];
+        return new Index[] {
+                new Index(0x01, cells, "@cells")
+        };
     }
 
     @Override
