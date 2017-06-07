@@ -65,7 +65,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         if (layer == currentLayer) {
             int selected = tileMaps[tabPane.tab].getSelected();
             if (tileMaps[tabPane.tab].selectedATB())
-                return (short) (selected - 47);
+                return (short) (selected - (tileMaps[tabPane.tab].autoTileSpacing));
             return (short) selected;
         }
         return there;
@@ -143,7 +143,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
                 if (i == 0)
                     if (j == 0)
                         continue;
-                if (getAutotileType(x + j, y + i, layer, myAT) == myAT)
+                if (myAT.considersSameAs(getAutotileType(x + j, y + i, layer, myAT)))
                     index |= power;
                 power <<= 1;
             }

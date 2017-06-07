@@ -7,11 +7,7 @@ package r48.io.r2k.obj.ldb;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.*;
-import r48.io.r2k.obj.ldb.Actor;
-import r48.io.r2k.obj.ldb.Skill;
-import r48.io.r2k.obj.ldb.Tileset;
 
 /**
  * Bare minimum needed to get ChipSet data out for now
@@ -81,7 +77,7 @@ public class Database extends R2kObject {
         }
     });
     public Terms terms = new Terms();
-    public System system = new System();
+    public LdbSystem system = new LdbSystem();
     public SparseArrayAR2kStruct<SVStore> switches = new SparseArrayAR2kStruct<SVStore>(new ISupplier<SVStore>() {
         @Override
         public SVStore get() {

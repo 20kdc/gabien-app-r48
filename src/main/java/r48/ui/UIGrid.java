@@ -88,6 +88,7 @@ public class UIGrid extends UIPanel {
 
     @Override
     public void setBounds(Rect r) {
+        int scrollBarW = 32; // uivScrollbar.getBounds().width; // Will fix ui lib later for this & resize conditions on windows
         int tiles = r.width / tileSize;
         if (tiles < 2)
             tiles = 2;
@@ -101,12 +102,13 @@ public class UIGrid extends UIPanel {
         rows /= tiles;
         allElements.clear();
         if (rows > availableRows) {
-            tmWidth--;
+            tmWidth -= (scrollBarW + (tileSize - 1)) / tileSize;
             allElements.add(uivScrollbar);
         } else {
             allElements.remove(uivScrollbar);
         }
-        uivScrollbar.setBounds(new Rect(tmWidth * tileSize, 0, tileSize, availableRows * tileSize));
+        Rect b = getBounds();
+        uivScrollbar.setBounds(new Rect(b.width - scrollBarW, 0, scrollBarW, availableRows * tileSize));
         super.setBounds(new Rect(r.x, r.y, tiles * tileSize, availableRows * tileSize));
     }
 

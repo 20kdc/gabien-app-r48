@@ -14,6 +14,8 @@ import r48.map.UIMapView;
 import r48.map.imaging.IImageLoader;
 import r48.ui.UITileGrid;
 
+import java.util.LinkedList;
+
 /**
  * I slept, finished MapUnit, and began writing this class.
  * Created on 31/05/17.
@@ -228,9 +230,11 @@ public class LcfTileRenderer implements ITileRenderer {
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv) {
         return new UITileGrid[] {
-                new UITileGrid(mv, 0, 1000, true, 50),
-                new UITileGrid(mv, 1000, 1000, true, 50),
-                new UITileGrid(mv, 2000, 1000, true, 50),
+                // 1000 + (1000 / 50) = 1020
+                new UITileGrid(mv, 0, 1020, true, 50),
+                new UITileGrid(mv, 1000, 1020, true, 50),
+                new UITileGrid(mv, 2000, 1020, true, 50),
+
                 new UITileGrid(mv, 3000, 1, false, 0),
                 new UITileGrid(mv, 3050, 1, false, 0),
                 new UITileGrid(mv, 3100, 1, false, 0),
@@ -257,23 +261,15 @@ public class LcfTileRenderer implements ITileRenderer {
 
     @Override
     public AutoTileTypeField[] indicateATs() {
-        return new AutoTileTypeField[] {
-                // Water ATs.
-                new AutoTileTypeField(0, 3000, 1),
-                //
-                new AutoTileTypeField(4000, 50, 0),
-                new AutoTileTypeField(4050, 50, 0),
-                new AutoTileTypeField(4100, 50, 0),
-                new AutoTileTypeField(4150, 50, 0),
-                new AutoTileTypeField(4200, 50, 0),
-                new AutoTileTypeField(4250, 50, 0),
-                new AutoTileTypeField(4300, 50, 0),
-                new AutoTileTypeField(4350, 50, 0),
-                new AutoTileTypeField(4400, 50, 0),
-                new AutoTileTypeField(4450, 50, 0),
-                new AutoTileTypeField(4500, 50, 0),
-                new AutoTileTypeField(4550, 50, 0),
-        };
+        LinkedList<AutoTileTypeField> attf = new LinkedList<AutoTileTypeField>();
+        int[] waterIndexes = new int[60];
+        for (int i = 0; i < waterIndexes.length; i++) {
+            waterIndexes[i] = i * 50;
+            attf.add(new AutoTileTypeField(i * 50, 50, 1, waterIndexes));
+        }
+        for (int i = 4000; i < 4600; i += 50)
+            attf.add(new AutoTileTypeField(i, 50, 0));
+        return attf.toArray(new AutoTileTypeField[0]);
     }
 
     @Override

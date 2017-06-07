@@ -11,7 +11,7 @@ import r48.io.r2k.chunks.R2kObject;
 /**
  * COPY jun6-2017
  */
-public class System extends R2kObject {
+public class LdbSystem extends R2kObject {
     @Override
     public Index[] getIndices() {
         return new Index[0];
