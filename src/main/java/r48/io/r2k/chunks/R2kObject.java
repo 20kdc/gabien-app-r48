@@ -54,7 +54,7 @@ public abstract class R2kObject implements IR2kStruct {
                     }
                     if (!disableSanity())
                         if (bais.available() != 0)
-                            throw new IOException("Not all of the chunk interpreted by " + t[i].chunk + " in " + this);
+                            throw new IOException("Not all of the chunk interpreted by " + t[i] + " in " + this);
                     handled = true;
                     break;
                 }

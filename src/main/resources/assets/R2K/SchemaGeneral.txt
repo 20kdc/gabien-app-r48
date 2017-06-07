@@ -18,6 +18,8 @@ D internal_classDictionary RPG_RT.ldb@classes_2k3 1 @name
 D internal_animDictionary RPG_RT.ldb@animations 1 @name
 D internal_enemyDictionary RPG_RT.ldb@enemies 1 @name
 
+D internal_battlecommandDictionary RPG_RT.ldb@battle_commands_2k3@commands 0 @name
+
 > var_id internal_variableDictionary
 > switch_id internal_switchDictionary
 
@@ -45,9 +47,11 @@ M internal_itemDictionary item_or_none_id__ item_or_none_id
 E class_or_none_id__ Class.ID 0 None
 M internal_classDictionary class_or_none_id__ class_or_none_id
 
-> battlecommand_id int
+> battlecommand_id internal_battlecommandDictionary
 
 > commonevent_id internal_cevDictionary
+E commonevent_or_none_id__ CEV.ID 0 None
+M internal_cevDictionary commonevent_or_none_id__ commonevent_or_none_id
 
 E character_id_base EventID 10001 player 10002 boat 10003 ship 10004 airShip 10005 runningEvent
 M internal_eventDictionary character_id_base character_id

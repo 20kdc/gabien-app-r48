@@ -30,7 +30,7 @@ public class Index {
     @Override
     public String toString() {
         if (rioHelperName != null)
-            return index + " -> " + rioHelperName;
+            return "0x" + Integer.toHexString(index) + " -> " + rioHelperName;
         return "0x" + Integer.toHexString(index);
     }
 }

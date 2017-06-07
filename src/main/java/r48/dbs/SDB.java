@@ -562,6 +562,13 @@ public class SDB {
         return fd;
     }
 
+    public void startupSanitizeDictionaries() {
+        for (DictionaryUpdaterRunnable dur : dictionaryUpdaterRunnables)
+            dur.sanitize();
+        for (Runnable merge : mergeRunnables)
+            merge.run();
+    }
+
     public void updateDictionaries(RubyIO map) {
         for (DictionaryUpdaterRunnable dur : dictionaryUpdaterRunnables)
             dur.actIfRequired(map);

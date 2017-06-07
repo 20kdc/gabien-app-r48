@@ -76,9 +76,13 @@ public class DictionaryUpdaterRunnable implements Runnable {
             } else {
                 actNow = true;
             }
-            SchemaElement ise = new EnumSchemaElement(finalMap, "ID.");
-            AppMain.schemas.setSDBEntry(dict, ise);
+            finalizeVals(finalMap);
         }
+    }
+
+    private void finalizeVals(HashMap<Integer, String> finalMap) {
+        SchemaElement ise = new EnumSchemaElement(finalMap, "ID.");
+        AppMain.schemas.setSDBEntry(dict, ise);
     }
 
     private void handleVal(HashMap<Integer, String> finalMap, RubyIO rio, int fixnumVal) {
@@ -94,5 +98,9 @@ public class DictionaryUpdaterRunnable implements Runnable {
     @Override
     public void run() {
         actNow = true;
+    }
+
+    public void sanitize() {
+        finalizeVals(new HashMap<Integer, String>());
     }
 }

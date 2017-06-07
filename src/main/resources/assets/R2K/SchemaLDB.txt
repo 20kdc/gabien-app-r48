@@ -468,7 +468,71 @@ C name Class.RPG::Tileset @name | #A
 
  ---
 
+e rpg_system_ldbid 0 RM2000 2003 RM2003
+e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 order 8 wait 9 quit
+
+: RPG::TestBattler
+
 : RPG::System
+@ldb_id rpg_system_ldbid
+@magic_number int
+
+@boat_name string
+@boat_index int
+@ship_name string
+@ship_index int
+@airship_name string
+@airship_index int
+@title_name string
+@gameover_name string
+@system_name string
+@system2_name_2k3 string
+@party subwindow array 0 actor_id
+@menu_commands_2k3 subwindow array 0 rpg_system_menucommand
+
+@title_music RPG::Music
+@battle_music RPG::Music
+@battle_end_music RPG::Music
+@inn_music RPG::Music
+@boat_music RPG::Music
+@ship_music RPG::Music
+@airship_music RPG::Music
+@gameover_music RPG::Music
+
+@cursor_se RPG::Sound
+@decision_se RPG::Sound
+@cancel_se RPG::Sound
+@buzzer_se RPG::Sound
+@battle_se RPG::Sound
+@escape_se RPG::Sound
+@enemy_attack_se RPG::Sound
+@enemy_hurt_se RPG::Sound
+@enemy_death_se RPG::Sound
+@actor_hurt_se RPG::Sound
+@dodge_se RPG::Sound
+@item_se RPG::Sound
+
+@transition_in change_transition_type
+@transition_out change_transition_type
+@battle_start_fadein change_transition_type
+@battle_start_fadeout change_transition_type
+@battle_end_fadein change_transition_type
+@battle_end_fadeout change_transition_type
+
+@message_stretch int
+@font_id int
+
+@test_condition int
+@test_actor actor_id
+@test_battle_background string
+@test_battle_data subwindow array 0 OPAQUE
+@test_battle_terrain terrain_id
+@test_battle_formation int
+@test_battle_condition int
+@frame_show_2k3 boolean
+@frame_name_2k3 string
+@invert_animations_2k3 boolean
+@show_title_2k3 booleanDefTrue
 
  ---
 
@@ -484,7 +548,29 @@ e rpg_cev_trigger 5 startOnCall 3 startOnCondition 4 startOnConditionParallel
 
  ---
 
+e rpg_battlecommand_type 0 attack 1 skill 2 subSkill 3 defense 4 item 5 escape 6 special
+: RPG::BattleCommand
+@name string
+@type rpg_battlecommand_type
+
+e rpg_battlecommand_battletype 0 traditional 1 alternative 2 gauge
+e rpg_battlecommand_dir 0 noModify 1 up 2 right 3 down 4 left
+
 : RPG::BattleCommands
+@auto_placement boolean
+@row_back boolean
+@window_large boolean
+@battle_type rpg_battlecommand_battletype
+@commands subwindow arrayIx1 RPG::BattleCommand
+@death_handler_1 int
+@death_handler_2 int
+@death_event commonevent_or_none_id
+@transparent boolean
+@teleport boolean
+@teleport_id map_id
+@teleport_x int
+@teleport_y int
+@teleport_face rpg_battlecommand_dir
 
  ---
 
@@ -512,11 +598,11 @@ C name Class.RPG::Class @name | #A
  ---
 
 : RPG::Database
- completion status listed. 14 OK. 5 NO. Progress is being made.
+ completion status listed. 16 OK. 3 NO. Progress is being made.
  SCHEDULE:
-  7 JUN: Troop, BattleCommands(Need to do)
-  8 JUN: Terrain, BattlerAnimation, Attribute
-  9 JUN: System ### PLANNED RELEASE DATE FOR v0.6!!!!
+  7 JUN: Troop, BattleCommands, System
+  8 JUN: System <cleanup>, Terrain, BattlerAnimation, Attribute
+  9 JUN: ### PLANNED RELEASE DATE FOR v0.6!!!!
  OK
 @actors subwindow hash int+1 subwindow RPG::Actor
  OK
@@ -539,7 +625,7 @@ C name Class.RPG::Class @name | #A
 @tilesets subwindow hash int+1 subwindow RPG::Tileset
  OK
 @terms subwindow rpg_terms
- NO
+ OK
 @system subwindow RPG::System
  OK
 @switches subwindow arrayIx1 string
@@ -549,7 +635,7 @@ C name Class.RPG::Class @name | #A
 @common_events subwindow hash int+1 subwindow RPG::CommonEvent
  OK Supposedly an integer. Supposedly.
 @db_version OPAQUE
- NO
+ OK
 @battle_commands_2k3 subwindow RPG::BattleCommands
  OK
 @classes_2k3 subwindow hash int+1 subwindow RPG::Class

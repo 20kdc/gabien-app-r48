@@ -128,6 +128,7 @@ public class AppMain {
         //  before starting the UI, which can cause external consistency checks
         //  (...and potentially cause havoc in the process)
 
+        schemas.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
         schemas.updateDictionaries(null);
         schemas.confirmAllExpectationsMet();
     }
@@ -135,7 +136,13 @@ public class AppMain {
     public static IConsumer<Double> initializeAndRun(final IConsumer<UIElement> uiTicker) {
 
         // initialize UI
-        final UIWindowView rootView = new UIWindowView();
+        final UIWindowView rootView = new UIWindowView() {
+            @Override
+            public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
+                Coco.run(igd);
+                super.updateAndRender(ox, oy, deltaTime, selected, igd);
+            }
+        };
         rootView.windowTextHeight = FontSizes.windowFrameHeight;
         windowMaker = rootView;
         rootView.setBounds(new Rect(0, 0, 800, 600));
