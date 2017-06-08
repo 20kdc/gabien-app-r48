@@ -75,10 +75,10 @@ public class LdbSystem extends R2kObject {
     public IntegerR2kStruct testCondition = new IntegerR2kStruct(0);
     public IntegerR2kStruct testActor = new IntegerR2kStruct(0);
     public StringR2kStruct battletestBackground = new StringR2kStruct();
-    public SparseArrayAR2kStruct<BlobR2kStruct> battletestData = new SparseArrayAR2kStruct<BlobR2kStruct>(new ISupplier<BlobR2kStruct>() {
+    public SparseArrayAR2kStruct<TestBattler> battletestData = new SparseArrayAR2kStruct<TestBattler>(new ISupplier<TestBattler>() {
         @Override
-        public BlobR2kStruct get() {
-            return new BlobR2kStruct(R2kUtil.supplyBlank(1, (byte) 0));
+        public TestBattler get() {
+            return new TestBattler();
         }
     });
     public IntegerR2kStruct magic = new IntegerR2kStruct(0);
@@ -134,7 +134,7 @@ public class LdbSystem extends R2kObject {
                 new Index(0x40, battleStartFadein, "@battle_start_fadein"),
                 new Index(0x41, battleEndFadeout, "@battle_end_fadeout"),
                 new Index(0x42, battleEndFadein, "@battle_end_fadein"),
-                new Index(0x47, messageStretch, "@message_stretch"),
+                new Index(0x47, messageStretch, "@message_tiling"),
                 new Index(0x48, fontId, "@font_id"),
                 new Index(0x51, testCondition, "@test_condition"),
                 new Index(0x52, testActor, "@test_actor"),
@@ -161,5 +161,39 @@ public class LdbSystem extends R2kObject {
     @Override
     public void fromRIO(RubyIO src) {
         fromRIOISF(src);
+    }
+
+    public static class TestBattler extends R2kObject {
+        public IntegerR2kStruct actor = new IntegerR2kStruct(1);
+        public IntegerR2kStruct level = new IntegerR2kStruct(1);
+        public IntegerR2kStruct weaponId = new IntegerR2kStruct(0);
+        public IntegerR2kStruct shieldId = new IntegerR2kStruct(0);
+        public IntegerR2kStruct armourId = new IntegerR2kStruct(0);
+        public IntegerR2kStruct helmetId = new IntegerR2kStruct(0);
+        public IntegerR2kStruct accessoryId = new IntegerR2kStruct(0);
+        @Override
+        public Index[] getIndices() {
+            return new Index[] {
+                    new Index(0x01, actor, "@actor"),
+                    new Index(0x02, level, "@level"),
+                    new Index(0x0B, weaponId, "@equip_weapon"),
+                    new Index(0x0C, shieldId, "@equip_shield"),
+                    new Index(0x0D, armourId, "@equip_armour"),
+                    new Index(0x0E, helmetId, "@equip_helmet"),
+                    new Index(0x0F, accessoryId, "@equip_accessory")
+            };
+        }
+
+        @Override
+        public RubyIO asRIO() {
+            RubyIO rio = new RubyIO().setSymlike("RPG::System::TestBattler", true);
+            asRIOISF(rio);
+            return rio;
+        }
+
+        @Override
+        public void fromRIO(RubyIO src) {
+            fromRIOISF(src);
+        }
     }
 }

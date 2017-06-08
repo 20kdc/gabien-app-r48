@@ -439,6 +439,10 @@ public class SDB {
                         // Really special schema
                         workingObj.aggregate.add(new RMAnimSchemaElement(args[1], args[2], Integer.parseInt(args[3])));
                     }
+                    if (args[0].equals("burnYourselfOutDoYourselfIn")) {
+                        // Really special schema
+                        workingObj.aggregate.add(new R2kSystemDefaultsInstallerSchemaElement());
+                    }
                     if (args[0].equals("name")) {
                         final LinkedList<String> arguments = new LinkedList<String>();
                         String text = "";

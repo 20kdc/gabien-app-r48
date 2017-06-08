@@ -29,12 +29,12 @@
 
 .rpg_actor_parameter_block
 C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C DEF:#D SPI:#E AGI:#F
-]0 maxHp int
-]1 maxMp int
-]2 atk int
-]3 def int
-]4 spi int
-]5 agi int
+]0 maxHp int= 10
+]1 maxMp int= 10
+]2 atk int= 10
+]3 def int= 10
+]4 spi int= 10
+]5 agi int= 10
 
 : RPG::Learning
 @level int= 1
@@ -48,19 +48,20 @@ C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C D
 
 : RPG::Actor
 C name Class.RPG::Actor @name | #A
-@name string
-@title string
+ Totally not a C&H reference. I added an 'i'.
+@name string= TediBear
+@title string= Survivalist
 +subwindow[ Graphics ] actorpage_graphics
 @face_name string
 @face_index int
-@init_level int
-@init_level_exp int
-@each_level_exp_p int
+@init_level int= 1
+@init_level_exp int= 10
+@each_level_exp_p int= 10
 @each_level_exp_modc int
-@final_level int
+@final_level int= 1
 @battle_auto boolean
 @battle_super_guard boolean
-@battle_parameters subwindow array 0 subwindow[ @rpg_actor_parameter_block ] rpg_actor_parameter_block
+@battle_parameters subwindow arrayAL1 subwindow[ @rpg_actor_parameter_block ] rpg_actor_parameter_block
 @battle_skillspanel_name string
 @battle_posx_2k3 int
 @battle_posy_2k3 int
@@ -436,8 +437,8 @@ C name Class.RPG::Animation @name | #A
 
 : RPG::Tileset
 C name Class.RPG::Tileset @name | #A
-@name string
-@tileset_name string
+@name string= Template
+@tileset_name string= templatetileset
  This is kind of important:
  The highpass data is obvious, lowpass/TID not so much.
  Lowpass/TID allocation is:
@@ -462,7 +463,7 @@ C name Class.RPG::Tileset @name | #A
 +tableSTAF R2K/TS162.txt @lowpass_data . . 162 1 1 down left right up upper wall counter
 +tableSTAF R2K/TS144.txt @highpass_data . . 144 1 1 down left right up upper wall counter
 @anim_cyclic boolean
-@anim_speed int= 0
+@anim_speed int
 
  ---
 
@@ -470,10 +471,31 @@ e rpg_system_ldbid 0 RM2000 2003 RM2003
 e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 order 8 wait 9 quit
 
 : RPG::TestBattler
+@actor actor_id
+@level int= 1
+@equip_weapon item_id
+@equip_shield item_id
+@equip_armour item_id
+@equip_helmet item_id
+@equip_accessory item_id
 
 : RPG::System
 @ldb_id rpg_system_ldbid
 @magic_number int
+
++subwindow[ Music ] rpg_system_music
++subwindow[ Sounds ] rpg_system_sound
++subwindow[ Transitions ] rpg_system_transition
++subwindow[ Test Parameters ] rpg_system_testing
+
+@title_name string
+@show_title_2k3 booleanDefTrue
+@gameover_name string
+@system_name string
+@system2_name_2k3 string
+
+@party subwindow array 0 actor_id
+@menu_commands_2k3 subwindow array 0 rpg_system_menucommand
 
 @boat_name string
 @boat_index int
@@ -481,13 +503,27 @@ e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 orde
 @ship_index int
 @airship_name string
 @airship_index int
-@title_name string
-@gameover_name string
-@system_name string
-@system2_name_2k3 string
-@party subwindow array 0 actor_id
-@menu_commands_2k3 subwindow array 0 rpg_system_menucommand
 
+@message_tiling int_boolean
+e rpg_system_font 0 gothic 1 mincho
+@font_id rpg_system_font
+
+@frame_show_2k3 boolean
+@frame_name_2k3 string
+@invert_animations_2k3 boolean
+
+.rpg_system_testing
+@test_condition int
+@test_actor actor_id
+@test_battle_background string
+@test_battle_data subwindow array 0 RPG::TestBattler
+@test_battle_terrain terrain_id
+e rpg_system_testing_battle_formation 0 fromTerrain 1 loose 2 tight
+@test_battle_formation rpg_system_testing_battle_formation
+e rpg_system_testing_battle_condition 0 none 1 initiative 2 back 3 surround 4 pincers
+@test_battle_condition rpg_system_testing_battle_condition
+
+.rpg_system_music
 @title_music RPG::Music
 @battle_music RPG::Music
 @battle_end_music RPG::Music
@@ -497,6 +533,7 @@ e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 orde
 @airship_music RPG::Music
 @gameover_music RPG::Music
 
+.rpg_system_sound
 @cursor_se RPG::Sound
 @decision_se RPG::Sound
 @cancel_se RPG::Sound
@@ -510,27 +547,13 @@ e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 orde
 @dodge_se RPG::Sound
 @item_se RPG::Sound
 
+.rpg_system_transition
 @transition_in change_transition_type
 @transition_out change_transition_type
 @battle_start_fadein change_transition_type
 @battle_start_fadeout change_transition_type
 @battle_end_fadein change_transition_type
 @battle_end_fadeout change_transition_type
-
-@message_stretch int
-@font_id int
-
-@test_condition int
-@test_actor actor_id
-@test_battle_background string
-@test_battle_data subwindow array 0 OPAQUE
-@test_battle_terrain terrain_id
-@test_battle_formation int
-@test_battle_condition int
-@frame_show_2k3 boolean
-@frame_name_2k3 string
-@invert_animations_2k3 boolean
-@show_title_2k3 booleanDefTrue
 
  ---
 
@@ -599,7 +622,9 @@ C name Class.RPG::Class @name | #A
  completion status listed. 16 OK. 3 NO. Progress is being made.
  SCHEDULE:
   7 JUN: Troop, BattleCommands, System
-  8 JUN: System <cleanup>, Terrain, BattlerAnimation, Attribute
+   (System was finished up after midnight. A proper serialization test happened just after, had to debug. 1AM now.
+    Doing System cleanup, then getting some rest. There's now more than enough time.)
+  8 JUN: Terrain, BattlerAnimation, Attribute
   9 JUN: ### PLANNED RELEASE DATE FOR v0.6!!!!
  OK
 @actors subwindow hash int+1 subwindow RPG::Actor
@@ -632,10 +657,11 @@ C name Class.RPG::Class @name | #A
  OK
 @common_events subwindow hash int+1 subwindow RPG::CommonEvent
  OK Supposedly an integer. Supposedly.
-@db_version OPAQUE
+@db_version stringBlobEditor
  OK
 @battle_commands_2k3 subwindow RPG::BattleCommands
  OK
 @classes_2k3 subwindow hash int+1 subwindow RPG::Class
  NO
 @battler_anims_2k3 subwindow hash int+1 subwindow RPG::BattlerAnimation
+C burnYourselfOutDoYourselfIn
