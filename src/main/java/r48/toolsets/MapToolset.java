@@ -12,7 +12,7 @@ import gabien.ui.IConsumer;
 import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import r48.AppMain;
-import r48.RubyIO;
+import r48.IMapContext;
 import r48.map.UIMapViewContainer;
 
 /**
@@ -45,11 +45,21 @@ public class MapToolset implements IToolset {
         };
     }
 
-    public RubyIO getCurrentMap() {
-        if (lastMadeMVC == null)
-            return null;
-        if (lastMadeMVC.view == null)
-            return null;
-        return lastMadeMVC.view.map;
+    public IMapContext getContext() {
+        return new IMapContext() {
+            @Override
+            public String getCurrentMap() {
+                if (lastMadeMVC == null)
+                    return null;
+                if (lastMadeMVC.view == null)
+                    return null;
+                return lastMadeMVC.view.mapId;
+            }
+
+            @Override
+            public void loadMap(String s) {
+                lastMadeMVC.loadMap(s);
+            }
+        };
     }
 }

@@ -74,6 +74,21 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     };
                     // 4. Setup start
                     target.getInstVarBySymbol("@start").getInstVarBySymbol("@player_map").fixnumVal = 1;
+                    // This is all hax anyway, so schedule a force-load of the new map.
+                    // Note that pending runnables happen at end of frame, usually,
+                    //  and it takes a frame to get all the UI sorted out
+                    AppMain.pendingRunnables.add(new Runnable() {
+                        @Override
+                        public void run() {
+                            AppMain.pendingRunnables.add(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (AppMain.mapContext != null)
+                                        AppMain.mapContext.loadMap("Map0001.lmu");
+                                }
+                            });
+                        }
+                    });
                     break;
             }
             // finally, signal

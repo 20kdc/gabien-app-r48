@@ -16,7 +16,6 @@ import r48.io.R2kObjectBackend;
 import r48.io.R48ObjectBackend;
 import r48.map.StuffRenderer;
 import r48.musicality.Musicality;
-import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
@@ -62,7 +61,6 @@ public class AppMain {
     public static HashSet<Runnable> pendingRunnables = new HashSet<Runnable>();
 
     private static UILabel uiStatusLabel;
-    private static MapToolset mapController;
 
     public static UIElement nextMapTool = null;
 
@@ -78,10 +76,11 @@ public class AppMain {
     public static ATDB[] autoTiles = new ATDB[0];
     public static SDB schemas = null;
 
-    // Backend Service (these are dealt with in StuffRenderer, since they're all really it's responsibility)
+    // Backend Services
 
     public static StuffRenderer stuffRenderer;
     public static MapSystem system;
+    public static IMapContext mapContext;
 
     // State for in-system copy/paste
     public static RubyIO theClipboard = null;
@@ -159,16 +158,19 @@ public class AppMain {
             @Override
             public void accept(Double deltaTime) {
                 uiStatusLabel.Text = objectDB.modifiedObjects.size() + " modified.";
-                if (mapController != null) {
-                    schemas.updateDictionaries(mapController.getCurrentMap());
+                if (mapContext != null) {
+                    String mapId = mapContext.getCurrentMap();
+                    RubyIO map = null;
+                    if (mapId != null)
+                        map = objectDB.getObject(mapId);
+                    schemas.updateDictionaries(map);
                 } else {
                     schemas.updateDictionaries(null);
                 }
                 if (Musicality.running)
                     Musicality.update(deltaTime);
 
-                LinkedList<Runnable> runs = new LinkedList<Runnable>();
-                runs.addAll(pendingRunnables);
+                LinkedList<Runnable> runs = new LinkedList<Runnable>(pendingRunnables);
                 pendingRunnables.clear();
                 for (Runnable r : runs)
                     r.run();
@@ -184,10 +186,12 @@ public class AppMain {
         // Until a future time, this is hard-coded as the classname of a map being created via MapInfos.
         // Probably simple enough to create a special alias, but meh.
         if (AppMain.schemas.hasSDBEntry("RPG::Map")) {
-            mapController = new MapToolset();
+            MapToolset mapController = new MapToolset();
+            // Really just restricts access to prevent a hax pileup
+            mapContext = mapController.getContext();
             toolsets.add(mapController);
         } else {
-            mapController = null;
+            mapContext = null;
         }
         if (AppMain.schemas.hasSDBEntry("EventCommandEditor"))
             toolsets.add(new RMToolsToolset());

@@ -26,6 +26,7 @@ import java.util.LinkedList;
  * Created on 12/27/16.
  */
 public class UIMapView extends UIElement implements IWindowElement {
+    // NOTE: camX/camY is negated display offset, from TL corner.
     private int camX, camY, lmX, lmY;
     private int currentLayer = 0;
     private boolean[] layerInvisible;
@@ -54,7 +55,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     };
 
     public UIMapView(String mapN, int i, int i1) {
-        // This makes it load in the right spot.
+        // Note that using setBounds directly causes camera adjustment (bad, only just created element)
         setBounds(new Rect(0, 0, i, i1));
 
         mapId = mapN;
@@ -66,14 +67,15 @@ public class UIMapView extends UIElement implements IWindowElement {
         AppMain.stuffRenderer = AppMain.system.rendererFromMap(map);
         tileSize = AppMain.stuffRenderer.tileRenderer.getTileSize();
 
-        camX = tileSize * (mapTable.width / 2);
-        camY = tileSize * (mapTable.height / 2);
+        camX = -i / 2;
+        camY = -i1 / 2;
         if (minimap) {
-            camX /= (tileSize / 2);
-            camY /= (tileSize / 2);
+            camX += 2 * mapTable.width;
+            camY += 2 * mapTable.height;
+        } else {
+            camX += (tileSize * mapTable.width) / 2;
+            camY += (tileSize * mapTable.height) / 2;
         }
-        camX -= i / 2;
-        camY -= i1 / 2;
     }
 
     public Rect getLayerTabRect(int i) {
@@ -294,11 +296,6 @@ public class UIMapView extends UIElement implements IWindowElement {
             lmX = x;
             lmY = y;
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Map" + mapId;
     }
 
     public void toggleMinimap() {
