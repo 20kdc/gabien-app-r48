@@ -4,10 +4,6 @@
 
  (highly incomplete) database schema
 
- LIST OF THINGS TO PERFORM WHEN DONE
- Dictionary unification
- 'MapContext'
-
  ---
 
 .rpg_actor_equipment_block
@@ -391,6 +387,13 @@ e rpg_terrain_bushdepth 0 normal 1 third 2 half 3 full
 
 
 : RPG::Attribute
+@name string
+@magical boolean
+@a_rate int= 300
+@b_rate int= 200
+@c_rate int= 100
+@d_rate int= 50
+@e_rate int
 
  ---
 
@@ -718,47 +721,26 @@ e rpg_bas_speed 0 slow 8 normal 14 fast
  ---
 
 : RPG::Database
- completion status listed. 18 OK. 1 NO. Almost done.
- SCHEDULE:
-  8 JUN: Terrain (done), BattlerAnimation (done), Attribute
-  9 JUN: ### PLANNED RELEASE DATE FOR v0.6!!!!
- OK
 @actors subwindow hash int+1 subwindow RPG::Actor
- OK
 @skills subwindow hash int+1 subwindow RPG::Skill
- OK
 @items subwindow hash int+1 subwindow RPG::Item
- OK
 @enemies subwindow hash int+1 subwindow RPG::Enemy
- OK
 @troops subwindow hash int+1 subwindow RPG::Troop
- OK
 @terrains subwindow hash int+1 subwindow RPG::Terrain
- NO
 @attributes subwindow hash int+1 subwindow RPG::Attribute
- OK
 @states subwindow hash int+1 subwindow RPG::State
- OK
 @animations subwindow hash int+1 subwindow RPG::Animation
- OK
 @tilesets subwindow hash int+1 subwindow RPG::Tileset
- OK
 @terms subwindow rpg_terms
- OK
 @system subwindow RPG::System
- OK
 @switches subwindow arrayIx1 string
- OK
 @variables subwindow arrayIx1 string
- OK
 @common_events subwindow hash int+1 subwindow RPG::CommonEvent
- OK Supposedly an integer. Supposedly.
-@db_version stringBlobEditor
- OK
+ Supposedly an integer. Supposedly.
+ Currently representing as an array of bytes.
+@db_version subwindow array 0 int
 @battle_commands_2k3 subwindow RPG::BattleCommands
- OK
 @classes_2k3 subwindow hash int+1 subwindow RPG::Class
- OK
 @battle_anim_sets_2k3 subwindow hash int+1 subwindow RPG::BattlerAnimationSet
  Supplies defaults
 C burnYourselfOutDoYourselfIn 0

@@ -97,7 +97,12 @@ public class Database extends R2kObject {
             return new CommonEvent();
         }
     });
-    public StringR2kStruct dbVersion = new StringR2kStruct();
+    public ArrayR2kStruct<ByteR2kStruct> dbVersion = new ArrayR2kStruct<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
+        @Override
+        public ByteR2kStruct get() {
+            return new ByteR2kStruct(0);
+        }
+    }, true);
     public BattleCommands battleCommands2k3 = new BattleCommands();
     public SparseArrayHR2kStruct<ActorClass> classes2k3 = new SparseArrayHR2kStruct<ActorClass>(new ISupplier<ActorClass>() {
         @Override

@@ -20,6 +20,10 @@ D internal_classDictionary RPG_RT.ldb@classes_2k3 1 @name
 D internal_animDictionary RPG_RT.ldb@animations 1 @name
 D internal_enemyDictionary RPG_RT.ldb@enemies 1 @name
 
+D internal_actorDictionary RPG_RT.ldb@actors 1 @name
+D internal_attributeDictionary RPG_RT.ldb@attributes 1 @name
+D internal_battleanimationDictionary RPG_RT.ldb@battle_anim_sets_2k3 1 @name
+
 D internal_battlecommandDictionary RPG_RT.ldb@battle_commands_2k3@commands 0 @name
 
 > var_id internal_variableDictionary
@@ -39,11 +43,11 @@ M internal_itemDictionary item_or_none_id__ item_or_none_id
 > terrain_id internal_terrainDictionary
 > animation_id internal_animDictionary
 
-> actor_id int+0
-> attribute_id int+0
+> actor_id internal_actorDictionary
+> attribute_id internal_attributeDictionary
 
  If you even see any of these mentioned at all, it is 2k3 only. *Always*.
-> battleranimation_id int
+> battleranimation_id internal_battleanimationDictionary
 
 > class_id internal_classDictionary
 E class_or_none_id__ Class.ID 0 None
