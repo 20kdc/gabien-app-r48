@@ -17,6 +17,9 @@ i HelpImg/0.demo.png
 . Third, make sure that you've selected that game at the first menu.
 . If not, closing both this help window and the main window should bring you back there.
 .
+. Before you continue, if you are just starting out and trying to make something to run on EasyRPG with this, read the following.
+> 21 R2k Backend Quickstart
+.
 . Moving this help window out of the way, the picture on the right should match.
 . The tab names should describe what they do, but in any case, for further detail, see the below pages:
 > 1 Map
@@ -365,6 +368,58 @@ p 4
 . P12.Should the left key be checked?
 . P13.Should the right key be checked?
 . P14.Should the up key be checked?
+
+21: R2k Backend Quickstart
+. RPG Maker 2000/2003 is, as you probably know, emulated by the (unrelated to me) open-source EasyRPG Player project.
+. As RPG Maker 2000/2003 does not have any Core Scripts to deal with, it means that with a full editor, games can be created from scratch.
+. Step 1. Create a blann folder.
+. Step 2. In the folder, create the folders "ChipSets" and "System". (capitalization is important.)
+. Step 3. Extract assets/R2K/templatetileset.png from this JAR (it's a ZIP file) and put it in ChipSets. Do not rename it.
+. Step 4. Extract assets/R2K/System.png from this JAR (it's a ZIP file) and put it in System. Do not rename it.
+. Step 5. Copy the program JAR into the folder and run it, or alternatively (if you understand how to use Root Path) simply point it there.
+. Step 6. Once you select RPG Maker 2000/2003, there should be 3 modified files, and the screen showing up should contain a grid flashing between different colours.
+. Step 7. Save all modified files, and begin work. You will need a knowledge of how RPG Maker 2000/2003 games are structured to continue, but it should work.
+.
+. General Structure:
+. RPG_RT.ldb and RPG_RT.lmt: Data files used to run the game.
+. RPG_RT.ini: Optional and not handled by R48. Starts with the line "[RPG_RT]", and ought to contain "GameTitle=your title here".
+. BattleWeapon: Weapons used for attack animations.
+. Battle: Enemy images. 480x480, 96x96 per enemy.
+. CharSet: Event and vehicle images. See Index/Map/MapTools/EventList/R2k Events Overview/Graphics.
+. ChipSet: Tilesets. The best way to understand this is probably to look at the template and experiment.
+. (ChipSets are always 480x256.)
+. FaceSet: Faces. 192x192 total, 48x48 for each face.
+. GameOver: 320x240 images for Game Over.
+. Music: Music, in various formats.
+. Panorama: For the "parallax" fields. Note that the editor's ability to view parallax is incomplete.
+. Picture: Arbitrary images to be shown on screen using specific commands.
+. Sound: Sound effects for various things.
+> 22 System: Alters the general appearance of system frames and text. 160x80.
+. System2: For things used in RPG Maker 2003. 80x96.
+. Title: Title screen images. 320x240.
+
+22: R2k Backend 'System' Explaination
+. The "System" images are 160x80, and follow a complex layout.
+. The bottom 32 pixels are 16x16 colour swabs for text rendering.
+. The 4th is used for disabled items, the 5th is used to mean "critical", and the 6th means dead.
+. The 10th, meanwhile, is used for healing actions.
+. The next highest 16 pixels are broken unevenly into 16 pieces.
+. Horizontally, these are:
+. 16 pixels: Main Background Swab
+. 16 pixels: Main Shadow Swab
+. 8 pixels times 10: Digits 0 to 9
+. 8 pixels: ':'
+. 8 pixels: Unused (or maybe space)
+. 16 pixels: Shadow Large
+. 16 pixels: Shadow Small
+. The remaining 32 vertical pixels are broken into 4.
+. 32 pixels: Window Frame Swab (can be stretched or tiled depending on RPG::System settings)
+. 32 pixels: Frame (outer 8 pixel border) and arrows (inner 16x16 pixels block split in 2, up arrow being upper)
+. 32 pixels: Selection Frame, animation frame 1
+. 32 pixels: Selection Frame, animation frame 2
+. 32 pixels: This is further split into 4 8-pixel wide frames of 4 8-pixel high change indicators.
+. From the top of the indicators, these are "positive", "same", "negative", and a "E" (Equipped?).
+> 21 Back To Quickstart
 
 800: Help Page On Help Page Allocations
 . 0: The first page.
