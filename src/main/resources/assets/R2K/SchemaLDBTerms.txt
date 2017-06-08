@@ -3,20 +3,16 @@
  * No warranty is provided, implied or otherwise.
 
 .rpg_terms
-+subwindow array 127 string
-+subwindow[ Labelled (WIP) ] rpg_terms_labels
-
-.rpg_terms_labels
 ]0 annXEncounter string
 ]1 preemptiveAttack string
 ]2 ranAwaySafely string
 ]3 failedToEscape string
 ]4 wonACombat string
-]5 partyDead string
-]6 experience string
-]7 youFound string
-]8 xMoney string
-]9 xReceived string
+]5 partyDead string= Your
+]6 experience string= experience
+]7 youFound string_= You_found
+]8 xMoney string= money!
+]9 xReceived string= received.
 ]10 annXAttacksTheEnemy string
 ]11 annCritEnemyHurt string
 ]12 annCritPlayersHurt string
@@ -49,44 +45,89 @@
 
 ]39 shop1Greet string
 ]40 shop1Impatient string
-]41 shop1Buy string
-]42 shop1Sell string
-]43 shop1Leave string
+]41 shop1Buy string= Buy
+]42 shop1Sell string= Sell
+]43 shop1Leave string= Leave
 ]44 shop1WTBQuestion string
 ]45 shop1ICoBQuestion string
 ]46 shop1Done string
 ]47 shop1WTSQuestion string
 ]48 shop1ICoSQuestion string
-]49 shop1Thanks string
+]49 shop1Thanks string_= Thank_you_for_your_custom.
 
 ]50 shop2Greet string
 ]51 shop2Impatient string
-]52 shop2Buy string
-]53 shop2Sell string
-]54 shop2Leave string
-]55 shop2WTBQuestion string
-]56 shop2ICoBQuestion string
+]52 shop2Buy string= Buy
+]53 shop2Sell string= Sell
+]54 shop2Leave string= Leave
+]55 shop2WTBQuestion string_= How_many?
+]56 shop2ICoBQuestion string_= How_many?
 ]57 shop2Done string
 ]58 shop2WTSQuestion string
 ]59 shop2ICoSQuestion string
-]60 shop2Thanks string
+]60 shop2Thanks string_= Thank_you_for_your_custom.
 
 ]61 shop3Greet string
 ]62 shop3Impatient string
-]63 shop3Buy string
-]64 shop3Sell string
-]65 shop3Leave string
-]66 shop3WTBQuestion string
-]67 shop3ICoBQuestion string
+]63 shop3Buy string= Buy
+]64 shop3Sell string= Sell
+]65 shop3Leave string= Leave
+]66 shop3WTBQuestion string_= How_many?
+]67 shop3ICoBQuestion string_= How_many?
 ]68 shop3Done string
 ]69 shop3WTSQuestion string
 ]70 shop3ICoSQuestion string
-]71 shop3Thanks string
+]71 shop3Thanks string_= Thank_you_for_your_custom.
 
- still got to add the rest
-
- supply defaults for the critical strings
-
+]72 inn1PriceX string_= It_costs_
+]73 inn1XGoldToSleep string_= to_sleep_here.
+]74 inn1ConfirmSleep string= Sleep?
+]75 inn1SleepYes string= Sleep
+]76 inn1SleepNo string= Don't
+]77 inn2PriceX string_= It_costs_
+]78 inn2XGoldToSleep string_= to_sleep_here.
+]79 inn2ConfirmSleep string= Sleep?
+]80 inn2SleepYes string= Sleep
+]81 inn2SleepNo string= Don't
+]82 headOwnedItems string= Owned
+]83 headEquippedItems string= Equipped
+]84 goldPostfix string= Gold
+]85 cmdFight string= Fight
+]86 cmdAuto string= Auto
+]87 cmdEscape string= Escape
+]88 cmdAttack string= Attack
+]89 cmdDefend string= Defend
+]90 cmdItemX string= Item
+]91 cmdSkill string= Skill
+]92 optEquipment string= Equipment
+]93 optSave string= Save
+]94 optStopGame string= Title
+]95 optStart string= Begin
+]96 optLoad string= Load
+]97 optExitApp string= Exit
+]98 bdsStatus string= Status
+]99 bdsRow string= Row
+]100 bdsOrder string= Order
+]101 bdsWaitOn string= WaitOn
+]102 bdsWaitOff string= WaitOff
+]103 bdsLevel string= Level
+]104 bdsHP string= HP
+]105 bdsSP string= SP
+]106 bdsNoStateFx string= No.StateFx
+]107 bdsEXP2ch string= XP
+]108 bdsLvl2ch string= Lv
+]109 bdsHp2ch string= HP
+]110 bdsSp2ch string= SP
+]111 bdsSpCost string= Sp.Cost
+]112 statAtk string= ATK
+]113 statDef string= DEF
+]114 statSpi string= SPI
+]115 statAgi string= AGI
+]116 equipWeapon string= Weapon
+]117 equipShield string= Shield
+]118 equipArmour string= Armour
+]119 equipHelmet string= Helmet
+]120 equipAccessory string= Accessory
 ]121 saveSlot string= Save...
 ]122 loadSlot string= Load...
 ]123 file string= File

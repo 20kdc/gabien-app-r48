@@ -126,6 +126,8 @@ public class SDB {
                             return new FloatSchemaElement(args[point++]);
                         if (text.equals("string="))
                             return new StringSchemaElement(args[point++], '\"');
+                        if (text.equals("string_="))
+                            return new StringSchemaElement(args[point++].replace('_', ' '), '\"');
                         if (text.equals("hwnd")) {
                             String a = args[point++];
                             if (a.equals("."))
