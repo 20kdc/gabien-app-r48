@@ -10,6 +10,7 @@ D internal_eventDictionary __MAP__@events 1 @name
 d internal_variableDictionary RPG_RT.ldb @variables
 d internal_switchDictionary RPG_RT.ldb @switches
 
+D internal_tilesetDictionary RPG_RT.ldb@tilesets 1 @name
 D internal_itemDictionary RPG_RT.ldb@items 1 @name
 D internal_skillDictionary RPG_RT.ldb@skills 1 @name
 D internal_stateDictionary RPG_RT.ldb@states 1 @name
@@ -33,7 +34,7 @@ M internal_itemDictionary item_or_none_id__ item_or_none_id
 > troop_id int
  not to be confused with an enemy within a troop
 > enemy_id internal_enemyDictionary
-> tileset_id int
+> tileset_id internal_tilesetDictionary
 > terrain_id int
 > animation_id internal_animDictionary
 

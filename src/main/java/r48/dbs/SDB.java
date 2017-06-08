@@ -441,7 +441,7 @@ public class SDB {
                     }
                     if (args[0].equals("burnYourselfOutDoYourselfIn")) {
                         // Really special schema
-                        workingObj.aggregate.add(new R2kSystemDefaultsInstallerSchemaElement());
+                        workingObj.aggregate.add(new R2kSystemDefaultsInstallerSchemaElement(Integer.parseInt(args[1])));
                     }
                     if (args[0].equals("name")) {
                         final LinkedList<String> arguments = new LinkedList<String>();

@@ -27,6 +27,7 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 @escape_state mapinfo_inheritflag
 @save_state mapinfo_inheritflag
 @encounters subwindow array 0 RPG::Encounter
+@encounter_steps int= 25
 @area_rect Rect
 
 : RPG::Start
@@ -48,3 +49,5 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 @map_order subwindow array 0 int+0
 @active_node int+0
 @start RPG::Start
+ Supplies defaults
+C burnYourselfOutDoYourselfIn 1

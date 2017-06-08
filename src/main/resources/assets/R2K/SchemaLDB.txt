@@ -664,4 +664,5 @@ C name Class.RPG::Class @name | #A
 @classes_2k3 subwindow hash int+1 subwindow RPG::Class
  NO
 @battler_anims_2k3 subwindow hash int+1 subwindow RPG::BattlerAnimation
-C burnYourselfOutDoYourselfIn
+ Supplies defaults
+C burnYourselfOutDoYourselfIn 0
