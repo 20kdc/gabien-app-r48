@@ -167,6 +167,7 @@ public class Application {
         });
 
         while (true) {
+            gamepaks.setBounds(new Rect(0, 0, 640, 480));
             final UIMapToolWrapper uimtw = new UIMapToolWrapper(gamepaks);
             closeHelper.accept(new Runnable() {
                 @Override

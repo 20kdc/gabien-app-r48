@@ -9,18 +9,48 @@ e UTF-8
 
 3: R2K
 f RPG_RT.ldb
-e SJIS
-. R2K[3?] (Shift-JIS) (might corrupt)
+e Cp943C
+. R2K[3?] (Japanese/CP943C) (might corrupt)
 
 3: R2K
 f RPG_RT.ldb
 e cp1251
-. R2K[3?] (Russian/CP1251) (might corrupt)
+. R2K[3?] (Russian/Cyrillic/CP1251) (might corrupt)
 
 3: R2K
 f RPG_RT.ldb
 e cp1250
-. R2K[3?] (Polish/CP1250) (might corrupt)
+. R2K[3?] (Polish/Eastern European/CP1250) (might corrupt)
+
+3: R2K
+f RPG_RT.ldb
+e MS949
+. R2K[3?] (Korean/MS949) (might corrupt)
+
+3: R2K
+f RPG_RT.ldb
+e MS936
+. R2K[3?] (Simplified Chinese/MS936) (might corrupt)
+
+3: R2K
+f RPG_RT.ldb
+e Cp1252
+. R2K[3?] (Occidental/CP1252) (might corrupt)
+
+3: R2K
+f RPG_RT.ldb
+e Cp1256
+. R2K[3?] (Arabic/CP1256) (might corrupt)
+
+3: R2K
+f RPG_RT.ldb
+e Cp1253
+. R2K[3?] (Greek/CP1253) (might corrupt)
+
+3: R2K
+f RPG_RT.ldb
+e Cp1255
+. R2K[3?] (Hebrew/CP1255) (might corrupt)
 
 0: RXP
 f Data/MapInfos.rxdata
@@ -36,7 +66,6 @@ e UTF-8
 
  The support for the Studio Pixel "Ikachan" engine is partially a test to ensure
   that the program is sufficiently modular for any further work.
- (Think 'MV'.)
 
 0: Ika
 f Pbm/Map1.pbm
