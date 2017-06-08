@@ -9,6 +9,7 @@ import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UIPanel;
+import gabien.ui.UIScrollbar;
 
 import java.util.LinkedList;
 
@@ -19,12 +20,12 @@ import java.util.LinkedList;
  * Created on 12/29/16.
  */
 public class UIScrollVertLayout extends UIPanel {
-    public UIVScrollbar scrollbar;
+    public UIScrollbar scrollbar;
     public LinkedList<UIElement> panels = new LinkedList<UIElement>();
     public int scrollLength = 0;
 
     public UIScrollVertLayout() {
-        scrollbar = new UIVScrollbar();
+        scrollbar = new UIScrollbar(true);
     }
 
     public void runLayout() {

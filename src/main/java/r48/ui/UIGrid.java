@@ -9,6 +9,7 @@ import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import gabien.ui.UIPanel;
+import gabien.ui.UIScrollbar;
 import r48.AppMain;
 import r48.FontSizes;
 
@@ -31,7 +32,7 @@ public class UIGrid extends UIPanel {
 
     private int tmWidth = 8;
 
-    public UIVScrollbar uivScrollbar = new UIVScrollbar();
+    public UIScrollbar uivScrollbar = new UIScrollbar(true);
 
     public Runnable onSelectionChange = null;
 
@@ -48,7 +49,7 @@ public class UIGrid extends UIPanel {
         totalRows /= tmWidth;
         int screenRows = getBounds().height / tileSize;
         int extraRows = totalRows - screenRows;
-        return ((int) Math.floor(uivScrollbar.scrollPoint * extraRows)) * tmWidth;
+        return ((int) Math.floor((uivScrollbar.scrollPoint * extraRows) + 0.5)) * tmWidth;
     }
 
     @Override
@@ -88,7 +89,11 @@ public class UIGrid extends UIPanel {
 
     @Override
     public void setBounds(Rect r) {
-        int scrollBarW = 32; // uivScrollbar.getBounds().width; // Will fix ui lib later for this & resize conditions on windows
+        setBoundsPass(r);
+        setBoundsPass(r);
+    }
+    private void setBoundsPass(Rect r) {
+        int scrollBarW = uivScrollbar.getBounds().width; // wait, this wasn't in UI lib at all. fixed.
         int tiles = r.width / tileSize;
         if (tiles < 2)
             tiles = 2;
