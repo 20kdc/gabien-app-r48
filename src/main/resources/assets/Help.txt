@@ -372,7 +372,7 @@ p 4
 21: R2k Backend Quickstart
 . RPG Maker 2000/2003 is, as you probably know, emulated by the (unrelated to me) open-source EasyRPG Player project.
 . As RPG Maker 2000/2003 does not have any Core Scripts to deal with, it means that with a full editor, games can be created from scratch.
-. Step 1. Create a blann folder.
+. Step 1. Create a blank folder.
 . Step 2. In the folder, create the folders "ChipSets" and "System". (capitalization is important.)
 . Step 3. Extract assets/R2K/templatetileset.png from this JAR (it's a ZIP file) and put it in ChipSets. Do not rename it.
 . Step 4. Extract assets/R2K/System.png from this JAR (it's a ZIP file) and put it in System. Do not rename it.

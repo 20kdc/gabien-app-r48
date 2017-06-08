@@ -12,6 +12,16 @@ f RPG_RT.ldb
 e SJIS
 . R2K[3?] (Shift-JIS) (might corrupt)
 
+3: R2K
+f RPG_RT.ldb
+e cp1251
+. R2K[3?] (Russian/CP1251) (might corrupt)
+
+3: R2K
+f RPG_RT.ldb
+e cp1250
+. R2K[3?] (Polish/CP1250) (might corrupt)
+
 0: RXP
 f Data/MapInfos.rxdata
 e UTF-8
