@@ -44,10 +44,15 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     // 1. Install a basic Actor
                     sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Actor"), new RubyIO().setFX(1));
                     target.getInstVarBySymbol("@actors").hashVal.put(new RubyIO().setFX(1), sub);
+                    target.getInstVarBySymbol("@system").getInstVarBySymbol("@party").arrVal = new RubyIO[] {
+                            new RubyIO().setFX(1)
+                    };
                     // 2. Install a tileset
                     sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Tileset"), new RubyIO().setFX(1));
                     target.getInstVarBySymbol("@tilesets").hashVal.put(new RubyIO().setFX(1), sub);
-                    // (I suspect a terrain may need to be installed!!!)
+                    // 3. Setup Terrain
+                    sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Terrain"), new RubyIO().setFX(1));
+                    target.getInstVarBySymbol("@terrains").hashVal.put(new RubyIO().setFX(1), sub);
                     break;
                 case 1:
                     // 1. Fix root
