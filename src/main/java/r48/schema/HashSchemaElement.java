@@ -27,6 +27,9 @@ import java.util.Map;
 public class HashSchemaElement extends SchemaElement {
     public SchemaElement keyElem, valElem;
 
+    // NOTE: This is cloned from.
+    private RubyIO defKeyWorkspace;
+
     public HashSchemaElement(SchemaElement keySE, SchemaElement opaqueSE) {
         keyElem = keySE;
         valElem = opaqueSE;
@@ -65,16 +68,18 @@ public class HashSchemaElement extends SchemaElement {
                         }
                     }, FontSizes.schemaButtonTextHeight));
                 }
-                // pre-emptively set up a default key workspace
-                final RubyIO rio = SchemaPath.createDefaultValue(keyElem, null);
-                UIElement workspace = keyElem.buildHoldingEditor(rio, launcher, new SchemaPath(keyElem, rio, launcher));
+                // Set up a key workspace.
+                if (defKeyWorkspace == null)
+                    defKeyWorkspace = SchemaPath.createDefaultValue(keyElem, null);
+                UIElement workspace = keyElem.buildHoldingEditor(defKeyWorkspace, launcher, path.otherIndex("(tempWSKey)"));
                 UIHHalfsplit workspaceHS = new UIHHalfsplit(2, 3, workspace, new UITextButton(FontSizes.schemaButtonTextHeight, "Add This Key", new Runnable() {
                     @Override
                     public void run() {
-                        if (target.getHashVal(rio) == null) {
+                        if (target.getHashVal(defKeyWorkspace) == null) {
                             RubyIO rio2 = new RubyIO();
-                            valElem.modifyVal(rio2, path.arrayHashIndex(rio, "{" + rio.toString() + "}"), true);
-                            target.hashVal.put(rio, rio2);
+                            RubyIO finWorkspace = new RubyIO().setDeepClone(defKeyWorkspace);
+                            valElem.modifyVal(rio2, path.arrayHashIndex(finWorkspace, "{" + finWorkspace.toString() + "}"), true);
+                            target.hashVal.put(finWorkspace, rio2);
                             // and this prevents further modification of the key
                             path.changeOccurred(false);
                             me.run();

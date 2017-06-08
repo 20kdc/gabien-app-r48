@@ -140,7 +140,7 @@ public class Database extends R2kObject {
                 new Index(0x1A, dbVersion, "@db_version"),
                 new Index(0x1D, battleCommands2k3, "@battle_commands_2k3"),
                 new Index(0x1E, classes2k3, "@classes_2k3"),
-                new Index(0x20, battlerAnimation2k3, "@battler_anims_2k3"),
+                new Index(0x20, battlerAnimation2k3, "@battle_anim_sets_2k3"),
         };
     }
 

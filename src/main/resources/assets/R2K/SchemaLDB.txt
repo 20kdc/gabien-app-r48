@@ -339,7 +339,57 @@ C name Class.RPG::Troop @name | #A
 
  ---
 
+.rpg_terrain_specialflags
+@back_party boolean
+@back_enemies boolean
+@lat_party boolean
+@lat_enemies boolean
+
 : RPG::Terrain
+C name Class.RPG::Terrain @name | #A
+@name string
+@damage int
+@encounter%_mod int= 100
+@background_name string
+@boat_pass boolean
+@ship_pass boolean
+@airship_pass booleanDefTrue
+@airship_pass booleanDefTrue
+e rpg_terrain_bushdepth 0 normal 1 third 2 half 3 full
+@bush_depth rpg_terrain_bushdepth
++subwindow[ 2K3 Extra... ] rpg_terrain_bkg
+
+.rpg_terrain_bkg
+@footstep_sound_2k3 RPG::Sound
+@footstep_for_damage_2k3 boolean
+
+@back_as_frame_2k3 boolean
+
+@background_a_name_2k3 string
+@background_a_scrh_2k3 boolean
+@background_a_scrh_speed_2k3 int
+@background_a_scrv_2k3 boolean
+@background_a_scrv_speed_2k3 int
+
+@background_b_exists_2k3 boolean
+
+@background_b_name_2k3 string
+@background_b_scrh_2k3 boolean
+@background_b_scrh_speed_2k3 int
+@background_b_scrv_2k3 boolean
+@background_b_scrv_speed_2k3 int
+
+@special_flags_2k3 rpg_terrain_specialflags
+@special_back_party_2k3 int
+@special_back_enemies_2k3 int
+@special_lat_party_2k3 int
+@special_lat_enemies_2k3 int
+@grid_loc_2k3 int
+@grid_a_2k3 int
+@grid_b_2k3 int
+@grid_c_2k3 int
+
+
 : RPG::Attribute
 
  ---
@@ -610,21 +660,67 @@ C name Class.RPG::Class @name | #A
 @learn_skills subwindow array 0 RPG::Learning
 @state_ranks subwindow array 0 int
 @attribute_ranks subwindow array 0 int
-@battle_commands subwindow array 0 battlecommand_id
+@battle_commands subwindow array 0 battlecommand_or_none_id
 
  ---
 
 : RPG::BattlerAnimation
+e rpg_battleranimation_type 0 battlerNoAnim 1 battlerWithAnim
+@type rpg_battleranimation_type
+@battler_name string
+@battler_index int
+@animation_id animation_id
+
+ There's a system here, but I don't know what.
+.rpg_bas_animset
+]0 _ OPAQUE
+]1 idle subwindow RPG::BattlerAnimation
+]2 rightHand subwindow RPG::BattlerAnimation
+]3 leftHand subwindow RPG::BattlerAnimation
+]4 skillUse subwindow RPG::BattlerAnimation
+]5 dead subwindow RPG::BattlerAnimation
+]6 damage subwindow RPG::BattlerAnimation
+]7 badStatus subwindow RPG::BattlerAnimation
+]8 defending subwindow RPG::BattlerAnimation
+]9 walkingLeft subwindow RPG::BattlerAnimation
+]10 walkingRight subwindow RPG::BattlerAnimation
+]11 victory subwindow RPG::BattlerAnimation
+]12 item subwindow RPG::BattlerAnimation
+]13 unk13 subwindow RPG::BattlerAnimation
+]14 unk14 subwindow RPG::BattlerAnimation
+]15 unk15 subwindow RPG::BattlerAnimation
+]16 unk16 subwindow RPG::BattlerAnimation
+]17 unk17 subwindow RPG::BattlerAnimation
+]18 unk18 subwindow RPG::BattlerAnimation
+]19 unk19 subwindow RPG::BattlerAnimation
+]20 unk20 subwindow RPG::BattlerAnimation
+]21 unk21 subwindow RPG::BattlerAnimation
+]22 unk22 subwindow RPG::BattlerAnimation
+]23 unk23 subwindow RPG::BattlerAnimation
+]24 unk24 subwindow RPG::BattlerAnimation
+]25 unk25 subwindow RPG::BattlerAnimation
+]26 unk26 subwindow RPG::BattlerAnimation
+]27 unk27 subwindow RPG::BattlerAnimation
+]28 unk28 subwindow RPG::BattlerAnimation
+]29 unk29 subwindow RPG::BattlerAnimation
+]30 unk30 subwindow RPG::BattlerAnimation
+]31 unk31 subwindow RPG::BattlerAnimation
+]32 unk32 subwindow RPG::BattlerAnimation
+
+: RPG::BattlerAnimationSet
+C name Class.RPG::BattlerAnimationSet @name | #A
+@name string
+e rpg_bas_speed 0 slow 8 normal 14 fast
+@speed rpg_bas_speed
+@base_data subwindow rpg_bas_animset
+@weapon_data subwindow rpg_bas_animset
 
  ---
 
 : RPG::Database
- completion status listed. 16 OK. 3 NO. Progress is being made.
+ completion status listed. 18 OK. 1 NO. Almost done.
  SCHEDULE:
-  7 JUN: Troop, BattleCommands, System
-   (System was finished up after midnight. A proper serialization test happened just after, had to debug. 1AM now.
-    Doing System cleanup, then getting some rest. There's now more than enough time.)
-  8 JUN: Terrain, BattlerAnimation, Attribute
+  8 JUN: Terrain (done), BattlerAnimation (done), Attribute
   9 JUN: ### PLANNED RELEASE DATE FOR v0.6!!!!
  OK
 @actors subwindow hash int+1 subwindow RPG::Actor
@@ -636,7 +732,7 @@ C name Class.RPG::Class @name | #A
 @enemies subwindow hash int+1 subwindow RPG::Enemy
  OK
 @troops subwindow hash int+1 subwindow RPG::Troop
- NO
+ OK
 @terrains subwindow hash int+1 subwindow RPG::Terrain
  NO
 @attributes subwindow hash int+1 subwindow RPG::Attribute
@@ -662,7 +758,7 @@ C name Class.RPG::Class @name | #A
 @battle_commands_2k3 subwindow RPG::BattleCommands
  OK
 @classes_2k3 subwindow hash int+1 subwindow RPG::Class
- NO
-@battler_anims_2k3 subwindow hash int+1 subwindow RPG::BattlerAnimation
+ OK
+@battle_anim_sets_2k3 subwindow hash int+1 subwindow RPG::BattlerAnimationSet
  Supplies defaults
 C burnYourselfOutDoYourselfIn 0

@@ -11,6 +11,7 @@ d internal_variableDictionary RPG_RT.ldb @variables
 d internal_switchDictionary RPG_RT.ldb @switches
 
 D internal_tilesetDictionary RPG_RT.ldb@tilesets 1 @name
+D internal_terrainDictionary RPG_RT.ldb@terrains 1 @name
 D internal_itemDictionary RPG_RT.ldb@items 1 @name
 D internal_skillDictionary RPG_RT.ldb@skills 1 @name
 D internal_stateDictionary RPG_RT.ldb@states 1 @name
@@ -35,7 +36,7 @@ M internal_itemDictionary item_or_none_id__ item_or_none_id
  not to be confused with an enemy within a troop
 > enemy_id internal_enemyDictionary
 > tileset_id internal_tilesetDictionary
-> terrain_id int
+> terrain_id internal_terrainDictionary
 > animation_id internal_animDictionary
 
 > actor_id int+0
@@ -49,6 +50,8 @@ E class_or_none_id__ Class.ID 0 None
 M internal_classDictionary class_or_none_id__ class_or_none_id
 
 > battlecommand_id internal_battlecommandDictionary
+E battlecommand_or_none_id__ BC.ID 0 None
+M internal_battlecommandDictionary battlecommand_or_none_id__ battlecommand_or_none_id
 
 > commonevent_id internal_cevDictionary
 E commonevent_or_none_id__ CEV.ID 0 None
