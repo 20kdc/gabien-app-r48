@@ -15,7 +15,6 @@ import r48.io.IkaObjectBackend;
 import r48.io.R2kObjectBackend;
 import r48.io.R48ObjectBackend;
 import r48.map.StuffRenderer;
-import r48.musicality.Musicality;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
@@ -167,8 +166,6 @@ public class AppMain {
                 } else {
                     schemas.updateDictionaries(null);
                 }
-                if (Musicality.running)
-                    Musicality.update(deltaTime);
 
                 LinkedList<Runnable> runs = new LinkedList<Runnable>(pendingRunnables);
                 pendingRunnables.clear();

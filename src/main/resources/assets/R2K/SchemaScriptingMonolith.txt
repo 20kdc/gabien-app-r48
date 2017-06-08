@@ -508,7 +508,7 @@ e begin_encounter_defeat 0 gameOver 1 executeDefeatCode
 
 .begin_encounter_novars
 ]1 troopIsVar int_boolean
-]2 troop int
+]2 troop troop_id
 +begin_encounter_general
 
 .begin_encounter_general

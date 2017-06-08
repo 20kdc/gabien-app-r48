@@ -10,7 +10,6 @@ package r48.toolsets;
 
 import gabien.ui.*;
 import r48.*;
-import r48.musicality.Musicality;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIFontSizeConfigurator;
@@ -57,7 +56,6 @@ public class BasicToolset implements IToolset {
                         "Set External Windows (bad)",
                         "Use normal in-built fonts",
                         "Use system fonts for everything",
-                        "Toggle calming sound",
                         "Configure font sizes",
                         "Rebuild UI",
                         "Test Fonts"
@@ -158,18 +156,6 @@ public class BasicToolset implements IToolset {
                             @Override
                             public void run() {
                                 UILabel.iAmAbsolutelySureIHateTheFont = true;
-                            }
-                        },
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!Musicality.initialized)
-                                    Musicality.initialize();
-                                if (Musicality.running) {
-                                    Musicality.kill();
-                                } else {
-                                    Musicality.boot();
-                                }
                             }
                         },
                         new Runnable() {

@@ -4,53 +4,53 @@
 
 3: R2K
 f RPG_RT.ldb
+e Cp1252
+. R2K[3?] (English/French/CP1252)
+
+3: R2K
+f RPG_RT.ldb
 e UTF-8
-. R2K[3?] (UTF-8) (might corrupt)
+. R2K[3?] (UTF-8)
 
 3: R2K
 f RPG_RT.ldb
 e Cp943C
-. R2K[3?] (Japanese/CP943C) (might corrupt)
+. R2K[3?] (Japanese/CP943C)
 
 3: R2K
 f RPG_RT.ldb
 e cp1251
-. R2K[3?] (Russian/Cyrillic/CP1251) (might corrupt)
+. R2K[3?] (Russian/Cyrillic/CP1251)
 
 3: R2K
 f RPG_RT.ldb
 e cp1250
-. R2K[3?] (Polish/Eastern European/CP1250) (might corrupt)
+. R2K[3?] (Polish/Eastern European/CP1250)
 
 3: R2K
 f RPG_RT.ldb
 e MS949
-. R2K[3?] (Korean/MS949) (might corrupt)
+. R2K[3?] (Korean/MS949)
 
 3: R2K
 f RPG_RT.ldb
 e MS936
-. R2K[3?] (Simplified Chinese/MS936) (might corrupt)
-
-3: R2K
-f RPG_RT.ldb
-e Cp1252
-. R2K[3?] (Occidental/CP1252) (might corrupt)
+. R2K[3?] (Simplified Chinese/MS936)
 
 3: R2K
 f RPG_RT.ldb
 e Cp1256
-. R2K[3?] (Arabic/CP1256) (might corrupt)
+. R2K[3?] (Arabic/CP1256)
 
 3: R2K
 f RPG_RT.ldb
 e Cp1253
-. R2K[3?] (Greek/CP1253) (might corrupt)
+. R2K[3?] (Greek/CP1253)
 
 3: R2K
 f RPG_RT.ldb
 e Cp1255
-. R2K[3?] (Hebrew/CP1255) (might corrupt)
+. R2K[3?] (Hebrew/CP1255)
 
 0: RXP
 f Data/MapInfos.rxdata
