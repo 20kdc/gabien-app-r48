@@ -49,7 +49,7 @@ public class Troop extends R2kObject {
                 new Index(0x03, autoPosition, "@OFED_auto_position"),
                 new Index(0x04, terrainSetSize),
                 new Index(0x05, terrainSet, "@terrain_set"),
-                new Index(0x06, appearRandomly, "@OFED_appear_randomly"),
+                new Index(0x06, appearRandomly, "@randomized_memberset_2k3"),
                 new Index(0x0B, pages, "@pages")
         };
     }

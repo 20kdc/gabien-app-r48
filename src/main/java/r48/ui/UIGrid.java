@@ -171,5 +171,8 @@ public class UIGrid extends UIPanel {
         selTile = i;
         selWidth = 1;
         selHeight = 1;
+        // work out a general estimate
+        double p = i / (double) tileCount;
+        uivScrollbar.scrollPoint = p;
     }
 }

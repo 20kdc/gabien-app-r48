@@ -27,7 +27,6 @@ public class FontSizes {
     public static int mapInfosTextHeight = 16; // separate tab!
     public static int mapLayertabTextHeight = 16;
 
-    public static int mapToolSelectorTextHeight = 16;
     public static int eventPickerEntryTextHeight = 16;
     public static int tilesTabTextHeight = 6;
 

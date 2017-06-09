@@ -14,6 +14,7 @@ import r48.UITest;
 import r48.map.tiles.VXATileRenderer;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTEventPicker;
+import r48.maptools.UIMTPickTile;
 import r48.maptools.UIMTShadowLayer;
 import r48.ui.UINSVertLayout;
 
@@ -26,7 +27,14 @@ import java.util.LinkedList;
 public class UIMapViewContainer extends UIPanel {
     private final ISupplier<IConsumer<UIElement>> windowMakerSupplier;
     public UIMapView view;
-    public UINSVertLayout viewToolbarSplit;
+    private UINSVertLayout viewToolbarSplit;
+    // Use when mapTool is being set to null.
+    private Runnable internalNoToolCallback = new Runnable() {
+        @Override
+        public void run() {
+
+        }
+    };
 
     // Map tool switch happens at the start of each frame, so it stays out of the way of windowing code.
     private UIMapToolWrapper mapTool = null;
@@ -59,6 +67,7 @@ public class UIMapViewContainer extends UIPanel {
                 if (AppMain.nextMapTool == mapTool.pattern)
                     AppMain.nextMapTool = null;
                 mapTool = null;
+                internalNoToolCallback.run();
                 if (view != null)
                     view.callbacks = null;
             }
@@ -89,6 +98,7 @@ public class UIMapViewContainer extends UIPanel {
                 if (mapTool != null) {
                     mapTool.selfClose = true;
                     mapTool = null;
+                    internalNoToolCallback.run();
                     view.callbacks = null;
                 }
             }
@@ -110,48 +120,107 @@ public class UIMapViewContainer extends UIPanel {
         // Creating the MapView and such causes quite a few side-effects (specifically global StuffRenderer kick-in-the-pants).
         // Also kick the dictionaries because of the event dictionary.
         view = new UIMapView(k, b.width, b.height);
+        view.pickTileHelper = new IConsumer<Short>() {
+            @Override
+            public void accept(Short aShort) {
+                UIMTAutotile atf = new UIMTAutotile(view);
+                atf.selectTile(aShort);
+                AppMain.nextMapTool = atf;
+            }
+        };
         UIScrollLayout layerTabLayout = new UIScrollLayout(false);
         layerTabLayout.scrollbar.setBounds(new Rect(0, 0, 8, 8));
 
-        final UITextButton[] buttons = new UITextButton[view.mapTable.planeCount];
+        final LinkedList<UITextButton> tools = new LinkedList<UITextButton>();
+        final IConsumer<Integer> clearTools = new IConsumer<Integer>() {
+            @Override
+            public void accept(Integer t) {
+                for (UITextButton utb : tools)
+                    utb.state = false;
+                if (t != -1)
+                    tools.get(t).state = true;
+            }
+        };
+
+        internalNoToolCallback = new Runnable() {
+            @Override
+            public void run() {
+                clearTools.accept(-1);
+            }
+        };
+
+        // -- Kind of a monolith here. Map tools ALWAYS go first, and must be togglables.
+        // It is assumed that this is the only class capable of causing tool changes.
+
         for (int i = 0; i < view.mapTable.planeCount; i++) {
             final int thisButton = i;
-            UITextButton button = new UITextButton(FontSizes.mapLayertabTextHeight, "L" + i, new Runnable() {
+            final UITextButton button = new UITextButton(FontSizes.mapLayertabTextHeight, "L" + i, new Runnable() {
                 @Override
                 public void run() {
-                    for (int i = 0; i < buttons.length; i++)
-                        buttons[i].state = false;
-                    buttons[thisButton].state = true;
+                    clearTools.accept(thisButton);
                     view.currentLayer = thisButton;
+                    AppMain.nextMapTool = new UIMTAutotile(view);
                 }
             }).togglable();
-            if (i == 0)
-                button.state = true;
-            layerTabLayout.panels.add(button);
-            buttons[i] = button;
+            tools.add(button);
         }
-
-        layerTabLayout.panels.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Tilemap ", new Runnable() {
-            @Override
-            public void run() {
-                AppMain.nextMapTool = new UIMTAutotile(view);
-            }
-        }));
         if (AppMain.stuffRenderer.tileRenderer instanceof VXATileRenderer) {
-            layerTabLayout.panels.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Shadow/Region ", new Runnable() {
+            final int thisButton = tools.size();
+            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Shadow/Region ", new Runnable() {
                 @Override
                 public void run() {
+                    clearTools.accept(thisButton);
                     AppMain.nextMapTool = new UIMTShadowLayer(view);
                 }
-            }));
+            }).togglable());
         }
-        layerTabLayout.panels.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Events ", new Runnable() {
+        {
+            final int thisButton = tools.size();
+            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Events ", new Runnable() {
+                @Override
+                public void run() {
+                    clearTools.accept(thisButton);
+                    AppMain.nextMapTool = new UIMTEventPicker(windowMakerSupplier.get(), view);
+                }
+            }).togglable());
+        }
+        {
+            final int thisButton = tools.size();
+            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Layer Visibility ", new Runnable() {
+                @Override
+                public void run() {
+                    clearTools.accept(thisButton);
+                    UIScrollLayout svl = new UIScrollLayout(true);
+                    int h = 0;
+                    for (int i = 0; i < AppMain.stuffRenderer.layers.length; i++) {
+                        final int fi = i;
+                        UITextButton layerVis = new UITextButton(FontSizes.mapLayertabTextHeight, AppMain.stuffRenderer.layers[i].getName(), new Runnable() {
+                            @Override
+                            public void run() {
+                                view.layerVis[fi] = !view.layerVis[fi];
+                            }
+                        }).togglable();
+                        layerVis.state = view.layerVis[i];
+                        h += layerVis.getBounds().height;
+                        svl.panels.add(layerVis);
+                    }
+                    svl.setBounds(new Rect(0, 0, 320, h));
+                    AppMain.nextMapTool = svl;
+                }
+            }).togglable());
+        }
+
+        // Utility buttons
+
+        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Tile From Map ", new Runnable() {
             @Override
             public void run() {
-                AppMain.nextMapTool = new UIMTEventPicker(windowMakerSupplier.get(), view);
+                // Select the current tile layer
+                clearTools.accept(view.currentLayer);
+                AppMain.nextMapTool = new UIMTPickTile(view);
             }
         }));
-        layerTabLayout.panels.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Reload Panorama/TS ", new Runnable() {
+        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Reload Panorama/TS ", new Runnable() {
             @Override
             public void run() {
                 AppMain.stuffRenderer.imageLoader.flushCache();
@@ -160,33 +229,16 @@ public class UIMapViewContainer extends UIPanel {
                 AppMain.stuffRenderer.imageLoader.flushCache();
             }
         }));
-        layerTabLayout.panels.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Properties ", new Runnable() {
+        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Properties ", new Runnable() {
             @Override
             public void run() {
                 AppMain.launchSchema("RPG::Map", view.map);
             }
         }));
-        layerTabLayout.panels.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Layer Visibility ", new Runnable() {
-            @Override
-            public void run() {
-                UIScrollLayout svl = new UIScrollLayout(true);
-                int h = 0;
-                for (int i = 0; i < AppMain.stuffRenderer.layers.length; i++) {
-                    final int fi = i;
-                    UITextButton layerVis = new UITextButton(FontSizes.mapLayertabTextHeight, AppMain.stuffRenderer.layers[i].getName(), new Runnable() {
-                        @Override
-                        public void run() {
-                            view.layerVis[fi] = !view.layerVis[fi];
-                        }
-                    }).togglable();
-                    layerVis.state = view.layerVis[i];
-                    h += layerVis.getBounds().height;
-                    svl.panels.add(layerVis);
-                }
-                svl.setBounds(new Rect(0, 0, 320, h));
-                AppMain.nextMapTool = svl;
-            }
-        }));
+
+        // finish layout
+        for (UITextButton utb : tools)
+            layerTabLayout.panels.add(utb);
 
         layerTabLayout.setBounds(new Rect(0, 0, 28, 28));
         viewToolbarSplit = new UINSVertLayout(layerTabLayout, view);

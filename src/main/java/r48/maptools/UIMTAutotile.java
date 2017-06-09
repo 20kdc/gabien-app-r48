@@ -18,6 +18,7 @@ import r48.map.tiles.AutoTileTypeField;
 import r48.ui.UITileGrid;
 
 /**
+ * Note that once created, it is meant to be locked to the layer it was created for.
  * Created on 12/29/16.
  */
 public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
@@ -25,7 +26,6 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
     private UITileGrid[] tileMaps;
     private final UIMapView map;
     private AutoTileTypeField[] atBases;
-    private int lastSelectedLayer = 0;
 
     public UIMTAutotile(UIMapView mv) {
         map = mv;
@@ -40,22 +40,12 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         tabPane = new UITabPane(AppMain.stuffRenderer.tileRenderer.getPlaneNames(layer), tileMaps, FontSizes.tilesTabTextHeight);
         atBases = AppMain.stuffRenderer.tileRenderer.indicateATs();
         allElements.add(tabPane);
-        lastSelectedLayer = layer;
     }
 
     @Override
     public void setBounds(Rect r) {
         super.setBounds(r);
         tabPane.setBounds(new Rect(0, 0, r.width, r.height));
-    }
-
-    @Override
-    public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
-        if (lastSelectedLayer != map.currentLayer) {
-            setupView();
-            setBounds(getBounds());
-        }
-        super.updateAndRender(ox, oy, deltaTime, select, igd);
     }
 
     // -- Tool stuff --
@@ -157,4 +147,12 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         return "T" + tileMaps[tabPane.tab].tileStart + "-" + (tileMaps[tabPane.tab].tileStart + tileMaps[tabPane.tab].tileCount - 1) + ":" + tileMaps[tabPane.tab].getSelected();
     }
 
+    public void selectTile(short aShort) {
+        int usedTab = 0;
+        for (int i = 0; i < tileMaps.length; i++)
+            if ((aShort >= tileMaps[i].tileStart) && (aShort < tileMaps[i].getTileEndAdjusted()))
+                usedTab = i;
+        tabPane.selectTab(usedTab);
+        tileMaps[usedTab].setSelected(aShort);
+    }
 }

@@ -1,0 +1,9 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+0: Levelling
+ EasyRPG had the formula, but... my goodness, is it long.
+. RM2000: inflate starts out at (1.5 + (exp_mul * 0.01)), base is exp. for each level, add (correction + base), then perform base *= inflate.
+. Then change inflate to (((LVL * 0.002) + 0.802) * (inflate - 1)) + 1, and run for the next level until done. Levels are 1 to LVL. My goodness this is long.
+. RM2003: (exp * LVL) + (factorial(LVL) * exp_mul) + (exp_add * LVL)

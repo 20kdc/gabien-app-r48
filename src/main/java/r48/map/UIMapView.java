@@ -36,7 +36,10 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     public final String mapId;
     public boolean minimap = false;
+    public boolean shiftDown = false;
     public IMapViewCallbacks callbacks;
+    // Responsible for starting a tool with the given tile.
+    public IConsumer<Short> pickTileHelper = null;
 
     public final int tileSize;
 
@@ -87,7 +90,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     @Override
     public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
         boolean debug = igd.isKeyDown(IGrInDriver.VK_D);
-
+        shiftDown = igd.isKeyDown(IGrInDriver.VK_SHIFT);
         if (selected)
             if (igd.isKeyJustPressed(IGrInDriver.VK_M))
                 toggleMinimap();
@@ -151,28 +154,32 @@ public class UIMapView extends UIElement implements IWindowElement {
                 }
             }
         }
-        UILabel.drawLabel(igd, 0, 0, 0, mapId + ";" + mouseXT + ", " + mouseYT, false, FontSizes.mapPositionTextHeight);
+        String shortcuts = "Any mouse button: Scroll, Shift-left: Pick tile.";
+        if (callbacks != null)
+            shortcuts = "Left mouse button: Use tool, others: Scroll, Shift-left: Pick tile.";
+        UILabel.drawLabel(igd, 0, 0, 0, mapId + ";" + mouseXT + ", " + mouseYT + "; " + shortcuts, false, FontSizes.mapPositionTextHeight);
     }
 
     @Override
     public void handleClick(int x, int y, int button) {
         lmX = x;
         lmY = y;
-        if (button == 3) {
+        if (button != 1) {
             dragging = true;
         } else {
             // implicit support for one-button mice
-            if (button == 1) {
-                if ((!minimap) && (callbacks != null)) {
-                    dragging = false;
-                    int mouseXT = (x + camX) / tileSize;
-                    int mouseYT = (y + camY) / tileSize;
+            if (!minimap) {
+                int mouseXT = UIElement.sensibleCellDiv(x + camX, tileSize);
+                int mouseYT = UIElement.sensibleCellDiv(y + camY, tileSize);
+                dragging = false;
+                if (shiftDown) {
+                    if (!mapTable.outOfBounds(mouseXT, mouseYT))
+                        pickTileHelper.accept(mapTable.getTiletype(mouseXT, mouseYT, currentLayer));
+                } else if (callbacks != null) {
                     callbacks.confirmAt(mouseXT, mouseYT, currentLayer);
-                } else {
-                    dragging = true;
                 }
             } else {
-                dragging = false;
+                dragging = true;
             }
         }
     }
@@ -184,6 +191,12 @@ public class UIMapView extends UIElement implements IWindowElement {
             camY -= y - lmY;
             lmX = x;
             lmY = y;
+        } else if (!minimap) {
+            int mouseXT = UIElement.sensibleCellDiv(x + camX, tileSize);
+            int mouseYT = UIElement.sensibleCellDiv(y + camY, tileSize);
+            if (!shiftDown)
+                if (callbacks != null)
+                    pickTileHelper.accept(mapTable.getTiletype(mouseXT, mouseYT, currentLayer));
         }
     }
 

@@ -38,6 +38,13 @@ public class UITileGrid extends UIGrid {
         return r + tileStart;
     }
 
+    public int getTileEndAdjusted() {
+        int r = tileCount;
+        if (autoTile)
+            r -= r / (autoTileSpacing + 1);
+        return r + tileStart;
+    }
+
     @Override
     public void setSelected(int i) {
         i -= tileStart;
