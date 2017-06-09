@@ -10,7 +10,7 @@ e Cp1252
 3: R2K
 f RPG_RT.ldb
 e UTF-8
-. R2K[3?] (UTF-8) (Use for new games!)
+. R2K[3?] (UTF-8) (Use for new games or languages not shown.)
 
 3: R2K
 f RPG_RT.ldb
@@ -36,21 +36,6 @@ e MS949
 f RPG_RT.ldb
 e MS936
 . R2K[3?] (Simplified Chinese/MS936)
-
-3: R2K
-f RPG_RT.ldb
-e Cp1256
-. R2K[3?] (Arabic/CP1256)
-
-3: R2K
-f RPG_RT.ldb
-e Cp1253
-. R2K[3?] (Greek/CP1253)
-
-3: R2K
-f RPG_RT.ldb
-e Cp1255
-. R2K[3?] (Hebrew/CP1255)
 
 0: RXP
 f Data/MapInfos.rxdata
