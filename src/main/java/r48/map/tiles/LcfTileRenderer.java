@@ -22,14 +22,8 @@ import java.util.LinkedList;
  */
 public class LcfTileRenderer implements ITileRenderer {
     public final IGrInDriver.IImage chipset;
-    public final String panorama;
 
-    public LcfTileRenderer(IImageLoader imageLoader, RubyIO tso, String vxaPano) {
-        if (vxaPano.equals("")) {
-            panorama = "";
-        } else {
-            panorama = "Panorama/" + vxaPano;
-        }
+    public LcfTileRenderer(IImageLoader imageLoader, RubyIO tso) {
         if (tso != null) {
             chipset = imageLoader.getImage("ChipSet/" + tso.getInstVarBySymbol("@tileset_name").decString(), false);
         } else {

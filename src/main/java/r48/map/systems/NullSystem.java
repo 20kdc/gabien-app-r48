@@ -2,7 +2,7 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-package r48.systems;
+package r48.map.systems;
 
 import r48.AppMain;
 import r48.RubyIO;

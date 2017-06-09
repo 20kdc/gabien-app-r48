@@ -21,7 +21,7 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return "Pn";
+        return "Panorama";
     }
 
     public void draw(int camX, int camY, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {

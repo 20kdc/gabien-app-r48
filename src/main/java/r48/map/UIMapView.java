@@ -54,6 +54,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             scheduler.forceNextUpdate = true;
         }
     };
+    public boolean[] layerVis;
 
     public UIMapView(String mapN, int i, int i1) {
         // Note that using setBounds directly causes camera adjustment (bad, only just created element)
@@ -65,6 +66,9 @@ public class UIMapView extends UIElement implements IWindowElement {
         listener.run();
 
         // begin!
+        layerVis = new boolean[AppMain.stuffRenderer.layers.length];
+        for (int j = 0; j < layerVis.length; j++)
+            layerVis[j] = true;
 
         AppMain.stuffRenderer = AppMain.system.rendererFromMap(map);
         tileSize = AppMain.stuffRenderer.tileRenderer.getTileSize();
@@ -96,7 +100,10 @@ public class UIMapView extends UIElement implements IWindowElement {
         int mouseYT = UIElement.sensibleCellDiv((igd.getMouseY() - oy) + camY, eTileSize);
         Rect camR = getBounds();
         // Stuff any possible important information...
-        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + eTileSize + "_" + debug + "_" + AppMain.stuffRenderer.tileRenderer.getFrame() + "_" + AppMain.stuffRenderer.hashCode() + "_" + currentLayer;
+        char[] visConfig = new char[layerVis.length];
+        for (int i = 0; i < layerVis.length; i++)
+            visConfig[i] = layerVis[i] ? 'T' : 'F';
+        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + eTileSize + "_" + debug + "_" + AppMain.stuffRenderer.tileRenderer.getFrame() + "_" + AppMain.stuffRenderer.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + AppMain.nextMapTool;
         if (scheduler.needsUpdate(config)) {
             boolean remakeBuf = true;
             if (offscreenBuf != null)
@@ -118,26 +125,29 @@ public class UIMapView extends UIElement implements IWindowElement {
         igd.clearAll(0, 0, 0);
         IMapViewDrawLayer[] layers = AppMain.stuffRenderer.layers;
         for (int i = 0; i < layers.length; i++)
-            layers[i].draw(camX, camY, mouseXT, mouseYT, eTileSize, currentLayer, callbacks, debug, igd);
+            if (layerVis[i])
+                layers[i].draw(camX, camY, mouseXT, mouseYT, eTileSize, currentLayer, callbacks, debug, igd);
 
-        int ovlLayers = callbacks.wantOverlay(minimap);
-        int camTR = UIElement.sensibleCellDiv((camX + igd.getWidth()), eTileSize) + 1;
-        int camTB = UIElement.sensibleCellDiv((camY + igd.getHeight()), eTileSize) + 1;
-        int camTX = UIElement.sensibleCellDiv(camX, eTileSize);
-        int camTY = UIElement.sensibleCellDiv(camY, eTileSize);
-        for (int l = 0; l < ovlLayers; l++) {
-            for (int i = camTX; i < camTR; i++) {
-                for (int j = camTY; j < camTB; j++) {
-                    int px = i * eTileSize;
-                    int py = j * eTileSize;
-                    px -= camX;
-                    py -= camY;
-                    // Keeping in mind px/py is the TL corner...
-                    px += eTileSize / 2;
-                    px -= tileSize / 2;
-                    py += eTileSize / 2;
-                    py -= tileSize / 2;
-                    callbacks.performOverlay(i, j, igd, px, py, l, minimap);
+        if (callbacks != null) {
+            int ovlLayers = callbacks.wantOverlay(minimap);
+            int camTR = UIElement.sensibleCellDiv((camX + igd.getWidth()), eTileSize) + 1;
+            int camTB = UIElement.sensibleCellDiv((camY + igd.getHeight()), eTileSize) + 1;
+            int camTX = UIElement.sensibleCellDiv(camX, eTileSize);
+            int camTY = UIElement.sensibleCellDiv(camY, eTileSize);
+            for (int l = 0; l < ovlLayers; l++) {
+                for (int i = camTX; i < camTR; i++) {
+                    for (int j = camTY; j < camTB; j++) {
+                        int px = i * eTileSize;
+                        int py = j * eTileSize;
+                        px -= camX;
+                        py -= camY;
+                        // Keeping in mind px/py is the TL corner...
+                        px += eTileSize / 2;
+                        px -= tileSize / 2;
+                        py += eTileSize / 2;
+                        py -= tileSize / 2;
+                        callbacks.performOverlay(i, j, igd, px, py, l, minimap);
+                    }
                 }
             }
         }
@@ -151,14 +161,19 @@ public class UIMapView extends UIElement implements IWindowElement {
         if (button == 3) {
             dragging = true;
         } else {
+            // implicit support for one-button mice
             if (button == 1) {
-                if (!minimap) {
+                if ((!minimap) && (callbacks != null)) {
+                    dragging = false;
                     int mouseXT = (x + camX) / tileSize;
                     int mouseYT = (y + camY) / tileSize;
                     callbacks.confirmAt(mouseXT, mouseYT, currentLayer);
+                } else {
+                    dragging = true;
                 }
+            } else {
+                dragging = false;
             }
-            dragging = false;
         }
     }
 

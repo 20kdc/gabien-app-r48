@@ -30,7 +30,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return "Ev";
+        return "Events";
     }
 
     @Override

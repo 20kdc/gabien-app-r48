@@ -18,7 +18,7 @@ import r48.map.StuffRenderer;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
-import r48.systems.*;
+import r48.map.systems.*;
 import r48.toolsets.BasicToolset;
 import r48.toolsets.IToolset;
 import r48.toolsets.MapToolset;

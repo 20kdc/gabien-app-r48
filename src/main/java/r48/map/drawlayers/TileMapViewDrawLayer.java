@@ -29,7 +29,7 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return "T" + tileLayer;
+        return "Tile Layer " + tileLayer;
     }
 
     @Override
@@ -63,7 +63,8 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
                     short tidx = targetTable.getTiletype(i, j, tileLayer);
                     if (i == mouseXT)
                         if (j == mouseYT)
-                            tidx = callbacks.shouldDrawAtCursor(tidx, tileLayer, currentLayer);
+                            if (callbacks != null)
+                                tidx = callbacks.shouldDrawAtCursor(tidx, tileLayer, currentLayer);
                     AppMain.stuffRenderer.tileRenderer.drawTile(tileLayer, tidx, px, py, igd, eTileSize);
                 }
             }

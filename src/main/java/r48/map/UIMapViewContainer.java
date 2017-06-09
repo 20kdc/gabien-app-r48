@@ -27,25 +27,6 @@ public class UIMapViewContainer extends UIPanel {
     private final ISupplier<IConsumer<UIElement>> windowMakerSupplier;
     public UIMapView view;
     public UINSVertLayout viewToolbarSplit;
-    private final IMapViewCallbacks nullMapTool = new IMapViewCallbacks() {
-        @Override
-        public short shouldDrawAtCursor(short there, int layer, int currentLayer) {
-            return there;
-        }
-
-        @Override
-        public int wantOverlay(boolean minimap) {
-            return 0;
-        }
-
-        @Override
-        public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
-        }
-
-        @Override
-        public void confirmAt(int x, int y, int layer) {
-        }
-    };
 
     // Map tool switch happens at the start of each frame, so it stays out of the way of windowing code.
     private UIMapToolWrapper mapTool = null;
@@ -79,7 +60,7 @@ public class UIMapViewContainer extends UIPanel {
                     AppMain.nextMapTool = null;
                 mapTool = null;
                 if (view != null)
-                    view.callbacks = nullMapTool;
+                    view.callbacks = null;
             }
         }
         wantsToolHide = false;
@@ -98,7 +79,7 @@ public class UIMapViewContainer extends UIPanel {
                     sameAsBefore = false;
                 }
                 if (!sameAsBefore) {
-                    view.callbacks = nullMapTool;
+                    view.callbacks = null;
                     if (AppMain.nextMapTool instanceof IMapViewCallbacks)
                         view.callbacks = (IMapViewCallbacks) AppMain.nextMapTool;
                     mapTool = new UIMapToolWrapper(AppMain.nextMapTool);
@@ -108,7 +89,7 @@ public class UIMapViewContainer extends UIPanel {
                 if (mapTool != null) {
                     mapTool.selfClose = true;
                     mapTool = null;
-                    view.callbacks = nullMapTool;
+                    view.callbacks = null;
                 }
             }
         }
@@ -129,7 +110,6 @@ public class UIMapViewContainer extends UIPanel {
         // Creating the MapView and such causes quite a few side-effects (specifically global StuffRenderer kick-in-the-pants).
         // Also kick the dictionaries because of the event dictionary.
         view = new UIMapView(k, b.width, b.height);
-        view.callbacks = nullMapTool;
         UIScrollLayout layerTabLayout = new UIScrollLayout(false);
         layerTabLayout.scrollbar.setBounds(new Rect(0, 0, 8, 8));
 
@@ -184,6 +164,27 @@ public class UIMapViewContainer extends UIPanel {
             @Override
             public void run() {
                 AppMain.launchSchema("RPG::Map", view.map);
+            }
+        }));
+        layerTabLayout.panels.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Layer Visibility ", new Runnable() {
+            @Override
+            public void run() {
+                UIScrollLayout svl = new UIScrollLayout(true);
+                int h = 0;
+                for (int i = 0; i < AppMain.stuffRenderer.layers.length; i++) {
+                    final int fi = i;
+                    UITextButton layerVis = new UITextButton(FontSizes.mapLayertabTextHeight, AppMain.stuffRenderer.layers[i].getName(), new Runnable() {
+                        @Override
+                        public void run() {
+                            view.layerVis[fi] = !view.layerVis[fi];
+                        }
+                    }).togglable();
+                    layerVis.state = view.layerVis[i];
+                    h += layerVis.getBounds().height;
+                    svl.panels.add(layerVis);
+                }
+                svl.setBounds(new Rect(0, 0, 320, h));
+                AppMain.nextMapTool = svl;
             }
         }));
 
