@@ -21,6 +21,7 @@ import r48.map.imaging.IImageLoader;
 import r48.map.imaging.XYZOrPNGImageLoader;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
+import r48.map.pass.R2kPassabilitySource;
 import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.LcfTileRenderer;
 
@@ -71,7 +72,7 @@ public class R2kSystem extends MapSystem {
             layers[5] = new R2kTileMapViewDrawLayer(tbl, 0, true, tileset);
             layers[6] = new R2kTileMapViewDrawLayer(tbl, 1, true, tileset);
             layers[7] = new EventMapViewDrawLayer(2, events, eventRenderer);
-            layers[8] = new PassabilityMapViewDrawLayer(new PassabilityMapViewDrawLayer.TestPassabilitySource());
+            layers[8] = new PassabilityMapViewDrawLayer(new R2kPassabilitySource(tbl, tileset));
         }
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
     }

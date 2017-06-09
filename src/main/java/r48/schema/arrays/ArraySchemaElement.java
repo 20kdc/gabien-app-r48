@@ -5,9 +5,7 @@
 
 package r48.schema.arrays;
 
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -16,7 +14,7 @@ import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
-import gabien.ui.UIScrollLayout;
+import r48.ui.UIHHalfsplit;
 
 /**
  * Notably, abstracting away sizeFixed and atLeastOne would just be an overcomplication.
@@ -46,6 +44,8 @@ public abstract class ArraySchemaElement extends SchemaElement {
             public void run() {
                 uiSVL.panels.clear();
                 final Runnable me = this;
+                // Work out how big each array index field has to be.
+                final Rect maxSize = UILabel.getRecommendedSize(target.arrVal.length + " ", FontSizes.schemaFieldTextHeight);
                 for (int i = 0; i < target.arrVal.length; i++) {
                     int pLevel = elementPermissionsLevel(i, target);
                     if (pLevel < 1)
@@ -70,7 +70,21 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     }
                     int sz = subelem.maxHoldingHeight();
                     uie.setBounds(new Rect(0, 0, 128, sz));
-                    uiSVL.panels.add(uie);
+                    // Add indexes for clarity.
+                    final UIElement editor = uie;
+                    final UIElement label = new UILabel(i + " ", FontSizes.schemaFieldTextHeight);
+                    UIPanel panel = new UIPanel() {
+                        @Override
+                        public void setBounds(Rect r) {
+                            super.setBounds(r);
+                            label.setBounds(new Rect(0, 0, maxSize.width, maxSize.height));
+                            editor.setBounds(new Rect(maxSize.width, 0, r.width - maxSize.width, r.height));
+                        }
+                    };
+                    panel.allElements.add(label);
+                    panel.allElements.add(editor);
+                    panel.setBounds(new Rect(0, 0, 128, Math.max(sz, maxSize.height)));
+                    uiSVL.panels.add(panel);
                 }
                 addAdditionButton(target.arrVal.length, path.arrayHashIndex(new RubyIO().setFX(target.arrVal.length), "[" + target.arrVal.length + "]"));
             }

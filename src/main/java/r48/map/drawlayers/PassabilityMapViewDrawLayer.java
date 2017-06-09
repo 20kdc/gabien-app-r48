@@ -7,6 +7,7 @@ package r48.map.drawlayers;
 import gabien.IGrDriver;
 import r48.AppMain;
 import r48.map.IMapViewCallbacks;
+import r48.map.pass.IPassabilitySource;
 
 import java.util.Random;
 
@@ -37,10 +38,18 @@ public class PassabilityMapViewDrawLayer implements IMapViewDrawLayer {
                 px -= camX;
                 py -= camY;
                 int flags = src.getPassability(i, j);
-                igd.blitImage(0, ((flags & 0x01) != 0) ? 0 : 8, 8, 8, px + 4, py, AppMain.layerTabs);
-                igd.blitImage(8, ((flags & 0x02) != 0) ? 0 : 8, 8, 8, px + 8, py + 4, AppMain.layerTabs);
-                igd.blitImage(16, ((flags & 0x04) != 0) ? 0 : 8, 8, 8, px + 4, py + 8, AppMain.layerTabs);
-                igd.blitImage(24, ((flags & 0x08) != 0) ? 0 : 8, 8, 8, px, py + 4, AppMain.layerTabs);
+                if (flags == -1)
+                    continue;
+                // Don't actually bother to draw green.
+                // This gives a much better view of what the "boundaries" are without clutter.
+                if ((flags & 0x01) == 0)
+                    igd.blitImage(16, 0, 8, 8, px + 4, py + 8, AppMain.layerTabs);
+                if ((flags & 0x02) == 0)
+                    igd.blitImage(8, 0, 8, 8, px + 8, py + 4, AppMain.layerTabs);
+                if ((flags & 0x04) == 0)
+                    igd.blitImage(24, 0, 8, 8, px, py + 4, AppMain.layerTabs);
+                if ((flags & 0x08) == 0)
+                    igd.blitImage(0, 0, 8, 8, px + 4, py, AppMain.layerTabs);
             }
         }
     }
