@@ -109,7 +109,7 @@ p _ string
 p map map_id
 p x int
 p y int
-X teleport_player_r2k_escapehatch
+X teleport_player_2k3_escapehatch
 
 10840: Player Enters Or Leaves Vehicle
 d Enters or leaves an airship occupying the same space as the player, or a ship/boat directly in front of the player. It is extremely picky about this.

@@ -9,6 +9,7 @@
 C objectDB lcf2000
 C versionId R2k
 C defineIndent
+C allowIndentControl
 
  -COM-
 

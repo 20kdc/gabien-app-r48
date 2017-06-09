@@ -10,7 +10,7 @@ e Cp1252
 3: R2K
 f RPG_RT.ldb
 e UTF-8
-. R2K[3?] (UTF-8)
+. R2K[3?] (UTF-8) (Use for new games!)
 
 3: R2K
 f RPG_RT.ldb

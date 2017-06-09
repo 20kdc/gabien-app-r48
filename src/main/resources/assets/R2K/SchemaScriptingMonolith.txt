@@ -336,7 +336,7 @@ e change_equipment_slot_id 0 weapon 1 shield 2 armour 3 helmet 4 accessory
 
  Teleport Event
 
- also used by teleport_player_r2k_escapehatch
+ also used by teleport_player_2k3_escapehatch
 e teleport_event_dir 0 ignored 1 up 2 right 3 down 4 left
 
 .teleport_event_parameters
@@ -478,16 +478,16 @@ e show_shop_type 0 shopA 1 shopB 2 shopC
 
  Teleport Player
 
-.teleport_player_r2k_escapehatch
+.teleport_player_2k3_escapehatch
 @indent indent
-@parameters teleport_player_r2k_escapehatch_array
+@parameters teleport_player_2k3_escapehatch_array
 
-.teleport_player_r2k_escapehatch_array
+.teleport_player_2k3_escapehatch_array
 ]0 _ string
 ]1 map map_id
 ]2 x int
 ]3 y int
-+]?4 direction ignored teleport_event_dir
++]?4 direction2k3 ignored teleport_event_dir
 
  BE
  Begin Encounter
