@@ -13,10 +13,7 @@ import r48.RubyIO;
 import r48.RubyTable;
 import r48.map.StuffRenderer;
 import r48.map.UIMapViewContainer;
-import r48.map.drawlayers.EventMapViewDrawLayer;
-import r48.map.drawlayers.IMapViewDrawLayer;
-import r48.map.drawlayers.PanoramaMapViewDrawLayer;
-import r48.map.drawlayers.R2kTileMapViewDrawLayer;
+import r48.map.drawlayers.*;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.R2kEventGraphicRenderer;
 import r48.map.imaging.CacheImageLoader;
@@ -56,7 +53,7 @@ public class R2kSystem extends MapSystem {
             String vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
             if (map.getInstVarBySymbol("@parallax_flag").type != 'T')
                 vxaPano = "";
-            layers = new IMapViewDrawLayer[8];
+            layers = new IMapViewDrawLayer[9];
             IGrInDriver.IImage img = null;
             if (!vxaPano.equals(""))
                 img = imageLoader.getImage("Panorama/" + vxaPano, true);
@@ -74,6 +71,7 @@ public class R2kSystem extends MapSystem {
             layers[5] = new R2kTileMapViewDrawLayer(tbl, 0, true, tileset);
             layers[6] = new R2kTileMapViewDrawLayer(tbl, 1, true, tileset);
             layers[7] = new EventMapViewDrawLayer(2, events, eventRenderer);
+            layers[8] = new PassabilityMapViewDrawLayer(new PassabilityMapViewDrawLayer.TestPassabilitySource());
         }
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
     }

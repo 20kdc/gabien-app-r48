@@ -13,6 +13,7 @@ import r48.RubyIO;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.map.UIMapToolWrapper;
+import r48.map.UIMapView;
 import r48.ui.UIFontSizeConfigurator;
 import r48.ui.UIHHalfsplit;
 import gabien.ui.UIScrollLayout;
@@ -51,14 +52,14 @@ public class Application {
         UIAdjuster scaleAdjust = new UIAdjuster(FontSizes.launcherTextHeight, new ISupplier<String>() {
             @Override
             public String get() {
-                return Integer.toString(++uiTicker.createScale);
+                return Integer.toString(++UIMapView.internalScaling);
             }
         }, new ISupplier<String>() {
             @Override
             public String get() {
-                if (uiTicker.createScale == 1)
-                    return Integer.toString(uiTicker.createScale);
-                return Integer.toString(--uiTicker.createScale);
+                if (UIMapView.internalScaling == 1)
+                    return Integer.toString(UIMapView.internalScaling);
+                return Integer.toString(--UIMapView.internalScaling);
             }
         });
 
@@ -89,7 +90,7 @@ public class Application {
             }
         })));
 
-        gamepaks.panels.add(new UIHHalfsplit(3, 5, new UILabel("Scale:", FontSizes.launcherTextHeight), scaleAdjust));
+        gamepaks.panels.add(new UIHHalfsplit(3, 5, new UILabel("Map Scale:", FontSizes.launcherTextHeight), scaleAdjust));
 
         gamepaks.panels.add(new UIHHalfsplit(3, 5, new UILabel("msPerFrame:", FontSizes.launcherTextHeight), msAdjust));
 
@@ -175,7 +176,7 @@ public class Application {
                     uimtw.selfClose = true;
                 }
             });
-            uiTicker.createScale = 1;
+            UIMapView.internalScaling = 1;
             scaleAdjust.accept("1");
             uiTicker.accept(uimtw);
 
