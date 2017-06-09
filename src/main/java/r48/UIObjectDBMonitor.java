@@ -6,6 +6,7 @@
 package r48;
 
 import gabien.IGrInDriver;
+import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 
@@ -15,6 +16,9 @@ import gabien.ui.UILabel;
  * Created on 12/29/16.
  */
 public class UIObjectDBMonitor extends UIElement {
+    public UIObjectDBMonitor() {
+        setBounds(new Rect(0, 0, 320, 240));
+    }
     @Override
     public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
         System.gc();

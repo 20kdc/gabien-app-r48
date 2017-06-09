@@ -177,6 +177,8 @@ public class UIMapView extends UIElement implements IWindowElement {
                         pickTileHelper.accept(mapTable.getTiletype(mouseXT, mouseYT, currentLayer));
                 } else if (callbacks != null) {
                     callbacks.confirmAt(mouseXT, mouseYT, currentLayer);
+                } else {
+                    dragging = true;
                 }
             } else {
                 dragging = true;

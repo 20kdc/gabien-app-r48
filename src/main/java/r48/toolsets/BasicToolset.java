@@ -35,8 +35,7 @@ public class BasicToolset implements IToolset {
     @Override
     public String[] tabNames() {
         return new String[] {
-                "ObjectDB Monitor",
-                "System Objects",
+                "Database Objects",
                 "System Tools",
                 " "
         };
@@ -45,7 +44,6 @@ public class BasicToolset implements IToolset {
     @Override
     public UIElement[] generateTabs(final ISupplier<IConsumer<UIElement>> windowMaker) {
         return new UIElement[] {
-                new UIObjectDBMonitor(),
                 makeFileList(),
                 new UIPopupMenu(new String[] {
                         "Edit Object",
@@ -58,7 +56,8 @@ public class BasicToolset implements IToolset {
                         "Use system fonts for everything",
                         "Configure font sizes",
                         "Rebuild UI",
-                        "Test Fonts"
+                        "Test Fonts",
+                        "Show ODB Memstat"
                 }, new Runnable[] {
                         new Runnable() {
                             @Override
@@ -179,6 +178,12 @@ public class BasicToolset implements IToolset {
                                         windowMaker.get().accept(svl);
                                     }
                                 }));
+                            }
+                        },
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                windowMaker.get().accept(new UIObjectDBMonitor());
                             }
                         }
                 }, FontSizes.menuTextHeight, false),

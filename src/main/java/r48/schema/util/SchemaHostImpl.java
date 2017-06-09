@@ -94,7 +94,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
 
     public SchemaHostImpl(IConsumer<UIElement> rootElem) {
         hostWindows = rootElem;
-        setBounds(new Rect(0, 0, 400, 480));
+        setBounds(new Rect(0, 0, 320, 240));
     }
 
     @Override
