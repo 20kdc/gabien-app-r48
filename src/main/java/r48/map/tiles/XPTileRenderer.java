@@ -115,14 +115,17 @@ public class XPTileRenderer implements ITileRenderer {
         if (tm0 != null)
             tileCount = ((tm0.getHeight() / 32) * 8);
         return new UITileGrid[] {
+                new UITileGrid(mv, 0, 7, 48, new int[] {
+                        48,
+                        48 * 2,
+                        48 * 3,
+                        48 * 4,
+                        48 * 5,
+                        48 * 6,
+                        48 * 7,
+                }),
                 new UITileGrid(mv, 0, 48, 0, null),
-                new UITileGrid(mv, 48, 48, 0, null),
-                new UITileGrid(mv, 48 * 2, 48, 0, null),
-                new UITileGrid(mv, 48 * 3, 48, 0, null),
-                new UITileGrid(mv, 48 * 4, 48, 0, null),
-                new UITileGrid(mv, 48 * 5, 48, 0, null),
-                new UITileGrid(mv, 48 * 6, 48, 0, null),
-                new UITileGrid(mv, 48 * 7, 48, 0, null),
+                new UITileGrid(mv, 48, 48 * 7, 0, null),
                 new UITileGrid(mv, 48 * 8, tileCount, 0, null),
         };
     }
@@ -131,7 +134,7 @@ public class XPTileRenderer implements ITileRenderer {
     public String[] getPlaneNames(int layer) {
         return new String[] {
                 "NULL",
-                "A1",
+                "A-MANUAL",
                 "A2",
                 "A3",
                 "A4",

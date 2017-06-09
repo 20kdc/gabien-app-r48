@@ -58,19 +58,21 @@ public class UIGrid extends UIPanel {
         int mouseSel = -1;
         int mouseX = igd.getMouseX() - ox;
         int mouseY = igd.getMouseY() - oy;
-        if (mouseX < tileSize * tmWidth) {
+        if (new Rect(0, 0, tileSize * tmWidth, r.height).contains(mouseX, mouseY)) {
             int tx = UIElement.sensibleCellDiv(mouseX, tileSize);
             int ty = UIElement.sensibleCellDiv(mouseY, tileSize);
             mouseSel = tx + (ty * tmWidth) + getScrollOffset();
         }
 
         int pi = 0;
-        for (int p = getScrollOffset(); p < tileCount; p++) {
+        int visibleTiles = (((r.height + (tileSize - 1)) / tileSize) * tmWidth);
+        int scrollOffset = getScrollOffset();
+        for (int p = scrollOffset; p < scrollOffset + visibleTiles; p++) {
             int px = ((pi % tmWidth) * tileSize);
             int py = (UIGrid.sensibleCellDiv(pi, tmWidth) * tileSize);
             if (py >= r.height)
                 break;
-            if (p < 0) {
+            if ((p < 0) || (p >= tileCount)) {
                 pi++;
                 // error
                 igd.clearRect(128, 0, 0, ox + px, oy + py, tileSize, tileSize);

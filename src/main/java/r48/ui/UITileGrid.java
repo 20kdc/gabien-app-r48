@@ -67,7 +67,7 @@ public class UITileGrid extends UIGrid {
             t = viewMap[t];
         if (atGroup != 0)
             if (!hover)
-                t += atGroup - 1;
+                t += 15; // Hardcoded offset. Not good, but it covers all cases right now.
         AppMain.stuffRenderer.tileRenderer.drawTile(map.currentLayer, (short) (t + tileStart), x, y, igd, tileSize);
     }
 }

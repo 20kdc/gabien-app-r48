@@ -305,13 +305,22 @@ public class VXATileRenderer implements ITileRenderer {
                     new UITileGrid(mv, 0x000, 0x100, 0, null)
             };
         } else {
+            int[] allATs = new int[0x1800 / 48];
+            for (int i = 0; i < allATs.length; i++) {
+                allATs[i] = i * 48;
+            }
             return new UITileGrid[] {
+                    // Using 16 as the value, though false for most ATs, makes everything work (walls).
+                    // Need to introduce another parameter or just set 16 as the display offset. Going with that.
+                    new UITileGrid(mv, 0x800, allATs.length, 48, allATs),
+
                     new UITileGrid(mv, 0x000, 0x400, 0, null),
                     new UITileGrid(mv, 0x600, 0x100, 0, null),
-                    new UITileGrid(mv, 0x800, 0x300, 48, null),
-                    new UITileGrid(mv, 0xB00, 0x600, 48, null),
-                    new UITileGrid(mv, 0x1100, 0x600, 48, null),
-                    new UITileGrid(mv, 0x1700, 0x900, 48, null),
+
+                    new UITileGrid(mv, 0x800, 0x300, 0, null),
+                    new UITileGrid(mv, 0xB00, 0x600, 0, null),
+                    new UITileGrid(mv, 0x1100, 0x600, 0, null),
+                    new UITileGrid(mv, 0x1700, 0x900, 0, null),
             };
         }
     }
@@ -325,6 +334,7 @@ public class VXATileRenderer implements ITileRenderer {
                     "USE SHADOWREGION TOOL",
             };
         return new String[] {
+                "Auto",
                 "G1", // General 1
                 "G2", // General 2
                 "AT1-M", // AT Layers
