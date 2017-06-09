@@ -11,6 +11,7 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
 import r48.map.UIMapViewContainer;
+import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.GabienImageLoader;
@@ -46,9 +47,17 @@ public class RXPSystem extends MapSystem {
     @Override
     public StuffRenderer rendererFromMap(RubyIO map) {
         IImageLoader imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png");
-        ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tsoFromMap(map));
+        RubyIO tileset = tsoFromMap(map);
+        ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tileset);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
+        String pano = "";
+        if (tileset != null) {
+            RubyIO rio = tileset.getInstVarBySymbol("@panorama_name");
+            if (rio != null)
+                if (rio.strVal.length > 0)
+                    pano = "Panoramas/" + rio.decString();
+        }
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0, 1, 2}, eventRenderer, imageLoader, map, pano));
     }
 
     @Override
@@ -56,6 +65,6 @@ public class RXPSystem extends MapSystem {
         IImageLoader imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png");
         ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 }

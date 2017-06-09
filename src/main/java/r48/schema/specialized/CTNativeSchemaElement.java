@@ -13,11 +13,10 @@ import r48.FontSizes;
 import r48.RubyCT;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
-import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIHHalfsplit;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 /**
  * Colours, tones, same thing
@@ -32,7 +31,7 @@ public class CTNativeSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-        UIScrollVertLayout uiSVL = new UIScrollVertLayout();
+        UIScrollLayout uiSVL = new UIScrollLayout(true);
         RubyCT rct = new RubyCT(target.userVal);
         addField(uiSVL, "R", 0, rct, path);
         addField(uiSVL, "G", 4, rct, path);
@@ -42,7 +41,7 @@ public class CTNativeSchemaElement extends SchemaElement {
         return uiSVL;
     }
 
-    private void addField(UIScrollVertLayout uiSVL, String r, final int i, final RubyCT targ, final SchemaPath sp) {
+    private void addField(UIScrollLayout uiSVL, String r, final int i, final RubyCT targ, final SchemaPath sp) {
         final UINumberBox uinb = new UINumberBox(FontSizes.schemaFieldTextHeight);
         uinb.number = (int) targ.innerTable.getDouble(i);
         uinb.onEdit = new Runnable() {

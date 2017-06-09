@@ -35,7 +35,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
 
     private void setupView() {
         allElements.clear();
-        int layer = map.getCurrentLayer();
+        int layer = map.currentLayer;
         tileMaps = AppMain.stuffRenderer.tileRenderer.createATUIPlanes(map);
         tabPane = new UITabPane(AppMain.stuffRenderer.tileRenderer.getPlaneNames(layer), tileMaps, FontSizes.tilesTabTextHeight);
         atBases = AppMain.stuffRenderer.tileRenderer.indicateATs();
@@ -51,7 +51,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
 
     @Override
     public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
-        if (lastSelectedLayer != map.getCurrentLayer()) {
+        if (lastSelectedLayer != map.currentLayer) {
             setupView();
             setBounds(getBounds());
         }

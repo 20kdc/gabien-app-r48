@@ -63,11 +63,6 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public int extraEventLayers() {
-        return 0;
-    }
-
-    @Override
     public RubyIO extractEventGraphic(RubyIO evI) {
         return evI.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@graphic");
     }

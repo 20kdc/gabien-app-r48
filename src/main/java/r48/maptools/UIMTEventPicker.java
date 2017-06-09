@@ -14,7 +14,7 @@ import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +25,7 @@ import java.util.Map;
 public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
     public IConsumer<UIElement> windowView;
     public UIMapView mapView;
-    public UIScrollVertLayout svl = new UIScrollVertLayout();
+    public UIScrollLayout svl = new UIScrollLayout(true);
     public HashMap<String, RubyIO> eventCache = new HashMap<String, RubyIO>();
 
     public UIMTEventPicker(IConsumer<UIElement> wv, UIMapView mv) {

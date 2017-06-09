@@ -13,7 +13,7 @@ import r48.RubyIO;
 import r48.UITest;
 import r48.map.StuffRenderer;
 import r48.ui.UIAppendButton;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 /**
  * Created on 12/29/16.
@@ -109,8 +109,8 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     @Override
     public void switchObject(SchemaPath nextObject) {
         if (innerElem != null) {
-            if (innerElemEditor instanceof UIScrollVertLayout)
-                innerElem.scrollValue = ((UIScrollVertLayout) innerElemEditor).scrollbar.scrollPoint;
+            if (innerElemEditor instanceof UIScrollLayout)
+                innerElem.scrollValue = ((UIScrollLayout) innerElemEditor).scrollbar.scrollPoint;
             AppMain.objectDB.deregisterModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
         }
         while (nextObject.editor == null)
@@ -120,8 +120,8 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
             doLaunch = true;
         innerElem = nextObject;
         innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
-        if (innerElemEditor instanceof UIScrollVertLayout)
-            ((UIScrollVertLayout) innerElemEditor).scrollbar.scrollPoint = innerElem.scrollValue;
+        if (innerElemEditor instanceof UIScrollLayout)
+            ((UIScrollLayout) innerElemEditor).scrollbar.scrollPoint = innerElem.scrollValue;
         innerElem.hasBeenUsed = true;
         AppMain.objectDB.registerModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
 

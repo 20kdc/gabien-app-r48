@@ -29,12 +29,6 @@ public class IkaTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public int[] tileLayerDrawOrder() {
-        // Standard draw order.
-        return new int[] {0};
-    }
-
-    @Override
     public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
         String[] blockTypes = new String[16];
         blockTypes[2] = "filt";
@@ -61,17 +55,12 @@ public class IkaTileRenderer implements ITileRenderer {
             if (block == 0)
                 igd.blitImage(frame, 0, ets, ets, px, py, i);
             if (block == 1)
-                igd.blitImage((15 - frame) + 16, 0, ets, ets, px, py, i);
+                igd.blitImage(16 - frame, 0, ets, ets, px, py, i);
             if (block == 2)
                 igd.blitImage(0, frame, ets, ets, px, py, i);
             if (block == 3)
-                igd.blitImage(0, (15 - frame) + 16, ets, ets, px, py, i);
+                igd.blitImage(0, 16 - frame, ets, ets, px, py, i);
         }
-    }
-
-    @Override
-    public String getPanorama() {
-        return "Back";
     }
 
     @Override

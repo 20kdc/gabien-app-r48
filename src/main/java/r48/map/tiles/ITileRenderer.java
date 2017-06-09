@@ -16,11 +16,7 @@ import r48.ui.UITileGrid;
 public interface ITileRenderer {
     int getTileSize();
 
-    int[] tileLayerDrawOrder();
-
     void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets);
-
-    String getPanorama();
 
     UITileGrid[] createATUIPlanes(UIMapView mv);
 

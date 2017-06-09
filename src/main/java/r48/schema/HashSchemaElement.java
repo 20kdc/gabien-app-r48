@@ -16,7 +16,7 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 import r48.ui.UIHHalfsplit;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class HashSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UIScrollVertLayout uiSV = new UIScrollVertLayout();
+        final UIScrollLayout uiSV = new UIScrollLayout(true);
         int vertSz = keyElem.maxHoldingHeight();
         if (valElem.maxHoldingHeight() > keyElem.maxHoldingHeight())
             vertSz = valElem.maxHoldingHeight();

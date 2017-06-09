@@ -13,7 +13,7 @@ import r48.*;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIFontSizeConfigurator;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 import r48.ui.UITextPrompt;
 
 import java.util.LinkedList;
@@ -172,7 +172,7 @@ public class BasicToolset implements IToolset {
                                     @Override
                                     public void accept(String s) {
                                         int fs = Integer.parseInt(s);
-                                        UIScrollVertLayout svl = new UIScrollVertLayout();
+                                        UIScrollLayout svl = new UIScrollLayout(true);
                                         for (int i = 0; i < 128; i++)
                                             svl.panels.add(new UITextBox(fs));
                                         svl.setBounds(new Rect(0, 0, 320, 240));

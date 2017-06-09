@@ -10,7 +10,7 @@ import gabien.ui.UIPanel;
 import gabien.ui.UITextButton;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -34,7 +34,7 @@ public class UITest extends UIPanel {
     // the naming got screwed up with the Nth layout redesign.
     // UITest -> outerPanel -> Back/PRINT
     //                      -> masterPanel
-    public UIScrollVertLayout masterPanel = new UIScrollVertLayout();
+    public UIScrollLayout masterPanel = new UIScrollLayout(true);
     public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton("PTS", new UIAppendButton("PTF", new UITextButton(FontSizes.inspectorBackTextHeight, "Back...", new Runnable() {
         @Override
         public void run() {

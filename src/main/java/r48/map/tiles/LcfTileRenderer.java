@@ -43,13 +43,6 @@ public class LcfTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public int[] tileLayerDrawOrder() {
-        return new int[] {
-                0, 1
-        };
-    }
-
-    @Override
     public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
         if (chipset == null)
             return;
@@ -220,11 +213,6 @@ public class LcfTileRenderer implements ITileRenderer {
 
     private void handleATField(int subfield, int fx, int fy, int px, int py, IGrDriver igd, IGrInDriver.IImage chipset, int ets) {
         XPTileRenderer.generalOldRMATField(fx * 16, fy * 16, subfield, 0, 16, ets, px, py, igd, chipset);
-    }
-
-    @Override
-    public String getPanorama() {
-        return panorama;
     }
 
     @Override

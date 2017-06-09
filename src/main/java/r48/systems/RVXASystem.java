@@ -7,6 +7,7 @@ package r48.systems;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
+import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.GabienImageLoader;
@@ -27,18 +28,20 @@ public class RVXASystem extends RXPSystem {
             if (map.getInstVarBySymbol("@parallax_show").type != 'T')
                 vxaPano = "";
         }
+        if (!vxaPano.equals(""))
+            vxaPano = "Parallaxes/" + vxaPano;
 
         IImageLoader imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png");
-        ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tsoFromMap(map), vxaPano);
+        ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tsoFromMap(map));
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0, 1, 3, 2}, eventRenderer, imageLoader, map, vxaPano));
     }
 
     @Override
     public StuffRenderer rendererFromTso(RubyIO tso) {
         IImageLoader imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png");
-        ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tso, "");
+        ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 }

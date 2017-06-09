@@ -12,7 +12,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.ui.UIAppendButton;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 import java.util.LinkedList;
 
@@ -26,7 +26,7 @@ public class UICellSelectionPanel extends UIPanel {
 
     public RMAnimRootPanel root;
 
-    public UIScrollVertLayout selectionPanel = new UIScrollVertLayout();
+    public UIScrollLayout selectionPanel = new UIScrollLayout(true);
 
     public UICellSelectionPanel(RMAnimRootPanel rmAnimRootPanel) {
         root = rmAnimRootPanel;

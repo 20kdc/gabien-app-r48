@@ -7,6 +7,7 @@ package r48.systems;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
+import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.NullEventGraphicRenderer;
 import r48.map.imaging.GabienImageLoader;
@@ -23,6 +24,6 @@ public class NullSystem extends MapSystem {
         IImageLoader imageLoader = new GabienImageLoader(AppMain.rootPath, "");
         ITileRenderer tileRenderer = new NullTileRenderer();
         IEventGraphicRenderer eventRenderer = new NullEventGraphicRenderer();
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 }

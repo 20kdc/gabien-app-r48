@@ -9,14 +9,14 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.ui.UIGrid;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 /**
  * Created on 2/18/17.
  */
 public class DefaultTableCellEditor implements ITableCellEditor {
     @Override
-    public Runnable createEditor(final UIScrollVertLayout panel, final RubyIO targV, final UIGrid uig, final Runnable changeOccurred) {
+    public Runnable createEditor(final UIScrollLayout panel, final RubyIO targV, final UIGrid uig, final Runnable changeOccurred) {
         final RubyTable targ = new RubyTable(targV.userVal);
         final UINumberBox[] boxes = new UINumberBox[targ.planeCount];
         for (int i = 0; i < boxes.length; i++) {

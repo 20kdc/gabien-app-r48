@@ -14,7 +14,7 @@ import java.util.LinkedList;
  * Created on 1/29/17.
  */
 public class UIFontSizeConfigurator extends UIPanel {
-    private UIScrollVertLayout outerLayout;
+    private UIScrollLayout outerLayout;
     private int lastFontSizerSize = -1;
 
     public UIFontSizeConfigurator() {
@@ -27,7 +27,7 @@ public class UIFontSizeConfigurator extends UIPanel {
             return;
         lastFontSizerSize = FontSizes.fontSizerTextHeight;
         allElements.clear();
-        outerLayout = new UIScrollVertLayout();
+        outerLayout = new UIScrollLayout(true);
         final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
         final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();
         outerLayout.panels.add(new UIHHalfsplit(1, 2, new UITextButton(FontSizes.fontSizerTextHeight, "*2", new Runnable() {

@@ -10,7 +10,7 @@ import gabien.ui.UIElement;
 import r48.RubyIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -28,7 +28,7 @@ public class AggregateSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        UIScrollVertLayout uiSVL = new UIScrollVertLayout() {
+        UIScrollLayout uiSVL = new UIScrollLayout(true) {
             @Override
             public String toString() {
                 return "SCHEMA Obj.";

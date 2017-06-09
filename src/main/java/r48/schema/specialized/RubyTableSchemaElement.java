@@ -11,13 +11,12 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.schema.SchemaElement;
-import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIGrid;
 import r48.ui.UIHHalfsplit;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 /**
  * OLD:
@@ -78,7 +77,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             }
         };
 
-        UIScrollVertLayout uiSVL = new UIScrollVertLayout();
+        UIScrollLayout uiSVL = new UIScrollLayout(true);
         final Runnable editorOnSelChange = tableCellEditor.createEditor(uiSVL, targV, uig, new Runnable() {
             @Override
             public void run() {

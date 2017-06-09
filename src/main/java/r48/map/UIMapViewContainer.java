@@ -15,6 +15,7 @@ import r48.map.tiles.VXATileRenderer;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTEventPicker;
 import r48.maptools.UIMTShadowLayer;
+import r48.ui.UINSVertLayout;
 
 import java.util.LinkedList;
 
@@ -25,6 +26,7 @@ import java.util.LinkedList;
 public class UIMapViewContainer extends UIPanel {
     private final ISupplier<IConsumer<UIElement>> windowMakerSupplier;
     public UIMapView view;
+    public UINSVertLayout viewToolbarSplit;
     private final IMapViewCallbacks nullMapTool = new IMapViewCallbacks() {
         @Override
         public short shouldDrawAtCursor(short there, int layer, int currentLayer) {
@@ -42,64 +44,6 @@ public class UIMapViewContainer extends UIPanel {
 
         @Override
         public void confirmAt(int x, int y, int layer) {
-            LinkedList<String> toolNames = new LinkedList<String>();
-            LinkedList<Runnable> toolRunnables = new LinkedList<Runnable>();
-
-            toolNames.add("Tiles");
-            toolRunnables.add(new Runnable() {
-                @Override
-                public void run() {
-                    if (view != null)
-                        AppMain.nextMapTool = new UIMTAutotile(view);
-                }
-            });
-            if (AppMain.stuffRenderer != null) {
-                if (AppMain.stuffRenderer.tileRenderer instanceof VXATileRenderer) {
-                    toolNames.add("Shadow/Region");
-                    toolRunnables.add(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (view != null)
-                                AppMain.nextMapTool = new UIMTShadowLayer(view);
-                        }
-                    });
-                }
-            }
-            toolNames.add("Edit Direct.");
-            toolRunnables.add(new Runnable() {
-                @Override
-                public void run() {
-                    if (view != null)
-                        AppMain.launchSchema("RPG::Map", view.map);
-                }
-            });
-            toolNames.add("Event List");
-            toolRunnables.add(new Runnable() {
-                @Override
-                public void run() {
-                    if (view != null)
-                        AppMain.nextMapTool = new UIMTEventPicker(windowMakerSupplier.get(), view);
-                }
-            });
-            toolNames.add("Reload Tileset");
-            toolRunnables.add(new Runnable() {
-                @Override
-                public void run() {
-                    AppMain.stuffRenderer.imageLoader.flushCache();
-                    if (view != null)
-                        AppMain.stuffRenderer = AppMain.system.rendererFromMap(view.map);
-                    AppMain.stuffRenderer.imageLoader.flushCache();
-                }
-            });
-            toolNames.add("<for dev only>");
-            toolRunnables.add(new Runnable() {
-                @Override
-                public void run() {
-                    if (view != null)
-                        windowMakerSupplier.get().accept(new UITest(view.map));
-                }
-            });
-            AppMain.nextMapTool = new UIPopupMenu(toolNames.toArray(new String[0]), toolRunnables.toArray(new Runnable[0]), FontSizes.mapToolSelectorTextHeight, true);
         }
     };
 
@@ -119,7 +63,7 @@ public class UIMapViewContainer extends UIPanel {
         //iconPlanX = (r.width / 2) - 32;
         //iconPlanY = (r.textHeight / 2) - 32;
         if (view != null)
-            view.setBounds(new Rect(0, 0, r.width, r.height));
+            viewToolbarSplit.setBounds(new Rect(0, 0, r.width, r.height));
     }
 
     @Override
@@ -186,7 +130,66 @@ public class UIMapViewContainer extends UIPanel {
         // Also kick the dictionaries because of the event dictionary.
         view = new UIMapView(k, b.width, b.height);
         view.callbacks = nullMapTool;
-        allElements.add(view);
+        UIScrollLayout layerTabLayout = new UIScrollLayout(false);
+        layerTabLayout.scrollbar.setBounds(new Rect(0, 0, 8, 8));
+
+        final UITextButton[] buttons = new UITextButton[view.mapTable.planeCount];
+        for (int i = 0; i < view.mapTable.planeCount; i++) {
+            final int thisButton = i;
+            UITextButton button = new UITextButton(FontSizes.mapLayertabTextHeight, "L" + i, new Runnable() {
+                @Override
+                public void run() {
+                    for (int i = 0; i < buttons.length; i++)
+                        buttons[i].state = false;
+                    buttons[thisButton].state = true;
+                    view.currentLayer = thisButton;
+                }
+            }).togglable();
+            if (i == 0)
+                button.state = true;
+            layerTabLayout.panels.add(button);
+            buttons[i] = button;
+        }
+
+        layerTabLayout.panels.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Tilemap ", new Runnable() {
+            @Override
+            public void run() {
+                AppMain.nextMapTool = new UIMTAutotile(view);
+            }
+        }));
+        if (AppMain.stuffRenderer.tileRenderer instanceof VXATileRenderer) {
+            layerTabLayout.panels.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Shadow/Region ", new Runnable() {
+                @Override
+                public void run() {
+                    AppMain.nextMapTool = new UIMTShadowLayer(view);
+                }
+            }));
+        }
+        layerTabLayout.panels.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Events ", new Runnable() {
+            @Override
+            public void run() {
+                AppMain.nextMapTool = new UIMTEventPicker(windowMakerSupplier.get(), view);
+            }
+        }));
+        layerTabLayout.panels.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Reload Panorama/TS ", new Runnable() {
+            @Override
+            public void run() {
+                AppMain.stuffRenderer.imageLoader.flushCache();
+                if (view != null)
+                    AppMain.stuffRenderer = AppMain.system.rendererFromMap(view.map);
+                AppMain.stuffRenderer.imageLoader.flushCache();
+            }
+        }));
+        layerTabLayout.panels.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Properties ", new Runnable() {
+            @Override
+            public void run() {
+                AppMain.launchSchema("RPG::Map", view.map);
+            }
+        }));
+
+        layerTabLayout.setBounds(new Rect(0, 0, 28, 28));
+        viewToolbarSplit = new UINSVertLayout(layerTabLayout, view);
+        allElements.add(viewToolbarSplit);
         AppMain.schemas.kickAllDictionariesForMapChange();
     }
 }

@@ -23,6 +23,6 @@ public class IkaSystem extends MapSystem {
         IImageLoader imageLoader = new GabienImageLoader(AppMain.rootPath + "Pbm/", ".pbm", 0, 0, 0);
         ITileRenderer tileRenderer = new IkaTileRenderer(imageLoader);
         IEventGraphicRenderer eventRenderer = new IkaEventGraphicRenderer(imageLoader);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0}, eventRenderer, imageLoader, map, "Back"));
     }
 }

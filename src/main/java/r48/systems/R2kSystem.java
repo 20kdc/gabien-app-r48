@@ -11,6 +11,7 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
 import r48.map.UIMapViewContainer;
+import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.R2kEventGraphicRenderer;
 import r48.map.imaging.CacheImageLoader;
@@ -49,7 +50,7 @@ public class R2kSystem extends MapSystem {
         IImageLoader imageLoader = new CacheImageLoader(new XYZOrPNGImageLoader(AppMain.rootPath));
         ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tsoFromMap2000(map), vxaPano);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0, 1}, eventRenderer, imageLoader, map, vxaPano));
     }
 
     @Override
@@ -57,6 +58,6 @@ public class R2kSystem extends MapSystem {
         IImageLoader imageLoader = new CacheImageLoader(new XYZOrPNGImageLoader(AppMain.rootPath));
         ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tso, "");
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 }

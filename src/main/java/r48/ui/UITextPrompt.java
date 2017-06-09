@@ -13,7 +13,7 @@ import r48.FontSizes;
  */
 public class UITextPrompt extends UIPanel implements IWindowElement {
     public UITextBox utb = new UITextBox(FontSizes.textDialogFieldTextHeight);
-    public UIScrollVertLayout uiSVL = new UIScrollVertLayout();
+    public UIScrollLayout uiSVL = new UIScrollLayout(true);
     public boolean wantClose = false;
 
     public UITextPrompt(final String s, final IConsumer<String> iConsumer) {

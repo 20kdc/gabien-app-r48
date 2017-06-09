@@ -39,11 +39,6 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public int extraEventLayers() {
-        return 1;
-    }
-
-    @Override
     public RubyIO extractEventGraphic(RubyIO event) {
         // 'Zero Page' gets in the way here.
         if (event.getInstVarBySymbol("@pages").arrVal.length <= 1)

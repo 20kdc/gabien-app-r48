@@ -53,12 +53,6 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public int[] tileLayerDrawOrder() {
-        // Standard draw order.
-        return new int[] {0, 1, 2};
-    }
-
-    @Override
     public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
         // The logic here is only documented in the mkxp repository, in tilemap.cpp.
         // I really hope it doesn't count as stealing here,
@@ -112,17 +106,6 @@ public class XPTileRenderer implements ITileRenderer {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public String getPanorama() {
-        if (tileset != null) {
-            RubyIO rio = tileset.getInstVarBySymbol("@panorama_name");
-            if (rio != null)
-                if (rio.strVal.length > 0)
-                    return "Panoramas/" + rio.decString();
-        }
-        return "";
     }
 
     @Override

@@ -13,13 +13,8 @@ import r48.RubyIO;
  * Created on 1/27/17.
  */
 public interface IEventGraphicRenderer {
-    // The number returned is NOT a map layer, but a position in the map draw order.
-    // The event is drawn after the map layer is.
-    // -1 is before any map layers.
+    // Only used for EventMapViewDrawLayer
     int determineEventLayer(RubyIO event);
-
-    // This adds layers after the tile layers. tileLayerCount == first extra layer.
-    int extraEventLayers();
 
     RubyIO extractEventGraphic(RubyIO event);
 

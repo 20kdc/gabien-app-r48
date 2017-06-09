@@ -13,7 +13,7 @@ import r48.RubyIO;
 import r48.RubyTable;
 import r48.ui.UIGrid;
 import r48.ui.UIHHalfsplit;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,7 +30,7 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
     }
 
     @Override
-    public Runnable createEditor(UIScrollVertLayout panel, final RubyIO targV, final UIGrid uig, final Runnable changeOccurred) {
+    public Runnable createEditor(UIScrollLayout panel, final RubyIO targV, final UIGrid uig, final Runnable changeOccurred) {
         final RubyTable targ = new RubyTable(targV.userVal);
         int bit = 1;
         // Java: "generic array creation warning!"

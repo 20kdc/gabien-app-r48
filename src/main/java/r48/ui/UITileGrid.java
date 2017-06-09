@@ -64,7 +64,7 @@ public class UITileGrid extends UIGrid {
         }
         if (autoTile)
             t -= t / (autoTileSpacing + 1);
-        AppMain.stuffRenderer.tileRenderer.drawTile(map.getCurrentLayer(), (short) (t + tileStart), x, y, igd, tileSize);
+        AppMain.stuffRenderer.tileRenderer.drawTile(map.currentLayer, (short) (t + tileStart), x, y, igd, tileSize);
     }
 
     public boolean selectedATB() {

@@ -15,7 +15,7 @@ import r48.dbs.IDatabase;
 import r48.map.UIMapToolWrapper;
 import r48.ui.UIFontSizeConfigurator;
 import r48.ui.UIHHalfsplit;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 import java.io.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,7 +30,7 @@ public class Application {
     public static void gabienmain() throws IOException {
         final WindowCreatingUIElementConsumer uiTicker = new WindowCreatingUIElementConsumer();
 
-        final UIScrollVertLayout gamepaks = new UIScrollVertLayout();
+        final UIScrollLayout gamepaks = new UIScrollLayout(true);
         gamepaks.setBounds(new Rect(0, 0, 400, 200));
         // this can't be good
         // Ok, explaination for this. Giving it a runnable, it will hold it until calld again, and then it will run it and remove it.

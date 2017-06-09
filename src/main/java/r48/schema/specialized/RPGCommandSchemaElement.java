@@ -6,7 +6,6 @@
 package r48.schema.specialized;
 
 import gabien.ui.*;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
@@ -22,7 +21,7 @@ import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 import r48.ui.UIEnumChoice;
 import r48.ui.UIHHalfsplit;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 import r48.ui.help.UIHelpSystem;
 
 import java.util.HashMap;
@@ -135,7 +134,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     if (rc.specialSchema != null)
                         return rc.specialSchema.buildHoldingEditor(target, launcher, path);
                     RubyIO param = target.getInstVarBySymbol("@parameters");
-                    UIScrollVertLayout uiSVL = new UIScrollVertLayout();
+                    UIScrollLayout uiSVL = new UIScrollLayout(true);
 
                     int height = 0;
                     if (target.getInstVarBySymbol("@indent") != null) {

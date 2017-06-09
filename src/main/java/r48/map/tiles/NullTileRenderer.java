@@ -19,18 +19,8 @@ public class NullTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public int[] tileLayerDrawOrder() {
-        return new int[0];
-    }
-
-    @Override
     public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
 
-    }
-
-    @Override
-    public String getPanorama() {
-        return "";
     }
 
     @Override

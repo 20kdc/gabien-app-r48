@@ -10,7 +10,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.map.UIMapViewContainer;
 import r48.ui.UIAppendButton;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 import r48.ui.UITextPrompt;
 
 import java.util.Comparator;
@@ -27,7 +27,7 @@ public class UIGRMMapInfos extends UIPanel {
     private final IRMLikeMapInfoBackendWPub operators;
     private final ISupplier<IConsumer<UIElement>> windowMakerGetter;
     private final IConsumer<Integer> mapLoader;
-    private UIScrollVertLayout uiSVL;
+    private UIScrollLayout uiSVL;
     private int selectedOrder = 0;
     private boolean deleteConfirmation = false;
     private boolean enableOrderHoleDebug = false;
@@ -48,7 +48,7 @@ public class UIGRMMapInfos extends UIPanel {
                 mapBox.loadMap(operators.nameFromInt(integer));
             }
         };
-        uiSVL = new UIScrollVertLayout();
+        uiSVL = new UIScrollLayout(true);
         rebuildList();
         allElements.add(uiSVL);
     }

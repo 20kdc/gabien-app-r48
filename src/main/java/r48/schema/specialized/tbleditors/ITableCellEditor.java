@@ -6,7 +6,7 @@ package r48.schema.specialized.tbleditors;
 
 import r48.RubyIO;
 import r48.ui.UIGrid;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 /**
  * Created on 2/18/17.
@@ -14,5 +14,5 @@ import r48.ui.UIScrollVertLayout;
 
 public interface ITableCellEditor {
     // Returns the on-selection-changed handler.
-    public Runnable createEditor(final UIScrollVertLayout base, final RubyIO targV, final UIGrid uig, final Runnable changeOccurred);
+    public Runnable createEditor(final UIScrollLayout base, final RubyIO targV, final UIGrid uig, final Runnable changeOccurred);
 }

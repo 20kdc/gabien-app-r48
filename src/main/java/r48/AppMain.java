@@ -263,7 +263,7 @@ public class AppMain {
         UIHelpSystem uhs = new UIHelpSystem();
         for (String st : s.split("\n"))
             uhs.page.add(new UIHelpSystem.HelpElement('.', st.split(" ")));
-        UIScrollVertLayout svl = new UIScrollVertLayout() {
+        UIScrollLayout svl = new UIScrollLayout(true) {
             @Override
             public String toString() {
                 return "Information";
@@ -289,7 +289,7 @@ public class AppMain {
                 hsc.loadPage(integer);
             }
         };
-        final UIScrollVertLayout uus = new UIScrollVertLayout();
+        final UIScrollLayout uus = new UIScrollLayout(true);
         uus.panels.add(uis);
         uus.setBounds(new Rect(0, 0, 560, 240));
         final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton("Index", uil, new Runnable() {

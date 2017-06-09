@@ -27,13 +27,11 @@ public class VXATileRenderer implements ITileRenderer {
     public static final int tileSize = 32;
     public final IGrInDriver.IImage[] tilesetMaps = new IGrInDriver.IImage[9];
     private final RubyIO tileset;
-    public String panoramaSetup = "";
     // Generated image the size of one shadow 'block'.
     public IGrInDriver.IImage shadowImage;
 
-    public VXATileRenderer(IImageLoader il, RubyIO tileset, String vxaPano) {
+    public VXATileRenderer(IImageLoader il, RubyIO tileset) {
         this.tileset = tileset;
-        panoramaSetup = vxaPano;
         int[] tinyTile = new int[256];
         for (int i = 0; i < 256; i++)
             tinyTile[i] = 0x80000000;
@@ -55,12 +53,6 @@ public class VXATileRenderer implements ITileRenderer {
     @Override
     public int getTileSize() {
         return tileSize;
-    }
-
-    @Override
-    public int[] tileLayerDrawOrder() {
-        // Shadows go under sufficiently foreground objects for some reason.
-        return new int[] {0, 1, 3, 2};
     }
 
     @Override
@@ -306,15 +298,8 @@ public class VXATileRenderer implements ITileRenderer {
     }
 
     @Override
-    public String getPanorama() {
-        if (panoramaSetup.length() == 0)
-            return "";
-        return "Parallaxes/" + panoramaSetup;
-    }
-
-    @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv) {
-        if (mv.getCurrentLayer() == 3) {
+        if (mv.currentLayer == 3) {
             // Shadow Layer
             return new UITileGrid[] {
                     new UITileGrid(mv, 0x000, 0x100, false, 0)

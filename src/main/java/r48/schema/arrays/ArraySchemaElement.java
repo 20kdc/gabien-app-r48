@@ -16,7 +16,7 @@ import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 /**
  * Notably, abstracting away sizeFixed and atLeastOne would just be an overcomplication.
@@ -34,7 +34,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this) : path2;
-        final UIScrollVertLayout uiSVL = new UIScrollVertLayout() {
+        final UIScrollLayout uiSVL = new UIScrollLayout(true) {
             @Override
             public String toString() {
                 return "SCHEMA Array";

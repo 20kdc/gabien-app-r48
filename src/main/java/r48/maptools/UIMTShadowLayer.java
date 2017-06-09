@@ -10,7 +10,7 @@ import r48.FontSizes;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.ui.UIHHalfsplit;
-import r48.ui.UIScrollVertLayout;
+import gabien.ui.UIScrollLayout;
 
 /**
  * UIMTAutotile isn't flexible enough for this.
@@ -18,13 +18,13 @@ import r48.ui.UIScrollVertLayout;
  */
 public class UIMTShadowLayer extends UIPanel implements IMapViewCallbacks {
     public final UIMapView map;
-    private UIScrollVertLayout uiSVL;
+    private UIScrollLayout uiSVL;
     private UINumberBox regionId;
     private int flags = 0;
 
     public UIMTShadowLayer(UIMapView mv) {
         map = mv;
-        uiSVL = new UIScrollVertLayout();
+        uiSVL = new UIScrollLayout(true);
         String[] s = new String[] {"Up-Left", "Up-Right", "Down-Left", "Down-Right"};
         UITextButton[] controlButtons = new UITextButton[4];
         int power = 1;
