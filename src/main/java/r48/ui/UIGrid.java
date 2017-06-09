@@ -60,7 +60,7 @@ public class UIGrid extends UIPanel {
         int pi = 0;
         for (int p = getScrollOffset(); p < tileCount; p++) {
             int px = ((pi % tmWidth) * tileSize);
-            int py = ((pi / tmWidth) * tileSize);
+            int py = (UIGrid.sensibleCellDiv(pi, tmWidth) * tileSize);
             if (py >= r.height)
                 break;
             drawTile(p, ox + px, oy + py, igd);
@@ -72,7 +72,7 @@ public class UIGrid extends UIPanel {
             pi = (selTile - getScrollOffset()) + (ty * tmWidth);
             for (int tx = 0; tx < selWidth; tx++) {
                 int px = (pi % tmWidth) * tileSize;
-                int py = (pi / tmWidth) * tileSize;
+                int py = UIGrid.sensibleCellDiv(pi, tmWidth) * tileSize;
                 if (py < 0)
                     continue;
                 if (py >= r.height)
