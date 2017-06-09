@@ -16,65 +16,58 @@ import r48.map.UIMapView;
 public class UITileGrid extends UIGrid {
     public final int tileStart;
     public final UIMapView map;
-    public final boolean autoTile;
-    public final int autoTileSpacing;
 
-    public UITileGrid(UIMapView mv, int tStart, int tileCount, boolean aTile, int aTileSpacing) {
+    // If 0, not an AT Group. Otherwise, this is the size of the AT group.
+    public final int atGroup;
+    public final int[] viewMap;
+
+    public UITileGrid(UIMapView mv, int tStart, int tileCount, int aTile, int[] remap) {
         super(mv.tileSize, tileCount);
-        canMultiSelect = true;
-        autoTile = aTile;
-        autoTileSpacing = aTileSpacing;
+        canMultiSelect = aTile == 0;
         map = mv;
         tileStart = tStart;
         bkgR = 255;
         bkgB = 255;
+        atGroup = aTile;
+        viewMap = remap;
     }
 
-    @Override
-    public int getSelected() {
-        int r = super.getSelected();
-        if (autoTile)
-            r -= r / (autoTileSpacing + 1);
+    public int getTCSelected() {
+        int r = getSelected();
+        if (viewMap != null)
+            return viewMap[r] + tileStart;
         return r + tileStart;
     }
 
-    public int getTileEndAdjusted() {
-        int r = tileCount;
-        if (autoTile)
-            r -= r / (autoTileSpacing + 1);
-        return r + tileStart;
-    }
-
-    @Override
-    public void setSelected(int i) {
-        i -= tileStart;
-        if (autoTile)
-            i += i / autoTileSpacing;
-        super.setSelected(i);
-    }
-
-    private boolean isAutoTile(int t) {
-        if (!autoTile)
+    public boolean tryTCSetSelected(int wanted) {
+        wanted -= tileStart;
+        if (viewMap == null) {
+            if (wanted >= 0)
+                if (wanted < tileCount) {
+                    setSelected(wanted);
+                    return true;
+                }
             return false;
-        return (t % (autoTileSpacing + 1)) == autoTileSpacing;
+        }
+        int fuzzLen = atGroup;
+        if (fuzzLen == 0)
+            fuzzLen = 1;
+        for (int i = 0; i < viewMap.length; i++) {
+            if ((wanted >= viewMap[i]) && (wanted < (viewMap[i] + fuzzLen))) {
+                setSelected(i);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
-    protected void drawTile(int t, int x, int y, IGrInDriver igd) {
-        if (isAutoTile(t)) {
-            int sz = 20;
-            if (tileSize < sz)
-                sz = tileSize;
-            int margin = ((tileSize - sz) / 2);
-            igd.blitImage(16, 36, sz, sz, x + margin, y + margin, AppMain.layerTabs);
-            return;
-        }
-        if (autoTile)
-            t -= t / (autoTileSpacing + 1);
+    protected void drawTile(int t, boolean hover, int x, int y, IGrInDriver igd) {
+        if (viewMap != null)
+            t = viewMap[t];
+        if (atGroup != 0)
+            if (!hover)
+                t += atGroup - 1;
         AppMain.stuffRenderer.tileRenderer.drawTile(map.currentLayer, (short) (t + tileStart), x, y, igd, tileSize);
-    }
-
-    public boolean selectedATB() {
-        return isAutoTile(super.getSelected());
     }
 }

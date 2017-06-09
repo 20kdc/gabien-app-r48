@@ -52,12 +52,8 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
 
     @Override
     public short shouldDrawAtCursor(short there, int layer, int currentLayer) {
-        if (layer == currentLayer) {
-            int selected = tileMaps[tabPane.tab].getSelected();
-            if (tileMaps[tabPane.tab].selectedATB())
-                return (short) (selected - (tileMaps[tabPane.tab].autoTileSpacing));
-            return (short) selected;
-        }
+        if (layer == currentLayer)
+            return (short) tileMaps[tabPane.tab].getTCSelected();
         return there;
     }
 
@@ -81,12 +77,12 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
             return;
         if (y >= map.mapTable.height)
             return;
-        int sel = tileMaps[tabPane.tab].getSelected();
+        int sel = tileMaps[tabPane.tab].getTCSelected();
         if (tabPane.tab != 8) {
-            if (tileMaps[tabPane.tab].selectedATB()) {
+            if (tileMaps[tabPane.tab].atGroup != 0) {
                 if (map.mapTable.outOfBounds(x, y))
                     return;
-                map.mapTable.setTiletype(x, y, layer, (short) (sel - 47));
+                map.mapTable.setTiletype(x, y, layer, (short) sel);
                 for (int i = -1; i < 2; i++)
                     for (int j = -1; j < 2; j++)
                         updateAutotile(x + i, y + j, layer);
@@ -148,11 +144,10 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
     }
 
     public void selectTile(short aShort) {
-        int usedTab = 0;
         for (int i = 0; i < tileMaps.length; i++)
-            if ((aShort >= tileMaps[i].tileStart) && (aShort < tileMaps[i].getTileEndAdjusted()))
-                usedTab = i;
-        tabPane.selectTab(usedTab);
-        tileMaps[usedTab].setSelected(aShort);
+            if (tileMaps[i].tryTCSetSelected(aShort)) {
+                tabPane.selectTab(i);
+                break;
+            }
     }
 }

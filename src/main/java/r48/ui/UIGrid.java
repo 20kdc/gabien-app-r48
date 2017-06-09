@@ -6,10 +6,7 @@
 package r48.ui;
 
 import gabien.IGrInDriver;
-import gabien.ui.Rect;
-import gabien.ui.UILabel;
-import gabien.ui.UIPanel;
-import gabien.ui.UIScrollbar;
+import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 
@@ -57,13 +54,31 @@ public class UIGrid extends UIPanel {
         Rect r = getBounds();
         igd.clearRect(bkgR, bkgG, bkgB, ox, oy, r.width, r.height);
         super.updateAndRender(ox, oy, deltaTime, selected, igd);
+
+        int mouseSel = -1;
+        int mouseX = igd.getMouseX() - ox;
+        int mouseY = igd.getMouseY() - oy;
+        if (mouseX < tileSize * tmWidth) {
+            int tx = UIElement.sensibleCellDiv(mouseX, tileSize);
+            int ty = UIElement.sensibleCellDiv(mouseY, tileSize);
+            mouseSel = tx + (ty * tmWidth) + getScrollOffset();
+        }
+
         int pi = 0;
         for (int p = getScrollOffset(); p < tileCount; p++) {
             int px = ((pi % tmWidth) * tileSize);
             int py = (UIGrid.sensibleCellDiv(pi, tmWidth) * tileSize);
             if (py >= r.height)
                 break;
-            drawTile(p, ox + px, oy + py, igd);
+            if (p < 0) {
+                pi++;
+                // error
+                igd.clearRect(128, 0, 0, ox + px, oy + py, tileSize, tileSize);
+                continue;
+            }
+            if (p == selTile)
+                igd.clearRect(128, 0, 128, ox + px, oy + py, tileSize, tileSize);
+            drawTile(p, p == mouseSel, ox + px, oy + py, igd);
             if (p == selTile)
                 igd.blitImage(36, 0, tileSize, tileSize, ox + px, oy + py, AppMain.layerTabs);
             pi++;
@@ -83,7 +98,7 @@ public class UIGrid extends UIPanel {
         }
     }
 
-    protected void drawTile(int t, int x, int y, IGrInDriver igd) {
+    protected void drawTile(int t, boolean hover, int x, int y, IGrInDriver igd) {
         UILabel.drawString(igd, x, y, Integer.toHexString(t), false, FontSizes.gridTextHeight);
     }
 
@@ -120,8 +135,8 @@ public class UIGrid extends UIPanel {
     @Override
     public void handleClick(int x, int y, int button) {
         if (x < tileSize * tmWidth) {
-            int tx = x / tileSize;
-            int ty = y / tileSize;
+            int tx = UIElement.sensibleCellDiv(x, tileSize);
+            int ty = UIElement.sensibleCellDiv(y, tileSize);
             selTile = tx + (ty * tmWidth) + getScrollOffset();
             selWidth = 1;
             selHeight = 1;
@@ -135,8 +150,8 @@ public class UIGrid extends UIPanel {
         if (x < tileSize * tmWidth) {
             if (!canMultiSelect)
                 return;
-            int tx = x / tileSize;
-            int ty = (y / tileSize) + (getScrollOffset() / tmWidth);
+            int tx = UIElement.sensibleCellDiv(x, tileSize);
+            int ty = UIElement.sensibleCellDiv(y, tileSize) + (getScrollOffset() / tmWidth);
             int ox = selTile % tmWidth;
             int oy = selTile / tmWidth;
             selWidth = (tx - ox) + 1;
@@ -151,6 +166,10 @@ public class UIGrid extends UIPanel {
     }
 
     private void selectionChanged() {
+        if (selTile < 0)
+            selTile = 0;
+        if (selTile >= tileCount)
+            selTile = tileCount - 1;
         if (onSelectionChange != null)
             onSelectionChange.run();
     }
@@ -171,6 +190,7 @@ public class UIGrid extends UIPanel {
         selTile = i;
         selWidth = 1;
         selHeight = 1;
+        selectionChanged();
         // work out a general estimate
         double p = i / (double) tileCount;
         uivScrollbar.scrollPoint = p;

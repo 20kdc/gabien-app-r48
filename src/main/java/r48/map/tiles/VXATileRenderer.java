@@ -302,17 +302,16 @@ public class VXATileRenderer implements ITileRenderer {
         if (mv.currentLayer == 3) {
             // Shadow Layer
             return new UITileGrid[] {
-                    new UITileGrid(mv, 0x000, 0x100, false, 0)
+                    new UITileGrid(mv, 0x000, 0x100, 0, null)
             };
         } else {
             return new UITileGrid[] {
-                    new UITileGrid(mv, 0x000, 1, false, 0),
-                    new UITileGrid(mv, 0x000, 0x400, false, 0),
-                    new UITileGrid(mv, 0x600, 0x100, false, 0),
-                    new UITileGrid(mv, 0x800, 0x300, true, 48),
-                    new UITileGrid(mv, 0xB00, 0x600, true, 48),
-                    new UITileGrid(mv, 0x1100, 0x600, true, 48),
-                    new UITileGrid(mv, 0x1700, 0x900, true, 48),
+                    new UITileGrid(mv, 0x000, 0x400, 0, null),
+                    new UITileGrid(mv, 0x600, 0x100, 0, null),
+                    new UITileGrid(mv, 0x800, 0x300, 48, null),
+                    new UITileGrid(mv, 0xB00, 0x600, 48, null),
+                    new UITileGrid(mv, 0x1100, 0x600, 48, null),
+                    new UITileGrid(mv, 0x1700, 0x900, 48, null),
             };
         }
     }
@@ -326,13 +325,12 @@ public class VXATileRenderer implements ITileRenderer {
                     "USE SHADOWREGION TOOL",
             };
         return new String[] {
-                "NIL",
                 "G1", // General 1
                 "G2", // General 2
-                "AT1", // AT Layers
-                "AT2",
-                "AT3",
-                "AT4",
+                "AT1-M", // AT Layers
+                "AT2-M",
+                "AT3-M",
+                "AT4-M",
         };
     }
 

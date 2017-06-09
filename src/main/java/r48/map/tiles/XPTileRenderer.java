@@ -115,15 +115,15 @@ public class XPTileRenderer implements ITileRenderer {
         if (tm0 != null)
             tileCount = ((tm0.getHeight() / 32) * 8);
         return new UITileGrid[] {
-                new UITileGrid(mv, 0, 49, true, 48),
-                new UITileGrid(mv, 48, 49, true, 48),
-                new UITileGrid(mv, 48 * 2, 49, true, 48),
-                new UITileGrid(mv, 48 * 3, 49, true, 48),
-                new UITileGrid(mv, 48 * 4, 49, true, 48),
-                new UITileGrid(mv, 48 * 5, 49, true, 48),
-                new UITileGrid(mv, 48 * 6, 49, true, 48),
-                new UITileGrid(mv, 48 * 7, 49, true, 48),
-                new UITileGrid(mv, 48 * 8, tileCount, false, 0),
+                new UITileGrid(mv, 0, 48, 0, null),
+                new UITileGrid(mv, 48, 48, 0, null),
+                new UITileGrid(mv, 48 * 2, 48, 0, null),
+                new UITileGrid(mv, 48 * 3, 48, 0, null),
+                new UITileGrid(mv, 48 * 4, 48, 0, null),
+                new UITileGrid(mv, 48 * 5, 48, 0, null),
+                new UITileGrid(mv, 48 * 6, 48, 0, null),
+                new UITileGrid(mv, 48 * 7, 48, 0, null),
+                new UITileGrid(mv, 48 * 8, tileCount, 0, null),
         };
     }
 

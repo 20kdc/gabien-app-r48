@@ -65,7 +65,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             private TileHelper tileHelper;
 
             @Override
-            protected void drawTile(int t, int x, int y, IGrInDriver igd) {
+            protected void drawTile(int t, boolean hover, int x, int y, IGrInDriver igd) {
                 int tX = t % targ.width;
                 int tY = t / targ.width;
                 if (targ.outOfBounds(tX, tY))

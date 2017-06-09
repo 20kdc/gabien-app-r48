@@ -211,31 +211,36 @@ public class LcfTileRenderer implements ITileRenderer {
 
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv) {
+        int[] genLcfATs = new int[80];
+        for (int i = 0; i < 60; i++)
+            genLcfATs[i] = i * 50;
+        for (int i = 0; i < 20; i++)
+            genLcfATs[i + 60] = 4000 + (i * 50);
         return new UITileGrid[] {
                 // 1000 + (1000 / 50) = 1020
-                new UITileGrid(mv, 0, 1020, true, 50),
-                new UITileGrid(mv, 1000, 1020, true, 50),
-                new UITileGrid(mv, 2000, 1020, true, 50),
+                new UITileGrid(mv, 0, 80, 50, genLcfATs),
 
-                new UITileGrid(mv, 3000, 1, false, 0),
-                new UITileGrid(mv, 3050, 1, false, 0),
-                new UITileGrid(mv, 3100, 1, false, 0),
-                new UITileGrid(mv, 4000, 612, true, 50),
-                new UITileGrid(mv, 5000, 144, false, 0),
-                new UITileGrid(mv, 10000, 144, false, 0),
+                new UITileGrid(mv, 0, 1020, 0, null),
+                new UITileGrid(mv, 1000, 1020, 0, null),
+                new UITileGrid(mv, 2000, 1020, 0, null),
+
+                new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}),
+
+                new UITileGrid(mv, 4000, 612, 0, null),
+                new UITileGrid(mv, 5000, 144, 0, null),
+                new UITileGrid(mv, 10000, 144, 0, null),
         };
     }
 
     @Override
     public String[] getPlaneNames(int layer) {
         return new String[] {
-                "WAT1",
-                "WAT2",
-                "WAT3",
-                "ANI1",
-                "ANI2",
-                "ANI3",
-                "TER.",
+                "Auto",
+                "WT1-M",
+                "WT2-M",
+                "WT3-M",
+                "ANI",
+                "TER-M",
                 "LOW",
                 "HIGH/EV.TileIndexes+10000",
         };
