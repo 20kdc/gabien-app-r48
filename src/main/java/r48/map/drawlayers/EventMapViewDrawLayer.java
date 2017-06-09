@@ -34,13 +34,9 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
     }
 
     @Override
-    public void draw(int camX, int camY, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
+    public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
         if (eTileSize != AppMain.stuffRenderer.tileRenderer.getTileSize())
             return;
-        int camTR = UIElement.sensibleCellDiv((camX + igd.getWidth()), eTileSize) + 1;
-        int camTB = UIElement.sensibleCellDiv((camY + igd.getHeight()), eTileSize) + 1;
-        int camTX = UIElement.sensibleCellDiv(camX, eTileSize);
-        int camTY = UIElement.sensibleCellDiv(camY, eTileSize);
         // Event Enable
         // Having it here is more efficient than having it as a tool overlay,
         // and sometimes the user might want to see events when using other tools.

@@ -16,5 +16,5 @@ import r48.map.IMapViewCallbacks;
  */
 public interface IMapViewDrawLayer {
     String getName();
-    void draw(int camX, int camY, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd);
+    void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd);
 }

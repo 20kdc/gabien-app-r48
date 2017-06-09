@@ -127,16 +127,16 @@ public class UIMapView extends UIElement implements IWindowElement {
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);
         IMapViewDrawLayer[] layers = AppMain.stuffRenderer.layers;
+        int camTR = UIElement.sensibleCellDiv((camX + igd.getWidth()), eTileSize) + 1;
+        int camTB = UIElement.sensibleCellDiv((camY + igd.getHeight()), eTileSize) + 1;
+        int camTX = UIElement.sensibleCellDiv(camX, eTileSize);
+        int camTY = UIElement.sensibleCellDiv(camY, eTileSize);
         for (int i = 0; i < layers.length; i++)
             if (layerVis[i])
-                layers[i].draw(camX, camY, mouseXT, mouseYT, eTileSize, currentLayer, callbacks, debug, igd);
+                layers[i].draw(camX, camY, camTX, camTY, camTR, camTB, mouseXT, mouseYT, eTileSize, currentLayer, callbacks, debug, igd);
 
         if (callbacks != null) {
             int ovlLayers = callbacks.wantOverlay(minimap);
-            int camTR = UIElement.sensibleCellDiv((camX + igd.getWidth()), eTileSize) + 1;
-            int camTB = UIElement.sensibleCellDiv((camY + igd.getHeight()), eTileSize) + 1;
-            int camTX = UIElement.sensibleCellDiv(camX, eTileSize);
-            int camTY = UIElement.sensibleCellDiv(camY, eTileSize);
             for (int l = 0; l < ovlLayers; l++) {
                 for (int i = camTX; i < camTR; i++) {
                     for (int j = camTY; j < camTB; j++) {

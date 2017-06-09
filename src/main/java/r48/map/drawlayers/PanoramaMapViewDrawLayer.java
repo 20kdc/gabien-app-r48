@@ -24,7 +24,7 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
         return "Panorama";
     }
 
-    public void draw(int camX, int camY, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
+    public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
         // Panorama Enable
         if (im != null) {
             // Need to tile the area with the image.

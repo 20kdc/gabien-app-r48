@@ -31,15 +31,11 @@ public class R2kTileMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return "Tile Layer " + layer + " (" + (upper ? "Upper" : "Lower") + ")";
+        return "Tiles L" + layer + " (" + (upper ? "'upper'/'wall' tileset flags" : "general") + ")";
     }
 
     @Override
-    public void draw(int camX, int camY, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
-        int camTR = UIElement.sensibleCellDiv((camX + igd.getWidth()), eTileSize) + 1;
-        int camTB = UIElement.sensibleCellDiv((camY + igd.getHeight()), eTileSize) + 1;
-        int camTX = UIElement.sensibleCellDiv(camX, eTileSize);
-        int camTY = UIElement.sensibleCellDiv(camY, eTileSize);
+    public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
         for (int i = camTX; i < camTR; i++) {
             if (i < 0)
                 continue;
@@ -102,7 +98,12 @@ public class R2kTileMapViewDrawLayer implements IMapViewDrawLayer {
         if (tidx >= rangeS)
             if (tidx < rangeE) {
                 RubyTable rt = new RubyTable(tileset.getInstVarBySymbol(s).userVal);
-                return (rt.getTiletype(group, 0, 0) & 0x10) != 0;
+                short val = rt.getTiletype(group, 0, 0);
+                // 0x10: Above
+                if (layer == 0)
+                    return (val & 0x10) != 0;
+                // 0x30: Wall | Above
+                return (val & 0x30) != 0;
             }
         return false;
     }

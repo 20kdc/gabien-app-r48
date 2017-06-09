@@ -67,12 +67,12 @@ public class R2kSystem extends MapSystem {
             // layer 1 upper
             // layer 2 upper
             layers[0] = new PanoramaMapViewDrawLayer(img);
-            layers[1] = new R2kTileMapViewDrawLayer(tbl, 0, false, tileset);
-            layers[2] = new R2kTileMapViewDrawLayer(tbl, 1, false, tileset);
+            layers[1] = new R2kTileMapViewDrawLayer(tbl, 0, false, tileset); // TSBelow
+            layers[2] = new R2kTileMapViewDrawLayer(tbl, 1, false, tileset); // ...
             layers[3] = new EventMapViewDrawLayer(0, events, eventRenderer);
-            layers[4] = new R2kTileMapViewDrawLayer(tbl, 0, true, tileset);
-            layers[5] = new R2kTileMapViewDrawLayer(tbl, 1, true, tileset);
-            layers[6] = new EventMapViewDrawLayer(1, events, eventRenderer);
+            layers[4] = new EventMapViewDrawLayer(1, events, eventRenderer); // Player/Same
+            layers[5] = new R2kTileMapViewDrawLayer(tbl, 0, true, tileset);
+            layers[6] = new R2kTileMapViewDrawLayer(tbl, 1, true, tileset);
             layers[7] = new EventMapViewDrawLayer(2, events, eventRenderer);
         }
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);

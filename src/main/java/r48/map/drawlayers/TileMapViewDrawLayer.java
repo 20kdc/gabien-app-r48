@@ -33,11 +33,7 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
     }
 
     @Override
-    public void draw(int camX, int camY, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
-        int camTR = UIElement.sensibleCellDiv((camX + igd.getWidth()), eTileSize) + 1;
-        int camTB = UIElement.sensibleCellDiv((camY + igd.getHeight()), eTileSize) + 1;
-        int camTX = UIElement.sensibleCellDiv(camX, eTileSize);
-        int camTY = UIElement.sensibleCellDiv(camY, eTileSize);
+    public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
         for (int i = camTX; i < camTR; i++) {
             if (i < 0)
                 continue;
