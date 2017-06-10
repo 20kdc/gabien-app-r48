@@ -60,4 +60,9 @@ public class UIMTEventMover extends UIPanel implements IMapViewCallbacks {
         mapView.passModificationNotification();
         AppMain.nextMapTool = new UIMTEventPicker(null, mapView);
     }
+
+    @Override
+    public boolean shouldIgnoreDrag() {
+        return true;
+    }
 }

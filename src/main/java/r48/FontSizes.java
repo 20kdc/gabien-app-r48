@@ -29,6 +29,7 @@ public class FontSizes {
 
     public static int eventPickerEntryTextHeight = 16;
     public static int tilesTabTextHeight = 6;
+    public static int atSubtoolTextHeight = 8;
 
     public static int rmaTimeframeFontSize = 8;
     public static int rmaPropertyFontSize = 8;

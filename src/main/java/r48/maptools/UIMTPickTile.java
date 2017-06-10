@@ -17,7 +17,7 @@ import r48.map.UIMapView;
  * Created on 09/06/17.
  */
 public class UIMTPickTile extends UIPanel implements IMapViewCallbacks {
-    public UILabel innerLabel = new UILabel("Click on a tile to pick it.", FontSizes.mapInfosTextHeight);
+    public UILabel innerLabel = new UILabel("Click on a tile to pick it.", FontSizes.dialogWindowTextHeight);
     public final UIMapView map;
     public UIMTPickTile(UIMapView m) {
         allElements.add(innerLabel);
@@ -50,5 +50,10 @@ public class UIMTPickTile extends UIPanel implements IMapViewCallbacks {
     public void confirmAt(int x, int y, int layer) {
         if (!map.mapTable.outOfBounds(x, y))
             map.pickTileHelper.accept(map.mapTable.getTiletype(x, y, layer));
+    }
+
+    @Override
+    public boolean shouldIgnoreDrag() {
+        return true;
     }
 }

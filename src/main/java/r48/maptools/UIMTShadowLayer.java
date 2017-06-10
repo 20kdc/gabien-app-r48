@@ -84,4 +84,9 @@ public class UIMTShadowLayer extends UIPanel implements IMapViewCallbacks {
         map.mapTable.setTiletype(x, y, 3, (short) (flags | (regionId.number << 8)));
         map.passModificationNotification();
     }
+
+    @Override
+    public boolean shouldIgnoreDrag() {
+        return false;
+    }
 }

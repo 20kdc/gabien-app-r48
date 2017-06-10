@@ -208,7 +208,8 @@ public class UIMapView extends UIElement implements IWindowElement {
             int mouseYT = UIElement.sensibleCellDiv((int) ((y / internalScaling) + camY), tileSize);
             if (!shiftDown)
                 if (callbacks != null)
-                    callbacks.confirmAt(mouseXT, mouseYT, currentLayer);
+                    if (!callbacks.shouldIgnoreDrag())
+                        callbacks.confirmAt(mouseXT, mouseYT, currentLayer);
         }
     }
 

@@ -126,6 +126,11 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
     }
 
     @Override
+    public boolean shouldIgnoreDrag() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "Ev.Pick [" + eventCache.size() + " total]";
     }

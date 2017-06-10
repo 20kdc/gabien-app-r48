@@ -20,4 +20,6 @@ public interface IMapViewCallbacks {
     void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap);
 
     void confirmAt(int x, int y, int layer);
+
+    boolean shouldIgnoreDrag();
 }

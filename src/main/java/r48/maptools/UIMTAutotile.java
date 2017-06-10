@@ -7,25 +7,35 @@ package r48.maptools;
 
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
-import gabien.ui.Rect;
-import gabien.ui.UIPanel;
-import gabien.ui.UITabPane;
+import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
+import r48.RubyTable;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.map.tiles.AutoTileTypeField;
+import r48.ui.UIAppendButton;
+import r48.ui.UINSVertLayout;
 import r48.ui.UITileGrid;
+
+import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * Note that once created, it is meant to be locked to the layer it was created for.
+ * ... this is kind of getting monolithic with multiple subtools. Oh well.
  * Created on 12/29/16.
  */
 public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
+    // Sub-tools panel
+    private UIElement subtoolBar;
+    private int subtool = 0;
+
     private UITabPane tabPane;
+    private UINSVertLayout subtoolNTabPaneHolder;
     private UITileGrid[] tileMaps;
-    private final UIMapView map;
-    private AutoTileTypeField[] atBases;
+    public final UIMapView map;
+    public AutoTileTypeField[] atBases;
 
     public UIMTAutotile(UIMapView mv) {
         map = mv;
@@ -39,13 +49,57 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         tileMaps = AppMain.stuffRenderer.tileRenderer.createATUIPlanes(map);
         tabPane = new UITabPane(AppMain.stuffRenderer.tileRenderer.getPlaneNames(layer), tileMaps, FontSizes.tilesTabTextHeight);
         atBases = AppMain.stuffRenderer.tileRenderer.indicateATs();
-        allElements.add(tabPane);
+
+        // Begin subtool bar...
+
+        subtool = 0;
+        final LinkedList<UITextButton> options = new LinkedList<UITextButton>();
+
+        UITextButton baseTool = new UITextButton(FontSizes.atSubtoolTextHeight, "Tile Pen", new Runnable() {
+            @Override
+            public void run() {
+                for (UITextButton utb : options)
+                    utb.state = false;
+                options.get(0).state = true;
+                subtool = 0;
+            }
+        }).togglable();
+        options.add(baseTool);
+        baseTool.state = true;
+
+        UIAppendButton uab = new UIAppendButton("Rectangle", baseTool, new Runnable() {
+            @Override
+            public void run() {
+                for (UITextButton utb : options)
+                    utb.state = false;
+                options.get(1).state = true;
+                subtool = 1;
+            }
+        }, FontSizes.atSubtoolTextHeight);
+        options.add(uab.button.togglable());
+
+        uab = new UIAppendButton("Fill", uab, new Runnable() {
+            @Override
+            public void run() {
+                for (UITextButton utb : options)
+                    utb.state = false;
+                options.get(2).state = true;
+                subtool = 2;
+            }
+        }, FontSizes.atSubtoolTextHeight);
+        options.add(uab.button.togglable());
+
+        subtoolBar = uab;
+        //
+
+        subtoolNTabPaneHolder = new UINSVertLayout(subtoolBar, tabPane);
+        allElements.add(subtoolNTabPaneHolder);
     }
 
     @Override
     public void setBounds(Rect r) {
         super.setBounds(r);
-        tabPane.setBounds(new Rect(0, 0, r.width, r.height));
+        subtoolNTabPaneHolder.setBounds(new Rect(0, 0, r.width, r.height));
     }
 
     // -- Tool stuff --
@@ -78,16 +132,58 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         if (y >= map.mapTable.height)
             return;
         int sel = tileMaps[tabPane.tab].getTCSelected();
-        if (tabPane.tab != 8) {
-            if (tileMaps[tabPane.tab].atGroup != 0) {
-                if (map.mapTable.outOfBounds(x, y))
-                    return;
-                map.mapTable.setTiletype(x, y, layer, (short) sel);
-                for (int i = -1; i < 2; i++)
-                    for (int j = -1; j < 2; j++)
-                        updateAutotile(x + i, y + j, layer);
-                return;
+
+        if (subtool == 1) {
+            // Tool 1: Rectangle
+            AppMain.nextMapTool = new UIMTAutotileRectangle(this, sel, x, y, tileMaps[tabPane.tab].atGroup != 0);
+            return;
+        } else if (subtool == 2) {
+            // Tool 2: Floodfill.
+            // The rules on what is considered the same are:
+            // 1. Any two tiles which have the same ID are the same.
+            // 2. Any two tiles which are both part of an AT group and that is the same AT group, are the same.
+            // 3. Anything else is not the same.
+            HashSet<FloodFillPoint> investigatePoints = new HashSet<FloodFillPoint>();
+            HashSet<FloodFillPoint> handledPoints = new HashSet<FloodFillPoint>();
+            investigatePoints.add(new FloodFillPoint(x, y));
+            int key = map.mapTable.getTiletype(x, y, map.currentLayer);
+            while (investigatePoints.size() > 0) {
+                LinkedList<FloodFillPoint> working = new LinkedList<FloodFillPoint>(investigatePoints);
+                investigatePoints.clear();
+                for (FloodFillPoint ffp : working) {
+                    // work out if this ought to be replaced
+                    if (ffp.contentMatches(key)) {
+                        if (handledPoints.contains(ffp))
+                            continue;
+                        handledPoints.add(ffp);
+                        map.mapTable.setTiletype(ffp.tX, ffp.tY, map.currentLayer, (short) sel);
+                        investigatePoints.add(new FloodFillPoint(ffp.tX - 1, ffp.tY));
+                        investigatePoints.add(new FloodFillPoint(ffp.tX + 1, ffp.tY));
+                        investigatePoints.add(new FloodFillPoint(ffp.tX, ffp.tY - 1));
+                        investigatePoints.add(new FloodFillPoint(ffp.tX, ffp.tY + 1));
+                    }
+                }
             }
+            if (tileMaps[tabPane.tab].atGroup != 0) {
+                for (FloodFillPoint ffp : handledPoints) {
+                    for (int i = -1; i < 2; i++)
+                        for (int j = -1; j < 2; j++)
+                            updateAutotile(map, atBases, ffp.tX + i, ffp.tY + j, layer);
+                }
+            }
+            map.passModificationNotification();
+            return;
+        }
+
+        // Tool 0: Default pen/selection.
+        if (tileMaps[tabPane.tab].atGroup != 0) {
+            if (map.mapTable.outOfBounds(x, y))
+                return;
+            map.mapTable.setTiletype(x, y, layer, (short) sel);
+            for (int i = -1; i < 2; i++)
+                for (int j = -1; j < 2; j++)
+                    updateAutotile(map, atBases, x + i, y + j, layer);
+            return;
         }
         for (int px = 0; px < tileMaps[tabPane.tab].selWidth; px++) {
             if (px + x < 0)
@@ -106,7 +202,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         }
     }
 
-    private AutoTileTypeField getAutotileType(int x, int y, int layer, AutoTileTypeField preferred) {
+    private static AutoTileTypeField getAutotileType(UIMapView map, int x, int y, int layer, AutoTileTypeField[] atBases, AutoTileTypeField preferred) {
         if (map.mapTable.outOfBounds(x, y))
             return preferred;
         int m = map.mapTable.getTiletype(x, y, layer);
@@ -117,8 +213,8 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         return null;
     }
 
-    private void updateAutotile(int x, int y, int layer) {
-        AutoTileTypeField myAT = getAutotileType(x, y, layer, null);
+    public static void updateAutotile(UIMapView map, AutoTileTypeField[] atBases, int x, int y, int layer) {
+        AutoTileTypeField myAT = getAutotileType(map, x, y, layer, atBases, null);
         if (myAT == null)
             return;
 
@@ -129,7 +225,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
                 if (i == 0)
                     if (j == 0)
                         continue;
-                if (myAT.considersSameAs(getAutotileType(x + j, y + i, layer, myAT)))
+                if (myAT.considersSameAs(getAutotileType(map, x + j, y + i, layer, atBases, myAT)))
                     index |= power;
                 power <<= 1;
             }
@@ -149,5 +245,47 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
                 tabPane.selectTab(i);
                 break;
             }
+    }
+
+    @Override
+    public boolean shouldIgnoreDrag() {
+        // When using "dangerous" tools, ignore drag.
+        return subtool != 0;
+    }
+
+    private class FloodFillPoint {
+        public final int tX, tY;
+        public FloodFillPoint(int x, int y) {
+            tX = x;
+            tY = y;
+        }
+        public boolean contentMatches(int target) {
+            if (map.mapTable.outOfBounds(tX, tY))
+                return false;
+            short here = map.mapTable.getTiletype(tX, tY, map.currentLayer);
+            if (here == target)
+                return true;
+            AutoTileTypeField attf = getAutotileType(map, tX, tY, map.currentLayer, atBases, null);
+            if (attf == null)
+                return false;
+            return (target >= attf.start) && (target < (attf.start + attf.length));
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof FloodFillPoint))
+                return false;
+            FloodFillPoint ffp = (FloodFillPoint) o;
+            if (ffp.tX != tX)
+                return false;
+            if (ffp.tY != tY)
+                return false;
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return tX + (tY << 16);
+        }
     }
 }
