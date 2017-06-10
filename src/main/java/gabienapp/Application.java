@@ -49,20 +49,6 @@ public class Application {
             }
         };
 
-        UIAdjuster scaleAdjust = new UIAdjuster(FontSizes.launcherTextHeight, new ISupplier<String>() {
-            @Override
-            public String get() {
-                return Integer.toString(++UIMapView.internalScaling);
-            }
-        }, new ISupplier<String>() {
-            @Override
-            public String get() {
-                if (UIMapView.internalScaling == 1)
-                    return Integer.toString(UIMapView.internalScaling);
-                return Integer.toString(--UIMapView.internalScaling);
-            }
-        });
-
         UIAdjuster msAdjust = new UIAdjuster(FontSizes.launcherTextHeight, new ISupplier<String>() {
             @Override
             public String get() {
@@ -89,8 +75,6 @@ public class Application {
                 uiTicker.accept(new UIFontSizeConfigurator());
             }
         })));
-
-        gamepaks.panels.add(new UIHHalfsplit(3, 5, new UILabel("Map Scale:", FontSizes.launcherTextHeight), scaleAdjust));
 
         gamepaks.panels.add(new UIHHalfsplit(3, 5, new UILabel("msPerFrame:", FontSizes.launcherTextHeight), msAdjust));
 
@@ -176,8 +160,6 @@ public class Application {
                     uimtw.selfClose = true;
                 }
             });
-            UIMapView.internalScaling = 1;
-            scaleAdjust.accept("1");
             uiTicker.accept(uimtw);
 
             while (uiTicker.runningWindows() > 0) {

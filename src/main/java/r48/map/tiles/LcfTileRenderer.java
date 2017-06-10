@@ -216,34 +216,67 @@ public class LcfTileRenderer implements ITileRenderer {
             genLcfATs[i] = i * 50;
         for (int i = 0; i < 20; i++)
             genLcfATs[i + 60] = 4000 + (i * 50);
-        return new UITileGrid[] {
-                // 1000 + (1000 / 50) = 1020
-                new UITileGrid(mv, 0, 80, 50, genLcfATs),
+        // On L0, lower layer tiles take priority,
+        // on L1, upper layer tiles take priority
+        if (mv.currentLayer == 0) {
+            return new UITileGrid[] {
+                    new UITileGrid(mv, 0, 80, 50, genLcfATs),
 
-                new UITileGrid(mv, 0, 1020, 0, null),
-                new UITileGrid(mv, 1000, 1020, 0, null),
-                new UITileGrid(mv, 2000, 1020, 0, null),
+                    new UITileGrid(mv, 5000, 144, 0, null),
 
-                new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}),
+                    new UITileGrid(mv, 0, 1000, 0, null),
+                    new UITileGrid(mv, 1000, 1000, 0, null),
+                    new UITileGrid(mv, 2000, 1000, 0, null),
 
-                new UITileGrid(mv, 4000, 612, 0, null),
-                new UITileGrid(mv, 5000, 144, 0, null),
-                new UITileGrid(mv, 10000, 144, 0, null),
-        };
+                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}),
+
+                    new UITileGrid(mv, 4000, 600, 0, null),
+                    new UITileGrid(mv, 10000, 144, 0, null),
+            };
+        } else {
+            return new UITileGrid[] {
+                    new UITileGrid(mv, 10000, 144, 0, null),
+
+                    new UITileGrid(mv, 0, 80, 50, genLcfATs),
+
+                    new UITileGrid(mv, 5000, 144, 0, null),
+
+                    new UITileGrid(mv, 0, 1000, 0, null),
+                    new UITileGrid(mv, 1000, 1000, 0, null),
+                    new UITileGrid(mv, 2000, 1000, 0, null),
+
+                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}),
+
+                    new UITileGrid(mv, 4000, 600, 0, null),
+            };
+        }
     }
 
     @Override
     public String[] getPlaneNames(int layer) {
-        return new String[] {
-                "Auto",
-                "WT1-M",
-                "WT2-M",
-                "WT3-M",
-                "ANI",
-                "TER-M",
-                "LOW",
-                "HIGH/EV.TileIndexes+10000",
-        };
+        if (layer == 0) {
+            return new String[] {
+                    "ATF",
+                    "LOWER",
+                    "W1M",
+                    "W2M",
+                    "W3M",
+                    "ANI",
+                    "TEM",
+                    "UPPER<DNU>",
+            };
+        } else {
+            return new String[] {
+                    "UPPER",
+                    "ATF<DNU>",
+                    "LOWER<DNU>",
+                    "W1M<DNU>",
+                    "W2M<DNU>",
+                    "W3M<DNU>",
+                    "ANI<DNU>",
+                    "TEM<DNU>",
+            };
+        }
     }
 
     @Override

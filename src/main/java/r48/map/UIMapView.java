@@ -37,7 +37,9 @@ public class UIMapView extends UIElement implements IWindowElement {
     public RubyTable mapTable;
     // Set by the layer tabs UI
     public int currentLayer;
-    public static int internalScaling = 1;
+
+    // internal scaling is a UIMapView-controlled thing, for good reason.
+    private int internalScaling = 1;
 
     public final String mapId;
     public boolean minimap = false;
@@ -111,7 +113,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         char[] visConfig = new char[layerVis.length];
         for (int i = 0; i < layerVis.length; i++)
             visConfig[i] = layerVis[i] ? 'T' : 'F';
-        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + eTileSize + "_" + debug + "_" + AppMain.stuffRenderer.tileRenderer.getFrame() + "_" + AppMain.stuffRenderer.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + AppMain.nextMapTool;
+        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + eTileSize + "_" + debug + "_" + AppMain.stuffRenderer.tileRenderer.getFrame() + "_" + AppMain.stuffRenderer.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + AppMain.nextMapTool + "_" + internalScaling;
         if (scheduler.needsUpdate(config)) {
             boolean remakeBuf = true;
             if (offscreenBuf != null)
@@ -134,7 +136,10 @@ public class UIMapView extends UIElement implements IWindowElement {
         String shortcuts = "Any mouse button: Scroll, Shift-left: Pick tile.";
         if (callbacks != null)
             shortcuts = "Left mouse button: Use tool, others: Scroll, Shift-left: Pick tile.";
-        UILabel.drawLabel(igd, 0, 0, 0, mapId + ";" + mouseXT + ", " + mouseYT + "; " + shortcuts, false, FontSizes.mapPositionTextHeight);
+        UILabel.drawLabel(igd, 0, ox + 24, oy + 3, mapId + ";" + mouseXT + ", " + mouseYT + "; " + shortcuts, false, FontSizes.mapPositionTextHeight);
+
+        igd.blitImage(52, 32, 16, 16, ox + 4, oy + 4, AppMain.layerTabs);
+        igd.blitImage(36, 32, 16, 16, ox + 4, oy + 24, AppMain.layerTabs);
     }
 
     public void render(int mouseXT, int mouseYT, int eTileSize, int currentLayer, boolean debug, IGrDriver igd) {
@@ -170,10 +175,29 @@ public class UIMapView extends UIElement implements IWindowElement {
         }
     }
 
+    private Rect getZPlusRect() {
+        return new Rect(4, 4, 16, 16);
+    }
+
+    private Rect getZMinusRect() {
+        return new Rect(4, 24, 16, 16);
+    }
+
     @Override
     public void handleClick(int x, int y, int button) {
         lmX = x;
         lmY = y;
+        if (getZPlusRect().contains(x, y)) {
+            dragging = false;
+            internalScaling++;
+            return;
+        }
+        if (getZMinusRect().contains(x, y)) {
+            dragging = false;
+            if (internalScaling > 1)
+                internalScaling--;
+            return;
+        }
         if (button != 1) {
             dragging = true;
         } else {
@@ -198,6 +222,10 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     @Override
     public void handleDrag(int x, int y) {
+        if (getZPlusRect().contains(x, y))
+            return;
+        if (getZMinusRect().contains(x, y))
+            return;
         if (dragging) {
             camX -= (x - lmX) / (double) internalScaling;
             camY -= (y - lmY) / (double) internalScaling;
