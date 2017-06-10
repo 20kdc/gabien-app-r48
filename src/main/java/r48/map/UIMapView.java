@@ -61,6 +61,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             //  since it'll have to run on any edits.
             mapTable = new RubyTable(map.getInstVarBySymbol("@data").userVal);
             AppMain.stuffRenderer = AppMain.system.rendererFromMap(map);
+            reinitLayerVis();
             scheduler.forceNextUpdate = true;
         }
     };
@@ -75,9 +76,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         listener.run();
 
         // begin!
-        layerVis = new boolean[AppMain.stuffRenderer.layers.length];
-        for (int j = 0; j < layerVis.length; j++)
-            layerVis[j] = !(AppMain.stuffRenderer.layers[j] instanceof PassabilityMapViewDrawLayer);
+        reinitLayerVis();
 
         AppMain.stuffRenderer = AppMain.system.rendererFromMap(map);
         tileSize = AppMain.stuffRenderer.tileRenderer.getTileSize();
@@ -91,6 +90,15 @@ public class UIMapView extends UIElement implements IWindowElement {
             camX += (tileSize * mapTable.width) / 2;
             camY += (tileSize * mapTable.height) / 2;
         }
+    }
+
+    private void reinitLayerVis() {
+        if (layerVis != null)
+            if (layerVis.length == AppMain.stuffRenderer.layers.length)
+                return;
+        layerVis = new boolean[AppMain.stuffRenderer.layers.length];
+        for (int j = 0; j < layerVis.length; j++)
+            layerVis[j] = !(AppMain.stuffRenderer.layers[j] instanceof PassabilityMapViewDrawLayer);
     }
 
     @Override

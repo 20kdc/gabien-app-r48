@@ -83,7 +83,9 @@ public class DictionaryUpdaterRunnable implements Runnable {
     }
 
     private void finalizeVals(HashMap<Integer, String> finalMap) {
-        SchemaElement ise = new EnumSchemaElement(finalMap, 0, "ID.");
+        // Default value of 1 because r2k. if this is ever in conflict then start adding a default parameter value for dictionaries.
+        // Do proper dictionary unification at the same time.
+        SchemaElement ise = new EnumSchemaElement(finalMap, 1, "ID.");
         AppMain.schemas.setSDBEntry(dict, ise);
     }
 

@@ -48,7 +48,8 @@ public class R2kSystem extends MapSystem {
         ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tileset);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
-        if (map != null) {
+        // Cannot get enough information without map & tileset
+        if ((map != null) && (tileset != null)) {
             RubyIO events = map.getInstVarBySymbol("@events");
             RubyTable tbl = new RubyTable(map.getInstVarBySymbol("@data").userVal);
             String vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
