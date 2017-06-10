@@ -70,7 +70,7 @@ C name Class.RPG::Actor @name | #A
 @equipment rpg_actor_equipment_block
 @no_weapon_attack_anim animation_id
 @class_2k3 class_or_none_id
-@learn_skills subwindow array 0 RPG::Learning
+@learn_skills subwindow hash int+0 RPG::Learning
 @rename_allow boolean
 @state_ranks subwindow array 0 int
 @attribute_ranks subwindow array 0 int
@@ -271,7 +271,7 @@ C name Class.RPG::Enemy @name | #A
 @levitate boolean
 @state_ranks subwindow array 0 int
 @attribute_ranks subwindow array 0 int
-@actions subwindow arrayIx1 subwindow RPG::EnemyAction
+@actions subwindow hash int+0 subwindow RPG::EnemyAction
 
  ---
 
@@ -572,7 +572,7 @@ e rpg_system_font 0 gothic 1 mincho
 @test_condition int
 @test_actor actor_id
 @test_battle_background string
-@test_battle_data subwindow array 0 RPG::System::TestBattler
+@test_battle_data subwindow arrayIx1 RPG::System::TestBattler
 @test_battle_terrain terrain_id
 e rpg_system_testing_battle_formation 0 fromTerrain 1 loose 2 tight
 @test_battle_formation rpg_system_testing_battle_formation
@@ -638,7 +638,7 @@ e rpg_battlecommand_dir 0 noModify 1 up 2 right 3 down 4 left
 @row_back boolean
 @window_large boolean
 @battle_type rpg_battlecommand_battletype
-@commands subwindow array 0 RPG::BattleCommand
+@commands subwindow arrayIx1 RPG::BattleCommand
 @death_handler_1 int
 @death_handler_2 int
 @death_event commonevent_or_none_id
@@ -664,7 +664,7 @@ C name Class.RPG::Class @name | #A
 @init_level_exp int
 @each_level_exp_mul int
 @each_level_exp_add int
-@learn_skills subwindow array 0 RPG::Learning
+@learn_skills subwindow hash int+0 RPG::Learning
 @state_ranks subwindow array 0 int
 @attribute_ranks subwindow array 0 int
 @battle_commands subwindow array 0 battlecommand_or_none_id

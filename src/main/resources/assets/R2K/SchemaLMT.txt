@@ -26,7 +26,7 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 @teleport_state mapinfo_inheritflag
 @escape_state mapinfo_inheritflag
 @save_state mapinfo_inheritflag
-@encounters subwindow array 0 RPG::Encounter
+@encounters subwindow arrayIx1 RPG::Encounter
 @encounter_steps int= 25
 @area_rect Rect
 

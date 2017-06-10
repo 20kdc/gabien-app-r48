@@ -29,12 +29,12 @@ public class ActorClass extends R2kObject {
     public IntegerR2kStruct eachLevelExpP = new IntegerR2kStruct(300);
     public IntegerR2kStruct eachLevelExpModC = new IntegerR2kStruct(0);
     public IntegerR2kStruct battlerAnimation = new IntegerR2kStruct(0);
-    public ArrayR2kStruct<Learning> learnSkills = new ArrayR2kStruct<Learning>(null, new ISupplier<Learning>() {
+    public SparseArrayHR2kStruct<Learning> learnSkills = new SparseArrayHR2kStruct<Learning>(new ISupplier<Learning>() {
         @Override
         public Learning get() {
             return new Learning();
         }
-    }, true);
+    });
     public ArraySizeR2kInterpretable<ByteR2kStruct> stateRanksSz = new ArraySizeR2kInterpretable<ByteR2kStruct>();
     public ArrayR2kStruct<ByteR2kStruct> stateRanks = new ArrayR2kStruct<ByteR2kStruct>(stateRanksSz, new ISupplier<ByteR2kStruct>() {
         @Override

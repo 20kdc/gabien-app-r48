@@ -47,7 +47,7 @@ public class Enemy extends R2kObject {
         }
     }, true);
 
-    public SparseArrayAR2kStruct<EnemyAction> enemyActions = new SparseArrayAR2kStruct<EnemyAction>(new ISupplier<EnemyAction>() {
+    public SparseArrayHR2kStruct<EnemyAction> enemyActions = new SparseArrayHR2kStruct<EnemyAction>(new ISupplier<EnemyAction>() {
         @Override
         public EnemyAction get() {
             return new EnemyAction();
