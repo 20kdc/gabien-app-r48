@@ -165,7 +165,7 @@ public class SDB {
                         if (text.equals("flushCommandBuffer")) {
                             // time to flush it!
                             String disambiguationIVar = args[point++];
-                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, "Code.Int."));
+                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, 0, "Code.Int."));
                             HashMap<Integer, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<Integer, String>();
                             commandBufferSchemas = new HashMap<Integer, SchemaElement>();
@@ -345,11 +345,14 @@ public class SDB {
                     setSDBEntry(args[0], handleChain(args, 1));
                 } else if (c == 'e') {
                     HashMap<Integer, String> options = new HashMap<Integer, String>();
+                    int defVal = 0;
                     for (int i = 1; i < args.length; i += 2) {
                         int k = Integer.parseInt(args[i]);
+                        if (i == 1)
+                            defVal = k;
                         options.put(k, args[i + 1]);
                     }
-                    EnumSchemaElement e = new EnumSchemaElement(options, "Integer");
+                    EnumSchemaElement e = new EnumSchemaElement(options, defVal, "Integer");
                     setSDBEntry(args[0], e);
                 } else if (c == 's') {
                     // Symbols
@@ -358,11 +361,14 @@ public class SDB {
                     setSDBEntry(args[0], new SymEnumSchemaElement(syms));
                 } else if (c == 'E') {
                     HashMap<Integer, String> options = new HashMap<Integer, String>();
+                    int defVal = 0;
                     for (int i = 2; i < args.length; i += 2) {
                         int k = Integer.parseInt(args[i]);
+                        if (i == 2)
+                            defVal = k;
                         options.put(k, args[i + 1]);
                     }
-                    EnumSchemaElement e = new EnumSchemaElement(options, args[1]);
+                    EnumSchemaElement e = new EnumSchemaElement(options, defVal, args[1]);
                     setSDBEntry(args[0], e);
                 } else if (c == 'M') {
                     mergeRunnables.add(new Runnable() {
@@ -374,7 +380,7 @@ public class SDB {
                             HashMap<Integer, String> finalMap = new HashMap<Integer, String>();
                             finalMap.putAll(mergeA.options);
                             finalMap.putAll(mergeB.options);
-                            SchemaElement ise = new EnumSchemaElement(finalMap, mergeB.buttonText);
+                            SchemaElement ise = new EnumSchemaElement(finalMap, mergeB.defaultVal, mergeB.buttonText);
                             AppMain.schemas.setSDBEntry(args[2], ise);
                         }
                     });

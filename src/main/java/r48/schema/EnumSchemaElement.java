@@ -27,13 +27,15 @@ public class EnumSchemaElement extends SchemaElement {
     public HashMap<Integer, String> options;
     public HashMap<String, Integer> viewOptions;
     public String buttonText;
+    public int defaultVal;
 
-    public EnumSchemaElement(HashMap<Integer, String> o, String bt) {
+    public EnumSchemaElement(HashMap<Integer, String> o, int def, String bt) {
         options = o;
         viewOptions = new HashMap<String, Integer>();
         for (Integer si : options.keySet())
             viewOptions.put(viewValue(si, true), si);
         buttonText = bt;
+        defaultVal = def;
     }
 
     @Override
@@ -72,7 +74,7 @@ public class EnumSchemaElement extends SchemaElement {
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (IntegerSchemaElement.ensureType(target, 'i', setDefault)) {
             if (!options.isEmpty()) {
-                target.fixnumVal = options.keySet().iterator().next();
+                target.fixnumVal = defaultVal;
             } else {
                 target.fixnumVal = 0;
             }

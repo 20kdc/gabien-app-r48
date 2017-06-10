@@ -83,7 +83,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
     }
 
     private void finalizeVals(HashMap<Integer, String> finalMap) {
-        SchemaElement ise = new EnumSchemaElement(finalMap, "ID.");
+        SchemaElement ise = new EnumSchemaElement(finalMap, 0, "ID.");
         AppMain.schemas.setSDBEntry(dict, ise);
     }
 
