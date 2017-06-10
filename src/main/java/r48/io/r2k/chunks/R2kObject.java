@@ -101,9 +101,8 @@ public abstract class R2kObject implements IR2kStruct {
 
     protected void fromRIOISF(RubyIO mt) {
         for (Index i : getIndices())
-            if (i.rioHelperName != null) {
+            if (i.rioHelperName != null)
                 ((IR2kStruct) i.chunk).fromRIO(mt.getInstVarBySymbol(i.rioHelperName));
-            }
         R2kUtil.rioToUnk(mt, unknownChunks);
     }
 }
