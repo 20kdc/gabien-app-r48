@@ -42,23 +42,23 @@ C name conditional_branch_timer ]1 ]2 | Timer [conditional_branch_timer_conditio
 .conditional_branch_actor_inParty
 
 .conditional_branch_actor_name
-C name conditional_branch_actor_name ]3 |named [string]A
+C name conditional_branch_actor_name ]3 | named [string]A
 ]3 name string
 
 .conditional_branch_actor_skill
-C name conditional_branch_actor_skill ]3 |skill @[skill_id]A
+C name conditional_branch_actor_skill ]3 | skill @[skill_id]A
 ]3 skill skill_id
 
 .conditional_branch_actor_weapon
-C name conditional_branch_actor_weapon ]3 |weapon @[weapon_id]A
+C name conditional_branch_actor_weapon ]3 | weapon @[weapon_id]A
 ]3 weapon weapon_id
 
 .conditional_branch_actor_armourIdWorn
-C name conditional_branch_actor_armourIdWorn ]3 |wears armour @[armour_id]A
+C name conditional_branch_actor_armourIdWorn ]3 | wears armour @[armour_id]A
 ]3 armour armour_id
 
 .conditional_branch_actor_hasState
-C name conditional_branch_actor_hasState ]3 |has state @[state_id]A
+C name conditional_branch_actor_hasState ]3 | has state @[state_id]A
 ]3 state state_id
 
  ---

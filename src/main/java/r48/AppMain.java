@@ -88,13 +88,13 @@ public class AppMain {
     public static IGrInDriver.IImage layerTabs = GaBIEn.getImageCK("layertab.png", 0, 0, 0);
     public static IGrInDriver.IImage noMap = GaBIEn.getImageCK("nomad.png", 0, 0, 0);
 
-    public static void initialize(String rp, String gamepack) throws IOException {
+    public static IConsumer<Double> initializeAndRun(final String rp, final String gamepak, final IConsumer<UIElement> uiTicker) throws IOException {
         rootPath = rp;
         // initialize core resources
 
         schemas = new SDB();
 
-        schemas.readFile(gamepack + "Schema.txt"); // This does a lot of IO, for one line.
+        schemas.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
 
         // initialize everything else that needs initializing, starting with ObjectDB
 
@@ -129,9 +129,6 @@ public class AppMain {
         schemas.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
         schemas.updateDictionaries(null);
         schemas.confirmAllExpectationsMet();
-    }
-
-    public static IConsumer<Double> initializeAndRun(final IConsumer<UIElement> uiTicker) {
 
         // initialize UI
         final UIWindowView rootView = new UIWindowView() {
@@ -148,7 +145,7 @@ public class AppMain {
         // Set up a default stuffRenderer for things to use.
         stuffRenderer = system.rendererFromMap(null);
 
-        rebuildInnerUI(rootView, uiTicker);
+        rebuildInnerUI(gamepak, rootView, uiTicker);
 
         // everything ready, start main window
         uiTicker.accept(rootView);
@@ -175,7 +172,7 @@ public class AppMain {
         };
     }
 
-    private static UITabPane initializeTabs(final UIWindowView rootView, final IConsumer<UIElement> uiTicker) {
+    private static UITabPane initializeTabs(final String gamepak, final UIWindowView rootView, final IConsumer<UIElement> uiTicker) {
         LinkedList<String> tabNames = new LinkedList<String>();
         LinkedList<UIElement> tabElems = new LinkedList<UIElement>();
 
@@ -191,7 +188,7 @@ public class AppMain {
             mapContext = null;
         }
         if (AppMain.schemas.hasSDBEntry("EventCommandEditor"))
-            toolsets.add(new RMToolsToolset());
+            toolsets.add(new RMToolsToolset(gamepak));
         toolsets.add(new BasicToolset(rootView, uiTicker, new IConsumer<IConsumer<UIElement>>() {
             @Override
             public void accept(IConsumer<UIElement> uiElementIConsumer) {
@@ -200,7 +197,7 @@ public class AppMain {
         }, new Runnable() {
             @Override
             public void run() {
-                rebuildInnerUI(rootView, uiTicker);
+                rebuildInnerUI(gamepak, rootView, uiTicker);
             }
         }));
 
@@ -224,7 +221,7 @@ public class AppMain {
         return new UITabPane(tabNames.toArray(new String[0]), tabElems.toArray(new UIElement[0]), FontSizes.tabTextHeight);
     }
 
-    private static void rebuildInnerUI(final UIWindowView rootView, final IConsumer<UIElement> uiTicker) {
+    private static void rebuildInnerUI(final String gamepak, final UIWindowView rootView, final IConsumer<UIElement> uiTicker) {
         uiStatusLabel = new UILabel("Loading...", FontSizes.statusBarTextHeight);
 
         UIAppendButton workspace = new UIAppendButton("Save All Modified Files", uiStatusLabel, new Runnable() {
@@ -239,7 +236,7 @@ public class AppMain {
                 startHelp(0);
             }
         }, FontSizes.statusBarTextHeight);
-        rootView.backing = new UINSVertLayout(workspace, initializeTabs(rootView, uiTicker));
+        rootView.backing = new UINSVertLayout(workspace, initializeTabs(gamepak, rootView, uiTicker));
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.

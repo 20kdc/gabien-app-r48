@@ -64,7 +64,7 @@ C name Class.RPG::Actor @name | #A
 @battle_posy_2k3 int
 @battler_anim_2k3 battleranimation_id
 @can_crit boolean
-@crit_percent boolean
+@crit_percent int
 @dual_wield boolean
 @lock_equipment boolean
 @equipment rpg_actor_equipment_block
@@ -244,10 +244,10 @@ e rpg_enemyaction_conditiontype 0 always 1 switchActive 2 turnCountInRange 3 liv
 @act_basic rpg_enemyaction_basic
 @act_skill skill_id
 @act_transform_enemy enemy_id
-@switch_on boolean
-@switch_on_id switch_id
-@switch_off boolean
-@switch_off_id switch_id
+@act_set_switch boolean
+@act_set_switch_id switch_id
+@act_reset_switch boolean
+@act_reset_switch_id switch_id
 
 : RPG::Enemy
 C name Class.RPG::Enemy @name | #A
@@ -472,7 +472,8 @@ e rpg_animationtiming_screenshake 0 noShake 1 target 2 screen
 @transparency int= 0
 
 : RPG::AnimationFrame
-@cells subwindow arrayIx1 subwindow RPG::AnimationCell
+ this apparently just does whatever, switch it for a hash
+@cells subwindow hash int+0 subwindow RPG::AnimationCell
 
 e rpg_animation_scope 0 target 1 screen
 e rpg_animation_position 0 up 1 middle 2 down
@@ -485,7 +486,8 @@ C name Class.RPG::Animation @name | #A
 @scope rpg_animation_scope
 @position rpg_animation_position
 @frames subwindow arrayIx1 subwindow RPG::AnimationFrame
-@timings subwindow arrayIx1 subwindow RPG::AnimationTiming
+ yet another "aaaaaa why is this happening" fix
+@timings subwindow hash int+0 subwindow RPG::AnimationTiming
 
  ---
 
@@ -524,7 +526,7 @@ C name Class.RPG::Tileset @name | #A
 e rpg_system_ldbid 0 RM2000 2003 RM2003
 e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 order 8 wait 9 quit
 
-: RPG::TestBattler
+: RPG::System::TestBattler
 @actor actor_id
 @level int= 1
 @equip_weapon item_id
@@ -570,7 +572,7 @@ e rpg_system_font 0 gothic 1 mincho
 @test_condition int
 @test_actor actor_id
 @test_battle_background string
-@test_battle_data subwindow array 0 RPG::TestBattler
+@test_battle_data subwindow array 0 RPG::System::TestBattler
 @test_battle_terrain terrain_id
 e rpg_system_testing_battle_formation 0 fromTerrain 1 loose 2 tight
 @test_battle_formation rpg_system_testing_battle_formation
@@ -636,7 +638,7 @@ e rpg_battlecommand_dir 0 noModify 1 up 2 right 3 down 4 left
 @row_back boolean
 @window_large boolean
 @battle_type rpg_battlecommand_battletype
-@commands subwindow arrayIx1 RPG::BattleCommand
+@commands subwindow array 0 RPG::BattleCommand
 @death_handler_1 int
 @death_handler_2 int
 @death_event commonevent_or_none_id

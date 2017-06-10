@@ -516,7 +516,7 @@ e begin_encounter_defeat 0 gameOver 1 executeDefeatCode
 ]4 escapeMode begin_encounter_escape
 ]5 defeatMode begin_encounter_defeat
 ]6 playerAttacksFirst int_boolean
-]7 battleMode_2k3 begin_encounter_battlemode
++]?7 battleMode_2k3 normal begin_encounter_battlemode
 +arrayDAM 3 int begin_encounter_0 1 begin_encounter_1 2 begin_encounter_2
 
 .begin_encounter_0

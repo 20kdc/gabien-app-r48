@@ -114,8 +114,7 @@ public class Application {
                                     if (!rootPath.endsWith("/"))
                                         if (!rootPath.endsWith("\\"))
                                             rootPath += "/";
-                                AppMain.initialize(rootPath, objName + "/");
-                                appTicker = AppMain.initializeAndRun(uiTicker);
+                                appTicker = AppMain.initializeAndRun(rootPath, objName + "/", uiTicker);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

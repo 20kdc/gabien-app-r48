@@ -56,7 +56,7 @@ public class Actor extends R2kObject {
             return new Learning();
         }
     });
-    public IntegerR2kStruct canRename = new IntegerR2kStruct(0);
+    public BooleanR2kStruct canRename = new BooleanR2kStruct(false);
     public StringR2kStruct renameResult = new StringR2kStruct();
     public ArraySizeR2kInterpretable<ByteR2kStruct> stateRanksSz = new ArraySizeR2kInterpretable<ByteR2kStruct>();
     public ArrayR2kStruct<ByteR2kStruct> stateRanks = new ArrayR2kStruct<ByteR2kStruct>(stateRanksSz, new ISupplier<ByteR2kStruct>() {

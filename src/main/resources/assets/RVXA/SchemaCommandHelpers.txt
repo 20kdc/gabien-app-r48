@@ -47,8 +47,6 @@ C name conditional_branch_parameters ]0 | {A=0=[@conditional_branch_switch]|{A=1
  And Now For Even More Suck (tm)
  Set Variables. I hope I didn't make a mistake, II.
 
- Party ! Still chasing little blue ghosts. I don't even know!
-
 e set_variables_source 0 int 1 var 2 random 3 gameData 4 script
 
 i RCOM/CommonSV.txt

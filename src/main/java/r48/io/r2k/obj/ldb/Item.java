@@ -150,7 +150,7 @@ public class Item extends R2kObject {
                 new Index(0x2D, spiPoints2, "@usebuff_spi"),
                 new Index(0x2E, agiPoints2, "@usebuff_agi"),
                 new Index(0x33, useMessage, "@skill_use_item_msg_2k3"),
-                new Index(0x35, skillId, "@skill_id_2k3"),
+                new Index(0x35, skillId, "@skill_id"),
                 new Index(0x37, switchId, "@switch_id"),
                 new Index(0x39, situationMap2, "@sit_map_2"),
                 new Index(0x3A, situationBattle, "@switch_only_in_battle"),

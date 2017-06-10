@@ -14,16 +14,14 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
+import r48.map.systems.IRMMapSystem;
 import r48.maptools.UIMTEventPicker;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.UITextPrompt;
 
 import java.io.PrintStream;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Right now this breaks under R2k for various reasons, first being the versionId assumption.
@@ -34,9 +32,13 @@ import java.util.Map;
 public class RMToolsToolset implements IToolset {
     final CMDB commandsEvent;
     final SchemaElement commandEvent;
+    final IRMMapSystem mapSystem;
 
-    public RMToolsToolset() {
-        commandsEvent = AppMain.schemas.getCMDB(AppMain.sysBackend + "/Commands.txt");
+    public RMToolsToolset(String gamepak) {
+        // If this errors, then this shouldn't have been constructed.
+        mapSystem = (IRMMapSystem) AppMain.system;
+
+        commandsEvent = AppMain.schemas.getCMDB(gamepak + "Commands.txt");
         commandEvent = AppMain.schemas.getSDBEntry("EventCommandEditor");
     }
 
@@ -69,14 +71,15 @@ public class RMToolsToolset implements IToolset {
                             @Override
                             public void accept(String s) {
                                 int i = Integer.parseInt(s);
-                                for (RubyIO rio : AppMain.objectDB.getObject("MapInfos").hashVal.keySet()) {
-                                    RubyIO map = AppMain.objectDB.getObject(RXPRMLikeMapInfoBackend.sNameFromInt((int) rio.fixnumVal));
+                                for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
                                     // Find event!
-                                    for (RubyIO event : map.getInstVarBySymbol("@events").hashVal.values()) {
-                                        for (RubyIO page : event.getInstVarBySymbol("@pages").arrVal) {
+                                    for (Map.Entry<RubyIO, RubyIO> event : rmd.map.getInstVarBySymbol("@events").hashVal.entrySet()) {
+                                        for (RubyIO page : event.getValue().getInstVarBySymbol("@pages").arrVal) {
+                                            if (page.type == '0')
+                                                continue;
                                             for (RubyIO cmd : page.getInstVarBySymbol("@list").arrVal) {
                                                 if (cmd.getInstVarBySymbol("@code").fixnumVal == i) {
-                                                    UIMTEventPicker.showEvent(event.getInstVarBySymbol("@id").fixnumVal, map, event);
+                                                    UIMTEventPicker.showEvent(event.getKey().fixnumVal, rmd.map, event.getValue());
                                                     return;
                                                 }
                                             }
@@ -97,8 +100,8 @@ public class RMToolsToolset implements IToolset {
                             objects.add(s);
                             objectSchemas.add("File." + s);
                         }
-                        for (RubyIO rio : AppMain.objectDB.getObject("MapInfos").hashVal.keySet()) {
-                            objects.add(RXPRMLikeMapInfoBackend.sNameFromInt((int) rio.fixnumVal));
+                        for (IRMMapSystem.RMMapData rio : mapSystem.getAllMaps()) {
+                            objects.add(rio.idName);
                             objectSchemas.add("RPG::Map");
                         }
                         Iterator<String> schemaIt = objectSchemas.iterator();
@@ -124,15 +127,16 @@ public class RMToolsToolset implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        for (RubyIO rio : AppMain.objectDB.getObject("MapInfos").hashVal.keySet()) {
-                            RubyIO map = AppMain.objectDB.getObject(RXPRMLikeMapInfoBackend.sNameFromInt((int) rio.fixnumVal));
+                        for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
                             // Find event!
-                            for (RubyIO event : map.getInstVarBySymbol("@events").hashVal.values()) {
-                                for (RubyIO page : event.getInstVarBySymbol("@pages").arrVal) {
+                            for (Map.Entry<RubyIO, RubyIO> event : rmd.map.getInstVarBySymbol("@events").hashVal.entrySet()) {
+                                for (RubyIO page : event.getValue().getInstVarBySymbol("@pages").arrVal) {
+                                    if (page.type == '0')
+                                        continue;
                                     for (RubyIO cmd : page.getInstVarBySymbol("@list").arrVal) {
                                         if (!commandsEvent.knownCommands.containsKey((int) cmd.getInstVarBySymbol("@code").fixnumVal)) {
                                             System.out.println(cmd.getInstVarBySymbol("@code").fixnumVal);
-                                            UIMTEventPicker.showEvent(event.getInstVarBySymbol("@id").fixnumVal, map, event);
+                                            UIMTEventPicker.showEvent(event.getKey().fixnumVal, rmd.map, event.getValue());
                                             return;
                                         }
                                     }
@@ -145,7 +149,7 @@ public class RMToolsToolset implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        for (RubyIO rio : AppMain.objectDB.getObject("CommonEvents").arrVal) {
+                        for (RubyIO rio : mapSystem.getAllCommonEvents())
                             if (rio.type != '0') {
                                 for (RubyIO cmd : rio.getInstVarBySymbol("@list").arrVal) {
                                     if (!commandsEvent.knownCommands.containsKey((int) cmd.getInstVarBySymbol("@code").fixnumVal)) {
@@ -156,7 +160,6 @@ public class RMToolsToolset implements IToolset {
                                     }
                                 }
                             }
-                        }
                         AppMain.launchDialog("nnnope");
                     }
                 },
@@ -176,23 +179,25 @@ public class RMToolsToolset implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        PrintStream ps = new PrintStream(GaBIEn.getOutFile("transcript.html"));
+                        PrintStream ps = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "transcript.html"));
                         RMTranscriptDumper dumper = new RMTranscriptDumper(ps);
                         dumper.start();
                         dumper.startFile("CommonEvents", "Common Events");
-                        for (RubyIO rio : AppMain.objectDB.getObject("CommonEvents").arrVal)
-                            if (rio.type != '0')
-                                dumper.dump(rio.getInstVarBySymbol("@name").decString(), rio.getInstVarBySymbol("@list").arrVal, commandsEvent);
+                        for (RubyIO rio : mapSystem.getAllCommonEvents())
+                            dumper.dump(rio.getInstVarBySymbol("@name").decString(), rio.getInstVarBySymbol("@list").arrVal, commandsEvent);
                         dumper.endFile();
                         // Order the maps so that it comes out coherently for valid diffs (OSER Equinox Comparison Project)
                         LinkedList<Integer> orderedMapInfos = new LinkedList<Integer>();
-                        for (Map.Entry<RubyIO, RubyIO> rio2 : AppMain.objectDB.getObject("MapInfos").hashVal.entrySet())
-                            orderedMapInfos.add((int) rio2.getKey().fixnumVal);
+                        HashMap<Integer, IRMMapSystem.RMMapData> mapMap = new HashMap<Integer, IRMMapSystem.RMMapData>();
+                        for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
+                            orderedMapInfos.add(rmd.id);
+                            mapMap.put(rmd.id, rmd);
+                        }
                         Collections.sort(orderedMapInfos);
                         for (int id : orderedMapInfos) {
-                            String name = RXPRMLikeMapInfoBackend.sNameFromInt(id);
-                            dumper.startFile(name, "Map:\"" + AppMain.objectDB.getObject("MapInfos").getHashVal(new RubyIO().setFX(id)).getInstVarBySymbol("@name").decString() + "\"");
-                            RubyIO map = AppMain.objectDB.getObject(name);
+                            IRMMapSystem.RMMapData rmd = mapMap.get(id);
+                            dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), "Map:\"" + rmd.name + "\"");
+                            RubyIO map = rmd.map;
                             LinkedList<Integer> orderedEVN = new LinkedList<Integer>();
                             for (RubyIO i : map.getInstVarBySymbol("@events").hashVal.keySet())
                                 orderedEVN.add((int) i.fixnumVal);
@@ -202,6 +207,8 @@ public class RMToolsToolset implements IToolset {
                                 String evp = "Ev." + k + " (" + event.getInstVarBySymbol("@name").decString() + "), Page ";
                                 int pageId = 1;
                                 for (RubyIO page : event.getInstVarBySymbol("@pages").arrVal) {
+                                    if (page.type == '0')
+                                        continue; // 0th page on R2k backend.
                                     dumper.dump(evp + pageId, page.getInstVarBySymbol("@list").arrVal, commandsEvent);
                                     pageId++;
                                 }
@@ -209,28 +216,7 @@ public class RMToolsToolset implements IToolset {
                             dumper.endFile();
                         }
 
-                        dumper.startFile("Items", "The list of items in the game.");
-                        LinkedList<String> lls = new LinkedList<String>();
-                        for (RubyIO page : AppMain.objectDB.getObject("Items").arrVal) {
-                            if (page.type != '0') {
-                                lls.add(page.getInstVarBySymbol("@name").decString());
-                            } else {
-                                lls.add("<NULL>");
-                            }
-                        }
-                        dumper.dumpBasicList("Names", lls.toArray(new String[0]), 0);
-                        dumper.endFile();
-
-                        dumper.startFile("System", "System data (of any importance, anyway).");
-                        RubyIO sys = AppMain.objectDB.getObject("System");
-
-                        dumper.dumpHTML("Notably, switch and variable lists have a 0th index, but only indexes starting from 1 are actually allowed to be used.<br/>");
-                        dumper.dumpHTML("Magic number is " + sys.getInstVarBySymbol("@magic_number").toString() + "<br/>");
-                        dumper.dumpHTML("Magic number II is " + sys.getInstVarBySymbol("@_").toString() + "<br/>");
-
-                        dumper.dumpSVList("@switches", sys.getInstVarBySymbol("@switches").arrVal, 0);
-                        dumper.dumpSVList("@variables", sys.getInstVarBySymbol("@variables").arrVal, 0);
-                        dumper.endFile();
+                        mapSystem.dumpCustomData(dumper);
 
                         dumper.end();
                         ps.close();

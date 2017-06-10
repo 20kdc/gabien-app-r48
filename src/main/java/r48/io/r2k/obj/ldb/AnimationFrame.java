@@ -9,12 +9,13 @@ import r48.RubyIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.chunks.R2kObject;
 import r48.io.r2k.chunks.SparseArrayAR2kStruct;
+import r48.io.r2k.chunks.SparseArrayHR2kStruct;
 
 /**
  * Created on 07/06/17.
  */
 public class AnimationFrame extends R2kObject {
-    public SparseArrayAR2kStruct<AnimationCell> cells = new SparseArrayAR2kStruct<AnimationCell>(new ISupplier<AnimationCell>() {
+    public SparseArrayHR2kStruct<AnimationCell> cells = new SparseArrayHR2kStruct<AnimationCell>(new ISupplier<AnimationCell>() {
         @Override
         public AnimationCell get() {
             return new AnimationCell();

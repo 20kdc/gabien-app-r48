@@ -20,16 +20,15 @@ import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
 import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.XPTileRenderer;
+import r48.toolsets.RMTranscriptDumper;
+
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * Created on 03/06/17.
  */
-public class RXPSystem extends MapSystem {
-    @Override
-    public UIElement createMapExplorer(ISupplier<IConsumer<UIElement>> windowMaker, UIMapViewContainer mapBox) {
-        return new UIGRMMapInfos(windowMaker, mapBox, new RXPRMLikeMapInfoBackend());
-    }
-
+public class RXPSystem extends MapSystem implements IRMMapSystem {
     protected static RubyIO tsoFromMap(RubyIO map) {
         if (map == null)
             return null;
@@ -42,6 +41,11 @@ public class RXPSystem extends MapSystem {
             if (tileset.type == '0')
                 tileset = null;
         return tileset;
+    }
+
+    @Override
+    public UIElement createMapExplorer(ISupplier<IConsumer<UIElement>> windowMaker, UIMapViewContainer mapBox) {
+        return new UIGRMMapInfos(windowMaker, mapBox, new RXPRMLikeMapInfoBackend());
     }
 
     @Override
@@ -66,5 +70,51 @@ public class RXPSystem extends MapSystem {
         ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
+    }
+
+    @Override
+    public RMMapData[] getAllMaps() {
+        LinkedList<RMMapData> rmdList = new LinkedList<RMMapData>();
+        for (Map.Entry<RubyIO, RubyIO> rio : AppMain.objectDB.getObject("MapInfos").hashVal.entrySet()) {
+            int id = (int) rio.getKey().fixnumVal;
+            RMMapData rmd = new RMMapData(rio.getValue().getInstVarBySymbol("@name").decString(), AppMain.objectDB.getObject(RXPRMLikeMapInfoBackend.sNameFromInt(id)), id, RXPRMLikeMapInfoBackend.sNameFromInt(id));
+            rmdList.add(rmd);
+        }
+        return rmdList.toArray(new RMMapData[0]);
+    }
+
+    @Override
+    public RubyIO[] getAllCommonEvents() {
+        LinkedList<RubyIO> rmdList = new LinkedList<RubyIO>();
+        for (RubyIO rio : AppMain.objectDB.getObject("CommonEvents").arrVal)
+            if (rio.type != '0')
+                rmdList.add(rio);
+        return rmdList.toArray(new RubyIO[0]);
+    }
+
+    @Override
+    public void dumpCustomData(RMTranscriptDumper dumper) {
+        dumper.startFile("Items", "The list of items in the game.");
+        LinkedList<String> lls = new LinkedList<String>();
+        for (RubyIO page : AppMain.objectDB.getObject("Items").arrVal) {
+            if (page.type != '0') {
+                lls.add(page.getInstVarBySymbol("@name").decString());
+            } else {
+                lls.add("<NULL>");
+            }
+        }
+        dumper.dumpBasicList("Names", lls.toArray(new String[0]), 0);
+        dumper.endFile();
+
+        dumper.startFile("System", "System data (of any importance, anyway).");
+        RubyIO sys = AppMain.objectDB.getObject("System");
+
+        dumper.dumpHTML("Notably, switch and variable lists have a 0th index, but only indexes starting from 1 are actually allowed to be used.<br/>");
+        dumper.dumpHTML("Magic number is " + sys.getInstVarBySymbol("@magic_number").toString() + "<br/>");
+        dumper.dumpHTML("Magic number II is " + sys.getInstVarBySymbol("@_").toString() + "<br/>");
+
+        dumper.dumpSVList("@switches", sys.getInstVarBySymbol("@switches").arrVal, 0);
+        dumper.dumpSVList("@variables", sys.getInstVarBySymbol("@variables").arrVal, 0);
+        dumper.endFile();
     }
 }

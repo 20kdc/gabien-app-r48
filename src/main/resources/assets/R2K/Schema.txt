@@ -9,7 +9,9 @@
 C objectDB lcf2000
 C versionId R2k
 C defineIndent
-C allowIndentControl
+
+ causing issues for now, need to debug
+ C allowIndentControl
 
  -COM-
 

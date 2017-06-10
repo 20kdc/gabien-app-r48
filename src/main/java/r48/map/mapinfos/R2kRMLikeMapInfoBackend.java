@@ -35,12 +35,16 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         return mapTreeOrders.arrVal.length;
     }
 
-    @Override
-    public String nameFromInt(int i) {
+    public static String sNameFromInt(int i) {
         String m = Integer.toString(i);
         while (m.length() < 4)
             m = "0" + m;
         return "Map" + m + ".lmu";
+    }
+
+    @Override
+    public String nameFromInt(int i) {
+        return sNameFromInt(i);
     }
 
     @Override

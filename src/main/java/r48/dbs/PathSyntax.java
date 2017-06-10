@@ -51,7 +51,7 @@ public class PathSyntax {
                     res = res.arrVal[atl];
                     break;
                 default:
-                    throw new RuntimeException("Bad pathsynt starter " + f + " (did root get separated properly?)");
+                    throw new RuntimeException("Bad pathsynt starter " + f + " (did root get separated properly?) code " + arg);
             }
             if (res == null)
                 return null;
