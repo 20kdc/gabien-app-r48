@@ -161,6 +161,23 @@ public class CMDB {
                             }
                         };
                     }
+                    if (args[0].equals("commandIndentConditionalOF")) {
+                        final int[] iargs = new int[args.length - 1];
+                        for (int i = 0; i < iargs.length; i++)
+                            iargs[i] = Integer.parseInt(args[i + 1]);
+                        rc.indentPost = new IFunction<RubyIO, Integer>() {
+                            @Override
+                            public Integer apply(RubyIO rubyIO) {
+                                for (int i = 0; i < iargs.length; i += 2) {
+                                    if (rubyIO.arrVal.length <= iargs[i])
+                                        continue;
+                                    if (rubyIO.arrVal[iargs[i]].fixnumVal == iargs[i + 1])
+                                        return 1;
+                                }
+                                return 0;
+                            }
+                        };
+                    }
                 } else if (c == '#') {
                     DBLoader.readFile(args[0], this);
                 } else if (c != ' ') {

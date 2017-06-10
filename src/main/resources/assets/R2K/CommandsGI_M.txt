@@ -15,7 +15,7 @@ p yVar var_id
 d Begin a battle between the player and an enemy!
 p _ string
 X begin_encounter_parameters
-I 1
+C commandIndentConditionalOF 4 2 5 1
 
 20710: ... Victory:
 d The code called in an Encounter when the player wins.

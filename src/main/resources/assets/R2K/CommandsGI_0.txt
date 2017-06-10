@@ -557,7 +557,7 @@ d Begins a loop, which will run forever unless broken.
 p _ string
 I1
 
-12210: Break Loop
+12220: Break Loop
 d Leaves the loop.
 p _ string
 
