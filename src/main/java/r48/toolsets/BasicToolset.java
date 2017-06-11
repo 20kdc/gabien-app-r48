@@ -195,8 +195,7 @@ public class BasicToolset implements IToolset {
                                 Collections.sort(t);
                                 for (String s : t) {
                                     ps.println("x \"" + s + "\"");
-                                    String afterCtx = s.substring(s.indexOf('/') + 1);
-                                    ps.println("y \"" + afterCtx + "\"");
+                                    ps.println("y \"" + TXDB.stripContext(s) + "\"");
                                 }
                                 ps.close();
                             }

@@ -52,13 +52,17 @@ public class TXDB {
 
     private static String get(String english, boolean constant) {
         if (languageId == 0)
-            return english;
+            return stripContext(english);
         String replace = subspace.get(english);
         if (!constant)
             ssTexts.add(english);
         if (replace == null)
             return ":NT:" + english;
         return replace;
+    }
+
+    public static String stripContext(String s) {
+        return s.substring(s.indexOf('/') + 1);
     }
 
     public static void nextLanguage() {

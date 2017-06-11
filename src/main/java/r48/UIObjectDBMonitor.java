@@ -26,18 +26,18 @@ public class UIObjectDBMonitor extends UIElement {
         System.gc();
         int step = UILabel.getRecommendedSize("", FontSizes.objectDBMonitorTextHeight).height;
         for (String s : UITest.sortedKeysStr(AppMain.objectDB.objectMap.keySet())) {
-            String status = TXDB.get(" #[disposed#]");
+            String status = TXDB.get(" [disposed]");
             RubyIO rio = AppMain.objectDB.objectMap.get(s).get();
             if (rio != null) {
                 status = FormatSyntax.formatExtended(TXDB.get(" #[#AML#]"), new RubyIO[] {new RubyIO().setFX(AppMain.objectDB.countModificationListeners(rio))});
                 if (AppMain.objectDB.getObjectNewlyCreated(s)) {
-                    status += TXDB.get(" #[created#]");
+                    status += TXDB.get(" [created]");
                 } else if (AppMain.objectDB.getObjectModified(s)) {
-                    status += TXDB.get(" #[modified#]");
+                    status += TXDB.get(" [modified]");
                 }
             } else {
                 if (AppMain.objectDB.getObjectModified(s)) {
-                    status += TXDB.get(" #[modifications lost, should never occur!#]");
+                    status += TXDB.get(" [modifications lost, should never occur!]");
                 } else {
                     AppMain.objectDB.objectMap.remove(s);
                 }
