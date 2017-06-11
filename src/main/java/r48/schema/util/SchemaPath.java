@@ -28,6 +28,7 @@ public class SchemaPath {
     public SchemaPath parent;
 
     // If editor is null, targetElement must be null, and vice versa.
+    // Host may be there or not.
     public SchemaElement editor;
     public ISchemaHost host;
     public RubyIO targetElement;
@@ -190,7 +191,7 @@ public class SchemaPath {
         SchemaPath p = findRoot();
         // Attempt to set a "changed flag".
         // This will also nudge the observers.
-        AppMain.objectDB.objectRootModified(p.targetElement);
+        AppMain.objectDB.objectRootModified(p.targetElement, this);
         // Run an autocorrect on just about everything.
         // Could cause a lagspike, but this is *after* modification anyway,
         //  and worth it for the consistency benefits.

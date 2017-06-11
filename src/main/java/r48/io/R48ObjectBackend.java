@@ -4,6 +4,7 @@
  */
 package r48.io;
 
+import gabien.GaBIEn;
 import r48.RubyIO;
 
 import java.io.*;
@@ -125,7 +126,7 @@ public class R48ObjectBackend implements IObjectBackend {
     @Override
     public RubyIO loadObjectFromFile(String filename) {
         try {
-            DataInputStream dis = new DataInputStream(new FileInputStream(prefix + filename + postfix));
+            DataInputStream dis = new DataInputStream(GaBIEn.getFile(prefix + filename + postfix));
             // Marshal v4.8
             if (dis.readUnsignedByte() != 0x04)
                 throw new IOException("mgk[0]!=0x04");
@@ -144,7 +145,7 @@ public class R48ObjectBackend implements IObjectBackend {
 
     @Override
     public void saveObjectToFile(String filename, RubyIO object) throws IOException {
-        DataOutputStream dis = new DataOutputStream(new FileOutputStream(prefix + filename + postfix));
+        DataOutputStream dis = new DataOutputStream(GaBIEn.getOutFile(prefix + filename + postfix));
         // Marshal v4.8
         dis.write(new byte[] {4, 8});
         LinkedList<RubyIO> objCache = new LinkedList<RubyIO>();

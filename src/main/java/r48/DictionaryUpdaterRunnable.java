@@ -5,10 +5,12 @@
 
 package r48;
 
+import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
 import r48.dbs.TXDB;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.util.SchemaPath;
 import r48.toolsets.MapToolset;
 
 import java.util.HashMap;
@@ -26,7 +28,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
     public final IFunction<RubyIO, RubyIO> fieldA;
     public final boolean hash;
     private RubyIO lastTarget = null;
-    private Runnable kickMe;
+    private IConsumer<SchemaPath> kickMe;
 
     public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<RubyIO, RubyIO> iFunction, boolean b, String ivar) {
         dict = targetDictionary;
@@ -36,9 +38,9 @@ public class DictionaryUpdaterRunnable implements Runnable {
         iVar = ivar;
         // Cause a proxy to be generated.
         AppMain.schemas.getSDBEntry(targetDictionary);
-        kickMe = new Runnable() {
+        kickMe = new IConsumer<SchemaPath>() {
             @Override
-            public void run() {
+            public void accept(SchemaPath sp) {
                 actNow = true;
             }
         };

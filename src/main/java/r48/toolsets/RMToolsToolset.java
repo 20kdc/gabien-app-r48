@@ -110,11 +110,11 @@ public class RMToolsToolset implements IToolset {
                         for (final String obj : objects) {
                             System.out.println(obj + "...");
                             RubyIO map = AppMain.objectDB.getObject(obj);
-                            Runnable modListen = new Runnable() {
+                            IConsumer<SchemaPath> modListen = new IConsumer<SchemaPath>() {
                                 @Override
-                                public void run() {
+                                public void accept(SchemaPath path) {
                                     // yup, and throw an exception to give the user an idea of the tree
-                                    throw new RuntimeException("MODIFY" + obj);
+                                    throw new RuntimeException("MODIFY " + obj + " " + path);
                                 }
                             };
                             AppMain.objectDB.registerModificationHandler(map, modListen);
@@ -123,7 +123,6 @@ public class RMToolsToolset implements IToolset {
                             AppMain.objectDB.deregisterModificationHandler(map, modListen);
                             System.out.println(obj + " done.");
                         }
-                        AppMain.launchDialog(TXDB.get("Not found."));
                     }
                 },
                 new Runnable() {

@@ -20,17 +20,20 @@ import r48.ui.UITextPrompt;
 import java.util.LinkedList;
 
 /**
+ * Provides some basic tools for changing the configuration of R48 and doing various bits and pieces.
+ * Note that the "rebuild UI" button was removed - the UI (specifically MapInfos right now)
+ *  attaches modification notifiers which can't go away until the whole ObjectDB is gone.
+ * Better to avoid potential leaks by just freeing everything - it's expected that the tabs survive for the lifetime of the application,
+ *  that is, until shutdown is called on AppMain which disconnects everything that could possibly cause such a leak.
  * Created on 04/06/17.
  */
 public class BasicToolset implements IToolset {
     private final IConsumer<UIElement> virtWM, realWM;
     private final IConsumer<IConsumer<UIElement>> setWM;
-    private final Runnable rebuildUi;
-    public BasicToolset(UIWindowView rootView, IConsumer<UIElement> uiTicker, IConsumer<IConsumer<UIElement>> swm, Runnable runnable) {
+    public BasicToolset(UIWindowView rootView, IConsumer<UIElement> uiTicker, IConsumer<IConsumer<UIElement>> swm) {
         virtWM = rootView;
         realWM = uiTicker;
         setWM = swm;
-        rebuildUi = runnable;
     }
 
     @Override
@@ -55,7 +58,6 @@ public class BasicToolset implements IToolset {
                         TXDB.get("Use normal in-built fonts"),
                         TXDB.get("Use system fonts for everything"),
                         TXDB.get("Configure font sizes"),
-                        TXDB.get("Rebuild UI"),
                         TXDB.get("Test Fonts"),
                         TXDB.get("Show ODB Memstat")
                 }, new Runnable[] {
@@ -163,7 +165,6 @@ public class BasicToolset implements IToolset {
                                 windowMaker.get().accept(new UIFontSizeConfigurator());
                             }
                         },
-                        rebuildUi,
                         new Runnable() {
                             @Override
                             public void run() {

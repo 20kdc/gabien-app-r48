@@ -194,11 +194,6 @@ public class AppMain {
             public void accept(IConsumer<UIElement> uiElementIConsumer) {
                 windowMaker = uiElementIConsumer;
             }
-        }, new Runnable() {
-            @Override
-            public void run() {
-                rebuildInnerUI(gamepak, rootView, uiTicker);
-            }
         }));
 
         // Initialize toolsets.

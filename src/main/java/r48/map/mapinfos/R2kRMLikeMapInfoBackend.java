@@ -4,6 +4,7 @@
  */
 package r48.map.mapinfos;
 
+import gabien.ui.IConsumer;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -16,7 +17,7 @@ import java.util.Set;
  * Created on 02/06/17.
  */
 public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
-    public Runnable modHandler;
+    public IConsumer<SchemaPath> modHandler;
     public RubyIO mapTree = AppMain.objectDB.getObject("RPG_RT.lmt");
     // Note: The orders table is [order] = map.
     // So swapping orders is probably the easiest operation here.
@@ -32,7 +33,8 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
 
     @Override
     public int getLastOrder() {
-        return mapTreeOrders.arrVal.length;
+        // Note the - 1 to make Order 0 disappear.
+        return mapTreeOrders.arrVal.length - 1;
     }
 
     public static String sNameFromInt(int i) {
@@ -48,7 +50,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     }
 
     @Override
-    public void registerModificationHandler(Runnable onMapInfoChange) {
+    public void registerModificationHandler(IConsumer<SchemaPath> onMapInfoChange) {
         modHandler = onMapInfoChange;
         AppMain.objectDB.registerModificationHandler(mapTree, onMapInfoChange);
     }
@@ -76,14 +78,23 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         RubyIO[] resArray = new RubyIO[mapTreeOrders.arrVal.length - 1];
         System.arraycopy(mapTreeOrders.arrVal, 0, resArray, 0, resArray.length);
         mapTreeOrders.arrVal = resArray;
+        // Eliminate from hash
+        mapTreeHash.removeHashVal(new RubyIO().setFX(k));
     }
 
     @Override
     public int createNewMap(int k) {
+        int targetOrder = mapTreeOrders.arrVal.length - 1;
+        int l = getMapOfOrder(targetOrder);
+        if (l == -1)
+            l = 0;
+        RubyIO mi = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
+        mi.getInstVarBySymbol("@parent_id").fixnumVal = l;
+
         RubyIO[] resArray = new RubyIO[mapTreeOrders.arrVal.length + 1];
         System.arraycopy(mapTreeOrders.arrVal, 0, resArray, 0, mapTreeOrders.arrVal.length);
         resArray[resArray.length - 1] = new RubyIO().setFX(k);
-        mapTreeHash.hashVal.put(new RubyIO().setFX(k), SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k)));
+        mapTreeHash.hashVal.put(new RubyIO().setFX(k), mi);
         mapTreeOrders.arrVal = resArray;
         return resArray.length - 1;
     }
@@ -91,8 +102,9 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     @Override
     public void complete() {
         // need to update indent???
-        AppMain.objectDB.objectRootModified(mapTree);
-        modHandler.run();
+        SchemaPath fakePath = new SchemaPath(AppMain.schemas.getSDBEntry("File.RPG_RT.lmt"), mapTree, null);
+        AppMain.objectDB.objectRootModified(mapTree, fakePath);
+        modHandler.accept(fakePath);
     }
 
     @Override

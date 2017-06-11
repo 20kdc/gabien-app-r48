@@ -17,9 +17,9 @@ import r48.map.UIMapToolWrapper;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFontSizeConfigurator;
 import r48.ui.UIHHalfsplit;
+import r48.ui.help.UIHelpSystem;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -31,7 +31,8 @@ public class Application {
 
     public static void gabienmain() throws IOException {
         final WindowCreatingUIElementConsumer uiTicker = new WindowCreatingUIElementConsumer();
-
+        // Load language list.
+        TXDB.init();
         // Note the mass-recreate.
         while (true) {
             final UIScrollLayout gamepaks = new UIScrollLayout(true);
@@ -168,6 +169,7 @@ public class Application {
             });
             uiTicker.accept(uimtw);
 
+            boolean failed = false;
             while (uiTicker.runningWindows() > 0) {
                 double dT = GaBIEn.timeDelta(false);
                 while (dT < (globalMS / 1000d)) {
@@ -179,9 +181,48 @@ public class Application {
                     dT = GaBIEn.timeDelta(false);
                 }
                 dT = GaBIEn.timeDelta(true);
-                if (appTicker != null)
-                    appTicker.accept(dT);
-                uiTicker.runTick(dT);
+                try {
+                    if (appTicker != null)
+                        appTicker.accept(dT);
+                    uiTicker.runTick(dT);
+                } catch (Exception e) {
+                    if (failed)
+                        throw new RuntimeException(e);
+                    failed = true;
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    PrintStream ps = new PrintStream(baos, false, "UTF-8");
+                    ps.println(TXDB.get("An error has occurred in R48. This is always the result of a bug somewhere."));
+                    ps.println(TXDB.get("Details follow. If another error occurs, R48 will shutdown. Make a backup immediately, only then save."));
+                    e.printStackTrace(ps);
+                    UIHelpSystem uhs = new UIHelpSystem();
+                    String r = baos.toString("UTF-8").replaceAll("\r", "");
+                    for (String s : r.split("\n"))
+                        uhs.page.add(new UIHelpSystem.HelpElement('.', s.split(" ")));
+                    uhs.page.add(new UIHelpSystem.HelpElement('>', TXDB.get("0 Save error as file").split(" ")));
+                    UIScrollLayout scroll = new UIScrollLayout(true) {
+                        @Override
+                        public String toString() {
+                            return "Error...";
+                        }
+                    };
+                    uhs.onLinkClick = new IConsumer<Integer>() {
+                        @Override
+                        public void accept(Integer integer) {
+                            try {
+                                OutputStream fos = GaBIEn.getOutFile("output.txt");
+                                baos.writeTo(fos);
+                                fos.close();
+                            } catch (IOException ioe) {
+                                // *sigh* give up
+                                throw new RuntimeException(ioe);
+                            }
+                        }
+                    };
+                    scroll.panels.add(uhs);
+                    uhs.setBounds(new Rect(0, 0, 640, 480));
+                    scroll.setBounds(new Rect(0, 0, 640, 480));
+                    uiTicker.accept(scroll);
+                }
             }
             if (!uimtw.selfClose)
                 break;

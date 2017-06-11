@@ -4,6 +4,9 @@
  */
 package r48.map.mapinfos;
 
+import gabien.ui.IConsumer;
+import r48.schema.util.SchemaPath;
+
 /**
  * Attempting to bridge the gap between RXP+ and R2k's map info systems so the same UI code can be used.
  * Plan here is to abstract all of RMMapInfos's complicated shifting-about code away,
@@ -13,7 +16,7 @@ package r48.map.mapinfos;
 public interface IRMLikeMapInfoBackendWPub extends IRMLikeMapInfoBackend {
     String nameFromInt(int i);
 
-    void registerModificationHandler(Runnable onMapInfoChange);
+    void registerModificationHandler(IConsumer<SchemaPath> onMapInfoChange);
 
     // Gets the actual mapinfo object.
     // The following are PRIMITIVES:

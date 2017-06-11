@@ -5,6 +5,7 @@
 
 package r48;
 
+import gabien.GaBIEn;
 import gabien.ui.Rect;
 import gabien.ui.UIPanel;
 import gabien.ui.UITextButton;
@@ -14,6 +15,7 @@ import r48.ui.UINSVertLayout;
 import gabien.ui.UIScrollLayout;
 
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -46,7 +48,7 @@ public class UITest extends UIPanel {
         @Override
         public void run() {
             try {
-                FileOutputStream fos = new FileOutputStream("PRINT.txt");
+                OutputStream fos = GaBIEn.getOutFile("PRINT.txt");
                 PrintStream ps = new PrintStream(fos);
                 ps.print(currentObj.toStringLong(""));
                 fos.close();

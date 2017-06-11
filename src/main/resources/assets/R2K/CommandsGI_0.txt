@@ -14,7 +14,6 @@ C digitCount 5
 
 0: >> insert point
 d A placeholder that allows for insertion.
-T Test This is a test string to override the Insert Point's description message.
 p _ string
 L
 

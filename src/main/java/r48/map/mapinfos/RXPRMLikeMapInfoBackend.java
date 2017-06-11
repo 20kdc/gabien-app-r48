@@ -4,6 +4,7 @@
  */
 package r48.map.mapinfos;
 
+import gabien.ui.IConsumer;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -17,7 +18,7 @@ import java.util.Set;
  * Created on 02/06/17.
  */
 public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
-    public Runnable modHandler;
+    public IConsumer<SchemaPath> modHandler;
     public RubyIO mapInfos = AppMain.objectDB.getObject("MapInfos");
 
     public static String sNameFromInt(int key) {
@@ -33,7 +34,7 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     }
 
     @Override
-    public void registerModificationHandler(Runnable onMapInfoChange) {
+    public void registerModificationHandler(IConsumer<SchemaPath> onMapInfoChange) {
         modHandler = onMapInfoChange;
         AppMain.objectDB.registerModificationHandler(mapInfos, onMapInfoChange);
     }
@@ -110,15 +111,20 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     @Override
     public int createNewMap(int k) {
         RubyIO mi = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
-        int targetOrder = getLastOrder() + 1;
-        mi.getInstVarBySymbol("@order").fixnumVal = targetOrder;
+        int targetOrder = getLastOrder();
+        int l = getMapOfOrder(targetOrder);
+        if (l == -1)
+            l = 0;
+        mi.getInstVarBySymbol("@parent_id").fixnumVal = l;
+        mi.getInstVarBySymbol("@order").fixnumVal = targetOrder + 1;
         mapInfos.hashVal.put(new RubyIO().setFX(k), mi);
         return targetOrder;
     }
 
     @Override
     public void complete() {
-        AppMain.objectDB.objectRootModified(mapInfos);
-        modHandler.run();
+        SchemaPath fakePath = new SchemaPath(AppMain.schemas.getSDBEntry("File.MapInfos"), mapInfos, null);
+        AppMain.objectDB.objectRootModified(mapInfos, fakePath);
+        modHandler.accept(fakePath);
     }
 }

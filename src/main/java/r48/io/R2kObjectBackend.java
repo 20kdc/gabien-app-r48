@@ -4,15 +4,13 @@
  */
 package r48.io;
 
+import gabien.GaBIEn;
 import r48.RubyIO;
 import r48.io.r2k.files.DatabaseIO;
 import r48.io.r2k.files.MapIO;
 import r48.io.r2k.files.MapTreeIO;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * A beginning?
@@ -69,21 +67,27 @@ public class R2kObjectBackend implements IObjectBackend {
         // Note the write occurs before the F.O.S is created for safety
         if (filename.endsWith(".lmu")) {
             MapIO.writeLmu(baos, object);
-            FileOutputStream fos = new FileOutputStream(root + filename);
+            OutputStream fos = GaBIEn.getOutFile(root + filename);
+            if (fos == null)
+                throw new IOException("Unable to open a file.");
             baos.writeTo(fos);
             fos.close();
             return;
         }
         if (filename.endsWith(".lmt")) {
             MapTreeIO.writeLmt(baos, object);
-            FileOutputStream fos = new FileOutputStream(root + filename);
+            OutputStream fos = GaBIEn.getOutFile(root + filename);
+            if (fos == null)
+                throw new IOException("Unable to open a file.");
             baos.writeTo(fos);
             fos.close();
             return;
         }
         if (filename.endsWith(".ldb")) {
             DatabaseIO.writeLdb(baos, object);
-            FileOutputStream fos = new FileOutputStream(root + filename);
+            OutputStream fos = GaBIEn.getOutFile(root + filename);
+            if (fos == null)
+                throw new IOException("Unable to open a file.");
             baos.writeTo(fos);
             fos.close();
             return;

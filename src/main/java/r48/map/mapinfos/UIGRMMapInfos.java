@@ -10,8 +10,10 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.UIMapViewContainer;
+import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 import gabien.ui.UIScrollLayout;
+import r48.ui.UINSVertLayout;
 import r48.ui.UITextPrompt;
 
 import java.util.Comparator;
@@ -32,9 +34,9 @@ public class UIGRMMapInfos extends UIPanel {
     private int selectedOrder = 0;
     private boolean deleteConfirmation = false;
     private boolean enableOrderHoleDebug = false;
-    private Runnable onMapInfoChange = new Runnable() {
+    private IConsumer<SchemaPath> onMapInfoChange = new IConsumer<SchemaPath>() {
         @Override
-        public void run() {
+        public void accept(SchemaPath sp) {
             rebuildList();
         }
     };
@@ -205,10 +207,11 @@ public class UIGRMMapInfos extends UIPanel {
         uiSVL.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, TXDB.get("<Insert New Map>"), new Runnable() {
             @Override
             public void run() {
-                windowMakerGetter.get().accept(new UITextPrompt(TXDB.get("Map ID?"), new IConsumer<String>() {
+                final UINumberBox num = new UINumberBox(FontSizes.textDialogFieldTextHeight);
+                UIAppendButton prompt = new UIAppendButton(TXDB.get("Confirm"), num, new Runnable() {
                     @Override
-                    public void accept(String s) {
-                        int i = Integer.parseInt(s);
+                    public void run() {
+                        int i = num.number;
                         if (operators.getHashBID(i) != null) {
                             AppMain.launchDialog(TXDB.get("That ID is already in use."));
                             return;
@@ -218,7 +221,22 @@ public class UIGRMMapInfos extends UIPanel {
                         mapLoader.accept(i);
                         rebuildList();
                     }
-                }));
+                }, FontSizes.textDialogFieldTextHeight);
+                UINSVertLayout dialog = new UINSVertLayout(prompt, new UITextButton(FontSizes.textDialogFieldTextHeight, TXDB.get("Find unused ID."), new Runnable() {
+                    @Override
+                    public void run() {
+                        int i = 1;
+                        while (operators.getHashBID(i) != null)
+                            i++;
+                        num.number = i;
+                    }
+                })) {
+                    @Override
+                    public String toString() {
+                        return TXDB.get("Map ID?");
+                    }
+                };
+                windowMakerGetter.get().accept(dialog);
             }
         }));
         uiSVL.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, TXDB.get("<Test Sequence Consistency>"), new Runnable() {

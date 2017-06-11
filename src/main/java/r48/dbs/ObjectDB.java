@@ -5,6 +5,7 @@
 
 package r48.dbs;
 
+import gabien.ui.IConsumer;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.io.IObjectBackend;
@@ -34,7 +35,7 @@ public class ObjectDB {
     //  this locks the object into memory for as long as it's modified.
     public HashSet<RubyIO> modifiedObjects = new HashSet<RubyIO>();
     public HashSet<RubyIO> newlyCreatedObjects = new HashSet<RubyIO>();
-    public WeakHashMap<RubyIO, LinkedList<Runnable>> objectListenersMap = new WeakHashMap<RubyIO, LinkedList<Runnable>>();
+    public WeakHashMap<RubyIO, LinkedList<IConsumer<SchemaPath>>> objectListenersMap = new WeakHashMap<RubyIO, LinkedList<IConsumer<SchemaPath>>>();
 
     public String getIdByObject(RubyIO obj) {
         return reverseObjectMap.get(obj);
@@ -123,10 +124,10 @@ public class ObjectDB {
         return false;
     }
 
-    private LinkedList<Runnable> getOrCreateModificationHandlers(RubyIO p) {
-        LinkedList<Runnable> notifyObjectModified = objectListenersMap.get(p);
+    private LinkedList<IConsumer<SchemaPath>> getOrCreateModificationHandlers(RubyIO p) {
+        LinkedList<IConsumer<SchemaPath>> notifyObjectModified = objectListenersMap.get(p);
         if (notifyObjectModified == null) {
-            notifyObjectModified = new LinkedList<Runnable>();
+            notifyObjectModified = new LinkedList<IConsumer<SchemaPath>>();
             objectListenersMap.put(p, notifyObjectModified);
         }
         return notifyObjectModified;
@@ -135,29 +136,34 @@ public class ObjectDB {
     // Note that these are run at the end of frame,
     //  because there appears to be a performance issue with these being spammed over and over again. Oops.
 
-    public void registerModificationHandler(RubyIO root, Runnable handler) {
+    public void registerModificationHandler(RubyIO root, IConsumer<SchemaPath> handler) {
         getOrCreateModificationHandlers(root).add(handler);
     }
 
-    public void deregisterModificationHandler(RubyIO root, Runnable handler) {
+    public void deregisterModificationHandler(RubyIO root, IConsumer<SchemaPath> handler) {
         getOrCreateModificationHandlers(root).remove(handler);
     }
 
-    public void objectRootModified(RubyIO p) {
+    public void objectRootModified(RubyIO p, final SchemaPath path) {
         // Is this available in ObjectDB?
         // If not, it's probably a default value that got modified,
         //  and the required root modification message will come later.
         if (!reverseObjectMap.containsKey(p))
             return;
         modifiedObjects.add(p);
-        LinkedList<Runnable> notifyObjectModified = objectListenersMap.get(p);
+        LinkedList<IConsumer<SchemaPath>> notifyObjectModified = objectListenersMap.get(p);
         if (notifyObjectModified != null)
-            for (Runnable r : new LinkedList<Runnable>(notifyObjectModified))
-                AppMain.pendingRunnables.add(r);
+            for (final IConsumer<SchemaPath> r : new LinkedList<IConsumer<SchemaPath>>(notifyObjectModified))
+                AppMain.pendingRunnables.add(new Runnable() {
+                    @Override
+                    public void run() {
+                        r.accept(path);
+                    }
+                });
     }
 
     public int countModificationListeners(RubyIO p) {
-        LinkedList<Runnable> notifyObjectModified = objectListenersMap.get(p);
+        LinkedList<IConsumer<SchemaPath>> notifyObjectModified = objectListenersMap.get(p);
         if (notifyObjectModified != null)
             return notifyObjectModified.size();
         return 0;

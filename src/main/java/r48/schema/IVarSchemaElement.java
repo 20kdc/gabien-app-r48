@@ -18,6 +18,7 @@ import r48.ui.UIAppendButton;
  */
 public class IVarSchemaElement extends SchemaElement {
     public String iVar;
+    public String alias;
     public SchemaElement subElem;
     public boolean optional = false;
 
@@ -26,13 +27,14 @@ public class IVarSchemaElement extends SchemaElement {
 
     public IVarSchemaElement(String iv, SchemaElement sub, boolean opt) {
         iVar = iv;
+        alias = iv;
         subElem = sub;
         optional = opt;
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UILabel uil = new UILabel(iVar + " ", FontSizes.schemaFieldTextHeight);
+        final UILabel uil = new UILabel(alias + " ", FontSizes.schemaFieldTextHeight);
         if (fieldWidthOverride) {
             uil.setBounds(new Rect(0, 0, fieldWidth, uil.getBounds().height));
             fieldWidthOverride = false;
@@ -51,7 +53,7 @@ public class IVarSchemaElement extends SchemaElement {
                 }
             });
         } else {
-            e2 = subElem.buildHoldingEditor(tgo, launcher, path.otherIndex("." + iVar));
+            e2 = subElem.buildHoldingEditor(tgo, launcher, path.otherIndex(alias));
             if (optional)
                 e2 = new UIAppendButton("-", e2, new Runnable() {
                     @Override
@@ -80,7 +82,7 @@ public class IVarSchemaElement extends SchemaElement {
     }
 
     public int getDefaultFieldWidth() {
-        return UILabel.getRecommendedSize(iVar + " ", FontSizes.schemaFieldTextHeight).width;
+        return UILabel.getRecommendedSize(alias + " ", FontSizes.schemaFieldTextHeight).width;
     }
 
     public void setFieldWidthOverride(int w) {
@@ -100,7 +102,7 @@ public class IVarSchemaElement extends SchemaElement {
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (target.iVars.containsKey(iVar)) {
             RubyIO r = target.iVars.get(iVar);
-            subElem.modifyVal(r, path, setDefault);
+            subElem.modifyVal(r, path.otherIndex(alias), setDefault);
         } else {
             if (!optional)
                 createIVar(target, path, true);
@@ -110,7 +112,7 @@ public class IVarSchemaElement extends SchemaElement {
     private void createIVar(RubyIO target, SchemaPath targetPath, boolean mv) {
         RubyIO r = new RubyIO();
         // being created, so create from scratch no matter what.
-        subElem.modifyVal(r, targetPath.otherIndex(iVar), mv);
+        subElem.modifyVal(r, targetPath.otherIndex(alias), mv);
         target.iVars.put(iVar, r);
         targetPath.changeOccurred(mv);
     }

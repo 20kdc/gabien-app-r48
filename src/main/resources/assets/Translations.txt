@@ -1,0 +1,8 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ The list of translations. "English" is the original language R48 was written for, so it doesn't have a file.
+
+l English
+l Test

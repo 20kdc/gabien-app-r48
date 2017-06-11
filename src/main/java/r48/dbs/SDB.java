@@ -5,6 +5,7 @@
 
 package r48.dbs;
 
+import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import r48.AppMain;
@@ -90,6 +91,9 @@ public class SDB {
             HashMap<Integer, SchemaElement> commandBufferSchemas = new HashMap<Integer, SchemaElement>();
 
             String language = "";
+            // As with CMDB, but it only affects iVars and array variables.
+            // For subwindows, however, will have to resort to preprocessing directives.
+            IConsumer<String> lastNamable;
 
             boolean languageDisabled() {
                 if (language.equals(""))
@@ -146,7 +150,7 @@ public class SDB {
                         }
                         if (text.equals("optIV")) {
                             String a = args[point++];
-                            return new IVarSchemaElement(a, get(), true);
+                            return namableIVar(new IVarSchemaElement(a, get(), true));
                         }
 
                         if (text.equals("array")) {
@@ -238,13 +242,13 @@ public class SDB {
                             String a = text.substring(2);
                             String b = args[point++];
                             String o = args[point++];
-                            return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), o);
+                            return namableAESE(new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), o));
                         }
                         if (text.startsWith("]")) {
                             // yay for consistency!
                             String a = text.substring(1);
                             String b = args[point++];
-                            return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), null);
+                            return namableAESE(new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), null));
                         }
                         // --
 
@@ -342,7 +346,11 @@ public class SDB {
                 if (c == 'C')
                     if (args.length > 0)
                         if (args[0].equals("lang")) {
-                            language = args[1];
+                            if (args.length == 2) {
+                                language = args[1];
+                            } else {
+                                language = "";
+                            }
                             return;
                         }
                 // Everything else...
@@ -359,7 +367,7 @@ public class SDB {
                     workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                     setSDBEntry(args[0], workingObj);
                 } else if (c == '@') {
-                    workingObj.aggregate.add(new IVarSchemaElement("@" + args[0], handleChain(args, 1), false));
+                    workingObj.aggregate.add(namableIVar(new IVarSchemaElement("@" + args[0], handleChain(args, 1), false)));
                 } else if (c == '+') {
                     workingObj.aggregate.add(handleChain(args, 0));
                 } else if (c == '>') {
@@ -373,7 +381,7 @@ public class SDB {
                             defVal = k;
                         options.put(k, args[i + 1]);
                     }
-                    EnumSchemaElement e = new EnumSchemaElement(options, defVal, "Integer");
+                    EnumSchemaElement e = new EnumSchemaElement(options, defVal, TXDB.get("Integer"));
                     setSDBEntry(args[0], e);
                 } else if (c == 's') {
                     // Symbols
@@ -406,7 +414,7 @@ public class SDB {
                         }
                     });
                 } else if (c == ']') {
-                    workingObj.aggregate.add(new ArrayElementSchemaElement(Integer.parseInt(args[0]), args[1], handleChain(args, 2), null));
+                    workingObj.aggregate.add(namableAESE(new ArrayElementSchemaElement(Integer.parseInt(args[0]), args[1], handleChain(args, 2), null)));
                 } else if (c == 'i') {
                     readFile(args[0]);
                 } else if (c == 'D') {
@@ -506,11 +514,34 @@ public class SDB {
                             }
                         });
                     }
+                    if (args[0].equals("langNameAI")) {
+
+                    }
                 } else if (c != ' ') {
                     for (String arg : args)
                         System.err.print(arg + " ");
                     System.err.println("(The command " + c + " in the SDB is not supported.)");
                 }
+            }
+
+            private SchemaElement namableIVar(final IVarSchemaElement iVarSchemaElement) {
+                lastNamable = new IConsumer<String>() {
+                    @Override
+                    public void accept(String s) {
+                        iVarSchemaElement.alias = s;
+                    }
+                };
+                return iVarSchemaElement;
+            }
+
+            private SchemaElement namableAESE(final ArrayElementSchemaElement arrayElementSchemaElement) {
+                lastNamable = new IConsumer<String>() {
+                    @Override
+                    public void accept(String s) {
+                        arrayElementSchemaElement.name = s;
+                    }
+                };
+                return arrayElementSchemaElement;
             }
         });
     }

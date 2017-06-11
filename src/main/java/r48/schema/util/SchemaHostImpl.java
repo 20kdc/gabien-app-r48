@@ -82,9 +82,9 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
         }
     }, FontSizes.schemaPathTextHeight);
 
-    private Runnable nudgeRunnable = new Runnable() {
+    private IConsumer<SchemaPath> nudgeRunnable = new IConsumer<SchemaPath>() {
         @Override
-        public void run() {
+        public void accept(SchemaPath sp) {
             nudged = true;
         }
     };

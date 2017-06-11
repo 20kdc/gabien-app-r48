@@ -17,6 +17,7 @@ import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.drawlayers.PassabilityMapViewDrawLayer;
+import r48.schema.util.SchemaPath;
 
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -55,9 +56,9 @@ public class UIMapView extends UIElement implements IWindowElement {
     // Managed using finalize for now.
     private IOsbDriver offscreenBuf;
 
-    private Runnable listener = new Runnable() {
+    private IConsumer<SchemaPath> listener = new IConsumer<SchemaPath>() {
         @Override
-        public void run() {
+        public void accept(SchemaPath sp) {
             // Not an incredibly high-cost operation, thankfully,
             //  since it'll have to run on any edits.
             mapTable = new RubyTable(map.getInstVarBySymbol("@data").userVal);
@@ -74,7 +75,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         mapId = mapN;
         map = AppMain.objectDB.getObject(mapN, "RPG::Map");
         AppMain.objectDB.registerModificationHandler(map, listener);
-        listener.run();
+        listener.accept(null);
 
         // begin!
         reinitLayerVis();
@@ -282,7 +283,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     // Used by tools, after they're done doing whatever.
     // Basically a convenience method.
     public void passModificationNotification() {
-        AppMain.objectDB.objectRootModified(map);
+        AppMain.objectDB.objectRootModified(map, new SchemaPath(AppMain.schemas.getSDBEntry("RPG::Map"), map, null));
     }
 
     @Override
