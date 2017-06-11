@@ -62,7 +62,7 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
                         if (j == mouseYT)
                             if (callbacks != null)
                                 tidx = callbacks.shouldDrawAtCursor(tidx, tileLayer, currentLayer);
-                    AppMain.stuffRenderer.tileRenderer.drawTile(tileLayer, tidx, px, py, igd, eTileSize);
+                    tr.drawTile(tileLayer, tidx, px, py, igd, eTileSize);
                 }
             }
         }

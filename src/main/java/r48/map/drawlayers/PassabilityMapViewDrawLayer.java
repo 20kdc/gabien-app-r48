@@ -20,8 +20,10 @@ import java.util.Random;
  */
 public class PassabilityMapViewDrawLayer implements IMapViewDrawLayer {
     public final IPassabilitySource src;
-    public PassabilityMapViewDrawLayer(IPassabilitySource ips) {
+    public final int tileSize;
+    public PassabilityMapViewDrawLayer(IPassabilitySource ips, int ts) {
         src = ips;
+        tileSize = ts;
     }
 
     @Override
@@ -31,7 +33,6 @@ public class PassabilityMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
-        int tileSize = AppMain.stuffRenderer.tileRenderer.getTileSize();
         if (eTileSize != tileSize)
             return;
         for (int i = camTX; i < camTR; i++) {
@@ -45,14 +46,17 @@ public class PassabilityMapViewDrawLayer implements IMapViewDrawLayer {
                     continue;
                 // Don't actually bother to draw green.
                 // This gives a much better view of what the "boundaries" are without clutter.
+
+                int tsH = tileSize - 8;
+                int tsQ = (tileSize / 2) - 4;
                 if ((flags & 0x01) == 0)
-                    igd.blitImage(16, 0, 8, 8, px + 4, py + 8, AppMain.layerTabs);
+                    igd.blitImage(16, 0, 8, 8, px + tsQ, py + tsH, AppMain.layerTabs);
                 if ((flags & 0x02) == 0)
-                    igd.blitImage(8, 0, 8, 8, px + 8, py + 4, AppMain.layerTabs);
+                    igd.blitImage(8, 0, 8, 8, px + tsH, py + tsQ, AppMain.layerTabs);
                 if ((flags & 0x04) == 0)
-                    igd.blitImage(24, 0, 8, 8, px, py + 4, AppMain.layerTabs);
+                    igd.blitImage(24, 0, 8, 8, px, py + tsQ, AppMain.layerTabs);
                 if ((flags & 0x08) == 0)
-                    igd.blitImage(0, 0, 8, 8, px + 4, py, AppMain.layerTabs);
+                    igd.blitImage(0, 0, 8, 8, px + tsQ, py, AppMain.layerTabs);
             }
         }
     }

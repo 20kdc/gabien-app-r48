@@ -47,9 +47,9 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
     private void setupView() {
         allElements.clear();
         int layer = map.currentLayer;
-        tileMaps = AppMain.stuffRenderer.tileRenderer.createATUIPlanes(map);
-        tabPane = new UITabPane(AppMain.stuffRenderer.tileRenderer.getPlaneNames(layer), tileMaps, FontSizes.tilesTabTextHeight);
-        atBases = AppMain.stuffRenderer.tileRenderer.indicateATs();
+        tileMaps = map.renderer.tileRenderer.createATUIPlanes(map);
+        tabPane = new UITabPane(map.renderer.tileRenderer.getPlaneNames(layer), tileMaps, FontSizes.tilesTabTextHeight);
+        atBases = map.renderer.tileRenderer.indicateATs();
 
         // Begin subtool bar...
 

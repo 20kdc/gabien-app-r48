@@ -5,6 +5,7 @@
 
 package r48.io;
 
+import gabien.GaBIEn;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.io.ika.BM8I;
@@ -34,9 +35,14 @@ public class IkaObjectBackend implements IObjectBackend {
             bm.data = new int[160 * 120];
             bm.palette = new int[256];
             try {
-                InputStream inp = new FileInputStream(root + "Pbm/Map1.pbm");
-                bm.loadBitmap(inp);
-                inp.close();
+                InputStream inp = GaBIEn.getFile(root + "Pbm/Map1.pbm");
+                if (inp != null) {
+                    bm.loadBitmap(inp);
+                    inp.close();
+                } else {
+                    // This should be covered by the schema defaults.
+                    return null;
+                }
             } catch (IOException ioe) {
                 // Oh well
                 ioe.printStackTrace();
@@ -123,7 +129,9 @@ public class IkaObjectBackend implements IObjectBackend {
                 int b = rt2.getTiletype(i, 0, 3) & 0xFF;
                 bm8.palette[i] = (a << 24) | (r << 16) | (g << 8) | b;
             }
-            OutputStream fio = new FileOutputStream(root + "Pbm/Map1.pbm");
+            OutputStream fio = GaBIEn.getOutFile(root + "Pbm/Map1.pbm");
+            if (fio == null)
+                throw new IOException("Unable to open Map1 for writing.");
             bm8.saveBitmap(fio);
             fio.close();
 

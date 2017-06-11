@@ -126,7 +126,10 @@ public class R48ObjectBackend implements IObjectBackend {
     @Override
     public RubyIO loadObjectFromFile(String filename) {
         try {
-            DataInputStream dis = new DataInputStream(GaBIEn.getFile(prefix + filename + postfix));
+            InputStream inp = GaBIEn.getFile(prefix + filename + postfix);
+            if (inp == null)
+                return null;
+            DataInputStream dis = new DataInputStream(inp);
             // Marshal v4.8
             if (dis.readUnsignedByte() != 0x04)
                 throw new IOException("mgk[0]!=0x04");
@@ -145,7 +148,10 @@ public class R48ObjectBackend implements IObjectBackend {
 
     @Override
     public void saveObjectToFile(String filename, RubyIO object) throws IOException {
-        DataOutputStream dis = new DataOutputStream(GaBIEn.getOutFile(prefix + filename + postfix));
+        OutputStream oup = GaBIEn.getOutFile(prefix + filename + postfix);
+        if (oup == null)
+            throw new IOException("Unable to open file!");
+        DataOutputStream dis = new DataOutputStream(oup);
         // Marshal v4.8
         dis.write(new byte[] {4, 8});
         LinkedList<RubyIO> objCache = new LinkedList<RubyIO>();

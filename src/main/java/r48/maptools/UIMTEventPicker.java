@@ -79,7 +79,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
                         @Override
                         public void run() {
                             // In practice I have seen that this should always go away after selection.
-                            showEvent(evK.fixnumVal, mapView.map, evI);
+                            showEvent(evK.fixnumVal, mapView, evI);
                             AppMain.nextMapTool = null;
                         }
                     });
@@ -103,7 +103,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
         svl.panels.add(new UITextButton(FontSizes.eventPickerEntryTextHeight, TXDB.get("+ Add Event"), new Runnable() {
             @Override
             public void run() {
-                int unusedIndex = AppMain.stuffRenderer.eventRenderer.eventIdBase();
+                int unusedIndex = mapView.renderer.eventRenderer.eventIdBase();
                 RubyIO evtHash = mapView.map.getInstVarBySymbol("@events");
                 while (evtHash.getHashVal(new RubyIO().setFX(unusedIndex)) != null)
                     unusedIndex++;
@@ -121,7 +121,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
                 newEvent.getInstVarBySymbol("@y").fixnumVal = y;
                 evtHash.hashVal.put(k, newEvent);
                 mapView.passModificationNotification();
-                showEvent(unusedIndex, mapView.map, newEvent);
+                showEvent(unusedIndex, mapView, newEvent);
             }
         }));
         svl.runLayout();
@@ -137,7 +137,10 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
         return FormatSyntax.formatExtended(TXDB.get("Ev.Pick #[#A total#]"), new RubyIO[] {new RubyIO().setFX(eventCache.size())});
     }
 
-    public static void showEvent(long fixnumVal, RubyIO map, RubyIO event) {
-        AppMain.launchNonRootSchema(map, "RPG::Map", new RubyIO().setFX(fixnumVal), event, "RPG::Event", "E" + fixnumVal);
+    public static void showEvent(long fixnumVal, UIMapView map, RubyIO event) {
+        AppMain.launchNonRootSchema(map.map, "RPG::Map", new RubyIO().setFX(fixnumVal), event, "RPG::Event", "E" + fixnumVal, map);
+    }
+    public static void showEventDivorced(long fixnumVal, RubyIO map, RubyIO event) {
+        AppMain.launchNonRootSchema(map, "RPG::Map", new RubyIO().setFX(fixnumVal), event, "RPG::Event", "E" + fixnumVal, null);
     }
 }

@@ -13,6 +13,7 @@ import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
+import r48.map.UIMapView;
 import r48.ui.UIAppendButton;
 import gabien.ui.UIScrollLayout;
 
@@ -24,7 +25,8 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     public SchemaPath innerElem;
     public UIElement innerElemEditor;
 
-    public StuffRenderer stuffRenderer = AppMain.stuffRenderer;
+    // Can be null - if not, the renderer is accessible.
+    private final UIMapView contextView;
 
     public UILabel pathLabel = new UILabel("", FontSizes.schemaPathTextHeight);
     public UIAppendButton toolbarP = new UIAppendButton(TXDB.get(".."), pathLabel, new Runnable() {
@@ -76,7 +78,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     public UIAppendButton toolbarC = new UIAppendButton(TXDB.get("C"), toolbarI, new Runnable() {
         @Override
         public void run() {
-            SchemaHostImpl next = new SchemaHostImpl(hostWindows);
+            SchemaHostImpl next = new SchemaHostImpl(hostWindows, contextView);
             next.switchObject(innerElem);
             hostWindows.accept(next);
         }
@@ -93,8 +95,9 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     public boolean stayClosed = false;
     private boolean nudged = false;
 
-    public SchemaHostImpl(IConsumer<UIElement> rootElem) {
+    public SchemaHostImpl(IConsumer<UIElement> rootElem, UIMapView rendererSource) {
         hostWindows = rootElem;
+        contextView = rendererSource;
         setBounds(new Rect(0, 0, 320, 240));
     }
 
@@ -150,7 +153,9 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
 
     @Override
     public StuffRenderer getContextRenderer() {
-        return stuffRenderer;
+        if (contextView != null)
+            return contextView.renderer;
+        return AppMain.stuffRendererIndependent;
     }
 
     @Override

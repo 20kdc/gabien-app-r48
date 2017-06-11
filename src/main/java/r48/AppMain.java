@@ -13,6 +13,7 @@ import r48.io.IkaObjectBackend;
 import r48.io.R2kObjectBackend;
 import r48.io.R48ObjectBackend;
 import r48.map.StuffRenderer;
+import r48.map.UIMapView;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
@@ -75,7 +76,8 @@ public class AppMain {
 
     // Backend Services
 
-    public static StuffRenderer stuffRenderer;
+    // The global context-independent stuffRenderer. *Only use outside of maps.*
+    public static StuffRenderer stuffRendererIndependent;
     public static MapSystem system;
     public static IMapContext mapContext;
 
@@ -141,7 +143,7 @@ public class AppMain {
         rootView.setBounds(new Rect(0, 0, 800, 600));
 
         // Set up a default stuffRenderer for things to use.
-        stuffRenderer = system.rendererFromMap(null);
+        stuffRendererIndependent = system.rendererFromMap(null);
 
         rebuildInnerUI(gamepak, rootView, uiTicker);
 
@@ -235,16 +237,16 @@ public class AppMain {
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
-    public static ISchemaHost launchSchema(String s, RubyIO rio) {
+    public static ISchemaHost launchSchema(String s, RubyIO rio, UIMapView context) {
         // Responsible for keeping listeners in place so nothing breaks.
-        SchemaHostImpl watcher = new SchemaHostImpl(windowMaker);
+        SchemaHostImpl watcher = new SchemaHostImpl(windowMaker, context);
         watcher.switchObject(new SchemaPath(schemas.getSDBEntry(s), rio, watcher));
         return watcher;
     }
 
-    public static ISchemaHost launchNonRootSchema(RubyIO root, String rootSchema, RubyIO arrayIndex, RubyIO element, String elementSchema, String indexText) {
+    public static ISchemaHost launchNonRootSchema(RubyIO root, String rootSchema, RubyIO arrayIndex, RubyIO element, String elementSchema, String indexText, UIMapView context) {
         // produce a valid (and false) parent chain, that handles all required guarantees.
-        ISchemaHost shi = launchSchema(rootSchema, root);
+        ISchemaHost shi = launchSchema(rootSchema, root, context);
         SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(rootSchema), root, shi);
         sp = sp.arrayHashIndex(arrayIndex, indexText);
         shi.switchObject(sp.newWindow(AppMain.schemas.getSDBEntry(elementSchema), element, shi));
@@ -321,7 +323,7 @@ public class AppMain {
         objectDB = null;
         autoTiles = new ATDB[0];
         schemas = null;
-        stuffRenderer = null;
+        stuffRendererIndependent = null;
         system = null;
         if (mapContext != null)
             mapContext.freeOsbResources();

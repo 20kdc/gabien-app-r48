@@ -73,14 +73,14 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             // layer 1 upper
             // layer 2 upper
             layers[0] = new PanoramaMapViewDrawLayer(img);
-            layers[1] = new R2kTileMapViewDrawLayer(tbl, 0, false, tileset); // TSBelow
-            layers[2] = new R2kTileMapViewDrawLayer(tbl, 1, false, tileset); // ...
-            layers[3] = new EventMapViewDrawLayer(0, events, eventRenderer);
-            layers[4] = new EventMapViewDrawLayer(1, events, eventRenderer); // Player/Same
-            layers[5] = new R2kTileMapViewDrawLayer(tbl, 0, true, tileset);
-            layers[6] = new R2kTileMapViewDrawLayer(tbl, 1, true, tileset);
-            layers[7] = new EventMapViewDrawLayer(2, events, eventRenderer);
-            layers[8] = new PassabilityMapViewDrawLayer(new R2kPassabilitySource(tbl, tileset));
+            layers[1] = new R2kTileMapViewDrawLayer(tbl, tileRenderer, 0, false, tileset); // TSBelow
+            layers[2] = new R2kTileMapViewDrawLayer(tbl, tileRenderer, 1, false, tileset); // ...
+            layers[3] = new EventMapViewDrawLayer(0, events, eventRenderer, 16);
+            layers[4] = new EventMapViewDrawLayer(1, events, eventRenderer, 16); // Player/Same
+            layers[5] = new R2kTileMapViewDrawLayer(tbl, tileRenderer, 0, true, tileset);
+            layers[6] = new R2kTileMapViewDrawLayer(tbl, tileRenderer, 1, true, tileset);
+            layers[7] = new EventMapViewDrawLayer(2, events, eventRenderer, 16);
+            layers[8] = new PassabilityMapViewDrawLayer(new R2kPassabilitySource(tbl, tileset), 16);
         }
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
     }

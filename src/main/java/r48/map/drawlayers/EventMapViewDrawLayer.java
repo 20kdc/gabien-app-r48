@@ -23,10 +23,12 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
     public RubyIO eventList;
     public int layer;
     public IEventGraphicRenderer iegr;
-    public EventMapViewDrawLayer(int layer2, RubyIO eventL, IEventGraphicRenderer e) {
+    public int tileSize;
+    public EventMapViewDrawLayer(int layer2, RubyIO eventL, IEventGraphicRenderer e, int ts) {
         eventList = eventL;
         layer = layer2;
         iegr = e;
+        tileSize = ts;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
-        if (eTileSize != AppMain.stuffRenderer.tileRenderer.getTileSize())
+        if (eTileSize != tileSize)
             return;
         // Event Enable
         // Having it here is more efficient than having it as a tool overlay,
@@ -55,7 +57,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
             }
         });
         for (RubyIO evI : ev) {
-            if (AppMain.stuffRenderer.eventRenderer.determineEventLayer(evI) != layer)
+            if (iegr.determineEventLayer(evI) != layer)
                 continue;
             int x = (int) evI.getInstVarBySymbol("@x").fixnumVal;
             int y = (int) evI.getInstVarBySymbol("@y").fixnumVal;
@@ -69,9 +71,9 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
                 continue;
             int px = (x * eTileSize) - camX;
             int py = (y * eTileSize) - camY;
-            RubyIO g = AppMain.stuffRenderer.eventRenderer.extractEventGraphic(evI);
+            RubyIO g = iegr.extractEventGraphic(evI);
             if (g != null)
-                AppMain.stuffRenderer.eventRenderer.drawEventGraphic(g, px, py, igd);
+                iegr.drawEventGraphic(g, px, py, igd);
         }
     }
 }

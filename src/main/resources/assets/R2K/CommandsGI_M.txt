@@ -74,7 +74,7 @@ p _ string
 p innType2 int_boolean
 p price int
 p hasInnerCode int_boolean
-C commandIndentConditionalIB 4
+C commandIndentConditionalIB 3
 
 20730: ... Stay:
 d Begins the code for when the player chooses to stay at the Inn.

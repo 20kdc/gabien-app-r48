@@ -62,12 +62,13 @@ public class UIMapView extends UIElement implements IWindowElement {
             // Not an incredibly high-cost operation, thankfully,
             //  since it'll have to run on any edits.
             mapTable = new RubyTable(map.getInstVarBySymbol("@data").userVal);
-            AppMain.stuffRenderer = AppMain.system.rendererFromMap(map);
+            renderer = AppMain.system.rendererFromMap(map);
             reinitLayerVis();
             scheduler.forceNextUpdate = true;
         }
     };
     public boolean[] layerVis;
+    public StuffRenderer renderer;
 
     public UIMapView(String mapN, int i, int i1) {
         setBounds(new Rect(0, 0, i, i1));
@@ -80,8 +81,8 @@ public class UIMapView extends UIElement implements IWindowElement {
         // begin!
         reinitLayerVis();
 
-        AppMain.stuffRenderer = AppMain.system.rendererFromMap(map);
-        tileSize = AppMain.stuffRenderer.tileRenderer.getTileSize();
+        renderer = AppMain.system.rendererFromMap(map);
+        tileSize = renderer.tileRenderer.getTileSize();
 
         camX = -i / (2 * internalScaling);
         camY = -i1 / (2 * internalScaling);
@@ -94,13 +95,13 @@ public class UIMapView extends UIElement implements IWindowElement {
         }
     }
 
-    private void reinitLayerVis() {
+    public void reinitLayerVis() {
         if (layerVis != null)
-            if (layerVis.length == AppMain.stuffRenderer.layers.length)
+            if (layerVis.length == renderer.layers.length)
                 return;
-        layerVis = new boolean[AppMain.stuffRenderer.layers.length];
+        layerVis = new boolean[renderer.layers.length];
         for (int j = 0; j < layerVis.length; j++)
-            layerVis[j] = !(AppMain.stuffRenderer.layers[j] instanceof PassabilityMapViewDrawLayer);
+            layerVis[j] = !(renderer.layers[j] instanceof PassabilityMapViewDrawLayer);
     }
 
     @Override
@@ -123,7 +124,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         char[] visConfig = new char[layerVis.length];
         for (int i = 0; i < layerVis.length; i++)
             visConfig[i] = layerVis[i] ? 'T' : 'F';
-        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + eTileSize + "_" + debug + "_" + AppMain.stuffRenderer.tileRenderer.getFrame() + "_" + AppMain.stuffRenderer.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + AppMain.nextMapTool + "_" + internalScaling;
+        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + eTileSize + "_" + debug + "_" + renderer.tileRenderer.getFrame() + "_" + renderer.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + AppMain.nextMapTool + "_" + internalScaling;
         if (scheduler.needsUpdate(config)) {
             boolean remakeBuf = true;
             if (offscreenBuf != null)
@@ -155,7 +156,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     public void render(int mouseXT, int mouseYT, int eTileSize, int currentLayer, boolean debug, IGrDriver igd) {
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);
-        IMapViewDrawLayer[] layers = AppMain.stuffRenderer.layers;
+        IMapViewDrawLayer[] layers = renderer.layers;
         int camTR = UIElement.sensibleCellDiv((int) (camX + igd.getWidth()), eTileSize) + 1;
         int camTB = UIElement.sensibleCellDiv((int) (camY + igd.getHeight()), eTileSize) + 1;
         int camTX = UIElement.sensibleCellDiv((int) camX, eTileSize);

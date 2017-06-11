@@ -69,14 +69,14 @@ public class BasicToolset implements IToolset {
                                     public void accept(String s) {
                                         final RubyIO rio = AppMain.objectDB.getObject(s);
                                         if (AppMain.schemas.hasSDBEntry("File." + s)) {
-                                            AppMain.launchSchema("File." + s, rio);
+                                            AppMain.launchSchema("File." + s, rio, null);
                                             return;
                                         }
                                         if (rio != null) {
                                             if (rio.type == 'o') {
                                                 if (rio.symVal != null) {
                                                     if (AppMain.schemas.hasSDBEntry(rio.symVal)) {
-                                                        AppMain.launchSchema(rio.symVal, rio);
+                                                        AppMain.launchSchema(rio.symVal, rio, null);
                                                         return;
                                                     }
                                                 }
@@ -84,7 +84,7 @@ public class BasicToolset implements IToolset {
                                             windowMaker.get().accept(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                                 @Override
                                                 public void accept(String s) {
-                                                    AppMain.launchSchema(s, rio);
+                                                    AppMain.launchSchema(s, rio, null);
                                                 }
                                             }));
                                         } else {
@@ -100,7 +100,7 @@ public class BasicToolset implements IToolset {
                                 windowMaker.get().accept(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
-                                        AppMain.launchSchema(s, SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry(s), new RubyIO().setFX(0)));
+                                        AppMain.launchSchema(s, SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry(s), new RubyIO().setFX(0)), null);
                                     }
                                 }));
                             }
@@ -193,7 +193,7 @@ public class BasicToolset implements IToolset {
             r.add(new Runnable() {
                 @Override
                 public void run() {
-                    AppMain.launchSchema("File." + s2, AppMain.objectDB.getObject(s2));
+                    AppMain.launchSchema("File." + s2, AppMain.objectDB.getObject(s2), null);
                 }
             });
         return new UIPopupMenu(s.toArray(new String[0]), r.toArray(new Runnable[0]), FontSizes.menuTextHeight, false);

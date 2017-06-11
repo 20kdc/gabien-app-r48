@@ -81,7 +81,7 @@ public class RMToolsToolset implements IToolset {
                                                 continue;
                                             for (RubyIO cmd : page.getInstVarBySymbol("@list").arrVal) {
                                                 if (cmd.getInstVarBySymbol("@code").fixnumVal == i) {
-                                                    UIMTEventPicker.showEvent(event.getKey().fixnumVal, rmd.map, event.getValue());
+                                                    UIMTEventPicker.showEventDivorced(event.getKey().fixnumVal, rmd.map, event.getValue());
                                                     return;
                                                 }
                                             }
@@ -137,7 +137,7 @@ public class RMToolsToolset implements IToolset {
                                     for (RubyIO cmd : page.getInstVarBySymbol("@list").arrVal) {
                                         if (!commandsEvent.knownCommands.containsKey((int) cmd.getInstVarBySymbol("@code").fixnumVal)) {
                                             System.out.println(cmd.getInstVarBySymbol("@code").fixnumVal);
-                                            UIMTEventPicker.showEvent(event.getKey().fixnumVal, rmd.map, event.getValue());
+                                            UIMTEventPicker.showEventDivorced(event.getKey().fixnumVal, rmd.map, event.getValue());
                                             return;
                                         }
                                     }

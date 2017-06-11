@@ -13,6 +13,7 @@ import r48.RubyTable;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
+import r48.map.tiles.ITileRenderer;
 
 /**
  * Created on 09/06/17.
@@ -22,7 +23,9 @@ public class R2kTileMapViewDrawLayer implements IMapViewDrawLayer {
     public boolean upper;
     public int layer;
     public RubyIO tileset;
-    public R2kTileMapViewDrawLayer(RubyTable tbl, int targLayer, boolean targUpper, RubyIO ts) {
+    public ITileRenderer tileRenderer;
+    public R2kTileMapViewDrawLayer(RubyTable tbl, ITileRenderer tr, int targLayer, boolean targUpper, RubyIO ts) {
+        tileRenderer = tr;
         targetTable = tbl;
         upper = targUpper;
         layer = targLayer;
@@ -69,7 +72,7 @@ public class R2kTileMapViewDrawLayer implements IMapViewDrawLayer {
                     // Wall only acts as implicit upper for L0.
                     boolean r = (val & ((layer == 0) ? 0x30 : 0x10)) != 0;
                     if (r == upper)
-                        AppMain.stuffRenderer.tileRenderer.drawTile(layer, tidx, px, py, igd, eTileSize);
+                        tileRenderer.drawTile(layer, tidx, px, py, igd, eTileSize);
                 }
             }
         }

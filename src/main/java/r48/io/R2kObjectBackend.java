@@ -27,7 +27,9 @@ public class R2kObjectBackend implements IObjectBackend {
     public RubyIO loadObjectFromFile(String filename) {
         if (filename.endsWith(".lmu")) {
             try {
-                FileInputStream fis = new FileInputStream(root + filename);
+                InputStream fis = GaBIEn.getFile(root + filename);
+                if (fis == null)
+                    return null;
                 RubyIO r = MapIO.readLmu(fis);
                 fis.close();
                 return r;
@@ -38,7 +40,9 @@ public class R2kObjectBackend implements IObjectBackend {
         }
         if (filename.endsWith(".lmt")) {
             try {
-                FileInputStream fis = new FileInputStream(root + filename);
+                InputStream fis = GaBIEn.getFile(root + filename);
+                if (fis == null)
+                    return null;
                 RubyIO r = MapTreeIO.readLmt(fis);
                 fis.close();
                 return r;
@@ -49,7 +53,9 @@ public class R2kObjectBackend implements IObjectBackend {
         }
         if (filename.endsWith(".ldb")) {
             try {
-                FileInputStream fis = new FileInputStream(root + filename);
+                InputStream fis = GaBIEn.getFile(root + filename);
+                if (fis == null)
+                    return null;
                 RubyIO r = DatabaseIO.readLdb(fis);
                 fis.close();
                 return r;

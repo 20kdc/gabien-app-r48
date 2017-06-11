@@ -45,10 +45,10 @@ public class StuffRenderer {
             panoImg = iil.getImage(vxaPano, true);
         layers[0] = new PanoramaMapViewDrawLayer(panoImg);
         RubyIO events = map.getInstVarBySymbol("@events");
-        layers[1] = new EventMapViewDrawLayer(-1, events, igr);
+        layers[1] = new EventMapViewDrawLayer(-1, events, igr, itr.getTileSize());
         for (int i = 0; i < rt.planeCount; i++) {
             layers[(i * 2) + 2] = new TileMapViewDrawLayer(rt, tlOrder[i], itr);
-            layers[(i * 2) + 3] = new EventMapViewDrawLayer(i, events, igr);
+            layers[(i * 2) + 3] = new EventMapViewDrawLayer(i, events, igr, itr.getTileSize());
         }
         return layers;
     }

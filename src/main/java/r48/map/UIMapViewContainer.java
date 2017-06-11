@@ -165,7 +165,7 @@ public class UIMapViewContainer extends UIPanel {
             }).togglable();
             tools.add(button);
         }
-        if (AppMain.stuffRenderer.tileRenderer instanceof VXATileRenderer) {
+        if (view.renderer.tileRenderer instanceof VXATileRenderer) {
             final int thisButton = tools.size();
             tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Shadow/Region"), new Runnable() {
                 @Override
@@ -193,9 +193,9 @@ public class UIMapViewContainer extends UIPanel {
                     clearTools.accept(thisButton);
                     UIScrollLayout svl = new UIScrollLayout(true);
                     int h = 0;
-                    for (int i = 0; i < AppMain.stuffRenderer.layers.length; i++) {
+                    for (int i = 0; i < view.renderer.layers.length; i++) {
                         final int fi = i;
-                        UITextButton layerVis = new UITextButton(FontSizes.mapLayertabTextHeight, AppMain.stuffRenderer.layers[i].getName(), new Runnable() {
+                        UITextButton layerVis = new UITextButton(FontSizes.mapLayertabTextHeight, view.renderer.layers[i].getName(), new Runnable() {
                             @Override
                             public void run() {
                                 view.layerVis[fi] = !view.layerVis[fi];
@@ -224,16 +224,16 @@ public class UIMapViewContainer extends UIPanel {
         tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Reload Panorama/TS"), new Runnable() {
             @Override
             public void run() {
-                AppMain.stuffRenderer.imageLoader.flushCache();
-                if (view != null)
-                    AppMain.stuffRenderer = AppMain.system.rendererFromMap(view.map);
-                AppMain.stuffRenderer.imageLoader.flushCache();
+                AppMain.stuffRendererIndependent.imageLoader.flushCache();
+                view.renderer = AppMain.system.rendererFromMap(view.map);
+                view.renderer.imageLoader.flushCache();
+                view.reinitLayerVis();
             }
         }));
         tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Properties"), new Runnable() {
             @Override
             public void run() {
-                AppMain.launchSchema("RPG::Map", view.map);
+                AppMain.launchSchema("RPG::Map", view.map, view);
             }
         }));
 

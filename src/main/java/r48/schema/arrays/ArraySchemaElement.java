@@ -84,7 +84,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 }
                 // Deal with 1-indexing and such
                 for (int i = 0; i < 4; i++) {
-                    if (elementPermissionsLevel(target.arrVal.length + i, new RubyIO().setNull()) != 0) {
+                    if (elementPermissionsLevel(target.arrVal.length + i, target) != 0) {
                         addAdditionButton(target.arrVal.length + i, path.arrayHashIndex(new RubyIO().setFX(target.arrVal.length + i), "[" + (target.arrVal.length + i) + "]"));
                         break;
                     }
