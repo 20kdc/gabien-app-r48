@@ -9,6 +9,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -25,7 +26,7 @@ import java.io.*;
 public class StringBlobSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        return new UIHHalfsplit(1, 2, new UITextButton(FontSizes.blobTextHeight, "Export/Edit", new Runnable() {
+        return new UIHHalfsplit(1, 2, new UITextButton(FontSizes.blobTextHeight, TXDB.get("Export/Edit"), new Runnable() {
             @Override
             public void run() {
                 try {
@@ -45,7 +46,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                     ioe.printStackTrace();
                 }
             }
-        }), new UITextButton(FontSizes.blobTextHeight, "Import", new Runnable() {
+        }), new UITextButton(FontSizes.blobTextHeight, TXDB.get("Import"), new Runnable() {
             @Override
             public void run() {
                 try {

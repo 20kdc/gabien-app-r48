@@ -7,6 +7,7 @@ package r48.ui;
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import r48.AppMain;
+import r48.dbs.TXDB;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -58,7 +59,7 @@ public class Coco {
                 AppMain.launchDialog(bb);
                 br.close();
             } else {
-                AppMain.launchDialog("Not an actual release. You have likely compiled this yourself. If not, check where you got this from.\n-<twenty>kdc, fooling automated replacement tools since 2017");
+                AppMain.launchDialog(TXDB.get("Not an actual release - you have likely compiled this yourself."));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

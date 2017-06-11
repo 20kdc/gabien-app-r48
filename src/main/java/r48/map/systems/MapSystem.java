@@ -10,6 +10,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UIPopupMenu;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
 import r48.map.UIMapViewContainer;
 
@@ -24,7 +25,7 @@ import r48.map.UIMapViewContainer;
 public abstract class MapSystem {
     public UIElement createMapExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final UIMapViewContainer mapBox) {
         return new UIPopupMenu(new String[] {
-                "Load Map"
+                TXDB.get("Load Map")
         }, new Runnable[] {
                 new Runnable() {
                     @Override

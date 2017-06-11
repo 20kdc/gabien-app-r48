@@ -6,6 +6,9 @@ package r48.map.drawlayers;
 
 import gabien.IGrDriver;
 import r48.AppMain;
+import r48.RubyIO;
+import r48.dbs.RPGCommand;
+import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.pass.IPassabilitySource;
 
@@ -23,7 +26,7 @@ public class PassabilityMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return "Passability Overlay";
+        return TXDB.get("Passability Overlay");
     }
 
     @Override

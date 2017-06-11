@@ -9,7 +9,9 @@ import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
+import r48.dbs.FormatSyntax;
 import r48.dbs.RPGCommand;
+import r48.dbs.TXDB;
 import r48.schema.IVarSchemaElement;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
@@ -61,7 +63,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
         final SchemaPath path = path2.tagSEMonitor(target, this);
         final UIPanel uip = new UIPanel() {
-            UIElement chooseCode = new UIAppendButton(" ? ", new UITextButton(FontSizes.schemaButtonTextHeight, database.buildCodename(target, true), new Runnable() {
+            UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(FontSizes.schemaButtonTextHeight, database.buildCodename(target, true), new Runnable() {
                 @Override
                 public void run() {
                     HashMap<String, Integer> rvi = new HashMap<String, Integer>();
@@ -101,7 +103,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                             // On the other hand, the elements will be obliterated anyway before reaching the user.
                             launcher.switchObject(path2);
                         }
-                    }, rvi, order, "Code"), path), target, launcher));
+                    }, rvi, order, TXDB.get("Code")), path), target, launcher));
                 }
             }), new Runnable() {
                 @Override
@@ -109,15 +111,15 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     int code = (int) target.getInstVarBySymbol("@code").fixnumVal;
                     RPGCommand rc = database.knownCommands.get(code);
                     String title = code + " : " + rc.formatName(null, null);
-                    String result = "This command isn't known by the schema's CMDB.";
+                    String result = TXDB.get("This command isn't known by the schema's CMDB.");
                     if (rc != null) {
                         if (rc.description == null) {
-                            result = "This command is known, but no description exists.";
+                            result = TXDB.get("This command is known, but no description exists.");
                         } else {
                             result = rc.description;
                         }
                     } else {
-                        title += "unknown";
+                        title += TXDB.get("Unknown Command");
                     }
                     UIHelpSystem uis = new UIHelpSystem();
                     uis.page.add(new UIHelpSystem.HelpElement('.', title.split(" ")));
@@ -146,7 +148,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     }
                     for (int i = 0; i < param.arrVal.length; i++) {
                         if (param.arrVal.length <= i) {
-                            uiSVL.panels.add(new UILabel("WARNING: Missing E" + i + ".", FontSizes.schemaFieldTextHeight));
+                            uiSVL.panels.add(new UILabel(FormatSyntax.formatExtended(TXDB.get("WARNING: Missing param. #A"), new RubyIO[] {new RubyIO().setFX(i)}), FontSizes.schemaFieldTextHeight));
                             continue;
                         }
                         String paramName = rc.getParameterName(param, i);

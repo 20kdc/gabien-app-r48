@@ -115,7 +115,7 @@ X teleport_player_2k3_escapehatch
 d Enters or leaves an airship occupying the same space as the player, or a ship/boat directly in front of the player. It is extremely picky about this.
 p _ string
 
-11060: @@Camera Pan{F: {B=linearMoveCamera=[direction]C #D tiles speed #E|#B}{B=linearFocusOnPlayer= speed #E} ({F=0=no }wait)| Control}
+11060: @@Camera Pan{F: {B=2=[direction]C #D tiles speed #E|#B}{B=3= speed #E} ({F=0=no }wait)| Control}
 d Controls where the 'camera' is looking.
 p _ string
  Unfortunately for humanity, Pv-Syntax is powerful enough to represent this, which means I'm obligated to do it rather than just X-trap.

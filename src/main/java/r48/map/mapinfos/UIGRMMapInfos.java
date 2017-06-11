@@ -8,6 +8,7 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.map.UIMapViewContainer;
 import r48.ui.UIAppendButton;
 import gabien.ui.UIScrollLayout;
@@ -113,7 +114,7 @@ public class UIGRMMapInfos extends UIPanel {
             if (selectedOrder != order) {
                 if (selectedOrder != 0)
                     if (!operators.wouldRelocatingInOrderFail(selectedOrder, order + 1)) {
-                        elm = new UIAppendButton(">>", elm, new Runnable() {
+                        elm = new UIAppendButton(TXDB.get(">>"), elm, new Runnable() {
                             @Override
                             public void run() {
                                 selectedOrder = operators.relocateInOrder(selectedOrder, order + 1);
@@ -124,7 +125,7 @@ public class UIGRMMapInfos extends UIPanel {
             } else {
                 if (parent != 0) {
                     // This used to be two operations, but, eh.
-                    elm = new UIAppendButton("Move Out ", elm, new Runnable() {
+                    elm = new UIAppendButton(TXDB.get("Move Out "), elm, new Runnable() {
                         @Override
                         public void run() {
                             final int parentLastOrder = MapInfoReparentUtil.findChildrenLastOrder(parent, operators);
@@ -168,14 +169,14 @@ public class UIGRMMapInfos extends UIPanel {
                         }
                     }, FontSizes.mapInfosTextHeight);
                 }
-                elm = new UIAppendButton("Edit Info. ", elm, new Runnable() {
+                elm = new UIAppendButton(TXDB.get("Edit Info. "), elm, new Runnable() {
                     @Override
                     public void run() {
                         operators.triggerEditInfoOf(k);
                     }
                 }, FontSizes.mapInfosTextHeight);
                 if (deleteConfirmation) {
-                    elm = new UIAppendButton("Delete!", elm, new Runnable() {
+                    elm = new UIAppendButton(TXDB.get("Delete!"), elm, new Runnable() {
                         @Override
                         public void run() {
                             // Orphan/move up child nodes first
@@ -189,7 +190,7 @@ public class UIGRMMapInfos extends UIPanel {
                         }
                     }, FontSizes.mapInfosTextHeight);
                 } else {
-                    elm = new UIAppendButton("Delete?", elm, new Runnable() {
+                    elm = new UIAppendButton(TXDB.get("Delete?"), elm, new Runnable() {
                         @Override
                         public void run() {
                             deleteConfirmation = true;
@@ -201,15 +202,15 @@ public class UIGRMMapInfos extends UIPanel {
             uiSVL.panels.add(elm);
         }
 
-        uiSVL.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, "<Insert New Map>", new Runnable() {
+        uiSVL.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, TXDB.get("<Insert New Map>"), new Runnable() {
             @Override
             public void run() {
-                windowMakerGetter.get().accept(new UITextPrompt("Map ID?", new IConsumer<String>() {
+                windowMakerGetter.get().accept(new UITextPrompt(TXDB.get("Map ID?"), new IConsumer<String>() {
                     @Override
                     public void accept(String s) {
                         int i = Integer.parseInt(s);
                         if (operators.getHashBID(i) != null) {
-                            AppMain.launchDialog("That ID is already in use.");
+                            AppMain.launchDialog(TXDB.get("That ID is already in use."));
                             return;
                         }
                         selectedOrder = operators.createNewMap(i);
@@ -220,7 +221,7 @@ public class UIGRMMapInfos extends UIPanel {
                 }));
             }
         }));
-        uiSVL.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, "<Test Sequence Consistency>", new Runnable() {
+        uiSVL.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, TXDB.get("<Test Sequence Consistency>"), new Runnable() {
             @Override
             public void run() {
                 LinkedList<Integer> orders = new LinkedList<Integer>();
@@ -237,16 +238,16 @@ public class UIGRMMapInfos extends UIPanel {
                         return 0;
                     }
                 });
-                String message = "The MapInfos database is sequential.";
+                String message = TXDB.get("The MapInfos database is sequential.");
                 int lastOrder = 0;
                 for (int i : orders) {
                     if (i != (lastOrder + 1)) {
                         if (i <= lastOrder) {
-                            message = "The entries in the MapInfos database contain duplicates. (@" + i + ")";
+                            message = TXDB.get("The entries in the MapInfos database contain duplicates.") + " (@" + i + ")";
                             enableOrderHoleDebug = true;
                             break;
                         } else {
-                            message = "The entries in the MapInfos database contain holes. (@" + i + ")";
+                            message = TXDB.get("The entries in the MapInfos database contain holes.") + " (@" + i + ")";
                             enableOrderHoleDebug = true;
                             break;
                         }

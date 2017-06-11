@@ -8,9 +8,7 @@ package r48;
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.*;
-import r48.dbs.ATDB;
-import r48.dbs.ObjectDB;
-import r48.dbs.SDB;
+import r48.dbs.*;
 import r48.io.IkaObjectBackend;
 import r48.io.R2kObjectBackend;
 import r48.io.R48ObjectBackend;
@@ -153,7 +151,9 @@ public class AppMain {
         return new IConsumer<Double>() {
             @Override
             public void accept(Double deltaTime) {
-                uiStatusLabel.Text = objectDB.modifiedObjects.size() + " modified.";
+                // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
+
+                uiStatusLabel.Text = FormatSyntax.formatExtended(TXDB.get("#A modified."), new RubyIO[] {new RubyIO().setFX(objectDB.modifiedObjects.size())});
                 if (mapContext != null) {
                     String mapId = mapContext.getCurrentMap();
                     RubyIO map = null;
@@ -222,15 +222,15 @@ public class AppMain {
     }
 
     private static void rebuildInnerUI(final String gamepak, final UIWindowView rootView, final IConsumer<UIElement> uiTicker) {
-        uiStatusLabel = new UILabel("Loading...", FontSizes.statusBarTextHeight);
+        uiStatusLabel = new UILabel(TXDB.get("Loading..."), FontSizes.statusBarTextHeight);
 
-        UIAppendButton workspace = new UIAppendButton("Save All Modified Files", uiStatusLabel, new Runnable() {
+        UIAppendButton workspace = new UIAppendButton(TXDB.get("Save All Modified Files"), uiStatusLabel, new Runnable() {
             @Override
             public void run() {
                 objectDB.ensureAllSaved();
             }
         }, FontSizes.statusBarTextHeight);
-        workspace = new UIAppendButton(" Help", workspace, new Runnable() {
+        workspace = new UIAppendButton(TXDB.get("Help"), workspace, new Runnable() {
             @Override
             public void run() {
                 startHelp(0);
@@ -263,7 +263,7 @@ public class AppMain {
         UIScrollLayout svl = new UIScrollLayout(true) {
             @Override
             public String toString() {
-                return "Information";
+                return TXDB.get("Information");
             }
         };
         svl.panels.add(uhs);
@@ -277,7 +277,7 @@ public class AppMain {
 
     public static void startHelp(Integer integer) {
         // exception to the rule
-        UILabel uil = new UILabel("Blank Help Window", FontSizes.helpPathHeight);
+        UILabel uil = new UILabel("", FontSizes.helpPathHeight);
         final UIHelpSystem uis = new UIHelpSystem();
         final HelpSystemController hsc = new HelpSystemController(uil, null, uis);
         uis.onLinkClick = new IConsumer<Integer>() {
@@ -289,7 +289,7 @@ public class AppMain {
         final UIScrollLayout uus = new UIScrollLayout(true);
         uus.panels.add(uis);
         uus.setBounds(new Rect(0, 0, 560, 240));
-        final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton("Index", uil, new Runnable() {
+        final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(TXDB.get("Index"), uil, new Runnable() {
             @Override
             public void run() {
                 hsc.loadPage(0);
@@ -297,7 +297,7 @@ public class AppMain {
         }, FontSizes.helpPathHeight), uus) {
             @Override
             public String toString() {
-                return "Help";
+                return TXDB.get("Help Window");
             }
         };
         hsc.onLoad = new Runnable() {
@@ -311,5 +311,27 @@ public class AppMain {
         };
         hsc.loadPage(integer);
         windowMaker.accept(topbar);
+    }
+
+    public static void shutdown() {
+        windowMaker = null;
+        pendingRunnables.clear();
+        uiStatusLabel = null;
+        nextMapTool = null;
+        rootPath = null;
+        dataPath = "";
+        dataExt = "";
+        odbBackend = "<you forgot to select a backend>";
+        sysBackend = "null";
+        objectDB = null;
+        autoTiles = new ATDB[0];
+        schemas = null;
+        stuffRenderer = null;
+        system = null;
+        if (mapContext != null)
+            mapContext.freeOsbResources();
+        mapContext = null;
+        theClipboard = null;
+        GaBIEn.hintFlushAllTheCaches();
     }
 }

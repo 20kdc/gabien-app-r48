@@ -10,6 +10,7 @@ package r48.toolsets;
 
 import gabien.ui.*;
 import r48.*;
+import r48.dbs.TXDB;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIFontSizeConfigurator;
@@ -35,9 +36,8 @@ public class BasicToolset implements IToolset {
     @Override
     public String[] tabNames() {
         return new String[] {
-                "Database Objects",
-                "System Tools",
-                " "
+                TXDB.get("Database Objects"),
+                TXDB.get("System Tools")
         };
     }
 
@@ -46,23 +46,23 @@ public class BasicToolset implements IToolset {
         return new UIElement[] {
                 makeFileList(),
                 new UIPopupMenu(new String[] {
-                        "Edit Object",
-                        "New Object via Schema, ODB'AnonObject'",
-                        "Autocorrect Object By Name And Schema",
-                        "Inspect Object (no Schema needed)",
-                        "Set Internal Windows (good)",
-                        "Set External Windows (bad)",
-                        "Use normal in-built fonts",
-                        "Use system fonts for everything",
-                        "Configure font sizes",
-                        "Rebuild UI",
-                        "Test Fonts",
-                        "Show ODB Memstat"
+                        TXDB.get("Edit Object"),
+                        TXDB.get("New Object via Schema, ODB'AnonObject'"),
+                        TXDB.get("Autocorrect Object By Name And Schema"),
+                        TXDB.get("Inspect Object (no Schema needed)"),
+                        TXDB.get("Set Internal Windows (good)"),
+                        TXDB.get("Set External Windows (bad)"),
+                        TXDB.get("Use normal in-built fonts"),
+                        TXDB.get("Use system fonts for everything"),
+                        TXDB.get("Configure font sizes"),
+                        TXDB.get("Rebuild UI"),
+                        TXDB.get("Test Fonts"),
+                        TXDB.get("Show ODB Memstat")
                 }, new Runnable[] {
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.get().accept(new UITextPrompt("Object Name?", new IConsumer<String>() {
+                                windowMaker.get().accept(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         final RubyIO rio = AppMain.objectDB.getObject(s);
@@ -79,14 +79,14 @@ public class BasicToolset implements IToolset {
                                                     }
                                                 }
                                             }
-                                            windowMaker.get().accept(new UITextPrompt("Schema ID?", new IConsumer<String>() {
+                                            windowMaker.get().accept(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                                 @Override
                                                 public void accept(String s) {
                                                     AppMain.launchSchema(s, rio);
                                                 }
                                             }));
                                         } else {
-                                            AppMain.launchDialog("No file, or schema to create it.");
+                                            AppMain.launchDialog(TXDB.get("No file, or schema to create it."));
                                         }
                                     }
                                 }));
@@ -95,7 +95,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.get().accept(new UITextPrompt("Schema ID?", new IConsumer<String>() {
+                                windowMaker.get().accept(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         AppMain.launchSchema(s, SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry(s), new RubyIO().setFX(0)));
@@ -106,16 +106,16 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.get().accept(new UITextPrompt("Object Name?", new IConsumer<String>() {
+                                windowMaker.get().accept(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         final RubyIO rio = AppMain.objectDB.getObject(s);
-                                        windowMaker.get().accept(new UITextPrompt("Schema ID?", new IConsumer<String>() {
+                                        windowMaker.get().accept(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                             @Override
                                             public void accept(String s) {
                                                 SchemaElement ise = AppMain.schemas.getSDBEntry(s);
                                                 ise.modifyVal(rio, new SchemaPath(ise, rio, null), false);
-                                                AppMain.launchDialog("OK!");
+                                                AppMain.launchDialog(TXDB.get("OK!"));
                                             }
                                         }));
                                     }
@@ -125,7 +125,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.get().accept(new UITextPrompt("Object Name?", new IConsumer<String>() {
+                                windowMaker.get().accept(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         windowMaker.get().accept(new UITest(AppMain.objectDB.getObject(s)));
@@ -167,15 +167,11 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.get().accept(new UITextPrompt("Font Size?", new IConsumer<String>() {
+                                windowMaker.get().accept(new UITextPrompt(TXDB.get("Font Size?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         int fs = Integer.parseInt(s);
-                                        UIScrollLayout svl = new UIScrollLayout(true);
-                                        for (int i = 0; i < 128; i++)
-                                            svl.panels.add(new UITextBox(fs));
-                                        svl.setBounds(new Rect(0, 0, 320, 240));
-                                        windowMaker.get().accept(svl);
+                                        windowMaker.get().accept(new UITextBox(fs));
                                     }
                                 }));
                             }
@@ -186,8 +182,7 @@ public class BasicToolset implements IToolset {
                                 windowMaker.get().accept(new UIObjectDBMonitor());
                             }
                         }
-                }, FontSizes.menuTextHeight, false),
-                new UIPanel()
+                }, FontSizes.menuTextHeight, false)
         };
     }
     private static UIElement makeFileList() {

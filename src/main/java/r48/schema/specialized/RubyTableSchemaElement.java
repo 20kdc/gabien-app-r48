@@ -10,6 +10,7 @@ import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.dbs.TXDB;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
 import r48.schema.util.ISchemaHost;
@@ -104,7 +105,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         UIElement uie = new UIHHalfsplit(1, 2, wNB, hNB);
         uie.setBounds(new Rect(0, 0, 128, uie.getBounds().height));
         uiSVL.panels.add(uie);
-        uiSVL.panels.add(new UITextButton(FontSizes.tableResizeTextHeight, "Resize", new Runnable() {
+        uiSVL.panels.add(new UITextButton(FontSizes.tableResizeTextHeight, TXDB.get("Resize"), new Runnable() {
             @Override
             public void run() {
                 RubyTable r2 = targ.resize(wNB.number, hNB.number, defVals);

@@ -6,6 +6,7 @@
 package r48.schema;
 
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -18,7 +19,7 @@ public class AMAISchemaElement extends OpaqueSchemaElement {
 
     @Override
     public String getMessage() {
-        return "Parent Index.";
+        return TXDB.get("Parent Index.");
     }
 
     @Override

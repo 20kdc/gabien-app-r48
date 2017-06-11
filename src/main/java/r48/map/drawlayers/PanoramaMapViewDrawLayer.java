@@ -7,6 +7,7 @@ package r48.map.drawlayers;
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.ui.UIElement;
+import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 
 /**
@@ -21,7 +22,7 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return "Panorama";
+        return TXDB.get("Panorama");
     }
 
     public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {

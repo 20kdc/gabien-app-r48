@@ -5,6 +5,7 @@
 
 package r48.dbs;
 
+import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import r48.AppMain;
@@ -35,11 +36,18 @@ public class CMDB {
             HashMap<String, SchemaElement> localAliasing = new HashMap<String, SchemaElement>();
             HashMap<Integer, SchemaElement> currentPvH = new HashMap<Integer, SchemaElement>();
             HashMap<Integer, String> currentPvH2 = new HashMap<Integer, String>();
+            IConsumer<String> lastNamable;
 
             @Override
             public void newObj(int objId, String objName) {
                 rc = new RPGCommand();
                 rc.name = objName;
+                lastNamable = new IConsumer<String>() {
+                    @Override
+                    public void accept(String s) {
+                        rc.name = s;
+                    }
+                };
                 knownCommands.put(objId, rc);
                 knownCommandOrder.add(objId);
                 workingCmdId = objId;
@@ -49,12 +57,24 @@ public class CMDB {
             public void execCmd(char c, String[] args) {
                 if (c == 'p') {
                     final String fv = args[0].trim();
+                    final int index = rc.paramName.size();
                     rc.paramName.add(new IFunction<RubyIO, String>() {
                         @Override
                         public String apply(RubyIO rubyIO) {
                             return fv;
                         }
                     });
+                    lastNamable = new IConsumer<String>() {
+                        @Override
+                        public void accept(final String s) {
+                            rc.paramName.set(index, new IFunction<RubyIO, String>() {
+                                @Override
+                                public String apply(RubyIO rubyIO) {
+                                    return s;
+                                }
+                            });
+                        }
+                    };
                     String s = args[1].trim();
                     final SchemaElement se = aliasingAwareSG(s);
                     rc.paramType.add(new IFunction<RubyIO, SchemaElement>() {
@@ -71,7 +91,7 @@ public class CMDB {
                     // Pv-syntax:
                     // P arrayDI defaultName defaultType
                     // v specificVal name type
-                    final String defName = args[1].trim();
+                    final String defName = args[1];
                     final int arrayDI = Integer.parseInt(args[0]);
                     final SchemaElement defaultSE = aliasingAwareSG(args[2]);
                     rc.paramType.add(new IFunction<RubyIO, SchemaElement>() {
@@ -90,32 +110,61 @@ public class CMDB {
                             return defaultSE;
                         }
                     });
-                    rc.paramName.add(new IFunction<RubyIO, String>() {
+
+                    final int index = rc.paramName.size();
+                    rc.paramName.add(null);
+                    lastNamable = new IConsumer<String>() {
                         @Override
-                        public String apply(RubyIO rubyIO) {
-                            if (rubyIO == null)
-                                return defName;
-                            if (rubyIO.arrVal == null)
-                                return defName;
-                            if (rubyIO.arrVal.length <= arrayDI)
-                                return defName;
-                            int p = (int) rubyIO.arrVal[arrayDI].fixnumVal;
-                            String ise = h2.get(p);
-                            if (ise != null)
-                                return ise;
-                            return defName;
+                        public void accept(final String def) {
+                            rc.paramName.set(index, new IFunction<RubyIO, String>() {
+                                @Override
+                                public String apply(RubyIO rubyIO) {
+                                    if (rubyIO == null)
+                                        return def;
+                                    if (rubyIO.arrVal == null)
+                                        return def;
+                                    if (rubyIO.arrVal.length <= arrayDI)
+                                        return def;
+                                    int p = (int) rubyIO.arrVal[arrayDI].fixnumVal;
+                                    String ise = h2.get(p);
+                                    if (ise != null)
+                                        return ise;
+                                    return def;
+                                }
+                            });
                         }
-                    });
+                    };
+                    lastNamable.accept(defName);
                 } else if (c == 'v') {
                     // v specificVal name type
-                    int idx = Integer.parseInt(args[0]);
+                    final int idx = Integer.parseInt(args[0]);
                     currentPvH.put(idx, aliasingAwareSG(args[2]));
                     currentPvH2.put(idx, args[1]);
+                    lastNamable = new IConsumer<String>() {
+                        @Override
+                        public void accept(String s) {
+                            currentPvH2.put(idx, s);
+                        }
+                    };
                 } else if (c == 'd') {
                     String desc = "";
                     for (String s : args)
                         desc += " " + s;
                     rc.description = desc.trim();
+                    lastNamable = new IConsumer<String>() {
+                        @Override
+                        public void accept(String s) {
+                            rc.description = s;
+                        }
+                    };
+                } else if (c == 'T') {
+                    if (args[0].equals(TXDB.getLanguage())) {
+                        String desc = "";
+                        for (int i = 1; i < args.length; i++)
+                            desc += " " + args[i];
+                        desc = desc.trim();
+                        lastNamable.accept(desc);
+                    }
                 } else if (c == 'i') {
                     rc.indentPre = Integer.parseInt(args[0]);
                 } else if (c == 'I') {

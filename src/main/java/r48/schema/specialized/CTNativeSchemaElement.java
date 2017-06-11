@@ -12,6 +12,7 @@ import gabien.ui.UINumberBox;
 import r48.FontSizes;
 import r48.RubyCT;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -33,10 +34,10 @@ public class CTNativeSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
         UIScrollLayout uiSVL = new UIScrollLayout(true);
         RubyCT rct = new RubyCT(target.userVal);
-        addField(uiSVL, "R", 0, rct, path);
-        addField(uiSVL, "G", 4, rct, path);
-        addField(uiSVL, "B", 8, rct, path);
-        addField(uiSVL, "A/L", 12, rct, path);
+        addField(uiSVL, TXDB.get("R"), 0, rct, path);
+        addField(uiSVL, TXDB.get("G"), 4, rct, path);
+        addField(uiSVL, TXDB.get("B"), 8, rct, path);
+        addField(uiSVL, TXDB.get("A/L"), 12, rct, path);
         uiSVL.setBounds(new Rect(0, 0, 128, UINumberBox.getRecommendedSize(FontSizes.schemaFieldTextHeight).height * 4));
         return uiSVL;
     }

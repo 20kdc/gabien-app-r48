@@ -13,6 +13,8 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
+import r48.dbs.FormatSyntax;
+import r48.dbs.TXDB;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.systems.IRMMapSystem;
 import r48.maptools.UIMTEventPicker;
@@ -44,14 +46,14 @@ public class RMToolsToolset implements IToolset {
 
     @Override
     public String[] tabNames() {
-        return new String[] {"Tools"};
+        return new String[] {TXDB.get("Tools")};
     }
 
     @Override
     public UIElement[] generateTabs(final ISupplier<IConsumer<UIElement>> windowMaker) {
         return new UIElement[] {new UIPopupMenu(new String[] {
-                "Locate EventCommand in all Pages",
-                "See If Autocorrect Modifies Anything",
+                TXDB.get("Locate EventCommand in all Pages"),
+                TXDB.get("See If Autocorrect Modifies Anything"),
                 // 3:24 PM, third day of 2017.
                 // This is now a viable option.
                 // 3:37 PM, same day.
@@ -59,15 +61,15 @@ public class RMToolsToolset implements IToolset {
                 // Still need to see to the CommonEvents.
                 // next day, um, these tools aren't really doable post-further-modularization (stickynote)
                 // 5th January 2017. Here we go.
-                "Locate incomplete ECs",
-                "Locate incomplete ECs (CommonEvents)",
-                "Run EC Creation Sanity Check",
-                "MEV/CEV Transcript Dump (no Troop/Item/etc.)",
+                TXDB.get("Locate incomplete ECs"),
+                TXDB.get("Locate incomplete ECs (CommonEvents)"),
+                TXDB.get("Run EC Creation Sanity Check"),
+                TXDB.get("MEV/CEV Transcript Dump (no Troop/Item/etc.)"),
         }, new Runnable[] {
                 new Runnable() {
                     @Override
                     public void run() {
-                        windowMaker.get().accept(new UITextPrompt("Code?", new IConsumer<String>() {
+                        windowMaker.get().accept(new UITextPrompt(TXDB.get("Code?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 int i = Integer.parseInt(s);
@@ -86,7 +88,7 @@ public class RMToolsToolset implements IToolset {
                                         }
                                     }
                                 }
-                                AppMain.launchDialog("nnnope");
+                                AppMain.launchDialog(TXDB.get("Not found."));
                             }
                         }));
                     }
@@ -121,7 +123,7 @@ public class RMToolsToolset implements IToolset {
                             AppMain.objectDB.deregisterModificationHandler(map, modListen);
                             System.out.println(obj + " done.");
                         }
-                        AppMain.launchDialog("nnnope");
+                        AppMain.launchDialog(TXDB.get("Not found."));
                     }
                 },
                 new Runnable() {
@@ -143,7 +145,7 @@ public class RMToolsToolset implements IToolset {
                                 }
                             }
                         }
-                        AppMain.launchDialog("nnnope");
+                        AppMain.launchDialog(TXDB.get("Not found."));
                     }
                 },
                 new Runnable() {
@@ -155,12 +157,12 @@ public class RMToolsToolset implements IToolset {
                                     if (!commandsEvent.knownCommands.containsKey((int) cmd.getInstVarBySymbol("@code").fixnumVal)) {
                                         System.out.println(rio.getInstVarBySymbol("@id").fixnumVal);
                                         System.out.println(cmd.getInstVarBySymbol("@code").fixnumVal);
-                                        AppMain.launchDialog("yup (chk.console)");
+                                        AppMain.launchDialog(TXDB.get("Found an unknown event command - Check the console."));
                                         return;
                                     }
                                 }
                             }
-                        AppMain.launchDialog("nnnope");
+                        AppMain.launchDialog(TXDB.get("Not found."));
                     }
                 },
                 new Runnable() {
@@ -182,7 +184,7 @@ public class RMToolsToolset implements IToolset {
                         PrintStream ps = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "transcript.html"));
                         RMTranscriptDumper dumper = new RMTranscriptDumper(ps);
                         dumper.start();
-                        dumper.startFile("CommonEvents", "Common Events");
+                        dumper.startFile("CommonEvents", TXDB.get("Common Events"));
                         for (RubyIO rio : mapSystem.getAllCommonEvents())
                             dumper.dump(rio.getInstVarBySymbol("@name").decString(), rio.getInstVarBySymbol("@list").arrVal, commandsEvent);
                         dumper.endFile();
@@ -196,7 +198,7 @@ public class RMToolsToolset implements IToolset {
                         Collections.sort(orderedMapInfos);
                         for (int id : orderedMapInfos) {
                             IRMMapSystem.RMMapData rmd = mapMap.get(id);
-                            dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), "Map:\"" + rmd.name + "\"");
+                            dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), FormatSyntax.formatExtended(TXDB.get("Map:#A"), new RubyIO[] {new RubyIO().setString(rmd.name)}));
                             RubyIO map = rmd.map;
                             LinkedList<Integer> orderedEVN = new LinkedList<Integer>();
                             for (RubyIO i : map.getInstVarBySymbol("@events").hashVal.keySet())
@@ -204,12 +206,11 @@ public class RMToolsToolset implements IToolset {
                             Collections.sort(orderedEVN);
                             for (int k : orderedEVN) {
                                 RubyIO event = map.getInstVarBySymbol("@events").getHashVal(new RubyIO().setFX(k));
-                                String evp = "Ev." + k + " (" + event.getInstVarBySymbol("@name").decString() + "), Page ";
                                 int pageId = 1;
                                 for (RubyIO page : event.getInstVarBySymbol("@pages").arrVal) {
                                     if (page.type == '0')
                                         continue; // 0th page on R2k backend.
-                                    dumper.dump(evp + pageId, page.getInstVarBySymbol("@list").arrVal, commandsEvent);
+                                    dumper.dump(FormatSyntax.formatExtended(TXDB.get("Ev.#A #C, page #B"), new RubyIO[] {new RubyIO().setFX(k), new RubyIO().setFX(pageId), event.getInstVarBySymbol("@name")}), page.getInstVarBySymbol("@list").arrVal, commandsEvent);
                                     pageId++;
                                 }
                             }
@@ -220,6 +221,7 @@ public class RMToolsToolset implements IToolset {
 
                         dumper.end();
                         ps.close();
+                        AppMain.launchDialog(TXDB.get("transcript.html was written to the target's folder."));
                     }
                 }
         }, FontSizes.menuTextHeight, false)

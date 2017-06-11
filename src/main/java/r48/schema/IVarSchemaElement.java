@@ -8,6 +8,7 @@ package r48.schema;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -41,7 +42,7 @@ public class IVarSchemaElement extends SchemaElement {
         if (tgo == null) {
             if (!optional)
                 throw new RuntimeException("Error: Made it to IVarSchemaElement.buildHoldingEditor when the actual IVar in question was missing, " + iVar);
-            e2 = new UITextButton(FontSizes.schemaButtonTextHeight, "<Missing - add?>", new Runnable() {
+            e2 = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("<Missing - add?>"), new Runnable() {
                 @Override
                 public void run() {
                     if (!target.iVars.containsKey(iVar)) {

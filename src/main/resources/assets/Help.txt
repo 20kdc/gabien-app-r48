@@ -6,7 +6,7 @@
 
 0: Index
 i HelpImg/0.demo.png
-. Greetings. I, am 20kdc. This is your guide to R48.
+. <NOTE> These helpfiles need a rewrite. Also, currently there aren't any translatability hooks.
 .
 . Firstly, keep in mind that text fields will revert unless you press enter.
 . The same goes for number fields.

@@ -6,6 +6,7 @@
 package r48;
 
 import gabien.ui.IFunction;
+import r48.dbs.TXDB;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.toolsets.MapToolset;
@@ -85,7 +86,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
     private void finalizeVals(HashMap<Integer, String> finalMap) {
         // Default value of 1 because r2k. if this is ever in conflict then start adding a default parameter value for dictionaries.
         // Do proper dictionary unification at the same time.
-        SchemaElement ise = new EnumSchemaElement(finalMap, 1, "ID.");
+        SchemaElement ise = new EnumSchemaElement(finalMap, 1, TXDB.get("ID."));
         AppMain.schemas.setSDBEntry(dict, ise);
     }
 

@@ -14,6 +14,7 @@ C digitCount 5
 
 0: >> insert point
 d A placeholder that allows for insertion.
+T Test This is a test string to override the Insert Point's description message.
 p _ string
 L
 
@@ -80,7 +81,7 @@ p faceFlipped int_boolean
 
  Control Switches follows. Uhoh.
 
-10210: @@Control Switch{E:{B=range=es @#C through @#D| @#C} = #E|es}
+10210: @@Control Switch{E:{B=1=es @#C through @#D| @#C} = #E|es}
 d Control switches in various ways. Single alters one switch. Range alters a group of switches. Indirect alters one switch, numbered by a variable.
 p _ string
 p type control_switches_type

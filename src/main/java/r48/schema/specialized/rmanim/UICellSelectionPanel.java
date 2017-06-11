@@ -11,6 +11,8 @@ import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.dbs.FormatSyntax;
+import r48.dbs.TXDB;
 import r48.ui.UIAppendButton;
 import gabien.ui.UIScrollLayout;
 
@@ -39,7 +41,7 @@ public class UICellSelectionPanel extends UIPanel {
             final int i2 = i;
             addAdditionButton(table, selectionPanel.panels, i2);
             String prefix = cellNumber == i2 ? ">" : " ";
-            UIElement button = new UITextButton(FontSizes.rmaPropertyFontSize, prefix + "Cell " + i2, new Runnable() {
+            UIElement button = new UITextButton(FontSizes.rmaPropertyFontSize, prefix + FormatSyntax.formatExtended(TXDB.get("Cell #A"), new RubyIO[] {new RubyIO().setFX(i)}), new Runnable() {
                 @Override
                 public void run() {
                     cellNumber = i2;
@@ -73,7 +75,7 @@ public class UICellSelectionPanel extends UIPanel {
     }
 
     private void addAdditionButton(final RubyTable table, final LinkedList<UIElement> panels, final int i2) {
-        panels.add(new UITextButton(FontSizes.rmaPropertyFontSize, "<add cell here>", new Runnable() {
+        panels.add(new UITextButton(FontSizes.rmaPropertyFontSize, TXDB.get("<add cell here>"), new Runnable() {
             @Override
             public void run() {
                 // delete cell

@@ -12,4 +12,6 @@ public interface IMapContext {
     // Returns null if none loaded.
     String getCurrentMap();
     void loadMap(String s);
+    // Shuts down internal caching as R48 reverts to the launcher.
+    void freeOsbResources();
 }

@@ -187,6 +187,10 @@ public class RubyIO {
 
     @Override
     public String toString() {
+        // NOTE: The following rules are relied upon by schema names, at least in theory:
+        // 1. "null" means t0.
+        // 2. Any valid number is a number.
+        // 3. T/F are booleans.
         String data = "";
         if (type == 'u')
             return symVal + ";" + userVal.length + "b";
@@ -202,6 +206,8 @@ public class RubyIO {
             return decString() + "f";
         if (type == 'i')
             return Long.toString(fixnumVal);
+        if (type == '0')
+            return "null";
         return ((char) type) + data;
     }
 

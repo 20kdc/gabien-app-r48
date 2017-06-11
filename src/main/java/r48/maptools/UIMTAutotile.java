@@ -11,6 +11,7 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyTable;
+import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.map.tiles.AutoTileTypeField;
@@ -55,7 +56,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         subtool = 0;
         final LinkedList<UITextButton> options = new LinkedList<UITextButton>();
 
-        UITextButton baseTool = new UITextButton(FontSizes.atSubtoolTextHeight, "Tile Pen", new Runnable() {
+        UITextButton baseTool = new UITextButton(FontSizes.atSubtoolTextHeight, TXDB.get("Tile Pen"), new Runnable() {
             @Override
             public void run() {
                 for (UITextButton utb : options)
@@ -67,7 +68,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         options.add(baseTool);
         baseTool.state = true;
 
-        UIAppendButton uab = new UIAppendButton("Rectangle", baseTool, new Runnable() {
+        UIAppendButton uab = new UIAppendButton(TXDB.get("Rectangle"), baseTool, new Runnable() {
             @Override
             public void run() {
                 for (UITextButton utb : options)
@@ -78,7 +79,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         }, FontSizes.atSubtoolTextHeight);
         options.add(uab.button.togglable());
 
-        uab = new UIAppendButton("Fill", uab, new Runnable() {
+        uab = new UIAppendButton(TXDB.get("Fill"), uab, new Runnable() {
             @Override
             public void run() {
                 for (UITextButton utb : options)

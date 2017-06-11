@@ -11,6 +11,7 @@ import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
+import r48.dbs.TXDB;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -54,7 +55,7 @@ public class HashSchemaElement extends SchemaElement {
                     UIHHalfsplit hs = new UIHHalfsplit(1, 4, (new OpaqueSchemaElement() {
                         @Override
                         public String getMessage() {
-                            return "Key ";
+                            return TXDB.get("Key ");
                         }
                     }).buildHoldingEditor(key, launcher, path), valElem.buildHoldingEditor(target.hashVal.get(key), launcher, path.arrayHashIndex(key, "{" + key.toString() + "}")));
                     hs.setBounds(new Rect(0, 0, 100, vertSzF));
@@ -72,7 +73,7 @@ public class HashSchemaElement extends SchemaElement {
                 if (defKeyWorkspace == null)
                     defKeyWorkspace = SchemaPath.createDefaultValue(keyElem, null);
                 UIElement workspace = keyElem.buildHoldingEditor(defKeyWorkspace, launcher, path.otherIndex("(tempWSKey)"));
-                UIHHalfsplit workspaceHS = new UIHHalfsplit(2, 3, workspace, new UITextButton(FontSizes.schemaButtonTextHeight, "Add This Key", new Runnable() {
+                UIHHalfsplit workspaceHS = new UIHHalfsplit(2, 3, workspace, new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Add Key"), new Runnable() {
                     @Override
                     public void run() {
                         if (target.getHashVal(defKeyWorkspace) == null) {

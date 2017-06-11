@@ -10,6 +10,7 @@ import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
+import r48.dbs.TXDB;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -19,7 +20,7 @@ import r48.schema.util.SchemaPath;
 public class OpaqueSchemaElement extends SchemaElement {
 
     public String getMessage() {
-        return "Can't edit:";
+        return TXDB.get("Can't edit:");
     }
 
     @Override

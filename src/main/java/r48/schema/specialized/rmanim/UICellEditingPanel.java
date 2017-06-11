@@ -8,6 +8,7 @@ import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyTable;
+import r48.dbs.TXDB;
 import r48.ui.UIHHalfsplit;
 
 import java.util.Collections;
@@ -30,14 +31,14 @@ public class UICellEditingPanel extends UIPanel {
         root = rmAnimRootPanel;
         cellSelectionPanel = csp;
         String[] properties = new String[] {
-                "cellID",
-                "xPos",
-                "yPos",
-                "scale",
-                "angle",
-                "mirror",
-                "opacity",
-                "blendType"
+                TXDB.get("cellID"),
+                TXDB.get("xPos"),
+                TXDB.get("yPos"),
+                TXDB.get("scale"),
+                TXDB.get("angle"),
+                TXDB.get("mirror"),
+                TXDB.get("opacity"),
+                TXDB.get("blendType")
         };
         // Filled in here
         halfsplits = new UIHHalfsplit[properties.length];

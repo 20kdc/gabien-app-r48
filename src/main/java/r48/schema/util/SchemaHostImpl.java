@@ -11,6 +11,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
+import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
 import r48.ui.UIAppendButton;
 import gabien.ui.UIScrollLayout;
@@ -26,24 +27,24 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     public StuffRenderer stuffRenderer = AppMain.stuffRenderer;
 
     public UILabel pathLabel = new UILabel("", FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarP = new UIAppendButton("..", pathLabel, new Runnable() {
+    public UIAppendButton toolbarP = new UIAppendButton(TXDB.get(".."), pathLabel, new Runnable() {
         @Override
         public void run() {
             if (innerElem.parent != null)
                 switchObject(innerElem.findBack());
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarCp = new UIAppendButton("Cp.", toolbarP, new Runnable() {
+    public UIAppendButton toolbarCp = new UIAppendButton(TXDB.get("Cp."), toolbarP, new Runnable() {
         @Override
         public void run() {
             AppMain.theClipboard = new RubyIO().setDeepClone(innerElem.targetElement);
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarPs = new UIAppendButton("Ps.", toolbarCp, new Runnable() {
+    public UIAppendButton toolbarPs = new UIAppendButton(TXDB.get("Ps."), toolbarCp, new Runnable() {
         @Override
         public void run() {
             if (AppMain.theClipboard == null) {
-                AppMain.launchDialog("nothing in clipboard");
+                AppMain.launchDialog(TXDB.get("Nothing in clipboard."));
             } else {
                 if (RubyIO.rubyTypeEquals(innerElem.targetElement, AppMain.theClipboard)) {
                     innerElem.targetElement.setDeepClone(AppMain.theClipboard);
@@ -52,12 +53,12 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
                     innerElem.changeOccurred(false);
                     switchObject(innerElem);
                 } else {
-                    AppMain.launchDialog("incompatible");
+                    AppMain.launchDialog(TXDB.get("Incompatible clipboard and target."));
                 }
             }
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarS = new UIAppendButton("Save", toolbarPs, new Runnable() {
+    public UIAppendButton toolbarS = new UIAppendButton(TXDB.get("Save"), toolbarPs, new Runnable() {
         @Override
         public void run() {
             SchemaPath root = innerElem.findRoot();
@@ -66,13 +67,13 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
             AppMain.objectDB.ensureSaved(root.hrIndex, root.lastArrayIndex);
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarI = new UIAppendButton("I", toolbarS, new Runnable() {
+    public UIAppendButton toolbarI = new UIAppendButton(TXDB.get("I"), toolbarS, new Runnable() {
         @Override
         public void run() {
             hostWindows.accept(new UITest(innerElem.targetElement));
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarC = new UIAppendButton("C", toolbarI, new Runnable() {
+    public UIAppendButton toolbarC = new UIAppendButton(TXDB.get("C"), toolbarI, new Runnable() {
         @Override
         public void run() {
             SchemaHostImpl next = new SchemaHostImpl(hostWindows);
@@ -160,7 +161,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     @Override
     public String toString() {
         if (innerElem == null)
-            return "loading";
+            return TXDB.get("Loading...");
         String name = innerElem.findRoot().toString();
         if (AppMain.objectDB.getObjectModified(name))
             return name + "*";

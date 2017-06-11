@@ -6,6 +6,7 @@ package r48.map.tiles;
 
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import r48.dbs.TXDB;
 import r48.map.UIMapView;
 import r48.ui.UITileGrid;
 
@@ -33,7 +34,7 @@ public class NullTileRenderer implements ITileRenderer {
     @Override
     public String[] getPlaneNames(int layer) {
         return new String[] {
-                "Tiles Unsupported"
+                TXDB.get("Tiles Unsupported")
         };
     }
 

@@ -14,6 +14,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.dbs.TXDB;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.drawlayers.PassabilityMapViewDrawLayer;
 
@@ -141,9 +142,9 @@ public class UIMapView extends UIElement implements IWindowElement {
                 igd.blitScaledImage(0, 0, camR.width, camR.height, ox, oy, camR.width * internalScaling, camR.height * internalScaling, offscreenBuf);
             }
         }
-        String shortcuts = "Any mouse button: Scroll, Shift-left: Pick tile.";
+        String shortcuts = TXDB.get("Any mouse button: Scroll, Shift-left: Pick tile.");
         if (callbacks != null)
-            shortcuts = "Left mouse button: Use tool, others: Scroll, Shift-left: Pick tile.";
+            shortcuts = TXDB.get("Left mouse button: Use tool, others: Scroll, Shift-left: Pick tile.");
         UILabel.drawLabel(igd, 0, ox + 24, oy + 3, mapId + ";" + mouseXT + ", " + mouseYT + "; " + shortcuts, false, FontSizes.mapPositionTextHeight);
 
         igd.blitImage(52, 32, 16, 16, ox + 4, oy + 4, AppMain.layerTabs);
@@ -289,5 +290,12 @@ public class UIMapView extends UIElement implements IWindowElement {
         super.finalize();
         if (offscreenBuf != null)
             offscreenBuf.shutdown();
+    }
+
+    public void freeOsbResources() {
+        if (offscreenBuf != null) {
+            offscreenBuf.shutdown();
+            offscreenBuf = null;
+        }
     }
 }

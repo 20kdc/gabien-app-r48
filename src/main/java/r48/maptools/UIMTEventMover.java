@@ -12,6 +12,7 @@ import gabien.ui.UIPanel;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 
@@ -26,7 +27,7 @@ public class UIMTEventMover extends UIPanel implements IMapViewCallbacks {
     public UIMTEventMover(RubyIO evI, UIMapView mv) {
         mapView = mv;
         targetEvent = evI;
-        uil = new UILabel("Click to place event", FontSizes.dialogWindowTextHeight);
+        uil = new UILabel(TXDB.get("Click to place event"), FontSizes.dialogWindowTextHeight);
         allElements.add(uil);
         setBounds(new Rect(0, 0, 160, 18));
     }

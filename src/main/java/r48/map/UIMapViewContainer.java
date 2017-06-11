@@ -11,6 +11,7 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.UITest;
+import r48.dbs.TXDB;
 import r48.map.tiles.VXATileRenderer;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTEventPicker;
@@ -166,7 +167,7 @@ public class UIMapViewContainer extends UIPanel {
         }
         if (AppMain.stuffRenderer.tileRenderer instanceof VXATileRenderer) {
             final int thisButton = tools.size();
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Shadow/Region ", new Runnable() {
+            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Shadow/Region"), new Runnable() {
                 @Override
                 public void run() {
                     clearTools.accept(thisButton);
@@ -176,7 +177,7 @@ public class UIMapViewContainer extends UIPanel {
         }
         {
             final int thisButton = tools.size();
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Events ", new Runnable() {
+            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Events"), new Runnable() {
                 @Override
                 public void run() {
                     clearTools.accept(thisButton);
@@ -186,7 +187,7 @@ public class UIMapViewContainer extends UIPanel {
         }
         {
             final int thisButton = tools.size();
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Layer Visibility ", new Runnable() {
+            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Layer Visibility"), new Runnable() {
                 @Override
                 public void run() {
                     clearTools.accept(thisButton);
@@ -212,7 +213,7 @@ public class UIMapViewContainer extends UIPanel {
 
         // Utility buttons
 
-        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Tile From Map ", new Runnable() {
+        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Tile From Map"), new Runnable() {
             @Override
             public void run() {
                 // Select the current tile layer
@@ -220,7 +221,7 @@ public class UIMapViewContainer extends UIPanel {
                 AppMain.nextMapTool = new UIMTPickTile(view);
             }
         }));
-        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Reload Panorama/TS ", new Runnable() {
+        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Reload Panorama/TS"), new Runnable() {
             @Override
             public void run() {
                 AppMain.stuffRenderer.imageLoader.flushCache();
@@ -229,7 +230,7 @@ public class UIMapViewContainer extends UIPanel {
                 AppMain.stuffRenderer.imageLoader.flushCache();
             }
         }));
-        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, " Properties ", new Runnable() {
+        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Properties"), new Runnable() {
             @Override
             public void run() {
                 AppMain.launchSchema("RPG::Map", view.map);

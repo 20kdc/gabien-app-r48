@@ -5,14 +5,14 @@
 package r48.map.drawlayers;
 
 import gabien.IGrDriver;
-import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.dbs.FormatSyntax;
+import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
-import r48.map.tiles.ITileRenderer;
 
 /**
  * Created on 09/06/17.
@@ -31,7 +31,7 @@ public class R2kTileMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return "Tiles L" + layer + " (" + (upper ? "'upper'/'wall' tileset flags" : "general") + ")";
+        return FormatSyntax.formatExtended(TXDB.get("Tile L#A ({B=T='upper'/'wall' tileset flags|general})"), new RubyIO[] {new RubyIO().setFX(layer), new RubyIO().setBool(upper)});
     }
 
     @Override

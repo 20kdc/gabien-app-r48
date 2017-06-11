@@ -19,6 +19,16 @@ public class ArrayUtils {
 
     public static void insertRioElement(RubyIO target, RubyIO rio, int i) {
         RubyIO[] old = target.arrVal;
+        // If i >= old.length, add nulls (uhoh)
+        if (i >= old.length) {
+            RubyIO[] n = new RubyIO[i + 1];
+            for (int j = 0; j < n.length; j++)
+                n[j] = new RubyIO().setNull();
+            System.arraycopy(old, 0, n, 0, old.length);
+            n[i] = rio;
+            target.arrVal = n;
+            return;
+        }
         RubyIO[] newArr = new RubyIO[old.length + 1];
         System.arraycopy(old, 0, newArr, 0, i);
         newArr[i] = rio;

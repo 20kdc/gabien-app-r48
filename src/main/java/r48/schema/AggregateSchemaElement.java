@@ -28,12 +28,7 @@ public class AggregateSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        UIScrollLayout uiSVL = new UIScrollLayout(true) {
-            @Override
-            public String toString() {
-                return "SCHEMA Obj.";
-            }
-        };
+        UIScrollLayout uiSVL = new UIScrollLayout(true);
         // Help IVarSchemaElements along a little
         int maxFW = 1;
         for (SchemaElement ise : aggregate) {

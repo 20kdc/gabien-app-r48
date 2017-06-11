@@ -89,8 +89,18 @@ public class SDB {
             HashMap<Integer, String> commandBufferNames = new HashMap<Integer, String>();
             HashMap<Integer, SchemaElement> commandBufferSchemas = new HashMap<Integer, SchemaElement>();
 
+            String language = "";
+
+            boolean languageDisabled() {
+                if (language.equals(""))
+                    return false;
+                return !language.equals(TXDB.getLanguage());
+            }
+
             @Override
             public void newObj(int objId, String objName) {
+                if (languageDisabled())
+                    return;
                 commandBufferNames.put(objId, objName);
                 workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                 commandBufferSchemas.put(objId, workingObj);
@@ -165,7 +175,7 @@ public class SDB {
                         if (text.equals("flushCommandBuffer")) {
                             // time to flush it!
                             String disambiguationIVar = args[point++];
-                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, 0, "Code.Int."));
+                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, 0, TXDB.get("Code.Int.")));
                             HashMap<Integer, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<Integer, String>();
                             commandBufferSchemas = new HashMap<Integer, SchemaElement>();
@@ -328,6 +338,17 @@ public class SDB {
 
             @Override
             public void execCmd(char c, final String[] args) throws IOException {
+                // Commands which can also act as preprocessor-like controls
+                if (c == 'C')
+                    if (args.length > 0)
+                        if (args[0].equals("lang")) {
+                            language = args[1];
+                            return;
+                        }
+                // Everything else...
+                if (languageDisabled())
+                    return;
+                // ...starts here:
                 if (c == 'a') {
                     if (!schemaDatabase.containsKey(args[0]))
                         throw new RuntimeException("Bad Schema Database: 'a' used to expect item " + args[0] + " that didn't exist.");
@@ -443,6 +464,7 @@ public class SDB {
                         workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                         commandBufferSchemas.put(-1, workingObj);
                     }
+                    // Why did I name the special schemas after song lyrics, again? I don't know.
                     if (args[0].equals("toWinAGameThatHasNoEnd")) {
                         // Really special schema
                         workingObj.aggregate.add(new RMAnimSchemaElement(args[1], args[2], Integer.parseInt(args[3])));
@@ -480,7 +502,7 @@ public class SDB {
                                         break;
                                     parameters.add(res);
                                 }
-                                return RPGCommand.formatNameExtended(textF, rubyIO, parameters.toArray(new RubyIO[0]), null);
+                                return FormatSyntax.formatNameExtended(textF, rubyIO, parameters.toArray(new RubyIO[0]), null);
                             }
                         });
                     }

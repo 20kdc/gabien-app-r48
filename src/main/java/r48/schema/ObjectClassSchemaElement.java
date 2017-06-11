@@ -45,7 +45,7 @@ public class ObjectClassSchemaElement extends SchemaElement {
             for (String s : target.iVars.keySet()) {
                 if (!iVars.contains(s)) {
                     System.out.println("WARNING: iVar " + s + " of " + symbol + " wasn't handled.");
-                    System.out.println("This usually means your schema is incomplete.");
+                    System.out.println("This usually means the schema is incomplete.");
                 }
             }
         }

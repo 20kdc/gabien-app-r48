@@ -53,10 +53,11 @@
 
   The rules of interpretations are:
    By default, the type name is looked up in the "Interp." prefixed name set.
+   Failing this, if it's an object, the "Class." prefixed name set is checked.
    Failing this, the schema is looked up, in case it is an enum.
 
   If the character '@' prefixes the interpretation type, the type name is considered to be the full name routine's ID,
-   and the parameters are given to the new name routine.
+   and all the parameters are given to the new name routine (no parameter is postfixed)
 
   If no interpretation exists for the type given, it fails completely,
    and will result in a no-variables-interpretation (An error in a case where no variables are allowed causes an exception.)
@@ -67,7 +68,7 @@
   An example call treating the *current structure* as a Class.RPG::AudioFile:
    [@Class.RPG::AudioFile]
 
-  Another example call, equally valid
+  Another example call, equally valid, but treating parameter A as the audio file, and running through the typical interpretation mechanism:
    [RPG::AudioFile]A
 
    --- CONDITIONAL BLOCKS ---
@@ -83,12 +84,11 @@
    {A:(with parameter)|(without parameter)}
 
   The second checks if a parameter is the same as another.
-  This can be used for range specification (emulating # in the Original Format):
+  This can be used for range specification (emulating # in the Original Format, but with flexibility):
    {AB:#A|@#A..@#B}
 
-  The third checks if a parameter, using the default interpretation (dumb as that may be), is equal to a literal text string.
-  Note that this is the human-readable text string,
-   which may be a little painful under some circumstances.
+  The third checks if a parameter, *by the fallback in-built RubyIO toString*, is equal to a literal text string.
+  This should only be used for numbers/enums and booleans, really.
   This can be used as a nicer way to output int_booleans...
   {A=1=(enable)|(disable)}
   ... or as a way to handle "invert" options. (Note the inverted order of the text.)
@@ -103,10 +103,15 @@
 
  ----------------------------------
 
+ CMDB's general syntax:
+
  Subcomms:
   '<number>:<name>' defines a command and it's name-routine.
   'p' defines a parameter. The parameter can only be a type name, chaining language is restricted to SDB.
   'd' defines the description of the command. You will be warned for omitting this.
+  'T' defines the last *namable thing* (this means the command, it's description, a parameter, or a P/v disambiguation subtype)'s new name/string,
+       for a given language.
+       (Meanwhile SDB has 'C lang <X>' directives, but that's because SDB does everything via overkill.)
   'P''s format is "disambiguationIndex defaultName defaultType".
   'v' defines a disambiguation "disValue name type".
    P 1 _ int
@@ -130,3 +135,4 @@
   'I' defines exit indent offset
       (ex. Else is l,i-1,I1.)
   'X' defines this as using a custom schema for indent & parameters.
+  'C' is, like with SDB, the gateway for special cases.

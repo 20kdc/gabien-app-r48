@@ -6,6 +6,7 @@ package r48.toolsets;
 
 import r48.RubyIO;
 import r48.dbs.CMDB;
+import r48.dbs.TXDB;
 
 import java.io.PrintStream;
 import java.util.LinkedList;
@@ -27,11 +28,11 @@ public class RMTranscriptDumper {
     public void start() {
         tableOfContents.clear();
         tableOfContentsIID.clear();
-        output.println("<html><head><title>Exported Transcript</title></head><body><a href=\"#toc\">to table of contents</a>");
+        output.println("<html><head><title>" + TXDB.get("Exported Transcript") + "</title></head><body><a href=\"#toc\">" + TXDB.get("To Table Of Contents") + "</a>");
     }
 
     public void end() {
-        output.println("<a name=\"toc\"/><h1>Table Of Contents</h1><ol>");
+        output.println("<a name=\"toc\"/><h1>" + TXDB.get("Table Of Contents") + "</h1><ol>");
         int hIndex = 0;
         for (String s : tableOfContents) {
             if (s != null) {

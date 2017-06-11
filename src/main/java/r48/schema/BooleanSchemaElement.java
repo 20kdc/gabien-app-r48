@@ -9,6 +9,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -24,14 +25,14 @@ public class BooleanSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        final UITextButton utb = new UITextButton(FontSizes.schemaButtonTextHeight, determineTruth(target) ? "True" : "False", null).togglable();
+        final UITextButton utb = new UITextButton(FontSizes.schemaButtonTextHeight, determineTruth(target) ? TXDB.get("True") : TXDB.get("False"), null).togglable();
         utb.state = determineTruth(target);
         utb.OnClick = new Runnable() {
             @Override
             public void run() {
                 modifyValueTruth(target, utb.state);
                 path.changeOccurred(false);
-                utb.Text = utb.state ? "True" : "False";
+                utb.Text = utb.state ? TXDB.get("True") : TXDB.get("False");
             }
         };
         return utb;

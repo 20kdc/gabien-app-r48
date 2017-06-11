@@ -7,6 +7,7 @@ package r48.maptools;
 import gabien.IGrDriver;
 import gabien.ui.*;
 import r48.FontSizes;
+import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.ui.UIHHalfsplit;
@@ -25,7 +26,7 @@ public class UIMTShadowLayer extends UIPanel implements IMapViewCallbacks {
     public UIMTShadowLayer(UIMapView mv) {
         map = mv;
         uiSVL = new UIScrollLayout(true);
-        String[] s = new String[] {"Up-Left", "Up-Right", "Down-Left", "Down-Right"};
+        String[] s = new String[] {TXDB.get("Up-Left"), TXDB.get("Up-Right"), TXDB.get("Down-Left"), TXDB.get("Down-Right")};
         UITextButton[] controlButtons = new UITextButton[4];
         int power = 1;
         for (int i = 0; i < 4; i++) {
@@ -41,7 +42,7 @@ public class UIMTShadowLayer extends UIPanel implements IMapViewCallbacks {
         uiSVL.panels.add(new UIHHalfsplit(1, 2, controlButtons[0], controlButtons[1]));
         uiSVL.panels.add(new UIHHalfsplit(1, 2, controlButtons[2], controlButtons[3]));
         int th = UITextButton.getRecommendedSize("X", FontSizes.tableElementTextHeight).height * 2;
-        uiSVL.panels.add(new UIHHalfsplit(1, 2, new UILabel("Region:", FontSizes.tableElementTextHeight), regionId = new UINumberBox(FontSizes.tableElementTextHeight)));
+        uiSVL.panels.add(new UIHHalfsplit(1, 2, new UILabel(TXDB.get("Region:"), FontSizes.tableElementTextHeight), regionId = new UINumberBox(FontSizes.tableElementTextHeight)));
         th += Math.max(UILabel.getRecommendedSize("", FontSizes.tableElementTextHeight).height, UINumberBox.getRecommendedSize(FontSizes.tableElementTextHeight).height);
         allElements.add(uiSVL);
         setBounds(new Rect(0, 0, 160, th));

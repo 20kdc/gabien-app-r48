@@ -10,6 +10,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
 import r48.schema.util.ISchemaHost;
@@ -58,8 +59,9 @@ public class EnumSchemaElement extends SchemaElement {
 
     public String viewValue(int fixnumVal, boolean prefix) {
         String st = options.get(fixnumVal);
+        // Maybe formatstring this - it has side effects in text formatting system
         if (st == null)
-            return "int:" + fixnumVal;
+            return TXDB.get("int:") + fixnumVal;
         if (!prefix)
             return st;
         return fixnumVal + ":" + st;

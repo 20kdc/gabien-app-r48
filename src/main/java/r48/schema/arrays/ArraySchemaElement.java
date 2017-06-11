@@ -9,12 +9,13 @@ import gabien.ui.*;
 import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.FormatSyntax;
+import r48.dbs.TXDB;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
-import r48.ui.UIHHalfsplit;
 
 /**
  * Notably, abstracting away sizeFixed and atLeastOne would just be an overcomplication.
@@ -32,13 +33,8 @@ public abstract class ArraySchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this) : path2;
-        final UIScrollLayout uiSVL = new UIScrollLayout(true) {
-            @Override
-            public String toString() {
-                return "SCHEMA Array";
-            }
-        };
-        // this object is needed as a pin to hold things together
+        final UIScrollLayout uiSVL = new UIScrollLayout(true);
+        // this object is needed as a pin to hold things together (or maybe not, the UI gets updated anyway. Unneeded complexity?)
         final Runnable runCompleteRelayout = new Runnable() {
             @Override
             public void run() {
@@ -86,14 +82,19 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     panel.setBounds(new Rect(0, 0, 128, Math.max(sz, maxSize.height)));
                     uiSVL.panels.add(panel);
                 }
-                addAdditionButton(target.arrVal.length, path.arrayHashIndex(new RubyIO().setFX(target.arrVal.length), "[" + target.arrVal.length + "]"));
+                // Deal with 1-indexing and such
+                for (int i = 0; i < 4; i++) {
+                    if (elementPermissionsLevel(target.arrVal.length + i, new RubyIO().setNull()) != 0) {
+                        addAdditionButton(target.arrVal.length + i, path.arrayHashIndex(new RubyIO().setFX(target.arrVal.length + i), "[" + (target.arrVal.length + i) + "]"));
+                        break;
+                    }
+                }
             }
 
             private void addAdditionButton(final int i, final SchemaPath ind) {
                 if (sizeFixed != 0)
                     return;
-                final Runnable me = this;
-                uiSVL.panels.add(new UITextButton(FontSizes.schemaArrayAddTextHeight, "Add @ " + i, new Runnable() {
+                uiSVL.panels.add(new UITextButton(FontSizes.schemaArrayAddTextHeight, FormatSyntax.formatExtended(TXDB.get("Add @ #A"), new RubyIO[] {new RubyIO().setFX(i)}), new Runnable() {
                     @Override
                     public void run() {
                         RubyIO rio = new RubyIO();
@@ -105,7 +106,6 @@ public abstract class ArraySchemaElement extends SchemaElement {
                         modifyVal(target, path, false);
                         // whack the UI
                         path.changeOccurred(false);
-                        me.run();
                     }
                 }));
             }

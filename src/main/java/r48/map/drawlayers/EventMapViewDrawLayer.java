@@ -9,6 +9,7 @@ import gabien.IGrInDriver;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.events.IEventGraphicRenderer;
 
@@ -30,7 +31,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return "Events";
+        return TXDB.get("Events");
     }
 
     @Override

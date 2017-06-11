@@ -2,37 +2,37 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
 
-3: R2K
+0: R2K
 f RPG_RT.ldb
 e Cp1252
 . R2K[3?] (English/French/CP1252)
 
-3: R2K
+0: R2K
 f RPG_RT.ldb
 e UTF-8
 . R2K[3?] (UTF-8) (Use for new games or languages not shown.)
 
-3: R2K
+0: R2K
 f RPG_RT.ldb
 e Cp943C
 . R2K[3?] (Japanese/CP943C)
 
-3: R2K
+0: R2K
 f RPG_RT.ldb
 e cp1251
 . R2K[3?] (Russian/Cyrillic/CP1251)
 
-3: R2K
+0: R2K
 f RPG_RT.ldb
 e cp1250
 . R2K[3?] (Polish/Eastern European/CP1250)
 
-3: R2K
+0: R2K
 f RPG_RT.ldb
 e MS949
 . R2K[3?] (Korean/MS949)
 
-3: R2K
+0: R2K
 f RPG_RT.ldb
 e MS936
 . R2K[3?] (Simplified Chinese/MS936)
@@ -41,25 +41,16 @@ e MS936
 f Data/MapInfos.rxdata
 e UTF-8
 
- YES! Moved from Class 1 to Class 0 support at 1:21:00 17 Feb GMT.
- (In retrospect, it was moved too early, perhaps. Oh well. Things SHOULD be... within boundaries, now,
-   or I wouldn't have moved this out of secretService.)
-
 0: RVXA
 f Data/MapInfos.rvdata2
 e UTF-8
-
- The support for the Studio Pixel "Ikachan" engine is partially a test to ensure
-  that the program is sufficiently modular for any further work.
 
 0: Ika
 f Pbm/Map1.pbm
 e UTF-8
 . Ikachan
 
- Mostly useless - but maybe move the syntax docs in RXP here.
- Serves as a simple example.
-
 0: Sticki
 e UTF-8
-. Launch Sticky Note Editor
+. Launch testbed ("Sticky Note Editor")
+l Test This is a test string to ensure TXDB languages are being honored by the launcher.

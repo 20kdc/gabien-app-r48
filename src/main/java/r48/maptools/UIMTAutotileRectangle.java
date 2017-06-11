@@ -12,6 +12,7 @@ import gabien.ui.UILabel;
 import gabien.ui.UIPanel;
 import r48.AppMain;
 import r48.FontSizes;
+import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.ui.UIAppendButton;
@@ -25,7 +26,7 @@ public class UIMTAutotileRectangle extends UIPanel implements IMapViewCallbacks 
     public final int selTile, startX, startY;
     public final boolean autotile;
 
-    public UIAppendButton innerLabel = new UIAppendButton("cancel", new UILabel("Click on a tile to finish the rectangle, or ", FontSizes.dialogWindowTextHeight), new Runnable() {
+    public UIAppendButton innerLabel = new UIAppendButton(TXDB.get("Cancel"), new UILabel(TXDB.get("Click on a tile to finish the rectangle, or:"), FontSizes.dialogWindowTextHeight), new Runnable() {
         @Override
         public void run() {
             AppMain.nextMapTool = parent;

@@ -9,6 +9,7 @@ import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
 import r48.map.UIMapViewContainer;
 import r48.map.drawlayers.IMapViewDrawLayer;
@@ -94,7 +95,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
 
     @Override
     public void dumpCustomData(RMTranscriptDumper dumper) {
-        dumper.startFile("Items", "The list of items in the game.");
+        dumper.startFile("Items", TXDB.get("The list of items in the game."));
         LinkedList<String> lls = new LinkedList<String>();
         for (RubyIO page : AppMain.objectDB.getObject("Items").arrVal) {
             if (page.type != '0') {
@@ -106,12 +107,12 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         dumper.dumpBasicList("Names", lls.toArray(new String[0]), 0);
         dumper.endFile();
 
-        dumper.startFile("System", "System data (of any importance, anyway).");
+        dumper.startFile("System", TXDB.get("System data (of any importance, anyway)."));
         RubyIO sys = AppMain.objectDB.getObject("System");
 
-        dumper.dumpHTML("Notably, switch and variable lists have a 0th index, but only indexes starting from 1 are actually allowed to be used.<br/>");
-        dumper.dumpHTML("Magic number is " + sys.getInstVarBySymbol("@magic_number").toString() + "<br/>");
-        dumper.dumpHTML("Magic number II is " + sys.getInstVarBySymbol("@_").toString() + "<br/>");
+        dumper.dumpHTML(TXDB.get("Notably, switch and variable lists have a 0th index, but only indexes starting from 1 are actually allowed to be used.") + "<br/>");
+        dumper.dumpHTML(TXDB.get("Magic number:") + sys.getInstVarBySymbol("@magic_number").toString() + "<br/>");
+        dumper.dumpHTML(TXDB.get("Magic number II:") + sys.getInstVarBySymbol("@_").toString() + "<br/>");
 
         dumper.dumpSVList("@switches", sys.getInstVarBySymbol("@switches").arrVal, 0);
         dumper.dumpSVList("@variables", sys.getInstVarBySymbol("@variables").arrVal, 0);

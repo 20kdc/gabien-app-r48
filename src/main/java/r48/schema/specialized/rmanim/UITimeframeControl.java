@@ -9,6 +9,7 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.ui.UIAppendButton;
 
 /**
@@ -22,23 +23,22 @@ public class UITimeframeControl extends UIPanel {
     private double playTimer = 0;
     public int recommendedFramerate;
 
-    public UILabel currentFrame = new UILabel("loading...", FontSizes.rmaTimeframeFontSize);
+    public UILabel currentFrame = new UILabel(TXDB.get("Loading..."), FontSizes.rmaTimeframeFontSize);
 
-    public UIAppendButton playController = new UIAppendButton("Play", currentFrame, new Runnable() {
+    public UIAppendButton playController = new UIAppendButton(TXDB.get("Play"), currentFrame, new Runnable() {
         @Override
         public void run() {
         }
     }, FontSizes.rmaTimeframeFontSize);
     public UITextButton playControllerButton = playController.button.togglable();
-
-    public UIAppendButton hsController = new UIAppendButton("HS", playController, new Runnable() {
+    public UIAppendButton hsController = new UIAppendButton(TXDB.get("HS"), playController, new Runnable() {
         @Override
         public void run() {
         }
     }, FontSizes.rmaTimeframeFontSize);
     public UITextButton hsControllerButton = hsController.button.togglable();
 
-    public UIAppendButton tsController = new UIAppendButton("TS", hsController, new Runnable() {
+    public UIAppendButton tsController = new UIAppendButton(TXDB.get("TS"), hsController, new Runnable() {
         @Override
         public void run() {
         }

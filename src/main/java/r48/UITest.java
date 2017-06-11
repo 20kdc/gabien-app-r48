@@ -8,6 +8,7 @@ package r48;
 import gabien.ui.Rect;
 import gabien.ui.UIPanel;
 import gabien.ui.UITextButton;
+import r48.dbs.TXDB;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
 import gabien.ui.UIScrollLayout;
@@ -35,7 +36,7 @@ public class UITest extends UIPanel {
     // UITest -> outerPanel -> Back/PRINT
     //                      -> masterPanel
     public UIScrollLayout masterPanel = new UIScrollLayout(true);
-    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton("PTS", new UIAppendButton("PTF", new UITextButton(FontSizes.inspectorBackTextHeight, "Back...", new Runnable() {
+    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(TXDB.get("PTS"), new UIAppendButton(TXDB.get("PTF"), new UITextButton(FontSizes.inspectorBackTextHeight, TXDB.get("Back..."), new Runnable() {
         @Override
         public void run() {
             if (back.size() > 0)
@@ -49,9 +50,9 @@ public class UITest extends UIPanel {
                 PrintStream ps = new PrintStream(fos);
                 ps.print(currentObj.toStringLong(""));
                 fos.close();
-                AppMain.launchDialog("PRINT.txt written!");
+                AppMain.launchDialog(TXDB.get("PRINT.txt written!"));
             } catch (Exception e) {
-                AppMain.launchDialog("Could not print: " + e);
+                AppMain.launchDialog(TXDB.get("Could not print.") + "\n" + e);
             }
         }
     }, FontSizes.inspectorBackTextHeight), new Runnable() {

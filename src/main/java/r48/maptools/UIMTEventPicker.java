@@ -10,6 +10,8 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.FormatSyntax;
+import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.schema.util.SchemaPath;
@@ -81,13 +83,13 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
                             AppMain.nextMapTool = null;
                         }
                     });
-                    button = new UIAppendButton("MOV", button, new Runnable() {
+                    button = new UIAppendButton(TXDB.get("MOV"), button, new Runnable() {
                         @Override
                         public void run() {
                             AppMain.nextMapTool = new UIMTEventMover(evI, mapView);
                         }
                     }, FontSizes.eventPickerEntryTextHeight);
-                    button = new UIAppendButton("DEL", button, new Runnable() {
+                    button = new UIAppendButton(TXDB.get("DEL"), button, new Runnable() {
                         @Override
                         public void run() {
                             mapView.map.getInstVarBySymbol("@events").hashVal.remove(evK);
@@ -98,7 +100,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
                     svl.panels.add(button);
                 }
         }
-        svl.panels.add(new UITextButton(FontSizes.eventPickerEntryTextHeight, "+ Add Event", new Runnable() {
+        svl.panels.add(new UITextButton(FontSizes.eventPickerEntryTextHeight, TXDB.get("+ Add Event"), new Runnable() {
             @Override
             public void run() {
                 int unusedIndex = AppMain.stuffRenderer.eventRenderer.eventIdBase();
@@ -132,7 +134,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
 
     @Override
     public String toString() {
-        return "Ev.Pick [" + eventCache.size() + " total]";
+        return FormatSyntax.formatExtended(TXDB.get("Ev.Pick #[#A total#]"), new RubyIO[] {new RubyIO().setFX(eventCache.size())});
     }
 
     public static void showEvent(long fixnumVal, RubyIO map, RubyIO event) {

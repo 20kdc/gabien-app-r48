@@ -6,9 +6,10 @@
 package r48.schema;
 
 import gabien.ui.*;
-import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.FormatSyntax;
+import r48.dbs.TXDB;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -44,7 +45,7 @@ public class ArrayElementSchemaElement extends SchemaElement {
             return panel;
         }
         if ((target.arrVal.length <= index) && (optional != null)) {
-            return new UITextButton(FontSizes.schemaButtonTextHeight, "Field " + name + " doesn't exist (default " + optional + ")", new Runnable() {
+            return new UITextButton(FontSizes.schemaButtonTextHeight, FormatSyntax.formatExtended(TXDB.get("Field #A doesn't exist (default #B)"), new RubyIO[] {new RubyIO().setString(name), new RubyIO().setString(optional)}), new Runnable() {
                 @Override
                 public void run() {
                     // resize to include and set default

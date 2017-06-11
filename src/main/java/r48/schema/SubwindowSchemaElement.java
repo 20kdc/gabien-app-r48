@@ -10,6 +10,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.FormatSyntax;
 import r48.dbs.RPGCommand;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -22,7 +23,7 @@ public class SubwindowSchemaElement extends SchemaElement {
     public IFunction<RubyIO, String> nameGetter = new IFunction<RubyIO, String>() {
         @Override
         public String apply(RubyIO rubyIO) {
-            return RPGCommand.interpretParameter(rubyIO, heldElement, true);
+            return FormatSyntax.interpretParameter(rubyIO, heldElement, true);
         }
     };
 

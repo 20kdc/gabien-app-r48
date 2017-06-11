@@ -12,6 +12,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.ATDB;
+import r48.dbs.TXDB;
 import r48.map.UIMapView;
 import r48.map.imaging.IImageLoader;
 import r48.ui.UITileGrid;
@@ -331,7 +332,7 @@ public class VXATileRenderer implements ITileRenderer {
             // Shadow Layer
             return new String[] {
                     // some friendly advice
-                    "USE SHADOWREGION TOOL",
+                    TXDB.get("Use Shadow-region Tool"),
             };
         return new String[] {
                 "Auto",

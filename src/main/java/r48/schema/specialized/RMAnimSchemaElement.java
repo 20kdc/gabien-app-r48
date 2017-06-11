@@ -9,6 +9,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.rmanim.RMAnimRootPanel;
 import r48.schema.util.ISchemaHost;
@@ -31,7 +32,7 @@ public class RMAnimSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(FontSizes.schemaButtonTextHeight, "Start RMAnimEditor", new Runnable() {
+        return new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Start RMAnimEditor"), new Runnable() {
             @Override
             public void run() {
                 RMAnimRootPanel rmarp = new RMAnimRootPanel(target, new Runnable() {
