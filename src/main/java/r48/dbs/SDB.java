@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * The ultimate database, more or less, since this houses the data definitions needed to do things like edit Events.
@@ -83,28 +84,19 @@ public class SDB {
         };
     }
 
-    public void readFile(String s) {
+    public void readFile(final String s) {
         DBLoader.readFile(s, new IDatabase() {
             AggregateSchemaElement workingObj;
 
             HashMap<Integer, String> commandBufferNames = new HashMap<Integer, String>();
             HashMap<Integer, SchemaElement> commandBufferSchemas = new HashMap<Integer, SchemaElement>();
 
-            String language = "";
-            // As with CMDB. See this code or the SDB documentation for what this affects.
-            LinkedList<IConsumer<String>> lastNamable = new LinkedList<IConsumer<String>>();
-
-            boolean languageDisabled() {
-                if (language.equals(""))
-                    return false;
-                return !language.equals(TXDB.getLanguage());
-            }
+            String outerContext = s + "/NONE";
 
             @Override
             public void newObj(int objId, String objName) {
-                if (languageDisabled())
-                    return;
-                commandBufferNames.put(objId, objName);
+                outerContext = s + "/commandBuffer";
+                commandBufferNames.put(objId, TXDB.get(outerContext, objName));
                 workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                 commandBufferSchemas.put(objId, workingObj);
                 //MapSystem.out.println("Array definition when inappropriate: " + objName);
@@ -137,19 +129,23 @@ public class SDB {
                         }
                         if (text.equals("float="))
                             return new FloatSchemaElement(args[point++]);
+                        // To translate, or not to? Unfortunately these can point at files.
                         if (text.equals("string="))
                             return new StringSchemaElement(args[point++], '\"');
                         if (text.equals("string_="))
                             return new StringSchemaElement(args[point++].replace('_', ' '), '\"');
+                        //
                         if (text.equals("hwnd")) {
+                            // These need their own translation mechanism
                             String a = args[point++];
                             if (a.equals("."))
                                 a = null;
                             return new HWNDSchemaElement(a, args[point++]);
                         }
                         if (text.equals("optIV")) {
-                            String a = args[point++];
-                            return namableIVar(new IVarSchemaElement(a, get(), true));
+                            String base = args[point++];
+                            String a = TXDB.get(outerContext, base);
+                            return new IVarSchemaElement(base, a, get(), true);
                         }
 
                         if (text.equals("array")) {
@@ -205,7 +201,7 @@ public class SDB {
                                     }
                                 });
                             } else {
-                                return namableSW(new SubwindowSchemaElement(get(), getFunctionToReturn(text2)));
+                                return new SubwindowSchemaElement(get(), getFunctionToReturn(TXDB.get(outerContext, text2)));
                             }
                         }
 
@@ -239,15 +235,15 @@ public class SDB {
                         if (text.startsWith("]?")) {
                             // yay for... well, semi-consistency!
                             String a = text.substring(2);
-                            String b = args[point++];
-                            String o = args[point++];
-                            return namableAESE(new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), o));
+                            String b = TXDB.get(outerContext, args[point++]);
+                            String o = TXDB.get(outerContext, args[point++]);
+                            return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), o);
                         }
                         if (text.startsWith("]")) {
                             // yay for consistency!
                             String a = text.substring(1);
-                            String b = args[point++];
-                            return namableAESE(new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), null));
+                            String b = TXDB.get(outerContext, args[point++]);
+                            return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), null);
                         }
                         // --
 
@@ -301,7 +297,7 @@ public class SDB {
                             if (hV.equals("."))
                                 hV = null;
 
-                            IFunction<RubyIO, String> iVT = getFunctionToReturn(iV == null ? "Open Table..." : iV);
+                            IFunction<RubyIO, String> iVT = getFunctionToReturn(iV == null ? TXDB.get("Open Table...") : TXDB.get(outerContext, iV));
 
                             int aW = Integer.parseInt(args[point++]);
                             int aH = Integer.parseInt(args[point++]);
@@ -319,11 +315,11 @@ public class SDB {
                                 tcf = new BitfieldTableCellEditor(flags.toArray(new String[0]));
                             }
                             if (eText.equals("tableSTA"))
-                                return namableSW(new SubwindowSchemaElement(new TilesetAllocTableSchemaElement(tilesetAllocations, iV, wV, hV, aW, aH, aI, tcf, defVals), iVT));
+                                return new SubwindowSchemaElement(new TilesetAllocTableSchemaElement(tilesetAllocations, iV, wV, hV, aW, aH, aI, tcf, defVals), iVT);
                             if (eText.equals("tableTS"))
-                                return namableSW(new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf, defVals), iVT));
+                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf, defVals), iVT);
                             if (eText.equals("table"))
-                                return namableSW(new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf, defVals), iVT));
+                                return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf, defVals), iVT);
                             throw new RuntimeException("Unknown table type " + text);
                         }
                         if (text.equals("CTNative"))
@@ -347,36 +343,27 @@ public class SDB {
 
             @Override
             public void execCmd(char c, final String[] args) throws IOException {
-                // Commands which can also act as preprocessor-like controls
-                if (c == 'C')
-                    if (args.length > 0)
-                        if (args[0].equals("lang")) {
-                            if (args.length == 2) {
-                                language = args[1];
-                            } else {
-                                language = "";
-                            }
-                            return;
-                        }
-                // Everything else...
-                if (languageDisabled())
-                    return;
-                // ...starts here:
                 if (c == 'a') {
                     if (!schemaDatabase.containsKey(args[0]))
                         throw new RuntimeException("Bad Schema Database: 'a' used to expect item " + args[0] + " that didn't exist.");
                 } else if (c == ':') {
                     workingObj = new AggregateSchemaElement(new SchemaElement[] {});
+                    outerContext = s + "/" + args[0];
                     setSDBEntry(args[0], new ObjectClassSchemaElement(args[0], workingObj, 'o'));
                 } else if (c == '.') {
                     workingObj = new AggregateSchemaElement(new SchemaElement[] {});
+                    outerContext = s + "/" + args[0];
                     setSDBEntry(args[0], workingObj);
                 } else if (c == '@') {
-                    workingObj.aggregate.add(namableIVar(new IVarSchemaElement("@" + args[0], handleChain(args, 1), false)));
+                    String t = "@" + args[0];
+                    workingObj.aggregate.add(new IVarSchemaElement(t, TXDB.get(outerContext, t), handleChain(args, 1), false));
                 } else if (c == '+') {
                     workingObj.aggregate.add(handleChain(args, 0));
                 } else if (c == '>') {
+                    String backup = outerContext;
+                    outerContext = args[0];
                     setSDBEntry(args[0], handleChain(args, 1));
+                    outerContext = backup;
                 } else if (c == 'e') {
                     HashMap<Integer, String> options = new HashMap<Integer, String>();
                     int defVal = 0;
@@ -384,14 +371,15 @@ public class SDB {
                         int k = Integer.parseInt(args[i]);
                         if (i == 1)
                             defVal = k;
-                        options.put(k, args[i + 1]);
+                        options.put(k, TXDB.get(args[0], args[i + 1]));
                     }
                     EnumSchemaElement e = new EnumSchemaElement(options, defVal, TXDB.get("Integer"));
                     setSDBEntry(args[0], e);
                 } else if (c == 's') {
                     // Symbols
                     String[] syms = new String[args.length - 1];
-                    System.arraycopy(args, 1, syms, 0, syms.length);
+                    for (int i = 0; i < syms.length; i++)
+                        syms[i] = TXDB.get(args[0], args[i + 1]);
                     setSDBEntry(args[0], new SymEnumSchemaElement(syms));
                 } else if (c == 'E') {
                     HashMap<Integer, String> options = new HashMap<Integer, String>();
@@ -400,9 +388,9 @@ public class SDB {
                         int k = Integer.parseInt(args[i]);
                         if (i == 2)
                             defVal = k;
-                        options.put(k, args[i + 1]);
+                        options.put(k, TXDB.get(args[0], args[i + 1]));
                     }
-                    EnumSchemaElement e = new EnumSchemaElement(options, defVal, args[1]);
+                    EnumSchemaElement e = new EnumSchemaElement(options, defVal, TXDB.get(args[0], args[1]));
                     setSDBEntry(args[0], e);
                 } else if (c == 'M') {
                     mergeRunnables.add(new Runnable() {
@@ -419,7 +407,7 @@ public class SDB {
                         }
                     });
                 } else if (c == ']') {
-                    workingObj.aggregate.add(namableAESE(new ArrayElementSchemaElement(Integer.parseInt(args[0]), args[1], handleChain(args, 2), null)));
+                    workingObj.aggregate.add(new ArrayElementSchemaElement(Integer.parseInt(args[0]), TXDB.get(outerContext, args[1]), handleChain(args, 2), null));
                 } else if (c == 'i') {
                     readFile(args[0]);
                 } else if (c == 'D') {
@@ -503,7 +491,7 @@ public class SDB {
                                 }
                             }
                         }
-                        final String textF = text;
+                        final String textF = TXDB.get(args[1], text);
 
                         nameDB.put(args[1], new IFunction<RubyIO, String>() {
                             @Override
@@ -519,56 +507,11 @@ public class SDB {
                             }
                         });
                     }
-                    if (args[0].equals("langRew")) {
-                        String text = "";
-                        for (int i = 3; i < args.length; i++) {
-                            if (text.length() > 0)
-                                text += " ";
-                            text += args[i];
-                        }
-                        if (TXDB.getLanguage().equals(args[1]))
-                            lastNamable.get(Integer.parseInt(args[2])).accept(text);
-                    }
                 } else if (c != ' ') {
                     for (String arg : args)
                         System.err.print(arg + " ");
                     System.err.println("(The command " + c + " in the SDB is not supported.)");
                 }
-            }
-
-            private SchemaElement namableIVar(final IVarSchemaElement iVarSchemaElement) {
-                lastNamable.addFirst(new IConsumer<String>() {
-                    @Override
-                    public void accept(String s) {
-                        iVarSchemaElement.alias = s;
-                    }
-                });
-                return iVarSchemaElement;
-            }
-
-            private SchemaElement namableAESE(final ArrayElementSchemaElement arrayElementSchemaElement) {
-                lastNamable.addFirst(new IConsumer<String>() {
-                    @Override
-                    public void accept(String s) {
-                        arrayElementSchemaElement.name = s;
-                    }
-                });
-                return arrayElementSchemaElement;
-            }
-
-            private SchemaElement namableSW(final SubwindowSchemaElement subwindowSchemaElement) {
-                lastNamable.addFirst(new IConsumer<String>() {
-                    @Override
-                    public void accept(final String s) {
-                        subwindowSchemaElement.nameGetter = new IFunction<RubyIO, String>() {
-                            @Override
-                            public String apply(RubyIO rubyIO) {
-                                return s;
-                            }
-                        };
-                    }
-                });
-                return subwindowSchemaElement;
             }
         });
     }

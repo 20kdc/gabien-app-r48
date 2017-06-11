@@ -65,6 +65,10 @@ public class MapToolset implements IToolset {
 
             @Override
             public void freeOsbResources() {
+                if (lastMadeMVC == null)
+                    return;
+                if (lastMadeMVC.view == null)
+                    return;
                 lastMadeMVC.view.freeOsbResources();
             }
         };

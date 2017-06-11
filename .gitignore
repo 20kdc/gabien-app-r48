@@ -2,6 +2,7 @@
 !build.gradle
 !README.md
 !.gitignore
+!translation.lua
 !src
 !src/
 !src/main

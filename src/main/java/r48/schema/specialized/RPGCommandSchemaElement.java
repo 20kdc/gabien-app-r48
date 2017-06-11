@@ -140,9 +140,9 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
                     int height = 0;
                     if (target.getInstVarBySymbol("@indent") != null) {
-                        SchemaElement ise = new IVarSchemaElement("@indent", new ROIntegerSchemaElement(0), false);
+                        SchemaElement ise = new IVarSchemaElement("@indent", TXDB.get("@indent"), new ROIntegerSchemaElement(0), false);
                         if (!allowControlOfIndent)
-                            ise = new IVarSchemaElement("@indent", new IntegerSchemaElement(0), false);
+                            ise = new IVarSchemaElement("@indent", TXDB.get("@indent"), new IntegerSchemaElement(0), false);
                         height += ise.maxHoldingHeight();
                         uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
                     }

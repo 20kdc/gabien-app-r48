@@ -116,6 +116,7 @@ public class Application {
                                         if (!rootPath.endsWith("/"))
                                             if (!rootPath.endsWith("\\"))
                                                 rootPath += "/";
+                                    TXDB.loadGamepakLanguage(objName + "/");
                                     appTicker = AppMain.initializeAndRun(rootPath, objName + "/", uiTicker);
                                 } catch (IOException e) {
                                     e.printStackTrace();

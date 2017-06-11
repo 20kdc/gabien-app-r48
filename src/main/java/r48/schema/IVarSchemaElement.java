@@ -25,9 +25,9 @@ public class IVarSchemaElement extends SchemaElement {
     public boolean fieldWidthOverride = false;
     public int fieldWidth;
 
-    public IVarSchemaElement(String iv, SchemaElement sub, boolean opt) {
+    public IVarSchemaElement(String iv, String a, SchemaElement sub, boolean opt) {
         iVar = iv;
-        alias = iv;
+        alias = a;
         subElem = sub;
         optional = opt;
     }

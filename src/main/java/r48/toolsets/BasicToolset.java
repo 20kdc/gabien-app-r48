@@ -8,6 +8,7 @@
  */
 package r48.toolsets;
 
+import gabien.GaBIEn;
 import gabien.ui.*;
 import r48.*;
 import r48.dbs.TXDB;
@@ -17,6 +18,8 @@ import r48.ui.UIFontSizeConfigurator;
 import gabien.ui.UIScrollLayout;
 import r48.ui.UITextPrompt;
 
+import java.io.PrintStream;
+import java.util.Collections;
 import java.util.LinkedList;
 
 /**
@@ -59,7 +62,8 @@ public class BasicToolset implements IToolset {
                         TXDB.get("Use system fonts for everything"),
                         TXDB.get("Configure font sizes"),
                         TXDB.get("Test Fonts"),
-                        TXDB.get("Show ODB Memstat")
+                        TXDB.get("Show ODB Memstat"),
+                        TXDB.get("Dump Schemaside Translations")
                 }, new Runnable[] {
                         new Runnable() {
                             @Override
@@ -181,6 +185,20 @@ public class BasicToolset implements IToolset {
                             @Override
                             public void run() {
                                 windowMaker.get().accept(new UIObjectDBMonitor());
+                            }
+                        },
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                PrintStream ps = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "Lang" + TXDB.getLanguage() + ".txt"));
+                                LinkedList<String> t = new LinkedList<String>(TXDB.ssTexts);
+                                Collections.sort(t);
+                                for (String s : t) {
+                                    ps.println("x \"" + s + "\"");
+                                    String afterCtx = s.substring(s.indexOf('/') + 1);
+                                    ps.println("y \"" + afterCtx + "\"");
+                                }
+                                ps.close();
                             }
                         }
                 }, FontSizes.menuTextHeight, false)
