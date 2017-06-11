@@ -51,7 +51,7 @@ C name Class.RPG::Actor @name | #A
 @face_name string
 @face_index int
 @init_level int= 1
-+hwnd . R2K/Levelling.txt
++hwnd . R2K/H_Levelling.txt
 @init_level_exp int= 10
 @each_level_exp_mul int= 10
 @each_level_exp_add int
@@ -536,6 +536,8 @@ e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 orde
 @equip_accessory item_id
 
 : RPG::System
+ Despite what https://github.com/EasyRPG/Player/issues/885 says, the default I leave this at is giving me RM2000 results (default menus).
+ Not so much chunk presence as chunk contents... The difference between "I have to make this optional and document it" or "I don't".
 @ldb_id rpg_system_ldbid
 @magic_number int
 
@@ -660,7 +662,7 @@ C name Class.RPG::Class @name | #A
 @battle_super_guard boolean
 @battle_parameters subwindow array 0 subwindow[ @rpg_actor_parameter_block ] rpg_actor_parameter_block
 @battler_animation battleranimation_id
-+hwnd . R2K/Levelling.txt
++hwnd . R2K/H_Levelling.txt
 @init_level_exp int
 @each_level_exp_mul int
 @each_level_exp_add int
