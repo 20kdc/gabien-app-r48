@@ -285,7 +285,7 @@ public class AppMain {
         };
         final UIScrollLayout uus = new UIScrollLayout(true);
         uus.panels.add(uis);
-        uus.setBounds(new Rect(0, 0, 560, 240));
+        uus.setBounds(new Rect(0, 0, 612, 240));
         final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(TXDB.get("Index"), uil, new Runnable() {
             @Override
             public void run() {
@@ -329,6 +329,7 @@ public class AppMain {
             mapContext.freeOsbResources();
         mapContext = null;
         theClipboard = null;
+        TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
     }
 }

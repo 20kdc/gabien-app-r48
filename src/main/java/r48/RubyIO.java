@@ -22,7 +22,7 @@ import java.util.Map;
  * Created on 12/27/16.
  */
 public class RubyIO {
-    public static String encoding;
+    public static String encoding = "UTF-8";
     public int type;
     public byte[] strVal; // actual meaning depends on iVars. Should be treated as immutable - replace strVal on change
     public String symVal;

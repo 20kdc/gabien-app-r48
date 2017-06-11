@@ -4,6 +4,9 @@
  */
 package r48.dbs;
 
+import gabien.ui.IFunction;
+import r48.RubyIO;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +24,38 @@ public class TXDB {
     private static int languageId = 0;
     private static HashMap<String, String> subspace = new HashMap<String, String>();
 
+    // This gets stuff inserted into it by AppMain (via sdb & co), so it has to be flushed in shutdown() there.
+    public static HashMap<String, IFunction<RubyIO, String>> nameDB = new HashMap<String, IFunction<RubyIO, String>>();
+
+    public static void flushNameDB() {
+        nameDB.clear();
+        // Usage: {@[lang-Russian-pluralRange][#A #B]|0|plural-form-0|1|plural-form-1|2|plural-form-2}
+        // Explicitly for Set Variables use and similar.
+        // Yes, if you request it, I'll make a similar TXDB routine for you,
+        //  assuming it's not ridiculously complicated.
+        nameDB.put("lang-Russian-pluralRange", new IFunction<RubyIO, String>() {
+            @Override
+            public String apply(RubyIO rubyIO) {
+                String[] range = rubyIO.decString().split(" ");
+                int v = Integer.valueOf(range[1]);
+                v -= Integer.valueOf(range[0]) - 1;
+                int i = v % 10;
+                if ((i == 1) && (v != 11))
+                    return "0";
+                if ((i >= 2) && (i <= 4) && ((v / 10) != 1))
+                    return "1";
+                return "2";
+            }
+        });
+        // Usage
+        nameDB.put("lang-Common-arrayLen", new IFunction<RubyIO, String>() {
+            @Override
+            public String apply(RubyIO rubyIO) {
+                return Integer.toString(rubyIO.arrVal.length);
+            }
+        });
+    }
+
     public static void init() {
         final LinkedList<String> languageLL = new LinkedList<String>();
         DBLoader.readFile("Translations.txt", new IDatabase() {
@@ -36,6 +71,7 @@ public class TXDB {
             }
         });
         languages = languageLL.toArray(new String[0]);
+        flushNameDB();
     }
 
     // NOTE: Translation items of the form get("Blahblah") (note: comments are scanned too) cannot include backslash escapes.
@@ -59,6 +95,11 @@ public class TXDB {
         if (replace == null)
             return ":NT:" + english;
         return replace;
+    }
+
+    // Checks if subspace contains a key. Assumes context-syntax is already done.
+    public static boolean has(String s) {
+        return subspace.get(s) != null;
     }
 
     public static String stripContext(String s) {

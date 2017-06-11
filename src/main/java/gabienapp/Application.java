@@ -82,6 +82,14 @@ public class Application {
             }), new Runnable() {
                 @Override
                 public void run() {
+                    // Unfortunately, if done quickly enough, the font will not load in time.
+                    // (Java "lazily" loads fonts.
+                    //  gabien-javase works around this bug - lazy loading appears to result in Java devs not caring about font load speed -
+                    //  and by the time it matters it's usually loaded, but, well, suffice to say this hurts my translatability plans a little.
+                    //  Not that it'll stop them, but it's annoying.)
+                    // This associates a lag with switching language, when it's actually due to Java being slow at loading a font.
+                    // (I'm slightly glad I'm not the only one this happens for, but unhappy that it's an issue.)
+                    // Unfortunately, a warning message cannot be shown to the user, as the warning message would itself trigger lag-for-font-load.
                     TXDB.nextLanguage();
                     closeHelper.accept(null);
                 }

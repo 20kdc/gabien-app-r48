@@ -195,7 +195,11 @@ public class BasicToolset implements IToolset {
                                 Collections.sort(t);
                                 for (String s : t) {
                                     ps.println("x \"" + s + "\"");
-                                    ps.println("y \"" + TXDB.stripContext(s) + "\"");
+                                    if (TXDB.has(s)) {
+                                        ps.println("y \"" + TXDB.get(s) + "\"");
+                                    } else {
+                                        ps.println("y \"" + TXDB.stripContext(s) + "\"");
+                                    }
                                 }
                                 ps.close();
                             }

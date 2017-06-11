@@ -58,6 +58,10 @@
 
   If the character '@' prefixes the interpretation type, the type name is considered to be the full name routine's ID,
    and all the parameters are given to the new name routine (no parameter is postfixed)
+  If a parameter is supposed to be postfixed, and that parameter is '[', then the parameter is the formatted text within there (treated as RubyIO string)
+   (For example, [add-one-to-integer][[add-one-to-integer][0]] would be a theoretical way to get 2.)
+  Note, however, that in order for this to work properly the text goes through the system encoding in the interim.
+  Thus, DO NOT use this syntax to handle translation text!!!
 
   If no interpretation exists for the type given, it fails completely,
    and will result in a no-variables-interpretation (An error in a case where no variables are allowed causes an exception.)
@@ -73,9 +77,10 @@
 
    --- CONDITIONAL BLOCKS ---
 
-  All blocks use '{' to start, '|' will invert the condition mid-way, and '}' terminates.
+  Almost all blocks use '{' to start, '|' will invert the condition mid-way, and '}' terminates.
+  (A special type uses '|' as a separator.)
 
-  There are three formats for blocks.
+  There are four formats for blocks.
   If a parameter mentioned is unavailable, the false branch is taken.
   Blocks are never entirely skipped unless they have no false-branch.
 
@@ -94,12 +99,53 @@
   ... or as a way to handle "invert" options. (Note the inverted order of the text.)
   {A=1=OFF|ON}
 
+  The fourth is an enumeration. It is indicated by having '@' instead of the first variable.
+  This enumeration is based on text, allowing it to be flexible (using interpretations for transform),
+   and also allowing it to be simple.
+  {@#A|:concurrent|Concurrent|:waitOn|Wait On...|Unknown #A}
+  The format here is:
+  {@<key>|<key1>|<value1>|<key2>|<value2>|<default>},
+   but can be expanded to any amount of key/value pairs:
+  {@<key>|<key1>|<value1>|<key2>|<value2>|<key3>|<value3>|<default>}
+   and the default omitted:
+  {@<key>|<key1>|<value1>|<key2>|<value2>|<key3>|<value3>}
+  In this case, if parameter A interprets to ":concurrent", it will show "Concurrent", if it interprets to ":waitOn", it will show "Wait On...",
+   and if neither is the case, it will show "Unknown #A" (this is further interpreted).
+
+  Note that in this case, *all divisions are run through the interpreter*.
+  This allows keys to be based on context, should it be necessary.
+
  Here are some examples of the Extended Format in use.
  These examples show all block types in use for their purposes.
 
   an example: 108:@@Comment{A: #A}
   a more advanced example: 103:@@Input Number {A: to @#A}{B: of #B digits}
   another example: 122:@@Set Variables{A: {AB:@#A|@#A..@#B} #C {D=int=int: [int]E|{D=var=var: @[var_id]E|#D}}}
+
+ ----------------------------------
+
+  Name Database Built-in Routines
+  These all follow the scheme "lang-<language>-<methodCamelCase>".
+  Common is used for routines which aren't targetted at a specific language.
+
+  lang-Russian-pluralRange:
+   Example:
+    {@[lang-Russian-pluralRange][#A #B]|0|plural-form-0|1|plural-form-1|2|plural-form-2}
+   Splits the input string by spaces, then converts to numbers, and takes the difference,
+    then gives the value 0, 1 or 2 dependent on plural form.
+
+  lang-Common-arrayLen:
+   Example:
+    {@[lang-Common-arrayLen]A|0|No commands|1|One command|[lang-Common-arrayLen]A commands}
+   Used to extract an array length from an array. (Which would otherwise show as "[<length>]".)
+   Note that one-indexed arrays are considered zero-indexed internally, this means their length is one higher than it 'should be'.
+
+ ----------------------------------
+
+ Note: It is probably possible to confuse the NDB interpreter if you know what you are doing (or don't).
+ Rather than generate an AST or such, it parses on-the-fly (for relative simplicity), and does so without some sanity checks.
+ At least in theory, the fact that # is the only escape character and {}[] have to be matched otherwise should keep things in line.
+ But, it might be possible to confuse it under some circumstance I didn't think of.
 
  ----------------------------------
 

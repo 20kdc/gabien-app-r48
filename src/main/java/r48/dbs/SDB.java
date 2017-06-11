@@ -51,7 +51,6 @@ public class SDB {
     private LinkedList<Runnable> mergeRunnables = new LinkedList<Runnable>();
     private LinkedList<String> remainingExpected = new LinkedList<String>();
     private HashMap<String, CMDB> cmdbs = new HashMap<String, CMDB>();
-    public HashMap<String, IFunction<RubyIO, String>> nameDB = new HashMap<String, IFunction<RubyIO, String>>();
 
     public SDB() {
         schemaDatabase.put("nil", new OpaqueSchemaElement());
@@ -197,7 +196,7 @@ public class SDB {
                                 return new SubwindowSchemaElement(get(), new IFunction<RubyIO, String>() {
                                     @Override
                                     public String apply(RubyIO rubyIO) {
-                                        return nameDB.get("Interp." + textFinal).apply(rubyIO);
+                                        return TXDB.nameDB.get("Interp." + textFinal).apply(rubyIO);
                                     }
                                 });
                             } else {
@@ -493,7 +492,7 @@ public class SDB {
                         }
                         final String textF = TXDB.get(args[1], text);
 
-                        nameDB.put(args[1], new IFunction<RubyIO, String>() {
+                        TXDB.nameDB.put(args[1], new IFunction<RubyIO, String>() {
                             @Override
                             public String apply(RubyIO rubyIO) {
                                 LinkedList<RubyIO> parameters = new LinkedList<RubyIO>();

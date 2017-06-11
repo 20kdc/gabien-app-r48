@@ -30,7 +30,7 @@ public class DBLoader {
 
     public static void readFile(InputStream helpStream, IDatabase db) {
         try {
-            InputStreamReader fr = new InputStreamReader(helpStream);
+            InputStreamReader fr = new InputStreamReader(helpStream, "UTF-8");
             new DBLoader(new BufferedReader(fr), db);
             fr.close();
         } catch (Exception e) {

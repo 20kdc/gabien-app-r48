@@ -10,6 +10,9 @@ import r48.RubyIO;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 
+import java.util.LinkedList;
+import java.util.Stack;
+
 /**
  * Yet another class solely to hold a common syntax in an obvious place.
  * Created on 11/06/17.
@@ -30,6 +33,57 @@ public class FormatSyntax {
                 }
                 // Parse condition
                 i++;
+                if (data[i] == '@') {
+                    // Special case.
+                    String tx = "";
+                    LinkedList<String> components = new LinkedList<String>();
+                    int escapeCount = 0;
+                    while (true) {
+                        char ch2 = data[++i];
+                        if (ch2 == '#') {
+                            tx += ch2;
+                            tx += data[++i];
+                            continue;
+                        }
+                        if (ch2 == '{')
+                            escapeCount++;
+                        if (ch2 == '}') {
+                            if (escapeCount == 0)
+                                break;
+                            escapeCount--;
+                        }
+                        if (ch2 == '[')
+                            escapeCount++;
+                        if (ch2 == ']') {
+                            if (escapeCount == 0)
+                                return "Mismatched []{} error.";
+                            escapeCount--;
+                        }
+                        if (ch2 == '|')
+                            if (escapeCount == 0) {
+                                components.add(tx);
+                                tx = "";
+                                continue;
+                            }
+                        tx += ch2;
+                    }
+                    components.add(tx);
+                    tx = components.getFirst();
+                    // If the component count is even, there's a default (1 + even KVP + 1)
+                    // If it's odd, there isn't.
+                    tx = formatNameExtended(tx, root, parameters, parameterSchemas);
+                    String val = "";
+                    if ((components.size() % 2) == 0)
+                        val = components.getLast();
+                    for (int j = 1; j < components.size() - 1; j += 2) {
+                        String a = components.get(j);
+                        String b = components.get(j + 1);
+                        if (tx.equals(a))
+                            val = b;
+                    }
+                    r += formatNameExtended(val, root, parameters, parameterSchemas);
+                    continue;
+                }
                 // Firstly a pid
                 int pidA = data[i] - 'A';
                 i++;
@@ -89,8 +143,38 @@ public class FormatSyntax {
                 int ss = type.indexOf('@');
                 if (parameters != null) {
                     if (ss != 0) {
-                        RubyIO p = parameters[data[++i] - 'A'];
-                        IFunction<RubyIO, String> handler = AppMain.schemas.nameDB.get("Interp." + type);
+                        char ch = data[++i];
+                        RubyIO p;
+                        if (ch == '[') {
+                            // At this point, it's gone recursive.
+                            // Need to safely skip over this lot...
+                            char ch2 = data[++i];
+                            String tx = "";
+                            int escapeCount = 1;
+                            while (escapeCount > 0) {
+                                tx += ch2;
+                                if (ch2 == '#')
+                                    tx += data[++i];
+                                if (ch2 == '[')
+                                    escapeCount++;
+                                if (ch2 == ']')
+                                    escapeCount--;
+                                if (ch2 == '{')
+                                    escapeCount++;
+                                if (ch2 == '}') {
+                                    escapeCount--;
+                                    if (escapeCount == 0)
+                                        return "Mismatched []{} error.";
+                                }
+                                ch2 = data[++i];
+                            }
+                            // ... then parse it.
+                            tx = formatNameExtended(tx, root, parameters, parameterSchemas);
+                            p = new RubyIO().encString(tx);
+                        } else {
+                            p = parameters[ch - 'A'];
+                        }
+                        IFunction<RubyIO, String> handler = TXDB.nameDB.get("Interp." + type);
                         if (handler != null) {
                             r += handler.apply(p);
                         } else {
@@ -100,7 +184,7 @@ public class FormatSyntax {
                     } else {
                         // Meta-interpretation syntax
                         String tp = type.substring(1);
-                        IFunction<RubyIO, String> n = AppMain.schemas.nameDB.get(tp);
+                        IFunction<RubyIO, String> n = TXDB.nameDB.get(tp);
                         if (n == null)
                             throw new RuntimeException("Expected NDB " + tp);
                         r += n.apply(root);
@@ -129,7 +213,7 @@ public class FormatSyntax {
     public static String interpretParameter(RubyIO rubyIO, SchemaElement ise, boolean prefixEnums) {
         // Basically, Class. overrides go first, then everything else comes after.
         if (rubyIO.type == 'o') {
-            IFunction<RubyIO, String> handler = AppMain.schemas.nameDB.get("Class." + rubyIO.symVal);
+            IFunction<RubyIO, String> handler = TXDB.nameDB.get("Class." + rubyIO.symVal);
             if (handler != null)
                 return handler.apply(rubyIO);
         }

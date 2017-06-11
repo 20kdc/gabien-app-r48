@@ -3,35 +3,44 @@
  * No warranty is provided, implied or otherwise.
 
 000:$
+d A comment in the plan.
 p text string
 
 990: Need!
+d Indicate that at this point you need to (non-optional)...
 p text string
 
 991: Want!
+d Indicate that at this point you want to (optional)...
 p text string
 
 992: Nb.$
+d
 p text string
 
 993: Consider$ (
+d Begins a consideration block.
 p text string
 i0
 I1
 
 994: )
+d Ends a consideration block.
 i-1
 I0
 
-995: Long-term Plan$
+995: @@Long-term Plan{B: #A ([ltp_type]B)}
+d This is a sub-plan which can run concurrently with the current plan, or be waited on.
 p name string
 p planType ltp_type
 p plan Plan
 
 996: Long Note
+d This is a long note - it is stored via a zlib-deflated blob.
 p desc string
 p contents zlibBlobEditor
 
 997: Table$
+d This is a map of strings to other strings.
 p of string
 p table NoteTable

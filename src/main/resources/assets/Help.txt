@@ -6,7 +6,6 @@
 
 0: Index
 i HelpImg/0.demo.png
-. <NOTE> These helpfiles need a rewrite. Also, currently there aren't any translatability hooks.
 .
 . Firstly, keep in mind that text fields will revert unless you press enter.
 . The same goes for number fields.
@@ -25,8 +24,7 @@ i HelpImg/0.demo.png
 > 1 Map
 > 2 MapInfos
 > 3 Tools
-> 4 System Objects
-> 5 ObjectDB Monitor
+> 4 Database Objects
 > 6 System Tools
 . Note that to ensure your work is saved, remember to press the button at the top-right to save your work.
 . Furthermore, keep backups. :)
@@ -35,21 +33,18 @@ i HelpImg/0.demo.png
 1: Map
 i HelpImg/1.diagram.png
 . 'Map' is the map editor.
-. From this, you can do many things.
-. However, first, you need to know controls.
+. This is how you modify maps, which are 2D tile-based grids on which objects sit.
+. What the kind of objects are, how big the tiles are, and such, is specific to the engine.
+.
 . Dragging with the Right Mouse Button allows panning about the map.
 . This is crucial for even basic datamining operations.
-. Clicking with the Left Mouse Button will use the current tool, or if no tool is running, will bring up a dialogue box to select one.
-> 7 Map Tools
+. Clicking with the Left Mouse Button will use the current tool, unless no tool is running, in which case it also pans.
+.
+> 7 At the top, a bar is shown. These are the map tools.
+.
 . Pressing the "m" button will toggle a minimap.
 . This allows faster navigation of the map, or reading messages written with tiles.
-. At the bottom-left, there are the Layer Tabs.
-. These allow the selection of a tile layer, and hiding/showing layers.
-. To hide/show a layer, right click on it's tab.
-. To select a layer, left-click on it's tab, so long as it's a tile layer.
-. The selected tile layer only matters to the tools which need to know it.
-. The "E" and "P" layers are not tile layers, but instead are placeholders.
-. These layers allow hiding/showing Events and the Panorama, respectively.
+. At the top left, there are zoom controls, and information on what mouse controls are currently available.
 > 0 Back to the Index.
 
 2: MapInfos
@@ -58,6 +53,7 @@ i HelpImg/1.diagram.png
 . but may be dummy entries for organization.
 . These maps are structured in a hierarchy.
 . To select a map, click on it's name.
+. This will attempt to open the map (which may not succeed, leaving you with a blank map and a created object, for now)
 . When a map is selected, buttons will appear to the right for movement.
 . Maps can be created and deleted with this tool.
 . Be careful.
@@ -70,7 +66,7 @@ i HelpImg/1.diagram.png
 . However, these functions are less... generic, than the ones in System Tools.
 > 0 Back to the Index.
 
-4: System Objects
+4: Database Objects
 . If there is a tab to edit an object, it is safer to edit it using that tab.
 . But failing that:
 . This allows editing the various bits and pieces that nobody would ever write a dedicated editor for, so the generic layout system was used.
@@ -80,10 +76,7 @@ i HelpImg/1.diagram.png
 > 12 Object Editing Details
 > 0 Back to the Index.
 
-5: ObjectDB Monitor
-. This keeps track of what files are loaded in memory.
-. Not much more can be said, since that's all it does.
-> 0 Back to the Index.
+ 5 no longer exists
 
 6: System Tools
 . This contains various functions for debugging, testing, and sanity maintenance.
@@ -373,8 +366,8 @@ p 4
 . RPG Maker 2000/2003 is, as you probably know, emulated by the (unrelated to me) open-source EasyRPG Player project.
 . As RPG Maker 2000/2003 does not have any Core Scripts to deal with, it means that with a full editor, games can be created from scratch.
 . Step 1. Create a blank folder.
-. Step 2. In the folder, create the folders "ChipSets" and "System". (capitalization is important.)
-. Step 3. Extract assets/R2K/templatetileset.png from this JAR (it's a ZIP file) and put it in ChipSets. Do not rename it.
+. Step 2. In the folder, create the folders "ChipSet" and "System". (capitalization is important.)
+. Step 3. Extract assets/R2K/templatetileset.png from this JAR (it's a ZIP file) and put it in ChipSet. Do not rename it.
 . Step 4. Extract assets/R2K/System.png from this JAR (it's a ZIP file) and put it in System. Do not rename it.
 . Step 5. Copy the program JAR into the folder and run it, or alternatively (if you understand how to use Root Path) simply point it there.
 . Step 6. Once you select RPG Maker 2000/2003, there should be 3 modified files, and the screen showing up should contain a grid flashing between different colours.
@@ -387,7 +380,7 @@ p 4
 . Battle: Enemy images. 480x480, 96x96 per enemy.
 . CharSet: Event and vehicle images. See Index/Map/MapTools/EventList/R2k Events Overview/Graphics.
 . ChipSet: Tilesets. The best way to understand this is probably to look at the template and experiment.
-. (ChipSets are always 480x256.)
+. (ChipSet files are always 480x256.)
 . FaceSet: Faces. 192x192 total, 48x48 for each face.
 . GameOver: 320x240 images for Game Over.
 . Music: Music, in various formats.
