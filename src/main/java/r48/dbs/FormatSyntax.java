@@ -43,7 +43,6 @@ public class FormatSyntax {
                 char pb = data[i++];
                 String wantedVal = "";
                 // If comparing parameter to parameter, both parameters can be force-prefixed.
-                boolean prefixComparisonVar = false;
                 if (pb == '=') {
                     // It's a string
                     pb = data[i++];
@@ -60,8 +59,7 @@ public class FormatSyntax {
                         disables++;
                         continue;
                     }
-                    wantedVal = interpretParameter(parameters[pidB], getParameterSchemaFromArray(root, parameterSchemas, pidB), true);
-                    prefixComparisonVar = true;
+                    wantedVal = interpretParameter(parameters[pidB], getParameterDisplaySchemaFromArray(root, parameterSchemas, pidB), true);
                 }
                 if (parameters.length <= pidA) {
                     disables++;
@@ -114,7 +112,7 @@ public class FormatSyntax {
                     if (disables == 0) {
                         int pid = data[++i] - 'A';
                         if ((pid >= 0) && (pid < parameters.length)) {
-                            r += interpretParameter(parameters[pid], getParameterSchemaFromArray(root, parameterSchemas, pid), prefixNext);
+                            r += interpretParameter(parameters[pid], getParameterDisplaySchemaFromArray(root, parameterSchemas, pid), prefixNext);
                         } else {
                             r += data[i];
                         }
@@ -135,21 +133,24 @@ public class FormatSyntax {
             if (handler != null)
                 return handler.apply(rubyIO);
         }
-        while (ise instanceof ProxySchemaElement)
-            ise = ((ProxySchemaElement) ise).getEntry();
         String r = null;
-        if (ise instanceof EnumSchemaElement)
-            r = ((EnumSchemaElement) ise).viewValue((int) rubyIO.fixnumVal, prefixEnums);
+        if (ise != null) {
+            while (ise instanceof ProxySchemaElement)
+                ise = ((ProxySchemaElement) ise).getEntry();
+            if (ise instanceof EnumSchemaElement)
+                r = ((EnumSchemaElement) ise).viewValue((int) rubyIO.fixnumVal, prefixEnums);
+        }
         if (r == null)
             r = rubyIO.toString();
         return r;
     }
 
-    public static SchemaElement getParameterSchemaFromArray(RubyIO root, IFunction<RubyIO, SchemaElement>[] ise, int i) {
+    // NOTE: This can return null.
+    public static SchemaElement getParameterDisplaySchemaFromArray(RubyIO root, IFunction<RubyIO, SchemaElement>[] ise, int i) {
         if (ise == null)
-            return AppMain.schemas.getSDBEntry("genericScriptParameter");
+            return null;
         if (ise.length <= i)
-            return AppMain.schemas.getSDBEntry("genericScriptParameter");
+            return null;
         return ise[i].apply(root);
     }
 
