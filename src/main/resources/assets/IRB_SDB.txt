@@ -51,4 +51,40 @@
   'A' Install AutoTiles files.
    The autotiles system works with a set of autotiles definitions, which must be installed.
   'C' Random stuff (allowIndentControl, name definitions..., access to the super special schema that only works for a given structure...)
-  <The actual chaining language is complicated - see SDB.java for details.>
+   The translation-relevant parts (unless a different system is suggested, this is *the* translation interface):
+   C lang allows writing language-specific definitions.
+    Example:
+     C lang English
+     e you_are_cat 0 notACat 1 amACat
+     C lang Lojban
+     e you_are_cat 0 do_mlatu 1 do_nai_mlatu
+     C lang
+      (language-neutral code follows...)
+    Note that this should be avoided when possible for maintainability.
+    A possible future command would be like the following command, but refering to X many items back (to allow subwindow renaming & IVar at the same time)
+   C langRew allows replacing the text of the last (or n-th last) named object.
+    Named objects are:
+    Subwindows with explicit text: subwindow[ ABC ]
+     but NOT subwindows referring to C name entries (these have @ at the start of their inner text)
+     (the inner object is processed first)
+    Tables (the shown text for opening the table dialog)
+    Instance variables ('@'-commands and optIVar. Note that the inner object is processed first.)
+    Array indexers (including ']'): ]1 blah int
+                                    ]?1 optBlah int
+    Again, inner object processed first.
+
+    This does not affect internal information (the Inspector will always show the instance variables as-given),
+     it just affects display.
+    Example:
+     C name ourWorkIsNeverOver | Our work is never over.
+     C langRew 0 Backwards .revo reven si krow ruO
+     @someVar int
+     C langRew 0 Backwards raVemos
+    Better example:
+     @otherVar int
+     @someVar subwindow[ Item ] RPG::Item
+     The subwindow is processed first, then the encapsulating iVar.
+     C langRew Backwards 0 raVemos
+     C langRew Backwards 1 metI
+     C langRew Backwards 2 raVrehto
+  <The actual chaining language is... complicated - see SDB.java for details.>

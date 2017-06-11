@@ -91,9 +91,8 @@ public class SDB {
             HashMap<Integer, SchemaElement> commandBufferSchemas = new HashMap<Integer, SchemaElement>();
 
             String language = "";
-            // As with CMDB, but it only affects iVars and array variables.
-            // For subwindows, however, will have to resort to preprocessing directives.
-            IConsumer<String> lastNamable;
+            // As with CMDB. See this code or the SDB documentation for what this affects.
+            LinkedList<IConsumer<String>> lastNamable = new LinkedList<IConsumer<String>>();
 
             boolean languageDisabled() {
                 if (language.equals(""))
@@ -206,7 +205,7 @@ public class SDB {
                                     }
                                 });
                             } else {
-                                return new SubwindowSchemaElement(get(), getFunctionToReturn(text2));
+                                return namableSW(new SubwindowSchemaElement(get(), getFunctionToReturn(text2)));
                             }
                         }
 
@@ -320,11 +319,11 @@ public class SDB {
                                 tcf = new BitfieldTableCellEditor(flags.toArray(new String[0]));
                             }
                             if (eText.equals("tableSTA"))
-                                return new SubwindowSchemaElement(new TilesetAllocTableSchemaElement(tilesetAllocations, iV, wV, hV, aW, aH, aI, tcf, defVals), iVT);
+                                return namableSW(new SubwindowSchemaElement(new TilesetAllocTableSchemaElement(tilesetAllocations, iV, wV, hV, aW, aH, aI, tcf, defVals), iVT));
                             if (eText.equals("tableTS"))
-                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf, defVals), iVT);
+                                return namableSW(new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf, defVals), iVT));
                             if (eText.equals("table"))
-                                return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf, defVals), iVT);
+                                return namableSW(new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf, defVals), iVT));
                             throw new RuntimeException("Unknown table type " + text);
                         }
                         if (text.equals("CTNative"))
@@ -520,8 +519,15 @@ public class SDB {
                             }
                         });
                     }
-                    if (args[0].equals("langNameAI")) {
-
+                    if (args[0].equals("langRew")) {
+                        String text = "";
+                        for (int i = 3; i < args.length; i++) {
+                            if (text.length() > 0)
+                                text += " ";
+                            text += args[i];
+                        }
+                        if (TXDB.getLanguage().equals(args[1]))
+                            lastNamable.get(Integer.parseInt(args[2])).accept(text);
                     }
                 } else if (c != ' ') {
                     for (String arg : args)
@@ -531,23 +537,38 @@ public class SDB {
             }
 
             private SchemaElement namableIVar(final IVarSchemaElement iVarSchemaElement) {
-                lastNamable = new IConsumer<String>() {
+                lastNamable.addFirst(new IConsumer<String>() {
                     @Override
                     public void accept(String s) {
                         iVarSchemaElement.alias = s;
                     }
-                };
+                });
                 return iVarSchemaElement;
             }
 
             private SchemaElement namableAESE(final ArrayElementSchemaElement arrayElementSchemaElement) {
-                lastNamable = new IConsumer<String>() {
+                lastNamable.addFirst(new IConsumer<String>() {
                     @Override
                     public void accept(String s) {
                         arrayElementSchemaElement.name = s;
                     }
-                };
+                });
                 return arrayElementSchemaElement;
+            }
+
+            private SchemaElement namableSW(final SubwindowSchemaElement subwindowSchemaElement) {
+                lastNamable.addFirst(new IConsumer<String>() {
+                    @Override
+                    public void accept(final String s) {
+                        subwindowSchemaElement.nameGetter = new IFunction<RubyIO, String>() {
+                            @Override
+                            public String apply(RubyIO rubyIO) {
+                                return s;
+                            }
+                        };
+                    }
+                });
+                return subwindowSchemaElement;
             }
         });
     }
