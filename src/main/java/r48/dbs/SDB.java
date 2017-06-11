@@ -334,6 +334,12 @@ public class SDB {
                             SchemaElement ise = get();
                             return new EventCommandArraySchemaElement(ise, getCMDB(a));
                         }
+                        if (text.equals("mapPositionHelper")) {
+                            String a = args[point++];
+                            String b = args[point++];
+                            String c = args[point++];
+                            return new MapPositionHelperSchemaElement(a, b, c);
+                        }
                         // -- If all else fails, it's an ID to be looked up. --
                         return getSDBEntry(text);
                     }

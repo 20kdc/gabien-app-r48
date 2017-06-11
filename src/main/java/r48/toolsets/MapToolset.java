@@ -13,6 +13,7 @@ import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.IMapContext;
+import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.UIMapViewContainer;
 

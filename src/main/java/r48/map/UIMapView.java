@@ -84,15 +84,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         renderer = AppMain.system.rendererFromMap(map);
         tileSize = renderer.tileRenderer.getTileSize();
 
-        camX = -i / (2 * internalScaling);
-        camY = -i1 / (2 * internalScaling);
-        if (minimap) {
-            camX += 2 * mapTable.width;
-            camY += 2 * mapTable.height;
-        } else {
-            camX += (tileSize * mapTable.width) / 2;
-            camY += (tileSize * mapTable.height) / 2;
-        }
+        showTile(mapTable.width / 2, mapTable.height / 2);
     }
 
     public void reinitLayerVis() {
@@ -144,9 +136,15 @@ public class UIMapView extends UIElement implements IWindowElement {
                 igd.blitScaledImage(0, 0, camR.width, camR.height, ox, oy, camR.width * internalScaling, camR.height * internalScaling, offscreenBuf);
             }
         }
-        String shortcuts = TXDB.get("Any mouse button: Scroll, Shift-left: Pick tile.");
-        if (callbacks != null)
-            shortcuts = TXDB.get("Left mouse button: Use tool, others: Scroll, Shift-left: Pick tile.");
+        String shortcuts = TXDB.get("Mouse drag: Scroll, Shift-left: Pick tile.");
+        if (callbacks != null) {
+            shortcuts = TXDB.get("LMB: Use tool, others: Scroll, Shift-left: Pick tile.");
+            if (pickTileHelper == null)
+                shortcuts = TXDB.get("LMB: Use tool, others: Scroll.");
+        } else {
+            if (pickTileHelper == null)
+                shortcuts = TXDB.get("Mouse drag: Scroll.");
+        }
         UILabel.drawLabel(igd, 0, ox + 24, oy + 3, mapId + ";" + mouseXT + ", " + mouseYT + "; " + shortcuts, false, FontSizes.mapPositionTextHeight);
 
         igd.blitImage(52, 32, 16, 16, ox + 4, oy + 4, AppMain.layerTabs);
@@ -299,5 +297,14 @@ public class UIMapView extends UIElement implements IWindowElement {
             offscreenBuf.shutdown();
             offscreenBuf = null;
         }
+    }
+
+    public void showTile(int x, int y) {
+        Rect b = getBounds();
+        camX = -b.width / (2 * internalScaling);
+        camY = -b.height / (2 * internalScaling);
+        int effectiveSize = minimap ? 2 : tileSize;
+        camX += effectiveSize * x;
+        camY += effectiveSize * y;
     }
 }

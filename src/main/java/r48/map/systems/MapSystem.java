@@ -39,6 +39,12 @@ public abstract class MapSystem {
     // The map can be null. This is used by the map view and on initial system startup.
     public abstract StuffRenderer rendererFromMap(RubyIO map);
 
+    // Converts "map_id"-style elements to their map ID strings.
+    // Returns null if the reference doesn't exist.
+    public String mapReferentToId(RubyIO mapReferent) {
+        return "Map";
+    }
+
     // The schema might have tables attached to tilesets and might want to allow editing of them.
     public StuffRenderer rendererFromTso(RubyIO target) {
         return rendererFromMap(null);

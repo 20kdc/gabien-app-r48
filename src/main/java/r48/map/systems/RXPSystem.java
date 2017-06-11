@@ -17,6 +17,7 @@ import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.GabienImageLoader;
 import r48.map.imaging.IImageLoader;
+import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
 import r48.map.tiles.ITileRenderer;
@@ -117,5 +118,10 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         dumper.dumpSVList("@switches", sys.getInstVarBySymbol("@switches").arrVal, 0);
         dumper.dumpSVList("@variables", sys.getInstVarBySymbol("@variables").arrVal, 0);
         dumper.endFile();
+    }
+
+    @Override
+    public String mapReferentToId(RubyIO mapReferent) {
+        return RXPRMLikeMapInfoBackend.sNameFromInt((int) mapReferent.fixnumVal);
     }
 }

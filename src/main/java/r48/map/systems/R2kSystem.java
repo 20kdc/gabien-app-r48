@@ -126,4 +126,9 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     public void dumpCustomData(RMTranscriptDumper dumper) {
 
     }
+
+    @Override
+    public String mapReferentToId(RubyIO mapReferent) {
+        return R2kRMLikeMapInfoBackend.sNameFromInt((int) mapReferent.fixnumVal);
+    }
 }

@@ -34,20 +34,24 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 @player_map map_id
 @player_x int
 @player_y int
++mapPositionHelper @player_map @player_x @player_y
 +optIV @boat_map map_id
 +optIV @boat_x int
 +optIV @boat_y int
++mapPositionHelper @boat_map @boat_x @boat_y
 +optIV @ship_map map_id
 +optIV @ship_x int
 +optIV @ship_y int
++mapPositionHelper @ship_map @ship_x @ship_y
 +optIV @airship_map map_id
 +optIV @airship_x int
 +optIV @airship_y int
++mapPositionHelper @airship_map @airship_x @airship_y
 
 : RPG::MapTree
 @map_infos subwindow hash int+0 subwindow RPG::MapInfo
 @map_order subwindow array 0 int+0
 @active_node int+0
-@start RPG::Start
+@start subwindow[ Player/Vehicle Start Point ] RPG::Start
  Supplies defaults
 C burnYourselfOutDoYourselfIn 1

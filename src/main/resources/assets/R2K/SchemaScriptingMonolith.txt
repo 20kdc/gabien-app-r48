@@ -487,8 +487,8 @@ e show_shop_type 0 shopA 1 shopB 2 shopC
 ]1 map map_id
 ]2 x int
 ]3 y int
++mapPositionHelper ]1 ]2 ]3
 +]?4 direction2k3 ignored teleport_event_dir
-
  BE
  Begin Encounter
 
