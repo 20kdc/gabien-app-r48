@@ -33,7 +33,7 @@ public class TXDB {
         // Explicitly for Set Variables use and similar.
         // Yes, if you request it, I'll make a similar TXDB routine for you,
         //  assuming it's not ridiculously complicated.
-        nameDB.put("lang-Russian-pluralRange", new IFunction<RubyIO, String>() {
+        nameDB.put("Interp.lang-Russian-pluralRange", new IFunction<RubyIO, String>() {
             @Override
             public String apply(RubyIO rubyIO) {
                 String[] range = rubyIO.decString().split(" ");
@@ -47,8 +47,7 @@ public class TXDB {
                 return "2";
             }
         });
-        // Usage
-        nameDB.put("lang-Common-arrayLen", new IFunction<RubyIO, String>() {
+        nameDB.put("Interp.lang-Common-arrayLen", new IFunction<RubyIO, String>() {
             @Override
             public String apply(RubyIO rubyIO) {
                 return Integer.toString(rubyIO.arrVal.length);

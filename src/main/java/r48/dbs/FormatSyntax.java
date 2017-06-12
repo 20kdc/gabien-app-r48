@@ -148,17 +148,22 @@ public class FormatSyntax {
                         if (ch == '[') {
                             // At this point, it's gone recursive.
                             // Need to safely skip over this lot...
-                            char ch2 = data[++i];
                             String tx = "";
                             int escapeCount = 1;
                             while (escapeCount > 0) {
-                                tx += ch2;
-                                if (ch2 == '#')
+                                char ch2 = data[++i];
+                                if (ch2 == '#') {
+                                    tx += ch2;
                                     tx += data[++i];
+                                    continue;
+                                }
                                 if (ch2 == '[')
                                     escapeCount++;
-                                if (ch2 == ']')
+                                if (ch2 == ']') {
                                     escapeCount--;
+                                    if (escapeCount == 0)
+                                        break;
+                                }
                                 if (ch2 == '{')
                                     escapeCount++;
                                 if (ch2 == '}') {
@@ -166,7 +171,7 @@ public class FormatSyntax {
                                     if (escapeCount == 0)
                                         return "Mismatched []{} error.";
                                 }
-                                ch2 = data[++i];
+                                tx += ch2;
                             }
                             // ... then parse it.
                             tx = formatNameExtended(tx, root, parameters, parameterSchemas);
