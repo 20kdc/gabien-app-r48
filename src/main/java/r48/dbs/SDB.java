@@ -173,7 +173,7 @@ public class SDB {
                         if (text.equals("flushCommandBuffer")) {
                             // time to flush it!
                             String disambiguationIVar = args[point++];
-                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, 0, TXDB.get("Code.Int.")));
+                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, 0, TXDB.get("Code")));
                             HashMap<Integer, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<Integer, String>();
                             commandBufferSchemas = new HashMap<Integer, SchemaElement>();
@@ -333,6 +333,11 @@ public class SDB {
                             String b = args[point++];
                             String c = args[point++];
                             return new MapPositionHelperSchemaElement(a, b, c);
+                        }
+                        if (text.equals("eventTileHelper")) {
+                            String a = args[point++];
+                            String b = args[point++];
+                            return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(b), Integer.parseInt(a)), getFunctionToReturn(TXDB.get("Select Tile Graphic...")));
                         }
                         // -- If all else fails, it's an ID to be looked up. --
                         return getSDBEntry(text);

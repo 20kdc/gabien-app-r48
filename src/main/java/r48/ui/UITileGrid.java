@@ -7,6 +7,7 @@ package r48.ui;
 
 import gabien.IGrInDriver;
 import r48.AppMain;
+import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 
 /**
@@ -14,17 +15,21 @@ import r48.map.UIMapView;
  * Created on 12/31/16.
  */
 public class UITileGrid extends UIGrid {
-    public final int tileStart;
-    public final UIMapView map;
+    public final int tileStart, layer;
+    public final StuffRenderer renderer;
 
     // If 0, not an AT Group. Otherwise, this is the size of the AT group.
     public final int atGroup;
     public final int[] viewMap;
 
     public UITileGrid(UIMapView mv, int tStart, int tileCount, int aTile, int[] remap) {
-        super(mv.tileSize, tileCount);
+        this(mv.renderer, mv.currentLayer, tStart, tileCount, aTile, remap);
+    }
+    public UITileGrid(StuffRenderer sr, int l, int tStart, int tileCount, int aTile, int[] remap) {
+        super(sr.tileRenderer.getTileSize(), tileCount);
         canMultiSelect = aTile == 0;
-        map = mv;
+        renderer = sr;
+        layer = l;
         tileStart = tStart;
         bkgR = 255;
         bkgB = 255;
@@ -68,6 +73,6 @@ public class UITileGrid extends UIGrid {
         if (atGroup != 0)
             if (!hover)
                 t += 15; // Hardcoded offset. Not good, but it covers all cases right now.
-        map.renderer.tileRenderer.drawTile(map.currentLayer, (short) (t + tileStart), x, y, igd, tileSize);
+        renderer.tileRenderer.drawTile(layer, (short) (t + tileStart), x, y, igd, tileSize);
     }
 }
