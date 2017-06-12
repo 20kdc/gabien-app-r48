@@ -170,8 +170,8 @@ public class UIMapView extends UIElement implements IWindowElement {
                     for (int j = camTY; j < camTB; j++) {
                         int px = i * eTileSize;
                         int py = j * eTileSize;
-                        px -= camX;
-                        py -= camY;
+                        px -= (int) camX;
+                        py -= (int) camY;
                         // Keeping in mind px/py is the TL corner...
                         px += eTileSize / 2;
                         px -= tileSize / 2;
@@ -196,15 +196,15 @@ public class UIMapView extends UIElement implements IWindowElement {
     public void handleClick(int x, int y, int button) {
         lmX = x;
         lmY = y;
+        // Zoom is mousewheel emulation.
         if (getZPlusRect().contains(x, y)) {
             dragging = false;
-            internalScaling++;
+            handleMousewheel(x, y, true);
             return;
         }
         if (getZMinusRect().contains(x, y)) {
             dragging = false;
-            if (internalScaling > 1)
-                internalScaling--;
+            handleMousewheel(x, y, false);
             return;
         }
         if (button != 1) {
@@ -252,12 +252,16 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     @Override
     public void handleMousewheel(int x, int y, boolean north) {
+        Rect camR = getBounds();
+        camX += camR.width / (internalScaling * 2.0d);
+        camY += camR.height / (internalScaling * 2.0d);
         if (north) {
             internalScaling++;
-        } else {
-            if (internalScaling > 1)
-                internalScaling--;
+        } else if (internalScaling > 1) {
+            internalScaling--;
         }
+        camX -= camR.width / (internalScaling * 2.0d);
+        camY -= camR.height / (internalScaling * 2.0d);
     }
 
     public void toggleMinimap() {
