@@ -87,4 +87,9 @@ public class IkaTileRenderer implements ITileRenderer {
         double time = GaBIEn.getTime();
         return (int) ((time - Math.floor(time)) * 64) % 16;
     }
+
+    @Override
+    public int getRecommendedWidth() {
+        return 16;
+    }
 }

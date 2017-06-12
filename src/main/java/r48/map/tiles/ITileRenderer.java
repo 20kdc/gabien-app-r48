@@ -26,4 +26,7 @@ public interface ITileRenderer {
 
     // Used to sync the map view and playing animations.
     int getFrame();
+
+    // The standardized tilemap width (8 for RXP, 6 for R2k)
+    int getRecommendedWidth();
 }

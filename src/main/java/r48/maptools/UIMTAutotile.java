@@ -41,7 +41,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
     public UIMTAutotile(UIMapView mv) {
         map = mv;
         setupView();
-        setBounds(new Rect(0, 0, 320, 200));
+        setBounds(new Rect(0, 0, (mv.tileSize * map.renderer.tileRenderer.getRecommendedWidth()) + 32, 200));
     }
 
     private void setupView() {

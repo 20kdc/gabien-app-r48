@@ -298,4 +298,9 @@ public class LcfTileRenderer implements ITileRenderer {
         double t = GaBIEn.getTime();
         return ((int) Math.floor(t * 24)) % 24;
     }
+
+    @Override
+    public int getRecommendedWidth() {
+        return 6;
+    }
 }

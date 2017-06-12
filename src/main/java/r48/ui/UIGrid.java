@@ -36,6 +36,7 @@ public class UIGrid extends UIPanel {
     public UIGrid(int tSize, int tCount) {
         tileSize = tSize;
         tileCount = tCount;
+        allElements.add(uivScrollbar);
         setBounds(new Rect(0, 0, 320, 200));
     }
 
@@ -106,11 +107,7 @@ public class UIGrid extends UIPanel {
 
     @Override
     public void setBounds(Rect r) {
-        setBoundsPass(r);
-        setBoundsPass(r);
-    }
-    private void setBoundsPass(Rect r) {
-        int scrollBarW = uivScrollbar.getBounds().width; // wait, this wasn't in UI lib at all. fixed.
+        int scrollBarW = uivScrollbar.getBounds().width;
         int tiles = r.width / tileSize;
         if (tiles < 2)
             tiles = 2;
@@ -118,17 +115,7 @@ public class UIGrid extends UIPanel {
         if (availableRows < 1)
             availableRows = 1;
         tmWidth = tiles;
-        int rows = tileCount;
-        if (rows % tiles > 0)
-            rows += tiles;
-        rows /= tiles;
-        allElements.clear();
-        if (rows > availableRows) {
-            tmWidth -= (scrollBarW + (tileSize - 1)) / tileSize;
-            allElements.add(uivScrollbar);
-        } else {
-            allElements.remove(uivScrollbar);
-        }
+        tmWidth -= (scrollBarW + (tileSize - 1)) / tileSize;
         Rect b = getBounds();
         uivScrollbar.setBounds(new Rect(b.width - scrollBarW, 0, scrollBarW, availableRows * tileSize));
         super.setBounds(new Rect(r.x, r.y, tiles * tileSize, availableRows * tileSize));
@@ -165,6 +152,11 @@ public class UIGrid extends UIPanel {
             selectionChanged();
         }
         super.handleDrag(x, y);
+    }
+
+    @Override
+    public void handleMousewheel(int x, int y, boolean north) {
+        uivScrollbar.handleMousewheel(x, y, north);
     }
 
     private void selectionChanged() {

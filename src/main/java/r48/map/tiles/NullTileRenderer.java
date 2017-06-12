@@ -47,4 +47,9 @@ public class NullTileRenderer implements ITileRenderer {
     public int getFrame() {
         return 0;
     }
+
+    @Override
+    public int getRecommendedWidth() {
+        return 8;
+    }
 }
