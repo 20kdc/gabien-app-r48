@@ -250,6 +250,16 @@ public class UIMapView extends UIElement implements IWindowElement {
         }
     }
 
+    @Override
+    public void handleMousewheel(int x, int y, boolean north) {
+        if (north) {
+            internalScaling++;
+        } else {
+            if (internalScaling > 1)
+                internalScaling--;
+        }
+    }
+
     public void toggleMinimap() {
         Rect camR = getBounds();
         int camW = camR.width / internalScaling;

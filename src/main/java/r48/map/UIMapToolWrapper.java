@@ -40,6 +40,11 @@ public class UIMapToolWrapper extends UIElement implements IWindowElement {
     }
 
     @Override
+    public void handleMousewheel(int x, int y, boolean north) {
+        pattern.handleMousewheel(x, y, north);
+    }
+
+    @Override
     public Rect getBounds() {
         return pattern.getBounds();
     }
