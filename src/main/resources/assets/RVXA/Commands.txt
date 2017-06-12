@@ -236,6 +236,7 @@ P 0 yVar var_id
 v 0 y int
 p playerDir direction_disable
 p fadeType transfer_player_fadetype
+x transfer_player_paramassist
 
 202:@@{A:[@transfer_vehicle_paramassist]|Transfer Vehicle}
 d Teleports a vehicle to someplace.

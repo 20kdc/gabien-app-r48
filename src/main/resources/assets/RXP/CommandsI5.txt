@@ -14,6 +14,7 @@ P 0 yVar var_id
 v 0 y int
 p playerDir direction_disable
 p fadeType transfer_player_fadetype
+x transfer_player_paramassist
 
 202:@@{A:[@set_event_location_paramassist]|Set Event Location}
 X set_event_location_paramassist

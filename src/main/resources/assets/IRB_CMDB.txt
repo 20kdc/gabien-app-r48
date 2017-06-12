@@ -181,4 +181,5 @@
   'I' defines exit indent offset
       (ex. Else is l,i-1,I1.)
   'X' defines this as using a custom schema for indent & parameters.
+  'x' defines the same, but indicates to any external processing tools that this is optional.
   'C' is, like with SDB, the gateway for special cases.

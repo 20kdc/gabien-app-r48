@@ -22,6 +22,11 @@ i RCOM/SchemaScript.txt
  Defining Events...
 
 : RPG::Event::Page::Condition
+C name Class.RPG::Event::Page::Condition $ | [RPG::Event::Page::Condition.switchA]A[RPG::Event::Page::Condition.switchB]A[RPG::Event::Page::Condition.var]A[RPG::Event::Page::Condition.selfSwitch]A
+C name Interp.RPG::Event::Page::Condition.switchA @switch1_valid @switch1_id | {A=T=, Switch @[switch_id]B}
+C name Interp.RPG::Event::Page::Condition.switchB @switch2_valid @switch2_id | {A=T=, Switch @[switch_id]B}
+C name Interp.RPG::Event::Page::Condition.var @variable_valid @variable_id @variable_value | {A=T=, Var @[var_id]B #C}
+C name Interp.RPG::Event::Page::Condition.selfSwitch @self_switch_valid @self_switch_ch | {A=T=, Self-Switch @[selfswitch_id]B}
 @switch1_valid boolean
 @switch1_id switch_id
 @switch2_valid boolean
@@ -46,6 +51,7 @@ e event_trigger 0 onInteract 1 onPlayerWalkAgainst 2 onEventWalkAgainst 3 autoru
 e event_movetype 0 fixed 1 random 2 approachPlayer 3 moveRoute
 
 : RPG::Event::Page
+C name Class.RPG::Event::Page @condition | [RPG::Event::Page::Condition]A
 @condition subwindow RPG::Event::Page::Condition
 @through boolean
 @move_type event_movetype

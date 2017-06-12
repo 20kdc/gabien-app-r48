@@ -133,4 +133,6 @@ e shop_item_type 0 item 1 weapon 2 armour
 
 e actor_equip_type 0 Weapon 1 Armour0 2 Armour2 3 Armour3 4 Armour4
 
+ Transfer Player
+
 e transfer_player_fadetype 0 dark 1 none

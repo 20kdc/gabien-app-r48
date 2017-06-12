@@ -48,12 +48,37 @@ C name transfer_player_paramassist ]0 ]1 ]2 ]3 | Transfer player{A=1= by vars @[
 
  NOTE: The CMDB stuff for this is:
  999:@@{A:[@transfer_player_paramassist]|Transfer Player}
- p useVariables int_boolean
- D map 0 int 0 map_id 1 var_id
- D x 0 int 0 int 1 var_id
- D y 0 int 0 int 1 var_id
+ p useVars int_boolean
+ P 0 mapVar var_id
+ v 0 map map_id
+ P 0 xVar var_id
+ v 0 x int
+ P 0 yVar var_id
+ v 0 y int
  p playerDir direction_disable
  p fadeType transfer_player_fadetype
+ x transfer_player_paramassist
+
+.transfer_player_paramassist
+@indent indent
+@parameters arrayDAM 0 int_boolean transfer_player_vars 0 transfer_player_novars
+
+.transfer_player_vars
+]0 targetVars int_boolean
+]1 mapVar var_id
+]2 xVar var_id
+]3 yVar var_id
+]4 playerDir direction_disable
+]5 fadeType transfer_player_fadetype
+
+.transfer_player_novars
+]0 targetVars int_boolean
+]1 mapVar map_id
+]2 xVar int
+]3 yVar int
+]4 playerDir direction_disable
+]5 fadeType transfer_player_fadetype
++mapPositionHelper ]1 ]2 ]3
 
  --
 

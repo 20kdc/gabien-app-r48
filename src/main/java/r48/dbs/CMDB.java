@@ -192,7 +192,7 @@ public class CMDB {
                     }
                 } else if (c == '>') {
                     localAliasing.put(args[0], AppMain.schemas.getSDBEntry(args[1]));
-                } else if (c == 'X') {
+                } else if ((c == 'X') || (c == 'x')) {
                     rc.specialSchema = AppMain.schemas.getSDBEntry(args[0]);
                 } else if (c == 'C') {
                     if (args[0].equals("digitCount"))
