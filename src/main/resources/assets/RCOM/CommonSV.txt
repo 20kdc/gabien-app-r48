@@ -7,7 +7,7 @@
 e set_variables_operation 0 = 1 += 2 -= 3 *= 4 /= 5 %=
 
  Setup a default.
-C name set_variables_parameters ]3 ]4 ]5 | {A=0=int: [int]B|{A=1=var: @[var_id]B|{A=2=random: [int]B through [int]C|[@set_variables_parameters_ext]}}}
+C name set_variables_parameters ]3 ]4 ]5 | {@#A|0|int: [int]B|1|var: @[var_id]B|2|random: [int]B through [int]C|[@set_variables_parameters_ext]}
 
  Notably, this gets overridden later if the schema allows for Set Variables full naming.
 C name set_variables_parameters_ext ]3 | [set_variables_source]A

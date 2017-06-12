@@ -76,7 +76,7 @@ public class FormatSyntax {
                     if ((components.size() % 2) == 0)
                         val = components.getLast();
                     for (int j = 1; j < components.size() - 1; j += 2) {
-                        String a = components.get(j);
+                        String a = formatNameExtended(components.get(j), root, parameters, parameterSchemas);
                         String b = components.get(j + 1);
                         if (tx.equals(a))
                             val = b;
@@ -113,7 +113,7 @@ public class FormatSyntax {
                         disables++;
                         continue;
                     }
-                    wantedVal = interpretParameter(parameters[pidB], getParameterDisplaySchemaFromArray(root, parameterSchemas, pidB), true);
+                    wantedVal = parameters[pidB].toString();
                 }
                 if (parameters.length <= pidA) {
                     disables++;

@@ -9,7 +9,7 @@ p firstSwitch switch_id
 p lastSwitch switch_id
 p turnOff int_boolean
 
-122:@@Set Variables{A: {AB:@#A|@#A..@#B} #C [@set_variables_parameters]}
+122:@@Set Variable{A:{AB: @#A|s @#A..@#B} #C [@set_variables_parameters]|s}
  note: the parameters given here are for formatting reasons, since the X overrides any actual use.
 p firstVar var_id
 p lastVar var_id

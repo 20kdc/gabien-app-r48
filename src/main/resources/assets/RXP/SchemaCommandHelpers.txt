@@ -20,7 +20,7 @@ i RCOM/CommonConditionals.txt
 e conditional_branch_actor_types 0 inParty 1 name= 2 skill? 3 weapon= 4 armourIdWorn? 5 hasState?
 
 .conditional_branch_actor
-C name conditional_branch_actor ]1 ]2 | Actor @[actor_id]A {B=0=in party|{B=1=[@conditional_branch_actor_name]|{B=2=[@conditional_branch_actor_skill]|{B=3=[@conditional_branch_actor_weapon]|{B=4=[@conditional_branch_actor_armourIdWorn]|{B=5=[@conditional_branch_actor_hasState]|[conditional_branch_actor_types]B (...)}}}}}}
+C name conditional_branch_actor ]1 ]2 | Actor @[actor_id]A {@#B|0|in party|1|[@conditional_branch_actor_name]|2|[@conditional_branch_actor_skill]|3|[@conditional_branch_actor_weapon]|4|[@conditional_branch_actor_armourIdWorn]|5|[@conditional_branch_actor_hasState]|[conditional_branch_actor_types]B (...)}
 ]0 type conditional_branch_types
 ]1 actor actor_id
 ]2 subCondition conditional_branch_actor_types
@@ -29,7 +29,7 @@ C name conditional_branch_actor ]1 ]2 | Actor @[actor_id]A {B=0=in party|{B=1=[@
 e cbr_gold_comparison_type 0 >= 1 <
 
 .conditional_branch_parameters
-C name conditional_branch_parameters ]0 | {A=0=[@conditional_branch_switch]|{A=1=[@conditional_branch_variable]|{A=2=[@conditional_branch_selfSwitch]|{A=3=[@conditional_branch_timer]|{A=4=[@conditional_branch_actor]|{A=5=[@conditional_branch_enemy]|{A=6=[@conditional_branch_character]|{A=7=[@conditional_branch_gold]|{A=8=[@conditional_branch_item]|{A=9=[@conditional_branch_weapon]|{A=10=[@conditional_branch_armour]|{A=11=[@conditional_branch_button]|{A=12=[@conditional_branch_script]|Unknown}}}}}}}}}}}}}
+C name conditional_branch_parameters ]0 | {@#A|0|[@conditional_branch_switch]|1|[@conditional_branch_variable]|2|[@conditional_branch_selfSwitch]|3|[@conditional_branch_timer]|4|[@conditional_branch_actor]|5|[@conditional_branch_enemy]|6|[@conditional_branch_character]|7|[@conditional_branch_gold]|8|[@conditional_branch_item]|9|[@conditional_branch_weapon]|10|[@conditional_branch_armour]|11|[@conditional_branch_button]|12|[@conditional_branch_script]|[conditional_branch_types]A (...)}
 @indent indent
 @parameters arrayDAM 0 conditional_branch_types conditional_branch_unknown 0 conditional_branch_switch 1 conditional_branch_variable 2 conditional_branch_selfSwitch 3 conditional_branch_timer 4 conditional_branch_actor 5 conditional_branch_enemy 6 conditional_branch_character 7 conditional_branch_gold 8 conditional_branch_item 9 conditional_branch_weapon 10 conditional_branch_armour 11 conditional_branch_button 12 conditional_branch_script
 
@@ -49,7 +49,7 @@ i RCOM/CommonSV.txt
  Notably, the majority of the Set Variables command's pattern is in the Commands.txt file.
  Furthermore, CommonSV handles the int/var/random cases, and lets the parent schema control any further cases by replacing set_variables_parameters_ext.
 
-C name set_variables_parameters_ext ]3 ]4 ]5 | [set_variables_source]A{A=3=: @[item_id]B}{A=4=: @[actor_id]B [set_variables_source_actor_var]C}{A=5=: [troop_enemy_id]B [set_variables_source_enemy_var]C}{A=6=: [character_id]B [set_variables_source_char_var]C}{A=7=: [set_variables_source_other_var]B}
+C name set_variables_parameters_ext ]3 ]4 ]5 | [set_variables_source]A{@#A|3|: @[item_id]B|4|: @[actor_id]B [set_variables_source_actor_var]C|5|: [troop_enemy_id]B [set_variables_source_enemy_var]C|6|: [character_id]B [set_variables_source_char_var]C|7|: [set_variables_source_other_var]B}
 
 .set_variables_itemCount
 +set_variables_base
