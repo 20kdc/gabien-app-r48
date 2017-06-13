@@ -38,15 +38,18 @@ p text string
 d Continues a 10110 'Say'.
 p text string
 
+ Need to automate this later.
+
 10140: @@Show Choices{B: {B=0=no cancel|cancel choice: #B}} (20140/20141 follows)
 d Shows a set of choices to the player. (editorChoices is for editor display purposes only.)
 p editorChoices string
 p 0|cancelChoice+1 int
 I1
 
-20140: ... On Choice:$
-d A choice. If the player selects this choice, the code between this and the next choice runs.
+20140: @@... On Choice:{B: #A (index #B)}
+d A choice. If the player selects this choice, the code between this and the next choice runs. The choiceIndex should be 0 for the first choice, 1 for the second, etc. If the text is blank, this is the 'cancel' choice.
 p text string
+p choiceIndex int
 K10140
 i-1
 I1
