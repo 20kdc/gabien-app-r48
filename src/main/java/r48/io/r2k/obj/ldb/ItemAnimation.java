@@ -30,7 +30,7 @@ public class ItemAnimation extends R2kObject {
                 new Index(0x03, type, "@type"),
                 new Index(0x04, weaponAnim, "@weapon_anim_idx"),
                 new Index(0x05, movement, "@movement"),
-                new Index(0x06, afterImage, "@after_image"),
+                new Index(0x06, afterImage, "@has_afterimage"),
                 new Index(0x07, attacks, "@attacks"),
                 new Index(0x08, ranged, "@ranged"),
                 new Index(0x09, rangedAnim, "@ranged_anim_idx"),

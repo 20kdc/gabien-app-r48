@@ -2,9 +2,11 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
 
- (highly incomplete) database schema
+ (less incomplete) database schema
 
  ---
+
+e rpg_statattr_rank 0 A 1 B 2 C 3 D 4 E
 
 .rpg_actor_equipment_block
 ]0 weapon item_or_none_id
@@ -71,9 +73,9 @@ C name Class.RPG::Actor @name | #A
 @no_weapon_attack_anim animation_id
 @class_2k3 class_or_none_id
 @learn_skills subwindow hash int+0 RPG::Learning
-@rename_allow boolean
-@state_ranks subwindow array 0 int
-@attribute_ranks subwindow array 0 int
+@editor_use_skillspanel_name boolean
+@state_rates subwindow hash state_id rpg_statattr_rank
+@element_rates subwindow hash attribute_id rpg_statattr_rank
 @battle_commands_2k3 subwindow array 0 battlecommand_id
 
  ---
@@ -81,7 +83,7 @@ C name Class.RPG::Actor @name | #A
 : RPG::BattlerAnimationData
 e rpg_badia_movetype 0 none 1 step 2 jump 3 move
 @move_type rpg_badia_movetype
-@afterimage_type int_boolean
+@has_afterimage int_boolean
 @pose int
 
 : RPG::Skill
@@ -143,7 +145,7 @@ e rpg_skill_fm 0 A 1 B 2 C 3 dodge
 @type int
 @movement rpg_badia_movetype
 @battle_anim animation_id
-@after_image int_boolean
+@has_afterimage int_boolean
 @attacks int
 @weapon_anim_idx int
 @ranged boolean
@@ -269,8 +271,8 @@ C name Class.RPG::Enemy @name | #A
 @crit_chance int
 @miss boolean
 @levitate boolean
-@state_ranks subwindow array 0 int
-@attribute_ranks subwindow array 0 int
+@state_rates subwindow hash state_id rpg_statattr_rank
+@element_rates subwindow hash attribute_id rpg_statattr_rank
 @actions subwindow hash int+0 subwindow RPG::EnemyAction
 
  ---
@@ -632,7 +634,7 @@ e rpg_battlecommand_type 0 attack 1 skill 2 subSkill 3 defense 4 item 5 escape 6
 @name string
 @type rpg_battlecommand_type
 
-e rpg_battlecommand_battletype 0 traditional 1 alternative 2 gauge
+e rpg_battlecommand_battletype 0 traditional 1 alternative 2 timeGauge
 e rpg_battlecommand_dir 0 noModify 1 up 2 right 3 down 4 left
 
 : RPG::BattleCommands
@@ -667,8 +669,8 @@ C name Class.RPG::Class @name | #A
 @each_level_exp_mul int
 @each_level_exp_add int
 @learn_skills subwindow hash int+0 RPG::Learning
-@state_ranks subwindow array 0 int
-@attribute_ranks subwindow array 0 int
+@state_rates subwindow hash state_id rpg_statattr_rank
+@element_rates subwindow hash attribute_id rpg_statattr_rank
 @battle_commands subwindow array 0 battlecommand_or_none_id
 
  ---

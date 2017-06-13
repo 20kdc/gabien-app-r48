@@ -33,17 +33,17 @@ public class Enemy extends R2kObject {
     public BooleanR2kStruct levitate = new BooleanR2kStruct(false);
 
     public ArraySizeR2kInterpretable<ByteR2kStruct> stateRanksSz = new ArraySizeR2kInterpretable<ByteR2kStruct>();
-    public ArrayR2kStruct<ByteR2kStruct> stateRanks = new ArrayR2kStruct<ByteR2kStruct>(stateRanksSz, new ISupplier<ByteR2kStruct>() {
+    public ArraySetR2kStruct<ByteR2kStruct> stateRanks = new ArraySetR2kStruct<ByteR2kStruct>(stateRanksSz, new ISupplier<ByteR2kStruct>() {
         @Override
         public ByteR2kStruct get() {
-            return new ByteR2kStruct(0);
+            return new ByteR2kStruct(2);
         }
     }, true);
     public ArraySizeR2kInterpretable<ByteR2kStruct> attrRanksSz = new ArraySizeR2kInterpretable<ByteR2kStruct>();
-    public ArrayR2kStruct<ByteR2kStruct> attrRanks = new ArrayR2kStruct<ByteR2kStruct>(attrRanksSz, new ISupplier<ByteR2kStruct>() {
+    public ArraySetR2kStruct<ByteR2kStruct> attrRanks = new ArraySetR2kStruct<ByteR2kStruct>(attrRanksSz, new ISupplier<ByteR2kStruct>() {
         @Override
         public ByteR2kStruct get() {
-            return new ByteR2kStruct(0);
+            return new ByteR2kStruct(2);
         }
     }, true);
 
@@ -76,9 +76,9 @@ public class Enemy extends R2kObject {
                 new Index(0x1A, miss, "@miss"),
                 new Index(0x1C, levitate, "@levitate"),
                 new Index(0x1F, stateRanksSz),
-                new Index(0x20, stateRanks, "@state_ranks"),
+                new Index(0x20, stateRanks, "@state_rates"),
                 new Index(0x21, attrRanksSz),
-                new Index(0x22, attrRanks, "@attribute_ranks"),
+                new Index(0x22, attrRanks, "@element_rates"),
                 new Index(0x2A, enemyActions, "@actions"),
         };
     }

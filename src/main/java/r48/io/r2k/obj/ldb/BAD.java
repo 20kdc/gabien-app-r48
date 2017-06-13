@@ -23,7 +23,7 @@ public class BAD extends R2kObject {
     public Index[] getIndices() {
         return new Index[] {
                 new Index(0x05, moveType, "@move_type"),
-                new Index(0x06, aiType, "@afterimage_type"),
+                new Index(0x06, aiType, "@has_afterimage"),
                 new Index(0x0E, pose, "@pose"),
         };
     }

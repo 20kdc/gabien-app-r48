@@ -59,17 +59,17 @@ public class Actor extends R2kObject {
     public BooleanR2kStruct canRename = new BooleanR2kStruct(false);
     public StringR2kStruct renameResult = new StringR2kStruct();
     public ArraySizeR2kInterpretable<ByteR2kStruct> stateRanksSz = new ArraySizeR2kInterpretable<ByteR2kStruct>();
-    public ArrayR2kStruct<ByteR2kStruct> stateRanks = new ArrayR2kStruct<ByteR2kStruct>(stateRanksSz, new ISupplier<ByteR2kStruct>() {
+    public ArraySetR2kStruct<ByteR2kStruct> stateRanks = new ArraySetR2kStruct<ByteR2kStruct>(stateRanksSz, new ISupplier<ByteR2kStruct>() {
         @Override
         public ByteR2kStruct get() {
-            return new ByteR2kStruct(0);
+            return new ByteR2kStruct(2);
         }
     }, true);
     public ArraySizeR2kInterpretable<ByteR2kStruct> attrRanksSz = new ArraySizeR2kInterpretable<ByteR2kStruct>();
-    public ArrayR2kStruct<ByteR2kStruct> attrRanks = new ArrayR2kStruct<ByteR2kStruct>(attrRanksSz, new ISupplier<ByteR2kStruct>() {
+    public ArraySetR2kStruct<ByteR2kStruct> attrRanks = new ArraySetR2kStruct<ByteR2kStruct>(attrRanksSz, new ISupplier<ByteR2kStruct>() {
         @Override
         public ByteR2kStruct get() {
-            return new ByteR2kStruct(0);
+            return new ByteR2kStruct(2);
         }
     }, true);
     public ArrayR2kStruct<Int32R2kStruct> battleCommands = new ArrayR2kStruct<Int32R2kStruct>(null, new ISupplier<Int32R2kStruct>() {
@@ -109,12 +109,12 @@ public class Actor extends R2kObject {
                 new Index(0x3C, batPosY, "@battle_posy_2k3"),
                 new Index(0x3E, battlerAnim, "@battler_anim_2k3"),
                 new Index(0x3F, learnSkills, "@learn_skills"),
-                new Index(0x42, canRename, "@rename_allow"),
+                new Index(0x42, canRename, "@editor_use_skillspanel_name"),
                 new Index(0x43, renameResult, "@battle_skillspanel_name"),
                 new Index(0x47, stateRanksSz),
-                new Index(0x48, stateRanks, "@state_ranks"),
+                new Index(0x48, stateRanks, "@state_rates"),
                 new Index(0x49, attrRanksSz),
-                new Index(0x4A, attrRanks, "@attribute_ranks"),
+                new Index(0x4A, attrRanks, "@element_rates"),
                 new Index(0x50, battleCommands, "@battle_commands_2k3")
         };
     }
