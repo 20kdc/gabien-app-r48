@@ -55,6 +55,7 @@ public class SDB {
     public SDB() {
         schemaDatabase.put("nil", new OpaqueSchemaElement());
         schemaDatabase.put("int", new IntegerSchemaElement(0));
+        schemaDatabase.put("roint", new ROIntegerSchemaElement(0));
         schemaDatabase.put("int+0", new LowerBoundIntegerSchemaElement(0, 0));
         schemaDatabase.put("int+1", new LowerBoundIntegerSchemaElement(1, 1));
         schemaDatabase.put("index", new AMAISchemaElement());

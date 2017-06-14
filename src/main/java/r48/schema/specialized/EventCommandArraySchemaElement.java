@@ -81,6 +81,10 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
                     modified = true;
                 }
                 indent += rc.indentPost.apply(commandTarg.getInstVarBySymbol("@parameters"));
+                // Group Behavior
+                if (rc.groupBehavior != null)
+                    modified |= rc.groupBehavior.correctElement(arr, i, commandTarg);
+                //
 
                 if (rc.needsBlockLeavePre) {
                     if (!lastWasBlockLeave) {

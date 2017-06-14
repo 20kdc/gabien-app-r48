@@ -40,16 +40,17 @@ p text string
 
  Need to automate this later.
 
-10140: @@Show Choices{B: {B=0=no cancel|cancel choice: #B}} (20140/20141 follows)
+10140: @@Show Choices{B: {B=0=no cancel|cancel choice: #B}| (20140/20141 follows)}
 d Shows a set of choices to the player. (editorChoices is for editor display purposes only.)
 p editorChoices string
-p 0|cancelChoice+1 int
+p 0|cancelIndex+1 int
 I1
 
-20140: @@... On Choice:{B: #A (index #B)}
-d A choice. If the player selects this choice, the code between this and the next choice runs. The choiceIndex should be 0 for the first choice, 1 for the second, etc. If the text is blank, this is the 'cancel' choice.
+20140: @@... On Choice:{B: {A=""=Cancel|#A} (index #B)}
+d A choice. If the player selects this choice, the code between this and the next choice runs. If the text is blank, this is a 'cancel' choice (and should be last)
 p text string
-p choiceIndex int
+p choiceIndex roint
+C groupBehavior r2k_choice
 K10140
 i-1
 I1
@@ -83,7 +84,7 @@ p faceFlipped int_boolean
 
  Control Switches follows. Uhoh.
 
-10210: @@Control Switch{E:{B=1=es @#C through @#D| @#C} = #E|es}
+10210: @@Control Switch{E:{B=1=es @#C .. @#D| @#C} = #E|es}
 d Control switches in various ways. Single alters one switch. Range alters a group of switches. Indirect alters one switch, numbered by a variable.
 p _ string
 p type control_switches_type

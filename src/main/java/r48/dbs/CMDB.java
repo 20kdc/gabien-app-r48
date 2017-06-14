@@ -7,13 +7,10 @@ package r48.dbs;
 
 import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
-import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -226,6 +223,38 @@ public class CMDB {
                                 return 0;
                             }
                         };
+                    }
+                    if (args[0].equals("groupBehavior")) {
+                        if (args[1].equals("r2k_choice")) {
+                            rc.groupBehavior = new IGroupBehavior() {
+                                @Override
+                                public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                                    RubyIO res = command.getInstVarBySymbol("@parameters").arrVal[1];
+                                    long id = command.getInstVarBySymbol("@indent").fixnumVal;
+                                    long nIdx = 0;
+                                    for (int i = commandIndex - 1; i >= 0; i--) {
+                                        RubyIO cmd = array.get(i);
+                                        if (cmd.getInstVarBySymbol("@indent").fixnumVal == id) {
+                                            long code = cmd.getInstVarBySymbol("@code").fixnumVal;
+                                            if (code == 10140) {
+                                                // Show Choices (term.)
+                                                break;
+                                            } else if (code == 20140) {
+                                                // Choice...
+                                                nIdx++;
+                                            }
+                                        }
+                                    }
+                                    if (nIdx != res.fixnumVal) {
+                                        res.fixnumVal = nIdx;
+                                        return true;
+                                    }
+                                    return false;
+                                }
+                            };
+                        } else {
+                            throw new RuntimeException("Unknown group behavior " + args[1]);
+                        }
                     }
                 } else if (c == '#') {
                     DBLoader.readFile(args[0], this);

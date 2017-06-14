@@ -34,7 +34,7 @@ e set_variables_enemyprop 0 hp 1 sp 2 maxHp 3 maxSp 4 atk 5 def 6 spi 7 agi
 ]2 ptrVarTarg var_id
 
 .set_variables_base
-C name set_variables_base ]1 ]2 ]3 ]4 | {A=0=Var#[@[var_id]B#]}{A=1=Vars#[@[var_id]B..@[var_id]C#]}{A=2=Var#[Var#[@[var_id]B#]#]} [set_variables_op]D
+C name set_variables_base ]1 ]2 ]3 ]4 | {A=0=Var#[@[var_id]B#]}{A=1=Vars#[@[var_id]B .. @[var_id]C#]}{A=2=Var#[Var#[@[var_id]B#]#]} [set_variables_op]D
 ]1 targetType set_variables_target
 +arrayDAM 1 set_variables_source set_variables_base_targ 1 set_variables_base_targ_r 2 set_variables_base_targ_i
 ]4 operation set_variables_op

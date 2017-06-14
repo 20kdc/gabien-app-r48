@@ -37,7 +37,11 @@ public class RPGCommand {
     public boolean needsBlockLeavePre;
     public boolean typeBlockLeave;
 
-    public String description = null;
+    public String description;
+
+    // Extrenely special behavior for certain commands.
+    // Only usable with the proper "shielding".
+    public IGroupBehavior groupBehavior;
 
     // Pass null for parameters if this is for combobox display.
     public String formatName(RubyIO root, RubyIO[] parameters) {
