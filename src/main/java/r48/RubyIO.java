@@ -139,9 +139,11 @@ public class RubyIO {
             iVars.put(a.getKey(), new RubyIO().setDeepClone(a.getValue()));
         if (hashDefVal != null)
             hashDefVal = new RubyIO();
-        if (hashVal != null)
+        if (hashVal != null) {
+            hashVal.clear();
             for (Map.Entry<RubyIO, RubyIO> a : clone.hashVal.entrySet())
                 hashVal.put(new RubyIO().setDeepClone(a.getKey()), new RubyIO().setDeepClone(a.getValue()));
+        }
         if (arrVal != null)
             for (int i = 0; i < arrVal.length; i++)
                 arrVal[i] = new RubyIO().setDeepClone(arrVal[i]);

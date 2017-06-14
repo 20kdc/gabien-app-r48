@@ -29,6 +29,7 @@ import java.util.*;
  * Right now this breaks under R2k for various reasons, first being the versionId assumption.
  * Need to shuffle about versionIds and fix that.
  * Secondly, need to switch to using IRMLikeMapInfoBackend full-time.
+ * (That was all done eventually.)
  * Created on 2/12/17.
  */
 public class RMToolsToolset implements IToolset {

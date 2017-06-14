@@ -6,6 +6,7 @@
 package r48.schema.arrays;
 
 import gabien.ui.*;
+import r48.AppMain;
 import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -37,7 +38,9 @@ public abstract class ArraySchemaElement extends SchemaElement {
         // this object is needed as a pin to hold things together.
         // It used to be kind of redundant, but now with the selection stuff...
         final Runnable runCompleteRelayout = new Runnable() {
-            int selected = -1;
+            // Only check selectedStart.
+            int selectedStart = -1;
+            int selectedEnd = -1;
             // Because of name ambiguity, but also whacks uiSVL
             public void containerRCL() {
                 run();
@@ -57,48 +60,57 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     SchemaElement subelem = getElementSchema(i);
                     UIElement uie = subelem.buildHoldingEditor(target.arrVal[i], launcher, ind);
                     final int mi = i;
-                    if (pLevel >= 2) {
-                        uie = new UIAppendButton("-", uie, new Runnable() {
+                    if (selectedStart == -1) {
+                        uie = new UIAppendButton(TXDB.get("Sel"), uie, new Runnable() {
                             @Override
                             public void run() {
-                                ArrayUtils.removeRioElement(target, mi);
-                                // fixup array indices!
-                                modifyVal(target, path, false);
-                                // whack the UI & such
-                                path.changeOccurred(false);
-                            }
-                        }, FontSizes.schemaButtonTextHeight);
-                    }
-                    if (selected == -1) {
-                        uie = new UIAppendButton("S", uie, new Runnable() {
-                            @Override
-                            public void run() {
-                                selected = mi;
+                                selectedStart = mi;
+                                selectedEnd = mi;
                                 containerRCL();
                             }
                         }, FontSizes.schemaButtonTextHeight);
-                    } else {
-                        if (selected == i) {
-                            uie = new UIAppendButton("D", uie, new Runnable() {
+                        if (pLevel >= 2) {
+                            uie = new UIAppendButton("-", uie, new Runnable() {
                                 @Override
                                 public void run() {
-                                    selected = -1;
+                                    ArrayUtils.removeRioElement(target, mi);
+                                    // whack the UI & such
+                                    path.changeOccurred(false);
+                                }
+                            }, FontSizes.schemaButtonTextHeight);
+                        }
+                    } else {
+                        if (selectedStart == i) {
+                            uie = new UIAppendButton(TXDB.get("DeSel"), uie, new Runnable() {
+                                @Override
+                                public void run() {
+                                    selectedStart = -1;
                                     containerRCL();
                                 }
                             }, FontSizes.schemaButtonTextHeight);
-                        } else {
-                            uie = new UIAppendButton("<", uie, new Runnable() {
+                            uie = new UIAppendButton("Cp.", uie, new Runnable() {
                                 @Override
                                 public void run() {
-                                    // swap mi and selected!
-                                    RubyIO a = target.arrVal[selected];
-                                    RubyIO b = target.arrVal[mi];
-                                    target.arrVal[mi] = a;
-                                    target.arrVal[selected] = b;
-                                    // fixup array indices!
-                                    modifyVal(target, path, false);
-                                    // whack the UI & such
-                                    path.changeOccurred(false);
+                                    // the clipboard is very lenient...
+                                    RubyIO rio = new RubyIO();
+                                    rio.type = '[';
+                                    rio.arrVal = new RubyIO[(selectedEnd - selectedStart) + 1];
+                                    for (int j = 0; j < rio.arrVal.length; j++)
+                                        rio.arrVal[j] = new RubyIO().setDeepClone(target.arrVal[j + selectedStart]);
+                                    AppMain.theClipboard = rio;
+                                    selectedStart = -1;
+                                    containerRCL();
+                                }
+                            }, FontSizes.schemaButtonTextHeight);
+                        } else if ((mi < selectedStart) || (mi > selectedEnd)){
+                            uie = new UIAppendButton(TXDB.get("Select..."), uie, new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mi < selectedStart)
+                                        selectedStart = mi;
+                                    if (mi > selectedEnd)
+                                        selectedEnd = mi;
+                                    containerRCL();
                                 }
                             }, FontSizes.schemaButtonTextHeight);
                         }
@@ -133,7 +145,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
             private void addAdditionButton(final int i, final SchemaPath ind) {
                 if (sizeFixed != 0)
                     return;
-                uiSVL.panels.add(new UITextButton(FontSizes.schemaArrayAddTextHeight, FormatSyntax.formatExtended(TXDB.get("Add @ #A"), new RubyIO[] {new RubyIO().setFX(i)}), new Runnable() {
+                UIElement uie = new UITextButton(FontSizes.schemaArrayAddTextHeight, FormatSyntax.formatExtended(TXDB.get("Add @ #A"), new RubyIO[] {new RubyIO().setFX(i)}), new Runnable() {
                     @Override
                     public void run() {
                         RubyIO rio = new RubyIO();
@@ -141,12 +153,30 @@ public abstract class ArraySchemaElement extends SchemaElement {
                         subelem.modifyVal(rio, ind, true);
 
                         ArrayUtils.insertRioElement(target, rio, i);
-                        // fixup array indices!
-                        modifyVal(target, path, false);
                         // whack the UI
                         path.changeOccurred(false);
                     }
-                }));
+                });
+                if (AppMain.theClipboard != null) {
+                    if (AppMain.theClipboard.type == '[') {
+                        uie = new UIAppendButton("Ps.", uie, new Runnable() {
+                            @Override
+                            public void run() {
+                                if (AppMain.theClipboard != null) {
+                                    // could have changed
+                                    if (AppMain.theClipboard.type == '[') {
+                                        RubyIO[] finalInsertionRv = AppMain.theClipboard.arrVal;
+                                        for (int j = finalInsertionRv.length - 1; j >= 0; j--)
+                                            ArrayUtils.insertRioElement(target, finalInsertionRv[j], i);
+                                        // whack the UI
+                                        path.changeOccurred(false);
+                                    }
+                                }
+                            }
+                        }, FontSizes.schemaButtonTextHeight);
+                    }
+                }
+                uiSVL.panels.add(uie);
             }
         };
         runCompleteRelayout.run();

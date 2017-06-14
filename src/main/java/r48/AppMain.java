@@ -155,7 +155,7 @@ public class AppMain {
             public void accept(Double deltaTime) {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
 
-                uiStatusLabel.Text = FormatSyntax.formatExtended(TXDB.get("#A modified."), new RubyIO[] {new RubyIO().setFX(objectDB.modifiedObjects.size())});
+                uiStatusLabel.Text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO[] {new RubyIO().setFX(objectDB.modifiedObjects.size()), (theClipboard == null) ? new RubyIO().setNull() : theClipboard});
                 if (mapContext != null) {
                     String mapId = mapContext.getCurrentMap();
                     RubyIO map = null;
@@ -225,6 +225,16 @@ public class AppMain {
             @Override
             public void run() {
                 objectDB.ensureAllSaved();
+            }
+        }, FontSizes.statusBarTextHeight);
+        workspace = new UIAppendButton(TXDB.get("Clipboard"), workspace, new Runnable() {
+            @Override
+            public void run() {
+                if (theClipboard == null) {
+                    launchDialog(TXDB.get("There is nothing in the clipboard."));
+                } else {
+                    windowMaker.accept(new UITest(theClipboard));
+                }
             }
         }, FontSizes.statusBarTextHeight);
         workspace = new UIAppendButton(TXDB.get("Help"), workspace, new Runnable() {
