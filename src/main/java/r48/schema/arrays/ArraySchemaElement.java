@@ -34,12 +34,18 @@ public abstract class ArraySchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this) : path2;
         final UIScrollLayout uiSVL = new UIScrollLayout(true);
-        // this object is needed as a pin to hold things together (or maybe not, the UI gets updated anyway. Unneeded complexity?)
+        // this object is needed as a pin to hold things together.
+        // It used to be kind of redundant, but now with the selection stuff...
         final Runnable runCompleteRelayout = new Runnable() {
+            int selected = -1;
+            // Because of name ambiguity, but also whacks uiSVL
+            public void containerRCL() {
+                run();
+                uiSVL.setBounds(uiSVL.getBounds());
+            }
             @Override
             public void run() {
                 uiSVL.panels.clear();
-                final Runnable me = this;
                 // Work out how big each array index field has to be.
                 final Rect maxSize = UILabel.getRecommendedSize(target.arrVal.length + " ", FontSizes.schemaFieldTextHeight);
                 for (int i = 0; i < target.arrVal.length; i++) {
@@ -58,11 +64,44 @@ public abstract class ArraySchemaElement extends SchemaElement {
                                 ArrayUtils.removeRioElement(target, mi);
                                 // fixup array indices!
                                 modifyVal(target, path, false);
-                                // whack the UI
+                                // whack the UI & such
                                 path.changeOccurred(false);
-                                me.run();
                             }
                         }, FontSizes.schemaButtonTextHeight);
+                    }
+                    if (selected == -1) {
+                        uie = new UIAppendButton("S", uie, new Runnable() {
+                            @Override
+                            public void run() {
+                                selected = mi;
+                                containerRCL();
+                            }
+                        }, FontSizes.schemaButtonTextHeight);
+                    } else {
+                        if (selected == i) {
+                            uie = new UIAppendButton("D", uie, new Runnable() {
+                                @Override
+                                public void run() {
+                                    selected = -1;
+                                    containerRCL();
+                                }
+                            }, FontSizes.schemaButtonTextHeight);
+                        } else {
+                            uie = new UIAppendButton("<", uie, new Runnable() {
+                                @Override
+                                public void run() {
+                                    // swap mi and selected!
+                                    RubyIO a = target.arrVal[selected];
+                                    RubyIO b = target.arrVal[mi];
+                                    target.arrVal[mi] = a;
+                                    target.arrVal[selected] = b;
+                                    // fixup array indices!
+                                    modifyVal(target, path, false);
+                                    // whack the UI & such
+                                    path.changeOccurred(false);
+                                }
+                            }, FontSizes.schemaButtonTextHeight);
+                        }
                     }
                     int sz = subelem.maxHoldingHeight();
                     uie.setBounds(new Rect(0, 0, 128, sz));
