@@ -10,12 +10,25 @@ package r48.map.mapinfos;
  */
 public class MapInfoReparentUtil {
     public static int findChildrenLastOrder(int mapId, IRMLikeMapInfoBackend operators) {
-        int order = operators.getOrderOfMap(mapId);
+        int origOrder = operators.getOrderOfMap(mapId);
+
+        int order = origOrder;
+        int key = mapId;
 
         // Recursively find the highest order, which ensures the whole tree will be moved.
-        for (int key : operators.getHashKeys())
-            if (operators.getHashBID(key).getInstVarBySymbol("@parent_id").fixnumVal == mapId)
-                order = Math.max(order, findChildrenLastOrder(key, operators));
+        for (int key2 : operators.getHashKeys())
+            if (operators.getHashBID(key2).getInstVarBySymbol("@parent_id").fixnumVal == mapId) {
+                int order2 = operators.getOrderOfMap(key2);
+                if (order2 > order) {
+                    order = order2;
+                    key = key2;
+                }
+            }
+        // There was a child (or there were children), find the last of that.
+        // (Turns out this function used to be a performance bottleneck, leading to weirdness when loading, say, OFF maps,
+        //  which have tons of internal structure.)
+        if (order != origOrder)
+            return findChildrenLastOrder(key, operators);
         return order;
     }
 

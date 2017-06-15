@@ -69,12 +69,15 @@ public class PNG8IImageLoader implements IImageLoader {
             int maj = dis.readInt();
             if (maj == end)
                 return null;
-            byte[] data = new byte[len];
-            if (dis.read(data) != len)
-                throw new IOException("did not read all of chunk");
-            dis.readInt();
-            if (maj == magicWanted)
+            if (maj == magicWanted) {
+                byte[] data = new byte[len];
+                if (dis.read(data) != len)
+                    throw new IOException("did not read all of chunk");
                 return data;
+            } else {
+                dis.skipBytes(len);
+            }
+            dis.readInt();
         }
     }
 
