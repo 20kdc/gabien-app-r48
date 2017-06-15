@@ -26,6 +26,11 @@ D internal_battleanimationDictionary RPG_RT.ldb@battle_anim_sets_2k3 1 @name
 
 D internal_battlecommandDictionary RPG_RT.ldb@battle_commands_2k3@commands 0 @name
 
+> f_charset_name { string subwindow[ Browse... ] fileSelector CharSet/ }
+> f_faceset_name { string subwindow[ Browse... ] fileSelector FaceSet/ }
+> f_music_name { string= (OFF) subwindow[ Browse... ] fileSelector Music/ }
+> f_sound_name { string= (OFF) subwindow[ Browse... ] fileSelector Sound/ }
+
 > var_id internal_variableDictionary
 > switch_id internal_switchDictionary
 
@@ -80,14 +85,14 @@ i R2K/SchemaScripting.txt
 @down int
 
 : RPG::Music
-@name string= (OFF)
+@name f_music_name
 @fadeTime int
 @volume int= 100
 @tempo int= 100
 @balance int= 50
 
 : RPG::Sound
-@name string= (OFF)
+@name f_sound_name
 @volume int= 100
 @tempo int= 100
 @balance int= 50

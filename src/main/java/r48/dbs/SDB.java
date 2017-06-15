@@ -275,6 +275,8 @@ public class SDB {
                                 }
                             });
                         }
+                        if (text.equals("fileSelector"))
+                            return new FileSelectorSchemaElement(args[point++]);
                         if (text.startsWith("table")) {
                             String eText = text;
                             boolean hasFlags = eText.endsWith("F");

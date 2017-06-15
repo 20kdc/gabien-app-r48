@@ -53,6 +53,10 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
             IGrInDriver.IImage i = imageLoader.getImage("CharSet/" + cName, false);
             int sx = i.getWidth() / 12;
             int sy = i.getHeight() / 8;
+            if (target.getInstVarBySymbol("@character_name").strVal[0] != '$') {
+                sx = 24;
+                sy = 32;
+            }
             int idx = ((int) target.getInstVarBySymbol("@character_index").fixnumVal);
             // Direction is apparently in a 0123 format???
             int dir = 2;

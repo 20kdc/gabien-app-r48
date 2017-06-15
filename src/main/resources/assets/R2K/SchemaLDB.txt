@@ -39,19 +39,19 @@ C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C D
 @skill skill_id
 
 .actorpage_graphics
-@character_name string
+@character_name f_charset_name
 @character_index int
 @character_blend_mode boolean
 +internal_EPGD
+@face_name f_faceset_name
+@face_index int
 
 : RPG::Actor
 C name Class.RPG::Actor @name | #A
  Totally not a C&H reference. I added an 'i'.
 @name string= TediBear
 @title string= Survivalist
-+subwindow[ Graphics ] actorpage_graphics
-@face_name string
-@face_index int
++subwindow[ Graphics/Face ] actorpage_graphics
 @init_level int= 1
 +hwnd . R2K/H_Levelling.txt
 @init_level_exp int= 10
@@ -496,7 +496,7 @@ C name Class.RPG::Animation @name | #A
 : RPG::Tileset
 C name Class.RPG::Tileset @name | #A
 @name string= Template
-@tileset_name string= templatetileset
+@tileset_name { string= templatetileset subwindow[ Browse... ] fileSelector CharSet/ }
  This is kind of important:
  The highpass data is obvious, lowpass/TID not so much.
  Lowpass/TID allocation is:

@@ -266,7 +266,7 @@ X wait_illogical_parameters
 
 11510: Play BGM$
 d Plays some background music.
-p music string
+p music f_music_name
 p fadeTime int
 p volume int_default_100
 p tempo int_default_100
@@ -279,7 +279,7 @@ p fadeTime int
 
 11550: Play Sound$
 d Plays a sound effect.
-p sound string
+p sound f_sound_name
 p volume int_default_100
 p tempo int_default_100
 p balance int_default_50
@@ -306,26 +306,26 @@ p actor actor_id
 
 10630: Change Actor G/I/T
 d Change how a party member appears in battle.
-p graphic string
+p graphic f_charset_name
 p actor actor_id
 p index int
 p transparent int_boolean
 
 10640: @@{B:Change @[actor_id]B's Face: #A:#C|Change Actor Face}
 d Change the face of a party member.
-p faceset string
+p faceset f_faceset_name
 p actor actor_id
 p index int
 
 10650: Change Vehicle Appearance
 d Change the appearance of a vehicle.
-p graphic string
+p graphic f_charset_name
 p vehicle scripting_vehicletype
 p index int
 
 10660: Change System BGM
 d Change a System BGM.
-p bgm string
+p bgm f_music_name
 p bgmId change_sys_bgm_id
 p fadein int
 p volume int_default_100

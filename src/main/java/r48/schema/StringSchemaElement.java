@@ -41,7 +41,6 @@ public class StringSchemaElement extends SchemaElement {
                 }
             }
         };
-        tb.setBounds(new Rect(0, 0, 9, 9));
         return tb;
     }
 
