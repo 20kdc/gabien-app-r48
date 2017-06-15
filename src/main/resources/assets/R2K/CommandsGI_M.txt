@@ -182,7 +182,7 @@ p _ string
 
 11560: Play Movie$
 d Plays a movie, if that's possible.
-p movie string
+p movie f_movie_name
 p usePosVars int_boolean
 P 1 xVar var_id
 v 0 x int

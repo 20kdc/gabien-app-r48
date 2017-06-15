@@ -336,7 +336,7 @@ p balance int_default_50
 
 10670: @@Change Sys.SFX{E: @#B to #A}
 d Change a sound effect used by the system.
-p sfx string
+p sfx f_sound_name
 p sfxId change_sys_sfx_id
 p volume int_default_100
 p tempo int_default_100
@@ -344,7 +344,7 @@ p balance int_default_50
 
 10680: Change Sys.GFX
 d Change the current set of graphics used by the system.
-p systemGfx string
+p systemGfx f_system_name
 p useTiling int_boolean
 p font change_sys_gfx_font
 
@@ -472,7 +472,7 @@ p tilesetId tileset_id
 
 11720: Change Parallax Setup
 d Change the parallax on the map.
-p parallax string
+p parallax f_parallax_name
 p scrollH int_boolean
 p scrollV int_boolean
 p scrollHAuto int_boolean

@@ -38,7 +38,7 @@ e var_compare_op_2k3 0 == 1 >= 2 <= 3 > 4 < 5 !=
 @skippable boolean
 
 .eventpage_graphics
-@character_name string
+@character_name f_charset_name
 @character_index int
 +eventTileHelper 1 R2K/TS144.txt
 @character_direction sprite_direction

@@ -119,14 +119,14 @@ p _ int
 
 34: Set Graphic!$
 d Change graphic to turn your event from a cat without a scarf to a cat *with* a scarf!
-p graphic string
+p graphic f_charset_name
 p index int
 p _ int
 p _ int
 
 35: Play Sound Effect$
 d Play a sound effect.
-p sound string
+p sound f_sound_name
 p volume int
 p tempo int
 p balance int

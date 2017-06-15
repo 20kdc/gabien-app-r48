@@ -26,10 +26,16 @@ D internal_battleanimationDictionary RPG_RT.ldb@battle_anim_sets_2k3 1 @name
 
 D internal_battlecommandDictionary RPG_RT.ldb@battle_commands_2k3@commands 0 @name
 
-> f_charset_name { string subwindow[ Browse... ] fileSelector CharSet/ }
-> f_faceset_name { string subwindow[ Browse... ] fileSelector FaceSet/ }
-> f_music_name { string= (OFF) subwindow[ Browse... ] fileSelector Music/ }
-> f_sound_name { string= (OFF) subwindow[ Browse... ] fileSelector Sound/ }
+> f_charset_name { string fileSelector CharSet/ }
+> f_faceset_name { string fileSelector FaceSet/ }
+> f_music_name { string= (OFF) fileSelector Music/ }
+> f_sound_name { string= (OFF) fileSelector Sound/ }
+> f_system_name { string= System fileSelector System/ }
+> f_system2_name { string= system2a fileSelector System2/ }
+> f_parallax_name { string fileSelector Panorama/ }
+> f_movie_name { string fileSelector Movie/ }
+> f_battleback_name { string fileSelector Backdrop/ }
+> f_monster_name { string fileSelector Monster/ }
 
 > var_id internal_variableDictionary
 > switch_id internal_switchDictionary

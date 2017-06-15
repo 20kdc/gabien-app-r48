@@ -275,8 +275,11 @@ public class SDB {
                                 }
                             });
                         }
-                        if (text.equals("fileSelector"))
-                            return new FileSelectorSchemaElement(args[point++]);
+                        if (text.equals("fileSelector")) {
+                            String tx = args[point++];
+                            String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO[] {new RubyIO().setString(tx)});
+                            return new SubwindowSchemaElement(new FileSelectorSchemaElement(tx), getFunctionToReturn(txHR));
+                        }
                         if (text.startsWith("table")) {
                             String eText = text;
                             boolean hasFlags = eText.endsWith("F");

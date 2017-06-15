@@ -57,7 +57,7 @@ p troopEnemyIdx int
 
 13210: Change Battle Background!
 d Change the background of the battle.
-p back string
+p back f_battleback_name
 
 13260: Show Battle Animation
 d Show an animation in battle.
