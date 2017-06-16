@@ -366,7 +366,7 @@ C name Class.RPG::Tileset @id @name | Tileset #A: #B
 @fog_zoom int
 @fog_sx int
 @fog_sy int
-@fog_opacity int
+@fog_opacity opacity
 @fog_hue int
 @fog_blend_type blend_type
 @battleback_name f_bb_name

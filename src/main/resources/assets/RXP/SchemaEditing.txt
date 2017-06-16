@@ -38,7 +38,7 @@ C name Interp.RPG::Event::Page::Condition.selfSwitch @self_switch_valid @self_sw
 @self_switch_ch selfswitch_id
 
 : RPG::Event::Page::Graphic
-@opacity int= 255
+@opacity opacity
 @pattern int
 @tile_id int
 @direction direction

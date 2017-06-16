@@ -100,13 +100,13 @@ d ...
 d ...
 41:@@Set Graphic{A: to #A:#D, facing #C}
 d Changes the graphics of this event.
-p name string
+p name f_char_name
 p hue int
 p dir direction
 p pattern int
 42: Set Opacity!
 d Changes the opacity of this event.
-p opacity int
+p opacity opacity
 43: Change blend_type!
 d Changes the @blend_type of this event.
 p blendType blend_type

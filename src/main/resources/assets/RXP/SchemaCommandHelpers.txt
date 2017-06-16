@@ -91,7 +91,7 @@ e cms_type 0 panorama 1 fog 2 battleback
 ]0 type cms_type
 ]1 name f_fog_name
 ]2 hue int
-]3 opacity% int= 100
+]3 opacity opacity
 ]4 blendType blend_type
 ]5 zoom int= 100
 ]6 sx int
