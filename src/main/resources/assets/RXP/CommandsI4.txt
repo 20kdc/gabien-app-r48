@@ -5,12 +5,14 @@
  [Interpreter Part 4]
 
 121:@@Control Switch{A:{AB: @#A|es @#A..@#B} = {C=1=OFF|ON}|es}
+d Sets a switch or a range of switches on or off.
 p firstSwitch switch_id
 p lastSwitch switch_id
 p turnOff int_boolean
 
 122:@@Set Variable{A:{AB: @#A|s @#A..@#B} #C [@set_variables_parameters]|s}
  note: the parameters given here are for formatting reasons, since the X overrides any actual use.
+d Modifies a variable or a range of variables (first/lastVar) in a given way (operation) by a given value (source)
 p firstVar var_id
 p lastVar var_id
 p op set_variables_operation
@@ -18,14 +20,17 @@ p src set_variables_source
 X set_variables_parameters
 
 123:@@Control Selfswitch{A: #A{B: = {B=1=OFF|ON}}}
+d Enables or disables a selfswitch.
 p selfSwitch selfswitch_id
 p turnOff int_boolean
 
  I think the timer counts up?
  In any case if running is false, seconds is irrelevant.
 124: Set timer1
+d Enables or disables the timer. If enabling, sets the time to a given value in seconds.
 p running int_boolean
-p seconds int
+P 0 seconds int
+v 0 _ int
 
 125:@@Modify Gold{A: by [@operate_value_0]}
 p modNegate int_boolean

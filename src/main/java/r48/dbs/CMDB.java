@@ -26,25 +26,25 @@ public class CMDB {
 
     public int dUsers = 0;
 
-    public CMDB(String baseFile) {
+    public CMDB(final String baseFile) {
         DBLoader.readFile(baseFile, new IDatabase() {
             RPGCommand rc;
             int workingCmdId = 0;
             HashMap<String, SchemaElement> localAliasing = new HashMap<String, SchemaElement>();
             HashMap<Integer, SchemaElement> currentPvH = new HashMap<Integer, SchemaElement>();
             HashMap<Integer, String> currentPvH2 = new HashMap<Integer, String>();
-            IConsumer<String> lastNamable;
+            String subContext = "CMDB@" + baseFile;
+            // sorting order seems to work well enough:
+            // X-/<name>
+            // X./<desc>
+            // X/
 
             @Override
             public void newObj(int objId, String objName) {
                 rc = new RPGCommand();
-                rc.name = objName;
-                lastNamable = new IConsumer<String>() {
-                    @Override
-                    public void accept(String s) {
-                        rc.name = s;
-                    }
-                };
+                subContext = "CMDB@" + baseFile + "." + lenForm(objId);
+                // Names use NDB syntax, thus, separate context
+                rc.name = TXDB.get(subContext + "-", objName);
                 knownCommands.put(objId, rc);
                 knownCommandOrder.add(objId);
                 workingCmdId = objId;
@@ -53,25 +53,13 @@ public class CMDB {
             @Override
             public void execCmd(char c, String[] args) {
                 if (c == 'p') {
-                    final String fv = args[0].trim();
-                    final int index = rc.paramName.size();
+                    final String fv = TXDB.get(subContext, args[0]);
                     rc.paramName.add(new IFunction<RubyIO, String>() {
                         @Override
                         public String apply(RubyIO rubyIO) {
                             return fv;
                         }
                     });
-                    lastNamable = new IConsumer<String>() {
-                        @Override
-                        public void accept(final String s) {
-                            rc.paramName.set(index, new IFunction<RubyIO, String>() {
-                                @Override
-                                public String apply(RubyIO rubyIO) {
-                                    return s;
-                                }
-                            });
-                        }
-                    };
                     String s = args[1].trim();
                     final SchemaElement se = aliasingAwareSG(s);
                     rc.paramType.add(new IFunction<RubyIO, SchemaElement>() {
@@ -88,7 +76,7 @@ public class CMDB {
                     // Pv-syntax:
                     // P arrayDI defaultName defaultType
                     // v specificVal name type
-                    final String defName = args[1];
+                    final String defName = TXDB.get(subContext, args[1]);
                     final int arrayDI = Integer.parseInt(args[0]);
                     final SchemaElement defaultSE = aliasingAwareSG(args[2]);
                     rc.paramType.add(new IFunction<RubyIO, SchemaElement>() {
@@ -108,60 +96,32 @@ public class CMDB {
                         }
                     });
 
-                    final int index = rc.paramName.size();
-                    rc.paramName.add(null);
-                    lastNamable = new IConsumer<String>() {
+                    rc.paramName.add(new IFunction<RubyIO, String>() {
                         @Override
-                        public void accept(final String def) {
-                            rc.paramName.set(index, new IFunction<RubyIO, String>() {
-                                @Override
-                                public String apply(RubyIO rubyIO) {
-                                    if (rubyIO == null)
-                                        return def;
-                                    if (rubyIO.arrVal == null)
-                                        return def;
-                                    if (rubyIO.arrVal.length <= arrayDI)
-                                        return def;
-                                    int p = (int) rubyIO.arrVal[arrayDI].fixnumVal;
-                                    String ise = h2.get(p);
-                                    if (ise != null)
-                                        return ise;
-                                    return def;
-                                }
-                            });
+                        public String apply(RubyIO rubyIO) {
+                            if (rubyIO == null)
+                                return defName;
+                            if (rubyIO.arrVal == null)
+                                return defName;
+                            if (rubyIO.arrVal.length <= arrayDI)
+                                return defName;
+                            int p = (int) rubyIO.arrVal[arrayDI].fixnumVal;
+                            String ise = h2.get(p);
+                            if (ise != null)
+                                return ise;
+                            return defName;
                         }
-                    };
-                    lastNamable.accept(defName);
+                    });
                 } else if (c == 'v') {
                     // v specificVal name type
                     final int idx = Integer.parseInt(args[0]);
                     currentPvH.put(idx, aliasingAwareSG(args[2]));
-                    currentPvH2.put(idx, args[1]);
-                    lastNamable = new IConsumer<String>() {
-                        @Override
-                        public void accept(String s) {
-                            currentPvH2.put(idx, s);
-                        }
-                    };
+                    currentPvH2.put(idx, TXDB.get(subContext, args[1]));
                 } else if (c == 'd') {
                     String desc = "";
                     for (String s : args)
                         desc += " " + s;
-                    rc.description = desc.trim();
-                    lastNamable = new IConsumer<String>() {
-                        @Override
-                        public void accept(String s) {
-                            rc.description = s;
-                        }
-                    };
-                } else if (c == 'T') {
-                    if (args[0].equals(TXDB.getLanguage())) {
-                        String desc = "";
-                        for (int i = 1; i < args.length; i++)
-                            desc += " " + args[i];
-                        desc = desc.trim();
-                        lastNamable.accept(desc);
-                    }
+                    rc.description = TXDB.get(subContext + ".", desc.trim());
                 } else if (c == 'i') {
                     rc.indentPre = Integer.parseInt(args[0]);
                 } else if (c == 'I') {
@@ -292,9 +252,7 @@ public class CMDB {
             RubyIO params = target.getInstVarBySymbol("@parameters");
             ext = cmd.formatName(params, params.arrVal);
         }
-        String spc = cid + " ";
-        while (spc.length() < (digitCount + 1))
-            spc = "0" + spc;
+        String spc = lenForm(cid) + " ";
         RubyIO indentValue = target.getInstVarBySymbol("@indent");
         if ((indentValue != null) && indent) {
             int len = (int) target.getInstVarBySymbol("@indent").fixnumVal;
@@ -306,5 +264,12 @@ public class CMDB {
             }
         }
         return spc + ext;
+    }
+
+    private String lenForm(int cid) {
+        String spc = Integer.toString(cid);
+        while (spc.length() < digitCount)
+            spc = "0" + spc;
+        return spc;
     }
 }

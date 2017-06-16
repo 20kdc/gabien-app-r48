@@ -69,6 +69,19 @@ D internal_eventDictionary __MAP__@events 1 @name
        This is an entry in the Enemies table.
 > enemy_id internal_enemyDictionary
 
+> f_pano_name { string fileSelector Graphics/Panoramas/ }
+> f_bb_name { string fileSelector Graphics/Battlebacks/ }
+> f_fog_name { string fileSelector Graphics/Fogs/ }
+> f_char_name { string fileSelector Graphics/Characters/ }
+> f_icon_name { string fileSelector Graphics/Icons/ }
+> f_tileset_name { string fileSelector Graphics/Tilesets/ }
+> f_autotile_name { string fileSelector Graphics/Autotiles/ }
+> f_animss_name { string fileSelector Graphics/Animations/ }
+> f_battler_name { string fileSelector Graphics/Battlers/ }
+> f_ws_name { string fileSelector Graphics/Windowskins/ }
+> f_title_name { string fileSelector Graphics/Titles/ }
+> f_go_name { string fileSelector Graphics/Gameovers/ }
+
  Defining the enums.
  In most cases these are global, so just don't move them from here.
 
@@ -103,6 +116,7 @@ E force_action_target Actor/TroopEnemyID -2 Last -1 Random
 
 : RPG::AudioFile
 C name Class.RPG::AudioFile @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|RPG::AudioFile}
+ This depends on context, apparently, so cannot be filenamed.
 @name string
 @pitch int= 100
 @volume int= 100

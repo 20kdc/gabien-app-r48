@@ -194,14 +194,31 @@ public class BasicToolset implements IToolset {
                                 LinkedList<String> t = new LinkedList<String>(TXDB.ssTexts);
                                 Collections.sort(t);
                                 for (String s : t) {
-                                    ps.println("x \"" + s + "\"");
-                                    if (TXDB.has(s)) {
-                                        ps.println("y \"" + TXDB.get(s) + "\"");
-                                    } else {
-                                        ps.println("y \"" + TXDB.stripContext(s) + "\"");
+                                    if (s.startsWith("SDB@")) {
+                                        ps.println("x \"" + s.substring(4) + "\"");
+                                        if (TXDB.has(s)) {
+                                            ps.println("y \"" + TXDB.get(s) + "\"");
+                                        } else {
+                                            ps.println("y \"" + TXDB.stripContext(s) + "\"");
+                                        }
                                     }
                                 }
                                 ps.close();
+                                ps = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "Cmtx" + TXDB.getLanguage() + ".txt"));
+                                t = new LinkedList<String>(TXDB.ssTexts);
+                                Collections.sort(t);
+                                for (String s : t) {
+                                    if (s.startsWith("CMDB@")) {
+                                        ps.println("x \"" + s.substring(5) + "\"");
+                                        if (TXDB.has(s)) {
+                                            ps.println("y \"" + TXDB.get(s) + "\"");
+                                        } else {
+                                            ps.println("y \"" + TXDB.stripContext(s) + "\"");
+                                        }
+                                    }
+                                }
+                                ps.close();
+                                AppMain.launchDialog(TXDB.get("Wrote Lang and Cmtx files (to be put in schema dir.)"));
                             }
                         }
                 }, FontSizes.menuTextHeight, false)

@@ -62,7 +62,7 @@ e animation_position 0 targetLower 1 targetMiddle 2 targetUpper 3 screenCentre
 C name Class.RPG::Animation @id @name | Animation #A: #B
 @id index
 @name string
-@animation_name string
+@animation_name f_animss_name
 @animation_hue int
 @frame_max int= 1
 @position animation_position
@@ -136,7 +136,7 @@ C name Class.RPG::CommonEvent @id @name @trigger @switch_id | CommonEvent #A: #B
 C name Class.RPG::Enemy @id @name | Enemy #A: #B
 @id index
 @name string
-@battler_name string
+@battler_name f_battler_name
 @battler_hue int
 @maxhp int
 @maxsp int
@@ -166,7 +166,7 @@ C name Class.RPG::Enemy @id @name | Enemy #A: #B
 C name Class.RPG::Item @id @name | Item #A: #B
 @id index
 @name string
-@icon_name string
+@icon_name f_icon_name
 @description string
 @scope int
 @occasion int
@@ -329,13 +329,13 @@ C name Class.RPG::State @id @name | State #A: #B
 @battle_start_se RPG::AudioFile
 @battle_end_me RPG::AudioFile
 @battle_bgm RPG::AudioFile
-@title_name string
+@title_name f_title_name
 @title_bgm RPG::AudioFile
-@windowskin_name string
-@battleback_name string
-@gameover_name string
+@windowskin_name f_ws_name
+@battleback_name f_bb_name
+@gameover_name f_go_name
 @gameover_me RPG::AudioFile
-@battler_name string
+@battler_name f_battler_name
 @battler_hue int
 @party_members subwindow array 0 OPAQUE
 @battle_transition string
@@ -355,21 +355,21 @@ C name Class.RPG::State @id @name | State #A: #B
 C name Class.RPG::Tileset @id @name | Tileset #A: #B
 @id index
 @name string
-@tileset_name string
-@autotile_names array 7 string
-@panorama_name string
+@tileset_name f_tileset_name
+@autotile_names array 7 f_autotile_name
+@panorama_name f_pano_name
 @panorama_hue int
 +tableTSF @passages . . 8 1 1 blockDown blockLeft blockRight blockUp UNK. UNK. submerge 'counter'
 +tableTS @priorities . . 8 1 1
 +tableTS @terrain_tags . . 8 1 1
-@fog_name string
+@fog_name f_fog_name
 @fog_zoom int
 @fog_sx int
 @fog_sy int
 @fog_opacity int
 @fog_hue int
 @fog_blend_type blend_type
-@battleback_name string
+@battleback_name f_bb_name
 
 > File.Tilesets arrayIx1 subwindow RPG::Tileset
 

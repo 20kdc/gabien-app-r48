@@ -43,7 +43,7 @@ C name Interp.RPG::Event::Page::Condition.selfSwitch @self_switch_valid @self_sw
 @tile_id int
 @direction direction
 @blend_type blend_type
-@character_name string
+@character_name f_char_name
 @character_hue int
 +internal_EPGD
 

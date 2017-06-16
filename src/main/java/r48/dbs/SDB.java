@@ -84,18 +84,19 @@ public class SDB {
         };
     }
 
-    public void readFile(final String s) {
-        DBLoader.readFile(s, new IDatabase() {
+    public void readFile(final String fName) {
+        final String fPfx = "SDB@" + fName;
+        DBLoader.readFile(fName, new IDatabase() {
             AggregateSchemaElement workingObj;
 
             HashMap<Integer, String> commandBufferNames = new HashMap<Integer, String>();
             HashMap<Integer, SchemaElement> commandBufferSchemas = new HashMap<Integer, SchemaElement>();
 
-            String outerContext = s + "/NONE";
+            String outerContext = fPfx + "/NONE";
 
             @Override
             public void newObj(int objId, String objName) {
-                outerContext = s + "/commandBuffer";
+                outerContext = fPfx + "/commandBuffer";
                 commandBufferNames.put(objId, TXDB.get(outerContext, objName));
                 workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                 commandBufferSchemas.put(objId, workingObj);
@@ -358,11 +359,11 @@ public class SDB {
                         throw new RuntimeException("Bad Schema Database: 'a' used to expect item " + args[0] + " that didn't exist.");
                 } else if (c == ':') {
                     workingObj = new AggregateSchemaElement(new SchemaElement[] {});
-                    outerContext = s + "/" + args[0];
+                    outerContext = fPfx + "/" + args[0];
                     setSDBEntry(args[0], new ObjectClassSchemaElement(args[0], workingObj, 'o'));
                 } else if (c == '.') {
                     workingObj = new AggregateSchemaElement(new SchemaElement[] {});
-                    outerContext = s + "/" + args[0];
+                    outerContext = fPfx + "/" + args[0];
                     setSDBEntry(args[0], workingObj);
                 } else if (c == '@') {
                     String t = "@" + args[0];

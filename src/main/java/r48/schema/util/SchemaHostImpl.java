@@ -46,7 +46,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
         @Override
         public void run() {
             if (AppMain.theClipboard == null) {
-                AppMain.launchDialog(TXDB.get("Nothing in clipboard."));
+                AppMain.launchDialog(TXDB.get("There is nothing in the clipboard."));
             } else {
                 if (RubyIO.rubyTypeEquals(innerElem.targetElement, AppMain.theClipboard)) {
                     innerElem.targetElement.setDeepClone(AppMain.theClipboard);

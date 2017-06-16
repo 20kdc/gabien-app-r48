@@ -123,9 +123,12 @@ public class TXDB {
             return;
         DBLoader.readFile("Systerms/" + languages[languageId] + ".txt", new LangLoadDatabase("r48/"));
         try {
-            DBLoader.readFile(gp + "Lang" + languages[languageId] + ".txt", new LangLoadDatabase(""));
+            DBLoader.readFile(gp + "Lang" + languages[languageId] + ".txt", new LangLoadDatabase("SDB@"));
         } catch (Exception e) {
-            // ignore any exceptions from the specific gamepak language
+        }
+        try {
+            DBLoader.readFile(gp + "Cmtx" + languages[languageId] + ".txt", new LangLoadDatabase("CMDB@"));
+        } catch (Exception e) {
         }
     }
 

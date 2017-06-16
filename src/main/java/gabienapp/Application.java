@@ -203,8 +203,8 @@ public class Application {
                     ps.println(TXDB.get("An error has occurred in R48. This is always the result of a bug somewhere."));
                     ps.println(TXDB.get("Details follow. If another error occurs, R48 will shutdown. Make a backup immediately, only then save."));
                     e.printStackTrace(ps);
-                    UIHelpSystem uhs = new UIHelpSystem();
                     String r = baos.toString("UTF-8").replaceAll("\r", "");
+                    UIHelpSystem uhs = new UIHelpSystem();
                     for (String s : r.split("\n"))
                         uhs.page.add(new UIHelpSystem.HelpElement('.', s.split(" ")));
                     uhs.page.add(new UIHelpSystem.HelpElement('>', TXDB.get("0 Save error as file").split(" ")));

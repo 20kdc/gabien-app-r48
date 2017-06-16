@@ -8,6 +8,7 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.map.UIMapViewContainer;
 import r48.schema.util.SchemaPath;
@@ -90,7 +91,7 @@ public class UIGRMMapInfos extends UIPanel {
                     while (parentStack.getLast() != parent)
                         parentStack.removeLast();
                 } else {
-                    AppMain.launchDialog("Parent Inconsistency Warning @ " + k + " o " + order);
+                    AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Parent Inconsistency Warning @ #A o #B"), new RubyIO[] {new RubyIO().setFX(k), new RubyIO().setFX(order)}));
                     enableOrderHoleDebug = true;
                 }
             }
@@ -116,7 +117,7 @@ public class UIGRMMapInfos extends UIPanel {
             if (selectedOrder != order) {
                 if (selectedOrder != 0)
                     if (!operators.wouldRelocatingInOrderFail(selectedOrder, order + 1)) {
-                        elm = new UIAppendButton(TXDB.get(">>"), elm, new Runnable() {
+                        elm = new UIAppendButton(">>", elm, new Runnable() {
                             @Override
                             public void run() {
                                 selectedOrder = operators.relocateInOrder(selectedOrder, order + 1);
