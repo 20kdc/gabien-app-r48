@@ -13,10 +13,7 @@ import r48.FontSizes;
 import r48.UITest;
 import r48.dbs.TXDB;
 import r48.map.tiles.VXATileRenderer;
-import r48.maptools.UIMTAutotile;
-import r48.maptools.UIMTEventPicker;
-import r48.maptools.UIMTPickTile;
-import r48.maptools.UIMTShadowLayer;
+import r48.maptools.*;
 import r48.ui.UINSVertLayout;
 
 import java.util.LinkedList;
@@ -221,21 +218,16 @@ public class UIMapViewContainer extends UIPanel {
                 AppMain.nextMapTool = new UIMTPickTile(view);
             }
         }));
-        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Reload Panorama/TS"), new Runnable() {
-            @Override
-            public void run() {
-                AppMain.stuffRendererIndependent.imageLoader.flushCache();
-                view.renderer = AppMain.system.rendererFromMap(view.map);
-                view.renderer.imageLoader.flushCache();
-                view.reinitLayerVis();
-            }
-        }));
-        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Properties"), new Runnable() {
-            @Override
-            public void run() {
-                AppMain.launchSchema("RPG::Map", view.map, view);
-            }
-        }));
+        {
+            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("..."), new Runnable() {
+                final int thisButton = tools.size();
+                @Override
+                public void run() {
+                    clearTools.accept(thisButton);
+                    AppMain.nextMapTool = new UIMTPopupButtons(view);
+                }
+            }).togglable());
+        }
 
         // finish layout
         for (UITextButton utb : tools)

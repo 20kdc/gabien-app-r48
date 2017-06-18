@@ -100,14 +100,34 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
 
         final UINumberBox wNB = new UINumberBox(FontSizes.tableSizeTextHeight);
         wNB.number = targ.width;
+        wNB.onEdit = new Runnable() {
+            @Override
+            public void run() {
+                if (wNB.number < 0)
+                    wNB.number = 0;
+            }
+        };
         final UINumberBox hNB = new UINumberBox(FontSizes.tableSizeTextHeight);
         hNB.number = targ.height;
+        hNB.onEdit = new Runnable() {
+            @Override
+            public void run() {
+                if (hNB.number < 0)
+                    hNB.number = 0;
+            }
+        };
         UIElement uie = new UIHHalfsplit(1, 2, wNB, hNB);
         uie.setBounds(new Rect(0, 0, 128, uie.getBounds().height));
         uiSVL.panels.add(uie);
         uiSVL.panels.add(new UITextButton(FontSizes.tableResizeTextHeight, TXDB.get("Resize"), new Runnable() {
             @Override
             public void run() {
+                int w = wNB.number;
+                if (w < 0)
+                     w = 0;
+                int h = hNB.number;
+                if (h < 0)
+                    h = 0;
                 RubyTable r2 = targ.resize(wNB.number, hNB.number, defVals);
                 if (width != null)
                     width.fixnumVal = wNB.number;
