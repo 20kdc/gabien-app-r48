@@ -154,13 +154,13 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                UILabel.iAmAbsolutelySureIHateTheFont = false;
+                                UILabel.fontOverride = "";
                             }
                         },
                         new Runnable() {
                             @Override
                             public void run() {
-                                UILabel.iAmAbsolutelySureIHateTheFont = true;
+                                UILabel.fontOverride = GaBIEn.getFontOverrides()[0];
                             }
                         },
                         new Runnable() {

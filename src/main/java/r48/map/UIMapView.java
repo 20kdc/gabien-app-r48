@@ -125,7 +125,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             if (remakeBuf) {
                 if (offscreenBuf != null)
                     offscreenBuf.shutdown();
-                offscreenBuf = GaBIEn.makeOffscreenBuffer(camR.width, camR.height);
+                offscreenBuf = GaBIEn.makeOffscreenBuffer(camR.width, camR.height, false);
             }
             render(mouseXT, mouseYT, eTileSize, currentLayer, debug, offscreenBuf);
         }
