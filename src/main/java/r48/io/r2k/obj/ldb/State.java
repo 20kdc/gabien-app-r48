@@ -83,7 +83,7 @@ public class State extends R2kObject {
                 new Index(0x24, avoidAttacks, "@avoid_attacks_2k3"),
                 new Index(0x25, reflectMagic, "@reflect_magic_2k3"),
                 new Index(0x26, cursed, "@cursed_2k3"),
-                new Index(0x27, battlerAnimationId, "@battler_animation_id_2k3"),
+                new Index(0x27, battlerAnimationId, "@battler_pose_2k3"),
                 new Index(0x29, restrictSkill, "@restrict_skill"),
                 new Index(0x2A, restrictSkillLevel, "@restrict_skill_level"),
                 new Index(0x2B, restrictMagic, "@restrict_magic"),

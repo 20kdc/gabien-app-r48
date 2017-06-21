@@ -154,7 +154,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                UILabel.fontOverride = "";
+                                UILabel.fontOverride = null;
                             }
                         },
                         new Runnable() {

@@ -28,12 +28,12 @@ public class ItemAnimation extends R2kObject {
     public Index[] getIndices() {
         return new Index[] {
                 new Index(0x03, type, "@type"),
-                new Index(0x04, weaponAnim, "@weapon_anim_idx"),
+                new Index(0x04, weaponAnim, "@weapon_batanim_idx"),
                 new Index(0x05, movement, "@movement"),
                 new Index(0x06, afterImage, "@has_afterimage"),
-                new Index(0x07, attacks, "@attacks"),
+                new Index(0x07, attacks, "@loop_count"),
                 new Index(0x08, ranged, "@ranged"),
-                new Index(0x09, rangedAnim, "@ranged_anim_idx"),
+                new Index(0x09, rangedAnim, "@ranged_batanim_idx"),
                 new Index(0x0C, rangedSpeed, "@ranged_speed"),
                 new Index(0x0D, battleAnim, "@battle_anim"),
         };

@@ -470,7 +470,7 @@ e show_shop_type 0 shopA 1 shopB 2 shopC
 ]3 hasInnerCode int_boolean
  Always zero in EasyRPG Test Game - 2000
 ]4 unknown int
-+arrayIxN 5 item_id
++arrayIxN 5 0 item_id
 
  -+- --\
   |  |-/

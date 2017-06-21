@@ -58,6 +58,8 @@ public class VXATileRenderer implements ITileRenderer {
 
     @Override
     public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
+        if (tileset == null)
+            return; // just don't bother.
         // MKXP repository links to http://www.tktkgame.com/tkool/memo/vx/tile_id.html
         // It's in Japanese but via translation at least explains that:
         // 1. Autotiles are different. Very different.

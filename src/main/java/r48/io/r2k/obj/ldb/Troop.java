@@ -46,7 +46,7 @@ public class Troop extends R2kObject {
         return new Index[] {
                 new Index(0x01, name, "@name"),
                 new Index(0x02, members, "@members"),
-                new Index(0x03, autoPosition, "@OFED_auto_position"),
+                new Index(0x03, autoPosition, "@auto_position"),
                 new Index(0x04, terrainSetSize),
                 new Index(0x05, terrainSet, "@terrain_set"),
                 new Index(0x06, appearRandomly, "@randomized_memberset_2k3"),

@@ -82,9 +82,12 @@ C name Class.RPG::Actor @name | #A
 
 : RPG::BattlerAnimationData
 e rpg_badia_movetype 0 none 1 step 2 jump 3 move
+ Unsure if this is right (If it's wrong adjust the custom* stuff in the set_base)
+E rpg_badia_pose Custom.No 0 none 1 idle 2 rightHand 3 leftHand 4 skillUse 5 dead 6 damage 7 badStatus 8 defending 9 walkingLeft 10 walkingRight 11 victory 12 item
+> rpg_badia_weapon int
 @move_type rpg_badia_movetype
 @has_afterimage int_boolean
-@pose int
+@pose rpg_badia_pose
 
 : RPG::Skill
 C name Class.RPG::Skill @name | #A
@@ -103,7 +106,7 @@ e rpg_skill_scope 0 hurtEnemy 1 hurtAllEnemies 2 healUserActor 3 healAnyActor 4 
 @switch_control_target switch_id
 @usable_in_battle boolean
 @usable_outside_battle boolean
-@required_attrs subwindow hash attribute_id boolean
+@mod_by_attributes subwindow hash attribute_id boolean
 
 .rpg_skill_sect2
 @animation animation_id
@@ -112,13 +115,13 @@ e rpg_skill_scope 0 hurtEnemy 1 hurtAllEnemies 2 healUserActor 3 healAnyActor 4 
 @use_text_2_2KO string
 e rpg_skill_fm 0 A 1 B 2 C 3 dodge
 @failure_message_2KO rpg_skill_fm
-@battler_anim_default actor_id
+@OFED_battler_anim_display_actor actor_id
 @battler_anim_data subwindow hash actor_id RPG::BattlerAnimationData
 
 .rpg_skill_sect3
-@sp_cost_percent boolean
-@sp_cost_val_percent int
 @sp_cost_val_normal int
+@sp_cost_percent_2k3 boolean
+@sp_cost_val_percent_2k3 int
 @hit_chance int= 100
 @base_dmg int
 @phys_dmg_frac20 int
@@ -133,7 +136,7 @@ e rpg_skill_fm 0 A 1 B 2 C 3 dodge
 @mod_def boolean
 @mod_spi boolean
 @mod_agi boolean
-@req_target_sp_nz boolean
+@steal_enemy_hp boolean
 @add_states_2k3 boolean
 @mod_states subwindow hash state_id boolean
 @affect_target_attr_defence boolean
@@ -142,14 +145,15 @@ e rpg_skill_fm 0 A 1 B 2 C 3 dodge
 
  Is this even used???
 : RPG::ItemAnimation
-@type int
+e rpg_ia_type 0 animation 1 battleAnimWeapon
+@type rpg_ia_type
 @movement rpg_badia_movetype
 @battle_anim animation_id
 @has_afterimage int_boolean
-@attacks int
-@weapon_anim_idx int
+@loop_count int
+@weapon_batanim_idx rpg_badia_weapon
 @ranged boolean
-@ranged_anim_idx int
+@ranged_batanim_idx rpg_badia_weapon
 e rpg_ia_speed 0 fast 1 medium 2 slow
 @ranged_speed rpg_ia_speed
 
@@ -333,7 +337,7 @@ C name Class.RPG::Troop @name | #A
 @members subwindow arrayIx1 RPG::Troop::Member
 @terrain_set subwindow hash terrain_id boolean
 @pages subwindow arrayIx1 subwindow RPG::Troop::Page
-@OFED_auto_position boolean
+@auto_position boolean
 @randomized_memberset_2k3 boolean
 
  ---
@@ -427,7 +431,7 @@ C name Class.RPG::State @name | #A
 @avoid_attacks_2k3 boolean
 @reflect_magic_2k3 boolean
 @cursed_2k3 boolean
-@battler_animation_id_2k3 animation_id
+@battler_pose_2k3 rpg_badia_pose
 @restrict_skill boolean
 @restrict_skill_level int
 @restrict_magic boolean
@@ -676,14 +680,15 @@ C name Class.RPG::Class @name | #A
  ---
 
 : RPG::BattlerAnimation
-e rpg_battleranimation_type 0 battlerNoAnim 1 battlerWithAnim
+C name Class.RPG::BattlerAnimation @name | #A
+e rpg_battleranimation_type 0 battlerCharSet 1 animationId
+@name string
 @type rpg_battleranimation_type
 @battler_name string
 @battler_index int
 @animation_id animation_id
 
- There's a system here, but I don't know what.
-.rpg_bas_animset
+.rpg_bas_animset_base
 ]0 _ OPAQUE
 ]1 idle subwindow RPG::BattlerAnimation
 ]2 rightHand subwindow RPG::BattlerAnimation
@@ -697,34 +702,36 @@ e rpg_battleranimation_type 0 battlerNoAnim 1 battlerWithAnim
 ]10 walkingRight subwindow RPG::BattlerAnimation
 ]11 victory subwindow RPG::BattlerAnimation
 ]12 item subwindow RPG::BattlerAnimation
-]13 unk13 subwindow RPG::BattlerAnimation
-]14 unk14 subwindow RPG::BattlerAnimation
-]15 unk15 subwindow RPG::BattlerAnimation
-]16 unk16 subwindow RPG::BattlerAnimation
-]17 unk17 subwindow RPG::BattlerAnimation
-]18 unk18 subwindow RPG::BattlerAnimation
-]19 unk19 subwindow RPG::BattlerAnimation
-]20 unk20 subwindow RPG::BattlerAnimation
-]21 unk21 subwindow RPG::BattlerAnimation
-]22 unk22 subwindow RPG::BattlerAnimation
-]23 unk23 subwindow RPG::BattlerAnimation
-]24 unk24 subwindow RPG::BattlerAnimation
-]25 unk25 subwindow RPG::BattlerAnimation
-]26 unk26 subwindow RPG::BattlerAnimation
-]27 unk27 subwindow RPG::BattlerAnimation
-]28 unk28 subwindow RPG::BattlerAnimation
-]29 unk29 subwindow RPG::BattlerAnimation
-]30 unk30 subwindow RPG::BattlerAnimation
-]31 unk31 subwindow RPG::BattlerAnimation
-]32 unk32 subwindow RPG::BattlerAnimation
+]13 custom13 subwindow RPG::BattlerAnimation
+]14 custom14 subwindow RPG::BattlerAnimation
+]15 custom15 subwindow RPG::BattlerAnimation
+]16 custom16 subwindow RPG::BattlerAnimation
+]17 custom17 subwindow RPG::BattlerAnimation
+]18 custom18 subwindow RPG::BattlerAnimation
+]19 custom19 subwindow RPG::BattlerAnimation
+]20 custom20 subwindow RPG::BattlerAnimation
+]21 custom21 subwindow RPG::BattlerAnimation
+]22 custom22 subwindow RPG::BattlerAnimation
+]23 custom23 subwindow RPG::BattlerAnimation
+]24 custom24 subwindow RPG::BattlerAnimation
+]25 custom25 subwindow RPG::BattlerAnimation
+]26 custom26 subwindow RPG::BattlerAnimation
+]27 custom27 subwindow RPG::BattlerAnimation
+]28 custom28 subwindow RPG::BattlerAnimation
+]29 custom29 subwindow RPG::BattlerAnimation
+]30 custom30 subwindow RPG::BattlerAnimation
+]31 custom31 subwindow RPG::BattlerAnimation
+]32 custom32 subwindow RPG::BattlerAnimation
+
+> rpg_bas_animset_weapon arrayIxN 1 33 subwindow RPG::BattlerAnimation
 
 : RPG::BattlerAnimationSet
 C name Class.RPG::BattlerAnimationSet @name | #A
 @name string
 e rpg_bas_speed 0 slow 8 normal 14 fast
 @speed rpg_bas_speed
-@base_data subwindow rpg_bas_animset
-@weapon_data subwindow rpg_bas_animset
+@base_data subwindow rpg_bas_animset_base
+@weapon_data subwindow rpg_bas_animset_weapon
 
  ---
 

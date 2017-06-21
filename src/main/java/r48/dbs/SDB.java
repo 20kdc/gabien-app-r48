@@ -159,7 +159,8 @@ public class SDB {
                             return new ArbIndexedArraySchemaElement(get(), 1, 0);
                         if (text.equals("arrayIxN")) {
                             int ofx = Integer.parseInt(args[point++]);
-                            return new ArbIndexedArraySchemaElement(get(), ofx, 0);
+                            int sz = Integer.parseInt(args[point++]);
+                            return new ArbIndexedArraySchemaElement(get(), ofx, sz);
                         }
                         if (text.equals("arrayDAM")) {
                             int disambiguatorIndex = Integer.parseInt(args[point++]);
