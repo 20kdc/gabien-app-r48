@@ -145,10 +145,10 @@ e rpg_skill_fm 0 A 1 B 2 C 3 dodge
 
  Is this even used???
 : RPG::ItemAnimation
-e rpg_ia_type 0 animation 1 battleAnimWeapon
+e rpg_ia_type 1 animation 0 battleAnimWeapon
 @type rpg_ia_type
 @movement rpg_badia_movetype
-@battle_anim animation_id
+@battle_anim animation_or_none_id
 @has_afterimage int_boolean
 @loop_count int
 @weapon_batanim_idx rpg_badia_weapon
@@ -431,7 +431,9 @@ C name Class.RPG::State @name | #A
 @avoid_attacks_2k3 boolean
 @reflect_magic_2k3 boolean
 @cursed_2k3 boolean
-@battler_pose_2k3 rpg_badia_pose
+ This is definitely correct, at least
+E rpg_state_pose Custom.No-1 100 none 0 idle 1 rightHand 2 leftHand 3 skillUse 4 dead 5 damage 6 badStatus 7 defending 8 walkingLeft 9 walkingRight 10 victory 11 item
+@battler_pose_2k3 rpg_state_pose
 @restrict_skill boolean
 @restrict_skill_level int
 @restrict_magic boolean
@@ -681,6 +683,7 @@ C name Class.RPG::Class @name | #A
 
 : RPG::BattlerAnimation
 C name Class.RPG::BattlerAnimation @name | #A
+ I really don't understand this stuff
 e rpg_battleranimation_type 0 battlerCharSet 1 animationId
 @name string
 @type rpg_battleranimation_type
