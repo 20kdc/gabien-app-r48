@@ -13,35 +13,35 @@
 ]7 youFound string_= You_found
 ]8 xMoney string= money!
 ]9 xReceived string= received.
-]10 annXAttacksTheEnemy string
-]11 annCritEnemyHurt string
-]12 annCritPlayersHurt string
-]13 annXGuarding string
-]14 annXCowardice1 string
-]15 annXCowardice2 string
-]16 annXPounces string
-]17 annXRunsAway string
-]18 annXTransforms string
-]19 annEHurtForXHP string
-]20 annXMissedE string
-]21 annPHurtForXHP string
-]22 annXMissedP string
-]23 annXFloppedSkillA string
-]24 annXFloppedSkillB string
-]25 annXFloppedSkillC string
-]26 annXDodged string
-]27 annUsesItem string
-]28 annXRecovered string
-]29 paramInc string
-]30 paramDec string
-]31 annXHPAbsorbedFromE string
-]32 annXHPAbsorbedFromP string
-]33 resistInc string
-]34 resistDec string
+]10 annXAttacksTheEnemy2KO string
+]11 annCritEnemyHurt2KO string
+]12 annCritPlayersHurt2KO string
+]13 annXGuarding2KO string
+]14 annXDoesNothing2KO string
+]15 annXReadies2Attacks2KO string
+]16 annXSelfDestructs2KO string
+]17 annXRunsAway2KO string
+]18 annXTransforms2KO string
+]19 annEHurtForXHP2KO string
+]20 annXMissedE2KO string
+]21 annPHurtForXHP2KO string
+]22 annXMissedP2KO string
+]23 annXFloppedSkillA2KO string
+]24 annXFloppedSkillB2KO string
+]25 annXFloppedSkillC2KO string
+]26 annXDodged2KO string
+]27 annUsesItem2KO string
+]28 annXRecovered2KO string
+]29 paramInc2KO string
+]30 paramDec2KO string
+]31 annXHPAbsorbedFromE2KO string
+]32 annXHPAbsorbedFromP2KO string
+]33 resistInc2KO string
+]34 resistDec2KO string
 ]35 levelUp string
 ]36 annLearnedX string
 ]37 battleStart string
-]38 FTXMiss2k3 string
+]38 floatTxtMiss2k3 string
 
 ]39 shop1Greet string
 ]40 shop1Impatient string
@@ -105,20 +105,20 @@
 ]95 optStart string= Begin
 ]96 optLoad string= Load
 ]97 optExitApp string= Exit
-]98 bdsStatus string= Status
-]99 bdsRow string= Row
-]100 bdsOrder string= Order
-]101 bdsWaitOn string= WaitOn
-]102 bdsWaitOff string= WaitOff
-]103 bdsLevel string= Level
-]104 bdsHP string= HP
-]105 bdsSP string= SP
-]106 bdsNoStateFx string= No.StateFx
-]107 bdsEXP2ch string= XP
-]108 bdsLvl2ch string= Lv
-]109 bdsHp2ch string= HP
-]110 bdsSp2ch string= SP
-]111 bdsSpCost string= Sp.Cost
+]98 menuStatus string= Status
+]99 menuRow string= Row
+]100 menuOrder string= Order
+]101 menuWaitOn string= WaitOn
+]102 menuWaitOff string= WaitOff
+]103 batStatLevel string= Level
+]104 batStatHP string= HP
+]105 batStatSP string= SP
+]106 batStatNoStateFx string= No.StateFx
+]107 exp2ch string= XP
+]108 lvl2ch string= Lv
+]109 hp2ch string= HP
+]110 sp2ch string= SP
+]111 spCost string= Sp.Cost
 ]112 statAtk string= ATK
 ]113 statDef string= DEF
 ]114 statSpi string= SPI
