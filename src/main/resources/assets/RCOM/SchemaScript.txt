@@ -39,8 +39,6 @@ e direction_disable 0 noChange 2 down 4 left 6 right 8 up
 .MoveCommandEditor_Most
 @parameters genericScriptParametersSW
 
-> MoveListEditor subwindow array 0 MoveCommandEditor
-
  Stuff that doesn't go in CommonConditionals but would if it was just called "CommonCommandStuff"
 
 C name transfer_player_paramassist2 ]4 ]5 | dir.[direction_disable]A, fade [transfer_player_fadetype]B

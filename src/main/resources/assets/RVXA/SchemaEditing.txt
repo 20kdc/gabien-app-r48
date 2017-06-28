@@ -4,7 +4,7 @@
 
  the VX Ace SchemaEditing file
 
-> genericScriptParameter typeChanger{ genericScriptParametersSW [ RPG::MoveRoute oRPG::MoveRoute MoveCommandEditor oRPG::MoveCommand RPG::BGM oRPG::BGM RPG::BGS oRPG::BGS string " boolean T boolean F int i }
+> genericScriptParameter typeChanger{ genericScriptParametersSW [ RPG::MoveRoute oRPG::MoveRoute RPG::MoveCommand oRPG::MoveCommand RPG::BGM oRPG::BGM RPG::BGS oRPG::BGS string " boolean T boolean F int i }
 
 i RCOM/SchemaScript.txt
 

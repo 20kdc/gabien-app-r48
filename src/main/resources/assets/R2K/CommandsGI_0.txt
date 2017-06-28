@@ -33,9 +33,10 @@ p text string
 10110: Say$
 d Begins a message to show to the player.
 p text string
+C groupBehavior messagebox 20110
 
 20110: Say (cont.)$
-d Continues a 10110 'Say'.
+d Continues a 10110 'Say' - should only be used from there.
 p text string
 
  Need to automate this later.

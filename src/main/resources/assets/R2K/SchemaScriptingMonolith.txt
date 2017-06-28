@@ -259,7 +259,7 @@ e timer_operation_type 0 setTime 1 setFlagsAndStart 2 stop
 .move_event_parameters
 @indent indent
 @parameters arrayDAM -1 nil move_event_array
-+optIV @move_commands subwindow[ Route... ] array 0 LcfMoveCommandEditor
++optIV @move_commands MoveListEditor
 
 .move_event_array
 ]0 _ string

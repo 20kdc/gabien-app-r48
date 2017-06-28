@@ -86,12 +86,12 @@ i R2K/SchemaScriptingMonolith3.txt
 @code int= 12310
 @indent int
 @parameters EventCommandParams
-+optIV @move_commands array 0 LcfMoveCommandEditor
++optIV @move_commands MoveListEditor
 
 .EventCommandEditor_Most
 @indent indent
 @parameters EventCommandParams
-+optIV @move_commands array 0 LcfMoveCommandEditor
++optIV @move_commands MoveListEditor
 
 > EventListEditor subwindow arrayCS RPG::EventCommand EventCommandEditor_Most R2K/Commands.txt
 
@@ -110,4 +110,4 @@ i R2K/SchemaScriptingMonolith3.txt
 @code int
 @parameters { ]0 _ string ]1 _ int ]2 _ int ]3 _ int }
 
-> MoveListEditor subwindow arrayMS RPG::MoveCommand movecommand_default_nothing R2K/CommandsMove.txt
+> MoveListEditor subwindow[ Route... ] arrayMS RPG::MoveCommand movecommand_default_nothing R2K/CommandsMove.txt

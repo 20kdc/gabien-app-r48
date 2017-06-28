@@ -94,9 +94,11 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             if (rc != null) {
                 // Indent stuff
                 indent += rc.indentPre;
-                if (indent != commandTarg.getInstVarBySymbol("@indent").fixnumVal) {
-                    commandTarg.getInstVarBySymbol("@indent").fixnumVal = indent;
-                    modified = true;
+                if (baseElement.allowControlOfIndent) {
+                    if (indent != commandTarg.getInstVarBySymbol("@indent").fixnumVal) {
+                        commandTarg.getInstVarBySymbol("@indent").fixnumVal = indent;
+                        modified = true;
+                    }
                 }
                 indent += rc.indentPost.apply(commandTarg.getInstVarBySymbol("@parameters"));
                 // Group Behavior
@@ -109,7 +111,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                         if (rc.blockLeaveReplacement != lastCode) {
                             RubyIO c = SchemaPath.createDefaultValue(baseElement, new RubyIO().setFX(0));
                             c.getInstVarBySymbol("@code").fixnumVal = database.blockLeaveCmd;
-                            c.getInstVarBySymbol("@indent").fixnumVal = commandTarg.getInstVarBySymbol("@indent").fixnumVal + 1;
+                            if (baseElement.allowControlOfIndent)
+                                c.getInstVarBySymbol("@indent").fixnumVal = commandTarg.getInstVarBySymbol("@indent").fixnumVal + 1;
                             arr.add(i, c);
                             // About to re-handle the same code.
                             lastWasBlockLeave = true;
@@ -254,7 +257,10 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         }, new IFunction<RubyIO, String>() {
             @Override
             public String apply(RubyIO rubyIO) {
-                return database.buildCodename(rubyIO.arrVal[start], true) + TXDB.get(" (...)");
+                String tx = database.buildCodename(rubyIO.arrVal[start], true);
+                if (getGroupLengthCore(rubyIO.arrVal, start) != 0)
+                    tx += TXDB.get(" (...)");
+                return tx;
             }
         });
     }

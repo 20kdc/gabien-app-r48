@@ -189,7 +189,7 @@ public class AppMain {
         } else {
             mapContext = null;
         }
-        if (AppMain.schemas.hasSDBEntry("EventCommandEditor"))
+        if (AppMain.schemas.hasSDBEntry("EventListEditor"))
             toolsets.add(new RMToolsToolset(gamepak));
         toolsets.add(new BasicToolset(rootView, uiTicker, new IConsumer<IConsumer<UIElement>>() {
             @Override
