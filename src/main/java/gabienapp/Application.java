@@ -197,6 +197,7 @@ public class Application {
                 } catch (Exception e) {
                     if (failed)
                         throw new RuntimeException(e);
+                    e.printStackTrace();
                     failed = true;
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     PrintStream ps = new PrintStream(baos, false, "UTF-8");

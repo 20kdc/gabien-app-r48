@@ -5,7 +5,6 @@
 
 package r48.dbs;
 
-import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
 import r48.AppMain;
 import r48.RubyIO;
@@ -187,6 +186,11 @@ public class CMDB {
                     if (args[0].equals("groupBehavior")) {
                         if (args[1].equals("r2k_choice")) {
                             rc.groupBehavior = new IGroupBehavior() {
+                                @Override
+                                public IGroupEditor getGroupEditor(RubyIO[] array, int index) {
+                                    return null;
+                                }
+
                                 @Override
                                 public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
                                     RubyIO res = command.getInstVarBySymbol("@parameters").arrVal[1];

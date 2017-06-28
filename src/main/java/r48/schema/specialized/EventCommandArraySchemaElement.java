@@ -7,6 +7,7 @@ package r48.schema.specialized;
 
 import r48.RubyIO;
 import r48.dbs.CMDB;
+import r48.dbs.IGroupBehavior;
 import r48.dbs.RPGCommand;
 import r48.dbs.SDB;
 import r48.schema.SchemaElement;
@@ -112,5 +113,15 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
         if (modified)
             array.arrVal = arr.toArray(new RubyIO[0]);
         return modified;
+    }
+
+    @Override
+    public IGroupBehavior.IGroupEditor getGroupEditor(RubyIO[] arr, int j) {
+        RubyIO commandTarg = arr[j];
+        int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
+        RPGCommand rc = database.knownCommands.get(code);
+        if (rc != null)
+            return rc.groupBehavior.getGroupEditor(arr, j);
+        return null;
     }
 }

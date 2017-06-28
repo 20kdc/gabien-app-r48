@@ -8,7 +8,6 @@ package r48.dbs;
 import gabien.ui.IFunction;
 import r48.AppMain;
 import r48.RubyIO;
-import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 
 import java.util.LinkedList;
@@ -41,6 +40,7 @@ public class RPGCommand {
 
     // Extrenely special behavior for certain commands.
     // Only usable with the proper "shielding".
+    // (Probably refers to making sure that this will NEVER crash)
     public IGroupBehavior groupBehavior;
 
     // Pass null for parameters if this is for combobox display.

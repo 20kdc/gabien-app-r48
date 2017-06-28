@@ -116,8 +116,7 @@ public class UIGrid extends UIPanel {
             availableRows = 1;
         tmWidth = tiles;
         tmWidth -= (scrollBarW + (tileSize - 1)) / tileSize;
-        Rect b = getBounds();
-        uivScrollbar.setBounds(new Rect(b.width - scrollBarW, 0, scrollBarW, availableRows * tileSize));
+        uivScrollbar.setBounds(new Rect(r.width - scrollBarW, 0, scrollBarW, availableRows * tileSize));
         super.setBounds(new Rect(r.x, r.y, tiles * tileSize, availableRows * tileSize));
     }
 
