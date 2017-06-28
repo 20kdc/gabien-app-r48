@@ -3,7 +3,7 @@
  * No warranty is provided, implied or otherwise.
  */
 
-package r48.schema.specialized;
+package r48.schema.specialized.cmgb;
 
 import gabien.ui.*;
 import r48.FontSizes;
@@ -18,6 +18,7 @@ import r48.schema.SchemaElement;
 import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.ROIntegerSchemaElement;
+import r48.schema.specialized.TempDialogSchemaChoice;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -29,6 +30,7 @@ import r48.ui.help.UIHelpSystem;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Used to make RPGCommands bearable.
@@ -38,6 +40,7 @@ import java.util.Map;
  */
 public class RPGCommandSchemaElement extends SchemaElement {
     public boolean allowControlOfIndent = false;
+    public boolean showHeader = true;
 
     // actualSchema is used for modifyVal,
     // while mostOfSchema is used for display.
@@ -62,6 +65,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         // They're tags for stuff done inside the schema, not part of the schema itself.
 
         final SchemaPath path = path2.tagSEMonitor(target, this);
+        final AtomicInteger passbackHeight = new AtomicInteger(0);
         final UIPanel uip = new UIPanel() {
             UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(FontSizes.schemaButtonTextHeight, database.buildCodename(target, true), new Runnable() {
                 @Override
@@ -140,11 +144,13 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
                     int height = 0;
                     if (target.getInstVarBySymbol("@indent") != null) {
-                        SchemaElement ise = new IVarSchemaElement("@indent", TXDB.get("@indent"), new ROIntegerSchemaElement(0), false);
-                        if (!allowControlOfIndent)
-                            ise = new IVarSchemaElement("@indent", TXDB.get("@indent"), new IntegerSchemaElement(0), false);
-                        height += ise.maxHoldingHeight();
-                        uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
+                        if (showHeader) {
+                            SchemaElement ise = new IVarSchemaElement("@indent", TXDB.get("@indent"), new ROIntegerSchemaElement(0), false);
+                            if (!allowControlOfIndent)
+                                ise = new IVarSchemaElement("@indent", TXDB.get("@indent"), new IntegerSchemaElement(0), false);
+                            height += ise.maxHoldingHeight();
+                            uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
+                        }
                     }
                     for (int i = 0; i < param.arrVal.length; i++) {
                         if (param.arrVal.length <= i) {
@@ -170,20 +176,29 @@ public class RPGCommandSchemaElement extends SchemaElement {
             public void setBounds(Rect r) {
                 super.setBounds(r);
                 allElements.clear();
-                allElements.add(chooseCode);
-                allElements.add(subElem);
-                int cch = chooseCode.getBounds().height;
-                chooseCode.setBounds(new Rect(0, 0, r.width, cch));
-                subElem.setBounds(new Rect(0, cch, r.width, r.height - cch));
+                if (showHeader) {
+                    allElements.add(chooseCode);
+                    allElements.add(subElem);
+                    int cch = chooseCode.getBounds().height;
+                    passbackHeight.set(cch + subElem.getBounds().height);
+                    chooseCode.setBounds(new Rect(0, 0, r.width, cch));
+                    subElem.setBounds(new Rect(0, cch, r.width, r.height - cch));
+                } else {
+                    allElements.add(subElem);
+                    passbackHeight.set(subElem.getBounds().height);
+                    subElem.setBounds(new Rect(0, 0, r.width, r.height));
+                }
             }
         };
         uip.setBounds(new Rect(0, 0, 320, 200));
+        uip.setBounds(new Rect(0, 0, 320, passbackHeight.get()));
         return uip;
     }
 
     @Override
     public int maxHoldingHeight() {
-        throw new RuntimeException("Just don't.");
+        // Guess :(
+        return 256;
     }
 
     @Override
@@ -207,5 +222,11 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 }
             }
         }
+    }
+
+    public RPGCommandSchemaElement hideHeaderVer() {
+        RPGCommandSchemaElement rcse = new RPGCommandSchemaElement(actualSchema, mostOfSchema, database, allowControlOfIndent);
+        rcse.showHeader = false;
+        return rcse;
     }
 }

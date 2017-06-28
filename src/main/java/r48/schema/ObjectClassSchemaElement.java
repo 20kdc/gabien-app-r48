@@ -60,7 +60,7 @@ public class ObjectClassSchemaElement extends SchemaElement {
         while (proxyHandling) {
             proxyHandling = false;
             if (ise instanceof IProxySchemaElement) {
-                ise = ((NameProxySchemaElement) ise).getEntry();
+                ise = ((IProxySchemaElement) ise).getEntry();
                 proxyHandling = true;
             }
             if (ise instanceof GenericDisambiguationSchemaElement) {

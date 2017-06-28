@@ -8,9 +8,8 @@
 
 i RCOM/SchemaScript.txt
 
-> EventListEditor subwindow arrayCS RVXA/Commands.txt EventCommandEditor
-> EventCommandEditor RPGCS RVXA/Commands.txt RPG::EventCommand EventCommandEditor_Most
-> MoveCommandEditor RPGMS RVXA/CommandsMove.txt RPG::MoveCommand MoveCommandEditor_Most
+> EventListEditor subwindow arrayCS RPG::EventCommand EventCommandEditor_Most RVXA/Commands.txt
+> MoveListEditor subwindow arrayMS RPG::MoveCommand MoveCommandEditor_Most RVXA/CommandsMove.txt
 
 : RPG::MoveRoute
 @list MoveListEditor

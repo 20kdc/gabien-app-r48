@@ -6,6 +6,7 @@
 package r48.schema;
 
 import gabien.ui.*;
+import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
@@ -29,12 +30,15 @@ public class ArrayElementSchemaElement extends SchemaElement {
     public String name;
     public SchemaElement subSchema;
     public String optional;
+    // Removes the element rather than cutting the array. Only use when it is safe to do so.
+    public boolean delRemove;
 
-    public ArrayElementSchemaElement(int ind, String niceName, SchemaElement ise, String opt) {
+    public ArrayElementSchemaElement(int ind, String niceName, SchemaElement ise, String opt, boolean dr) {
         index = ind;
         name = niceName;
         subSchema = ise;
         optional = opt;
+        delRemove = dr;
     }
 
     @Override
@@ -44,8 +48,11 @@ public class ArrayElementSchemaElement extends SchemaElement {
             panel.setBounds(new Rect(0, 0, 0, 0));
             return panel;
         }
-        if ((target.arrVal.length <= index) && (optional != null)) {
-            return new UITextButton(FontSizes.schemaButtonTextHeight, FormatSyntax.formatExtended(TXDB.get("Field #A doesn't exist (default #B)"), new RubyIO[] {new RubyIO().setString(name), new RubyIO().setString(optional)}), new Runnable() {
+        if (target.arrVal.length <= index) {
+            String tx = TXDB.get("(This index isn't valid - did you modify a group from another window?)");
+            if (optional != null)
+                tx = FormatSyntax.formatExtended(TXDB.get("Field #A doesn't exist (default #B)"), new RubyIO[] {new RubyIO().setString(name), new RubyIO().setString(optional)});
+            return new UITextButton(FontSizes.schemaButtonTextHeight, tx, new Runnable() {
                 @Override
                 public void run() {
                     // resize to include and set default
@@ -59,16 +66,23 @@ public class ArrayElementSchemaElement extends SchemaElement {
                 }
             });
         }
-        UIElement core = new UIHHalfsplit(1, 3, new UILabel(name, FontSizes.schemaFieldTextHeight), subSchema.buildHoldingEditor(target.arrVal[index], launcher, path.arrayHashIndex(new RubyIO().setFX(index), "." + name)));
+        UIElement core = subSchema.buildHoldingEditor(target.arrVal[index], launcher, path.arrayHashIndex(new RubyIO().setFX(index), "." + name));
+
+        if (!name.equals(""))
+            core = new UIHHalfsplit(1, 3, new UILabel(name, FontSizes.schemaFieldTextHeight), core);
 
         if (optional != null)
             return new UIAppendButton("-", core, new Runnable() {
                 @Override
                 public void run() {
-                    // Cut array and call modification alerter.
-                    RubyIO[] newArr = new RubyIO[index];
-                    System.arraycopy(target.arrVal, 0, newArr, 0, newArr.length);
-                    target.arrVal = newArr;
+                    if (delRemove) {
+                        ArrayUtils.removeRioElement(target, index);
+                    } else {
+                        // Cut array and call modification alerter.
+                        RubyIO[] newArr = new RubyIO[index];
+                        System.arraycopy(target.arrVal, 0, newArr, 0, newArr.length);
+                        target.arrVal = newArr;
+                    }
                     path.changeOccurred(false);
                 }
             }, FontSizes.schemaFieldTextHeight);

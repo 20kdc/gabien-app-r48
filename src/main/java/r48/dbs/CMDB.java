@@ -10,8 +10,6 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
-import r48.schema.specialized.cmgb.IGroupEditor;
-import r48.schema.specialized.cmgb.MessageboxGroupEditor;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -192,16 +190,21 @@ public class CMDB {
                             final int code = Integer.parseInt(args[2]);
                             rc.groupBehavior = new IGroupBehavior() {
                                 @Override
-                                public IGroupEditor getGroupEditor(RubyIO[] array, int index) {
+                                public int getGroupLength(RubyIO[] array, int index) {
                                     int l = 1;
                                     for (int i = index + 1; i < array.length; i++) {
-                                        if (array[index].getInstVarBySymbol("@code").fixnumVal == code) {
+                                        if (array[i].getInstVarBySymbol("@code").fixnumVal == code) {
                                             l++;
                                         } else {
                                             break;
                                         }
                                     }
-                                    return new MessageboxGroupEditor(index, l);
+                                    return l;
+                                }
+
+                                @Override
+                                public int getAdditionCode() {
+                                    return code;
                                 }
 
                                 @Override
@@ -212,8 +215,13 @@ public class CMDB {
                         } else if (args[1].equals("r2k_choice")) {
                             rc.groupBehavior = new IGroupBehavior() {
                                 @Override
-                                public IGroupEditor getGroupEditor(RubyIO[] array, int index) {
-                                    return null;
+                                public int getGroupLength(RubyIO[] array, int index) {
+                                    return 0;
+                                }
+
+                                @Override
+                                public int getAdditionCode() {
+                                    return 0;
                                 }
 
                                 @Override

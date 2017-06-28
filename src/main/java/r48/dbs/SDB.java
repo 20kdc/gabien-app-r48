@@ -19,6 +19,7 @@ import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.LowerBoundIntegerSchemaElement;
 import r48.schema.integers.ROIntegerSchemaElement;
 import r48.schema.specialized.*;
+import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 import r48.schema.specialized.tbleditors.DefaultTableCellEditor;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
@@ -236,13 +237,13 @@ public class SDB {
                             String a = text.substring(2);
                             String b = TXDB.get(outerContext, args[point++]);
                             String o = TXDB.get(outerContext, args[point++]);
-                            return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), o);
+                            return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), o, false);
                         }
                         if (text.startsWith("]")) {
                             // yay for consistency!
                             String a = text.substring(1);
                             String b = TXDB.get(outerContext, args[point++]);
-                            return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), null);
+                            return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), null, false);
                         }
                         // --
 
@@ -251,29 +252,6 @@ public class SDB {
 
                         // Specialized stuff starts here.
                         // This includes anything of type 'u'.
-
-                        // CS means "control indent if allowed"
-                        // MS means "never control indent"
-                        if (text.equals("RPGCS")) {
-                            final CMDB database = getCMDB(args[point++]);
-                            SchemaElement a = get();
-                            return new SubwindowSchemaElement(new RPGCommandSchemaElement(a, get(), database, allowControlOfEventCommandIndent), new IFunction<RubyIO, String>() {
-                                @Override
-                                public String apply(RubyIO rubyIO) {
-                                    return database.buildCodename(rubyIO, true);
-                                }
-                            });
-                        }
-                        if (text.equals("RPGMS")) {
-                            final CMDB database = getCMDB(args[point++]);
-                            SchemaElement a = get();
-                            return new SubwindowSchemaElement(new RPGCommandSchemaElement(a, get(), database, false), new IFunction<RubyIO, String>() {
-                                @Override
-                                public String apply(RubyIO rubyIO) {
-                                    return database.buildCodename(rubyIO, true);
-                                }
-                            });
-                        }
                         if (text.equals("fileSelector")) {
                             String tx = args[point++];
                             String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO[] {new RubyIO().setString(tx)});
@@ -328,11 +306,24 @@ public class SDB {
                         }
                         if (text.equals("CTNative"))
                             return new CTNativeSchemaElement(args[point++]);
+
+                        // CS means "control indent if allowed"
+                        // MS means "never control indent"
                         if (text.equals("arrayCS")) {
+                            SchemaElement s1, s2;
+                            s1 = get();
+                            s2 = get();
                             String a = args[point++];
-                            SchemaElement ise = get();
-                            return new EventCommandArraySchemaElement(ise, getCMDB(a));
+                            return new EventCommandArraySchemaElement(s1, s2, getCMDB(a), allowControlOfEventCommandIndent);
                         }
+                        if (text.equals("arrayMS")) {
+                            SchemaElement s1, s2;
+                            s1 = get();
+                            s2 = get();
+                            String a = args[point++];
+                            return new EventCommandArraySchemaElement(s1, s2, getCMDB(a), false);
+                        }
+
                         if (text.equals("mapPositionHelper")) {
                             String a = args[point++];
                             String b = args[point++];
@@ -416,7 +407,7 @@ public class SDB {
                         }
                     });
                 } else if (c == ']') {
-                    workingObj.aggregate.add(new ArrayElementSchemaElement(Integer.parseInt(args[0]), TXDB.get(outerContext, args[1]), handleChain(args, 2), null));
+                    workingObj.aggregate.add(new ArrayElementSchemaElement(Integer.parseInt(args[0]), TXDB.get(outerContext, args[1]), handleChain(args, 2), null, false));
                 } else if (c == 'i') {
                     readFile(args[0]);
                 } else if (c == 'D') {

@@ -11,7 +11,6 @@ import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
-import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.dbs.TXDB;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
@@ -62,14 +61,28 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     addAdditionButton(i, ind);
                     SchemaElement subelem = getElementSchema(i);
                     nextAdvance = getGroupLength(target.arrVal, i);
-                    UIElement uie = subelem.buildHoldingEditor(target.arrVal[i], launcher, ind);
+                    boolean hasNIdxSchema = false;
+                    if (nextAdvance == 0) {
+                        nextAdvance = 1;
+                    } else {
+                        subelem = getElementContextualSchema(target.arrVal, i, nextAdvance);
+                        hasNIdxSchema = true;
+                    }
+                    final int thisNextAdvance = nextAdvance;
+
+                    UIElement uie;
+                    if (hasNIdxSchema) {
+                        uie = subelem.buildHoldingEditor(target, launcher, ind);
+                    } else {
+                        uie = subelem.buildHoldingEditor(target.arrVal[i], launcher, ind);
+                    }
                     final int mi = i;
                     if (selectedStart == -1) {
                         uie = new UIAppendButton(TXDB.get("Sel"), uie, new Runnable() {
                             @Override
                             public void run() {
                                 selectedStart = mi;
-                                selectedEnd = mi;
+                                selectedEnd = mi + (thisNextAdvance - 1);
                                 containerRCL();
                             }
                         }, FontSizes.schemaButtonTextHeight);
@@ -77,7 +90,8 @@ public abstract class ArraySchemaElement extends SchemaElement {
                             uie = new UIAppendButton("-", uie, new Runnable() {
                                 @Override
                                 public void run() {
-                                    ArrayUtils.removeRioElement(target, mi);
+                                    for (int j = 0; j < thisNextAdvance; j++)
+                                        ArrayUtils.removeRioElement(target, mi);
                                     // whack the UI & such
                                     path.changeOccurred(false);
                                 }
@@ -203,22 +217,28 @@ public abstract class ArraySchemaElement extends SchemaElement {
             } else {
                 target.arrVal = new RubyIO[sizeFixed];
             }
+            for (int i = 0; i < target.arrVal.length; i++)
+                target.arrVal[i] = new RubyIO();
         }
         boolean modified = setDefault;
         while (true) {
             for (int j = 0; j < target.arrVal.length; j++) {
                 RubyIO rio = target.arrVal[j];
-                boolean tempSetDefault = setDefault || (rio == null);
-                if (tempSetDefault) {
-                    rio = new RubyIO();
-                    modified = true;
-                }
                 // Fun fact: There's a reason for this not-quite-linear timeline.
                 // It's because otherwise, when the subelement tries to notify the array of the modification,
                 //  it will lead to an infinite loop!
                 // So it has to be able to see it's own object for the loop to terminate.
                 target.arrVal[j] = rio;
-                getElementSchema(j).modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(j), "[" + j + "]"), tempSetDefault);
+                getElementSchema(j).modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(j), "[" + j + "]"), setDefault);
+            }
+            int groupStep;
+            for (int j = 0; j < target.arrVal.length; j += groupStep) {
+                groupStep = getGroupLength(target.arrVal, j);
+                if (groupStep == 0) {
+                    groupStep = 1;
+                    continue;
+                }
+                getElementContextualSchema(target.arrVal, j, groupStep).modifyVal(target, path, setDefault);
             }
             boolean aca = autoCorrectArray(target, path);
             modified = modified || aca;
@@ -245,11 +265,20 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // Also note that if a modification is performed, another check is done so that things like indent processing can run.
     protected abstract boolean autoCorrectArray(RubyIO array, SchemaPath path);
 
-    // Allows using a custom schema for specific elements in subclasses.
+    // Allows using a custom schema for specific elements in specific contexts in subclasses.
+    // Note that this is meant to be used by things messing with getGroupLength, and will not be used otherwise.
+    // Also note that for modifyVal purposes this acts *in addition* to getElementSchema,
+    //  so that getGroupLength can safely assume that getElementSchema is being followed.
+    protected SchemaElement getElementContextualSchema(RubyIO[] arr, int start, int length) {
+        throw new RuntimeException("Group length was used, but no contextual schema was defined for it.");
+    }
     protected abstract SchemaElement getElementSchema(int j);
+
     // Used to replace groups of elements with a single editor, where this makes sense.
+    // If this is non-zero for a given element, then the element schema is assumed to apply to the array.
+    // Use with care.
     protected int getGroupLength(RubyIO[] array, int j) {
-        return 1;
+        return 0;
     }
 
     // 0: Do not even show this element.

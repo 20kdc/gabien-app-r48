@@ -93,8 +93,7 @@ i R2K/SchemaScriptingMonolith3.txt
 @parameters EventCommandParams
 +optIV @move_commands array 0 LcfMoveCommandEditor
 
-> EventListEditor subwindow arrayCS R2K/Commands.txt EventCommandEditor
-> EventCommandEditor RPGCS R2K/Commands.txt RPG::EventCommand EventCommandEditor_Most
+> EventListEditor subwindow arrayCS RPG::EventCommand EventCommandEditor_Most R2K/Commands.txt
 
  Use the Command Buffer syntax to fix this mess.
  Note that this introduces new and interesting problems, but I claim it's worth it,
@@ -111,5 +110,4 @@ i R2K/SchemaScriptingMonolith3.txt
 @code int
 @parameters { ]0 _ string ]1 _ int ]2 _ int ]3 _ int }
 
-> LcfMoveCommandEditor RPGMS R2K/CommandsMove.txt RPG::MoveCommand movecommand_default_nothing
-> MoveListEditor subwindow array 0 RPG::MoveCommand
+> MoveListEditor subwindow arrayMS RPG::MoveCommand movecommand_default_nothing R2K/CommandsMove.txt

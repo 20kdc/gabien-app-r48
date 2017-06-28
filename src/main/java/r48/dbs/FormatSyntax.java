@@ -223,8 +223,8 @@ public class FormatSyntax {
         }
         String r = null;
         if (ise != null) {
-            while (ise instanceof NameProxySchemaElement)
-                ise = ((NameProxySchemaElement) ise).getEntry();
+            while (ise instanceof IProxySchemaElement)
+                ise = ((IProxySchemaElement) ise).getEntry();
             if (ise instanceof EnumSchemaElement)
                 r = ((EnumSchemaElement) ise).viewValue((int) rubyIO.fixnumVal, prefixEnums);
         }
