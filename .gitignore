@@ -3,6 +3,7 @@
 !README.md
 !.gitignore
 !translation.lua
+!translation-diff.sh
 !src
 !src/
 !src/main
