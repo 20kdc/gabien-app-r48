@@ -11,6 +11,7 @@ import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
+import r48.dbs.IProxySchemaElement;
 import r48.dbs.RPGCommand;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -18,7 +19,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 12/29/16.
  */
-public class SubwindowSchemaElement extends SchemaElement {
+public class SubwindowSchemaElement extends SchemaElement implements IProxySchemaElement {
     public SchemaElement heldElement;
     public IFunction<RubyIO, String> nameGetter = new IFunction<RubyIO, String>() {
         @Override
@@ -54,5 +55,10 @@ public class SubwindowSchemaElement extends SchemaElement {
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         heldElement.modifyVal(target, path, setDefault);
+    }
+
+    @Override
+    public SchemaElement getEntry() {
+        return heldElement;
     }
 }

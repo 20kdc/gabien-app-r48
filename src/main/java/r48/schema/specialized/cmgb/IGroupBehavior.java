@@ -2,12 +2,9 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-package r48.dbs;
+package r48.schema.specialized.cmgb;
 
-import gabien.ui.UIPanel;
 import r48.RubyIO;
-import r48.schema.SchemaElement;
-import r48.schema.util.SchemaPath;
 
 import java.util.LinkedList;
 
@@ -17,10 +14,6 @@ import java.util.LinkedList;
  * Created on 6/28/17.
  */
 public interface IGroupBehavior {
-    interface IGroupEditor {
-        UIPanel getEditor(RubyIO array, SchemaPath arrayPath);
-        int getLength();
-    }
     // If this returns null, then stuff acts "as per default".
     IGroupEditor getGroupEditor(RubyIO[] array, int index);
     // Note that this returning true indicates if modifications occurred.

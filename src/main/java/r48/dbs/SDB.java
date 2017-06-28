@@ -5,7 +5,6 @@
 
 package r48.dbs;
 
-import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import r48.AppMain;
@@ -27,8 +26,6 @@ import r48.schema.specialized.tbleditors.ITableCellEditor;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.Stack;
 
 /**
  * The ultimate database, more or less, since this houses the data definitions needed to do things like edit Events.
@@ -559,7 +556,7 @@ public class SDB {
             return schemaDatabase.get(text);
         // Notably, the proxy is put in the database so the expectation is only added once.
         remainingExpected.add(text);
-        SchemaElement ise = new ProxySchemaElement(text);
+        SchemaElement ise = new NameProxySchemaElement(text);
         schemaDatabase.put(text, ise);
         return ise;
     }

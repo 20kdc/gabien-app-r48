@@ -7,7 +7,8 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import r48.RubyIO;
-import r48.dbs.ProxySchemaElement;
+import r48.dbs.IProxySchemaElement;
+import r48.dbs.NameProxySchemaElement;
 import r48.schema.specialized.RubyTableSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -58,12 +59,8 @@ public class ObjectClassSchemaElement extends SchemaElement {
         boolean proxyHandling = true;
         while (proxyHandling) {
             proxyHandling = false;
-            if (ise instanceof ProxySchemaElement) {
-                ise = ((ProxySchemaElement) ise).getEntry();
-                proxyHandling = true;
-            }
-            if (ise instanceof SubwindowSchemaElement) {
-                ise = ((SubwindowSchemaElement) ise).heldElement;
+            if (ise instanceof IProxySchemaElement) {
+                ise = ((NameProxySchemaElement) ise).getEntry();
                 proxyHandling = true;
             }
             if (ise instanceof GenericDisambiguationSchemaElement) {

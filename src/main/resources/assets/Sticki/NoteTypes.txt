@@ -15,8 +15,9 @@ d Indicate that at this point you want to (optional)...
 p text string
 
 992: Nb.$
-d
+d A comment.
 p text string
+C groupBehavior messagebox 992
 
 993: Consider$ (
 d Begins a consideration block.

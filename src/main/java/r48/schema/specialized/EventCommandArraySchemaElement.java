@@ -5,9 +5,13 @@
 
 package r48.schema.specialized;
 
+import gabien.ui.IFunction;
 import r48.RubyIO;
 import r48.dbs.CMDB;
-import r48.dbs.IGroupBehavior;
+import r48.dbs.IProxySchemaElement;
+import r48.schema.SubwindowSchemaElement;
+import r48.schema.arrays.ArraySchemaElement;
+import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.dbs.RPGCommand;
 import r48.dbs.SDB;
 import r48.schema.SchemaElement;
@@ -24,12 +28,21 @@ import java.util.LinkedList;
  * Anything to simplify that thing. Jun 2, 2017.)
  * Created on 1/2/17.
  */
-public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
+public class EventCommandArraySchemaElement extends ArraySchemaElement {
     private final CMDB database;
-
+    private final SchemaElement baseElement;
     public EventCommandArraySchemaElement(SchemaElement eventCommand, CMDB db) {
-        super(eventCommand, 0, false);
+        super(0, false);
+        baseElement = eventCommand;
+        // gets rid of subwindows & proxies
         database = db;
+    }
+
+    public RPGCommandSchemaElement getPureRC() {
+        SchemaElement eventCommand = baseElement;
+        while (eventCommand instanceof IProxySchemaElement)
+            eventCommand = ((IProxySchemaElement) eventCommand).getEntry();
+        return (RPGCommandSchemaElement) eventCommand;
     }
 
     @Override
@@ -54,7 +67,7 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
 
         if (needsEndingBlock) {
             // 0 so that the code won't combust from lacking an array
-            RubyIO c = SchemaPath.createDefaultValue(subelems, new RubyIO().setFX(database.listLeaveCmd));
+            RubyIO c = SchemaPath.createDefaultValue(baseElement, new RubyIO().setFX(database.listLeaveCmd));
             c.getInstVarBySymbol("@code").fixnumVal = database.listLeaveCmd;
             arr.add(c);
         }
@@ -90,7 +103,7 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
                 if (rc.needsBlockLeavePre) {
                     if (!lastWasBlockLeave) {
                         if (rc.blockLeaveReplacement != lastCode) {
-                            RubyIO c = SchemaPath.createDefaultValue(subelems, new RubyIO().setFX(0));
+                            RubyIO c = SchemaPath.createDefaultValue(baseElement, new RubyIO().setFX(0));
                             c.getInstVarBySymbol("@code").fixnumVal = database.blockLeaveCmd;
                             c.getInstVarBySymbol("@indent").fixnumVal = commandTarg.getInstVarBySymbol("@indent").fixnumVal + 1;
                             arr.add(i, c);
@@ -116,12 +129,28 @@ public class EventCommandArraySchemaElement extends StandardArraySchemaElement {
     }
 
     @Override
-    public IGroupBehavior.IGroupEditor getGroupEditor(RubyIO[] arr, int j) {
+    public int getGroupLength(RubyIO[] arr, int j) {
         RubyIO commandTarg = arr[j];
         int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
         RPGCommand rc = database.knownCommands.get(code);
         if (rc != null)
-            return rc.groupBehavior.getGroupEditor(arr, j);
-        return null;
+            if (rc.groupBehavior != null)
+                return rc.groupBehavior.getGroupEditor(arr, j).getLength();
+        return 1;
+    }
+
+    @Override
+    protected SchemaElement getElementSchema(int j) {
+        return new SubwindowSchemaElement(baseElement, new IFunction<RubyIO, String>() {
+            @Override
+            public String apply(RubyIO rubyIO) {
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public int maxHoldingHeight() {
+        throw new RuntimeException("Do not use ECAs outside of subwindows. It's just bad.");
     }
 }

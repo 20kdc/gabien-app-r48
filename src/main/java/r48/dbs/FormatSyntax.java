@@ -11,7 +11,6 @@ import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 
 import java.util.LinkedList;
-import java.util.Stack;
 
 /**
  * Yet another class solely to hold a common syntax in an obvious place.
@@ -224,8 +223,8 @@ public class FormatSyntax {
         }
         String r = null;
         if (ise != null) {
-            while (ise instanceof ProxySchemaElement)
-                ise = ((ProxySchemaElement) ise).getEntry();
+            while (ise instanceof NameProxySchemaElement)
+                ise = ((NameProxySchemaElement) ise).getEntry();
             if (ise instanceof EnumSchemaElement)
                 r = ((EnumSchemaElement) ise).viewValue((int) rubyIO.fixnumVal, prefixEnums);
         }

@@ -17,11 +17,11 @@ import r48.schema.util.SchemaPath;
  * Has to be a separate class so RPGCommand stuff can 'see through it'.
  * Created on 1/3/17.
  */
-public class ProxySchemaElement extends SchemaElement {
+public class NameProxySchemaElement extends SchemaElement implements IProxySchemaElement {
     private final String tx;
     SchemaElement cache = null;
 
-    public ProxySchemaElement(String text) {
+    public NameProxySchemaElement(String text) {
         tx = text;
     }
 
@@ -30,6 +30,7 @@ public class ProxySchemaElement extends SchemaElement {
         return getEntry().buildHoldingEditor(target, launcher, path);
     }
 
+    @Override
     public SchemaElement getEntry() {
         if (cache != null)
             return cache;

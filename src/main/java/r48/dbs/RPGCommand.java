@@ -9,6 +9,7 @@ import gabien.ui.IFunction;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
+import r48.schema.specialized.cmgb.IGroupBehavior;
 
 import java.util.LinkedList;
 

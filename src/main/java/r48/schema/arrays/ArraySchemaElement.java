@@ -11,7 +11,7 @@ import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
-import r48.dbs.IGroupBehavior;
+import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.dbs.TXDB;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
@@ -55,20 +55,14 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 int nextAdvance;
                 for (int i = 0; i < target.arrVal.length; i += nextAdvance) {
                     nextAdvance = 1;
-                    IGroupBehavior.IGroupEditor groupEditor = getGroupEditor(target.arrVal, i);
                     int pLevel = elementPermissionsLevel(i, target);
                     if (pLevel < 1)
                         continue;
                     SchemaPath ind = path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]");
                     addAdditionButton(i, ind);
                     SchemaElement subelem = getElementSchema(i);
-                    UIElement uie = null;
-                    if (groupEditor != null) {
-                        nextAdvance = groupEditor.getLength();
-                        uie = groupEditor.getEditor(target, path.otherIndex("[" + i + " .. " + (i + nextAdvance) + "]"));
-                    }
-                    if (uie == null)
-                        uie = subelem.buildHoldingEditor(target.arrVal[i], launcher, ind);
+                    nextAdvance = getGroupLength(target.arrVal, i);
+                    UIElement uie = subelem.buildHoldingEditor(target.arrVal[i], launcher, ind);
                     final int mi = i;
                     if (selectedStart == -1) {
                         uie = new UIAppendButton(TXDB.get("Sel"), uie, new Runnable() {
@@ -254,8 +248,8 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // Allows using a custom schema for specific elements in subclasses.
     protected abstract SchemaElement getElementSchema(int j);
     // Used to replace groups of elements with a single editor, where this makes sense.
-    protected IGroupBehavior.IGroupEditor getGroupEditor(RubyIO[] array, int j) {
-        return null;
+    protected int getGroupLength(RubyIO[] array, int j) {
+        return 1;
     }
 
     // 0: Do not even show this element.

@@ -9,6 +9,9 @@ import gabien.ui.IFunction;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
+import r48.schema.specialized.cmgb.IGroupBehavior;
+import r48.schema.specialized.cmgb.IGroupEditor;
+import r48.schema.specialized.cmgb.MessageboxGroupEditor;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -184,7 +187,29 @@ public class CMDB {
                         };
                     }
                     if (args[0].equals("groupBehavior")) {
-                        if (args[1].equals("r2k_choice")) {
+                        // For commands with just one parameter that is a string.
+                        if (args[1].equals("messagebox")) {
+                            final int code = Integer.parseInt(args[2]);
+                            rc.groupBehavior = new IGroupBehavior() {
+                                @Override
+                                public IGroupEditor getGroupEditor(RubyIO[] array, int index) {
+                                    int l = 1;
+                                    for (int i = index + 1; i < array.length; i++) {
+                                        if (array[index].getInstVarBySymbol("@code").fixnumVal == code) {
+                                            l++;
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                    return new MessageboxGroupEditor(index, l);
+                                }
+
+                                @Override
+                                public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                                    return false;
+                                }
+                            };
+                        } else if (args[1].equals("r2k_choice")) {
                             rc.groupBehavior = new IGroupBehavior() {
                                 @Override
                                 public IGroupEditor getGroupEditor(RubyIO[] array, int index) {
