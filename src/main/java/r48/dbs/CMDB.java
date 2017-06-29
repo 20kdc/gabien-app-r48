@@ -226,19 +226,26 @@ public class CMDB {
 
                                 @Override
                                 public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                                    RubyIO tx = command.getInstVarBySymbol("@parameters").arrVal[0];
+
                                     RubyIO res = command.getInstVarBySymbol("@parameters").arrVal[1];
                                     long id = command.getInstVarBySymbol("@indent").fixnumVal;
                                     long nIdx = 0;
-                                    for (int i = commandIndex - 1; i >= 0; i--) {
-                                        RubyIO cmd = array.get(i);
-                                        if (cmd.getInstVarBySymbol("@indent").fixnumVal == id) {
-                                            long code = cmd.getInstVarBySymbol("@code").fixnumVal;
-                                            if (code == 10140) {
-                                                // Show Choices (term.)
-                                                break;
-                                            } else if (code == 20140) {
-                                                // Choice...
-                                                nIdx++;
+                                    if (tx.strVal.length == 0) {
+                                        // Always 4.
+                                        nIdx = 4;
+                                    } else {
+                                        for (int i = commandIndex - 1; i >= 0; i--) {
+                                            RubyIO cmd = array.get(i);
+                                            if (cmd.getInstVarBySymbol("@indent").fixnumVal == id) {
+                                                long code = cmd.getInstVarBySymbol("@code").fixnumVal;
+                                                if (code == 10140) {
+                                                    // Show Choices (term.)
+                                                    break;
+                                                } else if (code == 20140) {
+                                                    // Choice...
+                                                    nIdx++;
+                                                }
                                             }
                                         }
                                     }

@@ -16,7 +16,7 @@ e change_battle_parameter 0 maxHP 1 maxMP 2 atk 3 def 4 spi 5 agi
 e scripting_vehicletype 0 boat 1 ship 2 airShip
 
 e change_sys_bgm_id 0 battle 1 victory 2 inn 3 boat 4 ship 5 airShip 6 gameOver
-e change_sys_sfx_id 0 changeChoice 1 act 2 cancel 3 error 4 enterBattle 5 fleeBattle 6 enemyAttackBattle 7 enemyHurtBattle 8 allyHurtBattle 9 evadeInBattle 10 enemyDeadBattle 11 useItem
+e change_sys_sfx_id 0 cursor 1 act 2 cancel 3 buzzer 4 battle 5 escape 6 enemyAttack 7 enemyHurt 8 actorHurt 9 dodge 10 enemyDeath 11 item
 e change_sys_gfx_font 0 msGothic 1 msMincho
 
 e change_transition_situation 0 mapChangePre 1 mapChangePost 2 enterBattlePre 3 enterBattlePost 4 leaveBattlePre 5 leaveBattlePost

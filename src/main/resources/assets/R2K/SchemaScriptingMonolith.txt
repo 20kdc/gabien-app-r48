@@ -116,6 +116,7 @@ C name cbranch_base ]1 | #A
 
 .cbranch_switch
 +cbranch_base
+C name cbranch_switch ]2 ]3 | Switch @[switch_id]A {B=0=OFF|ON}
 ]2 switch switch_id
 ]3 invert int_boolean
 
@@ -201,7 +202,7 @@ C name cbranch_timer2 | Timer2 (...)
 ]2 valueSeconds int
 
 .cbranch_cherry
-C name cbranch_cherry | D.Cherry Ext. (...)
+C name cbranch_cherry | Cherry Ext. (...)
 +cbranch_base
 ]2 property cbranch_cherry_e
 

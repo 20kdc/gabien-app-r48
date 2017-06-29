@@ -528,7 +528,7 @@ d Enables or disables the ability to return to the main menu.
 p _ string
 p enable int_boolean
 
-12010: Conditional Branch
+12010: @@{B:[@cbranch_parameters]|Conditional Branch}
 d Runs the following code if a condition is true. Otherwise, runs the code at the Else Branch inside, or if one does not exist, goes to the end of the branch.
 p _ string
 X cbranch_parameters
