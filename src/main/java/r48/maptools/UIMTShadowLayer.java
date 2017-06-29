@@ -10,7 +10,6 @@ import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
-import r48.ui.UIHHalfsplit;
 import gabien.ui.UIScrollLayout;
 
 /**
@@ -39,10 +38,10 @@ public class UIMTShadowLayer extends UIPanel implements IMapViewCallbacks {
             }).togglable();
             power <<= 1;
         }
-        uiSVL.panels.add(new UIHHalfsplit(1, 2, controlButtons[0], controlButtons[1]));
-        uiSVL.panels.add(new UIHHalfsplit(1, 2, controlButtons[2], controlButtons[3]));
+        uiSVL.panels.add(new UISplitterLayout(controlButtons[0], controlButtons[1], false, 1, 2));
+        uiSVL.panels.add(new UISplitterLayout(controlButtons[2], controlButtons[3], false, 1, 2));
         int th = UITextButton.getRecommendedSize("X", FontSizes.tableElementTextHeight).height * 2;
-        uiSVL.panels.add(new UIHHalfsplit(1, 2, new UILabel(TXDB.get("Region:"), FontSizes.tableElementTextHeight), regionId = new UINumberBox(FontSizes.tableElementTextHeight)));
+        uiSVL.panels.add(new UISplitterLayout(new UILabel(TXDB.get("Region:"), FontSizes.tableElementTextHeight), regionId = new UINumberBox(FontSizes.tableElementTextHeight), false, 1, 2));
         th += Math.max(UILabel.getRecommendedSize("", FontSizes.tableElementTextHeight).height, UINumberBox.getRecommendedSize(FontSizes.tableElementTextHeight).height);
         allElements.add(uiSVL);
         setBounds(new Rect(0, 0, 160, th));

@@ -9,7 +9,6 @@ import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.TXDB;
-import r48.ui.UIHHalfsplit;
 
 import java.util.Collections;
 
@@ -20,7 +19,7 @@ import java.util.Collections;
 public class UICellEditingPanel extends UIPanel {
     public UICellSelectionPanel cellSelectionPanel;
     public RMAnimRootPanel root;
-    public UIHHalfsplit[] halfsplits;
+    public UISplitterLayout[] halfsplits;
     public Runnable[] cellChangeNotificationHandlers;
 
     // This is used so UICellSelectionPanel can notify this panel of cell changes.
@@ -41,13 +40,13 @@ public class UICellEditingPanel extends UIPanel {
                 TXDB.get("blendType")
         };
         // Filled in here
-        halfsplits = new UIHHalfsplit[properties.length];
+        halfsplits = new UISplitterLayout[properties.length];
         // Filled in by createPropertyEditor
         cellChangeNotificationHandlers = new Runnable[properties.length];
         int h = 0;
         for (int i = 0; i < halfsplits.length; i++) {
             UIElement ed = createPropertyEditor(i);
-            halfsplits[i] = new UIHHalfsplit(3, 5, new UILabel(properties[i], FontSizes.rmaPropertyFontSize), ed);
+            halfsplits[i] = new UISplitterLayout(new UILabel(properties[i], FontSizes.rmaPropertyFontSize), ed, false, 3, 5);
             h += halfsplits[i].getBounds().height;
         }
         setBounds(new Rect(0, 0, 32, h));

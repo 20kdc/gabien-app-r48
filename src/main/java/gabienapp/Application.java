@@ -16,7 +16,6 @@ import r48.dbs.TXDB;
 import r48.map.UIMapToolWrapper;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFontSizeConfigurator;
-import r48.ui.UIHHalfsplit;
 import r48.ui.help.UIHelpSystem;
 
 import java.io.*;
@@ -68,7 +67,7 @@ public class Application {
             });
             msAdjust.accept(Integer.toString(globalMS));
 
-            gamepaks.panels.add(new UIHHalfsplit(1, 2, new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Quit R48"), new Runnable() {
+            gamepaks.panels.add(new UISplitterLayout(new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Quit R48"), new Runnable() {
                 @Override
                 public void run() {
                     GaBIEn.ensureQuit();
@@ -93,9 +92,9 @@ public class Application {
                     TXDB.nextLanguage();
                     closeHelper.accept(null);
                 }
-            }, FontSizes.launcherTextHeight)));
+            }, FontSizes.launcherTextHeight), false, 1, 2));
 
-            gamepaks.panels.add(new UIHHalfsplit(3, 5, new UILabel(TXDB.get("MS per frame:"), FontSizes.launcherTextHeight), msAdjust));
+            gamepaks.panels.add(new UISplitterLayout(new UILabel(TXDB.get("MS per frame:"), FontSizes.launcherTextHeight), msAdjust, false, 3, 5));
 
             gamepaks.panels.add(new UILabel(TXDB.get("Root Path:"), FontSizes.launcherTextHeight));
 

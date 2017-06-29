@@ -16,7 +16,6 @@ import r48.schema.specialized.tbleditors.ITableCellEditor;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIGrid;
-import r48.ui.UIHHalfsplit;
 import gabien.ui.UIScrollLayout;
 
 /**
@@ -116,7 +115,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                     hNB.number = 0;
             }
         };
-        UIElement uie = new UIHHalfsplit(1, 2, wNB, hNB);
+        UIElement uie = new UISplitterLayout(wNB, hNB, false, 1, 2);
         uie.setBounds(new Rect(0, 0, 128, uie.getBounds().height));
         uiSVL.panels.add(uie);
         uiSVL.panels.add(new UITextButton(FontSizes.tableResizeTextHeight, TXDB.get("Resize"), new Runnable() {
@@ -138,7 +137,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             }
         }));
 
-        UIElement r = new UIHHalfsplit(6, 8, uig, uiSVL);
+        UIElement r = new UISplitterLayout(uig, uiSVL, false, 6, 8);
         r.setBounds(new Rect(0, 0, 128, 128));
         return r;
     }

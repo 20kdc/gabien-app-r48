@@ -5,10 +5,7 @@
 
 package r48.schema.specialized;
 
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import gabien.ui.UINumberBox;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyCT;
 import r48.RubyIO;
@@ -16,8 +13,6 @@ import r48.dbs.TXDB;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.ui.UIHHalfsplit;
-import gabien.ui.UIScrollLayout;
 
 /**
  * Colours, tones, same thing
@@ -61,7 +56,7 @@ public class CTNativeSchemaElement extends SchemaElement {
                 sp.changeOccurred(false);
             }
         };
-        uiSVL.panels.add(new UIHHalfsplit(1, 3, new UILabel(r, FontSizes.schemaFieldTextHeight), uinb));
+        uiSVL.panels.add(new UISplitterLayout(new UILabel(r, FontSizes.schemaFieldTextHeight), uinb, false, 1, 3));
     }
 
     @Override

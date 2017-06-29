@@ -5,9 +5,7 @@
 
 package r48.schema;
 
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
@@ -16,8 +14,6 @@ import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
-import r48.ui.UIHHalfsplit;
-import gabien.ui.UIScrollLayout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,12 +48,12 @@ public class HashSchemaElement extends SchemaElement {
                 for (RubyIO key : UITest.sortedKeys(target.hashVal.keySet())) {
                     final RubyIO kss = key;
                     // keys are opaque - this prevents MANY issues
-                    UIHHalfsplit hs = new UIHHalfsplit(1, 4, (new OpaqueSchemaElement() {
+                    UISplitterLayout hs = new UISplitterLayout((new OpaqueSchemaElement() {
                         @Override
                         public String getMessage() {
                             return TXDB.get("Key ");
                         }
-                    }).buildHoldingEditor(key, launcher, path), valElem.buildHoldingEditor(target.hashVal.get(key), launcher, path.arrayHashIndex(key, "{" + key.toString() + "}")));
+                    }).buildHoldingEditor(key, launcher, path), valElem.buildHoldingEditor(target.hashVal.get(key), launcher, path.arrayHashIndex(key, "{" + key.toString() + "}")), false, 1, 4);
                     hs.setBounds(new Rect(0, 0, 100, vertSzF));
                     uiSV.panels.add(new UIAppendButton("-", hs, new Runnable() {
                         @Override
@@ -73,7 +69,7 @@ public class HashSchemaElement extends SchemaElement {
                 if (defKeyWorkspace == null)
                     defKeyWorkspace = SchemaPath.createDefaultValue(keyElem, null);
                 UIElement workspace = keyElem.buildHoldingEditor(defKeyWorkspace, launcher, path.otherIndex("(tempWSKey)"));
-                UIHHalfsplit workspaceHS = new UIHHalfsplit(2, 3, workspace, new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Add Key"), new Runnable() {
+                UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Add Key"), new Runnable() {
                     @Override
                     public void run() {
                         if (target.getHashVal(defKeyWorkspace) == null) {
@@ -86,7 +82,7 @@ public class HashSchemaElement extends SchemaElement {
                             me.run();
                         }
                     }
-                }));
+                }), false, 2, 3);
                 workspaceHS.setBounds(new Rect(0, 0, 0, keyElem.maxHoldingHeight()));
                 uiSV.panels.add(workspaceHS);
             }

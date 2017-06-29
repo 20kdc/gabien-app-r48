@@ -6,6 +6,7 @@ package r48.schema.specialized;
 
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
+import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -14,7 +15,6 @@ import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.ui.UIHHalfsplit;
 
 import java.awt.*;
 import java.io.*;
@@ -26,7 +26,7 @@ import java.io.*;
 public class StringBlobSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        return new UIHHalfsplit(1, 2, new UITextButton(FontSizes.blobTextHeight, TXDB.get("Export/Edit"), new Runnable() {
+        return new UISplitterLayout(new UITextButton(FontSizes.blobTextHeight, TXDB.get("Export/Edit"), new Runnable() {
             @Override
             public void run() {
                 try {
@@ -66,7 +66,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                     ioe.printStackTrace();
                 }
             }
-        }));
+        }), false, 1, 2);
     }
 
     protected InputStream getCompressionInputStream(InputStream file) {

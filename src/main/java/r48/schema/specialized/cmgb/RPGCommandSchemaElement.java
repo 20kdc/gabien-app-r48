@@ -23,7 +23,6 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 import r48.ui.UIEnumChoice;
-import r48.ui.UIHHalfsplit;
 import gabien.ui.UIScrollLayout;
 import r48.ui.help.UIHelpSystem;
 
@@ -152,18 +151,31 @@ public class RPGCommandSchemaElement extends SchemaElement {
                             uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
                         }
                     }
+                    UILabel[] labels = new UILabel[param.arrVal.length];
+                    int labelWidth = 0;
+                    for (int i = 0; i < param.arrVal.length; i++) {
+                        if (param.arrVal.length <= i)
+                            continue;
+                        String paramName = rc.getParameterName(param, i);
+                        // Hidden parameters, introduced to deal with the "text as first parameter" thing brought about by R2k
+                        if (paramName.equals("_"))
+                            continue;
+                        labels[i] = new UILabel(paramName + " ", FontSizes.schemaFieldTextHeight);
+                        labelWidth = Math.max(labelWidth, labels[i].getBounds().width);
+                    }
+                    for (int i = 0; i < param.arrVal.length; i++)
+                        if (labels[i] != null)
+                            labels[i].setBounds(new Rect(0, 0, labelWidth, labels[i].getBounds().height));
                     for (int i = 0; i < param.arrVal.length; i++) {
                         if (param.arrVal.length <= i) {
                             uiSVL.panels.add(new UILabel(FormatSyntax.formatExtended(TXDB.get("WARNING: Missing param. #A"), new RubyIO[] {new RubyIO().setFX(i)}), FontSizes.schemaFieldTextHeight));
                             continue;
                         }
-                        String paramName = rc.getParameterName(param, i);
-                        // Hidden parameters, introduced to deal with the "text" thing brought about by R2k
-                        if (!paramName.equals("_")) {
+                        if (labels[i] != null) {
                             SchemaElement ise = rc.getParameterSchema(param, i);
                             height += ise.maxHoldingHeight();
                             UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
-                            uiSVL.panels.add(new UIHHalfsplit(1, 3, new UILabel(paramName, FontSizes.schemaFieldTextHeight), uie));
+                            uiSVL.panels.add(new UISplitterLayout(labels[i], uie, false, 0d));
                         }
                     }
                     uiSVL.setBounds(new Rect(0, 0, 128, height));

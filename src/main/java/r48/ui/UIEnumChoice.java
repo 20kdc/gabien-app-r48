@@ -18,7 +18,7 @@ import java.util.LinkedList;
  */
 public class UIEnumChoice extends UIPanel implements IWindowElement {
     UIScrollLayout uiSVL = new UIScrollLayout(true);
-    UIHHalfsplit finalSplit;
+    UISplitterLayout finalSplit;
     UINumberBox nb;
     boolean wantsSelfClose = false;
 
@@ -39,14 +39,14 @@ public class UIEnumChoice extends UIPanel implements IWindowElement {
             }));
         }
         nb = new UINumberBox(FontSizes.schemaFieldTextHeight);
-        finalSplit = new UIHHalfsplit(1, 3, nb, new UITextButton(FontSizes.schemaButtonTextHeight, buttonText, new Runnable() {
+        finalSplit = new UISplitterLayout(nb, new UITextButton(FontSizes.schemaButtonTextHeight, buttonText, new Runnable() {
             @Override
             public void run() {
                 if (!wantsSelfClose)
                     result.accept(nb.number);
                 wantsSelfClose = true;
             }
-        }));
+        }), false, 1, 3);
         if (buttonText.length() != 0)
             uiSVL.panels.add(finalSplit);
         allElements.add(uiSVL);

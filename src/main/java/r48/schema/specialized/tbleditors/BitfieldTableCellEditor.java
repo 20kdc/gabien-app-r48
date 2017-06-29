@@ -4,16 +4,11 @@
  */
 package r48.schema.specialized.tbleditors;
 
-import gabien.ui.IConsumer;
-import gabien.ui.UILabel;
-import gabien.ui.UINumberBox;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.ui.UIGrid;
-import r48.ui.UIHHalfsplit;
-import gabien.ui.UIScrollLayout;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -54,7 +49,7 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                     final int len = Integer.parseInt(a[1]);
                     final int pwr = 1 << len;
                     final UINumberBox number = new UINumberBox(FontSizes.tableElementTextHeight);
-                    panel.panels.add(new UIHHalfsplit(3, 4, new UILabel(name, FontSizes.tableElementTextHeight), number));
+                    panel.panels.add(new UISplitterLayout(new UILabel(name, FontSizes.tableElementTextHeight), number, false, 3, 4));
                     flagStates[i] = new IConsumer<AtomicInteger>() {
                         @Override
                         public void accept(final AtomicInteger currentState) {

@@ -30,7 +30,7 @@ public class UIFontSizeConfigurator extends UIPanel {
         outerLayout = new UIScrollLayout(true);
         final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
         final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();
-        outerLayout.panels.add(new UIHHalfsplit(1, 2, new UITextButton(FontSizes.fontSizerTextHeight, "*2", new Runnable() {
+        outerLayout.panels.add(new UISplitterLayout(new UITextButton(FontSizes.fontSizerTextHeight, "*2", new Runnable() {
             @Override
             public void run() {
                 for (Runnable r : doubleAll)
@@ -44,7 +44,7 @@ public class UIFontSizeConfigurator extends UIPanel {
                     r.run();
                 refreshLayout();
             }
-        })));
+        }), false, 1, 2));
         try {
             for (final Field field : FontSizes.class.getFields()) {
                 if (field.getType() == int.class) {
@@ -96,7 +96,7 @@ public class UIFontSizeConfigurator extends UIPanel {
                         }
                     });
                     tb.accept(Integer.toString(field.getInt(null)));
-                    outerLayout.panels.add(new UIHHalfsplit(4, 5, new UILabel(field.getName(), FontSizes.fontSizerTextHeight), tb));
+                    outerLayout.panels.add(new UISplitterLayout(new UILabel(field.getName(), FontSizes.fontSizerTextHeight), tb, false, 4, 5));
                 }
             }
         } catch (Exception e) {

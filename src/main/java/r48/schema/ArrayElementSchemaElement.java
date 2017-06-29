@@ -15,7 +15,6 @@ import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
-import r48.ui.UIHHalfsplit;
 
 /**
  * NOTE: This doesn't provide the array entry object!!!
@@ -68,9 +67,6 @@ public class ArrayElementSchemaElement extends SchemaElement {
         }
         UIElement core = subSchema.buildHoldingEditor(target.arrVal[index], launcher, path.arrayHashIndex(new RubyIO().setFX(index), "." + name));
 
-        if (!name.equals(""))
-            core = new UIHHalfsplit(1, 3, new UILabel(name, FontSizes.schemaFieldTextHeight), core);
-
         if (optional != null)
             return new UIAppendButton("-", core, new Runnable() {
                 @Override
@@ -86,6 +82,10 @@ public class ArrayElementSchemaElement extends SchemaElement {
                     path.changeOccurred(false);
                 }
             }, FontSizes.schemaFieldTextHeight);
+
+        if (!name.equals(""))
+            core = new UISplitterLayout(new UILabel(name, FontSizes.schemaFieldTextHeight), core, false, 1, 3);
+
         return core;
     }
 
