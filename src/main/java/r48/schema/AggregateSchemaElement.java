@@ -29,18 +29,18 @@ public class AggregateSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         UIScrollLayout uiSVL = new UIScrollLayout(true);
-        // Help IVarSchemaElements along a little
+        // Assist with the layout of "property grids".
         int maxFW = 1;
         for (SchemaElement ise : aggregate) {
-            if (ise instanceof IVarSchemaElement) {
-                int dfw = ((IVarSchemaElement) ise).getDefaultFieldWidth();
+            if (ise instanceof IFieldSchemaElement) {
+                int dfw = ((IFieldSchemaElement) ise).getDefaultFieldWidth();
                 if (maxFW < dfw)
                     maxFW = dfw;
             }
         }
         for (SchemaElement ise : aggregate) {
-            if (ise instanceof IVarSchemaElement)
-                ((IVarSchemaElement) ise).setFieldWidthOverride(maxFW);
+            if (ise instanceof IFieldSchemaElement)
+                ((IFieldSchemaElement) ise).setFieldWidthOverride(maxFW);
             uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
         }
         uiSVL.setBounds(new Rect(0, 0, 128, maxHoldingHeight()));

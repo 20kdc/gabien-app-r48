@@ -24,13 +24,16 @@ import r48.ui.UIAppendButton;
  * among other things, '_' as a name will act to make a given parameter invisible.
  * Created on 12/31/16.
  */
-public class ArrayElementSchemaElement extends SchemaElement {
+public class ArrayElementSchemaElement extends SchemaElement implements IFieldSchemaElement {
     public int index;
     public String name;
     public SchemaElement subSchema;
     public String optional;
     // Removes the element rather than cutting the array. Only use when it is safe to do so.
     public boolean delRemove;
+
+    private boolean fieldWidthOverride = false;
+    private int fieldWidth;
 
     public ArrayElementSchemaElement(int ind, String niceName, SchemaElement ise, String opt, boolean dr) {
         index = ind;
@@ -83,10 +86,27 @@ public class ArrayElementSchemaElement extends SchemaElement {
                 }
             }, FontSizes.schemaFieldTextHeight);
 
-        if (!name.equals(""))
-            core = new UISplitterLayout(new UILabel(name, FontSizes.schemaFieldTextHeight), core, false, 1, 3);
+        if (!name.equals("")) {
+            UILabel label = new UILabel(name, FontSizes.schemaFieldTextHeight);
+            if (fieldWidthOverride) {
+                label.setBounds(new Rect(0, 0, fieldWidth, label.getBounds().height));
+                fieldWidthOverride = false;
+            }
+            core = new UISplitterLayout(label, core, false, 0);
+        }
 
         return core;
+    }
+
+    @Override
+    public int getDefaultFieldWidth() {
+        return UILabel.getRecommendedSize(name + " ", FontSizes.schemaFieldTextHeight).width;
+    }
+
+    @Override
+    public void setFieldWidthOverride(int w) {
+        fieldWidth = w;
+        fieldWidthOverride = true;
     }
 
     @Override

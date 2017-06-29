@@ -16,14 +16,14 @@ import r48.ui.UIAppendButton;
 /**
  * Created on 12/29/16.
  */
-public class IVarSchemaElement extends SchemaElement {
+public class IVarSchemaElement extends SchemaElement implements IFieldSchemaElement {
     public String iVar;
     public String alias;
     public SchemaElement subElem;
     public boolean optional = false;
 
-    public boolean fieldWidthOverride = false;
-    public int fieldWidth;
+    private boolean fieldWidthOverride = false;
+    private int fieldWidth;
 
     public IVarSchemaElement(String iv, String a, SchemaElement sub, boolean opt) {
         iVar = iv;
@@ -81,10 +81,12 @@ public class IVarSchemaElement extends SchemaElement {
         return panel;
     }
 
+    @Override
     public int getDefaultFieldWidth() {
         return UILabel.getRecommendedSize(alias + " ", FontSizes.schemaFieldTextHeight).width;
     }
 
+    @Override
     public void setFieldWidthOverride(int w) {
         fieldWidth = w;
         fieldWidthOverride = true;
