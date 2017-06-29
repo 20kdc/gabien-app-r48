@@ -16,9 +16,9 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 @parent_id map_id
 @indent int
 @type mapinfo_type
-@edit_pos_x int
-@edit_pos_y int
-@expanded boolean
+@OFED_edit_pos_x int
+@OFED_edit_pos_y int
+@OFED_expanded boolean
 @music_type mapinfo_musictype
 @music RPG::Music
 @background_type mapinfo_backtype
