@@ -186,7 +186,7 @@ i HelpImg/9.usage.png
 . A page has, among other things:
 .
 . A @condition, which specifies when this page should be shown.
-. I am unsure which page "wins" if more than one is valid - I would presume it is the last.
+. If more than one page is valid, the last page wins.
 . This is made up of 'valid' flags, followed by their parameters - the parameters are ignored if the valid flag is false.
 . The final condition is the logical AND of all valid parts.
 .
@@ -266,7 +266,8 @@ i HelpImg/9.usage.png
 .
 . The primary things to note:
 .
-. Events are split into pages. First page with all matching conditions "wins" AFAIK.
+. Events are split into pages.
+. The last page with all matching conditions "wins".
 .
 . The @condition controls when the page applies.
 . The @trigger controls when the code in the event page runs.
@@ -302,8 +303,8 @@ p 4
 . The two characters on the left are close to what you will normally see.
 . The rest are designed more around special use of MoveRoutes.
 .
-.
-. Character event graphics use a spritesheet of 288x256 (If prefixed with a '$', the spritesheet can be any size.), divided into 8 characters.
+. Character event graphics use a spritesheet of 288x256, divided into 8 characters.
+. (EasyRPG Player-only: If prefixed with a '$', the spritesheet can be any size.)
 . This division, which the character index refers to, is 4 columns, 2 rows, of the form:
 .
 . 0123
