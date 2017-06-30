@@ -19,6 +19,7 @@ import gabien.ui.UIScrollLayout;
 import r48.ui.UITextPrompt;
 
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -190,7 +191,12 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                PrintStream ps = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "Lang" + TXDB.getLanguage() + ".txt"));
+                                PrintStream ps = null;
+                                try {
+                                    ps = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "Lang" + TXDB.getLanguage() + ".txt"), false, "UTF-8");
+                                } catch (UnsupportedEncodingException e) {
+                                    throw new RuntimeException(e);
+                                }
                                 LinkedList<String> t = new LinkedList<String>(TXDB.ssTexts);
                                 Collections.sort(t);
                                 for (String s : t) {

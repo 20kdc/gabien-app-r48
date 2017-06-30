@@ -23,6 +23,7 @@ import r48.schema.util.SchemaPath;
 import r48.ui.UITextPrompt;
 
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -181,7 +182,12 @@ public class RMToolsToolset implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        PrintStream ps = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "transcript.html"));
+                        PrintStream ps = null;
+                        try {
+                            ps = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "transcript.html"), false, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            throw new RuntimeException(e);
+                        }
                         RMTranscriptDumper dumper = new RMTranscriptDumper(ps);
                         dumper.start();
                         dumper.startFile("CommonEvents", TXDB.get("Common Events"));
