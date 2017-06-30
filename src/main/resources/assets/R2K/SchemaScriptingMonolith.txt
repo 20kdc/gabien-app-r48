@@ -292,17 +292,17 @@ e timer_operation_type 0 setTime 1 setFlagsAndStart 2 stop
   without potentially breaking any rules.
 
 e wait_button_id 0 actKey
-E wait_framecount frames 0 waitForCondition
+E wait_secTenthCount 10ths_of_a_second 0 waitForCondition2k3
 
 .wait_illogical_nowfc
-> wait_illogical_wfc ]?2 wfcCondType None wait_button_id
+> wait_illogical_wfc ]?2 wfcCondType_2k3 None wait_button_id
 
 .wait_illogical_parameters
 @indent indent
 @parameters arrayDAM -1 nil wait_array
 .wait_array
 ]0 _ string
-]1 frames wait_framecount
+]1 secTenthCount wait_secTenthCount
 +arrayDAM 1 int wait_illogical_nowfc 0 wait_illogical_wfc
 
  /- +-

@@ -171,7 +171,6 @@ C name Class.RPG::Item @name | #A
 
 .rpg_item_sect-1
 @dead_only boolean
-@sit_map_2 boolean
 @hit_chance int= 90
 @crit_chance int
 @attack_preemptive boolean
@@ -221,7 +220,8 @@ C name Class.RPG::Item @name | #A
 @usebuff_agi int
 
 .rpg_item_sect4
-@switch_only_in_battle boolean
+@switch_usable_in_battle boolean
+@switch_usable_on_map boolean
 @switch_id switch_id
 
  ---

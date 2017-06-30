@@ -260,7 +260,7 @@ p storeResultDamage int_boolean
 p resultDamageVar var_id
 
  The logic here is madness. The command name code is, to my knowledge, a precise description.
-11410: @@Wait {C:{B=0=For Action|For #B Frames}|For Action}
+11410: @@Wait {C:{B=0=For Action|For #B/10 Seconds}|For {A:Action|...}}
 d Wait a given number of frames or until the ACT key is pressed.
 p _ string
 X wait_illogical_parameters

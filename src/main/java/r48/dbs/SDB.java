@@ -390,7 +390,7 @@ public class SDB {
                             defVal = k;
                         options.put(k, TXDB.get(args[0], args[i + 1]));
                     }
-                    EnumSchemaElement e = new EnumSchemaElement(options, defVal, TXDB.get(args[0], args[1]));
+                    EnumSchemaElement e = new EnumSchemaElement(options, defVal, TXDB.get(args[0], args[1].replace('_', ' ')));
                     setSDBEntry(args[0], e);
                 } else if (c == 'M') {
                     mergeRunnables.add(new Runnable() {
