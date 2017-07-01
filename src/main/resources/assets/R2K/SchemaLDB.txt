@@ -65,8 +65,8 @@ C name Class.RPG::Actor @name | #A
 @class_2k3 class_or_none_id
 @learn_skills subwindow hash int+0 RPG::Learning
 @editor_use_skillspanel_name boolean
-@state_rates subwindow hash state_id rpg_statattr_rank
-@element_rates subwindow hash attribute_id rpg_statattr_rank
+@state_ranks subwindow hash state_id rpg_statattr_rank
+@element_ranks subwindow hash attribute_id rpg_statattr_rank
 @battle_commands_2k3 subwindow array 0 battlecommand_id
 
  ---
@@ -266,8 +266,8 @@ C name Class.RPG::Enemy @name | #A
 @crit_chance int
 @miss boolean
 @levitate boolean
-@state_rates subwindow hash state_id rpg_statattr_rank
-@element_rates subwindow hash attribute_id rpg_statattr_rank
+@state_ranks subwindow hash state_id rpg_statattr_rank
+@element_ranks subwindow hash attribute_id rpg_statattr_rank
 @actions subwindow hash int+0 subwindow RPG::EnemyAction
 
  ---
@@ -666,8 +666,8 @@ C name Class.RPG::Class @name | #A
 @each_level_exp_mul int
 @each_level_exp_add int
 @learn_skills subwindow hash int+0 RPG::Learning
-@state_rates subwindow hash state_id rpg_statattr_rank
-@element_rates subwindow hash attribute_id rpg_statattr_rank
+@state_ranks subwindow hash state_id rpg_statattr_rank
+@element_ranks subwindow hash attribute_id rpg_statattr_rank
 @battle_commands subwindow array 0 battlecommand_or_none_id
 
  ---

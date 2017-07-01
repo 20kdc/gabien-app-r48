@@ -191,39 +191,39 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                PrintStream ps = null;
+                                PrintStream psA = null;
+                                PrintStream psB = null;
                                 try {
-                                    ps = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "Lang" + TXDB.getLanguage() + ".txt"), false, "UTF-8");
+                                    psA = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "Lang" + TXDB.getLanguage() + ".txt"), false, "UTF-8");
+                                    psB = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "Cmtx" + TXDB.getLanguage() + ".txt"));
                                 } catch (UnsupportedEncodingException e) {
                                     throw new RuntimeException(e);
                                 }
                                 LinkedList<String> t = new LinkedList<String>(TXDB.ssTexts);
                                 Collections.sort(t);
                                 for (String s : t) {
+                                    String key = TXDB.stripContext(s);
+                                    String ctx = s.substring(0, s.length() - (key.length() + 1));
                                     if (s.startsWith("SDB@")) {
-                                        ps.println("x \"" + s.substring(4) + "\"");
+                                        psA.println("x \"" + s.substring(4) + "\"");
                                         if (TXDB.has(s)) {
-                                            ps.println("y \"" + TXDB.get(s) + "\"");
+                                            psA.println("y \"" + TXDB.get(ctx, key) + "\"");
                                         } else {
-                                            ps.println("y \"" + TXDB.stripContext(s) + "\"");
+                                            psA.println(" TODO");
+                                            psA.println("y \"" + key + "\"");
+                                        }
+                                    } else if (s.startsWith("CMDB@")) {
+                                        psB.println("x \"" + s.substring(5) + "\"");
+                                        if (TXDB.has(s)) {
+                                            psB.println("y \"" + TXDB.get(ctx, key) + "\"");
+                                        } else {
+                                            psB.println(" TODO");
+                                            psB.println("y \"" + key + "\"");
                                         }
                                     }
                                 }
-                                ps.close();
-                                ps = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "Cmtx" + TXDB.getLanguage() + ".txt"));
-                                t = new LinkedList<String>(TXDB.ssTexts);
-                                Collections.sort(t);
-                                for (String s : t) {
-                                    if (s.startsWith("CMDB@")) {
-                                        ps.println("x \"" + s.substring(5) + "\"");
-                                        if (TXDB.has(s)) {
-                                            ps.println("y \"" + TXDB.get(s) + "\"");
-                                        } else {
-                                            ps.println("y \"" + TXDB.stripContext(s) + "\"");
-                                        }
-                                    }
-                                }
-                                ps.close();
+                                psA.close();
+                                psB.close();
                                 AppMain.launchDialog(TXDB.get("Wrote Lang and Cmtx files (to be put in schema dir.)"));
                             }
                         }

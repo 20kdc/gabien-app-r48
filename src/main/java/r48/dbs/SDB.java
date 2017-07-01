@@ -371,7 +371,8 @@ public class SDB {
                         int k = Integer.parseInt(args[i]);
                         if (i == 1)
                             defVal = k;
-                        options.put(k, TXDB.get(args[0], args[i + 1]));
+                        String ctx = "SDB@" + args[0];
+                        options.put(k, TXDB.get(ctx, args[i + 1]));
                     }
                     EnumSchemaElement e = new EnumSchemaElement(options, defVal, TXDB.get("Integer"));
                     setSDBEntry(args[0], e);
@@ -388,7 +389,8 @@ public class SDB {
                         int k = Integer.parseInt(args[i]);
                         if (i == 2)
                             defVal = k;
-                        options.put(k, TXDB.get(args[0], args[i + 1]));
+                        String ctx = "SDB@" + args[0];
+                        options.put(k, TXDB.get(ctx, args[i + 1]));
                     }
                     EnumSchemaElement e = new EnumSchemaElement(options, defVal, TXDB.get(args[0], args[1].replace('_', ' ')));
                     setSDBEntry(args[0], e);
