@@ -76,9 +76,9 @@ public class Enemy extends R2kObject {
                 new Index(0x1A, miss, "@miss"),
                 new Index(0x1C, levitate, "@levitate"),
                 new Index(0x1F, stateRanksSz),
-                new Index(0x20, stateRanks, "@state_rates"),
+                new Index(0x20, stateRanks, "@state_ranks"),
                 new Index(0x21, attrRanksSz),
-                new Index(0x22, attrRanks, "@element_rates"),
+                new Index(0x22, attrRanks, "@element_ranks"),
                 new Index(0x2A, enemyActions, "@actions"),
         };
     }

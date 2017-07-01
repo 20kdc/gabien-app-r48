@@ -112,9 +112,9 @@ public class Actor extends R2kObject {
                 new Index(0x42, canRename, "@editor_use_skillspanel_name"),
                 new Index(0x43, renameResult, "@battle_skillspanel_name"),
                 new Index(0x47, stateRanksSz),
-                new Index(0x48, stateRanks, "@state_rates"),
+                new Index(0x48, stateRanks, "@state_ranks"),
                 new Index(0x49, attrRanksSz),
-                new Index(0x4A, attrRanks, "@element_rates"),
+                new Index(0x4A, attrRanks, "@element_ranks"),
                 new Index(0x50, battleCommands, "@battle_commands_2k3")
         };
     }
