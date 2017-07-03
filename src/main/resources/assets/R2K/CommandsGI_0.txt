@@ -576,7 +576,7 @@ l
 d Attempts to temporarily erase this event (if this is, in fact, a map event)
 p _ string
 
-12330: Call Event
+12330: @@Call{B:{B=0= Common Event @#C| Event}| Event}
 d Calls a page in another event, or calls a common event.
 p _ string
 p callType callevent_type

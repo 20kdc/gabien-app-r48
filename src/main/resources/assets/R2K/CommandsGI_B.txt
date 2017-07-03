@@ -5,7 +5,7 @@
  GI-B Command List
  Monoliths here go into Monolith3.
 
-1005: <Battle> Call Common Event (2k3)
+1005: @@<Battle> Call Common Event {B:@#B }(2k3)
 d Calls a common event. Not sure what else to say here.
 p _ string
 p cev commonevent_id

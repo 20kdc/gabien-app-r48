@@ -153,7 +153,7 @@ p pictureId int
 
  ---
 
-11210: Show Animation
+11210: @@Show Animation{E: @#B at @#C{D=0=| (wait)}{E=0=| (global)}}
 d Show an animation on an event/the player.
 p _ string
 p anim animation_id
@@ -161,15 +161,15 @@ p char character_id
 p wait int_boolean
 p global int_boolean
 
-11320: Flash Character
-d Make an event/the player flash. Useful for pain indicators, and demoni ###25982public UIScrollVertLayout masterPanel = new UIScrollVertLayout();95182### c transformations.
+11320: @@Flash Character{H: @#B #[#C,#D,#E,#F#] for #G/10 seconds{H=0=| (wait)}}
+d Make an event/the player flash in a given way for a given length of time (given in tenths of a second.)
 p _ string
 p char character_id
 p red int
 p green int
 p blue int
 p saturation int
-p time int
+p timeSecs/10 int
 p wait int_boolean
 
 11340: Wait Until All MoveRoutes Complete
