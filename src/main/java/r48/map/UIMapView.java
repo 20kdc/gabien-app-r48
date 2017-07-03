@@ -111,7 +111,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         int mouseXT = UIElement.sensibleCellDiv((igd.getMouseX() - ox) + (int) (camX * internalScaling), eTileSize * internalScaling);
         int mouseYT = UIElement.sensibleCellDiv((igd.getMouseY() - oy) + (int) (camY * internalScaling), eTileSize * internalScaling);
         Rect camR = getBounds();
-        camR = new Rect(0, 0, camR.width / internalScaling, camR.height / internalScaling);
+        camR = new Rect(0, 0, (camR.width / internalScaling) + ((camR.width % internalScaling != 0) ? 1 : 0), (camR.height / internalScaling) + ((camR.height % internalScaling != 0) ? 1 : 0));
         // Stuff any possible important information...
         char[] visConfig = new char[layerVis.length];
         for (int i = 0; i < layerVis.length; i++)
@@ -133,6 +133,10 @@ public class UIMapView extends UIElement implements IWindowElement {
             if (internalScaling == 1) {
                 igd.blitImage(0, 0, camR.width, camR.height, ox, oy, offscreenBuf);
             } else {
+                // Unworkable due to 'damage' caused by ScissorGrInDriver.
+                // Either composite into a mapview-sized buffer before doing final unscaled subpixel pan, change scissoring, or don't bother
+                //int spox = (int) ((camX - Math.floor(camX)) * internalScaling);
+                //int spoy = (int) ((camY - Math.floor(camY)) * internalScaling);
                 igd.blitScaledImage(0, 0, camR.width, camR.height, ox, oy, camR.width * internalScaling, camR.height * internalScaling, offscreenBuf);
             }
         }
@@ -266,17 +270,17 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     public void toggleMinimap() {
         Rect camR = getBounds();
-        int camW = camR.width / internalScaling;
-        int camH = camR.height / internalScaling;
+        double camW = camR.width / (double) internalScaling;
+        double camH = camR.height / (double) internalScaling;
 
         camX += camW / 2;
         camY += camH / 2;
         if (minimap) {
-            camX *= tileSize / 2;
-            camY *= tileSize / 2;
+            camX *= tileSize / 2d;
+            camY *= tileSize / 2d;
         } else {
-            camX /= tileSize / 2;
-            camY /= tileSize / 2;
+            camX /= tileSize / 2d;
+            camY /= tileSize / 2d;
         }
         camX -= camW / 2;
         camY -= camH / 2;
@@ -315,8 +319,8 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     public void showTile(int x, int y) {
         Rect b = getBounds();
-        camX = -b.width / (2 * internalScaling);
-        camY = -b.height / (2 * internalScaling);
+        camX = -b.width / (2d * internalScaling);
+        camY = -b.height / (2d * internalScaling);
         int effectiveSize = minimap ? 2 : tileSize;
         camX += effectiveSize * x;
         camY += effectiveSize * y;
