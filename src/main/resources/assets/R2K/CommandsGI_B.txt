@@ -5,27 +5,27 @@
  GI-B Command List
  Monoliths here go into Monolith3.
 
-1005: Call Common Event
+1005: <Battle> Call Common Event (2k3)
 d Calls a common event. Not sure what else to say here.
 p _ string
 p cev commonevent_id
 
-1006: Force Escape/Victory.
-d Forces an escape or victory. Note: Assuming ignoreChecks is false, Mode 0 fails in Pincer battles, 1 and 2 fail in Surround.
+1006: <Battle> Force Enemy/Player Flee (2k3)
+d Forces the player, or the enemies, to leave (without EXP/Gold gain). Note: Assuming ignoreChecks is false, Mode 0 fails in Pincer battles, 1 and 2 fail in Surround.
 p _ string
 p mode forceescape_mode
 P 1 _ int
 v 2 troopEnemyIdx int
 p ignoreChecks int_boolean
 
-1007: Setup Battle Combo (2k3?)
+1007: <Battle> Setup Battle Combo (2k3?)
 d Prepares a battle combo (multiple uses of one command) for usage by a party member.
 p _ string
 p user actor_id
 p command battlecommand_id
 p uses int_default_1
 
-13110: Change Enemy HP
+13110: <Battle> Change Enemy HP
 d Changes an enemy's HP by some amount. This can kill it.
 p _ string
 p troopEnemyIdx int
@@ -34,7 +34,7 @@ p modAmount change_enemy_hp_mode
 P 3 amount int
 v 1 amountVar var_id
 
-13120: Change Enemy SP
+13120: <Battle> Change Enemy SP
 d Changes an enemy's SP by some amount.
 p _ string
 p troopEnemyIdx int
@@ -43,28 +43,28 @@ p amountIsVar int_boolean
 P 3 amount int
 v 1 amountVar var_id
 
-13130: Change Enemy Condition
+13130: <Battle> Change Enemy Condition
 d A state is given/taken from/to an enemy.
 p _ string
 p troopEnemyIdx int
 p remove int_boolean
 p state state_id
 
-13150: Unhide Enemy
+13150: <Battle> Unhide Enemy
 d A previously hidden enemy comes out of the shadows!
 p _ string
 p troopEnemyIdx int
 
-13210: Change Battle Background!
+13210: <Battle> Change Battle Background!
 d Change the background of the battle.
 p back f_battleback_name
 
-13260: Show Battle Animation
+13260: <Battle> Show Battle Animation
 d Show an animation in battle.
 p _ string
 X show_battle_animation_parameters
 
-13410: Terminate Battle
+13410: <Battle> Terminate Battle
 d Just... stop the battle. Cut the scene. Stop fighting. Seriously, cut it out! Counts as abort, which isn't even a standard result.
 p _ string
 

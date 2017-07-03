@@ -30,10 +30,11 @@ public class R2kPassabilitySource implements IPassabilitySource {
         int f0 = R2kTileMapViewDrawLayer.getTileFlags(mapTable.getTiletype(x, y, 0), tileset);
         int f1 = R2kTileMapViewDrawLayer.getTileFlags(mapTable.getTiletype(x, y, 1), tileset);
         // Somewhere along the line this might have gotten the wrong way around...
-        boolean down = merge(f0, f1, 0x08, 0x01, x, y + 1);
-        boolean right = merge(f0, f1, 0x04, 0x02, x + 1, y);
-        boolean left = merge(f0, f1, 0x02, 0x04, x - 1, y);
-        boolean up = merge(f0, f1, 0x01, 0x08, x, y - 1);
+        // I believe it is fixed now. Testing on the green road on which the squid sits, in a diary of dreams, confirms this.
+        boolean down = merge(f0, f1, 0x01, 0x08, x, y + 1);
+        boolean right = merge(f0, f1, 0x02, 0x04, x + 1, y);
+        boolean left = merge(f0, f1, 0x04, 0x02, x - 1, y);
+        boolean up = merge(f0, f1, 0x08, 0x01, x, y - 1);
         int r = 0;
         if (down)
             r |= 1;
