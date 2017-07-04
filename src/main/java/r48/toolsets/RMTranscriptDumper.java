@@ -54,9 +54,9 @@ public class RMTranscriptDumper {
 
     // NOTE: File names must be unique, and are used as IDs, so keep them sane - I recommend using, well, file names.
     public void startFile(String name, String desc) {
-        anchor(name + " (" + desc + ")", name);
+        anchor(name + " (" + escapeHtml(desc) + ")", name);
         output.println("<h1>" + name + "</h1>");
-        output.println("<h2>" + desc + "</h2>");
+        output.println("<h2>" + escapeHtml(desc) + "</h2>");
     }
 
     public void endFile() {
@@ -65,7 +65,7 @@ public class RMTranscriptDumper {
 
     public void dump(String name, RubyIO[] code, CMDB database) {
         //anchor(name);
-        output.println("<h3>" + name + "</h3>");
+        output.println("<h3>" + escapeHtml(name) + "</h3>");
         output.println("<code><ul>");
         int ci = 0;
         for (RubyIO cm : code) {
@@ -86,10 +86,10 @@ public class RMTranscriptDumper {
 
     public void dumpBasicList(String name, String[] items, int startIndex) {
         //anchor(name);
-        output.println("<h3>" + name + "</h3>");
+        output.println("<h3>" + escapeHtml(name) + "</h3>");
         output.print("<ol start=\"" + startIndex + "\">");
         for (String it : items)
-            output.println("<li>" + it + "</li>");
+            output.println("<li>" + escapeHtml(it) + "</li>");
         output.println("</ol>");
         //anchor(null);
     }
