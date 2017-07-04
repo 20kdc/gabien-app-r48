@@ -70,6 +70,15 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         }
         UIElement core = subSchema.buildHoldingEditor(target.arrVal[index], launcher, path.arrayHashIndex(new RubyIO().setFX(index), "." + name));
 
+        if (!name.equals("")) {
+            UILabel label = new UILabel(name, FontSizes.schemaFieldTextHeight);
+            if (fieldWidthOverride) {
+                label.setBounds(new Rect(0, 0, fieldWidth, label.getBounds().height));
+                fieldWidthOverride = false;
+            }
+            core = new UISplitterLayout(label, core, false, 0);
+        }
+
         if (optional != null)
             return new UIAppendButton("-", core, new Runnable() {
                 @Override
@@ -85,15 +94,6 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
                     path.changeOccurred(false);
                 }
             }, FontSizes.schemaFieldTextHeight);
-
-        if (!name.equals("")) {
-            UILabel label = new UILabel(name, FontSizes.schemaFieldTextHeight);
-            if (fieldWidthOverride) {
-                label.setBounds(new Rect(0, 0, fieldWidth, label.getBounds().height));
-                fieldWidthOverride = false;
-            }
-            core = new UISplitterLayout(label, core, false, 0);
-        }
 
         return core;
     }

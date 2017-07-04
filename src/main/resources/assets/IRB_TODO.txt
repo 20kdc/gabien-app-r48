@@ -5,3 +5,9 @@
 from highest priority to lowest:
 + finish full 2k3 editor
 + eventually turn editor into huge gelatinous monstrosity
+
+short-term planning subsection:
+1. Wait for TRNS update
+1. Fix text on Enable/Disable Main Menu
+ YUME M33 E3 (the door) P1 index 11.
+2. -> "Add @ #A"

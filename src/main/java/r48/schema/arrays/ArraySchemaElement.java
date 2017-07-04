@@ -126,8 +126,9 @@ public abstract class ArraySchemaElement extends SchemaElement {
                                 public void run() {
                                     if (mi < selectedStart)
                                         selectedStart = mi;
-                                    if (mi > selectedEnd)
-                                        selectedEnd = mi;
+                                    int re = mi + (thisNextAdvance - 1);
+                                    if (re > selectedEnd)
+                                        selectedEnd = re;
                                     containerRCL();
                                 }
                             }, FontSizes.schemaButtonTextHeight);

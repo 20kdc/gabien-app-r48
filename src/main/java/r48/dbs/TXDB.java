@@ -85,6 +85,12 @@ public class TXDB {
         return get(context.replace('/', '-') + "/" + english, false);
     }
 
+    public static String getExUnderscore(String context, String english) {
+        if (english.equals("_"))
+            return "_";
+        return TXDB.get(context, english);
+    }
+
     private static String get(String english, boolean constant) {
         if (languageId == 0)
             return stripContext(english);

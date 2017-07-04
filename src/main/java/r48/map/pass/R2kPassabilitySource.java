@@ -18,9 +18,12 @@ import r48.map.drawlayers.R2kTileMapViewDrawLayer;
 public class R2kPassabilitySource implements IPassabilitySource {
     public final RubyTable mapTable;
     public final RubyIO tileset;
-    public R2kPassabilitySource(RubyTable rt, RubyIO ts) {
+    public final boolean scrollW, scrollH;
+    public R2kPassabilitySource(RubyTable rt, RubyIO ts, boolean w, boolean h) {
         mapTable = rt;
         tileset = ts;
+        scrollW = w;
+        scrollH = h;
     }
     @Override
     public int getPassability(int x, int y) {
@@ -48,6 +51,16 @@ public class R2kPassabilitySource implements IPassabilitySource {
     }
 
     private boolean merge(int f0, int f1, int flag, int flagInv, int oX, int oY) {
+        if (scrollW) {
+            while (oX < 0)
+                oX += mapTable.width;
+            oX %= mapTable.width;
+        }
+        if (scrollH) {
+            while (oY < 0)
+                oY += mapTable.height;
+            oY %= mapTable.height;
+        }
         if (mapTable.outOfBounds(oX, oY))
             return false;
         if ((f0 & flag) != 0)

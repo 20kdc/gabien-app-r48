@@ -235,14 +235,14 @@ public class SDB {
                         if (text.startsWith("]?")) {
                             // yay for... well, semi-consistency!
                             String a = text.substring(2);
-                            String b = TXDB.get(outerContext, args[point++]);
+                            String b = TXDB.getExUnderscore(outerContext, args[point++]);
                             String o = TXDB.get(outerContext, args[point++]);
                             return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), o, false);
                         }
                         if (text.startsWith("]")) {
                             // yay for consistency!
                             String a = text.substring(1);
-                            String b = TXDB.get(outerContext, args[point++]);
+                            String b = TXDB.getExUnderscore(outerContext, args[point++]);
                             return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), null, false);
                         }
                         // --

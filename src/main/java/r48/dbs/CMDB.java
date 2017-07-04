@@ -53,7 +53,7 @@ public class CMDB {
             @Override
             public void execCmd(char c, String[] args) {
                 if (c == 'p') {
-                    final String fv = TXDB.get(subContext, args[0]);
+                    final String fv = TXDB.getExUnderscore(subContext, args[0]);
                     rc.paramName.add(new IFunction<RubyIO, String>() {
                         @Override
                         public String apply(RubyIO rubyIO) {
@@ -76,7 +76,7 @@ public class CMDB {
                     // Pv-syntax:
                     // P arrayDI defaultName defaultType
                     // v specificVal name type
-                    final String defName = TXDB.get(subContext, args[1]);
+                    final String defName = TXDB.getExUnderscore(subContext, args[1]);
                     final int arrayDI = Integer.parseInt(args[0]);
                     final SchemaElement defaultSE = aliasingAwareSG(args[2]);
                     rc.paramType.add(new IFunction<RubyIO, SchemaElement>() {
@@ -116,7 +116,7 @@ public class CMDB {
                     // v specificVal name type
                     final int idx = Integer.parseInt(args[0]);
                     currentPvH.put(idx, aliasingAwareSG(args[2]));
-                    currentPvH2.put(idx, TXDB.get(subContext, args[1]));
+                    currentPvH2.put(idx, TXDB.getExUnderscore(subContext, args[1]));
                 } else if (c == 'd') {
                     String desc = "";
                     for (String s : args)
