@@ -37,5 +37,6 @@ public class CacheImageLoader implements IImageLoader {
     @Override
     public void flushCache() {
         loadedImages.clear();
+        root.flushCache();
     }
 }
