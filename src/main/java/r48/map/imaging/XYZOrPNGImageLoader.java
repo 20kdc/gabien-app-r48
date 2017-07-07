@@ -37,7 +37,8 @@ public class XYZOrPNGImageLoader implements IImageLoader {
 
     @Override
     public void flushCache() {
-        gImageLoader.flushCache();
         xImageLoader.flushCache();
+        pImageLoader.flushCache();
+        gImageLoader.flushCache();
     }
 }
