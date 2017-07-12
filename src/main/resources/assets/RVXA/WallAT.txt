@@ -5,10 +5,17 @@
  VX Ace Wall AutoTiles file.
 
  VX Ace has a special kind of AutoTile: Wall AutoTiles.
+ After research: format of this is best described as a bitfield:
+ 1: Left = !L
+ 2: Top = !U
+ 4: Right = !R
+ 8: Down = !(LL | LM | LR)
+
  I received a file which - with some processing - comes out to this:
 
 x3 2 1 0
 x2 2 0 0
+
 x1 0 1 0
 x0 0 0 0
 

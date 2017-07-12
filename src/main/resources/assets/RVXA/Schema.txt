@@ -9,7 +9,7 @@ C dataPath Data/
 C dataExt .rvdata2
 C versionId RVXA
 
-A RVXA/AutoTiles.txt RVXA/AutoTileRules.txt RVXA/WallAT.txt RVXA/WallATRules.txt
+A RVXA/AutoTiles.txt RVXA/AutoTileRules.txt RVXA/WallAT.txt $WallATs$
 C allowIndentControl
 C defineIndent
 

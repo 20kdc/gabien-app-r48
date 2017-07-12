@@ -95,6 +95,124 @@ public class ATDB {
     }
 
     public void calculateInverseMap(String file) throws IOException {
+        if (file.equals("$WallATs$")) {
+            /*
+            // The Specific Case Symmetrical Combinator
+            // 124
+            // 1 2
+            // 412
+
+            // basic rules
+            // U
+            inverseMap[0370] = 2;
+            // UL corner
+            inverseMap[0320] = 3;
+            inverseMap[0321] = 3;
+            // ML
+            inverseMap[0326] = 1;
+            // LL corner
+            inverseMap[0026] = 9;
+            inverseMap[0066] = 9;
+            // L
+            inverseMap[0037] = 8;
+
+            // all cases of O
+            for (int i = 0; i < 16; i++) {
+                int idx = (i & 1) | ((i & 2) << 1) | ((i & 4) << 3) | ((i & 8) << 4);
+                inverseMap[idx] = 15;
+            }
+
+            // from observation file 1
+            // RTL, inside that then BTT
+            inverseMap[0050] = 6;
+
+            inverseMap[0010] = 14;
+            inverseMap[0017] = 8;
+            inverseMap[0170] = 2;
+
+            inverseMap[0031] = 10;
+            inverseMap[0076] = 9;
+            inverseMap[0360] = 3;
+
+            inverseMap[0022] = 13;
+            inverseMap[0306] = 5;
+            inverseMap[0124] = 7;
+
+            // Symmetrics
+            for (int i = 0; i < 256; i++) {
+                if (inverseMap[i] != 0) {
+                    boolean ul = (i & 1) != 0;
+                    boolean um = (i & 2) != 0;
+                    boolean ur = (i & 4) != 0;
+                    boolean ml = (i & 8) != 0;
+                    boolean mr = (i & 16) != 0;
+                    boolean ll = (i & 32) != 0;
+                    boolean lm = (i & 64) != 0;
+                    boolean lr = (i & 128) != 0;
+                    int flip = 0;
+                    if (ul)
+                        flip |= 4; // UR
+                    if (um)
+                        flip |= 2; // UM
+                    if (ur)
+                        flip |= 1; // UL
+
+                    if (ml)
+                        flip |= 16; // MR
+                    if (mr)
+                        flip |= 8; // ML
+
+                    if (ll)
+                        flip |= 128; // LR
+                    if (lm)
+                        flip |= 64; // LM
+                    if (lr)
+                        flip |= 32; // LL
+
+                    boolean vl = (inverseMap[i] & 1) != 0;
+                    boolean vr = (inverseMap[i] & 4) != 0;
+                    int flipVal = inverseMap[i] & 10;
+                    if (vl)
+                        flipVal |= 4; // VR
+                    if (vr)
+                        flipVal |= 1; // VL
+
+                    if (inverseMap[flip] != 0) {
+                        if (inverseMap[flip] != flipVal)
+                            throw new RuntimeException("ATDB WallAT hax inconsistent symm.");
+                    } else {
+                        inverseMap[flip] = flipVal;
+                    }
+                }
+            }*/
+            // The "WRONG BUT IT WORKS OKAY" ruleset
+            for (int i = 0; i < 256; i++) {
+                // Tried and failed to get this consistent with the image Ozzy gave me for:
+                //  ###
+                // ###
+                // #
+                // ##
+                // I'm not sure there is any consistent logic in the actual output, so I'm using my own logic
+                // boolean ul = (i & 1) != 0;
+                boolean um = (i & 2) != 0;
+                // boolean ur = (i & 4) != 0;
+                boolean ml = (i & 8) != 0;
+                boolean mr = (i & 16) != 0;
+                // boolean ll = (i & 32) != 0;
+                boolean lm = (i & 64) != 0;
+                // boolean lr = (i & 128) != 0;
+                int p = 0;
+                p |= (!ml) ? 1 : 0;
+                p |= (!um) ? 2 : 0;
+                p |= (!mr) ? 4 : 0;
+                p |= (!lm) ? 8 : 0;
+                inverseMap[i] = p;
+            }
+            return;
+        }
+        calculateInverseMapRulesEngine(file);
+    }
+    public void calculateInverseMapRulesEngine(String file) throws IOException {
         DBLoader.readFile(file, new IDatabase() {
             @Override
             public void newObj(int objId, String objName) {
