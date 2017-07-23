@@ -74,8 +74,8 @@ e eventpage_trigger 0 playerInteract 1 playerCollide 2 playerOrEventCollide 3 au
 @tileset_id tileset_id
 @width roint= 20
 @height roint= 15
- actually an enum
-@scroll_type int
+e map_scroll_type 0 none 1 vertical 2 horizontal 3 horizontal+vertical
+@scroll_type map_scroll_type
 @parallax_flag boolean
 @parallax_name string
 @parallax_loop_x boolean

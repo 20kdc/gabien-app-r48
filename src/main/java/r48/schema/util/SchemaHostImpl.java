@@ -98,7 +98,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     public SchemaHostImpl(IConsumer<UIElement> rootElem, UIMapView rendererSource) {
         hostWindows = rootElem;
         contextView = rendererSource;
-        setBounds(new Rect(0, 0, 320, 240));
+        setBounds(new Rect(0, 0, 400, 300));
     }
 
     @Override

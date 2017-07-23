@@ -164,7 +164,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
             private void addAdditionButton(final int i, final SchemaPath ind) {
                 if (sizeFixed != 0)
                     return;
-                UIElement uie = new UITextButton(FontSizes.schemaArrayAddTextHeight, FormatSyntax.formatExtended(TXDB.get("Add @ #A"), new RubyIO[] {new RubyIO().setFX(i)}), new Runnable() {
+                UIElement uie = new UITextButton(FontSizes.schemaArrayAddTextHeight, FormatSyntax.formatExtended(TXDB.get("Add #@ #A"), new RubyIO[] {new RubyIO().setFX(i)}), new Runnable() {
                     @Override
                     public void run() {
                         RubyIO rio = new RubyIO();
