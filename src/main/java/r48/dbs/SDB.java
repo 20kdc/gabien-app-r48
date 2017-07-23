@@ -493,7 +493,7 @@ public class SDB {
                                 }
                             }
                         }
-                        final String textF = TXDB.get(args[1], text);
+                        final String textF = TXDB.get(fPfx + "/" + args[1], text);
 
                         TXDB.nameDB.put(args[1], new IFunction<RubyIO, String>() {
                             @Override
