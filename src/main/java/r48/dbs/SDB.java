@@ -467,12 +467,11 @@ public class SDB {
                         workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                         commandBufferSchemas.put(-1, workingObj);
                     }
-                    // Why did I name the special schemas after song lyrics, again? I don't know.
-                    if (args[0].equals("toWinAGameThatHasNoEnd")) {
+                    if (args[0].equals("magicGenpos")) {
                         // Really special schema
-                        workingObj.aggregate.add(new RMAnimSchemaElement(args[1], args[2], Integer.parseInt(args[3])));
+                        workingObj.aggregate.add(new GenposSchemaElement(args[1], args[2], args[3], Integer.parseInt(args[4])));
                     }
-                    if (args[0].equals("burnYourselfOutDoYourselfIn")) {
+                    if (args[0].equals("magicR2kSystemDefaults")) {
                         // Really special schema
                         workingObj.aggregate.add(new R2kSystemDefaultsInstallerSchemaElement(Integer.parseInt(args[1])));
                     }

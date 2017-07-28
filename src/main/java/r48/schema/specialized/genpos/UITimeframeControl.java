@@ -2,7 +2,7 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-package r48.schema.specialized.rmanim;
+package r48.schema.specialized.genpos;
 
 import gabien.IGrInDriver;
 import gabien.ui.*;

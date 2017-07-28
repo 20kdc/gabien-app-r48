@@ -54,4 +54,4 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 @active_node int+0
 @start subwindow[ Player/Vehicle Start Point ] RPG::Start
  Supplies defaults
-C burnYourselfOutDoYourselfIn 1
+C magicR2kSystemDefaults 1

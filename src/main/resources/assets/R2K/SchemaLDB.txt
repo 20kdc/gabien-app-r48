@@ -752,4 +752,4 @@ e rpg_bas_speed 0 slow 8 normal 14 fast
 @classes_2k3 subwindow hash int+1 subwindow RPG::Class
 @battle_anim_sets_2k3 subwindow hash int+1 subwindow RPG::BattlerAnimationSet
  Supplies defaults
-C burnYourselfOutDoYourselfIn 0
+C magicR2kSystemDefaults 0
