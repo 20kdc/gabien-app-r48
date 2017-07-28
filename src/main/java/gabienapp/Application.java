@@ -241,4 +241,39 @@ public class Application {
         }
         GaBIEn.ensureQuit();
     }
+
+    // Magically handles case issues.
+    public static String autoDetectWindows(String s) {
+        final String giveUp = s;
+        try {
+            // '/' is 'universal'. Not supposed to be, but that doesn't matter
+            s = s.replace('\\', '/');
+            File f = new File(s);
+            if (f.exists())
+                return s;
+            // Deal with earlier path components...
+            String st = f.getName();
+            // Sanity check.
+            if (s.contains("/")) {
+                if (!s.endsWith("/" + st))
+                    throw new RuntimeException("Weird inconsistency in Java File. 'Should never happen' but safety first.");
+            } else {
+                // Change things to make sense.
+                s = "./" + st;
+            }
+            String parent = autoDetectWindows(s.substring(0, s.length() - (st.length() + 1)));
+            f = new File(parent);
+            String[] subfiles = f.list();
+            if (subfiles != null)
+                for (String s2 : subfiles)
+                    if (s2.equalsIgnoreCase(st))
+                        return parent + "/" + s2;
+            // Oh well.
+            return parent + "/" + st;
+        } catch (Exception e) {
+            // This will likely result from permissions errors & IO errors.
+            // As this is just meant as a workaround for devs who can't use consistent case, it's not necessary to R48 operation.
+            return giveUp;
+        }
+    }
 }

@@ -6,10 +6,12 @@ package r48.map.imaging;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabienapp.Application;
 import r48.io.r2k.R2kUtil;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.zip.InflaterInputStream;
 
 /**
@@ -26,7 +28,7 @@ public class XYZImageLoader implements IImageLoader {
     @Override
     public IGrInDriver.IImage getImage(String name, boolean panorama) {
         try {
-            FileInputStream fis = new FileInputStream(root + name + ".xyz");
+            InputStream fis = GaBIEn.getFile(Application.autoDetectWindows(root + name + ".xyz"));
             if (fis.read() != 'X')
                 throw new IOException("Bad magic");
             if (fis.read() != 'Y')

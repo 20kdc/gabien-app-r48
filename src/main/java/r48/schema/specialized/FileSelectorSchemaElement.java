@@ -5,6 +5,7 @@
 package r48.schema.specialized;
 
 import gabien.ui.*;
+import gabienapp.Application;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -28,7 +29,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         UIScrollLayout uiSVL = new UIScrollLayout(true);
-        String[] strs = new File(AppMain.rootPath + pathExtender).list();
+        String[] strs = new File(Application.autoDetectWindows(AppMain.rootPath + pathExtender)).list();
         if (strs == null)
             return new UILabel("The folder does not exist or was not accessible.", FontSizes.schemaButtonTextHeight);
         for (String s : strs) {

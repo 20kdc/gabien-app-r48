@@ -6,6 +6,7 @@
 package r48.io;
 
 import gabien.GaBIEn;
+import gabienapp.Application;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.io.ika.BM8I;
@@ -35,7 +36,7 @@ public class IkaObjectBackend implements IObjectBackend {
             bm.data = new int[160 * 120];
             bm.palette = new int[256];
             try {
-                InputStream inp = GaBIEn.getFile(root + "Pbm/Map1.pbm");
+                InputStream inp = GaBIEn.getFile(Application.autoDetectWindows(root + "Pbm/Map1.pbm"));
                 if (inp != null) {
                     bm.loadBitmap(inp);
                     inp.close();
@@ -73,7 +74,7 @@ public class IkaObjectBackend implements IObjectBackend {
 
             NPChar np = new NPChar();
             try {
-                InputStream inp = new FileInputStream(root + "NPChar.dat");
+                InputStream inp = new FileInputStream(Application.autoDetectWindows(root + "NPChar.dat"));
                 np.load(inp);
                 inp.close();
             } catch (IOException ioe) {
@@ -129,7 +130,7 @@ public class IkaObjectBackend implements IObjectBackend {
                 int b = rt2.getTiletype(i, 0, 3) & 0xFF;
                 bm8.palette[i] = (a << 24) | (r << 16) | (g << 8) | b;
             }
-            OutputStream fio = GaBIEn.getOutFile(root + "Pbm/Map1.pbm");
+            OutputStream fio = GaBIEn.getOutFile(Application.autoDetectWindows(root + "Pbm/Map1.pbm"));
             if (fio == null)
                 throw new IOException("Unable to open Map1 for writing.");
             bm8.saveBitmap(fio);
@@ -152,7 +153,7 @@ public class IkaObjectBackend implements IObjectBackend {
                     n.eventID = (int) r2.getInstVarBySymbol("@scriptId").fixnumVal;
                 }
             }
-            fio = new FileOutputStream(root + "NPChar.dat");
+            fio = new FileOutputStream(Application.autoDetectWindows(root + "NPChar.dat"));
             npc.save(fio);
             fio.close();
             return;

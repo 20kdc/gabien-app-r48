@@ -6,6 +6,7 @@ package r48.map.imaging;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabienapp.Application;
 
 /**
  * Does whatever the default can.
@@ -39,9 +40,9 @@ public class GabienImageLoader implements IImageLoader {
     @Override
     public IGrInDriver.IImage getImage(String name, boolean panorama) {
         if (ck) {
-            return GaBIEn.getImageCK(prefix + name + postfix, r, g, b);
+            return GaBIEn.getImageCK(Application.autoDetectWindows(prefix + name + postfix), r, g, b);
         } else {
-            return GaBIEn.getImage(prefix + name + postfix);
+            return GaBIEn.getImage(Application.autoDetectWindows(prefix + name + postfix));
         }
     }
 

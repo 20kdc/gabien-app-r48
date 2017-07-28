@@ -6,6 +6,7 @@ package r48.map.imaging;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabienapp.Application;
 
 import java.io.*;
 
@@ -30,7 +31,8 @@ public class PNG8IImageLoader implements IImageLoader {
         if (panorama)
             return null;
         try {
-            DataInputStream dis = new DataInputStream(new FileInputStream(root + name + ".png"));
+            String ad = Application.autoDetectWindows(root + name + ".png");
+            DataInputStream dis = new DataInputStream(new FileInputStream(ad));
             // Magic number blahblahblah
             byte[] magic = new byte[8];
             if (dis.read(magic) != 8)
@@ -47,7 +49,7 @@ public class PNG8IImageLoader implements IImageLoader {
             byte[] pal = getChunk("PLTE", dis);
             if (pal == null)
                 return null;
-            return GaBIEn.getImageCK(root + name + ".png", pal[0] & 0xFF, pal[1] & 0xFF, pal[2] & 0xFF);
+            return GaBIEn.getImageCK(ad, pal[0] & 0xFF, pal[1] & 0xFF, pal[2] & 0xFF);
         } catch (Exception ioe) {
             // Exceptions here are, frankly, accepted behavior.
             return null;

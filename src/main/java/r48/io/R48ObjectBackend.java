@@ -5,6 +5,7 @@
 package r48.io;
 
 import gabien.GaBIEn;
+import gabienapp.Application;
 import r48.RubyIO;
 
 import java.io.*;
@@ -126,7 +127,7 @@ public class R48ObjectBackend implements IObjectBackend {
     @Override
     public RubyIO loadObjectFromFile(String filename) {
         try {
-            InputStream inp = GaBIEn.getFile(prefix + filename + postfix);
+            InputStream inp = GaBIEn.getFile(Application.autoDetectWindows(prefix + filename + postfix));
             if (inp == null)
                 return null;
             DataInputStream dis = new DataInputStream(inp);
@@ -148,7 +149,7 @@ public class R48ObjectBackend implements IObjectBackend {
 
     @Override
     public void saveObjectToFile(String filename, RubyIO object) throws IOException {
-        OutputStream oup = GaBIEn.getOutFile(prefix + filename + postfix);
+        OutputStream oup = GaBIEn.getOutFile(Application.autoDetectWindows(prefix + filename + postfix));
         if (oup == null)
             throw new IOException("Unable to open file!");
         DataOutputStream dis = new DataOutputStream(oup);

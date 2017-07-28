@@ -5,6 +5,7 @@
 package r48.io;
 
 import gabien.GaBIEn;
+import gabienapp.Application;
 import r48.RubyIO;
 import r48.io.r2k.files.DatabaseIO;
 import r48.io.r2k.files.MapIO;
@@ -25,9 +26,10 @@ public class R2kObjectBackend implements IObjectBackend {
 
     @Override
     public RubyIO loadObjectFromFile(String filename) {
+        String str = Application.autoDetectWindows(filename);
         if (filename.endsWith(".lmu")) {
             try {
-                InputStream fis = GaBIEn.getFile(root + filename);
+                InputStream fis = GaBIEn.getFile(str);
                 if (fis == null)
                     return null;
                 RubyIO r = MapIO.readLmu(fis);
@@ -40,7 +42,7 @@ public class R2kObjectBackend implements IObjectBackend {
         }
         if (filename.endsWith(".lmt")) {
             try {
-                InputStream fis = GaBIEn.getFile(root + filename);
+                InputStream fis = GaBIEn.getFile(str);
                 if (fis == null)
                     return null;
                 RubyIO r = MapTreeIO.readLmt(fis);
@@ -53,7 +55,7 @@ public class R2kObjectBackend implements IObjectBackend {
         }
         if (filename.endsWith(".ldb")) {
             try {
-                InputStream fis = GaBIEn.getFile(root + filename);
+                InputStream fis = GaBIEn.getFile(str);
                 if (fis == null)
                     return null;
                 RubyIO r = DatabaseIO.readLdb(fis);
@@ -69,11 +71,12 @@ public class R2kObjectBackend implements IObjectBackend {
 
     @Override
     public void saveObjectToFile(String filename, RubyIO object) throws IOException {
+        String str = Application.autoDetectWindows(filename);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // Note the write occurs before the F.O.S is created for safety
         if (filename.endsWith(".lmu")) {
             MapIO.writeLmu(baos, object);
-            OutputStream fos = GaBIEn.getOutFile(root + filename);
+            OutputStream fos = GaBIEn.getOutFile(str);
             if (fos == null)
                 throw new IOException("Unable to open a file.");
             baos.writeTo(fos);
@@ -82,7 +85,7 @@ public class R2kObjectBackend implements IObjectBackend {
         }
         if (filename.endsWith(".lmt")) {
             MapTreeIO.writeLmt(baos, object);
-            OutputStream fos = GaBIEn.getOutFile(root + filename);
+            OutputStream fos = GaBIEn.getOutFile(str);
             if (fos == null)
                 throw new IOException("Unable to open a file.");
             baos.writeTo(fos);
@@ -91,7 +94,7 @@ public class R2kObjectBackend implements IObjectBackend {
         }
         if (filename.endsWith(".ldb")) {
             DatabaseIO.writeLdb(baos, object);
-            OutputStream fos = GaBIEn.getOutFile(root + filename);
+            OutputStream fos = GaBIEn.getOutFile(str);
             if (fos == null)
                 throw new IOException("Unable to open a file.");
             baos.writeTo(fos);
