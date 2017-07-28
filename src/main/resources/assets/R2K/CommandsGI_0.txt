@@ -513,17 +513,17 @@ p useSwitch int_boolean
 P 4 switch switch_id
 v 0 _ int
 
-11840: Enable/Disable Escape
+11840: @@{B:{B=0=Disable|Enable}|Enable/Disable} Escape
 d Enables or disables escaping.
 p _ string
 p enable int_boolean
 
-11930: Enable/Disable Save
+11930: @@{B:{B=0=Disable|Enable}|Enable/Disable} Save
 d Enables or disables saving.
 p _ string
 p enable int_boolean
 
-11960: Enable/Disable Main Menu
+11960: @@{B:{B=0=Disable|Enable}|Enable/Disable} Main Menu
 d Enables or disables the ability to return to the main menu.
 p _ string
 p enable int_boolean
