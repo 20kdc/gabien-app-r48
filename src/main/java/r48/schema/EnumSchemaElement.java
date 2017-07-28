@@ -52,7 +52,7 @@ public class EnumSchemaElement extends SchemaElement {
                         // Enums can affect parent format, so deal with that now.
                         launcher.switchObject(path.findBack());
                     }
-                }, viewOptions, buttonText), path), target, launcher));
+                }, viewOptions, buttonText), null, path), target, launcher));
             }
         });
     }

@@ -111,6 +111,11 @@ public class RMAnimRootPanel extends UIPanel implements IGenposFrame {
         };
     }
 
+    @Override
+    public boolean canAddRemoveCells() {
+        return true;
+    }
+
     private RubyTable getTable() {
         RubyIO frameData = getFrame().getInstVarBySymbol("@cell_data");
         return new RubyTable(frameData.userVal);
@@ -139,8 +144,8 @@ public class RMAnimRootPanel extends UIPanel implements IGenposFrame {
     }
 
     @Override
-    public void setCellProp(int ct, int i, short number) {
-        getTable().setTiletype(ct, i, 0, number);
+    public void setCellProp(int ct, int i, int number) {
+        getTable().setTiletype(ct, i, 0, (short) number);
         updateNotify.run();
     }
 

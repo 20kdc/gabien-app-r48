@@ -11,8 +11,11 @@ import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.UIMapToolWrapper;
 import r48.schema.SchemaElement;
+import r48.schema.specialized.genpos.GenposFramePanelController;
 import r48.schema.specialized.genpos.RMAnimRootPanel;
+import r48.schema.specialized.genpos.TroopGenposFrame;
 import r48.schema.util.ISchemaHost;
+import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
 
 /**
@@ -45,28 +48,37 @@ public class GenposSchemaElement extends SchemaElement {
                         }
                     }, a, b, framerate);
                     // Setup automatic-update safety net
-                    launcher.launchOther(safetyWrap(rmarp, new IConsumer<SchemaPath>() {
+                    safetyWrap(rmarp, target, new Runnable() {
                         @Override
-                        public void accept(SchemaPath schemaPath) {
+                        public void run() {
                             rmarp.frameChanged();
                         }
-                    }, path.findRoot().targetElement));
+                    }, launcher, path);
+                }
+                if (genposType.equals("r2kTroop")) {
+                    final GenposFramePanelController rmarp = new GenposFramePanelController(new TroopGenposFrame(target, new Runnable() {
+                        @Override
+                        public void run() {
+                            path.changeOccurred(false);
+                        }
+                    }));
+                    rmarp.frameChanged();
+                    // Setup automatic-update safety net
+                    safetyWrap(rmarp.rootLayout, target, new Runnable() {
+                        @Override
+                        public void run() {
+                            rmarp.frameChanged();
+                        }
+                    }, launcher, path);
                 }
             }
         });
     }
 
-    private UIElement safetyWrap(RMAnimRootPanel rmarp, final IConsumer<SchemaPath> consumer, final RubyIO theRoot) {
+    private void safetyWrap(UIElement rmarp, final RubyIO targ, final Runnable consumer, final ISchemaHost launcher, final SchemaPath path) {
         rmarp.setBounds(new Rect(0, 0, 320, 200));
-        if (theRoot != null)
-            AppMain.objectDB.registerModificationHandler(theRoot, consumer);
-        return new UIMapToolWrapper(rmarp) {
-            @Override
-            public void windowClosed() {
-                if (theRoot != null)
-                    AppMain.objectDB.deregisterModificationHandler(theRoot, consumer);
-            }
-        };
+        SchemaElement boot = new TempDialogSchemaChoice(rmarp, consumer, path);
+        launcher.launchOther(boot, targ);
     }
 
     @Override

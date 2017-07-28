@@ -106,7 +106,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                             // On the other hand, the elements will be obliterated anyway before reaching the user.
                             launcher.switchObject(path2);
                         }
-                    }, rvi, order, TXDB.get("Code")), path), target, launcher));
+                    }, rvi, order, TXDB.get("Code")), null, path), target, launcher));
                 }
             }), new Runnable() {
                 @Override

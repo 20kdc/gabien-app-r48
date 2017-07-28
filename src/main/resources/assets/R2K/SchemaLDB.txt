@@ -330,6 +330,7 @@ C name Class.RPG::Troop @name | #A
 @pages subwindow arrayIx1 subwindow RPG::Troop::Page
 @auto_position boolean
 @randomized_memberset_2k3 boolean
+C magicGenpos r2kTroop . . 0
 
  ---
 
@@ -493,7 +494,7 @@ C name Class.RPG::Animation @name | #A
 : RPG::Tileset
 C name Class.RPG::Tileset @name | #A
 @name string= Template
-@tileset_name { string= templatetileset fileSelector CharSet/ }
+@tileset_name { string= templatetileset fileSelector ChipSet/ }
  This is kind of important:
  The highpass data is obvious, lowpass/TID not so much.
  Lowpass/TID allocation is:

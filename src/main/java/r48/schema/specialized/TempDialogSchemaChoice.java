@@ -21,15 +21,19 @@ import r48.schema.util.SchemaPath;
  */
 public class TempDialogSchemaChoice extends SchemaElement {
     public UIElement heldDialog;
+    public Runnable update;
     public SchemaPath hPar;
 
-    public TempDialogSchemaChoice(UIElement held, SchemaPath hr) {
+    public TempDialogSchemaChoice(UIElement held, Runnable updater, SchemaPath hr) {
         heldDialog = held;
+        update = updater;
         hPar = hr;
     }
 
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+        if (update != null)
+            update.run();
         return heldDialog;
     }
 
@@ -41,5 +45,7 @@ public class TempDialogSchemaChoice extends SchemaElement {
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         hPar.editor.modifyVal(hPar.targetElement, hPar, setDefault);
+        if (update != null)
+            update.run();
     }
 }

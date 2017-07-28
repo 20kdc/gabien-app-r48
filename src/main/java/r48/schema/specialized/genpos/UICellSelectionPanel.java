@@ -31,6 +31,7 @@ public class UICellSelectionPanel extends UIPanel {
     public UIScrollLayout selectionPanel = new UIScrollLayout(true);
 
     public UICellSelectionPanel(IGenposFrame rmAnimRootPanel) {
+        selectionPanel.scrollbar.setBounds(new Rect(0, 0, 8, 8));
         root = rmAnimRootPanel;
         allElements.add(selectionPanel);
     }
@@ -46,27 +47,34 @@ public class UICellSelectionPanel extends UIPanel {
                 @Override
                 public void run() {
                     cellNumber = i2;
-                    cellChangeNotificationNumber++;
-                    rebuildSelectionPanel();
-                }
-            });
-            selectionPanel.panels.add(new UIAppendButton("-", button, new Runnable() {
-                @Override
-                public void run() {
-                    if (i2 < root.getCellCount()) {
-                        // delete cell
-                        root.deleteCell(i2);
-                        cellNumber = -1;
-                        cellChangeNotificationNumber++;
-                    }
                     frameChanged();
                 }
-            }, FontSizes.rmaPropertyFontSize));
+            });
+            if (root.canAddRemoveCells()) {
+                selectionPanel.panels.add(new UIAppendButton("-", button, new Runnable() {
+                    @Override
+                    public void run() {
+                        if (i2 < root.getCellCount()) {
+                            // delete cell
+                            root.deleteCell(i2);
+                            cellNumber = -1;
+                            cellChangeNotificationNumber++;
+                        }
+                        frameChanged();
+                    }
+                }, FontSizes.rmaPropertyFontSize));
+            } else {
+                selectionPanel.panels.add(button);
+            }
         }
         addAdditionButton(selectionPanel.panels, cellCount);
+        // cause the (scrollable) selection panel to update stuff
+        selectionPanel.setBounds(selectionPanel.getBounds());
     }
 
     private void addAdditionButton(final LinkedList<UIElement> panels, final int i2) {
+        if (!root.canAddRemoveCells())
+            return;
         panels.add(new UITextButton(FontSizes.rmaPropertyFontSize, TXDB.get("<add cell here>"), new Runnable() {
             @Override
             public void run() {

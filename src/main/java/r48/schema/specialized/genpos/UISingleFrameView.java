@@ -18,7 +18,8 @@ import r48.RubyTable;
 public class UISingleFrameView extends UIElement {
     public GenposFramePanelController basePanelAccess;
 
-    private int lastMX, lastMY, camX, camY;
+    private int lastMX, lastMY;
+    public int camX, camY;
     private int dragging;
 
     public UISingleFrameView(GenposFramePanelController rmAnimRootPanel) {
@@ -43,10 +44,8 @@ public class UISingleFrameView extends UIElement {
         int opy = oy + (b.height / 2) - camY;
 
         IGrInDriver.IImage bkg = basePanelAccess.frame.getBackground();
-        if (bkg != null) {
-            // Draw the background in the centre
-            igd.blitImage(0, 0, bkg.getWidth(), bkg.getHeight(), -bkg.getWidth() / 2, -bkg.getHeight() / 2, bkg);
-        }
+        if (bkg != null)
+            igd.blitImage(0, 0, bkg.getWidth(), bkg.getHeight(), opx, opy, bkg);
         int[] d = basePanelAccess.frame.getIndicators();
         for (int i = 0; i < d.length; i += 2) {
             int x = d[i];
@@ -74,8 +73,8 @@ public class UISingleFrameView extends UIElement {
                 // RubyTable rt = new RubyTable(target.getInstVarBySymbol("@cell_data").userVal);
                 int ofsX = x - lastMX;
                 int ofsY = y - lastMY;
-                basePanelAccess.frame.setCellProp(basePanelAccess.cellSelection.cellNumber, 1, (short) (basePanelAccess.frame.getCellProp(basePanelAccess.cellSelection.cellNumber, 1) + ofsX));
-                basePanelAccess.frame.setCellProp(basePanelAccess.cellSelection.cellNumber, 2, (short) (basePanelAccess.frame.getCellProp(basePanelAccess.cellSelection.cellNumber, 2) + ofsY));
+                basePanelAccess.frame.setCellProp(basePanelAccess.cellSelection.cellNumber, 1, basePanelAccess.frame.getCellProp(basePanelAccess.cellSelection.cellNumber, 1) + ofsX);
+                basePanelAccess.frame.setCellProp(basePanelAccess.cellSelection.cellNumber, 2, basePanelAccess.frame.getCellProp(basePanelAccess.cellSelection.cellNumber, 2) + ofsY);
             }
         } else if (dragging == 3) {
             camX -= x - lastMX;

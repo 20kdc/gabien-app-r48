@@ -17,13 +17,14 @@ public interface IGenposFrame {
     // Interleaved X/Y. Provides position markers.
     int[] getIndicators();
 
+    boolean canAddRemoveCells();
+    void addCell(int i2);
     void deleteCell(int i2);
+
     int getCellProp(int ct, int i);
-    void setCellProp(int ct, int i, short number);
+    void setCellProp(int ct, int i, int number);
 
     int getCellCount();
-
-    void addCell(int i2);
 
     String[] getCellProps();
 

@@ -14,6 +14,7 @@ import r48.UITest;
 import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
+import r48.schema.SchemaElement;
 import r48.ui.UIAppendButton;
 import gabien.ui.UIScrollLayout;
 
@@ -26,6 +27,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     public UIElement innerElemEditor;
 
     // Can be null - if not, the renderer is accessible.
+    // Note that even if the map view "dies", it's renderer will stay around.
     private final UIMapView contextView;
 
     public UILabel pathLabel = new UILabel("", FontSizes.schemaPathTextHeight);
@@ -161,6 +163,12 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     @Override
     public void launchOther(UIElement uiTest) {
         hostWindows.accept(uiTest);
+    }
+
+    @Override
+    public void launchOther(SchemaElement boot, RubyIO targ) {
+        SchemaHostImpl shi = new SchemaHostImpl(hostWindows, contextView);
+        shi.switchObject(innerElem.newWindow(boot, targ, shi));
     }
 
     @Override

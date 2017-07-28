@@ -67,7 +67,7 @@ public class UICellEditingPanel extends UIPanel {
                     @Override
                     public void run() {
                         if (root.getCellCount() > ct) {
-                            root.setCellProp(ct, i, (short) unb.number);
+                            root.setCellProp(ct, i, unb.number);
                         } else {
                             cellSelectionPanel.frameChanged();
                         }

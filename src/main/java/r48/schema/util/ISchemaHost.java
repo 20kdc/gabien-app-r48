@@ -6,7 +6,9 @@
 package r48.schema.util;
 
 import gabien.ui.UIElement;
+import r48.RubyIO;
 import r48.map.StuffRenderer;
+import r48.schema.SchemaElement;
 
 /**
  * Used to make the Schema interface slightly saner to use
@@ -16,6 +18,7 @@ public interface ISchemaHost {
     void switchObject(SchemaPath nextObject);
 
     void launchOther(UIElement uiTest);
+    void launchOther(SchemaElement boot, RubyIO targ);
 
     // The StuffRenderer applicable to this window.
     StuffRenderer getContextRenderer();

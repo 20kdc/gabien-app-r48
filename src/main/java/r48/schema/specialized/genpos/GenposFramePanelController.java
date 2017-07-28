@@ -4,6 +4,7 @@
  */
 package r48.schema.specialized.genpos;
 
+import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UISplitterLayout;
 import r48.RubyIO;
@@ -26,6 +27,11 @@ public class GenposFramePanelController {
     public GenposFramePanelController(IGenposFrame rootForNow) {
         frame = rootForNow;
         editor = new UISingleFrameView(this);
+        IGrInDriver.IImage bkg = rootForNow.getBackground();
+        if (bkg != null) {
+            editor.camX = bkg.getWidth() / 2;
+            editor.camY = bkg.getHeight() / 2;
+        }
         cellSelection = new UICellSelectionPanel(rootForNow);
 
         // The UICellEditingPanel is informed about frame changes via UICellSelectionPanel
@@ -35,8 +41,9 @@ public class GenposFramePanelController {
         rootLayout = new UISplitterLayout(editor, editingSidebar, false, 1);
     }
 
-    // Frame changed events <Incoming>
+    // Frame changed events <Incoming>. Run before displaying on-screen
     public void frameChanged() {
+        // This implicitly changes an incrementing number which causes the cell editor to update.
         cellSelection.frameChanged();
     }
 
