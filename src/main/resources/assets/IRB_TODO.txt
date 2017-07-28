@@ -7,7 +7,7 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity
 
 short-term planning subsection:
-1. Wait for TRNS update
 1. Fix text on Enable/Disable Main Menu
  YUME M33 E3 (the door) P1 index 11.
-2. -> "Add @ #A"
+ (Um, did I do this already?)
+2. Troops editing
