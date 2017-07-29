@@ -30,6 +30,7 @@ public class CMDB {
         DBLoader.readFile(baseFile, new IDatabase() {
             RPGCommand rc;
             int workingCmdId = 0;
+            RPGCommand.SpecialTag nextTag = null;
             HashMap<String, SchemaElement> localAliasing = new HashMap<String, SchemaElement>();
             HashMap<Integer, SchemaElement> currentPvH = new HashMap<Integer, SchemaElement>();
             HashMap<Integer, String> currentPvH2 = new HashMap<Integer, String>();
@@ -68,6 +69,7 @@ public class CMDB {
                             return se;
                         }
                     });
+                    useTag();
                 } else if (c == 'P') {
                     final HashMap<Integer, SchemaElement> h = new HashMap<Integer, SchemaElement>();
                     currentPvH = h;
@@ -112,6 +114,7 @@ public class CMDB {
                             return defName;
                         }
                     });
+                    useTag();
                 } else if (c == 'v') {
                     // v specificVal name type
                     final int idx = Integer.parseInt(args[0]);
@@ -186,8 +189,9 @@ public class CMDB {
                     }
                     if (args[0].equals("spritesheet")) {
                         // C spritesheet 0 CharSet/
-                        //Integer.parseInt(args[1]);
-                        //args[2];
+                        nextTag.hasSpritesheet = true;
+                        nextTag.spritesheetTargstr = Integer.parseInt(args[1]);
+                        nextTag.spritesheetId = args[2];
                     }
                     if (args[0].equals("groupBehavior")) {
                         // For commands with just one parameter that is a string.
@@ -271,6 +275,11 @@ public class CMDB {
                     // Aha! Defining comments as a != ought to shut up the warnings!
                     throw new RuntimeException("Unknown command '" + c + "'.");
                 }
+            }
+
+            private void useTag() {
+                rc.paramSpecialTags.add(nextTag);
+                nextTag = new RPGCommand.SpecialTag();
             }
 
             private SchemaElement aliasingAwareSG(String s) {

@@ -141,13 +141,11 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     RubyIO param = target.getInstVarBySymbol("@parameters");
                     UIScrollLayout uiSVL = new UIScrollLayout(true);
 
-                    int height = 0;
                     if (target.getInstVarBySymbol("@indent") != null) {
                         if (showHeader) {
                             SchemaElement ise = new IVarSchemaElement("@indent", TXDB.get("@indent"), new ROIntegerSchemaElement(0), false);
                             if (!allowControlOfIndent)
                                 ise = new IVarSchemaElement("@indent", TXDB.get("@indent"), new IntegerSchemaElement(0), false);
-                            height += ise.maxHoldingHeight();
                             uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
                         }
                     }
@@ -173,11 +171,15 @@ public class RPGCommandSchemaElement extends SchemaElement {
                         }
                         if (labels[i] != null) {
                             SchemaElement ise = rc.getParameterSchema(param, i);
-                            height += ise.maxHoldingHeight();
                             UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
                             uiSVL.panels.add(new UISplitterLayout(labels[i], uie, false, 0d));
+                            rc.paramSpecialTags.get(i).applyTo(i, uiSVL.panels, param, launcher, path);
                         }
                     }
+                    int height = 0;
+                    uiSVL.setBounds(new Rect(0, 0, 128, 128));
+                    for (UIElement uie : uiSVL.panels)
+                        height += uie.getBounds().height;
                     uiSVL.setBounds(new Rect(0, 0, 128, height));
                     return uiSVL;
                 }

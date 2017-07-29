@@ -275,56 +275,7 @@ public class SDB {
                             final String varPath = args[point++];
                             final String imgPath = args[point++];
                             final String imgPfx = args[point++];
-                            String[] args2 = spritesheets.get(imgPfx);
-                            int p = spritesheetSP.get(imgPfx);
-                            final int cellW = Integer.parseInt(args2[p]);
-                            final int cellH = Integer.parseInt(args2[p + 1]);
-                            final int rowCells = Integer.parseInt(args2[p + 2]);
-                            final int useX = Integer.parseInt(args2[p + 3]);
-                            final int useY = Integer.parseInt(args2[p + 4]);
-                            final int useW = Integer.parseInt(args2[p + 5]);
-                            final int useH = Integer.parseInt(args2[p + 6]);
-                            final int def = Integer.parseInt(args2[p + 7]);
-                            return new SpritesheetCoreSchemaElement(spritesheetN.get(imgPfx), def, new IFunction<RubyIO, ISpritesheetProvider>() {
-                                @Override
-                                public ISpritesheetProvider apply(RubyIO rubyIO) {
-                                    final RubyIO var = PathSyntax.parse(rubyIO, varPath);
-                                    final String imgTxt = PathSyntax.parse(rubyIO, imgPath).decString();
-                                    String imgVal = imgPfx + imgTxt;
-                                    final IGrInDriver.IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgVal, false);
-                                    return new ISpritesheetProvider() {
-                                        @Override
-                                        public RubyIO numberHolder() {
-                                            return var;
-                                        }
-
-                                        @Override
-                                        public int itemWidth() {
-                                            return useW;
-                                        }
-
-                                        @Override
-                                        public int itemHeight() {
-                                            return useH;
-                                        }
-
-                                        @Override
-                                        public int itemCount() {
-                                            // Use this to inform the user of image issues
-                                            if (imgTxt.equals(""))
-                                                AppMain.launchDialog(TXDB.get("The image wasn't specified."));
-                                            return ((img.getHeight() + (cellH - 1)) / cellH) * rowCells;
-                                        }
-
-                                        @Override
-                                        public void drawItem(int t, int x, int y, IGrInDriver igd) {
-                                            int row = t / rowCells;
-                                            t %= rowCells;
-                                            igd.blitImage((t * cellW) + useX, (row * cellH) + useY, useW, useH, x, y, img);
-                                        }
-                                    };
-                                }
-                            });
+                            return makeSpriteSelector(varPath, imgPath, imgPfx);
                         }
                         if (text.startsWith("table")) {
                             String eText = text;
@@ -593,6 +544,59 @@ public class SDB {
                         System.err.print(arg + " ");
                     System.err.println("(The command " + c + " in the SDB is not supported.)");
                 }
+            }
+        });
+    }
+
+    public SchemaElement makeSpriteSelector(final String varPath, final String imgPath, final String imgPfx) {
+        String[] args2 = spritesheets.get(imgPfx);
+        int p = spritesheetSP.get(imgPfx);
+        final int cellW = Integer.parseInt(args2[p]);
+        final int cellH = Integer.parseInt(args2[p + 1]);
+        final int rowCells = Integer.parseInt(args2[p + 2]);
+        final int useX = Integer.parseInt(args2[p + 3]);
+        final int useY = Integer.parseInt(args2[p + 4]);
+        final int useW = Integer.parseInt(args2[p + 5]);
+        final int useH = Integer.parseInt(args2[p + 6]);
+        final int def = Integer.parseInt(args2[p + 7]);
+        return new SpritesheetCoreSchemaElement(spritesheetN.get(imgPfx), def, new IFunction<RubyIO, ISpritesheetProvider>() {
+            @Override
+            public ISpritesheetProvider apply(RubyIO rubyIO) {
+                final RubyIO var = PathSyntax.parse(rubyIO, varPath);
+                final String imgTxt = PathSyntax.parse(rubyIO, imgPath).decString();
+                String imgVal = imgPfx + imgTxt;
+                final IGrInDriver.IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgVal, false);
+                return new ISpritesheetProvider() {
+                    @Override
+                    public RubyIO numberHolder() {
+                        return var;
+                    }
+
+                    @Override
+                    public int itemWidth() {
+                        return useW;
+                    }
+
+                    @Override
+                    public int itemHeight() {
+                        return useH;
+                    }
+
+                    @Override
+                    public int itemCount() {
+                        // Use this to inform the user of image issues
+                        if (imgTxt.equals(""))
+                            AppMain.launchDialog(TXDB.get("The image wasn't specified."));
+                        return ((img.getHeight() + (cellH - 1)) / cellH) * rowCells;
+                    }
+
+                    @Override
+                    public void drawItem(int t, int x, int y, IGrInDriver igd) {
+                        int row = t / rowCells;
+                        t %= rowCells;
+                        igd.blitImage((t * cellW) + useX, (row * cellH) + useY, useW, useH, x, y, img);
+                    }
+                };
             }
         });
     }

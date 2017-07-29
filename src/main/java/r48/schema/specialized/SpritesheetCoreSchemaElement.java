@@ -47,6 +47,7 @@ public class SpritesheetCoreSchemaElement extends r48.schema.SchemaElement {
                     public void accept(Integer integer) {
                         actTarg.fixnumVal = integer;
                         path.changeOccurred(false);
+                        launcher.switchObject(path.findBack());
                     }
                 }), null, path), target, launcher));
             }

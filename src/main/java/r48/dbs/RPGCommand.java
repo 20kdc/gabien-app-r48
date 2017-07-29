@@ -6,10 +6,14 @@
 package r48.dbs;
 
 import gabien.ui.IFunction;
+import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
+import r48.schema.specialized.SpritesheetCoreSchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
+import r48.schema.util.ISchemaHost;
+import r48.schema.util.SchemaPath;
 
 import java.util.LinkedList;
 
@@ -23,6 +27,8 @@ public class RPGCommand {
     public SchemaElement specialSchema;
 
     public LinkedList<IFunction<RubyIO, SchemaElement>> paramType = new LinkedList<IFunction<RubyIO, SchemaElement>>();
+    // As the entire paramType cannot be replaced (paramType is relied upon for parameter names), this instead allows supplementing it.
+    public LinkedList<SpecialTag> paramSpecialTags = new LinkedList<SpecialTag>();
     public LinkedList<IFunction<RubyIO, String>> paramName = new LinkedList<IFunction<RubyIO, String>>();
     public int indentPre;
     // This is conditional solely because of Show Inn (R2k).
@@ -114,4 +120,16 @@ public class RPGCommand {
         return paramName.get(i).apply(root);
     }
 
+    public static class SpecialTag {
+        public boolean hasSpritesheet;
+        public String spritesheetId;
+        public int spritesheetTargstr;
+
+        public void applyTo(int idx, LinkedList<UIElement> elementList, RubyIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
+            if (hasSpritesheet) {
+                SchemaElement scse = AppMain.schemas.makeSpriteSelector("]" + idx, "]" + spritesheetTargstr, spritesheetId);
+                elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
+            }
+        }
+    }
 }
