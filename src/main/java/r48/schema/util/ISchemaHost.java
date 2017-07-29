@@ -18,8 +18,10 @@ public interface ISchemaHost {
     void switchObject(SchemaPath nextObject);
 
     void launchOther(UIElement uiTest);
-    void launchOther(SchemaElement boot, RubyIO targ);
 
     // The StuffRenderer applicable to this window.
     StuffRenderer getContextRenderer();
+
+    // Note that this launches the host, so get it ready by the end of your call
+    ISchemaHost newBlank();
 }

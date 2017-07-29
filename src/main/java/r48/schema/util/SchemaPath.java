@@ -8,6 +8,7 @@ package r48.schema.util;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
+import r48.schema.specialized.TempDialogSchemaChoice;
 
 import java.util.LinkedList;
 
@@ -216,5 +217,14 @@ public class SchemaPath {
             if (sw.editor != null)
                 sw.editor.modifyVal(sw.targetElement, sw, false);
         }
+    }
+
+    // If this is true, a temp dialog (unique UIElement) is in use and thus this can't be cloned.
+    public boolean hasTempDialog() {
+        if (editor instanceof TempDialogSchemaChoice)
+            return true;
+        if (parent != null)
+            return parent.hasTempDialog();
+        return false;
     }
 }

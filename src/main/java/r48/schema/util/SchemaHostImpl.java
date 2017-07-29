@@ -15,6 +15,7 @@ import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.schema.SchemaElement;
+import r48.schema.specialized.TempDialogSchemaChoice;
 import r48.ui.UIAppendButton;
 import gabien.ui.UIScrollLayout;
 
@@ -80,6 +81,10 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     public UIAppendButton toolbarC = new UIAppendButton(TXDB.get("C"), toolbarI, new Runnable() {
         @Override
         public void run() {
+            if (innerElem.hasTempDialog()) {
+                AppMain.launchDialog(TXDB.get("Cannot clone, this contains a temporary dialog."));
+                return;
+            }
             SchemaHostImpl next = new SchemaHostImpl(hostWindows, contextView);
             next.switchObject(innerElem);
             hostWindows.accept(next);
@@ -161,14 +166,15 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     }
 
     @Override
-    public void launchOther(UIElement uiTest) {
-        hostWindows.accept(uiTest);
+    public ISchemaHost newBlank() {
+        SchemaHostImpl shi = new SchemaHostImpl(hostWindows, contextView);
+        hostWindows.accept(shi);
+        return shi;
     }
 
     @Override
-    public void launchOther(SchemaElement boot, RubyIO targ) {
-        SchemaHostImpl shi = new SchemaHostImpl(hostWindows, contextView);
-        shi.switchObject(innerElem.newWindow(boot, targ, shi));
+    public void launchOther(UIElement uiTest) {
+        hostWindows.accept(uiTest);
     }
 
     @Override

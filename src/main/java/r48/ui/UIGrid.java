@@ -15,7 +15,7 @@ import r48.FontSizes;
  */
 public class UIGrid extends UIPanel {
     public int tileCount;
-    public int tileSize;
+    public int tileSizeW, tileSizeH;
 
     public int bkgR = 0;
     public int bkgG = 0;
@@ -33,8 +33,9 @@ public class UIGrid extends UIPanel {
 
     public Runnable onSelectionChange = null;
 
-    public UIGrid(int tSize, int tCount) {
-        tileSize = tSize;
+    public UIGrid(int tSizeW, int tSizeH, int tCount) {
+        tileSizeW = tSizeW;
+        tileSizeH = tSizeH;
         tileCount = tCount;
         allElements.add(uivScrollbar);
         setBounds(new Rect(0, 0, 320, 200));
@@ -45,7 +46,7 @@ public class UIGrid extends UIPanel {
         if (totalRows % tmWidth > 0)
             totalRows += tmWidth;
         totalRows /= tmWidth;
-        int screenRows = getBounds().height / tileSize;
+        int screenRows = getBounds().height / tileSizeH;
         int extraRows = totalRows - screenRows;
         return ((int) Math.floor((uivScrollbar.scrollPoint * extraRows) + 0.5)) * tmWidth;
     }
@@ -59,46 +60,72 @@ public class UIGrid extends UIPanel {
         int mouseSel = -1;
         int mouseX = igd.getMouseX() - ox;
         int mouseY = igd.getMouseY() - oy;
-        if (new Rect(0, 0, tileSize * tmWidth, r.height).contains(mouseX, mouseY)) {
-            int tx = UIElement.sensibleCellDiv(mouseX, tileSize);
-            int ty = UIElement.sensibleCellDiv(mouseY, tileSize);
+        if (new Rect(0, 0, tileSizeW * tmWidth, r.height).contains(mouseX, mouseY)) {
+            int tx = UIElement.sensibleCellDiv(mouseX, tileSizeW);
+            int ty = UIElement.sensibleCellDiv(mouseY, tileSizeH);
             mouseSel = tx + (ty * tmWidth) + getScrollOffset();
         }
 
         int pi = 0;
-        int visibleTiles = (((r.height + (tileSize - 1)) / tileSize) * tmWidth);
+        int visibleTiles = (((r.height + (tileSizeH - 1)) / tileSizeH) * tmWidth);
         int scrollOffset = getScrollOffset();
         for (int p = scrollOffset; p < scrollOffset + visibleTiles; p++) {
-            int px = ((pi % tmWidth) * tileSize);
-            int py = (UIGrid.sensibleCellDiv(pi, tmWidth) * tileSize);
+            int px = ((pi % tmWidth) * tileSizeW);
+            int py = (UIGrid.sensibleCellDiv(pi, tmWidth) * tileSizeH);
             if (py >= r.height)
                 break;
             if ((p < 0) || (p >= tileCount)) {
                 pi++;
                 // error
-                igd.clearRect(128, 0, 0, ox + px, oy + py, tileSize, tileSize);
+                igd.clearRect(128, 0, 0, ox + px, oy + py, tileSizeW, tileSizeH);
                 continue;
             }
             if (p == selTile)
-                igd.clearRect(128, 0, 128, ox + px, oy + py, tileSize, tileSize);
+                igd.clearRect(128, 0, 128, ox + px, oy + py, tileSizeW, tileSizeH);
             drawTile(p, p == mouseSel, ox + px, oy + py, igd);
             if (p == selTile)
-                igd.blitImage(36, 0, tileSize, tileSize, ox + px, oy + py, AppMain.layerTabs);
+                drawSelectionBox(ox + px, oy + py, tileSizeW, tileSizeH, igd);
             pi++;
         }
         for (int ty = 0; ty < selHeight; ty++) {
             pi = (selTile - getScrollOffset()) + (ty * tmWidth);
             for (int tx = 0; tx < selWidth; tx++) {
-                int px = (pi % tmWidth) * tileSize;
-                int py = UIGrid.sensibleCellDiv(pi, tmWidth) * tileSize;
+                int px = (pi % tmWidth) * tileSizeW;
+                int py = UIGrid.sensibleCellDiv(pi, tmWidth) * tileSizeH;
                 if (py < 0)
                     continue;
                 if (py >= r.height)
                     continue;
-                igd.blitImage(36, 0, tileSize, tileSize, ox + px, oy + py, AppMain.layerTabs);
+                drawSelectionBox(ox + px, oy + py, tileSizeW, tileSizeH, igd);
                 pi++;
             }
         }
+    }
+
+    // In case you're wondering why this is here, where else should it be? ...no, really, suggestions are appreciated.
+    public static void drawSelectionBox(int x, int y, int w, int h, IGrInDriver igd) {
+        drawDotLineV(x, y, h, igd);
+        drawDotLineV(x + (w - 1), y, h, igd);
+        drawDotLineH(x, y, w, igd);
+        drawDotLineH(x, y + (h - 1), w, igd);
+    }
+
+    private static void drawDotLineV(int x, int y, int h, IGrInDriver igd) {
+        while (h > 32) {
+            igd.blitImage(36, 0, 1, 32, x, y, AppMain.layerTabs);
+            y += 32;
+            h -= 32;
+        }
+        igd.blitImage(36, 0, 1, h, x, y, AppMain.layerTabs);
+    }
+
+    private static void drawDotLineH(int x, int y, int w, IGrInDriver igd) {
+        while (w > 32) {
+            igd.blitImage(36, 0, 32, 1, x, y, AppMain.layerTabs);
+            x += 32;
+            w -= 32;
+        }
+        igd.blitImage(36, 0, w, 1, x, y, AppMain.layerTabs);
     }
 
     protected void drawTile(int t, boolean hover, int x, int y, IGrInDriver igd) {
@@ -108,23 +135,23 @@ public class UIGrid extends UIPanel {
     @Override
     public void setBounds(Rect r) {
         int scrollBarW = uivScrollbar.getBounds().width;
-        int tiles = r.width / tileSize;
+        int tiles = r.width / tileSizeW;
         if (tiles < 2)
             tiles = 2;
-        int availableRows = r.height / tileSize;
+        int availableRows = r.height / tileSizeH;
         if (availableRows < 1)
             availableRows = 1;
         tmWidth = tiles;
-        tmWidth -= (scrollBarW + (tileSize - 1)) / tileSize;
-        uivScrollbar.setBounds(new Rect(r.width - scrollBarW, 0, scrollBarW, availableRows * tileSize));
-        super.setBounds(new Rect(r.x, r.y, tiles * tileSize, availableRows * tileSize));
+        tmWidth -= (scrollBarW + (tileSizeW - 1)) / tileSizeW;
+        uivScrollbar.setBounds(new Rect(r.width - scrollBarW, 0, scrollBarW, availableRows * tileSizeH));
+        super.setBounds(new Rect(r.x, r.y, tiles * tileSizeW, availableRows * tileSizeH));
     }
 
     @Override
     public void handleClick(int x, int y, int button) {
-        if (x < tileSize * tmWidth) {
-            int tx = UIElement.sensibleCellDiv(x, tileSize);
-            int ty = UIElement.sensibleCellDiv(y, tileSize);
+        if (x < tileSizeW * tmWidth) {
+            int tx = UIElement.sensibleCellDiv(x, tileSizeW);
+            int ty = UIElement.sensibleCellDiv(y, tileSizeH);
             selTile = tx + (ty * tmWidth) + getScrollOffset();
             selWidth = 1;
             selHeight = 1;
@@ -135,11 +162,11 @@ public class UIGrid extends UIPanel {
 
     @Override
     public void handleDrag(int x, int y) {
-        if (x < tileSize * tmWidth) {
+        if (x < tileSizeW * tmWidth) {
             if (!canMultiSelect)
                 return;
-            int tx = UIElement.sensibleCellDiv(x, tileSize);
-            int ty = UIElement.sensibleCellDiv(y, tileSize) + (getScrollOffset() / tmWidth);
+            int tx = UIElement.sensibleCellDiv(x, tileSizeW);
+            int ty = UIElement.sensibleCellDiv(y, tileSizeH) + (getScrollOffset() / tmWidth);
             int ox = selTile % tmWidth;
             int oy = selTile / tmWidth;
             selWidth = (tx - ox) + 1;
@@ -185,7 +212,6 @@ public class UIGrid extends UIPanel {
         selHeight = 1;
         selectionChanged();
         // work out a general estimate
-        double p = i / (double) tileCount;
-        uivScrollbar.scrollPoint = p;
+        uivScrollbar.scrollPoint = i / (double) tileCount;
     }
 }

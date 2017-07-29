@@ -61,7 +61,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         final RubyTable targ = new RubyTable(targV.userVal);
         final RubyIO width = widthVar == null ? null : target.getInstVarBySymbol(widthVar);
         final RubyIO height = heightVar == null ? null : target.getInstVarBySymbol(heightVar);
-        final UIGrid uig = new UIGrid(32, targ.width * targ.height) {
+        final UIGrid uig = new UIGrid(32, 32, targ.width * targ.height) {
             private TileHelper tileHelper;
 
             @Override
@@ -71,7 +71,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                 if (targ.outOfBounds(tX, tY))
                     return;
                 tileHelper = baseTileDraw(target, t, x, y, igd, tileHelper);
-                igd.clearRect(0, 0, 0, x, y, tileSize, FontSizes.gridTextHeight);
+                igd.clearRect(0, 0, 0, x, y, tileSizeW, FontSizes.gridTextHeight);
                 for (int i = 0; i < targ.planeCount; i++)
                     UILabel.drawString(igd, x, y + (i * FontSizes.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, FontSizes.gridTextHeight);
             }

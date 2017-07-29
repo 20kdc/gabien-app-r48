@@ -6,6 +6,7 @@ package r48.schema.specialized.genpos;
 
 import gabien.IGrInDriver;
 import gabien.ui.IFunction;
+import gabien.ui.Rect;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
@@ -34,8 +35,7 @@ public interface IGenposFrame {
 
     String[] getCellProps();
 
-    // Use the generic igd.blitImage(36, 0, 32, 32, ox + px, oy + py, AppMain.layerTabs);
-    void drawCellSelectionIndicator(int i, int opx, int opy, IGrInDriver igd);
+    Rect getCellSelectionIndicator(int i);
     void drawCell(int i, int opx, int opy, IGrInDriver igd);
 
     IGrInDriver.IImage getBackground();

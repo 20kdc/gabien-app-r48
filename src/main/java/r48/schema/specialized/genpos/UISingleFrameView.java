@@ -13,6 +13,7 @@ import gabien.ui.UIElement;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.schema.util.SchemaPath;
+import r48.ui.UIGrid;
 
 /**
  * Handles drawing for a single-frame editor.
@@ -57,8 +58,10 @@ public class UISingleFrameView extends UIElement {
             igd.clearRect(192, 0, 192, (opx + x) - 1, (opy + y) - 8, 2, 16);
         }
         if (basePanelAccess.cellSelection.cellNumber != -1)
-            if (basePanelAccess.frame.getCellCount() > basePanelAccess.cellSelection.cellNumber)
-                basePanelAccess.frame.drawCellSelectionIndicator(basePanelAccess.cellSelection.cellNumber, opx, opy, igd);
+            if (basePanelAccess.frame.getCellCount() > basePanelAccess.cellSelection.cellNumber) {
+                Rect r = basePanelAccess.frame.getCellSelectionIndicator(basePanelAccess.cellSelection.cellNumber);
+                UIGrid.drawSelectionBox(opx + (r.x - 1), opy + (r.y - 1), r.width + 2, r.height + 2, igd);
+            }
         int cellCount = basePanelAccess.frame.getCellCount();
         for (int i = 0; i < cellCount; i++)
             basePanelAccess.frame.drawCell(i, opx, opy, igd);

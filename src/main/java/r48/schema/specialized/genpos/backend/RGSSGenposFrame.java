@@ -7,6 +7,7 @@ package r48.schema.specialized.genpos.backend;
 import gabien.IGrInDriver;
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
+import gabien.ui.Rect;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.RubyTable;
@@ -179,11 +180,13 @@ public class RGSSGenposFrame implements IGenposFrame {
     }
 
     @Override
-    public void drawCellSelectionIndicator(int i, int opx, int opy, IGrInDriver igd) {
+    public Rect getCellSelectionIndicator(int i) {
         RubyTable rt = getTable();
         int x = (int) rt.getTiletype(i, 1, 0);
         int y = (int) rt.getTiletype(i, 2, 0);
-        igd.blitImage(36, 0, 32, 32, opx + x - 16, opy + y - 16, AppMain.layerTabs);
+        int scale = rt.getTiletype(i, 3, 0);
+        int ts = spriteCache.getScaledImageIconSize(scale);
+        return new Rect(x - (ts / 2), y - (ts / 2), ts, ts);
     }
 
     @Override

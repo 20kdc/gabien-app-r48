@@ -6,6 +6,7 @@ package r48.schema.specialized.genpos.backend;
 
 import gabien.IGrInDriver;
 import gabien.ui.IFunction;
+import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.ArrayUtils;
@@ -136,10 +137,18 @@ public class TroopGenposFrame implements IGenposFrame {
     }
 
     @Override
-    public void drawCellSelectionIndicator(int i, int opx, int opy, IGrInDriver igd) {
+    public Rect getCellSelectionIndicator(int i) {
         int x = (int) getCellProp(i, 1).targetElement.fixnumVal;
         int y = (int) getCellProp(i, 2).targetElement.fixnumVal;
-        igd.blitImage(36, 0, 32, 32, opx + x - 16, opy + y - 16, AppMain.layerTabs);
+        int w = 32;
+        int h = 32;
+        int enemy = (int) getCellProp(i, 0).targetElement.fixnumVal;
+        IGrInDriver.IImage enemyImg = enemies[enemy];
+        if (enemyImg != null) {
+            w = enemyImg.getWidth();
+            h = enemyImg.getHeight();
+        }
+        return new Rect(x - (w / 2), y - (h / 2), w, h);
     }
 
     @Override

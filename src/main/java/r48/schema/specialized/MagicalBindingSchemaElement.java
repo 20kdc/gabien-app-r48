@@ -104,13 +104,13 @@ public class MagicalBindingSchemaElement extends SchemaElement {
         }
 
         @Override
-        public void launchOther(SchemaElement boot, RubyIO targ) {
-            trueHost.launchOther(boot, targ);
+        public StuffRenderer getContextRenderer() {
+            return trueHost.getContextRenderer();
         }
 
         @Override
-        public StuffRenderer getContextRenderer() {
-            return trueHost.getContextRenderer();
+        public ISchemaHost newBlank() {
+            return trueHost.newBlank();
         }
     }
 }

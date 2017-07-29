@@ -13,6 +13,7 @@ import r48.schema.specialized.genpos.GenposAnimRootPanel;
 import r48.schema.specialized.genpos.GenposFramePanelController;
 import r48.schema.specialized.genpos.backend.*;
 import r48.schema.util.ISchemaHost;
+import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
 
 /**
@@ -33,10 +34,13 @@ public class GenposSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost lBase, final SchemaPath pBase) {
         return new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Graphically edit this..."), new Runnable() {
             @Override
             public void run() {
+                final ISchemaHost launcher = lBase.newBlank();
+                TempDialogSchemaChoice boot = new TempDialogSchemaChoice(null, null, pBase);
+                final SchemaPath path = pBase.newWindow(boot, target, launcher);
                 if (genposType.equals("vxaAnimation") || genposType.equals("xpAnimation")) {
                     Runnable updater = new Runnable() {
                         @Override
@@ -54,14 +58,13 @@ public class GenposSchemaElement extends SchemaElement {
                     };
                     final GenposAnimRootPanel rmarp = new GenposAnimRootPanel(anim, launcher, framerate);
                     // Setup automatic-update safety net
-                    safetyWrap(rmarp, target, new Runnable() {
+                    safetyWrap(rmarp, launcher, new Runnable() {
                         @Override
                         public void run() {
                             rmarp.frameChanged();
                         }
-                    }, launcher, path);
-                }
-                if (genposType.equals("r2kAnimation")) {
+                    }, boot, path);
+                } else if (genposType.equals("r2kAnimation")) {
                     Runnable updater = new Runnable() {
                         @Override
                         public void run() {
@@ -78,14 +81,13 @@ public class GenposSchemaElement extends SchemaElement {
                     };
                     final GenposAnimRootPanel rmarp = new GenposAnimRootPanel(anim, launcher, framerate);
                     // Setup automatic-update safety net
-                    safetyWrap(rmarp, target, new Runnable() {
+                    safetyWrap(rmarp, launcher, new Runnable() {
                         @Override
                         public void run() {
                             rmarp.frameChanged();
                         }
-                    }, launcher, path);
-                }
-                if (genposType.equals("r2kTroop")) {
+                    }, boot, path);
+                } else if (genposType.equals("r2kTroop")) {
                     final GenposFramePanelController rmarp = new GenposFramePanelController(new TroopGenposFrame(target, path, new Runnable() {
                         @Override
                         public void run() {
@@ -94,21 +96,24 @@ public class GenposSchemaElement extends SchemaElement {
                     }), launcher);
                     rmarp.frameChanged();
                     // Setup automatic-update safety net
-                    safetyWrap(rmarp.rootLayout, target, new Runnable() {
+                    safetyWrap(rmarp.rootLayout, launcher, new Runnable() {
                         @Override
                         public void run() {
                             rmarp.frameChanged();
                         }
-                    }, launcher, path);
+                    }, boot, path);
+                } else {
+                    throw new RuntimeException("Unknown GP type");
                 }
             }
         });
     }
 
-    private void safetyWrap(UIElement rmarp, final RubyIO targ, final Runnable consumer, final ISchemaHost launcher, final SchemaPath path) {
+    private void safetyWrap(UIElement rmarp, ISchemaHost shi, Runnable update, TempDialogSchemaChoice sc, final SchemaPath path) {
         rmarp.setBounds(new Rect(0, 0, 320, 200));
-        SchemaElement boot = new TempDialogSchemaChoice(rmarp, consumer, path);
-        launcher.launchOther(boot, targ);
+        sc.heldDialog = rmarp;
+        sc.update = update;
+        shi.switchObject(path);
     }
 
     @Override

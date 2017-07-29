@@ -7,15 +7,19 @@ package r48.schema.specialized.genpos.backend;
 import gabien.IGrInDriver;
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
+import gabien.ui.Rect;
 import r48.AppMain;
 import r48.ArrayUtils;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.SubwindowSchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.specialized.SpritesheetCoreSchemaElement;
 import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.util.SchemaPath;
+import r48.ui.ISpritesheetProvider;
 
 /**
  * Created on 29/07/17.
@@ -81,6 +85,31 @@ public class R2kGenposFrame implements IGenposFrame {
         SchemaElement se = new IntegerSchemaElement(0);
         if (i == 0)
             se = new BooleanSchemaElement(false);
+        if (i == 1)
+            se = new SpritesheetCoreSchemaElement(0, new ISpritesheetProvider() {
+                @Override
+                public int itemWidth() {
+                    return 96;
+                }
+
+                @Override
+                public int itemHeight() {
+                    return 96;
+                }
+
+                @Override
+                public int itemCount() {
+                    return 5 * 5;
+                }
+
+                @Override
+                public void drawItem(int t, int x, int y, IGrInDriver igd) {
+                    int tx = t % 5;
+                    int ty = t / 5;
+                    igd.clearRect(255, 0, 255, x, y, 96, 96);
+                    igd.blitImage(tx * 96, ty * 96, 96, 96, x, y, cache.getFramesetCache(false, false, 255));
+                }
+            });
         return memberPath.newWindow(se, member.getInstVarBySymbol(trueIVars[i]), null);
     }
 
@@ -114,11 +143,13 @@ public class R2kGenposFrame implements IGenposFrame {
     }
 
     @Override
-    public void drawCellSelectionIndicator(int i, int opx, int opy, IGrInDriver igd) {
+    public Rect getCellSelectionIndicator(int i) {
         RubyIO cell = frameSource.get().getInstVarBySymbol("@cells").arrVal[i + 1];
         int x = (int) cell.getInstVarBySymbol("@x").fixnumVal;
         int y = (int) cell.getInstVarBySymbol("@y").fixnumVal;
-        igd.blitImage(36, 0, 32, 32, opx + x - 16, opy + y - 16, AppMain.layerTabs);
+        int sc = (int) cell.getInstVarBySymbol("@scale").fixnumVal;
+        int sz = cache.getScaledImageIconSize(sc);
+        return new Rect(x - (sz / 2), y - (sz / 2), sz, sz);
     }
 
     @Override
@@ -139,9 +170,9 @@ public class R2kGenposFrame implements IGenposFrame {
         x = opx + x - (sz / 2);
         y = opy + y - (sz / 2);
         if (sc == 100) {
-            igd.blitImage((cid % 5) * 96, (cid / 5) * 96, 96, 96, x, y, img);
+            igd.blitImage((cid % 5) * cache.spriteSize, (cid / 5) * cache.spriteSize, cache.spriteSize, cache.spriteSize, x, y, img);
         } else {
-            igd.blitScaledImage((cid % 5) * 96, (cid / 5) * 96, 96, 96, x, y, sz, sz, img);
+            igd.blitScaledImage((cid % 5) * cache.spriteSize, (cid / 5) * cache.spriteSize, cache.spriteSize, cache.spriteSize, x, y, sz, sz, img);
         }
     }
 

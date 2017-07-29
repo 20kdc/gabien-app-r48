@@ -13,6 +13,7 @@ import r48.schema.util.SchemaPath;
 
 /**
  * Used to create dialogs within the system.
+ * (NOTE: Schema hosts should refuse to clone dialogs containing this in the path. It *kind of* works. Emphasis on "kind of".)
  * The older system was arguably cleaner, but UIElements couldn't be refreshed,
  * which left things like button texts stale.
  * (The point of this object is that objects creating temporary dialogs create one of these as an excuse to launch a new panel,

@@ -26,7 +26,7 @@ public class UITileGrid extends UIGrid {
         this(mv.renderer, mv.currentLayer, tStart, tileCount, aTile, remap);
     }
     public UITileGrid(StuffRenderer sr, int l, int tStart, int tileCount, int aTile, int[] remap) {
-        super(sr.tileRenderer.getTileSize(), tileCount);
+        super(sr.tileRenderer.getTileSize(), sr.tileRenderer.getTileSize(), tileCount);
         canMultiSelect = aTile == 0;
         renderer = sr;
         layer = l;
@@ -73,6 +73,6 @@ public class UITileGrid extends UIGrid {
         if (atGroup != 0)
             if (!hover)
                 t += 15; // Hardcoded offset. Not good, but it covers all cases right now.
-        renderer.tileRenderer.drawTile(layer, (short) (t + tileStart), x, y, igd, tileSize);
+        renderer.tileRenderer.drawTile(layer, (short) (t + tileStart), x, y, igd, tileSizeW);
     }
 }
