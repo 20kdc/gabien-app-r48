@@ -167,9 +167,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
 
     @Override
     public ISchemaHost newBlank() {
-        SchemaHostImpl shi = new SchemaHostImpl(hostWindows, contextView);
-        hostWindows.accept(shi);
-        return shi;
+        return new SchemaHostImpl(hostWindows, contextView);
     }
 
     @Override

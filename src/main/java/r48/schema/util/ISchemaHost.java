@@ -22,6 +22,5 @@ public interface ISchemaHost {
     // The StuffRenderer applicable to this window.
     StuffRenderer getContextRenderer();
 
-    // Note that this launches the host, so get it ready by the end of your call
     ISchemaHost newBlank();
 }
