@@ -204,7 +204,7 @@ public class RMToolsToolset implements IToolset {
                         Collections.sort(orderedMapInfos);
                         for (int id : orderedMapInfos) {
                             IRMMapSystem.RMMapData rmd = mapMap.get(id);
-                            dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), FormatSyntax.formatExtended(TXDB.get("Map:#A"), new RubyIO[] {new RubyIO().setString(rmd.name)}));
+                            dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), FormatSyntax.formatExtended(TXDB.get("Map:#A"), new RubyIO().setString(rmd.name)));
                             RubyIO map = rmd.map;
                             LinkedList<Integer> orderedEVN = new LinkedList<Integer>();
                             for (RubyIO i : map.getInstVarBySymbol("@events").hashVal.keySet())
@@ -216,7 +216,7 @@ public class RMToolsToolset implements IToolset {
                                 for (RubyIO page : event.getInstVarBySymbol("@pages").arrVal) {
                                     if (page.type == '0')
                                         continue; // 0th page on R2k backend.
-                                    dumper.dump(FormatSyntax.formatExtended(TXDB.get("Ev.#A #C, page #B"), new RubyIO[] {new RubyIO().setFX(k), new RubyIO().setFX(pageId), event.getInstVarBySymbol("@name")}), page.getInstVarBySymbol("@list").arrVal, commandsEvent);
+                                    dumper.dump(FormatSyntax.formatExtended(TXDB.get("Ev.#A #C, page #B"), new RubyIO().setFX(k), new RubyIO().setFX(pageId), event.getInstVarBySymbol("@name")), page.getInstVarBySymbol("@list").arrVal, commandsEvent);
                                     pageId++;
                                 }
                             }

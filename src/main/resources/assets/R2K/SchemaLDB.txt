@@ -32,10 +32,12 @@ C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C D
 .actorpage_graphics
 @character_name f_charset_name
 @character_index int
++spriteSelector @character_index @character_name CharSet/
 @character_blend_mode boolean
 +internal_EPGD
 @face_name f_faceset_name
 @face_index int
++spriteSelector @face_index @face_name FaceSet/
 
 : RPG::Actor
 C name Class.RPG::Actor @name | #A
@@ -546,28 +548,31 @@ e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 orde
 +subwindow[ Transitions ] rpg_system_transition
 +subwindow[ Test Parameters ] rpg_system_testing
 
-@title_name string
+@title_name { string fileSelector Title/ }
 @show_title_2k3 booleanDefTrue
-@gameover_name string
+@gameover_name { string fileSelector GameOver/ }
 @system_name f_system_name
 @system2_name_2k3 f_system2_name
 
 @party subwindow array 0 actor_id
 @menu_commands_2k3 subwindow array 0 rpg_system_menucommand
 
-@boat_name string
+@boat_name f_charset_name
 @boat_index int
-@ship_name string
++spriteSelector @boat_index @boat_name CharSet/
+@ship_name f_charset_name
 @ship_index int
-@airship_name string
++spriteSelector @ship_index @ship_name CharSet/
+@airship_name f_charset_name
 @airship_index int
++spriteSelector @airship_index @airship_name CharSet/
 
 @message_tiling int_boolean
 e rpg_system_font 0 gothic 1 mincho
 @font_id rpg_system_font
 
 @frame_show_2k3 boolean
-@frame_name_2k3 string
+@frame_name_2k3 { string fileSelector Frame/ }
 @invert_animations_2k3 boolean
 
 .rpg_system_testing

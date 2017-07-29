@@ -134,7 +134,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
 
     @Override
     public String toString() {
-        return FormatSyntax.formatExtended(TXDB.get("Ev.Pick #[#A total#]"), new RubyIO[] {new RubyIO().setFX(eventCache.size())});
+        return FormatSyntax.formatExtended(TXDB.get("Ev.Pick #[#A total#]"), new RubyIO().setFX(eventCache.size()));
     }
 
     public static void showEvent(long fixnumVal, UIMapView map, RubyIO event) {

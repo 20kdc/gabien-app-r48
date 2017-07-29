@@ -242,7 +242,7 @@ public class FormatSyntax {
         return ise[i].apply(root);
     }
 
-    public static String formatExtended(String s, RubyIO[] pieces) {
+    public static String formatExtended(String s, RubyIO... pieces) {
         RubyIO synthRoot = new RubyIO();
         synthRoot.type = '[';
         synthRoot.arrVal = pieces;

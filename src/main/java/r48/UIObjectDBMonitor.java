@@ -29,7 +29,7 @@ public class UIObjectDBMonitor extends UIElement {
             String status = TXDB.get(" [disposed]");
             RubyIO rio = AppMain.objectDB.objectMap.get(s).get();
             if (rio != null) {
-                status = FormatSyntax.formatExtended(TXDB.get(" #[#AML#]"), new RubyIO[] {new RubyIO().setFX(AppMain.objectDB.countModificationListeners(rio))});
+                status = FormatSyntax.formatExtended(TXDB.get(" #[#AML#]"), new RubyIO().setFX(AppMain.objectDB.countModificationListeners(rio)));
                 if (AppMain.objectDB.getObjectNewlyCreated(s)) {
                     status += TXDB.get(" [created]");
                 } else if (AppMain.objectDB.getObjectModified(s)) {

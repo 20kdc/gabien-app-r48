@@ -91,7 +91,7 @@ public class UIGRMMapInfos extends UIPanel {
                     while (parentStack.getLast() != parent)
                         parentStack.removeLast();
                 } else {
-                    AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Parent Inconsistency Warning @ #A o #B"), new RubyIO[] {new RubyIO().setFX(k), new RubyIO().setFX(order)}));
+                    AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Parent Inconsistency Warning @ #A o #B"), new RubyIO().setFX(k), new RubyIO().setFX(order)));
                     enableOrderHoleDebug = true;
                 }
             }

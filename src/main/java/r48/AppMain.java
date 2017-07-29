@@ -155,7 +155,7 @@ public class AppMain {
             public void accept(Double deltaTime) {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
 
-                uiStatusLabel.Text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO[] {new RubyIO().setFX(objectDB.modifiedObjects.size()), (theClipboard == null) ? new RubyIO().setNull() : theClipboard});
+                uiStatusLabel.Text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO().setFX(objectDB.modifiedObjects.size()), (theClipboard == null) ? new RubyIO().setNull() : theClipboard);
                 if (mapContext != null) {
                     String mapId = mapContext.getCurrentMap();
                     RubyIO map = null;

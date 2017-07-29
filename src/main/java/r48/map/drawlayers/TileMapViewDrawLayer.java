@@ -30,7 +30,7 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return FormatSyntax.formatExtended(TXDB.get("Tile Layer #A"), new RubyIO[] {new RubyIO().setFX(tileLayer)});
+        return FormatSyntax.formatExtended(TXDB.get("Tile Layer #A"), new RubyIO().setFX(tileLayer));
     }
 
     @Override

@@ -86,28 +86,38 @@ public class R2kGenposFrame implements IGenposFrame {
         if (i == 0)
             se = new BooleanSchemaElement(false);
         if (i == 1)
-            se = new SpritesheetCoreSchemaElement(0, new ISpritesheetProvider() {
+            se = new SpritesheetCoreSchemaElement("#A", 0, new IFunction<RubyIO, ISpritesheetProvider>() {
                 @Override
-                public int itemWidth() {
-                    return 96;
-                }
+                public ISpritesheetProvider apply(final RubyIO rubyIO) {
+                    return new ISpritesheetProvider() {
+                        @Override
+                        public RubyIO numberHolder() {
+                            return rubyIO;
+                        }
 
-                @Override
-                public int itemHeight() {
-                    return 96;
-                }
+                        @Override
+                        public int itemWidth() {
+                            return 96;
+                        }
 
-                @Override
-                public int itemCount() {
-                    return 5 * 5;
-                }
+                        @Override
+                        public int itemHeight() {
+                            return 96;
+                        }
 
-                @Override
-                public void drawItem(int t, int x, int y, IGrInDriver igd) {
-                    int tx = t % 5;
-                    int ty = t / 5;
-                    igd.clearRect(255, 0, 255, x, y, 96, 96);
-                    igd.blitImage(tx * 96, ty * 96, 96, 96, x, y, cache.getFramesetCache(false, false, 255));
+                        @Override
+                        public int itemCount() {
+                            return 5 * 5;
+                        }
+
+                        @Override
+                        public void drawItem(int t, int x, int y, IGrInDriver igd) {
+                            int tx = t % 5;
+                            int ty = t / 5;
+                            igd.clearRect(255, 0, 255, x, y, 96, 96);
+                            igd.blitImage(tx * 96, ty * 96, 96, 96, x, y, cache.getFramesetCache(false, false, 255));
+                        }
+                    };
                 }
             });
         return memberPath.newWindow(se, member.getInstVarBySymbol(trueIVars[i]), null);

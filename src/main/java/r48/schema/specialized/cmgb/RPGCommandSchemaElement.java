@@ -168,7 +168,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                             labels[i].setBounds(new Rect(0, 0, labelWidth, labels[i].getBounds().height));
                     for (int i = 0; i < param.arrVal.length; i++) {
                         if (param.arrVal.length <= i) {
-                            uiSVL.panels.add(new UILabel(FormatSyntax.formatExtended(TXDB.get("WARNING: Missing param. #A"), new RubyIO[] {new RubyIO().setFX(i)}), FontSizes.schemaFieldTextHeight));
+                            uiSVL.panels.add(new UILabel(FormatSyntax.formatExtended(TXDB.get("WARNING: Missing param. #A"), new RubyIO().setFX(i)), FontSizes.schemaFieldTextHeight));
                             continue;
                         }
                         if (labels[i] != null) {

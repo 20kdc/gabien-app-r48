@@ -5,6 +5,7 @@
 
 package r48.dbs;
 
+import gabien.IGrInDriver;
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import r48.AppMain;
@@ -23,6 +24,7 @@ import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 import r48.schema.specialized.tbleditors.DefaultTableCellEditor;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
+import r48.ui.ISpritesheetProvider;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -48,7 +50,12 @@ public class SDB {
     private LinkedList<DictionaryUpdaterRunnable> dictionaryUpdaterRunnables = new LinkedList<DictionaryUpdaterRunnable>();
     private LinkedList<Runnable> mergeRunnables = new LinkedList<Runnable>();
     private LinkedList<String> remainingExpected = new LinkedList<String>();
+
     private HashMap<String, CMDB> cmdbs = new HashMap<String, CMDB>();
+    // Spritesheet definitions are quite opaque lists of numbers defining how a grid sheet should appear. See spriteSelector.
+    private HashMap<String, String[]> spritesheets = new HashMap<String, String[]>();
+    private HashMap<String, String> spritesheetN = new HashMap<String, String>();
+    private HashMap<String, Integer> spritesheetSP = new HashMap<String, Integer>();
 
     public SDB() {
         schemaDatabase.put("nil", new OpaqueSchemaElement());
@@ -254,8 +261,61 @@ public class SDB {
                         // This includes anything of type 'u'.
                         if (text.equals("fileSelector")) {
                             String tx = args[point++];
-                            String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO[] {new RubyIO().setString(tx)});
+                            String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx));
                             return new SubwindowSchemaElement(new FileSelectorSchemaElement(tx), getFunctionToReturn(txHR));
+                        }
+                        if (text.equals("spriteSelector")) {
+                            // C spritesheet[ Select face index... ] FaceSets/ 48 48 4 0 0 48 48 0
+                            // +spriteSelector @face_index @face_name FaceSets/
+                            final String varPath = args[point++];
+                            final String imgPath = args[point++];
+                            final String imgPfx = args[point++];
+                            String[] args2 = spritesheets.get(imgPfx);
+                            int p = spritesheetSP.get(imgPfx);
+                            final int cellW = Integer.parseInt(args2[p]);
+                            final int cellH = Integer.parseInt(args2[p + 1]);
+                            final int rowCells = Integer.parseInt(args2[p + 2]);
+                            final int useX = Integer.parseInt(args2[p + 3]);
+                            final int useY = Integer.parseInt(args2[p + 4]);
+                            final int useW = Integer.parseInt(args2[p + 5]);
+                            final int useH = Integer.parseInt(args2[p + 6]);
+                            final int def = Integer.parseInt(args2[p + 7]);
+                            return new SpritesheetCoreSchemaElement(spritesheetN.get(imgPfx), def, new IFunction<RubyIO, ISpritesheetProvider>() {
+                                @Override
+                                public ISpritesheetProvider apply(RubyIO rubyIO) {
+                                    final RubyIO var = PathSyntax.parse(rubyIO, varPath);
+                                    String imgVal = imgPfx + PathSyntax.parse(rubyIO, imgPath).decString();
+                                    final IGrInDriver.IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgVal, false);
+                                    return new ISpritesheetProvider() {
+                                        @Override
+                                        public RubyIO numberHolder() {
+                                            return var;
+                                        }
+
+                                        @Override
+                                        public int itemWidth() {
+                                            return useW;
+                                        }
+
+                                        @Override
+                                        public int itemHeight() {
+                                            return useH;
+                                        }
+
+                                        @Override
+                                        public int itemCount() {
+                                            return ((img.getHeight() + (cellH - 1)) / cellH) * rowCells;
+                                        }
+
+                                        @Override
+                                        public void drawItem(int t, int x, int y, IGrInDriver igd) {
+                                            int row = t / rowCells;
+                                            t %= rowCells;
+                                            igd.blitImage((t * cellW) + useX, (row * cellH) + useY, useW, useH, x, y, img);
+                                        }
+                                    };
+                                }
+                            });
                         }
                         if (text.startsWith("table")) {
                             String eText = text;
@@ -507,6 +567,17 @@ public class SDB {
                                 return FormatSyntax.formatNameExtended(textF, rubyIO, parameters.toArray(new RubyIO[0]), null);
                             }
                         });
+                    }
+                    // Defines a spritesheet for spriteSelector.
+                    if (args[0].equals("spritesheet[")) {
+                        int point = 1;
+                        String text2 = args[point++];
+                        while (!args[point].equals("]"))
+                            text2 += " " + args[point++];
+                        point++;
+                        spritesheets.put(args[point], args);
+                        spritesheetN.put(args[point], TXDB.get(args[point] + "sprites", text2));
+                        spritesheetSP.put(args[point], point + 1);
                     }
                 } else if (c != ' ') {
                     for (String arg : args)

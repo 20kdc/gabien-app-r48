@@ -34,7 +34,7 @@ public class R2kTileMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return FormatSyntax.formatExtended(TXDB.get("Tile L#A ({B=T='upper'/'wall' tileset flags|general})"), new RubyIO[] {new RubyIO().setFX(layer), new RubyIO().setBool(upper)});
+        return FormatSyntax.formatExtended(TXDB.get("Tile L#A ({B=T='upper'/'wall' tileset flags|general})"), new RubyIO().setFX(layer), new RubyIO().setBool(upper));
     }
 
     @Override

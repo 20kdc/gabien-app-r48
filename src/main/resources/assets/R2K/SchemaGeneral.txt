@@ -39,6 +39,9 @@ D internal_battlecommandDictionary RPG_RT.ldb@battle_commands_2k3@commands 0 @na
 > f_battleback_name { string fileSelector Backdrop/ }
 > f_monster_name { string fileSelector Monster/ }
 
+C spritesheet[ Select character index... ] CharSet/ 72 128 4 24 64 24 32 0
+C spritesheet[ Select face index... ] FaceSet/ 48 48 4 0 0 48 48 0
+
 > var_id internal_variableDictionary
 > switch_id internal_switchDictionary
 

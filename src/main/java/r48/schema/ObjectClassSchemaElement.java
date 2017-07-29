@@ -10,6 +10,7 @@ import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
 import r48.dbs.NameProxySchemaElement;
 import r48.schema.specialized.RubyTableSchemaElement;
+import r48.schema.specialized.SpritesheetCoreSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -82,6 +83,10 @@ public class ObjectClassSchemaElement extends SchemaElement {
         if (ise instanceof AggregateSchemaElement) {
             boolean r = false;
             for (SchemaElement se : ((AggregateSchemaElement) ise).aggregate) {
+                if (se instanceof SpritesheetCoreSchemaElement) {
+                    // When these get involved, just return false.
+                    return false;
+                }
                 if (findAndAddIVars(se, target, iVars))
                     r = true;
             }

@@ -43,7 +43,7 @@ public class UICellSelectionPanel extends UIPanel {
             final int i2 = i;
             addAdditionButton(selectionPanel.panels, i2);
             String prefix = cellNumber == i2 ? ">" : " ";
-            UIElement button = new UITextButton(FontSizes.rmaCellFontSize, prefix + FormatSyntax.formatExtended(TXDB.get("Cell #A"), new RubyIO[] {new RubyIO().setFX(i)}), new Runnable() {
+            UIElement button = new UITextButton(FontSizes.rmaCellFontSize, prefix + FormatSyntax.formatExtended(TXDB.get("Cell #A"), new RubyIO().setFX(i)), new Runnable() {
                 @Override
                 public void run() {
                     cellNumber = i2;
