@@ -78,7 +78,8 @@ p continueEvents int_boolean
 
 10130: @@Change Face{D: to #A:#B, {C=0=left|right} {D=0=|, flipped}}
 d Change the face in the text box to a given face, including some details.
-p faceImage string
+p faceImage f_faceset_name
+C spritesheet 0 FaceSet/
 p faceIndex int
 p faceAtRight int_boolean
 p faceFlipped int_boolean
@@ -309,6 +310,7 @@ p actor actor_id
 d Change how a party member appears in battle.
 p graphic f_charset_name
 p actor actor_id
+C spritesheet 0 CharSet/
 p index int
 p transparent int_boolean
 
@@ -316,12 +318,14 @@ p transparent int_boolean
 d Change the face of a party member.
 p faceset f_faceset_name
 p actor actor_id
+C spritesheet 0 CharSet/
 p index int
 
 10650: Change Vehicle Appearance
 d Change the appearance of a vehicle.
 p graphic f_charset_name
 p vehicle scripting_vehicletype
+C spritesheet 0 CharSet/
 p index int
 
 10660: Change System BGM

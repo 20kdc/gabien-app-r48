@@ -264,6 +264,11 @@ public class SDB {
                             String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx));
                             return new SubwindowSchemaElement(new FileSelectorSchemaElement(tx), getFunctionToReturn(txHR));
                         }
+                        if (text.equals("halfsplit")) {
+                            SchemaElement a = get();
+                            SchemaElement b = get();
+                            return new HalfsplitSchemaElement(a, b);
+                        }
                         if (text.equals("spriteSelector")) {
                             // C spritesheet[ Select face index... ] FaceSets/ 48 48 4 0 0 48 48 0
                             // +spriteSelector @face_index @face_name FaceSets/
@@ -284,7 +289,8 @@ public class SDB {
                                 @Override
                                 public ISpritesheetProvider apply(RubyIO rubyIO) {
                                     final RubyIO var = PathSyntax.parse(rubyIO, varPath);
-                                    String imgVal = imgPfx + PathSyntax.parse(rubyIO, imgPath).decString();
+                                    final String imgTxt = PathSyntax.parse(rubyIO, imgPath).decString();
+                                    String imgVal = imgPfx + imgTxt;
                                     final IGrInDriver.IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgVal, false);
                                     return new ISpritesheetProvider() {
                                         @Override
@@ -304,6 +310,9 @@ public class SDB {
 
                                         @Override
                                         public int itemCount() {
+                                            // Use this to inform the user of image issues
+                                            if (imgTxt.equals(""))
+                                                AppMain.launchDialog(TXDB.get("The image wasn't specified."));
                                             return ((img.getHeight() + (cellH - 1)) / cellH) * rowCells;
                                         }
 

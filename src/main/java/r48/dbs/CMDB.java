@@ -184,6 +184,11 @@ public class CMDB {
                             }
                         };
                     }
+                    if (args[0].equals("spritesheet")) {
+                        // C spritesheet 0 CharSet/
+                        //Integer.parseInt(args[1]);
+                        //args[2];
+                    }
                     if (args[0].equals("groupBehavior")) {
                         // For commands with just one parameter that is a string.
                         if (args[1].equals("messagebox")) {

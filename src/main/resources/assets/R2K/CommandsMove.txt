@@ -120,6 +120,7 @@ p _ int
 34: Set Graphic!$
 d Change graphic to turn your event from a cat without a scarf to a cat *with* a scarf!
 p graphic f_charset_name
+C spritesheet 0 CharSet/
 p index int
 p _ int
 p _ int

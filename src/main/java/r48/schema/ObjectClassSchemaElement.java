@@ -80,13 +80,11 @@ public class ObjectClassSchemaElement extends SchemaElement {
             iVars.add(((RubyTableSchemaElement) ise).iVar);
             return true;
         }
+        if (ise instanceof HalfsplitSchemaElement)
+            return findAndAddIVars(((HalfsplitSchemaElement) ise).a, target, iVars) || findAndAddIVars(((HalfsplitSchemaElement) ise).b, target, iVars);
         if (ise instanceof AggregateSchemaElement) {
             boolean r = false;
             for (SchemaElement se : ((AggregateSchemaElement) ise).aggregate) {
-                if (se instanceof SpritesheetCoreSchemaElement) {
-                    // When these get involved, just return false.
-                    return false;
-                }
                 if (findAndAddIVars(se, target, iVars))
                     r = true;
             }
