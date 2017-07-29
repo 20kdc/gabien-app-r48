@@ -31,7 +31,13 @@ public class UITimeframeControl extends UIPanel {
         }
     }, FontSizes.rmaTimeframeFontSize);
     public UITextButton playControllerButton = playController.button.togglable();
-    public UIAppendButton hsController = new UIAppendButton(TXDB.get("HS"), playController, new Runnable() {
+    public UIAppendButton loopController = new UIAppendButton(TXDB.get("Loop"), playController, new Runnable() {
+        @Override
+        public void run() {
+        }
+    }, FontSizes.rmaTimeframeFontSize);
+    public UITextButton loopControllerButton = loopController.button.togglable();
+    public UIAppendButton hsController = new UIAppendButton(TXDB.get("HS"), loopController, new Runnable() {
         @Override
         public void run() {
         }
@@ -119,8 +125,14 @@ public class UITimeframeControl extends UIPanel {
                 frameTime *= 3;
             while (playTimer >= frameTime) {
                 playTimer -= frameTime;
-                rootPanel.target.setFrameIdx(rootPanel.target.getFrameIdx() + 1);
+                int oldIdx = rootPanel.target.getFrameIdx();
+                rootPanel.target.setFrameIdx(oldIdx + 1);
                 rootPanel.frameChanged();
+                if ((oldIdx + 1) != rootPanel.target.getFrameIdx())
+                    if (!loopControllerButton.state) {
+                        playControllerButton.state = false;
+                        break;
+                    }
             }
         } else {
             playTimer = 0;
