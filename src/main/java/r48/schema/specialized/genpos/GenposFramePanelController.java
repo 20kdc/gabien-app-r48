@@ -8,6 +8,8 @@ import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UISplitterLayout;
 import r48.RubyIO;
+import r48.schema.util.ISchemaHost;
+import r48.schema.util.SchemaPath;
 import r48.ui.UINSVertLayout;
 
 /**
@@ -17,6 +19,7 @@ import r48.ui.UINSVertLayout;
  */
 public class GenposFramePanelController {
     public UICellSelectionPanel cellSelection;
+    public UICellEditingPanel editingPanel;
     public UISingleFrameView editor;
     public UINSVertLayout editingSidebar;
 
@@ -24,7 +27,11 @@ public class GenposFramePanelController {
     public UISplitterLayout rootLayout;
     public IGenposFrame frame;
 
-    public GenposFramePanelController(IGenposFrame rootForNow) {
+    // for schema purposes
+    public ISchemaHost hostLauncher;
+
+    public GenposFramePanelController(IGenposFrame rootForNow, ISchemaHost launcher) {
+        hostLauncher = launcher;
         frame = rootForNow;
         editor = new UISingleFrameView(this);
         IGrInDriver.IImage bkg = rootForNow.getBackground();
@@ -34,17 +41,19 @@ public class GenposFramePanelController {
         }
         cellSelection = new UICellSelectionPanel(rootForNow);
 
-        // The UICellEditingPanel is informed about frame changes via UICellSelectionPanel
-        editingSidebar = new UINSVertLayout(new UICellEditingPanel(cellSelection, rootForNow), cellSelection);
+        editingPanel = new UICellEditingPanel(cellSelection, this);
+        editingSidebar = new UINSVertLayout(editingPanel, cellSelection);
         // Set an absolute width for the editing sidebar
-        editingSidebar.setBounds(new Rect(0, 0, 128, 32));
+        editingSidebar.setBounds(new Rect(0, 0, 192, 32));
         rootLayout = new UISplitterLayout(editor, editingSidebar, false, 1);
     }
 
     // Frame changed events <Incoming>. Run before displaying on-screen
     public void frameChanged() {
-        // This implicitly changes an incrementing number which causes the cell editor to update.
+        // This implicitly changes an incrementing number which causes the cell editor to update, but, that happens at next frame.
+        // Instead, for a case like this, call editingPanel directly
         cellSelection.frameChanged();
+        editingPanel.somethingChanged();
     }
 
 

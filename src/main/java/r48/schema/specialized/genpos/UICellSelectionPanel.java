@@ -43,7 +43,7 @@ public class UICellSelectionPanel extends UIPanel {
             final int i2 = i;
             addAdditionButton(selectionPanel.panels, i2);
             String prefix = cellNumber == i2 ? ">" : " ";
-            UIElement button = new UITextButton(FontSizes.rmaPropertyFontSize, prefix + FormatSyntax.formatExtended(TXDB.get("Cell #A"), new RubyIO[] {new RubyIO().setFX(i)}), new Runnable() {
+            UIElement button = new UITextButton(FontSizes.rmaCellFontSize, prefix + FormatSyntax.formatExtended(TXDB.get("Cell #A"), new RubyIO[] {new RubyIO().setFX(i)}), new Runnable() {
                 @Override
                 public void run() {
                     cellNumber = i2;
@@ -62,7 +62,7 @@ public class UICellSelectionPanel extends UIPanel {
                         }
                         frameChanged();
                     }
-                }, FontSizes.rmaPropertyFontSize));
+                }, FontSizes.rmaCellFontSize));
             } else {
                 selectionPanel.panels.add(button);
             }
@@ -75,7 +75,7 @@ public class UICellSelectionPanel extends UIPanel {
     private void addAdditionButton(final LinkedList<UIElement> panels, final int i2) {
         if (!root.canAddRemoveCells())
             return;
-        panels.add(new UITextButton(FontSizes.rmaPropertyFontSize, TXDB.get("<add cell here>"), new Runnable() {
+        panels.add(new UITextButton(FontSizes.rmaCellFontSize, TXDB.get("<add cell here>"), new Runnable() {
             @Override
             public void run() {
                 if (i2 <= root.getCellCount()) {

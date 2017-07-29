@@ -6,6 +6,8 @@ package r48.schema.specialized.genpos;
 
 import gabien.IGrInDriver;
 import r48.RubyIO;
+import r48.schema.SchemaElement;
+import r48.schema.util.SchemaPath;
 
 /**
  * Part of genpos.
@@ -21,8 +23,11 @@ public interface IGenposFrame {
     void addCell(int i2);
     void deleteCell(int i2);
 
-    int getCellProp(int ct, int i);
-    void setCellProp(int ct, int i, int number);
+    // Note: The target will be modified.
+    // targetElement and the path itself should be used by the caller.
+    // Use newWindow with a null launcher. (This has to be corrected by caller.)
+    SchemaPath getCellProp(int ct, int i);
+    void moveCell(int ct, int x, int y);
 
     int getCellCount();
 

@@ -7,9 +7,15 @@ package r48.schema.specialized.genpos;
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
 import r48.AppMain;
+import r48.ArrayUtils;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.imaging.IImageLoader;
+import r48.schema.BooleanSchemaElement;
+import r48.schema.SchemaElement;
+import r48.schema.integers.IntBooleanSchemaElement;
+import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.util.SchemaPath;
 
 import java.util.Map;
 
@@ -19,10 +25,12 @@ import java.util.Map;
 public class TroopGenposFrame implements IGenposFrame {
     public IGrInDriver.IImage battleBkg;
     public RubyIO troop;
+    public SchemaPath troopPath;
     public IGrInDriver.IImage[] enemies;
     public Runnable changed;
-    public TroopGenposFrame(RubyIO t, Runnable change) {
+    public TroopGenposFrame(RubyIO t, SchemaPath path, Runnable change) {
         troop = t;
+        troopPath = path;
         changed = change;
         // Immediately try and get needed resources
         RubyIO database = AppMain.objectDB.getObject("RPG_RT.ldb");
@@ -56,45 +64,54 @@ public class TroopGenposFrame implements IGenposFrame {
 
     @Override
     public boolean canAddRemoveCells() {
-        return false;
+        return true;
     }
 
     @Override
     public void addCell(int i2) {
-
+        RubyIO rio = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(i2));
+        ArrayUtils.insertRioElement(troop.getInstVarBySymbol("@members"), rio, i2);
+        changed.run();
     }
 
     @Override
     public void deleteCell(int i2) {
-
-    }
-
-    @Override
-    public int getCellProp(int ct, int i) {
-        RubyIO member = troop.getInstVarBySymbol("@members").arrVal[ct + 1];
-        if (i == 0)
-            return (int) member.getInstVarBySymbol("@enemy").fixnumVal;
-        if (i == 1)
-            return (int) member.getInstVarBySymbol("@x").fixnumVal;
-        if (i == 2)
-            return (int) member.getInstVarBySymbol("@y").fixnumVal;
-        if (i == 3)
-            return member.getInstVarBySymbol("@invisible").type == 'T' ? 1 : 0;
-        return 0;
-    }
-
-    @Override
-    public void setCellProp(int ct, int i, int number) {
-        RubyIO member = troop.getInstVarBySymbol("@members").arrVal[ct + 1];
-        if (i == 0)
-            member.getInstVarBySymbol("@enemy").fixnumVal = number;
-        if (i == 1)
-            member.getInstVarBySymbol("@x").fixnumVal = number;
-        if (i == 2)
-            member.getInstVarBySymbol("@y").fixnumVal = number;
-        if (i == 3)
-            member.getInstVarBySymbol("@invisible").type = (number != 0) ? 'T' : 'F';
+        ArrayUtils.removeRioElement(troop.getInstVarBySymbol("@members"), i2);
         changed.run();
+    }
+
+    private SchemaElement[] getCellPropSchemas() {
+        return new SchemaElement[] {
+                AppMain.schemas.getSDBEntry("enemy_id"),
+                new IntegerSchemaElement(0),
+                new IntegerSchemaElement(0),
+                new BooleanSchemaElement(false)
+        };
+    }
+
+    @Override
+    public SchemaPath getCellProp(int ct, int i) {
+        SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(new RubyIO().setFX(ct + 1), "[" + (ct + 1) + "]");
+        RubyIO member = troop.getInstVarBySymbol("@members").arrVal[ct + 1];
+        SchemaElement se = getCellPropSchemas()[i];
+        if (i == 0)
+            return memberPath.newWindow(se, member.getInstVarBySymbol("@enemy"), null);
+        if (i == 1)
+            return memberPath.newWindow(se, member.getInstVarBySymbol("@x"), null);
+        if (i == 2)
+            return memberPath.newWindow(se, member.getInstVarBySymbol("@y"), null);
+        if (i == 3)
+            return memberPath.newWindow(se, member.getInstVarBySymbol("@invisible"), null);
+        throw new RuntimeException("Invalid cell prop.");
+    }
+
+    @Override
+    public void moveCell(int ct, int x, int y) {
+        SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(new RubyIO().setFX(ct + 1), "[" + (ct + 1) + "]");
+        RubyIO member = troop.getInstVarBySymbol("@members").arrVal[ct + 1];
+        member.getInstVarBySymbol("@x").fixnumVal += x;
+        member.getInstVarBySymbol("@y").fixnumVal += y;
+        memberPath.changeOccurred(false);
     }
 
     @Override
@@ -114,19 +131,17 @@ public class TroopGenposFrame implements IGenposFrame {
 
     @Override
     public void drawCell(int i, int opx, int opy, IGrInDriver igd) {
-        int enemy = getCellProp(i, 0);
-        opx += getCellProp(i, 1);
-        opy += getCellProp(i, 2);
+        // hm.
+        int enemy = (int) getCellProp(i, 0).targetElement.fixnumVal;
+        opx += getCellProp(i, 1).targetElement.fixnumVal;
+        opy += getCellProp(i, 2).targetElement.fixnumVal;
         if (enemy < 0)
             return;
         if (enemy >= enemies.length)
             return;
         IGrInDriver.IImage enemyImg = enemies[enemy];
-        if (enemyImg == null) {
-            // What to do?
-        } else {
+        if (enemyImg != null)
             igd.blitImage(0, 0, enemyImg.getWidth(), enemyImg.getHeight(), opx - (enemyImg.getWidth() / 2), opy - (enemyImg.getHeight() / 2), enemyImg);
-        }
     }
 
     @Override

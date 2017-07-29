@@ -4,18 +4,21 @@
  */
 package r48.schema.specialized.genpos;
 
-import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabien.ui.IFunction;
 import gabien.ui.Rect;
 import gabien.ui.UIPanel;
 import r48.AppMain;
 import r48.ArrayUtils;
 import r48.RubyIO;
 import r48.RubyTable;
-import r48.dbs.ObjectDB;
 import r48.dbs.TXDB;
+import r48.schema.SchemaElement;
+import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.specialized.IMagicalBinder;
+import r48.schema.specialized.MagicalBindingSchemaElement;
+import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.ui.UINSVertLayout;
 
 /**
  * Animation Software For Serious Animation Purposes.
@@ -32,6 +35,7 @@ import r48.ui.UINSVertLayout;
  */
 public class RMAnimRootPanel extends UIPanel implements IGenposFrame {
     public RubyIO target;
+    public SchemaPath path;
     public Runnable updateNotify;
     public SpriteCache spriteCache = new SpriteCache();
     public GenposFramePanelController framePanelController;
@@ -41,9 +45,10 @@ public class RMAnimRootPanel extends UIPanel implements IGenposFrame {
     // used for indicator setup
     public boolean vxaAnim;
 
-    public RMAnimRootPanel(RubyIO t, boolean vxaAnimation, Runnable runnable, String a, String b, int recommendedFramerate) {
+    public RMAnimRootPanel(RubyIO t, SchemaPath basePath, ISchemaHost launcher, boolean vxaAnimation, Runnable runnable, String a, String b, int recommendedFramerate) {
         vxaAnim = vxaAnimation;
         target = t;
+        path = basePath;
         updateNotify = runnable;
         spriteCache.target = target;
         spriteCache.framesetALoc = a;
@@ -51,7 +56,7 @@ public class RMAnimRootPanel extends UIPanel implements IGenposFrame {
         // Stop animation elements escaping the window
         useScissoring = true;
 
-        framePanelController = new GenposFramePanelController(this);
+        framePanelController = new GenposFramePanelController(this, launcher);
         timeframe = new UITimeframeControl(this, recommendedFramerate);
 
         allElements.add(timeframe);
@@ -139,17 +144,6 @@ public class RMAnimRootPanel extends UIPanel implements IGenposFrame {
     }
 
     @Override
-    public int getCellProp(int ct, int i) {
-        return getTable().getTiletype(ct, i, 0);
-    }
-
-    @Override
-    public void setCellProp(int ct, int i, int number) {
-        getTable().setTiletype(ct, i, 0, (short) number);
-        updateNotify.run();
-    }
-
-    @Override
     public int getCellCount() {
         return getTable().width;
     }
@@ -172,6 +166,51 @@ public class RMAnimRootPanel extends UIPanel implements IGenposFrame {
             newTable.setTiletype(i2, p, 0, initValues[p]);
         }
         frameData.userVal = newTable.innerBytes;
+        updateNotify.run();
+    }
+
+    private SchemaElement[] getCellPropSchemas() {
+        return new SchemaElement[] {
+                new IntegerSchemaElement(0),
+                new IntegerSchemaElement(0),
+                new IntegerSchemaElement(0),
+                new IntegerSchemaElement(0),
+                new IntegerSchemaElement(0),
+                new IntegerSchemaElement(0),
+                new IntegerSchemaElement(0),
+                new IntegerSchemaElement(0)
+        };
+    }
+
+    @Override
+    public SchemaPath getCellProp(final int ct, final int i) {
+        // oh, this'll be *hilarious*. NOT.
+        SchemaElement se = new MagicalBindingSchemaElement(new IMagicalBinder() {
+            @Override
+            public RubyIO targetToBound(RubyIO target) {
+                short val = new RubyTable(target.userVal).getTiletype(ct, i, 0);
+                return new RubyIO().setFX(val);
+            }
+
+            @Override
+            public boolean applyBoundToTarget(RubyIO bound, RubyIO target) {
+                short s = new RubyTable(target.userVal).getTiletype(ct, i, 0);
+                short s2 = (short) bound.fixnumVal;
+                if (s != s2) {
+                    new RubyTable(target.userVal).setTiletype(ct, i, 0, s2);
+                    return true;
+                }
+                return false;
+            }
+        }, getCellPropSchemas()[i]);
+        return path.newWindow(se, getFrame().getInstVarBySymbol("@cell_data"), null);
+    }
+
+    @Override
+    public void moveCell(int ct, int x, int y) {
+        RubyTable rt = new RubyTable(getFrame().getInstVarBySymbol("@cell_data").userVal);
+        rt.setTiletype(ct, 1, 0, (short) (rt.getTiletype(ct, 1, 0) + x));
+        rt.setTiletype(ct, 2, 0, (short) (rt.getTiletype(ct, 2, 0) + y));
         updateNotify.run();
     }
 

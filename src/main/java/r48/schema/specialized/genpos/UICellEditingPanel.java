@@ -9,6 +9,7 @@ import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.schema.util.SchemaPath;
 
 import java.util.Collections;
 
@@ -18,29 +19,31 @@ import java.util.Collections;
  */
 public class UICellEditingPanel extends UIPanel {
     public UICellSelectionPanel cellSelectionPanel;
-    public IGenposFrame root;
+    public GenposFramePanelController root;
     public UISplitterLayout[] halfsplits;
-    public Runnable[] cellChangeNotificationHandlers;
 
     // This is used so UICellSelectionPanel can notify this panel of cell changes.
     // -1 is never used.
     public int lastCCN = -1;
 
-    public UICellEditingPanel(UICellSelectionPanel csp, IGenposFrame rmAnimRootPanel) {
+    public UICellEditingPanel(UICellSelectionPanel csp, GenposFramePanelController rmAnimRootPanel) {
         root = rmAnimRootPanel;
         cellSelectionPanel = csp;
-        String[] properties = rmAnimRootPanel.getCellProps();
+        String[] properties = root.frame.getCellProps();
         // Filled in here
         halfsplits = new UISplitterLayout[properties.length];
-        // Filled in by createPropertyEditor
-        cellChangeNotificationHandlers = new Runnable[properties.length];
+        setBounds(new Rect(0, 0, 32, recreateHalfSplits()));
+    }
+
+    private int recreateHalfSplits() {
+        String[] properties = root.frame.getCellProps();
         int h = 0;
         for (int i = 0; i < halfsplits.length; i++) {
             UIElement ed = createPropertyEditor(i);
-            halfsplits[i] = new UISplitterLayout(new UILabel(properties[i], FontSizes.rmaPropertyFontSize), ed, false, 3, 5);
+            halfsplits[i] = new UISplitterLayout(new UILabel(properties[i], FontSizes.schemaFieldTextHeight), ed, false, 3, 5);
             h += halfsplits[i].getBounds().height;
         }
-        setBounds(new Rect(0, 0, 32, h));
+        return h;
     }
 
     @Override
@@ -55,42 +58,32 @@ public class UICellEditingPanel extends UIPanel {
     }
 
     private UIElement createPropertyEditor(final int i) {
-        // general case
-        final UINumberBox unb = new UINumberBox(FontSizes.rmaPropertyFontSize);
+        if (cellSelectionPanel.cellNumber != -1) {
+            SchemaPath sp = root.frame.getCellProp(cellSelectionPanel.cellNumber, i);
+            sp.host = root.hostLauncher;
+            return sp.editor.buildHoldingEditor(sp.targetElement, root.hostLauncher, sp);
+        }
+        UIPanel uip = new UIPanel();
+        uip.setBounds(new Rect(0, 0, 32, 1));
+        return uip;
+    }
 
-        cellChangeNotificationHandlers[i] = new Runnable() {
-            @Override
-            public void run() {
-                final int ct = cellSelectionPanel.cellNumber;
-                unb.number = root.getCellProp(ct, i);
-                unb.onEdit = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (root.getCellCount() > ct) {
-                            root.setCellProp(ct, i, unb.number);
-                        } else {
-                            cellSelectionPanel.frameChanged();
-                        }
-                    }
-                };
-            }
-        };
-
-        return unb;
+    public void somethingChanged() {
+        allElements.clear();
+        int cell = cellSelectionPanel.cellNumber;
+        if (cell != -1) {
+            recreateHalfSplits();
+            setBounds(getBounds());
+            Collections.addAll(allElements, halfsplits);
+        }
     }
 
     @Override
     public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
-        int cell = cellSelectionPanel.cellNumber;
         int n = cellSelectionPanel.cellChangeNotificationNumber;
         if (lastCCN != n) {
             lastCCN = n;
-            allElements.clear();
-            if (cell != -1) {
-                Collections.addAll(allElements, halfsplits);
-                for (Runnable r : cellChangeNotificationHandlers)
-                    r.run();
-            }
+            somethingChanged();
         }
         super.updateAndRender(ox, oy, deltaTime, select, igd);
     }

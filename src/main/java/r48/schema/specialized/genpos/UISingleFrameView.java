@@ -10,6 +10,7 @@ import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.schema.util.SchemaPath;
 
 /**
  * Handles drawing for a single-frame editor.
@@ -69,12 +70,13 @@ public class UISingleFrameView extends UIElement {
     public void handleDrag(int x, int y) {
         if (dragging == 1) {
             if (basePanelAccess.cellSelection.cellNumber != -1) {
-                // RubyIO target = basePanelAccess.frame.getFrame();
-                // RubyTable rt = new RubyTable(target.getInstVarBySymbol("@cell_data").userVal);
-                int ofsX = x - lastMX;
-                int ofsY = y - lastMY;
-                basePanelAccess.frame.setCellProp(basePanelAccess.cellSelection.cellNumber, 1, basePanelAccess.frame.getCellProp(basePanelAccess.cellSelection.cellNumber, 1) + ofsX);
-                basePanelAccess.frame.setCellProp(basePanelAccess.cellSelection.cellNumber, 2, basePanelAccess.frame.getCellProp(basePanelAccess.cellSelection.cellNumber, 2) + ofsY);
+                if (basePanelAccess.frame.getCellCount() > basePanelAccess.cellSelection.cellNumber) {
+                    // RubyIO target = basePanelAccess.frame.getFrame();
+                    // RubyTable rt = new RubyTable(target.getInstVarBySymbol("@cell_data").userVal);
+                    int ofsX = x - lastMX;
+                    int ofsY = y - lastMY;
+                    basePanelAccess.frame.moveCell(basePanelAccess.cellSelection.cellNumber, ofsX, ofsY);
+                }
             }
         } else if (dragging == 3) {
             camX -= x - lastMX;

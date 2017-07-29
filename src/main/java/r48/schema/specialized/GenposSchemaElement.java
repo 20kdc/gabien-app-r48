@@ -41,7 +41,7 @@ public class GenposSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 if (genposType.equals("vxaAnimation") || genposType.equals("xpAnimation")) {
-                    final RMAnimRootPanel rmarp = new RMAnimRootPanel(target, genposType.equals("vxaAnimation"), new Runnable() {
+                    final RMAnimRootPanel rmarp = new RMAnimRootPanel(target, path, launcher, genposType.equals("vxaAnimation"), new Runnable() {
                         @Override
                         public void run() {
                             path.changeOccurred(false);
@@ -56,12 +56,12 @@ public class GenposSchemaElement extends SchemaElement {
                     }, launcher, path);
                 }
                 if (genposType.equals("r2kTroop")) {
-                    final GenposFramePanelController rmarp = new GenposFramePanelController(new TroopGenposFrame(target, new Runnable() {
+                    final GenposFramePanelController rmarp = new GenposFramePanelController(new TroopGenposFrame(target, path, new Runnable() {
                         @Override
                         public void run() {
                             path.changeOccurred(false);
                         }
-                    }));
+                    }), launcher);
                     rmarp.frameChanged();
                     // Setup automatic-update safety net
                     safetyWrap(rmarp.rootLayout, target, new Runnable() {

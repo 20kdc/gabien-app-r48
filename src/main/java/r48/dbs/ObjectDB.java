@@ -145,12 +145,10 @@ public class ObjectDB {
     }
 
     public void objectRootModified(RubyIO p, final SchemaPath path) {
-        // Is this available in ObjectDB?
-        // If not, it's probably a default value that got modified,
-        //  and the required root modification message will come later.
-        if (!reverseObjectMap.containsKey(p))
-            return;
-        modifiedObjects.add(p);
+        // Is this available in ObjectDB? If not, then it shouldn't be locked into permanent memory.
+        // However, if there are modification listeners on this particular object, they get used
+        if (reverseObjectMap.containsKey(p))
+            modifiedObjects.add(p);
         LinkedList<IConsumer<SchemaPath>> notifyObjectModified = objectListenersMap.get(p);
         if (notifyObjectModified != null)
             for (final IConsumer<SchemaPath> r : new LinkedList<IConsumer<SchemaPath>>(notifyObjectModified))
