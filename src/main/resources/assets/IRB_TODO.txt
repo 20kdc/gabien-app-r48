@@ -7,7 +7,4 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity
 
 short-term planning subsection:
-1. Fix text on Enable/Disable Main Menu
- YUME M33 E3 (the door) P1 index 11.
- (Um, did I do this already?)
-2. Troops editing
+Figure out how to make hues *and* tones work, then add that everywhere it's needed.

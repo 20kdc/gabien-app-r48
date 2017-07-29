@@ -248,6 +248,11 @@ public class Application {
         try {
             // '/' is 'universal'. Not supposed to be, but that doesn't matter
             s = s.replace('\\', '/');
+            if (s.equals(""))
+                return s;
+            if (!s.contains("/"))
+                if (s.contains(":"))
+                    return s;
             File f = new File(s);
             if (f.exists())
                 return s;
