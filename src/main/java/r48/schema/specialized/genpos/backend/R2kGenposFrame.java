@@ -5,6 +5,7 @@
 package r48.schema.specialized.genpos.backend;
 
 import gabien.IGrInDriver;
+import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.ArrayUtils;
@@ -84,10 +85,10 @@ public class R2kGenposFrame implements IGenposFrame {
     }
 
     @Override
-    public void moveCell(int ct, int x, int y) {
+    public void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y) {
         RubyIO cell = frameSource.get().getInstVarBySymbol("@cells").arrVal[ct + 1];
-        cell.getInstVarBySymbol("@x").fixnumVal += x;
-        cell.getInstVarBySymbol("@y").fixnumVal += y;
+        cell.getInstVarBySymbol("@x").fixnumVal = x.apply((int) cell.getInstVarBySymbol("@x").fixnumVal);
+        cell.getInstVarBySymbol("@y").fixnumVal = y.apply((int) cell.getInstVarBySymbol("@y").fixnumVal);
         updateNotify.run();
     }
 

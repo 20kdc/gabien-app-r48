@@ -7,7 +7,10 @@ package r48.schema.specialized.genpos;
 import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UISplitterLayout;
+import gabien.ui.UITextButton;
+import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UINSVertLayout;
@@ -30,6 +33,8 @@ public class GenposFramePanelController {
     // for schema purposes
     public ISchemaHost hostLauncher;
 
+    public UITextButton gridToggleButton;
+
     public GenposFramePanelController(IGenposFrame rootForNow, ISchemaHost launcher) {
         hostLauncher = launcher;
         frame = rootForNow;
@@ -42,7 +47,13 @@ public class GenposFramePanelController {
         cellSelection = new UICellSelectionPanel(rootForNow);
 
         editingPanel = new UICellEditingPanel(cellSelection, this);
-        editingSidebar = new UINSVertLayout(editingPanel, cellSelection);
+        gridToggleButton = new UITextButton(FontSizes.rmaCellFontSize, TXDB.get("8px Grid"), new Runnable() {
+            @Override
+            public void run() {
+                // Do nothing.
+            }
+        }).togglable();
+        editingSidebar = new UINSVertLayout(gridToggleButton, new UINSVertLayout(editingPanel, cellSelection));
         // Set an absolute width for the editing sidebar
         editingSidebar.setBounds(new Rect(0, 0, 192, 32));
         rootLayout = new UISplitterLayout(editor, editingSidebar, false, 1);

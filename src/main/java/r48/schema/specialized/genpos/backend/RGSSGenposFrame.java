@@ -5,6 +5,7 @@
 package r48.schema.specialized.genpos.backend;
 
 import gabien.IGrInDriver;
+import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.RubyIO;
@@ -156,10 +157,10 @@ public class RGSSGenposFrame implements IGenposFrame {
     }
 
     @Override
-    public void moveCell(int ct, int x, int y) {
+    public void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y) {
         RubyTable rt = new RubyTable(getFrame().getInstVarBySymbol("@cell_data").userVal);
-        rt.setTiletype(ct, 1, 0, (short) (rt.getTiletype(ct, 1, 0) + x));
-        rt.setTiletype(ct, 2, 0, (short) (rt.getTiletype(ct, 2, 0) + y));
+        rt.setTiletype(ct, 1, 0, (short) ((int) x.apply((int) rt.getTiletype(ct, 1, 0))));
+        rt.setTiletype(ct, 2, 0, (short) ((int) y.apply((int) rt.getTiletype(ct, 2, 0))));
         updateNotify.run();
     }
 

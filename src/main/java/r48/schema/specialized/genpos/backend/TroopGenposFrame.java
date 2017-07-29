@@ -5,6 +5,7 @@
 package r48.schema.specialized.genpos.backend;
 
 import gabien.IGrInDriver;
+import gabien.ui.IFunction;
 import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.ArrayUtils;
@@ -111,11 +112,11 @@ public class TroopGenposFrame implements IGenposFrame {
     }
 
     @Override
-    public void moveCell(int ct, int x, int y) {
+    public void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y) {
         SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(new RubyIO().setFX(ct + 1), "[" + (ct + 1) + "]");
         RubyIO member = troop.getInstVarBySymbol("@members").arrVal[ct + 1];
-        member.getInstVarBySymbol("@x").fixnumVal += x;
-        member.getInstVarBySymbol("@y").fixnumVal += y;
+        member.getInstVarBySymbol("@x").fixnumVal = x.apply((int) member.getInstVarBySymbol("@x").fixnumVal);
+        member.getInstVarBySymbol("@y").fixnumVal = y.apply((int) member.getInstVarBySymbol("@y").fixnumVal);
         memberPath.changeOccurred(false);
     }
 

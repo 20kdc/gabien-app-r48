@@ -6,6 +6,8 @@ package r48.schema.specialized.genpos;
 
 import gabien.IGrInDriver;
 import gabien.ScissorGrInDriver;
+import gabien.ui.IConsumer;
+import gabien.ui.IFunction;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import r48.RubyIO;
@@ -19,7 +21,7 @@ import r48.schema.util.SchemaPath;
 public class UISingleFrameView extends UIElement {
     public GenposFramePanelController basePanelAccess;
 
-    private int lastMX, lastMY;
+    private int lastMX, lastMY, lossX, lossY;
     public int camX, camY;
     private int dragging;
 
@@ -67,6 +69,8 @@ public class UISingleFrameView extends UIElement {
         dragging = button;
         lastMX = x;
         lastMY = y;
+        lossX = 0;
+        lossY = 0;
     }
 
     @Override
@@ -76,9 +80,28 @@ public class UISingleFrameView extends UIElement {
                 if (basePanelAccess.frame.getCellCount() > basePanelAccess.cellSelection.cellNumber) {
                     // RubyIO target = basePanelAccess.frame.getFrame();
                     // RubyTable rt = new RubyTable(target.getInstVarBySymbol("@cell_data").userVal);
-                    int ofsX = x - lastMX;
-                    int ofsY = y - lastMY;
-                    basePanelAccess.frame.moveCell(basePanelAccess.cellSelection.cellNumber, ofsX, ofsY);
+                    final int ofsX = (x - lastMX) + lossX;
+                    final int ofsY = (y - lastMY) + lossY;
+                    lastMX = x;
+                    lastMY = y;
+                    basePanelAccess.frame.moveCell(basePanelAccess.cellSelection.cellNumber, new IFunction<Integer, Integer>() {
+                        @Override
+                        public Integer apply(Integer integer) {
+                            int r = offset(integer, ofsX);
+                            int ao = r - integer;
+                            lossX = ofsX - ao;
+                            return r;
+                        }
+                    }, new IFunction<Integer, Integer>() {
+                        @Override
+                        public Integer apply(Integer integer) {
+                            int r = offset(integer, ofsY);
+                            int ao = r - integer;
+                            lossY = ofsY - ao;
+                            return r;
+                        }
+                    });
+                    return;
                 }
             }
         } else if (dragging == 3) {
@@ -87,5 +110,12 @@ public class UISingleFrameView extends UIElement {
         }
         lastMX = x;
         lastMY = y;
+    }
+
+    private int offset(int integer, int ofs) {
+        integer += ofs;
+        if (basePanelAccess.gridToggleButton.state)
+            integer &= ~7;
+        return integer;
     }
 }

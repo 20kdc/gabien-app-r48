@@ -7,4 +7,5 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity
 
 short-term planning subsection:
+drawSelectBox -> UIGrid fixes -> Spritesheet selector (test w/ animations first)
 Figure out how to make hues *and* tones work, then add that everywhere it's needed.
