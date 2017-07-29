@@ -109,6 +109,7 @@ public class UIGRMMapInfos extends UIPanel {
                 @Override
                 public void run() {
                     selectedOrder = order;
+                    deleteConfirmation = false;
                     mapLoader.accept(k);
                     rebuildList();
                 }
@@ -117,7 +118,7 @@ public class UIGRMMapInfos extends UIPanel {
             if (selectedOrder != order) {
                 if (selectedOrder != 0)
                     if (!operators.wouldRelocatingInOrderFail(selectedOrder, order + 1)) {
-                        elm = new UIAppendButton(">>", elm, new Runnable() {
+                        elm = new UIAppendButton(TXDB.get("Parent Here"), elm, new Runnable() {
                             @Override
                             public void run() {
                                 selectedOrder = operators.relocateInOrder(selectedOrder, order + 1);

@@ -7,9 +7,13 @@ package r48.map.mapinfos;
 import gabien.ui.IConsumer;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.dbs.FormatSyntax;
+import r48.dbs.TXDB;
 import r48.schema.util.SchemaPath;
 
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 /**
@@ -101,7 +105,40 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
 
     @Override
     public void complete() {
-        // need to update indent???
+        // Need to update indent...
+        getHashBID(0).getInstVarBySymbol("@indent").fixnumVal = 0;
+        LinkedList<Integer> intList = new LinkedList<Integer>(getHashKeys());
+        intList.sort(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer t0, Integer t1) {
+                t0 = getOrderOfMap(t0);
+                t1 = getOrderOfMap(t1);
+                if (t0 > t1)
+                    return 1;
+                if (t0 < t1)
+                    return -1;
+                return 0;
+            }
+        });
+        LinkedList<Integer> parentStack = new LinkedList<Integer>();
+        int lastOrder = 0;
+        for (final Integer k : intList) {
+            final RubyIO map = getHashBID(k);
+            final int order = getOrderOfMap(k);
+            if (lastOrder < order)
+                lastOrder = order;
+            final int parent = (int) map.getInstVarBySymbol("@parent_id").fixnumVal;
+            if (parent == 0) {
+                parentStack.clear();
+            } else {
+                if (parentStack.lastIndexOf(parent) != -1)
+                    while (parentStack.getLast() != parent)
+                        parentStack.removeLast();
+            }
+            parentStack.add(k);
+            map.getInstVarBySymbol("@indent").fixnumVal = parentStack.size();
+        }
+        // and done!
         SchemaPath fakePath = new SchemaPath(AppMain.schemas.getSDBEntry("File.RPG_RT.lmt"), mapTree, null);
         AppMain.objectDB.objectRootModified(mapTree, fakePath);
         modHandler.accept(fakePath);

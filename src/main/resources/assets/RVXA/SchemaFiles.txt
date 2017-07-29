@@ -165,8 +165,8 @@ C name Class.RPG::Item @id @name | Item #A: #B
 : RPG::MapInfo
 C name Class.RPG::MapInfo @order @name | MapInfo: #B (order #A)
 @name string
-@order int
-@parent_id int
+@order roint= 0
+@parent_id roint= 0
  These three mean nothing
 @expanded boolean
 @scroll_x int= 320

@@ -13,8 +13,8 @@ e mapinfo_type 1 map 2 area 0 root
 : RPG::MapInfo
 C name Class.RPG::MapInfo @name | MapInfo: #A
 @name string
-@parent_id map_id
-@indent int
+@parent_id roint= 0
+@indent roint= 0
 @type mapinfo_type
 @OFED_edit_pos_x int
 @OFED_edit_pos_y int
@@ -50,7 +50,7 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 
 : RPG::MapTree
 @map_infos subwindow hash int+0 subwindow RPG::MapInfo
-@map_order subwindow array 0 int+0
+@map_order subwindow array 0 roint= 0
 @active_node int+0
 @start subwindow[ Player/Vehicle Start Point ] RPG::Start
  Supplies defaults
