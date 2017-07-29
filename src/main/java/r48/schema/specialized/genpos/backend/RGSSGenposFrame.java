@@ -2,14 +2,10 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-package r48.schema.specialized.genpos;
+package r48.schema.specialized.genpos.backend;
 
 import gabien.IGrInDriver;
-import gabien.ui.IFunction;
-import gabien.ui.Rect;
-import gabien.ui.UIPanel;
-import r48.AppMain;
-import r48.ArrayUtils;
+import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
@@ -17,84 +13,41 @@ import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBindingSchemaElement;
-import r48.schema.util.ISchemaHost;
+import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.util.SchemaPath;
 
 /**
- * Animation Software For Serious Animation Purposes.
- * ...for stick figure animation. Ignore the 'RM'.
- * AAAA
- * --+-
- * BB|C
- * BB|C
- * A: timeframe
- * B: Frame Editor
- * C: Cell Editor
- * The 3-pane layout is controlled entirely from this class. Good luck.
- * Created on 2/17/17.
+ * This exists so that I can try and reuse RMGenposAnim code for the 2k3 animations,
+ *  while keeping this unreusable code here.
+ * Created on 29/07/17.
  */
-public class RMAnimRootPanel extends UIPanel implements IGenposFrame {
-    public RubyIO target;
-    public SchemaPath path;
-    public Runnable updateNotify;
-    public SpriteCache spriteCache = new SpriteCache();
-    public GenposFramePanelController framePanelController;
-    public UITimeframeControl timeframe;
-    public int frameIdx = 0;
+public class RGSSGenposFrame implements IGenposFrame {
+    public SpriteCache spriteCache;
 
     // used for indicator setup
     public boolean vxaAnim;
 
-    public RMAnimRootPanel(RubyIO t, SchemaPath basePath, ISchemaHost launcher, boolean vxaAnimation, Runnable runnable, String a, String b, int recommendedFramerate) {
-        vxaAnim = vxaAnimation;
-        target = t;
-        path = basePath;
+    public Runnable updateNotify;
+    public SchemaPath path;
+
+    // Must be initialized before this is used...
+    public ISupplier<RubyIO> frameSource;
+
+    public RGSSGenposFrame(SpriteCache sc, SchemaPath basePath, boolean vxaAnimation, Runnable runnable) {
         updateNotify = runnable;
-        spriteCache.target = target;
-        spriteCache.framesetALoc = a;
-        spriteCache.framesetBLoc = b;
-        // Stop animation elements escaping the window
-        useScissoring = true;
+        vxaAnim = vxaAnimation;
+        path = basePath;
 
-        framePanelController = new GenposFramePanelController(this, launcher);
-        timeframe = new UITimeframeControl(this, recommendedFramerate);
-
-        allElements.add(timeframe);
-        allElements.add(framePanelController.rootLayout);
-
-        // uhoh.
-        spriteCache.prepareFramesetCache();
-
-        frameChanged();
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        int th = timeframe.getBounds().height;
-        timeframe.setBounds(new Rect(0, 0, r.width, th));
-        framePanelController.rootLayout.setBounds(new Rect(0, th, r.width, r.height - th));
+        spriteCache = sc;
     }
 
     public RubyIO getFrame() {
-        RubyIO[] frames = target.getInstVarBySymbol("@frames").arrVal;
-        if (frames.length == 0) {
-            // Create a frame from scratch to avoid crashing
-            RubyIO copy = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Animation::Frame"), null);
-            frameIdx = -1;
-            insertFrame(copy);
-            frameChanged();
-            return copy;
-        }
-        if (frameIdx < 0) {
-            frameIdx = frames.length - 1;
-            frameChanged();
-        }
-        if (frameIdx >= frames.length) {
-            frameIdx = 0;
-            frameChanged();
-        }
-        return frames[frameIdx];
+        return frameSource.get();
+    }
+
+    private RubyTable getTable() {
+        RubyIO frameData = getFrame().getInstVarBySymbol("@cell_data");
+        return new RubyTable(frameData.userVal);
     }
 
     @Override
@@ -119,11 +72,6 @@ public class RMAnimRootPanel extends UIPanel implements IGenposFrame {
     @Override
     public boolean canAddRemoveCells() {
         return true;
-    }
-
-    private RubyTable getTable() {
-        RubyIO frameData = getFrame().getInstVarBySymbol("@cell_data");
-        return new RubyTable(frameData.userVal);
     }
 
     @Override
@@ -269,33 +217,5 @@ public class RMAnimRootPanel extends UIPanel implements IGenposFrame {
     @Override
     public IGrInDriver.IImage getBackground() {
         return null;
-    }
-
-    @Override
-    public String toString() {
-        return TXDB.get("Animation Editor");
-    }
-
-    public void insertFrame(RubyIO source) {
-        ArrayUtils.insertRioElement(target.getInstVarBySymbol("@frames"), source, frameIdx + 1);
-        updateNotify.run();
-        frameIdx++;
-        frameChanged();
-    }
-
-    public void deleteFrame() {
-        ArrayUtils.removeRioElement(target.getInstVarBySymbol("@frames"), frameIdx);
-        updateNotify.run();
-        frameIdx--;
-        frameChanged();
-    }
-
-    // This alerts everything to rebuild, but doesn't run the updateNotify.
-    // Use alone for things like advancing through frames.
-    public void frameChanged() {
-        // This does bounds checks
-        getFrame();
-        // Actually start alerting things
-        framePanelController.frameChanged();
     }
 }

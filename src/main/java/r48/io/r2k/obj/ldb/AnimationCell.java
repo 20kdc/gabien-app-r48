@@ -42,7 +42,7 @@ public class AnimationCell extends R2kObject {
 
     @Override
     public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::AnimationCell", true);
+        RubyIO rio = new RubyIO().setSymlike("RPG::Animation::Cell", true);
         asRIOISF(rio);
         return rio;
     }

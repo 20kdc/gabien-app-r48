@@ -5,17 +5,17 @@
 package r48.schema.specialized;
 
 import gabien.ui.*;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
-import r48.map.UIMapToolWrapper;
 import r48.schema.SchemaElement;
+import r48.schema.specialized.genpos.GenposAnimRootPanel;
 import r48.schema.specialized.genpos.GenposFramePanelController;
-import r48.schema.specialized.genpos.RMAnimRootPanel;
-import r48.schema.specialized.genpos.TroopGenposFrame;
+import r48.schema.specialized.genpos.backend.RGSSGenposFrame;
+import r48.schema.specialized.genpos.backend.RMGenposAnim;
+import r48.schema.specialized.genpos.backend.SpriteCache;
+import r48.schema.specialized.genpos.backend.TroopGenposFrame;
 import r48.schema.util.ISchemaHost;
-import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
 
 /**
@@ -41,12 +41,21 @@ public class GenposSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 if (genposType.equals("vxaAnimation") || genposType.equals("xpAnimation")) {
-                    final RMAnimRootPanel rmarp = new RMAnimRootPanel(target, path, launcher, genposType.equals("vxaAnimation"), new Runnable() {
+                    Runnable updater = new Runnable() {
                         @Override
                         public void run() {
                             path.changeOccurred(false);
                         }
-                    }, a, b, framerate);
+                    };
+                    final RGSSGenposFrame frame = new RGSSGenposFrame(new SpriteCache(target, a, b), path, genposType.equals("vxaAnimation"), updater);
+                    final RMGenposAnim anim = new RMGenposAnim(target, frame, updater);
+                    frame.frameSource = new ISupplier<RubyIO>() {
+                        @Override
+                        public RubyIO get() {
+                            return anim.getFrame();
+                        }
+                    };
+                    final GenposAnimRootPanel rmarp = new GenposAnimRootPanel(anim, launcher, framerate);
                     // Setup automatic-update safety net
                     safetyWrap(rmarp, target, new Runnable() {
                         @Override

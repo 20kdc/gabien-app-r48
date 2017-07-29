@@ -2,7 +2,7 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-package r48.schema.specialized.genpos;
+package r48.schema.specialized.genpos.backend;
 
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
@@ -15,6 +15,7 @@ import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntBooleanSchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.util.SchemaPath;
 
 import java.util.Map;

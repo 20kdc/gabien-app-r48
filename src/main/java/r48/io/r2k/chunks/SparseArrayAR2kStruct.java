@@ -10,10 +10,11 @@ import r48.RubyIO;
 import java.util.Map;
 
 /**
+ * NOTE: This uses nulls as padding, so it won't stuff things into index 0 when there shouldn't be anything there.
+ * Just a reminder to myself when looking at this again and probably worrying about the same thing.
  * Created on 01/06/17.
  */
 public class SparseArrayAR2kStruct<T extends IR2kStruct> extends SparseArrayR2kInterpretable<T> implements IR2kStruct {
-
     public SparseArrayAR2kStruct(ISupplier<T> call) {
         super(call);
     }

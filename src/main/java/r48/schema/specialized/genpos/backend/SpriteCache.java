@@ -2,7 +2,7 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
-package r48.schema.specialized.genpos;
+package r48.schema.specialized.genpos.backend;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
@@ -16,6 +16,13 @@ import r48.RubyIO;
 public class SpriteCache {
     public RubyIO target;
     public String framesetALoc, framesetBLoc;
+
+    public SpriteCache(RubyIO targ, String fal, String fbl) {
+        target = targ;
+        framesetALoc = fal;
+        framesetBLoc = fbl;
+        prepareFramesetCache();
+    }
     // 0-99: Set A 100-199: Set B
     public IGrInDriver.IImage[] framesetCacheA, framesetCacheB;
     public IGrInDriver.IImage[] framesetCacheAMirror, framesetCacheBMirror;

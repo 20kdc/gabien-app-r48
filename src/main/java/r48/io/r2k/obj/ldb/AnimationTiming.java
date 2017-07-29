@@ -38,7 +38,7 @@ public class AnimationTiming extends R2kObject {
 
     @Override
     public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::AnimationTiming", true);
+        RubyIO rio = new RubyIO().setSymlike("RPG::Animation::Timing", true);
         asRIOISF(rio);
         return rio;
     }

@@ -447,7 +447,7 @@ E rpg_state_pose Custom.No-1 100 none 0 idle 1 rightHand 2 leftHand 3 skillUse 4
 @msg_recovery string
  ---
 
-: RPG::AnimationTiming
+: RPG::Animation::Timing
 @frame int
 @sound RPG::Sound
 e rpg_animationtiming_flashscope 0 noFlash 1 target 2 screen
@@ -459,7 +459,7 @@ e rpg_animationtiming_flashscope 0 noFlash 1 target 2 screen
 e rpg_animationtiming_screenshake 0 noShake 1 target 2 screen
 @screen_shake rpg_animationtiming_screenshake
 
-: RPG::AnimationCell
+: RPG::Animation::Cell
 @visible boolean
 @cell_id int= 0
 @x int= 0
@@ -471,9 +471,8 @@ e rpg_animationtiming_screenshake 0 noShake 1 target 2 screen
 @tone_grey int= 100
 @transparency int= 0
 
-: RPG::AnimationFrame
- this apparently just does whatever, switch it for a hash
-@cells subwindow hash int+0 subwindow RPG::AnimationCell
+: RPG::Animation::Frame
+@cells subwindow arrayIx1 subwindow RPG::Animation::Cell
 
 e rpg_animation_scope 0 target 1 screen
 e rpg_animation_position 0 up 1 middle 2 down
@@ -485,9 +484,9 @@ C name Class.RPG::Animation @name | #A
 @unknown_03 int= -1
 @scope rpg_animation_scope
 @position rpg_animation_position
-@frames subwindow arrayIx1 subwindow RPG::AnimationFrame
+@frames subwindow arrayIx1 subwindow RPG::Animation::Frame
  yet another "aaaaaa why is this happening" fix
-@timings subwindow hash int+0 subwindow RPG::AnimationTiming
+@timings subwindow hash int+0 subwindow RPG::Animation::Timing
 
  ---
 

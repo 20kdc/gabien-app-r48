@@ -19,7 +19,7 @@ import r48.ui.UIAppendButton;
  * Created on 2/17/17.
  */
 public class UITimeframeControl extends UIPanel {
-    public RMAnimRootPanel rootPanel;
+    public GenposAnimRootPanel rootPanel;
     private double playTimer = 0;
     public int recommendedFramerate;
 
@@ -48,27 +48,27 @@ public class UITimeframeControl extends UIPanel {
     // The rest of the toolbar is constructed in the constructor
     public UIElement toolbar = tsController;
 
-    public UITimeframeControl(RMAnimRootPanel rp, int framerate) {
+    public UITimeframeControl(GenposAnimRootPanel rp, int framerate) {
         rootPanel = rp;
         recommendedFramerate = framerate;
         toolbar = new UIAppendButton("<", toolbar, new Runnable() {
             @Override
             public void run() {
-                rootPanel.frameIdx--;
+                rootPanel.target.setFrameIdx(rootPanel.target.getFrameIdx() - 1);
                 rootPanel.frameChanged();
             }
         }, FontSizes.rmaTimeframeFontSize);
         toolbar = new UIAppendButton(">", toolbar, new Runnable() {
             @Override
             public void run() {
-                rootPanel.frameIdx++;
+                rootPanel.target.setFrameIdx(rootPanel.target.getFrameIdx() + 1);
                 rootPanel.frameChanged();
             }
         }, FontSizes.rmaTimeframeFontSize);
         toolbar = new UIAppendButton("C", toolbar, new Runnable() {
             @Override
             public void run() {
-                AppMain.theClipboard = new RubyIO().setDeepClone(rootPanel.getFrame());
+                AppMain.theClipboard = new RubyIO().setDeepClone(rootPanel.target.getFrame());
             }
         }, FontSizes.rmaTimeframeFontSize);
         toolbar = new UIAppendButton("P", toolbar, new Runnable() {
@@ -76,8 +76,8 @@ public class UITimeframeControl extends UIPanel {
             public void run() {
                 if (AppMain.theClipboard.type == 'o') {
                     if (AppMain.theClipboard.symVal.equals("RPG::Animation::Frame")) {
-                        rootPanel.getFrame().setDeepClone(AppMain.theClipboard);
-                        rootPanel.updateNotify.run();
+                        rootPanel.target.getFrame().setDeepClone(AppMain.theClipboard);
+                        rootPanel.target.modifiedFrame();
                         rootPanel.frameChanged();
                     }
                 }
@@ -86,13 +86,15 @@ public class UITimeframeControl extends UIPanel {
         toolbar = new UIAppendButton("+", toolbar, new Runnable() {
             @Override
             public void run() {
-                rootPanel.insertFrame(new RubyIO().setDeepClone(rootPanel.getFrame()));
+                rootPanel.target.insertFrame(new RubyIO().setDeepClone(rootPanel.target.getFrame()));
+                rootPanel.frameChanged();
             }
         }, FontSizes.rmaTimeframeFontSize);
         toolbar = new UIAppendButton("-", toolbar, new Runnable() {
             @Override
             public void run() {
-                rootPanel.deleteFrame();
+                rootPanel.target.deleteFrame();
+                rootPanel.frameChanged();
             }
         }, FontSizes.rmaTimeframeFontSize);
 
@@ -117,13 +119,13 @@ public class UITimeframeControl extends UIPanel {
                 frameTime *= 3;
             while (playTimer >= frameTime) {
                 playTimer -= frameTime;
-                rootPanel.frameIdx++;
+                rootPanel.target.setFrameIdx(rootPanel.target.getFrameIdx() + 1);
                 rootPanel.frameChanged();
             }
         } else {
             playTimer = 0;
         }
-        currentFrame.Text = (rootPanel.frameIdx + 1) + " / " + rootPanel.target.getInstVarBySymbol("@frames").arrVal.length;
+        currentFrame.Text = (rootPanel.target.getFrameIdx() + 1) + " / " + rootPanel.target.getFrameCount();
         super.updateAndRender(ox, oy, deltaTime, select, igd);
     }
 }
