@@ -6,6 +6,7 @@ package r48.schema.specialized.genpos.backend;
 
 import gabien.IGrInDriver;
 import gabien.ui.ISupplier;
+import r48.AppMain;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
@@ -174,6 +175,14 @@ public class RGSSGenposFrame implements IGenposFrame {
                 TXDB.get("opacity"),
                 TXDB.get("blendType")
         };
+    }
+
+    @Override
+    public void drawCellSelectionIndicator(int i, int opx, int opy, IGrInDriver igd) {
+        RubyTable rt = getTable();
+        int x = (int) rt.getTiletype(i, 1, 0);
+        int y = (int) rt.getTiletype(i, 2, 0);
+        igd.blitImage(36, 0, 32, 32, opx + x - 16, opy + y - 16, AppMain.layerTabs);
     }
 
     @Override

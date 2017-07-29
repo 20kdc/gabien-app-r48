@@ -15,20 +15,23 @@ import r48.RubyIO;
  */
 public class SpriteCache {
     public RubyIO target;
-    public String framesetALoc, framesetBLoc;
+    public String framesetALoc, framesetBLoc, filePrefix;
+    public int spriteSize;
 
-    public SpriteCache(RubyIO targ, String fal, String fbl) {
+    public SpriteCache(RubyIO targ, String fal, String fbl, int ss, String prefix) {
         target = targ;
         framesetALoc = fal;
         framesetBLoc = fbl;
+        filePrefix = prefix;
+        spriteSize = ss;
         prepareFramesetCache();
     }
-    // 0-99: Set A 100-199: Set B
+
     public IGrInDriver.IImage[] framesetCacheA, framesetCacheB;
     public IGrInDriver.IImage[] framesetCacheAMirror, framesetCacheBMirror;
 
     public int getScaledImageIconSize(int scale) {
-        return (int) (192 * (scale / 100.0d));
+        return (int) (spriteSize * (scale / 100.0d));
     }
 
     // Prepares a bunch of generated images (because IGrInDriver already has 2 special methods for this package only, one more and it'll explode)
@@ -40,11 +43,11 @@ public class SpriteCache {
         framesetCacheAMirror = new IGrInDriver.IImage[16];
         framesetCacheBMirror = new IGrInDriver.IImage[16];
         if (nameA.length() != 0) {
-            framesetCacheA[15] = AppMain.stuffRendererIndependent.imageLoader.getImage("Animations/" + nameA, false);
+            framesetCacheA[15] = AppMain.stuffRendererIndependent.imageLoader.getImage(filePrefix + nameA, false);
             framesetCacheAMirror[15] = mirrorFrameset(framesetCacheA[15]);
         }
         if (nameB.length() != 0) {
-            framesetCacheB[15] = AppMain.stuffRendererIndependent.imageLoader.getImage("Animations/" + nameB, false);
+            framesetCacheB[15] = AppMain.stuffRendererIndependent.imageLoader.getImage(filePrefix + nameB, false);
             framesetCacheBMirror[15] = mirrorFrameset(framesetCacheB[15]);
         }
     }
@@ -57,6 +60,10 @@ public class SpriteCache {
         if (source[15] == null)
             return null;
         opacity >>= 4;
+        if (opacity < 0)
+            opacity = 0;
+        if (opacity > 15)
+            opacity = 15;
         if (source[opacity] == null)
             source[opacity] = generateOpacityImage(source[15], (opacity << 4) + 0xF);
         return source[opacity];
@@ -83,24 +90,24 @@ public class SpriteCache {
             return null;
         int[] originalData = framesetCache.getPixels();
         int originalWidth = framesetCache.getWidth();
-        int[] cache = new int[192 * 192 * 5 * 6];
+        int[] cache = new int[spriteSize * spriteSize * 5 * 6];
         for (int y = 0; y < 6; y++)
             for (int x = 0; x < 5; x++)
-                installMirror(cache, (x * 192) + (192 * 5 * (y * 192)), 192 * 5, originalData, (x * 192) + (originalWidth * (y * 192)), originalWidth);
-        return GaBIEn.createImage(cache, 192 * 5, 192 * 6);
+                installMirror(cache, (x * spriteSize) + (spriteSize * 5 * (y * spriteSize)), spriteSize * 5, originalData, (x * spriteSize) + (originalWidth * (y * spriteSize)), originalWidth);
+        return GaBIEn.createImage(cache, spriteSize * 5, spriteSize * 6);
     }
 
     private void installMirror(int[] cache, int base, int stride, int[] origData, int baseO, int strideO) {
-        for (int i = 0; i < 192; i++)
+        for (int i = 0; i < spriteSize; i++)
             installMirrorRow(cache, base + (stride * i), origData, baseO + (strideO * i));
     }
 
     private void installMirrorRow(int[] cache, int i, int[] origData, int i1) {
-        for (int j = 0; j < 192; j++) {
+        for (int j = 0; j < spriteSize; j++) {
             int tx = i + j;
             if (tx >= cache.length)
                 continue;
-            int tx2 = i1 + (191 - j);
+            int tx2 = i1 + ((spriteSize - 1) - j);
             if (tx2 >= origData.length)
                 continue;
             cache[tx] = origData[tx2];

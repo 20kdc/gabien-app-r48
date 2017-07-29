@@ -11,10 +11,7 @@ import r48.dbs.TXDB;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.genpos.GenposAnimRootPanel;
 import r48.schema.specialized.genpos.GenposFramePanelController;
-import r48.schema.specialized.genpos.backend.RGSSGenposFrame;
-import r48.schema.specialized.genpos.backend.RMGenposAnim;
-import r48.schema.specialized.genpos.backend.SpriteCache;
-import r48.schema.specialized.genpos.backend.TroopGenposFrame;
+import r48.schema.specialized.genpos.backend.*;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -47,8 +44,32 @@ public class GenposSchemaElement extends SchemaElement {
                             path.changeOccurred(false);
                         }
                     };
-                    final RGSSGenposFrame frame = new RGSSGenposFrame(new SpriteCache(target, a, b), path, genposType.equals("vxaAnimation"), updater);
-                    final RMGenposAnim anim = new RMGenposAnim(target, frame, updater);
+                    final RGSSGenposFrame frame = new RGSSGenposFrame(new SpriteCache(target, a, b, 192, "Animations/"), path, genposType.equals("vxaAnimation"), updater);
+                    final RMGenposAnim anim = new RMGenposAnim(target, frame, updater, false);
+                    frame.frameSource = new ISupplier<RubyIO>() {
+                        @Override
+                        public RubyIO get() {
+                            return anim.getFrame();
+                        }
+                    };
+                    final GenposAnimRootPanel rmarp = new GenposAnimRootPanel(anim, launcher, framerate);
+                    // Setup automatic-update safety net
+                    safetyWrap(rmarp, target, new Runnable() {
+                        @Override
+                        public void run() {
+                            rmarp.frameChanged();
+                        }
+                    }, launcher, path);
+                }
+                if (genposType.equals("r2kAnimation")) {
+                    Runnable updater = new Runnable() {
+                        @Override
+                        public void run() {
+                            path.changeOccurred(false);
+                        }
+                    };
+                    final R2kGenposFrame frame = new R2kGenposFrame(new SpriteCache(target, a, b, 96, "Battle/"), path, updater);
+                    final RMGenposAnim anim = new RMGenposAnim(target, frame, updater, true);
                     frame.frameSource = new ISupplier<RubyIO>() {
                         @Override
                         public RubyIO get() {

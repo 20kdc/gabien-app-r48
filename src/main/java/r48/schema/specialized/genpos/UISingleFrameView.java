@@ -54,6 +54,9 @@ public class UISingleFrameView extends UIElement {
             igd.clearRect(192, 0, 192, (opx + x) - 8, (opy + y) - 1, 16, 2);
             igd.clearRect(192, 0, 192, (opx + x) - 1, (opy + y) - 8, 2, 16);
         }
+        if (basePanelAccess.cellSelection.cellNumber != -1)
+            if (basePanelAccess.frame.getCellCount() > basePanelAccess.cellSelection.cellNumber)
+                basePanelAccess.frame.drawCellSelectionIndicator(basePanelAccess.cellSelection.cellNumber, opx, opy, igd);
         int cellCount = basePanelAccess.frame.getCellCount();
         for (int i = 0; i < cellCount; i++)
             basePanelAccess.frame.drawCell(i, opx, opy, igd);

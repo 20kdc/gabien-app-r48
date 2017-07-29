@@ -9,6 +9,7 @@ import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.ArrayUtils;
 import r48.RubyIO;
+import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.map.imaging.IImageLoader;
 import r48.schema.BooleanSchemaElement;
@@ -24,6 +25,18 @@ import java.util.Map;
  * Created on 28/07/17.
  */
 public class TroopGenposFrame implements IGenposFrame {
+
+    public static final int[] gameBattleDisplay = new int[] {
+                // 320x160 (RPG Maker 2000)
+                0, 0,
+                320, 0,
+                0, 160,
+                320, 160,
+                // 2k3?
+                0, 240,
+                320, 240
+    };
+
     public IGrInDriver.IImage battleBkg;
     public RubyIO troop;
     public SchemaPath troopPath;
@@ -51,16 +64,7 @@ public class TroopGenposFrame implements IGenposFrame {
 
     @Override
     public int[] getIndicators() {
-        return new int[] {
-                // 320x160 (RPG Maker 2000)
-                0, 0,
-                320, 0,
-                0, 160,
-                320, 160,
-                // 2k3?
-                0, 240,
-                320, 240
-        };
+        return gameBattleDisplay;
     }
 
     @Override
@@ -128,6 +132,13 @@ public class TroopGenposFrame implements IGenposFrame {
                 TXDB.get("y"),
                 TXDB.get("invisible")
         };
+    }
+
+    @Override
+    public void drawCellSelectionIndicator(int i, int opx, int opy, IGrInDriver igd) {
+        int x = (int) getCellProp(i, 1).targetElement.fixnumVal;
+        int y = (int) getCellProp(i, 2).targetElement.fixnumVal;
+        igd.blitImage(36, 0, 32, 32, opx + x - 16, opy + y - 16, AppMain.layerTabs);
     }
 
     @Override

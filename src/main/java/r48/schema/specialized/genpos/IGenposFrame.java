@@ -33,6 +33,8 @@ public interface IGenposFrame {
 
     String[] getCellProps();
 
+    // Use the generic igd.blitImage(36, 0, 32, 32, ox + px, oy + py, AppMain.layerTabs);
+    void drawCellSelectionIndicator(int i, int opx, int opy, IGrInDriver igd);
     void drawCell(int i, int opx, int opy, IGrInDriver igd);
 
     IGrInDriver.IImage getBackground();

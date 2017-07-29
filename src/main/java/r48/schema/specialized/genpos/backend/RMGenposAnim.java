@@ -45,29 +45,39 @@ public class RMGenposAnim implements IGenposAnim {
     public IGenposFrame perFrame;
     public Runnable updateNotify;
     public int frameIdx = 0;
+    public boolean ix1 = false;
 
-    public RMGenposAnim(RubyIO t, IGenposFrame frameHandler, Runnable runnable) {
+    public RMGenposAnim(RubyIO t, IGenposFrame frameHandler, Runnable runnable, boolean index) {
         perFrame = frameHandler;
         target = t;
         updateNotify = runnable;
+        ix1 = index;
 
         setFrameIdx(getFrameIdx());
     }
 
     public RubyIO getFrame() {
         RubyIO[] frames = target.getInstVarBySymbol("@frames").arrVal;
-        if (frames.length == 0) {
+        int min = 0;
+        if (ix1)
+            min = 1;
+        if (frames.length <= min) {
+            // Add nulls if necessary
+            while (frames.length < min) {
+                ArrayUtils.insertRioElement(target.getInstVarBySymbol("@frames"), new RubyIO().setNull(), 0);
+                frames = target.getInstVarBySymbol("@frames").arrVal;
+            }
             // Create a frame from scratch to avoid crashing
             RubyIO copy = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Animation::Frame"), null);
-            frameIdx = -1;
+            frameIdx = min - 1;
             insertFrame(copy);
             return copy;
         }
         if (frameIdx < 0)
-            frameIdx = frames.length - 1;
-        if (frameIdx >= frames.length)
+            frameIdx = frames.length - (1 + min);
+        if (frameIdx >= (frames.length - min))
             frameIdx = 0;
-        return frames[frameIdx];
+        return frames[frameIdx + min];
     }
 
     @Override
@@ -82,6 +92,7 @@ public class RMGenposAnim implements IGenposAnim {
         ArrayUtils.removeRioElement(target.getInstVarBySymbol("@frames"), frameIdx);
         updateNotify.run();
         frameIdx--;
+        getFrame();
     }
 
     @Override
@@ -107,6 +118,9 @@ public class RMGenposAnim implements IGenposAnim {
 
     @Override
     public int getFrameCount() {
-        return target.getInstVarBySymbol("@frames").arrVal.length;
+        int min = 0;
+        if (ix1)
+            min = 1;
+        return target.getInstVarBySymbol("@frames").arrVal.length - min;
     }
 }
