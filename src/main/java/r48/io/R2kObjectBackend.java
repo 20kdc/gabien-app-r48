@@ -26,6 +26,7 @@ public class R2kObjectBackend implements IObjectBackend {
 
     @Override
     public RubyIO loadObjectFromFile(String filename) {
+        filename = root + filename;
         String str = Application.autoDetectWindows(filename);
         if (filename.endsWith(".lmu")) {
             try {
@@ -71,6 +72,7 @@ public class R2kObjectBackend implements IObjectBackend {
 
     @Override
     public void saveObjectToFile(String filename, RubyIO object) throws IOException {
+        filename = root + filename;
         String str = Application.autoDetectWindows(filename);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // Note the write occurs before the F.O.S is created for safety
