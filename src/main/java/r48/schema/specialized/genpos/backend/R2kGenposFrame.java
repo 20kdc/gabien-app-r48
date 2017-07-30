@@ -11,10 +11,10 @@ import gabien.ui.Rect;
 import r48.AppMain;
 import r48.ArrayUtils;
 import r48.RubyIO;
+import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
-import r48.schema.SubwindowSchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
 import r48.schema.specialized.genpos.IGenposFrame;
@@ -86,15 +86,15 @@ public class R2kGenposFrame implements IGenposFrame {
         if (i == 0)
             se = new BooleanSchemaElement(false);
         if (i == 1)
-            se = new SpritesheetCoreSchemaElement("#A", 0, new IFunction<RubyIO, ISpritesheetProvider>() {
+            se = new SpritesheetCoreSchemaElement("#A", 0, new IFunction<RubyIO, RubyIO>() {
+                @Override
+                public RubyIO apply(RubyIO rubyIO) {
+                    return rubyIO;
+                }
+            }, new IFunction<RubyIO, ISpritesheetProvider>() {
                 @Override
                 public ISpritesheetProvider apply(final RubyIO rubyIO) {
                     return new ISpritesheetProvider() {
-                        @Override
-                        public RubyIO numberHolder() {
-                            return rubyIO;
-                        }
-
                         @Override
                         public int itemWidth() {
                             return 96;

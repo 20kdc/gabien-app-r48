@@ -27,18 +27,21 @@ import java.util.HashMap;
 public class SpritesheetCoreSchemaElement extends r48.schema.SchemaElement {
     public String text;
     public int defaultVal;
+
+    public IFunction<RubyIO, RubyIO> numberProvider;
     public IFunction<RubyIO, ISpritesheetProvider> provider;
 
-    public SpritesheetCoreSchemaElement(String propTranslated, int def, IFunction<RubyIO, ISpritesheetProvider> core) {
+    public SpritesheetCoreSchemaElement(String propTranslated, int def, IFunction<RubyIO, RubyIO> nprov, IFunction<RubyIO, ISpritesheetProvider> core) {
         text = propTranslated;
         defaultVal = def;
+        numberProvider = nprov;
         provider = core;
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final ISpritesheetProvider localProvider = provider.apply(target);
-        final RubyIO actTarg = localProvider.numberHolder();
+        final RubyIO actTarg = numberProvider.apply(target);
         return new UITextButton(FontSizes.schemaButtonTextHeight, FormatSyntax.formatExtended(text, actTarg), new Runnable() {
             @Override
             public void run() {
@@ -61,8 +64,7 @@ public class SpritesheetCoreSchemaElement extends r48.schema.SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        ISpritesheetProvider localProvider = provider.apply(target);
-        RubyIO actTarg = localProvider.numberHolder();
+        RubyIO actTarg = numberProvider.apply(target);
         if (IntegerSchemaElement.ensureType(actTarg, 'i', setDefault)) {
             actTarg.fixnumVal = defaultVal;
             path.changeOccurred(true);

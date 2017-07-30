@@ -9,6 +9,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.dbs.*;
+import r48.imagefx.ImageFXCache;
 import r48.io.IkaObjectBackend;
 import r48.io.R2kObjectBackend;
 import r48.io.R48ObjectBackend;
@@ -87,6 +88,7 @@ public class AppMain {
     // Images
     public static IGrInDriver.IImage layerTabs = GaBIEn.getImageCK("layertab.png", 0, 0, 0);
     public static IGrInDriver.IImage noMap = GaBIEn.getImageCK("nomad.png", 0, 0, 0);
+    public static ImageFXCache imageFXCache = null;
 
     public static IConsumer<Double> initializeAndRun(final String rp, final String gamepak, final IConsumer<UIElement> uiTicker) throws IOException {
         rootPath = rp;
@@ -129,6 +131,9 @@ public class AppMain {
         schemas.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
         schemas.updateDictionaries(null);
         schemas.confirmAllExpectationsMet();
+
+        // Initialize imageFX before doing anything graphical
+        imageFXCache = new ImageFXCache();
 
         // initialize UI
         final UIWindowView rootView = new UIWindowView() {
@@ -339,6 +344,7 @@ public class AppMain {
             mapContext.freeOsbResources();
         mapContext = null;
         theClipboard = null;
+        imageFXCache = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
     }
