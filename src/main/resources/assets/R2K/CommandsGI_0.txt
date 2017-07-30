@@ -318,7 +318,7 @@ p transparent int_boolean
 d Change the face of a party member.
 p faceset f_faceset_name
 p actor actor_id
-C spritesheet 0 CharSet/
+C spritesheet 0 FaceSet/
 p index int
 
 10650: Change Vehicle Appearance

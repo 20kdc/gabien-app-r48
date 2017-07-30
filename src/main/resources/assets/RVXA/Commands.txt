@@ -13,6 +13,7 @@ L
 101:@@Start Text {A:w/face #A:#B ({C=1=no }bkg, #D)|(c.401/102/103/104)}
 d Begins a segment of text.
 p faces string
+C spritesheet 0 Faces/
 p faceIndex int
 p backInvisible int_boolean
 p position change_text_options_position

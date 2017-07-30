@@ -31,13 +31,11 @@ C name Class.RPG::Actor @id @name | Actor #A: #B
  (Could actually be a stats table? IDK.)
 +table @parameters . . 6 100 1
 @final_level int= 1
-@battler_name string
+@battler_name f_battler_name
 @battler_hue int
 @exp_inflation int= 30
 @initial_level int= 1
- If you don't know why I set the default to this, shame on you.
- (If you do know, shame on me.)
-@character_name string= JeremiahOrange
+@character_name f_char_name
 @character_hue int
 
 > File.Actors arrayIx1 subwindow RPG::Actor

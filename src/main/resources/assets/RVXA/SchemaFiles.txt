@@ -23,6 +23,7 @@ C name Class.RPG::Actor @id @name | Actor #A: #B
 @character_index int
 @face_name string
 @face_index int
++spriteSelector @face_index @face_name Faces/
 @class_id class_id
 @initial_level int
 @max_level int
