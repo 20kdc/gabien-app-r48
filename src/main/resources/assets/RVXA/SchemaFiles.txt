@@ -19,9 +19,10 @@ C name Class.RPG::Actor @id @name | Actor #A: #B
 @note stringBlobEditor
 @description stringBlobEditor
 @nickname string
-@character_name string
+@character_name f_char_name
 @character_index int
-@face_name string
++spriteSelector @character_index @character_name Characters/
+@face_name f_face_name
 @face_index int
 +spriteSelector @face_index @face_name Faces/
 @class_id class_id
@@ -247,8 +248,9 @@ C name Class.RPG::State @id @name | State #A: #B
 @start_x int
 @start_y int
 @start_map_id map_id
-@character_name string
+@character_name f_char_name
 @character_index int
++spriteSelector @character_index @character_name Characters/
 
 .RPG::System.sounds
 +subwindow array 24 RPG::SE

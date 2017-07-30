@@ -13,6 +13,7 @@ d internal_switchDictionary RPG_RT.ldb @switches
 D internal_tilesetDictionary RPG_RT.ldb@tilesets 1 @name
 D internal_terrainDictionary RPG_RT.ldb@terrains 1 @name
 D internal_itemDictionary RPG_RT.ldb@items 1 @name
+D internal_troopDictionary RPG_RT.ldb@troops 1 @name
 D internal_skillDictionary RPG_RT.ldb@skills 1 @name
 D internal_stateDictionary RPG_RT.ldb@states 1 @name
 D internal_cevDictionary RPG_RT.ldb@common_events 1 @name
@@ -39,7 +40,7 @@ D internal_battlecommandDictionary RPG_RT.ldb@battle_commands_2k3@commands 0 @na
 > f_battleback_name { string fileSelector Backdrop/ }
 > f_monster_name { string fileSelector Monster/ }
 
-C spritesheet[ Select character index... ] CharSet/ 72 128 4 24 64 24 32 0
+C spritesheet[ Select character index... ] CharSet/ r2kCharacter
 C spritesheet[ Select face index... ] FaceSet/ 48 48 4 0 0 48 48 0
 
 > var_id internal_variableDictionary
@@ -52,7 +53,7 @@ M internal_itemDictionary item_or_none_id__ item_or_none_id
 > skill_id internal_skillDictionary
 > state_id internal_stateDictionary
 > map_id internal_mapDictionary
-> troop_id int
+> troop_id internal_troopDictionary
  not to be confused with an enemy within a troop
 > enemy_id internal_enemyDictionary
 > tileset_id internal_tilesetDictionary

@@ -12,7 +12,7 @@ L
 
 101:@@Start Text {A:w/face #A:#B ({C=1=no }bkg, #D)|(c.401/102/103/104)}
 d Begins a segment of text.
-p faces string
+p faceName f_face_name
 C spritesheet 0 Faces/
 p faceIndex int
 p backInvisible int_boolean
@@ -330,7 +330,7 @@ p time int
 231: Set Picture$!
 d Create and show a picture on the screen.
 p id int
-p image string
+p image f_picture_name
 p centred int_boolean
 p useVars int_boolean
 P 3 xVar var_id
@@ -436,7 +436,7 @@ p back2 string
 
 284: Switch Parallax!
 d Change the parallax settings.
-p parallax string
+p parallax f_parallax_name
 p loop_x boolean
 p loop_y boolean
 p sx int
@@ -602,15 +602,18 @@ p class class_id
 322: Change Actor$ Sprites
 d Change the sprites used by a party member.
 p actor actor_id
-p charName string
+p charName f_char_name
+C spritesheet 1 Characters/
 p charIdx int
-p faceName string
+p faceName f_face_name
+C spritesheet 3 Faces/
 p faceIdx int
 
 323: Change Vehicle$ Graphic
 d Change the sprites used by a vehicle.
 p vehicle vehicle_id
-p charName string
+p charName f_char_name
+C spritesheet 1 Characters/
 p charIdx int
 
 324: Change$ Nickname!

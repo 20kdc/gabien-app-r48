@@ -116,7 +116,8 @@ d ...
 
 41: Set graphic!$
 d Change the sprites of the character.
-p characterName string
+p characterName f_char_name
+C spritesheet 0 Characters/
 p characterIndex int
 
 42: Change Opacity!

@@ -21,8 +21,9 @@ i RCOM/SchemaScript.txt
 @pattern int= 1
 @tile_id int= 0
 @direction direction
-@character_name string
+@character_name f_char_name
 @character_index int
++spriteSelector @character_index @character_name Characters/
 +internal_EPGD
 
 e event_trigger 0 onInteract 1 onPlayerWalkAgainst 2 onEventWalkAgainst 3 autorun 4 parallel
