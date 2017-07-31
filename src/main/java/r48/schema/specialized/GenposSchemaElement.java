@@ -23,13 +23,15 @@ import r48.schema.util.SchemaPath;
  * Created on 2/17/17. "General Positioning" refactor started on July 28th, 2017.
  */
 public class GenposSchemaElement extends SchemaElement {
-    private String genposType, a, b;
+    private String genposType, a1, a2, b1, b2;
     private int framerate;
 
-    public GenposSchemaElement(String type, String arg, String arg1, int fps) {
+    public GenposSchemaElement(String type, String arg, String arg1, String arg2, String arg3, int fps) {
         genposType = type;
-        a = arg;
-        b = arg1;
+        a1 = arg;
+        a2 = arg1;
+        b1 = arg2;
+        b2 = arg3;
         framerate = fps;
     }
 
@@ -48,7 +50,7 @@ public class GenposSchemaElement extends SchemaElement {
                             path.changeOccurred(false);
                         }
                     };
-                    final RGSSGenposFrame frame = new RGSSGenposFrame(new SpriteCache(target, a, b, 192, "Animations/"), path, genposType.equals("vxaAnimation"), updater);
+                    final RGSSGenposFrame frame = new RGSSGenposFrame(new SpriteCache(target, a1, a2, b1, b2, 192, "Animations/"), path, genposType.equals("vxaAnimation"), updater);
                     final RMGenposAnim anim = new RMGenposAnim(target, frame, updater, false);
                     frame.frameSource = new ISupplier<RubyIO>() {
                         @Override
@@ -71,7 +73,7 @@ public class GenposSchemaElement extends SchemaElement {
                             path.changeOccurred(false);
                         }
                     };
-                    final R2kGenposFrame frame = new R2kGenposFrame(new SpriteCache(target, a, b, 96, "Battle/"), path, updater);
+                    final R2kGenposFrame frame = new R2kGenposFrame(new SpriteCache(target, a1, null, null, null, 96, "Battle/"), path, updater);
                     final RMGenposAnim anim = new RMGenposAnim(target, frame, updater, true);
                     frame.frameSource = new ISupplier<RubyIO>() {
                         @Override

@@ -21,13 +21,15 @@ import java.util.LinkedList;
  */
 public class SpriteCache {
     public RubyIO target;
-    public String framesetALoc, framesetBLoc, filePrefix;
+    public String framesetALoc, framesetAHue, framesetBLoc, framesetBHue, filePrefix;
     public int spriteSize;
 
-    public SpriteCache(RubyIO targ, String fal, String fbl, int ss, String prefix) {
+    public SpriteCache(RubyIO targ, String fal, String fah, String fbl, String fbh, int ss, String prefix) {
         target = targ;
         framesetALoc = fal;
         framesetBLoc = fbl;
+        framesetAHue = fah;
+        framesetBHue = fbh;
         filePrefix = prefix;
         spriteSize = ss;
         prepareFramesetCache();
@@ -39,22 +41,28 @@ public class SpriteCache {
         return (int) (spriteSize * (scale / 100.0d));
     }
 
-    // Prepares a bunch of generated images (because IGrInDriver already has 2 special methods for this package only, one more and it'll explode)
+    // Prepares the frameset images.
     public void prepareFramesetCache() {
-        String nameA = target.getInstVarBySymbol(framesetALoc).decString();
-        String nameB = target.getInstVarBySymbol(framesetBLoc).decString();
-        framesetCacheA = null;
-        framesetCacheB = null;
-        if (nameA.length() != 0)
-            framesetCacheA = AppMain.stuffRendererIndependent.imageLoader.getImage(filePrefix + nameA, false);
-        if (nameB.length() != 0)
-            framesetCacheB = AppMain.stuffRendererIndependent.imageLoader.getImage(filePrefix + nameB, false);
+        framesetCacheA = GaBIEn.getErrorImage();
+        if (framesetALoc != null) {
+            String nameA = target.getInstVarBySymbol(framesetALoc).decString();
+            if (nameA.length() != 0)
+                framesetCacheA = AppMain.stuffRendererIndependent.imageLoader.getImage(filePrefix + nameA, false);
+            if (framesetAHue != null)
+                framesetCacheA = AppMain.imageFXCache.process(framesetCacheA, new HueShiftImageEffect((int) target.getInstVarBySymbol(framesetAHue).fixnumVal));
+        }
+        framesetCacheB = GaBIEn.getErrorImage();
+        if (framesetBLoc != null) {
+            String nameB = target.getInstVarBySymbol(framesetBLoc).decString();
+            if (nameB.length() != 0)
+                framesetCacheB = AppMain.stuffRendererIndependent.imageLoader.getImage(filePrefix + nameB, false);
+            if (framesetBHue != null)
+                framesetCacheB = AppMain.imageFXCache.process(framesetCacheB, new HueShiftImageEffect((int) target.getInstVarBySymbol(framesetBHue).fixnumVal));
+        }
     }
 
-    public IGrInDriver.IImage getFramesetCache(boolean b, boolean mirror, int opacity, int hue) {
+    public IGrInDriver.IImage getFramesetCache(boolean b, boolean mirror, int opacity) {
         LinkedList<IImageEffect> effectList = new LinkedList<IImageEffect>();
-        if (hue != 0)
-            effectList.add(new HueShiftImageEffect(hue));
         if (mirror)
             effectList.add(new MirrorSubspritesImageEffect(spriteSize, 5, 6));
         if (opacity != 255)

@@ -206,9 +206,9 @@ public class RGSSGenposFrame implements IGenposFrame {
         IGrInDriver.IImage scaleImage;
         if (cell >= 100) {
             cell -= 100;
-            scaleImage = spriteCache.getFramesetCache(true, mirror, opacity, 0);
+            scaleImage = spriteCache.getFramesetCache(true, mirror, opacity);
         } else {
-            scaleImage = spriteCache.getFramesetCache(false, mirror, opacity, 0);
+            scaleImage = spriteCache.getFramesetCache(false, mirror, opacity);
         }
         int angle = rt.getTiletype(i, 4, 0);
         int scale = rt.getTiletype(i, 3, 0);
@@ -218,12 +218,10 @@ public class RGSSGenposFrame implements IGenposFrame {
         int cellX = (cell % 5) * 192;
         int cellY = (cell / 5) * 192;
         // try to avoid using rotated images
-        if (scaleImage != null) {
-            if ((angle % 360) == 0) {
-                igd.blitScaledImage(cellX, cellY, 192, 192, opx + ofx, opy + ofy, ts, ts, scaleImage);
-            } else {
-                igd.blitRotatedScaledImage(cellX, cellY, 192, 192, opx + ofx, opy + ofy, ts, ts, angle, scaleImage);
-            }
+        if ((angle % 360) == 0) {
+            igd.blitScaledImage(cellX, cellY, 192, 192, opx + ofx, opy + ofy, ts, ts, scaleImage);
+        } else {
+            igd.blitRotatedScaledImage(cellX, cellY, 192, 192, opx + ofx, opy + ofy, ts, ts, angle, scaleImage);
         }
     }
 

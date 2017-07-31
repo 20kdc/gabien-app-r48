@@ -332,7 +332,7 @@ C name Class.RPG::Troop @name | #A
 @pages subwindow arrayIx1 subwindow RPG::Troop::Page
 @auto_position boolean
 @randomized_memberset_2k3 boolean
-C magicGenpos r2kTroop . . 0
+C magicGenpos r2kTroop . . . . 0
 
  ---
 
@@ -489,7 +489,7 @@ C name Class.RPG::Animation @name | #A
 @frames subwindow arrayIx1 subwindow RPG::Animation::Frame
  yet another "aaaaaa why is this happening" fix
 @timings subwindow hash int+0 subwindow RPG::Animation::Timing
-C magicGenpos r2kAnimation @animation_name @animation_name 30
+C magicGenpos r2kAnimation @animation_name . . . 30
 
  ---
 

@@ -60,8 +60,11 @@ public class HueShiftImageEffect implements IImageEffect {
     private int[] sipMatrix(int[] baseA, int[] baseB, double v) {
         // Sine interpolate
         //int a = clamp((int) (((Math.cos(v * Math.PI) + 1.0d) / 2.0d) * 255));
+        // Square interpolate
+        double v2 = -((v - 0.5d) * 2);
+        int a = clamp((int) ((((v2 * Math.abs(v2)) + 1.0d) / 2.0d) * 255));
         // Linear interpolate
-        int a = clamp((int) ((1.0d - v) * 255));
+        //int a = clamp((int) ((1.0d - v) * 255));
         int b = 255 - a;
         int[] r = new int[9];
         for (int i = 0; i < 9; i++)

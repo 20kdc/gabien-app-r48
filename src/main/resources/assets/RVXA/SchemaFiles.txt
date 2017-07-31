@@ -53,15 +53,15 @@ e animation_position 0 targetLower 1 targetMiddle 2 targetUpper 3 screenCentre
 C name Class.RPG::Animation @id @name | Animation #A: #B
 @id index
 @name string
-@animation1_name string
-@animation1_hue int
-@animation2_name string
-@animation2_hue int
+@animation1_name f_animss_name
+@animation1_hue hue
+@animation2_name f_animss_name
+@animation2_hue hue
 @frame_max int= 1
 @position animation_position
 @frames subwindow arrayAL1 RPG::Animation::Frame
 @timings subwindow array 0 RPG::Animation::Timing
-C magicGenpos vxaAnimation @animation1_name @animation2_name 60
+C magicGenpos vxaAnimation @animation1_name @animation1_hue @animation2_name @animation2_hue 60
 
 > File.Animations arrayIx1 subwindow RPG::Animation
 
@@ -125,7 +125,7 @@ C name Class.RPG::Enemy @id @name | Enemy #A: #B
 @note stringBlobEditor
 +optIV @description stringBlobEditor
 @battler_name string
-@battler_hue int
+@battler_hue hue
 +optIV @icon_index int
 @exp int
 +optIV @eva int
@@ -327,7 +327,7 @@ C name Class.RPG::State @id @name | State #A: #B
 @switches subwindow arrayIx1 subwindow string
 @variables subwindow arrayIx1 subwindow string
 @battler_name string
-@battler_hue int
+@battler_hue hue
 @test_battlers subwindow array 0 subwindow RPG::System::TestBattler
 @test_troop_id troop_id
 @edit_map_id map_id

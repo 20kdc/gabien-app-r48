@@ -86,6 +86,7 @@ E iterate_enemy_index EnemyIdx -1 All
 
 e blend_type -1 KeepDestAlpha 0 Normal 1 Add 2 Sub
 
+> f_animss_name { string fileSelector Graphics/Animations/ }
 > f_char_name { string fileSelector Graphics/Characters/ }
 > f_face_name { string fileSelector Graphics/Faces/ }
 > f_picture_name { string fileSelector Graphics/Picture/ }

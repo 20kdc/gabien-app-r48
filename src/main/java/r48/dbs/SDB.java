@@ -496,7 +496,19 @@ public class SDB {
                     }
                     if (args[0].equals("magicGenpos")) {
                         // Really special schema
-                        workingObj.aggregate.add(new GenposSchemaElement(args[1], args[2], args[3], Integer.parseInt(args[4])));
+                        String aS = args[2];
+                        String bS = args[3];
+                        String cS = args[4];
+                        String dS = args[5];
+                        if (aS.equals("."))
+                            aS = null;
+                        if (bS.equals("."))
+                            bS = null;
+                        if (cS.equals("."))
+                            cS = null;
+                        if (dS.equals("."))
+                            dS = null;
+                        workingObj.aggregate.add(new GenposSchemaElement(args[1], aS, bS, cS, dS, Integer.parseInt(args[6])));
                     }
                     if (args[0].equals("magicR2kSystemDefaults")) {
                         // Really special schema
