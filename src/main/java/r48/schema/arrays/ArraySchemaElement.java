@@ -186,7 +186,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                                     if (AppMain.theClipboard.type == '[') {
                                         RubyIO[] finalInsertionRv = AppMain.theClipboard.arrVal;
                                         for (int j = finalInsertionRv.length - 1; j >= 0; j--)
-                                            ArrayUtils.insertRioElement(target, finalInsertionRv[j], i);
+                                            ArrayUtils.insertRioElement(target, new RubyIO().setDeepClone(finalInsertionRv[j]), i);
                                         // whack the UI
                                         path.changeOccurred(false);
                                     }

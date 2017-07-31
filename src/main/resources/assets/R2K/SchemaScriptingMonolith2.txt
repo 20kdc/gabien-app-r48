@@ -46,13 +46,13 @@
 e comm_picture_effectmode 0 none 1 rotate 2 waver
 
 .comm_picture_array_head_yv
-]1 pictureId int
+]1 pictureId picture_id
 ]2 posVars int_boolean
 ]3 xVar var_id
 ]4 yVar var_id
 
 .comm_picture_array_head_nv
-]1 pictureId int
+]1 pictureId picture_id
 ]2 posVars int_boolean
 ]3 x int
 ]4 y int
@@ -62,10 +62,11 @@ e comm_picture_effectmode 0 none 1 rotate 2 waver
 ]6 magnify int_default_100
 ]7 transparency int
 ]8 topTransparency int
-]9 tintRed int
-]10 tintGreen int
-]11 tintBlue int
-]12 tintSat int
+]9 red int= 128
+]10 green int= 128
+]11 blue int= 128
+]12 saturation int= 128
++r2kTonePicker ]9 ]10 ]11 ]12
 ]13 effectMode comm_picture_effectmode
 ]14 effectPower int
 
@@ -73,6 +74,6 @@ e comm_picture_effectmode 0 none 1 rotate 2 waver
 +]?15 bottomTransparency_2k3 topTransparency int
 
 .move_picture_array_foot
-]15 moveDuration int
+]15 moveSecs/10 int
 ]16 wait int_boolean
 +]?17 bottomTransparency_2k3 topTransparency int

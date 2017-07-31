@@ -425,11 +425,12 @@ e flashshake_screen_mode 0 temporary 1 begin 2 end
 
 .flash_screen_array
 ]0 _ string
-]1 red int
-]2 green int
-]3 blue int
-]4 saturation int
-]5 time int
+]1 red int= 128
+]2 green int= 128
+]3 blue int= 128
+]4 saturation int= 128
++r2kTonePicker ]1 ]2 ]3 ]4
+]5 timeSecs/10 int
 ]6 wait int_boolean
 +]?7 mode2k3 temporary flashshake_screen_mode
 

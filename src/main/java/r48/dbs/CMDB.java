@@ -193,6 +193,14 @@ public class CMDB {
                         nextTag.spritesheetTargstr = Integer.parseInt(args[1]);
                         nextTag.spritesheetId = args[2];
                     }
+                    if (args[0].equals("r2kTonePicker")) {
+                        // C r2kTonePicker 0 1 2 3
+                        nextTag.hasTonepicker = true;
+                        nextTag.tpA = Integer.parseInt(args[1]);
+                        nextTag.tpB = Integer.parseInt(args[2]);
+                        nextTag.tpC = Integer.parseInt(args[3]);
+                        nextTag.tpD = Integer.parseInt(args[4]);
+                    }
                     if (args[0].equals("groupBehavior")) {
                         // For commands with just one parameter that is a string.
                         if (args[1].equals("messagebox")) {

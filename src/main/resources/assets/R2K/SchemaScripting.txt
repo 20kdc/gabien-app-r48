@@ -45,6 +45,11 @@ e change_enemy_hp_mode 0 direct 1 variable 2 currentHp%
 > int_default_50 int= 50
 > int_default_100 int= 100
 
+ For tones, really.
+> int_default_128 int= 128
+
+> picture_id int+1
+
  ---
 
 i R2K/SchemaScriptingMonolith.txt

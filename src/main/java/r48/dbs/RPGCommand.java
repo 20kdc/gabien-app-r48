@@ -11,6 +11,7 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
+import r48.schema.specialized.TonePickerSchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -121,6 +122,8 @@ public class RPGCommand {
     }
 
     public static class SpecialTag {
+        public boolean hasTonepicker;
+        public int tpA, tpB, tpC, tpD;
         public boolean hasSpritesheet;
         public String spritesheetId;
         public int spritesheetTargstr;
@@ -128,6 +131,10 @@ public class RPGCommand {
         public void applyTo(int idx, LinkedList<UIElement> elementList, RubyIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
             if (hasSpritesheet) {
                 SchemaElement scse = AppMain.schemas.makeSpriteSelector("]" + idx, "]" + spritesheetTargstr, spritesheetId);
+                elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
+            }
+            if (hasTonepicker) {
+                SchemaElement scse = new TonePickerSchemaElement("]" + tpA, "]" + tpB, "]" + tpC, "]" + tpD);
                 elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
         }

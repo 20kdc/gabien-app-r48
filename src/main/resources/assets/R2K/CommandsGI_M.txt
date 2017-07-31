@@ -169,6 +169,7 @@ p red int
 p green int
 p blue int
 p saturation int
+C r2kTonePicker 3 4 5 6
 p timeSecs/10 int
 p wait int_boolean
 

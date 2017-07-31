@@ -423,11 +423,12 @@ p transition transition_type
 11030: Tint Screen
 d Tints the screen with given parameters.
 p _ string
-p red int
-p green int
-p blue int
-p saturation int
-p fadeTime int
+p red int_default_128
+p green int_default_128
+p blue int_default_128
+C r2kTonePicker 1 2 3 4
+p saturation int_default_128
+p fadeSecs/10 int
 p waitForFade int_boolean
 
 11040: Flash Screen

@@ -19,7 +19,27 @@ public class ImageFXCache {
         if (effectsChain.size() == 0)
             return input;
         String key = "";
-        for (IImageEffect effect :effectsChain)
+        for (IImageEffect effect : effectsChain)
+            key += effect.uniqueToString() + ":";
+        HashMap<String, IGrInDriver.IImage> imageEffectMap = effectsMap.get(input);
+        if (imageEffectMap == null) {
+            imageEffectMap = new HashMap<String, IGrInDriver.IImage>();
+            effectsMap.put(input, imageEffectMap);
+        }
+        IGrInDriver.IImage result = imageEffectMap.get(key);
+        if (result == null) {
+            result = input;
+            for (IImageEffect eff : effectsChain)
+                result = eff.process(result);
+            imageEffectMap.put(key, result);
+        }
+        return result;
+    }
+    public IGrInDriver.IImage process(IGrInDriver.IImage input, IImageEffect... effectsChain) {
+        if (effectsChain.length == 0)
+            return input;
+        String key = "";
+        for (IImageEffect effect : effectsChain)
             key += effect.uniqueToString() + ":";
         HashMap<String, IGrInDriver.IImage> imageEffectMap = effectsMap.get(input);
         if (imageEffectMap == null) {

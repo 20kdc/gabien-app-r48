@@ -276,6 +276,13 @@ public class SDB {
                             final String imgPfx = args[point++];
                             return makeSpriteSelector(varPath, imgPath, imgPfx);
                         }
+                        if (text.equals("r2kTonePicker")) {
+                            final String rPath = args[point++];
+                            final String gPath = args[point++];
+                            final String bPath = args[point++];
+                            final String sPath = args[point++];
+                            return new TonePickerSchemaElement(rPath, gPath, bPath, sPath);
+                        }
                         if (text.startsWith("table")) {
                             String eText = text;
                             boolean hasFlags = eText.endsWith("F");

@@ -9,9 +9,12 @@
 package r48.toolsets;
 
 import gabien.GaBIEn;
+import gabien.IGrInDriver;
+import gabien.IOsbDriver;
 import gabien.ui.*;
 import r48.*;
 import r48.dbs.TXDB;
+import r48.imagefx.ToneImageEffect;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIFontSizeConfigurator;
@@ -63,6 +66,7 @@ public class BasicToolset implements IToolset {
                         TXDB.get("Use system fonts for everything"),
                         TXDB.get("Configure font sizes"),
                         TXDB.get("Test Fonts"),
+                        TXDB.get("Test Tones"),
                         TXDB.get("Show ODB Memstat"),
                         TXDB.get("Dump Schemaside Translations")
                 }, new Runnable[] {
@@ -180,6 +184,32 @@ public class BasicToolset implements IToolset {
                                         windowMaker.get().accept(new UITextBox(fs));
                                     }
                                 }));
+                            }
+                        },
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                UIPanel panel = new UIPanel();
+                                panel.setBounds(new Rect(0, 0, 512, 1024));
+                                IOsbDriver finalComposite = GaBIEn.makeOffscreenBuffer(512, 1024, false);
+                                IGrInDriver.IImage totem = GaBIEn.getImage("tonetotm.png");
+                                finalComposite.blitImage(0, 0, 256, 256, 0, 0, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 128, 128, 128)));
+                                finalComposite.blitImage(0, 0, 256, 256, 256, 0, AppMain.imageFXCache.process(totem, new ToneImageEffect(0, 128, 128, 128)));
+
+                                finalComposite.blitImage(0, 0, 256, 256, 0, 256, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 0, 128, 128)));
+                                finalComposite.blitImage(0, 0, 256, 256, 256, 256, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 128, 0, 128)));
+
+                                finalComposite.blitImage(0, 0, 256, 256, 0, 512, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 128, 128, 0)));
+                                finalComposite.blitImage(0, 0, 256, 256, 256, 512, AppMain.imageFXCache.process(totem, new ToneImageEffect(0, 128, 128, 0)));
+
+                                finalComposite.blitImage(0, 0, 256, 256, 0, 768, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 0, 128, 0)));
+                                finalComposite.blitImage(0, 0, 256, 256, 256, 768, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 128, 0, 0)));
+                                panel.baseImage = GaBIEn.createImage(finalComposite.getPixels(), 512, 1024);
+                                finalComposite.shutdown();
+                                UIScrollLayout holdsMain = new UIScrollLayout(true);
+                                holdsMain.panels.add(panel);
+                                holdsMain.setBounds(new Rect(0, 0, 544, 256));
+                                windowMaker.get().accept(holdsMain);
                             }
                         },
                         new Runnable() {
