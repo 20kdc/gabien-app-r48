@@ -8,8 +8,10 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
+import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.imagefx.HueShiftImageEffect;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
 
@@ -137,10 +139,15 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
                     }
                     additiveBlending.put(s, GaBIEn.createImage(rpg, i.getWidth(), i.getHeight()));
                 }
-                igd.blitImage(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, additiveBlending.get(s));
-            } else {
-                igd.blitImage(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, i);
+                i = additiveBlending.get(s);
             }
+            RubyIO hueCtrl = target.getInstVarBySymbol("@character_hue");
+            if (hueCtrl != null) {
+                int hue = (int) (hueCtrl.fixnumVal);
+                if (hue != 0)
+                    i = AppMain.imageFXCache.process(i, new HueShiftImageEffect(hue));
+            }
+            igd.blitImage(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, i);
         }
     }
 
