@@ -108,7 +108,7 @@ p newClass class_id
 322: Change Actor$ Graphic!
 p actor actor_id
 p charName f_char_name
-p charHue int
+p charHue hue
 p battleName f_battler_name
-p bettleHue int
+p bettleHue hue
 

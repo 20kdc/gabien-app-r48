@@ -86,9 +86,27 @@ public class HueShiftImageEffect implements IImageEffect {
         int or = (i & 0xFF0000) >> 16;
         int og = (i & 0xFF00) >> 8;
         int ob = i & 0xFF;
+        int ogrey = (or + og + ob) / 3;
+        int osaturation = Math.abs(or - ogrey) + Math.abs(og - ogrey) + Math.abs(ob - ogrey);
         int r = clamp(((matrix[0] * or) + (matrix[1] * og) + (matrix[2] * ob)) / 255);
         int g = clamp(((matrix[3] * or) + (matrix[4] * og) + (matrix[5] * ob)) / 255);
         int b = clamp(((matrix[6] * or) + (matrix[7] * og) + (matrix[8] * ob)) / 255);
+        int grey = (r + g + b) / 3;
+        int diffR = r - grey;
+        int diffG = g - grey;
+        int diffB = b - grey;
+        int saturation = Math.abs(r - grey) + Math.abs(g - grey) + Math.abs(b - grey);
+        if (saturation != 0) {
+            diffR *= osaturation;
+            diffG *= osaturation;
+            diffB *= osaturation;
+            diffR /= saturation;
+            diffG /= saturation;
+            diffB /= saturation;
+            r = clamp(grey + diffR);
+            g = clamp(grey + diffG);
+            b = clamp(grey + diffB);
+        }
         return (i & 0xFF000000) | (r << 16) | (g << 8) | b;
     }
 

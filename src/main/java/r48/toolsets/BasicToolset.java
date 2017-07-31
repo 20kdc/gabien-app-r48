@@ -194,11 +194,14 @@ public class BasicToolset implements IToolset {
                                 panel.setBounds(new Rect(0, 0, 512, 1280));
                                 final IGrInDriver.IImage totem = GaBIEn.getImage("tonetotm.png");
                                 UIElement hueChanger = new UIElement() {
+                                    public double time = 0;
                                     @Override
                                     public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-                                        double time = GaBIEn.getTime();
-                                        time -= Math.floor(time);
-                                        int hue = (int) (time * 360);
+                                        double time2 = time;
+                                        if (!selected)
+                                            time += deltaTime;
+                                        time2 -= Math.floor(time2);
+                                        int hue = (int) (time2 * 360);
                                         igd.blitImage(0, 0, 256, 256, ox, oy, AppMain.imageFXCache.process(totem, new HueShiftImageEffect(hue)));
                                     }
 

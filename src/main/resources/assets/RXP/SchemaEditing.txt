@@ -43,7 +43,7 @@ C name Interp.RPG::Event::Page::Condition.selfSwitch @self_switch_valid @self_sw
 @direction direction
 @blend_type blend_type
 @character_name f_char_name
-@character_hue int
+@character_hue hue
 +internal_EPGD
 
 e event_trigger 0 onInteract 1 onPlayerWalkAgainst 2 onEventWalkAgainst 3 autorun 4 parallel

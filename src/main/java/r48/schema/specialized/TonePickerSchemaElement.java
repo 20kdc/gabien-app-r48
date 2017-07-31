@@ -13,6 +13,7 @@ import gabien.ui.UIPanel;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.PathSyntax;
+import r48.imagefx.IImageEffect;
 import r48.imagefx.ToneImageEffect;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -38,11 +39,15 @@ public class TonePickerSchemaElement extends SchemaElement {
         int ng = (int) PathSyntax.parse(target, gP).fixnumVal;
         int nb = (int) PathSyntax.parse(target, bP).fixnumVal;
         int ns = (int) PathSyntax.parse(target, sP).fixnumVal;
+        return createTotem(new ToneImageEffect(nr, ng, nb, ns));
+    }
+
+    public static UIPanel createTotem(IImageEffect cfg) {
         UIPanel panel = new UIPanel();
         IOsbDriver finalComposite = GaBIEn.makeOffscreenBuffer(128, 64, false);
         IGrInDriver.IImage totem = GaBIEn.getImage("tonetotm.png");
         finalComposite.blitScaledImage(0, 0, 256, 256, 0, 0, 64, 64, totem);
-        finalComposite.blitImage(0, 0, 64, 64, 64, 0, AppMain.imageFXCache.process(finalComposite, new ToneImageEffect(nr, ng, nb, ns)));
+        finalComposite.blitImage(0, 0, 64, 64, 64, 0, AppMain.imageFXCache.process(finalComposite, cfg));
         panel.baseImage = GaBIEn.createImage(finalComposite.getPixels(), 128, 64);
         panel.setBounds(new Rect(0, 0, 128, 64));
         finalComposite.shutdown();

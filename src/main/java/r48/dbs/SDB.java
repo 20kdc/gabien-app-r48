@@ -70,6 +70,7 @@ public class SDB {
         schemaDatabase.put("int_boolean", new IntBooleanSchemaElement(false));
         schemaDatabase.put("int_booleanDefTrue", new IntBooleanSchemaElement(true));
         schemaDatabase.put("OPAQUE", new OpaqueSchemaElement());
+        schemaDatabase.put("hue", new HuePickerSchemaElement());
 
         schemaDatabase.put("zlibBlobEditor", new ZLibBlobSchemaElement());
         schemaDatabase.put("stringBlobEditor", new StringBlobSchemaElement());

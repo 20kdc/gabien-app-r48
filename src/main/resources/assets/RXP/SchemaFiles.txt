@@ -32,11 +32,11 @@ C name Class.RPG::Actor @id @name | Actor #A: #B
 +table @parameters . . 6 100 1
 @final_level int= 1
 @battler_name f_battler_name
-@battler_hue int
+@battler_hue hue
 @exp_inflation int= 30
 @initial_level int= 1
 @character_name f_char_name
-@character_hue int
+@character_hue hue
 
 > File.Actors arrayIx1 subwindow RPG::Actor
 
@@ -61,7 +61,7 @@ C name Class.RPG::Animation @id @name | Animation #A: #B
 @id index
 @name string
 @animation_name f_animss_name
-@animation_hue int
+@animation_hue hue
 @frame_max int= 1
 @position animation_position
 @frames subwindow arrayAL1 RPG::Animation::Frame
@@ -135,7 +135,7 @@ C name Class.RPG::Enemy @id @name | Enemy #A: #B
 @id index
 @name string
 @battler_name f_battler_name
-@battler_hue int
+@battler_hue hue
 @maxhp int
 @maxsp int
 @str int
@@ -334,7 +334,7 @@ C name Class.RPG::State @id @name | State #A: #B
 @gameover_name f_go_name
 @gameover_me RPG::AudioFile
 @battler_name f_battler_name
-@battler_hue int
+@battler_hue hue
 @party_members subwindow array 0 OPAQUE
 @battle_transition string
 @test_battlers subwindow array 0 subwindow RPG::System::TestBattler
@@ -356,7 +356,7 @@ C name Class.RPG::Tileset @id @name | Tileset #A: #B
 @tileset_name f_tileset_name
 @autotile_names array 7 f_autotile_name
 @panorama_name f_pano_name
-@panorama_hue int
+@panorama_hue hue
 +tableTSF @passages . . 8 1 1 blockDown blockLeft blockRight blockUp UNK. UNK. submerge 'counter'
 +tableTS @priorities . . 8 1 1
 +tableTS @terrain_tags . . 8 1 1
@@ -365,7 +365,7 @@ C name Class.RPG::Tileset @id @name | Tileset #A: #B
 @fog_sx int
 @fog_sy int
 @fog_opacity opacity
-@fog_hue int
+@fog_hue hue
 @fog_blend_type blend_type
 @battleback_name f_bb_name
 

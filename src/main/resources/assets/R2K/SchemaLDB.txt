@@ -252,7 +252,7 @@ e rpg_enemyaction_conditiontype 0 always 1 switchActive 2 turnCountInRange 3 liv
 C name Class.RPG::Enemy @name | #A
 @name string
 @battler_name f_monster_name
-@battler_hue int
+@battler_hue hue
 @battler_blend_mode boolean
 @max_hp int= 10
 @max_sp int= 10

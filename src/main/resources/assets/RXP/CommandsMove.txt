@@ -101,7 +101,7 @@ d ...
 41:@@Set Graphic{A: to #A:#D, facing #C}
 d Changes the graphics of this event.
 p name f_char_name
-p hue int
+p hue hue
 p dir direction
 p pattern int
 42: Set Opacity!

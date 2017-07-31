@@ -36,7 +36,6 @@ public class IntegerSchemaElement extends SchemaElement {
                 path.changeOccurred(false); // does UI update, yadayadayada
             }
         };
-        unb.setBounds(new Rect(0, 0, 9, 9));
         return unb;
     }
 

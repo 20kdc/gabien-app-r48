@@ -85,12 +85,12 @@ e cms_type 0 panorama 1 fog 2 battleback
 .change_map_settings_parameters_panorama
 ]0 type cms_type
 ]1 name f_pano_name
-]2 hue int
+]2 hue hue
 
 .change_map_settings_parameters_fog
 ]0 type cms_type
 ]1 name f_fog_name
-]2 hue int
+]2 hue hue
 ]3 opacity opacity
 ]4 blendType blend_type
 ]5 zoom int= 100
