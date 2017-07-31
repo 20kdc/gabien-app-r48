@@ -14,6 +14,7 @@ import gabien.IOsbDriver;
 import gabien.ui.*;
 import r48.*;
 import r48.dbs.TXDB;
+import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.ToneImageEffect;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
@@ -190,9 +191,25 @@ public class BasicToolset implements IToolset {
                             @Override
                             public void run() {
                                 UIPanel panel = new UIPanel();
-                                panel.setBounds(new Rect(0, 0, 512, 1024));
+                                panel.setBounds(new Rect(0, 0, 512, 1280));
+                                final IGrInDriver.IImage totem = GaBIEn.getImage("tonetotm.png");
+                                UIElement hueChanger = new UIElement() {
+                                    @Override
+                                    public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
+                                        double time = GaBIEn.getTime();
+                                        time -= Math.floor(time);
+                                        int hue = (int) (time * 360);
+                                        igd.blitImage(0, 0, 256, 256, ox, oy, AppMain.imageFXCache.process(totem, new HueShiftImageEffect(hue)));
+                                    }
+
+                                    @Override
+                                    public void handleClick(int x, int y, int button) {
+
+                                    }
+                                };
+                                hueChanger.setBounds(new Rect(128, 1024, 256, 256));
+                                panel.allElements.add(hueChanger);
                                 IOsbDriver finalComposite = GaBIEn.makeOffscreenBuffer(512, 1024, false);
-                                IGrInDriver.IImage totem = GaBIEn.getImage("tonetotm.png");
                                 finalComposite.blitImage(0, 0, 256, 256, 0, 0, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 128, 128, 128)));
                                 finalComposite.blitImage(0, 0, 256, 256, 256, 0, AppMain.imageFXCache.process(totem, new ToneImageEffect(0, 128, 128, 128)));
 

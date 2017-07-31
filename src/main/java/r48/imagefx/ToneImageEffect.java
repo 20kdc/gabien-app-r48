@@ -19,7 +19,7 @@ import java.util.LinkedList;
  * Created on 31/07/17.
  */
 public class ToneImageEffect implements IImageEffect {
-    public int ar, ag, ab, as;
+    public final int ar, ag, ab, as;
     public ToneImageEffect(int i, int i1, int i2, int i3) {
         ar = i;
         ag = i1;

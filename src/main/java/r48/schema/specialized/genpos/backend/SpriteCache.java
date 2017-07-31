@@ -8,6 +8,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
 import r48.imagefx.MirrorSubspritesImageEffect;
 import r48.imagefx.OpacityImageEffect;
@@ -50,8 +51,10 @@ public class SpriteCache {
             framesetCacheB = AppMain.stuffRendererIndependent.imageLoader.getImage(filePrefix + nameB, false);
     }
 
-    public IGrInDriver.IImage getFramesetCache(boolean b, boolean mirror, int opacity) {
+    public IGrInDriver.IImage getFramesetCache(boolean b, boolean mirror, int opacity, int hue) {
         LinkedList<IImageEffect> effectList = new LinkedList<IImageEffect>();
+        if (hue != 0)
+            effectList.add(new HueShiftImageEffect(hue));
         if (mirror)
             effectList.add(new MirrorSubspritesImageEffect(spriteSize, 5, 6));
         if (opacity != 255)

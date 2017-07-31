@@ -115,7 +115,7 @@ public class R2kGenposFrame implements IGenposFrame {
                             int tx = t % 5;
                             int ty = t / 5;
                             igd.clearRect(255, 0, 255, x, y, 96, 96);
-                            igd.blitImage(tx * 96, ty * 96, 96, 96, x, y, cache.getFramesetCache(false, false, 255));
+                            igd.blitImage(tx * 96, ty * 96, 96, 96, x, y, cache.getFramesetCache(false, false, 255, 0));
                         }
                     };
                 }
@@ -171,7 +171,7 @@ public class R2kGenposFrame implements IGenposFrame {
         op *= 255;
         op /= 100;
         op = 255 - op;
-        IGrInDriver.IImage img = cache.getFramesetCache(false, false, op);
+        IGrInDriver.IImage img = cache.getFramesetCache(false, false, op, 0);
         int x = (int) cell.getInstVarBySymbol("@x").fixnumVal;
         int y = (int) cell.getInstVarBySymbol("@y").fixnumVal;
         int cid = (int) cell.getInstVarBySymbol("@cell_id").fixnumVal;

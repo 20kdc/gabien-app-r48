@@ -165,10 +165,10 @@ p global int_boolean
 d Make an event/the player flash in a given way for a given length of time (given in tenths of a second.)
 p _ string
 p char character_id
-p red int
-p green int
-p blue int
-p saturation int
+p red int_default_128
+p green int_default_128
+p blue int_default_128
+p saturation int_default_128
 C r2kTonePicker 3 4 5 6
 p timeSecs/10 int
 p wait int_boolean

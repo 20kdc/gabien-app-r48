@@ -206,9 +206,9 @@ public class RGSSGenposFrame implements IGenposFrame {
         IGrInDriver.IImage scaleImage;
         if (cell >= 100) {
             cell -= 100;
-            scaleImage = spriteCache.getFramesetCache(true, mirror, opacity);
+            scaleImage = spriteCache.getFramesetCache(true, mirror, opacity, 0);
         } else {
-            scaleImage = spriteCache.getFramesetCache(false, mirror, opacity);
+            scaleImage = spriteCache.getFramesetCache(false, mirror, opacity, 0);
         }
         int angle = rt.getTiletype(i, 4, 0);
         int scale = rt.getTiletype(i, 3, 0);

@@ -13,6 +13,7 @@ import r48.ArrayUtils;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.imagefx.HueShiftImageEffect;
 import r48.map.imaging.IImageLoader;
 import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
@@ -61,7 +62,8 @@ public class TroopGenposFrame implements IGenposFrame {
     }
 
     private IGrInDriver.IImage readEnemy(RubyIO value, IImageLoader img) {
-        return img.getImage("Monster/" + value.getInstVarBySymbol("@battler_name").decString(), false);
+        IGrInDriver.IImage im = img.getImage("Monster/" + value.getInstVarBySymbol("@battler_name").decString(), false);
+        return AppMain.imageFXCache.process(im, new HueShiftImageEffect((int) value.getInstVarBySymbol("@battler_hue").fixnumVal));
     }
 
     @Override
