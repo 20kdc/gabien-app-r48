@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 /**
  * The GabienImageLoader already has a cache (the internal cache)...
- * but XYZ doesn't!
+ * but XYZ doesn't, and in any case, nulls shouldn't be propagated.
  * Created on 31/05/17.
  */
 public class CacheImageLoader implements IImageLoader {
@@ -29,7 +29,7 @@ public class CacheImageLoader implements IImageLoader {
             return loadedImages.get(ki);
         IGrInDriver.IImage i = root.getImage(a, t);
         if (i == null)
-            i = GaBIEn.getImage("__error__");
+            i = GaBIEn.getErrorImage();
         loadedImages.put(ki, i);
         return i;
     }

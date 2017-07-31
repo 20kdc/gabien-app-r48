@@ -13,6 +13,7 @@ import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
 import r48.map.UIMapViewContainer;
+import r48.map.imaging.IImageLoader;
 
 /**
  * Responsible for creating NSRs and such.
@@ -23,6 +24,14 @@ import r48.map.UIMapViewContainer;
  * Created on 03/06/17.
  */
 public abstract class MapSystem {
+
+    // All implementations will probably use a common image loader across the mapsystem.
+    // It's not an absolute, but it's pretty likely.
+    protected final IImageLoader imageLoader;
+    public MapSystem(IImageLoader imgLoad) {
+        imageLoader = imgLoad;
+    }
+
     public UIElement createMapExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final UIMapViewContainer mapBox) {
         return new UIPopupMenu(new String[] {
                 TXDB.get("Load Map")

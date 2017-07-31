@@ -39,10 +39,17 @@ public class GabienImageLoader implements IImageLoader {
 
     @Override
     public IGrInDriver.IImage getImage(String name, boolean panorama) {
+        IGrInDriver.IImage error = GaBIEn.getErrorImage();
         if (ck) {
-            return GaBIEn.getImageCK(Application.autoDetectWindows(prefix + name + postfix), r, g, b);
+            IGrInDriver.IImage core = GaBIEn.getImageCK(Application.autoDetectWindows(prefix + name + postfix), r, g, b);
+            if (core == error)
+                return null;
+            return core;
         } else {
-            return GaBIEn.getImage(Application.autoDetectWindows(prefix + name + postfix));
+            IGrInDriver.IImage core = GaBIEn.getImage(Application.autoDetectWindows(prefix + name + postfix));
+            if (core == error)
+                return null;
+            return core;
         }
     }
 

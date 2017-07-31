@@ -15,6 +15,8 @@ import r48.map.UIMapViewContainer;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
+import r48.map.imaging.CacheImageLoader;
+import r48.map.imaging.ChainedImageLoader;
 import r48.map.imaging.GabienImageLoader;
 import r48.map.imaging.IImageLoader;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
@@ -31,6 +33,13 @@ import java.util.Map;
  * Created on 03/06/17.
  */
 public class RXPSystem extends MapSystem implements IRMMapSystem {
+    public RXPSystem() {
+        super(new CacheImageLoader(new ChainedImageLoader(new IImageLoader[] {
+                new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png"),
+                new GabienImageLoader(AppMain.rootPath + "Graphics/", ".jpg"),
+        })));
+    }
+
     protected static RubyIO tsoFromMap(RubyIO map) {
         if (map == null)
             return null;
@@ -52,7 +61,6 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
 
     @Override
     public StuffRenderer rendererFromMap(RubyIO map) {
-        IImageLoader imageLoader = new GabienImageLoader(AppMain.rootPath + "Graphics/", ".png");
         RubyIO tileset = tsoFromMap(map);
         ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tileset);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
