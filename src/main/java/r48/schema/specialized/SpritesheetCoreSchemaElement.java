@@ -58,11 +58,6 @@ public class SpritesheetCoreSchemaElement extends r48.schema.SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height;
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         RubyIO actTarg = numberProvider.apply(target);
         if (IntegerSchemaElement.ensureType(actTarg, 'i', setDefault)) {

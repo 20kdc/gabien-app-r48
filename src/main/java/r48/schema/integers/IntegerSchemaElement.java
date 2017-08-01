@@ -47,11 +47,6 @@ public class IntegerSchemaElement extends SchemaElement {
         return i;
     }
 
-    @Override
-    public int maxHoldingHeight() {
-        return UINumberBox.getRecommendedSize(FontSizes.schemaFieldTextHeight).height;
-    }
-
     // For lack of a better place.
     public static boolean ensureType(RubyIO tgt, char t, boolean setDefault) {
         if (tgt.type != t) {

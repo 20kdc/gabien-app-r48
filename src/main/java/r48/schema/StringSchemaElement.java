@@ -58,11 +58,6 @@ public class StringSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return UITextBox.getRecommendedSize(FontSizes.schemaFieldTextHeight).height;
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (IntegerSchemaElement.ensureType(target, type, setDefault)) {
             encodeVal(defaultStr, target);

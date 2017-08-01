@@ -79,11 +79,6 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return 192;
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         // Nothing can be done here.
     }

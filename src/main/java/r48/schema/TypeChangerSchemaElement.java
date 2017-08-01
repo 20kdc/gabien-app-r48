@@ -38,7 +38,6 @@ public class TypeChangerSchemaElement extends SchemaElement {
                     allElements.getFirst().setBounds(r);
             }
         };
-        innerHoldingPanel.setBounds(new Rect(0, 0, 128, maxHoldingHeight()));
 
         initializeHoldingPanel(innerHoldingPanel, targetValue, launcher, path);
 
@@ -55,7 +54,7 @@ public class TypeChangerSchemaElement extends SchemaElement {
                     targetValue.symVal = ftp;
                     targets[fi].modifyVal(targetValue, path, true);
                     path.changeOccurred(false);
-                    initializeHoldingPanel(innerHoldingPanel, targetValue, launcher, path);
+                    // auto-updates
                 }
             }, FontSizes.schemaButtonTextHeight);
         }
@@ -92,17 +91,7 @@ public class TypeChangerSchemaElement extends SchemaElement {
         UIElement uie = targetS.buildHoldingEditor(targetValue, l, path);
         uie.setBounds(new Rect(0, 0, b.width, b.height));
         innerHoldingPanel.allElements.add(uie);
-    }
-
-    @Override
-    public int maxHoldingHeight() {
-        int holdHeight = UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height;
-        for (SchemaElement ise : targets) {
-            int nextHeight = ise.maxHoldingHeight();
-            if (holdHeight < nextHeight)
-                holdHeight = nextHeight;
-        }
-        return holdHeight;
+        innerHoldingPanel.setBounds(new Rect(0, 0, b.width, b.height));
     }
 
     @Override

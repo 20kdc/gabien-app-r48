@@ -39,31 +39,9 @@ public class ArrayDisambiguatorSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
         final SchemaPath path = path2.tagSEMonitor(target, this);
-        UIPanel p = new UIPanel() {
-            public UIElement subElem = rebuildSubElem();
-
-            public UIElement rebuildSubElem() {
-                int iv = getDisambigIndex(target);
-                try {
-                    SchemaElement ise = getSchemaElement(iv);
-                    UIElement se = ise.buildHoldingEditor(target, launcher, path);
-                    allElements.add(se);
-                    return se;
-                } catch (RuntimeException e) {
-                    e.printStackTrace(System.out);
-                    System.out.println("ArrayDisambiguator Debug: " + iv);
-                    throw e;
-                }
-            }
-
-            @Override
-            public void setBounds(Rect r) {
-                super.setBounds(r);
-                subElem.setBounds(new Rect(0, 0, r.width, r.height));
-            }
-        };
-        p.setBounds(new Rect(0, 0, 320, maxHoldingHeight()));
-        return p;
+        int iv = getDisambigIndex(target);
+        SchemaElement ise = getSchemaElement(iv);
+        return ise.buildHoldingEditor(target, launcher, path);
     }
 
     private int getDisambigIndex(RubyIO target) {
@@ -80,14 +58,6 @@ public class ArrayDisambiguatorSchemaElement extends SchemaElement {
         if (r == null)
             r = defaultType;
         return r;
-    }
-
-    @Override
-    public int maxHoldingHeight() {
-        int height = defaultType.maxHoldingHeight();
-        for (SchemaElement possible : dTable.values())
-            height = Math.max(possible.maxHoldingHeight(), height);
-        return height;
     }
 
     @Override

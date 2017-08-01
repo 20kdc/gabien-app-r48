@@ -48,12 +48,6 @@ public class HWNDSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        // IDK.
-        return 100;
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
     }
 }

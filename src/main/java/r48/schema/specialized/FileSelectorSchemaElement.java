@@ -55,11 +55,6 @@ public class FileSelectorSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        throw new RuntimeException("Should be used as a subwindow.");
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         // Does nothing - this is solely an editor helper element.
     }

@@ -5,9 +5,7 @@
 
 package r48.schema;
 
-import gabien.ui.IFunction;
-import gabien.ui.UIElement;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
@@ -15,6 +13,7 @@ import r48.dbs.IProxySchemaElement;
 import r48.dbs.RPGCommand;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.UINSVertLayout;
 
 /**
  * Created on 12/29/16.
@@ -39,17 +38,18 @@ public class SubwindowSchemaElement extends SchemaElement implements IProxySchem
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(FontSizes.schemaButtonTextHeight, nameGetter.apply(target), new Runnable() {
+        // This is never meant to *actually* scroll.
+        String text = nameGetter.apply(target);
+        String[] lines = text.split("\n");
+        UIElement r = new UITextButton(FontSizes.schemaButtonTextHeight, lines[0], new Runnable() {
             @Override
             public void run() {
                 launcher.switchObject(path.newWindow(heldElement, target, launcher));
             }
         });
-    }
-
-    @Override
-    public int maxHoldingHeight() {
-        return UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height;
+        for (int i = 1; i < lines.length; i++)
+            r = new UINSVertLayout(r, new UILabel(lines[i], FontSizes.schemaFieldTextHeight));
+        return r;
     }
 
     @Override

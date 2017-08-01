@@ -37,14 +37,6 @@ public class GenericDisambiguationSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        int r = 0;
-        for (SchemaElement ise : mapping.values())
-            r = Math.max(r, ise.maxHoldingHeight());
-        return r;
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         getDisambiguation(target).modifyVal(target, path, setDefault);
     }

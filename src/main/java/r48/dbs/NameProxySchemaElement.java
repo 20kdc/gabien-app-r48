@@ -42,11 +42,6 @@ public class NameProxySchemaElement extends SchemaElement implements IProxySchem
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return getEntry().maxHoldingHeight();
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         getEntry().modifyVal(target, path, setDefault);
     }

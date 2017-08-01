@@ -49,22 +49,12 @@ public class MagicalBindingSchemaElement extends SchemaElement {
             }
 
             @Override
-            public int maxHoldingHeight() {
-                return inner.maxHoldingHeight();
-            }
-
-            @Override
             public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
                 inner.modifyVal(target, path, setDefault);
                 if (binder.applyBoundToTarget(target, trueTarget))
                     truePath.changeOccurred(setDefault);
             }
         }, bound, virtHost);
-    }
-
-    @Override
-    public int maxHoldingHeight() {
-        return inner.maxHoldingHeight();
     }
 
     @Override

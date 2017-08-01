@@ -32,11 +32,6 @@ public class HuePickerSchemaElement extends IntegerSchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return 64 + super.maxHoldingHeight();
-    }
-
-    @Override
     public int filter(int i) {
         return i % 360;
     }

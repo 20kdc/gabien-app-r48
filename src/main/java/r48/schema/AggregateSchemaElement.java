@@ -43,17 +43,11 @@ public class AggregateSchemaElement extends SchemaElement {
                 ((IFieldSchemaElement) ise).setFieldWidthOverride(maxFW);
             uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
         }
-        uiSVL.setBounds(new Rect(0, 0, 128, maxHoldingHeight()));
+        int h = 0;
+        for (UIElement uie : uiSVL.panels)
+            h += uie.getBounds().height;
+        uiSVL.setBounds(new Rect(0, 0, 128, h));
         return uiSVL;
-    }
-
-    @Override
-    public int maxHoldingHeight() {
-        // Give a value which won't result in a scroller.
-        int i = 0;
-        for (SchemaElement ise : aggregate)
-            i += ise.maxHoldingHeight();
-        return i;
     }
 
     @Override

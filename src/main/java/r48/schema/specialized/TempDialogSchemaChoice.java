@@ -39,11 +39,6 @@ public class TempDialogSchemaChoice extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        throw new RuntimeException("Temporary dialog element.");
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         hPar.editor.modifyVal(hPar.targetElement, hPar, setDefault);
         if (update != null)

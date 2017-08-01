@@ -38,14 +38,6 @@ public class ArbIndexedArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        if (sizeFixed != 0)
-            return subelems.maxHoldingHeight() * (sizeFixed - indexOffset);
-        // *gulp* guess, and hope the guess is correct.
-        return subelems.maxHoldingHeight() * 16;
-    }
-
-    @Override
     protected int elementPermissionsLevel(int i, RubyIO target) {
         if (i < indexOffset)
             return 0;

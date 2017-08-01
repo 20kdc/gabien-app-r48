@@ -28,12 +28,4 @@ public class StandardArraySchemaElement extends ArraySchemaElement {
     protected SchemaElement getElementSchema(int j) {
         return subelems;
     }
-
-    @Override
-    public int maxHoldingHeight() {
-        if (sizeFixed != 0)
-            return subelems.maxHoldingHeight() * sizeFixed;
-        // *gulp* guess, and hope the guess is correct.
-        return subelems.maxHoldingHeight() * 16;
-    }
 }

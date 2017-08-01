@@ -38,11 +38,6 @@ public class EPGDisplaySchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return 96;
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath index, boolean setDefault) {
 
     }

@@ -134,8 +134,6 @@ public abstract class ArraySchemaElement extends SchemaElement {
                             }, FontSizes.schemaButtonTextHeight);
                         }
                     }
-                    int sz = subelem.maxHoldingHeight();
-                    uie.setBounds(new Rect(0, 0, 128, sz));
                     // Add indexes for clarity.
                     final UIElement editor = uie;
                     final UIElement label = new UILabel(i + " ", FontSizes.schemaFieldTextHeight);
@@ -149,7 +147,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     };
                     panel.allElements.add(label);
                     panel.allElements.add(editor);
-                    panel.setBounds(new Rect(0, 0, 128, Math.max(sz, maxSize.height)));
+                    panel.setBounds(new Rect(0, 0, 128, Math.max(editor.getBounds().height, maxSize.height)));
                     uiSVL.panels.add(panel);
                 }
                 // Deal with 1-indexing and such
@@ -199,7 +197,10 @@ public abstract class ArraySchemaElement extends SchemaElement {
             }
         };
         runCompleteRelayout.run();
-        uiSVL.setBounds(new Rect(0, 0, 32, maxHoldingHeight()));
+        int h = 0;
+        for (UIElement uie : uiSVL.panels)
+            h += uie.getBounds().height;
+        uiSVL.setBounds(new Rect(0, 0, 32, h));
         return uiSVL;
     }
 

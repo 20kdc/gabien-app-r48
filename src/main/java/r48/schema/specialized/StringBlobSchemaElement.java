@@ -78,11 +78,6 @@ public class StringBlobSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return UITextButton.getRecommendedSize("", FontSizes.blobTextHeight).height;
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (IntegerSchemaElement.ensureType(target, '\"', setDefault)) {
             target.strVal = new byte[0];

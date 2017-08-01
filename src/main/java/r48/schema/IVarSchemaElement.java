@@ -58,7 +58,7 @@ public class IVarSchemaElement extends SchemaElement implements IFieldSchemaElem
                 e2 = new UIAppendButton("-", e2, new Runnable() {
                     @Override
                     public void run() {
-                        if (target.getInstVarBySymbol(iVar) == null) {
+                        if (target.getInstVarBySymbol(iVar) != null) {
                             target.rmIVar(iVar);
                             path.changeOccurred(false);
                         }
@@ -77,7 +77,7 @@ public class IVarSchemaElement extends SchemaElement implements IFieldSchemaElem
         };
         panel.allElements.add(uil);
         panel.allElements.add(elem);
-        panel.setBounds(new Rect(0, 0, 128, maxHoldingHeight()));
+        panel.setBounds(new Rect(0, 0, 128, Math.max(uil.getBounds().height, elem.getBounds().height)));
         return panel;
     }
 
@@ -90,14 +90,6 @@ public class IVarSchemaElement extends SchemaElement implements IFieldSchemaElem
     public void setFieldWidthOverride(int w) {
         fieldWidth = w;
         fieldWidthOverride = true;
-    }
-
-    @Override
-    public int maxHoldingHeight() {
-        int h = Math.max(UILabel.getRecommendedSize("", FontSizes.schemaFieldTextHeight).height, UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height);
-        if (subElem.maxHoldingHeight() > h)
-            return subElem.maxHoldingHeight();
-        return h;
     }
 
     @Override

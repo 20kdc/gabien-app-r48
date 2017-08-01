@@ -317,8 +317,8 @@ public class RubyIO {
                 iVarVals = new RubyIO[oldVals.length - 1];
                 System.arraycopy(oldKeys, 0, iVarKeys, 0, i);
                 System.arraycopy(oldVals, 0, iVarVals, 0, i);
-                System.arraycopy(oldKeys, i + 1, iVarKeys, i, oldKeys.length - i);
-                System.arraycopy(oldVals, i + 1, iVarVals, i, oldKeys.length - i);
+                System.arraycopy(oldKeys, i + 1, iVarKeys, i, oldKeys.length - (i + 1));
+                System.arraycopy(oldVals, i + 1, iVarVals, i, oldKeys.length - (i + 1));
                 return;
             }
         }

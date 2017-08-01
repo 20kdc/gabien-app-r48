@@ -110,13 +110,6 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     }
 
     @Override
-    public int maxHoldingHeight() {
-        if (name.equals("_"))
-            return 0;
-        return Math.max(UILabel.getRecommendedSize("", FontSizes.schemaFieldTextHeight).height, subSchema.maxHoldingHeight());
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         boolean changed = false;
         // Just in case.

@@ -68,11 +68,6 @@ public class EnumSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height;
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (IntegerSchemaElement.ensureType(target, 'i', setDefault)) {
             if (!options.isEmpty()) {

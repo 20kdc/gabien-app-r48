@@ -26,11 +26,6 @@ public class HalfsplitSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return Math.max(a.maxHoldingHeight(), b.maxHoldingHeight());
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         a.modifyVal(target, path, setDefault);
         b.modifyVal(target, path, setDefault);

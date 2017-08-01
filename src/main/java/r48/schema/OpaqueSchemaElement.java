@@ -34,11 +34,6 @@ public class OpaqueSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height;
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         // Not a clue, so re-initialize if all else fails.
         if ((target.type == 0) || setDefault) {

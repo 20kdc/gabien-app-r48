@@ -45,10 +45,6 @@ public abstract class SchemaElement {
     // Probably best not to break them.
     public abstract UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path);
 
-    // Maximum textHeight of the element out of buildHoldingEditor.
-    // Can throw an error, in which case this should be encapsulated with a SubwindowSchemaElement.
-    public abstract int maxHoldingHeight();
-
     // Modify target to approach the default value, or to correct errors.
     // The type starts as 0 (not '0', but actual numeric 0) and needs to be modified by something to result in a valid object.
     // Rules in general are documented on buildHoldingEditor.

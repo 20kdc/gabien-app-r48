@@ -42,11 +42,6 @@ public class EventTileReplacerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        throw new RuntimeException("This should always get a whole windowpanel to itself.");
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         // Do nothing, shouldn't act as schema, just an embeddable editing component
     }

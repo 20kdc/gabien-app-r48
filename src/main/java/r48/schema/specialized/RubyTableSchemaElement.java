@@ -149,11 +149,6 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        throw new RuntimeException("Really, don't try this.");
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath index, boolean setDefault) {
         if (iVar != null) {
             RubyIO st = target.getInstVarBySymbol(iVar);

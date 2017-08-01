@@ -27,11 +27,6 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return 0;
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (setDefault) {
             // Target is RPG::Database.

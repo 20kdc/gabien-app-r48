@@ -60,11 +60,6 @@ public class CTNativeSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return UINumberBox.getRecommendedSize(FontSizes.schemaFieldTextHeight).height * 4;
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (target.type != 'u') {
             target.setUser(cls, new byte[32]);

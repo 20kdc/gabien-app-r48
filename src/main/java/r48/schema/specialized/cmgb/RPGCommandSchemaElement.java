@@ -210,12 +210,6 @@ public class RPGCommandSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        // Guess :(
-        return 256;
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         path = path.tagSEMonitor(target, this);
         actualSchema.modifyVal(target, path, setDefault);

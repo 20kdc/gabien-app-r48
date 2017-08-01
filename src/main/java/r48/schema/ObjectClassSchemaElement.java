@@ -96,11 +96,6 @@ public class ObjectClassSchemaElement extends SchemaElement {
     }
 
     @Override
-    public int maxHoldingHeight() {
-        return backing.maxHoldingHeight();
-    }
-
-    @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         boolean modified = false;
         if (target.type != type) {

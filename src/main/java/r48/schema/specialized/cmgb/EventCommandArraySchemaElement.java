@@ -184,11 +184,6 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 }
 
                 @Override
-                public int maxHoldingHeight() {
-                    return UILabel.getRecommendedSize(text, FontSizes.schemaFieldTextHeight).height;
-                }
-
-                @Override
                 public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
                 }
             };
@@ -225,11 +220,6 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 }
 
                 @Override
-                public int maxHoldingHeight() {
-                    return UITextButton.getRecommendedSize(addText, FontSizes.schemaButtonTextHeight).height;
-                }
-
-                @Override
                 public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
                 }
             };
@@ -246,11 +236,6 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             }
 
             @Override
-            public int maxHoldingHeight() {
-                throw new RuntimeException("Cannot use this here");
-            }
-
-            @Override
             public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
                 getGroupElement(target.arrVal, start).modifyVal(target, path, setDefault);
             }
@@ -258,15 +243,11 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             @Override
             public String apply(RubyIO rubyIO) {
                 String tx = database.buildCodename(rubyIO.arrVal[start], true);
-                if (getGroupLengthCore(rubyIO.arrVal, start) != 0)
-                    tx += TXDB.get(" (...)");
+                int groupLen = getGroupLengthCore(rubyIO.arrVal, start);
+                for (int i = 1; i < groupLen; i++)
+                    tx += "\n" + database.buildCodename(rubyIO.arrVal[start + i], true);
                 return tx;
             }
         });
-    }
-
-    @Override
-    public int maxHoldingHeight() {
-        return 128;
     }
 }

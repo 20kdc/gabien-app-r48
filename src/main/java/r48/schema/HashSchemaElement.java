@@ -35,15 +35,10 @@ public class HashSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIScrollLayout uiSV = new UIScrollLayout(true);
-        int vertSz = keyElem.maxHoldingHeight();
-        if (valElem.maxHoldingHeight() > keyElem.maxHoldingHeight())
-            vertSz = valElem.maxHoldingHeight();
-        final int vertSzF = vertSz;
         // similar to the array schema, this is a containing object with access to local information
         Runnable rebuildSection = new Runnable() {
             @Override
             public void run() {
-                final Runnable me = this;
                 uiSV.panels.clear();
                 for (RubyIO key : UITest.sortedKeys(target.hashVal.keySet())) {
                     final RubyIO kss = key;
@@ -54,14 +49,13 @@ public class HashSchemaElement extends SchemaElement {
                             return TXDB.get("Key ");
                         }
                     }).buildHoldingEditor(key, launcher, path), valElem.buildHoldingEditor(target.hashVal.get(key), launcher, path.arrayHashIndex(key, "{" + key.toString() + "}")), false, 1, 4);
-                    hs.setBounds(new Rect(0, 0, 100, vertSzF));
                     uiSV.panels.add(new UIAppendButton("-", hs, new Runnable() {
                         @Override
                         public void run() {
                             // remove
                             target.hashVal.remove(kss);
                             path.changeOccurred(false);
-                            me.run();
+                            // auto-updates
                         }
                     }, FontSizes.schemaButtonTextHeight));
                 }
@@ -77,23 +71,17 @@ public class HashSchemaElement extends SchemaElement {
                             RubyIO finWorkspace = new RubyIO().setDeepClone(defKeyWorkspace);
                             valElem.modifyVal(rio2, path.arrayHashIndex(finWorkspace, "{" + finWorkspace.toString() + "}"), true);
                             target.hashVal.put(finWorkspace, rio2);
-                            // and this prevents further modification of the key
+                            // the deep clone prevents further modification of the key
                             path.changeOccurred(false);
-                            me.run();
+                            // auto-updates
                         }
                     }
                 }), false, 2, 3);
-                workspaceHS.setBounds(new Rect(0, 0, 0, keyElem.maxHoldingHeight()));
                 uiSV.panels.add(workspaceHS);
             }
         };
         rebuildSection.run();
         return uiSV;
-    }
-
-    @Override
-    public int maxHoldingHeight() {
-        throw new RuntimeException("HashSchemaElement definitely has to be in a subwindow, since it grows.");
     }
 
     @Override
