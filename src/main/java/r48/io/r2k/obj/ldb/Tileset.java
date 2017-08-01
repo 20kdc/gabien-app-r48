@@ -67,10 +67,10 @@ public class Tileset extends R2kObject {
         // 162 = 144 (selective) + 18 (AT Field????)
         RubyTable rt = new RubyTable(162, 1, 1, new int[] {0});
         System.arraycopy(terrainTbl.dat, 0, rt.innerBytes, 20, terrainTbl.dat.length);
-        mt.iVars.put("@terrain_id_data", new RubyIO().setUser("Table", rt.innerBytes));
+        mt.addIVar("@terrain_id_data", new RubyIO().setUser("Table", rt.innerBytes));
 
-        mt.iVars.put("@lowpass_data", bitfieldTable(lowPassTbl.dat));
-        mt.iVars.put("@highpass_data", bitfieldTable(highPassTbl.dat));
+        mt.addIVar("@lowpass_data", bitfieldTable(lowPassTbl.dat));
+        mt.addIVar("@highpass_data", bitfieldTable(highPassTbl.dat));
         return mt;
     }
 

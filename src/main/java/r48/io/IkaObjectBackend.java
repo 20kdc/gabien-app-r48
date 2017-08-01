@@ -66,11 +66,11 @@ public class IkaObjectBackend implements IObjectBackend {
                 for (int j = 0; j < bm.height; j++)
                     tbl.setTiletype(i, j, 0, (short) bm.data[i + (j * bm.width)]);
 
-            rio.iVars.put("@data", mapTbl);
-            rio.iVars.put("@palette", palTbl);
+            rio.addIVar("@data", mapTbl);
+            rio.addIVar("@palette", palTbl);
 
             RubyIO evTbl = new RubyIO().setHash();
-            rio.iVars.put("@events", evTbl);
+            rio.addIVar("@events", evTbl);
 
             NPChar np = new NPChar();
             try {
@@ -94,14 +94,14 @@ public class IkaObjectBackend implements IObjectBackend {
         RubyIO res = new RubyIO().setSymlike("RPG::Event", true);
         int px = rounder(io.posX);
         int py = rounder(io.posY);
-        res.iVars.put("@x", new RubyIO().setFX(px));
-        res.iVars.put("@y", new RubyIO().setFX(py));
-        res.iVars.put("@tOX", new RubyIO().setFX(rounder(io.ofsX) - px));
-        res.iVars.put("@tOY", new RubyIO().setFX(rounder(io.ofsY) - py));
-        res.iVars.put("@type", new RubyIO().setFX(io.entityType));
-        res.iVars.put("@status", new RubyIO().setFX(io.entityStatus));
-        res.iVars.put("@scriptId", new RubyIO().setFX(io.eventID));
-        res.iVars.put("@collisionType", new RubyIO().setFX(io.collisionType));
+        res.addIVar("@x", new RubyIO().setFX(px));
+        res.addIVar("@y", new RubyIO().setFX(py));
+        res.addIVar("@tOX", new RubyIO().setFX(rounder(io.ofsX) - px));
+        res.addIVar("@tOY", new RubyIO().setFX(rounder(io.ofsY) - py));
+        res.addIVar("@type", new RubyIO().setFX(io.entityType));
+        res.addIVar("@status", new RubyIO().setFX(io.entityStatus));
+        res.addIVar("@scriptId", new RubyIO().setFX(io.eventID));
+        res.addIVar("@collisionType", new RubyIO().setFX(io.collisionType));
         return res;
     }
 

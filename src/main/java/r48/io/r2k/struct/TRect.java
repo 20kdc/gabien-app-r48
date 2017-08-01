@@ -39,10 +39,10 @@ public class TRect implements IR2kStruct {
     @Override
     public RubyIO asRIO() {
         RubyIO rb = new RubyIO().setSymlike("Rect", true);
-        rb.iVars.put("@left", new RubyIO().setFX(l));
-        rb.iVars.put("@up", new RubyIO().setFX(u));
-        rb.iVars.put("@right", new RubyIO().setFX(r));
-        rb.iVars.put("@down", new RubyIO().setFX(d));
+        rb.addIVar("@left", new RubyIO().setFX(l));
+        rb.addIVar("@up", new RubyIO().setFX(u));
+        rb.addIVar("@right", new RubyIO().setFX(r));
+        rb.addIVar("@down", new RubyIO().setFX(d));
         return rb;
     }
 

@@ -24,7 +24,7 @@ public class BitfieldR2kStruct extends ByteR2kStruct {
         RubyIO r = new RubyIO().setSymlike("__bitfield__", true);
         int pwr = 1;
         for (String s : flags) {
-            r.iVars.put(s, new RubyIO().setBool((pwr & value) != 0));
+            r.addIVar(s, new RubyIO().setBool((pwr & value) != 0));
             pwr <<= 1;
         }
         return r;

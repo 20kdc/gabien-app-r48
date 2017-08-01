@@ -70,8 +70,8 @@ public class EventCommand implements IR2kStruct {
     @Override
     public RubyIO asRIO() {
         RubyIO mt = new RubyIO().setSymlike("RPG::EventCommand", true);
-        mt.iVars.put("@code", new RubyIO().setFX(code));
-        mt.iVars.put("@indent", new RubyIO().setFX(indent));
+        mt.addIVar("@code", new RubyIO().setFX(code));
+        mt.addIVar("@indent", new RubyIO().setFX(indent));
         RubyIO[] params = new RubyIO[parameters.length + 1];
         params[0] = new RubyIO().setString(text);
         for (int i = 0; i < parameters.length; i++)
@@ -79,7 +79,7 @@ public class EventCommand implements IR2kStruct {
         RubyIO paramArr = new RubyIO();
         paramArr.type = '[';
         paramArr.arrVal = params;
-        mt.iVars.put("@parameters", paramArr);
+        mt.addIVar("@parameters", paramArr);
         if (code == 11330) {
             RubyIO[] params2 = new RubyIO[moveCommands.length];
             for (int i = 0; i < params2.length; i++)
@@ -87,7 +87,7 @@ public class EventCommand implements IR2kStruct {
             RubyIO param2Arr = new RubyIO();
             param2Arr.type = '[';
             param2Arr.arrVal = params2;
-            mt.iVars.put("@move_commands", param2Arr);
+            mt.addIVar("@move_commands", param2Arr);
         }
         return mt;
     }

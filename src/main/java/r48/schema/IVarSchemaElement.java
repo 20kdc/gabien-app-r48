@@ -47,7 +47,7 @@ public class IVarSchemaElement extends SchemaElement implements IFieldSchemaElem
             e2 = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("<Missing - add?>"), new Runnable() {
                 @Override
                 public void run() {
-                    if (!target.iVars.containsKey(iVar)) {
+                    if (target.getInstVarBySymbol(iVar) == null) {
                         createIVar(target, path, false);
                     }
                 }
@@ -58,8 +58,8 @@ public class IVarSchemaElement extends SchemaElement implements IFieldSchemaElem
                 e2 = new UIAppendButton("-", e2, new Runnable() {
                     @Override
                     public void run() {
-                        if (target.iVars.containsKey(iVar)) {
-                            target.iVars.remove(iVar);
+                        if (target.getInstVarBySymbol(iVar) == null) {
+                            target.rmIVar(iVar);
                             path.changeOccurred(false);
                         }
                     }
@@ -102,8 +102,8 @@ public class IVarSchemaElement extends SchemaElement implements IFieldSchemaElem
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (target.iVars.containsKey(iVar)) {
-            RubyIO r = target.iVars.get(iVar);
+        if (target.getInstVarBySymbol(iVar) != null) {
+            RubyIO r = target.getInstVarBySymbol(iVar);
             subElem.modifyVal(r, path.otherIndex(alias), setDefault);
         } else {
             if (!optional)
@@ -115,7 +115,7 @@ public class IVarSchemaElement extends SchemaElement implements IFieldSchemaElem
         RubyIO r = new RubyIO();
         // being created, so create from scratch no matter what.
         subElem.modifyVal(r, targetPath.otherIndex(alias), mv);
-        target.iVars.put(iVar, r);
+        target.addIVar(iVar, r);
         targetPath.changeOccurred(mv);
     }
 }

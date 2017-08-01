@@ -8,6 +8,7 @@ package r48;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -26,7 +27,10 @@ public class RubyIO {
     public int type;
     public byte[] strVal; // actual meaning depends on iVars. Should be treated as immutable - replace strVal on change
     public String symVal;
-    public HashMap<String, RubyIO> iVars = new HashMap<String, RubyIO>();
+    // Reduced for memory usage. *sigh*
+    // public HashMap<String, RubyIO> iVars = new HashMap<String, RubyIO>();
+    public String[] iVarKeys;
+    public RubyIO[] iVarVals;
     public HashMap<RubyIO, RubyIO> hashVal;
     public RubyIO hashDefVal;
     public RubyIO[] arrVal;
@@ -43,7 +47,8 @@ public class RubyIO {
         type = '0';
         strVal = null;
         symVal = null;
-        iVars.clear();
+        iVarKeys = null;
+        iVarVals = null;
         hashVal = null;
         hashDefVal = null;
         arrVal = null;
@@ -107,8 +112,11 @@ public class RubyIO {
         type = clone.type;
         strVal = clone.strVal;
         symVal = clone.symVal;
-        iVars.clear();
-        iVars.putAll(clone.iVars);
+        iVarKeys = null;
+        iVarVals = null;
+        if (clone.iVarKeys != null)
+            for (String s : clone.iVarKeys)
+                addIVar(s, clone.getInstVarBySymbol(s));
         if (clone.hashVal != null) {
             hashVal = new HashMap<RubyIO, RubyIO>();
             hashVal.putAll(clone.hashVal);
@@ -135,8 +143,8 @@ public class RubyIO {
     // That's deep, man. [/decadesIDidntLiveIn]
     public RubyIO setDeepClone(RubyIO clone) {
         setShallowClone(clone);
-        for (Map.Entry<String, RubyIO> a : clone.iVars.entrySet())
-            iVars.put(a.getKey(), new RubyIO().setDeepClone(a.getValue()));
+        for (String s : clone.iVarKeys)
+            addIVar(s, new RubyIO().setDeepClone(clone.getInstVarBySymbol(s)));
         if (hashDefVal != null)
             hashDefVal = new RubyIO();
         if (hashVal != null) {
@@ -234,9 +242,11 @@ public class RubyIO {
         }
         if (type == 'o') {
             String s = indent + "o" + symVal + "\n";
-            for (Map.Entry<String, RubyIO> e : iVars.entrySet()) {
-                s += indent + " " + e.getKey() + "\n";
-                s += e.getValue().toStringLong(indent + " ");
+            if (iVarKeys != null) {
+                for (int i = 0; i < iVarKeys.length; i++) {
+                    s += indent + " " + iVarKeys[i] + "\n";
+                    s += iVarVals[i].toStringLong(indent + " ");
+                }
             }
             return s;
         }
@@ -271,8 +281,47 @@ public class RubyIO {
         return this;
     }
 
+    public void addIVar(String s, RubyIO rio) {
+        if (iVarKeys == null) {
+            iVarKeys = new String[] {s};
+            iVarVals = new RubyIO[] {rio};
+            return;
+        }
+        rmIVar(s);
+        String[] oldKeys = iVarKeys;
+        RubyIO[] oldVals = iVarVals;
+        iVarKeys = new String[oldKeys.length + 1];
+        iVarVals = new RubyIO[oldVals.length + 1];
+        System.arraycopy(oldKeys, 0, iVarKeys, 1, iVarKeys.length - 1);
+        System.arraycopy(oldVals, 0, iVarVals, 1, iVarVals.length - 1);
+        iVarKeys[0] = s;
+        iVarVals[0] = rio;
+    }
     public RubyIO getInstVarBySymbol(String cmd) {
-        return iVars.get(cmd);
+        if (iVarKeys == null)
+            return null;
+        for (int i = 0; i < iVarKeys.length; i++)
+            if (cmd.equals(iVarKeys[i]))
+                return iVarVals[i];
+        return null;
+        // return iVars.get(cmd);
+    }
+    public void rmIVar(String s) {
+        if (iVarKeys == null)
+            return;
+        for (int i = 0; i < iVarKeys.length; i++) {
+            if (iVarKeys[i].equals(s)) {
+                String[] oldKeys = iVarKeys;
+                RubyIO[] oldVals = iVarVals;
+                iVarKeys = new String[oldKeys.length - 1];
+                iVarVals = new RubyIO[oldVals.length - 1];
+                System.arraycopy(oldKeys, 0, iVarKeys, 0, i);
+                System.arraycopy(oldVals, 0, iVarVals, 0, i);
+                System.arraycopy(oldKeys, i + 1, iVarKeys, i, oldKeys.length - i);
+                System.arraycopy(oldVals, i + 1, iVarVals, i, oldKeys.length - i);
+                return;
+            }
+        }
     }
 
     // NOTE: this is solely for cases where an external primitive is being thrown in.

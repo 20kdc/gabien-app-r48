@@ -69,7 +69,7 @@ public class MapUnit extends R2kObject {
     public RubyIO asRIO() {
         RubyIO map = new RubyIO().setSymlike("RPG::Map", true);
         asRIOISF(map);
-        map.iVars.put("@data", makeLmuData());
+        map.addIVar("@data", makeLmuData());
         return map;
     }
 

@@ -93,8 +93,8 @@ public class MoveCommand implements IR2kStruct {
         RubyIO params = new RubyIO();
         params.type = '[';
         params.arrVal = p;
-        rio.iVars.put("@code", new RubyIO().setFX(code));
-        rio.iVars.put("@parameters", params);
+        rio.addIVar("@code", new RubyIO().setFX(code));
+        rio.addIVar("@parameters", params);
         return rio;
     }
 

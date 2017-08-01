@@ -44,10 +44,12 @@ public class ObjectClassSchemaElement extends SchemaElement {
         LinkedList<String> iVars = new LinkedList<String>();
         boolean enableIVarCheck = findAndAddIVars(backing, target, iVars);
         if (enableIVarCheck) {
-            for (String s : target.iVars.keySet()) {
-                if (!iVars.contains(s)) {
-                    System.out.println("WARNING: iVar " + s + " of " + symbol + " wasn't handled.");
-                    System.out.println("This usually means the schema is incomplete.");
+            if (target.iVarKeys != null) {
+                for (String s : target.iVarKeys) {
+                    if (!iVars.contains(s)) {
+                        System.out.println("WARNING: iVar " + s + " of " + symbol + " wasn't handled.");
+                        System.out.println("This usually means the schema is incomplete.");
+                    }
                 }
             }
         }

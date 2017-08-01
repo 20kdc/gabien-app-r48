@@ -17,9 +17,7 @@ import gabien.ui.UIScrollLayout;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 /**
  * At first was a break-into-console - now a proper window, if crude.
@@ -76,9 +74,9 @@ public class UITest extends UIPanel {
         LinkedList<String> strings = new LinkedList<String>();
         LinkedList<RubyIO> targs = new LinkedList<RubyIO>();
         // -- Actually collate things
-        for (String s : sortedKeysStr(obj.iVars.keySet())) {
-            strings.add("IVar " + s + " -> " + obj.iVars.get(s));
-            targs.add(obj.iVars.get(s));
+        for (String s : sortedKeysArr(obj.iVarKeys)) {
+            strings.add("IVar " + s + " -> " + obj.getInstVarBySymbol(s));
+            targs.add(obj.getInstVarBySymbol(s));
         }
         if (obj.hashVal != null) {
             for (RubyIO s : sortedKeys(obj.hashVal.keySet())) {
@@ -167,7 +165,7 @@ public class UITest extends UIPanel {
 
     public static LinkedList<String> sortedKeysStr(Set<String> keys) {
         LinkedList<String> ios = new LinkedList<String>(keys);
-        ios.sort(new Comparator<String>() {
+        Collections.sort(ios, new Comparator<String>() {
             @Override
             public int compare(String t0, String t1) {
                 return natStrComp(t0, t1);
@@ -176,9 +174,16 @@ public class UITest extends UIPanel {
         return ios;
     }
 
+    private LinkedList<String> sortedKeysArr(String[] iVarKeys) {
+        HashSet<String> hs = new HashSet<String>();
+        if (iVarKeys != null)
+            Collections.addAll(hs, iVarKeys);
+        return sortedKeysStr(hs);
+    }
+
     public static LinkedList<RubyIO> sortedKeys(Set<RubyIO> rubyIOs) {
         LinkedList<RubyIO> ios = new LinkedList<RubyIO>(rubyIOs);
-        ios.sort(new Comparator<RubyIO>() {
+        Collections.sort(ios, new Comparator<RubyIO>() {
             @Override
             public int compare(RubyIO rubyIO, RubyIO t1) {
                 return natStrComp(rubyIO.toString(), t1.toString());

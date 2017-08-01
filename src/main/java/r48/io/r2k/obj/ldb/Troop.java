@@ -170,8 +170,8 @@ public class Troop extends R2kObject {
         @Override
         public RubyIO asRIO() {
             RubyIO rio = new RubyIO().setSymlike("RPG::Troop::PageCondition", true);
-            rio.iVars.put("@flags_a", flagsA.asRIO());
-            rio.iVars.put("@flags_b_r2k", flagsB.asRIO());
+            rio.addIVar("@flags_a", flagsA.asRIO());
+            rio.addIVar("@flags_b_r2k", flagsB.asRIO());
             asRIOISF(rio);
             return rio;
         }

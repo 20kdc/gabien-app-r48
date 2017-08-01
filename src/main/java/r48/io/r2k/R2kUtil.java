@@ -155,7 +155,7 @@ public class R2kUtil {
         hash.setHash();
         for (Map.Entry<Integer, byte[]> e : unknownChunks.entrySet())
             hash.hashVal.put(new RubyIO().setFX(e.getKey()), new RubyIO().setUser("Blob", e.getValue()));
-        map.iVars.put("@__LCF__unknown", hash);
+        map.addIVar("@__LCF__unknown", hash);
     }
 
     public static void rioToUnk(RubyIO mt, HashMap<Integer, byte[]> unknownChunks) {

@@ -159,7 +159,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             RubyIO st = target.getInstVarBySymbol(iVar);
             if (st == null) {
                 st = new RubyIO();
-                target.iVars.put(iVar, st);
+                target.addIVar(iVar, st);
             }
             target = st;
         }

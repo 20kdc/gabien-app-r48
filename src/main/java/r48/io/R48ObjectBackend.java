@@ -191,7 +191,9 @@ public class R48ObjectBackend implements IObjectBackend {
         }
         // Everything else.
         // Firstly, pre-process (iVars wrapping)
-        boolean ivarData = rio.iVars.size() != 0;
+        boolean ivarData = rio.iVarKeys != null;
+        if (ivarData)
+            ivarData = rio.iVarKeys.length > 0;
         boolean shouldWriteObjCacheLate = false;
         boolean okay = false;
         if (b == 'o')
@@ -203,7 +205,7 @@ public class R48ObjectBackend implements IObjectBackend {
         if (b == 'o') {
             objCache.add(rio);
             saveSymbol(dis, rio.symVal, strCache);
-            saveIVarsCore(dis, rio.iVars, objCache, strCache);
+            saveIVarsCore(dis, rio, objCache, strCache);
             okay = true;
         }
         if (b == '{') {
@@ -256,7 +258,7 @@ public class R48ObjectBackend implements IObjectBackend {
         if (!okay)
             throw new IOException("Cannot save " + ((char) rio.type));
         if (ivarData)
-            saveIVarsCore(dis, rio.iVars, objCache, strCache);
+            saveIVarsCore(dis, rio, objCache, strCache);
         if (shouldWriteObjCacheLate)
             objCache.add(rio);
     }
@@ -272,17 +274,18 @@ public class R48ObjectBackend implements IObjectBackend {
         }
     }
 
-    private static void saveIVarsCore(DataOutputStream dis, HashMap<String, RubyIO> iVars, LinkedList<RubyIO> objCache, LinkedList<String> strCache) throws IOException {
-        Set<Map.Entry<String, RubyIO>> se = iVars.entrySet();
-        // damned if you do (IDE warning), damned if you don't (compiler warning).
-        Map.Entry<String, RubyIO>[] me = se.toArray(new Map.Entry[0]);
-        save32(dis, me.length);
-        for (Map.Entry<String, RubyIO> e : me) {
+    private static void saveIVarsCore(DataOutputStream dis, RubyIO iVars, LinkedList<RubyIO> objCache, LinkedList<String> strCache) throws IOException {
+        if (iVars.iVarKeys == null) {
+            save32(dis, 0);
+            return;
+        }
+        save32(dis, iVars.iVarKeys.length);
+        for (int i = 0; i < iVars.iVarKeys.length; i++) {
             RubyIO key = new RubyIO();
             key.type = ':';
-            key.symVal = e.getKey();
+            key.symVal = iVars.iVarKeys[i];
             saveValue(dis, key, objCache, strCache);
-            saveValue(dis, e.getValue(), objCache, strCache);
+            saveValue(dis, iVars.iVarVals[i], objCache, strCache);
         }
     }
 
@@ -387,7 +390,7 @@ public class R48ObjectBackend implements IObjectBackend {
             for (long i = 0; i < vars; i++) {
                 RubyIO k = loadValue(dis, objs, syms);
                 RubyIO v = loadValue(dis, objs, syms);
-                rio.iVars.put(k.symVal, v);
+                rio.addIVar(k.symVal, v);
             }
         }
         if (shouldWriteObjCacheLate)

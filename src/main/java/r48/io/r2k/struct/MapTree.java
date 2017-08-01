@@ -74,10 +74,10 @@ public class MapTree implements IR2kStruct {
         for (int i = 0; i < mapOrder.length; i++)
             mapOrderArray.arrVal[i] = new RubyIO().setFX(mapOrder[i]);
 
-        mt.iVars.put("@map_infos", mapInfos.asRIO());
-        mt.iVars.put("@map_order", mapOrderArray);
-        mt.iVars.put("@active_node", new RubyIO().setFX(activeNode));
-        mt.iVars.put("@start", start.asRIO());
+        mt.addIVar("@map_infos", mapInfos.asRIO());
+        mt.addIVar("@map_order", mapOrderArray);
+        mt.addIVar("@active_node", new RubyIO().setFX(activeNode));
+        mt.addIVar("@start", start.asRIO());
         return mt;
     }
 

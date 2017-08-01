@@ -94,7 +94,7 @@ public abstract class R2kObject implements IR2kStruct {
                 // Could be actually null for optionals.
                 RubyIO rio = ((IR2kStruct) i.chunk).asRIO();
                 if (rio != null)
-                    mt.iVars.put(i.rioHelperName, rio);
+                    mt.addIVar(i.rioHelperName, rio);
             }
         R2kUtil.unkToRio(mt, unknownChunks);
     }
