@@ -143,8 +143,9 @@ public class RubyIO {
     // That's deep, man. [/decadesIDidntLiveIn]
     public RubyIO setDeepClone(RubyIO clone) {
         setShallowClone(clone);
-        for (String s : clone.iVarKeys)
-            addIVar(s, new RubyIO().setDeepClone(clone.getInstVarBySymbol(s)));
+        if (clone.iVarKeys != null)
+            for (String s : clone.iVarKeys)
+                addIVar(s, new RubyIO().setDeepClone(clone.getInstVarBySymbol(s)));
         if (hashDefVal != null)
             hashDefVal = new RubyIO();
         if (hashVal != null) {

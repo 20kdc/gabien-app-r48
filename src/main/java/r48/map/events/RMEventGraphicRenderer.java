@@ -36,8 +36,6 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         }
     }
 
-    private HashMap<String, IGrInDriver.IImage> additiveBlending = new HashMap<String, IGrInDriver.IImage>();
-
     public static int lookupDirection(int dir) {
         if (dir == 2)
             return 0;
@@ -113,33 +111,16 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
             }
 
             boolean doBlend = false;
+            boolean doBlendType = false;
             RubyIO blendData = target.getInstVarBySymbol("@blend_type");
-            if (blendData != null)
-                doBlend = target.getInstVarBySymbol("@blend_type").fixnumVal == 1;
-            if (doBlend) {
-                // firstly, let's edit the image
-                if (!additiveBlending.containsKey(s)) {
-                    int[] rpg = i.getPixels();
-                    for (int j = 0; j < rpg.length; j++) {
-                        // backup alpha, then remove it
-                        int alD = ((rpg[j] & 0xFF000000) >> 24) & 0xFF;
-                        rpg[j] &= 0xFFFFFF;
-
-                        // extract components to try to work out something that looks OK
-                        int alA = (rpg[j] & 0xFF);
-                        int alB = (rpg[j] & 0xFF00) >> 8;
-                        int alC = (rpg[j] & 0xFF0000) >> 16;
-                        // This needs to simulate additive blending with mixing.
-                        // Somehow.
-                        int r = (alA + alB + alC) / 3;
-                        r *= alD;
-                        r /= 256;
-                        // put in new alpha
-                        rpg[j] |= r << 24;
-                    }
-                    additiveBlending.put(s, GaBIEn.createImage(rpg, i.getWidth(), i.getHeight()));
+            if (blendData != null) {
+                long m = target.getInstVarBySymbol("@blend_type").fixnumVal;
+                if (m == 1)
+                    doBlend = true;
+                if (m == 2) {
+                    doBlend = true;
+                    doBlendType = true;
                 }
-                i = additiveBlending.get(s);
             }
             RubyIO hueCtrl = target.getInstVarBySymbol("@character_hue");
             if (hueCtrl != null) {
@@ -147,7 +128,11 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
                 if (hue != 0)
                     i = AppMain.imageFXCache.process(i, new HueShiftImageEffect(hue));
             }
-            igd.blitImage(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, i);
+            if (doBlend) {
+                igd.blendRotatedScaledImage(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, sprW, sprH, 0, i, doBlendType);
+            } else {
+                igd.blitImage(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, i);
+            }
         }
     }
 

@@ -7,7 +7,5 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity
 
 short-term planning subsection:
-+ Implement hues & tones
-+ Add blendmodes to gabien API for the "scale & rotate" routine (And only for that, since it's a routine that's meant to be "does anything but is slow")
-+ Then use that everywhere it's supposed to be used
++ Then use blendmodes everywhere it's supposed to be used
 

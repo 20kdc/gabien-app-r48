@@ -1,10 +1,10 @@
 # gabien-app-r48
 
-An editor for RPG Maker 2000/2003 (support incomplete), RPG Maker XP, RPG Maker VX Ace, and Ikachan. Also a sticky note program.
+An editor for RPG Maker 2000/2003, RPG Maker XP, RPG Maker VX Ace, and Ikachan. Also a sticky note program.
 
 Support for these was gained by the following:
 
-RPG Maker 2000/2003 (incomplete): Reading the format documentation in EasyRPG's (liblcf)[https://github.com/EasyRPG/liblcf]
+RPG Maker 2000/2003: Reading the format documentation in EasyRPG's (liblcf)[https://github.com/EasyRPG/liblcf]
  (I have checked, this use is fine and doesn't require a PD-breaking MIT header, which would have resulted in me splitting the repository),
  some guesswork, and checking the results against OneShot (legacy), Ib v1.07 and the EasyRPG Test Game.
 
