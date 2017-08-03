@@ -22,7 +22,7 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 @music_type mapinfo_musictype
 @music RPG::Music
 @background_type mapinfo_backtype
-@background_name string
+@background_name f_battleback_name
 @teleport_state mapinfo_inheritflag
 @escape_state mapinfo_inheritflag
 @save_state mapinfo_inheritflag

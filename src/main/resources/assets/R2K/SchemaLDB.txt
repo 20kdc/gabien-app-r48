@@ -347,7 +347,7 @@ C name Class.RPG::Terrain @name | #A
 @name string
 @damage int
 @encounter%_mod int= 100
-@background_name string
+@background_name f_battleback_name
 @boat_pass boolean
 @ship_pass boolean
 @airship_pass booleanDefTrue

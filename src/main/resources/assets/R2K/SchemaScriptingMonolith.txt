@@ -491,6 +491,7 @@ e show_shop_type 0 shopA 1 shopB 2 shopC
 ]3 y int
 +mapPositionHelper ]1 ]2 ]3
 +]?4 direction2k3 ignored teleport_event_dir
+
  BE
  Begin Encounter
 
@@ -525,7 +526,7 @@ e begin_encounter_defeat 0 gameOver 1 executeDefeatCode
 ]0 _ string
 
 .begin_encounter_1
-]0 bkg string
+]0 bkg f_battleback_name
  this means nothing?!?!?!
 +]?8 formation_2k3 none int
 
