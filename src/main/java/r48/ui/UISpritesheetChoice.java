@@ -21,15 +21,14 @@ public class UISpritesheetChoice extends UIPanel {
         spriteGrid = new UIGrid(provider.itemWidth(), provider.itemHeight(), provider.itemCount()) {
             @Override
             protected void drawTile(int t, boolean hover, int x, int y, IGrInDriver igd) {
-                provider.drawItem(t, x, y, igd);
+                provider.drawItem(provider.mapIdxToVal(t), x, y, igd);
             }
-
         };
-        spriteGrid.setSelected(oldVal);
+        spriteGrid.setSelected(provider.mapValToIdx(oldVal));
         spriteGrid.onSelectionChange = new Runnable() {
             @Override
             public void run() {
-                consumer.accept(spriteGrid.getSelected());
+                consumer.accept(provider.mapIdxToVal(spriteGrid.getSelected()));
             }
         };
         final UINumberBox nb = new UINumberBox(FontSizes.dialogWindowTextHeight);

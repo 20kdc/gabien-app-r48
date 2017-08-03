@@ -110,28 +110,42 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
                 }
             }
 
-            boolean doBlend = false;
-            boolean doBlendType = false;
+            int blendType = 0;
             RubyIO blendData = target.getInstVarBySymbol("@blend_type");
-            if (blendData != null) {
-                long m = target.getInstVarBySymbol("@blend_type").fixnumVal;
-                if (m == 1)
-                    doBlend = true;
-                if (m == 2) {
-                    doBlend = true;
-                    doBlendType = true;
-                }
-            }
+            if (blendData != null)
+                blendType = (int) blendData.fixnumVal;
             RubyIO hueCtrl = target.getInstVarBySymbol("@character_hue");
             if (hueCtrl != null) {
                 int hue = (int) (hueCtrl.fixnumVal);
                 if (hue != 0)
                     i = AppMain.imageFXCache.process(i, new HueShiftImageEffect(hue));
             }
-            if (doBlend) {
-                igd.blendRotatedScaledImage(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, sprW, sprH, 0, i, doBlendType);
+            flexibleSpriteDraw(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, sprW, sprH, 0, i, blendType, igd);
+        }
+    }
+
+    public static void flexibleSpriteDraw(int srcx, int srcy, int srcw, int srch, int x, int y, int acw, int ach, int angle, IGrInDriver.IImage i, int blendType, IGrDriver igd) {
+        boolean doBlend = false;
+        boolean doBlendType = false;
+        if (blendType == 1)
+            doBlend = true;
+        if (blendType == 2) {
+            doBlend = true;
+            doBlendType = true;
+        }
+        if (doBlend) {
+            igd.blendRotatedScaledImage(srcx, srcy, srcw, srch, x, y, acw, ach, angle, i, doBlendType);
+        } else {
+            if ((angle % 360) == 0) {
+                if (acw == srcw) {
+                    if (ach == srch) {
+                        igd.blitImage(srcx, srcy, srcw, srch, x, y, i);
+                        return;
+                    }
+                }
+                igd.blitScaledImage(srcx, srcy, srcw, srch, x, y, acw, ach, i);
             } else {
-                igd.blitImage(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, i);
+                igd.blitRotatedScaledImage(srcx, srcy, srcw, srch, x, y, acw, ach, angle, i);
             }
         }
     }

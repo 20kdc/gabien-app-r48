@@ -12,12 +12,15 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.map.events.RMEventGraphicRenderer;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBindingSchemaElement;
+import r48.schema.specialized.SpritesheetCoreSchemaElement;
 import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.util.SchemaPath;
+import r48.ui.ISpritesheetProvider;
 
 /**
  * This exists so that I can try and reuse RMGenposAnim code for the 2k3 animations,
@@ -122,14 +125,68 @@ public class RGSSGenposFrame implements IGenposFrame {
 
     private SchemaElement[] getCellPropSchemas() {
         return new SchemaElement[] {
+                new SpritesheetCoreSchemaElement("#A", 0, new IFunction<RubyIO, RubyIO>() {
+                    @Override
+                    public RubyIO apply(RubyIO rubyIO) {
+                        return rubyIO;
+                    }
+                }, new IFunction<RubyIO, ISpritesheetProvider>() {
+                    @Override
+                    public ISpritesheetProvider apply(final RubyIO rubyIO) {
+                        return new ISpritesheetProvider() {
+                            @Override
+                            public int itemWidth() {
+                        return 96;
+                    }
+
+                            @Override
+                            public int itemHeight() {
+                        return 96;
+                    }
+
+                            @Override
+                            public int itemCount() {
+                                if (vxaAnim)
+                                    return 5 * 6 * 2;
+                                return 5 * 6;
+                            }
+
+                            @Override
+                            public int mapValToIdx(int itemVal) {
+                                if (itemVal >= 100)
+                                    return (itemVal - 100) + (5 * 6);
+                                return itemVal;
+                            }
+
+                            @Override
+                            public int mapIdxToVal(int idx) {
+                                if (idx >= (5 * 6))
+                                    return (idx - (5 * 6)) + 100;
+                                return idx;
+                            }
+
+                            @Override
+                            public void drawItem(int t, int x, int y, IGrInDriver igd) {
+                                boolean b = false;
+                                if (t >= 100) {
+                                    t -= 100;
+                                    b = true;
+                                }
+                                int tx = t % 5;
+                                int ty = t / 5;
+                                igd.clearRect(255, 0, 255, x, y, 96, 96);
+                                igd.blitScaledImage(tx * 192, ty * 192, 192, 192, x, y, 96, 96, spriteCache.getFramesetCache(b, false, 255));
+                            }
+                        };
+                    }
+                }),
                 new IntegerSchemaElement(0),
                 new IntegerSchemaElement(0),
                 new IntegerSchemaElement(0),
                 new IntegerSchemaElement(0),
                 new IntegerSchemaElement(0),
                 new IntegerSchemaElement(0),
-                new IntegerSchemaElement(0),
-                new IntegerSchemaElement(0)
+                AppMain.schemas.getSDBEntry("blend_type")
         };
     }
 
@@ -215,14 +272,10 @@ public class RGSSGenposFrame implements IGenposFrame {
         int ts = spriteCache.getScaledImageIconSize(scale);
         int ofx = rt.getTiletype(i, 1, 0) - (ts / 2);
         int ofy = rt.getTiletype(i, 2, 0) - (ts / 2);
+        int blendType = rt.getTiletype(i, 7, 0);
         int cellX = (cell % 5) * 192;
         int cellY = (cell / 5) * 192;
-        // try to avoid using rotated images
-        if ((angle % 360) == 0) {
-            igd.blitScaledImage(cellX, cellY, 192, 192, opx + ofx, opy + ofy, ts, ts, scaleImage);
-        } else {
-            igd.blitRotatedScaledImage(cellX, cellY, 192, 192, opx + ofx, opy + ofy, ts, ts, angle, scaleImage);
-        }
+        RMEventGraphicRenderer.flexibleSpriteDraw(cellX, cellY, 192, 192, opx + ofx, opy + ofy, ts, ts, angle, scaleImage, blendType, igd);
     }
 
     @Override

@@ -15,5 +15,7 @@ public interface ISpritesheetProvider {
     int itemWidth();
     int itemHeight();
     int itemCount();
+    int mapValToIdx(int itemVal);
+    int mapIdxToVal(int idx);
     void drawItem(int t, int x, int y, IGrInDriver igd);
 }

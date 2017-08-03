@@ -111,6 +111,16 @@ public class R2kGenposFrame implements IGenposFrame {
                         }
 
                         @Override
+                        public int mapValToIdx(int itemVal) {
+                            return itemVal;
+                        }
+
+                        @Override
+                        public int mapIdxToVal(int idx) {
+                            return idx;
+                        }
+
+                        @Override
                         public void drawItem(int t, int x, int y, IGrInDriver igd) {
                             int tx = t % 5;
                             int ty = t / 5;
