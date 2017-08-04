@@ -4,8 +4,6 @@
  */
 package r48.schema.specialized;
 
-import gabien.ui.IConsumer;
-import gabien.ui.IFunction;
 import gabien.ui.UIElement;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
@@ -17,14 +15,15 @@ import r48.schema.util.SchemaPath;
  * Magical Binding!
  * Maintains independent roots, allowing you to turn any structure into any other structure while still loading and saving in the original format.
  * The catch is, a modifyVal on this doesn't really work.
- *
+ * <p/>
  * Normal Structure <-> Data blob <-> MAGICAL FORMAT TRANSLATOR <-> {schema editors}
- *
+ * <p/>
  * Created on 29/07/17.
  */
 public class MagicalBindingSchemaElement extends SchemaElement {
     public SchemaElement inner;
     public IMagicalBinder binder;
+
     public MagicalBindingSchemaElement(IMagicalBinder b, SchemaElement inn) {
         binder = b;
         inner = inn;
@@ -67,6 +66,7 @@ public class MagicalBindingSchemaElement extends SchemaElement {
     private class VirtualizedSchemaHost implements ISchemaHost {
         public SchemaPath pathRoot, lastPath;
         public ISchemaHost trueHost;
+
         public VirtualizedSchemaHost(SchemaPath path, ISchemaHost parent) {
             pathRoot = path.otherIndex("").findBack();
             lastPath = pathRoot;

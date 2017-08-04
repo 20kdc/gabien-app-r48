@@ -5,12 +5,10 @@
 
 package r48.map;
 
-import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.UITest;
 import r48.dbs.TXDB;
 import r48.map.tiles.VXATileRenderer;
 import r48.maptools.*;
@@ -221,6 +219,7 @@ public class UIMapViewContainer extends UIPanel {
         {
             tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("..."), new Runnable() {
                 final int thisButton = tools.size();
+
                 @Override
                 public void run() {
                     clearTools.accept(thisButton);

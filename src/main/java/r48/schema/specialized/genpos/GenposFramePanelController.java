@@ -9,10 +9,8 @@ import gabien.ui.Rect;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.schema.util.ISchemaHost;
-import r48.schema.util.SchemaPath;
 import r48.ui.UINSVertLayout;
 
 /**

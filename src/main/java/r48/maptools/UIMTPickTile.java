@@ -20,6 +20,7 @@ import r48.map.UIMapView;
 public class UIMTPickTile extends UIPanel implements IMapViewCallbacks {
     public UILabel innerLabel = new UILabel(TXDB.get("Click on a tile to pick it."), FontSizes.dialogWindowTextHeight);
     public final UIMapView map;
+
     public UIMTPickTile(UIMapView m) {
         allElements.add(innerLabel);
         map = m;

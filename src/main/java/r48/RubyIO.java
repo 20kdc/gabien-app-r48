@@ -8,7 +8,6 @@ package r48;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -298,6 +297,7 @@ public class RubyIO {
         iVarKeys[0] = s;
         iVarVals[0] = rio;
     }
+
     public RubyIO getInstVarBySymbol(String cmd) {
         if (iVarKeys == null)
             return null;
@@ -307,6 +307,7 @@ public class RubyIO {
         return null;
         // return iVars.get(cmd);
     }
+
     public void rmIVar(String s) {
         if (iVarKeys == null)
             return;

@@ -4,7 +4,10 @@
  */
 package r48.schema.specialized;
 
-import gabien.ui.*;
+import gabien.ui.ISupplier;
+import gabien.ui.Rect;
+import gabien.ui.UIElement;
+import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -13,11 +16,9 @@ import r48.schema.specialized.genpos.GenposAnimRootPanel;
 import r48.schema.specialized.genpos.GenposFramePanelController;
 import r48.schema.specialized.genpos.backend.*;
 import r48.schema.util.ISchemaHost;
-import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
 
 /**
- *
  * This starts a UI-framework-based special editing package,
  * which calls back to this for edit notifications.
  * Created on 2/17/17. "General Positioning" refactor started on July 28th, 2017.

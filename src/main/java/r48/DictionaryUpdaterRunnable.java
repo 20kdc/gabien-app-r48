@@ -11,7 +11,6 @@ import r48.dbs.TXDB;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
-import r48.toolsets.MapToolset;
 
 import java.util.HashMap;
 import java.util.Map;

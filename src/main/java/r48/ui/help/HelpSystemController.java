@@ -5,7 +5,6 @@
 package r48.ui.help;
 
 import gabien.GaBIEn;
-import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;

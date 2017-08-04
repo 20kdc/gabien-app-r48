@@ -16,7 +16,6 @@ import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
-import gabien.ui.UIScrollLayout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -140,6 +139,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
     public static void showEvent(long fixnumVal, UIMapView map, RubyIO event) {
         AppMain.launchNonRootSchema(map.map, "RPG::Map", new RubyIO().setFX(fixnumVal), event, "RPG::Event", "E" + fixnumVal, map);
     }
+
     public static void showEventDivorced(long fixnumVal, RubyIO map, RubyIO event) {
         AppMain.launchNonRootSchema(map, "RPG::Map", new RubyIO().setFX(fixnumVal), event, "RPG::Event", "E" + fixnumVal, null);
     }

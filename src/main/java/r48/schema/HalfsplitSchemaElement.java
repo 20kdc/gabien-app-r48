@@ -15,6 +15,7 @@ import r48.schema.util.SchemaPath;
  */
 public class HalfsplitSchemaElement extends SchemaElement {
     public SchemaElement a, b;
+
     public HalfsplitSchemaElement(SchemaElement va, SchemaElement vb) {
         a = va;
         b = vb;

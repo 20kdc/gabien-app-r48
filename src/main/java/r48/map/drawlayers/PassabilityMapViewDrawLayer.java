@@ -6,8 +6,6 @@ package r48.map.drawlayers;
 
 import gabien.IGrDriver;
 import r48.AppMain;
-import r48.RubyIO;
-import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.pass.IPassabilitySource;
@@ -21,6 +19,7 @@ import java.util.Random;
 public class PassabilityMapViewDrawLayer implements IMapViewDrawLayer {
     public final IPassabilitySource src;
     public final int tileSize;
+
     public PassabilityMapViewDrawLayer(IPassabilitySource ips, int ts) {
         src = ips;
         tileSize = ts;
@@ -63,6 +62,7 @@ public class PassabilityMapViewDrawLayer implements IMapViewDrawLayer {
 
     public static class TestPassabilitySource implements IPassabilitySource {
         public Random r = new Random();
+
         @Override
         public int getPassability(int x, int y) {
             return r.nextInt(16);

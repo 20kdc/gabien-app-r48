@@ -5,9 +5,6 @@
 package r48.map.drawlayers;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
-import gabien.ui.UIElement;
-import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
@@ -24,6 +21,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
     public int layer;
     public IEventGraphicRenderer iegr;
     public int tileSize;
+
     public EventMapViewDrawLayer(int layer2, RubyIO eventL, IEventGraphicRenderer e, int ts) {
         eventList = eventL;
         layer = layer2;

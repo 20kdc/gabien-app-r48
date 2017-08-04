@@ -14,10 +14,7 @@ import r48.UITest;
 import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
-import r48.schema.SchemaElement;
-import r48.schema.specialized.TempDialogSchemaChoice;
 import r48.ui.UIAppendButton;
-import gabien.ui.UIScrollLayout;
 
 /**
  * Created on 12/29/16.

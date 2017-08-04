@@ -11,6 +11,7 @@ import r48.RubyIO;
  */
 public class PathSyntax {
     public static char[] breakers = new char[] {'$', '@', ']'};
+
     // break to next token.
     public static String breakToken(String full) {
         int plannedIdx = full.length();

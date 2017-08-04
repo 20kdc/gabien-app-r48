@@ -4,7 +4,6 @@
  */
 package r48.map.events;
 
-import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.ui.UILabel;
@@ -14,8 +13,6 @@ import r48.RubyIO;
 import r48.imagefx.HueShiftImageEffect;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
-
-import java.util.HashMap;
 
 /**
  * Created on 1/27/17.

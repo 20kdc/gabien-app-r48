@@ -5,7 +5,6 @@
 
 package r48.schema.integers;
 
-import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UINumberBox;
 import r48.FontSizes;

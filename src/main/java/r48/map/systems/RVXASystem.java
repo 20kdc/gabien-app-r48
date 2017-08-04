@@ -4,16 +4,11 @@
  */
 package r48.map.systems;
 
-import r48.AppMain;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
-import r48.map.imaging.CacheImageLoader;
-import r48.map.imaging.ChainedImageLoader;
-import r48.map.imaging.GabienImageLoader;
-import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.VXATileRenderer;
 

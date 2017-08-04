@@ -41,7 +41,7 @@ public class HWNDSchemaElement extends SchemaElement {
         };
         if (ivar != null) {
             hsc.loadPage((int) target.getInstVarBySymbol(ivar).fixnumVal);
-        } else{
+        } else {
             hsc.loadPage(0);
         }
         return uhs;

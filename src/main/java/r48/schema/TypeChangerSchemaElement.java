@@ -8,7 +8,6 @@ package r48.schema;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UIPanel;
-import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.schema.util.ISchemaHost;

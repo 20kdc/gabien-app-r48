@@ -11,6 +11,7 @@ import java.io.IOException;
  */
 public class TSDB {
     public int[] mapping;
+
     public TSDB(String arg) {
         DBLoader.readFile(arg, new IDatabase() {
             @Override

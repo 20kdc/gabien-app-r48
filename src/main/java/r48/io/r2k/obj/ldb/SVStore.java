@@ -14,6 +14,7 @@ import r48.io.r2k.chunks.StringR2kStruct;
  */
 public class SVStore extends R2kObject {
     public StringR2kStruct name = new StringR2kStruct();
+
     @Override
     public Index[] getIndices() {
         return new Index[] {

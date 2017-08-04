@@ -6,11 +6,9 @@
 package r48.maptools;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
@@ -271,10 +269,12 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
 
     private class FloodFillPoint {
         public final int tX, tY;
+
         public FloodFillPoint(int x, int y) {
             tX = x;
             tY = y;
         }
+
         public boolean contentMatches(int target) {
             if (map.mapTable.outOfBounds(tX, tY))
                 return false;

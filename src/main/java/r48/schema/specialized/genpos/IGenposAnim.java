@@ -12,13 +12,19 @@ import r48.RubyIO;
  */
 public interface IGenposAnim {
     void setFrameIdx(int i);
+
     int getFrameIdx();
+
     int getFrameCount();
+
     // If the frame is modified directly, call modifiedFrame
     RubyIO getFrame();
+
     void modifiedFrame();
+
     // NOTE: You need to setFrameIdx(getFrameIdx()); after these.
     void insertFrame(RubyIO rio);
+
     void deleteFrame();
 
     // Only called once - the separation helps keep the code sane.

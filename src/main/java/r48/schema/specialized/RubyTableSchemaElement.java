@@ -16,7 +16,6 @@ import r48.schema.specialized.tbleditors.ITableCellEditor;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIGrid;
-import gabien.ui.UIScrollLayout;
 
 /**
  * OLD:
@@ -123,7 +122,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             public void run() {
                 int w = wNB.number;
                 if (w < 0)
-                     w = 0;
+                    w = 0;
                 int h = hNB.number;
                 if (h < 0)
                     h = 0;

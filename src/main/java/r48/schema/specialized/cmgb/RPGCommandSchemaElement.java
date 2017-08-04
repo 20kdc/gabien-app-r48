@@ -23,7 +23,6 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 import r48.ui.UIEnumChoice;
-import gabien.ui.UIScrollLayout;
 import r48.ui.help.UIHelpSystem;
 
 import java.util.HashMap;

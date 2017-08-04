@@ -5,7 +5,6 @@
 
 package r48.schema;
 
-import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
 import r48.FontSizes;

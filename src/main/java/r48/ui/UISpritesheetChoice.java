@@ -17,6 +17,7 @@ import r48.dbs.TXDB;
 public class UISpritesheetChoice extends UIPanel {
     public UISplitterLayout rootLayout;
     public UIGrid spriteGrid;
+
     public UISpritesheetChoice(int oldVal, final ISpritesheetProvider provider, final IConsumer<Integer> consumer) {
         spriteGrid = new UIGrid(provider.itemWidth(), provider.itemHeight(), provider.itemCount()) {
             @Override
@@ -42,6 +43,7 @@ public class UISpritesheetChoice extends UIPanel {
         rootLayout = new UISplitterLayout(spriteGrid, msp, true, 1);
         allElements.add(rootLayout);
     }
+
     @Override
     public void setBounds(Rect r) {
         super.setBounds(r);

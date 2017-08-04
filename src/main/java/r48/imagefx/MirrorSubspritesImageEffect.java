@@ -14,6 +14,7 @@ public class MirrorSubspritesImageEffect implements IImageEffect {
     public final int spriteSize;
     public final int spritesW;
     public final int spritesH;
+
     public MirrorSubspritesImageEffect(int sub, int sub1, int sub2) {
         spriteSize = sub;
         spritesW = sub1;

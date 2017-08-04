@@ -12,5 +12,6 @@ import gabien.IGrInDriver;
 public interface IImageEffect {
     // Must be unique between all other configurations of image effect. Do not use ':'.
     String uniqueToString();
+
     IGrInDriver.IImage process(IGrInDriver.IImage input);
 }

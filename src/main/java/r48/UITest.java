@@ -8,13 +8,12 @@ package r48;
 import gabien.GaBIEn;
 import gabien.ui.Rect;
 import gabien.ui.UIPanel;
+import gabien.ui.UIScrollLayout;
 import gabien.ui.UITextButton;
 import r48.dbs.TXDB;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
-import gabien.ui.UIScrollLayout;
 
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.*;

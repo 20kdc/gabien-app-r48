@@ -9,7 +9,6 @@ import gabien.IGrInDriver;
 import gabienapp.Application;
 import r48.io.r2k.R2kUtil;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.InflaterInputStream;

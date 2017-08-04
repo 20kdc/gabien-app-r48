@@ -41,11 +41,13 @@ public abstract class ArraySchemaElement extends SchemaElement {
             // Only check selectedStart.
             int selectedStart = -1;
             int selectedEnd = -1;
+
             // Because of name ambiguity, but also whacks uiSVL
             public void containerRCL() {
                 run();
                 uiSVL.setBounds(uiSVL.getBounds());
             }
+
             @Override
             public void run() {
                 uiSVL.panels.clear();
@@ -120,7 +122,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                                     containerRCL();
                                 }
                             }, FontSizes.schemaButtonTextHeight);
-                        } else if ((mi < selectedStart) || (mi > selectedEnd)){
+                        } else if ((mi < selectedStart) || (mi > selectedEnd)) {
                             uie = new UIAppendButton(TXDB.get("Select..."), uie, new Runnable() {
                                 @Override
                                 public void run() {
@@ -274,6 +276,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     protected SchemaElement getElementContextualSchema(RubyIO[] arr, int start, int length) {
         throw new RuntimeException("Group length was used, but no contextual schema was defined for it.");
     }
+
     protected abstract SchemaElement getElementSchema(int j);
 
     // Used to replace groups of elements with a single editor, where this makes sense.

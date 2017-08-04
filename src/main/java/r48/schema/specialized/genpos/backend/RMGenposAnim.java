@@ -4,16 +4,9 @@
  */
 package r48.schema.specialized.genpos.backend;
 
-import gabien.IGrInDriver;
 import r48.AppMain;
 import r48.ArrayUtils;
 import r48.RubyIO;
-import r48.RubyTable;
-import r48.dbs.TXDB;
-import r48.schema.SchemaElement;
-import r48.schema.integers.IntegerSchemaElement;
-import r48.schema.specialized.IMagicalBinder;
-import r48.schema.specialized.MagicalBindingSchemaElement;
 import r48.schema.specialized.genpos.IGenposAnim;
 import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.util.SchemaPath;
@@ -29,15 +22,15 @@ import r48.schema.util.SchemaPath;
  * B: Frame Editor
  * C: Cell Editor
  * The 3-pane layout is controlled entirely from this class. Good luck.
- *
+ * <p/>
  * -- POST-GENPOS-REFACTOR --
  * Ok, what happens here is:
  * This class handles some generic object with an @frames array (which must contain "RPG::Animation::Frame"-class objects).
  * It delegates all the actual per-frame work to the frame handler you give it.
  * This lets this class manage both 2k3-era and RGSS-era animation objects,
- *  while still letting the details in the frames (which are vastly different)
- *  be handled elsewhere.
- *
+ * while still letting the details in the frames (which are vastly different)
+ * be handled elsewhere.
+ * <p/>
  * Created on 2/17/17.
  */
 public class RMGenposAnim implements IGenposAnim {

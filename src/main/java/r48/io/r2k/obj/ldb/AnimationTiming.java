@@ -22,6 +22,7 @@ public class AnimationTiming extends R2kObject {
     public IntegerR2kStruct flashBlue = new IntegerR2kStruct(31);
     public IntegerR2kStruct flashPower = new IntegerR2kStruct(31);
     public IntegerR2kStruct screenShake = new IntegerR2kStruct(0);
+
     @Override
     public Index[] getIndices() {
         return new Index[] {

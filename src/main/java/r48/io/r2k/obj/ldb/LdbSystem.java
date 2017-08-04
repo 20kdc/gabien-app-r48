@@ -7,7 +7,6 @@ package r48.io.r2k.obj.ldb;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.*;
 import r48.io.r2k.obj.Music;
 import r48.io.r2k.obj.Sound;
@@ -171,6 +170,7 @@ public class LdbSystem extends R2kObject {
         public IntegerR2kStruct armourId = new IntegerR2kStruct(0);
         public IntegerR2kStruct helmetId = new IntegerR2kStruct(0);
         public IntegerR2kStruct accessoryId = new IntegerR2kStruct(0);
+
         @Override
         public Index[] getIndices() {
             return new Index[] {

@@ -7,8 +7,6 @@ package r48.map.mapinfos;
 import gabien.ui.IConsumer;
 import r48.AppMain;
 import r48.RubyIO;
-import r48.dbs.FormatSyntax;
-import r48.dbs.TXDB;
 import r48.schema.util.SchemaPath;
 
 import java.util.Comparator;

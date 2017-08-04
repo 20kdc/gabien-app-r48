@@ -19,7 +19,6 @@ import r48.map.imaging.CacheImageLoader;
 import r48.map.imaging.ChainedImageLoader;
 import r48.map.imaging.GabienImageLoader;
 import r48.map.imaging.IImageLoader;
-import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
 import r48.map.tiles.ITileRenderer;

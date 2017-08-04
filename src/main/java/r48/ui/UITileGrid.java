@@ -6,7 +6,6 @@
 package r48.ui;
 
 import gabien.IGrInDriver;
-import r48.AppMain;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 
@@ -25,6 +24,7 @@ public class UITileGrid extends UIGrid {
     public UITileGrid(UIMapView mv, int tStart, int tileCount, int aTile, int[] remap) {
         this(mv.renderer, mv.currentLayer, tStart, tileCount, aTile, remap);
     }
+
     public UITileGrid(StuffRenderer sr, int l, int tStart, int tileCount, int aTile, int[] remap) {
         super(sr.tileRenderer.getTileSize(), sr.tileRenderer.getTileSize(), tileCount);
         canMultiSelect = aTile == 0;

@@ -11,7 +11,6 @@ import r48.dbs.TSDB;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.ui.UIGrid;
 import r48.ui.UITileGrid;
 
 /**
@@ -20,6 +19,7 @@ import r48.ui.UITileGrid;
 public class EventTileReplacerSchemaElement extends SchemaElement {
     public final TSDB displayMap;
     public final int layer;
+
     public EventTileReplacerSchemaElement(TSDB dmap, int l) {
         displayMap = dmap;
         layer = l;

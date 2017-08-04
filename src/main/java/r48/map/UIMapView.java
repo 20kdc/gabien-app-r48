@@ -19,9 +19,6 @@ import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.drawlayers.PassabilityMapViewDrawLayer;
 import r48.schema.util.SchemaPath;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-
 /**
  * Note: this class will slightly draw out of bounds.
  * Created on 12/27/16.

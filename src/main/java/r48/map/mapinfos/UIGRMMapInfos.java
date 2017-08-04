@@ -13,9 +13,7 @@ import r48.dbs.TXDB;
 import r48.map.UIMapViewContainer;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
-import gabien.ui.UIScrollLayout;
 import r48.ui.UINSVertLayout;
-import r48.ui.UITextPrompt;
 
 import java.util.Comparator;
 import java.util.LinkedList;

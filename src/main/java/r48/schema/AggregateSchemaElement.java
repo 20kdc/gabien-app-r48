@@ -7,11 +7,11 @@ package r48.schema;
 
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
+import gabien.ui.UIScrollLayout;
 import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import gabien.ui.UIScrollLayout;
 
 import java.util.Collections;
 import java.util.LinkedList;

@@ -19,9 +19,11 @@ import r48.schema.util.SchemaPath;
  */
 public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     public int mode = 0;
+
     public R2kSystemDefaultsInstallerSchemaElement(int i) {
         mode = i;
     }
+
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
         UIPanel panel = new UIPanel();

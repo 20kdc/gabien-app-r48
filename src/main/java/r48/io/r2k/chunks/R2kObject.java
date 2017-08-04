@@ -25,6 +25,7 @@ public abstract class R2kObject implements IR2kStruct {
     public boolean terminatable() {
         return false;
     }
+
     public boolean disableSanity() {
         return false;
     }

@@ -15,6 +15,7 @@ import java.util.WeakHashMap;
  */
 public class ImageFXCache {
     public WeakHashMap<IGrInDriver.IImage, HashMap<String, IGrInDriver.IImage>> effectsMap = new WeakHashMap<IGrInDriver.IImage, HashMap<String, IGrInDriver.IImage>>();
+
     public IGrInDriver.IImage process(IGrInDriver.IImage input, LinkedList<IImageEffect> effectsChain) {
         if (effectsChain.size() == 0)
             return input;
@@ -35,6 +36,7 @@ public class ImageFXCache {
         }
         return result;
     }
+
     public IGrInDriver.IImage process(IGrInDriver.IImage input, IImageEffect... effectsChain) {
         if (effectsChain.length == 0)
             return input;

@@ -5,12 +5,14 @@
 
 package r48.schema;
 
-import gabien.ui.*;
+import gabien.ui.IFunction;
+import gabien.ui.UIElement;
+import gabien.ui.UILabel;
+import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.IProxySchemaElement;
-import r48.dbs.RPGCommand;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UINSVertLayout;

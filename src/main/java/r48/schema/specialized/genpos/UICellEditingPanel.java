@@ -7,8 +7,6 @@ package r48.schema.specialized.genpos;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.FontSizes;
-import r48.RubyTable;
-import r48.dbs.TXDB;
 import r48.schema.util.SchemaPath;
 
 import java.util.Collections;

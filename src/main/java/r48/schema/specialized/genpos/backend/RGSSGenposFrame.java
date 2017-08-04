@@ -24,7 +24,7 @@ import r48.ui.ISpritesheetProvider;
 
 /**
  * This exists so that I can try and reuse RMGenposAnim code for the 2k3 animations,
- *  while keeping this unreusable code here.
+ * while keeping this unreusable code here.
  * Created on 29/07/17.
  */
 public class RGSSGenposFrame implements IGenposFrame {
@@ -136,13 +136,13 @@ public class RGSSGenposFrame implements IGenposFrame {
                         return new ISpritesheetProvider() {
                             @Override
                             public int itemWidth() {
-                        return 96;
-                    }
+                                return 96;
+                            }
 
                             @Override
                             public int itemHeight() {
-                        return 96;
-                    }
+                                return 96;
+                            }
 
                             @Override
                             public int itemCount() {

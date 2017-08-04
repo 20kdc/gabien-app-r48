@@ -5,7 +5,10 @@
 
 package r48.schema;
 
-import gabien.ui.*;
+import gabien.ui.UIElement;
+import gabien.ui.UIScrollLayout;
+import gabien.ui.UISplitterLayout;
+import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;

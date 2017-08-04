@@ -11,15 +11,14 @@ package r48.imagefx;
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
 
-import java.util.LinkedList;
-
 /**
  * NOTE: This doesn't emulate what appears to be an automatic gamma-adjust in RPG_RT & EasyRPG Player,
- *  that actually makes this look completely off. I don't know how to emulate that.
+ * that actually makes this look completely off. I don't know how to emulate that.
  * Created on 31/07/17.
  */
 public class ToneImageEffect implements IImageEffect {
     public final int ar, ag, ab, as;
+
     public ToneImageEffect(int i, int i1, int i2, int i3) {
         ar = i;
         ag = i1;

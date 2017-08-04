@@ -5,7 +5,6 @@
 package r48.map.tiles;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import r48.map.UIMapView;
 import r48.ui.UITileGrid;
 

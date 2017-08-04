@@ -114,6 +114,7 @@ public class ObjectDB {
             return modifiedObjects.contains(potentiallyModified);
         return false;
     }
+
     public boolean getObjectNewlyCreated(String id) {
         WeakReference<RubyIO> riow = objectMap.get(id);
         if (riow == null)

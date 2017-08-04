@@ -23,9 +23,11 @@ import java.io.File;
  */
 public class FileSelectorSchemaElement extends SchemaElement {
     public final String pathExtender;
+
     public FileSelectorSchemaElement(String ext) {
         pathExtender = ext;
     }
+
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         UIScrollLayout uiSVL = new UIScrollLayout(true);

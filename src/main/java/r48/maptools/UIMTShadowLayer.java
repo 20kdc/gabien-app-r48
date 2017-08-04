@@ -10,7 +10,6 @@ import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
-import gabien.ui.UIScrollLayout;
 
 /**
  * UIMTAutotile isn't flexible enough for this.

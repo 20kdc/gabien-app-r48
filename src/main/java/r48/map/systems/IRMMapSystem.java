@@ -15,6 +15,7 @@ public interface IRMMapSystem {
     // Expects @events containing events with @pages containing @list.
     // Pages can have null holes in it because R2k.
     RMMapData[] getAllMaps();
+
     // Expects @name and @list. Note these have to be in order.
     RubyIO[] getAllCommonEvents();
 

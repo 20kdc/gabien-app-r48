@@ -30,6 +30,7 @@ public class Animation extends R2kObject {
             return new AnimationFrame();
         }
     });
+
     @Override
     public Index[] getIndices() {
         return new Index[] {

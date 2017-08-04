@@ -27,6 +27,7 @@ public class EnemyAction extends R2kObject {
     public BooleanR2kStruct switchOff = new BooleanR2kStruct(false);
     public IntegerR2kStruct switchOffId = new IntegerR2kStruct(1);
     public IntegerR2kStruct rating = new IntegerR2kStruct(50);
+
     @Override
     public Index[] getIndices() {
         return new Index[] {

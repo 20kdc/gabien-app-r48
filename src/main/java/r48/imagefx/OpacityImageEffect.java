@@ -12,6 +12,7 @@ import gabien.IGrInDriver;
  */
 public class OpacityImageEffect implements IImageEffect {
     public final int opacity;
+
     public OpacityImageEffect(int o) {
         opacity = o;
     }

@@ -11,7 +11,10 @@ import r48.io.r2k.files.DatabaseIO;
 import r48.io.r2k.files.MapIO;
 import r48.io.r2k.files.MapTreeIO;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * A beginning?

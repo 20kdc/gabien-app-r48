@@ -24,6 +24,7 @@ public class AnimationCell extends R2kObject {
     public IntegerR2kStruct toneB = new IntegerR2kStruct(100);
     public IntegerR2kStruct toneG2 = new IntegerR2kStruct(100);
     public IntegerR2kStruct transparency = new IntegerR2kStruct(0);
+
     @Override
     public Index[] getIndices() {
         return new Index[] {

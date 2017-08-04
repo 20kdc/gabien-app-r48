@@ -4,20 +4,10 @@
  */
 package r48.schema.specialized.genpos;
 
-import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UIPanel;
-import r48.AppMain;
-import r48.ArrayUtils;
-import r48.RubyIO;
-import r48.RubyTable;
 import r48.dbs.TXDB;
-import r48.schema.SchemaElement;
-import r48.schema.integers.IntegerSchemaElement;
-import r48.schema.specialized.IMagicalBinder;
-import r48.schema.specialized.MagicalBindingSchemaElement;
 import r48.schema.util.ISchemaHost;
-import r48.schema.util.SchemaPath;
 
 /**
  * Animation Software For Serious Animation Purposes.

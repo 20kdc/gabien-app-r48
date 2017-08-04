@@ -13,6 +13,7 @@ package r48.schema;
  */
 public interface IFieldSchemaElement {
     int getDefaultFieldWidth();
+
     // NOTE: This is good for one buildHoldingEditor only.
     void setFieldWidthOverride(int w);
 }

@@ -13,7 +13,6 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.UIMapView;
-import r48.map.UIMapViewContainer;
 
 /**
  * Created on 18/06/17.
@@ -52,6 +51,7 @@ public class UIMTPopupButtons extends gabien.ui.UIPopupMenu {
 
     private static class UIMTMapResizer extends gabien.ui.UIPanel {
         public UISplitterLayout root;
+
         private UIMTMapResizer(final UIMapView view) {
             final UINumberBox a = new UINumberBox(FontSizes.textDialogFieldTextHeight);
             final UINumberBox b = new UINumberBox(FontSizes.textDialogFieldTextHeight);

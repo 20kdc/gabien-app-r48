@@ -71,6 +71,7 @@ public class Troop extends R2kObject {
         public IntegerR2kStruct x = new IntegerR2kStruct(0);
         public IntegerR2kStruct y = new IntegerR2kStruct(0);
         public BooleanR2kStruct invis = new BooleanR2kStruct(false);
+
         @Override
         public Index[] getIndices() {
             return new Index[] {

@@ -9,7 +9,6 @@ import r48.RubyIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.chunks.R2kObject;
 import r48.io.r2k.chunks.SparseArrayAR2kStruct;
-import r48.io.r2k.chunks.SparseArrayHR2kStruct;
 
 /**
  * Created on 07/06/17.
@@ -21,6 +20,7 @@ public class AnimationFrame extends R2kObject {
             return new AnimationCell();
         }
     });
+
     @Override
     public Index[] getIndices() {
         return new Index[] {

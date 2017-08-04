@@ -12,8 +12,6 @@ import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.chunks.OptionalR2kStruct;
 import r48.io.r2k.chunks.R2kObject;
 
-import java.util.Optional;
-
 /**
  * Created on 02/06/17.
  */

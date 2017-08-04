@@ -12,7 +12,6 @@ import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.NullEventGraphicRenderer;
 import r48.map.imaging.CacheImageLoader;
 import r48.map.imaging.GabienImageLoader;
-import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.NullTileRenderer;
 

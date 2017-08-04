@@ -5,7 +5,6 @@
 
 package r48.dbs;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
@@ -212,6 +211,7 @@ public class ATDB {
         }
         calculateInverseMapRulesEngine(file);
     }
+
     public void calculateInverseMapRulesEngine(String file) throws IOException {
         DBLoader.readFile(file, new IDatabase() {
             @Override

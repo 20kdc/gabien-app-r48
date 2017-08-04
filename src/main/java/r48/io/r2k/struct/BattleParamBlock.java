@@ -4,7 +4,6 @@
  */
 package r48.io.r2k.struct;
 
-import r48.ArrayUtils;
 import r48.RubyIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
@@ -19,6 +18,7 @@ import java.io.OutputStream;
  */
 public class BattleParamBlock implements IR2kStruct {
     public short[] array = new short[6];
+
     @Override
     public RubyIO asRIO() {
         RubyIO arr = new RubyIO();

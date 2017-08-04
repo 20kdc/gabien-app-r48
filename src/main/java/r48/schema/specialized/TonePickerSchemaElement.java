@@ -26,6 +26,7 @@ import r48.schema.util.SchemaPath;
  */
 public class TonePickerSchemaElement extends SchemaElement {
     public String rP, gP, bP, sP;
+
     public TonePickerSchemaElement(String rPath, String gPath, String bPath, String sPath) {
         rP = rPath;
         gP = gPath;

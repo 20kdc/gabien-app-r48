@@ -20,9 +20,11 @@ public class ArraySizeR2kInterpretable<T extends IR2kInterpretable> implements I
     public int bytes = 0;
     // Buffer used to ensure consistency
     public byte[] resultBytes = null;
+
     public ArraySizeR2kInterpretable() {
 
     }
+
     public ArraySizeR2kInterpretable(int b) {
         bytes = b;
     }

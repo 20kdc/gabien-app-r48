@@ -11,7 +11,6 @@ import gabien.ui.Rect;
 import r48.AppMain;
 import r48.ArrayUtils;
 import r48.RubyIO;
-import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;

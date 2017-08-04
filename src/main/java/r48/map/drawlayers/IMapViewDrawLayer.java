@@ -6,7 +6,6 @@
 package r48.map.drawlayers;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import r48.map.IMapViewCallbacks;
 
 /**
@@ -16,5 +15,6 @@ import r48.map.IMapViewCallbacks;
  */
 public interface IMapViewDrawLayer {
     String getName();
+
     void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd);
 }

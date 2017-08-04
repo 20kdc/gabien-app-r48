@@ -7,14 +7,12 @@ package r48.maptools;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.ui.Rect;
-import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UIPanel;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
-import r48.map.UIMapView;
 import r48.ui.UIAppendButton;
 
 /**

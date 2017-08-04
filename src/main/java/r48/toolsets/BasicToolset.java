@@ -19,7 +19,6 @@ import r48.imagefx.ToneImageEffect;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIFontSizeConfigurator;
-import gabien.ui.UIScrollLayout;
 import r48.ui.UITextPrompt;
 
 import java.io.PrintStream;
@@ -30,14 +29,15 @@ import java.util.LinkedList;
 /**
  * Provides some basic tools for changing the configuration of R48 and doing various bits and pieces.
  * Note that the "rebuild UI" button was removed - the UI (specifically MapInfos right now)
- *  attaches modification notifiers which can't go away until the whole ObjectDB is gone.
+ * attaches modification notifiers which can't go away until the whole ObjectDB is gone.
  * Better to avoid potential leaks by just freeing everything - it's expected that the tabs survive for the lifetime of the application,
- *  that is, until shutdown is called on AppMain which disconnects everything that could possibly cause such a leak.
+ * that is, until shutdown is called on AppMain which disconnects everything that could possibly cause such a leak.
  * Created on 04/06/17.
  */
 public class BasicToolset implements IToolset {
     private final IConsumer<UIElement> virtWM, realWM;
     private final IConsumer<IConsumer<UIElement>> setWM;
+
     public BasicToolset(UIWindowView rootView, IConsumer<UIElement> uiTicker, IConsumer<IConsumer<UIElement>> swm) {
         virtWM = rootView;
         realWM = uiTicker;
@@ -195,6 +195,7 @@ public class BasicToolset implements IToolset {
                                 final IGrInDriver.IImage totem = GaBIEn.getImage("tonetotm.png");
                                 UIElement hueChanger = new UIElement() {
                                     public double time = 0;
+
                                     @Override
                                     public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
                                         double time2 = time;
@@ -280,6 +281,7 @@ public class BasicToolset implements IToolset {
                 }, FontSizes.menuTextHeight, false)
         };
     }
+
     private static UIElement makeFileList() {
         LinkedList<String> s = AppMain.schemas.listFileDefs();
         LinkedList<Runnable> r = new LinkedList<Runnable>();

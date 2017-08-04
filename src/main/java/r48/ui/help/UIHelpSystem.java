@@ -8,11 +8,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.FontSizes;
-import r48.dbs.DBLoader;
-import r48.dbs.IDatabase;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.LinkedList;
 
 /**

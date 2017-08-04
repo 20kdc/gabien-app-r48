@@ -7,17 +7,14 @@ package r48.schema.specialized.genpos.backend;
 import gabien.IGrInDriver;
 import gabien.ui.IFunction;
 import gabien.ui.Rect;
-import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.ArrayUtils;
 import r48.RubyIO;
-import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.imagefx.HueShiftImageEffect;
 import r48.map.imaging.IImageLoader;
 import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
-import r48.schema.integers.IntBooleanSchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.util.SchemaPath;
@@ -30,14 +27,14 @@ import java.util.Map;
 public class TroopGenposFrame implements IGenposFrame {
 
     public static final int[] gameBattleDisplay = new int[] {
-                // 320x160 (RPG Maker 2000)
-                0, 0,
-                320, 0,
-                0, 160,
-                320, 160,
-                // 2k3?
-                0, 240,
-                320, 240
+            // 320x160 (RPG Maker 2000)
+            0, 0,
+            320, 0,
+            0, 160,
+            320, 160,
+            // 2k3?
+            0, 240,
+            320, 240
     };
 
     public IGrInDriver.IImage battleBkg;
@@ -45,6 +42,7 @@ public class TroopGenposFrame implements IGenposFrame {
     public SchemaPath troopPath;
     public IGrInDriver.IImage[] enemies;
     public Runnable changed;
+
     public TroopGenposFrame(RubyIO t, SchemaPath path, Runnable change) {
         troop = t;
         troopPath = path;

@@ -6,7 +6,6 @@ package r48.map.drawlayers;
 
 import gabien.IGrDriver;
 import gabien.ui.UILabel;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
@@ -22,6 +21,7 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
     public final RubyTable targetTable;
     public final int tileLayer;
     public final ITileRenderer tr;
+
     public TileMapViewDrawLayer(RubyTable table, int i, ITileRenderer itr) {
         targetTable = table;
         tileLayer = i;

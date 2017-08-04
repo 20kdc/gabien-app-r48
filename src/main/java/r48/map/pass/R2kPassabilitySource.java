@@ -19,12 +19,14 @@ public class R2kPassabilitySource implements IPassabilitySource {
     public final RubyTable mapTable;
     public final RubyIO tileset;
     public final boolean scrollW, scrollH;
+
     public R2kPassabilitySource(RubyTable rt, RubyIO ts, boolean w, boolean h) {
         mapTable = rt;
         tileset = ts;
         scrollW = w;
         scrollH = h;
     }
+
     @Override
     public int getPassability(int x, int y) {
         if (mapTable.outOfBounds(x, y))

@@ -6,7 +6,6 @@
 package r48.map;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 
 /**
  * Used for map-view-tools.

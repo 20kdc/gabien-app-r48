@@ -6,9 +6,7 @@
 package r48.schema.util;
 
 import gabien.ui.UIElement;
-import r48.RubyIO;
 import r48.map.StuffRenderer;
-import r48.schema.SchemaElement;
 
 /**
  * Used to make the Schema interface slightly saner to use

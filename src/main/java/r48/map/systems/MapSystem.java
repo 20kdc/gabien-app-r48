@@ -28,6 +28,7 @@ public abstract class MapSystem {
     // All implementations will probably use a common image loader across the mapsystem.
     // It's not an absolute, but it's pretty likely.
     protected final IImageLoader imageLoader;
+
     public MapSystem(IImageLoader imgLoad) {
         imageLoader = imgLoad;
     }

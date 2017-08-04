@@ -6,16 +6,20 @@
 package r48.ui;
 
 import gabien.IGrInDriver;
-import r48.RubyIO;
 
 /**
  * Created on 29/07/17.
  */
 public interface ISpritesheetProvider {
     int itemWidth();
+
     int itemHeight();
+
     int itemCount();
+
     int mapValToIdx(int itemVal);
+
     int mapIdxToVal(int idx);
+
     void drawItem(int t, int x, int y, IGrInDriver igd);
 }

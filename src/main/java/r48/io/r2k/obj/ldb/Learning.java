@@ -6,13 +6,8 @@ package r48.io.r2k.obj.ldb;
 
 import r48.RubyIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.chunks.IR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.chunks.R2kObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Created on 05/06/17.

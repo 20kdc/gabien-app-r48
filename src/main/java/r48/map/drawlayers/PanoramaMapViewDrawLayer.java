@@ -16,6 +16,7 @@ import r48.map.IMapViewCallbacks;
  */
 public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
     private final IGrInDriver.IImage im;
+
     public PanoramaMapViewDrawLayer(IGrInDriver.IImage pano) {
         im = pano;
     }

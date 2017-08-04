@@ -22,6 +22,7 @@ import r48.schema.util.SchemaPath;
  */
 public class MapPositionHelperSchemaElement extends SchemaElement {
     public final String pathA, pathB, pathC;
+
     public MapPositionHelperSchemaElement(String a, String b, String c) {
         pathA = a;
         pathB = b;

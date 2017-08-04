@@ -10,7 +10,6 @@ import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
-import r48.schema.specialized.SpritesheetCoreSchemaElement;
 import r48.schema.specialized.TonePickerSchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.ISchemaHost;

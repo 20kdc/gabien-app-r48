@@ -18,8 +18,9 @@ public class AutoTileTypeField {
         start = a;
         length = b;
         databaseId = c;
-        considerSameAs = new int[] { start };
+        considerSameAs = new int[] {start};
     }
+
     public AutoTileTypeField(int a, int b, int c, int[] considerSame) {
         start = a;
         length = b;

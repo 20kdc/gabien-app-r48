@@ -5,7 +5,6 @@
 package r48.map.events;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import r48.RubyIO;
 
 /**

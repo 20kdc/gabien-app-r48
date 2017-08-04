@@ -4,17 +4,12 @@
  */
 package r48.schema.specialized.genpos;
 
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UIPanel;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.RubyTable;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.ui.UIAppendButton;
-import gabien.ui.UIScrollLayout;
 
 import java.util.LinkedList;
 

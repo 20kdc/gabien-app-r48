@@ -6,13 +6,9 @@ package r48.schema.specialized.genpos;
 
 import gabien.IGrInDriver;
 import gabien.ScissorGrInDriver;
-import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import r48.RubyIO;
-import r48.RubyTable;
-import r48.schema.util.SchemaPath;
 import r48.ui.UIGrid;
 
 /**

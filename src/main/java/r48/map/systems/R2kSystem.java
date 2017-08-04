@@ -25,7 +25,6 @@ import r48.map.tiles.LcfTileRenderer;
 import r48.toolsets.RMTranscriptDumper;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 

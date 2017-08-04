@@ -11,5 +11,6 @@ import r48.RubyIO;
  */
 public interface IMagicalBinder {
     RubyIO targetToBound(RubyIO target);
+
     boolean applyBoundToTarget(RubyIO bound, RubyIO target);
 }

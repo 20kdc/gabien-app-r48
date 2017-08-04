@@ -20,6 +20,7 @@ import r48.schema.util.SchemaPath;
 public class HiddenSchemaElement extends SchemaElement implements IProxySchemaElement {
     public final SchemaElement content;
     public final IFunction<RubyIO, Boolean> show;
+
     public HiddenSchemaElement(SchemaElement hide, IFunction<RubyIO, Boolean> shouldShow) {
         content = hide;
         show = shouldShow;

@@ -15,7 +15,7 @@ import r48.schema.util.SchemaPath;
  * In a way, inspired by a game from Reflexive Entertainment (Rebound : Lost Worlds), of all things.
  * In that game, the editor seemed to use some sort of internal reflection data to allow editing all sorts of game objects.
  * This is a similar case, except we don't have a repository of objects to work with, just a single non-recursive tree.
- *
+ * <p/>
  * Created on 12/28/16.
  */
 public abstract class SchemaElement {

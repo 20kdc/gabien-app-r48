@@ -17,6 +17,7 @@ public class Terms extends R2kObject {
     // 380 to 506 incl.
     // 506 - 380 == 127
     public StringR2kStruct[] termArray = new StringR2kStruct[127];
+
     public Terms() {
         for (int i = 0; i < 127; i++)
             termArray[i] = new StringR2kStruct();

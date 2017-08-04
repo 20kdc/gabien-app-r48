@@ -17,29 +17,29 @@ import r48.io.r2k.chunks.StringR2kStruct;
  * Finishing this makes R48 feature-complete for the R2k backend, as far as I know.
  * There might be some rough edges that need to be smoothed (animation editor, maybe work out how to allow the Root MI without breakage...), but it'll be SOMETHING.
  * Stuff is done, for fun. Even though writing this serialization code took two weeks.
- *
- *  -- A MESSAGE TO USERS --
+ * <p/>
+ * -- A MESSAGE TO USERS --
  * When EasyRPG Editor is as complete as this, use it.
  * Abandon this decaying codebase. It works. That's it.
  * This thing was designed to handle Ruby objects. It does NOT handle Lucifer databases well, as this ton of classes proves.
- *
- *  -- A MESSAGE TO EASYRPG EDITOR --
+ * <p/>
+ * -- A MESSAGE TO EASYRPG EDITOR --
  * This is a message to EasyRPG Editor devs.
- *
+ * <p/>
  * Firstly, please stop importing everything to XML! Yes, it's nicer, but it breaks compatibility.
  * You aren't going to be extending (majorly) yet, and don't try until you have everything sorted out.
- *
+ * <p/>
  * Secondly, "Why didn't you contribute to EasyRPG Editor instead?"
  * I'm not that good with Qt and C++. At all. Or most UI frameworks. ^.^;
  * (Keep in mind my entire UI framework is full of N.I.H, then you should understand...)
  * Plus, see 1. Importing to XML makes testing rather... difficult. Even more so before I started using Ib as a test subject.
- *
+ * <p/>
  * But the datafiles on the command lists, at least, you should be able to port those!
  * And I hope you do. This editor SUCKS. I wrote it because it's something.
  * And also maybe ~~a little~~ a lot of wanting to write something actually useful for people.
- *
+ * <p/>
  * I'm going to embed a link to this note in the release tagline, accessible with the Konami Code,
- *  or via looking at the final JAR's data.
+ * or via looking at the final JAR's data.
  * My editor has a lot of rough corners, but I'm going to take a rest.
  * Either use this, or do better than me - you have everything I wrote at your disposal.
  */

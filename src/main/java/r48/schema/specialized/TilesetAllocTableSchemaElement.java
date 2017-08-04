@@ -18,6 +18,7 @@ import r48.schema.specialized.tbleditors.ITableCellEditor;
  */
 public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<StuffRenderer> {
     public TSDB allocSource;
+
     public TilesetAllocTableSchemaElement(TSDB source, String iVar, String wVar, String hVar, int dw, int dh, int defL, ITableCellEditor itce, int[] defVal) {
         super(iVar, wVar, hVar, dw, dh, defL, itce, defVal);
         allocSource = source;

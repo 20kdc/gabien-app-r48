@@ -30,6 +30,7 @@ public class BattlerAnimation extends R2kObject {
             return new BAE();
         }
     });
+
     @Override
     public Index[] getIndices() {
         return new Index[] {
