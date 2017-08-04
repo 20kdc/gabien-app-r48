@@ -63,9 +63,9 @@ public class UICellEditingPanel extends UIPanel {
             sp.host = root.hostLauncher;
             return sp.editor.buildHoldingEditor(sp.targetElement, root.hostLauncher, sp);
         }
-        UIPanel uip = new UIPanel();
-        uip.setBounds(new Rect(0, 0, 32, 1));
-        return uip;
+        UIPanel panel = new UIPanel();
+        panel.setBounds(new Rect(0, 0, 0, 0));
+        return panel;
     }
 
     public void somethingChanged() {

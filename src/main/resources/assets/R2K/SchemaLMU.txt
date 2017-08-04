@@ -9,7 +9,7 @@
 @item boolean
 @actor boolean
 @timer_1 boolean
-@timer_2 boolean
+@timer_2_2k3 boolean
 
 : RPG::EventPage::Condition
 C name Class.RPG::EventPage::Condition $ | [RPG::EventPage::Condition.switchA]A[RPG::EventPage::Condition.switchB]A[RPG::EventPage::Condition.var]A[RPG::EventPage::Condition.item]A[RPG::EventPage::Condition.actor]A[RPG::EventPage::Condition.timer1]A[RPG::EventPage::Condition.timer2]A
@@ -19,18 +19,25 @@ C name Interp.RPG::EventPage::Condition.var @valid@var_>=_or_2k3op @var_id @var_
 C name Interp.RPG::EventPage::Condition.item @valid@item @item_id | {A=T=, Party Has Item @[item_id]B}
 C name Interp.RPG::EventPage::Condition.actor @valid@actor @actor_id | {A=T=, Party Has Actor @[actor_id]B}
 C name Interp.RPG::EventPage::Condition.timer1 @valid@timer_1 @timer_1_secs | {A=T=, Timer1 <= #Bs}
-C name Interp.RPG::EventPage::Condition.timer2 @valid@timer_2 @timer_2_secs_2k3 | {A=T=, Timer2 <= #Bs}
-@valid EventPage_Condition_Flags
-@switch_a switch_id
-@switch_b switch_id
-@var_id var_id
+C name Interp.RPG::EventPage::Condition.timer2 @valid@timer_2_2k3 @timer_2_secs_2k3 | {A=T=, Timer2 <= #Bs}
++hide iV @valid EventPage_Condition_Flags
++path @valid@switch_a boolean
++condHide @valid@switch_a iV @switch_a switch_id
++path @valid@switch_b boolean
++condHide @valid@switch_b iV @switch_b switch_id
++path @valid@var_>=_or_2k3op boolean
++condHide @valid@var_>=_or_2k3op iV @var_id var_id
 e var_compare_op_2k3 0 == 1 >= 2 <= 3 > 4 < 5 !=
-+optIV @var_compare_op_2k3 var_compare_op_2k3
-@var_value int
-@item_id item_id
-@actor_id actor_id
-@timer_1_secs int
-@timer_2_secs_2k3 int
++condHide @valid@var_>=_or_2k3op optIV @var_compare_op_2k3 var_compare_op_2k3
++condHide @valid@var_>=_or_2k3op iV @var_value int
++path @valid@item boolean
++condHide @valid@item iV @item_id item_id
++path @valid@actor boolean
++condHide @valid@actor iV @actor_id actor_id
++path @valid@timer_1 boolean
++condHide @valid@timer_1 iV @timer_1_secs int
++path @valid@timer_2_2k3 boolean
++condHide @valid@timer_2_2k3 optIV @timer_2_secs_2k3 int
 
 : RPG::MoveRoute
 @list MoveListEditor

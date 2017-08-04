@@ -12,6 +12,8 @@ import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.chunks.OptionalR2kStruct;
 import r48.io.r2k.chunks.R2kObject;
 
+import java.util.Optional;
+
 /**
  * Created on 02/06/17.
  */
@@ -23,7 +25,7 @@ public class EventPageCondition extends R2kObject {
             "@item",
             "@actor",
             "@timer_1",
-            "@timer_2",
+            "@timer_2_2k3",
     });
     public IntegerR2kStruct switchAId = new IntegerR2kStruct(1);
     public IntegerR2kStruct switchBId = new IntegerR2kStruct(1);
@@ -32,7 +34,12 @@ public class EventPageCondition extends R2kObject {
     public IntegerR2kStruct itemId = new IntegerR2kStruct(1);
     public IntegerR2kStruct actorId = new IntegerR2kStruct(1);
     public IntegerR2kStruct timer1Sec = new IntegerR2kStruct(0);
-    public IntegerR2kStruct timer2Sec = new IntegerR2kStruct(0);
+    public OptionalR2kStruct<IntegerR2kStruct> timer2Sec = new OptionalR2kStruct<IntegerR2kStruct>(new ISupplier<IntegerR2kStruct>() {
+        @Override
+        public IntegerR2kStruct get() {
+            return new IntegerR2kStruct(0);
+        }
+    });
     public OptionalR2kStruct<IntegerR2kStruct> compareOp = new OptionalR2kStruct<IntegerR2kStruct>(new ISupplier<IntegerR2kStruct>() {
         @Override
         public IntegerR2kStruct get() {

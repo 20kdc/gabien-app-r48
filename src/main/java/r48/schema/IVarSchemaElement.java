@@ -65,20 +65,7 @@ public class IVarSchemaElement extends SchemaElement implements IFieldSchemaElem
                     }
                 }, FontSizes.schemaButtonTextHeight);
         }
-        final UIElement elem = e2;
-        final UIPanel panel = new UIPanel() {
-            @Override
-            public void setBounds(Rect r) {
-                super.setBounds(r);
-                // just leave the bounds as-is on UIL, but...
-                int lw = uil.getBounds().width;
-                elem.setBounds(new Rect(lw, 0, r.width - lw, r.height));
-            }
-        };
-        panel.allElements.add(uil);
-        panel.allElements.add(elem);
-        panel.setBounds(new Rect(0, 0, 128, Math.max(uil.getBounds().height, elem.getBounds().height)));
-        return panel;
+        return new UISplitterLayout(uil, e2, false, 0);
     }
 
     @Override

@@ -153,7 +153,35 @@ public class SDB {
                             String a = TXDB.get(outerContext, base);
                             return new IVarSchemaElement(base, a, get(), true);
                         }
-
+                        if (text.equals("iV")) {
+                            String base = args[point++];
+                            String a = TXDB.get(outerContext, base);
+                            return new IVarSchemaElement(base, a, get(), false);
+                        }
+                        if (text.equals("hide")) {
+                            SchemaElement hide = get();
+                            return new HiddenSchemaElement(hide, new IFunction<RubyIO, Boolean>() {
+                                @Override
+                                public Boolean apply(RubyIO rubyIO) {
+                                    return false;
+                                }
+                            });
+                        }
+                        if (text.equals("condHide")) {
+                            final String path = args[point++];
+                            SchemaElement hide = get();
+                            return new HiddenSchemaElement(hide, new IFunction<RubyIO, Boolean>() {
+                                @Override
+                                public Boolean apply(RubyIO rubyIO) {
+                                    return PathSyntax.parse(rubyIO, path).type == 'T';
+                                }
+                            });
+                        }
+                        if (text.equals("path")) {
+                            String path = args[point++];
+                            SchemaElement hide = get();
+                            return new PathSchemaElement(path, TXDB.get(outerContext, path), hide);
+                        }
                         if (text.equals("array")) {
                             int n = Integer.parseInt(args[point++]);
                             return new StandardArraySchemaElement(get(), n, false);

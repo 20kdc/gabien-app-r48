@@ -282,7 +282,7 @@ C name Class.RPG::Enemy @name | #A
 @fatigue boolean
 @enemy_hp boolean
 @actor_hp boolean
-@turn_enemy boolean
+@turn_enemy_2k3 boolean
 
 .rpg_troop_pagecondition_flags_b
 @turn_actor boolean
@@ -290,7 +290,7 @@ C name Class.RPG::Enemy @name | #A
 
 : RPG::Troop::PageCondition
 @flags_a subwindow rpg_troop_pagecondition_flags_a
-@flags_b_r2k subwindow rpg_troop_pagecondition_flags_b
+@flags_b_2k3 subwindow rpg_troop_pagecondition_flags_b
 @switch_a_id switch_id
 @switch_b_id switch_id
 @variable_id var_id

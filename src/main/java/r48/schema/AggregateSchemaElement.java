@@ -8,6 +8,7 @@ package r48.schema;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import r48.RubyIO;
+import r48.dbs.IProxySchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import gabien.ui.UIScrollLayout;
@@ -32,15 +33,22 @@ public class AggregateSchemaElement extends SchemaElement {
         // Assist with the layout of "property grids".
         int maxFW = 1;
         for (SchemaElement ise : aggregate) {
-            if (ise instanceof IFieldSchemaElement) {
-                int dfw = ((IFieldSchemaElement) ise).getDefaultFieldWidth();
+            SchemaElement useIse = ise;
+            while (useIse instanceof IProxySchemaElement)
+                useIse = ((IProxySchemaElement) useIse).getEntry();
+            if (useIse instanceof IFieldSchemaElement) {
+                int dfw = ((IFieldSchemaElement) useIse).getDefaultFieldWidth();
                 if (maxFW < dfw)
                     maxFW = dfw;
             }
         }
         for (SchemaElement ise : aggregate) {
-            if (ise instanceof IFieldSchemaElement)
-                ((IFieldSchemaElement) ise).setFieldWidthOverride(maxFW);
+            SchemaElement useIse = ise;
+            while (useIse instanceof IProxySchemaElement)
+                useIse = ((IProxySchemaElement) useIse).getEntry();
+            if (useIse instanceof IFieldSchemaElement)
+                ((IFieldSchemaElement) useIse).setFieldWidthOverride(maxFW);
+            // still deal with ise because the proxies may have some function
             uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
         }
         int h = 0;

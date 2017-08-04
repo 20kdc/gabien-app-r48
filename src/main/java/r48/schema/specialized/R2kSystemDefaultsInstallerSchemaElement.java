@@ -4,6 +4,7 @@
  */
 package r48.schema.specialized;
 
+import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UIPanel;
 import r48.AppMain;
@@ -23,7 +24,9 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     }
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-        return new UIPanel();
+        UIPanel panel = new UIPanel();
+        panel.setBounds(new Rect(0, 0, 0, 0));
+        return panel;
     }
 
     @Override

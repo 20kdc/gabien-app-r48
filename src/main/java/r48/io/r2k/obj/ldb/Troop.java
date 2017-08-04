@@ -127,7 +127,7 @@ public class Troop extends R2kObject {
     }
 
     public static class TroopPageCondition extends R2kObject {
-        public BitfieldR2kStruct flagsA = new BitfieldR2kStruct(new String[] {"@switch_a", "@switch_b", "@variable_>=_val", "@turn", "@fatigue", "@enemy_hp", "@actor_hp", "@turn_enemy"});
+        public BitfieldR2kStruct flagsA = new BitfieldR2kStruct(new String[] {"@switch_a", "@switch_b", "@variable_>=_val", "@turn", "@fatigue", "@enemy_hp", "@actor_hp", "@turn_enemy_2k3"});
         public BitfieldR2kStruct flagsB = new BitfieldR2kStruct(new String[] {"@turn_actor", "@command_actor"});
         public IR2kInterpretable flags = new IR2kInterpretable() {
             @Override
@@ -171,7 +171,7 @@ public class Troop extends R2kObject {
         public RubyIO asRIO() {
             RubyIO rio = new RubyIO().setSymlike("RPG::Troop::PageCondition", true);
             rio.addIVar("@flags_a", flagsA.asRIO());
-            rio.addIVar("@flags_b_r2k", flagsB.asRIO());
+            rio.addIVar("@flags_b_2k3", flagsB.asRIO());
             asRIOISF(rio);
             return rio;
         }
@@ -179,7 +179,7 @@ public class Troop extends R2kObject {
         @Override
         public void fromRIO(RubyIO src) {
             flagsA.fromRIO(src.getInstVarBySymbol("@flags_a"));
-            flagsB.fromRIO(src.getInstVarBySymbol("@flags_b_r2k"));
+            flagsB.fromRIO(src.getInstVarBySymbol("@flags_b_2k3"));
             fromRIOISF(src);
         }
 
