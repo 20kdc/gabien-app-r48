@@ -13,7 +13,7 @@ import gabien.IGrInDriver;
  * Created on 12/28/16.
  */
 public interface IMapViewCallbacks {
-    short shouldDrawAtCursor(short there, int layer, int currentLayer);
+    short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer);
 
     int wantOverlay(boolean minimap);
 

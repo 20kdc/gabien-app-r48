@@ -46,7 +46,7 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
         final UIMapView umv = new UIMapView(mapId, 320, 192);
         umv.callbacks = new IMapViewCallbacks() {
             @Override
-            public short shouldDrawAtCursor(short there, int layer, int currentLayer) {
+            public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
                 return there;
             }
 

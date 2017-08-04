@@ -91,7 +91,6 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
         options.add(uab.button.togglable());
 
         subtoolBar = uab;
-        //
 
         subtoolNTabPaneHolder = new UINSVertLayout(subtoolBar, tabPane);
         allElements.add(subtoolNTabPaneHolder);
@@ -106,10 +105,27 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
     // -- Tool stuff --
 
     @Override
-    public short shouldDrawAtCursor(short there, int layer, int currentLayer) {
-        if (layer == currentLayer)
-            return (short) tileMaps[tabPane.tab].getTCSelected();
-        return there;
+    public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+        if (layer != currentLayer)
+            return there;
+        if ((subtool != 0) || (tileMaps[tabPane.tab].atGroup != 0)) {
+            if (cx == tx)
+                if (cy == ty)
+                    return (short) tileMaps[tabPane.tab].getTCSelected();
+            return there;
+        }
+        if (tx < cx)
+            return there;
+        if (ty < cy)
+            return there;
+        if (tx >= cx + tileMaps[tabPane.tab].selWidth)
+            return there;
+        if (ty >= cy + tileMaps[tabPane.tab].selHeight)
+            return there;
+        int px = tx - cx;
+        int py = ty - cy;
+        int sel = tileMaps[tabPane.tab].getTCSelected();
+        return (short) (sel + px + (py * tileMaps[tabPane.tab].getSelectStride()));
     }
 
     @Override
@@ -119,7 +135,6 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
 
     @Override
     public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
-
     }
 
     @Override

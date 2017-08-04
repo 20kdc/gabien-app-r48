@@ -54,9 +54,11 @@ public class UIMTShadowLayer extends UIPanel implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAtCursor(short there, int layer, int currentLayer) {
-        if (layer == 3)
-            return (short) flags;
+    public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+        if (cx == tx)
+            if (cy == ty)
+                if (layer == 3)
+                    return (short) flags;
         return there;
     }
 

@@ -33,7 +33,7 @@ public class UIMTPickTile extends UIPanel implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAtCursor(short there, int layer, int currentLayer) {
+    public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
         return there;
     }
 

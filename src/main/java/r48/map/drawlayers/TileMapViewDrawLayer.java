@@ -58,10 +58,8 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
                     UILabel.drawString(igd, px, py + (tileLayer * FontSizes.mapDebugTextHeight), t, false, FontSizes.mapDebugTextHeight);
                 } else {
                     short tidx = targetTable.getTiletype(i, j, tileLayer);
-                    if (i == mouseXT)
-                        if (j == mouseYT)
-                            if (callbacks != null)
-                                tidx = callbacks.shouldDrawAtCursor(tidx, tileLayer, currentLayer);
+                    if (callbacks != null)
+                        tidx = callbacks.shouldDrawAt(mouseXT, mouseYT, i, j, tidx, tileLayer, currentLayer);
                     tr.drawTile(tileLayer, tidx, px, py, igd, eTileSize);
                 }
             }

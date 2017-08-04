@@ -62,10 +62,8 @@ public class R2kTileMapViewDrawLayer implements IMapViewDrawLayer {
                     UILabel.drawString(igd, px, py + (layer * FontSizes.mapDebugTextHeight), t, false, FontSizes.mapDebugTextHeight);
                 } else {
                     short tidx = targetTable.getTiletype(i, j, layer);
-                    if (i == mouseXT)
-                        if (j == mouseYT)
-                            if (callbacks != null)
-                                tidx = callbacks.shouldDrawAtCursor(tidx, layer, currentLayer);
+                    if (callbacks != null)
+                        tidx = callbacks.shouldDrawAt(mouseXT, mouseYT, i, j, tidx, layer, currentLayer);
                     // Work out upper/lower.
                     int val = getTileFlags(tidx, tileset);
                     // 0x10: Above. 0x20: Wall. I tested a Wall on L1 on ERPG, did not render over player,

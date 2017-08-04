@@ -45,7 +45,7 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
 
     // -- Tool things --
     @Override
-    public short shouldDrawAtCursor(short there, int layer, int currentLayer) {
+    public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
         return there;
     }
 

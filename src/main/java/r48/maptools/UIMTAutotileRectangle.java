@@ -50,8 +50,11 @@ public class UIMTAutotileRectangle extends UIPanel implements IMapViewCallbacks 
     }
 
     @Override
-    public short shouldDrawAtCursor(short there, int layer, int currentLayer) {
-        return (short) selTile;
+    public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+        if (cx == tx)
+            if (cy == ty)
+                return (short) selTile;
+        return there;
     }
 
     @Override

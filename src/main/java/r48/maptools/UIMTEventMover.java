@@ -39,10 +39,13 @@ public class UIMTEventMover extends UIPanel implements IMapViewCallbacks {
     }
 
     // tool stuff
+
     @Override
-    public short shouldDrawAtCursor(short there, int layer, int currentLayer) {
-        // This should be obvious enough.
-        return 0;
+    public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+        if (cx == tx)
+            if (cy == ty)
+                return 0;
+        return there;
     }
 
     @Override
