@@ -146,7 +146,8 @@ public class UIMapView extends UIElement implements IWindowElement {
             if (pickTileHelper == null)
                 shortcuts = TXDB.get("Mouse drag: Scroll.");
         }
-        UILabel.drawLabel(igd, 0, ox + 24, oy + 3, mapId + ";" + mouseXT + ", " + mouseYT + "; " + shortcuts, false, FontSizes.mapPositionTextHeight);
+        String status = mapId + ";" + mouseXT + ", " + mouseYT + "; " + shortcuts;
+        UILabel.drawLabel(igd, UILabel.getRecommendedSize(status, FontSizes.mapPositionTextHeight).width, ox + 24, oy + 3, status, false, FontSizes.mapPositionTextHeight);
 
         igd.blitImage(52, 32, 16, 16, ox + 4, oy + 4, AppMain.layerTabs);
         igd.blitImage(36, 32, 16, 16, ox + 4, oy + 24, AppMain.layerTabs);

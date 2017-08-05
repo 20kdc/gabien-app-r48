@@ -42,6 +42,8 @@ public class UIGrid extends UIPanel {
     }
 
     private int getScrollOffset() {
+        if (tmWidth <= 0)
+            return 0;
         int totalRows = tileCount;
         if (totalRows % tmWidth > 0)
             totalRows += tmWidth;
@@ -56,6 +58,9 @@ public class UIGrid extends UIPanel {
         Rect r = getBounds();
         igd.clearRect(bkgR, bkgG, bkgB, ox, oy, r.width, r.height);
         super.updateAndRender(ox, oy, deltaTime, selected, igd);
+
+        if (tmWidth <= 0)
+            return;
 
         int mouseSel = -1;
         int mouseX = igd.getMouseX() - ox;
@@ -162,6 +167,10 @@ public class UIGrid extends UIPanel {
 
     @Override
     public void handleDrag(int x, int y) {
+        if (tmWidth <= 0) {
+            super.handleDrag(x, y);
+            return;
+        }
         if (x < tileSizeW * tmWidth) {
             if (!canMultiSelect)
                 return;
