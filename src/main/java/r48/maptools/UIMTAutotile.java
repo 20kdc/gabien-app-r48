@@ -149,7 +149,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
 
         if (subtool == 1) {
             // Tool 1: Rectangle
-            AppMain.nextMapTool = new UIMTAutotileRectangle(this, sel, x, y, tileMaps[tabPane.tab].atGroup != 0);
+            AppMain.nextMapTool = new UIMTAutotileRectangle(this, x, y, tileMaps[tabPane.tab].atGroup != 0);
             return;
         } else if (subtool == 2) {
             // Tool 2: Floodfill.
@@ -265,6 +265,12 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
     public boolean shouldIgnoreDrag() {
         // When using "dangerous" tools, ignore drag.
         return subtool != 0;
+    }
+
+    public short getPlaceSelection(int i, int i1) {
+        int selWidth = tileMaps[tabPane.tab].selWidth;
+        int selHeight = tileMaps[tabPane.tab].selHeight;
+        return (short) (tileMaps[tabPane.tab].getTCSelected() + (i % selWidth) + ((i1 % selHeight) * tileMaps[tabPane.tab].getSelectStride()));
     }
 
     private class FloodFillPoint {

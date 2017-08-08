@@ -21,7 +21,7 @@ import r48.ui.UIAppendButton;
 public class UIMTAutotileRectangle extends UIPanel implements IMapViewCallbacks {
 
     public final UIMTAutotile parent;
-    public final int selTile, startX, startY;
+    public final int startX, startY;
     public final boolean autotile;
 
     public UIAppendButton innerLabel = new UIAppendButton(TXDB.get("Cancel"), new UILabel(TXDB.get("Click on a tile to finish the rectangle, or:"), FontSizes.dialogWindowTextHeight), new Runnable() {
@@ -31,10 +31,9 @@ public class UIMTAutotileRectangle extends UIPanel implements IMapViewCallbacks 
         }
     }, FontSizes.dialogWindowTextHeight);
 
-    public UIMTAutotileRectangle(UIMTAutotile par, int tile, int x, int y, boolean at) {
+    public UIMTAutotileRectangle(UIMTAutotile par, int x, int y, boolean at) {
         allElements.add(innerLabel);
         parent = par;
-        selTile = tile;
         startX = x;
         startY = y;
         autotile = at;
@@ -49,9 +48,15 @@ public class UIMTAutotileRectangle extends UIPanel implements IMapViewCallbacks 
 
     @Override
     public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
-        if (cx == tx)
-            if (cy == ty)
-                return (short) selTile;
+        int minX = Math.min(startX, cx);
+        int maxX = Math.max(startX, cx);
+        int minY = Math.min(startY, cy);
+        int maxY = Math.max(startY, cy);
+        if (tx >= minX)
+            if (ty >= minY)
+                if (tx <= maxX)
+                    if (ty <= maxY)
+                        return parent.getPlaceSelection(tx - startX, ty - startY);
         return there;
     }
 
@@ -72,12 +77,16 @@ public class UIMTAutotileRectangle extends UIPanel implements IMapViewCallbacks 
     @Override
     public void confirmAt(int x, int y, int layer) {
         if (!parent.map.mapTable.outOfBounds(x, y)) {
-            for (int i = startX; i <= x; i++)
-                for (int j = startY; j <= y; j++)
-                    parent.map.mapTable.setTiletype(i, j, parent.map.currentLayer, (short) selTile);
+            int minX = Math.min(startX, x);
+            int maxX = Math.max(startX, x);
+            int minY = Math.min(startY, y);
+            int maxY = Math.max(startY, y);
+            for (int i = minX; i <= maxX; i++)
+                for (int j = minY; j <= maxY; j++)
+                    parent.map.mapTable.setTiletype(i, j, parent.map.currentLayer, (short) parent.getPlaceSelection(i - startX, j - startY));
             if (autotile)
-                for (int i = startX - 1; i <= x + 1; i++)
-                    for (int j = startY - 1; j <= y + 1; j++)
+                for (int i = minX - 1; i <= maxX + 1; i++)
+                    for (int j = minY - 1; j <= maxY + 1; j++)
                         UIMTAutotile.updateAutotile(parent.map, parent.atBases, i, j, parent.map.currentLayer);
             parent.map.passModificationNotification();
             AppMain.nextMapTool = parent;
