@@ -10,6 +10,7 @@ import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.events.IEventGraphicRenderer;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 
@@ -42,7 +43,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
         // Having it here is more efficient than having it as a tool overlay,
         // and sometimes the user might want to see events when using other tools.
         LinkedList<RubyIO> ev = new LinkedList<RubyIO>(eventList.hashVal.values());
-        ev.sort(new Comparator<RubyIO>() {
+        Collections.sort(ev, new Comparator<RubyIO>() {
             @Override
             public int compare(RubyIO a, RubyIO b) {
                 int yA = (int) a.getInstVarBySymbol("@y").fixnumVal;

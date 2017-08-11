@@ -16,6 +16,7 @@ import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
 import r48.ui.UITreeView;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 
@@ -59,7 +60,7 @@ public class UIGRMMapInfos extends UIPanel {
     private void rebuildList() {
         uiSVL.panels.clear();
         LinkedList<Integer> intList = new LinkedList<Integer>(operators.getHashKeys());
-        intList.sort(new Comparator<Integer>() {
+        Collections.sort(intList, new Comparator<Integer>() {
             @Override
             public int compare(Integer t0, Integer t1) {
                 t0 = operators.getOrderOfMap(t0);
@@ -196,7 +197,7 @@ public class UIGRMMapInfos extends UIPanel {
                         if (!operators.wouldRelocatingInOrderFail(orderFrom, order + 1)) {
                             selectedOrder = operators.relocateInOrder(orderFrom, order + 1);
                             operators.complete();
-                            mapLoader.accept(k);
+                            mapLoader.accept(operators.getMapOfOrder(selectedOrder));
                             rebuildList();
                         }
                 }
@@ -245,17 +246,7 @@ public class UIGRMMapInfos extends UIPanel {
                 LinkedList<Integer> orders = new LinkedList<Integer>();
                 for (Integer map : operators.getHashKeys())
                     orders.add(operators.getOrderOfMap(map));
-                orders.sort(new Comparator<Integer>() {
-                    @Override
-                    public int compare(Integer a, Integer b) {
-                        // Really? I have to implement this myself?
-                        if (a < b)
-                            return -1;
-                        if (a > b)
-                            return 1;
-                        return 0;
-                    }
-                });
+                Collections.sort(orders);
                 String message = TXDB.get("The MapInfos database is sequential.");
                 int lastOrder = 0;
                 for (int i : orders) {

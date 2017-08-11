@@ -9,10 +9,7 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Just another one of those classes.
@@ -106,7 +103,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         // Need to update indent...
         getHashBID(0).getInstVarBySymbol("@indent").fixnumVal = 0;
         LinkedList<Integer> intList = new LinkedList<Integer>(getHashKeys());
-        intList.sort(new Comparator<Integer>() {
+        Collections.sort(intList, new Comparator<Integer>() {
             @Override
             public int compare(Integer t0, Integer t1) {
                 t0 = getOrderOfMap(t0);
