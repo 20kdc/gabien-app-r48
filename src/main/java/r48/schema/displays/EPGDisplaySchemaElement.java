@@ -6,7 +6,6 @@
 package r48.schema.displays;
 
 import gabien.IGrInDriver;
-import gabien.ui.MouseAction;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import r48.RubyIO;
@@ -30,7 +29,7 @@ public class EPGDisplaySchemaElement extends SchemaElement {
             }
 
             @Override
-            public void handleClick(MouseAction ma) {
+            public void handleClick(int x, int y, int button) {
 
             }
         };

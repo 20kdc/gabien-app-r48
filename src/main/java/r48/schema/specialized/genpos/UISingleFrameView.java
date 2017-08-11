@@ -8,7 +8,6 @@ import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ScissorGrInDriver;
 import gabien.ui.IFunction;
-import gabien.ui.MouseAction;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import r48.ui.UIGrid;
@@ -66,12 +65,10 @@ public class UISingleFrameView extends UIElement {
     }
 
     @Override
-    public void handleClick(MouseAction ma) {
-        if (!ma.down)
-            return;
-        dragging = ma.button;
-        lastMX = ma.x;
-        lastMY = ma.y;
+    public void handleClick(int x, int y, int button) {
+        dragging = button;
+        lastMX = x;
+        lastMY = y;
         lossX = 0;
         lossY = 0;
     }

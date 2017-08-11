@@ -21,7 +21,6 @@ import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIFontSizeConfigurator;
 import r48.ui.UITextPrompt;
-import r48.ui.UITreeView;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -70,7 +69,6 @@ public class BasicToolset implements IToolset {
                         TXDB.get("Configure font sizes"),
                         TXDB.get("Test Fonts"),
                         TXDB.get("Test Tones"),
-                        TXDB.get("Test Trees"),
                         TXDB.get("Show ODB Memstat"),
                         TXDB.get("Dump Schemaside Translations")
                 }, new Runnable[] {
@@ -210,7 +208,7 @@ public class BasicToolset implements IToolset {
                                     }
 
                                     @Override
-                                    public void handleClick(MouseAction ma) {
+                                    public void handleClick(int x, int y, int button) {
 
                                     }
                                 };
@@ -234,30 +232,6 @@ public class BasicToolset implements IToolset {
                                 holdsMain.panels.add(panel);
                                 holdsMain.setBounds(new Rect(0, 0, 544, 256));
                                 windowMaker.get().accept(holdsMain);
-                            }
-                        },
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                // NOTE: DO NOT TRANSLATE, for testing only
-                                int fs = FontSizes.mapInfosTextHeight;
-                                UITreeView utv = new UITreeView(new UITreeView.TreeElement[] {
-                                        new UITreeView.TreeElement(0, new UILabel("Fruit", fs), null),
-                                        new UITreeView.TreeElement(1, new UILabel("Apple", fs), null),
-                                        new UITreeView.TreeElement(2, new UILabel("Granny Smith", fs), null),
-                                        new UITreeView.TreeElement(1, new UILabel("Banana", fs), null),
-                                        new UITreeView.TreeElement(0, new UILabel("Vegetable", fs), null),
-                                        new UITreeView.TreeElement(1, new UILabel("Tomato", fs), null),
-                                        new UITreeView.TreeElement(2, new UILabel("Tomaho", fs), null),
-                                        new UITreeView.TreeElement(3, new UILabel("Tomato", fs), null),
-                                        new UITreeView.TreeElement(4, new UILabel("Tomaho", fs), null),
-                                        new UITreeView.TreeElement(5, new UILabel("Tomato", fs), null),
-                                        new UITreeView.TreeElement(3, new UILabel("Tometo", fs), null)
-                                });
-                                UIScrollLayout svl = new UIScrollLayout(true);
-                                svl.panels.add(utv);
-                                svl.setBounds(new Rect(0, 0, 128, 128));
-                                windowMaker.get().accept(svl);
                             }
                         },
                         new Runnable() {

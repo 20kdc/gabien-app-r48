@@ -7,7 +7,6 @@ package r48.map;
 
 import gabien.IGrInDriver;
 import gabien.ui.IWindowElement;
-import gabien.ui.MouseAction;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 
@@ -31,8 +30,8 @@ public class UIMapToolWrapper extends UIElement implements IWindowElement {
     }
 
     @Override
-    public void handleClick(MouseAction ma) {
-        pattern.handleClick(ma);
+    public void handleClick(int x, int y, int button) {
+        pattern.handleClick(x, y, button);
     }
 
     @Override

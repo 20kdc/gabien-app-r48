@@ -153,18 +153,16 @@ public class UIGrid extends UIPanel {
     }
 
     @Override
-    public void handleClick(MouseAction ma) {
-        if (ma.down) {
-            if (ma.x < tileSizeW * tmWidth) {
-                int tx = UIElement.sensibleCellDiv(ma.x, tileSizeW);
-                int ty = UIElement.sensibleCellDiv(ma.y, tileSizeH);
-                selTile = tx + (ty * tmWidth) + getScrollOffset();
-                selWidth = 1;
-                selHeight = 1;
-                selectionChanged();
-            }
+    public void handleClick(int x, int y, int button) {
+        if (x < tileSizeW * tmWidth) {
+            int tx = UIElement.sensibleCellDiv(x, tileSizeW);
+            int ty = UIElement.sensibleCellDiv(y, tileSizeH);
+            selTile = tx + (ty * tmWidth) + getScrollOffset();
+            selWidth = 1;
+            selHeight = 1;
+            selectionChanged();
         }
-        super.handleClick(ma);
+        super.handleClick(x, y, button);
     }
 
     @Override
