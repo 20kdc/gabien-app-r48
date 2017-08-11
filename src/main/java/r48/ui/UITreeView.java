@@ -91,17 +91,18 @@ public class UITreeView extends UIPanel {
     }
 
     @Override
-    public void handleClick(MouseAction ma) {
-        super.handleClick(ma);
+    public void handleClick(int x, int y, int button) {
+        super.handleClick(x, y, button);
         int targ = -1;
         for (int i = 0; i < elements.length; i++)
             if (selectedElement == elements[i].innerElement)
                 targ = i;
-        if (ma.button == 1) {
-            if (ma.down) {
+        if (button == 1) {
+            // Fix later
+            if (button != -1249242) {
                 dragBase = targ;
-                dragBaseX = ma.x;
-                dragBaseY = ma.y;
+                dragBaseX = x;
+                dragBaseY = y;
             } else {
                 if (targ != -1)
                     if (dragBase != -1)
