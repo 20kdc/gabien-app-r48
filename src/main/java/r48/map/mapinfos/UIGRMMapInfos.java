@@ -14,6 +14,7 @@ import r48.map.UIMapViewContainer;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
+import r48.ui.UITreeView;
 
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -72,6 +73,7 @@ public class UIGRMMapInfos extends UIPanel {
         });
         LinkedList<Integer> parentStack = new LinkedList<Integer>();
         int lastOrder = 0;
+        LinkedList<UITreeView.TreeElement> tree = new LinkedList<UITreeView.TreeElement>();
         for (final Integer k : intList) {
             final RubyIO map = operators.getHashBID(k);
             final int order = operators.getOrderOfMap(k);
@@ -80,7 +82,6 @@ public class UIGRMMapInfos extends UIPanel {
             final int parent = (int) map.getInstVarBySymbol("@parent_id").fixnumVal;
 
             String name = map.getInstVarBySymbol("@name").decString();
-            String spc = "";
 
             if (parent == 0) {
                 parentStack.clear();
@@ -94,13 +95,9 @@ public class UIGRMMapInfos extends UIPanel {
                 }
             }
             parentStack.add(k);
-            for (int i = 0; i < (parentStack.size() - 1); i++)
-                spc += " ";
-            if (selectedOrder == order) {
-                spc = ">" + spc;
-            } else {
-                spc = " " + spc;
-            }
+            String spc = " ";
+            if (selectedOrder == order)
+                spc = ">";
             if (enableOrderHoleDebug)
                 spc = order + spc;
             UIElement elm = new UITextButton(FontSizes.mapInfosTextHeight, spc + k + ":" + name + " P" + parent, new Runnable() {
@@ -113,18 +110,7 @@ public class UIGRMMapInfos extends UIPanel {
                 }
             });
 
-            if (selectedOrder != order) {
-                if (selectedOrder != 0)
-                    if (!operators.wouldRelocatingInOrderFail(selectedOrder, order + 1)) {
-                        elm = new UIAppendButton(TXDB.get("Parent Here"), elm, new Runnable() {
-                            @Override
-                            public void run() {
-                                selectedOrder = operators.relocateInOrder(selectedOrder, order + 1);
-                                operators.complete();
-                            }
-                        }, FontSizes.mapInfosTextHeight);
-                    }
-            } else {
+            if (selectedOrder == order) {
                 if (parent != 0) {
                     // This used to be two operations, but, eh.
                     elm = new UIAppendButton(TXDB.get("Move Out "), elm, new Runnable() {
@@ -201,9 +187,19 @@ public class UIGRMMapInfos extends UIPanel {
                     }, FontSizes.mapInfosTextHeight);
                 }
             }
-            uiSVL.panels.add(elm);
+            tree.add(new UITreeView.TreeElement(parentStack.size(), elm, new IConsumer<Integer>() {
+                @Override
+                public void accept(Integer integer) {
+                    int orderFrom = integer + 1;
+                    if (orderFrom > 0)
+                        if (!operators.wouldRelocatingInOrderFail(orderFrom, order + 1)) {
+                            selectedOrder = operators.relocateInOrder(orderFrom, order + 1);
+                            operators.complete();
+                        }
+                }
+            }));
         }
-
+        uiSVL.panels.add(new UITreeView(tree.toArray(new UITreeView.TreeElement[0])));
         uiSVL.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, TXDB.get("<Insert New Map>"), new Runnable() {
             @Override
             public void run() {

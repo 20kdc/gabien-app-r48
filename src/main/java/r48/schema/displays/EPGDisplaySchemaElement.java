@@ -27,11 +27,6 @@ public class EPGDisplaySchemaElement extends SchemaElement {
                 igd.clearRect(255, 0, 255, ox, oy, bounds.width, bounds.height);
                 launcher.getContextRenderer().eventRenderer.drawEventGraphic(target, ox + (bounds.width / 2) - 16, oy + (bounds.height / 2) - 16, igd);
             }
-
-            @Override
-            public void handleClick(int x, int y, int button) {
-
-            }
         };
         display.setBounds(new Rect(0, 0, 64, 96));
         return display;

@@ -93,23 +93,10 @@ public class UITreeView extends UIPanel {
     @Override
     public void handleClick(int x, int y, int button) {
         super.handleClick(x, y, button);
-        int targ = -1;
-        for (int i = 0; i < elements.length; i++)
-            if (selectedElement == elements[i].innerElement)
-                targ = i;
         if (button == 1) {
-            // Fix later
-            if (button != -1249242) {
-                dragBase = targ;
-                dragBaseX = x;
-                dragBaseY = y;
-            } else {
-                if (targ != -1)
-                    if (dragBase != -1)
-                        if (Math.max(dragDistX, dragDistY) > (nodeWidth / 2))
-                            elements[targ].elementDraggedHere.accept(dragBase);
-                dragBase = -1;
-            }
+            dragBase = getTarget(x, y);
+            dragBaseX = x;
+            dragBaseY = y;
             dragDistX = 0;
             dragDistY = 0;
         }
@@ -118,11 +105,35 @@ public class UITreeView extends UIPanel {
     @Override
     public void handleDrag(int x, int y) {
         super.handleDrag(x, y);
-        System.out.println(dragBase);
         if (dragBase != -1) {
             dragDistX = Math.abs(dragBaseX - x);
             dragDistY = Math.abs(dragBaseY - y);
         }
+    }
+
+    @Override
+    public void handleRelease(int x, int y) {
+        super.handleRelease(x, y);
+        int targ = getTarget(x, y);
+        if (targ != -1)
+            if (dragBase != -1)
+                if (Math.max(dragDistX, dragDistY) > (nodeWidth / 2))
+                    elements[targ].elementDraggedHere.accept(dragBase);
+        dragBase = -1;
+    }
+
+    private int getTarget(int x, int y) {
+        if (x < 0)
+            return -1;
+        if (x > getBounds().width)
+            return -1;
+        int cy = 0;
+        for (int i = 0; i < elements.length; i++) {
+            if ((y > cy) && (y < cy + elements[i].h))
+                return i;
+            cy += elements[i].h;
+        }
+        return -1;
     }
 
     public static class TreeElement {

@@ -24,7 +24,6 @@ public class UIObjectDBMonitor extends UIElement {
 
     @Override
     public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-        System.gc();
         int step = UILabel.getRecommendedSize("", FontSizes.objectDBMonitorTextHeight).height;
         for (String s : UITest.sortedKeysStr(AppMain.objectDB.objectMap.keySet())) {
             String status = TXDB.get(" [disposed]");
@@ -50,6 +49,6 @@ public class UIObjectDBMonitor extends UIElement {
 
     @Override
     public void handleClick(int x, int y, int button) {
-
+        System.gc();
     }
 }

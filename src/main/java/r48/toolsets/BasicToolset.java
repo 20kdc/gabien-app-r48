@@ -206,11 +206,6 @@ public class BasicToolset implements IToolset {
                                         int hue = (int) (time2 * 360);
                                         igd.blitImage(0, 0, 256, 256, ox, oy, AppMain.imageFXCache.process(totem, new HueShiftImageEffect(hue)));
                                     }
-
-                                    @Override
-                                    public void handleClick(int x, int y, int button) {
-
-                                    }
                                 };
                                 hueChanger.setBounds(new Rect(128, 1024, 256, 256));
                                 panel.allElements.add(hueChanger);
