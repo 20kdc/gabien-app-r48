@@ -38,7 +38,8 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     public final ITableCellEditor tableCellEditor;
 
     // This is imperfect but should do the job.
-    private int lastSelectionCache;
+    // Note it is initialized to -1
+    private int lastSelectionCache = -1;
     private double lastScrollCache;
 
     public final int[] defVals;
@@ -84,17 +85,30 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             }
         });
         uig.onSelectionChange = new Runnable() {
+            int selectionOnLastCall = -1;
             @Override
             public void run() {
+                int sel = uig.getSelected();
+                int oldSel = selectionOnLastCall;
                 lastScrollCache = uig.uivScrollbar.scrollPoint;
-                lastSelectionCache = uig.getSelected();
+                lastSelectionCache = sel;
+                selectionOnLastCall = sel;
                 editorOnSelChange.run();
+                if (oldSel == sel) {
+                    int tX = sel % targ.width;
+                    int tY = sel / targ.width;
+                    short p = targ.getTiletype(tX, tY, 0);
+                    short p2 = baseFlipBits(p);
+                    if (p != p2) {
+                        targ.setTiletype(tX, tY, 0, p2);
+                        path.changeOccurred(false);
+                    }
+                }
             }
         };
 
         uig.uivScrollbar.scrollPoint = lastScrollCache;
         uig.setSelected(lastSelectionCache);
-        uig.onSelectionChange.run();
 
         final UINumberBox wNB = new UINumberBox(FontSizes.tableSizeTextHeight);
         wNB.number = targ.width;
@@ -126,11 +140,11 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                 int h = hNB.number;
                 if (h < 0)
                     h = 0;
-                RubyTable r2 = targ.resize(wNB.number, hNB.number, defVals);
+                RubyTable r2 = targ.resize(w, h, defVals);
                 if (width != null)
-                    width.fixnumVal = wNB.number;
+                    width.fixnumVal = w;
                 if (height != null)
-                    height.fixnumVal = hNB.number;
+                    height.fixnumVal = h;
                 targV.userVal = r2.innerBytes;
                 path.changeOccurred(false);
             }
@@ -145,6 +159,9 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     // The idea is that TileHelper can contain any helper object needed.
     public TileHelper baseTileDraw(RubyIO target, int t, int x, int y, IGrInDriver igd, TileHelper th) {
         return null;
+    }
+    public short baseFlipBits(short p) {
+        return p;
     }
 
     @Override

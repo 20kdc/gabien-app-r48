@@ -1,0 +1,6 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+>R2K/TSPass.txt
+>R2K/TS162.txt

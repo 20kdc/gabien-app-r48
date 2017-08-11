@@ -1,0 +1,16 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ R2k Passability data include file
+
+  FL 1down 2left 4right 8up
+  PX up right down left
+
+  F A . B . X Y W H
+p 8 0 0 0 8 0 8 8 8
+p 4 8 0 8 8 8 8 8 8
+p 1 16 0 16 8 0 8 8 8
+p 2 24 0 24 8 8 8 8 8
+
+x 15
