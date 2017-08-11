@@ -82,11 +82,11 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
         }
 
         @Override
-        public void performGlobalOverlay(IGrDriver igd, int px, int py, int ol, boolean minimap) {
+        public void performGlobalOverlay(IGrDriver igd, int px, int py, int ol, boolean minimap, int eTileSize) {
             int x = (int) (GaBIEn.getTime() * 4);
             if ((x & 1) == 0) {
                 Rect r = getViewedRect();
-                Art.drawSelectionBox(px + (r.x * tileSize) - 1, py + (r.y * tileSize) - 1, (r.width * tileSize) + 2, (r.height * tileSize) + 2, igd);
+                Art.drawSelectionBox(px + (r.x * eTileSize) - 1, py + (r.y * eTileSize) - 1, (r.width * eTileSize) + 2, (r.height * eTileSize) + 2, igd);
             }
         }
 

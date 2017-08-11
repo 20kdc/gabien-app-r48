@@ -79,7 +79,7 @@ public class UIMTShadowLayer extends UIPanel implements IMapViewCallbacks {
     }
 
     @Override
-    public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap) {
+    public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap, int eTileSize) {
 
     }
 

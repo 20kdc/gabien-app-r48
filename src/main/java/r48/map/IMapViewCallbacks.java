@@ -17,7 +17,7 @@ public interface IMapViewCallbacks {
     int wantOverlay(boolean minimap);
 
     void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap);
-    void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap);
+    void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap, int eTileSize);
 
     void confirmAt(int x, int y, int layer);
 
