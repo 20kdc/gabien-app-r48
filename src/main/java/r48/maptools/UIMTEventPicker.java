@@ -65,6 +65,11 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
     }
 
     @Override
+    public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap) {
+
+    }
+
+    @Override
     public void confirmAt(final int x, final int y, final int layer) {
         svl.panels.clear();
         for (Map.Entry<RubyIO, RubyIO> evE : mapView.map.getInstVarBySymbol("@events").hashVal.entrySet()) {

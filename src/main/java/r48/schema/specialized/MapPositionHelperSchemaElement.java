@@ -65,6 +65,11 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
             }
 
             @Override
+            public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap) {
+
+            }
+
+            @Override
             public void confirmAt(int x, int y, int layer) {
                 abc[1].fixnumVal = x;
                 abc[2].fixnumVal = y;

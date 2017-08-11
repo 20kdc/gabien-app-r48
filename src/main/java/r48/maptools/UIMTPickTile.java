@@ -49,6 +49,11 @@ public class UIMTPickTile extends UIPanel implements IMapViewCallbacks {
     }
 
     @Override
+    public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap) {
+
+    }
+
+    @Override
     public void confirmAt(int x, int y, int layer) {
         if (!map.mapTable.outOfBounds(x, y))
             map.pickTileHelper.accept(map.mapTable.getTiletype(x, y, layer));

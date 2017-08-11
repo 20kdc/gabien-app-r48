@@ -26,7 +26,7 @@ public class Art {
         }
     }
 
-    public static void drawZoom(IGrInDriver igd, boolean b, int x, int y, int height) {
+    public static void drawZoom(IGrDriver igd, boolean b, int x, int y, int height) {
         int m = height / 16;
         igd.clearRect(128, 128, 128, x, y, height, height);
         igd.clearRect(64, 64, 64, x + m, y + m, height - (m * 2), height - (m * 2));
@@ -35,6 +35,32 @@ public class Art {
             igd.clearRect(255, 255, 255, x + (height / 2) - m, y + (m * 2), m * 2, height - (m * 4));
         igd.clearRect(255, 255, 255, x + (m * 2), y + (height / 2) - m, height - (m * 4), m * 2);
     }
+
+    public static void drawSelectionBox(int x, int y, int w, int h, IGrDriver igd) {
+        drawDotLineV(x, y, h, igd);
+        drawDotLineV(x + (w - 1), y, h, igd);
+        drawDotLineH(x, y, w, igd);
+        drawDotLineH(x, y + (h - 1), w, igd);
+    }
+
+    private static void drawDotLineV(int x, int y, int h, IGrDriver igd) {
+        while (h > 32) {
+            igd.blitImage(36, 0, 1, 32, x, y, AppMain.layerTabs);
+            y += 32;
+            h -= 32;
+        }
+        igd.blitImage(36, 0, 1, h, x, y, AppMain.layerTabs);
+    }
+
+    private static void drawDotLineH(int x, int y, int w, IGrDriver igd) {
+        while (w > 32) {
+            igd.blitImage(36, 0, 32, 1, x, y, AppMain.layerTabs);
+            x += 32;
+            w -= 32;
+        }
+        igd.blitImage(36, 0, w, 1, x, y, AppMain.layerTabs);
+    }
+
 
     // sprite is only used for width/height.
     // It's assumed the output goes to a scaling blit function.

@@ -10,6 +10,7 @@ import gabien.ScissorGrInDriver;
 import gabien.ui.IFunction;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
+import r48.ui.Art;
 import r48.ui.UIGrid;
 
 /**
@@ -57,7 +58,7 @@ public class UISingleFrameView extends UIElement {
         if (basePanelAccess.cellSelection.cellNumber != -1)
             if (basePanelAccess.frame.getCellCount() > basePanelAccess.cellSelection.cellNumber) {
                 Rect r = basePanelAccess.frame.getCellSelectionIndicator(basePanelAccess.cellSelection.cellNumber);
-                UIGrid.drawSelectionBox(opx + (r.x - 1), opy + (r.y - 1), r.width + 2, r.height + 2, igd);
+                Art.drawSelectionBox(opx + (r.x - 1), opy + (r.y - 1), r.width + 2, r.height + 2, igd);
             }
         int cellCount = basePanelAccess.frame.getCellCount();
         for (int i = 0; i < cellCount; i++)

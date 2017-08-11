@@ -89,7 +89,7 @@ public class UIGrid extends UIPanel {
                 igd.clearRect(128, 0, 128, ox + px, oy + py, tileSizeW, tileSizeH);
             drawTile(p, p == mouseSel, ox + px, oy + py, igd);
             if (p == selTile)
-                drawSelectionBox(ox + px, oy + py, tileSizeW, tileSizeH, igd);
+                Art.drawSelectionBox(ox + px, oy + py, tileSizeW, tileSizeH, igd);
             pi++;
         }
         for (int ty = 0; ty < selHeight; ty++) {
@@ -101,36 +101,10 @@ public class UIGrid extends UIPanel {
                     continue;
                 if (py >= r.height)
                     continue;
-                drawSelectionBox(ox + px, oy + py, tileSizeW, tileSizeH, igd);
+                Art.drawSelectionBox(ox + px, oy + py, tileSizeW, tileSizeH, igd);
                 pi++;
             }
         }
-    }
-
-    // In case you're wondering why this is here, where else should it be? ...no, really, suggestions are appreciated.
-    public static void drawSelectionBox(int x, int y, int w, int h, IGrInDriver igd) {
-        drawDotLineV(x, y, h, igd);
-        drawDotLineV(x + (w - 1), y, h, igd);
-        drawDotLineH(x, y, w, igd);
-        drawDotLineH(x, y + (h - 1), w, igd);
-    }
-
-    private static void drawDotLineV(int x, int y, int h, IGrInDriver igd) {
-        while (h > 32) {
-            igd.blitImage(36, 0, 1, 32, x, y, AppMain.layerTabs);
-            y += 32;
-            h -= 32;
-        }
-        igd.blitImage(36, 0, 1, h, x, y, AppMain.layerTabs);
-    }
-
-    private static void drawDotLineH(int x, int y, int w, IGrInDriver igd) {
-        while (w > 32) {
-            igd.blitImage(36, 0, 32, 1, x, y, AppMain.layerTabs);
-            x += 32;
-            w -= 32;
-        }
-        igd.blitImage(36, 0, w, 1, x, y, AppMain.layerTabs);
     }
 
     protected void drawTile(int t, boolean hover, int x, int y, IGrInDriver igd) {

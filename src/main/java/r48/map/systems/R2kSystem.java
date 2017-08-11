@@ -4,17 +4,16 @@
  */
 package r48.map.systems;
 
-import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.IConsumer;
+import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
-import r48.map.StuffRenderer;
-import r48.map.UIMapViewContainer;
+import r48.map.*;
 import r48.map.drawlayers.*;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.R2kEventGraphicRenderer;
@@ -136,4 +135,34 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     public String mapReferentToId(RubyIO mapReferent) {
         return R2kRMLikeMapInfoBackend.sNameFromInt((int) mapReferent.fixnumVal);
     }
+
+    @Override
+    public MapLoadDetails mapLoadRequest(RubyIO mapReferent, final ISupplier<IConsumer<UIElement>> windowMaker) {
+        final RubyIO root = AppMain.objectDB.getObject("RPG_RT.lmt");
+        final RubyIO mapInfos = root.getInstVarBySymbol("@map_infos");
+        final RubyIO mapInfo = mapInfos.getHashVal(mapReferent);
+        if (mapInfo == null)
+            return super.mapLoadRequest(mapReferent, windowMaker);
+        if (mapInfo.getInstVarBySymbol("@type").fixnumVal != 2)
+            return super.mapLoadRequest(mapReferent, windowMaker);
+        if (mapInfo.getInstVarBySymbol("@parent_id").fixnumVal == 0)
+            return null;
+        try {
+            MapLoadDetails mld = mapLoadRequest(mapInfo.getInstVarBySymbol("@parent_id"), windowMaker);
+            if (mld == null)
+                return null;
+            mld.getToolbar = new IFunction<UIMapView, IEditingToolbarController>() {
+                @Override
+                public IEditingToolbarController apply(UIMapView uiMapView) {
+                    return new R2kAreaEditingToolbarController(uiMapView.tileSize, root, mapInfo);
+                }
+            };
+            return mld;
+        } catch (StackOverflowError soe) {
+            // Could theoretically happen
+            soe.printStackTrace();
+            return null;
+        }
+    }
+
 }

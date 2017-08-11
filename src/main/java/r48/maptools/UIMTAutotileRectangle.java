@@ -75,6 +75,11 @@ public class UIMTAutotileRectangle extends UIPanel implements IMapViewCallbacks 
     }
 
     @Override
+    public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap) {
+
+    }
+
+    @Override
     public void confirmAt(int x, int y, int layer) {
         if (!parent.map.mapTable.outOfBounds(x, y)) {
             int minX = Math.min(startX, x);

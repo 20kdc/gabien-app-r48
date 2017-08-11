@@ -58,6 +58,11 @@ public class UIMTEventMover extends UIPanel implements IMapViewCallbacks {
     }
 
     @Override
+    public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap) {
+
+    }
+
+    @Override
     public void confirmAt(int x, int y, int layer) {
         targetEvent.getInstVarBySymbol("@x").fixnumVal = x;
         targetEvent.getInstVarBySymbol("@y").fixnumVal = y;

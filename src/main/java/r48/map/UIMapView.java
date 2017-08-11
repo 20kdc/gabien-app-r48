@@ -184,6 +184,7 @@ public class UIMapView extends UIElement implements IWindowElement {
                         callbacks.performOverlay(i, j, igd, px, py, l, minimap);
                     }
                 }
+                callbacks.performGlobalOverlay(igd, - ((int) camX), - ((int) camY), l, minimap);
             }
         }
     }
