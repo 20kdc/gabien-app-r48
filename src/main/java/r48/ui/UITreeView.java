@@ -18,13 +18,15 @@ import java.util.LinkedList;
 public class UITreeView extends UIPanel {
     private final TreeElement[] elements;
     private int nodeWidth = 8;
+    private int dragDistX = 0, dragDistY = 0;
+    private int dragBaseX = 0, dragBaseY = 0;
+    private int dragBase = -1;
     public UITreeView(TreeElement[] e) {
         elements = e;
     }
 
     @Override
     public void setBounds(Rect r) {
-        super.setBounds(r);
         allElements.clear();
         int y = 0;
         nodeWidth = 0;
@@ -43,6 +45,7 @@ public class UITreeView extends UIPanel {
             te.h = h;
             allElements.add(te.innerElement);
         }
+        super.setBounds(new Rect(r.x, r.y, r.width, y));
     }
 
     @Override
@@ -81,6 +84,43 @@ public class UITreeView extends UIPanel {
             }
             igd.blitScaledImage(ico * 4, 32, 4, 4, ox + (te.indent * nodeWidth), oy + y, nodeWidth, te.h, AppMain.layerTabs);
             y += te.h;
+        }
+        if (dragBase != -1)
+            if (Math.max(dragDistX, dragDistY) > (nodeWidth / 2))
+                igd.blitScaledImage(0, 32, 4, 4, igd.getMouseX() - (nodeWidth / 2), igd.getMouseY() - (nodeWidth / 2), nodeWidth, nodeWidth, AppMain.layerTabs);
+    }
+
+    @Override
+    public void handleClick(MouseAction ma) {
+        super.handleClick(ma);
+        int targ = -1;
+        for (int i = 0; i < elements.length; i++)
+            if (selectedElement == elements[i].innerElement)
+                targ = i;
+        if (ma.button == 1) {
+            if (ma.down) {
+                dragBase = targ;
+                dragBaseX = ma.x;
+                dragBaseY = ma.y;
+            } else {
+                if (targ != -1)
+                    if (dragBase != -1)
+                        if (Math.max(dragDistX, dragDistY) > (nodeWidth / 2))
+                            elements[targ].elementDraggedHere.accept(dragBase);
+                dragBase = -1;
+            }
+            dragDistX = 0;
+            dragDistY = 0;
+        }
+    }
+
+    @Override
+    public void handleDrag(int x, int y) {
+        super.handleDrag(x, y);
+        System.out.println(dragBase);
+        if (dragBase != -1) {
+            dragDistX = Math.abs(dragBaseX - x);
+            dragDistY = Math.abs(dragBaseY - y);
         }
     }
 
