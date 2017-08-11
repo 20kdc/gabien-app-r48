@@ -6,6 +6,7 @@ package r48.ui;
 
 import gabien.ui.*;
 import r48.FontSizes;
+import r48.dbs.TXDB;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -45,59 +46,53 @@ public class UIFontSizeConfigurator extends UIPanel {
                 refreshLayout();
             }
         }), false, 1, 2));
+        outerLayout.panels.add(new UISplitterLayout(new UITextButton(FontSizes.fontSizerTextHeight, TXDB.get("Save"), new Runnable() {
+            @Override
+            public void run() {
+                FontSizes.save();
+            }
+        }), new UITextButton(FontSizes.fontSizerTextHeight, TXDB.get("Load"), new Runnable() {
+            @Override
+            public void run() {
+                FontSizes.load();
+                refreshLayout();
+            }
+        }), false, 1, 2));
         try {
-            for (final Field field : FontSizes.class.getFields()) {
-                if (field.getType() == int.class) {
+            for (final FontSizes.FontSizeField field : FontSizes.getFields()) {
                     doubleAll.add(new Runnable() {
                         @Override
                         public void run() {
-                            try {
-                                field.setInt(null, field.getInt(null) * 2);
-                            } catch (Exception e) {
-                            }
+                            field.accept(field.get() * 2);
                         }
                     });
                     halfAll.add(new Runnable() {
                         @Override
                         public void run() {
-                            try {
-                                field.setInt(null, field.getInt(null) / 2);
-                            } catch (Exception e) {
-                            }
+                            field.accept(field.get() / 2);
                         }
                     });
                     UIAdjuster tb = new UIAdjuster(FontSizes.fontSizerTextHeight, new ISupplier<String>() {
                         @Override
                         public String get() {
-                            try {
-                                int nv = field.getInt(null) + 1;
-                                field.setInt(null, nv);
-                                refreshLayout();
-                                return Integer.toString(nv);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                return "ERR";
-                            }
+                            int nv = field.get() + 1;
+                            field.accept(nv);
+                            refreshLayout();
+                            return Integer.toString(nv);
                         }
                     }, new ISupplier<String>() {
                         @Override
                         public String get() {
-                            try {
-                                int nv = field.getInt(null) - 1;
-                                if (nv < 1)
-                                    nv = 1;
-                                field.setInt(null, nv);
-                                refreshLayout();
-                                return Integer.toString(nv);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                return "ERR";
-                            }
+                            int nv = field.get() - 1;
+                            if (nv < 1)
+                                nv = 1;
+                            field.accept(nv);
+                            refreshLayout();
+                            return Integer.toString(nv);
                         }
                     });
-                    tb.accept(Integer.toString(field.getInt(null)));
-                    outerLayout.panels.add(new UISplitterLayout(new UILabel(field.getName(), FontSizes.fontSizerTextHeight), tb, false, 4, 5));
-                }
+                    tb.accept(Integer.toString(field.get()));
+                    outerLayout.panels.add(new UISplitterLayout(new UILabel(field.name, FontSizes.fontSizerTextHeight), tb, false, 4, 5));
             }
         } catch (Exception e) {
             e.printStackTrace();
