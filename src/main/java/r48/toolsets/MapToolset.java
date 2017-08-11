@@ -34,7 +34,7 @@ public class MapToolset implements IToolset {
     }
 
     @Override
-    public UIElement[] generateTabs(ISupplier<IConsumer<UIElement>> windowMaker) {
+    public UIElement[] generateTabs(final ISupplier<IConsumer<UIElement>> windowMaker) {
         final UIMapViewContainer mapBox = new UIMapViewContainer(windowMaker);
         context = new IMapContext() {
             @Override
@@ -46,7 +46,7 @@ public class MapToolset implements IToolset {
 
             @Override
             public void loadMap(RubyIO k) {
-                mapBox.loadMap(AppMain.system.mapLoadRequest(k));
+                mapBox.loadMap(AppMain.system.mapLoadRequest(k, windowMaker));
             }
 
             @Override

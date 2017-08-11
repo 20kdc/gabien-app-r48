@@ -4,16 +4,12 @@
  */
 package r48.map.systems;
 
-import gabien.ui.IConsumer;
-import gabien.ui.ISupplier;
-import gabien.ui.UIElement;
-import gabien.ui.UIPopupMenu;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.IMapContext;
 import r48.RubyIO;
 import r48.dbs.TXDB;
-import r48.map.StuffRenderer;
-import r48.map.UIMapViewContainer;
+import r48.map.*;
 import r48.map.imaging.IImageLoader;
 
 /**
@@ -62,13 +58,20 @@ public abstract class MapSystem {
     }
 
     // Similar to mapReferentToId, but used to get details for an incoming map change
-    public MapLoadDetails mapLoadRequest(RubyIO mapReferent) {
+    public MapLoadDetails mapLoadRequest(RubyIO mapReferent, final ISupplier<IConsumer<UIElement>> windowMaker) {
         MapLoadDetails mld = new MapLoadDetails();
         mld.objectId = mapReferentToId(mapReferent);
+        mld.getToolbar = new IFunction<UIMapView, IEditingToolbarController>() {
+            @Override
+            public IEditingToolbarController apply(UIMapView uiMapView) {
+                return new MapEditingToolbarController(uiMapView, windowMaker);
+            }
+        };
         return mld;
     }
 
     public static class MapLoadDetails {
         public String objectId;
+        public IFunction<UIMapView, IEditingToolbarController> getToolbar;
     }
 }

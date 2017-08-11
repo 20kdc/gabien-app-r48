@@ -134,117 +134,17 @@ public class UIMapViewContainer extends UIPanel {
                 AppMain.nextMapTool = atf;
             }
         };
-        UIScrollLayout layerTabLayout = new UIScrollLayout(false);
-        layerTabLayout.scrollbar.setBounds(new Rect(0, 0, 8, 8));
 
-        final LinkedList<UITextButton> tools = new LinkedList<UITextButton>();
-        final IConsumer<Integer> clearTools = new IConsumer<Integer>() {
-            @Override
-            public void accept(Integer t) {
-                for (UITextButton utb : tools)
-                    utb.state = false;
-                if (t != -1)
-                    tools.get(t).state = true;
-            }
-        };
-
+        final IEditingToolbarController metc = map.getToolbar.apply(view);
+        viewToolbarSplit = new UINSVertLayout(metc.getBar(), view);
+        allElements.add(viewToolbarSplit);
+        AppMain.schemas.kickAllDictionariesForMapChange();
         internalNoToolCallback = new Runnable() {
             @Override
             public void run() {
-                clearTools.accept(-1);
+                metc.noTool();
             }
         };
-
-        // -- Kind of a monolith here. Map tools ALWAYS go first, and must be togglables.
-        // It is assumed that this is the only class capable of causing tool changes.
-
-        for (int i = 0; i < view.mapTable.planeCount; i++) {
-            final int thisButton = i;
-            final UITextButton button = new UITextButton(FontSizes.mapLayertabTextHeight, "L" + i, new Runnable() {
-                @Override
-                public void run() {
-                    clearTools.accept(thisButton);
-                    view.currentLayer = thisButton;
-                    AppMain.nextMapTool = new UIMTAutotile(view);
-                }
-            }).togglable();
-            tools.add(button);
-        }
-        if (view.renderer.tileRenderer instanceof VXATileRenderer) {
-            final int thisButton = tools.size();
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Shadow/Region"), new Runnable() {
-                @Override
-                public void run() {
-                    clearTools.accept(thisButton);
-                    AppMain.nextMapTool = new UIMTShadowLayer(view);
-                }
-            }).togglable());
-        }
-        {
-            final int thisButton = tools.size();
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Events"), new Runnable() {
-                @Override
-                public void run() {
-                    clearTools.accept(thisButton);
-                    AppMain.nextMapTool = new UIMTEventPicker(windowMakerSupplier.get(), view);
-                }
-            }).togglable());
-        }
-        {
-            final int thisButton = tools.size();
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Layer Visibility"), new Runnable() {
-                @Override
-                public void run() {
-                    clearTools.accept(thisButton);
-                    UIScrollLayout svl = new UIScrollLayout(true);
-                    int h = 0;
-                    for (int i = 0; i < view.renderer.layers.length; i++) {
-                        final int fi = i;
-                        UITextButton layerVis = new UITextButton(FontSizes.mapLayertabTextHeight, view.renderer.layers[i].getName(), new Runnable() {
-                            @Override
-                            public void run() {
-                                view.layerVis[fi] = !view.layerVis[fi];
-                            }
-                        }).togglable();
-                        layerVis.state = view.layerVis[i];
-                        h += layerVis.getBounds().height;
-                        svl.panels.add(layerVis);
-                    }
-                    svl.setBounds(new Rect(0, 0, 320, h));
-                    AppMain.nextMapTool = svl;
-                }
-            }).togglable());
-        }
-
-        // Utility buttons
-
-        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Tile From Map"), new Runnable() {
-            @Override
-            public void run() {
-                // Select the current tile layer
-                clearTools.accept(view.currentLayer);
-                AppMain.nextMapTool = new UIMTPickTile(view);
-            }
-        }));
-        {
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("..."), new Runnable() {
-                final int thisButton = tools.size();
-
-                @Override
-                public void run() {
-                    clearTools.accept(thisButton);
-                    AppMain.nextMapTool = new UIMTPopupButtons(view);
-                }
-            }).togglable());
-        }
-
-        // finish layout
-        for (UITextButton utb : tools)
-            layerTabLayout.panels.add(utb);
-
-        layerTabLayout.setBounds(new Rect(0, 0, 28, 28));
-        viewToolbarSplit = new UINSVertLayout(layerTabLayout, view);
-        allElements.add(viewToolbarSplit);
-        AppMain.schemas.kickAllDictionariesForMapChange();
+        metc.noTool();
     }
 }
