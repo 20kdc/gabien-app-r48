@@ -18,6 +18,7 @@ import r48.dbs.TXDB;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.drawlayers.PassabilityMapViewDrawLayer;
 import r48.schema.util.SchemaPath;
+import r48.ui.Art;
 
 /**
  * Note: this class will slightly draw out of bounds.
@@ -147,10 +148,12 @@ public class UIMapView extends UIElement implements IWindowElement {
                 shortcuts = TXDB.get("Mouse drag: Scroll.");
         }
         String status = mapId + ";" + mouseXT + ", " + mouseYT + "; " + shortcuts;
-        UILabel.drawLabel(igd, UILabel.getRecommendedSize(status, FontSizes.mapPositionTextHeight).width, ox + 24, oy + 3, status, false, FontSizes.mapPositionTextHeight);
 
-        igd.blitImage(52, 32, 16, 16, ox + 4, oy + 4, AppMain.layerTabs);
-        igd.blitImage(36, 32, 16, 16, ox + 4, oy + 24, AppMain.layerTabs);
+        Rect plusRect = getZPlusRect();
+        Rect minusRect = getZMinusRect();
+        UILabel.drawLabel(igd, UILabel.getRecommendedSize(status, FontSizes.mapPositionTextHeight).width, ox + plusRect.x + plusRect.width + getZoomButtonMargin(), oy + plusRect.y, status, false, FontSizes.mapPositionTextHeight);
+        Art.drawZoom(igd, true, ox + plusRect.x, oy + plusRect.y, plusRect.height);
+        Art.drawZoom(igd, false, ox + minusRect.x, oy + minusRect.y, minusRect.height);
     }
 
     public void render(int mouseXT, int mouseYT, int eTileSize, int currentLayer, boolean debug, IGrDriver igd) {
@@ -186,12 +189,26 @@ public class UIMapView extends UIElement implements IWindowElement {
         }
     }
 
+    // These can be adjusted later if there's a need to alter the UI
+    // Right now it's tied to map position text height, which is the most reliable metric of what the user wants the UI to be
+    public int getZoomButtonSize() {
+        return UILabel.getRecommendedSize("", FontSizes.mapPositionTextHeight).height;
+    }
+
+    public int getZoomButtonMargin() {
+        return 4;
+    }
+
     private Rect getZPlusRect() {
-        return new Rect(4, 4, 16, 16);
+        int zbs = getZoomButtonSize();
+        int zbm = getZoomButtonMargin();
+        return new Rect(zbm, zbm, zbs, zbs);
     }
 
     private Rect getZMinusRect() {
-        return new Rect(4, 24, 16, 16);
+        int zbs = getZoomButtonSize();
+        int zbm = getZoomButtonMargin();
+        return new Rect(zbm, (zbm * 2) + zbs, zbs, zbs);
     }
 
     @Override

@@ -16,6 +16,7 @@ import r48.map.UIMapView;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.Art;
 
 /**
  * Created on 11/06/17.
@@ -60,7 +61,7 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
             public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
                 if (x == tx)
                     if (y == ty)
-                        igd.blitImage(0, 36, 16, 16, (px + (umv.tileSize / 2)) - 8, (py + (umv.tileSize / 2)) - 8, AppMain.layerTabs);
+                        Art.drawTarget(px, py, umv.tileSize, igd);
             }
 
             @Override
