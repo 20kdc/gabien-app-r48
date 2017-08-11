@@ -15,6 +15,7 @@ public class TSDB {
     public LinkedList<TSPicture> pictures = new LinkedList<TSPicture>();
     public int[] mapping;
     public int xorDoubleclick = 0;
+    public boolean disableHex = false;
 
     public TSDB(String arg) {
         DBLoader.readFile(arg, new IDatabase() {
@@ -29,6 +30,8 @@ public class TSDB {
                     pictures.add(new TSPicture(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]), Integer.parseInt(args[7]), Integer.parseInt(args[8])));
                 if (c == 'x')
                     xorDoubleclick = Integer.parseInt(args[0]);
+                if (c == 'z')
+                    disableHex = true;
                 if (c == 't')
                     mapping = new int[Integer.parseInt(args[0])];
                 if (c == 'i')

@@ -44,6 +44,9 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
 
     public final int[] defVals;
 
+    public boolean allowTextdraw = true;
+    public boolean allowResize = true;
+
     public RubyTableSchemaElement(String iVar, String wVar, String hVar, int dw, int dh, int defL, ITableCellEditor tcl, int[] defV) {
         this.iVar = iVar;
         widthVar = wVar;
@@ -71,9 +74,11 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                 if (targ.outOfBounds(tX, tY))
                     return;
                 tileHelper = baseTileDraw(target, t, x, y, igd, tileHelper);
-                igd.clearRect(0, 0, 0, x, y, tileSizeW, FontSizes.gridTextHeight);
-                for (int i = 0; i < targ.planeCount; i++)
-                    UILabel.drawString(igd, x, y + (i * FontSizes.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, FontSizes.gridTextHeight);
+                if (allowTextdraw) {
+                    igd.clearRect(0, 0, 0, x, y, tileSizeW, FontSizes.gridTextHeight);
+                    for (int i = 0; i < targ.planeCount; i++)
+                        UILabel.drawString(igd, x, y + (i * FontSizes.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, FontSizes.gridTextHeight);
+                }
             }
         };
 
@@ -110,46 +115,47 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         uig.uivScrollbar.scrollPoint = lastScrollCache;
         uig.setSelected(lastSelectionCache);
 
-        final UINumberBox wNB = new UINumberBox(FontSizes.tableSizeTextHeight);
-        wNB.number = targ.width;
-        wNB.onEdit = new Runnable() {
-            @Override
-            public void run() {
-                if (wNB.number < 0)
-                    wNB.number = 0;
-            }
-        };
-        final UINumberBox hNB = new UINumberBox(FontSizes.tableSizeTextHeight);
-        hNB.number = targ.height;
-        hNB.onEdit = new Runnable() {
-            @Override
-            public void run() {
-                if (hNB.number < 0)
-                    hNB.number = 0;
-            }
-        };
-        UIElement uie = new UISplitterLayout(wNB, hNB, false, 1, 2);
-        uie.setBounds(new Rect(0, 0, 128, uie.getBounds().height));
-        uiSVL.panels.add(uie);
-        uiSVL.panels.add(new UITextButton(FontSizes.tableResizeTextHeight, TXDB.get("Resize"), new Runnable() {
-            @Override
-            public void run() {
-                int w = wNB.number;
-                if (w < 0)
-                    w = 0;
-                int h = hNB.number;
-                if (h < 0)
-                    h = 0;
-                RubyTable r2 = targ.resize(w, h, defVals);
-                if (width != null)
-                    width.fixnumVal = w;
-                if (height != null)
-                    height.fixnumVal = h;
-                targV.userVal = r2.innerBytes;
-                path.changeOccurred(false);
-            }
-        }));
-
+        if (allowResize) {
+            final UINumberBox wNB = new UINumberBox(FontSizes.tableSizeTextHeight);
+            wNB.number = targ.width;
+            wNB.onEdit = new Runnable() {
+                @Override
+                public void run() {
+                    if (wNB.number < 0)
+                        wNB.number = 0;
+                }
+            };
+            final UINumberBox hNB = new UINumberBox(FontSizes.tableSizeTextHeight);
+            hNB.number = targ.height;
+            hNB.onEdit = new Runnable() {
+                @Override
+                public void run() {
+                    if (hNB.number < 0)
+                        hNB.number = 0;
+                }
+            };
+            UIElement uie = new UISplitterLayout(wNB, hNB, false, 1, 2);
+            uie.setBounds(new Rect(0, 0, 128, uie.getBounds().height));
+            uiSVL.panels.add(uie);
+            uiSVL.panels.add(new UITextButton(FontSizes.tableResizeTextHeight, TXDB.get("Resize"), new Runnable() {
+                @Override
+                public void run() {
+                    int w = wNB.number;
+                    if (w < 0)
+                        w = 0;
+                    int h = hNB.number;
+                    if (h < 0)
+                        h = 0;
+                    RubyTable r2 = targ.resize(w, h, defVals);
+                    if (width != null)
+                        width.fixnumVal = w;
+                    if (height != null)
+                        height.fixnumVal = h;
+                    targV.userVal = r2.innerBytes;
+                    path.changeOccurred(false);
+                }
+            }));
+        }
         UIElement r = new UISplitterLayout(uig, uiSVL, false, 6, 8);
         r.setBounds(new Rect(0, 0, 128, 128));
         return r;

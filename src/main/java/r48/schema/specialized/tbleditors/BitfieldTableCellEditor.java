@@ -8,6 +8,7 @@ import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.dbs.TXDB;
 import r48.ui.UIGrid;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -98,6 +99,8 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
             }
         }
         setButtonStates(flagStates, 0, 0, targ, confirmButton, changeOccurred);
+        panel.panels.add(new UILabel(TXDB.get("Manual Edit:"), FontSizes.tableElementTextHeight));
+        final Runnable manualControl = new DefaultTableCellEditor().createEditor(panel, targV, uig, changeOccurred);
         return new Runnable() {
             @Override
             public void run() {
@@ -110,6 +113,7 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                 } else {
                     setButtonStates(flagStates, selX, selY, targ, confirmButton, changeOccurred);
                 }
+                manualControl.run();
             }
         };
     }
