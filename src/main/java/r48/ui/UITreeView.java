@@ -16,12 +16,18 @@ import java.util.LinkedList;
  * Created on 11/08/17.
  */
 public class UITreeView extends UIPanel {
-    private final TreeElement[] elements;
+    private TreeElement[] elements = new TreeElement[0];
     private int nodeWidth = 8;
-    private int dragDistX = 0, dragDistY = 0;
     private int dragBaseX = 0, dragBaseY = 0;
+    private boolean dragCursorEnable = false;
     private int dragBase = -1;
-    public UITreeView(TreeElement[] e) {
+
+    public UITreeView() {
+    }
+
+    // NOTE: Run UIScrollLayout setBounds(getBounds) after this.
+    public void setElements(TreeElement[] e) {
+        allElements.clear();
         elements = e;
     }
 
@@ -51,6 +57,13 @@ public class UITreeView extends UIPanel {
     @Override
     public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
         super.updateAndRender(ox, oy, deltaTime, select, igd);
+
+        int size = 4;
+        int base = 32;
+        if (nodeWidth >= 8) {
+            size = 8;
+            base = 52;
+        }
         int y = 0;
         HashSet<Integer> continuingLines = new HashSet<Integer>();
         for (int i = 0; i < elements.length; i++) {
@@ -76,18 +89,19 @@ public class UITreeView extends UIPanel {
 
             for (int j = 0; j < te.indent; j++) {
                 if (j == (te.indent - 1)) {
-                    igd.blitScaledImage(pico * 4, 32, 4, 4, ox + (j * nodeWidth), oy + y, nodeWidth, te.h, AppMain.layerTabs);
+                    igd.blitScaledImage(pico * size, base, size, size, ox + (j * nodeWidth), oy + y, nodeWidth, te.h, AppMain.layerTabs);
                 } else {
                     if (continuingLines.contains(j))
-                        igd.blitScaledImage(4, 32, 4, 4, ox + (j * nodeWidth), oy + y, nodeWidth, te.h, AppMain.layerTabs);
+                        igd.blitScaledImage(size, base, size, size, ox + (j * nodeWidth), oy + y, nodeWidth, te.h, AppMain.layerTabs);
                 }
             }
-            igd.blitScaledImage(ico * 4, 32, 4, 4, ox + (te.indent * nodeWidth), oy + y, nodeWidth, te.h, AppMain.layerTabs);
+            igd.blitScaledImage(ico * size, base, size, size, ox + (te.indent * nodeWidth), oy + y, nodeWidth, te.h, AppMain.layerTabs);
             y += te.h;
         }
-        if (dragBase != -1)
-            if (Math.max(dragDistX, dragDistY) > (nodeWidth / 2))
-                igd.blitScaledImage(0, 32, 4, 4, igd.getMouseX() - (nodeWidth / 2), igd.getMouseY() - (nodeWidth / 2), nodeWidth, nodeWidth, AppMain.layerTabs);
+        if (dragCursorEnable) {
+            int dcs = size * 3;
+            igd.blitScaledImage(0, base, size, size, igd.getMouseX() - (dcs / 2), igd.getMouseY() - (dcs / 2), dcs, dcs, AppMain.layerTabs);
+        }
     }
 
     @Override
@@ -97,8 +111,7 @@ public class UITreeView extends UIPanel {
             dragBase = getTarget(x, y);
             dragBaseX = x;
             dragBaseY = y;
-            dragDistX = 0;
-            dragDistY = 0;
+            dragCursorEnable = false;
         }
     }
 
@@ -106,8 +119,10 @@ public class UITreeView extends UIPanel {
     public void handleDrag(int x, int y) {
         super.handleDrag(x, y);
         if (dragBase != -1) {
-            dragDistX = Math.abs(dragBaseX - x);
-            dragDistY = Math.abs(dragBaseY - y);
+            int ddx = Math.abs(dragBaseX - x);
+            int ddy = Math.abs(dragBaseY - y);
+            if (Math.max(ddx, ddy) > 8)
+                dragCursorEnable = true;
         }
     }
 
@@ -117,9 +132,10 @@ public class UITreeView extends UIPanel {
         int targ = getTarget(x, y);
         if (targ != -1)
             if (dragBase != -1)
-                if (Math.max(dragDistX, dragDistY) > (nodeWidth / 2))
+                if (dragCursorEnable)
                     elements[targ].elementDraggedHere.accept(dragBase);
         dragBase = -1;
+        dragCursorEnable = false;
     }
 
     private int getTarget(int x, int y) {

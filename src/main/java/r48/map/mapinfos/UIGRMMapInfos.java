@@ -30,7 +30,8 @@ public class UIGRMMapInfos extends UIPanel {
     private final IRMLikeMapInfoBackendWPub operators;
     private final ISupplier<IConsumer<UIElement>> windowMakerGetter;
     private final IConsumer<Integer> mapLoader;
-    private UIScrollLayout uiSVL;
+    private UIScrollLayout uiSVL = new UIScrollLayout(true);
+    private UITreeView utv = new UITreeView();
     private int selectedOrder = 0;
     private boolean deleteConfirmation = false;
     private boolean enableOrderHoleDebug = false;
@@ -51,7 +52,6 @@ public class UIGRMMapInfos extends UIPanel {
                 mapBox.loadMap(operators.nameFromInt(integer));
             }
         };
-        uiSVL = new UIScrollLayout(true);
         rebuildList();
         allElements.add(uiSVL);
     }
@@ -199,7 +199,8 @@ public class UIGRMMapInfos extends UIPanel {
                 }
             }));
         }
-        uiSVL.panels.add(new UITreeView(tree.toArray(new UITreeView.TreeElement[0])));
+        utv.setElements(tree.toArray(new UITreeView.TreeElement[0]));
+        uiSVL.panels.add(utv);
         uiSVL.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, TXDB.get("<Insert New Map>"), new Runnable() {
             @Override
             public void run() {
@@ -272,6 +273,7 @@ public class UIGRMMapInfos extends UIPanel {
                 rebuildList();
             }
         }));
+        uiSVL.setBounds(uiSVL.getBounds());
         deleteConfirmation = false;
     }
 
