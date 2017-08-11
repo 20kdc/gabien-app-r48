@@ -15,8 +15,6 @@ import r48.schema.util.SchemaPath;
  * Created on 02/06/17.
  */
 public interface IRMLikeMapInfoBackendWPub extends IRMLikeMapInfoBackend {
-    String nameFromInt(int i);
-
     void registerModificationHandler(IConsumer<SchemaPath> onMapInfoChange);
 
     // Gets the actual mapinfo object.

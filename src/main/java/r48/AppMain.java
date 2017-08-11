@@ -83,6 +83,7 @@ public class AppMain {
     // The global context-independent stuffRenderer. *Only use outside of maps.*
     public static StuffRenderer stuffRendererIndependent;
     public static MapSystem system;
+    // ONLY this class & R2kSystemDefaultsInstallerSchemaElement should refer to this!!!
     public static IMapContext mapContext;
 
     // State for in-system copy/paste

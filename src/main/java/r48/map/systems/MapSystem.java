@@ -9,6 +9,7 @@ import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import gabien.ui.UIPopupMenu;
 import r48.FontSizes;
+import r48.IMapContext;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
@@ -33,14 +34,14 @@ public abstract class MapSystem {
         imageLoader = imgLoad;
     }
 
-    public UIElement createMapExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final UIMapViewContainer mapBox) {
+    public UIElement createMapExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final IMapContext mapBox) {
         return new UIPopupMenu(new String[] {
                 TXDB.get("Load Map")
         }, new Runnable[] {
                 new Runnable() {
                     @Override
                     public void run() {
-                        mapBox.loadMap("Map");
+                        mapBox.loadMap(new RubyIO().setFX(0));
                     }
                 }
         }, FontSizes.menuTextHeight, false);
@@ -58,5 +59,16 @@ public abstract class MapSystem {
     // The schema might have tables attached to tilesets and might want to allow editing of them.
     public StuffRenderer rendererFromTso(RubyIO target) {
         return rendererFromMap(null);
+    }
+
+    // Similar to mapReferentToId, but used to get details for an incoming map change
+    public MapLoadDetails mapLoadRequest(RubyIO mapReferent) {
+        MapLoadDetails mld = new MapLoadDetails();
+        mld.objectId = mapReferentToId(mapReferent);
+        return mld;
+    }
+
+    public static class MapLoadDetails {
+        public String objectId;
     }
 }

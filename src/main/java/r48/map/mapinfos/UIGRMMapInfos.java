@@ -7,6 +7,7 @@ package r48.map.mapinfos;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
+import r48.IMapContext;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
@@ -30,12 +31,13 @@ import java.util.LinkedList;
 public class UIGRMMapInfos extends UIPanel {
     private final IRMLikeMapInfoBackendWPub operators;
     private final ISupplier<IConsumer<UIElement>> windowMakerGetter;
-    private final IConsumer<Integer> mapLoader;
     private UIScrollLayout uiSVL = new UIScrollLayout(true);
     private UITreeView utv = new UITreeView();
     private int selectedOrder = 0;
     private boolean deleteConfirmation = false;
     private boolean enableOrderHoleDebug = false;
+    private IMapContext mapContext;
+
     private IConsumer<SchemaPath> onMapInfoChange = new IConsumer<SchemaPath>() {
         @Override
         public void accept(SchemaPath sp) {
@@ -43,16 +45,11 @@ public class UIGRMMapInfos extends UIPanel {
         }
     };
 
-    public UIGRMMapInfos(ISupplier<IConsumer<UIElement>> wmg, final UIMapViewContainer mapBox, final IRMLikeMapInfoBackendWPub b) {
+    public UIGRMMapInfos(ISupplier<IConsumer<UIElement>> wmg, final IRMLikeMapInfoBackendWPub b, IMapContext context) {
         operators = b;
+        mapContext = context;
         b.registerModificationHandler(onMapInfoChange);
         windowMakerGetter = wmg;
-        mapLoader = new IConsumer<Integer>() {
-            @Override
-            public void accept(Integer integer) {
-                mapBox.loadMap(operators.nameFromInt(integer));
-            }
-        };
         rebuildList();
         allElements.add(uiSVL);
     }
@@ -106,7 +103,7 @@ public class UIGRMMapInfos extends UIPanel {
                 public void run() {
                     selectedOrder = order;
                     deleteConfirmation = false;
-                    mapLoader.accept(k);
+                    mapContext.loadMap(new RubyIO().setFX(k));
                     rebuildList();
                 }
             });
@@ -197,7 +194,7 @@ public class UIGRMMapInfos extends UIPanel {
                         if (!operators.wouldRelocatingInOrderFail(orderFrom, order + 1)) {
                             selectedOrder = operators.relocateInOrder(orderFrom, order + 1);
                             operators.complete();
-                            mapLoader.accept(operators.getMapOfOrder(selectedOrder));
+                            mapContext.loadMap(new RubyIO().setFX(operators.getMapOfOrder(selectedOrder)));
                             rebuildList();
                         }
                 }
@@ -219,7 +216,7 @@ public class UIGRMMapInfos extends UIPanel {
                         }
                         selectedOrder = operators.createNewMap(i);
                         operators.complete();
-                        mapLoader.accept(i);
+                        mapContext.loadMap(new RubyIO().setFX(i));
                         rebuildList();
                     }
                 }, FontSizes.textDialogFieldTextHeight);

@@ -8,6 +8,7 @@ import gabien.ui.IConsumer;
 import gabien.ui.Rect;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.map.UIMapViewContainer;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 
@@ -24,6 +25,10 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     // So swapping orders is probably the easiest operation here.
     public RubyIO mapTreeHash = mapTree.getInstVarBySymbol("@map_infos");
     public RubyIO mapTreeOrders = mapTree.getInstVarBySymbol("@map_order");
+
+    public R2kRMLikeMapInfoBackend() {
+
+    }
 
     @Override
     public void swapOrders(int orderA, int orderB) {
@@ -43,11 +48,6 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         while (m.length() < 4)
             m = "0" + m;
         return "Map" + m + ".lmu";
-    }
-
-    @Override
-    public String nameFromInt(int i) {
-        return sNameFromInt(i);
     }
 
     @Override

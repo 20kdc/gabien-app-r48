@@ -10,6 +10,7 @@ import gabien.ui.IConsumer;
 import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import r48.AppMain;
+import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.map.StuffRenderer;
@@ -43,8 +44,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public UIElement createMapExplorer(ISupplier<IConsumer<UIElement>> windowMaker, UIMapViewContainer mapBox) {
-        return new UIGRMMapInfos(windowMaker, mapBox, new R2kRMLikeMapInfoBackend());
+    public UIElement createMapExplorer(ISupplier<IConsumer<UIElement>> windowMaker, IMapContext context) {
+        return new UIGRMMapInfos(windowMaker, new R2kRMLikeMapInfoBackend(), context);
     }
 
     private RubyIO tsoFromMap2000(RubyIO map) {

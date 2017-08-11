@@ -83,8 +83,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                             AppMain.pendingRunnables.add(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (AppMain.mapContext != null)
-                                        AppMain.mapContext.loadMap("Map0001.lmu");
+                                    AppMain.mapContext.loadMap(new RubyIO().setFX(1));
                                 }
                             });
                         }

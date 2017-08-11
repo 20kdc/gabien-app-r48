@@ -8,6 +8,7 @@ import gabien.ui.IConsumer;
 import gabien.ui.Rect;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.map.UIMapViewContainer;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 
@@ -28,11 +29,6 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         while (mapStr.length() < 3)
             mapStr = "0" + mapStr;
         return "Map" + mapStr;
-    }
-
-    @Override
-    public String nameFromInt(int key) {
-        return sNameFromInt(key);
     }
 
     @Override

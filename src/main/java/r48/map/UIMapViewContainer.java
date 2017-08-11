@@ -10,6 +10,7 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
+import r48.map.systems.MapSystem;
 import r48.map.tiles.VXATileRenderer;
 import r48.maptools.*;
 import r48.ui.UINSVertLayout;
@@ -107,15 +108,24 @@ public class UIMapViewContainer extends UIPanel {
         timeWaster.draw(igd, ox, oy, deltaTime, r.width, r.height);
     }
 
-    public void loadMap(String k) {
+    public void loadMap(MapSystem.MapLoadDetails map) {
         wantsToolHide = true;
         allElements.clear();
         if (view != null)
             view.windowClosed();
+        if (map == null) {
+            view = null;
+            internalNoToolCallback = new Runnable() {
+                @Override
+                public void run() {
+                }
+            };
+            return;
+        }
         Rect b = getBounds();
         // Creating the MapView and such causes quite a few side-effects (specifically global StuffRenderer kick-in-the-pants).
         // Also kick the dictionaries because of the event dictionary.
-        view = new UIMapView(k, b.width, b.height);
+        view = new UIMapView(map.objectId, b.width, b.height);
         view.pickTileHelper = new IConsumer<Short>() {
             @Override
             public void accept(Short aShort) {

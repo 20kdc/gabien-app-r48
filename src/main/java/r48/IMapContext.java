@@ -13,7 +13,8 @@ public interface IMapContext {
     // Returns null if none loaded.
     String getCurrentMap();
 
-    void loadMap(String s);
+    // Loads a map by it's referent.
+    void loadMap(RubyIO reference);
 
     // Shuts down internal caching as R48 reverts to the launcher.
     void freeOsbResources();
