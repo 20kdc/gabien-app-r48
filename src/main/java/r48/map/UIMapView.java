@@ -212,27 +212,29 @@ public class UIMapView extends UIElement implements IWindowElement {
     }
 
     @Override
-    public void handleClick(int x, int y, int button) {
-        lmX = x;
-        lmY = y;
+    public void handleClick(MouseAction ma) {
+        lmX = ma.x;
+        lmY = ma.y;
+        if (!ma.down)
+            return;
         // Zoom is mousewheel emulation.
-        if (getZPlusRect().contains(x, y)) {
+        if (getZPlusRect().contains(ma.x, ma.y)) {
             dragging = false;
-            handleMousewheel(x, y, true);
+            handleMousewheel(ma.x, ma.y, true);
             return;
         }
-        if (getZMinusRect().contains(x, y)) {
+        if (getZMinusRect().contains(ma.x, ma.y)) {
             dragging = false;
-            handleMousewheel(x, y, false);
+            handleMousewheel(ma.x, ma.y, false);
             return;
         }
-        if (button != 1) {
+        if (ma.button != 1) {
             dragging = true;
         } else {
             // implicit support for one-button mice
             if (!minimap) {
-                int mouseXT = UIElement.sensibleCellDiv((int) ((x / internalScaling) + camX), tileSize);
-                int mouseYT = UIElement.sensibleCellDiv((int) ((y / internalScaling) + camY), tileSize);
+                int mouseXT = UIElement.sensibleCellDiv((int) ((ma.x / internalScaling) + camX), tileSize);
+                int mouseYT = UIElement.sensibleCellDiv((int) ((ma.y / internalScaling) + camY), tileSize);
                 dragging = false;
                 if (shiftDown) {
                     if (!mapTable.outOfBounds(mouseXT, mouseYT))

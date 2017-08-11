@@ -6,6 +6,7 @@
 package r48;
 
 import gabien.IGrInDriver;
+import gabien.ui.MouseAction;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
@@ -49,7 +50,7 @@ public class UIObjectDBMonitor extends UIElement {
     }
 
     @Override
-    public void handleClick(int x, int y, int button) {
+    public void handleClick(MouseAction ma) {
 
     }
 }
