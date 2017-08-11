@@ -175,6 +175,7 @@ public class UIGRMMapInfos extends UIPanel {
                             }
                             operators.removeMap(k);
                             operators.complete();
+                            rebuildList();
                         }
                     }, FontSizes.mapInfosTextHeight);
                 } else {
@@ -196,6 +197,7 @@ public class UIGRMMapInfos extends UIPanel {
                             selectedOrder = operators.relocateInOrder(orderFrom, order + 1);
                             operators.complete();
                             mapLoader.accept(k);
+                            rebuildList();
                         }
                 }
             }));
