@@ -5,6 +5,7 @@
 package r48.map.mapinfos;
 
 import gabien.ui.IConsumer;
+import gabien.ui.Rect;
 import r48.schema.util.SchemaPath;
 
 /**
@@ -46,4 +47,6 @@ public interface IRMLikeMapInfoBackendWPub extends IRMLikeMapInfoBackend {
 
     // A modification was completed, trigger modification handlers
     void complete();
+
+    Rect getIconForMap(int k);
 }

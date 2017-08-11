@@ -5,9 +5,11 @@
 package r48.map.mapinfos;
 
 import gabien.ui.IConsumer;
+import gabien.ui.Rect;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
+import r48.ui.Art;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -126,5 +128,10 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         SchemaPath fakePath = new SchemaPath(AppMain.schemas.getSDBEntry("File.MapInfos"), mapInfos, null);
         AppMain.objectDB.objectRootModified(mapInfos, fakePath);
         modHandler.accept(fakePath);
+    }
+
+    @Override
+    public Rect getIconForMap(int k) {
+        return Art.mapIcon;
     }
 }

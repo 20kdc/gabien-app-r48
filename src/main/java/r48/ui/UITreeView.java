@@ -69,7 +69,6 @@ public class UITreeView extends UIPanel {
         for (int i = 0; i < elements.length; i++) {
             TreeElement te = elements[i];
 
-            int ico = 0;
             int pico = 2;
             boolean lastInSect = true;
             for (int j = i + 1; j < elements.length; j++) {
@@ -95,7 +94,9 @@ public class UITreeView extends UIPanel {
                         igd.blitScaledImage(size, base, size, size, ox + (j * nodeWidth), oy + y, nodeWidth, te.h, AppMain.layerTabs);
                 }
             }
-            igd.blitScaledImage(ico * size, base, size, size, ox + (te.indent * nodeWidth), oy + y, nodeWidth, te.h, AppMain.layerTabs);
+            // the actual item icon
+            Rect iconDisplay = Art.reconcile(new Rect(ox + (te.indent * nodeWidth), oy + y, nodeWidth, te.h), te.icon);
+            igd.blitScaledImage(te.icon.x, te.icon.y, te.icon.width, te.icon.height, iconDisplay.x, iconDisplay.y, iconDisplay.width, iconDisplay.height, AppMain.layerTabs);
             y += te.h;
         }
         if (dragCursorEnable) {
@@ -155,11 +156,13 @@ public class UITreeView extends UIPanel {
     public static class TreeElement {
         public final int indent;
         private int h;
+        public final Rect icon;
         public final UIElement innerElement;
         public final IConsumer<Integer> elementDraggedHere;
 
-        public TreeElement(int i, UIElement pineapple, IConsumer<Integer> o) {
+        public TreeElement(int i, Rect ico, UIElement pineapple, IConsumer<Integer> o) {
             indent = i;
+            icon = ico;
             innerElement = pineapple;
             if (o == null) {
                 elementDraggedHere = new IConsumer<Integer>() {

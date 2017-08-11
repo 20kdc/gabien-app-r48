@@ -189,7 +189,7 @@ public class UIGRMMapInfos extends UIPanel {
                     }, FontSizes.mapInfosTextHeight);
                 }
             }
-            tree.add(new UITreeView.TreeElement(parentStack.size(), elm, new IConsumer<Integer>() {
+            tree.add(new UITreeView.TreeElement(parentStack.size(), operators.getIconForMap(k), elm, new IConsumer<Integer>() {
                 @Override
                 public void accept(Integer integer) {
                     int orderFrom = integer + 1;
