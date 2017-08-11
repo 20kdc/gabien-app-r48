@@ -6,6 +6,7 @@ package r48.map.events;
 
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.FontSizes;
@@ -85,7 +86,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
             if (useVXAExtensionScheme)
                 if (!s.startsWith("!"))
                     oy -= 4;
-            IGrInDriver.IImage i = imageLoader.getImage("Characters/" + s, false);
+            IImage i = imageLoader.getImage("Characters/" + s, false);
             int sprW = i.getWidth() / patternCount;
             int sprH = i.getHeight() / 4;
             // Direction 2, pattern 0 == 0, ? (safe @ cliffs, page 0)
@@ -121,7 +122,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         }
     }
 
-    public static void flexibleSpriteDraw(int srcx, int srcy, int srcw, int srch, int x, int y, int acw, int ach, int angle, IGrInDriver.IImage i, int blendType, IGrDriver igd) {
+    public static void flexibleSpriteDraw(int srcx, int srcy, int srcw, int srch, int x, int y, int acw, int ach, int angle, IImage i, int blendType, IGrDriver igd) {
         boolean doBlend = false;
         boolean doBlendType = false;
         if (blendType == 1)

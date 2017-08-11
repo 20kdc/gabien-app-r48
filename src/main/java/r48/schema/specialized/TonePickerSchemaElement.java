@@ -5,8 +5,8 @@
 package r48.schema.specialized;
 
 import gabien.GaBIEn;
-import gabien.IGrInDriver;
-import gabien.IOsbDriver;
+import gabien.IGrDriver;
+import gabien.IImage;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UIPanel;
@@ -45,8 +45,8 @@ public class TonePickerSchemaElement extends SchemaElement {
 
     public static UIPanel createTotem(IImageEffect cfg) {
         UIPanel panel = new UIPanel();
-        IOsbDriver finalComposite = GaBIEn.makeOffscreenBuffer(128, 64, false);
-        IGrInDriver.IImage totem = GaBIEn.getImage("tonetotm.png");
+        IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(128, 64, false);
+        IImage totem = GaBIEn.getImage("tonetotm.png");
         finalComposite.blitScaledImage(0, 0, 256, 256, 0, 0, 64, 64, totem);
         finalComposite.blitImage(0, 0, 64, 64, 64, 0, AppMain.imageFXCache.process(finalComposite, cfg));
         panel.baseImage = GaBIEn.createImage(finalComposite.getPixels(), 128, 64);

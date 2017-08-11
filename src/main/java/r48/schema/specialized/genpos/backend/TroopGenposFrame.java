@@ -5,6 +5,7 @@
 package r48.schema.specialized.genpos.backend;
 
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.IFunction;
 import gabien.ui.Rect;
 import r48.AppMain;
@@ -37,10 +38,10 @@ public class TroopGenposFrame implements IGenposFrame {
             320, 240
     };
 
-    public IGrInDriver.IImage battleBkg;
+    public IImage battleBkg;
     public RubyIO troop;
     public SchemaPath troopPath;
-    public IGrInDriver.IImage[] enemies;
+    public IImage[] enemies;
     public Runnable changed;
 
     public TroopGenposFrame(RubyIO t, SchemaPath path, Runnable change) {
@@ -54,13 +55,13 @@ public class TroopGenposFrame implements IGenposFrame {
         long max = 0;
         for (RubyIO rio : database.getInstVarBySymbol("@enemies").hashVal.keySet())
             max = Math.max(max, rio.fixnumVal);
-        enemies = new IGrInDriver.IImage[(int) (max + 1)];
+        enemies = new IImage[(int) (max + 1)];
         for (Map.Entry<RubyIO, RubyIO> map : database.getInstVarBySymbol("@enemies").hashVal.entrySet())
             enemies[(int) (map.getKey().fixnumVal)] = readEnemy(map.getValue(), img);
     }
 
-    private IGrInDriver.IImage readEnemy(RubyIO value, IImageLoader img) {
-        IGrInDriver.IImage im = img.getImage("Monster/" + value.getInstVarBySymbol("@battler_name").decString(), false);
+    private IImage readEnemy(RubyIO value, IImageLoader img) {
+        IImage im = img.getImage("Monster/" + value.getInstVarBySymbol("@battler_name").decString(), false);
         return AppMain.imageFXCache.process(im, new HueShiftImageEffect((int) value.getInstVarBySymbol("@battler_hue").fixnumVal));
     }
 
@@ -143,7 +144,7 @@ public class TroopGenposFrame implements IGenposFrame {
         int w = 32;
         int h = 32;
         int enemy = (int) getCellProp(i, 0).targetElement.fixnumVal;
-        IGrInDriver.IImage enemyImg = enemies[enemy];
+        IImage enemyImg = enemies[enemy];
         if (enemyImg != null) {
             w = enemyImg.getWidth();
             h = enemyImg.getHeight();
@@ -161,13 +162,13 @@ public class TroopGenposFrame implements IGenposFrame {
             return;
         if (enemy >= enemies.length)
             return;
-        IGrInDriver.IImage enemyImg = enemies[enemy];
+        IImage enemyImg = enemies[enemy];
         if (enemyImg != null)
             igd.blitImage(0, 0, enemyImg.getWidth(), enemyImg.getHeight(), opx - (enemyImg.getWidth() / 2), opy - (enemyImg.getHeight() / 2), enemyImg);
     }
 
     @Override
-    public IGrInDriver.IImage getBackground() {
+    public IImage getBackground() {
         return battleBkg;
     }
 }

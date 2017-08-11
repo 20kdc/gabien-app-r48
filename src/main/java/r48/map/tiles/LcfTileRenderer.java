@@ -7,6 +7,7 @@ package r48.map.tiles;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IImage;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.ATDB;
@@ -21,7 +22,7 @@ import java.util.LinkedList;
  * Created on 31/05/17.
  */
 public class LcfTileRenderer implements ITileRenderer {
-    public final IGrInDriver.IImage chipset;
+    public final IImage chipset;
 
     public LcfTileRenderer(IImageLoader imageLoader, RubyIO tso) {
         if (tso != null) {
@@ -142,7 +143,7 @@ public class LcfTileRenderer implements ITileRenderer {
         }
     }
 
-    private void handleWATField(int tSubfield, int px, int py, IGrDriver igd, IGrInDriver.IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int ets) {
+    private void handleWATField(int tSubfield, int px, int py, IGrDriver igd, IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int ets) {
 
         int innerSubfield = tSubfield % 50;
         int outerSubfield = tSubfield / 50;
@@ -164,7 +165,7 @@ public class LcfTileRenderer implements ITileRenderer {
         }
     }
 
-    private void handleWATCorner(int cx, int cy, char c, int px, int py, IGrDriver igd, IGrInDriver.IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int etc) {
+    private void handleWATCorner(int cx, int cy, char c, int px, int py, IGrDriver igd, IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int etc) {
         int tox = 0;
         int toy = 0;
         switch (c) {
@@ -196,7 +197,7 @@ public class LcfTileRenderer implements ITileRenderer {
         igd.blitImage(tox + cx, toy + cy, etc, etc, px + cx, py + cy, chipset);
     }
 
-    private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrDriver igd, IGrInDriver.IImage chipset, int ets) {
+    private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrDriver igd, IImage chipset, int ets) {
         // Divided into 6-wide columns, 96 tiles per column.
         int ti = tidx - base;
         ti += ofsPage * 144;
@@ -205,7 +206,7 @@ public class LcfTileRenderer implements ITileRenderer {
         igd.blitImage(192 + (tx * 16), ty * 16, ets, ets, px, py, chipset);
     }
 
-    private void handleATField(int subfield, int fx, int fy, int px, int py, IGrDriver igd, IGrInDriver.IImage chipset, int ets) {
+    private void handleATField(int subfield, int fx, int fy, int px, int py, IGrDriver igd, IImage chipset, int ets) {
         XPTileRenderer.generalOldRMATField(fx * 16, fy * 16, subfield, 0, 16, ets, px, py, igd, chipset);
     }
 

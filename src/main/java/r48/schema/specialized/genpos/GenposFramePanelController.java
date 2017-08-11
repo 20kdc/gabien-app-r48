@@ -5,6 +5,7 @@
 package r48.schema.specialized.genpos;
 
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.Rect;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
@@ -37,7 +38,7 @@ public class GenposFramePanelController {
         hostLauncher = launcher;
         frame = rootForNow;
         editor = new UISingleFrameView(this);
-        IGrInDriver.IImage bkg = rootForNow.getBackground();
+        IImage bkg = rootForNow.getBackground();
         if (bkg != null) {
             editor.camX = bkg.getWidth() / 2;
             editor.camY = bkg.getHeight() / 2;

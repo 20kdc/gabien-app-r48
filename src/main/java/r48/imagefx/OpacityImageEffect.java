@@ -6,6 +6,7 @@ package r48.imagefx;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabien.IImage;
 
 /**
  * Created on 30/07/17.
@@ -23,7 +24,7 @@ public class OpacityImageEffect implements IImageEffect {
     }
 
     @Override
-    public IGrInDriver.IImage process(IGrInDriver.IImage image) {
+    public IImage process(IImage image) {
         int[] data = image.getPixels();
         for (int i = 0; i < data.length; i++) {
             int base = data[i] & 0xFFFFFF;

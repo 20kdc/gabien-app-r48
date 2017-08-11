@@ -5,6 +5,7 @@
 package r48.map.systems;
 
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.IConsumer;
 import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
@@ -67,7 +68,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             if (map.getInstVarBySymbol("@parallax_flag").type != 'T')
                 vxaPano = "";
             layers = new IMapViewDrawLayer[9];
-            IGrInDriver.IImage img = null;
+            IImage img = null;
             if (!vxaPano.equals(""))
                 img = imageLoader.getImage("Panorama/" + vxaPano, true);
             // Layer order seems to be this:

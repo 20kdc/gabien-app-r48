@@ -6,6 +6,7 @@ package r48.map.imaging;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabien.IImage;
 
 import java.util.HashMap;
 
@@ -15,7 +16,7 @@ import java.util.HashMap;
  * Created on 31/05/17.
  */
 public class CacheImageLoader implements IImageLoader {
-    public final HashMap<String, IGrInDriver.IImage> loadedImages = new HashMap<String, IGrInDriver.IImage>();
+    public final HashMap<String, IImage> loadedImages = new HashMap<String, IImage>();
     public final IImageLoader root;
 
     public CacheImageLoader(IImageLoader r) {
@@ -23,11 +24,11 @@ public class CacheImageLoader implements IImageLoader {
     }
 
     @Override
-    public IGrInDriver.IImage getImage(String a, boolean t) {
+    public IImage getImage(String a, boolean t) {
         String ki = a.toLowerCase() + "_" + (t ? "pano" : "geni");
         if (loadedImages.containsKey(ki))
             return loadedImages.get(ki);
-        IGrInDriver.IImage i = root.getImage(a, t);
+        IImage i = root.getImage(a, t);
         if (i == null)
             i = GaBIEn.getErrorImage();
         loadedImages.put(ki, i);

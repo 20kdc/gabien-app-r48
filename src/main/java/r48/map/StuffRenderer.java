@@ -5,6 +5,7 @@
 package r48.map;
 
 import gabien.IGrInDriver;
+import gabien.IImage;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.map.drawlayers.EventMapViewDrawLayer;
@@ -40,7 +41,7 @@ public class StuffRenderer {
         // 1: E-1
         // 2, 3: T0, E0
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[(rt.planeCount * 2) + 2];
-        IGrInDriver.IImage panoImg = null;
+        IImage panoImg = null;
         if (!vxaPano.equals(""))
             panoImg = iil.getImage(vxaPano, true);
         layers[0] = new PanoramaMapViewDrawLayer(panoImg);

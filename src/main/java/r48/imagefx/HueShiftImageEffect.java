@@ -6,6 +6,7 @@ package r48.imagefx;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabien.IImage;
 
 /**
  * Hue changing. If you're wondering why a family member seems a little blue, now you know.
@@ -78,7 +79,7 @@ public class HueShiftImageEffect implements IImageEffect {
     }
 
     @Override
-    public IGrInDriver.IImage process(IGrInDriver.IImage input) {
+    public IImage process(IImage input) {
         int[] array = input.getPixels();
         for (int i = 0; i < array.length; i++)
             array[i] = processCol(array[i]);

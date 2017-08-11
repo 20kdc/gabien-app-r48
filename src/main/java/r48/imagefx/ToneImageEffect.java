@@ -10,6 +10,7 @@ package r48.imagefx;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabien.IImage;
 
 /**
  * NOTE: This doesn't emulate what appears to be an automatic gamma-adjust in RPG_RT & EasyRPG Player,
@@ -32,7 +33,7 @@ public class ToneImageEffect implements IImageEffect {
     }
 
     @Override
-    public IGrInDriver.IImage process(IGrInDriver.IImage input) {
+    public IImage process(IImage input) {
         int[] array = input.getPixels();
         for (int i = 0; i < array.length; i++) {
             array[i] = processCol(array[i]);

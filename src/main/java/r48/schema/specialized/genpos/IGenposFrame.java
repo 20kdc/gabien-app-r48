@@ -5,6 +5,7 @@
 package r48.schema.specialized.genpos;
 
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.IFunction;
 import gabien.ui.Rect;
 import r48.schema.util.SchemaPath;
@@ -40,7 +41,7 @@ public interface IGenposFrame {
 
     void drawCell(int i, int opx, int opy, IGrInDriver igd);
 
-    IGrInDriver.IImage getBackground();
+    IImage getBackground();
 
     // Use FramePanelController's frameChanged()
     // void setFrameChangeHandler(Runnable r);

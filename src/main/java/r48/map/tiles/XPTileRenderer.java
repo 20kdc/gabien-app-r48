@@ -6,6 +6,7 @@ package r48.map.tiles;
 
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.FontSizes;
@@ -20,7 +21,7 @@ import r48.ui.UITileGrid;
  */
 public class XPTileRenderer implements ITileRenderer {
     private final RubyIO tileset;
-    public final IGrInDriver.IImage[] tilesetMaps = new IGrInDriver.IImage[8];
+    public final IImage[] tilesetMaps = new IImage[8];
 
     public static final int tileSize = 32;
 
@@ -83,7 +84,7 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     // Used by 2k3 support too, since it follows the same AT design
-    public static boolean generalOldRMATField(int tox, int toy, int subfield, int atFieldType, int fTileSize, int ets, int px, int py, IGrDriver igd, IGrInDriver.IImage img) {
+    public static boolean generalOldRMATField(int tox, int toy, int subfield, int atFieldType, int fTileSize, int ets, int px, int py, IGrDriver igd, IImage img) {
         if ((ets == fTileSize) && (AppMain.autoTiles[atFieldType] != null)) {
             if (subfield >= AppMain.autoTiles[atFieldType].entries.length)
                 return false;
@@ -110,7 +111,7 @@ public class XPTileRenderer implements ITileRenderer {
 
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv) {
-        IGrInDriver.IImage tm0 = tilesetMaps[0];
+        IImage tm0 = tilesetMaps[0];
         int tileCount = 48;
         if (tm0 != null)
             tileCount = ((tm0.getHeight() / 32) * 8);

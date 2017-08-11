@@ -5,6 +5,7 @@
 package r48.map.imaging;
 
 import gabien.IGrInDriver;
+import gabien.IImage;
 
 /**
  * Replaces *all* instances of using GaBIEn image loading, due to XYZ support that may be required in future.
@@ -26,7 +27,7 @@ import gabien.IGrInDriver;
 public interface IImageLoader {
     // Similar to getImage in the old system.
     // "panorama" indicates if *index-based* transparency should be disabled (R2k panoramas)
-    IGrInDriver.IImage getImage(String name, boolean panorama);
+    IImage getImage(String name, boolean panorama);
 
     void flushCache();
 }

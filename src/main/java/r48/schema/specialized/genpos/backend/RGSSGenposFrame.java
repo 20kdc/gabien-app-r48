@@ -5,6 +5,7 @@
 package r48.schema.specialized.genpos.backend;
 
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import gabien.ui.Rect;
@@ -260,7 +261,7 @@ public class RGSSGenposFrame implements IGenposFrame {
         int opacity = Math.min(Math.max(rt.getTiletype(i, 6, 0), 0), 255);
         if (opacity == 0)
             return;
-        IGrInDriver.IImage scaleImage;
+        IImage scaleImage;
         if (cell >= 100) {
             cell -= 100;
             scaleImage = spriteCache.getFramesetCache(true, mirror, opacity);
@@ -279,7 +280,7 @@ public class RGSSGenposFrame implements IGenposFrame {
     }
 
     @Override
-    public IGrInDriver.IImage getBackground() {
+    public IImage getBackground() {
         return null;
     }
 }

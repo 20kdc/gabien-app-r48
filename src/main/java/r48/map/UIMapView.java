@@ -8,7 +8,6 @@ package r48.map;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
-import gabien.IOsbDriver;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
@@ -52,7 +51,7 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     private MapViewUpdateScheduler scheduler = new MapViewUpdateScheduler();
     // Managed using finalize for now.
-    private IOsbDriver offscreenBuf;
+    private IGrDriver offscreenBuf;
 
     private IConsumer<SchemaPath> listener = new IConsumer<SchemaPath>() {
         @Override
@@ -323,6 +322,9 @@ public class UIMapView extends UIElement implements IWindowElement {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
+        // Unfortunately this does have to happen sometimes, specifically for embedded UIMapView instances,
+        //  so don't put up a warning about it.
+        // In the *general* (main map view) case, AppMain manages this properly.
         if (offscreenBuf != null)
             offscreenBuf.shutdown();
     }

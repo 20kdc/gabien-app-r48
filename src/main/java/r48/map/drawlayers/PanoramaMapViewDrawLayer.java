@@ -6,6 +6,7 @@ package r48.map.drawlayers;
 
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.UIElement;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
@@ -15,9 +16,9 @@ import r48.map.IMapViewCallbacks;
  * Created on 08/06/17.
  */
 public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
-    private final IGrInDriver.IImage im;
+    private final IImage im;
 
-    public PanoramaMapViewDrawLayer(IGrInDriver.IImage pano) {
+    public PanoramaMapViewDrawLayer(IImage pano) {
         im = pano;
     }
 

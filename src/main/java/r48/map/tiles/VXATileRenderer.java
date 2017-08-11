@@ -7,6 +7,7 @@ package r48.map.tiles;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.FontSizes;
@@ -26,10 +27,10 @@ import java.util.LinkedList;
 public class VXATileRenderer implements ITileRenderer {
 
     public static final int tileSize = 32;
-    public final IGrInDriver.IImage[] tilesetMaps = new IGrInDriver.IImage[9];
+    public final IImage[] tilesetMaps = new IImage[9];
     private final RubyIO tileset;
     // Generated image the size of one shadow 'block'.
-    public IGrInDriver.IImage shadowImage;
+    public IImage shadowImage;
 
     public VXATileRenderer(IImageLoader il, RubyIO tileset) {
         this.tileset = tileset;
@@ -148,7 +149,7 @@ public class VXATileRenderer implements ITileRenderer {
 
     private boolean handleMTLayer(short tidx, int ets, int px, int py, int tm, IGrDriver igd) {
         int t = tidx & 0xFF;
-        IGrInDriver.IImage planeImage = tilesetMaps[tm];
+        IImage planeImage = tilesetMaps[tm];
         if (planeImage != null) {
             // Only makes sense with a baseline of 8 but that leads to 'corrupted'-looking data in parts hm.
             // 9b - 80 = 1B.
@@ -267,7 +268,7 @@ public class VXATileRenderer implements ITileRenderer {
         poy *= tileSize * atCH;
         pox += tileSize * atOX;
         poy += tileSize * atOY;
-        IGrInDriver.IImage planeImg = tilesetMaps[tm];
+        IImage planeImg = tilesetMaps[tm];
         if (planeImg != null) {
             if ((ets == tileSize) && (AppMain.autoTiles[atF] != null)) {
                 ATDB.Autotile at = AppMain.autoTiles[atF].entries[atid];

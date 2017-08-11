@@ -6,6 +6,7 @@
 package r48.dbs;
 
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import r48.AppMain;
@@ -592,7 +593,7 @@ public class SDB {
                                     final boolean extended = imgTxt.startsWith("$");
                                     int effectiveW = 288;
                                     int effectiveH = 256;
-                                    final IGrInDriver.IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
+                                    final IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
                                     if (extended) {
                                         // EasyRPG Extended Mode
                                         effectiveW = img.getWidth();
@@ -613,7 +614,7 @@ public class SDB {
                             spritesheets.put(args[point], new IFunction<String, ISpritesheetProvider>() {
                                 @Override
                                 public ISpritesheetProvider apply(String imgTxt) {
-                                    final IGrInDriver.IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
+                                    final IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
                                     int sprW = img.getWidth() / 12;
                                     int sprH = img.getHeight() / 8;
                                     int cellW = sprW;
@@ -643,7 +644,7 @@ public class SDB {
                             spritesheets.put(args[point], new IFunction<String, ISpritesheetProvider>() {
                                 @Override
                                 public ISpritesheetProvider apply(final String imgTxt) {
-                                    final IGrInDriver.IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
+                                    final IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
                                     return createSpritesheetProviderCore(imgTxt, img, useW, useH, rowCells, cellW, cellH, useX, useY, -1);
                                 }
                             });
@@ -658,7 +659,7 @@ public class SDB {
         });
     }
 
-    private ISpritesheetProvider createSpritesheetProviderCore(final String imgTxt, final IGrInDriver.IImage img, final int useW, final int useH, final int rowCells, final int cellW, final int cellH, final int useX, final int useY, final int countOvr) {
+    private ISpritesheetProvider createSpritesheetProviderCore(final String imgTxt, final IImage img, final int useW, final int useH, final int rowCells, final int cellW, final int cellH, final int useX, final int useY, final int countOvr) {
         return new ISpritesheetProvider() {
             @Override
             public int itemWidth() {

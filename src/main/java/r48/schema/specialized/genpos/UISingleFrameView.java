@@ -5,6 +5,7 @@
 package r48.schema.specialized.genpos;
 
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ScissorGrInDriver;
 import gabien.ui.IFunction;
 import gabien.ui.MouseAction;
@@ -44,7 +45,7 @@ public class UISingleFrameView extends UIElement {
         int opx = ox + (b.width / 2) - camX;
         int opy = oy + (b.height / 2) - camY;
 
-        IGrInDriver.IImage bkg = basePanelAccess.frame.getBackground();
+        IImage bkg = basePanelAccess.frame.getBackground();
         if (bkg != null)
             igd.blitImage(0, 0, bkg.getWidth(), bkg.getHeight(), opx, opy, bkg);
         int[] d = basePanelAccess.frame.getIndicators();

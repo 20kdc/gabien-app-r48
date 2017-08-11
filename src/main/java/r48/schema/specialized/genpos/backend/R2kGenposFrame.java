@@ -5,6 +5,7 @@
 package r48.schema.specialized.genpos.backend;
 
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import gabien.ui.Rect;
@@ -180,7 +181,7 @@ public class R2kGenposFrame implements IGenposFrame {
         op *= 255;
         op /= 100;
         op = 255 - op;
-        IGrInDriver.IImage img = cache.getFramesetCache(false, false, op);
+        IImage img = cache.getFramesetCache(false, false, op);
         int x = (int) cell.getInstVarBySymbol("@x").fixnumVal;
         int y = (int) cell.getInstVarBySymbol("@y").fixnumVal;
         int cid = (int) cell.getInstVarBySymbol("@cell_id").fixnumVal;
@@ -196,7 +197,7 @@ public class R2kGenposFrame implements IGenposFrame {
     }
 
     @Override
-    public IGrInDriver.IImage getBackground() {
+    public IImage getBackground() {
         return null;
     }
 }

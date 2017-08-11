@@ -7,6 +7,7 @@ package r48;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.*;
 import r48.dbs.*;
 import r48.imagefx.ImageFXCache;
@@ -88,8 +89,8 @@ public class AppMain {
     public static RubyIO theClipboard = null;
 
     // Images
-    public static IGrInDriver.IImage layerTabs = GaBIEn.getImageCK("layertab.png", 0, 0, 0);
-    public static IGrInDriver.IImage noMap = GaBIEn.getImageCK("nomad.png", 0, 0, 0);
+    public static IImage layerTabs = GaBIEn.getImageCK("layertab.png", 0, 0, 0);
+    public static IImage noMap = GaBIEn.getImageCK("nomad.png", 0, 0, 0);
     public static ImageFXCache imageFXCache = null;
 
     public static IConsumer<Double> initializeAndRun(final String rp, final String gamepak, final IConsumer<UIElement> uiTicker) throws IOException {

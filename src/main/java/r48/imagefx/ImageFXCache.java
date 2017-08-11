@@ -5,6 +5,7 @@
 package r48.imagefx;
 
 import gabien.IGrInDriver;
+import gabien.IImage;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,20 +15,20 @@ import java.util.WeakHashMap;
  * Created on 30/07/17.
  */
 public class ImageFXCache {
-    public WeakHashMap<IGrInDriver.IImage, HashMap<String, IGrInDriver.IImage>> effectsMap = new WeakHashMap<IGrInDriver.IImage, HashMap<String, IGrInDriver.IImage>>();
+    public WeakHashMap<IImage, HashMap<String, IImage>> effectsMap = new WeakHashMap<IImage, HashMap<String, IImage>>();
 
-    public IGrInDriver.IImage process(IGrInDriver.IImage input, LinkedList<IImageEffect> effectsChain) {
+    public IImage process(IImage input, LinkedList<IImageEffect> effectsChain) {
         if (effectsChain.size() == 0)
             return input;
         String key = "";
         for (IImageEffect effect : effectsChain)
             key += effect.uniqueToString() + ":";
-        HashMap<String, IGrInDriver.IImage> imageEffectMap = effectsMap.get(input);
+        HashMap<String, IImage> imageEffectMap = effectsMap.get(input);
         if (imageEffectMap == null) {
-            imageEffectMap = new HashMap<String, IGrInDriver.IImage>();
+            imageEffectMap = new HashMap<String, IImage>();
             effectsMap.put(input, imageEffectMap);
         }
-        IGrInDriver.IImage result = imageEffectMap.get(key);
+        IImage result = imageEffectMap.get(key);
         if (result == null) {
             result = input;
             for (IImageEffect eff : effectsChain)
@@ -37,18 +38,18 @@ public class ImageFXCache {
         return result;
     }
 
-    public IGrInDriver.IImage process(IGrInDriver.IImage input, IImageEffect... effectsChain) {
+    public IImage process(IImage input, IImageEffect... effectsChain) {
         if (effectsChain.length == 0)
             return input;
         String key = "";
         for (IImageEffect effect : effectsChain)
             key += effect.uniqueToString() + ":";
-        HashMap<String, IGrInDriver.IImage> imageEffectMap = effectsMap.get(input);
+        HashMap<String, IImage> imageEffectMap = effectsMap.get(input);
         if (imageEffectMap == null) {
-            imageEffectMap = new HashMap<String, IGrInDriver.IImage>();
+            imageEffectMap = new HashMap<String, IImage>();
             effectsMap.put(input, imageEffectMap);
         }
-        IGrInDriver.IImage result = imageEffectMap.get(key);
+        IImage result = imageEffectMap.get(key);
         if (result == null) {
             result = input;
             for (IImageEffect eff : effectsChain)

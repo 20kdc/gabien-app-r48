@@ -6,6 +6,7 @@ package r48.map.imaging;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabienapp.Application;
 
 import java.io.*;
@@ -27,7 +28,7 @@ public class PNG8IImageLoader implements IImageLoader {
     }
 
     @Override
-    public IGrInDriver.IImage getImage(String name, boolean panorama) {
+    public IImage getImage(String name, boolean panorama) {
         if (panorama)
             return null;
         try {

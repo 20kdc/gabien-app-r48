@@ -5,6 +5,7 @@
 package r48.map.imaging;
 
 import gabien.IGrInDriver;
+import gabien.IImage;
 
 /**
  * Used for multi-format scenarios such as:
@@ -21,9 +22,9 @@ public class ChainedImageLoader implements IImageLoader {
     }
 
     @Override
-    public IGrInDriver.IImage getImage(String name, boolean panorama) {
+    public IImage getImage(String name, boolean panorama) {
         for (IImageLoader iil : subLoaders) {
-            IGrInDriver.IImage im = iil.getImage(name, panorama);
+            IImage im = iil.getImage(name, panorama);
             if (im != null)
                 return im;
         }

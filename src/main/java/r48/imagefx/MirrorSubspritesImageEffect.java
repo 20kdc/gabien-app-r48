@@ -6,6 +6,7 @@ package r48.imagefx;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabien.IImage;
 
 /**
  * Created on 30/07/17.
@@ -27,7 +28,7 @@ public class MirrorSubspritesImageEffect implements IImageEffect {
     }
 
     @Override
-    public IGrInDriver.IImage process(IGrInDriver.IImage framesetCache) {
+    public IImage process(IImage framesetCache) {
         // 192x192 tiles, in 6 rows of 5.
         // Simple, right?
         // ... right?

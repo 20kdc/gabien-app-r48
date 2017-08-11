@@ -6,6 +6,7 @@ package r48.map.imaging;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabienapp.Application;
 
 /**
@@ -38,15 +39,15 @@ public class GabienImageLoader implements IImageLoader {
     }
 
     @Override
-    public IGrInDriver.IImage getImage(String name, boolean panorama) {
-        IGrInDriver.IImage error = GaBIEn.getErrorImage();
+    public IImage getImage(String name, boolean panorama) {
+        IImage error = GaBIEn.getErrorImage();
         if (ck) {
-            IGrInDriver.IImage core = GaBIEn.getImageCK(Application.autoDetectWindows(prefix + name + postfix), r, g, b);
+            IImage core = GaBIEn.getImageCK(Application.autoDetectWindows(prefix + name + postfix), r, g, b);
             if (core == error)
                 return null;
             return core;
         } else {
-            IGrInDriver.IImage core = GaBIEn.getImage(Application.autoDetectWindows(prefix + name + postfix));
+            IImage core = GaBIEn.getImage(Application.autoDetectWindows(prefix + name + postfix));
             if (core == error)
                 return null;
             return core;

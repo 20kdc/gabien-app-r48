@@ -6,6 +6,7 @@ package r48.schema.specialized.genpos.backend;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import gabien.IImage;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.imagefx.HueShiftImageEffect;
@@ -35,7 +36,7 @@ public class SpriteCache {
         prepareFramesetCache();
     }
 
-    public IGrInDriver.IImage framesetCacheA, framesetCacheB;
+    public IImage framesetCacheA, framesetCacheB;
 
     public int getScaledImageIconSize(int scale) {
         return (int) (spriteSize * (scale / 100.0d));
@@ -61,7 +62,7 @@ public class SpriteCache {
         }
     }
 
-    public IGrInDriver.IImage getFramesetCache(boolean b, boolean mirror, int opacity) {
+    public IImage getFramesetCache(boolean b, boolean mirror, int opacity) {
         LinkedList<IImageEffect> effectList = new LinkedList<IImageEffect>();
         if (mirror)
             effectList.add(new MirrorSubspritesImageEffect(spriteSize, 5, 6));

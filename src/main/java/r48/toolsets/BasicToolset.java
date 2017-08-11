@@ -9,8 +9,9 @@
 package r48.toolsets;
 
 import gabien.GaBIEn;
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
-import gabien.IOsbDriver;
+import gabien.IImage;
 import gabien.ui.*;
 import r48.*;
 import r48.dbs.TXDB;
@@ -194,7 +195,7 @@ public class BasicToolset implements IToolset {
                             public void run() {
                                 UIPanel panel = new UIPanel();
                                 panel.setBounds(new Rect(0, 0, 512, 1280));
-                                final IGrInDriver.IImage totem = GaBIEn.getImage("tonetotm.png");
+                                final IImage totem = GaBIEn.getImage("tonetotm.png");
                                 UIElement hueChanger = new UIElement() {
                                     public double time = 0;
 
@@ -215,7 +216,7 @@ public class BasicToolset implements IToolset {
                                 };
                                 hueChanger.setBounds(new Rect(128, 1024, 256, 256));
                                 panel.allElements.add(hueChanger);
-                                IOsbDriver finalComposite = GaBIEn.makeOffscreenBuffer(512, 1024, false);
+                                IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(512, 1024, false);
                                 finalComposite.blitImage(0, 0, 256, 256, 0, 0, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 128, 128, 128)));
                                 finalComposite.blitImage(0, 0, 256, 256, 256, 0, AppMain.imageFXCache.process(totem, new ToneImageEffect(0, 128, 128, 128)));
 

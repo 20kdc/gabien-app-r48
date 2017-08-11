@@ -6,6 +6,7 @@ package r48.map.events;
 
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IImage;
 import r48.RubyIO;
 import r48.map.imaging.IImageLoader;
 
@@ -73,7 +74,7 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
             fail = true;
         if (!fail) {
             String r = graphics[type];
-            IGrInDriver.IImage im = imageLoader.getImage(r, false);
+            IImage im = imageLoader.getImage(r, false);
             igd.blitImage(dfX * dsX, dfY * dsY, dsX, dsY, ox + doX, oy + doY, im);
             fail = false;
         }
