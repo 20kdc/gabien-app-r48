@@ -195,6 +195,7 @@ public class UIGRMMapInfos extends UIPanel {
                         if (!operators.wouldRelocatingInOrderFail(orderFrom, order + 1)) {
                             selectedOrder = operators.relocateInOrder(orderFrom, order + 1);
                             operators.complete();
+                            mapLoader.accept(k);
                         }
                 }
             }));
