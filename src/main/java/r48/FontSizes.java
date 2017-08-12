@@ -85,17 +85,11 @@ public class FontSizes {
         prepare.symVal = "R48::FontConfig";
         for (FontSizeField fsf : getFields())
             prepare.addIVar("@" + fsf.name, new RubyIO().setFX(fsf.get()));
-        R48ObjectBackend rob = new R48ObjectBackend("", ".r48", false);
-        try {
-            rob.saveObjectToFile("fonts", prepare);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        AdHocSaveLoad.save("fonts", prepare);
     }
 
     public static void load() {
-        R48ObjectBackend rob = new R48ObjectBackend("", ".r48", false);
-        RubyIO dat = rob.loadObjectFromFile("fonts");
+        RubyIO dat = AdHocSaveLoad.load("fonts");
         if (dat != null) {
             for (FontSizeField fsf : getFields()) {
                 RubyIO f = dat.getInstVarBySymbol("@" + fsf.name);

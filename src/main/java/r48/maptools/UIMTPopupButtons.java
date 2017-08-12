@@ -17,7 +17,7 @@ import r48.map.UIMapView;
 /**
  * Created on 18/06/17.
  */
-public class UIMTPopupButtons extends gabien.ui.UIPopupMenu {
+public class UIMTPopupButtons extends gabien.ui.UIAutoclosingPopupMenu {
     public UIMTPopupButtons(final UIMapView view) {
         super(new String[] {
                 TXDB.get("Reload Panorama/TS"),
@@ -46,7 +46,7 @@ public class UIMTPopupButtons extends gabien.ui.UIPopupMenu {
                         AppMain.nextMapTool = new UIMTMapResizer(view);
                     }
                 }
-        }, FontSizes.dialogWindowTextHeight, false);
+        }, FontSizes.dialogWindowTextHeight, true);
     }
 
     private static class UIMTMapResizer extends gabien.ui.UIPanel {

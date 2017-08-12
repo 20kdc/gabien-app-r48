@@ -61,11 +61,15 @@ public class UIMapToolWrapper extends UIElement implements IWindowElement {
 
     @Override
     public boolean wantsSelfClose() {
+        if (pattern instanceof IWindowElement)
+            return selfClose || ((IWindowElement) pattern).wantsSelfClose();
         return selfClose;
     }
 
     @Override
     public void windowClosed() {
+        if (pattern instanceof IWindowElement)
+            ((IWindowElement) pattern).windowClosed();
         hasClosed = true;
     }
 

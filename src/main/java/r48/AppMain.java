@@ -62,7 +62,7 @@ public class AppMain {
     // Scheduled tasks
     public static HashSet<Runnable> pendingRunnables = new HashSet<Runnable>();
 
-    private static UILabel uiStatusLabel;
+    //private static UILabel uiStatusLabel;
 
     public static UIElement nextMapTool = null;
 
@@ -154,7 +154,7 @@ public class AppMain {
         // Set up a default stuffRenderer for things to use.
         stuffRendererIndependent = system.rendererFromMap(null);
 
-        rebuildInnerUI(gamepak, rootView, uiTicker);
+        final UILabel uiStatusLabel = rebuildInnerUI(gamepak, rootView, uiTicker);
 
         // everything ready, start main window
         uiTicker.accept(rootView);
@@ -228,8 +228,8 @@ public class AppMain {
         return new UITabPane(tabNames.toArray(new String[0]), tabElems.toArray(new UIElement[0]), FontSizes.tabTextHeight);
     }
 
-    private static void rebuildInnerUI(final String gamepak, final UIWindowView rootView, final IConsumer<UIElement> uiTicker) {
-        uiStatusLabel = new UILabel(TXDB.get("Loading..."), FontSizes.statusBarTextHeight);
+    private static UILabel rebuildInnerUI(final String gamepak, final UIWindowView rootView, final IConsumer<UIElement> uiTicker) {
+        UILabel uiStatusLabel = new UILabel(TXDB.get("Loading..."), FontSizes.statusBarTextHeight);
 
         UIAppendButton workspace = new UIAppendButton(TXDB.get("Save All Modified Files"), uiStatusLabel, new Runnable() {
             @Override
@@ -240,11 +240,45 @@ public class AppMain {
         workspace = new UIAppendButton(TXDB.get("Clipboard"), workspace, new Runnable() {
             @Override
             public void run() {
-                if (theClipboard == null) {
-                    launchDialog(TXDB.get("There is nothing in the clipboard."));
-                } else {
-                    windowMaker.accept(new UITest(theClipboard));
-                }
+                windowMaker.accept(new UIAutoclosingPopupMenu(new String[] {
+                        TXDB.get("Save Clipboard To 'clip.r48'"),
+                        TXDB.get("Load Clipboard From 'clip.r48'"),
+                        TXDB.get("Inspect Clipboard")
+                }, new Runnable[] {
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                if (theClipboard == null) {
+                                    launchDialog(TXDB.get("There is nothing in the clipboard."));
+                                } else {
+                                    AdHocSaveLoad.save("clip", theClipboard);
+                                    launchDialog(TXDB.get("The clipboard was saved."));
+                                }
+                            }
+                        },
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                RubyIO newClip = AdHocSaveLoad.load("clip");
+                                if (newClip == null) {
+                                    launchDialog(TXDB.get("The clipboard file is invalid or does not exist."));
+                                } else {
+                                    theClipboard = newClip;
+                                    launchDialog(TXDB.get("The clipboard file was loaded."));
+                                }
+                            }
+                        },
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                if (theClipboard == null) {
+                                    launchDialog(TXDB.get("There is nothing in the clipboard."));
+                                } else {
+                                    windowMaker.accept(new UITest(theClipboard));
+                                }
+                            }
+                        }
+                }, FontSizes.menuTextHeight, true));
             }
         }, FontSizes.statusBarTextHeight);
         workspace = new UIAppendButton(TXDB.get("Help"), workspace, new Runnable() {
@@ -254,6 +288,7 @@ public class AppMain {
             }
         }, FontSizes.statusBarTextHeight);
         rootView.backing = new UINSVertLayout(workspace, initializeTabs(gamepak, rootView, uiTicker));
+        return uiStatusLabel;
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
@@ -333,7 +368,6 @@ public class AppMain {
     public static void shutdown() {
         windowMaker = null;
         pendingRunnables.clear();
-        uiStatusLabel = null;
         nextMapTool = null;
         rootPath = null;
         dataPath = "";
