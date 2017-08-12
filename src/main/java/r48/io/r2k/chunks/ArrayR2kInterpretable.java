@@ -25,7 +25,12 @@ public class ArrayR2kInterpretable<T extends IR2kInterpretable> implements IR2kI
         cons = c;
         linked = other;
         if (other != null)
-            other.target = this;
+            other.target = new ISupplier<ArrayR2kInterpretable<T>>() {
+                @Override
+                public ArrayR2kInterpretable<T> get() {
+                    return ArrayR2kInterpretable.this;
+                }
+            };
         trustData = trust;
     }
 

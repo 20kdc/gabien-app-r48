@@ -4,6 +4,7 @@
  */
 package r48.io.r2k.chunks;
 
+import gabien.ui.ISupplier;
 import r48.io.r2k.R2kUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -16,7 +17,7 @@ import java.io.OutputStream;
  * Created on 31/05/17.
  */
 public class ArraySizeR2kInterpretable<T extends IR2kInterpretable> implements IR2kInterpretable {
-    public ArrayR2kInterpretable<T> target;
+    public ISupplier<ArrayR2kInterpretable<T>> target;
     public int bytes = 0;
     // Buffer used to ensure consistency
     public byte[] resultBytes = null;
@@ -47,9 +48,12 @@ public class ArraySizeR2kInterpretable<T extends IR2kInterpretable> implements I
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
+        ArrayR2kInterpretable<T> targ = target.get();
+        if (targ == null)
+            return true;
         ByteArrayOutputStream b2 = new ByteArrayOutputStream();
         resultBytes = null;
-        target.exportData(b2);
+        targ.exportData(b2);
         resultBytes = b2.toByteArray();
         switch (bytes) {
             case 0:

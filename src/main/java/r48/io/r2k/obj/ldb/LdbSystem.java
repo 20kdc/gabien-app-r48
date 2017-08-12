@@ -34,13 +34,20 @@ public class LdbSystem extends R2kObject {
             return new ShortR2kStruct(0);
         }
     }, true);
+
+    // The menuCommandsSize -> menuCommands link is broken here, so it's fixed in the constructor.
     public ArraySizeR2kInterpretable<ShortR2kStruct> menuCommandsSize = new ArraySizeR2kInterpretable<ShortR2kStruct>();
-    public ArrayR2kStruct<ShortR2kStruct> menuCommands = new ArrayR2kStruct<ShortR2kStruct>(menuCommandsSize, new ISupplier<ShortR2kStruct>() {
+    public OptionalR2kStruct<ArrayR2kStruct<ShortR2kStruct>> menuCommands = new OptionalR2kStruct<ArrayR2kStruct<ShortR2kStruct>>(new ISupplier<ArrayR2kStruct<ShortR2kStruct>>() {
         @Override
-        public ShortR2kStruct get() {
-            return new ShortR2kStruct(0);
+        public ArrayR2kStruct<ShortR2kStruct> get() {
+            return new ArrayR2kStruct<ShortR2kStruct>(menuCommandsSize, new ISupplier<ShortR2kStruct>() {
+                @Override
+                public ShortR2kStruct get() {
+                    return new ShortR2kStruct(0);
+                }
+            }, true);
         }
-    }, true);
+    });
 
     public Music titleMusic = new Music();
     public Music battleMusic = new Music();
@@ -88,6 +95,15 @@ public class LdbSystem extends R2kObject {
     public StringR2kStruct frameName = new StringR2kStruct();
     public BooleanR2kStruct invanim = new BooleanR2kStruct(false);
     public BooleanR2kStruct showTitle = new BooleanR2kStruct(true);
+
+    public LdbSystem() {
+        menuCommandsSize.target = new ISupplier<ArrayR2kInterpretable<ShortR2kStruct>>() {
+            @Override
+            public ArrayR2kInterpretable<ShortR2kStruct> get() {
+                return menuCommands.instance;
+            }
+        };
+    }
 
     @Override
     public Index[] getIndices() {
