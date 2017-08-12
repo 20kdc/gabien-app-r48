@@ -746,9 +746,15 @@ public class SDB {
             return schemaDatabase.get(text);
         // Notably, the proxy is put in the database so the expectation is only added once.
         remainingExpected.add(text);
-        SchemaElement ise = new NameProxySchemaElement(text);
+        SchemaElement ise = new NameProxySchemaElement(text, true);
         schemaDatabase.put(text, ise);
         return ise;
+    }
+
+    // Use if and only if you deliberately need the changing nature of a proxy (this disables the cache)
+    public void ensureSDBProxy(String text) {
+        NameProxySchemaElement npse = new NameProxySchemaElement(text, false);
+        schemaDatabase.put(text, npse);
     }
 
     public LinkedList<String> listFileDefs() {

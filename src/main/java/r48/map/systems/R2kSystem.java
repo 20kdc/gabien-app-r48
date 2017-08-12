@@ -65,8 +65,22 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             long scrollFlags = map.getInstVarBySymbol("@scroll_type").fixnumVal;
             RubyTable tbl = new RubyTable(map.getInstVarBySymbol("@data").userVal);
             String vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
-            if (map.getInstVarBySymbol("@parallax_flag").type != 'T')
+            boolean loopX = false;
+            boolean loopY = false;
+            int autoLoopX = 0;
+            int autoLoopY = 0;
+            if (map.getInstVarBySymbol("@parallax_flag").type != 'T') {
                 vxaPano = "";
+            } else {
+                loopX = map.getInstVarBySymbol("@parallax_loop_x").type == 'T';
+                loopY = map.getInstVarBySymbol("@parallax_loop_y").type == 'T';
+                boolean aloopX = map.getInstVarBySymbol("@parallax_loop_x").type == 'T';
+                boolean aloopY = map.getInstVarBySymbol("@parallax_loop_y").type == 'T';
+                if (aloopX)
+                    autoLoopX = (int) map.getInstVarBySymbol("@parallax_sx").fixnumVal;
+                if (aloopY)
+                    autoLoopY = (int) map.getInstVarBySymbol("@parallax_sy").fixnumVal;
+            }
             layers = new IMapViewDrawLayer[9];
             IImage img = null;
             if (!vxaPano.equals(""))
@@ -77,7 +91,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             // <events>
             // layer 1 upper
             // layer 2 upper
-            layers[0] = new PanoramaMapViewDrawLayer(img);
+            layers[0] = new PanoramaMapViewDrawLayer(img, loopX, loopY, autoLoopX, autoLoopY);
             layers[1] = new R2kTileMapViewDrawLayer(tbl, tileRenderer, 0, false, tileset); // TSBelow
             layers[2] = new R2kTileMapViewDrawLayer(tbl, tileRenderer, 1, false, tileset); // ...
             layers[3] = new EventMapViewDrawLayer(0, events, eventRenderer, 16);

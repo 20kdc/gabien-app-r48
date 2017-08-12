@@ -86,7 +86,7 @@ p faceFlipped int_boolean
 
  Control Switches follows. Uhoh.
 
-10210: @@Control Switch{E:{B=1=es @#C .. @#D| @#C} = #E|es}
+10210: @@Control Switch{E:{B=1=es @#C .. @#D|{B=2= #[var @#C#]| @#C}} = #E|es}
 d Control switches in various ways. Single alters one switch. Range alters a group of switches. Indirect alters one switch, numbered by a variable.
 p _ string
 p type control_switches_type

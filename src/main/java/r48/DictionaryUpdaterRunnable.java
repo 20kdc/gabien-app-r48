@@ -35,8 +35,8 @@ public class DictionaryUpdaterRunnable implements Runnable {
         fieldA = iFunction;
         hash = b;
         iVar = ivar;
-        // Cause a proxy to be generated.
-        AppMain.schemas.getSDBEntry(targetDictionary);
+        // Cause a proxy to be generated. (NOTE: This *must* be referenced via nocache proxy!)
+        AppMain.schemas.ensureSDBProxy(targetDictionary);
         kickMe = new IConsumer<SchemaPath>() {
             @Override
             public void accept(SchemaPath sp) {

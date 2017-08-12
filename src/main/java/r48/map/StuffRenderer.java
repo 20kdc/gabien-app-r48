@@ -44,7 +44,7 @@ public class StuffRenderer {
         IImage panoImg = null;
         if (!vxaPano.equals(""))
             panoImg = iil.getImage(vxaPano, true);
-        layers[0] = new PanoramaMapViewDrawLayer(panoImg);
+        layers[0] = new PanoramaMapViewDrawLayer(panoImg, false, false, 0, 0);
         RubyIO events = map.getInstVarBySymbol("@events");
         layers[1] = new EventMapViewDrawLayer(-1, events, igr, itr.getTileSize());
         for (int i = 0; i < rt.planeCount; i++) {

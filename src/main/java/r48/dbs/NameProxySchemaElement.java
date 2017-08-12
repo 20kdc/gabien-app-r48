@@ -19,10 +19,12 @@ import r48.schema.util.SchemaPath;
  */
 public class NameProxySchemaElement extends SchemaElement implements IProxySchemaElement {
     private final String tx;
-    SchemaElement cache = null;
+    private boolean useCache = true;
+    private SchemaElement cache = null;
 
-    public NameProxySchemaElement(String text) {
+    public NameProxySchemaElement(String text, boolean useCach) {
         tx = text;
+        useCache = useCach;
     }
 
     @Override
@@ -37,7 +39,8 @@ public class NameProxySchemaElement extends SchemaElement implements IProxySchem
         SchemaElement r = AppMain.schemas.schemaTrueDatabase.get(tx);
         if (r == null)
             throw new RuntimeException("Schema used " + tx + ", but it didn't exist when invoked.");
-        cache = r;
+        if (useCache)
+            cache = r;
         return r;
     }
 

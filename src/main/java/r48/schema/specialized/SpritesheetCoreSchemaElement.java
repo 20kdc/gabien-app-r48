@@ -41,14 +41,17 @@ public class SpritesheetCoreSchemaElement extends r48.schema.SchemaElement {
         return new UITextButton(FontSizes.schemaButtonTextHeight, FormatSyntax.formatExtended(text, actTarg), new Runnable() {
             @Override
             public void run() {
-                launcher.switchObject(path.newWindow(new TempDialogSchemaChoice(new UISpritesheetChoice((int) actTarg.fixnumVal, localProvider, new IConsumer<Integer>() {
+                TempDialogSchemaChoice temp = new TempDialogSchemaChoice(null, null, path);
+                final SchemaPath innerPath = path.newWindow(temp, target, launcher);
+                temp.heldDialog = new UISpritesheetChoice((int) actTarg.fixnumVal, localProvider, new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         actTarg.fixnumVal = integer;
-                        path.changeOccurred(false);
-                        launcher.switchObject(path.findBack());
+                        innerPath.changeOccurred(false);
+                        launcher.switchObject(innerPath.findBack());
                     }
-                }), null, path), target, launcher));
+                });
+                launcher.switchObject(innerPath);
             }
         });
     }
