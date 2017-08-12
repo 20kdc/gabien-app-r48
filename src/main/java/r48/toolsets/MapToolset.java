@@ -24,17 +24,9 @@ import r48.map.systems.MapSystem;
  */
 public class MapToolset implements IToolset {
     private IMapContext context;
+    private final UIElement[] tabs;
 
-    @Override
-    public String[] tabNames() {
-        return new String[] {
-                TXDB.get("Map"),
-                TXDB.get("MapInfos")
-        };
-    }
-
-    @Override
-    public UIElement[] generateTabs(final ISupplier<IConsumer<UIElement>> windowMaker) {
+    public MapToolset(final ISupplier<IConsumer<UIElement>> windowMaker) {
         final UIMapViewContainer mapBox = new UIMapViewContainer(windowMaker);
         context = new IMapContext() {
             @Override
@@ -58,13 +50,27 @@ public class MapToolset implements IToolset {
         };
         final UIElement mapInfoEl = AppMain.system.createMapExplorer(windowMaker, context);
         if (mapInfoEl != null) {
-            return new UIElement[] {
+            tabs = new UIElement[] {
                     mapBox, mapInfoEl
             };
+        } else {
+            tabs = new UIElement[] {
+                    mapBox
+            };
         }
-        return new UIElement[] {
-                mapBox
+    }
+
+    @Override
+    public String[] tabNames() {
+        return new String[] {
+                TXDB.get("Map"),
+                TXDB.get("MapInfos")
         };
+    }
+
+    @Override
+    public UIElement[] generateTabs(final ISupplier<IConsumer<UIElement>> windowMaker) {
+        return tabs;
     }
 
     public IMapContext getContext() {

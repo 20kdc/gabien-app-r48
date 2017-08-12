@@ -187,11 +187,18 @@ public class AppMain {
         LinkedList<String> tabNames = new LinkedList<String>();
         LinkedList<UIElement> tabElems = new LinkedList<UIElement>();
 
+        ISupplier<IConsumer<UIElement>> wmg = new ISupplier<IConsumer<UIElement>>() {
+            @Override
+            public IConsumer<UIElement> get() {
+                return windowMaker;
+            }
+        };
+
         LinkedList<IToolset> toolsets = new LinkedList<IToolset>();
         // Until a future time, this is hard-coded as the classname of a map being created via MapInfos.
         // Probably simple enough to create a special alias, but meh.
         if (AppMain.schemas.hasSDBEntry("RPG::Map")) {
-            MapToolset mapController = new MapToolset();
+            MapToolset mapController = new MapToolset(wmg);
             // Really just restricts access to prevent a hax pileup
             mapContext = mapController.getContext();
             toolsets.add(mapController);
@@ -208,12 +215,6 @@ public class AppMain {
         }));
 
         // Initialize toolsets.
-        ISupplier<IConsumer<UIElement>> wmg = new ISupplier<IConsumer<UIElement>>() {
-            @Override
-            public IConsumer<UIElement> get() {
-                return windowMaker;
-            }
-        };
         for (IToolset its : toolsets) {
             String[] tabs = its.tabNames();
             UIElement[] tabContents = its.generateTabs(wmg);
