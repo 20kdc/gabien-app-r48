@@ -37,7 +37,7 @@ public class HashSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UIScrollLayout uiSV = new UIScrollLayout(true);
+        final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
         // similar to the array schema, this is a containing object with access to local information
         Runnable rebuildSection = new Runnable() {
             @Override

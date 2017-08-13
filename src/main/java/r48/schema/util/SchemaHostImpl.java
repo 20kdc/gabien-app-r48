@@ -84,7 +84,6 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
             }
             SchemaHostImpl next = new SchemaHostImpl(hostWindows, contextView);
             next.switchObject(innerElem);
-            hostWindows.accept(next);
         }
     }, FontSizes.schemaPathTextHeight);
 
@@ -116,21 +115,17 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
 
     @Override
     public void switchObject(SchemaPath nextObject) {
-        if (innerElem != null) {
-            if (innerElemEditor instanceof UIScrollLayout)
-                innerElem.scrollValue = ((UIScrollLayout) innerElemEditor).scrollbar.scrollPoint;
+        if (innerElem != null)
             AppMain.objectDB.deregisterModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
-        }
         while (nextObject.editor == null)
             nextObject = nextObject.parent;
         boolean doLaunch = false;
         if (!(windowOpen || stayClosed))
             doLaunch = true;
         innerElem = nextObject;
-        innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
-        if (innerElemEditor instanceof UIScrollLayout)
-            ((UIScrollLayout) innerElemEditor).scrollbar.scrollPoint = innerElem.scrollValue;
+        // Do this first, so that findLast has a proper target and can be found during UI build (rather than the per-frame saving)
         innerElem.hasBeenUsed = true;
+        innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
         AppMain.objectDB.registerModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
 
         allElements.clear();

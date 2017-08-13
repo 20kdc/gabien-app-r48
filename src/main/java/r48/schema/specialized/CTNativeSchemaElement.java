@@ -10,6 +10,7 @@ import r48.FontSizes;
 import r48.RubyCT;
 import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -27,7 +28,7 @@ public class CTNativeSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-        UIScrollLayout uiSVL = new UIScrollLayout(true);
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
         RubyCT rct = new RubyCT(target.userVal);
         addField(uiSVL, TXDB.get("R"), 0, rct, path);
         addField(uiSVL, TXDB.get("G"), 4, rct, path);

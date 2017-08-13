@@ -212,7 +212,7 @@ public class RGSSGenposFrame implements IGenposFrame {
                 return false;
             }
         }, getCellPropSchemas()[i]);
-        return path.newWindow(se, getFrame().getInstVarBySymbol("@cell_data"), null);
+        return path.newWindow(se, getFrame().getInstVarBySymbol("@cell_data"));
     }
 
     @Override

@@ -103,13 +103,13 @@ public class TroopGenposFrame implements IGenposFrame {
         RubyIO member = troop.getInstVarBySymbol("@members").arrVal[ct + 1];
         SchemaElement se = getCellPropSchemas()[i];
         if (i == 0)
-            return memberPath.newWindow(se, member.getInstVarBySymbol("@enemy"), null);
+            return memberPath.newWindow(se, member.getInstVarBySymbol("@enemy"));
         if (i == 1)
-            return memberPath.newWindow(se, member.getInstVarBySymbol("@x"), null);
+            return memberPath.newWindow(se, member.getInstVarBySymbol("@x"));
         if (i == 2)
-            return memberPath.newWindow(se, member.getInstVarBySymbol("@y"), null);
+            return memberPath.newWindow(se, member.getInstVarBySymbol("@y"));
         if (i == 3)
-            return memberPath.newWindow(se, member.getInstVarBySymbol("@invisible"), null);
+            return memberPath.newWindow(se, member.getInstVarBySymbol("@invisible"));
         throw new RuntimeException("Invalid cell prop.");
     }
 

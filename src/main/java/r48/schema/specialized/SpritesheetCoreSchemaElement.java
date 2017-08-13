@@ -42,7 +42,7 @@ public class SpritesheetCoreSchemaElement extends r48.schema.SchemaElement {
             @Override
             public void run() {
                 TempDialogSchemaChoice temp = new TempDialogSchemaChoice(null, null, path);
-                final SchemaPath innerPath = path.newWindow(temp, target, launcher);
+                final SchemaPath innerPath = path.newWindow(temp, target);
                 temp.heldDialog = new UISpritesheetChoice((int) actTarg.fixnumVal, localProvider, new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {

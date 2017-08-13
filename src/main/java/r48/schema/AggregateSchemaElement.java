@@ -5,6 +5,7 @@
 
 package r48.schema;
 
+import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
@@ -29,7 +30,7 @@ public class AggregateSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        UIScrollLayout uiSVL = new UIScrollLayout(true);
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
         // Assist with the layout of "property grids".
         int maxFW = 1;
         for (SchemaElement ise : aggregate) {
@@ -62,5 +63,19 @@ public class AggregateSchemaElement extends SchemaElement {
     public void modifyVal(RubyIO target, SchemaPath i, boolean setDefault) {
         for (SchemaElement ise : aggregate)
             ise.modifyVal(target, i, setDefault);
+    }
+
+    public static UIScrollLayout createScrollSavingSVL(final SchemaPath path, final ISchemaHost host, final SchemaElement elem, final RubyIO target) {
+        final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(elem, target);
+        final SchemaPath keyStoragePath = path.findLast();
+        final UIScrollLayout uiSVL = new UIScrollLayout(true) {
+            @Override
+            public void updateAndRender(int ox, int oy, double DeltaTime, boolean select, IGrInDriver igd) {
+                super.updateAndRender(ox, oy, DeltaTime, select, igd);
+                path.findLast().getEmbedMap(host).put(myKey, scrollbar.scrollPoint);
+            }
+        };
+        uiSVL.scrollbar.scrollPoint = keyStoragePath.getEmbedSP(host, myKey);
+        return uiSVL;
     }
 }

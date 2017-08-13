@@ -10,7 +10,9 @@ import r48.RubyIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.WeakHashMap;
 
 /**
  * Generic schema path object used to keep references to things being edited in play,
@@ -31,7 +33,6 @@ public class SchemaPath {
     // If editor is null, targetElement must be null, and vice versa.
     // Host may be there or not.
     public SchemaElement editor;
-    public ISchemaHost host;
     public RubyIO targetElement;
 
     // Should only ever be set to true by tagSEMonitor. Implies editor and target.
@@ -50,9 +51,7 @@ public class SchemaPath {
     // ISchemaHost has to set this to true for the breadcrumbs to work properly
     public boolean hasBeenUsed = false;
 
-    // This is solely for use by SchemaHostImpl,
-    //  to save scroll values.
-    protected double scrollValue = 0.0d;
+    public WeakHashMap<ISchemaHost, HashMap<EmbedDataKey, Double>> embedData = new WeakHashMap<ISchemaHost, HashMap<EmbedDataKey, Double>>();
 
     private SchemaPath() {
     }
@@ -64,7 +63,6 @@ public class SchemaPath {
         if (hrIndex == null)
             hrIndex = "AnonObject";
         editor = heldElement;
-        host = launcher;
         targetElement = target;
     }
 
@@ -141,6 +139,14 @@ public class SchemaPath {
         return root;
     }
 
+    // Similar to findBack, but includes the current node too.
+    // Specifically for scroll value storage.
+    public SchemaPath findLast() {
+        if (hasBeenUsed)
+            return this;
+        return findBack();
+    }
+
     // -- Important Stuff (always used) --
 
     public SchemaPath arrayHashIndex(RubyIO index, String indexS) {
@@ -153,12 +159,11 @@ public class SchemaPath {
 
     // -- Display Stuff (used in buildHoldingEditor) --
 
-    public SchemaPath newWindow(SchemaElement heldElement, RubyIO target, ISchemaHost launcher) {
+    public SchemaPath newWindow(SchemaElement heldElement, RubyIO target) {
         SchemaPath sp = new SchemaPath();
         sp.parent = this;
         sp.lastArrayIndex = lastArrayIndex;
         sp.editor = heldElement;
-        sp.host = launcher;
         sp.targetElement = target;
         return sp;
     }
@@ -226,5 +231,44 @@ public class SchemaPath {
         if (parent != null)
             return parent.hasTempDialog();
         return false;
+    }
+
+    public HashMap<EmbedDataKey, Double> getEmbedMap(ISchemaHost host) {
+        HashMap<EmbedDataKey, Double> map = embedData.get(host);
+        if (map == null) {
+            map = new HashMap<EmbedDataKey, Double>();
+            embedData.put(host, map);
+        }
+        return map;
+    }
+
+    public double getEmbedSP(ISchemaHost host, EmbedDataKey myKey) {
+        Double d = getEmbedMap(host).get(myKey);
+        if (d == null)
+            return 0;
+        return d;
+    }
+
+    public static class EmbedDataKey {
+        public final SchemaElement key1;
+        public final RubyIO key2;
+
+        public EmbedDataKey(SchemaElement key1, RubyIO key2) {
+            this.key1 = key1;
+            this.key2 = key2;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof EmbedDataKey))
+                return false;
+            EmbedDataKey edk = (EmbedDataKey) o;
+            return (edk.key1 == key1) && (edk.key2 == key2);
+        }
+
+        @Override
+        public int hashCode() {
+            return key1.hashCode() + key2.hashCode();
+        }
     }
 }

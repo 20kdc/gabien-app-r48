@@ -46,7 +46,7 @@ public class SubwindowSchemaElement extends SchemaElement implements IProxySchem
         UIElement r = new UITextButton(FontSizes.schemaButtonTextHeight, lines[0], new Runnable() {
             @Override
             public void run() {
-                launcher.switchObject(path.newWindow(heldElement, target, launcher));
+                launcher.switchObject(path.newWindow(heldElement, target));
             }
         });
         for (int i = 1; i < lines.length; i++)

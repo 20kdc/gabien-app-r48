@@ -11,6 +11,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
 import r48.schema.util.ISchemaHost;
@@ -37,11 +38,6 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     public final String iVar, widthVar, heightVar;
     public final ITableCellEditor tableCellEditor;
 
-    // This is imperfect but should do the job.
-    // Note it is initialized to -1
-    private int lastSelectionCache = -1;
-    private double lastScrollCache;
-
     public final int[] defVals;
 
     public boolean allowTextdraw = true;
@@ -59,11 +55,15 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final RubyIO targV = iVar == null ? target : target.getInstVarBySymbol(iVar);
         final RubyTable targ = new RubyTable(targV.userVal);
         final RubyIO width = widthVar == null ? null : target.getInstVarBySymbol(widthVar);
         final RubyIO height = heightVar == null ? null : target.getInstVarBySymbol(heightVar);
+
+        final SchemaPath dataBlackboxTarget = path.findLast();
+        final SchemaPath.EmbedDataKey blackboxKey = new SchemaPath.EmbedDataKey(this, targV);
+
         final UIGrid uig = new UIGrid(32, 32, targ.width * targ.height) {
             private TileHelper tileHelper;
 
@@ -85,11 +85,17 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
                 super.updateAndRender(ox, oy, deltaTime, selected, igd);
                 // Lack of any better place.
-                lastScrollCache = uivScrollbar.scrollPoint;
+                double v = uivScrollbar.scrollPoint;
+                if (v <= 0)
+                    v = 0;
+                if (v >= 0.99)
+                    v = 0.99;
+                v += getSelected();
+                dataBlackboxTarget.getEmbedMap(launcher).put(blackboxKey, v);
             }
         };
 
-        UIScrollLayout uiSVL = new UIScrollLayout(true);
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
         final Runnable editorOnSelChange = tableCellEditor.createEditor(uiSVL, targV, uig, new Runnable() {
             @Override
             public void run() {
@@ -102,7 +108,6 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             public void run() {
                 int sel = uig.getSelected();
                 int oldSel = selectionOnLastCall;
-                lastSelectionCache = sel;
                 selectionOnLastCall = sel;
                 editorOnSelChange.run();
                 if (oldSel == sel) {
@@ -118,6 +123,19 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             }
         };
 
+        // and now time for your daily dose of magic:
+        // the scroll value here holds both the selection & the scroll cache.
+        Double selVal = dataBlackboxTarget.getEmbedMap(launcher).get(blackboxKey);
+        if (selVal == null)
+            selVal = -1d;
+        // -1d + 0.99 = -0.01d
+        // Clarify this situation first. Note that Math.floor extends to negative infinity, which is perfect for this
+        int lastSelectionCache = (int) Math.floor(selVal);
+        double lastScrollCache = selVal - lastSelectionCache;
+        if (lastScrollCache <= 0)
+            lastScrollCache = 0;
+        if (lastScrollCache >= 0.985)
+            lastScrollCache = 1;
         uig.setSelected(lastSelectionCache);
         uig.uivScrollbar.scrollPoint = lastScrollCache;
 

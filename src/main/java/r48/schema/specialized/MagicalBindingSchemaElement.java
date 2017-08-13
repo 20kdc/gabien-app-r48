@@ -82,7 +82,7 @@ public class MagicalBindingSchemaElement extends SchemaElement {
                     SchemaElement se = new TempDialogSchemaChoice(uie, this, nextObject);
                     if (nextObject.findBack() != lastPath)
                         lastPath = pathRoot;
-                    trueHost.switchObject(lastPath = lastPath.newWindow(se, nextObject.targetElement, VirtualizedSchemaHost.this));
+                    trueHost.switchObject(lastPath = lastPath.newWindow(se, nextObject.targetElement));
                 }
             };
             r.run();

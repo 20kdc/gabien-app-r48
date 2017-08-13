@@ -28,7 +28,7 @@ public interface IGenposFrame {
 
     // Note: The target will be modified.
     // targetElement and the path itself should be used by the caller.
-    // Use newWindow with a null launcher. (This has to be corrected by caller.)
+    // Use newWindow.
     SchemaPath getCellProp(int ct, int i);
 
     void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y);

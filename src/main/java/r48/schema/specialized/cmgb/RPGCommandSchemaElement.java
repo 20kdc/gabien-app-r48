@@ -12,6 +12,7 @@ import r48.dbs.CMDB;
 import r48.dbs.FormatSyntax;
 import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
+import r48.schema.AggregateSchemaElement;
 import r48.schema.IVarSchemaElement;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
@@ -105,7 +106,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                             // On the other hand, the elements will be obliterated anyway before reaching the user.
                             launcher.switchObject(path2);
                         }
-                    }, rvi, order, TXDB.get("Code")), null, path), target, launcher));
+                    }, rvi, order, TXDB.get("Code")), null, path), target));
                 }
             }), new Runnable() {
                 @Override
@@ -138,7 +139,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     if (rc.specialSchema != null)
                         return rc.specialSchema.buildHoldingEditor(target, launcher, path);
                     RubyIO param = target.getInstVarBySymbol("@parameters");
-                    UIScrollLayout uiSVL = new UIScrollLayout(true);
+                    final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, RPGCommandSchemaElement.this, target);
 
                     if (target.getInstVarBySymbol("@indent") != null) {
                         if (showHeader) {

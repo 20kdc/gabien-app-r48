@@ -304,7 +304,7 @@ public class AppMain {
         ISchemaHost shi = launchSchema(rootSchema, root, context);
         SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(rootSchema), root, shi);
         sp = sp.arrayHashIndex(arrayIndex, indexText);
-        shi.switchObject(sp.newWindow(AppMain.schemas.getSDBEntry(elementSchema), element, shi));
+        shi.switchObject(sp.newWindow(AppMain.schemas.getSDBEntry(elementSchema), element));
         return shi;
     }
 

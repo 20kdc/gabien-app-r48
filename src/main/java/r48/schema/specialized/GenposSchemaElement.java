@@ -43,7 +43,7 @@ public class GenposSchemaElement extends SchemaElement {
             public void run() {
                 final ISchemaHost launcher = lBase.newBlank();
                 TempDialogSchemaChoice boot = new TempDialogSchemaChoice(null, null, pBase);
-                final SchemaPath path = pBase.newWindow(boot, target, launcher);
+                final SchemaPath path = pBase.newWindow(boot, target);
                 if (genposType.equals("vxaAnimation") || genposType.equals("xpAnimation")) {
                     Runnable updater = new Runnable() {
                         @Override

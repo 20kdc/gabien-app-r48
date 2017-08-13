@@ -130,7 +130,7 @@ public class R2kGenposFrame implements IGenposFrame {
                     };
                 }
             });
-        return memberPath.newWindow(se, member.getInstVarBySymbol(trueIVars[i]), null);
+        return memberPath.newWindow(se, member.getInstVarBySymbol(trueIVars[i]));
     }
 
     @Override

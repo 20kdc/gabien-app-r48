@@ -5,6 +5,7 @@
 
 package r48.schema.arrays;
 
+import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.ArrayUtils;
@@ -12,6 +13,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -34,7 +36,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this) : path2;
-        final UIScrollLayout uiSVL = new UIScrollLayout(true);
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
         // this object is needed as a pin to hold things together.
         // It used to be kind of redundant, but now with the selection stuff...
         final Runnable runCompleteRelayout = new Runnable() {

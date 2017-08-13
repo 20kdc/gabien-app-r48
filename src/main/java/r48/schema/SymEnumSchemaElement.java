@@ -51,7 +51,7 @@ public class SymEnumSchemaElement extends SchemaElement {
                         // Enums can affect parent format, so deal with that now.
                         launcher.switchObject(path.findBack());
                     }
-                }, viewOptions, ""), null, path), target, launcher));
+                }, viewOptions, ""), null, path), target));
             }
         });
     }
