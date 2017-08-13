@@ -315,7 +315,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     // Used by tools, after they're done doing whatever.
     // Basically a convenience method.
     public void passModificationNotification() {
-        AppMain.objectDB.objectRootModified(map, new SchemaPath(AppMain.schemas.getSDBEntry("RPG::Map"), map, null));
+        AppMain.objectDB.objectRootModified(map, new SchemaPath(AppMain.schemas.getSDBEntry("RPG::Map"), map));
     }
 
     @Override

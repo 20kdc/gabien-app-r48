@@ -295,14 +295,14 @@ public class AppMain {
     public static ISchemaHost launchSchema(String s, RubyIO rio, UIMapView context) {
         // Responsible for keeping listeners in place so nothing breaks.
         SchemaHostImpl watcher = new SchemaHostImpl(windowMaker, context);
-        watcher.switchObject(new SchemaPath(schemas.getSDBEntry(s), rio, watcher));
+        watcher.switchObject(new SchemaPath(schemas.getSDBEntry(s), rio));
         return watcher;
     }
 
     public static ISchemaHost launchNonRootSchema(RubyIO root, String rootSchema, RubyIO arrayIndex, RubyIO element, String elementSchema, String indexText, UIMapView context) {
         // produce a valid (and false) parent chain, that handles all required guarantees.
         ISchemaHost shi = launchSchema(rootSchema, root, context);
-        SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(rootSchema), root, shi);
+        SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(rootSchema), root);
         sp = sp.arrayHashIndex(arrayIndex, indexText);
         shi.switchObject(sp.newWindow(AppMain.schemas.getSDBEntry(elementSchema), element));
         return shi;

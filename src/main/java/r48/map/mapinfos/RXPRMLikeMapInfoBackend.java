@@ -121,7 +121,7 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
 
     @Override
     public void complete() {
-        SchemaPath fakePath = new SchemaPath(AppMain.schemas.getSDBEntry("File.MapInfos"), mapInfos, null);
+        SchemaPath fakePath = new SchemaPath(AppMain.schemas.getSDBEntry("File.MapInfos"), mapInfos);
         AppMain.objectDB.objectRootModified(mapInfos, fakePath);
         modHandler.accept(fakePath);
     }

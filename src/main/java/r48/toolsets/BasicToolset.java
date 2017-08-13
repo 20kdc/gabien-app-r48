@@ -127,7 +127,7 @@ public class BasicToolset implements IToolset {
                                             @Override
                                             public void accept(String s) {
                                                 SchemaElement ise = AppMain.schemas.getSDBEntry(s);
-                                                ise.modifyVal(rio, new SchemaPath(ise, rio, null), false);
+                                                ise.modifyVal(rio, new SchemaPath(ise, rio), false);
                                                 AppMain.launchDialog(TXDB.get("OK!"));
                                             }
                                         }));

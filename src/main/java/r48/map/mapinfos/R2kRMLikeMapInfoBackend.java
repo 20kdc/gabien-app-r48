@@ -136,7 +136,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
             map.getInstVarBySymbol("@indent").fixnumVal = parentStack.size();
         }
         // and done!
-        SchemaPath fakePath = new SchemaPath(AppMain.schemas.getSDBEntry("File.RPG_RT.lmt"), mapTree, null);
+        SchemaPath fakePath = new SchemaPath(AppMain.schemas.getSDBEntry("File.RPG_RT.lmt"), mapTree);
         AppMain.objectDB.objectRootModified(mapTree, fakePath);
         modHandler.accept(fakePath);
     }

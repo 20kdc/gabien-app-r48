@@ -32,12 +32,12 @@ public class MagicalBindingSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO trueTarget, ISchemaHost launcher, final SchemaPath truePath) {
         // Use subwatchers to create the backwards binding flow
-        SchemaPath sp = createPath(trueTarget, truePath, new VirtualizedSchemaHost(truePath, launcher));
+        SchemaPath sp = createPath(trueTarget, truePath);
         // Bootstrap.
-        return sp.editor.buildHoldingEditor(sp.targetElement, launcher, sp);
+        return sp.editor.buildHoldingEditor(sp.targetElement, new VirtualizedSchemaHost(truePath, launcher), sp);
     }
 
-    private SchemaPath createPath(final RubyIO trueTarget, final SchemaPath truePath, ISchemaHost virtHost) {
+    private SchemaPath createPath(final RubyIO trueTarget, final SchemaPath truePath) {
         RubyIO bound = binder.targetToBound(trueTarget);
         return new SchemaPath(new SchemaElement() {
             // This is a fake root element used for binding
@@ -53,12 +53,12 @@ public class MagicalBindingSchemaElement extends SchemaElement {
                 if (binder.applyBoundToTarget(target, trueTarget))
                     truePath.changeOccurred(setDefault);
             }
-        }, bound, virtHost);
+        }, bound);
     }
 
     @Override
     public void modifyVal(final RubyIO trueTarget, final SchemaPath truePath, boolean setDefault) {
-        SchemaPath sp = createPath(trueTarget, truePath, null);
+        SchemaPath sp = createPath(trueTarget, truePath);
         sp.editor.modifyVal(sp.targetElement, sp, setDefault);
     }
 

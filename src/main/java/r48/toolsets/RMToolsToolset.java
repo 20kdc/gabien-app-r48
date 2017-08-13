@@ -120,7 +120,7 @@ public class RMToolsToolset implements IToolset {
                                 }
                             };
                             AppMain.objectDB.registerModificationHandler(map, modListen);
-                            SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(schemaIt.next()), map, null);
+                            SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(schemaIt.next()), map);
                             sp.editor.modifyVal(map, sp, false);
                             AppMain.objectDB.deregisterModificationHandler(map, modListen);
                             System.out.println(obj + " done.");
@@ -172,7 +172,7 @@ public class RMToolsToolset implements IToolset {
                         // This won't deal with the really complicated disambiguator events, but it's something.
                         for (int cc : commandsEvent.knownCommands.keySet()) {
                             RubyIO r = SchemaPath.createDefaultValue(commandEvent, new RubyIO().setFX(0));
-                            SchemaPath sp = new SchemaPath(commandEvent, r, null).arrayHashIndex(new RubyIO().setFX(0), "BLAH");
+                            SchemaPath sp = new SchemaPath(commandEvent, r).arrayHashIndex(new RubyIO().setFX(0), "BLAH");
                             // this is bad, but it works well enough
                             r.getInstVarBySymbol("@code").fixnumVal = cc;
                             commandEvent.modifyVal(r, sp, false);

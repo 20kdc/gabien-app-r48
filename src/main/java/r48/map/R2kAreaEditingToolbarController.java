@@ -116,7 +116,7 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
                 u.fixnumVal = Math.min(firstPointY, y);
                 r.fixnumVal = Math.max(firstPointX, x) + 1;
                 d.fixnumVal = Math.max(firstPointY, y) + 1;
-                AppMain.objectDB.objectRootModified(mapInfosRoot, new SchemaPath(AppMain.schemas.getSDBEntry("RPG::MapTree"), mapInfosRoot, null));
+                AppMain.objectDB.objectRootModified(mapInfosRoot, new SchemaPath(AppMain.schemas.getSDBEntry("RPG::MapTree"), mapInfosRoot));
                 label.Text = textA;
                 definingPoint2 = false;
             }

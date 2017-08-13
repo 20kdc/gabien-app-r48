@@ -57,7 +57,7 @@ public class SchemaPath {
     }
 
     // The basic constructor.
-    public SchemaPath(SchemaElement heldElement, RubyIO target, ISchemaHost launcher) {
+    public SchemaPath(SchemaElement heldElement, RubyIO target) {
         lastArrayIndex = target;
         hrIndex = AppMain.objectDB.getIdByObject(target);
         if (hrIndex == null)
