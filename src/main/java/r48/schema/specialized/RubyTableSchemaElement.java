@@ -80,6 +80,13 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                         UILabel.drawString(igd, x, y + (i * FontSizes.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, FontSizes.gridTextHeight);
                 }
             }
+
+            @Override
+            public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
+                super.updateAndRender(ox, oy, deltaTime, selected, igd);
+                // Lack of any better place.
+                lastScrollCache = uivScrollbar.scrollPoint;
+            }
         };
 
         UIScrollLayout uiSVL = new UIScrollLayout(true);
@@ -95,7 +102,6 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             public void run() {
                 int sel = uig.getSelected();
                 int oldSel = selectionOnLastCall;
-                lastScrollCache = uig.uivScrollbar.scrollPoint;
                 lastSelectionCache = sel;
                 selectionOnLastCall = sel;
                 editorOnSelChange.run();
@@ -112,8 +118,8 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             }
         };
 
-        uig.uivScrollbar.scrollPoint = lastScrollCache;
         uig.setSelected(lastSelectionCache);
+        uig.uivScrollbar.scrollPoint = lastScrollCache;
 
         if (allowResize) {
             final UINumberBox wNB = new UINumberBox(FontSizes.tableSizeTextHeight);
