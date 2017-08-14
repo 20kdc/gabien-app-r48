@@ -64,9 +64,7 @@ public class BasicToolset implements IToolset {
                         TXDB.get("Inspect Object (no Schema needed)"),
                         TXDB.get("Set Internal Windows (good)"),
                         TXDB.get("Set External Windows (bad)"),
-                        TXDB.get("Use normal in-built fonts"),
-                        TXDB.get("Use system fonts for everything"),
-                        TXDB.get("Configure font sizes"),
+                        TXDB.get("Configure fonts"),
                         TXDB.get("Test Fonts"),
                         TXDB.get("Test Tones"),
                         TXDB.get("Show ODB Memstat"),
@@ -156,18 +154,6 @@ public class BasicToolset implements IToolset {
                             @Override
                             public void run() {
                                 setWM.accept(realWM);
-                            }
-                        },
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                UILabel.fontOverride = null;
-                            }
-                        },
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                UILabel.fontOverride = GaBIEn.getFontOverrides()[0];
                             }
                         },
                         new Runnable() {

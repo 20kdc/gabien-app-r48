@@ -4,6 +4,8 @@
  */
 package r48.ui;
 
+import gabien.GaBIEn;
+import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -20,7 +22,7 @@ public class UIFontSizeConfigurator extends UIPanel {
 
     public UIFontSizeConfigurator() {
         refreshLayout();
-        setBounds(new Rect(0, 0, 320, 200));
+        setBounds(new Rect(0, 0, 320, 240));
     }
 
     public void refreshLayout() {
@@ -58,6 +60,26 @@ public class UIFontSizeConfigurator extends UIPanel {
                 refreshLayout();
             }
         }), false, 1, 2));
+        outerLayout.panels.add(new UITextButton(FontSizes.fontSizerTextHeight, "", new Runnable() {
+            @Override
+            public void run() {
+                if (UILabel.fontOverride != null) {
+                    UILabel.fontOverride = null;
+                } else {
+                    UILabel.fontOverride = GaBIEn.getFontOverrides()[0];
+                }
+            }
+        }) {
+            @Override
+            public void updateAndRender(int ox, int oy, double DeltaTime, boolean selected, IGrInDriver igd) {
+                if (UILabel.fontOverride != null) {
+                    Text = TXDB.get("Font: " + UILabel.fontOverride);
+                } else {
+                    Text = TXDB.get("Font: Internal w/fallbacks");
+                }
+                super.updateAndRender(ox, oy, DeltaTime, selected, igd);
+            }
+        });
         try {
             for (final FontSizes.FontSizeField field : FontSizes.getFields()) {
                     doubleAll.add(new Runnable() {
@@ -92,7 +114,8 @@ public class UIFontSizeConfigurator extends UIPanel {
                         }
                     });
                     tb.accept(Integer.toString(field.get()));
-                    outerLayout.panels.add(new UISplitterLayout(new UILabel(field.name, FontSizes.fontSizerTextHeight), tb, false, 4, 5));
+                    // NOTE: This is correct behavior due to an 'agreement' in FontSizes that this should be correct
+                    outerLayout.panels.add(new UISplitterLayout(new UILabel(TXDB.get("r48", field.name), FontSizes.fontSizerTextHeight), tb, false, 4, 5));
             }
         } catch (Exception e) {
             e.printStackTrace();

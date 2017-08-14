@@ -23,32 +23,32 @@ public class UITimeframeControl extends UIPanel {
     private double playTimer = 0;
     public int recommendedFramerate;
 
-    public UILabel currentFrame = new UILabel(TXDB.get("Loading..."), FontSizes.rmaTimeframeFontSize);
+    public UILabel currentFrame = new UILabel(TXDB.get("Loading..."), FontSizes.rmaTimeframeTextHeight);
 
     public UIAppendButton playController = new UIAppendButton(TXDB.get("Play"), currentFrame, new Runnable() {
         @Override
         public void run() {
         }
-    }, FontSizes.rmaTimeframeFontSize);
+    }, FontSizes.rmaTimeframeTextHeight);
     public UITextButton playControllerButton = playController.button.togglable();
     public UIAppendButton loopController = new UIAppendButton(TXDB.get("Loop"), playController, new Runnable() {
         @Override
         public void run() {
         }
-    }, FontSizes.rmaTimeframeFontSize);
+    }, FontSizes.rmaTimeframeTextHeight);
     public UITextButton loopControllerButton = loopController.button.togglable();
     public UIAppendButton hsController = new UIAppendButton(TXDB.get("HS"), loopController, new Runnable() {
         @Override
         public void run() {
         }
-    }, FontSizes.rmaTimeframeFontSize);
+    }, FontSizes.rmaTimeframeTextHeight);
     public UITextButton hsControllerButton = hsController.button.togglable();
 
     public UIAppendButton tsController = new UIAppendButton(TXDB.get("TS"), hsController, new Runnable() {
         @Override
         public void run() {
         }
-    }, FontSizes.rmaTimeframeFontSize);
+    }, FontSizes.rmaTimeframeTextHeight);
     public UITextButton tsControllerButton = tsController.button.togglable();
 
     // The rest of the toolbar is constructed in the constructor
@@ -63,20 +63,20 @@ public class UITimeframeControl extends UIPanel {
                 rootPanel.target.setFrameIdx(rootPanel.target.getFrameIdx() - 1);
                 rootPanel.frameChanged();
             }
-        }, FontSizes.rmaTimeframeFontSize);
+        }, FontSizes.rmaTimeframeTextHeight);
         toolbar = new UIAppendButton(">", toolbar, new Runnable() {
             @Override
             public void run() {
                 rootPanel.target.setFrameIdx(rootPanel.target.getFrameIdx() + 1);
                 rootPanel.frameChanged();
             }
-        }, FontSizes.rmaTimeframeFontSize);
+        }, FontSizes.rmaTimeframeTextHeight);
         toolbar = new UIAppendButton("C", toolbar, new Runnable() {
             @Override
             public void run() {
                 AppMain.theClipboard = new RubyIO().setDeepClone(rootPanel.target.getFrame());
             }
-        }, FontSizes.rmaTimeframeFontSize);
+        }, FontSizes.rmaTimeframeTextHeight);
         toolbar = new UIAppendButton("P", toolbar, new Runnable() {
             @Override
             public void run() {
@@ -88,21 +88,21 @@ public class UITimeframeControl extends UIPanel {
                     }
                 }
             }
-        }, FontSizes.rmaTimeframeFontSize);
+        }, FontSizes.rmaTimeframeTextHeight);
         toolbar = new UIAppendButton("+", toolbar, new Runnable() {
             @Override
             public void run() {
                 rootPanel.target.insertFrame(new RubyIO().setDeepClone(rootPanel.target.getFrame()));
                 rootPanel.frameChanged();
             }
-        }, FontSizes.rmaTimeframeFontSize);
+        }, FontSizes.rmaTimeframeTextHeight);
         toolbar = new UIAppendButton("-", toolbar, new Runnable() {
             @Override
             public void run() {
                 rootPanel.target.deleteFrame();
                 rootPanel.frameChanged();
             }
-        }, FontSizes.rmaTimeframeFontSize);
+        }, FontSizes.rmaTimeframeTextHeight);
 
         allElements.add(toolbar);
         setBounds(toolbar.getBounds());

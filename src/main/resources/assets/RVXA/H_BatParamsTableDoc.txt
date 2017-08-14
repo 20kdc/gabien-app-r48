@@ -1,0 +1,6 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+0: Table parameter details
+. maxHP, maxMP, attack, defense, magicAttack, magicDefense, agility, luck
