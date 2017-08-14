@@ -10,6 +10,7 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
+import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.map.tiles.AutoTileTypeField;
@@ -25,25 +26,24 @@ import java.util.LinkedList;
  * ... this is kind of getting monolithic with multiple subtools. Oh well.
  * Created on 12/29/16.
  */
-public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
+public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     // Sub-tools panel
     private UIElement subtoolBar;
     private int subtool = 0;
 
     private UITabPane tabPane;
-    private UINSVertLayout subtoolNTabPaneHolder;
     private UITileGrid[] tileMaps;
     public final UIMapView map;
     public AutoTileTypeField[] atBases;
 
-    public UIMTAutotile(UIMapView mv) {
-        map = mv;
+    public UIMTAutotile(IMapToolContext mv) {
+        super(mv, false);
+        map = mv.getMapView();
         setupView();
-        setBounds(new Rect(0, 0, (mv.tileSize * map.renderer.tileRenderer.getRecommendedWidth()) + 32, 200));
+        setBounds(new Rect(0, 0, (map.tileSize * map.renderer.tileRenderer.getRecommendedWidth()) + 32, 200));
     }
 
     private void setupView() {
-        allElements.clear();
         int layer = map.currentLayer;
         tileMaps = map.renderer.tileRenderer.createATUIPlanes(map);
         tabPane = new UITabPane(map.renderer.tileRenderer.getPlaneNames(layer), tileMaps, FontSizes.tilesTabTextHeight);
@@ -90,14 +90,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
 
         subtoolBar = uab;
 
-        subtoolNTabPaneHolder = new UINSVertLayout(subtoolBar, tabPane);
-        allElements.add(subtoolNTabPaneHolder);
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        subtoolNTabPaneHolder.setBounds(new Rect(0, 0, r.width, r.height));
+        changeInner(new UINSVertLayout(subtoolBar, tabPane));
     }
 
     // -- Tool stuff --
@@ -154,7 +147,7 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
 
         if (subtool == 1) {
             // Tool 1: Rectangle
-            AppMain.nextMapTool = new UIMTAutotileRectangle(this, x, y, tileMaps[tabPane.tab].atGroup != 0);
+            mapToolContext.accept(new UIMTAutotileRectangle(this, x, y, tileMaps[tabPane.tab].atGroup != 0));
             return;
         } else if (subtool == 2) {
             // Tool 2: Floodfill.
@@ -315,4 +308,5 @@ public class UIMTAutotile extends UIPanel implements IMapViewCallbacks {
             return tX + (tY << 16);
         }
     }
+
 }

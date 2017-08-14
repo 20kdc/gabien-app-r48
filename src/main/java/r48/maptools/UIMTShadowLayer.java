@@ -8,6 +8,7 @@ import gabien.IGrDriver;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.dbs.TXDB;
+import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 
@@ -15,15 +16,16 @@ import r48.map.UIMapView;
  * UIMTAutotile isn't flexible enough for this.
  * Created on 2/19/17.
  */
-public class UIMTShadowLayer extends UIPanel implements IMapViewCallbacks {
+public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
     public final UIMapView map;
-    private UIScrollLayout uiSVL;
     private UINumberBox regionId;
     private int flags = 0;
 
-    public UIMTShadowLayer(UIMapView mv) {
-        map = mv;
-        uiSVL = new UIScrollLayout(true);
+    public UIMTShadowLayer(IMapToolContext mv) {
+        super(mv, false);
+        map = mv.getMapView();
+        UIScrollLayout uiSVL = new UIScrollLayout(true);
+        changeInner(uiSVL);
         String[] s = new String[] {TXDB.get("Up-Left"), TXDB.get("Up-Right"), TXDB.get("Down-Left"), TXDB.get("Down-Right")};
         UITextButton[] controlButtons = new UITextButton[4];
         int power = 1;
@@ -44,12 +46,6 @@ public class UIMTShadowLayer extends UIPanel implements IMapViewCallbacks {
         th += Math.max(UILabel.getRecommendedSize("", FontSizes.tableElementTextHeight).height, UINumberBox.getRecommendedSize(FontSizes.tableElementTextHeight).height);
         allElements.add(uiSVL);
         setBounds(new Rect(0, 0, 160, th));
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        uiSVL.setBounds(new Rect(0, 0, r.width, r.height));
     }
 
     @Override

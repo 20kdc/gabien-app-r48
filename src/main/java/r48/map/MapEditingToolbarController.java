@@ -22,8 +22,10 @@ public class MapEditingToolbarController implements IEditingToolbarController {
     public UIScrollLayout rootLayout = new UIScrollLayout(false);
     private final LinkedList<UITextButton> tools = new LinkedList<UITextButton>();
 
-    public MapEditingToolbarController(final UIMapView view, final ISupplier<IConsumer<UIElement>> windowMakerSupplier) {
+    public MapEditingToolbarController(final IMapToolContext viewGiver, final ISupplier<IConsumer<UIElement>> windowMakerSupplier) {
         rootLayout.scrollbar.setBounds(new Rect(0, 0, 8, 8));
+
+        final UIMapView view = viewGiver.getMapView();
 
         // -- Kind of a monolith here. Map tools ALWAYS go first, and must be togglables.
         // It is assumed that this is the only class capable of causing tool changes.
@@ -35,7 +37,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 public void run() {
                     clearTools(thisButton);
                     view.currentLayer = thisButton;
-                    AppMain.nextMapTool = new UIMTAutotile(view);
+                    viewGiver.accept(new UIMTAutotile(viewGiver));
                 }
             }).togglable();
             tools.add(button);
@@ -46,7 +48,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 @Override
                 public void run() {
                     clearTools(thisButton);
-                    AppMain.nextMapTool = new UIMTShadowLayer(view);
+                    viewGiver.accept(new UIMTShadowLayer(viewGiver));
                 }
             }).togglable());
         }
@@ -56,7 +58,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 @Override
                 public void run() {
                     clearTools(thisButton);
-                    AppMain.nextMapTool = new UIMTEventPicker(windowMakerSupplier.get(), view);
+                    viewGiver.accept(new UIMTEventPicker(viewGiver));
                 }
             }).togglable());
         }
@@ -81,7 +83,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                         svl.panels.add(layerVis);
                     }
                     svl.setBounds(new Rect(0, 0, 320, h));
-                    AppMain.nextMapTool = svl;
+                    viewGiver.accept(UIMTBase.wrap(viewGiver, svl, false));
                 }
             }).togglable());
         }
@@ -93,7 +95,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
             public void run() {
                 // Select the current tile layer
                 clearTools(view.currentLayer);
-                AppMain.nextMapTool = new UIMTPickTile(view);
+                viewGiver.accept(new UIMTPickTile(viewGiver));
             }
         }));
         {
@@ -103,7 +105,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 @Override
                 public void run() {
                     clearTools(thisButton);
-                    AppMain.nextMapTool = new UIMTPopupButtons(view);
+                    viewGiver.accept(new UIMTPopupButtons(viewGiver));
                 }
             }).togglable());
         }

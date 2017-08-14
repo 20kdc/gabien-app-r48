@@ -13,29 +13,22 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 
 /**
  * Created on 1/1/17.
  */
-public class UIMTEventMover extends UIPanel implements IMapViewCallbacks {
+public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
     private RubyIO targetEvent;
-    private UILabel uil;
     private UIMapView mapView;
 
-    public UIMTEventMover(RubyIO evI, UIMapView mv) {
-        mapView = mv;
+    public UIMTEventMover(RubyIO evI, IMapToolContext mv) {
+        super(mv, true);
+        mapView = mv.getMapView();
         targetEvent = evI;
-        uil = new UILabel(TXDB.get("Click to place event"), FontSizes.dialogWindowTextHeight);
-        allElements.add(uil);
-        setBounds(new Rect(0, 0, 160, 18));
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        uil.setBounds(new Rect(0, 0, r.width, r.height));
+        changeInner(new UILabel(TXDB.get("Click to place event"), FontSizes.dialogWindowTextHeight));
     }
 
     // tool stuff
@@ -67,7 +60,7 @@ public class UIMTEventMover extends UIPanel implements IMapViewCallbacks {
         targetEvent.getInstVarBySymbol("@x").fixnumVal = x;
         targetEvent.getInstVarBySymbol("@y").fixnumVal = y;
         mapView.passModificationNotification();
-        AppMain.nextMapTool = new UIMTEventPicker(null, mapView);
+        mapToolContext.accept(new UIMTEventPicker(mapToolContext));
     }
 
     @Override

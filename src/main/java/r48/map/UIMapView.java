@@ -113,7 +113,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         char[] visConfig = new char[layerVis.length];
         for (int i = 0; i < layerVis.length; i++)
             visConfig[i] = layerVis[i] ? 'T' : 'F';
-        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + eTileSize + "_" + debug + "_" + renderer.tileRenderer.getFrame() + "_" + renderer.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + AppMain.nextMapTool + "_" + internalScaling;
+        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + eTileSize + "_" + debug + "_" + renderer.tileRenderer.getFrame() + "_" + renderer.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + callbacks + "_" + internalScaling;
         if (scheduler.needsUpdate(config)) {
             boolean remakeBuf = true;
             if (offscreenBuf != null)

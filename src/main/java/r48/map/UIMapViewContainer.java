@@ -33,9 +33,10 @@ public class UIMapViewContainer extends UIPanel {
         }
     };
 
+    public UIMTBase nextMapTool = null;
+
     // Map tool switch happens at the start of each frame, so it stays out of the way of windowing code.
-    private UIMapToolWrapper mapTool = null;
-    private boolean wantsToolHide = false;
+    private UIMTBase mapTool = null;
 
     private TimeWaster timeWaster = new TimeWaster();
 
@@ -58,24 +59,21 @@ public class UIMapViewContainer extends UIPanel {
         // remove stale tools.
         // (The way this code is written implies tools must be on rootView for now.)
         if (mapTool != null) {
-            if (wantsToolHide)
-                mapTool.selfClose = true;
             if (mapTool.hasClosed) {
-                if (AppMain.nextMapTool == mapTool.pattern)
-                    AppMain.nextMapTool = null;
+                if (nextMapTool == mapTool)
+                    nextMapTool = null;
                 mapTool = null;
                 internalNoToolCallback.run();
                 if (view != null)
                     view.callbacks = null;
             }
         }
-        wantsToolHide = false;
         // switch to next tool
         if (view != null) {
-            if (AppMain.nextMapTool != null) {
+            if (nextMapTool != null) {
                 boolean sameAsBefore = true;
                 if (mapTool != null) {
-                    if (mapTool.pattern != AppMain.nextMapTool) {
+                    if (mapTool != nextMapTool) {
                         // let's just hope the user doesn't do anything in a frame
                         // that would actually somehow lead to an inconsistent state
                         mapTool.selfClose = true;
@@ -86,9 +84,9 @@ public class UIMapViewContainer extends UIPanel {
                 }
                 if (!sameAsBefore) {
                     view.callbacks = null;
-                    if (AppMain.nextMapTool instanceof IMapViewCallbacks)
-                        view.callbacks = (IMapViewCallbacks) AppMain.nextMapTool;
-                    mapTool = new UIMapToolWrapper(AppMain.nextMapTool);
+                    if (nextMapTool instanceof IMapViewCallbacks)
+                        view.callbacks = (IMapViewCallbacks) nextMapTool;
+                    mapTool = nextMapTool;
                     windowMakerSupplier.get().accept(mapTool);
                 }
             } else {
@@ -109,7 +107,9 @@ public class UIMapViewContainer extends UIPanel {
     }
 
     public void loadMap(MapSystem.MapLoadDetails map) {
-        wantsToolHide = true;
+        if (mapTool != null)
+            mapTool.selfClose = true;
+
         allElements.clear();
         if (view != null)
             view.windowClosed();
@@ -126,16 +126,33 @@ public class UIMapViewContainer extends UIPanel {
         // Creating the MapView and such causes quite a few side-effects (specifically global StuffRenderer kick-in-the-pants).
         // Also kick the dictionaries because of the event dictionary.
         view = new UIMapView(map.objectId, b.width, b.height);
-        view.pickTileHelper = new IConsumer<Short>() {
+        final IMapToolContext mtc = new IMapToolContext() {
             @Override
-            public void accept(Short aShort) {
-                UIMTAutotile atf = new UIMTAutotile(view);
-                atf.selectTile(aShort);
-                AppMain.nextMapTool = atf;
+            public UIMapView getMapView() {
+                return view;
+            }
+
+            @Override
+            public void createWindow(UIElement window) {
+                windowMakerSupplier.get().accept(window);
+            }
+
+            @Override
+            public void accept(UIMTBase nextTool) {
+                nextMapTool = nextTool;
             }
         };
 
-        final IEditingToolbarController metc = map.getToolbar.apply(view);
+        view.pickTileHelper = new IConsumer<Short>() {
+            @Override
+            public void accept(Short aShort) {
+                UIMTAutotile atf = new UIMTAutotile(mtc);
+                atf.selectTile(aShort);
+                nextMapTool = atf;
+            }
+        };
+
+        final IEditingToolbarController metc = map.getToolbar.apply(mtc);
         viewToolbarSplit = new UINSVertLayout(metc.getBar(), view);
         allElements.add(viewToolbarSplit);
         AppMain.schemas.kickAllDictionariesForMapChange();

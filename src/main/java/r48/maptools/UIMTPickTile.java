@@ -10,6 +10,7 @@ import gabien.ui.UILabel;
 import gabien.ui.UIPanel;
 import r48.FontSizes;
 import r48.dbs.TXDB;
+import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 
@@ -17,20 +18,14 @@ import r48.map.UIMapView;
  * Actual tool is just a label saying what to do, these callbacks piggy back on it
  * Created on 09/06/17.
  */
-public class UIMTPickTile extends UIPanel implements IMapViewCallbacks {
+public class UIMTPickTile extends UIMTBase implements IMapViewCallbacks {
     public UILabel innerLabel = new UILabel(TXDB.get("Click on a tile to pick it."), FontSizes.dialogWindowTextHeight);
     public final UIMapView map;
 
-    public UIMTPickTile(UIMapView m) {
-        allElements.add(innerLabel);
-        map = m;
-        setBounds(getBounds());
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        Rect s = innerLabel.getBounds();
-        super.setBounds(new Rect(r.x, r.y, s.width, s.height));
+    public UIMTPickTile(IMapToolContext m) {
+        super(m, true);
+        map = m.getMapView();
+        changeInner(innerLabel);
     }
 
     @Override

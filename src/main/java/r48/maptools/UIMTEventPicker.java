@@ -12,6 +12,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.schema.util.SchemaPath;
@@ -24,16 +25,15 @@ import java.util.Map;
 /**
  * Created on 12/29/16.
  */
-public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
-    public IConsumer<UIElement> windowView;
+public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public UIMapView mapView;
     public UIScrollLayout svl = new UIScrollLayout(true);
     public HashMap<String, RubyIO> eventCache = new HashMap<String, RubyIO>();
 
-    public UIMTEventPicker(IConsumer<UIElement> wv, UIMapView mv) {
-        windowView = wv;
-        mapView = mv;
-        allElements.add(svl);
+    public UIMTEventPicker(IMapToolContext mv) {
+        super(mv, false);
+        mapView = mv.getMapView();
+        changeInner(svl);
         setBounds(new Rect(0, 0, 320, 200));
     }
 
@@ -85,13 +85,13 @@ public class UIMTEventPicker extends UIPanel implements IMapViewCallbacks {
                         public void run() {
                             // In practice I have seen that this should always go away after selection.
                             showEvent(evK.fixnumVal, mapView, evI);
-                            AppMain.nextMapTool = null;
+                            mapToolContext.accept(null);
                         }
                     });
                     button = new UIAppendButton(TXDB.get("MOV"), button, new Runnable() {
                         @Override
                         public void run() {
-                            AppMain.nextMapTool = new UIMTEventMover(evI, mapView);
+                            mapToolContext.accept(new UIMTEventMover(evI, mapToolContext));
                         }
                     }, FontSizes.eventPickerEntryTextHeight);
                     button = new UIAppendButton(TXDB.get("DEL"), button, new Runnable() {

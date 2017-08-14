@@ -17,6 +17,7 @@ import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.IEditingToolbarController;
 import r48.map.UIMapView;
+import r48.maptools.UIMTBase;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 
@@ -26,15 +27,17 @@ import r48.ui.Art;
 public class R2kAreaEditingToolbarController implements IEditingToolbarController {
     public final RubyIO mapInfosRoot, areaInfo;
     public final int tileSize;
-    public R2kAreaEditingToolbarController(int ts, RubyIO mapInfos, RubyIO mapInfo) {
-        tileSize = ts;
+    public final IMapToolContext mapToolContext;
+    public R2kAreaEditingToolbarController(IMapToolContext mtc, RubyIO mapInfos, RubyIO mapInfo) {
+        tileSize = mtc.getMapView().tileSize;
+        mapToolContext = mtc;
         mapInfosRoot = mapInfos;
         areaInfo = mapInfo;
     }
 
     @Override
     public void noTool() {
-        AppMain.nextMapTool = new UIMTAreaTool();
+        mapToolContext.accept(new UIMTAreaTool());
     }
 
     @Override
@@ -42,22 +45,16 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
         return new UILabel(TXDB.get("Editing Area..."), FontSizes.mapLayertabTextHeight);
     }
 
-    private class UIMTAreaTool extends UIPanel implements IMapViewCallbacks {
+    private class UIMTAreaTool extends UIMTBase implements IMapViewCallbacks {
 
         public UILabel label;
         public String textA = TXDB.get("Click to define first point (old area shown)");
         public String textB = TXDB.get("Click again to define second point");
 
         public UIMTAreaTool() {
+            super(R2kAreaEditingToolbarController.this.mapToolContext, true);
             label = new UILabel(textA, FontSizes.dialogWindowTextHeight);
-            allElements.add(label);
-            setBounds(label.getBounds());
-        }
-
-        @Override
-        public void setBounds(Rect r) {
-            super.setBounds(r);
-            label.setBounds(new Rect(0, 0, r.width, r.height));
+            changeInner(label);
         }
 
         public int firstPointX, firstPointY;

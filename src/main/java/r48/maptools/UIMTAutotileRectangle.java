@@ -6,6 +6,7 @@ package r48.maptools;
 
 import gabien.GaBIEn;
 import gabien.IGrDriver;
+import gabien.ui.IConsumer;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import gabien.ui.UIPanel;
@@ -18,7 +19,7 @@ import r48.ui.UIAppendButton;
 /**
  * Created on 10/06/17.
  */
-public class UIMTAutotileRectangle extends UIPanel implements IMapViewCallbacks {
+public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks {
 
     public final UIMTAutotile parent;
     public final int startX, startY;
@@ -27,12 +28,13 @@ public class UIMTAutotileRectangle extends UIPanel implements IMapViewCallbacks 
     public UIAppendButton innerLabel = new UIAppendButton(TXDB.get("Cancel"), new UILabel(TXDB.get("Click on a tile to finish the rectangle, or:"), FontSizes.dialogWindowTextHeight), new Runnable() {
         @Override
         public void run() {
-            AppMain.nextMapTool = parent;
+            mapToolContext.accept(parent);
         }
     }, FontSizes.dialogWindowTextHeight);
 
     public UIMTAutotileRectangle(UIMTAutotile par, int x, int y, boolean at) {
-        allElements.add(innerLabel);
+        super(par.mapToolContext, true);
+        changeInner(innerLabel);
         parent = par;
         startX = x;
         startY = y;
@@ -94,7 +96,7 @@ public class UIMTAutotileRectangle extends UIPanel implements IMapViewCallbacks 
                     for (int j = minY - 1; j <= maxY + 1; j++)
                         UIMTAutotile.updateAutotile(parent.map, parent.atBases, i, j, parent.map.currentLayer);
             parent.map.passModificationNotification();
-            AppMain.nextMapTool = parent;
+            mapToolContext.accept(parent);
         }
     }
 

@@ -64,8 +64,6 @@ public class AppMain {
 
     //private static UILabel uiStatusLabel;
 
-    public static UIElement nextMapTool = null;
-
     public static String rootPath = null;
     public static String dataPath = "";
     public static String dataExt = "";
@@ -368,7 +366,6 @@ public class AppMain {
     public static void shutdown() {
         windowMaker = null;
         pendingRunnables.clear();
-        nextMapTool = null;
         rootPath = null;
         dataPath = "";
         dataExt = "";

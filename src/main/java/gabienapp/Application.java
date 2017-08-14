@@ -13,7 +13,7 @@ import r48.RubyIO;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.TXDB;
-import r48.map.UIMapToolWrapper;
+import r48.maptools.UIMTBase;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFontSizeConfigurator;
 import r48.ui.help.UIHelpSystem;
@@ -37,7 +37,7 @@ public class Application {
             final UIScrollLayout gamepaks = new UIScrollLayout(true);
             gamepaks.setBounds(new Rect(0, 0, 400, 200));
             // this can't be good
-            // Ok, explaination for this. Giving it a runnable, it will hold it until calld again, and then it will run it and remove it.
+            // Ok, explaination for this. Giving it a runnable, it will hold it until called again, and then it will run it and remove it.
             final IConsumer<Runnable> closeHelper = new IConsumer<Runnable>() {
                 private Runnable r;
 
@@ -168,14 +168,14 @@ public class Application {
             });
 
             gamepaks.setBounds(new Rect(0, 0, 640, 480));
-            final UIMapToolWrapper uimtw = new UIMapToolWrapper(gamepaks);
+            final UIMTBase uimtw = UIMTBase.wrap(null, gamepaks, false);
+            uiTicker.accept(uimtw);
             closeHelper.accept(new Runnable() {
                 @Override
                 public void run() {
                     uimtw.selfClose = true;
                 }
             });
-            uiTicker.accept(uimtw);
 
             boolean failed = false;
             while (uiTicker.runningWindows() > 0) {

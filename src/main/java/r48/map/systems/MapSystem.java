@@ -61,9 +61,9 @@ public abstract class MapSystem {
     public MapLoadDetails mapLoadRequest(RubyIO mapReferent, final ISupplier<IConsumer<UIElement>> windowMaker) {
         MapLoadDetails mld = new MapLoadDetails();
         mld.objectId = mapReferentToId(mapReferent);
-        mld.getToolbar = new IFunction<UIMapView, IEditingToolbarController>() {
+        mld.getToolbar = new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override
-            public IEditingToolbarController apply(UIMapView uiMapView) {
+            public IEditingToolbarController apply(IMapToolContext uiMapView) {
                 return new MapEditingToolbarController(uiMapView, windowMaker);
             }
         };
@@ -72,6 +72,6 @@ public abstract class MapSystem {
 
     public static class MapLoadDetails {
         public String objectId;
-        public IFunction<UIMapView, IEditingToolbarController> getToolbar;
+        public IFunction<IMapToolContext, IEditingToolbarController> getToolbar;
     }
 }

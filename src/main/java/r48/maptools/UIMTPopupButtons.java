@@ -4,22 +4,22 @@
  */
 package r48.maptools;
 
-import gabien.ui.Rect;
-import gabien.ui.UINumberBox;
-import gabien.ui.UISplitterLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.map.IMapToolContext;
 import r48.map.UIMapView;
 
 /**
  * Created on 18/06/17.
  */
-public class UIMTPopupButtons extends gabien.ui.UIAutoclosingPopupMenu {
-    public UIMTPopupButtons(final UIMapView view) {
-        super(new String[] {
+public class UIMTPopupButtons extends UIMTBase {
+    public UIMTPopupButtons(final IMapToolContext mtc) {
+        super(mtc, true);
+        final UIMapView view = mtc.getMapView();
+        UIAutoclosingPopupMenu u = new UIAutoclosingPopupMenu(new String[] {
                 TXDB.get("Reload Panorama/TS"),
                 TXDB.get("Properties"),
                 TXDB.get("Resize"),
@@ -43,16 +43,17 @@ public class UIMTPopupButtons extends gabien.ui.UIAutoclosingPopupMenu {
                 new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.nextMapTool = new UIMTMapResizer(view);
+                        mtc.accept(new UIMTMapResizer(mtc));
                     }
                 }
         }, FontSizes.dialogWindowTextHeight, true);
+        changeInner(u);
     }
 
-    private static class UIMTMapResizer extends gabien.ui.UIPanel {
-        public UISplitterLayout root;
-
-        private UIMTMapResizer(final UIMapView view) {
+    private static class UIMTMapResizer extends UIMTBase {
+        private UIMTMapResizer(final IMapToolContext mtc) {
+            super(mtc, false);
+            final UIMapView view = mtc.getMapView();
             final UINumberBox a = new UINumberBox(FontSizes.textDialogFieldTextHeight);
             final UINumberBox b = new UINumberBox(FontSizes.textDialogFieldTextHeight);
             a.number = view.mapTable.width;
@@ -71,7 +72,7 @@ public class UIMTPopupButtons extends gabien.ui.UIAutoclosingPopupMenu {
                         b.number = 1;
                 }
             };
-            root = new UISplitterLayout(new UISplitterLayout(a, b, false, 0.5d), new UITextButton(FontSizes.textDialogFieldTextHeight, "Resize", new Runnable() {
+            UISplitterLayout root = new UISplitterLayout(new UISplitterLayout(a, b, false, 0.5d), new UITextButton(FontSizes.textDialogFieldTextHeight, "Resize", new Runnable() {
                 @Override
                 public void run() {
                     RubyIO resizeTarg = view.map.getInstVarBySymbol("@data");
@@ -94,14 +95,7 @@ public class UIMTPopupButtons extends gabien.ui.UIAutoclosingPopupMenu {
                     view.passModificationNotification();
                 }
             }), true, 0);
-            setBounds(root.getBounds());
-            allElements.add(root);
-        }
-
-        @Override
-        public void setBounds(Rect r) {
-            super.setBounds(r);
-            root.setBounds(new Rect(0, 0, r.width, r.height));
+            changeInner(root);
         }
     }
 }

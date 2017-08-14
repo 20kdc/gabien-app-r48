@@ -165,10 +165,10 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             MapLoadDetails mld = mapLoadRequest(mapInfo.getInstVarBySymbol("@parent_id"), windowMaker);
             if (mld == null)
                 return null;
-            mld.getToolbar = new IFunction<UIMapView, IEditingToolbarController>() {
+            mld.getToolbar = new IFunction<IMapToolContext, IEditingToolbarController>() {
                 @Override
-                public IEditingToolbarController apply(UIMapView uiMapView) {
-                    return new R2kAreaEditingToolbarController(uiMapView.tileSize, root, mapInfo);
+                public IEditingToolbarController apply(IMapToolContext uiMapView) {
+                    return new R2kAreaEditingToolbarController(uiMapView, root, mapInfo);
                 }
             };
             return mld;
