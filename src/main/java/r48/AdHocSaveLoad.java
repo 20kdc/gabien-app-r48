@@ -27,6 +27,14 @@ public class AdHocSaveLoad {
             throw new RuntimeException(e);
         }
     }
+    public static void saveLua(String fonts, RubyIO prepare) {
+        R48ObjectBackend rob = new R48ObjectBackend("", ".r48", true, true);
+        try {
+            rob.saveObjectToFile(fonts, prepare);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static RubyIO load(String fonts) {
         R48ObjectBackend rob = new R48ObjectBackend("", ".r48", false);
         return rob.loadObjectFromFile(fonts);

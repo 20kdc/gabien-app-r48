@@ -16,17 +16,27 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * NOTE! Additions to what this code writes need to be replicated in luahead or LS-mode needs to disable them
  * Created on 1/27/17.
  */
 public class R48ObjectBackend implements IObjectBackend {
     private final String prefix, postfix;
     // should be true unless otherwise needed
     public final boolean assumeDAG;
+    // should almost always be false - subset for luahead.lua simplicity of implementation
+    public final boolean lsMode;
 
     public R48ObjectBackend(String s, String dataExt, boolean aDAG) {
         prefix = s;
         postfix = dataExt;
         assumeDAG = aDAG;
+        lsMode = false;
+    }
+    public R48ObjectBackend(String s, String dataExt, boolean aDAG, boolean lsm) {
+        prefix = s;
+        postfix = dataExt;
+        assumeDAG = aDAG;
+        lsMode = lsm;
     }
 
     public static long load32(DataInputStream dis) throws IOException {
@@ -74,7 +84,20 @@ public class R48ObjectBackend implements IObjectBackend {
         return a | (dis.readUnsignedByte() << 8);
     }
 
-    public static void save32(DataOutputStream dis, long v) throws IOException {
+    // Lua Subset (For communication with luahead.lua)
+    public static void save32LSM(DataOutputStream dis, long v) throws IOException {
+        boolean neg = false;
+        if (v < 0)
+            neg = true;
+        if (neg) {
+            dis.write(-4);
+        } else {
+            dis.write(4);
+        }
+        save32LE(dis, v, 4);
+    }
+
+    public static void save32STM(DataOutputStream dis, long v) throws IOException {
         if (v == 0) {
             dis.write(0);
             return;
@@ -111,6 +134,14 @@ public class R48ObjectBackend implements IObjectBackend {
             dis.write(b);
         }
         save32LE(dis, v, b);
+    }
+
+    public void save32(DataOutputStream dis, long v) throws IOException {
+        if (lsMode) {
+            save32LSM(dis, v);
+        } else {
+            save32STM(dis, v);
+        }
     }
 
     private static void save32LE(DataOutputStream dis, long v, int bytes) throws IOException {
@@ -161,7 +192,7 @@ public class R48ObjectBackend implements IObjectBackend {
         dis.close();
     }
 
-    private static void saveSymbol(DataOutputStream dis, String sym, LinkedList<String> strCache) throws IOException {
+    private void saveSymbol(DataOutputStream dis, String sym, LinkedList<String> strCache) throws IOException {
         int symInd = strCache.indexOf(sym);
         if (symInd >= 0) {
             dis.write((int) ';');
@@ -175,7 +206,7 @@ public class R48ObjectBackend implements IObjectBackend {
         }
     }
 
-    private static void saveValue(DataOutputStream dis, RubyIO rio, LinkedList<RubyIO> objCache, LinkedList<String> strCache) throws IOException {
+    private void saveValue(DataOutputStream dis, RubyIO rio, LinkedList<RubyIO> objCache, LinkedList<String> strCache) throws IOException {
         // Deduplicatables
         int b = rio.type;
         int objIndex = objCache.indexOf(rio);
@@ -263,7 +294,7 @@ public class R48ObjectBackend implements IObjectBackend {
             objCache.add(rio);
     }
 
-    private static void saveHashCore(DataOutputStream dis, HashMap<RubyIO, RubyIO> iVars, LinkedList<RubyIO> objCache, LinkedList<String> strCache) throws IOException {
+    private void saveHashCore(DataOutputStream dis, HashMap<RubyIO, RubyIO> iVars, LinkedList<RubyIO> objCache, LinkedList<String> strCache) throws IOException {
         Set<Map.Entry<RubyIO, RubyIO>> se = iVars.entrySet();
         // damned if you do (IDE warning), damned if you don't (compiler warning).
         Map.Entry<RubyIO, RubyIO>[] me = se.toArray(new Map.Entry[0]);
@@ -274,7 +305,7 @@ public class R48ObjectBackend implements IObjectBackend {
         }
     }
 
-    private static void saveIVarsCore(DataOutputStream dis, RubyIO iVars, LinkedList<RubyIO> objCache, LinkedList<String> strCache) throws IOException {
+    private void saveIVarsCore(DataOutputStream dis, RubyIO iVars, LinkedList<RubyIO> objCache, LinkedList<String> strCache) throws IOException {
         if (iVars.iVarKeys == null) {
             save32(dis, 0);
             return;

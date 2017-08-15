@@ -124,8 +124,15 @@ public class FontSizes {
         prepare.symVal = "R48::FontConfig";
         for (FontSizeField fsf : getFields())
             prepare.addIVar("@" + fsf.name, new RubyIO().setFX(fsf.get()));
-        if (UILabel.fontOverride != null)
+
+        if (UILabel.fontOverride != null) {
+            String currentEnc = RubyIO.encoding;
+            RubyIO.encoding = "UTF-8";
+
             prepare.addIVar("@sysfont", new RubyIO().setString(UILabel.fontOverride));
+
+            RubyIO.encoding = currentEnc;
+        }
         AdHocSaveLoad.save("fonts", prepare);
     }
 
@@ -139,7 +146,12 @@ public class FontSizes {
             }
             RubyIO sys = dat.getInstVarBySymbol("@sysfont");
             if (sys != null) {
+                String currentEnc = RubyIO.encoding;
+                RubyIO.encoding = "UTF-8";
+
                 UILabel.fontOverride = sys.decString();
+
+                RubyIO.encoding = currentEnc;
             } else {
                 UILabel.fontOverride = null;
             }

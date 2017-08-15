@@ -30,7 +30,7 @@ import r48.ui.UINSVertLayout;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -241,7 +241,8 @@ public class AppMain {
                 windowMaker.accept(new UIAutoclosingPopupMenu(new String[] {
                         TXDB.get("Save Clipboard To 'clip.r48'"),
                         TXDB.get("Load Clipboard From 'clip.r48'"),
-                        TXDB.get("Inspect Clipboard")
+                        TXDB.get("Inspect Clipboard"),
+                        TXDB.get("Execute Lua from 'script.lua' onto clipboard")
                 }, new Runnable[] {
                         new Runnable() {
                             @Override
@@ -273,6 +274,35 @@ public class AppMain {
                                     launchDialog(TXDB.get("There is nothing in the clipboard."));
                                 } else {
                                     windowMaker.accept(new UITest(theClipboard));
+                                }
+                            }
+                        },
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                if (theClipboard == null) {
+                                    launchDialog(TXDB.get("There is nothing in the clipboard."));
+                                } else {
+                                    if (!LuaInterface.luaAvailable()) {
+                                        launchDialog(TXDB.get("Lua isn't installed, so can't use it."));
+                                    } else {
+                                        try {
+                                            BufferedReader br = new BufferedReader(new InputStreamReader(GaBIEn.getFile("script.lua"), "UTF-8"));
+                                            String t = "";
+                                            while (br.ready())
+                                                t += br.readLine() + "\r\n";
+                                            br.close();
+                                            RubyIO rio = LuaInterface.runLuaCall(theClipboard, t);
+                                            if (rio == null) {
+                                                launchDialog(TXDB.get("Lua error, or took > 10 seconds. Running R48 in a console will allow debugging."));
+                                            } else {
+                                                theClipboard = rio;
+                                                launchDialog(TXDB.get("Successful - the clipboard was replaced."));
+                                            }
+                                        } catch (Exception e) {
+                                            launchDialog(TXDB.get("An exception occurred? (R48-core files are stored in R48's current directory, not the root path.)"));
+                                        }
+                                    }
                                 }
                             }
                         }
