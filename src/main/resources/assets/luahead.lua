@@ -79,6 +79,33 @@ local function writeVI(file, v)
         writeU32LE(file, v)
     end
 end
+
+--
+
+
+local function extractU16LE(data, i)
+    local a, b = data:byte(i), data:byte(i + 1)
+    return a + (b * 256)
+end
+local function extractU32LE(data, i)
+    return extractU16LE(data, i) + (extractU16LE(data, i + 2) * 65536)
+end
+
+local function injectU8(data, i, v)
+    v = v % 0x100
+    return data:sub(1, i - 1) .. string.char(v) .. data:sub(i + 1)
+end
+local function injectU16LE(data, i, v)
+    v = v % 0x10000
+    data = injectU8(data, i, v % 256)
+    return injectU8(data, i + 1, math.floor(v / 256))
+end
+local function injectU32LE(data, i, v)
+    v = v % 0x100000000
+    data = injectU16LE(data, i, v % 0x10000)
+    return injectU16LE(data, i + 1, math.floor(v / 0x10000))
+end
+
 -- Used for hash reading, should be reliable in most cases
 function rubyObjEquals(a, b)
     for k, v in pairs(a) do
@@ -96,6 +123,35 @@ function rubyHashGet(hashRIO, key)
         end
     end
 end
+
+function rubyTable(data)
+    local width = extractU16LE(data, 5)
+    local height = extractU16LE(data, 9)
+    local planeCount = extractU16LE(data, 13)
+    local this = {
+        width = width,
+        height = height,
+        planeCount = planeCount,
+        data = data,
+        outOfBounds = function (x, y)
+            if x < 0 then return false end
+            if y < 0 then return false end
+            if x >= width then return false end
+            if y >= height then return false end
+        end
+    }
+    -- Unlike the R48 functions, these are unsigned.
+    this.getTiletype = function (x, y, plane)
+        local p = (21 + ((x + (y * width)) * 2)) + (width * height * 2 * plane)
+        return extractU16LE(this.data, p)
+    end
+    this.setTiletype = function (x, y, plane, v)
+        local p = (21 + ((x + (y * width)) * 2)) + (width * height * 2 * plane)
+        this.data = injectU16LE(this.data, p, v)
+    end
+    return this
+end
+
 local function loadRubyValue(file, symbolTable, gensym)
     local object = {}
     object.type = string.char(readU8(file))
@@ -203,7 +259,7 @@ local function saveRubyValue(file, object)
         end
         writeVI(file, x)
         for i = 1, x do
-            saveRubyValue(file, object.array[x - 1])
+            saveRubyValue(file, object.array[i - 1])
         end
     elseif object.type == "i" then
         writeVI(file, object.int)
