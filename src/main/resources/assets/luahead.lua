@@ -30,6 +30,7 @@ local function readU32LE(file)
     return l + (b * 65536)
 end
 local function readBlock(file, l)
+    if l == 0 then return "" end
     local t = file:read(l)
     if t:len() ~= l then error("Out of file") end
     return t
@@ -177,7 +178,8 @@ local function loadRubyValue(file, symbolTable, gensym)
     elseif object.type == "[" then
         -- NOTE: The array is indexed from 0 because otherwise some stuff doesn't make sense.
         object.array = {}
-        for i = 0, readVI(file) - 1 do
+        local ents = readVI(file)
+        for i = 0, ents - 1 do
             object.array[i] = loadRubyValue(file, symbolTable, gensym)
         end
     elseif object.type == ":" then
@@ -192,6 +194,7 @@ local function loadRubyValue(file, symbolTable, gensym)
         object.int = readVI(file)
     elseif (object.type == "\"") or (object.type == "f") then
         local tl = readVI(file)
+        print(object.type .. tl)
         local text = readBlock(file, tl)
         object.text = text
     elseif (object.type == "u") then
