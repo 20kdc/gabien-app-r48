@@ -49,6 +49,7 @@ public class CMDB {
                 knownCommands.put(objId, rc);
                 knownCommandOrder.add(objId);
                 workingCmdId = objId;
+                nextTag = new RPGCommand.SpecialTag();
             }
 
             @Override
