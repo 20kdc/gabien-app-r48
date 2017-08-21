@@ -78,13 +78,13 @@ public class TroopGenposFrame implements IGenposFrame {
     @Override
     public void addCell(int i2) {
         RubyIO rio = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(i2));
-        ArrayUtils.insertRioElement(troop.getInstVarBySymbol("@members"), rio, i2);
+        ArrayUtils.insertRioElement(troop.getInstVarBySymbol("@members"), rio, i2 + 1);
         changed.run();
     }
 
     @Override
     public void deleteCell(int i2) {
-        ArrayUtils.removeRioElement(troop.getInstVarBySymbol("@members"), i2);
+        ArrayUtils.removeRioElement(troop.getInstVarBySymbol("@members"), i2 + 1);
         changed.run();
     }
 
