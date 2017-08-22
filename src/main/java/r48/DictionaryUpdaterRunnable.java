@@ -26,15 +26,17 @@ public class DictionaryUpdaterRunnable implements Runnable {
     // Responsible for removing any initial wrapping
     public final IFunction<RubyIO, RubyIO> fieldA;
     public final boolean hash;
+    public final int defaultVal;
     private RubyIO lastTarget = null;
     private IConsumer<SchemaPath> kickMe;
 
-    public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<RubyIO, RubyIO> iFunction, boolean b, String ivar) {
+    public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<RubyIO, RubyIO> iFunction, boolean b, String ivar, int def) {
         dict = targetDictionary;
         targ = target;
         fieldA = iFunction;
         hash = b;
         iVar = ivar;
+        defaultVal = def;
         // Cause a proxy to be generated. (NOTE: This *must* be referenced via nocache proxy!)
         AppMain.schemas.ensureSDBProxy(targetDictionary);
         kickMe = new IConsumer<SchemaPath>() {
@@ -87,7 +89,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
     private void finalizeVals(HashMap<Integer, String> finalMap) {
         // Default value of 1 because r2k. if this is ever in conflict then start adding a default parameter value for dictionaries.
         // Do proper dictionary unification at the same time.
-        SchemaElement ise = new EnumSchemaElement(finalMap, 1, TXDB.get("ID."));
+        SchemaElement ise = new EnumSchemaElement(finalMap, defaultVal, TXDB.get("ID."));
         AppMain.schemas.setSDBEntry(dict, ise);
     }
 

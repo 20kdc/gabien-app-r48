@@ -469,23 +469,23 @@ public class SDB {
                 } else if (c == 'i') {
                     readFile(args[0]);
                 } else if (c == 'D') {
-                    String root = PathSyntax.breakToken(args[1]);
-                    final String remainder = args[1].substring(root.length());
+                    String root = PathSyntax.breakToken(args[2]);
+                    final String remainder = args[2].substring(root.length());
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root, new IFunction<RubyIO, RubyIO>() {
                         @Override
                         public RubyIO apply(RubyIO rubyIO) {
                             return PathSyntax.parse(rubyIO, remainder);
                         }
-                    }, args[2].equals("1"), args[3]));
+                    }, args[3].equals("1"), args[4], Integer.parseInt(args[1])));
                 } else if (c == 'd') {
-                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[1], new IFunction<RubyIO, RubyIO>() {
+                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[2], new IFunction<RubyIO, RubyIO>() {
                         @Override
                         public RubyIO apply(RubyIO rubyIO) {
-                            for (int i = 2; i < args.length; i++)
+                            for (int i = 3; i < args.length; i++)
                                 rubyIO = rubyIO.getInstVarBySymbol(args[i]);
                             return rubyIO;
                         }
-                    }, false, null));
+                    }, false, null, Integer.parseInt(args[1])));
                 } else if (c == 'A') {
                     // This is needed so the engine actually understands which autotiles map to what
                     int p = 0;
