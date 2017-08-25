@@ -7,8 +7,8 @@ A R2K/AutoTiles.txt R2KXPCOM/AutoTileRules.txt R2K/WaterATs.txt R2K/WaterATRules
 D internal_mapDictionary 1 RPG_RT.lmt@map_infos 1 @name
 D internal_eventDictionary 1 __MAP__@events 1 @name
 
-d internal_variableDictionary 1 RPG_RT.ldb @variables
-d internal_switchDictionary 1 RPG_RT.ldb @switches
+D internal_variableDictionary 1 RPG_RT.ldb@variables 1 $
+D internal_switchDictionary 1 RPG_RT.ldb@switches 1 $
 
 D internal_tilesetDictionary 1 RPG_RT.ldb@tilesets 1 @name
 D internal_terrainDictionary 1 RPG_RT.ldb@terrains 1 @name

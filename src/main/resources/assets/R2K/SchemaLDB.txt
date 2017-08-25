@@ -478,12 +478,13 @@ e rpg_animationtiming_screenshake 0 noShake 1 target 2 screen
 
 e rpg_animation_scope 0 target 1 screen
 e rpg_animation_position 0 up 1 middle 2 down
+e rpg_animation_celtype -1 battle 1 battle2
 
 : RPG::Animation
 C name Class.RPG::Animation @name | #A
 @name string
 @animation_name string
-@unknown_03 int= -1
+@battle2_2k3 rpg_animation_celtype
 @scope rpg_animation_scope
 @position rpg_animation_position
 @frames subwindow arrayIx1 subwindow RPG::Animation::Frame
@@ -748,8 +749,8 @@ e rpg_bas_speed 0 slow 8 normal 14 fast
 @tilesets subwindow hash int+1 subwindow RPG::Tileset
 @terms subwindow rpg_terms
 @system subwindow RPG::System
-@switches subwindow arrayIx1 string
-@variables subwindow arrayIx1 string
+@switches subwindow hash int+1 string
+@variables subwindow hash int+1 string
 @common_events subwindow hash int+1 subwindow RPG::CommonEvent
  Supposedly an integer. Supposedly.
  Currently representing as an array of bytes.

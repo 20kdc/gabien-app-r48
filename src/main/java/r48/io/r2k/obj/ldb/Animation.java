@@ -36,7 +36,7 @@ public class Animation extends R2kObject {
         return new Index[] {
                 new Index(0x01, name, "@name"),
                 new Index(0x02, animationName, "@animation_name"),
-                new Index(0x03, unknown3, "@unknown_03"),
+                new Index(0x03, unknown3, "@battle2_2k3"),
                 new Index(0x06, timings, "@timings"),
                 new Index(0x09, scope, "@scope"),
                 new Index(0x0A, position, "@position"),

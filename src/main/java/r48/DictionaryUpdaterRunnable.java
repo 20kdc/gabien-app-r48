@@ -22,15 +22,16 @@ import java.util.Map;
 public class DictionaryUpdaterRunnable implements Runnable {
     // act soon after init.
     private boolean actNow = true;
-    public final String dict, targ, iVar;
-    // Responsible for removing any initial wrapping
-    public final IFunction<RubyIO, RubyIO> fieldA;
+    public final String dict, targ;
+    // Responsible for removing any wrapping
+    // fieldA gets the root's wrapping, iVar gets the inner wrapping
+    public final IFunction<RubyIO, RubyIO> fieldA, iVar;
     public final boolean hash;
     public final int defaultVal;
     private RubyIO lastTarget = null;
     private IConsumer<SchemaPath> kickMe;
 
-    public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<RubyIO, RubyIO> iFunction, boolean b, String ivar, int def) {
+    public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<RubyIO, RubyIO> iFunction, boolean b, IFunction<RubyIO, RubyIO> ivar, int def) {
         dict = targetDictionary;
         targ = target;
         fieldA = iFunction;
@@ -98,7 +99,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
             if (iVar == null) {
                 finalMap.put(fixnumVal, rio.decString());
             } else {
-                finalMap.put(fixnumVal, rio.getInstVarBySymbol(iVar).decString());
+                finalMap.put(fixnumVal, iVar.apply(rio).decString());
             }
         }
     }

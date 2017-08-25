@@ -27,7 +27,7 @@ public class LdbSystem extends R2kObject {
     public StringR2kStruct systemName = new StringR2kStruct();
     public StringR2kStruct system2Name = new StringR2kStruct();
 
-    public ArraySizeR2kInterpretable<ShortR2kStruct> partySize = new ArraySizeR2kInterpretable<ShortR2kStruct>();
+    public ArraySizeR2kInterpretable<ShortR2kStruct> partySize = new ArraySizeR2kInterpretable<ShortR2kStruct>(true);
     public ArrayR2kStruct<ShortR2kStruct> party = new ArrayR2kStruct<ShortR2kStruct>(partySize, new ISupplier<ShortR2kStruct>() {
         @Override
         public ShortR2kStruct get() {
@@ -36,7 +36,7 @@ public class LdbSystem extends R2kObject {
     }, true);
 
     // The menuCommandsSize -> menuCommands link is broken here, so it's fixed in the constructor.
-    public ArraySizeR2kInterpretable<ShortR2kStruct> menuCommandsSize = new ArraySizeR2kInterpretable<ShortR2kStruct>();
+    public ArraySizeR2kInterpretable<ShortR2kStruct> menuCommandsSize = new ArraySizeR2kInterpretable<ShortR2kStruct>(true);
     public OptionalR2kStruct<ArrayR2kStruct<ShortR2kStruct>> menuCommands = new OptionalR2kStruct<ArrayR2kStruct<ShortR2kStruct>>(new ISupplier<ArrayR2kStruct<ShortR2kStruct>>() {
         @Override
         public ArrayR2kStruct<ShortR2kStruct> get() {

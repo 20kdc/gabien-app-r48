@@ -78,13 +78,13 @@ public class Database extends R2kObject {
     });
     public Terms terms = new Terms();
     public LdbSystem system = new LdbSystem();
-    public SparseArrayAR2kStruct<SVStore> switches = new SparseArrayAR2kStruct<SVStore>(new ISupplier<SVStore>() {
+    public SparseArrayHR2kStruct<SVStore> switches = new SparseArrayHR2kStruct<SVStore>(new ISupplier<SVStore>() {
         @Override
         public SVStore get() {
             return new SVStore();
         }
     });
-    public SparseArrayAR2kStruct<SVStore> variables = new SparseArrayAR2kStruct<SVStore>(new ISupplier<SVStore>() {
+    public SparseArrayHR2kStruct<SVStore> variables = new SparseArrayHR2kStruct<SVStore>(new ISupplier<SVStore>() {
         @Override
         public SVStore get() {
             return new SVStore();

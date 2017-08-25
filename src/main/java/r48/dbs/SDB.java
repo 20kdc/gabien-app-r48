@@ -476,7 +476,12 @@ public class SDB {
                         public RubyIO apply(RubyIO rubyIO) {
                             return PathSyntax.parse(rubyIO, remainder);
                         }
-                    }, args[3].equals("1"), args[4], Integer.parseInt(args[1])));
+                    }, args[3].equals("1"), new IFunction<RubyIO, RubyIO>() {
+                        @Override
+                        public RubyIO apply(RubyIO rubyIO) {
+                            return PathSyntax.parse(rubyIO, args[4]);
+                        }
+                    }, Integer.parseInt(args[1])));
                 } else if (c == 'd') {
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[2], new IFunction<RubyIO, RubyIO>() {
                         @Override
