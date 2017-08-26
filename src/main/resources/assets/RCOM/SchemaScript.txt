@@ -71,9 +71,9 @@ C name transfer_player_paramassist ]0 ]1 ]2 ]3 | Transfer player{A=1= by vars @[
 
 .transfer_player_novars
 ]0 targetVars int_boolean
-]1 mapVar map_id
-]2 xVar int
-]3 yVar int
+]1 map map_id
+]2 x int
+]3 y int
 ]4 playerDir direction_disable
 ]5 fadeType transfer_player_fadetype
 +mapPositionHelper ]1 ]2 ]3
