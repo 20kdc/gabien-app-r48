@@ -3,12 +3,12 @@
  * No warranty is provided, implied or otherwise.
 
 .rpg_terms
-]0 annXEncounter string
-]1 preemptiveAttack string
-]2 ranAwaySafely string
-]3 failedToEscape string
-]4 wonACombat string
-]5 partyDead string= Your
+]0 annXEncounter string_= _appeared...!
+]1 preemptiveAttack string_= A_preemptive_attack!
+]2 ranAwaySafely string_= Your_escape_succeeded.
+]3 failedToEscape string_= Your_escape_failed.
+]4 wonACombat string_= You_won!
+]5 partyDead string_= You_were_defeated.
 ]6 experience string= experience
 ]7 youFound string_= You_found
 ]8 xMoney string= money!

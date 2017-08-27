@@ -63,6 +63,7 @@ C name Class.RPG::Actor @name | #A
 @dual_wield boolean
 @lock_equipment boolean
 @equipment rpg_actor_equipment_block
+ This will default to 1 (IMPORTANT: This value being wrong causes crashes)
 @no_weapon_attack_anim animation_id
 @class_2k3 class_or_none_id
 @learn_skills subwindow hash int+0 RPG::Learning

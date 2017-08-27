@@ -53,6 +53,20 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     // 3. Setup Terrain
                     sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Terrain"), new RubyIO().setFX(1));
                     target.getInstVarBySymbol("@terrains").hashVal.put(new RubyIO().setFX(1), sub);
+                    // 4. Battle System initialization
+                    sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Animation"), new RubyIO().setFX(1));
+                    sub.getInstVarBySymbol("@name").setString("Default Fallback Animation");
+                    target.getInstVarBySymbol("@animations").hashVal.put(new RubyIO().setFX(1), sub);
+
+                    sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::State"), new RubyIO().setFX(1));
+                    // These are the minimum settings for death to work correctly.
+                    sub.getInstVarBySymbol("@name").setString("Death");
+                    sub.getInstVarBySymbol("@restrict").fixnumVal = 1;
+                    target.getInstVarBySymbol("@states").hashVal.put(new RubyIO().setFX(1), sub);
+
+                    sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::BattlerAnimationSet"), new RubyIO().setFX(1));
+                    sub.getInstVarBySymbol("@name").setString("Default Fallback AnimSet");
+                    target.getInstVarBySymbol("@battle_anim_sets_2k3").hashVal.put(new RubyIO().setFX(1), sub);
                     break;
                 case 1:
                     // 1. Fix root
