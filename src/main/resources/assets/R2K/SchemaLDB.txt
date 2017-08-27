@@ -400,8 +400,8 @@ e rpg_terrain_bushdepth 0 normal 1 third 2 half 3 full
  ---
 
 e rpg_state_restriction 0 noRestrict 1 cannotAct 2 onlyAttackEnemy 3 onlyAttackAlly
-e rpg_state_affecttype 0 halfParams 1 doubleParams 2 leaveParamsAlone
-e rpg_state_changetype 0 lose 1 gain 2 nothing
+e rpg_state_affecttype 2 leaveParamsAlone 0 halfParams 1 doubleParams
+e rpg_state_changetype 2 nothing 0 lose 1 gain
 : RPG::State
 C name Class.RPG::State @name | #A
 @name string
