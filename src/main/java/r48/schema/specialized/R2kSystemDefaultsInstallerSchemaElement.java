@@ -61,7 +61,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::State"), new RubyIO().setFX(1));
                     // These are the minimum settings for death to work correctly.
                     sub.getInstVarBySymbol("@name").setString("Death");
-                    sub.getInstVarBySymbol("@restrict").fixnumVal = 1;
+                    sub.getInstVarBySymbol("@restriction").fixnumVal = 1;
                     target.getInstVarBySymbol("@states").hashVal.put(new RubyIO().setFX(1), sub);
 
                     sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::BattlerAnimationSet"), new RubyIO().setFX(1));
