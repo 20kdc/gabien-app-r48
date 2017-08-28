@@ -4,10 +4,7 @@
  */
 package r48.schema.specialized;
 
-import gabien.ui.ISupplier;
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -51,7 +48,18 @@ public class GenposSchemaElement extends SchemaElement {
                             path.changeOccurred(false);
                         }
                     };
-                    final RGSSGenposFrame frame = new RGSSGenposFrame(new SpriteCache(target, a1, a2, b1, b2, 192, "Animations/"), path, genposType.equals("vxaAnimation"), updater);
+                    final SpriteCache sc = new SpriteCache(target, a1, a2, b1, b2, new IFunction<RubyIO, Integer>() {
+                        @Override
+                        public Integer apply(RubyIO rubyIO) {
+                            return 192;
+                        }
+                    }, new IFunction<RubyIO, String>() {
+                        @Override
+                        public String apply(RubyIO rubyIO) {
+                            return "Animations/";
+                        }
+                    });
+                    final RGSSGenposFrame frame = new RGSSGenposFrame(sc, path, genposType.equals("vxaAnimation"), updater);
                     final RMGenposAnim anim = new RMGenposAnim(target, frame, updater, false);
                     frame.frameSource = new ISupplier<RubyIO>() {
                         @Override
@@ -65,6 +73,7 @@ public class GenposSchemaElement extends SchemaElement {
                         @Override
                         public void run() {
                             rmarp.frameChanged();
+                            sc.prepareFramesetCache();
                         }
                     }, boot, path);
                 } else if (genposType.equals("r2kAnimation")) {
@@ -74,7 +83,22 @@ public class GenposSchemaElement extends SchemaElement {
                             path.changeOccurred(false);
                         }
                     };
-                    final R2kGenposFrame frame = new R2kGenposFrame(new SpriteCache(target, a1, null, null, null, 96, "Battle/"), path, updater);
+                    final SpriteCache sc = new SpriteCache(target, a1, null, null, null, new IFunction<RubyIO, Integer>() {
+                        @Override
+                        public Integer apply(RubyIO rubyIO) {
+                            if (rubyIO.getInstVarBySymbol("@battle2_2k3").fixnumVal == 1)
+                                return 128;
+                            return 96;
+                        }
+                    }, new IFunction<RubyIO, String>() {
+                        @Override
+                        public String apply(RubyIO rubyIO) {
+                            if (rubyIO.getInstVarBySymbol("@battle2_2k3").fixnumVal == 1)
+                                return "Battle2/";
+                            return "Battle/";
+                        }
+                    });
+                    final R2kGenposFrame frame = new R2kGenposFrame(sc, path, updater);
                     final RMGenposAnim anim = new RMGenposAnim(target, frame, updater, true);
                     frame.frameSource = new ISupplier<RubyIO>() {
                         @Override
@@ -88,6 +112,7 @@ public class GenposSchemaElement extends SchemaElement {
                         @Override
                         public void run() {
                             rmarp.frameChanged();
+                            sc.prepareFramesetCache();
                         }
                     }, boot, path);
                 } else if (genposType.equals("r2kTroop")) {

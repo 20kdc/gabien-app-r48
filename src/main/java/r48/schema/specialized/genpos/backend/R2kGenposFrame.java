@@ -97,12 +97,12 @@ public class R2kGenposFrame implements IGenposFrame {
                     return new ISpritesheetProvider() {
                         @Override
                         public int itemWidth() {
-                            return 96;
+                            return cache.spriteSize;
                         }
 
                         @Override
                         public int itemHeight() {
-                            return 96;
+                            return cache.spriteSize;
                         }
 
                         @Override
@@ -124,8 +124,8 @@ public class R2kGenposFrame implements IGenposFrame {
                         public void drawItem(int t, int x, int y, IGrInDriver igd) {
                             int tx = t % 5;
                             int ty = t / 5;
-                            igd.clearRect(255, 0, 255, x, y, 96, 96);
-                            igd.blitImage(tx * 96, ty * 96, 96, 96, x, y, cache.getFramesetCache(false, false, 255));
+                            igd.clearRect(255, 0, 255, x, y, cache.spriteSize, cache.spriteSize);
+                            igd.blitImage(tx * cache.spriteSize, ty * cache.spriteSize, cache.spriteSize, cache.spriteSize, x, y, cache.getFramesetCache(false, false, 255));
                         }
                     };
                 }

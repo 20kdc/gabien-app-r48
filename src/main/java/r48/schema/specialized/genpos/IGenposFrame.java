@@ -42,7 +42,4 @@ public interface IGenposFrame {
     void drawCell(int i, int opx, int opy, IGrInDriver igd);
 
     IImage getBackground();
-
-    // Use FramePanelController's frameChanged()
-    // void setFrameChangeHandler(Runnable r);
 }
