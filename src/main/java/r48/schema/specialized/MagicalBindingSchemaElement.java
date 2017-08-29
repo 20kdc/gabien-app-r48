@@ -34,7 +34,7 @@ public class MagicalBindingSchemaElement extends SchemaElement {
         // Use subwatchers to create the backwards binding flow
         SchemaPath sp = createPath(trueTarget, truePath);
         // Bootstrap.
-        return sp.editor.buildHoldingEditor(sp.targetElement, new VirtualizedSchemaHost(truePath, launcher), sp);
+        return sp.editor.buildHoldingEditor(sp.targetElement, new VirtualizedSchemaHost(truePath, sp, launcher), sp);
     }
 
     private SchemaPath createPath(final RubyIO trueTarget, final SchemaPath truePath) {
@@ -64,25 +64,42 @@ public class MagicalBindingSchemaElement extends SchemaElement {
 
     // This is a fake schema host, sandboxing the "inner" root to avoid screwing up things royally
     private class VirtualizedSchemaHost implements ISchemaHost {
-        public SchemaPath pathRoot, lastPath;
+        public SchemaPath pathRootReal, lastPathVirt, pathRootVirt, lastPathReal;
         public ISchemaHost trueHost;
 
-        public VirtualizedSchemaHost(SchemaPath path, ISchemaHost parent) {
-            pathRoot = path.otherIndex("").findBack();
-            lastPath = pathRoot;
+        public VirtualizedSchemaHost(SchemaPath path, SchemaPath virtR, ISchemaHost parent) {
+            pathRootReal = path.findBack();
+            lastPathReal = pathRootReal;
+            lastPathVirt = virtR;
+            pathRootVirt = virtR;
             trueHost = parent;
         }
 
         @Override
         public void switchObject(final SchemaPath nextObject) {
             final Runnable r = new Runnable() {
+                boolean ignoreThis = false;
                 @Override
                 public void run() {
+                    if (ignoreThis) {
+                        ignoreThis = false;
+                        return;
+                    }
+                    ignoreThis = true;
                     UIElement uie = nextObject.editor.buildHoldingEditor(nextObject.targetElement, VirtualizedSchemaHost.this, nextObject);
                     SchemaElement se = new TempDialogSchemaChoice(uie, this, nextObject);
-                    if (nextObject.findBack() != lastPath)
-                        lastPath = pathRoot;
-                    trueHost.switchObject(lastPath = lastPath.newWindow(se, nextObject.targetElement));
+                    if (nextObject.findBack() != lastPathVirt)
+                        lastPathReal = pathRootReal;
+                    if (nextObject == pathRootVirt) {
+                        // We're leaving
+                        trueHost.switchObject(pathRootReal);
+                        lastPathReal = pathRootReal;
+                        lastPathVirt = pathRootVirt;
+                        return;
+                    }
+                    lastPathVirt = nextObject;
+                    // Using an ordinary switch-object loses the control this instance has.
+                    trueHost.switchObject(lastPathReal = lastPathReal.newWindow(se, nextObject.targetElement));
                 }
             };
             r.run();
