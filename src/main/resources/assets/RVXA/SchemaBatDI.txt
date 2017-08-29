@@ -67,5 +67,5 @@ C defaultCB
 @rating int
 @skill_id skill_id
 @condition_type condition_type_code
-+hwnd @condition_type RVXA/BatActions.txt
++hwnd @condition_type RVXA/BatActions
 +flushCommandBuffer @condition_type condition_type_code

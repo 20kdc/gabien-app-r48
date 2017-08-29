@@ -48,13 +48,16 @@ i HelpImg/1.diagram.png
 > 0 Back to the Index.
 
 2: MapInfos
+i HelpImg/2.hierarchy.png
 . This is the grand list of maps for editing.
 . Keep in mind that some "maps" may not actually be maps,
 . but may be dummy entries for organization.
 . These maps are structured in a hierarchy.
 . To select a map, click on it's name.
 . This will attempt to open the map (which may not succeed, leaving you with a blank map and a created object, for now)
-. When a map is selected, buttons will appear to the right for movement.
+. When a map is selected, buttons will appear at the right.
+. (One for editing information, and one for moving the map up a level in the hierarchy.)
+. To parent a map under another map, simply drag and drop it.
 . Maps can be created and deleted with this tool.
 . Be careful.
 > 0 Back to the Index.
@@ -297,11 +300,9 @@ i HelpImg/9.usage.png
 . If the @character_name is not blank, character event graphics are used.
 .
 p 4
-I HelpImg/19.sheet.png 0 0 96 64
+I R2K/char.png 0 0 288 256
 p 4
-. Above: a somewhat atypical example, including a non-standard spritesheet size.
-. The two characters on the left are close to what you will normally see.
-. The rest are designed more around special use of MoveRoutes.
+. Above is a simple example, though the characters are the same character copy & pasted - an artist I am not.
 .
 . Character event graphics use a spritesheet of 288x256, divided into 8 characters.
 . (EasyRPG Player-only: If prefixed with a '$', the spritesheet can be any size.)
@@ -312,11 +313,13 @@ p 4
 .
 . (Hopefully the above text shows up correctly.)
 . The characters are in turn divided into 3 columns, 4 rows.
-. This makes for a total of 12 columns, 16 rows.
+. This makes for a total of 12 columns, 16 rows - each individual sprite being 24x32.
 .
 . In any case, each character has 3 patterns, 0, 1 and 2, each being a column.
-. 1 is considered the "standing" pose of a character, and you should typically set the pattern to 1 when using open-source replacement RTPs.
-. (I do not believe using non-open-source non-replacement RTPs with R48 is a good idea.)
+. 1 is considered the "standing" pose of a character, and you should typically set the pattern to 1.
+. Patterns 0 and 2 are the right and left (relative to the character, i.e. the 'up' sprites) leg of the character going forward, respectively.
+. Note that these pattern values, given RPG Maker 2000/2003's design, are standard when using open-source replacement RTPs.
+. (I do not believe using non-open-source non-replacement RTPs - that is, those owned by KADOKAWA, Enterbrain, Degica, or similar - with R48 is a good idea, nor do I endorse such activity.)
 . Note that the pattern will continually "walk" if @anim_type is set to "always".
 .
 . Each character also has 4 directions, this being the row.
@@ -326,6 +329,7 @@ p 4
 . If the @anim_type is "spin", the direction will always change. All the time. In a continuous loop.
 .
 > 11 Index Page Of Event Editing Details
+> 21 R2k Backend Quickstart
 
 20: So You Want To Use KII
 . I'll just cut to the chase. There are 3 forms of K.I.I.
@@ -377,15 +381,19 @@ p 4
 . General Structure:
 . RPG_RT.ldb and RPG_RT.lmt: Data files used to run the game.
 . RPG_RT.ini: Optional and not handled by R48. Starts with the line "[RPG_RT]", and ought to contain "GameTitle=your title here".
-. BattleWeapon: Weapons used for attack animations.
-. Battle: Enemy images. 480x480, 96x96 per enemy.
-. CharSet: Event and vehicle images. See Index/Map/MapTools/EventList/R2k Events Overview/Graphics.
-. ChipSet: Tilesets. The best way to understand this is probably to look at the template and experiment.
-. (ChipSet files are always 480x256.)
+. Backdrop: Battle background images. 320x240. Non-transparent?
+. Battle: Animation images. 480x480, 96x96 per cel.
+. Battle2: RPG Maker 2003 larger animation images. 640x640, 128x128 per cel.
+. BattleCharSet: Player party images. (This is probably 2003-only.) 144x384, 48x48 per image, one character per row.
+. BattleWeapon: Weapons used for attack animations. (This is probably 2003-only.)
+> 19 CharSet: Event, player and vehicle images. 288x256.
+. ChipSet: Tilesets. The best way to understand this is probably to look at the template and experiment. 480x256.
 . FaceSet: Faces. 192x192 total, 48x48 for each face.
+. Frame: Don't use this, really. Just use a Picture. 320x240.
 . GameOver: 320x240 images for Game Over.
+. Monster: Enemy images. Can be any size.
 . Music: Music, in various formats.
-. Panorama: For the "parallax" fields. Note that the editor's ability to view parallax is incomplete.
+. Panorama: For the "parallax" fields. Non-transparent? (Accurate parallax emulation in an editor is impossible due to it being gameplay-dependant)
 . Picture: Arbitrary images to be shown on screen using specific commands.
 . Sound: Sound effects for various things.
 > 22 System: Alters the general appearance of system frames and text. 160x80.

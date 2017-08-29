@@ -19,14 +19,19 @@ import r48.map.IMapViewCallbacks;
 public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
     private final IImage im;
     private boolean loopX, loopY;
-    private int autoLoopX, autoLoopY;
+    private int autoLoopX, autoLoopY, mapTilesW, mapTilesH, scrW, scrH, panoScale;
 
-    public PanoramaMapViewDrawLayer(IImage pano, boolean lx, boolean ly, int alx, int aly) {
+    public PanoramaMapViewDrawLayer(IImage pano, boolean lx, boolean ly, int alx, int aly, int mtx, int mty, int scw, int sch, int pScale) {
         im = pano;
         loopX = lx;
         loopY = ly;
         autoLoopX = alx;
         autoLoopY = aly;
+        mapTilesW = mtx;
+        mapTilesH = mty;
+        scrW = scw;
+        scrH = sch;
+        panoScale = pScale;
     }
 
     @Override
@@ -37,6 +42,8 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
     public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
         // Panorama Enable
         if (im != null) {
+            int effectiveImWidth = im.getWidth() * panoScale;
+            int effectiveImHeight = im.getHeight() * panoScale;
             // Need to tile the area with the image.
             // I give up, this is what I've got now.
             // It works better this way than the other way under some cases.
@@ -50,15 +57,55 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
             //  emulation needs to get the difference between R48's camera and an idealized 20x15 camera @ the top-left.
             // For animated parallax, it takes 40 seconds for a value of 1 to travel 160 pixels (tested on RPG_RT)
             // This boils down to precisely 4 pixels per second per speed value.
-            int centreX = eTileSize * 10;
-            int centreY = (eTileSize * 15) / 2;
+            int centreX = scrW / 2;
+            int centreY = scrH / 2;
             int cxc = camX + (igd.getWidth() / 2);
             int cyc = camY + (igd.getHeight() / 2);
 
-            if (loopX)
+            // Yume Nikki's Incredibly Long Climb Up A Very Boring Staircase (map ID 64, just above BLOCK 5),
+            //  as a 'true' case, and the Nexus, as a 'false' case
+            // At this point I don't know QUITE how the maths are working in all the cases they do.
+            // In practice that means I probably found the right formula and thus I don't need special cases
+            // As a good test for *looping*, unsure, but 110 of the 85 additionals...
+            if (loopX) {
                 eCamX -= ((cxc - centreX) / 2) + ((int) (autoLoopX * 4 * GaBIEn.getTime()));
-            if (loopY)
+            } else {
+                if (scrW != -1) {
+                    // Bind to the centre of the map, get the 'extra'
+                    int mapW = eTileSize * mapTilesW;
+                    int mapM = mapW - scrW;
+                    int mapCM = cxc - (scrW / 2);
+                    int exT = effectiveImWidth - scrW;
+                    eCamX = -(igd.getWidth() / 2);
+                    eCamX += effectiveImWidth / 2;
+                    if (mapM > 0) {
+                        long extra = exT;
+                        // arcane maths
+                        extra *= mapCM;
+                        extra /= mapM;
+                        eCamX += extra - (exT / 2);
+                    }
+                }
+            }
+            if (loopY) {
                 eCamY -= ((cyc - centreY) / 2) + ((int) (autoLoopY * 4 * GaBIEn.getTime()));
+            } else {
+                if (scrH != -1) {
+                    int mapH = eTileSize * mapTilesH;
+                    int mapM = mapH - scrH;
+                    int mapCM = cyc - (scrH / 2);
+                    int exT = effectiveImHeight - scrH;
+                    eCamY = -(igd.getHeight() / 2);
+                    eCamY += effectiveImHeight / 2;
+                    if (mapM > 0) {
+                        long extra = exT;
+                        // arcane maths
+                        extra *= mapCM;
+                        extra /= mapM;
+                        eCamY += extra - (exT / 2);
+                    }
+                }
+            }
 
             int camOTX = UIElement.sensibleCellDiv(eCamX, im.getWidth());
             int camOTY = UIElement.sensibleCellDiv(eCamY, im.getHeight());
@@ -77,7 +124,7 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
 
             for (int i = camOTX; i <= camOTeX; i++)
                 for (int j = camOTY; j <= camOTeY; j++)
-                    igd.blitImage(0, 0, im.getWidth(), im.getHeight(), (i * im.getWidth()) - eCamX, (j * im.getHeight()) - eCamY, im);
+                    igd.blitScaledImage(0, 0, im.getWidth(), im.getHeight(), (i * effectiveImWidth) - eCamX, (j * effectiveImHeight) - eCamY, effectiveImWidth, effectiveImHeight, im);
         }
     }
 }

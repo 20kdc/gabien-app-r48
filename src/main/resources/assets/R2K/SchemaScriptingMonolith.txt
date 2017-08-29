@@ -394,7 +394,7 @@ e teleport_event_dir 0 ignored 1 up 2 right 3 down 4 left
 @parameters key_input_information_base
 
 .key_input_information_base
-+hwnd . R2K/H_KII_Launchpad.txt
++hwnd . R2K/H_KII_Launchpad
 ]0 _ string
 ]1 var var_id
 ]2 wait int_boolean

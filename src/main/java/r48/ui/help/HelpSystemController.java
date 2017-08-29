@@ -8,6 +8,7 @@ import gabien.GaBIEn;
 import gabien.ui.UILabel;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
+import r48.dbs.TXDB;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,9 +57,17 @@ public class HelpSystemController {
     }
 
     private InputStream getHelpStream() {
-        if (helpFile == null)
-            return GaBIEn.getResource("Help.txt");
-        return GaBIEn.getFile(helpFile);
+        if (helpFile == null) {
+            // Local language?
+            InputStream inp = GaBIEn.getFile("Help" + TXDB.getLanguage() + ".txt");
+            if (inp == null)
+                return GaBIEn.getResource("Help.txt");
+            return inp;
+        }
+        InputStream inp = GaBIEn.getFile(helpFile + TXDB.getLanguage() + ".txt");
+        if (inp == null)
+            return GaBIEn.getResource(helpFile + ".txt");
+        return inp;
     }
 
 }

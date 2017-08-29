@@ -100,7 +100,7 @@ C name Class.RPG::Class @id @name | Class #A: #B
 @note stringBlobEditor
 @description stringBlobEditor
 @icon_index int
-+hwnd . RVXA/H_BatParamsTableDoc.txt
++hwnd . RVXA/H_BatParamsTableDoc
 +table @params . . 8 100 1
 @features subwindow array 0 subwindow RPG::BaseItem::Feature
 @learnings subwindow array 0 subwindow RPG::Class::Learning

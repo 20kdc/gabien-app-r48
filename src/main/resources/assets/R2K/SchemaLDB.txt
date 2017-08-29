@@ -46,7 +46,7 @@ C name Class.RPG::Actor @name | #A
 @title string= Survivalist
 +subwindow[ Graphics/Face ] actorpage_graphics
 @init_level int= 1
-+hwnd . R2K/H_Levelling.txt
++hwnd . R2K/H_Levelling
 @init_level_exp int= 10
 @each_level_exp_mul int= 10
 @each_level_exp_add int

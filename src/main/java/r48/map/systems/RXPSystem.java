@@ -71,7 +71,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
                 if (rio.strVal.length > 0)
                     pano = "Panoramas/" + rio.decString();
         }
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0, 1, 2}, eventRenderer, imageLoader, map, pano));
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0, 1, 2}, eventRenderer, imageLoader, map, pano, false, false, 0, 0, 640, 480, 2));
     }
 
     @Override

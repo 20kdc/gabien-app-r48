@@ -33,7 +33,7 @@ public class StuffRenderer {
         layers = l2;
     }
 
-    public static IMapViewDrawLayer[] prepareTraditional(ITileRenderer itr, int[] tlOrder, IEventGraphicRenderer igr, IImageLoader iil, RubyIO map, String vxaPano) {
+    public static IMapViewDrawLayer[] prepareTraditional(ITileRenderer itr, int[] tlOrder, IEventGraphicRenderer igr, IImageLoader iil, RubyIO map, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
         if (map == null)
             return new IMapViewDrawLayer[0];
         RubyTable rt = new RubyTable(map.getInstVarBySymbol("@data").userVal);
@@ -44,7 +44,7 @@ public class StuffRenderer {
         IImage panoImg = null;
         if (!vxaPano.equals(""))
             panoImg = iil.getImage(vxaPano, true);
-        layers[0] = new PanoramaMapViewDrawLayer(panoImg, false, false, 0, 0);
+        layers[0] = new PanoramaMapViewDrawLayer(panoImg, lx, ly, alx, aly, rt.width, rt.height, panoSW, panoSH, panoSC);
         RubyIO events = map.getInstVarBySymbol("@events");
         layers[1] = new EventMapViewDrawLayer(-1, events, igr, itr.getTileSize());
         for (int i = 0; i < rt.planeCount; i++) {

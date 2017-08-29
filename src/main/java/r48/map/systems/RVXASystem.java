@@ -29,7 +29,7 @@ public class RVXASystem extends RXPSystem {
 
         ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tsoFromMap(map));
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0, 1, 3, 2}, eventRenderer, imageLoader, map, vxaPano));
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0, 1, 3, 2}, eventRenderer, imageLoader, map, vxaPano, false, false, 0, 0, -1, -1, 1));
     }
 
     @Override

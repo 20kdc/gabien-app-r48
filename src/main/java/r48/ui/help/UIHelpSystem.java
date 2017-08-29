@@ -87,20 +87,15 @@ public class UIHelpSystem extends UIPanel {
         allElements.clear();
 
         for (HelpElement hc : page) {
+            if (y >= imgEndY)
+                imgSize = 0;
             if ((hc.c == '.') || (hc.c == '>')) {
                 int vlen = rect.width - imgSize;
-                if (vlen < (imgSize / 2)) {
-                    y = imgEndY;
-                    imgSize = 0;
-                }
-                vlen = rect.width - imgSize;
                 for (UIElement uil : handleThing(hc.c, hc.args, vlen)) {
                     int eh = uil.getBounds().height;
                     uil.setBounds(new Rect(0, y, vlen, eh));
                     allElements.add(uil);
                     y += eh;
-                    if (y >= imgEndY)
-                        imgSize = 0;
                 }
             }
             if ((hc.c == 'i') || (hc.c == 'I')) {
@@ -115,6 +110,11 @@ public class UIHelpSystem extends UIPanel {
                 uie.baseImage = r;
                 uie.imageX = xx;
                 uie.imageY = yy;
+                if (!left) {
+                    // If there isn't much space, do this anyway (responsive design people looking at this in future would be either approving or hating, if anyone was reading this)
+                    if (rect.width < (w * 2))
+                        left = true;
+                }
                 if (left) {
                     uie.setBounds(new Rect((rect.width / 2) - (w / 2), y, w, h));
                     y += h;
