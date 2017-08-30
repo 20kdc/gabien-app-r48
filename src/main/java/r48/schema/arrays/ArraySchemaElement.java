@@ -25,12 +25,13 @@ import r48.ui.UIAppendButton;
  * Created on 12/28/16. Abstractified 16 Feb 2017.
  */
 public abstract class ArraySchemaElement extends SchemaElement {
-    public int sizeFixed;
+    public int sizeFixed, indexDisplayOffset;
     public boolean atLeastOne;
 
-    public ArraySchemaElement(int fixedSize, boolean al1) {
+    public ArraySchemaElement(int fixedSize, boolean al1, int ido) {
         sizeFixed = fixedSize;
         atLeastOne = al1;
+        indexDisplayOffset = ido;
     }
 
     @Override
@@ -61,7 +62,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     int pLevel = elementPermissionsLevel(i, target);
                     if (pLevel < 1)
                         continue;
-                    SchemaPath ind = path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]");
+                    SchemaPath ind = path.arrayHashIndex(new RubyIO().setFX(i), "[" + (i + indexDisplayOffset) + "]");
                     addAdditionButton(i, ind);
                     SchemaElement subelem = getElementSchema(i);
                     nextAdvance = getGroupLength(target.arrVal, i);
@@ -110,7 +111,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                                     containerRCL();
                                 }
                             }, FontSizes.schemaButtonTextHeight);
-                            uie = new UIAppendButton("Cp.", uie, new Runnable() {
+                            uie = new UIAppendButton(TXDB.get("Cp."), uie, new Runnable() {
                                 @Override
                                 public void run() {
                                     // the clipboard is very lenient...
@@ -140,7 +141,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     }
                     // Add indexes for clarity.
                     final UIElement editor = uie;
-                    final UIElement label = new UILabel(i + " ", FontSizes.schemaFieldTextHeight);
+                    final UIElement label = new UILabel((i + indexDisplayOffset) + " ", FontSizes.schemaFieldTextHeight);
                     UIPanel panel = new UIPanel() {
                         @Override
                         public void setBounds(Rect r) {
@@ -180,7 +181,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 });
                 if (AppMain.theClipboard != null) {
                     if (AppMain.theClipboard.type == '[') {
-                        uie = new UIAppendButton("Ps.", uie, new Runnable() {
+                        uie = new UIAppendButton(TXDB.get("Ps."), uie, new Runnable() {
                             @Override
                             public void run() {
                                 if (AppMain.theClipboard != null) {
@@ -227,6 +228,17 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 target.arrVal[i] = new RubyIO();
         }
         boolean modified = setDefault;
+        if (sizeFixed != 0) {
+            if (target.arrVal.length != sizeFixed) {
+                int lenCut = Math.min(sizeFixed, target.arrVal.length);
+                RubyIO[] newArr = new RubyIO[sizeFixed];
+                for (int j = 0; j < newArr.length; j++)
+                    newArr[j] = new RubyIO();
+                System.arraycopy(target.arrVal, 0, newArr, 0, lenCut);
+                target.arrVal = newArr;
+                modified = true;
+            }
+        }
         while (true) {
             for (int j = 0; j < target.arrVal.length; j++) {
                 RubyIO rio = target.arrVal[j];

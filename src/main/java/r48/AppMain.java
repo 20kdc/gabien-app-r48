@@ -81,8 +81,9 @@ public class AppMain {
     // The global context-independent stuffRenderer. *Only use outside of maps.*
     public static StuffRenderer stuffRendererIndependent;
     public static MapSystem system;
-    // ONLY this class & R2kSystemDefaultsInstallerSchemaElement should refer to this!!!
-    public static IMapContext mapContext;
+
+    // ONLY this class should refer to this!!!
+    private static IMapContext mapContext;
 
     // State for in-system copy/paste
     public static RubyIO theClipboard = null;
@@ -391,6 +392,80 @@ public class AppMain {
         };
         hsc.loadPage(integer);
         windowMaker.accept(topbar);
+    }
+
+    // R2kSystemDefaultsInstallerSchemaElement uses this to indirectly access several things a SchemaElement isn't allowed to access.
+    public static void r2kProjectCreationHelperFunction() {
+        Runnable deploy = new Runnable() {
+            @Override
+            public void run() {
+                // Perform all mkdirs
+                String[] mkdirs = {
+                        "Backdrop",
+                        "Battle",
+                        "Battle2",
+                        "BattleCharSet",
+                        "BattleWeapon",
+                        "CharSet",
+                        "ChipSet",
+                        "FaceSet",
+                        "Frame",
+                        "GameOver",
+                        "Monster",
+                        "Music",
+                        "Panorama",
+                        "Picture",
+                        "Sound",
+                        "System",
+                        "System2",
+                        "Title"
+                };
+                String[] fileCopies = {
+                        "R2K/char.png", "CharSet/char.png",
+                        "R2K/System.png", "System/System.png",
+                        "R2K/templatetileset.png", "ChipSet/templatetileset.png",
+                };
+                for (String s : mkdirs)
+                    new File(AppMain.rootPath + s).mkdirs();
+                for (int i = 0; i < fileCopies.length; i += 2) {
+                    String src = fileCopies[i];
+                    String dst = fileCopies[i + 1];
+                    InputStream inp = GaBIEn.getResource(src);
+                    if (inp != null) {
+                        OutputStream oup = GaBIEn.getOutFile(rootPath + dst);
+                        if (oup != null) {
+                            try {
+                                byte[] b = new byte[2048];
+                                while (inp.available() > 0)
+                                    oup.write(b, 0, inp.read(b));
+                            } catch (IOException ioe) {
+
+                            }
+                            try {
+                                oup.close();
+                            } catch (IOException ioe) {
+
+                            }
+                        }
+                        try {
+                            inp.close();
+                        } catch (IOException ioe) {
+                        }
+                    }
+                }
+                launchDialog(TXDB.get("2k3 template synthesis complete."));
+                mapContext.loadMap(new RubyIO().setFX(1));
+            }
+        };
+        windowMaker.accept(new UIAutoclosingPopupMenu(new String[] {
+                TXDB.get("You are creating a RPG Maker 2000/2003 LDB."),
+                TXDB.get("Click here to automatically build skeleton project."),
+                TXDB.get("Otherwise, close this inner window."),
+        }, new Runnable[] {
+                deploy,
+                deploy,
+                deploy
+        }, FontSizes.menuTextHeight, true));
     }
 
     public static void shutdown() {

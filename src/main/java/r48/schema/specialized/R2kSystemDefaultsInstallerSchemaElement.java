@@ -67,6 +67,13 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::BattlerAnimationSet"), new RubyIO().setFX(1));
                     sub.getInstVarBySymbol("@name").setString("Default Fallback AnimSet");
                     target.getInstVarBySymbol("@battle_anim_sets_2k3").hashVal.put(new RubyIO().setFX(1), sub);
+                    // Prepare.
+                    AppMain.pendingRunnables.add(new Runnable() {
+                        @Override
+                        public void run() {
+                            AppMain.r2kProjectCreationHelperFunction();
+                        }
+                    });
                     break;
                 case 1:
                     // 1. Fix root
@@ -88,20 +95,6 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     };
                     // 4. Setup start
                     target.getInstVarBySymbol("@start").getInstVarBySymbol("@player_map").fixnumVal = 1;
-                    // This is all hax anyway, so schedule a force-load of the new map.
-                    // Note that pending runnables happen at end of frame, usually,
-                    //  and it takes a frame to get all the UI sorted out
-                    AppMain.pendingRunnables.add(new Runnable() {
-                        @Override
-                        public void run() {
-                            AppMain.pendingRunnables.add(new Runnable() {
-                                @Override
-                                public void run() {
-                                    AppMain.mapContext.loadMap(new RubyIO().setFX(1));
-                                }
-                            });
-                        }
-                    });
                     break;
             }
             // finally, signal

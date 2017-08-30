@@ -53,7 +53,7 @@ C name Class.RPG::Actor @name | #A
 @final_level int= 1
 @battle_auto boolean
 @battle_super_guard boolean
-@battle_parameters subwindow arrayAL1 subwindow[ @rpg_actor_parameter_block ] rpg_actor_parameter_block
+@battle_parameters subwindow arrayId1 99 subwindow[ @rpg_actor_parameter_block ] rpg_actor_parameter_block
 @battle_skillspanel_name string
 @battle_posx_2k3 int
 @battle_posy_2k3 int
@@ -667,7 +667,7 @@ C name Class.RPG::Class @name | #A
 @lock_equipment boolean
 @battle_auto boolean
 @battle_super_guard boolean
-@battle_parameters subwindow array 0 subwindow[ @rpg_actor_parameter_block ] rpg_actor_parameter_block
+@battle_parameters subwindow arrayId1 99 subwindow[ @rpg_actor_parameter_block ] rpg_actor_parameter_block
 @battler_animation battleranimation_id
 +hwnd . R2K/H_Levelling.txt
 @init_level_exp int

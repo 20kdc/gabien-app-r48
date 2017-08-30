@@ -185,10 +185,14 @@ public class SDB {
                         }
                         if (text.equals("array")) {
                             int n = Integer.parseInt(args[point++]);
-                            return new StandardArraySchemaElement(get(), n, false);
+                            return new StandardArraySchemaElement(get(), n, false, 0);
+                        }
+                        if (text.equals("arrayId1")) {
+                            int n = Integer.parseInt(args[point++]);
+                            return new StandardArraySchemaElement(get(), n, false, 1);
                         }
                         if (text.equals("arrayAL1"))
-                            return new StandardArraySchemaElement(get(), 0, true);
+                            return new StandardArraySchemaElement(get(), 0, true, 0);
                         if (text.equals("arrayIx1"))
                             return new ArbIndexedArraySchemaElement(get(), 1, 0);
                         if (text.equals("arrayIxN")) {

@@ -222,7 +222,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             } else {
                 RubyIO param = target.getInstVarBySymbol("@parameters");
                 // All parameters are described, and the SASE will ensure length is precisely equal
-                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(new OpaqueSchemaElement(), rc.paramName.size(), false);
+                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(new OpaqueSchemaElement(), rc.paramName.size(), false, 0);
                 parametersSanitySchema.modifyVal(param, path, setDefault);
                 for (int i = 0; i < param.arrVal.length; i++) {
                     SchemaElement ise = rc.getParameterSchema(param, i);
