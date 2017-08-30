@@ -32,6 +32,7 @@ public class Application {
         final WindowCreatingUIElementConsumer uiTicker = new WindowCreatingUIElementConsumer();
         // Load language list.
         TXDB.init();
+        FontSizes.load();
         // Note the mass-recreate.
         while (true) {
             final UIScrollLayout gamepaks = new UIScrollLayout(true);
