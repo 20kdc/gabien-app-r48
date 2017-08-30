@@ -30,7 +30,7 @@ public class UIFontSizeConfigurator extends UIPanel {
             return;
         lastFontSizerSize = FontSizes.fontSizerTextHeight;
         allElements.clear();
-        outerLayout = new UIScrollLayout(true);
+        outerLayout = new UIScrollLayout(true, FontSizes.generalScrollersize);
         final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
         final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();
         outerLayout.panels.add(new UISplitterLayout(new UITextButton(FontSizes.fontSizerTextHeight, "*2", new Runnable() {

@@ -19,11 +19,10 @@ import java.util.LinkedList;
  * Created on 11/08/17.
  */
 public class MapEditingToolbarController implements IEditingToolbarController {
-    public UIScrollLayout rootLayout = new UIScrollLayout(false);
+    public UIScrollLayout rootLayout = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
     private final LinkedList<UITextButton> tools = new LinkedList<UITextButton>();
 
     public MapEditingToolbarController(final IMapToolContext viewGiver, final ISupplier<IConsumer<UIElement>> windowMakerSupplier) {
-        rootLayout.scrollbar.setBounds(new Rect(0, 0, 8, 8));
 
         final UIMapView view = viewGiver.getMapView();
 
@@ -68,7 +67,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 @Override
                 public void run() {
                     clearTools(thisButton);
-                    UIScrollLayout svl = new UIScrollLayout(true);
+                    UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize);
                     int h = 0;
                     for (int i = 0; i < view.renderer.layers.length; i++) {
                         final int fi = i;
@@ -111,10 +110,12 @@ public class MapEditingToolbarController implements IEditingToolbarController {
         }
 
         // finish layout
-        for (UITextButton utb : tools)
+        int maxH = 1;
+        for (UITextButton utb : tools) {
             rootLayout.panels.add(utb);
-
-        rootLayout.setBounds(new Rect(0, 0, 28, 28));
+            maxH = Math.max(maxH, utb.getBounds().height);
+        }
+        rootLayout.setBounds(new Rect(0, 0, maxH + FontSizes.mapToolbarScrollersize, maxH + FontSizes.mapToolbarScrollersize));
     }
 
     public void clearTools(int t) {

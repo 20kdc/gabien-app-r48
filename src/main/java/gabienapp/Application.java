@@ -35,7 +35,7 @@ public class Application {
         FontSizes.load();
         // Note the mass-recreate.
         while (true) {
-            final UIScrollLayout gamepaks = new UIScrollLayout(true);
+            final UIScrollLayout gamepaks = new UIScrollLayout(true, FontSizes.generalScrollersize);
             gamepaks.setBounds(new Rect(0, 0, 400, 200));
             // this can't be good
             // Ok, explaination for this. Giving it a runnable, it will hold it until called again, and then it will run it and remove it.
@@ -209,7 +209,7 @@ public class Application {
                     for (String s : r.split("\n"))
                         uhs.page.add(new UIHelpSystem.HelpElement('.', s.split(" ")));
                     uhs.page.add(new UIHelpSystem.HelpElement('>', TXDB.get("0 Save error as file").split(" ")));
-                    UIScrollLayout scroll = new UIScrollLayout(true) {
+                    UIScrollLayout scroll = new UIScrollLayout(true, FontSizes.generalScrollersize) {
                         @Override
                         public String toString() {
                             return "Error...";

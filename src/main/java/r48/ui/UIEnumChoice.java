@@ -17,7 +17,7 @@ import java.util.LinkedList;
  * Created on 12/30/16.
  */
 public class UIEnumChoice extends UIPanel implements IWindowElement {
-    UIScrollLayout uiSVL = new UIScrollLayout(true);
+    UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
     UISplitterLayout finalSplit;
     UINumberBox nb;
     boolean wantsSelfClose = false;

@@ -209,7 +209,7 @@ public class BasicToolset implements IToolset {
                                 finalComposite.blitImage(0, 0, 256, 256, 256, 768, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 128, 0, 0)));
                                 panel.baseImage = GaBIEn.createImage(finalComposite.getPixels(), 512, 1024);
                                 finalComposite.shutdown();
-                                UIScrollLayout holdsMain = new UIScrollLayout(true);
+                                UIScrollLayout holdsMain = new UIScrollLayout(true, FontSizes.generalScrollersize);
                                 holdsMain.panels.add(panel);
                                 holdsMain.setBounds(new Rect(0, 0, 544, 256));
                                 windowMaker.get().accept(holdsMain);

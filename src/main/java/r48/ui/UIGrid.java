@@ -29,7 +29,7 @@ public class UIGrid extends UIPanel {
 
     private int tmWidth = 8;
 
-    public UIScrollbar uivScrollbar = new UIScrollbar(true);
+    public UIScrollbar uivScrollbar = new UIScrollbar(true, FontSizes.gridScrollersize);
 
     public Runnable onSelectionChange = null;
 

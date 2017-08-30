@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public UIMapView mapView;
-    public UIScrollLayout svl = new UIScrollLayout(true);
+    public UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize);
     public HashMap<String, RubyIO> eventCache = new HashMap<String, RubyIO>();
 
     public UIMTEventPicker(IMapToolContext mv) {

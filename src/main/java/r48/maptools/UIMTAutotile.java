@@ -40,7 +40,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         super(mv, false);
         map = mv.getMapView();
         setupView();
-        setBounds(new Rect(0, 0, (map.tileSize * map.renderer.tileRenderer.getRecommendedWidth()) + 32, 200));
+        setBounds(new Rect(0, 0, (map.tileSize * map.renderer.tileRenderer.getRecommendedWidth()) + FontSizes.gridScrollersize, 200));
     }
 
     private void setupView() {

@@ -23,10 +23,9 @@ public class UICellSelectionPanel extends UIPanel {
 
     public IGenposFrame root;
 
-    public UIScrollLayout selectionPanel = new UIScrollLayout(true);
+    public UIScrollLayout selectionPanel = new UIScrollLayout(true, FontSizes.cellSelectScrollersize);
 
     public UICellSelectionPanel(IGenposFrame rmAnimRootPanel) {
-        selectionPanel.scrollbar.setBounds(new Rect(0, 0, 8, 8));
         root = rmAnimRootPanel;
         allElements.add(selectionPanel);
     }

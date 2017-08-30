@@ -9,6 +9,7 @@ import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
+import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -68,7 +69,7 @@ public class AggregateSchemaElement extends SchemaElement {
     public static UIScrollLayout createScrollSavingSVL(final SchemaPath path, final ISchemaHost host, final SchemaElement elem, final RubyIO target) {
         final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(elem, target);
         final SchemaPath keyStoragePath = path.findLast();
-        final UIScrollLayout uiSVL = new UIScrollLayout(true) {
+        final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize) {
             @Override
             public void updateAndRender(int ox, int oy, double DeltaTime, boolean select, IGrInDriver igd) {
                 super.updateAndRender(ox, oy, DeltaTime, select, igd);

@@ -341,7 +341,7 @@ public class AppMain {
         UIHelpSystem uhs = new UIHelpSystem();
         for (String st : s.split("\n"))
             uhs.page.add(new UIHelpSystem.HelpElement('.', st.split(" ")));
-        UIScrollLayout svl = new UIScrollLayout(true) {
+        UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize) {
             @Override
             public String toString() {
                 return TXDB.get("Information");
@@ -367,7 +367,7 @@ public class AppMain {
                 hsc.loadPage(integer);
             }
         };
-        final UIScrollLayout uus = new UIScrollLayout(true);
+        final UIScrollLayout uus = new UIScrollLayout(true, FontSizes.generalScrollersize);
         uus.panels.add(uis);
         uus.setBounds(new Rect(0, 0, 612, 240));
         final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(TXDB.get("Index"), uil, new Runnable() {

@@ -34,7 +34,7 @@ public class UITest extends UIPanel {
     // the naming got screwed up with the Nth layout redesign.
     // UITest -> outerPanel -> Back/PRINT
     //                      -> masterPanel
-    public UIScrollLayout masterPanel = new UIScrollLayout(true);
+    public UIScrollLayout masterPanel = new UIScrollLayout(true, FontSizes.generalScrollersize);
     public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(TXDB.get("PTS"), new UIAppendButton(TXDB.get("PTF"), new UITextButton(FontSizes.inspectorBackTextHeight, TXDB.get("Back..."), new Runnable() {
         @Override
         public void run() {

@@ -106,6 +106,18 @@ public class FontSizes {
     // TXDB.get("launcherTextHeight")
     public static int launcherTextHeight = 16;
 
+    // TXDB.get("mapToolbarScrollersize")
+    public static int mapToolbarScrollersize = 8;
+
+    // TXDB.get("gridScrollersize")
+    public static int gridScrollersize = 24;
+
+    // TXDB.get("cellSelectScrollersize")
+    public static int cellSelectScrollersize = 8;
+
+    // TXDB.get("generalScrollersize")
+    public static int generalScrollersize = 24;
+
     // This hides the implied reflection for simplicity
     public static LinkedList<FontSizeField> getFields() {
         LinkedList<FontSizeField> fields = new LinkedList<FontSizeField>();

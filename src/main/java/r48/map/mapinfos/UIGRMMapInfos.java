@@ -31,7 +31,7 @@ import java.util.LinkedList;
 public class UIGRMMapInfos extends UIPanel {
     private final IRMLikeMapInfoBackendWPub operators;
     private final ISupplier<IConsumer<UIElement>> windowMakerGetter;
-    private UIScrollLayout uiSVL = new UIScrollLayout(true);
+    private UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
     private UITreeView utv = new UITreeView();
     private int selectedOrder = 0;
     private boolean deleteConfirmation = false;

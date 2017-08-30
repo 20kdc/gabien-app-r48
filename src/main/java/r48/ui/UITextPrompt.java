@@ -14,7 +14,7 @@ import r48.dbs.TXDB;
  */
 public class UITextPrompt extends UIPanel implements IWindowElement {
     public UITextBox utb = new UITextBox(FontSizes.textDialogFieldTextHeight);
-    public UIScrollLayout uiSVL = new UIScrollLayout(true);
+    public UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
     public boolean wantClose = false;
 
     public UITextPrompt(final String s, final IConsumer<String> iConsumer) {
