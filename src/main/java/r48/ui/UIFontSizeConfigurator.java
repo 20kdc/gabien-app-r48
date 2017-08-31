@@ -60,7 +60,7 @@ public class UIFontSizeConfigurator extends UIPanel {
                 refreshLayout();
             }
         }), false, 1, 2));
-        outerLayout.panels.add(new UITextButton(FontSizes.fontSizerTextHeight, "", new Runnable() {
+        UITextButton fontButton = new UITextButton(FontSizes.fontSizerTextHeight, "", new Runnable() {
             @Override
             public void run() {
                 if (UILabel.fontOverride != null) {
@@ -79,7 +79,20 @@ public class UIFontSizeConfigurator extends UIPanel {
                 }
                 super.updateAndRender(ox, oy, DeltaTime, selected, igd);
             }
-        });
+        };
+        final UIAppendButton fontButtonAppend = new UIAppendButton(TXDB.get("Even for height <= 8"), fontButton, new Runnable() {
+            @Override
+            public void run() {
+            }
+        }, FontSizes.fontSizerTextHeight);
+        fontButtonAppend.button.togglable().state = UILabel.fontOverrideUE8;
+        fontButtonAppend.button.OnClick = new Runnable() {
+            @Override
+            public void run() {
+                UILabel.fontOverrideUE8 = fontButtonAppend.button.state;
+            }
+        };
+        outerLayout.panels.add(fontButtonAppend);
         try {
             for (final FontSizes.FontSizeField field : FontSizes.getFields()) {
                     doubleAll.add(new Runnable() {

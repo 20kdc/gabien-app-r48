@@ -142,6 +142,7 @@ public class FontSizes {
             RubyIO.encoding = "UTF-8";
 
             prepare.addIVar("@sysfont", new RubyIO().setString(UILabel.fontOverride));
+            prepare.addIVar("@sysfont_ue8", new RubyIO().setBool(UILabel.fontOverrideUE8));
 
             RubyIO.encoding = currentEnc;
         }
@@ -167,6 +168,9 @@ public class FontSizes {
             } else {
                 UILabel.fontOverride = null;
             }
+            RubyIO sys2 = dat.getInstVarBySymbol("@sysfont_ue8");
+            if (sys2 != null)
+                UILabel.fontOverrideUE8 = sys2.type == 'T';
         }
     }
 

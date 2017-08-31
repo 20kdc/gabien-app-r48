@@ -114,16 +114,15 @@ public class UIGrid extends UIPanel {
     @Override
     public void setBounds(Rect r) {
         int scrollBarW = uivScrollbar.getBounds().width;
-        int tiles = r.width / tileSizeW;
+        int tiles = (r.width - scrollBarW) / tileSizeW;
         if (tiles < 2)
             tiles = 2;
         int availableRows = r.height / tileSizeH;
         if (availableRows < 1)
             availableRows = 1;
         tmWidth = tiles;
-        tmWidth -= (scrollBarW + (tileSizeW - 1)) / tileSizeW;
         uivScrollbar.setBounds(new Rect(r.width - scrollBarW, 0, scrollBarW, availableRows * tileSizeH));
-        super.setBounds(new Rect(r.x, r.y, tiles * tileSizeW, availableRows * tileSizeH));
+        super.setBounds(new Rect(r.x, r.y, r.width, availableRows * tileSizeH));
     }
 
     @Override
