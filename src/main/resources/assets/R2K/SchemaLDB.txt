@@ -42,8 +42,8 @@ C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C D
 : RPG::Actor
 C name Class.RPG::Actor @name | #A
  Totally not a C&H reference. I added an 'i'.
-@name string= TediBear
-@title string= Survivalist
+@name stringLen= TediBear 12
+@title stringLen= Survivalist 12
 +subwindow[ Graphics/Face ] actorpage_graphics
 @init_level int= 1
 +hwnd . R2K/H_Levelling
@@ -91,8 +91,8 @@ C name Class.RPG::Skill @name | #A
 +subwindow[ Result ] rpg_skill_sect4
 
 .rpg_skill_sect0
-@name string
-@description string
+@name stringLen 20
+@description stringLen 50
 e rpg_skill_type 0 normal 1 teleportMenu 2 battleEscape 3 switchControl 4 subSkill2k3
 @type rpg_skill_type
 e rpg_skill_scope 0 hurtEnemy 1 hurtAllEnemies 2 healUserActor 3 healAnyActor 4 healAllActors
@@ -156,8 +156,8 @@ e rpg_item_rtarget 0 single 1 centre 2 allAtSameTime 3 allInSequence
 E rpg_item_usecount Uses 0 Unlimited
 : RPG::Item
 C name Class.RPG::Item @name | #A
-@name string
-@description string
+@name stringLen 20
+@description stringLen 50
 @animation animation_id
 @type rpg_item_type
 @price int
@@ -251,7 +251,7 @@ e rpg_enemyaction_conditiontype 0 always 1 switchActive 2 turnCountInRange 3 liv
 
 : RPG::Enemy
 C name Class.RPG::Enemy @name | #A
-@name string
+@name stringLen 20
 @battler_name f_monster_name
 @battler_hue hue
 @battler_blend_mode boolean
@@ -404,7 +404,7 @@ e rpg_state_affecttype 2 leaveParamsAlone 0 halfParams 1 doubleParams
 e rpg_state_changetype 2 nothing 0 lose 1 gain
 : RPG::State
 C name Class.RPG::State @name | #A
-@name string
+@name stringLen 8
 @persists int_boolean
 @colour int
 @priority int

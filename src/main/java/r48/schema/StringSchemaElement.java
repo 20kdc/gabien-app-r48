@@ -25,6 +25,7 @@ public class StringSchemaElement extends SchemaElement {
         type = t;
     }
 
+    // Note the type must be UITextBox - This is so StringLenSchemaElement can latch on.
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UITextBox tb = new UITextBox(FontSizes.schemaFieldTextHeight);

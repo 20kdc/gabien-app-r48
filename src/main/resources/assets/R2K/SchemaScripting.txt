@@ -50,6 +50,9 @@ e change_enemy_hp_mode 0 direct 1 variable 2 currentHp%
 
 > picture_id int+1
 
+ NOTE: This is in halfwidth characters.
+> textbox_string stringLen 50
+
  ---
 
 i R2K/SchemaScriptingMonolith.txt

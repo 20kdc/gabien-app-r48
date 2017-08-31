@@ -137,10 +137,26 @@ public class SDB {
                         if (text.equals("float="))
                             return new FloatSchemaElement(args[point++]);
                         // To translate, or not to? Unfortunately these can point at files.
+                        // (later) However, context makes it obvious
                         if (text.equals("string="))
-                            return new StringSchemaElement(args[point++], '\"');
+                            return new StringSchemaElement(TXDB.get(outerContext, args[point++]), '\"');
                         if (text.equals("string_="))
-                            return new StringSchemaElement(args[point++].replace('_', ' '), '\"');
+                            return new StringSchemaElement(TXDB.get(outerContext, args[point++]).replace('_', ' '), '\"');
+                        // Before you go using these - They are based on *visual* length, and are not hard limits.
+                        if (text.equals("stringLen")) {
+                            int l = Integer.parseInt(args[point++]);
+                            return new StringLenSchemaElement("", l);
+                        }
+                        if (text.equals("stringLen=")) {
+                            String txt = args[point++];
+                            int l = Integer.parseInt(args[point++]);
+                            return new StringLenSchemaElement(TXDB.get(outerContext, txt), l);
+                        }
+                        if (text.equals("stringLen_=")) {
+                            String txt = args[point++];
+                            int l = Integer.parseInt(args[point++]);
+                            return new StringLenSchemaElement(TXDB.get(outerContext, txt).replace('_', ' '), l);
+                        }
                         //
                         if (text.equals("hwnd")) {
                             // These need their own translation mechanism
