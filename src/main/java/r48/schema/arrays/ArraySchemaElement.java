@@ -246,7 +246,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 // It's because otherwise, when the subelement tries to notify the array of the modification,
                 //  it will lead to an infinite loop!
                 // So it has to be able to see it's own object for the loop to terminate.
-                target.arrVal[j] = rio;
+                // (Later: This got changed around a bit in a restructuring. Point is, target.arrVal[j] == rio)
                 getElementSchema(j).modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(j), "[" + j + "]"), setDefault);
             }
             int groupStep;

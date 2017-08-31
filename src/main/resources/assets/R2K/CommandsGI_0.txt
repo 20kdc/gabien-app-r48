@@ -94,8 +94,8 @@ P 1 target? int
 v 0 target switch_id
 v 1 rangeFirst switch_id
 v 2 targIndVar var_id
-
-p rangeLast switch_id
+P 1 _ int
+v 1 rangeLast switch_id
 p changeMode control_switches_change_mode
 
 10220: @@Set {A:Vars[@set_variables_parameters]|Variables}
@@ -148,7 +148,7 @@ p expIsVar int_boolean
 P 4 expVar var_id
 v 0 exp int
 
-d showLvlUp int_boolean
+p showLvlUp int_boolean
 
 10420: Change Exp.Level
 d Modifies the levels a given set of party members have.
@@ -163,7 +163,7 @@ p lvlIsVar int_boolean
 P 4 lvlVar var_id
 v 0 lvl int
 
-d showLvlUp int_boolean
+p showLvlUp int_boolean
 
 10430: Change Battle Parameters
 d Modifies the parameters a given set of party members have.
@@ -369,15 +369,7 @@ p yVar var_id
 10850: Teleport Vehicle
 d Teleports a vehicle.
 p _ string
-p vehicle scripting_vehicletype
-p positionVars int_boolean
-
-P 2 mapVar var_id
-v 0 map map_id
-P 2 xVar var_id
-v 0 x int
-P 2 yVar var_id
-v 0 y int
+X teleport_vehicle_parameters
 
 10860: Teleport Event
 d Teleports an event. (Can set direction on 2k3.)
@@ -390,7 +382,7 @@ p _ string
 p eventA character_id
 p eventB character_id
 
-10820: Store Terrain Tag
+10910: Store Terrain Tag
 d Stores the terrain tag of a given point on the map. These come from Tileset/@terrain_id_data.
 p _ string
 p useVars int_boolean

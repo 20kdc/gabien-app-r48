@@ -532,3 +532,29 @@ e begin_encounter_defeat 0 gameOver 1 executeDefeatCode
 
 .begin_encounter_2
 ]9 terrainId terrain_id
+
+ TV
+ teleport vehicle
+
+.teleport_vehicle_parameters
+@indent indent
+@parameters arrayDAM 2 int teleport_vehicle_vars 0 teleport_vehicle_novars
+
+.teleport_vehicle_vars
+]0 _ string
+]1 vehicle scripting_vehicletype
+]2 positionVars int_boolean
+]3 map var_id
+]4 x var_id
+]5 y var_id
++]?6 direction2k3 ignored teleport_event_dir
+
+.teleport_vehicle_novars
+]0 _ string
+]1 vehicle scripting_vehicletype
+]2 positionVars int_boolean
+]3 map map_id
+]4 x int
+]5 y int
++mapPositionHelper ]3 ]4 ]5
++]?6 direction2k3 ignored teleport_event_dir

@@ -203,9 +203,10 @@ public class SDB {
                             int n = Integer.parseInt(args[point++]);
                             return new StandardArraySchemaElement(get(), n, false, 0);
                         }
-                        if (text.equals("arrayId1")) {
+                        if (text.equals("arrayIdX")) {
+                            int x = Integer.parseInt(args[point++]);
                             int n = Integer.parseInt(args[point++]);
-                            return new StandardArraySchemaElement(get(), n, false, 1);
+                            return new StandardArraySchemaElement(get(), n, false, x);
                         }
                         if (text.equals("arrayAL1"))
                             return new StandardArraySchemaElement(get(), 0, true, 0);

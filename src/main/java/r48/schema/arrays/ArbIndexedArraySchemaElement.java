@@ -19,7 +19,7 @@ public class ArbIndexedArraySchemaElement extends ArraySchemaElement {
     public int indexOffset;
 
     public ArbIndexedArraySchemaElement(SchemaElement s, int io, int fixedSize) {
-        super(fixedSize, false, io);
+        super(fixedSize, false, 0);
         subelems = s;
         indexOffset = io;
     }

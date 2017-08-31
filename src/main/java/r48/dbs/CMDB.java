@@ -46,6 +46,8 @@ public class CMDB {
                 subContext = "CMDB@" + baseFile + "." + lenForm(objId);
                 // Names use NDB syntax, thus, separate context
                 rc.name = TXDB.get(subContext + "-", objName);
+                if (knownCommands.containsKey(objId))
+                    throw new RuntimeException("Redefined " + objId);
                 knownCommands.put(objId, rc);
                 knownCommandOrder.add(objId);
                 workingCmdId = objId;

@@ -26,13 +26,14 @@ p command battlecommand_id
 p uses int_default_1
 
 13110: <Battle> Change Enemy HP
-d Changes an enemy's HP by some amount. This can kill it.
+d Changes an enemy's HP by some amount. This can kill it. The meaning of 'unknown' is unknown.
 p _ string
 p troopEnemyIdx int
 p negative int_boolean
 p modAmount change_enemy_hp_mode
 P 3 amount int
 v 1 amountVar var_id
+p unknown int_default_1
 
 13120: <Battle> Change Enemy SP
 d Changes an enemy's SP by some amount.
