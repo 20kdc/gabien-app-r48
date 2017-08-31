@@ -89,7 +89,7 @@ e blend_type -1 KeepDestAlpha 0 Normal 1 Add 2 Sub
 > f_animss_name { string fileSelector Graphics/Animations/ }
 > f_char_name { string fileSelector Graphics/Characters/ }
 > f_face_name { string fileSelector Graphics/Faces/ }
-> f_picture_name { string fileSelector Graphics/Picture/ }
+> f_picture_name { string fileSelector Graphics/Pictures/ }
 > f_parallax_name { string fileSelector Graphics/Parallaxes/ }
 
 C spritesheet[ Select character index... ] Characters/ vxaCharacter
@@ -101,25 +101,25 @@ C spritesheet[ Select face index... ] Faces/ 96 96 4 0 0 96 96 0
 
 : RPG::ME
 C name Class.RPG::ME @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|}
-@name string
+@name { string fileSelector Audio/ME/ }
 @pitch int= 100
 @volume int= 100
 
 : RPG::SE
 C name Class.RPG::SE @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|}
-@name string
+@name { string fileSelector Audio/SE/ }
 @pitch int= 100
 @volume int= 100
 
 : RPG::BGM
 C name Class.RPG::BGM @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|}
-@name string
+@name { string fileSelector Audio/BGM/ }
 @pitch int= 100
 @volume int= 100
 
 : RPG::BGS
 C name Class.RPG::BGS @name @pitch @volume | {A:[string]A p.[int]B v.[int]C|}
-@name string
+@name { string fileSelector Audio/BGS/ }
 @pitch int= 100
 @volume int= 100
 
