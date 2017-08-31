@@ -54,7 +54,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         subtool = 0;
         final LinkedList<UITextButton> options = new LinkedList<UITextButton>();
 
-        UITextButton baseTool = new UITextButton(FontSizes.atSubtoolTextHeight, TXDB.get("Tile Pen"), new Runnable() {
+        UITextButton baseTool = new UITextButton(FontSizes.atSubtoolTextHeight, TXDB.get("Pen"), new Runnable() {
             @Override
             public void run() {
                 for (UITextButton utb : options)
@@ -66,7 +66,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         options.add(baseTool);
         baseTool.state = true;
 
-        UIAppendButton uab = new UIAppendButton(TXDB.get("Rectangle"), baseTool, new Runnable() {
+        UIAppendButton uab = new UIAppendButton(TXDB.get("Rect."), baseTool, new Runnable() {
             @Override
             public void run() {
                 for (UITextButton utb : options)
