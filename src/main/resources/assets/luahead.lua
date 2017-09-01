@@ -194,7 +194,6 @@ local function loadRubyValue(file, symbolTable, gensym)
         object.int = readVI(file)
     elseif (object.type == "\"") or (object.type == "f") then
         local tl = readVI(file)
-        print(object.type .. tl)
         local text = readBlock(file, tl)
         object.text = text
     elseif (object.type == "u") then
