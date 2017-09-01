@@ -72,10 +72,11 @@ public class UIFontSizeConfigurator extends UIPanel {
         }) {
             @Override
             public void updateAndRender(int ox, int oy, double DeltaTime, boolean selected, IGrInDriver igd) {
+                Text = TXDB.get("Font: ");
                 if (UILabel.fontOverride != null) {
-                    Text = TXDB.get("Font: " + UILabel.fontOverride);
+                    Text += UILabel.fontOverride;
                 } else {
-                    Text = TXDB.get("Font: Internal w/fallbacks");
+                    Text += TXDB.get("Internal w/fallbacks");
                 }
                 super.updateAndRender(ox, oy, DeltaTime, selected, igd);
             }

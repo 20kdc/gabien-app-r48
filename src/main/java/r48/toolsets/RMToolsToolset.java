@@ -35,7 +35,6 @@ import java.util.*;
  */
 public class RMToolsToolset implements IToolset {
     final CMDB commandsEvent;
-    final SchemaElement commandEvent;
     final IRMMapSystem mapSystem;
 
     public RMToolsToolset(String gamepak) {
@@ -43,7 +42,6 @@ public class RMToolsToolset implements IToolset {
         mapSystem = (IRMMapSystem) AppMain.system;
 
         commandsEvent = AppMain.schemas.getCMDB(gamepak + "Commands.txt");
-        commandEvent = AppMain.schemas.getSDBEntry("EventCommandEditor");
     }
 
     @Override
@@ -65,7 +63,6 @@ public class RMToolsToolset implements IToolset {
                 // 5th January 2017. Here we go.
                 TXDB.get("Locate incomplete ECs"),
                 TXDB.get("Locate incomplete ECs (CommonEvents)"),
-                TXDB.get("Run EC Creation Sanity Check"),
                 TXDB.get("MEV/CEV Transcript Dump (no Troop/Item/etc.)"),
         }, new Runnable[] {
                 new Runnable() {
@@ -164,19 +161,6 @@ public class RMToolsToolset implements IToolset {
                                 }
                             }
                         AppMain.launchDialog(TXDB.get("Not found."));
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        // This won't deal with the really complicated disambiguator events, but it's something.
-                        for (int cc : commandsEvent.knownCommands.keySet()) {
-                            RubyIO r = SchemaPath.createDefaultValue(commandEvent, new RubyIO().setFX(0));
-                            SchemaPath sp = new SchemaPath(commandEvent, r).arrayHashIndex(new RubyIO().setFX(0), "BLAH");
-                            // this is bad, but it works well enough
-                            r.getInstVarBySymbol("@code").fixnumVal = cc;
-                            commandEvent.modifyVal(r, sp, false);
-                        }
                     }
                 },
                 new Runnable() {
