@@ -9,6 +9,8 @@ import r48.dbs.CMDB;
 import r48.dbs.TXDB;
 
 import java.io.PrintStream;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 /**
@@ -131,6 +133,17 @@ public class RMTranscriptDumper {
         for (int i = 0; i < arrVal.length; i++)
             s[i] = arrVal[i].toString();
         dumpBasicList(n, s, st);
+    }
+    public void dumpSVListHash(String n, RubyIO arrHashVal) {
+        LinkedList<Long> l = new LinkedList<Long>();
+        for (RubyIO rio : arrHashVal.hashVal.keySet())
+            l.add(rio.fixnumVal);
+        Collections.sort(l);
+        output.println("<h3>" + escapeHtml(n) + "</h3>");
+        output.print("<ul>");
+        for (Long ll : l)
+            output.println("<li>" + escapeHtml(ll + " : " + arrHashVal.getHashVal(new RubyIO().setFX(ll))) + "</li>");
+        output.println("</ul>");
     }
 
     public void dumpHTML(String s) {

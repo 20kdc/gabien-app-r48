@@ -13,6 +13,7 @@ import r48.AppMain;
 import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.dbs.TXDB;
 import r48.map.*;
 import r48.map.drawlayers.*;
 import r48.map.events.IEventGraphicRenderer;
@@ -142,7 +143,11 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
 
     @Override
     public void dumpCustomData(RMTranscriptDumper dumper) {
-
+        dumper.startFile("RPG_RT.ldb", TXDB.get("System data (of any importance, anyway)."));
+        RubyIO sys = AppMain.objectDB.getObject("RPG_RT.ldb");
+        dumper.dumpSVListHash("@switches", sys.getInstVarBySymbol("@switches"));
+        dumper.dumpSVListHash("@variables", sys.getInstVarBySymbol("@variables"));
+        dumper.endFile();
     }
 
     @Override
