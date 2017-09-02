@@ -17,6 +17,7 @@ import r48.io.R48ObjectBackend;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.map.systems.*;
+import r48.schema.OpaqueSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
@@ -34,6 +35,7 @@ import java.io.*;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
@@ -519,5 +521,58 @@ public class AppMain {
 
     public static void schemaHostImplRegister(SchemaHostImpl shi) {
         activeHosts.add(shi);
+    }
+
+    // Is this messy? Yes. Is it required? After someone lost some work to R48? YES IT DEFINITELY IS.
+
+    public static void performSystemDump(boolean emergency) {
+        RubyIO n = new RubyIO();
+        n.setHash();
+        for (RubyIO rio : objectDB.modifiedObjects) {
+            String s = objectDB.getIdByObject(rio);
+            if (s != null)
+                n.hashVal.put(new RubyIO().setString(s), rio);
+        }
+        if (!emergency) {
+            RubyIO n2 = new RubyIO();
+            n2.setString(TXDB.get("R48 Non-Emergency Backup File. This file can be used in place of r48.error.YOUR_SAVED_DATA.r48 in case of power failure or corrupting error. Assuming you actually save often it won't get too big - otherwise you need the reliability."));
+            RubyIO n3 = AdHocSaveLoad.load("r48.pfail.YOUR_SAVED_DATA");
+            if (n3 != null) {
+                // Unlink for disk space & memory usage reasons.
+                // Already this is going to eat RAM.
+                n3.rmIVar("@last");
+                n2.addIVar("@last", n3);
+            }
+            n2.addIVar("@current", n);
+            n = n2;
+        }
+        AdHocSaveLoad.save(emergency ? "r48.error.YOUR_SAVED_DATA" : "r48.pfail.YOUR_SAVED_DATA", n);
+    }
+    public static void reloadSystemDump() {
+        RubyIO sysDump = AdHocSaveLoad.load("r48.error.YOUR_SAVED_DATA");
+        if (sysDump == null) {
+            AppMain.launchDialog("The system dump was unloadable. It should be r48.error.YOUR_SAVED_DATA.r48");
+            return;
+        }
+        RubyIO possibleActualDump = sysDump.getInstVarBySymbol("@current");
+        if (possibleActualDump != null)
+            sysDump = possibleActualDump;
+        for (Map.Entry<RubyIO, RubyIO> rio : sysDump.hashVal.entrySet()) {
+            String name = rio.getKey().decString();
+            RubyIO root = objectDB.getObject(name);
+            if (root == null) {
+                root = new RubyIO();
+                root.setNull();
+                objectDB.newlyCreatedObjects.add(root);
+                objectDB.objectMap.put(name, new WeakReference<RubyIO>(root));
+            }
+            root.setDeepClone(rio.getValue());
+            objectDB.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(), root));
+        }
+        if (possibleActualDump != null) {
+            AppMain.launchDialog("Power failure dump loaded.");
+        } else {
+            AppMain.launchDialog("Error dump loaded.");
+        }
     }
 }

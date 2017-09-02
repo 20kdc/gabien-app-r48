@@ -28,9 +28,7 @@ p turnOff int_boolean
  In any case if running is false, seconds is irrelevant.
 124: Set timer1
 d Enables or disables the timer. If enabling, sets the time to a given value in seconds.
-p running int_boolean
-P 0 seconds int
-v 0 _ int
+X set_timer1_parameters
 
 125:@@Modify Gold{A: by [@operate_value_0]}
 p modNegate int_boolean

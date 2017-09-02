@@ -68,7 +68,8 @@ public class BasicToolset implements IToolset {
                         TXDB.get("Test Fonts"),
                         TXDB.get("Test Tones"),
                         TXDB.get("Show ODB Memstat"),
-                        TXDB.get("Dump Schemaside Translations")
+                        TXDB.get("Dump Schemaside Translations"),
+                        TXDB.get("Recover data from R48 error <INCREDIBLY DAMAGING>"),
                 }, new Runnable[] {
                         new Runnable() {
                             @Override
@@ -262,6 +263,22 @@ public class BasicToolset implements IToolset {
                                 psA.close();
                                 psB.close();
                                 AppMain.launchDialog(TXDB.get("Wrote Lang and Cmtx files (to be put in schema dir.)"));
+                            }
+                        },
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                AppMain.launchDialog("If the backup file was not created, invalid, or otherwise harmed, this can destroy more data than it saves.\nCheck *everything* before a final save.\nType 'I understand.' at the prompt if you WILL do this.");
+                                windowMaker.get().accept(new UITextPrompt(TXDB.get("SAFETY CONFIRMATION PROMPT"), new IConsumer<String>() {
+                                    @Override
+                                    public void accept(String s) {
+                                        // Don't translate this, don't lax the restrictions.
+                                        // If they aren't willing to put in the effort to type it,
+                                        //  then they won't be careful enough using this - and will probably ruin even more of their data.
+                                        if (s.equals("I understand."))
+                                            AppMain.reloadSystemDump();
+                                    }
+                                }));
                             }
                         }
                 }, FontSizes.menuTextHeight, false)

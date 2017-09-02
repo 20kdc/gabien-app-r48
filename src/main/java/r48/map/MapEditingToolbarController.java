@@ -114,11 +114,11 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                     return;
                 }
                 if (AppMain.theClipboard.type != 'u') {
-                    AppMain.launchDialog("Unable - the clipboard must contain a section of map data.\nThis is not a usertype.");
+                    AppMain.launchDialog("Unable - the clipboard must contain a section of map data - This is not a usertype.");
                     return;
                 }
                 if (!AppMain.theClipboard.symVal.equals("Table")) {
-                    AppMain.launchDialog("Unable - the clipboard must contain a section of map data.\nThis is not a Table.");
+                    AppMain.launchDialog("Unable - the clipboard must contain a section of map data - This is not a Table.");
                     return;
                 }
                 RubyTable rt = new RubyTable(AppMain.theClipboard.userVal);
