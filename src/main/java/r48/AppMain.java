@@ -31,8 +31,10 @@ import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
 
 import java.io.*;
+import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.WeakHashMap;
 
 /**
  * Pre-release development notice. 31 Dec, 2016.
@@ -93,6 +95,9 @@ public class AppMain {
     public static IImage noMap = GaBIEn.getImageCK("nomad.png", 0, 0, 0);
     public static ImageFXCache imageFXCache = null;
 
+    // All active schema hosts
+    private static LinkedList<ISchemaHost> activeHosts;
+
     public static IConsumer<Double> initializeAndRun(final String rp, final String gamepak, final IConsumer<UIElement> uiTicker) throws IOException {
         rootPath = rp;
         // initialize core resources
@@ -138,6 +143,8 @@ public class AppMain {
         // Initialize imageFX before doing anything graphical
         imageFXCache = new ImageFXCache();
 
+        activeHosts = new LinkedList<ISchemaHost>();
+
         // initialize UI
         final UIWindowView rootView = new UIWindowView() {
             @Override
@@ -178,6 +185,12 @@ public class AppMain {
                 pendingRunnables.clear();
                 for (Runnable r : runs)
                     r.run();
+
+                LinkedList<ISchemaHost> newActive = new LinkedList<ISchemaHost>();
+                for (ISchemaHost ac : activeHosts)
+                    if (ac.isActive())
+                        newActive.add(ac);
+                activeHosts = newActive;
             }
         };
     }
@@ -486,7 +499,25 @@ public class AppMain {
         mapContext = null;
         theClipboard = null;
         imageFXCache = null;
+        activeHosts = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
+    }
+
+    // Used for event selection boxes.
+    public static boolean currentlyOpenInEditor(RubyIO r) {
+        for (ISchemaHost ish : activeHosts) {
+            SchemaPath sp = ish.getCurrentObject();
+            while (sp != null) {
+                if (sp.targetElement == r)
+                    return true;
+                sp = sp.parent;
+            }
+        }
+        return false;
+    }
+
+    public static void schemaHostImplRegister(SchemaHostImpl shi) {
+        activeHosts.add(shi);
     }
 }

@@ -137,6 +137,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
         if (doLaunch) {
             windowOpen = true;
             hostWindows.accept(this);
+            AppMain.schemaHostImplRegister(this);
         }
         setBounds(getBounds());
     }
@@ -163,6 +164,16 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     }
 
     @Override
+    public boolean isActive() {
+        return windowOpen;
+    }
+
+    @Override
+    public SchemaPath getCurrentObject() {
+        return innerElem;
+    }
+
+    @Override
     public void launchOther(UIElement uiTest) {
         hostWindows.accept(uiTest);
     }
@@ -185,7 +196,10 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     @Override
     public void windowClosed() {
         windowOpen = false;
-        if (innerElem != null)
+        if (innerElem != null) {
             AppMain.objectDB.deregisterModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
+            innerElem = null;
+            innerElemEditor = null;
+        }
     }
 }

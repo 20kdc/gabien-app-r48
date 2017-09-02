@@ -21,4 +21,8 @@ public interface ISchemaHost {
     StuffRenderer getContextRenderer();
 
     ISchemaHost newBlank();
+
+    boolean isActive();
+
+    SchemaPath getCurrentObject();
 }

@@ -4,11 +4,14 @@
  */
 package r48.map.drawlayers;
 
+import gabien.GaBIEn;
 import gabien.IGrDriver;
+import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.events.IEventGraphicRenderer;
+import r48.ui.Art;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -56,8 +59,6 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
             }
         });
         for (RubyIO evI : ev) {
-            if (iegr.determineEventLayer(evI) != layer)
-                continue;
             int x = (int) evI.getInstVarBySymbol("@x").fixnumVal;
             int y = (int) evI.getInstVarBySymbol("@y").fixnumVal;
             if (x < camTX)
@@ -70,9 +71,17 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
                 continue;
             int px = (x * eTileSize) - camX;
             int py = (y * eTileSize) - camY;
-            RubyIO g = iegr.extractEventGraphic(evI);
-            if (g != null)
-                iegr.drawEventGraphic(g, px, py, igd);
+            if (layer == 0x7FFFFFFF) {
+                if (AppMain.currentlyOpenInEditor(evI))
+                    if ((((int) GaBIEn.getTime()) & 1) == 0)
+                        Art.drawSelectionBox(px - 1, py - 1, eTileSize + 2, eTileSize + 2, igd);
+            } else {
+                if (iegr.determineEventLayer(evI) != layer)
+                    continue;
+                RubyIO g = iegr.extractEventGraphic(evI);
+                if (g != null)
+                    iegr.drawEventGraphic(g, px, py, igd);
+            }
         }
     }
 }

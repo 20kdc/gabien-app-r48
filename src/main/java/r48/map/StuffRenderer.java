@@ -40,7 +40,7 @@ public class StuffRenderer {
         // 0: P
         // 1: E-1
         // 2, 3: T0, E0
-        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[(rt.planeCount * 2) + 2];
+        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[(rt.planeCount * 2) + 3];
         IImage panoImg = null;
         if (!vxaPano.equals(""))
             panoImg = iil.getImage(vxaPano, true);
@@ -51,6 +51,7 @@ public class StuffRenderer {
             layers[(i * 2) + 2] = new TileMapViewDrawLayer(rt, tlOrder[i], itr);
             layers[(i * 2) + 3] = new EventMapViewDrawLayer(i, events, igr, itr.getTileSize());
         }
+        layers[layers.length - 1] = new EventMapViewDrawLayer(0x7FFFFFFF, events, igr, itr.getTileSize());
         return layers;
     }
 }

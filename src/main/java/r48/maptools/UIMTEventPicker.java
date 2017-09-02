@@ -83,9 +83,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                     UIElement button = new UITextButton(FontSizes.eventPickerEntryTextHeight, nam, new Runnable() {
                         @Override
                         public void run() {
-                            // In practice I have seen that this should always go away after selection.
                             showEvent(evK.fixnumVal, mapView, evI);
-                            mapToolContext.accept(null);
                         }
                     });
                     button = new UIAppendButton(TXDB.get("MOV"), button, new Runnable() {

@@ -119,5 +119,15 @@ public class MagicalBindingSchemaElement extends SchemaElement {
         public ISchemaHost newBlank() {
             return trueHost.newBlank();
         }
+
+        @Override
+        public boolean isActive() {
+            return trueHost.isActive();
+        }
+
+        @Override
+        public SchemaPath getCurrentObject() {
+            return lastPathVirt;
+        }
     }
 }
