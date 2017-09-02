@@ -35,6 +35,8 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
+        if (layer == 0x7FFFFFFF)
+            return TXDB.get("Event Selection");
         return TXDB.get("Events");
     }
 

@@ -71,7 +71,11 @@ public class RMToolsToolset implements IToolset {
                         windowMaker.get().accept(new UITextPrompt(TXDB.get("Code?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
-                                int i = Integer.parseInt(s);
+                                Integer i = Integer.parseInt(s);
+                                if (i == null) {
+                                    AppMain.launchDialog(TXDB.get("Not a valid number."));
+                                    return;
+                                }
                                 for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
                                     // Find event!
                                     for (Map.Entry<RubyIO, RubyIO> event : rmd.map.getInstVarBySymbol("@events").hashVal.entrySet()) {

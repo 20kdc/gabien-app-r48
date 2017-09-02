@@ -92,7 +92,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             // <events>
             // layer 1 upper
             // layer 2 upper
-            layers[0] = new PanoramaMapViewDrawLayer(img, loopX, loopY, autoLoopX, autoLoopY, tbl.width, tbl.height, 320, 240, 16);
+            layers[0] = new PanoramaMapViewDrawLayer(img, loopX, loopY, autoLoopX, autoLoopY, tbl.width, tbl.height, 320, 240, 1);
             layers[1] = new R2kTileMapViewDrawLayer(tbl, tileRenderer, 0, false, tileset); // TSBelow
             layers[2] = new R2kTileMapViewDrawLayer(tbl, tileRenderer, 1, false, tileset); // ...
             layers[3] = new EventMapViewDrawLayer(0, events, eventRenderer, 16);

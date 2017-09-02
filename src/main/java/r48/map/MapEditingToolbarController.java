@@ -8,6 +8,7 @@ package r48.map;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
+import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.map.tiles.VXATileRenderer;
 import r48.maptools.*;
@@ -42,8 +43,8 @@ public class MapEditingToolbarController implements IEditingToolbarController {
             tools.add(button);
         }
         if (view.renderer.tileRenderer instanceof VXATileRenderer) {
-            final int thisButton = tools.size();
             tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Shadow/Region"), new Runnable() {
+                final int thisButton = tools.size();
                 @Override
                 public void run() {
                     clearTools(thisButton);
@@ -51,45 +52,40 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 }
             }).togglable());
         }
-        {
+        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Events"), new Runnable() {
             final int thisButton = tools.size();
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Events"), new Runnable() {
-                @Override
-                public void run() {
-                    clearTools(thisButton);
-                    viewGiver.accept(new UIMTEventPicker(viewGiver));
-                }
-            }).togglable());
-        }
-        {
+            @Override
+            public void run() {
+                clearTools(thisButton);
+                viewGiver.accept(new UIMTEventPicker(viewGiver));
+            }
+        }).togglable());
+        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Layer Visibility"), new Runnable() {
             final int thisButton = tools.size();
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Layer Visibility"), new Runnable() {
-                @Override
-                public void run() {
-                    clearTools(thisButton);
-                    UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize);
-                    int h = 0;
-                    for (int i = 0; i < view.renderer.layers.length; i++) {
-                        final int fi = i;
-                        UITextButton layerVis = new UITextButton(FontSizes.mapLayertabTextHeight, view.renderer.layers[i].getName(), new Runnable() {
+            @Override
+            public void run() {
+                clearTools(thisButton);
+                UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize);
+                int h = 0;
+                for (int i = 0; i < view.renderer.layers.length; i++) {
+                    final int fi = i;
+                    UITextButton layerVis = new UITextButton(FontSizes.mapLayertabTextHeight, view.renderer.layers[i].getName(), new Runnable() {
                             @Override
-                            public void run() {
-                                view.layerVis[fi] = !view.layerVis[fi];
+                            public void run() {view.layerVis[fi] = !view.layerVis[fi];
                             }
                         }).togglable();
-                        layerVis.state = view.layerVis[i];
-                        h += layerVis.getBounds().height;
-                        svl.panels.add(layerVis);
-                    }
-                    svl.setBounds(new Rect(0, 0, 320, h));
-                    viewGiver.accept(UIMTBase.wrap(viewGiver, svl, false));
+                    layerVis.state = view.layerVis[i];
+                    h += layerVis.getBounds().height;
+                    svl.panels.add(layerVis);
                 }
-            }).togglable());
-        }
+                svl.setBounds(new Rect(0, 0, 320, h));
+                viewGiver.accept(UIMTBase.wrap(viewGiver, svl, false));
+            }
+        }).togglable());
 
         // Utility buttons
 
-        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Tile From Map"), new Runnable() {
+        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Grab Tile"), new Runnable() {
             @Override
             public void run() {
                 // Select the current tile layer
@@ -97,17 +93,53 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 viewGiver.accept(new UIMTPickTile(viewGiver));
             }
         }));
-        {
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("..."), new Runnable() {
-                final int thisButton = tools.size();
 
-                @Override
-                public void run() {
-                    clearTools(thisButton);
-                    viewGiver.accept(new UIMTPopupButtons(viewGiver));
+        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("B.Copy"), new Runnable() {
+            final int thisButton = tools.size();
+
+            @Override
+            public void run() {
+                clearTools(thisButton);
+                viewGiver.accept(new UIMTCopyRectangle(viewGiver));
+            }
+        }));
+
+        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("B.Paste"), new Runnable() {
+            final int thisButton = tools.size();
+
+            @Override
+            public void run() {
+                if (AppMain.theClipboard == null) {
+                    AppMain.launchDialog("Unable - there is no clipboard.");
+                    return;
                 }
-            }).togglable());
-        }
+                if (AppMain.theClipboard.type != 'u') {
+                    AppMain.launchDialog("Unable - the clipboard must contain a section of map data.\nThis is not a usertype.");
+                    return;
+                }
+                if (!AppMain.theClipboard.symVal.equals("Table")) {
+                    AppMain.launchDialog("Unable - the clipboard must contain a section of map data.\nThis is not a Table.");
+                    return;
+                }
+                RubyTable rt = new RubyTable(AppMain.theClipboard.userVal);
+                if (rt.planeCount != viewGiver.getMapView().mapTable.planeCount) {
+                    AppMain.launchDialog("Unable - the map data must contain the same amount of layers for transfer.");
+                    return;
+                }
+                clearTools(thisButton);
+                viewGiver.accept(new UIMTPasteRectangle(viewGiver, rt));
+            }
+        }));
+
+        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("..."), new Runnable() {
+            final int thisButton = tools.size();
+
+            @Override
+            public void run() {
+                clearTools(thisButton);
+                viewGiver.accept(new UIMTPopupButtons(viewGiver));
+            }
+        }).togglable());
 
         // finish layout
         int maxH = 1;
