@@ -195,43 +195,38 @@ public class Application {
                         appTicker.accept(dT);
                     uiTicker.runTick(dT);
                 } catch (Exception e) {
-                    if (failed)
-                        throw new RuntimeException(e);
-                    e.printStackTrace();
-                    failed = true;
-                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    PrintStream ps = new PrintStream(baos, false, "UTF-8");
-                    ps.println(TXDB.get("An error has occurred in R48. This is always the result of a bug somewhere."));
-                    ps.println(TXDB.get("Details follow. If another error occurs, R48 will shutdown. Make a backup immediately, only then save."));
-                    e.printStackTrace(ps);
-                    String r = baos.toString("UTF-8").replaceAll("\r", "");
-                    UIHelpSystem uhs = new UIHelpSystem();
-                    for (String s : r.split("\n"))
-                        uhs.page.add(new UIHelpSystem.HelpElement('.', s.split(" ")));
-                    uhs.page.add(new UIHelpSystem.HelpElement('>', TXDB.get("0 Save error as file").split(" ")));
-                    UIScrollLayout scroll = new UIScrollLayout(true, FontSizes.generalScrollersize) {
-                        @Override
-                        public String toString() {
-                            return "Error...";
+                    if (!failed) {
+                        e.printStackTrace();
+                        failed = true;
+                        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        PrintStream ps = new PrintStream(baos, false, "UTF-8");
+                        ps.println(TXDB.get("An error has occurred in R48. This is always the result of a bug somewhere."));
+                        ps.println(TXDB.get("Details follow. If another error occurs, R48 will shutdown. Make a backup immediately, only then save."));
+                        e.printStackTrace(ps);
+                        try {
+                            OutputStream fos = GaBIEn.getOutFile("r48.error.txt");
+                            baos.writeTo(fos);
+                            fos.close();
+                        } catch (IOException ioe) {
+                            ps.println("The error could not be saved.");
                         }
-                    };
-                    uhs.onLinkClick = new IConsumer<Integer>() {
-                        @Override
-                        public void accept(Integer integer) {
-                            try {
-                                OutputStream fos = GaBIEn.getOutFile("output.txt");
-                                baos.writeTo(fos);
-                                fos.close();
-                            } catch (IOException ioe) {
-                                // *sigh* give up
-                                throw new RuntimeException(ioe);
+                        String r = baos.toString("UTF-8").replaceAll("\r", "");
+                        UIHelpSystem uhs = new UIHelpSystem();
+                        for (String s : r.split("\n"))
+                            uhs.page.add(new UIHelpSystem.HelpElement('.', s.split(" ")));
+                        UIScrollLayout scroll = new UIScrollLayout(true, FontSizes.generalScrollersize) {
+                            @Override
+                            public String toString() {
+                                return "Error...";
                             }
-                        }
-                    };
-                    scroll.panels.add(uhs);
-                    uhs.setBounds(new Rect(0, 0, 640, 480));
-                    scroll.setBounds(new Rect(0, 0, 640, 480));
-                    uiTicker.accept(scroll);
+                        };
+                        scroll.panels.add(uhs);
+                        uhs.setBounds(new Rect(0, 0, 640, 480));
+                        scroll.setBounds(new Rect(0, 0, 640, 480));
+                        uiTicker.accept(scroll);
+                    } else {
+                        e.printStackTrace();
+                    }
                 }
             }
             if (!uimtw.selfClose)

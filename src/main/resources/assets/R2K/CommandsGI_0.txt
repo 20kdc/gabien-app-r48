@@ -44,13 +44,13 @@ p text textbox_string
 10140: @@Show Choices{B: {B=0=no cancel|cancel choice: #B}| (20140/20141 follows)}
 d Shows a set of choices to the player. (editorChoices is for editor display purposes only.)
 p editorChoices string
-p 0|cancelIndex+1 int
+p 0|cancelIndex+1 choice_begin_magic
 I1
 
-20140: @@... On Choice:{B: {A=""=Cancel|#A} (index #B)}
+20140: @@... On Choice:{B: {B=4=Cancel|#A} (index #B)}
 d A choice. If the player selects this choice, the code between this and the next choice runs. If the text is blank, this is a 'cancel' choice (and should be last)
 p text string
-p choiceIndex roint
+p choiceIndex choice_index_magic
 C groupBehavior r2k_choice
 K10140
 i-1

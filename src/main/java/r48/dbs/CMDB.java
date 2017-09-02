@@ -246,12 +246,10 @@ public class CMDB {
 
                                 @Override
                                 public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
-                                    RubyIO tx = command.getInstVarBySymbol("@parameters").arrVal[0];
-
                                     RubyIO res = command.getInstVarBySymbol("@parameters").arrVal[1];
                                     long id = command.getInstVarBySymbol("@indent").fixnumVal;
                                     long nIdx = 0;
-                                    if (tx.strVal.length == 0) {
+                                    if (res.fixnumVal == 4) {
                                         // Always 4.
                                         nIdx = 4;
                                     } else {

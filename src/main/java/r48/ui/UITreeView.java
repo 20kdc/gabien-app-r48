@@ -42,7 +42,8 @@ public class UITreeView extends UIPanel {
             nodeWidth += te.innerElement.getBounds().height;
             total++;
         }
-        nodeWidth /= total;
+        if (total != 0)
+            nodeWidth /= total;
         for (TreeElement te : elements) {
             int x = nodeWidth * (te.indent + 1);
             int h = te.innerElement.getBounds().height;

@@ -158,14 +158,14 @@ p startSecs int
 
  operate_value has 3 parameters: Negate, const/var (int_boolean), operand (int_or_var)
 
-125:@@Gold{A: += [@operate_value_0]}
+125:@@Gold{A: += [@operate_value_0]| Add/Remove}
 d Give or take gold from the player.
 p negate int_boolean
 p amountIsVar int_boolean
 P 1 amountVar var_id
 v 0 amount int
 
-126:@@Item{A: #A += [@operate_value_1]}
+126:@@Item{A: #A += [@operate_value_1]| Add/Remove}
 d Give or take items from the player.
 p item item_id
 p negate int_boolean
@@ -173,21 +173,23 @@ p amountIsVar int_boolean
 P 2 amountVar var_id
 v 0 amount int
 
-127:@@Weapon{A: #A += [@operate_value_1]}
+127:@@Weapon{A: @#A += [@operate_value_1]| Add/Remove}
 d Give or take weapons from the player.
 p item weapon_id
 p negate int_boolean
 p amountIsVar int_boolean
 P 2 amountVar var_id
 v 0 amount int
+p includeEquipped boolean
 
-128:@@Armour{A: #A += [@operate_value_1]}
+128:@@Armour{A: #A += [@operate_value_1]| Add/Remove}
 d Give or take armour from the player.
 p item armour_id
 p negate int_boolean
 p amountIsVar int_boolean
 P 2 amountVar var_id
 v 0 amount int
+p includeEquipped boolean
 
 129:@@{A:{B=0=Remove actor @#A from party|Add actor @#A to party{C=0= without} resetting}|Add/remove actor to party}
 d Adds or removes a party member from/to the player's party.
@@ -519,6 +521,7 @@ p negateMod int_boolean
 p modIsVar int_boolean
 P 3 modVar var_id
 v 0 mod int
+p canKill boolean
 
 312:@@Actor{A: [@iterate_actor_var] MP += [@operate_value_2]| MP +=...}
 d Heal or harm a party member's magical talents.

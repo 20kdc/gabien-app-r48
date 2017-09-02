@@ -36,6 +36,8 @@ I1
 402: When Choice =$
 d Within a choice block, contains the code for a specific choice.
 p choice int
+ We don't actually care about this
+p _ string
 i-1
 I1
 K102
