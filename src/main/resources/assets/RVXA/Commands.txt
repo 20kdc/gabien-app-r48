@@ -153,8 +153,7 @@ p turnOff int_boolean
 
 124:@@{A:{A=1=Stop Timer|Start Timer at #B seconds}|Start/Stop Timer}
 d Stop or start a timer.
-p stop int_boolean
-p startSecs int
+X onoff_timer_parameters
 
  operate_value has 3 parameters: Negate, const/var (int_boolean), operand (int_or_var)
 
@@ -556,6 +555,7 @@ p negateMod int_boolean
 p modIsVar int_boolean
 P 3 modVar var_id
 v 0 mod int
+p showLevelUp boolean
 
 316:@@LVL of actor{A: [@iterate_actor_var] += [@operate_value_2]}
 d Give a party member free levels!
@@ -566,6 +566,7 @@ p negateMod int_boolean
 p modIsVar int_boolean
 P 3 modVar var_id
 v 0 mod int
+p showLevelUp boolean
 
 317:@@Modify parameter{C: @#C} in actor{A: [@iterate_actor_var] by [@operate_value_3]}
 d Modify a party member in confusing battle-related ways.
@@ -631,6 +632,7 @@ p negateMod int_boolean
 p modIsVar int_boolean
 P 2 modVar var_id
 v 0 mod int
+p canKill boolean
 
 332:@@MP of enemy{A: @#A += [@operate_value_1]}
 d Heal or harm an enemy's magical abilities.

@@ -468,8 +468,9 @@ public class AppMain {
                         }
                     }
                 }
-                launchDialog(TXDB.get("2k3 template synthesis complete."));
                 mapContext.loadMap(new RubyIO().setFX(1));
+                objectDB.ensureAllSaved();
+                launchDialog(TXDB.get("2k3 template synthesis complete."));
             }
         };
         windowMaker.accept(new UIAutoclosingPopupMenu(new String[] {
@@ -546,7 +547,11 @@ public class AppMain {
             n2.addIVar("@current", n);
             n = n2;
         }
+        if (emergency)
+            System.err.println("emergency dump is now actually occurring. Good luck.");
         AdHocSaveLoad.save(emergency ? "r48.error.YOUR_SAVED_DATA" : "r48.pfail.YOUR_SAVED_DATA", n);
+        if (emergency)
+            System.err.println("emergency dump is complete.");
     }
     public static void reloadSystemDump() {
         RubyIO sysDump = AdHocSaveLoad.load("r48.error.YOUR_SAVED_DATA");

@@ -88,7 +88,8 @@ p actor actor_id
 p unlearn boolean
 p skill skill_id
 
-319: Actor equips$$
+319: Actor$ equips$$
+p actor actor_id
 p type actor_equip_type
 P 0 equip int
 v 0 equipWeapon weapon_id

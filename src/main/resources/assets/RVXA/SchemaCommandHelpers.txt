@@ -131,3 +131,14 @@ e shop_item_type 0 item 1 weapon 2 armour
 e equipment_slot 0 weaponA 1 armourA/weaponB 2 armourB 3 armourC 4 armourD
 > equipment_id int
 E force_action_target TargetIdx -2 Last -1 Random
+
+.onoff_timer_parameters
+@indent indent
+@parameters arrayDAM 0 int onoff_timer_stop 0 onoff_timer_start
+
+.onoff_timer_start
+]0 stop int_boolean
+]1 startSecs int
+
+.onoff_timer_stop
+]0 stop int_boolean

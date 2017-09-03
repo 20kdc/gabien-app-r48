@@ -268,8 +268,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                AppMain.launchDialog("If the backup file was not created, invalid, or otherwise harmed, this can destroy more data than it saves.\nCheck *everything* before a final save.\nType 'I understand.' at the prompt if you WILL do this.");
-                                windowMaker.get().accept(new UITextPrompt(TXDB.get("SAFETY CONFIRMATION PROMPT"), new IConsumer<String>() {
+                                windowMaker.get().accept(new UITextPrompt(TXDB.get("Safety Confirmation Prompt"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         // Don't translate this, don't lax the restrictions.
@@ -279,6 +278,8 @@ public class BasicToolset implements IToolset {
                                             AppMain.reloadSystemDump();
                                     }
                                 }));
+                                AppMain.launchDialog(TXDB.get("If the backup file is invalid, wasn't created, or is otherwise harmed, this can destroy more data than it saves.") +
+                                        "\n" + TXDB.get("Check *everything* before a final save.") + "\n" + TXDB.get("Type 'I understand.' at the prompt behind this window if you WILL do this."));
                             }
                         }
                 }, FontSizes.menuTextHeight, false)
