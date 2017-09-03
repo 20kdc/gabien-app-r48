@@ -108,7 +108,8 @@ public class TimeWaster {
             if (un == null)
                 un = System.getenv("USER");
             if (un != null)
-                partingMessage = TXDB.get("Goodbye, #A.");
+                // don't translate
+                partingMessage += " " + un + ".";
             String[] pointMsgs = new String[] {
                     TXDB.get("Now, get back to work!"),
                     TXDB.get("Seriously? What are you doing?"),
@@ -134,10 +135,12 @@ public class TimeWaster {
             };
             if (points - 2 == pointMsgs.length - 1)
                 AdHocSaveLoad.save(".memory", new RubyIO().setFX(1957));
-            if (points - 2 == pointMsgs.length)
+            if (points - 2 == pointMsgs.length) {
                 points = -1;
-            // Any GitHub issues on this will be disregarded.
-            UILabel.drawString(igd, ox, oy + FontSizes.timeWasterTextHeight, pointMsgs[points - 2], false, FontSizes.timeWasterTextHeight);
+            } else {
+                // Any GitHub issues on this will be disregarded.
+                UILabel.drawString(igd, ox, oy + FontSizes.timeWasterTextHeight, pointMsgs[points - 2], false, FontSizes.timeWasterTextHeight);
+            }
         }
     }
 
