@@ -333,6 +333,8 @@ public class Application {
                     }
                 }
             }
+            if (failed != null)
+                break;
             if (!uimtw.selfClose)
                 break;
             appTicker = null;
