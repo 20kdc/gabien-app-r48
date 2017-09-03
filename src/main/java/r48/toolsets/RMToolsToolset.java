@@ -54,6 +54,7 @@ public class RMToolsToolset implements IToolset {
         return new UIElement[] {new UIPopupMenu(new String[] {
                 TXDB.get("Locate EventCommand in all Pages"),
                 TXDB.get("See If Autocorrect Modifies Anything"),
+                TXDB.get("Universal String Replace"),
                 // 3:24 PM, third day of 2017.
                 // This is now a viable option.
                 // 3:37 PM, same day.
@@ -109,7 +110,6 @@ public class RMToolsToolset implements IToolset {
                             objects.add(rio.idName);
                             objectSchemas.add("RPG::Map");
                         }
-                        Iterator<String> schemaIt = objectSchemas.iterator();
                         for (final String obj : objects) {
                             System.out.println(obj + "...");
                             RubyIO map = AppMain.objectDB.getObject(obj);
@@ -121,11 +121,52 @@ public class RMToolsToolset implements IToolset {
                                 }
                             };
                             AppMain.objectDB.registerModificationHandler(map, modListen);
-                            SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(schemaIt.next()), map);
+                            SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(objectSchemas.removeFirst()), map);
                             sp.editor.modifyVal(map, sp, false);
                             AppMain.objectDB.deregisterModificationHandler(map, modListen);
                             System.out.println(obj + " done.");
                         }
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        windowMaker.get().accept(new UITextPrompt(TXDB.get("Find?"), new IConsumer<String>() {
+                            @Override
+                            public void accept(final String find) {
+                                windowMaker.get().accept(new UITextPrompt(TXDB.get("Replace?"), new IConsumer<String>() {
+                                    @Override
+                                    public void accept(final String repl) {
+                                        LinkedList<String> objects = new LinkedList<String>();
+                                        LinkedList<String> objectSchemas = new LinkedList<String>();
+                                        for (String s : AppMain.schemas.listFileDefs()) {
+                                            objects.add(s);
+                                            objectSchemas.add("File." + s);
+                                        }
+                                        for (IRMMapSystem.RMMapData rio : mapSystem.getAllMaps()) {
+                                            objects.add(rio.idName);
+                                            objectSchemas.add("RPG::Map");
+                                        }
+                                        int total = 0;
+                                        String log = "";
+                                        for (String s : objects) {
+                                            RubyIO rio = AppMain.objectDB.getObject(s);
+                                            SchemaElement se = AppMain.schemas.getSDBEntry(objectSchemas.removeFirst());
+                                            if (rio != null) {
+                                                int count = universalStringReplace(rio, find, repl);
+                                                total += count;
+                                                if (count > 0) {
+                                                    SchemaPath sp = new SchemaPath(se, rio);
+                                                    sp.changeOccurred(false);
+                                                    log += "\n" + s + ": " + count;
+                                                }
+                                            }
+                                        }
+                                        AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Made #A total string adjustments."), new RubyIO().setFX(total)) + log);
+                                    }
+                                }));
+                            }
+                        }));
                     }
                 },
                 new Runnable() {
@@ -220,5 +261,26 @@ public class RMToolsToolset implements IToolset {
                 }
         }, FontSizes.menuTextHeight, false)
         };
+    }
+
+    // The core of the universal string replace function, useful for dealing with uncooperative filenames.
+    private int universalStringReplace(RubyIO rio, String find, String repl) {
+        // NOTE: Hash keys are not up for modification - hash values are.
+        int total = 0;
+        if (rio.type == '"')
+            if (rio.decString().equals(find)) {
+                rio.encString(repl);
+                total++;
+            }
+        if ((rio.type == '{') || (rio.type == '}'))
+            for (Map.Entry<RubyIO, RubyIO> me : rio.hashVal.entrySet())
+                total += universalStringReplace(me.getValue(), find, repl);
+        if (rio.type == '[')
+            for (RubyIO me : rio.arrVal)
+                total += universalStringReplace(me, find, repl);
+        if (rio.iVarVals != null)
+            for (RubyIO val : rio.iVarVals)
+                total += universalStringReplace(val, find, repl);
+        return total;
     }
 }
