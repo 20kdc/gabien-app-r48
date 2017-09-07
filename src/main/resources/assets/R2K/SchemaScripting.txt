@@ -15,6 +15,11 @@ e change_battle_parameter 0 maxHP 1 maxMP 2 atk 3 def 4 spi 5 agi
 
 e scripting_vehicletype 0 boat 1 ship 2 airShip
 
+ Weird undocumented 'feature' : -1 teleports party...
+ Thanks to Ghabry for finding out and notifying me about this:
+ <Ghabry> t20kdc: That's some implementation detail Cherry explained to me. Because the "Change Vehicle Command" checks if the party is in the affected vehicle and in that case moves the party, too. When the Party has no vehicle she has the vehicle ID -1. So "-1" results in the party being moved.
+e scripting_vehicletype_wp 0 boat 1 ship 2 airShip -1 party
+
 e change_sys_bgm_id 0 battle 1 victory 2 inn 3 boat 4 ship 5 airShip 6 gameOver
 e change_sys_sfx_id 0 cursor 1 act 2 cancel 3 buzzer 4 battle 5 escape 6 enemyAttack 7 enemyHurt 8 actorHurt 9 dodge 10 enemyDeath 11 item
 e change_sys_gfx_font 0 msGothic 1 msMincho

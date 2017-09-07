@@ -542,7 +542,7 @@ e begin_encounter_defeat 0 gameOver 1 executeDefeatCode
 
 .teleport_vehicle_vars
 ]0 _ string
-]1 vehicle scripting_vehicletype
+]1 vehicle scripting_vehicletype_wp
 ]2 positionVars int_boolean
 ]3 map var_id
 ]4 x var_id
@@ -551,7 +551,7 @@ e begin_encounter_defeat 0 gameOver 1 executeDefeatCode
 
 .teleport_vehicle_novars
 ]0 _ string
-]1 vehicle scripting_vehicletype
+]1 vehicle scripting_vehicletype_wp
 ]2 positionVars int_boolean
 ]3 map map_id
 ]4 x int
