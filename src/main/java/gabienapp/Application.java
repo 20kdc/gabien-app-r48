@@ -181,21 +181,13 @@ public class Application {
             // This is the identity of the error window that 'brings the system down softly'.
             UIElement failed = null;
 
-            // Notably, DO NOT create a secondary backup immediately
-            double nextSecondaryBackup = GaBIEn.getTime() + 60;
-            boolean showedBackupUnavailableWarning = false;
             // ok, so, 'what is going on with the flags', you might ask?
             // Well:
-            // backupAvailable/backupWasSecondary describe the state of the LAST backup made,
-            //  including emergency backups.
-            // Emergency backups always occur JUST BEFORE message writing time,
-            //  and secondary backups are disabled by emergency backups.
-            // showedBackupUnavailableWarning is just part of the secondary backup creator.
+            // backupAvailable describes the state of the LAST backup made
+            // Emergency backups always occur JUST BEFORE message writing time
             // weHaveSecondary indicates if any secondary backup ever completed during this run,
             //  which makes it worth keeping.
-            boolean backupWasSecondary = true;
             boolean backupAvailable = false;
-            boolean weHaveSecondary = false;
             while (uiTicker.runningWindows().size() > 0) {
                 double dT = GaBIEn.timeDelta(false);
                 while (dT < (globalMS / 1000d)) {
@@ -207,25 +199,6 @@ public class Application {
                     dT = GaBIEn.timeDelta(false);
                 }
                 dT = GaBIEn.timeDelta(true);
-                if (failed == null) {
-                    if (GaBIEn.getTime() > nextSecondaryBackup) {
-                        nextSecondaryBackup += 60;
-                        if (AppMain.objectDB != null) {
-                            try {
-                                // This will cause lag. It is *worth it*.
-                                AppMain.performSystemDump(false);
-                                weHaveSecondary = true;
-                                backupAvailable = true;
-                                backupWasSecondary = true;
-                            } catch (Exception e) {
-                                if (!showedBackupUnavailableWarning) {
-                                    showedBackupUnavailableWarning = true;
-                                    AppMain.launchDialog("R48's automatic backup system is not working - you may not have the necessary disk space. R48 will continue backup attempts regardless.");
-                                }
-                            }
-                        }
-                    }
-                }
                 try {
                     if (appTicker != null)
                         appTicker.accept(dT);
@@ -240,13 +213,11 @@ public class Application {
                         try {
                             AppMain.performSystemDump(true);
                             backupAvailable = true;
-                            backupWasSecondary = false;
                         } catch (Exception finalErr) {
                             fErr = finalErr;
                         }
                         System.err.println("This is the R48 'Everything is going down the toilet' display!");
                         System.err.println("Current status: BACKUP AVAILABLE? " + backupAvailable);
-                        System.err.println("                BACKUP SECONDARY? " + backupWasSecondary);
                         System.err.println("Preparing file...");
                         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         PrintStream ps = new PrintStream(baos, false, "UTF-8");
@@ -260,17 +231,7 @@ public class Application {
                             ps.println(TXDB.get("DO NOT MODIFY OR DESTROY THIS COPY UNLESS YOUR CURRENT WORK IS COMPLETELY SAFE, VALID, NON-CORRUPT AND BACKED UP."));
                             ps.println(TXDB.get("PREFERABLY FORWARD THE ERROR TEXT FILE (r48.error.txt) TO YOUR DEVELOPMENT GROUP."));
                             ps.println(TXDB.get("I wrote that in caps since those are the most important instructions for recovering your work."));
-                            if (backupWasSecondary) {
-                                ps.println(TXDB.get("Make a copy of r48.pfail.YOUR_SAVED_DATA.r48 - this contains data that changed between your last save and up to a minute ago."));
-                                ps.println(TXDB.get("Apparently the error corrupted your in-memory data, so you'll have lost about a minute's work, but this contains a backup."));
-                                ps.println(TXDB.get("You'll need to rename it to r48.error.YOUR_SAVED_DATA.r48 (if such a file already exists at this time, it is outdated or corrupted) to fix this."));
-                            } else {
-                                if (!weHaveSecondary) {
-                                    ps.println(TXDB.get("Make a copy of r48.error.YOUR_SAVED_DATA.r48 - it contains your data at the time of the error."));
-                                } else {
-                                    ps.println(TXDB.get("Make a copy of r48.pfail.YOUR_SAVED_DATA.r48 and r48.error.YOUR_SAVED_DATA.r48 - the second is less likely to work but more up-to-date."));
-                                }
-                            }
+                            ps.println(TXDB.get("Make a copy of r48.error.YOUR_SAVED_DATA.r48 - it contains your data at the time of the error."));
                             ps.println(TXDB.get("You can import the backup using 'Recover data from R48 error' - but copy the game first, as the data may be corrupt."));
                             ps.println(TXDB.get("You are encountering an error. Backup as much as you can, backup as often as you can."));
                         } else {

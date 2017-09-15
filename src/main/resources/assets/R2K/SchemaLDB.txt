@@ -14,7 +14,6 @@ e rpg_statattr_rank 0 A 1 B 2 C 3 D 4 E
 ]2 armour item_or_none_id
 ]3 helmet item_or_none_id
 ]4 accessory item_or_none_id
-+subwindow[ Additional Unknown ] arrayIxN 5 0 item_or_none_id
 
 .rpg_actor_parameter_block
 C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C DEF:#D SPI:#E AGI:#F

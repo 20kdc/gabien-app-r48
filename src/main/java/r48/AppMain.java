@@ -525,7 +525,7 @@ public class AppMain {
     }
 
     // Is this messy? Yes. Is it required? After someone lost some work to R48? YES IT DEFINITELY IS.
-
+    // Later: I've reduced the amount of backups performed because it appears spikes were occurring all the time.
     public static void performSystemDump(boolean emergency) {
         RubyIO n = new RubyIO();
         n.setHash();

@@ -34,10 +34,10 @@ public class Actor extends R2kObject {
     public IntegerR2kStruct initLevelExp = new IntegerR2kStruct(300);
     public IntegerR2kStruct eachLevelExpP = new IntegerR2kStruct(300);
     public IntegerR2kStruct eachLevelExpModC = new IntegerR2kStruct(0);
-    public ArrayR2kStruct<IntegerR2kStruct> equipment = new ArrayR2kStruct<IntegerR2kStruct>(null, new ISupplier<IntegerR2kStruct>() {
+    public ArrayR2kStruct<ShortR2kStruct> equipment = new ArrayR2kStruct<ShortR2kStruct>(null, new ISupplier<ShortR2kStruct>() {
         @Override
-        public IntegerR2kStruct get() {
-            return new IntegerR2kStruct(0);
+        public ShortR2kStruct get() {
+            return new ShortR2kStruct(0);
         }
     }, true);
     public IntegerR2kStruct noWeaponAttackAnim = new IntegerR2kStruct(1);

@@ -172,7 +172,7 @@ public class R48ObjectBackend implements IObjectBackend {
             RubyIO rio = loadValue(dis, objCache, strCache);
             dis.close();
             return rio;
-        } catch (IOException ioe) {
+        } catch (Exception ioe) {
             ioe.printStackTrace();
             return null;
         }
