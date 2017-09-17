@@ -425,10 +425,11 @@ e flashshake_screen_mode 0 temporary 1 begin 2 end
 
 .flash_screen_array
 ]0 _ string
-]1 red int= 128
-]2 green int= 128
-]3 blue int= 128
-]4 saturation int= 128
+ See GI_M 11320 for details
+]1 red% int= 200
+]2 green% int= 200
+]3 blue% int= 200
+]4 saturation% int= 100
 +r2kTonePicker ]1 ]2 ]3 ]4
 ]5 timeSecs/10 int
 ]6 wait int_boolean

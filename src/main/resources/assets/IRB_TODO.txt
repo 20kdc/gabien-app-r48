@@ -3,18 +3,21 @@
  * No warranty is provided, implied or otherwise.
 
 from highest priority to lowest:
-+ finish full 2k3 editor (Done, mostly)
-+ eventually turn editor into huge gelatinous monstrosity
++ finish full 2k3 editor (Done, but now playing catch-up with cherry's branch)
++ eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning subsection:
+- SUNDAY -
++ r2k3 1.12 / r2k0 <whatever>
 + Demo video
   (work on this was good testing and lead to v0.7-2, DO MORE OF THESE FULL TEST RUNS.
    also good R48 publicity)
-+ canonize P.P.P.
-+ r2k3 1.12 / r2k0 <whatever>
+- MONDAY -
+ Demo video upload
 + release v0.7.1
+- LATER -
 + r95 support? (ask Ghabry on this, has been documenting the format)
-+ CC0 for legality help
++ CC0/MIT? Confer with #easyrpg
 + release v0.8
 + Everything that happened to get to v0.8 probably hit testing issues, wait
 + ...

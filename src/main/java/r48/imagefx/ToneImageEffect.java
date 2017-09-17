@@ -15,16 +15,23 @@ import gabien.IImage;
 /**
  * NOTE: This doesn't emulate what appears to be an automatic gamma-adjust in RPG_RT & EasyRPG Player,
  * that actually makes this look completely off. I don't know how to emulate that.
+ * EDIT: It's actually based around 100 *sigh*
  * Created on 31/07/17.
  */
 public class ToneImageEffect implements IImageEffect {
     public final int ar, ag, ab, as;
 
     public ToneImageEffect(int i, int i1, int i2, int i3) {
-        ar = i;
-        ag = i1;
-        ab = i2;
-        as = i3;
+        this(i, i1, i2, i3, 255);
+    }
+
+    public ToneImageEffect(int i, int i1, int i2, int i3, int base) {
+        // base is the half-way value
+        base *= 2;
+        ar = (i * 255) / base;
+        ag = (i1 * 255) / base;
+        ab = (i2 * 255) / base;
+        as = (i3 * 255) / base;
     }
 
     @Override

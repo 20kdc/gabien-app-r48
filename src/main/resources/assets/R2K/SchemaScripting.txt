@@ -51,6 +51,7 @@ E choice_begin_magic choiceIndex+1 0 None 5 invisibleCancel
 > int_default_1 int= 1
 > int_default_50 int= 50
 > int_default_100 int= 100
+> int_default_200 int= 200
 
  For tones, really.
 > int_default_128 int= 128

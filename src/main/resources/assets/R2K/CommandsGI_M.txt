@@ -149,7 +149,7 @@ X move_picture_parameters
 11130: Erase Picture
 d Erases a picture from the screen.
 p _ string
-p pictureId picture_id
+X erase_picture_parameters
 
  ---
 
@@ -165,12 +165,13 @@ p global int_boolean
 d Make an event/the player flash in a given way for a given length of time (given in tenths of a second.)
 p _ string
 p char character_id
-p red int_default_128
-p green int_default_128
-p blue int_default_128
-p saturation int_default_128
-C r2kTonePicker 3 4 5 6
-p timeSecs/10 int
+ NOTE: Normally 200/200/200/100 is WRONG, but we want it here to make it actually "flash" while making it clear this is a percentage
+p red% int_default_200
+p green% int_default_200
+p blue% int_default_200
+C r2kTonePicker 2 3 4 5
+p saturation% int_default_100
+p timeSecs/10 int_default_1
 p wait int_boolean
 
 11340: Wait Until All MoveRoutes Complete

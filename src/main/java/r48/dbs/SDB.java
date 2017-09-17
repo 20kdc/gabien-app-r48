@@ -332,7 +332,7 @@ public class SDB {
                             final String gPath = args[point++];
                             final String bPath = args[point++];
                             final String sPath = args[point++];
-                            return new TonePickerSchemaElement(rPath, gPath, bPath, sPath);
+                            return new TonePickerSchemaElement(rPath, gPath, bPath, sPath, 100);
                         }
                         if (text.startsWith("table")) {
                             String eText = text;

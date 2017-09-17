@@ -41,6 +41,17 @@
 +comm_picture_array_foot
 +move_picture_array_foot
 
+.erase_picture_parameters
+@indent indent
+@parameters erase_picture_array
+
+e erase_picture_range 0 const/ppp 1 var 2 range
+.erase_picture_array
++]?2 choiceType_112 const/ppp erase_picture_range
+ I don't know if it actually crashes, consider this a motivation NOT to mess it up
++arrayDAM 2 int ]1 pictureId picture_id 1 ]1 pictureVarId var_id
++arrayDAM 2 int ]?3 _ ignoreme int 2 ]?3 rangeLast_112 crash picture_id
+
  --- Components
 
 e comm_picture_effectmode 0 none 1 rotate 2 waver
@@ -62,10 +73,10 @@ e comm_picture_effectmode 0 none 1 rotate 2 waver
 ]6 magnify int_default_100
 ]7 transparency int
 ]8 topTransparency int
-]9 red int= 128
-]10 green int= 128
-]11 blue int= 128
-]12 saturation int= 128
+]9 red int= 100
+]10 green int= 100
+]11 blue int= 100
+]12 saturation int= 100
 +r2kTonePicker ]9 ]10 ]11 ]12
 ]13 effectMode comm_picture_effectmode
 ]14 effectPower int

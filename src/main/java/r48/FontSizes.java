@@ -65,6 +65,9 @@ public class FontSizes {
     // TXDB.get("rmaCellTextHeight")
     public static int rmaCellTextHeight = 16;
 
+    // TXDB.get("tonePickerTextHeight")
+    public static int tonePickerTextHeight = 6;
+
     // TXDB.get("dialogWindowTextHeight")
     public static int dialogWindowTextHeight = 16;
     // TXDB.get("textDialogFieldTextHeight")

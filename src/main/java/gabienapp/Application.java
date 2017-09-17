@@ -240,7 +240,7 @@ public class Application {
                             ps.println(TXDB.get("Make a copy of the game immediately, then, if R48 is still around, try to save, but I will summarize by saying: it appears all hope is lost now."));
                             ps.println(TXDB.get("The reason for the failure to backup is below."));
                             ps.println(TXDB.get("----"));
-                            fErr.printStackTrace();
+                            fErr.printStackTrace(ps);
                             ps.println(TXDB.get("----"));
                         }
                         ps.println(TXDB.get("Error details follow."));
@@ -251,7 +251,7 @@ public class Application {
                             baos.writeTo(fos);
                             fos.close();
                             System.err.println("Save OK!");
-                        } catch (IOException ioe) {
+                        } catch (Exception ioe) {
                             ps.println("The error could not be saved.");
                             System.err.println("Failed to save!");
                         }

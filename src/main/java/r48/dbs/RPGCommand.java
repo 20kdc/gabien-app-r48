@@ -126,6 +126,7 @@ public class RPGCommand {
         public boolean hasSpritesheet;
         public String spritesheetId;
         public int spritesheetTargstr;
+        public int tpBase;
 
         public void applyTo(int idx, LinkedList<UIElement> elementList, RubyIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
             if (hasSpritesheet) {
@@ -133,7 +134,7 @@ public class RPGCommand {
                 elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
             if (hasTonepicker) {
-                SchemaElement scse = new TonePickerSchemaElement("]" + tpA, "]" + tpB, "]" + tpC, "]" + tpD);
+                SchemaElement scse = new TonePickerSchemaElement("]" + tpA, "]" + tpB, "]" + tpC, "]" + tpD, tpBase);
                 elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
         }

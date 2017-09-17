@@ -199,6 +199,7 @@ public class CMDB {
                     if (args[0].equals("r2kTonePicker")) {
                         // C r2kTonePicker 0 1 2 3
                         nextTag.hasTonepicker = true;
+                        nextTag.tpBase = 100;
                         nextTag.tpA = Integer.parseInt(args[1]);
                         nextTag.tpB = Integer.parseInt(args[2]);
                         nextTag.tpC = Integer.parseInt(args[3]);
