@@ -53,9 +53,7 @@ public class SDB {
     private LinkedList<String> remainingExpected = new LinkedList<String>();
 
     private HashMap<String, CMDB> cmdbs = new HashMap<String, CMDB>();
-    // Spritesheet definitions are quite opaque lists of numbers defining how a grid sheet should appear. See spriteSelector.
-    private HashMap<String, IFunction<String, ISpritesheetProvider>> spritesheets = new HashMap<String, IFunction<String, ISpritesheetProvider>>();
-    private HashMap<String, String> spritesheetN = new HashMap<String, String>();
+    public SDBHelpers helpers = new SDBHelpers();
 
     public SDB() {
         schemaDatabase.put("nil", new OpaqueSchemaElement());
@@ -77,6 +75,8 @@ public class SDB {
         schemaDatabase.put("stringBlobEditor", new StringBlobSchemaElement());
 
         schemaDatabase.put("internal_EPGD", new EPGDisplaySchemaElement());
+        // Note the deliberate avoidance of the expectation checker here.
+        schemaDatabase.put("internal_r2kPPPID", helpers.makePicPointerPatchID(new NameProxySchemaElement("var_id", false)));
 
         schemaTrueDatabase.putAll(schemaDatabase);
     }
@@ -226,7 +226,7 @@ public class SDB {
                                 int ind = Integer.parseInt(args[point++]);
                                 disambiguations.put(ind, get());
                             }
-                            return new ArrayDisambiguatorSchemaElement(disambiguatorIndex, disambiguatorType, backup, disambiguations);
+                            return new ArrayDisambiguatorSchemaElement(disambiguatorIndex, backup, disambiguations);
                         }
                         if (text.equals("flushCommandBuffer")) {
                             // time to flush it!
@@ -325,7 +325,7 @@ public class SDB {
                             final String varPath = args[point++];
                             final String imgPath = args[point++];
                             final String imgPfx = args[point++];
-                            return makeSpriteSelector(varPath, imgPath, imgPfx);
+                            return helpers.makeSpriteSelector(varPath, imgPath, imgPfx);
                         }
                         if (text.equals("r2kTonePicker")) {
                             final String rPath = args[point++];
@@ -608,135 +608,15 @@ public class SDB {
                         String text2 = args[point++];
                         while (!args[point].equals("]"))
                             text2 += " " + args[point++];
-                        point++;
-
-                        final String imgPfx = args[point];
-                        spritesheetN.put(args[point], TXDB.get(args[point] + "sprites", text2));
-                        if (args[point + 1].equals("r2kCharacter")) {
-                            spritesheets.put(args[point], new IFunction<String, ISpritesheetProvider>() {
-                                @Override
-                                public ISpritesheetProvider apply(String imgTxt) {
-                                    final boolean extended = imgTxt.startsWith("$");
-                                    int effectiveW = 288;
-                                    int effectiveH = 256;
-                                    final IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
-                                    if (extended) {
-                                        // EasyRPG Extended Mode
-                                        effectiveW = img.getWidth();
-                                        effectiveH = img.getHeight();
-                                    }
-                                    final int useW = effectiveW / 12;
-                                    final int useH = effectiveH / 8;
-
-                                    final int cellW = useW * 3;
-                                    final int cellH = useH * 4;
-                                    final int useX = useW;
-                                    final int useY = useH * 2;
-                                    final int rowCells = 4;
-                                    return createSpritesheetProviderCore(imgTxt, img, useW, useH, rowCells, cellW, cellH, useX, useY, -1);
-                                }
-                            });
-                        } else if (args[point + 1].equals("vxaCharacter")) {
-                            spritesheets.put(args[point], new IFunction<String, ISpritesheetProvider>() {
-                                @Override
-                                public ISpritesheetProvider apply(String imgTxt) {
-                                    final IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
-                                    int sprW = img.getWidth() / 12;
-                                    int sprH = img.getHeight() / 8;
-                                    int cellW = sprW;
-                                    int cellH = sprH;
-                                    int ovr = -1;
-                                    if (imgTxt.startsWith("!$") || imgTxt.startsWith("$")) {
-                                        // Character index doesn't work on these
-                                        sprW = img.getWidth() / 3;
-                                        sprH = img.getHeight() / 4;
-                                        cellW = 0;
-                                        cellH = 0;
-                                        ovr = 1;
-                                    }
-                                    int useX = sprW;
-                                    int useY = 0;
-                                    return createSpritesheetProviderCore(imgTxt, img, sprW, sprH, 4, cellW, cellH, useX, useY, ovr);
-                                }
-                            });
-                        } else {
-                            final int cellW = Integer.parseInt(args[point + 1]);
-                            final int cellH = Integer.parseInt(args[point + 2]);
-                            final int rowCells = Integer.parseInt(args[point + 3]);
-                            final int useX = Integer.parseInt(args[point + 4]);
-                            final int useY = Integer.parseInt(args[point + 5]);
-                            final int useW = Integer.parseInt(args[point + 6]);
-                            final int useH = Integer.parseInt(args[point + 7]);
-                            spritesheets.put(args[point], new IFunction<String, ISpritesheetProvider>() {
-                                @Override
-                                public ISpritesheetProvider apply(final String imgTxt) {
-                                    final IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
-                                    return createSpritesheetProviderCore(imgTxt, img, useW, useH, rowCells, cellW, cellH, useX, useY, -1);
-                                }
-                            });
-                        }
+                        point++; // skip ]
+                        // returns new point
+                        helpers.createSpritesheet(args, point, text2);
                     }
                 } else if (c != ' ') {
                     for (String arg : args)
                         System.err.print(arg + " ");
                     System.err.println("(The command " + c + " in the SDB is not supported.)");
                 }
-            }
-        });
-    }
-
-    private ISpritesheetProvider createSpritesheetProviderCore(final String imgTxt, final IImage img, final int useW, final int useH, final int rowCells, final int cellW, final int cellH, final int useX, final int useY, final int countOvr) {
-        return new ISpritesheetProvider() {
-            @Override
-            public int itemWidth() {
-                return useW;
-            }
-
-            @Override
-            public int itemHeight() {
-                return useH;
-            }
-
-            @Override
-            public int itemCount() {
-                // Use this to inform the user of image issues
-                if (imgTxt.equals(""))
-                    AppMain.launchDialog(TXDB.get("The image wasn't specified."));
-                if (countOvr != -1)
-                    return countOvr;
-                return ((img.getHeight() + (cellH - 1)) / cellH) * rowCells;
-            }
-
-            @Override
-            public int mapValToIdx(int itemVal) {
-                return itemVal;
-            }
-
-            @Override
-            public int mapIdxToVal(int idx) {
-                return idx;
-            }
-
-            @Override
-            public void drawItem(int t, int x, int y, IGrInDriver igd) {
-                int row = t / rowCells;
-                t %= rowCells;
-                igd.blitImage((t * cellW) + useX, (row * cellH) + useY, useW, useH, x, y, img);
-            }
-        };
-    }
-
-    public SchemaElement makeSpriteSelector(final String varPath, final String imgPath, final String imgPfx) {
-        final IFunction<String, ISpritesheetProvider> args2 = spritesheets.get(imgPfx);
-        return new SpritesheetCoreSchemaElement(spritesheetN.get(imgPfx), 0, new IFunction<RubyIO, RubyIO>() {
-            @Override
-            public RubyIO apply(RubyIO rubyIO) {
-                return PathSyntax.parse(rubyIO, varPath);
-            }
-        }, new IFunction<RubyIO, ISpritesheetProvider>() {
-            @Override
-            public ISpritesheetProvider apply(RubyIO rubyIO) {
-                return args2.apply(PathSyntax.parse(rubyIO, imgPath).decString());
             }
         });
     }

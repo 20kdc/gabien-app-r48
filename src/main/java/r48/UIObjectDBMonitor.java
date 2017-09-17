@@ -42,7 +42,7 @@ public class UIObjectDBMonitor extends UIElement {
                     AppMain.objectDB.objectMap.remove(s);
                 }
             }
-            UILabel.drawLabel(igd, getBounds().width, ox, oy, s + status, false, FontSizes.objectDBMonitorTextHeight);
+            UILabel.drawLabel(igd, getBounds().width, ox, oy, s + status, 0, FontSizes.objectDBMonitorTextHeight);
             oy += step;
         }
     }

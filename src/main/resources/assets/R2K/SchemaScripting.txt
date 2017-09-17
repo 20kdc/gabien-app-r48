@@ -55,7 +55,7 @@ E choice_begin_magic choiceIndex+1 0 None 5 invisibleCancel
  For tones, really.
 > int_default_128 int= 128
 
-> picture_id int+1
+> picture_id internal_r2kPPPID
 
  NOTE: This is in halfwidth characters.
 > textbox_string stringLen 50

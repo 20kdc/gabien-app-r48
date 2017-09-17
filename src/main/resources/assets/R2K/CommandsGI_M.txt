@@ -149,7 +149,7 @@ X move_picture_parameters
 11130: Erase Picture
 d Erases a picture from the screen.
 p _ string
-p pictureId int
+p pictureId picture_id
 
  ---
 

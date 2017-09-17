@@ -9,6 +9,7 @@ import gabien.ui.IConsumer;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.dbs.PathSyntax;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -40,7 +41,7 @@ public class HWNDSchemaElement extends SchemaElement {
             }
         };
         if (ivar != null) {
-            hsc.loadPage((int) target.getInstVarBySymbol(ivar).fixnumVal);
+            hsc.loadPage((int) PathSyntax.parse(target, ivar).fixnumVal);
         } else {
             hsc.loadPage(0);
         }

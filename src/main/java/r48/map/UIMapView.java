@@ -150,7 +150,7 @@ public class UIMapView extends UIElement implements IWindowElement {
 
         Rect plusRect = getZPlusRect();
         Rect minusRect = getZMinusRect();
-        UILabel.drawLabel(igd, UILabel.getRecommendedSize(status, FontSizes.mapPositionTextHeight).width, ox + plusRect.x + plusRect.width + getZoomButtonMargin(), oy + plusRect.y, status, false, FontSizes.mapPositionTextHeight);
+        UILabel.drawLabel(igd, UILabel.getRecommendedSize(status, FontSizes.mapPositionTextHeight).width, ox + plusRect.x + plusRect.width + getZoomButtonMargin(), oy + plusRect.y, status, 0, FontSizes.mapPositionTextHeight);
         Art.drawZoom(igd, true, ox + plusRect.x, oy + plusRect.y, plusRect.height);
         Art.drawZoom(igd, false, ox + minusRect.x, oy + minusRect.y, minusRect.height);
     }

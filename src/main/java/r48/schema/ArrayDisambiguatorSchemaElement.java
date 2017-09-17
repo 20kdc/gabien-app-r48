@@ -23,13 +23,11 @@ public class ArrayDisambiguatorSchemaElement extends SchemaElement {
     // -1: There is no disambiguator (value is assumed to be 0). You should use a disambiguatorType of nil here.
     // #hastilyAddedFeatures
     public int dIndex;
-    public SchemaElement dType;
     public SchemaElement defaultType;
     public HashMap<Integer, SchemaElement> dTable;
 
-    public ArrayDisambiguatorSchemaElement(int disambiguatorIndex, SchemaElement disambiguatorType, SchemaElement backup, HashMap<Integer, SchemaElement> disambiguations) {
+    public ArrayDisambiguatorSchemaElement(int disambiguatorIndex, SchemaElement backup, HashMap<Integer, SchemaElement> disambiguations) {
         dIndex = disambiguatorIndex;
-        dType = disambiguatorType;
         defaultType = backup;
         dTable = disambiguations;
     }

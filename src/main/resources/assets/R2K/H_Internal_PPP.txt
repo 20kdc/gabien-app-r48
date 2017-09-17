@@ -1,0 +1,17 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+ This is referenced by SDBHelpers.
+
+
+0: Constant Picture ID
+. The ID given is the picture's number.
+1: Picture ID From Variable
+. The picture ID is retrieved from the variable.
+2: Picture ID & Image From Variables
+. The picture ID is retrieved from the variable.
+. If this is a show command, the last 4 characters of the image name are replaced with the value of the variable after the given one.
+. Thus, if the variable chosen was variable 6, with the value 1, and the variable after (variable 7) had the value 2, and the image was 'tomcat':
+. 1. The image would be "to0002"
+. 2. The picture ID would be 1.
