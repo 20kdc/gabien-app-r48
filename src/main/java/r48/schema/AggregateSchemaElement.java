@@ -23,15 +23,22 @@ import java.util.LinkedList;
  * Created on 12/29/16.
  */
 public class AggregateSchemaElement extends SchemaElement {
-    public LinkedList<SchemaElement> aggregate = new LinkedList<SchemaElement>();
+    public final LinkedList<SchemaElement> aggregate = new LinkedList<SchemaElement>();
+    public final SchemaElement impersonatorScroll;
 
     public AggregateSchemaElement(SchemaElement[] ag) {
         Collections.addAll(aggregate, ag);
+        impersonatorScroll = this;
+    }
+    public AggregateSchemaElement(SchemaElement[] ag, SchemaElement fake) {
+        Collections.addAll(aggregate, ag);
+        impersonatorScroll = fake;
     }
 
     @Override
     public UIElement buildHoldingEditor(RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
+        // Possibly question if this aggregate is useless???
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, impersonatorScroll, target);
         // Assist with the layout of "property grids".
         int maxFW = 1;
         for (SchemaElement ise : aggregate) {
@@ -66,6 +73,10 @@ public class AggregateSchemaElement extends SchemaElement {
             ise.modifyVal(target, i, setDefault);
     }
 
+    // NOTE: In *general* elem should be the SchemaElement.
+    // HOWEVER, if the object is regen-on-change w/ subwindows,
+    //  this causes awful scroll loss, so instead nab the regenerator (it's not like the regenerator uses it for anything)
+    // PREFERABLY avoid regeneration of schema objects that are reusable (RPGCommandSchemaElement was fixed this way)
     public static UIScrollLayout createScrollSavingSVL(final SchemaPath path, final ISchemaHost host, final SchemaElement elem, final RubyIO target) {
         final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(elem, target);
         final SchemaPath keyStoragePath = path.findLast();

@@ -7,6 +7,7 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import r48.RubyIO;
+import r48.dbs.PathSyntax;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -18,15 +19,15 @@ import java.util.HashMap;
  * Note that the element MUST be an enum - enums trigger a UI rebuild when they're set.
  * Created on 12/31/16.
  */
-public class ArrayDisambiguatorSchemaElement extends SchemaElement {
+public class DisambiguatorSchemaElement extends SchemaElement {
     // Special values:
-    // -1: There is no disambiguator (value is assumed to be 0). You should use a disambiguatorType of nil here.
+    // "$fail": There is no disambiguator. Implemented via PathSyntax.
     // #hastilyAddedFeatures
-    public int dIndex;
+    public String dIndex;
     public SchemaElement defaultType;
     public HashMap<Integer, SchemaElement> dTable;
 
-    public ArrayDisambiguatorSchemaElement(int disambiguatorIndex, SchemaElement backup, HashMap<Integer, SchemaElement> disambiguations) {
+    public DisambiguatorSchemaElement(String disambiguatorIndex, SchemaElement backup, HashMap<Integer, SchemaElement> disambiguations) {
         dIndex = disambiguatorIndex;
         defaultType = backup;
         dTable = disambiguations;
@@ -41,33 +42,31 @@ public class ArrayDisambiguatorSchemaElement extends SchemaElement {
     }
 
     private int getDisambigIndex(RubyIO target) {
-        if (dIndex == -1)
+        if (dIndex == null)
             return 0;
-        // This means bad news.
-        if (target.arrVal.length <= dIndex)
+        target = PathSyntax.parse(target, dIndex);
+        if (target == null)
             return 0x7FFFFFFF;
-        return (int) target.arrVal[dIndex].fixnumVal;
+        return (int) target.fixnumVal;
     }
 
     private SchemaElement getSchemaElement(int dVal) {
         SchemaElement r = dTable.get(dVal);
         if (r == null)
             r = defaultType;
+        if (r == null)
+            r = new AggregateSchemaElement(new SchemaElement[0]);
         return r;
+    }
+
+    // used by OCSE
+    public SchemaElement getDisambiguation(RubyIO target) {
+        return getSchemaElement(getDisambigIndex(target));
     }
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path2, boolean setDefault) {
         final SchemaPath path = path2.tagSEMonitor(target, this);
-        // ensure target is an array (and that's about it, since this is defined by array elements)
-        setDefault = IntegerSchemaElement.ensureType(target, '[', setDefault);
-        boolean modified = false;
-        if (setDefault || (target.arrVal == null)) {
-            target.arrVal = new RubyIO[dIndex + 1];
-            for (int i = 0; i < target.arrVal.length; i++)
-                target.arrVal[i] = new RubyIO().setNull();
-            modified = true;
-        }
 
         int iv = getDisambigIndex(target);
         if (iv == 0x7FFFFFFF)
@@ -80,7 +79,5 @@ public class ArrayDisambiguatorSchemaElement extends SchemaElement {
             System.out.println("ArrayDisambiguator Debug: " + iv);
             throw e;
         }
-        if (modified)
-            path.changeOccurred(true);
     }
 }

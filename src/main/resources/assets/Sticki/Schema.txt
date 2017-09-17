@@ -15,6 +15,29 @@ s ltp_type concurrent waitOn
  Example of new conditionals
 C name Interp.ltp_type $ | {@#A|:concurrent|Concurrent|:waitOn|Wait On...|Unknown #A}
 
+.ams_setting_host
+@indent indent
+@parameters ams_setting
+
+ Complex array type for testing KII mechanics
+ Notably this does "iffy" stuff like use a DA when no array exists, for testing purposes -
+  because reducing the amount of ways a developer can end up having an "oversight" that screws up the whole thing...
+ That's important.
+
+.ams_setting
++lengthAdjust[ Single ] 2
++lengthAdjust[ Range ] 3
++DA{ $length ams_setting_unk 2 ams_setting_single 3 ams_setting_range }
+.ams_setting_unk
+]0 testID string
+.ams_setting_single
+]0 testID string
+]1 target int
+.ams_setting_range
+]0 testID string
+]1 first int
+]2 last int
+
 .NoteEditor_Most
 @indent indent
 @parameters array 0 OPAQUE

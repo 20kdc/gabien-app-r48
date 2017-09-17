@@ -34,8 +34,18 @@ public class PathSyntax {
             workingArg = workingArg.substring(subcom.length());
             switch (f) {
                 case '$':
-                    if (subcom.length() != 0)
-                        throw new RuntimeException("unsure what to do here, $ doesn't accept additional");
+                    if (subcom.equals("length")) {
+                        // This is used for length disambiguation.
+                        if (res.arrVal == null) {
+                            res = null;
+                        } else {
+                            res = new RubyIO().setFX(res.arrVal.length);
+                        }
+                    } else if (subcom.equals("fail")) {
+                        return null;
+                    } else if (subcom.length() != 0) {
+                        throw new RuntimeException("$-command must be '', 'length'");
+                    }
                     break;
                 case '@':
                     res = res.getInstVarBySymbol("@" + subcom);

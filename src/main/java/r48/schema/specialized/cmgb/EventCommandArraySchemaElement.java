@@ -37,16 +37,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
 
     public EventCommandArraySchemaElement(SchemaElement a, SchemaElement b, CMDB db, boolean indentControl) {
         super(0, false, 0);
-        baseElement = new RPGCommandSchemaElement(a, b, db, indentControl);
+        baseElement = new RPGCommandSchemaElement(a, b, db, indentControl, true);
         // gets rid of subwindows & proxies
         database = db;
-    }
-
-    public RPGCommandSchemaElement getPureRC() {
-        SchemaElement eventCommand = baseElement;
-        while (eventCommand instanceof IProxySchemaElement)
-            eventCommand = ((IProxySchemaElement) eventCommand).getEntry();
-        return (RPGCommandSchemaElement) eventCommand;
     }
 
     @Override
@@ -163,7 +156,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         });
     }
 
-    private SchemaElement getGroupElement(RubyIO[] arr, final int start) {
+    private SchemaElement getGroupElement(RubyIO[] arr, final int start, final SchemaElement binding) {
         // Uhoh.
         final int length;
         boolean addRemove = false;
@@ -190,7 +183,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         }
         int iSize = addRemove ? 1 : 0;
         SchemaElement[] group = new SchemaElement[length + iSize];
-        RPGCommandSchemaElement rcse = getPureRC();
+        RPGCommandSchemaElement rcse = baseElement;
         for (int i = 0; i < group.length - iSize; i++) {
             boolean elemAddRemove = addRemove && (i != 0);
             group[i] = new ArrayElementSchemaElement(start + i, "", rcse, elemAddRemove ? "" : null, elemAddRemove);
@@ -224,7 +217,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 }
             };
         }
-        return new AggregateSchemaElement(group);
+        return new AggregateSchemaElement(group, binding);
     }
 
     @Override
@@ -232,12 +225,12 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         return new SubwindowSchemaElement(new SchemaElement() {
             @Override
             public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-                return getGroupElement(target.arrVal, start).buildHoldingEditor(target, launcher, path);
+                return getGroupElement(target.arrVal, start, this).buildHoldingEditor(target, launcher, path);
             }
 
             @Override
             public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-                getGroupElement(target.arrVal, start).modifyVal(target, path, setDefault);
+                getGroupElement(target.arrVal, start, this).modifyVal(target, path, setDefault);
             }
         }, new IFunction<RubyIO, String>() {
             @Override

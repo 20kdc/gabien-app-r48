@@ -11,7 +11,6 @@ import gabien.ui.IFunction;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.*;
-import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.LowerBoundIntegerSchemaElement;
 import r48.schema.specialized.HWNDSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
@@ -177,7 +176,7 @@ class SDBHelpers {
                         return TXDB.get("Explain this picture mode...");
                     }
                 }),
-                new ArrayDisambiguatorSchemaElement(0, new ArrayElementSchemaElement(1, TXDB.get("id"), new LowerBoundIntegerSchemaElement(1, 1), null, false), disambiguations),
+                new DisambiguatorSchemaElement("]0", new ArrayElementSchemaElement(1, TXDB.get("id"), new LowerBoundIntegerSchemaElement(1, 1), null, false), disambiguations),
         });
         return new MagicalBindingSchemaElement(new IMagicalBinder() {
             @Override

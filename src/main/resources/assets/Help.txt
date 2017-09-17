@@ -331,42 +331,6 @@ p 4
 > 11 Index Page Of Event Editing Details
 > 21 R2k Backend Quickstart
 
-20: So You Want To Use KII
-. I'll just cut to the chase. There are 3 forms of K.I.I.
-. The system can't figure out which is which, so I've put a bunch of optional parameters in.
-. Add/remove as required.
-. Note that yes/no parameters are always 1 for yes, 0 for no, and are considered 0 if omitted.
-. The first 2 parameters are always:
-.
-. P1.The result variable ID
-. P2.Should the system wait for a key?
-. There is a gap here... and then:
-. P4.Should the decision key should be checked?
-. P5.Should the cancel key should be checked?
-.
-. 5-parameter form (Rpg2k < 1.50):
-. P3.Should the directional keys be checked?
-.
-. 6 to 10-parameter form (Rpg2k >= 1.50):
-. P3 has unknown meaning.
-. P6.Should the shift key be checked?
-. P7.Should the down key be checked?
-. P8.Should the left key be checked?
-. P9.Should the right key be checked?
-. P10.Should the up key be checked?
-.
-. 11 to 14-parameter form (Rpg2k3):
-. P3 has unknown meaning.
-. P6.Should the number keys be checked?
-. P7.Should the arithmetic keys be checked?
-. P8.The timer ID for P9. Can be 0 or 1.
-. P9.Should the amount of time taken be recorded?
-. P10.Should the shift key be checked?
-. P11.Should the down key be checked?
-. P12.Should the left key be checked?
-. P13.Should the right key be checked?
-. P14.Should the up key be checked?
-
 21: R2k Backend Quickstart
 . RPG Maker 2000/2003 is, as you probably know, emulated by the (unrelated to me) open-source EasyRPG Player project.
 . As RPG Maker 2000/2003 does not have any Core Scripts to deal with, it means that with a full editor, games can be created from scratch.

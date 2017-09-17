@@ -36,7 +36,7 @@ e set_variables_enemyprop 0 hp 1 sp 2 maxHp 3 maxSp 4 atk 5 def 6 spi 7 agi
 .set_variables_base
 C name set_variables_base ]1 ]2 ]3 ]4 | {A=0=Var#[@[var_id]B#]}{A=1=Vars#[@[var_id]B .. @[var_id]C#]}{A=2=Var#[Var#[@[var_id]B#]#]} [set_variables_op]D
 ]1 targetType set_variables_target
-+arrayDAM 1 set_variables_source set_variables_base_targ 1 set_variables_base_targ_r 2 set_variables_base_targ_i
++DA{ ]1 set_variables_base_targ 1 set_variables_base_targ_r 2 set_variables_base_targ_i }
 ]4 operation set_variables_op
 ]5 source set_variables_source
 
@@ -93,7 +93,7 @@ C name set_variables_battle ]6 ]7 | EnemyIdx: #A -> [set_variables_enemyprop]B
 .set_variables_parameters
 C name set_variables_parameters ]5 | : [@set_variables_base] {A=0=[@set_variables_int]}{A=1=[@set_variables_var]}{A=2=[@set_variables_indirect]}{A=3=[@set_variables_random]}{A=4=[@set_variables_item]}{A=5=[@set_variables_actor]}{A=6=[@set_variables_event]}{A=7=[@set_variables_gameinfo]}{A=8=[@set_variables_battle]}
 @indent indent
-@parameters arrayDAM 5 set_variables_source set_variables_base 0 set_variables_int 1 set_variables_var 2 set_variables_indirect 3 set_variables_random 4 set_variables_item 5 set_variables_actor 6 set_variables_event 7 set_variables_gameinfo 8 set_variables_battle
+@parameters DA{ ]5 set_variables_base 0 set_variables_int 1 set_variables_var 2 set_variables_indirect 3 set_variables_random 4 set_variables_item 5 set_variables_actor 6 set_variables_event 7 set_variables_gameinfo 8 set_variables_battle }
 
  ___ ___
  |   | /
@@ -120,7 +120,7 @@ C name cbranch_switch ]2 ]3 | Switch @[switch_id]A {B=0=ON|OFF}
 ]2 switch switch_id
 ]3 invert int_boolean
 
-> cbranch_varcomp arrayDAM 3 cbranch_varcomp cbranch_varcomp_var 0 cbranch_varcomp_raw
+> cbranch_varcomp DA{ ]3 cbranch_varcomp_var 0 cbranch_varcomp_raw }
 C name cbranch_varcomp ]2 ]5 ]3 ]4 | Var#[@[var_id]A#] [cbranch_varcomp_e]B {C=0=#D|Var#[@[var_id]D#]}
 
 .cbranch_varcomp_var
@@ -182,7 +182,7 @@ C name cbranch_actorprop | Actor (...)
 ]4 value state_id
 
 
-> cbranch_actorprop arrayDAM 3 cbranch_actorprop_e cbranch_actorprop_base 1 cbranch_actorprop_name 2 cbranch_actorprop_int 3 cbranch_actorprop_int 4 cbranch_actorprop_skill 5 cbranch_actorprop_item 6 cbranch_actorprop_state
+> cbranch_actorprop DA{ ]3 cbranch_actorprop_base 1 cbranch_actorprop_name 2 cbranch_actorprop_int 3 cbranch_actorprop_int 4 cbranch_actorprop_skill 5 cbranch_actorprop_item 6 cbranch_actorprop_state }
 
 .cbranch_chardir
 C name cbranch_chardir | Char.Dir. (...)
@@ -209,7 +209,7 @@ C name cbranch_cherry | Cherry Ext. (...)
 .cbranch_parameters
 C name cbranch_parameters ]1 | Conditional: {A=0=[@cbranch_switch]}{A=1=[@cbranch_varcomp]}{A=2=[@cbranch_timer1]}{A=3=[@cbranch_goldcomp]}{A=4=[@cbranch_itemcomp]}{A=5=[@cbranch_actorprop]}{A=6=[@cbranch_chardir]}{A=7=[@cbranch_vehicle]}{A=8=[@cbranch_base]}{A=9=[@cbranch_base]}{A=10=[@cbranch_timer2]}{A=11=[@cbranch_cherry]}
 @indent indent
-@parameters arrayDAM 1 cbranch_type cbranch_base 0 cbranch_switch 1 cbranch_varcomp 2 cbranch_timer1 3 cbranch_goldcomp 4 cbranch_itemcomp 5 cbranch_actorprop 6 cbranch_chardir 7 cbranch_vehicle 8 cbranch_base 9 cbranch_base 10 cbranch_timer2 11 cbranch_cherry
+@parameters DA{ ]1 cbranch_base 0 cbranch_switch 1 cbranch_varcomp 2 cbranch_timer1 3 cbranch_goldcomp 4 cbranch_itemcomp 5 cbranch_actorprop 6 cbranch_chardir 7 cbranch_vehicle 8 cbranch_base 9 cbranch_base 10 cbranch_timer2 11 cbranch_cherry }
 
  --- /-\
   |  | |
@@ -223,7 +223,7 @@ e timer_operation_type 0 setTime 1 setFlagsAndStart 2 stop
 
 .timer_operation_parameters
 @indent indent
-@parameters arrayDAM 1 timer_operation_type timer_operation_base 0 timer_operation_set 1 timer_operation_start
+@parameters DA{ ]1 timer_operation_base 0 timer_operation_set 1 timer_operation_start }
 
 .timer_operation_base
 ]0 _ string
@@ -233,7 +233,7 @@ e timer_operation_type 0 setTime 1 setFlagsAndStart 2 stop
 .timer_operation_set
 +timer_operation_base
 ]2 secondsIsVar int_boolean
-+arrayDAM 2 int_boolean timer_operation_set_var 0 timer_operation_set_int
++DA{ ]2 timer_operation_set_var 0 timer_operation_set_int }
 
 .timer_operation_set_var
 ]3 secondsVar var_id
@@ -259,7 +259,7 @@ e timer_operation_type 0 setTime 1 setFlagsAndStart 2 stop
 
 .move_event_parameters
 @indent indent
-@parameters arrayDAM -1 nil move_event_array
+@parameters move_event_array
 +optIV @move_commands MoveListEditor
 
 .move_event_array
@@ -299,11 +299,11 @@ E wait_secTenthCount 10ths_of_a_second 0 waitForCondition2k3
 
 .wait_illogical_parameters
 @indent indent
-@parameters arrayDAM -1 nil wait_array
+@parameters wait_array
 .wait_array
 ]0 _ string
 ]1 secTenthCount wait_secTenthCount
-+arrayDAM 1 int wait_illogical_nowfc 0 wait_illogical_wfc
++DA{ ]1 wait_illogical_nowfc 0 wait_illogical_wfc }
 
  /- +-
  |  +-
@@ -315,17 +315,17 @@ e change_equipment_slot_id 0 weapon 1 shield 2 armour 3 helmet 4 accessory
 
 .change_equipment_parameters
 @indent indent
-@parameters arrayDAM 3 int change_equipment_base 0 change_equipment_add 1 change_equipment_remove
+@parameters DA{ ]3 change_equipment_base 0 change_equipment_add 1 change_equipment_remove }
 .change_equipment_base
 ]0 _ string
 ]1 targetMode get_actors_mode
-+arrayDAM 1 int ]2 _ int 1 ]2 actor actor_id 2 ]2 actorVar var_id
++DA{ ]1 ]2 _ int 1 ]2 actor actor_id 2 ]2 actorVar var_id }
 ]3 remove int_boolean
 
 .change_equipment_add
 +change_equipment_base
 ]4 itemIsVar int_boolean
-+arrayDAM 4 int ]5 itemVar var_id 0 ]5 item item_id
++DA{ ]4 ]5 itemVar var_id 0 ]5 item item_id }
 
 .change_equipment_remove
 +change_equipment_base
@@ -342,7 +342,7 @@ e teleport_event_dir 0 ignored 1 up 2 right 3 down 4 left
 
 .teleport_event_parameters
 @indent indent
-@parameters arrayDAM 1 int teleport_event 0 teleport_event_novars
+@parameters DA{ ]1 teleport_event 0 teleport_event_novars }
 
 .teleport_event
 ]0 _ string
@@ -367,7 +367,7 @@ e teleport_event_dir 0 ignored 1 up 2 right 3 down 4 left
 
 .ar_teleport_target_parameters
 @indent indent
-@parameters arrayDAM 1 int ar_teleport_target_remove 0 ar_teleport_target_add
+@parameters DA{ ]1 ar_teleport_target_remove 0 ar_teleport_target_add }
 
 .ar_teleport_target_remove
 ]0 _ string
@@ -381,35 +381,7 @@ e teleport_event_dir 0 ignored 1 up 2 right 3 down 4 left
 ]3 x int
 ]4 y int
 ]5 requireSwitch int_boolean
-+arrayDAM 5 int ]6 switch switch_id 0 ]6 _ int
-
- |
- |/
- |\ II
-
- Key input information
-
-.key_input_information_parameters
-@indent indent
-@parameters key_input_information_base
-
-.key_input_information_base
-+hwnd . R2K/H_KII_Launchpad
-]0 _ string
-]1 var var_id
-]2 wait int_boolean
-]4 checkDesc int_boolean
-]5 checkCancel int_boolean
-]3 p3 int
-+]?6 p6 ? int
-+]?7 p7 ? int
-+]?8 p8 ? int
-+]?9 p9 ? int
-+]?10 p10 ? int
-+]?11 p11 ? int
-+]?12 p12 ? int
-+]?13 p13 ? int
-+]?14 p14 ? int
++DA{ ]5 ]6 switch switch_id 0 ]6 _ int }
 
  --- ---
  --  ^ .
@@ -503,7 +475,7 @@ e begin_encounter_defeat 0 gameOver 1 executeDefeatCode
 
 .begin_encounter_parameters
 @indent indent
-@parameters arrayDAM 1 int begin_encounter_vars 0 begin_encounter_novars
+@parameters DA{ ]1 begin_encounter_vars 0 begin_encounter_novars }
 
 .begin_encounter_vars
 ]1 troopIsVar int_boolean
@@ -521,7 +493,7 @@ e begin_encounter_defeat 0 gameOver 1 executeDefeatCode
 ]5 defeatMode begin_encounter_defeat
 ]6 playerAttacksFirst int_boolean
 +]?7 battleMode_2k3 normal begin_encounter_battlemode
-+arrayDAM 3 int begin_encounter_0 1 begin_encounter_1 2 begin_encounter_2
++DA{ ]3 begin_encounter_0 1 begin_encounter_1 2 begin_encounter_2 }
 
 .begin_encounter_0
 ]0 _ string
@@ -532,6 +504,7 @@ e begin_encounter_defeat 0 gameOver 1 executeDefeatCode
 +]?8 formation_2k3 none int
 
 .begin_encounter_2
+]0 _ string
 ]9 terrainId terrain_id
 
  TV
@@ -539,7 +512,7 @@ e begin_encounter_defeat 0 gameOver 1 executeDefeatCode
 
 .teleport_vehicle_parameters
 @indent indent
-@parameters arrayDAM 2 int teleport_vehicle_vars 0 teleport_vehicle_novars
+@parameters DA{ ]2 teleport_vehicle_vars 0 teleport_vehicle_novars }
 
 .teleport_vehicle_vars
 ]0 _ string

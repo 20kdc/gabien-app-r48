@@ -30,7 +30,7 @@ C name conditional_branch_actor ]1 ]2 | Actor @[actor_id]A {B=0=in party|{B=1=[@
 ]0 type conditional_branch_types
 ]1 actor actor_id
 ]2 subCondition conditional_branch_actor_types
-+arrayDAM 2 conditional_branch_actor_types conditional_branch_actor_unknown 0 conditional_branch_actor_inParty 1 conditional_branch_actor_name 2 conditional_branch_actor_class 3 conditional_branch_actor_skill 4 conditional_branch_actor_weapon 5 conditional_branch_actor_armourIdWorn 6 conditional_branch_actor_hasState
++DA{ ]2 conditional_branch_actor_unknown 0 conditional_branch_actor_inParty 1 conditional_branch_actor_name 2 conditional_branch_actor_class 3 conditional_branch_actor_skill 4 conditional_branch_actor_weapon 5 conditional_branch_actor_armourIdWorn 6 conditional_branch_actor_hasState }
 
 e cbr_gold_comparison_type 0 >= 1 <= 2 <
 
@@ -42,7 +42,7 @@ C name conditional_branch_vehicle ]1 | In Vehicle: [int]A
 .conditional_branch_parameters
 C name conditional_branch_parameters ]0 | {A=0=[@conditional_branch_switch]|{A=1=[@conditional_branch_variable]|{A=2=[@conditional_branch_selfSwitch]|{A=3=[@conditional_branch_timer]|{A=4=[@conditional_branch_actor]|{A=5=[@conditional_branch_enemy]|{A=6=[@conditional_branch_character]|{A=7=[@conditional_branch_gold]|{A=8=[@conditional_branch_item]|{A=9=[@conditional_branch_weapon]|{A=10=[@conditional_branch_armour]|{A=11=[@conditional_branch_button]|{A=12=[@conditional_branch_script]|{A=13=[@conditional_branch_vehicle]|Unknown}}}}}}}}}}}}}}
 @indent indent
-@parameters arrayDAM 0 conditional_branch_types conditional_branch_unknown 0 conditional_branch_switch 1 conditional_branch_variable 2 conditional_branch_selfSwitch 3 conditional_branch_timer 4 conditional_branch_actor 5 conditional_branch_enemy 6 conditional_branch_character 7 conditional_branch_gold 8 conditional_branch_item 9 conditional_branch_weapon 10 conditional_branch_armour 11 conditional_branch_button 12 conditional_branch_script 13 conditional_branch_vehicle
+@parameters DA{ ]0 conditional_branch_unknown 0 conditional_branch_switch 1 conditional_branch_variable 2 conditional_branch_selfSwitch 3 conditional_branch_timer 4 conditional_branch_actor 5 conditional_branch_enemy 6 conditional_branch_character 7 conditional_branch_gold 8 conditional_branch_item 9 conditional_branch_weapon 10 conditional_branch_armour 11 conditional_branch_button 12 conditional_branch_script 13 conditional_branch_vehicle }
 
  And Now For Even More Suck (tm)
  Set Variables. I hope I didn't make a mistake, II.
@@ -60,7 +60,7 @@ i RCOM/CommonSV.txt
 
 .set_variables_parameters
 @indent indent
-@parameters arrayDAM 3 set_variables_source set_variables_base 0 set_variables_int 1 set_variables_var 2 set_variables_random 3 set_variables_gamedata 4 set_variables_script
+@parameters DA{ ]3 set_variables_base 0 set_variables_int 1 set_variables_var 2 set_variables_random 3 set_variables_gamedata 4 set_variables_script }
 
  Set Variables (Game Data)
 
@@ -70,7 +70,7 @@ e set_variables_gamedata_type 0 itemCount 1 weaponCount 2 armourCount 3 actorVar
 +set_variables_base
 ]4 gamedataType set_variables_gamedata_type
 
-> set_variables_gamedata arrayDAM 4 set_variables_gamedata_type set_variables_gamedata_base 0 set_variables_itemCount 1 set_variables_weaponCount 2 set_variables_armourCount 3 set_variables_actorVar 4 set_variables_enemyVar 5 set_variables_eventVar 6 set_variables_partyMember 7 set_variables_otherVar
+> set_variables_gamedata DA{ ]4 set_variables_gamedata_base 0 set_variables_itemCount 1 set_variables_weaponCount 2 set_variables_armourCount 3 set_variables_actorVar 4 set_variables_enemyVar 5 set_variables_eventVar 6 set_variables_partyMember 7 set_variables_otherVar }
 
 .set_variables_itemCount
 +set_variables_gamedata_base
@@ -134,7 +134,7 @@ E force_action_target TargetIdx -2 Last -1 Random
 
 .onoff_timer_parameters
 @indent indent
-@parameters arrayDAM 0 int onoff_timer_stop 0 onoff_timer_start
+@parameters DA{ ]0 onoff_timer_stop 0 onoff_timer_start }
 
 .onoff_timer_start
 ]0 stop int_boolean

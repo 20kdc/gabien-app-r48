@@ -16,7 +16,7 @@ C name conditional_branch_variable ]1 ]2 ]3 ]4 | Var @[var_id]A [comparison_type
 ]1 var var_id
 ]4 cond comparison_type
 ]2 targetIsVar int_boolean
-+arrayDAM 2 int_boolean conditional_branch_variable_bn 0 conditional_branch_variable_bn 1 conditional_branch_variable_by
++DA{ ]2 conditional_branch_variable_bn 0 conditional_branch_variable_bn 1 conditional_branch_variable_by }
 
 .conditional_branch_variable_bn
 ]3 target int

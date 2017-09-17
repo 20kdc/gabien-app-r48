@@ -11,7 +11,7 @@
 
 .show_picture_parameters
 @indent indent
-@parameters arrayDAM 2 int show_picture_array_yv 0 show_picture_array_nv
+@parameters DA{ ]2 show_picture_array_yv 0 show_picture_array_nv }
 
 .show_picture_array_yv
 +comm_picture_array_head_yv
@@ -27,7 +27,7 @@
 
 .move_picture_parameters
 @indent indent
-@parameters arrayDAM 2 int move_picture_array_yv 0 move_picture_array_nv
+@parameters DA{ ]2 move_picture_array_yv 0 move_picture_array_nv }
 
 .move_picture_array_yv
 +comm_picture_array_head_yv
@@ -47,10 +47,11 @@
 
 e erase_picture_range 0 const/ppp 1 var 2 range
 .erase_picture_array
+]0 _ string
 +]?2 choiceType_112 const/ppp erase_picture_range
  I don't know if it actually crashes, consider this a motivation NOT to mess it up
-+arrayDAM 2 int ]1 pictureId picture_id 1 ]1 pictureVarId var_id
-+arrayDAM 2 int ]?3 _ ignoreme int 2 ]?3 rangeLast_112 crash picture_id
++DA{ ]2 ]1 pictureId picture_id 1 ]1 pictureVarId var_id }
++DA{ ]2 ]?3 _ ignoreme int 2 ]?3 rangeLast_112 crash picture_id }
 
  --- Components
 

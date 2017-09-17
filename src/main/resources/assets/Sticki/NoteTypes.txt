@@ -6,6 +6,10 @@
 d A comment in the plan.
 p text string
 
+980: @@Anti-Mass Spectrometer Test Fire{A:: #A{B: on #B{C: and #C}}}
+d Test samples using Anti-Mass Spectrometer testtextteststext
+X ams_setting_host
+
 990: Need!
 d Indicate that at this point you need to (non-optional)...
 p text string

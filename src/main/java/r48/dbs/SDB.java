@@ -5,8 +5,6 @@
 
 package r48.dbs;
 
-import gabien.IGrInDriver;
-import gabien.IImage;
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import r48.AppMain;
@@ -25,7 +23,6 @@ import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 import r48.schema.specialized.tbleditors.DefaultTableCellEditor;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
-import r48.ui.ISpritesheetProvider;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -217,16 +214,25 @@ public class SDB {
                             int sz = Integer.parseInt(args[point++]);
                             return new ArbIndexedArraySchemaElement(get(), ofx, sz);
                         }
-                        if (text.equals("arrayDAM")) {
-                            int disambiguatorIndex = Integer.parseInt(args[point++]);
-                            SchemaElement disambiguatorType = get();
+                        if (text.equals("arrayDAM"))
+                            throw new RuntimeException("Use DA.");
+                        if (text.equals("DA{")) {
+                            String disambiguatorIndex = args[point++];
                             SchemaElement backup = get();
                             HashMap<Integer, SchemaElement> disambiguations = new HashMap<Integer, SchemaElement>();
-                            while (point < args.length) {
+                            while (!args[point].equals("}")) {
                                 int ind = Integer.parseInt(args[point++]);
                                 disambiguations.put(ind, get());
                             }
-                            return new ArrayDisambiguatorSchemaElement(disambiguatorIndex, backup, disambiguations);
+                            return new DisambiguatorSchemaElement(disambiguatorIndex, backup, disambiguations);
+                        }
+                        if (text.equals("lengthAdjust[")) {
+                            String text2 = args[point++];
+                            while (!args[point].equals("]"))
+                                text2 += " " + args[point++];
+                            point++;
+                            int len = Integer.parseInt(args[point++]);
+                            return new LengthChangeSchemaElement(TXDB.get(outerContext, text2), len);
                         }
                         if (text.equals("flushCommandBuffer")) {
                             // time to flush it!
@@ -235,7 +241,7 @@ public class SDB {
                             HashMap<Integer, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<Integer, String>();
                             commandBufferSchemas = new HashMap<Integer, SchemaElement>();
-                            return new GenericDisambiguationSchemaElement(disambiguationIVar, baseSE);
+                            return new DisambiguatorSchemaElement(disambiguationIVar, baseSE.get(-1), baseSE);
                         }
                         if (text.equals("hash")) {
                             SchemaElement k = get();

@@ -41,7 +41,7 @@ e battle_cbranch_type 0 switch 1 varCompare 2 actorCanAct 3 enemyCanAct 4 target
 .battle_cbranch_array
 ]0 _ string
 ]1 type battle_cbranch_type
-+arrayDAM 1 int battle_cbranch_nx 0 battle_cbranch_switch 1 battle_cbranch_varcomp 2 battle_cbranch_aca 3 battle_cbranch_enemyidx 4 battle_cbranch_enemyidx 5 battle_cbranch_aluc
++DA{ 1 battle_cbranch_nx 0 battle_cbranch_switch 1 battle_cbranch_varcomp 2 battle_cbranch_aca 3 battle_cbranch_enemyidx 4 battle_cbranch_enemyidx 5 battle_cbranch_aluc }
 
 .battle_cbranch_nx
 
@@ -53,7 +53,7 @@ e battle_cbranch_type 0 switch 1 varCompare 2 actorCanAct 3 enemyCanAct 4 target
 ]2 var var_id
 ]5 compareOp cbranch_varcomp_e
 ]3 targetIsVar int_boolean
-+arrayDAM 3 int battle_cbranch_varcomp_v 0 battle_cbranch_varcomp_c
++DA{ 3 battle_cbranch_varcomp_v 0 battle_cbranch_varcomp_c }
 
 .battle_cbranch_varcomp_v
 ]4 targetVar var_id

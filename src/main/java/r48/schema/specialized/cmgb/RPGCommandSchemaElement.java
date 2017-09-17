@@ -38,20 +38,25 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created on 12/30/16.
  */
 public class RPGCommandSchemaElement extends SchemaElement {
-    public boolean allowControlOfIndent = false;
-    public boolean showHeader = true;
+    public final boolean allowControlOfIndent;
+    public final boolean showHeader;
 
     // actualSchema is used for modifyVal,
     // while mostOfSchema is used for display.
-    public SchemaElement actualSchema, mostOfSchema;
+    public final SchemaElement actualSchema, mostOfSchema;
 
-    public CMDB database;
+    public final CMDB database;
 
-    public RPGCommandSchemaElement(SchemaElement ise, SchemaElement mos, CMDB db, boolean allowIndentControl) {
+    private RPGCommandSchemaElement hiddenHeadVer;
+
+    public RPGCommandSchemaElement(SchemaElement ise, SchemaElement mos, CMDB db, boolean allowIndentControl, boolean showHdr) {
         actualSchema = ise;
         mostOfSchema = mos;
         database = db;
         allowControlOfIndent = allowIndentControl;
+        showHeader = showHdr;
+        if (showHeader)
+            hiddenHeadVer = this;
     }
 
     @Override
@@ -233,8 +238,10 @@ public class RPGCommandSchemaElement extends SchemaElement {
     }
 
     public RPGCommandSchemaElement hideHeaderVer() {
-        RPGCommandSchemaElement rcse = new RPGCommandSchemaElement(actualSchema, mostOfSchema, database, allowControlOfIndent);
-        rcse.showHeader = false;
+        if (hiddenHeadVer != null)
+            return hiddenHeadVer;
+        RPGCommandSchemaElement rcse = new RPGCommandSchemaElement(actualSchema, mostOfSchema, database, allowControlOfIndent, false);
+        hiddenHeadVer = rcse;
         return rcse;
     }
 }

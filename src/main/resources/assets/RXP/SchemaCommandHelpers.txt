@@ -5,6 +5,9 @@
  Defining event command special schemas. (RXP Version)
  Yes, this was seriously the best plan I could think of other than outright hardcoding.
 
+ looking back in September 2017, arrayDAM probably existed originally for this.
+ And now I'm replacing it with the cleaner DA{}.
+
 > string_array subwindow array 0 string
 
 e cap_type 0 MaxHP 1 MaxSP 2 Str. 3 Dex. 4 Agi. 5 Int.
@@ -24,14 +27,14 @@ C name conditional_branch_actor ]1 ]2 | Actor @[actor_id]A {@#B|0|in party|1|[@c
 ]0 type conditional_branch_types
 ]1 actor actor_id
 ]2 subCondition conditional_branch_actor_types
-+arrayDAM 2 conditional_branch_actor_types conditional_branch_actor_unknown 0 conditional_branch_actor_inParty 1 conditional_branch_actor_name 2 conditional_branch_actor_skill 3 conditional_branch_actor_weapon 4 conditional_branch_actor_armourIdWorn 5 conditional_branch_actor_hasState
++DA{ ]2 conditional_branch_actor_unknown 0 conditional_branch_actor_inParty 1 conditional_branch_actor_name 2 conditional_branch_actor_skill 3 conditional_branch_actor_weapon 4 conditional_branch_actor_armourIdWorn 5 conditional_branch_actor_hasState }
 
 e cbr_gold_comparison_type 0 >= 1 <
 
 .conditional_branch_parameters
 C name conditional_branch_parameters ]0 | {@#A|0|[@conditional_branch_switch]|1|[@conditional_branch_variable]|2|[@conditional_branch_selfSwitch]|3|[@conditional_branch_timer]|4|[@conditional_branch_actor]|5|[@conditional_branch_enemy]|6|[@conditional_branch_character]|7|[@conditional_branch_gold]|8|[@conditional_branch_item]|9|[@conditional_branch_weapon]|10|[@conditional_branch_armour]|11|[@conditional_branch_button]|12|[@conditional_branch_script]|[conditional_branch_types]A (...)}
 @indent indent
-@parameters arrayDAM 0 conditional_branch_types conditional_branch_unknown 0 conditional_branch_switch 1 conditional_branch_variable 2 conditional_branch_selfSwitch 3 conditional_branch_timer 4 conditional_branch_actor 5 conditional_branch_enemy 6 conditional_branch_character 7 conditional_branch_gold 8 conditional_branch_item 9 conditional_branch_weapon 10 conditional_branch_armour 11 conditional_branch_button 12 conditional_branch_script
+@parameters DA{ ]0 conditional_branch_unknown 0 conditional_branch_switch 1 conditional_branch_variable 2 conditional_branch_selfSwitch 3 conditional_branch_timer 4 conditional_branch_actor 5 conditional_branch_enemy 6 conditional_branch_character 7 conditional_branch_gold 8 conditional_branch_item 9 conditional_branch_weapon 10 conditional_branch_armour 11 conditional_branch_button 12 conditional_branch_script }
 
  Set Variables. I hope I didn't make a mistake.
 
@@ -76,7 +79,7 @@ C name set_variables_parameters_ext ]3 ]4 ]5 | [set_variables_source]A{@#A|3|: @
 
 .set_variables_parameters
 @indent indent
-@parameters arrayDAM 3 set_variables_source set_variables_base 0 set_variables_int 1 set_variables_var 2 set_variables_random 3 set_variables_itemCount 4 set_variables_actorVar 5 set_variables_enemyVar 6 set_variables_characterVar 7 set_variables_otherVar
+@parameters DA{ ]3 set_variables_base 0 set_variables_int 1 set_variables_var 2 set_variables_random 3 set_variables_itemCount 4 set_variables_actorVar 5 set_variables_enemyVar 6 set_variables_characterVar 7 set_variables_otherVar }
 
  Change Map Settings
 
@@ -103,7 +106,7 @@ e cms_type 0 panorama 1 fog 2 battleback
 
 .change_map_settings_parameters
 @indent indent
-@parameters arrayDAM 0 cms_type change_map_settings_parameters_fog 0 change_map_settings_parameters_panorama 1 change_map_settings_parameters_fog 2 change_map_settings_parameters_battleback
+@parameters DA{ ]0 change_map_settings_parameters_fog 0 change_map_settings_parameters_panorama 1 change_map_settings_parameters_fog 2 change_map_settings_parameters_battleback }
 
  Shop items.
 
@@ -127,7 +130,7 @@ e shop_item_type 0 item 1 weapon 2 armour
 
 .shop_items_parameters
 @indent indent
-@parameters arrayDAM 0 shop_item_type shop_items_parameters_unknown 0 shop_items_parameters_item 1 shop_items_parameters_weapon 2 shop_items_parameters_armour
+@parameters DA{ ]0 shop_items_parameters_unknown 0 shop_items_parameters_item 1 shop_items_parameters_weapon 2 shop_items_parameters_armour }
 
 .set_timer1_running
 ]0 running int_boolean
@@ -138,7 +141,7 @@ e shop_item_type 0 item 1 weapon 2 armour
 
 .set_timer1_parameters
 @indent indent
-@parameters arrayDAM 0 int_boolean set_timer1_running 0 set_timer1_disable
+@parameters DA{ ]0 set_timer1_running 0 set_timer1_disable }
 
  Actor equip.
 

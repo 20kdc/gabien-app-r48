@@ -59,7 +59,7 @@ C name transfer_player_paramassist ]0 ]1 ]2 ]3 | Transfer player{A=1= by vars @[
 
 .transfer_player_paramassist
 @indent indent
-@parameters arrayDAM 0 int_boolean transfer_player_vars 0 transfer_player_novars
+@parameters DA{ ]0 transfer_player_vars 0 transfer_player_novars }
 
 .transfer_player_vars
 ]0 targetVars int_boolean
@@ -92,7 +92,7 @@ e set_event_location_type 0 ints 1 vars 2 swap
 C name set_event_location_paramassist2 ]1 ]2 ]3 | {A=0=loc.[int]B,[int]C}{A=1=loc.vars.@[var_id]B,@[var_id]C}{A=2=swap with @[character_id]B}
 C name set_event_location_paramassist ]0 ]4 | Set ev.@[character_id]A to [@set_event_location_paramassist2], dir [direction_disable]B
 @indent indent
-@parameters arrayDAM 1 set_event_location_type set_event_location_header 0 set_event_location_a 1 set_event_location_b 2 set_event_location_c
+@parameters DA{ ]1 set_event_location_header 0 set_event_location_a 1 set_event_location_b 2 set_event_location_c }
 
 .set_event_location_a
 +set_event_location_header

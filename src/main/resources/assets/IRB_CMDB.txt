@@ -155,9 +155,7 @@
   '<number>:<name>' defines a command and it's name-routine.
   'p' defines a parameter. The parameter can only be a type name, chaining language is restricted to SDB.
   'd' defines the description of the command. You will be warned for omitting this.
-  'T' defines the last *namable thing* (this means the command, it's description, a parameter, or a P/v disambiguation subtype)'s new name/string,
-       for a given language.
-       (Meanwhile SDB has 'C lang <X>' directives, but that's because SDB does everything via overkill.)
+  'T' doesn't exist anymore, why was this still doc'd
   'P''s format is "disambiguationIndex defaultName defaultType".
   'v' defines a disambiguation "disValue name type".
    P 1 _ int

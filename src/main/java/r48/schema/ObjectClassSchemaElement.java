@@ -64,8 +64,8 @@ public class ObjectClassSchemaElement extends SchemaElement {
                 ise = ((IProxySchemaElement) ise).getEntry();
                 proxyHandling = true;
             }
-            if (ise instanceof GenericDisambiguationSchemaElement) {
-                ise = ((GenericDisambiguationSchemaElement) ise).getDisambiguation(target);
+            if (ise instanceof DisambiguatorSchemaElement) {
+                ise = ((DisambiguatorSchemaElement) ise).getDisambiguation(target);
                 proxyHandling = true;
             }
         }

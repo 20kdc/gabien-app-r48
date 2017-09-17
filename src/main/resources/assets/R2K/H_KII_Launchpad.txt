@@ -1,8 +1,0 @@
-
- * This is released into the public domain.
- * No warranty is provided, implied or otherwise.
-
-0: Key Input Information
-. WARNING! Please open the help file linked below if you want to understand this.
-. KII varies between versions and parameter sizes.
-> 20 Click here for the information.
