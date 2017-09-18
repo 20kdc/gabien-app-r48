@@ -36,6 +36,7 @@ D internal_battlecommandDictionary 1 RPG_RT.ldb@battle_commands_2k3@commands 0 @
  Not that you should be synthing against RPG_RT, but compatibility is king
 > f_system2_name { string fileSelector System2/ }
 > f_parallax_name { string fileSelector Panorama/ }
+> f_picture_name { string fileSelector Picture/ }
 > f_movie_name { string fileSelector Movie/ }
 > f_battleback_name { string fileSelector Backdrop/ }
 > f_monster_name { string fileSelector Monster/ }

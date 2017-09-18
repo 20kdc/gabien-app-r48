@@ -73,7 +73,7 @@ e comm_picture_effectmode 0 none 1 rotate 2 waver
 ]12 saturation int= 100
 +r2kTonePicker ]9 ]10 ]11 ]12
 ]13 effectMode comm_picture_effectmode
-]14 effectPower int
++DA{ ]13 ]14 effectPower int 0 ]14 _ int }
 
 .comm_picture_nbo
 ]1 pictureId picture_id
@@ -94,11 +94,15 @@ e comm_picture_effectmode 0 none 1 rotate 2 waver
 +]?15 bottomTransparency_2k3 topTransparency internal_r2kPPPV
 
 .show_picture_array_nbo
-]0 img string
+]0 img f_picture_name
 +comm_picture_nbo
 
+e show_picture_maplayer 0 invisible 1 aboveParallax 2 aboveLowerTiles 3 aboveLowerEvents 4 aboveMidEvents 5 aboveUpperTiles 6 aboveUpperEvents 7 aboveWeather 8 aboveAnimations 9 aboveTextbox 10 aboveTimers
+e show_picture_btllayer 0 invisible 1 aboveBackground 2 aboveBattlersAndAnims 3 aboveWeather 4 aboveTextbox 5 aboveTimers
+e show_picture_sheettype 0 singleConstFrame 1 singleVarFrame 2 animation
+
 .show_picture_array_nbn
-]0 img string
+]0 img f_picture_name
  15: bottomTransparency (marked Ignored in Ghabry's sheet)
  16, 17: useless
 ]16 _ int
@@ -106,22 +110,27 @@ e comm_picture_effectmode 0 none 1 rotate 2 waver
  18: CNBN handles this (T.O.D)
  19, 20: Name replacement suffix character count
 ]20 nameReplaceSfxVar_112 var_or_none_id
-]19 nameRepSfxChrCount_112 int= 4
++DA{ ]20 ]19 nameRepSfxChrCount_112 int= 4 0 ]19 _ int }
  21, 22: CNBN handles this (magtrain)
  23 through 30: Just this.
-]23 SHW_112 int
-]24 SHH_112 int
-]25 STT_112 int
- STT controls SIX type
-]26 SIX_112 int
- Single Loop
-]27 SOS_112 int_boolean
-
- needs enums
-]28 MAPZ_112 int= 7
-]29 BTLZ_112 int
+]23 sheetSplitW_112 int
++DA{ ]23 show_picture_array_nbn_sheetdata_ext_on 0 show_picture_array_nbn_sheetdata_ext_off }
+]28 mapLayer_112 { hide int= 7 show_picture_maplayer }
+]29 battleLayer_112 show_picture_btllayer
 ]30 persist_112 int_boolean
 +comm_picture_nbn
+
+.show_picture_array_nbn_sheetdata_ext_on
+]24 sheetSplitH_112 int
+]25 sheetAnimType_112 show_picture_sheettype
++DA{ ]25 ]26 sheetIndex_112 int 1 ]26 sheetIdxVar_112 var_id 2 ]26 sheetAnimSpeed_112 int }
+]27 sheetOneLoop_112 int_boolean
+
+.show_picture_array_nbn_sheetdata_ext_off
+]24 _ int
+]25 _ int
+]26 _ int
+]27 _ int
 
  ---
 
