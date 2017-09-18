@@ -51,7 +51,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     }
 
     @Override
-    public int getDefaultFieldWidth() {
+    public int getDefaultFieldWidth(RubyIO target) {
         return UILabel.getRecommendedSize(txPath + " ", FontSizes.schemaFieldTextHeight).width;
     }
 

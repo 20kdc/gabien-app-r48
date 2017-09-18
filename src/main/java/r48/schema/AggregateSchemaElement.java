@@ -22,9 +22,12 @@ import java.util.LinkedList;
  * Basically a UI element masquerading as a schema element.
  * Created on 12/29/16.
  */
-public class AggregateSchemaElement extends SchemaElement {
+public class AggregateSchemaElement extends SchemaElement implements IFieldSchemaElement {
     public final LinkedList<SchemaElement> aggregate = new LinkedList<SchemaElement>();
     public final SchemaElement impersonatorScroll;
+
+    private int overrideFW = -1;
+    private boolean overrideSet = false;
 
     public AggregateSchemaElement(SchemaElement[] ag) {
         Collections.addAll(aggregate, ag);
@@ -40,31 +43,39 @@ public class AggregateSchemaElement extends SchemaElement {
         // Possibly question if this aggregate is useless???
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, impersonatorScroll, target);
         // Assist with the layout of "property grids".
-        int maxFW = 1;
+        if (!overrideSet)
+            overrideFW = getDefaultFieldWidth(target);
         for (SchemaElement ise : aggregate) {
-            SchemaElement useIse = ise;
-            while (useIse instanceof IProxySchemaElement)
-                useIse = ((IProxySchemaElement) useIse).getEntry();
-            if (useIse instanceof IFieldSchemaElement) {
-                int dfw = ((IFieldSchemaElement) useIse).getDefaultFieldWidth();
-                if (maxFW < dfw)
-                    maxFW = dfw;
-            }
-        }
-        for (SchemaElement ise : aggregate) {
-            SchemaElement useIse = ise;
-            while (useIse instanceof IProxySchemaElement)
-                useIse = ((IProxySchemaElement) useIse).getEntry();
-            if (useIse instanceof IFieldSchemaElement)
-                ((IFieldSchemaElement) useIse).setFieldWidthOverride(maxFW);
+            IFieldSchemaElement possibleField = extractField(ise, target);
+            if (possibleField != null)
+                possibleField.setFieldWidthOverride(overrideFW);
             // still deal with ise because the proxies may have some function
             uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
         }
+        overrideSet = false;
         int h = 0;
         for (UIElement uie : uiSVL.panels)
             h += uie.getBounds().height;
         uiSVL.setBounds(new Rect(0, 0, 128, h));
         return uiSVL;
+    }
+
+    private IFieldSchemaElement extractField(SchemaElement ise, RubyIO rio) {
+        boolean continuing = true;
+        while (continuing) {
+            continuing = false;
+            if (ise instanceof IProxySchemaElement) {
+                ise = ((IProxySchemaElement) ise).getEntry();
+                continuing = true;
+            }
+            if (ise instanceof DisambiguatorSchemaElement) {
+                ise = ((DisambiguatorSchemaElement) ise).getDisambiguation(rio);
+                continuing = true;
+            }
+        }
+        if (ise instanceof IFieldSchemaElement)
+            return (IFieldSchemaElement) ise;
+        return null;
     }
 
     @Override
@@ -89,5 +100,25 @@ public class AggregateSchemaElement extends SchemaElement {
         };
         uiSVL.scrollbar.scrollPoint = keyStoragePath.getEmbedSP(host, myKey);
         return uiSVL;
+    }
+
+    @Override
+    public int getDefaultFieldWidth(RubyIO target) {
+        int maxFW = 1;
+        for (SchemaElement ise : aggregate) {
+            IFieldSchemaElement possibleField = extractField(ise, target);
+            if (possibleField != null) {
+                int dfw = possibleField.getDefaultFieldWidth(target);
+                if (maxFW < dfw)
+                    maxFW = dfw;
+            }
+        }
+        return maxFW;
+    }
+
+    @Override
+    public void setFieldWidthOverride(int w) {
+        overrideFW = w;
+        overrideSet = true;
     }
 }

@@ -69,7 +69,7 @@ public class IVarSchemaElement extends SchemaElement implements IFieldSchemaElem
     }
 
     @Override
-    public int getDefaultFieldWidth() {
+    public int getDefaultFieldWidth(RubyIO target) {
         return UILabel.getRecommendedSize(alias + " ", FontSizes.schemaFieldTextHeight).width;
     }
 
