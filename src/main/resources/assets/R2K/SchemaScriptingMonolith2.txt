@@ -11,35 +11,31 @@
 
 .show_picture_parameters
 @indent indent
-@parameters DA{ ]2 show_picture_array_yv 0 show_picture_array_nv }
+@parameters show_picture_array
 
-.show_picture_array_yv
-+comm_picture_array_head_yv
-]0 img string
-+comm_picture_array_foot
-+show_picture_array_foot
-
-.show_picture_array_nv
-+comm_picture_array_head_nv
-]0 img string
+.show_picture_array
++lengthAdjust[ General Mode ] 15
++lengthAdjust[ Old 2k3 Mode ] 16
++lengthAdjust[ 2k3 1.12 Mode ] 31
++DA{ $length show_picture_array_nbo 31 show_picture_array_nbn }
++DA{ ]2 comm_picture_array_head_yv 0 comm_picture_array_head_nv }
 +comm_picture_array_foot
 +show_picture_array_foot
 
 .move_picture_parameters
 @indent indent
-@parameters DA{ ]2 move_picture_array_yv 0 move_picture_array_nv }
+@parameters move_picture_array
 
-.move_picture_array_yv
-+comm_picture_array_head_yv
-]0 _ string
+.move_picture_array
++lengthAdjust[ General Mode ] 17
++lengthAdjust[ Old 2k3 Mode ] 18
++lengthAdjust[ 2k3 1.12 Mode ] 23
++DA{ $length move_picture_array_nbo 23 move_picture_array_nbn }
++DA{ ]2 comm_picture_array_head_yv 0 comm_picture_array_head_nv }
 +comm_picture_array_foot
 +move_picture_array_foot
 
-.move_picture_array_nv
-+comm_picture_array_head_nv
-]0 _ string
-+comm_picture_array_foot
-+move_picture_array_foot
+ ---
 
 .erase_picture_parameters
 @indent indent
@@ -58,22 +54,19 @@ e erase_picture_range 0 const/ppp 1 var 2 range
 e comm_picture_effectmode 0 none 1 rotate 2 waver
 
 .comm_picture_array_head_yv
-]1 pictureId picture_id
 ]2 posVars int_boolean
 ]3 xVar var_id
 ]4 yVar var_id
 
 .comm_picture_array_head_nv
-]1 pictureId picture_id
 ]2 posVars int_boolean
 ]3 x int
 ]4 y int
 
 .comm_picture_array_foot
 ]5 mapAttach int_boolean
-]6 magnify int_default_100
-]7 transparency int
-]8 topTransparency int
+ this is basically a guess
+]8 maskColour0 int_boolean
 ]9 red int= 100
 ]10 green int= 100
 ]11 blue int= 100
@@ -82,10 +75,71 @@ e comm_picture_effectmode 0 none 1 rotate 2 waver
 ]13 effectMode comm_picture_effectmode
 ]14 effectPower int
 
+.comm_picture_nbo
+]1 pictureId picture_id
+]6 magnify { hide int= 100 internal_r2kPPPV }
+]7 topTransparency internal_r2kPPPV
+
+.comm_picture_nbn
+]18 picIdIsVar_112 int_boolean
++DA{ ]18 ]1 picIdVar var_id 0 ]1 picId picture_id }
+]21 magnifyIsVar_112 int_boolean
++DA{ ]21 ]6 magnifyVar var_id 0 ]6 magnify { hide int= 100 internal_r2kPPPV } }
+]22 topTransparIsVar_112 int_boolean
++DA{ ]22 ]7 topTransparVar var_id 0 ]7 topTranspar internal_r2kPPPV }
+
+ ---
+
 .show_picture_array_foot
-+]?15 bottomTransparency_2k3 topTransparency int
++]?15 bottomTransparency_2k3 topTransparency internal_r2kPPPV
+
+.show_picture_array_nbo
+]0 img string
++comm_picture_nbo
+
+.show_picture_array_nbn
+]0 img string
+ 15: bottomTransparency (marked Ignored in Ghabry's sheet)
+ 16, 17: useless
+]16 _ int
+]17 _ int
+ 18: CNBN handles this (T.O.D)
+ 19, 20: Name replacement suffix character count
+]20 nameReplaceSfxVar_112 var_or_none_id
+]19 nameRepSfxChrCount_112 int= 4
+ 21, 22: CNBN handles this (magtrain)
+ 23 through 30: Just this.
+]23 SHW_112 int
+]24 SHH_112 int
+]25 STT_112 int
+ STT controls SIX type
+]26 SIX_112 int
+ Single Loop
+]27 SOS_112 int_boolean
+
+ needs enums
+]28 MAPZ_112 int= 7
+]29 BTLZ_112 int
+]30 persist_112 int_boolean
++comm_picture_nbn
+
+ ---
 
 .move_picture_array_foot
 ]15 moveSecs/10 int
 ]16 wait int_boolean
-+]?17 bottomTransparency_2k3 topTransparency int
++]?17 bottomTransparency_2k3 topTransparency internal_r2kPPPV
+
+.move_picture_array_nbo
+]0 _ string
++comm_picture_nbo
+
+.move_picture_array_nbn
+]0 _ string
+ 17: bottomTransparency
+ 18: id type in CPN
+ 19, 20: NRC
+]19 _ int
+]20 _ int
+ 21, 22: CNBN handles this (magtrain)
++comm_picture_nbn

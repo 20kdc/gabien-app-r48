@@ -11,6 +11,8 @@ import gabien.ui.IFunction;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.*;
+import r48.schema.integers.IntBooleanSchemaElement;
+import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.LowerBoundIntegerSchemaElement;
 import r48.schema.specialized.HWNDSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
@@ -210,6 +212,47 @@ class SDBHelpers {
                 } else if (type == 1) {
                     t += 10000;
                 }
+                if (target.fixnumVal != t) {
+                    target.fixnumVal = t;
+                    return true;
+                }
+                return false;
+            }
+        }, inner);
+    }
+    public SchemaElement makePicPointerPatchVar(SchemaElement varId) {
+        // Less complicated but still more than an enum is reasonable for.
+        HashMap<Integer, SchemaElement> disambiguations = new HashMap<Integer, SchemaElement>();
+        disambiguations.put(0, new ArrayElementSchemaElement(1, TXDB.get("value"), new LowerBoundIntegerSchemaElement(0, 0), null, false));
+        AggregateSchemaElement inner = new AggregateSchemaElement(new SchemaElement[] {
+                new ArrayElementSchemaElement(0, TXDB.get("isVar"), new IntBooleanSchemaElement(false), null, false),
+                new DisambiguatorSchemaElement("]0", new ArrayElementSchemaElement(1, TXDB.get("valueVar"), varId, null, false), disambiguations),
+        });
+        return new MagicalBindingSchemaElement(new IMagicalBinder() {
+            @Override
+            public RubyIO targetToBound(RubyIO target) {
+                // Split PPP address into components
+                long t = target.fixnumVal;
+                long type = 0;
+                if (t > 10000) {
+                    t -= 10000;
+                    type++;
+                }
+                RubyIO base = new RubyIO();
+                base.arrVal = new RubyIO[2];
+                base.type = '[';
+                base.arrVal[0] = new RubyIO().setFX(type);
+                base.arrVal[1] = new RubyIO().setFX(t);
+                return base;
+            }
+
+            @Override
+            public boolean applyBoundToTarget(RubyIO bound, RubyIO target) {
+                // Stitch it back together
+                long type = bound.arrVal[0].fixnumVal;
+                long t = bound.arrVal[1].fixnumVal;
+                if (type != 0)
+                    t += 10000;
                 if (target.fixnumVal != t) {
                     target.fixnumVal = t;
                     return true;

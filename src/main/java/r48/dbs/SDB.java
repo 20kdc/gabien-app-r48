@@ -73,7 +73,9 @@ public class SDB {
 
         schemaDatabase.put("internal_EPGD", new EPGDisplaySchemaElement());
         // Note the deliberate avoidance of the expectation checker here.
-        schemaDatabase.put("internal_r2kPPPID", helpers.makePicPointerPatchID(new NameProxySchemaElement("var_id", false)));
+        SchemaElement vid = new NameProxySchemaElement("var_id", false);
+        schemaDatabase.put("internal_r2kPPPID", helpers.makePicPointerPatchID(vid));
+        schemaDatabase.put("internal_r2kPPPV", helpers.makePicPointerPatchVar(vid));
 
         schemaTrueDatabase.putAll(schemaDatabase);
     }
