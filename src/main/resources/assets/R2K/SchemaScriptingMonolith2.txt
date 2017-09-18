@@ -44,9 +44,16 @@
 e erase_picture_range 0 const/ppp 1 var 2 range
 .erase_picture_array
 ]0 _ string
+ can't depend on ]2 for pictureId if it isn't around (will cause disambiguator failures)
++DA{ $length erase_picture_array_nc 3 erase_picture_array_wc 4 erase_picture_array_wc }
+.erase_picture_array_nc
+ Notably, setting this flips it into WC
 +]?2 choiceType_112 const/ppp erase_picture_range
- I don't know if it actually crashes, consider this a motivation NOT to mess it up
+]1 pictureId picture_id
+.erase_picture_array_wc
++]?2 choiceType_112 const/ppp erase_picture_range
 +DA{ ]2 ]1 pictureId picture_id 1 ]1 pictureVarId var_id }
+ I don't know if it actually crashes, consider this a motivation NOT to mess it up
 +DA{ ]2 ]?3 _ ignoreme int 2 ]?3 rangeLast_112 crash picture_id }
 
  --- Components
