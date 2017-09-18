@@ -120,6 +120,8 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
                 camOTeX = 0;
                 camOTY = 0;
                 camOTeY = 0;
+                eCamX = camX;
+                eCamY = camY;
             }
 
             for (int i = camOTX; i <= camOTeX; i++)
