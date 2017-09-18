@@ -172,8 +172,8 @@ class SDBHelpers {
         disambiguations.put(2, idV);
         AggregateSchemaElement inner = new AggregateSchemaElement(new SchemaElement[] {
                 new HalfsplitSchemaElement(
-                        new ArrayElementSchemaElement(0, TXDB.get("type"), new EnumSchemaElement(types, 0, ""), null, false),
-                        new DisambiguatorSchemaElement("]0", new ArrayElementSchemaElement(1, TXDB.get("id"), new LowerBoundIntegerSchemaElement(1, 1), null, false), disambiguations)
+                        new ArrayElementSchemaElement(0, TXDB.get("type "), new EnumSchemaElement(types, 0, ""), null, false),
+                        new DisambiguatorSchemaElement("]0", new ArrayElementSchemaElement(1, TXDB.get("id "), new LowerBoundIntegerSchemaElement(1, 1), null, false), disambiguations)
                 ),
                 new SubwindowSchemaElement(new HWNDSchemaElement("]0", "R2K/H_Internal_PPP"), new IFunction<RubyIO, String>() {
                     @Override
@@ -225,10 +225,10 @@ class SDBHelpers {
     public SchemaElement makePicPointerPatchVar(SchemaElement varId) {
         // Less complicated but still more than an enum is reasonable for.
         HashMap<Integer, SchemaElement> disambiguations = new HashMap<Integer, SchemaElement>();
-        disambiguations.put(0, new ArrayElementSchemaElement(1, TXDB.get("value"), new LowerBoundIntegerSchemaElement(0, 0), null, false));
+        disambiguations.put(0, new ArrayElementSchemaElement(1, TXDB.get("value "), new LowerBoundIntegerSchemaElement(0, 0), null, false));
         SchemaElement inner = new HalfsplitSchemaElement(
-                new ArrayElementSchemaElement(0, TXDB.get("isVar"), new IntBooleanSchemaElement(false), null, false),
-                new DisambiguatorSchemaElement("]0", new ArrayElementSchemaElement(1, TXDB.get("valueVar"), varId, null, false), disambiguations)
+                new ArrayElementSchemaElement(0, TXDB.get("isVar "), new IntBooleanSchemaElement(false), null, false),
+                new DisambiguatorSchemaElement("]0", new ArrayElementSchemaElement(1, TXDB.get("valueVar "), varId, null, false), disambiguations)
         );
         return new MagicalBindingSchemaElement(new IMagicalBinder() {
             @Override
