@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Yay bitfields!
+ * (As of sep-19-2017, has static methods for use by BitfieldSchemaElement, which uses the same syntax)
  * Created on 2/18/17.
  */
 public class BitfieldTableCellEditor implements ITableCellEditor {
@@ -26,8 +27,49 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
     }
 
     @Override
-    public Runnable createEditor(UIScrollLayout panel, final RubyIO targV, final UIGrid uig, final Runnable changeOccurred) {
+    public Runnable createEditor(final UIScrollLayout panel, final RubyIO targV, final UIGrid uig, final Runnable changeOccurred) {
         final RubyTable targ = new RubyTable(targV.userVal);
+        final AtomicReference<IConsumer<Integer>> setter = new AtomicReference<IConsumer<Integer>>();
+        final IConsumer<Integer> wtm = installEditor(flags, new IConsumer<UIElement>() {
+            @Override
+            public void accept(UIElement element) {
+                panel.panels.add(element);
+            }
+        }, setter);
+        panel.panels.add(new UILabel(TXDB.get("Manual Edit:"), FontSizes.tableElementTextHeight));
+        final Runnable manualControl = new DefaultTableCellEditor().createEditor(panel, targV, uig, changeOccurred);
+        return new Runnable() {
+            @Override
+            public void run() {
+                int sel = uig.getSelected();
+                final int selX = sel % targ.width;
+                final int selY = sel / targ.width;
+                boolean oob = targ.outOfBounds(selX, selY);
+                if (!oob) {
+                    setter.set(new IConsumer<Integer>() {
+                        @Override
+                        public void accept(Integer integer) {
+                            targ.setTiletype(selX, selY, 0, (short) (int) integer);
+                        }
+                    });
+                    wtm.accept((int) targ.getTiletype(selX, selY, 0));
+                } else {
+                    setter.set(new IConsumer<Integer>() {
+                        @Override
+                        public void accept(Integer integer) {
+
+                        }
+                    });
+                    wtm.accept(-1);
+                }
+                manualControl.run();
+            }
+        };
+    }
+
+    // Returns 'update' runnable (which you should immediately run when ready).
+    // Calls callbacks for various reasons.
+    public static IConsumer<Integer> installEditor(final String[] flags, final IConsumer<UIElement> panelAdder, final AtomicReference<IConsumer<Integer>> set) {
         int bit = 1;
         // Java: "generic array creation warning!"
         // me: adds specifier
@@ -39,7 +81,6 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
         // GOOD UI PROGRAMMING RESULTS IN LIVING IN A GIANT GAME OF MOUSETRAP.
         // (Alternatively, a ton of abstraction, but I already abstracted enough today.)
         final IConsumer<AtomicInteger>[] flagStates = new IConsumer[flags.length];
-        final AtomicReference<Runnable> confirmButton = new AtomicReference<Runnable>();
         for (int i = 0; i < flags.length; i++) {
             final int thisBit = bit;
             if (!flags[i].equals(".")) {
@@ -50,7 +91,7 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                     final int len = Integer.parseInt(a[1]);
                     final int pwr = 1 << len;
                     final UINumberBox number = new UINumberBox(FontSizes.tableElementTextHeight);
-                    panel.panels.add(new UISplitterLayout(new UILabel(name, FontSizes.tableElementTextHeight), number, false, 3, 4));
+                    panelAdder.accept(new UISplitterLayout(new UILabel(name, FontSizes.tableElementTextHeight), number, false, 3, 4));
                     flagStates[i] = new IConsumer<AtomicInteger>() {
                         @Override
                         public void accept(final AtomicInteger currentState) {
@@ -60,10 +101,10 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                                 @Override
                                 public void run() {
                                     int r = currentState.get();
-                                    r &= 0xFFFF ^ (thisBit * (pwr - 1));
+                                    r &= ~(thisBit * (pwr - 1));
                                     r |= thisBit * (number.number & (pwr - 1));
                                     currentState.set(r);
-                                    confirmButton.get().run();
+                                    set.get().accept(r);
                                 }
                             };
                         }
@@ -72,7 +113,7 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                 } else {
                     // Bool-field
                     final UITextButton flag = new UITextButton(FontSizes.tableElementTextHeight, Integer.toHexString(thisBit) + ": " + flags[i], null).togglable();
-                    panel.panels.add(flag);
+                    panelAdder.accept(flag);
                     flagStates[i] = new IConsumer<AtomicInteger>() {
                         @Override
                         public void accept(final AtomicInteger currentState) {
@@ -80,8 +121,9 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                             flag.OnClick = new Runnable() {
                                 @Override
                                 public void run() {
-                                    currentState.set(currentState.get() ^ thisBit);
-                                    confirmButton.get().run();
+                                    int v = currentState.get() ^ thisBit;
+                                    currentState.set(v);
+                                    set.get().accept(v);
                                 }
                             };
                         }
@@ -98,37 +140,13 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                 bit <<= 1;
             }
         }
-        setButtonStates(flagStates, 0, 0, targ, confirmButton, changeOccurred);
-        panel.panels.add(new UILabel(TXDB.get("Manual Edit:"), FontSizes.tableElementTextHeight));
-        final Runnable manualControl = new DefaultTableCellEditor().createEditor(panel, targV, uig, changeOccurred);
-        return new Runnable() {
+        return new IConsumer<Integer>() {
             @Override
-            public void run() {
-                int sel = uig.getSelected();
-                int selX = sel % targ.width;
-                int selY = sel / targ.width;
-                boolean oob = targ.outOfBounds(selX, selY);
-                if (oob) {
-                    setButtonStates(flagStates, 0, 0, targ, confirmButton, changeOccurred);
-                } else {
-                    setButtonStates(flagStates, selX, selY, targ, confirmButton, changeOccurred);
-                }
-                manualControl.run();
+            public void accept(Integer i2) {
+                final AtomicInteger currentState = new AtomicInteger(i2);
+                for (int i = 0; i < flagStates.length; i++)
+                    flagStates[i].accept(currentState);
             }
         };
     }
-
-    private void setButtonStates(IConsumer<AtomicInteger>[] flagStates, final int x, final int y, final RubyTable rt, final AtomicReference<Runnable> confirm, final Runnable onChange) {
-        final AtomicInteger currentState = new AtomicInteger(rt.getTiletype(x, y, 0) & 0xFFFF);
-        confirm.set(new Runnable() {
-            @Override
-            public void run() {
-                rt.setTiletype(x, y, 0, (short) currentState.get());
-                onChange.run();
-            }
-        });
-        for (int i = 0; i < flagStates.length; i++)
-            flagStates[i].accept(currentState);
-    }
-
 }

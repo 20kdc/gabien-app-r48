@@ -124,7 +124,7 @@ e show_picture_sheettype 0 singleConstFrame 1 singleVarFrame 2 animation
 +DA{ ]23 show_picture_array_nbn_sheetdata_ext_on 0 show_picture_array_nbn_sheetdata_ext_off }
 ]28 mapLayer_112 { hide int= 7 show_picture_maplayer }
 ]29 battleLayer_112 show_picture_btllayer
-]30 persist_112 int_boolean
+]30 flags_112 subwindow[ Flags... ] bitfield= 97 eraseOnMapChange eraseOnBattleEnd . . tintAffects flashAffects shakeAffects
 +comm_picture_nbn
 
 .show_picture_array_nbn_sheetdata_ext_on

@@ -14,10 +14,7 @@ import r48.schema.*;
 import r48.schema.arrays.ArbIndexedArraySchemaElement;
 import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.displays.EPGDisplaySchemaElement;
-import r48.schema.integers.IntBooleanSchemaElement;
-import r48.schema.integers.IntegerSchemaElement;
-import r48.schema.integers.LowerBoundIntegerSchemaElement;
-import r48.schema.integers.ROIntegerSchemaElement;
+import r48.schema.integers.*;
 import r48.schema.specialized.*;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
@@ -342,6 +339,13 @@ public class SDB {
                             final String sPath = args[point++];
                             return new TonePickerSchemaElement(rPath, gPath, bPath, sPath, 100);
                         }
+                        if (text.equals("bitfield=")) {
+                            int i = Integer.parseInt(args[point++]);
+                            LinkedList<String> flags = new LinkedList<String>();
+                            while (point < args.length)
+                                flags.add(args[point++]);
+                            return new BitfieldSchemaElement(i, flags.toArray(new String[0]));
+                        }
                         if (text.startsWith("table")) {
                             String eText = text;
                             boolean hasFlags = eText.endsWith("F");
@@ -350,6 +354,7 @@ public class SDB {
                             boolean hasDefault = eText.endsWith("D");
                             if (hasDefault)
                                 eText = eText.substring(0, eText.length() - 1);
+                            // combination order is tableSTADF
 
                             TSDB tilesetAllocations = null;
                             if (eText.equals("tableSTA"))
