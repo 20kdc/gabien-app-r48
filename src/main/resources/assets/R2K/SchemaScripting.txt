@@ -44,6 +44,9 @@ e forceescape_mode 0 escape 1 instaKillEnemiesAndWin 2 instaKillSingleEnemyAndWi
 e change_enemy_hp_mode 0 direct 1 variable 2 currentHp%
 
 e choice_index_magic 0 choice 4 invisibleCancel
+ This one's used for display, so the user sees "choice index invisibleCancel" on the display.
+ They still have to manually bind it together though.
+e choice_index_magic_2 4 invisibleCancel
 E choice_begin_magic choiceIndex+1 0 None 5 invisibleCancel
  BEFORE ADDING A "mysteriously set to 1" type for a parameter just before an actor_id,
   have you considered it could be GetActors? - 20kdc to themselves

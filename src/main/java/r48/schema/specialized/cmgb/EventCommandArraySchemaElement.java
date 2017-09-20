@@ -13,10 +13,7 @@ import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.*;
-import r48.schema.AggregateSchemaElement;
-import r48.schema.ArrayElementSchemaElement;
-import r48.schema.SchemaElement;
-import r48.schema.SubwindowSchemaElement;
+import r48.schema.*;
 import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -160,26 +157,12 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         // Uhoh.
         final int length;
         boolean addRemove = false;
-        if (start < arr.length) {
-            int p = getGroupLengthCore(arr, start);
-            if (p == 0) {
-                length = 1;
-            } else {
-                length = p;
-                addRemove = true;
-            }
+        int p = getGroupLengthCore(arr, start);
+        if (p == 0) {
+            length = 1;
         } else {
-            final String text = TXDB.get("The group is invalid.");
-            return new SchemaElement() {
-                @Override
-                public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-                    return new UILabel(text, FontSizes.schemaFieldTextHeight);
-                }
-
-                @Override
-                public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-                }
-            };
+            length = p;
+            addRemove = true;
         }
         int iSize = addRemove ? 1 : 0;
         SchemaElement[] group = new SchemaElement[length + iSize];
@@ -222,15 +205,31 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
 
     @Override
     protected SchemaElement getElementContextualSchema(RubyIO[] arr, final int start, final int length) {
+        // Record the first RubyIO of the group.
+        // getGroupElement seeks for it now, so it "tracks" the group properly despite array changes.
+        final RubyIO tracker = arr[start];
         return new SubwindowSchemaElement(new SchemaElement() {
+            public int actualStart(RubyIO target) {
+                for (int i = 0; i < target.arrVal.length; i++)
+                    if (target.arrVal[i] == tracker)
+                        return i;
+                return -1;
+            }
+
             @Override
             public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-                return getGroupElement(target.arrVal, start, this).buildHoldingEditor(target, launcher, path);
+                int actualStart = actualStart(target);
+                if (actualStart == -1)
+                    return new UILabel(TXDB.get("The command isn't in the list anymore, so it has no context."), FontSizes.schemaFieldTextHeight);
+                return getGroupElement(target.arrVal, actualStart, this).buildHoldingEditor(target, launcher, path);
             }
 
             @Override
             public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-                getGroupElement(target.arrVal, start, this).modifyVal(target, path, setDefault);
+                int actualStart = actualStart(target);
+                if (actualStart == -1)
+                    return;
+                getGroupElement(target.arrVal, actualStart, this).modifyVal(target, path, setDefault);
             }
         }, new IFunction<RubyIO, String>() {
             @Override

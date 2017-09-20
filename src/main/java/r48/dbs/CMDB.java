@@ -183,8 +183,9 @@ public class CMDB {
                                 for (int i = 0; i < iargs.length; i += 2) {
                                     if (rubyIO.arrVal.length <= iargs[i])
                                         continue;
-                                    if (rubyIO.arrVal[iargs[i]].fixnumVal == iargs[i + 1])
-                                        return 1;
+                                    if (rubyIO.arrVal[iargs[i]].type == 'i')
+                                        if (rubyIO.arrVal[iargs[i]].fixnumVal == iargs[i + 1])
+                                            return 1;
                                 }
                                 return 0;
                             }

@@ -179,5 +179,38 @@
   'I' defines exit indent offset
       (ex. Else is l,i-1,I1.)
   'X' defines this as using a custom schema for indent & parameters.
-  'x' defines the same, but indicates to any external processing tools that this is optional.
+  'x' defines the same, but indicates to any external processing tools (Ghabry, take note:) that this is optional.
   'C' is, like with SDB, the gateway for special cases.
+  '#' includes another file.
+  '>' allows CMDB to create aliases. I'm not sure R48 even still uses this -
+   it was meant for scaffolding when the type I *wanted* to use wasn't implemented yet,
+   back when that happened approximately every two seconds.
+  I'm now documenting all C-values, though they're made up as I go along:
+   C digitCount <number>
+    Controls the global amount of digits used for command numbers.
+   NOTE: Only one post-indent control can apply at a time, including I.
+    C commandIndentConditionalIB <paramId>
+     Uses a parameter as an int_boolean flag to control post-indentation (true == 1, false == 0)
+    C commandIndentConditionalOF (<paramId> <intValue>)...
+     Essentially sets a bunch of conditions, and if at least one is true, post-indents by 1, otherwise doesn't.
+     The conditions check if integer parameters are equal to integer values.
+    C spritesheet <strParamId> <spritesheet>
+     Attaches a graphical index picker button to the bottom of the *next defined parameter*,
+      which must be an integer.
+     This uses the generic spritesheet API, with <spritesheet> being the directory name as usual.
+     The <strParamId> is the parameter ID of the string for the particular image.
+    C r2kTonePicker <index1> <index2> <index3> <index4>
+     Attaches a graphical tone calibration (not actually a picker) view to the bottom of the next defined parameter.
+     All 4 parameters are indexes, in the order: red, green, blue, saturation.
+     This is for RPG Maker 2000/2003 tones - values may differ from other engines.
+    C groupBehavior <type> <...>
+     This defines how this command acts in relation to others.
+     This is solely a user aiding measure, mind, and theoretically optional.
+     Behaviors are:
+      messagebox <command ID>
+       This will cause any commands with the given ID put after the message box to be merged with it in the editor.
+       It also provides a button to add a new command with that ID to the end.
+       As this is a proper group, it will take up less space in the list, and is copy/pasted as one.
+      r2k_choice
+       This is particular behavior for r2k choices, which in general automatically adjust their indexes.
+       Honestly this system is still a bit clunky, but it doesn't auto"correct" anything existing incorrectly.

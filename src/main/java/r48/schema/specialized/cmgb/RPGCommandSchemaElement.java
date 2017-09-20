@@ -55,7 +55,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         database = db;
         allowControlOfIndent = allowIndentControl;
         showHeader = showHdr;
-        if (showHeader)
+        if (!showHeader)
             hiddenHeadVer = this;
     }
 
