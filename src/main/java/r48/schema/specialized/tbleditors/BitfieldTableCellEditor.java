@@ -44,24 +44,13 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                 int sel = uig.getSelected();
                 final int selX = sel % targ.width;
                 final int selY = sel / targ.width;
-                boolean oob = targ.outOfBounds(selX, selY);
-                if (!oob) {
-                    setter.set(new IConsumer<Integer>() {
-                        @Override
-                        public void accept(Integer integer) {
-                            targ.setTiletype(selX, selY, 0, (short) (int) integer);
-                        }
-                    });
-                    wtm.accept((int) targ.getTiletype(selX, selY, 0));
-                } else {
-                    setter.set(new IConsumer<Integer>() {
-                        @Override
-                        public void accept(Integer integer) {
-
-                        }
-                    });
-                    wtm.accept(-1);
-                }
+                setter.set(new IConsumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) {
+                        targ.setTiletype(selX, selY, 0, (short) (int) integer);
+                    }
+                });
+                wtm.accept((int) targ.getTiletype(selX, selY, 0));
                 manualControl.run();
             }
         };

@@ -1,6 +1,7 @@
 *
 !build.gradle
 !README.md
+!CREDITS.txt
 !.gitignore
 !translation.lua
 !translation-diff.sh

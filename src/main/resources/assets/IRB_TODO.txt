@@ -12,8 +12,11 @@ short-term planning subsection:
 + Demo video
   (work on this was good testing and lead to v0.7-2, DO MORE OF THESE FULL TEST RUNS.
    also good R48 publicity)
-- Friday -
+- Sunday -
  Demo video upload (if not on Thursday)
+
+FIX TABLE STUFF! Releasing demo vid with this in.
+
 - LATER -
 + r95 support? (ask Ghabry on this, has been documenting the format)
 + CC0/MIT? Confer with #easyrpg

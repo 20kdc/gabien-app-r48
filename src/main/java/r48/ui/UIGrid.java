@@ -186,9 +186,9 @@ public class UIGrid extends UIPanel {
 
     public void setSelected(int i) {
         if (i < 0)
-            return;
+            i = 0;
         if (i >= tileCount)
-            return;
+            i = tileCount - 1;
         selTile = i;
         selWidth = 1;
         selHeight = 1;

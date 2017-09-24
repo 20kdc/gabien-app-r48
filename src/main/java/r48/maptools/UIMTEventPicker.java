@@ -86,13 +86,25 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                             showEvent(evK.fixnumVal, mapView, evI);
                         }
                     });
-                    button = new UIAppendButton(TXDB.get("MOV"), button, new Runnable() {
+                    button = new UIAppendButton(TXDB.get("Move"), button, new Runnable() {
                         @Override
                         public void run() {
                             mapToolContext.accept(new UIMTEventMover(evI, mapToolContext));
                         }
                     }, FontSizes.eventPickerEntryTextHeight);
-                    button = new UIAppendButton(TXDB.get("DEL"), button, new Runnable() {
+                    button = new UIAppendButton(TXDB.get("Clone"), button, new Runnable() {
+                        @Override
+                        public void run() {
+                            RubyIO evtHash = mapView.map.getInstVarBySymbol("@events");
+                            int unusedIndex = getFreeIndex(evtHash);
+                            RubyIO newEvent = new RubyIO().setDeepClone(evI);
+                            evtHash.hashVal.put(new RubyIO().setFX(unusedIndex), newEvent);
+                            // This'll fix the potential inconsistencies
+                            mapView.passModificationNotification();
+                            mapToolContext.accept(new UIMTEventMover(newEvent, mapToolContext));
+                        }
+                    }, FontSizes.eventPickerEntryTextHeight);
+                    button = new UIAppendButton(TXDB.get("Del."), button, new Runnable() {
                         @Override
                         public void run() {
                             mapView.map.getInstVarBySymbol("@events").hashVal.remove(evK);
@@ -106,10 +118,8 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         svl.panels.add(new UITextButton(FontSizes.eventPickerEntryTextHeight, TXDB.get("+ Add Event"), new Runnable() {
             @Override
             public void run() {
-                int unusedIndex = mapView.renderer.eventRenderer.eventIdBase();
                 RubyIO evtHash = mapView.map.getInstVarBySymbol("@events");
-                while (evtHash.getHashVal(new RubyIO().setFX(unusedIndex)) != null)
-                    unusedIndex++;
+                int unusedIndex = getFreeIndex(evtHash);
 
                 RubyIO k = new RubyIO().setFX(unusedIndex);
                 RubyIO newEvent = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Event"), k);
@@ -128,6 +138,13 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
             }
         }));
         svl.runLayout();
+    }
+
+    private int getFreeIndex(RubyIO evtHash) {
+        int unusedIndex = mapView.renderer.eventRenderer.eventIdBase();
+        while (evtHash.getHashVal(new RubyIO().setFX(unusedIndex)) != null)
+            unusedIndex++;
+        return unusedIndex;
     }
 
     @Override
