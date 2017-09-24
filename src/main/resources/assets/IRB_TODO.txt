@@ -7,15 +7,6 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning subsection:
-- Thursday -
-+ release v0.7.1
-+ Demo video
-  (work on this was good testing and lead to v0.7-2, DO MORE OF THESE FULL TEST RUNS.
-   also good R48 publicity)
-- Sunday -
- Demo video upload (if not on Thursday)
-
-FIX TABLE STUFF! Releasing demo vid with this in.
 
 - LATER -
 + r95 support? (ask Ghabry on this, has been documenting the format)
