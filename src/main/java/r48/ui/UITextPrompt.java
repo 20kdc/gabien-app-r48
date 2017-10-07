@@ -6,6 +6,7 @@
 package r48.ui;
 
 import gabien.ui.*;
+import gabienapp.Application;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 
@@ -27,7 +28,8 @@ public class UITextPrompt extends UIPanel implements IWindowElement {
                 wantClose = true;
             }
         }), false, 4, 5));
-        setBounds(new Rect(0, 0, 320, 38));
+        uiSVL.runLayout();
+        setBounds(new Rect(0, 0, FontSizes.scaleGuess(320), uiSVL.scrollLength));
     }
 
     @Override

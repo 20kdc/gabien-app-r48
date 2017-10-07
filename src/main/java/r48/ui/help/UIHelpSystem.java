@@ -8,6 +8,8 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.*;
+import gabienapp.Application;
+import r48.AppMain;
 import r48.FontSizes;
 
 import java.util.LinkedList;
@@ -102,14 +104,20 @@ public class UIHelpSystem extends UIPanel {
                 boolean left = hc.c == 'I';
                 final IImage r = GaBIEn.getImage(hc.args[0]);
                 boolean extended = hc.args.length > 1;
+                // uiGuessScaler takes over
                 final int xx = extended ? Integer.parseInt(hc.args[1]) : 0;
                 final int yy = extended ? Integer.parseInt(hc.args[2]) : 0;
-                final int w = extended ? Integer.parseInt(hc.args[3]) : r.getWidth();
-                final int h = extended ? Integer.parseInt(hc.args[4]) : r.getHeight();
+                final int sw = extended ? Integer.parseInt(hc.args[3]) : r.getWidth();
+                final int sh = extended ? Integer.parseInt(hc.args[4]) : r.getHeight();
+                final int w = FontSizes.scaleGuess(sw);
+                final int h = FontSizes.scaleGuess(sh);
                 UIPanel uie = new UIPanel();
                 uie.baseImage = r;
                 uie.imageX = xx;
                 uie.imageY = yy;
+                uie.imageScale = true;
+                uie.imageSW = sw;
+                uie.imageSH = sh;
                 if (!left) {
                     // If there isn't much space, do this anyway (responsive design people looking at this in future would be either approving or hating, if anyone was reading this)
                     if (rect.width < (w * 2))

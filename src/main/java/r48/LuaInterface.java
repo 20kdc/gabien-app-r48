@@ -41,20 +41,23 @@ public class LuaInterface {
                 if (GaBIEn.getTime() > now + 10) {
                     System.err.println("Giving up :(");
                     try {
-                        babysit.destroyForcibly();
+                        babysit.destroy();
                     } catch (Exception e) {}
                     return null;
                 }
-                boolean wt = babysit.isAlive();
-                if (wt)
-                    System.err.println(babysit.waitFor());
+                boolean alive = true;
+                try {
+                    babysit.exitValue();
+                    alive = false;
+                } catch (IllegalThreadStateException itse) {
+                }
                 InputStream out2 = babysit.getInputStream();
                 while (out2.available() > 0)
                     System.err.write(out2.read());
                 InputStream out1 = babysit.getErrorStream();
                 while (out1.available() > 0)
                     System.err.write(out1.read());
-                if (!wt)
+                if (!alive)
                     break;
             }
             RubyIO res = AdHocSaveLoad.load("templuao");

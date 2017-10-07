@@ -9,6 +9,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.*;
+import gabienapp.Application;
 import r48.dbs.*;
 import r48.imagefx.ImageFXCache;
 import r48.io.IkaObjectBackend;
@@ -88,6 +89,7 @@ public class AppMain {
 
     // ONLY this class should refer to this!!!
     private static IMapContext mapContext;
+    private static UIWindowView rootView;
 
     // State for in-system copy/paste
     public static RubyIO theClipboard = null;
@@ -148,7 +150,7 @@ public class AppMain {
         activeHosts = new LinkedList<ISchemaHost>();
 
         // initialize UI
-        final UIWindowView rootView = new UIWindowView() {
+        rootView = new UIWindowView() {
             @Override
             public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
                 Coco.run(igd);
@@ -156,13 +158,15 @@ public class AppMain {
             }
         };
         rootView.windowTextHeight = FontSizes.windowFrameHeight;
+        rootView.sizerSize = rootView.windowTextHeight * 2;
+        rootView.sizerOfs = (rootView.windowTextHeight * 4) / 3;
         windowMaker = rootView;
         rootView.setBounds(new Rect(0, 0, 800, 600));
 
         // Set up a default stuffRenderer for things to use.
         stuffRendererIndependent = system.rendererFromMap(null);
 
-        final UILabel uiStatusLabel = rebuildInnerUI(gamepak, rootView, uiTicker);
+        final UILabel uiStatusLabel = rebuildInnerUI(gamepak, uiTicker);
 
         // everything ready, start main window
         uiTicker.accept(rootView);
@@ -197,7 +201,7 @@ public class AppMain {
         };
     }
 
-    private static UITabPane initializeTabs(final String gamepak, final UIWindowView rootView, final IConsumer<UIElement> uiTicker) {
+    private static UITabPane initializeTabs(final String gamepak, final IConsumer<UIElement> uiTicker) {
         LinkedList<String> tabNames = new LinkedList<String>();
         LinkedList<UIElement> tabElems = new LinkedList<UIElement>();
 
@@ -242,7 +246,7 @@ public class AppMain {
         return new UITabPane(tabNames.toArray(new String[0]), tabElems.toArray(new UIElement[0]), FontSizes.tabTextHeight);
     }
 
-    private static UILabel rebuildInnerUI(final String gamepak, final UIWindowView rootView, final IConsumer<UIElement> uiTicker) {
+    private static UILabel rebuildInnerUI(final String gamepak, final IConsumer<UIElement> uiTicker) {
         UILabel uiStatusLabel = new UILabel(TXDB.get("Loading..."), FontSizes.statusBarTextHeight);
 
         UIAppendButton workspace = new UIAppendButton(TXDB.get("Save All Modified Files"), uiStatusLabel, new Runnable() {
@@ -331,7 +335,7 @@ public class AppMain {
                 startHelp(0);
             }
         }, FontSizes.statusBarTextHeight);
-        rootView.backing = new UINSVertLayout(workspace, initializeTabs(gamepak, rootView, uiTicker));
+        rootView.backing = new UINSVertLayout(workspace, initializeTabs(gamepak, uiTicker));
         return uiStatusLabel;
     }
 
@@ -365,8 +369,9 @@ public class AppMain {
         svl.panels.add(uhs);
         uhs.setBounds(uhs.getBounds());
         int h = uhs.getBounds().height;
-        if (h > 500)
-            h = 500;
+        int limit = rootView.getBounds().height - rootView.getWindowFrameHeight();
+        if (h > limit)
+            h = limit;
         svl.setBounds(new Rect(0, 0, uhs.getBounds().width, h));
         windowMaker.accept(svl);
     }
@@ -384,7 +389,7 @@ public class AppMain {
         };
         final UIScrollLayout uus = new UIScrollLayout(true, FontSizes.generalScrollersize);
         uus.panels.add(uis);
-        uus.setBounds(new Rect(0, 0, 612, 240));
+        uus.setBounds(new Rect(0, 0, (rootView.getBounds().width / 3) * 2, rootView.getBounds().height / 2));
         final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(TXDB.get("Index"), uil, new Runnable() {
             @Override
             public void run() {
@@ -441,7 +446,7 @@ public class AppMain {
                         "R2K/templatetileset.png", "ChipSet/templatetileset.png",
                 };
                 for (String s : mkdirs)
-                    new File(AppMain.rootPath + s).mkdirs();
+                    GaBIEn.makeDirectories(AppMain.rootPath + s);
                 for (int i = 0; i < fileCopies.length; i += 2) {
                     String src = fileCopies[i];
                     String dst = fileCopies[i + 1];
@@ -500,6 +505,7 @@ public class AppMain {
         if (mapContext != null)
             mapContext.freeOsbResources();
         mapContext = null;
+        rootView = null;
         theClipboard = null;
         imageFXCache = null;
         activeHosts = null;

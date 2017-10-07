@@ -121,6 +121,9 @@ public class FontSizes {
     // TXDB.get("generalScrollersize")
     public static int generalScrollersize = 24;
 
+    // TXDB.get("uiGuessScaleTenths")
+    public static int uiGuessScaleTenths = 10;
+
     // This hides the implied reflection for simplicity
     public static LinkedList<FontSizeField> getFields() {
         LinkedList<FontSizeField> fields = new LinkedList<FontSizeField>();
@@ -152,7 +155,7 @@ public class FontSizes {
         AdHocSaveLoad.save("fonts", prepare);
     }
 
-    public static void load() {
+    public static boolean load() {
         RubyIO dat = AdHocSaveLoad.load("fonts");
         if (dat != null) {
             for (FontSizeField fsf : getFields()) {
@@ -174,14 +177,16 @@ public class FontSizes {
             RubyIO sys2 = dat.getInstVarBySymbol("@sysfont_ue8");
             if (sys2 != null)
                 UILabel.fontOverrideUE8 = sys2.type == 'T';
+            return true;
         }
+        return false;
     }
 
     public static class FontSizeField implements IConsumer<Integer>, ISupplier<Integer> {
+        // untranslated
         public final String name;
         private final Field intern;
         public FontSizeField(Field i) {
-            // need to translate this somehow
             name = i.getName();
             intern = i;
         }
@@ -203,5 +208,9 @@ public class FontSizes {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public static int scaleGuess(int defaultVal) {
+        return (defaultVal * uiGuessScaleTenths) / 10;
     }
 }

@@ -154,7 +154,11 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                setWM.accept(realWM);
+                                if (GaBIEn.singleWindowApp()) {
+                                    AppMain.launchDialog(TXDB.get("You are running on a platform which does not support multiple windows."));
+                                } else {
+                                    setWM.accept(realWM);
+                                }
                             }
                         },
                         new Runnable() {

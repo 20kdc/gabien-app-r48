@@ -6,6 +6,8 @@
 package gabienapp;
 
 import gabien.GaBIEn;
+import gabien.IGrInDriver;
+import gabien.WindowSpecs;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
@@ -32,7 +34,10 @@ public class Application {
         final WindowCreatingUIElementConsumer uiTicker = new WindowCreatingUIElementConsumer();
         // Load language list.
         TXDB.init();
-        FontSizes.load();
+        boolean fontsLoaded = FontSizes.load();
+        if (!fontsLoaded)
+            if (GaBIEn.singleWindowApp())
+                autoDetectCorrectUISizeOnSWA();
         // Note the mass-recreate.
         while (true) {
             final UIScrollLayout gamepaks = new UIScrollLayout(true, FontSizes.generalScrollersize);
@@ -68,32 +73,7 @@ public class Application {
             });
             msAdjust.accept(Integer.toString(globalMS));
 
-            gamepaks.panels.add(new UISplitterLayout(new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Quit R48"), new Runnable() {
-                @Override
-                public void run() {
-                    GaBIEn.ensureQuit();
-                }
-            }), new UIAppendButton(TXDB.getLanguage(), new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Font Sizes"), new Runnable() {
-                @Override
-                public void run() {
-                    uiTicker.accept(new UIFontSizeConfigurator());
-                    closeHelper.accept(null);
-                }
-            }), new Runnable() {
-                @Override
-                public void run() {
-                    // Unfortunately, if done quickly enough, the font will not load in time.
-                    // (Java "lazily" loads fonts.
-                    //  gabien-javase works around this bug - lazy loading appears to result in Java devs not caring about font load speed -
-                    //  and by the time it matters it's usually loaded, but, well, suffice to say this hurts my translatability plans a little.
-                    //  Not that it'll stop them, but it's annoying.)
-                    // This associates a lag with switching language, when it's actually due to Java being slow at loading a font.
-                    // (I'm slightly glad I'm not the only one this happens for, but unhappy that it's an issue.)
-                    // Unfortunately, a warning message cannot be shown to the user, as the warning message would itself trigger lag-for-font-load.
-                    TXDB.nextLanguage();
-                    closeHelper.accept(null);
-                }
-            }, FontSizes.launcherTextHeight), false, 1, 2));
+            gamepaks.panels.add(figureOutTopBar(uiTicker, closeHelper));
 
             gamepaks.panels.add(new UISplitterLayout(new UILabel(TXDB.get("MS per frame:"), FontSizes.launcherTextHeight), msAdjust, false, 3, 5));
 
@@ -180,7 +160,6 @@ public class Application {
 
             // This is the identity of the error window that 'brings the system down softly'.
             UIElement failed = null;
-
             // ok, so, 'what is going on with the flags', you might ask?
             // Well:
             // backupAvailable describes the state of the LAST backup made
@@ -305,33 +284,98 @@ public class Application {
         GaBIEn.ensureQuit();
     }
 
+    private static void autoDetectCorrectUISizeOnSWA() {
+        // Used solely to work out window size during a specific situation on Android.
+        int frames = 0;
+        WindowSpecs ws = GaBIEn.defaultWindowSpecs("test", 800, 600);
+        ws.scale = 1;
+        ws.resizable = true;
+        IGrInDriver gi = GaBIEn.makeGrIn("test", 800, 600, ws);
+        while (frames < 4) {
+            gi.flush();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+
+            }
+            frames++;
+        }
+        // The above triggered a flush, which would cause the initial resize on SWPs
+        FontSizes.uiGuessScaleTenths = Math.max(10, Math.min(gi.getWidth(), gi.getHeight()) / 30);
+        gi.shutdown();
+        for (FontSizes.FontSizeField fsf : FontSizes.getFields()) {
+            // as this is a touch device, map 8 to 16 (6 is for things that really matter)
+            if (fsf.get() == 8)
+                fsf.accept(16);
+            if (!fsf.name.equals("uiGuessScaleTenths"))
+                fsf.accept(FontSizes.scaleGuess(fsf.get()));
+        }
+    }
+
+    private static UIElement figureOutTopBar(final WindowCreatingUIElementConsumer uiTicker, final IConsumer<Runnable> closeHelper) {
+        UIElement whatever = new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Quit R48"), new Runnable() {
+            @Override
+            public void run() {
+                GaBIEn.ensureQuit();
+            }
+        });
+        if (!GaBIEn.singleWindowApp()) {
+            whatever = new UISplitterLayout(whatever, new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Font Sizes"), new Runnable() {
+                @Override
+                public void run() {
+                    uiTicker.accept(new UIFontSizeConfigurator());
+                    closeHelper.accept(null);
+                }
+            }), false, 1, 2);
+        }
+
+        return new UIAppendButton(TXDB.getLanguage(), whatever, new Runnable() {
+            @Override
+            public void run() {
+                // Unfortunately, if done quickly enough, the font will not load in time.
+                // (Java "lazily" loads fonts.
+                //  gabien-javase works around this bug - lazy loading appears to result in Java devs not caring about font load speed -
+                //  and by the time it matters it's usually loaded, but, well, suffice to say this hurts my translatability plans a little.
+                //  Not that it'll stop them, but it's annoying.)
+                // This associates a lag with switching language, when it's actually due to Java being slow at loading a font.
+                // (I'm slightly glad I'm not the only one this happens for, but unhappy that it's an issue.)
+                // Unfortunately, a warning message cannot be shown to the user, as the warning message would itself trigger lag-for-font-load.
+                TXDB.nextLanguage();
+                closeHelper.accept(null);
+            }
+        }, FontSizes.launcherTextHeight);
+    }
+
     // Magically handles case issues.
     public static String autoDetectWindows(String s) {
         final String giveUp = s;
         try {
-            // '/' is 'universal'. Not supposed to be, but that doesn't matter
+            // '/' is 'universal'. Not supposed to be, but that doesn't matter.
+            // Firstly convert to '/' form.
+            // We will be dealing with the following kinds of paths.
+            // Relative: "([$PATHCHARS]*/)*[$PATHCHARS]*"
+            // Windows Absolute: "?:/.*"
+            // MLA Absolute / Windows NT Special Path Absolute: "/.*"
             s = s.replace('\\', '/');
             if (s.equals(""))
                 return s;
             if (!s.contains("/"))
                 if (s.contains(":"))
-                    return s;
-            File f = new File(s);
-            if (f.exists())
+                    return s; // A: / B: / C:
+            if (GaBIEn.fileOrDirExists(s))
                 return s;
             // Deal with earlier path components...
-            String st = f.getName();
+            String st = GaBIEn.basename(s);
             // Sanity check.
             if (s.contains("/")) {
                 if (!s.endsWith("/" + st))
-                    throw new RuntimeException("Weird inconsistency in Java File. 'Should never happen' but safety first.");
+                    throw new RuntimeException("Weird inconsistency in gabien path sanitizer. 'Should never happen' but safety first.");
             } else {
                 // Change things to make sense.
                 s = "./" + st;
             }
             String parent = autoDetectWindows(s.substring(0, s.length() - (st.length() + 1)));
-            f = new File(parent);
-            String[] subfiles = f.list();
+            String[] subfiles = GaBIEn.listEntries(parent);
             if (subfiles != null)
                 for (String s2 : subfiles)
                     if (s2.equalsIgnoreCase(st))
