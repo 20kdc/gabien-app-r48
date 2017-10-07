@@ -7,9 +7,11 @@ package r48.ui;
 
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import r48.AppMain;
 import r48.FontSizes;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
+import r48.map.tiles.AutoTileTypeField;
 
 /**
  * Tile selection, now with more hax for the AutoTile button. (not-a-TM)
@@ -17,6 +19,7 @@ import r48.map.UIMapView;
  */
 public class UITileGrid extends UIGrid {
     public final int tileStart, layer;
+    public final int spriteScale = FontSizes.getSpriteScale();
     public final StuffRenderer renderer;
 
     // If 0, not an AT Group. Otherwise, this is the size of the AT group.
@@ -72,9 +75,21 @@ public class UITileGrid extends UIGrid {
     protected void drawTile(int t, boolean hover, int x, int y, IGrInDriver igd) {
         if (viewMap != null)
             t = viewMap[t];
-        if (atGroup != 0)
-            if (!hover)
-                t += 15; // Hardcoded offset. Not good, but it covers all cases right now.
-        renderer.tileRenderer.drawTile(layer, (short) (t + tileStart), x, y, igd, tileSizeW, FontSizes.getSpriteScale());
+        t += tileStart;
+        if (atGroup != 0) {
+            AutoTileTypeField[] attf = renderer.tileRenderer.indicateATs();
+            int target = hover ? 0xFF : 0;
+            int def = hover ? 0 : atGroup - 1; // fallback
+            for (AutoTileTypeField at : attf) {
+                if (t >= at.start) {
+                    if (t < (at.length + at.start)) {
+                        def = AppMain.autoTiles[at.databaseId].inverseMap[target];
+                        break;
+                    }
+                }
+            }
+            t += def;
+        }
+        renderer.tileRenderer.drawTile(layer, (short) t, x, y, igd, tileSizeW / spriteScale, FontSizes.getSpriteScale());
     }
 }

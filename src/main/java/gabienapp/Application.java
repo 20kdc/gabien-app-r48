@@ -31,13 +31,16 @@ public class Application {
     private static IConsumer<Double> appTicker = null;
     private static WindowCreatingUIElementConsumer uiTicker;
 
+    public static boolean mobileExtremelySpecialBehavior;
+
     public static void gabienmain() throws IOException {
+        mobileExtremelySpecialBehavior = GaBIEn.singleWindowApp();
         uiTicker = new WindowCreatingUIElementConsumer();
         // Load language list.
         TXDB.init();
         boolean fontsLoaded = FontSizes.load();
         if (!fontsLoaded)
-            if (GaBIEn.singleWindowApp())
+            if (GaBIEn.singleWindowApp()) // SWA always means we need to adapt to local screen size, and should generally cut down as many usability issues as possible
                 autoDetectCorrectUISizeOnSWA();
         // Note the mass-recreate.
         while (true) {
@@ -81,6 +84,12 @@ public class Application {
             gamepaks.panels.add(new UILabel(TXDB.get("Root Path:"), FontSizes.launcherTextHeight));
 
             final UITextBox rootBox = new UITextBox(FontSizes.launcherTextHeight);
+            /*
+             * If single-window, assume we're on Android, so the user probably wants to be able to use EasyRPG Player
+             * Regarding if I'm allowed to do this:
+             */
+            if (mobileExtremelySpecialBehavior)
+                rootBox.text = "easyrpg/games/R48 Game";
             gamepaks.panels.add(rootBox);
 
             gamepaks.panels.add(new UILabel(TXDB.get("Choose Target Engine:"), FontSizes.launcherTextHeight));
@@ -105,6 +114,7 @@ public class Application {
                                         if (!rootPath.endsWith("/"))
                                             if (!rootPath.endsWith("\\"))
                                                 rootPath += "/";
+                                    if (mobileExtremelySpecialBehavior)
                                     TXDB.loadGamepakLanguage(objName + "/");
                                     appTicker = AppMain.initializeAndRun(rootPath, objName + "/", uiTicker);
                                 } catch (IOException e) {
@@ -322,7 +332,7 @@ public class Application {
                 GaBIEn.ensureQuit();
             }
         });
-        if (!GaBIEn.singleWindowApp()) {
+        if (!GaBIEn.singleWindowApp()) { // SWA means we can't create windows
             whatever = new UISplitterLayout(whatever, new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Font Sizes"), new Runnable() {
                 @Override
                 public void run() {

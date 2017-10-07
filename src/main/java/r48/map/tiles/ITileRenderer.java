@@ -15,6 +15,14 @@ import r48.ui.UITileGrid;
 public interface ITileRenderer {
     int getTileSize();
 
+    // NOTE: ETS should be how much of the tile to use at spriteScale 1.
+    // When in minimap, it's at an appropriate value (< tileSize).
+    // Otherwise, it's tileSize.
+    // spriteScale meanwhile is how much to "zoom" the tile.
+    // So the size to render is ETS * spriteScale.
+    // spriteScale is used in most situations, but not UIMapView.
+    // There, it is instead done "in bulk" on an offscreen buffer,
+    //  since the offscreen buffer had to be used anyway for *other* efficiency reasons.
     void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets, int spriteScale);
 
     UITileGrid[] createATUIPlanes(UIMapView mv);

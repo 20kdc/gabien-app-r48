@@ -14,6 +14,7 @@ import r48.RubyIO;
 import r48.dbs.ATDB;
 import r48.dbs.TXDB;
 import r48.map.UIMapView;
+import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
 import r48.ui.UITileGrid;
 
@@ -28,15 +29,13 @@ public class VXATileRenderer implements ITileRenderer {
     public static final int tileSize = 32;
     public final IImage[] tilesetMaps = new IImage[9];
     private final RubyIO tileset;
-    // Generated image the size of one shadow 'block'.
+    // Generated one-pixel image to be blended for shadow
     public IImage shadowImage;
 
     public VXATileRenderer(IImageLoader il, RubyIO tileset) {
         this.tileset = tileset;
-        int[] tinyTile = new int[256];
-        for (int i = 0; i < 256; i++)
-            tinyTile[i] = 0x80000000;
-        shadowImage = GaBIEn.createImage(tinyTile, 16, 16);
+        int[] tinyTile = new int[] {0x80000000};
+        shadowImage = GaBIEn.createImage(tinyTile, 1, 1);
         // If the tileset's null, then just give up.
         // The tileset being/not being null is an implementation detail anyway.
         if (tileset != null) {
@@ -87,7 +86,7 @@ public class VXATileRenderer implements ITileRenderer {
 
         // Shadow layer.
         if (layer == 3) {
-            int st = ets / 2;
+            int st = ((ets * spriteScale) / 2);
             drawShadowTileFlag(tidx, 1, px, py, igd, st);
             drawShadowTileFlag(tidx, 2, px + st, py, igd, st);
             drawShadowTileFlag(tidx, 4, px, py + st, igd, st);
@@ -103,7 +102,7 @@ public class VXATileRenderer implements ITileRenderer {
 
         if (plane >= 0)
             if (plane < 4)
-                if (handleMTLayer(tidx, ets, px, py, plane + 5, igd))
+                if (handleMTLayer(tidx, ets, px, py, plane + 5, igd, spriteScale))
                     return;
 
         int mode = (int) tileset.getInstVarBySymbol("@mode").fixnumVal;
@@ -113,29 +112,29 @@ public class VXATileRenderer implements ITileRenderer {
         // Notice only 3 planes are allocated - that's 2 rows of 3 ATs.
         if (plane >= 8)
             if (plane <= 0x0A)
-                if (handleSATLayer(tidx, 0x0800, ets, px, py, 0, igd, mode))
+                if (handleSATLayer(tidx, 0x0800, ets, px, py, 0, igd, mode, spriteScale))
                     return;
 
         if (plane >= 0x0B)
             if (plane <= 0x10)
-                if (handleSATLayer(tidx, 0x0B00, ets, px, py, 1, igd, mode))
+                if (handleSATLayer(tidx, 0x0B00, ets, px, py, 1, igd, mode, spriteScale))
                     return;
 
         // Secondary 'Wall' AT Planes (Part 3 and 4). These use AT Type 1 "wall".
 
         if (plane >= 0x11)
             if (plane <= 0x16)
-                if (handleSATLayer(tidx, 0x1100, ets, px, py, 2, igd, mode))
+                if (handleSATLayer(tidx, 0x1100, ets, px, py, 2, igd, mode, spriteScale))
                     return;
         if (plane >= 0x17)
             if (plane <= 0x1F)
-                if (handleSATLayer(tidx, 0x1700, ets, px, py, 3, igd, mode))
+                if (handleSATLayer(tidx, 0x1700, ets, px, py, 3, igd, mode, spriteScale))
                     return;
 
         // Plane 6 (Part 5)
 
         if (plane == 6)
-            if (handleMTLayer(tidx, ets, px, py, 4, igd))
+            if (handleMTLayer(tidx, ets, px, py, 4, igd, spriteScale))
                 return;
 
         UILabel.drawString(igd, px, py, Integer.toHexString(tidx), false, FontSizes.mapDebugTextHeight);
@@ -143,10 +142,10 @@ public class VXATileRenderer implements ITileRenderer {
 
     private void drawShadowTileFlag(short tidx, int i, int i1, int i2, IGrDriver igd, int st) {
         if ((tidx & i) != 0)
-            igd.blitImage(0, 0, st, st, i1, i2, shadowImage);
+            igd.blitScaledImage(0, 0, 1, 1, i1, i2, st, st, shadowImage);
     }
 
-    private boolean handleMTLayer(short tidx, int ets, int px, int py, int tm, IGrDriver igd) {
+    private boolean handleMTLayer(short tidx, int ets, int px, int py, int tm, IGrDriver igd, int spriteScale) {
         int t = tidx & 0xFF;
         IImage planeImage = tilesetMaps[tm];
         if (planeImage != null) {
@@ -159,13 +158,13 @@ public class VXATileRenderer implements ITileRenderer {
                 tgtY -= 16;
                 tgtX += 8;
             }
-            igd.blitImage(tgtX * tileSize, tgtY * tileSize, ets, ets, px, py, planeImage);
+            RMEventGraphicRenderer.flexibleSpriteDraw(tgtX * tileSize, tgtY * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, planeImage, 0, igd);
             return true;
         }
         return false;
     }
 
-    private boolean handleSATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrDriver igd, int mode) {
+    private boolean handleSATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrDriver igd, int mode, int spriteScale) {
         int atField = 0;
         int atCW = 2;
         int atCH = 3;
@@ -252,10 +251,10 @@ public class VXATileRenderer implements ITileRenderer {
             // Every other row is skipped for animation purposes.
             atCH = 6;
         }
-        return handleATLayer(tidx, base, ets, px, py, tm, igd, atField, atCW, atCH, atOX, atOY, 48);
+        return handleATLayer(tidx, base, ets, px, py, tm, igd, atField, atCW, atCH, atOX, atOY, 48, spriteScale);
     }
 
-    private boolean handleATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrDriver igd, int atF, int atCW, int atCH, int atOX, int atOY, int div) {
+    private boolean handleATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrDriver igd, int atF, int atCW, int atCH, int atOX, int atOY, int div, int spriteScale) {
         int tin = tidx - base;
         if (tin < 0)
             return false;
@@ -272,7 +271,8 @@ public class VXATileRenderer implements ITileRenderer {
             if ((ets == tileSize) && (AppMain.autoTiles[atF] != null)) {
                 ATDB.Autotile at = AppMain.autoTiles[atF].entries[atid];
                 if (at != null) {
-                    int cSize = tileSize / 2;
+                    int cSize = (ets / 2) * spriteScale;
+                    int cSizeI = tileSize / 2;
                     for (int sA = 0; sA < 2; sA++)
                         for (int sB = 0; sB < 2; sB++) {
                             int ti = at.corners[sA + (sB * 2)];
@@ -286,14 +286,16 @@ public class VXATileRenderer implements ITileRenderer {
                                 ty /= 2;
                                 ty += tileSize;
                             }
-                            int sX = (sA * cSize);
-                            int sY = (sB * cSize);
-                            igd.blitImage(tx + pox + sX, ty + poy + sY, cSize, cSize, px + sX, py + sY, planeImg);
+                            int sX = (sA * cSizeI);
+                            int sY = (sB * cSizeI);
+                            int s2X = sA * cSize;
+                            int s2Y = sB * cSize;
+                            RMEventGraphicRenderer.flexibleSpriteDraw(tx + pox + sX, ty + poy + sY, cSizeI, cSizeI, px + s2X, py + s2Y, cSize, cSize, 0, planeImg,0, igd);
                         }
                     return true;
                 }
             } else {
-                igd.blitImage(tileSize, 2 * tileSize, ets, ets, px, py, planeImg);
+                RMEventGraphicRenderer.flexibleSpriteDraw(tileSize, 2 * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, planeImg, 0, igd);
                 return true;
             }
         }
@@ -309,9 +311,8 @@ public class VXATileRenderer implements ITileRenderer {
             };
         } else {
             int[] allATs = new int[0x1800 / 48];
-            for (int i = 0; i < allATs.length; i++) {
+            for (int i = 0; i < allATs.length; i++)
                 allATs[i] = i * 48;
-            }
             return new UITileGrid[] {
                     // Using 16 as the value, though false for most ATs, makes everything work (walls).
                     // Need to introduce another parameter or just set 16 as the display offset. Going with that.
@@ -337,7 +338,7 @@ public class VXATileRenderer implements ITileRenderer {
                     TXDB.get("Use Shadow-region Tool"),
             };
         return new String[] {
-                "Auto",
+                "AT",
                 "G1", // General 1
                 "G2", // General 2
                 "AT1-M", // AT Layers
@@ -356,6 +357,7 @@ public class VXATileRenderer implements ITileRenderer {
         LinkedList<Integer> atWFields = new LinkedList<Integer>();
         for (int i = 0; i < 32; i++) {
             int resultingAddr = i * 48;
+
             if (i < 8) {
                 // AT fields for T.M. 3!
                 atFields.add(resultingAddr + 0x1700);

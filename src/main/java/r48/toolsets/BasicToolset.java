@@ -155,7 +155,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                if (GaBIEn.singleWindowApp()) {
+                                if (GaBIEn.singleWindowApp()) { // SWA means no multiple GrInDrivers.
                                     AppMain.launchDialog(TXDB.get("You are running on a platform which does not support multiple windows."));
                                 } else {
                                     setWM.accept(realWM);

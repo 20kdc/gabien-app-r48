@@ -169,7 +169,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     }
 
     private boolean useDragControl() {
-        return GaBIEn.singleWindowApp() || camDragSwitch;
+        return GaBIEn.singleWindowApp() || camDragSwitch; // SWA means "make sure the user can use a 1-button mouse w/no hover".
     }
 
     public void render(int mouseXT, int mouseYT, int eTileSize, int currentLayer, boolean debug, IGrDriver igd) {
