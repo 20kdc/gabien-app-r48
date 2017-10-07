@@ -23,7 +23,7 @@ public class NullEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd) {
+    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int ss) {
 
     }
 

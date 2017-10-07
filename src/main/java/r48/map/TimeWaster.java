@@ -28,11 +28,13 @@ public class TimeWaster {
     private double iconVelX = 0;
     private double iconVelY = 0;
     private int points = 0;
+    private final int iconSize;
     private Random madness = new Random();
 
     public TimeWaster() {
         if (AdHocSaveLoad.load(".memory") != null)
             points = -1;
+        iconSize = 64 * FontSizes.getSpriteScale();
     }
 
     public void draw(IGrInDriver igd, int ox, int oy, double deltaTime, int sw, int sh) {
@@ -71,7 +73,7 @@ public class TimeWaster {
                 break;
         }
         moveTime += deltaTime * mul;
-        Rect b = new Rect(ox + (int) iconPlanX, oy + (int) iconPlanY, 64, 64);
+        Rect b = new Rect(ox + (int) iconPlanX, oy + (int) iconPlanY, iconSize, iconSize);
         if (type == 0) {
             if (b.contains(igd.getMouseX(), igd.getMouseY())) {
                 moveTime = 8;
@@ -82,15 +84,12 @@ public class TimeWaster {
                 // gravity
                 iconPlanX += iconVelX * deltaTime;
                 iconPlanY += iconVelY * deltaTime;
-                iconVelY += deltaTime * 128;
-                if (iconPlanY > (sh - 64)) {
-                    iconPlanY = (sh - 64);
+                iconVelY += deltaTime * iconSize * 2;
+                if (iconPlanY > (sh - iconSize)) {
+                    iconPlanY = (sh - iconSize);
                     iconVelY = -iconVelY;
                     if (madness.nextBoolean())
                         iconVelX = -iconVelX;
-                }
-                if (iconPlanX > (sw - 64)) {
-
                 }
             }
         } else {
@@ -100,7 +99,7 @@ public class TimeWaster {
             iconVelY = 0;
         }
         if (points < 13)
-            igd.blitImage(type * 64, 0, 64, 64, ox + (int) iconPlanX, oy + (int) iconPlanY, AppMain.noMap);
+            igd.blitScaledImage(type * 64, 0, 64, 64, ox + (int) iconPlanX, oy + (int) iconPlanY, iconSize, iconSize, AppMain.noMap);
         if (points > 1) {
             UILabel.drawString(igd, ox, oy, FormatSyntax.formatExtended(TXDB.get("You have #A absolutely worthless points."), new RubyIO().setFX(points)), false, FontSizes.timeWasterTextHeight);
             String partingMessage = TXDB.get("Goodbye.");
@@ -147,29 +146,29 @@ public class TimeWaster {
     // x/y is a position to stay away from.
     private void doJump(int x, int y, int w, int h) {
         // By default, make it impossible to reach.
-        iconPlanX = -64;
-        iconPlanY = -64;
-        if (w < 64)
+        iconPlanX = -iconSize;
+        iconPlanY = -iconSize;
+        if (w < iconSize)
             return;
-        if (h < 64)
+        if (h < iconSize)
             return;
         // make it highly unlikely it will hit the same position twice
         for (int tries = 0; tries < 64; tries++) {
-            iconPlanX = madness.nextInt(w - 64);
-            iconPlanY = madness.nextInt(h - 64);
-            Rect r2 = new Rect((int) iconPlanX, (int) iconPlanY, 64, 64);
+            iconPlanX = madness.nextInt(w - iconSize);
+            iconPlanY = madness.nextInt(h - iconSize);
+            Rect r2 = new Rect((int) iconPlanX, (int) iconPlanY, iconSize, iconSize);
             if (!r2.contains(x, y))
                 return;
-            if (!r2.contains(x + 63, y))
+            if (!r2.contains(x + iconSize - 1, y))
                 return;
-            if (!r2.contains(x, y + 63))
+            if (!r2.contains(x, y + iconSize - 1))
                 return;
-            if (!r2.contains(x + 63, y + 63))
+            if (!r2.contains(x + iconSize - 1, y + iconSize - 1))
                 return;
         }
         // Fall back to hiding it
-        iconPlanX = -64;
-        iconPlanY = -64;
+        iconPlanX = -iconSize;
+        iconPlanY = -iconSize;
     }
 
 }

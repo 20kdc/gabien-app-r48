@@ -5,7 +5,9 @@
 
 package r48.ui;
 
+import gabien.GaBIEn;
 import gabien.IGrInDriver;
+import r48.FontSizes;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 
@@ -26,7 +28,7 @@ public class UITileGrid extends UIGrid {
     }
 
     public UITileGrid(StuffRenderer sr, int l, int tStart, int tileCount, int aTile, int[] remap) {
-        super(sr.tileRenderer.getTileSize(), sr.tileRenderer.getTileSize(), tileCount);
+        super(sr.tileRenderer.getTileSize() * FontSizes.getSpriteScale(), sr.tileRenderer.getTileSize() * FontSizes.getSpriteScale(), tileCount);
         canMultiSelect = aTile == 0;
         renderer = sr;
         layer = l;
@@ -73,6 +75,6 @@ public class UITileGrid extends UIGrid {
         if (atGroup != 0)
             if (!hover)
                 t += 15; // Hardcoded offset. Not good, but it covers all cases right now.
-        renderer.tileRenderer.drawTile(layer, (short) (t + tileStart), x, y, igd, tileSizeW);
+        renderer.tileRenderer.drawTile(layer, (short) (t + tileStart), x, y, igd, tileSizeW, FontSizes.getSpriteScale());
     }
 }

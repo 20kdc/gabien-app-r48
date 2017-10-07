@@ -7,10 +7,12 @@ package r48.schema.specialized;
 
 import gabien.IGrInDriver;
 import r48.AppMain;
+import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TSDB;
 import r48.map.StuffRenderer;
+import r48.map.events.RMEventGraphicRenderer;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
 
 /**
@@ -28,6 +30,11 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
     }
 
     @Override
+    public int getGridSize() {
+        return 32 * FontSizes.getSpriteScale();
+    }
+
+    @Override
     public StuffRenderer baseTileDraw(RubyIO target, int t, int x, int y, IGrInDriver igd, StuffRenderer osr) {
         if (allocSource.mapping != null)
             if (t > allocSource.mapping.length)
@@ -39,16 +46,18 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
         if (osr == null)
             osr = AppMain.system.rendererFromTso(target);
         int ts = osr.tileRenderer.getTileSize();
+        int sprScale = FontSizes.getSpriteScale();
+        int height = 32 * sprScale;
         if (allocSource.mapping != null) {
-            osr.tileRenderer.drawTile(0, (short) allocSource.mapping[t], x, y + (32 - ts), igd, ts);
+            osr.tileRenderer.drawTile(0, (short) allocSource.mapping[t], x, y + (height - (ts * sprScale)), igd, ts, sprScale);
         } else {
-            osr.tileRenderer.drawTile(0, (short) t, x, y + (32 - ts), igd, ts);
+            osr.tileRenderer.drawTile(0, (short) t, x, y + (height - ts), igd, ts, sprScale);
         }
         for (TSDB.TSPicture tsp : allocSource.pictures) {
             boolean flagValid = (targ.getTiletype(t % targ.width, t / targ.width, 0) & tsp.flag) != 0;
             int rtX = flagValid ? tsp.layertabAX : tsp.layertabIX;
             int rtY = flagValid ? tsp.layertabAY : tsp.layertabIY;
-            igd.blitImage(rtX, rtY, tsp.w, tsp.h, x + tsp.x, y + tsp.y, AppMain.layerTabs);
+            RMEventGraphicRenderer.flexibleSpriteDraw(rtX, rtY, tsp.w, tsp.h, x + (tsp.x * sprScale), y + (tsp.y * sprScale), tsp.w * sprScale, tsp.h * sprScale, 0, AppMain.layerTabs, 0, igd);
         }
         return osr;
     }

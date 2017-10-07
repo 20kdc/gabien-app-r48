@@ -30,6 +30,9 @@ public class UIMapView extends UIElement implements IWindowElement {
     // System scale mouse values.
     private int lmX, lmY;
 
+    // useful on mobile to allow dragging camera when using any tool
+    private boolean camDragSwitch = false;
+
     private boolean dragging = false;
     public final RubyIO map;
     // replaced when the map is edited
@@ -137,11 +140,18 @@ public class UIMapView extends UIElement implements IWindowElement {
                 igd.blitScaledImage(0, 0, camR.width, camR.height, ox, oy, camR.width * internalScaling, camR.height * internalScaling, offscreenBuf);
             }
         }
+        boolean dedicatedDragControl = useDragControl();
         String shortcuts = TXDB.get("Mouse drag: Scroll, Shift-left: Pick tile.");
+        if (dedicatedDragControl)
+            shortcuts = TXDB.get("Drag scrolls about.");
         if (callbacks != null) {
             shortcuts = TXDB.get("LMB: Use tool, others: Scroll, Shift-left: Pick tile.");
             if (pickTileHelper == null)
                 shortcuts = TXDB.get("LMB: Use tool, others: Scroll.");
+            if (dedicatedDragControl)
+                shortcuts = TXDB.get("Tap/Drag: Use tool. Camera button: Scroll.");
+            if (camDragSwitch)
+                shortcuts = TXDB.get("Dragging scrolls about. Camera button: Return.");
         } else {
             if (pickTileHelper == null)
                 shortcuts = TXDB.get("Mouse drag: Scroll.");
@@ -150,9 +160,16 @@ public class UIMapView extends UIElement implements IWindowElement {
 
         Rect plusRect = getZPlusRect();
         Rect minusRect = getZMinusRect();
+        Rect dragRect = getDragRect();
         UILabel.drawLabel(igd, UILabel.getRecommendedSize(status, FontSizes.mapPositionTextHeight).width, ox + plusRect.x + plusRect.width + getZoomButtonMargin(), oy + plusRect.y, status, 0, FontSizes.mapPositionTextHeight);
         Art.drawZoom(igd, true, ox + plusRect.x, oy + plusRect.y, plusRect.height);
         Art.drawZoom(igd, false, ox + minusRect.x, oy + minusRect.y, minusRect.height);
+        if (dedicatedDragControl)
+            Art.drawDragControl(igd, camDragSwitch, ox + dragRect.x, oy + dragRect.y, minusRect.height);
+    }
+
+    private boolean useDragControl() {
+        return GaBIEn.singleWindowApp() || camDragSwitch;
     }
 
     public void render(int mouseXT, int mouseYT, int eTileSize, int currentLayer, boolean debug, IGrDriver igd) {
@@ -211,6 +228,12 @@ public class UIMapView extends UIElement implements IWindowElement {
         return new Rect(zbm, (zbm * 2) + zbs, zbs, zbs);
     }
 
+    private Rect getDragRect() {
+        int zbs = getZoomButtonSize();
+        int zbm = getZoomButtonMargin();
+        return new Rect(zbm, (zbm * 3) + (zbs * 2), zbs, zbs);
+    }
+
     @Override
     public void handleClick(int x, int y, int button) {
         lmX = x;
@@ -226,6 +249,13 @@ public class UIMapView extends UIElement implements IWindowElement {
             handleMousewheel(x, y, false);
             return;
         }
+        if (useDragControl()) {
+            if (getDragRect().contains(x, y)) {
+                dragging = false;
+                camDragSwitch = !camDragSwitch;
+                return;
+            }
+        }
         if (button != 1) {
             dragging = true;
         } else {
@@ -237,7 +267,7 @@ public class UIMapView extends UIElement implements IWindowElement {
                 if (shiftDown) {
                     if (!mapTable.outOfBounds(mouseXT, mouseYT))
                         pickTileHelper.accept(mapTable.getTiletype(mouseXT, mouseYT, currentLayer));
-                } else if (callbacks != null) {
+                } else if ((callbacks != null) && (!camDragSwitch)) {
                     callbacks.confirmAt(mouseXT, mouseYT, currentLayer);
                 } else {
                     dragging = true;

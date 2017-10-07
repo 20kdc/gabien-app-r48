@@ -15,7 +15,7 @@ import r48.ui.UITileGrid;
 public interface ITileRenderer {
     int getTileSize();
 
-    void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets);
+    void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets, int spriteScale);
 
     UITileGrid[] createATUIPlanes(UIMapView mv);
 

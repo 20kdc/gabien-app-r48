@@ -124,6 +124,9 @@ public class FontSizes {
     // TXDB.get("uiGuessScaleTenths")
     public static int uiGuessScaleTenths = 10;
 
+    // TXDB.get("uiGridScaleTenths")
+    public static int uiGridScaleTenths = 10;
+
     // This hides the implied reflection for simplicity
     public static LinkedList<FontSizeField> getFields() {
         LinkedList<FontSizeField> fields = new LinkedList<FontSizeField>();
@@ -212,5 +215,11 @@ public class FontSizes {
 
     public static int scaleGuess(int defaultVal) {
         return (defaultVal * uiGuessScaleTenths) / 10;
+    }
+    public static int scaleGrid(int defaultVal) {
+        return (defaultVal * uiGridScaleTenths) / 10;
+    }
+    public static int getSpriteScale() {
+        return ((FontSizes.uiGuessScaleTenths + 5) / 10);
     }
 }

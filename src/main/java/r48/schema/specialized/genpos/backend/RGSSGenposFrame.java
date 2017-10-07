@@ -167,7 +167,7 @@ public class RGSSGenposFrame implements IGenposFrame {
                             }
 
                             @Override
-                            public void drawItem(int t, int x, int y, IGrInDriver igd) {
+                            public void drawItem(int t, int x, int y, int spriteScale, IGrInDriver igd) {
                                 boolean b = false;
                                 if (t >= 100) {
                                     t -= 100;
@@ -176,7 +176,7 @@ public class RGSSGenposFrame implements IGenposFrame {
                                 int tx = t % 5;
                                 int ty = t / 5;
                                 igd.clearRect(255, 0, 255, x, y, 96, 96);
-                                igd.blitScaledImage(tx * 192, ty * 192, 192, 192, x, y, 96, 96, spriteCache.getFramesetCache(b, false, 255));
+                                igd.blitScaledImage(tx * 192, ty * 192, 192, 192, x, y, 96 * spriteScale, 96 * spriteScale, spriteCache.getFramesetCache(b, false, 255));
                             }
                         };
                     }

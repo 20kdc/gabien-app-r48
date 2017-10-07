@@ -6,7 +6,6 @@ package r48.map.tiles;
 
 import gabien.GaBIEn;
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.UILabel;
 import r48.AppMain;
@@ -58,7 +57,7 @@ public class VXATileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets, int spriteScale) {
         if (tileset == null)
             return; // just don't bother.
         // MKXP repository links to http://www.tktkgame.com/tkool/memo/vx/tile_id.html

@@ -5,8 +5,8 @@
 package r48.map.events;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IImage;
+import r48.FontSizes;
 import r48.RubyIO;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
@@ -48,7 +48,7 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd) {
+    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int sprScale) {
         String cName = target.getInstVarBySymbol("@character_name").decString();
         if (!cName.equals("")) {
             IImage i = imageLoader.getImage("CharSet/" + cName, false);
@@ -72,10 +72,11 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
             int py = ((idx / 4) * 4) + dir;
             // The vertical offset is either 12 or 16?
             // 16 causes papers to be weirdly offset, 12 causes lift doors to be out of place
-            igd.blitImage(sx * px, sy * py, sx, sy, (ox + 8) - (sx / 2), (oy - sy) + 16, i);
+            int blendType = 0;
+            RMEventGraphicRenderer.flexibleSpriteDraw(sx * px, sy * py, sx, sy, (ox + (8 * sprScale)) - ((sx * sprScale) / 2), (oy - (sy * sprScale)) + (16 * sprScale), sx * sprScale, sy * sprScale, 0, i, blendType, igd);
         } else {
             // ok, so in this case it's a tile. In the index field.
-            tileRenderer.drawTile(0, (short) (target.getInstVarBySymbol("@character_index").fixnumVal + 10000), ox, oy, igd, 16);
+            tileRenderer.drawTile(0, (short) (target.getInstVarBySymbol("@character_index").fixnumVal + 10000), ox, oy, igd, 16, sprScale);
         }
     }
 

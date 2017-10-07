@@ -82,7 +82,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
                     continue;
                 RubyIO g = iegr.extractEventGraphic(evI);
                 if (g != null)
-                    iegr.drawEventGraphic(g, px, py, igd);
+                    iegr.drawEventGraphic(g, px, py, igd, 1);
             }
         }
     }

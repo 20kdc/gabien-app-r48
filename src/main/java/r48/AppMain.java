@@ -489,6 +489,10 @@ public class AppMain {
         }, FontSizes.menuTextHeight, true));
     }
 
+    public static void pleaseShutdown() {
+        Application.shutdownAllAppMainWindows();
+    }
+
     public static void shutdown() {
         windowMaker = null;
         pendingRunnables.clear();

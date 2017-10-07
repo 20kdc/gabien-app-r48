@@ -11,6 +11,8 @@ import r48.AppMain;
 import r48.FontSizes;
 
 /**
+ * Notably, despite the name of "uiGridScaleTenths", this does NOT actually do the grid size adjustment.
+ * It's too particular for that.
  * Created on 12/28/16.
  */
 public class UIGrid extends UIPanel {

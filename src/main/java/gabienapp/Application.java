@@ -29,9 +29,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Application {
     public static int globalMS = 33;
     private static IConsumer<Double> appTicker = null;
+    private static WindowCreatingUIElementConsumer uiTicker;
 
     public static void gabienmain() throws IOException {
-        final WindowCreatingUIElementConsumer uiTicker = new WindowCreatingUIElementConsumer();
+        uiTicker = new WindowCreatingUIElementConsumer();
         // Load language list.
         TXDB.init();
         boolean fontsLoaded = FontSizes.load();
@@ -310,6 +311,8 @@ public class Application {
             if (!fsf.name.equals("uiGuessScaleTenths"))
                 fsf.accept(FontSizes.scaleGuess(fsf.get()));
         }
+        // exceptions
+        FontSizes.tilesTabTextHeight *= 2;
     }
 
     private static UIElement figureOutTopBar(final WindowCreatingUIElementConsumer uiTicker, final IConsumer<Runnable> closeHelper) {
@@ -387,5 +390,11 @@ public class Application {
             // As this is just meant as a workaround for devs who can't use consistent case, it's not necessary to R48 operation.
             return giveUp;
         }
+    }
+
+    // Only use from AppMain's "pleaseShutdown"
+    public static void shutdownAllAppMainWindows() {
+        for (UIElement uie : uiTicker.runningWindows())
+            uiTicker.forceRemove(uie);
     }
 }

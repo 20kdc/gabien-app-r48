@@ -121,11 +121,11 @@ public class R2kGenposFrame implements IGenposFrame {
                         }
 
                         @Override
-                        public void drawItem(int t, int x, int y, IGrInDriver igd) {
+                        public void drawItem(int t, int x, int y, int spriteScale, IGrInDriver igd) {
                             int tx = t % 5;
                             int ty = t / 5;
                             igd.clearRect(255, 0, 255, x, y, cache.spriteSize, cache.spriteSize);
-                            igd.blitImage(tx * cache.spriteSize, ty * cache.spriteSize, cache.spriteSize, cache.spriteSize, x, y, cache.getFramesetCache(false, false, 255));
+                            igd.blitScaledImage(tx * cache.spriteSize, ty * cache.spriteSize, cache.spriteSize, cache.spriteSize, x, y, cache.spriteSize * spriteScale, cache.spriteSize * spriteScale, cache.getFramesetCache(false, false, 255));
                         }
                     };
                 }

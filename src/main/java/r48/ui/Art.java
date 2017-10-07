@@ -27,13 +27,31 @@ public class Art {
     }
 
     public static void drawZoom(IGrDriver igd, boolean b, int x, int y, int height) {
-        int m = height / 16;
+        int m = height / 12;
         igd.clearRect(128, 128, 128, x, y, height, height);
         igd.clearRect(64, 64, 64, x + m, y + m, height - (m * 2), height - (m * 2));
 
         if (b)
             igd.clearRect(255, 255, 255, x + (height / 2) - m, y + (m * 2), m * 2, height - (m * 4));
         igd.clearRect(255, 255, 255, x + (m * 2), y + (height / 2) - m, height - (m * 4), m * 2);
+    }
+
+    public static void drawDragControl(IGrDriver igd, boolean select, int x, int y, int height) {
+        int m = height / 12;
+        int m2 = height / 4;
+
+        int a = 255;
+        int b = 64;
+        if (select) {
+            b = 255;
+            a = 64;
+        }
+
+        igd.clearRect(128, 128, 128, x, y, height, height);
+        igd.clearRect(a, a, a, x + m, y + m, height - (m * 2), height - (m * 2));
+
+        igd.clearRect(b, b, b, x + (height / 2) - m2, y + (m * 2), m2 * 2, height - (m * 4));
+        igd.clearRect(b, b, b, x + (m * 2), y + (height / 2) - m2, height - (m * 4), m2 * 2);
     }
 
     public static void drawSelectionBox(int x, int y, int w, int h, IGrDriver igd) {

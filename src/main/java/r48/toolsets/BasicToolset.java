@@ -70,6 +70,7 @@ public class BasicToolset implements IToolset {
                         TXDB.get("Show ODB Memstat"),
                         TXDB.get("Dump Schemaside Translations"),
                         TXDB.get("Recover data from R48 error <INCREDIBLY DAMAGING>"),
+                        TXDB.get("Return to menu"),
                 }, new Runnable[] {
                         new Runnable() {
                             @Override
@@ -284,6 +285,12 @@ public class BasicToolset implements IToolset {
                                 }));
                                 AppMain.launchDialog(TXDB.get("If the backup file is invalid, wasn't created, or is otherwise harmed, this can destroy more data than it saves.") +
                                         "\n" + TXDB.get("Check *everything* before a final save.") + "\n" + TXDB.get("Type 'I understand.' at the prompt behind this window if you WILL do this."));
+                            }
+                        },
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                AppMain.pleaseShutdown();
                             }
                         }
                 }, FontSizes.menuTextHeight, false)

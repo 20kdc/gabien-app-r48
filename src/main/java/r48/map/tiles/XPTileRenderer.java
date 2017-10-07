@@ -5,7 +5,6 @@
 package r48.map.tiles;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.UILabel;
 import r48.AppMain;
@@ -13,6 +12,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.ATDB;
 import r48.map.UIMapView;
+import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
 import r48.ui.UITileGrid;
 
@@ -54,7 +54,7 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets, int spriteScale) {
         // The logic here is only documented in the mkxp repository, in tilemap.cpp.
         // I really hope it doesn't count as stealing here,
         //  if I would've had to have typed this code ANYWAY
@@ -67,7 +67,7 @@ public class XPTileRenderer implements ITileRenderer {
             tidx %= 48;
             boolean didDraw = false;
             if (tilesetMaps[atMap] != null) {
-                didDraw = didDraw || generalOldRMATField(0, 0, tidx, 0, tileSize, ets, px, py, igd, tilesetMaps[atMap]);
+                didDraw = didDraw || generalOldRMATField(0, 0, tidx, 0, tileSize, ets, px, py, igd, tilesetMaps[atMap], spriteScale);
             } else {
                 didDraw = true; // It's invisible, so it should just be considered drawn no matter what
             }
@@ -80,11 +80,11 @@ public class XPTileRenderer implements ITileRenderer {
         int tx = tidx % tsh;
         int ty = tidx / tsh;
         if (tilesetMaps[0] != null)
-            igd.blitImage(tx * tileSize, ty * tileSize, ets, ets, px, py, tilesetMaps[0]);
+            RMEventGraphicRenderer.flexibleSpriteDraw(tx * tileSize, ty * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, tilesetMaps[0], 0, igd);
     }
 
     // Used by 2k3 support too, since it follows the same AT design
-    public static boolean generalOldRMATField(int tox, int toy, int subfield, int atFieldType, int fTileSize, int ets, int px, int py, IGrDriver igd, IImage img) {
+    public static boolean generalOldRMATField(int tox, int toy, int subfield, int atFieldType, int fTileSize, int ets, int px, int py, IGrDriver igd, IImage img, int spriteScale) {
         if ((ets == fTileSize) && (AppMain.autoTiles[atFieldType] != null)) {
             if (subfield >= AppMain.autoTiles[atFieldType].entries.length)
                 return false;
@@ -98,12 +98,12 @@ public class XPTileRenderer implements ITileRenderer {
                         int ty = ti / 3;
                         int sX = (sA * cSize);
                         int sY = (sB * cSize);
-                        igd.blitImage((tx * fTileSize) + sX + tox, (ty * fTileSize) + sY + toy, cSize, cSize, px + sX, py + sY, img);
+                        RMEventGraphicRenderer.flexibleSpriteDraw((tx * fTileSize) + sX + tox, (ty * fTileSize) + sY + toy, cSize, cSize, px + (sX * spriteScale), py + (sY * spriteScale), cSize * spriteScale, cSize * spriteScale, 0, img, 0, igd);
                     }
                 return true;
             }
         } else {
-            igd.blitImage(tox + fTileSize, toy + (2 * fTileSize), ets, ets, px, py, img);
+            RMEventGraphicRenderer.flexibleSpriteDraw(tox + fTileSize, toy + (2 * fTileSize), ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, img, 0, igd);
             return true;
         }
         return false;

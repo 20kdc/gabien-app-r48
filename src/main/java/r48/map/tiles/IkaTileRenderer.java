@@ -7,7 +7,6 @@ package r48.map.tiles;
 
 import gabien.GaBIEn;
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IImage;
 import r48.dbs.TXDB;
 import r48.map.UIMapView;
@@ -31,7 +30,7 @@ public class IkaTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets, int spriteScale) {
         String[] blockTypes = new String[16];
         blockTypes[2] = "filt";
         blockTypes[4] = "Item";
@@ -49,19 +48,19 @@ public class IkaTileRenderer implements ITileRenderer {
             return;
         IImage i = imageLoader.getImage("Prt" + blockTypes[plane], false);
         if (plane != 6) {
-            igd.blitImage(16 * block, 0, ets, ets, px, py, i);
+            igd.blitScaledImage(16 * block, 0, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
         } else {
             // fun fact, this was probably the most loved feature of IkachanMapEdit.
             // I would be in for a *lynching* if I got rid of it.
             int frame = getFrame();
             if (block == 0)
-                igd.blitImage(frame, 0, ets, ets, px, py, i);
+                igd.blitScaledImage(frame, 0, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
             if (block == 1)
-                igd.blitImage(16 - frame, 0, ets, ets, px, py, i);
+                igd.blitScaledImage(16 - frame, 0, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
             if (block == 2)
-                igd.blitImage(0, frame, ets, ets, px, py, i);
+                igd.blitScaledImage(0, frame, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
             if (block == 3)
-                igd.blitImage(0, 16 - frame, ets, ets, px, py, i);
+                igd.blitScaledImage(0, 16 - frame, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
         }
     }
 

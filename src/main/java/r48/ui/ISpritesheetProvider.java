@@ -21,5 +21,5 @@ public interface ISpritesheetProvider {
 
     int mapIdxToVal(int idx);
 
-    void drawItem(int t, int x, int y, IGrInDriver igd);
+    void drawItem(int t, int x, int y, int spriteScale, IGrInDriver igd);
 }

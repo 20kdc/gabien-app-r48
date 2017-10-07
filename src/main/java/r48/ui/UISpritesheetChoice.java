@@ -19,10 +19,10 @@ public class UISpritesheetChoice extends UIPanel {
     public UIGrid spriteGrid;
 
     public UISpritesheetChoice(int oldVal, final ISpritesheetProvider provider, final IConsumer<Integer> consumer) {
-        spriteGrid = new UIGrid(provider.itemWidth(), provider.itemHeight(), provider.itemCount()) {
+        spriteGrid = new UIGrid(provider.itemWidth() * FontSizes.getSpriteScale(), provider.itemHeight() * FontSizes.getSpriteScale(), provider.itemCount()) {
             @Override
             protected void drawTile(int t, boolean hover, int x, int y, IGrInDriver igd) {
-                provider.drawItem(provider.mapIdxToVal(t), x, y, igd);
+                provider.drawItem(provider.mapIdxToVal(t), x, y, FontSizes.getSpriteScale(), igd);
             }
         };
         spriteGrid.setSelected(provider.mapValToIdx(oldVal));

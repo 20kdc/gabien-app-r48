@@ -12,7 +12,6 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.*;
 import r48.schema.integers.IntBooleanSchemaElement;
-import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.LowerBoundIntegerSchemaElement;
 import r48.schema.specialized.HWNDSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
@@ -64,10 +63,10 @@ class SDBHelpers {
             }
 
             @Override
-            public void drawItem(int t, int x, int y, IGrInDriver igd) {
+            public void drawItem(int t, int x, int y, int spriteScale, IGrInDriver igd) {
                 int row = t / rowCells;
                 t %= rowCells;
-                igd.blitImage((t * cellW) + useX, (row * cellH) + useY, useW, useH, x, y, img);
+                igd.blitScaledImage((t * cellW) + useX, (row * cellH) + useY, useW, useH, x, y, useW * spriteScale, useH * spriteScale, img);
             }
         };
     }

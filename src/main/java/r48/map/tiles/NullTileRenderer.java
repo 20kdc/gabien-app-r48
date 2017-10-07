@@ -19,7 +19,7 @@ public class NullTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets, int spriteScale) {
 
     }
 

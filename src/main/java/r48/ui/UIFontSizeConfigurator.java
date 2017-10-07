@@ -22,7 +22,7 @@ public class UIFontSizeConfigurator extends UIPanel {
 
     public UIFontSizeConfigurator() {
         refreshLayout();
-        setBounds(new Rect(0, 0, 320, 240));
+        setBounds(new Rect(0, 0, FontSizes.scaleGuess(320), FontSizes.scaleGuess(240)));
     }
 
     public void refreshLayout() {

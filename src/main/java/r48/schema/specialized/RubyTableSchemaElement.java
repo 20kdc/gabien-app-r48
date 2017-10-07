@@ -64,7 +64,8 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         final SchemaPath dataBlackboxTarget = path.findLast();
         final SchemaPath.EmbedDataKey blackboxKey = new SchemaPath.EmbedDataKey(this, targV);
 
-        final UIGrid uig = new UIGrid(32, 32, targ.width * targ.height) {
+        int gridSize = getGridSize();
+        final UIGrid uig = new UIGrid(gridSize, gridSize, targ.width * targ.height) {
             private TileHelper tileHelper;
 
             @Override
@@ -210,5 +211,9 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             target.setUser("Table", new RubyTable(defW, defH, planes, defVals).innerBytes);
             index.changeOccurred(true);
         }
+    }
+
+    public int getGridSize() {
+        return FontSizes.scaleGrid(32);
     }
 }

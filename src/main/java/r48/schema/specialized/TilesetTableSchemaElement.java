@@ -7,6 +7,7 @@ package r48.schema.specialized;
 
 import gabien.IGrInDriver;
 import r48.AppMain;
+import r48.FontSizes;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
@@ -26,7 +27,7 @@ public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRende
         if (osr == null)
             osr = AppMain.system.rendererFromMap(null);
         int ts = osr.tileRenderer.getTileSize();
-        osr.tileRenderer.drawTile(0, (short) t, x, y + (32 - ts), igd, ts);
+        osr.tileRenderer.drawTile(0, (short) t, x, y + (32 - ts), igd, ts, FontSizes.getSpriteScale());
         return osr;
     }
 }

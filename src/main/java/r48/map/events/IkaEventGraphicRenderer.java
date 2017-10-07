@@ -34,7 +34,7 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd) {
+    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int sprScale) {
         String[] graphics = new String[] {"Hari", "Isogin", "Kani", "Sleep", "Chibi", "Hoshi", "Dum", "Carry", "Juel", "Ufo"};
         int dsX = 16;
         int dsY = 16;
@@ -75,7 +75,7 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
         if (!fail) {
             String r = graphics[type];
             IImage im = imageLoader.getImage(r, false);
-            igd.blitImage(dfX * dsX, dfY * dsY, dsX, dsY, ox + doX, oy + doY, im);
+            RMEventGraphicRenderer.flexibleSpriteDraw(dfX * dsX, dfY * dsY, dsX, dsY, ox + (doX * sprScale), oy + (doY * sprScale), dsX * sprScale, dsY * sprScale, 0, im, 0, igd);
             fail = false;
         }
         if (fail)

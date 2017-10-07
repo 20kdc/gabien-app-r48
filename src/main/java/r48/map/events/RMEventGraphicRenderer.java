@@ -5,7 +5,6 @@
 package r48.map.events;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.UILabel;
 import r48.AppMain;
@@ -66,7 +65,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd) {
+    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int sprScale) {
         int pat = (int) target.getInstVarBySymbol("@pattern").fixnumVal;
         int coreDir = (int) target.getInstVarBySymbol("@direction").fixnumVal;
         int dir = lookupDirection(coreDir);
@@ -77,7 +76,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         RubyIO cName = target.getInstVarBySymbol("@character_name");
         short tId = (short) target.getInstVarBySymbol("@tile_id").fixnumVal;
         if (tId != 0) {
-            tileRenderer.drawTile(0, tId, ox, oy, igd, tileRenderer.getTileSize());
+            tileRenderer.drawTile(0, tId, ox, oy, igd, tileRenderer.getTileSize(), sprScale);
         } else if (cName.strVal.length > 0) {
             // lower centre of tile, the reference point for characters
             ox += 16;
@@ -118,7 +117,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
                 if (hue != 0)
                     i = AppMain.imageFXCache.process(i, new HueShiftImageEffect(hue));
             }
-            flexibleSpriteDraw(tx * sprW, ty * sprH, sprW, sprH, ox - (sprW / 2), oy - sprH, sprW, sprH, 0, i, blendType, igd);
+            flexibleSpriteDraw(tx * sprW, ty * sprH, sprW, sprH, ox - ((sprW * sprScale) / 2), oy - (sprH * sprScale), sprW * sprScale, sprH * sprScale, 0, i, blendType, igd);
         }
     }
 
