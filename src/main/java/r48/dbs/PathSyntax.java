@@ -10,6 +10,7 @@ import r48.RubyIO;
  * Created on 08/06/17.
  */
 public class PathSyntax {
+    // NOTE: This must not contain \, as that is used for EscapedStringSyntax embedded in hashes
     public static char[] breakers = new char[] {'$', '@', ']'};
 
     // break to next token.
@@ -37,7 +38,7 @@ public class PathSyntax {
                     if (subcom.startsWith(":")) {
                         RubyIO hashVal = new RubyIO();
                         if (subcom.startsWith(":\"")) {
-                            hashVal.setString(subcom.substring(2));
+                            hashVal.setString(EscapedStringSyntax.unescape(subcom.substring(2)));
                         } else {
                             int i = Integer.parseInt(subcom.substring(1));
                             hashVal.setFX(i);

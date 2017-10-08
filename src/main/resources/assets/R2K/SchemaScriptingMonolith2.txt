@@ -14,9 +14,9 @@
 @parameters show_picture_array
 
 .show_picture_array
-+lengthAdjust[ General Mode ] 15
-+lengthAdjust[ Old 2k3 Mode ] 16
-+lengthAdjust[ 2k3 1.12 Mode ] 31
++lengthAdjust General\_Mode 15
++lengthAdjust Old\_2k3\_Mode 16
++lengthAdjust 2k3\_1.12\_Mode 31
 +DA{ $length show_picture_array_nbo 31 show_picture_array_nbn }
 +DA{ ]2 comm_picture_array_head_yv 0 comm_picture_array_head_nv }
 +comm_picture_array_foot
@@ -27,9 +27,9 @@
 @parameters move_picture_array
 
 .move_picture_array
-+lengthAdjust[ General Mode ] 17
-+lengthAdjust[ Old 2k3 Mode ] 18
-+lengthAdjust[ 2k3 1.12 Mode ] 23
++lengthAdjust General\_Mode 17
++lengthAdjust Old\_2k3\_Mode 18
++lengthAdjust 2k3\_1.12\_Mode 23
 +DA{ $length move_picture_array_nbo 23 move_picture_array_nbn }
 +DA{ ]2 comm_picture_array_head_yv 0 comm_picture_array_head_nv }
 +comm_picture_array_foot
@@ -124,7 +124,7 @@ e show_picture_sheettype 0 singleConstFrame 1 singleVarFrame 2 animation
 +DA{ ]23 show_picture_array_nbn_sheetdata_ext_on 0 show_picture_array_nbn_sheetdata_ext_off }
 ]28 mapLayer_112 { hide int= 7 show_picture_maplayer }
 ]29 battleLayer_112 show_picture_btllayer
-]30 flags_112 subwindow[ Flags... ] bitfield= 97 eraseOnMapChange eraseOnBattleEnd . . tintAffects flashAffects shakeAffects
+]30 flags_112 subwindow: Flags... bitfield= 97 eraseOnMapChange eraseOnBattleEnd . . tintAffects flashAffects shakeAffects
 +comm_picture_nbn
 
 .show_picture_array_nbn_sheetdata_ext_on

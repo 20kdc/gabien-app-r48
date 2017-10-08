@@ -139,23 +139,16 @@ public class SDB {
                         // To translate, or not to? Unfortunately these can point at files.
                         // (later) However, context makes it obvious
                         if (text.equals("string="))
-                            return new StringSchemaElement(TXDB.get(outerContext, args[point++]), '\"');
-                        if (text.equals("string_="))
-                            return new StringSchemaElement(TXDB.get(outerContext, args[point++]).replace('_', ' '), '\"');
+                            return new StringSchemaElement(TXDB.get(outerContext, EscapedStringSyntax.unescape(args[point++])), '\"');
                         // Before you go using these - They are based on *visual* length, and are not hard limits.
                         if (text.equals("stringLen")) {
                             int l = Integer.parseInt(args[point++]);
                             return new StringLenSchemaElement("", l);
                         }
                         if (text.equals("stringLen=")) {
-                            String txt = args[point++];
+                            String txt = EscapedStringSyntax.unescape(args[point++]);
                             int l = Integer.parseInt(args[point++]);
                             return new StringLenSchemaElement(TXDB.get(outerContext, txt), l);
-                        }
-                        if (text.equals("stringLen_=")) {
-                            String txt = args[point++];
-                            int l = Integer.parseInt(args[point++]);
-                            return new StringLenSchemaElement(TXDB.get(outerContext, txt).replace('_', ' '), l);
                         }
                         //
                         if (text.equals("hwnd")) {
@@ -166,12 +159,12 @@ public class SDB {
                             return new HWNDSchemaElement(a, args[point++]);
                         }
                         if (text.equals("optIV")) {
-                            String base = args[point++];
+                            String base = EscapedStringSyntax.unescape(args[point++]);
                             String a = TXDB.get(outerContext, base);
                             return new IVarSchemaElement(base, a, get(), true);
                         }
                         if (text.equals("iV")) {
-                            String base = args[point++];
+                            String base = EscapedStringSyntax.unescape(args[point++]);
                             String a = TXDB.get(outerContext, base);
                             return new IVarSchemaElement(base, a, get(), false);
                         }
@@ -230,11 +223,8 @@ public class SDB {
                             disambiguations.put("x", backup);
                             return new DisambiguatorSchemaElement(disambiguatorIndex, disambiguations);
                         }
-                        if (text.equals("lengthAdjust[")) {
-                            String text2 = args[point++];
-                            while (!args[point].equals("]"))
-                                text2 += " " + args[point++];
-                            point++;
+                        if (text.equals("lengthAdjust")) {
+                            String text2 = EscapedStringSyntax.unescape(args[point++]);
                             int len = Integer.parseInt(args[point++]);
                             return new LengthChangeSchemaElement(TXDB.get(outerContext, text2), len);
                         }
@@ -253,12 +243,9 @@ public class SDB {
                         }
                         if (text.equals("subwindow"))
                             return new SubwindowSchemaElement(get());
-                        // subwindow[ This Is A Test ]
-                        if (text.equals("subwindow[")) {
-                            String text2 = args[point++];
-                            while (!args[point].equals("]"))
-                                text2 += " " + args[point++];
-                            point++;
+                        // subwindow: This\_Is\_A\_Test
+                        if (text.equals("subwindow:")) {
+                            String text2 = EscapedStringSyntax.unescape(args[point++]);
                             if (text2.startsWith("@")) {
                                 final String textFinal = text2.substring(1);
                                 return new SubwindowSchemaElement(get(), new IFunction<RubyIO, String>() {
@@ -302,14 +289,14 @@ public class SDB {
                         if (text.startsWith("]?")) {
                             // yay for... well, semi-consistency!
                             String a = text.substring(2);
-                            String b = TXDB.getExUnderscore(outerContext, args[point++]);
-                            String o = TXDB.get(outerContext, args[point++]);
+                            String b = TXDB.getExUnderscore(outerContext, EscapedStringSyntax.unescape(args[point++]));
+                            String o = TXDB.get(outerContext, EscapedStringSyntax.unescape(args[point++]));
                             return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), o, false);
                         }
                         if (text.startsWith("]")) {
                             // yay for consistency!
                             String a = text.substring(1);
-                            String b = TXDB.getExUnderscore(outerContext, args[point++]);
+                            String b = EscapedStringSyntax.unescape(TXDB.getExUnderscore(outerContext, args[point++]));
                             return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), null, false);
                         }
                         // --

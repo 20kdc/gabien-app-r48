@@ -130,4 +130,4 @@ i R2K/SchemaScriptingMonolith3.txt
 @code int
 @parameters { ]0 _ string ]1 _ int ]2 _ int ]3 _ int }
 
-> MoveListEditor subwindow[ Route... ] arrayMS RPG::MoveCommand movecommand_default_nothing R2K/CommandsMove.txt
+> MoveListEditor subwindow: Route... arrayMS RPG::MoveCommand movecommand_default_nothing R2K/CommandsMove.txt
