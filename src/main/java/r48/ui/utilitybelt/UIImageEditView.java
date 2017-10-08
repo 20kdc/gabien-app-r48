@@ -19,12 +19,16 @@ import r48.ui.UIGrid;
  * Though I kind of modified those plans a bit.
  */
 public class UIImageEditView extends UIElement {
-    public int[] image = new int[256 * 256];
-    public int imageW = 256, imageH = 256, cursorX = 128, cursorY = 128, zoom = FontSizes.getSpriteScale() * 16;
+    public int[] image = new int[1024];
+    public int imageW = 32, imageH = 32, cursorX = 16, cursorY = 16, zoom = FontSizes.getSpriteScale() * 16;
     public int gridW = 16, gridH = 16, gridOX = 0, gridOY = 0;
-    public ISupplier<Integer> colour;
+    public Runnable colour;
 
-    public UIImageEditView(ISupplier<Integer> c) {
+    public boolean showTarget;
+    public int targetX, targetY;
+    public int gridColour = 0x200020;
+
+    public UIImageEditView(Runnable c) {
         colour = c;
     }
 
@@ -34,15 +38,31 @@ public class UIImageEditView extends UIElement {
         Rect viewRct = getViewRect();
         // Maybe cache this for perf.
         IGrDriver osb = GaBIEn.makeOffscreenBuffer(bounds.width, bounds.height, false);
-        osb.clearRect(24, 24, 24, 0, 0, bounds.width, bounds.height);
-        osb.clearRect(16, 16, 16, viewRct.x, viewRct.y, viewRct.width, viewRct.height);
+        osb.clearRect(32, 32, 32, 0, 0, bounds.width, bounds.height);
+        int gcR = (gridColour >> 16) & 0xFF;
+        int gcG = (gridColour >> 8) & 0xFF;
+        int gcB = gridColour & 0xFF;
+        osb.clearRect(gcR / 3, gcG / 3, gcB / 3, viewRct.x, viewRct.y, viewRct.width, viewRct.height);
         Rect localGrid = getLocalGridRect(viewRct);
-        localGrid = localGrid.getIntersection(viewRct);
-        if (localGrid != null)
-            osb.clearRect(8, 8, 8, localGrid.x, localGrid.y, localGrid.width, localGrid.height);
+        boolean primaryX = (UIGrid.sensibleCellDiv(cursorX - gridOX, gridW) & 1) != 0;
+        boolean primaryY = (UIGrid.sensibleCellDiv(cursorY - gridOY, gridH) & 1) != 0;
+        int gridReach = 9;
+        for (int i = 0; i < (gridReach * gridReach); i++) {
+            int ofx = ((i % gridReach) - (gridReach / 2)) * localGrid.width;
+            int ofy = ((i / gridReach) - (gridReach / 2)) * localGrid.height;
+            int o = 0x80;
+            boolean light = ((i & 1) != 0) ^ primaryX ^ primaryY;
+            if (light)
+                o = 0xC0;
+            Rect subLocalGrid = viewRct.getIntersection(new Rect(localGrid.x + ofx, localGrid.y + ofy, localGrid.width, localGrid.height));
+            if (subLocalGrid != null)
+                osb.clearRect((gcR * o) / 255, (gcG * o) / 255, (gcB * o) / 255, subLocalGrid.x, subLocalGrid.y, subLocalGrid.width, subLocalGrid.height);
+        }
         IImage tempImg = createImg();
         osb.blitScaledImage(0, 0, imageW, imageH, viewRct.x, viewRct.y, viewRct.width, viewRct.height, tempImg);
         Art.drawSelectionBox(viewRct.x + (cursorX * zoom), viewRct.y + (cursorY * zoom), zoom, zoom, osb);
+        if (showTarget)
+            Art.drawTarget(viewRct.x + (targetX * zoom), viewRct.y + (targetY * zoom), zoom, osb);
         igd.blitImage(0, 0, bounds.width, bounds.height, ox, oy, osb);
         osb.shutdown();
 
@@ -107,7 +127,7 @@ public class UIImageEditView extends UIElement {
         ny -= UIGrid.sensibleCellDiv(ny, imageH) * imageH;
         if (nx == cursorX)
             if (ny == cursorY)
-                image[nx + (ny * imageW)] = colour.get();
+                colour.run();
         cursorX = nx;
         cursorY = ny;
     }

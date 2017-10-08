@@ -18,8 +18,9 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
     public int x, y;
     public UIScrollbar hueScroll, alphaScroll;
     public UISplitterLayout alphaContainer;
+    public UIColourSwatch swatch;
 
-    public UIColourPicker(IConsumer<Integer> iConsumer) {
+    public UIColourPicker(IConsumer<Integer> iConsumer, boolean alpha) {
         super();
         result = iConsumer;
         colourPanel = new UIPanel() {
@@ -31,6 +32,7 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
                 if (lastHue != newHue) {
                     baseImage = Art.getColourPal(newHue);
                     lastHue = newHue;
+                    changeCol();
                 }
                 super.updateAndRender(ox, oy, deltaTime, select, igd);
                 int margin = currentMainSpriteScale * 4;
@@ -46,6 +48,7 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
                 x = xi / currentMainSpriteScale;
                 y = yi / currentMainSpriteScale;
                 restrictXY();
+                changeCol();
             }
 
             @Override
@@ -54,6 +57,7 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
                     x = xi / currentMainSpriteScale;
                     y = yi / currentMainSpriteScale;
                     restrictXY();
+                    changeCol();
                 }
             }
 
@@ -69,17 +73,37 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
             }
         };
         hueScroll = new UIScrollbar(true, FontSizes.generalScrollersize);
-        alphaScroll = new UIScrollbar(false, UILabel.getRecommendedSize("", FontSizes.schemaFieldTextHeight).height);
+        int alphaScrollH = UILabel.getRecommendedSize("", FontSizes.schemaFieldTextHeight).height;
+        if (alpha) {
+            alphaScroll = new UIScrollbar(false, alphaScrollH);
+            alphaScroll.scrollPoint = 1.0d;
+            alphaContainer = new UISplitterLayout(new UILabel(TXDB.get("Alpha"), FontSizes.schemaFieldTextHeight), alphaScroll, false, 0d);
+        }
+        swatch = new UIColourSwatch(0);
         colourPanel.baseImage = Art.getColourPal(0);
         colourPanel.imageScale = true;
         colourPanel.imageSW = 256;
         colourPanel.imageSH = 256;
-        alphaContainer = new UISplitterLayout(new UILabel(TXDB.get("Alpha"), FontSizes.schemaFieldTextHeight), alphaScroll, false, 0d);
         currentMainSpriteScale = Math.max(1, FontSizes.getSpriteScale() / 2);
         allElements.add(colourPanel);
         allElements.add(hueScroll);
-        allElements.add(alphaContainer);
-        setBounds(new Rect(0, 0, (currentMainSpriteScale * 256) + hueScroll.getBounds().width, currentMainSpriteScale * 256));
+        if (alpha)
+            allElements.add(alphaContainer);
+        allElements.add(swatch);
+        changeCol();
+        setBounds(new Rect(0, 0, (currentMainSpriteScale * 256) + hueScroll.getBounds().width, (currentMainSpriteScale * 256) + (alphaScrollH * (alpha ? 2 : 1))));
+    }
+
+    private void changeCol() {
+        int col = colourPanel.baseImage.getPixels()[x + (y * 256)];
+        col &= 0xFFFFFF;
+        if (alphaScroll != null) {
+            int al = Math.min(255, Math.max(0, (int) (alphaScroll.scrollPoint * 255d)));
+            col |= al << 24;
+        } else {
+            col |= 0xFF000000;
+        }
+        swatch.col = col;
     }
 
     @Override
@@ -89,6 +113,13 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
         int remainder = r.width - ((currentMainSpriteScale * 256) + hsw);
         colourPanel.setBounds(new Rect(remainder / 2, 0, currentMainSpriteScale * 256, currentMainSpriteScale * 256));
         hueScroll.setBounds(new Rect(r.width - hsw, 0, hsw, currentMainSpriteScale * 256));
+        int abo = 0;
+        int abh = FontSizes.generalScrollersize;
+        if (alphaScroll != null) {
+            abo = abh = alphaContainer.getBounds().height;
+            alphaContainer.setBounds(new Rect(0, currentMainSpriteScale * 256, r.width, abh));
+        }
+        swatch.setBounds(new Rect(0, (currentMainSpriteScale * 256) + abo, r.width, abh));
         super.setBounds(r);
     }
 
@@ -99,10 +130,6 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
 
     @Override
     public void windowClosed() {
-        int col = colourPanel.baseImage.getPixels()[x + (y * 256)];
-        col &= 0xFFFFFF;
-        int al = Math.min(255, Math.max(0, (int) (alphaScroll.scrollPoint * 255d)));
-        col |= al << 24;
-        result.accept(col);
+        result.accept(swatch.col);
     }
 }

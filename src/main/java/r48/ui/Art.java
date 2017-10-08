@@ -21,6 +21,7 @@ public class Art {
     public static Rect mapIcon = new Rect(0, 52, 8, 8);
     public static Rect areaIcon = new Rect(16, 44, 8, 8);
     private static IImage colourPal;
+    public static Rect r48ico = new Rect(37, 1, 31, 31);
 
     // Note that X & Y are at the top-left of the tile.
     public static void drawTarget(int x, int y, int tileSize, IGrDriver igd) {

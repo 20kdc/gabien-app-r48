@@ -16,6 +16,7 @@ import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.TXDB;
 import r48.maptools.UIMTBase;
+import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFontSizeConfigurator;
 import r48.ui.help.UIHelpSystem;
@@ -38,10 +39,23 @@ public class Application {
         uiTicker = new WindowCreatingUIElementConsumer();
         // Load language list.
         TXDB.init();
+        Rect splashSize = null;
+        // If the system override hasn't loaded by 50ms, Java is *being slow*. Show splash screen.
+        // (Note; a quirk of the android backend means this triggers there too, but it NEEDS to anyway for splashSize)
+        if (UILabel.fontOverride == null) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        if (GaBIEn.singleWindowApp() || (UILabel.fontOverride == null))
+            splashSize = runFontLoader();
         boolean fontsLoaded = FontSizes.load();
         if (!fontsLoaded)
             if (GaBIEn.singleWindowApp()) // SWA always means we need to adapt to local screen size, and should generally cut down as many usability issues as possible
-                autoDetectCorrectUISizeOnSWA();
+                autoDetectCorrectUISizeOnSWA(splashSize.width, splashSize.height);
+
         // Note the mass-recreate.
         while (true) {
             final UIScrollLayout gamepaks = new UIScrollLayout(true, FontSizes.generalScrollersize);
@@ -295,15 +309,23 @@ public class Application {
         GaBIEn.ensureQuit();
     }
 
-    private static void autoDetectCorrectUISizeOnSWA() {
-        // Used solely to work out window size during a specific situation on Android.
+    private static Rect runFontLoader() {
         int frames = 0;
-        WindowSpecs ws = GaBIEn.defaultWindowSpecs("test", 800, 600);
+        // Used for two reasons.
+        // 1. to work out window size during a specific situation on Android.
+        // 2. on certain Linux distributions, Java still freezes up during font load
+        WindowSpecs ws = GaBIEn.defaultWindowSpecs("R48 Startup...", 800, 600);
         ws.scale = 1;
         ws.resizable = true;
-        IGrInDriver gi = GaBIEn.makeGrIn("test", 800, 600, ws);
-        while (frames < 4) {
+        IGrInDriver gi = GaBIEn.makeGrIn("R48 Startup...", 800, 600, ws);
+        while (frames < 10) {
             gi.flush();
+            gi.clearAll(255, 255, 255);
+            int sz = (Math.min(gi.getWidth(), gi.getHeight()) / 4) * 2;
+            Rect pos = new Rect((gi.getWidth() / 2) - (sz / 2), (gi.getHeight() / 2) - (sz / 2), sz, sz);
+            Rect ltPos = Art.r48ico;
+            gi.blitScaledImage(ltPos.x, ltPos.y, ltPos.width, ltPos.height, pos.x, pos.y, pos.width, pos.height, GaBIEn.getImage("layertab.png"));
+            // this is while font settings are at defaults
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -311,9 +333,16 @@ public class Application {
             }
             frames++;
         }
-        // The above triggered a flush, which would cause the initial resize on SWPs
-        FontSizes.uiGuessScaleTenths = Math.max(10, Math.min(gi.getWidth(), gi.getHeight()) / 30);
+        gi.drawText(0, -16, 0, 0, 0, 8, "Loading font...");
+        Rect r = new Rect(0, 0, gi.getWidth(), gi.getHeight());
         gi.shutdown();
+        return r;
+    }
+
+    private static void autoDetectCorrectUISizeOnSWA(int w, int h) {
+        // The above triggered a flush, which would cause the initial resize on SWPs
+        FontSizes.uiGuessScaleTenths = Math.max(10, Math.min(w, h) / 30);
+
         for (FontSizes.FontSizeField fsf : FontSizes.getFields()) {
             // as this is a touch device, map 8 to 16 (6 is for things that really matter)
             if (fsf.get() == 8)

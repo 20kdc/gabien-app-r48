@@ -6,19 +6,14 @@
 package r48.ui.utilitybelt;
 
 import gabien.GaBIEn;
-import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.TXDB;
-import r48.ui.Art;
-import r48.ui.UIAppendButton;
-import r48.ui.UIColourPicker;
-import r48.ui.UITextPrompt;
+import r48.maptools.UIMTBase;
+import r48.ui.*;
 
-import java.awt.*;
 import java.io.OutputStream;
 import java.util.LinkedList;
 
@@ -32,6 +27,8 @@ public class ImageEditorController {
     private UIScrollLayout paletteView;
     public LinkedList<Integer> palette = new LinkedList<Integer>();
     public int selPaletteIndex = 0;
+    public boolean rectangleRunning;
+    public int rectanglePoint1X, rectanglePoint1Y;
     public ISupplier<IConsumer<UIElement>> windowMaker;
 
     public ImageEditorController(ISupplier<IConsumer<UIElement>> worldMachine) {
@@ -44,15 +41,32 @@ public class ImageEditorController {
         palette.add(0xFFFF00FF);
         palette.add(0xFFFFFF00);
         palette.add(0xFFFFFFFF);
-        imageEditView = new UIImageEditView(new ISupplier<Integer>() {
+        palette.add(0x00000000);
+        imageEditView = new UIImageEditView(new Runnable() {
             @Override
-            public Integer get() {
-                return palette.get(selPaletteIndex);
+            public void run() {
+                applyCursor();
             }
         });
         paletteView = new UIScrollLayout(true, FontSizes.generalScrollersize);
         paletteView.setBounds(new Rect(0, 0, initPalette(), 1));
         rootView = new UISplitterLayout(imageEditView, paletteView, false, 1.0d);
+    }
+
+    public void applyCursor() {
+        if (!rectangleRunning) {
+            rectanglePoint1X = imageEditView.cursorX;
+            rectanglePoint1Y = imageEditView.cursorY;
+        }
+        int col = palette.get(selPaletteIndex);
+        for (int i = Math.max(0, Math.min(rectanglePoint1X, imageEditView.cursorX)); i < Math.min(imageEditView.imageW, Math.max(rectanglePoint1X, imageEditView.cursorX) + 1); i++)
+            for (int j = Math.max(0, Math.min(rectanglePoint1Y, imageEditView.cursorY)); j < Math.min(imageEditView.imageH, Math.max(rectanglePoint1Y, imageEditView.cursorY) + 1); j++)
+                imageEditView.image[i + (j * imageEditView.imageW)] = col;
+        imageEditView.showTarget = false;
+        if (rectangleRunning) {
+            rectangleRunning = false;
+            initPalette();
+        }
     }
 
     public void load(String filename) {
@@ -102,7 +116,7 @@ public class ImageEditorController {
         }), false, 0.5d);
         paletteView.panels.add(saveLoad);
         int widthGuess = saveLoad.getBounds().width;
-        paletteView.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Add Colour..."), new Runnable() {
+        paletteView.panels.add(new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Add Colour"), new Runnable() {
             @Override
             public void run() {
                 windowMaker.get().accept(new UIColourPicker(new IConsumer<Integer>() {
@@ -111,24 +125,91 @@ public class ImageEditorController {
                         palette.add(integer);
                         initPalette();
                     }
-                }));
+                }, true));
+            }
+        }), new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("From Image"), new Runnable() {
+            @Override
+            public void run() {
+                palette.add(imageEditView.image[imageEditView.cursorX + (imageEditView.cursorY * imageEditView.imageW)]);
+                initPalette();
+            }
+        }), false, 0.5d));
+        if (!rectangleRunning) {
+            paletteView.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Rectangle"), new Runnable() {
+                @Override
+                public void run() {
+                    rectangleRunning = true;
+                    imageEditView.targetX = rectanglePoint1X = imageEditView.cursorX;
+                    imageEditView.targetY = rectanglePoint1Y = imageEditView.cursorY;
+                    imageEditView.showTarget = true;
+                    initPalette();
+                }
+            }));
+        } else {
+            paletteView.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Cancel"), new Runnable() {
+                @Override
+                public void run() {
+                    rectangleRunning = false;
+                    imageEditView.showTarget = false;
+                    initPalette();
+                }
+            }));
+        }
+        paletteView.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Resize"), new Runnable() {
+            @Override
+            public void run() {
+                showXYChanger(new Rect(0, 0, imageEditView.imageW, imageEditView.imageH), new IConsumer<Rect>() {
+                    @Override
+                    public void accept(Rect rect) {
+                        // X/Y is where to put the input on the output.
+                        int[] newImage = new int[rect.width * rect.height];
+                        for (int i = 0; i < Math.min(rect.width - rect.x, imageEditView.imageW); i++) {
+                            for (int j = 0; j < Math.min(rect.height - rect.y, imageEditView.imageH); j++) {
+                                if (i + rect.x < 0)
+                                    continue;
+                                if (j + rect.y < 0)
+                                    continue;
+                                int c = imageEditView.image[i + (j * imageEditView.imageW)];
+                                newImage[(i + rect.x) + ((j + rect.y) * rect.width)] = c;
+                            }
+                        }
+                        imageEditView.cursorX = rect.width / 2;
+                        imageEditView.cursorY = rect.height / 2;
+                        imageEditView.imageW = rect.width;
+                        imageEditView.imageH = rect.height;
+                        imageEditView.image = newImage;
+                    }
+                }, TXDB.get("Resize..."));
             }
         }));
+        paletteView.panels.add(new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Regrid"), new Runnable() {
+            @Override
+            public void run() {
+                showXYChanger(new Rect(imageEditView.gridOX, imageEditView.gridOY, imageEditView.gridW, imageEditView.gridH), new IConsumer<Rect>() {
+                    @Override
+                    public void accept(Rect rect) {
+                        imageEditView.gridOX = rect.x;
+                        imageEditView.gridOY = rect.y;
+                        imageEditView.gridW = rect.width;
+                        imageEditView.gridH = rect.height;
+                    }
+                }, TXDB.get("Change Grid..."));
+            }
+        }), new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("RCGrid"), new Runnable() {
+            @Override
+            public void run() {
+                windowMaker.get().accept(new UIColourPicker(new IConsumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) {
+                        imageEditView.gridColour = integer & 0xFFFFFF;
+                    }
+                }, false));
+            }
+        }), false, 0.5d));
         int idx = 0;
         for (final Integer col : palette) {
             final int fidx = idx;
-            final int a = ((col & 0xFF000000) >> 24) & 0xFF;
-            final int r = (col & 0xFF0000) >> 16;
-            final int g = (col & 0xFF00) >> 8;
-            final int b = (col & 0xFF);
-            UIElement cPanel = new UIElement() {
-                @Override
-                public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-                    Rect bounds = getBounds();
-                    igd.clearRect(r, g, b, ox, oy, bounds.width / 2, bounds.height);
-                    igd.clearRect(a, a, a, ox + (bounds.width / 2), oy, bounds.width - (bounds.width / 2), bounds.height);
-                }
-            };
+            UIElement cPanel = new UIColourSwatch(col);
             if (selPaletteIndex == fidx) {
                 cPanel = new UIAppendButton("X", cPanel, new Runnable() {
                     @Override
@@ -155,11 +236,11 @@ public class ImageEditorController {
             cPanel = new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, "<", new Runnable() {
                 @Override
                 public void run() {
-                    imageEditView.image[imageEditView.cursorX + (imageEditView.cursorY * imageEditView.imageW)] = col;
                     if (fidx != selPaletteIndex) {
                         selPaletteIndex = fidx;
                         initPalette();
                     }
+                    applyCursor();
                 }
             }), cPanel, false, 0.0d);
             paletteView.panels.add(new UIAppendButton("O", cPanel, new Runnable() {
@@ -175,5 +256,51 @@ public class ImageEditorController {
         }
         paletteView.setBounds(paletteView.getBounds());
         return widthGuess + FontSizes.generalScrollersize;
+    }
+
+    private void showXYChanger(Rect targetVal, final IConsumer<Rect> iConsumer, final String title) {
+        UIScrollLayout xyChanger = new UIScrollLayout(true, FontSizes.generalScrollersize) {
+            @Override
+            public String toString() {
+                return title;
+            }
+        };
+        final UIMTBase res = UIMTBase.wrap(null, xyChanger, false);
+        final UINumberBox wVal, hVal, xVal, yVal;
+        final UITextButton acceptButton;
+        wVal = new UINumberBox(FontSizes.schemaFieldTextHeight);
+        hVal = new UINumberBox(FontSizes.schemaFieldTextHeight);
+        xVal = new UINumberBox(FontSizes.schemaFieldTextHeight);
+        yVal = new UINumberBox(FontSizes.schemaFieldTextHeight);
+        wVal.number = targetVal.width;
+        hVal.number = targetVal.height;
+        xVal.number = targetVal.x;
+        yVal.number = targetVal.y;
+        hVal.onEdit = wVal.onEdit = new Runnable() {
+            @Override
+            public void run() {
+                wVal.number = Math.max(1, wVal.number);
+                hVal.number = Math.max(1, hVal.number);
+            }
+        };
+
+        acceptButton = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Accept"), new Runnable() {
+            @Override
+            public void run() {
+                Rect r = new Rect(xVal.number, yVal.number, wVal.number, hVal.number);
+                r.width = Math.max(r.width, 1);
+                r.height = Math.max(r.height, 1);
+                iConsumer.accept(r);
+                res.selfClose = true;
+            }
+        });
+        xyChanger.panels.add(new UILabel(TXDB.get("Size"), FontSizes.schemaFieldTextHeight));
+        xyChanger.panels.add(new UISplitterLayout(wVal, hVal, false, 1, 2));
+        xyChanger.panels.add(new UILabel(TXDB.get("Offset"), FontSizes.schemaFieldTextHeight));
+        xyChanger.panels.add(new UISplitterLayout(xVal, yVal, false, 1, 2));
+        xyChanger.panels.add(acceptButton);
+        res.setBounds(xyChanger.getBounds());
+        res.setBounds(new Rect(0, 0, FontSizes.scaleGuess(200), xyChanger.scrollLength));
+        windowMaker.get().accept(res);
     }
 }
