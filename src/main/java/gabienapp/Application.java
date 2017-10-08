@@ -260,6 +260,11 @@ public class Application {
                             System.err.println("Failed to save!");
                         }
                         System.err.println("Displaying situation to user");
+                        if (GaBIEn.singleWindowApp()) {
+                            // SWA means this can't be handled sanely
+                            shutdownAllAppMainWindows();
+                        }
+
                         String r = baos.toString("UTF-8").replaceAll("\r", "");
                         UIHelpSystem uhs = new UIHelpSystem();
                         for (String s : r.split("\n"))

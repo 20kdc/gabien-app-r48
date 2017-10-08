@@ -174,12 +174,13 @@ public class BasicToolset implements IToolset {
                                 windowMaker.get().accept(new UITextPrompt(TXDB.get("Font Size?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
-                                        Integer i = Integer.parseInt(s);
-                                        if (i == null) {
+                                        try {
+                                            Integer i = Integer.parseInt(s);
+                                            windowMaker.get().accept(new UITextBox(i));
+                                        } catch (Exception e) {
                                             AppMain.launchDialog(TXDB.get("Not a valid number."));
                                             return;
                                         }
-                                        windowMaker.get().accept(new UITextBox(i));
                                     }
                                 }));
                             }

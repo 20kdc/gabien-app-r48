@@ -72,8 +72,10 @@ public class RMToolsToolset implements IToolset {
                         windowMaker.get().accept(new UITextPrompt(TXDB.get("Code?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
-                                Integer i = Integer.parseInt(s);
-                                if (i == null) {
+                                int i;
+                                try {
+                                    i = Integer.parseInt(s);
+                                } catch (Exception e) {
                                     AppMain.launchDialog(TXDB.get("Not a valid number."));
                                     return;
                                 }
