@@ -32,7 +32,6 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
                 if (lastHue != newHue) {
                     baseImage = Art.getColourPal(newHue);
                     lastHue = newHue;
-                    changeCol();
                 }
                 super.updateAndRender(ox, oy, deltaTime, select, igd);
                 int margin = currentMainSpriteScale * 4;
@@ -48,7 +47,6 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
                 x = xi / currentMainSpriteScale;
                 y = yi / currentMainSpriteScale;
                 restrictXY();
-                changeCol();
             }
 
             @Override
@@ -57,7 +55,6 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
                     x = xi / currentMainSpriteScale;
                     y = yi / currentMainSpriteScale;
                     restrictXY();
-                    changeCol();
                 }
             }
 
@@ -90,11 +87,11 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
         if (alpha)
             allElements.add(alphaContainer);
         allElements.add(swatch);
-        changeCol();
         setBounds(new Rect(0, 0, (currentMainSpriteScale * 256) + hueScroll.getBounds().width, (currentMainSpriteScale * 256) + (alphaScrollH * (alpha ? 2 : 1))));
     }
 
-    private void changeCol() {
+    @Override
+    public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
         int col = colourPanel.baseImage.getPixels()[x + (y * 256)];
         col &= 0xFFFFFF;
         if (alphaScroll != null) {
@@ -104,6 +101,7 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
             col |= 0xFF000000;
         }
         swatch.col = col;
+        super.updateAndRender(ox, oy, deltaTime, select, igd);
     }
 
     @Override
@@ -131,5 +129,13 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
     @Override
     public void windowClosed() {
         result.accept(swatch.col);
+    }
+
+    @Override
+    public String toString() {
+        String text = Integer.toHexString(swatch.col);
+        for (int i = text.length(); i < 8; i++)
+            text = "0" + text;
+        return "#" + text;
     }
 }

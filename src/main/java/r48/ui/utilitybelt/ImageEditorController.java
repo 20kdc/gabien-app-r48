@@ -93,25 +93,31 @@ public class ImageEditorController {
 
     private int initPalette() {
         paletteView.panels.clear();
+        final String fbStrB = TXDB.get("Back");
+        final String fbStrA = TXDB.get("Accept");
+        final String fbStrL = TXDB.get("Load: ");
+        final String fbStrS = TXDB.get("Save: ");
         UISplitterLayout saveLoad = new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Load PNG..."), new Runnable() {
             @Override
             public void run() {
-                windowMaker.get().accept(new UITextPrompt(TXDB.get("Filename to load (R48-relative)?"), new IConsumer<String>() {
+                windowMaker.get().accept(new UIFileBrowser(new IConsumer<String>() {
                     @Override
                     public void accept(String s) {
-                        load(s);
+                        if (s != null)
+                            load(s);
                     }
-                }));
+                }, fbStrL, fbStrB, fbStrA, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize));
             }
         }), new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Save PNG..."), new Runnable() {
             @Override
             public void run() {
-                windowMaker.get().accept(new UITextPrompt(TXDB.get("Filename to save (R48-relative)?"), new IConsumer<String>() {
+                windowMaker.get().accept(new UIFileBrowser(new IConsumer<String>() {
                     @Override
                     public void accept(String s) {
-                        save(s);
+                        if (s != null)
+                            save(s);
                     }
-                }));
+                }, fbStrS, fbStrB, fbStrA, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize));
             }
         }), false, 0.5d);
         paletteView.panels.add(saveLoad);
@@ -216,6 +222,8 @@ public class ImageEditorController {
                     public void run() {
                         if (palette.size() > 1) {
                             selPaletteIndex--;
+                            if (selPaletteIndex == -1)
+                                selPaletteIndex++;
                             palette.remove(fidx);
                             initPalette();
                         }
