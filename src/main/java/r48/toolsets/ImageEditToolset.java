@@ -25,7 +25,7 @@ public class ImageEditToolset implements IToolset {
     @Override
     public UIElement[] generateTabs(ISupplier<IConsumer<UIElement>> windowMaker) {
         return new UIElement[] {
-                new ImageEditorController().rootView
+                new ImageEditorController(windowMaker).rootView
         };
     }
 }

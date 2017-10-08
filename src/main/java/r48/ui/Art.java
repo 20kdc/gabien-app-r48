@@ -4,11 +4,14 @@
  */
 package r48.ui;
 
+import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.Rect;
 import r48.AppMain;
 import r48.FontSizes;
+import r48.imagefx.HueShiftImageEffect;
 
 /**
  * Drawing functions for UI resources that vary dependent on resolution or such.
@@ -17,6 +20,7 @@ import r48.FontSizes;
 public class Art {
     public static Rect mapIcon = new Rect(0, 52, 8, 8);
     public static Rect areaIcon = new Rect(16, 44, 8, 8);
+    private static IImage colourPal;
 
     // Note that X & Y are at the top-left of the tile.
     public static void drawTarget(int x, int y, int tileSize, IGrDriver igd) {
@@ -98,5 +102,32 @@ public class Art {
         if (sc == 0)
             sc = 1;
         return new Rect(display.x + (display.width / 2) - ((sc * sprite.width) / 2), display.y + (display.height / 2) - ((sc * sprite.height) / 2), sc * sprite.width, sc * sprite.height);
+    }
+
+    private static IImage genColourPal() {
+        int[] x = new int[256 * 256];
+        int idx = 0;
+        for (int baseline = 0; baseline < 256; baseline++) {
+            int specWid = 256 - baseline;
+            for (int red = 0; red < 256; red++) {
+                // At specWid 1, ered should always be 255
+                // At specWid 256, ered should equal red.
+                int fromRight = 255 - red;
+                // do transform
+                fromRight *= specWid;
+                fromRight /= 256;
+                // ...
+                int effectiveRed = 255 - fromRight; // reverses fromRight
+                int v = 0xFF000000 | (effectiveRed << 16) | (baseline << 8) | baseline;
+                x[idx++] = v;
+            }
+        }
+        return GaBIEn.createImage(x, 256, 256);
+    }
+
+    public static IImage getColourPal(int hue) {
+        if (colourPal == null)
+            colourPal = genColourPal();
+        return AppMain.imageFXCache.process(colourPal, new HueShiftImageEffect(hue));
     }
 }
