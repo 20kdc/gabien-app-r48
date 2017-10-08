@@ -165,14 +165,15 @@ class SDBHelpers {
         types.put(0, TXDB.get("Constant"));
         types.put(1, TXDB.get("From Id Var. (PPP/EasyRPG/2k3 1.12)"));
         types.put(2, TXDB.get("From Id/Name Suffix Var. Pair (PPP/EasyRPG/2k3 1.12)"));
-        HashMap<Integer, SchemaElement> disambiguations = new HashMap<Integer, SchemaElement>();
+        HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
         ArrayElementSchemaElement idV = new ArrayElementSchemaElement(1, TXDB.get("idVar"), varId, null, false);
-        disambiguations.put(1, idV);
-        disambiguations.put(2, idV);
+        disambiguations.put("i1", idV);
+        disambiguations.put("i2", idV);
+        disambiguations.put("x", new ArrayElementSchemaElement(1, TXDB.get("id "), new LowerBoundIntegerSchemaElement(1, 1), null, false));
         AggregateSchemaElement inner = new AggregateSchemaElement(new SchemaElement[] {
                 new HalfsplitSchemaElement(
                         new ArrayElementSchemaElement(0, TXDB.get("type "), new EnumSchemaElement(types, 0, ""), null, false),
-                        new DisambiguatorSchemaElement("]0", new ArrayElementSchemaElement(1, TXDB.get("id "), new LowerBoundIntegerSchemaElement(1, 1), null, false), disambiguations)
+                        new DisambiguatorSchemaElement("]0", disambiguations)
                 ),
                 new SubwindowSchemaElement(new HWNDSchemaElement("]0", "R2K/H_Internal_PPP"), new IFunction<RubyIO, String>() {
                     @Override
@@ -223,11 +224,12 @@ class SDBHelpers {
     }
     public SchemaElement makePicPointerPatchVar(SchemaElement varId) {
         // Less complicated but still more than an enum is reasonable for.
-        HashMap<Integer, SchemaElement> disambiguations = new HashMap<Integer, SchemaElement>();
-        disambiguations.put(0, new ArrayElementSchemaElement(1, TXDB.get("value "), new LowerBoundIntegerSchemaElement(0, 0), null, false));
+        HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
+        disambiguations.put("i0", new ArrayElementSchemaElement(1, TXDB.get("value "), new LowerBoundIntegerSchemaElement(0, 0), null, false));
+        disambiguations.put("x", new ArrayElementSchemaElement(1, TXDB.get("valueVar "), varId, null, false));
         SchemaElement inner = new HalfsplitSchemaElement(
                 new ArrayElementSchemaElement(0, TXDB.get("isVar "), new IntBooleanSchemaElement(false), null, false),
-                new DisambiguatorSchemaElement("]0", new ArrayElementSchemaElement(1, TXDB.get("valueVar "), varId, null, false), disambiguations)
+                new DisambiguatorSchemaElement("]0", disambiguations)
         );
         return new MagicalBindingSchemaElement(new IMagicalBinder() {
             @Override

@@ -92,16 +92,20 @@ public class SDB {
             AggregateSchemaElement workingObj;
 
             HashMap<Integer, String> commandBufferNames = new HashMap<Integer, String>();
-            HashMap<Integer, SchemaElement> commandBufferSchemas = new HashMap<Integer, SchemaElement>();
+            HashMap<String, SchemaElement> commandBufferSchemas = new HashMap<String, SchemaElement>();
 
             String outerContext = fPfx + "/NONE";
 
             @Override
             public void newObj(int objId, String objName) {
                 outerContext = fPfx + "/commandBuffer";
-                commandBufferNames.put(objId, TXDB.get(outerContext, objName));
                 workingObj = new AggregateSchemaElement(new SchemaElement[] {});
-                commandBufferSchemas.put(objId, workingObj);
+                if (objId != -1) {
+                    commandBufferNames.put(objId, TXDB.get(outerContext, objName));
+                    commandBufferSchemas.put("i" + objId, workingObj);
+                } else {
+                    commandBufferSchemas.put("x" + objId, workingObj);
+                }
                 //MapSystem.out.println("Array definition when inappropriate: " + objName);
             }
 
@@ -218,12 +222,13 @@ public class SDB {
                         if (text.equals("DA{")) {
                             String disambiguatorIndex = args[point++];
                             SchemaElement backup = get();
-                            HashMap<Integer, SchemaElement> disambiguations = new HashMap<Integer, SchemaElement>();
+                            HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
                             while (!args[point].equals("}")) {
                                 int ind = Integer.parseInt(args[point++]);
-                                disambiguations.put(ind, get());
+                                disambiguations.put("i" + ind, get());
                             }
-                            return new DisambiguatorSchemaElement(disambiguatorIndex, backup, disambiguations);
+                            disambiguations.put("x", backup);
+                            return new DisambiguatorSchemaElement(disambiguatorIndex, disambiguations);
                         }
                         if (text.equals("lengthAdjust[")) {
                             String text2 = args[point++];
@@ -237,10 +242,10 @@ public class SDB {
                             // time to flush it!
                             String disambiguationIVar = args[point++];
                             setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, 0, TXDB.get("Code")));
-                            HashMap<Integer, SchemaElement> baseSE = commandBufferSchemas;
+                            HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<Integer, String>();
-                            commandBufferSchemas = new HashMap<Integer, SchemaElement>();
-                            return new DisambiguatorSchemaElement(disambiguationIVar, baseSE.get(-1), baseSE);
+                            commandBufferSchemas = new HashMap<String, SchemaElement>();
+                            return new DisambiguatorSchemaElement(disambiguationIVar, baseSE);
                         }
                         if (text.equals("hash")) {
                             SchemaElement k = get();
@@ -560,7 +565,7 @@ public class SDB {
                         AppMain.sysBackend = args[1];
                     if (args[0].equals("defaultCB")) {
                         workingObj = new AggregateSchemaElement(new SchemaElement[] {});
-                        commandBufferSchemas.put(-1, workingObj);
+                        commandBufferSchemas.put("x default", workingObj);
                     }
                     if (args[0].equals("magicGenpos")) {
                         // Really special schema

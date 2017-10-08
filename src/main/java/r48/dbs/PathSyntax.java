@@ -34,17 +34,28 @@ public class PathSyntax {
             workingArg = workingArg.substring(subcom.length());
             switch (f) {
                 case '$':
-                    if (subcom.equals("length")) {
-                        // This is used for length disambiguation.
-                        if (res.arrVal == null) {
-                            res = null;
+                    if (subcom.startsWith(":")) {
+                        RubyIO hashVal = new RubyIO();
+                        if (subcom.startsWith(":\"")) {
+                            hashVal.setString(subcom.substring(2));
                         } else {
-                            res = new RubyIO().setFX(res.arrVal.length);
+                            int i = Integer.parseInt(subcom.substring(1));
+                            hashVal.setFX(i);
                         }
-                    } else if (subcom.equals("fail")) {
-                        return null;
-                    } else if (subcom.length() != 0) {
-                        throw new RuntimeException("$-command must be '', 'length'");
+                        return res.getHashVal(hashVal);
+                    } else {
+                        if (subcom.equals("length")) {
+                            // This is used for length disambiguation.
+                            if (res.arrVal == null) {
+                                res = null;
+                            } else {
+                                res = new RubyIO().setFX(res.arrVal.length);
+                            }
+                        } else if (subcom.equals("fail")) {
+                            return null;
+                        } else if (subcom.length() != 0) {
+                            throw new RuntimeException("$-command must be '', ':\"someS1FormatTextForHVal', ':123' (hash number), 'length', 'fail'");
+                        }
                     }
                     break;
                 case '@':

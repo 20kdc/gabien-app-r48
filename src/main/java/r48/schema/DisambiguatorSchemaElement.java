@@ -16,44 +16,55 @@ import java.util.HashMap;
 
 /**
  * This is used for things like conditional branches, which are so complicated it's ridiculous.
- * Note that the element MUST be an enum - enums trigger a UI rebuild when they're set.
+ * There used to be a note here saying the element must be an enum,
+ *  but that was before the Decision where all elements started getting rebuilt out of sheer practicality.
+ * That was 9 months ago. It's now the 8th of October.
  * Created on 12/31/16.
  */
 public class DisambiguatorSchemaElement extends SchemaElement {
     // Special values:
+    // null: Always returns i0
     // "$fail": There is no disambiguator. Implemented via PathSyntax.
     // #hastilyAddedFeatures
     public String dIndex;
-    public SchemaElement defaultType;
-    public HashMap<Integer, SchemaElement> dTable;
+    // "text
+    // i123
+    // x
+    // Strings are handled with "Cmd[ ABCD ] some user text"
+    // Ints are "0: some user text"
+    // x is default
+    public HashMap<String, SchemaElement> dTable;
 
-    public DisambiguatorSchemaElement(String disambiguatorIndex, SchemaElement backup, HashMap<Integer, SchemaElement> disambiguations) {
+    public DisambiguatorSchemaElement(String disambiguatorIndex, HashMap<String, SchemaElement> disambiguations) {
         dIndex = disambiguatorIndex;
-        defaultType = backup;
         dTable = disambiguations;
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
         final SchemaPath path = path2.tagSEMonitor(target, this);
-        int iv = getDisambigIndex(target);
+        String iv = getDisambigIndex(target);
         SchemaElement ise = getSchemaElement(iv);
         return ise.buildHoldingEditor(target, launcher, path);
     }
 
-    private int getDisambigIndex(RubyIO target) {
+    private String getDisambigIndex(RubyIO target) {
         if (dIndex == null)
-            return 0;
+            return "i0";
         target = PathSyntax.parse(target, dIndex);
         if (target == null)
-            return 0x7FFFFFFF;
-        return (int) target.fixnumVal;
+            return "x";
+        if (target.type == 'i')
+            return "i" + target.fixnumVal;
+        if (target.type == '"')
+            return "\"" + target.decString();
+        return "x";
     }
 
-    private SchemaElement getSchemaElement(int dVal) {
+    private SchemaElement getSchemaElement(String dVal) {
         SchemaElement r = dTable.get(dVal);
         if (r == null)
-            r = defaultType;
+            r = dTable.get("x");
         if (r == null)
             r = new AggregateSchemaElement(new SchemaElement[0]);
         return r;
@@ -68,9 +79,10 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     public void modifyVal(RubyIO target, SchemaPath path2, boolean setDefault) {
         final SchemaPath path = path2.tagSEMonitor(target, this);
 
-        int iv = getDisambigIndex(target);
-        if (iv == 0x7FFFFFFF)
-            System.out.println("Warning: Disambiguator working off of nothing here, this CANNOT GO WELL");
+        String iv = getDisambigIndex(target);
+        if (!setDefault)
+            if (iv.equals("x"))
+                System.out.println("Warning: Disambiguator working off of nothing here, this CANNOT GO WELL");
         try {
             SchemaElement ise = getSchemaElement(iv);
             ise.modifyVal(target, path, setDefault);

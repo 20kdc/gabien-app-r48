@@ -38,6 +38,23 @@ C name Interp.ltp_type $ | {@#A|:concurrent|Concurrent|:waitOn|Wait On...|Unknow
 ]1 first int
 ]2 last int
 
+ JSONDisamb.
+
+0: Cat
+@meow boolean
+
+1: Mouse
+@squeak boolean
+
+2: Dog
+@woof boolean
+
+: JLDV
+@test_cmdbuf_light test_cmdbuf_type
++flushCommandBuffer @test_cmdbuf_light test_cmdbuf_type
+
+ Footer
+
 .NoteEditor_Most
 @indent indent
 @parameters array 0 OPAQUE
