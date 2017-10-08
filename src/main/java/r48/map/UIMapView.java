@@ -213,7 +213,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     }
 
     public int getZoomButtonMargin() {
-        return 4;
+        return FontSizes.scaleGuess(4);
     }
 
     private Rect getZPlusRect() {

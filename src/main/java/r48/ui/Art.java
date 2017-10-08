@@ -8,6 +8,7 @@ import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import r48.AppMain;
+import r48.FontSizes;
 
 /**
  * Drawing functions for UI resources that vary dependent on resolution or such.
@@ -55,10 +56,18 @@ public class Art {
     }
 
     public static void drawSelectionBox(int x, int y, int w, int h, IGrDriver igd) {
-        drawDotLineV(x, y, h, igd);
-        drawDotLineV(x + (w - 1), y, h, igd);
-        drawDotLineH(x, y, w, igd);
-        drawDotLineH(x, y + (h - 1), w, igd);
+        int thickness = FontSizes.getSpriteScale();
+        while (thickness > 0) {
+            drawDotLineV(x, y, h, igd);
+            drawDotLineV(x + (w - 1), y, h, igd);
+            drawDotLineH(x, y, w, igd);
+            drawDotLineH(x, y + (h - 1), w, igd);
+            thickness--;
+            x++;
+            y++;
+            w -= 2;
+            h -= 2;
+        }
     }
 
     private static void drawDotLineV(int x, int y, int h, IGrDriver igd) {

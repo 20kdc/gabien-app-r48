@@ -22,10 +22,7 @@ import r48.schema.OpaqueSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
-import r48.toolsets.BasicToolset;
-import r48.toolsets.IToolset;
-import r48.toolsets.MapToolset;
-import r48.toolsets.RMToolsToolset;
+import r48.toolsets.*;
 import r48.ui.Coco;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
@@ -231,6 +228,7 @@ public class AppMain {
                 windowMaker = uiElementIConsumer;
             }
         }));
+        toolsets.add(new ImageEditToolset());
 
         // Initialize toolsets.
         for (IToolset its : toolsets) {
