@@ -75,8 +75,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
             int py = (y * eTileSize) - camY;
             if (layer == 0x7FFFFFFF) {
                 if (AppMain.currentlyOpenInEditor(evI))
-                    if ((((int) GaBIEn.getTime()) & 1) == 0)
-                        Art.drawSelectionBox(px - 1, py - 1, eTileSize + 2, eTileSize + 2, igd);
+                    Art.drawSelectionBox(px - 1, py - 1, eTileSize + 2, eTileSize + 2, 1, igd);
             } else {
                 if (iegr.determineEventLayer(evI) != layer)
                     continue;

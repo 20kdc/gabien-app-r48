@@ -91,7 +91,7 @@ public class UIGrid extends UIPanel {
                 igd.clearRect(128, 0, 128, ox + px, oy + py, tileSizeW, tileSizeH);
             drawTile(p, p == mouseSel, ox + px, oy + py, igd);
             if (p == selTile)
-                Art.drawSelectionBox(ox + px, oy + py, tileSizeW, tileSizeH, igd);
+                Art.drawSelectionBox(ox + px, oy + py, tileSizeW, tileSizeH, FontSizes.getSpriteScale(), igd);
             pi++;
         }
         for (int ty = 0; ty < selHeight; ty++) {
@@ -103,7 +103,7 @@ public class UIGrid extends UIPanel {
                     continue;
                 if (py >= r.height)
                     continue;
-                Art.drawSelectionBox(ox + px, oy + py, tileSizeW, tileSizeH, igd);
+                Art.drawSelectionBox(ox + px, oy + py, tileSizeW, tileSizeH, FontSizes.getSpriteScale(), igd);
                 pi++;
             }
         }

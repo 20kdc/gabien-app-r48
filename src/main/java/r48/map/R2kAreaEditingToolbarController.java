@@ -83,7 +83,7 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
             int x = (int) (GaBIEn.getTime() * 4);
             if ((x & 1) == 0) {
                 Rect r = getViewedRect();
-                Art.drawSelectionBox(px + (r.x * eTileSize) - 1, py + (r.y * eTileSize) - 1, (r.width * eTileSize) + 2, (r.height * eTileSize) + 2, igd);
+                Art.drawSelectionBox(px + (r.x * eTileSize) - 1, py + (r.y * eTileSize) - 1, (r.width * eTileSize) + 2, (r.height * eTileSize) + 2, 1, igd);
             }
         }
 

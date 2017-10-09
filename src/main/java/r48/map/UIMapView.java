@@ -158,10 +158,11 @@ public class UIMapView extends UIElement implements IWindowElement {
         }
         String status = mapId + ";" + mouseXT + ", " + mouseYT + "; " + shortcuts;
 
-        Rect plusRect = getZPlusRect();
-        Rect minusRect = getZMinusRect();
-        Rect dragRect = getDragRect();
-        UILabel.drawLabel(igd, UILabel.getRecommendedSize(status, FontSizes.mapPositionTextHeight).width, ox + plusRect.x + plusRect.width + getZoomButtonMargin(), oy + plusRect.y, status, 0, FontSizes.mapPositionTextHeight);
+        Rect plusRect = Art.getZIconRect(false, 0);
+        Rect plusRectFull = Art.getZIconRect(true, 0); // used for X calc on the label
+        Rect minusRect = Art.getZIconRect(false, 1);
+        Rect dragRect = Art.getZIconRect(false, 2);
+        UILabel.drawLabel(igd, UILabel.getRecommendedSize(status, FontSizes.mapPositionTextHeight).width, ox + plusRectFull.x + plusRectFull.width, oy + plusRect.y, status, 0, FontSizes.mapPositionTextHeight);
         Art.drawZoom(igd, true, ox + plusRect.x, oy + plusRect.y, plusRect.height);
         Art.drawZoom(igd, false, ox + minusRect.x, oy + minusRect.y, minusRect.height);
         if (dedicatedDragControl)
@@ -206,51 +207,23 @@ public class UIMapView extends UIElement implements IWindowElement {
         }
     }
 
-    // These can be adjusted later if there's a need to alter the UI
-    // Right now it's tied to map position text height, which is the most reliable metric of what the user wants the UI to be
-    public int getZoomButtonSize() {
-        return UILabel.getRecommendedSize("", FontSizes.mapPositionTextHeight).height;
-    }
-
-    public int getZoomButtonMargin() {
-        return FontSizes.scaleGuess(4);
-    }
-
-    private Rect getZPlusRect() {
-        int zbs = getZoomButtonSize();
-        int zbm = getZoomButtonMargin();
-        return new Rect(zbm, zbm, zbs, zbs);
-    }
-
-    private Rect getZMinusRect() {
-        int zbs = getZoomButtonSize();
-        int zbm = getZoomButtonMargin();
-        return new Rect(zbm, (zbm * 2) + zbs, zbs, zbs);
-    }
-
-    private Rect getDragRect() {
-        int zbs = getZoomButtonSize();
-        int zbm = getZoomButtonMargin();
-        return new Rect(zbm, (zbm * 3) + (zbs * 2), zbs, zbs);
-    }
-
     @Override
     public void handleClick(int x, int y, int button) {
         lmX = x;
         lmY = y;
         // Zoom is mousewheel emulation.
-        if (getZPlusRect().contains(x, y)) {
+        if (Art.getZIconRect(true, 0).contains(x, y)) {
             dragging = false;
             handleMousewheel(x, y, true);
             return;
         }
-        if (getZMinusRect().contains(x, y)) {
+        if (Art.getZIconRect(true, 1).contains(x, y)) {
             dragging = false;
             handleMousewheel(x, y, false);
             return;
         }
         if (useDragControl()) {
-            if (getDragRect().contains(x, y)) {
+            if (Art.getZIconRect(true, 2).contains(x, y)) {
                 dragging = false;
                 camDragSwitch = !camDragSwitch;
                 return;
@@ -280,10 +253,6 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     @Override
     public void handleDrag(int x, int y) {
-        if (getZPlusRect().contains(x, y))
-            return;
-        if (getZMinusRect().contains(x, y))
-            return;
         if (dragging) {
             camX -= (x - lmX) / (double) internalScaling;
             camY -= (y - lmY) / (double) internalScaling;

@@ -35,7 +35,7 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
                 }
                 super.updateAndRender(ox, oy, deltaTime, select, igd);
                 int margin = currentMainSpriteScale * 4;
-                Art.drawSelectionBox(ox + ((x * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - margin, oy + ((y * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - margin, margin + 1, margin + 1, igd);
+                Art.drawSelectionBox(ox + ((x * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - margin, oy + ((y * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - margin, margin + 1, margin + 1, 1, igd);
             }
 
             @Override

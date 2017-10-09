@@ -60,17 +60,18 @@ public class UIImageEditView extends UIElement {
         }
         IImage tempImg = createImg();
         osb.blitScaledImage(0, 0, imageW, imageH, viewRct.x, viewRct.y, viewRct.width, viewRct.height, tempImg);
-        Art.drawSelectionBox(viewRct.x + (cursorX * zoom), viewRct.y + (cursorY * zoom), zoom, zoom, osb);
+        Art.drawSelectionBox(viewRct.x + (cursorX * zoom), viewRct.y + (cursorY * zoom), zoom, zoom, FontSizes.getSpriteScale(), osb);
         if (showTarget)
             Art.drawTarget(viewRct.x + (targetX * zoom), viewRct.y + (targetY * zoom), zoom, osb);
         igd.blitImage(0, 0, bounds.width, bounds.height, ox, oy, osb);
         osb.shutdown();
 
-        Rect zPlus = getZPlusRect();
-        Rect zMinus = getZMinusRect();
-        int textX = zPlus.x + zPlus.width + getZoomButtonMargin();
+        Rect zPlus = Art.getZIconRect(false, 0);
+        Rect zPlusFull = Art.getZIconRect(true, 0);
+        Rect zMinus = Art.getZIconRect(false, 1);
+        int textX = zPlusFull.x + zPlusFull.width;
         String text = cursorX + ", " + cursorY;
-        UILabel.drawLabel(igd, bounds.width - (textX + getZoomButtonMargin()), ox + textX, oy + getZoomButtonMargin(), text,  0, FontSizes.mapPositionTextHeight);
+        UILabel.drawLabel(igd, bounds.width - (textX + zPlus.x), ox + textX, oy + zPlus.y, text,  0, FontSizes.mapPositionTextHeight);
         Art.drawZoom(igd, true, zPlus.x + ox, zPlus.y + oy, zPlus.height);
         Art.drawZoom(igd, false, zMinus.x + ox, zMinus.y + oy, zMinus.height);
     }
@@ -88,35 +89,15 @@ public class UIImageEditView extends UIElement {
         return new Rect(camOfsX + (bounds.width / 2), camOfsY + (bounds.height / 2), imageW * zoom, imageH * zoom);
     }
 
-    public int getZoomButtonSize() {
-        return UILabel.getRecommendedSize("", FontSizes.mapPositionTextHeight).height;
-    }
-
-    public int getZoomButtonMargin() {
-        return FontSizes.scaleGuess(4);
-    }
-
-    private Rect getZPlusRect() {
-        int zbs = getZoomButtonSize();
-        int zbm = getZoomButtonMargin();
-        return new Rect(zbm, zbm, zbs, zbs);
-    }
-
-    private Rect getZMinusRect() {
-        int zbs = getZoomButtonSize();
-        int zbm = getZoomButtonMargin();
-        return new Rect(zbm, (zbm * 2) + zbs, zbs, zbs);
-    }
-
     @Override
     public void handleClick(int x, int y, int button) {
         if (button != 1)
             return;
-        if (getZPlusRect().contains(x, y)) {
+        if (Art.getZIconRect(true, 0).contains(x, y)) {
             handleMousewheel(x, y, true);
             return;
         }
-        if (getZMinusRect().contains(x, y)) {
+        if (Art.getZIconRect(true, 1).contains(x, y)) {
             handleMousewheel(x, y, false);
             return;
         }
@@ -135,9 +116,9 @@ public class UIImageEditView extends UIElement {
     @Override
     public void handleMousewheel(int x, int y, boolean north) {
         if (north) {
-            zoom++;
+            zoom *= 2;
         } else {
-            zoom--;
+            zoom /= 2;
             if (zoom < 3)
                 zoom = 3;
         }

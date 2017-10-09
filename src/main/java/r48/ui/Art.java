@@ -9,6 +9,7 @@ import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.Rect;
+import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.imagefx.HueShiftImageEffect;
@@ -23,6 +24,10 @@ public class Art {
     private static IImage colourPal;
     public static Rect r48ico = new Rect(37, 1, 31, 31);
 
+    // Must be -dotLineAni
+    private static final int dotLineMetric = 27;
+    private static final int dotLineAni = 2;
+
     // Note that X & Y are at the top-left of the tile.
     public static void drawTarget(int x, int y, int tileSize, IGrDriver igd) {
         if (tileSize <= 16) {
@@ -30,6 +35,24 @@ public class Art {
         } else {
             igd.blitImage(0, 36, 16, 16, (x + (tileSize / 2)) - 8, (y + (tileSize / 2)) - 8, AppMain.layerTabs);
         }
+    }
+
+    // This controls the layout of (in particular) zoom
+    public static int getZIconSize() {
+        return UILabel.getRecommendedSize("", FontSizes.mapPositionTextHeight).height;
+    }
+
+    public static int getZIconMargin() {
+        return FontSizes.scaleGuess(4);
+    }
+
+    public static Rect getZIconRect(boolean click, int x) {
+        int zbs = getZIconSize();
+        int zbm = getZIconMargin();
+        int ry = (x * ((zbm * 2) + zbs));
+        if (click)
+            return new Rect(0, ry, zbs + (zbm * 2), zbs + (zbm * 2));
+        return new Rect(zbm, zbm + ry, zbs, zbs);
     }
 
     public static void drawZoom(IGrDriver igd, boolean b, int x, int y, int height) {
@@ -60,13 +83,14 @@ public class Art {
         igd.clearRect(b, b, b, x + (m * 2), y + (height / 2) - m2, height - (m * 4), m2 * 2);
     }
 
-    public static void drawSelectionBox(int x, int y, int w, int h, IGrDriver igd) {
-        int thickness = FontSizes.getSpriteScale();
+    // this works decently even on high-DPI (with a sufficient thickness)
+    public static void drawSelectionBox(int x, int y, int w, int h, int thickness, IGrDriver igd) {
+        int f = ((int) (GaBIEn.getTime() * (dotLineAni + 1))) % (dotLineAni + 1);
         while (thickness > 0) {
-            drawDotLineV(x, y, h, igd);
-            drawDotLineV(x + (w - 1), y, h, igd);
-            drawDotLineH(x, y, w, igd);
-            drawDotLineH(x, y + (h - 1), w, igd);
+            drawDotLineV(x, y, h, f, igd);
+            drawDotLineV(x + (w - 1), y, h, dotLineAni - f, igd);
+            drawDotLineH(x, y, w, dotLineAni - f, igd);
+            drawDotLineH(x, y + (h - 1), w, f, igd);
             thickness--;
             x++;
             y++;
@@ -75,22 +99,26 @@ public class Art {
         }
     }
 
-    private static void drawDotLineV(int x, int y, int h, IGrDriver igd) {
-        while (h > 32) {
-            igd.blitImage(36, 0, 1, 32, x, y, AppMain.layerTabs);
-            y += 32;
-            h -= 32;
+    private static void drawDotLineV(int x, int y, int h, int f, IGrDriver igd) {
+        if (h <= 0)
+            return;
+        while (h > dotLineMetric) {
+            igd.blitImage(36, f, 1, dotLineMetric, x, y, AppMain.layerTabs);
+            y += dotLineMetric;
+            h -= dotLineMetric;
         }
-        igd.blitImage(36, 0, 1, h, x, y, AppMain.layerTabs);
+        igd.blitImage(36, f, 1, h, x, y, AppMain.layerTabs);
     }
 
-    private static void drawDotLineH(int x, int y, int w, IGrDriver igd) {
-        while (w > 32) {
-            igd.blitImage(36, 0, 32, 1, x, y, AppMain.layerTabs);
-            x += 32;
-            w -= 32;
+    private static void drawDotLineH(int x, int y, int w, int f, IGrDriver igd) {
+        if (w <= 0)
+            return;
+        while (w > dotLineMetric) {
+            igd.blitImage(36 + f, 0, dotLineMetric, 1, x, y, AppMain.layerTabs);
+            x += dotLineMetric;
+            w -= dotLineMetric;
         }
-        igd.blitImage(36, 0, w, 1, x, y, AppMain.layerTabs);
+        igd.blitImage(36 + f, 0, w, 1, x, y, AppMain.layerTabs);
     }
 
 
