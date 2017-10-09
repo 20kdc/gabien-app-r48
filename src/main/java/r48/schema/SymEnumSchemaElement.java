@@ -19,16 +19,17 @@ import r48.ui.UIEnumChoice;
 import java.util.HashMap;
 
 /**
- * Enum. Note that it is critical to implementation of many things that this explicitly switch into a new view.
- * Specifically, the switch will cause a UI rebuild upon return, which is required to keep data consistency.
+ * A copy of EnumSchemaElement that handles non-integer elements.
  * Created on 12/30/16.
  */
 public class SymEnumSchemaElement extends SchemaElement {
     public String[] options;
+    public boolean actuallyString;
     public HashMap<String, Integer> viewOptions;
 
-    public SymEnumSchemaElement(String[] o) {
+    public SymEnumSchemaElement(String[] o, boolean actStr) {
         options = o;
+        actuallyString = actStr;
         viewOptions = new HashMap<String, Integer>();
         for (int i = 0; i < o.length; i++)
             viewOptions.put(o[i], i);
@@ -36,7 +37,10 @@ public class SymEnumSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(FontSizes.schemaButtonTextHeight, target.symVal, new Runnable() {
+        String bText = target.symVal;
+        if (actuallyString)
+            bText = target.decString();
+        return new UITextButton(FontSizes.schemaButtonTextHeight, bText, new Runnable() {
             @Override
             public void run() {
                 launcher.switchObject(path.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<Integer>() {
@@ -46,7 +50,11 @@ public class SymEnumSchemaElement extends SchemaElement {
                             return;
                         if (integer >= options.length)
                             return;
-                        target.symVal = options[integer];
+                        if (actuallyString) {
+                            target.encString(options[integer]);
+                        } else {
+                            target.symVal = options[integer];
+                        }
                         path.changeOccurred(false);
                         // Enums can affect parent format, so deal with that now.
                         launcher.switchObject(path.findBack());
@@ -58,9 +66,16 @@ public class SymEnumSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (IntegerSchemaElement.ensureType(target, ':', setDefault)) {
-            target.symVal = options[0];
-            path.changeOccurred(true);
+        if (actuallyString) {
+            if (IntegerSchemaElement.ensureType(target, '"', setDefault)) {
+                target.encString(options[0]);
+                path.changeOccurred(true);
+            }
+        } else {
+            if (IntegerSchemaElement.ensureType(target, ':', setDefault)) {
+                target.symVal = options[0];
+                path.changeOccurred(true);
+            }
         }
     }
 }

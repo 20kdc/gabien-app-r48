@@ -26,3 +26,19 @@ short-term planning subsection:
 
 - ANYTIME -
 + Anything Cherry thinks up next
+
+-- NOTE TO SELF
+
+ Syntaxes in R48:
+
+ DBS (general 'DB' syntax)
+
+ TXDB
+
+ This lot:
+ SDB---+----\
+  |    |    |
+  v    v    v
+ CMDB ATDB TSDB
+
+ PS/FS/ESS

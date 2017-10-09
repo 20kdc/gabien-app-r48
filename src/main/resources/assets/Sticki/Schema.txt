@@ -50,8 +50,23 @@ C name Interp.ltp_type $ | {@#A|:concurrent|Concurrent|:waitOn|Wait On...|Unknow
 @woof boolean
 
 : JLDV
+@a1 JLDV1
+@a2 JLDV2
+
+: JLDV1
 @test_cmdbuf_light test_cmdbuf_type
 +flushCommandBuffer @test_cmdbuf_light test_cmdbuf_type
+
+Cmd Woof!\_Bark!
+@dog boolean
+Cmd Meow!\_Purr...
+@cat boolean
+Cmd Squeek!
+@mouse boolean
+
+: JLDV2
+@test_cmdbuf_heavy test_cmdbuf2_type
++flushCommandBufferStr @test_cmdbuf_heavy test_cmdbuf2_type
 
  Footer
 

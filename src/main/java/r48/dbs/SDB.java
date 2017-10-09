@@ -92,6 +92,7 @@ public class SDB {
             AggregateSchemaElement workingObj;
 
             HashMap<Integer, String> commandBufferNames = new HashMap<Integer, String>();
+            LinkedList<String> commandBufferNames2 = new LinkedList<String>();
             HashMap<String, SchemaElement> commandBufferSchemas = new HashMap<String, SchemaElement>();
 
             String outerContext = fPfx + "/NONE";
@@ -229,6 +230,17 @@ public class SDB {
                             setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, 0, TXDB.get("Code")));
                             HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<Integer, String>();
+                            commandBufferNames2 = new LinkedList<String>();
+                            commandBufferSchemas = new HashMap<String, SchemaElement>();
+                            return new DisambiguatorSchemaElement(disambiguationIVar, baseSE);
+                        }
+                        if (text.equals("flushCommandBufferStr")) {
+                            // time to flush it!
+                            String disambiguationIVar = args[point++];
+                            setSDBEntry(args[point++], new SymEnumSchemaElement(commandBufferNames2.toArray(new String[0]), true));
+                            HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
+                            commandBufferNames = new HashMap<Integer, String>();
+                            commandBufferNames2 = new LinkedList<String>();
                             commandBufferSchemas = new HashMap<String, SchemaElement>();
                             return new DisambiguatorSchemaElement(disambiguationIVar, baseSE);
                         }
@@ -458,7 +470,7 @@ public class SDB {
                     String[] syms = new String[args.length - 1];
                     for (int i = 0; i < syms.length; i++)
                         syms[i] = TXDB.get(args[0], args[i + 1]);
-                    setSDBEntry(args[0], new SymEnumSchemaElement(syms));
+                    setSDBEntry(args[0], new SymEnumSchemaElement(syms, false));
                 } else if (c == 'E') {
                     HashMap<Integer, String> options = new HashMap<Integer, String>();
                     int defVal = 0;
@@ -527,6 +539,14 @@ public class SDB {
                         p++;
                     }
                 } else if (c == 'C') {
+                    if (args[0].equals("md")) {
+                        // not sure about translation here
+                        outerContext = fPfx + "/commandBuffer";
+                        workingObj = new AggregateSchemaElement(new SchemaElement[] {});
+                        String n = EscapedStringSyntax.unescape(args[1]);
+                        commandBufferNames2.add(n);
+                        commandBufferSchemas.put("\"" + n, workingObj);
+                    }
                     if (args[0].equals("allowIndentControl"))
                         allowControlOfEventCommandIndent = true;
                     if (args[0].equals("defineIndent")) {

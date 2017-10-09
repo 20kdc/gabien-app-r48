@@ -20,8 +20,8 @@ import r48.ui.UIEnumChoice;
 import java.util.HashMap;
 
 /**
- * Enum. Note that it is critical to implementation of many things that this explicitly switch into a new view.
- * Specifically, the switch will cause a UI rebuild upon return, which is required to keep data consistency.
+ * Enum. There was something here about it being important to switch into a new view, but in practice stuff changed.
+ * The system is a lot cleaner now it's having the entire UI rebuilt all the time.
  * Created on 12/30/16.
  */
 public class EnumSchemaElement extends SchemaElement {
