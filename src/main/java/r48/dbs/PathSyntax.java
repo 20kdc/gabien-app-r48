@@ -25,26 +25,65 @@ public class PathSyntax {
         return full.substring(0, plannedIdx);
     }
 
-    // Parses the syntax.
+    // Used for missing IV autodetect
+    public static String getAbsoluteIVar(String iv) {
+        if (iv.startsWith("@")) {
+            String n = iv.substring(1);
+            if (breakToken(n).equals(n))
+                return iv;
+        }
+        if (iv.startsWith("$:")) {
+            String n = iv.substring(2);
+            if (breakToken(n).equals(n))
+                return n;
+        }
+        return null;
+    }
+
     public static RubyIO parse(RubyIO res, String arg) {
+        return parse(res, arg, 0);
+    }
+    // Parses the syntax.
+    // mode 0: GET
+    // mode 1: GET/ADD
+    // mode 2: GET/DEL
+    // Note that you detect creation by checking if output type is 0 (which should otherwise never happen)
+    public static RubyIO parse(RubyIO res, String arg, int mode) {
         String workingArg = arg;
         while (workingArg.length() > 0) {
             char f = workingArg.charAt(0);
             workingArg = workingArg.substring(1);
             String subcom = breakToken(workingArg);
             workingArg = workingArg.substring(subcom.length());
+            boolean specialImmediate = (mode != 0) & (workingArg.length() == 0);
             switch (f) {
                 case '$':
-                    if (subcom.startsWith(":")) {
+                    if (subcom.startsWith("{")) {
                         RubyIO hashVal = new RubyIO();
-                        if (subcom.startsWith(":\"")) {
+                        if (subcom.startsWith("{\"")) {
                             hashVal.setString(EscapedStringSyntax.unescape(subcom.substring(2)));
                         } else {
                             int i = Integer.parseInt(subcom.substring(1));
                             hashVal.setFX(i);
                         }
-                        return res.getHashVal(hashVal);
+                        RubyIO root = res;
+                        res = res.getHashVal(hashVal);
+                        if (specialImmediate) {
+                            if (mode == 1) {
+                                if (res == null) {
+                                    res = new RubyIO();
+                                    root.hashVal.put(hashVal, res);
+                                }
+                            } else if (mode == 2) {
+                                root.removeHashVal(hashVal);
+                            }
+                        }
+                    } else if (subcom.startsWith(":")) {
+                        res = mapIV(res, subcom.substring(1), specialImmediate, mode);
                     } else {
+                        if (specialImmediate)
+                            if (mode == 2)
+                                throw new RuntimeException("Cannot delete this. Fix your schema.");
                         if (subcom.equals("length")) {
                             // This is used for length disambiguation.
                             if (res.arrVal == null) {
@@ -55,14 +94,17 @@ public class PathSyntax {
                         } else if (subcom.equals("fail")) {
                             return null;
                         } else if (subcom.length() != 0) {
-                            throw new RuntimeException("$-command must be '', ':\"someS1FormatTextForHVal', ':123' (hash number), 'length', 'fail'");
+                            throw new RuntimeException("$-command must be '$' (self), '${\"someSFormatTextForHVal' (hash string), '${123' (hash number), '$:someIval' ('raw' iVar), '$length', '$fail'");
                         }
                     }
                     break;
                 case '@':
-                    res = res.getInstVarBySymbol("@" + subcom);
+                    res = mapIV(res, "@" + subcom, specialImmediate, mode);
                     break;
                 case ']':
+                    if (specialImmediate)
+                        if (mode == 2)
+                            throw new RuntimeException("Cannot delete this. Fix your schema.");
                     int atl = Integer.parseInt(subcom);
                     if (atl < 0) {
                         res = null;
@@ -78,6 +120,22 @@ public class PathSyntax {
             }
             if (res == null)
                 return null;
+        }
+        return res;
+    }
+
+    private static RubyIO mapIV(RubyIO res, String myst, boolean specialImmediate, int mode) {
+        RubyIO root = res;
+        res = res.getInstVarBySymbol(myst);
+        if (specialImmediate) {
+            if (mode == 1) {
+                if (res == null) {
+                    res = new RubyIO();
+                    root.addIVar(myst, res);
+                }
+            } else if (mode == 2) {
+                root.rmIVar(myst);
+            }
         }
         return res;
     }

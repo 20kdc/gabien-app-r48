@@ -161,12 +161,12 @@ public class SDB {
                         if (text.equals("optIV")) {
                             String base = EscapedStringSyntax.unescape(args[point++]);
                             String a = TXDB.get(outerContext, base);
-                            return new IVarSchemaElement(base, a, get(), true);
+                            return new PathSchemaElement(base, a, get(), true);
                         }
                         if (text.equals("iV")) {
                             String base = EscapedStringSyntax.unescape(args[point++]);
                             String a = TXDB.get(outerContext, base);
-                            return new IVarSchemaElement(base, a, get(), false);
+                            return new PathSchemaElement(base, a, get(), false);
                         }
                         if (text.equals("hide")) {
                             SchemaElement hide = get();
@@ -190,7 +190,7 @@ public class SDB {
                         if (text.equals("path")) {
                             String path = args[point++];
                             SchemaElement hide = get();
-                            return new PathSchemaElement(path, TXDB.get(outerContext, path), hide);
+                            return new PathSchemaElement(path, TXDB.get(outerContext, path), hide, false);
                         }
                         if (text.equals("array")) {
                             int n = Integer.parseInt(args[point++]);
@@ -438,7 +438,7 @@ public class SDB {
                     setSDBEntry(args[0], workingObj);
                 } else if (c == '@') {
                     String t = "@" + args[0];
-                    workingObj.aggregate.add(new IVarSchemaElement(t, TXDB.get(outerContext, t), handleChain(args, 1), false));
+                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, t), handleChain(args, 1), false));
                 } else if (c == '+') {
                     workingObj.aggregate.add(handleChain(args, 0));
                 } else if (c == '>') {

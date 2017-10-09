@@ -13,8 +13,8 @@ import r48.dbs.FormatSyntax;
 import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
 import r48.schema.AggregateSchemaElement;
-import r48.schema.IVarSchemaElement;
 import r48.schema.OpaqueSchemaElement;
+import r48.schema.PathSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
@@ -148,9 +148,9 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
                     if (target.getInstVarBySymbol("@indent") != null) {
                         if (showHeader) {
-                            SchemaElement ise = new IVarSchemaElement("@indent", TXDB.get("@indent"), new ROIntegerSchemaElement(0), false);
+                            SchemaElement ise = new PathSchemaElement("@indent", TXDB.get("@indent"), new ROIntegerSchemaElement(0), false);
                             if (!allowControlOfIndent)
-                                ise = new IVarSchemaElement("@indent", TXDB.get("@indent"), new IntegerSchemaElement(0), false);
+                                ise = new PathSchemaElement("@indent", TXDB.get("@indent"), new IntegerSchemaElement(0), false);
                             uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
                         }
                     }

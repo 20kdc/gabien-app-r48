@@ -2,62 +2,100 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
  */
+
 package r48.schema;
 
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import gabien.ui.UISplitterLayout;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.PathSyntax;
+import r48.dbs.TXDB;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.UIAppendButton;
 
 /**
- * Created on 04/08/17.
+ * Created on 9 October 2017 from the ashes of IVarSchemaElement
  */
 public class PathSchemaElement extends SchemaElement implements IFieldSchemaElement {
-    public String path, txPath;
-    public SchemaElement core;
-    private int fwOverride;
-    private boolean enableFwOverride;
+    public String pStr;
+    public String alias;
+    public SchemaElement subElem;
+    public boolean optional = false;
 
-    public PathSchemaElement(String pat, String txPat, SchemaElement hide) {
-        path = pat;
-        txPath = txPat;
-        core = hide;
+    private boolean fieldWidthOverride = false;
+    private int fieldWidth;
+
+    public PathSchemaElement(String iv, String a, SchemaElement sub, boolean opt) {
+        pStr = iv;
+        alias = a;
+        subElem = sub;
+        optional = opt;
     }
 
     @Override
-    public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath pat) {
-        RubyIO r = PathSyntax.parse(target, path);
-        if (r == null)
-            throw new RuntimeException("PathSchemaElement " + path + " was lied to, the target does not exist");
-        UILabel label = new UILabel(txPath + " ", FontSizes.schemaFieldTextHeight);
-        if (enableFwOverride) {
-            label.setBounds(new Rect(0, 0, fwOverride, label.getBounds().height));
-            enableFwOverride = false;
+    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+        final UILabel uil = new UILabel(alias + " ", FontSizes.schemaFieldTextHeight);
+        if (fieldWidthOverride) {
+            uil.setBounds(new Rect(0, 0, fieldWidth, uil.getBounds().height));
+            fieldWidthOverride = false;
         }
-        return new UISplitterLayout(label, core.buildHoldingEditor(r, launcher, pat), false, 0);
-    }
-
-    @Override
-    public void modifyVal(RubyIO target, SchemaPath pat, boolean setDefault) {
-        RubyIO r = PathSyntax.parse(target, path);
-        if (r == null)
-            throw new RuntimeException("PathSchemaElement " + path + " was lied to, the target does not exist");
-        core.modifyVal(r, pat, setDefault);
+        RubyIO tgo = PathSyntax.parse(target, pStr, 0);
+        UIElement e2;
+        if (tgo == null) {
+            if (!optional)
+                throw new RuntimeException("Error: Made it to PathSchemaElement.buildHoldingEditor when target wasn't there: " + pStr);
+            e2 = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("<Missing - add?>"), new Runnable() {
+                @Override
+                public void run() {
+                    RubyIO rio = PathSyntax.parse(target, pStr, 1);
+                    if (rio.type == 0)
+                        createIVar(rio, path, false);
+                }
+            });
+        } else {
+            e2 = subElem.buildHoldingEditor(tgo, launcher, path.otherIndex(alias));
+            if (optional)
+                e2 = new UIAppendButton("-", e2, new Runnable() {
+                    @Override
+                    public void run() {
+                        if (PathSyntax.parse(target, pStr, 2) != null) {
+                            path.changeOccurred(false);
+                        }
+                    }
+                }, FontSizes.schemaButtonTextHeight);
+        }
+        return new UISplitterLayout(uil, e2, false, 0);
     }
 
     @Override
     public int getDefaultFieldWidth(RubyIO target) {
-        return UILabel.getRecommendedSize(txPath + " ", FontSizes.schemaFieldTextHeight).width;
+        return UILabel.getRecommendedSize(alias + " ", FontSizes.schemaFieldTextHeight).width;
     }
 
     @Override
     public void setFieldWidthOverride(int w) {
-        fwOverride = w;
-        enableFwOverride = true;
+        fieldWidth = w;
+        fieldWidthOverride = true;
+    }
+
+    @Override
+    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+        RubyIO r = PathSyntax.parse(target, pStr, 0);
+        if (r != null) {
+            subElem.modifyVal(r, path.otherIndex(alias), setDefault);
+        } else {
+            if (!optional) {
+                RubyIO rio = PathSyntax.parse(target, pStr, 1);
+                if (rio.type == 0)
+                   createIVar(rio, path, true);
+            }
+        }
+    }
+
+    private void createIVar(RubyIO r, SchemaPath targetPath, boolean mv) {
+        // being created, so create from scratch no matter what.
+        subElem.modifyVal(r, targetPath.otherIndex(alias), mv);
+        targetPath.changeOccurred(mv);
     }
 }

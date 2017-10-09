@@ -8,6 +8,7 @@ package r48.schema;
 import gabien.ui.UIElement;
 import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
+import r48.dbs.PathSyntax;
 import r48.schema.specialized.RubyTableSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -70,8 +71,11 @@ public class ObjectClassSchemaElement extends SchemaElement {
             }
         }
         // Final type disambiguation
-        if (ise instanceof IVarSchemaElement) {
-            iVars.add(((IVarSchemaElement) ise).iVar);
+        if (ise instanceof PathSchemaElement) {
+            // This catches normal iVars, though could cause some harmless spillage
+            String n = PathSyntax.getAbsoluteIVar(((PathSchemaElement) ise).pStr);
+            if (n != null)
+                iVars.add(n);
             return true;
         }
         if (ise instanceof RubyTableSchemaElement) {

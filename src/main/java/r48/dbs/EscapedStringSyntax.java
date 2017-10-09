@@ -8,12 +8,16 @@ package r48.dbs;
 /**
  * For escaping strings.
  * The syntax is as follows.
- * Almost every character goes through unmodified unless a \ shows up.
- * In this case, an additional character decides what kind of escape this is (and the \ isn't outputted).
+ * Only \ makes any difference.
+ * In this case, an additional character decides what kind of escape this is (and the \ isn't outputted):
+ *
  * \: Just writes '\'. You know how this works.
  *
- * 1234567890-=:
+ * 1234567890-=
+ *  maps to
  * !"£$%^&*()_+
+ *
+ * finally, {} map to [] (because PathSyntax)
  *
  * Note that translators get the post-unescape version.
  *
@@ -82,6 +86,12 @@ public class EscapedStringSyntax {
                             break;
                         case '+':
                             r += "+";
+                            break;
+                        case '{':
+                            r += "[";
+                            break;
+                        case '}':
+                            r += "]";
                             break;
                         default:
                             throw new RuntimeException("Unknown escape " + c);
