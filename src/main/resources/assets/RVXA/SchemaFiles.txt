@@ -124,13 +124,13 @@ C name Class.RPG::Enemy @id @name | Enemy #A: #B
 @id index
 @name string
 @note stringBlobEditor
-+optIV @description stringBlobEditor
++optP @description stringBlobEditor
 @battler_name string
 @battler_hue hue
-+optIV @icon_index int
++optP @icon_index int
 @exp int
-+optIV @eva int
-+optIV @hit int
++optP @eva int
++optP @hit int
 @gold int
 @params battle_parameter_array
 @actions subwindow array 0 subwindow RPG::Enemy::Action
@@ -217,7 +217,7 @@ C name Class.RPG::State @id @name | State #A: #B
 @id index
 @name string
 @note stringBlobEditor
-+optIV @description stringBlobEditor
++optP @description stringBlobEditor
 @features subwindow array 0 subwindow RPG::BaseItem::Feature
  Hero gets state message?
 @message1 string
@@ -234,7 +234,7 @@ C name Class.RPG::State @id @name | State #A: #B
 @restriction int
 @chance_by_damage int
 @remove_by_damage boolean
-+optIV @release_by_damage boolean
++optP @release_by_damage boolean
 @remove_by_walking boolean
 @steps_to_remove int
 @auto_removal_timing int

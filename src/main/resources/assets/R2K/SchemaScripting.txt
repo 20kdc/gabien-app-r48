@@ -106,12 +106,12 @@ i R2K/SchemaScriptingMonolith3.txt
 @code int= 12310
 @indent int
 @parameters EventCommandParams
-+optIV @move_commands MoveListEditor
++optP @move_commands MoveListEditor
 
 .EventCommandEditor_Most
 @indent indent
 @parameters EventCommandParams
-+optIV @move_commands MoveListEditor
++optP @move_commands MoveListEditor
 
 > EventListEditor subwindow arrayCS RPG::EventCommand EventCommandEditor_Most R2K/Commands.txt
 

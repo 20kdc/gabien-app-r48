@@ -26,7 +26,7 @@ C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C D
 
 : RPG::BPB
 @1to50 arrayIdX 1 50 subwindow: @rpg_actor_parameter_block rpg_actor_parameter_block
-+optIV @51to99_2k3 arrayIdX 51 49 subwindow: @rpg_actor_parameter_block rpg_actor_parameter_block
++optP @51to99_2k3 arrayIdX 51 49 subwindow: @rpg_actor_parameter_block rpg_actor_parameter_block
 
 
 : RPG::Learning
@@ -561,7 +561,7 @@ e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 orde
 @system2_name_2k3 f_system2_name
 
 @party subwindow array 0 actor_id
-+optIV @menu_commands_2k3 subwindow array 0 rpg_system_menucommand
++optP @menu_commands_2k3 subwindow array 0 rpg_system_menucommand
 
 @boat_name f_charset_name
 @boat_index int

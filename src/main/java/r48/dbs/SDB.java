@@ -158,16 +158,6 @@ public class SDB {
                                 a = null;
                             return new HWNDSchemaElement(a, args[point++]);
                         }
-                        if (text.equals("optIV")) {
-                            String base = EscapedStringSyntax.unescape(args[point++]);
-                            String a = TXDB.get(outerContext, base);
-                            return new PathSchemaElement(base, a, get(), true);
-                        }
-                        if (text.equals("iV")) {
-                            String base = EscapedStringSyntax.unescape(args[point++]);
-                            String a = TXDB.get(outerContext, base);
-                            return new PathSchemaElement(base, a, get(), false);
-                        }
                         if (text.equals("hide")) {
                             SchemaElement hide = get();
                             return new HiddenSchemaElement(hide, new IFunction<RubyIO, Boolean>() {
@@ -191,6 +181,11 @@ public class SDB {
                             String path = args[point++];
                             SchemaElement hide = get();
                             return new PathSchemaElement(path, TXDB.get(outerContext, path), hide, false);
+                        }
+                        if (text.equals("optP")) {
+                            String path = args[point++];
+                            SchemaElement hide = get();
+                            return new PathSchemaElement(path, TXDB.get(outerContext, path), hide, true);
                         }
                         if (text.equals("array")) {
                             int n = Integer.parseInt(args[point++]);

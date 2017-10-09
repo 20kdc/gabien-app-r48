@@ -59,9 +59,8 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
                 e2 = new UIAppendButton("-", e2, new Runnable() {
                     @Override
                     public void run() {
-                        if (PathSyntax.parse(target, pStr, 2) != null) {
+                        if (PathSyntax.parse(target, pStr, 2) != null)
                             path.changeOccurred(false);
-                        }
                     }
                 }, FontSizes.schemaButtonTextHeight);
         }

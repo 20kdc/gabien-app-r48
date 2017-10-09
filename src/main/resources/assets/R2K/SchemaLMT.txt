@@ -35,17 +35,17 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 @player_x int
 @player_y int
 +mapPositionHelper @player_map @player_x @player_y
-+optIV @boat_map map_id
-+optIV @boat_x int
-+optIV @boat_y int
++optP @boat_map map_id
++optP @boat_x int
++optP @boat_y int
 +mapPositionHelper @boat_map @boat_x @boat_y
-+optIV @ship_map map_id
-+optIV @ship_x int
-+optIV @ship_y int
++optP @ship_map map_id
++optP @ship_x int
++optP @ship_y int
 +mapPositionHelper @ship_map @ship_x @ship_y
-+optIV @airship_map map_id
-+optIV @airship_x int
-+optIV @airship_y int
++optP @airship_map map_id
++optP @airship_x int
++optP @airship_y int
 +mapPositionHelper @airship_map @airship_x @airship_y
 
 : RPG::MapTree

@@ -20,24 +20,24 @@ C name Interp.RPG::EventPage::Condition.item @valid@item @item_id | {A=T=, Party
 C name Interp.RPG::EventPage::Condition.actor @valid@actor @actor_id | {A=T=, Party Has Actor @[actor_id]B}
 C name Interp.RPG::EventPage::Condition.timer1 @valid@timer_1 @timer_1_secs | {A=T=, Timer1 <= #Bs}
 C name Interp.RPG::EventPage::Condition.timer2 @valid@timer_2_2k3 @timer_2_secs_2k3 | {A=T=, Timer2 <= #Bs}
-+hide iV @valid EventPage_Condition_Flags
++hide path @valid EventPage_Condition_Flags
 +path @valid@switch_a boolean
-+condHide @valid@switch_a iV @switch_a switch_id
++condHide @valid@switch_a path @switch_a switch_id
 +path @valid@switch_b boolean
-+condHide @valid@switch_b iV @switch_b switch_id
++condHide @valid@switch_b path @switch_b switch_id
 +path @valid@var_>=_or_2k3op boolean
-+condHide @valid@var_>=_or_2k3op iV @var_id var_id
++condHide @valid@var_>=_or_2k3op path @var_id var_id
 e var_compare_op_2k3 0 == 1 >= 2 <= 3 > 4 < 5 !=
-+condHide @valid@var_>=_or_2k3op optIV @var_compare_op_2k3 var_compare_op_2k3
-+condHide @valid@var_>=_or_2k3op iV @var_value int
++condHide @valid@var_>=_or_2k3op optP @var_compare_op_2k3 var_compare_op_2k3
++condHide @valid@var_>=_or_2k3op path @var_value int
 +path @valid@item boolean
-+condHide @valid@item iV @item_id item_id
++condHide @valid@item path @item_id item_id
 +path @valid@actor boolean
-+condHide @valid@actor iV @actor_id actor_id
++condHide @valid@actor path @actor_id actor_id
 +path @valid@timer_1 boolean
-+condHide @valid@timer_1 iV @timer_1_secs int
++condHide @valid@timer_1 path @timer_1_secs int
 +path @valid@timer_2_2k3 boolean
-+condHide @valid@timer_2_2k3 optIV @timer_2_secs_2k3 int
++condHide @valid@timer_2_2k3 optP @timer_2_secs_2k3 int
 
 : RPG::MoveRoute
 @list MoveListEditor
