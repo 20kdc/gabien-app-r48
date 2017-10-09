@@ -119,8 +119,8 @@ public class UIImageEditView extends UIElement {
             zoom *= 2;
         } else {
             zoom /= 2;
-            if (zoom < 3)
-                zoom = 3;
+            if (zoom < 1)
+                zoom = 1;
         }
     }
 

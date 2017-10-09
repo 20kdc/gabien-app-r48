@@ -52,6 +52,8 @@ C name Interp.ltp_type $ | {@#A|:concurrent|Concurrent|:waitOn|Wait On...|Unknow
 : JLDV
 @a1 JLDV1
 @a2 JLDV2
+@a3 JLDV3
+@a4 JLDV4
 
 : JLDV1
 @test_cmdbuf_light test_cmdbuf_type
@@ -67,6 +69,17 @@ Cmd Squeek!
 : JLDV2
 @test_cmdbuf_heavy test_cmdbuf2_type
 +flushCommandBufferStr @test_cmdbuf_heavy test_cmdbuf2_type
+
+.JLDV3
++subwindow: Raw hash string string
++hashObject :Core1 :Core2
++path ${:Core1 string
++path ${:Core2 string
+
+.JLDV4
++subwindow: Raw hash int string
++hashObject 23
++path ${23 string
 
  Footer
 

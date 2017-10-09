@@ -248,6 +248,20 @@ public class SDB {
                             SchemaElement k = get();
                             return new HashSchemaElement(k, get());
                         }
+                        if (text.equals("hashObject")) {
+                            LinkedList<RubyIO> validKeys = new LinkedList<RubyIO>();
+                            while (point < args.length) {
+                                String r = EscapedStringSyntax.unescape(args[point++]);
+                                RubyIO res = new RubyIO();
+                                if (r.startsWith(":")) {
+                                    res.setString(r.substring(1));
+                                } else {
+                                    res.setFX(Long.parseLong(r));
+                                }
+                                validKeys.add(res);
+                            }
+                            return new HashObjectSchemaElement(validKeys);
+                        }
                         if (text.equals("subwindow"))
                             return new SubwindowSchemaElement(get());
                         // subwindow: This\_Is\_A\_Test
