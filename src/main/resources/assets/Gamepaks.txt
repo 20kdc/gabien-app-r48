@@ -2,6 +2,8 @@
  * This is released into the public domain.
  * No warranty is provided, implied or otherwise.
 
+= RPG\_Maker\_2000,\_2003,\_or\_EasyRPG.\_(Android\_users,\_go\_here.) =
+
 0: R2K
 f RPG_RT.ldb
 e Cp1252
@@ -37,6 +39,8 @@ f RPG_RT.ldb
 e MS936
 . R2K[3?] (Simplified Chinese/MS936)
 
+= RGSS\_Engines =
+
 0: RXP
 f Data/MapInfos.rxdata
 e UTF-8
@@ -44,6 +48,8 @@ e UTF-8
 0: RVXA
 f Data/MapInfos.rvdata2
 e UTF-8
+
+= Tests =
 
 0: Ika
 f Pbm/Map1.pbm
@@ -53,7 +59,6 @@ e UTF-8
 0: Sticki
 e UTF-8
 . Launch testbed ("Sticky Note Editor")
-l Test This is a test string to ensure TXDB languages are being honored by the launcher.
 
 0: JSONTest
 e UTF-8

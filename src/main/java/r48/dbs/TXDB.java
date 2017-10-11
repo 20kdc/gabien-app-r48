@@ -4,10 +4,15 @@
  */
 package r48.dbs;
 
+import gabien.GaBIEn;
 import gabien.ui.IFunction;
+import r48.AppMain;
 import r48.RubyIO;
 
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -119,6 +124,7 @@ public class TXDB {
         if (languageId == 0)
             return;
         DBLoader.readFile("Systerms/" + languages[languageId] + ".txt", new LangLoadDatabase("r48/"));
+        DBLoader.readFile("Systerms/L-" + languages[languageId] + ".txt", new LangLoadDatabase("launcher/"));
     }
 
     public static void loadGamepakLanguage(String gp) {
@@ -128,6 +134,7 @@ public class TXDB {
         if (languageId == 0)
             return;
         DBLoader.readFile("Systerms/" + languages[languageId] + ".txt", new LangLoadDatabase("r48/"));
+        DBLoader.readFile("Systerms/L-" + languages[languageId] + ".txt", new LangLoadDatabase("launcher/"));
         try {
             DBLoader.readFile(gp + "Lang" + languages[languageId] + ".txt", new LangLoadDatabase("SDB@"));
         } catch (Exception e) {
@@ -140,6 +147,31 @@ public class TXDB {
 
     public static String getLanguage() {
         return languages[languageId];
+    }
+
+    public static void performDump(String group, String prefix) {
+        PrintStream psA = null;
+        try {
+            psA = new PrintStream(GaBIEn.getOutFile(group + TXDB.getLanguage() + ".txt"), false, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        LinkedList<String> t = new LinkedList<String>(TXDB.ssTexts);
+        Collections.sort(t);
+        for (String s : t) {
+            String key = TXDB.stripContext(s);
+            String ctx = s.substring(0, s.length() - (key.length() + 1));
+            if (s.startsWith(prefix)) {
+                psA.println("x \"" + s.substring(prefix.length()) + "\"");
+                if (TXDB.has(s)) {
+                    psA.println("y \"" + TXDB.get(ctx, key) + "\"");
+                } else {
+                    psA.println(" TODO");
+                    psA.println("y \"" + key + "\"");
+                }
+            }
+        }
+        psA.close();
     }
 
     private static class LangLoadDatabase implements IDatabase {

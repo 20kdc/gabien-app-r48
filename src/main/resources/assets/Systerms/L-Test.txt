@@ -1,0 +1,13 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+x "RPG Maker 2000, 2003, or EasyRPG. (Android users, go here.)"
+y "We didn't start the fire"
+
+x "RGSS Engines"
+y "It was always burning since the world's been turning"
+
+x "Tests"
+y "- Billy Joel, "We Didn't Start The Fire""
+

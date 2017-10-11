@@ -235,11 +235,13 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
+                                TXDB.performDump("Lang", "SDB@");
+                                TXDB.performDump("Cmtx", "CMDB@");
                                 PrintStream psA = null;
                                 PrintStream psB = null;
                                 try {
                                     psA = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "Lang" + TXDB.getLanguage() + ".txt"), false, "UTF-8");
-                                    psB = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "Cmtx" + TXDB.getLanguage() + ".txt"));
+                                    psB = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "Cmtx" + TXDB.getLanguage() + ".txt"), false, "UTF-8");
                                 } catch (UnsupportedEncodingException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -268,7 +270,7 @@ public class BasicToolset implements IToolset {
                                 }
                                 psA.close();
                                 psB.close();
-                                AppMain.launchDialog(TXDB.get("Wrote Lang and Cmtx files (to be put in schema dir.)"));
+                                AppMain.launchDialog(TXDB.get("Wrote Lang and Cmtx files to R48 startup directory (to be put in schema dir.)"));
                             }
                         },
                         new Runnable() {

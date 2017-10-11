@@ -29,8 +29,9 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class Application {
     public static int globalMS = 33;
-    private static IConsumer<Double> appTicker = null;
-    private static WindowCreatingUIElementConsumer uiTicker;
+    protected static IConsumer<Double> appTicker = null;
+    protected static UITextBox rootBox;
+    protected static WindowCreatingUIElementConsumer uiTicker;
 
     public static boolean mobileExtremelySpecialBehavior;
 
@@ -97,7 +98,7 @@ public class Application {
 
             gamepaks.panels.add(new UILabel(TXDB.get("Root Path:"), FontSizes.launcherTextHeight));
 
-            final UITextBox rootBox = new UITextBox(FontSizes.launcherTextHeight);
+            rootBox = new UITextBox(FontSizes.launcherTextHeight);
             /*
              * If single-window, assume we're on Android, so the user probably wants to be able to use EasyRPG Player
              * Regarding if I'm allowed to do this:
@@ -108,72 +109,34 @@ public class Application {
 
             gamepaks.panels.add(new UILabel(TXDB.get("Choose Target Engine:"), FontSizes.launcherTextHeight));
 
-            DBLoader.readFile("Gamepaks.txt", new IDatabase() {
-
-                UITextButton lastButton;
-                AtomicReference<String> boxedEncoding; // it's a boxed object, so...
-
+            final int firstGPI = gamepaks.panels.size();
+            final IConsumer<IGPMenuPanel> menuConstructor = new IConsumer<IGPMenuPanel>() {
                 @Override
-                public void newObj(int objId, final String objName) throws IOException {
-                    final AtomicReference<String> box = new AtomicReference<String>();
-                    boxedEncoding = box;
-                    lastButton = new UITextButton(FontSizes.enumChoiceTextHeight, objName, new Runnable() {
-                        @Override
-                        public void run() {
-                            if (appTicker == null) {
-                                try {
-                                    RubyIO.encoding = box.get();
-                                    String rootPath = rootBox.text;
-                                    if (!rootPath.equals(""))
-                                        if (!rootPath.endsWith("/"))
-                                            if (!rootPath.endsWith("\\"))
-                                                rootPath += "/";
-                                    if (mobileExtremelySpecialBehavior)
-                                    TXDB.loadGamepakLanguage(objName + "/");
-                                    appTicker = AppMain.initializeAndRun(rootPath, objName + "/", uiTicker);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                public void accept(IGPMenuPanel igpMenuPanel) {
+                    while (gamepaks.panels.size() > firstGPI)
+                        gamepaks.panels.removeLast();
+                    if (igpMenuPanel == null) {
+                        closeHelper.accept(null);
+                        return;
+                    }
+                    String[] names = igpMenuPanel.getButtonText();
+                    ISupplier<IGPMenuPanel>[] runs = igpMenuPanel.getButtonActs();
+                    for (int i = 0; i < names.length; i++) {
+                        final ISupplier<IGPMenuPanel> r = runs[i];
+                        gamepaks.panels.add(new UITextButton(FontSizes.enumChoiceTextHeight, names[i], new Runnable() {
+                            @Override
+                            public void run() {
+                                accept(r.get());
                             }
-                            closeHelper.accept(null);
-                        }
-                    });
-                    InputStream tester = GaBIEn.getFile(objName + "/Schema.txt");
-                    if (tester != null) {
-                        gamepaks.panels.add(lastButton);
-                        tester.close();
+                        }));
                     }
+                    gamepaks.setBounds(gamepaks.getBounds());
                 }
+            };
+            // ...
 
-                @Override
-                public void execCmd(char c, String[] args) throws IOException {
-                    if (c == '.') {
-                        String rn = "";
-                        for (String s : args)
-                            rn += s + " ";
-                        lastButton.Text = rn;
-                    }
-                    if (c == 'e')
-                        boxedEncoding.set(args[0]);
-                    if (c == 'l')
-                        if (args[0].equals(TXDB.getLanguage())) {
-                            String rn = "";
-                            for (int i = 1; i < args.length; i++)
-                                rn += args[i] + " ";
-                            lastButton.Text = rn;
-                        }
-
-                /*
-                 * if (c == 'f')
-                 *     if (!new File(args[0]).exists()) {
-                 *         System.out.println("Can't use " + lastButton.Text + ": " + args[0] + " missing");
-                 *         gamepaks.panels.remove(lastButton);
-                 *     }
-                 */
-                }
-            });
-
-            gamepaks.setBounds(new Rect(0, 0, 640, 480));
+            gamepaks.setBounds(new Rect(0, 0, FontSizes.scaleGuess(640), FontSizes.scaleGuess(480)));
+            menuConstructor.accept(new PrimaryGPMenuPanel());
             final UIMTBase uimtw = UIMTBase.wrap(null, gamepaks, false);
             uiTicker.accept(uimtw);
             closeHelper.accept(new Runnable() {
