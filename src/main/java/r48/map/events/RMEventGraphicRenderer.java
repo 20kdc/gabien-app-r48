@@ -14,8 +14,12 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.imagefx.HueShiftImageEffect;
+import r48.imagefx.IImageEffect;
+import r48.imagefx.ToneImageEffect;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
+
+import java.util.LinkedList;
 
 /**
  * Created on 1/27/17.
@@ -59,7 +63,8 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         // O.S suggests it's 2 (230: Ground 2)
         // For now I'm assuming a glitch in R.Q.U for lack of any better ideas.
         // (Also the fact that O.S. "258: Memory" doesn't show up right compared to in-game. Odds are against us.)
-        return 2;
+        // <NOTE : THE ABOVE APPLIES TO A TRADITIONAL LAYER SETUP, RXP doesn't use that anymore due to AlwaysOnTop
+        return (event.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@always_on_top").type == 'T') ? 1 : 0;
     }
 
     @Override
@@ -115,11 +120,15 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
             if (blendData != null)
                 blendType = (int) blendData.fixnumVal;
             RubyIO hueCtrl = target.getInstVarBySymbol("@character_hue");
+            LinkedList<IImageEffect> hsie = new LinkedList<IImageEffect>();
             if (hueCtrl != null) {
                 int hue = (int) (hueCtrl.fixnumVal);
                 if (hue != 0)
-                    i = AppMain.imageFXCache.process(i, new HueShiftImageEffect(hue));
+                    hsie.add(new HueShiftImageEffect(hue));
             }
+            if (blendType != 0)
+                hsie.add(new ToneImageEffect(1, 1, 1, 2, 2));
+            i = AppMain.imageFXCache.process(i, hsie);
             flexibleSpriteDraw(tx * sprW, ty * sprH, sprW, sprH, ox - ((sprW * sprScale) / 2), oy - (sprH * sprScale), sprW * sprScale, sprH * sprScale, 0, i, blendType, igd);
         }
     }

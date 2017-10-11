@@ -23,6 +23,7 @@ import r48.imagefx.HueShiftImageEffect;
 public class Art {
     public static Rect mapIcon = new Rect(0, 52, 8, 8);
     public static Rect areaIcon = new Rect(16, 44, 8, 8);
+    public static Rect hiddenTreeIcon = new Rect(24, 36, 8, 8);
     private static IImage colourPal;
     public static Rect r48ico = new Rect(37, 1, 31, 31);
 

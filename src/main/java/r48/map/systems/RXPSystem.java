@@ -7,15 +7,20 @@
 
 package r48.map.systems;
 
+import gabien.IImage;
 import gabien.ui.IConsumer;
 import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.IMapContext;
 import r48.RubyIO;
+import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
+import r48.map.drawlayers.EventMapViewDrawLayer;
 import r48.map.drawlayers.IMapViewDrawLayer;
+import r48.map.drawlayers.PanoramaMapViewDrawLayer;
+import r48.map.drawlayers.TileMapViewDrawLayer;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.CacheImageLoader;
@@ -73,7 +78,24 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
                 if (rio.strVal.length > 0)
                     pano = "Panoramas/" + rio.decString();
         }
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0, 1, 2}, eventRenderer, imageLoader, map, pano, false, false, 0, 0, -1, -1, 2));
+        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
+        if (map != null) {
+            RubyTable rt = new RubyTable(map.getInstVarBySymbol("@data").userVal);
+            IImage panoImg = null;
+            if (!pano.equals(""))
+                panoImg = imageLoader.getImage(pano, true);
+            RubyIO events = map.getInstVarBySymbol("@events");
+            layers = new IMapViewDrawLayer[] {
+                    new PanoramaMapViewDrawLayer(panoImg, false, false, 0, 0, rt.width, rt.height, -1, -1, 2),
+                    new TileMapViewDrawLayer(rt, 0, tileRenderer),
+                    new TileMapViewDrawLayer(rt, 1, tileRenderer),
+                    new TileMapViewDrawLayer(rt, 2, tileRenderer),
+                    new EventMapViewDrawLayer(0, events, eventRenderer, tileRenderer.getTileSize()),
+                    new EventMapViewDrawLayer(1, events, eventRenderer, tileRenderer.getTileSize()),
+                    new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, tileRenderer.getTileSize()),
+            };
+        }
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
     }
 
     @Override

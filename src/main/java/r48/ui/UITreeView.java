@@ -49,13 +49,28 @@ public class UITreeView extends UIPanel {
         }
         if (total != 0)
             nodeWidth /= total;
+        TreeElement lastElement = null; // to set hasChildren
+        int invisibleAboveIndent = 0x7FFFFFFF; // to hide unexpanded nodes
         for (TreeElement te : elements) {
+            te.visible = te.indent <= invisibleAboveIndent;
+            if (lastElement != null)
+                if (te.indent > lastElement.indent)
+                    lastElement.hasChildren = true;
             int x = nodeWidth * (te.indent + 1);
             int h = te.innerElement.getBounds().height;
             te.innerElement.setBounds(new Rect(x, y, r.width - x, h));
+            if (!te.visible)
+                h = 0;
             y += h;
             te.h = h;
-            allElements.add(te.innerElement);
+            if (te.visible)
+                allElements.add(te.innerElement);
+            lastElement = te;
+            // If we're visible, set invisibleAboveIndent.
+            // If expanded, then set it to "infinite"
+            // Otherwise, set it to current indent, so this code will only run again on a indent <= this one
+            if (te.visible)
+                invisibleAboveIndent = te.expanded ? 0x7FFFFFFF : te.indent;
         }
         super.setBounds(new Rect(r.x, r.y, r.width, y));
     }
@@ -74,6 +89,8 @@ public class UITreeView extends UIPanel {
         HashSet<Integer> continuingLines = new HashSet<Integer>();
         for (int i = 0; i < elements.length; i++) {
             TreeElement te = elements[i];
+            if (!te.visible)
+                continue;
 
             int pico = 2;
             boolean lastInSect = true;
@@ -102,6 +119,10 @@ public class UITreeView extends UIPanel {
             }
             // the actual item icon
             Rect iconDisplay = Art.reconcile(new Rect(ox + (te.indent * nodeWidth), oy + y, nodeWidth, te.h), te.icon);
+            if (te.hasChildren && (!te.expanded)) {
+                Rect ico = Art.hiddenTreeIcon;
+                igd.blitScaledImage(ico.x, ico.y, ico.width, ico.height, iconDisplay.x, iconDisplay.y, iconDisplay.width, iconDisplay.height, AppMain.layerTabs);
+            }
             igd.blitScaledImage(te.icon.x, te.icon.y, te.icon.width, te.icon.height, iconDisplay.x, iconDisplay.y, iconDisplay.width, iconDisplay.height, AppMain.layerTabs);
             y += te.h;
         }
@@ -128,7 +149,7 @@ public class UITreeView extends UIPanel {
         if (dragBase != -1) {
             int ddx = Math.abs(dragBaseX - x);
             int ddy = Math.abs(dragBaseY - y);
-            if (Math.max(ddx, ddy) > 8)
+            if (Math.max(ddx, ddy) > (elements[dragBase].h / 2))
                 dragCursorEnable = true;
         }
     }
@@ -137,10 +158,14 @@ public class UITreeView extends UIPanel {
     public void handleRelease(int x, int y) {
         super.handleRelease(x, y);
         int targ = getTarget(x, y);
-        if (targ != -1)
-            if (dragBase != -1)
-                if (dragCursorEnable)
+        if (dragBase != -1) {
+            if (dragCursorEnable) {
+                if (targ != -1)
                     elements[targ].elementDraggedHere.accept(dragBase);
+            } else if (targ == dragBase) {
+                elements[dragBase].expandToggle.run();
+            }
+        }
         dragBase = -1;
         dragCursorEnable = false;
     }
@@ -160,13 +185,19 @@ public class UITreeView extends UIPanel {
     }
 
     public static class TreeElement {
-        public final int indent;
+        // Calculated on setBounds. Set to 0 if invisible.
         private int h;
+        // Calculated on setBounds.
+        private boolean hasChildren, visible;
+
+        public final boolean expanded;
+        public final int indent;
         public final Rect icon;
         public final UIElement innerElement;
         public final IConsumer<Integer> elementDraggedHere;
+        public final Runnable expandToggle;
 
-        public TreeElement(int i, Rect ico, UIElement pineapple, IConsumer<Integer> o) {
+        public TreeElement(int i, Rect ico, UIElement pineapple, IConsumer<Integer> o, boolean expand, Runnable ext) {
             indent = i;
             icon = ico;
             innerElement = pineapple;
@@ -178,6 +209,17 @@ public class UITreeView extends UIPanel {
                 };
             } else {
                 elementDraggedHere = o;
+            }
+            expanded = expand;
+            if (ext == null) {
+                expandToggle = new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                };
+            } else {
+                expandToggle = ext;
             }
         }
     }

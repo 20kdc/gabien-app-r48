@@ -21,6 +21,7 @@ import r48.ui.UITreeView;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 /**
@@ -39,6 +40,7 @@ public class UIGRMMapInfos extends UIPanel {
     private boolean deleteConfirmation = false;
     private boolean enableOrderHoleDebug = false;
     private IMapContext mapContext;
+    private HashSet<Integer> notExpanded = new HashSet<Integer>();
 
     private IConsumer<SchemaPath> onMapInfoChange = new IConsumer<SchemaPath>() {
         @Override
@@ -199,6 +201,16 @@ public class UIGRMMapInfos extends UIPanel {
                             mapContext.loadMap(new RubyIO().setFX(operators.getMapOfOrder(selectedOrder)));
                             rebuildList();
                         }
+                }
+            }, !notExpanded.contains(k), new Runnable() {
+                @Override
+                public void run() {
+                    if (notExpanded.contains(k)) {
+                        notExpanded.remove(k);
+                    } else {
+                        notExpanded.add(k);
+                    }
+                    rebuildList();
                 }
             }));
         }
