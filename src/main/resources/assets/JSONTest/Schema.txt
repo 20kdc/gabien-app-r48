@@ -6,6 +6,7 @@ C objectDB json
 C dataExt .json
 
 > float? typeChanger{ float f int i }
+> any typeChanger{ nil 0 boolean T boolean F string " float f int i subwindow array 0 any [ subwindow hash string any { }
 
 .JSONObject1
 +hashObject :words :num1 :num2
@@ -14,3 +15,4 @@ C dataExt .json
 }:num2 float?
 
 > File.JSONTestFile1 array 0 JSONObject1
+> File.ArbitraryJSONFile any

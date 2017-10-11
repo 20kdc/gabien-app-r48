@@ -113,7 +113,7 @@ public class JsonObjectBackend implements IObjectBackend {
         int c = r.read();
         while (c != -1) {
             boolean next = false;
-            if ((c == '[') || (c == ']') || (c == ':') || (c == '{') || (c == '}') || (c == ',')) {
+            if (singleCharBreaker(c)) {
                 tokens.add(Character.toString((char) c));
                 next = true;
             } else if (((c >= '0') && (c <= '9')) || (c == '-')) {
@@ -148,7 +148,6 @@ public class JsonObjectBackend implements IObjectBackend {
                                     break;
                             }
                             s += (char) v;
-                            break;
                         } else if (c == '"') {
                             s += "\"";
                         } else if (c == '\\') {
@@ -184,6 +183,8 @@ public class JsonObjectBackend implements IObjectBackend {
                 // just be insanely liberal about what is accepted here
                 String s = "";
                 while (c >= 33) {
+                    if (singleCharBreaker(c))
+                        break;
                     s += (char) c;
                     c = r.read(); // if -1, this will still work fine)
                 }
@@ -192,6 +193,10 @@ public class JsonObjectBackend implements IObjectBackend {
             if (next)
                 c = r.read();
         }
+    }
+
+    private boolean singleCharBreaker(int c) {
+        return (c == '[') || (c == ']') || (c == ':') || (c == '{') || (c == '}') || (c == ',');
     }
 
     private int handleHexDig(int c) throws IOException {
