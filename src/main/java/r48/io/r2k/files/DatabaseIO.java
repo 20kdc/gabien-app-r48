@@ -22,7 +22,7 @@ public class DatabaseIO {
     public static RubyIO readLdb(InputStream fis) throws IOException {
         String magic = R2kUtil.decodeLcfString(R2kUtil.readLcfBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfDataBase"))
-            throw new IOException("Not an LcfDataBase");
+            System.err.println("Loading a file which pretends to be an LCF database but says " + magic);
         // Try to follow the standard...
         Database mu = new Database();
         mu.importData(fis);

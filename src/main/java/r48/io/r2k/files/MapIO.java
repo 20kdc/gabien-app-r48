@@ -33,7 +33,7 @@ public class MapIO {
     public static RubyIO readLmu(InputStream fis) throws IOException {
         String magic = R2kUtil.decodeLcfString(R2kUtil.readLcfBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfMapUnit"))
-            throw new IOException("Not an LcfMapUnit");
+            System.err.println("Loading a file which pretends to be an LCF map but says " + magic);
         // Try to follow the standard...
         MapUnit mu = new MapUnit();
         mu.importData(fis);
