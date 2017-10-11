@@ -9,8 +9,8 @@ C dataExt .json
 
 .JSONObject1
 +hashObject :words :num1 :num2
-+path ${:words array 0 float?
-+path ${:num1 float?
-+path ${:num2 float?
+}:words array 0 float?
+}:num1 float?
+}:num2 float?
 
 > File.JSONTestFile1 array 0 JSONObject1

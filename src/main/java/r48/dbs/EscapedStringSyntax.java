@@ -13,6 +13,8 @@ package r48.dbs;
  *
  * \: Just writes '\'. You know how this works.
  *
+ * ?: Just writs '?' - this is for use in "optionals"
+ *
  * 1234567890-=
  *  maps to
  * !"£$%^&*()_+

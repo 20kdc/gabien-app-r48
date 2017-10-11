@@ -459,7 +459,19 @@ public class SDB {
                     setSDBEntry(args[0], workingObj);
                 } else if (c == '@') {
                     String t = "@" + args[0];
+                    // Note: the unescaping happens in the Path
                     workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, t), handleChain(args, 1), false));
+                } else if (c == '}') {
+                    String intA0 = args[0];
+                    boolean opt = false;
+                    // This can be escaped if it matters.
+                    if (intA0.startsWith("?")) {
+                        intA0 = intA0.substring(1);
+                        opt = true;
+                    }
+                    // Note: the unescaping happens in the Path
+                    String t = "${" + intA0;
+                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, intA0), handleChain(args, 1), opt));
                 } else if (c == '+') {
                     workingObj.aggregate.add(handleChain(args, 0));
                 } else if (c == '>') {
