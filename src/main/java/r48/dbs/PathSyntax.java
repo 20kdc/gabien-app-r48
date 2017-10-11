@@ -7,6 +7,8 @@ package r48.dbs;
 import r48.RubyIO;
 
 /**
+ * NOTE: This uses escapes internally to escape from itself.
+ * With that in mind, do not escape this w/EscapedStringSyntax. It's not necessary.
  * Created on 08/06/17.
  */
 public class PathSyntax {

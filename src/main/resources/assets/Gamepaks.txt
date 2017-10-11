@@ -54,3 +54,6 @@ e UTF-8
 e UTF-8
 . Launch testbed ("Sticky Note Editor")
 l Test This is a test string to ensure TXDB languages are being honored by the launcher.
+
+0: JSONTest
+e UTF-8

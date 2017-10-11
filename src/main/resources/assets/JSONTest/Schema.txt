@@ -1,0 +1,16 @@
+
+ * This is released into the public domain.
+ * No warranty is provided, implied or otherwise.
+
+C objectDB json
+C dataExt .json
+
+> float? typeChanger{ float f int i }
+
+.JSONObject1
++hashObject :words :num1 :num2
++path ${:words array 0 float?
++path ${:num1 float?
++path ${:num2 float?
+
+> File.JSONTestFile1 array 0 JSONObject1

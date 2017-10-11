@@ -13,6 +13,7 @@ import gabienapp.Application;
 import r48.dbs.*;
 import r48.imagefx.ImageFXCache;
 import r48.io.IkaObjectBackend;
+import r48.io.JsonObjectBackend;
 import r48.io.R2kObjectBackend;
 import r48.io.R48ObjectBackend;
 import r48.map.StuffRenderer;
@@ -115,6 +116,8 @@ public class AppMain {
             objectDB = new ObjectDB(new IkaObjectBackend(rootPath));
         } else if (odbBackend.equals("lcf2000")) {
             objectDB = new ObjectDB(new R2kObjectBackend(rootPath));
+        } else if (odbBackend.equals("json")) {
+            objectDB = new ObjectDB(new JsonObjectBackend(rootPath, dataExt));
         } else {
             throw new IOException("Unknown ODB backend " + odbBackend);
         }
