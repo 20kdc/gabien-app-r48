@@ -1,12 +1,16 @@
 /*
- * This is released into the public domain.
- * No warranty is provided, implied or otherwise.
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
 package r48.ui.utilitybelt;
 
-import gabien.*;
-import gabien.ui.ISupplier;
+import gabien.GaBIEn;
+import gabien.IGrDriver;
+import gabien.IGrInDriver;
+import gabien.IImage;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
@@ -71,7 +75,7 @@ public class UIImageEditView extends UIElement {
         Rect zMinus = Art.getZIconRect(false, 1);
         int textX = zPlusFull.x + zPlusFull.width;
         String text = cursorX + ", " + cursorY;
-        UILabel.drawLabel(igd, bounds.width - (textX + zPlus.x), ox + textX, oy + zPlus.y, text,  0, FontSizes.mapPositionTextHeight);
+        UILabel.drawLabel(igd, bounds.width - (textX + zPlus.x), ox + textX, oy + zPlus.y, text, 0, FontSizes.mapPositionTextHeight);
         Art.drawZoom(igd, true, zPlus.x + ox, zPlus.y + oy, zPlus.height);
         Art.drawZoom(igd, false, zMinus.x + ox, zMinus.y + oy, zMinus.height);
     }
@@ -103,7 +107,7 @@ public class UIImageEditView extends UIElement {
         }
         Rect bounds = getViewRect();
         int nx = UIGrid.sensibleCellDiv(x - bounds.x, zoom);
-        int ny =  UIGrid.sensibleCellDiv(y - bounds.y, zoom);
+        int ny = UIGrid.sensibleCellDiv(y - bounds.y, zoom);
         nx -= UIGrid.sensibleCellDiv(nx, imageW) * imageW;
         ny -= UIGrid.sensibleCellDiv(ny, imageH) * imageH;
         if (nx == cursorX)

@@ -1,7 +1,10 @@
 /*
- * This is released into the public domain.
- * No warranty is provided, implied or otherwise.
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+
 package r48.map.tiles;
 
 import gabien.GaBIEn;
@@ -203,7 +206,7 @@ public class LcfTileRenderer implements ITileRenderer {
         ti += ofsPage * 144;
         int tx = (ti % 6) + ((ti / 96) * 6);
         int ty = ((ti / 6) % 16);
-        RMEventGraphicRenderer.flexibleSpriteDraw(192 + (tx * 16), ty * 16, ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, chipset,0, igd);
+        RMEventGraphicRenderer.flexibleSpriteDraw(192 + (tx * 16), ty * 16, ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, chipset, 0, igd);
     }
 
     private void handleATField(int subfield, int fx, int fy, int px, int py, IGrDriver igd, IImage chipset, int ets, int spriteScale) {

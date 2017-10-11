@@ -1,7 +1,10 @@
 /*
- * This is released into the public domain.
- * No warranty is provided, implied or otherwise.
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+
 package r48.ui;
 
 import gabien.GaBIEn;
@@ -10,7 +13,6 @@ import gabien.ui.*;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 
-import java.lang.reflect.Field;
 import java.util.LinkedList;
 
 /**
@@ -96,40 +98,40 @@ public class UIFontSizeConfigurator extends UIPanel {
         outerLayout.panels.add(fontButtonAppend);
         try {
             for (final FontSizes.FontSizeField field : FontSizes.getFields()) {
-                    doubleAll.add(new Runnable() {
-                        @Override
-                        public void run() {
-                            field.accept(field.get() * 2);
-                        }
-                    });
-                    halfAll.add(new Runnable() {
-                        @Override
-                        public void run() {
-                            field.accept(field.get() / 2);
-                        }
-                    });
-                    UIAdjuster tb = new UIAdjuster(FontSizes.fontSizerTextHeight, new ISupplier<String>() {
-                        @Override
-                        public String get() {
-                            int nv = field.get() + 1;
-                            field.accept(nv);
-                            refreshLayout();
-                            return Integer.toString(nv);
-                        }
-                    }, new ISupplier<String>() {
-                        @Override
-                        public String get() {
-                            int nv = field.get() - 1;
-                            if (nv < 1)
-                                nv = 1;
-                            field.accept(nv);
-                            refreshLayout();
-                            return Integer.toString(nv);
-                        }
-                    });
-                    tb.accept(Integer.toString(field.get()));
-                    // NOTE: This is correct behavior due to an 'agreement' in FontSizes that this should be correct
-                    outerLayout.panels.add(new UISplitterLayout(new UILabel(TXDB.get("r48", field.name), FontSizes.fontSizerTextHeight), tb, false, 4, 5));
+                doubleAll.add(new Runnable() {
+                    @Override
+                    public void run() {
+                        field.accept(field.get() * 2);
+                    }
+                });
+                halfAll.add(new Runnable() {
+                    @Override
+                    public void run() {
+                        field.accept(field.get() / 2);
+                    }
+                });
+                UIAdjuster tb = new UIAdjuster(FontSizes.fontSizerTextHeight, new ISupplier<String>() {
+                    @Override
+                    public String get() {
+                        int nv = field.get() + 1;
+                        field.accept(nv);
+                        refreshLayout();
+                        return Integer.toString(nv);
+                    }
+                }, new ISupplier<String>() {
+                    @Override
+                    public String get() {
+                        int nv = field.get() - 1;
+                        if (nv < 1)
+                            nv = 1;
+                        field.accept(nv);
+                        refreshLayout();
+                        return Integer.toString(nv);
+                    }
+                });
+                tb.accept(Integer.toString(field.get()));
+                // NOTE: This is correct behavior due to an 'agreement' in FontSizes that this should be correct
+                outerLayout.panels.add(new UISplitterLayout(new UILabel(TXDB.get("r48", field.name), FontSizes.fontSizerTextHeight), tb, false, 4, 5));
             }
         } catch (Exception e) {
             e.printStackTrace();

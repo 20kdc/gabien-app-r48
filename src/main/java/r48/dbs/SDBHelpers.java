@@ -1,6 +1,8 @@
 /*
- * This is released into the public domain.
- * No warranty is provided, implied or otherwise.
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
 package r48.dbs;
@@ -23,13 +25,14 @@ import java.util.HashMap;
 
 /**
  * Things that SDB shouldn't have inside it,
- *  for creating schema elements
+ * for creating schema elements
  * Created on Sunday September 17th, 2017
  */
 class SDBHelpers {
     // Spritesheet definitions are quite opaque lists of numbers defining how a grid sheet should appear. See spriteSelector.
     protected HashMap<String, IFunction<String, ISpritesheetProvider>> spritesheets = new HashMap<String, IFunction<String, ISpritesheetProvider>>();
     protected HashMap<String, String> spritesheetN = new HashMap<String, String>();
+
     public ISpritesheetProvider createSpritesheetProviderCore(final String imgTxt, final IImage img, final int useW, final int useH, final int rowCells, final int cellW, final int cellH, final int useX, final int useY, final int countOvr) {
         return new ISpritesheetProvider() {
             @Override
@@ -222,6 +225,7 @@ class SDBHelpers {
             }
         }, inner);
     }
+
     public SchemaElement makePicPointerPatchVar(SchemaElement varId) {
         // Less complicated but still more than an enum is reasonable for.
         HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();

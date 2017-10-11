@@ -1,6 +1,8 @@
 /*
- * This is released into the public domain.
- * No warranty is provided, implied or otherwise.
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
 package r48.map;
@@ -45,6 +47,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
         if (view.renderer.tileRenderer instanceof VXATileRenderer) {
             tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Shadow/Region"), new Runnable() {
                 final int thisButton = tools.size();
+
                 @Override
                 public void run() {
                     clearTools(thisButton);
@@ -54,6 +57,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
         }
         tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Events"), new Runnable() {
             final int thisButton = tools.size();
+
             @Override
             public void run() {
                 clearTools(thisButton);
@@ -62,6 +66,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
         }).togglable());
         tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Layer Visibility"), new Runnable() {
             final int thisButton = tools.size();
+
             @Override
             public void run() {
                 clearTools(thisButton);
@@ -70,10 +75,11 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 for (int i = 0; i < view.renderer.layers.length; i++) {
                     final int fi = i;
                     UITextButton layerVis = new UITextButton(FontSizes.mapLayertabTextHeight, view.renderer.layers[i].getName(), new Runnable() {
-                            @Override
-                            public void run() {view.layerVis[fi] = !view.layerVis[fi];
-                            }
-                        }).togglable();
+                        @Override
+                        public void run() {
+                            view.layerVis[fi] = !view.layerVis[fi];
+                        }
+                    }).togglable();
                     layerVis.state = view.layerVis[i];
                     h += layerVis.getBounds().height;
                     svl.panels.add(layerVis);

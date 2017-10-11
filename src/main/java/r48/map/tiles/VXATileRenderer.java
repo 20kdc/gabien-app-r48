@@ -1,7 +1,10 @@
 /*
- * This is released into the public domain.
- * No warranty is provided, implied or otherwise.
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+
 package r48.map.tiles;
 
 import gabien.GaBIEn;
@@ -290,7 +293,7 @@ public class VXATileRenderer implements ITileRenderer {
                             int sY = (sB * cSizeI);
                             int s2X = sA * cSize;
                             int s2Y = sB * cSize;
-                            RMEventGraphicRenderer.flexibleSpriteDraw(tx + pox + sX, ty + poy + sY, cSizeI, cSizeI, px + s2X, py + s2Y, cSize, cSize, 0, planeImg,0, igd);
+                            RMEventGraphicRenderer.flexibleSpriteDraw(tx + pox + sX, ty + poy + sY, cSizeI, cSizeI, px + s2X, py + s2Y, cSize, cSize, 0, planeImg, 0, igd);
                         }
                     return true;
                 }

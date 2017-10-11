@@ -1,22 +1,20 @@
 /*
- * This is released into the public domain.
- * No warranty is provided, implied or otherwise.
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
 package gabienapp;
 
-import gabien.GaBIEn;
 import gabien.ui.ISupplier;
-import gabien.ui.UITextButton;
 import r48.AppMain;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.TXDB;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -25,6 +23,7 @@ import static gabienapp.Application.mobileExtremelySpecialBehavior;
 public class CategoryGPMenuPanel implements IGPMenuPanel {
     public LinkedList<String> res1 = new LinkedList<String>();
     public LinkedList<ISupplier<IGPMenuPanel>> res2 = new LinkedList<ISupplier<IGPMenuPanel>>();
+
     public CategoryGPMenuPanel(final IGPMenuPanel root, final String category) {
         res1.add(TXDB.get("Back..."));
         res2.add(new ISupplier<IGPMenuPanel>() {
@@ -36,6 +35,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
         DBLoader.readFile("Gamepaks.txt", new IDatabase() {
             AtomicReference<String> boxedEncoding; // it's a boxed object, so...
             boolean doWeCare = false;
+
             @Override
             public void newObj(int objId, final String objName) throws IOException {
                 if (!doWeCare)

@@ -81,13 +81,12 @@ Fix your game install, then use the correct encoding in the R48 launcher menu. T
 
 ## section 6 : license and disclaimer
 
-This is released into the public domain.
+    gabien-app-r48 - Editing program for various formats
+    Written starting in 2016 by contributors (see CREDITS.txt)
+    To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+    You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-No warranty is provided, implied or otherwise.
-
-To re-iterate the previous sentence, any usage of this program is entirely your responsibility.
-
-(This, along with the gabien-common and gabien-javase dependencies, may be changed to CC0 with disclaimer in future. Legal fun.)
+Note that said copy of the CC0 is in 'COPYING.txt'.
 
 ## section 7 : credits
 

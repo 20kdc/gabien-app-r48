@@ -1,6 +1,8 @@
 /*
- * This is released into the public domain.
- * No warranty is provided, implied or otherwise.
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
 package r48.schema;
@@ -8,7 +10,6 @@ package r48.schema;
 import gabien.ui.UIElement;
 import r48.RubyIO;
 import r48.dbs.PathSyntax;
-import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -17,7 +18,7 @@ import java.util.HashMap;
 /**
  * This is used for things like conditional branches, which are so complicated it's ridiculous.
  * There used to be a note here saying the element must be an enum,
- *  but that was before the Decision where all elements started getting rebuilt out of sheer practicality.
+ * but that was before the Decision where all elements started getting rebuilt out of sheer practicality.
  * That was 9 months ago. It's now the 8th of October.
  * Created on 12/31/16.
  */
