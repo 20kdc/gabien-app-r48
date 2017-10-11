@@ -8,6 +8,7 @@ import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
+import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -16,7 +17,6 @@ import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
-import java.awt.*;
 import java.io.*;
 
 /**
@@ -26,11 +26,12 @@ import java.io.*;
 public class StringBlobSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
+        final String fpath = AppMain.rootPath + "r48.edit.txt";
         return new UISplitterLayout(new UITextButton(FontSizes.blobTextHeight, TXDB.get("Export/Edit"), new Runnable() {
             @Override
             public void run() {
                 try {
-                    OutputStream os = GaBIEn.getOutFile("edit.rb");
+                    OutputStream os = GaBIEn.getOutFile(fpath);
                     InputStream dis = getDecompressionInputStream(target.strVal);
                     byte[] block = new byte[512];
                     while (true) {
@@ -41,7 +42,8 @@ public class StringBlobSchemaElement extends SchemaElement {
                     }
                     dis.close();
                     os.close();
-                    Desktop.getDesktop().open(new File("edit.rb"));
+                    if (!GaBIEn.tryStartTextEditor(fpath))
+                        AppMain.launchDialog(TXDB.get("Please edit the file 'edit.txt' in the game's directory."));
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
                 }
@@ -51,7 +53,7 @@ public class StringBlobSchemaElement extends SchemaElement {
             public void run() {
                 try {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    InputStream dis = getCompressionInputStream(GaBIEn.getFile("edit.rb"));
+                    InputStream dis = getCompressionInputStream(GaBIEn.getFile(fpath));
                     byte[] block = new byte[512];
                     while (true) {
                         int r = dis.read(block);
