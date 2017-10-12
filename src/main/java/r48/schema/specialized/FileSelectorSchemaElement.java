@@ -7,6 +7,7 @@
 
 package r48.schema.specialized;
 
+import gabien.GaBIEn;
 import gabien.ui.*;
 import gabienapp.Application;
 import r48.AppMain;
@@ -16,8 +17,6 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-
-import java.io.File;
 
 /**
  * Gives a list of items (removing the final extension).
@@ -35,7 +34,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
-        String[] strs = new File(Application.autoDetectWindows(AppMain.rootPath + pathExtender)).list();
+        String[] strs = GaBIEn.listEntries(Application.autoDetectWindows(AppMain.rootPath + pathExtender));
         if (strs == null)
             return new UILabel("The folder does not exist or was not accessible.", FontSizes.schemaButtonTextHeight);
         for (String s : strs) {

@@ -9,7 +9,6 @@ package r48;
 
 import gabien.GaBIEn;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -74,10 +73,10 @@ public class LuaInterface {
     }
 
     private static void cleanup() {
-        new File("templuah.r48").delete();
-        new File("templuac.r48").delete();
-        new File("templuat.r48").delete();
-        new File("templuao.r48").delete();
+        GaBIEn.rmFile("templuah.r48");
+        GaBIEn.rmFile("templuac.r48");
+        GaBIEn.rmFile("templuat.r48");
+        GaBIEn.rmFile("templuao.r48");
     }
 
     public static boolean luaAvailable() {

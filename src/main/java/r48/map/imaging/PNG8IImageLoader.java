@@ -11,7 +11,10 @@ import gabien.GaBIEn;
 import gabien.IImage;
 import gabienapp.Application;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * You know what I mentioned previously about "Here goes nothing"?
@@ -33,9 +36,10 @@ public class PNG8IImageLoader implements IImageLoader {
     public IImage getImage(String name, boolean panorama) {
         if (panorama)
             return null;
+        DataInputStream dis = null;
         try {
             String ad = Application.autoDetectWindows(root + name + ".png");
-            DataInputStream dis = new DataInputStream(new FileInputStream(ad));
+            dis = new DataInputStream(GaBIEn.getFile(ad));
             // Magic number blahblahblah
             byte[] magic = new byte[8];
             if (dis.read(magic) != 8)
@@ -52,8 +56,16 @@ public class PNG8IImageLoader implements IImageLoader {
             byte[] pal = getChunk("PLTE", dis);
             if (pal == null)
                 return null;
+            dis.close();
+            dis = null;
             return GaBIEn.getImageCK(ad, pal[0] & 0xFF, pal[1] & 0xFF, pal[2] & 0xFF);
         } catch (Exception ioe) {
+            try {
+                if (dis != null)
+                    dis.close();
+            } catch (Exception e2) {
+
+            }
             // Exceptions here are, frankly, accepted behavior.
             return null;
         }

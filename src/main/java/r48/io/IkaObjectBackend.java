@@ -14,7 +14,9 @@ import r48.RubyTable;
 import r48.io.ika.BM8I;
 import r48.io.ika.NPChar;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Created on 1/27/17.
@@ -76,7 +78,7 @@ public class IkaObjectBackend implements IObjectBackend {
 
             NPChar np = new NPChar();
             try {
-                InputStream inp = new FileInputStream(Application.autoDetectWindows(root + "NPChar.dat"));
+                InputStream inp = GaBIEn.getFile(Application.autoDetectWindows(root + "NPChar.dat"));
                 np.load(inp);
                 inp.close();
             } catch (IOException ioe) {
@@ -155,7 +157,7 @@ public class IkaObjectBackend implements IObjectBackend {
                     n.eventID = (int) r2.getInstVarBySymbol("@scriptId").fixnumVal;
                 }
             }
-            fio = new FileOutputStream(Application.autoDetectWindows(root + "NPChar.dat"));
+            fio = GaBIEn.getOutFile(Application.autoDetectWindows(root + "NPChar.dat"));
             npc.save(fio);
             fio.close();
             return;
