@@ -56,6 +56,8 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
             osr.tileRenderer.drawTile(0, (short) t, x, y + (height - ts), igd, ts, sprScale);
         }
         for (TSDB.TSPicture tsp : allocSource.pictures) {
+            if (!tsp.acceptable.apply(t))
+                continue;
             boolean flagValid = (targ.getTiletype(t % targ.width, t / targ.width, 0) & tsp.flag) != 0;
             int rtX = flagValid ? tsp.layertabAX : tsp.layertabIX;
             int rtY = flagValid ? tsp.layertabAY : tsp.layertabIY;

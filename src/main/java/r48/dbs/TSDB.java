@@ -7,6 +7,8 @@
 
 package r48.dbs;
 
+import gabien.ui.IFunction;
+
 import java.io.IOException;
 import java.util.LinkedList;
 
@@ -22,6 +24,14 @@ public class TSDB {
 
     public TSDB(String arg) {
         DBLoader.readFile(arg, new IDatabase() {
+
+            public IFunction<Integer, Boolean> acceptable = new IFunction<Integer, Boolean>() {
+                @Override
+                public Boolean apply(Integer integer) {
+                    return true;
+                }
+            };
+
             @Override
             public void newObj(int objId, String objName) throws IOException {
 
@@ -30,9 +40,28 @@ public class TSDB {
             @Override
             public void execCmd(char c, String[] args) throws IOException {
                 if (c == 'p')
-                    pictures.add(new TSPicture(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]), Integer.parseInt(args[7]), Integer.parseInt(args[8])));
+                    pictures.add(new TSPicture(acceptable, Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]), Integer.parseInt(args[7]), Integer.parseInt(args[8])));
                 if (c == 'x')
                     xorDoubleclick = Integer.parseInt(args[0]);
+                if (c == 'l') {
+                    if (args.length < 2) {
+                        acceptable = new IFunction<Integer, Boolean>() {
+                            @Override
+                            public Boolean apply(Integer integer) {
+                                return true;
+                            }
+                        };
+                    } else {
+                        final int first = Integer.parseInt(args[0]);
+                        final int len = Integer.parseInt(args[1]);
+                        acceptable = new IFunction<Integer, Boolean>() {
+                            @Override
+                            public Boolean apply(Integer integer) {
+                                return (integer >= first) && (integer < (first + len));
+                            }
+                        };
+                    }
+                }
                 if (c == 'z')
                     disableHex = true;
                 if (c == 't')
@@ -54,8 +83,10 @@ public class TSDB {
 
     public class TSPicture {
         public int flag, layertabIX, layertabIY, layertabAX, layertabAY, x, y, w, h;
+        public IFunction<Integer, Boolean> acceptable;
 
-        public TSPicture(int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8) {
+        public TSPicture(IFunction<Integer, Boolean> accept, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8) {
+            acceptable = accept;
             flag = i;
             layertabIX = i1;
             layertabIY = i2;

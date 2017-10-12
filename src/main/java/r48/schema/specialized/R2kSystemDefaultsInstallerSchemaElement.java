@@ -12,6 +12,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UIPanel;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.RubyTable;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -98,6 +99,13 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     };
                     // 4. Setup start
                     target.getInstVarBySymbol("@start").getInstVarBySymbol("@player_map").fixnumVal = 1;
+                    break;
+                case 2:
+                    // Nobody expects tilesets to act the way they do on defaults, FIX IT.
+                    // I was informed to set upper to false by default, and though I have done that for most tiles,
+                    //  my having to do this is a natural consequence.
+                    RubyTable rt = new RubyTable(target.getInstVarBySymbol("@highpass_data").userVal);
+                    rt.setTiletype(0, 0, 0, (short) 0x1F);
                     break;
             }
             // finally, signal

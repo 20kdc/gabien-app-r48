@@ -87,6 +87,7 @@ public class R2kTileMapViewDrawLayer implements IMapViewDrawLayer {
         flags |= checkUpperRange(tidx, tileset, 3000, 3050, 3, "@lowpass_data");
         flags |= checkUpperRange(tidx, tileset, 3050, 3100, 4, "@lowpass_data");
         flags |= checkUpperRange(tidx, tileset, 3100, 4000, 5, "@lowpass_data");
+
         flags |= checkUpperRange(tidx, tileset, 4000, 4050, 6, "@lowpass_data");
         flags |= checkUpperRange(tidx, tileset, 4050, 4100, 7, "@lowpass_data");
         flags |= checkUpperRange(tidx, tileset, 4100, 4150, 8, "@lowpass_data");
