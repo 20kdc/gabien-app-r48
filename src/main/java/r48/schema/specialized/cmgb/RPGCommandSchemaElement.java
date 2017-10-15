@@ -70,7 +70,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         // Basically, don't use newWindow directly on a tagSEMonitor, don't switchObject to a tagSEMonitor.
         // They're tags for stuff done inside the schema, not part of the schema itself.
 
-        final SchemaPath path = path2.tagSEMonitor(target, this);
+        final SchemaPath path = path2.tagSEMonitor(target, this, false);
         final AtomicInteger passbackHeight = new AtomicInteger(0);
         final UIPanel uip = new UIPanel() {
             UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(FontSizes.schemaButtonTextHeight, database.buildCodename(target, true), new Runnable() {
@@ -218,7 +218,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        path = path.tagSEMonitor(target, this);
+        path = path.tagSEMonitor(target, this, false);
         actualSchema.modifyVal(target, path, setDefault);
         RPGCommand rc = database.knownCommands.get((int) target.getInstVarBySymbol("@code").fixnumVal);
         if (rc != null) {

@@ -11,19 +11,23 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 /**
- * Created on Sep 17 2017 (thank you IDEA for my install still being broken and no clue how to fix it without a wipe)
+ * Created on Sep 17 2017
  */
 public class LengthChangeSchemaElement extends SchemaElement {
     public String translatedText;
     public int targetLen;
+    // this implies that this element is responsible for creating the array
+    public boolean defaultLen;
 
-    public LengthChangeSchemaElement(String tx, int l) {
+    public LengthChangeSchemaElement(String tx, int l, boolean def) {
         translatedText = tx;
         targetLen = l;
+        defaultLen = def;
     }
 
     @Override
@@ -46,5 +50,13 @@ public class LengthChangeSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+        if (defaultLen) {
+            if (IntegerSchemaElement.ensureType(target, '[', setDefault)) {
+                target.arrVal = new RubyIO[targetLen];
+                for (int i = 0; i < target.arrVal.length; i++)
+                    target.arrVal[i] = new RubyIO().setNull();
+                path.changeOccurred(true);
+            }
+        }
     }
 }

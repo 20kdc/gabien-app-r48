@@ -47,10 +47,15 @@ public class Actor extends R2kObject {
     public IntegerR2kStruct batPosX = new IntegerR2kStruct(220);
     public IntegerR2kStruct batPosY = new IntegerR2kStruct(120);
     public IntegerR2kStruct battlerAnim = new IntegerR2kStruct(1);
-    public SparseArrayHR2kStruct<Learning> learnSkills = new SparseArrayHR2kStruct<Learning>(new ISupplier<Learning>() {
+    public OptionalR2kStruct<SparseArrayAR2kStruct<Learning>> learnSkills = new OptionalR2kStruct<SparseArrayAR2kStruct<Learning>>(new ISupplier<SparseArrayAR2kStruct<Learning>>() {
         @Override
-        public Learning get() {
-            return new Learning();
+        public SparseArrayAR2kStruct<Learning> get() {
+            return new SparseArrayAR2kStruct<Learning>(new ISupplier<Learning>() {
+                @Override
+                public Learning get() {
+                    return new Learning();
+                }
+            });
         }
     });
     public BooleanR2kStruct canRename = new BooleanR2kStruct(false);

@@ -27,7 +27,7 @@ public class ActorClass extends R2kObject {
     public IntegerR2kStruct eachLevelExpP = new IntegerR2kStruct(300);
     public IntegerR2kStruct eachLevelExpModC = new IntegerR2kStruct(0);
     public IntegerR2kStruct battlerAnimation = new IntegerR2kStruct(0);
-    public SparseArrayHR2kStruct<Learning> learnSkills = new SparseArrayHR2kStruct<Learning>(new ISupplier<Learning>() {
+    public SparseArrayAR2kStruct<Learning> learnSkills = new SparseArrayAR2kStruct<Learning>(new ISupplier<Learning>() {
         @Override
         public Learning get() {
             return new Learning();
@@ -53,22 +53,6 @@ public class ActorClass extends R2kObject {
             return new Int32R2kStruct(0);
         }
     }, true);
-    /*
-     @name string
-@two_weapon boolean
-@lock_equipment boolean
-@battle_auto boolean
-@battle_super_guard boolean
-@battle_parameters subwindow array 0 subwindow[ @rpg_actor_parameter_block ] rpg_actor_parameter_block
-@init_level_exp int
-@each_level_exp_p int
-@each_level_exp_modc int
-@learn_skills subwindow array 0 RPG::Learning
-@state_ranks subwindow array 0 int
-@attribute_ranks subwindow array 0 int
-@battle_commands subwindow array 0 battlecommand_id
-
-     */
 
     @Override
     public Index[] getIndices() {

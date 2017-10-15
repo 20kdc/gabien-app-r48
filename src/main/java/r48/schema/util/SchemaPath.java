@@ -37,7 +37,8 @@ public class SchemaPath {
     public SchemaElement editor;
     public RubyIO targetElement;
 
-    // Should only ever be set to true by tagSEMonitor. Implies editor and target.
+    // Should only ever be set to true by tagSEMonitor.
+    // Implies editor and target.
     public boolean monitorsSubelements = false;
 
     // At the root object, this is guaranteed to be the object itself.
@@ -180,7 +181,21 @@ public class SchemaPath {
         return sp;
     }
 
-    public SchemaPath tagSEMonitor(RubyIO target, SchemaElement ise) {
+    public SchemaPath tagSEMonitor(RubyIO target, SchemaElement ise, boolean upwards) {
+        if (upwards) {
+            // This is for DisambiguatorSchemaElement to make sure the entire structure containing a disambiguator gets the tag.
+            // This is so that edits to the thing being disambiguated on get caught properly.
+            SchemaPath spp = this;
+            SchemaPath sppLast = this;
+            while ((target == spp.targetElement) || (target == null)) {
+                sppLast = spp;
+                spp = spp.parent;
+                if (spp == null)
+                    break;
+            }
+            if (sppLast != spp)
+                sppLast.monitorsSubelements = true;
+        }
         SchemaPath sp = new SchemaPath();
         sp.parent = this;
         sp.targetElement = target;

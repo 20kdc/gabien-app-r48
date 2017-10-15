@@ -43,7 +43,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
-        final SchemaPath path = path2.tagSEMonitor(target, this);
+        final SchemaPath path = path2.tagSEMonitor(target, this, true);
         String iv = getDisambigIndex(target);
         SchemaElement ise = getSchemaElement(iv);
         return ise.buildHoldingEditor(target, launcher, path);
@@ -78,7 +78,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path2, boolean setDefault) {
-        final SchemaPath path = path2.tagSEMonitor(target, this);
+        final SchemaPath path = path2.tagSEMonitor(target, this, true);
 
         String iv = getDisambigIndex(target);
         if (!setDefault)

@@ -80,8 +80,12 @@ E class_or_none_id__ Class.ID 0 None
 M internal_classDictionary class_or_none_id__ class_or_none_id
 
 > battlecommand_id internal_battlecommandDictionary
-E battlecommand_or_none_id__ BC.ID 0 None
+
+E battlecommand_or_none_id__ BC.ID 0 <None>
 M internal_battlecommandDictionary battlecommand_or_none_id__ battlecommand_or_none_id
+
+E battlecommand_menu_id__ BC.ID 0 <End>
+M internal_battlecommandDictionary battlecommand_menu_id__ battlecommand_menu_id
 
 > commonevent_id internal_cevDictionary
 E commonevent_or_none_id__ CEV.ID 0 None

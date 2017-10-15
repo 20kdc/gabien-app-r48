@@ -46,7 +46,7 @@ public class MagicalBindingSchemaElement extends SchemaElement {
             // This is a fake root element used for binding
             @Override
             public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-                path = path.tagSEMonitor(target, this);
+                path = path.tagSEMonitor(target, this, true);
                 return inner.buildHoldingEditor(target, launcher, path);
             }
 

@@ -224,7 +224,12 @@ public class SDB {
                         if (text.equals("lengthAdjust")) {
                             String text2 = EscapedStringSyntax.unescape(args[point++]);
                             int len = Integer.parseInt(args[point++]);
-                            return new LengthChangeSchemaElement(TXDB.get(outerContext, text2), len);
+                            return new LengthChangeSchemaElement(TXDB.get(outerContext, text2), len, false);
+                        }
+                        if (text.equals("lengthAdjustDef")) {
+                            String text2 = EscapedStringSyntax.unescape(args[point++]);
+                            int len = Integer.parseInt(args[point++]);
+                            return new LengthChangeSchemaElement(TXDB.get(outerContext, text2), len, true);
                         }
                         if (text.equals("flushCommandBuffer")) {
                             // time to flush it!

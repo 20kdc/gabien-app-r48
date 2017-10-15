@@ -30,6 +30,27 @@ C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C D
 @1to50 arrayIdX 1 50 subwindow: @rpg_actor_parameter_block rpg_actor_parameter_block
 +optP @51to99_2k3 arrayIdX 51 49 subwindow: @rpg_actor_parameter_block rpg_actor_parameter_block
 
+ FOR EASYRPG PLAYER DEVELOPERS:
+ Precise behavior is that:
+  + this should always be 7 in size (practically)
+  + you can only use 6 slots, using the 7th (idx 6) causes it to be replaced with 'Row' internally somehow
+  + otherwise, Row replaces the first int <= 0, *and the list ends there*. (completely terminates)
+
+.RPG::BCA
++hide lengthAdjustDef Set... 7
++DA{ $length rpg_bca_def 0 rpg_bca_zro }
+
+.rpg_bca_def
+]0 x0 battlecommand_menu_id
+]1 x1 battlecommand_menu_id
+]2 x2 battlecommand_menu_id
+]3 x3 battlecommand_menu_id
+]4 x4 battlecommand_menu_id
+]5 x5 battlecommand_menu_id
++hide ]6 x6 int= -1
+
+.rpg_bca_zro
++lengthAdjustDef Set... 7
 
 : RPG::Learning
 @level int= 1
@@ -72,11 +93,11 @@ C name Class.RPG::Actor @name | #A
  This will default to 1 (IMPORTANT: This value being wrong causes crashes)
 @no_weapon_attack_anim animation_id
 @class_2k3 class_or_none_id
-@learn_skills subwindow hash int+0 RPG::Learning
+@learn_skills subwindow arrayIx1 RPG::Learning
 @editor_use_skillspanel_name boolean
 @state_ranks subwindow hash state_id rpg_statattr_rank
 @element_ranks subwindow hash attribute_id rpg_statattr_rank
-@battle_commands_2k3 subwindow array 0 battlecommand_id
++optP @battle_commands_2k3 subwindow RPG::BCA
 
  ---
 
@@ -676,13 +697,13 @@ C name Class.RPG::Class @name | #A
 @battle_parameters subwindow RPG::BPB
 @battler_animation battleranimation_id
 +hwnd . R2K/H_Levelling
-@init_level_exp int
-@each_level_exp_mul int
+@init_level_exp int= 10
+@each_level_exp_mul int= 10
 @each_level_exp_add int
-@learn_skills subwindow hash int+0 RPG::Learning
+@learn_skills subwindow arrayIx1 RPG::Learning
 @state_ranks subwindow hash state_id rpg_statattr_rank
 @element_ranks subwindow hash attribute_id rpg_statattr_rank
-@battle_commands subwindow array 0 battlecommand_or_none_id
+@battle_commands subwindow RPG::BCA
 
  ---
 
