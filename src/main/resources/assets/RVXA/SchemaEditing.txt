@@ -67,7 +67,7 @@ e event_pritype 0 floor 1 character 2 flying
 @id index
 @x int
 @y int
-@pages subwindow arrayAL1 subwindow RPG::Event::Page
+@pages arrayAL1 subwindow RPG::Event::Page
 
 : RPG::Map::Encounter
 @troop_id troop_id

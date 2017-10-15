@@ -675,7 +675,7 @@ C name Class.RPG::Class @name | #A
 @battle_super_guard boolean
 @battle_parameters subwindow RPG::BPB
 @battler_animation battleranimation_id
-+hwnd . R2K/H_Levelling.txt
++hwnd . R2K/H_Levelling
 @init_level_exp int
 @each_level_exp_mul int
 @each_level_exp_add int

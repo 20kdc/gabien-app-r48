@@ -72,7 +72,7 @@ C name Class.RPG::Event::Page @condition | [RPG::Event::Page::Condition]A
 @x int
 @y int
 @name string
-@pages subwindow arrayAL1 subwindow RPG::Event::Page
+@pages arrayAL1 subwindow RPG::Event::Page
 
  Defining Map.
 

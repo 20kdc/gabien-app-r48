@@ -34,26 +34,31 @@ public class HelpSystemController {
 
     public void loadPage(final int i) {
         hs.page.clear();
-        DBLoader.readFile(getHelpStream(), new IDatabase() {
-            boolean working = false;
+        InputStream helpStream = getHelpStream();
+        if (helpStream != null) {
+            DBLoader.readFile(helpStream, new IDatabase() {
+                boolean working = false;
 
-            @Override
-            public void newObj(int objId, String objName) throws IOException {
-                if (objId == i) {
-                    if (pageName != null)
-                        pageName.Text = objName;
-                    working = true;
-                } else {
-                    working = false;
+                @Override
+                public void newObj(int objId, String objName) throws IOException {
+                    if (objId == i) {
+                        if (pageName != null)
+                            pageName.Text = objName;
+                        working = true;
+                    } else {
+                        working = false;
+                    }
                 }
-            }
 
-            @Override
-            public void execCmd(char c, String[] args) throws IOException {
-                if (working)
-                    hs.page.add(new UIHelpSystem.HelpElement(c, args));
-            }
-        });
+                @Override
+                public void execCmd(char c, String[] args) throws IOException {
+                    if (working)
+                        hs.page.add(new UIHelpSystem.HelpElement(c, args));
+                }
+            });
+        } else {
+            System.err.println("Unable to get at help file: ");
+        }
         hs.setBounds(hs.getBounds());
         if (onLoad != null)
             onLoad.run();
