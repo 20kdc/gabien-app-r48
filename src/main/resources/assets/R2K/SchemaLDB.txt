@@ -30,24 +30,14 @@ C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C D
 @1to50 arrayIdX 1 50 subwindow: @rpg_actor_parameter_block rpg_actor_parameter_block
 +optP @51to99_2k3 arrayIdX 51 49 subwindow: @rpg_actor_parameter_block rpg_actor_parameter_block
 
- FOR EASYRPG PLAYER DEVELOPERS:
- Precise behavior is that:
-  + this should always be 7 in size (practically)
-  + you can only use 6 slots, using the 7th (idx 6) causes it to be replaced with 'Row' internally somehow
-  + otherwise, Row replaces the first int <= 0, *and the list ends there*. (completely terminates)
+ HAHAHA-NO. EASYRPG PLAYER DEVS KNEW BETTER ALL ALONG.
 
 .RPG::BCA
 +hide lengthAdjustDef Set... 7
 +DA{ $length rpg_bca_def 0 rpg_bca_zro }
 
 .rpg_bca_def
-]0 x0 battlecommand_menu_id
-]1 x1 battlecommand_menu_id
-]2 x2 battlecommand_menu_id
-]3 x3 battlecommand_menu_id
-]4 x4 battlecommand_menu_id
-]5 x5 battlecommand_menu_id
-+hide ]6 x6 int= -1
++array 7 battlecommand_menu_id
 
 .rpg_bca_zro
 +lengthAdjustDef Set... 7

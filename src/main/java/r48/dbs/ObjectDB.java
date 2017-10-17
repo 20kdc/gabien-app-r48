@@ -38,6 +38,7 @@ public class ObjectDB {
     public HashSet<RubyIO> modifiedObjects = new HashSet<RubyIO>();
     public HashSet<RubyIO> newlyCreatedObjects = new HashSet<RubyIO>();
     public WeakHashMap<RubyIO, LinkedList<IConsumer<SchemaPath>>> objectListenersMap = new WeakHashMap<RubyIO, LinkedList<IConsumer<SchemaPath>>>();
+    public HashMap<String, LinkedList<IConsumer<SchemaPath>>> objectRootListenersMap = new HashMap<String, LinkedList<IConsumer<SchemaPath>>>();
 
     public String getIdByObject(RubyIO obj) {
         return reverseObjectMap.get(obj);
@@ -136,6 +137,15 @@ public class ObjectDB {
         return notifyObjectModified;
     }
 
+    private LinkedList<IConsumer<SchemaPath>> getOrCreateRootModificationHandlers(String p) {
+        LinkedList<IConsumer<SchemaPath>> notifyObjectModified = objectRootListenersMap.get(p);
+        if (notifyObjectModified == null) {
+            notifyObjectModified = new LinkedList<IConsumer<SchemaPath>>();
+            objectRootListenersMap.put(p, notifyObjectModified);
+        }
+        return notifyObjectModified;
+    }
+
     // Note that these are run at the end of frame,
     //  because there appears to be a performance issue with these being spammed over and over again. Oops.
 
@@ -145,6 +155,14 @@ public class ObjectDB {
 
     public void deregisterModificationHandler(RubyIO root, IConsumer<SchemaPath> handler) {
         getOrCreateModificationHandlers(root).remove(handler);
+    }
+
+    public void registerModificationHandler(String root, IConsumer<SchemaPath> handler) {
+        getOrCreateRootModificationHandlers(root).add(handler);
+    }
+
+    public void deregisterModificationHandler(String root, IConsumer<SchemaPath> handler) {
+        getOrCreateRootModificationHandlers(root).remove(handler);
     }
 
     public void objectRootModified(RubyIO p, final SchemaPath path) {
@@ -161,13 +179,32 @@ public class ObjectDB {
                         r.accept(path);
                     }
                 });
+        String root = getIdByObject(path.findRoot().targetElement);
+        if (root != null) {
+            notifyObjectModified = objectRootListenersMap.get(root);
+            if (notifyObjectModified != null)
+                for (final IConsumer<SchemaPath> r : new LinkedList<IConsumer<SchemaPath>>(notifyObjectModified))
+                    AppMain.pendingRunnables.add(new Runnable() {
+                        @Override
+                        public void run() {
+                            r.accept(path);
+                        }
+                    });
+        }
     }
 
     public int countModificationListeners(RubyIO p) {
+        int n = 0;
         LinkedList<IConsumer<SchemaPath>> notifyObjectModified = objectListenersMap.get(p);
         if (notifyObjectModified != null)
-            return notifyObjectModified.size();
-        return 0;
+            n += notifyObjectModified.size();
+        String r = getIdByObject(p);
+        if (r != null) {
+            notifyObjectModified = objectRootListenersMap.get(r);
+            if (notifyObjectModified != null)
+                n += notifyObjectModified.size();
+        }
+        return n;
     }
 
     public void ensureAllSaved() {

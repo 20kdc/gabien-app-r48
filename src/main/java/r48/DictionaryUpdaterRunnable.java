@@ -30,7 +30,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
     public final IFunction<RubyIO, RubyIO> fieldA, iVar;
     public final boolean hash;
     public final int defaultVal;
-    private RubyIO lastTarget = null;
+    private String lastTarget = null;
     private IConsumer<SchemaPath> kickMe;
 
     public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<RubyIO, RubyIO> iFunction, boolean b, IFunction<RubyIO, RubyIO> ivar, int def) {
@@ -56,18 +56,28 @@ public class DictionaryUpdaterRunnable implements Runnable {
             // actually update
             HashMap<Integer, String> finalMap = new HashMap<Integer, String>();
             RubyIO target;
+            String targetName;
             if (targ.equals("__MAP__")) {
                 target = map;
+                targetName = AppMain.objectDB.getIdByObject(map);
+                if (targetName == null)
+                    targetName = "__MAPANONOBJECT-ML-FAIL__";
             } else {
                 target = AppMain.objectDB.getObject(targ);
+                targetName = targ;
             }
             if (target != null) {
-                if (lastTarget != target) {
-                    if (lastTarget != null)
+                boolean reregister = true;
+                if (lastTarget != null) {
+                    if (!lastTarget.equals(targetName)) {
                         AppMain.objectDB.deregisterModificationHandler(lastTarget, kickMe);
-                    AppMain.objectDB.registerModificationHandler(target, kickMe);
+                    } else {
+                        reregister = false;
+                    }
                 }
-                lastTarget = target;
+                if (reregister)
+                    AppMain.objectDB.registerModificationHandler(targetName, kickMe);
+                lastTarget = targetName;
                 if (fieldA != null)
                     target = fieldA.apply(target);
                 if (target == null)

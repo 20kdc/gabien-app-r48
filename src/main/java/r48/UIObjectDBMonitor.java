@@ -50,6 +50,12 @@ public class UIObjectDBMonitor extends UIElement {
     }
 
     @Override
+    public String toString() {
+        Runtime r = Runtime.getRuntime();
+        return ((r.totalMemory() - r.freeMemory()) / (1024 * 1024)) + "/" + (r.totalMemory() / (1024 * 1024)) + "M " + (r.maxMemory() / (1024 * 1024)) + "MX";
+    }
+
+    @Override
     public void handleClick(int x, int y, int button) {
         System.gc();
     }
