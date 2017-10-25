@@ -28,9 +28,7 @@ import r48.ui.UIAppendButton;
 import r48.ui.UIEnumChoice;
 import r48.ui.help.UIHelpSystem;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -76,16 +74,18 @@ public class RPGCommandSchemaElement extends SchemaElement {
             UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(FontSizes.schemaButtonTextHeight, database.buildCodename(target, true), new Runnable() {
                 @Override
                 public void run() {
-                    HashMap<String, Integer> rvi = new HashMap<String, Integer>();
-                    HashMap<Integer, String> rvs = new HashMap<Integer, String>();
-                    for (Map.Entry<Integer, RPGCommand> me : database.knownCommands.entrySet()) {
-                        String text = me.getKey() + ";" + me.getValue().formatName(null, null);
-                        rvs.put(me.getKey(), text);
-                        rvi.put(text, me.getKey());
+                    UIEnumChoice.Category[] categories = new UIEnumChoice.Category[database.categories.length];
+                    for (int i = 0; i < categories.length; i++) {
+                        LinkedList<UIEnumChoice.Option> llo = new LinkedList<UIEnumChoice.Option>();
+                        for (Integer key : database.knownCommandOrder) {
+                            RPGCommand rc = database.knownCommands.get(key);
+                            String text = key + ";" + rc.formatName(null, null);
+                            if (rc.category == i)
+                                llo.add(new UIEnumChoice.Option(text, key));
+                        }
+                        categories[i] = new UIEnumChoice.Category(database.categories[i], llo);
                     }
-                    LinkedList<String> order = new LinkedList<String>();
-                    for (Integer i : database.knownCommandOrder)
-                        order.add(rvs.get(i));
+
                     launcher.switchObject(path2.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<Integer>() {
                         @Override
                         public void accept(Integer integer) {
@@ -113,7 +113,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                             // On the other hand, the elements will be obliterated anyway before reaching the user.
                             launcher.switchObject(path2);
                         }
-                    }, rvi, order, TXDB.get("Code")), null, path), target));
+                    }, categories, TXDB.get("Code")), null, path), target));
                 }
             }), new Runnable() {
                 @Override

@@ -13,9 +13,11 @@ package r48.dbs;
  * Only \ makes any difference.
  * In this case, an additional character decides what kind of escape this is (and the \ isn't outputted):
  * <p>
+ * _: Just writes ' '
+ * <p>
  * \: Just writes '\'. You know how this works.
  * <p>
- * ?: Just writs '?' - this is for use in "optionals"
+ * ?: Just writes '?' - this is for use in "optionals"
  * <p>
  * 1234567890-=
  * maps to

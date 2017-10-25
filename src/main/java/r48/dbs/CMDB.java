@@ -21,6 +21,7 @@ import java.util.LinkedList;
  */
 public class CMDB {
     public int digitCount = 3;
+    public String[] categories = new String[] {TXDB.get("Commands")};
     public HashMap<Integer, RPGCommand> knownCommands = new HashMap<Integer, RPGCommand>();
     public LinkedList<Integer> knownCommandOrder = new LinkedList<Integer>();
     public int listLeaveCmd = -1; // -1 means "no list leave command actually exists".
@@ -45,6 +46,7 @@ public class CMDB {
             @Override
             public void newObj(int objId, String objName) {
                 rc = new RPGCommand();
+                rc.category = categories.length - 1;
                 subContext = "CMDB@" + baseFile + "." + lenForm(objId);
                 // Names use NDB syntax, thus, separate context
                 rc.name = TXDB.get(subContext + "-", objName);
@@ -160,6 +162,13 @@ public class CMDB {
                 } else if ((c == 'X') || (c == 'x')) {
                     rc.specialSchema = AppMain.schemas.getSDBEntry(args[0]);
                 } else if (c == 'C') {
+                    if (args[0].equals("category"))
+                        rc.category = Integer.parseInt(args[1]);
+                    if (args[0].equals("categories")) {
+                        categories = new String[args.length - 1];
+                        for (int i = 1; i < args.length; i++)
+                            categories[i - 1] = TXDB.get(subContext + ".categories", EscapedStringSyntax.unescape(args[i]));
+                    }
                     if (args[0].equals("digitCount"))
                         digitCount = Integer.parseInt(args[1]);
                     if (args[0].equals("commandIndentConditionalIB")) {

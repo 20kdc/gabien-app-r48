@@ -7,6 +7,7 @@
  GI-M Command List
 
 10830: @@Teleport Player By Vars{D: @#B, @#C, @#D}
+C category 3
 d Like Teleport Player, except more complicated.
 p _ string
 p mapVar var_id
@@ -14,24 +15,28 @@ p xVar var_id
 p yVar var_id
 
 10710: Begin Encounter
+C category 3
 d Begin a battle between the player and an enemy!
 p _ string
 X begin_encounter_parameters
 C commandIndentConditionalOF 4 2 5 1
 
 20710: ... Victory:
+C category 3
 d The code called in an Encounter when the player wins.
 p _ string
 K10710
 i-1
 I1
 20711: ... Escape:
+C category 3
 d The code called in an Encounter when the player escapes.
 p _ string
 K10710
 i-1
 I1
 20712: ... Defeat:
+C category 3
 d The code called in an Encounter when the player is defeated.
 p _ string
 K10710
@@ -39,18 +44,21 @@ i-1
 I1
 
 20713: End Encounter
+C category 3
 d Ends an Encounter Block.
 p _ string
 i-1
 l
 
 10720: @@Show Shop{D:: [show_shop_bstype]B, message set [show_shop_type]C}
+C category 0
 d Shows a shop. Note that this only acts as a block if hasInnerCode is enabled.
 p _ string
 X show_shop_parameters
 C commandIndentConditionalIB 3
 
 20720: ... Transaction:
+C category 0
 d Begins the code for when the player does business of some form with the Shop.
 p _ string
 K10720
@@ -58,6 +66,7 @@ i-1
 I1
 
 20721: ... Refuse Transaction:
+C category 0
 d Begins the code for when the player chooses not to do business with the Shop.
 p _ string
 K10720
@@ -65,12 +74,14 @@ i-1
 I1
 
 20722: End Shop
+C category 0
 d Ends a Shop Block.
 p _ string
 i-1
 l
 
 10730: @@Show Inn{D: typeB: #B, price: #C {D=0=| (result branch follows)}}
+C category 0
 d Shows an Inn's screen. Note that this only acts as a block if hasInnerCode is enabled.
 p _ string
 p innType2 int_boolean
@@ -79,6 +90,7 @@ p hasInnerCode int_boolean
 C commandIndentConditionalIB 3
 
 20730: ... Stay:
+C category 0
 d Begins the code for when the player chooses to stay at the Inn.
 p _ string
 K10730
@@ -86,6 +98,7 @@ i-1
 I1
 
 20731: ... Refuse Stay:
+C category 0
 d Begins the code for when the player chooses not to stay at the Inn.
 p _ string
 K10730
@@ -93,12 +106,14 @@ i-1
 I1
 
 20732: End Inn
+C category 0
 d Ends an Inn Block.
 p _ string
 i-1
 l
 
 10740: @@Enter Party Member{B: @#B's} Name
+C category 2
 d For changing the name of a party member. Because players really don't care about Crono's parents or their naming decisions.
 p _ string
 p target actor_id
@@ -106,6 +121,7 @@ p useCharset2 int_boolean
 p showOldName int_boolean
 
 10810: @@Teleport Player{D: to @#B : #C, #D{E: dir @#E}}
+C category 2
 d Teleports the player to a given map and position. If in a parallel event, continue running (orphaned from character), otherwise, terminate.
 p _ string
 p map map_id
@@ -114,10 +130,12 @@ p y int
 X teleport_player_2k3_escapehatch
 
 10840: Player Enters Or Leaves Vehicle
+C category 2
 d Enters or leaves an airship occupying the same space as the player, or a ship/boat directly in front of the player. It is extremely picky about this.
 p _ string
 
 11060: @@Camera Pan{F: {B=2=[direction]C #D tiles speed #E|#B}{B=3= speed #E} ({F=0=no }wait)| Control}
+C category 3
 d Controls where the 'camera' is looking.
 p _ string
  Unfortunately for humanity, Pv-Syntax is powerful enough to represent this, which means I'm obligated to do it rather than just X-trap.
@@ -134,8 +152,6 @@ v 2 wait int_boolean
 v 3 wait int_boolean
 
  NOTE: WHEN WRITING PICTURE STUFF:
-  + consider the PPP to be non-existent, it'll just complicate things.
-    just make sure to *support it* by not screwing up arb-val-entry
   + use Monolith2 for the specials
 
 11110: Show Picture
@@ -156,6 +172,7 @@ X erase_picture_parameters
  ---
 
 11210: @@Show Animation{E: @#B at @#C{D=0=| (wait)}{E=0=| (global)}}
+C category 3
 d Show an animation on an event/the player.
 p _ string
 p anim animation_id
@@ -164,6 +181,7 @@ p wait int_boolean
 p global int_boolean
 
 11320: @@Flash Character{H: @#B #[#C,#D,#E,#F#] for #G/10 seconds{H=0=| (wait)}}
+C category 3
 d Make an event/the player flash in a given way for a given length of time (given in tenths of a second.)
 p _ string
 p char character_id
@@ -177,14 +195,17 @@ p timeSecs/10 int_default_1
 p wait int_boolean
 
 11340: Wait Until All MoveRoutes Complete
+C category 3
 d Exactly what it says on the tin.
 p _ string
 
 11350: Stop All Pending MoveRoutes
+C category 3
 d I assume there's some good reason for this thing's existence - perhaps if you had to chase down a fleeing NPC - but...
 p _ string
 
 11560: Play Movie$
+C category 3
 d Plays a movie, if that's possible.
 p movie f_movie_name
 p usePosVars int_boolean

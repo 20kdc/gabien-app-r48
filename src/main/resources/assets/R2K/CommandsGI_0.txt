@@ -33,23 +33,27 @@ d A continuation of a comment.
 p text string
 
 10110: Say$
+C category 0
 d Begins a message to show to the player.
 p text textbox_string
 C groupBehavior messagebox 20110
 
 20110: Say (cont.)$
+C category 0
 d Continues a 10110 'Say' - should only be used from there.
 p text textbox_string
 
  Need to automate this later.
 
 10140: @@Show Choices{B: {B=0=no cancel|cancel choice: #B}| (20140/20141 follows)}
+C category 0
 d Shows a set of choices to the player. (editorChoices is for editor display purposes only.)
 p editorChoices string
 p 0|cancelIndex+1 choice_begin_magic
 I1
 
 20140: @@... On Choice:{B: {B=4=Cancel|#A} (index @[choice_index_magic_2]B)}
+C category 0
 d A choice. If the player selects this choice, the code between this and the next choice runs. If the text is blank, this is a 'cancel' choice (and should be last)
 p text string
 p choiceIndex choice_index_magic
@@ -59,18 +63,21 @@ i-1
 I1
 
 20141: End Choices
+C category 0
 d The end of a set of choices.
 p _ string
 i-1
 l
 
 10150: @@Input Number{C: to var. @#C (#B digits)}
+C category 0
 d Shows a numeric input to the player, with a set amount of digits, and stores the result in a variable.
 p _ string
 p digits int
 p var var_id
 
 10120: @@Message Options{E: {B=0=opaque|transparent},#C,{D=0=fixed|unfixed},events{E=0= don't} continue}
+C category 0
 d Sets if the text box is transparent, where it is, if it will move to avoid hiding the player, and if events can move about (I think).
 p _ string
 p transparent int_boolean
@@ -79,6 +86,7 @@ p positionLocked int_boolean
 p continueEvents int_boolean
 
 10130: @@Change Face{D: to #A:#B, {C=0=left|right} {D=0=|, flipped}}
+C category 0
 d Change the face in the text box to a given face, including some details.
 p faceImage f_faceset_name
 C spritesheet 0 FaceSet/
@@ -89,6 +97,7 @@ p faceFlipped int_boolean
  Control Switches follows. Uhoh.
 
 10210: @@Control Switch{E:{B=1=es @#C .. @#D|{B=2= #[var @#C#]| @#C}} = #E|es}
+C category 1
 d Control switches in various ways. Single alters one switch. Range alters a group of switches. Indirect alters one switch, numbered by a variable.
 p _ string
 p type control_switches_type
@@ -101,16 +110,19 @@ v 1 rangeLast switch_id
 p changeMode control_switches_change_mode
 
 10220: @@Set {A:Vars[@set_variables_parameters]|Variables}
+C category 1
 d Modify a variable or range of variables in various ways dependent on a given value.
 p _ string
 X set_variables_parameters
 
 10230: Timer Operation
+C category 1
 d Alters the settings on either timer ID 0 (if unspecified) or a given timer. Can set the timer, change it's visibility + if it counts in bettle, or stop it.
 p _ string
 X timer_operation_parameters
 
 10310: @@{B:{B=0=Give|Take From}|Give/Take From} Player:{D: {C=0=#D|Var(@[var_id]D)}} Gold
+C category 2
 d Adds or removes gold by a constant amount or the value in a variable.
 p _ string
 p takeGold int_boolean
@@ -119,6 +131,7 @@ P 2 goldVar var_id
 v 0 gold int
 
 10320: Modify Items
+C category 2
 d Adds or removes the amount of an item (selected by ID or the value in a variable) by a constant amount or the value in a variable.
 p _ string
 p remove int_boolean
@@ -130,6 +143,7 @@ P 4 countVar var_id
 v 0 count int
 
 10330: Change Party Member
+C category 2
 d Adds or removes a party member, selected by ID or the value in a variable.
 p _ string
 p remove int_boolean
@@ -138,6 +152,7 @@ P 2 actorVar var_id
 v 0 actor actor_id
 
 10410: Change EXP
+C category 2
 d Modifies the amount of experience a given set of party members has.
 p _ string
 p targetMode get_actors_mode
@@ -153,6 +168,7 @@ v 0 exp int
 p showLvlUp int_boolean
 
 10420: Change Exp.Level
+C category 2
 d Modifies the levels a given set of party members have.
 p _ string
 p targetMode get_actors_mode
@@ -168,6 +184,7 @@ v 0 lvl int
 p showLvlUp int_boolean
 
 10430: Change Battle Parameters
+C category 2
 d Modifies the parameters a given set of party members have.
 p _ string
 p targetMode get_actors_mode
@@ -182,6 +199,7 @@ P 5 plVar var_id
 v 0 pl int
 
 10440: Change Skills
+C category 2
 d Adds or removes skills a given set of party members have.
 p _ string
 p targetMode get_actors_mode
@@ -195,11 +213,13 @@ P 4 skillVar var_id
 v 0 skill skill_id
 
 10450: Change Equipment
+C category 2
 d Equips a given piece of equipment to, or unequips all equipment from a given set of party members
 p _ string
 X change_equipment_parameters
 
 10460: Change HP
+C category 2
 d Heals or hurts a given set of party members. Can trigger Game Over if allowed to.
 p _ string
 p targetMode get_actors_mode
@@ -216,6 +236,7 @@ v 0 amount int
 p allowDeath int_boolean
 
 10470: Change SP
+C category 2
 d Gives or takes SP from a given set of party members.
 p _ string
 p targetMode get_actors_mode
@@ -229,6 +250,7 @@ P 4 amountVar var_id
 v 0 amount int
 
 10480: Add/Remove State
+C category 2
 d Adds to or removes a State from a given set of party members.
 p _ string
 p targetMode get_actors_mode
@@ -240,6 +262,7 @@ p remove int_boolean
 p state state_id
 
 10490: Full Heal + Recharge
+C category 2
 d Fills HP and SP to maximum possible for a given set of party members.
 p _ string
 p targetMode get_actors_mode
@@ -248,6 +271,7 @@ v 1 target actor_id
 v 2 targetVar var_id
 
 10500: Simulate Attack
+C category 4
 d Causes an attack of damage atk - (((actor.def * defMod) / 400) + ((actor.spi * spiMod) / 800)), with the result being varied by *up to, in either direction* (variance * 5) / 100.
 p _ string
 p targetMode get_actors_mode
@@ -299,16 +323,19 @@ d Show the game over screen, and such.
 p _ string
 
 10610: @@{B:Change @[actor_id]B's Name: #A|Change Actor Name}
+C category 2
 d Change the name of a party member.
 p name string
 p actor actor_id
 
 10620: @@{B:Change @[actor_id]B's Title: #A|Change Actor Title}
+C category 2
 d Change the title of a party member.
 p title string
 p actor actor_id
 
 10630: Change Actor G/I/T
+C category 2
 d Change how a party member appears in battle.
 p graphic f_charset_name
 p actor actor_id
@@ -317,6 +344,7 @@ p index int
 p transparent int_boolean
 
 10640: @@{B:Change @[actor_id]B's Face: #A:#C|Change Actor Face}
+C category 2
 d Change the face of a party member.
 p faceset f_faceset_name
 p actor actor_id
@@ -324,6 +352,7 @@ C spritesheet 0 FaceSet/
 p index int
 
 10650: Change Vehicle Appearance
+C category 3
 d Change the appearance of a vehicle.
 p graphic f_charset_name
 p vehicle scripting_vehicletype
@@ -369,22 +398,26 @@ p xVar var_id
 p yVar var_id
 
 10850: Teleport Vehicle
+C category 3
 d Teleports a vehicle.
 p _ string
 X teleport_vehicle_parameters
 
 10860: Teleport Event
+C category 3
 d Teleports an event. (Can set direction on 2k3.)
 p _ string
 X teleport_event_parameters
 
 10870: Swap Events
+C category 3
 d Swaps the positions of two events / the event and the player.
 p _ string
 p eventA character_id
 p eventB character_id
 
 10910: Store Terrain Tag
+C category 3
 d Stores the terrain tag of a given point on the map. These come from Tileset/@terrain_id_data.
 p _ string
 p useVars int_boolean
@@ -395,6 +428,7 @@ v 0 y int
 p resultVar var_id
 
 10920: Store Event ID
+C category 3
 d Stores the event ID of whatever event is on a given point on the map, or 0 if none exists there.
 p _ string
 p useVars int_boolean
@@ -405,11 +439,13 @@ v 0 y int
 p resultVar var_id
 
 11010: Hide Map
+C category 3
 d Hides the map.
 p _ string
 p transition transition_type
 
 11020: Show Map
+C category 3
 d Shows the map.
 p _ string
 p transition transition_type
@@ -436,17 +472,20 @@ p _ string
 X shake_screen_parameters
 
 11070: Weather Control
+C category 3
 d Controls the weather. Your forecast today: Rain. Which is good, because the clouds will protect you from the burning, uncaring sun.
 p _ string
 p weather weather_control_type
 p strength weather_control_strength
 
 11310: @@{B:{B=1=Show Player|Hide Player}|Change Player Visibility}
+C category 3
 d Show or hide the player on the map.
 p _ string
 p visible int_boolean
 
 11330: @@Move Event{B: @[character_id]B}
+C category 3
 d Sends a list of MoveCommands to an event.
 p _ string
 X move_event_parameters
@@ -466,11 +505,13 @@ p _ string
 X key_input_information_parameters
 
 11710: Set Map Tileset
+C category 3
 d Sets the map's tileset. Hopefully you've designed the map and tilesets with this in mind.
 p _ string
 p tilesetId tileset_id
 
 11720: Change Parallax Setup
+C category 3
 d Change the parallax on the map.
 p parallax f_parallax_name
 p scrollH int_boolean
@@ -481,11 +522,13 @@ p scrollVAuto int_boolean
 p scrollVSpeed int
 
 11740: Change Encounter Rate
+C category 3
 d Change the encounter rate on the map.
 p _ string
 p newRate int
 
 11750: Substitute Tiles
+C category 3
 d Change all tiles of one ID for another. Note that these IDs are *relative* to the tile plane. That is, 5000 for the Lower Layer, 10000 for the Upper Layer.
 p _ string
 p upperLayer int_boolean
@@ -493,16 +536,19 @@ p tileA int
 p tileB int
 
 11810: Add/Remove Teleport Target
+C category 2
 d Adds a teleport target to, or removes a teleport target from, the menu.
 p _ string
 X ar_teleport_target_parameters
 
 11820: Enable/Disable Teleport
+C category 2
 d Enable or disable the teleportation menu.
 p _ string
 p enable int_boolean
 
 11830: Set Escape Target
+C category 2
 d Set the target position to escape to for a given map.
 p _ string
 p map map_id
@@ -528,12 +574,14 @@ p _ string
 p enable int_boolean
 
 12010: @@{B:[@cbranch_parameters]|Conditional Branch}
+C category 1
 d Runs the following code if a condition is true. Otherwise, runs the code at the Else Branch inside, or if one does not exist, goes to the end of the branch.
 p _ string
 X cbranch_parameters
 I1
 
 22010: Else Branch
+C category 1
 d Indicates that if the containing branch was false, the following code should be executed. (Otherwise, the previous code will be executed, and this will not.)
 p _ string
 i-1
@@ -541,41 +589,49 @@ I1
 l
 
 22011: End Branch
+C category 1
 d Indicates the end of a conditional branch.
 p _ string
 i-1
 l
 
 12110: @@Label #B
+C category 1
 d A label. See JumpToLabel.
 p _ string
 p labelId int
 
 12120: @@Jump To Label #B
+C category 1
 d Jump to a label.
 p _ string
 p labelId int
 
 12210: Start Loop
+C category 1
 d Begins a loop, which will run forever unless broken.
 p _ string
 I1
 
 12220: Break Loop
+C category 1
 d Leaves the loop.
 p _ string
 
 22210: End Loop
+C category 1
 d Indicates the end of a loop - will go back to the start.
 p _ string
 i-1
 l
 
 12320: Temp. Erase This Event
+C category 3
 d Attempts to temporarily erase this event (if this is, in fact, a map event)
 p _ string
 
 12330: @@Call{B:{B=0= Common Event @#C| Event}| Event}
+C category 1
 d Calls a page in another event, or calls a common event.
 p _ string
 p callType callevent_type
@@ -596,6 +652,7 @@ d Returns to the title screen.
 p _ string
 
 1008: Change Party Member Class (2K3 Only)
+C category 2
 d Changes a party member's class. (EasyRPG only supports Single Actor at time of writing - the GetActors usage is only a suspicion)
 p _ string
 p targetMode get_actors_mode
@@ -610,6 +667,7 @@ p statsEffect change_actor_class_statsfx
 p showClassChange int_boolean
 
 1009: Add/Remove Party Member Battle Command (2K3 Only)
+C category 2
 d Adds or removes a battle command from a party member. (EasyRPG only supports Single Actor at time of writing - the GetActors usage is only a suspicion)
 p _ string
 p targetMode get_actors_mode

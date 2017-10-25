@@ -7,6 +7,8 @@
  Sauron's Command List
  It sees all, you know
 
+C categories 1\_-\_Text 2\_-\_Flow 3\_-\_Party 4\_-\_Map 5\_-\_Battle 6\_-\_Misc
+
 # R2K/CommandsGI_0.txt
 # R2K/CommandsGI_M.txt
 # R2K/CommandsGI_B.txt

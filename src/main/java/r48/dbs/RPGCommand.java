@@ -51,6 +51,7 @@ public class RPGCommand {
     // Only usable with the proper "shielding".
     // (Probably refers to making sure that this will NEVER crash)
     public IGroupBehavior groupBehavior;
+    public int category;
 
     // Pass null for parameters if this is for combobox display.
     public String formatName(RubyIO root, RubyIO[] parameters) {
