@@ -17,8 +17,8 @@ import r48.schema.util.SchemaPath;
 public class StandardArraySchemaElement extends ArraySchemaElement {
     public SchemaElement subelems;
 
-    public StandardArraySchemaElement(SchemaElement s, int fixedSize, boolean al1, int ido) {
-        super(fixedSize, al1, ido);
+    public StandardArraySchemaElement(SchemaElement s, int fixedSize, boolean al1, int ido, IArrayInterface uiHelper) {
+        super(fixedSize, al1 ? 1 : 0, ido, uiHelper);
         subelems = s;
     }
 

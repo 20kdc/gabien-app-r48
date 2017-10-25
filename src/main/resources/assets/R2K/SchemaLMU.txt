@@ -77,7 +77,7 @@ e eventpage_trigger 0 playerInteract 1 playerCollide 2 playerOrEventCollide 3 au
 @name string
 @x int
 @y int
-@pages arrayIx1 subwindow RPG::EventPage
+@pages arrayPIx1 RPG::EventPage
 
 : RPG::Map
 @tileset_id tileset_id

@@ -7,19 +7,20 @@
 
 package r48.schema.arrays;
 
-import gabien.ui.*;
+import gabien.ui.Rect;
+import gabien.ui.UIElement;
+import gabien.ui.UIScrollLayout;
 import r48.AppMain;
 import r48.ArrayUtils;
-import r48.FontSizes;
 import r48.RubyIO;
-import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.ui.UIAppendButton;
+
+import java.util.LinkedList;
 
 /**
  * Notably, abstracting away sizeFixed and atLeastOne would just be an overcomplication.
@@ -27,192 +28,155 @@ import r48.ui.UIAppendButton;
  */
 public abstract class ArraySchemaElement extends SchemaElement {
     public int sizeFixed, indexDisplayOffset;
-    public boolean atLeastOne;
+    public int atLeast;
 
-    public ArraySchemaElement(int fixedSize, boolean al1, int ido) {
+    public IArrayInterface uiHelper;
+
+    // Used for pager state
+    private IntegerSchemaElement myUniqueStateInstance = new IntegerSchemaElement(0);
+
+    public ArraySchemaElement(int fixedSize, int al1, int ido, IArrayInterface uiHelp) {
         sizeFixed = fixedSize;
-        atLeastOne = al1;
+        atLeast = al1;
         indexDisplayOffset = ido;
+        uiHelper = uiHelp;
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
-        // this object is needed as a pin to hold things together.
-        // It used to be kind of redundant, but now with the selection stuff...
-        final Runnable runCompleteRelayout = new Runnable() {
-            // Only check selectedStart.
-            int selectedStart = -1;
-            int selectedEnd = -1;
 
-            // Because of name ambiguity, but also whacks uiSVL
-            public void containerRCL() {
-                run();
-                uiSVL.setBounds(uiSVL.getBounds());
+        uiSVL.panels.clear();
+        int nextAdvance;
+        LinkedList<IArrayInterface.ArrayPosition> positions = new LinkedList<IArrayInterface.ArrayPosition>();
+        for (int i = 0; i < target.arrVal.length; i += nextAdvance) {
+            nextAdvance = 1;
+            int pLevel = elementPermissionsLevel(i, target);
+            if (pLevel < 1)
+                continue;
+            SchemaPath ind = path.arrayHashIndex(new RubyIO().setFX(i), "[" + (i + indexDisplayOffset) + "]");
+
+            SchemaElement subelem = getElementSchema(i);
+            nextAdvance = getGroupLength(target.arrVal, i);
+            boolean hasNIdxSchema = false;
+            if (nextAdvance == 0) {
+                nextAdvance = 1;
+            } else {
+                subelem = getElementContextualSchema(target.arrVal, i, nextAdvance);
+                hasNIdxSchema = true;
+            }
+
+            Runnable deleter = getRemovalCallback(pLevel, target, launcher, i, nextAdvance, path, ind);
+            Runnable addition = getAdditionCallback(target, launcher, i, path, ind);
+            Runnable clipAddition = getClipAdditionCallback(target, i, path);
+
+            UIElement uie;
+            if (hasNIdxSchema) {
+                uie = subelem.buildHoldingEditor(target, launcher, path);
+            } else {
+                uie = subelem.buildHoldingEditor(target.arrVal[i], launcher, ind);
+            }
+            RubyIO[] copyHelpElems = new RubyIO[nextAdvance];
+            System.arraycopy(target.arrVal, i, copyHelpElems, 0, copyHelpElems.length);
+            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition((i + indexDisplayOffset) + " ", copyHelpElems, uie, deleter, addition, clipAddition);
+            positions.add(position);
+        }
+        // The 4 for-loop is to deal with 1-indexing and such
+        for (int i = 0; i < 4; i++) {
+            int idx = target.arrVal.length + i;
+            if (elementPermissionsLevel(idx, target) != 0) {
+                SchemaPath ind = path.arrayHashIndex(new RubyIO().setFX(idx), "[" + (idx + indexDisplayOffset) + "]");
+                IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition((idx + indexDisplayOffset) + " ", null, null, null, getAdditionCallback(target, launcher, idx, path, ind), getClipAdditionCallback(target, idx, path));
+                positions.add(position);
+                break;
+            }
+        }
+
+        final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(myUniqueStateInstance, target);
+        final SchemaPath keyStoragePath = path.findLast();
+
+        IArrayInterface.IProperty prop = new IArrayInterface.IProperty() {
+            @Override
+            public void accept(Double v) {
+                keyStoragePath.getEmbedMap(launcher).put(myKey, v);
             }
 
             @Override
-            public void run() {
-                uiSVL.panels.clear();
-                // Work out how big each array index field has to be.
-                final Rect maxSize = UILabel.getRecommendedSize(target.arrVal.length + " ", FontSizes.schemaFieldTextHeight);
-                int nextAdvance;
-                for (int i = 0; i < target.arrVal.length; i += nextAdvance) {
-                    nextAdvance = 1;
-                    int pLevel = elementPermissionsLevel(i, target);
-                    if (pLevel < 1)
-                        continue;
-                    SchemaPath ind = path.arrayHashIndex(new RubyIO().setFX(i), "[" + (i + indexDisplayOffset) + "]");
-                    addAdditionButton(i, ind);
-                    SchemaElement subelem = getElementSchema(i);
-                    nextAdvance = getGroupLength(target.arrVal, i);
-                    boolean hasNIdxSchema = false;
-                    if (nextAdvance == 0) {
-                        nextAdvance = 1;
-                    } else {
-                        subelem = getElementContextualSchema(target.arrVal, i, nextAdvance);
-                        hasNIdxSchema = true;
-                    }
-                    final int thisNextAdvance = nextAdvance;
-
-                    UIElement uie;
-                    if (hasNIdxSchema) {
-                        uie = subelem.buildHoldingEditor(target, launcher, path);
-                    } else {
-                        uie = subelem.buildHoldingEditor(target.arrVal[i], launcher, ind);
-                    }
-                    final int mi = i;
-                    if (selectedStart == -1) {
-                        uie = new UIAppendButton(TXDB.get("Sel"), uie, new Runnable() {
-                            @Override
-                            public void run() {
-                                selectedStart = mi;
-                                selectedEnd = mi + (thisNextAdvance - 1);
-                                containerRCL();
-                            }
-                        }, FontSizes.schemaButtonTextHeight);
-                        if (pLevel >= 2) {
-                            uie = new UIAppendButton("-", uie, new Runnable() {
-                                @Override
-                                public void run() {
-                                    for (int j = 0; j < thisNextAdvance; j++)
-                                        ArrayUtils.removeRioElement(target, mi);
-                                    // whack the UI & such
-                                    path.changeOccurred(false);
-                                }
-                            }, FontSizes.schemaButtonTextHeight);
-                        }
-                    } else {
-                        if (selectedStart == i) {
-                            uie = new UIAppendButton(TXDB.get("DeSel"), uie, new Runnable() {
-                                @Override
-                                public void run() {
-                                    selectedStart = -1;
-                                    containerRCL();
-                                }
-                            }, FontSizes.schemaButtonTextHeight);
-                            uie = new UIAppendButton(TXDB.get("Cp."), uie, new Runnable() {
-                                @Override
-                                public void run() {
-                                    // the clipboard is very lenient...
-                                    RubyIO rio = new RubyIO();
-                                    rio.type = '[';
-                                    rio.arrVal = new RubyIO[(selectedEnd - selectedStart) + 1];
-                                    for (int j = 0; j < rio.arrVal.length; j++)
-                                        rio.arrVal[j] = new RubyIO().setDeepClone(target.arrVal[j + selectedStart]);
-                                    AppMain.theClipboard = rio;
-                                    selectedStart = -1;
-                                    containerRCL();
-                                }
-                            }, FontSizes.schemaButtonTextHeight);
-                        } else if ((mi < selectedStart) || (mi > selectedEnd)) {
-                            uie = new UIAppendButton(TXDB.get("Select..."), uie, new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (mi < selectedStart)
-                                        selectedStart = mi;
-                                    int re = mi + (thisNextAdvance - 1);
-                                    if (re > selectedEnd)
-                                        selectedEnd = re;
-                                    containerRCL();
-                                }
-                            }, FontSizes.schemaButtonTextHeight);
-                        }
-                    }
-                    // Add indexes for clarity.
-                    final UIElement editor = uie;
-                    final UIElement label = new UILabel((i + indexDisplayOffset) + " ", FontSizes.schemaFieldTextHeight);
-                    UIPanel panel = new UIPanel() {
-                        @Override
-                        public void setBounds(Rect r) {
-                            super.setBounds(r);
-                            label.setBounds(new Rect(0, 0, maxSize.width, maxSize.height));
-                            editor.setBounds(new Rect(maxSize.width, 0, r.width - maxSize.width, r.height));
-                        }
-                    };
-                    panel.allElements.add(label);
-                    panel.allElements.add(editor);
-                    panel.setBounds(new Rect(0, 0, 128, Math.max(editor.getBounds().height, maxSize.height)));
-                    uiSVL.panels.add(panel);
-                }
-                // Deal with 1-indexing and such
-                for (int i = 0; i < 4; i++) {
-                    if (elementPermissionsLevel(target.arrVal.length + i, target) != 0) {
-                        addAdditionButton(target.arrVal.length + i, path.arrayHashIndex(new RubyIO().setFX(target.arrVal.length + i), "[" + (target.arrVal.length + i) + "]"));
-                        break;
-                    }
-                }
-            }
-
-            private void addAdditionButton(final int i, final SchemaPath ind) {
-                if (sizeFixed != 0)
-                    return;
-                UIElement uie = new UITextButton(FontSizes.schemaArrayAddTextHeight, FormatSyntax.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setFX(i)), new Runnable() {
-                    @Override
-                    public void run() {
-                        RubyIO rio = new RubyIO();
-                        SchemaElement subelem = getElementSchema(i);
-                        subelem.modifyVal(rio, ind, true);
-
-                        ArrayUtils.insertRioElement(target, rio, i);
-                        // whack the UI
-                        path.changeOccurred(false);
-                        // Perform *magic*.
-                        // What this means is that the subclass is given everything it needs to, theoretically,
-                        //  construct a contrived sequence of schema paths that lead to the 'user' switching into the target element,
-                        //  selecting something in there, and popping up a command selection dialog.
-                        elementOnCreateMagic(target, i, launcher, ind, path);
-                    }
-                });
-                if (AppMain.theClipboard != null) {
-                    if (AppMain.theClipboard.type == '[') {
-                        uie = new UIAppendButton(TXDB.get("Ps."), uie, new Runnable() {
-                            @Override
-                            public void run() {
-                                if (AppMain.theClipboard != null) {
-                                    // could have changed
-                                    if (AppMain.theClipboard.type == '[') {
-                                        RubyIO[] finalInsertionRv = AppMain.theClipboard.arrVal;
-                                        for (int j = finalInsertionRv.length - 1; j >= 0; j--)
-                                            ArrayUtils.insertRioElement(target, new RubyIO().setDeepClone(finalInsertionRv[j]), i);
-                                        // whack the UI
-                                        path.changeOccurred(false);
-                                    }
-                                }
-                            }
-                        }, FontSizes.schemaButtonTextHeight);
-                    }
-                }
-                uiSVL.panels.add(uie);
+            public Double get() {
+                return keyStoragePath.getEmbedSP(launcher, myKey);
             }
         };
-        runCompleteRelayout.run();
+
+        uiHelper.provideInterfaceFrom(uiSVL, prop, positions.toArray(new IArrayInterface.ArrayPosition[0]));
+
         int h = 0;
         for (UIElement uie : uiSVL.panels)
             h += uie.getBounds().height;
         uiSVL.setBounds(new Rect(0, 0, 32, h));
         return uiSVL;
+    }
+
+    private Runnable getRemovalCallback(final int pLevel, final RubyIO target, final ISchemaHost launcher, final int mi, final int thisNextAdvance, final SchemaPath path, final SchemaPath ind) {
+        if (pLevel < 2)
+            return null;
+        if (sizeFixed != 0)
+            return null;
+        return new Runnable() {
+            @Override
+            public void run() {
+                for (int j = 0; j < thisNextAdvance; j++)
+                    ArrayUtils.removeRioElement(target, mi);
+                // whack the UI & such
+                path.changeOccurred(false);
+            }
+        };
+    }
+
+    private Runnable getAdditionCallback(final RubyIO target, final ISchemaHost launcher, final int i, final SchemaPath path, final SchemaPath ind) {
+        if (sizeFixed != 0)
+            return null;
+        return new Runnable() {
+            @Override
+            public void run() {
+                RubyIO rio = new RubyIO();
+                SchemaElement subelem = getElementSchema(i);
+                subelem.modifyVal(rio, ind, true);
+
+                ArrayUtils.insertRioElement(target, rio, i);
+                // whack the UI
+                path.changeOccurred(false);
+                // Perform *magic*.
+                // What this means is that the subclass is given everything it needs to, theoretically,
+                //  construct a contrived sequence of schema paths that lead to the 'user' switching into the target element,
+                //  selecting something in there, and popping up a command selection dialog.
+                elementOnCreateMagic(target, i, launcher, ind, path);
+            }
+        };
+    }
+
+    private Runnable getClipAdditionCallback(final RubyIO target, final int i, final SchemaPath path) {
+        if (sizeFixed != 0)
+            return null;
+        return new Runnable() {
+            @Override
+            public void run() {
+                if (AppMain.theClipboard != null) {
+                    // could have changed
+                    if (AppMain.theClipboard.type == '[') {
+                        RubyIO[] finalInsertionRv = AppMain.theClipboard.arrVal;
+                        for (int j = finalInsertionRv.length - 1; j >= 0; j--)
+                            ArrayUtils.insertRioElement(target, new RubyIO().setDeepClone(finalInsertionRv[j]), i);
+                        // whack the UI
+                        path.changeOccurred(false);
+                    } else {
+                        AppMain.launchDialog(TXDB.get("Can't copy in - copying in a range into an array requires that range be an array.") + "\n" + TXDB.get("Copying from the array interface will give you these."));
+                    }
+                } else {
+                    AppMain.launchDialog(TXDB.get("Can't copy in - the clipboard is empty."));
+                }
+            }
+        };
     }
 
     @Override
@@ -221,12 +185,12 @@ public abstract class ArraySchemaElement extends SchemaElement {
         setDefault = IntegerSchemaElement.ensureType(target, '[', setDefault);
         if (target.arrVal == null) {
             setDefault = true;
-        } else if ((target.arrVal.length == 0) && atLeastOne) {
+        } else if (target.arrVal.length < atLeast) {
             setDefault = true;
         }
         if (setDefault) {
-            if ((sizeFixed == 0) && atLeastOne) {
-                target.arrVal = new RubyIO[1];
+            if (sizeFixed < atLeast) {
+                target.arrVal = new RubyIO[atLeast];
             } else {
                 target.arrVal = new RubyIO[sizeFixed];
             }
@@ -318,7 +282,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // 2: All permissions.
     // (Used to prevent a user shooting themselves in the foot - should not be considered a serious mechanism.)
     protected int elementPermissionsLevel(int i, RubyIO target) {
-        boolean canDelete = (sizeFixed == 0) && (!(atLeastOne && target.arrVal.length <= 1));
+        boolean canDelete = (sizeFixed == 0) && (!(target.arrVal.length <= atLeast));
         return canDelete ? 2 : 1;
     }
 }

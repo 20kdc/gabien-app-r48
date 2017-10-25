@@ -18,6 +18,7 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.PathSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.arrays.StandardArrayInterface;
 import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.ROIntegerSchemaElement;
@@ -234,7 +235,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             } else {
                 RubyIO param = target.getInstVarBySymbol("@parameters");
                 // All parameters are described, and the SASE will ensure length is precisely equal
-                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(new OpaqueSchemaElement(), rc.paramName.size(), false, 0);
+                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(new OpaqueSchemaElement(), rc.paramName.size(), false, 0, new StandardArrayInterface());
                 parametersSanitySchema.modifyVal(param, path, setDefault);
                 for (int i = 0; i < param.arrVal.length; i++) {
                     SchemaElement ise = rc.getParameterSchema(param, i);

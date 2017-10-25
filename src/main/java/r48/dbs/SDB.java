@@ -14,6 +14,8 @@ import r48.DictionaryUpdaterRunnable;
 import r48.RubyIO;
 import r48.schema.*;
 import r48.schema.arrays.ArbIndexedArraySchemaElement;
+import r48.schema.arrays.PagerArrayInterface;
+import r48.schema.arrays.StandardArrayInterface;
 import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.displays.EPGDisplaySchemaElement;
 import r48.schema.integers.*;
@@ -50,6 +52,8 @@ public class SDB {
 
     private HashMap<String, CMDB> cmdbs = new HashMap<String, CMDB>();
     public SDBHelpers helpers = new SDBHelpers();
+
+    private StandardArrayInterface standardArrayUi = new StandardArrayInterface();
 
     public SDB() {
         schemaDatabase.put("nil", new OpaqueSchemaElement());
@@ -192,21 +196,23 @@ public class SDB {
                         }
                         if (text.equals("array")) {
                             int n = Integer.parseInt(args[point++]);
-                            return new StandardArraySchemaElement(get(), n, false, 0);
+                            return new StandardArraySchemaElement(get(), n, false, 0, standardArrayUi);
                         }
                         if (text.equals("arrayIdX")) {
                             int x = Integer.parseInt(args[point++]);
                             int n = Integer.parseInt(args[point++]);
-                            return new StandardArraySchemaElement(get(), n, false, x);
+                            return new StandardArraySchemaElement(get(), n, false, x, standardArrayUi);
                         }
                         if (text.equals("arrayAL1"))
-                            return new StandardArraySchemaElement(get(), 0, true, 0);
+                            return new StandardArraySchemaElement(get(), 0, true, 0, standardArrayUi);
+                        if (text.equals("arrayPIx1"))
+                            return new ArbIndexedArraySchemaElement(get(), 1, 1, 0, new PagerArrayInterface());
                         if (text.equals("arrayIx1"))
-                            return new ArbIndexedArraySchemaElement(get(), 1, 0);
+                            return new ArbIndexedArraySchemaElement(get(), 1, 0, 0, standardArrayUi);
                         if (text.equals("arrayIxN")) {
                             int ofx = Integer.parseInt(args[point++]);
                             int sz = Integer.parseInt(args[point++]);
-                            return new ArbIndexedArraySchemaElement(get(), ofx, sz);
+                            return new ArbIndexedArraySchemaElement(get(), ofx, 0, sz, standardArrayUi);
                         }
                         if (text.equals("arrayDAM"))
                             throw new RuntimeException("Use DA.");

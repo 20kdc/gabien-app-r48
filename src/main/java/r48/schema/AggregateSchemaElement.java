@@ -98,7 +98,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
             @Override
             public void updateAndRender(int ox, int oy, double DeltaTime, boolean select, IGrInDriver igd) {
                 super.updateAndRender(ox, oy, DeltaTime, select, igd);
-                path.findLast().getEmbedMap(host).put(myKey, scrollbar.scrollPoint);
+                keyStoragePath.getEmbedMap(host).put(myKey, scrollbar.scrollPoint);
             }
         };
         uiSVL.scrollbar.scrollPoint = keyStoragePath.getEmbedSP(host, myKey);
