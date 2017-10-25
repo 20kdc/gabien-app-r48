@@ -143,6 +143,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         return 0;
     }
 
+    // Note that this always returns != 0, so all schemas are in fact array-based.
     @Override
     public int getGroupLength(RubyIO[] arr, int j) {
         int l = getGroupLengthCore(arr, j);
@@ -212,7 +213,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    protected SchemaElement getElementContextualSchema(RubyIO[] arr, final int start, final int length) {
+    protected SubwindowSchemaElement getElementContextualSchema(RubyIO[] arr, final int start, final int length) {
         // Record the first RubyIO of the group.
         // getGroupElement seeks for it now, so it "tracks" the group properly despite array changes.
         final RubyIO tracker = arr[start];
@@ -249,5 +250,18 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 return tx;
             }
         });
+    }
+
+    @Override
+    protected void elementOnCreateMagic(RubyIO target, int i, ISchemaHost launcher, SchemaPath ind, SchemaPath path) {
+        // Notably:
+        //  1. the inner-schema always uses the 'path' path.
+        //  2. the path constructed must have "back" going to inside the command, then to the array
+        //     (so the user knows the command was added anyway)
+        SubwindowSchemaElement targ = getElementContextualSchema(target.arrVal, i, getGroupLength(target.arrVal, i));
+        path = path.newWindow(targ.heldElement, target);
+        path = path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]");
+        // Ok, now navigate to the command selector
+        RPGCommandSchemaElement.navigateToCode(launcher, path, target.arrVal[i], path.tagSEMonitor(target, this, false), database);
     }
 }

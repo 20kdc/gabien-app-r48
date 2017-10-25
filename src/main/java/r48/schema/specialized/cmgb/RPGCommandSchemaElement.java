@@ -74,46 +74,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(FontSizes.schemaButtonTextHeight, database.buildCodename(target, true), new Runnable() {
                 @Override
                 public void run() {
-                    UIEnumChoice.Category[] categories = new UIEnumChoice.Category[database.categories.length];
-                    for (int i = 0; i < categories.length; i++) {
-                        LinkedList<UIEnumChoice.Option> llo = new LinkedList<UIEnumChoice.Option>();
-                        for (Integer key : database.knownCommandOrder) {
-                            RPGCommand rc = database.knownCommands.get(key);
-                            String text = key + ";" + rc.formatName(null, null);
-                            if (rc.category == i)
-                                llo.add(new UIEnumChoice.Option(text, key));
-                        }
-                        categories[i] = new UIEnumChoice.Category(database.categories[i], llo);
-                    }
-
-                    launcher.switchObject(path2.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<Integer>() {
-                        @Override
-                        public void accept(Integer integer) {
-                            RPGCommand rc = database.knownCommands.get(integer);
-                            target.getInstVarBySymbol("@code").fixnumVal = integer;
-                            RubyIO param = target.getInstVarBySymbol("@parameters");
-                            if (rc != null) {
-                                // Notice: Both are used!
-                                // Firstly nuke it to whatever the command says for array-len-reduce, then use the X-code to fill in details
-                                param.arrVal = new RubyIO[rc.paramType.size()];
-                                for (int i = 0; i < param.arrVal.length; i++) {
-                                    RubyIO rio = new RubyIO();
-                                    SchemaElement ise = rc.getParameterSchema(param, i);
-                                    ise.modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), true);
-                                    param.arrVal[i] = rio;
-                                }
-                                if (rc.specialSchema != null) {
-                                    SchemaElement schemaElement = rc.specialSchema;
-                                    schemaElement.modifyVal(target, path, true);
-                                }
-                            }
-                            // Indent recalculation, and such.
-                            path.changeOccurred(false);
-                            // On the one hand, the elements are stale.
-                            // On the other hand, the elements will be obliterated anyway before reaching the user.
-                            launcher.switchObject(path2);
-                        }
-                    }, categories, TXDB.get("Code")), null, path), target));
+                    navigateToCode(launcher, path2, target, path, database);
                 }
             }), new Runnable() {
                 @Override
@@ -214,6 +175,50 @@ public class RPGCommandSchemaElement extends SchemaElement {
         uip.setBounds(new Rect(0, 0, 320, 200));
         uip.setBounds(new Rect(0, 0, 320, passbackHeight.get()));
         return uip;
+    }
+
+    // Used by EventCommandArray for edit-on-create.
+    protected static void navigateToCode(final ISchemaHost launcher, final SchemaPath path2, final RubyIO target, final SchemaPath path, final CMDB database) {
+        UIEnumChoice.Category[] categories = new UIEnumChoice.Category[database.categories.length];
+        for (int i = 0; i < categories.length; i++) {
+            LinkedList<UIEnumChoice.Option> llo = new LinkedList<UIEnumChoice.Option>();
+            for (Integer key : database.knownCommandOrder) {
+                RPGCommand rc = database.knownCommands.get(key);
+                String text = key + ";" + rc.formatName(null, null);
+                if (rc.category == i)
+                    llo.add(new UIEnumChoice.Option(text, key));
+            }
+            categories[i] = new UIEnumChoice.Category(database.categories[i], llo);
+        }
+
+        launcher.switchObject(path2.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<Integer>() {
+            @Override
+            public void accept(Integer integer) {
+                RPGCommand rc = database.knownCommands.get(integer);
+                target.getInstVarBySymbol("@code").fixnumVal = integer;
+                RubyIO param = target.getInstVarBySymbol("@parameters");
+                if (rc != null) {
+                    // Notice: Both are used!
+                    // Firstly nuke it to whatever the command says for array-len-reduce, then use the X-code to fill in details
+                    param.arrVal = new RubyIO[rc.paramType.size()];
+                    for (int i = 0; i < param.arrVal.length; i++) {
+                        RubyIO rio = new RubyIO();
+                        SchemaElement ise = rc.getParameterSchema(param, i);
+                        ise.modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), true);
+                        param.arrVal[i] = rio;
+                    }
+                    if (rc.specialSchema != null) {
+                        SchemaElement schemaElement = rc.specialSchema;
+                        schemaElement.modifyVal(target, path, true);
+                    }
+                }
+                // Indent recalculation, and such.
+                path.changeOccurred(false);
+                // On the one hand, the elements are stale.
+                // On the other hand, the elements will be obliterated anyway before reaching the user.
+                launcher.switchObject(path2);
+            }
+        }, categories, TXDB.get("Code")), null, path), target));
     }
 
     @Override

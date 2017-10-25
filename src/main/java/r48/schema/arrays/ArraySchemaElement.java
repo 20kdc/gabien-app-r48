@@ -78,7 +78,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
 
                     UIElement uie;
                     if (hasNIdxSchema) {
-                        uie = subelem.buildHoldingEditor(target, launcher, ind);
+                        uie = subelem.buildHoldingEditor(target, launcher, path);
                     } else {
                         uie = subelem.buildHoldingEditor(target.arrVal[i], launcher, ind);
                     }
@@ -178,6 +178,11 @@ public abstract class ArraySchemaElement extends SchemaElement {
                         ArrayUtils.insertRioElement(target, rio, i);
                         // whack the UI
                         path.changeOccurred(false);
+                        // Perform *magic*.
+                        // What this means is that the subclass is given everything it needs to, theoretically,
+                        //  construct a contrived sequence of schema paths that lead to the 'user' switching into the target element,
+                        //  selecting something in there, and popping up a command selection dialog.
+                        elementOnCreateMagic(target, i, launcher, ind, path);
                     }
                 });
                 if (AppMain.theClipboard != null) {
@@ -272,6 +277,13 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // Used to do the correct tagging so that updates to children will affect the parent
     public boolean monitorsSubelements() {
         return false;
+    }
+
+    // Used by certain rather complicated array types that want to give the user a *specific* UI on the creation of an element.
+    // The element gets created & acknowledged, then this kickstarts the UI for editing details.
+    // If the user exits this UI via the "back" method, further contrived sequences can be created to delete the element.
+    // As for closing the window... hm.
+    protected void elementOnCreateMagic(RubyIO target, int i, ISchemaHost launcher, SchemaPath ind, SchemaPath path) {
     }
 
     // Allows performing automatic correction of structural issues,
