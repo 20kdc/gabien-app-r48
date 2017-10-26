@@ -8,6 +8,7 @@
 package r48.schema.specialized;
 
 import gabien.GaBIEn;
+import gabien.IGrInDriver;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
@@ -22,6 +23,8 @@ import r48.schema.util.SchemaPath;
 
 import java.io.*;
 
+import static r48.schema.AggregateSchemaElement.hookButtonForPressPreserve;
+
 /**
  * Generic string blob (no compression on this one)
  * Created on 2/16/17.
@@ -30,6 +33,30 @@ public class StringBlobSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
         final String fpath = AppMain.rootPath + "r48.edit.txt";
+
+        UITextButton importer = new UITextButton(FontSizes.blobTextHeight, TXDB.get("Import"), new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    InputStream dis = getCompressionInputStream(GaBIEn.getFile(fpath));
+                    byte[] block = new byte[512];
+                    while (true) {
+                        int r = dis.read(block);
+                        if (r <= 0)
+                            break;
+                        baos.write(block, 0, r);
+                    }
+                    dis.close();
+                    target.strVal = baos.toByteArray();
+                    path.changeOccurred(false);
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                    AppMain.launchDialog(TXDB.get("Wasn't able to import.") + "\n" + ioe);
+                }
+            }
+        });
+        final Runnable importScrSaveTicker = hookButtonForPressPreserve(path, launcher, this, target, importer, "import");
         return new UISplitterLayout(new UITextButton(FontSizes.blobTextHeight, TXDB.get("Export/Edit"), new Runnable() {
             @Override
             public void run() {
@@ -49,29 +76,16 @@ public class StringBlobSchemaElement extends SchemaElement {
                         AppMain.launchDialog(TXDB.get("Please edit the file 'edit.txt' in the game's directory."));
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
+                    AppMain.launchDialog(TXDB.get("Wasn't able to export.") + "\n" + ioe);
                 }
             }
-        }), new UITextButton(FontSizes.blobTextHeight, TXDB.get("Import"), new Runnable() {
+        }), importer, false, 1, 2) {
             @Override
-            public void run() {
-                try {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    InputStream dis = getCompressionInputStream(GaBIEn.getFile(fpath));
-                    byte[] block = new byte[512];
-                    while (true) {
-                        int r = dis.read(block);
-                        if (r <= 0)
-                            break;
-                        baos.write(block, 0, r);
-                    }
-                    dis.close();
-                    target.strVal = baos.toByteArray();
-                    path.changeOccurred(false);
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
+            public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
+                super.updateAndRender(ox, oy, deltaTime, select, igd);
+                importScrSaveTicker.run();
             }
-        }), false, 1, 2);
+        };
     }
 
     protected InputStream getCompressionInputStream(InputStream file) {

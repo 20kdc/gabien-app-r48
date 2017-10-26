@@ -7,10 +7,7 @@
 
 package r48.schema.arrays;
 
-import gabien.ui.IConsumer;
-import gabien.ui.ISupplier;
-import gabien.ui.UIElement;
-import gabien.ui.UIScrollLayout;
+import gabien.ui.*;
 import r48.RubyIO;
 
 /**
@@ -25,7 +22,7 @@ public interface IArrayInterface {
      * Note that svl is dedicated to this interface - the only reason it's built like this is so SchemaPath won't be unnecessarily 'leaked' for scroll stuff.
      * state is tied to a unique SchemaElement held by the ArraySchemaElement for the purposes of holding extra state.
      */
-    void provideInterfaceFrom(UIScrollLayout svl, IProperty state, ArrayPosition[] positions);
+    void provideInterfaceFrom(UIScrollLayout svl, IFunction<String, IProperty> state, ArrayPosition[] positions);
 
     interface IProperty extends ISupplier<Double>, IConsumer<Double> {
 

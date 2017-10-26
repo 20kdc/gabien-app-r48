@@ -16,7 +16,7 @@ import java.util.LinkedList;
  */
 public class StandardArrayInterface implements IArrayInterface {
     @Override
-    public void provideInterfaceFrom(final UIScrollLayout uiSVL, IProperty prop, final ArrayPosition[] positions) {
+    public void provideInterfaceFrom(final UIScrollLayout uiSVL, final IFunction<String, IProperty> prop, final ArrayPosition[] positions) {
         // this object is needed as a pin to hold things together.
         // It used to be kind of redundant, but now with the selection stuff...
         final Runnable runCompleteRelayout = new Runnable() {

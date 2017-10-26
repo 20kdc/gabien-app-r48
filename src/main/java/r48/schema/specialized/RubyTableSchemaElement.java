@@ -64,7 +64,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         final RubyIO height = heightVar == null ? null : target.getInstVarBySymbol(heightVar);
 
         final SchemaPath dataBlackboxTarget = path.findLast();
-        final SchemaPath.EmbedDataKey blackboxKey = new SchemaPath.EmbedDataKey(this, targV);
+        final SchemaPath.EmbedDataKey blackboxKey = new SchemaPath.EmbedDataKey(this, targV, RubyTableSchemaElement.class, "blackbox");
 
         int gridSize = getGridSize();
         final UIGrid uig = new UIGrid(gridSize, gridSize, targ.width * targ.height) {

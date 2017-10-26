@@ -7,6 +7,7 @@
 
 package r48.schema.arrays;
 
+import gabien.ui.IFunction;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
@@ -93,22 +94,26 @@ public abstract class ArraySchemaElement extends SchemaElement {
             }
         }
 
-        final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(myUniqueStateInstance, target);
         final SchemaPath keyStoragePath = path.findLast();
 
-        IArrayInterface.IProperty prop = new IArrayInterface.IProperty() {
+        uiHelper.provideInterfaceFrom(uiSVL, new IFunction<String, IArrayInterface.IProperty>() {
             @Override
-            public void accept(Double v) {
-                keyStoragePath.getEmbedMap(launcher).put(myKey, v);
-            }
+            public IArrayInterface.IProperty apply(String s) {
+                final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(myUniqueStateInstance, target, uiHelper.getClass(), s);
 
-            @Override
-            public Double get() {
-                return keyStoragePath.getEmbedSP(launcher, myKey);
-            }
-        };
+                return new IArrayInterface.IProperty() {
+                    @Override
+                    public void accept(Double v) {
+                        keyStoragePath.getEmbedMap(launcher).put(myKey, v);
+                    }
 
-        uiHelper.provideInterfaceFrom(uiSVL, prop, positions.toArray(new IArrayInterface.ArrayPosition[0]));
+                    @Override
+                    public Double get() {
+                        return keyStoragePath.getEmbedSP(launcher, myKey);
+                    }
+                };
+            }
+        }, positions.toArray(new IArrayInterface.ArrayPosition[0]));
 
         int h = 0;
         for (UIElement uie : uiSVL.panels)

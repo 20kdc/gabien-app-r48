@@ -11,6 +11,7 @@ import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
+import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
@@ -92,7 +93,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     //  this causes awful scroll loss, so instead nab the regenerator (it's not like the regenerator uses it for anything)
     // PREFERABLY avoid regeneration of schema objects that are reusable (RPGCommandSchemaElement was fixed this way)
     public static UIScrollLayout createScrollSavingSVL(final SchemaPath path, final ISchemaHost host, final SchemaElement elem, final RubyIO target) {
-        final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(elem, target);
+        final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(elem, target, AggregateSchemaElement.class, "N/scrollSavingSVL");
         final SchemaPath keyStoragePath = path.findLast();
         final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize) {
             @Override
@@ -103,6 +104,33 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
         };
         uiSVL.scrollbar.scrollPoint = keyStoragePath.getEmbedSP(host, myKey);
         return uiSVL;
+    }
+
+    // Only to be used if this button is known to cause changeOccurred.
+    // The Runnable is an "undo" for if it's uncertain - needs to be triggered on updateAndRender.
+    public static Runnable hookButtonForPressPreserve(final SchemaPath path, final ISchemaHost host, final SchemaElement elem, final RubyIO target, final UITextButton utb, final String id) {
+        final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(elem, target, AggregateSchemaElement.class, "B/" + id);
+        final SchemaPath keyStoragePath = path.findLast();
+        final Runnable saver = new Runnable() {
+            @Override
+            public void run() {
+                keyStoragePath.getEmbedMap(host).put(myKey, 0d);
+            }
+        };
+        final Runnable next = utb.OnClick;
+        utb.OnClick = new Runnable() {
+            @Override
+            public void run() {
+                if (next != null)
+                    next.run();
+                keyStoragePath.getEmbedMap(host).put(myKey, 1d);
+            }
+        };
+        if (keyStoragePath.getEmbedSP(host, myKey) != 0d) {
+            utb.state = true;
+            utb.PressedTime = 0.5d;
+        }
+        return saver;
     }
 
     @Override

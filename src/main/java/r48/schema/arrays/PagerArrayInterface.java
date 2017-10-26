@@ -14,7 +14,7 @@ import java.util.LinkedList;
  */
 public class PagerArrayInterface implements IArrayInterface {
     @Override
-    public void provideInterfaceFrom(UIScrollLayout svl, final IProperty prop, final ArrayPosition[] positions) {
+    public void provideInterfaceFrom(UIScrollLayout svl, final IFunction<String, IProperty> prop, final ArrayPosition[] positions) {
         LinkedList<UIElement> uie = new LinkedList<UIElement>();
         for (int i = 0; i < positions.length; i++) {
             if (positions[i].core != null) {
@@ -85,11 +85,12 @@ public class PagerArrayInterface implements IArrayInterface {
         String[] str = new String[uie.size()];
         for (int i = 0; i < str.length; i++)
             str[i] = Integer.toString(i + 1);
+        final IProperty prop2 = prop.apply("page");
         UITabPane utp = new UITabPane(str, uie.toArray(new UIElement[0]), FontSizes.tabTextHeight) {
             @Override
             public void selectTab(int i) {
                 super.selectTab(i);
-                prop.accept((double) i);
+                prop2.accept((double) i);
             }
         };
         int h = utp.tabBarHeight;
@@ -97,7 +98,7 @@ public class PagerArrayInterface implements IArrayInterface {
             h = Math.max(h, ue.getBounds().height + utp.tabBarHeight);
         utp.setBounds(new Rect(0, 0, 200, h));
         svl.panels.add(utp);
-        int state = (int) ((double) prop.get());
+        int state = (int) ((double) prop2.get());
         if (state < 0)
             state = 0;
         if (state >= utp.tabElems.length)

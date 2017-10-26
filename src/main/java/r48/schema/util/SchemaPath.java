@@ -269,10 +269,13 @@ public class SchemaPath {
     public static class EmbedDataKey {
         public final SchemaElement key1;
         public final RubyIO key2;
+        public final String property;
 
-        public EmbedDataKey(SchemaElement key1, RubyIO key2) {
+        // propIdClass is so all properties are class-local on top of being schema-element-local.
+        public EmbedDataKey(SchemaElement key1, RubyIO key2, Class propIdClass, String prop) {
             this.key1 = key1;
             this.key2 = key2;
+            property = propIdClass + ":" + prop;
         }
 
         @Override
@@ -280,12 +283,12 @@ public class SchemaPath {
             if (!(o instanceof EmbedDataKey))
                 return false;
             EmbedDataKey edk = (EmbedDataKey) o;
-            return (edk.key1 == key1) && (edk.key2 == key2);
+            return (edk.key1 == key1) && (edk.key2 == key2) && (edk.property.equals(property));
         }
 
         @Override
         public int hashCode() {
-            return key1.hashCode() + key2.hashCode();
+            return key1.hashCode() + key2.hashCode() + property.hashCode();
         }
     }
 }
