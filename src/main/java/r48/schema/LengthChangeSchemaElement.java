@@ -7,6 +7,7 @@
 
 package r48.schema;
 
+import gabien.IGrInDriver;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
@@ -43,7 +44,15 @@ public class LengthChangeSchemaElement extends SchemaElement {
                 target.arrVal = rubies;
                 path.changeOccurred(false);
             }
-        }).togglable();
+        }) {
+            final Runnable r = AggregateSchemaElement.hookButtonForPressPreserve(path, launcher, LengthChangeSchemaElement.this, target, this, "main");
+
+            @Override
+            public void updateAndRender(int ox, int oy, double DeltaTime, boolean selected, IGrInDriver igd) {
+                super.updateAndRender(ox, oy, DeltaTime, selected, igd);
+                r.run();
+            }
+        }.togglable();
         r.state = target.arrVal.length == targetLen;
         return r;
     }
