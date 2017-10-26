@@ -10,6 +10,7 @@ package r48;
 import gabien.ui.IConsumer;
 import gabien.ui.ISupplier;
 import gabien.ui.UILabel;
+import gabienapp.Application;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -150,6 +151,7 @@ public class FontSizes {
             String currentEnc = RubyIO.encoding;
             RubyIO.encoding = "UTF-8";
 
+            prepare.addIVar("@secondary_images", new RubyIO().setString(Application.secondaryImageLoadLocation));
             prepare.addIVar("@sysfont", new RubyIO().setString(UILabel.fontOverride));
             prepare.addIVar("@sysfont_ue8", new RubyIO().setBool(UILabel.fontOverrideUE8));
 
@@ -180,6 +182,9 @@ public class FontSizes {
             RubyIO sys2 = dat.getInstVarBySymbol("@sysfont_ue8");
             if (sys2 != null)
                 UILabel.fontOverrideUE8 = sys2.type == 'T';
+            RubyIO sys3 = dat.getInstVarBySymbol("@secondary_images");
+            if (sys3 != null)
+                Application.secondaryImageLoadLocation = sys3.decString();
             return true;
         }
         return false;

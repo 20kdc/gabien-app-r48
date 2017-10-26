@@ -18,12 +18,11 @@ import gabienapp.Application;
  * Created on 29/05/17.
  */
 public class GabienImageLoader implements IImageLoader {
-    public final String prefix, postfix;
+    public final String postfix;
     public final boolean ck;
     public final int r, g, b;
 
-    public GabienImageLoader(String pf, String pp, int cr, int cg, int cb) {
-        prefix = pf;
+    public GabienImageLoader(String pp, int cr, int cg, int cb) {
         postfix = pp;
         ck = true;
         r = cr;
@@ -31,8 +30,7 @@ public class GabienImageLoader implements IImageLoader {
         b = cb;
     }
 
-    public GabienImageLoader(String pf, String pp) {
-        prefix = pf;
+    public GabienImageLoader(String pp) {
         postfix = pp;
         ck = false;
         r = 0;
@@ -44,12 +42,12 @@ public class GabienImageLoader implements IImageLoader {
     public IImage getImage(String name, boolean panorama) {
         IImage error = GaBIEn.getErrorImage();
         if (ck) {
-            IImage core = GaBIEn.getImageCK(Application.autoDetectWindows(prefix + name + postfix), r, g, b);
+            IImage core = GaBIEn.getImageCK(Application.autoDetectWindows(name + postfix), r, g, b);
             if (core == error)
                 return null;
             return core;
         } else {
-            IImage core = GaBIEn.getImage(Application.autoDetectWindows(prefix + name + postfix));
+            IImage core = GaBIEn.getImage(Application.autoDetectWindows(name + postfix));
             if (core == error)
                 return null;
             return core;

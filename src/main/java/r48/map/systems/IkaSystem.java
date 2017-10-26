@@ -7,12 +7,12 @@
 
 package r48.map.systems;
 
-import r48.AppMain;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.IkaEventGraphicRenderer;
 import r48.map.imaging.CacheImageLoader;
+import r48.map.imaging.FixAndSecondaryImageLoader;
 import r48.map.imaging.GabienImageLoader;
 import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.IkaTileRenderer;
@@ -22,7 +22,7 @@ import r48.map.tiles.IkaTileRenderer;
  */
 public class IkaSystem extends MapSystem {
     public IkaSystem() {
-        super(new CacheImageLoader(new GabienImageLoader(AppMain.rootPath + "Pbm/", ".pbm", 0, 0, 0)));
+        super(new CacheImageLoader(new FixAndSecondaryImageLoader("Pbm/", "", new GabienImageLoader(".pbm", 0, 0, 0))));
     }
 
     @Override

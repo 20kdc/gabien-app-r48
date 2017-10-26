@@ -28,6 +28,7 @@ import gabien.IImage;
  */
 public interface IImageLoader {
     // Similar to getImage in the old system.
+    // On error, returns null, unless a cache.
     // "panorama" indicates if *index-based* transparency should be disabled (R2k panoramas)
     IImage getImage(String name, boolean panorama);
 

@@ -26,11 +26,6 @@ import java.io.UnsupportedEncodingException;
  * Created on 02/06/17.
  */
 public class PNG8IImageLoader implements IImageLoader {
-    public final String root;
-
-    public PNG8IImageLoader(String rootPath) {
-        root = rootPath;
-    }
 
     @Override
     public IImage getImage(String name, boolean panorama) {
@@ -38,7 +33,7 @@ public class PNG8IImageLoader implements IImageLoader {
             return null;
         DataInputStream dis = null;
         try {
-            String ad = Application.autoDetectWindows(root + name + ".png");
+            String ad = Application.autoDetectWindows(name + ".png");
             dis = new DataInputStream(GaBIEn.getFile(ad));
             // Magic number blahblahblah
             byte[] magic = new byte[8];

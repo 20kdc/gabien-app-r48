@@ -42,11 +42,11 @@ import java.util.Map;
  */
 public class R2kSystem extends MapSystem implements IRMMapSystem {
     public R2kSystem() {
-        super(new CacheImageLoader(new ChainedImageLoader(new IImageLoader[] {
-                new XYZImageLoader(AppMain.rootPath),
-                new PNG8IImageLoader(AppMain.rootPath),
-                new GabienImageLoader(AppMain.rootPath, ".png")
-        })));
+        super(new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new ChainedImageLoader(new IImageLoader[] {
+                new XYZImageLoader(),
+                new PNG8IImageLoader(),
+                new GabienImageLoader(".png")
+        }))));
     }
 
     @Override

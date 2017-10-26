@@ -36,6 +36,8 @@ public class Application {
 
     public static boolean mobileExtremelySpecialBehavior;
 
+    public static String secondaryImageLoadLocation = "";
+
     public static void gabienmain() throws IOException {
         mobileExtremelySpecialBehavior = GaBIEn.singleWindowApp();
         uiTicker = new WindowCreatingUIElementConsumer();
@@ -100,13 +102,37 @@ public class Application {
             gamepaks.panels.add(new UILabel(TXDB.get("Root Path:"), FontSizes.launcherTextHeight));
 
             rootBox = new UITextBox(FontSizes.launcherTextHeight);
+
             /*
              * If single-window, assume we're on Android, so the user probably wants to be able to use EasyRPG Player
              * Regarding if I'm allowed to do this:
              */
             if (mobileExtremelySpecialBehavior)
                 rootBox.text = "easyrpg/games/R48 Game";
+
             gamepaks.panels.add(rootBox);
+
+            gamepaks.panels.add(new UILabel(TXDB.get("Secondary Image Load Location:"), FontSizes.launcherTextHeight));
+
+            final UITextBox sillBox = new UITextBox(FontSizes.launcherTextHeight);
+            sillBox.text = "";
+            sillBox.onEdit = new Runnable() {
+                @Override
+                public void run() {
+                    secondaryImageLoadLocation = sillBox.text.replace('\\', '/');
+                    if (secondaryImageLoadLocation.length() != 0)
+                        if (!secondaryImageLoadLocation.endsWith("/"))
+                            secondaryImageLoadLocation += "/";
+                    sillBox.text = secondaryImageLoadLocation;
+                }
+            };
+
+            gamepaks.panels.add(new UISplitterLayout(sillBox, new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Save"), new Runnable() {
+                @Override
+                public void run() {
+                    FontSizes.save();
+                }
+            }), false, 1));
 
             gamepaks.panels.add(new UILabel(TXDB.get("Choose Target Engine:"), FontSizes.launcherTextHeight));
 

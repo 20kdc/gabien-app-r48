@@ -7,13 +7,13 @@
 
 package r48.map.systems;
 
-import r48.AppMain;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.NullEventGraphicRenderer;
 import r48.map.imaging.CacheImageLoader;
+import r48.map.imaging.FixAndSecondaryImageLoader;
 import r48.map.imaging.GabienImageLoader;
 import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.NullTileRenderer;
@@ -25,7 +25,7 @@ public class NullSystem extends MapSystem {
     public NullSystem() {
         // Redundant cache as error safety net.
         // Having an explicit "ErrorSafetyNetImageLoader" would just complicate things.
-        super(new CacheImageLoader(new GabienImageLoader(AppMain.rootPath, "")));
+        super(new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new GabienImageLoader(""))));
     }
 
     @Override

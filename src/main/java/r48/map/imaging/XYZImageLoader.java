@@ -20,16 +20,11 @@ import java.util.zip.InflaterInputStream;
  * Created on 31/05/17.
  */
 public class XYZImageLoader implements IImageLoader {
-    public final String root;
-
-    public XYZImageLoader(String rootPath) {
-        root = rootPath;
-    }
 
     @Override
     public IImage getImage(String name, boolean panorama) {
         try {
-            InputStream fis = GaBIEn.getFile(Application.autoDetectWindows(root + name + ".xyz"));
+            InputStream fis = GaBIEn.getFile(Application.autoDetectWindows(name + ".xyz"));
             if (fis.read() != 'X')
                 throw new IOException("Bad magic");
             if (fis.read() != 'Y')
