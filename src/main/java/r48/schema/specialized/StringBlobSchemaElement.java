@@ -82,13 +82,17 @@ public class StringBlobSchemaElement extends SchemaElement {
         return new ByteArrayInputStream(b);
     }
 
+    protected byte[] createDefaultByteArray() {
+        return new byte[0];
+    }
+
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (IntegerSchemaElement.ensureType(target, '\"', setDefault)) {
-            target.strVal = new byte[0];
+            target.strVal = createDefaultByteArray();
             path.changeOccurred(true);
         } else if (target.strVal == null) {
-            target.strVal = new byte[0];
+            target.strVal = createDefaultByteArray();
             path.changeOccurred(true);
         }
     }

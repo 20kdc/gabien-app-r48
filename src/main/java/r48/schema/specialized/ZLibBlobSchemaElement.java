@@ -8,6 +8,8 @@
 package r48.schema.specialized;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.InflaterInputStream;
@@ -30,4 +32,23 @@ public class ZLibBlobSchemaElement extends StringBlobSchemaElement {
         return new InflaterInputStream(new ByteArrayInputStream(b));
     }
 
+    @Override
+    protected byte[] createDefaultByteArray() {
+        try {
+            DeflaterInputStream dis = new DeflaterInputStream(new ByteArrayInputStream(new byte[0]));
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] block = new byte[512];
+            while (true) {
+                int r = dis.read(block);
+                if (r <= 0)
+                    break;
+                baos.write(block, 0, r);
+            }
+            dis.close();
+            return baos.toByteArray();
+        } catch (IOException ie) {
+            ie.printStackTrace();
+            return new byte[0];
+        }
+    }
 }
