@@ -103,7 +103,7 @@ public class ObjectDB {
             newlyCreatedObjects.remove(rio);
         } catch (Exception ioe) {
             // ERROR!
-            AppMain.launchDialog(TXDB.get("Error: ") + ioe);
+            AppMain.launchDialog(TXDB.get("Error saving object: ") + id + "\n" + ioe);
             ioe.printStackTrace();
         }
     }

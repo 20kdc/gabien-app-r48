@@ -337,7 +337,9 @@ C name Class.RPG::State @id @name | State #A: #B
 @gameover_me RPG::AudioFile
 @battler_name f_battler_name
 @battler_hue hue
-@party_members subwindow array 0 OPAQUE
+ Believe it or not, not AL1 (see OneShot remake, Melolune)
+ The behavior appears to be that the player's party is given the first actor in the database.
+@party_members subwindow array 0 actor_id
 @battle_transition string
 @test_battlers subwindow array 0 subwindow RPG::System::TestBattler
 @test_troop_id int
@@ -347,6 +349,7 @@ C name Class.RPG::State @id @name | State #A: #B
 @start_x int= 1
 @start_y int= 1
 @start_map_id int= 1
++mapPositionHelper @start_map_id @start_x @start_y
 @edit_map_id int= 1
 
 > File.System RPG::System
