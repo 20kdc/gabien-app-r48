@@ -87,7 +87,7 @@ C name Class.RPG::Actor @name | #A
 @editor_use_skillspanel_name boolean
 @state_ranks subwindow hash state_id rpg_statattr_rank
 @element_ranks subwindow hash attribute_id rpg_statattr_rank
-+optP @battle_commands_2k3 subwindow RPG::BCA
+@battle_commands_2k3 subwindow RPG::BCA
 
  ---
 
