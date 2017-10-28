@@ -21,6 +21,7 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
     public UIScrollbar hueScroll, alphaScroll;
     public UISplitterLayout alphaContainer;
     public UIColourSwatch swatch;
+    public UITextButton confirmer;
 
     public UIColourPicker(IConsumer<Integer> iConsumer, boolean alpha) {
         super();
@@ -38,7 +39,7 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
                 }
                 super.updateAndRender(ox, oy, deltaTime, select, igd);
                 int margin = currentMainSpriteScale * 4;
-                Art.drawSelectionBox(ox + ((x * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - margin, oy + ((y * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - margin, margin + 1, margin + 1, 1, igd);
+                Art.drawSelectionBox(ox + ((x * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - (margin / 2), oy + ((y * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - (margin / 2), margin + 1, margin + 1, 1, igd);
             }
 
             @Override
@@ -85,12 +86,22 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
         colourPanel.imageSW = 256;
         colourPanel.imageSH = 256;
         currentMainSpriteScale = Math.max(1, FontSizes.getSpriteScale() / 2);
+        confirmer = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Set Colour"), new Runnable() {
+            @Override
+            public void run() {
+                if (result != null) {
+                    result.accept(swatch.col);
+                    result = null;
+                }
+            }
+        });
         allElements.add(colourPanel);
         allElements.add(hueScroll);
         if (alpha)
             allElements.add(alphaContainer);
         allElements.add(swatch);
-        setBounds(new Rect(0, 0, (currentMainSpriteScale * 256) + hueScroll.getBounds().width, (currentMainSpriteScale * 256) + (alphaScrollH * (alpha ? 2 : 1))));
+        allElements.add(confirmer);
+        setBounds(new Rect(0, 0, (currentMainSpriteScale * 256) + hueScroll.getBounds().width, (currentMainSpriteScale * 256) + (alphaScrollH * (alpha ? 1 : 0)) + FontSizes.generalScrollersize + confirmer.getBounds().height));
     }
 
     @Override
@@ -121,17 +132,19 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
             alphaContainer.setBounds(new Rect(0, currentMainSpriteScale * 256, r.width, abh));
         }
         swatch.setBounds(new Rect(0, (currentMainSpriteScale * 256) + abo, r.width, abh));
+        confirmer.setBounds(new Rect(0, (currentMainSpriteScale * 256) + abo + abh, r.width, confirmer.getBounds().height));
         super.setBounds(r);
     }
 
     @Override
     public boolean wantsSelfClose() {
-        return false;
+        return result == null;
     }
 
     @Override
     public void windowClosed() {
-        result.accept(swatch.col);
+        if (result != null)
+            result.accept(null);
     }
 
     @Override

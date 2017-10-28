@@ -25,6 +25,9 @@ import r48.ui.UIGrid;
 public class UIImageEditView extends UIElement {
     public int[] image = new int[1024];
     public int imageW = 32, imageH = 32, cursorX = 16, cursorY = 16, zoom = FontSizes.getSpriteScale() * 16;
+    public boolean camMode = true, dragging;
+    public int dragLastX, dragLastY;
+    public double camX, camY;
     public int gridW = 16, gridH = 16, gridOX = 0, gridOY = 0;
     public Runnable colour;
 
@@ -73,11 +76,13 @@ public class UIImageEditView extends UIElement {
         Rect zPlus = Art.getZIconRect(false, 0);
         Rect zPlusFull = Art.getZIconRect(true, 0);
         Rect zMinus = Art.getZIconRect(false, 1);
+        Rect zDrag = Art.getZIconRect(false, 2);
         int textX = zPlusFull.x + zPlusFull.width;
         String text = cursorX + ", " + cursorY;
         UILabel.drawLabel(igd, bounds.width - (textX + zPlus.x), ox + textX, oy + zPlus.y, text, 0, FontSizes.mapPositionTextHeight);
         Art.drawZoom(igd, true, zPlus.x + ox, zPlus.y + oy, zPlus.height);
         Art.drawZoom(igd, false, zMinus.x + ox, zMinus.y + oy, zMinus.height);
+        Art.drawDragControl(igd, camMode, zDrag.x + ox, zDrag.y + oy, zDrag.height);
     }
 
     private Rect getLocalGridRect(Rect viewRct) {
@@ -88,13 +93,12 @@ public class UIImageEditView extends UIElement {
 
     private Rect getViewRect() {
         Rect bounds = getBounds();
-        int camOfsX = -((cursorX * zoom) + (zoom / 2));
-        int camOfsY = -((cursorY * zoom) + (zoom / 2));
-        return new Rect(camOfsX + (bounds.width / 2), camOfsY + (bounds.height / 2), imageW * zoom, imageH * zoom);
+        return new Rect((int) (camX * zoom) + (bounds.width / 2), (int) (camY * zoom) + (bounds.height / 2), imageW * zoom, imageH * zoom);
     }
 
     @Override
     public void handleClick(int x, int y, int button) {
+        dragging = false;
         if (button != 1)
             return;
         if (Art.getZIconRect(true, 0).contains(x, y)) {
@@ -105,16 +109,41 @@ public class UIImageEditView extends UIElement {
             handleMousewheel(x, y, false);
             return;
         }
-        Rect bounds = getViewRect();
-        int nx = UIGrid.sensibleCellDiv(x - bounds.x, zoom);
-        int ny = UIGrid.sensibleCellDiv(y - bounds.y, zoom);
-        nx -= UIGrid.sensibleCellDiv(nx, imageW) * imageW;
-        ny -= UIGrid.sensibleCellDiv(ny, imageH) * imageH;
-        if (nx == cursorX)
-            if (ny == cursorY)
+        if (Art.getZIconRect(true, 2).contains(x, y)) {
+            camMode = !camMode;
+            return;
+        }
+        dragging = true;
+        dragLastX = x;
+        dragLastY = y;
+        handleAct(x, y, true);
+    }
+
+    @Override
+    public void handleDrag(int x, int y) {
+        handleAct(x, y, false);
+        dragLastX = x;
+        dragLastY = y;
+    }
+
+    public void handleAct(int x, int y, boolean first) {
+        if (!dragging)
+            return;
+        if (camMode) {
+            camX += (x - dragLastX) / (double) zoom;
+            camY += (y - dragLastY) / (double) zoom;
+        } else {
+            Rect bounds = getViewRect();
+            int nx = UIGrid.sensibleCellDiv(x - bounds.x, zoom);
+            int ny = UIGrid.sensibleCellDiv(y - bounds.y, zoom);
+            nx -= UIGrid.sensibleCellDiv(nx, imageW) * imageW;
+            ny -= UIGrid.sensibleCellDiv(ny, imageH) * imageH;
+            boolean perform = (first || (nx != cursorX) || (ny != cursorY)) && !camMode;
+            cursorX = nx;
+            cursorY = ny;
+            if (perform)
                 colour.run();
-        cursorX = nx;
-        cursorY = ny;
+        }
     }
 
     @Override

@@ -132,6 +132,8 @@ public class ImageEditorController {
                 windowMaker.get().accept(new UIColourPicker(new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
+                        if (integer == null)
+                            return;
                         palette.add(integer);
                         initPalette();
                     }
@@ -192,7 +194,7 @@ public class ImageEditorController {
                 }, TXDB.get("Resize..."));
             }
         }));
-        paletteView.panels.add(new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Regrid"), new Runnable() {
+        paletteView.panels.add(new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Grid Size"), new Runnable() {
             @Override
             public void run() {
                 showXYChanger(new Rect(imageEditView.gridOX, imageEditView.gridOY, imageEditView.gridW, imageEditView.gridH), new IConsumer<Rect>() {
@@ -205,12 +207,14 @@ public class ImageEditorController {
                     }
                 }, TXDB.get("Change Grid..."));
             }
-        }), new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("RCGrid"), new Runnable() {
+        }), new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Colour"), new Runnable() {
             @Override
             public void run() {
                 windowMaker.get().accept(new UIColourPicker(new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
+                        if (integer == null)
+                            return;
                         imageEditView.gridColour = integer & 0xFFFFFF;
                     }
                 }, false));
@@ -252,18 +256,9 @@ public class ImageEditorController {
                         selPaletteIndex = fidx;
                         initPalette();
                     }
-                    applyCursor();
                 }
             }), cPanel, false, 0.0d);
-            paletteView.panels.add(new UIAppendButton("O", cPanel, new Runnable() {
-                @Override
-                public void run() {
-                    if (fidx != selPaletteIndex) {
-                        selPaletteIndex = fidx;
-                        initPalette();
-                    }
-                }
-            }, FontSizes.schemaButtonTextHeight));
+            paletteView.panels.add(cPanel);
             idx++;
         }
         paletteView.setBounds(paletteView.getBounds());
