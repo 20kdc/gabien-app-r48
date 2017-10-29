@@ -43,27 +43,36 @@ public class UIImageEditView extends UIElement {
     public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
         Rect bounds = getBounds();
         Rect viewRct = getViewRect();
-        // Maybe cache this for perf.
+        // Maybe cache this for perf. Acts like a more precise scissor for now.
         IGrDriver osb = GaBIEn.makeOffscreenBuffer(bounds.width, bounds.height, false);
         osb.clearRect(32, 32, 32, 0, 0, bounds.width, bounds.height);
         int gcR = (gridColour >> 16) & 0xFF;
         int gcG = (gridColour >> 8) & 0xFF;
         int gcB = gridColour & 0xFF;
         osb.clearRect(gcR / 3, gcG / 3, gcB / 3, viewRct.x, viewRct.y, viewRct.width, viewRct.height);
+        // viewRct is in zoomed osb-local coordinates.
+        // It's the rectangle of the image.
+        // localGrid is in zoomed osb-local coordinates.
+        // It's X/Y is the viewrect x/y + the grid offset - 1 grid cell (so the offset stuff is correct) scaled,
+        //  and it's W/H is the grid size scaled.
         Rect localGrid = getLocalGridRect(viewRct);
-        boolean primaryX = (UIGrid.sensibleCellDiv(cursorX - gridOX, gridW) & 1) != 0;
-        boolean primaryY = (UIGrid.sensibleCellDiv(cursorY - gridOY, gridH) & 1) != 0;
-        int gridReach = 9;
-        for (int i = 0; i < (gridReach * gridReach); i++) {
-            int ofx = ((i % gridReach) - (gridReach / 2)) * localGrid.width;
-            int ofy = ((i / gridReach) - (gridReach / 2)) * localGrid.height;
-            int o = 0x80;
-            boolean light = ((i & 1) != 0) ^ primaryX ^ primaryY;
-            if (light)
-                o = 0xC0;
-            Rect subLocalGrid = viewRct.getIntersection(new Rect(localGrid.x + ofx, localGrid.y + ofy, localGrid.width, localGrid.height));
-            if (subLocalGrid != null)
-                osb.clearRect((gcR * o) / 255, (gcG * o) / 255, (gcB * o) / 255, subLocalGrid.x, subLocalGrid.y, subLocalGrid.width, subLocalGrid.height);
+        boolean outerFlip = false;
+        for (int ofx = (localGrid.x - (gridW * zoom)); ofx < (viewRct.x + viewRct.width); ofx += localGrid.width) {
+            Rect testGrid = viewRct.getIntersection(new Rect(ofx, viewRct.y, localGrid.width, viewRct.height));
+            if (testGrid == null)
+                continue;
+            int i = outerFlip ? 1 : 0;
+            outerFlip = !outerFlip;
+            for (int ofy = (localGrid.y - (gridH * zoom)); ofy < (viewRct.y + viewRct.height); ofy += localGrid.height) {
+                int o = 0x80;
+                boolean light = ((i & 1) != 0);
+                if (light)
+                    o = 0xC0;
+                Rect subLocalGrid = viewRct.getIntersection(new Rect(ofx, ofy, localGrid.width, localGrid.height));
+                if (subLocalGrid != null)
+                    osb.clearRect((gcR * o) / 255, (gcG * o) / 255, (gcB * o) / 255, subLocalGrid.x, subLocalGrid.y, subLocalGrid.width, subLocalGrid.height);
+                i++;
+            }
         }
         IImage tempImg = createImg();
         osb.blitScaledImage(0, 0, imageW, imageH, viewRct.x, viewRct.y, viewRct.width, viewRct.height, tempImg);
@@ -86,9 +95,13 @@ public class UIImageEditView extends UIElement {
     }
 
     private Rect getLocalGridRect(Rect viewRct) {
-        int localAnchorX = (UIGrid.sensibleCellDiv(cursorX - gridOX, gridW) * gridW) + gridOX;
-        int localAnchorY = (UIGrid.sensibleCellDiv(cursorY - gridOY, gridH) * gridH) + gridOY;
-        return new Rect(viewRct.x + (localAnchorX * zoom), viewRct.y + (localAnchorY * zoom), gridW * zoom, gridH * zoom);
+        int localAnchorX = gridOX % gridW;
+        if (localAnchorX != 0)
+            localAnchorX -= gridW * zoom;
+        int localAnchorY = gridOY % gridH;
+        if (localAnchorY != 0)
+            localAnchorY -= gridH * zoom;
+        return new Rect(viewRct.x + localAnchorX, viewRct.y + localAnchorY, gridW * zoom, gridH * zoom);
     }
 
     private Rect getViewRect() {
