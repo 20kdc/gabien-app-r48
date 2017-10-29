@@ -18,15 +18,22 @@ import r48.schema.util.SchemaPath;
  */
 public class HalfsplitSchemaElement extends SchemaElement {
     public SchemaElement a, b;
+    public double weight = 0.5d;
 
     public HalfsplitSchemaElement(SchemaElement va, SchemaElement vb) {
         a = va;
         b = vb;
     }
 
+    public HalfsplitSchemaElement(SchemaElement va, SchemaElement vb, double wei) {
+        a = va;
+        b = vb;
+        weight = wei;
+    }
+
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-        return new UISplitterLayout(a.buildHoldingEditor(target, launcher, path), b.buildHoldingEditor(target, launcher, path), false, 0.5d);
+        return new UISplitterLayout(a.buildHoldingEditor(target, launcher, path), b.buildHoldingEditor(target, launcher, path), false, weight);
     }
 
     @Override

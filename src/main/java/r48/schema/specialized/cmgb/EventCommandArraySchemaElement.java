@@ -7,10 +7,7 @@
 
 package r48.schema.specialized.cmgb;
 
-import gabien.ui.IFunction;
-import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -18,10 +15,7 @@ import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.dbs.SDB;
 import r48.dbs.TXDB;
-import r48.schema.AggregateSchemaElement;
-import r48.schema.ArrayElementSchemaElement;
-import r48.schema.SchemaElement;
-import r48.schema.SubwindowSchemaElement;
+import r48.schema.*;
 import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.arrays.StandardArrayInterface;
 import r48.schema.util.ISchemaHost;
@@ -158,7 +152,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         return new SubwindowSchemaElement(baseElement, new IFunction<RubyIO, String>() {
             @Override
             public String apply(RubyIO rubyIO) {
-                return database.buildCodename(rubyIO, true);
+                return TXDB.get("This text should not be visible. Grouping is used for all commands.");
             }
         });
     }
@@ -214,10 +208,34 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    protected SubwindowSchemaElement getElementContextualSchema(RubyIO[] arr, final int start, final int length) {
+    protected SchemaElement getElementContextualSchema(RubyIO[] arr, final int start, final int length) {
         // Record the first RubyIO of the group.
         // getGroupElement seeks for it now, so it "tracks" the group properly despite array changes.
         final RubyIO tracker = arr[start];
+        return new HalfsplitSchemaElement(new SchemaElement() {
+            @Override
+            public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+                UIPanel indentPad = new UIPanel();
+                int h = UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height;
+                int indent = 0;
+                if (tracker.getInstVarBySymbol("@indent") != null)
+                    indent = (int) tracker.getInstVarBySymbol("@indent").fixnumVal;
+                if (indent < 0)
+                    indent = 0;
+                indentPad.setBounds(new Rect(0, 0, h * indent, h));
+                return indentPad;
+            }
+
+            @Override
+            public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+
+            }
+        }, getElementContextualSubwindowSchema(tracker, start), 0d);
+    }
+
+    private SubwindowSchemaElement getElementContextualSubwindowSchema(final RubyIO tracker, final int start) {
+        // The reason why the inside changes index but the outside doesn't care,
+        //  is because the subwindow gets recreated anytime a change happens, while the inside doesn't.
         return new SubwindowSchemaElement(new SchemaElement() {
             public int actualStart(RubyIO target) {
                 for (int i = 0; i < target.arrVal.length; i++)
@@ -259,7 +277,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         //  1. the inner-schema always uses the 'path' path.
         //  2. the path constructed must have "back" going to inside the command, then to the array
         //     (so the user knows the command was added anyway)
-        SubwindowSchemaElement targ = getElementContextualSchema(target.arrVal, i, getGroupLength(target.arrVal, i));
+        SubwindowSchemaElement targ = getElementContextualSubwindowSchema(target.arrVal[i], i);
         path = path.newWindow(targ.heldElement, target);
         path = path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]");
         // Ok, now navigate to the command selector

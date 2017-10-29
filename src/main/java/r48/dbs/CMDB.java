@@ -336,12 +336,8 @@ public class CMDB {
         RubyIO indentValue = target.getInstVarBySymbol("@indent");
         if ((indentValue != null) && indent) {
             int len = (int) target.getInstVarBySymbol("@indent").fixnumVal;
-            if (len < 0) {
-                spc += "(INDTERR" + len + ")";
-            } else {
-                for (int i = 0; i < len; i++)
-                    spc += "_";
-            }
+            if (len < 0)
+                spc += "(INDTERR" + len + ") ";
         }
         return spc + ext;
     }
