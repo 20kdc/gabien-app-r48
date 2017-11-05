@@ -91,6 +91,6 @@ public class UITileGrid extends UIGrid {
             }
             t += def;
         }
-        renderer.tileRenderer.drawTile(layer, (short) t, x, y, igd, tileSizeW / spriteScale, FontSizes.getSpriteScale());
+        renderer.tileRenderer.drawTile(layer, (short) t, x, y, igd, FontSizes.getSpriteScale());
     }
 }

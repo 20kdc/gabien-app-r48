@@ -63,7 +63,7 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
                     short tidx = targetTable.getTiletype(i, j, tileLayer);
                     if (callbacks != null)
                         tidx = callbacks.shouldDrawAt(mouseXT, mouseYT, i, j, tidx, tileLayer, currentLayer);
-                    tr.drawTile(tileLayer, tidx, px, py, igd, eTileSize, 1);
+                    tr.drawTile(tileLayer, tidx, px, py, igd, 1);
                 }
             }
         }

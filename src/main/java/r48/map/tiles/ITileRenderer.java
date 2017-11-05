@@ -26,7 +26,7 @@ public interface ITileRenderer {
     // spriteScale is used in most situations, but not UIMapView.
     // There, it is instead done "in bulk" on an offscreen buffer,
     //  since the offscreen buffer had to be used anyway for *other* efficiency reasons.
-    void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets, int spriteScale);
+    void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale);
 
     UITileGrid[] createATUIPlanes(UIMapView mv);
 

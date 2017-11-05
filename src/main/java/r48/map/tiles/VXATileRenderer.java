@@ -59,7 +59,7 @@ public class VXATileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets, int spriteScale) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale) {
         if (tileset == null)
             return; // just don't bother.
         // MKXP repository links to http://www.tktkgame.com/tkool/memo/vx/tile_id.html
@@ -89,7 +89,7 @@ public class VXATileRenderer implements ITileRenderer {
 
         // Shadow layer.
         if (layer == 3) {
-            int st = ((ets * spriteScale) / 2);
+            int st = ((tileSize * spriteScale) / 2);
             drawShadowTileFlag(tidx, 1, px, py, igd, st);
             drawShadowTileFlag(tidx, 2, px + st, py, igd, st);
             drawShadowTileFlag(tidx, 4, px, py + st, igd, st);
@@ -105,7 +105,7 @@ public class VXATileRenderer implements ITileRenderer {
 
         if (plane >= 0)
             if (plane < 4)
-                if (handleMTLayer(tidx, ets, px, py, plane + 5, igd, spriteScale))
+                if (handleMTLayer(tidx, tileSize, px, py, plane + 5, igd, spriteScale))
                     return;
 
         int mode = (int) tileset.getInstVarBySymbol("@mode").fixnumVal;
@@ -115,29 +115,29 @@ public class VXATileRenderer implements ITileRenderer {
         // Notice only 3 planes are allocated - that's 2 rows of 3 ATs.
         if (plane >= 8)
             if (plane <= 0x0A)
-                if (handleSATLayer(tidx, 0x0800, ets, px, py, 0, igd, mode, spriteScale))
+                if (handleSATLayer(tidx, 0x0800, tileSize, px, py, 0, igd, mode, spriteScale))
                     return;
 
         if (plane >= 0x0B)
             if (plane <= 0x10)
-                if (handleSATLayer(tidx, 0x0B00, ets, px, py, 1, igd, mode, spriteScale))
+                if (handleSATLayer(tidx, 0x0B00, tileSize, px, py, 1, igd, mode, spriteScale))
                     return;
 
         // Secondary 'Wall' AT Planes (Part 3 and 4). These use AT Type 1 "wall".
 
         if (plane >= 0x11)
             if (plane <= 0x16)
-                if (handleSATLayer(tidx, 0x1100, ets, px, py, 2, igd, mode, spriteScale))
+                if (handleSATLayer(tidx, 0x1100, tileSize, px, py, 2, igd, mode, spriteScale))
                     return;
         if (plane >= 0x17)
             if (plane <= 0x1F)
-                if (handleSATLayer(tidx, 0x1700, ets, px, py, 3, igd, mode, spriteScale))
+                if (handleSATLayer(tidx, 0x1700, tileSize, px, py, 3, igd, mode, spriteScale))
                     return;
 
         // Plane 6 (Part 5)
 
         if (plane == 6)
-            if (handleMTLayer(tidx, ets, px, py, 4, igd, spriteScale))
+            if (handleMTLayer(tidx, tileSize, px, py, 4, igd, spriteScale))
                 return;
 
         UILabel.drawString(igd, px, py, Integer.toHexString(tidx), false, FontSizes.mapDebugTextHeight);

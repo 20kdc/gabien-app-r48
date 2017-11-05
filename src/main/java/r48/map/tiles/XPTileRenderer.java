@@ -57,7 +57,7 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets, int spriteScale) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale) {
         // The logic here is only documented in the mkxp repository, in tilemap.cpp.
         // I really hope it doesn't count as stealing here,
         //  if I would've had to have typed this code ANYWAY
@@ -70,7 +70,7 @@ public class XPTileRenderer implements ITileRenderer {
             tidx %= 48;
             boolean didDraw = false;
             if (tilesetMaps[atMap] != null) {
-                didDraw = didDraw || generalOldRMATField(0, 0, tidx, 0, tileSize, ets, px, py, igd, tilesetMaps[atMap], spriteScale);
+                didDraw = didDraw || generalOldRMATField(0, 0, tidx, 0, tileSize, px, py, igd, tilesetMaps[atMap], spriteScale);
             } else {
                 didDraw = true; // It's invisible, so it should just be considered drawn no matter what
             }
@@ -83,12 +83,12 @@ public class XPTileRenderer implements ITileRenderer {
         int tx = tidx % tsh;
         int ty = tidx / tsh;
         if (tilesetMaps[0] != null)
-            RMEventGraphicRenderer.flexibleSpriteDraw(tx * tileSize, ty * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, tilesetMaps[0], 0, igd);
+            RMEventGraphicRenderer.flexibleSpriteDraw(tx * tileSize, ty * tileSize, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, tilesetMaps[0], 0, igd);
     }
 
     // Used by 2k3 support too, since it follows the same AT design
-    public static boolean generalOldRMATField(int tox, int toy, int subfield, int atFieldType, int fTileSize, int ets, int px, int py, IGrDriver igd, IImage img, int spriteScale) {
-        if ((ets == fTileSize) && (AppMain.autoTiles[atFieldType] != null)) {
+    public static boolean generalOldRMATField(int tox, int toy, int subfield, int atFieldType, int fTileSize, int px, int py, IGrDriver igd, IImage img, int spriteScale) {
+        if (AppMain.autoTiles[atFieldType] != null) {
             if (subfield >= AppMain.autoTiles[atFieldType].entries.length)
                 return false;
             ATDB.Autotile at = AppMain.autoTiles[atFieldType].entries[subfield];
@@ -105,9 +105,6 @@ public class XPTileRenderer implements ITileRenderer {
                     }
                 return true;
             }
-        } else {
-            RMEventGraphicRenderer.flexibleSpriteDraw(tox + fTileSize, toy + (2 * fTileSize), ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, img, 0, igd);
-            return true;
         }
         return false;
     }

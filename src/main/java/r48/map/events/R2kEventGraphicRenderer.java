@@ -78,7 +78,7 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
             RMEventGraphicRenderer.flexibleSpriteDraw(sx * px, sy * py, sx, sy, (ox + (8 * sprScale)) - ((sx * sprScale) / 2), (oy - (sy * sprScale)) + (16 * sprScale), sx * sprScale, sy * sprScale, 0, i, blendType, igd);
         } else {
             // ok, so in this case it's a tile. In the index field.
-            tileRenderer.drawTile(0, (short) (target.getInstVarBySymbol("@character_index").fixnumVal + 10000), ox, oy, igd, 16, sprScale);
+            tileRenderer.drawTile(0, (short) (target.getInstVarBySymbol("@character_index").fixnumVal + 10000), ox, oy, igd, sprScale);
         }
     }
 

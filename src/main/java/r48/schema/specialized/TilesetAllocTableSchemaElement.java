@@ -51,9 +51,9 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
         int sprScale = FontSizes.getSpriteScale();
         int height = 32 * sprScale;
         if (allocSource.mapping != null) {
-            osr.tileRenderer.drawTile(0, (short) allocSource.mapping[t], x, y + (height - (ts * sprScale)), igd, ts, sprScale);
+            osr.tileRenderer.drawTile(0, (short) allocSource.mapping[t], x, y + (height - (ts * sprScale)), igd, sprScale);
         } else {
-            osr.tileRenderer.drawTile(0, (short) t, x, y + (height - ts), igd, ts, sprScale);
+            osr.tileRenderer.drawTile(0, (short) t, x, y + (height - ts), igd, sprScale);
         }
         for (TSDB.TSPicture tsp : allocSource.pictures) {
             if (!tsp.acceptable.apply(t))

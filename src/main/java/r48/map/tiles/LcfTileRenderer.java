@@ -26,6 +26,7 @@ import java.util.LinkedList;
  */
 public class LcfTileRenderer implements ITileRenderer {
     public final IImage chipset;
+    public static final int tileSize = 16;
 
     public LcfTileRenderer(IImageLoader imageLoader, RubyIO tso) {
         if (tso != null) {
@@ -37,11 +38,11 @@ public class LcfTileRenderer implements ITileRenderer {
 
     @Override
     public int getTileSize() {
-        return 16;
+        return tileSize;
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int ets, int spriteScale) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale) {
         if (chipset == null)
             return;
         // There are 288 "Common Tiles" (non-AT) divided into upper and lower layer tiles.
@@ -49,9 +50,9 @@ public class LcfTileRenderer implements ITileRenderer {
         // Two pages of 144 each.
         // Everything here makes more sense in decimal.
         if ((tidx >= 5000) && (tidx < 6000))
-            handleCommonPage(5000, 0, tidx, px, py, igd, chipset, ets, spriteScale);
+            handleCommonPage(5000, 0, tidx, px, py, igd, chipset, spriteScale);
         if ((tidx >= 10000) && (tidx < 11000))
-            handleCommonPage(10000, 1, tidx, px, py, igd, chipset, ets, spriteScale);
+            handleCommonPage(10000, 1, tidx, px, py, igd, chipset, spriteScale);
         // This is a possible *50-wide AT Field!!!!!* Well, 12 of them.
         // Terrain ATs are laid out as follows on the image:
         // ??45
@@ -67,7 +68,7 @@ public class LcfTileRenderer implements ITileRenderer {
 
             int fx = ((field % 2) * 3) + ((field / 8) * 6);
             int fy = ((field / 2) % 4) * 4;
-            handleATField(subfield, fx, fy, px, py, igd, chipset, ets, spriteScale);
+            handleATField(subfield, fx, fy, px, py, igd, chipset, spriteScale);
             // igd.drawText(px, py, 255, 255, 255, 8, Integer.toString(field));
         }
 
@@ -87,7 +88,7 @@ public class LcfTileRenderer implements ITileRenderer {
             s = Math.floor(s);
             int f = (int) s;
             f %= 4;
-            RMEventGraphicRenderer.flexibleSpriteDraw(48 + (field * 16), 64 + (f * 16), ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, chipset, 0, igd);
+            RMEventGraphicRenderer.flexibleSpriteDraw(48 + (field * 16), 64 + (f * 16), tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, chipset, 0, igd);
         }
 
         // Water tiles are yet another 50-entry AT field, seemingly of a different type.
@@ -142,11 +143,11 @@ public class LcfTileRenderer implements ITileRenderer {
                 baseY += 48;
             }
 
-            handleWATField(tSubfield, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, ets, spriteScale);
+            handleWATField(tSubfield, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, spriteScale);
         }
     }
 
-    private void handleWATField(int tSubfield, int px, int py, IGrDriver igd, IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int ets, int spriteScale) {
+    private void handleWATField(int tSubfield, int px, int py, IGrDriver igd, IImage chipset, int aniX, int baseY, int diamondY, int ovlX, int spriteScale) {
 
         int innerSubfield = tSubfield % 50;
         int outerSubfield = tSubfield / 50;
@@ -159,9 +160,9 @@ public class LcfTileRenderer implements ITileRenderer {
         char ll = charTbl[adb.entries[innerSubfield].corners[2]];
         char lr = charTbl[adb.entries[innerSubfield].corners[3]];
 
-        int etc = ets / 2;
+        int etc = tileSize / 2;
         handleWATCorner(0, 0, ((outerSubfield & 1) != 0) ? 'D' : ul, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc, spriteScale);
-        if ((etc * 2) == ets) {
+        if ((etc * 2) == tileSize) {
             handleWATCorner(etc, 0, ((outerSubfield & 2) != 0) ? 'D' : ur, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc, spriteScale);
             handleWATCorner(0, etc, ((outerSubfield & 4) != 0) ? 'D' : ll, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc, spriteScale);
             handleWATCorner(etc, etc, ((outerSubfield & 8) != 0) ? 'D' : lr, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, etc, spriteScale);
@@ -200,17 +201,17 @@ public class LcfTileRenderer implements ITileRenderer {
         RMEventGraphicRenderer.flexibleSpriteDraw(tox + cx, toy + cy, etc, etc, px + (cx * spriteScale), py + (cy * spriteScale), etc * spriteScale, etc * spriteScale, 0, chipset, 0, igd);
     }
 
-    private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrDriver igd, IImage chipset, int ets, int spriteScale) {
+    private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrDriver igd, IImage chipset, int spriteScale) {
         // Divided into 6-wide columns, 96 tiles per column.
         int ti = tidx - base;
         ti += ofsPage * 144;
         int tx = (ti % 6) + ((ti / 96) * 6);
         int ty = ((ti / 6) % 16);
-        RMEventGraphicRenderer.flexibleSpriteDraw(192 + (tx * 16), ty * 16, ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, chipset, 0, igd);
+        RMEventGraphicRenderer.flexibleSpriteDraw(((tx + 12) * tileSize), ty * tileSize, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, chipset, 0, igd);
     }
 
-    private void handleATField(int subfield, int fx, int fy, int px, int py, IGrDriver igd, IImage chipset, int ets, int spriteScale) {
-        XPTileRenderer.generalOldRMATField(fx * 16, fy * 16, subfield, 0, 16, ets, px, py, igd, chipset, spriteScale);
+    private void handleATField(int subfield, int fx, int fy, int px, int py, IGrDriver igd, IImage chipset, int spriteScale) {
+        XPTileRenderer.generalOldRMATField(fx, fy, subfield, 0, tileSize, px, py, igd, chipset, spriteScale);
     }
 
     @Override

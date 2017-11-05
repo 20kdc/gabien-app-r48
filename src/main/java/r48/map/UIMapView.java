@@ -43,10 +43,14 @@ public class UIMapView extends UIElement implements IWindowElement {
     public int currentLayer;
 
     // internal scaling is a UIMapView-controlled thing, for good reason.
-    private int internalScaling = 1;
+    // should start off equal to internalScalingDiv
+    private int internalScalingMul = 1;
+    private int internalScalingDiv = 1;
+    // Zoom fractions are deliberately converted to this, corrected, and then converted back.
+    // Do not set above 8 or possibly 4, can be harmful on large screens.
+    private final int tuningZoomWorkingDiv = 4;
 
     public final String mapId;
-    public boolean minimap = false;
     public boolean shiftDown = false;
     public IMapViewCallbacks callbacks;
     // Responsible for starting a tool with the given tile.
@@ -89,6 +93,29 @@ public class UIMapView extends UIElement implements IWindowElement {
         showTile(mapTable.width / 2, mapTable.height / 2);
     }
 
+    private int internalScaling(int i) {
+        return (i * internalScalingMul) / internalScalingDiv;
+    }
+
+    private double internalScaling(double i) {
+        return (i * internalScalingMul) / internalScalingDiv;
+    }
+
+    private int internalScalingReverse(int i) {
+        return ((i * internalScalingDiv) / internalScalingMul);
+    }
+
+    private double internalScalingReverse(double i) {
+        return ((i * internalScalingDiv) / internalScalingMul);
+    }
+
+    private int internalScalingReversePad(int i) {
+        int m = (i * internalScalingDiv);
+        return (m / internalScalingMul) + (((m % internalScalingMul) != 0) ? 1 : 0);
+    }
+
+
+
     public void reinitLayerVis() {
         if (layerVis != null)
             if (layerVis.length == renderer.layers.length)
@@ -102,23 +129,16 @@ public class UIMapView extends UIElement implements IWindowElement {
     public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
         boolean debug = igd.isKeyDown(IGrInDriver.VK_D);
         shiftDown = igd.isKeyDown(IGrInDriver.VK_SHIFT);
-        if (selected)
-            if (igd.isKeyJustPressed(IGrInDriver.VK_M))
-                toggleMinimap();
 
-        int eTileSize = tileSize;
-        if (minimap)
-            eTileSize = 2;
-
-        int mouseXT = UIElement.sensibleCellDiv((igd.getMouseX() - ox) + (int) (camX * internalScaling), eTileSize * internalScaling);
-        int mouseYT = UIElement.sensibleCellDiv((igd.getMouseY() - oy) + (int) (camY * internalScaling), eTileSize * internalScaling);
+        int mouseXT = UIElement.sensibleCellDiv((igd.getMouseX() - ox) + (int) internalScaling(camX), internalScaling(tileSize));
+        int mouseYT = UIElement.sensibleCellDiv((igd.getMouseY() - oy) + (int) internalScaling(camY), internalScaling(tileSize));
         Rect camR = getBounds();
-        camR = new Rect(0, 0, (camR.width / internalScaling) + ((camR.width % internalScaling != 0) ? 1 : 0), (camR.height / internalScaling) + ((camR.height % internalScaling != 0) ? 1 : 0));
+        camR = new Rect(0, 0, internalScalingReversePad(camR.width), internalScalingReversePad(camR.height));
         // Stuff any possible important information...
         char[] visConfig = new char[layerVis.length];
         for (int i = 0; i < layerVis.length; i++)
             visConfig[i] = layerVis[i] ? 'T' : 'F';
-        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + eTileSize + "_" + debug + "_" + renderer.tileRenderer.getFrame() + "_" + renderer.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + callbacks + "_" + internalScaling;
+        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + debug + "_" + renderer.tileRenderer.getFrame() + "_" + renderer.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + callbacks + "_" + internalScalingMul + "_" + internalScalingDiv;
         if (scheduler.needsUpdate(config)) {
             boolean remakeBuf = true;
             if (offscreenBuf != null)
@@ -129,17 +149,13 @@ public class UIMapView extends UIElement implements IWindowElement {
                     offscreenBuf.shutdown();
                 offscreenBuf = GaBIEn.makeOffscreenBuffer(camR.width, camR.height, false);
             }
-            render(mouseXT, mouseYT, eTileSize, currentLayer, debug, offscreenBuf);
+            render(mouseXT, mouseYT, currentLayer, debug, offscreenBuf);
         }
         if (offscreenBuf != null) {
-            if (internalScaling == 1) {
+            if ((internalScalingMul == 1) && (internalScalingDiv == 1)) {
                 igd.blitImage(0, 0, camR.width, camR.height, ox, oy, offscreenBuf);
             } else {
-                // Unworkable due to 'damage' caused by ScissorGrInDriver.
-                // Either composite into a mapview-sized buffer before doing final unscaled subpixel pan, change scissoring, or don't bother
-                //int spox = (int) ((camX - Math.floor(camX)) * internalScaling);
-                //int spoy = (int) ((camY - Math.floor(camY)) * internalScaling);
-                igd.blitScaledImage(0, 0, camR.width, camR.height, ox, oy, camR.width * internalScaling, camR.height * internalScaling, offscreenBuf);
+                igd.blitScaledImage(0, 0, camR.width, camR.height, ox, oy, internalScaling(camR.width), internalScaling(camR.height), offscreenBuf);
             }
         }
         boolean dedicatedDragControl = useDragControl();
@@ -158,7 +174,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             if (pickTileHelper == null)
                 shortcuts = TXDB.get("Mouse drag: Scroll.");
         }
-        String status = mapId + ";" + mouseXT + ", " + mouseYT + "; " + shortcuts;
+        String status = mapId + ";" + mouseXT + ", " + mouseYT + " Z" + internalScalingMul + ":" + internalScalingDiv + "; " + shortcuts;
 
         Rect plusRect = Art.getZIconRect(false, 0);
         Rect plusRectFull = Art.getZIconRect(true, 0); // used for X calc on the label
@@ -175,36 +191,32 @@ public class UIMapView extends UIElement implements IWindowElement {
         return GaBIEn.singleWindowApp() || camDragSwitch; // SWA means "make sure the user can use a 1-button mouse w/no hover".
     }
 
-    public void render(int mouseXT, int mouseYT, int eTileSize, int currentLayer, boolean debug, IGrDriver igd) {
+    public void render(int mouseXT, int mouseYT, int currentLayer, boolean debug, IGrDriver igd) {
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);
         IMapViewDrawLayer[] layers = renderer.layers;
-        int camTR = UIElement.sensibleCellDiv((int) (camX + igd.getWidth()), eTileSize) + 1;
-        int camTB = UIElement.sensibleCellDiv((int) (camY + igd.getHeight()), eTileSize) + 1;
-        int camTX = UIElement.sensibleCellDiv((int) camX, eTileSize);
-        int camTY = UIElement.sensibleCellDiv((int) camY, eTileSize);
+        int camTR = UIElement.sensibleCellDiv((int) (camX + igd.getWidth()), tileSize) + 1;
+        int camTB = UIElement.sensibleCellDiv((int) (camY + igd.getHeight()), tileSize) + 1;
+        int camTX = UIElement.sensibleCellDiv((int) camX, tileSize);
+        int camTY = UIElement.sensibleCellDiv((int) camY, tileSize);
         for (int i = 0; i < layers.length; i++)
             if (layerVis[i])
-                layers[i].draw((int) camX, (int) camY, camTX, camTY, camTR, camTB, mouseXT, mouseYT, eTileSize, currentLayer, callbacks, debug, igd);
+                layers[i].draw((int) camX, (int) camY, camTX, camTY, camTR, camTB, mouseXT, mouseYT, tileSize, currentLayer, callbacks, debug, igd);
 
+        boolean minimap = internalScalingDiv > 1;
         if (callbacks != null) {
             int ovlLayers = callbacks.wantOverlay(minimap);
             for (int l = 0; l < ovlLayers; l++) {
                 for (int i = camTX; i < camTR; i++) {
                     for (int j = camTY; j < camTB; j++) {
-                        int px = i * eTileSize;
-                        int py = j * eTileSize;
+                        int px = i * tileSize;
+                        int py = j * tileSize;
                         px -= (int) camX;
                         py -= (int) camY;
-                        // Keeping in mind px/py is the TL corner...
-                        px += eTileSize / 2;
-                        px -= tileSize / 2;
-                        py += eTileSize / 2;
-                        py -= tileSize / 2;
                         callbacks.performOverlay(i, j, igd, px, py, l, minimap);
                     }
                 }
-                callbacks.performGlobalOverlay(igd, -((int) camX), -((int) camY), l, minimap, eTileSize);
+                callbacks.performGlobalOverlay(igd, -((int) camX), -((int) camY), l, minimap, tileSize);
             }
         }
     }
@@ -235,20 +247,16 @@ public class UIMapView extends UIElement implements IWindowElement {
             dragging = true;
         } else {
             // implicit support for one-button mice
-            if (!minimap) {
-                int mouseXT = UIElement.sensibleCellDiv((int) ((x / internalScaling) + camX), tileSize);
-                int mouseYT = UIElement.sensibleCellDiv((int) ((y / internalScaling) + camY), tileSize);
-                dragging = false;
-                if (shiftDown) {
-                    if (!mapTable.outOfBounds(mouseXT, mouseYT))
-                        pickTileHelper.accept(mapTable.getTiletype(mouseXT, mouseYT, currentLayer));
-                } else if ((callbacks != null) && (!camDragSwitch)) {
+            int mouseXT = UIElement.sensibleCellDiv((int) (internalScalingReverse(x) + camX), tileSize);
+            int mouseYT = UIElement.sensibleCellDiv((int) (internalScalingReverse(y) + camY), tileSize);
+            dragging = false;
+            if (shiftDown) {
+                if (!mapTable.outOfBounds(mouseXT, mouseYT))
+                    pickTileHelper.accept(mapTable.getTiletype(mouseXT, mouseYT, currentLayer));
+            } else if ((callbacks != null) && (!camDragSwitch)) {
                     callbacks.confirmAt(mouseXT, mouseYT, currentLayer);
-                } else {
-                    dragging = true;
-                }
             } else {
-                dragging = true;
+                    dragging = true;
             }
         }
     }
@@ -256,13 +264,13 @@ public class UIMapView extends UIElement implements IWindowElement {
     @Override
     public void handleDrag(int x, int y) {
         if (dragging) {
-            camX -= (x - lmX) / (double) internalScaling;
-            camY -= (y - lmY) / (double) internalScaling;
+            camX -= internalScalingReverse((double) (x - lmX));
+            camY -= internalScalingReverse((double) (y - lmY));
             lmX = x;
             lmY = y;
-        } else if (!minimap) {
-            int mouseXT = UIElement.sensibleCellDiv((int) ((x / internalScaling) + camX), tileSize);
-            int mouseYT = UIElement.sensibleCellDiv((int) ((y / internalScaling) + camY), tileSize);
+        } else {
+            int mouseXT = UIElement.sensibleCellDiv((int) (internalScalingReverse(x) + camX), tileSize);
+            int mouseYT = UIElement.sensibleCellDiv((int) (internalScalingReverse(y) + camY), tileSize);
             if (!shiftDown)
                 if (callbacks != null)
                     if (!callbacks.shouldIgnoreDrag())
@@ -273,34 +281,38 @@ public class UIMapView extends UIElement implements IWindowElement {
     @Override
     public void handleMousewheel(int x, int y, boolean north) {
         Rect camR = getBounds();
-        camX += camR.width / (internalScaling * 2.0d);
-        camY += camR.height / (internalScaling * 2.0d);
+        camX += camR.width / internalScaling(2.0d);
+        camY += camR.height / internalScaling(2.0d);
+        // Firstly, convert fraction to tuningZoomWorkingDiv
+        internalScalingMul = (internalScalingMul * tuningZoomWorkingDiv) / internalScalingDiv;
+        if (internalScalingMul < 1)
+            internalScalingMul = 1;
+        internalScalingDiv = tuningZoomWorkingDiv;
+        // Secondly, zoom
         if (north) {
-            internalScaling++;
-        } else if (internalScaling > 1) {
-            internalScaling--;
-        }
-        camX -= camR.width / (internalScaling * 2.0d);
-        camY -= camR.height / (internalScaling * 2.0d);
-    }
-
-    public void toggleMinimap() {
-        Rect camR = getBounds();
-        double camW = camR.width / (double) internalScaling;
-        double camH = camR.height / (double) internalScaling;
-
-        camX += camW / 2;
-        camY += camH / 2;
-        if (minimap) {
-            camX *= tileSize / 2d;
-            camY *= tileSize / 2d;
+            // Zoom in.
+            internalScalingMul++;
         } else {
-            camX /= tileSize / 2d;
-            camY /= tileSize / 2d;
+            // Zoom out.
+            internalScalingMul--;
+            if (internalScalingMul < 1)
+                internalScalingMul = 1;
         }
-        camX -= camW / 2;
-        camY -= camH / 2;
-        minimap = !minimap;
+        // Thirdly, convert back. Basically, try to see if both parts of the fraction are divisible by some number.
+        // This does an okay job - it always gets the major fractions right.
+        // 1:2/1:4/3:4/1:1/5:4/3:2/7:4/2:1/9:4/5:2/11:4/3:1.
+        for (int i = internalScalingDiv; i > 1; i--) {
+            if ((internalScalingMul % i) == 0) {
+                if ((internalScalingDiv % i) == 0) {
+                    // There's an equivalent fraction, with both parameters divided by i.
+                    internalScalingMul /= i;
+                    internalScalingDiv /= i;
+                    break;
+                }
+            }
+        }
+        camX -= camR.width / internalScaling(2.0d);
+        camY -= camR.height / internalScaling(2.0d);
     }
 
     @Override
@@ -338,10 +350,9 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     public void showTile(int x, int y) {
         Rect b = getBounds();
-        camX = -b.width / (2d * internalScaling);
-        camY = -b.height / (2d * internalScaling);
-        int effectiveSize = minimap ? 2 : tileSize;
-        camX += effectiveSize * x;
-        camY += effectiveSize * y;
+        camX = -b.width / internalScaling(2.0d);
+        camY = -b.height / internalScaling(2.0d);
+        camX += tileSize * x;
+        camY += tileSize * y;
     }
 }

@@ -73,7 +73,7 @@ public class R2kTileMapViewDrawLayer implements IMapViewDrawLayer {
                     // Wall only acts as implicit upper for L0.
                     boolean r = (val & ((layer == 0) ? 0x30 : 0x10)) != 0;
                     if (r == upper)
-                        tileRenderer.drawTile(layer, tidx, px, py, igd, eTileSize, 1);
+                        tileRenderer.drawTile(layer, tidx, px, py, igd, 1);
                 }
             }
         }

@@ -29,7 +29,7 @@ public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRende
         if (osr == null)
             osr = AppMain.system.rendererFromMap(null);
         int ts = osr.tileRenderer.getTileSize();
-        osr.tileRenderer.drawTile(0, (short) t, x, y + (32 - ts), igd, ts, FontSizes.getSpriteScale());
+        osr.tileRenderer.drawTile(0, (short) t, x, y + ((32 * FontSizes.getSpriteScale()) - ts), igd, FontSizes.getSpriteScale());
         return osr;
     }
 }
