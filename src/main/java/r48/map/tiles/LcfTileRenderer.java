@@ -68,8 +68,8 @@ public class LcfTileRenderer implements ITileRenderer {
 
             int fx = ((field % 2) * 3) + ((field / 8) * 6);
             int fy = ((field / 2) % 4) * 4;
-            handleATField(subfield, fx, fy, px, py, igd, chipset, spriteScale);
-            // igd.drawText(px, py, 255, 255, 255, 8, Integer.toString(field));
+            XPTileRenderer.generalOldRMATField(fx * tileSize, fy * tileSize, subfield, 0, tileSize, px, py, igd, chipset, spriteScale);
+            //igd.drawText(px, py, 255, 255, 255, 8, Integer.toString(field));
         }
 
         // Animated tiles are... frankly, weird.
@@ -88,7 +88,7 @@ public class LcfTileRenderer implements ITileRenderer {
             s = Math.floor(s);
             int f = (int) s;
             f %= 4;
-            RMEventGraphicRenderer.flexibleSpriteDraw(48 + (field * 16), 64 + (f * 16), tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, chipset, 0, igd);
+            RMEventGraphicRenderer.flexibleSpriteDraw((tileSize * 3) + (field * tileSize), (tileSize * 4) + (f * tileSize), tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, chipset, 0, igd);
         }
 
         // Water tiles are yet another 50-entry AT field, seemingly of a different type.
@@ -130,17 +130,17 @@ public class LcfTileRenderer implements ITileRenderer {
             int[] frames = new int[] {
                     0, 1, 2, 1
             };
-            int aniX = frames[f] * 16;
+            int aniX = frames[f] * tileSize;
 
             int ovlX = aniX;
             if (tField == 1)
-                ovlX += 48; // skip 3 columns
+                ovlX += tileSize * 3; // skip 3 columns
 
-            int baseY = 64;
-            int diamondY = 80;
+            int baseY = tileSize * 4;
+            int diamondY = tileSize * 5;
             if (tField == 2) {
-                diamondY += 16;
-                baseY += 48;
+                diamondY += tileSize;
+                baseY += tileSize * 3;
             }
 
             handleWATField(tSubfield, px, py, igd, chipset, aniX, baseY, diamondY, ovlX, spriteScale);
@@ -187,15 +187,15 @@ public class LcfTileRenderer implements ITileRenderer {
                 break;
             case '|':
                 tox = ovlX;
-                toy = 16;
+                toy = tileSize;
                 break;
             case '-':
                 tox = ovlX;
-                toy = 32;
+                toy = tileSize * 2;
                 break;
             case '+':
                 tox = ovlX;
-                toy = 48;
+                toy = tileSize * 3;
                 break;
         }
         RMEventGraphicRenderer.flexibleSpriteDraw(tox + cx, toy + cy, etc, etc, px + (cx * spriteScale), py + (cy * spriteScale), etc * spriteScale, etc * spriteScale, 0, chipset, 0, igd);
@@ -208,10 +208,6 @@ public class LcfTileRenderer implements ITileRenderer {
         int tx = (ti % 6) + ((ti / 96) * 6);
         int ty = ((ti / 6) % 16);
         RMEventGraphicRenderer.flexibleSpriteDraw(((tx + 12) * tileSize), ty * tileSize, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, chipset, 0, igd);
-    }
-
-    private void handleATField(int subfield, int fx, int fy, int px, int py, IGrDriver igd, IImage chipset, int spriteScale) {
-        XPTileRenderer.generalOldRMATField(fx, fy, subfield, 0, tileSize, px, py, igd, chipset, spriteScale);
     }
 
     @Override
