@@ -20,7 +20,7 @@ public class ToneImageEffect implements IImageEffect {
     public final int ar, ag, ab, as;
 
     public ToneImageEffect(int i, int i1, int i2, int i3) {
-        this(i, i1, i2, i3, 255);
+        this(i, i1, i2, i3, 127);
     }
 
     public ToneImageEffect(int i, int i1, int i2, int i3, int base) {

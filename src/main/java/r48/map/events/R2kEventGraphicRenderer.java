@@ -20,10 +20,16 @@ import r48.map.tiles.ITileRenderer;
 public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
     public final IImageLoader imageLoader;
     public final ITileRenderer tileRenderer;
+    // Idea is, if 2x is needed, this is set in the constructor.
+    // DO NOT use this for all calculations. This is meant for calculations on the event file,
+    //  and it's relation is meant for calculations on the tiles.
+    public final int localTileSize = 16;
+    private final int remoteTileSize;
 
     public R2kEventGraphicRenderer(IImageLoader imageLoad, ITileRenderer tr) {
         tileRenderer = tr;
         imageLoader = imageLoad;
+        remoteTileSize = tileRenderer.getTileSize();
     }
 
     @Override
@@ -54,11 +60,15 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
         String cName = target.getInstVarBySymbol("@character_name").decString();
         if (!cName.equals("")) {
             IImage i = imageLoader.getImage("CharSet/" + cName, false);
+            int rsx = scaleLocalToRemote(i.getWidth() / 12);
+            int rsy = scaleLocalToRemote(i.getHeight() / 8);
             int sx = i.getWidth() / 12;
             int sy = i.getHeight() / 8;
             if (target.getInstVarBySymbol("@character_name").strVal[0] != '$') {
-                sx = 24;
-                sy = 32;
+                sx = localTileSize * 3;
+                sy = localTileSize * 4;
+                rsx = remoteTileSize * 3;
+                rsy = remoteTileSize * 4;
             }
             int idx = ((int) target.getInstVarBySymbol("@character_index").fixnumVal);
             // Direction is apparently in a 0123 format???
@@ -75,11 +85,15 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
             // The vertical offset is either 12 or 16?
             // 16 causes papers to be weirdly offset, 12 causes lift doors to be out of place
             int blendType = 0;
-            RMEventGraphicRenderer.flexibleSpriteDraw(sx * px, sy * py, sx, sy, (ox + (8 * sprScale)) - ((sx * sprScale) / 2), (oy - (sy * sprScale)) + (16 * sprScale), sx * sprScale, sy * sprScale, 0, i, blendType, igd);
+            RMEventGraphicRenderer.flexibleSpriteDraw(sx * px, sy * py, sx, sy, ox + (((remoteTileSize * sprScale) - (sx * sprScale)) / 2), (oy - (rsy * sprScale)) + (remoteTileSize * sprScale), rsx * sprScale, rsy * sprScale, 0, i, blendType, igd);
         } else {
             // ok, so in this case it's a tile. In the index field.
             tileRenderer.drawTile(0, (short) (target.getInstVarBySymbol("@character_index").fixnumVal + 10000), ox, oy, igd, sprScale);
         }
+    }
+
+    private int scaleLocalToRemote(int i) {
+        return (i * remoteTileSize) / localTileSize;
     }
 
     @Override
