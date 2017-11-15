@@ -121,6 +121,18 @@ public class TXDB {
     public static void nextLanguage() {
         languageId++;
         languageId %= languages.length;
+        setLanguage();
+    }
+    public static void setLanguage(String s) {
+        for (int i = 0; i < languages.length; i++) {
+            if (languages[i].equals(s)) {
+                languageId = i;
+                setLanguage();
+                break;
+            }
+        }
+    }
+    public static void setLanguage() {
         subspace.clear();
         ssTexts.clear();
         if (languageId == 0)

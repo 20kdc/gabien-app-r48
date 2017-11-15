@@ -11,6 +11,7 @@ import gabien.ui.IConsumer;
 import gabien.ui.ISupplier;
 import gabien.ui.UILabel;
 import gabienapp.Application;
+import r48.dbs.TXDB;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -147,22 +148,25 @@ public class FontSizes {
         for (FontSizeField fsf : getFields())
             prepare.addIVar("@" + fsf.name, new RubyIO().setFX(fsf.get()));
 
-        if (UILabel.fontOverride != null) {
-            String currentEnc = RubyIO.encoding;
-            RubyIO.encoding = "UTF-8";
+        String currentEnc = RubyIO.encoding;
+        RubyIO.encoding = "UTF-8";
 
-            prepare.addIVar("@secondary_images", new RubyIO().setString(Application.secondaryImageLoadLocation));
+        prepare.addIVar("@secondary_images", new RubyIO().setString(Application.secondaryImageLoadLocation));
+        prepare.addIVar("@lang", new RubyIO().setString(TXDB.getLanguage()));
+        if (UILabel.fontOverride != null) {
             prepare.addIVar("@sysfont", new RubyIO().setString(UILabel.fontOverride));
             prepare.addIVar("@sysfont_ue8", new RubyIO().setBool(UILabel.fontOverrideUE8));
-
-            RubyIO.encoding = currentEnc;
         }
+        RubyIO.encoding = currentEnc;
         AdHocSaveLoad.save("fonts", prepare);
     }
 
     public static boolean load() {
         RubyIO dat = AdHocSaveLoad.load("fonts");
         if (dat != null) {
+            String currentEnc = RubyIO.encoding;
+            RubyIO.encoding = "UTF-8";
+
             for (FontSizeField fsf : getFields()) {
                 RubyIO f = dat.getInstVarBySymbol("@" + fsf.name);
                 if (f != null)
@@ -170,12 +174,7 @@ public class FontSizes {
             }
             RubyIO sys = dat.getInstVarBySymbol("@sysfont");
             if (sys != null) {
-                String currentEnc = RubyIO.encoding;
-                RubyIO.encoding = "UTF-8";
-
                 UILabel.fontOverride = sys.decString();
-
-                RubyIO.encoding = currentEnc;
             } else {
                 UILabel.fontOverride = null;
             }
@@ -185,9 +184,25 @@ public class FontSizes {
             RubyIO sys3 = dat.getInstVarBySymbol("@secondary_images");
             if (sys3 != null)
                 Application.secondaryImageLoadLocation = sys3.decString();
+
+            RubyIO.encoding = currentEnc;
             return true;
         }
         return false;
+    }
+
+    // Notably, language is loaded early, and is not loaded along with font sizes in general.
+    // This is so that TXDB & such can start up.
+    public static void loadLanguage() {
+        RubyIO dat = AdHocSaveLoad.load("fonts");
+        if (dat != null) {
+            String currentEnc = RubyIO.encoding;
+            RubyIO.encoding = "UTF-8";
+            RubyIO sys = dat.getInstVarBySymbol("@lang");
+            if (sys != null)
+                TXDB.setLanguage(sys.decString());
+            RubyIO.encoding = currentEnc;
+        }
     }
 
     public static class FontSizeField implements IConsumer<Integer>, ISupplier<Integer> {

@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.IImage;
+import gabien.backendhelp.Blender;
 import gabien.ui.*;
 import r48.*;
 import r48.dbs.TXDB;
@@ -66,6 +67,7 @@ public class BasicToolset implements IToolset {
                         TXDB.get("Configure fonts"),
                         TXDB.get("Test Fonts"),
                         TXDB.get("Test Tones"),
+                        TXDB.get("Test Add/Sub Blending"),
                         TXDB.get("Show ODB Memstat"),
                         TXDB.get("Dump Schemaside Translations"),
                         TXDB.get("Recover data from R48 error <INCREDIBLY DAMAGING>"),
@@ -217,6 +219,32 @@ public class BasicToolset implements IToolset {
 
                                 finalComposite.blitImage(0, 0, 256, 256, 0, 768, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 0, 128, 0)));
                                 finalComposite.blitImage(0, 0, 256, 256, 256, 768, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 128, 0, 0)));
+                                panel.baseImage = GaBIEn.createImage(finalComposite.getPixels(), 512, 1024);
+                                finalComposite.shutdown();
+                                UIScrollLayout holdsMain = new UIScrollLayout(true, FontSizes.generalScrollersize);
+                                holdsMain.panels.add(panel);
+                                holdsMain.setBounds(new Rect(0, 0, 544, 256));
+                                windowMaker.get().accept(holdsMain);
+                            }
+                        },
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                UIPanel panel = new UIPanel();
+                                panel.setBounds(new Rect(0, 0, 512, 512));
+                                final IImage totem = GaBIEn.getImage("tonetotm.png");
+                                IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(512, 512, false);
+
+                                finalComposite.clearRect(255, 255, 255, 0, 0, 256, 512);
+                                finalComposite.clearRect(0, 0, 0, 256, 0, 256, 512);
+                                // Hardware (if possibel) Sub-White Add-Black
+                                finalComposite.blendRotatedScaledImage(0, 0, 256, 256, 0, 0, 256, 256, 0, totem, true);
+                                finalComposite.blendRotatedScaledImage(0, 0, 256, 256, 256, 0, 256, 256, 0, totem, false);
+
+                                // Software Sub-White Add-Black
+                                Blender.blendRotatedScaledImage(finalComposite, 0, 0, 256, 256, 0, 256, 256, 256, 0, totem, true);
+                                Blender.blendRotatedScaledImage(finalComposite, 0, 0, 256, 256, 256, 256, 256, 256, 0, totem, false);
+
                                 panel.baseImage = GaBIEn.createImage(finalComposite.getPixels(), 512, 1024);
                                 finalComposite.shutdown();
                                 UIScrollLayout holdsMain = new UIScrollLayout(true, FontSizes.generalScrollersize);

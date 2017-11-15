@@ -533,7 +533,7 @@ public class SDB {
                             finalMap.putAll(mergeA.options);
                             finalMap.putAll(mergeB.options);
                             SchemaElement ise = new EnumSchemaElement(finalMap, mergeB.defaultVal, mergeB.buttonText);
-                            AppMain.schemas.setSDBEntry(args[2], ise);
+                            setSDBEntry(args[2], ise);
                         }
                     });
                 } else if (c == ']') {

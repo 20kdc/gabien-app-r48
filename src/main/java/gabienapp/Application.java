@@ -24,12 +24,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created on 1/27/17.
  */
 public class Application {
-    public static int globalMS = 33;
+    // The default value of this affects splash screen.
+    // The actual value used for the main application is in gabienmain() below, set after the splash.
+    public static int globalMS = 50;
+    private static double compensationDT = 0;
+
+    private static IGPMenuPanel rootGPMenuPanel;
+
     protected static IConsumer<Double> appTicker = null;
     protected static UITextBox rootBox;
     protected static WindowCreatingUIElementConsumer uiTicker;
@@ -41,20 +48,11 @@ public class Application {
     public static void gabienmain() throws IOException {
         mobileExtremelySpecialBehavior = GaBIEn.singleWindowApp();
         uiTicker = new WindowCreatingUIElementConsumer();
-        // Load language list.
-        TXDB.init();
-        Rect splashSize = null;
-        // If the system override hasn't loaded by 50ms, Java is *being slow*. Show splash screen.
-        // (Note; a quirk of the android backend means this triggers there too, but it NEEDS to anyway for splashSize)
-        if (UILabel.fontOverride == null) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        if (GaBIEn.singleWindowApp() || (UILabel.fontOverride == null))
-            splashSize = runFontLoader();
+        // runFontLoader tries to do as much loading as possible there
+        Rect splashSize = runFontLoader();
+        // Set globalMS to intended value
+        globalMS = 33;
+        // This must happen after waiting for the UILabel font override stuff
         boolean fontsLoaded = FontSizes.load();
         if (!fontsLoaded)
             if (GaBIEn.singleWindowApp()) // SWA always means we need to adapt to local screen size, and should generally cut down as many usability issues as possible
@@ -163,7 +161,7 @@ public class Application {
             // ...
 
             gamepaks.setBounds(new Rect(0, 0, FontSizes.scaleGuess(640), FontSizes.scaleGuess(480)));
-            menuConstructor.accept(new PrimaryGPMenuPanel());
+            menuConstructor.accept(rootGPMenuPanel);
             final UIMTBase uimtw = UIMTBase.wrap(null, gamepaks, false);
             uiTicker.accept(uimtw);
             closeHelper.accept(new Runnable() {
@@ -183,16 +181,7 @@ public class Application {
             //  which makes it worth keeping.
             boolean backupAvailable = false;
             while (uiTicker.runningWindows().size() > 0) {
-                double dT = GaBIEn.timeDelta(false);
-                while (dT < (globalMS / 1000d)) {
-                    try {
-                        Thread.sleep(globalMS);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    dT = GaBIEn.timeDelta(false);
-                }
-                dT = GaBIEn.timeDelta(true);
+                double dT = handleTick();
                 try {
                     if (appTicker != null)
                         appTicker.accept(dT);
@@ -304,8 +293,26 @@ public class Application {
         GaBIEn.ensureQuit();
     }
 
+    private static double handleTick() {
+        double dT = GaBIEn.timeDelta(false);
+        double dTTarg = (globalMS / 1000d) - compensationDT;
+        while (dT < dTTarg) {
+            try {
+                Thread.sleep(globalMS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            dT = GaBIEn.timeDelta(false);
+        }
+        double dTRes = GaBIEn.timeDelta(true);
+        compensationDT = Math.min(dTTarg, dTRes - dTTarg);
+        return dTRes;
+    }
+
     private static Rect runFontLoader() {
-        int frames = 0;
+        int frames = -10; // Fadeout
+        int timer2 = 0; // Baton
+        String movement = " "; // the baton is 'thrown'
         // Used for two reasons.
         // 1. to work out window size during a specific situation on Android.
         // 2. on certain Linux distributions, Java still freezes up during font load
@@ -313,22 +320,55 @@ public class Application {
         ws.scale = 1;
         ws.resizable = true;
         IGrInDriver gi = GaBIEn.makeGrIn("R48 Startup...", 800, 600, ws);
-        while (frames < 10) {
-            gi.flush();
+        // runs in parallel with font-load wait
+        final AtomicBoolean txdbDonePrimaryTask = new AtomicBoolean(false);
+        Thread txdbThread = new Thread() {
+            @Override
+            public void run() {
+                TXDB.init();
+                FontSizes.loadLanguage();
+                // TXDB 'stable', spammed class refs
+                txdbDonePrimaryTask.set(true);
+                rootGPMenuPanel = new PrimaryGPMenuPanel();
+            }
+        };
+        txdbThread.start();
+        while (frames <= 15) {
+            gi.flush(); // to kickstart w/h
+            handleTick();
             gi.clearAll(255, 255, 255);
             int sz = (Math.min(gi.getWidth(), gi.getHeight()) / 4) * 2;
             Rect pos = new Rect((gi.getWidth() / 2) - (sz / 2), (gi.getHeight() / 2) - (sz / 2), sz, sz);
             Rect ltPos = Art.r48ico;
             gi.blitScaledImage(ltPos.x, ltPos.y, ltPos.width, ltPos.height, pos.x, pos.y, pos.width, pos.height, GaBIEn.getImage("layertab.png"));
-            // this is while font settings are at defaults
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
 
+            // Can't translate for several reasons (but especially no fonts).
+            // This is really the only reason any of the messages are likely to be seen,
+            //  because certain JRE implementations can't load fonts to save their lives
+            String waitingFor = null;
+            // Doesn't matter if it switches font on the last frame or something, just make sure the application remains running
+            if (UILabel.fontOverride == null) {
+                waitingFor = "Loading";
+            } else if ((!txdbDonePrimaryTask.get()) || (rootGPMenuPanel == null)) {
+                waitingFor = "Loading";
             }
-            frames++;
+            if (waitingFor == null) {
+                frames++;
+                waitingFor = TXDB.get("Fading");
+            }
+            char[] chars = {'|', '/', '-', '\\'};
+            char ch = chars[timer2 % chars.length];
+            timer2++;
+            movement += "  ";
+            // has to be internal-font-able
+            int goodSize = 16;
+            int goodSizeActual = UILabel.getRecommendedSize("", goodSize).height;
+            UILabel.drawLabel(gi, gi.getWidth(), 0, gi.getHeight() - goodSizeActual, waitingFor + movement + ch, 1, goodSize);
+
+            // fade
+            int c = Math.max(0, Math.min(255, 25 * frames)) << 24;
+            gi.blitScaledImage(0, 0, 1, 1, 0, 0, gi.getWidth(), gi.getHeight(), GaBIEn.createImage(new int[] {c}, 1, 1));
         }
-        gi.drawText(0, -16, 0, 0, 0, 8, "Loading font...");
         Rect r = new Rect(0, 0, gi.getWidth(), gi.getHeight());
         gi.shutdown();
         return r;
