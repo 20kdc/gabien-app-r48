@@ -6,6 +6,8 @@
 !.gitignore
 !translation.lua
 !translation-diff.sh
+!releaser
+!releaser/*.sh
 !src
 !src/
 !src/main
