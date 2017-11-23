@@ -66,7 +66,7 @@ e rpg_saveactor_row -1 back 0 unset 1 front
 @switch_valid boolean
 @switch_id switch_id
 
-e rpg_savesystem_screen 1 map
+e rpg_savesystem_screen 0 unknown0 1 unknown1default
 : RPG::SaveSystem
 @screen rpg_savesystem_screen
 @frame_count int
@@ -75,6 +75,21 @@ e rpg_savesystem_screen 1 map
 @font_id int
 @switches subwindow arrayEIdX switch_id 1 0 boolean
 @variables subwindow arrayEIdX var_id 1 0 int
+
+: RPG::Interpreter
+C name Class.RPG::Interpreter @stack$length | {A=0=empty|#A-deep interpreter}
+@stack arrayIx1 subwindow RPG::InterpreterStackLevel
+
+: RPG::InterpreterStackLevel
+@list_size int
+ @list EventListEditor
+@list OPAQUE
+@index int
+@event_id event_or_none_id
+@actioned boolean
+
+: RPG::SaveCommonEvent
+@i subwindow RPG::Interpreter
 
 : RPG::Save
  Important
@@ -94,5 +109,5 @@ e rpg_savesystem_screen 1 map
 @pictures OPAQUE
 @panorama OPAQUE
  the villain[s] of this story
-@events OPAQUE
-@common_events OPAQUE
+@main_interpreter subwindow RPG::Interpreter
+@common_events subwindow hash commonevent_id RPG::SaveCommonEvent

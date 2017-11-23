@@ -93,8 +93,11 @@ M internal_battlecommandDictionary battlecommand_menu_id__ battlecommand_menu_id
 E commonevent_or_none_id__ CEV.ID 0 None
 M internal_cevDictionary commonevent_or_none_id__ commonevent_or_none_id
 
-E character_id_base EventID 10001 player 10002 boat 10003 ship 10004 airShip 10005 runningEvent
-M internal_eventDictionary character_id_base character_id
+E character_id__ EventID 10001 player 10002 boat 10003 ship 10004 airShip 10005 runningEvent
+M internal_eventDictionary character_id__ character_id
+
+E event_or_none_id__ EventID 0 None
+M internal_eventDictionary event_or_none_id__ event_or_none_id
 
 e timer_id 0 timer1 1 timer2
 

@@ -10,6 +10,7 @@ package r48.io.r2k.files;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.R2kUtil;
+import r48.io.r2k.chunks.ArrayR2kStruct;
 import r48.io.r2k.chunks.BlobR2kStruct;
 import r48.io.r2k.chunks.IR2kStruct;
 import r48.io.r2k.obj.Save;
@@ -30,7 +31,9 @@ public class SaveDataIO {
             System.err.println("Loading a file which pretends to be an LCF save file but says " + magic);
         // Try to follow the standard...
         IR2kStruct mu = new Save();
+        // ArrayR2kStruct.supremelyTrustDataDebug = true;
         mu.importData(fis);
+        // ArrayR2kStruct.supremelyTrustDataDebug = false;
         return mu.asRIO();
     }
 

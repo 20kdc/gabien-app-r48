@@ -22,7 +22,11 @@ public class ArrayR2kInterpretable<T extends IR2kInterpretable> implements IR2kI
     public LinkedList<T> array = new LinkedList<T>();
     public final ISupplier<T> cons;
     public final boolean trustData;
+    // NOTE: supremelyTrustData is for debug only
+    public static boolean supremelyTrustDataDebug = false;
     public final ArraySizeR2kInterpretable<T> linked;
+    // Written by ArraySize, don't mess with it
+    public int fromArraySizeValue = -1;
 
     public ArrayR2kInterpretable(ArraySizeR2kInterpretable<T> other, ISupplier<T> c, boolean trust) {
         cons = c;
@@ -46,6 +50,7 @@ public class ArrayR2kInterpretable<T extends IR2kInterpretable> implements IR2kI
     @Override
     public void importData(InputStream bais) throws IOException {
         array.clear();
+        int total = bais.available();
         while (bais.available() > 0) {
             try {
                 T v = cons.get();
@@ -57,6 +62,17 @@ public class ArrayR2kInterpretable<T extends IR2kInterpretable> implements IR2kI
             } catch (RuntimeException re) {
                 if (trustData)
                     throw new IOException("While parsing in array of " + (cons.get().getClass()), re);
+            }
+        }
+        if (supremelyTrustDataDebug) {
+            if (linked != null) {
+                if (linked.unitSize) {
+                    if (array.size() != fromArraySizeValue)
+                        throw new IOException("Mismatched unitsize field: " + array.size() + " vs " + fromArraySizeValue);
+                } else {
+                    if (total != fromArraySizeValue)
+                        throw new IOException("Mismatched normal field: " + total + " vs " + fromArraySizeValue);
+                }
             }
         }
     }

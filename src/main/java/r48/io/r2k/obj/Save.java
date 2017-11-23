@@ -11,10 +11,7 @@ import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.chunks.*;
-import r48.io.r2k.obj.lsd.SaveActor;
-import r48.io.r2k.obj.lsd.SaveSystem;
-import r48.io.r2k.obj.lsd.SaveTarget;
-import r48.io.r2k.obj.lsd.SaveTitle;
+import r48.io.r2k.obj.lsd.*;
 
 /**
  * Savefile
@@ -88,16 +85,31 @@ public class Save extends R2kObject {
             return new byte[0];
         }
     });
-    public BlobR2kStruct events = new BlobR2kStruct(new ISupplier<byte[]>() {
+    public Interpreter mainInterpreter = new Interpreter();
+    public SparseArrayHR2kStruct<R2kObject> commonEvents = new SparseArrayHR2kStruct<R2kObject>(new ISupplier<R2kObject>() {
         @Override
-        public byte[] get() {
-            return new byte[0];
-        }
-    });
-    public BlobR2kStruct commonEvents = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
-            return new byte[0];
+        public R2kObject get() {
+            return new R2kObject() {
+                public Interpreter interp = new Interpreter();
+                @Override
+                public Index[] getIndices() {
+                    return new Index[] {
+                            new Index(0x01, interp, "@i")
+                    };
+                }
+
+                @Override
+                public RubyIO asRIO() {
+                    RubyIO root = new RubyIO().setSymlike("RPG::SaveCommonEvent", true);
+                    asRIOISF(root);
+                    return root;
+                }
+
+                @Override
+                public void fromRIO(RubyIO src) {
+                    fromRIOISF(src);
+                }
+            };
         }
     });
 
@@ -117,7 +129,7 @@ public class Save extends R2kObject {
                 new Index(0x6E, targets, "@targets"),
                 new Index(0x6F, mapInfo, "@map_info"),
                 new Index(0x70, panorama, "@panorama"),
-                new Index(0x71, events, "@events"),
+                new Index(0x71, mainInterpreter, "@main_interpreter"),
                 new Index(0x72, commonEvents, "@common_events"),
         };
     }

@@ -35,6 +35,7 @@ public abstract class R2kObject implements IR2kStruct {
 
     public void importData(InputStream src) throws IOException {
         Index[] t = getIndices();
+        unknownChunks.clear();
         while (true) {
             if (src.available() == 0)
                 if (terminatable())
@@ -45,26 +46,25 @@ public abstract class R2kObject implements IR2kStruct {
             int len = R2kUtil.readLcfVLI(src);
             // System.out.println(this + " -> 0x" + Integer.toHexString(cid) + " [" + len + "]");
             byte[] data = R2kUtil.readLcfBytes(src, len);
-            boolean handled = false;
-            for (int i = 0; i < t.length; i++)
-                if (cid == t[i].index) {
-                    ByteArrayInputStream bais = new ByteArrayInputStream(data);
-                    try {
-                        t[i].chunk.importData(bais);
-                    } catch (IOException e) {
-                        throw new IOException("In " + t[i] + " of " + this, e);
-                    } catch (RuntimeException e) {
-                        throw new RuntimeException("In " + t[i] + " of " + this, e);
-                    }
-                    if (!disableSanity())
-                        if (bais.available() != 0)
-                            throw new IOException("Not all of the chunk interpreted by " + t[i] + " in " + this);
-                    handled = true;
-                    break;
-                }
-            if (!handled)
-                unknownChunks.put(cid, data);
+            unknownChunks.put(cid, data);
             // System.out.println("<<");
+        }
+        for (int i = 0; i < t.length; i++) {
+            byte[] data = unknownChunks.get(t[i].index);
+            if (data != null) {
+                unknownChunks.remove(t[i].index);
+                ByteArrayInputStream bais = new ByteArrayInputStream(data);
+                try {
+                    t[i].chunk.importData(bais);
+                } catch (IOException e) {
+                    throw new IOException("In " + t[i] + " of " + this, e);
+                } catch (RuntimeException e) {
+                    throw new RuntimeException("In " + t[i] + " of " + this, e);
+                }
+                if (!disableSanity())
+                    if (bais.available() != 0)
+                        throw new IOException("Not all of the chunk interpreted by " + t[i] + " in " + this);
+            }
         }
     }
 

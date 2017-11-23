@@ -22,7 +22,7 @@ import java.io.OutputStream;
 public class ArraySizeR2kInterpretable<T extends IR2kInterpretable> implements IR2kInterpretable {
     public ISupplier<ArrayR2kInterpretable<T>> target;
     public boolean unitSize;
-
+    // Bytes used for size field
     public int bytes = 0;
     // Buffer used to ensure consistency
     public byte[] resultBytes = null;
@@ -47,16 +47,18 @@ public class ArraySizeR2kInterpretable<T extends IR2kInterpretable> implements I
 
     @Override
     public void importData(InputStream bais) throws IOException {
+        int v;
         switch (bytes) {
             case 0:
-                R2kUtil.readLcfVLI(bais);
+                v = R2kUtil.readLcfVLI(bais);
                 break;
             case 1:
-                R2kUtil.readLcfU8(bais);
+                v = R2kUtil.readLcfU8(bais);
                 break;
             default:
                 throw new RuntimeException("unknown B " + bytes);
         }
+        target.get().fromArraySizeValue = v;
     }
 
     @Override
