@@ -233,7 +233,7 @@ public class BasicToolset implements IToolset {
                                 UIPanel panel = new UIPanel();
                                 panel.setBounds(new Rect(0, 0, 512, 512));
                                 final IImage totem = GaBIEn.getImage("tonetotm.png");
-                                IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(512, 512, false);
+                                IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(512, 1024, false);
 
                                 finalComposite.clearRect(255, 255, 255, 0, 0, 256, 512);
                                 finalComposite.clearRect(0, 0, 0, 256, 0, 256, 512);

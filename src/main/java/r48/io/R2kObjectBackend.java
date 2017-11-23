@@ -13,6 +13,7 @@ import r48.RubyIO;
 import r48.io.r2k.files.DatabaseIO;
 import r48.io.r2k.files.MapIO;
 import r48.io.r2k.files.MapTreeIO;
+import r48.io.r2k.files.SaveDataIO;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -73,6 +74,19 @@ public class R2kObjectBackend implements IObjectBackend {
                 return null;
             }
         }
+        if (filename.endsWith(".lsd")) {
+            try {
+                InputStream fis = GaBIEn.getFile(str);
+                if (fis == null)
+                    return null;
+                RubyIO r = SaveDataIO.readLsd(fis);
+                fis.close();
+                return r;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
         return null;
     }
 
@@ -102,6 +116,15 @@ public class R2kObjectBackend implements IObjectBackend {
         }
         if (filename.endsWith(".ldb")) {
             DatabaseIO.writeLdb(baos, object);
+            OutputStream fos = GaBIEn.getOutFile(str);
+            if (fos == null)
+                throw new IOException("Unable to open a file.");
+            baos.writeTo(fos);
+            fos.close();
+            return;
+        }
+        if (filename.endsWith(".lsd")) {
+            SaveDataIO.writeLsd(baos, object);
             OutputStream fos = GaBIEn.getOutFile(str);
             if (fos == null)
                 throw new IOException("Unable to open a file.");

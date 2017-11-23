@@ -9,14 +9,14 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning subsection:
-+ v0.7.2 w/ Android as part of released builds
-+ r95 (ask Ghabry on this, has been documenting the format)
++ 2k save-edit (thank you, Ghabry)
 + v0.8
-+ <This is a secret.>
++ R48-as-2k/2k3-save-editor is a massive benefit by itself and raises awareness
++ UI improvements driven by influx due to save editing.
 + v0.9
-+ FIX STUFF
-+ v0.9.1
-+ FIX MORE STUFF
++ This is the version where whatever got done after v0.8 gets tested.
+  In general, this release is for MAKING R48 STABLE!
+  TEST EVERYTHING!
 + v1.0
 
 - ANYTIME -
