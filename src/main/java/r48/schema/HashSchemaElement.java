@@ -14,6 +14,7 @@ import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
+import r48.dbs.IProxySchemaElement;
 import r48.dbs.TXDB;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -50,8 +51,13 @@ public class HashSchemaElement extends SchemaElement {
                     // keys are opaque - this prevents MANY issues
                     UISplitterLayout hs = new UISplitterLayout((new OpaqueSchemaElement() {
                         @Override
-                        public String getMessage() {
-                            return TXDB.get("Key ");
+                        public String getMessage(RubyIO v) {
+                            SchemaElement ke = keyElem;
+                            while (ke instanceof IProxySchemaElement)
+                                ke = ((IProxySchemaElement) ke).getEntry();
+                            if (ke instanceof EnumSchemaElement)
+                                return ((EnumSchemaElement) ke).viewValue((int) v.fixnumVal, true);
+                            return TXDB.get("Key " + v);
                         }
                     }).buildHoldingEditor(key, launcher, path), valElem.buildHoldingEditor(target.hashVal.get(key), launcher, path.arrayHashIndex(key, "{" + key.toString() + "}")), false, 1, 4);
                     uiSV.panels.add(new UIAppendButton("-", hs, new Runnable() {

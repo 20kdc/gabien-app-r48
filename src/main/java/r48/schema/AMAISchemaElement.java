@@ -20,8 +20,8 @@ import r48.schema.util.SchemaPath;
 public class AMAISchemaElement extends OpaqueSchemaElement {
 
     @Override
-    public String getMessage() {
-        return TXDB.get("Parent Index.");
+    public String getMessage(RubyIO v) {
+        return TXDB.get("Parent Index. ") + v;
     }
 
     @Override

@@ -21,13 +21,13 @@ import r48.schema.util.SchemaPath;
  */
 public class OpaqueSchemaElement extends SchemaElement {
 
-    public String getMessage() {
-        return TXDB.get("Can't edit:");
+    public String getMessage(RubyIO v) {
+        return TXDB.get("Can't edit: ") + v;
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(FontSizes.schemaButtonTextHeight, getMessage() + target, new Runnable() {
+        return new UITextButton(FontSizes.schemaButtonTextHeight, getMessage(target), new Runnable() {
             @Override
             public void run() {
                 launcher.launchOther(new UITest(target));

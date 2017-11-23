@@ -34,7 +34,8 @@ public class StandardArrayInterface implements IArrayInterface {
             public void run() {
                 uiSVL.panels.clear();
                 // Work out how big each array index field has to be.
-                final Rect maxSize = UILabel.getRecommendedSize(positions[positions.length - 1].text, FontSizes.schemaFieldTextHeight);
+                // NOTE: maxSize gets modified by this loop.
+                final Rect maxSize = UILabel.getRecommendedSize("", FontSizes.schemaFieldTextHeight);
                 for (int i = 0; i < positions.length; i++) {
                     final int mi = i;
                     addAdditionButton(positions[mi].execInsert, positions[mi].execInsertCopiedArray, positions[mi].text);
@@ -101,6 +102,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         // Add indexes for clarity.
                         final UIElement editor = uie;
                         final UIElement label = new UILabel(positions[mi].text, FontSizes.schemaFieldTextHeight);
+                        maxSize.width = Math.max(maxSize.width, label.getBounds().width);
                         UIPanel panel = new UIPanel() {
                             @Override
                             public void setBounds(Rect r) {
@@ -109,6 +111,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                 editor.setBounds(new Rect(maxSize.width, 0, r.width - maxSize.width, r.height));
                             }
                         };
+
                         panel.allElements.add(label);
                         panel.allElements.add(editor);
                         panel.setBounds(new Rect(0, 0, 128, Math.max(editor.getBounds().height, maxSize.height)));

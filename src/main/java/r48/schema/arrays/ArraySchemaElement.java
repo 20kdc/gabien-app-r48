@@ -14,8 +14,10 @@ import gabien.ui.UIScrollLayout;
 import r48.AppMain;
 import r48.ArrayUtils;
 import r48.RubyIO;
+import r48.dbs.IProxySchemaElement;
 import r48.dbs.TXDB;
 import r48.schema.AggregateSchemaElement;
+import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -32,6 +34,8 @@ public abstract class ArraySchemaElement extends SchemaElement {
     public int atLeast;
 
     public IArrayInterface uiHelper;
+    // Usually null, but can point to something that resolves to an EnumSchemaElement
+    public SchemaElement possibleEnumElement;
 
     // Used for pager state
     private IntegerSchemaElement myUniqueStateInstance = new IntegerSchemaElement(0);
@@ -41,6 +45,11 @@ public abstract class ArraySchemaElement extends SchemaElement {
         atLeast = al1;
         indexDisplayOffset = ido;
         uiHelper = uiHelp;
+    }
+
+    public ArraySchemaElement(int fixedSize, int al1, int ido, IArrayInterface uiHelp, SchemaElement enumer) {
+        this(fixedSize, al1, ido, uiHelp);
+        possibleEnumElement = enumer;
     }
 
     @Override
@@ -80,7 +89,14 @@ public abstract class ArraySchemaElement extends SchemaElement {
             }
             RubyIO[] copyHelpElems = new RubyIO[nextAdvance];
             System.arraycopy(target.arrVal, i, copyHelpElems, 0, copyHelpElems.length);
-            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition((i + indexDisplayOffset) + " ", copyHelpElems, uie, deleter, addition, clipAddition);
+            String dispData = (i + indexDisplayOffset) + " ";
+            if (possibleEnumElement != null) {
+                SchemaElement se = possibleEnumElement;
+                while (se instanceof IProxySchemaElement)
+                    se = ((IProxySchemaElement) se).getEntry();
+                dispData = ((EnumSchemaElement) se).viewValue(i + indexDisplayOffset, true) + " ";
+            }
+            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(dispData, copyHelpElems, uie, deleter, addition, clipAddition);
             positions.add(position);
         }
         // The 4 for-loop is to deal with 1-indexing and such

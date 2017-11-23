@@ -21,6 +21,10 @@ public class StandardArraySchemaElement extends ArraySchemaElement {
         super(fixedSize, al1 ? 1 : 0, ido, uiHelper);
         subelems = s;
     }
+    public StandardArraySchemaElement(SchemaElement s, int fixedSize, boolean al1, int ido, IArrayInterface uiHelper, SchemaElement enumer) {
+        super(fixedSize, al1 ? 1 : 0, ido, uiHelper, enumer);
+        subelems = s;
+    }
 
     @Override
     protected boolean autoCorrectArray(RubyIO array, SchemaPath path) {

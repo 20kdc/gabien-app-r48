@@ -100,7 +100,7 @@ public class BasicToolset implements IToolset {
                                                 }
                                             }));
                                         } else {
-                                            AppMain.launchDialog(TXDB.get("No file, or schema to create it."));
+                                            AppMain.launchDialog(TXDB.get("The file couldn't be read, and there's no schema to create it."));
                                         }
                                     }
                                 }));

@@ -78,6 +78,8 @@ M internal_animDictionary animation_or_none_id__ animation_or_none_id
 > class_id internal_classDictionary
 E class_or_none_id__ Class.ID 0 None
 M internal_classDictionary class_or_none_id__ class_or_none_id
+E class_complex_id__ Class.ID -1 Unset 0 None
+M internal_classDictionary class_complex_id__ class_complex_id
 
 > battlecommand_id internal_battlecommandDictionary
 

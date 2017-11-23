@@ -24,21 +24,75 @@
 @face4_index int
 +spriteSelector @face4_index @face4_name FaceSet/
 
+e rpg_saveactor_row -1 back 0 unset 1 front
 : RPG::SaveActor
+@name string
+@title string
+@level int
+@exp int
+@current_hp int
+@current_sp int
+@character_name f_charset_name
+@character_index int
++spriteSelector @character_index @character_name CharSet/
+@character_flags int
+@face_name f_faceset_name
+@face_index int
++spriteSelector @face_index @face_name FaceSet/
+@hp_mod int
+@sp_mod int
+@atk_mod int
+@def_mod int
+@spi_mod int
+@agi_mod int
+@skills subwindow array 0 skill_id
+@equipment rpg_actor_equipment_block
+@2k3_changed_battle_commands boolean
+@2k3_battle_commands subwindow array 7 battlecommand_menu_id
+@states array 0 state_id
+@2k3_class_id class_complex_id
+@row rpg_saveactor_row
+@two_weapon boolean
+@lock_equipment boolean
+@auto_battle boolean
+@super_guard boolean
+@2k3_battler_animation battleranimation_id
+
+: RPG::SaveTarget
+@map map_id
+@x int
+@y int
++mapPositionHelper @map @x @y
+@switch_valid boolean
+@switch_id switch_id
+
+e rpg_savesystem_screen 1 map
+: RPG::SaveSystem
+@screen rpg_savesystem_screen
+@frame_count int
+@system_name f_system_name
+@message_stretch int
+@font_id int
+@switches subwindow arrayEIdX switch_id 1 0 boolean
+@variables subwindow arrayEIdX var_id 1 0 int
 
 : RPG::Save
+ Important
 @title subwindow RPG::SaveTitle
+@system subwindow: WARNING:\_INCOMPLETE RPG::SaveSystem
+@actors subwindow hash actor_id subwindow RPG::SaveActor
+@party OPAQUE
 @party_pos OPAQUE
-@party_items OPAQUE
-@actors subwindow hash actor_id RPG::SaveActor
-@system OPAQUE
-@screen OPAQUE
-@pictures OPAQUE
+ Unimportant Global
 @boat_pos OPAQUE
 @ship_pos OPAQUE
 @airship_pos OPAQUE
-@targets OPAQUE
+@targets subwindow array 0 RPG::SaveTarget
+ Unimportant Local
 @map_info OPAQUE
+@screen OPAQUE
+@pictures OPAQUE
 @panorama OPAQUE
+ the villain[s] of this story
 @events OPAQUE
 @common_events OPAQUE

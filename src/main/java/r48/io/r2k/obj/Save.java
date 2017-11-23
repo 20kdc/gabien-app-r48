@@ -10,11 +10,10 @@ package r48.io.r2k.obj;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.chunks.BlobR2kStruct;
-import r48.io.r2k.chunks.IR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
-import r48.io.r2k.chunks.SparseArrayHR2kStruct;
+import r48.io.r2k.chunks.*;
 import r48.io.r2k.obj.lsd.SaveActor;
+import r48.io.r2k.obj.lsd.SaveSystem;
+import r48.io.r2k.obj.lsd.SaveTarget;
 import r48.io.r2k.obj.lsd.SaveTitle;
 
 /**
@@ -22,12 +21,7 @@ import r48.io.r2k.obj.lsd.SaveTitle;
  */
 public class Save extends R2kObject {
     public SaveTitle title = new SaveTitle();
-    public BlobR2kStruct system = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
-            return new byte[0];
-        }
-    });
+    public SaveSystem system = new SaveSystem();
     public BlobR2kStruct screen = new BlobR2kStruct(new ISupplier<byte[]>() {
         @Override
         public byte[] get() {
@@ -40,25 +34,25 @@ public class Save extends R2kObject {
             return new byte[0];
         }
     });
-    public BlobR2kStruct party_pos = new BlobR2kStruct(new ISupplier<byte[]>() {
+    public BlobR2kStruct partyPos = new BlobR2kStruct(new ISupplier<byte[]>() {
         @Override
         public byte[] get() {
             return new byte[0];
         }
     });
-    public BlobR2kStruct boat_pos = new BlobR2kStruct(new ISupplier<byte[]>() {
+    public BlobR2kStruct boatPos = new BlobR2kStruct(new ISupplier<byte[]>() {
         @Override
         public byte[] get() {
             return new byte[0];
         }
     });
-    public BlobR2kStruct ship_pos = new BlobR2kStruct(new ISupplier<byte[]>() {
+    public BlobR2kStruct shipPos = new BlobR2kStruct(new ISupplier<byte[]>() {
         @Override
         public byte[] get() {
             return new byte[0];
         }
     });
-    public BlobR2kStruct airship_pos = new BlobR2kStruct(new ISupplier<byte[]>() {
+    public BlobR2kStruct airshipPos = new BlobR2kStruct(new ISupplier<byte[]>() {
         @Override
         public byte[] get() {
             return new byte[0];
@@ -70,19 +64,19 @@ public class Save extends R2kObject {
             return new SaveActor();
         }
     });
-    public BlobR2kStruct party_items = new BlobR2kStruct(new ISupplier<byte[]>() {
+    public BlobR2kStruct partyItems = new BlobR2kStruct(new ISupplier<byte[]>() {
         @Override
         public byte[] get() {
             return new byte[0];
         }
     });
-    public BlobR2kStruct targets = new BlobR2kStruct(new ISupplier<byte[]>() {
+    public SparseArrayAR2kStruct<SaveTarget> targets = new SparseArrayAR2kStruct<SaveTarget>(new ISupplier<SaveTarget>() {
         @Override
-        public byte[] get() {
-            return new byte[0];
+        public SaveTarget get() {
+            return new SaveTarget();
         }
     });
-    public BlobR2kStruct map_info = new BlobR2kStruct(new ISupplier<byte[]>() {
+    public BlobR2kStruct mapInfo = new BlobR2kStruct(new ISupplier<byte[]>() {
         @Override
         public byte[] get() {
             return new byte[0];
@@ -100,7 +94,7 @@ public class Save extends R2kObject {
             return new byte[0];
         }
     });
-    public BlobR2kStruct common_events = new BlobR2kStruct(new ISupplier<byte[]>() {
+    public BlobR2kStruct commonEvents = new BlobR2kStruct(new ISupplier<byte[]>() {
         @Override
         public byte[] get() {
             return new byte[0];
@@ -114,17 +108,17 @@ public class Save extends R2kObject {
                 new Index(0x65, system, "@system"),
                 new Index(0x66, screen, "@screen"),
                 new Index(0x67, pictures, "@pictures"),
-                new Index(0x68, party_pos, "@party_pos"),
-                new Index(0x69, boat_pos, "@boat_pos"),
-                new Index(0x6A, ship_pos, "@ship_pos"),
-                new Index(0x6B, airship_pos, "@airship_pos"),
+                new Index(0x68, partyPos, "@party_pos"),
+                new Index(0x69, boatPos, "@boat_pos"),
+                new Index(0x6A, shipPos, "@ship_pos"),
+                new Index(0x6B, airshipPos, "@airship_pos"),
                 new Index(0x6C, actors, "@actors"),
-                new Index(0x6D, party_items, "@party_items"),
+                new Index(0x6D, partyItems, "@party"),
                 new Index(0x6E, targets, "@targets"),
-                new Index(0x6F, map_info, "@map_info"),
+                new Index(0x6F, mapInfo, "@map_info"),
                 new Index(0x70, panorama, "@panorama"),
                 new Index(0x71, events, "@events"),
-                new Index(0x72, common_events, "@common_events"),
+                new Index(0x72, commonEvents, "@common_events"),
         };
     }
 

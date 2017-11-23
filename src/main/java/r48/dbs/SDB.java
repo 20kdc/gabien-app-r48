@@ -203,6 +203,14 @@ public class SDB {
                             int n = Integer.parseInt(args[point++]);
                             return new StandardArraySchemaElement(get(), n, false, x, standardArrayUi);
                         }
+                        if (text.equals("arrayEIdX")) {
+                            // this is *particularly* exotic
+                            // arrayEIdX <enum> <displayOffset> <fixedSize> <val>
+                            SchemaElement enu = get();
+                            int x = Integer.parseInt(args[point++]);
+                            int n = Integer.parseInt(args[point++]);
+                            return new StandardArraySchemaElement(get(), n, false, x, standardArrayUi, enu);
+                        }
                         if (text.equals("arrayAL1"))
                             return new StandardArraySchemaElement(get(), 0, true, 0, standardArrayUi);
                         if (text.equals("arrayPIx1"))
