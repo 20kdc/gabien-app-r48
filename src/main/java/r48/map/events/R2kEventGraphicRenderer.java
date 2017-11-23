@@ -60,15 +60,16 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
         String cName = target.getInstVarBySymbol("@character_name").decString();
         if (!cName.equals("")) {
             IImage i = imageLoader.getImage("CharSet/" + cName, false);
-            int rsx = scaleLocalToRemote(i.getWidth() / 12);
-            int rsy = scaleLocalToRemote(i.getHeight() / 8);
             int sx = i.getWidth() / 12;
             int sy = i.getHeight() / 8;
+            int rsx = scaleLocalToRemote(sx);
+            int rsy = scaleLocalToRemote(sy);
             if (target.getInstVarBySymbol("@character_name").strVal[0] != '$') {
-                sx = localTileSize * 3;
-                sy = localTileSize * 4;
-                rsx = remoteTileSize * 3;
-                rsy = remoteTileSize * 4;
+                // @16 : 24x32
+                sx = (localTileSize * 3) / 2;
+                sy = localTileSize * 2;
+                rsx = (remoteTileSize * 3) / 2;
+                rsy = remoteTileSize * 2;
             }
             int idx = ((int) target.getInstVarBySymbol("@character_index").fixnumVal);
             // Direction is apparently in a 0123 format???
