@@ -36,6 +36,12 @@ public class ArrayR2kInterpretable<T extends IR2kInterpretable> implements IR2kI
             };
         trustData = trust;
     }
+    public ArrayR2kInterpretable(ArraySizeR2kInterpretable<T> other, ISupplier<T> c, boolean trust, int defSize) {
+        this(other, c, trust);
+        for (int i = 0; i < defSize; i++) {
+            array.add(cons.get());
+        }
+    }
 
     @Override
     public void importData(InputStream bais) throws IOException {

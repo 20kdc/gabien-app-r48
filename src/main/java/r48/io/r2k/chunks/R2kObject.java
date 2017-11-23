@@ -74,9 +74,15 @@ public abstract class R2kObject implements IR2kStruct {
         chunks.putAll(unknownChunks);
         for (Index i : getIndices()) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            if (!i.chunk.exportData(baos)) {
-                byte[] r = baos.toByteArray();
-                chunks.put(i.index, r);
+            try {
+                if (!i.chunk.exportData(baos)) {
+                    byte[] r = baos.toByteArray();
+                    chunks.put(i.index, r);
+                }
+            } catch (IOException e) {
+                throw new IOException("In " + i + " of " + this, e);
+            } catch (RuntimeException e) {
+                throw new RuntimeException("In " + i + " of " + this, e);
             }
         }
         LinkedList<Integer> keys = new LinkedList<Integer>(chunks.keySet());

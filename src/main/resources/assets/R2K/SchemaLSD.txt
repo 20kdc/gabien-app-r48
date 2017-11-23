@@ -5,3 +5,40 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
  LSD support (For Ghabry)
+
+: RPG::SaveTitle
+@timestamp float
+@hero_name string
+@hero_level int
+@hero_hp int
+@face1_name f_faceset_name
+@face1_index int
++spriteSelector @face1_index @face1_name FaceSet/
+@face2_name f_faceset_name
+@face2_index int
++spriteSelector @face2_index @face2_name FaceSet/
+@face3_name f_faceset_name
+@face3_index int
++spriteSelector @face3_index @face3_name FaceSet/
+@face4_name f_faceset_name
+@face4_index int
++spriteSelector @face4_index @face4_name FaceSet/
+
+: RPG::SaveActor
+
+: RPG::Save
+@title subwindow RPG::SaveTitle
+@party_pos OPAQUE
+@party_items OPAQUE
+@actors subwindow hash actor_id RPG::SaveActor
+@system OPAQUE
+@screen OPAQUE
+@pictures OPAQUE
+@boat_pos OPAQUE
+@ship_pos OPAQUE
+@airship_pos OPAQUE
+@targets OPAQUE
+@map_info OPAQUE
+@panorama OPAQUE
+@events OPAQUE
+@common_events OPAQUE

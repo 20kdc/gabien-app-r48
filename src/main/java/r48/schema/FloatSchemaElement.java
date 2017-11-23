@@ -45,7 +45,7 @@ public class FloatSchemaElement extends StringSchemaElement {
     @Override
     public boolean verifier(String text) {
         try {
-            Float.parseFloat(text);
+            Double.parseDouble(text);
         } catch (Exception e) {
             return false;
         }

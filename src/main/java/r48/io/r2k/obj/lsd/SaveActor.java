@@ -18,48 +18,92 @@ import r48.io.r2k.chunks.*;
 public class SaveActor extends R2kObject {
     public StringR2kStruct name = new StringR2kStruct();
     public StringR2kStruct title = new StringR2kStruct();
-    public StringR2kStruct sprite_name = new StringR2kStruct();
-    public IntegerR2kStruct sprite_id = new IntegerR2kStruct(0);
-    public IntegerR2kStruct sprite_flags = new IntegerR2kStruct(0);
-    public StringR2kStruct face_name = new StringR2kStruct();
-    public IntegerR2kStruct face_id = new IntegerR2kStruct(0);
+    public StringR2kStruct charName = new StringR2kStruct();
+    public IntegerR2kStruct charIdx = new IntegerR2kStruct(0);
+    public IntegerR2kStruct charFlags = new IntegerR2kStruct(0);
+    public StringR2kStruct faceName = new StringR2kStruct();
+    public IntegerR2kStruct faceIdx = new IntegerR2kStruct(0);
     public IntegerR2kStruct level = new IntegerR2kStruct(-1);
     public IntegerR2kStruct exp = new IntegerR2kStruct(-1);
-    public IntegerR2kStruct hp_mod = new IntegerR2kStruct(-1);
-    public IntegerR2kStruct sp_mod = new IntegerR2kStruct(-1);
-    public IntegerR2kStruct attack_mod = new IntegerR2kStruct(0);
-    public IntegerR2kStruct defense_mod = new IntegerR2kStruct(0);
-    public IntegerR2kStruct spirit_mod = new IntegerR2kStruct(0);
-    public IntegerR2kStruct agility_mod = new IntegerR2kStruct(0);
-    // WARNING: DOUBLE PLUS UNGOOD MISSING OR UNTAGGED SIZEFIELDS!
-    public IntegerR2kStruct skills_size = new IntegerR2kStruct(-1);
-    public ArrayR2kStruct<ShortR2kStruct> skills = new ArrayR2kStruct<ShortR2kStruct>(null, new ISupplier<ShortR2kStruct>() {
+    public IntegerR2kStruct hpMod = new IntegerR2kStruct(-1);
+    public IntegerR2kStruct spMod = new IntegerR2kStruct(-1);
+    public IntegerR2kStruct attackMod = new IntegerR2kStruct(0);
+    public IntegerR2kStruct defenseMod = new IntegerR2kStruct(0);
+    public IntegerR2kStruct spiritMod = new IntegerR2kStruct(0);
+    public IntegerR2kStruct agilityMod = new IntegerR2kStruct(0);
+    public ArraySizeR2kInterpretable<ShortR2kStruct> skillsSize = new ArraySizeR2kInterpretable<ShortR2kStruct>(true);
+    public ArrayR2kStruct<ShortR2kStruct> skills = new ArrayR2kStruct<ShortR2kStruct>(skillsSize, new ISupplier<ShortR2kStruct>() {
         @Override
         public ShortR2kStruct get() {
             return new ShortR2kStruct(0);
         }
-    }, true);
+    });
+    public ArrayR2kStruct<ShortR2kStruct> equipment = new ArrayR2kStruct<ShortR2kStruct>(null, new ISupplier<ShortR2kStruct>() {
+        @Override
+        public ShortR2kStruct get() {
+            return new ShortR2kStruct(0);
+        }
+    }, 5);
+    public IntegerR2kStruct currentHp = new IntegerR2kStruct(-1);
+    public IntegerR2kStruct currentSp = new IntegerR2kStruct(-1);
+    public ArrayR2kStruct<Int32R2kStruct> battleCommands = new ArrayR2kStruct<Int32R2kStruct>(null, new ISupplier<Int32R2kStruct>() {
+        @Override
+        public Int32R2kStruct get() {
+            return new Int32R2kStruct(-1);
+        }
+    }, false, 7);
+    public ArraySizeR2kInterpretable<ShortR2kStruct> statesSize = new ArraySizeR2kInterpretable<ShortR2kStruct>(true);
+    public ArrayR2kStruct<ShortR2kStruct> states = new ArrayR2kStruct<ShortR2kStruct>(statesSize, new ISupplier<ShortR2kStruct>() {
+        @Override
+        public ShortR2kStruct get() {
+            return new ShortR2kStruct(0);
+        }
+    });
+    public BooleanR2kStruct changedBattleCommands = new BooleanR2kStruct(false);
+    public IntegerR2kStruct classId = new IntegerR2kStruct(-1);
+    public IntegerR2kStruct row = new IntegerR2kStruct(0);
+    public BooleanR2kStruct twoWeapon = new BooleanR2kStruct(false);
+    public BooleanR2kStruct lockEquipment = new BooleanR2kStruct(false);
+    public BooleanR2kStruct autoBattle = new BooleanR2kStruct(false);
+    public BooleanR2kStruct superGuard = new BooleanR2kStruct(false);
+    public IntegerR2kStruct battlerAnimation = new IntegerR2kStruct(0);
 
     @Override
     public Index[] getIndices() {
         return new Index[] {
                 new Index(0x01, name, "@name"),
                 new Index(0x02, title, "@title"),
-                new Index(0x0B, sprite_name, "@sprite_name"),
-                new Index(0x0C, sprite_id, "@sprite_id"),
-                new Index(0x0D, sprite_flags, "@sprite_flags"),
-                new Index(0x15, face_name, "@face_name"),
-                new Index(0x16, face_id, "@face_id"),
+                new Index(0x0B, charName, "@character_name"),
+                new Index(0x0C, charIdx, "@character_idx"),
+                new Index(0x0D, charFlags, "@char_flags"),
+                new Index(0x15, faceName, "@face_name"),
+                new Index(0x16, faceIdx, "@face_idx"),
                 new Index(0x1F, level, "@level"),
                 new Index(0x20, exp, "@exp"),
-                new Index(0x21, hp_mod, "@hp_mod"),
-                new Index(0x22, sp_mod, "@sp_mod"),
-                new Index(0x29, attack_mod, "@attack_mod"),
-                new Index(0x2A, defense_mod, "@defense_mod"),
-                new Index(0x2B, spirit_mod, "@spirit_mod"),
-                new Index(0x2C, agility_mod, "@agility_mod"),
-                new Index(0x33, skills_size, "@skills_size"),
+                new Index(0x21, hpMod, "@hp_mod"),
+                new Index(0x22, spMod, "@sp_mod"),
+                new Index(0x29, attackMod, "@attack_mod"),
+                new Index(0x2A, defenseMod, "@defense_mod"),
+                new Index(0x2B, spiritMod, "@spirit_mod"),
+                new Index(0x2C, agilityMod, "@agility_mod"),
+                new Index(0x33, skillsSize),
                 new Index(0x34, skills, "@skills"),
+                new Index(0x3D, equipment, "@equipment"),
+                new Index(0x47, currentHp, "@current_hp"),
+                new Index(0x48, currentSp, "@current_sp"),
+                // check for an 0x4F / 79
+                new Index(0x50, battleCommands, "@2k3_battle_commands"),
+                new Index(0x51, statesSize),
+                new Index(0x52, states, "@states"),
+
+                new Index(0x53, changedBattleCommands, "@2k3_changed_battle_commands"),
+                new Index(0x5A, classId, "@2k3_class_id"),
+                new Index(0x5B, row, "@row"),
+                new Index(0x5C, twoWeapon, "@two_weapon"),
+                new Index(0x5D, lockEquipment, "@lock_equipment"),
+                new Index(0x5E, autoBattle, "@auto_battle"),
+                new Index(0x5F, superGuard, "@super_guard"),
+                new Index(0x60, battlerAnimation, "@battler_animation"),
         };
     }
 

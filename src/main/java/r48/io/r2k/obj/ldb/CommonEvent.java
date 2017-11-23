@@ -28,7 +28,7 @@ public class CommonEvent extends R2kObject {
         public EventCommand get() {
             return new EventCommand();
         }
-    }, true);
+    });
 
     @Override
     public Index[] getIndices() {

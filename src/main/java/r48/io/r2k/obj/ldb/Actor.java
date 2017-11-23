@@ -41,7 +41,7 @@ public class Actor extends R2kObject {
         public ShortR2kStruct get() {
             return new ShortR2kStruct(0);
         }
-    }, true);
+    });
     public IntegerR2kStruct noWeaponAttackAnim = new IntegerR2kStruct(1);
     public IntegerR2kStruct aClass = new IntegerR2kStruct(0);
     public IntegerR2kStruct batPosX = new IntegerR2kStruct(220);
@@ -66,20 +66,20 @@ public class Actor extends R2kObject {
         public ByteR2kStruct get() {
             return new ByteR2kStruct(2);
         }
-    }, true);
+    });
     public ArraySizeR2kInterpretable<ByteR2kStruct> attrRanksSz = new ArraySizeR2kInterpretable<ByteR2kStruct>();
     public ArraySetR2kStruct<ByteR2kStruct> attrRanks = new ArraySetR2kStruct<ByteR2kStruct>(attrRanksSz, new ISupplier<ByteR2kStruct>() {
         @Override
         public ByteR2kStruct get() {
             return new ByteR2kStruct(2);
         }
-    }, true);
+    });
     public ArrayR2kStruct<Int32R2kStruct> battleCommands = new ArrayR2kStruct<Int32R2kStruct>(null, new ISupplier<Int32R2kStruct>() {
         @Override
         public Int32R2kStruct get() {
             return new Int32R2kStruct(0);
         }
-    }, true);
+    });
 
     @Override
     public Index[] getIndices() {

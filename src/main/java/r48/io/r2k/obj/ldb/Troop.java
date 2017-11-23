@@ -106,7 +106,7 @@ public class Troop extends R2kObject {
             public EventCommand get() {
                 return new EventCommand();
             }
-        }, true);
+        });
 
         @Override
         public RubyIO asRIO() {

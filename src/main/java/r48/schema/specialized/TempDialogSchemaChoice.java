@@ -42,7 +42,8 @@ public class TempDialogSchemaChoice extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        hPar.editor.modifyVal(hPar.targetElement, hPar, setDefault);
+        if (hPar.editor != null)
+            hPar.editor.modifyVal(hPar.targetElement, hPar, setDefault);
         if (update != null)
             update.run();
     }

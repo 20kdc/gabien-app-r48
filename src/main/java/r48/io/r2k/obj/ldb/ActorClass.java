@@ -52,7 +52,7 @@ public class ActorClass extends R2kObject {
         public Int32R2kStruct get() {
             return new Int32R2kStruct(0);
         }
-    }, true);
+    });
 
     @Override
     public Index[] getIndices() {

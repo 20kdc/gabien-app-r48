@@ -14,8 +14,17 @@ import r48.RubyIO;
  * Created on 01/06/17.
  */
 public class ArrayR2kStruct<T extends IR2kStruct> extends ArrayR2kInterpretable<T> implements IR2kStruct {
+    public ArrayR2kStruct(ArraySizeR2kInterpretable<T> other, ISupplier<T> c) {
+        super(other, c, true);
+    }
     public ArrayR2kStruct(ArraySizeR2kInterpretable<T> other, ISupplier<T> c, boolean trust) {
         super(other, c, trust);
+    }
+    public ArrayR2kStruct(ArraySizeR2kInterpretable<T> other, ISupplier<T> c, int defSize) {
+        super(other, c, true, defSize);
+    }
+    public ArrayR2kStruct(ArraySizeR2kInterpretable<T> other, ISupplier<T> c, boolean trust, int defSize) {
+        super(other, c, trust, defSize);
     }
 
     @Override

@@ -33,3 +33,7 @@ i R2K/SchemaLMT.txt
 i R2K/SchemaLDB.txt
 i R2K/SchemaLDBTerms.txt
 > File.RPG_RT.ldb RPG::Database
+
+ -LSD-
+
+i R2K/SchemaLSD.txt

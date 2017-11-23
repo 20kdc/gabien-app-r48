@@ -36,7 +36,7 @@ public class LdbSystem extends R2kObject {
         public ShortR2kStruct get() {
             return new ShortR2kStruct(0);
         }
-    }, true);
+    });
 
     // The menuCommandsSize -> menuCommands link is broken here, so it's fixed in the constructor.
     public ArraySizeR2kInterpretable<ShortR2kStruct> menuCommandsSize = new ArraySizeR2kInterpretable<ShortR2kStruct>(true);
@@ -48,7 +48,7 @@ public class LdbSystem extends R2kObject {
                 public ShortR2kStruct get() {
                     return new ShortR2kStruct(0);
                 }
-            }, true);
+            });
         }
     });
 

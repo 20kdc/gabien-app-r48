@@ -27,7 +27,7 @@ public class BPB implements IR2kStruct {
         public BattleParamBlock get() {
             return new BattleParamBlock();
         }
-    }, true);
+    });
     public ArrayR2kStruct<BattleParamBlock> parameters2 = null;
 
     public BPB() {

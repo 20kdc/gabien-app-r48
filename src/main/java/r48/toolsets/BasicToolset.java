@@ -142,7 +142,12 @@ public class BasicToolset implements IToolset {
                                 windowMaker.get().accept(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
-                                        windowMaker.get().accept(new UITest(AppMain.objectDB.getObject(s)));
+                                        RubyIO obj = AppMain.objectDB.getObject(s);
+                                        if (obj == null) {
+                                            AppMain.launchDialog(TXDB.get("The file couldn't be read, and R48 cannot create it."));
+                                        } else {
+                                            windowMaker.get().accept(new UITest(obj));
+                                        }
                                     }
                                 }));
                             }

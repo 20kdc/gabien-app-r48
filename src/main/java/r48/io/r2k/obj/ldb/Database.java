@@ -107,7 +107,7 @@ public class Database extends R2kObject {
         public ByteR2kStruct get() {
             return new ByteR2kStruct(0);
         }
-    }, true);
+    });
     public BattleCommands battleCommands2k3 = new BattleCommands();
     public SparseArrayHR2kStruct<ActorClass> classes2k3 = new SparseArrayHR2kStruct<ActorClass>(new ISupplier<ActorClass>() {
         @Override

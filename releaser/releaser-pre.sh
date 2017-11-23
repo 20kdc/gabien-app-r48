@@ -22,6 +22,7 @@ cd staging &&
 unzip -o ../../gabien-common/build/libs/gabien-common.jar &&
 unzip -o ../build/libs/gabien-app-r48.jar &&
 cd .. &&
+lua translation.lua > staging/assets/Systerms/English.txt &&
 # Prepare licensing information
 cp CREDITS.txt staging/ &&
 cp COPYING.txt staging/ &&
