@@ -18,7 +18,13 @@ import r48.io.r2k.chunks.*;
 public class Animation extends R2kObject {
     public StringR2kStruct name = new StringR2kStruct();
     public StringR2kStruct animationName = new StringR2kStruct();
-    public IntegerR2kStruct unknown3 = new IntegerR2kStruct(-1);
+    public BooleanR2kStruct unknown3 = new BooleanR2kStruct(false) {
+        @Override
+        public RubyIO asRIO() {
+            // This is to make up for a screwup with previous versions of R48
+            return new RubyIO().setBool(i >= 0);
+        }
+    };
     public SparseArrayHR2kStruct<AnimationTiming> timings = new SparseArrayHR2kStruct<AnimationTiming>(new ISupplier<AnimationTiming>() {
         @Override
         public AnimationTiming get() {

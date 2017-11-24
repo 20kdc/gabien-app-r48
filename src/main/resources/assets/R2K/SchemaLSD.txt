@@ -47,16 +47,16 @@ e rpg_saveactor_row -1 back 0 unset 1 front
 @agi_mod int
 @skills subwindow array 0 skill_id
 @equipment rpg_actor_equipment_block
-@2k3_changed_battle_commands boolean
-@2k3_battle_commands subwindow array 7 battlecommand_menu_id
+@changed_battle_commands_2k3 boolean
+@battle_commands_2k3 subwindow array 7 battlecommand_menu_id
 @states array 0 state_id
-@2k3_class_id class_complex_id
+@class_id_2k3 class_complex_id
 @row rpg_saveactor_row
 @two_weapon boolean
 @lock_equipment boolean
 @auto_battle boolean
 @super_guard boolean
-@2k3_battler_animation battleranimation_id
+@battler_animation_2k3 battleranimation_id
 
 : RPG::SaveTarget
 @map map_id
@@ -75,10 +75,12 @@ e rpg_savesystem_screen 0 unknown0 1 unknown1default
 @font_id int
 @switches subwindow arrayEIdX switch_id 1 0 boolean
 @variables subwindow arrayEIdX var_id 1 0 int
+ TODO: LOTS
 
 : RPG::Interpreter
 C name Class.RPG::Interpreter @stack$length | {A=0=empty|#A-deep interpreter}
 @stack arrayIx1 subwindow RPG::InterpreterStackLevel
+ TODO: Outer interpreter state
 
 : RPG::InterpreterStackLevel
 @list_size int
@@ -87,6 +89,7 @@ C name Class.RPG::Interpreter @stack$length | {A=0=empty|#A-deep interpreter}
 @index int
 @event_id event_or_none_id
 @actioned boolean
+ TODO: @branches
 
 : RPG::SaveCommonEvent
 @i subwindow RPG::Interpreter

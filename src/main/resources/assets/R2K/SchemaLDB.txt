@@ -496,13 +496,12 @@ e rpg_animationtiming_screenshake 0 noShake 1 target 2 screen
 
 e rpg_animation_scope 0 target 1 screen
 e rpg_animation_position 0 up 1 middle 2 down
-e rpg_animation_celtype -1 battle 1 battle2
 
 : RPG::Animation
 C name Class.RPG::Animation @name | #A
 @name string
 @animation_name string
-@battle2_2k3 rpg_animation_celtype
+@battle2_2k3 boolean
 @scope rpg_animation_scope
 @position rpg_animation_position
 @frames subwindow arrayIx1 subwindow RPG::Animation::Frame

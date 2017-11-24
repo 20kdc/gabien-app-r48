@@ -89,14 +89,14 @@ public class GenposSchemaElement extends SchemaElement {
                     final SpriteCache sc = new SpriteCache(target, a1, null, null, null, new IFunction<RubyIO, Integer>() {
                         @Override
                         public Integer apply(RubyIO rubyIO) {
-                            if (rubyIO.getInstVarBySymbol("@battle2_2k3").fixnumVal == 1)
+                            if (rubyIO.getInstVarBySymbol("@battle2_2k3").type == 'T')
                                 return 128;
                             return 96;
                         }
                     }, new IFunction<RubyIO, String>() {
                         @Override
                         public String apply(RubyIO rubyIO) {
-                            if (rubyIO.getInstVarBySymbol("@battle2_2k3").fixnumVal == 1)
+                            if (rubyIO.getInstVarBySymbol("@battle2_2k3").type == 'T')
                                 return "Battle2/";
                             return "Battle/";
                         }

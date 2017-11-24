@@ -92,18 +92,18 @@ public class SaveActor extends R2kObject {
                 new Index(0x47, currentHp, "@current_hp"),
                 new Index(0x48, currentSp, "@current_sp"),
                 // check for an 0x4F / 79
-                new Index(0x50, battleCommands, "@2k3_battle_commands"),
+                new Index(0x50, battleCommands, "@battle_commands_2k3"),
                 new Index(0x51, statesSize),
                 new Index(0x52, states, "@states"),
 
-                new Index(0x53, changedBattleCommands, "@2k3_changed_battle_commands"),
-                new Index(0x5A, classId, "@2k3_class_id"),
+                new Index(0x53, changedBattleCommands, "@changed_battle_commands_2k3"),
+                new Index(0x5A, classId, "@class_id_2k3"),
                 new Index(0x5B, row, "@row"),
                 new Index(0x5C, twoWeapon, "@two_weapon"),
                 new Index(0x5D, lockEquipment, "@lock_equipment"),
                 new Index(0x5E, autoBattle, "@auto_battle"),
                 new Index(0x5F, superGuard, "@super_guard"),
-                new Index(0x60, battlerAnimation, "@2k3_battler_animation"),
+                new Index(0x60, battlerAnimation, "@battler_animation_2k3"),
         };
     }
 
