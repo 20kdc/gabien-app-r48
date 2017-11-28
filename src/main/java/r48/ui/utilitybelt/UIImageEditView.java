@@ -15,6 +15,7 @@ import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import r48.FontSizes;
+import r48.dbs.TXDB;
 import r48.ui.Art;
 import r48.ui.UIGrid;
 
@@ -25,7 +26,7 @@ import r48.ui.UIGrid;
 public class UIImageEditView extends UIElement {
     public int[] image = new int[1024];
     public int imageW = 32, imageH = 32, cursorX = 16, cursorY = 16, zoom = FontSizes.getSpriteScale() * 16;
-    public boolean camMode = true, dragging;
+    public boolean camMode = true, tempCamMode = false, dragging;
     public int dragLastX, dragLastY;
     public double camX, camY;
     public int gridW = 16, gridH = 16, gridOX = 0, gridOY = 0;
@@ -87,7 +88,15 @@ public class UIImageEditView extends UIElement {
         Rect zMinus = Art.getZIconRect(false, 1);
         Rect zDrag = Art.getZIconRect(false, 2);
         int textX = zPlusFull.x + zPlusFull.width;
-        String text = cursorX + ", " + cursorY;
+        String info = TXDB.get("LMB: Draw/place, others: scroll, camera button: scroll mode");
+        if (GaBIEn.singleWindowApp())
+            info = TXDB.get("Tap/Drag: Draw, camera button: Switch to scrolling");
+        if (camMode) {
+            info = TXDB.get("All mouse buttons scroll, camera button goes back to drawing");
+            if (GaBIEn.singleWindowApp())
+                info = TXDB.get("Tap/Drag: Scroll, camera button : go back to drawing");
+        }
+        String text = cursorX + ", " + cursorY + " " + info;
         UILabel.drawLabel(igd, bounds.width - (textX + zPlus.x), ox + textX, oy + zPlus.y, text, 0, FontSizes.mapPositionTextHeight);
         Art.drawZoom(igd, true, zPlus.x + ox, zPlus.y + oy, zPlus.height);
         Art.drawZoom(igd, false, zMinus.x + ox, zMinus.y + oy, zMinus.height);
@@ -112,19 +121,22 @@ public class UIImageEditView extends UIElement {
     @Override
     public void handleClick(int x, int y, int button) {
         dragging = false;
-        if (button != 1)
-            return;
-        if (Art.getZIconRect(true, 0).contains(x, y)) {
-            handleMousewheel(x, y, true);
-            return;
-        }
-        if (Art.getZIconRect(true, 1).contains(x, y)) {
-            handleMousewheel(x, y, false);
-            return;
-        }
-        if (Art.getZIconRect(true, 2).contains(x, y)) {
-            camMode = !camMode;
-            return;
+        if (button == 1) {
+            tempCamMode = false;
+            if (Art.getZIconRect(true, 0).contains(x, y)) {
+                handleMousewheel(x, y, true);
+                return;
+            }
+            if (Art.getZIconRect(true, 1).contains(x, y)) {
+                handleMousewheel(x, y, false);
+                return;
+            }
+            if (Art.getZIconRect(true, 2).contains(x, y)) {
+                camMode = !camMode;
+                return;
+            }
+        } else {
+            tempCamMode = true;
         }
         dragging = true;
         dragLastX = x;
@@ -142,7 +154,7 @@ public class UIImageEditView extends UIElement {
     public void handleAct(int x, int y, boolean first) {
         if (!dragging)
             return;
-        if (camMode) {
+        if (camMode || tempCamMode) {
             camX += (x - dragLastX) / (double) zoom;
             camY += (y - dragLastY) / (double) zoom;
         } else {
