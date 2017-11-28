@@ -17,13 +17,15 @@ import r48.*;
 import r48.dbs.TXDB;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.ToneImageEffect;
+import r48.io.IMIUtils;
+import r48.io.IObjectBackend;
+import r48.map.systems.IRMMapSystem;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIFontSizeConfigurator;
 import r48.ui.UITextPrompt;
 
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -62,6 +64,7 @@ public class BasicToolset implements IToolset {
                         TXDB.get("New Object via Schema, ODB'AnonObject'"),
                         TXDB.get("Autocorrect Object By Name And Schema"),
                         TXDB.get("Inspect Object (no Schema needed)"),
+                        TXDB.get("Compile IMI Data"),
                         TXDB.get("Set Internal Windows (good)"),
                         TXDB.get("Set External Windows (bad)"),
                         TXDB.get("Configure fonts"),
@@ -147,6 +150,67 @@ public class BasicToolset implements IToolset {
                                             AppMain.launchDialog(TXDB.get("The file couldn't be read, and R48 cannot create it."));
                                         } else {
                                             windowMaker.get().accept(new UITest(obj));
+                                        }
+                                    }
+                                }));
+                            }
+                        },
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                windowMaker.get().accept(new UITextPrompt(TXDB.get("Root path to original game?"), new IConsumer<String>() {
+                                    @Override
+                                    public void accept(String s) {
+                                        s = s.replace('\\', '/');
+                                        if (!s.endsWith("/"))
+                                            s += "/";
+                                        boolean warning = false;
+                                        LinkedList<String> objs = AppMain.schemas.listFileDefs();
+                                        if (AppMain.system instanceof IRMMapSystem) {
+                                            IRMMapSystem rms = (IRMMapSystem) AppMain.system;
+                                            for (IRMMapSystem.RMMapData rio : rms.getAllMaps())
+                                                objs.add(rio.idName);
+                                        } else {
+                                            warning = true;
+                                        }
+                                        FileOutputStream fos = null;
+                                        try {
+                                            IObjectBackend oldGameAccess = IObjectBackend.Factory.create(AppMain.odbBackend, s, AppMain.dataPath, AppMain.dataExt);
+                                            fos = new FileOutputStream(AppMain.rootPath + "imi.txt");
+                                            DataOutputStream dos = new DataOutputStream(fos);
+                                            for (String s2 : objs) {
+                                                // NOTE: This has no Schema access, which is intentional
+                                                RubyIO a = oldGameAccess.loadObjectFromFile(s2);
+                                                //
+                                                RubyIO b = AppMain.objectDB.getObject(s2);
+                                                if (a != null) {
+                                                    byte[] diff = IMIUtils.createIMIData(a, b, "");
+                                                    if (diff != null) {
+                                                        dos.writeBytes("~\"");
+                                                        IMIUtils.writeIMIStringBody(dos, s2.getBytes("UTF-8"), false);
+                                                        dos.writeByte('\n');
+                                                        dos.write(diff);
+                                                    }
+                                                } else {
+                                                    dos.writeBytes("+\"");
+                                                    IMIUtils.writeIMIStringBody(dos, s2.getBytes("UTF-8"), false);
+                                                    dos.writeByte('\n');
+                                                    IMIUtils.createIMIDump(dos, b, "");
+                                                }
+                                            }
+                                            fos.close();
+                                            if (warning) {
+                                                AppMain.launchDialog(TXDB.get("Created patchfile 'imi.txt' - note that maps may not have been included."));
+                                            } else {
+                                                AppMain.launchDialog(TXDB.get("Created patchfile 'imi.txt'."));
+                                            }
+                                        } catch (IOException ioe) {
+                                            try {
+                                                if (fos != null)
+                                                    fos.close();
+                                            } catch (Exception e) {
+                                            }
+                                            AppMain.launchDialog(TXDB.get("Unable due to IOException (corrupt results may exist): ") + ioe.getMessage());
                                         }
                                     }
                                 }));

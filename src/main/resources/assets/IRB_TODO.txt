@@ -9,14 +9,26 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning subsection:
-+ 2k save-edit (thank you, Ghabry)
++ Project IMI:
+  Usage as follows:
+  1. Firstly, zip up all other assets that have changed (these must not include Data/ files)
+     explaination for OSD:
+     "If you have changed any of the graphics or audio (but *not* Data - R48 will handle that),
+       put those folders into a ZIP."
+     "(making sure that, *after* you open the ZIP, you see, for example, 'Graphics',
+       and that you only see the contents of that folder by going a level deeper)"
+     "Then, remove all files within the ZIP that you haven't changed."
+  2. Secondly, compile with "Compile IMI Data".
+     This will ask you for the location of an unmodified copy of the game.
+     Without this, R48 cannot work out what has changed.
+     R48 will then compile the IMI datafile.
+  3. User runs IMI installer 'blank'. This will either find the output files, and create the IMI installer,
+      or complain about something.
 + v0.8
++ 2k save-edit (thank you, Ghabry)
++ v0.9
 + R48-as-2k/2k3-save-editor is a massive benefit by itself and raises awareness
 + UI improvements driven by influx due to save editing.
-+ v0.9
-+ This is the version where whatever got done after v0.8 gets tested.
-  In general, this release is for MAKING R48 STABLE!
-  TEST EVERYTHING!
 + v1.0
 
 - ANYTIME -

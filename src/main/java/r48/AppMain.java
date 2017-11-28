@@ -14,10 +14,7 @@ import gabien.ui.*;
 import gabienapp.Application;
 import r48.dbs.*;
 import r48.imagefx.ImageFXCache;
-import r48.io.IkaObjectBackend;
-import r48.io.JsonObjectBackend;
-import r48.io.R2kObjectBackend;
-import r48.io.R48ObjectBackend;
+import r48.io.*;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.map.systems.*;
@@ -111,17 +108,7 @@ public class AppMain {
 
         // initialize everything else that needs initializing, starting with ObjectDB
 
-        if (odbBackend.equals("r48")) {
-            objectDB = new ObjectDB(new R48ObjectBackend(rootPath + dataPath, dataExt, true));
-        } else if (odbBackend.equals("ika")) {
-            objectDB = new ObjectDB(new IkaObjectBackend(rootPath));
-        } else if (odbBackend.equals("lcf2000")) {
-            objectDB = new ObjectDB(new R2kObjectBackend(rootPath));
-        } else if (odbBackend.equals("json")) {
-            objectDB = new ObjectDB(new JsonObjectBackend(rootPath, dataExt));
-        } else {
-            throw new IOException("Unknown ODB backend " + odbBackend);
-        }
+        objectDB = new ObjectDB(IObjectBackend.Factory.create(odbBackend, rootPath, dataPath, dataExt));
 
         if (sysBackend.equals("null")) {
             system = new NullSystem();

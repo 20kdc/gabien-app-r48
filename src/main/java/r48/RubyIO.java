@@ -7,7 +7,9 @@
 
 package r48;
 
-import java.io.UnsupportedEncodingException;
+import r48.io.IMIUtils;
+
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +27,19 @@ import java.util.Map;
  */
 public class RubyIO {
     public static String encoding = "UTF-8";
+    /*
+     * The Grand List Of Objects R48 Supports:
+     * NOTE: All objects can theoretically have iVars.
+     *       Serialization support varies, and sometimes iVars may be lost.
+     * 0, T, F : singletons. no values set
+     * i       : fixnumVal
+     * f, "    : strVal
+     * :, o    : symVal
+     * u       : symVal, userVal
+     * {       : hashVal
+     * }       : hashVal, hashDefVal
+     * [       : arrVal
+     */
     public int type;
     public byte[] strVal; // actual meaning depends on iVars. Should be treated as immutable - replace strVal on change
     public String symVal;
@@ -199,7 +214,7 @@ public class RubyIO {
 
     @Override
     public String toString() {
-        // NOTE: The following rules are relied upon by schema names, at least in theory:
+        // NOTE: The following rules are relied upon by schema name-routines, at least in theory:
         // 1. "null" means t0.
         // 2. Any valid number is a number.
         // 3. T/F are booleans.
@@ -223,46 +238,17 @@ public class RubyIO {
         return ((char) type) + data;
     }
 
-    // NOTE: THIS IS NOT COMPLETE, nor is it properly machine-readable.
-    // This is just a nice pretty-printer.
+    // Outputs IMI-code for something so that there's a basically human-readable version of it.
     public String toStringLong(String indent) {
-        if (type == '[') {
-            String s = indent + "[\n";
-            for (RubyIO rio : arrVal)
-                s += rio.toStringLong(indent + " ");
-            s += indent + "]\n";
-            return s;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            IMIUtils.createIMIDump(new DataOutputStream(baos), this, indent);
+            return new String(baos.toByteArray(), encoding);
+        } catch (Exception ioe) {
+            StringWriter sw = new StringWriter();
+            ioe.printStackTrace(new PrintWriter(sw));
+            return indent + "Couldn't dump: " + ioe + "\n" + sw;
         }
-        if (type == '{') {
-            String s = indent + "{\n";
-            for (Map.Entry<RubyIO, RubyIO> e : hashVal.entrySet()) {
-                s += e.getKey().toStringLong(indent + " ");
-                s += e.getValue().toStringLong(indent + " ");
-            }
-            s += indent + "}\n";
-            return s;
-        }
-        if (type == 'o') {
-            String s = indent + "o" + symVal + "\n";
-            if (iVarKeys != null) {
-                for (int i = 0; i < iVarKeys.length; i++) {
-                    s += indent + " " + iVarKeys[i] + "\n";
-                    s += iVarVals[i].toStringLong(indent + " ");
-                }
-            }
-            return s;
-        }
-        if (type == 'u') {
-            String hex = "";
-            for (byte n : userVal) {
-                String t = Integer.toHexString(n & 0xFF);
-                if (t.length() == 1)
-                    t = "0" + t;
-                hex += " " + t.toUpperCase();
-            }
-            return indent + toString() + hex + "\n";
-        }
-        return indent + toString() + "\n";
     }
 
     public String decString() {

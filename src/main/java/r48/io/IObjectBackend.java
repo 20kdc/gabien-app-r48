@@ -8,6 +8,7 @@
 package r48.io;
 
 import r48.RubyIO;
+import r48.dbs.ObjectDB;
 
 import java.io.IOException;
 
@@ -21,4 +22,20 @@ public interface IObjectBackend {
     RubyIO loadObjectFromFile(String filename);
 
     void saveObjectToFile(String filename, RubyIO object) throws IOException;
+
+    abstract class Factory {
+        public static IObjectBackend create(String odbBackend, String rootPath, String dataPath, String dataExt) throws IOException {
+            if (odbBackend.equals("r48")) {
+                return new R48ObjectBackend(rootPath + dataPath, dataExt, true);
+            } else if (odbBackend.equals("ika")) {
+                return new IkaObjectBackend(rootPath);
+            } else if (odbBackend.equals("lcf2000")) {
+                return new R2kObjectBackend(rootPath);
+            } else if (odbBackend.equals("json")) {
+                return new JsonObjectBackend(rootPath, dataExt);
+            } else {
+                throw new IOException("Unknown ODB backend " + odbBackend);
+            }
+        }
+    }
 }
