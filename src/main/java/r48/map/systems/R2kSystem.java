@@ -50,6 +50,11 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
+    public String mapSchema() {
+        return "RPG::Map";
+    }
+
+    @Override
     public UIElement createMapExplorer(ISupplier<IConsumer<UIElement>> windowMaker, IMapContext context) {
         return new UIGRMMapInfos(windowMaker, new R2kRMLikeMapInfoBackend(), context);
     }
@@ -109,14 +114,14 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             layers[8] = new PassabilityMapViewDrawLayer(new R2kPassabilitySource(tbl, tileset, (scrollFlags & 2) != 0, (scrollFlags & 1) != 0), 16);
             layers[9] = new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, 16);
         }
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers, "RPG::Event");
     }
 
     @Override
     public StuffRenderer rendererFromTso(RubyIO tso) {
         ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0], "RPG::Event");
     }
 
     @Override

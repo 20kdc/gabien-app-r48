@@ -26,9 +26,14 @@ public class IkaSystem extends MapSystem {
     }
 
     @Override
+    public String mapSchema() {
+        return "IkachanMap";
+    }
+
+    @Override
     public StuffRenderer rendererFromMap(RubyIO map) {
         ITileRenderer tileRenderer = new IkaTileRenderer(imageLoader);
         IEventGraphicRenderer eventRenderer = new IkaEventGraphicRenderer(imageLoader);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0}, eventRenderer, imageLoader, map, "Back", true, true, 0, 0, -1, -1, 1));
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0}, eventRenderer, imageLoader, map, "Back", true, true, 0, 0, -1, -1, 1), "IkachanEvent");
     }
 }

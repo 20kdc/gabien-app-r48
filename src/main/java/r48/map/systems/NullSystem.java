@@ -29,9 +29,14 @@ public class NullSystem extends MapSystem {
     }
 
     @Override
+    public String mapSchema() {
+        return null;
+    }
+
+    @Override
     public StuffRenderer rendererFromMap(RubyIO map) {
         ITileRenderer tileRenderer = new NullTileRenderer();
         IEventGraphicRenderer eventRenderer = new NullEventGraphicRenderer();
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0], "RPG::Event");
     }
 }

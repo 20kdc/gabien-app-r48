@@ -142,6 +142,7 @@ public class MapInfoReparentUtil {
         return newOrder;
     }
 
+    // Moves the given map to the last order for safe removal, without any internal messing around.
     public static void removeMapHelperSALT(int k, IRMLikeMapInfoBackendWPriv operators) {
         int glo = operators.getLastOrder();
         for (int i = operators.getOrderOfMap(k); i < glo; i++)

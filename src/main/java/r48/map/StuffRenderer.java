@@ -26,13 +26,15 @@ public class StuffRenderer {
     public final ITileRenderer tileRenderer;
     public final IEventGraphicRenderer eventRenderer;
     public final IImageLoader imageLoader;
+    public final String eventSchema;
     public final IMapViewDrawLayer[] layers;
 
-    public StuffRenderer(IImageLoader l, ITileRenderer t, IEventGraphicRenderer e, IMapViewDrawLayer[] l2) {
+    public StuffRenderer(IImageLoader l, ITileRenderer t, IEventGraphicRenderer e, IMapViewDrawLayer[] l2, String es) {
         tileRenderer = t;
         eventRenderer = e;
         imageLoader = l;
         layers = l2;
+        eventSchema = es;
     }
 
     public static IMapViewDrawLayer[] prepareTraditional(ITileRenderer itr, int[] tlOrder, IEventGraphicRenderer igr, IImageLoader iil, RubyIO map, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {

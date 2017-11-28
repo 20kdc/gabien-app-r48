@@ -116,7 +116,7 @@ public class RMToolsToolset implements IToolset {
                         }
                         for (IRMMapSystem.RMMapData rio : mapSystem.getAllMaps()) {
                             objects.add(rio.idName);
-                            objectSchemas.add("RPG::Map");
+                            objectSchemas.add(AppMain.system.mapSchema());
                         }
                         for (final String obj : objects) {
                             System.out.println(obj + "...");
@@ -153,7 +153,7 @@ public class RMToolsToolset implements IToolset {
                                         }
                                         for (IRMMapSystem.RMMapData rio : mapSystem.getAllMaps()) {
                                             objects.add(rio.idName);
-                                            objectSchemas.add("RPG::Map");
+                                            objectSchemas.add(AppMain.system.mapSchema());
                                         }
                                         int total = 0;
                                         String log = "";

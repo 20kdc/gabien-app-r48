@@ -32,7 +32,7 @@ public class IkaObjectBackend implements IObjectBackend {
     @Override
     public RubyIO loadObjectFromFile(String filename) {
         if (filename.equals("Map")) {
-            RubyIO rio = new RubyIO().setSymlike("RPG::Map", true);
+            RubyIO rio = new RubyIO().setSymlike("IkachanMap", true);
 
             BM8I bm = new BM8I();
             bm.width = 160;
@@ -95,7 +95,7 @@ public class IkaObjectBackend implements IObjectBackend {
     }
 
     private RubyIO convertEventToRuby(NPChar.NPCCharacter io) {
-        RubyIO res = new RubyIO().setSymlike("RPG::Event", true);
+        RubyIO res = new RubyIO().setSymlike("IkachanEvent", true);
         int px = rounder(io.posX);
         int py = rounder(io.posY);
         res.addIVar("@x", new RubyIO().setFX(px));

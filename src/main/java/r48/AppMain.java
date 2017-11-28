@@ -203,7 +203,7 @@ public class AppMain {
         LinkedList<IToolset> toolsets = new LinkedList<IToolset>();
         // Until a future time, this is hard-coded as the classname of a map being created via MapInfos.
         // Probably simple enough to create a special alias, but meh.
-        if (AppMain.schemas.hasSDBEntry("RPG::Map")) {
+        if (system.mapSchema() != null) {
             MapToolset mapController = new MapToolset(wmg);
             // Really just restricts access to prevent a hax pileup
             mapContext = mapController.getContext();
@@ -211,7 +211,7 @@ public class AppMain {
         } else {
             mapContext = null;
         }
-        if (AppMain.schemas.hasSDBEntry("EventListEditor"))
+        if (system instanceof IRMMapSystem)
             toolsets.add(new RMToolsToolset(gamepak));
         toolsets.add(new BasicToolset(rootView, uiTicker, new IConsumer<IConsumer<UIElement>>() {
             @Override
@@ -359,6 +359,8 @@ public class AppMain {
         uhs.setBounds(uhs.getBounds());
         int h = uhs.getBounds().height;
         int limit = rootView.getBounds().height - rootView.getWindowFrameHeight();
+        limit *= 3;
+        limit /= 4;
         if (h > limit)
             h = limit;
         svl.setBounds(new Rect(0, 0, uhs.getBounds().width, h));

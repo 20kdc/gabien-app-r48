@@ -80,7 +80,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         setBounds(new Rect(0, 0, i, i1));
 
         mapId = mapN;
-        map = AppMain.objectDB.getObject(mapN, "RPG::Map");
+        map = AppMain.objectDB.getObject(mapN, AppMain.system.mapSchema());
         AppMain.objectDB.registerModificationHandler(map, listener);
         listener.accept(null);
 
@@ -328,7 +328,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     // Used by tools, after they're done doing whatever.
     // Basically a convenience method.
     public void passModificationNotification() {
-        AppMain.objectDB.objectRootModified(map, new SchemaPath(AppMain.schemas.getSDBEntry("RPG::Map"), map));
+        AppMain.objectDB.objectRootModified(map, new SchemaPath(AppMain.schemas.getSDBEntry(AppMain.system.mapSchema()), map));
     }
 
     @Override

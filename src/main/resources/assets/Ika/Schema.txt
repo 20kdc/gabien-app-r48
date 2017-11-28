@@ -10,7 +10,7 @@ C versionId Ika
 e eventType 0 Globefish 1 Isogin 2 Crab 3 Sleep 4 NiceStar 5 AttackStar 6 Dum 7 Carry 8 Juel 9 Ufo
 e collisionType 0 Null 1 Block 2 Enemy 3 Event
 
-: RPG::Event
+: IkachanEvent
 @x int
 @y int
 @scriptId int
@@ -21,8 +21,8 @@ e collisionType 0 Null 1 Block 2 Enemy 3 Event
 @status int
 @collisionType collisionType
 
-> mapEvents hash int subwindow RPG::Event
-: RPG::Map
+> mapEvents hash int subwindow IkachanEvent
+: IkachanMap
 @events subwindow mapEvents
 +table @data . . 160 120 1
  There. Now I'm shipping only 0x36 bytes which is the standard BMP header.
@@ -31,4 +31,4 @@ e collisionType 0 Null 1 Block 2 Enemy 3 Event
   but I've finally dealt with the one potentially license-wobbly part of the Ika backend.
 +table @palette . . 256 1 4
 
-> File.Map RPG::Map
+> File.Map IkachanMap

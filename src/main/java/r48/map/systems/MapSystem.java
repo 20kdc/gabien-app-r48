@@ -36,6 +36,9 @@ public abstract class MapSystem {
         imageLoader = imgLoad;
     }
 
+    // If null, maps are not enabled.
+    public abstract String mapSchema();
+
     public UIElement createMapExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final IMapContext mapBox) {
         return new UIPopupMenu(new String[] {
                 TXDB.get("Load Map")

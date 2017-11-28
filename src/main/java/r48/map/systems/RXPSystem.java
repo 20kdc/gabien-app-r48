@@ -59,6 +59,11 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
+    public String mapSchema() {
+        return "RPG::Map";
+    }
+
+    @Override
     public UIElement createMapExplorer(ISupplier<IConsumer<UIElement>> windowMaker, IMapContext mapBox) {
         return new UIGRMMapInfos(windowMaker, new RXPRMLikeMapInfoBackend(), mapBox);
     }
@@ -92,14 +97,14 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
                     new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, tileRenderer.getTileSize()),
             };
         }
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers, "RPG::Event");
     }
 
     @Override
     public StuffRenderer rendererFromTso(RubyIO tso) {
         ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0], "RPG::Event");
     }
 
     @Override

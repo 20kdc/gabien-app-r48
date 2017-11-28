@@ -193,6 +193,7 @@ public class IMIUtils {
                 mod = true;
                 dos.writeBytes(id2 + ">");
                 createIMIDump(dos, new RubyIO().setFX(i), id2);
+                dos.writeBytes(id2);
                 createIMIDump(dos, target.arrVal[i], incrementIndent(id2));
             }
         }

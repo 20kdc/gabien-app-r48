@@ -19,6 +19,7 @@ import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
+import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
@@ -127,7 +128,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                 int unusedIndex = getFreeIndex(evtHash);
 
                 RubyIO k = new RubyIO().setFX(unusedIndex);
-                RubyIO newEvent = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Event"), k);
+                RubyIO newEvent = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry(mapView.renderer.eventSchema), k);
                 RubyIO evName = newEvent.getInstVarBySymbol("@name");
                 if (evName != null) {
                     String n = Integer.toString(unusedIndex);
@@ -163,10 +164,10 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     }
 
     public static void showEvent(long fixnumVal, UIMapView map, RubyIO event) {
-        AppMain.launchNonRootSchema(map.map, "RPG::Map", new RubyIO().setFX(fixnumVal), event, "RPG::Event", "E" + fixnumVal, map);
+        AppMain.launchNonRootSchema(map.map, AppMain.system.mapSchema(), new RubyIO().setFX(fixnumVal), event, map.renderer.eventSchema, "E" + fixnumVal, map);
     }
 
     public static void showEventDivorced(long fixnumVal, RubyIO map, RubyIO event) {
-        AppMain.launchNonRootSchema(map, "RPG::Map", new RubyIO().setFX(fixnumVal), event, "RPG::Event", "E" + fixnumVal, null);
+        AppMain.launchNonRootSchema(map, AppMain.system.mapSchema(), new RubyIO().setFX(fixnumVal), event, AppMain.stuffRendererIndependent.eventSchema, "E" + fixnumVal, null);
     }
 }

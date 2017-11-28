@@ -43,7 +43,7 @@ public class UIMTPopupButtons extends UIMTBase {
                 new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.launchSchema("RPG::Map", view.map, view);
+                        AppMain.launchSchema(AppMain.system.mapSchema(), view.map, view);
                     }
                 },
                 new Runnable() {
