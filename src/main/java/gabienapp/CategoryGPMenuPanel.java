@@ -13,6 +13,7 @@ import r48.RubyIO;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.TXDB;
+import r48.io.PathUtils;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -49,11 +50,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                         if (Application.appTicker == null) {
                             try {
                                 RubyIO.encoding = box.get();
-                                String rootPath = Application.rootBox.text;
-                                if (!rootPath.equals(""))
-                                    if (!rootPath.endsWith("/"))
-                                        if (!rootPath.endsWith("\\"))
-                                            rootPath += "/";
+                                String rootPath = PathUtils.fixRootPath(Application.rootBox.text);
                                 if (mobileExtremelySpecialBehavior)
                                     TXDB.loadGamepakLanguage(objName + "/");
                                 Application.appTicker = AppMain.initializeAndRun(rootPath, objName + "/", Application.uiTicker);

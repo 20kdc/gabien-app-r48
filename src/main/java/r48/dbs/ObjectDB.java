@@ -54,12 +54,12 @@ public class ObjectDB {
         }
         RubyIO rio = backend.loadObjectFromFile(id);
         if (rio == null) {
-            if (!AppMain.schemas.hasSDBEntry(backupSchema)) {
-                System.err.println("Could not find backup schema for object " + id);
-                return null;
-            }
-            SchemaElement ise = AppMain.schemas.getSDBEntry(backupSchema);
             if (backupSchema != null) {
+                if (!AppMain.schemas.hasSDBEntry(backupSchema)) {
+                    System.err.println("Could not find backup schema for object " + id);
+                    return null;
+                }
+                SchemaElement ise = AppMain.schemas.getSDBEntry(backupSchema);
                 if (ise != null) {
                     try {
                         rio = SchemaPath.createDefaultValue(ise, null);

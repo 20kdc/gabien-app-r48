@@ -10,6 +10,7 @@ package r48.map.imaging;
 import gabien.GaBIEn;
 import gabien.IImage;
 import gabienapp.Application;
+import r48.io.PathUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -33,7 +34,7 @@ public class PNG8IImageLoader implements IImageLoader {
             return null;
         DataInputStream dis = null;
         try {
-            String ad = Application.autoDetectWindows(name + ".png");
+            String ad = PathUtils.autoDetectWindows(name + ".png");
             dis = new DataInputStream(GaBIEn.getFile(ad));
             // Magic number blahblahblah
             byte[] magic = new byte[8];

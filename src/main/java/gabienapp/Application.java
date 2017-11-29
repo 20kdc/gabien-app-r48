@@ -228,6 +228,7 @@ public class Application {
                         }
                         ps.println(TXDB.get("Error details follow."));
                         e.printStackTrace(ps);
+                        ps.flush();
                         System.err.println("Prepared contents...");
                         try {
                             OutputStream fos = GaBIEn.getOutFile("r48.error.txt");
@@ -421,49 +422,6 @@ public class Application {
                 closeHelper.accept(null);
             }
         }, FontSizes.launcherTextHeight);
-    }
-
-    // Magically handles case issues.
-    public static String autoDetectWindows(String s) {
-        final String giveUp = s;
-        try {
-            // '/' is 'universal'. Not supposed to be, but that doesn't matter.
-            // Firstly convert to '/' form.
-            // We will be dealing with the following kinds of paths.
-            // Relative: "([$PATHCHARS]*/)*[$PATHCHARS]*"
-            // Windows Absolute: "?:/.*"
-            // MLA Absolute / Windows NT Special Path Absolute: "/.*"
-            s = s.replace('\\', '/');
-            if (s.equals(""))
-                return s;
-            if (!s.contains("/"))
-                if (s.contains(":"))
-                    return s; // A: / B: / C:
-            if (GaBIEn.fileOrDirExists(s))
-                return s;
-            // Deal with earlier path components...
-            String st = GaBIEn.basename(s);
-            // Sanity check.
-            if (s.contains("/")) {
-                if (!s.endsWith("/" + st))
-                    throw new RuntimeException("Weird inconsistency in gabien path sanitizer. 'Should never happen' but safety first.");
-            } else {
-                // Change things to make sense.
-                s = "./" + st;
-            }
-            String parent = autoDetectWindows(s.substring(0, s.length() - (st.length() + 1)));
-            String[] subfiles = GaBIEn.listEntries(parent);
-            if (subfiles != null)
-                for (String s2 : subfiles)
-                    if (s2.equalsIgnoreCase(st))
-                        return parent + "/" + s2;
-            // Oh well.
-            return parent + "/" + st;
-        } catch (Exception e) {
-            // This will likely result from permissions errors & IO errors.
-            // As this is just meant as a workaround for devs who can't use consistent case, it's not necessary to R48 operation.
-            return giveUp;
-        }
     }
 
     // Only use from AppMain's "pleaseShutdown"

@@ -25,7 +25,14 @@ import java.util.Map;
  *  ": Ends the array
  *  \: Two hex digits follow - "0x" is prepended for parsing.
  * This is meant to imitate the look of a string.
- * Commands:
+ * Outer Level Commands:
+ * I0[dbBackend][dataPath][dataExt] : Must be the first command. Specifies details via UTF-8 byte arrays.
+ * ~[file][IMI] : Patch a file (UTF-8 byte array path) with a given IMI segment
+ * +[file][IMI] : Create a file (UTF-8 byte array path) with a given IMI segment
+ *                (If the file already exists, a patch error has occurred)
+ * F[file][data]: Write an assetfile (UTF-8 byte array path) with the following data (byte array)
+ * (32, 13, 10) : NOP
+ * IMI Segment Commands:
  * (32, 13, 10):  NOP
  * ?[num]: : Enforces that the type is as given *by colon terminated integer*, on pain of patch error.
  *           The reason it's done this way is because IMI's pretending to be human-readable.

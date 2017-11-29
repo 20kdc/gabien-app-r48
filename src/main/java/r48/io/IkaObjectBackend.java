@@ -40,7 +40,7 @@ public class IkaObjectBackend implements IObjectBackend {
             bm.data = new int[160 * 120];
             bm.palette = new int[256];
             try {
-                InputStream inp = GaBIEn.getFile(Application.autoDetectWindows(root + "Pbm/Map1.pbm"));
+                InputStream inp = GaBIEn.getFile(PathUtils.autoDetectWindows(root + "Pbm/Map1.pbm"));
                 if (inp != null) {
                     bm.loadBitmap(inp);
                     inp.close();
@@ -78,7 +78,7 @@ public class IkaObjectBackend implements IObjectBackend {
 
             NPChar np = new NPChar();
             try {
-                InputStream inp = GaBIEn.getFile(Application.autoDetectWindows(root + "NPChar.dat"));
+                InputStream inp = GaBIEn.getFile(PathUtils.autoDetectWindows(root + "NPChar.dat"));
                 np.load(inp);
                 inp.close();
             } catch (IOException ioe) {
@@ -134,7 +134,7 @@ public class IkaObjectBackend implements IObjectBackend {
                 int b = rt2.getTiletype(i, 0, 3) & 0xFF;
                 bm8.palette[i] = (a << 24) | (r << 16) | (g << 8) | b;
             }
-            OutputStream fio = GaBIEn.getOutFile(Application.autoDetectWindows(root + "Pbm/Map1.pbm"));
+            OutputStream fio = GaBIEn.getOutFile(PathUtils.autoDetectWindows(root + "Pbm/Map1.pbm"));
             if (fio == null)
                 throw new IOException("Unable to open Map1 for writing.");
             bm8.saveBitmap(fio);
@@ -157,7 +157,7 @@ public class IkaObjectBackend implements IObjectBackend {
                     n.eventID = (int) r2.getInstVarBySymbol("@scriptId").fixnumVal;
                 }
             }
-            fio = GaBIEn.getOutFile(Application.autoDetectWindows(root + "NPChar.dat"));
+            fio = GaBIEn.getOutFile(PathUtils.autoDetectWindows(root + "NPChar.dat"));
             npc.save(fio);
             fio.close();
             return;

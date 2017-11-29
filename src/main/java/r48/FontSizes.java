@@ -70,6 +70,11 @@ public class FontSizes {
     // TXDB.get("tonePickerTextHeight")
     public static int tonePickerTextHeight = 6;
 
+    // TXDB.get("imiAsmButtonsTextHeight")
+    public static int imiAsmButtonsTextHeight = 16;
+    // TXDB.get("imiAsmAssetTextHeight")
+    public static int imiAsmAssetTextHeight = 16;
+
     // TXDB.get("dialogWindowTextHeight")
     public static int dialogWindowTextHeight = 16;
     // TXDB.get("textDialogFieldTextHeight")

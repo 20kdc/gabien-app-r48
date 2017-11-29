@@ -10,6 +10,7 @@ package r48.map.imaging;
 import gabien.GaBIEn;
 import gabien.IImage;
 import gabienapp.Application;
+import r48.io.PathUtils;
 
 /**
  * Does whatever the default can.
@@ -42,12 +43,12 @@ public class GabienImageLoader implements IImageLoader {
     public IImage getImage(String name, boolean panorama) {
         IImage error = GaBIEn.getErrorImage();
         if (ck) {
-            IImage core = GaBIEn.getImageCK(Application.autoDetectWindows(name + postfix), r, g, b);
+            IImage core = GaBIEn.getImageCK(PathUtils.autoDetectWindows(name + postfix), r, g, b);
             if (core == error)
                 return null;
             return core;
         } else {
-            IImage core = GaBIEn.getImage(Application.autoDetectWindows(name + postfix));
+            IImage core = GaBIEn.getImage(PathUtils.autoDetectWindows(name + postfix));
             if (core == error)
                 return null;
             return core;

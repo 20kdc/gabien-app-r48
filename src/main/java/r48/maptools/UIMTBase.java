@@ -14,9 +14,9 @@ import gabien.ui.UIPanel;
 import r48.map.IMapToolContext;
 
 /**
- * Created on August 14 2017. Date manually put in because INTELLIJ IDEA CE 14.1.3 (Arch Linux build at the least) IS COMPLETELY BROKEN!!!
- * It completely lost UI at first, and when closing and re-opening fixed that, I lost my
- * I am currently having issues with templates not working. Ow, ow, my head, it cannot suffer this idiocity for too long...
+ * Created on August 14 2017.
+ * This is used from several places, not necessarily map tools,
+ *  because it's a good base class for anonymous classes (among other things)
  */
 public class UIMTBase extends UIPanel implements IWindowElement {
     private UIElement innerElem = null;
@@ -63,6 +63,13 @@ public class UIMTBase extends UIPanel implements IWindowElement {
     @Override
     public void windowClosed() {
         hasClosed = true;
+    }
+
+    @Override
+    public String toString() {
+        if (innerElem != null)
+            return innerElem.toString();
+        return super.toString();
     }
 
     public static UIMTBase wrap(IMapToolContext mtc, UIElement svl, boolean forceSize) {

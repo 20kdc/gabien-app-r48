@@ -9,6 +9,7 @@ package r48.map.imaging;
 import gabien.GaBIEn;
 import gabien.IImage;
 import gabienapp.Application;
+import r48.io.PathUtils;
 import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class XYZImageLoader implements IImageLoader {
     @Override
     public IImage getImage(String name, boolean panorama) {
         try {
-            InputStream fis = GaBIEn.getFile(Application.autoDetectWindows(name + ".xyz"));
+            InputStream fis = GaBIEn.getFile(PathUtils.autoDetectWindows(name + ".xyz"));
             if (fis.read() != 'X')
                 throw new IOException("Bad magic");
             if (fis.read() != 'Y')
