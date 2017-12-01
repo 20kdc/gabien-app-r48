@@ -439,6 +439,7 @@ public class AppMain {
                         "R2K/char.png", "CharSet/char.png",
                         "R2K/System.png", "System/System.png",
                         "R2K/templatetileset.png", "ChipSet/templatetileset.png",
+                        "R2K/slime.png", "Monster/monster.png",
                 };
                 for (String s : mkdirs)
                     GaBIEn.makeDirectories(AppMain.rootPath + s);
