@@ -66,3 +66,7 @@
 # This is important in case someone can't run the shell scripts
 !instimi/src/main/resources/world.txt
 
+# Git is being a git about this, make it clear.
+# These files are to be COPIED OVER.
+instimi/src/main/resources/CREDITS.txt
+instimi/src/main/resources/COPYING.txt
