@@ -32,3 +32,29 @@
 !src/main/java/*/*/*/*/*/*
 !src/main/java/*/*/*/*/*/*/*
 !src/main/java/*/*/*/*/*/*/*/*
+
+# IMI (Integrated Mod Installer)
+# Note that this tree gets mixed together with various bits and pieces by the IMI release process.
+
+!instimi
+!instimi/
+!instimi/build.gradle
+!instimi/src
+!instimi/src/
+!instimi/src/main
+!instimi/src/main/
+!instimi/src/main/java
+!instimi/src/main/java/
+
+# Fake-GaBIEn class (the rest of the gabien folder is copied from gabien-common during build)
+!instimi/src/main/java/gabien
+!instimi/src/main/java/gabien/
+!instimi/src/main/java/gabien/GaBIEn.java
+
+# IMI classes
+!instimi/src/main/java/r48
+!instimi/src/main/java/r48/
+!instimi/src/main/java/r48/imi
+!instimi/src/main/java/r48/imi/
+!instimi/src/main/java/r48/imi/*
+
