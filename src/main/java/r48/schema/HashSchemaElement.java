@@ -39,12 +39,34 @@ public class HashSchemaElement extends SchemaElement {
         this.flexible = flexible;
     }
 
+    private SchemaPath.EmbedDataKey getSearchTermCharKey(RubyIO target, int key) {
+        return new SchemaPath.EmbedDataKey(this, target, HashSchemaElement.class, "searchTerm/" + key);
+    }
+    private String getSearchTerm(RubyIO target, ISchemaHost launcher, SchemaPath context) {
+        int p = 0;
+        String s = "";
+        while (true) {
+            double ch = context.getEmbedSP(launcher, getSearchTermCharKey(target, p++));
+            if (ch <= 0)
+                break;
+            s += (char) ch;
+        }
+        return s;
+    }
+    private void setSearchTerm(RubyIO target, ISchemaHost launcher, SchemaPath context, String term) {
+        for (int i = 0; i <= term.length(); i++) {
+            int v = 0;
+            if (i != term.length())
+                v = term.charAt(i);
+            context.getEmbedMap(launcher).put(getSearchTermCharKey(target, i), (double) v);
+        }
+    }
+
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
         // similar to the array schema, this is a containing object with access to local information
         Runnable rebuildSection = new Runnable() {
-            public String searchTerm = "";
             // "Here come the hax!"
             // Also does relayout
             public void trigger() {
@@ -62,11 +84,11 @@ public class HashSchemaElement extends SchemaElement {
             public void run() {
                 uiSV.panels.clear();
                 final UITextBox searchBox = new UITextBox(FontSizes.schemaFieldTextHeight);
-                searchBox.text = searchTerm;
+                searchBox.text = getSearchTerm(target, launcher, path);
                 searchBox.onEdit = new Runnable() {
                     @Override
                     public void run() {
-                        searchTerm = searchBox.text;
+                        setSearchTerm(target, launcher, path, searchBox.text);
                         trigger();
                     }
                 };
@@ -77,7 +99,7 @@ public class HashSchemaElement extends SchemaElement {
                         return getKeyText(rubyIO);
                     }
                 })) {
-                    if (!getKeyText(key).contains(searchTerm))
+                    if (!getKeyText(key).contains(searchBox.text))
                         continue;
                     final RubyIO kss = key;
                     // keys are opaque - this prevents MANY issues

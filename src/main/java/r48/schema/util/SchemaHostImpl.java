@@ -18,6 +18,8 @@ import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.ui.UIAppendButton;
 
+import java.util.HashMap;
+
 /**
  * Created on 12/29/16.
  */
@@ -84,7 +86,12 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
                 AppMain.launchDialog(TXDB.get("Cannot clone, this contains a temporary dialog."));
                 return;
             }
+            // This serves to ensure that cloning a window causes it to retain scroll and such,
+            // while still keeping it independent.
+            HashMap<SchemaPath.EmbedDataKey, Double> info = innerElem.embedData.get(SchemaHostImpl.this);
             SchemaHostImpl next = new SchemaHostImpl(hostWindows, contextView);
+            if (info != null)
+                innerElem.getEmbedMap(next).putAll(info);
             next.switchObject(innerElem);
         }
     }, FontSizes.schemaPathTextHeight);
