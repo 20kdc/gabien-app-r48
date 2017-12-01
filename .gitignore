@@ -65,3 +65,4 @@
 !instimi/src/main/resources/manifest.txt
 # This is important in case someone can't run the shell scripts
 !instimi/src/main/resources/world.txt
+

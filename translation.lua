@@ -38,6 +38,8 @@ local function check(f)
   local fd = io.open(f, "r")
   findtr(fd, f)
   fd:close()
+ elseif f:sub(f:len() - 3, f:len()) == ".txt" then
+  -- do nothing
  else
   for k, v in ipairs(ls(f)) do
    check(f .. "/" .. v)

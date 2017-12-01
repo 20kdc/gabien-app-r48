@@ -1,7 +1,6 @@
 apply plugin: "java"
 apply plugin: "eclipse"
 apply plugin: "idea"
-apply plugin: "application"
 
 dependencies {
     compile files('../gabien-common/build/libs/gabien-common.jar')
@@ -13,10 +12,9 @@ targetCompatibility = 1.6
 
 group = "gabien"
 archivesBaseName = "gabien-app-r48"
-mainClassName = "gabien.Main"
 
 jar {
     manifest {
-        attributes("Main-Class": "gabien.Main")
+        attributes 'Main-Class': "gabien.Main"
     }
 }

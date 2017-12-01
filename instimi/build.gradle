@@ -11,10 +11,9 @@ targetCompatibility = 1.6
 
 group = "imi"
 archivesBaseName = "gabien-app-r48-imi"
-mainClassName = "r48.imi.Main"
 
 jar {
  manifest {
-  attributes("Main-Class": "r48.imi.Main")
+  attributes 'Main-Class': "gabien.Main"
  }
 }
