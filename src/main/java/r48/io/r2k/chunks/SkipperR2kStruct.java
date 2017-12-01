@@ -8,7 +8,6 @@
 package r48.io.r2k.chunks;
 
 import r48.RubyIO;
-import r48.io.r2k.struct.EventCommand;
 
 import java.io.IOException;
 import java.io.InputStream;

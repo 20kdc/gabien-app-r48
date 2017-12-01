@@ -8,7 +8,6 @@
 package r48.io;
 
 import r48.RubyIO;
-import r48.dbs.ObjectDB;
 
 import java.io.IOException;
 

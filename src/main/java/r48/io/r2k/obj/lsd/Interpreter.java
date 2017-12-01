@@ -11,7 +11,6 @@ import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.chunks.*;
-import r48.io.r2k.struct.EventCommand;
 
 public class Interpreter extends R2kObject {
     public SparseArrayAR2kStruct<InterpreterStackLevel> commands = new SparseArrayAR2kStruct<InterpreterStackLevel>(new ISupplier<InterpreterStackLevel>() {

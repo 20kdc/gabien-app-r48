@@ -4,14 +4,14 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-Classes in this folder are not allowed to refer to other R48 classes,
- with the following exceptions allowed:
+Classes in this folder are not allowed to refer to other R48/Gabien classes,
+ with the following exceptions allowed (these are specifically copied into IMI worktree):
 
- r48.RubyIO
- r48.RubyCT
- r48.RubyTable
- r48.RubyBigNum
+ r48.io.*
+ r48.Ruby*
  r48.ArrayUtils
+ gabien.GaBIEn (There's a fake GaBIEn class for IO in the instimi tree)
+ gabien.ui.IConsumer/IFunction/ISupplier
 
 This is so that if plan IMI goes through properly, the installer can be cut down in size.
 This is also why dataPath, dataExt and odbBackend are explicitly recorded:

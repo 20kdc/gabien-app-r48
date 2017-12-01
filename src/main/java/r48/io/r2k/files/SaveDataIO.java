@@ -7,14 +7,10 @@
 
 package r48.io.r2k.files;
 
-import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.ArrayR2kStruct;
-import r48.io.r2k.chunks.BlobR2kStruct;
 import r48.io.r2k.chunks.IR2kStruct;
 import r48.io.r2k.obj.Save;
-import r48.io.r2k.struct.MapTree;
 
 import java.io.IOException;
 import java.io.InputStream;

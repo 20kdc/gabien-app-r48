@@ -8,7 +8,6 @@
 package r48.io;
 
 import gabien.GaBIEn;
-import gabienapp.Application;
 import r48.RubyIO;
 import r48.io.r2k.files.DatabaseIO;
 import r48.io.r2k.files.MapIO;

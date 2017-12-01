@@ -9,8 +9,10 @@ package r48.io;
 
 import r48.RubyIO;
 
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 /**

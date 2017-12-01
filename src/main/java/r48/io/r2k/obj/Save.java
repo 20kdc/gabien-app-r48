@@ -10,7 +10,10 @@ package r48.io.r2k.obj;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.chunks.*;
+import r48.io.r2k.chunks.BlobR2kStruct;
+import r48.io.r2k.chunks.R2kObject;
+import r48.io.r2k.chunks.SparseArrayAR2kStruct;
+import r48.io.r2k.chunks.SparseArrayHR2kStruct;
 import r48.io.r2k.obj.lsd.*;
 
 /**
