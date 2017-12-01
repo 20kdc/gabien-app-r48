@@ -7,17 +7,28 @@
 
 package gabien;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.File;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 
 /**
  * Fake GaBIEn class for use by r48.io
  * Created on 1st December 2017.
  */
 public class GaBIEn {
+    public static InputStream getResource(String s) {
+        return ClassLoader.getSystemClassLoader().getResourceAsStream(s);
+    }
+
+    public static BufferedImage getImage(String s) {
+        try {
+            return ImageIO.read(getResource(s));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        }
+    }
+
     public static InputStream getFile(String f) {
         try {
             return new FileInputStream(f);

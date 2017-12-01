@@ -18,9 +18,13 @@ cp -r ../../gabien-common/src/main/java/gabien/ui/ISupplier.java src/main/java/g
 cp -r ../src/main/java/r48/Ruby*.java src/main/java/r48/ &&
 cp -r ../src/main/java/r48/io src/main/java/r48/ &&
 gradle build &&
+cd build/classes/main &&
+find . -type f > ../../../src/main/resources/world.txt &&
+cd ../../.. &&
+gradle build &&
 cp build/libs/gabien-app-r48-imi.jar staging.jar &&
 cd ../staging &&
-zip -r ../instimi/staging.jar COPYING.txt CREDITS.txt &&
+cp COPYING.txt CREDITS.txt ../instimi/src/main/resources/ &&
 cd ../instimi &&
 stripzip staging.jar &&
 mv staging.jar $1.jar &&

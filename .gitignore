@@ -58,3 +58,10 @@
 !instimi/src/main/java/r48/imi/
 !instimi/src/main/java/r48/imi/*
 
+!instimi/src/main/resources
+!instimi/src/main/resources/
+!instimi/src/main/resources/branding.png
+!instimi/src/main/resources/branding.txt
+!instimi/src/main/resources/manifest.txt
+# This is important in case someone can't run the shell scripts
+!instimi/src/main/resources/world.txt
