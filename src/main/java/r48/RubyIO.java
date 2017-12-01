@@ -237,7 +237,7 @@ public class RubyIO {
         if (type == 'i')
             return Long.toString(fixnumVal);
         if (type == 'l') {
-            String str2 = "";
+            String str2 = "L";
             RubyBigNum working = new RubyBigNum(userVal, false);
             boolean negated = false;
             if (working.isNegative()) {
@@ -245,10 +245,10 @@ public class RubyIO {
                 working = working.negate();
             }
             if (working.compare(RubyBigNum.ZERO) == 0) {
-                str2 = "0";
+                str2 = "0L";
             } else {
                 while (working.compare(RubyBigNum.ZERO) > 0) {
-                    RubyBigNum[] res = working.divide(new RubyBigNum(10));
+                    RubyBigNum[] res = working.divide(RubyBigNum.TEN);
                     str2 = ((char) ('0' + res[1].truncateToLong())) + str2;
                     working = res[0];
                 }

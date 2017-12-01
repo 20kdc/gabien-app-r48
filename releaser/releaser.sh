@@ -19,6 +19,11 @@
 LANG=en_US.UTF-8
 LANGUAGE=en_US:en
 
+if [ "$#" -ne 2 ]; then
+ echo "releaser.sh RELEASEID ANDROIDVERSIONCODE"
+ exit
+fi
+
 ./releaser-pre.sh $1 &&
 ./releaser-desktop.sh $1 &&
 # Android

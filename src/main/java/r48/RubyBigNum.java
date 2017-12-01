@@ -22,6 +22,11 @@ public class RubyBigNum {
     //       Also, this can have a length of 0 (resulting number is 0)
     private final byte[] data;
     public static final RubyBigNum ZERO = new RubyBigNum(new byte[0], true);
+    public static final RubyBigNum TEN = new RubyBigNum(10);
+    private RubyBigNum cacheLShift = null;
+    private RubyBigNum cacheRShift = null;
+    private RubyBigNum cacheNegate = null;
+
     public RubyBigNum(byte[] data, boolean raw) {
         this.data = new byte[data.length];
         if (raw) {
@@ -107,6 +112,8 @@ public class RubyBigNum {
     }
 
     public RubyBigNum negate() {
+        if (cacheNegate != null)
+            return cacheNegate;
         // The +1 is "just in case", and is countered by reduceCore
         byte[] newData = new byte[data.length + 1];
         if (data.length > 0)
@@ -114,7 +121,7 @@ public class RubyBigNum {
                 newData[0] = (byte) 0xFF;
         System.arraycopy(data, 0, newData, 1, data.length);
         negateCore(newData);
-        return new RubyBigNum(reduceCore(newData), true);
+        return cacheNegate = new RubyBigNum(reduceCore(newData), true);
     }
 
     public RubyBigNum add(RubyBigNum other) {
@@ -154,16 +161,14 @@ public class RubyBigNum {
     // Long division! Returns [div, mod].
     public RubyBigNum[] divide(RubyBigNum rbn) {
         // work out negative/positive stuff
-        // /0 check doesn't catch all cases, this is "okay"
         // NOTE: Semantics are from testing in Lua,
         //  so if you want an idea of what a given division will return, look there
-        if (rbn.data.length == 0)
+        if (rbn.isZero())
             throw new RuntimeException("Attempt to divide by 0");
-        if (data.length == 0) {
+        if (isZero())
             return new RubyBigNum[]{
                     ZERO, ZERO
             };
-        }
         if (rbn.data[0] < 0) {
             RubyBigNum[] res = divide(rbn.negate());
             return new RubyBigNum[] {
@@ -182,11 +187,14 @@ public class RubyBigNum {
         div = ZERO;
         mod = this;
         power = new RubyBigNum(new byte[] {1}, true);
-        for (int i = 0; i < mod.data.length * 8; i++) {
+        // This mustn't change despite mod changing.
+        int mdl8 = mod.data.length * 8;
+        for (int i = 0; i < mdl8; i++) {
             rbn = rbn.shiftL(false);
             power = power.shiftL(false);
         }
-        for (int i = 0; i < mod.data.length * 8; i++) {
+        // <= because it has to run a final round after it's completely shifted
+        for (int i = 0; i <= mdl8; i++) {
             RubyBigNum without = mod.add(rbn.negate());
             boolean zero = without.isZero();
             if (!(zero || without.isNegative())) {
@@ -211,6 +219,9 @@ public class RubyBigNum {
     }
 
     public RubyBigNum shiftR(boolean arithmetic) {
+        if (!arithmetic)
+            if (cacheRShift != null)
+                return cacheRShift;
         byte[] newData = new byte[data.length];
         System.arraycopy(data, 0, newData, 0, data.length);
         for (int i = newData.length - 1; i >= 0; i--) {
@@ -222,10 +233,16 @@ public class RubyBigNum {
             }
             newData[i] = (byte) (((newData[i] >> 1) & 0x7F) | nextBit);
         }
-        return new RubyBigNum(newData, true);
+        RubyBigNum res = new RubyBigNum(newData, true);
+        if (!arithmetic)
+            cacheRShift = res;
+        return res;
     }
 
     public RubyBigNum shiftL(boolean arithmetic) {
+        if (!arithmetic)
+            if (cacheLShift != null)
+                return cacheLShift;
         byte[] newData = new byte[data.length + 1];
         if (arithmetic)
             if (data.length != 0)
@@ -238,7 +255,10 @@ public class RubyBigNum {
                 nextBit = (newData[i + 1] & 0x80) >> 7;
             newData[i] = (byte) ((newData[i] << 1) | nextBit);
         }
-        return new RubyBigNum(reduceCore(newData), true);
+        RubyBigNum res = new RubyBigNum(reduceCore(newData), true);
+        if (!arithmetic)
+            cacheLShift = res;
+        return res;
     }
 
     // This is allowed to return the original array
