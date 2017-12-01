@@ -9,10 +9,7 @@ package r48.io;
 
 import r48.RubyIO;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Map;
 
@@ -41,7 +38,7 @@ import java.util.Map;
  *           i: Semicolon-terminated number which ends object, implemented by the T ending object
  *           ": Byte array (with no starting '"'!)
  *           ':' / 'o': byte array with starting " for sym - syms are encoded in UTF-8.
- *
+ *           l: Binary byte array w/ starting " in the slightly-odd format used internally by R48, that removes the length field
  *          )
  * =[k][v]: Create or patch an instance variable. [k] is a UTF-8 byte array - [v] is another IMI segment.
  *          The default value is INVALID (new RubyIO())
@@ -328,6 +325,10 @@ public class IMIUtils {
             case 'i':
                 dos.writeBytes(Long.toString(target.fixnumVal) + ";\n");
                 return;
+            case 'l':
+                dos.writeByte('\"');
+                writeIMIStringBody(dos, target.userVal, true);
+                return;
             case '0':
             case 'T':
             case 'F':
@@ -407,5 +408,42 @@ public class IMIUtils {
         if (n2.endsWith("    "))
             return n2.substring(0, n2.length() - 4) + "\t";
         return n2;
+    }
+
+    public static byte[] readIMIStringBody(InputStream inp) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        int escapeState = 0;
+        int escapeHex = 0;
+        String hexStr = "0123456789abcdef";
+        while (true) {
+            int b = inp.read();
+            if (b == -1)
+                throw new IOException("Early termination during string.");
+            int io = hexStr.indexOf(Character.toLowerCase(b));
+            switch (escapeState) {
+                case 0:
+                    if (b == '\"') {
+                        return baos.toByteArray();
+                    } else if (b == '\\') {
+                        escapeState = 1;
+                    } else {
+                        baos.write(b);
+                    }
+                    break;
+                case 1:
+                    if (io == -1)
+                        throw new IOException("Cannot have -1 index on first hex digit");
+                    escapeHex = io << 4;
+                    escapeState = 2;
+                    break;
+                case 2:
+                    if (io == -1)
+                        throw new IOException("Cannot have -1 index on second hex digit");
+                    escapeHex |= io;
+                    baos.write(escapeHex);
+                    escapeState = 0;
+                    break;
+            }
+        }
     }
 }

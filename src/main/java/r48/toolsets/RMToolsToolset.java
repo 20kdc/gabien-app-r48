@@ -8,10 +8,7 @@
 package r48.toolsets;
 
 import gabien.GaBIEn;
-import gabien.ui.IConsumer;
-import gabien.ui.ISupplier;
-import gabien.ui.UIElement;
-import gabien.ui.UIPopupMenu;
+import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -161,7 +158,16 @@ public class RMToolsToolset implements IToolset {
                                             RubyIO rio = AppMain.objectDB.getObject(s);
                                             SchemaElement se = AppMain.schemas.getSDBEntry(objectSchemas.removeFirst());
                                             if (rio != null) {
-                                                int count = universalStringReplace(rio, find, repl);
+                                                int count = BasicToolset.universalStringLocator(rio, new IFunction<RubyIO, Integer>() {
+                                                    @Override
+                                                    public Integer apply(RubyIO rubyIO) {
+                                                        if (rubyIO.decString().equals(find)) {
+                                                            rubyIO.encString(repl);
+                                                            return 1;
+                                                        }
+                                                        return 0;
+                                                    }
+                                                });
                                                 total += count;
                                                 if (count > 0) {
                                                     SchemaPath sp = new SchemaPath(se, rio);
@@ -269,26 +275,5 @@ public class RMToolsToolset implements IToolset {
                 }
         }, FontSizes.menuTextHeight, false)
         };
-    }
-
-    // The core of the universal string replace function, useful for dealing with uncooperative filenames.
-    private int universalStringReplace(RubyIO rio, String find, String repl) {
-        // NOTE: Hash keys are not up for modification - hash values are.
-        int total = 0;
-        if (rio.type == '"')
-            if (rio.decString().equals(find)) {
-                rio.encString(repl);
-                total++;
-            }
-        if ((rio.type == '{') || (rio.type == '}'))
-            for (Map.Entry<RubyIO, RubyIO> me : rio.hashVal.entrySet())
-                total += universalStringReplace(me.getValue(), find, repl);
-        if (rio.type == '[')
-            for (RubyIO me : rio.arrVal)
-                total += universalStringReplace(me, find, repl);
-        if (rio.iVarVals != null)
-            for (RubyIO val : rio.iVarVals)
-                total += universalStringReplace(val, find, repl);
-        return total;
     }
 }

@@ -31,6 +31,7 @@ import r48.ui.help.UIHelpSystem;
 
 import java.io.*;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -97,6 +98,9 @@ public class AppMain {
 
     // All active schema hosts
     private static LinkedList<ISchemaHost> activeHosts;
+
+    // -- For one schema element only --
+    public static HashMap<Integer, String> osSHESEDB;
 
     public static IConsumer<Double> initializeAndRun(final String rp, final String gamepak, final IConsumer<UIElement> uiTicker) throws IOException {
         rootPath = rp;
@@ -504,6 +508,7 @@ public class AppMain {
         theClipboard = null;
         imageFXCache = null;
         activeHosts = null;
+        osSHESEDB = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
     }
@@ -581,5 +586,18 @@ public class AppMain {
         } else {
             AppMain.launchDialog("Error dump loaded.");
         }
+    }
+
+    // Attempts to ascertain all known objects
+    public static LinkedList<String> getAllObjects() {
+        // anything loaded gets added (this allows some bypass of the mechanism)
+        HashSet<String> mainSet = new HashSet<String>(objectDB.objectMap.keySet());
+        mainSet.addAll(schemas.listFileDefs());
+        if (system instanceof IRMMapSystem) {
+            IRMMapSystem rms = (IRMMapSystem) system;
+            for (IRMMapSystem.RMMapData rio : rms.getAllMaps())
+                mainSet.add(rio.idName);
+        }
+        return new LinkedList<String>(mainSet);
     }
 }

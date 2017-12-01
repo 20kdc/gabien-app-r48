@@ -53,6 +53,11 @@ e UTF-8
 
 = Tests =
 
+0: OSLoc
+f Languages/en.loc
+e UTF-8
+. OneShot (remake) External Localization Files
+
 0: Ika
 f Pbm/Map1.pbm
 e UTF-8

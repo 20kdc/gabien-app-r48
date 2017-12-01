@@ -9,6 +9,8 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning subsection:
++ Project OSLoc:
+  OneShot localization files, as a prelude to IMI release
 + Project IMI:
   Usage as follows:
   1. Firstly, zip up all other assets that have changed (these must not include Data/ files)

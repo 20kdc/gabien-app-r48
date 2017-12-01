@@ -7,16 +7,15 @@
 
 package r48.schema;
 
-import gabien.ui.UIElement;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UISplitterLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
+import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.IProxySchemaElement;
 import r48.dbs.TXDB;
 import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.specialized.OSStrHashMapSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -29,13 +28,15 @@ import java.util.Map;
  */
 public class HashSchemaElement extends SchemaElement {
     public SchemaElement keyElem, valElem;
+    public boolean flexible;
 
     // NOTE: This is cloned from.
     private RubyIO defKeyWorkspace;
 
-    public HashSchemaElement(SchemaElement keySE, SchemaElement opaqueSE) {
+    public HashSchemaElement(SchemaElement keySE, SchemaElement opaqueSE, boolean flexible) {
         keyElem = keySE;
         valElem = opaqueSE;
+        this.flexible = flexible;
     }
 
     @Override
@@ -43,23 +44,56 @@ public class HashSchemaElement extends SchemaElement {
         final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
         // similar to the array schema, this is a containing object with access to local information
         Runnable rebuildSection = new Runnable() {
+            public String searchTerm = "";
+            // "Here come the hax!"
+            // Also does relayout
+            public void trigger() {
+                // NOTE: This gets called while update&render is occurring
+                //       That's fine: delay the actual relayout
+                run();
+                AppMain.pendingRunnables.add(new Runnable() {
+                    @Override
+                    public void run() {
+                        uiSV.setBounds(uiSV.getBounds());
+                    }
+                });
+            }
             @Override
             public void run() {
                 uiSV.panels.clear();
-                for (RubyIO key : UITest.sortedKeys(target.hashVal.keySet())) {
+                final UITextBox searchBox = new UITextBox(FontSizes.schemaFieldTextHeight);
+                searchBox.text = searchTerm;
+                searchBox.onEdit = new Runnable() {
+                    @Override
+                    public void run() {
+                        searchTerm = searchBox.text;
+                        trigger();
+                    }
+                };
+                uiSV.panels.add(new UISplitterLayout(new UILabel(TXDB.get("Search Keys:"), FontSizes.schemaFieldTextHeight), searchBox, false, 0d));
+                for (RubyIO key : UITest.sortedKeys(target.hashVal.keySet(), new IFunction<RubyIO, String>() {
+                    @Override
+                    public String apply(RubyIO rubyIO) {
+                        return getKeyText(rubyIO);
+                    }
+                })) {
+                    if (!getKeyText(key).contains(searchTerm))
+                        continue;
                     final RubyIO kss = key;
                     // keys are opaque - this prevents MANY issues
-                    UISplitterLayout hs = new UISplitterLayout((new OpaqueSchemaElement() {
+                    UIElement hsA = (new OpaqueSchemaElement() {
                         @Override
                         public String getMessage(RubyIO v) {
-                            SchemaElement ke = keyElem;
-                            while (ke instanceof IProxySchemaElement)
-                                ke = ((IProxySchemaElement) ke).getEntry();
-                            if (ke instanceof EnumSchemaElement)
-                                return ((EnumSchemaElement) ke).viewValue((int) v.fixnumVal, true);
-                            return TXDB.get("Key " + v);
+                            return getKeyText(v);
                         }
-                    }).buildHoldingEditor(key, launcher, path), valElem.buildHoldingEditor(target.hashVal.get(key), launcher, path.arrayHashIndex(key, "{" + key.toString() + "}")), false, 1, 4);
+                    }).buildHoldingEditor(key, launcher, path);
+                    UIElement hsB = valElem.buildHoldingEditor(target.hashVal.get(key), launcher, path.arrayHashIndex(key, "{" + getKeyText(key) + "}"));
+                    UISplitterLayout hs = null;
+                    if (flexible) {
+                        hs = new UISplitterLayout(hsA, hsB, true, 0.0d);
+                    } else {
+                        hs = new UISplitterLayout(hsA, hsB, false, 1, 4);
+                    }
                     uiSV.panels.add(new UIAppendButton("-", hs, new Runnable() {
                         @Override
                         public void run() {
@@ -80,7 +114,7 @@ public class HashSchemaElement extends SchemaElement {
                         if (target.getHashVal(defKeyWorkspace) == null) {
                             RubyIO rio2 = new RubyIO();
                             RubyIO finWorkspace = new RubyIO().setDeepClone(defKeyWorkspace);
-                            valElem.modifyVal(rio2, path.arrayHashIndex(finWorkspace, "{" + finWorkspace.toString() + "}"), true);
+                            valElem.modifyVal(rio2, path.arrayHashIndex(finWorkspace, "{" + getKeyText(finWorkspace) + "}"), true);
                             target.hashVal.put(finWorkspace, rio2);
                             // the deep clone prevents further modification of the key
                             path.changeOccurred(false);
@@ -95,6 +129,17 @@ public class HashSchemaElement extends SchemaElement {
         return uiSV;
     }
 
+    private String getKeyText(RubyIO v) {
+        SchemaElement ke = keyElem;
+        while (ke instanceof IProxySchemaElement)
+            ke = ((IProxySchemaElement) ke).getEntry();
+        if (ke instanceof OSStrHashMapSchemaElement)
+            return OSStrHashMapSchemaElement.decode(v);
+        if (ke instanceof EnumSchemaElement)
+            return ((EnumSchemaElement) ke).viewValue((int) v.fixnumVal, true);
+        return TXDB.get("Key " + v);
+    }
+
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         setDefault = IntegerSchemaElement.ensureType(target, '{', setDefault);
@@ -107,7 +152,7 @@ public class HashSchemaElement extends SchemaElement {
                 path.changeOccurred(true);
             }
             for (Map.Entry<RubyIO, RubyIO> e : target.hashVal.entrySet())
-                valElem.modifyVal(e.getValue(), path.arrayHashIndex(e.getKey(), "{" + e.getKey().toString() + "}"), false);
+                valElem.modifyVal(e.getValue(), path.arrayHashIndex(e.getKey(), "{" + getKeyText(e.getKey()) + "}"), false);
         }
     }
 }

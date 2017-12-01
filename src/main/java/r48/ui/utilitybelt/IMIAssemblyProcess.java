@@ -51,7 +51,7 @@ public class IMIAssemblyProcess {
         AppMain.pendingRunnables.add(taskRunner);
 
         try {
-            FileOutputStream fos = new FileOutputStream(AppMain.rootPath + "imi.txt.gz");
+            FileOutputStream fos = new FileOutputStream(PathUtils.autoDetectWindows(AppMain.rootPath + "imi.txt.gz"));
             dos = new DataOutputStream(new GZIPOutputStream(fos));
             dos.writeBytes("I0\"");
             IMIUtils.writeIMIStringBody(dos, AppMain.odbBackend.getBytes("UTF-8"), false);
@@ -61,15 +61,7 @@ public class IMIAssemblyProcess {
             IMIUtils.writeIMIStringBody(dos, AppMain.dataExt.getBytes("UTF-8"), false);
             dos.writeByte('\n');
 
-            LinkedList<String> objs = AppMain.schemas.listFileDefs();
-            if (AppMain.system instanceof IRMMapSystem) {
-                IRMMapSystem rms = (IRMMapSystem) AppMain.system;
-                for (IRMMapSystem.RMMapData rio : rms.getAllMaps()) {
-                    objs.add(rio.idName);
-                }
-            } else {
-                AppMain.launchDialog(TXDB.get("Map information not available."));
-            }
+            LinkedList<String> objs = AppMain.getAllObjects();
             final IObjectBackend oldGameAccess = IObjectBackend.Factory.create(AppMain.odbBackend, s, AppMain.dataPath, AppMain.dataExt);
             for (final String s2 : objs) {
                 imiAssemblyTasks.add(new Runnable() {

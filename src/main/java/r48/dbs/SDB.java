@@ -79,6 +79,7 @@ public class SDB {
         SchemaElement vid = new NameProxySchemaElement("var_id", false);
         schemaDatabase.put("internal_r2kPPPID", helpers.makePicPointerPatchID(vid));
         schemaDatabase.put("internal_r2kPPPV", helpers.makePicPointerPatchVar(vid));
+        schemaDatabase.put("internal_LF_INDEX", new OSStrHashMapSchemaElement());
 
         schemaTrueDatabase.putAll(schemaDatabase);
     }
@@ -267,7 +268,11 @@ public class SDB {
                         }
                         if (text.equals("hash")) {
                             SchemaElement k = get();
-                            return new HashSchemaElement(k, get());
+                            return new HashSchemaElement(k, get(), false);
+                        }
+                        if (text.equals("hashFlex")) {
+                            SchemaElement k = get();
+                            return new HashSchemaElement(k, get(), true);
                         }
                         if (text.equals("hashObject")) {
                             LinkedList<RubyIO> validKeys = new LinkedList<RubyIO>();

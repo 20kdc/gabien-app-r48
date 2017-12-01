@@ -29,7 +29,9 @@ import r48.ui.utilitybelt.IMIAssemblyController;
 
 import java.io.*;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * Provides some basic tools for changing the configuration of R48 and doing various bits and pieces.
@@ -67,6 +69,7 @@ public class BasicToolset implements IToolset {
                         TXDB.get("Autocorrect Object By Name And Schema"),
                         TXDB.get("Inspect Object (no Schema needed)"),
                         TXDB.get("Compile IMI Data"),
+                        TXDB.get("Retrieve all object strings"),
                         TXDB.get("Set Internal Windows (good)"),
                         TXDB.get("Set External Windows (bad)"),
                         TXDB.get("Configure fonts"),
@@ -167,6 +170,39 @@ public class BasicToolset implements IToolset {
                                         new IMIAssemblyController(s, windowMaker.get());
                                     }
                                 }));
+                            }
+                        },
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    OutputStream lm = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "locmaps.txt"));
+                                    final DataOutputStream dos = new DataOutputStream(lm);
+                                    final HashSet<String> text = new HashSet<String>();
+                                    for (String s : AppMain.getAllObjects()) {
+                                        RubyIO obj = AppMain.objectDB.getObject(s, null);
+                                        if (obj != null) {
+                                            universalStringLocator(obj, new IFunction<RubyIO, Integer>() {
+                                                @Override
+                                                public Integer apply(RubyIO rubyIO) {
+                                                    text.add(rubyIO.decString());
+                                                    return 1;
+                                                }
+                                            });
+                                        }
+                                    }
+                                    for (String st : text) {
+                                        dos.writeBytes("\"");
+                                        IMIUtils.writeIMIStringBody(dos, st.getBytes("UTF-8"), false);
+                                        dos.write('\n');
+                                    }
+                                    dos.write(';');
+                                    dos.write('\n');
+                                    dos.close();
+                                    AppMain.launchDialog(TXDB.get("Wrote locmaps.txt"));
+                                } catch (IOException ioe) {
+                                    throw new RuntimeException(ioe);
+                                }
                             }
                         },
                         new Runnable() {
@@ -359,5 +395,22 @@ public class BasicToolset implements IToolset {
                 }
             });
         return new UIPopupMenu(s.toArray(new String[0]), r.toArray(new Runnable[0]), FontSizes.menuTextHeight, false);
+    }
+
+    public static int universalStringLocator(RubyIO rio, IFunction<RubyIO, Integer> string) {
+        // NOTE: Hash keys are not up for modification.
+        int total = 0;
+        if (rio.type == '"')
+            total += string.apply(rio);
+        if ((rio.type == '{') || (rio.type == '}'))
+            for (Map.Entry<RubyIO, RubyIO> me : rio.hashVal.entrySet())
+                total += universalStringLocator(me.getValue(), string);
+        if (rio.type == '[')
+            for (RubyIO me : rio.arrVal)
+                total += universalStringLocator(me, string);
+        if (rio.iVarVals != null)
+            for (RubyIO val : rio.iVarVals)
+                total += universalStringLocator(val, string);
+        return total;
     }
 }

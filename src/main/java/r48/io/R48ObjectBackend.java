@@ -162,9 +162,12 @@ public class R48ObjectBackend implements IObjectBackend {
     @Override
     public RubyIO loadObjectFromFile(String filename) {
         try {
-            InputStream inp = GaBIEn.getFile(PathUtils.autoDetectWindows(prefix + filename + postfix));
-            if (inp == null)
+            String fullPath = PathUtils.autoDetectWindows(prefix + filename + postfix);
+            InputStream inp = GaBIEn.getFile(fullPath);
+            if (inp == null) {
+                System.err.println(fullPath + " wasn't found.");
                 return null;
+            }
             DataInputStream dis = new DataInputStream(inp);
             // Marshal v4.8
             if (dis.readUnsignedByte() != 0x04)
@@ -275,6 +278,17 @@ public class R48ObjectBackend implements IObjectBackend {
             objCache.add(rio);
             save32(dis, rio.strVal.length);
             dis.write(rio.strVal);
+            okay = true;
+        }
+        if (b == 'l') {
+            objCache.add(rio);
+            dis.write(rio.userVal[0]);
+            // the + 1 is implied thanks to the extra sign byte
+            save32(dis, rio.userVal.length / 2);
+            dis.write(rio.userVal, 1, rio.userVal.length - 1);
+            // again, extra sign byte explains the inversion
+            if ((rio.userVal.length & 1) == 0)
+                dis.write(0);
             okay = true;
         }
         if (b == 'u') {
@@ -406,6 +420,18 @@ public class R48ObjectBackend implements IObjectBackend {
             if (dis.read(data) != len)
                 throw new IOException("Didn't read all of data");
             rio.strVal = data;
+        } else if (b == 'l') {
+            objs.add(rio);
+            byte posneg = dis.readByte();
+            if (posneg != '+')
+                if (posneg != '-')
+                    throw new IOException("Expected + or -");
+            int len = (int) load32(dis) * 2;
+            byte[] data = new byte[len + 1];
+            data[0] = posneg;
+            if (dis.read(data, 1, len) != len)
+                throw new IOException("Didn't read all of data");
+            rio.userVal = data;
         } else if (b == 'u') {
             // 1832, performs ivars before entry.
             shouldWriteObjCacheLate = true;

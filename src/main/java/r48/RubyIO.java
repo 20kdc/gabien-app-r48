@@ -39,6 +39,7 @@ public class RubyIO {
      * {       : hashVal
      * }       : hashVal, hashDefVal
      * [       : arrVal
+     * l       : userVal (first byte is the +/- byte, remainder is data)
      */
     public int type;
     public byte[] strVal; // actual meaning depends on iVars. Should be treated as immutable - replace strVal on change
@@ -201,6 +202,8 @@ public class RubyIO {
             return a.decString().equals(b.decString());
         if (a.type == 'f')
             return a.decString().equals(b.decString());
+        if (a.type == 'l')
+            return new RubyBigNum(a.userVal, true).compare(new RubyBigNum(b.userVal, true)) == 0;
         if (a.type == ':')
             return a.symVal.equals(b.symVal);
         if (a.type == 'T')
@@ -233,6 +236,27 @@ public class RubyIO {
             return decString() + "f";
         if (type == 'i')
             return Long.toString(fixnumVal);
+        if (type == 'l') {
+            String str2 = "";
+            RubyBigNum working = new RubyBigNum(userVal, false);
+            boolean negated = false;
+            if (working.isNegative()) {
+                negated = true;
+                working = working.negate();
+            }
+            if (working.compare(RubyBigNum.ZERO) == 0) {
+                str2 = "0";
+            } else {
+                while (working.compare(RubyBigNum.ZERO) > 0) {
+                    RubyBigNum[] res = working.divide(new RubyBigNum(10));
+                    str2 = ((char) ('0' + res[1].truncateToLong())) + str2;
+                    working = res[0];
+                }
+            }
+            if (negated)
+                str2 = "-" + str2;
+            return str2;
+        }
         if (type == '0')
             return "null";
         return ((char) type) + data;

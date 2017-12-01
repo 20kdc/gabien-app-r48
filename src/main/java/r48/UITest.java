@@ -8,10 +8,7 @@
 package r48;
 
 import gabien.GaBIEn;
-import gabien.ui.Rect;
-import gabien.ui.UIPanel;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.dbs.TXDB;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
@@ -183,11 +180,19 @@ public class UITest extends UIPanel {
     }
 
     public static LinkedList<RubyIO> sortedKeys(Set<RubyIO> rubyIOs) {
+        return sortedKeys(rubyIOs, new IFunction<RubyIO, String>() {
+            @Override
+            public String apply(RubyIO rubyIO) {
+                return rubyIO.toString();
+            }
+        });
+    }
+    public static LinkedList<RubyIO> sortedKeys(Set<RubyIO> rubyIOs, final IFunction<RubyIO, String> toString) {
         LinkedList<RubyIO> ios = new LinkedList<RubyIO>(rubyIOs);
         Collections.sort(ios, new Comparator<RubyIO>() {
             @Override
             public int compare(RubyIO rubyIO, RubyIO t1) {
-                return natStrComp(rubyIO.toString(), t1.toString());
+                return natStrComp(toString.apply(rubyIO), toString.apply(t1));
             }
         });
         return ios;
