@@ -13,6 +13,6 @@ archivesBaseName = "gabien-app-r48-imi"
 
 jar {
  manifest {
-  attributes 'Main-Class': "gabien.Main"
+  attributes 'Main-Class': "r48.imi.Main"
  }
 }
