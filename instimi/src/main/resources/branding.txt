@@ -1,5 +1,5 @@
 R48 - Integrated Mod Installer
-This installer hasn't got a mod in it.#Select the imi.txt.gz file to create a usable installer.#The installer will be called 'imi-finalized.jar'.#(For those who wish to change the installer further:#This file is a ZIP file, and is partially customizable.)
+This installer hasn't got a mod in it.#In R48, go into System Tools, click Compile IMI Data,#and specify the path to the original game.#This will create the imi.txt.gz file.#Select it to create a usable installer.#The installer will be called 'imi-finalized.jar'.#(For those who wish to change the installer further:#The file is a ZIP file, and is partially customizable.)
 'imi-finalized.jar' has been written.#You can close this now.
 IMI Output File
 Unable to write 'imi-finalized.jar':
