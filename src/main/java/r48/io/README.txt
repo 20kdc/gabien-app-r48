@@ -16,3 +16,7 @@ Classes in this folder are not allowed to refer to other R48/Gabien classes,
 This is so that if plan IMI goes through properly, the installer can be cut down in size.
 This is also why dataPath, dataExt and odbBackend are explicitly recorded:
 It's because there is no good reason for the IMI program to use schema.
+
+Also, if adding a new backend to IObjectBackend.Factory, make sure IMI knows it's prefix,
+ and make sure prefixes don't conflict.
+(IMI strips out unnecessary IO code for size reasons. This allows a finalized IMI installer to be ~46K + IMI code size at this time.)

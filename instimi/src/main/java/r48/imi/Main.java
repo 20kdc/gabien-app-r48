@@ -90,9 +90,23 @@ public class Main {
                         didFileDialog = false;
                     } else {
                         try {
+                            String backendType = findBackendFrom(new FileInputStream(fd.getDirectory() + "/" + sf));
                             OutputStream os = GaBIEn.getOutFile("imi-finalized.jar");
                             ZipOutputStream os2 = new ZipOutputStream(os);
                             for (String s : classes) {
+                                boolean unnecessary = false;
+                                if (s.startsWith("r48/io/")) {
+                                    if (s.toLowerCase().startsWith("r48/io/ika"))
+                                        unnecessary = !backendType.equals("ika");
+                                    if (s.toLowerCase().startsWith("r48/io/json"))
+                                        unnecessary = !backendType.equals("json");
+                                    if (s.toLowerCase().startsWith("r48/io/r2k"))
+                                        unnecessary = !backendType.equals("lcf2000");
+                                    if (s.toLowerCase().startsWith("r48/io/r48"))
+                                        unnecessary = !backendType.equals("r48");
+                                }
+                                if (unnecessary)
+                                    continue;
                                 InputStream inp = GaBIEn.getResource(s);
                                 System.err.println(s);
                                 putZipEnt(os2, inp, s);
@@ -107,6 +121,27 @@ public class Main {
                             prepDialog(new String[] {Branding.lines[4], e.toString(), e.getMessage()}, null, null, brand2, imi);
                         }
                     }
+                }
+
+                // Do the minimal amount of work to write
+                private String findBackendFrom(FileInputStream fileInputStream) throws IOException {
+                    GZIPInputStream gzi = new GZIPInputStream(fileInputStream);
+                    DataInputStream dis = new DataInputStream(gzi);
+                    if (dis.read() != 'I') {
+                        dis.close();
+                        throw new IOException("IMI file does not start with version");
+                    }
+                    if (dis.read() != '0') {
+                        dis.close();
+                        throw new IOException("IMI file not version 0");
+                    }
+                    if (dis.read() != '"') {
+                        dis.close();
+                        throw new IOException("Syntax error");
+                    }
+                    String r = new String(IMIUtils.readIMIStringBody(dis), "UTF-8");
+                    dis.close();
+                    return r;
                 }
 
                 private void putZipEnt(ZipOutputStream os2, InputStream inp, String s) throws IOException {
