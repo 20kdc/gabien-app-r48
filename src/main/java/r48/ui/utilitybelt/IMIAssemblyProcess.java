@@ -38,6 +38,8 @@ public class IMIAssemblyProcess {
         taskRunner = new Runnable() {
             @Override
             public void run() {
+                if (dos == null)
+                    return;
                 double n = GaBIEn.getTime();
                 while (GaBIEn.getTime() < (n + 0.1d)) {
                     if (imiAssemblyTasks.size() == 0)
@@ -67,6 +69,8 @@ public class IMIAssemblyProcess {
                 imiAssemblyTasks.add(new Runnable() {
                     @Override
                     public void run() {
+                        if (dos == null)
+                            return;
                         // NOTE: This has no Schema access, which is intentional
                         RubyIO a = oldGameAccess.loadObjectFromFile(s2);
                         //
