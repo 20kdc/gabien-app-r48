@@ -1,6 +1,10 @@
 ./r48/RubyIO.class
+./r48/imi/Main$2$2.class
+./r48/imi/Main$2$1.class
 ./r48/imi/Main$3.class
 ./r48/imi/Main$2.class
+./r48/imi/Main$2$2$1.class
+./r48/imi/Main$2$1$1.class
 ./r48/imi/Main$Branding.class
 ./r48/imi/Main.class
 ./r48/imi/Main$1.class

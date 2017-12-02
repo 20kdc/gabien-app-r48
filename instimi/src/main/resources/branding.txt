@@ -5,12 +5,13 @@ IMI Output File
 Unable to write 'imi-finalized.jar':
 "world.txt" file copy index not available.#You're probably using a JAR that was scavenged from an IMI installer.#Thank you for trying, but that won't work.
 Select...
-This installer contains a mod for a game.#Before continuing, create a backup of the game.#Then install to your main copy of the game.
-Install to...
-I.M.I is installing the mod...
+This installer contains a mod for a game.#Before continuing, create a backup of the game.#Secondly, copy this JAR to the main copy of the game.#Thirdly and finally, run the JAR there, and press Install Here.
+Install Here
+I.M.I is installing the mod...#
 Reading object $.
 Patching object $.
 Writing object $.
-Failed during:
-The mod has been installed.
-The mod couldn't be installed.#Some files may have been modified.#Please restore from backup.
+Writing asset $.
+Failed during:#
+The mod has been installed.#Please close the installer.#
+The mod couldn't be installed.#Some files may have been modified.#Please quit this and restore from backup.#

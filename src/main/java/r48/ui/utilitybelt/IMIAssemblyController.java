@@ -66,14 +66,17 @@ public class IMIAssemblyController {
                         fileBrowserOpen = false;
                         if (s != null) {
                             s = PathUtils.autoDetectWindows(s);
-                            if (!s.toLowerCase().startsWith(PathUtils.autoDetectWindows(AppMain.rootPath).toLowerCase())) {
-                                AppMain.launchDialog(TXDB.get("The asset doesn't appear to be inside the game."));
+                            int idx = s.toLowerCase().indexOf(AppMain.rootPath.toLowerCase());
+                            if (idx <= -1) {
+                                AppMain.launchDialog(TXDB.get("The asset doesn't appear to be inside the game. Should this cause issues, run R48 from within the modded game's directory."));
                                 return;
                             }
                             InputStream inp = GaBIEn.getFile(s);
                             if (inp == null)
                                 AppMain.launchDialog(TXDB.get("The file appears to be inaccessible."));
-                            s = s.substring(AppMain.rootPath.length());
+                            s = s.substring(idx + AppMain.rootPath.length());
+                            if (s.startsWith("/"))
+                                s = s.substring(1);
                             try {
                                 inp.close();
                             } catch (IOException ioe) {

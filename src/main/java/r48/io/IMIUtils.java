@@ -481,6 +481,7 @@ public class IMIUtils {
     // 'R'-prefix status: Reading file
     // '~'-prefix status: Modifying file
     // 'W'-prefix status: Writing file
+    // 'A'-prefix status: R/W asset
     public static void runIMIFile(InputStream inp, String root, IConsumer<String> status) throws IOException {
         IObjectBackend backendFile = null;
         HashMap<String, RubyIO> newDataMap = new HashMap<String, RubyIO>();
@@ -532,6 +533,9 @@ public class IMIUtils {
                         throw new IOException("Invalid syntax.");
                     } else {
                         String dataPath = new String(readIMIStringBody(inp), "UTF-8");
+                        if (inp.read() != '\"')
+                            throw new IOException("Invalid syntax.");
+                        status.accept("A" + dataPath);
                         byte[] results = readIMIStringBody(inp);
                         OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(root + dataPath));
                         os.write(results);
@@ -627,7 +631,7 @@ public class IMIUtils {
                     break;
                 case ']':
                     runIMISegment(inp, obj.arrVal[(int) readIMINumber(inp, ':')]);
-                    return;
+                    break;
                 case '=':
                     if (inp.read() != '\"') {
                         throw new IOException("Expected quote after -=");

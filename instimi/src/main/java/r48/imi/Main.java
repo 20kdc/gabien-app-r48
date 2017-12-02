@@ -8,6 +8,9 @@
 package r48.imi;
 
 import gabien.GaBIEn;
+import gabien.ui.IConsumer;
+import r48.io.IMIUtils;
+import r48.io.PathUtils;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -17,14 +20,14 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.LinkedList;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 /**
  * I.M.I.
- * "The sequence has begun.
- *  It's too late - the machine comes alive. It's awake."
+ * "The sequence has begun - It's too late.
+ *  The machine comes alive - It's awake."
  * Created on December 1st.
  */
 public class Main {
@@ -58,7 +61,12 @@ public class Main {
             brand = b2;
         }
         final BufferedImage brand2 = brand;
-        InputStream mod = GaBIEn.getResource("imi.gz");
+        InputStream modI = GaBIEn.getResource("imi.gz");
+        if (modI == null)
+            if (args.length == 2)
+                if (args[0].equals("loadFile"))
+                    modI = GaBIEn.getFile(PathUtils.autoDetectWindows(args[1]));
+        final InputStream mod = modI;
         if (mod == null) {
             prepDialog(Branding.lines[1].split("#"), Branding.lines[6], new Runnable() {
                 boolean didFileDialog = false;
@@ -115,10 +123,82 @@ public class Main {
                 }
             }, brand, imi);
         } else {
-            prepDialog(Branding.lines[4].split("#"), null, new Runnable() {
+            prepDialog(Branding.lines[7].split("#"), Branding.lines[8], new Runnable() {
+                boolean hasIMIAwoken = false;
                 @Override
                 public void run() {
-                    prepDialog(new String[] {"?"}, null, null, brand2, imi);
+                    if (hasIMIAwoken)
+                        return;
+                    hasIMIAwoken = true;
+                    // Awaken it.
+                    final IConsumer<String> status = new IConsumer<String>() {
+                        String errorPostfix = "";
+                        boolean didError = false;
+                        @Override
+                        public void accept(String s) {
+                            if (s == null) {
+                                didError = true;
+                                errorPostfix = Branding.lines[16] + errorPostfix;
+                                acceptCore(errorPostfix);
+                            } else {
+                                if (didError) {
+                                    errorPostfix += "#" + s;
+                                    acceptCore(errorPostfix);
+                                } else {
+                                    errorPostfix = Branding.lines[14] + s;
+                                    acceptCore(Branding.lines[9] + s);
+                                }
+                            }
+                        }
+
+                        private void acceptCore(final String s) {
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    prepDialog(s.split("#"), null, null, brand2, imi);
+                                }
+                            });
+                        }
+                    };
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            status.accept("");
+                            try {
+                                IMIUtils.runIMIFile(new GZIPInputStream(mod), "", new IConsumer<String>() {
+                                    @Override
+                                    public void accept(String s) {
+                                        String c = s.substring(1);
+                                        char ch = s.charAt(0);
+                                        int ln = 0;
+                                        switch (ch) {
+                                            case 'R':
+                                                ln = 10;
+                                                break;
+                                            case '~':
+                                                ln = 11;
+                                                break;
+                                            case 'W':
+                                                ln = 12;
+                                                break;
+                                            case 'A':
+                                                ln = 13;
+                                                break;
+                                        }
+                                        status.accept(Branding.lines[ln].replace("$", c));
+                                    }
+                                });
+                                status.accept(Branding.lines[15]);
+                            } catch (Exception e) {
+                                status.accept(null);
+                                StringWriter sw = new StringWriter();
+                                e.printStackTrace();
+                                e.printStackTrace(new PrintWriter(sw));
+                                for (String s2 : sw.toString().split("\n"))
+                                    status.accept(s2.replace("\r", ""));
+                            }
+                        }
+                    }.start();
                 }
             }, brand, imi);
         }
@@ -157,7 +237,7 @@ public class Main {
         public static String[] lines;
 
         public static void init() {
-            lines = new String[15];
+            lines = new String[17];
             for (int i = 0; i < lines.length; i++)
                 lines[i] = "I just don't know what went wrong...";
             try {
