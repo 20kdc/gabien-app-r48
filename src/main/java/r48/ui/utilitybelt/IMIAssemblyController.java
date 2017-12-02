@@ -101,7 +101,7 @@ public class IMIAssemblyController {
             @Override
             public void run() {
                 try {
-                    OutputStream os = GaBIEn.getOutFile(AppMain.rootPath + "imiManifest.txt");
+                    OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "imiManifest.txt"));
                     PrintStream ps = new PrintStream(os, false, "UTF-8");
                     for (String s : files)
                         ps.println(s);
@@ -146,7 +146,7 @@ public class IMIAssemblyController {
 
     private void importSavedManifest() {
         try {
-            InputStream inp = GaBIEn.getFile(AppMain.rootPath + "imiManifest.txt");
+            InputStream inp = GaBIEn.getFile(PathUtils.autoDetectWindows(AppMain.rootPath + "imiManifest.txt"));
             BufferedReader br = new BufferedReader(new InputStreamReader(inp, "UTF-8"));
             while (br.ready())
                 files.add(br.readLine());
