@@ -14,6 +14,14 @@ import java.io.*;
 public class DoubleR2kStruct implements IR2kStruct {
     public double v = 0;
 
+    public DoubleR2kStruct() {
+
+    }
+
+    public DoubleR2kStruct(double v) {
+        this.v = v;
+    }
+
     @Override
     public RubyIO asRIO() {
         RubyIO d = new RubyIO();

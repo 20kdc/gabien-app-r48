@@ -28,10 +28,10 @@ public class Save extends R2kObject {
             return new byte[0];
         }
     });
-    public BlobR2kStruct pictures = new BlobR2kStruct(new ISupplier<byte[]>() {
+    public SparseArrayHR2kStruct<SavePicture> pictures = new SparseArrayHR2kStruct<SavePicture>(new ISupplier<SavePicture>() {
         @Override
-        public byte[] get() {
-            return new byte[0];
+        public SavePicture get() {
+            return new SavePicture();
         }
     });
     public BlobR2kStruct partyPos = new BlobR2kStruct(new ISupplier<byte[]>() {

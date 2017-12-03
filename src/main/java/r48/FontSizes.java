@@ -157,6 +157,7 @@ public class FontSizes {
         RubyIO.encoding = "UTF-8";
 
         prepare.addIVar("@secondary_images", new RubyIO().setString(Application.secondaryImageLoadLocation));
+        prepare.addIVar("@saved_rootpath", new RubyIO().setString(Application.rootPathBackup));
         prepare.addIVar("@lang", new RubyIO().setString(TXDB.getLanguage()));
         if (UILabel.fontOverride != null) {
             prepare.addIVar("@sysfont", new RubyIO().setString(UILabel.fontOverride));
@@ -189,6 +190,9 @@ public class FontSizes {
             RubyIO sys3 = dat.getInstVarBySymbol("@secondary_images");
             if (sys3 != null)
                 Application.secondaryImageLoadLocation = sys3.decString();
+            RubyIO sys4 = dat.getInstVarBySymbol("@saved_rootpath");
+            if (sys4 != null)
+                Application.rootPathBackup = sys4.decString();
 
             RubyIO.encoding = currentEnc;
             return true;

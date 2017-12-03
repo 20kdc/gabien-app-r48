@@ -60,6 +60,16 @@ public class TXDB {
                 return Integer.toString(rubyIO.arrVal.length);
             }
         });
+        nameDB.put("Interp.lang-Common-add", new IFunction<RubyIO, String>() {
+            @Override
+            public String apply(RubyIO rubyIO) {
+                String[] range = rubyIO.decString().split(" ");
+                int v = 0;
+                for (String s : range)
+                    v += Integer.valueOf(s);
+                return Integer.toString(v);
+            }
+        });
     }
 
     public static void init() {

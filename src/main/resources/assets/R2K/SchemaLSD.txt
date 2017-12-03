@@ -71,34 +71,117 @@ e rpg_savesystem_screen 0 unknown0 1 unknown1default
 @screen rpg_savesystem_screen
 @frame_count int
 @system_name f_system_name
-@message_stretch int
-@font_id int
+@message_tiling int_boolean
+@font_id rpg_system_font
 @switches subwindow arrayEIdX switch_id 1 0 boolean
 @variables subwindow arrayEIdX var_id 1 0 int
  TODO: LOTS
 
 : RPG::Interpreter
-C name Class.RPG::Interpreter @stack$length | {A=0=empty|#A-deep interpreter}
+ Regarding this routine, {A=0=1|#A} makes an A of 0 show as 1,
+  because of the Ix1 - then 1 is changed to "empty" and other values are changed to the original count minus 1.
+C name Class.RPG::Interpreter @stack$length | {@{A=0=1|#A}|1|empty|[lang-Common-add][#A -1]-deep interpreter}
 @stack arrayIx1 subwindow RPG::InterpreterStackLevel
- TODO: Outer interpreter state
+@shown_message boolean
+@waiting_for_nmovement boolean
+ INVESTIGATE THIS!!!
+@waiting_for_sleep int
+@waiting_for_sleep_alt int
+@keyii_wait boolean
+ COMM W/ EASYRPG!!
+@keyii_variable var_id
+@keyii_timed boolean
+@keyii_time_variable var_id
+@keyii_filter_arrowkeys boolean
+@keyii_filter_decision boolean
+@keyii_filter_cancel boolean
+@keyii_filter_1A boolean
+@keyii_filter_1B boolean
+@keyii_filter_1C boolean
+@keyii_filter_1D boolean
+@keyii_filter_1E boolean
+ Might actually be memory, not filter - OR could be 2k3 - check the index order for details
+@keyii_filter_23 boolean
+@keyii_filter_24 boolean
+@keyii_filter_25 boolean
+@keyii_filter_26 boolean
 
 : RPG::InterpreterStackLevel
-@list_size int
- @list EventListEditor
-@list OPAQUE
+@list EventListEditor
 @index int
 @event_id event_or_none_id
 @actioned boolean
- TODO: @branches
+@branches subwindow array 0 int
 
 : RPG::SaveCommonEvent
 @i subwindow RPG::Interpreter
 
+.rpg_savepicture_flags
+@erase_on_mapchange boolean
+@erase_on_battleend boolean
+@unused_1 boolean
+@unused_2 boolean
+@mod_tint boolean
+@mod_flash boolean
+@mod_shake boolean
+
+: RPG::SavePicture
+C name Class.RPG::SavePicture @name @spritesheet_cols_112 @spritesheet_rows_112 @spritesheet_frame_112 @x @y | {A=""=<unused picture>|#A#[#B,#C#]#[#D#] at #E #F}
+@name string
+@spritesheet_cols_112 int= 1
+@spritesheet_rows_112 int= 1
+@spritesheet_frame_112 int
+@spritesheet_speed_112 int
+ no, not that one
+@spritesheet_oneshot_112 boolean
+
+@rotation float
+@waver int
+@layer_map_112 show_picture_maplayer
+@layer_battle_112 show_picture_btllayer
+@fixed boolean
+@start_x float
+@start_y float
+@lifetime int
+@flags_112 rpg_savepicture_flags
+
++subwindow: Current\_State rpg_savepicture_state_current
+@move_remain_time int
++subwindow: Target\_State rpg_savepicture_state_target
+
+.rpg_savepicture_state_current
+@x float
+@y float
+@magnify float
+@transparency boolean
+@transparency_top float
+@transparency_bottom float
+@r float
+@g float
+@b float
+@s float
+@fx int
+@fxstrength float
+
+.rpg_savepicture_state_target
+@target_x float
+@target_y float
+@target_magnify float
+@target_transp_top float
+@target_transp_bottom float
+@target_r int
+@target_g int
+@target_b int
+@target_s int
+@target_fxstrength int
+
 : RPG::Save
  Important
 @title subwindow RPG::SaveTitle
+ the villain of this story
 @system subwindow: WARNING:\_INCOMPLETE RPG::SaveSystem
 @actors subwindow hash actor_id subwindow RPG::SaveActor
+ the villain[s] of this story
 @party OPAQUE
 @party_pos OPAQUE
  Unimportant Global
@@ -109,8 +192,8 @@ C name Class.RPG::Interpreter @stack$length | {A=0=empty|#A-deep interpreter}
  Unimportant Local
 @map_info OPAQUE
 @screen OPAQUE
-@pictures OPAQUE
+@pictures subwindow hash int subwindow RPG::SavePicture
 @panorama OPAQUE
- the villain[s] of this story
+
 @main_interpreter subwindow RPG::Interpreter
 @common_events subwindow hash commonevent_id RPG::SaveCommonEvent

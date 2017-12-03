@@ -16,7 +16,8 @@ public class SaveSystem extends R2kObject {
     public IntegerR2kStruct screen = new IntegerR2kStruct(1);
     public IntegerR2kStruct frameCount = new IntegerR2kStruct(0);
     public StringR2kStruct systemName = new StringR2kStruct();
-    public IntegerR2kStruct messageStretch = new IntegerR2kStruct(-1);
+    // This is different from the documented default - test this out?
+    public IntegerR2kStruct messageStretch = new IntegerR2kStruct(0);
     public IntegerR2kStruct fontId = new IntegerR2kStruct(0);
     public ArraySizeR2kInterpretable<BooleanR2kStruct> switchesSize = new ArraySizeR2kInterpretable<BooleanR2kStruct>(true);
     public ArrayR2kStruct<BooleanR2kStruct> switches = new ArrayR2kStruct<BooleanR2kStruct>(switchesSize, new ISupplier<BooleanR2kStruct>() {
@@ -48,7 +49,7 @@ public class SaveSystem extends R2kObject {
                 new Index(0x01, screen, "@screen"),
                 new Index(0x0B, frameCount, "@frame_count"),
                 new Index(0x15, systemName, "@system_name"),
-                new Index(0x16, messageStretch, "@message_stretch"),
+                new Index(0x16, messageStretch, "@message_tiling"),
                 new Index(0x17, fontId, "@font_id"),
                 new Index(0x1F, switchesSize),
                 new Index(0x20, switches, "@switches"),

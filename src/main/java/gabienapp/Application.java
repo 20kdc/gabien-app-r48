@@ -44,6 +44,8 @@ public class Application {
     public static boolean mobileExtremelySpecialBehavior;
 
     public static String secondaryImageLoadLocation = "";
+    // This is the root path which is *defaulted to*.
+    public static String rootPathBackup = "";
 
     public static void gabienmain() throws IOException {
         mobileExtremelySpecialBehavior = GaBIEn.singleWindowApp();
@@ -57,6 +59,14 @@ public class Application {
         if (!fontsLoaded)
             if (GaBIEn.singleWindowApp()) // SWA always means we need to adapt to local screen size, and should generally cut down as many usability issues as possible
                 autoDetectCorrectUISizeOnSWA(splashSize.width, splashSize.height);
+
+        /*
+         * If single-window, assume we're on Android,
+         *  so the user probably wants to be able to use EasyRPG Player
+         * If EasyRPG Player has an issue with this, please bring it up at any time, and I will change this.
+         */
+        if (mobileExtremelySpecialBehavior)
+            rootPathBackup = "easyrpg/games/R48 Game";
 
         // Note the mass-recreate.
         while (true) {
@@ -100,15 +110,15 @@ public class Application {
             gamepaks.panels.add(new UILabel(TXDB.get("Root Path:"), FontSizes.launcherTextHeight));
 
             rootBox = new UITextBox(FontSizes.launcherTextHeight);
+            rootBox.text = rootPathBackup;
 
-            /*
-             * If single-window, assume we're on Android, so the user probably wants to be able to use EasyRPG Player
-             * Regarding if I'm allowed to do this:
-             */
-            if (mobileExtremelySpecialBehavior)
-                rootBox.text = "easyrpg/games/R48 Game";
-
-            gamepaks.panels.add(rootBox);
+            gamepaks.panels.add(new UISplitterLayout(rootBox, new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Save"), new Runnable() {
+                @Override
+                public void run() {
+                    rootPathBackup = rootBox.text;
+                    FontSizes.save();
+                }
+            }), false, 1));
 
             gamepaks.panels.add(new UILabel(TXDB.get("Secondary Image Load Location:"), FontSizes.launcherTextHeight));
 

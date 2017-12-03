@@ -142,6 +142,12 @@
    Used to extract an array length from an array. (Which would otherwise show as "[<length>]".)
    Note that one-indexed arrays are considered zero-indexed internally, this means their length is one higher than it 'should be'.
 
+  lang-Common-add:
+   Example:
+    [lang-Common-add][5 5]
+   Splits to words, converts words to integers, then adds them together to get a result.
+   Useful for, say, r2k LSD save interpreter stack depth adjustment.
+
  ----------------------------------
 
  Note: It is probably possible to confuse the NDB interpreter if you know what you are doing (or don't).
