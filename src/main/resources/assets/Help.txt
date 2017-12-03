@@ -14,8 +14,9 @@ i HelpImg/0.demo.png
 . This is critical to several operations.
 .
 . Secondly, make sure you ran this program from the same directory as the game that you want to edit.
+. Alternatively, make sure that the game path has been set correctly.
 .
-. Third, make sure that you've selected that game at the first menu.
+. Third, make sure that you've selected that game's engine at the first menu.
 . If not, closing both this help window and the main window should bring you back there.
 .
 . Before you continue, if you are just starting out and trying to make something to run on EasyRPG with this, read the following.

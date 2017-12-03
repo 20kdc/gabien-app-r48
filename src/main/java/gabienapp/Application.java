@@ -107,7 +107,7 @@ public class Application {
 
             gamepaks.panels.add(new UISplitterLayout(new UILabel(TXDB.get("MS per frame:"), FontSizes.launcherTextHeight), msAdjust, false, 3, 5));
 
-            gamepaks.panels.add(new UILabel(TXDB.get("Root Path:"), FontSizes.launcherTextHeight));
+            gamepaks.panels.add(new UILabel(TXDB.get("Path To Game (if you aren't running R48 in the game folder):"), FontSizes.launcherTextHeight));
 
             rootBox = new UITextBox(FontSizes.launcherTextHeight);
             rootBox.text = rootPathBackup;
