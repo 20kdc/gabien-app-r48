@@ -32,10 +32,12 @@
 ./r48/io/r2k/obj/lsd/Interpreter$1.class
 ./r48/io/r2k/obj/lsd/SaveActor$2.class
 ./r48/io/r2k/obj/lsd/SaveSystem$1.class
+./r48/io/r2k/obj/lsd/Interpreter$InterpreterStackLevel$2.class
 ./r48/io/r2k/obj/lsd/Interpreter$InterpreterStackLevel$1.class
 ./r48/io/r2k/obj/lsd/SaveSystem$2.class
 ./r48/io/r2k/obj/lsd/Interpreter.class
 ./r48/io/r2k/obj/lsd/SaveActor.class
+./r48/io/r2k/obj/lsd/SavePicture.class
 ./r48/io/r2k/obj/lsd/SaveTarget.class
 ./r48/io/r2k/obj/lsd/SaveSystem.class
 ./r48/io/r2k/obj/lsd/SaveActor$1.class
