@@ -46,6 +46,7 @@ D internal_eventDictionary 1 __MAP__@events 1 @name
 > int_or_var int
 > selfswitch_id string= A
 > opacity int= 255
+> zoom int= 100
 > troop_enemy_id int
 
  Defining dictionaries...

@@ -98,8 +98,8 @@ P 3 xVar var_id
 v 0 x int
 P 3 yVar var_id
 v 0 y int
-p zoom_x int
-p zoom_y int
+p zoom_x zoom
+p zoom_y zoom
 p opacity opacity
 p blendType blend_type
 
@@ -112,8 +112,8 @@ P 3 xVar var_id
 v 0 x int
 P 3 yVar var_id
 v 0 y int
-p zoom_x int
-p zoom_y int
+p zoom_x zoom
+p zoom_y zoom
 p opacity opacity
 p blendType blend_type
 

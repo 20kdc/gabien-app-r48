@@ -205,6 +205,11 @@ local function loadRubyValue(file, symbolTable, gensym)
         local tl = readVI(file)
         local text = readBlock(file, tl)
         object.user = text
+    elseif (object.type == "l") then
+        object.user = readBlock(file, 1)
+        local tl = readVI(file)
+        local text = readBlock(file, tl * 2)
+        object.user = object.user .. text
     elseif (object.type == "T") or (object.type == "F") or (object.type == "0") then
         -- nothing to do with these
     else
@@ -277,6 +282,17 @@ local function saveRubyValue(file, object)
         saveRubyValue(file, {type = ":", text = object.text})
         writeVI(file, object.user:len())
         file:write(object.user)
+    elseif (object.type == "l") then
+        if object.user:len() < 1 then
+            error("bignum must have sign")
+        end
+        file:write(object.user:sub(1, 1))
+        local nb = object.user:sub(2)
+        if math.floor(nb:len() / 2) ~= (nb:len() / 2) then
+            error("post-sign data length must be divisible by 2")
+        end
+        writeVI(file, math.floor(nb:len() / 2))
+        file:write(nb)
     elseif (object.type == "T") or (object.type == "F") or (object.type == "0") then
         -- nothing to do with these
     else

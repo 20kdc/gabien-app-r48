@@ -9,15 +9,21 @@ package r48;
 
 import gabien.GaBIEn;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
 /**
+ * NOTE: This class, like most of R48, is not thread-safe.
+ * This class is *particularly* not thread-safe because it uses a bunch of temp files to do it's job.
  * Created on August 14th, 2017
  */
 public class LuaInterface {
+    // Error details, if known, from Lua
+    public static byte[] lastError = null;
     public static RubyIO runLuaCall(RubyIO input, String code) {
+        lastError = null;
         try {
             OutputStream ohs = GaBIEn.getOutFile("templuah.r48");
             InputStream ihs = GaBIEn.getFile("luahead.lua");
@@ -38,6 +44,7 @@ public class LuaInterface {
             System.err.println("Running Lua:");
             Process babysit = Runtime.getRuntime().exec("lua templuah.r48");
             double now = GaBIEn.getTime();
+            ByteArrayOutputStream lastErr = new ByteArrayOutputStream();
             while (true) {
                 if (GaBIEn.getTime() > now + 10) {
                     System.err.println("Giving up :(");
@@ -45,6 +52,7 @@ public class LuaInterface {
                         babysit.destroy();
                     } catch (Exception e) {
                     }
+                    lastError = lastErr.toByteArray();
                     return null;
                 }
                 boolean alive = true;
@@ -55,15 +63,16 @@ public class LuaInterface {
                 }
                 InputStream out2 = babysit.getInputStream();
                 while (out2.available() > 0)
-                    System.err.write(out2.read());
+                    lastErr.write(out2.read());
                 InputStream out1 = babysit.getErrorStream();
                 while (out1.available() > 0)
-                    System.err.write(out1.read());
+                    lastErr.write(out1.read());
                 if (!alive)
                     break;
             }
             RubyIO res = AdHocSaveLoad.load("templuao");
             cleanup();
+            lastError = lastErr.toByteArray();
             return res;
         } catch (Exception e) {
             e.printStackTrace();

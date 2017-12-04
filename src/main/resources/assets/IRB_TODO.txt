@@ -8,33 +8,24 @@ from highest priority to lowest:
 + finish full 2k3 editor (Done)
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
+OSLoc & IMI:
+ yeah, this... isn't going well
+
 short-term planning subsection:
-+ Project OSLoc:
-  OneShot localization files, as a prelude to IMI release
-+ Project IMI:
-  Usage as follows:
-  1. Firstly, zip up all other assets that have changed (these must not include Data/ files)
-     explaination for OSD:
-     "If you have changed any of the graphics or audio (but *not* Data - R48 will handle that),
-       put those folders into a ZIP."
-     "(making sure that, *after* you open the ZIP, you see, for example, 'Graphics',
-       and that you only see the contents of that folder by going a level deeper)"
-     "Then, remove all files within the ZIP that you haven't changed."
-  2. Secondly, compile with "Compile IMI Data".
-     This will ask you for the location of an unmodified copy of the game.
-     Without this, R48 cannot work out what has changed.
-     R48 will then compile the IMI datafile.
-  3. User runs IMI installer 'blank'. This will either find the output files, and create the IMI installer,
-      or complain about something.
+  Run everything via testing.
+  IMI's gone through critical path testing.
+  2k/2k3 save file editing is currently "hidden".
 + v0.8
-+ 2k save-edit (thank you, Ghabry)
++ 2k/2k3 save-edit (thank you, Ghabry)
 + v0.9
 + R48-as-2k/2k3-save-editor is a massive benefit by itself and raises awareness
-+ UI improvements driven by influx due to save editing.
++ UI improvements driven by influx due to save editing ???
++ Bugfixes, really
 + v1.0
 
 - ANYTIME -
-+ Anything Cherry thinks up next
++ Responding to anything Cherry thinks up next
+  (the original note was written because of 2k3 1.12, in case it's text seemed suspicious)
 
 -- NOTE TO SELF
 

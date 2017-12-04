@@ -307,7 +307,14 @@ public class AppMain {
                                             br.close();
                                             RubyIO rio = LuaInterface.runLuaCall(theClipboard, t);
                                             if (rio == null) {
-                                                launchDialog(TXDB.get("Lua error, or took > 10 seconds. Running R48 in a console will allow debugging."));
+                                                String s = "";
+                                                try {
+                                                    if (LuaInterface.lastError != null)
+                                                        s = "\n" + new String(LuaInterface.lastError, "UTF-8");
+                                                } catch (Exception e2) {
+                                                    // output clearly unavailable
+                                                }
+                                                launchDialog(TXDB.get("Lua error, or took > 10 seconds. Output:") + s);
                                             } else {
                                                 theClipboard = rio;
                                                 launchDialog(TXDB.get("Successful - the clipboard was replaced."));
