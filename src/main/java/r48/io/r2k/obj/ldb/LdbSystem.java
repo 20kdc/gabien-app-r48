@@ -90,6 +90,18 @@ public class LdbSystem extends R2kObject {
             return new TestBattler();
         }
     });
+    public OptionalR2kStruct<IntegerR2kStruct> saveCountEn = new OptionalR2kStruct<IntegerR2kStruct>(new ISupplier<IntegerR2kStruct>() {
+        @Override
+        public IntegerR2kStruct get() {
+            return new IntegerR2kStruct(0);
+        }
+    });
+    public OptionalR2kStruct<IntegerR2kStruct> saveCountJp = new OptionalR2kStruct<IntegerR2kStruct>(new ISupplier<IntegerR2kStruct>() {
+        @Override
+        public IntegerR2kStruct get() {
+            return new IntegerR2kStruct(0);
+        }
+    });
     public IntegerR2kStruct magic = new IntegerR2kStruct(0);
     public IntegerR2kStruct battletestTerrain = new IntegerR2kStruct(0);
     public IntegerR2kStruct battletestFormation = new IntegerR2kStruct(0);
@@ -158,7 +170,8 @@ public class LdbSystem extends R2kObject {
                 new Index(0x52, testActor, "@test_actor"),
                 new Index(0x54, battletestBackground, "@test_battle_background"),
                 new Index(0x55, battletestData, "@test_battle_data"),
-                new Index(0x5B, magic, "@magic_number"),
+                new Index(0x5A, saveCountEn, "@save_count_en"),
+                new Index(0x5B, saveCountJp, "@save_count_jp"),
                 new Index(0x5E, battletestTerrain, "@test_battle_terrain"),
                 new Index(0x5F, battletestFormation, "@test_battle_formation"),
                 new Index(0x60, battletestCondition, "@test_battle_condition"),
