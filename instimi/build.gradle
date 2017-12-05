@@ -1,6 +1,7 @@
 apply plugin: "java"
 apply plugin: "eclipse"
 apply plugin: "idea"
+apply plugin: "application"
 
 dependencies {
 }
@@ -10,6 +11,9 @@ targetCompatibility = 1.6
 
 group = "imi"
 archivesBaseName = "gabien-app-r48-imi"
+
+// This is used for "application"
+mainClassName = "r48.imi.Main"
 
 jar {
  manifest {
