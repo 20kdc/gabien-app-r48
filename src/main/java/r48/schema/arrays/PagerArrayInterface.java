@@ -14,7 +14,8 @@ import java.util.LinkedList;
  */
 public class PagerArrayInterface implements IArrayInterface {
     @Override
-    public void provideInterfaceFrom(UIScrollLayout svl, final IFunction<String, IProperty> prop, final ArrayPosition[] positions) {
+    public void provideInterfaceFrom(UIScrollLayout svl, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
+        final ArrayPosition[] positions = getPositions.get();
         LinkedList<UIElement> uie = new LinkedList<UIElement>();
         for (int i = 0; i < positions.length; i++) {
             if (positions[i].core != null) {
@@ -41,11 +42,11 @@ public class PagerArrayInterface implements IArrayInterface {
                     }
                 }
                 if (positions[i].execDelete != null) {
-                    final Runnable r = positions[i].execDelete;
+                    final ISupplier<Runnable> r = positions[i].execDelete;
                     barLayout.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, "-", new Runnable() {
                         @Override
                         public void run() {
-                            r.run();
+                            r.get().run();
                         }
                     }));
                 }

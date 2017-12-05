@@ -16,13 +16,15 @@ import java.util.LinkedList;
  */
 public class StandardArrayInterface implements IArrayInterface {
     @Override
-    public void provideInterfaceFrom(final UIScrollLayout uiSVL, final IFunction<String, IProperty> prop, final ArrayPosition[] positions) {
+    public void provideInterfaceFrom(final UIScrollLayout uiSVL, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
+        final ArrayPosition[] positions = getPositions.get();
         // this object is needed as a pin to hold things together.
         // It used to be kind of redundant, but now with the selection stuff...
         final Runnable runCompleteRelayout = new Runnable() {
             // Only check selectedStart.
             int selectedStart = -1;
             int selectedEnd = -1;
+            boolean confirmingSelectionDelete = false;
 
             // Because of name ambiguity, but also whacks uiSVL
             public void containerRCL() {
@@ -42,6 +44,7 @@ public class StandardArrayInterface implements IArrayInterface {
                     UIElement uie = positions[mi].core;
                     if (uie != null) {
                         if (selectedStart == -1) {
+                            confirmingSelectionDelete = false;
                             uie = new UIAppendButton(TXDB.get("Sel"), uie, new Runnable() {
                                 @Override
                                 public void run() {
@@ -54,12 +57,22 @@ public class StandardArrayInterface implements IArrayInterface {
                                 uie = new UIAppendButton("-", uie, new Runnable() {
                                     @Override
                                     public void run() {
-                                        positions[mi].execDelete.run();
+                                        positions[mi].execDelete.get().run();
                                     }
                                 }, FontSizes.schemaButtonTextHeight);
                             }
-                        } else {
+                        } else if (!confirmingSelectionDelete) {
+                            // Selection, but not confirming delete
                             if (selectedStart == mi) {
+                                if (positions[selectedStart].execDelete != null) {
+                                    uie = new UIAppendButton("-", uie, new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            confirmingSelectionDelete = true;
+                                            containerRCL();
+                                        }
+                                    }, FontSizes.schemaButtonTextHeight);
+                                }
                                 uie = new UIAppendButton(TXDB.get("DeSel"), uie, new Runnable() {
                                     @Override
                                     public void run() {
@@ -94,6 +107,46 @@ public class StandardArrayInterface implements IArrayInterface {
                                             selectedStart = mi;
                                         if (mi > selectedEnd)
                                             selectedEnd = mi;
+                                        containerRCL();
+                                    }
+                                }, FontSizes.schemaButtonTextHeight);
+                            }
+                        } else {
+                            // Selection, confirming delete
+                            if (selectedStart == mi) {
+                                uie = new UIAppendButton(TXDB.get(" Cancel "), uie, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        confirmingSelectionDelete = false;
+                                        containerRCL();
+                                    }
+                                }, FontSizes.schemaButtonTextHeight);
+                                if (positions[selectedStart].execDelete != null) {
+                                    // freed up room means a good long "Delete" can be written
+                                    uie = new UIAppendButton(TXDB.get("Delete"), uie, new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ArrayPosition[] effectivePositions = positions;
+                                            Runnable term = null;
+                                            for (int j = selectedStart; j <= selectedEnd; j++) {
+                                                if (j >= effectivePositions.length)
+                                                    break;
+                                                if (effectivePositions[selectedStart].execDelete == null)
+                                                    break;
+                                                term = effectivePositions[selectedStart].execDelete.get();
+                                                effectivePositions = getPositions.get();
+                                            }
+                                            if (term != null)
+                                                term.run();
+                                        }
+                                    }, FontSizes.schemaButtonTextHeight);
+                                }
+                            } else if ((mi > selectedStart) && (mi <= selectedEnd)) {
+                                // Only the top one can confirm, others are for cancelling
+                                uie = new UIAppendButton(TXDB.get("Cancel..."), uie, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        confirmingSelectionDelete = false;
                                         containerRCL();
                                     }
                                 }, FontSizes.schemaButtonTextHeight);

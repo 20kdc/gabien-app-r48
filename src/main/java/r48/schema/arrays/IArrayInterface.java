@@ -21,8 +21,9 @@ public interface IArrayInterface {
      * Create the interface.
      * Note that svl is dedicated to this interface - the only reason it's built like this is so SchemaPath won't be unnecessarily 'leaked' for scroll stuff.
      * state is tied to a unique SchemaElement held by the ArraySchemaElement for the purposes of holding extra state.
+     * Also note that the positions are invalidated when any exec function is called.
      */
-    void provideInterfaceFrom(UIScrollLayout svl, IFunction<String, IProperty> state, ArrayPosition[] positions);
+    void provideInterfaceFrom(UIScrollLayout svl, IFunction<String, IProperty> state, ISupplier<ArrayPosition[]> positions);
 
     interface IProperty extends ISupplier<Double>, IConsumer<Double> {
 
@@ -46,10 +47,14 @@ public interface IArrayInterface {
     class ArrayPosition {
         public final String text;
         public final RubyIO[] elements;
-        public final Runnable execDelete, execInsert, execInsertCopiedArray;
+        public final Runnable execInsert, execInsertCopiedArray;
+        // The way this works is that you run a get to perform the delete,
+        //  then run the Runnable to perform the update
+        // This is weird but very convenient
+        public final ISupplier<Runnable> execDelete;
         public final UIElement core;
 
-        public ArrayPosition(String txt, RubyIO[] elem, UIElement cor, Runnable exeDelete, Runnable exeInsert, Runnable exeInsertCopiedArray) {
+        public ArrayPosition(String txt, RubyIO[] elem, UIElement cor, ISupplier<Runnable> exeDelete, Runnable exeInsert, Runnable exeInsertCopiedArray) {
             text = txt;
             elements = elem;
             core = cor;

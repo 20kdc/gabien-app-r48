@@ -7,10 +7,7 @@
 
 package r48.schema.arrays;
 
-import gabien.ui.IFunction;
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UIScrollLayout;
+import gabien.ui.*;
 import r48.AppMain;
 import r48.ArrayUtils;
 import r48.RubyIO;
@@ -58,6 +55,41 @@ public abstract class ArraySchemaElement extends SchemaElement {
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
 
         uiSVL.panels.clear();
+
+        final SchemaPath keyStoragePath = path.findLast();
+
+        uiHelper.provideInterfaceFrom(uiSVL, new IFunction<String, IArrayInterface.IProperty>() {
+            @Override
+            public IArrayInterface.IProperty apply(String s) {
+                final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(myUniqueStateInstance, target, uiHelper.getClass(), s);
+
+                return new IArrayInterface.IProperty() {
+                    @Override
+                    public void accept(Double v) {
+                        keyStoragePath.getEmbedMap(launcher).put(myKey, v);
+                    }
+
+                    @Override
+                    public Double get() {
+                        return keyStoragePath.getEmbedSP(launcher, myKey);
+                    }
+                };
+            }
+        }, new ISupplier<IArrayInterface.ArrayPosition[]>() {
+            @Override
+            public IArrayInterface.ArrayPosition[] get() {
+                return getPositions(target, launcher, path);
+            }
+        });
+
+        int h = 0;
+        for (UIElement uie : uiSVL.panels)
+            h += uie.getBounds().height;
+        uiSVL.setBounds(new Rect(0, 0, 32, h));
+        return uiSVL;
+    }
+
+    private IArrayInterface.ArrayPosition[] getPositions(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         int nextAdvance;
         LinkedList<IArrayInterface.ArrayPosition> positions = new LinkedList<IArrayInterface.ArrayPosition>();
         for (int i = 0; i < target.arrVal.length; i += nextAdvance) {
@@ -77,7 +109,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 hasNIdxSchema = true;
             }
 
-            Runnable deleter = getRemovalCallback(pLevel, target, launcher, i, nextAdvance, path, ind);
+            ISupplier<Runnable> deleter = getRemovalCallback(pLevel, target, launcher, i, nextAdvance, path, ind);
             Runnable addition = getAdditionCallback(target, launcher, i, path, ind);
             Runnable clipAddition = getClipAdditionCallback(target, i, path);
 
@@ -109,47 +141,25 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 break;
             }
         }
-
-        final SchemaPath keyStoragePath = path.findLast();
-
-        uiHelper.provideInterfaceFrom(uiSVL, new IFunction<String, IArrayInterface.IProperty>() {
-            @Override
-            public IArrayInterface.IProperty apply(String s) {
-                final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(myUniqueStateInstance, target, uiHelper.getClass(), s);
-
-                return new IArrayInterface.IProperty() {
-                    @Override
-                    public void accept(Double v) {
-                        keyStoragePath.getEmbedMap(launcher).put(myKey, v);
-                    }
-
-                    @Override
-                    public Double get() {
-                        return keyStoragePath.getEmbedSP(launcher, myKey);
-                    }
-                };
-            }
-        }, positions.toArray(new IArrayInterface.ArrayPosition[0]));
-
-        int h = 0;
-        for (UIElement uie : uiSVL.panels)
-            h += uie.getBounds().height;
-        uiSVL.setBounds(new Rect(0, 0, 32, h));
-        return uiSVL;
+        return positions.toArray(new IArrayInterface.ArrayPosition[0]);
     }
 
-    private Runnable getRemovalCallback(final int pLevel, final RubyIO target, final ISchemaHost launcher, final int mi, final int thisNextAdvance, final SchemaPath path, final SchemaPath ind) {
+    private ISupplier<Runnable> getRemovalCallback(final int pLevel, final RubyIO target, final ISchemaHost launcher, final int mi, final int thisNextAdvance, final SchemaPath path, final SchemaPath ind) {
         if (pLevel < 2)
             return null;
         if (sizeFixed != 0)
             return null;
-        return new Runnable() {
+        return new ISupplier<Runnable>() {
             @Override
-            public void run() {
+            public Runnable get() {
                 for (int j = 0; j < thisNextAdvance; j++)
                     ArrayUtils.removeRioElement(target, mi);
-                // whack the UI & such
-                path.changeOccurred(false);
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        path.changeOccurred(false);
+                    }
+                };
             }
         };
     }
