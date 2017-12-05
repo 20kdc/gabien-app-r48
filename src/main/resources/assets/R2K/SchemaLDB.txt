@@ -559,8 +559,8 @@ e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 orde
  Despite what https://github.com/EasyRPG/Player/issues/885 says, the default I leave this at is giving me RM2000 results (default menus).
  Not so much chunk presence as chunk contents... The difference between "I have to make this optional and document it" or "I don't".
 @ldb_id rpg_system_ldbid
-+optP @save_count_en int
-+optP @save_count_jp int
++optP @save_count_2k3en int
++optP @save_count_other int
 
 +subwindow: Music rpg_system_music
 +subwindow: Sounds rpg_system_sound
