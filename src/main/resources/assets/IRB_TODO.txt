@@ -8,37 +8,46 @@ from highest priority to lowest:
 + finish full 2k3 editor (Done)
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
-OSLoc & IMI:
- yeah, this... isn't going well
+OSLoc, IMI:
+ OSLoc was a failure and will be removed by v1.0
+ IMI may be a failure???
 
 short-term planning subsection:
   Run everything via testing.
+  This includes the Android build.
+  This *particularly* includes the Android build.
   IMI's gone through critical path testing.
   2k/2k3 save file editing is currently "hidden".
 + v0.8
+  (RELEASE DATE: 10th of December.
+   I'm building this early, then running through testing after I sleep.
+   If I don't find anything I'll use this build, otherwise it's frantic debugging.
+   I'm getting this release out to that I can finish save-edit for v0.9
+    and then do whatever for v1.0 (or nothing at all)
+  )
 + 2k/2k3 save-edit (thank you, Ghabry)
+  <IMMEDIATELY BEGIN INFORMAL RELEASE-TESTING>
 + v0.9
-+ R48-as-2k/2k3-save-editor is a massive benefit by itself and raises awareness
-+ UI improvements driven by influx due to save editing ???
-+ Bugfixes, really
+  (LATEST RELEASE DATE: 20th of December.)
++ Bugfixes.
+  This is very much a "what did I break this time" release.
+  The Android UX needs testing.
+- Remove OSLoc and maybe IMI, which I'll rename the WAU.
+  Icky, kind of cancerous...
 + v1.0
+  (RELEASE DATE: 27th of December, basically.
+   This time last year was when R48 started.)
++ Since this is now past the stable release,
+   possibly change the way everything refers to everything.
+  Definitely figure out how to make it so every schema path has a path-from-root-object,
+   which must be totally reliable *or* completely fail.
+  If this means abstracting SchemaPaths some more and removing RubyIO target it'll have to be done.
+  Plus, this will mean magical bindings become *less* hacky, if they can be represented.
++ If that's done,
+   definitely definitely keep a shadow copy of every ObjectDB value that's loaded,
+   and definitely definitely add an undo button.
++ v1.1
 
 - ANYTIME -
 + Responding to anything Cherry thinks up next
   (the original note was written because of 2k3 1.12, in case it's text seemed suspicious)
-
--- NOTE TO SELF
-
- Syntaxes in R48:
-
- DBS (general 'DB' syntax)
-
- TXDB
-
- This lot:
- SDB---+----\
-  |    |    |
-  v    v    v
- CMDB ATDB TSDB
-
- PS/FS/ESS

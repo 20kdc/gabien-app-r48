@@ -92,9 +92,9 @@ public class UIImageEditView extends UIElement {
         if (GaBIEn.singleWindowApp())
             info = TXDB.get("Tap/Drag: Draw, camera button: Switch to scrolling");
         if (camMode) {
-            info = TXDB.get("All mouse buttons scroll, camera button goes back to drawing");
+            info = TXDB.get("All mouse buttons position cursor & scroll, camera button goes back to drawing");
             if (GaBIEn.singleWindowApp())
-                info = TXDB.get("Tap/Drag: Scroll, camera button : go back to drawing");
+                info = TXDB.get("Tap: Position cursor, Drag: Scroll, camera button : go back to drawing");
         }
         String text = cursorX + ", " + cursorY + " " + info;
         UILabel.drawLabel(igd, bounds.width - (textX + zPlus.x), ox + textX, oy + zPlus.y, text, 0, FontSizes.mapPositionTextHeight);
@@ -154,16 +154,22 @@ public class UIImageEditView extends UIElement {
     public void handleAct(int x, int y, boolean first) {
         if (!dragging)
             return;
+
+        Rect bounds = getViewRect();
+        int nx = UIGrid.sensibleCellDiv(x - bounds.x, zoom);
+        int ny = UIGrid.sensibleCellDiv(y - bounds.y, zoom);
+        nx -= UIGrid.sensibleCellDiv(nx, imageW) * imageW;
+        ny -= UIGrid.sensibleCellDiv(ny, imageH) * imageH;
+
         if (camMode || tempCamMode) {
+            if (first) {
+                cursorX = nx;
+                cursorY = ny;
+            }
             camX += (x - dragLastX) / (double) zoom;
             camY += (y - dragLastY) / (double) zoom;
         } else {
-            Rect bounds = getViewRect();
-            int nx = UIGrid.sensibleCellDiv(x - bounds.x, zoom);
-            int ny = UIGrid.sensibleCellDiv(y - bounds.y, zoom);
-            nx -= UIGrid.sensibleCellDiv(nx, imageW) * imageW;
-            ny -= UIGrid.sensibleCellDiv(ny, imageH) * imageH;
-            boolean perform = (first || (nx != cursorX) || (ny != cursorY)) && !camMode;
+            boolean perform = first || (nx != cursorX) || (ny != cursorY);
             cursorX = nx;
             cursorY = ny;
             if (perform)
