@@ -371,8 +371,12 @@ public class Application {
             char ch = chars[timer2 % chars.length];
             timer2++;
             movement += "  ";
-            // has to be internal-font-able
+            // has to be internal-font-able, unless on Android
             int goodSize = 16;
+            if (mobileExtremelySpecialBehavior)
+                goodSize = gi.getHeight() / 32;
+            if (goodSize < 8)
+                goodSize = 8;
             int goodSizeActual = UILabel.getRecommendedSize("", goodSize).height;
             UILabel.drawLabel(gi, gi.getWidth(), 0, gi.getHeight() - goodSizeActual, waitingFor + movement + ch, 1, goodSize);
 

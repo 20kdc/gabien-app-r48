@@ -55,6 +55,7 @@
 ./r48/io/r2k/obj/ldb/Skill$2.class
 ./r48/io/r2k/obj/ldb/Item.class
 ./r48/io/r2k/obj/ldb/AnimationTiming.class
+./r48/io/r2k/obj/ldb/LdbSystem$5.class
 ./r48/io/r2k/obj/ldb/Troop$1.class
 ./r48/io/r2k/obj/ldb/Actor$2.class
 ./r48/io/r2k/obj/ldb/AnimationFrame$1.class
@@ -75,6 +76,7 @@
 ./r48/io/r2k/obj/ldb/LdbSystem$4.class
 ./r48/io/r2k/obj/ldb/BattlerAnimation.class
 ./r48/io/r2k/obj/ldb/BattlerAnimation$BAE.class
+./r48/io/r2k/obj/ldb/LdbSystem$6.class
 ./r48/io/r2k/obj/ldb/LdbSystem.class
 ./r48/io/r2k/obj/ldb/Learning.class
 ./r48/io/r2k/obj/ldb/Enemy$3.class
