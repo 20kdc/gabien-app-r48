@@ -58,7 +58,9 @@ public class ArraySizeR2kInterpretable<T extends IR2kInterpretable> implements I
             default:
                 throw new RuntimeException("unknown B " + bytes);
         }
-        target.get().fromArraySizeValue = v;
+        ArrayR2kInterpretable<T> targ = target.get();
+        if (targ != null)
+            targ.fromArraySizeValue = v;
     }
 
     @Override

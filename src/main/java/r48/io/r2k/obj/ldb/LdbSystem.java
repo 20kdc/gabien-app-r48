@@ -39,6 +39,7 @@ public class LdbSystem extends R2kObject {
     });
 
     // The menuCommandsSize -> menuCommands link is broken here, so it's fixed in the constructor.
+    // Really not sure about this, it fixes v0.8 for release I think but I want to have a better look at it later
     public ArraySizeR2kInterpretable<ShortR2kStruct> menuCommandsSize = new ArraySizeR2kInterpretable<ShortR2kStruct>(true);
     public OptionalR2kStruct<ArrayR2kStruct<ShortR2kStruct>> menuCommands = new OptionalR2kStruct<ArrayR2kStruct<ShortR2kStruct>>(new ISupplier<ArrayR2kStruct<ShortR2kStruct>>() {
         @Override

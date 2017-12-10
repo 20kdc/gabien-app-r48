@@ -122,6 +122,9 @@ public class RMToolsToolset implements IToolset {
                                 @Override
                                 public void accept(SchemaPath path) {
                                     // yup, and throw an exception to give the user an idea of the tree
+                                    // Note that R48 during an error does NOT write over the main object DB for safety reasons
+                                    //  (doing so could result in making the situation worse)
+                                    // the important thing here is that this means autocorrect testing won't lead to the testing env. being poisoneds
                                     throw new RuntimeException("MODIFY " + obj + " " + path);
                                 }
                             };
