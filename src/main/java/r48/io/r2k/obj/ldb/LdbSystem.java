@@ -165,7 +165,7 @@ public class LdbSystem extends R2kObject {
                 new Index(0x40, battleStartFadein, "@battle_start_fadein"),
                 new Index(0x41, battleEndFadeout, "@battle_end_fadeout"),
                 new Index(0x42, battleEndFadein, "@battle_end_fadein"),
-                new Index(0x47, messageStretch, "@message_tiling"),
+                new Index(0x47, messageStretch, "@system_box_tiling"),
                 new Index(0x48, fontId, "@font_id"),
                 new Index(0x51, testCondition, "@test_condition"),
                 new Index(0x52, testActor, "@test_actor"),

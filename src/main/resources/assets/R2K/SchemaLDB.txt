@@ -571,6 +571,7 @@ e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 orde
 @show_title_2k3 booleanDefTrue
 @gameover_name { string fileSelector GameOver/ }
 @system_name f_system_name
+@system_box_tiling int_boolean
 @system2_name_2k3 f_system2_name
 
 @party subwindow array 0 actor_id
@@ -586,7 +587,6 @@ e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 orde
 @airship_index int
 +spriteSelector @airship_index @airship_name CharSet/
 
-@message_tiling int_boolean
 e rpg_system_font 0 gothic 1 mincho
 @font_id rpg_system_font
 

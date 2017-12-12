@@ -19,13 +19,21 @@ import java.io.OutputStream;
  */
 public class ByteR2kStruct implements IR2kStruct {
     public byte value;
+    public boolean signed = false;
 
     public ByteR2kStruct(int v) {
         value = (byte) v;
     }
 
+    public ByteR2kStruct signed() {
+        signed = true;
+        return this;
+    }
+
     @Override
     public RubyIO asRIO() {
+        if (signed)
+            return new RubyIO().setFX(value);
         return new RubyIO().setFX(value & 0xFF);
     }
 

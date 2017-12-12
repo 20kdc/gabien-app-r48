@@ -29,6 +29,8 @@ e change_sys_gfx_font 0 msGothic 1 msMincho
 e change_transition_situation 0 mapChangePre 1 mapChangePost 2 enterBattlePre 3 enterBattlePost 4 leaveBattlePre 5 leaveBattlePost
  also used by LDBSystem, need to figure out a better place for this
 e change_transition_type 0 default 1 fade 2 blocks 3 dwDown 4 dwUp 5 blindsA 6 blindsB 7 blindsC 8 scalingSquareI 9 scalingSquareO 10 moveScrUpDown 11 moveScrDownUp 12 moveScrLeftRight 13 moveScrRightLeft 14 verticalOverlap 15 horizontalOverlap 16 quads 17 zoom 18 pieces 19 haze 20 null 21 none
+
+ Notably, regarding SaveSystem usage, this necessitated a signed byte type for it...
 e transition_type -1 default 0 fade 1 blocks 2 dwDown 3 dwUp 4 blindsA 5 blindsB 6 blindsC 7 scalingSquareI 8 scalingSquareO 9 moveScrUpDown 10 moveScrDownUp 11 moveScrLeftRight 12 moveScrRightLeft 13 verticalOverlap 14 horizontalOverlap 15 quads 16 zoom 17 pieces 18 haze 19 null 20 none
 
  (Pretty sure fog and sandstorm are 2k3, anyway)

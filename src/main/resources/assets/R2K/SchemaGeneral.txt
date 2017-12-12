@@ -34,6 +34,8 @@ D internal_battlecommandDictionary 1 RPG_RT.ldb@battle_commands_2k3@commands 0 @
 > f_music_name { string= (OFF) fileSelector Music/ }
 > f_sound_name { string= (OFF) fileSelector Sound/ }
 > f_system_name { string= System fileSelector System/ }
+ NOTE: The default here is blank, this makes it use the game-picked System
+> f_save_system_name { string fileSelector System/ }
  This used to default to 'system2a', but that causes issues on RPG_RT unless you *have* a system2a handy.
  Not that you should be synthing against RPG_RT, but compatibility is king
 > f_system2_name { string fileSelector System2/ }

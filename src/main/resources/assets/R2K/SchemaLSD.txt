@@ -66,16 +66,79 @@ e rpg_saveactor_row -1 back 0 unset 1 front
 @switch_valid boolean
 @switch_id switch_id
 
-e rpg_savesystem_screen 0 unknown0 1 unknown1default
+ The screen value is completely ignored
+e rpg_savesystem_screen 5 save
 : RPG::SaveSystem
 @screen rpg_savesystem_screen
 @frame_count int
-@system_name f_system_name
-@message_tiling int_boolean
+ If empty, defaults to game's default System.
+@system_name f_save_system_name
+@system_box_tiling int_boolean
 @font_id rpg_system_font
 @switches subwindow arrayEIdX switch_id 1 0 boolean
 @variables subwindow arrayEIdX var_id 1 0 int
- TODO: LOTS
++subwindow: Messagebox rpg_savesystem_text
++subwindow: Music rpg_savesystem_music
++subwindow: Sound rpg_savesystem_sound
++subwindow: Transitions rpg_savesystem_transition
+@can_teleport booleanDefTrue
+@can_escape booleanDefTrue
+@can_save booleanDefTrue
+@can_menu booleanDefTrue
+@battle_background string
+@save_count int
+@save_slot int= 1
+@atb_wait_mode_2k3 int_boolean
+
+.rpg_savesystem_text
+@message_transparent int
+@message_position int= 2
+@message_prevent_overlap int= 1
+@message_continue_events int
+@face_name f_faceset_name
+@face_index int
++spriteSelector @face_index @face_name FaceSet/
+@face_right boolean
+@face_flip boolean
+@transparent boolean
+
+.rpg_savesystem_music
+@title_music RPG::Music
+@battle_music RPG::Music
+@battle_end_music RPG::Music
+@inn_music RPG::Music
+@boat_music RPG::Music
+@ship_music RPG::Music
+@airship_music RPG::Music
+@gameover_music RPG::Music
+ Note the division. 'vehicle_start' and 'battle_start' are backups for when leaving the respective state.
+@rtmusic_current RPG::Music
+@rtmusic_memorized RPG::Music
+@rtmusic_vehicle_start RPG::Music
+@rtmusic_battle_start RPG::Music
+
+.rpg_savesystem_sound
+@cursor_se RPG::Sound
+@decision_se RPG::Sound
+@cancel_se RPG::Sound
+@buzzer_se RPG::Sound
+@battle_se RPG::Sound
+@escape_se RPG::Sound
+@enemy_attack_se RPG::Sound
+@enemy_hurt_se RPG::Sound
+@actor_hurt_se RPG::Sound
+@dodge_se RPG::Sound
+@enemy_death_se RPG::Sound
+@item_se RPG::Sound
+
+.rpg_savesystem_transition
+ They sure did put a lot of attention into this behavior, huh.
+@transition_in transition_type_or_def
+@transition_out transition_type_or_def
+@battle_start_fadein transition_type_or_def
+@battle_start_fadeout transition_type_or_def
+@battle_end_fadein transition_type_or_def
+@battle_end_fadeout transition_type_or_def
 
 : RPG::Interpreter
  Regarding this routine, {A=0=1|#A} makes an A of 0 show as 1,
@@ -88,7 +151,7 @@ C name Class.RPG::Interpreter @stack$length | {@{A=0=1|#A}|1|empty|[lang-Common-
 @waiting_for_sleep int
 @waiting_for_sleep_alt int
 @keyii_wait boolean
- COMM W/ EASYRPG!!
+ COMM W/ EASYRPG!! (apparently they're not quite sure either about this)
 @keyii_variable var_id
 @keyii_timed boolean
 @keyii_time_variable var_id
@@ -152,27 +215,27 @@ C name Class.RPG::SavePicture @name @spritesheet_cols_112 @spritesheet_rows_112 
 .rpg_savepicture_state_current
 @x float
 @y float
-@magnify float
+@magnify float= 100.0
 @transparency boolean
 @transparency_top float
 @transparency_bottom float
-@r float
-@g float
-@b float
-@s float
+@r float= 100.0
+@g float= 100.0
+@b float= 100.0
+@s float= 100.0
 @fx int
 @fxstrength float
 
 .rpg_savepicture_state_target
 @target_x float
 @target_y float
-@target_magnify float
-@target_transp_top float
-@target_transp_bottom float
-@target_r int
-@target_g int
-@target_b int
-@target_s int
+@target_magnify int= 100
+@target_transp_top int
+@target_transp_bottom int
+@target_r int= 100
+@target_g int= 100
+@target_b int= 100
+@target_s int= 100
 @target_fxstrength int
 
 : RPG::Save

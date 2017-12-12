@@ -25,6 +25,8 @@ short-term planning subsection:
    I'm getting this release out to that I can finish save-edit for v0.9
     and then do whatever for v1.0 (or nothing at all)
   )
++ ask easyrpg about what is up with SaveSystem system_box_tiling
++ send back SavePicture default value fixes, they probably need this
 + 2k/2k3 save-edit (thank you, Ghabry)
   <IMMEDIATELY BEGIN INFORMAL RELEASE-TESTING>
 + v0.9
