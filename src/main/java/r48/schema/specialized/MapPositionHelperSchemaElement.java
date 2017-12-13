@@ -14,6 +14,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.PathSyntax;
+import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.schema.SchemaElement;
@@ -42,10 +43,12 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
         };
         for (int i = 0; i < 3; i++)
             if (abc[i] == null)
-                return new UILabel("A component is missing.", FontSizes.schemaFieldTextHeight);
+                return new UILabel(TXDB.get("A component is missing."), FontSizes.schemaFieldTextHeight);
         String mapId = AppMain.system.mapReferentToId(abc[0]);
         if (mapId == null)
-            return new UILabel("No such map exists.", FontSizes.schemaFieldTextHeight);
+            return new UILabel(TXDB.get("Can't translate ID to map."), FontSizes.schemaFieldTextHeight);
+        if (AppMain.objectDB.getObject(mapId, null) == null)
+            return new UILabel(TXDB.get("No such map exists."), FontSizes.schemaFieldTextHeight);
         final long x = abc[1].fixnumVal;
         final long y = abc[2].fixnumVal;
         final UIMapView umv = new UIMapView(mapId, 320, FontSizes.scaleGuess(192));

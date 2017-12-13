@@ -95,6 +95,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
                     new TileMapViewDrawLayer(rt, 2, tileRenderer),
                     new EventMapViewDrawLayer(0, events, eventRenderer, tileRenderer.getTileSize()),
                     new EventMapViewDrawLayer(1, events, eventRenderer, tileRenderer.getTileSize()),
+                    // selection
                     new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, tileRenderer.getTileSize()),
             };
         }

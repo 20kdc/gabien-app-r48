@@ -64,6 +64,8 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         // For now I'm assuming a glitch in R.Q.U for lack of any better ideas.
         // (Also the fact that O.S. "258: Memory" doesn't show up right compared to in-game. Odds are against us.)
         // <NOTE : THE ABOVE APPLIES TO A TRADITIONAL LAYER SETUP, RXP doesn't use that anymore due to AlwaysOnTop
+        // NOTE: Check map 200 (green pg dock) 53, 44 in OS - This has been witnessed in-game,
+        //  so it's an absolute definite that a non-AOT event outranks Tile Layer 2, at least in MKXP.
         return (event.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@always_on_top").type == 'T') ? 1 : 0;
     }
 
