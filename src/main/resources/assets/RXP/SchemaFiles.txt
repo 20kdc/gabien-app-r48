@@ -362,9 +362,9 @@ C name Class.RPG::Tileset @id @name | Tileset #A: #B
 @autotile_names array 7 f_autotile_name
 @panorama_name f_pano_name
 @panorama_hue hue
-+tableTSF @passages . . 8 1 1 blockDown blockLeft blockRight blockUp UNK. UNK. submerge 'counter'
-+tableTS @priorities . . 8 1 1
-+tableTS @terrain_tags . . 8 1 1
++tableSTAF RXP/TSTables.txt @passages . . 1632 1 1 blockDown blockLeft blockRight blockUp UNK. UNK. submerge 'counter'
++tableSTA RXP/TSTables.txt @priorities . . 1632 1 1
++tableSTA RXP/TSTables.txt @terrain_tags . . 1632 1 1
 @fog_name f_fog_name
 @fog_zoom int
 @fog_sx int

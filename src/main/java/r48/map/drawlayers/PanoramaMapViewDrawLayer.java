@@ -22,6 +22,7 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
     private final IImage im;
     private boolean loopX, loopY;
     private int autoLoopX, autoLoopY, mapTilesW, mapTilesH, scrW, scrH, panoScale;
+    private int parallaxRatioA, parallaxRatioB;
 
     public PanoramaMapViewDrawLayer(IImage pano, boolean lx, boolean ly, int alx, int aly, int mtx, int mty, int scw, int sch, int pScale) {
         im = pano;
@@ -34,6 +35,23 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
         scrW = scw;
         scrH = sch;
         panoScale = pScale;
+        parallaxRatioA = 2;
+        parallaxRatioB = 1;
+    }
+
+    public PanoramaMapViewDrawLayer(IImage pano, boolean lx, boolean ly, int alx, int aly, int mtx, int mty, int scw, int sch, int pScale, int pra, int prb) {
+        im = pano;
+        loopX = lx;
+        loopY = ly;
+        autoLoopX = alx;
+        autoLoopY = aly;
+        mapTilesW = mtx;
+        mapTilesH = mty;
+        scrW = scw;
+        scrH = sch;
+        panoScale = pScale;
+        parallaxRatioA = pra;
+        parallaxRatioB = prb;
     }
 
     @Override
@@ -46,6 +64,7 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
         if (im != null) {
             int effectiveImWidth = im.getWidth() * panoScale;
             int effectiveImHeight = im.getHeight() * panoScale;
+
             // Need to tile the area with the image.
             // I give up, this is what I've got now.
             // It works better this way than the other way under some cases.
@@ -70,7 +89,7 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
             // In practice that means I probably found the right formula and thus I don't need special cases
             // As a good test for *looping*, unsure, but 110 of the 85 additionals...
             if (loopX) {
-                eCamX -= ((cxc - centreX) / 2) + ((int) (autoLoopX * 4 * GaBIEn.getTime()));
+                eCamX -= (((cxc - centreX) * parallaxRatioB) / parallaxRatioA) + ((int) (autoLoopX * 4 * GaBIEn.getTime()));
             } else {
                 if (scrW != -1) {
                     // Bind to the centre of the map, get the 'extra'
@@ -90,7 +109,7 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
                 }
             }
             if (loopY) {
-                eCamY -= ((cyc - centreY) / 2) + ((int) (autoLoopY * 4 * GaBIEn.getTime()));
+                eCamY -= (((cyc - centreY) * parallaxRatioB) / parallaxRatioA) + ((int) (autoLoopY * 4 * GaBIEn.getTime()));
             } else {
                 if (scrH != -1) {
                     int mapH = eTileSize * mapTilesH;
@@ -109,10 +128,10 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
                 }
             }
 
-            int camOTX = UIElement.sensibleCellDiv(eCamX, im.getWidth());
-            int camOTY = UIElement.sensibleCellDiv(eCamY, im.getHeight());
-            int camOTeX = UIElement.sensibleCellDiv(eCamX + igd.getWidth(), im.getWidth()) + 1;
-            int camOTeY = UIElement.sensibleCellDiv(eCamY + igd.getHeight(), im.getHeight()) + 1;
+            int camOTX = UIElement.sensibleCellDiv(eCamX, effectiveImWidth);
+            int camOTY = UIElement.sensibleCellDiv(eCamY, effectiveImHeight);
+            int camOTeX = UIElement.sensibleCellDiv(eCamX + igd.getWidth(), effectiveImWidth) + 1;
+            int camOTeY = UIElement.sensibleCellDiv(eCamY + igd.getHeight(), effectiveImHeight) + 1;
 
             // If *nothing's* looping, it's probably 'bound to the map' (YumeNikki Nexus, OneShot Maize).
             // Failing anything else this helps avoid confusion: "where was the actual map again?"

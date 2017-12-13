@@ -88,7 +88,8 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
                 panoImg = imageLoader.getImage(pano, true);
             RubyIO events = map.getInstVarBySymbol("@events");
             layers = new IMapViewDrawLayer[] {
-                    new PanoramaMapViewDrawLayer(panoImg, false, false, 0, 0, rt.width, rt.height, -1, -1, 2),
+                    // works for green docks
+                    new PanoramaMapViewDrawLayer(panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
                     new TileMapViewDrawLayer(rt, 0, tileRenderer),
                     new TileMapViewDrawLayer(rt, 1, tileRenderer),
                     new TileMapViewDrawLayer(rt, 2, tileRenderer),
