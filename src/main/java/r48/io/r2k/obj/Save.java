@@ -64,12 +64,7 @@ public class Save extends R2kObject {
             return new SaveActor();
         }
     });
-    public BlobR2kStruct partyItems = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
-            return new byte[0];
-        }
-    });
+    public SaveParty partyItems = new SaveParty();
     public SparseArrayAR2kStruct<SaveTarget> targets = new SparseArrayAR2kStruct<SaveTarget>(new ISupplier<SaveTarget>() {
         @Override
         public SaveTarget get() {

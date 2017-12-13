@@ -133,12 +133,12 @@ e rpg_savesystem_screen 5 save
 
 .rpg_savesystem_transition
  They sure did put a lot of attention into this behavior, huh.
-@transition_in transition_type_or_def
-@transition_out transition_type_or_def
-@battle_start_fadein transition_type_or_def
-@battle_start_fadeout transition_type_or_def
-@battle_end_fadein transition_type_or_def
-@battle_end_fadeout transition_type_or_def
+@transition_in transition_type
+@transition_out transition_type
+@battle_start_fadein transition_type
+@battle_start_fadeout transition_type
+@battle_end_fadein transition_type
+@battle_end_fadeout transition_type
 
 : RPG::Interpreter
  Regarding this routine, {A=0=1|#A} makes an A of 0 show as 1,
@@ -152,6 +152,7 @@ C name Class.RPG::Interpreter @stack$length | {@{A=0=1|#A}|1|empty|[lang-Common-
 @waiting_for_sleep_alt int
 @keyii_wait boolean
  COMM W/ EASYRPG!! (apparently they're not quite sure either about this)
+ Just about all of these "but how could this occur when saving" cases are related to background common events.
 @keyii_variable var_id
 @keyii_timed boolean
 @keyii_time_variable var_id
@@ -238,14 +239,42 @@ C name Class.RPG::SavePicture @name @spritesheet_cols_112 @spritesheet_rows_112 
 @target_s int= 100
 @target_fxstrength int
 
+: RPG::SaveParty
+@party subwindow array 0 actor_id
+@inventory subwindow array 0 RPG::SaveItem
+@party_gold int
+ NOTE: Suspicious lack of intra-second info.
+       Could be framecount based
+ NOTE2: YNEG examination suggests these are always incrementing.
+        Despite being off. Hm.
+@timer1_seconds int
+@timer1_on boolean
+@timer1_visible boolean
+@timer1_on_battle boolean
+@timer2_seconds int
+@timer2_on boolean
+@timer2_visible boolean
+@timer2_on_battle boolean
+@stats_battles int
+@stats_defeats int
+@stats_escapes int
+@stats_victories int
+@stats_turns int
+@stats_steps int
+
+ Synthesized from whole nylon by SaveParty
+: RPG::SaveItem
+@id item_id
+@count int= 1
+@usage int
+
 : RPG::Save
  Important
 @title subwindow RPG::SaveTitle
- the villain of this story
-@system subwindow: WARNING:\_INCOMPLETE RPG::SaveSystem
+@system subwindow RPG::SaveSystem
 @actors subwindow hash actor_id subwindow RPG::SaveActor
+@party subwindow RPG::SaveParty
  the villain[s] of this story
-@party OPAQUE
 @party_pos OPAQUE
  Unimportant Global
 @boat_pos OPAQUE
