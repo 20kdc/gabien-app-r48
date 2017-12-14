@@ -96,7 +96,7 @@ public abstract class SaveCharacter extends R2kObject {
                 new Index(0x52, flashGreen, "@flash_green"),
                 new Index(0x53, flashBlue, "@flash_blue"),
                 new Index(0x54, flashCurrentLevel, "@flash_position"),
-                new Index(0x55, flashTimeLeft, "@flash_time_left"),
+                new Index(0x55, flashTimeLeft, "@flash_frames_left"),
                 // !!!
         };
     }

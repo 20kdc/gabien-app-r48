@@ -315,7 +315,7 @@ e rpg_character_transparency 0 off 3 on
 @flash_green int= 100
 @flash_blue int= 100
 @flash_position float
-@flash_time_left int
+@flash_frames_left int
 
 : RPG::SaveMapEvent
 C name Class.RPG::SaveMapEvent @character_name @character_index @x @y | #A:#B#@@#C,#D
@@ -378,13 +378,47 @@ C name Class.RPG::SavePartyLocation @character_name @character_index @map @x @y 
 @parallax_autoloop_y boolean
 @parallax_sy int
 
+: RPG::SaveScreen
+@tint_r float= 100.0
+@tint_g float= 100.0
+@tint_b float= 100.0
+@tint_s float= 100.0
+@tint_end_r int= 100
+@tint_end_g int= 100
+@tint_end_b int= 100
+@tint_end_s int= 100
+@tint_frames_left int= 0
+
+@flash_continuous boolean
+@flash_r int
+@flash_g int
+@flash_b int
+@flash_position float
+@flash_frames_left int
+
+@shake_strength int
+@shake_speed int
+@shake_x int
+@shake_y int
+@shake_continuous boolean
+
+@pan_x int
+@pan_y int
+ TODO WORK OUT BATTLEANIM!!!
+@battleanim_id int
+@battleanim_target int
+@battleanim_frame int
+@unknown_2e int
+@battleanim_global boolean
+@weather weather_control_type
+@weather_strength weather_control_strength
+
 : RPG::Save
  Important
 @title subwindow RPG::SaveTitle
 @system subwindow RPG::SaveSystem
 @actors subwindow hash actor_id subwindow RPG::SaveActor
 @party subwindow RPG::SaveParty
- the villain[s] of this story
 @party_pos subwindow RPG::SavePartyLocation
  Unimportant Global
 @boat_pos subwindow RPG::SaveVehicleLocation
@@ -393,9 +427,11 @@ C name Class.RPG::SavePartyLocation @character_name @character_index @map @x @y 
 @targets subwindow array 0 RPG::SaveTarget
  Unimportant Local
 @map_info subwindow RPG::SaveMapInfo
-@screen OPAQUE
+@screen subwindow RPG::SaveScreen
 @pictures subwindow hash int subwindow RPG::SavePicture
-@panorama OPAQUE
+
+ pretend this doesn't exist because it supposedly holds no info
+ @panorama OPAQUE
 
 @main_interpreter subwindow RPG::Interpreter
 @common_events subwindow hash commonevent_id RPG::SaveCommonEvent

@@ -22,12 +22,7 @@ import r48.io.r2k.obj.lsd.*;
 public class Save extends R2kObject {
     public SaveTitle title = new SaveTitle();
     public SaveSystem system = new SaveSystem();
-    public BlobR2kStruct screen = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
-            return new byte[0];
-        }
-    });
+    public SaveScreen screen = new SaveScreen();
     public SparseArrayHR2kStruct<SavePicture> pictures = new SparseArrayHR2kStruct<SavePicture>(new ISupplier<SavePicture>() {
         @Override
         public SavePicture get() {

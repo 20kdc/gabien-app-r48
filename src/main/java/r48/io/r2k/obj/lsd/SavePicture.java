@@ -21,9 +21,6 @@ public class SavePicture extends R2kObject {
     public DoubleR2kStruct x = new DoubleR2kStruct();
     public DoubleR2kStruct y = new DoubleR2kStruct();
     public BooleanR2kStruct fixed = new BooleanR2kStruct(false);
-    // NOTE: At time of writing, these are NOT liblcf's defaults.
-    // This is because those generate visual glitchiness on redefaulting testing w/ Yume Nikki.
-    // I'll tell them in the morning.
     public DoubleR2kStruct magnify = new DoubleR2kStruct(100);
     public DoubleR2kStruct topTransparency = new DoubleR2kStruct();
     public BooleanR2kStruct transparency = new BooleanR2kStruct(false);
