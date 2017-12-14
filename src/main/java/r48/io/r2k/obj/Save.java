@@ -34,30 +34,10 @@ public class Save extends R2kObject {
             return new SavePicture();
         }
     });
-    public BlobR2kStruct partyPos = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
-            return new byte[0];
-        }
-    });
-    public BlobR2kStruct boatPos = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
-            return new byte[0];
-        }
-    });
-    public BlobR2kStruct shipPos = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
-            return new byte[0];
-        }
-    });
-    public BlobR2kStruct airshipPos = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
-            return new byte[0];
-        }
-    });
+    public SavePartyLocation partyPos = new SavePartyLocation();
+    public SaveVehicleLocation boatPos = new SaveVehicleLocation();
+    public SaveVehicleLocation shipPos = new SaveVehicleLocation();
+    public SaveVehicleLocation airshipPos = new SaveVehicleLocation();
     public SparseArrayHR2kStruct<SaveActor> actors = new SparseArrayHR2kStruct<SaveActor>(new ISupplier<SaveActor>() {
         @Override
         public SaveActor get() {
@@ -71,12 +51,7 @@ public class Save extends R2kObject {
             return new SaveTarget();
         }
     });
-    public BlobR2kStruct mapInfo = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
-            return new byte[0];
-        }
-    });
+    public SaveMapInfo mapInfo = new SaveMapInfo();
     public BlobR2kStruct panorama = new BlobR2kStruct(new ISupplier<byte[]>() {
         @Override
         public byte[] get() {

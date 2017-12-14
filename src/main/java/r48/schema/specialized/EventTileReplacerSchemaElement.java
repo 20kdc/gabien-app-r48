@@ -9,6 +9,7 @@ package r48.schema.specialized;
 
 import gabien.ui.UIElement;
 import r48.RubyIO;
+import r48.dbs.PathSyntax;
 import r48.dbs.TSDB;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -21,22 +22,25 @@ import r48.ui.UITileGrid;
 public class EventTileReplacerSchemaElement extends SchemaElement {
     public final TSDB displayMap;
     public final int layer;
+    public final String charName, charIdx;
 
-    public EventTileReplacerSchemaElement(TSDB dmap, int l) {
+    public EventTileReplacerSchemaElement(TSDB dmap, int l, String idx, String n) {
         displayMap = dmap;
         layer = l;
+        charName = n;
+        charIdx = idx;
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
         final UITileGrid r = new UITileGrid(launcher.getContextRenderer(), layer, 0, displayMap.mapping.length, 0, displayMap.mapping);
-        if (target.getInstVarBySymbol("@character_name").strVal.length == 0)
-            r.setSelected((int) target.getInstVarBySymbol("@character_index").fixnumVal);
+        if (PathSyntax.parse(target, charName).strVal.length == 0)
+            r.setSelected((int) PathSyntax.parse(target, charIdx).fixnumVal);
         r.onSelectionChange = new Runnable() {
             @Override
             public void run() {
-                target.getInstVarBySymbol("@character_name").strVal = new byte[0];
-                target.getInstVarBySymbol("@character_index").fixnumVal = r.getSelected();
+                PathSyntax.parse(target, charName).strVal = new byte[0];
+                PathSyntax.parse(target, charIdx).fixnumVal = r.getSelected();
                 path.changeOccurred(false);
             }
         };

@@ -13,10 +13,7 @@ import r48.RubyIO;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created on 30/05/17.
@@ -178,5 +175,24 @@ public class R2kUtil {
                 return data;
             }
         };
+    }
+
+    public static Index[] mergeIndices(Index[] a, Index[] b) {
+        LinkedList<Index> lli = new LinkedList<Index>();
+        for (int i = 0; i < a.length; i++)
+            lli.add(a[i]);
+        for (int i = 0; i < b.length; i++)
+            lli.add(b[i]);
+        Collections.sort(lli, new Comparator<Index>() {
+            @Override
+            public int compare(Index index, Index t1) {
+                if (index.index < t1.index)
+                    return -1;
+                if (index.index > t1.index)
+                    return 1;
+                return 0;
+            }
+        });
+        return lli.toArray(new Index[0]);
     }
 }

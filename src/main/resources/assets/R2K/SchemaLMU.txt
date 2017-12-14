@@ -49,7 +49,7 @@ e var_compare_op_2k3 0 == 1 >= 2 <= 3 > 4 < 5 !=
 .eventpage_graphics
 @character_name f_charset_name
 @character_index int
-+halfsplit eventTileHelper 1 R2K/TS144.txt spriteSelector @character_index @character_name CharSet/
++halfsplit eventTileHelper @character_index @character_name 1 R2K/TS144.txt spriteSelector @character_index @character_name CharSet/
 @character_direction sprite_direction
 @character_pattern int= 1
 @character_blend_mode boolean

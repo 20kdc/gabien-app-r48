@@ -460,9 +460,11 @@ public class SDB {
                             return new MapPositionHelperSchemaElement(a, b, c);
                         }
                         if (text.equals("eventTileHelper")) {
+                            String c = args[point++];
+                            String d = args[point++];
                             String a = args[point++];
                             String b = args[point++];
-                            return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(b), Integer.parseInt(a)), getFunctionToReturn(TXDB.get("Select Tile Graphic...")));
+                            return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(b), Integer.parseInt(a), c, d), getFunctionToReturn(TXDB.get("Select Tile Graphic...")));
                         }
                         // -- If all else fails, it's an ID to be looked up. --
                         return getSDBEntry(text);

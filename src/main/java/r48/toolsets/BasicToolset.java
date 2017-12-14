@@ -18,9 +18,7 @@ import r48.dbs.TXDB;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.ToneImageEffect;
 import r48.io.IMIUtils;
-import r48.io.IObjectBackend;
 import r48.io.PathUtils;
-import r48.map.systems.IRMMapSystem;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIFontSizeConfigurator;
@@ -287,6 +285,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
+                                // Test Add/Sub Blending...
                                 UIPanel panel = new UIPanel();
                                 panel.setBounds(new Rect(0, 0, 512, 512));
                                 final IImage totem = GaBIEn.getImage("tonetotm.png");
@@ -294,7 +293,7 @@ public class BasicToolset implements IToolset {
 
                                 finalComposite.clearRect(255, 255, 255, 0, 0, 256, 512);
                                 finalComposite.clearRect(0, 0, 0, 256, 0, 256, 512);
-                                // Hardware (if possibel) Sub-White Add-Black
+                                // Hardware (if possible) Sub-White Add-Black
                                 finalComposite.blendRotatedScaledImage(0, 0, 256, 256, 0, 0, 256, 256, 0, totem, true);
                                 finalComposite.blendRotatedScaledImage(0, 0, 256, 256, 256, 0, 256, 256, 0, totem, false);
 

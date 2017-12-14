@@ -268,6 +268,116 @@ C name Class.RPG::SavePicture @name @spritesheet_cols_112 @spritesheet_rows_112 
 @count int= 1
 @usage int
 
+ Common between the various eventlikes
+
+ note: check if this is actually a bitfield
+e rpg_character_transparency 0 off 3 on
+.rpg_character_graphics
+@character_name f_charset_name
+@character_index int
++halfsplit eventTileHelper @character_index @character_name 1 R2K/TS144.txt spriteSelector @character_index @character_name CharSet/
+@character_direction sprite_direction
+@character_pattern int= 1
++internal_EPGD
+
+.rpg_character
+@active booleanDefTrue
+@map map_id
+@x int
+@y int
++mapPositionHelper @map @x @y
++subwindow: Graphics rpg_character_graphics
+@dir sprite_direction
+@transparency rpg_character_transparency
+@remaining_step int
+@move_frequency int
+@layer eventpage_layer
+@block_other_events boolean
+@anim_type eventpage_animtype
+@lock_dir boolean
+@move_speed int= 4
+@move_route RPG::MoveRoute
+@move_route_overwrite boolean
+@move_route_position int
+@move_route_has_looped boolean
+@anim_paused int
+@through boolean
+@wait_time_counter int
+@anim_count int
+@wait_time int
+@jumping boolean
+@begin_jump_x int
+@begin_jump_y int
+@unknown_47 int
+@moved_on_frame int
+@flying boolean
+@flash_red int= 100
+@flash_green int= 100
+@flash_blue int= 100
+@flash_position float
+@flash_time_left int
+
+: RPG::SaveMapEvent
+C name Class.RPG::SaveMapEvent @character_name @character_index @x @y | #A:#B#@@#C,#D
++rpg_character
+@running boolean
+@original_moveroute_index int
+@pending boolean
+@interpreter subwindow RPG::Interpreter
+ 2f is just plain ignored for now
+
+e rpg_save_vehicletype_opt 0 none 1 boat 2 ship 3 airShip
+e rpg_save_vehicletype 1 boat 2 ship 3 airShip
+
+: RPG::SaveVehicleLocation
+C name Class.RPG::SaveVehicleLocation @character_name @character_index @map @x @y | #A:#B#@@#C #D,#E
++rpg_character
+@vehicle_type rpg_save_vehicletype
+@original_moveroute_index int
+@remaining_ascent int
+@remaining_descent int
+@sprite2_name f_charset_name
+@sprite2_index int
++halfsplit eventTileHelper @sprite2_index @sprite2_name 1 R2K/TS144.txt spriteSelector @sprite2_index @sprite2_name CharSet/
+
+: RPG::SavePartyLocation
+C name Class.RPG::SavePartyLocation @character_name @character_index @map @x @y | #A:#B#@@#C #D,#E
++rpg_character
+@sprite_transparent boolean
+ 2f is just plain ignored for now
+@vehicle_boarding boolean
+@vehicle_aboard boolean
+@vehicle_type rpg_save_vehicletype_opt
+@vehicle_leaving boolean
+@vehicle_movespeed_backup int= 4
+@menu_activation_waiting boolean
+@pan_state int= 1
+@pan_x int= 2304
+@pan_y int= 1792
+@pan_end_x int= 2304
+@pan_end_y int= 1792
+@pan_speed int= 16
+@encounter_steps int
+@encounter_activation_waiting boolean
+@map_save_count int
+@db_save_count int
+
+: RPG::SaveMapInfo
+@x int
+@y int
+@encounter_rate int
+@tileset_id tileset_id
+@events subwindow hash int subwindow RPG::SaveMapEvent
+@lower_tile_remap table . . . 144 1 1
+@upper_tile_remap table . . . 144 1 1
+@parallax_name string
+@parallax_loop_x boolean
+@parallax_loop_y boolean
+@parallax_autoloop_x boolean
+@parallax_sx int
+@parallax_autoloop_y boolean
+@parallax_sy int
+
 : RPG::Save
  Important
 @title subwindow RPG::SaveTitle
@@ -275,14 +385,14 @@ C name Class.RPG::SavePicture @name @spritesheet_cols_112 @spritesheet_rows_112 
 @actors subwindow hash actor_id subwindow RPG::SaveActor
 @party subwindow RPG::SaveParty
  the villain[s] of this story
-@party_pos OPAQUE
+@party_pos subwindow RPG::SavePartyLocation
  Unimportant Global
-@boat_pos OPAQUE
-@ship_pos OPAQUE
-@airship_pos OPAQUE
+@boat_pos subwindow RPG::SaveVehicleLocation
+@ship_pos subwindow RPG::SaveVehicleLocation
+@airship_pos subwindow RPG::SaveVehicleLocation
 @targets subwindow array 0 RPG::SaveTarget
  Unimportant Local
-@map_info OPAQUE
+@map_info subwindow RPG::SaveMapInfo
 @screen OPAQUE
 @pictures subwindow hash int subwindow RPG::SavePicture
 @panorama OPAQUE

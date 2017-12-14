@@ -47,6 +47,7 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
         String mapId = AppMain.system.mapReferentToId(abc[0]);
         if (mapId == null)
             return new UILabel(TXDB.get("Can't translate ID to map."), FontSizes.schemaFieldTextHeight);
+        // The UIMapView constructor will automatically create missing maps. We don't want this!
         if (AppMain.objectDB.getObject(mapId, null) == null)
             return new UILabel(TXDB.get("No such map exists."), FontSizes.schemaFieldTextHeight);
         final long x = abc[1].fixnumVal;

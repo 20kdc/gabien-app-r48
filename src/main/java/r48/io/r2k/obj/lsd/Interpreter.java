@@ -13,6 +13,9 @@ import r48.io.r2k.Index;
 import r48.io.r2k.chunks.*;
 import r48.io.r2k.struct.EventCommand;
 
+/**
+ * aka 'SaveEventData'
+ */
 public class Interpreter extends R2kObject {
     public SparseArrayAR2kStruct<InterpreterStackLevel> commands = new SparseArrayAR2kStruct<InterpreterStackLevel>(new ISupplier<InterpreterStackLevel>() {
         @Override
@@ -40,6 +43,7 @@ public class Interpreter extends R2kObject {
     public BooleanR2kStruct kiiFilter24  = new BooleanR2kStruct(false);
     public BooleanR2kStruct kiiFilter25  = new BooleanR2kStruct(false);
     public BooleanR2kStruct kiiFilter26  = new BooleanR2kStruct(false);
+
     @Override
     public Index[] getIndices() {
         return new Index[] {
