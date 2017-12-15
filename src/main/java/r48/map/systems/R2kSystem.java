@@ -24,6 +24,7 @@ import r48.map.StuffRenderer;
 import r48.map.drawlayers.*;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.R2kEventGraphicRenderer;
+import r48.map.events.TraditionalEventAccess;
 import r48.map.imaging.*;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
@@ -249,7 +250,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
                     RubyIO map = AppMain.objectDB.getObject(objn);
                     return MapViewState.fromRT(rendererFromMap(mapId, map, root), map, "@data", true);
                 }
-            }, true, false);
+            }, true, null);
         }
         final RubyIO root = AppMain.objectDB.getObject("RPG_RT.lmt");
         final RubyIO mapInfos = root.getInstVarBySymbol("@map_infos");
@@ -265,12 +266,12 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
         if (!allowCreate)
             if (AppMain.objectDB.getObject(objn, null) == null)
                 return null;
+        final RubyIO map = AppMain.objectDB.getObject(objn);
         return new MapViewDetails(objn, "RPG::Map", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {
-                RubyIO map = AppMain.objectDB.getObject(objn);
                 return MapViewState.fromRT(rendererFromMap(v, map, null), map, "@data", false);
             }
-        }, false, true);
+        }, false, new TraditionalEventAccess(map, 1, "RPG::Map"));
     }
 }

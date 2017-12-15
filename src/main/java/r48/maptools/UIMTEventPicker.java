@@ -20,12 +20,10 @@ import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
-import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created on 12/29/16.
@@ -58,7 +56,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public int wantOverlay(boolean minimap) {
         // use this time to cache the essentials, this should vastly speed up drawing
         eventCache.clear();
-        for (RubyIO evI : mapView.map.object.getInstVarBySymbol("@events").hashVal.values())
+        for (RubyIO evI : mapView.map.eventAccess.getEventKeys())
             eventCache.put((evI.getInstVarBySymbol("@x").fixnumVal) + ";" + (evI.getInstVarBySymbol("@y").fixnumVal), evI);
         return 1;
     }
@@ -77,9 +75,8 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     @Override
     public void confirmAt(final int x, final int y, final int layer) {
         svl.panels.clear();
-        for (Map.Entry<RubyIO, RubyIO> evE : mapView.map.object.getInstVarBySymbol("@events").hashVal.entrySet()) {
-            final RubyIO evK = evE.getKey();
-            final RubyIO evI = evE.getValue();
+        for (final RubyIO evK : mapView.map.eventAccess.getEventKeys()) {
+            final RubyIO evI = mapView.map.eventAccess.getEvent(evK);
             if (evI.getInstVarBySymbol("@x").fixnumVal == x)
                 if (evI.getInstVarBySymbol("@y").fixnumVal == y) {
                     String nam = "event" + evK.toString();
@@ -88,7 +85,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                     UIElement button = new UITextButton(FontSizes.eventPickerEntryTextHeight, nam, new Runnable() {
                         @Override
                         public void run() {
-                            showEvent(evK.fixnumVal, mapView, evI);
+                            showEvent(evK, mapView, evI);
                         }
                     });
                     button = new UIAppendButton(TXDB.get("Move"), button, new Runnable() {
@@ -100,10 +97,8 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                     button = new UIAppendButton(TXDB.get("Clone"), button, new Runnable() {
                         @Override
                         public void run() {
-                            RubyIO evtHash = mapView.map.object.getInstVarBySymbol("@events");
-                            int unusedIndex = getFreeIndex(evtHash);
                             RubyIO newEvent = new RubyIO().setDeepClone(evI);
-                            evtHash.hashVal.put(new RubyIO().setFX(unusedIndex), newEvent);
+                            mapView.map.eventAccess.addEvent(newEvent);
                             // This'll fix the potential inconsistencies
                             mapView.passModificationNotification();
                             mapToolContext.accept(new UIMTEventMover(newEvent, mapToolContext));
@@ -112,7 +107,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                     button = new UIAppendButton(TXDB.get("Del."), button, new Runnable() {
                         @Override
                         public void run() {
-                            mapView.map.object.getInstVarBySymbol("@events").hashVal.remove(evK);
+                            mapView.map.eventAccess.delEvent(evK);
                             mapView.passModificationNotification();
                             confirmAt(x, y, layer);
                         }
@@ -123,33 +118,24 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         svl.panels.add(new UITextButton(FontSizes.eventPickerEntryTextHeight, TXDB.get("+ Add Event"), new Runnable() {
             @Override
             public void run() {
-                RubyIO evtHash = mapView.map.object.getInstVarBySymbol("@events");
-                int unusedIndex = getFreeIndex(evtHash);
-
-                RubyIO k = new RubyIO().setFX(unusedIndex);
-                RubyIO newEvent = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry(mapView.mapTable.renderer.eventSchema), k);
-                RubyIO evName = newEvent.getInstVarBySymbol("@name");
+                RubyIO k = mapView.map.eventAccess.addEvent(null);
+                RubyIO v = mapView.map.eventAccess.getEvent(k);
+                if (v == null)
+                    throw new RuntimeException("IEventAccess implementation not sane.");
+                RubyIO evName = v.getInstVarBySymbol("@name");
                 if (evName != null) {
-                    String n = Integer.toString(unusedIndex);
+                    String n = Integer.toString((int) k.fixnumVal);
                     while (n.length() < 4)
                         n = "0" + n;
                     evName.encString("EV" + n);
                 }
-                newEvent.getInstVarBySymbol("@x").fixnumVal = x;
-                newEvent.getInstVarBySymbol("@y").fixnumVal = y;
-                evtHash.hashVal.put(k, newEvent);
+                v.getInstVarBySymbol("@x").fixnumVal = x;
+                v.getInstVarBySymbol("@y").fixnumVal = y;
                 mapView.passModificationNotification();
-                showEvent(unusedIndex, mapView, newEvent);
+                showEvent(k, mapView, v);
             }
         }));
         svl.runLayout();
-    }
-
-    private int getFreeIndex(RubyIO evtHash) {
-        int unusedIndex = mapView.mapTable.renderer.eventRenderer.eventIdBase();
-        while (evtHash.getHashVal(new RubyIO().setFX(unusedIndex)) != null)
-            unusedIndex++;
-        return unusedIndex;
     }
 
     @Override
@@ -162,11 +148,11 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         return FormatSyntax.formatExtended(TXDB.get("Ev.Pick #[#A total#]"), new RubyIO().setFX(eventCache.size()));
     }
 
-    public static void showEvent(long fixnumVal, UIMapView map, RubyIO event) {
-        AppMain.launchNonRootSchema(map.map.object, map.map.objectSchema, new RubyIO().setFX(fixnumVal), event, map.mapTable.renderer.eventSchema, "E" + fixnumVal, map);
+    public static void showEvent(RubyIO key, UIMapView map, RubyIO event) {
+        AppMain.launchNonRootSchema(map.map.object, map.map.objectSchema, key, event, map.mapTable.renderer.eventSchema, "E" + key, map);
     }
 
-    public static void showEventDivorced(long fixnumVal, RubyIO map, String mapSchema, RubyIO event) {
-        AppMain.launchNonRootSchema(map, mapSchema, new RubyIO().setFX(fixnumVal), event, AppMain.stuffRendererIndependent.eventSchema, "E" + fixnumVal, null);
+    public static void showEventDivorced(RubyIO key, RubyIO map, String mapSchema, RubyIO event) {
+        AppMain.launchNonRootSchema(map, mapSchema, key, event, AppMain.stuffRendererIndependent.eventSchema, "E" + key, null);
     }
 }

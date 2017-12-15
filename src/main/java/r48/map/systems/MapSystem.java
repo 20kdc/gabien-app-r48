@@ -14,6 +14,7 @@ import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController;
 import r48.map.StuffRenderer;
+import r48.map.events.IEventAccess;
 import r48.map.imaging.IImageLoader;
 
 /**
@@ -174,16 +175,19 @@ public abstract class MapSystem {
         public final String objectId;
         public final String objectSchema;
         public final RubyIO object;
+        // for UIMapView internals
         public final ISupplier<MapViewState> rendererRetriever;
+        // for tools (without this, event access is disabled)
+        public IEventAccess eventAccess;
         // Recommendation flags for the default ToolbarController if relevant
-        public boolean recommendReadonlyTiles, recommendEventAccess;
+        public boolean recommendReadonlyTiles;
 
-        public MapViewDetails(String o, String os, ISupplier<MapViewState> mvs, boolean readonlyTiles, boolean eventAccess) {
+        public MapViewDetails(String o, String os, ISupplier<MapViewState> mvs, boolean readonlyTiles, IEventAccess event) {
             objectId = o;
             objectSchema = os;
             object = AppMain.objectDB.getObject(o, os);
             recommendReadonlyTiles = readonlyTiles;
-            recommendEventAccess = eventAccess;
+            eventAccess = event;
             rendererRetriever = mvs;
         }
     }

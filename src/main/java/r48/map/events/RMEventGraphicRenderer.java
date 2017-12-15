@@ -160,9 +160,4 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
             }
         }
     }
-
-    @Override
-    public int eventIdBase() {
-        return 1;
-    }
 }

@@ -13,6 +13,7 @@ import r48.RubyIO;
 import r48.map.StuffRenderer;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.IkaEventGraphicRenderer;
+import r48.map.events.TraditionalEventAccess;
 import r48.map.imaging.CacheImageLoader;
 import r48.map.imaging.FixAndSecondaryImageLoader;
 import r48.map.imaging.GabienImageLoader;
@@ -41,14 +42,14 @@ public class IkaSystem extends MapSystem {
     @Override
     public MapViewDetails mapViewRequest(String gum, boolean allowCreate) {
         if (!allowCreate)
-            if (AppMain.objectDB.getObject("Map", null) == null)
+            if (AppMain.objectDB.getObject(gum, null) == null)
                 return null;
-        return new MapViewDetails("Map", "IkachanMap", new ISupplier<MapViewState>() {
+        final RubyIO map = AppMain.objectDB.getObject(gum);
+        return new MapViewDetails(gum, "IkachanMap", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {
-                RubyIO map = AppMain.objectDB.getObject("Map");
                 return MapViewState.fromRT(rendererGeneral(map), map, "@data", false);
             }
-        }, false, true);
+        }, false, new TraditionalEventAccess(map, 0, "RPG::Map"));
     }
 }

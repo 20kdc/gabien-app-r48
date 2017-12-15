@@ -106,9 +106,4 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
     private int scaleLocalToRemote(int i) {
         return (i * remoteTileSize) / localTileSize;
     }
-
-    @Override
-    public int eventIdBase() {
-        return 1;
-    }
 }

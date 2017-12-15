@@ -7,26 +7,23 @@
 
 package r48.map.events;
 
-import gabien.IGrDriver;
 import r48.RubyIO;
 
+import java.util.LinkedList;
+
 /**
- * For WIP/no-event handlers.
- * Created on 1/27/17.
+ * Used to abstract @events
+ * Created on December 15th 2017
  */
-public class NullEventGraphicRenderer implements IEventGraphicRenderer {
-    @Override
-    public int determineEventLayer(RubyIO event) {
-        return 0;
-    }
+public interface IEventAccess {
+    // Note that you should call the relevant modification trigger after all modifications.
+    // This should be empty for non-Map event renderers.
+    LinkedList<RubyIO> getEventKeys();
 
-    @Override
-    public RubyIO extractEventGraphic(RubyIO event) {
-        return event;
-    }
+    RubyIO getEvent(RubyIO key);
 
-    @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int ss) {
+    void delEvent(RubyIO key);
 
-    }
+    // returns the key
+    RubyIO addEvent(RubyIO eve);
 }

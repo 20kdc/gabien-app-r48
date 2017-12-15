@@ -23,6 +23,7 @@ import r48.map.drawlayers.PanoramaMapViewDrawLayer;
 import r48.map.drawlayers.TileMapViewDrawLayer;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
+import r48.map.events.TraditionalEventAccess;
 import r48.map.imaging.*;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
@@ -108,13 +109,13 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         if (!allowCreate)
             if (AppMain.objectDB.getObject(gum, null) == null)
                 return null;
+        final RubyIO map = AppMain.objectDB.getObject(gum);
         return new MapViewDetails(gum, "RPG::Map", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {
-                RubyIO map = AppMain.objectDB.getObject(gum);
                 return MapViewState.fromRT(rendererFromMap(map), map, "@data", false);
             }
-        }, false, true);
+        }, false, new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 1, "RPG::Event"));
     }
 
     @Override

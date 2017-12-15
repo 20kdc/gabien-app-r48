@@ -22,6 +22,4 @@ public interface IEventGraphicRenderer {
 
     // while this handles event graphics
     void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int sprScale);
-
-    int eventIdBase();
 }
