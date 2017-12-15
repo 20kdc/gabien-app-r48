@@ -132,4 +132,9 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     public Rect getIconForMap(int k) {
         return Art.mapIcon;
     }
+
+    @Override
+    public String translateToGUM(int k) {
+        return sNameFromInt(k);
+    }
 }

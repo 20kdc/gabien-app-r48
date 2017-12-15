@@ -13,11 +13,10 @@ import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.RubyIO;
-import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.drawlayers.PassabilityMapViewDrawLayer;
+import r48.map.systems.MapSystem;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 
@@ -36,9 +35,10 @@ public class UIMapView extends UIElement implements IWindowElement {
     private boolean camDragSwitch = false;
 
     private boolean dragging = false;
-    public final RubyIO map;
-    // replaced when the map is edited
-    public RubyTable mapTable;
+
+    public final MapSystem.MapViewDetails map;
+    public final String mapGUM;
+    public MapSystem.MapViewState mapTable;
     // Set by the layer tabs UI
     public int currentLayer;
 
@@ -50,7 +50,6 @@ public class UIMapView extends UIElement implements IWindowElement {
     // Do not set above 8 or possibly 4, can be harmful on large screens.
     private final int tuningZoomWorkingDiv = 4;
 
-    public final String mapId;
     public boolean shiftDown = false;
     public IMapViewCallbacks callbacks;
     // Responsible for starting a tool with the given tile.
@@ -67,29 +66,25 @@ public class UIMapView extends UIElement implements IWindowElement {
         public void accept(SchemaPath sp) {
             // Not an incredibly high-cost operation, thankfully,
             //  since it'll have to run on any edits.
-            mapTable = new RubyTable(map.getInstVarBySymbol("@data").userVal);
-            renderer = AppMain.system.rendererFromMap(map);
+            mapTable = map.rendererRetriever.get();
             reinitLayerVis();
             scheduler.forceNextUpdate = true;
         }
     };
     public boolean[] layerVis;
-    public StuffRenderer renderer;
 
     public UIMapView(String mapN, int i, int i1) {
         setBounds(new Rect(0, 0, i, i1));
 
-        mapId = mapN;
-        map = AppMain.objectDB.getObject(mapN, AppMain.system.mapSchema());
-        AppMain.objectDB.registerModificationHandler(map, listener);
+        map = AppMain.system.mapViewRequest(mapN);
+        mapGUM = mapN;
+        AppMain.objectDB.registerModificationHandler(map.object, listener);
         listener.accept(null);
 
         // begin!
         reinitLayerVis();
 
-        renderer = AppMain.system.rendererFromMap(map);
-        tileSize = renderer.tileRenderer.getTileSize();
-
+        tileSize = mapTable.renderer.tileRenderer.getTileSize();
         showTile(mapTable.width / 2, mapTable.height / 2);
     }
 
@@ -118,11 +113,11 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     public void reinitLayerVis() {
         if (layerVis != null)
-            if (layerVis.length == renderer.layers.length)
+            if (layerVis.length == mapTable.renderer.layers.length)
                 return;
-        layerVis = new boolean[renderer.layers.length];
+        layerVis = new boolean[mapTable.renderer.layers.length];
         for (int j = 0; j < layerVis.length; j++)
-            layerVis[j] = !(renderer.layers[j] instanceof PassabilityMapViewDrawLayer);
+            layerVis[j] = !(mapTable.renderer.layers[j] instanceof PassabilityMapViewDrawLayer);
     }
 
     @Override
@@ -138,7 +133,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         char[] visConfig = new char[layerVis.length];
         for (int i = 0; i < layerVis.length; i++)
             visConfig[i] = layerVis[i] ? 'T' : 'F';
-        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + debug + "_" + renderer.tileRenderer.getFrame() + "_" + renderer.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + callbacks + "_" + internalScalingMul + "_" + internalScalingDiv;
+        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + debug + "_" + mapTable.renderer.tileRenderer.getFrame() + "_" + mapTable.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + callbacks + "_" + internalScalingMul + "_" + internalScalingDiv;
         if (scheduler.needsUpdate(config)) {
             boolean remakeBuf = true;
             if (offscreenBuf != null)
@@ -174,7 +169,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             if (pickTileHelper == null)
                 shortcuts = TXDB.get("Mouse drag: Scroll.");
         }
-        String status = mapId + ";" + mouseXT + ", " + mouseYT + " Z" + internalScalingMul + ":" + internalScalingDiv + "; " + shortcuts;
+        String status = map.objectId + ";" + mouseXT + ", " + mouseYT + " Z" + internalScalingMul + ":" + internalScalingDiv + "; " + shortcuts;
 
         Rect plusRect = Art.getZIconRect(false, 0);
         Rect plusRectFull = Art.getZIconRect(true, 0); // used for X calc on the label
@@ -194,7 +189,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     public void render(int mouseXT, int mouseYT, int currentLayer, boolean debug, IGrDriver igd) {
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);
-        IMapViewDrawLayer[] layers = renderer.layers;
+        IMapViewDrawLayer[] layers = mapTable.renderer.layers;
         int camTR = UIElement.sensibleCellDiv((int) (camX + igd.getWidth()), tileSize) + 1;
         int camTB = UIElement.sensibleCellDiv((int) (camY + igd.getHeight()), tileSize) + 1;
         int camTX = UIElement.sensibleCellDiv((int) camX, tileSize);
@@ -252,7 +247,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             dragging = false;
             if (shiftDown) {
                 if (!mapTable.outOfBounds(mouseXT, mouseYT))
-                    pickTileHelper.accept(mapTable.getTiletype(mouseXT, mouseYT, currentLayer));
+                    pickTileHelper.accept(mapTable.getTileData.apply(new int[] {mouseXT, mouseYT, currentLayer}));
             } else if ((callbacks != null) && (!camDragSwitch)) {
                     callbacks.confirmAt(mouseXT, mouseYT, currentLayer);
             } else {
@@ -322,13 +317,13 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     @Override
     public void windowClosed() {
-        AppMain.objectDB.deregisterModificationHandler(map, listener);
+        AppMain.objectDB.deregisterModificationHandler(map.object, listener);
     }
 
     // Used by tools, after they're done doing whatever.
     // Basically a convenience method.
     public void passModificationNotification() {
-        AppMain.objectDB.objectRootModified(map, new SchemaPath(AppMain.schemas.getSDBEntry(AppMain.system.mapSchema()), map));
+        AppMain.objectDB.objectRootModified(map.object, new SchemaPath(AppMain.schemas.getSDBEntry(AppMain.system.mapSchema()), map.object));
     }
 
     @Override

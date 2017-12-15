@@ -12,7 +12,6 @@ import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.IMapContext;
-import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.UIMapViewContainer;
 
@@ -28,15 +27,16 @@ public class MapToolset implements IToolset {
         final UIMapViewContainer mapBox = new UIMapViewContainer(windowMaker);
         context = new IMapContext() {
             @Override
-            public String getCurrentMap() {
+            public String getCurrentMapObject() {
                 if (mapBox.view == null)
                     return null;
-                return mapBox.view.mapId;
+                return mapBox.view.map.objectId;
             }
 
             @Override
-            public void loadMap(RubyIO k) {
-                mapBox.loadMap(AppMain.system.mapLoadRequest(k, windowMaker));
+            public void loadMap(String gum) {
+                System.out.println("Game Unique Map:" + gum);
+                mapBox.loadMap(gum);
             }
 
             @Override

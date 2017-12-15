@@ -44,7 +44,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
             }).togglable();
             tools.add(button);
         }
-        if (view.renderer.tileRenderer instanceof VXATileRenderer) {
+        if (view.mapTable.renderer.tileRenderer instanceof VXATileRenderer) {
             tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Shadow/Region"), new Runnable() {
                 final int thisButton = tools.size();
 
@@ -72,9 +72,9 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 clearTools(thisButton);
                 UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize);
                 int h = 0;
-                for (int i = 0; i < view.renderer.layers.length; i++) {
+                for (int i = 0; i < view.mapTable.renderer.layers.length; i++) {
                     final int fi = i;
-                    UITextButton layerVis = new UITextButton(FontSizes.mapLayertabTextHeight, view.renderer.layers[i].getName(), new Runnable() {
+                    UITextButton layerVis = new UITextButton(FontSizes.mapLayertabTextHeight, view.mapTable.renderer.layers[i].getName(), new Runnable() {
                         @Override
                         public void run() {
                             view.layerVis[fi] = !view.layerVis[fi];

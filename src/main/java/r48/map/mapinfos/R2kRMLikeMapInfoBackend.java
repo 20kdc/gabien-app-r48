@@ -52,6 +52,12 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         return "Map" + m + ".lmu";
     }
 
+    public static String sTranslateToGUM(int k) {
+        final RubyIO map = AppMain.objectDB.getObject("RPG_RT.lmt").getInstVarBySymbol("@map_infos").getHashVal(new RubyIO().setFX(k));
+        String pfx = map.getInstVarBySymbol("@type").fixnumVal == 2 ? "Area." : "Map.";
+        return pfx + k;
+    }
+
     @Override
     public void registerModificationHandler(IConsumer<SchemaPath> onMapInfoChange) {
         modHandler = onMapInfoChange;
@@ -147,6 +153,11 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     public Rect getIconForMap(int k) {
         final RubyIO map = getHashBID(k);
         return map.getInstVarBySymbol("@type").fixnumVal == 2 ? Art.areaIcon : Art.mapIcon;
+    }
+
+    @Override
+    public String translateToGUM(int k) {
+        return sTranslateToGUM(k);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class UITileGrid extends UIGrid {
     public final int[] viewMap;
 
     public UITileGrid(UIMapView mv, int tStart, int tileCount, int aTile, int[] remap) {
-        this(mv.renderer, mv.currentLayer, tStart, tileCount, aTile, remap);
+        this(mv.mapTable.renderer, mv.currentLayer, tStart, tileCount, aTile, remap);
     }
 
     public UITileGrid(StuffRenderer sr, int l, int tStart, int tileCount, int aTile, int[] remap) {

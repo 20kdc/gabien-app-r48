@@ -10,7 +10,6 @@ package r48.map;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.AppMain;
-import r48.map.systems.MapSystem;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTBase;
 import r48.ui.UINSVertLayout;
@@ -104,14 +103,14 @@ public class UIMapViewContainer extends UIPanel {
         timeWaster.draw(igd, ox, oy, deltaTime, r.width, r.height);
     }
 
-    public void loadMap(MapSystem.MapLoadDetails map) {
+    public void loadMap(String gum) {
         if (mapTool != null)
             mapTool.selfClose = true;
 
         allElements.clear();
         if (view != null)
             view.windowClosed();
-        if (map == null) {
+        if (gum == null) {
             view = null;
             internalNoToolCallback = new Runnable() {
                 @Override
@@ -123,7 +122,7 @@ public class UIMapViewContainer extends UIPanel {
         Rect b = getBounds();
         // Creating the MapView and such causes quite a few side-effects (specifically global StuffRenderer kick-in-the-pants).
         // Also kick the dictionaries because of the event dictionary.
-        view = new UIMapView(map.objectId, b.width, b.height);
+        view = new UIMapView(gum, b.width, b.height);
         final IMapToolContext mtc = new IMapToolContext() {
             @Override
             public UIMapView getMapView() {
@@ -150,7 +149,7 @@ public class UIMapViewContainer extends UIPanel {
             }
         };
 
-        final IEditingToolbarController metc = map.getToolbar.apply(mtc);
+        final IEditingToolbarController metc = AppMain.system.mapLoadRequest(gum, windowMakerSupplier).apply(mtc);
         viewToolbarSplit = new UINSVertLayout(metc.getBar(), view);
         allElements.add(viewToolbarSplit);
         AppMain.schemas.kickAllDictionariesForMapChange();

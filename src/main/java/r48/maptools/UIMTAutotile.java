@@ -45,14 +45,14 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         super(mv, false);
         map = mv.getMapView();
         setupView();
-        setBounds(new Rect(0, 0, (map.tileSize * FontSizes.getSpriteScale() * map.renderer.tileRenderer.getRecommendedWidth()) + FontSizes.gridScrollersize, 200));
+        setBounds(new Rect(0, 0, (map.tileSize * FontSizes.getSpriteScale() * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) + FontSizes.gridScrollersize, 200));
     }
 
     private void setupView() {
         int layer = map.currentLayer;
-        tileMaps = map.renderer.tileRenderer.createATUIPlanes(map);
-        tabPane = new UITabPane(map.renderer.tileRenderer.getPlaneNames(layer), tileMaps, FontSizes.tilesTabTextHeight);
-        atBases = map.renderer.tileRenderer.indicateATs();
+        tileMaps = map.mapTable.renderer.tileRenderer.createATUIPlanes(map);
+        tabPane = new UITabPane(map.mapTable.renderer.tileRenderer.getPlaneNames(layer), tileMaps, FontSizes.tilesTabTextHeight);
+        atBases = map.mapTable.renderer.tileRenderer.indicateATs();
 
         // Begin subtool bar...
 

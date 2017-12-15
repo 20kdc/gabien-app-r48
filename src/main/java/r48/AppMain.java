@@ -14,7 +14,7 @@ import gabien.ui.*;
 import gabienapp.Application;
 import r48.dbs.*;
 import r48.imagefx.ImageFXCache;
-import r48.io.*;
+import r48.io.IObjectBackend;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.map.systems.*;
@@ -156,7 +156,7 @@ public class AppMain {
         rootView.setBounds(new Rect(0, 0, 800, 600));
 
         // Set up a default stuffRenderer for things to use.
-        stuffRendererIndependent = system.rendererFromMap(null);
+        stuffRendererIndependent = system.rendererFromTso(null);
 
         final UILabel uiStatusLabel = rebuildInnerUI(gamepak, uiTicker);
 
@@ -170,7 +170,7 @@ public class AppMain {
 
                 uiStatusLabel.Text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO().setFX(objectDB.modifiedObjects.size()), (theClipboard == null) ? new RubyIO().setNull() : theClipboard);
                 if (mapContext != null) {
-                    String mapId = mapContext.getCurrentMap();
+                    String mapId = mapContext.getCurrentMapObject();
                     RubyIO map = null;
                     if (mapId != null)
                         map = objectDB.getObject(mapId);
@@ -476,7 +476,8 @@ public class AppMain {
                         }
                     }
                 }
-                mapContext.loadMap(new RubyIO().setFX(1));
+                // Load map 1, save everything
+                mapContext.loadMap("M1");
                 objectDB.ensureAllSaved();
                 launchDialog(TXDB.get("2k3 template synthesis complete."));
             }

@@ -13,7 +13,6 @@ import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.UIMapView;
@@ -34,16 +33,16 @@ public class UIMTPopupButtons extends UIMTBase {
                     @Override
                     public void run() {
                         AppMain.stuffRendererIndependent.imageLoader.flushCache();
-                        view.renderer.imageLoader.flushCache();
-                        view.renderer = AppMain.system.rendererFromMap(view.map);
-                        view.renderer.imageLoader.flushCache();
+                        view.mapTable.renderer.imageLoader.flushCache();
+                        view.mapTable = view.map.rendererRetriever.get();
+                        view.mapTable.renderer.imageLoader.flushCache();
                         view.reinitLayerVis();
                     }
                 },
                 new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.launchSchema(AppMain.system.mapSchema(), view.map, view);
+                        AppMain.launchSchema(AppMain.system.mapSchema(), view.map.object, view);
                     }
                 },
                 new Runnable() {
@@ -81,23 +80,13 @@ public class UIMTPopupButtons extends UIMTBase {
             UISplitterLayout root = new UISplitterLayout(new UISplitterLayout(a, b, false, 0.5d), new UITextButton(FontSizes.textDialogFieldTextHeight, "Resize", new Runnable() {
                 @Override
                 public void run() {
-                    RubyIO resizeTarg = view.map.getInstVarBySymbol("@data");
-                    int[] r = new int[view.mapTable.planeCount];
                     int w = a.number;
                     if (w < 1)
                         w = 1;
                     int h = b.number;
                     if (h < 1)
                         h = 1;
-                    if (view.mapTable.width > 0)
-                        if (view.mapTable.height > 0)
-                            for (int i = 0; i < r.length; i++)
-                                r[i] = view.mapTable.getTiletype(0, 0, i) & 0xFFFF;
-                    resizeTarg.userVal = view.mapTable.resize(w, h, r).innerBytes;
-                    if (view.map.getInstVarBySymbol("@width") != null)
-                        view.map.getInstVarBySymbol("@width").fixnumVal = w;
-                    if (view.map.getInstVarBySymbol("@height") != null)
-                        view.map.getInstVarBySymbol("@height").fixnumVal = h;
+                    view.mapTable.resize(w, h);
                     view.passModificationNotification();
                 }
             }), true, 0);

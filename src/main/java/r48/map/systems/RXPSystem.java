@@ -68,7 +68,6 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         return new UIGRMMapInfos(windowMaker, new RXPRMLikeMapInfoBackend(), mapBox);
     }
 
-    @Override
     public StuffRenderer rendererFromMap(RubyIO map) {
         RubyIO tileset = tsoFromMap(map);
         ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tileset);
@@ -107,6 +106,17 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0], "RPG::Event");
+    }
+
+    @Override
+    public MapViewDetails mapViewRequest(final String gum) {
+        return new MapViewDetails(gum, "RPG::Map", new ISupplier<MapViewState>() {
+            @Override
+            public MapViewState get() {
+                RubyIO map = AppMain.objectDB.getObject(gum);
+                return MapViewState.fromRT(rendererFromMap(map), map, "@data");
+            }
+        });
     }
 
     @Override
@@ -156,7 +166,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public String mapReferentToId(RubyIO mapReferent) {
+    public String mapReferentToGUM(RubyIO mapReferent) {
         return RXPRMLikeMapInfoBackend.sNameFromInt((int) mapReferent.fixnumVal);
     }
 }

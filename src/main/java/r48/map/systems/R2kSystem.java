@@ -65,7 +65,6 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
         return AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@tilesets").getHashVal(map.getInstVarBySymbol("@tileset_id"));
     }
 
-    @Override
     public StuffRenderer rendererFromMap(RubyIO map) {
         RubyIO tileset = tsoFromMap2000(map);
         ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tileset);
@@ -163,37 +162,48 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public String mapReferentToId(RubyIO mapReferent) {
-        return R2kRMLikeMapInfoBackend.sNameFromInt((int) mapReferent.fixnumVal);
+    public String mapReferentToGUM(RubyIO mapReferent) {
+        return R2kRMLikeMapInfoBackend.sTranslateToGUM((int) mapReferent.fixnumVal);
     }
 
     @Override
-    public MapLoadDetails mapLoadRequest(RubyIO mapReferent, final ISupplier<IConsumer<UIElement>> windowMaker) {
-        final RubyIO root = AppMain.objectDB.getObject("RPG_RT.lmt");
-        final RubyIO mapInfos = root.getInstVarBySymbol("@map_infos");
-        final RubyIO mapInfo = mapInfos.getHashVal(mapReferent);
-        if (mapInfo == null)
-            return super.mapLoadRequest(mapReferent, windowMaker);
-        if (mapInfo.getInstVarBySymbol("@type").fixnumVal != 2)
-            return super.mapLoadRequest(mapReferent, windowMaker);
-        if (mapInfo.getInstVarBySymbol("@parent_id").fixnumVal == 0)
-            return null;
-        try {
-            MapLoadDetails mld = mapLoadRequest(mapInfo.getInstVarBySymbol("@parent_id"), windowMaker);
-            if (mld == null)
-                return null;
-            mld.getToolbar = new IFunction<IMapToolContext, IEditingToolbarController>() {
+    public IFunction<IMapToolContext, IEditingToolbarController> mapLoadRequest(String gum, final ISupplier<IConsumer<UIElement>> windowMaker) {
+        if (gum.startsWith("Area.")) {
+            final RubyIO root = AppMain.objectDB.getObject("RPG_RT.lmt");
+            final RubyIO mapInfos = root.getInstVarBySymbol("@map_infos");
+            final RubyIO mapInfo = mapInfos.getHashVal(new RubyIO().setFX(Long.parseLong(gum.substring(5))));
+            return new IFunction<IMapToolContext, IEditingToolbarController>() {
                 @Override
                 public IEditingToolbarController apply(IMapToolContext uiMapView) {
                     return new R2kAreaEditingToolbarController(uiMapView, root, mapInfo);
                 }
             };
-            return mld;
-        } catch (StackOverflowError soe) {
-            // Could theoretically happen
-            soe.printStackTrace();
-            return null;
         }
+        return super.mapLoadRequest(gum, windowMaker);
+    }
+
+    @Override
+    public MapViewDetails mapViewRequest(String gum) {
+        String[] gp = gum.split("\\.");
+        int v = Integer.parseInt(gp[1]);
+        final RubyIO root = AppMain.objectDB.getObject("RPG_RT.lmt");
+        final RubyIO mapInfos = root.getInstVarBySymbol("@map_infos");
+        final RubyIO mapInfo = mapInfos.getHashVal(new RubyIO().setFX(v));
+        try {
+            if (mapInfo.getInstVarBySymbol("@type").fixnumVal == 2)
+                return mapViewRequest("Map." + mapInfo.getInstVarBySymbol("@parent_id").fixnumVal);
+        } catch (StackOverflowError soe) {
+            // Note the implied change to an Exception, which gets caught
+            throw new RuntimeException(soe);
+        }
+        final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(v);
+        return new MapViewDetails(objn, "RPG::Map", new ISupplier<MapViewState>() {
+            @Override
+            public MapViewState get() {
+                RubyIO map = AppMain.objectDB.getObject(objn);
+                return MapViewState.fromRT(rendererFromMap(map), map, "@data");
+            }
+        });
     }
 
 }

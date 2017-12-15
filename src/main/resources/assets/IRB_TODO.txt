@@ -28,6 +28,7 @@ short-term planning subsection:
 + ask easyrpg about what is up with SaveSystem system_box_tiling
 + send back SavePicture default value fixes, they probably need this
 + 2k/2k3 save-edit (thank you, Ghabry)
++ checkup on TilesetTableSchemaElement
   <IMMEDIATELY BEGIN INFORMAL RELEASE-TESTING>
 + v0.9
   (LATEST RELEASE DATE: 20th of December.)

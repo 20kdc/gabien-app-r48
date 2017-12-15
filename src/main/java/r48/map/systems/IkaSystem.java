@@ -7,6 +7,8 @@
 
 package r48.map.systems;
 
+import gabien.ui.ISupplier;
+import r48.AppMain;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
 import r48.map.events.IEventGraphicRenderer;
@@ -30,10 +32,25 @@ public class IkaSystem extends MapSystem {
         return "IkachanMap";
     }
 
-    @Override
-    public StuffRenderer rendererFromMap(RubyIO map) {
+    public StuffRenderer rendererGeneral(RubyIO map) {
         ITileRenderer tileRenderer = new IkaTileRenderer(imageLoader);
         IEventGraphicRenderer eventRenderer = new IkaEventGraphicRenderer(imageLoader);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0}, eventRenderer, imageLoader, map, "Back", true, true, 0, 0, -1, -1, 1), "IkachanEvent");
+    }
+
+    @Override
+    public StuffRenderer rendererFromTso(RubyIO target) {
+        return rendererGeneral(null);
+    }
+
+    @Override
+    public MapViewDetails mapViewRequest(String gum) {
+        return new MapViewDetails("Map", "IkachanMap", new ISupplier<MapViewState>() {
+            @Override
+            public MapViewState get() {
+                RubyIO map = AppMain.objectDB.getObject("Map");
+                return MapViewState.fromRT(rendererGeneral(map), map, "@data");
+            }
+        });
     }
 }

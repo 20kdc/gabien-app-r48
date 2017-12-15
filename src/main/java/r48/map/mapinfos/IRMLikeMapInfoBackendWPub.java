@@ -15,6 +15,8 @@ import r48.schema.util.SchemaPath;
  * Attempting to bridge the gap between RXP+ and R2k's map info systems so the same UI code can be used.
  * Plan here is to abstract all of RMMapInfos's complicated shifting-about code away,
  * then make it work on RXP, then make it work on R2k.
+ * All relevant GUMs are assumed to have their own map ID.
+ * However, not all map IDs must have GUMs.
  * Created on 02/06/17.
  */
 public interface IRMLikeMapInfoBackendWPub extends IRMLikeMapInfoBackend {
@@ -49,5 +51,10 @@ public interface IRMLikeMapInfoBackendWPub extends IRMLikeMapInfoBackend {
     // A modification was completed, trigger modification handlers
     void complete();
 
+    // Gets an icon from Art for treeview
     Rect getIconForMap(int k);
+
+    // Translates a map entry to a GUM.
+    // Returning null is fine, and will return the user to the No Map Selected display.
+    String translateToGUM(int k);
 }

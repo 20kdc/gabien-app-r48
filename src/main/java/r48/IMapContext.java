@@ -8,16 +8,21 @@
 package r48;
 
 /**
- * Acts as a getter/setter for the current map for dictionaries & r2ksystemdefaults game bootstrap code.
- * Also serves as a way for a certain schema element to get ahold of a UIMapView portably.
+ * Ties together the Map tab and everything related.
+ * Here's how it'll work from now on.
+ * Something loadable in the Map panel is referred to by a MapSystem implementation defined string (a GUM).
+ * The format must be documented in the MapSystem comment header.
+ * The GUM is passed to the MapContext, which starts up the UIMapViewContainer,
+ *  which in turn passes the GUM to the UIMapView and grabs the toolbar via the MapSystem.
+ * The UIMapView does it's own setup via the MapSystem, and that's the basics initialized.
  * Created on 08/06/17.
  */
 public interface IMapContext {
     // Returns null if none loaded.
-    String getCurrentMap();
+    String getCurrentMapObject();
 
-    // Loads a map by it's referent.
-    void loadMap(RubyIO reference);
+    // Loads a map by it's GUM, or null to revert to No Map Selected.
+    void loadMap(String gum);
 
     // Shuts down internal caching as R48 reverts to the launcher.
     void freeOsbResources();

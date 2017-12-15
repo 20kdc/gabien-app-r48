@@ -107,7 +107,7 @@ public class UIGRMMapInfos extends UIPanel {
                 public void run() {
                     selectedOrder = order;
                     deleteConfirmation = false;
-                    mapContext.loadMap(new RubyIO().setFX(k));
+                    mapContext.loadMap(operators.translateToGUM(k));
                     rebuildList();
                 }
             });
@@ -198,7 +198,7 @@ public class UIGRMMapInfos extends UIPanel {
                         if (!operators.wouldRelocatingInOrderFail(orderFrom, order + 1)) {
                             selectedOrder = operators.relocateInOrder(orderFrom, order + 1);
                             operators.complete();
-                            mapContext.loadMap(new RubyIO().setFX(operators.getMapOfOrder(selectedOrder)));
+                            mapContext.loadMap(operators.translateToGUM(operators.getMapOfOrder(selectedOrder)));
                             rebuildList();
                         }
                 }
@@ -230,7 +230,7 @@ public class UIGRMMapInfos extends UIPanel {
                         }
                         selectedOrder = operators.createNewMap(i);
                         operators.complete();
-                        mapContext.loadMap(new RubyIO().setFX(i));
+                        mapContext.loadMap(operators.translateToGUM(i));
                         rebuildList();
                     }
                 }, FontSizes.textDialogFieldTextHeight);

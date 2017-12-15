@@ -163,7 +163,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     @Override
     public StuffRenderer getContextRenderer() {
         if (contextView != null)
-            return contextView.renderer;
+            return contextView.mapTable.renderer;
         return AppMain.stuffRendererIndependent;
     }
 

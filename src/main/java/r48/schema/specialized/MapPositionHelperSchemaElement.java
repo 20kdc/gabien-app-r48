@@ -44,15 +44,15 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
         for (int i = 0; i < 3; i++)
             if (abc[i] == null)
                 return new UILabel(TXDB.get("A component is missing."), FontSizes.schemaFieldTextHeight);
-        String mapId = AppMain.system.mapReferentToId(abc[0]);
-        if (mapId == null)
+        String mapGUM = AppMain.system.mapReferentToGUM(abc[0]);
+        if (mapGUM == null)
             return new UILabel(TXDB.get("Can't translate ID to map."), FontSizes.schemaFieldTextHeight);
         // The UIMapView constructor will automatically create missing maps. We don't want this!
-        if (AppMain.objectDB.getObject(mapId, null) == null)
+        if (AppMain.objectDB.getObject(mapGUM, null) == null)
             return new UILabel(TXDB.get("No such map exists."), FontSizes.schemaFieldTextHeight);
         final long x = abc[1].fixnumVal;
         final long y = abc[2].fixnumVal;
-        final UIMapView umv = new UIMapView(mapId, 320, FontSizes.scaleGuess(192));
+        final UIMapView umv = new UIMapView(mapGUM, 320, FontSizes.scaleGuess(192));
         umv.callbacks = new IMapViewCallbacks() {
             @Override
             public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
