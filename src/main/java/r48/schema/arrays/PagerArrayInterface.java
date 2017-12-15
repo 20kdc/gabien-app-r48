@@ -18,6 +18,7 @@ public class PagerArrayInterface implements IArrayInterface {
         final ArrayPosition[] positions = getPositions.get();
         LinkedList<UIElement> uie = new LinkedList<UIElement>();
         for (int i = 0; i < positions.length; i++) {
+            final String i2 = Integer.toString(i + 1);
             if (positions[i].core != null) {
                 // "+", "+>", "-", "Cp.", "Ps."
                 UIScrollLayout barLayout = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
@@ -75,35 +76,37 @@ public class PagerArrayInterface implements IArrayInterface {
                         }));
                     }
                 }
-                if (barLayout.panels.size() > 0) {
-                    barLayout.setBounds(new Rect(0, 0, 128, UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height + FontSizes.mapToolbarScrollersize));
-                    uie.add(new UISplitterLayout(barLayout, positions[i].core, true, 0d));
-                } else {
-                    uie.add(positions[i].core);
-                }
+                barLayout.setBounds(new Rect(0, 0, 128, UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height + FontSizes.mapToolbarScrollersize));
+                uie.add(new UISplitterLayout(barLayout, positions[i].core, true, 0d) {
+                    @Override
+                    public String toString() {
+                        return i2;
+                    }
+                });
             }
         }
-        String[] str = new String[uie.size()];
-        for (int i = 0; i < str.length; i++)
-            str[i] = Integer.toString(i + 1);
         final IProperty prop2 = prop.apply("page");
-        UITabPane utp = new UITabPane(str, uie.toArray(new UIElement[0]), FontSizes.tabTextHeight) {
+        UITabPane utp = new UITabPane(FontSizes.tabTextHeight, false) {
             @Override
-            public void selectTab(int i) {
+            public void selectTab(UIElement i) {
                 super.selectTab(i);
-                prop2.accept((double) i);
+                prop2.accept((double) getTabIndex());
             }
         };
+
         int h = utp.tabBarHeight;
-        for (UIElement ue : utp.tabElems)
+        for (UIElement ue : uie) {
+            utp.addTab(new UIWindowView.WVWindow(ue, new UIWindowView.IWVWindowIcon[] {}));
             h = Math.max(h, ue.getBounds().height + utp.tabBarHeight);
+        }
         utp.setBounds(new Rect(0, 0, 200, h));
         svl.panels.add(utp);
         int state = (int) ((double) prop2.get());
         if (state < 0)
             state = 0;
-        if (state >= utp.tabElems.length)
-            state = utp.tabElems.length - 1;
-        utp.selectTab(state);
+        if (state >= uie.size())
+            state = uie.size() - 1;
+        if (uie.size() > 0)
+            utp.selectTab(uie.get(state));
     }
 }

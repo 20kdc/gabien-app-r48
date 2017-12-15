@@ -8,10 +8,7 @@
 package r48.maptools;
 
 import gabien.IGrDriver;
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UITabPane;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -49,9 +46,10 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     }
 
     private void setupView() {
-        int layer = map.currentLayer;
         tileMaps = map.mapTable.renderer.tileRenderer.createATUIPlanes(map);
-        tabPane = new UITabPane(map.mapTable.renderer.tileRenderer.getPlaneNames(layer), tileMaps, FontSizes.tilesTabTextHeight);
+        tabPane = new UITabPane(FontSizes.tilesTabTextHeight, false);
+        for (UIElement uie : tileMaps)
+            tabPane.addTab(new UIWindowView.WVWindow(uie, new UIWindowView.IWVWindowIcon[] {}));
         atBases = map.mapTable.renderer.tileRenderer.indicateATs();
 
         // Begin subtool bar...
@@ -104,24 +102,28 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
         if (layer != currentLayer)
             return there;
-        if ((subtool != 0) || (tileMaps[tabPane.tab].atGroup != 0)) {
+        int tab = tabPane.getTabIndex();
+        // give up
+        if (tab == -1)
+            return there;
+        if ((subtool != 0) || (tileMaps[tab].atGroup != 0)) {
             if (cx == tx)
                 if (cy == ty)
-                    return (short) tileMaps[tabPane.tab].getTCSelected();
+                    return (short) tileMaps[tab].getTCSelected();
             return there;
         }
         if (tx < cx)
             return there;
         if (ty < cy)
             return there;
-        if (tx >= cx + tileMaps[tabPane.tab].selWidth)
+        if (tx >= cx + tileMaps[tab].selWidth)
             return there;
-        if (ty >= cy + tileMaps[tabPane.tab].selHeight)
+        if (ty >= cy + tileMaps[tab].selHeight)
             return there;
         int px = tx - cx;
         int py = ty - cy;
-        int sel = tileMaps[tabPane.tab].getTCSelected();
-        return (short) (sel + px + (py * tileMaps[tabPane.tab].getSelectStride()));
+        int sel = tileMaps[tab].getTCSelected();
+        return (short) (sel + px + (py * tileMaps[tab].getSelectStride()));
     }
 
     @Override
@@ -148,11 +150,15 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             return;
         if (y >= map.mapTable.height)
             return;
-        int sel = tileMaps[tabPane.tab].getTCSelected();
+        int tab = tabPane.getTabIndex();
+        // give up
+        if (tab == -1)
+            return;
+        int sel = tileMaps[tab].getTCSelected();
 
         if (subtool == 1) {
             // Tool 1: Rectangle
-            mapToolContext.accept(new UIMTAutotileRectangle(this, x, y, tileMaps[tabPane.tab].atGroup != 0));
+            mapToolContext.accept(new UIMTAutotileRectangle(this, x, y, tileMaps[tab].atGroup != 0));
             return;
         } else if (subtool == 2) {
             // Tool 2: Floodfill.
@@ -181,7 +187,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                     }
                 }
             }
-            if (tileMaps[tabPane.tab].atGroup != 0) {
+            if (tileMaps[tab].atGroup != 0) {
                 for (FloodFillPoint ffp : handledPoints) {
                     for (int i = -1; i < 2; i++)
                         for (int j = -1; j < 2; j++)
@@ -193,7 +199,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         }
 
         // Tool 0: Default pen/selection.
-        if (tileMaps[tabPane.tab].atGroup != 0) {
+        if (tileMaps[tab].atGroup != 0) {
             if (map.mapTable.outOfBounds(x, y))
                 return;
             map.mapTable.setTiletype(x, y, layer, (short) sel);
@@ -202,17 +208,17 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                     updateAutotile(map, atBases, x + i, y + j, layer);
             return;
         }
-        for (int px = 0; px < tileMaps[tabPane.tab].selWidth; px++) {
+        for (int px = 0; px < tileMaps[tab].selWidth; px++) {
             if (px + x < 0)
                 continue;
             if (px + x >= map.mapTable.width)
                 continue;
-            for (int py = 0; py < tileMaps[tabPane.tab].selHeight; py++) {
+            for (int py = 0; py < tileMaps[tab].selHeight; py++) {
                 if (py + y < 0)
                     continue;
                 if (py + y >= map.mapTable.height)
                     continue;
-                short ind = (short) (sel + px + (py * tileMaps[tabPane.tab].getSelectStride()));
+                short ind = (short) (sel + px + (py * tileMaps[tab].getSelectStride()));
                 map.mapTable.setTiletype(x + px, y + py, layer, ind);
                 map.passModificationNotification();
             }
@@ -253,13 +259,17 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public String toString() {
-        return "T" + tileMaps[tabPane.tab].tileStart + "-" + (tileMaps[tabPane.tab].tileStart + tileMaps[tabPane.tab].tileCount - 1) + ":" + tileMaps[tabPane.tab].getSelected();
+        int tab = tabPane.getTabIndex();
+        // give up
+        if (tab == -1)
+            return "???";
+        return "T" + tileMaps[tab].tileStart + "-" + (tileMaps[tab].tileStart + tileMaps[tab].tileCount - 1) + ":" + tileMaps[tab].getSelected();
     }
 
     public void selectTile(short aShort) {
         for (int i = 0; i < tileMaps.length; i++)
             if (tileMaps[i].tryTCSetSelected(aShort)) {
-                tabPane.selectTab(i);
+                tabPane.selectTab(tileMaps[i]);
                 break;
             }
     }
@@ -271,9 +281,13 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     }
 
     public short getPlaceSelection(int i, int i1) {
-        int selWidth = tileMaps[tabPane.tab].selWidth;
-        int selHeight = tileMaps[tabPane.tab].selHeight;
-        return (short) (tileMaps[tabPane.tab].getTCSelected() + (i % selWidth) + ((i1 % selHeight) * tileMaps[tabPane.tab].getSelectStride()));
+        int tab = tabPane.getTabIndex();
+        // give up
+        if (tab == -1)
+            return 0;
+        int selWidth = tileMaps[tab].selWidth;
+        int selHeight = tileMaps[tab].selHeight;
+        return (short) (tileMaps[tab].getTCSelected() + (i % selWidth) + ((i1 % selHeight) * tileMaps[tab].getSelectStride()));
     }
 
     private class FloodFillPoint {

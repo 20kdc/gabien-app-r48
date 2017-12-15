@@ -27,12 +27,15 @@ public class UITileGrid extends UIGrid {
     public final int atGroup;
     public final int[] viewMap;
 
-    public UITileGrid(UIMapView mv, int tStart, int tileCount, int aTile, int[] remap) {
-        this(mv.mapTable.renderer, mv.currentLayer, tStart, tileCount, aTile, remap);
+    private final String toStringRes;
+
+    public UITileGrid(UIMapView mv, int tStart, int tileCount, int aTile, int[] remap, String tiles) {
+        this(mv.mapTable.renderer, mv.currentLayer, tStart, tileCount, aTile, remap, tiles);
     }
 
-    public UITileGrid(StuffRenderer sr, int l, int tStart, int tileCount, int aTile, int[] remap) {
+    public UITileGrid(StuffRenderer sr, int l, int tStart, int tileCount, int aTile, int[] remap, String tiles) {
         super(sr.tileRenderer.getTileSize() * FontSizes.getSpriteScale(), sr.tileRenderer.getTileSize() * FontSizes.getSpriteScale(), tileCount);
+        toStringRes = tiles;
         canMultiSelect = aTile == 0;
         renderer = sr;
         layer = l;
@@ -41,6 +44,11 @@ public class UITileGrid extends UIGrid {
         bkgB = 255;
         atGroup = aTile;
         viewMap = remap;
+    }
+
+    @Override
+    public String toString() {
+        return toStringRes;
     }
 
     public int getTCSelected() {

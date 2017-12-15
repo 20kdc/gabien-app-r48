@@ -124,20 +124,10 @@ public class XPTileRenderer implements ITileRenderer {
                         48 * 5,
                         48 * 6,
                         48 * 7,
-                }),
-                new UITileGrid(mv, 0, 48, 0, null),
-                new UITileGrid(mv, 48, 48 * 7, 0, null),
-                new UITileGrid(mv, 48 * 8, tileCount, 0, null),
-        };
-    }
-
-    @Override
-    public String[] getPlaneNames(int layer) {
-        return new String[] {
-                "AUTO",
-                "NULL",
-                "AT-M",
-                "TMAP",
+                }, "AUTO"),
+                new UITileGrid(mv, 0, 48, 0, null, "NULL"),
+                new UITileGrid(mv, 48, 48 * 7, 0, null, "AT-M"),
+                new UITileGrid(mv, 48 * 8, tileCount, 0, null, "TMAP"),
         };
     }
 

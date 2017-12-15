@@ -221,61 +221,34 @@ public class LcfTileRenderer implements ITileRenderer {
         // on L1, upper layer tiles take priority
         if (mv.currentLayer == 0) {
             return new UITileGrid[] {
-                    new UITileGrid(mv, 0, 80, 50, genLcfATs),
+                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF"),
 
-                    new UITileGrid(mv, 5000, 144, 0, null),
+                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER"),
 
-                    new UITileGrid(mv, 0, 1000, 0, null),
-                    new UITileGrid(mv, 1000, 1000, 0, null),
-                    new UITileGrid(mv, 2000, 1000, 0, null),
+                    new UITileGrid(mv, 0, 1000, 0, null, "W1M"),
+                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M"),
+                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M"),
 
-                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}),
+                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI"),
 
-                    new UITileGrid(mv, 4000, 600, 0, null),
-                    new UITileGrid(mv, 10000, 144, 0, null),
+                    new UITileGrid(mv, 4000, 600, 0, null, "TEM"),
+                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER<DNU>"),
             };
         } else {
             return new UITileGrid[] {
-                    new UITileGrid(mv, 10000, 144, 0, null),
+                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER"),
 
-                    new UITileGrid(mv, 0, 80, 50, genLcfATs),
+                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF<DNU>"),
 
-                    new UITileGrid(mv, 5000, 144, 0, null),
+                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER<DNU>"),
 
-                    new UITileGrid(mv, 0, 1000, 0, null),
-                    new UITileGrid(mv, 1000, 1000, 0, null),
-                    new UITileGrid(mv, 2000, 1000, 0, null),
+                    new UITileGrid(mv, 0, 1000, 0, null, "W1M<DNU>"),
+                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M<DNU>"),
+                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M<DNU>"),
 
-                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}),
+                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI<DNU>"),
 
-                    new UITileGrid(mv, 4000, 600, 0, null),
-            };
-        }
-    }
-
-    @Override
-    public String[] getPlaneNames(int layer) {
-        if (layer == 0) {
-            return new String[] {
-                    "ATF",
-                    "LOWER",
-                    "W1M",
-                    "W2M",
-                    "W3M",
-                    "ANI",
-                    "TEM",
-                    "UPPER<DNU>",
-            };
-        } else {
-            return new String[] {
-                    "UPPER",
-                    "ATF<DNU>",
-                    "LOWER<DNU>",
-                    "W1M<DNU>",
-                    "W2M<DNU>",
-                    "W3M<DNU>",
-                    "ANI<DNU>",
-                    "TEM<DNU>",
+                    new UITileGrid(mv, 4000, 600, 0, null, "TEM<DNU>"),
             };
         }
     }

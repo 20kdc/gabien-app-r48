@@ -48,11 +48,6 @@ public class RMToolsToolset implements IToolset {
     }
 
     @Override
-    public String[] tabNames() {
-        return new String[] {TXDB.get("Tools")};
-    }
-
-    @Override
     public UIElement[] generateTabs(final ISupplier<IConsumer<UIElement>> windowMaker) {
         return new UIElement[] {new UIPopupMenu(new String[] {
                 TXDB.get("Locate EventCommand in all Pages"),
@@ -276,7 +271,12 @@ public class RMToolsToolset implements IToolset {
                         AppMain.launchDialog(TXDB.get("transcript.html was written to the target's folder."));
                     }
                 }
-        }, FontSizes.menuTextHeight, false)
+        }, FontSizes.menuTextHeight, false) {
+            @Override
+            public String toString() {
+                return TXDB.get("Tools");
+            }
+        }
         };
     }
 }

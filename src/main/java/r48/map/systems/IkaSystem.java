@@ -50,6 +50,6 @@ public class IkaSystem extends MapSystem {
             public MapViewState get() {
                 return MapViewState.fromRT(rendererGeneral(map), map, "@data", false);
             }
-        }, false, new TraditionalEventAccess(map, 0, "RPG::Map"));
+        }, false, new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 0, "RPG::Map"));
     }
 }

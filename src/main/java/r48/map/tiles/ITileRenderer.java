@@ -30,8 +30,6 @@ public interface ITileRenderer {
 
     UITileGrid[] createATUIPlanes(UIMapView mv);
 
-    String[] getPlaneNames(int layer);
-
     AutoTileTypeField[] indicateATs();
 
     // Used to sync the map view and playing animations.

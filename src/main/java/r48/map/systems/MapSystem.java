@@ -40,7 +40,7 @@ public abstract class MapSystem {
     }
 
     // If null, the map explorer is not enabled.
-    public UIElement createMapExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final IMapContext mapBox) {
+    public UIElement createMapExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final IMapContext mapBox, final String mapInfos) {
         return new UIPopupMenu(new String[] {
                 TXDB.get("Load Map")
         }, new Runnable[] {
@@ -50,11 +50,16 @@ public abstract class MapSystem {
                         mapBox.loadMap("Map");
                     }
                 }
-        }, FontSizes.menuTextHeight, false);
+        }, FontSizes.menuTextHeight, false) {
+            @Override
+            public String toString() {
+                return mapInfos;
+            }
+        };
     }
 
     // If null, the save explorer is not enabled.
-    public UIElement createSaveExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final IMapContext mapBox) {
+    public UIElement createSaveExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final IMapContext mapBox, String saves) {
         return null;
     }
 

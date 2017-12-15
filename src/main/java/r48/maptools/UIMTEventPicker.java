@@ -56,8 +56,10 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public int wantOverlay(boolean minimap) {
         // use this time to cache the essentials, this should vastly speed up drawing
         eventCache.clear();
-        for (RubyIO evI : mapView.map.eventAccess.getEventKeys())
+        for (RubyIO evK : mapView.map.eventAccess.getEventKeys()) {
+            RubyIO evI = mapView.map.eventAccess.getEvent(evK);
             eventCache.put((evI.getInstVarBySymbol("@x").fixnumVal) + ";" + (evI.getInstVarBySymbol("@y").fixnumVal), evI);
+        }
         return 1;
     }
 

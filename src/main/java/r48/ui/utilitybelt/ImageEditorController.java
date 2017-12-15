@@ -54,7 +54,12 @@ public class ImageEditorController {
         });
         paletteView = new UIScrollLayout(true, FontSizes.generalScrollersize);
         paletteView.setBounds(new Rect(0, 0, initPalette(), 1));
-        rootView = new UISplitterLayout(imageEditView, paletteView, false, 1.0d);
+        rootView = new UISplitterLayout(imageEditView, paletteView, false, 1.0d) {
+            @Override
+            public String toString() {
+                return TXDB.get("Image Editor");
+            }
+        };
     }
 
     public void applyCursor() {

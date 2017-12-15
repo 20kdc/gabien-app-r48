@@ -29,16 +29,10 @@ public class NullTileRenderer implements ITileRenderer {
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv) {
         return new UITileGrid[] {
-                new UITileGrid(mv, 0, 1, 0, null)
+                new UITileGrid(mv, 0, 1, 0, null, TXDB.get("Tiles Unsupported"))
         };
     }
 
-    @Override
-    public String[] getPlaneNames(int layer) {
-        return new String[] {
-                TXDB.get("Tiles Unsupported")
-        };
-    }
 
     @Override
     public AutoTileTypeField[] indicateATs() {

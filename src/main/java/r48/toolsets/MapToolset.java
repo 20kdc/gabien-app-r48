@@ -22,7 +22,6 @@ import r48.map.UIMapViewContainer;
 public class MapToolset implements IToolset {
     private IMapContext context;
     private final UIElement[] tabs;
-    private String[] text;
 
     public MapToolset(final ISupplier<IConsumer<UIElement>> windowMaker) {
         final UIMapViewContainer mapBox = new UIMapViewContainer(windowMaker);
@@ -47,15 +46,12 @@ public class MapToolset implements IToolset {
                 mapBox.view.freeOsbResources();
             }
         };
-        text = new String[] {
-                TXDB.get("Map"),
-                TXDB.get("MapInfos"),
-                TXDB.get("Saves")
-        };
 
-        final UIElement saveEl = AppMain.system.createSaveExplorer(windowMaker, context);
+        String mapInfos = TXDB.get("MapInfos");
+        String saves = TXDB.get("Saves");
+        final UIElement saveEl = AppMain.system.createSaveExplorer(windowMaker, context, saves);
         if (saveEl != null) {
-            final UIElement mapInfoEl = AppMain.system.createMapExplorer(windowMaker, context);
+            final UIElement mapInfoEl = AppMain.system.createMapExplorer(windowMaker, context, mapInfos);
             if (mapInfoEl != null) {
                 tabs = new UIElement[] {
                         mapBox, mapInfoEl, saveEl
@@ -64,13 +60,9 @@ public class MapToolset implements IToolset {
                 tabs = new UIElement[] {
                         mapBox, saveEl
                 };
-                text = new String[] {
-                        text[0],
-                        text[2]
-                };
             }
         } else {
-            final UIElement mapInfoEl = AppMain.system.createMapExplorer(windowMaker, context);
+            final UIElement mapInfoEl = AppMain.system.createMapExplorer(windowMaker, context, mapInfos);
             if (mapInfoEl != null) {
                 tabs = new UIElement[] {
                         mapBox, mapInfoEl
@@ -81,11 +73,6 @@ public class MapToolset implements IToolset {
                 };
             }
         }
-    }
-
-    @Override
-    public String[] tabNames() {
-        return text;
     }
 
     @Override

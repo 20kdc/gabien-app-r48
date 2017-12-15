@@ -14,7 +14,7 @@ import r48.dbs.TXDB;
 
 public class UIColourPicker extends UIPanel implements IWindowElement {
 
-    public UIPanel colourPanel;
+    public UIPublicPanel colourPanel;
     public IConsumer<Integer> result;
     public int currentMainSpriteScale = 1;
     public int x, y;
@@ -26,7 +26,7 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
     public UIColourPicker(IConsumer<Integer> iConsumer, boolean alpha) {
         super();
         result = iConsumer;
-        colourPanel = new UIPanel() {
+        colourPanel = new UIPublicPanel() {
             boolean dragging = false;
             int lastHue = 0;
 

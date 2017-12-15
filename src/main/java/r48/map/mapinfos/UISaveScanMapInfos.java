@@ -23,15 +23,22 @@ public class UISaveScanMapInfos extends UIPanel {
     public final IFunction<Integer, String> objectMapping, gumMapping;
     public final IMapContext context;
     public final int first, last;
+    private final String toStringRes;
 
-    public UISaveScanMapInfos(IFunction<Integer, String> map, IFunction<Integer, String> gummap, int f, int l, IMapContext ctx) {
+    public UISaveScanMapInfos(IFunction<Integer, String> map, IFunction<Integer, String> gummap, int f, int l, IMapContext ctx, String saves) {
         objectMapping = map;
         gumMapping = gummap;
         context = ctx;
         first = f;
         last = l;
+        toStringRes = saves;
         allElements.add(mainLayout);
         reload();
+    }
+
+    @Override
+    public String toString() {
+        return toStringRes;
     }
 
     @Override
@@ -43,14 +50,16 @@ public class UISaveScanMapInfos extends UIPanel {
     public void reload() {
         for (int i = first; i <= last; i++) {
             RubyIO rio = AppMain.objectDB.getObject(objectMapping.apply(i), null);
+            final String gum = gumMapping.apply(i);
             if (rio != null) {
-                final String gum = gumMapping.apply(i);
                 mainLayout.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, FormatSyntax.formatExtended(TXDB.get("#A : #B"), new RubyIO().setInternString(gum), rio), new Runnable() {
                     @Override
                     public void run() {
                         context.loadMap(gum);
                     }
                 }));
+            } else {
+                mainLayout.panels.add(new UILabel(FormatSyntax.formatExtended(TXDB.get("#A (Unavailable)"), new RubyIO().setInternString(gum), rio), FontSizes.mapInfosTextHeight));
             }
         }
     }

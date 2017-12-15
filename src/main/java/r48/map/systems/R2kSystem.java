@@ -52,12 +52,12 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public UIElement createMapExplorer(ISupplier<IConsumer<UIElement>> windowMaker, IMapContext context) {
-        return new UIGRMMapInfos(windowMaker, new R2kRMLikeMapInfoBackend(), context);
+    public UIElement createMapExplorer(ISupplier<IConsumer<UIElement>> windowMaker, IMapContext context, String mapInfos) {
+        return new UIGRMMapInfos(windowMaker, new R2kRMLikeMapInfoBackend(), context, mapInfos);
     }
 
     @Override
-    public UIElement createSaveExplorer(ISupplier<IConsumer<UIElement>> windowMaker, IMapContext mapBox) {
+    public UIElement createSaveExplorer(ISupplier<IConsumer<UIElement>> windowMaker, IMapContext mapBox, String saves) {
         return new UISaveScanMapInfos(new IFunction<Integer, String>() {
             @Override
             public String apply(Integer integer) {
@@ -68,7 +68,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             public String apply(Integer integer) {
                 return "Save." + integer;
             }
-        }, 1, 99, mapBox);
+        }, 1, 99, mapBox, saves);
     }
 
     private String getSaveName(Integer integer) {
@@ -272,6 +272,6 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             public MapViewState get() {
                 return MapViewState.fromRT(rendererFromMap(v, map, null), map, "@data", false);
             }
-        }, false, new TraditionalEventAccess(map, 1, "RPG::Map"));
+        }, false, new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 1, "RPG::Map"));
     }
 }

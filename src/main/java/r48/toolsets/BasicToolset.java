@@ -43,18 +43,10 @@ public class BasicToolset implements IToolset {
     private final IConsumer<UIElement> virtWM, realWM;
     private final IConsumer<IConsumer<UIElement>> setWM;
 
-    public BasicToolset(UIWindowView rootView, IConsumer<UIElement> uiTicker, IConsumer<IConsumer<UIElement>> swm) {
+    public BasicToolset(IConsumer<UIElement> rootView, IConsumer<UIElement> uiTicker, IConsumer<IConsumer<UIElement>> swm) {
         virtWM = rootView;
         realWM = uiTicker;
         setWM = swm;
-    }
-
-    @Override
-    public String[] tabNames() {
-        return new String[] {
-                TXDB.get("Database Objects"),
-                TXDB.get("System Tools")
-        };
     }
 
     @Override
@@ -244,7 +236,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                UIPanel panel = new UIPanel();
+                                UIPublicPanel panel = new UIPublicPanel();
                                 panel.setBounds(new Rect(0, 0, 512, 1280));
                                 final IImage totem = GaBIEn.getImage("tonetotm.png");
                                 UIElement hueChanger = new UIElement() {
@@ -261,7 +253,7 @@ public class BasicToolset implements IToolset {
                                     }
                                 };
                                 hueChanger.setBounds(new Rect(128, 1024, 256, 256));
-                                panel.allElements.add(hueChanger);
+                                panel.addElement(hueChanger);
                                 IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(512, 1024, false);
                                 finalComposite.blitImage(0, 0, 256, 256, 0, 0, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 128, 128, 128)));
                                 finalComposite.blitImage(0, 0, 256, 256, 256, 0, AppMain.imageFXCache.process(totem, new ToneImageEffect(0, 128, 128, 128)));
@@ -286,7 +278,7 @@ public class BasicToolset implements IToolset {
                             @Override
                             public void run() {
                                 // Test Add/Sub Blending...
-                                UIPanel panel = new UIPanel();
+                                UIPublicPanel panel = new UIPublicPanel();
                                 panel.setBounds(new Rect(0, 0, 512, 512));
                                 final IImage totem = GaBIEn.getImage("tonetotm.png");
                                 IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(512, 1024, false);
@@ -379,7 +371,12 @@ public class BasicToolset implements IToolset {
                                 AppMain.pleaseShutdown();
                             }
                         }
-                }, FontSizes.menuTextHeight, false)
+                }, FontSizes.menuTextHeight, false) {
+                    @Override
+                    public String toString() {
+                        return TXDB.get("System Tools");
+                    }
+                }
         };
     }
 
@@ -393,7 +390,12 @@ public class BasicToolset implements IToolset {
                     AppMain.launchSchema("File." + s2, AppMain.objectDB.getObject(s2), null);
                 }
             });
-        return new UIPopupMenu(s.toArray(new String[0]), r.toArray(new Runnable[0]), FontSizes.menuTextHeight, false);
+        return new UIPopupMenu(s.toArray(new String[0]), r.toArray(new Runnable[0]), FontSizes.menuTextHeight, false) {
+            @Override
+            public String toString() {
+                return TXDB.get("Database Objects");
+            }
+        };
     }
 
     public static int universalStringLocator(RubyIO rio, IFunction<RubyIO, Integer> string) {

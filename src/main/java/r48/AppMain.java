@@ -8,6 +8,7 @@
 package r48;
 
 import gabien.GaBIEn;
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.*;
@@ -23,6 +24,7 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.*;
+import r48.ui.Art;
 import r48.ui.Coco;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
@@ -84,9 +86,68 @@ public class AppMain {
     public static StuffRenderer stuffRendererIndependent;
     public static MapSystem system;
 
-    // ONLY this class should refer to this!!!
+    // ONLY this class should refer to this (I think?)
     private static IMapContext mapContext;
     private static UIWindowView rootView;
+    private static IConsumer<UIElement> insertTab, insertImmortalTab;
+
+    // NOTE: These two are never cleaned up and do not carry baggage
+    private static IConsumer<UIElement> rootViewWM = new IConsumer<UIElement>() {
+        @Override
+        public void accept(final UIElement uiElement) {
+            rootView.accept(new UIWindowView.WVWindow(uiElement, new UIWindowView.IWVWindowIcon[] {
+                    new UIWindowView.IWVWindowIcon() {
+                        @Override
+                        public void draw(IGrDriver igd, int x, int y, int size) {
+                            igd.clearRect(128, 64, 64, x, y, size, size);
+                            if (uiElement instanceof IWindowElement)
+                                if (((IWindowElement) uiElement).wantsSelfClose()) {
+                                    rootView.removeByUIE(uiElement);
+                                    ((IWindowElement) uiElement).windowClosed();
+                                }
+                        }
+
+                        @Override
+                        public void click() {
+                            if (uiElement instanceof IWindowElement)
+                                ((IWindowElement) uiElement).windowClosed();
+                            rootView.removeByUIE(uiElement);
+                        }
+                    },
+                    new UIWindowView.IWVWindowIcon() {
+                        @Override
+                        public void draw(IGrDriver igd, int x, int y, int size) {
+                            Art.tabWindowIcon(igd, x, y, size);
+                        }
+
+                        @Override
+                        public void click() {
+                            rootView.removeByUIE(uiElement);
+                            insertTab.accept(uiElement);
+                        }
+                    }
+            }));
+        }
+    };
+    private static IConsumer<UIElement> rootViewWMI = new IConsumer<UIElement>() {
+        @Override
+        public void accept(final UIElement uiElement) {
+            rootView.accept(new UIWindowView.WVWindow(uiElement, new UIWindowView.IWVWindowIcon[] {
+                    new UIWindowView.IWVWindowIcon() {
+                        @Override
+                        public void draw(IGrDriver igd, int x, int y, int size) {
+                            Art.tabWindowIcon(igd, x, y, size);
+                        }
+
+                        @Override
+                        public void click() {
+                            rootView.removeByUIE(uiElement);
+                            insertImmortalTab.accept(uiElement);
+                        }
+                    }
+            }));
+        }
+    };
 
     // State for in-system copy/paste
     public static RubyIO theClipboard = null;
@@ -152,7 +213,7 @@ public class AppMain {
         rootView.windowTextHeight = FontSizes.windowFrameHeight;
         rootView.sizerSize = rootView.windowTextHeight * 2;
         rootView.sizerOfs = (rootView.windowTextHeight * 4) / 3;
-        windowMaker = rootView;
+        windowMaker = rootViewWM;
         rootView.setBounds(new Rect(0, 0, 800, 600));
 
         // Set up a default stuffRenderer for things to use.
@@ -193,9 +254,9 @@ public class AppMain {
         };
     }
 
+    // This can only be done once now that rootView & the tab pane kind of share state.
+    // For a proper UI reset, careful nuking is required.
     private static UITabPane initializeTabs(final String gamepak, final IConsumer<UIElement> uiTicker) {
-        LinkedList<String> tabNames = new LinkedList<String>();
-        LinkedList<UIElement> tabElems = new LinkedList<UIElement>();
 
         ISupplier<IConsumer<UIElement>> wmg = new ISupplier<IConsumer<UIElement>>() {
             @Override
@@ -215,7 +276,7 @@ public class AppMain {
         }
         if (system instanceof IRMMapSystem)
             toolsets.add(new RMToolsToolset(gamepak));
-        toolsets.add(new BasicToolset(rootView, uiTicker, new IConsumer<IConsumer<UIElement>>() {
+        toolsets.add(new BasicToolset(rootViewWM, uiTicker, new IConsumer<IConsumer<UIElement>>() {
             @Override
             public void accept(IConsumer<UIElement> uiElementIConsumer) {
                 windowMaker = uiElementIConsumer;
@@ -223,18 +284,74 @@ public class AppMain {
         }));
         toolsets.add(new ImageEditToolset());
 
-        // Initialize toolsets.
-        for (IToolset its : toolsets) {
-            String[] tabs = its.tabNames();
-            UIElement[] tabContents = its.generateTabs(wmg);
-            // NOTE: This allows skipping out on actually generating tabs at the end, if you dare.
-            for (int i = 0; i < tabContents.length; i++) {
-                tabNames.add(tabs[i]);
-                tabElems.add(tabContents[i]);
-            }
-        }
+        final UITabPane utp = new UITabPane(FontSizes.tabTextHeight, true);
+        insertImmortalTab = new IConsumer<UIElement>() {
+            @Override
+            public void accept(final UIElement uiElement) {
+                utp.addTab(new UIWindowView.WVWindow(uiElement, new UIWindowView.IWVWindowIcon[] {
+                        new UIWindowView.IWVWindowIcon() {
+                            @Override
+                            public void draw(IGrDriver igd, int x, int y, int size) {
+                                Art.windowWindowIcon(igd, x, y, size);
+                            }
 
-        return new UITabPane(tabNames.toArray(new String[0]), tabElems.toArray(new UIElement[0]), FontSizes.tabTextHeight);
+                            @Override
+                            public void click() {
+                                utp.removeTab(uiElement);
+                                Rect r = rootView.getBounds();
+                                uiElement.setBounds(new Rect(0, 0, r.width / 2, r.height / 2));
+                                rootViewWMI.accept(uiElement);
+                            }
+                        }
+                }));
+            }
+        };
+
+        // Initialize toolsets.
+        for (IToolset its : toolsets)
+            for (UIElement uie : its.generateTabs(wmg))
+                insertImmortalTab.accept(uie);
+
+        insertTab = new IConsumer<UIElement>() {
+            @Override
+            public void accept(final UIElement uiElement) {
+                utp.addTab(new UIWindowView.WVWindow(uiElement, new UIWindowView.IWVWindowIcon[] {
+                        new UIWindowView.IWVWindowIcon() {
+                            @Override
+                            public void draw(IGrDriver igd, int x, int y, int size) {
+                                igd.clearRect(128, 64, 64, x, y, size, size);
+                                if (uiElement instanceof IWindowElement)
+                                    if (((IWindowElement) uiElement).wantsSelfClose()) {
+                                        utp.removeTab(uiElement);
+                                        ((IWindowElement) uiElement).windowClosed();
+                                    }
+                            }
+
+                            @Override
+                            public void click() {
+                                if (uiElement instanceof IWindowElement)
+                                    ((IWindowElement) uiElement).windowClosed();
+                                utp.removeTab(uiElement);
+                            }
+                        },
+                        new UIWindowView.IWVWindowIcon() {
+                            @Override
+                            public void draw(IGrDriver igd, int x, int y, int size) {
+                                Art.windowWindowIcon(igd, x, y, size);
+                            }
+
+                            @Override
+                            public void click() {
+                                utp.removeTab(uiElement);
+                                Rect r = rootView.getBounds();
+                                uiElement.setBounds(new Rect(0, 0, r.width / 2, r.height / 2));
+                                rootViewWM.accept(uiElement);
+                            }
+                        }
+                }));
+            }
+        };
+        return utp;
     }
 
     private static UILabel rebuildInnerUI(final String gamepak, final IConsumer<UIElement> uiTicker) {
@@ -512,6 +629,8 @@ public class AppMain {
             mapContext.freeOsbResources();
         mapContext = null;
         rootView = null;
+        insertImmortalTab = null;
+        insertTab = null;
         theClipboard = null;
         imageFXCache = null;
         activeHosts = null;

@@ -156,7 +156,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         final UIElement editor = uie;
                         final UIElement label = new UILabel(positions[mi].text, FontSizes.schemaFieldTextHeight);
                         maxSize.width = Math.max(maxSize.width, label.getBounds().width);
-                        UIPanel panel = new UIPanel() {
+                        UIPublicPanel panel = new UIPublicPanel() {
                             @Override
                             public void setBounds(Rect r) {
                                 super.setBounds(r);
@@ -165,8 +165,8 @@ public class StandardArrayInterface implements IArrayInterface {
                             }
                         };
 
-                        panel.allElements.add(label);
-                        panel.allElements.add(editor);
+                        panel.addElement(label);
+                        panel.addElement(editor);
                         panel.setBounds(new Rect(0, 0, 128, Math.max(editor.getBounds().height, maxSize.height)));
                         uiSVL.panels.add(panel);
                     }

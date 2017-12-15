@@ -10,6 +10,7 @@ package r48.map;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.AppMain;
+import r48.dbs.TXDB;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTBase;
 import r48.ui.UINSVertLayout;
@@ -39,6 +40,11 @@ public class UIMapViewContainer extends UIPanel {
 
     public UIMapViewContainer(ISupplier<IConsumer<UIElement>> wms) {
         windowMakerSupplier = wms;
+    }
+
+    @Override
+    public String toString() {
+        return TXDB.get("Map");
     }
 
     @Override

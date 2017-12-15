@@ -10,10 +10,7 @@ package r48.schema.specialized;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import gabien.ui.UIPanel;
+import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -31,8 +28,8 @@ import r48.schema.util.SchemaPath;
  * Created on 31/07/17.
  */
 public class TonePickerSchemaElement extends SchemaElement {
-    public String rP, gP, bP, sP;
-    public int base;
+    public final String rP, gP, bP, sP;
+    public final int base;
 
     public TonePickerSchemaElement(String rPath, String gPath, String bPath, String sPath, int b) {
         rP = rPath;
@@ -52,7 +49,7 @@ public class TonePickerSchemaElement extends SchemaElement {
     }
 
     public static UIPanel createTotem(IImageEffect cfg) {
-        UIPanel panel = new UIPanel();
+        UIPublicPanel panel = new UIPublicPanel();
         // The tone picker text height is typically 6, which should equal 64, as a base.
         // How do I make this work? Like this:
         int imageUnit = (FontSizes.tonePickerTextHeight * 64) / 6;

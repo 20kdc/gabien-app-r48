@@ -16,8 +16,5 @@ import gabien.ui.UIElement;
  * Created on 2/12/17.
  */
 public interface IToolset {
-    String[] tabNames();
-
-    // NOTE: This allows skipping out on actually generating tabs at the end, if you dare.
     UIElement[] generateTabs(ISupplier<IConsumer<UIElement>> windowMaker);
 }

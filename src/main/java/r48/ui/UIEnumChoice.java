@@ -40,7 +40,13 @@ public class UIEnumChoice extends UIPanel implements IWindowElement {
     public UIEnumChoice(final IConsumer<Integer> result, final Category[] order, String buttonText) {
         categoryPanels = new UIScrollLayout[order.length];
         for (int i = 0; i < categoryPanels.length; i++) {
-            categoryPanels[i] = new UIScrollLayout(true, FontSizes.generalScrollersize);
+            final String name = order[i].translatedName;
+            categoryPanels[i] = new UIScrollLayout(true, FontSizes.generalScrollersize) {
+                @Override
+                public String toString() {
+                    return name;
+                }
+            };
             for (final Option o : order[i].options) {
                 categoryPanels[i].panels.add(new UITextButton(FontSizes.enumChoiceTextHeight, o.key, new Runnable() {
                     @Override
@@ -65,10 +71,9 @@ public class UIEnumChoice extends UIPanel implements IWindowElement {
         if (buttonText.length() != 0)
             categoryPanels[categoryPanels.length - 1].panels.add(finalSplit);
 
-        String[] strs = new String[categoryPanels.length];
-        for (int i = 0; i < strs.length; i++)
-            strs[i] = order[i].translatedName;
-        mainPanel = new UITabPane(strs, categoryPanels, FontSizes.tabTextHeight);
+        mainPanel = new UITabPane(FontSizes.tabTextHeight, false);
+        for (UIElement uie : categoryPanels)
+            mainPanel.addTab(new UIWindowView.WVWindow(uie, new UIWindowView.IWVWindowIcon[] {}));
 
         allElements.add(mainPanel);
     }

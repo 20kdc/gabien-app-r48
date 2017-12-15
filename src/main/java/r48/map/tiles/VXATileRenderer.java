@@ -310,7 +310,7 @@ public class VXATileRenderer implements ITileRenderer {
         if (mv.currentLayer == 3) {
             // Shadow Layer
             return new UITileGrid[] {
-                    new UITileGrid(mv, 0x000, 0x100, 0, null)
+                    new UITileGrid(mv, 0x000, 0x100, 0, null, TXDB.get("Don't use this, use the Shadow-Region tool."))
             };
         } else {
             int[] allATs = new int[0x1800 / 48];
@@ -319,36 +319,17 @@ public class VXATileRenderer implements ITileRenderer {
             return new UITileGrid[] {
                     // Using 16 as the value, though false for most ATs, makes everything work (walls).
                     // Need to introduce another parameter or just set 16 as the display offset. Going with that.
-                    new UITileGrid(mv, 0x800, allATs.length, 48, allATs),
+                    new UITileGrid(mv, 0x800, allATs.length, 48, allATs, "AT"),
 
-                    new UITileGrid(mv, 0x000, 0x400, 0, null),
-                    new UITileGrid(mv, 0x600, 0x100, 0, null),
+                    new UITileGrid(mv, 0x000, 0x400, 0, null, "G1"),
+                    new UITileGrid(mv, 0x600, 0x100, 0, null, "G2"),
 
-                    new UITileGrid(mv, 0x800, 0x300, 0, null),
-                    new UITileGrid(mv, 0xB00, 0x600, 0, null),
-                    new UITileGrid(mv, 0x1100, 0x600, 0, null),
-                    new UITileGrid(mv, 0x1700, 0x900, 0, null),
+                    new UITileGrid(mv, 0x800, 0x300, 0, null, "AT1-M"),
+                    new UITileGrid(mv, 0xB00, 0x600, 0, null, "AT2-M"),
+                    new UITileGrid(mv, 0x1100, 0x600, 0, null, "AT3-M"),
+                    new UITileGrid(mv, 0x1700, 0x900, 0, null, "AT4-M"),
             };
         }
-    }
-
-    @Override
-    public String[] getPlaneNames(int layer) {
-        if (layer == 3)
-            // Shadow Layer
-            return new String[] {
-                    // some friendly advice
-                    TXDB.get("Use Shadow-region Tool"),
-            };
-        return new String[] {
-                "AT",
-                "G1", // General 1
-                "G2", // General 2
-                "AT1-M", // AT Layers
-                "AT2-M",
-                "AT3-M",
-                "AT4-M",
-        };
     }
 
     @Override

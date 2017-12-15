@@ -60,8 +60,8 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public UIElement createMapExplorer(ISupplier<IConsumer<UIElement>> windowMaker, IMapContext mapBox) {
-        return new UIGRMMapInfos(windowMaker, new RXPRMLikeMapInfoBackend(), mapBox);
+    public UIElement createMapExplorer(ISupplier<IConsumer<UIElement>> windowMaker, IMapContext mapBox, String mapInfos) {
+        return new UIGRMMapInfos(windowMaker, new RXPRMLikeMapInfoBackend(), mapBox, mapInfos);
     }
 
     public StuffRenderer rendererFromMap(RubyIO map) {

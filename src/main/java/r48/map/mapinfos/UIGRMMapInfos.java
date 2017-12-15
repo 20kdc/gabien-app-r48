@@ -41,6 +41,7 @@ public class UIGRMMapInfos extends UIPanel {
     private boolean enableOrderHoleDebug = false;
     private IMapContext mapContext;
     private HashSet<Integer> notExpanded = new HashSet<Integer>();
+    private String toStringRes;
 
     private IConsumer<SchemaPath> onMapInfoChange = new IConsumer<SchemaPath>() {
         @Override
@@ -49,9 +50,10 @@ public class UIGRMMapInfos extends UIPanel {
         }
     };
 
-    public UIGRMMapInfos(ISupplier<IConsumer<UIElement>> wmg, final IRMLikeMapInfoBackendWPub b, IMapContext context) {
+    public UIGRMMapInfos(ISupplier<IConsumer<UIElement>> wmg, final IRMLikeMapInfoBackendWPub b, IMapContext context, String mapInfos) {
         operators = b;
         mapContext = context;
+        toStringRes = mapInfos;
         b.registerModificationHandler(onMapInfoChange);
         windowMakerGetter = wmg;
         rebuildList();
@@ -280,6 +282,11 @@ public class UIGRMMapInfos extends UIPanel {
         }));
         uiSVL.setBounds(uiSVL.getBounds());
         deleteConfirmation = false;
+    }
+
+    @Override
+    public String toString() {
+        return toStringRes;
     }
 
     // Is a map part of the chain from pathInnermostId to root?

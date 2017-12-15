@@ -111,7 +111,7 @@ public class UIHelpSystem extends UIPanel {
                 final int sh = extended ? Integer.parseInt(hc.args[4]) : r.getHeight();
                 final int w = FontSizes.scaleGuess(sw);
                 final int h = FontSizes.scaleGuess(sh);
-                UIPanel uie = new UIPanel();
+                UIPublicPanel uie = new UIPublicPanel();
                 uie.baseImage = r;
                 uie.imageX = xx;
                 uie.imageY = yy;

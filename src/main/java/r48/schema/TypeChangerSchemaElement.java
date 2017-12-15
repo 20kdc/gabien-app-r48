@@ -9,7 +9,7 @@ package r48.schema;
 
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import gabien.ui.UIPanel;
+import gabien.ui.UIPublicPanel;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.schema.util.ISchemaHost;
@@ -31,7 +31,7 @@ public class TypeChangerSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO targetValue, final ISchemaHost launcher, final SchemaPath path) {
         // Abstract away the inner object for sanity reasons
-        final UIPanel innerHoldingPanel = new UIPanel() {
+        final UIPublicPanel innerHoldingPanel = new UIPublicPanel() {
             @Override
             public void setBounds(Rect r) {
                 super.setBounds(r);
@@ -82,16 +82,16 @@ public class TypeChangerSchemaElement extends SchemaElement {
         return tp;
     }
 
-    private void initializeHoldingPanel(UIPanel innerHoldingPanel, RubyIO targetValue, ISchemaHost l, SchemaPath path) {
+    private void initializeHoldingPanel(UIPublicPanel innerHoldingPanel, RubyIO targetValue, ISchemaHost l, SchemaPath path) {
         int rei = getRelevantElementId(targetValue);
         SchemaElement targetS = new OpaqueSchemaElement();
         if (rei != -1)
             targetS = targets[rei];
         Rect b = innerHoldingPanel.getBounds();
-        innerHoldingPanel.allElements.clear();
+        innerHoldingPanel.clearElements();
         UIElement uie = targetS.buildHoldingEditor(targetValue, l, path);
         uie.setBounds(new Rect(0, 0, b.width, b.height));
-        innerHoldingPanel.allElements.add(uie);
+        innerHoldingPanel.addElement(uie);
         innerHoldingPanel.setBounds(new Rect(0, 0, b.width, b.height));
     }
 
