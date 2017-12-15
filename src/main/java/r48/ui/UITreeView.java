@@ -163,7 +163,8 @@ public class UITreeView extends UIPanel {
                 if (targ != -1)
                     elements[targ].elementDraggedHere.accept(dragBase);
             } else if (targ == dragBase) {
-                elements[dragBase].expandToggle.run();
+                if (x < ((elements[dragBase].indent + 1) * elements[dragBase].h))
+                    elements[dragBase].expandToggle.run();
             }
         }
         dragBase = -1;

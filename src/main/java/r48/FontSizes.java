@@ -153,26 +153,20 @@ public class FontSizes {
         for (FontSizeField fsf : getFields())
             prepare.addIVar("@" + fsf.name, new RubyIO().setFX(fsf.get()));
 
-        String currentEnc = RubyIO.encoding;
-        RubyIO.encoding = "UTF-8";
-
-        prepare.addIVar("@secondary_images", new RubyIO().setString(Application.secondaryImageLoadLocation));
-        prepare.addIVar("@saved_rootpath", new RubyIO().setString(Application.rootPathBackup));
-        prepare.addIVar("@lang", new RubyIO().setString(TXDB.getLanguage()));
+        prepare.addIVar("@secondary_images", new RubyIO().setInternString(Application.secondaryImageLoadLocation));
+        prepare.addIVar("@saved_rootpath", new RubyIO().setInternString(Application.rootPathBackup));
+        prepare.addIVar("@lang", new RubyIO().setInternString(TXDB.getLanguage()));
         if (UILabel.fontOverride != null) {
-            prepare.addIVar("@sysfont", new RubyIO().setString(UILabel.fontOverride));
+            prepare.addIVar("@sysfont", new RubyIO().setInternString(UILabel.fontOverride));
             prepare.addIVar("@sysfont_ue8", new RubyIO().setBool(UILabel.fontOverrideUE8));
         }
-        RubyIO.encoding = currentEnc;
         AdHocSaveLoad.save("fonts", prepare);
     }
 
     public static boolean load() {
+        // NOTE: Use internal string methods here, this is a game-independent file
         RubyIO dat = AdHocSaveLoad.load("fonts");
         if (dat != null) {
-            String currentEnc = RubyIO.encoding;
-            RubyIO.encoding = "UTF-8";
-
             for (FontSizeField fsf : getFields()) {
                 RubyIO f = dat.getInstVarBySymbol("@" + fsf.name);
                 if (f != null)
@@ -180,7 +174,7 @@ public class FontSizes {
             }
             RubyIO sys = dat.getInstVarBySymbol("@sysfont");
             if (sys != null) {
-                UILabel.fontOverride = sys.decString();
+                UILabel.fontOverride = sys.decInternString();
             } else {
                 UILabel.fontOverride = null;
             }
@@ -189,12 +183,10 @@ public class FontSizes {
                 UILabel.fontOverrideUE8 = sys2.type == 'T';
             RubyIO sys3 = dat.getInstVarBySymbol("@secondary_images");
             if (sys3 != null)
-                Application.secondaryImageLoadLocation = sys3.decString();
+                Application.secondaryImageLoadLocation = sys3.decInternString();
             RubyIO sys4 = dat.getInstVarBySymbol("@saved_rootpath");
             if (sys4 != null)
-                Application.rootPathBackup = sys4.decString();
-
-            RubyIO.encoding = currentEnc;
+                Application.rootPathBackup = sys4.decInternString();
             return true;
         }
         return false;
@@ -205,12 +197,9 @@ public class FontSizes {
     public static void loadLanguage() {
         RubyIO dat = AdHocSaveLoad.load("fonts");
         if (dat != null) {
-            String currentEnc = RubyIO.encoding;
-            RubyIO.encoding = "UTF-8";
             RubyIO sys = dat.getInstVarBySymbol("@lang");
             if (sys != null)
-                TXDB.setLanguage(sys.decString());
-            RubyIO.encoding = currentEnc;
+                TXDB.setLanguage(sys.decInternString());
         }
     }
 

@@ -26,6 +26,8 @@ import java.util.Map;
  * Created on 12/27/16.
  */
 public class RubyIO {
+    // The encoding of all strings that are not internal.
+    // If I get proof that :encoding is necessary, this will become a default encoding setting, and translation will happen in the ODB backend.
     public static String encoding = "UTF-8";
     /*
      * The Grand List Of Objects R48 Supports:
@@ -91,6 +93,14 @@ public class RubyIO {
         setNull();
         type = '"';
         encString(s);
+        return this;
+    }
+
+    // Use solely for transient RubyIO objects, or as a replacement for the "temporary change of encoding" hack.
+    public RubyIO setInternString(String s) {
+        setNull();
+        type = '"';
+        encInternString(s);
         return this;
     }
 
@@ -284,9 +294,23 @@ public class RubyIO {
         return new String(strVal, Charset.forName(encoding));
     }
 
+    // Use for transient RubyIOs
+    public String decInternString() {
+        return new String(strVal, Charset.forName("UTF-8"));
+    }
+
     public RubyIO encString(String text) {
         try {
             strVal = text.getBytes(encoding);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public RubyIO encInternString(String text) {
+        try {
+            strVal = text.getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

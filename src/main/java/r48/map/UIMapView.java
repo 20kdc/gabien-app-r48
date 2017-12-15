@@ -169,7 +169,7 @@ public class UIMapView extends UIElement implements IWindowElement {
             if (pickTileHelper == null)
                 shortcuts = TXDB.get("Mouse drag: Scroll.");
         }
-        String status = map.objectId + ";" + mouseXT + ", " + mouseYT + " Z" + internalScalingMul + ":" + internalScalingDiv + "; " + shortcuts;
+        String status = mapGUM + ";" + mouseXT + ", " + mouseYT + " Z" + internalScalingMul + ":" + internalScalingDiv + "; " + shortcuts;
 
         Rect plusRect = Art.getZIconRect(false, 0);
         Rect plusRectFull = Art.getZIconRect(true, 0); // used for X calc on the label
