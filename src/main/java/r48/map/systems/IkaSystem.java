@@ -24,12 +24,7 @@ import r48.map.tiles.IkaTileRenderer;
  */
 public class IkaSystem extends MapSystem {
     public IkaSystem() {
-        super(new CacheImageLoader(new FixAndSecondaryImageLoader("Pbm/", "", new GabienImageLoader(".pbm", 0, 0, 0))));
-    }
-
-    @Override
-    public String mapSchema() {
-        return "IkachanMap";
+        super(new CacheImageLoader(new FixAndSecondaryImageLoader("Pbm/", "", new GabienImageLoader(".pbm", 0, 0, 0))), true);
     }
 
     public StuffRenderer rendererGeneral(RubyIO map) {
@@ -49,8 +44,8 @@ public class IkaSystem extends MapSystem {
             @Override
             public MapViewState get() {
                 RubyIO map = AppMain.objectDB.getObject("Map");
-                return MapViewState.fromRT(rendererGeneral(map), map, "@data");
+                return MapViewState.fromRT(rendererGeneral(map), map, "@data", false);
             }
-        });
+        }, false, true);
     }
 }

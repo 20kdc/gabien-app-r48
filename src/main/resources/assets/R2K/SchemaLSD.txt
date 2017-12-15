@@ -414,6 +414,7 @@ C name Class.RPG::SavePartyLocation @character_name @character_index @map @x @y 
 @weather_strength weather_control_strength
 
 : RPG::Save
+C name Class.RPG::Save @title@timestamp @title@hero_name @title@hero_level @title@hero_hp | [lang-Common-r2kTsConverter]A #B L#C #DHP
  Important
 @title subwindow RPG::SaveTitle
 @system subwindow RPG::SaveSystem

@@ -24,17 +24,20 @@ public interface IRMMapSystem {
 
     void dumpCustomData(RMTranscriptDumper dumper);
 
+    // This identifies an actual RM map, not a GUM
     class RMMapData {
         public final String name;
         public final RubyIO map;
         public final int id;
         public final String idName;
+        public final String schemaName;
 
-        public RMMapData(String n, RubyIO m, int i, String iN) {
+        public RMMapData(String n, RubyIO m, int i, String iN, String sN) {
             name = n;
             map = m;
             id = i;
             idName = iN;
+            schemaName = sN;
         }
     }
 }

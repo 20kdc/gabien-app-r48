@@ -42,13 +42,17 @@ public class UIMTPopupButtons extends UIMTBase {
                 new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.launchSchema(AppMain.system.mapSchema(), view.map.object, view);
+                        AppMain.launchSchema(view.map.objectSchema, view.map.object, view);
                     }
                 },
                 new Runnable() {
                     @Override
                     public void run() {
-                        mtc.accept(new UIMTMapResizer(mtc));
+                        if (view.map.recommendReadonlyTiles) {
+                            AppMain.launchDialog(TXDB.get("Tiles are apparently readonly, so resizing is not possible."));
+                        } else {
+                            mtc.accept(new UIMTMapResizer(mtc));
+                        }
                     }
                 }
         }, FontSizes.dialogWindowTextHeight, true);

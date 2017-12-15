@@ -55,7 +55,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         if (target.arrVal.length <= index) {
             String tx = TXDB.get("(This index isn't valid - did you modify a group from another window?)");
             if (optional != null)
-                tx = FormatSyntax.formatExtended(TXDB.get("Field #A doesn't exist (default #B)"), new RubyIO().setString(name), new RubyIO().setString(optional));
+                tx = FormatSyntax.formatExtended(TXDB.get("Field #A doesn't exist (default #B)"), new RubyIO().setInternString(name), new RubyIO().setInternString(optional));
             return new UITextButton(FontSizes.schemaButtonTextHeight, tx, new Runnable() {
                 @Override
                 public void run() {

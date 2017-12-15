@@ -355,7 +355,7 @@ public class SDB {
                         // This includes anything of type 'u'.
                         if (text.equals("fileSelector")) {
                             String tx = args[point++];
-                            String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx));
+                            String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO().setInternString(tx));
                             return new SubwindowSchemaElement(new FileSelectorSchemaElement(tx), getFunctionToReturn(txHR));
                         }
                         if (text.equals("halfsplit")) {

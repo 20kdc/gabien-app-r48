@@ -205,9 +205,7 @@ public class AppMain {
         };
 
         LinkedList<IToolset> toolsets = new LinkedList<IToolset>();
-        // Until a future time, this is hard-coded as the classname of a map being created via MapInfos.
-        // Probably simple enough to create a special alias, but meh.
-        if (system.mapSchema() != null) {
+        if (system.enableMapSubsystem) {
             MapToolset mapController = new MapToolset(wmg);
             // Really just restricts access to prevent a hax pileup
             mapContext = mapController.getContext();
@@ -547,11 +545,11 @@ public class AppMain {
         for (RubyIO rio : objectDB.modifiedObjects) {
             String s = objectDB.getIdByObject(rio);
             if (s != null)
-                n.hashVal.put(new RubyIO().setString(s), rio);
+                n.hashVal.put(new RubyIO().setInternString(s), rio);
         }
         if (!emergency) {
             RubyIO n2 = new RubyIO();
-            n2.setString(TXDB.get("R48 Non-Emergency Backup File. This file can be used in place of r48.error.YOUR_SAVED_DATA.r48 in case of power failure or corrupting error. Assuming you actually save often it won't get too big - otherwise you need the reliability."));
+            n2.setInternString(TXDB.get("R48 Non-Emergency Backup File. This file can be used in place of r48.error.YOUR_SAVED_DATA.r48 in case of power failure or corrupting error. Assuming you actually save often it won't get too big - otherwise you need the reliability."));
             RubyIO n3 = AdHocSaveLoad.load("r48.pfail.YOUR_SAVED_DATA");
             if (n3 != null) {
                 // Unlink for disk space & memory usage reasons.
@@ -579,7 +577,7 @@ public class AppMain {
         if (possibleActualDump != null)
             sysDump = possibleActualDump;
         for (Map.Entry<RubyIO, RubyIO> rio : sysDump.hashVal.entrySet()) {
-            String name = rio.getKey().decString();
+            String name = rio.getKey().decInternString();
             RubyIO root = objectDB.getObject(name);
             if (root == null) {
                 root = new RubyIO();

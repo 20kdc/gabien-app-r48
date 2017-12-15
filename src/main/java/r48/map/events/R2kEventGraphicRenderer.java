@@ -34,9 +34,10 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
 
     @Override
     public int determineEventLayer(RubyIO event) {
-        if (event.getInstVarBySymbol("@pages").arrVal.length <= 1)
+        RubyIO eventCore = extractEventGraphic(event);
+        if (eventCore == null)
             return 0;
-        int ld = (int) event.getInstVarBySymbol("@pages").arrVal[1].getInstVarBySymbol("@layer").fixnumVal;
+        int ld = (int) eventCore.getInstVarBySymbol("@layer").fixnumVal;
         if (ld == 0)
             return 0;
         if (ld == 1)
@@ -49,6 +50,15 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
 
     @Override
     public RubyIO extractEventGraphic(RubyIO event) {
+        if (event.symVal == null)
+            return null;
+        // Savefile event classes
+        if (event.symVal.equals("RPG::SavePartyLocation"))
+            return event;
+        if (event.symVal.equals("RPG::SaveVehicleLocation"))
+            return event;
+        if (event.symVal.equals("RPG::SaveMapEvent"))
+            return event;
         // 'Zero Page' gets in the way here.
         if (event.getInstVarBySymbol("@pages").arrVal.length <= 1)
             return null;

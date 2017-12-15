@@ -30,19 +30,21 @@ public class MapEditingToolbarController implements IEditingToolbarController {
         final UIMapView view = viewGiver.getMapView();
 
         // -- Kind of a monolith here. Map tools ALWAYS go first, and must be togglables.
-        // It is assumed that this is the only class capable of causing tool changes.
+        // It is assumed that this is the only class capable of causing tool changes (unless noTool is called)
 
-        for (int i = 0; i < view.mapTable.planeCount; i++) {
-            final int thisButton = i;
-            final UITextButton button = new UITextButton(FontSizes.mapLayertabTextHeight, "L" + i, new Runnable() {
-                @Override
-                public void run() {
-                    clearTools(thisButton);
-                    view.currentLayer = thisButton;
-                    viewGiver.accept(new UIMTAutotile(viewGiver));
-                }
-            }).togglable();
-            tools.add(button);
+        if (!view.map.recommendReadonlyTiles) {
+            for (int i = 0; i < view.mapTable.planeCount; i++) {
+                final int thisButton = i;
+                final UITextButton button = new UITextButton(FontSizes.mapLayertabTextHeight, "L" + i, new Runnable() {
+                    @Override
+                    public void run() {
+                        clearTools(thisButton);
+                        view.currentLayer = thisButton;
+                        viewGiver.accept(new UIMTAutotile(viewGiver));
+                    }
+                }).togglable();
+                tools.add(button);
+            }
         }
         if (view.mapTable.renderer.tileRenderer instanceof VXATileRenderer) {
             tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Shadow/Region"), new Runnable() {
@@ -55,15 +57,17 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 }
             }).togglable());
         }
-        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Events"), new Runnable() {
-            final int thisButton = tools.size();
+        if (view.map.recommendEventAccess) {
+            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Events"), new Runnable() {
+                final int thisButton = tools.size();
 
-            @Override
-            public void run() {
-                clearTools(thisButton);
-                viewGiver.accept(new UIMTEventPicker(viewGiver));
-            }
-        }).togglable());
+                @Override
+                public void run() {
+                    clearTools(thisButton);
+                    viewGiver.accept(new UIMTEventPicker(viewGiver));
+                }
+            }).togglable());
+        }
         tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Layer Visibility"), new Runnable() {
             final int thisButton = tools.size();
 
@@ -91,51 +95,53 @@ public class MapEditingToolbarController implements IEditingToolbarController {
 
         // Utility buttons
 
-        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Grab Tile"), new Runnable() {
-            @Override
-            public void run() {
-                // Select the current tile layer
-                clearTools(view.currentLayer);
-                viewGiver.accept(new UIMTPickTile(viewGiver));
-            }
-        }));
-
-        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("B.Copy"), new Runnable() {
-            final int thisButton = tools.size();
-
-            @Override
-            public void run() {
-                clearTools(thisButton);
-                viewGiver.accept(new UIMTCopyRectangle(viewGiver));
-            }
-        }));
-
-        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("B.Paste"), new Runnable() {
-            final int thisButton = tools.size();
-
-            @Override
-            public void run() {
-                if (AppMain.theClipboard == null) {
-                    AppMain.launchDialog("Unable - there is no clipboard.");
-                    return;
+        if (!view.map.recommendReadonlyTiles) {
+            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Grab Tile"), new Runnable() {
+                @Override
+                public void run() {
+                    // Select the current tile layer
+                    clearTools(view.currentLayer);
+                    viewGiver.accept(new UIMTPickTile(viewGiver));
                 }
-                if (AppMain.theClipboard.type != 'u') {
-                    AppMain.launchDialog("Unable - the clipboard must contain a section of map data - This is not a usertype.");
-                    return;
+            }));
+
+            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("B.Copy"), new Runnable() {
+                final int thisButton = tools.size();
+
+                @Override
+                public void run() {
+                    clearTools(thisButton);
+                    viewGiver.accept(new UIMTCopyRectangle(viewGiver));
                 }
-                if (!AppMain.theClipboard.symVal.equals("Table")) {
-                    AppMain.launchDialog("Unable - the clipboard must contain a section of map data - This is not a Table.");
-                    return;
+            }));
+
+            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("B.Paste"), new Runnable() {
+                final int thisButton = tools.size();
+
+                @Override
+                public void run() {
+                    if (AppMain.theClipboard == null) {
+                        AppMain.launchDialog("Unable - there is no clipboard.");
+                        return;
+                    }
+                    if (AppMain.theClipboard.type != 'u') {
+                        AppMain.launchDialog("Unable - the clipboard must contain a section of map data - This is not a usertype.");
+                        return;
+                    }
+                    if (!AppMain.theClipboard.symVal.equals("Table")) {
+                        AppMain.launchDialog("Unable - the clipboard must contain a section of map data - This is not a Table.");
+                        return;
+                    }
+                    RubyTable rt = new RubyTable(AppMain.theClipboard.userVal);
+                    if (rt.planeCount != viewGiver.getMapView().mapTable.planeCount) {
+                        AppMain.launchDialog("Unable - the map data must contain the same amount of layers for transfer.");
+                        return;
+                    }
+                    clearTools(thisButton);
+                    viewGiver.accept(new UIMTPasteRectangle(viewGiver, rt));
                 }
-                RubyTable rt = new RubyTable(AppMain.theClipboard.userVal);
-                if (rt.planeCount != viewGiver.getMapView().mapTable.planeCount) {
-                    AppMain.launchDialog("Unable - the map data must contain the same amount of layers for transfer.");
-                    return;
-                }
-                clearTools(thisButton);
-                viewGiver.accept(new UIMTPasteRectangle(viewGiver, rt));
-            }
-        }));
+            }));
+        }
 
         tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("..."), new Runnable() {
             final int thisButton = tools.size();

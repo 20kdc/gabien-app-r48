@@ -7,9 +7,6 @@
 
 package r48.map.systems;
 
-import gabien.ui.IConsumer;
-import gabien.ui.IFunction;
-import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.IMapViewDrawLayer;
@@ -28,12 +25,7 @@ public class NullSystem extends MapSystem {
     public NullSystem() {
         // Redundant cache as error safety net.
         // Having an explicit "ErrorSafetyNetImageLoader" would just complicate things.
-        super(new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new GabienImageLoader(""))));
-    }
-
-    @Override
-    public String mapSchema() {
-        return null;
+        super(new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new GabienImageLoader(""))), false);
     }
 
     @Override
@@ -45,26 +37,6 @@ public class NullSystem extends MapSystem {
 
     @Override
     public MapViewDetails mapViewRequest(String gum) {
-        return new MapViewDetails(gum, null, new ISupplier<MapViewState>() {
-            @Override
-            public MapViewState get() {
-                return new MapViewState(rendererFromTso(null), 0, 0, 1, new IFunction<int[], Short>() {
-                    @Override
-                    public Short apply(int[] ints) {
-                        throw new RuntimeException("Should never be called (w & h are 0)");
-                    }
-                }, new IConsumer<int[]>() {
-                    @Override
-                    public void accept(int[] ints) {
-                        throw new RuntimeException("Should never be called (w & h are 0)");
-                    }
-                }, new IConsumer<int[]>() {
-                    @Override
-                    public void accept(int[] ints) {
-                        
-                    }
-                });
-            }
-        });
+        throw new RuntimeException("There's no map system, how can you bring up a map?");
     }
 }

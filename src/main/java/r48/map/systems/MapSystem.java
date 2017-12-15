@@ -29,14 +29,16 @@ public abstract class MapSystem {
     // All implementations will probably use a common image loader across the mapsystem.
     // It's not an absolute, but it's pretty likely.
     protected final IImageLoader imageLoader;
+    // If this is off, almost everything here is inaccessible,
+    //  apart from the generic StuffRenderers
+    public final boolean enableMapSubsystem;
 
-    public MapSystem(IImageLoader imgLoad) {
+    public MapSystem(IImageLoader imgLoad, boolean enableSwitch) {
         imageLoader = imgLoad;
+        enableMapSubsystem = enableSwitch;
     }
 
-    // If null, maps are not enabled.
-    public abstract String mapSchema();
-
+    // If null, the map explorer is not enabled.
     public UIElement createMapExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final IMapContext mapBox) {
         return new UIPopupMenu(new String[] {
                 TXDB.get("Load Map")
@@ -48,6 +50,11 @@ public abstract class MapSystem {
                     }
                 }
         }, FontSizes.menuTextHeight, false);
+    }
+
+    // If null, the save explorer is not enabled.
+    public UIElement createSaveExplorer(final ISupplier<IConsumer<UIElement>> windowMaker, final IMapContext mapBox) {
+        return null;
     }
 
     // Converts "map_id"-style elements to their GUM strings
@@ -102,17 +109,17 @@ public abstract class MapSystem {
 
         public boolean outOfBounds(int mouseXT, int mouseYT) {
             if (mouseXT < 0)
-                return false;
+                return true;
             if (mouseYT < 0)
-                return false;
+                return true;
             if (mouseXT >= width)
-                return false;
+                return true;
             if (mouseYT >= height)
-                return false;
-            return true;
+                return true;
+            return false;
         }
 
-        public static MapViewState fromRT(StuffRenderer stuffRenderer, final RubyIO its, final String str) {
+        public static MapViewState fromRT(StuffRenderer stuffRenderer, final RubyIO its, final String str, final boolean readOnly) {
             final RubyTable rt = new RubyTable(its.getInstVarBySymbol(str).userVal);
             return new MapViewState(stuffRenderer, rt.width, rt.height, rt.planeCount, new IFunction<int[], Short>() {
                 @Override
@@ -122,11 +129,15 @@ public abstract class MapSystem {
             }, new IConsumer<int[]>() {
                 @Override
                 public void accept(int[] ints) {
+                    if (readOnly)
+                        return;
                     rt.setTiletype(ints[0], ints[1], ints[2], (short) ints[3]);
                 }
             }, new IConsumer<int[]>() {
                 @Override
                 public void accept(int[] ints) {
+                    if (readOnly)
+                        return;
                     int[] defs = new int[ints.length - 2];
                     for (int i = 0; i < defs.length; i++)
                         defs[i] = ints[i + 2];
@@ -160,12 +171,18 @@ public abstract class MapSystem {
         // Used for bringing up relevant dialogs & adding listeners.
         // MapViewState really runs the show
         public final String objectId;
+        public final String objectSchema;
         public final RubyIO object;
         public final ISupplier<MapViewState> rendererRetriever;
+        // Recommendation flags for the default ToolbarController if relevant
+        public boolean recommendReadonlyTiles, recommendEventAccess;
 
-        public MapViewDetails(String o, String os, ISupplier<MapViewState> mvs) {
+        public MapViewDetails(String o, String os, ISupplier<MapViewState> mvs, boolean readonlyTiles, boolean eventAccess) {
             objectId = o;
+            objectSchema = os;
             object = AppMain.objectDB.getObject(o, os);
+            recommendReadonlyTiles = readonlyTiles;
+            recommendEventAccess = eventAccess;
             rendererRetriever = mvs;
         }
     }

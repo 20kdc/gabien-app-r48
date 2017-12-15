@@ -148,6 +148,11 @@
    Splits to words, converts words to integers, then adds them together to get a result.
    Useful for, say, r2k LSD save interpreter stack depth adjustment.
 
+  lang-Common-r2kTsConverter:
+   Example:
+    [lang-Common-r2kTsConverter]A
+   Converts a TDateTime (float) to a human-readable date format.
+
  ----------------------------------
 
  Note: It is probably possible to confuse the NDB interpreter if you know what you are doing (or don't).

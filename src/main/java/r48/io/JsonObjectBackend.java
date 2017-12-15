@@ -32,7 +32,7 @@ public class JsonObjectBackend implements IObjectBackend {
         try {
             inp = GaBIEn.getFile(PathUtils.autoDetectWindows(root + filename + ext));
             LinkedList<String> tokens = new LinkedList<String>();
-            Reader r = new InputStreamReader(inp, "UTF-8");
+            Reader r = new InputStreamReader(inp, RubyIO.encoding);
             tokenize(tokens, r);
             inp.close();
             inp = null;

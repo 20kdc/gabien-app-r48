@@ -22,6 +22,7 @@ import r48.map.UIMapViewContainer;
 public class MapToolset implements IToolset {
     private IMapContext context;
     private final UIElement[] tabs;
+    private String[] text;
 
     public MapToolset(final ISupplier<IConsumer<UIElement>> windowMaker) {
         final UIMapViewContainer mapBox = new UIMapViewContainer(windowMaker);
@@ -46,24 +47,45 @@ public class MapToolset implements IToolset {
                 mapBox.view.freeOsbResources();
             }
         };
-        final UIElement mapInfoEl = AppMain.system.createMapExplorer(windowMaker, context);
-        if (mapInfoEl != null) {
-            tabs = new UIElement[] {
-                    mapBox, mapInfoEl
-            };
+        text = new String[] {
+                TXDB.get("Map"),
+                TXDB.get("MapInfos"),
+                TXDB.get("Saves")
+        };
+
+        final UIElement saveEl = AppMain.system.createSaveExplorer(windowMaker, context);
+        if (saveEl != null) {
+            final UIElement mapInfoEl = AppMain.system.createMapExplorer(windowMaker, context);
+            if (mapInfoEl != null) {
+                tabs = new UIElement[] {
+                        mapBox, mapInfoEl, saveEl
+                };
+            } else {
+                tabs = new UIElement[] {
+                        mapBox, saveEl
+                };
+                text = new String[] {
+                        text[0],
+                        text[2]
+                };
+            }
         } else {
-            tabs = new UIElement[] {
-                    mapBox
-            };
+            final UIElement mapInfoEl = AppMain.system.createMapExplorer(windowMaker, context);
+            if (mapInfoEl != null) {
+                tabs = new UIElement[] {
+                        mapBox, mapInfoEl
+                };
+            } else {
+                tabs = new UIElement[] {
+                        mapBox
+                };
+            }
         }
     }
 
     @Override
     public String[] tabNames() {
-        return new String[] {
-                TXDB.get("Map"),
-                TXDB.get("MapInfos")
-        };
+        return text;
     }
 
     @Override

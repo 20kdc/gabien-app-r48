@@ -27,6 +27,7 @@ import r48.map.events.R2kEventGraphicRenderer;
 import r48.map.imaging.*;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
+import r48.map.mapinfos.UISaveScanMapInfos;
 import r48.map.pass.R2kPassabilitySource;
 import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.LcfTileRenderer;
@@ -46,12 +47,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
                 new XYZImageLoader(),
                 new PNG8IImageLoader(),
                 new GabienImageLoader(".png")
-        }))));
-    }
-
-    @Override
-    public String mapSchema() {
-        return "RPG::Map";
+        }))), true);
     }
 
     @Override
@@ -59,13 +55,37 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
         return new UIGRMMapInfos(windowMaker, new R2kRMLikeMapInfoBackend(), context);
     }
 
+    @Override
+    public UIElement createSaveExplorer(ISupplier<IConsumer<UIElement>> windowMaker, IMapContext mapBox) {
+        return new UISaveScanMapInfos(new IFunction<Integer, String>() {
+            @Override
+            public String apply(Integer integer) {
+                return getSaveName(integer);
+            }
+        }, new IFunction<Integer, String>() {
+            @Override
+            public String apply(Integer integer) {
+                return "Save." + integer;
+            }
+        }, 1, 99, mapBox);
+    }
+
+    private String getSaveName(Integer integer) {
+        String padme = integer.toString();
+        if (padme.length() == 1)
+            padme = "0" + padme;
+        return "Save" + padme + ".lsd";
+    }
+
+
     private RubyIO tsoFromMap2000(RubyIO map) {
         if (map == null)
             return null;
         return AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@tilesets").getHashVal(map.getInstVarBySymbol("@tileset_id"));
     }
 
-    public StuffRenderer rendererFromMap(RubyIO map) {
+    // saveData is optional, and replaces some things.
+    private StuffRenderer rendererFromMap(int mapId, RubyIO map, RubyIO saveData) {
         RubyIO tileset = tsoFromMap2000(map);
         ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tileset);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
@@ -73,6 +93,10 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
         // Cannot get enough information without map & tileset
         if ((map != null) && (tileset != null)) {
             RubyIO events = map.getInstVarBySymbol("@events");
+
+            if (saveData != null)
+                events = saveFileVirtualEvents(mapId, saveData);
+
             long scrollFlags = map.getInstVarBySymbol("@scroll_type").fixnumVal;
             RubyTable tbl = new RubyTable(map.getInstVarBySymbol("@data").userVal);
             String vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
@@ -116,6 +140,29 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers, "RPG::Event");
     }
 
+    // Rearranges objects in a convenient manner.
+    // Note that this trick can't be used for editing, so this might be removed later
+    private RubyIO saveFileVirtualEvents(int mapId, RubyIO saveData) {
+        RubyIO eventsHash = new RubyIO();
+        eventsHash.setHash();
+        // Inject 'events'
+        sfveInjectEvent(eventsHash, 10001, mapId, saveData.getInstVarBySymbol("@party_pos"));
+        sfveInjectEvent(eventsHash, 10002, mapId, saveData.getInstVarBySymbol("@boat_pos"));
+        sfveInjectEvent(eventsHash, 10003, mapId, saveData.getInstVarBySymbol("@ship_pos"));
+        sfveInjectEvent(eventsHash, 10004, mapId, saveData.getInstVarBySymbol("@airship_pos"));
+        // Inject actual events
+        for (Map.Entry<RubyIO, RubyIO> kv : saveData.getInstVarBySymbol("@map_info").getInstVarBySymbol("@events").hashVal.entrySet())
+            if (eventsHash.getHashVal(kv.getKey()) == null)
+                eventsHash.hashVal.put(kv.getKey(), kv.getValue());
+        return eventsHash;
+    }
+
+    private void sfveInjectEvent(RubyIO eventsHash, int i, int mapId, RubyIO instVarBySymbol) {
+        if (instVarBySymbol.getInstVarBySymbol("@map").fixnumVal != mapId)
+            return;
+        eventsHash.hashVal.put(new RubyIO().setFX(i), instVarBySymbol);
+    }
+
     @Override
     public StuffRenderer rendererFromTso(RubyIO tso) {
         ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tso);
@@ -133,7 +180,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             RubyIO obj = AppMain.objectDB.getObject(R2kRMLikeMapInfoBackend.sNameFromInt(id));
             if (obj == null)
                 continue;
-            RMMapData rmd = new RMMapData(rio.getValue().getInstVarBySymbol("@name").decString(), obj, id, R2kRMLikeMapInfoBackend.sNameFromInt(id));
+            RMMapData rmd = new RMMapData(rio.getValue().getInstVarBySymbol("@name").decString(), obj, id, R2kRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
             rmdList.add(rmd);
         }
         return rmdList.toArray(new RMMapData[0]);
@@ -168,6 +215,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
 
     @Override
     public IFunction<IMapToolContext, IEditingToolbarController> mapLoadRequest(String gum, final ISupplier<IConsumer<UIElement>> windowMaker) {
+        if (gum.startsWith("Save."))
+            return super.mapLoadRequest(gum, windowMaker);
         if (gum.startsWith("Area.")) {
             final RubyIO root = AppMain.objectDB.getObject("RPG_RT.lmt");
             final RubyIO mapInfos = root.getInstVarBySymbol("@map_infos");
@@ -185,7 +234,20 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     @Override
     public MapViewDetails mapViewRequest(String gum) {
         String[] gp = gum.split("\\.");
-        int v = Integer.parseInt(gp[1]);
+        final int v = Integer.parseInt(gp[1]);
+        if (gp[0].equals("Save")) {
+            final String obj = getSaveName(v);
+            return new MapViewDetails(obj, "RPG::Save", new ISupplier<MapViewState>() {
+                @Override
+                public MapViewState get() {
+                    final RubyIO root = AppMain.objectDB.getObject(obj);
+                    int mapId = (int) root.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map").fixnumVal;
+                    final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(mapId);
+                    RubyIO map = AppMain.objectDB.getObject(objn);
+                    return MapViewState.fromRT(rendererFromMap(mapId, map, root), map, "@data", true);
+                }
+            }, true, false);
+        }
         final RubyIO root = AppMain.objectDB.getObject("RPG_RT.lmt");
         final RubyIO mapInfos = root.getInstVarBySymbol("@map_infos");
         final RubyIO mapInfo = mapInfos.getHashVal(new RubyIO().setFX(v));
@@ -201,9 +263,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             @Override
             public MapViewState get() {
                 RubyIO map = AppMain.objectDB.getObject(objn);
-                return MapViewState.fromRT(rendererFromMap(map), map, "@data");
+                return MapViewState.fromRT(rendererFromMap(v, map, null), map, "@data", false);
             }
-        });
+        }, false, true);
     }
-
 }

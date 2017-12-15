@@ -41,7 +41,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         super(new CacheImageLoader(new FixAndSecondaryImageLoader("Graphics/", "", new ChainedImageLoader(new IImageLoader[] {
                 new GabienImageLoader(".png"),
                 new GabienImageLoader(".jpg"),
-        }))));
+        }))), true);
     }
 
     protected static RubyIO tsoFromMap(RubyIO map) {
@@ -56,11 +56,6 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
             if (tileset.type == '0')
                 tileset = null;
         return tileset;
-    }
-
-    @Override
-    public String mapSchema() {
-        return "RPG::Map";
     }
 
     @Override
@@ -114,9 +109,9 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
             @Override
             public MapViewState get() {
                 RubyIO map = AppMain.objectDB.getObject(gum);
-                return MapViewState.fromRT(rendererFromMap(map), map, "@data");
+                return MapViewState.fromRT(rendererFromMap(map), map, "@data", false);
             }
-        });
+        }, false, true);
     }
 
     @Override
@@ -124,7 +119,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         LinkedList<RMMapData> rmdList = new LinkedList<RMMapData>();
         for (Map.Entry<RubyIO, RubyIO> rio : AppMain.objectDB.getObject("MapInfos").hashVal.entrySet()) {
             int id = (int) rio.getKey().fixnumVal;
-            RMMapData rmd = new RMMapData(rio.getValue().getInstVarBySymbol("@name").decString(), AppMain.objectDB.getObject(RXPRMLikeMapInfoBackend.sNameFromInt(id)), id, RXPRMLikeMapInfoBackend.sNameFromInt(id));
+            RMMapData rmd = new RMMapData(rio.getValue().getInstVarBySymbol("@name").decString(), AppMain.objectDB.getObject(RXPRMLikeMapInfoBackend.sNameFromInt(id)), id, RXPRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
             rmdList.add(rmd);
         }
         return rmdList.toArray(new RMMapData[0]);
