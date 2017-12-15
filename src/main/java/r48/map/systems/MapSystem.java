@@ -68,8 +68,9 @@ public abstract class MapSystem {
     // Otherwise, this is a tileset object, so use that info.
     public abstract StuffRenderer rendererFromTso(RubyIO target);
 
-    // Used to prepare a UIMapView.
-    public abstract MapViewDetails mapViewRequest(String gum);
+    // Used to prepare a UIMapView. Can only return null if allowCreate is false.
+    // Can throw an exception if the GUM is actually invalid, because GUMs are internal strings and can't be entered by the user.
+    public abstract MapViewDetails mapViewRequest(String gum, boolean allowCreate);
 
     // Used to get UI details.
     public IFunction<IMapToolContext, IEditingToolbarController> mapLoadRequest(String gum, final ISupplier<IConsumer<UIElement>> windowMaker) {

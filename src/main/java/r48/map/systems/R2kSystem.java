@@ -232,11 +232,14 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public MapViewDetails mapViewRequest(String gum) {
+    public MapViewDetails mapViewRequest(String gum, boolean allowCreate) {
         String[] gp = gum.split("\\.");
         final int v = Integer.parseInt(gp[1]);
         if (gp[0].equals("Save")) {
             final String obj = getSaveName(v);
+            if (!allowCreate)
+                if (AppMain.objectDB.getObject(obj, null) == null)
+                    return null;
             return new MapViewDetails(obj, "RPG::Save", new ISupplier<MapViewState>() {
                 @Override
                 public MapViewState get() {
@@ -253,12 +256,15 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
         final RubyIO mapInfo = mapInfos.getHashVal(new RubyIO().setFX(v));
         try {
             if (mapInfo.getInstVarBySymbol("@type").fixnumVal == 2)
-                return mapViewRequest("Map." + mapInfo.getInstVarBySymbol("@parent_id").fixnumVal);
+                return mapViewRequest("Map." + mapInfo.getInstVarBySymbol("@parent_id").fixnumVal, true);
         } catch (StackOverflowError soe) {
             // Note the implied change to an Exception, which gets caught
             throw new RuntimeException(soe);
         }
         final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(v);
+        if (!allowCreate)
+            if (AppMain.objectDB.getObject(objn, null) == null)
+                return null;
         return new MapViewDetails(objn, "RPG::Map", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {

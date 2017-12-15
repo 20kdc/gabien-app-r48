@@ -140,14 +140,16 @@ public class UIMapViewContainer extends UIPanel {
             }
         };
 
-        view.pickTileHelper = new IConsumer<Short>() {
-            @Override
-            public void accept(Short aShort) {
-                UIMTAutotile atf = new UIMTAutotile(mtc);
-                atf.selectTile(aShort);
-                nextMapTool = atf;
-            }
-        };
+        if (!view.map.recommendReadonlyTiles) {
+            view.pickTileHelper = new IConsumer<Short>() {
+                @Override
+                public void accept(Short aShort) {
+                    UIMTAutotile atf = new UIMTAutotile(mtc);
+                    atf.selectTile(aShort);
+                    nextMapTool = atf;
+                }
+            };
+        }
 
         final IEditingToolbarController metc = AppMain.system.mapLoadRequest(gum, windowMakerSupplier).apply(mtc);
         viewToolbarSplit = new UINSVertLayout(metc.getBar(), view);

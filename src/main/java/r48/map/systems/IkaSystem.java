@@ -39,7 +39,10 @@ public class IkaSystem extends MapSystem {
     }
 
     @Override
-    public MapViewDetails mapViewRequest(String gum) {
+    public MapViewDetails mapViewRequest(String gum, boolean allowCreate) {
+        if (!allowCreate)
+            if (AppMain.objectDB.getObject("Map", null) == null)
+                return null;
         return new MapViewDetails("Map", "IkachanMap", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {

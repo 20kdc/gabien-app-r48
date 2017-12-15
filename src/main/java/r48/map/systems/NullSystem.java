@@ -36,7 +36,7 @@ public class NullSystem extends MapSystem {
     }
 
     @Override
-    public MapViewDetails mapViewRequest(String gum) {
+    public MapViewDetails mapViewRequest(String gum, boolean allowCreate) {
         throw new RuntimeException("There's no map system, how can you bring up a map?");
     }
 }

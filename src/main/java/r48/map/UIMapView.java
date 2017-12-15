@@ -76,7 +76,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     public UIMapView(String mapN, int i, int i1) {
         setBounds(new Rect(0, 0, i, i1));
 
-        map = AppMain.system.mapViewRequest(mapN);
+        map = AppMain.system.mapViewRequest(mapN, true);
         mapGUM = mapN;
         AppMain.objectDB.registerModificationHandler(map.object, listener);
         listener.accept(null);
@@ -247,7 +247,8 @@ public class UIMapView extends UIElement implements IWindowElement {
             dragging = false;
             if (shiftDown) {
                 if (!mapTable.outOfBounds(mouseXT, mouseYT))
-                    pickTileHelper.accept(mapTable.getTileData.apply(new int[] {mouseXT, mouseYT, currentLayer}));
+                    if (pickTileHelper != null)
+                        pickTileHelper.accept(mapTable.getTileData.apply(new int[] {mouseXT, mouseYT, currentLayer}));
             } else if ((callbacks != null) && (!camDragSwitch)) {
                     callbacks.confirmAt(mouseXT, mouseYT, currentLayer);
             } else {

@@ -104,7 +104,10 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public MapViewDetails mapViewRequest(final String gum) {
+    public MapViewDetails mapViewRequest(final String gum, boolean allowCreate) {
+        if (!allowCreate)
+            if (AppMain.objectDB.getObject(gum, null) == null)
+                return null;
         return new MapViewDetails(gum, "RPG::Map", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {
