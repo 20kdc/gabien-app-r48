@@ -72,6 +72,8 @@ public class ObjectDB {
                 } else {
                     return null;
                 }
+            } else {
+                return null;
             }
         }
         objectMap.put(id, new WeakReference<RubyIO>(rio));

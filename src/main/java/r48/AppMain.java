@@ -285,6 +285,19 @@ public class AppMain {
         toolsets.add(new ImageEditToolset());
 
         final UITabPane utp = new UITabPane(FontSizes.tabTextHeight, true);
+        Runnable runVisFrame = new Runnable() {
+            @Override
+            public void run() {
+                double keys = objectDB.objectMap.keySet().size();
+                if (keys < 1) {
+                    utp.visualizationOrange = 0.0d;
+                } else {
+                    utp.visualizationOrange = objectDB.modifiedObjects.size() / keys;
+                }
+                pendingRunnables.add(this);
+            }
+        };
+        pendingRunnables.add(runVisFrame);
         insertImmortalTab = new IConsumer<UIElement>() {
             @Override
             public void accept(final UIElement uiElement) {
