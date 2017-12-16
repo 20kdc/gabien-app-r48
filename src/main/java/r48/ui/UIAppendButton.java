@@ -38,7 +38,7 @@ public class UIAppendButton extends UIPanel {
     @Override
     public void setBounds(Rect r) {
         super.setBounds(r);
-        button.setBounds(UITextButton.getRecommendedSize(button.Text, textHeight));
+        button.setBounds(UITextButton.getRecommendedSize(button.text, textHeight));
         Rect bgb = button.getBounds();
         button.setBounds(new Rect(r.width - bgb.width, 0, bgb.width, bgb.height));
         subElement.setBounds(new Rect(0, 0, r.width - bgb.width, r.height));

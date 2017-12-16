@@ -9,12 +9,12 @@ package r48.map.drawlayers;
 
 import gabien.IGrDriver;
 import gabien.ui.UILabel;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
+import r48.map.UIMapView;
 import r48.map.tiles.ITileRenderer;
 
 /**
@@ -58,7 +58,7 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
                 // Possible offset of 1?
                 if (debug) {
                     String t = Integer.toString(targetTable.getTiletype(i, j, tileLayer), 16);
-                    UILabel.drawString(igd, px, py + (tileLayer * FontSizes.mapDebugTextHeight), t, false, FontSizes.mapDebugTextHeight);
+                    UILabel.drawString(igd, px, py + (tileLayer * UIMapView.mapDebugTextHeight), t, false, UIMapView.mapDebugTextHeight);
                 } else {
                     short tidx = targetTable.getTiletype(i, j, tileLayer);
                     if (callbacks != null)

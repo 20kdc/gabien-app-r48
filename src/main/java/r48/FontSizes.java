@@ -48,8 +48,6 @@ public class FontSizes {
 
     // TXDB.get("mapPositionTextHeight")
     public static int mapPositionTextHeight = 16;
-    // TXDB.get("mapDebugTextHeight")
-    public static int mapDebugTextHeight = 6;
     // TXDB.get("mapInfosTextHeight")
     public static int mapInfosTextHeight = 16; // separate tab!
     // TXDB.get("mapLayertabTextHeight")

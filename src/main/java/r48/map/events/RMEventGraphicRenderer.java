@@ -11,11 +11,11 @@ import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.ui.UILabel;
 import r48.AppMain;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
 import r48.imagefx.ToneImageEffect;
+import r48.map.UIMapView;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
 
@@ -81,7 +81,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         int dir = lookupDirection(coreDir);
         if (dir == -1) {
             dir = 0;
-            UILabel.drawString(igd, ox, oy, "D" + coreDir, false, FontSizes.mapDebugTextHeight);
+            UILabel.drawString(igd, ox, oy, "D" + coreDir, false, UIMapView.mapDebugTextHeight * sprScale);
         }
         RubyIO cName = target.getInstVarBySymbol("@character_name");
         short tId = (short) target.getInstVarBySymbol("@tile_id").fixnumVal;

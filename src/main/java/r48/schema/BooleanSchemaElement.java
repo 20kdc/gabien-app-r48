@@ -29,12 +29,12 @@ public class BooleanSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
         final UITextButton utb = new UITextButton(FontSizes.schemaButtonTextHeight, determineTruth(target) ? TXDB.get("True") : TXDB.get("False"), null).togglable();
         utb.state = determineTruth(target);
-        utb.OnClick = new Runnable() {
+        utb.onClick = new Runnable() {
             @Override
             public void run() {
                 modifyValueTruth(target, utb.state);
                 path.changeOccurred(false);
-                utb.Text = utb.state ? TXDB.get("True") : TXDB.get("False");
+                utb.text = utb.state ? TXDB.get("True") : TXDB.get("False");
             }
         };
         return utb;

@@ -110,7 +110,7 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                         @Override
                         public void accept(final AtomicInteger currentState) {
                             flag.state = ((currentState.get() & thisBit) != 0);
-                            flag.OnClick = new Runnable() {
+                            flag.onClick = new Runnable() {
                                 @Override
                                 public void run() {
                                     int v = currentState.get() ^ thisBit;

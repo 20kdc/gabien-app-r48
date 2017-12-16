@@ -12,7 +12,6 @@ import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.ui.UILabel;
 import r48.AppMain;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.ATDB;
 import r48.dbs.TXDB;
@@ -140,7 +139,7 @@ public class VXATileRenderer implements ITileRenderer {
             if (handleMTLayer(tidx, tileSize, px, py, 4, igd, spriteScale))
                 return;
 
-        UILabel.drawString(igd, px, py, Integer.toHexString(tidx), false, FontSizes.mapDebugTextHeight);
+        UILabel.drawString(igd, px, py, Integer.toHexString(tidx), false, UIMapView.mapDebugTextHeight);
     }
 
     private void drawShadowTileFlag(short tidx, int i, int i1, int i2, IGrDriver igd, int st) {

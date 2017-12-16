@@ -397,6 +397,7 @@ public class Application {
             // as this is a touch device, map 8 to 16 (6 is for things that really matter)
             if (fsf.get() == 8)
                 fsf.accept(16);
+            // uiGuessScaleTenths was set manually.
             if (!fsf.name.equals("uiGuessScaleTenths"))
                 fsf.accept(FontSizes.scaleGuess(fsf.get()));
         }

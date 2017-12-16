@@ -165,15 +165,17 @@ public class Art {
 
     public static void tabWindowIcon(IGrDriver igd, int x, int y, int size) {
         int tabAscender = size / 4;
+        int tabMargin = Math.max(1, size / 8);
         igd.clearRect(64, 64, 128, x, y, size / 2, size - tabAscender);
-        igd.clearRect(32, 32, 64, x + 1, y + 1, (size / 2) - 2, (size - tabAscender) - 2);
+        igd.clearRect(32, 32, 64, x + tabMargin, y + tabMargin, (size / 2) - (tabMargin * 2), (size - tabAscender) - (tabMargin * 2));
         igd.clearRect(64, 64, 128, x, y + tabAscender, size, size - tabAscender);
     }
 
     public static void windowWindowIcon(IGrDriver igd, int x, int y, int size) {
-        int frameHeight = size / 4;
+        int frameHeight = size / 3;
+        int tMargin = Math.max(1, size / 8);
         igd.clearRect(128, 128, 128, x, y, size, frameHeight);
-        igd.clearRect(32, 32, 32, x + 1, y + 1, size - 2, frameHeight - 2);
+        igd.clearRect(32, 32, 32, x + tMargin, y + tMargin, size - (tMargin * 2), frameHeight - (tMargin * 2));
         igd.clearRect(96, 96, 96, x, y + frameHeight, size, size - frameHeight);
     }
 }

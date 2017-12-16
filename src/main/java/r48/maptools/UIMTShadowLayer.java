@@ -72,9 +72,9 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
         if (map.mapTable.outOfBounds(tx, ty))
             return;
         int regionId = (map.mapTable.getTiletype(tx, ty, 3) & 0xFF00) >> 8;
-        int l = UILabel.getTextLength("R" + regionId, FontSizes.mapDebugTextHeight) + 1;
-        igd.clearRect(0, 0, 0, px, py, l, FontSizes.mapDebugTextHeight);
-        UILabel.drawString(igd, px, py, "R" + regionId, true, FontSizes.mapDebugTextHeight);
+        int l = UILabel.getTextLength("R" + regionId, UIMapView.mapDebugTextHeight) + 1;
+        igd.clearRect(0, 0, 0, px, py, l, UIMapView.mapDebugTextHeight);
+        UILabel.drawString(igd, px, py, "R" + regionId, true, UIMapView.mapDebugTextHeight);
     }
 
     @Override

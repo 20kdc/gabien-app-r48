@@ -28,11 +28,15 @@ public class UIFontSizeConfigurator extends UIPanel {
     }
 
     public void refreshLayout() {
+        double iniScroll = 0;
+        if (outerLayout != null)
+            iniScroll = outerLayout.scrollbar.scrollPoint;
         if (lastFontSizerSize == FontSizes.fontSizerTextHeight)
             return;
         lastFontSizerSize = FontSizes.fontSizerTextHeight;
         allElements.clear();
         outerLayout = new UIScrollLayout(true, FontSizes.generalScrollersize);
+        outerLayout.scrollbar.scrollPoint = iniScroll;
         final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
         final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();
         outerLayout.panels.add(new UISplitterLayout(new UITextButton(FontSizes.fontSizerTextHeight, "*2", new Runnable() {
@@ -74,11 +78,11 @@ public class UIFontSizeConfigurator extends UIPanel {
         }) {
             @Override
             public void updateAndRender(int ox, int oy, double DeltaTime, boolean selected, IGrInDriver igd) {
-                Text = TXDB.get("Font: ");
+                text = TXDB.get("Font: ");
                 if (UILabel.fontOverride != null) {
-                    Text += UILabel.fontOverride;
+                    text += UILabel.fontOverride;
                 } else {
-                    Text += TXDB.get("Internal w/fallbacks");
+                    text += TXDB.get("Internal w/fallbacks");
                 }
                 super.updateAndRender(ox, oy, DeltaTime, selected, igd);
             }
@@ -89,7 +93,7 @@ public class UIFontSizeConfigurator extends UIPanel {
             }
         }, FontSizes.fontSizerTextHeight);
         fontButtonAppend.button.togglable().state = UILabel.fontOverrideUE8;
-        fontButtonAppend.button.OnClick = new Runnable() {
+        fontButtonAppend.button.onClick = new Runnable() {
             @Override
             public void run() {
                 UILabel.fontOverrideUE8 = fontButtonAppend.button.state;

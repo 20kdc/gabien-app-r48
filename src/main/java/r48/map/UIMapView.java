@@ -25,6 +25,9 @@ import r48.ui.Art;
  * Created on 12/27/16.
  */
 public class UIMapView extends UIElement implements IWindowElement {
+    // This is drawn within the tile view. I.E. It's in content-pixels, not device-pixels
+    public static final int mapDebugTextHeight = 6;
+
     // NOTE: camX/camY is negated display offset, from TL corner.
     // Also note that they are adjusted to internal scale.
     private double camX, camY;

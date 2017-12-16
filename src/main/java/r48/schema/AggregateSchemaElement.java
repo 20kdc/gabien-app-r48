@@ -117,8 +117,8 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
                 keyStoragePath.getEmbedMap(host).put(myKey, 0d);
             }
         };
-        final Runnable next = utb.OnClick;
-        utb.OnClick = new Runnable() {
+        final Runnable next = utb.onClick;
+        utb.onClick = new Runnable() {
             @Override
             public void run() {
                 if (next != null)
@@ -128,7 +128,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
         };
         if (keyStoragePath.getEmbedSP(host, myKey) != 0d) {
             utb.state = true;
-            utb.PressedTime = 0.5d;
+            utb.pressedTime = 0.5d;
         }
         return saver;
     }
