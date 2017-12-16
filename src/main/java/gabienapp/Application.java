@@ -47,6 +47,10 @@ public class Application {
     // This is the root path which is *defaulted to*.
     public static String rootPathBackup = "";
 
+    // Used if R48 tries to boot before the font is loaded, to catch that.
+    // This means things that change the current font override state have to turn this off.
+    public static boolean preventFontOverrider = false;
+
     public static void gabienmain() throws IOException {
         mobileExtremelySpecialBehavior = GaBIEn.singleWindowApp();
         uiTicker = new WindowCreatingUIElementConsumer();
@@ -191,6 +195,11 @@ public class Application {
             //  which makes it worth keeping.
             boolean backupAvailable = false;
             while (uiTicker.runningWindows().size() > 0) {
+                if (UILabel.fontOverride != null)
+                    if (preventFontOverrider) {
+                        UILabel.fontOverride = null;
+                        preventFontOverrider = true;
+                    }
                 double dT = handleTick();
                 try {
                     if (appTicker != null)
@@ -326,8 +335,12 @@ public class Application {
         String movement = " "; // the baton is 'thrown'
         // Used for two reasons.
         // 1. to work out window size during a specific situation on Android.
-        // 2. on certain Linux distributions, Java still freezes up during font load
+        // 2. on certain distributions (Arch Linux), Java still freezes up during font load,
+        //     so try to pave over it and PRETEND EVERYTHING'S FINE!!!
+        //    I suspect network connectivity is involved, which is odd.
         WindowSpecs ws = GaBIEn.defaultWindowSpecs("R48 Startup...", 800, 600);
+        // Used to speed things up if possible
+        final AtomicBoolean fontsNecessary = new AtomicBoolean(true);
         ws.scale = 1;
         ws.resizable = true;
         IGrInDriver gi = GaBIEn.makeGrIn("R48 Startup...", 800, 600, ws);
@@ -337,9 +350,17 @@ public class Application {
             @Override
             public void run() {
                 TXDB.init();
-                FontSizes.loadLanguage();
+                boolean canAvoidWait = FontSizes.loadLanguage();
                 // TXDB 'stable', spammed class refs
                 txdbDonePrimaryTask.set(true);
+                // If we're setup correctly: English never needs the font-loading.
+                // The reason it's important we use the correct language for this is because if font-loading is slow,
+                //  we WILL (not may, WILL) freeze up until ready.
+                if (canAvoidWait)
+                    if (TXDB.getLanguage().equals("English")) {
+                        preventFontOverrider = true;
+                        fontsNecessary.set(false);
+                    }
                 rootGPMenuPanel = new PrimaryGPMenuPanel();
             }
         };
@@ -349,19 +370,34 @@ public class Application {
             handleTick();
             gi.clearAll(255, 255, 255);
             int sz = (Math.min(gi.getWidth(), gi.getHeight()) / 4) * 2;
-            Rect pos = new Rect((gi.getWidth() / 2) - (sz / 2), (gi.getHeight() / 2) - (sz / 2), sz, sz);
             Rect ltPos = Art.r48ico;
+            Rect ltPos2 = Art.r48ver;
+
+            // note the swap on Y from - (sz / 2) because of the version
+            Rect pos = new Rect((gi.getWidth() / 2) - (sz / 2), (gi.getHeight() / 2) - ((sz * 3) / 4), sz, sz);
+            int fxRatio = ltPos2.width * ltPos2.height;
+            int aspectMul = (ltPos2.height * fxRatio) / ltPos2.width;
+            int szVHeight = (sz * aspectMul) / fxRatio;
+            // this is where the "big version number" maths get changed to "little version number" maths
+            Rect pos2 = new Rect(pos.x + (sz / 4), pos.y + (pos.height + (pos.height / 16)), sz / 2, szVHeight / 2);
             gi.blitScaledImage(ltPos.x, ltPos.y, ltPos.width, ltPos.height, pos.x, pos.y, pos.width, pos.height, GaBIEn.getImage("layertab.png"));
+            int margin = sz / 62;
+            gi.clearRect(0, 0, 0, pos2.x - margin, pos2.y - margin, pos2.width + (margin * 2), pos2.height + (margin * 2));
+            gi.blitScaledImage(ltPos2.x, ltPos2.y, ltPos2.width, ltPos2.height, pos2.x, pos2.y, pos2.width, pos2.height, GaBIEn.getImage("layertab.png"));
+
 
             // Can't translate for several reasons (but especially no fonts).
-            // This is really the only reason any of the messages are likely to be seen,
-            //  because certain JRE implementations can't load fonts to save their lives
+            // This is really the only reason any of the messages are likely to be seen.
             String waitingFor = null;
             // Doesn't matter if it switches font on the last frame or something, just make sure the application remains running
-            if (UILabel.fontOverride == null) {
+            if ((UILabel.fontOverride == null) && fontsNecessary.get()) {
                 waitingFor = "Loading";
             } else if ((!txdbDonePrimaryTask.get()) || (rootGPMenuPanel == null)) {
                 waitingFor = "Loading";
+            }
+            if (preventFontOverrider && (UILabel.fontOverride != null)) {
+                UILabel.fontOverride = null;
+                preventFontOverrider = false;
             }
             if (waitingFor == null) {
                 frames++;

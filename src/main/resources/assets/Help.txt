@@ -457,7 +457,7 @@ p 4
 .
 . You are using the following version of R48:
 p 4
-I layertab.png 36 48 32 16
+I layertab.png 37 48 31 16
 p 4
 .
 . gabien-app-r48 - Editing program for various formats

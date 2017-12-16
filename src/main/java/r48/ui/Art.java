@@ -26,6 +26,7 @@ public class Art {
     public static Rect hiddenTreeIcon = new Rect(24, 36, 8, 8);
     private static IImage colourPal;
     public static Rect r48ico = new Rect(37, 1, 31, 31);
+    public static Rect r48ver = new Rect(37, 48, 31, 16);
 
     // Must be -dotLineAni
     private static final int dotLineMetric = 27;

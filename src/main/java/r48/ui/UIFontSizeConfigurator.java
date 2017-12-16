@@ -10,6 +10,7 @@ package r48.ui;
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.ui.*;
+import gabienapp.Application;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 
@@ -72,6 +73,7 @@ public class UIFontSizeConfigurator extends UIPanel {
                 if (UILabel.fontOverride != null) {
                     UILabel.fontOverride = null;
                 } else {
+                    Application.preventFontOverrider = false;
                     UILabel.fontOverride = GaBIEn.getFontOverrides()[0];
                 }
             }

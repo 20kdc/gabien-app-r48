@@ -192,13 +192,17 @@ public class FontSizes {
 
     // Notably, language is loaded early, and is not loaded along with font sizes in general.
     // This is so that TXDB & such can start up.
-    public static void loadLanguage() {
+    // Returns true if sysfont is disabled (see caller in Application)
+    public static boolean loadLanguage() {
         RubyIO dat = AdHocSaveLoad.load("fonts");
+        boolean sysfontDisabled = false;
         if (dat != null) {
+            sysfontDisabled = dat.getInstVarBySymbol("@sysfont") == null;
             RubyIO sys = dat.getInstVarBySymbol("@lang");
             if (sys != null)
                 TXDB.setLanguage(sys.decInternString());
         }
+        return sysfontDisabled;
     }
 
     public static class FontSizeField implements IConsumer<Integer>, ISupplier<Integer> {
