@@ -53,7 +53,7 @@ public class SymEnumSchemaElement extends SchemaElement {
                         if (integer >= options.length)
                             return;
                         if (actuallyString) {
-                            target.encString(options[integer]);
+                            target.encString(options[integer], false);
                         } else {
                             target.symVal = options[integer];
                         }
@@ -70,7 +70,7 @@ public class SymEnumSchemaElement extends SchemaElement {
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (actuallyString) {
             if (IntegerSchemaElement.ensureType(target, '"', setDefault)) {
-                target.encString(options[0]);
+                target.encString(options[0], false);
                 path.changeOccurred(true);
             }
         } else {

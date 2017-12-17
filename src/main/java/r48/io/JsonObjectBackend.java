@@ -32,7 +32,7 @@ public class JsonObjectBackend implements IObjectBackend {
         try {
             inp = GaBIEn.getFile(PathUtils.autoDetectWindows(root + filename + ext));
             LinkedList<String> tokens = new LinkedList<String>();
-            Reader r = new InputStreamReader(inp, IObjectBackend.Factory.encoding);
+            Reader r = new InputStreamReader(inp, "UTF-8");
             tokenize(tokens, r);
             inp.close();
             inp = null;
@@ -53,7 +53,7 @@ public class JsonObjectBackend implements IObjectBackend {
     private RubyIO loadFromTokens(LinkedList<String> tokens) {
         String n = tokens.removeFirst();
         if (n.startsWith("\""))
-            return new RubyIO().setString(n.substring(1));
+            return new RubyIO().setString(n.substring(1), true);
         if (n.equals("{")) {
             RubyIO hash = new RubyIO().setHash();
             // comma policy is very liberal here since it's never ambiguous
@@ -106,7 +106,7 @@ public class JsonObjectBackend implements IObjectBackend {
         float f = Float.parseFloat(n);
         if ((((long) f) == f) && (!n.contains(".")))
             return new RubyIO().setFX((long) f);
-        RubyIO str = new RubyIO().setString(n);
+        RubyIO str = new RubyIO().setString(n, true);
         str.type = 'f';
         return str;
     }

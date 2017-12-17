@@ -280,7 +280,7 @@ public class SDB {
                                 String r = EscapedStringSyntax.unescape(args[point++]);
                                 RubyIO res = new RubyIO();
                                 if (r.startsWith(":")) {
-                                    res.setString(r.substring(1));
+                                    res.setString(r.substring(1), false);
                                 } else {
                                     res.setFX(Long.parseLong(r));
                                 }
@@ -355,7 +355,7 @@ public class SDB {
                         // This includes anything of type 'u'.
                         if (text.equals("fileSelector")) {
                             String tx = args[point++];
-                            String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx));
+                            String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx, true));
                             return new SubwindowSchemaElement(new FileSelectorSchemaElement(tx), getFunctionToReturn(txHR));
                         }
                         if (text.equals("halfsplit")) {

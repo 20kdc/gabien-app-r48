@@ -8,6 +8,7 @@
 package r48;
 
 import r48.io.IMIUtils;
+import r48.io.IObjectBackend;
 
 import java.io.*;
 import java.util.HashMap;
@@ -85,10 +86,10 @@ public class RubyIO {
         return this;
     }
 
-    public RubyIO setString(String s) {
+    public RubyIO setString(String s, boolean intern) {
         setNull();
         type = '"';
-        encString(s);
+        encString(s, intern);
         return this;
     }
 
@@ -289,10 +290,14 @@ public class RubyIO {
         }
     }
 
-    public RubyIO encString(String text) {
+    // intern means "use UTF-8"
+    public RubyIO encString(String text, boolean intern) {
         try {
-            strVal = text.getBytes("UTF-8");
-            RubyEncodingTranslator.inject(this, "UTF-8");
+            String encoding = "UTF-8";
+            if (!intern)
+                encoding = IObjectBackend.Factory.encoding;
+            strVal = text.getBytes(encoding);
+            RubyEncodingTranslator.inject(this, encoding);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

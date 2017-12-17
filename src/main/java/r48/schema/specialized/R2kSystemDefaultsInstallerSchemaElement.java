@@ -59,17 +59,17 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     target.getInstVarBySymbol("@terrains").hashVal.put(new RubyIO().setFX(1), sub);
                     // 4. Battle System initialization
                     sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Animation"), new RubyIO().setFX(1));
-                    sub.getInstVarBySymbol("@name").setString("Default Fallback Animation");
+                    sub.getInstVarBySymbol("@name").setString("Default Fallback Animation", false);
                     target.getInstVarBySymbol("@animations").hashVal.put(new RubyIO().setFX(1), sub);
 
                     sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::State"), new RubyIO().setFX(1));
                     // These are the minimum settings for death to work correctly.
-                    sub.getInstVarBySymbol("@name").setString("Death");
+                    sub.getInstVarBySymbol("@name").setString("Death", false);
                     sub.getInstVarBySymbol("@restriction").fixnumVal = 1;
                     target.getInstVarBySymbol("@states").hashVal.put(new RubyIO().setFX(1), sub);
 
                     sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::BattlerAnimationSet"), new RubyIO().setFX(1));
-                    sub.getInstVarBySymbol("@name").setString("Default Fallback AnimSet");
+                    sub.getInstVarBySymbol("@name").setString("Default Fallback AnimSet", false);
                     target.getInstVarBySymbol("@battle_anim_sets_2k3").hashVal.put(new RubyIO().setFX(1), sub);
                     // Prepare.
                     AppMain.pendingRunnables.add(new Runnable() {
@@ -82,13 +82,13 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                 case 1:
                     // 1. Fix root
                     sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(0));
-                    sub.getInstVarBySymbol("@name").setString("Root");
+                    sub.getInstVarBySymbol("@name").setString("Root", false);
                     sub.getInstVarBySymbol("@parent_id").fixnumVal = 0;
                     sub.getInstVarBySymbol("@type").fixnumVal = 0;
                     target.getInstVarBySymbol("@map_infos").hashVal.put(new RubyIO().setFX(0), sub);
                     // 2. Create basic map entry
                     sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(1));
-                    sub.getInstVarBySymbol("@name").setString("First Map");
+                    sub.getInstVarBySymbol("@name").setString("First Map", false);
                     sub.getInstVarBySymbol("@parent_id").fixnumVal = 0;
                     sub.getInstVarBySymbol("@type").fixnumVal = 1;
                     target.getInstVarBySymbol("@map_infos").hashVal.put(new RubyIO().setFX(1), sub);

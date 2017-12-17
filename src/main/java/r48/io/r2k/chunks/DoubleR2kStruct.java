@@ -26,7 +26,7 @@ public class DoubleR2kStruct implements IR2kStruct {
     public RubyIO asRIO() {
         RubyIO d = new RubyIO();
         d.type = 'f';
-        d.encString(Double.toString(v));
+        d.encString(Double.toString(v), true);
         return d;
     }
 

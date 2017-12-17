@@ -48,7 +48,7 @@ public class StringSchemaElement extends SchemaElement {
 
 
     protected void encodeVal(String text, RubyIO target) {
-        target.encString(text);
+        target.encString(text, false);
     }
 
     protected boolean verifier(String text) {

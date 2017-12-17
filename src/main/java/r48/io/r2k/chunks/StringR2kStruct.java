@@ -7,6 +7,7 @@
 
 package r48.io.r2k.chunks;
 
+import r48.RubyEncodingTranslator;
 import r48.RubyIO;
 import r48.io.IObjectBackend;
 import r48.io.r2k.R2kUtil;
@@ -14,6 +15,7 @@ import r48.io.r2k.R2kUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 
 /**
  * the difficulty is getting this stuff into memory...
@@ -33,7 +35,15 @@ public class StringR2kStruct implements IR2kStruct {
 
     @Override
     public void fromRIO(RubyIO src) {
-        data = src.strVal;
+        if (!IObjectBackend.Factory.encoding.equals(RubyEncodingTranslator.getStringCharset(src))) {
+            try {
+                data = src.decString().getBytes(IObjectBackend.Factory.encoding);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            data = src.strVal;
+        }
     }
 
     @Override

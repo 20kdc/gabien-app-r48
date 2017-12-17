@@ -129,7 +129,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                     String n = Integer.toString((int) k.fixnumVal);
                     while (n.length() < 4)
                         n = "0" + n;
-                    evName.encString("EV" + n);
+                    evName.encString("EV" + n, false);
                 }
                 v.getInstVarBySymbol("@x").fixnumVal = x;
                 v.getInstVarBySymbol("@y").fixnumVal = y;

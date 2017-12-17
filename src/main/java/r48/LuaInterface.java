@@ -102,9 +102,9 @@ public class LuaInterface {
         testObject.addIVar("@bigint1", new RubyIO().setFX(0xFFFFFFFFL));
         testObject.addIVar("@bigint2", new RubyIO().setFX(-0xFFFFFFFFL));
         testObject.addIVar("@array", a);
-        testObject.addIVar("@string", new RubyIO().setString("string"));
-        RubyIO special1 = new RubyIO().setString("string2");
-        special1.addIVar("@iv", new RubyIO().setString("Test"));
+        testObject.addIVar("@string", new RubyIO().setString("string", true));
+        RubyIO special1 = new RubyIO().setString("string2", true);
+        special1.addIVar("@iv", new RubyIO().setString("Test", true));
         testObject.addIVar("@stringWIV", special1);
         RubyIO rio = runLuaCall(testObject, "local object = ... return object");
         // need to test this better

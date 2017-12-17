@@ -151,11 +151,11 @@ public class FontSizes {
         for (FontSizeField fsf : getFields())
             prepare.addIVar("@" + fsf.name, new RubyIO().setFX(fsf.get()));
 
-        prepare.addIVar("@secondary_images", new RubyIO().setString(Application.secondaryImageLoadLocation));
-        prepare.addIVar("@saved_rootpath", new RubyIO().setString(Application.rootPathBackup));
-        prepare.addIVar("@lang", new RubyIO().setString(TXDB.getLanguage()));
+        prepare.addIVar("@secondary_images", new RubyIO().setString(Application.secondaryImageLoadLocation, true));
+        prepare.addIVar("@saved_rootpath", new RubyIO().setString(Application.rootPathBackup, true));
+        prepare.addIVar("@lang", new RubyIO().setString(TXDB.getLanguage(), true));
         if (UILabel.fontOverride != null) {
-            prepare.addIVar("@sysfont", new RubyIO().setString(UILabel.fontOverride));
+            prepare.addIVar("@sysfont", new RubyIO().setString(UILabel.fontOverride, true));
             prepare.addIVar("@sysfont_ue8", new RubyIO().setBool(UILabel.fontOverrideUE8));
         }
         AdHocSaveLoad.save("fonts", prepare);

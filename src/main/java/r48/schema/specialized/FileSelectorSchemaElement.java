@@ -9,7 +9,6 @@ package r48.schema.specialized;
 
 import gabien.GaBIEn;
 import gabien.ui.*;
-import gabienapp.Application;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -43,7 +42,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
             uiSVL.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, sStripped, new Runnable() {
                 @Override
                 public void run() {
-                    target.encString(sStripped);
+                    target.encString(sStripped, false);
                     path.changeOccurred(false);
                     launcher.switchObject(path.findBack());
                 }

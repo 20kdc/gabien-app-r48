@@ -677,11 +677,11 @@ public class AppMain {
         for (RubyIO rio : objectDB.modifiedObjects) {
             String s = objectDB.getIdByObject(rio);
             if (s != null)
-                n.hashVal.put(new RubyIO().setString(s), rio);
+                n.hashVal.put(new RubyIO().setString(s, true), rio);
         }
         if (!emergency) {
             RubyIO n2 = new RubyIO();
-            n2.setString(TXDB.get("R48 Non-Emergency Backup File. This file can be used in place of r48.error.YOUR_SAVED_DATA.r48 in case of power failure or corrupting error. Assuming you actually save often it won't get too big - otherwise you need the reliability."));
+            n2.setString(TXDB.get("R48 Non-Emergency Backup File. This file can be used in place of r48.error.YOUR_SAVED_DATA.r48 in case of power failure or corrupting error. Assuming you actually save often it won't get too big - otherwise you need the reliability."), true);
             RubyIO n3 = AdHocSaveLoad.load("r48.pfail.YOUR_SAVED_DATA");
             if (n3 != null) {
                 // Unlink for disk space & memory usage reasons.

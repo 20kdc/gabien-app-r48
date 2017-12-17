@@ -160,7 +160,7 @@ public class RMToolsToolset implements IToolset {
                                                     @Override
                                                     public Integer apply(RubyIO rubyIO) {
                                                         if (rubyIO.decString().equals(find)) {
-                                                            rubyIO.encString(repl);
+                                                            rubyIO.encString(repl, false);
                                                             return 1;
                                                         }
                                                         return 0;
@@ -245,7 +245,7 @@ public class RMToolsToolset implements IToolset {
                         Collections.sort(orderedMapInfos);
                         for (int id : orderedMapInfos) {
                             IRMMapSystem.RMMapData rmd = mapMap.get(id);
-                            dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), FormatSyntax.formatExtended(TXDB.get("Map:#A"), new RubyIO().setString(rmd.name)));
+                            dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), FormatSyntax.formatExtended(TXDB.get("Map:#A"), new RubyIO().setString(rmd.name, true)));
                             RubyIO map = rmd.map;
                             LinkedList<Integer> orderedEVN = new LinkedList<Integer>();
                             for (RubyIO i : map.getInstVarBySymbol("@events").hashVal.keySet())
