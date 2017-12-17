@@ -8,6 +8,7 @@
 package r48.io.r2k.chunks;
 
 import r48.RubyIO;
+import r48.io.IObjectBackend;
 import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class StringR2kStruct implements IR2kStruct {
 
     @Override
     public RubyIO asRIO() {
-        return new RubyIO().setString(data);
+        return new RubyIO().setString(data, IObjectBackend.Factory.encoding);
     }
 
     @Override

@@ -9,10 +9,10 @@ package gabienapp;
 
 import gabien.ui.ISupplier;
 import r48.AppMain;
-import r48.RubyIO;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.TXDB;
+import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 
 import java.io.IOException;
@@ -49,7 +49,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                     public IGPMenuPanel get() {
                         if (Application.appTicker == null) {
                             try {
-                                RubyIO.encoding = box.get();
+                                IObjectBackend.Factory.encoding = box.get();
                                 String rootPath = PathUtils.fixRootPath(Application.rootBox.text);
                                 if (mobileExtremelySpecialBehavior)
                                     TXDB.loadGamepakLanguage(objName + "/");

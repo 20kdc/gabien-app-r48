@@ -8,6 +8,7 @@
 package r48.io.r2k.struct;
 
 import r48.RubyIO;
+import r48.io.IObjectBackend;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
 
@@ -89,7 +90,7 @@ public class MoveCommand implements IR2kStruct {
     public RubyIO asRIO() {
         RubyIO rio = new RubyIO().setSymlike("RPG::MoveCommand", true);
         RubyIO[] p = new RubyIO[4];
-        p[0] = new RubyIO().setString(text);
+        p[0] = new RubyIO().setString(text, IObjectBackend.Factory.encoding);
         p[1] = new RubyIO().setFX(a);
         p[2] = new RubyIO().setFX(b);
         p[3] = new RubyIO().setFX(c);

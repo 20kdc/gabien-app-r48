@@ -9,6 +9,7 @@ package r48.io.r2k;
 
 import gabien.ui.ISupplier;
 import r48.RubyIO;
+import r48.io.IObjectBackend;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -131,7 +132,7 @@ public class R2kUtil {
     //  instead passing the binary data directly to RIO
     public static String decodeLcfString(byte[] data) {
         try {
-            return new String(data, RubyIO.encoding);
+            return new String(data, IObjectBackend.Factory.encoding);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -140,7 +141,7 @@ public class R2kUtil {
     // See above for when to use this
     public static byte[] encodeLcfString(String text) {
         try {
-            return text.getBytes(RubyIO.encoding);
+            return text.getBytes(IObjectBackend.Factory.encoding);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

@@ -14,7 +14,6 @@ import r48.dbs.TXDB;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
-import r48.map.systems.IRMMapSystem;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -55,12 +54,14 @@ public class IMIAssemblyProcess {
         try {
             FileOutputStream fos = new FileOutputStream(PathUtils.autoDetectWindows(AppMain.rootPath + "imi.txt.gz"));
             dos = new DataOutputStream(new GZIPOutputStream(fos));
-            dos.writeBytes("I0\"");
+            dos.writeBytes("I1\"");
             IMIUtils.writeIMIStringBody(dos, AppMain.odbBackend.getBytes("UTF-8"), false);
             dos.writeBytes("\"");
             IMIUtils.writeIMIStringBody(dos, AppMain.dataPath.getBytes("UTF-8"), false);
             dos.writeBytes("\"");
             IMIUtils.writeIMIStringBody(dos, AppMain.dataExt.getBytes("UTF-8"), false);
+            dos.writeByte('\n');
+            IMIUtils.writeIMIStringBody(dos, IObjectBackend.Factory.encoding.getBytes("UTF-8"), false);
             dos.writeByte('\n');
 
             LinkedList<String> objs = AppMain.getAllObjects();

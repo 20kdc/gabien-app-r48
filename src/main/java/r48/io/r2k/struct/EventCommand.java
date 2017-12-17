@@ -8,6 +8,7 @@
 package r48.io.r2k.struct;
 
 import r48.RubyIO;
+import r48.io.IObjectBackend;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
 
@@ -76,7 +77,7 @@ public class EventCommand implements IR2kStruct {
         mt.addIVar("@code", new RubyIO().setFX(code));
         mt.addIVar("@indent", new RubyIO().setFX(indent));
         RubyIO[] params = new RubyIO[parameters.length + 1];
-        params[0] = new RubyIO().setString(text);
+        params[0] = new RubyIO().setString(text, IObjectBackend.Factory.encoding);
         for (int i = 0; i < parameters.length; i++)
             params[i + 1] = new RubyIO().setFX(parameters[i]);
         RubyIO paramArr = new RubyIO();

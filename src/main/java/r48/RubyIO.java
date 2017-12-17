@@ -10,7 +10,6 @@ package r48;
 import r48.io.IMIUtils;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,9 +25,6 @@ import java.util.Map;
  * Created on 12/27/16.
  */
 public class RubyIO {
-    // The encoding of all strings that are not internal.
-    // If I get proof that :encoding is necessary, this will become a default encoding setting, and translation will happen in the ODB backend.
-    public static String encoding = "UTF-8";
     /*
      * The Grand List Of Objects R48 Supports:
      * NOTE: All objects can theoretically have iVars.
@@ -96,18 +92,11 @@ public class RubyIO {
         return this;
     }
 
-    // Use solely for transient RubyIO objects, or as a replacement for the "temporary change of encoding" hack.
-    public RubyIO setInternString(String s) {
-        setNull();
-        type = '"';
-        encInternString(s);
-        return this;
-    }
-
-    public RubyIO setString(byte[] s) {
+    public RubyIO setString(byte[] s, String javaEncoding) {
         setNull();
         type = '"';
         strVal = copyByteArray(s);
+        RubyEncodingTranslator.inject(this, javaEncoding);
         return this;
     }
 
@@ -277,7 +266,8 @@ public class RubyIO {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             IMIUtils.createIMIDump(new DataOutputStream(baos), this, indent);
-            return new String(baos.toByteArray(), encoding);
+            // IMI is really 7-bit but UTF-8 is close enough
+            return new String(baos.toByteArray(), "UTF-8");
         } catch (Exception ioe) {
             StringWriter sw = new StringWriter();
             ioe.printStackTrace(new PrintWriter(sw));
@@ -291,28 +281,20 @@ public class RubyIO {
         // the specific details are that:
         // SOME (not all) strings, are tagged with an ":encoding" iVar.
         // This specifies their encoding.
-        return new String(strVal, Charset.forName(encoding));
-    }
-
-    // Use for transient RubyIOs
-    public String decInternString() {
-        return new String(strVal, Charset.forName("UTF-8"));
+        try {
+            return new String(strVal, RubyEncodingTranslator.getStringCharset(this));
+        } catch (UnsupportedEncodingException e) {
+            // If this ever occurs, RubyEncodingTranslator's broke
+            throw new RuntimeException(e);
+        }
     }
 
     public RubyIO encString(String text) {
         try {
-            strVal = text.getBytes(encoding);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return this;
-    }
-
-    public RubyIO encInternString(String text) {
-        try {
             strVal = text.getBytes("UTF-8");
+            RubyEncodingTranslator.inject(this, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return this;
     }

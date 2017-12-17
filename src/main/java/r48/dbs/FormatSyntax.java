@@ -177,7 +177,7 @@ public class FormatSyntax {
                             }
                             // ... then parse it.
                             tx = formatNameExtended(tx, root, parameters, parameterSchemas);
-                            p = new RubyIO().setInternString(tx);
+                            p = new RubyIO().setString(tx);
                         } else {
                             p = parameters[ch - 'A'];
                         }

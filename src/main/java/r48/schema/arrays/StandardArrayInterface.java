@@ -176,7 +176,7 @@ public class StandardArrayInterface implements IArrayInterface {
             private void addAdditionButton(final Runnable runnable, final Runnable runnable2, final String text) {
                 if (runnable == null)
                     return;
-                UIElement uie = new UITextButton(FontSizes.schemaArrayAddTextHeight, FormatSyntax.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setInternString(text)), runnable);
+                UIElement uie = new UITextButton(FontSizes.schemaArrayAddTextHeight, FormatSyntax.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setString(text)), runnable);
                 if (runnable2 != null)
                     uie = new UIAppendButton(TXDB.get("Ps."), uie, runnable2, FontSizes.schemaButtonTextHeight);
                 uiSVL.panels.add(uie);

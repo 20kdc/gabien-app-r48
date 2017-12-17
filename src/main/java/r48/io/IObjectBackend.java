@@ -23,6 +23,8 @@ public interface IObjectBackend {
     void saveObjectToFile(String filename, RubyIO object) throws IOException;
 
     abstract class Factory {
+        // Null so that things will error if it's unset.
+        public static String encoding;
         public static IObjectBackend create(String odbBackend, String rootPath, String dataPath, String dataExt) throws IOException {
             if (odbBackend.equals("r48")) {
                 return new R48ObjectBackend(rootPath + dataPath, dataExt, true);

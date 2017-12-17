@@ -489,21 +489,40 @@ public class IMIUtils {
             int cmd = inp.read();
             if (cmd == -1)
                 break;
+            String backend, dataPath, dataExt;
             switch (cmd) {
                 case 'I':
-                    if (inp.read() != '0') {
-                        throw new IOException("The IMI code given is incompatible with this program.");
-                    } else {
-                        if (inp.read() != '\"')
-                            throw new IOException("Invalid syntax.");
-                        String backend = new String(readIMIStringBody(inp), "UTF-8");
-                        if (inp.read() != '\"')
-                            throw new IOException("Invalid syntax.");
-                        String dataPath = new String(readIMIStringBody(inp), "UTF-8");
-                        if (inp.read() != '\"')
-                            throw new IOException("Invalid syntax.");
-                        String dataExt = new String(readIMIStringBody(inp), "UTF-8");
-                        backendFile = IObjectBackend.Factory.create(backend, root, dataPath, dataExt);
+                    switch (inp.read()) {
+                        case '0':
+                            if (inp.read() != '\"')
+                                throw new IOException("Invalid syntax.");
+                            backend = new String(readIMIStringBody(inp), "UTF-8");
+                            if (inp.read() != '\"')
+                                throw new IOException("Invalid syntax.");
+                            dataPath = new String(readIMIStringBody(inp), "UTF-8");
+                            if (inp.read() != '\"')
+                                throw new IOException("Invalid syntax.");
+                            IObjectBackend.Factory.encoding = "UTF-8";
+                            dataExt = new String(readIMIStringBody(inp), "UTF-8");
+                            backendFile = IObjectBackend.Factory.create(backend, root, dataPath, dataExt);
+                            break;
+                        case '1':
+                            if (inp.read() != '\"')
+                                throw new IOException("Invalid syntax.");
+                            backend = new String(readIMIStringBody(inp), "UTF-8");
+                            if (inp.read() != '\"')
+                                throw new IOException("Invalid syntax.");
+                            dataPath = new String(readIMIStringBody(inp), "UTF-8");
+                            if (inp.read() != '\"')
+                                throw new IOException("Invalid syntax.");
+                            dataExt = new String(readIMIStringBody(inp), "UTF-8");
+                            if (inp.read() != '\"')
+                                throw new IOException("Invalid syntax.");
+                            IObjectBackend.Factory.encoding = new String(readIMIStringBody(inp), "UTF-8");
+                            backendFile = IObjectBackend.Factory.create(backend, root, dataPath, dataExt);
+                            break;
+                        default:
+                            throw new IOException("The IMI code given is incompatible with this program.");
                     }
                     break;
                 case '+':
@@ -511,7 +530,7 @@ public class IMIUtils {
                     if (inp.read() != '\"') {
                         throw new IOException("Invalid syntax.");
                     } else {
-                        String dataPath = new String(readIMIStringBody(inp), "UTF-8");
+                        dataPath = new String(readIMIStringBody(inp), "UTF-8");
                         status.accept("R" + dataPath);
                         RubyIO obj = backendFile.loadObjectFromFile(dataPath);
                         status.accept("~" + dataPath);
@@ -532,7 +551,7 @@ public class IMIUtils {
                     if (inp.read() != '\"') {
                         throw new IOException("Invalid syntax.");
                     } else {
-                        String dataPath = new String(readIMIStringBody(inp), "UTF-8");
+                        dataPath = new String(readIMIStringBody(inp), "UTF-8");
                         if (inp.read() != '\"')
                             throw new IOException("Invalid syntax.");
                         status.accept("A" + dataPath);

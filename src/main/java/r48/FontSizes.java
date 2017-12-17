@@ -151,11 +151,11 @@ public class FontSizes {
         for (FontSizeField fsf : getFields())
             prepare.addIVar("@" + fsf.name, new RubyIO().setFX(fsf.get()));
 
-        prepare.addIVar("@secondary_images", new RubyIO().setInternString(Application.secondaryImageLoadLocation));
-        prepare.addIVar("@saved_rootpath", new RubyIO().setInternString(Application.rootPathBackup));
-        prepare.addIVar("@lang", new RubyIO().setInternString(TXDB.getLanguage()));
+        prepare.addIVar("@secondary_images", new RubyIO().setString(Application.secondaryImageLoadLocation));
+        prepare.addIVar("@saved_rootpath", new RubyIO().setString(Application.rootPathBackup));
+        prepare.addIVar("@lang", new RubyIO().setString(TXDB.getLanguage()));
         if (UILabel.fontOverride != null) {
-            prepare.addIVar("@sysfont", new RubyIO().setInternString(UILabel.fontOverride));
+            prepare.addIVar("@sysfont", new RubyIO().setString(UILabel.fontOverride));
             prepare.addIVar("@sysfont_ue8", new RubyIO().setBool(UILabel.fontOverrideUE8));
         }
         AdHocSaveLoad.save("fonts", prepare);
@@ -172,7 +172,7 @@ public class FontSizes {
             }
             RubyIO sys = dat.getInstVarBySymbol("@sysfont");
             if (sys != null) {
-                UILabel.fontOverride = sys.decInternString();
+                UILabel.fontOverride = sys.decString();
             } else {
                 UILabel.fontOverride = null;
             }
@@ -181,10 +181,10 @@ public class FontSizes {
                 UILabel.fontOverrideUE8 = sys2.type == 'T';
             RubyIO sys3 = dat.getInstVarBySymbol("@secondary_images");
             if (sys3 != null)
-                Application.secondaryImageLoadLocation = sys3.decInternString();
+                Application.secondaryImageLoadLocation = sys3.decString();
             RubyIO sys4 = dat.getInstVarBySymbol("@saved_rootpath");
             if (sys4 != null)
-                Application.rootPathBackup = sys4.decInternString();
+                Application.rootPathBackup = sys4.decString();
             return true;
         }
         return false;
@@ -200,7 +200,7 @@ public class FontSizes {
             sysfontDisabled = dat.getInstVarBySymbol("@sysfont") == null;
             RubyIO sys = dat.getInstVarBySymbol("@lang");
             if (sys != null)
-                TXDB.setLanguage(sys.decInternString());
+                TXDB.setLanguage(sys.decString());
         }
         return sysfontDisabled;
     }
