@@ -14,9 +14,11 @@ import r48.IMapContext;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.ui.UIAppendButton;
 
 /**
  * A 'flat' explorer showing just map information.
+ * Created sometime in December 2017 (whoops!)
  */
 public class UISaveScanMapInfos extends UIPanel {
     public final UIScrollLayout mainLayout = new UIScrollLayout(true, FontSizes.generalScrollersize);
@@ -48,6 +50,7 @@ public class UISaveScanMapInfos extends UIPanel {
     }
 
     public void reload() {
+        mainLayout.panels.clear();
         for (int i = first; i <= last; i++) {
             RubyIO rio = AppMain.objectDB.getObject(objectMapping.apply(i), null);
             final String gum = gumMapping.apply(i);
@@ -59,8 +62,15 @@ public class UISaveScanMapInfos extends UIPanel {
                     }
                 }));
             } else {
-                mainLayout.panels.add(new UILabel(FormatSyntax.formatExtended(TXDB.get("#A (Unavailable)"), new RubyIO().setInternString(gum), rio), FontSizes.mapInfosTextHeight));
+                mainLayout.panels.add(new UIAppendButton(TXDB.get("New..."), new UILabel(FormatSyntax.formatExtended(TXDB.get("#A (Unavailable)"), new RubyIO().setInternString(gum), rio), FontSizes.mapInfosTextHeight), new Runnable() {
+                    @Override
+                    public void run() {
+                        context.loadMap(gum);
+                        reload();
+                    }
+                }, FontSizes.mapInfosTextHeight));
             }
         }
+        mainLayout.setBounds(mainLayout.getBounds());
     }
 }

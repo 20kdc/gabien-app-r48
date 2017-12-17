@@ -30,6 +30,8 @@ D internal_battleanimationDictionary 1 RPG_RT.ldb@battle_anim_sets_2k3 1 @name
 D internal_battlecommandDictionary 1 RPG_RT.ldb@battle_commands_2k3@commands 0 @name
 
 > f_charset_name { string= char fileSelector CharSet/ }
+ NOTE: The default here is blank, this just stops it crashing
+> f_save_charset_name { string fileSelector CharSet/ }
 > f_faceset_name { string fileSelector FaceSet/ }
 > f_music_name { string= (OFF) fileSelector Music/ }
 > f_sound_name { string= (OFF) fileSelector Sound/ }

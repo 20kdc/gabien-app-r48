@@ -68,7 +68,7 @@ public abstract class SaveCharacter extends R2kObject {
                 new Index(0x17, spritePattern, "@character_pattern"),
                 new Index(0x18, transparency, "@transparency"),
                 new Index(0x1F, remainingStep, "@remaining_step"),
-                new Index(0x20, moveFrequency, "@move_frequency"),
+                new Index(0x20, moveFrequency, "@move_freq"),
                 new Index(0x21, layer, "@layer"),
                 new Index(0x22, overlapForbidden, "@block_other_events"),
                 new Index(0x23, animType, "@anim_type"),

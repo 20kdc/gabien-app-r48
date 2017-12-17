@@ -59,7 +59,8 @@ e var_compare_op_2k3 0 == 1 >= 2 <= 3 > 4 < 5 !=
 C name Class.RPG::EventPage @condition | [RPG::EventPage::Condition]A
 @condition subwindow RPG::EventPage::Condition
 +subwindow: Graphics eventpage_graphics
-e eventpage_layer 0 belowPlayer 1 withPlayer+collide 2 abovePlayer
+ Default is set like this both for convenience and so that a SavePartyLocation is correct
+e eventpage_layer 1 withPlayer+collide 0 belowPlayer 2 abovePlayer
 @layer eventpage_layer
 e eventpage_movetype 0 don't 1 random 2 guardVLine 3 guardHLine 4 chasePlayer 5 fleePlayer 6 custom
 @move_type eventpage_movetype

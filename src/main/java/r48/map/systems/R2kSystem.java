@@ -248,6 +248,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
                     int mapId = (int) root.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map").fixnumVal;
                     final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(mapId);
                     RubyIO map = AppMain.objectDB.getObject(objn);
+                    if (map == null)
+                        return MapViewState.getBlank();
                     return MapViewState.fromRT(rendererFromMap(mapId, map, root), map, "@data", true);
                 }
             }, true, null);

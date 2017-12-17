@@ -10,7 +10,6 @@ package r48.io.r2k.obj;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.chunks.BlobR2kStruct;
 import r48.io.r2k.chunks.R2kObject;
 import r48.io.r2k.chunks.SparseArrayAR2kStruct;
 import r48.io.r2k.chunks.SparseArrayHR2kStruct;
@@ -47,12 +46,6 @@ public class Save extends R2kObject {
         }
     });
     public SaveMapInfo mapInfo = new SaveMapInfo();
-    public BlobR2kStruct panorama = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
-            return new byte[0];
-        }
-    });
     public Interpreter mainInterpreter = new Interpreter();
     public SparseArrayHR2kStruct<R2kObject> commonEvents = new SparseArrayHR2kStruct<R2kObject>(new ISupplier<R2kObject>() {
         @Override
@@ -96,7 +89,7 @@ public class Save extends R2kObject {
                 new Index(0x6D, partyItems, "@party"),
                 new Index(0x6E, targets, "@targets"),
                 new Index(0x6F, mapInfo, "@map_info"),
-                new Index(0x70, panorama, "@panorama"),
+                //new Index(0x70, panorama, "@panorama"),
                 new Index(0x71, mainInterpreter, "@main_interpreter"),
                 new Index(0x72, commonEvents, "@common_events"),
         };

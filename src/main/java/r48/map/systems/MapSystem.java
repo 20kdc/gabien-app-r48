@@ -126,6 +126,24 @@ public abstract class MapSystem {
             return false;
         }
 
+        public static MapViewState getBlank() {
+            return new MapViewState(AppMain.stuffRendererIndependent, 0, 0, 0, new IFunction<int[], Short>() {
+                @Override
+                public Short apply(int[] ints) {
+                    return 0;
+                }
+            }, new IConsumer<int[]>() {
+                @Override
+                public void accept(int[] ints) {
+                }
+            }, new IConsumer<int[]>() {
+                @Override
+                public void accept(int[] ints) {
+
+                }
+            });
+        }
+
         public static MapViewState fromRT(StuffRenderer stuffRenderer, final RubyIO its, final String str, final boolean readOnly) {
             final RubyTable rt = new RubyTable(its.getInstVarBySymbol(str).userVal);
             return new MapViewState(stuffRenderer, rt.width, rt.height, rt.planeCount, new IFunction<int[], Short>() {
