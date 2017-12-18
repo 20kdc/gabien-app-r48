@@ -14,6 +14,7 @@ import r48.map.drawlayers.EventMapViewDrawLayer;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.drawlayers.PanoramaMapViewDrawLayer;
 import r48.map.drawlayers.TileMapViewDrawLayer;
+import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
@@ -26,18 +27,16 @@ public class StuffRenderer {
     public final ITileRenderer tileRenderer;
     public final IEventGraphicRenderer eventRenderer;
     public final IImageLoader imageLoader;
-    public final String eventSchema;
     public final IMapViewDrawLayer[] layers;
 
-    public StuffRenderer(IImageLoader l, ITileRenderer t, IEventGraphicRenderer e, IMapViewDrawLayer[] l2, String es) {
+    public StuffRenderer(IImageLoader l, ITileRenderer t, IEventGraphicRenderer e, IMapViewDrawLayer[] l2) {
         tileRenderer = t;
         eventRenderer = e;
         imageLoader = l;
         layers = l2;
-        eventSchema = es;
     }
 
-    public static IMapViewDrawLayer[] prepareTraditional(ITileRenderer itr, int[] tlOrder, IEventGraphicRenderer igr, IImageLoader iil, RubyIO map, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
+    public static IMapViewDrawLayer[] prepareTraditional(ITileRenderer itr, int[] tlOrder, IEventGraphicRenderer igr, IImageLoader iil, RubyIO map, IEventAccess events, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
         if (map == null)
             return new IMapViewDrawLayer[0];
         RubyTable rt = new RubyTable(map.getInstVarBySymbol("@data").userVal);
@@ -49,7 +48,6 @@ public class StuffRenderer {
         if (!vxaPano.equals(""))
             panoImg = iil.getImage(vxaPano, true);
         layers[0] = new PanoramaMapViewDrawLayer(panoImg, lx, ly, alx, aly, rt.width, rt.height, panoSW, panoSH, panoSC);
-        RubyIO events = map.getInstVarBySymbol("@events");
         layers[1] = new EventMapViewDrawLayer(-1, events, igr, itr.getTileSize());
         for (int i = 0; i < rt.planeCount; i++) {
             layers[(i * 2) + 2] = new TileMapViewDrawLayer(rt, tlOrder[i], itr);

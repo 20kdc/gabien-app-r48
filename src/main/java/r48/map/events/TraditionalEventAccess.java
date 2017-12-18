@@ -55,6 +55,11 @@ public class TraditionalEventAccess implements IEventAccess {
         return key;
     }
 
+    @Override
+    public String getEventSchema(RubyIO key) {
+        return eventSchema;
+    }
+
     private int getFreeIndex() {
         int unusedIndex = eventIdBase;
         while (mapEvents.getHashVal(new RubyIO().setFX(unusedIndex)) != null)

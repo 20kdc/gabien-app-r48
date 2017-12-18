@@ -22,6 +22,7 @@ import r48.map.IMapToolContext;
 import r48.map.R2kAreaEditingToolbarController;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.*;
+import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.R2kEventGraphicRenderer;
 import r48.map.events.TraditionalEventAccess;
@@ -86,18 +87,13 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     }
 
     // saveData is optional, and replaces some things.
-    private StuffRenderer rendererFromMap(int mapId, RubyIO map, RubyIO saveData) {
+    private StuffRenderer rendererFromMap(RubyIO map, IEventAccess events) {
         RubyIO tileset = tsoFromMap2000(map);
         ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tileset);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
         // Cannot get enough information without map & tileset
         if ((map != null) && (tileset != null)) {
-            RubyIO events = map.getInstVarBySymbol("@events");
-
-            if (saveData != null)
-                events = saveFileVirtualEvents(mapId, saveData);
-
             long scrollFlags = map.getInstVarBySymbol("@scroll_type").fixnumVal;
             RubyTable tbl = new RubyTable(map.getInstVarBySymbol("@data").userVal);
             String vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
@@ -138,12 +134,12 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             layers[8] = new PassabilityMapViewDrawLayer(new R2kPassabilitySource(tbl, tileset, (scrollFlags & 2) != 0, (scrollFlags & 1) != 0), 16);
             layers[9] = new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, 16);
         }
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers, "RPG::Event");
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
     }
 
     // Rearranges objects in a convenient manner.
     // Note that this trick can't be used for editing, so this might be removed later
-    private RubyIO saveFileVirtualEvents(int mapId, RubyIO saveData) {
+    private IEventAccess saveFileVirtualEvents(int mapId, RubyIO saveData) {
         RubyIO eventsHash = new RubyIO();
         eventsHash.setHash();
         // Inject 'events'
@@ -155,7 +151,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
         for (Map.Entry<RubyIO, RubyIO> kv : saveData.getInstVarBySymbol("@map_info").getInstVarBySymbol("@events").hashVal.entrySet())
             if (eventsHash.getHashVal(kv.getKey()) == null)
                 eventsHash.hashVal.put(kv.getKey(), kv.getValue());
-        return eventsHash;
+        return new TraditionalEventAccess(eventsHash, 1, "RPG::Event");
     }
 
     private void sfveInjectEvent(RubyIO eventsHash, int i, int mapId, RubyIO instVarBySymbol) {
@@ -168,7 +164,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     public StuffRenderer rendererFromTso(RubyIO tso) {
         ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0], "RPG::Event");
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 
     @Override
@@ -250,7 +246,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
                     RubyIO map = AppMain.objectDB.getObject(objn);
                     if (map == null)
                         return MapViewState.getBlank();
-                    return MapViewState.fromRT(rendererFromMap(mapId, map, root), map, "@data", true);
+                    return MapViewState.fromRT(rendererFromMap(map, saveFileVirtualEvents(mapId, root)), map, "@data", true);
                 }
             }, true, null);
         }
@@ -269,11 +265,12 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             if (AppMain.objectDB.getObject(objn, null) == null)
                 return null;
         final RubyIO map = AppMain.objectDB.getObject(objn);
+        final IEventAccess iea = new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 1, "RPG::Event");
         return new MapViewDetails(objn, "RPG::Map", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {
-                return MapViewState.fromRT(rendererFromMap(v, map, null), map, "@data", false);
+                return MapViewState.fromRT(rendererFromMap(map, iea), map, "@data", false);
             }
-        }, false, new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 1, "RPG::Map"));
+        }, false, iea);
     }
 }

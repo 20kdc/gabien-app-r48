@@ -151,10 +151,10 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     }
 
     public static void showEvent(RubyIO key, UIMapView map, RubyIO event) {
-        AppMain.launchNonRootSchema(map.map.object, map.map.objectSchema, key, event, map.mapTable.renderer.eventSchema, "E" + key, map);
+        AppMain.launchNonRootSchema(map.map.object, map.map.objectSchema, key, event, map.map.eventAccess.getEventSchema(key), "E" + key, map);
     }
 
-    public static void showEventDivorced(RubyIO key, RubyIO map, String mapSchema, RubyIO event) {
-        AppMain.launchNonRootSchema(map, mapSchema, key, event, AppMain.stuffRendererIndependent.eventSchema, "E" + key, null);
+    public static void showEventDivorced(RubyIO key, RubyIO map, String mapSchema, RubyIO event, String eventSchema) {
+        AppMain.launchNonRootSchema(map, mapSchema, key, event, eventSchema, "E" + key, null);
     }
 }

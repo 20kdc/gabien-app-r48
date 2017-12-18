@@ -10,6 +10,7 @@ package r48.map.systems;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.IMapViewDrawLayer;
+import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.tiles.ITileRenderer;
@@ -20,7 +21,7 @@ import r48.map.tiles.VXATileRenderer;
  */
 public class RVXASystem extends RXPSystem {
     @Override
-    public StuffRenderer rendererFromMap(RubyIO map) {
+    public StuffRenderer rendererFromMap(RubyIO map, IEventAccess events) {
         String vxaPano = "";
         if (map != null) {
             vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
@@ -32,13 +33,13 @@ public class RVXASystem extends RXPSystem {
 
         ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tsoFromMap(map));
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0, 1, 3, 2}, eventRenderer, imageLoader, map, vxaPano, false, false, 0, 0, -1, -1, 1), "RPG::Event");
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0, 1, 3, 2}, eventRenderer, imageLoader, map, events, vxaPano, false, false, 0, 0, -1, -1, 1));
     }
 
     @Override
     public StuffRenderer rendererFromTso(RubyIO tso) {
         ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0], "RPG::Event");
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 }

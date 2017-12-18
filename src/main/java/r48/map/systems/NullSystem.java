@@ -32,7 +32,7 @@ public class NullSystem extends MapSystem {
     public StuffRenderer rendererFromTso(RubyIO target) {
         ITileRenderer tileRenderer = new NullTileRenderer();
         IEventGraphicRenderer eventRenderer = new NullEventGraphicRenderer();
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0], "RPG::Event");
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 
     @Override

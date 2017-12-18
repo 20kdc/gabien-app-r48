@@ -11,6 +11,7 @@ import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
+import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.IkaEventGraphicRenderer;
 import r48.map.events.TraditionalEventAccess;
@@ -28,15 +29,15 @@ public class IkaSystem extends MapSystem {
         super(new CacheImageLoader(new FixAndSecondaryImageLoader("Pbm/", "", new GabienImageLoader(".pbm", 0, 0, 0))), true);
     }
 
-    public StuffRenderer rendererGeneral(RubyIO map) {
+    public StuffRenderer rendererGeneral(RubyIO map, IEventAccess iea) {
         ITileRenderer tileRenderer = new IkaTileRenderer(imageLoader);
         IEventGraphicRenderer eventRenderer = new IkaEventGraphicRenderer(imageLoader);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0}, eventRenderer, imageLoader, map, "Back", true, true, 0, 0, -1, -1, 1), "IkachanEvent");
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0}, eventRenderer, imageLoader, map, iea, "Back", true, true, 0, 0, -1, -1, 1));
     }
 
     @Override
     public StuffRenderer rendererFromTso(RubyIO target) {
-        return rendererGeneral(null);
+        return rendererGeneral(null, null);
     }
 
     @Override
@@ -45,11 +46,12 @@ public class IkaSystem extends MapSystem {
             if (AppMain.objectDB.getObject(gum, null) == null)
                 return null;
         final RubyIO map = AppMain.objectDB.getObject(gum);
+        final IEventAccess events = new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 0, "RPG::Event");
         return new MapViewDetails(gum, "IkachanMap", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {
-                return MapViewState.fromRT(rendererGeneral(map), map, "@data", false);
+                return MapViewState.fromRT(rendererGeneral(map, events), map, "@data", false);
             }
-        }, false, new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 0, "RPG::Map"));
+        }, false, events);
     }
 }

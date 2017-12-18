@@ -21,6 +21,7 @@ import r48.map.drawlayers.EventMapViewDrawLayer;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.drawlayers.PanoramaMapViewDrawLayer;
 import r48.map.drawlayers.TileMapViewDrawLayer;
+import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.events.TraditionalEventAccess;
@@ -64,7 +65,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         return new UIGRMMapInfos(windowMaker, new RXPRMLikeMapInfoBackend(), mapBox, mapInfos);
     }
 
-    public StuffRenderer rendererFromMap(RubyIO map) {
+    public StuffRenderer rendererFromMap(RubyIO map, IEventAccess events) {
         RubyIO tileset = tsoFromMap(map);
         ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tileset);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
@@ -81,7 +82,6 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
             IImage panoImg = null;
             if (!pano.equals(""))
                 panoImg = imageLoader.getImage(pano, true);
-            RubyIO events = map.getInstVarBySymbol("@events");
             layers = new IMapViewDrawLayer[] {
                     // works for green docks
                     new PanoramaMapViewDrawLayer(panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
@@ -94,14 +94,14 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
                     new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, tileRenderer.getTileSize()),
             };
         }
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers, "RPG::Event");
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
     }
 
     @Override
     public StuffRenderer rendererFromTso(RubyIO tso) {
         ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0], "RPG::Event");
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 
     @Override
@@ -110,12 +110,13 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
             if (AppMain.objectDB.getObject(gum, null) == null)
                 return null;
         final RubyIO map = AppMain.objectDB.getObject(gum);
+        final IEventAccess events = new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 1, "RPG::Event");
         return new MapViewDetails(gum, "RPG::Map", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {
-                return MapViewState.fromRT(rendererFromMap(map), map, "@data", false);
+                return MapViewState.fromRT(rendererFromMap(map, events), map, "@data", false);
             }
-        }, false, new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 1, "RPG::Event"));
+        }, false, events);
     }
 
     @Override

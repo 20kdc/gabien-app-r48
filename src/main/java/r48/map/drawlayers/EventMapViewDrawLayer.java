@@ -12,6 +12,7 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
+import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.ui.Art;
 
@@ -23,12 +24,12 @@ import java.util.LinkedList;
  * Created on 08/06/17.
  */
 public class EventMapViewDrawLayer implements IMapViewDrawLayer {
-    public RubyIO eventList;
+    public IEventAccess eventList;
     public int layer;
     public IEventGraphicRenderer iegr;
     public int tileSize;
 
-    public EventMapViewDrawLayer(int layer2, RubyIO eventL, IEventGraphicRenderer e, int ts) {
+    public EventMapViewDrawLayer(int layer2, IEventAccess eventL, IEventGraphicRenderer e, int ts) {
         eventList = eventL;
         layer = layer2;
         iegr = e;
@@ -49,7 +50,9 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
         // Event Enable
         // Having it here is more efficient than having it as a tool overlay,
         // and sometimes the user might want to see events when using other tools.
-        LinkedList<RubyIO> ev = new LinkedList<RubyIO>(eventList.hashVal.values());
+        LinkedList<RubyIO> ev = new LinkedList<RubyIO>();
+        for (RubyIO r : eventList.getEventKeys())
+            ev.add(eventList.getEvent(r));
         Collections.sort(ev, new Comparator<RubyIO>() {
             @Override
             public int compare(RubyIO a, RubyIO b) {

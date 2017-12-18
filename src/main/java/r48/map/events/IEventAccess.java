@@ -26,4 +26,6 @@ public interface IEventAccess {
 
     // returns the key
     RubyIO addEvent(RubyIO eve);
+
+    String getEventSchema(RubyIO key);
 }

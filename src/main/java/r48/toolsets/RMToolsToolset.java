@@ -34,6 +34,11 @@ import java.util.Map;
  * Need to shuffle about versionIds and fix that.
  * Secondly, need to switch to using IRMLikeMapInfoBackend full-time.
  * (That was all done eventually.)
+ *
+ * Ok, list of assumptions made by using this:
+ * 1. RPG::Event is a thing
+ * 2. Data structures are similar to that of RPG Maker XP
+ *
  * Created on 2/12/17.
  */
 public class RMToolsToolset implements IToolset {
@@ -85,7 +90,7 @@ public class RMToolsToolset implements IToolset {
                                                 continue;
                                             for (RubyIO cmd : page.getInstVarBySymbol("@list").arrVal) {
                                                 if (cmd.getInstVarBySymbol("@code").fixnumVal == i) {
-                                                    UIMTEventPicker.showEventDivorced(event.getKey(), rmd.map, rmd.schemaName, event.getValue());
+                                                    UIMTEventPicker.showEventDivorced(event.getKey(), rmd.map, rmd.schemaName, event.getValue(), "RPG::Event");
                                                     return;
                                                 }
                                             }
@@ -193,7 +198,7 @@ public class RMToolsToolset implements IToolset {
                                     for (RubyIO cmd : page.getInstVarBySymbol("@list").arrVal) {
                                         if (!commandsEvent.knownCommands.containsKey((int) cmd.getInstVarBySymbol("@code").fixnumVal)) {
                                             System.out.println(cmd.getInstVarBySymbol("@code").fixnumVal);
-                                            UIMTEventPicker.showEventDivorced(event.getKey(), rmd.map, rmd.schemaName, event.getValue());
+                                            UIMTEventPicker.showEventDivorced(event.getKey(), rmd.map, rmd.schemaName, event.getValue(), "RPG::Event");
                                             return;
                                         }
                                     }
