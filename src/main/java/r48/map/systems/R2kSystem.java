@@ -22,10 +22,7 @@ import r48.map.IMapToolContext;
 import r48.map.R2kAreaEditingToolbarController;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.*;
-import r48.map.events.IEventAccess;
-import r48.map.events.IEventGraphicRenderer;
-import r48.map.events.R2kEventGraphicRenderer;
-import r48.map.events.TraditionalEventAccess;
+import r48.map.events.*;
 import r48.map.imaging.*;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
@@ -137,29 +134,6 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
     }
 
-    // Rearranges objects in a convenient manner.
-    // Note that this trick can't be used for editing, so this might be removed later
-    private IEventAccess saveFileVirtualEvents(int mapId, RubyIO saveData) {
-        RubyIO eventsHash = new RubyIO();
-        eventsHash.setHash();
-        // Inject 'events'
-        sfveInjectEvent(eventsHash, 10001, mapId, saveData.getInstVarBySymbol("@party_pos"));
-        sfveInjectEvent(eventsHash, 10002, mapId, saveData.getInstVarBySymbol("@boat_pos"));
-        sfveInjectEvent(eventsHash, 10003, mapId, saveData.getInstVarBySymbol("@ship_pos"));
-        sfveInjectEvent(eventsHash, 10004, mapId, saveData.getInstVarBySymbol("@airship_pos"));
-        // Inject actual events
-        for (Map.Entry<RubyIO, RubyIO> kv : saveData.getInstVarBySymbol("@map_info").getInstVarBySymbol("@events").hashVal.entrySet())
-            if (eventsHash.getHashVal(kv.getKey()) == null)
-                eventsHash.hashVal.put(kv.getKey(), kv.getValue());
-        return new TraditionalEventAccess(eventsHash, 1, "RPG::Event");
-    }
-
-    private void sfveInjectEvent(RubyIO eventsHash, int i, int mapId, RubyIO instVarBySymbol) {
-        if (instVarBySymbol.getInstVarBySymbol("@map").fixnumVal != mapId)
-            return;
-        eventsHash.hashVal.put(new RubyIO().setFX(i), instVarBySymbol);
-    }
-
     @Override
     public StuffRenderer rendererFromTso(RubyIO tso) {
         ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tso);
@@ -237,18 +211,19 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             if (!allowCreate)
                 if (AppMain.objectDB.getObject(obj, null) == null)
                     return null;
+            final RubyIO root = AppMain.objectDB.getObject(obj);
             return new MapViewDetails(obj, "RPG::Save", new ISupplier<MapViewState>() {
                 @Override
                 public MapViewState get() {
-                    final RubyIO root = AppMain.objectDB.getObject(obj);
                     int mapId = (int) root.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map").fixnumVal;
                     final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(mapId);
                     RubyIO map = AppMain.objectDB.getObject(objn);
+                    final IEventAccess events = new R2kSavefileEventAccess(root);
                     if (map == null)
-                        return MapViewState.getBlank();
-                    return MapViewState.fromRT(rendererFromMap(map, saveFileVirtualEvents(mapId, root)), map, "@data", true);
+                        return MapViewState.getBlank(events);
+                    return MapViewState.fromRT(rendererFromMap(map, events), map, "@data", true, events);
                 }
-            }, true, null);
+            }, true, true);
         }
         final RubyIO root = AppMain.objectDB.getObject("RPG_RT.lmt");
         final RubyIO mapInfos = root.getInstVarBySymbol("@map_infos");
@@ -269,8 +244,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
         return new MapViewDetails(objn, "RPG::Map", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {
-                return MapViewState.fromRT(rendererFromMap(map, iea), map, "@data", false);
+                return MapViewState.fromRT(rendererFromMap(map, iea), map, "@data", false, iea);
             }
-        }, false, iea);
+        }, false, true);
     }
 }

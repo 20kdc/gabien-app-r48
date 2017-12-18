@@ -13,6 +13,9 @@ import java.util.LinkedList;
 
 /**
  * Used to abstract @events
+ * Note that this is now part of the state as of 2:20 AM Dec 18th 2017, because of LUDICROUS EFFICIENCY BOOSTS,
+ *  because it can rely on knowing when there's been a change via the hair-sensitive modification listeners...
+ * ...rather than recreating getEventKeys and such every single time.
  * Created on December 15th 2017
  */
 public interface IEventAccess {
@@ -24,8 +27,13 @@ public interface IEventAccess {
 
     void delEvent(RubyIO key);
 
-    // returns the key
-    RubyIO addEvent(RubyIO eve);
+    // Returns the "add event" strings (strings may or may not be null, but the array must not be null)
+    String[] eventTypes();
+
+    // returns the key, or null for failure
+    RubyIO addEvent(RubyIO eve, int type);
 
     String getEventSchema(RubyIO key);
+
+    int getEventType(RubyIO evK);
 }

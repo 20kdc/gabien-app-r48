@@ -9,12 +9,14 @@ package r48.map.events;
 
 import r48.AppMain;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.schema.util.SchemaPath;
 
 import java.util.LinkedList;
 
 /**
  * EventAccess implementation for the general case.
+ * This instance can be reused.
  * Created on December 15th 2017
  */
 public class TraditionalEventAccess implements IEventAccess {
@@ -47,7 +49,14 @@ public class TraditionalEventAccess implements IEventAccess {
     }
 
     @Override
-    public RubyIO addEvent(RubyIO eve) {
+    public String[] eventTypes() {
+        return new String[] {
+                TXDB.get("+ Add Event")
+        };
+    }
+
+    @Override
+    public RubyIO addEvent(RubyIO eve, int type) {
         RubyIO key = new RubyIO().setFX(getFreeIndex());
         if (eve == null)
             eve = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry(eventSchema), key);
@@ -58,6 +67,11 @@ public class TraditionalEventAccess implements IEventAccess {
     @Override
     public String getEventSchema(RubyIO key) {
         return eventSchema;
+    }
+
+    @Override
+    public int getEventType(RubyIO evK) {
+        return 0;
     }
 
     private int getFreeIndex() {

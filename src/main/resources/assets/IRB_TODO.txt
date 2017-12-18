@@ -28,9 +28,7 @@ short-term planning subsection:
 + ask easyrpg about what is up with SaveSystem system_box_tiling
 + ask easyrpg about pan_state having to be -1 (not 0, -1) to prevent pan weirdness, etcetc
 + send back SavePicture default value fixes, they probably need this
-+ 2k/2k3 save-edit (thank you, Ghabry)
-+ Fixing encoding issues is still in-between r/n (FormatSyntax is assuming system encoding, not UTF-8, when given internal strings - makes sense, but bad),
-   need to actually bring :encoding in to really fix everything
++ 2k/2k3 save-edit (18th: Savefile events UI & general QoL regarding savefiles 19th: Basically more tuning & testing 20th: RELEASE)
   <IMMEDIATELY BEGIN INFORMAL RELEASE-TESTING>
 + v0.9
   (LATEST RELEASE DATE: 20th of December.)

@@ -50,8 +50,8 @@ public class IkaSystem extends MapSystem {
         return new MapViewDetails(gum, "IkachanMap", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {
-                return MapViewState.fromRT(rendererGeneral(map, events), map, "@data", false);
+                return MapViewState.fromRT(rendererGeneral(map, events), map, "@data", false, events);
             }
-        }, false, events);
+        }, false, true);
     }
 }

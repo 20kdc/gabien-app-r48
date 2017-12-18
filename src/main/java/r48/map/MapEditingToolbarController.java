@@ -57,7 +57,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 }
             }).togglable());
         }
-        if (view.map.eventAccess != null) {
+        if (view.mapTable.eventAccess != null) {
             tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Events"), new Runnable() {
                 final int thisButton = tools.size();
 

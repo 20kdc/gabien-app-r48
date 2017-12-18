@@ -36,7 +36,11 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
     public int determineEventLayer(RubyIO event) {
         RubyIO eventCore = extractEventGraphic(event);
         if (eventCore == null)
-            return 0;
+            return -1;
+        RubyIO active = eventCore.getInstVarBySymbol("@active");
+        if (active != null)
+            if (active.type == 'F')
+                return -1;
         int ld = (int) eventCore.getInstVarBySymbol("@layer").fixnumVal;
         if (ld == 0)
             return 0;

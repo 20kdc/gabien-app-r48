@@ -96,6 +96,8 @@ public abstract class MapSystem {
      */
     public static class MapViewState {
         public final StuffRenderer renderer;
+        // Only for tool use, so can be null if the tools won't ever access it
+        public final IEventAccess eventAccess;
         public final int width, height, planeCount;
         // int[] contains X, Y, Layer
         public final IFunction<int[], Short> getTileData;
@@ -104,7 +106,7 @@ public abstract class MapSystem {
         // int[] contains X, Y, (defaults...)
         public final IConsumer<int[]> resize;
 
-        public MapViewState(StuffRenderer r, int w, int h, int pc, IFunction<int[], Short> gtd, IConsumer<int[]> std, IConsumer<int[]> rz) {
+        public MapViewState(StuffRenderer r, int w, int h, int pc, IFunction<int[], Short> gtd, IConsumer<int[]> std, IConsumer<int[]> rz, IEventAccess iea) {
             renderer = r;
             width = w;
             height = h;
@@ -112,6 +114,7 @@ public abstract class MapSystem {
             getTileData = gtd;
             setTileData = std;
             resize = rz;
+            eventAccess = iea;
         }
 
         public boolean outOfBounds(int mouseXT, int mouseYT) {
@@ -126,7 +129,7 @@ public abstract class MapSystem {
             return false;
         }
 
-        public static MapViewState getBlank() {
+        public static MapViewState getBlank(IEventAccess iea) {
             return new MapViewState(AppMain.stuffRendererIndependent, 0, 0, 0, new IFunction<int[], Short>() {
                 @Override
                 public Short apply(int[] ints) {
@@ -141,10 +144,10 @@ public abstract class MapSystem {
                 public void accept(int[] ints) {
 
                 }
-            });
+            }, iea);
         }
 
-        public static MapViewState fromRT(StuffRenderer stuffRenderer, final RubyIO its, final String str, final boolean readOnly) {
+        public static MapViewState fromRT(StuffRenderer stuffRenderer, final RubyIO its, final String str, final boolean readOnly, IEventAccess iea) {
             final RubyTable rt = new RubyTable(its.getInstVarBySymbol(str).userVal);
             return new MapViewState(stuffRenderer, rt.width, rt.height, rt.planeCount, new IFunction<int[], Short>() {
                 @Override
@@ -172,7 +175,7 @@ public abstract class MapSystem {
                         its.getInstVarBySymbol("@height").fixnumVal = ints[1];
                     rt.resize(ints[0], ints[1], defs);
                 }
-            });
+            }, iea);
         }
 
         public short getTiletype(int i, int i1, int i2) {
@@ -200,18 +203,16 @@ public abstract class MapSystem {
         public final RubyIO object;
         // for UIMapView internals
         public final ISupplier<MapViewState> rendererRetriever;
-        // for tools (without this, event access is disabled)
-        public IEventAccess eventAccess;
         // Recommendation flags for the default ToolbarController if relevant
-        public boolean recommendReadonlyTiles;
+        public boolean recommendReadonlyTiles, recommendEventAccess;
 
-        public MapViewDetails(String o, String os, ISupplier<MapViewState> mvs, boolean readonlyTiles, IEventAccess event) {
+        public MapViewDetails(String o, String os, ISupplier<MapViewState> mvs, boolean readonlyTiles, boolean eventAccess) {
             objectId = o;
             objectSchema = os;
             object = AppMain.objectDB.getObject(o, os);
             recommendReadonlyTiles = readonlyTiles;
-            eventAccess = event;
             rendererRetriever = mvs;
+            recommendEventAccess = eventAccess;
         }
     }
 }
