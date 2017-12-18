@@ -144,8 +144,8 @@ public class SaveSystem extends R2kObject {
                 new Index(0x65, enemyDeathSound, "@enemy_death_se"),
                 new Index(0x66, itemSound, "@item_se"),
 
-                new Index(0x6F, transitionOut, "@transition_out"),
-                new Index(0x70, transitionIn, "@transition_in"),
+                new Index(0x6F, transitionOut, "@transition_fadeout"),
+                new Index(0x70, transitionIn, "@transition_fadein"),
                 new Index(0x71, battleStartFadeout, "@battle_start_fadeout"),
                 new Index(0x72, battleStartFadein, "@battle_start_fadein"),
                 new Index(0x73, battleEndFadeout, "@battle_end_fadeout"),

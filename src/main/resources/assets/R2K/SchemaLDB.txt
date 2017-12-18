@@ -559,6 +559,11 @@ e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 orde
  Despite what https://github.com/EasyRPG/Player/issues/885 says, the default I leave this at is giving me RM2000 results (default menus).
  Not so much chunk presence as chunk contents... The difference between "I have to make this optional and document it" or "I don't".
 @ldb_id rpg_system_ldbid
+
+ NOTE: NAMING HERE IS IMPORTANT.
+ Some names map to names in SaveSystem that get copied over by R2kSystemDefaultsInstaller etcetc.
+ Also, usual disclaimer on anything that could be affected by defaults installer applies.
+
 +optP @save_count_2k3en int
 +optP @save_count_other int
 
@@ -630,8 +635,8 @@ e rpg_system_testing_battle_condition 0 none 1 initiative 2 back 3 surround 4 pi
 @item_se RPG::Sound
 
 .rpg_system_transition
-@transition_in transition_type
-@transition_out transition_type
+@transition_fadein transition_type
+@transition_fadeout transition_type
 @battle_start_fadein transition_type
 @battle_start_fadeout transition_type
 @battle_end_fadein transition_type

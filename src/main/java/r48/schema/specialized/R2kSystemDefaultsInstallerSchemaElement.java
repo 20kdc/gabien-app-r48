@@ -17,6 +17,8 @@ import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
+import java.util.HashMap;
+
 /**
  * Installs a set of sensible defaults on command.
  * Created on 08/06/17.
@@ -107,9 +109,57 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     RubyTable rt = new RubyTable(target.getInstVarBySymbol("@highpass_data").userVal);
                     rt.setTiletype(0, 0, 0, (short) 0x1F);
                     break;
+                case 3:
+                    // Savefile
+                    saveFileSetup(target);
+                    break;
             }
             // finally, signal
             path.changeOccurred(true);
         }
+    }
+
+    private void saveFileSetup(RubyIO target) {
+        setupSaveCharacter(target.getInstVarBySymbol("@party_pos"), "@player_map", "@player_x", "@player_y");
+        setupSaveCharacter(target.getInstVarBySymbol("@boat_pos"), "@boat_map", "@boat_x", "@boat_y");
+        setupSaveCharacter(target.getInstVarBySymbol("@ship_pos"), "@ship_map", "@ship_x", "@ship_y");
+        setupSaveCharacter(target.getInstVarBySymbol("@airship_pos"), "@airship_map", "@airship_x", "@airship_y");
+        // copy over stuff
+        RubyIO savSys = target.getInstVarBySymbol("@system");
+        RubyIO ldb = AppMain.objectDB.getObject("RPG_RT.ldb");
+        RubyIO ldbSys = ldb.getInstVarBySymbol("@system");
+
+        savSys.getInstVarBySymbol("@system_name").setDeepClone(ldbSys.getInstVarBySymbol("@system_name"));
+        savSys.getInstVarBySymbol("@system_box_tiling").setDeepClone(ldbSys.getInstVarBySymbol("@system_box_tiling"));
+        savSys.getInstVarBySymbol("@font_id").setDeepClone(ldbSys.getInstVarBySymbol("@font_id"));
+
+        initializeArrayWithClones(savSys.getInstVarBySymbol("@switches"), ldb.getInstVarBySymbol("@switches").hashVal, new RubyIO().setBool(false));
+        initializeArrayWithClones(savSys.getInstVarBySymbol("@variables"), ldb.getInstVarBySymbol("@variables").hashVal, new RubyIO().setFX(0));
+
+        for (String iv : savSys.iVarKeys)
+            if (iv.endsWith("_se") || iv.endsWith("_music") || iv.endsWith("_fadein") || iv.endsWith("_fadeout"))
+                savSys.getInstVarBySymbol(iv).setDeepClone(ldbSys.getInstVarBySymbol(iv));
+    }
+
+    private void initializeArrayWithClones(RubyIO instVarBySymbol, HashMap<RubyIO, RubyIO> length, RubyIO rubyIO) {
+        int maxVal = 0;
+        for (RubyIO rio : length.keySet())
+            maxVal = Math.max((int) rio.fixnumVal, maxVal);
+        instVarBySymbol.arrVal = new RubyIO[maxVal];
+        for (int i = 0; i < instVarBySymbol.arrVal.length; i++)
+            instVarBySymbol.arrVal[i] = new RubyIO().setDeepClone(rubyIO);
+    }
+
+    private void setupSaveCharacter(RubyIO chr, String s, String s1, String s2) {
+        RubyIO lmt = AppMain.objectDB.getObject("RPG_RT.lmt").getInstVarBySymbol("@start");
+        RubyIO a = lmt.getInstVarBySymbol(s);
+        RubyIO b = lmt.getInstVarBySymbol(s1);
+        RubyIO c = lmt.getInstVarBySymbol(s2);
+        if (a != null)
+            chr.getInstVarBySymbol("@map").setDeepClone(a);
+        if (b != null)
+            chr.getInstVarBySymbol("@x").setDeepClone(b);
+        if (c != null)
+            chr.getInstVarBySymbol("@y").setDeepClone(c);
     }
 }

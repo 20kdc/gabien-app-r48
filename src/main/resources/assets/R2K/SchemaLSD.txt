@@ -4,7 +4,11 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
- LSD support (For Ghabry)
+ LSD support
+
+ NOTE: NAMING HERE IS IMPORTANT.
+ Some names map to names in SaveSystem that get copied over by R2kSystemDefaultsInstaller etcetc.
+ Also, usual disclaimer on anything that could be affected by defaults installer applies.
 
 : RPG::SaveTitle
  Yes, this is important.
@@ -134,8 +138,8 @@ e rpg_savesystem_screen 5 save
 
 .rpg_savesystem_transition
  They sure did put a lot of attention into this behavior, huh.
-@transition_in transition_type
-@transition_out transition_type
+@transition_fadein transition_type
+@transition_fadeout transition_type
 @battle_start_fadein transition_type
 @battle_start_fadeout transition_type
 @battle_end_fadein transition_type
@@ -438,3 +442,4 @@ C name Class.RPG::Save @title@timestamp @title@hero_name @title@hero_level @titl
 
 @main_interpreter subwindow RPG::Interpreter
 @common_events subwindow hash commonevent_id RPG::SaveCommonEvent
+C magicR2kSystemDefaults 3
