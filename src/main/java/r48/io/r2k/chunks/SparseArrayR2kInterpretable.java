@@ -36,7 +36,13 @@ public class SparseArrayR2kInterpretable<T extends IR2kStruct> implements IR2kIn
         for (int i = 0; i < entries; i++) {
             int k = R2kUtil.readLcfVLI(bais);
             T target = constructor.get();
-            target.importData(bais);
+            try {
+                target.importData(bais);
+            } catch (IOException e) {
+                throw new IOException("In element " + i + " of " + this, e);
+            } catch (RuntimeException e) {
+                throw new RuntimeException("In element " + i + " of " + this, e);
+            }
             map.put(k, target);
         }
     }

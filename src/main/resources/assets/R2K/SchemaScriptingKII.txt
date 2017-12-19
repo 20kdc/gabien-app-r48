@@ -18,7 +18,7 @@
 ]0 _ string
 ]1 var var_id
 ]2 wait int_boolean
-]4 checkDesc int_boolean
+]4 checkAction int_boolean
 ]5 checkCancel int_boolean
 +lengthAdjust 2k\_<\_1.50 10
 +lengthAdjust 2k\_>=\_1.50 11

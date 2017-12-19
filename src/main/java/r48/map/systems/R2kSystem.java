@@ -237,7 +237,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
         if (!allowCreate)
             if (AppMain.objectDB.getObject(objn, null) == null)
                 return null;
-        final RubyIO map = AppMain.objectDB.getObject(objn);
+        final RubyIO map = AppMain.objectDB.getObject(objn, "RPG::Map");
         final IEventAccess iea = new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 1, "RPG::Event");
         return new MapViewDetails(objn, "RPG::Map", new ISupplier<MapViewState>() {
             @Override

@@ -544,7 +544,8 @@ C name Class.RPG::Tileset @name | #A
  ---
 
 e rpg_system_ldbid 0 RM2000 2003 RM2003
-e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 order 8 wait 9 quit
+ 9 might in fact be a padding item
+e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 order 8 wait 9 unknown/padding/quit
 
 : RPG::System::TestBattler
 @actor actor_id

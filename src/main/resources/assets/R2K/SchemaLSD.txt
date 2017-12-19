@@ -156,9 +156,8 @@ C name Class.RPG::Interpreter @stack$length | {@{A=0=1|#A}|1|empty|[lang-Common-
 @waiting_for_sleep int
 @waiting_for_sleep_alt int
 @keyii_wait boolean
- COMM W/ EASYRPG!! (apparently they're not quite sure either about this)
- Just about all of these "but how could this occur when saving" cases are related to background common events.
-@keyii_variable var_id
+ Regarding this, it's limited to a byte.
+@keyii_variable_OLD int
 @keyii_timed boolean
 @keyii_time_variable var_id
 @keyii_filter_arrowkeys boolean

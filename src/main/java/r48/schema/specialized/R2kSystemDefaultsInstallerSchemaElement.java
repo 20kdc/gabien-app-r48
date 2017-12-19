@@ -152,7 +152,8 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
         RubyIO ldbSys = ldb.getInstVarBySymbol("@system");
 
         target.getInstVarBySymbol("@party").getInstVarBySymbol("@party").setDeepClone(ldbSys.getInstVarBySymbol("@party"));
-        savSys.getInstVarBySymbol("@system_name").setDeepClone(ldbSys.getInstVarBySymbol("@system_name"));
+        // Unnecessary
+        //savSys.getInstVarBySymbol("@system_name").setDeepClone(ldbSys.getInstVarBySymbol("@system_name"));
         savSys.getInstVarBySymbol("@system_box_tiling").setDeepClone(ldbSys.getInstVarBySymbol("@system_box_tiling"));
         savSys.getInstVarBySymbol("@font_id").setDeepClone(ldbSys.getInstVarBySymbol("@font_id"));
 

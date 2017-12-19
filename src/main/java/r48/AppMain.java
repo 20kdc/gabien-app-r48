@@ -605,7 +605,7 @@ public class AppMain {
                     }
                 }
                 // Load map 1, save everything
-                mapContext.loadMap("M1");
+                mapContext.loadMap("Map.1");
                 objectDB.ensureAllSaved();
                 launchDialog(TXDB.get("2k3 template synthesis complete."));
             }

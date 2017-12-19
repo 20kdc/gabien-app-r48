@@ -28,7 +28,8 @@ public class Interpreter extends R2kObject {
     public IntegerR2kStruct waitingSlp1 = new IntegerR2kStruct(0);
     public IntegerR2kStruct waitingSlp2 = new IntegerR2kStruct(0);
     public BooleanR2kStruct kiiWait = new BooleanR2kStruct(false);
-    public IntegerR2kStruct kiiVariable = new IntegerR2kStruct(0);
+    // Yes, really. Don't trust this
+    public ByteR2kStruct kiiVariable = new ByteR2kStruct(0);
     public BooleanR2kStruct kiiTimed  = new BooleanR2kStruct(false);
     public IntegerR2kStruct kiiTimeVariable = new IntegerR2kStruct(0);
     public BooleanR2kStruct kiiFilterArrowkeys = new BooleanR2kStruct(false);
@@ -51,7 +52,7 @@ public class Interpreter extends R2kObject {
                 new Index(0x04, shownMessage, "@shown_message"),
                 new Index(0x0D, waitingMovementEnd, "@waiting_for_nmovement"),
                 new Index(0x15, kiiWait, "@keyii_wait"),
-                new Index(0x16, kiiVariable, "@keyii_variable"),
+                new Index(0x16, kiiVariable, "@keyii_variable_OLD"),
                 new Index(0x17, kiiFilterArrowkeys, "@keyii_filter_arrowkeys"),
                 new Index(0x18, kiiFilterDecision, "@keyii_filter_decision"),
                 new Index(0x19, kiiFilterCancel, "@keyii_filter_cancel"),
