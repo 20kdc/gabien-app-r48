@@ -16,4 +16,6 @@ public interface IEditingToolbarController {
     void noTool();
 
     UIElement getBar();
+
+    boolean allowPickTile();
 }

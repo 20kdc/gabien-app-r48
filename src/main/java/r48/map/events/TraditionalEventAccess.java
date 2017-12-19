@@ -74,6 +74,11 @@ public class TraditionalEventAccess implements IEventAccess {
         return 0;
     }
 
+    @Override
+    public Runnable hasSync(RubyIO evK) {
+        return null;
+    }
+
     private int getFreeIndex() {
         int unusedIndex = eventIdBase;
         while (mapEvents.getHashVal(new RubyIO().setFX(unusedIndex)) != null)

@@ -9,6 +9,7 @@ package r48.map.systems;
 
 import gabien.IImage;
 import gabien.ui.IConsumer;
+import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import r48.AppMain;
@@ -16,6 +17,9 @@ import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.map.IEditingToolbarController;
+import r48.map.IMapToolContext;
+import r48.map.MapEditingToolbarController;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.EventMapViewDrawLayer;
 import r48.map.drawlayers.IMapViewDrawLayer;
@@ -116,7 +120,16 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
             public MapViewState get() {
                 return MapViewState.fromRT(rendererFromMap(map, events), map, "@data", false, events);
             }
-        }, false, true);
+        }, new IFunction<IMapToolContext, IEditingToolbarController>() {
+            @Override
+            public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
+                return mapEditingToolbar(iMapToolContext);
+            }
+        });
+    }
+
+    protected IEditingToolbarController mapEditingToolbar(IMapToolContext iMapToolContext) {
+        return new MapEditingToolbarController(iMapToolContext, false);
     }
 
     @Override

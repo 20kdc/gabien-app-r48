@@ -12,7 +12,6 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.TXDB;
-import r48.map.tiles.VXATileRenderer;
 import r48.maptools.*;
 
 import java.util.LinkedList;
@@ -22,17 +21,24 @@ import java.util.LinkedList;
  * Created on 11/08/17.
  */
 public class MapEditingToolbarController implements IEditingToolbarController {
-    public UIScrollLayout rootLayout = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
+    private UIScrollLayout rootLayout = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
     private final LinkedList<UITextButton> tools = new LinkedList<UITextButton>();
+    private final boolean readonlyTiles;
 
-    public MapEditingToolbarController(final IMapToolContext viewGiver, final ISupplier<IConsumer<UIElement>> windowMakerSupplier) {
+    public MapEditingToolbarController(final IMapToolContext viewGiver, boolean rd) {
+        // Usual stupid complaints, please ignore (if you add the diamond w/ or w/o types the compiler errors)
+        this(viewGiver, rd, new String[] {}, new IFunction[0]);
+    }
+
+    public MapEditingToolbarController(final IMapToolContext viewGiver, boolean rd, String[] toolNames, final IFunction<IMapToolContext, UIMTBase>[] toolFuncs) {
+        readonlyTiles = rd;
 
         final UIMapView view = viewGiver.getMapView();
 
         // -- Kind of a monolith here. Map tools ALWAYS go first, and must be togglables.
         // It is assumed that this is the only class capable of causing tool changes (unless noTool is called)
 
-        if (!view.map.recommendReadonlyTiles) {
+        if (!readonlyTiles) {
             for (int i = 0; i < view.mapTable.planeCount; i++) {
                 final int thisButton = i;
                 final UITextButton button = new UITextButton(FontSizes.mapLayertabTextHeight, "L" + i, new Runnable() {
@@ -46,14 +52,15 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 tools.add(button);
             }
         }
-        if (view.mapTable.renderer.tileRenderer instanceof VXATileRenderer) {
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Shadow/Region"), new Runnable() {
+        for (int i = 0; i < toolNames.length; i++) {
+            final int toolId = i;
+            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, toolNames[i], new Runnable() {
                 final int thisButton = tools.size();
 
                 @Override
                 public void run() {
                     clearTools(thisButton);
-                    viewGiver.accept(new UIMTShadowLayer(viewGiver));
+                    viewGiver.accept(toolFuncs[toolId].apply(viewGiver));
                 }
             }).togglable());
         }
@@ -95,7 +102,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
 
         // Utility buttons
 
-        if (!view.map.recommendReadonlyTiles) {
+        if (!readonlyTiles) {
             tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Grab Tile"), new Runnable() {
                 @Override
                 public void run() {
@@ -149,7 +156,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
             @Override
             public void run() {
                 clearTools(thisButton);
-                viewGiver.accept(new UIMTPopupButtons(viewGiver));
+                viewGiver.accept(new UIMTPopupButtons(viewGiver, readonlyTiles));
             }
         }).togglable());
 
@@ -177,5 +184,10 @@ public class MapEditingToolbarController implements IEditingToolbarController {
     @Override
     public UIElement getBar() {
         return rootLayout;
+    }
+
+    @Override
+    public boolean allowPickTile() {
+        return !readonlyTiles;
     }
 }

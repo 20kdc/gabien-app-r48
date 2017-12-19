@@ -21,7 +21,7 @@ import r48.map.UIMapView;
  * Created on 18/06/17.
  */
 public class UIMTPopupButtons extends UIMTBase {
-    public UIMTPopupButtons(final IMapToolContext mtc) {
+    public UIMTPopupButtons(final IMapToolContext mtc, final boolean disableResize) {
         super(mtc, true);
         final UIMapView view = mtc.getMapView();
         UIAutoclosingPopupMenu u = new UIAutoclosingPopupMenu(new String[] {
@@ -48,7 +48,7 @@ public class UIMTPopupButtons extends UIMTBase {
                 new Runnable() {
                     @Override
                     public void run() {
-                        if (view.map.recommendReadonlyTiles) {
+                        if (disableResize) {
                             AppMain.launchDialog(TXDB.get("Tiles are apparently readonly, so resizing is not possible."));
                         } else {
                             mtc.accept(new UIMTMapResizer(mtc));

@@ -30,10 +30,19 @@ public interface IEventAccess {
     // Returns the "add event" strings (strings may or may not be null, but the array must not be null)
     String[] eventTypes();
 
-    // returns the key, or null for failure
+    // returns one of:
+    // null for fail & do nothing
+    // Ruby null for "run the modification notifier"
+    // the key
+
     RubyIO addEvent(RubyIO eve, int type);
 
     String getEventSchema(RubyIO key);
 
     int getEventType(RubyIO evK);
+
+    // If this returns something, then the event is read-only, but has a button marked "Sync" which is expected to cause modifications
+    // Yes, this is a cop-out because I can't think of a better design r/n
+    // everything else I thought up was just hacky or overabstracting
+    Runnable hasSync(RubyIO evK);
 }

@@ -8,10 +8,7 @@
 package r48.maptools;
 
 import gabien.IGrDriver;
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -81,43 +78,78 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
             final RubyIO evI = mapView.mapTable.eventAccess.getEvent(evK);
             if (evI.getInstVarBySymbol("@x").fixnumVal == x)
                 if (evI.getInstVarBySymbol("@y").fixnumVal == y) {
-                    String nam = "event" + evK.toString();
+                    String nam = evK.toString();
                     if (evI.getInstVarBySymbol("@name") != null)
                         nam = evI.getInstVarBySymbol("@name").decString();
-                    UIElement button = new UITextButton(FontSizes.eventPickerEntryTextHeight, nam, new Runnable() {
-                        @Override
-                        public void run() {
-                            showEvent(evK, mapView, evI);
-                        }
-                    });
-                    button = new UIAppendButton(TXDB.get("Move"), button, new Runnable() {
-                        @Override
-                        public void run() {
-                            mapToolContext.accept(new UIMTEventMover(evI, mapToolContext));
-                        }
-                    }, FontSizes.eventPickerEntryTextHeight);
-                    button = new UIAppendButton(TXDB.get("Clone"), button, new Runnable() {
-                        @Override
-                        public void run() {
-                            RubyIO newEvent = new RubyIO().setDeepClone(evI);
-                            if (mapView.mapTable.eventAccess.addEvent(newEvent, mapView.mapTable.eventAccess.getEventType(evK)) == null) {
-                                AppMain.launchDialog(TXDB.get("Couldn't add the event."));
-                                return;
+
+                    Runnable r = mapView.mapTable.eventAccess.hasSync(evK);
+                    if (r == null) {
+                        // Note the checks in case of out of date panel.
+                        UIElement button = new UITextButton(FontSizes.eventPickerEntryTextHeight, nam, new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
+                                    confirmAt(x, y, layer);
+                                    return;
+                                }
+                                showEvent(evK, mapView, evI);
                             }
-                            // This'll fix the potential inconsistencies
-                            mapView.passModificationNotification();
-                            mapToolContext.accept(new UIMTEventMover(newEvent, mapToolContext));
-                        }
-                    }, FontSizes.eventPickerEntryTextHeight);
-                    button = new UIAppendButton(TXDB.get("Del."), button, new Runnable() {
-                        @Override
-                        public void run() {
-                            mapView.mapTable.eventAccess.delEvent(evK);
-                            mapView.passModificationNotification();
-                            confirmAt(x, y, layer);
-                        }
-                    }, FontSizes.eventPickerEntryTextHeight);
-                    svl.panels.add(button);
+                        });
+                        button = new UIAppendButton(TXDB.get("Move"), button, new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
+                                    confirmAt(x, y, layer);
+                                    return;
+                                }
+                                mapToolContext.accept(new UIMTEventMover(evI, mapToolContext));
+                            }
+                        }, FontSizes.eventPickerEntryTextHeight);
+                        button = new UIAppendButton(TXDB.get("Clone"), button, new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
+                                    confirmAt(x, y, layer);
+                                    return;
+                                }
+                                RubyIO newEvent = new RubyIO().setDeepClone(evI);
+                                if (mapView.mapTable.eventAccess.addEvent(newEvent, mapView.mapTable.eventAccess.getEventType(evK)) == null)
+                                    return;
+                                // This'll fix the potential inconsistencies
+                                mapView.passModificationNotification();
+                                mapToolContext.accept(new UIMTEventMover(newEvent, mapToolContext));
+                            }
+                        }, FontSizes.eventPickerEntryTextHeight);
+                        button = new UIAppendButton(TXDB.get("Del."), button, new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
+                                    confirmAt(x, y, layer);
+                                    return;
+                                }
+                                mapView.mapTable.eventAccess.delEvent(evK);
+                                mapView.passModificationNotification();
+                                confirmAt(x, y, layer);
+                            }
+                        }, FontSizes.eventPickerEntryTextHeight);
+                        svl.panels.add(button);
+                    } else {
+                        UIElement button = new UILabel(nam, FontSizes.eventPickerEntryTextHeight);
+                        button = new UIAppendButton(TXDB.get("Sync"), button, new Runnable() {
+                            @Override
+                            public void run() {
+                                // It's possible (if unlikely) that this action actually became invalid.
+                                // Consider: confirmAt -> object change -> click Sync
+                                Runnable r = mapView.mapTable.eventAccess.hasSync(evK);
+                                if (r != null) {
+                                    r.run();
+                                    mapView.passModificationNotification();
+                                }
+                                confirmAt(x, y, layer);
+                            }
+                        }, FontSizes.eventPickerEntryTextHeight);
+                        svl.panels.add(button);
+                    }
                 }
         }
         String[] types = mapView.mapTable.eventAccess.eventTypes();
@@ -129,8 +161,10 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                 @Override
                 public void run() {
                     RubyIO k = mapView.mapTable.eventAccess.addEvent(null, i2);
-                    if (k == null) {
-                        AppMain.launchDialog(TXDB.get("Couldn't add the event."));
+                    if (k == null)
+                        return;
+                    if (k.type == '0') {
+                        mapView.passModificationNotification();
                         return;
                     }
                     RubyIO v = mapView.mapTable.eventAccess.getEvent(k);
@@ -145,6 +179,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                     }
                     v.getInstVarBySymbol("@x").fixnumVal = x;
                     v.getInstVarBySymbol("@y").fixnumVal = y;
+                    // Note: modification notify before show, to prevent the possibility of the schema info from IEA being wrong
                     mapView.passModificationNotification();
                     showEvent(k, mapView, v);
                 }

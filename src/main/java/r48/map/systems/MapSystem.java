@@ -12,7 +12,6 @@ import r48.*;
 import r48.dbs.TXDB;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
-import r48.map.MapEditingToolbarController;
 import r48.map.StuffRenderer;
 import r48.map.events.IEventAccess;
 import r48.map.imaging.IImageLoader;
@@ -77,16 +76,6 @@ public abstract class MapSystem {
     // Used to prepare a UIMapView. Can only return null if allowCreate is false.
     // Can throw an exception if the GUM is actually invalid, because GUMs are internal strings and can't be entered by the user.
     public abstract MapViewDetails mapViewRequest(String gum, boolean allowCreate);
-
-    // Used to get UI details.
-    public IFunction<IMapToolContext, IEditingToolbarController> mapLoadRequest(String gum, final ISupplier<IConsumer<UIElement>> windowMaker) {
-        return new IFunction<IMapToolContext, IEditingToolbarController>() {
-            @Override
-            public IEditingToolbarController apply(IMapToolContext uiMapView) {
-                return new MapEditingToolbarController(uiMapView, windowMaker);
-            }
-        };
-    }
 
     /*
      * Acts as a wrapper around RubyTable, but also provides a StuffRenderer separately.
@@ -203,16 +192,15 @@ public abstract class MapSystem {
         public final RubyIO object;
         // for UIMapView internals
         public final ISupplier<MapViewState> rendererRetriever;
-        // Recommendation flags for the default ToolbarController if relevant
-        public boolean recommendReadonlyTiles, recommendEventAccess;
+        // For editing. This was going to happen ever since recommendedflags started sneaking in, since otherwise the system has to have more copied code for GUM translation
+        public final IFunction<IMapToolContext, IEditingToolbarController> toolbar;
 
-        public MapViewDetails(String o, String os, ISupplier<MapViewState> mvs, boolean readonlyTiles, boolean eventAccess) {
+        public MapViewDetails(String o, String os, ISupplier<MapViewState> mvs, IFunction<IMapToolContext, IEditingToolbarController> tb) {
             objectId = o;
             objectSchema = os;
             object = AppMain.objectDB.getObject(o, os);
-            recommendReadonlyTiles = readonlyTiles;
             rendererRetriever = mvs;
-            recommendEventAccess = eventAccess;
+            toolbar = tb;
         }
     }
 }

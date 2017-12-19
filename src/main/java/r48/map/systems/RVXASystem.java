@@ -7,7 +7,12 @@
 
 package r48.map.systems;
 
+import gabien.ui.IFunction;
 import r48.RubyIO;
+import r48.dbs.TXDB;
+import r48.map.IEditingToolbarController;
+import r48.map.IMapToolContext;
+import r48.map.MapEditingToolbarController;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventAccess;
@@ -15,6 +20,8 @@ import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.VXATileRenderer;
+import r48.maptools.UIMTBase;
+import r48.maptools.UIMTShadowLayer;
 
 /**
  * Created on 03/06/17.
@@ -41,5 +48,18 @@ public class RVXASystem extends RXPSystem {
         ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
+    }
+
+    protected IEditingToolbarController mapEditingToolbar(IMapToolContext iMapToolContext) {
+        return new MapEditingToolbarController(iMapToolContext, false, new String[] {
+                TXDB.get("Shadow/Region")
+        }, new IFunction[] {
+                new IFunction<IMapToolContext, UIMTBase>() {
+                    @Override
+                    public UIMTBase apply(IMapToolContext o) {
+                        return new UIMTShadowLayer(o);
+                    }
+                }
+        });
     }
 }

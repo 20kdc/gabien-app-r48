@@ -17,10 +17,7 @@ import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
-import r48.map.IEditingToolbarController;
-import r48.map.IMapToolContext;
-import r48.map.R2kAreaEditingToolbarController;
-import r48.map.StuffRenderer;
+import r48.map.*;
 import r48.map.drawlayers.*;
 import r48.map.events.*;
 import r48.map.imaging.*;
@@ -185,24 +182,6 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public IFunction<IMapToolContext, IEditingToolbarController> mapLoadRequest(String gum, final ISupplier<IConsumer<UIElement>> windowMaker) {
-        if (gum.startsWith("Save."))
-            return super.mapLoadRequest(gum, windowMaker);
-        if (gum.startsWith("Area.")) {
-            final RubyIO root = AppMain.objectDB.getObject("RPG_RT.lmt");
-            final RubyIO mapInfos = root.getInstVarBySymbol("@map_infos");
-            final RubyIO mapInfo = mapInfos.getHashVal(new RubyIO().setFX(Long.parseLong(gum.substring(5))));
-            return new IFunction<IMapToolContext, IEditingToolbarController>() {
-                @Override
-                public IEditingToolbarController apply(IMapToolContext uiMapView) {
-                    return new R2kAreaEditingToolbarController(uiMapView, root, mapInfo);
-                }
-            };
-        }
-        return super.mapLoadRequest(gum, windowMaker);
-    }
-
-    @Override
     public MapViewDetails mapViewRequest(String gum, boolean allowCreate) {
         String[] gp = gum.split("\\.");
         final int v = Integer.parseInt(gp[1]);
@@ -211,7 +190,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             if (!allowCreate)
                 if (AppMain.objectDB.getObject(obj, null) == null)
                     return null;
-            final RubyIO root = AppMain.objectDB.getObject(obj);
+            final RubyIO root = AppMain.objectDB.getObject(obj, "RPG::Save");
             return new MapViewDetails(obj, "RPG::Save", new ISupplier<MapViewState>() {
                 @Override
                 public MapViewState get() {
@@ -223,16 +202,35 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
                         return MapViewState.getBlank(events);
                     return MapViewState.fromRT(rendererFromMap(map, events), map, "@data", true, events);
                 }
-            }, true, true);
+            }, new IFunction<IMapToolContext, IEditingToolbarController>() {
+                @Override
+                public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
+                    return new MapEditingToolbarController(iMapToolContext, true);
+                }
+            });
         }
+        // Map, Area
         final RubyIO root = AppMain.objectDB.getObject("RPG_RT.lmt");
         final RubyIO mapInfos = root.getInstVarBySymbol("@map_infos");
         final RubyIO mapInfo = mapInfos.getHashVal(new RubyIO().setFX(v));
         try {
-            if (mapInfo.getInstVarBySymbol("@type").fixnumVal == 2)
-                return mapViewRequest("Map." + mapInfo.getInstVarBySymbol("@parent_id").fixnumVal, true);
+            if (mapInfo.getInstVarBySymbol("@type").fixnumVal == 2) {
+                long parent = mapInfo.getInstVarBySymbol("@parent_id").fixnumVal;
+                if (parent == v)
+                    return null;
+                MapViewDetails mvd = mapViewRequest("Map." + parent, false);
+                if (mvd == null)
+                    return null;
+                return new MapViewDetails(mvd.objectId, mvd.objectSchema, mvd.rendererRetriever, new IFunction<IMapToolContext, IEditingToolbarController>() {
+                    @Override
+                    public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
+                        return new R2kAreaEditingToolbarController(iMapToolContext, root, mapInfo);
+                    }
+                });
+            }
         } catch (StackOverflowError soe) {
             // Note the implied change to an Exception, which gets caught
+            // This is still not good, though
             throw new RuntimeException(soe);
         }
         final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(v);
@@ -246,6 +244,11 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             public MapViewState get() {
                 return MapViewState.fromRT(rendererFromMap(map, iea), map, "@data", false, iea);
             }
-        }, false, true);
+        }, new IFunction<IMapToolContext, IEditingToolbarController>() {
+            @Override
+            public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
+                return new MapEditingToolbarController(iMapToolContext, false);
+            }
+        });
     }
 }

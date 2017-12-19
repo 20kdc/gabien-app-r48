@@ -113,10 +113,32 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     // Savefile
                     saveFileSetup(target);
                     break;
+                case 4:
+                    // map_id saner default setter, but only for savefiles.
+                    mapIdMagic(target, path.findRoot());
+                    break;
             }
             // finally, signal
             path.changeOccurred(true);
         }
+    }
+
+    // sets target to the relevant map ID based on vague information
+    private void mapIdMagic(RubyIO target, SchemaPath root) {
+        String str = AppMain.objectDB.getIdByObject(root.targetElement);
+        if (str == null)
+            return;
+        if (str.startsWith("Map"))
+            if (str.endsWith(".lmu")) {
+                try {
+                    target.fixnumVal = Integer.parseInt(str.substring(3, str.length() - 4));
+                } catch (Exception e) {
+                    // nope
+                }
+            }
+        if (str.startsWith("Save"))
+            if (str.endsWith(".lsd"))
+                target.setDeepClone(root.targetElement.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map"));
     }
 
     private void saveFileSetup(RubyIO target) {
@@ -129,6 +151,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
         RubyIO ldb = AppMain.objectDB.getObject("RPG_RT.ldb");
         RubyIO ldbSys = ldb.getInstVarBySymbol("@system");
 
+        target.getInstVarBySymbol("@party").getInstVarBySymbol("@party").setDeepClone(ldbSys.getInstVarBySymbol("@party"));
         savSys.getInstVarBySymbol("@system_name").setDeepClone(ldbSys.getInstVarBySymbol("@system_name"));
         savSys.getInstVarBySymbol("@system_box_tiling").setDeepClone(ldbSys.getInstVarBySymbol("@system_box_tiling"));
         savSys.getInstVarBySymbol("@font_id").setDeepClone(ldbSys.getInstVarBySymbol("@font_id"));
@@ -139,6 +162,16 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
         for (String iv : savSys.iVarKeys)
             if (iv.endsWith("_se") || iv.endsWith("_music") || iv.endsWith("_fadein") || iv.endsWith("_fadeout"))
                 savSys.getInstVarBySymbol(iv).setDeepClone(ldbSys.getInstVarBySymbol(iv));
+
+        // table init!
+        initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@lower_tile_remap"));
+        initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@upper_tile_remap"));
+    }
+
+    private void initTable(RubyIO instVarBySymbol) {
+        RubyTable rt = new RubyTable(instVarBySymbol.userVal);
+        for (int i = 0; i < 0x90; i++)
+            rt.setTiletype(i, 0, 0, (short) i);
     }
 
     private void initializeArrayWithClones(RubyIO instVarBySymbol, HashMap<RubyIO, RubyIO> length, RubyIO rubyIO) {

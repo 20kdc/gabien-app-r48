@@ -45,6 +45,11 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
         return new UILabel(TXDB.get("Editing Area..."), FontSizes.mapLayertabTextHeight);
     }
 
+    @Override
+    public boolean allowPickTile() {
+        return false;
+    }
+
     private class UIMTAreaTool extends UIMTBase implements IMapViewCallbacks {
 
         public UILabel label;

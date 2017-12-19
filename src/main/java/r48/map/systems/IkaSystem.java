@@ -7,9 +7,13 @@
 
 package r48.map.systems;
 
+import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.map.IEditingToolbarController;
+import r48.map.IMapToolContext;
+import r48.map.MapEditingToolbarController;
 import r48.map.StuffRenderer;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
@@ -52,6 +56,11 @@ public class IkaSystem extends MapSystem {
             public MapViewState get() {
                 return MapViewState.fromRT(rendererGeneral(map, events), map, "@data", false, events);
             }
-        }, false, true);
+        }, new IFunction<IMapToolContext, IEditingToolbarController>() {
+            @Override
+            public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
+                return new MapEditingToolbarController(iMapToolContext, false);
+            }
+        });
     }
 }

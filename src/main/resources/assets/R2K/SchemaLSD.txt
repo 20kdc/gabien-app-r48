@@ -286,7 +286,9 @@ e rpg_character_transparency 0 off 3 on
 +internal_EPGD
 
 .rpg_character
+ R2kSavefileEventAccess requires this
 @active booleanDefTrue
+ In case you're wondering, yes, this is why map_id has the magical mad insane thing on it.
 @map map_id
 @x int
 @y int
@@ -299,8 +301,10 @@ e rpg_character_transparency 0 off 3 on
 @block_other_events boolean
 @anim_type eventpage_animtype
 @lock_dir boolean
-@move_freq int= 3
-@move_speed int= 3
+ These settings have to be the same as the real default ones for the player,
+  or an attempt at synthesizing a "blank" WILL fail.
+@move_freq int= 2
+@move_speed int= 4
 @move_route RPG::MoveRoute
 @move_route_overwrite boolean
 @move_route_position int

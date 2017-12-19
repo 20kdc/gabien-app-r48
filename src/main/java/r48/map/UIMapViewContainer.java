@@ -146,7 +146,9 @@ public class UIMapViewContainer extends UIPanel {
             }
         };
 
-        if (!view.map.recommendReadonlyTiles) {
+        final IEditingToolbarController metc = view.map.toolbar.apply(mtc);
+
+        if (metc.allowPickTile()) {
             view.pickTileHelper = new IConsumer<Short>() {
                 @Override
                 public void accept(Short aShort) {
@@ -157,7 +159,6 @@ public class UIMapViewContainer extends UIPanel {
             };
         }
 
-        final IEditingToolbarController metc = AppMain.system.mapLoadRequest(gum, windowMakerSupplier).apply(mtc);
         viewToolbarSplit = new UINSVertLayout(metc.getBar(), view);
         allElements.add(viewToolbarSplit);
         AppMain.schemas.kickAllDictionariesForMapChange();
