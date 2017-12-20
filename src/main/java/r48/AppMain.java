@@ -536,7 +536,6 @@ public class AppMain {
             public void run() {
                 uus.scrollbar.scrollPoint = 0;
                 Rect b = topbar.getBounds();
-                topbar.setBounds(new Rect(0, 0, 16, 16));
                 topbar.setBounds(b);
             }
         };

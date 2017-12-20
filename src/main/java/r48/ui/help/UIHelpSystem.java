@@ -64,7 +64,7 @@ public class UIHelpSystem extends UIPanel {
                 }
             })};
         }
-        // I'm running analysis tools just for the sake of it. It's complaining about this returning null.
+        // I'm running analysis tools just for the sake of it. It's complaining about this returning null. (This made sense at the time.)
         // Then again, it also complained that UIMapView's update & render was too complicated.
         // And complained about a useless OR which I did for code understandability reasons (this flag is always set to true, never false)
         // What good is optimization if I'm not allowed to write easier to understand code and have the optimizer get rid of the odd bits!
@@ -124,19 +124,28 @@ public class UIHelpSystem extends UIPanel {
                         left = true;
                 }
                 if (left) {
+                    if (imgSize != 0) {
+                        y = imgEndY;
+                        imgSize = 0;
+                    }
                     uie.setBounds(new Rect((rect.width / 2) - (w / 2), y, w, h));
                     y += h;
                 } else {
-                    uie.setBounds(new Rect(rect.width - w, y, w, h));
-                    imgSize = w;
-                    imgEndY = y + h;
+                    if (imgSize != 0) {
+                        uie.setBounds(new Rect(rect.width - w, imgEndY, w, h));
+                        imgSize = Math.max(imgSize, w);
+                        imgEndY += h;
+                    } else {
+                        uie.setBounds(new Rect(rect.width - w, y, w, h));
+                        imgSize = w;
+                        imgEndY = y + h;
+                    }
                 }
                 allElements.add(uie);
             }
             if (hc.c == 'p')
-                y += Integer.parseInt(hc.args[0]);
+                y += FontSizes.scaleGuess(Integer.parseInt(hc.args[0]));
         }
-
         super.setBounds(new Rect(rect.x, rect.y, rect.width, Math.max(imgEndY, y)));
     }
 
