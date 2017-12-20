@@ -224,14 +224,14 @@ p _ string
 d Opens the Main menu, which is, I assume, the menu that shows up when you press the menu key.
 p _ string
 
-5001: Open Load Menu
+5001: Open Load Menu (2K3-E Only)
 d Opens the Load menu.
 p _ string
 
-5003: Toggle ATB Mode
+5003: Toggle ATB Mode (2K3-E Only)
 d Toggles the ATB battle system.
 p _ string
 
-5005: Open Video Options
+5005: Open Video Options (2K3-E Only)
 d Does absolutely nothing, or, alternatively, opens the video options.
 p _ string

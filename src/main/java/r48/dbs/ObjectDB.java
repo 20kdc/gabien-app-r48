@@ -40,6 +40,8 @@ public class ObjectDB {
     public WeakHashMap<RubyIO, LinkedList<IConsumer<SchemaPath>>> objectListenersMap = new WeakHashMap<RubyIO, LinkedList<IConsumer<SchemaPath>>>();
     public HashMap<String, LinkedList<IConsumer<SchemaPath>>> objectRootListenersMap = new HashMap<String, LinkedList<IConsumer<SchemaPath>>>();
 
+    private boolean objectRootModifiedRecursion = false;
+
     public String getIdByObject(RubyIO obj) {
         return reverseObjectMap.get(obj);
     }
@@ -167,7 +169,19 @@ public class ObjectDB {
         getOrCreateRootModificationHandlers(root).remove(handler);
     }
 
-    public void objectRootModified(RubyIO p, final SchemaPath path) {
+    public void objectRootModified(final RubyIO p, final SchemaPath path) {
+        if (objectRootModifiedRecursion) {
+            AppMain.pendingRunnables.add(new Runnable() {
+                @Override
+                public void run() {
+                    // in case of mysterious error
+                    objectRootModifiedRecursion = false;
+                    objectRootModified(p, path);
+                }
+            });
+            return;
+        }
+        objectRootModifiedRecursion = true;
         // Is this available in ObjectDB? If not, then it shouldn't be locked into permanent memory.
         // However, if there are modification listeners on this particular object, they get used
         if (reverseObjectMap.containsKey(p))
@@ -175,24 +189,15 @@ public class ObjectDB {
         LinkedList<IConsumer<SchemaPath>> notifyObjectModified = objectListenersMap.get(p);
         if (notifyObjectModified != null)
             for (final IConsumer<SchemaPath> r : new LinkedList<IConsumer<SchemaPath>>(notifyObjectModified))
-                AppMain.pendingRunnables.add(new Runnable() {
-                    @Override
-                    public void run() {
-                        r.accept(path);
-                    }
-                });
+                r.accept(path);
         String root = getIdByObject(path.findRoot().targetElement);
         if (root != null) {
             notifyObjectModified = objectRootListenersMap.get(root);
             if (notifyObjectModified != null)
                 for (final IConsumer<SchemaPath> r : new LinkedList<IConsumer<SchemaPath>>(notifyObjectModified))
-                    AppMain.pendingRunnables.add(new Runnable() {
-                        @Override
-                        public void run() {
-                            r.accept(path);
-                        }
-                    });
+                    r.accept(path);
         }
+        objectRootModifiedRecursion = false;
     }
 
     public int countModificationListeners(RubyIO p) {

@@ -118,7 +118,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         return new MapViewDetails(gum, "RPG::Map", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {
-                return MapViewState.fromRT(rendererFromMap(map, events), map, "@data", false, events);
+                return MapViewState.fromRT(rendererFromMap(map, events), gum, map, "@data", false, events);
             }
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override

@@ -27,6 +27,7 @@ Lblock
 12410: //* $
 d A comment.
 p text string
+C groupBehavior messagebox 22410
 
 22410: //. $
 d A continuation of a comment.
@@ -678,10 +679,10 @@ v 2 targetVar var_id
 p command battlecommand_id
 p add int_boolean
 
-5002: Shutdown RPG_RT
+5002: Shutdown RPG_RT (2K3-E Only)
 d Goodnight.
 p _ string
 
-5004: Toggle Fullscreen
+5004: Toggle Fullscreen (2K3-E Only)
 d Allows you to fry the player's graphics card.
 p _ string

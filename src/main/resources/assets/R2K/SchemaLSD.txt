@@ -445,4 +445,6 @@ C name Class.RPG::Save @title@timestamp @title@hero_name @title@hero_level @titl
 
 @main_interpreter subwindow RPG::Interpreter
 @common_events subwindow hash commonevent_id RPG::SaveCommonEvent
+
+ NOTE: This also creates a button.
 C magicR2kSystemDefaults 3

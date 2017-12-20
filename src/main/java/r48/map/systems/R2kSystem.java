@@ -199,8 +199,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
                     RubyIO map = AppMain.objectDB.getObject(objn);
                     final IEventAccess events = new R2kSavefileEventAccess(root);
                     if (map == null)
-                        return MapViewState.getBlank(events);
-                    return MapViewState.fromRT(rendererFromMap(map, events), map, "@data", true, events);
+                        return MapViewState.getBlank(null, events);
+                    return MapViewState.fromRT(rendererFromMap(map, events), objn, map, "@data", true, events);
                 }
             }, new IFunction<IMapToolContext, IEditingToolbarController>() {
                 @Override
@@ -242,7 +242,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
         return new MapViewDetails(objn, "RPG::Map", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {
-                return MapViewState.fromRT(rendererFromMap(map, iea), map, "@data", false, iea);
+                return MapViewState.fromRT(rendererFromMap(map, iea), objn, map, "@data", false, iea);
             }
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override

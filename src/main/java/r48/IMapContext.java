@@ -18,7 +18,8 @@ package r48;
  * Created on 08/06/17.
  */
 public interface IMapContext {
-    // Returns null if none loaded.
+    // NOTE: This is for __MAP__ purposes. The object should not be written to.
+    // Returns null if none loaded or if no __MAP__ mapping is available.
     String getCurrentMapObject();
 
     // Loads a map by it's GUM, or null to revert to No Map Selected.

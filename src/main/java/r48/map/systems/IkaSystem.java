@@ -45,7 +45,7 @@ public class IkaSystem extends MapSystem {
     }
 
     @Override
-    public MapViewDetails mapViewRequest(String gum, boolean allowCreate) {
+    public MapViewDetails mapViewRequest(final String gum, boolean allowCreate) {
         if (!allowCreate)
             if (AppMain.objectDB.getObject(gum, null) == null)
                 return null;
@@ -54,7 +54,7 @@ public class IkaSystem extends MapSystem {
         return new MapViewDetails(gum, "IkachanMap", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {
-                return MapViewState.fromRT(rendererGeneral(map, events), map, "@data", false, events);
+                return MapViewState.fromRT(rendererGeneral(map, events), gum, map, "@data", false, events);
             }
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override

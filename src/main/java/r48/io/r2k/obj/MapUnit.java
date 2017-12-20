@@ -64,7 +64,7 @@ public class MapUnit extends R2kObject {
                 new Index(0x47, layer0),
                 new Index(0x48, layer1),
                 new Index(0x51, events, "@events"),
-                new Index(0x5B, magicNumber, "@magic_number")
+                new Index(0x5B, magicNumber, "@save_count")
         };
     }
 

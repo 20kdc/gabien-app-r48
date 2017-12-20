@@ -7,17 +7,20 @@
 
 package r48.schema.specialized;
 
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UIPanel;
+import gabien.ui.*;
 import r48.AppMain;
+import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.dbs.TXDB;
+import r48.map.events.R2kSavefileEventAccess;
+import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Installs a set of sensible defaults on command.
@@ -31,10 +34,59 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-        UIPanel panel = new UIPanel();
-        panel.setBounds(new Rect(0, 0, 0, 0));
-        return panel;
+    public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
+        if (mode == 3) {
+            UITextButton utb1 = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Reset Events & Version (use after map change)"), new Runnable() {
+                @Override
+                public void run() {
+                    // Before doing anything stupid...
+                    long mapId = target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map").fixnumVal;
+                    String mapName = R2kRMLikeMapInfoBackend.sNameFromInt((int) mapId);
+                    RubyIO map = AppMain.objectDB.getObject(mapName, null);
+                    if (map == null) {
+                        AppMain.launchDialog(TXDB.get("The map's invalid, so that's not possible."));
+                        return;
+                    }
+                    RubyIO saveEvs = target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@events");
+                    saveEvs.hashVal.clear();
+                    // Ghosts, become real!
+                    for (Map.Entry<RubyIO, RubyIO> evs : map.getInstVarBySymbol("@events").hashVal.entrySet())
+                        saveEvs.hashVal.put(evs.getKey(), R2kSavefileEventAccess.eventAsSaveEvent(mapId, evs.getKey(), evs.getValue()));
+                    // @system save_count is in-game save count, not actual System @save_count
+                    target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").setDeepClone(map.getInstVarBySymbol("@save_count"));
+                    RubyIO ldbSys = AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@system");
+                    RubyIO saveCount = ldbSys.getInstVarBySymbol("@save_count_2k3en");
+                    if (saveCount == null)
+                        saveCount = ldbSys.getInstVarBySymbol("@save_count_other");
+                    if (saveCount == null)
+                        saveCount = new RubyIO().setFX(0);
+                    target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@db_save_count").setDeepClone(saveCount);
+                    initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@lower_tile_remap"));
+                    initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@upper_tile_remap"));
+
+                    path.changeOccurred(false);
+                    AppMain.launchDialog(TXDB.get("Reset events to map state and set versioning."));
+                }
+            });
+            UITextButton utb2 = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Try To Get RPG_RT To Reset The Map"), new Runnable() {
+                @Override
+                public void run() {
+                    RubyIO saveEvs = target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@events");
+                    saveEvs.hashVal.clear();
+                    target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").setFX(0);
+                    initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@lower_tile_remap"));
+                    initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@upper_tile_remap"));
+
+                    path.changeOccurred(false);
+                    AppMain.launchDialog(TXDB.get("Ok, cleaned up. If RPG_RT loads this save, the map will probably be reset."));
+                }
+            });
+            return new UISplitterLayout(utb1, utb2, true, 0.5d);
+        } else {
+            UIPanel panel = new UIPanel();
+            panel.setBounds(new Rect(0, 0, 0, 0));
+            return panel;
+        }
     }
 
     @Override

@@ -35,16 +35,24 @@ public class R2kSavefileEventAccess implements IEventAccess {
 
     public R2kSavefileEventAccess(RubyIO root) {
         saveFileRoot = root;
-        int mapId = (int) saveFileRoot.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map").fixnumVal;
+        int mapId = (int) getMapId();
         // Inject 'events'
         sfveInjectEvent("Party", mapId, saveFileRoot.getInstVarBySymbol("@party_pos"));
         sfveInjectEvent("Boat", mapId, saveFileRoot.getInstVarBySymbol("@boat_pos"));
         sfveInjectEvent("Ship", mapId, saveFileRoot.getInstVarBySymbol("@ship_pos"));
         sfveInjectEvent("Airship", mapId, saveFileRoot.getInstVarBySymbol("@airship_pos"));
         // Inject actual events
-        for (Map.Entry<RubyIO, RubyIO> kv : saveFileRoot.getInstVarBySymbol("@map_info").getInstVarBySymbol("@events").hashVal.entrySet())
+        for (Map.Entry<RubyIO, RubyIO> kv : getSaveEvents().hashVal.entrySet())
             if (eventsHash.getHashVal(kv.getKey()) == null)
                 eventsHash.hashVal.put(kv.getKey(), kv.getValue());
+    }
+
+    private long getMapId() {
+        return saveFileRoot.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map").fixnumVal;
+    }
+
+    private RubyIO getSaveEvents() {
+        return saveFileRoot.getInstVarBySymbol("@map_info").getInstVarBySymbol("@events");
     }
 
     private void sfveInjectEvent(String s, int mapId, RubyIO instVarBySymbol) {
@@ -57,12 +65,11 @@ public class R2kSavefileEventAccess implements IEventAccess {
     public LinkedList<RubyIO> getEventKeys() {
         LinkedList<RubyIO> keys = new LinkedList<RubyIO>(eventsHash.hashVal.keySet());
         RubyIO map = getMap();
-        for (RubyIO rio : map.getInstVarBySymbol("@events").hashVal.keySet()) {
-            if (eventsHash.getHashVal(rio) == null) {
-                // Add ghost
-                keys.add(rio);
-            }
-        }
+        if (map != null)
+            if (map.getInstVarBySymbol("@save_count").fixnumVal != saveFileRoot.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").fixnumVal)
+                for (RubyIO rio : map.getInstVarBySymbol("@events").hashVal.keySet())
+                    if (eventsHash.getHashVal(rio) == null)
+                        keys.add(rio); // Add ghost
         return keys;
     }
 
@@ -90,13 +97,33 @@ public class R2kSavefileEventAccess implements IEventAccess {
     @Override
     public void delEvent(RubyIO key) {
         if (key.type == '"') {
-            AppMain.launchDialog(TXDB.get("You can't delete that. Open it up and move it to map 0 if need be."));
-        } else {
-            if (eventsHash.getHashVal(key) == null) {
-                AppMain.launchDialog(TXDB.get("You can't kill a ghost, silly! Also, how are you reading this? The UI shouldn't let you run this right now."));
+            if (key.decString().equals("Player")) {
+                AppMain.launchDialog(TXDB.get("You can't do THAT! ...Who would clean up the mess?"));
             } else {
-                eventsHash.removeHashVal(key);
-                AppMain.launchDialog(TXDB.get("Transformed to ghost. If you want the event *gone*, re-Sync it and set @active to false."));
+                RubyIO rio = getEvent(key);
+                if (rio == null) {
+                    AppMain.launchDialog(TXDB.get("That's already gone."));
+                } else {
+                    rio.getInstVarBySymbol("@map").fixnumVal = 0;
+                    AppMain.launchDialog(TXDB.get("Can't be deleted, but was moved to @map 0 (as close as you can get to deleted)"));
+                }
+            }
+        } else {
+            RubyIO se = getSaveEvents();
+            if (se.getHashVal(key) == null) {
+                AppMain.launchDialog(TXDB.get("You're trying to delete a ghost. Yes, I know the Event Picker is slightly unreliable. Poor ghost."));
+            } else {
+                se.removeHashVal(key);
+                RubyIO map = getMap();
+                boolean ghost = false;
+                if (map != null)
+                    if (map.getInstVarBySymbol("@save_count").fixnumVal != saveFileRoot.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").fixnumVal)
+                        ghost = true;
+                if (ghost) {
+                    AppMain.launchDialog(TXDB.get("Transformed to ghost. Re-Syncing it and setting @active to false might get rid of it."));
+                } else {
+                    AppMain.launchDialog(TXDB.get("As the version numbers are in sync, this worked."));
+                }
             }
         }
     }
@@ -113,7 +140,7 @@ public class R2kSavefileEventAccess implements IEventAccess {
         return null;
     }
 
-    private RubyIO eventAsSaveEvent(long mapId, RubyIO key, RubyIO event) {
+    public static RubyIO eventAsSaveEvent(long mapId, RubyIO key, RubyIO event) {
         RubyIO rio = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::SaveMapEvent"), key);
         rio.getInstVarBySymbol("@map").setFX(mapId);
         rio.getInstVarBySymbol("@x").setDeepClone(event.getInstVarBySymbol("@x"));
@@ -133,6 +160,10 @@ public class R2kSavefileEventAccess implements IEventAccess {
 
             rio.getInstVarBySymbol("@move_freq").setDeepClone(eventPage.getInstVarBySymbol("@move_freq"));
             rio.getInstVarBySymbol("@move_speed").setDeepClone(eventPage.getInstVarBySymbol("@move_speed"));
+
+            rio.getInstVarBySymbol("@layer").setDeepClone(eventPage.getInstVarBySymbol("@layer"));
+            rio.getInstVarBySymbol("@block_other_events").setDeepClone(eventPage.getInstVarBySymbol("@block_other_events"));
+            // with any luck the moveroute issue will solve itself. with luck.
         }
         return rio;
     }
@@ -162,13 +193,29 @@ public class R2kSavefileEventAccess implements IEventAccess {
     }
 
     @Override
-    public Runnable hasSync(RubyIO evK) {
+    public Runnable hasSync(final RubyIO evK) {
         // Ghost...!
         if (eventsHash.getHashVal(evK) == null)
             return new Runnable() {
                 @Override
                 public void run() {
-                    AppMain.launchDialog(TXDB.get("Naw! Ghostie want biscuits!"));
+                    // "Naw! Ghostie want biscuits!"
+                    if (eventsHash.getHashVal(evK) != null) {
+                        // "Dere's already a ghostie here, and 'e's nomming on biscuits!"
+                        AppMain.launchDialog(TXDB.get("The event was already added somehow (but perhaps not synced). The button should now have disappeared."));
+                    } else {
+                        RubyIO map = getMap();
+                        if (map == null) {
+                            AppMain.launchDialog(TXDB.get("There's no map to get the event from!"));
+                            return;
+                        }
+                        RubyIO ev = map.getInstVarBySymbol("@events").getHashVal(evK);
+                        if (ev == null) {
+                            AppMain.launchDialog(TXDB.get("So, you saw the ghost, got the Map's properties window via System Tools (or you left it up) to delete the event, then came back and pressed Sync? Or has the software just completely broken?!?!?"));
+                            return;
+                        }
+                        getSaveEvents().hashVal.put(evK, eventAsSaveEvent(getMapId(), evK, ev));
+                    }
                 }
             };
         return null;

@@ -21,6 +21,8 @@ i HelpImg/0.demo.png
 .
 . Before you continue, if you are just starting out and trying to make something to run on EasyRPG with this, read the following.
 > 21 R2k Backend Quickstart
+. While if you just want to use this to increase your gold in a 2k/2k3 game (you know who you are)...
+> 23 R2k Savefiles Quickstart
 .
 . Moving this help window out of the way, the picture on the right should match.
 . The tab names should describe what they do, but in any case, for further detail, see the below pages:
@@ -389,6 +391,41 @@ p 4
 . 32 pixels: This is further split into 4 8-pixel wide frames of 4 8-pixel high change indicators.
 . From the top of the indicators, these are "positive", "same", "negative", and a "E" (Equipped?).
 > 21 Back To Quickstart
+
+23: R2k Savefiles Quickstart
+. There are many RPG Maker 2000/2003 games out there. That's a fact at this point.
+. And there are quite a few people, (maybe including you, as you're reading this!) who want to edit savefiles in these games.
+. Unfortunately, a RPG Maker 2000/2003 savefile is rather complicated! But that won't be an issue.
+. The Saves panel lets you load or create savefiles.
+. Creating a savefile is experimental, but should bring you to the start of the game, allowing you to inject items you shouldn't have, adjust actors, etc. from the very start.
+. Savefiles are shown in the Map panel.
+. Most of this simply acts as a display, though - the details are in '...' -> 'Properties'.
+. Let's start with the basic outline...
+i HelpImg/3.2003save.png
+. @title : Defines how this savefile appears in the Load menu.
+. @system : Defines various RPG_RT.ldb@system details.
+. @actors : Contains experience, skills, battle commands (if applicable) of actors.
+. @party : Contains party members, the items list, gold, timers, and some generic stats.
+. @party_pos (accessible as the "Party" event on-world): The current player position and details.
+. @boat_pos (if party's on the same map, accessible as "Boat"): The boat's position & details.
+. @ship_pos (if party's on the same map, accessible as "Ship"): The ship's position & details.
+. @airship_pos (if party's on the same map, accessible as "Airship"): The airship's position & details.
+. @target : Used by the Teleport event. Note that it seems a fake target is sometimes added by RPG_RT.
+. @map_info : Contains details from the MapInfo entry regarding this map, tile remaps, events, and parallax info.
+. @screen : Contains information on global screen effects. Some of this is uncertain (contact EasyRPG with your findings, they'll tell me).
+. @pictures : Maps Picture IDs to their information.
+. @main_interpreter : The Interpreter used for non-parallel event code.
+. @common_events : The Interpreters of common events.
+. Reset Events & Version : Using this will delete all events from the savefile and add in the map's events and set the save-counts.
+. Using it and then removing a particular event *should* allow you to bypass event obstacles, though note that some events may stop working entirely simply by it's use.
+. If you simply want to reliably teleport the player, use the next button:
+. Try To Get RPG_RT To Reset The Map (not shown) : Tries to get RPG_RT to reset the map by setting this as an older save and getting rid of event info.
+. This is incredibly useful if you intend to teleport yourself across maps and *don't* wish to disturb events at your destination.
+. Note that all events will be converted to ghosts.
+.
+. Regarding what I mean by a "ghost" here, a "ghost" is what I'm calling events which will appear in the map that aren't in the save.
+. R48 detects when ghosts are likely to occur and show them - and lets you put them in the savefile!
+. But this is done in the same way as Reset Events, so... possibly unreliable.
 
 800: Help Page On Help Page Allocations
 . 0: The first page.
