@@ -10,7 +10,6 @@ package r48.map;
 import gabien.IGrInDriver;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
-import r48.AdHocSaveLoad;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -34,8 +33,6 @@ public class TimeWaster {
     private Random madness = new Random();
 
     public TimeWaster() {
-        if (AdHocSaveLoad.load(".memory") != null)
-            points = -1;
         iconSize = 64 * FontSizes.getSpriteScale();
     }
 
@@ -103,39 +100,16 @@ public class TimeWaster {
         if (points < 13)
             igd.blitScaledImage(type * 64, 0, 64, 64, ox + (int) iconPlanX, oy + (int) iconPlanY, iconSize, iconSize, AppMain.noMap);
         if (points > 1) {
-            UILabel.drawString(igd, ox, oy, FormatSyntax.formatExtended(TXDB.get("You have #A absolutely worthless points."), new RubyIO().setFX(points)), false, FontSizes.timeWasterTextHeight);
-            String partingMessage = TXDB.get("Goodbye.");
-            String un = System.getenv("USERNAME");
-            if (un == null)
-                un = System.getenv("USER");
-            if (un != null)
-                // don't translate
-                partingMessage += " " + un + ".";
+            UILabel.drawString(igd, ox, oy, FormatSyntax.formatExtended(TXDB.get("You have #A points..."), new RubyIO().setFX(points)), false, FontSizes.timeWasterTextHeight);
             String[] pointMsgs = new String[] {
-                    TXDB.get("Now, get back to work!"),
-                    TXDB.get("Seriously? What are you doing?"),
-                    TXDB.get("You are supposed to use the MapInfos tab to select or create a map."),
-                    TXDB.get("Like, select 'SECRET RAM CLUB'. I hear they give free memory sticks."),
-                    TXDB.get("But really, point (aha) your mouse in the general direction of MapInfos."),
-                    TXDB.get("Fine. DON'T select a map. Just keep following the trail."),
-                    TXDB.get("Because, apparently, this has become a game to you..."),
-                    TXDB.get("Well, try to beat it NOW!"),
-                    TXDB.get("Ok, that isn't working somehow?"),
-                    TXDB.get("How is that not working?"),
-                    TXDB.get("If you continue to succeed I'm going to make it invisible."),
-                    TXDB.get("It's invisible now. You can't beat THAT."),
-                    TXDB.get("You... no, see, it's INVISIBLE. Are you cheating?"),
-                    TXDB.get("Someone is going to have to translate all these lines, you know."),
-                    TXDB.get("Consider what you are doing. Stop it."),
-                    TXDB.get("If you go any further... I'll be forced to stop you."),
-                    TXDB.get("I could deactivate the points counter."),
-                    TXDB.get("And then I could save this into a file."),
-                    TXDB.get("You'd never be... you'd never be able to see this again."),
-                    TXDB.get("Not unless you figure out the secret."),
-                    partingMessage,
+                    TXDB.get("...you should probably get back to work."),
+                    TXDB.get("...are you lost...?"),
+                    TXDB.get("Ok, so, quick rundown on the interface..."),
+                    TXDB.get("'MapInfos' lets you select a map."),
+                    TXDB.get("'Saves', if it shows up, is for savefiles."),
+                    TXDB.get("All tabs can become windows."),
+                    TXDB.get("All in-R48 windows can become tabs.")
             };
-            if (points - 2 == pointMsgs.length - 1)
-                AdHocSaveLoad.save(".memory", new RubyIO().setFX(1957));
             if (points - 2 == pointMsgs.length) {
                 points = -1;
             } else {
