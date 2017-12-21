@@ -284,7 +284,7 @@ public class AppMain {
         }));
         toolsets.add(new ImageEditToolset());
 
-        final UITabPane utp = new UITabPane(FontSizes.tabTextHeight, true);
+        final UITabPane utp = new UITabPane(FontSizes.tabTextHeight, true, true);
         Runnable runVisFrame = new Runnable() {
             @Override
             public void run() {

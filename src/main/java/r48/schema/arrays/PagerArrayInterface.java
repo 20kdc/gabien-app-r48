@@ -93,7 +93,7 @@ public class PagerArrayInterface implements IArrayInterface {
             }
         }
         final IProperty prop2 = prop.apply("page");
-        UITabPane utp = new UITabPane(FontSizes.tabTextHeight, false) {
+        UITabPane utp = new UITabPane(FontSizes.tabTextHeight, false, false) {
             @Override
             public void selectTab(UIElement i) {
                 super.selectTab(i);

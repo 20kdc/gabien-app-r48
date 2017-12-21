@@ -47,7 +47,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
 
     private void setupView() {
         tileMaps = map.mapTable.renderer.tileRenderer.createATUIPlanes(map);
-        tabPane = new UITabPane(FontSizes.tilesTabTextHeight, false);
+        tabPane = new UITabPane(FontSizes.tilesTabTextHeight, false, false);
         for (UIElement uie : tileMaps)
             tabPane.addTab(new UIWindowView.WVWindow(uie, new UIWindowView.IWVWindowIcon[] {}));
         atBases = map.mapTable.renderer.tileRenderer.indicateATs();

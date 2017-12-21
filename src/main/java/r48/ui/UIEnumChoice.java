@@ -71,7 +71,7 @@ public class UIEnumChoice extends UIPanel implements IWindowElement {
         if (buttonText.length() != 0)
             categoryPanels[categoryPanels.length - 1].panels.add(finalSplit);
 
-        mainPanel = new UITabPane(FontSizes.tabTextHeight, false);
+        mainPanel = new UITabPane(FontSizes.tabTextHeight, false, false);
         for (UIElement uie : categoryPanels)
             mainPanel.addTab(new UIWindowView.WVWindow(uie, new UIWindowView.IWVWindowIcon[] {}));
 
