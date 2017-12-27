@@ -21,6 +21,7 @@ import r48.io.IMIUtils;
 import r48.io.PathUtils;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
+import r48.ui.Coco;
 import r48.ui.UIFontSizeConfigurator;
 import r48.ui.UITextPrompt;
 import r48.ui.utilitybelt.IMIAssemblyController;
@@ -65,7 +66,7 @@ public class BasicToolset implements IToolset {
                         TXDB.get("Configure fonts"),
                         TXDB.get("Test Fonts"),
                         TXDB.get("Test Tones"),
-                        TXDB.get("Test Add/Sub Blending"),
+                        TXDB.get("Show Version"),
                         TXDB.get("Show ODB Memstat"),
                         TXDB.get("Dump Schemaside Translations"),
                         TXDB.get("Recover data from R48 error <INCREDIBLY DAMAGING>"),
@@ -277,28 +278,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                // Test Add/Sub Blending...
-                                UIPublicPanel panel = new UIPublicPanel();
-                                panel.setBounds(new Rect(0, 0, 512, 512));
-                                final IImage totem = GaBIEn.getImage("tonetotm.png");
-                                IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(512, 1024, false);
-
-                                finalComposite.clearRect(255, 255, 255, 0, 0, 256, 512);
-                                finalComposite.clearRect(0, 0, 0, 256, 0, 256, 512);
-                                // Hardware (if possible) Sub-White Add-Black
-                                finalComposite.blendRotatedScaledImage(0, 0, 256, 256, 0, 0, 256, 256, 0, totem, true);
-                                finalComposite.blendRotatedScaledImage(0, 0, 256, 256, 256, 0, 256, 256, 0, totem, false);
-
-                                // Software Sub-White Add-Black
-                                Blender.blendRotatedScaledImage(finalComposite, 0, 0, 256, 256, 0, 256, 256, 256, 0, totem, true);
-                                Blender.blendRotatedScaledImage(finalComposite, 0, 0, 256, 256, 256, 256, 256, 256, 0, totem, false);
-
-                                panel.baseImage = GaBIEn.createImage(finalComposite.getPixels(), 512, 1024);
-                                finalComposite.shutdown();
-                                UIScrollLayout holdsMain = new UIScrollLayout(true, FontSizes.generalScrollersize);
-                                holdsMain.panels.add(panel);
-                                holdsMain.setBounds(new Rect(0, 0, 544, 256));
-                                windowMaker.get().accept(holdsMain);
+                                Coco.launch();
                             }
                         },
                         new Runnable() {
@@ -371,13 +351,38 @@ public class BasicToolset implements IToolset {
                                 AppMain.pleaseShutdown();
                             }
                         }
-                }, FontSizes.menuTextHeight, false) {
+                }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, false) {
                     @Override
                     public String toString() {
                         return TXDB.get("System Tools");
                     }
                 }
         };
+    }
+
+    private void testAddSubBlending(IConsumer<UIElement> windowMaker) {
+        // Test Add/Sub Blending...
+        UIPublicPanel panel = new UIPublicPanel();
+        panel.setBounds(new Rect(0, 0, 512, 512));
+        final IImage totem = GaBIEn.getImage("tonetotm.png");
+        IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(512, 1024, false);
+
+        finalComposite.clearRect(255, 255, 255, 0, 0, 256, 512);
+        finalComposite.clearRect(0, 0, 0, 256, 0, 256, 512);
+        // Hardware (if possible) Sub-White Add-Black
+        finalComposite.blendRotatedScaledImage(0, 0, 256, 256, 0, 0, 256, 256, 0, totem, true);
+        finalComposite.blendRotatedScaledImage(0, 0, 256, 256, 256, 0, 256, 256, 0, totem, false);
+
+        // Software Sub-White Add-Black
+        Blender.blendRotatedScaledImage(finalComposite, 0, 0, 256, 256, 0, 256, 256, 256, 0, totem, true);
+        Blender.blendRotatedScaledImage(finalComposite, 0, 0, 256, 256, 256, 256, 256, 256, 0, totem, false);
+
+        panel.baseImage = GaBIEn.createImage(finalComposite.getPixels(), 512, 1024);
+        finalComposite.shutdown();
+        UIScrollLayout holdsMain = new UIScrollLayout(true, FontSizes.generalScrollersize);
+        holdsMain.panels.add(panel);
+        holdsMain.setBounds(new Rect(0, 0, 544, 256));
+        windowMaker.accept(holdsMain);
     }
 
     private static UIElement makeFileList() {
@@ -390,7 +395,7 @@ public class BasicToolset implements IToolset {
                     AppMain.launchSchema("File." + s2, AppMain.objectDB.getObject(s2), null);
                 }
             });
-        return new UIPopupMenu(s.toArray(new String[0]), r.toArray(new Runnable[0]), FontSizes.menuTextHeight, false) {
+        return new UIPopupMenu(s.toArray(new String[0]), r.toArray(new Runnable[0]), FontSizes.menuTextHeight, FontSizes.menuScrollersize, false) {
             @Override
             public String toString() {
                 return TXDB.get("Database Objects");

@@ -160,6 +160,10 @@ public class AppMain {
     // All active schema hosts
     private static LinkedList<ISchemaHost> activeHosts;
 
+    // Used to scale certain windows.
+    public static int mainWindowWidth;
+    public static int mainWindowHeight;
+
     // -- For one schema element only --
     public static HashMap<Integer, String> osSHESEDB;
 
@@ -207,6 +211,9 @@ public class AppMain {
             @Override
             public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
                 Coco.run(igd);
+                Rect r = getBounds();
+                mainWindowWidth = r.width;
+                mainWindowHeight = r.height;
                 super.updateAndRender(ox, oy, deltaTime, selected, igd);
             }
         };
@@ -215,6 +222,8 @@ public class AppMain {
         rootView.sizerOfs = (rootView.windowTextHeight * 4) / 3;
         windowMaker = rootViewWM;
         rootView.setBounds(new Rect(0, 0, 800, 600));
+        mainWindowWidth = 800;
+        mainWindowHeight = 600;
 
         // Set up a default stuffRenderer for things to use.
         stuffRendererIndependent = system.rendererFromTso(null);
@@ -356,8 +365,7 @@ public class AppMain {
                             @Override
                             public void click() {
                                 utp.removeTab(uiElement);
-                                Rect r = rootView.getBounds();
-                                uiElement.setBounds(new Rect(0, 0, r.width / 2, r.height / 2));
+                                uiElement.setBounds(new Rect(0, 0, mainWindowWidth / 2, mainWindowHeight / 2));
                                 rootViewWM.accept(uiElement);
                             }
                         }
@@ -454,7 +462,7 @@ public class AppMain {
                                 }
                             }
                         }
-                }, FontSizes.menuTextHeight, true));
+                }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
             }
         }, FontSizes.statusBarTextHeight);
         workspace = new UIAppendButton(TXDB.get("Help"), workspace, new Runnable() {
@@ -617,7 +625,7 @@ public class AppMain {
                 deploy,
                 deploy,
                 deploy
-        }, FontSizes.menuTextHeight, true));
+        }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
     }
 
     public static void pleaseShutdown() {

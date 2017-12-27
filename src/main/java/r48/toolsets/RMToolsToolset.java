@@ -276,7 +276,7 @@ public class RMToolsToolset implements IToolset {
                         AppMain.launchDialog(TXDB.get("transcript.html was written to the target's folder."));
                     }
                 }
-        }, FontSizes.menuTextHeight, false) {
+        }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, false) {
             @Override
             public String toString() {
                 return TXDB.get("Tools");

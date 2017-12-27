@@ -55,7 +55,7 @@ public class UIMTPopupButtons extends UIMTBase {
                         }
                     }
                 }
-        }, FontSizes.dialogWindowTextHeight, true);
+        }, FontSizes.dialogWindowTextHeight, FontSizes.menuScrollersize, true);
         changeInner(u);
     }
 

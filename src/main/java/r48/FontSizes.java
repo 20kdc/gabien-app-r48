@@ -126,6 +126,9 @@ public class FontSizes {
     // TXDB.get("generalScrollersize")
     public static int generalScrollersize = 24;
 
+    // TXDB.get("menuScrollersize")
+    public static int menuScrollersize = 24;
+
     // TXDB.get("uiGuessScaleTenths")
     public static int uiGuessScaleTenths = 10;
 

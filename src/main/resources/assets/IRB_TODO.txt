@@ -19,9 +19,9 @@ short-term planning:
 + ask easyrpg about pan_state having to be -1 (not 0, -1) to prevent pan weirdness, etcetc
 + send back SavePicture default value fixes, they probably need this (Well, I did mention it, but if anything's happened I don't see it)
 
-- Maybe remove OSLoc and maybe IMI, which I'll rename the WAU.
-  Icky, kind of cancerous...
 + v1.0
   (RELEASE DATE: 27th of December, basically.
    This time last year was when R48 started.)
 + Draw up more plans over time, but after this I think I'd like a break
+- Maybe remove OSLoc and maybe IMI, which I'll rename the WAU.
+  Icky, kind of cancerous...

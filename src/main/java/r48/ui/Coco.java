@@ -44,10 +44,10 @@ public class Coco {
         combuf[combuf.length - 1] = d;
         String r = new String(combuf);
         if (r.equals("UUDDLRLRBA"))
-            coco();
+            launch();
     }
 
-    private static void coco() {
+    public static void launch() {
         // read from prep-final-release.sh output
         try {
             InputStream r = GaBIEn.getResource("version.txt");

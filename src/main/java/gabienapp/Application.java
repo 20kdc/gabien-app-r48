@@ -58,11 +58,6 @@ public class Application {
         Rect splashSize = runFontLoader();
         // Set globalMS to intended value
         globalMS = 33;
-        // This must happen after waiting for the UILabel font override stuff
-        boolean fontsLoaded = FontSizes.load();
-        if (!fontsLoaded)
-            if (GaBIEn.singleWindowApp()) // SWA always means we need to adapt to local screen size, and should generally cut down as many usability issues as possible
-                autoDetectCorrectUISizeOnSWA(splashSize.width, splashSize.height);
 
         /*
          * If single-window, assume we're on Android,
@@ -71,6 +66,12 @@ public class Application {
          */
         if (mobileExtremelySpecialBehavior)
             rootPathBackup = "easyrpg/games/R48 Game";
+
+        // This must happen after waiting for the UILabel font override stuff
+        boolean fontsLoaded = FontSizes.load();
+        if (!fontsLoaded)
+            if (GaBIEn.singleWindowApp()) // SWA always means we need to adapt to local screen size, and should generally cut down as many usability issues as possible
+                autoDetectCorrectUISizeOnSWA(splashSize.width, splashSize.height);
 
         // Note the mass-recreate.
         while (true) {
@@ -428,7 +429,8 @@ public class Application {
     }
 
     private static void autoDetectCorrectUISizeOnSWA(int w, int h) {
-        // The above triggered a flush, which would cause the initial resize on SWPs
+        // The above triggered a flush, which would cause the initial resize on SWPs.
+        // Note that using 30 rather than 60 means UI elements get a size increase (useful for phones).
         FontSizes.uiGuessScaleTenths = Math.max(10, Math.min(w, h) / 30);
 
         for (FontSizes.FontSizeField fsf : FontSizes.getFields()) {

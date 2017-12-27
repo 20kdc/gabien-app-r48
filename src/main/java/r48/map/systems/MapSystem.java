@@ -49,7 +49,7 @@ public abstract class MapSystem {
                         mapBox.loadMap("Map");
                     }
                 }
-        }, FontSizes.menuTextHeight, false) {
+        }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, false) {
             @Override
             public String toString() {
                 return mapInfos;
