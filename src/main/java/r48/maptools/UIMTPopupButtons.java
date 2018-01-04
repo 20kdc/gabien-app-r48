@@ -7,6 +7,8 @@
 
 package r48.maptools;
 
+import gabien.GaBIEn;
+import gabien.IGrDriver;
 import gabien.ui.UIAutoclosingPopupMenu;
 import gabien.ui.UINumberBox;
 import gabien.ui.UISplitterLayout;
@@ -16,6 +18,8 @@ import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.UIMapView;
+
+import java.io.OutputStream;
 
 /**
  * Created on 18/06/17.
@@ -28,6 +32,7 @@ public class UIMTPopupButtons extends UIMTBase {
                 TXDB.get("Reload Panorama/TS"),
                 TXDB.get("Properties"),
                 TXDB.get("Resize"),
+                TXDB.get("Export shot.png"),
         }, new Runnable[] {
                 new Runnable() {
                     @Override
@@ -53,6 +58,26 @@ public class UIMTPopupButtons extends UIMTBase {
                         } else {
                             mtc.accept(new UIMTMapResizer(mtc));
                         }
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        IGrDriver igd = GaBIEn.makeOffscreenBuffer(view.tileSize * view.mapTable.width, view.tileSize * view.mapTable.height, true);
+                        view.renderCore(igd, 0, 0);
+                        OutputStream os = GaBIEn.getOutFile("shot.png");
+                        if (os != null) {
+                            try {
+                                os.write(igd.createPNG());
+                                os.close();
+                                AppMain.launchDialog(TXDB.get("Wrote 'shot.png' in R48 working directory."));
+                            } catch (Exception e) {
+                                AppMain.launchDialog(TXDB.get("Failed for... " + e));
+                            }
+                        } else {
+                            AppMain.launchDialog(TXDB.get("Failed to open file."));
+                        }
+                        igd.shutdown();
                     }
                 }
         }, FontSizes.dialogWindowTextHeight, FontSizes.menuScrollersize, true);
