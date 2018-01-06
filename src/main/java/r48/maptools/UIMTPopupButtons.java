@@ -33,6 +33,7 @@ public class UIMTPopupButtons extends UIMTBase {
                 TXDB.get("Properties"),
                 TXDB.get("Resize"),
                 TXDB.get("Export shot.png"),
+                TXDB.get("Show/Hide Tile IDs")
         }, new Runnable[] {
                 new Runnable() {
                     @Override
@@ -78,6 +79,12 @@ public class UIMTPopupButtons extends UIMTBase {
                             AppMain.launchDialog(TXDB.get("Failed to open file."));
                         }
                         igd.shutdown();
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        view.debugToggle = !view.debugToggle;
                     }
                 }
         }, FontSizes.dialogWindowTextHeight, FontSizes.menuScrollersize, true);

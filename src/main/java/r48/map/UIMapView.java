@@ -39,6 +39,9 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     private boolean dragging = false;
 
+    // controlled from UIMTPopupButtons
+    public boolean debugToggle = false;
+
     public final MapSystem.MapViewDetails map;
     public final String mapGUM;
     public MapSystem.MapViewState mapTable;
@@ -125,7 +128,6 @@ public class UIMapView extends UIElement implements IWindowElement {
 
     @Override
     public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-        boolean debug = igd.isKeyDown(IGrInDriver.VK_D);
         shiftDown = igd.isKeyDown(IGrInDriver.VK_SHIFT);
 
         int mouseXT = UIElement.sensibleCellDiv((igd.getMouseX() - ox) + (int) internalScaling(camX), internalScaling(tileSize));
@@ -136,7 +138,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         char[] visConfig = new char[layerVis.length];
         for (int i = 0; i < layerVis.length; i++)
             visConfig[i] = layerVis[i] ? 'T' : 'F';
-        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + debug + "_" + mapTable.renderer.tileRenderer.getFrame() + "_" + mapTable.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + callbacks + "_" + internalScalingMul + "_" + internalScalingDiv;
+        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + debugToggle + "_" + mapTable.renderer.tileRenderer.getFrame() + "_" + mapTable.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + callbacks + "_" + internalScalingMul + "_" + internalScalingDiv;
         if (scheduler.needsUpdate(config)) {
             boolean remakeBuf = true;
             if (offscreenBuf != null)
@@ -147,7 +149,7 @@ public class UIMapView extends UIElement implements IWindowElement {
                     offscreenBuf.shutdown();
                 offscreenBuf = GaBIEn.makeOffscreenBuffer(camR.width, camR.height, false);
             }
-            render(mouseXT, mouseYT, currentLayer, debug, offscreenBuf);
+            render(mouseXT, mouseYT, currentLayer, offscreenBuf);
         }
         if (offscreenBuf != null) {
             if ((internalScalingMul == 1) && (internalScalingDiv == 1)) {
@@ -198,10 +200,10 @@ public class UIMapView extends UIElement implements IWindowElement {
         // mouse position constants specifically chosen to reduce chance of overlap
         for (int i = 0; i < layers.length; i++)
             if (layerVis[i])
-                layers[i].draw(vCX, vCY, camTX, camTY, camTR, camTB, 0xC0000000, 0xC0000000, tileSize, currentLayer, null, false, igd);
+                layers[i].draw(vCX, vCY, camTX, camTY, camTR, camTB, 0xC0000000, 0xC0000000, tileSize, currentLayer, null, debugToggle, igd);
     }
 
-    private void render(int mouseXT, int mouseYT, int currentLayer, boolean debug, IGrDriver igd) {
+    private void render(int mouseXT, int mouseYT, int currentLayer, IGrDriver igd) {
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);
         IMapViewDrawLayer[] layers = mapTable.renderer.layers;
@@ -211,7 +213,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         int camTY = UIElement.sensibleCellDiv((int) camY, tileSize);
         for (int i = 0; i < layers.length; i++)
             if (layerVis[i])
-                layers[i].draw((int) camX, (int) camY, camTX, camTY, camTR, camTB, mouseXT, mouseYT, tileSize, currentLayer, callbacks, debug, igd);
+                layers[i].draw((int) camX, (int) camY, camTX, camTY, camTR, camTB, mouseXT, mouseYT, tileSize, currentLayer, callbacks, debugToggle, igd);
 
         boolean minimap = internalScalingDiv > 1;
         if (callbacks != null) {
