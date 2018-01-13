@@ -21,9 +21,12 @@ import java.util.LinkedList;
 public class HashObjectSchemaElement extends SchemaElement {
 
     public final LinkedList<RubyIO> allowedKeys;
+    // disables setDefault
+    public final boolean inner;
 
-    public HashObjectSchemaElement(LinkedList<RubyIO> allowedKey) {
+    public HashObjectSchemaElement(LinkedList<RubyIO> allowedKey, boolean hashObjectInner) {
         allowedKeys = allowedKey;
+        inner = hashObjectInner;
     }
 
     @Override
@@ -35,7 +38,7 @@ public class HashObjectSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (IntegerSchemaElement.ensureType(target, '{', setDefault)) {
+        if (IntegerSchemaElement.ensureType(target, '{', setDefault && (!inner))) {
             target.hashVal = new HashMap<RubyIO, RubyIO>();
             path.changeOccurred(true);
         } else {

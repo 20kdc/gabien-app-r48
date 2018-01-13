@@ -259,7 +259,8 @@ public class SDB {
                         if (text.equals("flushCommandBufferStr")) {
                             // time to flush it!
                             String disambiguationIVar = args[point++];
-                            setSDBEntry(args[point++], new SymEnumSchemaElement(commandBufferNames2.toArray(new String[0]), true));
+                            // TODO: There needs to be more documentation & info on how this works. I'm forgetting.
+                            setSDBEntry(args[point++], new SymEnumSchemaElement(commandBufferNames2.toArray(new String[0]), commandBufferNames2.toArray(new String[0]), true));
                             HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<Integer, String>();
                             commandBufferNames2 = new LinkedList<String>();
@@ -274,7 +275,7 @@ public class SDB {
                             SchemaElement k = get();
                             return new HashSchemaElement(k, get(), true);
                         }
-                        if (text.equals("hashObject")) {
+                        if (text.equals("hashObject") || text.equals("hashObjectInner")) {
                             LinkedList<RubyIO> validKeys = new LinkedList<RubyIO>();
                             while (point < args.length) {
                                 String r = EscapedStringSyntax.unescape(args[point++]);
@@ -286,7 +287,7 @@ public class SDB {
                                 }
                                 validKeys.add(res);
                             }
-                            return new HashObjectSchemaElement(validKeys);
+                            return new HashObjectSchemaElement(validKeys, text.equals("hashObjectInner"));
                         }
                         if (text.equals("subwindow"))
                             return new SubwindowSchemaElement(get());
@@ -521,10 +522,13 @@ public class SDB {
                     setSDBEntry(args[0], e);
                 } else if (c == 's') {
                     // Symbols
-                    String[] syms = new String[args.length - 1];
-                    for (int i = 0; i < syms.length; i++)
-                        syms[i] = TXDB.get(args[0], args[i + 1]);
-                    setSDBEntry(args[0], new SymEnumSchemaElement(syms, false));
+                    String[] symsA = new String[args.length - 1];
+                    String[] symsB = new String[args.length - 1];
+                    for (int i = 0; i < symsA.length; i++) {
+                        symsA[i] = TXDB.get(args[0], args[i + 1]);
+                        symsB[i] = args[i + 1];
+                    }
+                    setSDBEntry(args[0], new SymEnumSchemaElement(symsA, symsB, false));
                 } else if (c == 'E') {
                     HashMap<Integer, String> options = new HashMap<Integer, String>();
                     int defVal = 0;

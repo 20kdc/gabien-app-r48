@@ -29,12 +29,12 @@ public class SymEnumSchemaElement extends SchemaElement {
     public boolean actuallyString;
     public HashMap<String, Integer> viewOptions;
 
-    public SymEnumSchemaElement(String[] o, boolean actStr) {
+    public SymEnumSchemaElement(String[] on, String[] o, boolean actStr) {
         options = o;
         actuallyString = actStr;
         viewOptions = new HashMap<String, Integer>();
-        for (int i = 0; i < o.length; i++)
-            viewOptions.put(o[i], i);
+        for (int i = 0; i < on.length; i++)
+            viewOptions.put(on[i], i);
     }
 
     @Override
