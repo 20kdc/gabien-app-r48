@@ -326,13 +326,18 @@ public class AppMain {
                             }
                         }
                 }));
+                utp.selectTab(uiElement);
             }
         };
 
+        UIElement firstTab = null;
         // Initialize toolsets.
         for (IToolset its : toolsets)
-            for (UIElement uie : its.generateTabs(wmg))
+            for (UIElement uie : its.generateTabs(wmg)) {
+                if (firstTab == null)
+                    firstTab = uie;
                 insertImmortalTab.accept(uie);
+            }
 
         insertTab = new IConsumer<UIElement>() {
             @Override
@@ -370,8 +375,11 @@ public class AppMain {
                             }
                         }
                 }));
+                utp.selectTab(uiElement);
             }
         };
+
+        utp.selectTab(firstTab);
         return utp;
     }
 

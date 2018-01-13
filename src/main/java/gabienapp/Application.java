@@ -128,7 +128,7 @@ public class Application {
             gamepaks.panels.add(new UILabel(TXDB.get("Secondary Image Load Location:"), FontSizes.launcherTextHeight));
 
             final UITextBox sillBox = new UITextBox(FontSizes.launcherTextHeight);
-            sillBox.text = "";
+            sillBox.text = secondaryImageLoadLocation;
             sillBox.onEdit = new Runnable() {
                 @Override
                 public void run() {
