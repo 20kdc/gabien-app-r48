@@ -113,7 +113,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         if (!allowCreate)
             if (AppMain.objectDB.getObject(gum, null) == null)
                 return null;
-        final RubyIO map = AppMain.objectDB.getObject(gum);
+        final RubyIO map = AppMain.objectDB.getObject(gum, "RPG::Map");
         final IEventAccess events = new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 1, "RPG::Event");
         return new MapViewDetails(gum, "RPG::Map", new ISupplier<MapViewState>() {
             @Override

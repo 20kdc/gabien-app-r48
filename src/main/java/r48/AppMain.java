@@ -16,6 +16,7 @@ import gabienapp.Application;
 import r48.dbs.*;
 import r48.imagefx.ImageFXCache;
 import r48.io.IObjectBackend;
+import r48.io.PathUtils;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.map.systems.*;
@@ -167,10 +168,14 @@ public class AppMain {
     // -- For one schema element only --
     public static HashMap<Integer, String> osSHESEDB;
 
+    // Try to ensure these directories exist.
+    public static LinkedList<String> recommendedDirs;
+
     public static IConsumer<Double> initializeAndRun(final String rp, final String gamepak, final IConsumer<UIElement> uiTicker) throws IOException {
         rootPath = rp;
         // initialize core resources
 
+        recommendedDirs = new LinkedList<String>();
         schemas = new SDB();
 
         schemas.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
@@ -230,9 +235,28 @@ public class AppMain {
 
         final UILabel uiStatusLabel = rebuildInnerUI(gamepak, uiTicker);
 
+        // start possible recommended directory nagger
+        final LinkedList<String> createDirs = new LinkedList<String>();
+        for (String s : recommendedDirs)
+            if (!GaBIEn.dirExists(PathUtils.autoDetectWindows(rootPath + s)))
+                createDirs.add(s);
+        if (createDirs.size() > 0) {
+            rootViewWM.accept(new UIAutoclosingPopupMenu(new String[] {
+                    TXDB.get("Create Missing Directories")
+            }, new Runnable[] {
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            for (String st : createDirs)
+                                GaBIEn.makeDirectories(PathUtils.autoDetectWindows(rootPath + st));
+                            launchDialog(TXDB.get("Done!"));
+                        }
+                    }
+            }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
+        }
+
         // everything ready, start main window
         uiTicker.accept(rootView);
-
         return new IConsumer<Double>() {
             @Override
             public void accept(Double deltaTime) {
@@ -663,6 +687,7 @@ public class AppMain {
         imageFXCache = null;
         activeHosts = null;
         osSHESEDB = null;
+        recommendedDirs = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
     }

@@ -11,6 +11,29 @@ C dataPath Data/
 C dataExt .rxdata
 C versionId RXP
 
+C recommendMkdir Data
+
+C recommendMkdir Graphics
+C recommendMkdir Graphics/Animations
+C recommendMkdir Graphics/Autotiles
+C recommendMkdir Graphics/Battlebacks
+C recommendMkdir Graphics/Battlers
+C recommendMkdir Graphics/Characters
+C recommendMkdir Graphics/Fogs
+C recommendMkdir Graphics/Gameovers
+C recommendMkdir Graphics/Icons
+C recommendMkdir Graphics/Panoramas
+C recommendMkdir Graphics/Pictures
+C recommendMkdir Graphics/Tilesets
+C recommendMkdir Graphics/Titles
+C recommendMkdir Graphics/Transitions
+C recommendMkdir Graphics/Windowskins
+
+C recommendMkdir Audio/BGM
+C recommendMkdir Audio/BGS
+C recommendMkdir Audio/ME
+C recommendMkdir Audio/SE
+
 A RXP/AutoTiles.txt R2KXPCOM/AutoTileRules.txt
 C allowIndentControl
 C defineIndent

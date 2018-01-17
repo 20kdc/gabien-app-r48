@@ -617,6 +617,8 @@ public class SDB {
                     }
                     if (args[0].equals("objectDB"))
                         AppMain.odbBackend = args[1];
+                    if (args[0].equals("recommendMkdir"))
+                        AppMain.recommendedDirs.add(args[1]);
                     if (args[0].equals("dataPath"))
                         AppMain.dataPath = args[1];
                     if (args[0].equals("dataExt"))
