@@ -34,7 +34,7 @@ public class RubyTable {
         width = w;
         height = h;
         planeCount = i;
-        innerTable.putInt(0, i);
+        innerTable.putInt(0, 3);
         innerTable.putInt(4, w);
         innerTable.putInt(8, h);
         innerTable.putInt(12, i);
