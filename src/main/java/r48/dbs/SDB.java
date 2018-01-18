@@ -79,7 +79,6 @@ public class SDB {
         SchemaElement vid = new NameProxySchemaElement("var_id", false);
         schemaDatabase.put("internal_r2kPPPID", helpers.makePicPointerPatchID(vid));
         schemaDatabase.put("internal_r2kPPPV", helpers.makePicPointerPatchVar(vid));
-        schemaDatabase.put("internal_LF_INDEX", new OSStrHashMapSchemaElement());
 
         schemaTrueDatabase.putAll(schemaDatabase);
     }

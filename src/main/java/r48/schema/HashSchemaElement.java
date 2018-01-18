@@ -15,7 +15,6 @@ import r48.UITest;
 import r48.dbs.IProxySchemaElement;
 import r48.dbs.TXDB;
 import r48.schema.integers.IntegerSchemaElement;
-import r48.schema.specialized.OSStrHashMapSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -155,8 +154,6 @@ public class HashSchemaElement extends SchemaElement {
         SchemaElement ke = keyElem;
         while (ke instanceof IProxySchemaElement)
             ke = ((IProxySchemaElement) ke).getEntry();
-        if (ke instanceof OSStrHashMapSchemaElement)
-            return OSStrHashMapSchemaElement.decode(v);
         if (ke instanceof EnumSchemaElement)
             return ((EnumSchemaElement) ke).viewValue((int) v.fixnumVal, true);
         return TXDB.get("Key " + v);

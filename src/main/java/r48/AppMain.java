@@ -34,7 +34,6 @@ import r48.ui.help.UIHelpSystem;
 
 import java.io.*;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -164,9 +163,6 @@ public class AppMain {
     // Used to scale certain windows.
     public static int mainWindowWidth;
     public static int mainWindowHeight;
-
-    // -- For one schema element only --
-    public static HashMap<Integer, String> osSHESEDB;
 
     // Try to ensure these directories exist.
     public static LinkedList<String> recommendedDirs;
@@ -686,7 +682,6 @@ public class AppMain {
         theClipboard = null;
         imageFXCache = null;
         activeHosts = null;
-        osSHESEDB = null;
         recommendedDirs = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
