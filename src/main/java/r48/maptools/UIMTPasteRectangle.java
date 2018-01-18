@@ -40,16 +40,10 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
-        if (tx < cx)
-            return there;
-        if (ty < cy)
-            return there;
-        if (tx >= cx + table.width)
-            return there;
-        if (ty >= cy + table.height)
-            return there;
         int px = tx - cx;
         int py = ty - cy;
+        if (table.outOfBounds(new int[] {px, py}))
+            return there;
         return table.getTiletype(px, py, layer);
     }
 
@@ -71,9 +65,9 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
     @Override
     public void confirmAt(int x, int y, int layer) {
         UIMapView map = mapToolContext.getMapView();
-        for (int l = 0; l < table.planeCount; l++)
-            for (int i = 0; i < table.width; i++)
-                for (int j = 0; j < table.height; j++)
+        for (int l = 0; l < table.getDimension(2); l++)
+            for (int i = 0; i < table.getDimension(0); i++)
+                for (int j = 0; j < table.getDimension(1); j++)
                     if (!map.mapTable.outOfBounds(i + x, j + y))
                         map.mapTable.setTiletype(i + x, j + y, l, table.getTiletype(i, j, l));
         map.passModificationNotification();

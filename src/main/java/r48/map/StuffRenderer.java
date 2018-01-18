@@ -43,13 +43,13 @@ public class StuffRenderer {
         // 0: P
         // 1: E-1
         // 2, 3: T0, E0
-        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[(rt.planeCount * 2) + 3];
+        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[(rt.getDimension(2) * 2) + 3];
         IImage panoImg = null;
         if (!vxaPano.equals(""))
             panoImg = iil.getImage(vxaPano, true);
-        layers[0] = new PanoramaMapViewDrawLayer(panoImg, lx, ly, alx, aly, rt.width, rt.height, panoSW, panoSH, panoSC);
+        layers[0] = new PanoramaMapViewDrawLayer(panoImg, lx, ly, alx, aly, rt.getDimension(0), rt.getDimension(1), panoSW, panoSH, panoSC);
         layers[1] = new EventMapViewDrawLayer(-1, events, igr, itr.getTileSize());
-        for (int i = 0; i < rt.planeCount; i++) {
+        for (int i = 0; i < rt.getDimension(2); i++) {
             layers[(i * 2) + 2] = new TileMapViewDrawLayer(rt, tlOrder[i], itr);
             layers[(i * 2) + 3] = new EventMapViewDrawLayer(i, events, igr, itr.getTileSize());
         }

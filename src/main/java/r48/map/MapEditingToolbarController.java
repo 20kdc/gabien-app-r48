@@ -140,7 +140,11 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                         return;
                     }
                     RubyTable rt = new RubyTable(AppMain.theClipboard.userVal);
-                    if (rt.planeCount != viewGiver.getMapView().mapTable.planeCount) {
+                    if (!rt.isNormalized()) {
+                        AppMain.launchDialog("Unable - Only 3D (X, Y, Layer) data can be used.");
+                        return;
+                    }
+                    if (rt.getDimension(2) != viewGiver.getMapView().mapTable.planeCount) {
                         AppMain.launchDialog("Unable - the map data must contain the same amount of layers for transfer.");
                         return;
                     }

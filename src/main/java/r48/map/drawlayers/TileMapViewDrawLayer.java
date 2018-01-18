@@ -18,6 +18,10 @@ import r48.map.UIMapView;
 import r48.map.tiles.ITileRenderer;
 
 /**
+ * Apparently, still a class using the traditional RubyTable directly.
+ * ...which means it needs to check that said table is normalized. Agguhh.
+ * As this class is critical to performance I'm just leaving it as using RubyTable.
+ * I'll rename it to RubyTableTileMapViewDrawLayer or whatever if need be.
  * Created on 08/06/17.
  */
 public class TileMapViewDrawLayer implements IMapViewDrawLayer {
@@ -38,24 +42,21 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
+        int tableWidth = targetTable.getDimension(0);
         for (int i = camTX; i < camTR; i++) {
             if (i < 0)
                 continue;
-            if (i >= targetTable.width)
+            if (i >= tableWidth)
                 continue;
             for (int j = camTY; j < camTB; j++) {
                 if (j < 0)
                     continue;
-                if (j >= targetTable.height)
+                if (j >= targetTable.getDimension(1))
                     continue;
                 int px = i * eTileSize;
                 int py = j * eTileSize;
                 px -= camX;
                 py -= camY;
-                // 5, 26-29: cafe main bar. In DEBUG, shows as 255, 25d, 25d, ???, I think.
-                // 1c8 >> 3 == 39.
-                // 39 in binary is 00111001.
-                // Possible offset of 1?
                 if (debug) {
                     String t = Integer.toString(targetTable.getTiletype(i, j, tileLayer), 16);
                     UILabel.drawString(igd, px, py + (tileLayer * UIMapView.mapDebugTextHeight), t, false, UIMapView.mapDebugTextHeight);

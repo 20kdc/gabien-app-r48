@@ -45,12 +45,12 @@ public class R2kTileMapViewDrawLayer implements IMapViewDrawLayer {
         for (int i = camTX; i < camTR; i++) {
             if (i < 0)
                 continue;
-            if (i >= targetTable.width)
+            if (i >= targetTable.getDimension(0))
                 continue;
             for (int j = camTY; j < camTB; j++) {
                 if (j < 0)
                     continue;
-                if (j >= targetTable.height)
+                if (j >= targetTable.getDimension(1))
                     continue;
                 int px = i * eTileSize;
                 int py = j * eTileSize;

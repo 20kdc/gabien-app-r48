@@ -45,8 +45,9 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
             @Override
             public void run() {
                 int sel = uig.getSelected();
-                final int selX = sel % targ.width;
-                final int selY = sel / targ.width;
+                int targWidth = targ.getDimension(0);
+                final int selX = sel % targWidth;
+                final int selY = sel / targWidth;
                 setter.set(new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {

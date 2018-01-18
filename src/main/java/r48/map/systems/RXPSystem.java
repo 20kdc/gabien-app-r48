@@ -88,7 +88,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
                 panoImg = imageLoader.getImage(pano, true);
             layers = new IMapViewDrawLayer[] {
                     // works for green docks
-                    new PanoramaMapViewDrawLayer(panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
+                    new PanoramaMapViewDrawLayer(panoImg, true, true, 0, 0, rt.getDimension(0), rt.getDimension(1), -1, -1, 2, 1, 0),
                     new TileMapViewDrawLayer(rt, 0, tileRenderer),
                     new TileMapViewDrawLayer(rt, 1, tileRenderer),
                     new TileMapViewDrawLayer(rt, 2, tileRenderer),

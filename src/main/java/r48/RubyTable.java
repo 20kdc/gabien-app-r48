@@ -18,73 +18,106 @@ import java.nio.ByteOrder;
 public class RubyTable {
     public final byte[] innerBytes;
     public final ByteBuffer innerTable;
-    public final int width, height, planeCount;
+    public final int dataOffset;
+    private final int[] dimensions;
 
     public RubyTable(byte[] data) {
         innerBytes = data;
         innerTable = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
-        planeCount = innerTable.getInt(12);
-        width = innerTable.getInt(4);
-        height = innerTable.getInt(8);
+        innerTable.position(0);
+        dimensions = new int[innerTable.getInt()];
+        for (int i = 0; i < dimensions.length; i++)
+            dimensions[i] = innerTable.getInt();
+        dataOffset = innerTable.position() + 4;
+        innerTable.position(0);
     }
 
-    public RubyTable(int w, int h, int i, int[] defVals) {
-        innerBytes = new byte[20 + (w * h * i * 2)];
+    public RubyTable(int w, int h, int[] defVals) {
+        dimensions = new int[] {
+                w,
+                h,
+                defVals.length
+        };
+        dataOffset = 20;
+        innerBytes = new byte[20 + (w * h * defVals.length * 2)];
         innerTable = ByteBuffer.wrap(innerBytes).order(ByteOrder.LITTLE_ENDIAN);
-        width = w;
-        height = h;
-        planeCount = i;
         innerTable.putInt(0, 3);
         innerTable.putInt(4, w);
         innerTable.putInt(8, h);
-        innerTable.putInt(12, i);
-        innerTable.putInt(16, w * h * i);
+        innerTable.putInt(12, defVals.length);
+        innerTable.putInt(16, w * h * defVals.length);
         for (int j = 0; j < (w * h); j++)
-            for (int l = 0; l < i; l++)
+            for (int l = 0; l < defVals.length; l++)
                 innerTable.putShort(20 + ((j + (l * (w * h))) * 2), (short) defVals[l]);
     }
-    // inline notes on Table format:
-    // first 4 bytes match plane count later on. giving up and checking mkxp gives no further detail.
-    // next 4 bytes are a LE32-bit width
-    // further 4 bytes are a LE32-bit textHeight
-    // LE32-bit "depth" (plane count).
-    // 4 bytes which seems to be w * h * d.
-    // It seems to be consistent enough between files for now, in any case.
-    // The data is based around 16-bit tile planes.
 
-    public short getTiletype(int x, int y, int plane) {
-        int p = 20 + ((x + (y * width)) * 2);
-        p += width * height * 2 * plane;
-        return innerTable.getShort(p);
+    public boolean isNormalized() {
+        return dimensions.length == 3;
     }
 
-    public void setTiletype(int x, int y, int plane, short type) {
-        int p = 20 + ((x + (y * width)) * 2);
-        p += width * height * 2 * plane;
-        innerTable.putShort(p, type);
+    public int getDimensions() {
+        return dimensions.length;
     }
 
-    public boolean outOfBounds(int x, int y) {
-        if (x < 0)
-            return true;
-        if (x >= width)
-            return true;
-        if (y < 0)
-            return true;
-        if (y >= height)
-            return true;
+    public int getDimension(int d) {
+        return dimensions[d];
+    }
+
+    private int decodeCoodinate(int[] c) {
+        int multiplier = 1;
+        int p = 0;
+        for (int i = 0; i < c.length; i++) {
+            p += c[i] * multiplier;
+            multiplier *= dimensions[i];
+        }
+        return (p * 2) + dataOffset;
+    }
+
+    // for N-dimensional tables
+    public short getTiletypeN(int[] coordinate) {
+        return innerTable.getShort(decodeCoodinate(coordinate));
+    }
+
+    public void setTiletypeN(int[] coordinate, short type) {
+        innerTable.putShort(decodeCoodinate(coordinate), type);
+    }
+
+    public short getTiletype(int i, int i1, int i2) {
+        if (dimensions.length != 3)
+            throw new RuntimeException("Attempted 3D access on un-normalized table.");
+        return innerTable.getShort(dataOffset + ((i + (dimensions[0] * (i1 + (dimensions[1] * i2)))) * 2));
+    }
+
+    public void setTiletype(int i, int i1, int i2, short i3) {
+        if (dimensions.length != 3)
+            throw new RuntimeException("Attempted 3D access on un-normalized table.");
+        innerTable.putShort(dataOffset + ((i + (dimensions[0] * (i1 + (dimensions[1] * i2)))) * 2), i3);
+    }
+
+    // This can and should restrict itself to only the numbers given.
+    // If too many numbers are given, throwing an exception is fine,
+    //  if too few are given, consider that just a wildcard.
+    public boolean outOfBounds(int[] coordinate) {
+        for (int i = 0; i < coordinate.length; i++) {
+            if (coordinate[i] < 0)
+                return true;
+            if (coordinate[i] >= dimensions[i])
+                return true;
+        }
         return false;
     }
 
     public RubyTable resize(int w, int h, int[] defVals) {
-        RubyTable n = new RubyTable(w, h, planeCount, defVals);
-        for (int i = 0; i < width; i++) {
+        if (getDimensions() != 3)
+            throw new RuntimeException("Attempted to resize " + getDimensions() + "-dimensional table");
+        RubyTable n = new RubyTable(w, h, defVals);
+        for (int i = 0; i < dimensions[0]; i++) {
             if (w <= i)
                 break;
-            for (int j = 0; j < height; j++) {
+            for (int j = 0; j < dimensions[1]; j++) {
                 if (h <= j)
                     break;
-                for (int k = 0; k < planeCount; k++)
+                for (int k = 0; k < dimensions[2]; k++)
                     n.setTiletype(i, j, k, getTiletype(i, j, k));
             }
         }

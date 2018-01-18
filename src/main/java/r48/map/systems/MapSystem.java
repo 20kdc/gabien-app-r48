@@ -15,6 +15,8 @@ import r48.map.IMapToolContext;
 import r48.map.StuffRenderer;
 import r48.map.events.IEventAccess;
 import r48.map.imaging.IImageLoader;
+import r48.schema.OpaqueSchemaElement;
+import r48.schema.util.SchemaPath;
 
 /**
  * Responsible for creating NSRs and such.
@@ -141,10 +143,29 @@ public abstract class MapSystem {
 
         public static MapViewState fromRT(StuffRenderer stuffRenderer, String underscoreMapObjectId, final RubyIO its, final String str, final boolean readOnly, IEventAccess iea) {
             final RubyTable rt = new RubyTable(its.getInstVarBySymbol(str).userVal);
-            return new MapViewState(stuffRenderer, underscoreMapObjectId, rt.width, rt.height, rt.planeCount, new IFunction<int[], Short>() {
+            // --HAX: Detect R48 bad behavior for VX Ace, accidentally creating 4-dimensional tables.
+            if (AppMain.system instanceof RVXASystem) {
+                if (rt.getDimensions() == 4) {
+                    System.out.println("WARNING: VXA system with 4-dimensional array, last dimension " + rt.getDimension(3) + ", others " + rt.getDimension(0) + ", " + rt.getDimension(1) + ", " + rt.getDimension(2));
+                    if (rt.getDimension(3) == (rt.getDimension(0) * rt.getDimension(1) * rt.getDimension(2))) {
+                        if (rt.getDimension(3) != 0) {
+                            System.out.println("WARNING: ENGAGING IN EMERGENCY CORRECTION!!! o.o;;; -20kdc");
+                            rt.innerTable.putInt(0, 3);
+                            AppMain.launchDialog(TXDB.get("The map you have loaded has just been modified by R48 to account for an error in previous versions of R48 (pre v1.0-1). This error typically prevents correct loading of the map by official RGSS versions. Thus, the @data table has been corrected to 3 dimensions. If you believe this correction is in error, do not save at this point. Instead, please report the situation immediately."));
+                            // This is really bad, the alternatives are worse.
+                            AppMain.objectDB.objectRootModified(its, new SchemaPath(new OpaqueSchemaElement(), its));
+                            return getBlank(underscoreMapObjectId, iea);
+                        }
+                    }
+                }
+            }
+            // --END HAX
+            if (!rt.isNormalized())
+                throw new RuntimeException("Who makes a " + rt.getDimensions() + "-dimensional RubyTable!?!?!");
+            return new MapViewState(stuffRenderer, underscoreMapObjectId, rt.getDimension(0), rt.getDimension(1), rt.getDimension(2), new IFunction<int[], Short>() {
                 @Override
                 public Short apply(int[] ints) {
-                    return rt.getTiletype(ints[0], ints[1], ints[2]);
+                    return rt.getTiletypeN(ints);
                 }
             }, new IConsumer<int[]>() {
                 @Override

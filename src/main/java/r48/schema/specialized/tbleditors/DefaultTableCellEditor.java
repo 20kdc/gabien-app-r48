@@ -21,7 +21,7 @@ public class DefaultTableCellEditor implements ITableCellEditor {
     @Override
     public Runnable createEditor(final UIScrollLayout panel, final RubyIO targV, final UIGrid uig, final Runnable changeOccurred) {
         final RubyTable targ = new RubyTable(targV.userVal);
-        final UINumberBox[] boxes = new UINumberBox[targ.planeCount];
+        final UINumberBox[] boxes = new UINumberBox[targ.getDimension(2)];
         for (int i = 0; i < boxes.length; i++) {
             boxes[i] = new UINumberBox(FontSizes.tableElementTextHeight);
             boxes[i].number = targ.getTiletype(0, 0, i);
@@ -32,9 +32,10 @@ public class DefaultTableCellEditor implements ITableCellEditor {
             @Override
             public void run() {
                 int sel = uig.getSelected();
-                int selX = sel % targ.width;
-                int selY = sel / targ.width;
-                boolean oob = targ.outOfBounds(selX, selY);
+                int targWidth = targ.getDimension(0);
+                int selX = sel % targWidth;
+                int selY = sel / targWidth;
+                boolean oob = targ.outOfBounds(new int[] {selX, selY});
                 for (int i = 0; i < boxes.length; i++) {
                     if (oob) {
                         boxes[i].number = 0;

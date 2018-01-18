@@ -90,7 +90,7 @@ public class SaveMapInfo extends R2kObject {
     }
 
     private RubyIO bToTable(byte[] dat) {
-        RubyTable rt = new RubyTable(dat.length, 1, 1, new int[] {0});
+        RubyTable rt = new RubyTable(dat.length, 1, new int[] {0});
         for (int i = 0; i < dat.length; i++)
             rt.setTiletype(i, 0, 0, (short) (dat[i] & 0xFF));
         return new RubyIO().setUser("Table", rt.innerBytes);
@@ -98,7 +98,7 @@ public class SaveMapInfo extends R2kObject {
 
     private byte[] bFromTable(RubyIO instVarBySymbol) {
         RubyTable rt = new RubyTable(instVarBySymbol.userVal);
-        byte[] data = new byte[rt.width];
+        byte[] data = new byte[rt.getDimension(0)];
         for (int i = 0; i < data.length; i++)
             data[i] = (byte) rt.getTiletype(i, 0, 0);
         return data;
