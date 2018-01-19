@@ -54,17 +54,12 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         planes = defL;
         tableCellEditor = tcl;
         defVals = defV;
-        if (defL != defV.length)
-            throw new RuntimeException("Default value count != plane count.");
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final RubyIO targV = iVar == null ? target : target.getInstVarBySymbol(iVar);
         final RubyTable targ = new RubyTable(targV.userVal);
-        // Un-normalized table? Whoops!
-        if (!targ.isNormalized())
-            return new UILabel(TXDB.get("Received a non-3D table. Do these even EXIST!?!?!"), FontSizes.schemaFieldTextHeight);
         final RubyIO width = widthVar == null ? null : target.getInstVarBySymbol(widthVar);
         final RubyIO height = heightVar == null ? null : target.getInstVarBySymbol(heightVar);
 
@@ -72,21 +67,20 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         final SchemaPath.EmbedDataKey blackboxKey = new SchemaPath.EmbedDataKey(this, targV, RubyTableSchemaElement.class, "blackbox");
 
         int gridSize = getGridSize();
-        final UIGrid uig = new UIGrid(gridSize, gridSize, targ.getDimension(0) * targ.getDimension(1)) {
+        final UIGrid uig = new UIGrid(gridSize, gridSize, targ.width * targ.height) {
             private TileHelper tileHelper;
 
             @Override
             protected void drawTile(int t, boolean hover, int x, int y, IGrInDriver igd) {
-                int targWidth = targ.getDimension(0);
-                int tX = t % targWidth;
-                int tY = t / targWidth;
-                if (targ.outOfBounds(new int[] {tX, tY}))
+                int tX = t % targ.width;
+                int tY = t / targ.width;
+                if (targ.outOfBounds(tX, tY))
                     return;
                 tileHelper = baseTileDraw(target, t, x, y, igd, tileHelper);
                 if (allowTextdraw) {
                     igd.clearRect(0, 0, 0, x, y, tileSizeW, FontSizes.gridTextHeight);
-                    for (int i = 0; i < targ.getDimension(2); i++)
-                        UILabel.drawString(igd, x, y + (i * FontSizes.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targWidth, t / targWidth, i) & 0xFFFF), false, FontSizes.gridTextHeight);
+                    for (int i = 0; i < targ.planeCount; i++)
+                        UILabel.drawString(igd, x, y + (i * FontSizes.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, FontSizes.gridTextHeight);
                 }
             }
 
@@ -121,9 +115,8 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                 selectionOnLastCall = sel;
                 editorOnSelChange.run();
                 if (oldSel == sel) {
-                    int targWidth = targ.getDimension(0);
-                    int tX = sel % targWidth;
-                    int tY = sel / targWidth;
+                    int tX = sel % targ.width;
+                    int tY = sel / targ.width;
                     short p = targ.getTiletype(tX, tY, 0);
                     short p2 = baseFlipBits(p);
                     if (p != p2) {
@@ -152,7 +145,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
 
         if (allowResize) {
             final UINumberBox wNB = new UINumberBox(FontSizes.tableSizeTextHeight);
-            wNB.number = targ.getDimension(0);
+            wNB.number = targ.width;
             wNB.onEdit = new Runnable() {
                 @Override
                 public void run() {
@@ -161,7 +154,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                 }
             };
             final UINumberBox hNB = new UINumberBox(FontSizes.tableSizeTextHeight);
-            hNB.number = targ.getDimension(1);
+            hNB.number = targ.height;
             hNB.onEdit = new Runnable() {
                 @Override
                 public void run() {
@@ -219,7 +212,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         // Not a clue, so re-initialize if all else fails.
         // (This will definitely trigger if the iVar was missing)
         if (target.type != 'u') {
-            target.setUser("Table", new RubyTable(defW, defH, defVals).innerBytes);
+            target.setUser("Table", new RubyTable(defW, defH, planes, defVals).innerBytes);
             index.changeOccurred(true);
         }
     }

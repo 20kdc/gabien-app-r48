@@ -58,8 +58,7 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
         for (TSDB.TSPicture tsp : allocSource.pictures) {
             if (!tsp.acceptable.apply(t))
                 continue;
-            int targWidth = targ.getDimension(0);
-            boolean flagValid = (targ.getTiletype(t % targWidth, t / targWidth, 0) & tsp.flag) != 0;
+            boolean flagValid = (targ.getTiletype(t % targ.width, t / targ.width, 0) & tsp.flag) != 0;
             int rtX = flagValid ? tsp.layertabAX : tsp.layertabIX;
             int rtY = flagValid ? tsp.layertabAY : tsp.layertabIY;
             RMEventGraphicRenderer.flexibleSpriteDraw(rtX, rtY, tsp.w, tsp.h, x + (tsp.x * sprScale), y + (tsp.y * sprScale), tsp.w * sprScale, tsp.h * sprScale, 0, AppMain.layerTabs, 0, igd);

@@ -89,7 +89,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
             RXPAccurateDrawLayer accurate = new RXPAccurateDrawLayer(rt, events, tileRenderer, eventRenderer);
             layers = new IMapViewDrawLayer[] {
                     // works for green docks
-                    new PanoramaMapViewDrawLayer(panoImg, true, true, 0, 0, rt.getDimension(0), rt.getDimension(1), -1, -1, 2, 1, 0),
+                    new PanoramaMapViewDrawLayer(panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
                     // Signal layers (controls Z-Emulation)
                     accurate.signalLayerTiA,
                     accurate.signalLayerTiB,

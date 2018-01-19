@@ -6,37 +6,14 @@
 
 from highest priority to lowest:
 + finish full 2k3 editor (Done)
-+ eventually turn editor into huge gelatinous monstrosity (Nearly there)
++ eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning:
-+ v1.0-1
-+ N-dimensional Table Support (or: "Greetings from Virtual Reality.")
- In particular:
- 1. Make table cell stuff less dependent on structure.
-    If the reader of this hates efficiency, just fold table cells into another use of magicalbinding
- 2. RubyTableSchemaElement probably needs a rewrite.
-    Basically, there are two situations:
-     A. All dimensions are subject to being put in the UIGrid, but only one table cell can be used
-     B. All dimensions apart from X are subject to being put in the UIGrid, and that last dimension is property ID
-    B. is particularly relevant given the way RGSS-era animations are structured.
-    Consider just axing the entire idea of a "one size fits all" base-class for this,
-     instead relying on an interface (ITableFormat?) that will allow abstractifying how the table works.
-    Oddly enough "add an interface" seems to always lead to simpler code than "special-case this",
-     probably by enforcing separation of concerns.
-    The thing is, there's already something like a table access class built into the mapping system.
-    The difference is that that's 2D+layers, this is 1D+properties (which is what this should have been all along).
-    This could at least reduce the requirement for interfaces in table cells
-     (i.e. Undo 1 to try and counter any efficiency downsides of 2, given 2 is definitely a wanted thing anyway)
-    Performance-wise, whatever call-stack results is probably not going to be as optimized as I'd like.
-    It'll be one call into the implementation, and another into RubyTable plus the awkward int[] creation,
-     though this can be avoided for normalized 3D tables.
-    A possible idea is to make RubyTable itself an implementation of ITableFormat,
-     which would bypass most overhead caused by this plan,
-     especially given it integrates parts of what is now RubyTableSchemaElement into RubyTable for simplicity.
-+ Project reimagined-pancake. Will see what happens with this one, it's another one of those mad plots.
-  Worst case, it has near-zero maintenance cost.
-+ Perhaps reimplement zoom out to not be so inefficient.
-  Keeping in mind that for all I know the average tablet has a resolution higher than my current monitor.
++ v0.9
+  (LATEST RELEASE DATE: 20th of December.)
++ Bugfixes.
+  v1.0 is basically a "fix what's broken" release for obvious reasons.
+  The Android UX needs testing.
 
 + ask easyrpg about what is up with SaveSystem system_box_tiling
 + ask easyrpg about pan_state having to be -1 (not 0, -1) to prevent pan weirdness, etcetc

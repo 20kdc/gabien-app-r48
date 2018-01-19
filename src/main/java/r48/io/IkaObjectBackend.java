@@ -52,7 +52,7 @@ public class IkaObjectBackend implements IObjectBackend {
                 ioe.printStackTrace();
             }
 
-            RubyTable pal = new RubyTable(256, 1, new int[4]);
+            RubyTable pal = new RubyTable(256, 1, 4, new int[4]);
             for (int i = 0; i < 256; i++) {
                 int rgba = bm.palette[i];
                 pal.setTiletype(i, 0, 0, (short) ((rgba >> 24) & 0xFF));
@@ -62,7 +62,7 @@ public class IkaObjectBackend implements IObjectBackend {
             }
             RubyIO palTbl = new RubyIO().setUser("Table", pal.innerBytes);
 
-            RubyTable tbl = new RubyTable(bm.width, bm.height, new int[1]);
+            RubyTable tbl = new RubyTable(bm.width, bm.height, 1, new int[1]);
             RubyIO mapTbl = new RubyIO().setUser("Table", tbl.innerBytes);
 
             for (int i = 0; i < bm.width; i++)
@@ -118,13 +118,13 @@ public class IkaObjectBackend implements IObjectBackend {
             // allow saving
             BM8I bm8 = new BM8I();
             RubyTable rt = new RubyTable(object.getInstVarBySymbol("@data").userVal);
-            bm8.width = rt.getDimension(0);
-            bm8.height = rt.getDimension(1);
+            bm8.width = rt.width;
+            bm8.height = rt.height;
             bm8.data = new int[bm8.width * bm8.height];
             bm8.palette = new int[256];
-            for (int i = 0; i < rt.getDimension(0); i++)
-                for (int j = 0; j < rt.getDimension(1); j++)
-                    bm8.data[i + (j * rt.getDimension(0))] = (int) rt.getTiletype(i, j, 0);
+            for (int i = 0; i < rt.width; i++)
+                for (int j = 0; j < rt.height; j++)
+                    bm8.data[i + (j * rt.width)] = (int) rt.getTiletype(i, j, 0);
             RubyTable rt2 = new RubyTable(object.getInstVarBySymbol("@palette").userVal);
             for (int i = 0; i < 256; i++) {
                 int a = rt2.getTiletype(i, 0, 0) & 0xFF;

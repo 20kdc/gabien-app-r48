@@ -89,13 +89,12 @@ public class RGSSGenposFrame implements IGenposFrame {
         RubyIO frame = getFrame();
         RubyIO frameData = frame.getInstVarBySymbol("@cell_data");
         RubyTable table = new RubyTable(frameData.userVal);
-        int cellCount = table.getDimension(0);
-        frame.getInstVarBySymbol("@cell_max").fixnumVal = cellCount - 1;
-        RubyTable newTable = new RubyTable(cellCount - 1, 8, new int[1]);
+        frame.getInstVarBySymbol("@cell_max").fixnumVal = table.width - 1;
+        RubyTable newTable = new RubyTable(table.width - 1, 8, 1, new int[1]);
         for (int p = 0; p < 8; p++) {
             for (int j = 0; j < i2; j++)
                 newTable.setTiletype(j, p, 0, table.getTiletype(j, p, 0));
-            for (int j = i2 + 1; j < cellCount; j++)
+            for (int j = i2 + 1; j < table.width; j++)
                 newTable.setTiletype(j - 1, p, 0, table.getTiletype(j, p, 0));
         }
         frameData.userVal = newTable.innerBytes;
@@ -104,7 +103,7 @@ public class RGSSGenposFrame implements IGenposFrame {
 
     @Override
     public int getCellCount() {
-        return getTable().getDimension(0);
+        return getTable().width;
     }
 
     @Override
@@ -112,16 +111,15 @@ public class RGSSGenposFrame implements IGenposFrame {
         RubyIO frame = getFrame();
         RubyIO frameData = frame.getInstVarBySymbol("@cell_data");
         RubyTable table = new RubyTable(frameData.userVal);
-        int cellCount = table.getDimension(0);
-        frame.getInstVarBySymbol("@cell_max").fixnumVal = cellCount + 1;
-        RubyTable newTable = new RubyTable(cellCount + 1, 8, new int[1]);
+        frame.getInstVarBySymbol("@cell_max").fixnumVal = table.width + 1;
+        RubyTable newTable = new RubyTable(table.width + 1, 8, 1, new int[1]);
         short[] initValues = new short[] {
                 1, 0, 0, 100, 0, 0, 255, 1
         };
         for (int p = 0; p < 8; p++) {
             for (int j = 0; j < i2; j++)
                 newTable.setTiletype(j, p, 0, table.getTiletype(j, p, 0));
-            for (int j = i2; j < cellCount; j++)
+            for (int j = i2; j < table.width; j++)
                 newTable.setTiletype(j + 1, p, 0, table.getTiletype(j, p, 0));
             newTable.setTiletype(i2, p, 0, initValues[p]);
         }

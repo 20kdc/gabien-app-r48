@@ -68,7 +68,7 @@ public class Tileset extends R2kObject {
         asRIOISF(mt);
 
         // 162 = 144 (selective) + 18 (AT Field????)
-        RubyTable rt = new RubyTable(162, 1, new int[] {0});
+        RubyTable rt = new RubyTable(162, 1, 1, new int[] {0});
         System.arraycopy(terrainTbl.dat, 0, rt.innerBytes, 20, terrainTbl.dat.length);
         mt.addIVar("@terrain_id_data", new RubyIO().setUser("Table", rt.innerBytes));
 
@@ -88,7 +88,7 @@ public class Tileset extends R2kObject {
     }
 
     private RubyIO bitfieldTable(byte[] dat) {
-        RubyTable rt = new RubyTable(dat.length, 1, new int[] {0});
+        RubyTable rt = new RubyTable(dat.length, 1, 1, new int[] {0});
         for (int i = 0; i < dat.length; i++)
             rt.innerBytes[20 + (i * 2)] = dat[i];
         return new RubyIO().setUser("Table", rt.innerBytes);
@@ -96,7 +96,7 @@ public class Tileset extends R2kObject {
 
     private byte[] bitfieldTableRV(RubyIO src) {
         RubyTable rt = new RubyTable(src.userVal);
-        byte[] r = new byte[rt.getDimension(0)];
+        byte[] r = new byte[rt.width];
         for (int i = 0; i < r.length; i++)
             r[i] = (byte) rt.getTiletype(i, 0, 0);
         return r;

@@ -18,10 +18,6 @@ import r48.map.UIMapView;
 import r48.map.tiles.ITileRenderer;
 
 /**
- * Apparently, still a class using the traditional RubyTable directly.
- * ...which means it needs to check that said table is normalized. Agguhh.
- * As this class is critical to performance I'm just leaving it as using RubyTable.
- * I'll rename it to RubyTableTileMapViewDrawLayer or whatever if need be.
  * Created on 08/06/17.
  */
 public class TileMapViewDrawLayer implements IMapViewDrawLayer {
@@ -46,24 +42,22 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
-        int tableWidth = targetTable.getDimension(0);
-        int tableHeight = targetTable.getDimension(1);
         for (int i = camTX; i < camTR; i++) {
             if (i < 0)
                 continue;
-            if (i >= tableWidth)
+            if (i >= targetTable.width)
                 continue;
             for (int j = camTY; j < camTB; j++) {
                 if (j < 0)
                     continue;
-                if (j >= tableHeight)
+                if (j >= targetTable.height)
                     continue;
                 int px = i * eTileSize;
                 int py = j * eTileSize;
                 px -= camX;
                 py -= camY;
                 if (tileLayer == -1) {
-                    for (int k = 0; k < targetTable.getDimension(2); k++)
+                    for (int k = 0; k < targetTable.planeCount; k++)
                         tileDrawIntern(k, mouseXT, mouseYT, currentLayer, callbacks, debug, igd, i, j, px, py);
                 } else {
                     tileDrawIntern(tileLayer, mouseXT, mouseYT, currentLayer, callbacks, debug, igd, i, j, px, py);
