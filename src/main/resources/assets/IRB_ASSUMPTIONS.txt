@@ -19,3 +19,4 @@ The Grand List Of Assumptions
    (This is going to need fixing for C.C. among others)
 5. If it is in hashVal.keySet(), it is immutable. Backends can assume this, for memory reasons.
 6. Events are grid-aligned, and have iVars @name (opt.), @x, @y.
+7. Various RubyTable things.

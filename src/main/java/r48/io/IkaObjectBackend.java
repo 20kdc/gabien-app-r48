@@ -52,7 +52,7 @@ public class IkaObjectBackend implements IObjectBackend {
                 ioe.printStackTrace();
             }
 
-            RubyTable pal = new RubyTable(256, 1, 4, new int[4]);
+            RubyTable pal = new RubyTable(3, 256, 1, 4, new int[4]);
             for (int i = 0; i < 256; i++) {
                 int rgba = bm.palette[i];
                 pal.setTiletype(i, 0, 0, (short) ((rgba >> 24) & 0xFF));
@@ -62,7 +62,7 @@ public class IkaObjectBackend implements IObjectBackend {
             }
             RubyIO palTbl = new RubyIO().setUser("Table", pal.innerBytes);
 
-            RubyTable tbl = new RubyTable(bm.width, bm.height, 1, new int[1]);
+            RubyTable tbl = new RubyTable(3, bm.width, bm.height, 1, new int[1]);
             RubyIO mapTbl = new RubyIO().setUser("Table", tbl.innerBytes);
 
             for (int i = 0; i < bm.width; i++)

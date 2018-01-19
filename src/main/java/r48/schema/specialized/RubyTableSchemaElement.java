@@ -36,7 +36,7 @@ import r48.ui.UIGrid;
 public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     public final int defW;
     public final int defH;
-    public final int planes;
+    public final int planes, dimensions;
     public final String iVar, widthVar, heightVar;
     public final ITableCellEditor tableCellEditor;
 
@@ -45,13 +45,14 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     public boolean allowTextdraw = true;
     public boolean allowResize = true;
 
-    public RubyTableSchemaElement(String iVar, String wVar, String hVar, int dw, int dh, int defL, ITableCellEditor tcl, int[] defV) {
+    public RubyTableSchemaElement(String iVar, String wVar, String hVar, int dim, int dw, int dh, int defL, ITableCellEditor tcl, int[] defV) {
         this.iVar = iVar;
         widthVar = wVar;
         heightVar = hVar;
         defW = dw;
         defH = dh;
         planes = defL;
+        dimensions = dim;
         tableCellEditor = tcl;
         defVals = defV;
     }
@@ -212,7 +213,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         // Not a clue, so re-initialize if all else fails.
         // (This will definitely trigger if the iVar was missing)
         if (target.type != 'u') {
-            target.setUser("Table", new RubyTable(defW, defH, planes, defVals).innerBytes);
+            target.setUser("Table", new RubyTable(dimensions, defW, defH, planes, defVals).innerBytes);
             index.changeOccurred(true);
         }
     }

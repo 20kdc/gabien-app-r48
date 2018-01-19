@@ -39,7 +39,7 @@ C name Class.RPG::Actor @id @name | Actor #A: #B
 @cell_max roint= 1
  In this version, 7 is blend_type, 6 is opacity (0-255), 5 is mirror (int_boolean), 4 is angle, 3 is scale (0-100), x is modified by 1, y is modified by 2.
  0 is presumably cell-id.
-+table @cell_data @cell_max . 1 8 1
++table @cell_data @cell_max . 2 1 8 1
 
 e animation_flashscope 0 none 1 target 2 screen 3 hideTarget
 : RPG::Animation::Timing
@@ -103,7 +103,7 @@ C name Class.RPG::Class @id @name | Class #A: #B
 @description stringBlobEditor
 @icon_index int
 +hwnd . RVXA/H_BatParamsTableDoc
-+table @params . . 8 100 1
++table @params . . 2 8 100 1
 @features subwindow array 0 subwindow RPG::BaseItem::Feature
 @learnings subwindow array 0 subwindow RPG::Class::Learning
 @exp_params RPG::Class.exp_params
@@ -351,7 +351,7 @@ C name Class.RPG::Tileset @id @name @mode | Tileset #A (M#C): #B
 @name string
 @mode int= 1
 @note stringBlobEditor
-+tableTSF @flags . . 8192 1 1 blockDown blockLeft blockRight blockUp 'star' ladder submerge 'counter' poison noBoat noShip noAShip [terrainTag;8
++tableTSF @flags . . 1 8192 1 1 blockDown blockLeft blockRight blockUp 'star' ladder submerge 'counter' poison noBoat noShip noAShip [terrainTag;8
 @tileset_names array 9 string
 
 > File.Tilesets arrayIx1 typeChanger{ subwindow RPG::Tileset oRPG::Tileset nil 0 }

@@ -379,8 +379,8 @@ C name Class.RPG::SavePartyLocation @character_name @character_index @map @x @y 
 @encounter_rate int
 @tileset_id tileset_id
 @events subwindow hash int subwindow RPG::SaveMapEvent
-@lower_tile_remap table . . . 144 1 1
-@upper_tile_remap table . . . 144 1 1
+@lower_tile_remap table . . . 3 144 1 1
+@upper_tile_remap table . . . 3 144 1 1
 @parallax_name string
 @parallax_loop_x boolean
 @parallax_loop_y boolean

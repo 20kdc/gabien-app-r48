@@ -410,6 +410,7 @@ public class SDB {
 
                             IFunction<RubyIO, String> iVT = getFunctionToReturn(iV == null ? TXDB.get("Open Table...") : TXDB.get(outerContext, iV));
 
+                            int dc = Integer.parseInt(args[point++]);
                             int aW = Integer.parseInt(args[point++]);
                             int aH = Integer.parseInt(args[point++]);
                             int aI = Integer.parseInt(args[point++]);
@@ -426,11 +427,11 @@ public class SDB {
                                 tcf = new BitfieldTableCellEditor(flags.toArray(new String[0]));
                             }
                             if (eText.equals("tableSTA"))
-                                return new SubwindowSchemaElement(new TilesetAllocTableSchemaElement(tilesetAllocations, iV, wV, hV, aW, aH, aI, tcf, defVals), iVT);
+                                return new SubwindowSchemaElement(new TilesetAllocTableSchemaElement(tilesetAllocations, iV, wV, hV, dc, aW, aH, aI, tcf, defVals), iVT);
                             if (eText.equals("tableTS"))
-                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf, defVals), iVT);
+                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, dc, aW, aH, aI, tcf, defVals), iVT);
                             if (eText.equals("table"))
-                                return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, aW, aH, aI, tcf, defVals), iVT);
+                                return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, dc, aW, aH, aI, tcf, defVals), iVT);
                             throw new RuntimeException("Unknown table type " + text);
                         }
                         if (text.equals("CTNative"))

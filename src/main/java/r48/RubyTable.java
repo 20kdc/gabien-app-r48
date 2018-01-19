@@ -18,23 +18,28 @@ import java.nio.ByteOrder;
 public class RubyTable {
     public final byte[] innerBytes;
     public final ByteBuffer innerTable;
+    // Can be 0, 1, or 2. Apparently does not affect actual function.
+    // Nevermind the weird "support" for 4D tables, and the inconsistent... arggggghhhh.
+    public final int dimensionCount;
     public final int width, height, planeCount;
 
     public RubyTable(byte[] data) {
         innerBytes = data;
         innerTable = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
+        dimensionCount = innerTable.getInt(0);
         planeCount = innerTable.getInt(12);
         width = innerTable.getInt(4);
         height = innerTable.getInt(8);
     }
 
-    public RubyTable(int w, int h, int i, int[] defVals) {
+    public RubyTable(int dc, int w, int h, int i, int[] defVals) {
         innerBytes = new byte[20 + (w * h * i * 2)];
         innerTable = ByteBuffer.wrap(innerBytes).order(ByteOrder.LITTLE_ENDIAN);
         width = w;
         height = h;
         planeCount = i;
-        innerTable.putInt(0, 3);
+        dimensionCount = dc;
+        innerTable.putInt(0, dc);
         innerTable.putInt(4, w);
         innerTable.putInt(8, h);
         innerTable.putInt(12, i);
@@ -77,7 +82,7 @@ public class RubyTable {
     }
 
     public RubyTable resize(int w, int h, int[] defVals) {
-        RubyTable n = new RubyTable(w, h, planeCount, defVals);
+        RubyTable n = new RubyTable(dimensionCount, w, h, planeCount, defVals);
         for (int i = 0; i < width; i++) {
             if (w <= i)
                 break;

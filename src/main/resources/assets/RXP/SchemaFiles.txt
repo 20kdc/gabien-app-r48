@@ -26,12 +26,8 @@ C name Class.RPG::Actor @id @name | Actor #A: #B
 @armor4_id armour_id
 @armor4_fix boolean
 @exp_basis int= 30
- oh, you have GOT to be kidding me.
- Judging by the steady increase,
-  this is PROBABLY an EXP table.
- In any case, it's not actually used?
- (Could actually be a stats table? IDK.)
-+table @parameters . . 6 100 1
+ This is the stats table. At this time, IDK what the stats are.
++table @parameters . . 2 6 100 1
 @final_level int= 1
 @battler_name f_battler_name
 @battler_hue hue
@@ -44,7 +40,7 @@ C name Class.RPG::Actor @id @name | Actor #A: #B
 
 : RPG::Animation::Frame
 @cell_max roint= 1
-+table @cell_data @cell_max . 1 8 1
++table @cell_data @cell_max . 2 1 8 1
 
 e animation_timing_condition 0 always 1 whenHit 2 whenNotHit
 e animation_flashscope 0 none 1 target 2 screen 3 hideTarget
@@ -104,8 +100,8 @@ C name Class.RPG::Class @id @name | Class #A: #B
 @position int
 @weapon_set subwindow array 0 weapon_id
 @armor_set subwindow array 0 armour_id
-+table @element_ranks . . 1 1 1
-+table @state_ranks . . 1 1 1
++table @element_ranks . . 1 1 1 1
++table @state_ranks . . 1 1 1 1
 @learnings subwindow array 0 RPG::Class::Learning
 
 > File.Classes arrayIx1 subwindow RPG::Class
@@ -150,8 +146,8 @@ C name Class.RPG::Enemy @id @name | Enemy #A: #B
 @eva int
 @animation1_id animation_id
 @animation2_id animation_id
-+table @element_ranks . . 1 1 1
-+table @state_ranks . . 1 1 1
++table @element_ranks . . 1 1 1 1
++table @state_ranks . . 1 1 1 1
 @actions subwindow array 0 subwindow RPG::Enemy::Action
 @exp int
 @gold int
@@ -362,9 +358,9 @@ C name Class.RPG::Tileset @id @name | Tileset #A: #B
 @autotile_names array 7 f_autotile_name
 @panorama_name f_pano_name
 @panorama_hue hue
-+tableSTAF RXP/TSTables.txt @passages . . 1632 1 1 blockDown blockLeft blockRight blockUp UNK. UNK. submerge 'counter'
-+tableSTA RXP/TSTables.txt @priorities . . 1632 1 1
-+tableSTA RXP/TSTables.txt @terrain_tags . . 1632 1 1
++tableSTAF RXP/TSTables.txt @passages . . 1 1632 1 1 blockDown blockLeft blockRight blockUp UNK. UNK. submerge 'counter'
++tableSTA RXP/TSTables.txt @priorities . . 1 1632 1 1
++tableSTA RXP/TSTables.txt @terrain_tags . . 1 1632 1 1
 @fog_name f_fog_name
 @fog_zoom int
 @fog_sx int

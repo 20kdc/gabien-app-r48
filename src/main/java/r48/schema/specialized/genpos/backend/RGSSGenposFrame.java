@@ -90,7 +90,7 @@ public class RGSSGenposFrame implements IGenposFrame {
         RubyIO frameData = frame.getInstVarBySymbol("@cell_data");
         RubyTable table = new RubyTable(frameData.userVal);
         frame.getInstVarBySymbol("@cell_max").fixnumVal = table.width - 1;
-        RubyTable newTable = new RubyTable(table.width - 1, 8, 1, new int[1]);
+        RubyTable newTable = new RubyTable(3, table.width - 1, 8, 1, new int[1]);
         for (int p = 0; p < 8; p++) {
             for (int j = 0; j < i2; j++)
                 newTable.setTiletype(j, p, 0, table.getTiletype(j, p, 0));
@@ -112,7 +112,7 @@ public class RGSSGenposFrame implements IGenposFrame {
         RubyIO frameData = frame.getInstVarBySymbol("@cell_data");
         RubyTable table = new RubyTable(frameData.userVal);
         frame.getInstVarBySymbol("@cell_max").fixnumVal = table.width + 1;
-        RubyTable newTable = new RubyTable(table.width + 1, 8, 1, new int[1]);
+        RubyTable newTable = new RubyTable(3, table.width + 1, 8, 1, new int[1]);
         short[] initValues = new short[] {
                 1, 0, 0, 100, 0, 0, 255, 1
         };

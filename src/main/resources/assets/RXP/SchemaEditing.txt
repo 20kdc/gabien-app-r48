@@ -81,7 +81,7 @@ C name Class.RPG::Event::Page @condition | [RPG::Event::Page::Condition]A
 @bgs RPG::AudioFile
 @width roint= 20
 @height roint= 15
-+tableD @data @width @height 20 15 3 48 0 0
++tableD @data @width @height 3 20 15 3 48 0 0
 @events subwindow hash int+1 subwindow RPG::Event
 @tileset_id tileset_id
 @autoplay_bgm boolean

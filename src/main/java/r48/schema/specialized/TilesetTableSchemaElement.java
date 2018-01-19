@@ -19,8 +19,8 @@ import r48.schema.specialized.tbleditors.ITableCellEditor;
  * Created on 1/4/17.
  */
 public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRenderer> {
-    public TilesetTableSchemaElement(String iVar, String wVar, String hVar, int dw, int dh, int defL, ITableCellEditor itce, int[] defVal) {
-        super(iVar, wVar, hVar, dw, dh, defL, itce, defVal);
+    public TilesetTableSchemaElement(String iVar, String wVar, String hVar, int dc, int dw, int dh, int defL, ITableCellEditor itce, int[] defVal) {
+        super(iVar, wVar, hVar, dc, dw, dh, defL, itce, defVal);
     }
 
     @Override

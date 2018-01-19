@@ -96,7 +96,7 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
         tiles = tils;
         events = ev;
         // -1 is the "ground plane".
-        for (int i = -1; i < tbl.getDimension(1) + 5; i++)
+        for (int i = -1; i < tbl.height + 5; i++)
             zSorting.add(new RXPPriorityPlane(i));
         // Very specific choice of algorithm.
         for (RubyIO r : eventList.getEventKeys()) {
@@ -134,7 +134,7 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
             return 0;
         if (tid < 0)
             return 0;
-        if (tid >= rts.getDimension(0))
+        if (tid >= rts.width)
             return 0;
         return rts.getTiletype(tid, 0, 0);
     }
