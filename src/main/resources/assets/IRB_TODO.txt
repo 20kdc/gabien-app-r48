@@ -9,7 +9,6 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning:
-+ Fix cache not properly flushing
 + v1.0-2
 + Figure out RXP's oddities
 

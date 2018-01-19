@@ -36,6 +36,6 @@ public class FixAndSecondaryImageLoader implements IImageLoader {
 
     @Override
     public void flushCache() {
-
+        loader.flushCache();
     }
 }
