@@ -130,13 +130,15 @@ function rubyHashGet(hashRIO, key)
 end
 
 function rubyTable(data)
-    local width = extractU16LE(data, 5)
-    local height = extractU16LE(data, 9)
-    local planeCount = extractU16LE(data, 13)
+    local dimCount = extractU32LE(data, 1)
+    local width = extractU32LE(data, 5)
+    local height = extractU32LE(data, 9)
+    local planeCount = extractU32LE(data, 13)
     local this = {
         width = width,
         height = height,
         planeCount = planeCount,
+        dimensionCount = dimCount,
         data = data,
         outOfBounds = function (x, y)
             if x < 0 then return false end

@@ -205,17 +205,26 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         if (iVar != null) {
             RubyIO st = target.getInstVarBySymbol(iVar);
             if (st == null) {
-                st = new RubyIO();
+                st = new RubyIO(); // will trigger change because type != 'u'
                 target.addIVar(iVar, st);
             }
             target = st;
         }
         // Not a clue, so re-initialize if all else fails.
         // (This will definitely trigger if the iVar was missing)
+        boolean changeOccurred = false;
         if (target.type != 'u') {
             target.setUser("Table", new RubyTable(dimensions, defW, defH, planes, defVals).innerBytes);
-            index.changeOccurred(true);
+            changeOccurred = true;
         }
+        // Fix up pre v1.0-2 tables (would have existed from the start if I knew about it, but...)
+        RubyTable rt = new RubyTable(target.userVal);
+        if (rt.dimensionCount != dimensions) {
+            rt.innerTable.putInt(0, dimensions);
+            changeOccurred = true;
+        }
+        if (changeOccurred)
+            index.changeOccurred(true);
     }
 
     public int getGridSize() {

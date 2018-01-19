@@ -92,8 +92,6 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
                     new PanoramaMapViewDrawLayer(panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
                     // Signal layers (controls Z-Emulation)
                     accurate.signalLayerTiA,
-                    accurate.signalLayerTiB,
-                    accurate.signalLayerTiC,
                     accurate.signalLayerEvA,
                     accurate.signalLayerEvB,
                     // Z-Emulation

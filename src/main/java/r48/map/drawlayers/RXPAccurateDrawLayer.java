@@ -8,7 +8,6 @@
 package r48.map.drawlayers;
 
 import gabien.IGrDriver;
-import gabien.IImage;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
@@ -17,8 +16,9 @@ import r48.map.events.IEventAccess;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.tiles.XPTileRenderer;
 
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.TreeSet;
+import java.util.LinkedList;
 
 /**
  * After looking closely at the system as part of the "reimagined-pancake" writeup,
@@ -41,9 +41,6 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
     public boolean enableEventsA = false;
     public boolean enableEventsB = false;
     public boolean enableTilesA = false;
-    public boolean enableTilesB = false;
-    public boolean enableTilesC = false;
-
     public final IMapViewDrawLayer signalLayerEvA = new SignalMapViewLayer(TXDB.get("Event Layers (lower)"), new Runnable() {
         @Override
         public void run() {
@@ -56,39 +53,15 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
             enableEventsB = true;
         }
     });
-    public final IMapViewDrawLayer signalLayerTiA = new SignalMapViewLayer(TXDB.get("Tiles L0"), new Runnable() {
+
+    public final IMapViewDrawLayer signalLayerTiA = new SignalMapViewLayer(TXDB.get("Tile Layers"), new Runnable() {
         @Override
         public void run() {
             enableTilesA = true;
         }
     });
-
-    public final IMapViewDrawLayer signalLayerTiB = new SignalMapViewLayer(TXDB.get("Tiles L1"), new Runnable() {
-        @Override
-        public void run() {
-            enableTilesB = true;
-        }
-    });
-    public final IMapViewDrawLayer signalLayerTiC = new SignalMapViewLayer(TXDB.get("Tiles L2"), new Runnable() {
-        @Override
-        public void run() {
-            enableTilesC = true;
-        }
-    });
-
-    // Used to quickly build the efficient render list to offset the cost of all this.
-    public final TreeSet<IZSortedObject> zSorting = new TreeSet<IZSortedObject>(new Comparator<IZSortedObject>() {
-        @Override
-        public int compare(IZSortedObject t0, IZSortedObject t1) {
-            long zA = t0.getZ();
-            long zB = t1.getZ();
-            if (zA < zB)
-                return 1;
-            if (zA > zB)
-                return -1;
-            return 0;
-        }
-    });
+    // Used to be a TreeSet, but objects keep disappearing and I want to eliminate causes.
+    public final LinkedList<IZSortedObject> zSorting = new LinkedList<IZSortedObject>();
 
     public RXPAccurateDrawLayer(RubyTable tbl, IEventAccess evl, XPTileRenderer tils, RMEventGraphicRenderer ev) {
         mapTable = tbl;
@@ -107,25 +80,44 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
             //  use a suitable replacement for 999.
             long z = Long.MAX_VALUE;
             if (!isUpper) {
-                z = (ed.getInstVarBySymbol("@y").fixnumVal * 32) + 32;
+                // OS/"ground 1" is great at catching off-by-X errors here.
+                // In particular, look at where the street lamps touch the fence,
+                //  and how window lights interact with street lamps.
+                // This routine needs to be well-calibrated.
+                // Another thing to check is RQ/Level 5/Hall 1.
+                // Note that while RQ should be a good stress test for this system,
+                //  some maps, such as Map055, appear on TID examination to be incomplete.
+                z = ((ed.getInstVarBySymbol("@y").fixnumVal + 1) * 2) + 1;
                 RubyIO edG = events.extractEventGraphic(ed);
                 if (edG != null) {
                     long tid = edG.getInstVarBySymbol("@tile_id").fixnumVal;
                     if (tid != 0) {
                         // Get priority...
-                        z += getTIDPriority((short) tid) * 32;
+                        z += getTIDPriority((short) tid);
                     } else {
-                        // Firstly, correct for missing Y accounting
+                        /*
                         IImage i = events.imageLoader.getImage("Characters/" + edG.getInstVarBySymbol("@character_name").decString(), false);
-                        int sprH = i.getHeight() / 4;
-                        z -= sprH;
-                        if (sprH > 32)
-                            z += 31;
+                        int sprH = i.getHeight() / (4 * 32);
+                        //z -= sprH; // causes more trouble than it's worth
+                        if (sprH > 1)
+                            z += 2;*/
                     }
                 }
             }
             zSorting.add(new RXPEventPlane(ed, z, isUpper));
         }
+        Collections.sort(zSorting, new Comparator<IZSortedObject>() {
+            @Override
+            public int compare(IZSortedObject t0, IZSortedObject t1) {
+                long zA = t0.getZ();
+                long zB = t1.getZ();
+                if (zA < zB)
+                    return -1;
+                if (zA > zB)
+                    return 1;
+                return 0;
+            }
+        });
     }
 
     private int getTIDPriority(short tid) {
@@ -147,17 +139,9 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
     @Override
     public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
         for (IZSortedObject zso : zSorting) {
-            if (zso instanceof RXPPriorityPlane) {
-                if (((RXPPriorityPlane) zso).tileLayer == 0)
-                    if (!enableTilesA)
-                        continue;
-                if (((RXPPriorityPlane) zso).tileLayer == 1)
-                    if (!enableTilesB)
-                        continue;
-                if (((RXPPriorityPlane) zso).tileLayer == 2)
-                    if (!enableTilesC)
-                        continue;
-            }
+            if (zso instanceof RXPPriorityPlane)
+                if (!enableTilesA)
+                    continue;
             if (zso instanceof RXPEventPlane) {
                 if (!((RXPEventPlane) zso).eventUpper) {
                     if (!enableEventsA)
@@ -170,8 +154,6 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
             zso.draw(camX, camY, camTX, camTY, camTR, camTB, mouseXT, mouseYT, eTileSize, currentLayer, callbacks, debug, igd);
         }
         enableTilesA = false;
-        enableTilesB = false;
-        enableTilesC = false;
         enableEventsA = false;
         enableEventsB = false;
     }
@@ -228,14 +210,16 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
 
         @Override
         public long getZ() {
-            if (pIndex == -1)
-                return 0;
-            return (pIndex + 1) * 32;
+            return (pIndex + 1) * 2;
         }
 
         @Override
         public boolean shouldDraw(int x, int y, int layer, short value) {
-            int targPIndex = y + getTIDPriority(value);
+            int pri = getTIDPriority(value);
+            if (pIndex == -1)
+                if (pri == 0)
+                    return true;
+            int targPIndex = y + pri;
             return targPIndex == pIndex;
         }
     }
