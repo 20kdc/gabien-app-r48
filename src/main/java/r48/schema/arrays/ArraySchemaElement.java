@@ -126,7 +126,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 SchemaElement se = possibleEnumElement;
                 while (se instanceof IProxySchemaElement)
                     se = ((IProxySchemaElement) se).getEntry();
-                dispData = ((EnumSchemaElement) se).viewValue(i + indexDisplayOffset, true) + " ";
+                dispData = ((EnumSchemaElement) se).viewValue(new RubyIO().setFX(i + indexDisplayOffset), true) + " ";
             }
             IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(dispData, copyHelpElems, uie, deleter, addition, clipAddition);
             positions.add(position);

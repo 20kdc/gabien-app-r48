@@ -155,7 +155,7 @@ public class HashSchemaElement extends SchemaElement {
         while (ke instanceof IProxySchemaElement)
             ke = ((IProxySchemaElement) ke).getEntry();
         if (ke instanceof EnumSchemaElement)
-            return ((EnumSchemaElement) ke).viewValue((int) v.fixnumVal, true);
+            return ((EnumSchemaElement) ke).viewValue(v, true);
         return TXDB.get("Key " + v);
     }
 

@@ -65,13 +65,7 @@ public class PathSyntax {
             switch (f) {
                 case '$':
                     if (subcom.startsWith("{")) {
-                        RubyIO hashVal = new RubyIO();
-                        if (subcom.startsWith("{:")) {
-                            hashVal.setString(EscapedStringSyntax.unescape(subcom.substring(2)), true);
-                        } else {
-                            int i = Integer.parseInt(subcom.substring(1));
-                            hashVal.setFX(i);
-                        }
+                        RubyIO hashVal = ValueSyntax.decode(EscapedStringSyntax.unescape(subcom.substring(1)));
                         RubyIO root = res;
                         res = res.getHashVal(hashVal);
                         if (specialImmediate) {

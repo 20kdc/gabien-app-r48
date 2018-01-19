@@ -97,8 +97,7 @@ public class SDB {
         DBLoader.readFile(fName, new IDatabase() {
             AggregateSchemaElement workingObj;
 
-            HashMap<Integer, String> commandBufferNames = new HashMap<Integer, String>();
-            LinkedList<String> commandBufferNames2 = new LinkedList<String>();
+            HashMap<String, String> commandBufferNames = new HashMap<String, String>();
             HashMap<String, SchemaElement> commandBufferSchemas = new HashMap<String, SchemaElement>();
 
             String outerContext = fPfx + "/NONE";
@@ -108,7 +107,7 @@ public class SDB {
                 outerContext = fPfx + "/commandBuffer";
                 workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                 if (objId != -1) {
-                    commandBufferNames.put(objId, TXDB.get(outerContext, objName));
+                    commandBufferNames.put(Integer.toString(objId), TXDB.get(outerContext, objName));
                     commandBufferSchemas.put("i" + objId, workingObj);
                 } else {
                     commandBufferSchemas.put("x" + objId, workingObj);
@@ -245,24 +244,25 @@ public class SDB {
                             int len = Integer.parseInt(args[point++]);
                             return new LengthChangeSchemaElement(TXDB.get(outerContext, text2), len, true);
                         }
+                        /*
+                         * Command buffers are assembled by putting entries into commandBufferNames (which is ValueSyntax, Text),
+                         *  and into commandBufferSchemas (which is DisambiguatorSyntax, Schema)
+                         */
                         if (text.equals("flushCommandBuffer")) {
                             // time to flush it!
                             String disambiguationIVar = args[point++];
-                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, 0, TXDB.get("Code")));
+                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, "0", "INT:" + TXDB.get("Code")));
                             HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
-                            commandBufferNames = new HashMap<Integer, String>();
-                            commandBufferNames2 = new LinkedList<String>();
+                            commandBufferNames = new HashMap<String, String>();
                             commandBufferSchemas = new HashMap<String, SchemaElement>();
                             return new DisambiguatorSchemaElement(disambiguationIVar, baseSE);
                         }
                         if (text.equals("flushCommandBufferStr")) {
                             // time to flush it!
                             String disambiguationIVar = args[point++];
-                            // TODO: There needs to be more documentation & info on how this works. I'm forgetting.
-                            setSDBEntry(args[point++], new SymEnumSchemaElement(commandBufferNames2.toArray(new String[0]), commandBufferNames2.toArray(new String[0]), true));
+                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, "\"", "STR:" + TXDB.get("Code")));
                             HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
-                            commandBufferNames = new HashMap<Integer, String>();
-                            commandBufferNames2 = new LinkedList<String>();
+                            commandBufferNames = new HashMap<String, String>();
                             commandBufferSchemas = new HashMap<String, SchemaElement>();
                             return new DisambiguatorSchemaElement(disambiguationIVar, baseSE);
                         }
@@ -509,37 +509,33 @@ public class SDB {
                     setSDBEntry(args[0], handleChain(args, 1));
                     outerContext = backup;
                 } else if (c == 'e') {
-                    HashMap<Integer, String> options = new HashMap<Integer, String>();
+                    HashMap<String, String> options = new HashMap<String, String>();
                     int defVal = 0;
                     for (int i = 1; i < args.length; i += 2) {
                         int k = Integer.parseInt(args[i]);
                         if (i == 1)
                             defVal = k;
                         String ctx = "SDB@" + args[0];
-                        options.put(k, TXDB.get(ctx, args[i + 1]));
+                        options.put(Integer.toString(k), TXDB.get(ctx, args[i + 1]));
                     }
-                    EnumSchemaElement e = new EnumSchemaElement(options, defVal, TXDB.get("Integer"));
+                    // INT: is part of the format
+                    EnumSchemaElement e = new EnumSchemaElement(options, Integer.toString(defVal), "INT:" + TXDB.get("Integer"));
                     setSDBEntry(args[0], e);
                 } else if (c == 's') {
                     // Symbols
-                    String[] symsA = new String[args.length - 1];
-                    String[] symsB = new String[args.length - 1];
-                    for (int i = 0; i < symsA.length; i++) {
-                        symsA[i] = TXDB.get(args[0], args[i + 1]);
-                        symsB[i] = args[i + 1];
-                    }
-                    setSDBEntry(args[0], new SymEnumSchemaElement(symsA, symsB, false));
+                    HashMap<String, String> options = new HashMap<String, String>();
+                    for (int i = 1; i < args.length; i++)
+                        options.put(":" + args[i], TXDB.get(args[0], args[i]));
+
+                    EnumSchemaElement ese = new EnumSchemaElement(options, ":" + args[1], "SYM:" + TXDB.get("Symbol"));
+                    setSDBEntry(args[0], ese);
                 } else if (c == 'E') {
-                    HashMap<Integer, String> options = new HashMap<Integer, String>();
-                    int defVal = 0;
+                    HashMap<String, String> options = new HashMap<String, String>();
                     for (int i = 2; i < args.length; i += 2) {
-                        int k = Integer.parseInt(args[i]);
-                        if (i == 2)
-                            defVal = k;
                         String ctx = "SDB@" + args[0];
-                        options.put(k, TXDB.get(ctx, args[i + 1]));
+                        options.put(args[i], TXDB.get(ctx, args[i + 1]));
                     }
-                    EnumSchemaElement e = new EnumSchemaElement(options, defVal, TXDB.get(args[0], args[1].replace('_', ' ')));
+                    EnumSchemaElement e = new EnumSchemaElement(options, args[2], "INT:" + TXDB.get(args[0], args[1].replace('_', ' ')));
                     setSDBEntry(args[0], e);
                 } else if (c == 'M') {
                     mergeRunnables.add(new Runnable() {
@@ -548,7 +544,7 @@ public class SDB {
                             // Proxies are bad for this.
                             EnumSchemaElement mergeA = (EnumSchemaElement) schemaTrueDatabase.get(args[0]);
                             EnumSchemaElement mergeB = (EnumSchemaElement) schemaTrueDatabase.get(args[1]);
-                            HashMap<Integer, String> finalMap = new HashMap<Integer, String>();
+                            HashMap<String, String> finalMap = new HashMap<String, String>();
                             finalMap.putAll(mergeA.options);
                             finalMap.putAll(mergeB.options);
                             SchemaElement ise = new EnumSchemaElement(finalMap, mergeB.defaultVal, mergeB.buttonText);
@@ -601,9 +597,19 @@ public class SDB {
                         // not sure about translation here
                         outerContext = fPfx + "/commandBuffer";
                         workingObj = new AggregateSchemaElement(new SchemaElement[] {});
-                        String n = EscapedStringSyntax.unescape(args[1]);
-                        commandBufferNames2.add(n);
-                        commandBufferSchemas.put("\"" + n, workingObj);
+                        String val = EscapedStringSyntax.unescape(args[1]);
+                        String nam = val;
+                        if (args.length > 2) {
+                            if (args[2].equals(":")) {
+                                nam = EscapedStringSyntax.unescape(args[3]);
+                            } else {
+                                throw new RuntimeException("Cmd text should be escaped. If you want to add a proper name, use 'Cmd zPirate : Awesome\\_Zombie\\_Pirate'");
+                            }
+                        }
+                        // the \" is "just in case" it's needed later
+                        nam = TXDB.get(outerContext + "/\"" + val, nam);
+                        commandBufferNames.put("\"" + val, nam);
+                        commandBufferSchemas.put("\"" + val, workingObj);
                     }
                     if (args[0].equals("allowIndentControl"))
                         allowControlOfEventCommandIndent = true;

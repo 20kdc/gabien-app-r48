@@ -9,6 +9,7 @@ package r48.ui;
 
 import gabien.ui.*;
 import r48.FontSizes;
+import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.TXDB;
 
@@ -22,22 +23,21 @@ import java.util.LinkedList;
 public class UIEnumChoice extends UIPanel implements IWindowElement {
     private final UIScrollLayout[] categoryPanels;
     private final UITabPane mainPanel;
-    private UISplitterLayout finalSplit;
-    private UINumberBox nb;
     private boolean wantsSelfClose = false;
 
-    public UIEnumChoice(final IConsumer<Integer> result, final HashMap<String, Integer> options, String buttonText) {
-        this(result, new Category[] {new Category(TXDB.get("Options"), mapOptions(options))}, buttonText);
+    // entryText defaults to "Manual."
+    public UIEnumChoice(final IConsumer<RubyIO> result, final HashMap<String, RubyIO> options, String entryText, EntryMode entryType) {
+        this(result, new Category[] {new Category(TXDB.get("Options"), mapOptions(options))}, entryText, entryType);
     }
 
-    private static LinkedList<Option> mapOptions(HashMap<String, Integer> o) {
+    private static LinkedList<Option> mapOptions(HashMap<String, RubyIO> o) {
         LinkedList<Option> llo = new LinkedList<Option>();
         for (String s : UITest.sortedKeysStr(o.keySet()))
             llo.add(new Option(s, o.get(s)));
         return llo;
     }
 
-    public UIEnumChoice(final IConsumer<Integer> result, final Category[] order, String buttonText) {
+    public UIEnumChoice(final IConsumer<RubyIO> result, final Category[] order, String entryText, EntryMode entryType) {
         categoryPanels = new UIScrollLayout[order.length];
         for (int i = 0; i < categoryPanels.length; i++) {
             final String name = order[i].translatedName;
@@ -59,16 +59,46 @@ public class UIEnumChoice extends UIPanel implements IWindowElement {
             }
         }
 
-        nb = new UINumberBox(FontSizes.schemaFieldTextHeight);
-        finalSplit = new UISplitterLayout(nb, new UITextButton(FontSizes.schemaButtonTextHeight, buttonText, new Runnable() {
-            @Override
-            public void run() {
-                if (!wantsSelfClose)
-                    result.accept(nb.number);
-                wantsSelfClose = true;
-            }
-        }), false, 1, 3);
-        if (buttonText.length() != 0)
+        if (entryText == null)
+            entryText = TXDB.get("Manual.");
+
+        UISplitterLayout finalSplit = null;
+        if (entryType == EntryMode.STR) {
+            final UITextBox nb = new UITextBox(FontSizes.schemaFieldTextHeight);
+            finalSplit = new UISplitterLayout(nb, new UITextButton(FontSizes.schemaButtonTextHeight, entryText, new Runnable() {
+                @Override
+                public void run() {
+                    if (!wantsSelfClose)
+                        result.accept(new RubyIO().setString(nb.text, false));
+                    wantsSelfClose = true;
+                }
+            }), false, 1, 3);
+        } else if (entryType == EntryMode.SYM) {
+            final UITextBox nb = new UITextBox(FontSizes.schemaFieldTextHeight);
+            finalSplit = new UISplitterLayout(nb, new UITextButton(FontSizes.schemaButtonTextHeight, entryText, new Runnable() {
+                @Override
+                public void run() {
+                    if (!wantsSelfClose) {
+                        RubyIO rio = new RubyIO();
+                        rio.type = ':';
+                        rio.symVal = nb.text;
+                        result.accept(rio);
+                    }
+                    wantsSelfClose = true;
+                }
+            }), false, 1, 3);
+        } else if (entryType == EntryMode.INT) {
+            final UINumberBox nb = new UINumberBox(FontSizes.schemaFieldTextHeight);
+            finalSplit = new UISplitterLayout(nb, new UITextButton(FontSizes.schemaButtonTextHeight, entryText, new Runnable() {
+                @Override
+                public void run() {
+                    if (!wantsSelfClose)
+                        result.accept(new RubyIO().setFX(nb.number));
+                    wantsSelfClose = true;
+                }
+            }), false, 1, 3);
+        }
+        if (finalSplit != null)
             categoryPanels[categoryPanels.length - 1].panels.add(finalSplit);
 
         mainPanel = new UITabPane(FontSizes.tabTextHeight, false, false);
@@ -94,23 +124,31 @@ public class UIEnumChoice extends UIPanel implements IWindowElement {
 
     }
 
+    public enum EntryMode {
+        LOCK,
+        STR,
+        SYM,
+        INT
+    }
+
     // The absolute advanced API for use by RPGCommand stuff
 
-    public static final class Category {
+    public static final class Category<X> {
         public final String translatedName;
         public final Option[] options;
 
         public Category(String s, LinkedList<Option> o) {
             translatedName = s;
+            // ... more Java nonsense
             options = o.toArray(new Option[0]);
         }
     }
 
     public static final class Option {
         public final String key;
-        public final int value;
+        public final RubyIO value;
 
-        public Option(String s, Integer integer) {
+        public Option(String s, RubyIO integer) {
             key = s;
             value = integer;
         }

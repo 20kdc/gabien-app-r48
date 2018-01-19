@@ -10,6 +10,7 @@ package r48;
 import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
 import r48.dbs.TXDB;
+import r48.dbs.ValueSyntax;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
@@ -54,7 +55,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
         if (actNow) {
             actNow = false;
             // actually update
-            HashMap<Integer, String> finalMap = new HashMap<Integer, String>();
+            HashMap<String, String> finalMap = new HashMap<String, String>();
             RubyIO target;
             String targetName;
             if (targ.equals("__MAP__")) {
@@ -83,13 +84,12 @@ public class DictionaryUpdaterRunnable implements Runnable {
                 if (target == null)
                     return; // :(
                 if (hash) {
-                    for (Map.Entry<RubyIO, RubyIO> rio : target.hashVal.entrySet()) {
-                        handleVal(finalMap, rio.getValue(), (int) rio.getKey().fixnumVal);
-                    }
+                    for (Map.Entry<RubyIO, RubyIO> rio : target.hashVal.entrySet())
+                        handleVal(finalMap, rio.getValue(), rio.getKey());
                 } else {
                     for (int i = 0; i < target.arrVal.length; i++) {
                         RubyIO rio = target.arrVal[i];
-                        handleVal(finalMap, rio, i);
+                        handleVal(finalMap, rio, new RubyIO().setFX(i));
                     }
                 }
             } else {
@@ -99,19 +99,22 @@ public class DictionaryUpdaterRunnable implements Runnable {
         }
     }
 
-    private void finalizeVals(HashMap<Integer, String> finalMap) {
+    private void finalizeVals(HashMap<String, String> finalMap) {
         // Default value of 1 because r2k. if this is ever in conflict then start adding a default parameter value for dictionaries.
         // Do proper dictionary unification at the same time.
-        SchemaElement ise = new EnumSchemaElement(finalMap, defaultVal, TXDB.get("ID."));
+        SchemaElement ise = new EnumSchemaElement(finalMap, Integer.toString(defaultVal), "INT:" + TXDB.get("ID."));
         AppMain.schemas.setSDBEntry(dict, ise);
     }
 
-    private void handleVal(HashMap<Integer, String> finalMap, RubyIO rio, int fixnumVal) {
+    private void handleVal(HashMap<String, String> finalMap, RubyIO rio, RubyIO k) {
         if (rio.type != '0') {
+            String p = ValueSyntax.encode(k);
+            if (p == null)
+                return;
             if (iVar == null) {
-                finalMap.put(fixnumVal, rio.decString());
+                finalMap.put(p, rio.decString());
             } else {
-                finalMap.put(fixnumVal, iVar.apply(rio).decString());
+                finalMap.put(p, iVar.apply(rio).decString());
             }
         }
     }
@@ -122,6 +125,6 @@ public class DictionaryUpdaterRunnable implements Runnable {
     }
 
     public void sanitize() {
-        finalizeVals(new HashMap<Integer, String>());
+        finalizeVals(new HashMap<String, String>());
     }
 }

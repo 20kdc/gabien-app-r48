@@ -16,40 +16,40 @@ Cmd ref
 Cmd raw
 .member_details
  FAKE, USED TO MAKE ENUM
-+flushCommandBufferStr ${:refType member_reftype
++flushCommandBufferStr ${"refType member_reftype
 
 .compiled_value
 +forceHash
-}:name string
-}:value string
-+optP ${:type string= dynamic
+}"name string
+}"value string
++optP ${"type string= dynamic
 
 .compiled_from
 +forceHash
-}:type string
-}:values array 0 compiled_value
+}"type string
+}"values array 0 compiled_value
 
 .compiled_data
 +forceHash
-+optP ${:type string= select
-}:pattern string
-}:from compiled_from
++optP ${"type string= select
+}"pattern string
+}"from compiled_from
 
 Cmd member
-+hashObjectInner :type :refType :name :parent :compiled
-}:refType member_reftype
++hashObjectInner "type "refType "name "parent "compiled
+}"refType member_reftype
  for a.b.c you have this as a.b, so this doesn't affect consistency
-+optP ${:parent string
-}:compiled subwindow compiled_data
++optP ${"parent string
+}"compiled subwindow compiled_data
 
 Cmd object
-+hashObjectInner :type :name :members
-}:members subwindow: Members array 0 definition
++hashObjectInner "type "name "members
+}"members subwindow: Members array 0 definition
 
 .definition
 +forceHash
-}:type definition_type
-}:name string= cc
-+flushCommandBufferStr ${:type definition_type
+}"type definition_type
+}"name string= cc
++flushCommandBufferStr ${"type definition_type
 
 > File.definitions definition

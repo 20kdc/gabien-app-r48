@@ -23,6 +23,7 @@ package r48.dbs;
  * maps to
  * !"£$%^&*()_+
  * <p>
+ * :'# maps to :@~
  * finally, {} map to [] (because PathSyntax)
  * <p>
  * Note that translators get the post-unescape version.
@@ -93,6 +94,15 @@ public class EscapedStringSyntax {
                             break;
                         case '+':
                             r += "+";
+                            break;
+                        case ';':
+                            r += ":";
+                            break;
+                        case '\'':
+                            r += "@";
+                            break;
+                        case '#':
+                            r += "~";
                             break;
                         case '{':
                             r += "[";

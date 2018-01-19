@@ -187,16 +187,17 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 RPGCommand rc = database.knownCommands.get(key);
                 String text = key + ";" + rc.formatName(null, null);
                 if (rc.category == i)
-                    llo.add(new UIEnumChoice.Option(text, key));
+                    llo.add(new UIEnumChoice.Option(text, new RubyIO().setFX(key)));
             }
             categories[i] = new UIEnumChoice.Category(database.categories[i], llo);
         }
 
-        launcher.switchObject(path2.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<Integer>() {
+        launcher.switchObject(path2.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {
             @Override
-            public void accept(Integer integer) {
-                RPGCommand rc = database.knownCommands.get(integer);
-                target.getInstVarBySymbol("@code").fixnumVal = integer;
+            public void accept(RubyIO integer) {
+                // NOTE: This just uses ints for everything.
+                RPGCommand rc = database.knownCommands.get((int) integer.fixnumVal);
+                target.getInstVarBySymbol("@code").fixnumVal = integer.fixnumVal;
                 RubyIO param = target.getInstVarBySymbol("@parameters");
                 if (rc != null) {
                     // Notice: Both are used!
@@ -219,7 +220,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 // On the other hand, the elements will be obliterated anyway before reaching the user.
                 launcher.switchObject(path2);
             }
-        }, categories, TXDB.get("Code")), null, path), target));
+        }, categories, TXDB.get("Code"), UIEnumChoice.EntryMode.INT), null, path), target));
     }
 
     @Override

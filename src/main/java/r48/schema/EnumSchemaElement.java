@@ -12,7 +12,9 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.dbs.ValueSyntax;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
 import r48.schema.util.ISchemaHost;
@@ -27,52 +29,68 @@ import java.util.HashMap;
  * Created on 12/30/16.
  */
 public class EnumSchemaElement extends SchemaElement {
-    public HashMap<Integer, String> options;
-    public HashMap<String, Integer> viewOptions;
-    public String buttonText;
-    public int defaultVal;
+    // Maps ValueSyntax strings to option text
+    public HashMap<String, String> options;
+    // Maps option text to output RubyIOs
+    public HashMap<String, RubyIO> viewOptions;
 
-    public EnumSchemaElement(HashMap<Integer, String> o, int def, String bt) {
+    public String buttonText;
+    public UIEnumChoice.EntryMode entryMode;
+    public String defaultVal;
+
+    public EnumSchemaElement(HashMap<String, String> o, String def, String es) {
         options = o;
-        viewOptions = new HashMap<String, Integer>();
-        for (Integer si : options.keySet())
-            viewOptions.put(viewValue(si, true), si);
-        buttonText = bt;
+        viewOptions = new HashMap<String, RubyIO>();
+        if (es.contains(":")) {
+            int i = es.indexOf(":");
+            buttonText = es.substring(i + 1);
+            es = es.substring(0, i);
+        }
+        for (String si : options.keySet()) {
+            RubyIO dec = ValueSyntax.decode(si);
+            viewOptions.put(viewValue(dec, true), dec);
+        }
+        buttonText = es;
+        entryMode = UIEnumChoice.EntryMode.valueOf(es);
         defaultVal = def;
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(FontSizes.schemaButtonTextHeight, viewValue((int) target.fixnumVal, true), new Runnable() {
+        return new UITextButton(FontSizes.schemaButtonTextHeight, viewValue(target, true), new Runnable() {
             @Override
             public void run() {
-                launcher.switchObject(path.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<Integer>() {
+                launcher.switchObject(path.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {
                     @Override
-                    public void accept(Integer integer) {
-                        target.fixnumVal = integer;
+                    public void accept(RubyIO integer) {
+                        target.setDeepClone(integer);
                         path.changeOccurred(false);
                         // Enums can affect parent format, so deal with that now.
                         launcher.switchObject(path.findBack());
                     }
-                }, viewOptions, buttonText), null, path), target));
+                }, viewOptions, buttonText, entryMode), null, path), target));
             }
         });
     }
 
-    public String viewValue(int fixnumVal, boolean prefix) {
-        String st = options.get(fixnumVal);
-        // Maybe formatstring this - it has side effects in text formatting system
-        if (st == null)
-            return TXDB.get("int:") + fixnumVal;
-        if (!prefix)
-            return st;
-        return fixnumVal + ":" + st;
+    public String viewValue(RubyIO val, boolean prefix) {
+        String v2 = ValueSyntax.encode(val);
+        if (v2 != null) {
+            String st = options.get(v2);
+            if (st != null) {
+                if (!prefix)
+                    return st;
+                return FormatSyntax.formatExtended(TXDB.get("#A : #B"), val, new RubyIO().setString(st, true));
+            }
+        }
+        return FormatSyntax.formatExtended(TXDB.get("#A (?)"), val);
     }
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (IntegerSchemaElement.ensureType(target, 'i', setDefault)) {
-            target.fixnumVal = defaultVal;
+        RubyIO def = ValueSyntax.decode(defaultVal);
+        if (IntegerSchemaElement.ensureType(target, (char) def.type, setDefault)) {
+            target.setDeepClone(def);
             path.changeOccurred(true);
         }
     }

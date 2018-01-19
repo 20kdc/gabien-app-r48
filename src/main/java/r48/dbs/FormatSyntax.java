@@ -229,7 +229,7 @@ public class FormatSyntax {
             while (ise instanceof IProxySchemaElement)
                 ise = ((IProxySchemaElement) ise).getEntry();
             if (ise instanceof EnumSchemaElement)
-                r = ((EnumSchemaElement) ise).viewValue((int) rubyIO.fixnumVal, prefixEnums);
+                r = ((EnumSchemaElement) ise).viewValue(rubyIO, prefixEnums);
         }
         if (r == null)
             r = rubyIO.toString();

@@ -49,7 +49,7 @@ public class IntegerSchemaElement extends SchemaElement {
     }
 
     // For lack of a better place.
-    public static boolean ensureType(RubyIO tgt, char t, boolean setDefault) {
+    public static boolean ensureType(RubyIO tgt, int t, boolean setDefault) {
         if (tgt.type != t) {
             tgt.setNull();
             tgt.type = t;

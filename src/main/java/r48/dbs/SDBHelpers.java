@@ -164,10 +164,10 @@ class SDBHelpers {
         // Since this is much too complicated for a mere enum,
         //  use the magical binding to make it more in-line with R48's standards,
         //  with a minimal amount of code
-        HashMap<Integer, String> types = new HashMap<Integer, String>();
-        types.put(0, TXDB.get("Constant"));
-        types.put(1, TXDB.get("From Id Var. (PPP/EasyRPG/2k3 1.12)"));
-        types.put(2, TXDB.get("From Id/Name Suffix Var. Pair (PPP/EasyRPG/2k3 1.12)"));
+        HashMap<String, String> types = new HashMap<String, String>();
+        types.put("0", TXDB.get("Constant"));
+        types.put("1", TXDB.get("From Id Var. (PPP/EasyRPG/2k3 1.12)"));
+        types.put("2", TXDB.get("From Id/Name Suffix Var. Pair (PPP/EasyRPG/2k3 1.12)"));
         HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
         ArrayElementSchemaElement idV = new ArrayElementSchemaElement(1, TXDB.get("idVar"), varId, null, false);
         disambiguations.put("i1", idV);
@@ -175,7 +175,7 @@ class SDBHelpers {
         disambiguations.put("x", new ArrayElementSchemaElement(1, TXDB.get("id "), new LowerBoundIntegerSchemaElement(1, 1), null, false));
         AggregateSchemaElement inner = new AggregateSchemaElement(new SchemaElement[] {
                 new HalfsplitSchemaElement(
-                        new ArrayElementSchemaElement(0, TXDB.get("type "), new EnumSchemaElement(types, 0, ""), null, false),
+                        new ArrayElementSchemaElement(0, TXDB.get("type "), new EnumSchemaElement(types, "0", "LOCK"), null, false),
                         new DisambiguatorSchemaElement("]0", disambiguations)
                 ),
                 new SubwindowSchemaElement(new HWNDSchemaElement("]0", "R2K/H_Internal_PPP"), new IFunction<RubyIO, String>() {

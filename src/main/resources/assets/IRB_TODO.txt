@@ -9,11 +9,9 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning:
-+ v0.9
-  (LATEST RELEASE DATE: 20th of December.)
-+ Bugfixes.
-  v1.0 is basically a "fix what's broken" release for obvious reasons.
-  The Android UX needs testing.
++ Fix cache not properly flushing
++ Fix various TMUI stuff (disappearing after rectangle tool usage...)
++ v1.0-2
 
 + ask easyrpg about what is up with SaveSystem system_box_tiling
 + ask easyrpg about pan_state having to be -1 (not 0, -1) to prevent pan weirdness, etcetc
