@@ -222,6 +222,16 @@ public class UIGRMMapInfos extends UIPanel {
             @Override
             public void run() {
                 final UINumberBox num = new UINumberBox(FontSizes.textDialogFieldTextHeight);
+                final Runnable unusedID = new Runnable() {
+                    @Override
+                    public void run() {
+                        int i = 1;
+                        while (operators.getHashBID(i) != null)
+                            i++;
+                        num.number = i;
+                    }
+                };
+                unusedID.run();
                 UIAppendButton prompt = new UIAppendButton(TXDB.get("Confirm"), num, new Runnable() {
                     @Override
                     public void run() {
@@ -236,15 +246,7 @@ public class UIGRMMapInfos extends UIPanel {
                         rebuildList();
                     }
                 }, FontSizes.textDialogFieldTextHeight);
-                UINSVertLayout dialog = new UINSVertLayout(prompt, new UITextButton(FontSizes.textDialogFieldTextHeight, TXDB.get("Find unused ID."), new Runnable() {
-                    @Override
-                    public void run() {
-                        int i = 1;
-                        while (operators.getHashBID(i) != null)
-                            i++;
-                        num.number = i;
-                    }
-                })) {
+                UINSVertLayout dialog = new UINSVertLayout(prompt, new UITextButton(FontSizes.textDialogFieldTextHeight, TXDB.get("Find unused ID."), unusedID)) {
                     @Override
                     public String toString() {
                         return TXDB.get("Map ID?");
