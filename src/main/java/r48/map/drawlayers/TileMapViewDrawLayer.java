@@ -40,9 +40,14 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
         return FormatSyntax.formatExtended(TXDB.get("Tile Layer #A"), new RubyIO().setFX(tileLayer));
     }
 
+    public boolean shouldDraw(int x, int y, int layer, short value) {
+        return true;
+    }
+
     @Override
     public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
         int tableWidth = targetTable.getDimension(0);
+        int tableHeight = targetTable.getDimension(1);
         for (int i = camTX; i < camTR; i++) {
             if (i < 0)
                 continue;
@@ -51,21 +56,32 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
             for (int j = camTY; j < camTB; j++) {
                 if (j < 0)
                     continue;
-                if (j >= targetTable.getDimension(1))
+                if (j >= tableHeight)
                     continue;
                 int px = i * eTileSize;
                 int py = j * eTileSize;
                 px -= camX;
                 py -= camY;
-                if (debug) {
-                    String t = Integer.toString(targetTable.getTiletype(i, j, tileLayer), 16);
-                    UILabel.drawString(igd, px, py + (tileLayer * UIMapView.mapDebugTextHeight), t, false, UIMapView.mapDebugTextHeight);
+                if (tileLayer == -1) {
+                    for (int k = 0; k < targetTable.getDimension(2); k++)
+                        tileDrawIntern(k, mouseXT, mouseYT, currentLayer, callbacks, debug, igd, i, j, px, py);
                 } else {
-                    short tidx = targetTable.getTiletype(i, j, tileLayer);
-                    if (callbacks != null)
-                        tidx = callbacks.shouldDrawAt(mouseXT, mouseYT, i, j, tidx, tileLayer, currentLayer);
-                    tr.drawTile(tileLayer, tidx, px, py, igd, 1);
+                    tileDrawIntern(tileLayer, mouseXT, mouseYT, currentLayer, callbacks, debug, igd, i, j, px, py);
                 }
+            }
+        }
+    }
+
+    private void tileDrawIntern(int tdi, int mouseXT, int mouseYT, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd, int i, int j, int px, int py) {
+        short tidx = targetTable.getTiletype(i, j, tdi);
+        if (callbacks != null)
+            tidx = callbacks.shouldDrawAt(mouseXT, mouseYT, i, j, tidx, tdi, currentLayer);
+        if (shouldDraw(i, j, tdi, tidx)) {
+            if (debug) {
+                String t = Integer.toString(tidx, 16);
+                UILabel.drawString(igd, px, py + (tdi * UIMapView.mapDebugTextHeight), t, false, UIMapView.mapDebugTextHeight);
+            } else {
+                tr.drawTile(tdi, tidx, px, py, igd, 1);
             }
         }
     }

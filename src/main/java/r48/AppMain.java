@@ -236,19 +236,24 @@ public class AppMain {
         for (String s : recommendedDirs)
             if (!GaBIEn.dirExists(PathUtils.autoDetectWindows(rootPath + s)))
                 createDirs.add(s);
-        if (createDirs.size() > 0) {
-            rootViewWM.accept(new UIAutoclosingPopupMenu(new String[] {
-                    TXDB.get("Create Missing Directories")
-            }, new Runnable[] {
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            for (String st : createDirs)
-                                GaBIEn.makeDirectories(PathUtils.autoDetectWindows(rootPath + st));
-                            launchDialog(TXDB.get("Done!"));
+
+        // Only trigger create directories prompt if the database is *clearly* missing objects.
+        // Do not do so otherwise (see: OneShot)
+        if (objectDB.modifiedObjects.size() > 0) {
+            if (createDirs.size() > 0) {
+                rootViewWM.accept(new UIAutoclosingPopupMenu(new String[] {
+                        TXDB.get("This appears to be newly created. Click to create directories.")
+                }, new Runnable[] {
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                for (String st : createDirs)
+                                    GaBIEn.makeDirectories(PathUtils.autoDetectWindows(rootPath + st));
+                                launchDialog(TXDB.get("Done!"));
+                            }
                         }
-                    }
-            }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
+                }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
+            }
         }
 
         // everything ready, start main window

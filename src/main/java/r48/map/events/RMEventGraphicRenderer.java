@@ -28,7 +28,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
 
     private int patternCount = 4;
     private boolean useVXAExtensionScheme = false;
-    private final IImageLoader imageLoader;
+    public final IImageLoader imageLoader;
     private final ITileRenderer tileRenderer;
 
     public RMEventGraphicRenderer(IImageLoader img, ITileRenderer tile, boolean vxa) {
@@ -56,16 +56,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
     public int determineEventLayer(RubyIO event) {
         if (useVXAExtensionScheme)
             return (int) event.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@priority_type").fixnumVal;
-        // Assume RXP. R.Q.U suggests this is 0, see "31 Hall 1" in Maintenance, specifically the pipework in front of the door at the top right.
-        // But O.S suggests this is 2, or 1.
-        // Current guess is that Y position means more than layer???
-        // Basically: R.Q.U stuff says this MUST be 0. No matter what.
-        // O.S suggests it's 2 (230: Ground 2)
-        // For now I'm assuming a glitch in R.Q.U for lack of any better ideas.
-        // (Also the fact that O.S. "258: Memory" doesn't show up right compared to in-game. Odds are against us.)
-        // <NOTE : THE ABOVE APPLIES TO A TRADITIONAL LAYER SETUP, RXP doesn't use that anymore due to AlwaysOnTop
-        // NOTE: Check map 200 (green pg dock) 53, 44 in OS - This has been witnessed in-game,
-        //  so it's an absolute definite that a non-AOT event outranks Tile Layer 2, at least in MKXP.
+        // NOTE: This is actually used specially, by the RXPAccurateDrawLayer.
         return (event.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@always_on_top").type == 'T') ? 1 : 0;
     }
 

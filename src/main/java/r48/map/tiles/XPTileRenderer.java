@@ -7,11 +7,13 @@
 
 package r48.map.tiles;
 
+import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.RubyTable;
 import r48.dbs.ATDB;
 import r48.map.UIMapView;
 import r48.map.events.RMEventGraphicRenderer;
@@ -22,10 +24,10 @@ import r48.ui.UITileGrid;
  * Created on 1/27/17.
  */
 public class XPTileRenderer implements ITileRenderer {
-    private final RubyIO tileset;
     public final IImage[] tilesetMaps = new IImage[8];
 
     public static final int tileSize = 32;
+    public final RubyTable priorities;
 
     @Override
     public int getTileSize() {
@@ -33,10 +35,10 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     public XPTileRenderer(IImageLoader imageLoader, RubyIO tileset) {
-        this.tileset = tileset;
         // If the tileset's null, then just give up.
         // The tileset being/not being null is an implementation detail anyway.
         if (tileset != null) {
+            priorities = new RubyTable(tileset.getInstVarBySymbol("@priorities").userVal);
             RubyIO tn = tileset.getInstVarBySymbol("@tileset_name");
             if (tn != null) {
                 // XP
@@ -52,6 +54,8 @@ public class XPTileRenderer implements ITileRenderer {
                     }
                 }
             }
+        } else {
+            priorities = null;
         }
     }
 
@@ -69,7 +73,11 @@ public class XPTileRenderer implements ITileRenderer {
             tidx %= 48;
             boolean didDraw = false;
             if (tilesetMaps[atMap] != null) {
-                didDraw = didDraw || generalOldRMATField(0, 0, tidx, 0, tileSize, px, py, igd, tilesetMaps[atMap], spriteScale);
+                int animControl = 0;
+                int animSets = tilesetMaps[atMap].getWidth() / 96;
+                if (animSets > 0)
+                    animControl = (96 * (getFrame() % animSets));
+                didDraw = didDraw || generalOldRMATField(animControl, 0, tidx, 0, tileSize, px, py, igd, tilesetMaps[atMap], spriteScale);
             } else {
                 didDraw = true; // It's invisible, so it should just be considered drawn no matter what
             }
@@ -146,7 +154,8 @@ public class XPTileRenderer implements ITileRenderer {
 
     @Override
     public int getFrame() {
-        return 0;
+        // Need to work out acceleration for this. Going w/ 4
+        return (int) (GaBIEn.getTime() * 4);
     }
 
     @Override

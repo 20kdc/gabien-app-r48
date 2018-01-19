@@ -7,76 +7,38 @@
 
 package r48.map.drawlayers;
 
-import gabien.IGrDriver;
-import gabien.ui.UILabel;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
-import r48.map.IMapViewCallbacks;
-import r48.map.UIMapView;
 import r48.map.tiles.ITileRenderer;
 
 /**
- * Created on 09/06/17.
+ * Created on 09/06/17, made to extend TMVDL on January 18th 2018.
  */
-public class R2kTileMapViewDrawLayer implements IMapViewDrawLayer {
-    public RubyTable targetTable;
-    public boolean upper;
-    public int layer;
-    public RubyIO tileset;
-    public ITileRenderer tileRenderer;
+public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
+    public final boolean upper;
+    public final RubyIO tileset;
 
     public R2kTileMapViewDrawLayer(RubyTable tbl, ITileRenderer tr, int targLayer, boolean targUpper, RubyIO ts) {
-        tileRenderer = tr;
-        targetTable = tbl;
+        super(tbl, targLayer, tr);
         upper = targUpper;
-        layer = targLayer;
         tileset = ts;
     }
 
     @Override
     public String getName() {
-        return FormatSyntax.formatExtended(TXDB.get("Tile L#A ({B=T='upper'/'wall' tileset flags|general})"), new RubyIO().setFX(layer), new RubyIO().setBool(upper));
+        return FormatSyntax.formatExtended(TXDB.get("Tile L#A ({B=T='upper'/'wall' tileset flags|general})"), new RubyIO().setFX(tileLayer), new RubyIO().setBool(upper));
     }
 
     @Override
-    public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
-        for (int i = camTX; i < camTR; i++) {
-            if (i < 0)
-                continue;
-            if (i >= targetTable.getDimension(0))
-                continue;
-            for (int j = camTY; j < camTB; j++) {
-                if (j < 0)
-                    continue;
-                if (j >= targetTable.getDimension(1))
-                    continue;
-                int px = i * eTileSize;
-                int py = j * eTileSize;
-                px -= camX;
-                py -= camY;
-                // 5, 26-29: cafe main bar. In DEBUG, shows as 255, 25d, 25d, ???, I think.
-                // 1c8 >> 3 == 39.
-                // 39 in binary is 00111001.
-                // Possible offset of 1?
-                if (debug) {
-                    String t = Integer.toString(targetTable.getTiletype(i, j, layer), 16);
-                    UILabel.drawString(igd, px, py + (layer * UIMapView.mapDebugTextHeight), t, false, UIMapView.mapDebugTextHeight);
-                } else {
-                    short tidx = targetTable.getTiletype(i, j, layer);
-                    if (callbacks != null)
-                        tidx = callbacks.shouldDrawAt(mouseXT, mouseYT, i, j, tidx, layer, currentLayer);
-                    // Work out upper/lower.
-                    int val = getTileFlags(tidx, tileset);
-                    // 0x10: Above. 0x20: Wall. I tested a Wall on L1 on ERPG, did not render over player,
-                    // Wall only acts as implicit upper for L0.
-                    boolean r = (val & ((layer == 0) ? 0x30 : 0x10)) != 0;
-                    if (r == upper)
-                        tileRenderer.drawTile(layer, tidx, px, py, igd, 1);
-                }
-            }
-        }
+    public boolean shouldDraw(int x, int y, int layer, short tidx) {
+        // Work out upper/lower.
+        int val = getTileFlags(tidx, tileset);
+        // 0x10: Above. 0x20: Wall. I tested a Wall on L1 on ERPG, did not render over player,
+        // Wall only acts as implicit upper for L0.
+        boolean r = (val & ((layer == 0) ? 0x30 : 0x10)) != 0;
+        return r == upper;
     }
 
     public static int getTileFlags(short tidx, RubyIO tileset) {

@@ -24,7 +24,7 @@ import r48.map.StuffRenderer;
 import r48.map.drawlayers.EventMapViewDrawLayer;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.drawlayers.PanoramaMapViewDrawLayer;
-import r48.map.drawlayers.TileMapViewDrawLayer;
+import r48.map.drawlayers.RXPAccurateDrawLayer;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
@@ -71,8 +71,8 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
 
     public StuffRenderer rendererFromMap(RubyIO map, IEventAccess events) {
         RubyIO tileset = tsoFromMap(map);
-        ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tileset);
-        IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
+        XPTileRenderer tileRenderer = new XPTileRenderer(imageLoader, tileset);
+        RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
         String pano = "";
         if (tileset != null) {
             RubyIO rio = tileset.getInstVarBySymbol("@panorama_name");
@@ -86,14 +86,18 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
             IImage panoImg = null;
             if (!pano.equals(""))
                 panoImg = imageLoader.getImage(pano, true);
+            RXPAccurateDrawLayer accurate = new RXPAccurateDrawLayer(rt, events, tileRenderer, eventRenderer);
             layers = new IMapViewDrawLayer[] {
                     // works for green docks
                     new PanoramaMapViewDrawLayer(panoImg, true, true, 0, 0, rt.getDimension(0), rt.getDimension(1), -1, -1, 2, 1, 0),
-                    new TileMapViewDrawLayer(rt, 0, tileRenderer),
-                    new TileMapViewDrawLayer(rt, 1, tileRenderer),
-                    new TileMapViewDrawLayer(rt, 2, tileRenderer),
-                    new EventMapViewDrawLayer(0, events, eventRenderer, tileRenderer.getTileSize()),
-                    new EventMapViewDrawLayer(1, events, eventRenderer, tileRenderer.getTileSize()),
+                    // Signal layers (controls Z-Emulation)
+                    accurate.signalLayerTiA,
+                    accurate.signalLayerTiB,
+                    accurate.signalLayerTiC,
+                    accurate.signalLayerEvA,
+                    accurate.signalLayerEvB,
+                    // Z-Emulation
+                    accurate,
                     // selection
                     new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, tileRenderer.getTileSize()),
             };
