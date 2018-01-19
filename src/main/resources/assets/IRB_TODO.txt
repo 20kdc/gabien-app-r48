@@ -10,8 +10,8 @@ from highest priority to lowest:
 
 short-term planning:
 + Fix cache not properly flushing
-+ Fix various TMUI stuff (disappearing after rectangle tool usage...)
 + v1.0-2
++ Figure out RXP's oddities
 
 + ask easyrpg about what is up with SaveSystem system_box_tiling
 + ask easyrpg about pan_state having to be -1 (not 0, -1) to prevent pan weirdness, etcetc

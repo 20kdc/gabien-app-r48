@@ -16,6 +16,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTBase;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
@@ -48,6 +49,11 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
     @Override
     public boolean allowPickTile() {
         return false;
+    }
+
+    @Override
+    public void onPickTileLastATOverride(UIMTAutotile at) {
+
     }
 
     private class UIMTAreaTool extends UIMTBase implements IMapViewCallbacks {

@@ -24,6 +24,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
     private UIScrollLayout rootLayout = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
     private final LinkedList<UITextButton> tools = new LinkedList<UITextButton>();
     private final boolean readonlyTiles;
+    private UIMTAutotile lastAT;
 
     public MapEditingToolbarController(final IMapToolContext viewGiver, boolean rd) {
         // Usual stupid complaints, please ignore (if you add the diamond w/ or w/o types the compiler errors)
@@ -46,7 +47,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                     public void run() {
                         clearTools(thisButton);
                         view.currentLayer = thisButton;
-                        viewGiver.accept(new UIMTAutotile(viewGiver));
+                        viewGiver.accept(lastAT = new UIMTAutotile(viewGiver, lastAT));
                     }
                 }).togglable();
                 tools.add(button);
@@ -189,5 +190,10 @@ public class MapEditingToolbarController implements IEditingToolbarController {
     @Override
     public boolean allowPickTile() {
         return !readonlyTiles;
+    }
+
+    @Override
+    public void onPickTileLastATOverride(UIMTAutotile at) {
+        lastAT = at;
     }
 }

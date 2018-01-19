@@ -28,6 +28,8 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
     public UIAppendButton innerLabel = new UIAppendButton(TXDB.get("Cancel"), new UILabel(TXDB.get("Click on a tile to finish the rectangle, or:"), FontSizes.dialogWindowTextHeight), new Runnable() {
         @Override
         public void run() {
+            parent.selfClose = false;
+            parent.hasClosed = false;
             mapToolContext.accept(parent);
         }
     }, FontSizes.dialogWindowTextHeight);
@@ -96,6 +98,8 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
                     for (int j = minY - 1; j <= maxY + 1; j++)
                         UIMTAutotile.updateAutotile(parent.map, parent.atBases, i, j, parent.map.currentLayer);
             parent.map.passModificationNotification();
+            parent.selfClose = false;
+            parent.hasClosed = false;
             mapToolContext.accept(parent);
         }
     }

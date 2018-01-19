@@ -101,4 +101,21 @@ public class UITileGrid extends UIGrid {
         }
         renderer.tileRenderer.drawTile(layer, (short) t, x, y, igd, FontSizes.getSpriteScale());
     }
+
+    public boolean compatibleWith(UITileGrid lTM) {
+        if (tileStart != lTM.tileStart)
+            return false;
+        if (atGroup != lTM.atGroup)
+            return false;
+        if (viewMap != null) {
+            if (lTM.viewMap == null)
+                return false;
+            if (viewMap.length != lTM.viewMap.length)
+                return false;
+            for (int i = 0; i < viewMap.length; i++)
+                if (viewMap[i] != lTM.viewMap[i])
+                    return false;
+        }
+        return true;
+    }
 }

@@ -38,11 +38,22 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     public final UIMapView map;
     public AutoTileTypeField[] atBases;
 
-    public UIMTAutotile(IMapToolContext mv) {
+    public UIMTAutotile(IMapToolContext mv, UIMTAutotile last) {
         super(mv, false);
         map = mv.getMapView();
         setupView();
         setBounds(new Rect(0, 0, (map.tileSize * FontSizes.getSpriteScale() * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) + FontSizes.gridScrollersize, 200));
+        if (last != null) {
+            // Attempt to transfer state.
+            UITileGrid lTM = last.tileMaps[last.tabPane.getTabIndex()];
+            for (int i = 0; i < tileMaps.length; i++) {
+                if (tileMaps[i].compatibleWith(lTM)) {
+                    tileMaps[i].setSelected(lTM.getSelected());
+                    tabPane.selectTab(tileMaps[i]);
+                    break;
+                }
+            }
+        }
     }
 
     private void setupView() {

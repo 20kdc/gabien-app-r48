@@ -8,6 +8,7 @@
 package r48.map;
 
 import gabien.ui.UIElement;
+import r48.maptools.UIMTAutotile;
 
 /**
  * Created on 11/08/17.
@@ -18,4 +19,6 @@ public interface IEditingToolbarController {
     UIElement getBar();
 
     boolean allowPickTile();
+
+    void onPickTileLastATOverride(UIMTAutotile at);
 }

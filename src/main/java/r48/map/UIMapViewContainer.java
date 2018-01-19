@@ -152,7 +152,7 @@ public class UIMapViewContainer extends UIPanel {
             view.pickTileHelper = new IConsumer<Short>() {
                 @Override
                 public void accept(Short aShort) {
-                    UIMTAutotile atf = new UIMTAutotile(mtc);
+                    UIMTAutotile atf = new UIMTAutotile(mtc, null);
                     atf.selectTile(aShort);
                     nextMapTool = atf;
                 }
