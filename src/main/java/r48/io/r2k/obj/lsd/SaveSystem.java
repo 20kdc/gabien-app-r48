@@ -18,9 +18,13 @@ public class SaveSystem extends R2kObject {
     public IntegerR2kStruct screen = new IntegerR2kStruct(1);
     public IntegerR2kStruct frameCount = new IntegerR2kStruct(0);
     public StringR2kStruct systemName = new StringR2kStruct();
-    // This is different from the documented default - test this out?
-    // the "messing with YNET" test showed that it's value is actually forced to 1 somehow, hm.
-    public IntegerR2kStruct systemBoxStretch = new IntegerR2kStruct(0);
+    // This gets it's default from the database.
+    public OptionalR2kStruct<IntegerR2kStruct> systemBoxStretch = new OptionalR2kStruct<IntegerR2kStruct>(new ISupplier<IntegerR2kStruct>() {
+        @Override
+        public IntegerR2kStruct get() {
+            return new IntegerR2kStruct(0);
+        }
+    });
     public IntegerR2kStruct fontId = new IntegerR2kStruct(0);
     public ArraySizeR2kInterpretable<BooleanR2kStruct> switchesSize = new ArraySizeR2kInterpretable<BooleanR2kStruct>(true);
     public ArrayR2kStruct<BooleanR2kStruct> switches = new ArrayR2kStruct<BooleanR2kStruct>(switchesSize, new ISupplier<BooleanR2kStruct>() {

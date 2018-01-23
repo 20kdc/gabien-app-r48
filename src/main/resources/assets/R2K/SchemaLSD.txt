@@ -78,7 +78,8 @@ e rpg_savesystem_screen 5 save
 @frame_count int
  If empty, defaults to game's default System.
 @system_name f_save_system_name
-@system_box_tiling int_boolean
+ If not present, defaults to that in Database.
++optP @system_box_tiling int_boolean
 @font_id rpg_system_font
 @switches subwindow arrayEIdX switch_id 1 0 boolean
 @variables subwindow arrayEIdX var_id 1 0 int
