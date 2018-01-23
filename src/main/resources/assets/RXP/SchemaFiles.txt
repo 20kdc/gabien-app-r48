@@ -115,7 +115,7 @@ C name Class.RPG::CommonEvent @id @name @trigger @switch_id | CommonEvent #A: #B
 @switch_id switch_id
 @list EventListEditor
 
-> File.CommonEvents array 0 typeChanger{ subwindow RPG::CommonEvent oRPG::CommonEvent nil 0 }
+> File.CommonEvents arrayIx1 subwindow RPG::CommonEvent
 
 : RPG::Enemy::Action
 @kind enemy_action_kind

@@ -33,9 +33,9 @@ public class CTNativeSchemaElement extends SchemaElement {
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
         RubyCT rct = new RubyCT(target.userVal);
         addField(uiSVL, TXDB.get("R"), 0, rct, path);
-        addField(uiSVL, TXDB.get("G"), 4, rct, path);
-        addField(uiSVL, TXDB.get("B"), 8, rct, path);
-        addField(uiSVL, TXDB.get("A/L"), 12, rct, path);
+        addField(uiSVL, TXDB.get("G"), 8, rct, path);
+        addField(uiSVL, TXDB.get("B"), 16, rct, path);
+        addField(uiSVL, TXDB.get("A/L"), 24, rct, path);
         uiSVL.setBounds(new Rect(0, 0, 128, UINumberBox.getRecommendedSize(FontSizes.schemaFieldTextHeight).height * 4));
         return uiSVL;
     }
@@ -68,9 +68,9 @@ public class CTNativeSchemaElement extends SchemaElement {
             target.setUser(cls, new byte[32]);
             RubyCT rct = new RubyCT(target.userVal);
             rct.innerTable.putDouble(0, 0);
-            rct.innerTable.putDouble(4, 0);
             rct.innerTable.putDouble(8, 0);
-            rct.innerTable.putDouble(12, 255);
+            rct.innerTable.putDouble(16, 0);
+            rct.innerTable.putDouble(24, 255);
             path.changeOccurred(true);
         }
     }
