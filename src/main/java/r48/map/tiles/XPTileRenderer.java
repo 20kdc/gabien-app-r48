@@ -154,8 +154,9 @@ public class XPTileRenderer implements ITileRenderer {
 
     @Override
     public int getFrame() {
-        // Need to work out acceleration for this. Going w/ 4
-        return (int) (GaBIEn.getTime() * 4);
+        // 16 / 40
+        double m = 16.0d / 40.0d;
+        return (int) (GaBIEn.getTime() / m);
     }
 
     @Override
