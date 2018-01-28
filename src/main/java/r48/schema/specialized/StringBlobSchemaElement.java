@@ -16,14 +16,13 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 import java.io.*;
-
-import static r48.schema.AggregateSchemaElement.hookButtonForPressPreserve;
 
 /**
  * Generic string blob (no compression on this one)
@@ -38,17 +37,9 @@ public class StringBlobSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 try {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     InputStream dis = getCompressionInputStream(GaBIEn.getFile(fpath));
-                    byte[] block = new byte[512];
-                    while (true) {
-                        int r = dis.read(block);
-                        if (r <= 0)
-                            break;
-                        baos.write(block, 0, r);
-                    }
+                    target.strVal = readStream(dis);
                     dis.close();
-                    target.strVal = baos.toByteArray();
                     path.changeOccurred(false);
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
@@ -56,20 +47,14 @@ public class StringBlobSchemaElement extends SchemaElement {
                 }
             }
         });
-        final Runnable importScrSaveTicker = hookButtonForPressPreserve(path, launcher, this, target, importer, "import");
+        final Runnable importScrSaveTicker = AggregateSchemaElement.hookButtonForPressPreserve(path, launcher, this, target, importer, "import");
         return new UISplitterLayout(new UITextButton(FontSizes.blobTextHeight, TXDB.get("Export/Edit"), new Runnable() {
             @Override
             public void run() {
                 try {
                     OutputStream os = GaBIEn.getOutFile(fpath);
                     InputStream dis = getDecompressionInputStream(target.strVal);
-                    byte[] block = new byte[512];
-                    while (true) {
-                        int r = dis.read(block);
-                        if (r <= 0)
-                            break;
-                        os.write(block, 0, r);
-                    }
+                    copyStream(dis, os);
                     dis.close();
                     os.close();
                     if (!GaBIEn.tryStartTextEditor(fpath))
@@ -79,13 +64,35 @@ public class StringBlobSchemaElement extends SchemaElement {
                     AppMain.launchDialog(TXDB.get("Wasn't able to export.") + "\n" + ioe);
                 }
             }
-        }), importer, false, 1, 2) {
+        }), importer, false, 0.5d) {
             @Override
             public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
                 super.updateAndRender(ox, oy, deltaTime, select, igd);
                 importScrSaveTicker.run();
             }
         };
+    }
+
+    public static byte[] readStream(InputStream dis) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] block = new byte[512];
+        while (true) {
+            int r = dis.read(block);
+            if (r <= 0)
+                break;
+            baos.write(block, 0, r);
+        }
+        return baos.toByteArray();
+    }
+
+    public static void copyStream(InputStream dis, OutputStream os) throws IOException {
+        byte[] block = new byte[512];
+        while (true) {
+            int r = dis.read(block);
+            if (r <= 0)
+                break;
+            os.write(block, 0, r);
+        }
     }
 
     protected InputStream getCompressionInputStream(InputStream file) {
