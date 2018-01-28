@@ -97,6 +97,14 @@ public class RMGenposAnim implements IGenposAnim {
     }
 
     @Override
+    public boolean acceptableForPaste(RubyIO theClipboard) {
+        if (AppMain.theClipboard.type == 'o')
+            if (AppMain.theClipboard.symVal.equals("RPG::Animation::Frame"))
+                return true;
+        return false;
+    }
+
+    @Override
     public void modifiedFrame() {
         updateNotify.run();
     }

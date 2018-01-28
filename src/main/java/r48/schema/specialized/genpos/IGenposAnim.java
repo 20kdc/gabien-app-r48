@@ -32,4 +32,6 @@ public interface IGenposAnim {
 
     // Only called once - the separation helps keep the code sane.
     IGenposFrame getFrameDisplay();
+
+    boolean acceptableForPaste(RubyIO theClipboard);
 }

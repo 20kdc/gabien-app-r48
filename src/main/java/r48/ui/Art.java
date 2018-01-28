@@ -21,25 +21,13 @@ import r48.imagefx.HueShiftImageEffect;
  * Created on 11/08/17.
  */
 public class Art {
-    public static Rect mapIcon = new Rect(0, 52, 8, 8);
-    public static Rect areaIcon = new Rect(16, 44, 8, 8);
-    public static Rect hiddenTreeIcon = new Rect(24, 36, 8, 8);
     private static IImage colourPal;
-    public static Rect r48ico = new Rect(37, 1, 31, 31);
-    public static Rect r48ver = new Rect(37, 48, 31, 16);
+    public static Rect r48ico = new Rect(33, 1, 31, 31);
+    public static Rect r48ver = new Rect(33, 48, 31, 16);
 
     // Must be -dotLineAni
     private static final int dotLineMetric = 27;
     private static final int dotLineAni = 2;
-
-    // Note that X & Y are at the top-left of the tile.
-    public static void drawTarget(int x, int y, int tileSize, IGrDriver igd) {
-        if (tileSize <= 16) {
-            igd.blitImage(16, 36, 8, 8, (x + (tileSize / 2)) - 4, (y + (tileSize / 2)) - 4, AppMain.layerTabs);
-        } else {
-            igd.blitImage(0, 36, 16, 16, (x + (tileSize / 2)) - 8, (y + (tileSize / 2)) - 8, AppMain.layerTabs);
-        }
-    }
 
     // This controls the layout of (in particular) zoom
     public static int getZIconSize() {
@@ -59,19 +47,19 @@ public class Art {
         return new Rect(zbm, zbm + ry, zbs, zbs);
     }
 
-    public static void drawZoom(IGrDriver igd, boolean b, int x, int y, int height) {
-        int m = height / 12;
-        igd.clearRect(128, 128, 128, x, y, height, height);
-        igd.clearRect(64, 64, 64, x + m, y + m, height - (m * 2), height - (m * 2));
+    public static void drawZoom(IGrDriver igd, boolean b, int x, int y, int size) {
+        int m = size / 12;
+        igd.clearRect(128, 128, 128, x, y, size, size);
+        igd.clearRect(64, 64, 64, x + m, y + m, size - (m * 2), size - (m * 2));
 
         if (b)
-            igd.clearRect(255, 255, 255, x + (height / 2) - m, y + (m * 2), m * 2, height - (m * 4));
-        igd.clearRect(255, 255, 255, x + (m * 2), y + (height / 2) - m, height - (m * 4), m * 2);
+            igd.clearRect(255, 255, 255, x + (size / 2) - m, y + (m * 2), m * 2, size - (m * 4));
+        igd.clearRect(255, 255, 255, x + (m * 2), y + (size / 2) - m, size - (m * 4), m * 2);
     }
 
-    public static void drawDragControl(IGrDriver igd, boolean select, int x, int y, int height) {
-        int m = height / 12;
-        int m2 = height / 4;
+    public static void drawDragControl(IGrDriver igd, boolean select, int x, int y, int size) {
+        int m = size / 12;
+        int m2 = size / 4;
 
         int a = 255;
         int b = 64;
@@ -80,11 +68,11 @@ public class Art {
             a = 64;
         }
 
-        igd.clearRect(128, 128, 128, x, y, height, height);
-        igd.clearRect(a, a, a, x + m, y + m, height - (m * 2), height - (m * 2));
+        igd.clearRect(128, 128, 128, x, y, size, size);
+        igd.clearRect(a, a, a, x + m, y + m, size - (m * 2), size - (m * 2));
 
-        igd.clearRect(b, b, b, x + (height / 2) - m2, y + (m * 2), m2 * 2, height - (m * 4));
-        igd.clearRect(b, b, b, x + (m * 2), y + (height / 2) - m2, height - (m * 4), m2 * 2);
+        igd.clearRect(b, b, b, x + (size / 2) - m2, y + (m * 2), m2 * 2, size - (m * 4));
+        igd.clearRect(b, b, b, x + (m * 2), y + (size / 2) - m2, size - (m * 4), m2 * 2);
     }
 
     // this works decently even on high-DPI (with a sufficient thickness)
@@ -107,34 +95,22 @@ public class Art {
         if (h <= 0)
             return;
         while (h > dotLineMetric) {
-            igd.blitImage(36, f, 1, dotLineMetric, x, y, AppMain.layerTabs);
+            igd.blitImage(32, f, 1, dotLineMetric, x, y, AppMain.layerTabs);
             y += dotLineMetric;
             h -= dotLineMetric;
         }
-        igd.blitImage(36, f, 1, h, x, y, AppMain.layerTabs);
+        igd.blitImage(32, f, 1, h, x, y, AppMain.layerTabs);
     }
 
     private static void drawDotLineH(int x, int y, int w, int f, IGrDriver igd) {
         if (w <= 0)
             return;
         while (w > dotLineMetric) {
-            igd.blitImage(36 + f, 0, dotLineMetric, 1, x, y, AppMain.layerTabs);
+            igd.blitImage(32 + f, 0, dotLineMetric, 1, x, y, AppMain.layerTabs);
             x += dotLineMetric;
             w -= dotLineMetric;
         }
-        igd.blitImage(36 + f, 0, w, 1, x, y, AppMain.layerTabs);
-    }
-
-
-    // sprite is only used for width/height.
-    // It's assumed the output goes to a scaling blit function.
-    public static Rect reconcile(Rect display, Rect sprite) {
-        int sca = display.width / sprite.width;
-        int scb = display.height / sprite.height;
-        int sc = Math.min(sca, scb);
-        if (sc == 0)
-            sc = 1;
-        return new Rect(display.x + (display.width / 2) - ((sc * sprite.width) / 2), display.y + (display.height / 2) - ((sc * sprite.height) / 2), sc * sprite.width, sc * sprite.height);
+        igd.blitImage(32 + f, 0, w, 1, x, y, AppMain.layerTabs);
     }
 
     private static IImage genColourPal() {
@@ -178,5 +154,64 @@ public class Art {
         igd.clearRect(128, 128, 128, x, y, size, frameHeight);
         igd.clearRect(32, 32, 32, x + tMargin, y + tMargin, size - (tMargin * 2), frameHeight - (tMargin * 2));
         igd.clearRect(96, 96, 96, x, y + frameHeight, size, size - frameHeight);
+    }
+
+    // For ID reference, ignore the left 20px of symbolic.png, and look at the 16x16-sprite grid.
+    public static void drawSymbol(IGrDriver igd, Symbol symbol, int x, int y, int size, boolean force) {
+        // NOTE: Symbols are drawn at one of the following sizes:
+        // 4px
+        // 8px
+        // 16px
+        // 16px * X
+        // Symbols do NOT get scaled to non-integer sizes, unless size < 4 or force.
+        if (size <= 4) {
+            drawSymbol4px(igd, symbol.ordinal(), x, y, size);
+        } else if (size < 8) {
+            int m = (size - 4) / 2;
+            drawSymbol4px(igd, symbol.ordinal(), x + m, y + m, 4);
+        } else if (size < 16) {
+            int m = (size - 8) / 2;
+            if (force)
+                m = 0;
+            drawSymbol8px(igd, symbol.ordinal(), x + m, y + m, force ? size : 8);
+        } else {
+            int ms = 16 * (size / 16);
+            int m = (size - ms) / 2;
+            if (force) {
+                m = 0;
+                ms = size;
+            }
+            drawSymbol16px(igd, symbol.ordinal(), x + m, y + m, ms);
+        }
+    }
+
+    private static void drawSymbol4px(IGrDriver igd, int symbol, int x, int y, int size) {
+        igd.blitScaledImage(0, symbol * 4, 4, 4, x, y, size, size, AppMain.symbol);
+    }
+
+    private static void drawSymbol8px(IGrDriver igd, int symbol, int x, int y, int size) {
+        int page = symbol / 4;
+        symbol %= 4;
+        int subpage = symbol / 2;
+        symbol %= 2;
+        subpage += page * 2;
+        igd.blitScaledImage(4 + (symbol * 8), subpage * 8, 8, 8, x, y, size, size, AppMain.symbol);
+    }
+
+    private static void drawSymbol16px(IGrDriver igd, int symbol, int x, int y, int size) {
+        int page = symbol / 4;
+        symbol %= 4;
+        igd.blitScaledImage(20 + (symbol * 16), page * 16, 16, 16, x, y, size, size, AppMain.symbol);
+    }
+
+    // Basically a "compatibility" function. Tries to draw an appropriate event-point image given a tile size and a top-left position.
+    public static void drawTarget(int px, int py, int tileSize, IGrDriver igd) {
+        Art.drawSymbol(igd, Art.Symbol.Target, px + (tileSize / 4), py + (tileSize / 4), tileSize / 2, false);
+    }
+
+    public enum Symbol {
+        Map, BarV, BarVBranchR, BarCornerUR,
+        Target, Area, Expandable, Play,
+        Loop, Close, Div3, Div2
     }
 }

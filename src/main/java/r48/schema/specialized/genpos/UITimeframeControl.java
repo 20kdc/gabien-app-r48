@@ -83,12 +83,10 @@ public class UITimeframeControl extends UIPanel {
         toolbar = new UIAppendButton("P", toolbar, new Runnable() {
             @Override
             public void run() {
-                if (AppMain.theClipboard.type == 'o') {
-                    if (AppMain.theClipboard.symVal.equals("RPG::Animation::Frame")) {
-                        rootPanel.target.getFrame().setDeepClone(AppMain.theClipboard);
-                        rootPanel.target.modifiedFrame();
-                        rootPanel.frameChanged();
-                    }
+                if (rootPanel.target.acceptableForPaste(AppMain.theClipboard)) {
+                    rootPanel.target.getFrame().setDeepClone(AppMain.theClipboard);
+                    rootPanel.target.modifiedFrame();
+                    rootPanel.frameChanged();
                 }
             }
         }, FontSizes.rmaTimeframeTextHeight);

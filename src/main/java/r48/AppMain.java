@@ -99,7 +99,7 @@ public class AppMain {
                     new UIWindowView.IWVWindowIcon() {
                         @Override
                         public void draw(IGrDriver igd, int x, int y, int size) {
-                            igd.clearRect(128, 64, 64, x, y, size, size);
+                            Art.drawSymbol(igd, Art.Symbol.Close, x, y, size, false);
                             if (uiElement instanceof IWindowElement)
                                 if (((IWindowElement) uiElement).wantsSelfClose()) {
                                     rootView.removeByUIE(uiElement);
@@ -155,6 +155,7 @@ public class AppMain {
     // Images
     public static IImage layerTabs = GaBIEn.getImageCK("layertab.png", 0, 0, 0);
     public static IImage noMap = GaBIEn.getImageCK("nomad.png", 0, 0, 0);
+    public static IImage symbol = GaBIEn.getImageCK("symbolic.png", 0, 0, 0);
     public static ImageFXCache imageFXCache = null;
 
     // All active schema hosts

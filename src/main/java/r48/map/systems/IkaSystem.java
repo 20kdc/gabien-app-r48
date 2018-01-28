@@ -50,7 +50,7 @@ public class IkaSystem extends MapSystem {
             if (AppMain.objectDB.getObject(gum, null) == null)
                 return null;
         final RubyIO map = AppMain.objectDB.getObject(gum);
-        final IEventAccess events = new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 0, "RPG::Event");
+        final IEventAccess events = new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 0, "IkachanEvent");
         return new MapViewDetails(gum, "IkachanMap", new ISupplier<MapViewState>() {
             @Override
             public MapViewState get() {

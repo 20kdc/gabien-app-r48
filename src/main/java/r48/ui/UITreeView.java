@@ -12,7 +12,6 @@ import gabien.ui.IConsumer;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UIPanel;
-import r48.AppMain;
 
 import java.util.HashSet;
 
@@ -25,6 +24,7 @@ public class UITreeView extends UIPanel {
     private int nodeWidth = 8;
     private int dragBaseX = 0, dragBaseY = 0;
     private boolean dragCursorEnable = false;
+    private Art.Symbol dragCursorSymbol = null;
     private int dragBase = -1;
 
     public UITreeView() {
@@ -79,12 +79,6 @@ public class UITreeView extends UIPanel {
     public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
         super.updateAndRender(ox, oy, deltaTime, select, igd);
 
-        int size = 4;
-        int base = 32;
-        if (nodeWidth >= 8) {
-            size = 8;
-            base = 52;
-        }
         int y = 0;
         HashSet<Integer> continuingLines = new HashSet<Integer>();
         for (int i = 0; i < elements.length; i++) {
@@ -92,7 +86,7 @@ public class UITreeView extends UIPanel {
             if (!te.visible)
                 continue;
 
-            int pico = 2;
+            Art.Symbol pico = Art.Symbol.BarVBranchR;
             boolean lastInSect = true;
             for (int j = i + 1; j < elements.length; j++) {
                 if (elements[j].indent == te.indent) {
@@ -103,33 +97,29 @@ public class UITreeView extends UIPanel {
                     break;
             }
             if (lastInSect) {
-                pico = 3;
+                pico = Art.Symbol.BarCornerUR;
                 continuingLines.remove(te.indent - 1);
             } else {
                 continuingLines.add(te.indent - 1);
             }
 
+            int totalSize = Math.max(te.h, nodeWidth);
             for (int j = 0; j < te.indent; j++) {
                 if (j == (te.indent - 1)) {
-                    igd.blitScaledImage(pico * size, base, size, size, ox + (j * nodeWidth), oy + y, nodeWidth, te.h, AppMain.layerTabs);
+                    Art.drawSymbol(igd, pico, ox + (j * nodeWidth), oy + y, totalSize, true);
                 } else {
                     if (continuingLines.contains(j))
-                        igd.blitScaledImage(size, base, size, size, ox + (j * nodeWidth), oy + y, nodeWidth, te.h, AppMain.layerTabs);
+                        Art.drawSymbol(igd, Art.Symbol.BarV, ox + (j * nodeWidth), oy + y, totalSize, true);
                 }
             }
             // the actual item icon
-            Rect iconDisplay = Art.reconcile(new Rect(ox + (te.indent * nodeWidth), oy + y, nodeWidth, te.h), te.icon);
-            if (te.hasChildren && (!te.expanded)) {
-                Rect ico = Art.hiddenTreeIcon;
-                igd.blitScaledImage(ico.x, ico.y, ico.width, ico.height, iconDisplay.x, iconDisplay.y, iconDisplay.width, iconDisplay.height, AppMain.layerTabs);
-            }
-            igd.blitScaledImage(te.icon.x, te.icon.y, te.icon.width, te.icon.height, iconDisplay.x, iconDisplay.y, iconDisplay.width, iconDisplay.height, AppMain.layerTabs);
+            if (te.hasChildren && (!te.expanded))
+                Art.drawSymbol(igd, Art.Symbol.Expandable, ox + (te.indent * nodeWidth), oy + y, te.h, true);
+            Art.drawSymbol(igd, te.icon, ox + (te.indent * nodeWidth), oy + y, te.h, true);
             y += te.h;
         }
-        if (dragCursorEnable) {
-            int dcs = size * 3;
-            igd.blitScaledImage(0, base, size, size, igd.getMouseX() - (dcs / 2), igd.getMouseY() - (dcs / 2), dcs, dcs, AppMain.layerTabs);
-        }
+        if (dragCursorEnable)
+            Art.drawSymbol(igd, dragCursorSymbol, igd.getMouseX() - (nodeWidth / 2), igd.getMouseY() - (nodeWidth / 2), nodeWidth, false);
     }
 
     @Override
@@ -149,8 +139,10 @@ public class UITreeView extends UIPanel {
         if (dragBase != -1) {
             int ddx = Math.abs(dragBaseX - x);
             int ddy = Math.abs(dragBaseY - y);
-            if (Math.max(ddx, ddy) > (elements[dragBase].h / 2))
+            if (Math.max(ddx, ddy) > (elements[dragBase].h / 2)) {
                 dragCursorEnable = true;
+                dragCursorSymbol = elements[dragBase].icon;
+            }
         }
     }
 
@@ -193,12 +185,12 @@ public class UITreeView extends UIPanel {
 
         public final boolean expanded;
         public final int indent;
-        public final Rect icon;
+        public final Art.Symbol icon;
         public final UIElement innerElement;
         public final IConsumer<Integer> elementDraggedHere;
         public final Runnable expandToggle;
 
-        public TreeElement(int i, Rect ico, UIElement pineapple, IConsumer<Integer> o, boolean expand, Runnable ext) {
+        public TreeElement(int i, Art.Symbol ico, UIElement pineapple, IConsumer<Integer> o, boolean expand, Runnable ext) {
             indent = i;
             icon = ico;
             innerElement = pineapple;
