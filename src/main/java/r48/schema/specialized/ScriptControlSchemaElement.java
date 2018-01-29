@@ -26,6 +26,7 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.zip.DeflaterInputStream;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
 /**
@@ -175,10 +176,11 @@ public class ScriptControlSchemaElement extends SchemaElement {
         InputStream inp = GaBIEn.getFile(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts/" + s + ".rb"));
         if (inp == null)
             return null;
-        DeflaterInputStream def = new DeflaterInputStream(inp);
-        byte[] b = StringBlobSchemaElement.readStream(def);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DeflaterOutputStream def = new DeflaterOutputStream(baos);
+        StringBlobSchemaElement.copyStream(inp, def);
         def.close();
-        return b;
+        return baos.toByteArray();
     }
 
     @Override
