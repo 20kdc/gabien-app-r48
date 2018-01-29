@@ -13,6 +13,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
 import java.util.LinkedList;
@@ -87,7 +88,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                         containerRCL();
                                     }
                                 }, FontSizes.schemaButtonTextHeight);
-                                uie = new UIAppendButton(TXDB.get("Cp."), uie, new Runnable() {
+                                uie = new UIAppendButton(Art.Symbol.CopyGroup, uie, new Runnable() {
                                     @Override
                                     public void run() {
                                         // the clipboard is very lenient...
@@ -185,7 +186,7 @@ public class StandardArrayInterface implements IArrayInterface {
                     return;
                 UIElement uie = new UITextButton(FontSizes.schemaArrayAddTextHeight, FormatSyntax.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setString(text, true)), runnable);
                 if (runnable2 != null)
-                    uie = new UIAppendButton(TXDB.get("Ps."), uie, runnable2, FontSizes.schemaButtonTextHeight);
+                    uie = new UIAppendButton(Art.Symbol.PasteGroup, uie, runnable2, FontSizes.schemaButtonTextHeight);
                 uiSVL.panels.add(uie);
             }
         };

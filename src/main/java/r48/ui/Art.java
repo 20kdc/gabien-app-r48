@@ -212,6 +212,8 @@ public class Art {
     public enum Symbol {
         Map, BarV, BarVBranchR, BarCornerUR,
         Target, Area, Expandable, Play,
-        Loop, Close, Div3, Div2
+        Loop, Close, Div3, Div2,
+        Save, Copy, Paste, CloneFrame,
+        Inspect, Back, CopyGroup, PasteGroup
     }
 }

@@ -61,7 +61,7 @@ public class FontSizes {
     public static int atSubtoolTextHeight = 8;
 
     // TXDB.get("rmaTimeframeTextHeight")
-    public static int rmaTimeframeTextHeight = 8;
+    public static int rmaTimeframeTextHeight = 16;
     // TXDB.get("rmaCellTextHeight")
     public static int rmaCellTextHeight = 16;
 
