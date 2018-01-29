@@ -152,7 +152,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
             scr.arrVal[0] = new RubyIO().setFX(0);
             scr.arrVal[1] = new RubyIO().setString(s, false);
             scr.arrVal[2] = new RubyIO();
-            scr.arrVal[2].type = '[';
+            scr.arrVal[2].type = '"';
             DeflaterInputStream def = new DeflaterInputStream(new ByteArrayInputStream(new byte[0]));
             scr.arrVal[2].strVal = StringBlobSchemaElement.readStream(def);
             def.close();
