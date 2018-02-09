@@ -231,23 +231,23 @@ public class LcfTileRenderer implements ITileRenderer {
                     new UITileGrid(mv, 0, 1000, 0, null, "W1M", sc),
                     new UITileGrid(mv, 1000, 1000, 0, null, "W2M", sc),
                     new UITileGrid(mv, 2000, 1000, 0, null, "W3M", sc),
-                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER<DNU>", sc),
+                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER<X>", sc),
             };
         } else {
             return new UITileGrid[] {
                     new UITileGrid(mv, 10000, 144, 0, null, "UPPER", sc),
 
-                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF<DNU>", sc),
+                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF<X>", sc),
 
-                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER<DNU>", sc),
+                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER<X>", sc),
 
-                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI<DNU>", sc),
+                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI<X>", sc),
 
-                    new UITileGrid(mv, 0, 1000, 0, null, "W1M<DNU>", sc),
-                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M<DNU>", sc),
-                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M<DNU>", sc),
+                    new UITileGrid(mv, 0, 1000, 0, null, "W1M<X>", sc),
+                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M<X>", sc),
+                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M<X>", sc),
 
-                    new UITileGrid(mv, 4000, 600, 0, null, "TEM<DNU>", sc),
+                    new UITileGrid(mv, 4000, 600, 0, null, "TEM<X>", sc),
             };
         }
     }
