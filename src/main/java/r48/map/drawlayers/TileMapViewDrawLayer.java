@@ -40,17 +40,23 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
         return true;
     }
 
+    public boolean shouldDrawRow(int y, int layer) {
+        return true;
+    }
+
     @Override
     public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
-        for (int i = camTX; i < camTR; i++) {
-            if (i < 0)
+        for (int j = camTY; j < camTB; j++) {
+            if (j < 0)
                 continue;
-            if (i >= targetTable.width)
+            if (j >= targetTable.height)
                 continue;
-            for (int j = camTY; j < camTB; j++) {
-                if (j < 0)
+            if (!shouldDrawRow(j, currentLayer))
+                continue;
+            for (int i = camTX; i < camTR; i++) {
+                if (i < 0)
                     continue;
-                if (j >= targetTable.height)
+                if (i >= targetTable.width)
                     continue;
                 int px = i * eTileSize;
                 int py = j * eTileSize;

@@ -120,6 +120,7 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
         });
     }
 
+    // MKXP bounds between 0 and 5, this is used for optimisation but is otherwise not relied upon by this code.
     private int getTIDPriority(short tid) {
         RubyTable rts = tiles.priorities;
         if (rts == null)
@@ -183,6 +184,11 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
         public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
             int x = (int) evI.getInstVarBySymbol("@x").fixnumVal;
             int y = (int) evI.getInstVarBySymbol("@y").fixnumVal;
+            // Events vary in size - to stop the most obvious glitching, add some margin.
+            camTX -= 2;
+            camTY -= 2;
+            camTR += 2;
+            camTB += 2;
             if (x < camTX)
                 return;
             if (y < camTY)
@@ -211,6 +217,16 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
         @Override
         public long getZ() {
             return (pIndex + 1) * 2;
+        }
+
+        @Override
+        public boolean shouldDrawRow(int y, int layer) {
+            // Optimisation to counteract the large amount of layers created by this.
+            if (pIndex < y)
+                return false;
+            if (pIndex > (y + 5))
+                return false;
+            return true;
         }
 
         @Override
