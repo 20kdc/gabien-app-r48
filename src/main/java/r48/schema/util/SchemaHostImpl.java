@@ -16,6 +16,7 @@ import r48.UITest;
 import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
+import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
 import java.util.HashMap;
@@ -33,20 +34,20 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     private final UIMapView contextView;
 
     public UILabel pathLabel = new UILabel("", FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarP = new UIAppendButton(TXDB.get(".."), pathLabel, new Runnable() {
+    public UIAppendButton toolbarP = new UIAppendButton(Art.Symbol.Back, pathLabel, new Runnable() {
         @Override
         public void run() {
             if (innerElem.parent != null)
                 switchObject(innerElem.findBack());
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarCp = new UIAppendButton(TXDB.get("Cp."), toolbarP, new Runnable() {
+    public UIAppendButton toolbarCp = new UIAppendButton(Art.Symbol.Copy, toolbarP, new Runnable() {
         @Override
         public void run() {
             AppMain.theClipboard = new RubyIO().setDeepClone(innerElem.targetElement);
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarPs = new UIAppendButton(TXDB.get("Ps."), toolbarCp, new Runnable() {
+    public UIAppendButton toolbarPs = new UIAppendButton(Art.Symbol.Paste, toolbarCp, new Runnable() {
         @Override
         public void run() {
             if (AppMain.theClipboard == null) {
@@ -64,7 +65,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
             }
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarS = new UIAppendButton(TXDB.get("Save"), toolbarPs, new Runnable() {
+    public UIAppendButton toolbarS = new UIAppendButton(Art.Symbol.Save, toolbarPs, new Runnable() {
         @Override
         public void run() {
             SchemaPath root = innerElem.findRoot();
@@ -73,13 +74,13 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
             AppMain.objectDB.ensureSaved(root.hrIndex, root.lastArrayIndex);
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarI = new UIAppendButton(TXDB.get("I"), toolbarS, new Runnable() {
+    public UIAppendButton toolbarI = new UIAppendButton(Art.Symbol.Inspect, toolbarS, new Runnable() {
         @Override
         public void run() {
             hostWindows.accept(new UITest(innerElem.targetElement));
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarC = new UIAppendButton(TXDB.get("C"), toolbarI, new Runnable() {
+    public UIAppendButton toolbarC = new UIAppendButton(Art.Symbol.CloneFrame, toolbarI, new Runnable() {
         @Override
         public void run() {
             if (innerElem.hasTempDialog()) {

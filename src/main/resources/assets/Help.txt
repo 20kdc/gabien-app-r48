@@ -494,7 +494,7 @@ i HelpImg/3.2003save.png
 .
 . You are using the following version of R48:
 p 4
-I layertab.png 37 48 31 16
+I layertab.png 33 48 31 16
 p 4
 . "Merry Holidays Edition"
 .

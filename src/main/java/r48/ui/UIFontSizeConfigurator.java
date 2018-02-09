@@ -94,7 +94,8 @@ public class UIFontSizeConfigurator extends UIPanel {
             public void run() {
             }
         }, FontSizes.fontSizerTextHeight);
-        fontButtonAppend.button.togglable().state = UILabel.fontOverrideUE8;
+        fontButtonAppend.button.toggle = true;
+        fontButtonAppend.button.state = UILabel.fontOverrideUE8;
         fontButtonAppend.button.onClick = new Runnable() {
             @Override
             public void run() {

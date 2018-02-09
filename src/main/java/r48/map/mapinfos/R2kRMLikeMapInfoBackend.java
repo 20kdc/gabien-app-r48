@@ -8,7 +8,6 @@
 package r48.map.mapinfos;
 
 import gabien.ui.IConsumer;
-import gabien.ui.Rect;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.util.SchemaPath;
@@ -150,9 +149,9 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     }
 
     @Override
-    public Rect getIconForMap(int k) {
+    public Art.Symbol getIconForMap(int k) {
         final RubyIO map = getHashBID(k);
-        return map.getInstVarBySymbol("@type").fixnumVal == 2 ? Art.areaIcon : Art.mapIcon;
+        return map.getInstVarBySymbol("@type").fixnumVal == 2 ? Art.Symbol.Area : Art.Symbol.Map;
     }
 
     @Override

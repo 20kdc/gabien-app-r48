@@ -13,6 +13,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
 /**
@@ -28,36 +29,40 @@ public class UITimeframeControl extends UIPanel {
 
     public UILabel currentFrame = new UILabel(TXDB.get("Loading..."), FontSizes.rmaTimeframeTextHeight);
 
-    public UIAppendButton playController = new UIAppendButton(TXDB.get("Play"), currentFrame, new Runnable() {
+    public UIAppendButton playController = new UIAppendButton(Art.Symbol.Play, currentFrame, new Runnable() {
         @Override
         public void run() {
         }
     }, FontSizes.rmaTimeframeTextHeight);
-    public UITextButton playControllerButton = playController.button.togglable();
-    public UIAppendButton loopController = new UIAppendButton(TXDB.get("Loop"), playController, new Runnable() {
+    public UIButton playControllerButton = playController.button;
+    public UIAppendButton loopController = new UIAppendButton(Art.Symbol.Loop, playController, new Runnable() {
         @Override
         public void run() {
         }
     }, FontSizes.rmaTimeframeTextHeight);
-    public UITextButton loopControllerButton = loopController.button.togglable();
-    public UIAppendButton hsController = new UIAppendButton(TXDB.get("HS"), loopController, new Runnable() {
+    public UIButton loopControllerButton = loopController.button;
+    public UIAppendButton hsController = new UIAppendButton(Art.Symbol.Div2, loopController, new Runnable() {
         @Override
         public void run() {
         }
     }, FontSizes.rmaTimeframeTextHeight);
-    public UITextButton hsControllerButton = hsController.button.togglable();
+    public UIButton hsControllerButton = hsController.button;
 
-    public UIAppendButton tsController = new UIAppendButton(TXDB.get("TS"), hsController, new Runnable() {
+    public UIAppendButton tsController = new UIAppendButton(Art.Symbol.Div3, hsController, new Runnable() {
         @Override
         public void run() {
         }
     }, FontSizes.rmaTimeframeTextHeight);
-    public UITextButton tsControllerButton = tsController.button.togglable();
+    public UIButton tsControllerButton = tsController.button;
 
     // The rest of the toolbar is constructed in the constructor
     public UIElement toolbar = tsController;
 
     public UITimeframeControl(GenposAnimRootPanel rp, int framerate) {
+        playControllerButton.toggle = true;
+        loopControllerButton.toggle = true;
+        hsControllerButton.toggle = true;
+        tsControllerButton.toggle = true;
         rootPanel = rp;
         recommendedFramerate = framerate;
         toolbar = new UIAppendButton("<", toolbar, new Runnable() {
@@ -74,21 +79,19 @@ public class UITimeframeControl extends UIPanel {
                 rootPanel.frameChanged();
             }
         }, FontSizes.rmaTimeframeTextHeight);
-        toolbar = new UIAppendButton("C", toolbar, new Runnable() {
+        toolbar = new UIAppendButton(Art.Symbol.Copy, toolbar, new Runnable() {
             @Override
             public void run() {
                 AppMain.theClipboard = new RubyIO().setDeepClone(rootPanel.target.getFrame());
             }
         }, FontSizes.rmaTimeframeTextHeight);
-        toolbar = new UIAppendButton("P", toolbar, new Runnable() {
+        toolbar = new UIAppendButton(Art.Symbol.Paste, toolbar, new Runnable() {
             @Override
             public void run() {
-                if (AppMain.theClipboard.type == 'o') {
-                    if (AppMain.theClipboard.symVal.equals("RPG::Animation::Frame")) {
-                        rootPanel.target.getFrame().setDeepClone(AppMain.theClipboard);
-                        rootPanel.target.modifiedFrame();
-                        rootPanel.frameChanged();
-                    }
+                if (rootPanel.target.acceptableForPaste(AppMain.theClipboard)) {
+                    rootPanel.target.getFrame().setDeepClone(AppMain.theClipboard);
+                    rootPanel.target.modifiedFrame();
+                    rootPanel.frameChanged();
                 }
             }
         }, FontSizes.rmaTimeframeTextHeight);

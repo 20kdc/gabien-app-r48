@@ -8,8 +8,8 @@
 package r48.map.mapinfos;
 
 import gabien.ui.IConsumer;
-import gabien.ui.Rect;
 import r48.schema.util.SchemaPath;
+import r48.ui.Art;
 
 /**
  * Attempting to bridge the gap between RXP+ and R2k's map info systems so the same UI code can be used.
@@ -51,8 +51,8 @@ public interface IRMLikeMapInfoBackendWPub extends IRMLikeMapInfoBackend {
     // A modification was completed, trigger modification handlers
     void complete();
 
-    // Gets an icon from Art for treeview
-    Rect getIconForMap(int k);
+    // Gets a symbol index for treeview
+    Art.Symbol getIconForMap(int k);
 
     // Translates a map entry to a GUM.
     // Returning null is fine, and will return the user to the No Map Selected display.
