@@ -8,6 +8,7 @@
 package r48.schema.specialized;
 
 import gabien.ui.UIElement;
+import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.PathSyntax;
 import r48.dbs.TSDB;
@@ -33,7 +34,7 @@ public class EventTileReplacerSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        final UITileGrid r = new UITileGrid(launcher.getContextRenderer(), layer, 0, displayMap.mapping.length, 0, displayMap.mapping, "This text can't be seen.");
+        final UITileGrid r = new UITileGrid(launcher.getContextRenderer(), layer, 0, displayMap.mapping.length, 0, displayMap.mapping, "This text can't be seen.", FontSizes.getSpriteScale());
         if (PathSyntax.parse(target, charName).strVal.length == 0)
             r.setSelected((int) PathSyntax.parse(target, charIdx).fixnumVal);
         r.onSelectionChange = new Runnable() {

@@ -41,8 +41,8 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     public UIMTAutotile(IMapToolContext mv, UIMTAutotile last) {
         super(mv, false);
         map = mv.getMapView();
-        setupView();
-        setBounds(new Rect(0, 0, (map.tileSize * FontSizes.getSpriteScale() * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) + FontSizes.gridScrollersize, 200));
+        int scale = setupView();
+        setBounds(new Rect(0, 0, (map.tileSize * scale * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) + FontSizes.gridScrollersize, 200));
         if (last != null) {
             // Attempt to transfer state.
             UITileGrid lTM = last.tileMaps[last.tabPane.getTabIndex()];
@@ -56,8 +56,16 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         }
     }
 
-    private void setupView() {
-        tileMaps = map.mapTable.renderer.tileRenderer.createATUIPlanes(map);
+    private int setupView() {
+        // Logic here:
+        // UIMTAutotile's tools really don't work well as symbols, so that's been abandoned,
+        //  but the current text squeeze is bad.
+        // The solution is to go for the core problem, which is the contents being too small for the UI.
+        // The maths are chosen such that 8x32 is sufficient, but anything below that gets a boost.
+        int resultScale = FontSizes.getSpriteScale();
+        if ((map.tileSize * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) < 256)
+            resultScale *= 2;
+        tileMaps = map.mapTable.renderer.tileRenderer.createATUIPlanes(map, resultScale);
         tabPane = new UITabPane(FontSizes.tilesTabTextHeight, false, false);
         for (UIElement uie : tileMaps)
             tabPane.addTab(new UIWindowView.WVWindow(uie, new UIWindowView.IWVWindowIcon[] {}));
@@ -107,6 +115,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         subtoolBar = uab;
 
         changeInner(new UINSVertLayout(subtoolBar, tabPane));
+        return resultScale;
     }
 
     // -- Tool stuff --

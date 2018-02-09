@@ -21,11 +21,15 @@ public class UISymbolButton extends UIButton {
     public UISymbolButton(int fontSize, Art.Symbol symbolIndex, Runnable runnable) {
         int margin = fontSize / 8;
         symbol = symbolIndex;
-        // See rationale in gabien-core classes.
-        setBounds(new Rect(0, 0, fontSize + (margin * 2), fontSize + margin));
+        // See rationale in gabien-core classes. Note, though, that the width is smaller.
+        setBounds(new Rect(0, 0, fontSize + margin, fontSize + margin));
         onClick = runnable;
     }
 
+    public UISymbolButton togglable() {
+        toggle = true;
+        return this;
+    }
 
     @Override
     public void updateAndRender(int ox, int oy, double DeltaTime, boolean selected, IGrInDriver igd) {
@@ -34,7 +38,7 @@ public class UISymbolButton extends UIButton {
         ox += po;
         oy += po;
         if (state)
-            oy += po * 3;
+            oy += po;
         Art.drawSymbol(igd, symbol, ox, oy, getBounds().height - (po * 2), false);
     }
 }

@@ -99,7 +99,7 @@ public class AppMain {
                     new UIWindowView.IWVWindowIcon() {
                         @Override
                         public void draw(IGrDriver igd, int x, int y, int size) {
-                            Art.drawSymbol(igd, Art.Symbol.Close, x, y, size, false);
+                            Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false);
                             if (uiElement instanceof IWindowElement)
                                 if (((IWindowElement) uiElement).wantsSelfClose()) {
                                     rootView.removeByUIE(uiElement);

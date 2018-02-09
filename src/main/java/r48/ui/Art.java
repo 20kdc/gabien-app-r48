@@ -210,10 +210,15 @@ public class Art {
     }
 
     public enum Symbol {
+        // NOTE! If you can't tell the difference in grayscale, it's too alike.
         Map, BarV, BarVBranchR, BarCornerUR,
         Target, Area, Expandable, Play,
-        Loop, Close, Div3, Div2,
+        Loop, XRed, Div3, Div2,
         Save, Copy, Paste, CloneFrame,
-        Inspect, Back, CopyGroup, PasteGroup
+        // CopyGroup/PasteGroup have multiple items, while Copy/Paste show blank boxes/paper.
+        Inspect, Back, CopyGroup, PasteGroup,
+        // "Rectangle" is white & dashed, area is solid-skyblue,
+        //  XWhite is white and smaller than XRed.
+        Rectangle, AlsoUnused, XWhite, Unused
     }
 }

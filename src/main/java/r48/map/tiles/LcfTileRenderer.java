@@ -211,7 +211,7 @@ public class LcfTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public UITileGrid[] createATUIPlanes(UIMapView mv) {
+    public UITileGrid[] createATUIPlanes(UIMapView mv, int sc) {
         int[] genLcfATs = new int[80];
         for (int i = 0; i < 60; i++)
             genLcfATs[i] = i * 50;
@@ -221,34 +221,33 @@ public class LcfTileRenderer implements ITileRenderer {
         // on L1, upper layer tiles take priority
         if (mv.currentLayer == 0) {
             return new UITileGrid[] {
-                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF"),
+                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF", sc),
 
-                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER"),
+                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER", sc),
 
-                    new UITileGrid(mv, 0, 1000, 0, null, "W1M"),
-                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M"),
-                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M"),
+                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI", sc),
 
-                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI"),
-
-                    new UITileGrid(mv, 4000, 600, 0, null, "TEM"),
-                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER<DNU>"),
+                    new UITileGrid(mv, 4000, 600, 0, null, "TEM", sc),
+                    new UITileGrid(mv, 0, 1000, 0, null, "W1M", sc),
+                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M", sc),
+                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M", sc),
+                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER<DNU>", sc),
             };
         } else {
             return new UITileGrid[] {
-                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER"),
+                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER", sc),
 
-                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF<DNU>"),
+                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF<DNU>", sc),
 
-                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER<DNU>"),
+                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER<DNU>", sc),
 
-                    new UITileGrid(mv, 0, 1000, 0, null, "W1M<DNU>"),
-                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M<DNU>"),
-                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M<DNU>"),
+                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI<DNU>", sc),
 
-                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI<DNU>"),
+                    new UITileGrid(mv, 0, 1000, 0, null, "W1M<DNU>", sc),
+                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M<DNU>", sc),
+                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M<DNU>", sc),
 
-                    new UITileGrid(mv, 4000, 600, 0, null, "TEM<DNU>"),
+                    new UITileGrid(mv, 4000, 600, 0, null, "TEM<DNU>", sc),
             };
         }
     }

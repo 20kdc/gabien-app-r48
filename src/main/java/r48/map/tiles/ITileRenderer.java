@@ -28,7 +28,9 @@ public interface ITileRenderer {
     //  since the offscreen buffer had to be used anyway for *other* efficiency reasons.
     void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale);
 
-    UITileGrid[] createATUIPlanes(UIMapView mv);
+    // NOTE: The reason sprScale is supplied here is so the tiling tool's width can be increased 'naturally'.
+    //       See UIMTAutotile for details.
+    UITileGrid[] createATUIPlanes(UIMapView mv, int sprScale);
 
     AutoTileTypeField[] indicateATs();
 

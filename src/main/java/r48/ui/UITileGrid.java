@@ -20,7 +20,7 @@ import r48.map.tiles.AutoTileTypeField;
  */
 public class UITileGrid extends UIGrid {
     public final int tileStart, layer;
-    public final int spriteScale = FontSizes.getSpriteScale();
+    public final int spriteScale;
     public final StuffRenderer renderer;
 
     // If 0, not an AT Group. Otherwise, this is the size of the AT group.
@@ -29,13 +29,14 @@ public class UITileGrid extends UIGrid {
 
     private final String toStringRes;
 
-    public UITileGrid(UIMapView mv, int tStart, int tileCount, int aTile, int[] remap, String tiles) {
-        this(mv.mapTable.renderer, mv.currentLayer, tStart, tileCount, aTile, remap, tiles);
+    public UITileGrid(UIMapView mv, int tStart, int tileCount, int aTile, int[] remap, String tiles, int sprScale) {
+        this(mv.mapTable.renderer, mv.currentLayer, tStart, tileCount, aTile, remap, tiles, sprScale);
     }
 
-    public UITileGrid(StuffRenderer sr, int l, int tStart, int tileCount, int aTile, int[] remap, String tiles) {
-        super(sr.tileRenderer.getTileSize() * FontSizes.getSpriteScale(), sr.tileRenderer.getTileSize() * FontSizes.getSpriteScale(), tileCount);
-        toStringRes = tiles;
+    public UITileGrid(StuffRenderer sr, int l, int tStart, int tileCount, int aTile, int[] remap, String tiles, int sprScale) {
+        super(sr.tileRenderer.getTileSize() * sprScale, sr.tileRenderer.getTileSize() * sprScale, tileCount);
+        // Padding for readability. As this padding is on the left, it's last to get removed.
+        toStringRes = " " + tiles;
         canMultiSelect = aTile == 0;
         renderer = sr;
         layer = l;
@@ -44,6 +45,7 @@ public class UITileGrid extends UIGrid {
         bkgB = 255;
         atGroup = aTile;
         viewMap = remap;
+        spriteScale = sprScale;
     }
 
     @Override
@@ -99,7 +101,7 @@ public class UITileGrid extends UIGrid {
             }
             t += def;
         }
-        renderer.tileRenderer.drawTile(layer, (short) t, x, y, igd, FontSizes.getSpriteScale());
+        renderer.tileRenderer.drawTile(layer, (short) t, x, y, igd, spriteScale);
     }
 
     public boolean compatibleWith(UITileGrid lTM) {
