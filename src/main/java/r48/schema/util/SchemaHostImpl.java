@@ -41,13 +41,13 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
                 switchObject(innerElem.findBack());
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarCp = new UIAppendButton(Art.Symbol.Copy, toolbarP, new Runnable() {
+    public UIAppendButton toolbarCp = new UIAppendButton(TXDB.get("Copy"), toolbarP, new Runnable() {
         @Override
         public void run() {
             AppMain.theClipboard = new RubyIO().setDeepClone(innerElem.targetElement);
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarPs = new UIAppendButton(Art.Symbol.Paste, toolbarCp, new Runnable() {
+    public UIAppendButton toolbarPs = new UIAppendButton(TXDB.get("Paste"), toolbarCp, new Runnable() {
         @Override
         public void run() {
             if (AppMain.theClipboard == null) {
@@ -65,7 +65,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
             }
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarS = new UIAppendButton(Art.Symbol.Save, toolbarPs, new Runnable() {
+    public UIAppendButton toolbarS = new UIAppendButton(TXDB.get("Save"), toolbarPs, new Runnable() {
         @Override
         public void run() {
             SchemaPath root = innerElem.findRoot();

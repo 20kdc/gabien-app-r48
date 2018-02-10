@@ -79,13 +79,13 @@ public class UITimeframeControl extends UIPanel {
                 rootPanel.frameChanged();
             }
         }, FontSizes.rmaTimeframeTextHeight);
-        toolbar = new UIAppendButton(Art.Symbol.Copy, toolbar, new Runnable() {
+        toolbar = new UIAppendButton(TXDB.get("Copy"), toolbar, new Runnable() {
             @Override
             public void run() {
                 AppMain.theClipboard = new RubyIO().setDeepClone(rootPanel.target.getFrame());
             }
         }, FontSizes.rmaTimeframeTextHeight);
-        toolbar = new UIAppendButton(Art.Symbol.Paste, toolbar, new Runnable() {
+        toolbar = new UIAppendButton(TXDB.get("Paste"), toolbar, new Runnable() {
             @Override
             public void run() {
                 if (rootPanel.target.acceptableForPaste(AppMain.theClipboard)) {

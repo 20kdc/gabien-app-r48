@@ -11,6 +11,7 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.ui.Art;
 import r48.ui.UISymbolButton;
 
@@ -60,7 +61,7 @@ public class PagerArrayInterface implements IArrayInterface {
                     }));
                 }
                 final RubyIO[] copyMe = positions[i].elements;
-                barLayout.panels.add(new UISymbolButton(FontSizes.schemaButtonTextHeight, Art.Symbol.Copy, new Runnable() {
+                barLayout.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Copy"), new Runnable() {
                     @Override
                     public void run() {
                         RubyIO rio = new RubyIO();
@@ -76,7 +77,7 @@ public class PagerArrayInterface implements IArrayInterface {
                 if (i < positions.length - 1) {
                     if (positions[i + 1].execInsertCopiedArray != null) {
                         final Runnable r = positions[i + 1].execInsertCopiedArray;
-                        barLayout.panels.add(new UISymbolButton(FontSizes.schemaButtonTextHeight, Art.Symbol.Paste, new Runnable() {
+                        barLayout.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Paste"), new Runnable() {
                             @Override
                             public void run() {
                                 r.run();
