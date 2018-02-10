@@ -48,8 +48,8 @@ public class GenposAnimRootPanel extends UIPanel {
     public void setBounds(Rect r) {
         super.setBounds(r);
         int th = timeframe.getBounds().height;
-        timeframe.setBounds(new Rect(0, 0, r.width, th));
-        framePanelController.rootLayout.setBounds(new Rect(0, th, r.width, r.height - th));
+        timeframe.setBounds(new Rect(0, r.height - th, r.width, th));
+        framePanelController.rootLayout.setBounds(new Rect(0, 0, r.width, r.height - th));
     }
 
     @Override

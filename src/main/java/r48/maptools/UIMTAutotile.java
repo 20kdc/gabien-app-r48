@@ -46,10 +46,8 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         // If so, give it as much extra space as possible without messing with the tile-count-width.
         tabPane.handleIncoming();
         setBounds(new Rect(0, 0, (map.tileSize * scale * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) + FontSizes.gridScrollersize, FontSizes.scaleGuess(200)));
-        if (tabPane.getShortened()) {
-            System.out.println("Whoops!");
+        if (tabPane.getShortened())
             setBounds(new Rect(0, 0, ((map.tileSize * scale * (map.mapTable.renderer.tileRenderer.getRecommendedWidth() + 1)) - 1) + FontSizes.gridScrollersize, FontSizes.scaleGuess(200)));
-        }
         if (last != null) {
             // Attempt to transfer state.
             UITileGrid lTM = last.tileMaps[last.tabPane.getTabIndex()];
@@ -95,7 +93,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         options.add(baseTool);
         baseTool.state = true;
 
-        UIAppendButton uab = new UIAppendButton(TXDB.get("Rect."), baseTool, new Runnable() {
+        UIAppendButton uab = new UIAppendButton(TXDB.get("Rectangle"), baseTool, new Runnable() {
             @Override
             public void run() {
                 for (UIButton utb : options)

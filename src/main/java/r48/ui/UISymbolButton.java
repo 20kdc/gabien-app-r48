@@ -34,11 +34,8 @@ public class UISymbolButton extends UIButton {
     @Override
     public void updateAndRender(int ox, int oy, double DeltaTime, boolean selected, IGrInDriver igd) {
         super.updateAndRender(ox, oy, DeltaTime, selected, igd);
-        int po = getPressOffset(getBounds().height);
-        ox += po;
-        oy += po;
-        if (state)
-            oy += po;
-        Art.drawSymbol(igd, symbol, ox, oy, getBounds().height - (po * 2), false);
+        Rect bo = getBounds();
+        Rect cr = UIButton.getContentsRect(bo.width, bo.height, state);
+        Art.drawSymbol(igd, symbol, ox + cr.x, oy + cr.y, cr.height, false);
     }
 }
