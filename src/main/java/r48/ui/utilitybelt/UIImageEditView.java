@@ -11,9 +11,7 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.IImage;
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UILabel;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.ui.Art;
@@ -58,9 +56,9 @@ public class UIImageEditView extends UIElement {
         //  and it's W/H is the grid size scaled.
         Rect localGrid = getLocalGridRect(viewRct);
         boolean outerFlip = false;
+        Intersector intersect = MTIntersector.singleton.get();
         for (int ofx = (localGrid.x - (gridW * zoom)); ofx < (viewRct.x + viewRct.width); ofx += localGrid.width) {
-            Rect testGrid = viewRct.getIntersection(new Rect(ofx, viewRct.y, localGrid.width, viewRct.height));
-            if (testGrid == null)
+            if (!viewRct.intersects(new Rect(ofx, viewRct.y, localGrid.width, viewRct.height)))
                 continue;
             int i = outerFlip ? 1 : 0;
             outerFlip = !outerFlip;
@@ -69,9 +67,10 @@ public class UIImageEditView extends UIElement {
                 boolean light = ((i & 1) != 0);
                 if (light)
                     o = 0xC0;
-                Rect subLocalGrid = viewRct.getIntersection(new Rect(ofx, ofy, localGrid.width, localGrid.height));
-                if (subLocalGrid != null)
-                    osb.clearRect((gcR * o) / 255, (gcG * o) / 255, (gcB * o) / 255, subLocalGrid.x, subLocalGrid.y, subLocalGrid.width, subLocalGrid.height);
+                // The osb.clearRect call alters the Intersect, but that's fine since it gets reset.
+                intersect.set(viewRct);
+                if (intersect.intersect(ofx, ofy, localGrid.width, localGrid.height))
+                    osb.clearRect((gcR * o) / 255, (gcG * o) / 255, (gcB * o) / 255, intersect.x, intersect.y, intersect.width, intersect.height);
                 i++;
             }
         }

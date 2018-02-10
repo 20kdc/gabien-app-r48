@@ -20,12 +20,13 @@ import r48.map.drawlayers.R2kTileMapViewDrawLayer;
  */
 public class R2kPassabilitySource implements IPassabilitySource {
     public final RubyTable mapTable;
-    public final RubyIO tileset;
+    public final RubyTable tsLow, tsHigh;
     public final boolean scrollW, scrollH;
 
-    public R2kPassabilitySource(RubyTable rt, RubyIO ts, boolean w, boolean h) {
+    public R2kPassabilitySource(RubyTable rt, RubyIO tileset, boolean w, boolean h) {
         mapTable = rt;
-        tileset = ts;
+        tsLow = new RubyTable(tileset.getInstVarBySymbol("@lowpass_data").userVal);
+        tsHigh = new RubyTable(tileset.getInstVarBySymbol("@highpass_data").userVal);
         scrollW = w;
         scrollH = h;
     }
@@ -36,8 +37,8 @@ public class R2kPassabilitySource implements IPassabilitySource {
             return -1;
 
         short f0id = mapTable.getTiletype(x, y, 0);
-        int f0 = R2kTileMapViewDrawLayer.getTileFlags(f0id, tileset);
-        int f1 = R2kTileMapViewDrawLayer.getTileFlags(mapTable.getTiletype(x, y, 1), tileset);
+        int f0 = R2kTileMapViewDrawLayer.getTileFlags(f0id, tsLow, tsHigh);
+        int f1 = R2kTileMapViewDrawLayer.getTileFlags(mapTable.getTiletype(x, y, 1), tsLow, tsHigh);
 
         // Somewhere along the line this might have gotten the wrong way around...
         // I believe it is fixed now. Testing on the green road on which the squid sits, in a diary of dreams, confirms this.
@@ -72,8 +73,8 @@ public class R2kPassabilitySource implements IPassabilitySource {
             return false;
 
         short b0id = mapTable.getTiletype(oX, oY, 0);
-        int b0 = R2kTileMapViewDrawLayer.getTileFlags(b0id, tileset);
-        int b1 = R2kTileMapViewDrawLayer.getTileFlags(mapTable.getTiletype(oX, oY, 1), tileset);
+        int b0 = R2kTileMapViewDrawLayer.getTileFlags(b0id, tsLow, tsHigh);
+        int b1 = R2kTileMapViewDrawLayer.getTileFlags(mapTable.getTiletype(oX, oY, 1), tsLow, tsHigh);
 
         return mergeCore(f0id, f0, f1, flag) & mergeCore(b0id, b0, b1, flagInv);
     }

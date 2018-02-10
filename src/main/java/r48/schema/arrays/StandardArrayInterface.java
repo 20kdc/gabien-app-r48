@@ -17,6 +17,7 @@ import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Please work.
@@ -44,8 +45,8 @@ public class StandardArrayInterface implements IArrayInterface {
             public void run() {
                 uiSVL.panels.clear();
                 // Work out how big each array index field has to be.
-                // NOTE: maxSize gets modified by this loop.
-                final Rect maxSize = UILabel.getRecommendedSize("", FontSizes.schemaFieldTextHeight);
+                final Rect maxSizePre = UILabel.getRecommendedSize("", FontSizes.schemaFieldTextHeight);
+                final AtomicInteger maxWidth = new AtomicInteger(maxSizePre.width);
                 for (int i = 0; i < positions.length; i++) {
                     final int mi = i;
                     addAdditionButton(positions[mi].execInsert, positions[mi].execInsertCopiedArray, positions[mi].text);
@@ -72,7 +73,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         } else if (!confirmingSelectionDelete) {
                             // Selection, but not confirming delete
                             if (selectedStart == mi) {
-                                if (positions[selectedStart].execDelete != null) {
+                               if (positions[selectedStart].execDelete != null) {
                                     uie = new UIAppendButton("-", uie, new Runnable() {
                                         @Override
                                         public void run() {
@@ -163,19 +164,19 @@ public class StandardArrayInterface implements IArrayInterface {
                         // Add indexes for clarity.
                         final UIElement editor = uie;
                         final UIElement label = new UILabel(positions[mi].text, FontSizes.schemaFieldTextHeight);
-                        maxSize.width = Math.max(maxSize.width, label.getBounds().width);
+                        maxWidth.set(Math.max(maxWidth.get(), label.getBounds().width));
                         UIPublicPanel panel = new UIPublicPanel() {
                             @Override
                             public void setBounds(Rect r) {
                                 super.setBounds(r);
-                                label.setBounds(new Rect(0, 0, maxSize.width, maxSize.height));
-                                editor.setBounds(new Rect(maxSize.width, 0, r.width - maxSize.width, r.height));
+                                label.setBounds(new Rect(0, 0, maxWidth.get(), maxSizePre.height));
+                                editor.setBounds(new Rect(maxWidth.get(), 0, r.width - maxSizePre.width, r.height));
                             }
                         };
 
                         panel.addElement(label);
                         panel.addElement(editor);
-                        panel.setBounds(new Rect(0, 0, 128, Math.max(editor.getBounds().height, maxSize.height)));
+                        panel.setBounds(new Rect(0, 0, 128, Math.max(editor.getBounds().height, maxSizePre.height)));
                         uiSVL.panels.add(panel);
                     }
                 }

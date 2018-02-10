@@ -299,9 +299,7 @@ public class ImageEditorController {
         acceptButton = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Accept"), new Runnable() {
             @Override
             public void run() {
-                Rect r = new Rect(xVal.number, yVal.number, wVal.number, hVal.number);
-                r.width = Math.max(r.width, 1);
-                r.height = Math.max(r.height, 1);
+                Rect r = new Rect(xVal.number, yVal.number, Math.max(wVal.number, 1), Math.max(hVal.number, 1));
                 iConsumer.accept(r);
                 res.selfClose = true;
             }

@@ -51,7 +51,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
         };
     }
 
-    public void actIfRequired(RubyIO map) {
+    public boolean actIfRequired(RubyIO map) {
         if (actNow) {
             actNow = false;
             // actually update
@@ -82,7 +82,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
                 if (fieldA != null)
                     target = fieldA.apply(target);
                 if (target == null)
-                    return; // :(
+                    return true; // :(
                 if (hash) {
                     for (Map.Entry<RubyIO, RubyIO> rio : target.hashVal.entrySet())
                         handleVal(finalMap, rio.getValue(), rio.getKey());
@@ -96,7 +96,9 @@ public class DictionaryUpdaterRunnable implements Runnable {
                 actNow = true;
             }
             finalizeVals(finalMap);
+            return true;
         }
+        return false;
     }
 
     private void finalizeVals(HashMap<String, String> finalMap) {

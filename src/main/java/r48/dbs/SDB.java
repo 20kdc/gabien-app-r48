@@ -769,10 +769,12 @@ public class SDB {
     }
 
     public void updateDictionaries(RubyIO map) {
+        boolean needsMerge = false;
         for (DictionaryUpdaterRunnable dur : dictionaryUpdaterRunnables)
-            dur.actIfRequired(map);
-        for (Runnable merge : mergeRunnables)
-            merge.run();
+            needsMerge |= dur.actIfRequired(map);
+        if (needsMerge)
+            for (Runnable merge : mergeRunnables)
+                merge.run();
     }
 
     public void kickAllDictionariesForMapChange() {
