@@ -52,9 +52,16 @@ public class MagicalBindingSchemaElement extends SchemaElement {
 
             @Override
             public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+                // Regarding what's going on here.
+                // If we're being checked "externally" (think Autocorrect check),
+                //  don't export just yet.
+                // If inner gets modified, it'll trigger a cascading Path call.
+                boolean wasTagged = path.monitorsSubelements;
+                path = path.tagSEMonitor(target, this, true);
                 inner.modifyVal(target, path, setDefault);
-                if (binder.applyBoundToTarget(target, trueTarget))
-                    truePath.changeOccurred(setDefault);
+                if (wasTagged)
+                    if (binder.applyBoundToTarget(target, trueTarget))
+                        truePath.changeOccurred(setDefault);
             }
         }, bound);
     }

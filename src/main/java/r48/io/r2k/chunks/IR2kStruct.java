@@ -13,6 +13,9 @@ import r48.RubyIO;
  * My goodness, the format is madness.
  * But I must continue.
  * R2kObject is a subclass of this for Lcf Chunked objects.
+ * Anyway, do note that some of these might be "single-use".
+ * What this means is that they have a strict lifecycle of create, import, convert, and then die.
+ * These elements will error if used incorrectly.
  * Created on 31/05/17.
  */
 public interface IR2kStruct extends IR2kInterpretable {

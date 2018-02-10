@@ -12,6 +12,10 @@ p text string
 d Test samples using Anti-Mass Spectrometer testtextteststext
 X ams_setting_host
 
+985: @@Time {A=F=doesn't exist|exists} here.
+d Welcome to a world where the air I breathe is mine, nothing to overwhelm me and nothing to grab my mind...
+p timeExists boolean
+
 990: Need!
 d Indicate that at this point you need to (non-optional)...
 p text string

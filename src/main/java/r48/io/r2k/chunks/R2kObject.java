@@ -33,6 +33,10 @@ public abstract class R2kObject implements IR2kStruct {
         return false;
     }
 
+    public boolean logStuff() {
+        return false;
+    }
+
     public void importData(InputStream src) throws IOException {
         Index[] t = getIndices();
         unknownChunks.clear();
@@ -54,6 +58,9 @@ public abstract class R2kObject implements IR2kStruct {
             if (data != null) {
                 unknownChunks.remove(t[i].index);
                 ByteArrayInputStream bais = new ByteArrayInputStream(data);
+                if (logStuff())
+                    if (t[i].rioHelperName != null)
+                        System.err.println("Importing " + t[i].rioHelperName);
                 try {
                     t[i].chunk.importData(bais);
                 } catch (IOException e) {
@@ -73,6 +80,9 @@ public abstract class R2kObject implements IR2kStruct {
         HashMap<Integer, byte[]> chunks = new HashMap<Integer, byte[]>();
         chunks.putAll(unknownChunks);
         for (Index i : getIndices()) {
+            if (logStuff())
+                if (i.rioHelperName != null)
+                    System.err.println("Exporting " + i.rioHelperName);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             try {
                 if (!i.chunk.exportData(baos)) {

@@ -12,6 +12,9 @@ import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.DictionaryUpdaterRunnable;
 import r48.RubyIO;
+import r48.io.r2k.chunks.IR2kStruct;
+import r48.io.r2k.chunks.SparseArrayAR2kStruct;
+import r48.io.r2k.obj.ldb.Troop;
 import r48.schema.*;
 import r48.schema.arrays.ArbIndexedArraySchemaElement;
 import r48.schema.arrays.PagerArrayInterface;
@@ -282,13 +285,7 @@ public class SDB {
                             LinkedList<RubyIO> validKeys = new LinkedList<RubyIO>();
                             while (point < args.length) {
                                 String r = EscapedStringSyntax.unescape(args[point++]);
-                                RubyIO res = new RubyIO();
-                                if (r.startsWith(":")) {
-                                    res.setString(r.substring(1), false);
-                                } else {
-                                    res.setFX(Long.parseLong(r));
-                                }
-                                validKeys.add(res);
+                                validKeys.add(ValueSyntax.decode(r));
                             }
                             return new HashObjectSchemaElement(validKeys, text.equals("hashObjectInner"));
                         }
@@ -381,6 +378,26 @@ public class SDB {
                             final String bPath = args[point++];
                             final String sPath = args[point++];
                             return new TonePickerSchemaElement(rPath, gPath, bPath, sPath, 100);
+                        }
+                        if (text.equals("r2kBinding")) {
+                            String type = args[point++];
+                            IMagicalBinder binder;
+                            if (type.equals("TroopPages")) {
+                                binder = new LcfMagicalBinder(new ISupplier<IR2kStruct>() {
+                                    @Override
+                                    public IR2kStruct get() {
+                                        return new SparseArrayAR2kStruct<Troop.TroopPage>(new ISupplier<Troop.TroopPage>() {
+                                            @Override
+                                            public Troop.TroopPage get() {
+                                                return new Troop.TroopPage();
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                throw new RuntimeException("Unknown binding " + type);
+                            }
+                            return new MagicalBindingSchemaElement(binder, get());
                         }
                         if (text.equals("bitfield=")) {
                             int i = Integer.parseInt(args[point++]);

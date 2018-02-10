@@ -10,10 +10,7 @@ package r48.io.r2k.obj.ldb;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.chunks.ArrayR2kStruct;
-import r48.io.r2k.chunks.ByteR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
-import r48.io.r2k.chunks.SparseArrayHR2kStruct;
+import r48.io.r2k.chunks.*;
 
 /**
  * Bare minimum needed to get ChipSet data out for now
@@ -27,16 +24,16 @@ public class Database extends R2kObject {
             return new Actor();
         }
     });
-    public SparseArrayHR2kStruct<Skill> skills = new SparseArrayHR2kStruct<Skill>(new ISupplier<Skill>() {
+    public SparseArrayHR2kStruct<DeferredProxyR2kStruct> skills = new SparseArrayHR2kStruct<DeferredProxyR2kStruct>(new ISupplier<DeferredProxyR2kStruct>() {
         @Override
-        public Skill get() {
-            return new Skill();
+        public DeferredProxyR2kStruct get() {
+            return new DeferredProxyR2kStruct(new Skill());
         }
     });
-    public SparseArrayHR2kStruct<Item> items = new SparseArrayHR2kStruct<Item>(new ISupplier<Item>() {
+    public SparseArrayHR2kStruct<DeferredProxyR2kStruct> items = new SparseArrayHR2kStruct<DeferredProxyR2kStruct>(new ISupplier<DeferredProxyR2kStruct>() {
         @Override
-        public Item get() {
-            return new Item();
+        public DeferredProxyR2kStruct get() {
+            return new DeferredProxyR2kStruct(new Item());
         }
     });
 
@@ -46,10 +43,10 @@ public class Database extends R2kObject {
             return new Enemy();
         }
     });
-    public SparseArrayHR2kStruct<Troop> troops = new SparseArrayHR2kStruct<Troop>(new ISupplier<Troop>() {
+    public SparseArrayHR2kStruct<DeferredProxyR2kStruct> troops = new SparseArrayHR2kStruct<DeferredProxyR2kStruct>(new ISupplier<DeferredProxyR2kStruct>() {
         @Override
-        public Troop get() {
-            return new Troop();
+        public DeferredProxyR2kStruct get() {
+            return new DeferredProxyR2kStruct(new Troop());
         }
     });
     public SparseArrayHR2kStruct<Terrain> terrains = new SparseArrayHR2kStruct<Terrain>(new ISupplier<Terrain>() {
@@ -70,10 +67,10 @@ public class Database extends R2kObject {
             return new State();
         }
     });
-    public SparseArrayHR2kStruct<Animation> animations = new SparseArrayHR2kStruct<Animation>(new ISupplier<Animation>() {
+    public SparseArrayHR2kStruct<DeferredProxyR2kStruct> animations = new SparseArrayHR2kStruct<DeferredProxyR2kStruct>(new ISupplier<DeferredProxyR2kStruct>() {
         @Override
-        public Animation get() {
-            return new Animation();
+        public DeferredProxyR2kStruct get() {
+            return new DeferredProxyR2kStruct(new Animation());
         }
     });
     public SparseArrayHR2kStruct<Tileset> tilesets = new SparseArrayHR2kStruct<Tileset>(new ISupplier<Tileset>() {
@@ -96,10 +93,10 @@ public class Database extends R2kObject {
             return new SVStore();
         }
     });
-    public SparseArrayHR2kStruct<CommonEvent> commonEvents = new SparseArrayHR2kStruct<CommonEvent>(new ISupplier<CommonEvent>() {
+    public SparseArrayHR2kStruct<DeferredProxyR2kStruct> commonEvents = new SparseArrayHR2kStruct<DeferredProxyR2kStruct>(new ISupplier<DeferredProxyR2kStruct>() {
         @Override
-        public CommonEvent get() {
-            return new CommonEvent();
+        public DeferredProxyR2kStruct get() {
+            return new DeferredProxyR2kStruct(new CommonEvent());
         }
     });
     public ArrayR2kStruct<ByteR2kStruct> dbVersion = new ArrayR2kStruct<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
@@ -124,6 +121,11 @@ public class Database extends R2kObject {
 
     @Override
     public boolean terminatable() {
+        return true;
+    }
+
+    @Override
+    public boolean logStuff() {
         return true;
     }
 

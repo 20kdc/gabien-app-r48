@@ -23,140 +23,112 @@ public class FormatSyntax {
     // The new format allows for more precise setups,
     // but isn't as neat.
     public static String formatNameExtended(String name, RubyIO root, RubyIO[] parameters, IFunction<RubyIO, SchemaElement>[] parameterSchemas) {
-        String r = "";
+        StringBuilder r = new StringBuilder();
         char[] data = name.toCharArray();
-        int disables = 0;
         boolean prefixNext = false;
+        // C: A fully parsable formatNameExtended string.
+        // A: A component array of the form C or C|A.
+        // V: A single letter from 'A' through 'Z', representing a parameter.
+        // T: An unparsed string limited by context (no escapes, nor [{}]# etc.)
+        // R: An instance of T : Name routine.
+        // I: An instance of R where Interp. is prepended.
         for (int i = 0; i < data.length; i++) {
             if (data[i] == '{') {
-                if ((parameters == null) || (disables > 0)) {
-                    disables++;
-                    continue;
-                }
                 // Parse condition
+                // Precedence:
+                // {@A} ('arbitrary enumeration form')
+                // {V:A} ('variable exists form')
+                // {V=T=A} ('vt equality form')
+                // {VV:A} ('vv equality form ')
                 i++;
+                LinkedList<String> components = new LinkedList<String>();
                 if (data[i] == '@') {
-                    // Special case.
-                    String tx = "";
-                    LinkedList<String> components = new LinkedList<String>();
-                    int escapeCount = 0;
-                    while (true) {
-                        char ch2 = data[++i];
-                        if (ch2 == '#') {
-                            tx += ch2;
-                            tx += data[++i];
-                            continue;
+                    // arbitrary enumeration form.
+                    i = explodeComponentsAndAdvance(components, data, i + 1, '}');
+                    // If components is even, then that's because there's one start and one default to balance it out,
+                    //  at the start and end respectively.
+                    // Of course, since the first component is removed instantly,
+                    //  the check is for odd.
+                    String val = components.removeFirst();
+                    String def = "";
+                    if ((components.size() & 1) != 0)
+                        def = components.removeLast();
+                    for (int j = 0; j < components.size(); j += 2) {
+                        if (val.equals(formatNameExtended(components.get(j), root, parameters, parameterSchemas))) {
+                            def = components.get(j + 1);
+                            break;
                         }
-                        if (ch2 == '{')
-                            escapeCount++;
-                        if (ch2 == '}') {
-                            if (escapeCount == 0)
-                                break;
-                            escapeCount--;
-                        }
-                        if (ch2 == '[')
-                            escapeCount++;
-                        if (ch2 == ']') {
-                            if (escapeCount == 0)
-                                return "Mismatched []{} error.";
-                            escapeCount--;
-                        }
-                        if (ch2 == '|')
-                            if (escapeCount == 0) {
-                                components.add(tx);
-                                tx = "";
-                                continue;
-                            }
-                        tx += ch2;
                     }
-                    components.add(tx);
-                    tx = components.getFirst();
-                    // If the component count is even, there's a default (1 + even KVP + 1)
-                    // If it's odd, there isn't.
-                    tx = formatNameExtended(tx, root, parameters, parameterSchemas);
-                    String val = "";
-                    if ((components.size() % 2) == 0)
-                        val = components.getLast();
-                    for (int j = 1; j < components.size() - 1; j += 2) {
-                        String a = formatNameExtended(components.get(j), root, parameters, parameterSchemas);
-                        String b = components.get(j + 1);
-                        if (tx.equals(a))
-                            val = b;
+                    def = formatNameExtended(def, root, parameters, parameterSchemas);
+                    r.append(def);
+                } else if (data[i + 1] == ':') {
+                    char v = data[i];
+                    // variable exists form.
+                    i = explodeComponentsAndAdvance(components, data, i + 2, '}');
+                    boolean result = parameters != null;
+                    if (result)
+                        result = (v - 'A') < parameters.length;
+                    determineBooleanComponent(r, components, result, root, parameters, parameterSchemas);
+                } else if (data[i + 1] == '=') {
+                    char va = data[i];
+                    // vt equality form.
+                    StringBuilder eqTarget = new StringBuilder();
+                    i = explodeComponent(eqTarget, data, i + 2, "=");
+                    i = explodeComponentsAndAdvance(components, data, i + 1, '}');
+                    boolean result = parameters != null;
+                    if (result) {
+                        SchemaElement as = getParameterDisplaySchemaFromArray(parameters[va - 'A'], parameterSchemas, va - 'A');
+                        String a = interpretParameter(parameters[va - 'A'], as, false);
+                        result = a.equals(eqTarget.toString());
                     }
-                    r += formatNameExtended(val, root, parameters, parameterSchemas);
-                    continue;
-                }
-                // Firstly a pid
-                int pidA = data[i] - 'A';
-                i++;
-                if (data[i] == ':') {
-                    // The parameter exists, that's enough
-                    if (parameters.length <= pidA)
-                        disables++;
-                    continue;
-                }
-                // The parameter must be equal to something else
-                char pb = data[i++];
-                String wantedVal = "";
-                // If comparing parameter to parameter, both parameters can be force-prefixed.
-                if (pb == '=') {
-                    // It's a string
-                    pb = data[i++];
-                    while (pb != '=') {
-                        wantedVal += pb;
-                        pb = data[i++];
+                    determineBooleanComponent(r, components, result, root, parameters, parameterSchemas);
+                } else if (data[i + 2] == ':') {
+                    // vv equality form.
+                    char va = data[i];
+                    char vb = data[i + 1];
+                    boolean result = parameters != null;
+                    if (result) {
+                        SchemaElement as = getParameterDisplaySchemaFromArray(parameters[va - 'A'], parameterSchemas, va - 'A');
+                        SchemaElement bs = getParameterDisplaySchemaFromArray(parameters[vb - 'A'], parameterSchemas, vb - 'A');
+                        String a = interpretParameter(parameters[va - 'A'], as, false);
+                        String b = interpretParameter(parameters[vb - 'A'], bs, false);
+                        result = a.equals(b);
                     }
-                    i--; // it'll i++ later
+                    i = explodeComponentsAndAdvance(components, data, i + 3, '}');
+                    determineBooleanComponent(r, components, result, root, parameters, parameterSchemas);
                 } else {
-                    if (data[i] != ':')
-                        return "BADLY FORMATTED PS!";
-                    int pidB = pb - 'A';
-                    if (parameters.length <= pidB) {
-                        disables++;
-                        continue;
-                    }
-                    wantedVal = parameters[pidB].toString();
+                    throw new RuntimeException("Unknown conditional type!");
                 }
-                if (parameters.length <= pidA) {
-                    disables++;
-                } else {
-                    if (!parameters[pidA].toString().equals(wantedVal))
-                        disables++;
-                }
-            } else if (data[i] == '|') {
-                if (disables == 1) {
-                    disables = 0;
-                } else if (disables == 0) {
-                    disables = 1;
-                }
-            } else if (data[i] == '}') {
-                if (disables > 0)
-                    disables--;
             } else if (data[i] == '@') {
-                if (disables == 0)
-                    prefixNext = true;
+                prefixNext = true;
             } else if (data[i] == '[') {
-                if (disables > 0)
-                    continue;
+                // Parse precedence order:
+                // [@R]
+                // [I][C]
+                // [I]V
                 // commence reinterpretation.
-                String type = "";
-                while (data[++i] != ']')
-                    type += data[i];
-                int ss = type.indexOf('@');
+                StringBuilder type = new StringBuilder();
+                int indexOfAt = -1;
+                while (data[++i] != ']') {
+                    if (indexOfAt == -1)
+                        if (data[i] == '@')
+                            indexOfAt = type.length();
+                    type.append(data[i]);
+                }
                 if (parameters != null) {
-                    if (ss != 0) {
+                    if (indexOfAt != 0) {
                         char ch = data[++i];
                         RubyIO p;
                         if (ch == '[') {
                             // At this point, it's gone recursive.
                             // Need to safely skip over this lot...
-                            String tx = "";
+                            StringBuilder tx = new StringBuilder();
                             int escapeCount = 1;
                             while (escapeCount > 0) {
                                 char ch2 = data[++i];
                                 if (ch2 == '#') {
-                                    tx += ch2;
-                                    tx += data[++i];
+                                    tx.append(ch2);
+                                    tx.append(data[++i]);
                                     continue;
                                 }
                                 if (ch2 == '[')
@@ -173,20 +145,20 @@ public class FormatSyntax {
                                     if (escapeCount == 0)
                                         return "Mismatched []{} error.";
                                 }
-                                tx += ch2;
+                                tx.append(ch2);
                             }
                             // ... then parse it.
-                            tx = formatNameExtended(tx, root, parameters, parameterSchemas);
-                            p = new RubyIO().setString(tx, true);
+                            String out = formatNameExtended(tx.toString(), root, parameters, parameterSchemas);
+                            p = new RubyIO().setString(out, true);
                         } else {
                             p = parameters[ch - 'A'];
                         }
                         IFunction<RubyIO, String> handler = TXDB.nameDB.get("Interp." + type);
                         if (handler != null) {
-                            r += handler.apply(p);
+                            r.append(handler.apply(p));
                         } else {
-                            SchemaElement ise = AppMain.schemas.getSDBEntry(type);
-                            r += interpretParameter(p, ise, prefixNext);
+                            SchemaElement ise = AppMain.schemas.getSDBEntry(type.toString());
+                            r.append(interpretParameter(p, ise, prefixNext));
                         }
                     } else {
                         // Meta-interpretation syntax
@@ -194,27 +166,74 @@ public class FormatSyntax {
                         IFunction<RubyIO, String> n = TXDB.nameDB.get(tp);
                         if (n == null)
                             throw new RuntimeException("Expected NDB " + tp);
-                        r += n.apply(root);
+                        r.append(n.apply(root));
                     }
                 }
                 prefixNext = false;
             } else if (data[i] == '#') {
-                if (parameters != null)
-                    if (disables == 0) {
-                        int pid = data[++i] - 'A';
-                        if ((pid >= 0) && (pid < parameters.length)) {
-                            r += interpretParameter(parameters[pid], getParameterDisplaySchemaFromArray(root, parameterSchemas, pid), prefixNext);
-                        } else {
-                            r += data[i];
-                        }
+                if (parameters != null) {
+                    int pid = data[++i] - 'A';
+                    if ((pid >= 0) && (pid < parameters.length)) {
+                        r.append(interpretParameter(parameters[pid], getParameterDisplaySchemaFromArray(root, parameterSchemas, pid), prefixNext));
+                    } else {
+                        r.append(data[i]);
                     }
+                }
                 prefixNext = false;
             } else {
-                if (disables == 0)
-                    r += data[i];
+                r.append(data[i]);
             }
         }
-        return r;
+        return r.toString();
+    }
+
+    private static void determineBooleanComponent(StringBuilder r, LinkedList<String> components, boolean result, RubyIO root, RubyIO[] parameters, IFunction<RubyIO, SchemaElement>[] parameterSchemas) {
+        for (int i = (result ? 0 : 1); i < components.size(); i += 2)
+            r.append(formatNameExtended(components.get(i), root, parameters, parameterSchemas));
+    }
+
+    private static int explodeComponent(StringBuilder eqTarget, char[] data, int i, String s) {
+        int level = 0;
+        boolean escape = false;
+        while (i < data.length) {
+            char c = data[i++];
+            if (level == 0)
+                if (s.indexOf(c) != -1)
+                    return i - 1;
+            eqTarget.append(c);
+            if (!escape) {
+                if (c == '#') {
+                    escape = true;
+                } else if (c == '{') {
+                    level++;
+                } else if (c == '[') {
+                    level++;
+                } else if (c == ']') {
+                    level--;
+                    if (level < 0)
+                        throw new RuntimeException("Parse error - too many levels out, hit ]");
+                } else if (c == '}') {
+                    level--;
+                    if (level < 0)
+                        throw new RuntimeException("Parse error - too many levels out, hit }");
+                }
+            } else {
+                escape = false;
+            }
+        }
+        throw new RuntimeException("Hit end-of-data without reaching end character.");
+    }
+
+    private static int explodeComponentsAndAdvance(LinkedList<String> components, char[] data, int i, char ender) {
+        while (i < data.length) {
+            StringBuilder c = new StringBuilder();
+            i = explodeComponent(c, data, i, "|" + ender);
+            components.add(c.toString());
+            if (data[i] == ender)
+                return i;
+            i++;
+        }
+        throw new RuntimeException("Hit end-of-data without reaching end character.");
     }
 
     public static String interpretParameter(RubyIO rubyIO, SchemaElement ise, boolean prefixEnums) {

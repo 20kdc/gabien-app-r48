@@ -92,8 +92,6 @@ public class DictionaryUpdaterRunnable implements Runnable {
                         handleVal(finalMap, rio, new RubyIO().setFX(i));
                     }
                 }
-            } else {
-                actNow = true;
             }
             finalizeVals(finalMap);
             return true;

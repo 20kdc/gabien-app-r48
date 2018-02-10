@@ -37,10 +37,13 @@ public class Troop extends R2kObject {
             return new BooleanR2kStruct(true);
         }
     }, true);
-    public SparseArrayAR2kStruct<TroopPage> pages = new SparseArrayAR2kStruct<TroopPage>(new ISupplier<TroopPage>() {
+    // Actually a SparseArrayAR2kStruct<TroopPage>, but this is "heavily-deferred",
+    //  thanks to Final Tear 3.
+    public BlobR2kStruct pages = new BlobR2kStruct(new ISupplier<byte[]>() {
         @Override
-        public TroopPage get() {
-            return new TroopPage();
+        public byte[] get() {
+            // blank SparseArrayAR2kStruct is one zero byte.
+            return new byte[1];
         }
     });
 
