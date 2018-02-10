@@ -170,7 +170,7 @@ public class StandardArrayInterface implements IArrayInterface {
                             public void setBounds(Rect r) {
                                 super.setBounds(r);
                                 label.setBounds(new Rect(0, 0, maxWidth.get(), maxSizePre.height));
-                                editor.setBounds(new Rect(maxWidth.get(), 0, r.width - maxSizePre.width, r.height));
+                                editor.setBounds(new Rect(maxWidth.get(), 0, r.width - maxWidth.get(), r.height));
                             }
                         };
 
