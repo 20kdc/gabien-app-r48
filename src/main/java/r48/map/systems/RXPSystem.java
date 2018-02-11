@@ -21,10 +21,7 @@ import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController;
 import r48.map.StuffRenderer;
-import r48.map.drawlayers.EventMapViewDrawLayer;
-import r48.map.drawlayers.IMapViewDrawLayer;
-import r48.map.drawlayers.PanoramaMapViewDrawLayer;
-import r48.map.drawlayers.RXPAccurateDrawLayer;
+import r48.map.drawlayers.*;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
@@ -98,6 +95,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
                     accurate,
                     // selection
                     new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, tileRenderer.getTileSize()),
+                    new GridMapViewDrawLayer()
             };
         }
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);

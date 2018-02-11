@@ -10,10 +10,7 @@ package r48.map;
 import gabien.IImage;
 import r48.RubyIO;
 import r48.RubyTable;
-import r48.map.drawlayers.EventMapViewDrawLayer;
-import r48.map.drawlayers.IMapViewDrawLayer;
-import r48.map.drawlayers.PanoramaMapViewDrawLayer;
-import r48.map.drawlayers.TileMapViewDrawLayer;
+import r48.map.drawlayers.*;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
@@ -42,8 +39,10 @@ public class StuffRenderer {
         RubyTable rt = new RubyTable(map.getInstVarBySymbol("@data").userVal);
         // 0: P
         // 1: E-1
-        // 2, 3: T0, E0
-        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[(rt.planeCount * 2) + 3];
+        // 2, 3, [4, 5, [[6, 7]...]]]: Ti, Ei
+        // E-2: ES
+        // E-1: G
+        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[(rt.planeCount * 2) + 4];
         IImage panoImg = null;
         if (!vxaPano.equals(""))
             panoImg = iil.getImage(vxaPano, true);
@@ -53,7 +52,8 @@ public class StuffRenderer {
             layers[(i * 2) + 2] = new TileMapViewDrawLayer(rt, tlOrder[i], itr);
             layers[(i * 2) + 3] = new EventMapViewDrawLayer(i, events, igr, itr.getTileSize());
         }
-        layers[layers.length - 1] = new EventMapViewDrawLayer(0x7FFFFFFF, events, igr, itr.getTileSize());
+        layers[layers.length - 2] = new EventMapViewDrawLayer(0x7FFFFFFF, events, igr, itr.getTileSize());
+        layers[layers.length - 1] = new GridMapViewDrawLayer();
         return layers;
     }
 }

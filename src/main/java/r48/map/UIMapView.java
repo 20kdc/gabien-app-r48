@@ -14,6 +14,7 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
+import r48.map.drawlayers.GridMapViewDrawLayer;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.drawlayers.PassabilityMapViewDrawLayer;
 import r48.map.systems.MapSystem;
@@ -122,8 +123,14 @@ public class UIMapView extends UIElement implements IWindowElement {
             if (layerVis.length == mapTable.renderer.layers.length)
                 return;
         layerVis = new boolean[mapTable.renderer.layers.length];
-        for (int j = 0; j < layerVis.length; j++)
-            layerVis[j] = !(mapTable.renderer.layers[j] instanceof PassabilityMapViewDrawLayer);
+        for (int j = 0; j < layerVis.length; j++) {
+            boolean defaultVis = true;
+            if (mapTable.renderer.layers[j] instanceof PassabilityMapViewDrawLayer)
+                defaultVis = false;
+            if (mapTable.renderer.layers[j] instanceof GridMapViewDrawLayer)
+                defaultVis = false;
+            layerVis[j] = defaultVis;
+        }
     }
 
     @Override

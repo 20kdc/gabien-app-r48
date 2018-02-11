@@ -107,7 +107,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
                 if (aloopY)
                     autoLoopY = (int) map.getInstVarBySymbol("@parallax_sy").fixnumVal;
             }
-            layers = new IMapViewDrawLayer[10];
+            layers = new IMapViewDrawLayer[11];
             IImage img = null;
             if (!vxaPano.equals(""))
                 img = imageLoader.getImage("Panorama/" + vxaPano, true);
@@ -127,6 +127,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             layers[7] = new EventMapViewDrawLayer(2, events, eventRenderer, 16);
             layers[8] = new PassabilityMapViewDrawLayer(new R2kPassabilitySource(tbl, tileset, (scrollFlags & 2) != 0, (scrollFlags & 1) != 0), 16);
             layers[9] = new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, 16);
+            layers[10] = new GridMapViewDrawLayer();
         }
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
     }
