@@ -99,12 +99,11 @@ public class UIGRMMapInfos extends UIPanel {
                 }
             }
             parentStack.add(k);
-            String spc = " ";
-            if (selectedOrder == order)
-                spc = ">";
+            String spc = "";
             if (enableOrderHoleDebug)
-                spc = order + spc;
-            UIElement elm = new UITextButton(FontSizes.mapInfosTextHeight, spc + k + ":" + name + " P" + parent, new Runnable() {
+                spc = order + " ";
+
+            UITextButton tb = new UITextButton(FontSizes.mapInfosTextHeight, spc + k + ":" + name + " P" + parent, new Runnable() {
                 @Override
                 public void run() {
                     selectedOrder = order;
@@ -112,7 +111,9 @@ public class UIGRMMapInfos extends UIPanel {
                     mapContext.loadMap(operators.translateToGUM(k));
                     rebuildList();
                 }
-            });
+            }).togglable();
+            tb.state = selectedOrder == order;
+            UIElement elm = tb;
 
             if (selectedOrder == order) {
                 if (parent != 0) {
