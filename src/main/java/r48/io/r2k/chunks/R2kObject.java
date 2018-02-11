@@ -58,9 +58,13 @@ public abstract class R2kObject implements IR2kStruct {
             if (data != null) {
                 unknownChunks.remove(t[i].index);
                 ByteArrayInputStream bais = new ByteArrayInputStream(data);
+                boolean logTime = false;
+                long logTimeNow = System.currentTimeMillis();
                 if (logStuff())
-                    if (t[i].rioHelperName != null)
-                        System.err.println("Importing " + t[i].rioHelperName);
+                    if (t[i].rioHelperName != null) {
+                        System.err.print("Importing " + t[i].rioHelperName);
+                        logTime = true;
+                    }
                 try {
                     t[i].chunk.importData(bais);
                 } catch (IOException e) {
@@ -68,6 +72,8 @@ public abstract class R2kObject implements IR2kStruct {
                 } catch (RuntimeException e) {
                     throw new RuntimeException("In " + t[i] + " of " + this, e);
                 }
+                if (logTime)
+                    System.err.println(" (" + (System.currentTimeMillis() - logTimeNow) + "ms)");
                 if (!disableSanity())
                     if (bais.available() != 0)
                         throw new IOException("Not all of the chunk interpreted by " + t[i] + " in " + this);

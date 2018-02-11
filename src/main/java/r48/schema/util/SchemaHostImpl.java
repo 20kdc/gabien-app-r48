@@ -69,8 +69,8 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
         @Override
         public void run() {
             SchemaPath root = innerElem.findRoot();
-            // perform a final verification of the file, just in case.
-            root.editor.modifyVal(root.targetElement, root, false);
+            // perform a final verification of the file, just in case? (NOPE: Causes long save times on, say, LDBs)
+            // root.editor.modifyVal(root.targetElement, root, false);
             AppMain.objectDB.ensureSaved(root.hrIndex, root.lastArrayIndex);
         }
     }, FontSizes.schemaPathTextHeight);

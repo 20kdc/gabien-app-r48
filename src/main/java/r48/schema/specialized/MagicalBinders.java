@@ -7,8 +7,11 @@
 
 package r48.schema.specialized;
 
+import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.io.r2k.chunks.SparseArrayHR2kStruct;
+import r48.io.r2k.obj.ldb.BAD;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -36,6 +39,8 @@ public class MagicalBinders {
             return LcfMagicalBinder.getAnimationFrames();
         if (name.equals("R2kTroopPages"))
             return LcfMagicalBinder.getTroopPages();
+        if (name.equals("R2kBattlerAnimationMap"))
+            return LcfMagicalBinder.getBattlerAnimationMap();
         return null;
     }
 

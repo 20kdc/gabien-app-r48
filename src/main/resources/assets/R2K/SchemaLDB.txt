@@ -127,7 +127,7 @@ e rpg_skill_scope 0 hurtEnemy 1 hurtAllEnemies 2 healUserActor 3 healAnyActor 4 
 e rpg_skill_fm 0 A 1 B 2 C 3 dodge
 @failure_message_2KO rpg_skill_fm
 @OFED_battler_anim_display_actor actor_id
-@battler_anim_data subwindow hash actor_id RPG::BattlerAnimationData
+@battler_anim_data binding R2kBattlerAnimationMap subwindow hash actor_id RPG::BattlerAnimationData
 
 .rpg_skill_sect3
 @sp_cost_val_normal int

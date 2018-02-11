@@ -10,6 +10,7 @@ package r48.io.r2k.obj.ldb;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
+import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.*;
 import r48.io.r2k.obj.Sound;
 
@@ -66,12 +67,7 @@ public class Skill extends R2kObject {
     public BooleanR2kStruct afAtDef = new BooleanR2kStruct(false);
     public IntegerR2kStruct defBattlerAnim = new IntegerR2kStruct(1);
 
-    public SparseArrayHR2kStruct<BAD> battlerAnimMap = new SparseArrayHR2kStruct<BAD>(new ISupplier<BAD>() {
-        @Override
-        public BAD get() {
-            return new BAD();
-        }
-    });
+    public BlobR2kStruct battlerAnimMap = new BlobR2kStruct(R2kUtil.userspaceBinder + "R2kBattlerAnimationMap", R2kUtil.supplyBlank(1, (byte) 0));
 
     @Override
     public Index[] getIndices() {

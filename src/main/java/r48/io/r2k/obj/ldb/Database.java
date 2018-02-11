@@ -124,10 +124,12 @@ public class Database extends R2kObject {
         return true;
     }
 
-    @Override
-    public boolean logStuff() {
-        return true;
-    }
+    /*
+     *  @Override
+     *  public boolean logStuff() {
+     *      return true;
+     *  }
+     */
 
     @Override
     public Index[] getIndices() {

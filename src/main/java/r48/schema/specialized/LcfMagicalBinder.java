@@ -11,7 +11,9 @@ import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.chunks.IR2kStruct;
 import r48.io.r2k.chunks.SparseArrayAR2kStruct;
+import r48.io.r2k.chunks.SparseArrayHR2kStruct;
 import r48.io.r2k.obj.ldb.AnimationFrame;
+import r48.io.r2k.obj.ldb.BAD;
 import r48.io.r2k.obj.ldb.Troop;
 import r48.schema.integers.IntegerSchemaElement;
 
@@ -53,6 +55,20 @@ public class LcfMagicalBinder implements IMagicalBinder {
                     @Override
                     public AnimationFrame get() {
                         return new AnimationFrame();
+                    }
+                });
+            }
+        });
+    }
+
+    protected static IMagicalBinder getBattlerAnimationMap() {
+        return new LcfMagicalBinder("R2kBattlerAnimationMap", new ISupplier<IR2kStruct>() {
+            @Override
+            public IR2kStruct get() {
+                return new SparseArrayHR2kStruct<BAD>(new ISupplier<BAD>() {
+                    @Override
+                    public BAD get() {
+                        return new BAD();
                     }
                 });
             }
