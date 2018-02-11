@@ -170,7 +170,7 @@ public class RMToolsToolset implements IToolset {
                                                         }
                                                         return 0;
                                                     }
-                                                });
+                                                }, true);
                                                 total += count;
                                                 if (count > 0) {
                                                     SchemaPath sp = new SchemaPath(se, rio);

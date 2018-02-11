@@ -21,14 +21,18 @@ import java.io.OutputStream;
  */
 public class BlobR2kStruct implements IR2kStruct {
     public byte[] dat;
+    public String blobClass = "Blob";
 
     public BlobR2kStruct(ISupplier<byte[]> mkDef) {
         dat = mkDef.get();
     }
+    public BlobR2kStruct(String c, ISupplier<byte[]> mkDef) {
+        blobClass = c;
+    }
 
     @Override
     public RubyIO asRIO() {
-        return new RubyIO().setUser("Blob", dat);
+        return new RubyIO().setUser(blobClass, dat);
     }
 
     @Override

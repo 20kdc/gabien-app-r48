@@ -198,6 +198,11 @@ public class R48ObjectBackend implements IObjectBackend {
         dis.close();
     }
 
+    @Override
+    public String userspaceBindersPrefix() {
+        return null;
+    }
+
     private void saveSymbol(DataOutputStream dis, String sym, LinkedList<String> strCache) throws IOException {
         int symInd = strCache.indexOf(sym);
         if (symInd >= 0) {

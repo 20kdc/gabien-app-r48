@@ -115,6 +115,8 @@ public class GenposSchemaElement extends SchemaElement {
                     final IMagicalBinder binder = LcfMagicalBinder.getAnimationFrames();
                     final AtomicReference<RubyIO> frameBound = new AtomicReference<RubyIO>(binder.targetToBound(framesObject));
 
+                    // This handles "outbound" changes made within the animator.
+
                     Runnable outbound = new Runnable() {
                         @Override
                         public void run() {
@@ -133,7 +135,9 @@ public class GenposSchemaElement extends SchemaElement {
                         }
                     };
                     final GenposAnimRootPanel rmarp = new GenposAnimRootPanel(anim, launcher, framerate);
-                    // Setup inbound safety-net.
+
+                    // This handles "inbound" changes made outside the animator.
+
                     safetyWrap(rmarp, launcher, new Runnable() {
                         @Override
                         public void run() {

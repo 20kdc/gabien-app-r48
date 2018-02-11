@@ -10,6 +10,7 @@ package r48.io.r2k.obj.ldb;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
+import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.*;
 
 /**
@@ -33,12 +34,8 @@ public class Animation extends R2kObject {
     });
     public IntegerR2kStruct scope = new IntegerR2kStruct(0);
     public IntegerR2kStruct position = new IntegerR2kStruct(2);
-    public BlobR2kStruct frames = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
-            return new byte[1];
-        }
-    });
+    // Actually a SparseArrayA<AnimationFrame>, but thanks to Final Tear 3, has to be deferred.
+    public BlobR2kStruct frames = new BlobR2kStruct(R2kUtil.userspaceBinder + "R2kAnimationFrames", R2kUtil.supplyBlank(1, (byte) 0));
 
     @Override
     public Index[] getIndices() {

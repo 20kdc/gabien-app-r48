@@ -21,6 +21,8 @@ import java.util.*;
  */
 public class R2kUtil {
 
+    public final static String userspaceBinder = "Binder::";
+
     private static ByteArrayInputStream baos(byte[] data) {
         return new ByteArrayInputStream(data);
     }

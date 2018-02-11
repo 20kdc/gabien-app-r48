@@ -25,12 +25,14 @@ import java.io.IOException;
  */
 public class LcfMagicalBinder implements IMagicalBinder {
     private final ISupplier<IR2kStruct> inner;
-    public LcfMagicalBinder(ISupplier<IR2kStruct> iSupplier) {
+    private final String className;
+    public LcfMagicalBinder(String cn, ISupplier<IR2kStruct> iSupplier) {
         inner = iSupplier;
+        className = cn;
     }
 
     public static IMagicalBinder getTroopPages() {
-        return new LcfMagicalBinder(new ISupplier<IR2kStruct>() {
+        return new LcfMagicalBinder("R2kTroopPages", new ISupplier<IR2kStruct>() {
             @Override
             public IR2kStruct get() {
                 return new SparseArrayAR2kStruct<Troop.TroopPage>(new ISupplier<Troop.TroopPage>() {
@@ -44,7 +46,7 @@ public class LcfMagicalBinder implements IMagicalBinder {
     }
 
     public static IMagicalBinder getAnimationFrames() {
-        return new LcfMagicalBinder(new ISupplier<IR2kStruct>() {
+        return new LcfMagicalBinder("R2kAnimationFrames", new ISupplier<IR2kStruct>() {
             @Override
             public IR2kStruct get() {
                 return new SparseArrayAR2kStruct<AnimationFrame>(new ISupplier<AnimationFrame>() {
@@ -81,9 +83,9 @@ public class LcfMagicalBinder implements IMagicalBinder {
         byte[] tba = baos.toByteArray();
         // Try to ensure target is a blob.
         if (IntegerSchemaElement.ensureType(target, 'u', false)) {
-            target.setSymlike("Blob", false);
-        } else if (!target.symVal.equals("Blob")) {
-            target.setSymlike("Blob", false);
+            target.setSymlike(className, false);
+        } else if (!target.symVal.equals(className)) {
+            target.setSymlike(className, false);
         } else {
             if (target.userVal.length == tba.length) {
                 boolean same = true;

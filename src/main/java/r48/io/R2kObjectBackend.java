@@ -9,6 +9,7 @@ package r48.io;
 
 import gabien.GaBIEn;
 import r48.RubyIO;
+import r48.io.r2k.R2kUtil;
 import r48.io.r2k.files.DatabaseIO;
 import r48.io.r2k.files.MapIO;
 import r48.io.r2k.files.MapTreeIO;
@@ -132,5 +133,10 @@ public class R2kObjectBackend implements IObjectBackend {
             return;
         }
         throw new IOException("Unknown how to save " + filename + " (lmu/lmt/ldb)");
+    }
+
+    @Override
+    public String userspaceBindersPrefix() {
+        return R2kUtil.userspaceBinder;
     }
 }

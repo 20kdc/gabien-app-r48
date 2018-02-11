@@ -22,6 +22,9 @@ public interface IObjectBackend {
 
     void saveObjectToFile(String filename, RubyIO object) throws IOException;
 
+    // Does this backend use userspace binders, and if so, what's the usersym prefix? Can be null.
+    String userspaceBindersPrefix();
+
     abstract class Factory {
         // Null so that things will error if it's unset.
         public static String encoding;

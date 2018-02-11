@@ -347,7 +347,7 @@ C name Class.RPG::Troop @name | #A
 @name string
 @members subwindow arrayIx1 RPG::Troop::Member
 @terrain_set subwindow hash terrain_id boolean
-@pages r2kBinding TroopPages subwindow arrayIx1 subwindow RPG::Troop::Page
+@pages binding R2kTroopPages subwindow arrayIx1 subwindow RPG::Troop::Page
 @auto_position boolean
 @randomized_memberset_2k3 boolean
 C magicGenpos r2kTroop . . . . 0
@@ -506,7 +506,7 @@ C name Class.RPG::Animation @name | #A
 @position rpg_animation_position
  oh, this is fun. see, r2kAnimation has to be changed to make this work
  the alternative is "worse". for some definitions of "worse".
-@frames r2kBinding AnimationFrames subwindow arrayIx1 subwindow RPG::Animation::Frame
+@frames binding R2kAnimationFrames subwindow arrayIx1 subwindow RPG::Animation::Frame
  yet another "aaaaaa why is this happening" fix
 @timings subwindow hash int+0 subwindow RPG::Animation::Timing
 C magicGenpos r2kAnimation @animation_name . . . 30

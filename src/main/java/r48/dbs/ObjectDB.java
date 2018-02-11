@@ -26,9 +26,11 @@ import java.util.WeakHashMap;
  */
 public class ObjectDB {
     private final IObjectBackend backend;
+    public String binderPrefix;
 
     public ObjectDB(IObjectBackend b) {
         backend = b;
+        binderPrefix = b.userspaceBindersPrefix();
     }
 
     public HashMap<String, WeakReference<RubyIO>> objectMap = new HashMap<String, WeakReference<RubyIO>>();

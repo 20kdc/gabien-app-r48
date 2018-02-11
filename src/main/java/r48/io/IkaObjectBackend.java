@@ -164,4 +164,9 @@ public class IkaObjectBackend implements IObjectBackend {
         // do nothing, usually
         throw new IOException("Can't save " + filename);
     }
+
+    @Override
+    public String userspaceBindersPrefix() {
+        return null;
+    }
 }

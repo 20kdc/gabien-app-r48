@@ -20,6 +20,8 @@ import r48.imagefx.ToneImageEffect;
 import r48.io.IMIUtils;
 import r48.io.PathUtils;
 import r48.schema.SchemaElement;
+import r48.schema.specialized.IMagicalBinder;
+import r48.schema.specialized.MagicalBinders;
 import r48.schema.util.SchemaPath;
 import r48.ui.Coco;
 import r48.ui.UIFontSizeConfigurator;
@@ -179,7 +181,7 @@ public class BasicToolset implements IToolset {
                                                     text.add(rubyIO.decString());
                                                     return 1;
                                                 }
-                                            });
+                                            }, false);
                                         }
                                     }
                                     for (String st : text) {
@@ -335,7 +337,8 @@ public class BasicToolset implements IToolset {
                                     @Override
                                     public void accept(String s) {
                                         // Don't translate this, don't lax the restrictions.
-                                        // If they aren't willing to put in the effort to type it,
+                                        //  (For a natively English user, the case-sensitivity and punctuation will be enough to stop them.)
+                                        // If they aren't willing to put in the effort to type it, whatever that effort may be,
                                         //  then they won't be careful enough using this - and will probably ruin even more of their data.
                                         if (s.equals("I understand."))
                                             AppMain.reloadSystemDump();
@@ -403,20 +406,29 @@ public class BasicToolset implements IToolset {
         };
     }
 
-    public static int universalStringLocator(RubyIO rio, IFunction<RubyIO, Integer> string) {
-        // NOTE: Hash keys are not up for modification.
+    public static int universalStringLocator(RubyIO rio, IFunction<RubyIO, Integer> string, boolean writing) {
+        // NOTE: Hash keys, ivar keys are not up for modification.
         int total = 0;
         if (rio.type == '"')
             total += string.apply(rio);
         if ((rio.type == '{') || (rio.type == '}'))
             for (Map.Entry<RubyIO, RubyIO> me : rio.hashVal.entrySet())
-                total += universalStringLocator(me.getValue(), string);
+                total += universalStringLocator(me.getValue(), string, writing);
         if (rio.type == '[')
             for (RubyIO me : rio.arrVal)
-                total += universalStringLocator(me, string);
+                total += universalStringLocator(me, string, writing);
         if (rio.iVarVals != null)
             for (RubyIO val : rio.iVarVals)
-                total += universalStringLocator(val, string);
+                total += universalStringLocator(val, string, writing);
+        IMagicalBinder b = MagicalBinders.getBinderFor(rio);
+        if (b != null) {
+            RubyIO bound = b.targetToBound(rio);
+            int c = universalStringLocator(bound, string, writing);
+            total += c;
+            if (writing)
+                if (c != 0)
+                    b.applyBoundToTarget(bound, rio);
+        }
         return total;
     }
 }

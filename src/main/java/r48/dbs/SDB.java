@@ -380,16 +380,11 @@ public class SDB {
                             final String sPath = args[point++];
                             return new TonePickerSchemaElement(rPath, gPath, bPath, sPath, 100);
                         }
-                        if (text.equals("r2kBinding")) {
+                        if (text.equals("binding")) {
                             String type = args[point++];
-                            IMagicalBinder binder;
-                            if (type.equals("TroopPages")) {
-                                binder = LcfMagicalBinder.getTroopPages();
-                            } else if (type.equals("AnimationFrames")) {
-                                binder = LcfMagicalBinder.getAnimationFrames();
-                            } else {
+                            IMagicalBinder binder = MagicalBinders.getBinderByName(type);
+                            if (binder == null)
                                 throw new RuntimeException("Unknown binding " + type);
-                            }
                             return new MagicalBindingSchemaElement(binder, get());
                         }
                         if (text.equals("bitfield=")) {

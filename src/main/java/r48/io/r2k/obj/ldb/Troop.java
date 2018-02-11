@@ -10,6 +10,7 @@ package r48.io.r2k.obj.ldb;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
+import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.*;
 import r48.io.r2k.struct.EventCommand;
 
@@ -39,13 +40,7 @@ public class Troop extends R2kObject {
     }, true);
     // Actually a SparseArrayAR2kStruct<TroopPage>, but this is "heavily-deferred",
     //  thanks to Final Tear 3.
-    public BlobR2kStruct pages = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
-            // blank SparseArrayAR2kStruct is one zero byte.
-            return new byte[1];
-        }
-    });
+    public BlobR2kStruct pages = new BlobR2kStruct(R2kUtil.userspaceBinder + "R2kTroopPages", R2kUtil.supplyBlank(1, (byte) 0));
 
     @Override
     public Index[] getIndices() {

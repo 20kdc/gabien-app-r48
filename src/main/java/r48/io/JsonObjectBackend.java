@@ -247,6 +247,11 @@ public class JsonObjectBackend implements IObjectBackend {
         dos.close();
     }
 
+    @Override
+    public String userspaceBindersPrefix() {
+        return null;
+    }
+
     private void saveValue(DataOutputStream dos, RubyIO object) throws IOException {
         boolean first = true; // for collections
         switch (object.type) {

@@ -10,6 +10,8 @@ package r48;
 import gabien.GaBIEn;
 import gabien.ui.*;
 import r48.dbs.TXDB;
+import r48.schema.specialized.IMagicalBinder;
+import r48.schema.specialized.MagicalBinders;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
 
@@ -95,13 +97,22 @@ public class UITest extends UIPanel {
         masterPanel.panels.clear();
         for (int i = 0; i < navigaList.length; i++) {
             final int j = i;
-            UITextButton button = new UITextButton(FontSizes.inspectorTextHeight, navigaList[i], new Runnable() {
+            UIElement button = new UITextButton(FontSizes.inspectorTextHeight, navigaList[i], new Runnable() {
                 @Override
                 public void run() {
                     back.addLast(obj);
                     loadObject(objectList[j]);
                 }
             });
+            final IMagicalBinder b = MagicalBinders.getBinderFor(objectList[j]);
+            if (b != null)
+                button = new UIAppendButton(TXDB.get("Binding"), button, new Runnable() {
+                    @Override
+                    public void run() {
+                        back.addLast(obj);
+                        loadObject(b.targetToBound(objectList[j]));
+                    }
+                }, FontSizes.inspectorTextHeight);
             masterPanel.panels.add(button);
         }
         masterPanel.setBounds(masterPanel.getBounds());
