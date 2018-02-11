@@ -8,6 +8,8 @@
 package r48.schema.specialized;
 
 import gabien.ui.UIElement;
+import gabien.ui.UIPanel;
+import r48.AppMain;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
 import r48.schema.SchemaElement;
@@ -36,12 +38,13 @@ public class MagicalBindingSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final RubyIO trueTarget, ISchemaHost launcher, final SchemaPath truePath) {
         // Use subwatchers to create the backwards binding flow
         SchemaPath sp = createPath(trueTarget, truePath);
-        // Bootstrap.
-        return sp.editor.buildHoldingEditor(sp.targetElement, new VirtualizedSchemaHost(truePath, sp, launcher), sp);
+        // Bootstrap. Note the additional level of indirection to make sure you can return to your starting point.
+        SchemaPath vrp = sp.otherIndex("");
+        return sp.editor.buildHoldingEditor(sp.targetElement, new VirtualizedSchemaHost(truePath.findBack(), sp, truePath, sp, launcher), vrp);
     }
 
     private SchemaPath createPath(final RubyIO trueTarget, final SchemaPath truePath) {
-        RubyIO bound = binder.targetToBound(trueTarget);
+        RubyIO bound = MagicalBinders.toBoundWithCache(binder, trueTarget);
         return new SchemaPath(new SchemaElement() {
             // This is a fake root element used for binding
             @Override
@@ -72,48 +75,57 @@ public class MagicalBindingSchemaElement extends SchemaElement {
         sp.editor.modifyVal(sp.targetElement, sp, setDefault);
     }
 
-    // This is a fake schema host, sandboxing the "inner" root to avoid screwing up things royally
+    // This is a fake schema host, sandboxing the "inner" root to avoid screwing up things royally.
     private class VirtualizedSchemaHost implements ISchemaHost {
-        public SchemaPath pathRootReal, lastPathVirt, pathRootVirt, lastPathReal;
+        // When we go to the virtual path root, that means we're leaving.
+        public SchemaPath pathRootReal, pathRootVirt, lastPathReal, lastPathVirt;
         public ISchemaHost trueHost;
 
-        public VirtualizedSchemaHost(SchemaPath path, SchemaPath virtR, ISchemaHost parent) {
-            pathRootReal = path.findBack();
-            lastPathReal = pathRootReal;
-            lastPathVirt = virtR;
-            pathRootVirt = virtR;
+        public VirtualizedSchemaHost(SchemaPath prr, SchemaPath prv, SchemaPath lpr, SchemaPath lpv, ISchemaHost parent) {
+            pathRootReal = prr;
+            pathRootVirt = prv;
+
+            lastPathReal = lpr;
+            lastPathVirt = lpv;
+
             trueHost = parent;
         }
 
         @Override
-        public void switchObject(final SchemaPath nextObject) {
-            final Runnable r = new Runnable() {
-                boolean ignoreThis = false;
+        public void switchObject(final SchemaPath nextVirt) {
+            // This is where things get weird, to maintain a sense of a virtual stack.
+            if (nextVirt.findBack() == lastPathVirt) {
+                // Forward step?
+                lastPathReal = switchObjectInner(lastPathReal, nextVirt);
+            } else if (nextVirt.findBack() == lastPathVirt.findBack()) {
+                // Side-step?
+                lastPathReal = switchObjectInner(lastPathReal.findBack(), nextVirt);
+            } else {
+                // Backward-step?
+                lastPathReal = switchObjectInner(lastPathReal.findBack().findBack(), nextVirt);
+            }
+            nextVirt.hasBeenUsed = true;
+            lastPathVirt = nextVirt;
+            trueHost.switchObject(lastPathReal);
+        }
+
+        private SchemaPath switchObjectInner(SchemaPath parent, final SchemaPath nextVirt) {
+            return parent.newWindow(new SchemaElement() {
+                @Override
+                public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+                    VirtualizedSchemaHost targ = VirtualizedSchemaHost.this;
+                    if (launcher != trueHost) {
+                        // THIS IS A CLONE! Generate a new VSH.
+                        targ = new VirtualizedSchemaHost(pathRootReal, pathRootVirt, lastPathReal, lastPathVirt, launcher);
+                    }
+                    return nextVirt.editor.buildHoldingEditor(target, targ, nextVirt);
+                }
 
                 @Override
-                public void run() {
-                    if (ignoreThis) {
-                        ignoreThis = false;
-                        return;
-                    }
-                    ignoreThis = true;
-                    UIElement uie = nextObject.editor.buildHoldingEditor(nextObject.targetElement, VirtualizedSchemaHost.this, nextObject);
-                    SchemaElement se = new TempDialogSchemaChoice(uie, this, nextObject);
-                    if (nextObject.findBack() != lastPathVirt)
-                        lastPathReal = pathRootReal;
-                    if (nextObject == pathRootVirt) {
-                        // We're leaving
-                        trueHost.switchObject(pathRootReal);
-                        lastPathReal = pathRootReal;
-                        lastPathVirt = pathRootVirt;
-                        return;
-                    }
-                    lastPathVirt = nextObject;
-                    // Using an ordinary switch-object loses the control this instance has.
-                    trueHost.switchObject(lastPathReal = lastPathReal.newWindow(se, nextObject.targetElement));
+                public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+                    nextVirt.editor.modifyVal(target, nextVirt, setDefault);
                 }
-            };
-            r.run();
+            }, nextVirt.targetElement);
         }
 
         @Override

@@ -21,6 +21,7 @@ import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.map.systems.*;
 import r48.schema.OpaqueSchemaElement;
+import r48.schema.specialized.IMagicalBinder;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
@@ -34,9 +35,7 @@ import r48.ui.help.UIHelpSystem;
 
 import java.io.*;
 import java.lang.ref.WeakReference;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Pre-release development notice. 31 Dec, 2016.
@@ -160,6 +159,10 @@ public class AppMain {
 
     // All active schema hosts
     private static LinkedList<ISchemaHost> activeHosts;
+    // All magical bindings in use
+    public static WeakHashMap<RubyIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache;
+    // All magical binders in use
+    public static HashMap<String, IMagicalBinder> magicalBinderCache;
 
     // Used to scale certain windows.
     public static int mainWindowWidth;
@@ -174,6 +177,8 @@ public class AppMain {
 
         recommendedDirs = new LinkedList<String>();
         schemas = new SDB();
+        magicalBindingCache = new WeakHashMap<RubyIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>>();
+        magicalBinderCache = new HashMap<String, IMagicalBinder>();
 
         schemas.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
 
@@ -688,6 +693,8 @@ public class AppMain {
         theClipboard = null;
         imageFXCache = null;
         activeHosts = null;
+        magicalBindingCache = null;
+        magicalBinderCache = null;
         recommendedDirs = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();

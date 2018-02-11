@@ -112,8 +112,8 @@ public class GenposSchemaElement extends SchemaElement {
                     });
 
                     final RubyIO framesObject = target.getInstVarBySymbol("@frames");
-                    final IMagicalBinder binder = LcfMagicalBinder.getAnimationFrames();
-                    final AtomicReference<RubyIO> frameBound = new AtomicReference<RubyIO>(binder.targetToBound(framesObject));
+                    final IMagicalBinder binder = MagicalBinders.getBinderByName("R2kAnimationFrames");
+                    final AtomicReference<RubyIO> frameBound = new AtomicReference<RubyIO>(MagicalBinders.toBoundWithCache(binder, framesObject));
 
                     // This handles "outbound" changes made within the animator.
 
@@ -136,13 +136,9 @@ public class GenposSchemaElement extends SchemaElement {
                     };
                     final GenposAnimRootPanel rmarp = new GenposAnimRootPanel(anim, launcher, framerate);
 
-                    // This handles "inbound" changes made outside the animator.
-
                     safetyWrap(rmarp, launcher, new Runnable() {
                         @Override
                         public void run() {
-                            // Inbound!
-                            frameBound.set(anim.target = binder.targetToBound(framesObject));
                             // usual stuff
                             rmarp.frameChanged();
                             sc.prepareFramesetCache();

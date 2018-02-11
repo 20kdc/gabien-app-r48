@@ -187,7 +187,7 @@ class SDBHelpers {
         });
         return new MagicalBindingSchemaElement(new IMagicalBinder() {
             @Override
-            public RubyIO targetToBound(RubyIO target) {
+            public RubyIO targetToBoundNCache(RubyIO target) {
                 // Split PPP address into components
                 long t = target.fixnumVal;
                 long type = 0;
@@ -237,7 +237,7 @@ class SDBHelpers {
         );
         return new MagicalBindingSchemaElement(new IMagicalBinder() {
             @Override
-            public RubyIO targetToBound(RubyIO target) {
+            public RubyIO targetToBoundNCache(RubyIO target) {
                 // Split PPP address into components
                 long t = target.fixnumVal;
                 long type = 0;

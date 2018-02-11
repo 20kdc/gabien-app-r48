@@ -110,7 +110,7 @@ public class UITest extends UIPanel {
                     @Override
                     public void run() {
                         back.addLast(obj);
-                        loadObject(b.targetToBound(objectList[j]));
+                        loadObject(MagicalBinders.toBoundWithCache(b, objectList[j]));
                     }
                 }, FontSizes.inspectorTextHeight);
             masterPanel.panels.add(button);

@@ -13,7 +13,7 @@ import r48.RubyIO;
  * Created on 29/07/17.
  */
 public interface IMagicalBinder {
-    RubyIO targetToBound(RubyIO target);
+    RubyIO targetToBoundNCache(RubyIO target);
 
     boolean applyBoundToTarget(RubyIO bound, RubyIO target);
 }

@@ -31,7 +31,7 @@ public class LcfMagicalBinder implements IMagicalBinder {
         className = cn;
     }
 
-    public static IMagicalBinder getTroopPages() {
+    protected static IMagicalBinder getTroopPages() {
         return new LcfMagicalBinder("R2kTroopPages", new ISupplier<IR2kStruct>() {
             @Override
             public IR2kStruct get() {
@@ -45,7 +45,7 @@ public class LcfMagicalBinder implements IMagicalBinder {
         });
     }
 
-    public static IMagicalBinder getAnimationFrames() {
+    protected static IMagicalBinder getAnimationFrames() {
         return new LcfMagicalBinder("R2kAnimationFrames", new ISupplier<IR2kStruct>() {
             @Override
             public IR2kStruct get() {
@@ -60,7 +60,7 @@ public class LcfMagicalBinder implements IMagicalBinder {
     }
 
     @Override
-    public RubyIO targetToBound(RubyIO target) {
+    public RubyIO targetToBoundNCache(RubyIO target) {
         IR2kStruct s = inner.get();
         try {
             s.importData(new ByteArrayInputStream(target.userVal));

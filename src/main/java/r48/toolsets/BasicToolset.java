@@ -422,7 +422,7 @@ public class BasicToolset implements IToolset {
                 total += universalStringLocator(val, string, writing);
         IMagicalBinder b = MagicalBinders.getBinderFor(rio);
         if (b != null) {
-            RubyIO bound = b.targetToBound(rio);
+            RubyIO bound = MagicalBinders.toBoundWithCache(b, rio);
             int c = universalStringLocator(bound, string, writing);
             total += c;
             if (writing)

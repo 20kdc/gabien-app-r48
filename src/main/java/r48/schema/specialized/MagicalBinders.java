@@ -8,13 +8,30 @@
 package r48.schema.specialized;
 
 import r48.AppMain;
-import r48.RubyIO; /**
+import r48.RubyIO;
+
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+
+/**
  * The registry of MagicalBinder objects that are used to replace major things.
- * Used so that certain tools can still operate in the presence of a magical binder.
+ * Particular functions of this:
+ * 1. Ensures a 1 IMagicalBinder per binder-format policy on major binders
+ * 2. Ensures that for any given target object, there is one bound object per major binder
+ * 2 is critically important for maintaining consistency, and 1 is important to maintain 2.
  * Created on February 11th, 2018
  */
 public class MagicalBinders {
     public static IMagicalBinder getBinderByName(String name) {
+        if (AppMain.magicalBinderCache.containsKey(name))
+            return AppMain.magicalBinderCache.get(name);
+        IMagicalBinder imb = getBinderByNameCore(name);
+        if (imb != null)
+            AppMain.magicalBinderCache.put(name, imb);
+        return imb;
+    }
+
+    private static IMagicalBinder getBinderByNameCore(String name) {
         if (name.equals("R2kAnimationFrames"))
             return LcfMagicalBinder.getAnimationFrames();
         if (name.equals("R2kTroopPages"))
@@ -32,4 +49,24 @@ public class MagicalBinders {
         return null;
     }
 
+    public static RubyIO toBoundWithCache(IMagicalBinder binder, RubyIO trueTarget) {
+        HashMap<IMagicalBinder, WeakReference<RubyIO>> hm = AppMain.magicalBindingCache.get(trueTarget);
+        if (hm == null) {
+            hm = new HashMap<IMagicalBinder, WeakReference<RubyIO>>();
+            AppMain.magicalBindingCache.put(trueTarget, hm);
+        }
+        WeakReference<RubyIO> b = hm.get(binder);
+        RubyIO v = null;
+        if (b != null) {
+            v = b.get();
+            if (v == null)
+                b = null;
+        }
+        if (b == null) {
+            v = binder.targetToBoundNCache(trueTarget);
+            b = new WeakReference<RubyIO>(v);
+            hm.put(binder, b);
+        }
+        return v;
+    }
 }

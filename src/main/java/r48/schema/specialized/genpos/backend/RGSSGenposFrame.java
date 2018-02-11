@@ -199,7 +199,7 @@ public class RGSSGenposFrame implements IGenposFrame {
         // oh, this'll be *hilarious*. NOT.
         SchemaElement se = new MagicalBindingSchemaElement(new IMagicalBinder() {
             @Override
-            public RubyIO targetToBound(RubyIO target) {
+            public RubyIO targetToBoundNCache(RubyIO target) {
                 short val = new RubyTable(target.userVal).getTiletype(ct, i, 0);
                 return new RubyIO().setFX(val);
             }
