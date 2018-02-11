@@ -28,7 +28,8 @@ import r48.schema.util.SchemaPath;
  * <p/>
  * -- POST-GENPOS-REFACTOR --
  * Ok, what happens here is:
- * This class handles some generic object with an @frames array (which must contain "RPG::Animation::Frame"-class objects).
+ * This class handles the @frames array (which must contain "RPG::Animation::Frame"-class objects).
+ * (The reason it doesn't handle the parent object is because of magical bindings. Thanks to FT3.)
  * It delegates all the actual per-frame work to the frame handler you give it.
  * This lets this class manage both 2k3-era and RGSS-era animation objects,
  * while still letting the details in the frames (which are vastly different)
@@ -37,6 +38,7 @@ import r48.schema.util.SchemaPath;
  * Created on 2/17/17.
  */
 public class RMGenposAnim implements IGenposAnim {
+    // NOTE: This can be updated, and this is relied upon for cases where a magical binding is closely linked.
     public RubyIO target;
     public IGenposFrame perFrame;
     public Runnable updateNotify;
@@ -53,15 +55,15 @@ public class RMGenposAnim implements IGenposAnim {
     }
 
     public RubyIO getFrame() {
-        RubyIO[] frames = target.getInstVarBySymbol("@frames").arrVal;
+        RubyIO[] frames = target.arrVal;
         int min = 0;
         if (ix1)
             min = 1;
         if (frames.length <= min) {
             // Add nulls if necessary
             while (frames.length < min) {
-                ArrayUtils.insertRioElement(target.getInstVarBySymbol("@frames"), new RubyIO().setNull(), 0);
-                frames = target.getInstVarBySymbol("@frames").arrVal;
+                ArrayUtils.insertRioElement(target, new RubyIO().setNull(), 0);
+                frames = target.arrVal;
             }
             // Create a frame from scratch to avoid crashing
             RubyIO copy = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Animation::Frame"), null);
@@ -78,14 +80,14 @@ public class RMGenposAnim implements IGenposAnim {
 
     @Override
     public void insertFrame(RubyIO source) {
-        ArrayUtils.insertRioElement(target.getInstVarBySymbol("@frames"), source, frameIdx + 1);
+        ArrayUtils.insertRioElement(target, source, frameIdx + 1);
         updateNotify.run();
         frameIdx++;
     }
 
     @Override
     public void deleteFrame() {
-        ArrayUtils.removeRioElement(target.getInstVarBySymbol("@frames"), frameIdx);
+        ArrayUtils.removeRioElement(target, frameIdx);
         updateNotify.run();
         frameIdx--;
         getFrame();
@@ -125,6 +127,6 @@ public class RMGenposAnim implements IGenposAnim {
         int min = 0;
         if (ix1)
             min = 1;
-        return target.getInstVarBySymbol("@frames").arrVal.length - min;
+        return target.arrVal.length - min;
     }
 }

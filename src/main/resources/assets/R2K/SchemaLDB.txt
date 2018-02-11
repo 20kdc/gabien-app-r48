@@ -504,7 +504,9 @@ C name Class.RPG::Animation @name | #A
 @battle2_2k3 boolean
 @scope rpg_animation_scope
 @position rpg_animation_position
-@frames subwindow arrayIx1 subwindow RPG::Animation::Frame
+ oh, this is fun. see, r2kAnimation has to be changed to make this work
+ the alternative is "worse". for some definitions of "worse".
+@frames r2kBinding AnimationFrames subwindow arrayIx1 subwindow RPG::Animation::Frame
  yet another "aaaaaa why is this happening" fix
 @timings subwindow hash int+0 subwindow RPG::Animation::Timing
 C magicGenpos r2kAnimation @animation_name . . . 30

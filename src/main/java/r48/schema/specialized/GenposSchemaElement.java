@@ -7,7 +7,9 @@
 
 package r48.schema.specialized;
 
+import gabien.GaBIEn;
 import gabien.ui.*;
+import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -17,6 +19,8 @@ import r48.schema.specialized.genpos.GenposFramePanelController;
 import r48.schema.specialized.genpos.backend.*;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * This starts a UI-framework-based special editing package,
@@ -63,7 +67,7 @@ public class GenposSchemaElement extends SchemaElement {
                         }
                     });
                     final RGSSGenposFrame frame = new RGSSGenposFrame(sc, path, genposType.equals("vxaAnimation"), updater);
-                    final RMGenposAnim anim = new RMGenposAnim(target, frame, updater, false);
+                    final RMGenposAnim anim = new RMGenposAnim(target.getInstVarBySymbol("@frames"), frame, updater, false);
                     frame.frameSource = new ISupplier<RubyIO>() {
                         @Override
                         public RubyIO get() {
@@ -80,29 +84,48 @@ public class GenposSchemaElement extends SchemaElement {
                         }
                     }, boot, path);
                 } else if (genposType.equals("r2kAnimation")) {
-                    Runnable updater = new Runnable() {
+                    // This is particularly mucky because of it's direct interaction with a magically-bound element,
+                    //  to increase performance when not dealing with this element.
+                    // And also because of the way the battle2 falls back to the older sprites.
+                    final ISupplier<Boolean> actuallyBattle2 = new ISupplier<Boolean>() {
                         @Override
-                        public void run() {
-                            path.changeOccurred(false);
+                        public Boolean get() {
+                            if (AppMain.stuffRendererIndependent.imageLoader.getImage("Battle2/" + target.getInstVarBySymbol("@animation_name").decString(), false) == GaBIEn.getErrorImage())
+                                return false;
+                            return target.getInstVarBySymbol("@battle2_2k3").type == 'T';
                         }
                     };
                     final SpriteCache sc = new SpriteCache(target, a1, null, null, null, new IFunction<RubyIO, Integer>() {
                         @Override
                         public Integer apply(RubyIO rubyIO) {
-                            if (rubyIO.getInstVarBySymbol("@battle2_2k3").type == 'T')
+                            if (actuallyBattle2.get())
                                 return 128;
                             return 96;
                         }
                     }, new IFunction<RubyIO, String>() {
                         @Override
                         public String apply(RubyIO rubyIO) {
-                            if (rubyIO.getInstVarBySymbol("@battle2_2k3").type == 'T')
+                            if (actuallyBattle2.get())
                                 return "Battle2/";
                             return "Battle/";
                         }
                     });
-                    final R2kGenposFrame frame = new R2kGenposFrame(sc, path, updater);
-                    final RMGenposAnim anim = new RMGenposAnim(target, frame, updater, true);
+
+                    final RubyIO framesObject = target.getInstVarBySymbol("@frames");
+                    final IMagicalBinder binder = LcfMagicalBinder.getAnimationFrames();
+                    final AtomicReference<RubyIO> frameBound = new AtomicReference<RubyIO>(binder.targetToBound(framesObject));
+
+                    Runnable outbound = new Runnable() {
+                        @Override
+                        public void run() {
+                            binder.applyBoundToTarget(frameBound.get(), framesObject);
+                            path.changeOccurred(false);
+                        }
+                    };
+
+                    final R2kGenposFrame frame = new R2kGenposFrame(sc, path, outbound);
+                    final RMGenposAnim anim = new RMGenposAnim(frameBound.get(), frame, outbound, true);
+
                     frame.frameSource = new ISupplier<RubyIO>() {
                         @Override
                         public RubyIO get() {
@@ -110,10 +133,13 @@ public class GenposSchemaElement extends SchemaElement {
                         }
                     };
                     final GenposAnimRootPanel rmarp = new GenposAnimRootPanel(anim, launcher, framerate);
-                    // Setup automatic-update safety net
+                    // Setup inbound safety-net.
                     safetyWrap(rmarp, launcher, new Runnable() {
                         @Override
                         public void run() {
+                            // Inbound!
+                            frameBound.set(anim.target = binder.targetToBound(framesObject));
+                            // usual stuff
                             rmarp.frameChanged();
                             sc.prepareFramesetCache();
                         }

@@ -33,10 +33,10 @@ public class Animation extends R2kObject {
     });
     public IntegerR2kStruct scope = new IntegerR2kStruct(0);
     public IntegerR2kStruct position = new IntegerR2kStruct(2);
-    public SparseArrayAR2kStruct<AnimationFrame> frames = new SparseArrayAR2kStruct<AnimationFrame>(new ISupplier<AnimationFrame>() {
+    public BlobR2kStruct frames = new BlobR2kStruct(new ISupplier<byte[]>() {
         @Override
-        public AnimationFrame get() {
-            return new AnimationFrame();
+        public byte[] get() {
+            return new byte[1];
         }
     });
 

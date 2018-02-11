@@ -10,6 +10,9 @@ package r48.schema.specialized;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.chunks.IR2kStruct;
+import r48.io.r2k.chunks.SparseArrayAR2kStruct;
+import r48.io.r2k.obj.ldb.AnimationFrame;
+import r48.io.r2k.obj.ldb.Troop;
 import r48.schema.integers.IntegerSchemaElement;
 
 import java.io.ByteArrayInputStream;
@@ -24,6 +27,34 @@ public class LcfMagicalBinder implements IMagicalBinder {
     private final ISupplier<IR2kStruct> inner;
     public LcfMagicalBinder(ISupplier<IR2kStruct> iSupplier) {
         inner = iSupplier;
+    }
+
+    public static IMagicalBinder getTroopPages() {
+        return new LcfMagicalBinder(new ISupplier<IR2kStruct>() {
+            @Override
+            public IR2kStruct get() {
+                return new SparseArrayAR2kStruct<Troop.TroopPage>(new ISupplier<Troop.TroopPage>() {
+                    @Override
+                    public Troop.TroopPage get() {
+                        return new Troop.TroopPage();
+                    }
+                });
+            }
+        });
+    }
+
+    public static IMagicalBinder getAnimationFrames() {
+        return new LcfMagicalBinder(new ISupplier<IR2kStruct>() {
+            @Override
+            public IR2kStruct get() {
+                return new SparseArrayAR2kStruct<AnimationFrame>(new ISupplier<AnimationFrame>() {
+                    @Override
+                    public AnimationFrame get() {
+                        return new AnimationFrame();
+                    }
+                });
+            }
+        });
     }
 
     @Override
