@@ -455,15 +455,6 @@ i HelpImg/3.2003save.png
 .
 > 800 back
 
-802: Additional Information
-. The version you have is >= 0.5.
-. With that in regard.
-. The solstice was missed, I wanted to release this then but chickened out.
-. But hey, they needed more time too, so whatever - here I am, typing these words.
-. I wonder what will happen if THEY find me out? Well. Let's just hope that doesn't happen.
-.
-> 800 back
-
 998: Internal Tool Documentation 'RMAnimEditor'
 . Sometimes, you just need to edit a battle animation.
 . And you can't do that very easily from the standard interface, though it is possible.

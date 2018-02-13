@@ -163,7 +163,7 @@ public class Application {
                     ISupplier<IGPMenuPanel>[] runs = igpMenuPanel.getButtonActs();
                     for (int i = 0; i < names.length; i++) {
                         final ISupplier<IGPMenuPanel> r = runs[i];
-                        gamepaks.panels.add(new UITextButton(FontSizes.enumChoiceTextHeight, names[i], new Runnable() {
+                        gamepaks.panels.add(new UITextButton(FontSizes.launcherTextHeight, names[i], new Runnable() {
                             @Override
                             public void run() {
                                 accept(r.get());
