@@ -18,9 +18,10 @@ cp -r ../../gabien-common/src/main/java/gabien/ui/ISupplier.java src/main/java/g
 cp -r ../src/main/java/r48/Ruby*.java src/main/java/r48/ &&
 cp -r ../src/main/java/r48/io src/main/java/r48/ &&
 gradle build &&
-cd build/classes/java/main &&
-find . -type f > ../../../../src/main/resources/world.txt &&
-cd ../../../.. &&
+cd build/classes/main && # Next two lines dependent on this
+find . -type f > ../../../src/main/resources/world.txt &&
+cd ../../.. &&
+echo "performing imi rebuild @ `pwd`" &&
 gradle build &&
 cp build/libs/gabien-app-r48-imi.jar staging.jar &&
 cd ../staging &&

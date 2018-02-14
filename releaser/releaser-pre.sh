@@ -6,7 +6,7 @@
 
 # Release Build Script, iteration 2
 # This part of the script compiles the critical stuff.
-# Supply with the version name.
+# Supply with the version name and version code.
 # This builds Common and R48, creates the "staging" folder, and populates it.
 
 # Start with leaving the releaser folder first
@@ -28,7 +28,7 @@ cp CREDITS.txt staging/ &&
 cp COPYING.txt staging/ &&
 # The date is represented with the last commit's date.
 # Note that refs/heads/master is used because HEAD points there - this is not good practice but it saves complexity.
-echo "R48 $1, last commit:" `cat .git/refs/heads/master` `git log | grep Date | head -n 1` >> staging-version.txt &&
+echo "R48 $1 (AVC $2), last commit:" `cat .git/refs/heads/master` `git log | grep Date | head -n 1` >> staging-version.txt &&
 # Write in the boring details
 echo "gabien-app-r48 - Editing program for various formats" >> staging-version.txt &&
 echo "Written starting in 2016 by contributors (see CREDITS.txt)" >> staging-version.txt &&
