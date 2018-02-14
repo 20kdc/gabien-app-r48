@@ -9,6 +9,9 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning:
++ immortal window export
++ clean up windowing?
+
 + Figure out RXP's oddities(???)
 
 + send back SavePicture default value fixes, they probably need this (Well, I did mention it, but if anything's happened I don't see it)

@@ -40,7 +40,7 @@ public class UIMTPopupButtons extends UIMTBase {
                     public void run() {
                         AppMain.stuffRendererIndependent.imageLoader.flushCache();
                         view.mapTable.renderer.imageLoader.flushCache();
-                        view.mapTable = view.map.rendererRetriever.get();
+                        view.performRefresh(null);
                         view.mapTable.renderer.imageLoader.flushCache();
                         view.reinitLayerVis();
                     }

@@ -377,7 +377,7 @@ public class AppMain {
                         new UIWindowView.IWVWindowIcon() {
                             @Override
                             public void draw(IGrDriver igd, int x, int y, int size) {
-                                igd.clearRect(128, 64, 64, x, y, size, size);
+                                Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false);
                                 if (uiElement instanceof IWindowElement)
                                     if (((IWindowElement) uiElement).wantsSelfClose()) {
                                         utp.removeTab(uiElement);

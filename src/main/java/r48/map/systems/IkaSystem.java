@@ -51,10 +51,10 @@ public class IkaSystem extends MapSystem {
                 return null;
         final RubyIO map = AppMain.objectDB.getObject(gum);
         final IEventAccess events = new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 0, "IkachanEvent");
-        return new MapViewDetails(gum, "IkachanMap", new ISupplier<MapViewState>() {
+        return new MapViewDetails(gum, "IkachanMap", new IFunction<String, MapViewState>() {
             @Override
-            public MapViewState get() {
-                return MapViewState.fromRT(rendererGeneral(map, events), gum, map, "@data", false, events);
+            public MapViewState apply(String s) {
+                return MapViewState.fromRT(rendererGeneral(map, events), gum, new String[] {}, map, "@data", false, events);
             }
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override

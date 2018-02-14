@@ -17,10 +17,7 @@ import r48.io.r2k.chunks.SparseArrayAR2kStruct;
 import r48.io.r2k.obj.ldb.AnimationFrame;
 import r48.io.r2k.obj.ldb.Troop;
 import r48.schema.*;
-import r48.schema.arrays.ArbIndexedArraySchemaElement;
-import r48.schema.arrays.PagerArrayInterface;
-import r48.schema.arrays.StandardArrayInterface;
-import r48.schema.arrays.StandardArraySchemaElement;
+import r48.schema.arrays.*;
 import r48.schema.displays.EPGDisplaySchemaElement;
 import r48.schema.displays.HWNDSchemaElement;
 import r48.schema.displays.HuePickerSchemaElement;
@@ -201,36 +198,76 @@ public class SDB {
                             SchemaElement hide = get();
                             return new PathSchemaElement(path, TXDB.get(outerContext, path), hide, true);
                         }
-                        if (text.equals("array")) {
-                            int n = Integer.parseInt(args[point++]);
-                            return new StandardArraySchemaElement(get(), n, false, 0, standardArrayUi);
+
+                        // CS means "control indent if allowed"
+                        // MS means "never control indent"
+                        if (text.equals("arrayCS")) {
+                            SchemaElement s1, s2;
+                            s1 = get();
+                            s2 = get();
+                            String a = args[point++];
+                            return new EventCommandArraySchemaElement(s1, s2, getCMDB(a), allowControlOfEventCommandIndent);
                         }
-                        if (text.equals("arrayIdX")) {
-                            int x = Integer.parseInt(args[point++]);
-                            int n = Integer.parseInt(args[point++]);
-                            return new StandardArraySchemaElement(get(), n, false, x, standardArrayUi);
+                        if (text.equals("arrayMS")) {
+                            SchemaElement s1, s2;
+                            s1 = get();
+                            s2 = get();
+                            String a = args[point++];
+                            return new EventCommandArraySchemaElement(s1, s2, getCMDB(a), false);
                         }
-                        if (text.equals("arrayEIdX")) {
-                            // this is *particularly* exotic
-                            // arrayEIdX <enum> <displayOffset> <fixedSize> <val>
-                            SchemaElement enu = get();
-                            int x = Integer.parseInt(args[point++]);
-                            int n = Integer.parseInt(args[point++]);
-                            return new StandardArraySchemaElement(get(), n, false, x, standardArrayUi, enu);
+
+                        // array[E][P][IdX/AL1/Ix1/IxN]
+                        if (text.startsWith("array")) {
+                            String ending = text.substring(5);
+                            SchemaElement enu = null;
+                            IArrayInterface iai = standardArrayUi;
+                            if (ending.startsWith("E")) {
+                                enu = get();
+                                ending = ending.substring(1);
+                            }
+                            if (ending.startsWith("P")) {
+                                iai = new PagerArrayInterface();
+                                ending = ending.substring(1);
+                            }
+                            if (ending.equals("")) {
+                                int n = Integer.parseInt(args[point++]);
+                                if (enu != null) {
+                                    return new StandardArraySchemaElement(get(), n, false, 0, iai, enu);
+                                } else {
+                                    return new StandardArraySchemaElement(get(), n, false, 0, iai);
+                                }
+                            } else if (ending.equals("IdX")) {
+                                int x = Integer.parseInt(args[point++]);
+                                int n = Integer.parseInt(args[point++]);
+                                if (enu != null) {
+                                    return new StandardArraySchemaElement(get(), n, false, x, iai, enu);
+                                } else {
+                                    return new StandardArraySchemaElement(get(), n, false, x, iai);
+                                }
+                            } else if (ending.equals("AL1")) {
+                                if (enu != null) {
+                                    return new StandardArraySchemaElement(get(), 0, true, 0, iai, enu);
+                                } else {
+                                    return new StandardArraySchemaElement(get(), 0, true, 0, iai);
+                                }
+                            } else if (ending.equals("Ix1")) {
+                                if (enu != null) {
+                                    throw new RuntimeException("Incompatible with enumerations!");
+                                } else {
+                                    return new ArbIndexedArraySchemaElement(get(), 1, 0, 0, iai);
+                                }
+                            } else if (ending.equals("IxN")) {
+                                int ofx = Integer.parseInt(args[point++]);
+                                int sz = Integer.parseInt(args[point++]);
+                                if (enu != null) {
+                                    throw new RuntimeException("Incompatible with enumerations!");
+                                } else {
+                                    return new ArbIndexedArraySchemaElement(get(), ofx, 0, sz, iai);
+                                }
+                            } else {
+                                throw new RuntimeException("Cannot handle array ending " + ending);
+                            }
                         }
-                        if (text.equals("arrayAL1"))
-                            return new StandardArraySchemaElement(get(), 0, true, 0, standardArrayUi);
-                        if (text.equals("arrayPIx1"))
-                            return new ArbIndexedArraySchemaElement(get(), 1, 1, 0, new PagerArrayInterface());
-                        if (text.equals("arrayIx1"))
-                            return new ArbIndexedArraySchemaElement(get(), 1, 0, 0, standardArrayUi);
-                        if (text.equals("arrayIxN")) {
-                            int ofx = Integer.parseInt(args[point++]);
-                            int sz = Integer.parseInt(args[point++]);
-                            return new ArbIndexedArraySchemaElement(get(), ofx, 0, sz, standardArrayUi);
-                        }
-                        if (text.equals("arrayDAM"))
-                            throw new RuntimeException("Use DA.");
                         if (text.equals("DA{")) {
                             String disambiguatorIndex = args[point++];
                             SchemaElement backup = get();
@@ -445,23 +482,6 @@ public class SDB {
                         }
                         if (text.equals("CTNative"))
                             return new CTNativeSchemaElement(args[point++]);
-
-                        // CS means "control indent if allowed"
-                        // MS means "never control indent"
-                        if (text.equals("arrayCS")) {
-                            SchemaElement s1, s2;
-                            s1 = get();
-                            s2 = get();
-                            String a = args[point++];
-                            return new EventCommandArraySchemaElement(s1, s2, getCMDB(a), allowControlOfEventCommandIndent);
-                        }
-                        if (text.equals("arrayMS")) {
-                            SchemaElement s1, s2;
-                            s1 = get();
-                            s2 = get();
-                            String a = args[point++];
-                            return new EventCommandArraySchemaElement(s1, s2, getCMDB(a), false);
-                        }
 
                         if (text.equals("mapPositionHelper")) {
                             String a = args[point++];

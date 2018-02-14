@@ -95,7 +95,7 @@ public class PagerArrayInterface implements IArrayInterface {
             }
         }
         final IProperty prop2 = prop.apply("page");
-        UITabPane utp = new UITabPane(FontSizes.tabTextHeight, false, false) {
+        UITabPane utp = new UITabPane(FontSizes.tabTextHeight, false, false, FontSizes.schemaPagerTabScrollersize) {
             @Override
             public void selectTab(UIElement i) {
                 super.selectTab(i);
@@ -103,10 +103,10 @@ public class PagerArrayInterface implements IArrayInterface {
             }
         };
 
-        int h = utp.tabBarHeight;
+        int h = utp.tabBarHeight + FontSizes.schemaPagerTabScrollersize;
         for (UIElement ue : uie) {
             utp.addTab(new UIWindowView.WVWindow(ue, new UIWindowView.IWVWindowIcon[] {}));
-            h = Math.max(h, ue.getBounds().height + utp.tabBarHeight);
+            h = Math.max(h, ue.getBounds().height + utp.tabBarHeight + FontSizes.schemaPagerTabScrollersize);
         }
         utp.setBounds(new Rect(0, 0, 200, h));
         svl.panels.add(utp);

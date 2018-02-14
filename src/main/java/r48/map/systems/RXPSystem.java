@@ -17,10 +17,7 @@ import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
-import r48.map.IEditingToolbarController;
-import r48.map.IMapToolContext;
-import r48.map.MapEditingToolbarController;
-import r48.map.StuffRenderer;
+import r48.map.*;
 import r48.map.drawlayers.*;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
@@ -47,11 +44,9 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         }))), true);
     }
 
-    protected static RubyIO tsoFromMap(RubyIO map) {
-        if (map == null)
-            return null;
+    protected static RubyIO tsoById(long id) {
         RubyIO tileset = null;
-        int tid = (int) map.getInstVarBySymbol("@tileset_id").fixnumVal;
+        int tid = (int) id;
         RubyIO tilesets = AppMain.objectDB.getObject("Tilesets");
         if ((tid >= 0) && (tid < tilesets.arrVal.length))
             tileset = tilesets.arrVal[tid];
@@ -66,8 +61,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
         return new UIGRMMapInfos(windowMaker, new RXPRMLikeMapInfoBackend(), mapBox, mapInfos);
     }
 
-    public StuffRenderer rendererFromMap(RubyIO map, IEventAccess events) {
-        RubyIO tileset = tsoFromMap(map);
+    public StuffRenderer rendererFromMapAndTso(RubyIO map, RubyIO tileset, IEventAccess events) {
         XPTileRenderer tileRenderer = new XPTileRenderer(imageLoader, tileset);
         RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
         String pano = "";
@@ -115,10 +109,19 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
                 return null;
         final RubyIO map = AppMain.objectDB.getObject(gum, "RPG::Map");
         final IEventAccess events = new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 1, "RPG::Event");
-        return new MapViewDetails(gum, "RPG::Map", new ISupplier<MapViewState>() {
+        return new MapViewDetails(gum, "RPG::Map", new IFunction<String, MapViewState>() {
+            private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("Tilesets");
             @Override
-            public MapViewState get() {
-                return MapViewState.fromRT(rendererFromMap(map, events), gum, map, "@data", false, events);
+            public MapViewState apply(String changed) {
+                long currentTsId = map.getInstVarBySymbol("@tileset_id").fixnumVal;
+                RubyIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
+                if (lastTileset == null) {
+                    lastTileset = tsoById(currentTsId);
+                    tilesetCache.insertTileset(currentTsId, lastTileset);
+                }
+                return MapViewState.fromRT(rendererFromMapAndTso(map, lastTileset, events), gum, new String[] {
+                        "Tilesets"
+                }, map, "@data", false, events);
             }
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override

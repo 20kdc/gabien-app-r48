@@ -117,6 +117,12 @@ public class FontSizes {
     // TXDB.get("mapToolbarScrollersize")
     public static int mapToolbarScrollersize = 8;
 
+    // TXDB.get("tilesTabScrollersize")
+    public static int tilesTabScrollersize = 8;
+
+    // TXDB.get("schemaPagerTabScrollersize")
+    public static int schemaPagerTabScrollersize = 8;
+
     // TXDB.get("gridScrollersize")
     public static int gridScrollersize = 24;
 

@@ -28,7 +28,7 @@ import r48.maptools.UIMTShadowLayer;
  */
 public class RVXASystem extends RXPSystem {
     @Override
-    public StuffRenderer rendererFromMap(RubyIO map, IEventAccess events) {
+    public StuffRenderer rendererFromMapAndTso(RubyIO map, RubyIO tso, IEventAccess events) {
         String vxaPano = "";
         if (map != null) {
             vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
@@ -38,7 +38,7 @@ public class RVXASystem extends RXPSystem {
         if (!vxaPano.equals(""))
             vxaPano = "Parallaxes/" + vxaPano;
 
-        ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tsoFromMap(map));
+        ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0, 1, 3, 2}, eventRenderer, imageLoader, map, events, vxaPano, false, false, 0, 0, -1, -1, 1));
     }

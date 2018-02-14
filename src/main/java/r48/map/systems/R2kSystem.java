@@ -74,15 +74,12 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     }
 
 
-    private RubyIO tsoFromMap2000(RubyIO map) {
-        if (map == null)
-            return null;
-        return AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@tilesets").getHashVal(map.getInstVarBySymbol("@tileset_id"));
+    private RubyIO tsoById(long id) {
+        return AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@tilesets").getHashVal(new RubyIO().setFX(id));
     }
 
     // saveData is optional, and replaces some things.
-    private StuffRenderer rendererFromMap(RubyIO map, IEventAccess events) {
-        RubyIO tileset = tsoFromMap2000(map);
+    private StuffRenderer rendererFromMapAndTso(RubyIO map, RubyIO tileset, IEventAccess events) {
         ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tileset);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
@@ -192,16 +189,33 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
                 if (AppMain.objectDB.getObject(obj, null) == null)
                     return null;
             final RubyIO root = AppMain.objectDB.getObject(obj, "RPG::Save");
-            return new MapViewDetails(obj, "RPG::Save", new ISupplier<MapViewState>() {
+            return new MapViewDetails(obj, "RPG::Save", new IFunction<String, MapViewState>() {
+                private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("RPG_RT.ldb");
                 @Override
-                public MapViewState get() {
+                public MapViewState apply(String changed) {
                     int mapId = (int) root.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map").fixnumVal;
+                    tilesetCache.updateMapId(mapId);
+
                     final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(mapId);
                     RubyIO map = AppMain.objectDB.getObject(objn);
                     final IEventAccess events = new R2kSavefileEventAccess(root);
                     if (map == null)
-                        return MapViewState.getBlank(null, events);
-                    return MapViewState.fromRT(rendererFromMap(map, events), objn, map, "@data", true, events);
+                        return MapViewState.getBlank(null, new String[] {
+                                objn
+                        }, events);
+
+                    // Map okay - update tileset cache & render
+                    long currentTsId = map.getInstVarBySymbol("@tileset_id").fixnumVal;
+                    RubyIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
+                    if (lastTileset == null) {
+                        lastTileset = tsoById(currentTsId);
+                        tilesetCache.insertTileset(currentTsId, lastTileset);
+                    }
+
+                    return MapViewState.fromRT(rendererFromMapAndTso(map, lastTileset, events), objn, new String[] {
+                            objn,
+                            "RPG_RT.ldb"
+                    }, map, "@data", true, events);
                 }
             }, new IFunction<IMapToolContext, IEditingToolbarController>() {
                 @Override
@@ -240,10 +254,19 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
                 return null;
         final RubyIO map = AppMain.objectDB.getObject(objn, "RPG::Map");
         final IEventAccess iea = new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 1, "RPG::Event");
-        return new MapViewDetails(objn, "RPG::Map", new ISupplier<MapViewState>() {
+        return new MapViewDetails(objn, "RPG::Map", new IFunction<String, MapViewState>() {
+            private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("RPG_RT.ldb");
             @Override
-            public MapViewState get() {
-                return MapViewState.fromRT(rendererFromMap(map, iea), objn, map, "@data", false, iea);
+            public MapViewState apply(String changed) {
+                long currentTsId = map.getInstVarBySymbol("@tileset_id").fixnumVal;
+                RubyIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
+                if (lastTileset == null) {
+                    lastTileset = tsoById(currentTsId);
+                    tilesetCache.insertTileset(currentTsId, lastTileset);
+                }
+                return MapViewState.fromRT(rendererFromMapAndTso(map, lastTileset, iea), objn, new String[] {
+                        "RPG_RT.ldb"
+                }, map, "@data", false, iea);
             }
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override

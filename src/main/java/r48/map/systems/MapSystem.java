@@ -87,6 +87,8 @@ public abstract class MapSystem {
         public final StuffRenderer renderer;
         // Used for __MAP__ dictionaries
         public final String underscoreMapObjectId;
+        // This is an additional list of object roots to listen for modifications on.
+        public final String[] refreshOnObjectChange;
         // Only for tool use, so can be null if the tools won't ever access it
         public final IEventAccess eventAccess;
         public final int width, height, planeCount;
@@ -97,9 +99,10 @@ public abstract class MapSystem {
         // int[] contains X, Y, (defaults...)
         public final IConsumer<int[]> resize;
 
-        public MapViewState(StuffRenderer r, String usm, int w, int h, int pc, IFunction<int[], Short> gtd, IConsumer<int[]> std, IConsumer<int[]> rz, IEventAccess iea) {
+        public MapViewState(StuffRenderer r, String usm, String[] exrefresh, int w, int h, int pc, IFunction<int[], Short> gtd, IConsumer<int[]> std, IConsumer<int[]> rz, IEventAccess iea) {
             renderer = r;
             underscoreMapObjectId = usm;
+            refreshOnObjectChange = exrefresh;
             width = w;
             height = h;
             planeCount = pc;
@@ -121,8 +124,8 @@ public abstract class MapSystem {
             return false;
         }
 
-        public static MapViewState getBlank(String underscoreMapObjectId, IEventAccess iea) {
-            return new MapViewState(AppMain.stuffRendererIndependent, underscoreMapObjectId, 0, 0, 0, new IFunction<int[], Short>() {
+        public static MapViewState getBlank(String underscoreMapObjectId, String[] ex, IEventAccess iea) {
+            return new MapViewState(AppMain.stuffRendererIndependent, underscoreMapObjectId, ex, 0, 0, 0, new IFunction<int[], Short>() {
                 @Override
                 public Short apply(int[] ints) {
                     return 0;
@@ -139,9 +142,9 @@ public abstract class MapSystem {
             }, iea);
         }
 
-        public static MapViewState fromRT(StuffRenderer stuffRenderer, String underscoreMapObjectId, final RubyIO its, final String str, final boolean readOnly, IEventAccess iea) {
+        public static MapViewState fromRT(StuffRenderer stuffRenderer, String underscoreMapObjectId, String[] ex, final RubyIO its, final String str, final boolean readOnly, IEventAccess iea) {
             final RubyTable rt = new RubyTable(its.getInstVarBySymbol(str).userVal);
-            return new MapViewState(stuffRenderer, underscoreMapObjectId, rt.width, rt.height, rt.planeCount, new IFunction<int[], Short>() {
+            return new MapViewState(stuffRenderer, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, new IFunction<int[], Short>() {
                 @Override
                 public Short apply(int[] ints) {
                     return rt.getTiletype(ints[0], ints[1], ints[2]);
@@ -193,13 +196,16 @@ public abstract class MapSystem {
         // dictionaryObjectId is used for __MAP__
         public final String objectId;
         public final String objectSchema;
+        // NOTE: The main modification listener gets inserted on this root,
+        //        and changes to the map cause this root to be modified.
+        // Additional modification listeners are inserted on a per-State basis.
         public final RubyIO object;
         // for UIMapView internals
-        public final ISupplier<MapViewState> rendererRetriever;
+        public final IFunction<String, MapViewState> rendererRetriever;
         // For editing. This was going to happen ever since recommendedflags started sneaking in, since otherwise the system has to have more copied code for GUM translation
         public final IFunction<IMapToolContext, IEditingToolbarController> toolbar;
 
-        public MapViewDetails(String o, String os, ISupplier<MapViewState> mvs, IFunction<IMapToolContext, IEditingToolbarController> tb) {
+        public MapViewDetails(String o, String os, IFunction<String, MapViewState> mvs, IFunction<IMapToolContext, IEditingToolbarController> tb) {
             objectId = o;
             objectSchema = os;
             object = AppMain.objectDB.getObject(o, os);

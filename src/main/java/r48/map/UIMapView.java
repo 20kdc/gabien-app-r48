@@ -71,13 +71,26 @@ public class UIMapView extends UIElement implements IWindowElement {
     private IConsumer<SchemaPath> listener = new IConsumer<SchemaPath>() {
         @Override
         public void accept(SchemaPath sp) {
-            // Not an incredibly high-cost operation, thankfully,
-            //  since it'll have to run on any edits.
-            mapTable = map.rendererRetriever.get();
-            reinitLayerVis();
-            scheduler.forceNextUpdate = true;
+            performRefresh(AppMain.objectDB.getIdByObject(sp.findRoot().targetElement));
         }
     };
+    private String[] listenAdditionals = new String[0];
+
+    public void performRefresh(String cause) {
+        // Not an incredibly high-cost operation, thankfully,
+        //  since it'll have to run on any edits.
+        for (String s : listenAdditionals)
+            if (!map.objectId.equals(s))
+                AppMain.objectDB.deregisterModificationHandler(s, listener);
+        mapTable = map.rendererRetriever.apply(cause);
+        listenAdditionals = mapTable.refreshOnObjectChange;
+        for (String s : listenAdditionals)
+            if (!map.objectId.equals(s))
+                AppMain.objectDB.registerModificationHandler(s, listener);
+        reinitLayerVis();
+        scheduler.forceNextUpdate = true;
+    }
+
     public boolean[] layerVis;
 
     public UIMapView(String mapN, int i, int i1) {
@@ -86,7 +99,7 @@ public class UIMapView extends UIElement implements IWindowElement {
         map = AppMain.system.mapViewRequest(mapN, true);
         mapGUM = mapN;
         AppMain.objectDB.registerModificationHandler(map.object, listener);
-        listener.accept(null);
+        performRefresh(null);
 
         // begin!
         reinitLayerVis();
