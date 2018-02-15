@@ -90,13 +90,7 @@ public class LcfMagicalBinder implements IMagicalBinder {
     public boolean applyBoundToTarget(RubyIO bound, RubyIO target) {
         IR2kStruct s = inner.get();
         s.fromRIO(bound);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            s.exportData(baos);
-        } catch (IOException ioe) {
-            throw new RuntimeException(ioe);
-        }
-        byte[] tba = baos.toByteArray();
+        byte[] tba = getStructBytes(s);
         // Try to ensure target is a blob.
         if (IntegerSchemaElement.ensureType(target, 'u', false)) {
             target.setSymlike(className, false);
@@ -117,5 +111,32 @@ public class LcfMagicalBinder implements IMagicalBinder {
         }
         target.userVal = tba;
         return true;
+    }
+
+    private byte[] getStructBytes(IR2kStruct s) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            s.exportData(baos);
+        } catch (IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
+        return baos.toByteArray();
+    }
+
+    @Override
+    public boolean modifyVal(RubyIO trueTarget, boolean setDefault) {
+        boolean mod = IntegerSchemaElement.ensureType(trueTarget, 'u', setDefault);
+        if (!mod) {
+            // Unmodified - now we know it *was* 'u', check class
+            mod = !trueTarget.symVal.equals(className);
+        }
+        if (mod) {
+            trueTarget.setSymlike(className, false);
+            trueTarget.symVal = className;
+            // This sets up a valid but bad structure,
+            // which then gets properly filled in by the setDefault'd schema.
+            trueTarget.userVal = getStructBytes(inner.get());
+        }
+        return mod;
     }
 }

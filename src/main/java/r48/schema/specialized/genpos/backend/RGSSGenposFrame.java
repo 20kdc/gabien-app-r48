@@ -21,6 +21,7 @@ import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBindingSchemaElement;
+import r48.schema.specialized.RubyTableSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
 import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.util.SchemaPath;
@@ -212,6 +213,15 @@ public class RGSSGenposFrame implements IGenposFrame {
                     new RubyTable(target.userVal).setTiletype(ct, i, 0, s2);
                     return true;
                 }
+                return false;
+            }
+
+            @Override
+            public boolean modifyVal(RubyIO trueTarget, boolean setDefault) {
+                // NOTE: THIS SHOULD NEVER HAVE TO OCCUR.
+                // This never gets synthesized.
+                if (setDefault)
+                    throw new RuntimeException("How did this occur?");
                 return false;
             }
         }, getCellPropSchemas()[i]);

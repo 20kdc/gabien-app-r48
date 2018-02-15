@@ -171,7 +171,10 @@ public class AppMain {
     // Try to ensure these directories exist.
     public static LinkedList<String> recommendedDirs;
 
-    public static IConsumer<Double> initializeAndRun(final String rp, final String gamepak, final IConsumer<UIElement> uiTicker) throws IOException {
+    // Manages fullscreeniness.
+    public static Runnable toggleFullscreen;
+
+    public static IConsumer<Double> initializeAndRun(final String rp, final String gamepak, final WindowCreatingUIElementConsumer uiTicker) throws IOException {
         rootPath = rp;
         // initialize core resources
 
@@ -263,7 +266,24 @@ public class AppMain {
         }
 
         // everything ready, start main window
-        uiTicker.accept(rootView);
+        toggleFullscreen = new Runnable() {
+            boolean weAreFullscreen = true;
+            Rect preFullscreenRect = null;
+            @Override
+            public void run() {
+                uiTicker.forceRemove(rootView);
+                if (!weAreFullscreen) {
+                    preFullscreenRect = rootView.getBounds();
+                } else {
+                    if (preFullscreenRect != null)
+                        rootView.setBounds(preFullscreenRect);
+                }
+                weAreFullscreen = !weAreFullscreen;
+                uiTicker.accept(rootView, 1, weAreFullscreen);
+            }
+        };
+        toggleFullscreen.run();
+
         return new IConsumer<Double>() {
             @Override
             public void accept(Double deltaTime) {
@@ -696,6 +716,7 @@ public class AppMain {
         magicalBindingCache = null;
         magicalBinderCache = null;
         recommendedDirs = null;
+        toggleFullscreen = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
     }

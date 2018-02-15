@@ -71,6 +71,8 @@ public class MagicalBindingSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(final RubyIO trueTarget, final SchemaPath truePath, boolean setDefault) {
+        if (binder.modifyVal(trueTarget, setDefault))
+            truePath.changeOccurred(true);
         SchemaPath sp = createPath(trueTarget, truePath);
         sp.editor.modifyVal(sp.targetElement, sp, setDefault);
     }

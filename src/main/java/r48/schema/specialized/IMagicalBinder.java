@@ -15,5 +15,9 @@ import r48.RubyIO;
 public interface IMagicalBinder {
     RubyIO targetToBoundNCache(RubyIO target);
 
+    // Returns true on change.
     boolean applyBoundToTarget(RubyIO bound, RubyIO target);
+
+    // Returns true on change.
+    boolean modifyVal(RubyIO trueTarget, boolean setDefault);
 }
