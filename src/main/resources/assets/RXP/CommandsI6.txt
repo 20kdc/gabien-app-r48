@@ -32,6 +32,7 @@ X shop_items_parameters
 
 303: User gives name!
 p actor actor_id
+p maxChars int
 
  [ Gap here between 303 to 311 ]
 
