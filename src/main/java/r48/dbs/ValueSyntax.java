@@ -19,7 +19,7 @@ import r48.RubyIO;
 public class ValueSyntax {
     public static RubyIO decode(String unescape) {
         if (unescape.startsWith("\"")) {
-            return new RubyIO().setString(unescape.substring(2), true);
+            return new RubyIO().setString(unescape.substring(1), true);
         } else if (unescape.startsWith(":")) {
             RubyIO sym = new RubyIO();
             sym.type = ':';
