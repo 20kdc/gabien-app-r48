@@ -65,12 +65,7 @@ public class ObjectDB {
                 }
                 SchemaElement ise = AppMain.schemas.getSDBEntry(backupSchema);
                 if (ise != null) {
-                    try {
-                        rio = SchemaPath.createDefaultValue(ise, null);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return null;
-                    }
+                    rio = SchemaPath.createDefaultValue(ise, null);
                     modifiedObjects.add(rio);
                     newlyCreatedObjects.add(rio);
                 } else {
