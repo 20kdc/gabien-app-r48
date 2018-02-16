@@ -112,7 +112,7 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
         hostWindows = rootElem;
         contextView = rendererSource;
         // Why is this scaled by main window size? Answer: Because the alternative is occasional Android version glitches.
-        setBounds(new Rect(0, 0, AppMain.mainWindowWidth / 3, AppMain.mainWindowHeight / 2));
+        setBounds(new Rect(0, 0, AppMain.mainWindowWidth / 2, (AppMain.mainWindowHeight / 3) * 2));
     }
 
     @Override
