@@ -162,7 +162,7 @@ public class R48ObjectBackend implements IObjectBackend {
     public RubyIO loadObjectFromFile(String filename) {
         try {
             String fullPath = PathUtils.autoDetectWindows(prefix + filename + postfix);
-            InputStream inp = GaBIEn.getFile(fullPath);
+            InputStream inp = GaBIEn.getInFile(fullPath);
             if (inp == null) {
                 System.err.println(fullPath + " wasn't found.");
                 return null;

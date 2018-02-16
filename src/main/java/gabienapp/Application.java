@@ -47,11 +47,16 @@ public class Application {
     // This is the root path which is *defaulted to*.
     public static String rootPathBackup = "";
 
+    // used for directory name so R48 stops polluting any workspace it's used in.
+    public static final String BRAND = "r48";
+
     // Used if R48 tries to boot before the font is loaded, to catch that.
     // This means things that change the current font override state have to turn this off.
     public static boolean preventFontOverrider = false;
 
     public static void gabienmain() throws IOException {
+        GaBIEn.appPrefixes = new String[] {BRAND + "/"};
+
         mobileExtremelySpecialBehavior = GaBIEn.singleWindowApp();
         uiTicker = new WindowCreatingUIElementConsumer();
         // runFontLoader tries to do as much loading as possible there

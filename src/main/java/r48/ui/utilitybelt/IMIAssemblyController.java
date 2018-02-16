@@ -71,7 +71,7 @@ public class IMIAssemblyController {
                                 AppMain.launchDialog(TXDB.get("The asset doesn't appear to be inside the game. Should this cause issues, run R48 from within the modded game's directory."));
                                 return;
                             }
-                            InputStream inp = GaBIEn.getFile(s);
+                            InputStream inp = GaBIEn.getInFile(s);
                             if (inp == null)
                                 AppMain.launchDialog(TXDB.get("The file appears to be inaccessible."));
                             s = s.substring(idx + AppMain.rootPath.length());
@@ -146,7 +146,7 @@ public class IMIAssemblyController {
 
     private void importSavedManifest() {
         try {
-            InputStream inp = GaBIEn.getFile(PathUtils.autoDetectWindows(AppMain.rootPath + "imiManifest.txt"));
+            InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(AppMain.rootPath + "imiManifest.txt"));
             BufferedReader br = new BufferedReader(new InputStreamReader(inp, "UTF-8"));
             while (br.ready())
                 files.add(br.readLine());

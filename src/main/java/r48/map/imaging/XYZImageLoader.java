@@ -25,7 +25,7 @@ public class XYZImageLoader implements IImageLoader {
     @Override
     public IImage getImage(String name, boolean panorama) {
         try {
-            InputStream fis = GaBIEn.getFile(PathUtils.autoDetectWindows(name + ".xyz"));
+            InputStream fis = GaBIEn.getInFile(PathUtils.autoDetectWindows(name + ".xyz"));
             if (fis.read() != 'X')
                 throw new IOException("Bad magic");
             if (fis.read() != 'Y')

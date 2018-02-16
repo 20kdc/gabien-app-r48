@@ -152,9 +152,9 @@ public class AppMain {
     public static RubyIO theClipboard = null;
 
     // Images
-    public static IImage layerTabs = GaBIEn.getImageCK("layertab.png", 0, 0, 0);
-    public static IImage noMap = GaBIEn.getImageCK("nomad.png", 0, 0, 0);
-    public static IImage symbol = GaBIEn.getImageCK("symbolic.png", 0, 0, 0);
+    public static IImage layerTabs = GaBIEn.getImageCKEx("layertab.png", false, true, 0, 0, 0);
+    public static IImage noMap = GaBIEn.getImageCKEx("nomad.png", false, true, 0, 0, 0);
+    public static IImage symbol = GaBIEn.getImageCKEx("symbolic.png", false, true, 0, 0, 0);
     public static ImageFXCache imageFXCache = null;
 
     // All active schema hosts
@@ -495,7 +495,7 @@ public class AppMain {
                                         launchDialog(TXDB.get("Lua isn't installed, so can't use it."));
                                     } else {
                                         try {
-                                            BufferedReader br = new BufferedReader(new InputStreamReader(GaBIEn.getFile("script.lua"), "UTF-8"));
+                                            BufferedReader br = new BufferedReader(new InputStreamReader(GaBIEn.getInFile("script.lua"), "UTF-8"));
                                             String t = "";
                                             while (br.ready())
                                                 t += br.readLine() + "\r\n";

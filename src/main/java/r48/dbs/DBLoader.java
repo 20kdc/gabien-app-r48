@@ -22,7 +22,7 @@ public class DBLoader {
     public static void readFile(String s, IDatabase db) {
         System.out.println(">>" + s + " as " + db);
         try {
-            readFile(GaBIEn.getFile(s), db);
+            readFile(GaBIEn.getResource(s), db);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

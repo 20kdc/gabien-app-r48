@@ -37,7 +37,7 @@ public class StringBlobSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 try {
-                    InputStream dis = getCompressionInputStream(GaBIEn.getFile(fpath));
+                    InputStream dis = getCompressionInputStream(GaBIEn.getInFile(fpath));
                     target.strVal = readStream(dis);
                     dis.close();
                     path.changeOccurred(false);

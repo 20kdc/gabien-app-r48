@@ -67,12 +67,12 @@ public class HelpSystemController {
     private InputStream getHelpStream() {
         if (helpFile == null) {
             // Local language?
-            InputStream inp = GaBIEn.getFile("Help" + TXDB.getLanguage() + ".txt");
+            InputStream inp = GaBIEn.getResource("Help" + TXDB.getLanguage() + ".txt");
             if (inp == null)
                 return GaBIEn.getResource("Help.txt");
             return inp;
         }
-        InputStream inp = GaBIEn.getFile(helpFile + TXDB.getLanguage() + ".txt");
+        InputStream inp = GaBIEn.getResource(helpFile + TXDB.getLanguage() + ".txt");
         if (inp == null)
             return GaBIEn.getResource(helpFile + ".txt");
         return inp;

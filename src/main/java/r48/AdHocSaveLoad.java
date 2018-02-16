@@ -7,6 +7,8 @@
 
 package r48;
 
+import gabien.GaBIEn;
+import gabienapp.Application;
 import r48.io.R48ObjectBackend;
 
 import java.io.IOException;
@@ -23,7 +25,8 @@ import java.io.IOException;
  */
 public class AdHocSaveLoad {
     public static void save(String fonts, RubyIO prepare) {
-        R48ObjectBackend rob = new R48ObjectBackend("", ".r48", false);
+        GaBIEn.makeDirectories(Application.BRAND);
+        R48ObjectBackend rob = new R48ObjectBackend(Application.BRAND + "/", ".r48", false);
         try {
             rob.saveObjectToFile(fonts, prepare);
         } catch (IOException e) {
@@ -32,7 +35,8 @@ public class AdHocSaveLoad {
     }
 
     public static void saveLua(String fonts, RubyIO prepare) {
-        R48ObjectBackend rob = new R48ObjectBackend("", ".r48", true, true);
+        GaBIEn.makeDirectories(Application.BRAND);
+        R48ObjectBackend rob = new R48ObjectBackend(Application.BRAND + "/", ".r48", true, true);
         try {
             rob.saveObjectToFile(fonts, prepare);
         } catch (IOException e) {
@@ -41,7 +45,7 @@ public class AdHocSaveLoad {
     }
 
     public static RubyIO load(String fonts) {
-        R48ObjectBackend rob = new R48ObjectBackend("", ".r48", false);
+        R48ObjectBackend rob = new R48ObjectBackend(Application.BRAND + "/", ".r48", false);
         return rob.loadObjectFromFile(fonts);
     }
 }

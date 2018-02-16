@@ -9,8 +9,12 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning:
-+ immortal window export
-+ clean up windowing?
++ USABILITY-HIGH
+ + command-trees
+ + all the XP things
++ USABILITY-LOW
+ + immortal window export
+ + clean up windowing?
 
 + Figure out RXP's oddities(???)
 

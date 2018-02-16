@@ -116,7 +116,7 @@ public class IMIAssemblyProcess {
         String someIssues = null;
         try {
             for (String s : files) {
-                InputStream source = GaBIEn.getFile(PathUtils.autoDetectWindows(AppMain.rootPath + s));
+                InputStream source = GaBIEn.getInFile(PathUtils.autoDetectWindows(AppMain.rootPath + s));
                 if (source != null) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     byte[] data = new byte[1024];

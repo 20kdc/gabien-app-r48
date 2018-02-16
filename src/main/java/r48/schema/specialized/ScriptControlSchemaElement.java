@@ -126,7 +126,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
         // A particular difference that's going to show up here is that empty-named or #-prefixed files won't get removed.
         // This way, the conversion is bi-directional.
         LinkedList<RubyIO> scripts = new LinkedList<RubyIO>();
-        InputStream inp = GaBIEn.getFile(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts/_scripts.txt"));
+        InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts/_scripts.txt"));
         if (inp == null) {
             AppMain.launchDialog(TXDB.get("It appears scripts/_scripts.txt does not exist. It acts as an index."));
             return null;
@@ -173,7 +173,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
     }
 
     private byte[] loadScript(String s) throws IOException {
-        InputStream inp = GaBIEn.getFile(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts/" + s + ".rb"));
+        InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts/" + s + ".rb"));
         if (inp == null)
             return null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

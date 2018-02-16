@@ -37,7 +37,7 @@ public class R2kObjectBackend implements IObjectBackend {
         String str = PathUtils.autoDetectWindows(filename);
         if (filename.endsWith(".lmu")) {
             try {
-                InputStream fis = GaBIEn.getFile(str);
+                InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
                 RubyIO r = MapIO.readLmu(fis);
@@ -50,7 +50,7 @@ public class R2kObjectBackend implements IObjectBackend {
         }
         if (filename.endsWith(".lmt")) {
             try {
-                InputStream fis = GaBIEn.getFile(str);
+                InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
                 RubyIO r = MapTreeIO.readLmt(fis);
@@ -63,7 +63,7 @@ public class R2kObjectBackend implements IObjectBackend {
         }
         if (filename.endsWith(".ldb")) {
             try {
-                InputStream fis = GaBIEn.getFile(str);
+                InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
                 RubyIO r = DatabaseIO.readLdb(fis);
@@ -76,7 +76,7 @@ public class R2kObjectBackend implements IObjectBackend {
         }
         if (filename.endsWith(".lsd")) {
             try {
-                InputStream fis = GaBIEn.getFile(str);
+                InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
                 RubyIO r = SaveDataIO.readLsd(fis);

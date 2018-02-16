@@ -26,7 +26,7 @@ public class LuaInterface {
         lastError = null;
         try {
             OutputStream ohs = GaBIEn.getOutFile("templuah.r48");
-            InputStream ihs = GaBIEn.getFile("luahead.lua");
+            InputStream ihs = GaBIEn.getResource("luahead.lua");
             byte[] databuf = new byte[ihs.available()];
             if (ihs.read(databuf) != databuf.length) {
                 ohs.close();

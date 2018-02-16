@@ -35,7 +35,7 @@ public class PNG8IImageLoader implements IImageLoader {
         DataInputStream dis = null;
         try {
             String ad = PathUtils.autoDetectWindows(name + ".png");
-            dis = new DataInputStream(GaBIEn.getFile(ad));
+            dis = new DataInputStream(GaBIEn.getInFile(ad));
             // Magic number blahblahblah
             byte[] magic = new byte[8];
             if (dis.read(magic) != 8)
@@ -54,7 +54,7 @@ public class PNG8IImageLoader implements IImageLoader {
                 return null;
             dis.close();
             dis = null;
-            return GaBIEn.getImageCK(ad, pal[0] & 0xFF, pal[1] & 0xFF, pal[2] & 0xFF);
+            return GaBIEn.getImageCKEx(ad, true, false, pal[0] & 0xFF, pal[1] & 0xFF, pal[2] & 0xFF);
         } catch (Exception ioe) {
             try {
                 if (dis != null)

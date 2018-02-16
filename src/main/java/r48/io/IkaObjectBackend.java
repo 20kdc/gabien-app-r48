@@ -39,7 +39,7 @@ public class IkaObjectBackend implements IObjectBackend {
             bm.data = new int[160 * 120];
             bm.palette = new int[256];
             try {
-                InputStream inp = GaBIEn.getFile(PathUtils.autoDetectWindows(root + "Pbm/Map1.pbm"));
+                InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(root + "Pbm/Map1.pbm"));
                 if (inp != null) {
                     bm.loadBitmap(inp);
                     inp.close();
@@ -77,7 +77,7 @@ public class IkaObjectBackend implements IObjectBackend {
 
             NPChar np = new NPChar();
             try {
-                InputStream inp = GaBIEn.getFile(PathUtils.autoDetectWindows(root + "NPChar.dat"));
+                InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(root + "NPChar.dat"));
                 np.load(inp);
                 inp.close();
             } catch (IOException ioe) {
