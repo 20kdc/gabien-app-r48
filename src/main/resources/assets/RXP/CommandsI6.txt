@@ -6,7 +6,9 @@
 
  [Interpreter Part 6]
 
-301: Start Battle (c.601/602/603)
+301: Start Battle (c.601/602/603/604)
+d Starts a battle. If one of the Battle Result Branch commands follows, then all of them should (allowing gaps for each branch).
+C category 4
 p troop troop_id
 p canEscape boolean
 p canLose boolean
@@ -14,29 +16,42 @@ p canLose boolean
  Notably, these 4 are optional, but they always show up in a group of 4.
 
 601: Battle Result Branches Start: If Win
+C category 4
 I1
 602: Battle Result Branch: If Escape
+C category 4
 i-1
 I1
 603: Battle Result Branch: If Lose
+C category 4
 i-1
 I1
 604: Battle Result Branches End
+C category 4
 i-1
 
  These 2 have identical schemas
 302: Shop Items (c.605)
+C category 0
+d Shop items. This gets followed by 605 additional items.
 X shop_items_parameters
+C groupBehavior messagebox 605
 605: Additional Item
+C category 0
+d An additional item for 302. Otherwise pointless.
 X shop_items_parameters
 
-303: User gives name!
+303: @@User gives name{B: to #A, length #B}
+C category 2
+d Asks the user what to name an actor.
 p actor actor_id
 p maxChars int
 
  [ Gap here between 303 to 311 ]
 
 311:@@Change Actor{A: #A} HP{A: by [@operate_value_1]{E=T= (can kill)| (never kills)}}
+C category 2
+d Adds/removes HP to/from actor/party.
 p actor iterate_actor
  operate_value
 p modNegate int_boolean
@@ -46,6 +61,8 @@ v 0 mod int
 p canKill boolean
 
 312:@@Change Actor{A: #A} SP{A: by [@operate_value_1]}
+d Adds/removes SP to/from actor/party.
+C category 2
 p actor iterate_actor
  operate_value
 p modNegate int_boolean
@@ -54,14 +71,20 @@ P 2 modVar var_id
 v 0 mod int
 
 313: Change Actor$ State (remove$,state$)
+d Adds/removes a state to/from actor/party.
+C category 2
 p actor iterate_actor
 p remove int_boolean
 p state state_id
 
 314: Full recovery!
+d Fully recovers actor/party to full health and SP.
+C category 2
 p actor iterate_actor
 
 315:@@Change Actor{A: #A} EXP{A: by [@operate_value_1]}
+d Adds/removes EXP to/from actor/party.
+C category 2
 p actor iterate_actor
  operate_value
 p modNegate int_boolean
@@ -70,6 +93,8 @@ P 2 modVar var_id
 v 0 mod int
 
 316:@@Change Actor{A: #A} Level{A: by [@operate_value_1]}
+d Adds/removes levels to/from actor/party.
+C category 2
 p actor iterate_actor
  operate_value
 p modNegate int_boolean
@@ -78,6 +103,8 @@ P 2 modVar var_id
 v 0 mod int
 
 317:@@Change Actor{A: #A} Parameter{A: #B by [@operate_value_2]}
+d Adds/removes parameter points to/from actor/party.
+C category 2
 p actor actor_id
 p param cap_type
  operate_value
@@ -87,11 +114,15 @@ P 3 modVar var_id
 v 0 mod int
 
 318: Actor$ (Un =$)learn Skill$
+d Adds/removes a skill to/from an actor.
+C category 2
 p actor actor_id
 p unlearn boolean
 p skill skill_id
 
 319: Actor$ equips$$
+d Adds/removes equipment to/from an actor. (If the equipment is not available, it is automatically given, but only if it is not already available.)
+C category 2
 p actor actor_id
 p type actor_equip_type
 P 0 equip int
@@ -102,14 +133,20 @@ v 3 equipArmour armour_id
 v 4 equipArmour armour_id
 
 320: Rename Actor$!
+d Forcefully renames an actor.
+C category 2
 p actor actor_id
 p newName string
 
 321: Reclass Actor$!
+d Changes the class of an actor.
+C category 2
 p actor actor_id
 p newClass class_id
 
 322: Change Actor$ Graphic!
+d Changes the graphics of an actor.
+C category 2
 p actor actor_id
 p charName f_char_name
 p charHue hue

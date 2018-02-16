@@ -114,6 +114,17 @@ D internal_eventDictionary 1 __MAP__@events 1 @name
 E character_id_base EventID -1 player 0 thisEvent
 M internal_eventDictionary character_id_base character_id
 
+E id_or_none_base ID 0 none
+
+ or-none dictionaries. Unfinished, add as needed
+M internal_commevDictionary id_or_none_base commonevent_id_or_none
+M internal_skillDictionary id_or_none_base skill_id_or_none
+M internal_stateDictionary id_or_none_base state_id_or_none
+M internal_weaponDictionary id_or_none_base weapon_id_or_none
+M internal_armourDictionary id_or_none_base armour_id_or_none
+M internal_troopDictionary id_or_none_base troop_id_or_none
+M internal_classDictionary id_or_none_base class_id_or_none
+
 e comparison_type 0 == 1 >= 2 <= 3 > 4 < 5 !=
 e change_text_options_position 0 top 1 middle 2 bottom
 E iterate_actor ActorID 0 All

@@ -15,24 +15,25 @@ C name Class.RPG::Actor @id @name | Actor #A: #B
 @id index
 @name string
 @class_id class_id
-@weapon_id weapon_id
+@weapon_id weapon_id_or_none
 @weapon_fix boolean
-@armor1_id armour_id
+@armor1_id armour_id_or_none
 @armor1_fix boolean
-@armor2_id armour_id
+@armor2_id armour_id_or_none
 @armor2_fix boolean
-@armor3_id armour_id
+@armor3_id armour_id_or_none
 @armor3_fix boolean
-@armor4_id armour_id
+@armor4_id armour_id_or_none
 @armor4_fix boolean
-@exp_basis int= 30
- This is the stats table. At this time, IDK what the stats are.
+ This is the stats table.
+ maxhp, maxsp, str, dex, agi, int
 +table @parameters . . 2 6 100 1
-@final_level int= 1
 @battler_name f_battler_name
 @battler_hue hue
+@exp_basis int= 30
 @exp_inflation int= 30
 @initial_level int= 1
+@final_level int= 1
 @character_name f_char_name
 @character_hue hue
 
@@ -169,7 +170,7 @@ C name Class.RPG::Item @id @name | Item #A: #B
 @animation1_id animation_id
 @animation2_id animation_id
 @menu_se subwindow RPG::AudioFile
-@common_event_id commonevent_id
+@common_event_id commonevent_id_or_none
 @price int
 @consumable boolean
 @parameter_type int
@@ -186,7 +187,7 @@ C name Class.RPG::Item @id @name | Item #A: #B
 @plus_state_set subwindow array 0 state_id
 @minus_state_set subwindow array 0 state_id
 
-> File.Items array 0 typeChanger{ subwindow RPG::Item oRPG::Item nil 0 }
+> File.Items arrayIx1 subwindow RPG::Item
 
 : RPG::MapInfo
 C name Class.RPG::MapInfo @order @name | MapInfo: #B (order #A)
@@ -273,26 +274,26 @@ C name Class.RPG::State @id @name | State #A: #B
 > File.States arrayIx1 subwindow RPG::State
 
 : RPG::System::Words
-@hp string
-@sp string
-@agi string
-@atk string
-@dex string
-@int string
-@str string
-@gold string
-@item string
-@mdef string
-@pdef string
-@equip string
-@guard string
-@skill string
-@armor1 string
-@armor2 string
-@armor3 string
-@armor4 string
-@attack string
-@weapon string
+@hp string= hp
+@sp string= sp
+@agi string= agi
+@atk string= atk
+@dex string= dex
+@int string= int
+@str string= str
+@gold string= gold
+@item string= item
+@mdef string= mdef
+@pdef string= pdef
+@equip string= equip
+@guard string= guard
+@skill string= skill
+@armor1 string= armour1
+@armor2 string= armour2
+@armor3 string= armour3
+@armor4 string= armour4
+@attack string= attack
+@weapon string= weapon
 
 : RPG::System::TestBattler
 @level int

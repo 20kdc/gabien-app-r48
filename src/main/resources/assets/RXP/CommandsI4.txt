@@ -7,12 +7,14 @@
  [Interpreter Part 4]
 
 121:@@Control Switch{A:{AB: @#A|es @#A..@#B} = {C=1=OFF|ON}|es}
+C category 1
 d Sets a switch or a range of switches on or off.
 p firstSwitch switch_id
 p lastSwitch switch_id
 p turnOff int_boolean
 
 122:@@Set Variable{A:{AB: @#A|s @#A..@#B} #C [@set_variables_parameters]|s}
+C category 1
  note: the parameters given here are for formatting reasons, since the X overrides any actual use.
 d Modifies a variable or a range of variables (first/lastVar) in a given way (operation) by a given value (source)
 p firstVar var_id
@@ -22,6 +24,7 @@ p src set_variables_source
 X set_variables_parameters
 
 123:@@Control Selfswitch{A: #A{B: = {B=1=OFF|ON}}}
+C category 1
 d Enables or disables a selfswitch.
 p selfSwitch selfswitch_id
 p turnOff int_boolean
@@ -29,16 +32,21 @@ p turnOff int_boolean
  I think the timer counts up?
  In any case if running is false, seconds is irrelevant.
 124: Set timer1
+C category 5
 d Enables or disables the timer. If enabling, sets the time to a given value in seconds.
 X set_timer1_parameters
 
 125:@@Modify Gold{A: by [@operate_value_0]}
+C category 2
+d Modifies the amount of gold the party has.
 p modNegate int_boolean
 p modIsVar int_boolean
 P 1 modVar var_id
 v 0 mod int
 
 126:@@Modify Item{A: @#A by [@operate_value_1]}
+C category 2
+d Gives or takes away some amount of a given item from/to the party.
 p item item_id
 p modNegate int_boolean
 p modIsVar int_boolean
@@ -46,6 +54,8 @@ P 2 modVar var_id
 v 0 mod int
 
 127:@@Modify Weapon{A: @#A by [@operate_value_1]}
+C category 2
+d Gives or takes away some amount of a given weapon from/to the party.
 p weapon weapon_id
 p modNegate int_boolean
 p modIsVar int_boolean
@@ -53,6 +63,8 @@ P 2 modVar var_id
 v 0 mod int
 
 128:@@Modify Armour{A: @#A by [@operate_value_1]}
+C category 2
+d Gives or takes away some amount of a given armour from/to the party.
 p armour armour_id
 p modNegate int_boolean
 p modIsVar int_boolean
@@ -60,6 +72,8 @@ P 2 modVar var_id
 v 0 mod int
 
 129:@@{A:{B=0=Remove actor @#A from party|Add actor @#A to party{C=0= without} resetting}|Add/remove actor to party}
+C category 2
+d Removes or adds an actor to/from the party.
 p actor actor_id
 p add int_boolean
 p addInitialize int_boolean
@@ -67,22 +81,33 @@ p addInitialize int_boolean
  Command 130 was skipped?
 
 131: Change Windowskin
+C category 5
+d Changes the Windowskin used by the game. This Windowskin is used in stretched mode.
 p file string
 
 132: Change Battle BGM!
+C category 5
+d Changes the battle BGM used by the game.
  May not actually work in middle of battle.
  Or the variable change is auto-detected...
 p audio RPG::AudioFile
 
 133: Change Battle End ME!
+C category 5
+d Changes the battle end musical-effect.
 p audio RPG::AudioFile
 
 134: Enable/Disable Saving:$
+C category 5
+d Enables or disables saving the game.
 p enabled int_boolean
 
 135: Enable/Disable Menu:$
+C category 5
+d Enables or disables accessing the menu.
 p enabled int_boolean
 
 136: Enable/Disable Encounters:$
+C category 5
+d Enables or disables random encounters.
 p enabled int_boolean
-

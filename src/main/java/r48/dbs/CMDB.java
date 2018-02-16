@@ -29,14 +29,15 @@ public class CMDB {
 
     public int dUsers = 0;
 
-    public CMDB(final String baseFile) {
-        DBLoader.readFile(baseFile, new IDatabase() {
+    public CMDB(final String readFile) {
+        DBLoader.readFile(readFile, new IDatabase() {
             RPGCommand rc;
             int workingCmdId = 0;
             RPGCommand.SpecialTag nextTag = null;
             HashMap<String, SchemaElement> localAliasing = new HashMap<String, SchemaElement>();
             HashMap<Integer, SchemaElement> currentPvH = new HashMap<Integer, SchemaElement>();
             HashMap<Integer, String> currentPvH2 = new HashMap<Integer, String>();
+            String baseFile = readFile;
             String subContext = "CMDB@" + baseFile;
             // sorting order seems to work well enough:
             // X-/<name>
@@ -292,7 +293,10 @@ public class CMDB {
                         }
                     }
                 } else if (c == '#') {
+                    String oldFile = baseFile;
+                    baseFile = args[0];
                     DBLoader.readFile(args[0], this);
+                    baseFile = oldFile;
                 } else if (c != ' ') {
                     // Aha! Defining comments as a != ought to shut up the warnings!
                     throw new RuntimeException("Unknown command '" + c + "'.");

@@ -7,6 +7,7 @@
  [Interpreter Part 7]
 
 331:@@Change Enemy{A: #A} HP{A: by [@operate_value_1]{E=T= (can kill)| (never kills)}}
+C category 4
 p enemyType iterate_enemy
  operate_value
 p modNegate int_boolean
@@ -16,6 +17,7 @@ v 0 mod int
 p canKill boolean
 
 332:@@Change Enemy{A: #A} SP{A: by [@operate_value_1]}
+C category 4
 p enemyType iterate_enemy
  operate_value
 p modNegate int_boolean
@@ -24,28 +26,34 @@ P 2 modVar var_id
 v 0 mod int
 
 333: Change Enemy$ State (remove$,state$)
+C category 4
 p enemyType iterate_enemy
 p remove int_boolean
 p enemyState state_id
 
 334: Enemy$ recovers all
+C category 4
      ("recover_all", for the enemy, is typically a boss cheating
       and going into a 'second stage'. Hmph.)
 p enemyType iterate_enemy
 
 335: Show Enemy$
+C category 4
 p enemy troop_enemy_id
 
 336: Transform Enemy$!
+C category 4
 p changeling troop_enemy_id
 p transform enemy_id
 
 337: Show$$ Battle Animation$
+C category 4
 p ib0 iterate_battler0
 p ib1 iterate_battler1
 p animId animation_id
 
 338: Deal$$ damage
+C category 4
 p ib0 iterate_battler0
 p ib1 iterate_battler1
 p damageIsVar int_boolean
@@ -54,6 +62,7 @@ v 0 damage int
 
  NB. Need to figure this whole thing out, and switch to EF-mode.
 339: Force Action!$->kind$ act$ target$ run-now$
+C category 4
 p ib0 iterate_battler0
 p ib1 iterate_battler1
 p kind enemy_action_kind
@@ -65,13 +74,21 @@ p target force_action_target
 p runNow int_boolean
 
 340: Abort Battle
+C category 4
 351: 'Call Menu Screen' (aborts battle?)
+C category 5
 352: 'Call Save Screen' (aborts battle?)
+C category 5
 353: Game Over
+C category 5
 354: Title Screen
+C category 5
 
 355: Ruby$
+C category 5
 p code string
+C groupBehavior messagebox 655
 
 655: Ruby(Cont.)$
+C category 5
 p code string

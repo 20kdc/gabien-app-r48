@@ -15,21 +15,25 @@
 C digitCount 5
 
 0: >> insert point
+C category 5
 d A placeholder that allows for insertion.
 p _ string
 L
 
 10: >> E.O.B. insert point
+C category 5
 d A placeholder that allows for insertion.
 p _ string
 Lblock
 
 12410: //* $
+C category 5
 d A comment.
 p text string
 C groupBehavior messagebox 22410
 
 22410: //. $
+C category 5
 d A continuation of a comment.
 p text string
 

@@ -55,6 +55,8 @@
 
  [Early codes]
 
+C categories 1\_-\_Text 2\_-\_Flow 3\_-\_Party 4\_-\_Map 5\_-\_Battle 6\_-\_Misc
+
 0: >> insert point
 d An insertion point. This acts as something to replace to add new commands.
 L
@@ -64,6 +66,7 @@ L
 108: //*$
 d The beginning of a comment.
 p note string
+C groupBehavior messagebox 408
 
 408: //$
 d A comment continues.
