@@ -182,11 +182,14 @@ public abstract class MapSystem {
         }
 
         public void resize(int w, int h) {
-            int[] r = new int[planeCount];
+            int[] r = new int[planeCount + 2];
+            r[0] = w;
+            r[1] = h;
             if (w > 0)
                 if (h > 0)
-                    for (int i = 0; i < r.length; i++)
-                        r[i] = getTileData.apply(new int[] {0, 0, i}) & 0xFFFF;
+                    for (int i = 0; i < planeCount; i++)
+                        r[i + 2] = getTileData.apply(new int[] {0, 0, i}) & 0xFFFF;
+            resize.apply(r);
         }
     }
 
