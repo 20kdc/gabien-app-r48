@@ -345,6 +345,18 @@ C name Class.RPG::State @id @name | State #A: #B
 
 > File.System RPG::System
 
+.RPG::Tileset.names
++subwindow array 9 string
+]0 A1 string
+]1 A2 string
+]2 A3 string
+]3 A4 string
+]4 A5 string
+]5 B string
+]6 C string
+]7 D string
+]8 E string
+
 : RPG::Tileset
 C name Class.RPG::Tileset @id @name @mode | Tileset #A (M#C): #B
 @id index
@@ -352,7 +364,7 @@ C name Class.RPG::Tileset @id @name @mode | Tileset #A (M#C): #B
 @mode int= 1
 @note stringBlobEditor
 +tableTSF @flags . . 1 8192 1 1 blockDown blockLeft blockRight blockUp 'star' ladder submerge 'counter' poison noBoat noShip noAShip [terrainTag;8
-@tileset_names array 9 string
+@tileset_names array 9 RPG::Tileset.names
 
 > File.Tilesets arrayIx1 typeChanger{ subwindow RPG::Tileset oRPG::Tileset nil 0 }
 
