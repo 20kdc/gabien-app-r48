@@ -143,7 +143,8 @@ public abstract class MapSystem {
         }
 
         public static MapViewState fromRT(StuffRenderer stuffRenderer, String underscoreMapObjectId, String[] ex, final RubyIO its, final String str, final boolean readOnly, IEventAccess iea) {
-            final RubyTable rt = new RubyTable(its.getInstVarBySymbol(str).userVal);
+            final RubyIO sz = its.getInstVarBySymbol(str);
+            final RubyTable rt = new RubyTable(sz.userVal);
             return new MapViewState(stuffRenderer, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, new IFunction<int[], Short>() {
                 @Override
                 public Short apply(int[] ints) {
@@ -168,7 +169,7 @@ public abstract class MapSystem {
                         its.getInstVarBySymbol("@width").fixnumVal = ints[0];
                     if (its.getInstVarBySymbol("@height") != null)
                         its.getInstVarBySymbol("@height").fixnumVal = ints[1];
-                    rt.resize(ints[0], ints[1], defs);
+                    sz.userVal = rt.resize(ints[0], ints[1], defs).innerBytes;
                 }
             }, iea);
         }
@@ -189,7 +190,7 @@ public abstract class MapSystem {
                 if (h > 0)
                     for (int i = 0; i < planeCount; i++)
                         r[i + 2] = getTileData.apply(new int[] {0, 0, i}) & 0xFFFF;
-            resize.apply(r);
+            resize.accept(r);
         }
     }
 
