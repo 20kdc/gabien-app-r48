@@ -7,8 +7,8 @@
 
 package r48.schema.specialized.genpos;
 
-import gabien.ui.Rect;
-import gabien.ui.UIPanel;
+import gabien.ui.UIElement;
+import gabien.ui.UISplitterLayout;
 import r48.dbs.TXDB;
 import r48.schema.util.ISchemaHost;
 
@@ -22,34 +22,22 @@ import r48.schema.util.ISchemaHost;
  * A: timeframe
  * B: Frame Editor
  * C: Cell Editor
- * The 3-pane layout is controlled entirely from this class. Good luck.
  * Created on 2/17/17.
  */
-public class GenposAnimRootPanel extends UIPanel {
-    public IGenposAnim target;
-    public GenposFramePanelController framePanelController;
-    public UITimeframeControl timeframe;
+public class GenposAnimRootPanel extends UIElement.UIProxy {
+    public final IGenposAnim target;
+    public final GenposFramePanelController framePanelController;
+    public final UITimeframeControl timeframe;
 
     public GenposAnimRootPanel(IGenposAnim t, ISchemaHost launcher, int recommendedFramerate) {
         target = t;
-        // Stop animation elements escaping the window
-        useScissoring = true;
 
         framePanelController = new GenposFramePanelController(target.getFrameDisplay(), launcher);
         timeframe = new UITimeframeControl(this, recommendedFramerate);
 
-        allElements.add(timeframe);
-        allElements.add(framePanelController.rootLayout);
+        proxySetElement(new UISplitterLayout(timeframe, framePanelController.rootLayout, true, 1), true);
 
         frameChanged();
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        int th = timeframe.getBounds().height;
-        timeframe.setBounds(new Rect(0, r.height - th, r.width, th));
-        framePanelController.rootLayout.setBounds(new Rect(0, 0, r.width, r.height - th));
     }
 
     @Override

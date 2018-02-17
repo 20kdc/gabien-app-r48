@@ -26,16 +26,9 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
     public UILabel innerLabel = new UILabel(TXDB.get("Click at the target, or close this window."), FontSizes.dialogWindowTextHeight);
 
     public UIMTPasteRectangle(IMapToolContext par, RubyTable clipboard) {
-        super(par, true);
+        super(par);
         changeInner(innerLabel);
         table = clipboard;
-        setBounds(getBounds());
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        Rect s = innerLabel.getBounds();
-        super.setBounds(new Rect(r.x, r.y, s.width, s.height));
     }
 
     @Override

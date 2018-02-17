@@ -7,9 +7,8 @@
 
 package r48.ui;
 
-import gabien.IGrInDriver;
+import gabien.IGrDriver;
 import r48.AppMain;
-import r48.FontSizes;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.map.tiles.AutoTileTypeField;
@@ -83,7 +82,7 @@ public class UITileGrid extends UIGrid {
     }
 
     @Override
-    protected void drawTile(int t, boolean hover, int x, int y, IGrInDriver igd) {
+    protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
         if (viewMap != null)
             t = viewMap[t];
         t += tileStart;

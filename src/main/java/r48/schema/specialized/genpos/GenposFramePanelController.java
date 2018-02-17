@@ -53,10 +53,8 @@ public class GenposFramePanelController {
             public void run() {
                 // Do nothing.
             }
-        }).togglable();
+        }).togglable(false);
         editingSidebar = new UINSVertLayout(gridToggleButton, new UINSVertLayout(editingPanel, cellSelection));
-        // Set an absolute width for the editing sidebar
-        editingSidebar.setBounds(new Rect(0, 0, 192, 32));
         rootLayout = new UISplitterLayout(editor, editingSidebar, false, 1);
     }
 

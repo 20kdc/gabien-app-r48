@@ -8,7 +8,9 @@
 package r48.ui;
 
 import gabien.GaBIEn;
+import gabien.IDesktopPeripherals;
 import gabien.IGrInDriver;
+import gabien.IPeripherals;
 import r48.AppMain;
 import r48.dbs.TXDB;
 
@@ -23,7 +25,7 @@ import java.io.InputStreamReader;
 public class Coco {
     private static char[] combuf = new char[10];
 
-    public static void run(IGrInDriver igd) {
+    public static void run(IDesktopPeripherals igd) {
         if (igd.isKeyJustPressed(IGrInDriver.VK_LEFT))
             key('L');
         if (igd.isKeyJustPressed(IGrInDriver.VK_DOWN))

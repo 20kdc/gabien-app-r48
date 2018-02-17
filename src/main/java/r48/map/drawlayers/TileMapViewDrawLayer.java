@@ -7,6 +7,7 @@
 
 package r48.map.drawlayers;
 
+import gabien.FontManager;
 import gabien.IGrDriver;
 import gabien.ui.UILabel;
 import r48.RubyIO;
@@ -79,7 +80,7 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
         if (shouldDraw(i, j, tdi, tidx)) {
             if (debug) {
                 String t = Integer.toString(tidx, 16);
-                UILabel.drawString(igd, px, py + (tdi * UIMapView.mapDebugTextHeight), t, false, UIMapView.mapDebugTextHeight);
+                FontManager.drawString(igd, px, py + (tdi * UIMapView.mapDebugTextHeight), t, false, UIMapView.mapDebugTextHeight);
             } else {
                 tr.drawTile(tdi, tidx, px, py, igd, 1);
             }

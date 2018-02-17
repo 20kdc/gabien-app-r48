@@ -7,6 +7,7 @@
 
 package r48.map.tiles;
 
+import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
@@ -139,7 +140,7 @@ public class VXATileRenderer implements ITileRenderer {
             if (handleMTLayer(tidx, tileSize, px, py, 4, igd, spriteScale))
                 return;
 
-        UILabel.drawString(igd, px, py, Integer.toHexString(tidx), false, UIMapView.mapDebugTextHeight);
+        FontManager.drawString(igd, px, py, Integer.toHexString(tidx), false, UIMapView.mapDebugTextHeight);
     }
 
     private void drawShadowTileFlag(short tidx, int i, int i1, int i2, IGrDriver igd, int st) {

@@ -15,6 +15,7 @@ import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.map.events.R2kSavefileEventAccess;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
+import r48.schema.HiddenSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -83,9 +84,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
             });
             return new UISplitterLayout(utb1, utb2, true, 0.5d);
         } else {
-            UIPanel panel = new UIPanel();
-            panel.setBounds(new Rect(0, 0, 0, 0));
-            return panel;
+            return HiddenSchemaElement.makeHiddenElement();
         }
     }
 

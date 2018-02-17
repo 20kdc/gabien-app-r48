@@ -7,6 +7,7 @@
 
 package r48.schema.specialized.genpos.backend;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.IFunction;
@@ -21,7 +22,6 @@ import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBindingSchemaElement;
-import r48.schema.specialized.RubyTableSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
 import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.util.SchemaPath;
@@ -157,28 +157,28 @@ public class RGSSGenposFrame implements IGenposFrame {
                             }
 
                             @Override
-                            public int mapValToIdx(int itemVal) {
+                            public int mapValToIdx(long itemVal) {
                                 if (itemVal >= 100)
-                                    return (itemVal - 100) + (5 * 6);
-                                return itemVal;
+                                    return (int) ((itemVal - 100) + (5 * 6));
+                                return (int) itemVal;
                             }
 
                             @Override
-                            public int mapIdxToVal(int idx) {
+                            public long mapIdxToVal(int idx) {
                                 if (idx >= (5 * 6))
                                     return (idx - (5 * 6)) + 100;
                                 return idx;
                             }
 
                             @Override
-                            public void drawItem(int t, int x, int y, int spriteScale, IGrInDriver igd) {
+                            public void drawItem(long t, int x, int y, int spriteScale, IGrDriver igd) {
                                 boolean b = false;
                                 if (t >= 100) {
                                     t -= 100;
                                     b = true;
                                 }
-                                int tx = t % 5;
-                                int ty = t / 5;
+                                int tx = (int) t % 5;
+                                int ty = (int) t / 5;
                                 igd.clearRect(255, 0, 255, x, y, 96, 96);
                                 igd.blitScaledImage(tx * 192, ty * 192, 192, 192, x, y, 96 * spriteScale, 96 * spriteScale, spriteCache.getFramesetCache(b, false, 255));
                             }
@@ -261,7 +261,7 @@ public class RGSSGenposFrame implements IGenposFrame {
     }
 
     @Override
-    public void drawCell(int i, int opx, int opy, IGrInDriver igd) {
+    public void drawCell(int i, int opx, int opy, IGrDriver igd) {
         RubyTable rt = getTable();
         // Slightly less unfinished.
 

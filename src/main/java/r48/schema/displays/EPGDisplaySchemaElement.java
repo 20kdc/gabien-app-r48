@@ -7,8 +7,11 @@
 
 package r48.schema.displays;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IPeripherals;
 import gabien.ui.Rect;
+import gabien.ui.Size;
 import gabien.ui.UIElement;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -25,17 +28,21 @@ public class EPGDisplaySchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, SchemaPath path) {
         final int sprScale = FontSizes.getSpriteScale();
-        UIElement display = new UIElement() {
+        UIElement display = new UIElement(64, 96 * sprScale) {
             @Override
-            public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-                Rect bounds = getBounds();
-                igd.clearRect(255, 0, 255, ox, oy, bounds.width, bounds.height);
+            public void update(double deltaTime) {
+
+            }
+
+            @Override
+            public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+                Size bounds = getSize();
+                igd.clearRect(255, 0, 255, 0, 0, bounds.width, bounds.height);
                 StuffRenderer r = launcher.getContextRenderer();
                 int ofs = r.tileRenderer.getTileSize() / 2;
-                r.eventRenderer.drawEventGraphic(target, ox + (bounds.width / 2) - (ofs * sprScale), oy + (bounds.height / 2) - (ofs * sprScale), igd, sprScale);
+                r.eventRenderer.drawEventGraphic(target, (bounds.width / 2) - (ofs * sprScale), (bounds.height / 2) - (ofs * sprScale), igd, sprScale);
             }
         };
-        display.setBounds(new Rect(0, 0, 64, 96 * sprScale));
         return display;
     }
 

@@ -66,8 +66,8 @@ public class StringBlobSchemaElement extends SchemaElement {
             }
         }), importer, false, 0.5d) {
             @Override
-            public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
-                super.updateAndRender(ox, oy, deltaTime, select, igd);
+            public void update(double deltaTime) {
+                super.update(deltaTime);
                 importScrSaveTicker.run();
             }
         };

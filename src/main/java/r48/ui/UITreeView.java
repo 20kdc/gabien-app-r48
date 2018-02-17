@@ -7,11 +7,10 @@
 
 package r48.ui;
 
-import gabien.IGrInDriver;
-import gabien.ui.IConsumer;
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UIPanel;
+import gabien.IDesktopPeripherals;
+import gabien.IGrDriver;
+import gabien.IPeripherals;
+import gabien.ui.*;
 
 import java.util.HashSet;
 
@@ -19,8 +18,9 @@ import java.util.HashSet;
  * NOTE: This must be recreated every time it needs to be reloaded, and needs to be contained in a UIScrollViewLayout to work properly.
  * Created on 11/08/17.
  */
-public class UITreeView extends UIPanel {
+public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IOldMouseReceiver {
     private TreeElement[] elements = new TreeElement[0];
+    private OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
     private int nodeWidth = 8;
     private int dragBaseX = 0, dragBaseY = 0;
     private boolean dragCursorEnable = false;
@@ -30,41 +30,47 @@ public class UITreeView extends UIPanel {
     public UITreeView() {
     }
 
-    // NOTE: Run UIScrollLayout setBounds(getBounds) after this.
     public void setElements(TreeElement[] e) {
-        allElements.clear();
         elements = e;
+        runLayout();
     }
 
     @Override
-    public void setBounds(Rect r) {
-        allElements.clear();
+    public void runLayout() {
+        Size r = getSize();
+        for (UIElement uie : layoutGetElements())
+            layoutRemoveElement(uie);
         int y = 0;
         nodeWidth = 0;
         int total = 0;
         for (TreeElement te : elements) {
-            // Bad IDE warning! This makes total sense - it's averaging the node heights to get the aspect ratio around about right.
-            nodeWidth += te.innerElement.getBounds().height;
+            // Bad IDE warning! No biscuit for you.
+            // This makes total sense - it's averaging the node heights to get the aspect ratio around about right.
+            nodeWidth += te.innerElement.getSize().height;
             total++;
         }
         if (total != 0)
             nodeWidth /= total;
         TreeElement lastElement = null; // to set hasChildren
         int invisibleAboveIndent = 0x7FFFFFFF; // to hide unexpanded nodes
+        int width = 0;
         for (TreeElement te : elements) {
             te.visible = te.indent <= invisibleAboveIndent;
             if (lastElement != null)
                 if (te.indent > lastElement.indent)
                     lastElement.hasChildren = true;
             int x = nodeWidth * (te.indent + 1);
-            int h = te.innerElement.getBounds().height;
-            te.innerElement.setBounds(new Rect(x, y, r.width - x, h));
+            int h = te.innerElement.getWantedSize().height;
+            te.innerElement.setForcedBounds(null, new Rect(x, y, r.width - x, h));
+            h = te.innerElement.getWantedSize().height;
+            te.innerElement.setForcedBounds(null, new Rect(x, y, r.width - x, h));
+            width = Math.max(width, te.innerElement.getWantedSize().width);
             if (!te.visible)
                 h = 0;
             y += h;
             te.h = h;
             if (te.visible)
-                allElements.add(te.innerElement);
+                layoutAddElement(te.innerElement);
             lastElement = te;
             // If we're visible, set invisibleAboveIndent.
             // If expanded, then set it to "infinite"
@@ -72,13 +78,15 @@ public class UITreeView extends UIPanel {
             if (te.visible)
                 invisibleAboveIndent = te.expanded ? 0x7FFFFFFF : te.indent;
         }
-        super.setBounds(new Rect(r.x, r.y, r.width, y));
+        setWantedSize(new Size(width, y));
     }
 
     @Override
-    public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
-        super.updateAndRender(ox, oy, deltaTime, select, igd);
-
+    public void render(boolean select, IPeripherals peripherals, IGrDriver igd) {
+        if (peripherals instanceof IDesktopPeripherals) {
+            mouseEmulator.mouseX = ((IDesktopPeripherals) peripherals).getMouseX();
+            mouseEmulator.mouseY = ((IDesktopPeripherals) peripherals).getMouseY();
+        }
         int y = 0;
         HashSet<Integer> continuingLines = new HashSet<Integer>();
         for (int i = 0; i < elements.length; i++) {
@@ -106,25 +114,39 @@ public class UITreeView extends UIPanel {
             int totalSize = Math.max(te.h, nodeWidth);
             for (int j = 0; j < te.indent; j++) {
                 if (j == (te.indent - 1)) {
-                    Art.drawSymbol(igd, pico, ox + (j * nodeWidth), oy + y, totalSize, true);
+                    Art.drawSymbol(igd, pico, j * nodeWidth, y, totalSize, true);
                 } else {
                     if (continuingLines.contains(j))
-                        Art.drawSymbol(igd, Art.Symbol.BarV, ox + (j * nodeWidth), oy + y, totalSize, true);
+                        Art.drawSymbol(igd, Art.Symbol.BarV, j * nodeWidth, y, totalSize, true);
                 }
             }
             // the actual item icon
             if (te.hasChildren && (!te.expanded))
-                Art.drawSymbol(igd, Art.Symbol.Expandable, ox + (te.indent * nodeWidth), oy + y, te.h, true);
-            Art.drawSymbol(igd, te.icon, ox + (te.indent * nodeWidth), oy + y, te.h, true);
+                Art.drawSymbol(igd, Art.Symbol.Expandable, te.indent * nodeWidth, y, te.h, true);
+            Art.drawSymbol(igd, te.icon, te.indent * nodeWidth, y, te.h, true);
             y += te.h;
         }
         if (dragCursorEnable)
-            Art.drawSymbol(igd, dragCursorSymbol, igd.getMouseX() - (nodeWidth / 2), igd.getMouseY() - (nodeWidth / 2), nodeWidth, false);
+            Art.drawSymbol(igd, dragCursorSymbol, mouseEmulator.mouseX - (nodeWidth / 2), mouseEmulator.mouseY - (nodeWidth / 2), nodeWidth, false);
+    }
+
+    @Override
+    public void handlePointerBegin(IPointer state) {
+        mouseEmulator.handlePointerBegin(state);
+    }
+
+    @Override
+    public void handlePointerUpdate(IPointer state) {
+        mouseEmulator.handlePointerUpdate(state);
+    }
+
+    @Override
+    public void handlePointerEnd(IPointer state) {
+        mouseEmulator.handlePointerEnd(state);
     }
 
     @Override
     public void handleClick(int x, int y, int button) {
-        super.handleClick(x, y, button);
         if (button == 1) {
             dragBase = getTarget(x, y);
             dragBaseX = x;
@@ -135,7 +157,6 @@ public class UITreeView extends UIPanel {
 
     @Override
     public void handleDrag(int x, int y) {
-        super.handleDrag(x, y);
         if (dragBase != -1) {
             int ddx = Math.abs(dragBaseX - x);
             int ddy = Math.abs(dragBaseY - y);
@@ -148,7 +169,6 @@ public class UITreeView extends UIPanel {
 
     @Override
     public void handleRelease(int x, int y) {
-        super.handleRelease(x, y);
         int targ = getTarget(x, y);
         if (dragBase != -1) {
             if (dragCursorEnable) {
@@ -166,7 +186,7 @@ public class UITreeView extends UIPanel {
     private int getTarget(int x, int y) {
         if (x < 0)
             return -1;
-        if (x > getBounds().width)
+        if (x > getSize().width)
             return -1;
         int cy = 0;
         for (int i = 0; i < elements.length; i++) {

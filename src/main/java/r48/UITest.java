@@ -26,7 +26,7 @@ import java.util.*;
  * ...which is why it's now missing the useful left/right scroll control and the "DS" (save currently viewed object) button.
  * Created on 12/27/16.
  */
-public class UITest extends UIPanel {
+public class UITest extends UIElement.UIProxy {
     public RubyIO currentObj;
     public String[] navigaList;
     public RubyIO[] objectList;
@@ -64,8 +64,8 @@ public class UITest extends UIPanel {
 
     public UITest(RubyIO obj) {
         loadObject(obj);
-        allElements.add(outerPanel);
-        setBounds(new Rect(0, 0, 320, 200));
+        proxySetElement(outerPanel, false);
+        setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(320), FontSizes.scaleGuess(240)));
     }
 
     public void loadObject(final RubyIO obj) {
@@ -94,7 +94,7 @@ public class UITest extends UIPanel {
         // --
         navigaList = strings.toArray(new String[0]);
         objectList = targs.toArray(new RubyIO[0]);
-        masterPanel.panels.clear();
+        masterPanel.panelsClear();
         for (int i = 0; i < navigaList.length; i++) {
             final int j = i;
             UIElement button = new UITextButton(FontSizes.inspectorTextHeight, navigaList[i], new Runnable() {
@@ -113,15 +113,8 @@ public class UITest extends UIPanel {
                         loadObject(MagicalBinders.toBoundWithCache(b, objectList[j]));
                     }
                 }, FontSizes.inspectorTextHeight);
-            masterPanel.panels.add(button);
+            masterPanel.panelsAdd(button);
         }
-        masterPanel.setBounds(masterPanel.getBounds());
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        outerPanel.setBounds(new Rect(0, 0, r.width, r.height));
     }
 
     public static int natStrComp(String s, String s1) {

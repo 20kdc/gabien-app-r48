@@ -26,7 +26,7 @@ public class DefaultTableCellEditor implements ITableCellEditor {
             boxes[i] = new UINumberBox(FontSizes.tableElementTextHeight);
             boxes[i].number = targ.getTiletype(0, 0, i);
             boxes[i].onEdit = createOnEdit(targ, changeOccurred, 0, 0, i, boxes[i]);
-            panel.panels.add(boxes[i]);
+            panel.panelsAdd(boxes[i]);
         }
         return new Runnable() {
             @Override

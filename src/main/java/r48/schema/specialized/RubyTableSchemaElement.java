@@ -7,6 +7,8 @@
 
 package r48.schema.specialized;
 
+import gabien.FontManager;
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.FontSizes;
@@ -72,7 +74,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             private TileHelper tileHelper;
 
             @Override
-            protected void drawTile(int t, boolean hover, int x, int y, IGrInDriver igd) {
+            protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
                 int tX = t % targ.width;
                 int tY = t / targ.width;
                 if (targ.outOfBounds(tX, tY))
@@ -81,13 +83,13 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                 if (allowTextdraw) {
                     igd.clearRect(0, 0, 0, x, y, tileSizeW, FontSizes.gridTextHeight);
                     for (int i = 0; i < targ.planeCount; i++)
-                        UILabel.drawString(igd, x, y + (i * FontSizes.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, FontSizes.gridTextHeight);
+                        FontManager.drawString(igd, x, y + (i * FontSizes.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, FontSizes.gridTextHeight);
                 }
             }
 
             @Override
-            public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-                super.updateAndRender(ox, oy, deltaTime, selected, igd);
+            public void update(double deltaTime) {
+                super.update(deltaTime);
                 // Lack of any better place.
                 double v = uivScrollbar.scrollPoint;
                 if (v <= 0)
@@ -164,15 +166,14 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                 }
             };
             UIElement uie = new UISplitterLayout(wNB, hNB, false, 1, 2);
-            uie.setBounds(new Rect(0, 0, 128, uie.getBounds().height));
-            uiSVL.panels.add(uie);
-            uiSVL.panels.add(new UITextButton(FontSizes.tableResizeTextHeight, TXDB.get("Resize"), new Runnable() {
+            uiSVL.panelsAdd(uie);
+            uiSVL.panelsAdd(new UITextButton(FontSizes.tableResizeTextHeight, TXDB.get("Resize"), new Runnable() {
                 @Override
                 public void run() {
-                    int w = wNB.number;
+                    int w = (int) wNB.number;
                     if (w < 0)
                         w = 0;
-                    int h = hNB.number;
+                    int h = (int) hNB.number;
                     if (h < 0)
                         h = 0;
                     RubyTable r2 = targ.resize(w, h, defVals);
@@ -185,14 +186,12 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                 }
             }));
         }
-        UIElement r = new UISplitterLayout(uig, uiSVL, false, 6, 8);
-        r.setBounds(new Rect(0, 0, 128, 128));
-        return r;
+        return new UISplitterLayout(uig, uiSVL, false, 6, 8);
     }
 
     // Overridden in super-special tileset versions of this.
     // The idea is that TileHelper can contain any helper object needed.
-    public TileHelper baseTileDraw(RubyIO target, int t, int x, int y, IGrInDriver igd, TileHelper th) {
+    public TileHelper baseTileDraw(RubyIO target, int t, int x, int y, IGrDriver igd, TileHelper th) {
         return null;
     }
 

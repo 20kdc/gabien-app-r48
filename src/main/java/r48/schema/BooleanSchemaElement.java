@@ -27,8 +27,7 @@ public class BooleanSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        final UITextButton utb = new UITextButton(FontSizes.schemaButtonTextHeight, determineTruth(target) ? TXDB.get("True") : TXDB.get("False"), null).togglable();
-        utb.state = determineTruth(target);
+        final UITextButton utb = new UITextButton(determineTruth(target) ? TXDB.get("True") : TXDB.get("False"), FontSizes.schemaButtonTextHeight, null).togglable(determineTruth(target));
         utb.onClick = new Runnable() {
             @Override
             public void run() {

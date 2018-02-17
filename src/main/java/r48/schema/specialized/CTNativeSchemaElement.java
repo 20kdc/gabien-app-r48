@@ -36,7 +36,6 @@ public class CTNativeSchemaElement extends SchemaElement {
         addField(uiSVL, TXDB.get("G"), 8, rct, path);
         addField(uiSVL, TXDB.get("B"), 16, rct, path);
         addField(uiSVL, TXDB.get("A/L"), 24, rct, path);
-        uiSVL.setBounds(new Rect(0, 0, 128, UINumberBox.getRecommendedSize(FontSizes.schemaFieldTextHeight).height * 4));
         return uiSVL;
     }
 
@@ -59,7 +58,7 @@ public class CTNativeSchemaElement extends SchemaElement {
                 sp.changeOccurred(false);
             }
         };
-        uiSVL.panels.add(new UISplitterLayout(new UILabel(r, FontSizes.schemaFieldTextHeight), uinb, false, 1, 3));
+        uiSVL.panelsAdd(new UISplitterLayout(new UILabel(r, FontSizes.schemaFieldTextHeight), uinb, false, 1, 3));
     }
 
     @Override

@@ -18,6 +18,7 @@ import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.imagefx.IImageEffect;
 import r48.imagefx.ToneImageEffect;
+import r48.schema.HiddenSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -48,7 +49,8 @@ public class TonePickerSchemaElement extends SchemaElement {
         return createTotem(new ToneImageEffect(nr, ng, nb, ns, base));
     }
 
-    public static UIPanel createTotem(IImageEffect cfg) {
+    public static UIElement createTotem(IImageEffect cfg) {
+        /*IPCRESS
         UIPublicPanel panel = new UIPublicPanel();
         // The tone picker text height is typically 6, which should equal 64, as a base.
         // How do I make this work? Like this:
@@ -62,7 +64,8 @@ public class TonePickerSchemaElement extends SchemaElement {
         panel.baseImage = GaBIEn.createImage(finalComposite.getPixels(), imageUnit * 2, imageUnit);
         panel.setBounds(new Rect(0, 0, imageUnit * 2, imageUnit));
         finalComposite.shutdown();
-        return panel;
+        return panel;*/
+        return HiddenSchemaElement.makeHiddenElementIpcress();
     }
 
     @Override

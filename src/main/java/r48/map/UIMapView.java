@@ -7,9 +7,7 @@
 
 package r48.map;
 
-import gabien.GaBIEn;
-import gabien.IGrDriver;
-import gabien.IGrInDriver;
+import gabien.*;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
@@ -25,7 +23,7 @@ import r48.ui.Art;
  * Note: this class will slightly draw out of bounds.
  * Created on 12/27/16.
  */
-public class UIMapView extends UIElement implements IWindowElement {
+public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseReceiver {
     // This is drawn within the tile view. I.E. It's in content-pixels, not device-pixels
     public static final int mapDebugTextHeight = 6;
 
@@ -67,6 +65,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     private MapViewUpdateScheduler scheduler = new MapViewUpdateScheduler();
     // Managed using finalize for now.
     private IGrDriver offscreenBuf;
+    public OldMouseEmulator mouseEmulator;
 
     private IConsumer<SchemaPath> listener = new IConsumer<SchemaPath>() {
         @Override
@@ -94,7 +93,10 @@ public class UIMapView extends UIElement implements IWindowElement {
     public boolean[] layerVis;
 
     public UIMapView(String mapN, int i, int i1) {
-        setBounds(new Rect(0, 0, i, i1));
+        mouseEmulator = new OldMouseEmulator(this);
+        Rect fakeWorldRect = new Rect(0, 0, i, i1);
+        setWantedSize(fakeWorldRect);
+        setForcedBounds(null, fakeWorldRect);
 
         map = AppMain.system.mapViewRequest(mapN, true);
         mapGUM = mapN;
@@ -147,13 +149,22 @@ public class UIMapView extends UIElement implements IWindowElement {
     }
 
     @Override
-    public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-        shiftDown = igd.isKeyDown(IGrInDriver.VK_SHIFT);
+    public void update(double deltaTime) {
 
-        int mouseXT = UIElement.sensibleCellDiv((igd.getMouseX() - ox) + (int) internalScaling(camX), internalScaling(tileSize));
-        int mouseYT = UIElement.sensibleCellDiv((igd.getMouseY() - oy) + (int) internalScaling(camY), internalScaling(tileSize));
-        Rect camR = getBounds();
-        camR = new Rect(0, 0, internalScalingReversePad(camR.width), internalScalingReversePad(camR.height));
+    }
+
+    @Override
+    public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+        shiftDown = false;
+        if (peripherals instanceof IDesktopPeripherals) {
+            mouseEmulator.mouseX = ((IDesktopPeripherals) peripherals).getMouseX();
+            mouseEmulator.mouseY = ((IDesktopPeripherals) peripherals).getMouseY();
+            shiftDown = ((IDesktopPeripherals) peripherals).isKeyDown(IGrInDriver.VK_SHIFT);
+        }
+        int mouseXT = UIElement.sensibleCellDiv(mouseEmulator.mouseX + (int) internalScaling(camX), internalScaling(tileSize));
+        int mouseYT = UIElement.sensibleCellDiv(mouseEmulator.mouseY + (int) internalScaling(camY), internalScaling(tileSize));
+        Size camR = getSize();
+        camR = new Size(internalScalingReversePad(camR.width), internalScalingReversePad(camR.height));
         // Stuff any possible important information...
         char[] visConfig = new char[layerVis.length];
         for (int i = 0; i < layerVis.length; i++)
@@ -173,9 +184,9 @@ public class UIMapView extends UIElement implements IWindowElement {
         }
         if (offscreenBuf != null) {
             if ((internalScalingMul == 1) && (internalScalingDiv == 1)) {
-                igd.blitImage(0, 0, camR.width, camR.height, ox, oy, offscreenBuf);
+                igd.blitImage(0, 0, camR.width, camR.height, 0, 0, offscreenBuf);
             } else {
-                igd.blitScaledImage(0, 0, camR.width, camR.height, ox, oy, internalScaling(camR.width), internalScaling(camR.height), offscreenBuf);
+                igd.blitScaledImage(0, 0, camR.width, camR.height, 0, 0, internalScaling(camR.width), internalScaling(camR.height), offscreenBuf);
             }
         }
         boolean dedicatedDragControl = useDragControl();
@@ -200,11 +211,11 @@ public class UIMapView extends UIElement implements IWindowElement {
         Rect plusRectFull = Art.getZIconRect(true, 0); // used for X calc on the label
         Rect minusRect = Art.getZIconRect(false, 1);
         Rect dragRect = Art.getZIconRect(false, 2);
-        UILabel.drawLabel(igd, UILabel.getRecommendedSize(status, FontSizes.mapPositionTextHeight).width, ox + plusRectFull.x + plusRectFull.width, oy + plusRect.y, status, 0, FontSizes.mapPositionTextHeight);
-        Art.drawZoom(igd, true, ox + plusRect.x, oy + plusRect.y, plusRect.height);
-        Art.drawZoom(igd, false, ox + minusRect.x, oy + minusRect.y, minusRect.height);
+        UILabel.drawLabel(igd, UILabel.getRecommendedTextSize(status, FontSizes.mapPositionTextHeight).width, plusRectFull.x + plusRectFull.width, plusRect.y, status, 0, FontSizes.mapPositionTextHeight);
+        Art.drawZoom(igd, true, plusRect.x, plusRect.y, plusRect.height);
+        Art.drawZoom(igd, false, minusRect.x, minusRect.y, minusRect.height);
         if (dedicatedDragControl)
-            Art.drawDragControl(igd, camDragSwitch, ox + dragRect.x, oy + dragRect.y, minusRect.height);
+            Art.drawDragControl(igd, camDragSwitch, dragRect.x, dragRect.y, minusRect.height);
     }
 
     private boolean useDragControl() {
@@ -251,6 +262,21 @@ public class UIMapView extends UIElement implements IWindowElement {
                 callbacks.performGlobalOverlay(igd, -((int) camX), -((int) camY), l, minimap, tileSize);
             }
         }
+    }
+
+    @Override
+    public void handlePointerBegin(IPointer state) {
+        mouseEmulator.handlePointerBegin(state);
+    }
+
+    @Override
+    public void handlePointerUpdate(IPointer state) {
+        mouseEmulator.handlePointerUpdate(state);
+    }
+
+    @Override
+    public void handlePointerEnd(IPointer state) {
+        mouseEmulator.handlePointerEnd(state);
     }
 
     @Override
@@ -312,8 +338,13 @@ public class UIMapView extends UIElement implements IWindowElement {
     }
 
     @Override
+    public void handleRelease(int x, int y) {
+
+    }
+
+    @Override
     public void handleMousewheel(int x, int y, boolean north) {
-        Rect camR = getBounds();
+        Size camR = getSize();
         camX += camR.width / internalScaling(2.0d);
         camY += camR.height / internalScaling(2.0d);
         // Firstly, convert fraction to tuningZoomWorkingDiv
@@ -349,12 +380,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     }
 
     @Override
-    public boolean wantsSelfClose() {
-        return false;
-    }
-
-    @Override
-    public void windowClosed() {
+    public void handleRootDisconnect() {
         AppMain.objectDB.deregisterModificationHandler(map.object, listener);
     }
 
@@ -382,7 +408,7 @@ public class UIMapView extends UIElement implements IWindowElement {
     }
 
     public void showTile(int x, int y) {
-        Rect b = getBounds();
+        Size b = getSize();
         camX = -b.width / internalScaling(2.0d);
         camY = -b.height / internalScaling(2.0d);
         camX += tileSize * x;

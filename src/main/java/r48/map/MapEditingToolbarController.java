@@ -49,7 +49,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                         view.currentLayer = thisButton;
                         viewGiver.accept(lastAT = new UIMTAutotile(viewGiver, lastAT));
                     }
-                }).togglable();
+                }).togglable(false);
                 tools.add(button);
             }
         }
@@ -63,7 +63,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                     clearTools(thisButton);
                     viewGiver.accept(toolFuncs[toolId].apply(viewGiver));
                 }
-            }).togglable());
+            }).togglable(false));
         }
         if (view.mapTable.eventAccess != null) {
             tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Events"), new Runnable() {
@@ -74,7 +74,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                     clearTools(thisButton);
                     viewGiver.accept(new UIMTEventPicker(viewGiver));
                 }
-            }).togglable());
+            }).togglable(false));
         }
         tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Layer Visibility"), new Runnable() {
             final int thisButton = tools.size();
@@ -91,15 +91,13 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                         public void run() {
                             view.layerVis[fi] = !view.layerVis[fi];
                         }
-                    }).togglable();
-                    layerVis.state = view.layerVis[i];
-                    h += layerVis.getBounds().height;
-                    svl.panels.add(layerVis);
+                    }).togglable(view.layerVis[i]);
+                    h += layerVis.getWantedSize().height;
+                    svl.panelsAdd(layerVis);
                 }
-                svl.setBounds(new Rect(0, 0, 320, h));
-                viewGiver.accept(UIMTBase.wrap(viewGiver, svl, false));
+                viewGiver.accept(UIMTBase.wrap(viewGiver, svl));
             }
-        }).togglable());
+        }).togglable(false));
 
         // Utility buttons
 
@@ -159,15 +157,15 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 clearTools(thisButton);
                 viewGiver.accept(new UIMTPopupButtons(viewGiver, readonlyTiles));
             }
-        }).togglable());
+        }).togglable(false));
 
         // finish layout
         int maxH = 1;
         for (UITextButton utb : tools) {
-            rootLayout.panels.add(utb);
-            maxH = Math.max(maxH, utb.getBounds().height);
+            rootLayout.panelsAdd(utb);
+            maxH = Math.max(maxH, utb.getWantedSize().height);
         }
-        rootLayout.setBounds(new Rect(0, 0, maxH + FontSizes.mapToolbarScrollersize, maxH + FontSizes.mapToolbarScrollersize));
+        rootLayout.runLayout();
     }
 
     public void clearTools(int t) {

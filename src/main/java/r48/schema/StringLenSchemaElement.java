@@ -81,10 +81,10 @@ public class StringLenSchemaElement extends StringSchemaElement {
         final UITextBox utb = (UITextBox) super.buildHoldingEditor(target, launcher, path);
         UILabel l = new UILabel("-00000", FontSizes.schemaFieldTextHeight) {
             @Override
-            public void updateAndRender(int ox, int oy, double DeltaTime, boolean selected, IGrInDriver igd) {
+            public void update(double deltaTime) {
                 int l1 = measureText(utb.text);
-                Text = Integer.toString(len - l1);
-                super.updateAndRender(ox, oy, DeltaTime, selected, igd);
+                text = Integer.toString(len - l1);
+                super.update(deltaTime);
             }
         };
         return new UISplitterLayout(utb, l, false, 1);

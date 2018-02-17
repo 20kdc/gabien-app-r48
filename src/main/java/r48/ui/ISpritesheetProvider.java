@@ -7,6 +7,7 @@
 
 package r48.ui;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 
 /**
@@ -19,9 +20,9 @@ public interface ISpritesheetProvider {
 
     int itemCount();
 
-    int mapValToIdx(int itemVal);
+    int mapValToIdx(long itemVal);
 
-    int mapIdxToVal(int idx);
+    long mapIdxToVal(int idx);
 
-    void drawItem(int t, int x, int y, int spriteScale, IGrInDriver igd);
+    void drawItem(long t, int x, int y, int spriteScale, IGrDriver igd);
 }

@@ -39,19 +39,21 @@ public class IMIAssemblyController {
             }
         });
         fileList = new UIScrollLayout(true, FontSizes.generalScrollersize);
-        final UIMTBase base = new UIMTBase(null, false) {
+        final UIMTBase base = new UIMTBase(null) {
             boolean didChangeInner = false;
+
             @Override
-            public void setBounds(Rect r) {
+            public void runLayout() {
                 if (!didChangeInner) {
                     didChangeInner = true;
                     changeInner(outerSplit);
                 }
-                super.setBounds(r);
+                super.runLayout();
             }
 
             @Override
-            public void windowClosed() {
+            public void handleRootDisconnect() {
+                super.handleRootDisconnect();
                 assembler.windowLost();
             }
         };
@@ -137,8 +139,8 @@ public class IMIAssemblyController {
                 return base;
             }
         };
-        outerSplit.setBounds(new Rect(0, 0, FontSizes.scaleGuess(400), FontSizes.scaleGuess(300)));
-        base.setBounds(outerSplit.getBounds());
+
+        base.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(400), FontSizes.scaleGuess(300)));
         importSavedManifest();
         rebuildFL();
         wm.accept(base);
@@ -156,18 +158,18 @@ public class IMIAssemblyController {
     }
 
     public void rebuildFL() {
-        fileList.panels.clear();
+        fileList.panelsClear();
         for (String s2 : assembler.imiCreatedFiles) {
             UILabel fileName = new UILabel(TXDB.get("Create Data: ") + s2, FontSizes.imiAsmAssetTextHeight);
-            fileList.panels.add(fileName);
+            fileList.panelsAdd(fileName);
         }
         for (String s2 : assembler.imiModdedFiles) {
             UILabel fileName = new UILabel(TXDB.get("Modify Data: ") + s2, FontSizes.imiAsmAssetTextHeight);
-            fileList.panels.add(fileName);
+            fileList.panelsAdd(fileName);
         }
         for (final String s : files) {
             UILabel fileName = new UILabel(TXDB.get("Copy Asset: ") + s, FontSizes.imiAsmAssetTextHeight);
-            fileList.panels.add(new UIAppendButton(TXDB.get("Cancel"), fileName, new Runnable() {
+            fileList.panelsAdd(new UIAppendButton(TXDB.get("Cancel"), fileName, new Runnable() {
                 @Override
                 public void run() {
                     files.remove(s);
@@ -175,6 +177,5 @@ public class IMIAssemblyController {
                 }
             }, FontSizes.imiAsmAssetTextHeight));
         }
-        fileList.setBounds(fileList.getBounds());
     }
 }

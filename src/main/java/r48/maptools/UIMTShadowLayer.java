@@ -7,6 +7,7 @@
 
 package r48.maptools;
 
+import gabien.FontManager;
 import gabien.IGrDriver;
 import gabien.ui.*;
 import r48.FontSizes;
@@ -25,7 +26,7 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
     private int flags = 0;
 
     public UIMTShadowLayer(IMapToolContext mv) {
-        super(mv, false);
+        super(mv);
         map = mv.getMapView();
         UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
         changeInner(uiSVL);
@@ -39,16 +40,12 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
                 public void run() {
                     flags ^= thePower;
                 }
-            }).togglable();
+            }).togglable(false);
             power <<= 1;
         }
-        uiSVL.panels.add(new UISplitterLayout(controlButtons[0], controlButtons[1], false, 1, 2));
-        uiSVL.panels.add(new UISplitterLayout(controlButtons[2], controlButtons[3], false, 1, 2));
-        int th = UITextButton.getRecommendedSize("X", FontSizes.tableElementTextHeight).height * 2;
-        uiSVL.panels.add(new UISplitterLayout(new UILabel(TXDB.get("Region:"), FontSizes.tableElementTextHeight), regionId = new UINumberBox(FontSizes.tableElementTextHeight), false, 1, 2));
-        th += Math.max(UILabel.getRecommendedSize("", FontSizes.tableElementTextHeight).height, UINumberBox.getRecommendedSize(FontSizes.tableElementTextHeight).height);
-        allElements.add(uiSVL);
-        setBounds(new Rect(0, 0, 160, th));
+        uiSVL.panelsAdd(new UISplitterLayout(controlButtons[0], controlButtons[1], false, 1, 2));
+        uiSVL.panelsAdd(new UISplitterLayout(controlButtons[2], controlButtons[3], false, 1, 2));
+        uiSVL.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Region:"), FontSizes.tableElementTextHeight), regionId = new UINumberBox(FontSizes.tableElementTextHeight), false, 1, 2));
     }
 
     @Override
@@ -72,9 +69,9 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
         if (map.mapTable.outOfBounds(tx, ty))
             return;
         int regionId = (map.mapTable.getTiletype(tx, ty, 3) & 0xFF00) >> 8;
-        int l = UILabel.getTextLength("R" + regionId, UIMapView.mapDebugTextHeight) + 1;
+        int l = FontManager.getLineLength("R" + regionId, UIMapView.mapDebugTextHeight) + 1;
         igd.clearRect(0, 0, 0, px, py, l, UIMapView.mapDebugTextHeight);
-        UILabel.drawString(igd, px, py, "R" + regionId, true, UIMapView.mapDebugTextHeight);
+        FontManager.drawString(igd, px, py, "R" + regionId, true, UIMapView.mapDebugTextHeight);
     }
 
     @Override

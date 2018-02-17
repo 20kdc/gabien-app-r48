@@ -12,14 +12,14 @@ package r48.map.mapinfos;
  * Created on 02/06/17.
  */
 public class MapInfoReparentUtil {
-    public static int findChildrenLastOrder(int mapId, IRMLikeMapInfoBackend operators) {
+    public static int findChildrenLastOrder(long mapId, IRMLikeMapInfoBackend operators) {
         int origOrder = operators.getOrderOfMap(mapId);
 
         int order = origOrder;
-        int key = mapId;
+        long key = mapId;
 
         // Recursively find the highest order, which ensures the whole tree will be moved.
-        for (int key2 : operators.getHashKeys())
+        for (long key2 : operators.getHashKeys())
             if (operators.getHashBID(key2).getInstVarBySymbol("@parent_id").fixnumVal == mapId) {
                 int order2 = operators.getOrderOfMap(key2);
                 if (order2 > order) {
@@ -39,7 +39,7 @@ public class MapInfoReparentUtil {
     public static boolean wouldRelocatingInOrderFail(int orderA, int orderB, IRMLikeMapInfoBackendWPriv operators) {
         // This is one of those methods where not documenting it would be more of a pain
         //  than documenting it.
-        int map = operators.getMapOfOrder(orderA);
+        long map = operators.getMapOfOrder(orderA);
         if (map == -1)
             return true;
         // When moving a tree about,
@@ -63,7 +63,7 @@ public class MapInfoReparentUtil {
     public static int relocateInOrder(int orderA, int orderB, IRMLikeMapInfoBackendWPriv operators) {
         // This is one of those methods where not documenting it would be more of a pain
         //  than documenting it.
-        int map = operators.getMapOfOrder(orderA);
+        long map = operators.getMapOfOrder(orderA);
         if (map == -1)
             return orderA;
         // When moving a tree about,
@@ -134,7 +134,7 @@ public class MapInfoReparentUtil {
         long newParent = 0;
         int newOrder = operators.getOrderOfMap(map);
         if (newOrder > 1) {
-            int prevMap = operators.getMapOfOrder(newOrder - 1);
+            long prevMap = operators.getMapOfOrder(newOrder - 1);
             if (prevMap != -1)
                 newParent = prevMap;
         }
@@ -143,7 +143,7 @@ public class MapInfoReparentUtil {
     }
 
     // Moves the given map to the last order for safe removal, without any internal messing around.
-    public static void removeMapHelperSALT(int k, IRMLikeMapInfoBackendWPriv operators) {
+    public static void removeMapHelperSALT(long k, IRMLikeMapInfoBackendWPriv operators) {
         int glo = operators.getLastOrder();
         for (int i = operators.getOrderOfMap(k); i < glo; i++)
             operators.swapOrders(i, i + 1);

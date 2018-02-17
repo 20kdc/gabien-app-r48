@@ -7,6 +7,7 @@
 
 package r48.map.tiles;
 
+import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
@@ -82,7 +83,7 @@ public class XPTileRenderer implements ITileRenderer {
                 didDraw = true; // It's invisible, so it should just be considered drawn no matter what
             }
             if (!didDraw)
-                UILabel.drawString(igd, px, py, ":" + tidx, false, UIMapView.mapDebugTextHeight);
+                FontManager.drawString(igd, px, py, ":" + tidx, false, UIMapView.mapDebugTextHeight);
             return;
         }
         tidx -= 48 * 8;

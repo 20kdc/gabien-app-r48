@@ -19,12 +19,12 @@ import java.util.Set;
  */
 public interface IRMLikeMapInfoBackend {
     // Reading primitives
-    Set<Integer> getHashKeys();
+    Set<Long> getHashKeys();
 
-    RubyIO getHashBID(int k);
+    RubyIO getHashBID(long k);
 
-    int getOrderOfMap(int k);
+    int getOrderOfMap(long k);
 
     // -1 means failure.
-    int getMapOfOrder(int order);
+    long getMapOfOrder(int order);
 }

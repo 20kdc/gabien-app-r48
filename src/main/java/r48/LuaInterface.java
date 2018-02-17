@@ -8,6 +8,7 @@
 package r48;
 
 import gabien.GaBIEn;
+import gabienapp.Application;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -84,8 +85,8 @@ public class LuaInterface {
     private static void cleanup() {
         GaBIEn.rmFile("templuah.r48");
         GaBIEn.rmFile("templuac.r48");
-        GaBIEn.rmFile("templuat.r48");
-        GaBIEn.rmFile("templuao.r48");
+        GaBIEn.rmFile(Application.BRAND + "/templuat.r48");
+        GaBIEn.rmFile(Application.BRAND + "/templuao.r48");
     }
 
     public static boolean luaAvailable() {

@@ -47,11 +47,8 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        if (name.equals("_")) {
-            UIPanel panel = new UIPanel();
-            panel.setBounds(new Rect(0, 0, 0, 0));
-            return panel;
-        }
+        if (name.equals("_"))
+            return HiddenSchemaElement.makeHiddenElement();
         if (target.arrVal.length <= index) {
             String tx = TXDB.get("(This index isn't valid - did you modify a group from another window?)");
             if (optional != null)
@@ -73,11 +70,8 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         UIElement core = subSchema.buildHoldingEditor(target.arrVal[index], launcher, path.arrayHashIndex(new RubyIO().setFX(index), "." + name));
 
         if (!name.equals("")) {
-            UILabel label = new UILabel(name, FontSizes.schemaFieldTextHeight);
-            if (fieldWidthOverride) {
-                label.setBounds(new Rect(0, 0, fieldWidth, label.getBounds().height));
-                fieldWidthOverride = false;
-            }
+            UILabel label = new UIOverridableWidthLabel(name, FontSizes.schemaFieldTextHeight, fieldWidth, fieldWidthOverride);
+            fieldWidthOverride = false;
             core = new UISplitterLayout(label, core, false, 0);
         }
 
@@ -102,7 +96,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
 
     @Override
     public int getDefaultFieldWidth(RubyIO target) {
-        return UILabel.getRecommendedSize(name + " ", FontSizes.schemaFieldTextHeight).width;
+        return UILabel.getRecommendedTextSize(name + " ", FontSizes.schemaFieldTextHeight).width;
     }
 
     @Override
@@ -141,5 +135,25 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         subSchema.modifyVal(target.arrVal[index], path.arrayHashIndex(new RubyIO().setFX(index), "." + name), setDefault);
         if (changed)
             path.changeOccurred(true);
+    }
+
+    public static class UIOverridableWidthLabel extends UILabel {
+        final boolean fieldWidthOverride;
+        final int fieldWidth;
+
+        public UIOverridableWidthLabel(String text, int textHeight, int width, boolean override) {
+            super(text, textHeight);
+            fieldWidth = width;
+            fieldWidthOverride = override;
+        }
+
+        @Override
+        public void setWantedSize(Size s) {
+            if (!fieldWidthOverride) {
+                super.setWantedSize(s);
+            } else {
+                super.setWantedSize(new Size(fieldWidth, s.height));
+            }
+        }
     }
 }

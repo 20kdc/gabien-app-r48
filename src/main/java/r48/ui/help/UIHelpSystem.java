@@ -18,15 +18,21 @@ import java.util.LinkedList;
  * Helping things along where needed.
  * Created on 1/25/17.
  */
-public class UIHelpSystem extends UIPanel {
-
+public class UIHelpSystem extends UIElement.UIPanel {
+    /*IPCRESS*/
     public IConsumer<Integer> onLinkClick;
     public LinkedList<HelpElement> page = new LinkedList<HelpElement>();
 
     public UIHelpSystem() {
-        super.setBounds(new Rect(0, 0, 640, 320));
+        //super.setBounds(new Rect(0, 0, 640, 320));
     }
 
+    @Override
+    public void runLayout() {
+
+    }
+
+    /*IPCRESS
     private UIElement[] handleThing(char c, String[] args, int availableWidth) {
         if (c == '.') {
             String t = "";
@@ -42,7 +48,7 @@ public class UIHelpSystem extends UIPanel {
                 }
                 t = rt;
             }
-            working.Text = t;
+            working.text = t;
             results.add(working);
             return results.toArray(new UIElement[0]);
         }
@@ -147,7 +153,7 @@ public class UIHelpSystem extends UIPanel {
                 y += FontSizes.scaleGuess(Integer.parseInt(hc.args[0]));
         }
         super.setBounds(new Rect(rect.x, rect.y, rect.width, Math.max(imgEndY, y)));
-    }
+    }*/
 
     public static class HelpElement {
         char c;

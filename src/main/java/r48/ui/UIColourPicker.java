@@ -7,13 +7,23 @@
 
 package r48.ui;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 
-public class UIColourPicker extends UIPanel implements IWindowElement {
+public class UIColourPicker extends UIElement.UIPanel {
+    public UIColourPicker(IConsumer<Integer> iConsumer, boolean alpha) {
 
+    }
+
+    @Override
+    public void runLayout() {
+
+    }
+/*IPCRESS
     public UIPublicPanel colourPanel;
     public IConsumer<Integer> result;
     public int currentMainSpriteScale = 1;
@@ -26,40 +36,37 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
     public UIColourPicker(IConsumer<Integer> iConsumer, boolean alpha) {
         super();
         result = iConsumer;
-        colourPanel = new UIPublicPanel() {
-            boolean dragging = false;
+        colourPanel = new UIPublicPanel(256, 256) {
             int lastHue = 0;
 
             @Override
-            public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
+            public void render(boolean select, IPeripherals peripherals, IGrDriver igd) {
                 int newHue = (int) Math.floor((hueScroll.scrollPoint * 359) + 0.5d);
                 if (lastHue != newHue) {
                     baseImage = Art.getColourPal(newHue);
                     lastHue = newHue;
                 }
-                super.updateAndRender(ox, oy, deltaTime, select, igd);
+                super.render(select, peripherals, igd);
                 int margin = currentMainSpriteScale * 4;
-                Art.drawSelectionBox(ox + ((x * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - (margin / 2), oy + ((y * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - (margin / 2), margin + 1, margin + 1, 1, igd);
+                Art.drawSelectionBox(((x * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - (margin / 2),  ((y * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - (margin / 2), margin + 1, margin + 1, 1, igd);
             }
 
             @Override
-            public void handleClick(int xi, int yi, int button) {
-                dragging = false;
-                if (button != 1)
+            public void handlePointerBegin(IPointer state) {
+                if (state.getType() != IPointer.PointerType.Generic)
                     return;
-                dragging = true;
-                x = xi / currentMainSpriteScale;
-                y = yi / currentMainSpriteScale;
+                x = state.getX() / currentMainSpriteScale;
+                y = state.getY() / currentMainSpriteScale;
                 restrictXY();
             }
 
             @Override
-            public void handleDrag(int xi, int yi) {
-                if (dragging) {
-                    x = xi / currentMainSpriteScale;
-                    y = yi / currentMainSpriteScale;
-                    restrictXY();
-                }
+            public void handlePointerUpdate(IPointer state) {
+                if (state.getType() != IPointer.PointerType.Generic)
+                    return;
+                x = state.getX() / currentMainSpriteScale;
+                y = state.getY() / currentMainSpriteScale;
+                restrictXY();
             }
 
             private void restrictXY() {
@@ -74,7 +81,7 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
             }
         };
         hueScroll = new UIScrollbar(true, FontSizes.generalScrollersize);
-        int alphaScrollH = UILabel.getRecommendedSize("", FontSizes.schemaFieldTextHeight).height;
+        int alphaScrollH = UILabel.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight).height;
         if (alpha) {
             alphaScroll = new UIScrollbar(false, alphaScrollH);
             alphaScroll.scrollPoint = 1.0d;
@@ -154,4 +161,5 @@ public class UIColourPicker extends UIPanel implements IWindowElement {
             text = "0" + text;
         return "#" + text;
     }
+    */
 }

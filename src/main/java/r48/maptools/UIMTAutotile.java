@@ -39,15 +39,15 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     public AutoTileTypeField[] atBases;
 
     public UIMTAutotile(IMapToolContext mv, UIMTAutotile last) {
-        super(mv, false);
+        super(mv);
         map = mv.getMapView();
         int scale = setupView();
         // Properly set the tab pane into gear, then see if it's still having issues displaying tabs.
         // If so, give it as much extra space as possible without messing with the tile-count-width.
         tabPane.handleIncoming();
-        setBounds(new Rect(0, 0, (map.tileSize * scale * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) + FontSizes.gridScrollersize, FontSizes.scaleGuess(200)));
+        setForcedBounds(null, new Rect(0, 0, (map.tileSize * scale * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) + FontSizes.gridScrollersize, FontSizes.scaleGuess(200)));
         if (tabPane.getShortened())
-            setBounds(new Rect(0, 0, ((map.tileSize * scale * (map.mapTable.renderer.tileRenderer.getRecommendedWidth() + 1)) - 1) + FontSizes.gridScrollersize, FontSizes.scaleGuess(200)));
+            setForcedBounds(null, new Rect(0, 0, ((map.tileSize * scale * (map.mapTable.renderer.tileRenderer.getRecommendedWidth() + 1)) - 1) + FontSizes.gridScrollersize, FontSizes.scaleGuess(200)));
         if (last != null) {
             // Attempt to transfer state.
             UITileGrid lTM = last.tileMaps[last.tabPane.getTabIndex()];
@@ -89,9 +89,8 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                 options.get(0).state = true;
                 subtool = 0;
             }
-        }).togglable();
+        }).togglable(true);
         options.add(baseTool);
-        baseTool.state = true;
 
         UIAppendButton uab = new UIAppendButton(TXDB.get("Rectangle"), baseTool, new Runnable() {
             @Override

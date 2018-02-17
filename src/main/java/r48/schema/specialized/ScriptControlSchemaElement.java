@@ -8,7 +8,9 @@
 package r48.schema.specialized;
 
 import gabien.GaBIEn;
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IPeripherals;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
@@ -115,8 +117,8 @@ public class ScriptControlSchemaElement extends SchemaElement {
 
         return new UISplitterLayout(exporter, importer, false, 0.5d) {
             @Override
-            public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
-                super.updateAndRender(ox, oy, deltaTime, select, igd);
+            public void update(double deltaTime) {
+                super.update(deltaTime);
                 importScrSaveTicker.run();
             }
         };

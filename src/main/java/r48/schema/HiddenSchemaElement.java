@@ -7,10 +7,10 @@
 
 package r48.schema;
 
+import gabien.IGrDriver;
+import gabien.IPeripherals;
 import gabien.ui.IFunction;
-import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import gabien.ui.UIPanel;
 import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -33,9 +33,25 @@ public class HiddenSchemaElement extends SchemaElement implements IProxySchemaEl
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
         if (show.apply(target))
             return content.buildHoldingEditor(target, launcher, path);
-        UIPanel panel = new UIPanel();
-        panel.setBounds(new Rect(0, 0, 0, 0));
-        return panel;
+        return makeHiddenElement();
+    }
+
+    public static UIElement makeHiddenElement() {
+        return new UIElement(0, 0) {
+            @Override
+            public void update(double deltaTime) {
+
+            }
+
+            @Override
+            public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+
+            }
+        };
+    }
+
+    public static UIElement makeHiddenElementIpcress() {
+        return makeHiddenElement();
     }
 
     @Override

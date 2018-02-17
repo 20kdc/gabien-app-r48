@@ -20,7 +20,7 @@ import java.util.LinkedList;
  * Used for RPG Command Selection.
  * Created on 12/30/16.
  */
-public class UIEnumChoice extends UIPanel implements IWindowElement {
+public class UIEnumChoice extends UIElement.UIProxy {
     private final UIScrollLayout[] categoryPanels;
     private final UITabPane mainPanel;
     private boolean wantsSelfClose = false;
@@ -48,7 +48,7 @@ public class UIEnumChoice extends UIPanel implements IWindowElement {
                 }
             };
             for (final Option o : order[i].options) {
-                categoryPanels[i].panels.add(new UITextButton(FontSizes.enumChoiceTextHeight, o.key, new Runnable() {
+                categoryPanels[i].panelsAdd(new UITextButton(o.key, FontSizes.enumChoiceTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         if (!wantsSelfClose)
@@ -99,29 +99,18 @@ public class UIEnumChoice extends UIPanel implements IWindowElement {
             }), false, 1, 3);
         }
         if (finalSplit != null)
-            categoryPanels[categoryPanels.length - 1].panels.add(finalSplit);
+            categoryPanels[categoryPanels.length - 1].panelsAdd(finalSplit);
 
         mainPanel = new UITabPane(FontSizes.tabTextHeight, false, false);
         for (UIElement uie : categoryPanels)
             mainPanel.addTab(new UIWindowView.WVWindow(uie, new UIWindowView.IWVWindowIcon[] {}));
 
-        allElements.add(mainPanel);
+        proxySetElement(mainPanel, false);
     }
 
     @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        mainPanel.setBounds(new Rect(0, 0, r.width, r.height));
-    }
-
-    @Override
-    public boolean wantsSelfClose() {
+    public boolean requestsUnparenting() {
         return wantsSelfClose;
-    }
-
-    @Override
-    public void windowClosed() {
-
     }
 
     public enum EntryMode {

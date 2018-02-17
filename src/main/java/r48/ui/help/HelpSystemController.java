@@ -43,7 +43,7 @@ public class HelpSystemController {
                 public void newObj(int objId, String objName) throws IOException {
                     if (objId == i) {
                         if (pageName != null)
-                            pageName.Text = objName;
+                            pageName.text = objName;
                         working = true;
                     } else {
                         working = false;
@@ -59,7 +59,6 @@ public class HelpSystemController {
         } else {
             System.err.println("Unable to get at help file: ");
         }
-        hs.setBounds(hs.getBounds());
         if (onLoad != null)
             onLoad.run();
     }

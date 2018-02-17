@@ -21,7 +21,13 @@ import r48.imagefx.HueShiftImageEffect;
  * Created on 11/08/17.
  */
 public class Art {
+
+    // Images
+    public static IImage layerTabs = GaBIEn.getImageCKEx("layertab.png", false, true, 0, 0, 0);
+    public static IImage noMap = GaBIEn.getImageCKEx("nomad.png", false, true, 0, 0, 0);
+    public static IImage symbolic = GaBIEn.getImageCKEx("symbolic.png", false, true, 0, 0, 0);
     private static IImage colourPal;
+
     public static Rect r48ico = new Rect(33, 1, 31, 31);
     public static Rect r48ver = new Rect(33, 48, 31, 16);
 
@@ -31,7 +37,7 @@ public class Art {
 
     // This controls the layout of (in particular) zoom
     public static int getZIconSize() {
-        return UILabel.getRecommendedSize("", FontSizes.mapPositionTextHeight).height;
+        return UILabel.getRecommendedTextSize("", FontSizes.mapPositionTextHeight).height;
     }
 
     public static int getZIconMargin() {
@@ -95,22 +101,22 @@ public class Art {
         if (h <= 0)
             return;
         while (h > dotLineMetric) {
-            igd.blitImage(32, f, 1, dotLineMetric, x, y, AppMain.layerTabs);
+            igd.blitImage(32, f, 1, dotLineMetric, x, y, layerTabs);
             y += dotLineMetric;
             h -= dotLineMetric;
         }
-        igd.blitImage(32, f, 1, h, x, y, AppMain.layerTabs);
+        igd.blitImage(32, f, 1, h, x, y, layerTabs);
     }
 
     private static void drawDotLineH(int x, int y, int w, int f, IGrDriver igd) {
         if (w <= 0)
             return;
         while (w > dotLineMetric) {
-            igd.blitImage(32 + f, 0, dotLineMetric, 1, x, y, AppMain.layerTabs);
+            igd.blitImage(32 + f, 0, dotLineMetric, 1, x, y, layerTabs);
             x += dotLineMetric;
             w -= dotLineMetric;
         }
-        igd.blitImage(32 + f, 0, w, 1, x, y, AppMain.layerTabs);
+        igd.blitImage(32 + f, 0, w, 1, x, y, layerTabs);
     }
 
     private static IImage genColourPal() {
@@ -186,7 +192,7 @@ public class Art {
     }
 
     private static void drawSymbol4px(IGrDriver igd, int symbol, int x, int y, int size) {
-        igd.blitScaledImage(0, symbol * 4, 4, 4, x, y, size, size, AppMain.symbol);
+        igd.blitScaledImage(0, symbol * 4, 4, 4, x, y, size, size, symbolic);
     }
 
     private static void drawSymbol8px(IGrDriver igd, int symbol, int x, int y, int size) {
@@ -195,13 +201,13 @@ public class Art {
         int subpage = symbol / 2;
         symbol %= 2;
         subpage += page * 2;
-        igd.blitScaledImage(4 + (symbol * 8), subpage * 8, 8, 8, x, y, size, size, AppMain.symbol);
+        igd.blitScaledImage(4 + (symbol * 8), subpage * 8, 8, 8, x, y, size, size, symbolic);
     }
 
     private static void drawSymbol16px(IGrDriver igd, int symbol, int x, int y, int size) {
         int page = symbol / 4;
         symbol %= 4;
-        igd.blitScaledImage(20 + (symbol * 16), page * 16, 16, 16, x, y, size, size, AppMain.symbol);
+        igd.blitScaledImage(20 + (symbol * 16), page * 16, 16, 16, x, y, size, size, symbolic);
     }
 
     // Basically a "compatibility" function. Tries to draw an appropriate event-point image given a tile size and a top-left position.

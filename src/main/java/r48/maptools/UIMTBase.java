@@ -7,61 +7,52 @@
 
 package r48.maptools;
 
-import gabien.ui.IWindowElement;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import gabien.ui.UIPanel;
 import r48.map.IMapToolContext;
 
 /**
+ * Was used for many things that it shouldn't have been. Now, not so much.
  * Created on August 14 2017.
- * This is used from several places, not necessarily map tools,
- *  because it's a good base class for anonymous classes (among other things)
  */
-public class UIMTBase extends UIPanel implements IWindowElement {
+public class UIMTBase extends UIElement.UIPanel {
     private UIElement innerElem = null;
-    private boolean forceSz;
 
     public final IMapToolContext mapToolContext;
 
     public boolean selfClose = false;
     public boolean hasClosed = false;
 
-    public UIMTBase(IMapToolContext mtc, final boolean forceSize) {
-        forceSz = forceSize;
+    public UIMTBase(IMapToolContext mtc) {
         mapToolContext = mtc;
     }
 
     protected void changeInner(UIElement inner) {
-        allElements.clear();
+        for (UIElement uie : layoutGetElements())
+            layoutRemoveElement(uie);
         innerElem = inner;
         if (inner != null) {
-            allElements.add(inner);
-            setBounds(inner.getBounds());
+            layoutAddElement(inner);
+            runLayout();
         }
     }
 
     @Override
-    public void setBounds(Rect r) {
-        if (innerElem != null) {
-            if (forceSz) {
-                Rect s = innerElem.getBounds();
-                innerElem.setBounds(new Rect(0, 0, s.width, s.height));
-                super.setBounds(new Rect(r.x, r.y, s.width, s.height));
-                return;
-            }
-            innerElem.setBounds(new Rect(0, 0, r.width, r.height));
-        }
-        super.setBounds(r);
-    }
-
-    @Override
-    public boolean wantsSelfClose() {
+    public boolean requestsUnparenting() {
         return selfClose;
     }
 
     @Override
-    public void windowClosed() {
+    public void runLayout() {
+        if (innerElem != null) {
+            innerElem.setForcedBounds(this, new Rect(getSize()));
+            setWantedSize(innerElem.getWantedSize());
+        }
+    }
+
+    @Override
+    public void handleRootDisconnect() {
+        super.handleRootDisconnect();
         hasClosed = true;
     }
 
@@ -72,8 +63,8 @@ public class UIMTBase extends UIPanel implements IWindowElement {
         return super.toString();
     }
 
-    public static UIMTBase wrap(IMapToolContext mtc, UIElement svl, boolean forceSize) {
-        UIMTBase r = new UIMTBase(mtc, forceSize);
+    public static UIMTBase wrap(IMapToolContext mtc, UIElement svl) {
+        UIMTBase r = new UIMTBase(mtc);
         r.changeInner(svl);
         return r;
     }

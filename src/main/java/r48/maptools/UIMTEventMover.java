@@ -24,7 +24,7 @@ public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
     private UIMapView mapView;
 
     public UIMTEventMover(RubyIO evI, IMapToolContext mv) {
-        super(mv, true);
+        super(mv);
         mapView = mv.getMapView();
         targetEvent = evI;
         changeInner(new UILabel(TXDB.get("Click to place event"), FontSizes.dialogWindowTextHeight));

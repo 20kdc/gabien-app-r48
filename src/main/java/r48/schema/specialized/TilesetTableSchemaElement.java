@@ -7,7 +7,7 @@
 
 package r48.schema.specialized;
 
-import gabien.IGrInDriver;
+import gabien.IGrDriver;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -24,7 +24,7 @@ public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRende
     }
 
     @Override
-    public StuffRenderer baseTileDraw(RubyIO target, int t, int x, int y, IGrInDriver igd, StuffRenderer osr) {
+    public StuffRenderer baseTileDraw(RubyIO target, int t, int x, int y, IGrDriver igd, StuffRenderer osr) {
         // The whole "variable in, variable out" thing is a safe leak-proof way of caching the helper object.
         if (osr == null)
             osr = AppMain.system.rendererFromTso(target);

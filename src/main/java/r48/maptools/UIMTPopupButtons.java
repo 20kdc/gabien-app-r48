@@ -26,7 +26,7 @@ import java.io.OutputStream;
  */
 public class UIMTPopupButtons extends UIMTBase {
     public UIMTPopupButtons(final IMapToolContext mtc, final boolean disableResize) {
-        super(mtc, true);
+        super(mtc);
         final UIMapView view = mtc.getMapView();
         UIAutoclosingPopupMenu u = new UIAutoclosingPopupMenu(new String[] {
                 TXDB.get("Reload Panorama/TS"),
@@ -93,7 +93,7 @@ public class UIMTPopupButtons extends UIMTBase {
 
     private static class UIMTMapResizer extends UIMTBase {
         private UIMTMapResizer(final IMapToolContext mtc) {
-            super(mtc, false);
+            super(mtc);
             final UIMapView view = mtc.getMapView();
             final UINumberBox a = new UINumberBox(FontSizes.textDialogFieldTextHeight);
             final UINumberBox b = new UINumberBox(FontSizes.textDialogFieldTextHeight);
@@ -116,10 +116,10 @@ public class UIMTPopupButtons extends UIMTBase {
             UISplitterLayout root = new UISplitterLayout(new UISplitterLayout(a, b, false, 0.5d), new UITextButton(FontSizes.textDialogFieldTextHeight, "Resize", new Runnable() {
                 @Override
                 public void run() {
-                    int w = a.number;
+                    int w = (int) a.number;
                     if (w < 1)
                         w = 1;
-                    int h = b.number;
+                    int h = (int) b.number;
                     if (h < 1)
                         h = 1;
                     view.mapTable.resize(w, h);

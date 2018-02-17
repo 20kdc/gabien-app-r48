@@ -39,22 +39,22 @@ public interface IRMLikeMapInfoBackendWPub extends IRMLikeMapInfoBackend {
     // Returned is the new index, in case it differs.
     int relocateInOrder(int orderFrom, int orderTo);
 
-    void triggerEditInfoOf(int k);
+    void triggerEditInfoOf(long k);
 
     // It is assumed that any children have been reparented before you use this.
-    void removeMap(int k);
+    void removeMap(long k);
 
     // Key goes in, order comes out.
     // Assumes you've checked for conflict first.
-    int createNewMap(int k);
+    int createNewMap(long k);
 
     // A modification was completed, trigger modification handlers
     void complete();
 
     // Gets a symbol index for treeview
-    Art.Symbol getIconForMap(int k);
+    Art.Symbol getIconForMap(long k);
 
     // Translates a map entry to a GUM.
     // Returning null is fine, and will return the user to the No Map Selected display.
-    String translateToGUM(int k);
+    String translateToGUM(long k);
 }

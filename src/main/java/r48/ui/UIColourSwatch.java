@@ -7,8 +7,11 @@
 
 package r48.ui;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IPeripherals;
 import gabien.ui.Rect;
+import gabien.ui.Size;
 import gabien.ui.UIElement;
 
 /**
@@ -23,13 +26,18 @@ public class UIColourSwatch extends UIElement {
     }
 
     @Override
-    public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-        Rect bounds = getBounds();
+    public void update(double deltaTime) {
+
+    }
+
+    @Override
+    public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+        Size bounds = getSize();
         final int a = ((col & 0xFF000000) >> 24) & 0xFF;
         final int r = (col & 0xFF0000) >> 16;
         final int g = (col & 0xFF00) >> 8;
         final int b = (col & 0xFF);
-        igd.clearRect(r, g, b, ox, oy, bounds.width / 2, bounds.height);
-        igd.clearRect(a, a, a, ox + (bounds.width / 2), oy, bounds.width - (bounds.width / 2), bounds.height);
+        igd.clearRect(r, g, b, 0, 0, bounds.width / 2, bounds.height);
+        igd.clearRect(a, a, a, bounds.width / 2, 0, bounds.width - (bounds.width / 2), bounds.height);
     }
 }

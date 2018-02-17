@@ -8,7 +8,6 @@
 package r48;
 
 import r48.io.IMIUtils;
-import r48.io.IObjectBackend;
 
 import java.io.*;
 import java.util.HashMap;
@@ -26,6 +25,9 @@ import java.util.Map;
  * Created on 12/27/16.
  */
 public class RubyIO {
+    // Null so that things will error if it's unset.
+    public static String encoding;
+
     /*
      * The Grand List Of Objects R48 Supports:
      * NOTE: All objects can theoretically have iVars.
@@ -295,7 +297,7 @@ public class RubyIO {
         try {
             String encoding = "UTF-8";
             if (!intern)
-                encoding = IObjectBackend.Factory.encoding;
+                encoding = RubyIO.encoding;
             strVal = text.getBytes(encoding);
             RubyEncodingTranslator.inject(this, encoding);
         } catch (UnsupportedEncodingException e) {

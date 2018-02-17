@@ -51,7 +51,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         return "Map" + m + ".lmu";
     }
 
-    public static String sTranslateToGUM(int k) {
+    public static String sTranslateToGUM(long k) {
         final RubyIO map = AppMain.objectDB.getObject("RPG_RT.lmt").getInstVarBySymbol("@map_infos").getHashVal(new RubyIO().setFX(k));
         String pfx = map.getInstVarBySymbol("@type").fixnumVal == 2 ? "Area." : "Map.";
         return pfx + k;
@@ -74,12 +74,12 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     }
 
     @Override
-    public void triggerEditInfoOf(int k) {
+    public void triggerEditInfoOf(long k) {
         AppMain.launchNonRootSchema(mapTree, "RPG::MapTree", new RubyIO().setFX(k), getHashBID(k), "RPG::MapInfo", "M" + k, null);
     }
 
     @Override
-    public void removeMap(int k) {
+    public void removeMap(long k) {
         // Prepare...
         MapInfoReparentUtil.removeMapHelperSALT(k, this);
         // Remove last from array
@@ -91,9 +91,9 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     }
 
     @Override
-    public int createNewMap(int k) {
+    public int createNewMap(long k) {
         int targetOrder = mapTreeOrders.arrVal.length - 1;
-        int l = getMapOfOrder(targetOrder);
+        long l = getMapOfOrder(targetOrder);
         if (l == -1)
             l = 0;
         RubyIO mi = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
@@ -111,12 +111,12 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     public void complete() {
         // Need to update indent...
         getHashBID(0).getInstVarBySymbol("@indent").fixnumVal = 0;
-        LinkedList<Integer> intList = new LinkedList<Integer>(getHashKeys());
-        Collections.sort(intList, new Comparator<Integer>() {
+        LinkedList<Long> intList = new LinkedList<Long>(getHashKeys());
+        Collections.sort(intList, new Comparator<Long>() {
             @Override
-            public int compare(Integer t0, Integer t1) {
-                t0 = getOrderOfMap(t0);
-                t1 = getOrderOfMap(t1);
+            public int compare(Long p0, Long p1) {
+                int t0 = getOrderOfMap(p0);
+                int t1 = getOrderOfMap(p1);
                 if (t0 > t1)
                     return 1;
                 if (t0 < t1)
@@ -124,14 +124,14 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
                 return 0;
             }
         });
-        LinkedList<Integer> parentStack = new LinkedList<Integer>();
+        LinkedList<Long> parentStack = new LinkedList<Long>();
         int lastOrder = 0;
-        for (final Integer k : intList) {
+        for (final Long k : intList) {
             final RubyIO map = getHashBID(k);
             final int order = getOrderOfMap(k);
             if (lastOrder < order)
                 lastOrder = order;
-            final int parent = (int) map.getInstVarBySymbol("@parent_id").fixnumVal;
+            final long parent = map.getInstVarBySymbol("@parent_id").fixnumVal;
             if (parent == 0) {
                 parentStack.clear();
             } else {
@@ -149,34 +149,34 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     }
 
     @Override
-    public Art.Symbol getIconForMap(int k) {
+    public Art.Symbol getIconForMap(long k) {
         final RubyIO map = getHashBID(k);
         return map.getInstVarBySymbol("@type").fixnumVal == 2 ? Art.Symbol.Area : Art.Symbol.Map;
     }
 
     @Override
-    public String translateToGUM(int k) {
+    public String translateToGUM(long k) {
         return sTranslateToGUM(k);
     }
 
     @Override
-    public Set<Integer> getHashKeys() {
+    public Set<Long> getHashKeys() {
         // The job of this is to hide that there *ever was* a Map 0.
         // Map 0 is reserved.
-        HashSet<Integer> hs = new HashSet<Integer>();
+        HashSet<Long> hs = new HashSet<Long>();
         for (RubyIO i : mapTreeHash.hashVal.keySet())
             if (i.fixnumVal != 0)
-                hs.add((int) i.fixnumVal);
+                hs.add(i.fixnumVal);
         return hs;
     }
 
     @Override
-    public RubyIO getHashBID(int k) {
+    public RubyIO getHashBID(long k) {
         return mapTreeHash.getHashVal(new RubyIO().setFX(k));
     }
 
     @Override
-    public int getOrderOfMap(int k) {
+    public int getOrderOfMap(long k) {
         for (int i = 0; i < mapTreeOrders.arrVal.length; i++)
             if (mapTreeOrders.arrVal[i].fixnumVal == k)
                 return i;
@@ -184,7 +184,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     }
 
     @Override
-    public int getMapOfOrder(int order) {
-        return (int) mapTreeOrders.arrVal[order].fixnumVal;
+    public long getMapOfOrder(int order) {
+        return mapTreeOrders.arrVal[order].fixnumVal;
     }
 }

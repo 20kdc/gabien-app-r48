@@ -36,10 +36,10 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
         final IConsumer<Integer> wtm = installEditor(flags, new IConsumer<UIElement>() {
             @Override
             public void accept(UIElement element) {
-                panel.panels.add(element);
+                panel.panelsAdd(element);
             }
         }, setter);
-        panel.panels.add(new UILabel(TXDB.get("Manual Edit:"), FontSizes.tableElementTextHeight));
+        panel.panelsAdd(new UILabel(TXDB.get("Manual Edit:"), FontSizes.tableElementTextHeight));
         final Runnable manualControl = new DefaultTableCellEditor().createEditor(panel, targV, uig, changeOccurred);
         return new Runnable() {
             @Override
@@ -104,7 +104,7 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                     bit <<= len;
                 } else {
                     // Bool-field
-                    final UITextButton flag = new UITextButton(FontSizes.tableElementTextHeight, Integer.toHexString(thisBit) + ": " + flags[i], null).togglable();
+                    final UITextButton flag = new UITextButton(FontSizes.tableElementTextHeight, Integer.toHexString(thisBit) + ": " + flags[i], null).togglable(false);
                     panelAdder.accept(flag);
                     flagStates[i] = new IConsumer<AtomicInteger>() {
                         @Override

@@ -7,6 +7,7 @@
 
 package r48.schema.specialized.genpos;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.IFunction;
@@ -42,7 +43,7 @@ public interface IGenposFrame {
 
     Rect getCellSelectionIndicator(int i);
 
-    void drawCell(int i, int opx, int opy, IGrInDriver igd);
+    void drawCell(int i, int opx, int opy, IGrDriver igd);
 
     IImage getBackground();
 }

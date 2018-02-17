@@ -53,7 +53,7 @@ public class ImageEditorController {
             }
         });
         paletteView = new UIScrollLayout(true, FontSizes.generalScrollersize);
-        paletteView.setBounds(new Rect(0, 0, initPalette(), 1));
+        initPalette();
         rootView = new UISplitterLayout(imageEditView, paletteView, false, 1.0d) {
             @Override
             public String toString() {
@@ -100,8 +100,8 @@ public class ImageEditorController {
         }
     }
 
-    private int initPalette() {
-        paletteView.panels.clear();
+    private void initPalette() {
+        paletteView.panelsClear();
         final String fbStrB = TXDB.get("Back");
         final String fbStrA = TXDB.get("Accept");
         final String fbStrL = TXDB.get("Load: ");
@@ -129,9 +129,9 @@ public class ImageEditorController {
                 }, fbStrS, fbStrB, fbStrA, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize));
             }
         }), false, 0.5d);
-        paletteView.panels.add(saveLoad);
-        int widthGuess = saveLoad.getBounds().width;
-        paletteView.panels.add(new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Add Colour"), new Runnable() {
+        paletteView.panelsAdd(saveLoad);
+        int widthGuess = saveLoad.getWantedSize().width;
+        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Add Colour"), new Runnable() {
             @Override
             public void run() {
                 windowMaker.get().accept(new UIColourPicker(new IConsumer<Integer>() {
@@ -152,7 +152,7 @@ public class ImageEditorController {
             }
         }), false, 0.5d));
         if (!rectangleRunning) {
-            paletteView.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Rectangle"), new Runnable() {
+            paletteView.panelsAdd(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Rectangle"), new Runnable() {
                 @Override
                 public void run() {
                     rectangleRunning = true;
@@ -163,7 +163,7 @@ public class ImageEditorController {
                 }
             }));
         } else {
-            paletteView.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Cancel"), new Runnable() {
+            paletteView.panelsAdd(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Cancel"), new Runnable() {
                 @Override
                 public void run() {
                     rectangleRunning = false;
@@ -172,7 +172,7 @@ public class ImageEditorController {
                 }
             }));
         }
-        paletteView.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Resize"), new Runnable() {
+        paletteView.panelsAdd(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Resize"), new Runnable() {
             @Override
             public void run() {
                 showXYChanger(new Rect(0, 0, imageEditView.imageW, imageEditView.imageH), new IConsumer<Rect>() {
@@ -199,7 +199,7 @@ public class ImageEditorController {
                 }, TXDB.get("Resize..."));
             }
         }));
-        paletteView.panels.add(new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Grid Size"), new Runnable() {
+        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Grid Size"), new Runnable() {
             @Override
             public void run() {
                 showXYChanger(new Rect(imageEditView.gridOX, imageEditView.gridOY, imageEditView.gridW, imageEditView.gridH), new IConsumer<Rect>() {
@@ -263,11 +263,9 @@ public class ImageEditorController {
                     }
                 }
             }), cPanel, false, 0.0d);
-            paletteView.panels.add(cPanel);
+            paletteView.panelsAdd(cPanel);
             idx++;
         }
-        paletteView.setBounds(paletteView.getBounds());
-        return widthGuess + FontSizes.generalScrollersize;
     }
 
     private void showXYChanger(Rect targetVal, final IConsumer<Rect> iConsumer, final String title) {
@@ -277,7 +275,7 @@ public class ImageEditorController {
                 return title;
             }
         };
-        final UIMTBase res = UIMTBase.wrap(null, xyChanger, false);
+        final UIMTBase res = UIMTBase.wrap(null, xyChanger);
         final UINumberBox wVal, hVal, xVal, yVal;
         final UITextButton acceptButton;
         wVal = new UINumberBox(FontSizes.schemaFieldTextHeight);
@@ -299,18 +297,19 @@ public class ImageEditorController {
         acceptButton = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Accept"), new Runnable() {
             @Override
             public void run() {
-                Rect r = new Rect(xVal.number, yVal.number, Math.max(wVal.number, 1), Math.max(hVal.number, 1));
+                Rect r = new Rect((int) xVal.number, (int) yVal.number, Math.max((int) wVal.number, 1), Math.max((int) hVal.number, 1));
                 iConsumer.accept(r);
                 res.selfClose = true;
             }
         });
-        xyChanger.panels.add(new UILabel(TXDB.get("Size"), FontSizes.schemaFieldTextHeight));
-        xyChanger.panels.add(new UISplitterLayout(wVal, hVal, false, 1, 2));
-        xyChanger.panels.add(new UILabel(TXDB.get("Offset"), FontSizes.schemaFieldTextHeight));
-        xyChanger.panels.add(new UISplitterLayout(xVal, yVal, false, 1, 2));
-        xyChanger.panels.add(acceptButton);
-        res.setBounds(xyChanger.getBounds());
-        res.setBounds(new Rect(0, 0, FontSizes.scaleGuess(200), xyChanger.scrollLength));
+        xyChanger.panelsAdd(new UILabel(TXDB.get("Size"), FontSizes.schemaFieldTextHeight));
+        xyChanger.panelsAdd(new UISplitterLayout(wVal, hVal, false, 1, 2));
+        xyChanger.panelsAdd(new UILabel(TXDB.get("Offset"), FontSizes.schemaFieldTextHeight));
+        xyChanger.panelsAdd(new UISplitterLayout(xVal, yVal, false, 1, 2));
+        xyChanger.panelsAdd(acceptButton);
+
+        res.runLayout();
+        res.setForcedBounds(null, new Rect(res.getWantedSize()));
         windowMaker.get().accept(res);
     }
 }

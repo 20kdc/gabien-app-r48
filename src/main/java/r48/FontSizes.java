@@ -7,9 +7,9 @@
 
 package r48;
 
+import gabien.FontManager;
 import gabien.ui.IConsumer;
 import gabien.ui.ISupplier;
-import gabien.ui.UILabel;
 import gabienapp.Application;
 import r48.dbs.TXDB;
 
@@ -163,9 +163,9 @@ public class FontSizes {
         prepare.addIVar("@secondary_images", new RubyIO().setString(Application.secondaryImageLoadLocation, true));
         prepare.addIVar("@saved_rootpath", new RubyIO().setString(Application.rootPathBackup, true));
         prepare.addIVar("@lang", new RubyIO().setString(TXDB.getLanguage(), true));
-        if (UILabel.fontOverride != null) {
-            prepare.addIVar("@sysfont", new RubyIO().setString(UILabel.fontOverride, true));
-            prepare.addIVar("@sysfont_ue8", new RubyIO().setBool(UILabel.fontOverrideUE8));
+        if (FontManager.fontOverride != null) {
+            prepare.addIVar("@sysfont", new RubyIO().setString(FontManager.fontOverride, true));
+            prepare.addIVar("@sysfont_ue8", new RubyIO().setBool(FontManager.fontOverrideUE8));
         }
         AdHocSaveLoad.save("fonts", prepare);
     }
@@ -181,13 +181,13 @@ public class FontSizes {
             }
             RubyIO sys = dat.getInstVarBySymbol("@sysfont");
             if (sys != null) {
-                UILabel.fontOverride = sys.decString();
+                FontManager.fontOverride = sys.decString();
             } else {
-                UILabel.fontOverride = null;
+                FontManager.fontOverride = null;
             }
             RubyIO sys2 = dat.getInstVarBySymbol("@sysfont_ue8");
             if (sys2 != null)
-                UILabel.fontOverrideUE8 = sys2.type == 'T';
+                FontManager.fontOverrideUE8 = sys2.type == 'T';
             RubyIO sys3 = dat.getInstVarBySymbol("@secondary_images");
             if (sys3 != null)
                 Application.secondaryImageLoadLocation = sys3.decString();

@@ -14,10 +14,7 @@ import r48.dbs.CMDB;
 import r48.dbs.FormatSyntax;
 import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
-import r48.schema.AggregateSchemaElement;
-import r48.schema.OpaqueSchemaElement;
-import r48.schema.PathSchemaElement;
-import r48.schema.SchemaElement;
+import r48.schema.*;
 import r48.schema.arrays.StandardArrayInterface;
 import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
@@ -62,6 +59,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
+        /*IPCRESS
         // A note here:
         // Using newWindow on path will cause a growing stack issue:
         //  newWindow always returns DIRECTLY to the path, subwindows use Back which 
@@ -71,7 +69,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
         final SchemaPath path = path2.tagSEMonitor(target, this, false);
         final AtomicInteger passbackHeight = new AtomicInteger(0);
-        final UIPanel uip = new UIPanel() {
+        final UIElement.UIPanel uip = new UIElement.UIPanel() {
             UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(FontSizes.schemaButtonTextHeight, database.buildCodename(target, true), new Runnable() {
                 @Override
                 public void run() {
@@ -176,6 +174,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
         uip.setBounds(new Rect(0, 0, 320, 200));
         uip.setBounds(new Rect(0, 0, 320, passbackHeight.get()));
         return uip;
+        */
+        return HiddenSchemaElement.makeHiddenElementIpcress();
     }
 
     // Used by EventCommandArray for edit-on-create.

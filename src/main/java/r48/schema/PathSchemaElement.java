@@ -37,11 +37,8 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UILabel uil = new UILabel(alias + " ", FontSizes.schemaFieldTextHeight);
-        if (fieldWidthOverride) {
-            uil.setBounds(new Rect(0, 0, fieldWidth, uil.getBounds().height));
-            fieldWidthOverride = false;
-        }
+        final UILabel uil = new ArrayElementSchemaElement.UIOverridableWidthLabel(alias + " ", FontSizes.schemaFieldTextHeight, fieldWidth, fieldWidthOverride);
+        fieldWidthOverride = false;
         RubyIO tgo = PathSyntax.parse(target, pStr, 0);
         UIElement e2;
         if (tgo == null) {
@@ -71,7 +68,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
 
     @Override
     public int getDefaultFieldWidth(RubyIO target) {
-        return UILabel.getRecommendedSize(alias + " ", FontSizes.schemaFieldTextHeight).width;
+        return UILabel.getRecommendedTextSize(alias + " ", FontSizes.schemaFieldTextHeight).width;
     }
 
     @Override

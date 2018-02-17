@@ -8,8 +8,6 @@
 package r48.schema.specialized;
 
 import gabien.ui.UIElement;
-import gabien.ui.UIPanel;
-import r48.AppMain;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
 import r48.schema.SchemaElement;

@@ -24,7 +24,7 @@ public class UIMTPickTile extends UIMTBase implements IMapViewCallbacks {
     public final UIMapView map;
 
     public UIMTPickTile(IMapToolContext m) {
-        super(m, true);
+        super(m);
         map = m.getMapView();
         changeInner(innerLabel);
     }

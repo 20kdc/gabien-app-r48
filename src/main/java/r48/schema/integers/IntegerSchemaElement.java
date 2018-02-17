@@ -19,16 +19,16 @@ import r48.schema.util.SchemaPath;
  * Created on 12/29/16.
  */
 public class IntegerSchemaElement extends SchemaElement {
-    public int defaultInt;
+    public long defaultInt;
 
-    public IntegerSchemaElement(int i) {
+    public IntegerSchemaElement(long i) {
         defaultInt = i;
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UINumberBox unb = new UINumberBox(FontSizes.schemaFieldTextHeight);
-        unb.number = (int) target.fixnumVal;
+        unb.number = target.fixnumVal;
         unb.readOnly = isReadOnly();
         unb.onEdit = new Runnable() {
             @Override
@@ -44,7 +44,7 @@ public class IntegerSchemaElement extends SchemaElement {
         return false;
     }
 
-    public int filter(int i) {
+    public long filter(long i) {
         return i;
     }
 

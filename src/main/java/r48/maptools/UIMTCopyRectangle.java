@@ -38,15 +38,8 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
     }, FontSizes.dialogWindowTextHeight);
 
     public UIMTCopyRectangle(IMapToolContext par) {
-        super(par, true);
+        super(par);
         changeInner(inner);
-        setBounds(getBounds());
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        Rect s = innerLabel.getBounds();
-        super.setBounds(new Rect(r.x, r.y, s.width, s.height));
     }
 
     @Override
@@ -102,8 +95,7 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
         } else {
             startX = x;
             startY = y;
-            innerLabel.Text = TXDB.get("Click on another tile to finish copying.");
-            setBounds(getBounds());
+            innerLabel.text = TXDB.get("Click on another tile to finish copying.");
             stage = true;
         }
     }

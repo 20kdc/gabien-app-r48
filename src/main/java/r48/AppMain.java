@@ -7,10 +7,7 @@
 
 package r48;
 
-import gabien.GaBIEn;
-import gabien.IGrDriver;
-import gabien.IGrInDriver;
-import gabien.IImage;
+import gabien.*;
 import gabien.ui.*;
 import gabienapp.Application;
 import r48.dbs.*;
@@ -99,18 +96,16 @@ public class AppMain {
                         @Override
                         public void draw(IGrDriver igd, int x, int y, int size) {
                             Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false);
-                            if (uiElement instanceof IWindowElement)
-                                if (((IWindowElement) uiElement).wantsSelfClose()) {
-                                    rootView.removeByUIE(uiElement);
-                                    ((IWindowElement) uiElement).windowClosed();
-                                }
+                            if (uiElement.requestsUnparenting()) {
+                                rootView.removeByUIE(uiElement);
+                                uiElement.handleRootDisconnect();
+                            }
                         }
 
                         @Override
                         public void click() {
-                            if (uiElement instanceof IWindowElement)
-                                ((IWindowElement) uiElement).windowClosed();
                             rootView.removeByUIE(uiElement);
+                            uiElement.handleRootDisconnect();
                         }
                     },
                     new UIWindowView.IWVWindowIcon() {
@@ -151,12 +146,6 @@ public class AppMain {
     // State for in-system copy/paste
     public static RubyIO theClipboard = null;
 
-    // Images
-    public static IImage layerTabs = GaBIEn.getImageCKEx("layertab.png", false, true, 0, 0, 0);
-    public static IImage noMap = GaBIEn.getImageCKEx("nomad.png", false, true, 0, 0, 0);
-    public static IImage symbol = GaBIEn.getImageCKEx("symbolic.png", false, true, 0, 0, 0);
-    public static ImageFXCache imageFXCache = null;
-
     // All active schema hosts
     private static LinkedList<ISchemaHost> activeHosts;
     // All magical bindings in use
@@ -173,6 +162,9 @@ public class AppMain {
 
     // Manages fullscreeniness.
     public static Runnable toggleFullscreen;
+
+    // Image cache
+    public static ImageFXCache imageFXCache = null;
 
     public static IConsumer<Double> initializeAndRun(final String rp, final String gamepak, final WindowCreatingUIElementConsumer uiTicker) throws IOException {
         rootPath = rp;
@@ -219,21 +211,22 @@ public class AppMain {
         // initialize UI
         rootView = new UIWindowView() {
             @Override
-            public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-                Coco.run(igd);
-                Rect r = getBounds();
+            public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+                if (peripherals instanceof IDesktopPeripherals)
+                    Coco.run((IDesktopPeripherals) peripherals);
+                Size r = getSize();
                 mainWindowWidth = r.width;
                 mainWindowHeight = r.height;
-                super.updateAndRender(ox, oy, deltaTime, selected, igd);
+                super.render(selected, peripherals, igd);
             }
         };
         rootView.windowTextHeight = FontSizes.windowFrameHeight;
         rootView.sizerSize = rootView.windowTextHeight * 2;
         rootView.sizerOfs = (rootView.windowTextHeight * 4) / 3;
         windowMaker = rootViewWM;
-        rootView.setBounds(new Rect(0, 0, 800, 600));
-        mainWindowWidth = 800;
-        mainWindowHeight = 600;
+        mainWindowWidth = FontSizes.scaleGuess(800);
+        mainWindowHeight = FontSizes.scaleGuess(600);
+        rootView.setForcedBounds(null, new Rect(0, 0, mainWindowWidth, mainWindowHeight));
 
         // Set up a default stuffRenderer for things to use.
         stuffRendererIndependent = system.rendererFromTso(null);
@@ -273,10 +266,10 @@ public class AppMain {
             public void run() {
                 uiTicker.forceRemove(rootView);
                 if (!weAreFullscreen) {
-                    preFullscreenRect = rootView.getBounds();
+                    preFullscreenRect = rootView.getParentRelativeBounds();
                 } else {
                     if (preFullscreenRect != null)
-                        rootView.setBounds(preFullscreenRect);
+                        rootView.setForcedBounds(null, preFullscreenRect);
                 }
                 weAreFullscreen = !weAreFullscreen;
                 uiTicker.accept(rootView, 1, weAreFullscreen);
@@ -289,7 +282,7 @@ public class AppMain {
             public void accept(Double deltaTime) {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
 
-                uiStatusLabel.Text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO().setFX(objectDB.modifiedObjects.size()), (theClipboard == null) ? new RubyIO().setNull() : theClipboard);
+                uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO().setFX(objectDB.modifiedObjects.size()), (theClipboard == null) ? new RubyIO().setNull() : theClipboard);
                 if (mapContext != null) {
                     String mapId = mapContext.getCurrentMapObject();
                     RubyIO map = null;
@@ -371,8 +364,8 @@ public class AppMain {
                             @Override
                             public void click() {
                                 utp.removeTab(uiElement);
-                                Rect r = rootView.getBounds();
-                                uiElement.setBounds(new Rect(0, 0, r.width / 2, r.height / 2));
+                                Size r = rootView.getSize();
+                                uiElement.setForcedBounds(null, new Rect(0, 0, r.width / 2, r.height / 2));
                                 rootViewWMI.accept(uiElement);
                             }
                         }
@@ -398,18 +391,13 @@ public class AppMain {
                             @Override
                             public void draw(IGrDriver igd, int x, int y, int size) {
                                 Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false);
-                                if (uiElement instanceof IWindowElement)
-                                    if (((IWindowElement) uiElement).wantsSelfClose()) {
-                                        utp.removeTab(uiElement);
-                                        ((IWindowElement) uiElement).windowClosed();
-                                    }
+                                if (uiElement.requestsUnparenting())
+                                    utp.removeTab(uiElement); // this does do root disconnect
                             }
 
                             @Override
                             public void click() {
-                                if (uiElement instanceof IWindowElement)
-                                    ((IWindowElement) uiElement).windowClosed();
-                                utp.removeTab(uiElement);
+                                utp.removeTab(uiElement); // also does root disconnect
                             }
                         },
                         new UIWindowView.IWVWindowIcon() {
@@ -421,7 +409,7 @@ public class AppMain {
                             @Override
                             public void click() {
                                 utp.removeTab(uiElement);
-                                uiElement.setBounds(new Rect(0, 0, mainWindowWidth / 2, mainWindowHeight / 2));
+                                uiElement.setForcedBounds(null, new Rect(0, 0, mainWindowWidth / 2, mainWindowHeight / 2));
                                 rootViewWM.accept(uiElement);
                             }
                         }
@@ -561,15 +549,17 @@ public class AppMain {
                 return TXDB.get("Information");
             }
         };
-        svl.panels.add(uhs);
-        uhs.setBounds(uhs.getBounds());
-        int h = uhs.getBounds().height;
-        int limit = rootView.getBounds().height - rootView.getWindowFrameHeight();
+        svl.panelsAdd(uhs);
+
+        svl.runLayout();
+        int h = svl.getWantedSize().height;
+
+        int limit = rootView.getSize().height - rootView.getWindowFrameHeight();
         limit *= 3;
         limit /= 4;
         if (h > limit)
             h = limit;
-        svl.setBounds(new Rect(0, 0, uhs.getBounds().width, h));
+        svl.setForcedBounds(null, new Rect(0, 0, uhs.getSize().width, h));
         windowMaker.accept(svl);
     }
 
@@ -585,8 +575,9 @@ public class AppMain {
             }
         };
         final UIScrollLayout uus = new UIScrollLayout(true, FontSizes.generalScrollersize);
-        uus.panels.add(uis);
-        uus.setBounds(new Rect(0, 0, (rootView.getBounds().width / 3) * 2, rootView.getBounds().height / 2));
+        uus.panelsAdd(uis);
+        Size rootSize = rootView.getSize();
+        uus.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, rootSize.height / 2));
         final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(TXDB.get("Index"), uil, new Runnable() {
             @Override
             public void run() {
@@ -602,8 +593,6 @@ public class AppMain {
             @Override
             public void run() {
                 uus.scrollbar.scrollPoint = 0;
-                Rect b = topbar.getBounds();
-                topbar.setBounds(b);
             }
         };
         hsc.loadPage(integer);

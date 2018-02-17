@@ -48,12 +48,11 @@ public class LengthChangeSchemaElement extends SchemaElement {
             final Runnable r = AggregateSchemaElement.hookButtonForPressPreserve(path, launcher, LengthChangeSchemaElement.this, target, this, "main");
 
             @Override
-            public void updateAndRender(int ox, int oy, double DeltaTime, boolean selected, IGrInDriver igd) {
-                super.updateAndRender(ox, oy, DeltaTime, selected, igd);
+            public void update(double deltaTime) {
+                super.update(deltaTime);
                 r.run();
             }
-        }.togglable();
-        r.state = target.arrVal.length == targetLen;
+        }.togglable(target.arrVal.length == targetLen);
         return r;
     }
 

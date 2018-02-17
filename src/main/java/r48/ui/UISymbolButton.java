@@ -7,8 +7,11 @@
 
 package r48.ui;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IPeripherals;
 import gabien.ui.Rect;
+import gabien.ui.Size;
 import gabien.ui.UIButton;
 
 /**
@@ -18,24 +21,32 @@ import gabien.ui.UIButton;
 public class UISymbolButton extends UIButton {
     public Art.Symbol symbol;
 
+    @Deprecated
     public UISymbolButton(int fontSize, Art.Symbol symbolIndex, Runnable runnable) {
-        int margin = fontSize / 8;
-        symbol = symbolIndex;
-        // See rationale in gabien-core classes. Note, though, that the width is smaller.
-        setBounds(new Rect(0, 0, fontSize + margin, fontSize + margin));
-        onClick = runnable;
+        this(symbolIndex, fontSize, runnable);
     }
 
-    public UISymbolButton togglable() {
-        toggle = true;
+    public UISymbolButton(Art.Symbol symbolIndex, int fontSize, Runnable runnable) {
+        super(getRecommendedBorderWidth(fontSize));
+        int margin = fontSize / 8;
+        symbol = symbolIndex;
+        onClick = runnable;
+        // See rationale in gabien-core UILabel. Note, though, that the width is smaller.
+        Rect sz = new Rect(0, 0, fontSize + margin, fontSize + margin);
+        setWantedSize(sz);
+        setForcedBounds(null, new Rect(sz));
+    }
+
+    @Override
+    public UISymbolButton togglable(boolean state) {
+        super.togglable(state);
         return this;
     }
 
     @Override
-    public void updateAndRender(int ox, int oy, double DeltaTime, boolean selected, IGrInDriver igd) {
-        super.updateAndRender(ox, oy, DeltaTime, selected, igd);
-        Rect bo = getBounds();
-        Rect cr = getContentsRect();
-        Art.drawSymbol(igd, symbol, ox + cr.x, oy + cr.y, cr.height, false);
+    public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+        super.render(selected, peripherals, igd);
+        int bw = getBorderWidth();
+        Art.drawSymbol(igd, symbol, bw, bw, getSize().height - (bw * 2), false);
     }
 }

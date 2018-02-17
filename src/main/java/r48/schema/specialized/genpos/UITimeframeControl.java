@@ -7,7 +7,9 @@
 
 package r48.schema.specialized.genpos;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
@@ -22,7 +24,7 @@ import r48.ui.UIAppendButton;
  * Notably, the actual current frame number is stored by the Root Panel since everything needs that.
  * Created on 2/17/17.
  */
-public class UITimeframeControl extends UIPanel {
+public class UITimeframeControl extends UIElement.UIProxy {
     public GenposAnimRootPanel rootPanel;
     private double playTimer = 0;
     public int recommendedFramerate;
@@ -110,18 +112,11 @@ public class UITimeframeControl extends UIPanel {
             }
         }, FontSizes.rmaTimeframeTextHeight);
 
-        allElements.add(toolbar);
-        setBounds(toolbar.getBounds());
+        proxySetElement(toolbar, true);
     }
 
     @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        toolbar.setBounds(new Rect(0, 0, r.width, r.height));
-    }
-
-    @Override
-    public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
+    public void update(double deltaTime) {
         if (playControllerButton.state) {
             playTimer += deltaTime;
             double frameTime = 1.0d / recommendedFramerate;
@@ -143,7 +138,7 @@ public class UITimeframeControl extends UIPanel {
         } else {
             playTimer = 0;
         }
-        currentFrame.Text = (rootPanel.target.getFrameIdx() + 1) + " / " + rootPanel.target.getFrameCount();
-        super.updateAndRender(ox, oy, deltaTime, select, igd);
+        currentFrame.text = (rootPanel.target.getFrameIdx() + 1) + " / " + rootPanel.target.getFrameCount();
+        super.update(deltaTime);
     }
 }

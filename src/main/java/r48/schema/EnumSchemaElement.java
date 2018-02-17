@@ -57,7 +57,7 @@ public class EnumSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(FontSizes.schemaButtonTextHeight, viewValue(target, true), new Runnable() {
+        return new UITextButton(viewValue(target, true), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 launcher.switchObject(path.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {

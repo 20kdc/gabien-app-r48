@@ -7,9 +7,7 @@
 
 package r48.schema;
 
-import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import gabien.ui.UIPanel;
 import r48.RubyIO;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -31,9 +29,7 @@ public class HashObjectSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-        UIPanel panel = new UIPanel();
-        panel.setBounds(new Rect(0, 0, 0, 0));
-        return panel;
+        return HiddenSchemaElement.makeHiddenElement();
     }
 
     @Override

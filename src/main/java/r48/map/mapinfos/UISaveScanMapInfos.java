@@ -20,7 +20,7 @@ import r48.ui.UIAppendButton;
  * A 'flat' explorer showing just map information.
  * Created sometime in December 2017 (whoops!)
  */
-public class UISaveScanMapInfos extends UIPanel {
+public class UISaveScanMapInfos extends UIElement.UIProxy {
     public final UIScrollLayout mainLayout = new UIScrollLayout(true, FontSizes.generalScrollersize);
     public final IFunction<Integer, String> objectMapping, gumMapping;
     public final IMapContext context;
@@ -34,8 +34,8 @@ public class UISaveScanMapInfos extends UIPanel {
         first = f;
         last = l;
         toStringRes = saves;
-        allElements.add(mainLayout);
         reload();
+        proxySetElement(mainLayout, true);
     }
 
     @Override
@@ -43,26 +43,20 @@ public class UISaveScanMapInfos extends UIPanel {
         return toStringRes;
     }
 
-    @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        mainLayout.setBounds(new Rect(0, 0, r.width, r.height));
-    }
-
     public void reload() {
-        mainLayout.panels.clear();
+        mainLayout.panelsClear();
         for (int i = first; i <= last; i++) {
             RubyIO rio = AppMain.objectDB.getObject(objectMapping.apply(i), null);
             final String gum = gumMapping.apply(i);
             if (rio != null) {
-                mainLayout.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, FormatSyntax.formatExtended(TXDB.get("#A : #B"), new RubyIO().setString(gum, true), rio), new Runnable() {
+                mainLayout.panelsAdd(new UITextButton(FontSizes.mapInfosTextHeight, FormatSyntax.formatExtended(TXDB.get("#A : #B"), new RubyIO().setString(gum, true), rio), new Runnable() {
                     @Override
                     public void run() {
                         context.loadMap(gum);
                     }
                 }));
             } else {
-                mainLayout.panels.add(new UIAppendButton(TXDB.get("New..."), new UILabel(FormatSyntax.formatExtended(TXDB.get("#A (Unavailable)"), new RubyIO().setString(gum, true), rio), FontSizes.mapInfosTextHeight), new Runnable() {
+                mainLayout.panelsAdd(new UIAppendButton(TXDB.get("New..."), new UILabel(FormatSyntax.formatExtended(TXDB.get("#A (Unavailable)"), new RubyIO().setString(gum, true), rio), FontSizes.mapInfosTextHeight), new Runnable() {
                     @Override
                     public void run() {
                         context.loadMap(gum);
@@ -71,6 +65,5 @@ public class UISaveScanMapInfos extends UIPanel {
                 }, FontSizes.mapInfosTextHeight));
             }
         }
-        mainLayout.setBounds(mainLayout.getBounds());
     }
 }

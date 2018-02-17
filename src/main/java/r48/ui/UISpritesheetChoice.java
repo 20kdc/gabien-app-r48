@@ -7,7 +7,7 @@
 
 package r48.ui;
 
-import gabien.IGrInDriver;
+import gabien.IGrDriver;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -16,14 +16,14 @@ import r48.dbs.TXDB;
  * Like UIEnumChoice in that this provides options to the user, but acts differently in that this provides a grid of images.
  * Created on 29/07/17.
  */
-public class UISpritesheetChoice extends UIPanel {
+public class UISpritesheetChoice extends UIElement.UIProxy {
     public UISplitterLayout rootLayout;
     public UIGrid spriteGrid;
 
-    public UISpritesheetChoice(int oldVal, final ISpritesheetProvider provider, final IConsumer<Integer> consumer) {
+    public UISpritesheetChoice(long oldVal, final ISpritesheetProvider provider, final IConsumer<Long> consumer) {
         spriteGrid = new UIGrid(provider.itemWidth() * FontSizes.getSpriteScale(), provider.itemHeight() * FontSizes.getSpriteScale(), provider.itemCount()) {
             @Override
-            protected void drawTile(int t, boolean hover, int x, int y, IGrInDriver igd) {
+            protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
                 provider.drawItem(provider.mapIdxToVal(t), x, y, FontSizes.getSpriteScale(), igd);
             }
         };
@@ -43,12 +43,6 @@ public class UISpritesheetChoice extends UIPanel {
             }
         }), false, 1);
         rootLayout = new UISplitterLayout(spriteGrid, msp, true, 1);
-        allElements.add(rootLayout);
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        rootLayout.setBounds(new Rect(0, 0, r.width, r.height));
+        proxySetElement(rootLayout, true);
     }
 }

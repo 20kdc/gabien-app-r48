@@ -343,6 +343,6 @@ function cloneRubyValue(v)
     return v2
 end
 
-local object = loadRuby("templuat.r48")
+local object = loadRuby("r48/templuat.r48")
 object = loadfile("templuac.r48")(object)
-saveRuby("templuao.r48", object)
+saveRuby("r48/templuao.r48", object)

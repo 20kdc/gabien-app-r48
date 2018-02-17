@@ -7,7 +7,9 @@
 
 package r48.schema;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IPeripherals;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
@@ -54,13 +56,11 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
             if (possibleField != null)
                 possibleField.setFieldWidthOverride(overrideFW);
             // still deal with ise because the proxies may have some function
-            uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
+            uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
         }
         overrideSet = false;
-        int h = 0;
-        for (UIElement uie : uiSVL.panels)
-            h += uie.getBounds().height;
-        uiSVL.setBounds(new Rect(0, 0, 128, h));
+        uiSVL.runLayout();
+        uiSVL.setForcedBounds(null, new Rect(uiSVL.getWantedSize()));
         return uiSVL;
     }
 
@@ -97,8 +97,8 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
         final SchemaPath keyStoragePath = path.findLast();
         final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize) {
             @Override
-            public void updateAndRender(int ox, int oy, double DeltaTime, boolean select, IGrInDriver igd) {
-                super.updateAndRender(ox, oy, DeltaTime, select, igd);
+            public void render(boolean select, IPeripherals peripherals, IGrDriver igd) {
+                super.render(select, peripherals, igd);
                 keyStoragePath.getEmbedMap(host).put(myKey, scrollbar.scrollPoint);
             }
         };

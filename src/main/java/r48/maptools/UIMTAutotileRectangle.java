@@ -35,19 +35,12 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
     }, FontSizes.dialogWindowTextHeight);
 
     public UIMTAutotileRectangle(UIMTAutotile par, int x, int y, boolean at) {
-        super(par.mapToolContext, true);
+        super(par.mapToolContext);
         changeInner(innerLabel);
         parent = par;
         startX = x;
         startY = y;
         autotile = at;
-        setBounds(getBounds());
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        Rect s = innerLabel.getBounds();
-        super.setBounds(new Rect(r.x, r.y, s.width, s.height));
     }
 
     @Override

@@ -69,19 +69,11 @@ public class HashSchemaElement extends SchemaElement {
             // "Here come the hax!"
             // Also does relayout
             public void trigger() {
-                // NOTE: This gets called while update&render is occurring
-                //       That's fine: delay the actual relayout
                 run();
-                AppMain.pendingRunnables.add(new Runnable() {
-                    @Override
-                    public void run() {
-                        uiSV.setBounds(uiSV.getBounds());
-                    }
-                });
             }
             @Override
             public void run() {
-                uiSV.panels.clear();
+                uiSV.panelsClear();
                 final UITextBox searchBox = new UITextBox(FontSizes.schemaFieldTextHeight);
                 searchBox.text = getSearchTerm(target, launcher, path);
                 searchBox.onEdit = new Runnable() {
@@ -91,7 +83,7 @@ public class HashSchemaElement extends SchemaElement {
                         trigger();
                     }
                 };
-                uiSV.panels.add(new UISplitterLayout(new UILabel(TXDB.get("Search Keys:"), FontSizes.schemaFieldTextHeight), searchBox, false, 0d));
+                uiSV.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Search Keys:"), FontSizes.schemaFieldTextHeight), searchBox, false, 0d));
                 for (RubyIO key : UITest.sortedKeys(target.hashVal.keySet(), new IFunction<RubyIO, String>() {
                     @Override
                     public String apply(RubyIO rubyIO) {
@@ -115,7 +107,7 @@ public class HashSchemaElement extends SchemaElement {
                     } else {
                         hs = new UISplitterLayout(hsA, hsB, false, 1, 4);
                     }
-                    uiSV.panels.add(new UIAppendButton("-", hs, new Runnable() {
+                    uiSV.panelsAdd(new UIAppendButton("-", hs, new Runnable() {
                         @Override
                         public void run() {
                             // remove
@@ -143,7 +135,7 @@ public class HashSchemaElement extends SchemaElement {
                         }
                     }
                 }), false, 2, 3);
-                uiSV.panels.add(workspaceHS);
+                uiSV.panelsAdd(workspaceHS);
             }
         };
         rebuildSection.run();

@@ -7,7 +7,7 @@
 
 package r48.ui;
 
-import gabien.IGrInDriver;
+import gabien.*;
 import gabien.ui.*;
 import r48.FontSizes;
 
@@ -16,7 +16,7 @@ import r48.FontSizes;
  * It's too particular for that.
  * Created on 12/28/16.
  */
-public class UIGrid extends UIPanel {
+public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMouseReceiver {
     public int tileCount;
     public int tileSizeW, tileSizeH;
 
@@ -35,13 +35,14 @@ public class UIGrid extends UIPanel {
     public UIScrollbar uivScrollbar = new UIScrollbar(true, FontSizes.gridScrollersize);
 
     public Runnable onSelectionChange = null;
+    public OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
 
     public UIGrid(int tSizeW, int tSizeH, int tCount) {
+        super(FontSizes.scaleGuess(320), FontSizes.scaleGuess(200));
         tileSizeW = tSizeW;
         tileSizeH = tSizeH;
         tileCount = tCount;
-        allElements.add(uivScrollbar);
-        setBounds(new Rect(0, 0, 320, 200));
+        layoutAddElement(uivScrollbar);
     }
 
     private int getScrollOffset() {
@@ -51,23 +52,27 @@ public class UIGrid extends UIPanel {
         if (totalRows % tmWidth > 0)
             totalRows += tmWidth;
         totalRows /= tmWidth;
-        int screenRows = getBounds().height / tileSizeH;
+        int screenRows = getSize().height / tileSizeH;
         int extraRows = totalRows - screenRows;
         return ((int) Math.floor((uivScrollbar.scrollPoint * extraRows) + 0.5)) * tmWidth;
     }
 
     @Override
-    public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-        Rect r = getBounds();
-        igd.clearRect(bkgR, bkgG, bkgB, ox, oy, r.width, r.height);
-        super.updateAndRender(ox, oy, deltaTime, selected, igd);
+    public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+        if (peripherals instanceof IDesktopPeripherals) {
+            mouseEmulator.mouseX = ((IDesktopPeripherals) peripherals).getMouseX();
+            mouseEmulator.mouseY = ((IDesktopPeripherals) peripherals).getMouseY();
+        }
+        Size r = getSize();
+        igd.clearRect(bkgR, bkgG, bkgB, 0, 0, r.width, r.height);
+        super.render(selected, peripherals, igd);
 
         if (tmWidth <= 0)
             return;
 
         int mouseSel = -1;
-        int mouseX = igd.getMouseX() - ox;
-        int mouseY = igd.getMouseY() - oy;
+        int mouseX = mouseEmulator.mouseX;
+        int mouseY = mouseEmulator.mouseY;
         if (new Rect(0, 0, tileSizeW * tmWidth, r.height).contains(mouseX, mouseY)) {
             int tx = UIElement.sensibleCellDiv(mouseX, tileSizeW);
             int ty = UIElement.sensibleCellDiv(mouseY, tileSizeH);
@@ -85,14 +90,14 @@ public class UIGrid extends UIPanel {
             if ((p < 0) || (p >= tileCount)) {
                 pi++;
                 // error
-                igd.clearRect(128, 0, 0, ox + px, oy + py, tileSizeW, tileSizeH);
+                igd.clearRect(128, 0, 0, px, py, tileSizeW, tileSizeH);
                 continue;
             }
             if (p == selTile)
-                igd.clearRect(128, 0, 128, ox + px, oy + py, tileSizeW, tileSizeH);
-            drawTile(p, p == mouseSel, ox + px, oy + py, igd);
+                igd.clearRect(128, 0, 128, px, py, tileSizeW, tileSizeH);
+            drawTile(p, p == mouseSel, px, py, igd);
             if (p == selTile)
-                Art.drawSelectionBox(ox + px, oy + py, tileSizeW, tileSizeH, FontSizes.getSpriteScale(), igd);
+                Art.drawSelectionBox(px, py, tileSizeW, tileSizeH, FontSizes.getSpriteScale(), igd);
             pi++;
         }
         for (int ty = 0; ty < selHeight; ty++) {
@@ -104,19 +109,20 @@ public class UIGrid extends UIPanel {
                     continue;
                 if (py >= r.height)
                     continue;
-                Art.drawSelectionBox(ox + px, oy + py, tileSizeW, tileSizeH, FontSizes.getSpriteScale(), igd);
+                Art.drawSelectionBox(px, py, tileSizeW, tileSizeH, FontSizes.getSpriteScale(), igd);
                 pi++;
             }
         }
     }
 
-    protected void drawTile(int t, boolean hover, int x, int y, IGrInDriver igd) {
-        UILabel.drawString(igd, x, y, Integer.toHexString(t), false, FontSizes.gridTextHeight);
+    protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
+        FontManager.drawString(igd, x, y, Integer.toHexString(t), false, FontSizes.gridTextHeight);
     }
 
     @Override
-    public void setBounds(Rect r) {
-        int scrollBarW = uivScrollbar.getBounds().width;
+    public void runLayout() {
+        int scrollBarW = uivScrollbar.getWantedSize().width;
+        Size r = getSize();
         int tiles = (r.width - scrollBarW) / tileSizeW;
         if (tiles < 2)
             tiles = 2;
@@ -124,8 +130,8 @@ public class UIGrid extends UIPanel {
         if (availableRows < 1)
             availableRows = 1;
         tmWidth = tiles;
-        uivScrollbar.setBounds(new Rect(r.width - scrollBarW, 0, scrollBarW, availableRows * tileSizeH));
-        super.setBounds(new Rect(r.x, r.y, r.width, availableRows * tileSizeH));
+        uivScrollbar.setForcedBounds(this, new Rect(r.width - scrollBarW, 0, scrollBarW, availableRows * tileSizeH));
+        setWantedSize(new Size(r.width, availableRows * tileSizeH));
     }
 
     @Override
@@ -138,15 +144,12 @@ public class UIGrid extends UIPanel {
             selHeight = 1;
             selectionChanged();
         }
-        super.handleClick(x, y, button);
     }
 
     @Override
     public void handleDrag(int x, int y) {
-        if (tmWidth <= 0) {
-            super.handleDrag(x, y);
+        if (tmWidth <= 0)
             return;
-        }
         if (x < tileSizeW * tmWidth) {
             if (!canMultiSelect)
                 return;
@@ -162,7 +165,11 @@ public class UIGrid extends UIPanel {
                 selHeight = 1;
             selectionChanged();
         }
-        super.handleDrag(x, y);
+    }
+
+    @Override
+    public void handleRelease(int x, int y) {
+
     }
 
     @Override

@@ -167,7 +167,6 @@ public class GenposSchemaElement extends SchemaElement {
     }
 
     private void safetyWrap(UIElement rmarp, ISchemaHost shi, Runnable update, TempDialogSchemaChoice sc, final SchemaPath path) {
-        rmarp.setBounds(new Rect(0, 0, 320, 200));
         sc.heldDialog = rmarp;
         sc.update = update;
         shi.switchObject(path);

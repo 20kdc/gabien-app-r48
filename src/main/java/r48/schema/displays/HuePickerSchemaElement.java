@@ -29,7 +29,7 @@ public class HuePickerSchemaElement extends IntegerSchemaElement {
     }
 
     @Override
-    public int filter(int i) {
+    public long filter(long i) {
         return i % 360;
     }
 }

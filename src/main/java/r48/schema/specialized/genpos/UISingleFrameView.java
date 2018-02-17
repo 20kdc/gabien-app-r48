@@ -7,45 +7,38 @@
 
 package r48.schema.specialized.genpos;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.IImage;
-import gabien.ScissorGrInDriver;
-import gabien.ui.IFunction;
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
+import gabien.IPeripherals;
+import gabien.ui.*;
 import r48.ui.Art;
 
 /**
  * Handles drawing for a single-frame editor.
  * Created on 2/17/17.
  */
-public class UISingleFrameView extends UIElement {
+public class UISingleFrameView extends UIElement implements OldMouseEmulator.IOldMouseReceiver {
     public GenposFramePanelController basePanelAccess;
 
     private int lastMX, lastMY, lossX, lossY;
     public int camX, camY;
     private int dragging;
 
+    public OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
+
     public UISingleFrameView(GenposFramePanelController rmAnimRootPanel) {
         basePanelAccess = rmAnimRootPanel;
     }
 
     @Override
-    public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igdo) {
-        ScissorGrInDriver igd = new ScissorGrInDriver();
-
-        Rect b = getBounds();
-
-        igd.inner = igdo;
-        igd.workLeft = ox;
-        igd.workTop = oy;
-        igd.workRight = ox + b.width;
-        igd.workBottom = oy + b.height;
+    public void render(boolean select, IPeripherals peripherals, IGrDriver igd) {
+        Size b = getSize();
 
         igd.clearAll(255, 0, 255);
 
-        int opx = ox + (b.width / 2) - camX;
-        int opy = oy + (b.height / 2) - camY;
+        int opx = (b.width / 2) - camX;
+        int opy = (b.height / 2) - camY;
 
         IImage bkg = basePanelAccess.frame.getBackground();
         if (bkg != null)
@@ -115,10 +108,36 @@ public class UISingleFrameView extends UIElement {
         lastMY = y;
     }
 
+    @Override
+    public void handleRelease(int x, int y) {
+
+    }
+
+    @Override
+    public void handlePointerBegin(IPointer state) {
+        mouseEmulator.handlePointerBegin(state);
+    }
+
+    @Override
+    public void handlePointerUpdate(IPointer state) {
+        mouseEmulator.handlePointerUpdate(state);
+    }
+
+    @Override
+    public void handlePointerEnd(IPointer state) {
+        mouseEmulator.handlePointerEnd(state);
+    }
+
     private int offset(int integer, int ofs) {
         integer += ofs;
         if (basePanelAccess.gridToggleButton.state)
             integer &= ~7;
         return integer;
     }
+
+    @Override
+    public void update(double deltaTime) {
+
+    }
+
 }

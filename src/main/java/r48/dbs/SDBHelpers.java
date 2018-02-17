@@ -7,6 +7,7 @@
 
 package r48.dbs;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.IFunction;
@@ -57,20 +58,20 @@ class SDBHelpers {
             }
 
             @Override
-            public int mapValToIdx(int itemVal) {
-                return itemVal;
+            public int mapValToIdx(long itemVal) {
+                return (int) itemVal;
             }
 
             @Override
-            public int mapIdxToVal(int idx) {
+            public long mapIdxToVal(int idx) {
                 return idx;
             }
 
             @Override
-            public void drawItem(int t, int x, int y, int spriteScale, IGrInDriver igd) {
-                int row = t / rowCells;
-                t %= rowCells;
-                igd.blitScaledImage((t * cellW) + useX, (row * cellH) + useY, useW, useH, x, y, useW * spriteScale, useH * spriteScale, img);
+            public void drawItem(long t, int x, int y, int spriteScale, IGrDriver igd) {
+                int row = ((int) t) / rowCells;
+                int col = ((int) t) % rowCells;
+                igd.blitScaledImage((col * cellW) + useX, (row * cellH) + useY, useW, useH, x, y, useW * spriteScale, useH * spriteScale, img);
             }
         };
     }

@@ -18,7 +18,7 @@ import java.util.Collections;
  * The system for editing a given cell.
  * Created on 2/17/17.
  */
-public class UICellEditingPanel extends UIPanel {
+public class UICellEditingPanel extends UIElement.UIPanel {
     public UICellSelectionPanel cellSelectionPanel;
     public GenposFramePanelController root;
     public UISplitterLayout[] halfsplits;
@@ -33,9 +33,10 @@ public class UICellEditingPanel extends UIPanel {
         String[] properties = root.frame.getCellProps();
         // Filled in here
         halfsplits = new UISplitterLayout[properties.length];
-        setBounds(new Rect(0, 0, 32, recreateHalfSplits()));
+        //setBounds(new Rect(0, 0, 32, recreateHalfSplits()));
     }
 
+    /*IPCRESS
     private int recreateHalfSplits() {
         String[] properties = root.frame.getCellProps();
         int h = 0;
@@ -77,15 +78,23 @@ public class UICellEditingPanel extends UIPanel {
             setBounds(getBounds());
             Collections.addAll(allElements, halfsplits);
         }
+    }*/
+
+    public void somethingChanged() {
+
     }
 
     @Override
-    public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
+    public void update(double deltaTime) {
         int n = cellSelectionPanel.cellChangeNotificationNumber;
         if (lastCCN != n) {
             lastCCN = n;
             somethingChanged();
         }
-        super.updateAndRender(ox, oy, deltaTime, select, igd);
+    }
+
+    @Override
+    public void runLayout() {
+
     }
 }

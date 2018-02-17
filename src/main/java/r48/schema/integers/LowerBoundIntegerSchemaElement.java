@@ -20,7 +20,7 @@ public class LowerBoundIntegerSchemaElement extends IntegerSchemaElement {
     }
 
     @Override
-    public int filter(int i) {
+    public long filter(long i) {
         if (i < lowerBound)
             i = lowerBound;
         return i;

@@ -7,10 +7,7 @@
 
 package r48.toolsets;
 
-import gabien.GaBIEn;
-import gabien.IGrDriver;
-import gabien.IGrInDriver;
-import gabien.IImage;
+import gabien.*;
 import gabien.backendhelp.Blender;
 import gabien.ui.*;
 import r48.*;
@@ -65,7 +62,6 @@ public class BasicToolset implements IToolset {
                         TXDB.get("Set External Windows (bad)"),
                         TXDB.get("Configure fonts"),
                         TXDB.get("Test Fonts"),
-                        TXDB.get("Test Tones"),
                         TXDB.get("Show Version"),
                         TXDB.get("Show ODB Memstat"),
                         TXDB.get("Dump Schemaside Translations"),
@@ -238,47 +234,6 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                UIPublicPanel panel = new UIPublicPanel();
-                                panel.setBounds(new Rect(0, 0, 512, 1280));
-                                final IImage totem = GaBIEn.getImage("tonetotm.png");
-                                UIElement hueChanger = new UIElement() {
-                                    public double time = 0;
-
-                                    @Override
-                                    public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-                                        double time2 = time;
-                                        if (!selected)
-                                            time += deltaTime;
-                                        time2 -= Math.floor(time2);
-                                        int hue = (int) (time2 * 360);
-                                        igd.blitImage(0, 0, 256, 256, ox, oy, AppMain.imageFXCache.process(totem, new HueShiftImageEffect(hue)));
-                                    }
-                                };
-                                hueChanger.setBounds(new Rect(128, 1024, 256, 256));
-                                panel.addElement(hueChanger);
-                                IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(512, 1024, false);
-                                finalComposite.blitImage(0, 0, 256, 256, 0, 0, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 128, 128, 128)));
-                                finalComposite.blitImage(0, 0, 256, 256, 256, 0, AppMain.imageFXCache.process(totem, new ToneImageEffect(0, 128, 128, 128)));
-
-                                finalComposite.blitImage(0, 0, 256, 256, 0, 256, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 0, 128, 128)));
-                                finalComposite.blitImage(0, 0, 256, 256, 256, 256, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 128, 0, 128)));
-
-                                finalComposite.blitImage(0, 0, 256, 256, 0, 512, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 128, 128, 0)));
-                                finalComposite.blitImage(0, 0, 256, 256, 256, 512, AppMain.imageFXCache.process(totem, new ToneImageEffect(0, 128, 128, 0)));
-
-                                finalComposite.blitImage(0, 0, 256, 256, 0, 768, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 0, 128, 0)));
-                                finalComposite.blitImage(0, 0, 256, 256, 256, 768, AppMain.imageFXCache.process(totem, new ToneImageEffect(128, 128, 0, 0)));
-                                panel.baseImage = GaBIEn.createImage(finalComposite.getPixels(), 512, 1024);
-                                finalComposite.shutdown();
-                                UIScrollLayout holdsMain = new UIScrollLayout(true, FontSizes.generalScrollersize);
-                                holdsMain.panels.add(panel);
-                                holdsMain.setBounds(new Rect(0, 0, 544, 256));
-                                windowMaker.get().accept(holdsMain);
-                            }
-                        },
-                        new Runnable() {
-                            @Override
-                            public void run() {
                                 Coco.launch();
                             }
                         },
@@ -366,31 +321,6 @@ public class BasicToolset implements IToolset {
                     }
                 }
         };
-    }
-
-    private void testAddSubBlending(IConsumer<UIElement> windowMaker) {
-        // Test Add/Sub Blending...
-        UIPublicPanel panel = new UIPublicPanel();
-        panel.setBounds(new Rect(0, 0, 512, 512));
-        final IImage totem = GaBIEn.getImage("tonetotm.png");
-        IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(512, 1024, false);
-
-        finalComposite.clearRect(255, 255, 255, 0, 0, 256, 512);
-        finalComposite.clearRect(0, 0, 0, 256, 0, 256, 512);
-        // Hardware (if possible) Sub-White Add-Black
-        finalComposite.blendRotatedScaledImage(0, 0, 256, 256, 0, 0, 256, 256, 0, totem, true);
-        finalComposite.blendRotatedScaledImage(0, 0, 256, 256, 256, 0, 256, 256, 0, totem, false);
-
-        // Software Sub-White Add-Black
-        Blender.blendRotatedScaledImage(finalComposite, 0, 0, 256, 256, 0, 256, 256, 256, 0, totem, true);
-        Blender.blendRotatedScaledImage(finalComposite, 0, 0, 256, 256, 256, 256, 256, 256, 0, totem, false);
-
-        panel.baseImage = GaBIEn.createImage(finalComposite.getPixels(), 512, 1024);
-        finalComposite.shutdown();
-        UIScrollLayout holdsMain = new UIScrollLayout(true, FontSizes.generalScrollersize);
-        holdsMain.panels.add(panel);
-        holdsMain.setBounds(new Rect(0, 0, 544, 256));
-        windowMaker.accept(holdsMain);
     }
 
     private static UIElement makeFileList() {

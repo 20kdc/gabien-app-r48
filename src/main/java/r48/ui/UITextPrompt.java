@@ -14,7 +14,11 @@ import r48.dbs.TXDB;
 /**
  * Created on 12/31/16.
  */
-public class UITextPrompt extends UIPanel implements IWindowElement {
+public class UITextPrompt extends UIElement.UIProxy {
+    public UITextPrompt(final String s, final IConsumer<String> iConsumer) {
+        proxySetElement(new UILabel("IPCRESS" ,16), true);
+    }
+    /*IPCRESS
     public UITextBox utb = new UITextBox(FontSizes.textDialogFieldTextHeight);
     public UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
     public boolean wantClose = false;
@@ -47,5 +51,5 @@ public class UITextPrompt extends UIPanel implements IWindowElement {
     @Override
     public void windowClosed() {
 
-    }
+    }*/
 }

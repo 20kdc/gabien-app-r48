@@ -63,7 +63,7 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
         public String textB = TXDB.get("Click again to define second point");
 
         public UIMTAreaTool() {
-            super(R2kAreaEditingToolbarController.this.mapToolContext, true);
+            super(R2kAreaEditingToolbarController.this.mapToolContext);
             label = new UILabel(textA, FontSizes.dialogWindowTextHeight);
             changeInner(label);
         }
@@ -113,7 +113,7 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
                 firstPointX = x;
                 firstPointY = y;
                 definingPoint2 = true;
-                label.Text = textB;
+                label.text = textB;
             } else {
                 RubyIO rect = areaInfo.getInstVarBySymbol("@area_rect");
                 RubyIO l = rect.getInstVarBySymbol("@left");
@@ -125,7 +125,7 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
                 r.fixnumVal = Math.max(firstPointX, x) + 1;
                 d.fixnumVal = Math.max(firstPointY, y) + 1;
                 AppMain.objectDB.objectRootModified(mapInfosRoot, new SchemaPath(AppMain.schemas.getSDBEntry("RPG::MapTree"), mapInfosRoot));
-                label.Text = textA;
+                label.text = textA;
                 definingPoint2 = false;
             }
         }

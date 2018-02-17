@@ -33,7 +33,7 @@ public class PagerArrayInterface implements IArrayInterface {
                 UIScrollLayout barLayout = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
                 if (positions[i].execInsert != null) {
                     final Runnable r = positions[i].execInsert;
-                    barLayout.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, "+", new Runnable() {
+                    barLayout.panelsAdd(new UITextButton(FontSizes.schemaButtonTextHeight, "+", new Runnable() {
                         @Override
                         public void run() {
                             r.run();
@@ -43,7 +43,7 @@ public class PagerArrayInterface implements IArrayInterface {
                 if (i < positions.length - 1) {
                     if (positions[i + 1].execInsert != null) {
                         final Runnable r = positions[i + 1].execInsert;
-                        barLayout.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, "+>", new Runnable() {
+                        barLayout.panelsAdd(new UITextButton(FontSizes.schemaButtonTextHeight, "+>", new Runnable() {
                             @Override
                             public void run() {
                                 r.run();
@@ -53,7 +53,7 @@ public class PagerArrayInterface implements IArrayInterface {
                 }
                 if (positions[i].execDelete != null) {
                     final ISupplier<Runnable> r = positions[i].execDelete;
-                    barLayout.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, "-", new Runnable() {
+                    barLayout.panelsAdd(new UITextButton(FontSizes.schemaButtonTextHeight, "-", new Runnable() {
                         @Override
                         public void run() {
                             r.get().run();
@@ -61,7 +61,7 @@ public class PagerArrayInterface implements IArrayInterface {
                     }));
                 }
                 final RubyIO[] copyMe = positions[i].elements;
-                barLayout.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Copy"), new Runnable() {
+                barLayout.panelsAdd(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Copy"), new Runnable() {
                     @Override
                     public void run() {
                         RubyIO rio = new RubyIO();
@@ -77,7 +77,7 @@ public class PagerArrayInterface implements IArrayInterface {
                 if (i < positions.length - 1) {
                     if (positions[i + 1].execInsertCopiedArray != null) {
                         final Runnable r = positions[i + 1].execInsertCopiedArray;
-                        barLayout.panels.add(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Paste"), new Runnable() {
+                        barLayout.panelsAdd(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Paste"), new Runnable() {
                             @Override
                             public void run() {
                                 r.run();
@@ -85,7 +85,6 @@ public class PagerArrayInterface implements IArrayInterface {
                         }));
                     }
                 }
-                barLayout.setBounds(new Rect(0, 0, 128, UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height + FontSizes.mapToolbarScrollersize));
                 uie.add(new UISplitterLayout(barLayout, positions[i].core, true, 0d) {
                     @Override
                     public String toString() {
@@ -103,13 +102,9 @@ public class PagerArrayInterface implements IArrayInterface {
             }
         };
 
-        int h = utp.tabBarHeight + FontSizes.schemaPagerTabScrollersize;
-        for (UIElement ue : uie) {
+        for (UIElement ue : uie)
             utp.addTab(new UIWindowView.WVWindow(ue, new UIWindowView.IWVWindowIcon[] {}));
-            h = Math.max(h, ue.getBounds().height + utp.tabBarHeight + FontSizes.schemaPagerTabScrollersize);
-        }
-        utp.setBounds(new Rect(0, 0, 200, h));
-        svl.panels.add(utp);
+        svl.panelsAdd(utp);
         int state = (int) ((double) prop2.get());
         if (state < 0)
             state = 0;

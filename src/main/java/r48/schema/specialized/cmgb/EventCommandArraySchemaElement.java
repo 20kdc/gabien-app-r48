@@ -215,15 +215,13 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         return new HalfsplitSchemaElement(new SchemaElement() {
             @Override
             public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-                UIPanel indentPad = new UIPanel();
-                int h = UITextButton.getRecommendedSize("", FontSizes.schemaButtonTextHeight).height;
+                int h = UITextButton.getRecommendedTextSize("", FontSizes.schemaButtonTextHeight).height;
                 int indent = 0;
                 if (tracker.getInstVarBySymbol("@indent") != null)
                     indent = (int) tracker.getInstVarBySymbol("@indent").fixnumVal;
                 if (indent < 0)
                     indent = 0;
-                indentPad.setBounds(new Rect(0, 0, h * indent, h));
-                return indentPad;
+                return new UIPublicPanel(h * indent, h);
             }
 
             @Override

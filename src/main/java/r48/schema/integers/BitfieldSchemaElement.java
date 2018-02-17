@@ -39,7 +39,7 @@ public class BitfieldSchemaElement extends IntegerSchemaElement {
         BitfieldTableCellEditor.installEditor(flags, new IConsumer<UIElement>() {
             @Override
             public void accept(UIElement element) {
-                uiSVL.panels.add(element);
+                uiSVL.panelsAdd(element);
             }
         }, new AtomicReference<IConsumer<Integer>>(new IConsumer<Integer>() {
             @Override
@@ -48,8 +48,8 @@ public class BitfieldSchemaElement extends IntegerSchemaElement {
                 path.changeOccurred(false);
             }
         })).accept((int) target.fixnumVal);
-        uiSVL.panels.add(new UILabel(TXDB.get("Manual Edit:"), FontSizes.tableElementTextHeight));
-        uiSVL.panels.add(super.buildHoldingEditor(target, launcher, path));
+        uiSVL.panelsAdd(new UILabel(TXDB.get("Manual Edit:"), FontSizes.tableElementTextHeight));
+        uiSVL.panelsAdd(super.buildHoldingEditor(target, launcher, path));
         return uiSVL;
     }
 }

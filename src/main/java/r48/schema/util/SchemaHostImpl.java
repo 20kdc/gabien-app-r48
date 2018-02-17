@@ -24,7 +24,7 @@ import java.util.HashMap;
 /**
  * Created on 12/29/16.
  */
-public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowElement {
+public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     public IConsumer<UIElement> hostWindows;
     public SchemaPath innerElem;
     public UIElement innerElemEditor;
@@ -112,16 +112,9 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
         hostWindows = rootElem;
         contextView = rendererSource;
         // Why is this scaled by main window size? Answer: Because the alternative is occasional Android version glitches.
-        setBounds(new Rect(0, 0, AppMain.mainWindowWidth / 2, (AppMain.mainWindowHeight / 3) * 2));
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        int h = toolbarC.getBounds().height;
-        toolbarC.setBounds(new Rect(0, 0, r.width, h));
-        if (innerElem != null)
-            innerElemEditor.setBounds(new Rect(0, h, r.width, r.height - h));
+        Rect r = new Rect(0, 0, AppMain.mainWindowWidth / 2, (AppMain.mainWindowHeight / 3) * 2);
+        setForcedBounds(null, r);
+        setWantedSize(r);
     }
 
     @Override
@@ -139,27 +132,27 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
         innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
         AppMain.objectDB.registerModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
 
-        allElements.clear();
-        allElements.add(toolbarC);
-        allElements.add(innerElemEditor);
+        for (UIElement uie : layoutGetElements())
+            layoutRemoveElement(uie);
+        layoutAddElement(toolbarC);
+        layoutAddElement(innerElemEditor);
 
-        pathLabel.Text = innerElem.toStringMissingRoot();
+        pathLabel.text = innerElem.toStringMissingRoot();
 
         if (doLaunch) {
             windowOpen = true;
             hostWindows.accept(this);
             AppMain.schemaHostImplRegister(this);
         }
-        setBounds(getBounds());
     }
 
     @Override
-    public void updateAndRender(int ox, int oy, double DeltaTime, boolean select, IGrInDriver igd) {
+    public void update(double deltaTime) {
+        super.update(deltaTime);
         if (nudged) {
             switchObject(innerElem);
             nudged = false;
         }
-        super.updateAndRender(ox, oy, DeltaTime, select, igd);
     }
 
     @Override
@@ -200,17 +193,18 @@ public class SchemaHostImpl extends UIPanel implements ISchemaHost, IWindowEleme
     }
 
     @Override
-    public boolean wantsSelfClose() {
-        return false;
-    }
-
-    @Override
-    public void windowClosed() {
+    public void handleRootDisconnect() {
+        super.handleRootDisconnect();
         windowOpen = false;
         if (innerElem != null) {
             AppMain.objectDB.deregisterModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
             innerElem = null;
             innerElemEditor = null;
         }
+    }
+
+    @Override
+    public void runLayout() {
+
     }
 }

@@ -31,16 +31,16 @@ import java.util.LinkedList;
  * <p/>
  * Created on 1/1/17. Copied for Generic RM Map Infos on Jun 2 2017.
  */
-public class UIGRMMapInfos extends UIPanel {
+public class UIGRMMapInfos extends UIElement.UIProxy {
     private final IRMLikeMapInfoBackendWPub operators;
     private final ISupplier<IConsumer<UIElement>> windowMakerGetter;
-    private UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
-    private UITreeView utv = new UITreeView();
+    private final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
+    private final UITreeView utv = new UITreeView();
     private int selectedOrder = 0;
     private boolean deleteConfirmation = false;
     private boolean enableOrderHoleDebug = false;
     private IMapContext mapContext;
-    private HashSet<Integer> notExpanded = new HashSet<Integer>();
+    private HashSet<Long> notExpanded = new HashSet<Long>();
     private String toStringRes;
 
     private IConsumer<SchemaPath> onMapInfoChange = new IConsumer<SchemaPath>() {
@@ -57,17 +57,17 @@ public class UIGRMMapInfos extends UIPanel {
         b.registerModificationHandler(onMapInfoChange);
         windowMakerGetter = wmg;
         rebuildList();
-        allElements.add(uiSVL);
+        proxySetElement(uiSVL, true);
     }
 
     private void rebuildList() {
-        uiSVL.panels.clear();
-        LinkedList<Integer> intList = new LinkedList<Integer>(operators.getHashKeys());
-        Collections.sort(intList, new Comparator<Integer>() {
+        uiSVL.panelsClear();
+        LinkedList<Long> intList = new LinkedList<Long>(operators.getHashKeys());
+        Collections.sort(intList, new Comparator<Long>() {
             @Override
-            public int compare(Integer t0, Integer t1) {
-                t0 = operators.getOrderOfMap(t0);
-                t1 = operators.getOrderOfMap(t1);
+            public int compare(Long p0, Long p1) {
+                int t0 = operators.getOrderOfMap(p0);
+                int t1 = operators.getOrderOfMap(p1);
                 if (t0 > t1)
                     return 1;
                 if (t0 < t1)
@@ -75,15 +75,15 @@ public class UIGRMMapInfos extends UIPanel {
                 return 0;
             }
         });
-        LinkedList<Integer> parentStack = new LinkedList<Integer>();
+        LinkedList<Long> parentStack = new LinkedList<Long>();
         int lastOrder = 0;
         LinkedList<UITreeView.TreeElement> tree = new LinkedList<UITreeView.TreeElement>();
-        for (final Integer k : intList) {
+        for (final Long k : intList) {
             final RubyIO map = operators.getHashBID(k);
             final int order = operators.getOrderOfMap(k);
             if (lastOrder < order)
                 lastOrder = order;
-            final int parent = (int) map.getInstVarBySymbol("@parent_id").fixnumVal;
+            final long parent = map.getInstVarBySymbol("@parent_id").fixnumVal;
 
             String name = map.getInstVarBySymbol("@name").decString();
 
@@ -111,8 +111,7 @@ public class UIGRMMapInfos extends UIPanel {
                     mapContext.loadMap(operators.translateToGUM(k));
                     rebuildList();
                 }
-            }).togglable();
-            tb.state = selectedOrder == order;
+            }).togglable(selectedOrder == order);
             UIElement elm = tb;
 
             if (selectedOrder == order) {
@@ -173,7 +172,7 @@ public class UIGRMMapInfos extends UIPanel {
                         @Override
                         public void run() {
                             // Orphan/move up child nodes first
-                            for (Integer rk : operators.getHashKeys()) {
+                            for (Long rk : operators.getHashKeys()) {
                                 RubyIO rio = operators.getHashBID(rk);
                                 if (rio.getInstVarBySymbol("@parent_id").fixnumVal == k)
                                     rio.getInstVarBySymbol("@parent_id").fixnumVal = parent;
@@ -218,8 +217,8 @@ public class UIGRMMapInfos extends UIPanel {
             }));
         }
         utv.setElements(tree.toArray(new UITreeView.TreeElement[0]));
-        uiSVL.panels.add(utv);
-        uiSVL.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, TXDB.get("<Insert New Map>"), new Runnable() {
+        uiSVL.panelsAdd(utv);
+        uiSVL.panelsAdd(new UITextButton(TXDB.get("<Insert New Map>"), FontSizes.mapInfosTextHeight, new Runnable() {
             @Override
             public void run() {
                 final UINumberBox num = new UINumberBox(FontSizes.textDialogFieldTextHeight);
@@ -236,7 +235,7 @@ public class UIGRMMapInfos extends UIPanel {
                 UIAppendButton prompt = new UIAppendButton(TXDB.get("Confirm"), num, new Runnable() {
                     @Override
                     public void run() {
-                        int i = num.number;
+                        long i = num.number;
                         if (operators.getHashBID(i) != null) {
                             AppMain.launchDialog(TXDB.get("That ID is already in use."));
                             return;
@@ -256,11 +255,11 @@ public class UIGRMMapInfos extends UIPanel {
                 windowMakerGetter.get().accept(dialog);
             }
         }));
-        uiSVL.panels.add(new UITextButton(FontSizes.mapInfosTextHeight, TXDB.get("<Test Sequence Consistency>"), new Runnable() {
+        uiSVL.panelsAdd(new UITextButton(FontSizes.mapInfosTextHeight, TXDB.get("<Test Sequence Consistency>"), new Runnable() {
             @Override
             public void run() {
                 LinkedList<Integer> orders = new LinkedList<Integer>();
-                for (Integer map : operators.getHashKeys())
+                for (Long map : operators.getHashKeys())
                     orders.add(operators.getOrderOfMap(map));
                 Collections.sort(orders);
                 String message = TXDB.get("The MapInfos database is sequential.");
@@ -283,7 +282,6 @@ public class UIGRMMapInfos extends UIPanel {
                 rebuildList();
             }
         }));
-        uiSVL.setBounds(uiSVL.getBounds());
         deleteConfirmation = false;
     }
 
@@ -293,19 +291,13 @@ public class UIGRMMapInfos extends UIPanel {
     }
 
     // Is a map part of the chain from pathInnermostId to root?
-    private boolean mapInPath(int mapId, int pathInnermostId) {
+    private boolean mapInPath(long mapId, long pathInnermostId) {
         while (pathInnermostId != 0) {
             if (pathInnermostId == mapId)
                 return true;
             RubyIO path = operators.getHashBID(pathInnermostId);
-            pathInnermostId = (int) path.getInstVarBySymbol("@parent_id").fixnumVal;
+            pathInnermostId = path.getInstVarBySymbol("@parent_id").fixnumVal;
         }
         return false;
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        uiSVL.setBounds(new Rect(0, 0, r.width, r.height));
     }
 }

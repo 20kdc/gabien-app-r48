@@ -54,7 +54,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
 
-        uiSVL.panels.clear();
+        uiSVL.panelsClear();
 
         final SchemaPath keyStoragePath = path.findLast();
 
@@ -82,10 +82,6 @@ public abstract class ArraySchemaElement extends SchemaElement {
             }
         });
 
-        int h = 0;
-        for (UIElement uie : uiSVL.panels)
-            h += uie.getBounds().height;
-        uiSVL.setBounds(new Rect(0, 0, 32, h));
         return uiSVL;
     }
 

@@ -7,6 +7,7 @@
 
 package r48.schema.specialized.genpos.backend;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.IFunction;
@@ -114,19 +115,19 @@ public class R2kGenposFrame implements IGenposFrame {
                         }
 
                         @Override
-                        public int mapValToIdx(int itemVal) {
-                            return itemVal;
+                        public int mapValToIdx(long itemVal) {
+                            return (int) itemVal;
                         }
 
                         @Override
-                        public int mapIdxToVal(int idx) {
+                        public long mapIdxToVal(int idx) {
                             return idx;
                         }
 
                         @Override
-                        public void drawItem(int t, int x, int y, int spriteScale, IGrInDriver igd) {
-                            int tx = t % 5;
-                            int ty = t / 5;
+                        public void drawItem(long t, int x, int y, int spriteScale, IGrDriver igd) {
+                            int tx = (int) t % 5;
+                            int ty = (int) t / 5;
                             igd.clearRect(255, 0, 255, x, y, cache.spriteSize, cache.spriteSize);
                             igd.blitScaledImage(tx * cache.spriteSize, ty * cache.spriteSize, cache.spriteSize, cache.spriteSize, x, y, cache.spriteSize * spriteScale, cache.spriteSize * spriteScale, cache.getFramesetCache(false, false, 255));
                         }
@@ -176,7 +177,7 @@ public class R2kGenposFrame implements IGenposFrame {
     }
 
     @Override
-    public void drawCell(int i, int opx, int opy, IGrInDriver igd) {
+    public void drawCell(int i, int opx, int opy, IGrDriver igd) {
         RubyIO cell = frameSource.get().getInstVarBySymbol("@cells").arrVal[i + 1];
         if (cell.getInstVarBySymbol("@visible").type == 'F')
             return;

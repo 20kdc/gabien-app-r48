@@ -7,7 +7,9 @@
 
 package r48.map;
 
+import gabien.IGrDriver;
 import gabien.IGrInDriver;
+import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.dbs.TXDB;
@@ -19,7 +21,7 @@ import r48.ui.UINSVertLayout;
  * WARNING: May Contain Minigame.
  * Created on 1/1/17.
  */
-public class UIMapViewContainer extends UIPanel {
+public class UIMapViewContainer extends UIElement.UIPanel {
     private final ISupplier<IConsumer<UIElement>> windowMakerSupplier;
     public UIMapView view;
     private UINSVertLayout viewToolbarSplit;
@@ -38,6 +40,8 @@ public class UIMapViewContainer extends UIPanel {
 
     private TimeWaster timeWaster = new TimeWaster();
 
+    private double deltaTimeAccum = 0;
+
     public UIMapViewContainer(ISupplier<IConsumer<UIElement>> wms) {
         windowMakerSupplier = wms;
     }
@@ -48,19 +52,23 @@ public class UIMapViewContainer extends UIPanel {
     }
 
     @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        //iconPlanX = (r.width / 2) - 32;
-        //iconPlanY = (r.textHeight / 2) - 32;
-        if (view != null)
-            viewToolbarSplit.setBounds(new Rect(0, 0, r.width, r.height));
+    public void runLayout() {
+        if (viewToolbarSplit != null) {
+            viewToolbarSplit.setForcedBounds(this, new Rect(getSize()));
+            setWantedSize(viewToolbarSplit.getWantedSize());
+        }
     }
 
     @Override
-    public void updateAndRender(int ox, int oy, double deltaTime, boolean select, IGrInDriver igd) {
+    public void update(double deltaTime) {
+        super.update(deltaTime);
+        deltaTimeAccum += deltaTime;
+    }
 
+    @Override
+    public void render(boolean select, IPeripherals peripherals, IGrDriver igd) {
         // remove stale tools.
-        // (The way this code is written implies tools must be on rootView for now.)
+        // (this code is weird!)
         if (mapTool != null) {
             if (mapTool.hasClosed) {
                 if (nextMapTool == mapTool)
@@ -102,22 +110,25 @@ public class UIMapViewContainer extends UIPanel {
             }
         }
 
-        super.updateAndRender(ox, oy, deltaTime, select, igd);
-        if (view != null)
+        super.render(select, peripherals, igd);
+        if (view != null) {
+            deltaTimeAccum = 0;
             return;
-        Rect r = getBounds();
-        timeWaster.draw(igd, ox, oy, deltaTime, r.width, r.height);
+        }
+        Size r = getSize();
+        timeWaster.draw(igd, peripherals, 0, 0, deltaTimeAccum, r.width, r.height);
+        deltaTimeAccum = 0;
     }
 
     public void loadMap(String gum) {
         if (mapTool != null)
             mapTool.selfClose = true;
 
-        allElements.clear();
-        if (view != null)
-            view.windowClosed();
+        for (UIElement u : layoutGetElements())
+            layoutRemoveElement(u);
         if (gum == null) {
             view = null;
+            viewToolbarSplit = null;
             internalNoToolCallback = new Runnable() {
                 @Override
                 public void run() {
@@ -125,7 +136,7 @@ public class UIMapViewContainer extends UIPanel {
             };
             return;
         }
-        Rect b = getBounds();
+        Size b = getSize();
         // Creating the MapView and such causes quite a few side-effects (specifically global StuffRenderer kick-in-the-pants).
         // Also kick the dictionaries because of the event dictionary.
         view = new UIMapView(gum, b.width, b.height);
@@ -160,7 +171,7 @@ public class UIMapViewContainer extends UIPanel {
         }
 
         viewToolbarSplit = new UINSVertLayout(metc.getBar(), view);
-        allElements.add(viewToolbarSplit);
+        layoutAddElement(viewToolbarSplit);
         AppMain.schemas.kickAllDictionariesForMapChange();
         internalNoToolCallback = new Runnable() {
             @Override

@@ -31,16 +31,9 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public HashMap<String, RubyIO> eventCache = new HashMap<String, RubyIO>();
 
     public UIMTEventPicker(IMapToolContext mv) {
-        super(mv, false);
+        super(mv);
         mapView = mv.getMapView();
         changeInner(svl);
-        setBounds(new Rect(0, 0, 320, 200));
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        svl.setBounds(new Rect(0, 0, r.width, r.height));
     }
 
     // -- Tool things --
@@ -73,7 +66,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public void confirmAt(final int x, final int y, final int layer) {
-        svl.panels.clear();
+        svl.panelsClear();
         for (final RubyIO evK : mapView.mapTable.eventAccess.getEventKeys()) {
             final RubyIO evI = mapView.mapTable.eventAccess.getEvent(evK);
             if (evI.getInstVarBySymbol("@x").fixnumVal == x)
@@ -132,7 +125,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 confirmAt(x, y, layer);
                             }
                         }, FontSizes.eventPickerEntryTextHeight);
-                        svl.panels.add(button);
+                        svl.panelsAdd(button);
                     } else {
                         UIElement button = new UILabel(nam, FontSizes.eventPickerEntryTextHeight);
                         button = new UIAppendButton(TXDB.get("Sync"), button, new Runnable() {
@@ -148,7 +141,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 confirmAt(x, y, layer);
                             }
                         }, FontSizes.eventPickerEntryTextHeight);
-                        svl.panels.add(button);
+                        svl.panelsAdd(button);
                     }
                 }
         }
@@ -157,7 +150,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
             final int i2 = i;
             if (types[i] == null)
                 continue;
-            svl.panels.add(new UITextButton(FontSizes.eventPickerEntryTextHeight, types[i], new Runnable() {
+            svl.panelsAdd(new UITextButton(FontSizes.eventPickerEntryTextHeight, types[i], new Runnable() {
                 @Override
                 public void run() {
                     RubyIO k = mapView.mapTable.eventAccess.addEvent(null, i2);

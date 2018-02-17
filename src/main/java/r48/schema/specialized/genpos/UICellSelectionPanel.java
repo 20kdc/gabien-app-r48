@@ -19,7 +19,7 @@ import java.util.LinkedList;
 /**
  * Created on 2/17/17.
  */
-public class UICellSelectionPanel extends UIPanel {
+public class UICellSelectionPanel extends UIElement.UIProxy {
     // Instead, using getCell will ensure it gets corrected.
     public int cellNumber = -1;
     public int cellChangeNotificationNumber = 0;
@@ -30,15 +30,15 @@ public class UICellSelectionPanel extends UIPanel {
 
     public UICellSelectionPanel(IGenposFrame rmAnimRootPanel) {
         root = rmAnimRootPanel;
-        allElements.add(selectionPanel);
+        proxySetElement(selectionPanel, true);
     }
 
     private void rebuildSelectionPanel() {
-        selectionPanel.panels.clear();
+        selectionPanel.panelsClear();
         final int cellCount = root.getCellCount();
         for (int i = 0; i < cellCount; i++) {
             final int i2 = i;
-            addAdditionButton(selectionPanel.panels, i2);
+            addAdditionButton(i2);
             String prefix = cellNumber == i2 ? ">" : " ";
             UIElement button = new UITextButton(FontSizes.rmaCellTextHeight, prefix + FormatSyntax.formatExtended(TXDB.get("Cell #A"), new RubyIO().setFX(i)), new Runnable() {
                 @Override
@@ -48,7 +48,7 @@ public class UICellSelectionPanel extends UIPanel {
                 }
             });
             if (root.canAddRemoveCells()) {
-                selectionPanel.panels.add(new UIAppendButton("-", button, new Runnable() {
+                selectionPanel.panelsAdd(new UIAppendButton("-", button, new Runnable() {
                     @Override
                     public void run() {
                         if (i2 < root.getCellCount()) {
@@ -61,18 +61,16 @@ public class UICellSelectionPanel extends UIPanel {
                     }
                 }, FontSizes.rmaCellTextHeight));
             } else {
-                selectionPanel.panels.add(button);
+                selectionPanel.panelsAdd(button);
             }
         }
-        addAdditionButton(selectionPanel.panels, cellCount);
-        // cause the (scrollable) selection panel to update stuff
-        selectionPanel.setBounds(selectionPanel.getBounds());
+        addAdditionButton(cellCount);
     }
 
-    private void addAdditionButton(final LinkedList<UIElement> panels, final int i2) {
+    private void addAdditionButton(final int i2) {
         if (!root.canAddRemoveCells())
             return;
-        panels.add(new UITextButton(FontSizes.rmaCellTextHeight, TXDB.get("<add cell here>"), new Runnable() {
+        selectionPanel.panelsAdd(new UITextButton(FontSizes.rmaCellTextHeight, TXDB.get("<add cell here>"), new Runnable() {
             @Override
             public void run() {
                 if (i2 <= root.getCellCount()) {
@@ -83,12 +81,6 @@ public class UICellSelectionPanel extends UIPanel {
                 frameChanged();
             }
         }));
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        selectionPanel.setBounds(new Rect(0, 0, r.width, r.height));
     }
 
     public void frameChanged() {

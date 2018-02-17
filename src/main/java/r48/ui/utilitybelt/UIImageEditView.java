@@ -7,10 +7,7 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.GaBIEn;
-import gabien.IGrDriver;
-import gabien.IGrInDriver;
-import gabien.IImage;
+import gabien.*;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -21,7 +18,7 @@ import r48.ui.UIGrid;
  * Thanks to Tomeno for the general design of this UI in a tablet-friendly pixel-arty way.
  * Though I kind of modified those plans a bit.
  */
-public class UIImageEditView extends UIElement {
+public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldMouseReceiver {
     public int[] image = new int[1024];
     public int imageW = 32, imageH = 32, cursorX = 16, cursorY = 16, zoom = FontSizes.getSpriteScale() * 16;
     public boolean camMode = true, tempCamMode = false, dragging;
@@ -34,13 +31,20 @@ public class UIImageEditView extends UIElement {
     public int targetX, targetY;
     public int gridColour = 0x200020;
 
+    public OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
+
     public UIImageEditView(Runnable c) {
         colour = c;
     }
 
     @Override
-    public void updateAndRender(int ox, int oy, double deltaTime, boolean selected, IGrInDriver igd) {
-        Rect bounds = getBounds();
+    public void update(double deltaTime) {
+
+    }
+
+    @Override
+    public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+        Size bounds = getSize();
         Rect viewRct = getViewRect();
         // Maybe cache this for perf. Acts like a more precise scissor for now.
         IGrDriver osb = GaBIEn.makeOffscreenBuffer(bounds.width, bounds.height, false);
@@ -79,7 +83,7 @@ public class UIImageEditView extends UIElement {
         Art.drawSelectionBox(viewRct.x + (cursorX * zoom), viewRct.y + (cursorY * zoom), zoom, zoom, FontSizes.getSpriteScale(), osb);
         if (showTarget)
             Art.drawTarget(viewRct.x + (targetX * zoom), viewRct.y + (targetY * zoom), zoom, osb);
-        igd.blitImage(0, 0, bounds.width, bounds.height, ox, oy, osb);
+        igd.blitImage(0, 0, bounds.width, bounds.height, 0, 0, osb);
         osb.shutdown();
 
         Rect zPlus = Art.getZIconRect(false, 0);
@@ -96,10 +100,10 @@ public class UIImageEditView extends UIElement {
                 info = TXDB.get("Tap: Position cursor, Drag: Scroll, camera button : go back to drawing");
         }
         String text = cursorX + ", " + cursorY + " " + info;
-        UILabel.drawLabel(igd, bounds.width - (textX + zPlus.x), ox + textX, oy + zPlus.y, text, 0, FontSizes.mapPositionTextHeight);
-        Art.drawZoom(igd, true, zPlus.x + ox, zPlus.y + oy, zPlus.height);
-        Art.drawZoom(igd, false, zMinus.x + ox, zMinus.y + oy, zMinus.height);
-        Art.drawDragControl(igd, camMode, zDrag.x + ox, zDrag.y + oy, zDrag.height);
+        UILabel.drawLabel(igd, bounds.width - (textX + zPlus.x), textX, zPlus.y, text, 0, FontSizes.mapPositionTextHeight);
+        Art.drawZoom(igd, true, zPlus.x, zPlus.y, zPlus.height);
+        Art.drawZoom(igd, false, zMinus.x, zMinus.y, zMinus.height);
+        Art.drawDragControl(igd, camMode, zDrag.x, zDrag.y, zDrag.height);
     }
 
     private Rect getLocalGridRect(Rect viewRct) {
@@ -113,8 +117,23 @@ public class UIImageEditView extends UIElement {
     }
 
     private Rect getViewRect() {
-        Rect bounds = getBounds();
+        Size bounds = getSize();
         return new Rect((int) (camX * zoom) + (bounds.width / 2), (int) (camY * zoom) + (bounds.height / 2), imageW * zoom, imageH * zoom);
+    }
+
+    @Override
+    public void handlePointerBegin(IPointer state) {
+        mouseEmulator.handlePointerBegin(state);
+    }
+
+    @Override
+    public void handlePointerUpdate(IPointer state) {
+        mouseEmulator.handlePointerUpdate(state);
+    }
+
+    @Override
+    public void handlePointerEnd(IPointer state) {
+        mouseEmulator.handlePointerEnd(state);
     }
 
     @Override
@@ -148,6 +167,11 @@ public class UIImageEditView extends UIElement {
         handleAct(x, y, false);
         dragLastX = x;
         dragLastY = y;
+    }
+
+    @Override
+    public void handleRelease(int x, int y) {
+
     }
 
     public void handleAct(int x, int y, boolean first) {

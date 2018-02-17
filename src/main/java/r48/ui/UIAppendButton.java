@@ -13,46 +13,41 @@ import gabien.ui.*;
  * Just a useful tool for constructing UI stuff.
  * Created on 12/29/16.
  */
-public class UIAppendButton extends UIPanel {
+public class UIAppendButton extends UIElement.UIPanel {
     public final UIButton button;
     public final UIElement subElement;
-    public final int textHeight;
-
-    public UIAppendButton(Art.Symbol s, UIElement holder, Runnable runnable, int h2) {
-        textHeight = h2;
-        button = new UISymbolButton(h2, s, runnable);
-        subElement = holder;
-        // This specific order was chosen because labels on the left can overflow and get in the way of the button.
-        allElements.add(subElement);
-        allElements.add(button);
-        Rect bgb = button.getBounds();
-        int h = holder.getBounds().height;
-        if (bgb.height > h)
-            h = bgb.height;
-        setBounds(new Rect(0, 0, holder.getBounds().width + bgb.width, h));
-    }
 
     public UIAppendButton(String s, UIElement holder, Runnable runnable, int h2) {
-        textHeight = h2;
-        button = new UITextButton(h2, s, runnable);
+        this(new UITextButton(s, h2, runnable), holder);
+    }
+
+    public UIAppendButton(Art.Symbol s, UIElement holder, Runnable runnable, int h2) {
+        this(new UISymbolButton(s, h2, runnable), holder);
+    }
+
+    public UIAppendButton(UIButton s, UIElement holder) {
+        button = s;
         subElement = holder;
         // This specific order was chosen because labels on the left can overflow and get in the way of the button.
-        allElements.add(subElement);
-        allElements.add(button);
-        Rect bgb = button.getBounds();
-        int h = holder.getBounds().height;
-        if (bgb.height > h)
-            h = bgb.height;
-        setBounds(new Rect(0, 0, holder.getBounds().width + bgb.width, h));
+        layoutAddElement(subElement);
+        layoutAddElement(button);
+
+        runLayout();
+        setForcedBounds(null, new Rect(getWantedSize()));
     }
 
     @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        // Hopefully unnecessary.
-        // button.setBounds(UITextButton.getRecommendedSize(button.text, textHeight));
-        Rect bgb = button.getBounds();
-        button.setBounds(new Rect(r.width - bgb.width, 0, bgb.width, bgb.height));
-        subElement.setBounds(new Rect(0, 0, r.width - bgb.width, r.height));
+    public void runLayout() {
+        Size r = getSize();
+
+        Size bgb1 = button.getWantedSize();
+
+        button.setForcedBounds(this, new Rect(r.width - bgb1.width, 0, bgb1.width, bgb1.height));
+        subElement.setForcedBounds(this, new Rect(0, 0, r.width - bgb1.width, r.height));
+
+        // In case of change.
+        bgb1 = button.getWantedSize();
+        Size bgb2 = subElement.getWantedSize();
+        setWantedSize(new Size(bgb1.width + bgb2.width, Math.max(bgb1.height, bgb2.height)));
     }
 }

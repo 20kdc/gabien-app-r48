@@ -25,8 +25,8 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     public IConsumer<SchemaPath> modHandler;
     public RubyIO mapInfos = AppMain.objectDB.getObject("MapInfos");
 
-    public static String sNameFromInt(int key) {
-        String mapStr = Integer.toString(key);
+    public static String sNameFromInt(long key) {
+        String mapStr = Long.toString(key);
         while (mapStr.length() < 3)
             mapStr = "0" + mapStr;
         return "Map" + mapStr;
@@ -39,28 +39,28 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     }
 
     @Override
-    public Set<Integer> getHashKeys() {
-        HashSet<Integer> hs = new HashSet<Integer>();
+    public Set<Long> getHashKeys() {
+        HashSet<Long> hs = new HashSet<Long>();
         for (RubyIO rio : mapInfos.hashVal.keySet())
-            hs.add((int) rio.fixnumVal);
+            hs.add(rio.fixnumVal);
         return hs;
     }
 
     @Override
-    public RubyIO getHashBID(int k) {
+    public RubyIO getHashBID(long k) {
         return mapInfos.getHashVal(new RubyIO().setFX(k));
     }
 
     @Override
-    public int getOrderOfMap(int k) {
+    public int getOrderOfMap(long k) {
         return (int) mapInfos.getHashVal(new RubyIO().setFX(k)).getInstVarBySymbol("@order").fixnumVal;
     }
 
     @Override
-    public int getMapOfOrder(int order) {
+    public long getMapOfOrder(int order) {
         for (Map.Entry<RubyIO, RubyIO> rio : mapInfos.hashVal.entrySet())
             if (rio.getValue().getInstVarBySymbol("@order").fixnumVal == order)
-                return (int) rio.getKey().fixnumVal;
+                return rio.getKey().fixnumVal;
         return -1;
     }
 
@@ -75,14 +75,14 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     }
 
     @Override
-    public void triggerEditInfoOf(int k) {
+    public void triggerEditInfoOf(long k) {
         AppMain.launchNonRootSchema(mapInfos, "File.MapInfos", new RubyIO().setFX(k), getHashBID(k), "RPG::MapInfo", "M" + k, null);
     }
 
     @Override
     public void swapOrders(int orderA, int orderB) {
-        int a = getMapOfOrder(orderA);
-        int b = getMapOfOrder(orderB);
+        long a = getMapOfOrder(orderA);
+        long b = getMapOfOrder(orderB);
         RubyIO ao = getHashBID(a).getInstVarBySymbol("@order");
         RubyIO bo = getHashBID(b).getInstVarBySymbol("@order");
         long t = bo.fixnumVal;
@@ -93,7 +93,7 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     @Override
     public int getLastOrder() {
         int targetOrder = 0;
-        for (int m : getHashKeys()) {
+        for (long m : getHashKeys()) {
             int o = getOrderOfMap(m);
             if (o > targetOrder)
                 targetOrder = o;
@@ -102,16 +102,16 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     }
 
     @Override
-    public void removeMap(int k) {
+    public void removeMap(long k) {
         MapInfoReparentUtil.removeMapHelperSALT(k, this);
         mapInfos.removeHashVal(new RubyIO().setFX(k));
     }
 
     @Override
-    public int createNewMap(int k) {
+    public int createNewMap(long k) {
         RubyIO mi = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
         int targetOrder = getLastOrder();
-        int l = getMapOfOrder(targetOrder);
+        long l = getMapOfOrder(targetOrder);
         if (l == -1)
             l = 0;
         mi.getInstVarBySymbol("@parent_id").fixnumVal = l;
@@ -128,12 +128,12 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     }
 
     @Override
-    public Art.Symbol getIconForMap(int k) {
+    public Art.Symbol getIconForMap(long k) {
         return Art.Symbol.Map;
     }
 
     @Override
-    public String translateToGUM(int k) {
+    public String translateToGUM(long k) {
         return sNameFromInt(k);
     }
 }

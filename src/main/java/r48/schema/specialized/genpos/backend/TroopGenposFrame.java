@@ -7,7 +7,7 @@
 
 package r48.schema.specialized.genpos.backend;
 
-import gabien.IGrInDriver;
+import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.ui.IFunction;
 import gabien.ui.Rect;
@@ -156,7 +156,7 @@ public class TroopGenposFrame implements IGenposFrame {
     }
 
     @Override
-    public void drawCell(int i, int opx, int opy, IGrInDriver igd) {
+    public void drawCell(int i, int opx, int opy, IGrDriver igd) {
         // hm.
         int enemy = (int) getCellProp(i, 0).targetElement.fixnumVal;
         opx += getCellProp(i, 1).targetElement.fixnumVal;

@@ -7,6 +7,7 @@
 
 package r48.map.events;
 
+import gabien.FontManager;
 import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.ui.UILabel;
@@ -72,7 +73,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         int dir = lookupDirection(coreDir);
         if (dir == -1) {
             dir = 0;
-            UILabel.drawString(igd, ox, oy, "D" + coreDir, false, UIMapView.mapDebugTextHeight * sprScale);
+            FontManager.drawString(igd, ox, oy, "D" + coreDir, false, UIMapView.mapDebugTextHeight * sprScale);
         }
         RubyIO cName = target.getInstVarBySymbol("@character_name");
         short tId = (short) target.getInstVarBySymbol("@tile_id").fixnumVal;

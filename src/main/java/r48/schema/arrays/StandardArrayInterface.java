@@ -38,14 +38,13 @@ public class StandardArrayInterface implements IArrayInterface {
             // Because of name ambiguity, but also whacks uiSVL
             public void containerRCL() {
                 run();
-                uiSVL.setBounds(uiSVL.getBounds());
             }
 
             @Override
             public void run() {
-                uiSVL.panels.clear();
+                uiSVL.panelsClear();
                 // Work out how big each array index field has to be.
-                final Rect maxSizePre = UILabel.getRecommendedSize("", FontSizes.schemaFieldTextHeight);
+                final Size maxSizePre = UILabel.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight);
                 final AtomicInteger maxWidth = new AtomicInteger(maxSizePre.width);
                 for (int i = 0; i < positions.length; i++) {
                     final int mi = i;
@@ -161,10 +160,11 @@ public class StandardArrayInterface implements IArrayInterface {
                                 }, FontSizes.schemaButtonTextHeight);
                             }
                         }
+                        /*IPCRESS
                         // Add indexes for clarity.
                         final UIElement editor = uie;
                         final UIElement label = new UILabel(positions[mi].text, FontSizes.schemaFieldTextHeight);
-                        maxWidth.set(Math.max(maxWidth.get(), label.getBounds().width));
+                        maxWidth.set(Math.max(maxWidth.get(), label.getSize().width));
                         UIPublicPanel panel = new UIPublicPanel() {
                             @Override
                             public void setBounds(Rect r) {
@@ -177,7 +177,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         panel.addElement(label);
                         panel.addElement(editor);
                         panel.setBounds(new Rect(0, 0, 128, Math.max(editor.getBounds().height, maxSizePre.height)));
-                        uiSVL.panels.add(panel);
+                        uiSVL.panels.add(panel);*/
                     }
                 }
             }
@@ -188,7 +188,7 @@ public class StandardArrayInterface implements IArrayInterface {
                 UIElement uie = new UITextButton(FontSizes.schemaArrayAddTextHeight, FormatSyntax.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setString(text, true)), runnable);
                 if (runnable2 != null)
                     uie = new UIAppendButton(TXDB.get("Paste Array"), uie, runnable2, FontSizes.schemaButtonTextHeight);
-                uiSVL.panels.add(uie);
+                uiSVL.panelsAdd(uie);
             }
         };
         runCompleteRelayout.run();

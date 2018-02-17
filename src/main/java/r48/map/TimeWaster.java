@@ -7,7 +7,7 @@
 
 package r48.map;
 
-import gabien.IGrInDriver;
+import gabien.*;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import r48.AppMain;
@@ -15,6 +15,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.ui.Art;
 
 import java.util.Random;
 
@@ -36,7 +37,13 @@ public class TimeWaster {
         iconSize = 64 * FontSizes.getSpriteScale();
     }
 
-    public void draw(IGrInDriver igd, int ox, int oy, double deltaTime, int sw, int sh) {
+    public void draw(IGrDriver igd, IPeripherals ip, int ox, int oy, double deltaTime, int sw, int sh) {
+        int mouseX = -1;
+        int mouseY = -1;
+        if (ip instanceof IDesktopPeripherals) {
+            mouseX = ((IDesktopPeripherals) ip).getMouseX();
+            mouseY = ((IDesktopPeripherals) ip).getMouseY();
+        }
         int stage = ((int) (moveTime / 8)) % 6;
         int type = 0;
         int mul = 1;
@@ -59,7 +66,7 @@ public class TimeWaster {
             case 3:
                 type = 2;
                 // set random position
-                doJump(igd.getMouseX() - ox, igd.getMouseY() - oy, sw, sh);
+                doJump(mouseX - ox, mouseY - oy, sw, sh);
                 mul = darkMul;
                 break;
             case 4:
@@ -74,7 +81,7 @@ public class TimeWaster {
         moveTime += deltaTime * mul;
         Rect b = new Rect(ox + (int) iconPlanX, oy + (int) iconPlanY, iconSize, iconSize);
         if (type == 0) {
-            if (b.contains(igd.getMouseX(), igd.getMouseY())) {
+            if (b.contains(mouseX, mouseY)) {
                 moveTime = 8;
                 if (points != -1)
                     points++;
@@ -98,9 +105,9 @@ public class TimeWaster {
             iconVelY = 0;
         }
         if (points < 13)
-            igd.blitScaledImage(type * 64, 0, 64, 64, ox + (int) iconPlanX, oy + (int) iconPlanY, iconSize, iconSize, AppMain.noMap);
+            igd.blitScaledImage(type * 64, 0, 64, 64, ox + (int) iconPlanX, oy + (int) iconPlanY, iconSize, iconSize, Art.noMap);
         if (points > 1) {
-            UILabel.drawString(igd, ox, oy, FormatSyntax.formatExtended(TXDB.get("You have #A points..."), new RubyIO().setFX(points)), false, FontSizes.timeWasterTextHeight);
+            FontManager.drawString(igd, ox, oy, FormatSyntax.formatExtended(TXDB.get("You have #A points..."), new RubyIO().setFX(points)), false, FontSizes.timeWasterTextHeight);
             String[] pointMsgs = new String[] {
                     TXDB.get("...you should probably get back to work."),
                     TXDB.get("...are you lost...?"),
@@ -114,7 +121,7 @@ public class TimeWaster {
                 points = -1;
             } else {
                 // Any GitHub issues on this will be disregarded.
-                UILabel.drawString(igd, ox, oy + FontSizes.timeWasterTextHeight, pointMsgs[points - 2], false, FontSizes.timeWasterTextHeight);
+                FontManager.drawString(igd, ox, oy + FontSizes.timeWasterTextHeight, pointMsgs[points - 2], false, FontSizes.timeWasterTextHeight);
             }
         }
     }

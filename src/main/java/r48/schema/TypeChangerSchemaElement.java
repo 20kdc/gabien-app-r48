@@ -30,6 +30,7 @@ public class TypeChangerSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO targetValue, final ISchemaHost launcher, final SchemaPath path) {
+        /* IPCRESS
         // Abstract away the inner object for sanity reasons
         final UIPublicPanel innerHoldingPanel = new UIPublicPanel() {
             @Override
@@ -60,6 +61,8 @@ public class TypeChangerSchemaElement extends SchemaElement {
             }, FontSizes.schemaButtonTextHeight);
         }
         return holder;
+        */
+        return HiddenSchemaElement.makeHiddenElementIpcress();
     }
 
     private int getRelevantElementId(RubyIO targetValue) {
@@ -82,6 +85,7 @@ public class TypeChangerSchemaElement extends SchemaElement {
         return tp;
     }
 
+    /*IPCRESS
     private void initializeHoldingPanel(UIPublicPanel innerHoldingPanel, RubyIO targetValue, ISchemaHost l, SchemaPath path) {
         int rei = getRelevantElementId(targetValue);
         SchemaElement targetS = new OpaqueSchemaElement();
@@ -93,7 +97,7 @@ public class TypeChangerSchemaElement extends SchemaElement {
         uie.setBounds(new Rect(0, 0, b.width, b.height));
         innerHoldingPanel.addElement(uie);
         innerHoldingPanel.setBounds(new Rect(0, 0, b.width, b.height));
-    }
+    }*/
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {

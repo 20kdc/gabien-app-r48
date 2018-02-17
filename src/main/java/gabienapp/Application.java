@@ -7,6 +7,7 @@
 
 package gabienapp;
 
+import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.WindowSpecs;
@@ -14,7 +15,6 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
-import r48.maptools.UIMTBase;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFontSizeConfigurator;
@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -50,12 +51,8 @@ public class Application {
     // used for directory name so R48 stops polluting any workspace it's used in.
     public static final String BRAND = "r48";
 
-    // Used if R48 tries to boot before the font is loaded, to catch that.
-    // This means things that change the current font override state have to turn this off.
-    public static boolean preventFontOverrider = false;
-
     public static void gabienmain() throws IOException {
-        GaBIEn.appPrefixes = new String[] {BRAND + "/"};
+        GaBIEn.appPrefixes = new String[] {BRAND + "/", ""};
 
         mobileExtremelySpecialBehavior = GaBIEn.singleWindowApp();
         uiTicker = new WindowCreatingUIElementConsumer();
@@ -80,8 +77,13 @@ public class Application {
 
         // Note the mass-recreate.
         while (true) {
-            final UIScrollLayout gamepaks = new UIScrollLayout(true, FontSizes.generalScrollersize);
-            gamepaks.setBounds(new Rect(0, 0, 400, 200));
+            final AtomicBoolean gamepaksRequestClose = new AtomicBoolean(false);
+            final UIScrollLayout gamepaks = new UIScrollLayout(true, FontSizes.generalScrollersize) {
+                @Override
+                public boolean requestsUnparenting() {
+                    return gamepaksRequestClose.get();
+                }
+            };
             // this can't be good
             // Ok, explaination for this. Giving it a runnable, it will hold it until called again, and then it will run it and remove it.
             final IConsumer<Runnable> closeHelper = new IConsumer<Runnable>() {
@@ -113,16 +115,18 @@ public class Application {
             });
             msAdjust.accept(Integer.toString(globalMS));
 
-            gamepaks.panels.add(figureOutTopBar(uiTicker, closeHelper));
+            final LinkedList<UIElement> basePanels = new LinkedList<UIElement>();
 
-            gamepaks.panels.add(new UISplitterLayout(new UILabel(TXDB.get("MS per frame:"), FontSizes.launcherTextHeight), msAdjust, false, 3, 5));
+            basePanels.add(figureOutTopBar(uiTicker, closeHelper));
 
-            gamepaks.panels.add(new UILabel(TXDB.get("Path To Game (if you aren't running R48 in the game folder):"), FontSizes.launcherTextHeight));
+            basePanels.add(new UISplitterLayout(new UILabel(TXDB.get("MS per frame:"), FontSizes.launcherTextHeight), msAdjust, false, 3, 5));
+
+            basePanels.add(new UILabel(TXDB.get("Path To Game (if you aren't running R48 in the game folder):"), FontSizes.launcherTextHeight));
 
             rootBox = new UITextBox(FontSizes.launcherTextHeight);
             rootBox.text = rootPathBackup;
 
-            gamepaks.panels.add(new UISplitterLayout(rootBox, new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Save"), new Runnable() {
+            basePanels.add(new UISplitterLayout(rootBox, new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Save"), new Runnable() {
                 @Override
                 public void run() {
                     rootPathBackup = rootBox.text;
@@ -130,7 +134,7 @@ public class Application {
                 }
             }), false, 1));
 
-            gamepaks.panels.add(new UILabel(TXDB.get("Secondary Image Load Location:"), FontSizes.launcherTextHeight));
+            basePanels.add(new UILabel(TXDB.get("Secondary Image Load Location:"), FontSizes.launcherTextHeight));
 
             final UITextBox sillBox = new UITextBox(FontSizes.launcherTextHeight);
             sillBox.text = secondaryImageLoadLocation;
@@ -145,21 +149,21 @@ public class Application {
                 }
             };
 
-            gamepaks.panels.add(new UISplitterLayout(sillBox, new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Save"), new Runnable() {
+            basePanels.add(new UISplitterLayout(sillBox, new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Save"), new Runnable() {
                 @Override
                 public void run() {
                     FontSizes.save();
                 }
             }), false, 1));
 
-            gamepaks.panels.add(new UILabel(TXDB.get("Choose Target Engine:"), FontSizes.launcherTextHeight));
+            basePanels.add(new UILabel(TXDB.get("Choose Target Engine:"), FontSizes.launcherTextHeight));
 
-            final int firstGPI = gamepaks.panels.size();
             final IConsumer<IGPMenuPanel> menuConstructor = new IConsumer<IGPMenuPanel>() {
                 @Override
                 public void accept(IGPMenuPanel igpMenuPanel) {
-                    while (gamepaks.panels.size() > firstGPI)
-                        gamepaks.panels.removeLast();
+                    gamepaks.panelsClear();
+                    for (UIElement uie : basePanels)
+                        gamepaks.panelsAdd(uie);
                     if (igpMenuPanel == null) {
                         closeHelper.accept(null);
                         return;
@@ -168,26 +172,24 @@ public class Application {
                     ISupplier<IGPMenuPanel>[] runs = igpMenuPanel.getButtonActs();
                     for (int i = 0; i < names.length; i++) {
                         final ISupplier<IGPMenuPanel> r = runs[i];
-                        gamepaks.panels.add(new UITextButton(FontSizes.launcherTextHeight, names[i], new Runnable() {
+                        gamepaks.panelsAdd(new UITextButton(FontSizes.launcherTextHeight, names[i], new Runnable() {
                             @Override
                             public void run() {
                                 accept(r.get());
                             }
                         }));
                     }
-                    gamepaks.setBounds(gamepaks.getBounds());
                 }
             };
             // ...
 
-            gamepaks.setBounds(new Rect(0, 0, FontSizes.scaleGuess(640), FontSizes.scaleGuess(480)));
+            gamepaks.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(640), FontSizes.scaleGuess(480)));
             menuConstructor.accept(rootGPMenuPanel);
-            final UIMTBase uimtw = UIMTBase.wrap(null, gamepaks, false);
-            uiTicker.accept(uimtw);
+            uiTicker.accept(gamepaks);
             closeHelper.accept(new Runnable() {
                 @Override
                 public void run() {
-                    uimtw.selfClose = true;
+                    gamepaksRequestClose.set(true);
                 }
             });
 
@@ -201,11 +203,6 @@ public class Application {
             //  which makes it worth keeping.
             boolean backupAvailable = false;
             while (uiTicker.runningWindows().size() > 0) {
-                if (UILabel.fontOverride != null)
-                    if (preventFontOverrider) {
-                        UILabel.fontOverride = null;
-                        preventFontOverrider = true;
-                    }
                 double dT = handleTick();
                 try {
                     if (appTicker != null)
@@ -280,9 +277,8 @@ public class Application {
                                 return "Error...";
                             }
                         };
-                        scroll.panels.add(uhs);
-                        uhs.setBounds(new Rect(0, 0, 640, 480));
-                        scroll.setBounds(new Rect(0, 0, 640, 480));
+                        scroll.panelsAdd(uhs);
+                        scroll.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(640), FontSizes.scaleGuess(480)));
                         uiTicker.accept(scroll);
                         failed = scroll;
                         System.err.println("Well, that worked at least");
@@ -310,7 +306,7 @@ public class Application {
             }
             if (failed != null)
                 break;
-            if (!uimtw.selfClose)
+            if (!gamepaksRequestClose.get())
                 break;
             appTicker = null;
             // Cleanup application memory
@@ -363,10 +359,8 @@ public class Application {
                 // The reason it's important we use the correct language for this is because if font-loading is slow,
                 //  we WILL (not may, WILL) freeze up until ready.
                 if (canAvoidWait)
-                    if (TXDB.getLanguage().equals("English")) {
-                        preventFontOverrider = true;
+                    if (TXDB.getLanguage().equals("English"))
                         fontsNecessary.set(false);
-                    }
                 rootGPMenuPanel = new PrimaryGPMenuPanel();
             }
         };
@@ -398,14 +392,10 @@ public class Application {
             // This is really the only reason any of the messages are likely to be seen.
             String waitingFor = null;
             // Doesn't matter if it switches font on the last frame or something, just make sure the application remains running
-            if ((UILabel.fontOverride == null) && fontsNecessary.get()) {
+            if ((!FontManager.fontsReady) && fontsNecessary.get()) {
                 waitingFor = "Loading";
             } else if ((!txdbDonePrimaryTask.get()) || (rootGPMenuPanel == null)) {
                 waitingFor = "Loading";
-            }
-            if (preventFontOverrider && (UILabel.fontOverride != null)) {
-                UILabel.fontOverride = null;
-                preventFontOverrider = false;
             }
             if (waitingFor == null) {
                 frames++;
@@ -421,7 +411,7 @@ public class Application {
                 goodSize = gi.getHeight() / 32;
             if (goodSize < 8)
                 goodSize = 8;
-            int goodSizeActual = UILabel.getRecommendedSize("", goodSize).height;
+            int goodSizeActual = UILabel.getRecommendedTextSize("", goodSize).height;
             UILabel.drawLabel(gi, gi.getWidth(), 0, gi.getHeight() - goodSizeActual, waitingFor + movement + ch, 1, goodSize);
 
             // fade
