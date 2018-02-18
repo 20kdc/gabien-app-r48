@@ -65,7 +65,7 @@ public class Main {
         if (modI == null)
             if (args.length == 2)
                 if (args[0].equals("loadFile"))
-                    modI = GaBIEn.getFile(PathUtils.autoDetectWindows(args[1]));
+                    modI = GaBIEn.getInFile(PathUtils.autoDetectWindows(args[1]));
         final InputStream mod = modI;
         if (mod == null) {
             prepDialog(Branding.lines[1].split("#"), Branding.lines[6], new Runnable() {

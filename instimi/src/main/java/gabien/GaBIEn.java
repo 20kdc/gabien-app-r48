@@ -29,7 +29,7 @@ public class GaBIEn {
         }
     }
 
-    public static InputStream getFile(String f) {
+    public static InputStream getInFile(String f) {
         try {
             return new FileInputStream(f);
         } catch (Exception e) {
