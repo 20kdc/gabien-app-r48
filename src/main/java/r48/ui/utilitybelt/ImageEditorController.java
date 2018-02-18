@@ -278,14 +278,10 @@ public class ImageEditorController {
         final UIMTBase res = UIMTBase.wrap(null, xyChanger);
         final UINumberBox wVal, hVal, xVal, yVal;
         final UITextButton acceptButton;
-        wVal = new UINumberBox(FontSizes.schemaFieldTextHeight);
-        hVal = new UINumberBox(FontSizes.schemaFieldTextHeight);
-        xVal = new UINumberBox(FontSizes.schemaFieldTextHeight);
-        yVal = new UINumberBox(FontSizes.schemaFieldTextHeight);
-        wVal.number = targetVal.width;
-        hVal.number = targetVal.height;
-        xVal.number = targetVal.x;
-        yVal.number = targetVal.y;
+        wVal = new UINumberBox(targetVal.width, FontSizes.schemaFieldTextHeight);
+        hVal = new UINumberBox(targetVal.height, FontSizes.schemaFieldTextHeight);
+        xVal = new UINumberBox(targetVal.x, FontSizes.schemaFieldTextHeight);
+        yVal = new UINumberBox(targetVal.y, FontSizes.schemaFieldTextHeight);
         hVal.onEdit = wVal.onEdit = new Runnable() {
             @Override
             public void run() {

@@ -82,7 +82,7 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                     final String name = a[0].substring(1);
                     final int len = Integer.parseInt(a[1]);
                     final int pwr = 1 << len;
-                    final UINumberBox number = new UINumberBox(FontSizes.tableElementTextHeight);
+                    final UINumberBox number = new UINumberBox(0, FontSizes.tableElementTextHeight);
                     panelAdder.accept(new UISplitterLayout(new UILabel(name, FontSizes.tableElementTextHeight), number, false, 3, 4));
                     flagStates[i] = new IConsumer<AtomicInteger>() {
                         @Override

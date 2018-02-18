@@ -7,6 +7,7 @@
 
 package r48.schema.displays;
 
+import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
@@ -50,22 +51,23 @@ public class TonePickerSchemaElement extends SchemaElement {
     }
 
     public static UIElement createTotem(IImageEffect cfg) {
-        /*IPCRESS
-        UIPublicPanel panel = new UIPublicPanel();
         // The tone picker text height is typically 6, which should equal 64, as a base.
         // How do I make this work? Like this:
+
         int imageUnit = (FontSizes.tonePickerTextHeight * 64) / 6;
+        UIPublicPanel panel = new UIPublicPanel(imageUnit * 2, imageUnit);
         IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(imageUnit * 2, imageUnit, false);
+
         IImage totem = GaBIEn.getImage("tonetotm.png");
         finalComposite.blitScaledImage(0, 0, 256, 256, 0, 0, imageUnit, imageUnit, totem);
         finalComposite.blitImage(0, 0, imageUnit, imageUnit, imageUnit, 0, AppMain.imageFXCache.process(finalComposite, cfg));
-        UILabel.drawString(finalComposite, 0, (imageUnit + 1) - FontSizes.tonePickerTextHeight, TXDB.get("TotemSrc."), false, FontSizes.tonePickerTextHeight);
-        UILabel.drawString(finalComposite, imageUnit, (imageUnit + 1) - FontSizes.tonePickerTextHeight, TXDB.get("Composite"), false, FontSizes.tonePickerTextHeight);
+
+        FontManager.drawString(finalComposite, 0, (imageUnit + 1) - FontSizes.tonePickerTextHeight, TXDB.get("TotemSrc."), false, false, FontSizes.tonePickerTextHeight);
+        FontManager.drawString(finalComposite, imageUnit, (imageUnit + 1) - FontSizes.tonePickerTextHeight, TXDB.get("Composite"), false, false, FontSizes.tonePickerTextHeight);
+
         panel.baseImage = GaBIEn.createImage(finalComposite.getPixels(), imageUnit * 2, imageUnit);
-        panel.setBounds(new Rect(0, 0, imageUnit * 2, imageUnit));
         finalComposite.shutdown();
-        return panel;*/
-        return HiddenSchemaElement.makeHiddenElementIpcress();
+        return panel;
     }
 
     @Override

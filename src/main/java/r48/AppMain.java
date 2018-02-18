@@ -242,8 +242,8 @@ public class AppMain {
             }
         };
         rootView.windowTextHeight = FontSizes.windowFrameHeight;
-        rootView.sizerSize = rootView.windowTextHeight * 2;
-        rootView.sizerOfs = (rootView.windowTextHeight * 4) / 3;
+        rootView.sizerVisual = rootView.windowTextHeight / 2;
+        rootView.sizerActual = rootView.windowTextHeight;
 
         trueWindowMaker = rootViewWM;
         trueWindowMakerI = rootViewWMI;
@@ -615,7 +615,7 @@ public class AppMain {
         limit /= 4;
         if (h > limit)
             h = limit;
-        svl.setForcedBounds(null, new Rect(0, 0, uhs.getSize().width, h));
+        svl.setForcedBounds(null, new Rect(0, 0, Math.min(mainWindowWidth, svl.getWantedSize().width), h));
         trueWindowMaker.accept(svl);
     }
 
@@ -633,7 +633,6 @@ public class AppMain {
         final UIScrollLayout uus = new UIScrollLayout(true, FontSizes.generalScrollersize);
         uus.panelsAdd(uis);
         Size rootSize = rootView.getSize();
-        uus.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, rootSize.height / 2));
         final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(TXDB.get("Index"), uil, new Runnable() {
             @Override
             public void run() {
@@ -652,6 +651,7 @@ public class AppMain {
             }
         };
         hsc.loadPage(integer);
+        topbar.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, rootSize.height / 2));
         trueWindowMaker.accept(topbar);
     }
 

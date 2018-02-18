@@ -95,9 +95,8 @@ public class UIMTPopupButtons extends UIMTBase {
         private UIMTMapResizer(final IMapToolContext mtc) {
             super(mtc);
             final UIMapView view = mtc.getMapView();
-            final UINumberBox a = new UINumberBox(FontSizes.textDialogFieldTextHeight);
-            final UINumberBox b = new UINumberBox(FontSizes.textDialogFieldTextHeight);
-            a.number = view.mapTable.width;
+            final UINumberBox a = new UINumberBox(view.mapTable.width, FontSizes.textDialogFieldTextHeight);
+            final UINumberBox b = new UINumberBox(view.mapTable.height, FontSizes.textDialogFieldTextHeight);
             a.onEdit = new Runnable() {
                 @Override
                 public void run() {
@@ -105,7 +104,6 @@ public class UIMTPopupButtons extends UIMTBase {
                         a.number = 1;
                 }
             };
-            b.number = view.mapTable.height;
             b.onEdit = new Runnable() {
                 @Override
                 public void run() {

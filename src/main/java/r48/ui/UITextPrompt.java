@@ -16,7 +16,7 @@ import r48.dbs.TXDB;
  */
 public class UITextPrompt extends UIElement.UIProxy {
 
-    public UITextBox utb = new UITextBox(FontSizes.textDialogFieldTextHeight);
+    public UITextBox utb = new UITextBox("", FontSizes.textDialogFieldTextHeight);
     public UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
     public boolean wantClose = false;
 

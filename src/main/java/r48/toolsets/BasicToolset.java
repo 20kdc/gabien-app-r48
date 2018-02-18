@@ -219,7 +219,7 @@ public class BasicToolset implements IToolset {
                                     public void accept(String s) {
                                         try {
                                             Integer i = Integer.parseInt(s);
-                                            windowMaker.accept(new UITextBox(i));
+                                            windowMaker.accept(new UITextBox("", i));
                                         } catch (Exception e) {
                                             AppMain.launchDialog(TXDB.get("Not a valid number."));
                                         }

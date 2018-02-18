@@ -123,8 +123,7 @@ public class Application {
 
             basePanels.add(new UILabel(TXDB.get("Path To Game (if you aren't running R48 in the game folder):"), FontSizes.launcherTextHeight));
 
-            rootBox = new UITextBox(FontSizes.launcherTextHeight);
-            rootBox.text = rootPathBackup;
+            rootBox = new UITextBox(rootPathBackup, FontSizes.launcherTextHeight);
 
             basePanels.add(new UISplitterLayout(rootBox, new UITextButton(TXDB.get("Save"), FontSizes.launcherTextHeight, new Runnable() {
                 @Override
@@ -136,8 +135,7 @@ public class Application {
 
             basePanels.add(new UILabel(TXDB.get("Secondary Image Load Location:"), FontSizes.launcherTextHeight));
 
-            final UITextBox sillBox = new UITextBox(FontSizes.launcherTextHeight);
-            sillBox.text = secondaryImageLoadLocation;
+            final UITextBox sillBox = new UITextBox(secondaryImageLoadLocation, FontSizes.launcherTextHeight);
             sillBox.onEdit = new Runnable() {
                 @Override
                 public void run() {

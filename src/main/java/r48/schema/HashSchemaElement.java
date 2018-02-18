@@ -73,8 +73,7 @@ public class HashSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 uiSV.panelsClear();
-                final UITextBox searchBox = new UITextBox(FontSizes.schemaFieldTextHeight);
-                searchBox.text = getSearchTerm(target, launcher, path);
+                final UITextBox searchBox = new UITextBox(getSearchTerm(target, launcher, path), FontSizes.schemaFieldTextHeight);
                 searchBox.onEdit = new Runnable() {
                     @Override
                     public void run() {

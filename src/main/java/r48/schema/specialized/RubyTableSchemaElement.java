@@ -146,8 +146,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         uig.uivScrollbar.scrollPoint = lastScrollCache;
 
         if (allowResize) {
-            final UINumberBox wNB = new UINumberBox(FontSizes.tableSizeTextHeight);
-            wNB.number = targ.width;
+            final UINumberBox wNB = new UINumberBox(targ.width, FontSizes.tableSizeTextHeight);
             wNB.onEdit = new Runnable() {
                 @Override
                 public void run() {
@@ -155,8 +154,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                         wNB.number = 0;
                 }
             };
-            final UINumberBox hNB = new UINumberBox(FontSizes.tableSizeTextHeight);
-            hNB.number = targ.height;
+            final UINumberBox hNB = new UINumberBox(targ.height, FontSizes.tableSizeTextHeight);
             hNB.onEdit = new Runnable() {
                 @Override
                 public void run() {

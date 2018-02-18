@@ -221,7 +221,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
         uiSVL.panelsAdd(new UITextButton(TXDB.get("<Insert New Map>"), FontSizes.mapInfosTextHeight, new Runnable() {
             @Override
             public void run() {
-                final UINumberBox num = new UINumberBox(FontSizes.textDialogFieldTextHeight);
+                final UINumberBox num = new UINumberBox(0, FontSizes.textDialogFieldTextHeight);
                 final Runnable unusedID = new Runnable() {
                     @Override
                     public void run() {

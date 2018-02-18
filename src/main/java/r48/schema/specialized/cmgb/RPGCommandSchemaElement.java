@@ -59,7 +59,6 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
-        /*IPCRESS
         // A note here:
         // Using newWindow on path will cause a growing stack issue:
         //  newWindow always returns DIRECTLY to the path, subwindows use Back which 
@@ -68,114 +67,81 @@ public class RPGCommandSchemaElement extends SchemaElement {
         // They're tags for stuff done inside the schema, not part of the schema itself.
 
         final SchemaPath path = path2.tagSEMonitor(target, this, false);
-        final AtomicInteger passbackHeight = new AtomicInteger(0);
-        final UIElement.UIPanel uip = new UIElement.UIPanel() {
-            UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(FontSizes.schemaButtonTextHeight, database.buildCodename(target, true), new Runnable() {
-                @Override
-                public void run() {
-                    navigateToCode(launcher, path2, target, path, database);
-                }
-            }), new Runnable() {
-                @Override
-                public void run() {
-                    int code = (int) target.getInstVarBySymbol("@code").fixnumVal;
-                    RPGCommand rc = database.knownCommands.get(code);
-                    String title = code + " : " + rc.formatName(null, null);
-                    String result = TXDB.get("This command isn't known by the schema's CMDB.");
-                    if (rc != null) {
-                        if (rc.description == null) {
-                            result = TXDB.get("This command is known, but no description exists.");
-                        } else {
-                            result = rc.description;
-                        }
-                    } else {
-                        title += TXDB.get("Unknown Command");
-                    }
-                    UIHelpSystem uis = new UIHelpSystem();
-                    uis.page.add(new UIHelpSystem.HelpElement('.', title.split(" ")));
-                    uis.page.add(new UIHelpSystem.HelpElement('.', result.split(" ")));
-                    uis.setBounds(new Rect(0, 0, 320, 200));
-                    launcher.launchOther(uis);
-                }
-            }, FontSizes.schemaButtonTextHeight);
-            UIElement subElem = buildSubElem();
 
-            private UIElement buildSubElem() {
-                RPGCommand rc = database.knownCommands.get((int) target.getInstVarBySymbol("@code").fixnumVal);
-                if (rc != null) {
-                    if (rc.specialSchema != null)
-                        return rc.specialSchema.buildHoldingEditor(target, launcher, path);
-                    RubyIO param = target.getInstVarBySymbol("@parameters");
-                    final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, RPGCommandSchemaElement.this, target);
-
-                    if (target.getInstVarBySymbol("@indent") != null) {
-                        if (showHeader) {
-                            SchemaElement ise = new PathSchemaElement("@indent", TXDB.get("@indent"), new ROIntegerSchemaElement(0), false);
-                            if (!allowControlOfIndent)
-                                ise = new PathSchemaElement("@indent", TXDB.get("@indent"), new IntegerSchemaElement(0), false);
-                            uiSVL.panels.add(ise.buildHoldingEditor(target, launcher, path));
-                        }
-                    }
-                    UILabel[] labels = new UILabel[param.arrVal.length];
-                    int labelWidth = 0;
-                    for (int i = 0; i < param.arrVal.length; i++) {
-                        if (param.arrVal.length <= i)
-                            continue;
-                        String paramName = rc.getParameterName(param, i);
-                        // Hidden parameters, introduced to deal with the "text as first parameter" thing brought about by R2k
-                        if (paramName.equals("_"))
-                            continue;
-                        labels[i] = new UILabel(paramName + " ", FontSizes.schemaFieldTextHeight);
-                        labelWidth = Math.max(labelWidth, labels[i].getBounds().width);
-                    }
-                    for (int i = 0; i < param.arrVal.length; i++)
-                        if (labels[i] != null)
-                            labels[i].setBounds(new Rect(0, 0, labelWidth, labels[i].getBounds().height));
-                    for (int i = 0; i < param.arrVal.length; i++) {
-                        if (param.arrVal.length <= i) {
-                            uiSVL.panels.add(new UILabel(FormatSyntax.formatExtended(TXDB.get("WARNING: Missing param. #A"), new RubyIO().setFX(i)), FontSizes.schemaFieldTextHeight));
-                            continue;
-                        }
-                        if (labels[i] != null) {
-                            SchemaElement ise = rc.getParameterSchema(param, i);
-                            UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
-                            uiSVL.panels.add(new UISplitterLayout(labels[i], uie, false, 0d));
-                            rc.paramSpecialTags.get(i).applyTo(i, uiSVL.panels, param, launcher, path);
-                        }
-                    }
-                    int height = 0;
-                    uiSVL.setBounds(new Rect(0, 0, 128, 128));
-                    for (UIElement uie : uiSVL.panels)
-                        height += uie.getBounds().height;
-                    uiSVL.setBounds(new Rect(0, 0, 128, height));
-                    return uiSVL;
-                }
-                return mostOfSchema.buildHoldingEditor(target, launcher, path);
-            }
-
+        UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(database.buildCodename(target, true), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
-            public void setBounds(Rect r) {
-                super.setBounds(r);
-                allElements.clear();
-                if (showHeader) {
-                    allElements.add(chooseCode);
-                    allElements.add(subElem);
-                    int cch = chooseCode.getBounds().height;
-                    passbackHeight.set(cch + subElem.getBounds().height);
-                    chooseCode.setBounds(new Rect(0, 0, r.width, cch));
-                    subElem.setBounds(new Rect(0, cch, r.width, r.height - cch));
+            public void run() {
+                navigateToCode(launcher, path2, target, path, database);
+            }
+        }), new Runnable() {
+            @Override
+            public void run() {
+                int code = (int) target.getInstVarBySymbol("@code").fixnumVal;
+                RPGCommand rc = database.knownCommands.get(code);
+                String title = code + " : " + rc.formatName(null, null);
+                String result = TXDB.get("This command isn't known by the schema's CMDB.");
+                if (rc != null) {
+                    if (rc.description == null) {
+                        result = TXDB.get("This command is known, but no description exists.");
+                    } else {
+                        result = rc.description;
+                    }
                 } else {
-                    allElements.add(subElem);
-                    passbackHeight.set(subElem.getBounds().height);
-                    subElem.setBounds(new Rect(0, 0, r.width, r.height));
+                    title += TXDB.get("Unknown Command");
+                }
+                UIHelpSystem uis = new UIHelpSystem();
+                uis.page.add(new UIHelpSystem.HelpElement('.', title.split(" ")));
+                uis.page.add(new UIHelpSystem.HelpElement('.', result.split(" ")));
+                launcher.launchOther(uis);
+            }
+        }, FontSizes.schemaButtonTextHeight);
+
+        return new UISplitterLayout(chooseCode, buildSubElem(target, launcher, path), true, 0);
+    }
+
+    private UIElement buildSubElem(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+        RPGCommand rc = database.knownCommands.get((int) target.getInstVarBySymbol("@code").fixnumVal);
+        if (rc != null) {
+            if (rc.specialSchema != null)
+                return rc.specialSchema.buildHoldingEditor(target, launcher, path);
+            RubyIO param = target.getInstVarBySymbol("@parameters");
+            final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, RPGCommandSchemaElement.this, target);
+
+            if (target.getInstVarBySymbol("@indent") != null) {
+                if (showHeader) {
+                    SchemaElement ise = new PathSchemaElement("@indent", TXDB.get("@indent"), new ROIntegerSchemaElement(0), false);
+                    if (!allowControlOfIndent)
+                        ise = new PathSchemaElement("@indent", TXDB.get("@indent"), new IntegerSchemaElement(0), false);
+                    uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
                 }
             }
-        };
-        uip.setBounds(new Rect(0, 0, 320, 200));
-        uip.setBounds(new Rect(0, 0, 320, passbackHeight.get()));
-        return uip;
-        */
-        return HiddenSchemaElement.makeHiddenElementIpcress();
+            UILabel[] labels = new UILabel[param.arrVal.length];
+            AtomicInteger labelWidth = new AtomicInteger();
+            for (int i = 0; i < param.arrVal.length; i++) {
+                if (param.arrVal.length <= i)
+                    continue;
+                String paramName = rc.getParameterName(param, i);
+                // Hidden parameters, introduced to deal with the "text as first parameter" thing brought about by R2k
+                if (paramName.equals("_"))
+                    continue;
+                labels[i] = new ArrayElementSchemaElement.UIOverridableWidthLabel(paramName + " ", FontSizes.schemaFieldTextHeight, labelWidth, true);
+                labelWidth.set(Math.max(labelWidth.get(), labels[i].getWantedSize().width));
+            }
+            for (int i = 0; i < param.arrVal.length; i++) {
+                if (param.arrVal.length <= i) {
+                    uiSVL.panelsAdd(new UILabel(FormatSyntax.formatExtended(TXDB.get("WARNING: Missing param. #A"), new RubyIO().setFX(i)), FontSizes.schemaFieldTextHeight));
+                    continue;
+                }
+                if (labels[i] != null) {
+                    SchemaElement ise = rc.getParameterSchema(param, i);
+                    UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
+                    uiSVL.panelsAdd(new UISplitterLayout(labels[i], uie, false, 0d));
+                    rc.paramSpecialTags.get(i).applyTo(i, uiSVL, param, launcher, path);
+                }
+            }
+            return uiSVL;
+        }
+        return mostOfSchema.buildHoldingEditor(target, launcher, path);
     }
 
     // Used by EventCommandArray for edit-on-create.

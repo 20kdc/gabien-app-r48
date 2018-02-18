@@ -12,6 +12,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UIPublicPanel;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.maptools.UIMTBase;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -30,20 +31,14 @@ public class TypeChangerSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO targetValue, final ISchemaHost launcher, final SchemaPath path) {
-        /* IPCRESS
-        // Abstract away the inner object for sanity reasons
-        final UIPublicPanel innerHoldingPanel = new UIPublicPanel() {
-            @Override
-            public void setBounds(Rect r) {
-                super.setBounds(r);
-                if (allElements.size() > 0)
-                    allElements.getFirst().setBounds(r);
-            }
-        };
+        int rei = getRelevantElementId(targetValue);
 
-        initializeHoldingPanel(innerHoldingPanel, targetValue, launcher, path);
+        SchemaElement targetS = new OpaqueSchemaElement();
+        if (rei != -1)
+            targetS = targets[rei];
 
-        UIElement holder = innerHoldingPanel;
+        UIElement holder = targetS.buildHoldingEditor(targetValue, launcher, path);
+
         for (int i = typeString.length - 1; i >= 0; i--) {
             final int fi = i;
             final char chr = typeString[i].charAt(0);
@@ -61,8 +56,6 @@ public class TypeChangerSchemaElement extends SchemaElement {
             }, FontSizes.schemaButtonTextHeight);
         }
         return holder;
-        */
-        return HiddenSchemaElement.makeHiddenElementIpcress();
     }
 
     private int getRelevantElementId(RubyIO targetValue) {
@@ -84,20 +77,6 @@ public class TypeChangerSchemaElement extends SchemaElement {
             tp = null;
         return tp;
     }
-
-    /*IPCRESS
-    private void initializeHoldingPanel(UIPublicPanel innerHoldingPanel, RubyIO targetValue, ISchemaHost l, SchemaPath path) {
-        int rei = getRelevantElementId(targetValue);
-        SchemaElement targetS = new OpaqueSchemaElement();
-        if (rei != -1)
-            targetS = targets[rei];
-        Rect b = innerHoldingPanel.getBounds();
-        innerHoldingPanel.clearElements();
-        UIElement uie = targetS.buildHoldingEditor(targetValue, l, path);
-        uie.setBounds(new Rect(0, 0, b.width, b.height));
-        innerHoldingPanel.addElement(uie);
-        innerHoldingPanel.setBounds(new Rect(0, 0, b.width, b.height));
-    }*/
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {

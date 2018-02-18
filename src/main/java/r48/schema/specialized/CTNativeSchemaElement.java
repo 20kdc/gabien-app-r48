@@ -40,8 +40,7 @@ public class CTNativeSchemaElement extends SchemaElement {
     }
 
     private void addField(UIScrollLayout uiSVL, String r, final int i, final RubyCT targ, final SchemaPath sp) {
-        final UINumberBox uinb = new UINumberBox(FontSizes.schemaFieldTextHeight);
-        uinb.number = (int) targ.innerTable.getDouble(i);
+        final UINumberBox uinb = new UINumberBox((long) targ.innerTable.getDouble(i), FontSizes.schemaFieldTextHeight);
         uinb.onEdit = new Runnable() {
             @Override
             public void run() {

@@ -44,7 +44,7 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
         }
         uiSVL.panelsAdd(new UISplitterLayout(controlButtons[0], controlButtons[1], false, 1, 2));
         uiSVL.panelsAdd(new UISplitterLayout(controlButtons[2], controlButtons[3], false, 1, 2));
-        uiSVL.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Region:"), FontSizes.tableElementTextHeight), regionId = new UINumberBox(FontSizes.tableElementTextHeight), false, 1, 2));
+        uiSVL.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Region:"), FontSizes.tableElementTextHeight), regionId = new UINumberBox(0, FontSizes.tableElementTextHeight), false, 1, 2));
         changeInner(uiSVL, true);
     }
 

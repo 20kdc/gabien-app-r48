@@ -23,8 +23,7 @@ public class DefaultTableCellEditor implements ITableCellEditor {
         final RubyTable targ = new RubyTable(targV.userVal);
         final UINumberBox[] boxes = new UINumberBox[targ.planeCount];
         for (int i = 0; i < boxes.length; i++) {
-            boxes[i] = new UINumberBox(FontSizes.tableElementTextHeight);
-            boxes[i].number = targ.getTiletype(0, 0, i);
+            boxes[i] = new UINumberBox(targ.getTiletype(0, 0, i), FontSizes.tableElementTextHeight);
             boxes[i].onEdit = createOnEdit(targ, changeOccurred, 0, 0, i, boxes[i]);
             panel.panelsAdd(boxes[i]);
         }

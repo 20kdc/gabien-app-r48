@@ -9,6 +9,7 @@ package r48.dbs;
 
 import gabien.ui.IFunction;
 import gabien.ui.UIElement;
+import gabien.ui.UIScrollLayout;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
@@ -131,14 +132,14 @@ public class RPGCommand {
         public int spritesheetTargstr;
         public int tpBase;
 
-        public void applyTo(int idx, LinkedList<UIElement> elementList, RubyIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
+        public void applyTo(int idx, UIScrollLayout elementList, RubyIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
             if (hasSpritesheet) {
                 SchemaElement scse = AppMain.schemas.helpers.makeSpriteSelector("]" + idx, "]" + spritesheetTargstr, spritesheetId);
-                elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
+                elementList.panelsAdd(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
             if (hasTonepicker) {
                 SchemaElement scse = new TonePickerSchemaElement("]" + tpA, "]" + tpB, "]" + tpC, "]" + tpD, tpBase);
-                elementList.add(scse.buildHoldingEditor(targetParamArray, launcher, path));
+                elementList.panelsAdd(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
         }
     }

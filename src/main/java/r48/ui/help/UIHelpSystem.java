@@ -13,6 +13,7 @@ import gabien.ui.*;
 import r48.FontSizes;
 
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Helping things along where needed.
@@ -40,16 +41,26 @@ public class UIHelpSystem extends UIElement.UIPanel {
     // The thing about the UI rewrite for this,
     //  is that gabien now has a system that splits labels.
     // The trouble is, it doesn't account for the *image* factor.
-    private UIElement[] handleThing(char c, String[] args, int availableWidth) {
+    private UIElement[] handleThing(char c, String[] args, int availableWidth, AtomicInteger writeOriginalEstimate, int originalEstimateBoost) {
         if (c == '.') {
             String t = "";
             LinkedList<UIElement> results = new LinkedList<UIElement>();
             int textHeight = FontSizes.helpParagraphStartHeight;
-            UILabel working = new UILabel("", FontSizes.helpParagraphStartHeight);
+            // for original estimate
+            StringBuilder sbt = new StringBuilder();
+            for (String s : args) {
+                sbt.append(s);
+                sbt.append(' ');
+            }
+            UILabel working = new UILabel(sbt.toString(), FontSizes.helpParagraphStartHeight);
+            writeOriginalEstimate.set(Math.max(writeOriginalEstimate.get(), working.getWantedSize().width + originalEstimateBoost));
+            // original estimate done, get back to work
+            working.text = "";
             for (String s : args) {
                 String rt = t + s + " ";
                 if (UILabel.getRecommendedTextSize(rt, textHeight).width > availableWidth) {
                     working.text = t;
+                    working.runLayout();
                     results.add(working);
                     textHeight = FontSizes.helpTextHeight;
                     working = new UILabel("", FontSizes.helpTextHeight);
@@ -58,6 +69,7 @@ public class UIHelpSystem extends UIElement.UIPanel {
                 t = rt;
             }
             working.text = t;
+            working.runLayout();
             results.add(working);
             return results.toArray(new UIElement[0]);
         }
@@ -72,12 +84,14 @@ public class UIHelpSystem extends UIElement.UIPanel {
                 }
             }
             final int index = Integer.parseInt(args[0]);
-            return new UIElement[] {new UITextButton(t, FontSizes.helpLinkHeight, new Runnable() {
+            UITextButton button = new UITextButton(t, FontSizes.helpLinkHeight, new Runnable() {
                 @Override
                 public void run() {
                     onLinkClick.accept(index);
                 }
-            })};
+            });
+            writeOriginalEstimate.set(Math.max(writeOriginalEstimate.get(), button.getWantedSize().width + originalEstimateBoost));
+            return new UIElement[] {button};
         }
         // I'm running analysis tools just for the sake of it. It's complaining about this returning null. (This made sense at the time.)
         // Then again, it also complained that UIMapView's update & render was too complicated.
@@ -110,6 +124,8 @@ public class UIHelpSystem extends UIElement.UIPanel {
         int imgSize = 0;
         int imgEndY = 0;
 
+        AtomicInteger recommendedW = new AtomicInteger(0);
+
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
 
@@ -118,7 +134,7 @@ public class UIHelpSystem extends UIElement.UIPanel {
                 imgSize = 0;
             if ((hc.c == '.') || (hc.c == '>')) {
                 int vlen = rect.width - imgSize;
-                for (UIElement uil : handleThing(hc.c, hc.args, vlen)) {
+                for (UIElement uil : handleThing(hc.c, hc.args, vlen, recommendedW, imgSize)) {
                     int eh = uil.getWantedSize().height;
                     uil.setForcedBounds(null, new Rect(0, y, vlen, eh));
                     eh = uil.getWantedSize().height;
@@ -171,11 +187,12 @@ public class UIHelpSystem extends UIElement.UIPanel {
                 uie.imageSH = sh;
                 uie.setForcedBounds(null, bounds);
                 layoutAddElement(uie);
+                recommendedW.set(Math.max(recommendedW.get(), imgSize));
             }
             if (hc.c == 'p')
                 y += FontSizes.scaleGuess(Integer.parseInt(hc.args[0]));
         }
-        setWantedSize(new Size(rect.width, Math.max(imgEndY, y)));
+        setWantedSize(new Size(recommendedW.get(), Math.max(imgEndY, y)));
     }
 
     public static class HelpElement {

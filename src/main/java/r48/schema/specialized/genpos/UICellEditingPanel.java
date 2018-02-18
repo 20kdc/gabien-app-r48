@@ -10,6 +10,7 @@ package r48.schema.specialized.genpos;
 import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.FontSizes;
+import r48.schema.HiddenSchemaElement;
 import r48.schema.util.SchemaPath;
 
 import java.util.Collections;
@@ -33,29 +34,18 @@ public class UICellEditingPanel extends UIElement.UIPanel {
         String[] properties = root.frame.getCellProps();
         // Filled in here
         halfsplits = new UISplitterLayout[properties.length];
-        //setBounds(new Rect(0, 0, 32, recreateHalfSplits()));
+        recreateHalfSplits();
+        setForcedBounds(null, new Rect(getWantedSize()));
     }
 
-    /*IPCRESS
-    private int recreateHalfSplits() {
+    private void recreateHalfSplits() {
+        for (UIElement uie : layoutGetElements())
+            layoutRemoveElement(uie);
         String[] properties = root.frame.getCellProps();
-        int h = 0;
         for (int i = 0; i < halfsplits.length; i++) {
             UIElement ed = createPropertyEditor(i);
             halfsplits[i] = new UISplitterLayout(new UILabel(properties[i], FontSizes.schemaFieldTextHeight), ed, false, 3, 5);
-            h += halfsplits[i].getBounds().height;
-        }
-        return h;
-    }
-
-    @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        int p = 0;
-        for (int i = 0; i < halfsplits.length; i++) {
-            int h = halfsplits[i].getBounds().height;
-            halfsplits[i].setBounds(new Rect(0, p, r.width, h));
-            p += h;
+            layoutAddElement(halfsplits[i]);
         }
     }
 
@@ -65,27 +55,17 @@ public class UICellEditingPanel extends UIElement.UIPanel {
             // Used to have to 'correct host' here, but host's very existence was bad for window cloning and also totally unnecessary
             return sp.editor.buildHoldingEditor(sp.targetElement, root.hostLauncher, sp);
         }
-        UIPanel panel = new UIPanel();
-        panel.setBounds(new Rect(0, 0, 0, 0));
-        return panel;
+        return HiddenSchemaElement.makeHiddenElement();
     }
 
     public void somethingChanged() {
-        allElements.clear();
-        int cell = cellSelectionPanel.cellNumber;
-        if (cell != -1) {
-            recreateHalfSplits();
-            setBounds(getBounds());
-            Collections.addAll(allElements, halfsplits);
-        }
-    }*/
-
-    public void somethingChanged() {
-
+        recreateHalfSplits();
+        runLayout();
     }
 
     @Override
     public void update(double deltaTime) {
+        super.update(deltaTime);
         int n = cellSelectionPanel.cellChangeNotificationNumber;
         if (lastCCN != n) {
             lastCCN = n;
@@ -95,6 +75,15 @@ public class UICellEditingPanel extends UIElement.UIPanel {
 
     @Override
     public void runLayout() {
-
+        int w = 0;
+        int h = 0;
+        Size r = getSize();
+        for (int i = 0; i < halfsplits.length; i++) {
+            Size ws = halfsplits[i].getWantedSize();
+            halfsplits[i].setForcedBounds(this, new Rect(0, h, r.width, ws.height));
+            w = Math.max(w, ws.width);
+            h += ws.height;
+        }
+        setWantedSize(new Size(w, h));
     }
 }

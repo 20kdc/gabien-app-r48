@@ -27,8 +27,7 @@ public class IntegerSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UINumberBox unb = new UINumberBox(FontSizes.schemaFieldTextHeight);
-        unb.number = target.fixnumVal;
+        final UINumberBox unb = new UINumberBox(target.fixnumVal, FontSizes.schemaFieldTextHeight);
         unb.readOnly = isReadOnly();
         unb.onEdit = new Runnable() {
             @Override

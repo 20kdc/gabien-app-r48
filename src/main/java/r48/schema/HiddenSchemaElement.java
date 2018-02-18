@@ -50,10 +50,6 @@ public class HiddenSchemaElement extends SchemaElement implements IProxySchemaEl
         };
     }
 
-    public static UIElement makeHiddenElementIpcress() {
-        return makeHiddenElement();
-    }
-
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         content.modifyVal(target, path, setDefault);

@@ -34,8 +34,7 @@ public class UISpritesheetChoice extends UIElement.UIProxy {
                 consumer.accept(provider.mapIdxToVal(spriteGrid.getSelected()));
             }
         };
-        final UINumberBox nb = new UINumberBox(FontSizes.dialogWindowTextHeight);
-        nb.number = oldVal;
+        final UINumberBox nb = new UINumberBox(oldVal, FontSizes.dialogWindowTextHeight);
         UISplitterLayout msp = new UISplitterLayout(nb, new UITextButton(TXDB.get("Sprite Num."), FontSizes.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {

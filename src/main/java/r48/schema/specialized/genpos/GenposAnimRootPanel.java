@@ -35,7 +35,7 @@ public class GenposAnimRootPanel extends UIElement.UIProxy {
         framePanelController = new GenposFramePanelController(target.getFrameDisplay(), launcher);
         timeframe = new UITimeframeControl(this, recommendedFramerate);
 
-        proxySetElement(new UISplitterLayout(timeframe, framePanelController.rootLayout, true, 1), true);
+        proxySetElement(new UISplitterLayout(timeframe, framePanelController.rootLayout, true, 0), true);
 
         frameChanged();
     }
