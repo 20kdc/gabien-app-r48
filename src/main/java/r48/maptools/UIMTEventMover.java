@@ -27,7 +27,7 @@ public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
         super(mv);
         mapView = mv.getMapView();
         targetEvent = evI;
-        changeInner(new UILabel(TXDB.get("Click to place event"), FontSizes.dialogWindowTextHeight));
+        changeInner(new UILabel(TXDB.get("Click to place event"), FontSizes.dialogWindowTextHeight), true);
     }
 
     // tool stuff

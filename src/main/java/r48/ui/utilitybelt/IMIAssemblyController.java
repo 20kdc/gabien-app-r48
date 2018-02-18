@@ -19,6 +19,7 @@ import r48.ui.UIAppendButton;
 
 import java.io.*;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Responsible for assembling an IMI patchfile.
@@ -39,24 +40,6 @@ public class IMIAssemblyController {
             }
         });
         fileList = new UIScrollLayout(true, FontSizes.generalScrollersize);
-        final UIMTBase base = new UIMTBase(null) {
-            boolean didChangeInner = false;
-
-            @Override
-            public void runLayout() {
-                if (!didChangeInner) {
-                    didChangeInner = true;
-                    changeInner(outerSplit);
-                }
-                super.runLayout();
-            }
-
-            @Override
-            public void handleRootDisconnect() {
-                super.handleRootDisconnect();
-                assembler.windowLost();
-            }
-        };
         UITextButton bAA = new UITextButton(FontSizes.imiAsmButtonsTextHeight, TXDB.get("Add Asset"), new Runnable() {
             @Override
             public void run() {
@@ -116,6 +99,7 @@ public class IMIAssemblyController {
             }
         });
         UISplitterLayout toolbar = new UISplitterLayout(bAA, bSM, false, 0.5d);
+        final AtomicBoolean baseCloser = new AtomicBoolean(false);
         UIAppendButton appender = new UIAppendButton(TXDB.get("Finish"), toolbar, new Runnable() {
             @Override
             public void run() {
@@ -126,7 +110,7 @@ public class IMIAssemblyController {
                 } else {
                     // IMI assembler ready
                     assembler.injectFiles(files);
-                    base.selfClose = true;
+                    baseCloser.set(true);
                 }
             }
         }, FontSizes.imiAsmButtonsTextHeight);
@@ -139,8 +123,12 @@ public class IMIAssemblyController {
                 return base;
             }
         };
-
-        base.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(400), FontSizes.scaleGuess(300)));
+        final UIMTBase base = UIMTBase.wrapWithCloseCallback(null, outerSplit, baseCloser, new Runnable() {
+            @Override
+            public void run() {
+                assembler.windowLost();
+            }
+        });
         importSavedManifest();
         rebuildFL();
         wm.accept(base);

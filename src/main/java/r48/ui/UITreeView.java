@@ -83,6 +83,7 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
 
     @Override
     public void render(boolean select, IPeripherals peripherals, IGrDriver igd) {
+        super.render(select, peripherals, igd);
         if (peripherals instanceof IDesktopPeripherals) {
             mouseEmulator.mouseX = ((IDesktopPeripherals) peripherals).getMouseX();
             mouseEmulator.mouseY = ((IDesktopPeripherals) peripherals).getMouseY();
@@ -132,16 +133,19 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
 
     @Override
     public void handlePointerBegin(IPointer state) {
+        super.handlePointerBegin(state);
         mouseEmulator.handlePointerBegin(state);
     }
 
     @Override
     public void handlePointerUpdate(IPointer state) {
+        super.handlePointerUpdate(state);
         mouseEmulator.handlePointerUpdate(state);
     }
 
     @Override
     public void handlePointerEnd(IPointer state) {
+        super.handlePointerEnd(state);
         mouseEmulator.handlePointerEnd(state);
     }
 

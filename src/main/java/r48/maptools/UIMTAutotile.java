@@ -41,7 +41,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     public UIMTAutotile(IMapToolContext mv, UIMTAutotile last) {
         super(mv);
         map = mv.getMapView();
-        int scale = setupView();
+        int scale = setupView(true);
         // Properly set the tab pane into gear, then see if it's still having issues displaying tabs.
         // If so, give it as much extra space as possible without messing with the tile-count-width.
         tabPane.handleIncoming();
@@ -61,7 +61,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         }
     }
 
-    private int setupView() {
+    private int setupView(boolean inConstructor) {
         // Logic here:
         // UIMTAutotile's tools really don't work well as symbols, so that's been abandoned,
         //  but the current text squeeze is bad.
@@ -118,7 +118,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
 
         subtoolBar = uab;
 
-        changeInner(new UINSVertLayout(subtoolBar, tabPane));
+        changeInner(new UINSVertLayout(subtoolBar, tabPane), false);
         return resultScale;
     }
 

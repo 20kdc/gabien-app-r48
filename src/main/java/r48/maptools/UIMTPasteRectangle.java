@@ -27,7 +27,7 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
 
     public UIMTPasteRectangle(IMapToolContext par, RubyTable clipboard) {
         super(par);
-        changeInner(innerLabel);
+        changeInner(innerLabel, true);
         table = clipboard;
     }
 

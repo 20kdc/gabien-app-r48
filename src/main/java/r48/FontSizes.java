@@ -10,6 +10,7 @@ package r48;
 import gabien.FontManager;
 import gabien.ui.IConsumer;
 import gabien.ui.ISupplier;
+import gabien.ui.UIBorderedElement;
 import gabienapp.Application;
 import r48.dbs.TXDB;
 
@@ -167,6 +168,7 @@ public class FontSizes {
             prepare.addIVar("@sysfont", new RubyIO().setString(FontManager.fontOverride, true));
             prepare.addIVar("@sysfont_ue8", new RubyIO().setBool(FontManager.fontOverrideUE8));
         }
+        prepare.addIVar("@theme_variant", new RubyIO().setFX(UIBorderedElement.borderTheme));
         AdHocSaveLoad.save("fonts", prepare);
     }
 
@@ -194,6 +196,9 @@ public class FontSizes {
             RubyIO sys4 = dat.getInstVarBySymbol("@saved_rootpath");
             if (sys4 != null)
                 Application.rootPathBackup = sys4.decString();
+            RubyIO sys5 = dat.getInstVarBySymbol("@theme_variant");
+            if (sys5 != null)
+                UIBorderedElement.borderTheme = (int) sys5.fixnumVal;
             return true;
         }
         return false;

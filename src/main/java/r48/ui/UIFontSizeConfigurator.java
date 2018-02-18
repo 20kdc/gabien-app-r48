@@ -11,6 +11,8 @@ import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.ui.*;
 import r48.FontSizes;
+import r48.RubyIO;
+import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 
 import java.util.LinkedList;
@@ -24,17 +26,18 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
 
     public UIFontSizeConfigurator() {
         outerLayout = new UIScrollLayout(true, FontSizes.generalScrollersize);
-        refreshLayout();
+        refreshLayout(true);
         proxySetElement(outerLayout, false);
         setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(320), FontSizes.scaleGuess(240)));
     }
 
-    public void refreshLayout() {
+    public void refreshLayout(boolean force) {
         double iniScroll = 0;
         if (outerLayout != null)
             iniScroll = outerLayout.scrollbar.scrollPoint;
-        if (lastFontSizerSize == FontSizes.fontSizerTextHeight)
-            return;
+        if (!force)
+            if (lastFontSizerSize == FontSizes.fontSizerTextHeight)
+                return;
         lastFontSizerSize = FontSizes.fontSizerTextHeight;
         outerLayout.panelsClear();
         outerLayout.scrollbar.scrollPoint = iniScroll;
@@ -45,14 +48,14 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
             public void run() {
                 for (Runnable r : doubleAll)
                     r.run();
-                refreshLayout();
+                refreshLayout(false);
             }
         }), new UITextButton(FontSizes.fontSizerTextHeight, "/2", new Runnable() {
             @Override
             public void run() {
                 for (Runnable r : halfAll)
                     r.run();
-                refreshLayout();
+                refreshLayout(false);
             }
         }), false, 1, 2));
         outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(FontSizes.fontSizerTextHeight, TXDB.get("Save"), new Runnable() {
@@ -64,7 +67,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
             @Override
             public void run() {
                 FontSizes.load();
-                refreshLayout();
+                refreshLayout(true);
             }
         }), false, 1, 2));
         UITextButton fontButton = new UITextButton(FontSizes.fontSizerTextHeight, "", new Runnable() {
@@ -102,6 +105,14 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
             }
         };
         outerLayout.panelsAdd(fontButtonAppend);
+        outerLayout.panelsAdd(new UITextButton(FormatSyntax.formatExtended(TXDB.get("Theme: #A"), new RubyIO().setFX(UIBorderedElement.borderTheme)), FontSizes.fontSizerTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                UIBorderedElement.borderTheme++;
+                UIBorderedElement.borderTheme %= UIBorderedElement.BORDER_THEMES;
+                refreshLayout(true);
+            }
+        }));
         try {
             for (final FontSizes.FontSizeField field : FontSizes.getFields()) {
                 doubleAll.add(new Runnable() {
@@ -121,7 +132,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                     public String get() {
                         int nv = field.get() + 1;
                         field.accept(nv);
-                        refreshLayout();
+                        refreshLayout(false);
                         return Integer.toString(nv);
                     }
                 }, new ISupplier<String>() {
@@ -131,7 +142,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                         if (nv < 1)
                             nv = 1;
                         field.accept(nv);
-                        refreshLayout();
+                        refreshLayout(false);
                         return Integer.toString(nv);
                     }
                 });

@@ -33,7 +33,13 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public UIMTEventPicker(IMapToolContext mv) {
         super(mv);
         mapView = mv.getMapView();
-        changeInner(svl);
+        svl.panelsAdd(new UILabel(TXDB.get("Click on a target to show the events."), FontSizes.eventPickerEntryTextHeight) {
+            @Override
+            public void setWantedSize(Size size) {
+                super.setWantedSize(new Size(size.width, size.height * 8));
+            }
+        });
+        changeInner(svl, true);
     }
 
     // -- Tool things --
@@ -178,7 +184,6 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                 }
             }));
         }
-        svl.runLayout();
     }
 
     @Override

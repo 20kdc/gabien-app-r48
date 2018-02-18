@@ -97,6 +97,9 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
         }
     }, FontSizes.schemaPathTextHeight);
 
+    // Used so this doesn't require too much changes when moved about
+    public UIElement toolbarRoot = toolbarC;
+
     private IConsumer<SchemaPath> nudgeRunnable = new IConsumer<SchemaPath>() {
         @Override
         public void accept(SchemaPath sp) {
@@ -111,6 +114,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     public SchemaHostImpl(IConsumer<UIElement> rootElem, UIMapView rendererSource) {
         hostWindows = rootElem;
         contextView = rendererSource;
+        layoutAddElement(toolbarRoot);
         // Why is this scaled by main window size? Answer: Because the alternative is occasional Android version glitches.
         Rect r = new Rect(0, 0, AppMain.mainWindowWidth / 2, (AppMain.mainWindowHeight / 3) * 2);
         setForcedBounds(null, r);
@@ -134,16 +138,31 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
 
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
-        layoutAddElement(toolbarC);
+        layoutAddElement(toolbarRoot);
         layoutAddElement(innerElemEditor);
 
         pathLabel.text = innerElem.toStringMissingRoot();
+
+        runLayout();
 
         if (doLaunch) {
             windowOpen = true;
             hostWindows.accept(this);
             AppMain.schemaHostImplRegister(this);
         }
+    }
+
+    @Override
+    public void runLayout() {
+        Size tb = toolbarRoot.getWantedSize();
+        Size r = getSize();
+        toolbarRoot.setForcedBounds(this, new Rect(0, 0, r.width, tb.height));
+        Size iee = tb;
+        if (innerElemEditor != null) {
+            iee = innerElemEditor.getWantedSize();
+            innerElemEditor.setForcedBounds(this, new Rect(0, tb.height, r.width, r.height - tb.height));
+        }
+        setWantedSize(new Size(Math.max(tb.width, iee.width), tb.height + iee.height));
     }
 
     @Override
@@ -201,10 +220,5 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
             innerElem = null;
             innerElemEditor = null;
         }
-    }
-
-    @Override
-    public void runLayout() {
-
     }
 }

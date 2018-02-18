@@ -65,7 +65,7 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
         public UIMTAreaTool() {
             super(R2kAreaEditingToolbarController.this.mapToolContext);
             label = new UILabel(textA, FontSizes.dialogWindowTextHeight);
-            changeInner(label);
+            changeInner(label, true);
         }
 
         public int firstPointX, firstPointY;

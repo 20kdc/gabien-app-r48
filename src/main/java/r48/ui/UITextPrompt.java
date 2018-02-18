@@ -15,41 +15,25 @@ import r48.dbs.TXDB;
  * Created on 12/31/16.
  */
 public class UITextPrompt extends UIElement.UIProxy {
-    public UITextPrompt(final String s, final IConsumer<String> iConsumer) {
-        proxySetElement(new UILabel("IPCRESS" ,16), true);
-    }
-    /*IPCRESS
+
     public UITextBox utb = new UITextBox(FontSizes.textDialogFieldTextHeight);
     public UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
     public boolean wantClose = false;
 
     public UITextPrompt(final String s, final IConsumer<String> iConsumer) {
-        allElements.add(uiSVL);
-        uiSVL.panels.add(new UILabel(s, FontSizes.textDialogDescTextHeight));
-        uiSVL.panels.add(new UISplitterLayout(utb, new UITextButton(FontSizes.textDialogFieldTextHeight, TXDB.get("OK"), new Runnable() {
+        uiSVL.panelsAdd(new UILabel(s, FontSizes.textDialogDescTextHeight));
+        uiSVL.panelsAdd(new UISplitterLayout(utb, new UITextButton(FontSizes.textDialogFieldTextHeight, TXDB.get("OK"), new Runnable() {
             @Override
             public void run() {
                 iConsumer.accept(utb.text);
                 wantClose = true;
             }
         }), false, 4, 5));
-        uiSVL.runLayout();
-        setBounds(new Rect(0, 0, FontSizes.scaleGuess(320), uiSVL.scrollLength));
+        proxySetElement(uiSVL, true);
     }
 
     @Override
-    public void setBounds(Rect r) {
-        super.setBounds(r);
-        uiSVL.setBounds(new Rect(0, 0, r.width, r.height));
-    }
-
-    @Override
-    public boolean wantsSelfClose() {
+    public boolean requestsUnparenting() {
         return wantClose;
     }
-
-    @Override
-    public void windowClosed() {
-
-    }*/
 }

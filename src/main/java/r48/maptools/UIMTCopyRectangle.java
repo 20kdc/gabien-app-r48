@@ -39,7 +39,7 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
 
     public UIMTCopyRectangle(IMapToolContext par) {
         super(par);
-        changeInner(inner);
+        changeInner(inner, true);
     }
 
     @Override

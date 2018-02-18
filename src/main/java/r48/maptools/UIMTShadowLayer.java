@@ -29,7 +29,6 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
         super(mv);
         map = mv.getMapView();
         UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
-        changeInner(uiSVL);
         String[] s = new String[] {TXDB.get("Up-Left"), TXDB.get("Up-Right"), TXDB.get("Down-Left"), TXDB.get("Down-Right")};
         UITextButton[] controlButtons = new UITextButton[4];
         int power = 1;
@@ -46,6 +45,7 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
         uiSVL.panelsAdd(new UISplitterLayout(controlButtons[0], controlButtons[1], false, 1, 2));
         uiSVL.panelsAdd(new UISplitterLayout(controlButtons[2], controlButtons[3], false, 1, 2));
         uiSVL.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Region:"), FontSizes.tableElementTextHeight), regionId = new UINumberBox(FontSizes.tableElementTextHeight), false, 1, 2));
+        changeInner(uiSVL, true);
     }
 
     @Override

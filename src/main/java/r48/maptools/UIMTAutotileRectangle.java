@@ -36,7 +36,7 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
 
     public UIMTAutotileRectangle(UIMTAutotile par, int x, int y, boolean at) {
         super(par.mapToolContext);
-        changeInner(innerLabel);
+        changeInner(innerLabel, true);
         parent = par;
         startX = x;
         startY = y;

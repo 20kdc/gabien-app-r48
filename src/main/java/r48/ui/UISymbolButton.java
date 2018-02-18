@@ -44,8 +44,7 @@ public class UISymbolButton extends UIButton {
     }
 
     @Override
-    public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
-        super.render(selected, peripherals, igd);
+    public void renderContents(boolean selected, IPeripherals peripherals, IGrDriver igd) {
         int bw = getBorderWidth();
         Art.drawSymbol(igd, symbol, bw, bw, getSize().height - (bw * 2), false);
     }

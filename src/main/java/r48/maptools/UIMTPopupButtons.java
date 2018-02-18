@@ -88,7 +88,7 @@ public class UIMTPopupButtons extends UIMTBase {
                     }
                 }
         }, FontSizes.dialogWindowTextHeight, FontSizes.menuScrollersize, true);
-        changeInner(u);
+        changeInner(u, true);
     }
 
     private static class UIMTMapResizer extends UIMTBase {
@@ -126,7 +126,7 @@ public class UIMTPopupButtons extends UIMTBase {
                     view.passModificationNotification();
                 }
             }), true, 0);
-            changeInner(root);
+            changeInner(root, true);
         }
     }
 }

@@ -8,8 +8,11 @@
 package r48.maptools;
 
 import gabien.ui.Rect;
+import gabien.ui.Size;
 import gabien.ui.UIElement;
 import r48.map.IMapToolContext;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Was used for many things that it shouldn't have been. Now, not so much.
@@ -27,13 +30,20 @@ public class UIMTBase extends UIElement.UIPanel {
         mapToolContext = mtc;
     }
 
-    protected void changeInner(UIElement inner) {
+    protected void changeInner(UIElement inner, boolean inConstructor) {
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
+        if (innerElem != null)
+            if (inConstructor)
+                throw new RuntimeException("Stop it! >.<");
         innerElem = inner;
         if (inner != null) {
             layoutAddElement(inner);
             runLayout();
+        }
+        if (inConstructor) {
+            // if you're lying about this... >.<
+            setForcedBounds(null, new Rect(inner.getWantedSize()));
         }
     }
 
@@ -65,7 +75,24 @@ public class UIMTBase extends UIElement.UIPanel {
 
     public static UIMTBase wrap(IMapToolContext mtc, UIElement svl) {
         UIMTBase r = new UIMTBase(mtc);
-        r.changeInner(svl);
+        r.changeInner(svl, true);
+        return r;
+    }
+
+    public static UIMTBase wrapWithCloseCallback(IMapToolContext mtc, UIElement svl, final AtomicBoolean baseCloser, final Runnable cc) {
+        UIMTBase r = new UIMTBase(mtc) {
+            @Override
+            public boolean requestsUnparenting() {
+                return baseCloser.get();
+            }
+
+            @Override
+            public void handleRootDisconnect() {
+                super.handleRootDisconnect();
+                cc.run();
+            }
+        };
+        r.changeInner(svl, true);
         return r;
     }
 }
