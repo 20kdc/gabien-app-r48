@@ -8,6 +8,7 @@
 package r48;
 
 import gabien.FontManager;
+import gabien.GaBIEn;
 import gabien.ui.IConsumer;
 import gabien.ui.ISupplier;
 import gabien.ui.UIBorderedElement;
@@ -172,7 +173,7 @@ public class FontSizes {
         AdHocSaveLoad.save("fonts", prepare);
     }
 
-    public static boolean load() {
+    public static boolean load(boolean first) {
         // NOTE: Use internal string methods here, this is a game-independent file
         RubyIO dat = AdHocSaveLoad.load("fonts");
         if (dat != null) {
@@ -200,6 +201,8 @@ public class FontSizes {
             if (sys5 != null)
                 UIBorderedElement.borderTheme = (int) sys5.fixnumVal;
             return true;
+        } else if (first) {
+            FontManager.fontOverride = GaBIEn.getFontOverrides()[0];
         }
         return false;
     }

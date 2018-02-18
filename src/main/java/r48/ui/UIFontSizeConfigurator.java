@@ -66,7 +66,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         }), new UITextButton(TXDB.get("Load"), FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
-                FontSizes.load();
+                FontSizes.load(false);
                 refreshLayout(true);
             }
         }), false, 1, 2));

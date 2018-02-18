@@ -214,7 +214,7 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
         Rect dragRect = Art.getZIconRect(false, 2);
 
         int textX = plusRectFull.x + plusRectFull.width;
-        int textW = camR.width - (textX + ((plusRectFull.width - plusRect.width) / 2));
+        int textW = getSize().width - (textX + ((plusRectFull.width - plusRect.width) / 2));
         statusLine.draw(status, FontSizes.mapPositionTextHeight, igd, textX, plusRect.y, textW);
 
         Art.drawZoom(igd, true, plusRect.x, plusRect.y, plusRect.height);

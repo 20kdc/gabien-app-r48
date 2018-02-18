@@ -69,8 +69,8 @@ public class Application {
         if (mobileExtremelySpecialBehavior)
             rootPathBackup = "easyrpg/games/R48 Game";
 
-        // This must happen after waiting for the UILabel font override stuff
-        boolean fontsLoaded = FontSizes.load();
+        // The 'true' here is so that it will load in "late" defaults (fontOverride)
+        boolean fontsLoaded = FontSizes.load(true);
         if (!fontsLoaded)
             if (GaBIEn.singleWindowApp()) // SWA always means we need to adapt to local screen size, and should generally cut down as many usability issues as possible
                 autoDetectCorrectUISizeOnSWA(splashSize.width, splashSize.height);
