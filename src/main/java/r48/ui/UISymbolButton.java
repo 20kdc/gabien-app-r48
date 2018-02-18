@@ -21,11 +21,6 @@ import gabien.ui.UIButton;
 public class UISymbolButton extends UIButton {
     public Art.Symbol symbol;
 
-    @Deprecated
-    public UISymbolButton(int fontSize, Art.Symbol symbolIndex, Runnable runnable) {
-        this(symbolIndex, fontSize, runnable);
-    }
-
     public UISymbolButton(Art.Symbol symbolIndex, int fontSize, Runnable runnable) {
         super(getRecommendedBorderWidth(fontSize));
         int margin = fontSize / 8;
@@ -44,8 +39,8 @@ public class UISymbolButton extends UIButton {
     }
 
     @Override
-    public void renderContents(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+    public void renderContents(boolean selected, boolean textBlack, IPeripherals peripherals, IGrDriver igd) {
         int bw = getBorderWidth();
-        Art.drawSymbol(igd, symbol, bw, bw, getSize().height - (bw * 2), false);
+        Art.drawSymbol(igd, symbol, bw, bw, getSize().height - (bw * 2), false, textBlack);
     }
 }

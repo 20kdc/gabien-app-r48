@@ -182,7 +182,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             group[group.length - 1] = new SchemaElement() {
                 @Override
                 public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-                    return new UITextButton(FontSizes.schemaButtonTextHeight, addText, new Runnable() {
+                    return new UITextButton(addText, FontSizes.schemaButtonTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             RubyIO commandTarg = target.arrVal[start];

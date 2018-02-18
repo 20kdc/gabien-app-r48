@@ -23,7 +23,7 @@ public class MapToolset implements IToolset {
     private IMapContext context;
     private final UIElement[] tabs;
 
-    public MapToolset(final ISupplier<IConsumer<UIElement>> windowMaker) {
+    public MapToolset(final IConsumer<UIElement> windowMaker) {
         final UIMapViewContainer mapBox = new UIMapViewContainer(windowMaker);
         context = new IMapContext() {
             @Override
@@ -76,7 +76,7 @@ public class MapToolset implements IToolset {
     }
 
     @Override
-    public UIElement[] generateTabs(final ISupplier<IConsumer<UIElement>> windowMaker) {
+    public UIElement[] generateTabs(final IConsumer<UIElement> windowMaker) {
         return tabs;
     }
 

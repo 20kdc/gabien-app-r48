@@ -5,16 +5,16 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.toolsets;
-
-import gabien.ui.IConsumer;
-import gabien.ui.ISupplier;
-import gabien.ui.UIElement;
+package r48.ui;
 
 /**
- * Hopefully will allow cleaning up the initial tab creation code.
- * Created on 2/12/17.
+ * Exists as a continuation of the previous IWindowElement.
+ * As it turns out, the 'root disconnection' method is somewhat unreliable.
+ * Written on February 18th, 2018
  */
-public interface IToolset {
-    UIElement[] generateTabs(IConsumer<UIElement> windowMaker);
+public interface IWindowElement {
+    // The window is absolutely, definitely being closed.
+    // Will always be called when the window is being closed,
+    //  and will only be called when the window is being closed.
+    void windowClosing();
 }

@@ -8,9 +8,6 @@
 package r48.schema.specialized;
 
 import gabien.GaBIEn;
-import gabien.IGrDriver;
-import gabien.IGrInDriver;
-import gabien.IPeripherals;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
@@ -39,7 +36,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
 
-        final UITextButton importer = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Import scripts/*.rb"), new Runnable() {
+        final UITextButton importer = new UITextButton(TXDB.get("Import scripts/*.rb"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -54,7 +51,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
             }
         });
 
-        final UITextButton exporter = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Export scripts/*.rb"), new Runnable() {
+        final UITextButton exporter = new UITextButton(TXDB.get("Export scripts/*.rb"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {

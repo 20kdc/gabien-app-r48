@@ -34,7 +34,7 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
         int power = 1;
         for (int i = 0; i < 4; i++) {
             final int thePower = power;
-            controlButtons[i] = new UITextButton(FontSizes.tableElementTextHeight, s[i], new Runnable() {
+            controlButtons[i] = new UITextButton(s[i], FontSizes.tableElementTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     flags ^= thePower;
@@ -71,7 +71,7 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
         int regionId = (map.mapTable.getTiletype(tx, ty, 3) & 0xFF00) >> 8;
         int l = FontManager.getLineLength("R" + regionId, UIMapView.mapDebugTextHeight) + 1;
         igd.clearRect(0, 0, 0, px, py, l, UIMapView.mapDebugTextHeight);
-        FontManager.drawString(igd, px, py, "R" + regionId, true, UIMapView.mapDebugTextHeight);
+        FontManager.drawString(igd, px, py, "R" + regionId, true, false, UIMapView.mapDebugTextHeight);
     }
 
     @Override

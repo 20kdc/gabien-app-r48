@@ -66,6 +66,7 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
     // Managed using finalize for now.
     private IGrDriver offscreenBuf;
     public OldMouseEmulator mouseEmulator;
+    public UILabel.StatusLine statusLine = new UILabel.StatusLine();
 
     private IConsumer<SchemaPath> listener = new IConsumer<SchemaPath>() {
         @Override
@@ -211,7 +212,11 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
         Rect plusRectFull = Art.getZIconRect(true, 0); // used for X calc on the label
         Rect minusRect = Art.getZIconRect(false, 1);
         Rect dragRect = Art.getZIconRect(false, 2);
-        UILabel.drawLabel(igd, UILabel.getRecommendedTextSize(status, FontSizes.mapPositionTextHeight).width, plusRectFull.x + plusRectFull.width, plusRect.y, status, 0, FontSizes.mapPositionTextHeight);
+
+        int textX = plusRectFull.x + plusRectFull.width;
+        int textW = camR.width - (textX + ((plusRectFull.width - plusRect.width) / 2));
+        statusLine.draw(status, FontSizes.mapPositionTextHeight, igd, textX, plusRect.y, textW);
+
         Art.drawZoom(igd, true, plusRect.x, plusRect.y, plusRect.height);
         Art.drawZoom(igd, false, minusRect.x, minusRect.y, minusRect.height);
         if (dedicatedDragControl)

@@ -37,7 +37,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
         if (mode == 3) {
-            UITextButton utb1 = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Reset Events & Version (use after map change)"), new Runnable() {
+            UITextButton utb1 = new UITextButton(TXDB.get("Reset Events & Version (use after map change)"), FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     // Before doing anything stupid...
@@ -69,7 +69,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     AppMain.launchDialog(TXDB.get("Reset events to map state and set versioning."));
                 }
             });
-            UITextButton utb2 = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Try To Get RPG_RT To Reset The Map"), new Runnable() {
+            UITextButton utb2 = new UITextButton(TXDB.get("Try To Get RPG_RT To Reset The Map"), FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     RubyIO saveEvs = target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@events");

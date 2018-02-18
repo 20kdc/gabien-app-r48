@@ -17,16 +17,14 @@ import r48.io.PathUtils;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.map.systems.*;
+import r48.maptools.UIMTBase;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.*;
-import r48.ui.Art;
-import r48.ui.Coco;
-import r48.ui.UIAppendButton;
-import r48.ui.UINSVertLayout;
+import r48.ui.*;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
 
@@ -57,7 +55,7 @@ import java.util.*;
  */
 public class AppMain {
     // Where new windows go
-    private static IConsumer<UIElement> windowMaker;
+    private static IConsumer<UIElement> trueWindowMaker, trueWindowMakerI;
 
     // Scheduled tasks
     public static HashSet<Runnable> pendingRunnables = new HashSet<Runnable>();
@@ -87,6 +85,24 @@ public class AppMain {
     private static UIWindowView rootView;
     private static IConsumer<UIElement> insertTab, insertImmortalTab;
 
+    /*
+     * For lack of a better place, this is a description of how window management works in R48.
+     * There are 3 places windows can be.
+     * They can be on the UIWindowView (rootViewWM/rootViewWMI), on the UITabPane (insertTab/insertImmortalTab),
+     *  or 'outside' (See 'new BasicToolset' below).
+     * If a window is removed it's one of:
+     *  a self-destruct, or the user closed it.
+     * For the first two places, these are handled by a callback in the host and in the close icon.
+     * For the third place, the element gets wrapped.
+     */
+    // NOTE: This is never cleaned up and does not carry baggage
+    private static IConsumer<UIElement> userWindowMaker = new IConsumer<UIElement>() {
+        @Override
+        public void accept(UIElement uiElement) {
+            trueWindowMaker.accept(uiElement);
+        }
+    };
+
     // NOTE: These two are never cleaned up and do not carry baggage
     private static IConsumer<UIElement> rootViewWM = new IConsumer<UIElement>() {
         @Override
@@ -95,17 +111,15 @@ public class AppMain {
                     new UIWindowView.IWVWindowIcon() {
                         @Override
                         public void draw(IGrDriver igd, int x, int y, int size) {
-                            Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false);
-                            if (uiElement.requestsUnparenting()) {
-                                rootView.removeByUIE(uiElement);
-                                uiElement.handleRootDisconnect();
-                            }
+                            Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
                         }
 
                         @Override
                         public void click() {
                             rootView.removeByUIE(uiElement);
-                            uiElement.handleRootDisconnect();
+                            // This will be seen as a tab transfer without explicit force
+                            if (uiElement instanceof IWindowElement)
+                                ((IWindowElement) uiElement).windowClosing();
                         }
                     },
                     new UIWindowView.IWVWindowIcon() {
@@ -219,11 +233,21 @@ public class AppMain {
                 mainWindowHeight = r.height;
                 super.render(selected, peripherals, igd);
             }
+
+            @Override
+            public void handleClosedUserWindow(WVWindow wvWindow, boolean selfDestruct) {
+                if (selfDestruct)
+                    if (wvWindow.contents instanceof IWindowElement)
+                        ((IWindowElement) wvWindow.contents).windowClosing();
+            }
         };
         rootView.windowTextHeight = FontSizes.windowFrameHeight;
         rootView.sizerSize = rootView.windowTextHeight * 2;
         rootView.sizerOfs = (rootView.windowTextHeight * 4) / 3;
-        windowMaker = rootViewWM;
+
+        trueWindowMaker = rootViewWM;
+        trueWindowMakerI = rootViewWMI;
+
         mainWindowWidth = FontSizes.scaleGuess(800);
         mainWindowHeight = FontSizes.scaleGuess(600);
         rootView.setForcedBounds(null, new Rect(0, 0, mainWindowWidth, mainWindowHeight));
@@ -310,17 +334,9 @@ public class AppMain {
     // This can only be done once now that rootView & the tab pane kind of share state.
     // For a proper UI reset, careful nuking is required.
     private static UITabPane initializeTabs(final String gamepak, final IConsumer<UIElement> uiTicker) {
-
-        ISupplier<IConsumer<UIElement>> wmg = new ISupplier<IConsumer<UIElement>>() {
-            @Override
-            public IConsumer<UIElement> get() {
-                return windowMaker;
-            }
-        };
-
         LinkedList<IToolset> toolsets = new LinkedList<IToolset>();
         if (system.enableMapSubsystem) {
-            MapToolset mapController = new MapToolset(wmg);
+            MapToolset mapController = new MapToolset(userWindowMaker);
             // Really just restricts access to prevent a hax pileup
             mapContext = mapController.getContext();
             toolsets.add(mapController);
@@ -329,15 +345,54 @@ public class AppMain {
         }
         if (system instanceof IRMMapSystem)
             toolsets.add(new RMToolsToolset(gamepak));
-        toolsets.add(new BasicToolset(rootViewWM, uiTicker, new IConsumer<IConsumer<UIElement>>() {
+        toolsets.add(new BasicToolset(new IConsumer<Boolean>() {
             @Override
-            public void accept(IConsumer<UIElement> uiElementIConsumer) {
-                windowMaker = uiElementIConsumer;
+            public void accept(Boolean aBoolean) {
+                if (aBoolean) {
+                    // Real
+                    trueWindowMaker = new IConsumer<UIElement>() {
+                        @Override
+                        public void accept(final UIElement uiElement) {
+                            injectReal(uiElement, false);
+                        }
+                    };
+                    trueWindowMakerI = new IConsumer<UIElement>() {
+                        @Override
+                        public void accept(final UIElement uiElement) {
+                            injectReal(uiElement, true);
+                        }
+                    };
+                } else {
+                    // Virtual
+                    trueWindowMaker = rootViewWM;
+                    trueWindowMakerI = rootViewWMI;
+                }
+            }
+
+            private void injectReal(final UIElement uiElement, final boolean b) {
+                uiTicker.accept(new UIElement.UIProxy(uiElement, false) {
+                    @Override
+                    public void handleRootDisconnect() {
+                        super.handleRootDisconnect();
+                        if (b) {
+                            insertImmortalTab.accept(uiElement);
+                        } else {
+                            insertTab.accept(uiElement);
+                        }
+                    }
+                });
             }
         }));
         toolsets.add(new ImageEditToolset());
 
-        final UITabPane utp = new UITabPane(FontSizes.tabTextHeight, true, true);
+        final UITabPane utp = new UITabPane(FontSizes.tabTextHeight, true, true) {
+            @Override
+            public void handleClosedUserTab(UIWindowView.WVWindow wvWindow, boolean selfDestruct) {
+                if (selfDestruct)
+                    if (wvWindow.contents instanceof IWindowElement)
+                        ((IWindowElement) wvWindow.contents).windowClosing();
+            }
+        };
         Runnable runVisFrame = new Runnable() {
             @Override
             public void run() {
@@ -366,7 +421,7 @@ public class AppMain {
                                 utp.removeTab(uiElement);
                                 Size r = rootView.getSize();
                                 uiElement.setForcedBounds(null, new Rect(0, 0, r.width / 2, r.height / 2));
-                                rootViewWMI.accept(uiElement);
+                                trueWindowMakerI.accept(uiElement);
                             }
                         }
                 }));
@@ -377,7 +432,7 @@ public class AppMain {
         UIElement firstTab = null;
         // Initialize toolsets.
         for (IToolset its : toolsets)
-            for (UIElement uie : its.generateTabs(wmg)) {
+            for (UIElement uie : its.generateTabs(userWindowMaker)) {
                 if (firstTab == null)
                     firstTab = uie;
                 insertImmortalTab.accept(uie);
@@ -390,14 +445,15 @@ public class AppMain {
                         new UIWindowView.IWVWindowIcon() {
                             @Override
                             public void draw(IGrDriver igd, int x, int y, int size) {
-                                Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false);
-                                if (uiElement.requestsUnparenting())
-                                    utp.removeTab(uiElement); // this does do root disconnect
+                                Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
                             }
 
                             @Override
                             public void click() {
                                 utp.removeTab(uiElement); // also does root disconnect
+                                // This will be seen as a tab transfer without explicit force
+                                if (uiElement instanceof IWindowElement)
+                                    ((IWindowElement) uiElement).windowClosing();
                             }
                         },
                         new UIWindowView.IWVWindowIcon() {
@@ -410,7 +466,7 @@ public class AppMain {
                             public void click() {
                                 utp.removeTab(uiElement);
                                 uiElement.setForcedBounds(null, new Rect(0, 0, mainWindowWidth / 2, mainWindowHeight / 2));
-                                rootViewWM.accept(uiElement);
+                                trueWindowMaker.accept(uiElement);
                             }
                         }
                 }));
@@ -434,7 +490,7 @@ public class AppMain {
         workspace = new UIAppendButton(TXDB.get("Clipboard"), workspace, new Runnable() {
             @Override
             public void run() {
-                windowMaker.accept(new UIAutoclosingPopupMenu(new String[] {
+                trueWindowMaker.accept(new UIAutoclosingPopupMenu(new String[] {
                         TXDB.get("Save Clipboard To 'clip.r48'"),
                         TXDB.get("Load Clipboard From 'clip.r48'"),
                         TXDB.get("Inspect Clipboard"),
@@ -469,7 +525,7 @@ public class AppMain {
                                 if (theClipboard == null) {
                                     launchDialog(TXDB.get("There is nothing in the clipboard."));
                                 } else {
-                                    windowMaker.accept(new UITest(theClipboard));
+                                    trueWindowMaker.accept(new UITest(theClipboard));
                                 }
                             }
                         },
@@ -525,7 +581,7 @@ public class AppMain {
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
     public static ISchemaHost launchSchema(String s, RubyIO rio, UIMapView context) {
         // Responsible for keeping listeners in place so nothing breaks.
-        SchemaHostImpl watcher = new SchemaHostImpl(windowMaker, context);
+        SchemaHostImpl watcher = new SchemaHostImpl(userWindowMaker, context);
         watcher.switchObject(new SchemaPath(schemas.getSDBEntry(s), rio));
         return watcher;
     }
@@ -560,7 +616,7 @@ public class AppMain {
         if (h > limit)
             h = limit;
         svl.setForcedBounds(null, new Rect(0, 0, uhs.getSize().width, h));
-        windowMaker.accept(svl);
+        trueWindowMaker.accept(svl);
     }
 
     public static void startHelp(Integer integer) {
@@ -596,7 +652,7 @@ public class AppMain {
             }
         };
         hsc.loadPage(integer);
-        windowMaker.accept(topbar);
+        trueWindowMaker.accept(topbar);
     }
 
     // R2kSystemDefaultsInstallerSchemaElement uses this to indirectly access several things a SchemaElement isn't allowed to access.
@@ -665,7 +721,7 @@ public class AppMain {
                 launchDialog(TXDB.get("2k3 template synthesis complete."));
             }
         };
-        windowMaker.accept(new UIAutoclosingPopupMenu(new String[] {
+        trueWindowMaker.accept(new UIAutoclosingPopupMenu(new String[] {
                 TXDB.get("You are creating a RPG Maker 2000/2003 LDB."),
                 TXDB.get("Click here to automatically build skeleton project."),
                 TXDB.get("Otherwise, close this inner window."),
@@ -681,7 +737,8 @@ public class AppMain {
     }
 
     public static void shutdown() {
-        windowMaker = null;
+        trueWindowMaker = null;
+        trueWindowMakerI = null;
         pendingRunnables.clear();
         rootPath = null;
         dataPath = "";

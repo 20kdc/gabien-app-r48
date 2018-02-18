@@ -11,6 +11,7 @@ import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
 import r48.map.IMapToolContext;
+import r48.ui.IWindowElement;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -18,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Was used for many things that it shouldn't have been. Now, not so much.
  * Created on August 14 2017.
  */
-public class UIMTBase extends UIElement.UIPanel {
+public class UIMTBase extends UIElement.UIPanel implements IWindowElement {
     private UIElement innerElem = null;
 
     public final IMapToolContext mapToolContext;
@@ -61,8 +62,7 @@ public class UIMTBase extends UIElement.UIPanel {
     }
 
     @Override
-    public void handleRootDisconnect() {
-        super.handleRootDisconnect();
+    public void windowClosing() {
         hasClosed = true;
     }
 
@@ -79,16 +79,18 @@ public class UIMTBase extends UIElement.UIPanel {
         return r;
     }
 
-    public static UIMTBase wrapWithCloseCallback(IMapToolContext mtc, UIElement svl, final AtomicBoolean baseCloser, final Runnable cc) {
+    public static UIMTBase wrapWithCloseCallback(IMapToolContext mtc, final UIElement svl, final AtomicBoolean baseCloser, final Runnable cc) {
         UIMTBase r = new UIMTBase(mtc) {
             @Override
             public boolean requestsUnparenting() {
-                return baseCloser.get();
+                if (baseCloser != null)
+                    return baseCloser.get();
+                return svl.requestsUnparenting();
             }
 
             @Override
-            public void handleRootDisconnect() {
-                super.handleRootDisconnect();
+            public void windowClosing() {
+                super.windowClosing();
                 cc.run();
             }
         };

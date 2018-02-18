@@ -39,7 +39,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
             return new UILabel("The folder does not exist or was not accessible.", FontSizes.schemaButtonTextHeight);
         for (String s : strs) {
             final String sStripped = stripExt(s);
-            uiSVL.panelsAdd(new UITextButton(FontSizes.schemaButtonTextHeight, sStripped, new Runnable() {
+            uiSVL.panelsAdd(new UITextButton(sStripped, FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     target.encString(sStripped, false);

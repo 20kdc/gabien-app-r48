@@ -43,14 +43,14 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         outerLayout.scrollbar.scrollPoint = iniScroll;
         final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
         final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(FontSizes.fontSizerTextHeight, "*2", new Runnable() {
+        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton("*2", FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 for (Runnable r : doubleAll)
                     r.run();
                 refreshLayout(false);
             }
-        }), new UITextButton(FontSizes.fontSizerTextHeight, "/2", new Runnable() {
+        }), new UITextButton("/2", FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 for (Runnable r : halfAll)
@@ -58,19 +58,19 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 refreshLayout(false);
             }
         }), false, 1, 2));
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(FontSizes.fontSizerTextHeight, TXDB.get("Save"), new Runnable() {
+        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Save"), FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 FontSizes.save();
             }
-        }), new UITextButton(FontSizes.fontSizerTextHeight, TXDB.get("Load"), new Runnable() {
+        }), new UITextButton(TXDB.get("Load"), FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 FontSizes.load();
                 refreshLayout(true);
             }
         }), false, 1, 2));
-        UITextButton fontButton = new UITextButton(FontSizes.fontSizerTextHeight, "", new Runnable() {
+        UITextButton fontButton = new UITextButton("", FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 if (FontManager.fontOverride != null) {

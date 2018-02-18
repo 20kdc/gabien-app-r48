@@ -14,8 +14,6 @@ import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.ui.UIAppendButton;
 
-import java.util.LinkedList;
-
 /**
  * Created on 2/17/17.
  */
@@ -40,7 +38,7 @@ public class UICellSelectionPanel extends UIElement.UIProxy {
             final int i2 = i;
             addAdditionButton(i2);
             String prefix = cellNumber == i2 ? ">" : " ";
-            UIElement button = new UITextButton(FontSizes.rmaCellTextHeight, prefix + FormatSyntax.formatExtended(TXDB.get("Cell #A"), new RubyIO().setFX(i)), new Runnable() {
+            UIElement button = new UITextButton(prefix + FormatSyntax.formatExtended(TXDB.get("Cell #A"), new RubyIO().setFX(i)), FontSizes.rmaCellTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     cellNumber = i2;
@@ -70,7 +68,7 @@ public class UICellSelectionPanel extends UIElement.UIProxy {
     private void addAdditionButton(final int i2) {
         if (!root.canAddRemoveCells())
             return;
-        selectionPanel.panelsAdd(new UITextButton(FontSizes.rmaCellTextHeight, TXDB.get("<add cell here>"), new Runnable() {
+        selectionPanel.panelsAdd(new UITextButton(TXDB.get("<add cell here>"), FontSizes.rmaCellTextHeight, new Runnable() {
             @Override
             public void run() {
                 if (i2 <= root.getCellCount()) {

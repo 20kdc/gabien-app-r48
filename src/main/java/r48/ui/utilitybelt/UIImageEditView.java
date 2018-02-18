@@ -32,6 +32,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     public int gridColour = 0x200020;
 
     public OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
+    public UILabel.StatusLine statusLine = new UILabel.StatusLine();
 
     public UIImageEditView(Runnable c) {
         colour = c;
@@ -39,7 +40,6 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
 
     @Override
     public void update(double deltaTime) {
-
     }
 
     @Override
@@ -90,7 +90,6 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         Rect zPlusFull = Art.getZIconRect(true, 0);
         Rect zMinus = Art.getZIconRect(false, 1);
         Rect zDrag = Art.getZIconRect(false, 2);
-        int textX = zPlusFull.x + zPlusFull.width;
         String info = TXDB.get("LMB: Draw/place, others: scroll, camera button: scroll mode");
         if (GaBIEn.singleWindowApp())
             info = TXDB.get("Tap/Drag: Draw, camera button: Switch to scrolling");
@@ -100,7 +99,11 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
                 info = TXDB.get("Tap: Position cursor, Drag: Scroll, camera button : go back to drawing");
         }
         String text = cursorX + ", " + cursorY + " " + info;
-        UILabel.drawLabel(igd, bounds.width - (textX + zPlus.x), textX, zPlus.y, text, 0, FontSizes.mapPositionTextHeight);
+
+        int textX = zPlusFull.x + zPlusFull.width;
+        int textW = bounds.width - (textX + ((zPlusFull.width - zPlus.width) / 2));
+        statusLine.draw(text, FontSizes.mapPositionTextHeight, igd, textX, zPlus.y, textW);
+
         Art.drawZoom(igd, true, zPlus.x, zPlus.y, zPlus.height);
         Art.drawZoom(igd, false, zMinus.x, zMinus.y, zMinus.height);
         Art.drawDragControl(igd, camMode, zDrag.x, zDrag.y, zDrag.height);

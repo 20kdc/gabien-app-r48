@@ -72,7 +72,7 @@ public class UIHelpSystem extends UIElement.UIPanel {
                 }
             }
             final int index = Integer.parseInt(args[0]);
-            return new UIElement[] {new UITextButton(FontSizes.helpLinkHeight, t, new Runnable() {
+            return new UIElement[] {new UITextButton(t, FontSizes.helpLinkHeight, new Runnable() {
                 @Override
                 public void run() {
                     onLinkClick.accept(index);
@@ -129,7 +129,7 @@ public class UIHelpSystem extends UIElement.UIPanel {
             }
             if ((hc.c == 'i') || (hc.c == 'I')) {
                 boolean left = hc.c == 'I';
-                final IImage r = GaBIEn.getImage(hc.args[0]);
+                final IImage r = GaBIEn.getImageEx(hc.args[0], false, true);
                 boolean extended = hc.args.length > 1;
                 // uiGuessScaler takes over
                 final int xx = extended ? Integer.parseInt(hc.args[1]) : 0;

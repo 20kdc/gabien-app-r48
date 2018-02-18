@@ -41,7 +41,7 @@ public class SpritesheetCoreSchemaElement extends r48.schema.SchemaElement {
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final ISpritesheetProvider localProvider = provider.apply(target);
         final RubyIO actTarg = numberProvider.apply(target);
-        return new UITextButton(FontSizes.schemaButtonTextHeight, FormatSyntax.formatExtended(text, actTarg), new Runnable() {
+        return new UITextButton(FormatSyntax.formatExtended(text, actTarg), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 TempDialogSchemaChoice temp = new TempDialogSchemaChoice(null, null, path);

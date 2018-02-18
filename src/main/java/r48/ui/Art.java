@@ -163,7 +163,9 @@ public class Art {
     }
 
     // For ID reference, ignore the left 20px of symbolic.png, and look at the 16x16-sprite grid.
-    public static void drawSymbol(IGrDriver igd, Symbol symbol, int x, int y, int size, boolean force) {
+    public static void drawSymbol(IGrDriver igd, Symbol symbol, int x, int y, int size, boolean force, boolean background) {
+        if (background)
+            igd.clearRect(0, 0, 0, x, y, size, size);
         // NOTE: Symbols are drawn at one of the following sizes:
         // 4px
         // 8px
@@ -212,7 +214,7 @@ public class Art {
 
     // Basically a "compatibility" function. Tries to draw an appropriate event-point image given a tile size and a top-left position.
     public static void drawTarget(int px, int py, int tileSize, IGrDriver igd) {
-        Art.drawSymbol(igd, Art.Symbol.Target, px + (tileSize / 4), py + (tileSize / 4), tileSize / 2, false);
+        Art.drawSymbol(igd, Art.Symbol.Target, px + (tileSize / 4), py + (tileSize / 4), tileSize / 2, false, false);
     }
 
     public enum Symbol {

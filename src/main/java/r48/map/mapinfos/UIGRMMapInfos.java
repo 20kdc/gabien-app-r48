@@ -33,7 +33,7 @@ import java.util.LinkedList;
  */
 public class UIGRMMapInfos extends UIElement.UIProxy {
     private final IRMLikeMapInfoBackendWPub operators;
-    private final ISupplier<IConsumer<UIElement>> windowMakerGetter;
+    private final IConsumer<UIElement> windowMakerGetter;
     private final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
     private final UITreeView utv = new UITreeView();
     private int selectedOrder = 0;
@@ -50,7 +50,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
         }
     };
 
-    public UIGRMMapInfos(ISupplier<IConsumer<UIElement>> wmg, final IRMLikeMapInfoBackendWPub b, IMapContext context, String mapInfos) {
+    public UIGRMMapInfos(IConsumer<UIElement> wmg, final IRMLikeMapInfoBackendWPub b, IMapContext context, String mapInfos) {
         operators = b;
         mapContext = context;
         toStringRes = mapInfos;
@@ -103,7 +103,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
             if (enableOrderHoleDebug)
                 spc = order + " ";
 
-            UITextButton tb = new UITextButton(FontSizes.mapInfosTextHeight, spc + k + ":" + name + " P" + parent, new Runnable() {
+            UITextButton tb = new UITextButton(spc + k + ":" + name + " P" + parent, FontSizes.mapInfosTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     selectedOrder = order;
@@ -246,16 +246,16 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                         rebuildList();
                     }
                 }, FontSizes.textDialogFieldTextHeight);
-                UINSVertLayout dialog = new UINSVertLayout(prompt, new UITextButton(FontSizes.textDialogFieldTextHeight, TXDB.get("Find unused ID."), unusedID)) {
+                UINSVertLayout dialog = new UINSVertLayout(prompt, new UITextButton(TXDB.get("Find unused ID."), FontSizes.textDialogFieldTextHeight, unusedID)) {
                     @Override
                     public String toString() {
                         return TXDB.get("Map ID?");
                     }
                 };
-                windowMakerGetter.get().accept(dialog);
+                windowMakerGetter.accept(dialog);
             }
         }));
-        uiSVL.panelsAdd(new UITextButton(FontSizes.mapInfosTextHeight, TXDB.get("<Test Sequence Consistency>"), new Runnable() {
+        uiSVL.panelsAdd(new UITextButton(TXDB.get("<Test Sequence Consistency>"), FontSizes.mapInfosTextHeight, new Runnable() {
             @Override
             public void run() {
                 LinkedList<Integer> orders = new LinkedList<Integer>();

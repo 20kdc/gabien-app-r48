@@ -116,7 +116,7 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
     }
 
     protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
-        FontManager.drawString(igd, x, y, Integer.toHexString(t), false, FontSizes.gridTextHeight);
+        FontManager.drawString(igd, x, y, Integer.toHexString(t), false, false, FontSizes.gridTextHeight);
     }
 
     @Override

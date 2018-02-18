@@ -36,7 +36,7 @@ public class UITest extends UIElement.UIProxy {
     // UITest -> outerPanel -> Back/PRINT
     //                      -> masterPanel
     public UIScrollLayout masterPanel = new UIScrollLayout(true, FontSizes.generalScrollersize);
-    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(TXDB.get("PTS"), new UIAppendButton(TXDB.get("PTF"), new UITextButton(FontSizes.inspectorBackTextHeight, TXDB.get("Back..."), new Runnable() {
+    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(TXDB.get("PTS"), new UIAppendButton(TXDB.get("PTF"), new UITextButton(TXDB.get("Back..."), FontSizes.inspectorBackTextHeight, new Runnable() {
         @Override
         public void run() {
             if (back.size() > 0)
@@ -97,7 +97,7 @@ public class UITest extends UIElement.UIProxy {
         masterPanel.panelsClear();
         for (int i = 0; i < navigaList.length; i++) {
             final int j = i;
-            UIElement button = new UITextButton(FontSizes.inspectorTextHeight, navigaList[i], new Runnable() {
+            UIElement button = new UITextButton(navigaList[i], FontSizes.inspectorTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     back.addLast(obj);

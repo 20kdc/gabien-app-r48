@@ -104,7 +104,7 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                     bit <<= len;
                 } else {
                     // Bool-field
-                    final UITextButton flag = new UITextButton(FontSizes.tableElementTextHeight, Integer.toHexString(thisBit) + ": " + flags[i], null).togglable(false);
+                    final UITextButton flag = new UITextButton(Integer.toHexString(thisBit) + ": " + flags[i], FontSizes.tableElementTextHeight, null).togglable(false);
                     panelAdder.accept(flag);
                     flagStates[i] = new IConsumer<AtomicInteger>() {
                         @Override

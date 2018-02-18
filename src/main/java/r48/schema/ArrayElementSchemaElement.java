@@ -18,6 +18,8 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * NOTE: This doesn't provide the array entry object!!!
  * This is because ArrayElementSchemaElement should only exist inside arrayDAM.
@@ -53,7 +55,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
             String tx = TXDB.get("(This index isn't valid - did you modify a group from another window?)");
             if (optional != null)
                 tx = FormatSyntax.formatExtended(TXDB.get("Field #A doesn't exist (default #B)"), new RubyIO().setString(name, true), new RubyIO().setString(optional, true));
-            return new UITextButton(FontSizes.schemaButtonTextHeight, tx, new Runnable() {
+            return new UITextButton(tx, FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     // resize to include and set default
@@ -139,9 +141,13 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
 
     public static class UIOverridableWidthLabel extends UILabel {
         final boolean fieldWidthOverride;
-        final int fieldWidth;
+        final AtomicInteger fieldWidth;
 
         public UIOverridableWidthLabel(String text, int textHeight, int width, boolean override) {
+            this(text, textHeight, new AtomicInteger(width), override);
+        }
+
+        public UIOverridableWidthLabel(String text, int textHeight, AtomicInteger width, boolean override) {
             super(text, textHeight);
             fieldWidth = width;
             fieldWidthOverride = override;
@@ -152,7 +158,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
             if (!fieldWidthOverride) {
                 super.setWantedSize(s);
             } else {
-                super.setWantedSize(new Size(fieldWidth, s.height));
+                super.setWantedSize(new Size(fieldWidth.get(), s.height));
             }
         }
     }

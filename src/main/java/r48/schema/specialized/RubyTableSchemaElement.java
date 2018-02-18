@@ -9,7 +9,6 @@ package r48.schema.specialized;
 
 import gabien.FontManager;
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -83,7 +82,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                 if (allowTextdraw) {
                     igd.clearRect(0, 0, 0, x, y, tileSizeW, FontSizes.gridTextHeight);
                     for (int i = 0; i < targ.planeCount; i++)
-                        FontManager.drawString(igd, x, y + (i * FontSizes.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, FontSizes.gridTextHeight);
+                        FontManager.drawString(igd, x, y + (i * FontSizes.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, false, FontSizes.gridTextHeight);
                 }
             }
 
@@ -167,7 +166,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             };
             UIElement uie = new UISplitterLayout(wNB, hNB, false, 1, 2);
             uiSVL.panelsAdd(uie);
-            uiSVL.panelsAdd(new UITextButton(FontSizes.tableResizeTextHeight, TXDB.get("Resize"), new Runnable() {
+            uiSVL.panelsAdd(new UITextButton(TXDB.get("Resize"), FontSizes.tableResizeTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     int w = (int) wNB.number;

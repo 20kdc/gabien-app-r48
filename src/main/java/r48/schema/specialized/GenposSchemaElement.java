@@ -42,7 +42,7 @@ public class GenposSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost lBase, final SchemaPath pBase) {
-        return new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Graphically edit this..."), new Runnable() {
+        return new UITextButton(TXDB.get("Graphically edit this..."), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 final ISchemaHost launcher = lBase.newBlank();

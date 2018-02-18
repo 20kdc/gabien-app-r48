@@ -126,7 +126,7 @@ public class Application {
             rootBox = new UITextBox(FontSizes.launcherTextHeight);
             rootBox.text = rootPathBackup;
 
-            basePanels.add(new UISplitterLayout(rootBox, new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Save"), new Runnable() {
+            basePanels.add(new UISplitterLayout(rootBox, new UITextButton(TXDB.get("Save"), FontSizes.launcherTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     rootPathBackup = rootBox.text;
@@ -149,7 +149,7 @@ public class Application {
                 }
             };
 
-            basePanels.add(new UISplitterLayout(sillBox, new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Save"), new Runnable() {
+            basePanels.add(new UISplitterLayout(sillBox, new UITextButton(TXDB.get("Save"), FontSizes.launcherTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     FontSizes.save();
@@ -172,7 +172,7 @@ public class Application {
                     ISupplier<IGPMenuPanel>[] runs = igpMenuPanel.getButtonActs();
                     for (int i = 0; i < names.length; i++) {
                         final ISupplier<IGPMenuPanel> r = runs[i];
-                        gamepaks.panelsAdd(new UITextButton(FontSizes.launcherTextHeight, names[i], new Runnable() {
+                        gamepaks.panelsAdd(new UITextButton(names[i], FontSizes.launcherTextHeight, new Runnable() {
                             @Override
                             public void run() {
                                 accept(r.get());
@@ -380,12 +380,12 @@ public class Application {
             int szVHeight = (sz * aspectMul) / fxRatio;
             // this is where the "big version number" maths get changed to "little version number" maths
             Rect pos2 = new Rect(pos.x + (sz / 4), pos.y + (pos.height + (pos.height / 16)), sz / 2, szVHeight / 2);
-            gi.blitScaledImage(ltPos.x, ltPos.y, ltPos.width, ltPos.height, pos.x, pos.y, pos.width, pos.height, GaBIEn.getImage("layertab.png"));
+            gi.blitScaledImage(ltPos.x, ltPos.y, ltPos.width, ltPos.height, pos.x, pos.y, pos.width, pos.height, GaBIEn.getImageEx("layertab.png", false, true));
             int margin = sz / 124;
             gi.clearRect(192, 192, 192, pos2.x - (margin * 3), pos2.y - (margin * 3), pos2.width + (margin * 6), pos2.height + (margin * 6));
             gi.clearRect(128, 128, 128, pos2.x - (margin * 2), pos2.y - (margin * 2), pos2.width + (margin * 4), pos2.height + (margin * 4));
             gi.clearRect(0, 0, 0, pos2.x - margin, pos2.y - margin, pos2.width + (margin * 2), pos2.height + (margin * 2));
-            gi.blitScaledImage(ltPos2.x, ltPos2.y, ltPos2.width, ltPos2.height, pos2.x, pos2.y, pos2.width, pos2.height, GaBIEn.getImage("layertab.png"));
+            gi.blitScaledImage(ltPos2.x, ltPos2.y, ltPos2.width, ltPos2.height, pos2.x, pos2.y, pos2.width, pos2.height, GaBIEn.getImageEx("layertab.png", false, true));
 
 
             // Can't translate for several reasons (but especially no fonts).
@@ -441,14 +441,14 @@ public class Application {
     }
 
     private static UIElement figureOutTopBar(final WindowCreatingUIElementConsumer uiTicker, final IConsumer<Runnable> closeHelper) {
-        UIElement whatever = new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Quit R48"), new Runnable() {
+        UIElement whatever = new UITextButton(TXDB.get("Quit R48"), FontSizes.launcherTextHeight, new Runnable() {
             @Override
             public void run() {
                 GaBIEn.ensureQuit();
             }
         });
         if (!GaBIEn.singleWindowApp()) { // SWA means we can't create windows
-            whatever = new UISplitterLayout(whatever, new UITextButton(FontSizes.launcherTextHeight, TXDB.get("Font Sizes"), new Runnable() {
+            whatever = new UISplitterLayout(whatever, new UITextButton(TXDB.get("Font Sizes"), FontSizes.launcherTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     uiTicker.accept(new UIFontSizeConfigurator());

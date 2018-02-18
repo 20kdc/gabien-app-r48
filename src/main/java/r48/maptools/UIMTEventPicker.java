@@ -84,7 +84,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                     Runnable r = mapView.mapTable.eventAccess.hasSync(evK);
                     if (r == null) {
                         // Note the checks in case of out of date panel.
-                        UIElement button = new UITextButton(FontSizes.eventPickerEntryTextHeight, nam, new Runnable() {
+                        UIElement button = new UITextButton(nam, FontSizes.eventPickerEntryTextHeight, new Runnable() {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
@@ -156,7 +156,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
             final int i2 = i;
             if (types[i] == null)
                 continue;
-            svl.panelsAdd(new UITextButton(FontSizes.eventPickerEntryTextHeight, types[i], new Runnable() {
+            svl.panelsAdd(new UITextButton(types[i], FontSizes.eventPickerEntryTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     RubyIO k = mapView.mapTable.eventAccess.addEvent(null, i2);

@@ -113,7 +113,7 @@ public class UIMTPopupButtons extends UIMTBase {
                         b.number = 1;
                 }
             };
-            UISplitterLayout root = new UISplitterLayout(new UISplitterLayout(a, b, false, 0.5d), new UITextButton(FontSizes.textDialogFieldTextHeight, "Resize", new Runnable() {
+            UISplitterLayout root = new UISplitterLayout(new UISplitterLayout(a, b, false, 0.5d), new UITextButton("Resize", FontSizes.textDialogFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     int w = (int) a.number;

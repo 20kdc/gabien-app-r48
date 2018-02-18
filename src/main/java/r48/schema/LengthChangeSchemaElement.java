@@ -7,7 +7,6 @@
 
 package r48.schema;
 
-import gabien.IGrInDriver;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
@@ -34,7 +33,7 @@ public class LengthChangeSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         // This is never meant to *actually* scroll.
-        UITextButton r = new UITextButton(FontSizes.schemaButtonTextHeight, translatedText, new Runnable() {
+        UITextButton r = new UITextButton(translatedText, FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 RubyIO[] rubies = new RubyIO[targetLen];

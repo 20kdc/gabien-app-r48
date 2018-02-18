@@ -65,7 +65,7 @@ public class UIEnumChoice extends UIElement.UIProxy {
         UISplitterLayout finalSplit = null;
         if (entryType == EntryMode.STR) {
             final UITextBox nb = new UITextBox(FontSizes.schemaFieldTextHeight);
-            finalSplit = new UISplitterLayout(nb, new UITextButton(FontSizes.schemaButtonTextHeight, entryText, new Runnable() {
+            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
@@ -75,7 +75,7 @@ public class UIEnumChoice extends UIElement.UIProxy {
             }), false, 1, 3);
         } else if (entryType == EntryMode.SYM) {
             final UITextBox nb = new UITextBox(FontSizes.schemaFieldTextHeight);
-            finalSplit = new UISplitterLayout(nb, new UITextButton(FontSizes.schemaButtonTextHeight, entryText, new Runnable() {
+            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     if (!wantsSelfClose) {
@@ -89,7 +89,7 @@ public class UIEnumChoice extends UIElement.UIProxy {
             }), false, 1, 3);
         } else if (entryType == EntryMode.INT) {
             final UINumberBox nb = new UINumberBox(FontSizes.schemaFieldTextHeight);
-            finalSplit = new UISplitterLayout(nb, new UITextButton(FontSizes.schemaButtonTextHeight, entryText, new Runnable() {
+            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)

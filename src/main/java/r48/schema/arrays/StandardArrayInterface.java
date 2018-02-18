@@ -13,7 +13,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
-import r48.ui.Art;
+import r48.schema.ArrayElementSchemaElement;
 import r48.ui.UIAppendButton;
 
 import java.util.LinkedList;
@@ -160,24 +160,11 @@ public class StandardArrayInterface implements IArrayInterface {
                                 }, FontSizes.schemaButtonTextHeight);
                             }
                         }
-                        /*IPCRESS
                         // Add indexes for clarity.
                         final UIElement editor = uie;
-                        final UIElement label = new UILabel(positions[mi].text, FontSizes.schemaFieldTextHeight);
-                        maxWidth.set(Math.max(maxWidth.get(), label.getSize().width));
-                        UIPublicPanel panel = new UIPublicPanel() {
-                            @Override
-                            public void setBounds(Rect r) {
-                                super.setBounds(r);
-                                label.setBounds(new Rect(0, 0, maxWidth.get(), maxSizePre.height));
-                                editor.setBounds(new Rect(maxWidth.get(), 0, r.width - maxWidth.get(), r.height));
-                            }
-                        };
-
-                        panel.addElement(label);
-                        panel.addElement(editor);
-                        panel.setBounds(new Rect(0, 0, 128, Math.max(editor.getBounds().height, maxSizePre.height)));
-                        uiSVL.panels.add(panel);*/
+                        final UIElement label = new ArrayElementSchemaElement.UIOverridableWidthLabel(positions[mi].text, FontSizes.schemaFieldTextHeight, maxWidth, true);
+                        maxWidth.set(Math.max(label.getWantedSize().width, maxWidth.get()));
+                        uiSVL.panelsAdd(new UISplitterLayout(label, editor, false, 0));
                     }
                 }
             }
@@ -185,7 +172,7 @@ public class StandardArrayInterface implements IArrayInterface {
             private void addAdditionButton(final Runnable runnable, final Runnable runnable2, final String text) {
                 if (runnable == null)
                     return;
-                UIElement uie = new UITextButton(FontSizes.schemaArrayAddTextHeight, FormatSyntax.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setString(text, true)), runnable);
+                UIElement uie = new UITextButton(FormatSyntax.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setString(text, true)), FontSizes.schemaArrayAddTextHeight, runnable);
                 if (runnable2 != null)
                     uie = new UIAppendButton(TXDB.get("Paste Array"), uie, runnable2, FontSizes.schemaButtonTextHeight);
                 uiSVL.panelsAdd(uie);

@@ -115,20 +115,20 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
             int totalSize = Math.max(te.h, nodeWidth);
             for (int j = 0; j < te.indent; j++) {
                 if (j == (te.indent - 1)) {
-                    Art.drawSymbol(igd, pico, j * nodeWidth, y, totalSize, true);
+                    Art.drawSymbol(igd, pico, j * nodeWidth, y, totalSize, true, true);
                 } else {
                     if (continuingLines.contains(j))
-                        Art.drawSymbol(igd, Art.Symbol.BarV, j * nodeWidth, y, totalSize, true);
+                        Art.drawSymbol(igd, Art.Symbol.BarV, j * nodeWidth, y, totalSize, true, true);
                 }
             }
             // the actual item icon
             if (te.hasChildren && (!te.expanded))
-                Art.drawSymbol(igd, Art.Symbol.Expandable, te.indent * nodeWidth, y, te.h, true);
-            Art.drawSymbol(igd, te.icon, te.indent * nodeWidth, y, te.h, true);
+                Art.drawSymbol(igd, Art.Symbol.Expandable, te.indent * nodeWidth, y, te.h, true, true);
+            Art.drawSymbol(igd, te.icon, te.indent * nodeWidth, y, te.h, true, true);
             y += te.h;
         }
         if (dragCursorEnable)
-            Art.drawSymbol(igd, dragCursorSymbol, mouseEmulator.mouseX - (nodeWidth / 2), mouseEmulator.mouseY - (nodeWidth / 2), nodeWidth, false);
+            Art.drawSymbol(igd, dragCursorSymbol, mouseEmulator.mouseX - (nodeWidth / 2), mouseEmulator.mouseY - (nodeWidth / 2), nodeWidth, false, true);
     }
 
     @Override

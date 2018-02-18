@@ -22,7 +22,7 @@ public class UITextPrompt extends UIElement.UIProxy {
 
     public UITextPrompt(final String s, final IConsumer<String> iConsumer) {
         uiSVL.panelsAdd(new UILabel(s, FontSizes.textDialogDescTextHeight));
-        uiSVL.panelsAdd(new UISplitterLayout(utb, new UITextButton(FontSizes.textDialogFieldTextHeight, TXDB.get("OK"), new Runnable() {
+        uiSVL.panelsAdd(new UISplitterLayout(utb, new UITextButton(TXDB.get("OK"), FontSizes.textDialogFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 iConsumer.accept(utb.text);

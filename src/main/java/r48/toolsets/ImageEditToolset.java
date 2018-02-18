@@ -14,7 +14,7 @@ import r48.ui.utilitybelt.ImageEditorController;
 
 public class ImageEditToolset implements IToolset {
     @Override
-    public UIElement[] generateTabs(ISupplier<IConsumer<UIElement>> windowMaker) {
+    public UIElement[] generateTabs(IConsumer<UIElement> windowMaker) {
         return new UIElement[] {
                 new ImageEditorController(windowMaker).rootView
         };

@@ -8,7 +8,6 @@
 package r48.schema;
 
 import gabien.ui.*;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
@@ -121,7 +120,7 @@ public class HashSchemaElement extends SchemaElement {
                 if (defKeyWorkspace == null)
                     defKeyWorkspace = SchemaPath.createDefaultValue(keyElem, null);
                 UIElement workspace = keyElem.buildHoldingEditor(defKeyWorkspace, launcher, path.otherIndex("(tempWSKey)"));
-                UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Add Key"), new Runnable() {
+                UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(TXDB.get("Add Key"), FontSizes.schemaButtonTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         if (target.getHashVal(defKeyWorkspace) == null) {

@@ -107,7 +107,7 @@ public class TimeWaster {
         if (points < 13)
             igd.blitScaledImage(type * 64, 0, 64, 64, ox + (int) iconPlanX, oy + (int) iconPlanY, iconSize, iconSize, Art.noMap);
         if (points > 1) {
-            FontManager.drawString(igd, ox, oy, FormatSyntax.formatExtended(TXDB.get("You have #A points..."), new RubyIO().setFX(points)), false, FontSizes.timeWasterTextHeight);
+            FontManager.drawString(igd, ox, oy, FormatSyntax.formatExtended(TXDB.get("You have #A points..."), new RubyIO().setFX(points)), false, false, FontSizes.timeWasterTextHeight);
             String[] pointMsgs = new String[] {
                     TXDB.get("...you should probably get back to work."),
                     TXDB.get("...are you lost...?"),
@@ -121,7 +121,7 @@ public class TimeWaster {
                 points = -1;
             } else {
                 // Any GitHub issues on this will be disregarded.
-                FontManager.drawString(igd, ox, oy + FontSizes.timeWasterTextHeight, pointMsgs[points - 2], false, FontSizes.timeWasterTextHeight);
+                FontManager.drawString(igd, ox, oy + FontSizes.timeWasterTextHeight, pointMsgs[points - 2], false, false, FontSizes.timeWasterTextHeight);
             }
         }
     }

@@ -54,8 +54,6 @@ public abstract class ArraySchemaElement extends SchemaElement {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
 
-        uiSVL.panelsClear();
-
         final SchemaPath keyStoragePath = path.findLast();
 
         uiHelper.provideInterfaceFrom(uiSVL, new IFunction<String, IArrayInterface.IProperty>() {
@@ -82,6 +80,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
             }
         });
 
+        uiSVL.runLayout();
         return uiSVL;
     }
 

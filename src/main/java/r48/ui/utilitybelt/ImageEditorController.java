@@ -33,9 +33,9 @@ public class ImageEditorController {
     public int selPaletteIndex = 0;
     public boolean rectangleRunning;
     public int rectanglePoint1X, rectanglePoint1Y;
-    public ISupplier<IConsumer<UIElement>> windowMaker;
+    public IConsumer<UIElement> windowMaker;
 
-    public ImageEditorController(ISupplier<IConsumer<UIElement>> worldMachine) {
+    public ImageEditorController(IConsumer<UIElement> worldMachine) {
         windowMaker = worldMachine;
         palette.add(0xFF000000);
         palette.add(0xFF0000FF);
@@ -80,7 +80,7 @@ public class ImageEditorController {
 
     public void load(String filename) {
         GaBIEn.hintFlushAllTheCaches();
-        IImage im = GaBIEn.getImage(filename);
+        IImage im = GaBIEn.getImageEx(filename, true, false);
         if (im == GaBIEn.getErrorImage()) {
             AppMain.launchDialog("Failed to load " + filename + ".");
         } else {
@@ -106,10 +106,10 @@ public class ImageEditorController {
         final String fbStrA = TXDB.get("Accept");
         final String fbStrL = TXDB.get("Load: ");
         final String fbStrS = TXDB.get("Save: ");
-        UISplitterLayout saveLoad = new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Load PNG..."), new Runnable() {
+        UISplitterLayout saveLoad = new UISplitterLayout(new UITextButton(TXDB.get("Load PNG..."), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
-                windowMaker.get().accept(new UIFileBrowser(new IConsumer<String>() {
+                windowMaker.accept(new UIFileBrowser(new IConsumer<String>() {
                     @Override
                     public void accept(String s) {
                         if (s != null)
@@ -117,10 +117,10 @@ public class ImageEditorController {
                     }
                 }, fbStrL, fbStrB, fbStrA, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize));
             }
-        }), new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Save PNG..."), new Runnable() {
+        }), new UITextButton(TXDB.get("Save PNG..."), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
-                windowMaker.get().accept(new UIFileBrowser(new IConsumer<String>() {
+                windowMaker.accept(new UIFileBrowser(new IConsumer<String>() {
                     @Override
                     public void accept(String s) {
                         if (s != null)
@@ -131,10 +131,10 @@ public class ImageEditorController {
         }), false, 0.5d);
         paletteView.panelsAdd(saveLoad);
         int widthGuess = saveLoad.getWantedSize().width;
-        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Add Colour"), new Runnable() {
+        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Add Colour"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
-                windowMaker.get().accept(new UIColourPicker(new IConsumer<Integer>() {
+                windowMaker.accept(new UIColourPicker(new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         if (integer == null)
@@ -144,7 +144,7 @@ public class ImageEditorController {
                     }
                 }, true));
             }
-        }), new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("From Image"), new Runnable() {
+        }), new UITextButton(TXDB.get("From Image"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 palette.add(imageEditView.image[imageEditView.cursorX + (imageEditView.cursorY * imageEditView.imageW)]);
@@ -152,7 +152,7 @@ public class ImageEditorController {
             }
         }), false, 0.5d));
         if (!rectangleRunning) {
-            paletteView.panelsAdd(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Rectangle"), new Runnable() {
+            paletteView.panelsAdd(new UITextButton(TXDB.get("Rectangle"), FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     rectangleRunning = true;
@@ -163,7 +163,7 @@ public class ImageEditorController {
                 }
             }));
         } else {
-            paletteView.panelsAdd(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Cancel"), new Runnable() {
+            paletteView.panelsAdd(new UITextButton(TXDB.get("Cancel"), FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     rectangleRunning = false;
@@ -172,7 +172,7 @@ public class ImageEditorController {
                 }
             }));
         }
-        paletteView.panelsAdd(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Resize"), new Runnable() {
+        paletteView.panelsAdd(new UITextButton(TXDB.get("Resize"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 showXYChanger(new Rect(0, 0, imageEditView.imageW, imageEditView.imageH), new IConsumer<Rect>() {
@@ -199,7 +199,7 @@ public class ImageEditorController {
                 }, TXDB.get("Resize..."));
             }
         }));
-        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Grid Size"), new Runnable() {
+        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 showXYChanger(new Rect(imageEditView.gridOX, imageEditView.gridOY, imageEditView.gridW, imageEditView.gridH), new IConsumer<Rect>() {
@@ -212,10 +212,10 @@ public class ImageEditorController {
                     }
                 }, TXDB.get("Change Grid..."));
             }
-        }), new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Colour"), new Runnable() {
+        }), new UITextButton(TXDB.get("Colour"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
-                windowMaker.get().accept(new UIColourPicker(new IConsumer<Integer>() {
+                windowMaker.accept(new UIColourPicker(new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         if (integer == null)
@@ -254,7 +254,7 @@ public class ImageEditorController {
                     }
                 }, FontSizes.schemaButtonTextHeight);
             }
-            cPanel = new UISplitterLayout(new UITextButton(FontSizes.schemaButtonTextHeight, "<", new Runnable() {
+            cPanel = new UISplitterLayout(new UITextButton("<", FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     if (fidx != selPaletteIndex) {
@@ -294,7 +294,7 @@ public class ImageEditorController {
             }
         };
 
-        acceptButton = new UITextButton(FontSizes.schemaButtonTextHeight, TXDB.get("Accept"), new Runnable() {
+        acceptButton = new UITextButton(TXDB.get("Accept"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 Rect r = new Rect((int) xVal.number, (int) yVal.number, Math.max((int) wVal.number, 1), Math.max((int) hVal.number, 1));
@@ -310,6 +310,6 @@ public class ImageEditorController {
 
         res.runLayout();
         res.setForcedBounds(null, new Rect(res.getWantedSize()));
-        windowMaker.get().accept(res);
+        windowMaker.accept(res);
     }
 }

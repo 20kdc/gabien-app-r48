@@ -140,7 +140,7 @@ public class VXATileRenderer implements ITileRenderer {
             if (handleMTLayer(tidx, tileSize, px, py, 4, igd, spriteScale))
                 return;
 
-        FontManager.drawString(igd, px, py, Integer.toHexString(tidx), false, UIMapView.mapDebugTextHeight);
+        FontManager.drawString(igd, px, py, Integer.toHexString(tidx), false, false, UIMapView.mapDebugTextHeight);
     }
 
     private void drawShadowTileFlag(short tidx, int i, int i1, int i2, IGrDriver igd, int st) {

@@ -45,7 +45,7 @@ public class SubwindowSchemaElement extends SchemaElement implements IProxySchem
         // This is never meant to *actually* scroll.
         String text = nameGetter.apply(target);
         String[] lines = text.split("\n");
-        UIElement r = new UITextButton(FontSizes.schemaButtonTextHeight, lines[0], new Runnable() {
+        UIElement r = new UITextButton(lines[0], FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 launcher.switchObject(path.newWindow(heldElement, target));

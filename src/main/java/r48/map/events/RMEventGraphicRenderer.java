@@ -73,7 +73,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         int dir = lookupDirection(coreDir);
         if (dir == -1) {
             dir = 0;
-            FontManager.drawString(igd, ox, oy, "D" + coreDir, false, UIMapView.mapDebugTextHeight * sprScale);
+            FontManager.drawString(igd, ox, oy, "D" + coreDir, false, false, UIMapView.mapDebugTextHeight * sprScale);
         }
         RubyIO cName = target.getInstVarBySymbol("@character_name");
         short tId = (short) target.getInstVarBySymbol("@tile_id").fixnumVal;

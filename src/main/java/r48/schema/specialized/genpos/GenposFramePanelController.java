@@ -8,7 +8,6 @@
 package r48.schema.specialized.genpos;
 
 import gabien.IImage;
-import gabien.ui.Rect;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
@@ -48,7 +47,7 @@ public class GenposFramePanelController {
         cellSelection = new UICellSelectionPanel(rootForNow);
 
         editingPanel = new UICellEditingPanel(cellSelection, this);
-        gridToggleButton = new UITextButton(FontSizes.rmaCellTextHeight, TXDB.get("8px Grid"), new Runnable() {
+        gridToggleButton = new UITextButton(TXDB.get("8px Grid"), FontSizes.rmaCellTextHeight, new Runnable() {
             @Override
             public void run() {
                 // Do nothing.

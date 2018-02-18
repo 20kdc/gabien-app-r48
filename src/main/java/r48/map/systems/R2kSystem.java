@@ -47,12 +47,12 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public UIElement createMapExplorer(ISupplier<IConsumer<UIElement>> windowMaker, IMapContext context, String mapInfos) {
+    public UIElement createMapExplorer(IConsumer<UIElement> windowMaker, IMapContext context, String mapInfos) {
         return new UIGRMMapInfos(windowMaker, new R2kRMLikeMapInfoBackend(), context, mapInfos);
     }
 
     @Override
-    public UIElement createSaveExplorer(ISupplier<IConsumer<UIElement>> windowMaker, IMapContext mapBox, String saves) {
+    public UIElement createSaveExplorer(IConsumer<UIElement> windowMaker, IMapContext mapBox, String saves) {
         return new UISaveScanMapInfos(new IFunction<Integer, String>() {
             @Override
             public String apply(Integer integer) {

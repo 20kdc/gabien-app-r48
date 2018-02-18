@@ -27,7 +27,7 @@ public class OpaqueSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(FontSizes.schemaButtonTextHeight, getMessage(target), new Runnable() {
+        return new UITextButton(getMessage(target), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 launcher.launchOther(new UITest(target));

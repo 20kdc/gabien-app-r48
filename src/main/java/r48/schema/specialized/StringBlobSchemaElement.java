@@ -8,7 +8,6 @@
 package r48.schema.specialized;
 
 import gabien.GaBIEn;
-import gabien.IGrInDriver;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
@@ -33,7 +32,7 @@ public class StringBlobSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
         final String fpath = AppMain.rootPath + "r48.edit.txt";
 
-        UITextButton importer = new UITextButton(FontSizes.blobTextHeight, TXDB.get("Import"), new Runnable() {
+        UITextButton importer = new UITextButton(TXDB.get("Import"), FontSizes.blobTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -48,7 +47,7 @@ public class StringBlobSchemaElement extends SchemaElement {
             }
         });
         final Runnable importScrSaveTicker = AggregateSchemaElement.hookButtonForPressPreserve(path, launcher, this, target, importer, "import");
-        return new UISplitterLayout(new UITextButton(FontSizes.blobTextHeight, TXDB.get("Export/Edit"), new Runnable() {
+        return new UISplitterLayout(new UITextButton(TXDB.get("Export/Edit"), FontSizes.blobTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {

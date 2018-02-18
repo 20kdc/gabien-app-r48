@@ -42,7 +42,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
         if (!readonlyTiles) {
             for (int i = 0; i < view.mapTable.planeCount; i++) {
                 final int thisButton = i;
-                final UITextButton button = new UITextButton(FontSizes.mapLayertabTextHeight, "L" + i, new Runnable() {
+                final UITextButton button = new UITextButton("L" + i, FontSizes.mapLayertabTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         clearTools(thisButton);
@@ -55,7 +55,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
         }
         for (int i = 0; i < toolNames.length; i++) {
             final int toolId = i;
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, toolNames[i], new Runnable() {
+            tools.add(new UITextButton(toolNames[i], FontSizes.mapLayertabTextHeight, new Runnable() {
                 final int thisButton = tools.size();
 
                 @Override
@@ -66,7 +66,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
             }).togglable(false));
         }
         if (view.mapTable.eventAccess != null) {
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Events"), new Runnable() {
+            tools.add(new UITextButton(TXDB.get("Events"), FontSizes.mapLayertabTextHeight, new Runnable() {
                 final int thisButton = tools.size();
 
                 @Override
@@ -76,7 +76,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 }
             }).togglable(false));
         }
-        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Layer Visibility"), new Runnable() {
+        tools.add(new UITextButton(TXDB.get("Layer Visibility"), FontSizes.mapLayertabTextHeight, new Runnable() {
             final int thisButton = tools.size();
 
             @Override
@@ -86,7 +86,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 int h = 0;
                 for (int i = 0; i < view.mapTable.renderer.layers.length; i++) {
                     final int fi = i;
-                    UITextButton layerVis = new UITextButton(FontSizes.mapLayertabTextHeight, view.mapTable.renderer.layers[i].getName(), new Runnable() {
+                    UITextButton layerVis = new UITextButton(view.mapTable.renderer.layers[i].getName(), FontSizes.mapLayertabTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             view.layerVis[fi] = !view.layerVis[fi];
@@ -102,7 +102,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
         // Utility buttons
 
         if (!readonlyTiles) {
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("Grab Tile"), new Runnable() {
+            tools.add(new UITextButton(TXDB.get("Grab Tile"), FontSizes.mapLayertabTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     // Select the current tile layer
@@ -111,7 +111,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 }
             }));
 
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("B.Copy"), new Runnable() {
+            tools.add(new UITextButton(TXDB.get("B.Copy"), FontSizes.mapLayertabTextHeight, new Runnable() {
                 final int thisButton = tools.size();
 
                 @Override
@@ -121,7 +121,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 }
             }));
 
-            tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("B.Paste"), new Runnable() {
+            tools.add(new UITextButton(TXDB.get("B.Paste"), FontSizes.mapLayertabTextHeight, new Runnable() {
                 final int thisButton = tools.size();
 
                 @Override
@@ -149,7 +149,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
             }));
         }
 
-        tools.add(new UITextButton(FontSizes.mapLayertabTextHeight, TXDB.get("..."), new Runnable() {
+        tools.add(new UITextButton(TXDB.get("..."), FontSizes.mapLayertabTextHeight, new Runnable() {
             final int thisButton = tools.size();
 
             @Override

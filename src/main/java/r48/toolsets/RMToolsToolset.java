@@ -53,7 +53,7 @@ public class RMToolsToolset implements IToolset {
     }
 
     @Override
-    public UIElement[] generateTabs(final ISupplier<IConsumer<UIElement>> windowMaker) {
+    public UIElement[] generateTabs(final IConsumer<UIElement> windowMaker) {
         return new UIElement[] {new UIPopupMenu(new String[] {
                 TXDB.get("Locate EventCommand in all Pages"),
                 TXDB.get("See If Autocorrect Modifies Anything"),
@@ -72,7 +72,7 @@ public class RMToolsToolset implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        windowMaker.get().accept(new UITextPrompt(TXDB.get("Code?"), new IConsumer<String>() {
+                        windowMaker.accept(new UITextPrompt(TXDB.get("Code?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 int i;
@@ -139,10 +139,10 @@ public class RMToolsToolset implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        windowMaker.get().accept(new UITextPrompt(TXDB.get("Find?"), new IConsumer<String>() {
+                        windowMaker.accept(new UITextPrompt(TXDB.get("Find?"), new IConsumer<String>() {
                             @Override
                             public void accept(final String find) {
-                                windowMaker.get().accept(new UITextPrompt(TXDB.get("Replace?"), new IConsumer<String>() {
+                                windowMaker.accept(new UITextPrompt(TXDB.get("Replace?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(final String repl) {
                                         LinkedList<String> objects = new LinkedList<String>();

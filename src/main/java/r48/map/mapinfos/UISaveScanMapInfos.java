@@ -49,7 +49,7 @@ public class UISaveScanMapInfos extends UIElement.UIProxy {
             RubyIO rio = AppMain.objectDB.getObject(objectMapping.apply(i), null);
             final String gum = gumMapping.apply(i);
             if (rio != null) {
-                mainLayout.panelsAdd(new UITextButton(FontSizes.mapInfosTextHeight, FormatSyntax.formatExtended(TXDB.get("#A : #B"), new RubyIO().setString(gum, true), rio), new Runnable() {
+                mainLayout.panelsAdd(new UITextButton(FormatSyntax.formatExtended(TXDB.get("#A : #B"), new RubyIO().setString(gum, true), rio), FontSizes.mapInfosTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         context.loadMap(gum);

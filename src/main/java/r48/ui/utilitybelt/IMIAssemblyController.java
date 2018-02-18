@@ -9,7 +9,6 @@ package r48.ui.utilitybelt;
 
 import gabien.GaBIEn;
 import gabien.ui.*;
-import gabienapp.Application;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -40,7 +39,7 @@ public class IMIAssemblyController {
             }
         });
         fileList = new UIScrollLayout(true, FontSizes.generalScrollersize);
-        UITextButton bAA = new UITextButton(FontSizes.imiAsmButtonsTextHeight, TXDB.get("Add Asset"), new Runnable() {
+        UITextButton bAA = new UITextButton(TXDB.get("Add Asset"), FontSizes.imiAsmButtonsTextHeight, new Runnable() {
             @Override
             public void run() {
                 if (fileBrowserOpen)
@@ -82,7 +81,7 @@ public class IMIAssemblyController {
                 fileBrowserOpen = true;
             }
         });
-        UITextButton bSM = new UITextButton(FontSizes.imiAsmButtonsTextHeight, TXDB.get("Save Asset List"), new Runnable() {
+        UITextButton bSM = new UITextButton(TXDB.get("Save Asset List"), FontSizes.imiAsmButtonsTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {

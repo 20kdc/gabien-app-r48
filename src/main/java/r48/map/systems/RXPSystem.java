@@ -57,7 +57,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
     }
 
     @Override
-    public UIElement createMapExplorer(ISupplier<IConsumer<UIElement>> windowMaker, IMapContext mapBox, String mapInfos) {
+    public UIElement createMapExplorer(IConsumer<UIElement> windowMaker, IMapContext mapBox, String mapInfos) {
         return new UIGRMMapInfos(windowMaker, new RXPRMLikeMapInfoBackend(), mapBox, mapInfos);
     }
 

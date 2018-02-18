@@ -36,7 +36,7 @@ public class UISpritesheetChoice extends UIElement.UIProxy {
         };
         final UINumberBox nb = new UINumberBox(FontSizes.dialogWindowTextHeight);
         nb.number = oldVal;
-        UISplitterLayout msp = new UISplitterLayout(nb, new UITextButton(FontSizes.dialogWindowTextHeight, TXDB.get("Sprite Num."), new Runnable() {
+        UISplitterLayout msp = new UISplitterLayout(nb, new UITextButton(TXDB.get("Sprite Num."), FontSizes.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 consumer.accept(nb.number);
