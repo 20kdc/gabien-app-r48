@@ -35,7 +35,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
     private final IRMLikeMapInfoBackendWPub operators;
     private final IConsumer<UIElement> windowMakerGetter;
     private final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
-    private final UITreeView utv = new UITreeView();
+    private final UITreeView utv;
     private int selectedOrder = 0;
     private boolean deleteConfirmation = false;
     private boolean enableOrderHoleDebug = false;
@@ -51,6 +51,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
     };
 
     public UIGRMMapInfos(IConsumer<UIElement> wmg, final IRMLikeMapInfoBackendWPub b, IMapContext context, String mapInfos) {
+        utv = new UITreeView(UIBorderedElement.getRecommendedTextSize("", FontSizes.mapInfosTextHeight).height);
         operators = b;
         mapContext = context;
         toStringRes = mapInfos;

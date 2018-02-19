@@ -164,52 +164,66 @@ public class Art {
 
     // For ID reference, ignore the left 20px of symbolic.png, and look at the 16x16-sprite grid.
     public static void drawSymbol(IGrDriver igd, Symbol symbol, int x, int y, int size, boolean force, boolean background) {
+        drawSymbol(igd, symbol, x, y, size, size, force, background);
+    }
+
+    public static void drawSymbol(IGrDriver igd, Symbol symbol, int x, int y, int sizeW, int sizeH, boolean force, boolean background) {
         if (background)
-            igd.clearRect(0, 0, 0, x, y, size, size);
+            igd.clearRect(0, 0, 0, x, y, sizeW, sizeH);
         // NOTE: Symbols are drawn at one of the following sizes:
         // 4px
         // 8px
         // 16px
         // 16px * X
         // Symbols do NOT get scaled to non-integer sizes, unless size < 4 or force.
+        int size = Math.min(sizeW, sizeH);
         if (size <= 4) {
-            drawSymbol4px(igd, symbol.ordinal(), x, y, size);
+            drawSymbol4px(igd, symbol.ordinal(), x, y, sizeW, sizeH);
         } else if (size < 8) {
-            int m = (size - 4) / 2;
-            drawSymbol4px(igd, symbol.ordinal(), x + m, y + m, 4);
+            int mX = (sizeW - 4) / 2;
+            int mY = (sizeH - 4) / 2;
+            if (force) {
+                mX = 0;
+                mY = 0;
+            }
+            drawSymbol4px(igd, symbol.ordinal(), x + mX, y + mY, force ? sizeW : 4, force ? sizeH : 4);
         } else if (size < 16) {
-            int m = (size - 8) / 2;
-            if (force)
-                m = 0;
-            drawSymbol8px(igd, symbol.ordinal(), x + m, y + m, force ? size : 8);
+            int mX = (sizeW - 8) / 2;
+            int mY = (sizeH - 8) / 2;
+            if (force) {
+                mX = 0;
+                mY = 0;
+            }
+            drawSymbol8px(igd, symbol.ordinal(), x + mX, y + mY, force ? sizeW : 8, force ? sizeH : 8);
         } else {
             int ms = 16 * (size / 16);
-            int m = (size - ms) / 2;
+            int mX = (sizeW - ms) / 2;
+            int mY = (sizeH - ms) / 2;
             if (force) {
-                m = 0;
-                ms = size;
+                mX = 0;
+                mY = 0;
             }
-            drawSymbol16px(igd, symbol.ordinal(), x + m, y + m, ms);
+            drawSymbol16px(igd, symbol.ordinal(), x + mX, y + mY, force ? sizeW : ms, force ? sizeH : ms);
         }
     }
 
-    private static void drawSymbol4px(IGrDriver igd, int symbol, int x, int y, int size) {
-        igd.blitScaledImage(0, symbol * 4, 4, 4, x, y, size, size, symbolic);
+    private static void drawSymbol4px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
+        igd.blitScaledImage(0, symbol * 4, 4, 4, x, y, sizeW, sizeH, symbolic);
     }
 
-    private static void drawSymbol8px(IGrDriver igd, int symbol, int x, int y, int size) {
+    private static void drawSymbol8px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
         int page = symbol / 4;
         symbol %= 4;
         int subpage = symbol / 2;
         symbol %= 2;
         subpage += page * 2;
-        igd.blitScaledImage(4 + (symbol * 8), subpage * 8, 8, 8, x, y, size, size, symbolic);
+        igd.blitScaledImage(4 + (symbol * 8), subpage * 8, 8, 8, x, y, sizeW, sizeH, symbolic);
     }
 
-    private static void drawSymbol16px(IGrDriver igd, int symbol, int x, int y, int size) {
+    private static void drawSymbol16px(IGrDriver igd, int symbol, int x, int y, int sizeW, int sizeH) {
         int page = symbol / 4;
         symbol %= 4;
-        igd.blitScaledImage(20 + (symbol * 16), page * 16, 16, 16, x, y, size, size, symbolic);
+        igd.blitScaledImage(20 + (symbol * 16), page * 16, 16, 16, x, y, sizeW, sizeH, symbolic);
     }
 
     // Basically a "compatibility" function. Tries to draw an appropriate event-point image given a tile size and a top-left position.

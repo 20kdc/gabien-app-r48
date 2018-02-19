@@ -68,35 +68,40 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
         final SchemaPath path = path2.tagSEMonitor(target, this, false);
 
-        UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(database.buildCodename(target, true), FontSizes.schemaButtonTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                navigateToCode(launcher, path2, target, path, database);
-            }
-        }), new Runnable() {
-            @Override
-            public void run() {
-                int code = (int) target.getInstVarBySymbol("@code").fixnumVal;
-                RPGCommand rc = database.knownCommands.get(code);
-                String title = code + " : " + rc.formatName(null, null);
-                String result = TXDB.get("This command isn't known by the schema's CMDB.");
-                if (rc != null) {
-                    if (rc.description == null) {
-                        result = TXDB.get("This command is known, but no description exists.");
-                    } else {
-                        result = rc.description;
-                    }
-                } else {
-                    title += TXDB.get("Unknown Command");
+        if (showHeader) {
+            UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(database.buildCodename(target, true), FontSizes.schemaButtonTextHeight, new Runnable() {
+                @Override
+                public void run() {
+                    navigateToCode(launcher, path2, target, path, database);
                 }
-                UIHelpSystem uis = new UIHelpSystem();
-                uis.page.add(new UIHelpSystem.HelpElement('.', title.split(" ")));
-                uis.page.add(new UIHelpSystem.HelpElement('.', result.split(" ")));
-                launcher.launchOther(uis);
-            }
-        }, FontSizes.schemaButtonTextHeight);
+            }), new Runnable() {
+                @Override
+                public void run() {
+                    int code = (int) target.getInstVarBySymbol("@code").fixnumVal;
+                    RPGCommand rc = database.knownCommands.get(code);
+                    String title = code + " : " + rc.formatName(null, null);
+                    String result = TXDB.get("This command isn't known by the schema's CMDB.");
+                    if (rc != null) {
+                        if (rc.description == null) {
+                            result = TXDB.get("This command is known, but no description exists.");
+                        } else {
+                            result = rc.description;
+                        }
+                    } else {
+                        title += TXDB.get("Unknown Command");
+                    }
+                    UIHelpSystem uis = new UIHelpSystem();
+                    uis.page.add(new UIHelpSystem.HelpElement('.', title.split(" ")));
+                    uis.page.add(new UIHelpSystem.HelpElement('.', result.split(" ")));
+                    uis.runLayout();
+                    uis.setForcedBounds(null, new Rect(uis.getWantedSize()));
+                    launcher.launchOther(uis);
+                }
+            }, FontSizes.schemaButtonTextHeight);
 
-        return new UISplitterLayout(chooseCode, buildSubElem(target, launcher, path), true, 0);
+            return new UISplitterLayout(chooseCode, buildSubElem(target, launcher, path), true, 0);
+        }
+        return buildSubElem(target, launcher, path);
     }
 
     private UIElement buildSubElem(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
@@ -139,6 +144,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     rc.paramSpecialTags.get(i).applyTo(i, uiSVL, param, launcher, path);
                 }
             }
+            uiSVL.runLayout();
+            uiSVL.setForcedBounds(null, new Rect(uiSVL.getWantedSize()));
             return uiSVL;
         }
         return mostOfSchema.buildHoldingEditor(target, launcher, path);

@@ -817,7 +817,7 @@ public class AppMain {
     public static void reloadSystemDump() {
         RubyIO sysDump = AdHocSaveLoad.load("r48.error.YOUR_SAVED_DATA");
         if (sysDump == null) {
-            AppMain.launchDialog("The system dump was unloadable. It should be r48.error.YOUR_SAVED_DATA.r48");
+            AppMain.launchDialog(TXDB.get("The system dump was unloadable. It should be: r48.error.YOUR_SAVED_DATA.r48"));
             return;
         }
         RubyIO possibleActualDump = sysDump.getInstVarBySymbol("@current");
@@ -836,9 +836,9 @@ public class AppMain {
             objectDB.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(), root));
         }
         if (possibleActualDump != null) {
-            AppMain.launchDialog("Power failure dump loaded.");
+            AppMain.launchDialog(TXDB.get("Power failure dump loaded."));
         } else {
-            AppMain.launchDialog("Error dump loaded.");
+            AppMain.launchDialog(TXDB.get("Error dump loaded."));
         }
     }
 

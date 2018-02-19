@@ -127,23 +127,15 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                         field.accept(field.get() / 2);
                     }
                 });
-                UIAdjuster tb = new UIAdjuster(FontSizes.fontSizerTextHeight, new ISupplier<String>() {
+                UIAdjuster tb = new UIAdjuster(FontSizes.fontSizerTextHeight, field.get(), new IFunction<Long, Long>() {
                     @Override
-                    public String get() {
-                        int nv = field.get() + 1;
-                        field.accept(nv);
-                        refreshLayout(false);
-                        return Integer.toString(nv);
-                    }
-                }, new ISupplier<String>() {
-                    @Override
-                    public String get() {
-                        int nv = field.get() - 1;
+                    public Long apply(Long aLong) {
+                        int nv = (int) (long) aLong;
                         if (nv < 1)
                             nv = 1;
                         field.accept(nv);
                         refreshLayout(false);
-                        return Integer.toString(nv);
+                        return (long) nv;
                     }
                 });
                 tb.accept(Integer.toString(field.get()));

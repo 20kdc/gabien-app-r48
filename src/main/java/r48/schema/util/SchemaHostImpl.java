@@ -141,6 +141,8 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost, IW
             layoutRemoveElement(uie);
         layoutAddElement(toolbarRoot);
         layoutAddElement(innerElemEditor);
+        // Not actually correct, but serves to help assist the layout code
+        innerElemEditor.setForcedBounds(this, new Rect(getSize()));
 
         pathLabel.text = innerElem.toStringMissingRoot();
 

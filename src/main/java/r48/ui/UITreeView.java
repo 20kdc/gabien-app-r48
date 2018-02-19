@@ -11,6 +11,7 @@ import gabien.IDesktopPeripherals;
 import gabien.IGrDriver;
 import gabien.IPeripherals;
 import gabien.ui.*;
+import r48.FontSizes;
 
 import java.util.HashSet;
 
@@ -21,13 +22,14 @@ import java.util.HashSet;
 public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IOldMouseReceiver {
     private TreeElement[] elements = new TreeElement[0];
     private OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
-    private int nodeWidth = 8;
+    private final int nodeWidth;
     private int dragBaseX = 0, dragBaseY = 0;
     private boolean dragCursorEnable = false;
     private Art.Symbol dragCursorSymbol = null;
     private int dragBase = -1;
 
-    public UITreeView() {
+    public UITreeView(int nw) {
+        nodeWidth = nw;
     }
 
     public void setElements(TreeElement[] e) {
@@ -41,16 +43,10 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
         int y = 0;
-        nodeWidth = 0;
-        int total = 0;
-        for (TreeElement te : elements) {
-            // Bad IDE warning! No biscuit for you.
-            // This makes total sense - it's averaging the node heights to get the aspect ratio around about right.
-            nodeWidth += te.innerElement.getSize().height;
-            total++;
-        }
-        if (total != 0)
-            nodeWidth /= total;
+        // If not handled carefully, this will almost certainly be a vicious cycle.
+        // 'tis the cost of buttons that are allowed to specify new sizes.
+        // Could easily override said buttons, but that would lose the point.
+        // Keeping this in mind, nodeWidth is now final, and for most symbols direct w/h is used.
         TreeElement lastElement = null; // to set hasChildren
         int invisibleAboveIndent = 0x7FFFFFFF; // to hide unexpanded nodes
         int width = 0;
@@ -113,19 +109,19 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
                 continuingLines.add(te.indent - 1);
             }
 
-            int totalSize = Math.max(te.h, nodeWidth);
             for (int j = 0; j < te.indent; j++) {
                 if (j == (te.indent - 1)) {
-                    Art.drawSymbol(igd, pico, j * nodeWidth, y, totalSize, true, blackText);
+                    Art.drawSymbol(igd, pico, j * nodeWidth, y, nodeWidth, te.h, true, blackText);
                 } else {
                     if (continuingLines.contains(j))
-                        Art.drawSymbol(igd, Art.Symbol.BarV, j * nodeWidth, y, totalSize, true, blackText);
+                        Art.drawSymbol(igd, Art.Symbol.BarV, j * nodeWidth, y, nodeWidth, te.h, true, blackText);
                 }
             }
             // the actual item icon
+            int nwMargin = (te.h - nodeWidth) / 2;
             if (te.hasChildren && (!te.expanded))
-                Art.drawSymbol(igd, Art.Symbol.Expandable, te.indent * nodeWidth, y, te.h, true, blackText);
-            Art.drawSymbol(igd, te.icon, te.indent * nodeWidth, y, te.h, true, blackText);
+                Art.drawSymbol(igd, Art.Symbol.Expandable, te.indent * nodeWidth, y + nwMargin, nodeWidth, true, blackText);
+            Art.drawSymbol(igd, te.icon, te.indent * nodeWidth, y + nwMargin, nodeWidth, true, blackText);
             y += te.h;
         }
         if (dragCursorEnable)

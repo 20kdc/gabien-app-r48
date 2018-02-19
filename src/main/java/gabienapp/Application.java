@@ -100,17 +100,14 @@ public class Application {
                 }
             };
 
-            UIAdjuster msAdjust = new UIAdjuster(FontSizes.launcherTextHeight, new ISupplier<String>() {
+            UIAdjuster msAdjust = new UIAdjuster(FontSizes.launcherTextHeight, globalMS, new IFunction<Long, Long>() {
                 @Override
-                public String get() {
-                    return Integer.toString(++globalMS);
-                }
-            }, new ISupplier<String>() {
-                @Override
-                public String get() {
-                    if (globalMS == 1)
-                        return Integer.toString(globalMS);
-                    return Integer.toString(--globalMS);
+                public Long apply(Long aLong) {
+                    int gms = (int) (long) aLong;
+                    if (gms < 1)
+                        gms = 1;
+                    globalMS = gms;
+                    return (long) gms;
                 }
             });
             msAdjust.accept(Integer.toString(globalMS));
