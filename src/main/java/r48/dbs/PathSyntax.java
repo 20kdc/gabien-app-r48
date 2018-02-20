@@ -50,7 +50,7 @@ public class PathSyntax {
             }
             return new String[] {
                     sb.toString(),
-                    full.substring(plannedIdx + 1)
+                    full.substring(plannedIdx)
             };
         } else {
             for (char c : breakers) {
@@ -67,7 +67,7 @@ public class PathSyntax {
             }
             return new String[] {
                     full.substring(0, plannedIdx),
-                    full.substring(plannedIdx + 1)
+                    full.substring(plannedIdx)
             };
         }
     }

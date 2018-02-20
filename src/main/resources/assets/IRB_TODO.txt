@@ -13,14 +13,22 @@ short-term planning:
  + command-trees
  + all the XP things
 + USABILITY-MID
- + DB2
-   + Borrow from JSON tokenizer
-   + Use ';' as a line-ender?
-   + Generally less line-oriented and messy
-
-+ USABILITY-LOW
- + immortal window export
- + clean up windowing?
+ + "SDB1.1"
+  - SDB2 scrapped, would cause major rewriting for no good reason
+  + Keep using SDB2 "Sane Path Syntax" groundwork
+  + DBLoader tokenizer tries to preserve compatibility by making " only applicable at the start of a word
+   + Magically applies to TXDB - Check if this is a good thing, if it is, keep doing it
+    + Are Java & JSON escapes sufficiently compatible? If so, great, TXDB just got better with no added work
+  + Semi-incompatible extension to DB1 format
+  + Can be immediately put to use.
+  + Format changes can still occur via slow progression as per usual,
+     rather than a big change that will break everything
+  + Should serve as an example of how format changes should occur in R48
+  + "C sdb1.1" enables SDB1.1 features in a specific SDB file during transition period
+   + SDB1.1 PathSyntax, ValueSyntax, DisambiguatorSyntax
+    etc.
+ + SDB Further Documentation Project
+  + Should create a useful index to help clean up SDB
 
 + Figure out RXP's oddities(???)
 

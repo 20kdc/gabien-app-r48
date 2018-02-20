@@ -63,7 +63,3 @@ e UTF-8
 0: Sticki
 e UTF-8
 . Launch testbed ("Sticky Note Editor")
-
-0: SDB2Test
-e UTF-8
-. DO NOT PRESS
