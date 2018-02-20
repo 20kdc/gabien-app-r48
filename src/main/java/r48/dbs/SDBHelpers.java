@@ -76,17 +76,17 @@ class SDBHelpers {
         };
     }
 
-    public SchemaElement makeSpriteSelector(final String varPath, final String imgPath, final String imgPfx) {
+    public SchemaElement makeSpriteSelector(final String varPath, final String imgPath, final String imgPfx, final boolean sdb2) {
         final IFunction<String, ISpritesheetProvider> args2 = spritesheets.get(imgPfx);
         return new SpritesheetCoreSchemaElement(spritesheetN.get(imgPfx), 0, new IFunction<RubyIO, RubyIO>() {
             @Override
             public RubyIO apply(RubyIO rubyIO) {
-                return PathSyntax.parse(rubyIO, varPath);
+                return PathSyntax.parse(rubyIO, varPath, sdb2);
             }
         }, new IFunction<RubyIO, ISpritesheetProvider>() {
             @Override
             public ISpritesheetProvider apply(RubyIO rubyIO) {
-                return args2.apply(PathSyntax.parse(rubyIO, imgPath).decString());
+                return args2.apply(PathSyntax.parse(rubyIO, imgPath, sdb2).decString());
             }
         });
     }
@@ -177,10 +177,10 @@ class SDBHelpers {
         disambiguations.put("x", new ArrayElementSchemaElement(1, TXDB.get("id "), new LowerBoundIntegerSchemaElement(1, 1), null, false));
         AggregateSchemaElement inner = new AggregateSchemaElement(new SchemaElement[] {
                 new HalfsplitSchemaElement(
-                        new ArrayElementSchemaElement(0, TXDB.get("type "), new EnumSchemaElement(types, "0", "LOCK"), null, false),
-                        new DisambiguatorSchemaElement("]0", disambiguations)
+                        new ArrayElementSchemaElement(0, TXDB.get("type "), new EnumSchemaElement(types, new RubyIO().setFX(0), "LOCK"), null, false),
+                        new DisambiguatorSchemaElement("]0", disambiguations, true)
                 ),
-                new SubwindowSchemaElement(new HWNDSchemaElement("]0", "R2K/H_Internal_PPP"), new IFunction<RubyIO, String>() {
+                new SubwindowSchemaElement(new HWNDSchemaElement("]0", "R2K/H_Internal_PPP", true), new IFunction<RubyIO, String>() {
                     @Override
                     public String apply(RubyIO rubyIO) {
                         return TXDB.get("Explain this picture mode...");
@@ -240,7 +240,7 @@ class SDBHelpers {
         disambiguations.put("x", new ArrayElementSchemaElement(1, TXDB.get("valueVar "), varId, null, false));
         SchemaElement inner = new HalfsplitSchemaElement(
                 new ArrayElementSchemaElement(0, TXDB.get("isVar "), new IntBooleanSchemaElement(false), null, false),
-                new DisambiguatorSchemaElement("]0", disambiguations)
+                new DisambiguatorSchemaElement("]0", disambiguations, true)
         );
         return new MagicalBindingSchemaElement(new IMagicalBinder() {
             @Override

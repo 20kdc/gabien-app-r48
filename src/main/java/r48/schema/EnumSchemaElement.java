@@ -36,9 +36,9 @@ public class EnumSchemaElement extends SchemaElement {
 
     public String buttonText;
     public UIEnumChoice.EntryMode entryMode;
-    public String defaultVal;
+    public RubyIO defaultVal;
 
-    public EnumSchemaElement(HashMap<String, String> o, String def, String es) {
+    public EnumSchemaElement(HashMap<String, String> o, RubyIO def, String es) {
         options = o;
         viewOptions = new HashMap<String, RubyIO>();
         if (es.contains(":")) {
@@ -47,7 +47,7 @@ public class EnumSchemaElement extends SchemaElement {
             es = es.substring(0, i);
         }
         for (String si : options.keySet()) {
-            RubyIO dec = ValueSyntax.decode(si);
+            RubyIO dec = ValueSyntax.decode(si, true);
             viewOptions.put(viewValue(dec, true), dec);
         }
         buttonText = es;
@@ -74,7 +74,7 @@ public class EnumSchemaElement extends SchemaElement {
     }
 
     public String viewValue(RubyIO val, boolean prefix) {
-        String v2 = ValueSyntax.encode(val);
+        String v2 = ValueSyntax.encode(val, true);
         if (v2 != null) {
             String st = options.get(v2);
             if (st != null) {
@@ -88,9 +88,8 @@ public class EnumSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        RubyIO def = ValueSyntax.decode(defaultVal);
-        if (IntegerSchemaElement.ensureType(target, (char) def.type, setDefault)) {
-            target.setDeepClone(def);
+        if (IntegerSchemaElement.ensureType(target, (char) defaultVal.type, setDefault)) {
+            target.setDeepClone(defaultVal);
             path.changeOccurred(true);
         }
     }

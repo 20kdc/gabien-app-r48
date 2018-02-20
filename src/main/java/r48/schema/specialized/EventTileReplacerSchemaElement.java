@@ -24,24 +24,26 @@ public class EventTileReplacerSchemaElement extends SchemaElement {
     public final TSDB displayMap;
     public final int layer;
     public final String charName, charIdx;
+    public final boolean sdb2;
 
-    public EventTileReplacerSchemaElement(TSDB dmap, int l, String idx, String n) {
+    public EventTileReplacerSchemaElement(TSDB dmap, int l, String idx, String n, boolean sdb2x) {
         displayMap = dmap;
         layer = l;
         charName = n;
         charIdx = idx;
+        sdb2 = sdb2x;
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
         final UITileGrid r = new UITileGrid(launcher.getContextRenderer(), layer, 0, displayMap.mapping.length, 0, displayMap.mapping, "This text can't be seen.", FontSizes.getSpriteScale());
-        if (PathSyntax.parse(target, charName).strVal.length == 0)
-            r.setSelected((int) PathSyntax.parse(target, charIdx).fixnumVal);
+        if (PathSyntax.parse(target, charName, sdb2).strVal.length == 0)
+            r.setSelected((int) PathSyntax.parse(target, charIdx, sdb2).fixnumVal);
         r.onSelectionChange = new Runnable() {
             @Override
             public void run() {
-                PathSyntax.parse(target, charName).strVal = new byte[0];
-                PathSyntax.parse(target, charIdx).fixnumVal = r.getSelected();
+                PathSyntax.parse(target, charName, sdb2).strVal = new byte[0];
+                PathSyntax.parse(target, charIdx, sdb2).fixnumVal = r.getSelected();
                 path.changeOccurred(false);
             }
         };

@@ -1,0 +1,59 @@
+
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+ValueSyntax is a syntax for describing basic Ruby values
+ (specifically all the kinds that you have to worry about disambiguations and such with)
+It has three forms, but one is dependent on SDB version:
+
+'"' text... : string (SDB1)
+'$' text... : string (SDB2)
+':' text... : symbol
+text... : integer
+
+PathSyntax is a syntax for getting a RubyIO relative to another RubyIO.
+Sometimes, it's used relative to the world.
+
+PathSyntax is used in the following SDB1 stuff (mostly as regexes)
+  condHide
+  ^[Dd]
+  C name
+  path
+  optP
+  spriteSelector
+  flushCommandBuffer
+  DA{
+  SDBHelpers
+
+  ???
+
+PathSyntax text is divided into a start block (which may not be allowed to exist in some cases),
+ which if allowed is an ObjectDB ID, and a set of path-components,
+ which have to start with '$' (':' for SDB2), '@', or ']'.
+
+A path-component continues until the next instance of a path-component start character,
+ unless in SDB2, where the escaping is applied at this level,
+  and '#' escapes the next character (including another '#').
+
+Note that a path component may support additions / deletions, or may not.
+Retrieval, addition and deletion are marked with "RAD".
+
+The path-component forms are:
+
+':' (SDB2) / '$' (SDB1):
+
+   '{' ValueSyntax : Hash value by key. (RAD)
+   '.' text...     : Arbitrary (can be non-@) instance variable (RAD)
+   'length'        : Array length (R..)
+   'fail'          : Always fails. (R..)
+   <nothing>       : "self" - NOP.
+
+'@':
+
+   text...         : IVar - the '@' gets included (RAD)
+
+']':
+
+   text...         : Array index integer (RA.)

@@ -13,6 +13,7 @@ import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
@@ -46,6 +47,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     public boolean allowTextdraw = true;
     public boolean allowResize = true;
 
+    // NOTE: Doesn't need SDB2-PS compat because it only just started using PS, thankfully
     public RubyTableSchemaElement(String iVar, String wVar, String hVar, int dim, int dw, int dh, int defL, ITableCellEditor tcl, int[] defV) {
         this.iVar = iVar;
         widthVar = wVar;
@@ -60,10 +62,10 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final RubyIO targV = iVar == null ? target : target.getInstVarBySymbol(iVar);
+        final RubyIO targV = iVar == null ? target : PathSyntax.parse(target, iVar, true);
         final RubyTable targ = new RubyTable(targV.userVal);
-        final RubyIO width = widthVar == null ? null : target.getInstVarBySymbol(widthVar);
-        final RubyIO height = heightVar == null ? null : target.getInstVarBySymbol(heightVar);
+        final RubyIO width = widthVar == null ? null : PathSyntax.parse(target, widthVar, true);
+        final RubyIO height = heightVar == null ? null : PathSyntax.parse(target, heightVar, true);
 
         final SchemaPath dataBlackboxTarget = path.findLast();
         final SchemaPath.EmbedDataKey blackboxKey = new SchemaPath.EmbedDataKey(this, targV, RubyTableSchemaElement.class, "blackbox");

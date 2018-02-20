@@ -21,7 +21,7 @@ public class ArbIndexedArraySchemaElement extends ArraySchemaElement {
     public int indexOffset;
 
     public ArbIndexedArraySchemaElement(SchemaElement s, int io, int atLeast, int fixedSize, IArrayInterface uiHelper) {
-        super(fixedSize, (atLeast > 0) ? (atLeast + io) : 0, 0, uiHelper);
+        super(fixedSize, (atLeast > -1) ? (atLeast + io) : 0, 0, uiHelper);
         subelems = s;
         indexOffset = io;
     }

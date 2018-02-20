@@ -64,5 +64,6 @@ e UTF-8
 e UTF-8
 . Launch testbed ("Sticky Note Editor")
 
-0: JSONTest
+0: SDB2Test
 e UTF-8
+. DO NOT PRESS

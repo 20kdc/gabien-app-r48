@@ -114,9 +114,9 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
             if (target.getInstVarBySymbol("@indent") != null) {
                 if (showHeader) {
-                    SchemaElement ise = new PathSchemaElement("@indent", TXDB.get("@indent"), new ROIntegerSchemaElement(0), false);
+                    SchemaElement ise = new PathSchemaElement("@indent", TXDB.get("@indent"), new ROIntegerSchemaElement(0), true, false);
                     if (!allowControlOfIndent)
-                        ise = new PathSchemaElement("@indent", TXDB.get("@indent"), new IntegerSchemaElement(0), false);
+                        ise = new PathSchemaElement("@indent", TXDB.get("@indent"), new IntegerSchemaElement(0), true, false);
                     uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
                 }
             }

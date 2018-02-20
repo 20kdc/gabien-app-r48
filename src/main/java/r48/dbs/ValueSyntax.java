@@ -17,8 +17,11 @@ import r48.RubyIO;
  * Created on 10/06/17.
  */
 public class ValueSyntax {
-    public static RubyIO decode(String unescape) {
-        if (unescape.startsWith("\"")) {
+    public static RubyIO decode(String unescape, boolean sdb2) {
+        boolean str = unescape.startsWith("\"");
+        if (sdb2)
+            str = unescape.startsWith("$");
+        if (str) {
             return new RubyIO().setString(unescape.substring(1), true);
         } else if (unescape.startsWith(":")) {
             RubyIO sym = new RubyIO();
@@ -31,16 +34,20 @@ public class ValueSyntax {
         }
     }
 
-    // Can return null if unencodable.
-    public static String encode(RubyIO val) {
+    // Can return null if unencodable. Note that this is for use in hashes.
+    public static String encode(RubyIO val, boolean sdb2) {
         String v2 = "";
         if (val.type == '"') {
-            v2 = "\"" + val.decString();
+            v2 = (sdb2 ? "$" : "\"") + val.decString();
         } else if (val.type == ':') {
             v2 = ":" + val.symVal;
         } else if (val.type == 'i') {
             v2 += val.fixnumVal;
         }
         return v2;
+    }
+
+    public static String port(String arg) {
+        return encode(decode(arg, false), true);
     }
 }

@@ -12,6 +12,12 @@ short-term planning:
 + USABILITY-HIGH
  + command-trees
  + all the XP things
++ USABILITY-MID
+ + DB2
+   + Borrow from JSON tokenizer
+   + Use ';' as a line-ender?
+   + Generally less line-oriented and messy
+
 + USABILITY-LOW
  + immortal window export
  + clean up windowing?

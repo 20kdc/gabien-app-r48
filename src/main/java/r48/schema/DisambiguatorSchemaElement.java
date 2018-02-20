@@ -25,8 +25,7 @@ import java.util.HashMap;
 public class DisambiguatorSchemaElement extends SchemaElement {
     // Special values:
     // null: Always returns i0
-    // "$fail": There is no disambiguator. Implemented via PathSyntax.
-    // #hastilyAddedFeatures
+    // Other stuff goes via PathSyntax.
     public String dIndex;
     // "text
     // i123
@@ -35,10 +34,12 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     // Ints are "0: some user text"
     // x is default
     public HashMap<String, SchemaElement> dTable;
+    public boolean sdb2;
 
-    public DisambiguatorSchemaElement(String disambiguatorIndex, HashMap<String, SchemaElement> disambiguations) {
+    public DisambiguatorSchemaElement(String disambiguatorIndex, HashMap<String, SchemaElement> disambiguations, boolean sdb2x) {
         dIndex = disambiguatorIndex;
         dTable = disambiguations;
+        sdb2 = sdb2x;
     }
 
     @Override
@@ -52,13 +53,18 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     private String getDisambigIndex(RubyIO target) {
         if (dIndex == null)
             return "i0";
-        target = PathSyntax.parse(target, dIndex);
+        target = PathSyntax.parse(target, dIndex, sdb2);
         if (target == null)
             return "x";
         if (target.type == 'i')
             return "i" + target.fixnumVal;
-        if (target.type == '"')
-            return "\"" + target.decString();
+        if (sdb2) {
+            if (target.type == '"')
+                return "$" + target.decString();
+        } else {
+            if (target.type == '"')
+                return "\"" + target.decString();
+        }
         return "x";
     }
 

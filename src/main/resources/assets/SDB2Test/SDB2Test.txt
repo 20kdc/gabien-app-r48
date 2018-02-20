@@ -1,0 +1,48 @@
+/*
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+// SDB2 (and also DB2Loader) test.
+// DB2Loader [is a] [will be] a proper tokenizer, but [will] use[s] "lines" (splitting by ';' tokens).
+// It [will] reuse[s] JSON string syntax.
+// DB2Loader [will] type-tag[s], but these tags don't have to be used.
+// DBLoader forms can be "converted" to DB2, but this is pretty bad to use for SDB.
+// IDs should be the same as strings.
+//
+// Valid ID characters should be just about everything NOT:
+// '(', ')', '[', ']', '{', '}', ',', '"', '/',
+// and whitespace.
+//
+// Forms are:
+// ':' id form ';' : Perform object-class schema element assignment.
+// id form ';' : Perform schema element assignment.
+// (try to only have the above two!)
+// id '(' parameters ')' ';' : Perform call to system routine, can return value
+// '[' parameters ']' : Returns aggregate
+// '{' '}' : Need to work out what this should be for - I'm thinking "sufficiently advanced disambiguator".
+//           Should allow specifying rules and outcomes.
+// Example of {}:
+// {
+//  "@type", "i192", [
+//   beep
+//  ],
+//  "@type", "i128", [
+//   boop
+//  ]
+// }
+
+objectDB("r48", "Data/", ".rxdata");
+mapSystem("null");
+
+: RPG::Troop [
+ name(Class.RPG::Troop, @id, @name, "Troop #A: #B");
+ @id index;
+ @name string;
+ @pages subwindow arrayAL1(RPG::Troop::Page);
+ @members subwindow array(RPG::Troop::Member);
+];
+
+File.Troops arrayIx1(subwindow(RPG::Troop));

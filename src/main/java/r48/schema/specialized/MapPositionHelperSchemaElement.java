@@ -27,19 +27,21 @@ import r48.ui.Art;
  */
 public class MapPositionHelperSchemaElement extends SchemaElement {
     public final String pathA, pathB, pathC;
+    public boolean sdb2;
 
-    public MapPositionHelperSchemaElement(String a, String b, String c) {
+    public MapPositionHelperSchemaElement(String a, String b, String c, boolean sdb2x) {
         pathA = a;
         pathB = b;
         pathC = c;
+        sdb2 = sdb2x;
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
         final RubyIO[] abc = {
-                PathSyntax.parse(target, pathA),
-                PathSyntax.parse(target, pathB),
-                PathSyntax.parse(target, pathC)
+                PathSyntax.parse(target, pathA, sdb2),
+                PathSyntax.parse(target, pathB, sdb2),
+                PathSyntax.parse(target, pathC, sdb2)
         };
         for (int i = 0; i < 3; i++)
             if (abc[i] == null)

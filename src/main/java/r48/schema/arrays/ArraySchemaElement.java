@@ -142,7 +142,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     private ISupplier<Runnable> getRemovalCallback(final int pLevel, final RubyIO target, final ISchemaHost launcher, final int mi, final int thisNextAdvance, final SchemaPath path, final SchemaPath ind) {
         if (pLevel < 2)
             return null;
-        if (sizeFixed != 0)
+        if (sizeFixed != -1)
             return null;
         return new ISupplier<Runnable>() {
             @Override
@@ -160,7 +160,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     }
 
     private Runnable getAdditionCallback(final RubyIO target, final ISchemaHost launcher, final int i, final SchemaPath path, final SchemaPath ind) {
-        if (sizeFixed != 0)
+        if (sizeFixed != -1)
             return null;
         return new Runnable() {
             @Override
@@ -182,7 +182,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     }
 
     private Runnable getClipAdditionCallback(final RubyIO target, final int i, final SchemaPath path) {
-        if (sizeFixed != 0)
+        if (sizeFixed != -1)
             return null;
         return new Runnable() {
             @Override
@@ -224,7 +224,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 target.arrVal[i] = new RubyIO();
         }
         boolean modified = setDefault;
-        if (sizeFixed != 0) {
+        if (sizeFixed != -1) {
             if (target.arrVal.length != sizeFixed) {
                 int lenCut = Math.min(sizeFixed, target.arrVal.length);
                 RubyIO[] newArr = new RubyIO[sizeFixed];
@@ -308,7 +308,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // 2: All permissions.
     // (Used to prevent a user shooting themselves in the foot - should not be considered a serious mechanism.)
     protected int elementPermissionsLevel(int i, RubyIO target) {
-        boolean canDelete = (sizeFixed == 0) && (!(target.arrVal.length <= atLeast));
+        boolean canDelete = (sizeFixed == -1) && (!(target.arrVal.length <= atLeast));
         return canDelete ? 2 : 1;
     }
 }

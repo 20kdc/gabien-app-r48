@@ -36,7 +36,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     private final RPGCommandSchemaElement baseElement;
 
     public EventCommandArraySchemaElement(SchemaElement a, SchemaElement b, CMDB db, boolean indentControl) {
-        super(0, 0, 0, new StandardArrayInterface());
+        super(-1, 0, 0, new StandardArrayInterface());
         baseElement = new RPGCommandSchemaElement(a, b, db, indentControl, true);
         // gets rid of subwindows & proxies
         database = db;

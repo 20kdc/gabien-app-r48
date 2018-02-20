@@ -102,13 +102,13 @@ public class DictionaryUpdaterRunnable implements Runnable {
     private void finalizeVals(HashMap<String, String> finalMap) {
         // Default value of 1 because r2k. if this is ever in conflict then start adding a default parameter value for dictionaries.
         // Do proper dictionary unification at the same time.
-        SchemaElement ise = new EnumSchemaElement(finalMap, Integer.toString(defaultVal), "INT:" + TXDB.get("ID."));
+        SchemaElement ise = new EnumSchemaElement(finalMap, new RubyIO().setFX(defaultVal), "INT:" + TXDB.get("ID."));
         AppMain.schemas.setSDBEntry(dict, ise);
     }
 
     private void handleVal(HashMap<String, String> finalMap, RubyIO rio, RubyIO k) {
         if (rio.type != '0') {
-            String p = ValueSyntax.encode(k);
+            String p = ValueSyntax.encode(k, true);
             if (p == null)
                 return;
             if (iVar == null) {

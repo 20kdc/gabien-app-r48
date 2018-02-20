@@ -131,52 +131,9 @@ public class JsonObjectBackend implements IObjectBackend {
                 }
                 tokens.add(s);
             } else if (c == '"') {
-                // String
-                String s = "\"";
-                c = r.read();
-                while (c != -1) {
-                    if (c == '"')
-                        break;
-                    if (c == '\\') {
-                        c = r.read();
-                        if (c == -1)
-                            break;
-                        if (c == 'u') {
-                            int v = 0;
-                            for (int i = 0; i < 4; i++) {
-                                c = r.read();
-                                v = (v << 4) | handleHexDig(c);
-                                if (c == -1)
-                                    break;
-                            }
-                            s += (char) v;
-                        } else if (c == '"') {
-                            s += "\"";
-                        } else if (c == '\\') {
-                            s += "\\";
-                        } else if (c == '/') {
-                            s += "/";
-                        } else if (c == 'b') {
-                            s += "\b";
-                        } else if (c == 'f') {
-                            s += "\f";
-                        } else if (c == 'n') {
-                            s += "\n";
-                        } else if (c == 'r') {
-                            s += "\r";
-                        } else if (c == 't') {
-                            s += "\t";
-                        } else {
-                            throw new IOException("Unknown escape " + c);
-                        }
-                    } else {
-                        s += (char) c;
-                    }
-                    c = r.read();
-                }
-                if (c == -1)
-                    throw new IOException("String terminated too early");
-                tokens.add(s);
+                String s = JsonStringIO.readString(r);
+                // The '\"' is just a prefix, as readString returns the unprefixed string contents
+                tokens.add("\"" + s);
                 next = true;
             } else if (c < 33) {
                 // Whitespace...
@@ -199,42 +156,6 @@ public class JsonObjectBackend implements IObjectBackend {
 
     private boolean singleCharBreaker(int c) {
         return (c == '[') || (c == ']') || (c == ':') || (c == '{') || (c == '}') || (c == ',');
-    }
-
-    private int handleHexDig(int c) throws IOException {
-        if (c == '0')
-            return 0;
-        if (c == '1')
-            return 1;
-        if (c == '2')
-            return 2;
-        if (c == '3')
-            return 3;
-        if (c == '4')
-            return 4;
-        if (c == '5')
-            return 5;
-        if (c == '6')
-            return 6;
-        if (c == '7')
-            return 7;
-        if (c == '8')
-            return 8;
-        if (c == '9')
-            return 9;
-        if ((c == 'A') || (c == 'a'))
-            return 10;
-        if ((c == 'B') || (c == 'b'))
-            return 11;
-        if ((c == 'C') || (c == 'c'))
-            return 12;
-        if ((c == 'D') || (c == 'd'))
-            return 13;
-        if ((c == 'E') || (c == 'e'))
-            return 14;
-        if ((c == 'F') || (c == 'f'))
-            return 15;
-        throw new IOException("Unknown hex char");
     }
 
     @Override
@@ -272,24 +193,7 @@ public class JsonObjectBackend implements IObjectBackend {
                 dos.writeBytes(object.decString());
                 break;
             case '"':
-                // Unlike other backends, this has a definitive encoding which cannot change, in theory.
-                // In this case system encoding is actually ignored in favour of Java encoding (as it's the same as JSON)
-                dos.write('\"');
-                for (char c : object.decString().toCharArray()) {
-                    // can't let any messups happen
-                    if ((c < 32) || (c > 126)) {
-                        String pad4 = Integer.toHexString(c);
-                        while (pad4.length() < 4)
-                            pad4 = "0" + pad4;
-                        dos.writeBytes("\\u" + pad4);
-                    } else if ((c == '\"') || (c == '\\')) {
-                        dos.write('\\');
-                        dos.write(c);
-                    } else {
-                        dos.write(c);
-                    }
-                }
-                dos.write('\"');
+                dos.writeBytes(JsonStringIO.getStringAsASCII(object.decString()));
                 break;
             case '{':
                 dos.write('{');

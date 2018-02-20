@@ -75,7 +75,7 @@ public class ObjectClassSchemaElement extends SchemaElement {
         // Final type disambiguation
         if (ise instanceof PathSchemaElement) {
             // This catches normal iVars, though could cause some harmless spillage
-            String n = PathSyntax.getAbsoluteIVar(((PathSchemaElement) ise).pStr);
+            String n = PathSyntax.getAbsoluteIVar(((PathSchemaElement) ise).pStr, ((PathSchemaElement) ise).sdb2);
             if (n != null)
                 iVars.add(n);
             return true;
