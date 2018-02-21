@@ -27,8 +27,6 @@ public class CMDB {
     public int listLeaveCmd = -1; // -1 means "no list leave command actually exists".
     public int blockLeaveCmd = 0; // This is 10 on R2k, but that is controlled via Lblock.
 
-    public int dUsers = 0;
-
     public CMDB(final String readFile) {
         DBLoader.readFile(readFile, new IDatabase() {
             RPGCommand rc;
@@ -150,13 +148,15 @@ public class CMDB {
                     rc.needsBlockLeavePre = true;
                 } else if (c == 'L') {
                     rc.typeBlockLeave = true;
-                    if (args[0].equals("block")) {
-                        // block context only
-                        blockLeaveCmd = workingCmdId;
-                    } else {
-                        // default context: all
-                        listLeaveCmd = workingCmdId;
-                        blockLeaveCmd = workingCmdId;
+                    if (args.length > 0) {
+                        if (args[0].equals("block")) {
+                            // block context only
+                            blockLeaveCmd = workingCmdId;
+                        } else {
+                            // default context: all
+                            listLeaveCmd = workingCmdId;
+                            blockLeaveCmd = workingCmdId;
+                        }
                     }
                 } else if (c == '>') {
                     localAliasing.put(args[0], AppMain.schemas.getSDBEntry(args[1]));
@@ -167,8 +167,9 @@ public class CMDB {
                         rc.category = Integer.parseInt(args[1]);
                     if (args[0].equals("categories")) {
                         categories = new String[args.length - 1];
+                        // No longer using EscapedStringSyntax, so sanity has been restored (yay!)
                         for (int i = 1; i < args.length; i++)
-                            categories[i - 1] = TXDB.get(subContext + ".categories", EscapedStringSyntax.unescape(args[i]));
+                            categories[i - 1] = TXDB.get(subContext + ".categories", args[i]);
                     }
                     if (args[0].equals("digitCount"))
                         digitCount = Integer.parseInt(args[1]);
@@ -324,8 +325,6 @@ public class CMDB {
             }
         if (fails1 > 0)
             System.err.println(fails1 + " commands do not have descriptions.");
-        if (dUsers > 0)
-            System.err.println(dUsers + " commands use D-syntax. This is deprecated in favour of Pv-syntax, which changes the parameter name accordingly and is easier to read.");
     }
 
     public String buildCodename(RubyIO target, boolean indent) {

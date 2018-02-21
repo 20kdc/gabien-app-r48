@@ -53,4 +53,9 @@
   'A' Install AutoTiles files.
    The autotiles system works with a set of autotiles definitions, which must be installed.
   'C' Random stuff (allowIndentControl, name definitions..., access to the super special schema that only works for a given structure...)
-  <The actual chaining language is... complicated - see SDB.java for details.>
+  <
+   The actual chaining language is... complicated - see SDB.java for details.
+   Notably, there are two 'versions' of SDB.
+   One of them uses a syntax called "EscapedStringSyntax", which is horrific to deal with.
+   The other has eradicated that in favour of the added support in DBLoader for JSON string syntax.
+  >

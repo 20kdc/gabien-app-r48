@@ -100,6 +100,10 @@ public class SDB {
     public void readFile(final String fName) {
         final String fPfx = "SDB@" + fName;
         DBLoader.readFile(fName, new IDatabase() {
+
+            // SDBv1.1
+            boolean v1p1;
+
             AggregateSchemaElement workingObj;
 
             HashMap<String, String> commandBufferNames = new HashMap<String, String>();
@@ -149,17 +153,19 @@ public class SDB {
                             return new FloatSchemaElement(args[point++]);
                         // To translate, or not to? Unfortunately these can point at files.
                         // (later) However, context makes it obvious
-                        if (text.equals("string="))
-                            return new StringSchemaElement(TXDB.get(outerContext, EscapedStringSyntax.unescape(args[point++])), '\"');
+                        if (text.equals("string=")) {
+                            String esc = unescapeIfPre11(args[point++]);
+                            return new StringSchemaElement(TXDB.get(outerContext, esc), '\"');
+                        }
                         // Before you go using these - They are based on *visual* length, and are not hard limits.
                         if (text.equals("stringLen")) {
                             int l = Integer.parseInt(args[point++]);
                             return new StringLenSchemaElement("", l);
                         }
                         if (text.equals("stringLen=")) {
-                            String txt = EscapedStringSyntax.unescape(args[point++]);
+                            String esc = unescapeIfPre11(args[point++]);
                             int l = Integer.parseInt(args[point++]);
-                            return new StringLenSchemaElement(TXDB.get(outerContext, txt), l);
+                            return new StringLenSchemaElement(TXDB.get(outerContext, esc), l);
                         }
                         //
                         if (text.equals("hwnd")) {
@@ -184,19 +190,19 @@ public class SDB {
                             return new HiddenSchemaElement(hide, new IFunction<RubyIO, Boolean>() {
                                 @Override
                                 public Boolean apply(RubyIO rubyIO) {
-                                    return PathSyntax.parse(rubyIO, path, false).type == 'T';
+                                    return PathSyntax.parse(rubyIO, path, v1p1).type == 'T';
                                 }
                             });
                         }
                         if (text.equals("path")) {
                             String path = args[point++];
                             SchemaElement hide = get();
-                            return new PathSchemaElement(path, TXDB.get(outerContext, path), hide, false, false);
+                            return new PathSchemaElement(path, TXDB.get(outerContext, path), hide, v1p1, false);
                         }
                         if (text.equals("optP")) {
                             String path = args[point++];
                             SchemaElement hide = get();
-                            return new PathSchemaElement(path, TXDB.get(outerContext, path), hide, false, true);
+                            return new PathSchemaElement(path, TXDB.get(outerContext, path), hide, v1p1, true);
                         }
 
                         // CS means "control indent if allowed"
@@ -283,15 +289,15 @@ public class SDB {
                                 disambiguations.put("i" + ind, get());
                             }
                             disambiguations.put("x", backup);
-                            return new DisambiguatorSchemaElement(disambiguatorIndex, disambiguations, false);
+                            return new DisambiguatorSchemaElement(disambiguatorIndex, disambiguations);
                         }
                         if (text.equals("lengthAdjust")) {
-                            String text2 = EscapedStringSyntax.unescape(args[point++]);
+                            String text2 = unescapeIfPre11(args[point++]);
                             int len = Integer.parseInt(args[point++]);
                             return new LengthChangeSchemaElement(TXDB.get(outerContext, text2), len, false);
                         }
                         if (text.equals("lengthAdjustDef")) {
-                            String text2 = EscapedStringSyntax.unescape(args[point++]);
+                            String text2 = unescapeIfPre11(args[point++]);
                             int len = Integer.parseInt(args[point++]);
                             return new LengthChangeSchemaElement(TXDB.get(outerContext, text2), len, true);
                         }
@@ -306,7 +312,7 @@ public class SDB {
                             HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<String, String>();
                             commandBufferSchemas = new HashMap<String, SchemaElement>();
-                            return new DisambiguatorSchemaElement(disambiguationIVar, baseSE, false);
+                            return new DisambiguatorSchemaElement(disambiguationIVar, baseSE);
                         }
                         if (text.equals("flushCommandBufferStr")) {
                             // time to flush it!
@@ -315,7 +321,7 @@ public class SDB {
                             HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<String, String>();
                             commandBufferSchemas = new HashMap<String, SchemaElement>();
-                            return new DisambiguatorSchemaElement(disambiguationIVar, baseSE, false);
+                            return new DisambiguatorSchemaElement(disambiguationIVar, baseSE);
                         }
                         if (text.equals("hash")) {
                             SchemaElement k = get();
@@ -326,18 +332,17 @@ public class SDB {
                             return new HashSchemaElement(k, get(), true);
                         }
                         if (text.equals("hashObject") || text.equals("hashObjectInner")) {
+                            // This never got used by anything, so it's set as always-v1p1
                             LinkedList<RubyIO> validKeys = new LinkedList<RubyIO>();
-                            while (point < args.length) {
-                                String r = EscapedStringSyntax.unescape(args[point++]);
-                                validKeys.add(ValueSyntax.decode(r, false));
-                            }
+                            while (point < args.length)
+                                validKeys.add(ValueSyntax.decode(args[point++], true));
                             return new HashObjectSchemaElement(validKeys, text.equals("hashObjectInner"));
                         }
                         if (text.equals("subwindow"))
                             return new SubwindowSchemaElement(get());
                         // subwindow: This\_Is\_A\_Test
                         if (text.equals("subwindow:")) {
-                            String text2 = EscapedStringSyntax.unescape(args[point++]);
+                            String text2 = unescapeIfPre11(args[point++]);
                             if (text2.startsWith("@")) {
                                 final String textFinal = text2.substring(1);
                                 return new SubwindowSchemaElement(get(), new IFunction<RubyIO, String>() {
@@ -381,14 +386,14 @@ public class SDB {
                         if (text.startsWith("]?")) {
                             // yay for... well, semi-consistency!
                             String a = text.substring(2);
-                            String b = TXDB.getExUnderscore(outerContext, EscapedStringSyntax.unescape(args[point++]));
-                            String o = TXDB.get(outerContext, EscapedStringSyntax.unescape(args[point++]));
+                            String b = TXDB.getExUnderscore(outerContext, unescapeIfPre11(args[point++]));
+                            String o = TXDB.get(outerContext, unescapeIfPre11(args[point++]));
                             return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), o, false);
                         }
                         if (text.startsWith("]")) {
                             // yay for consistency!
                             String a = text.substring(1);
-                            String b = EscapedStringSyntax.unescape(TXDB.getExUnderscore(outerContext, args[point++]));
+                            String b = TXDB.getExUnderscore(outerContext, unescapeIfPre11(args[point++]));
                             return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), null, false);
                         }
                         // --
@@ -508,6 +513,12 @@ public class SDB {
                 }.get();
             }
 
+            private String unescapeIfPre11(String arg) {
+                if (v1p1)
+                    return arg;
+                return EscapedStringSyntax.unescape(arg);
+            }
+
             @Override
             public void execCmd(char c, final String[] args) throws IOException {
                 if (c == 'a') {
@@ -522,9 +533,9 @@ public class SDB {
                     outerContext = fPfx + "/" + args[0];
                     setSDBEntry(args[0], workingObj);
                 } else if (c == '@') {
-                    String t = "@" + args[0];
+                    String t = "@" + PathSyntax.poundEscape(args[0]);
                     // Note: the unescaping happens in the Path
-                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, t), handleChain(args, 1), false, false));
+                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, t), handleChain(args, 1), true, false));
                 } else if (c == '}') {
                     String intA0 = args[0];
                     boolean opt = false;
@@ -534,8 +545,8 @@ public class SDB {
                         opt = true;
                     }
                     // Note: the unescaping happens in the Path
-                    String t = "${" + intA0;
-                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, intA0), handleChain(args, 1), false, opt));
+                    String t = (v1p1 ? ":{" : "${") + intA0;
+                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, intA0), handleChain(args, 1), v1p1, opt));
                 } else if (c == '+') {
                     workingObj.aggregate.add(handleChain(args, 0));
                 } else if (c == '>') {
@@ -562,15 +573,15 @@ public class SDB {
                     for (int i = 1; i < args.length; i++)
                         options.put(":" + args[i], TXDB.get(args[0], args[i]));
 
-                    EnumSchemaElement ese = new EnumSchemaElement(options, ValueSyntax.decode(":" + args[1], false), "SYM:" + TXDB.get("Symbol"));
+                    EnumSchemaElement ese = new EnumSchemaElement(options, ValueSyntax.decode(":" + args[1], true), "SYM:" + TXDB.get("Symbol"));
                     setSDBEntry(args[0], ese);
                 } else if (c == 'E') {
                     HashMap<String, String> options = new HashMap<String, String>();
                     for (int i = 2; i < args.length; i += 2) {
                         String ctx = "SDB@" + args[0];
-                        options.put(ValueSyntax.port(args[i]), TXDB.get(ctx, args[i + 1]));
+                        options.put(v1p1 ? args[i] : ValueSyntax.port(args[i]), TXDB.get(ctx, args[i + 1]));
                     }
-                    EnumSchemaElement e = new EnumSchemaElement(options, ValueSyntax.decode(args[2], false), "INT:" + TXDB.get(args[0], args[1].replace('_', ' ')));
+                    EnumSchemaElement e = new EnumSchemaElement(options, ValueSyntax.decode(args[2], v1p1), "INT:" + TXDB.get(args[0], args[1].replace('_', ' ')));
                     setSDBEntry(args[0], e);
                 } else if (c == 'M') {
                     mergeRunnables.add(new Runnable() {
@@ -591,16 +602,16 @@ public class SDB {
                 } else if (c == 'i') {
                     readFile(args[0]);
                 } else if (c == 'D') {
-                    final String[] root = PathSyntax.breakToken(args[2], false);
+                    final String[] root = PathSyntax.breakToken(args[2], v1p1);
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], new IFunction<RubyIO, RubyIO>() {
                         @Override
                         public RubyIO apply(RubyIO rubyIO) {
-                            return PathSyntax.parse(rubyIO, root[1], false);
+                            return PathSyntax.parse(rubyIO, root[1], v1p1);
                         }
                     }, args[3].equals("1"), new IFunction<RubyIO, RubyIO>() {
                         @Override
                         public RubyIO apply(RubyIO rubyIO) {
-                            return PathSyntax.parse(rubyIO, args[4], false);
+                            return PathSyntax.parse(rubyIO, args[4], v1p1);
                         }
                     }, Integer.parseInt(args[1])));
                 } else if (c == 'd') {
@@ -628,22 +639,21 @@ public class SDB {
                     }
                 } else if (c == 'C') {
                     if (args[0].equals("md")) {
-                        // not sure about translation here
+                        // This is getting changed over for sanity reasons.
+                        // It's not used right now, so it's safe to move it over.
+                        // The new syntax is Cmd <DisambiguatorSyntax> ["Name!"]
                         outerContext = fPfx + "/commandBuffer";
                         workingObj = new AggregateSchemaElement(new SchemaElement[] {});
-                        String val = EscapedStringSyntax.unescape(args[1]);
+                        String val = args[1];
                         String nam = val;
-                        if (args.length > 2) {
-                            if (args[2].equals(":")) {
-                                nam = EscapedStringSyntax.unescape(args[3]);
-                            } else {
-                                throw new RuntimeException("Cmd text should be escaped. If you want to add a proper name, use 'Cmd zPirate : Awesome\\_Zombie\\_Pirate'");
-                            }
+                        if (args.length == 3) {
+                            nam = args[2];
+                        } else if (args.length != 2) {
+                            throw new RuntimeException("Cmd <Disambiguator> [<Name>]");
                         }
-                        // the \" is "just in case" it's needed later
-                        nam = TXDB.get(outerContext + "/\"" + val, nam);
-                        commandBufferNames.put("$" + val, nam);
-                        commandBufferSchemas.put("$" + val, workingObj);
+                        nam = TXDB.get(outerContext + "/" + val, nam);
+                        commandBufferNames.put(val, nam);
+                        commandBufferSchemas.put(val, workingObj);
                     }
                     if (args[0].equals("allowIndentControl"))
                         allowControlOfEventCommandIndent = true;
@@ -713,7 +723,7 @@ public class SDB {
                             public String apply(RubyIO rubyIO) {
                                 LinkedList<RubyIO> parameters = new LinkedList<RubyIO>();
                                 for (String arg : arguments) {
-                                    RubyIO res = PathSyntax.parse(rubyIO, arg, false);
+                                    RubyIO res = PathSyntax.parse(rubyIO, arg, v1p1);
                                     if (res == null)
                                         break;
                                     parameters.add(res);
@@ -732,6 +742,8 @@ public class SDB {
                         // returns new point
                         helpers.createSpritesheet(args, point, text2);
                     }
+                    if (args[0].equals("SDBv1.1"))
+                        v1p1 = true;
                 } else if (c != ' ') {
                     for (String arg : args)
                         System.err.print(arg + " ");

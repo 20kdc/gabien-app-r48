@@ -47,7 +47,8 @@ i HelpImg/1.diagram.png
 .
 > 7 At the top, a bar is shown. These are the map tools.
 .
-. Pressing the "m" button will toggle a minimap.
+ More awkward to write due to SDB1.1 stuff. Makes everything important less awkward, so worth it.
+. Pressing the "\"m\"" button will toggle a minimap.
 . This allows faster navigation of the map, or reading messages written with tiles.
 . At the top left, there are zoom controls, and information on what mouse controls are currently available.
 > 0 Back to the Index.
@@ -55,7 +56,7 @@ i HelpImg/1.diagram.png
 2: MapInfos
 i HelpImg/2.hierarchy.png
 . This is the grand list of maps for editing.
-. Keep in mind that some "maps" may not actually be maps,
+. Keep in mind that some "\"maps\"" may not actually be maps,
 . but may be dummy entries for organization.
 . These maps are structured in a hierarchy.
 . To select a map, click on it's name.
@@ -93,10 +94,10 @@ i HelpImg/2.hierarchy.png
 
 7: Map Tools
 . This would not be very much of an editor if maps were not editable.
-. The "Map Tools" dialogue box exists to help you achieve this.
+. The \"Map Tools\"" dialogue box exists to help you achieve this.
 i HelpImg/7.example.png
 . As you can see, several tools exist.
-. For general usage, "Tiles", and "Event List", should be enough.
+. For general usage, "\"Tiles\"," and "\"Event List\"," should be enough.
 . For access to the BGS/BGM, map resize, and other map pieces, use Edit Direct.
 > 8 Tiles
 > 9 Event List
@@ -123,10 +124,10 @@ i HelpImg/9.usage.png
 . Note before continuing:
 . In older versions of R48, all tile data was destroyed by this.
 . It isn't the case anymore.
-. Step 1. Click "Edit Direct.".
-. Step 2. Select "@data".
+. Step 1. Click "\"Edit Direct.\"".
+. Step 2. Select "\"@data\"".
 . Step 3. Edit the width/height to the right. (The two numbers next to each other, below the tile number values.)
-. Step 4. Click "Resize".
+. Step 4. Click "\"Resize\"".
 > 7 Back to the Map Tools.
 
 11: Event Editing Details
@@ -146,7 +147,7 @@ i HelpImg/9.usage.png
 > 9 Back to the Event List guide.
 
 12: Object Editing Details
-. The "Schema" system for editing objects is meant to be usable.
+. The "\"Schema\"" system for editing objects is meant to be usable.
 . However, it does not make things easy.
 .
 . Beforehand, a reminder.
@@ -162,10 +163,10 @@ i HelpImg/9.usage.png
 .
 . Secondly, the top (not the title) bar does many things.
 . It shows the object you're currently using.
-. You can use "Insp." for raw inspection.
+. You can use "\"Insp.\"" for raw inspection.
 . This is usually useless on backends other than 'r48' (RGSS).
-. ".." lets you go back a level, and "Save" does what you'd expect.
-. The "Cp." and "Ps." buttons allow copying and pasting a part, so long as it's relatively valid, from one place to another.
+. "\"..\"" lets you go back a level, and "\"Save\"" does what you'd expect.
+. The "\"Cp.\"" and "\"Ps.\"" buttons allow copying and pasting a part, so long as it's relatively valid, from one place to another.
 . The system will try to correct any obviously wrong details.
 . The copy and paste applies to the object being viewed, not the currently selected field or any details.
 .
@@ -232,7 +233,7 @@ i HelpImg/9.usage.png
 .
 . To change the type, click on the command, then click on the command type at the top.
 .
-. A consistent thing to note is that "MoveRoute Editor Helper NOP" or such are absolutely ignored in-game.
+. A consistent thing to note is that "\"MoveRoute Editor Helper NOP\"" or such are absolutely ignored in-game.
 . The 'Insert Point' is also ignored in-game.
 .
 > 14 Back to RGSS Events (Overview)
@@ -266,7 +267,7 @@ i HelpImg/9.usage.png
 . This allows avoiding wasted space.
 .
 . Finally, note that the prefixes are not removed before attempting to load the file.
-. 
+.
 > 14 Back to RGSS Events (Overview)
 
 18: RPG Maker 2000/2003 Events Overview
@@ -275,14 +276,14 @@ i HelpImg/9.usage.png
 . The primary things to note:
 .
 . Events are split into pages.
-. The last page with all matching conditions "wins".
+. The last page with all matching conditions "\"wins\"".
 .
 . The @condition controls when the page applies.
 . The @trigger controls when the code in the event page runs.
 . The @list is the code of the event.
 .
 . The @move_type controls movement first and foremost, like in RGSS.
-. The @move_route only applies if the @move_type is "custom".
+. The @move_route only applies if the @move_type is "\"custom\"".
 . The @layer an event is on affects it's collision with the player.
 . The @block_other_events flag indicates this blocks any other event from entering where this event is - and this event from entering any other.
 .
@@ -321,17 +322,17 @@ p 4
 . This makes for a total of 12 columns, 16 rows - each individual sprite being 24x32.
 .
 . In any case, each character has 3 patterns, 0, 1 and 2, each being a column.
-. 1 is considered the "standing" pose of a character, and you should typically set the pattern to 1.
+. 1 is considered the "\"standing\"" pose of a character, and you should typically set the pattern to 1.
 . Patterns 0 and 2 are the right and left (relative to the character, i.e. the 'up' sprites) leg of the character going forward, respectively.
 . Note that these pattern values, given RPG Maker 2000/2003's design, are standard when using open-source replacement RTPs.
 . (I do not believe using non-open-source non-replacement RTPs - that is, those owned by KADOKAWA, Enterbrain, Degica, or similar - with R48 is a good idea, nor do I endorse such activity.)
-. Note that the pattern will continually "walk" if @anim_type is set to "always".
+. Note that the pattern will continually "\"walk\"" if @anim_type is set to "\"always\"".
 .
 . Each character also has 4 directions, this being the row.
 . The directions are up, right, down, left.
-. Note that if the @anim_type does NOT say "noActDirchange", the character will temporarily change direction to face the player when 'talking'.
-. This appears to mean "interaction triggered by the player on the event somehow."
-. If the @anim_type is "spin", the direction will always change. All the time. In a continuous loop.
+. Note that if the @anim_type does NOT say "\"noActDirchange\"," the character will temporarily change direction to face the player when 'talking'.
+. This appears to mean "\"interaction triggered by the player on the event somehow.\""
+. If the @anim_type is "\"spin\"," the direction will always change. All the time. In a continuous loop.
 .
 > 11 Index Page Of Event Editing Details
 > 21 R2k Backend Quickstart
@@ -340,7 +341,7 @@ p 4
 . RPG Maker 2000/2003 is, as you probably know, emulated by the (unrelated to me) open-source EasyRPG Player project.
 . As RPG Maker 2000/2003 does not have any Core Scripts to deal with, it means that with a full editor, games can be created from scratch.
 . Step 1. Create a blank folder.
-. Step 2. In the folder, create the folders "ChipSet" and "System". (capitalization is important.)
+. Step 2. In the folder, create the folders "\"ChipSet\"" and "\"System\"". (capitalization is important.)
 . Step 3. Extract assets/R2K/templatetileset.png from this JAR (it's a ZIP file) and put it in ChipSet. Do not rename it.
 . Step 4. Extract assets/R2K/System.png from this JAR (it's a ZIP file) and put it in System. Do not rename it.
 . Step 5. Copy the program JAR into the folder and run it, or alternatively (if you understand how to use Root Path) simply point it there.
@@ -349,7 +350,7 @@ p 4
 .
 . General Structure:
 . RPG_RT.ldb and RPG_RT.lmt: Data files used to run the game.
-. RPG_RT.ini: Optional and not handled by R48. Starts with the line "[RPG_RT]", and ought to contain "GameTitle=your title here".
+. RPG_RT.ini: Optional and not handled by R48. Starts with the line "\"[RPG_RT]\"," and ought to contain "\"GameTitle=your title here\"".
 . Backdrop: Battle background images. 320x240. Non-transparent?
 . Battle: Animation images. 480x480, 96x96 per cel.
 . Battle2: RPG Maker 2003 larger animation images. 640x640, 128x128 per cel.
@@ -362,7 +363,7 @@ p 4
 . GameOver: 320x240 images for Game Over.
 . Monster: Enemy images. Can be any size.
 . Music: Music, in various formats.
-. Panorama: For the "parallax" fields. Non-transparent? (Accurate parallax emulation in an editor is impossible due to it being gameplay-dependant)
+. Panorama: For the "\"parallax\"" fields. Non-transparent? (Accurate parallax emulation in an editor is impossible due to it being gameplay-dependant)
 . Picture: Arbitrary images to be shown on screen using specific commands.
 . Sound: Sound effects for various things.
 > 22 System: Alters the general appearance of system frames and text. 160x80.
@@ -370,9 +371,9 @@ p 4
 . Title: Title screen images. 320x240.
 
 22: R2k Backend 'System' Explaination
-. The "System" images are 160x80, and follow a complex layout.
+. The "\"System\"" images are 160x80, and follow a complex layout.
 . The bottom 32 pixels are 16x16 colour swabs for text rendering.
-. The 4th is used for disabled items, the 5th is used to mean "critical", and the 6th means dead.
+. The 4th is used for disabled items, the 5th is used to mean "\"critical\"," and the 6th means dead.
 . The 10th, meanwhile, is used for healing actions.
 . The next highest 16 pixels are broken unevenly into 16 pieces.
 . Horizontally, these are:
@@ -389,7 +390,7 @@ p 4
 . 32 pixels: Selection Frame, animation frame 1
 . 32 pixels: Selection Frame, animation frame 2
 . 32 pixels: This is further split into 4 8-pixel wide frames of 4 8-pixel high change indicators.
-. From the top of the indicators, these are "positive", "same", "negative", and a "E" (Equipped?).
+. From the top of the indicators, these are "\"positive\"," "\"same\"," "\"negative\"," and a "\"E\"" (Equipped?).
 > 21 Back To Quickstart
 
 23: R2k Savefiles Quickstart
@@ -406,10 +407,10 @@ i HelpImg/3.2003save.png
 . @system : Defines various RPG_RT.ldb@system details.
 . @actors : Contains experience, skills, battle commands (if applicable) of actors.
 . @party : Contains party members, the items list, gold, timers, and some generic stats.
-. @party_pos (accessible as the "Party" event on-world): The current player position and details.
-. @boat_pos (if party's on the same map, accessible as "Boat"): The boat's position & details.
-. @ship_pos (if party's on the same map, accessible as "Ship"): The ship's position & details.
-. @airship_pos (if party's on the same map, accessible as "Airship"): The airship's position & details.
+. @party_pos (accessible as the "\"Party\"" event on-world): The current player position and details.
+. @boat_pos (if party's on the same map, accessible as "\"Boat\""): The boat's position & details.
+. @ship_pos (if party's on the same map, accessible as "\"Ship\""): The ship's position & details.
+. @airship_pos (if party's on the same map, accessible as "\"Airship\""): The airship's position & details.
 . @target : Used by the Teleport event. Note that it seems a fake target is sometimes added by RPG_RT.
 . @map_info : Contains details from the MapInfo entry regarding this map, tile remaps, events, and parallax info.
 . @screen : Contains information on global screen effects. Some of this is uncertain (contact EasyRPG with your findings, they'll tell me).
@@ -423,7 +424,7 @@ i HelpImg/3.2003save.png
 . This is incredibly useful if you intend to teleport yourself across maps and *don't* wish to disturb events at your destination.
 . Note that all events will be converted to ghosts.
 .
-. Regarding what I mean by a "ghost" here, a "ghost" is what I'm calling events which will appear in the map that aren't in the save.
+. Regarding what I mean by a "\"ghost\"" here, a "\"ghost\"" is what I'm calling events which will appear in the map that aren't in the save.
 . R48 detects when ghosts are likely to occur and show them - and lets you put them in the savefile!
 . But this is done in the same way as Reset Events, so... possibly unreliable.
 
@@ -440,7 +441,7 @@ i HelpImg/3.2003save.png
 . The help format is a simple markup format.
 . It is meant for easy, fast layout.
 . It uses the normal DB format, divided into sections with the usual numbered-object-creation syntax.
-. For example, "801: The Help Format" begins page 801.
+. For example, "\"801: The Help Format\"" begins page 801.
 . Pages should, but do not have to be, ordered.
 . The following 'commands' exist:
 . '.': Write a line of text. Automatic word-break is always on, but line-break also occurs.
@@ -472,7 +473,7 @@ i HelpImg/3.2003save.png
 . And it allows inserting a copy of the current frame as the next frame ('+'), and removing the current frame ('-').
 .
 . In the lower-left is the actual Animation View.
-. A darkened cross on the background is the "zero point" - coordinates 0, 0 relative to the animation's point on-screen.
+. A darkened cross on the background is the "\"zero point\"" - coordinates 0, 0 relative to the animation's point on-screen.
 . Right-button-drags across the Animation View will shift it's camera.
 . Left-button-drags will change the X/Y position of the currently selected cell.
 .
@@ -487,7 +488,6 @@ i HelpImg/3.2003save.png
 p 4
 I layertab.png 33 48 31 16
 p 4
-. "Merry Holidays Edition"
 .
 . gabien-app-r48 - Editing program for various formats
 . Written starting in 2016 by contributors (see CREDITS.txt)

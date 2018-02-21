@@ -9,9 +9,11 @@ ValueSyntax is a syntax for describing basic Ruby values
 It has three forms, but one is dependent on SDB version:
 
 '"' text... : string (SDB1)
-'$' text... : string (SDB2)
+'$' text... : string (SDB1.1)
 ':' text... : symbol
 text... : integer
+
+ Note that some SDB stuff is post-1.1's introduction and thus doesn't use the flag.
 
 PathSyntax is a syntax for getting a RubyIO relative to another RubyIO.
 Sometimes, it's used relative to the world.
@@ -31,10 +33,10 @@ PathSyntax is used in the following SDB1 stuff (mostly as regexes)
 
 PathSyntax text is divided into a start block (which may not be allowed to exist in some cases),
  which if allowed is an ObjectDB ID, and a set of path-components,
- which have to start with '$' (':' for SDB2), '@', or ']'.
+ which have to start with '$' (':' for SDB1.1), '@', or ']'.
 
 A path-component continues until the next instance of a path-component start character,
- unless in SDB2, where the escaping is applied at this level,
+ unless in SDB1.1, where the escaping is applied at this level,
   and '#' escapes the next character (including another '#').
 
 Note that a path component may support additions / deletions, or may not.
@@ -42,7 +44,7 @@ Retrieval, addition and deletion are marked with "RAD".
 
 The path-component forms are:
 
-':' (SDB2) / '$' (SDB1):
+':' (SDB1.1) / '$' (SDB1):
 
    '{' ValueSyntax : Hash value by key. (RAD)
    '.' text...     : Arbitrary (can be non-@) instance variable (RAD)

@@ -6,7 +6,7 @@
 
  Defining the script commands...
 
-> genericScriptParameter typeChanger{ genericScriptParametersSW [ RPG::MoveRoute oRPG::MoveRoute RPG::MoveCommand oRPG::MoveCommand RPG::AudioFile oRPG::AudioFile string " boolean T boolean F int i }
+> genericScriptParameter typeChanger{ genericScriptParametersSW [ RPG::MoveRoute oRPG::MoveRoute RPG::MoveCommand oRPG::MoveCommand RPG::AudioFile oRPG::AudioFile string "\"" boolean T boolean F int i }
 
 i RCOM/SchemaScript.txt
 

@@ -163,25 +163,25 @@ D L R
 33: L/R (diagonals are ignored)
 d U U
 D D D
-34: "full" UL corner (LR diag, D&R ortho)
+34: 'full' UL corner (LR diag, D&R ortho)
 d UL UL
 D UL UL
 35: UL corner, only lower and right ortho (no diag.)
 d UL UL
 D UL B
-36: "full" UR corner (LL diag, D&L ortho)
+36: 'full' UR corner (LL diag, D&L ortho)
 d UR UR
 D UR UR
 37: UR corner, only lower and left ortho (no diag.)
 d UR UR
 D B UR
-38: "full" LR corner (UL diag, U&L ortho)
+38: 'full' LR corner (UL diag, U&L ortho)
 d LR LR
 D LR LR
 39: LR corner, only upper and left ortho (no diag.)
 d B LR
 D LR LR
-40: "full" LL corner (UR diag, U&R ortho)
+40: 'full' LL corner (UR diag, U&R ortho)
 d LL LL
 D LL LL
 41: LL corner, only upper and right ortho (no diag.)

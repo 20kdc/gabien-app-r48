@@ -4,7 +4,7 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-= RPG\_Maker\_2000,\_2003,\_or\_EasyRPG.\_(Android\_users,\_go\_here.) =
+= "RPG Maker 2000, 2003, or EasyRPG. (Android users, go here.)"
 
 0: R2K
 f RPG_RT.ldb
@@ -41,7 +41,7 @@ f RPG_RT.ldb
 e MS936
 . R2K[3?] (Simplified Chinese/MS936)
 
-= RGSS\_Engines\_(RPG\_Maker\_XP,\_VX\_Ace) =
+= "RGSS Engines (RPG Maker XP, VX Ace)"
 
 0: RXP
 f Data/MapInfos.rxdata
@@ -51,14 +51,14 @@ e UTF-8
 f Data/MapInfos.rvdata2
 e UTF-8
 
-= Other... =
+= "Other..."
 
 0: Ika
 f Pbm/Map1.pbm
 e UTF-8
 . Ikachan
 
-= Tests =
+= "Tests"
 
 0: Sticki
 e UTF-8

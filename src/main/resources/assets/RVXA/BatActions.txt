@@ -12,8 +12,8 @@
 . No condition applies!
 . For lack of a better place, I'll explain the rating system here, to my understanding.
 . Imagine there is a line, with the rating of highest *valid* rated action at the top, and that number minus 3 at the bottom.
-. For rating purposes, the highest rating minus 3 is considered "0", so the variance is between "0" (max minus 3) and "3" (max).
-. Furthermore, all actions with a rating <= "0" are culled early.
+. For rating purposes, the highest rating minus 3 is considered 0, so the variance is between 0 (max minus 3) and 3 (max).
+. Furthermore, all actions with a rating <= 0 are culled early.
 . So, to force an action, it would simply have to have a rating 3 more than any other action.
 . This is important if you want an action to always be performed under certain conditions without a random chance of anything else.
 .

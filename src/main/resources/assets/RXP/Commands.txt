@@ -55,7 +55,7 @@
 
  [Early codes]
 
-C categories 1\_-\_Text 2\_-\_Flow 3\_-\_Party 4\_-\_Map 5\_-\_Battle 6\_-\_Misc
+C categories "1 - Text" "2 - Flow" "3 - Party" "4 - Map" "5 - Battle" "6 - Misc"
 
 0: >> insert point
 d An insertion point. This acts as something to replace to add new commands.

@@ -105,10 +105,6 @@ I1
 
 113: Break Loop
 d Leave a loop formed between a Start Loop and End Loop.
- This command breaks to the next Repeat Above it finds with a lesser indent,
-  this proves the indent of Repeat Above is i-1 I0, OR it has a leave block before it.
- The answer in actual fact (I wrote the "find EventCommand by code" button to find this)
-  is that End Loop is indeed preceded by a Leave Block.
 
 413: End Loop/Repeat Above
 d The end of a loop (goes back to the start)
@@ -299,7 +295,7 @@ d Make characters following the player visible or invisible.
 p invisible int_boolean
 
 217: Gather Followers
-d Presumably, this makes characters following the player "merge into the player".
+d Presumably, this makes characters following the player 'merge into the player'.
 
 221: Fadeout Screen
 d And goodbye.
@@ -655,7 +651,7 @@ d Yeah, because we haven't seen *that* one before. Enemy recovers everything and
 p enemy iterate_enemy_index
 
 335: Enemy$ Appears
-d *cough 334* some entirely new enemy from nowhere, "An enemy shows up! Where they were before, IDK.", or just *cough 336*
+d *cough 334* some entirely new enemy from nowhere, 'An enemy shows up! Where they were before, IDK.', or just *cough 336*
 p enemy iterate_enemy_index
 
 336: Enemy$ transforms!

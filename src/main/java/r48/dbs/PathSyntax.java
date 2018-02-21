@@ -181,4 +181,21 @@ public class PathSyntax {
         }
         return res;
     }
+
+    // Used by SDB stuff that generates paths.
+    public static String poundEscape(String arg) {
+        StringBuilder res = new StringBuilder();
+        for (char c : arg.toCharArray()) {
+            boolean escape = false;
+            if (c == '#')
+                escape = true;
+            for (int i = 0; i < breakersSDB2.length; i++)
+                if (c == breakersSDB2[i])
+                    escape = true;
+            if (escape)
+                res.append('#');
+            res.append(c);
+        }
+        return res.toString();
+    }
 }

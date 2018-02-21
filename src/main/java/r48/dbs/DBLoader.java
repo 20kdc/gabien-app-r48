@@ -8,11 +8,10 @@
 package r48.dbs;
 
 import gabien.GaBIEn;
+import r48.io.JsonStringIO;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.LinkedList;
 
 /**
  * Handles the basic database syntax.
@@ -48,7 +47,9 @@ public class DBLoader {
                 String l = br.readLine();
                 if (l.length() > 0) {
                     char cmd = l.charAt(0);
-                    String[] ll = l.substring(1).trim().split(" ");
+                    if (cmd == ' ')
+                        continue;
+                    String[] ll = tokenize(new StringReader(l.substring(1).trim()));
                     if (cmd >= '0')
                         if (cmd <= '9') {
                             int a = l.indexOf(':');
@@ -63,6 +64,39 @@ public class DBLoader {
             }
         } catch (RuntimeException re) {
             throw new RuntimeException("at line " + ln, re);
+        }
+    }
+
+    private String[] tokenize(Reader trim) {
+        try {
+            LinkedList<String> lls = new LinkedList<String>();
+            StringBuilder sb = new StringBuilder();
+            while (true) {
+                int ch = trim.read();
+                if (ch < 0)
+                    break;
+                if (ch == ' ') {
+                    if (sb.length() > 0) {
+                        lls.add(sb.toString());
+                        sb = new StringBuilder();
+                    }
+                } else if ((sb.length() == 0) && (ch == '"')) {
+                    //System.err.println("Used SDB1.1 String");
+                    String tx = JsonStringIO.readString(trim);
+                    // Was used to port stuff to SDB1.1
+                    //if (!tx.equals("\""))
+                    //    throw new RuntimeException("Detected bad SDB1.1 string");
+                    lls.add(tx);
+                } else {
+                    sb.append((char) ch);
+                }
+            }
+            if (sb.length() > 0)
+                lls.add(sb.toString());
+            return lls.toArray(new String[0]);
+        } catch (IOException ioe) {
+            // only used with strings
+            throw new RuntimeException(ioe);
         }
     }
 }

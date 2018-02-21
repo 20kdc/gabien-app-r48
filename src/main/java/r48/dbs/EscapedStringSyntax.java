@@ -28,6 +28,7 @@ package r48.dbs;
  * <p>
  * Note that translators get the post-unescape version.
  * <p>
+ * NOTE: THIS IS BEING PHASED OUT WITH SDB1.1
  * October 9th, 2017.
  */
 public class EscapedStringSyntax {

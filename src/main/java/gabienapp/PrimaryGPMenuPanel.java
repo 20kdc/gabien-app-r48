@@ -31,7 +31,7 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
             @Override
             public void execCmd(char c, String[] args) throws IOException {
                 if (c == '=') {
-                    String tx = EscapedStringSyntax.unescape(args[0]);
+                    String tx = args[0];
                     final CategoryGPMenuPanel cat = new CategoryGPMenuPanel(PrimaryGPMenuPanel.this, args[0]);
                     res1.add(TXDB.get("launcher", tx));
                     res2.add(new ISupplier<IGPMenuPanel>() {
