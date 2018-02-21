@@ -11,6 +11,8 @@ import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
+import gabienapp.Application;
+import r48.AdHocSaveLoad;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -30,19 +32,20 @@ import java.io.*;
 public class StringBlobSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        final String fpath = AppMain.rootPath + "r48.edit.txt";
+        final String fpath = Application.BRAND + "/r48.edit.txt";
 
         UITextButton importer = new UITextButton(TXDB.get("Import"), FontSizes.blobTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {
+                    AdHocSaveLoad.prepare();
                     InputStream dis = getCompressionInputStream(GaBIEn.getInFile(fpath));
                     target.strVal = readStream(dis);
                     dis.close();
                     path.changeOccurred(false);
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
-                    AppMain.launchDialog(TXDB.get("Wasn't able to import.") + "\n" + ioe);
+                    AppMain.launchDialog(TXDB.get("Wasn't able to import 'r48.edit.txt' from the R48 settings folder.") + "\n" + ioe);
                 }
             }
         });
@@ -51,13 +54,14 @@ public class StringBlobSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 try {
+                    AdHocSaveLoad.prepare();
                     OutputStream os = GaBIEn.getOutFile(fpath);
                     InputStream dis = getDecompressionInputStream(target.strVal);
                     copyStream(dis, os);
                     dis.close();
                     os.close();
                     if (!GaBIEn.tryStartTextEditor(fpath))
-                        AppMain.launchDialog(TXDB.get("Please edit the file 'edit.txt' in the game's directory."));
+                        AppMain.launchDialog(TXDB.get("Unable to start the editor! Wrote to the file 'r48.edit.txt' in the R48 settings folder."));
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
                     AppMain.launchDialog(TXDB.get("Wasn't able to export.") + "\n" + ioe);
