@@ -145,9 +145,15 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
                 eCamY = camY;
             }
 
-            for (int i = camOTX; i <= camOTeX; i++)
-                for (int j = camOTY; j <= camOTeY; j++)
-                    igd.blitScaledImage(0, 0, im.getWidth(), im.getHeight(), (i * effectiveImWidth) - eCamX, (j * effectiveImHeight) - eCamY, effectiveImWidth, effectiveImHeight, im);
+            if (panoScale != 1) {
+                for (int i = camOTX; i <= camOTeX; i++)
+                    for (int j = camOTY; j <= camOTeY; j++)
+                        igd.blitScaledImage(0, 0, im.getWidth(), im.getHeight(), (i * effectiveImWidth) - eCamX, (j * effectiveImHeight) - eCamY, effectiveImWidth, effectiveImHeight, im);
+            } else {
+                int totalW = (camOTeX - camOTX) + 1;
+                int totalH = (camOTeY - camOTY) + 1;
+                igd.blitTiledImage((camOTX * effectiveImWidth) - eCamX, (camOTY * effectiveImHeight) - eCamY, totalW * effectiveImWidth, totalH * effectiveImHeight, im);
+            }
         }
     }
 }

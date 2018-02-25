@@ -10,6 +10,7 @@ package r48.ui;
 import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.ui.*;
+import gabienapp.Application;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
@@ -105,14 +106,19 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
             }
         };
         outerLayout.panelsAdd(fontButtonAppend);
-        outerLayout.panelsAdd(new UITextButton(FormatSyntax.formatExtended(TXDB.get("Theme: #A"), new RubyIO().setFX(UIBorderedElement.borderTheme)), FontSizes.fontSizerTextHeight, new Runnable() {
+        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(FormatSyntax.formatExtended(TXDB.get("Theme: #A"), new RubyIO().setFX(UIBorderedElement.borderTheme)), FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 UIBorderedElement.borderTheme++;
                 UIBorderedElement.borderTheme %= UIBorderedElement.BORDER_THEMES;
                 refreshLayout(true);
             }
-        }));
+        }), new UITextButton(TXDB.get("Enable Blending"), FontSizes.fontSizerTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                Application.allowBlending = !Application.allowBlending;
+            }
+        }).togglable(Application.allowBlending), false, 0.5));
         try {
             for (final FontSizes.FontSizeField field : FontSizes.getFields()) {
                 doubleAll.add(new Runnable() {

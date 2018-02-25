@@ -19,7 +19,7 @@
 +lengthAdjust General\_Mode 15
 +lengthAdjust Old\_2k3\_Mode 16
 +lengthAdjust 2k3\_1.12\_Mode 31
-+DA{ $length show_picture_array_nbo 31 show_picture_array_nbn }
++DA{ :length show_picture_array_nbo 31 show_picture_array_nbn }
 +DA{ ]2 comm_picture_array_head_yv 0 comm_picture_array_head_nv }
 +comm_picture_array_foot
 +show_picture_array_foot
@@ -32,7 +32,7 @@
 +lengthAdjust General\_Mode 17
 +lengthAdjust Old\_2k3\_Mode 18
 +lengthAdjust 2k3\_1.12\_Mode 23
-+DA{ $length move_picture_array_nbo 23 move_picture_array_nbn }
++DA{ :length move_picture_array_nbo 23 move_picture_array_nbn }
 +DA{ ]2 comm_picture_array_head_yv 0 comm_picture_array_head_nv }
 +comm_picture_array_foot
 +move_picture_array_foot
@@ -47,7 +47,7 @@ e erase_picture_range 0 const/ppp 1 var 2 range
 .erase_picture_array
 ]0 _ string
  can't depend on ]2 for pictureId if it isn't around (will cause disambiguator failures)
-+DA{ $length erase_picture_array_nc 3 erase_picture_array_wc 4 erase_picture_array_wc }
++DA{ :length erase_picture_array_nc 3 erase_picture_array_wc 4 erase_picture_array_wc }
 .erase_picture_array_nc
  Notably, setting this flips it into WC
 +]?2 choiceType_112 const/ppp erase_picture_range

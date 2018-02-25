@@ -170,6 +170,7 @@ public class FontSizes {
             prepare.addIVar("@sysfont_ue8", new RubyIO().setBool(FontManager.fontOverrideUE8));
         }
         prepare.addIVar("@theme_variant", new RubyIO().setFX(UIBorderedElement.borderTheme));
+        prepare.addIVar("@actual_blending", new RubyIO().setBool(Application.allowBlending));
         AdHocSaveLoad.save("fonts", prepare);
     }
 
@@ -200,6 +201,9 @@ public class FontSizes {
             RubyIO sys5 = dat.getInstVarBySymbol("@theme_variant");
             if (sys5 != null)
                 UIBorderedElement.borderTheme = (int) sys5.fixnumVal;
+            RubyIO sys6 = dat.getInstVarBySymbol("@actual_blending");
+            if (sys6 != null)
+                Application.allowBlending = sys6.type == 'T';
             return true;
         } else if (first) {
             FontManager.fontOverride = GaBIEn.getFontOverrides()[0];

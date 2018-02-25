@@ -23,7 +23,7 @@
 +lengthAdjust 2k\_<\_1.50 10
 +lengthAdjust 2k\_>=\_1.50 11
 +lengthAdjust 2k3 15
-+DA{ $length key_input_information_2ku150 11 key_input_information_2k150 15 key_input_information_2k3 }
++DA{ :length key_input_information_2ku150 11 key_input_information_2k150 15 key_input_information_2k3 }
 
 .key_input_information_2ku150
  unsure if this works for other versions

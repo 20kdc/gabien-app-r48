@@ -10,6 +10,11 @@ package r48.imagefx;
 import gabien.IImage;
 
 /**
+ * REGISTRY:
+ * 'H' + shift = HueShift
+ * 'M' + spriteSize + '.' + spritesW + '.' + spritesH = MirrorSubsprites
+ * 'O' + opacity = Opacity
+ * 'T' + R + ',' + G + ',' + B + ',' + S
  * Created on 30/07/17.
  */
 public interface IImageEffect {

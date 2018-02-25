@@ -34,7 +34,7 @@ C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C D
 
 .RPG::BCA
 +hide lengthAdjustDef Set... 7
-+DA{ $length rpg_bca_def 0 rpg_bca_zro }
++DA{ :length rpg_bca_def 0 rpg_bca_zro }
 
 .rpg_bca_def
 +array 7 battlecommand_menu_id

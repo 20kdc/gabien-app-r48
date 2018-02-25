@@ -29,7 +29,7 @@ C name Interp.ltp_type $ | {@#A|:concurrent|Concurrent|:waitOn|Wait On...|Unknow
 .ams_setting
 +lengthAdjust Single 2
 +lengthAdjust Range 3
-+DA{ $length ams_setting_unk 2 ams_setting_single 3 ams_setting_range }
++DA{ :length ams_setting_unk 2 ams_setting_single 3 ams_setting_range }
 .ams_setting_unk
 ]0 testID string
 .ams_setting_single

@@ -36,6 +36,9 @@ public class Application {
     public static int globalMS = 50;
     private static double compensationDT = 0;
 
+    // *cough*OneShot*cough*. controlled by FontSizeConfigurator
+    public static boolean allowBlending = true;
+
     private static IGPMenuPanel rootGPMenuPanel;
 
     protected static IConsumer<Double> appTicker = null;
@@ -443,7 +446,7 @@ public class Application {
             }
         });
         if (!GaBIEn.singleWindowApp()) { // SWA means we can't create windows
-            whatever = new UISplitterLayout(whatever, new UITextButton(TXDB.get("Font Sizes"), FontSizes.launcherTextHeight, new Runnable() {
+            whatever = new UISplitterLayout(whatever, new UITextButton(TXDB.get("Configuration"), FontSizes.launcherTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     uiTicker.accept(new UIFontSizeConfigurator());

@@ -7,20 +7,19 @@
 
 package r48.toolsets;
 
-import gabien.*;
-import gabien.backendhelp.Blender;
+import gabien.GaBIEn;
 import gabien.ui.*;
 import r48.*;
 import r48.dbs.TXDB;
-import r48.imagefx.HueShiftImageEffect;
-import r48.imagefx.ToneImageEffect;
 import r48.io.IMIUtils;
 import r48.io.PathUtils;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBinders;
 import r48.schema.util.SchemaPath;
-import r48.ui.*;
+import r48.ui.Coco;
+import r48.ui.UIFontSizeConfigurator;
+import r48.ui.UITextPrompt;
 import r48.ui.utilitybelt.IMIAssemblyController;
 
 import java.io.*;
@@ -56,7 +55,7 @@ public class BasicToolset implements IToolset {
                         TXDB.get("Retrieve all object strings"),
                         TXDB.get("Set Internal Windows (good)"),
                         TXDB.get("Set External Windows (bad)"),
-                        TXDB.get("Configure fonts"),
+                        TXDB.get("Configuration"),
                         TXDB.get("Test Fonts"),
                         TXDB.get("Show Version"),
                         TXDB.get("Show ODB Memstat"),
