@@ -35,6 +35,9 @@ public class StandardArrayInterface implements IArrayInterface {
             int selectedEnd = -1;
             boolean confirmingSelectionDelete = false;
 
+            // So IPCRESS did end up with one disadvantage: the exact parent tracking means that now this has to be explicitly unbound.
+            LinkedList<Runnable> releasers = new LinkedList<Runnable>();
+
             // Because of name ambiguity, but also whacks uiSVL
             public void containerRCL() {
                 run();
@@ -43,6 +46,9 @@ public class StandardArrayInterface implements IArrayInterface {
             @Override
             public void run() {
                 uiSVL.panelsClear();
+                for (Runnable r : releasers)
+                    r.run();
+                releasers.clear();
                 // Work out how big each array index field has to be.
                 final Size maxSizePre = UILabel.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight);
                 final AtomicInteger maxWidth = new AtomicInteger(maxSizePre.width);
@@ -50,7 +56,10 @@ public class StandardArrayInterface implements IArrayInterface {
                     final int mi = i;
                     addAdditionButton(positions[mi].execInsert, positions[mi].execInsertCopiedArray, positions[mi].text);
                     UIElement uie = positions[mi].core;
+                    final UIElement originalUIE = uie;
                     if (uie != null) {
+                        // NOTE: At the end of this code, editor can only be a pure UIAppendButton group.
+                        // The reason for this is because it simplifies releasing it all later.
                         if (selectedStart == -1) {
                             confirmingSelectionDelete = false;
                             uie = new UIAppendButton(TXDB.get("Sel"), uie, new Runnable() {
@@ -164,7 +173,28 @@ public class StandardArrayInterface implements IArrayInterface {
                         final UIElement editor = uie;
                         final UIElement label = new ArrayElementSchemaElement.UIOverridableWidthLabel(positions[mi].text, FontSizes.schemaFieldTextHeight, maxWidth, true);
                         maxWidth.set(Math.max(label.getWantedSize().width, maxWidth.get()));
-                        uiSVL.panelsAdd(new UISplitterLayout(label, editor, false, 0));
+                        releasers.add(new Runnable() {
+                            @Override
+                            public void run() {
+                                UIElement edit = editor;
+                                while (edit != originalUIE) {
+                                    if (edit instanceof UIAppendButton) {
+                                        ((UIAppendButton) edit).release();
+                                        edit = ((UIAppendButton) edit).subElement;
+                                    } else {
+                                        throw new RuntimeException("Append chain didn't lead to element, oh dear");
+                                    }
+                                }
+                            }
+                        });
+                        final UISplitterLayout outerSplit = new UISplitterLayout(label, editor, false, 0);
+                        releasers.add(new Runnable() {
+                            @Override
+                            public void run() {
+                                outerSplit.release();
+                            }
+                        });
+                        uiSVL.panelsAdd(outerSplit);
                     }
                 }
             }

@@ -72,7 +72,13 @@ public class RPGCommandSchemaElement extends SchemaElement {
             UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(database.buildCodename(target, true), FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    navigateToCode(launcher, path2, target, path, database);
+                    navigateToCode(launcher, path2, target, new IConsumer<int[]>() {
+                        @Override
+                        public void accept(int[] tmp) {
+                            // Templates don't work from here, but the path does
+                            path.changeOccurred(false);
+                        }
+                    }, path, database);
                 }
             }), new Runnable() {
                 @Override
@@ -152,7 +158,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
     }
 
     // Used by EventCommandArray for edit-on-create.
-    protected static void navigateToCode(final ISchemaHost launcher, final SchemaPath path2, final RubyIO target, final SchemaPath path, final CMDB database) {
+    protected static void navigateToCode(final ISchemaHost launcher, final SchemaPath displayPath, final RubyIO target, final IConsumer<int[]> templateAndConfirm, final SchemaPath path, final CMDB database) {
         UIEnumChoice.Category[] categories = new UIEnumChoice.Category[database.categories.length];
         for (int i = 0; i < categories.length; i++) {
             LinkedList<UIEnumChoice.Option> llo = new LinkedList<UIEnumChoice.Option>();
@@ -165,7 +171,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             categories[i] = new UIEnumChoice.Category(database.categories[i], llo);
         }
 
-        launcher.switchObject(path2.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {
+        launcher.switchObject(displayPath.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {
             @Override
             public void accept(RubyIO integer) {
                 // NOTE: This just uses ints for everything.
@@ -187,11 +193,10 @@ public class RPGCommandSchemaElement extends SchemaElement {
                         schemaElement.modifyVal(target, path, true);
                     }
                 }
-                // Indent recalculation, and such.
-                path.changeOccurred(false);
+                templateAndConfirm.accept(rc.template);
                 // On the one hand, the elements are stale.
                 // On the other hand, the elements will be obliterated anyway before reaching the user.
-                launcher.switchObject(path2);
+                launcher.switchObject(displayPath);
             }
         }, categories, TXDB.get("Code"), UIEnumChoice.EntryMode.INT), null, path), target));
     }

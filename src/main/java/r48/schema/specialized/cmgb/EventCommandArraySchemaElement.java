@@ -95,8 +95,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 }
                 indent += rc.indentPost.apply(commandTarg.getInstVarBySymbol("@parameters"));
                 // Group Behavior
-                if (rc.groupBehavior != null)
-                    modified |= rc.groupBehavior.correctElement(arr, i, commandTarg);
+                for (IGroupBehavior groupBehavior : rc.groupBehaviors)
+                    modified |= groupBehavior.correctElement(arr, i, commandTarg);
                 //
 
                 if (rc.needsBlockLeavePre) {
@@ -123,6 +123,22 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             lastCode = code;
         }
 
+        // This second pass is used by certain group-behaviors that *really, really* need accurate indent information to not cause damage.
+        // Specifically consider this for behaviors which add/remove commands.
+        for (int i = 0; i < arr.size(); i++) {
+            RubyIO commandTarg = arr.get(i);
+            int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
+            RPGCommand rc = database.knownCommands.get(code);
+            if (rc != null) {
+                for (IGroupBehavior groupBehavior : rc.groupBehaviors) {
+                    if (groupBehavior.majorCorrectElement(arr, i, commandTarg)) {
+                        modified = true;
+                        break;
+                    }
+                }
+            }
+        }
+
         if (modified)
             array.arrVal = arr.toArray(new RubyIO[0]);
         return modified;
@@ -132,10 +148,11 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         RubyIO commandTarg = arr[j];
         int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
         RPGCommand rc = database.knownCommands.get(code);
+        int max = 0;
         if (rc != null)
-            if (rc.groupBehavior != null)
-                return rc.groupBehavior.getGroupLength(arr, j);
-        return 0;
+            for (IGroupBehavior groupBehavior : rc.groupBehaviors)
+                max = Math.max(max, groupBehavior.getGroupLength(arr, j));
+        return max;
     }
 
     // Note that this always returns != 0, so all schemas are in fact array-based.
@@ -189,9 +206,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                             int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
                             RPGCommand rc = database.knownCommands.get(code);
                             if (rc != null)
-                                if (rc.groupBehavior != null) {
+                                for (IGroupBehavior groupBehavior : rc.groupBehaviors) {
                                     RubyIO ne = SchemaPath.createDefaultValue(baseElement, null);
-                                    ne.getInstVarBySymbol("@code").fixnumVal = rc.groupBehavior.getAdditionCode();
+                                    ne.getInstVarBySymbol("@code").fixnumVal = groupBehavior.getAdditionCode();
                                     ArrayUtils.insertRioElement(target, ne, start + length);
                                     path.changeOccurred(false);
                                 }
@@ -270,15 +287,26 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    protected void elementOnCreateMagic(RubyIO target, int i, ISchemaHost launcher, SchemaPath ind, SchemaPath path) {
+    protected void elementOnCreateMagic(final RubyIO target, final int idx, ISchemaHost launcher, SchemaPath ind, SchemaPath path) {
+        final SchemaPath sp = path;
         // Notably:
         //  1. the inner-schema always uses the 'path' path.
         //  2. the path constructed must have "back" going to inside the command, then to the array
         //     (so the user knows the command was added anyway)
-        SubwindowSchemaElement targ = getElementContextualSubwindowSchema(target.arrVal[i], i);
+        SubwindowSchemaElement targ = getElementContextualSubwindowSchema(target.arrVal[idx], idx);
         path = path.newWindow(targ.heldElement, target);
-        path = path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]");
+        path = path.arrayHashIndex(new RubyIO().setFX(idx), "[" + idx + "]");
         // Ok, now navigate to the command selector
-        RPGCommandSchemaElement.navigateToCode(launcher, path, target.arrVal[i], path.tagSEMonitor(target, this, false), database);
+        RPGCommandSchemaElement.navigateToCode(launcher, path, target.arrVal[idx], new IConsumer<int[]>() {
+            @Override
+            public void accept(int[] i) {
+                for (int j = 0; j < i.length; j++) {
+                    RubyIO ne = SchemaPath.createDefaultValue(baseElement, null);
+                    ne.getInstVarBySymbol("@code").fixnumVal = i[j];
+                    ArrayUtils.insertRioElement(target, ne, idx + j + 1);
+                }
+                sp.changeOccurred(false);
+            }
+        }, path, database);
     }
 }

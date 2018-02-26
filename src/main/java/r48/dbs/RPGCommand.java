@@ -8,7 +8,6 @@
 package r48.dbs;
 
 import gabien.ui.IFunction;
-import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import r48.AppMain;
 import r48.RubyIO;
@@ -49,9 +48,10 @@ public class RPGCommand {
     public String description;
 
     // Extrenely special behavior for certain commands.
-    // Only usable with the proper "shielding".
-    // (Probably refers to making sure that this will NEVER crash)
-    public IGroupBehavior groupBehavior;
+    // Note that groupBehaviors should try to be as stable as possible, i.e. not corrupt stuff.
+    public LinkedList<IGroupBehavior> groupBehaviors = new LinkedList<IGroupBehavior>();
+    // Used when this command is created.
+    public int[] template = new int[0];
     public int category;
 
     // Pass null for parameters if this is for combobox display.

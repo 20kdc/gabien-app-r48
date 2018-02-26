@@ -209,9 +209,9 @@
    NOTE: Only one post-indent control can apply at a time, including I.
     C commandIndentConditionalIB <paramId>
      Uses a parameter as an int_boolean flag to control post-indentation (true == 1, false == 0)
-    C commandIndentConditionalOF (<paramId> <intValue>)...
+    C commandIndentConditionalOF (<paramId> <value>)...
      Essentially sets a bunch of conditions, and if at least one is true, post-indents by 1, otherwise doesn't.
-     The conditions check if integer parameters are equal to integer values.
+     The conditions check if parameters are equal to values. (See: ValueSyntax in SDB1.1 mode)
    C spritesheet <strParamId> <spritesheet>
     Attaches a graphical index picker button to the bottom of the *next defined parameter*,
      which must be an integer.
@@ -232,3 +232,19 @@
      r2k_choice
       This is particular behavior for r2k choices, which in general automatically adjust their indexes.
       Honestly this system is still a bit clunky, but it doesn't auto"correct" anything existing incorrectly.
+
+     NOT QUITE SUPPORTED YET:
+
+     form <ID/name pairs> <end ID>
+      Used to improve UI for things such as:
+      A:
+      B:
+       @>
+      B:
+       @>
+      C:
+     cleanupIfHeadless <valid IDs above> <top ID>
+      Very important if using template.
+
+   C template <IDs...>
+    Sets up a template to follow this command with when inserted.

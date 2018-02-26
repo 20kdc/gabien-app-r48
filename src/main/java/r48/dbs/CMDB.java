@@ -187,18 +187,20 @@ public class CMDB {
                         };
                     }
                     if (args[0].equals("commandIndentConditionalOF")) {
-                        final int[] iargs = new int[args.length - 1];
-                        for (int i = 0; i < iargs.length; i++)
-                            iargs[i] = Integer.parseInt(args[i + 1]);
+                        final RubyIO[] iargs = new RubyIO[(args.length - 1) / 2];
+                        final int[] ikeys = new int[iargs.length];
+                        for (int i = 0; i < iargs.length; i++) {
+                            ikeys[i] = Integer.parseInt(args[(i * 2) + 1]);
+                            iargs[i] = ValueSyntax.decode(args[(i * 2) + 2], true);
+                        }
                         rc.indentPost = new IFunction<RubyIO, Integer>() {
                             @Override
                             public Integer apply(RubyIO rubyIO) {
-                                for (int i = 0; i < iargs.length; i += 2) {
-                                    if (rubyIO.arrVal.length <= iargs[i])
+                                for (int i = 0; i < iargs.length; i++) {
+                                    if (rubyIO.arrVal.length <= ikeys[i])
                                         continue;
-                                    if (rubyIO.arrVal[iargs[i]].type == 'i')
-                                        if (rubyIO.arrVal[iargs[i]].fixnumVal == iargs[i + 1])
-                                            return 1;
+                                    if (RubyIO.rubyEquals(rubyIO.arrVal[ikeys[i]], iargs[i]))
+                                        return 1;
                                 }
                                 return 0;
                             }
@@ -223,7 +225,7 @@ public class CMDB {
                         // For commands with just one parameter that is a string.
                         if (args[1].equals("messagebox")) {
                             final int code = Integer.parseInt(args[2]);
-                            rc.groupBehavior = new IGroupBehavior() {
+                            rc.groupBehaviors.add(new IGroupBehavior() {
                                 @Override
                                 public int getGroupLength(RubyIO[] array, int index) {
                                     int l = 1;
@@ -246,9 +248,14 @@ public class CMDB {
                                 public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
                                     return false;
                                 }
-                            };
+
+                                @Override
+                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg) {
+                                    return false;
+                                }
+                            });
                         } else if (args[1].equals("r2k_choice")) {
-                            rc.groupBehavior = new IGroupBehavior() {
+                            rc.groupBehaviors.add(new IGroupBehavior() {
                                 @Override
                                 public int getGroupLength(RubyIO[] array, int index) {
                                     return 0;
@@ -288,10 +295,49 @@ public class CMDB {
                                     }
                                     return false;
                                 }
-                            };
+
+                                @Override
+                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg) {
+                                    return false;
+                                }
+                            });
+                        } else if (args[1].equals("form")) {
+                            final int lastId = Integer.parseInt(args[args.length - 1]);
+                            final String[] translatedNames = new String[(args.length - 3) / 2];
+                            final int[] subIds = new int[translatedNames.length];
+                            for (int i = 0; i < translatedNames.length; i++) {
+                                subIds[i] = Integer.parseInt(args[(i * 2) + 2]);
+                                translatedNames[i] = TXDB.get(subContext, args[(i * 2) + 3]);
+                            }
+                            rc.groupBehaviors.add(new IGroupBehavior() {
+                                @Override
+                                public int getGroupLength(RubyIO[] arr, int ind) {
+                                    return 0;
+                                }
+
+                                @Override
+                                public int getAdditionCode() {
+                                    return 0;
+                                }
+
+                                @Override
+                                public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg) {
+                                    return false;
+                                }
+                            });
                         } else {
                             throw new RuntimeException("Unknown group behavior " + args[1]);
                         }
+                    }
+                    if (args[0].equals("template")) {
+                        rc.template = new int[args.length - 1];
+                        for (int i = 1; i < args.length; i++)
+                            rc.template[i - 1] = Integer.parseInt(args[i]);
                     }
                 } else if (c == '#') {
                     String oldFile = baseFile;

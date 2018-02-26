@@ -34,6 +34,13 @@ d Begins a consideration block.
 p text string
 i0
 I1
+C groupBehavior form 982 "Add Alternative" 994
+C template 994
+
+982: ) Alternatively Via (
+d Suggests an alternative method of consideration.
+i-1
+I1
 
 994: )
 d Ends a consideration block.
