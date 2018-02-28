@@ -125,18 +125,22 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
 
         // This second pass is used by certain group-behaviors that *really, really* need accurate indent information to not cause damage.
         // Specifically consider this for behaviors which add/remove commands.
+        boolean continueToBreak = false;
         for (int i = 0; i < arr.size(); i++) {
             RubyIO commandTarg = arr.get(i);
             int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
             RPGCommand rc = database.knownCommands.get(code);
             if (rc != null) {
                 for (IGroupBehavior groupBehavior : rc.groupBehaviors) {
-                    if (groupBehavior.majorCorrectElement(arr, i, commandTarg)) {
+                    if (groupBehavior.majorCorrectElement(arr, i, commandTarg, baseElement)) {
                         modified = true;
+                        continueToBreak = true;
                         break;
                     }
                 }
             }
+            if (continueToBreak)
+                break;
         }
 
         if (modified)

@@ -46,6 +46,9 @@ public interface IArrayInterface {
      */
     class ArrayPosition {
         public final String text;
+        // These are only allowed for two purposes:
+        // 1. Comparison (for group-deletion algorithm)
+        // 2. Copying (for clipboard)
         public final RubyIO[] elements;
         public final Runnable execInsert, execInsertCopiedArray;
         // The way this works is that you run a get to perform the delete,

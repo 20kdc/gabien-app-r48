@@ -12,6 +12,7 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
+import r48.schema.util.SchemaPath;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -250,7 +251,7 @@ public class CMDB {
                                 }
 
                                 @Override
-                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg) {
+                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
                                     return false;
                                 }
                             });
@@ -297,7 +298,7 @@ public class CMDB {
                                 }
 
                                 @Override
-                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg) {
+                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
                                     return false;
                                 }
                             });
@@ -326,8 +327,96 @@ public class CMDB {
                                 }
 
                                 @Override
-                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg) {
+                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                                    // Form correction
+                                    RubyIO rio = commandTarg.getInstVarBySymbol("@indent");
+                                    long topIndent = 0;
+                                    if (rio != null)
+                                        topIndent = rio.fixnumVal;
+
+                                    int indexOfLastValid = i;
+
+                                    for (int j = i + 1; j < arr.size(); j++) {
+                                        RubyIO riox = arr.get(j);
+                                        RubyIO rioy = riox.getInstVarBySymbol("@indent");
+                                        long subIndent = 0;
+                                        if (rioy != null)
+                                            subIndent = rioy.fixnumVal;
+                                        if (subIndent == topIndent) {
+                                            long tid = riox.getInstVarBySymbol("@code").fixnumVal;
+                                            if (tid == lastId)
+                                                return false;
+                                            // If TID does not match a valid follower, BREAK NOW.
+                                            // Otherwise, push valid
+                                            for (int subId : subIds) {
+                                                if (tid == subId) {
+                                                    indexOfLastValid = j;
+                                                    break;
+                                                }
+                                            }
+                                            if (indexOfLastValid != j)
+                                                break;
+                                        } else if (subIndent < topIndent) {
+                                            // Abandon hope.
+                                            break;
+                                        }
+                                    }
+                                    // Didn't find 'top', insert at best-guess
+                                    RubyIO cap = SchemaPath.createDefaultValue(baseElement, null);
+                                    cap.getInstVarBySymbol("@code").fixnumVal = lastId;
+                                    arr.add(indexOfLastValid + 1, cap);
+                                    return true;
+                                }
+                            });
+                        } else if (args[1].equals("expectHead")) {
+                            final int[] ikeys = new int[args.length - 2];
+                            for (int i = 0; i < ikeys.length; i++)
+                                ikeys[i] = Integer.parseInt(args[i + 2]);
+                            rc.groupBehaviors.add(new IGroupBehavior() {
+                                @Override
+                                public int getGroupLength(RubyIO[] arr, int ind) {
+                                    return 0;
+                                }
+
+                                @Override
+                                public int getAdditionCode() {
+                                    return 0;
+                                }
+
+                                @Override
+                                public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
                                     return false;
+                                }
+
+                                @Override
+                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                                    RubyIO rio = commandTarg.getInstVarBySymbol("@indent");
+                                    long topIndent = 0;
+                                    if (rio != null)
+                                        topIndent = rio.fixnumVal;
+                                    int oi = i;
+                                    i--;
+                                    while (i >= 0) {
+                                        RubyIO riox = arr.get(i);
+                                        RubyIO rioy = riox.getInstVarBySymbol("@indent");
+                                        long subIndent = 0;
+                                        if (rioy != null)
+                                            subIndent = rioy.fixnumVal;
+                                        if (subIndent <= topIndent) {
+                                            // Check...
+                                            long perm = riox.getInstVarBySymbol("@code").fixnumVal;
+                                            // Permitted?
+                                            for (int ip : ikeys)
+                                                if (perm == ip)
+                                                    return false;
+                                            // Not permitted, exit out immediately to let arr.remove(oi) take place
+                                            break;
+                                        }
+                                        i--;
+                                    }
+                                    // Ran out!
+                                    arr.remove(oi);
+                                    return true;
                                 }
                             });
                         } else {

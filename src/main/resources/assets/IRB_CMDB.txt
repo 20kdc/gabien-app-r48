@@ -243,7 +243,7 @@
       B:
        @>
       C:
-     cleanupIfHeadless <valid IDs above> <top ID>
+     expectHead <valid IDs that are expected above this>
       Very important if using template.
 
    C template <IDs...>

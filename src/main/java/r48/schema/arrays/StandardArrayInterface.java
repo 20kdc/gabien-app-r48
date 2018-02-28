@@ -16,6 +16,8 @@ import r48.dbs.TXDB;
 import r48.schema.ArrayElementSchemaElement;
 import r48.ui.UIAppendButton;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -145,11 +147,38 @@ public class StandardArrayInterface implements IArrayInterface {
                                         public void run() {
                                             ArrayPosition[] effectivePositions = positions;
                                             Runnable term = null;
+                                            // allowedDelete is used to make sure that nothing gets deleted that shouldn't be.
+                                            // The commented printlns here are for debugging.
+                                            HashSet<RubyIO> allowedDelete = new HashSet<RubyIO>();
+                                            for (int j = selectedStart; j <= selectedEnd; j++)
+                                                if (effectivePositions[j].elements != null)
+                                                    Collections.addAll(allowedDelete, effectivePositions[j].elements);
+                                            //System.err.println("ST" + selectedStart + ";" + selectedEnd);
                                             for (int j = selectedStart; j <= selectedEnd; j++) {
-                                                if (j >= effectivePositions.length)
+                                                //System.err.println(j);
+                                                if (selectedStart >= effectivePositions.length) {
+                                                    //System.err.println("NR");
                                                     break;
-                                                if (effectivePositions[selectedStart].execDelete == null)
+                                                }
+                                                if (effectivePositions[selectedStart].execDelete == null) {
+                                                    //System.err.println("NED");
                                                     break;
+                                                }
+                                                if (effectivePositions[selectedStart].elements == null) {
+                                                    //System.err.println("NEL");
+                                                    break;
+                                                }
+                                                boolean aok = true;
+                                                for (RubyIO rio : effectivePositions[selectedStart].elements) {
+                                                    if (!allowedDelete.contains(rio)) {
+                                                        aok = false;
+                                                        break;
+                                                    }
+                                                }
+                                                if (!aok) {
+                                                    //System.err.println("NOK");
+                                                    break;
+                                                }
                                                 term = effectivePositions[selectedStart].execDelete.get();
                                                 effectivePositions = getPositions.get();
                                             }

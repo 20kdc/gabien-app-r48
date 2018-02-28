@@ -8,6 +8,7 @@
 package r48.schema.specialized.cmgb;
 
 import r48.RubyIO;
+import r48.schema.SchemaElement;
 
 import java.util.LinkedList;
 
@@ -29,5 +30,5 @@ public interface IGroupBehavior {
 
     // This second pass is used by certain group-behaviors that *really, really* need accurate indent information to not cause damage.
     // Specifically consider this for behaviors which add/remove commands.
-    boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg);
+    boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement);
 }

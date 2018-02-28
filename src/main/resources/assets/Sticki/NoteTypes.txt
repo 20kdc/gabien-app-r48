@@ -35,17 +35,18 @@ p text string
 i0
 I1
 C groupBehavior form 982 "Add Alternative" 994
-C template 994
 
 982: ) Alternatively Via (
 d Suggests an alternative method of consideration.
 i-1
 I1
+C groupBehavior expectHead 982 993
 
 994: )
 d Ends a consideration block.
 i-1
 I0
+C groupBehavior expectHead 982 993
 
 995: @@Long-term Plan{B: #A ([ltp_type]B)}
 d This is a sub-plan which can run concurrently with the current plan, or be waited on.
