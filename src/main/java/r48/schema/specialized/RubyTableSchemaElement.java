@@ -9,6 +9,7 @@ package r48.schema.specialized;
 
 import gabien.FontManager;
 import gabien.IGrDriver;
+import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -89,8 +90,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
             }
 
             @Override
-            public void update(double deltaTime) {
-                super.update(deltaTime);
+            public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
                 // Lack of any better place.
                 double v = uivScrollbar.scrollPoint;
                 if (v <= 0)
@@ -99,6 +99,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                     v = 0.99;
                 v += getSelected();
                 dataBlackboxTarget.getEmbedMap(launcher).put(blackboxKey, v);
+                super.update(deltaTime, selected, peripherals);
             }
         };
 

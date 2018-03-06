@@ -39,12 +39,12 @@ public class HiddenSchemaElement extends SchemaElement implements IProxySchemaEl
     public static UIElement makeHiddenElement() {
         return new UIElement(0, 0) {
             @Override
-            public void update(double deltaTime) {
+            public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
 
             }
 
             @Override
-            public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+            public void render(IGrDriver igd) {
 
             }
         };

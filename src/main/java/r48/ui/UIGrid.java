@@ -7,7 +7,10 @@
 
 package r48.ui;
 
-import gabien.*;
+import gabien.FontManager;
+import gabien.IDesktopPeripherals;
+import gabien.IGrDriver;
+import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.FontSizes;
 
@@ -58,14 +61,19 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
     }
 
     @Override
-    public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+        super.update(deltaTime, selected, peripherals);
         if (peripherals instanceof IDesktopPeripherals) {
             mouseEmulator.mouseX = ((IDesktopPeripherals) peripherals).getMouseX();
             mouseEmulator.mouseY = ((IDesktopPeripherals) peripherals).getMouseY();
         }
+    }
+
+    @Override
+    public void render(IGrDriver igd) {
         Size r = getSize();
         igd.clearRect(bkgR, bkgG, bkgB, 0, 0, r.width, r.height);
-        super.render(selected, peripherals, igd);
+        super.render(igd);
 
         if (tmWidth <= 0)
             return;
@@ -175,6 +183,24 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
     @Override
     public void handleMousewheel(int x, int y, boolean north) {
         uivScrollbar.handleMousewheel(x, y, north);
+    }
+
+    @Override
+    public void handlePointerBegin(IPointer state) {
+        mouseEmulator.handlePointerBegin(state);
+        super.handlePointerBegin(state);
+    }
+
+    @Override
+    public void handlePointerUpdate(IPointer state) {
+        mouseEmulator.handlePointerUpdate(state);
+        super.handlePointerUpdate(state);
+    }
+
+    @Override
+    public void handlePointerEnd(IPointer state) {
+        mouseEmulator.handlePointerEnd(state);
+        super.handlePointerEnd(state);
     }
 
     private void selectionChanged() {

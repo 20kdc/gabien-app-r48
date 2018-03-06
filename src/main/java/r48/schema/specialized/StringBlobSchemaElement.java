@@ -49,7 +49,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                 }
             }
         });
-        final Runnable importScrSaveTicker = AggregateSchemaElement.hookButtonForPressPreserve(path, launcher, this, target, importer, "import");
+        AggregateSchemaElement.hookButtonForPressPreserve(path, launcher, this, target, importer, "import");
         return new UISplitterLayout(new UITextButton(TXDB.get("Export/Edit"), FontSizes.blobTextHeight, new Runnable() {
             @Override
             public void run() {
@@ -67,13 +67,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                     AppMain.launchDialog(TXDB.get("Wasn't able to export.") + "\n" + ioe);
                 }
             }
-        }), importer, false, 0.5d) {
-            @Override
-            public void update(double deltaTime) {
-                super.update(deltaTime);
-                importScrSaveTicker.run();
-            }
-        };
+        }), importer, false, 0.5d);
     }
 
     public static byte[] readStream(InputStream dis) throws IOException {

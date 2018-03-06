@@ -9,6 +9,7 @@ package r48.ui;
 
 import gabien.FontManager;
 import gabien.GaBIEn;
+import gabien.IPeripherals;
 import gabien.ui.*;
 import gabienapp.Application;
 import r48.FontSizes;
@@ -82,14 +83,14 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
             }
         }) {
             @Override
-            public void update(double dt) {
+            public void updateContents(double deltaTime, boolean selected, IPeripherals peripherals) {
                 text = TXDB.get("Font: ");
                 if (FontManager.fontOverride != null) {
                     text += FontManager.fontOverride;
                 } else {
                     text += TXDB.get("Internal w/fallbacks");
                 }
-                super.update(dt);
+                super.updateContents(deltaTime, selected, peripherals);
             }
         };
         final UIAppendButton fontButtonAppend = new UIAppendButton(TXDB.get("Even for height <= 8"), fontButton, new Runnable() {

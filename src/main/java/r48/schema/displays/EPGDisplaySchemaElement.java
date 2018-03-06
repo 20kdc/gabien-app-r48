@@ -8,9 +8,7 @@
 package r48.schema.displays;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IPeripherals;
-import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
 import r48.FontSizes;
@@ -30,12 +28,12 @@ public class EPGDisplaySchemaElement extends SchemaElement {
         final int sprScale = FontSizes.getSpriteScale();
         UIElement display = new UIElement(64, 96 * sprScale) {
             @Override
-            public void update(double deltaTime) {
+            public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
 
             }
 
             @Override
-            public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+            public void render(IGrDriver igd) {
                 Size bounds = getSize();
                 igd.clearRect(255, 0, 255, 0, 0, bounds.width, bounds.height);
                 StuffRenderer r = launcher.getContextRenderer();

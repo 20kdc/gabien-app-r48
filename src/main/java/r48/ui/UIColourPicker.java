@@ -8,8 +8,6 @@
 package r48.ui;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
-import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -31,13 +29,13 @@ public class UIColourPicker extends UIElement.UIPanel {
             int lastHue = 0;
 
             @Override
-            public void render(boolean select, IPeripherals peripherals, IGrDriver igd) {
+            public void render(IGrDriver igd) {
                 int newHue = (int) Math.floor((hueScroll.scrollPoint * 359) + 0.5d);
                 if (lastHue != newHue) {
                     baseImage = Art.getColourPal(newHue);
                     lastHue = newHue;
                 }
-                super.render(select, peripherals, igd);
+                super.render(igd);
                 int margin = currentMainSpriteScale * 4;
                 Art.drawSelectionBox(((x * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - (margin / 2),  ((y * currentMainSpriteScale) + (currentMainSpriteScale / 2)) - (margin / 2), margin + 1, margin + 1, 1, igd);
             }
@@ -105,7 +103,7 @@ public class UIColourPicker extends UIElement.UIPanel {
     }
 
     @Override
-    public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+    public void render(IGrDriver igd) {
         int col = colourPanel.baseImage.getPixels()[x + (y * 256)];
         col &= 0xFFFFFF;
         if (alphaScroll != null) {
@@ -115,7 +113,7 @@ public class UIColourPicker extends UIElement.UIPanel {
             col |= 0xFF000000;
         }
         swatch.col = col;
-        super.render(selected, peripherals, igd);
+        super.render(igd);
     }
 
     @Override

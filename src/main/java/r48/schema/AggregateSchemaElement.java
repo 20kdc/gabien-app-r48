@@ -7,13 +7,7 @@
 
 package r48.schema;
 
-import gabien.IGrDriver;
-import gabien.IGrInDriver;
-import gabien.IPeripherals;
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
@@ -97,8 +91,14 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
         final SchemaPath keyStoragePath = path.findLast();
         final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize) {
             @Override
-            public void render(boolean select, IPeripherals peripherals, IGrDriver igd) {
-                super.render(select, peripherals, igd);
+            public void handleMousewheel(int x, int y, boolean north) {
+                super.handleMousewheel(x, y, north);
+                keyStoragePath.getEmbedMap(host).put(myKey, scrollbar.scrollPoint);
+            }
+
+            @Override
+            public void handlePointerEnd(IPointer state) {
+                super.handlePointerEnd(state);
                 keyStoragePath.getEmbedMap(host).put(myKey, scrollbar.scrollPoint);
             }
         };
@@ -107,16 +107,9 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     }
 
     // Only to be used if this button is known to cause changeOccurred.
-    // The Runnable is an "undo" for if it's uncertain - needs to be triggered on updateAndRender.
-    public static Runnable hookButtonForPressPreserve(final SchemaPath path, final ISchemaHost host, final SchemaElement elem, final RubyIO target, final UITextButton utb, final String id) {
+    public static void hookButtonForPressPreserve(final SchemaPath path, final ISchemaHost host, final SchemaElement elem, final RubyIO target, final UITextButton utb, final String id) {
         final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(elem, target, AggregateSchemaElement.class, "B/" + id);
         final SchemaPath keyStoragePath = path.findLast();
-        final Runnable saver = new Runnable() {
-            @Override
-            public void run() {
-                keyStoragePath.getEmbedMap(host).put(myKey, 0d);
-            }
-        };
         final Runnable next = utb.onClick;
         utb.onClick = new Runnable() {
             @Override
@@ -130,7 +123,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
             utb.state = true;
             utb.pressedTime = 0.5d;
         }
-        return saver;
+        keyStoragePath.getEmbedMap(host).put(myKey, 0d);
     }
 
     @Override

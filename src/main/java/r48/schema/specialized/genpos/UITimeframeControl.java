@@ -7,10 +7,10 @@
 
 package r48.schema.specialized.genpos;
 
-import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IPeripherals;
-import gabien.ui.*;
+import gabien.ui.UIButton;
+import gabien.ui.UIElement;
+import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -116,7 +116,7 @@ public class UITimeframeControl extends UIElement.UIProxy {
     }
 
     @Override
-    public void update(double deltaTime) {
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
         if (playControllerButton.state) {
             playTimer += deltaTime;
             double frameTime = 1.0d / recommendedFramerate;
@@ -139,6 +139,7 @@ public class UITimeframeControl extends UIElement.UIProxy {
             playTimer = 0;
         }
         currentFrame.text = (rootPanel.target.getFrameIdx() + 1) + " / " + rootPanel.target.getFrameCount();
-        super.update(deltaTime);
+
+        super.update(deltaTime, selected, peripherals);
     }
 }

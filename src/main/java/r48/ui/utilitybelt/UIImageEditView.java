@@ -7,7 +7,10 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.*;
+import gabien.GaBIEn;
+import gabien.IGrDriver;
+import gabien.IImage;
+import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -39,11 +42,12 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     }
 
     @Override
-    public void update(double deltaTime) {
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+
     }
 
     @Override
-    public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+    public void render(IGrDriver igd) {
         Size bounds = getSize();
         Rect viewRct = getViewRect();
         // Maybe cache this for perf. Acts like a more precise scissor for now.

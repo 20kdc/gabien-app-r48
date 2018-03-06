@@ -7,13 +7,11 @@
 
 package r48.schema.specialized.genpos;
 
-import gabien.IGrInDriver;
+import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.schema.HiddenSchemaElement;
 import r48.schema.util.SchemaPath;
-
-import java.util.Collections;
 
 /**
  * The system for editing a given cell.
@@ -64,13 +62,13 @@ public class UICellEditingPanel extends UIElement.UIPanel {
     }
 
     @Override
-    public void update(double deltaTime) {
-        super.update(deltaTime);
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
         int n = cellSelectionPanel.cellChangeNotificationNumber;
         if (lastCCN != n) {
             lastCCN = n;
             somethingChanged();
         }
+        super.update(deltaTime, selected, peripherals);
     }
 
     @Override

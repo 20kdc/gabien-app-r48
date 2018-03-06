@@ -110,15 +110,9 @@ public class ScriptControlSchemaElement extends SchemaElement {
             }
         });
 
-        final Runnable importScrSaveTicker = AggregateSchemaElement.hookButtonForPressPreserve(path, launcher, this, target, importer, "import");
+        AggregateSchemaElement.hookButtonForPressPreserve(path, launcher, this, target, importer, "import");
 
-        return new UISplitterLayout(exporter, importer, false, 0.5d) {
-            @Override
-            public void update(double deltaTime) {
-                super.update(deltaTime);
-                importScrSaveTicker.run();
-            }
-        };
+        return new UISplitterLayout(exporter, importer, false, 0.5d);
     }
 
     private RubyIO importScripts() throws IOException {

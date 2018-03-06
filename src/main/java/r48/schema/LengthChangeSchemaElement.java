@@ -32,7 +32,7 @@ public class LengthChangeSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        // This is never meant to *actually* scroll.
+        // This was hooked up to a button preserver by accident. Useless because it's a toggle now.
         UITextButton r = new UITextButton(translatedText, FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
@@ -43,15 +43,7 @@ public class LengthChangeSchemaElement extends SchemaElement {
                 target.arrVal = rubies;
                 path.changeOccurred(false);
             }
-        }) {
-            final Runnable r = AggregateSchemaElement.hookButtonForPressPreserve(path, launcher, LengthChangeSchemaElement.this, target, this, "main");
-
-            @Override
-            public void update(double deltaTime) {
-                super.update(deltaTime);
-                r.run();
-            }
-        }.togglable(target.arrVal.length == targetLen);
+        }).togglable(target.arrVal.length == targetLen);
         return r;
     }
 

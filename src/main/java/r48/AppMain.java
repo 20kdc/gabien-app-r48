@@ -7,7 +7,10 @@
 
 package r48;
 
-import gabien.*;
+import gabien.GaBIEn;
+import gabien.IDesktopPeripherals;
+import gabien.IGrDriver;
+import gabien.IPeripherals;
 import gabien.ui.*;
 import gabienapp.Application;
 import r48.dbs.*;
@@ -17,7 +20,6 @@ import r48.io.PathUtils;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.map.systems.*;
-import r48.maptools.UIMTBase;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.util.ISchemaHost;
@@ -225,13 +227,18 @@ public class AppMain {
         // initialize UI
         rootView = new UIWindowView() {
             @Override
-            public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+            public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
                 if (peripherals instanceof IDesktopPeripherals)
                     Coco.run((IDesktopPeripherals) peripherals);
+                super.update(deltaTime, selected, peripherals);
+            }
+
+            @Override
+            public void render(IGrDriver igd) {
                 Size r = getSize();
                 mainWindowWidth = r.width;
                 mainWindowHeight = r.height;
-                super.render(selected, peripherals, igd);
+                super.render(igd);
             }
 
             @Override

@@ -8,9 +8,11 @@
 package r48.map;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IPeripherals;
-import gabien.ui.*;
+import gabien.ui.IConsumer;
+import gabien.ui.Rect;
+import gabien.ui.Size;
+import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.dbs.TXDB;
 import r48.maptools.UIMTAutotile;
@@ -60,13 +62,13 @@ public class UIMapViewContainer extends UIElement.UIPanel {
     }
 
     @Override
-    public void update(double deltaTime) {
-        super.update(deltaTime);
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+        super.update(deltaTime, selected, peripherals);
         deltaTimeAccum += deltaTime;
     }
 
     @Override
-    public void render(boolean select, IPeripherals peripherals, IGrDriver igd) {
+    public void render(IGrDriver igd) {
         // remove stale tools.
         // (this code is weird!)
         if (mapTool != null) {
@@ -110,13 +112,13 @@ public class UIMapViewContainer extends UIElement.UIPanel {
             }
         }
 
-        super.render(select, peripherals, igd);
+        super.render(igd);
         if (view != null) {
             deltaTimeAccum = 0;
             return;
         }
         Size r = getSize();
-        timeWaster.draw(igd, peripherals, 0, 0, deltaTimeAccum, r.width, r.height);
+        //timeWaster.draw(igd, peripherals, 0, 0, deltaTimeAccum, r.width, r.height);
         deltaTimeAccum = 0;
     }
 

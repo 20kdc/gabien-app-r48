@@ -8,10 +8,7 @@
 package r48.ui;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
-import gabien.IPeripherals;
 import gabien.ui.Rect;
-import gabien.ui.Size;
 import gabien.ui.UIButton;
 
 /**
@@ -39,7 +36,7 @@ public class UISymbolButton extends UIButton {
     }
 
     @Override
-    public void renderContents(boolean selected, boolean textBlack, IPeripherals peripherals, IGrDriver igd) {
+    public void renderContents(boolean textBlack, IGrDriver igd) {
         int bw = getBorderWidth();
         Art.drawSymbol(igd, symbol, bw, bw, getSize().height - (bw * 2), false, textBlack);
     }

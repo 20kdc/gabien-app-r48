@@ -7,7 +7,7 @@
 
 package r48.schema.util;
 
-import gabien.IGrInDriver;
+import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
@@ -169,8 +169,8 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost, IW
     }
 
     @Override
-    public void update(double deltaTime) {
-        super.update(deltaTime);
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+        super.update(deltaTime, selected, peripherals);
         if (nudged) {
             switchObject(innerElem);
             nudged = false;

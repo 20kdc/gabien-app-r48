@@ -8,7 +8,6 @@
 package r48.schema.specialized.genpos;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.IPeripherals;
 import gabien.ui.*;
@@ -32,7 +31,12 @@ public class UISingleFrameView extends UIElement implements OldMouseEmulator.IOl
     }
 
     @Override
-    public void render(boolean select, IPeripherals peripherals, IGrDriver igd) {
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+
+    }
+
+    @Override
+    public void render(IGrDriver igd) {
         Size b = getSize();
 
         igd.clearAll(255, 0, 255);
@@ -134,10 +138,4 @@ public class UISingleFrameView extends UIElement implements OldMouseEmulator.IOl
             integer &= ~7;
         return integer;
     }
-
-    @Override
-    public void update(double deltaTime) {
-
-    }
-
 }

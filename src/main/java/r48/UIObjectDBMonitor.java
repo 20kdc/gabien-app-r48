@@ -8,7 +8,6 @@
 package r48;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.dbs.FormatSyntax;
@@ -24,12 +23,12 @@ public class UIObjectDBMonitor extends UIElement {
     }
 
     @Override
-    public void update(double deltaTime) {
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
 
     }
 
     @Override
-    public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+    public void render(IGrDriver igd) {
         int step = UILabel.getRecommendedTextSize("", FontSizes.objectDBMonitorTextHeight).height;
         int oy = 0;
         for (String s : UITest.sortedKeysStr(AppMain.objectDB.objectMap.keySet())) {

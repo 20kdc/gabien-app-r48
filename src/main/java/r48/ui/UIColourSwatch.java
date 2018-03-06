@@ -8,9 +8,7 @@
 package r48.ui;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IPeripherals;
-import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
 
@@ -26,12 +24,12 @@ public class UIColourSwatch extends UIElement {
     }
 
     @Override
-    public void update(double deltaTime) {
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
 
     }
 
     @Override
-    public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+    public void render(IGrDriver igd) {
         Size bounds = getSize();
         final int a = ((col & 0xFF000000) >> 24) & 0xFF;
         final int r = (col & 0xFF0000) >> 16;

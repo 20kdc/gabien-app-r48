@@ -11,7 +11,6 @@ import gabien.IDesktopPeripherals;
 import gabien.IGrDriver;
 import gabien.IPeripherals;
 import gabien.ui.*;
-import r48.FontSizes;
 
 import java.util.HashSet;
 
@@ -78,13 +77,18 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
     }
 
     @Override
-    public void render(boolean select, IPeripherals peripherals, IGrDriver igd) {
-        super.render(select, peripherals, igd);
-        boolean blackText = UIBorderedElement.getBlackTextFlagWindowRoot();
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+        super.update(deltaTime, selected, peripherals);
         if (peripherals instanceof IDesktopPeripherals) {
             mouseEmulator.mouseX = ((IDesktopPeripherals) peripherals).getMouseX();
             mouseEmulator.mouseY = ((IDesktopPeripherals) peripherals).getMouseY();
         }
+    }
+
+    @Override
+    public void render(IGrDriver igd) {
+        super.render(igd);
+        boolean blackText = UIBorderedElement.getBlackTextFlagWindowRoot();
         int y = 0;
         HashSet<Integer> continuingLines = new HashSet<Integer>();
         for (int i = 0; i < elements.length; i++) {

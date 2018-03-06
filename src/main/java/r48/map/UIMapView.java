@@ -20,7 +20,7 @@ import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 
 /**
- * Note: this class will slightly draw out of bounds.
+ * The beginning.
  * Created on 12/27/16.
  */
 public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseReceiver {
@@ -150,18 +150,17 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
     }
 
     @Override
-    public void update(double deltaTime) {
-
-    }
-
-    @Override
-    public void render(boolean selected, IPeripherals peripherals, IGrDriver igd) {
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
         shiftDown = false;
         if (peripherals instanceof IDesktopPeripherals) {
             mouseEmulator.mouseX = ((IDesktopPeripherals) peripherals).getMouseX();
             mouseEmulator.mouseY = ((IDesktopPeripherals) peripherals).getMouseY();
             shiftDown = ((IDesktopPeripherals) peripherals).isKeyDown(IGrInDriver.VK_SHIFT);
         }
+    }
+
+    @Override
+    public void render(IGrDriver igd) {
         int mouseXT = UIElement.sensibleCellDiv(mouseEmulator.mouseX + (int) internalScaling(camX), internalScaling(tileSize));
         int mouseYT = UIElement.sensibleCellDiv(mouseEmulator.mouseY + (int) internalScaling(camY), internalScaling(tileSize));
         Size camR = getSize();
