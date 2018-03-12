@@ -93,20 +93,18 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 super.updateContents(deltaTime, selected, peripherals);
             }
         };
-        final UIAppendButton fontButtonAppend = new UIAppendButton(TXDB.get("Even for height <= 8"), fontButton, new Runnable() {
+        final UITextButton fontButtonAppend = new UITextButton(TXDB.get("Even for height <= 8"), FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
             }
-        }, FontSizes.fontSizerTextHeight);
-        fontButtonAppend.button.toggle = true;
-        fontButtonAppend.button.state = FontManager.fontOverrideUE8;
-        fontButtonAppend.button.onClick = new Runnable() {
+        }).togglable(FontManager.fontOverrideUE8);
+        fontButtonAppend.onClick = new Runnable() {
             @Override
             public void run() {
-                FontManager.fontOverrideUE8 = fontButtonAppend.button.state;
+                FontManager.fontOverrideUE8 = fontButtonAppend.state;
             }
         };
-        outerLayout.panelsAdd(fontButtonAppend);
+        outerLayout.panelsAdd(new UISplitterLayout(fontButton, fontButtonAppend, false, 0.5));
         outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(FormatSyntax.formatExtended(TXDB.get("Theme: #A"), new RubyIO().setFX(UIBorderedElement.borderTheme)), FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
