@@ -7,7 +7,10 @@
 
 package r48.map;
 
-import gabien.ui.*;
+import gabien.ui.IFunction;
+import gabien.ui.UIElement;
+import gabien.ui.UIScrollLayout;
+import gabien.ui.UITextButton;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyTable;
@@ -83,7 +86,6 @@ public class MapEditingToolbarController implements IEditingToolbarController {
             public void run() {
                 clearTools(thisButton);
                 UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize);
-                int h = 0;
                 for (int i = 0; i < view.mapTable.renderer.layers.length; i++) {
                     final int fi = i;
                     UITextButton layerVis = new UITextButton(view.mapTable.renderer.layers[i].getName(), FontSizes.mapLayertabTextHeight, new Runnable() {
@@ -92,7 +94,6 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                             view.layerVis[fi] = !view.layerVis[fi];
                         }
                     }).togglable(view.layerVis[i]);
-                    h += layerVis.getWantedSize().height;
                     svl.panelsAdd(layerVis);
                 }
                 viewGiver.accept(UIMTBase.wrap(viewGiver, svl));

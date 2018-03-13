@@ -8,7 +8,6 @@
 package r48.maptools;
 
 import gabien.ui.Rect;
-import gabien.ui.Size;
 import gabien.ui.UIElement;
 import r48.map.IMapToolContext;
 import r48.ui.IWindowElement;
@@ -40,11 +39,15 @@ public class UIMTBase extends UIElement.UIPanel implements IWindowElement {
         innerElem = inner;
         if (inner != null) {
             layoutAddElement(inner);
-            runLayout();
-        }
-        if (inConstructor) {
-            // if you're lying about this... >.<
-            setForcedBounds(null, new Rect(inner.getWantedSize()));
+            if (inConstructor) {
+                // if you're lying about this... >.<
+                // Forces it to establish a wanted size, then uses that
+                inner.runLayout();
+                // This will cause a relayout, which does the rest
+                setForcedBounds(null, new Rect(inner.getWantedSize()));
+            } else {
+                runLayout();
+            }
         }
     }
 

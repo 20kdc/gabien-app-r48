@@ -193,15 +193,31 @@ public class SDB {
                                 }
                             });
                         }
-                        if (text.equals("path")) {
+                        if (text.equals("path") || text.equals("pathN")) {
                             String path = args[point++];
+                            String txt = "";
+                            if (!text.endsWith("N")) {
+                                txt = TXDB.get(outerContext, path);
+                            } else {
+                                txt = TXDB.getExUnderscore(outerContext, args[point++]);
+                                if (txt.equals("_"))
+                                    txt = null;
+                            }
                             SchemaElement hide = get();
-                            return new PathSchemaElement(path, TXDB.get(outerContext, path), hide, v1p1, false);
+                            return new PathSchemaElement(path, txt, hide, v1p1, false);
                         }
-                        if (text.equals("optP")) {
+                        if (text.equals("optP") || text.equals("optPN")) {
                             String path = args[point++];
+                            String txt = "";
+                            if (!text.endsWith("N")) {
+                                txt = TXDB.get(outerContext, path);
+                            } else {
+                                txt = TXDB.getExUnderscore(outerContext, args[point++]);
+                                if (txt.equals("_"))
+                                    txt = null;
+                            }
                             SchemaElement hide = get();
-                            return new PathSchemaElement(path, TXDB.get(outerContext, path), hide, v1p1, true);
+                            return new PathSchemaElement(path, txt, hide, v1p1, true);
                         }
 
                         // CS means "control indent if allowed"

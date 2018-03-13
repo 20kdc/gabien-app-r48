@@ -7,7 +7,10 @@
 
 package r48.schema;
 
-import gabien.ui.*;
+import gabien.ui.UIElement;
+import gabien.ui.UILabel;
+import gabien.ui.UISplitterLayout;
+import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.PathSyntax;
@@ -39,7 +42,9 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UILabel uil = new ArrayElementSchemaElement.UIOverridableWidthLabel(alias + " ", FontSizes.schemaFieldTextHeight, fieldWidth, fieldWidthOverride);
+        UILabel uil = null;
+        if (alias != null)
+            uil = new ArrayElementSchemaElement.UIOverridableWidthLabel(alias + " ", FontSizes.schemaFieldTextHeight, fieldWidth, fieldWidthOverride);
         fieldWidthOverride = false;
         RubyIO tgo = PathSyntax.parse(target, pStr, 0, sdb2);
         UIElement e2;
@@ -65,12 +70,16 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
                     }
                 }, FontSizes.schemaButtonTextHeight);
         }
-        return new UISplitterLayout(uil, e2, false, 0);
+        if (uil != null)
+            return new UISplitterLayout(uil, e2, false, 0);
+        return e2;
     }
 
     @Override
     public int getDefaultFieldWidth(RubyIO target) {
-        return UILabel.getRecommendedTextSize(alias + " ", FontSizes.schemaFieldTextHeight).width;
+        if (alias != null)
+            return UILabel.getRecommendedTextSize(alias + " ", FontSizes.schemaFieldTextHeight).width;
+        return 0;
     }
 
     @Override
