@@ -29,6 +29,16 @@ import java.util.LinkedList;
  * (On top of it's previous behaviors, this is now responsible for indent. It monitors subelements *anyway*,
  * and moving the logic here allows me to cut off some of SchemaPath's rube-goldberg-iness.
  * Anything to simplify that thing. Jun 2, 2017.)
+ *
+ * OK, so here's the March 13th, 2018 accurate notes:
+ *
+ * The direct subelements of this are halfsplit schema elements designed to generate the indentation reliably.
+ * The right side of those is a set of subwindows containing super-special schema elements,
+ *  that are tagged with the specific command RubyIO to look for.
+ * This allows editing to work properly with groups *and* for it to still be able to handle command movement and deletion.
+ * getGroupElement is run inside of these after the target has been located,
+ *  in order to finish up the specific interface we're showing to the user at a given time.
+ *
  * Created on 1/2/17.
  */
 public class EventCommandArraySchemaElement extends ArraySchemaElement {

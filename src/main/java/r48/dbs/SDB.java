@@ -299,11 +299,9 @@ public class SDB {
                             String disambiguatorIndex = args[point++];
                             SchemaElement backup = get();
                             HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
-                            while (!args[point].equals("}")) {
-                                int ind = Integer.parseInt(args[point++]);
-                                disambiguations.put("i" + ind, get());
-                            }
-                            disambiguations.put("x", backup);
+                            while (!args[point].equals("}"))
+                                disambiguations.put(args[point++], get());
+                            disambiguations.put("", backup);
                             return new DisambiguatorSchemaElement(disambiguatorIndex, disambiguations);
                         }
                         if (text.equals("lengthAdjust")) {

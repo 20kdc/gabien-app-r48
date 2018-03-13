@@ -10,6 +10,7 @@ package r48.schema;
 import gabien.ui.UIElement;
 import r48.RubyIO;
 import r48.dbs.PathSyntax;
+import r48.dbs.ValueSyntax;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -20,19 +21,19 @@ import java.util.HashMap;
  * There used to be a note here saying the element must be an enum,
  * but that was before the Decision where all elements started getting rebuilt out of sheer practicality.
  * That was 9 months ago. It's now the 8th of October.
+ *
+ * Notes on March 13th 2018:
+ *  DisambiguatorSyntax is weird.
+ *
  * Created on 12/31/16.
  */
 public class DisambiguatorSchemaElement extends SchemaElement {
-    // Special values:
-    // null: Always returns i0
-    // Other stuff goes via PathSyntax.
+    // PathSyntax
     public String dIndex;
-    // "text
-    // i123
-    // x
-    // Strings are handled with "Cmd[ ABCD ] some user text"
-    // Ints are "0: some user text"
-    // x is default
+
+    // ValueSyntax
+    // "" is default
+    // there's some special translation stuff for SDB1 compat
     public HashMap<String, SchemaElement> dTable;
 
     public DisambiguatorSchemaElement(String disambiguatorIndex, HashMap<String, SchemaElement> disambiguations) {
@@ -49,22 +50,16 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     }
 
     private String getDisambigIndex(RubyIO target) {
-        if (dIndex == null)
-            return "i0";
         target = PathSyntax.parse(target, dIndex, true);
         if (target == null)
-            return "x";
-        if (target.type == 'i')
-            return "i" + target.fixnumVal;
-        if (target.type == '"')
-            return "$" + target.decString();
-        return "x";
+            return "";
+        return ValueSyntax.encode(target, true);
     }
 
     private SchemaElement getSchemaElement(String dVal) {
         SchemaElement r = dTable.get(dVal);
         if (r == null)
-            r = dTable.get("x");
+            r = dTable.get("");
         if (r == null)
             r = new AggregateSchemaElement(new SchemaElement[0]);
         return r;
@@ -81,7 +76,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
 
         String iv = getDisambigIndex(target);
         if (!setDefault)
-            if (iv.equals("x"))
+            if (iv.equals(""))
                 System.out.println("Warning: Disambiguator working off of nothing here, this CANNOT GO WELL");
         try {
             SchemaElement ise = getSchemaElement(iv);

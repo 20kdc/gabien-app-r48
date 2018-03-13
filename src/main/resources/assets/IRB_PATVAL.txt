@@ -20,7 +20,6 @@ Sometimes, it's used relative to the world.
 
 PathSyntax is used in the following SDB1 stuff (mostly as regexes)
   condHide
-  ^[Dd]
   C name
   path
   optP

@@ -12,12 +12,15 @@ import r48.RubyIO;
 /**
  * Value syntax. Meant to be used from within EscapedStringSyntax or PathSyntax.
  * Most things are treated as int for compatibility.
- * However, " starts a string (no ending ")
- * and : starts a symbol.
+ * However, " starts a string (no ending "),
+ *  : starts a symbol,
+ *  and nil means null.
  * Created on 10/06/17.
  */
 public class ValueSyntax {
     public static RubyIO decode(String unescape, boolean sdb2) {
+        if (unescape.equals("nil"))
+            return new RubyIO().setNull();
         boolean str = unescape.startsWith("\"");
         if (sdb2)
             str = unescape.startsWith("$");
@@ -34,8 +37,10 @@ public class ValueSyntax {
         }
     }
 
-    // Can return null if unencodable. Note that this is for use in hashes.
+    // Returns "" if unencodable. Note that this is for use in hashes.
     public static String encode(RubyIO val, boolean sdb2) {
+        if (val.type == '0')
+            return "nil";
         String v2 = "";
         if (val.type == '"') {
             v2 = (sdb2 ? "$" : "\"") + val.decString();

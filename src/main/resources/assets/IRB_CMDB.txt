@@ -237,9 +237,6 @@
      r2k_choice
       This is particular behavior for r2k choices, which in general automatically adjust their indexes.
       Honestly this system is still a bit clunky, but it doesn't auto"correct" anything existing incorrectly.
-
-     NOT QUITE SUPPORTED YET:
-
      form <ID/name pairs> <end ID>
       Used to improve UI for things such as:
       A:

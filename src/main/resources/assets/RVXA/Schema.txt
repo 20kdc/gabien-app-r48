@@ -35,9 +35,9 @@ D internal_mapDictionary 1 MapInfos 1 @name
 D internal_itemDictionary 1 Items 0 @name
 D internal_commevDictionary 1 CommonEvents 0 @name
 D internal_animationDictionary 1 Animations 0 @name
-d internal_elementDictionary 1 System @elements
-d internal_variableDictionary 1 System @variables
-d internal_switchDictionary 1 System @switches
+D internal_elementDictionary 1 System@elements 0 :
+D internal_variableDictionary 1 System@variables 0 :
+D internal_switchDictionary 1 System@switches 0 :
 
 D internal_actorDictionary 1 Actors 0 @name
 D internal_skillDictionary 1 Skills 0 @name
@@ -49,10 +49,10 @@ D internal_classDictionary 1 Classes 0 @name
 
 D internal_enemyDictionary 1 Enemies 0 @name
 
-d internal_atypeDictionary 1 System @armor_types
-d internal_wtypeDictionary 1 System @weapon_types
-d internal_etypeDictionary 1 System @terms @etypes
-d internal_stypeDictionary 1 System @skill_types
+D internal_atypeDictionary 1 System@armor_types 0 :
+D internal_wtypeDictionary 1 System@weapon_types 0 :
+D internal_etypeDictionary 1 System@terms@etypes 0 :
+D internal_stypeDictionary 1 System@skill_types 0 :
 
 D internal_eventDictionary 1 __MAP__@events 1 @name
 

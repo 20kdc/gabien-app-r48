@@ -39,6 +39,8 @@ public class PathSyntax {
                             break;
                         }
                     }
+                    if (plannedIdx != full.length())
+                        break;
                     sb.append(ch[i]);
                 }
             }

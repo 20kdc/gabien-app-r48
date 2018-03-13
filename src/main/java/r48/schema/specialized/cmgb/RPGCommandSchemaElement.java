@@ -181,6 +181,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 RPGCommand rc = database.knownCommands.get((int) integer.fixnumVal);
                 target.getInstVarBySymbol("@code").fixnumVal = integer.fixnumVal;
                 RubyIO param = target.getInstVarBySymbol("@parameters");
+                boolean zp = false;
                 if (rc != null) {
                     // Notice: Both are used!
                     // Firstly nuke it to whatever the command says for array-len-reduce, then use the X-code to fill in details
@@ -195,11 +196,25 @@ public class RPGCommandSchemaElement extends SchemaElement {
                         SchemaElement schemaElement = rc.specialSchema;
                         schemaElement.modifyVal(target, path, true);
                     }
+                    templateAndConfirm.accept(rc.template);
+                    if (rc.specialSchema == null) {
+                        zp = true;
+                        for (IFunction<RubyIO, String> name : rc.paramName) {
+                            if (!name.apply(target).equals("_")) {
+                                zp = false;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    templateAndConfirm.accept(new int[0]);
                 }
-                templateAndConfirm.accept(rc.template);
                 // On the one hand, the elements are stale.
                 // On the other hand, the elements will be obliterated anyway before reaching the user.
+                // if zp, then it's a two-stage leave to avoid angering the virtualization god
                 launcher.switchObject(displayPath);
+                if (zp)
+                    launcher.switchObject(displayPath.findBack());
             }
         }, categories, TXDB.get("Code"), UIEnumChoice.EntryMode.INT), null, path), target));
     }

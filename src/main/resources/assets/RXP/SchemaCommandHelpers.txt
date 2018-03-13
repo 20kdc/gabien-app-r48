@@ -9,6 +9,7 @@
 
  looking back in September 2017, arrayDAM probably existed originally for this.
  And now I'm replacing it with the cleaner DA{}.
+ Additional note, March 13th 2018 - DA{} should now be 'fully capable'.
 
 > string_array subwindow array 0 string
 
