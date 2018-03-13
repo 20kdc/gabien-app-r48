@@ -92,7 +92,9 @@ e vehicle_id 0 boat 1 ship 2 airship
 > int_or_var int
 > opacity int= 255
 > scale int= 100
-E troop_enemy_id TroopEnemyIndex -1 All
+
+E troop_enemy_id_base TroopEnemyIndex -1 All
+> troop_enemy_id context? troop_enemy_id troop_enemy_id_base
 
 E character_id_base EventID -1 player 0 thisEvent
 M internal_eventDictionary character_id_base character_id

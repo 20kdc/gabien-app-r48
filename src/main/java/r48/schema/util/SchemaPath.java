@@ -62,10 +62,12 @@ public class SchemaPath {
 
     private SchemaPath() {
         parent = null;
+        lastArrayIndex = null;
     }
 
     private SchemaPath(SchemaPath sp) {
         parent = sp;
+        lastArrayIndex = sp.lastArrayIndex;
         contextualSchemas.putAll(sp.contextualSchemas);
     }
 
@@ -176,7 +178,6 @@ public class SchemaPath {
 
     public SchemaPath newWindow(SchemaElement heldElement, RubyIO target) {
         SchemaPath sp = new SchemaPath(this);
-        sp.lastArrayIndex = lastArrayIndex;
         sp.editor = heldElement;
         sp.targetElement = target;
         return sp;
@@ -186,7 +187,6 @@ public class SchemaPath {
 
     public SchemaPath otherIndex(String index) {
         SchemaPath sp = new SchemaPath(this);
-        sp.lastArrayIndex = lastArrayIndex;
         sp.hrIndex = index;
         return sp;
     }

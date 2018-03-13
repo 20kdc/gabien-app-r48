@@ -70,8 +70,12 @@ D internal_eventDictionary 1 __MAP__@events 1 @name
 > selfswitch_id string= A
 > opacity int= 255
 > zoom int= 100
+
+E iterate_enemy_base EnemyID -1 All
+
  Binds contextual troop enemy ID to actual troop enemy ID
 > troop_enemy_id context? troop_enemy_id int
+> iterate_enemy context? iterate_enemy iterate_enemy_base
 
  Defining dictionaries...
  If it's an ID in any game-global dictionary, put it here.
@@ -129,7 +133,6 @@ M internal_classDictionary id_or_none_base class_id_or_none
 e comparison_type 0 == 1 >= 2 <= 3 > 4 < 5 !=
 e change_text_options_position 0 top 1 middle 2 bottom
 E iterate_actor ActorID 0 All
-E iterate_enemy EnemyID -1 All
 e iterate_battler0 0 EnemyIx 1 ActorIx
 E iterate_battler1 ID -1 All
 e weather_type 0 none 1 rain 2 storm 3 snow

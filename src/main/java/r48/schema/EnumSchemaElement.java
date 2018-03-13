@@ -44,10 +44,12 @@ public class EnumSchemaElement extends SchemaElement {
             int i = es.indexOf(":");
             buttonText = es.substring(i + 1);
             es = es.substring(0, i);
+            entryMode = UIEnumChoice.EntryMode.valueOf(es);
+        } else {
+            buttonText = es;
+            entryMode = UIEnumChoice.EntryMode.INT;
         }
         convertOptions();
-        buttonText = es;
-        entryMode = UIEnumChoice.EntryMode.valueOf(es);
         defaultVal = def;
     }
 

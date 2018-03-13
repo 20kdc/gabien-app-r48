@@ -435,7 +435,7 @@ public class SDB {
                             return new MagicalBindingSchemaElement(binder, get());
                         }
                         if (text.equals("context?")) {
-                            // context? id default
+                            // context? <id> <default>
                             final String idx = args[point++];
                             final SchemaElement insideThat = get();
                             return new SchemaElement() {
@@ -458,9 +458,10 @@ public class SDB {
                             };
                         }
                         if (text.equals("contextDictionary")) {
-                            // D <name> <default value> <outer path, including root> <'1' means hash> <inner path> <inner path interpretation id> <element to surround with this>
+                            // D <name> <base or '.'> <default value> <outer path, including root> <'1' means hash> <inner path> <inner path interpretation id> <element to surround with this>
                             // contextDictionary <ctxId> <default 0 @name rpg_troop_core
                             final String contextName = args[point++];
+                            final String base = args[point++];
                             final RubyIO defVal = ValueSyntax.decode(args[point++], true);
                             final String outer = args[point++];
                             final boolean hash = args[point++].equals("1");
@@ -478,6 +479,13 @@ public class SDB {
                                         @Override
                                         public void liveUpdate() {
                                             options.clear();
+                                            if (!base.equals(".")) {
+                                                EnumSchemaElement baseEnum = (EnumSchemaElement) schemaTrueDatabase.get(base);
+                                                options.putAll(baseEnum.options);
+                                                entryMode = baseEnum.entryMode;
+                                                // Default val doesn't get carried over since it gets specced here
+                                                buttonText = baseEnum.buttonText;
+                                            }
                                             RubyIO p = PathSyntax.parse(host, outer, true);
                                             if (p != null)
                                                 DictionaryUpdaterRunnable.coreLogic(options, createPathMap(inner, true), p, hash, interpret);

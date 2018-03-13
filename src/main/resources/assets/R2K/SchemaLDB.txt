@@ -351,8 +351,9 @@ C name Class.RPG::Enemy @name | #A
 @randomized_memberset_2k3 boolean
 C magicGenpos r2kTroop . . . . 0
 
-> RPG::Troop contextDictionary troop_enemy_id 1 @members 0 @enemy enemy_id rpg_troop_core
+: RPG::Troop
 C name Class.RPG::Troop @name | #A
++contextDictionary troop_enemy_id . 1 @members 0 @enemy enemy_id rpg_troop_core
 
  ---
 
