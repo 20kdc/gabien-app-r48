@@ -153,13 +153,7 @@ public class FormatSyntax {
                         } else {
                             p = parameters[ch - 'A'];
                         }
-                        IFunction<RubyIO, String> handler = TXDB.nameDB.get("Interp." + type);
-                        if (handler != null) {
-                            r.append(handler.apply(p));
-                        } else {
-                            SchemaElement ise = AppMain.schemas.getSDBEntry(type.toString());
-                            r.append(interpretParameter(p, ise, prefixNext));
-                        }
+                        r.append(interpretParameter(p, type.toString(), prefixNext));
                     } else {
                         // Meta-interpretation syntax
                         String tp = type.substring(1);
@@ -234,6 +228,20 @@ public class FormatSyntax {
             i++;
         }
         throw new RuntimeException("Hit end-of-data without reaching end character.");
+    }
+
+    public static String interpretParameter(RubyIO rubyIO, String st, boolean prefixEnums) {
+        if (st != null) {
+            IFunction<RubyIO, String> handler = TXDB.nameDB.get("Interp." + st);
+            if (handler != null) {
+                return handler.apply(rubyIO);
+            } else {
+                SchemaElement ise = AppMain.schemas.getSDBEntry(st);
+                return interpretParameter(rubyIO, ise, prefixEnums);
+            }
+        } else {
+            return interpretParameter(rubyIO, (SchemaElement) null, prefixEnums);
+        }
     }
 
     public static String interpretParameter(RubyIO rubyIO, SchemaElement ise, boolean prefixEnums) {

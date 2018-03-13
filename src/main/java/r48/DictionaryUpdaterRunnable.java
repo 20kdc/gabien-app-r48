@@ -30,16 +30,18 @@ public class DictionaryUpdaterRunnable implements Runnable {
     public final IFunction<RubyIO, RubyIO> fieldA, iVar;
     public final boolean hash;
     public final int defaultVal;
+    public final String interpret;
     private String lastTarget = null;
     private IConsumer<SchemaPath> kickMe;
 
-    public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<RubyIO, RubyIO> iFunction, boolean b, IFunction<RubyIO, RubyIO> ivar, int def) {
+    public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<RubyIO, RubyIO> iFunction, boolean b, IFunction<RubyIO, RubyIO> ivar, int def, String ip) {
         dict = targetDictionary;
         targ = target;
         fieldA = iFunction;
         hash = b;
         iVar = ivar;
         defaultVal = def;
+        interpret = ip;
         // Cause a proxy to be generated. (NOTE: This *must* be referenced via nocache proxy!)
         AppMain.schemas.ensureSDBProxy(targetDictionary);
         kickMe = new IConsumer<SchemaPath>() {
@@ -83,7 +85,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
                 if (target == null)
                     return true; // :(
                 try {
-                    coreLogic(finalMap, iVar, target, hash, null);
+                    coreLogic(finalMap, iVar, target, hash, interpret);
                 } catch (Exception e) {
                     throw new RuntimeException("During DUR " + dict, e);
                 }
@@ -94,7 +96,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
         return false;
     }
 
-    public static void coreLogic(HashMap<String, String> finalMap, IFunction<RubyIO, RubyIO> innerMap, RubyIO target, boolean hash, SchemaElement interpret) {
+    public static void coreLogic(HashMap<String, String> finalMap, IFunction<RubyIO, RubyIO> innerMap, RubyIO target, boolean hash, String interpret) {
         if (hash) {
             for (Map.Entry<RubyIO, RubyIO> rio : target.hashVal.entrySet())
                 handleVal(finalMap, innerMap, rio.getValue(), rio.getKey(), interpret);
@@ -111,7 +113,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
         AppMain.schemas.setSDBEntry(dict, ise);
     }
 
-    private static void handleVal(HashMap<String, String> finalMap, IFunction<RubyIO, RubyIO> iVar, RubyIO rio, RubyIO k, SchemaElement interpret) {
+    private static void handleVal(HashMap<String, String> finalMap, IFunction<RubyIO, RubyIO> iVar, RubyIO rio, RubyIO k, String interpret) {
         if (rio.type != '0') {
             String p = ValueSyntax.encode(k, true);
             if (p == null)

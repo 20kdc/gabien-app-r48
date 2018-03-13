@@ -72,7 +72,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(database.buildCodename(target, true), FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    navigateToCode(launcher, path2, target, new IConsumer<int[]>() {
+                    navigateToCode(launcher, path2.findLast(), target, new IConsumer<int[]>() {
                         @Override
                         public void accept(int[] tmp) {
                             // Templates don't work from here, but the path does
@@ -160,6 +160,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
     // Used by EventCommandArray for edit-on-create.
     // NOTE: displayPath is the path of the command window
     protected static void navigateToCode(final ISchemaHost launcher, final SchemaPath displayPath, final RubyIO target, final IConsumer<int[]> templateAndConfirm, final SchemaPath path, final CMDB database) {
+        if (displayPath.editor == null)
+            throw new RuntimeException("navigateToCode without displayable parent should never happen and will crash after confirm, so this helps w/ debugging.");
         UIEnumChoice.Category[] categories = new UIEnumChoice.Category[database.categories.length];
         for (int i = 0; i < categories.length; i++) {
             LinkedList<UIEnumChoice.Option> llo = new LinkedList<UIEnumChoice.Option>();

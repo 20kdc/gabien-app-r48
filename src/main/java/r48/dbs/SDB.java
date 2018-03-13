@@ -458,14 +458,14 @@ public class SDB {
                             };
                         }
                         if (text.equals("contextDictionary")) {
-                            // D <name> <default value> <outer path, including root> <'1' means hash> <inner path> <element to treat inner path as for interpret> <element to surround with this>
+                            // D <name> <default value> <outer path, including root> <'1' means hash> <inner path> <inner path interpretation id> <element to surround with this>
                             // contextDictionary <ctxId> <default 0 @name rpg_troop_core
                             final String contextName = args[point++];
                             final RubyIO defVal = ValueSyntax.decode(args[point++], true);
                             final String outer = args[point++];
                             final boolean hash = args[point++].equals("1");
                             final String inner = args[point++];
-                            final SchemaElement interpret = get();
+                            final String interpret = args[point++];
                             final SchemaElement insideThat = get();
                             return new SchemaElement() {
                                 @Override
@@ -670,12 +670,18 @@ public class SDB {
                 } else if (c == 'i') {
                     readFile(args[0]);
                 } else if (c == 'D') {
-                    // D <name> <default value> <outer path, including root> <'1' means hash> <inner path>
-                    final String[] root = PathSyntax.breakToken(args[2], v1p1);
-                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], createPathMap(root[1], v1p1), args[3].equals("1"), createPathMap(args[4], v1p1), Integer.parseInt(args[1])));
+                    // D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [<interpretation ID>]
+                    final String[] root = PathSyntax.breakToken(args[2], true);
+                    String interpret = null;
+                    if (args.length == 6) {
+                        interpret = args[5];
+                    } else if (args.length != 5) {
+                        throw new RuntimeException("Expects D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID]");
+                    }
+                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], createPathMap(root[1], true), args[3].equals("1"), createPathMap(args[4], true), Integer.parseInt(args[1]), interpret));
                 } else if (c == 'd') {
                     // OLD SYSTEM
-                    System.err.println("'d'-format is old. It'll stay around but won't get updated. Use 'D'-format instead");
+                    System.err.println("'d'-format is old. It'll stay around but won't get updated. Use 'D'-format instead. " + args[0]);
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[2], new IFunction<RubyIO, RubyIO>() {
                         @Override
                         public RubyIO apply(RubyIO rubyIO) {
@@ -683,7 +689,7 @@ public class SDB {
                                 rubyIO = rubyIO.getInstVarBySymbol(args[i]);
                             return rubyIO;
                         }
-                    }, false, null, Integer.parseInt(args[1])));
+                    }, false, null, Integer.parseInt(args[1]), null));
                 } else if (c == 'A') {
                     // This is needed so the engine actually understands which autotiles map to what
                     int p = 0;
