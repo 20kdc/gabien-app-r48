@@ -158,6 +158,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
     }
 
     // Used by EventCommandArray for edit-on-create.
+    // NOTE: displayPath is the path of the command window
     protected static void navigateToCode(final ISchemaHost launcher, final SchemaPath displayPath, final RubyIO target, final IConsumer<int[]> templateAndConfirm, final SchemaPath path, final CMDB database) {
         UIEnumChoice.Category[] categories = new UIEnumChoice.Category[database.categories.length];
         for (int i = 0; i < categories.length; i++) {

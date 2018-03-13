@@ -9,6 +9,7 @@ package r48.schema.util;
 
 import r48.AppMain;
 import r48.RubyIO;
+import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
 
@@ -30,7 +31,7 @@ import java.util.WeakHashMap;
  * Created on 12/29/16.
  */
 public class SchemaPath {
-    public SchemaPath parent;
+    public final SchemaPath parent;
 
     // If editor is null, targetElement must be null, and vice versa.
     // Host may be there or not.
@@ -54,13 +55,24 @@ public class SchemaPath {
     // ISchemaHost has to set this to true for the breadcrumbs to work properly
     public boolean hasBeenUsed = false;
 
+    // Used for scroll data & such
     public WeakHashMap<ISchemaHost, HashMap<EmbedDataKey, Double>> embedData = new WeakHashMap<ISchemaHost, HashMap<EmbedDataKey, Double>>();
 
+    public final HashMap<String, SchemaElement> contextualSchemas = new HashMap<String, SchemaElement>();
+
     private SchemaPath() {
+        parent = null;
     }
+
+    private SchemaPath(SchemaPath sp) {
+        parent = sp;
+        contextualSchemas.putAll(sp.contextualSchemas);
+    }
+
 
     // The basic constructor.
     public SchemaPath(SchemaElement heldElement, RubyIO target) {
+        parent = null;
         lastArrayIndex = target;
         hrIndex = AppMain.objectDB.getIdByObject(target);
         if (hrIndex == null)
@@ -71,6 +83,7 @@ public class SchemaPath {
 
     // Used for default value setup bootstrapping.
     private SchemaPath(RubyIO target, RubyIO lai) {
+        parent = null;
         lastArrayIndex = lai;
         hrIndex = AppMain.objectDB.getIdByObject(target);
         if (hrIndex == null)
@@ -153,8 +166,7 @@ public class SchemaPath {
     // -- Important Stuff (always used) --
 
     public SchemaPath arrayHashIndex(RubyIO index, String indexS) {
-        SchemaPath sp = new SchemaPath();
-        sp.parent = this;
+        SchemaPath sp = new SchemaPath(this);
         sp.lastArrayIndex = index;
         sp.hrIndex = indexS;
         return sp;
@@ -163,8 +175,7 @@ public class SchemaPath {
     // -- Display Stuff (used in buildHoldingEditor) --
 
     public SchemaPath newWindow(SchemaElement heldElement, RubyIO target) {
-        SchemaPath sp = new SchemaPath();
-        sp.parent = this;
+        SchemaPath sp = new SchemaPath(this);
         sp.lastArrayIndex = lastArrayIndex;
         sp.editor = heldElement;
         sp.targetElement = target;
@@ -174,8 +185,7 @@ public class SchemaPath {
     // Not so much used, and quite unimportant
 
     public SchemaPath otherIndex(String index) {
-        SchemaPath sp = new SchemaPath();
-        sp.parent = this;
+        SchemaPath sp = new SchemaPath(this);
         sp.lastArrayIndex = lastArrayIndex;
         sp.hrIndex = index;
         return sp;
@@ -196,8 +206,7 @@ public class SchemaPath {
             if (sppLast != spp)
                 sppLast.monitorsSubelements = true;
         }
-        SchemaPath sp = new SchemaPath();
-        sp.parent = this;
+        SchemaPath sp = new SchemaPath(this);
         sp.targetElement = target;
         sp.editor = ise;
         sp.monitorsSubelements = true;
@@ -264,6 +273,12 @@ public class SchemaPath {
         if (d == null)
             return 0;
         return d;
+    }
+
+    public SchemaPath contextSchema(String contextName, SchemaElement enumSchemaElement) {
+        SchemaPath sp = new SchemaPath(this);
+        sp.contextualSchemas.put(contextName, enumSchemaElement);
+        return sp;
     }
 
     public static class EmbedDataKey {

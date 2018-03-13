@@ -70,7 +70,8 @@ D internal_eventDictionary 1 __MAP__@events 1 @name
 > selfswitch_id string= A
 > opacity int= 255
 > zoom int= 100
-> troop_enemy_id int
+ Binds contextual troop enemy ID to actual troop enemy ID
+> troop_enemy_id context? troop_enemy_id int
 
  Defining dictionaries...
  If it's an ID in any game-global dictionary, put it here.

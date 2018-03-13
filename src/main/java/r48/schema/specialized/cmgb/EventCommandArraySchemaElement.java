@@ -298,8 +298,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         //  2. the path constructed must have "back" going to inside the command, then to the array
         //     (so the user knows the command was added anyway)
         SubwindowSchemaElement targ = getElementContextualSubwindowSchema(target.arrVal[idx], idx);
-        path = path.newWindow(targ.heldElement, target);
         path = path.arrayHashIndex(new RubyIO().setFX(idx), "[" + idx + "]");
+        path = path.newWindow(targ.heldElement, target);
         // Ok, now navigate to the command selector
         RPGCommandSchemaElement.navigateToCode(launcher, path, target.arrVal[idx], new IConsumer<int[]>() {
             @Override

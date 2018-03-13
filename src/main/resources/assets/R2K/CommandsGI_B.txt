@@ -19,7 +19,7 @@ d Forces the player, or the enemies, to leave (without EXP/Gold gain). Note: Ass
 p _ string
 p mode forceescape_mode
 P 1 _ int
-v 2 troopEnemyIdx int
+v 2 troopEnemyIdx troop_enemy_id
 p ignoreChecks int_boolean
 
 1007: <Battle> Setup Battle Combo (2k3?)
@@ -34,7 +34,7 @@ p uses int_default_1
 C category 4
 d Changes an enemy's HP by some amount. This can kill it. The meaning of 'unknown' is unknown.
 p _ string
-p troopEnemyIdx int
+p troopEnemyIdx troop_enemy_id
 p negative int_boolean
 p modAmount change_enemy_hp_mode
 P 3 amount int
@@ -45,7 +45,7 @@ p unknown int_default_1
 C category 4
 d Changes an enemy's SP by some amount.
 p _ string
-p troopEnemyIdx int
+p troopEnemyIdx troop_enemy_id
 p negative int_boolean
 p amountIsVar int_boolean
 P 3 amount int
@@ -55,7 +55,7 @@ v 1 amountVar var_id
 C category 4
 d A state is given/taken from/to an enemy.
 p _ string
-p troopEnemyIdx int
+p troopEnemyIdx troop_enemy_id
 p remove int_boolean
 p state state_id
 
@@ -63,7 +63,7 @@ p state state_id
 C category 4
 d A previously hidden enemy comes out of the shadows!
 p _ string
-p troopEnemyIdx int
+p troopEnemyIdx troop_enemy_id
 
 13210: <Battle> Change Battle Background!
 C category 4

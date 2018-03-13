@@ -40,19 +40,29 @@ public class EnumSchemaElement extends SchemaElement {
 
     public EnumSchemaElement(HashMap<String, String> o, RubyIO def, String es) {
         options = o;
-        viewOptions = new HashMap<String, RubyIO>();
         if (es.contains(":")) {
             int i = es.indexOf(":");
             buttonText = es.substring(i + 1);
             es = es.substring(0, i);
         }
+        convertOptions();
+        buttonText = es;
+        entryMode = UIEnumChoice.EntryMode.valueOf(es);
+        defaultVal = def;
+    }
+
+    public void convertOptions() {
+        viewOptions = new HashMap<String, RubyIO>();
         for (String si : options.keySet()) {
             RubyIO dec = ValueSyntax.decode(si, true);
             viewOptions.put(viewValue(dec, true), dec);
         }
-        buttonText = es;
-        entryMode = UIEnumChoice.EntryMode.valueOf(es);
-        defaultVal = def;
+    }
+
+    // Overridden by variants that update whenever needed.
+    // Note that using this has significant overhead.
+    public void liveUpdate() {
+
     }
 
     @Override
@@ -60,6 +70,7 @@ public class EnumSchemaElement extends SchemaElement {
         return new UITextButton(viewValue(target, true), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
+                liveUpdate();
                 launcher.switchObject(path.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {
                     @Override
                     public void accept(RubyIO integer) {
@@ -88,6 +99,7 @@ public class EnumSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+        liveUpdate();
         if (IntegerSchemaElement.ensureType(target, (char) defaultVal.type, setDefault)) {
             target.setDeepClone(defaultVal);
             path.changeOccurred(true);

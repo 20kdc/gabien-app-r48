@@ -72,6 +72,10 @@ C magicR2kSystemDefaults 4
 > troop_id internal_troopDictionary
  not to be confused with an enemy within a troop
 > enemy_id internal_enemyDictionary
+
+ Binds contextual troop enemy ID to actual troop enemy ID
+> troop_enemy_id context? troop_enemy_id int
+
 > tileset_id internal_tilesetDictionary
 > terrain_id internal_terrainDictionary
 

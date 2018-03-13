@@ -43,7 +43,7 @@ public class MagicalBindingSchemaElement extends SchemaElement {
 
     private SchemaPath createPath(final RubyIO trueTarget, final SchemaPath truePath) {
         RubyIO bound = MagicalBinders.toBoundWithCache(binder, trueTarget);
-        return new SchemaPath(new SchemaElement() {
+        SchemaPath sp = new SchemaPath(new SchemaElement() {
             // This is a fake root element used for binding
             @Override
             public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
@@ -65,6 +65,8 @@ public class MagicalBindingSchemaElement extends SchemaElement {
                         truePath.changeOccurred(setDefault);
             }
         }, bound);
+        sp.contextualSchemas.putAll(truePath.contextualSchemas);
+        return sp;
     }
 
     @Override

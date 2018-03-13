@@ -9,13 +9,10 @@ package r48.dbs;
 
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
+import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.DictionaryUpdaterRunnable;
 import r48.RubyIO;
-import r48.io.r2k.chunks.IR2kStruct;
-import r48.io.r2k.chunks.SparseArrayAR2kStruct;
-import r48.io.r2k.obj.ldb.AnimationFrame;
-import r48.io.r2k.obj.ldb.Troop;
 import r48.schema.*;
 import r48.schema.arrays.*;
 import r48.schema.displays.EPGDisplaySchemaElement;
@@ -28,6 +25,8 @@ import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 import r48.schema.specialized.tbleditors.DefaultTableCellEditor;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
+import r48.schema.util.ISchemaHost;
+import r48.schema.util.SchemaPath;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -435,6 +434,66 @@ public class SDB {
                                 throw new RuntimeException("Unknown binding " + type);
                             return new MagicalBindingSchemaElement(binder, get());
                         }
+                        if (text.equals("context?")) {
+                            // context? id default
+                            final String idx = args[point++];
+                            final SchemaElement insideThat = get();
+                            return new SchemaElement() {
+                                @Override
+                                public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+                                    return getSchema(path).buildHoldingEditor(target, launcher, path);
+                                }
+
+                                private SchemaElement getSchema(SchemaPath path) {
+                                    SchemaElement se = path.contextualSchemas.get(idx);
+                                    if (se == null)
+                                        return insideThat;
+                                    return se;
+                                }
+
+                                @Override
+                                public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+                                    getSchema(path).modifyVal(target, path, setDefault);
+                                }
+                            };
+                        }
+                        if (text.equals("contextDictionary")) {
+                            // D <name> <default value> <outer path, including root> <'1' means hash> <inner path> <element to treat inner path as for interpret> <element to surround with this>
+                            // contextDictionary <ctxId> <default 0 @name rpg_troop_core
+                            final String contextName = args[point++];
+                            final RubyIO defVal = ValueSyntax.decode(args[point++], true);
+                            final String outer = args[point++];
+                            final boolean hash = args[point++].equals("1");
+                            final String inner = args[point++];
+                            final SchemaElement interpret = get();
+                            final SchemaElement insideThat = get();
+                            return new SchemaElement() {
+                                @Override
+                                public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+                                    return insideThat.buildHoldingEditor(target, launcher, applySchema(target, path));
+                                }
+
+                                private SchemaPath applySchema(final RubyIO host, SchemaPath path) {
+                                    EnumSchemaElement sce = new EnumSchemaElement(new HashMap<String, String>(), defVal, "INT:" + TXDB.get("ID.")) {
+                                        @Override
+                                        public void liveUpdate() {
+                                            options.clear();
+                                            RubyIO p = PathSyntax.parse(host, outer, true);
+                                            if (p != null)
+                                                DictionaryUpdaterRunnable.coreLogic(options, createPathMap(inner, true), p, hash, interpret);
+                                            convertOptions();
+                                        }
+                                    };
+                                    sce.liveUpdate();
+                                    return path.contextSchema(contextName, sce);
+                                }
+
+                                @Override
+                                public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+                                    insideThat.modifyVal(target, applySchema(target, path), setDefault);
+                                }
+                            };
+                        }
                         if (text.equals("bitfield=")) {
                             int i = Integer.parseInt(args[point++]);
                             LinkedList<String> flags = new LinkedList<String>();
@@ -511,6 +570,15 @@ public class SDB {
                         return getSDBEntry(text);
                     }
                 }.get();
+            }
+
+            private IFunction<RubyIO, RubyIO> createPathMap(final String inner, boolean v1p1) {
+                return new IFunction<RubyIO, RubyIO>() {
+                    @Override
+                    public RubyIO apply(RubyIO rubyIO) {
+                        return PathSyntax.parse(rubyIO, inner, true);
+                    }
+                };
             }
 
             private String unescapeIfPre11(String arg) {
@@ -602,19 +670,12 @@ public class SDB {
                 } else if (c == 'i') {
                     readFile(args[0]);
                 } else if (c == 'D') {
+                    // D <name> <default value> <outer path, including root> <'1' means hash> <inner path>
                     final String[] root = PathSyntax.breakToken(args[2], v1p1);
-                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], new IFunction<RubyIO, RubyIO>() {
-                        @Override
-                        public RubyIO apply(RubyIO rubyIO) {
-                            return PathSyntax.parse(rubyIO, root[1], v1p1);
-                        }
-                    }, args[3].equals("1"), new IFunction<RubyIO, RubyIO>() {
-                        @Override
-                        public RubyIO apply(RubyIO rubyIO) {
-                            return PathSyntax.parse(rubyIO, args[4], v1p1);
-                        }
-                    }, Integer.parseInt(args[1])));
+                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], createPathMap(root[1], v1p1), args[3].equals("1"), createPathMap(args[4], v1p1), Integer.parseInt(args[1])));
                 } else if (c == 'd') {
+                    // OLD SYSTEM
+                    System.err.println("'d'-format is old. It'll stay around but won't get updated. Use 'D'-format instead");
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[2], new IFunction<RubyIO, RubyIO>() {
                         @Override
                         public RubyIO apply(RubyIO rubyIO) {

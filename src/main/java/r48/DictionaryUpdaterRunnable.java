@@ -9,8 +9,7 @@ package r48;
 
 import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
-import r48.dbs.TXDB;
-import r48.dbs.ValueSyntax;
+import r48.dbs.*;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
@@ -83,14 +82,10 @@ public class DictionaryUpdaterRunnable implements Runnable {
                     target = fieldA.apply(target);
                 if (target == null)
                     return true; // :(
-                if (hash) {
-                    for (Map.Entry<RubyIO, RubyIO> rio : target.hashVal.entrySet())
-                        handleVal(finalMap, rio.getValue(), rio.getKey());
-                } else {
-                    for (int i = 0; i < target.arrVal.length; i++) {
-                        RubyIO rio = target.arrVal[i];
-                        handleVal(finalMap, rio, new RubyIO().setFX(i));
-                    }
+                try {
+                    coreLogic(finalMap, iVar, target, hash, null);
+                } catch (Exception e) {
+                    throw new RuntimeException("During DUR " + dict, e);
                 }
             }
             finalizeVals(finalMap);
@@ -99,22 +94,34 @@ public class DictionaryUpdaterRunnable implements Runnable {
         return false;
     }
 
+    public static void coreLogic(HashMap<String, String> finalMap, IFunction<RubyIO, RubyIO> innerMap, RubyIO target, boolean hash, SchemaElement interpret) {
+        if (hash) {
+            for (Map.Entry<RubyIO, RubyIO> rio : target.hashVal.entrySet())
+                handleVal(finalMap, innerMap, rio.getValue(), rio.getKey(), interpret);
+        } else {
+            for (int i = 0; i < target.arrVal.length; i++) {
+                RubyIO rio = target.arrVal[i];
+                handleVal(finalMap, innerMap, rio, new RubyIO().setFX(i), interpret);
+            }
+        }
+    }
+
     private void finalizeVals(HashMap<String, String> finalMap) {
-        // Default value of 1 because r2k. if this is ever in conflict then start adding a default parameter value for dictionaries.
-        // Do proper dictionary unification at the same time.
         SchemaElement ise = new EnumSchemaElement(finalMap, new RubyIO().setFX(defaultVal), "INT:" + TXDB.get("ID."));
         AppMain.schemas.setSDBEntry(dict, ise);
     }
 
-    private void handleVal(HashMap<String, String> finalMap, RubyIO rio, RubyIO k) {
+    private static void handleVal(HashMap<String, String> finalMap, IFunction<RubyIO, RubyIO> iVar, RubyIO rio, RubyIO k, SchemaElement interpret) {
         if (rio.type != '0') {
             String p = ValueSyntax.encode(k, true);
             if (p == null)
                 return;
-            if (iVar == null) {
+            if (iVar != null)
+                rio = iVar.apply(rio);
+            if (rio.type == '\"') {
                 finalMap.put(p, rio.decString());
             } else {
-                finalMap.put(p, iVar.apply(rio).decString());
+                finalMap.put(p, FormatSyntax.interpretParameter(rio, interpret, false));
             }
         }
     }
