@@ -33,8 +33,8 @@ public class LcfMagicalBinder implements IMagicalBinder {
         className = cn;
     }
 
-    protected static IMagicalBinder getTroopPages() {
-        return new LcfMagicalBinder("R2kTroopPages", new ISupplier<IR2kStruct>() {
+    protected static IMagicalBinder getTroopPages(String binderPrefix) {
+        return new LcfMagicalBinder(binderPrefix + "R2kTroopPages", new ISupplier<IR2kStruct>() {
             @Override
             public IR2kStruct get() {
                 return new SparseArrayAR2kStruct<Troop.TroopPage>(new ISupplier<Troop.TroopPage>() {
@@ -47,8 +47,8 @@ public class LcfMagicalBinder implements IMagicalBinder {
         });
     }
 
-    protected static IMagicalBinder getAnimationFrames() {
-        return new LcfMagicalBinder("R2kAnimationFrames", new ISupplier<IR2kStruct>() {
+    protected static IMagicalBinder getAnimationFrames(String binderPrefix) {
+        return new LcfMagicalBinder(binderPrefix + "R2kAnimationFrames", new ISupplier<IR2kStruct>() {
             @Override
             public IR2kStruct get() {
                 return new SparseArrayAR2kStruct<AnimationFrame>(new ISupplier<AnimationFrame>() {
@@ -61,8 +61,8 @@ public class LcfMagicalBinder implements IMagicalBinder {
         });
     }
 
-    protected static IMagicalBinder getBattlerAnimationMap() {
-        return new LcfMagicalBinder("R2kBattlerAnimationMap", new ISupplier<IR2kStruct>() {
+    protected static IMagicalBinder getBattlerAnimationMap(String binderPrefix) {
+        return new LcfMagicalBinder(binderPrefix + "R2kBattlerAnimationMap", new ISupplier<IR2kStruct>() {
             @Override
             public IR2kStruct get() {
                 return new SparseArrayHR2kStruct<BAD>(new ISupplier<BAD>() {

@@ -51,25 +51,16 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     public boolean autoCorrectArray(RubyIO array, SchemaPath path) {
         if (!SDB.allowControlOfEventCommandIndent)
             return false;
-        boolean needsEndingBlock = false;
-        if (array.arrVal.length == 0) {
-            needsEndingBlock = database.listLeaveCmd != -1;
-        } else {
-            if (array.arrVal[array.arrVal.length - 1].getInstVarBySymbol("@code").fixnumVal != database.listLeaveCmd)
-                needsEndingBlock = database.listLeaveCmd != -1;
-        }
+
+        boolean debugInfloop = false;
+
+        if (debugInfloop)
+            System.out.println("---");
 
         LinkedList<RubyIO> arr = new LinkedList<RubyIO>();
         Collections.addAll(arr, array.arrVal);
 
-        if (needsEndingBlock) {
-            // 0 so that the code won't combust from lacking an array
-            RubyIO c = SchemaPath.createDefaultValue(baseElement, new RubyIO().setFX(database.listLeaveCmd));
-            c.getInstVarBySymbol("@code").fixnumVal = database.listLeaveCmd;
-            arr.add(c);
-        }
-
-        boolean modified = needsEndingBlock;
+        boolean modified = false;
 
         // NOTE: This method is deliberately awkward to allow for the concurrent modification...
         // Attempting to 'fix' it will only make it worse.
@@ -86,6 +77,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             RPGCommand rc = database.knownCommands.get(code);
             if (rc != null) {
                 // Indent stuff
+                final int indentOld = indent;
                 indent += rc.indentPre;
                 if (baseElement.allowControlOfIndent) {
                     if (indent != commandTarg.getInstVarBySymbol("@indent").fixnumVal) {
@@ -93,11 +85,13 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                         modified = true;
                     }
                 }
+                // Used to understand infinite loops
+                if (debugInfloop)
+                    System.out.println("i " + i + " " + code + " " + indent);
                 indent += rc.indentPost.apply(commandTarg.getInstVarBySymbol("@parameters"));
                 // Group Behavior
                 for (IGroupBehavior groupBehavior : rc.groupBehaviors)
                     modified |= groupBehavior.correctElement(arr, i, commandTarg);
-                //
 
                 if (rc.needsBlockLeavePre) {
                     if (!lastWasBlockLeave) {
@@ -105,9 +99,10 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                             RubyIO c = SchemaPath.createDefaultValue(baseElement, new RubyIO().setFX(0));
                             c.getInstVarBySymbol("@code").fixnumVal = database.blockLeaveCmd;
                             if (baseElement.allowControlOfIndent)
-                                c.getInstVarBySymbol("@indent").fixnumVal = commandTarg.getInstVarBySymbol("@indent").fixnumVal + 1;
+                                c.getInstVarBySymbol("@indent").fixnumVal = indentOld;
                             arr.add(i, c);
                             // About to re-handle the same code.
+                            indent = indentOld;
                             lastWasBlockLeave = true;
                             // What to do here depends on a few things. They'll be handled in CMDB.
                             lastCode = database.blockLeaveCmd;
@@ -133,6 +128,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             if (rc != null) {
                 for (IGroupBehavior groupBehavior : rc.groupBehaviors) {
                     if (groupBehavior.majorCorrectElement(arr, i, commandTarg, baseElement)) {
+                        // System.err.println(code);
                         modified = true;
                         continueToBreak = true;
                         break;
@@ -141,6 +137,25 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             }
             if (continueToBreak)
                 break;
+        }
+
+        // After it's done with major structural work, add ending block
+        if (!continueToBreak) {
+            boolean needsEndingBlock = false;
+            if (array.arrVal.length == 0) {
+                needsEndingBlock = database.listLeaveCmd != -1;
+            } else {
+                if (array.arrVal[array.arrVal.length - 1].getInstVarBySymbol("@code").fixnumVal != database.listLeaveCmd)
+                    needsEndingBlock = database.listLeaveCmd != -1;
+            }
+
+            if (needsEndingBlock) {
+                // 0 so that the code won't combust from lacking an array
+                RubyIO c = SchemaPath.createDefaultValue(baseElement, new RubyIO().setFX(database.listLeaveCmd));
+                c.getInstVarBySymbol("@code").fixnumVal = database.listLeaveCmd;
+                arr.add(c);
+                modified = true;
+            }
         }
 
         if (modified)

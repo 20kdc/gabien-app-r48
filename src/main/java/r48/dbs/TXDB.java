@@ -95,6 +95,12 @@ public class TXDB {
                 return new Date(v).toString();
             }
         });
+        nameDB.put("lang-Common-valueSyntax", new IFunction<RubyIO, String>() {
+            @Override
+            public String apply(RubyIO rubyIO) {
+                return ValueSyntax.encode(rubyIO, true);
+            }
+        });
     }
 
     public static void init() {

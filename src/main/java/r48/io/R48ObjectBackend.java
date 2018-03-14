@@ -322,8 +322,12 @@ public class R48ObjectBackend implements IObjectBackend {
         Map.Entry<RubyIO, RubyIO>[] me = se.toArray(new Map.Entry[0]);
         save32(dis, me.length);
         for (Map.Entry<RubyIO, RubyIO> e : me) {
-            saveValue(dis, e.getKey(), objCache, strCache);
-            saveValue(dis, e.getValue(), objCache, strCache);
+            try {
+                saveValue(dis, e.getKey(), objCache, strCache);
+                saveValue(dis, e.getValue(), objCache, strCache);
+            } catch (Exception ex) {
+                throw new IOException("Hit catch at HK " + e.getKey(), ex);
+            }
         }
     }
 
@@ -337,8 +341,12 @@ public class R48ObjectBackend implements IObjectBackend {
             RubyIO key = new RubyIO();
             key.type = ':';
             key.symVal = iVars.iVarKeys[i];
-            saveValue(dis, key, objCache, strCache);
-            saveValue(dis, iVars.iVarVals[i], objCache, strCache);
+            try {
+                saveValue(dis, key, objCache, strCache);
+                saveValue(dis, iVars.iVarVals[i], objCache, strCache);
+            } catch (Exception ex) {
+                throw new IOException("Hit catch at IVar " + iVars.iVarKeys[i], ex);
+            }
         }
     }
 

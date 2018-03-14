@@ -217,6 +217,8 @@ public class Application {
                             AppMain.performSystemDump(true);
                             backupAvailable = true;
                         } catch (Exception finalErr) {
+                            System.err.println("Failed to backup:");
+                            finalErr.printStackTrace();
                             fErr = finalErr;
                         }
                         System.err.println("This is the R48 'Everything is going down the toilet' display!");

@@ -153,6 +153,11 @@
     [lang-Common-r2kTsConverter]A
    Converts a TDateTime (float) to a human-readable date format.
 
+  lang-Common-valueSyntax:
+   Example:
+    [lang-Common-valueSyntax]A
+   Converts an object to ValueSyntax form for totally consistent output.
+   Useful at the start of {@ blocks.
  ----------------------------------
 
  Note: It is probably possible to confuse the NDB interpreter if you know what you are doing (or don't).

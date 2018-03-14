@@ -36,6 +36,7 @@ C groupBehavior messagebox 22410
 C category 5
 d A continuation of a comment.
 p text string
+C groupBehavior expectHead 12410 22410
 
 10110: Say$
 C category 0
@@ -47,6 +48,7 @@ C groupBehavior messagebox 20110
 C category 0
 d Continues a 10110 'Say' - should only be used from there.
 p text textbox_string
+C groupBehavior expectHead 10110 20110
 
  Need to automate this later.
 
@@ -55,6 +57,7 @@ C category 0
 d Shows a set of choices to the player. (editorChoices is for editor display purposes only.)
 p editorChoices string
 p 0|cancelIndex+1 choice_begin_magic
+C form 10140 "Choice" 20141
 I1
 
 20140: @@... On Choice:{B: {B=4=Cancel|#A} (index @[choice_index_magic_2]B)}
@@ -63,6 +66,7 @@ d A choice. If the player selects this choice, the code between this and the nex
 p text string
 p choiceIndex choice_index_magic
 C groupBehavior r2k_choice
+C groupBehavior expectHead 10140 20140
 K10140
 i-1
 I1
@@ -71,6 +75,7 @@ I1
 C category 0
 d The end of a set of choices.
 p _ string
+C groupBehavior expectHead 10140 20140
 i-1
 l
 
@@ -126,7 +131,7 @@ d Alters the settings on either timer ID 0 (if unspecified) or a given timer. Ca
 p _ string
 X timer_operation_parameters
 
-10310: @@{B:{B=0=Give|Take From}|Give/Take From} Player:{D: {C=0=#D|Var(@[var_id]D)}} Gold
+10310: @@{B:{B=0=Give|Take From}|Give/Take From} Player:{D: {C=0=#D|Var(#D)}} Gold
 C category 2
 d Adds or removes gold by a constant amount or the value in a variable.
 p _ string
@@ -135,7 +140,7 @@ p goldIsVar int_boolean
 P 2 goldVar var_id
 v 0 gold int
 
-10320: Modify Items
+10320: {F:{B=0=Give|Take From}|Give/Take From} Player:{F: {E=0=#F|Var(#F)} Of} Item{F: {C=0=#D|Var(#D)}}
 C category 2
 d Adds or removes the amount of an item (selected by ID or the value in a variable) by a constant amount or the value in a variable.
 p _ string
@@ -582,6 +587,7 @@ p enable int_boolean
 C category 1
 d Runs the following code if a condition is true. Otherwise, runs the code at the Else Branch inside, or if one does not exist, goes to the end of the branch.
 p _ string
+C groupBehavior form 22010 Else 22011
 X cbranch_parameters
 I1
 
@@ -589,6 +595,7 @@ I1
 C category 1
 d Indicates that if the containing branch was false, the following code should be executed. (Otherwise, the previous code will be executed, and this will not.)
 p _ string
+C groupBehavior expectHead 12010
 i-1
 I1
 l
@@ -597,6 +604,7 @@ l
 C category 1
 d Indicates the end of a conditional branch.
 p _ string
+C groupBehavior expectHead 22010 12010
 i-1
 l
 
@@ -616,6 +624,7 @@ p labelId int
 C category 1
 d Begins a loop, which will run forever unless broken.
 p _ string
+C groupBehavior form 22210
 I1
 
 12220: Break Loop
@@ -627,6 +636,7 @@ p _ string
 C category 1
 d Indicates the end of a loop - will go back to the start.
 p _ string
+C groupBehavior expectHead 12210
 i-1
 l
 

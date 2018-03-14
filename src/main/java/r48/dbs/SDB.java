@@ -263,7 +263,7 @@ public class SDB {
                                 if (enu != null) {
                                     throw new RuntimeException("Incompatible with enumerations!");
                                 } else {
-                                    return new ArbIndexedArraySchemaElement(get(), 1, 0, -1, iai);
+                                    return new ArbIndexedArraySchemaElement(get(), 1, -1, -1, iai);
                                 }
                             } else if (ending.equals("IxN")) {
                                 int ofx = Integer.parseInt(args[point++]);
@@ -273,7 +273,7 @@ public class SDB {
                                 if (enu != null) {
                                     throw new RuntimeException("Incompatible with enumerations!");
                                 } else {
-                                    return new ArbIndexedArraySchemaElement(get(), ofx, 0, sz, iai);
+                                    return new ArbIndexedArraySchemaElement(get(), ofx, -1, sz, iai);
                                 }
                             } else {
                                 throw new RuntimeException("Cannot handle array ending " + ending);

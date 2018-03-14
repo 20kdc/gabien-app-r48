@@ -342,6 +342,10 @@ public class CMDB {
                                         long subIndent = 0;
                                         if (rioy != null)
                                             subIndent = rioy.fixnumVal;
+                                        if (subIndent > topIndent) {
+                                            indexOfLastValid = j;
+                                            continue;
+                                        }
                                         if (subIndent == topIndent) {
                                             long tid = riox.getInstVarBySymbol("@code").fixnumVal;
                                             if (tid == lastId)

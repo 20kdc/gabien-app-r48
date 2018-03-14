@@ -28,6 +28,7 @@ public class BlobR2kStruct implements IR2kStruct {
     }
     public BlobR2kStruct(String c, ISupplier<byte[]> mkDef) {
         blobClass = c;
+        dat = mkDef.get();
     }
 
     @Override
