@@ -76,13 +76,15 @@ public class PathSyntax {
     public static String getAbsoluteIVar(String iv, boolean sdb2) {
         if (iv.startsWith("@")) {
             String n = iv.substring(1);
-            if (breakToken(n, sdb2).equals(n))
-                return iv;
+            String[] ivb = breakToken(n, sdb2);
+            if (ivb[1].equals(""))
+                return "@" + ivb[0];
         }
         if (iv.startsWith(sdb2 ? ":." : "$:")) {
             String n = iv.substring(2);
-            if (breakToken(n, sdb2).equals(n))
-                return n;
+            String[] ivb = breakToken(n, sdb2);
+            if (ivb[1].equals(""))
+                return ivb[0];
         }
         return null;
     }
@@ -189,9 +191,12 @@ public class PathSyntax {
             boolean escape = false;
             if (c == '#')
                 escape = true;
-            for (int i = 0; i < breakersSDB2.length; i++)
-                if (c == breakersSDB2[i])
+            for (char cb : breakersSDB2) {
+                if (c == cb) {
                     escape = true;
+                    break;
+                }
+            }
             if (escape)
                 res.append('#');
             res.append(c);
