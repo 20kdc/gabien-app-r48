@@ -212,10 +212,11 @@ public class CMDB {
                             return true;
                         }
                     };
-                } else if (arg.equals("expectHead")) {
+                } else if (arg.equals("expectHead") || arg.equals("expectTail")) {
                     final int[] ikeys = new int[gbStateArgs.length - gbStatePosition];
                     for (int i = 0; i < ikeys.length; i++)
                         ikeys[i] = Integer.parseInt(gbStateArgs[gbStatePosition++]);
+                    final boolean tail = arg.equals("expectTail");
                     return new IGroupBehavior() {
                         @Override
                         public int getGroupLength(RubyIO[] arr, int ind) {
@@ -239,8 +240,12 @@ public class CMDB {
                             if (rio != null)
                                 topIndent = rio.fixnumVal;
                             int oi = i;
-                            i--;
-                            while (i >= 0) {
+                            if (tail) {
+                                i++;
+                            } else {
+                                i--;
+                            }
+                            while ((i >= 0) && (i < arr.size())) {
                                 RubyIO riox = arr.get(i);
                                 RubyIO rioy = riox.getInstVarBySymbol("@indent");
                                 long subIndent = 0;
@@ -256,7 +261,11 @@ public class CMDB {
                                     // Not permitted, exit out immediately to let arr.remove(oi) take place
                                     break;
                                 }
-                                i--;
+                                if (tail) {
+                                    i++;
+                                } else {
+                                    i--;
+                                }
                             }
                             // Ran out!
                             arr.remove(oi);

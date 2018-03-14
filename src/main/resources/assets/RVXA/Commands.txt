@@ -19,6 +19,7 @@ C spritesheet 0 Faces/
 p faceIndex int
 p backInvisible int_boolean
 p position change_text_options_position
+C groupBehavior messagebox 401
 
 401: Tx.$
 d Continues the text.
@@ -28,6 +29,7 @@ p text string
 d Show a set of choices to the user, potentially allowing the cancel button.
 p choices string_array
 p cancellable int_boolean
+C groupBehavior form 402 "Choice" 403 "Cancelled" 404
 I1
 
  See IRB_CMDB.txt for indentation logic docs, and the 'K command'.
@@ -36,18 +38,21 @@ I1
 d When a given choice index is chosen...
 p choice int
 p textRef string
+C groupBehavior expectHead 102 402 403
 i-1
 I1
 K102
 
 403: When cancelled (idx 4)
 d When choice index 4 (cancel) is chosen...
+C groupBehavior expectHead 102 402 403
 i-1
 I1
 K102
 
 404: End Choice
 d The end of a choice block.
+C groupBehavior expectHead 102 402 403
 i-1
 K102
 
@@ -66,6 +71,7 @@ p var var_id
 d Begins some scrolling text.
 p speed int
 p notFast boolean
+C groupBehavior messagebox 405
 
 405: Scrtx.$
 d Continue some scrolling text.
@@ -74,6 +80,7 @@ p text string
 108: //*$
 d The beginning of a comment.
 p text string
+C groupBehavior messagebox 408
 
 408: //$
 d The continuation of a comment.
@@ -84,22 +91,26 @@ p text string
 d A conditional branch, allowing you to run different code depending on the state of things.
  The parameter exists so the A: detect works
 p type conditional_branch_types
+C groupBehavior form 411 "Else" 412
 X conditional_branch_parameters
 I1
 
 411: Else
 d A conditional branch will go here if the answer is 'false'. Otherwise, this is skipped entirely.
+C groupBehavior expectHead 111
 i-1
 I1
 l
 
 412: End Conditional
 d Ends a conditional branch.
+C groupBehavior expectHead 111 411
 i-1
 l
 
 112: Start Loop (c.113/413)
 d Begins a loop.
+C groupBehavior form 413
  this is a blank 'placeholder' command
 I1
 
@@ -108,6 +119,7 @@ d Leave a loop formed between a Start Loop and End Loop.
 
 413: End Loop/Repeat Above
 d The end of a loop (goes back to the start)
+C groupBehavior expectHead 112
 i-1
 l
 
@@ -322,9 +334,9 @@ p speed int
 p duration int
 p wait boolean
 
-230: Wait$
-d Wait some amount of time.
-p time int
+230: @@Wait{A: #A frames}
+d Wait some amount of frames.
+p timeFrames int
 
 231: Set Picture$!
 d Create and show a picture on the screen.
@@ -357,7 +369,7 @@ p scaleX scale
 p scaleY scale
 p opacity opacity
 p blend blend_type
-p duration int
+p durationFrames int
 p wait boolean
 
 233: Picture$ Rotation Speed!
@@ -464,21 +476,34 @@ p canLose boolean
  Notably, these 4 are optional, but they always show up in a group of 4.
 
 601: Battle Result Branches Start: If Win
-d Always use these in the full group of 4.
+d The result branches for a battle. Always use these in the full group of 4.
+C groupBehavior expectHead 301
+C groupBehavior expectTail 602
+C template 602 603 604
 I1
 
 602: Battle Result Branch: If Escape
-d Always use these in the full group of 4.
+C category -1
+ Somewhat less ambiguous in the language it's in, I feel :
+ Are you not a cat?
+d xu na'i do mlatu
+C groupBehavior expectHead 601
+C groupBehavior expectTail 603
 i-1
 I1
 
 603: Battle Result Branch: If Lose
-d Always use these in the full group of 4.
+C category -1
+d xu na'i do mlatu
+C groupBehavior expectHead 602
+C groupBehavior expectTail 604
 i-1
 I1
 
 604: Battle Result Branches End
-d Always use these in the full group of 4.
+C category -1
+d Ends the Battle Result Branches.
+C groupBehavior expectHead 603
 i-1
 
 302: Shop Processing (c.605)
@@ -492,6 +517,7 @@ p itemPriceEx int_boolean
 P 2 priceEx int
 v 0 _ int
 p purchaseOnly boolean
+C groupBehavior messagebox 605
 
 605: Additional Shop Item
 d An additional shop item.
@@ -647,20 +673,20 @@ p remove int_boolean
 p state state_id
 
 334: Enemy$ recovers all
-d Yeah, because we haven't seen *that* one before. Enemy recovers everything and then gets swapped out with *cough see 335*
+d Enemy recovers all health, MP, etc. (Note: Players may hate you if you use this.)
 p enemy iterate_enemy_index
 
-335: Enemy$ Appears
-d *cough 334* some entirely new enemy from nowhere, 'An enemy shows up! Where they were before, IDK.', or just *cough 336*
+335: Enemy$ appears
+d Make a previously hidden enemy become unhidden.
 p enemy iterate_enemy_index
 
-336: Enemy$ transforms!
-d *cough 335* transform into another enemy that'll curb stomp you. Flipping changelings. And they even *cough see 337*
+336: @@{B:Enemy #A transforms into #B|Enemy transforms into...}
+d Transforms an enemy into another enemy. TODO: Side effects?
 p enemy iterate_enemy_index
 p transform enemy_id
 
 337: Enemy$ uses animation$
-d *cough 336* let the enemy look awesome while doing the transformation/whatever!, because of animations.
+d Play an animation on the enemy, presumably before something bad happens to it or the player.
 p enemy iterate_enemy_index
 p animation animation_id
 
@@ -690,6 +716,7 @@ d Return to the title screen.
 355: Ruby>$
 d Run some Ruby.
 p ruby string
+C groupBehavior messagebox 655
 
 655: Ruby.$
 d Continuation of embedded Ruby.

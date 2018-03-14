@@ -210,7 +210,7 @@
      Set the categories. The default category for a command is the last. Each name is unescaped and translated.
      The categories are referred to by their indexes.
    C category <index>
-     Set the category of this command.
+     Set the category of this command. -1 means 'hide'
    NOTE: Only one post-indent control can apply at a time, including I.
     C commandIndentConditionalIB <paramId>
      Uses a parameter as an int_boolean flag to control post-indentation (true == 1, false == 0)
@@ -255,6 +255,11 @@
      Allows controlling a groupBehavior based on a condition.
      The groupBehavior defaults to being off.
      Thanks to indent, this usually works out
+
+     UPCOMING:
+      expectTail <valid IDs that are expected below this>
+      Expects the command below at the same indent level to be...
+      Used for BRBs (they have a strict layout)
 
    C template <IDs...>
     Sets up a template to follow this command with when inserted.

@@ -36,7 +36,6 @@ C groupBehavior messagebox 22410
 C category 5
 d A continuation of a comment.
 p text string
-C groupBehavior expectHead 12410 22410
 
 10110: Say$
 C category 0
@@ -48,7 +47,6 @@ C groupBehavior messagebox 20110
 C category 0
 d Continues a 10110 'Say' - should only be used from there.
 p text textbox_string
-C groupBehavior expectHead 10110 20110
 
  Need to automate this later.
 
@@ -57,7 +55,7 @@ C category 0
 d Shows a set of choices to the player. (editorChoices is for editor display purposes only.)
 p editorChoices string
 p 0|cancelIndex+1 choice_begin_magic
-C form 10140 "Choice" 20141
+C groupBehavior form 20140 "Choice" 20141
 I1
 
 20140: @@... On Choice:{B: {B=4=Cancel|#A} (index @[choice_index_magic_2]B)}
