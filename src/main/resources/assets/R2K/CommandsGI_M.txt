@@ -20,11 +20,14 @@ d Begin a battle between the player and an enemy!
 p _ string
 X begin_encounter_parameters
 C commandIndentConditionalOF 4 2 5 1
+C groupBehavior condition @parameters]4 2 form 20710 Victory 20711 Escape 20712 Defeat 20713
+C groupBehavior condition @parameters]5 1 form 20710 Victory 20711 Escape 20712 Defeat 20713
 
 20710: ... Victory:
 C category 3
 d The code called in an Encounter when the player wins.
 p _ string
+C groupBehavior expectHead 10710 20710 20711 20712
 K10710
 i-1
 I1
@@ -32,6 +35,7 @@ I1
 C category 3
 d The code called in an Encounter when the player escapes.
 p _ string
+C groupBehavior expectHead 10710 20710 20711 20712
 K10710
 i-1
 I1
@@ -39,6 +43,7 @@ I1
 C category 3
 d The code called in an Encounter when the player is defeated.
 p _ string
+C groupBehavior expectHead 10710 20710 20711 20712
 K10710
 i-1
 I1
@@ -47,6 +52,7 @@ I1
 C category 3
 d Ends an Encounter Block.
 p _ string
+C groupBehavior expectHead 10710 20710 20711 20712
 i-1
 l
 
@@ -56,11 +62,13 @@ d Shows a shop. Note that this only acts as a block if hasInnerCode is enabled.
 p _ string
 X show_shop_parameters
 C commandIndentConditionalIB 3
+C groupBehavior condition !@parameters]3 0 form 20720 Transaction 20721 "Refuse Transaction" 20722
 
 20720: ... Transaction:
 C category 0
 d Begins the code for when the player does business of some form with the Shop.
 p _ string
+C groupBehavior expectHead 10720 20720 20721
 K10720
 i-1
 I1
@@ -69,6 +77,7 @@ I1
 C category 0
 d Begins the code for when the player chooses not to do business with the Shop.
 p _ string
+C groupBehavior expectHead 10720 20720 20721
 K10720
 i-1
 I1
@@ -77,6 +86,7 @@ I1
 C category 0
 d Ends a Shop Block.
 p _ string
+C groupBehavior expectHead 10720 20720 20721
 i-1
 l
 
@@ -88,11 +98,13 @@ p innType2 int_boolean
 p price int
 p hasInnerCode int_boolean
 C commandIndentConditionalIB 3
+C groupBehavior condition !@parameters]3 0 form 20730 Stay 20731 "Refuse Stay" 20732
 
 20730: ... Stay:
 C category 0
 d Begins the code for when the player chooses to stay at the Inn.
 p _ string
+C groupBehavior expectHead 10730 20730 20731
 K10730
 i-1
 I1
@@ -101,6 +113,7 @@ I1
 C category 0
 d Begins the code for when the player chooses not to stay at the Inn.
 p _ string
+C groupBehavior expectHead 10730 20730 20731
 K10730
 i-1
 I1
@@ -109,6 +122,7 @@ I1
 C category 0
 d Ends an Inn Block.
 p _ string
+C groupBehavior expectHead 10730 20730 20731
 i-1
 l
 

@@ -58,8 +58,265 @@ public class CMDB {
                 nextTag = new RPGCommand.SpecialTag();
             }
 
+            int gbStatePosition;
+            String[] gbStateArgs;
+
+            IGroupBehavior getGroupBehavior() {
+                final String arg = gbStateArgs[gbStatePosition++];
+                // For commands with just one parameter that is a string.
+                if (arg.equals("messagebox")) {
+                    final int code = Integer.parseInt(gbStateArgs[gbStatePosition++]);
+                    return new IGroupBehavior() {
+                        @Override
+                        public int getGroupLength(RubyIO[] array, int index) {
+                            int l = 1;
+                            for (int i = index + 1; i < array.length; i++) {
+                                if (array[i].getInstVarBySymbol("@code").fixnumVal == code) {
+                                    l++;
+                                } else {
+                                    break;
+                                }
+                            }
+                            return l;
+                        }
+
+                        @Override
+                        public int getAdditionCode() {
+                            return code;
+                        }
+
+                        @Override
+                        public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                            return false;
+                        }
+                    };
+                } else if (arg.equals("r2k_choice")) {
+                    return new IGroupBehavior() {
+                        @Override
+                        public int getGroupLength(RubyIO[] array, int index) {
+                            return 0;
+                        }
+
+                        @Override
+                        public int getAdditionCode() {
+                            return 0;
+                        }
+
+                        @Override
+                        public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                            RubyIO res = command.getInstVarBySymbol("@parameters").arrVal[1];
+                            long id = command.getInstVarBySymbol("@indent").fixnumVal;
+                            long nIdx = 0;
+                            if (res.fixnumVal == 4) {
+                                // Always 4.
+                                nIdx = 4;
+                            } else {
+                                for (int i = commandIndex - 1; i >= 0; i--) {
+                                    RubyIO cmd = array.get(i);
+                                    if (cmd.getInstVarBySymbol("@indent").fixnumVal == id) {
+                                        long code = cmd.getInstVarBySymbol("@code").fixnumVal;
+                                        if (code == 10140) {
+                                            // Show Choices (term.)
+                                            break;
+                                        } else if (code == 20140) {
+                                            // Choice...
+                                            nIdx++;
+                                        }
+                                    }
+                                }
+                            }
+                            if (nIdx != res.fixnumVal) {
+                                res.fixnumVal = nIdx;
+                                return true;
+                            }
+                            return false;
+                        }
+
+                        @Override
+                        public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                            return false;
+                        }
+                    };
+                } else if (arg.equals("form")) {
+                    final String[] translatedNames = new String[(gbStateArgs.length - (gbStatePosition + 1)) / 2];
+                    final int[] subIds = new int[translatedNames.length];
+                    for (int i = 0; i < translatedNames.length; i++) {
+                        subIds[i] = Integer.parseInt(gbStateArgs[gbStatePosition++]);
+                        translatedNames[i] = TXDB.get(subContext, gbStateArgs[gbStatePosition++]);
+                    }
+                    final int lastId = Integer.parseInt(gbStateArgs[gbStatePosition++]);
+                    return new IGroupBehavior() {
+                        @Override
+                        public int getGroupLength(RubyIO[] arr, int ind) {
+                            return 0;
+                        }
+
+                        @Override
+                        public int getAdditionCode() {
+                            return 0;
+                        }
+
+                        @Override
+                        public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                            // Form correction
+                            RubyIO rio = commandTarg.getInstVarBySymbol("@indent");
+                            long topIndent = 0;
+                            if (rio != null)
+                                topIndent = rio.fixnumVal;
+
+                            int indexOfLastValid = i;
+
+                            for (int j = i + 1; j < arr.size(); j++) {
+                                RubyIO riox = arr.get(j);
+                                RubyIO rioy = riox.getInstVarBySymbol("@indent");
+                                long subIndent = 0;
+                                if (rioy != null)
+                                    subIndent = rioy.fixnumVal;
+                                if (subIndent > topIndent) {
+                                    indexOfLastValid = j;
+                                    continue;
+                                }
+                                if (subIndent == topIndent) {
+                                    long tid = riox.getInstVarBySymbol("@code").fixnumVal;
+                                    if (tid == lastId)
+                                        return false;
+                                    // If TID does not match a valid follower, BREAK NOW.
+                                    // Otherwise, push valid
+                                    for (int subId : subIds) {
+                                        if (tid == subId) {
+                                            indexOfLastValid = j;
+                                            break;
+                                        }
+                                    }
+                                    if (indexOfLastValid != j)
+                                        break;
+                                } else if (subIndent < topIndent) {
+                                    // Abandon hope.
+                                    break;
+                                }
+                            }
+                            // Didn't find 'top', insert at best-guess
+                            RubyIO cap = SchemaPath.createDefaultValue(baseElement, null);
+                            cap.getInstVarBySymbol("@code").fixnumVal = lastId;
+                            arr.add(indexOfLastValid + 1, cap);
+                            return true;
+                        }
+                    };
+                } else if (arg.equals("expectHead")) {
+                    final int[] ikeys = new int[gbStateArgs.length - gbStatePosition];
+                    for (int i = 0; i < ikeys.length; i++)
+                        ikeys[i] = Integer.parseInt(gbStateArgs[gbStatePosition++]);
+                    return new IGroupBehavior() {
+                        @Override
+                        public int getGroupLength(RubyIO[] arr, int ind) {
+                            return 0;
+                        }
+
+                        @Override
+                        public int getAdditionCode() {
+                            return 0;
+                        }
+
+                        @Override
+                        public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                            RubyIO rio = commandTarg.getInstVarBySymbol("@indent");
+                            long topIndent = 0;
+                            if (rio != null)
+                                topIndent = rio.fixnumVal;
+                            int oi = i;
+                            i--;
+                            while (i >= 0) {
+                                RubyIO riox = arr.get(i);
+                                RubyIO rioy = riox.getInstVarBySymbol("@indent");
+                                long subIndent = 0;
+                                if (rioy != null)
+                                    subIndent = rioy.fixnumVal;
+                                if (subIndent <= topIndent) {
+                                    // Check...
+                                    long perm = riox.getInstVarBySymbol("@code").fixnumVal;
+                                    // Permitted?
+                                    for (int ip : ikeys)
+                                        if (perm == ip)
+                                            return false;
+                                    // Not permitted, exit out immediately to let arr.remove(oi) take place
+                                    break;
+                                }
+                                i--;
+                            }
+                            // Ran out!
+                            arr.remove(oi);
+                            return true;
+                        }
+                    };
+                } else if (arg.equals("condition")) {
+                    String s = gbStateArgs[gbStatePosition++];
+                    final String idx;
+                    final boolean inv;
+                    if (inv = s.startsWith("!")) {
+                        idx = s.substring(1);
+                    } else {
+                        idx = s;
+                    }
+                    final RubyIO v = ValueSyntax.decode(gbStateArgs[gbStatePosition++], true);
+                    final IGroupBehavior igb = getGroupBehavior();
+                    return new IGroupBehavior() {
+                        private boolean checkCondition(RubyIO command) {
+                            RubyIO p = PathSyntax.parse(command, idx, true);
+                            if (p == null)
+                                return false;
+                            return inv ^ RubyIO.rubyEquals(p, v);
+                        }
+
+                        @Override
+                        public int getGroupLength(RubyIO[] arr, int ind) {
+                            if (!checkCondition(arr[ind]))
+                                return 0;
+                            return igb.getGroupLength(arr, ind);
+                        }
+
+                        @Override
+                        public int getAdditionCode() {
+                            return igb.getAdditionCode();
+                        }
+
+                        @Override
+                        public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                            if (!checkCondition(command))
+                                return false;
+                            return igb.correctElement(array, commandIndex, command);
+                        }
+
+                        @Override
+                        public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                            if (!checkCondition(commandTarg))
+                                return false;
+                            return igb.majorCorrectElement(arr, i, commandTarg, baseElement);
+                        }
+                    };
+                } else {
+                    throw new RuntimeException("Unknown group behavior " + arg);
+                }
+            }
+
             @Override
             public void execCmd(char c, String[] args) {
+                gbStatePosition = -1;
+                gbStateArgs = null;
                 if (c == 'p') {
                     final String fv = TXDB.getExUnderscore(subContext, args[0]);
                     rc.paramName.add(new IFunction<RubyIO, String>() {
@@ -223,209 +480,11 @@ public class CMDB {
                         nextTag.tpD = Integer.parseInt(args[4]);
                     }
                     if (args[0].equals("groupBehavior")) {
-                        // For commands with just one parameter that is a string.
-                        if (args[1].equals("messagebox")) {
-                            final int code = Integer.parseInt(args[2]);
-                            rc.groupBehaviors.add(new IGroupBehavior() {
-                                @Override
-                                public int getGroupLength(RubyIO[] array, int index) {
-                                    int l = 1;
-                                    for (int i = index + 1; i < array.length; i++) {
-                                        if (array[i].getInstVarBySymbol("@code").fixnumVal == code) {
-                                            l++;
-                                        } else {
-                                            break;
-                                        }
-                                    }
-                                    return l;
-                                }
-
-                                @Override
-                                public int getAdditionCode() {
-                                    return code;
-                                }
-
-                                @Override
-                                public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
-                                    return false;
-                                }
-                            });
-                        } else if (args[1].equals("r2k_choice")) {
-                            rc.groupBehaviors.add(new IGroupBehavior() {
-                                @Override
-                                public int getGroupLength(RubyIO[] array, int index) {
-                                    return 0;
-                                }
-
-                                @Override
-                                public int getAdditionCode() {
-                                    return 0;
-                                }
-
-                                @Override
-                                public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
-                                    RubyIO res = command.getInstVarBySymbol("@parameters").arrVal[1];
-                                    long id = command.getInstVarBySymbol("@indent").fixnumVal;
-                                    long nIdx = 0;
-                                    if (res.fixnumVal == 4) {
-                                        // Always 4.
-                                        nIdx = 4;
-                                    } else {
-                                        for (int i = commandIndex - 1; i >= 0; i--) {
-                                            RubyIO cmd = array.get(i);
-                                            if (cmd.getInstVarBySymbol("@indent").fixnumVal == id) {
-                                                long code = cmd.getInstVarBySymbol("@code").fixnumVal;
-                                                if (code == 10140) {
-                                                    // Show Choices (term.)
-                                                    break;
-                                                } else if (code == 20140) {
-                                                    // Choice...
-                                                    nIdx++;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (nIdx != res.fixnumVal) {
-                                        res.fixnumVal = nIdx;
-                                        return true;
-                                    }
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
-                                    return false;
-                                }
-                            });
-                        } else if (args[1].equals("form")) {
-                            final int lastId = Integer.parseInt(args[args.length - 1]);
-                            final String[] translatedNames = new String[(args.length - 3) / 2];
-                            final int[] subIds = new int[translatedNames.length];
-                            for (int i = 0; i < translatedNames.length; i++) {
-                                subIds[i] = Integer.parseInt(args[(i * 2) + 2]);
-                                translatedNames[i] = TXDB.get(subContext, args[(i * 2) + 3]);
-                            }
-                            rc.groupBehaviors.add(new IGroupBehavior() {
-                                @Override
-                                public int getGroupLength(RubyIO[] arr, int ind) {
-                                    return 0;
-                                }
-
-                                @Override
-                                public int getAdditionCode() {
-                                    return 0;
-                                }
-
-                                @Override
-                                public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
-                                    // Form correction
-                                    RubyIO rio = commandTarg.getInstVarBySymbol("@indent");
-                                    long topIndent = 0;
-                                    if (rio != null)
-                                        topIndent = rio.fixnumVal;
-
-                                    int indexOfLastValid = i;
-
-                                    for (int j = i + 1; j < arr.size(); j++) {
-                                        RubyIO riox = arr.get(j);
-                                        RubyIO rioy = riox.getInstVarBySymbol("@indent");
-                                        long subIndent = 0;
-                                        if (rioy != null)
-                                            subIndent = rioy.fixnumVal;
-                                        if (subIndent > topIndent) {
-                                            indexOfLastValid = j;
-                                            continue;
-                                        }
-                                        if (subIndent == topIndent) {
-                                            long tid = riox.getInstVarBySymbol("@code").fixnumVal;
-                                            if (tid == lastId)
-                                                return false;
-                                            // If TID does not match a valid follower, BREAK NOW.
-                                            // Otherwise, push valid
-                                            for (int subId : subIds) {
-                                                if (tid == subId) {
-                                                    indexOfLastValid = j;
-                                                    break;
-                                                }
-                                            }
-                                            if (indexOfLastValid != j)
-                                                break;
-                                        } else if (subIndent < topIndent) {
-                                            // Abandon hope.
-                                            break;
-                                        }
-                                    }
-                                    // Didn't find 'top', insert at best-guess
-                                    RubyIO cap = SchemaPath.createDefaultValue(baseElement, null);
-                                    cap.getInstVarBySymbol("@code").fixnumVal = lastId;
-                                    arr.add(indexOfLastValid + 1, cap);
-                                    return true;
-                                }
-                            });
-                        } else if (args[1].equals("expectHead")) {
-                            final int[] ikeys = new int[args.length - 2];
-                            for (int i = 0; i < ikeys.length; i++)
-                                ikeys[i] = Integer.parseInt(args[i + 2]);
-                            rc.groupBehaviors.add(new IGroupBehavior() {
-                                @Override
-                                public int getGroupLength(RubyIO[] arr, int ind) {
-                                    return 0;
-                                }
-
-                                @Override
-                                public int getAdditionCode() {
-                                    return 0;
-                                }
-
-                                @Override
-                                public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
-                                    RubyIO rio = commandTarg.getInstVarBySymbol("@indent");
-                                    long topIndent = 0;
-                                    if (rio != null)
-                                        topIndent = rio.fixnumVal;
-                                    int oi = i;
-                                    i--;
-                                    while (i >= 0) {
-                                        RubyIO riox = arr.get(i);
-                                        RubyIO rioy = riox.getInstVarBySymbol("@indent");
-                                        long subIndent = 0;
-                                        if (rioy != null)
-                                            subIndent = rioy.fixnumVal;
-                                        if (subIndent <= topIndent) {
-                                            // Check...
-                                            long perm = riox.getInstVarBySymbol("@code").fixnumVal;
-                                            // Permitted?
-                                            for (int ip : ikeys)
-                                                if (perm == ip)
-                                                    return false;
-                                            // Not permitted, exit out immediately to let arr.remove(oi) take place
-                                            break;
-                                        }
-                                        i--;
-                                    }
-                                    // Ran out!
-                                    arr.remove(oi);
-                                    return true;
-                                }
-                            });
-                        } else {
-                            throw new RuntimeException("Unknown group behavior " + args[1]);
-                        }
+                        gbStatePosition = 1;
+                        gbStateArgs = args;
+                        rc.groupBehaviors.add(getGroupBehavior());
+                        if (gbStatePosition != args.length)
+                            throw new RuntimeException("Group behavior must consume all args");
                     }
                     if (args[0].equals("template")) {
                         rc.template = new int[args.length - 1];

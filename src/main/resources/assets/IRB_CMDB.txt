@@ -251,5 +251,10 @@
      expectHead <valid IDs that are expected above this>
       Very important if using template.
 
+     condition <command-relative-path, possibly prefixed with '!'> <ValueSyntax> <group behavior details>
+     Allows controlling a groupBehavior based on a condition.
+     The groupBehavior defaults to being off.
+     Thanks to indent, this usually works out
+
    C template <IDs...>
     Sets up a template to follow this command with when inserted.

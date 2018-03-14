@@ -85,6 +85,7 @@ p _ string
 C category 4
 d Runs the following code if a condition is true. Otherwise, runs the code at the Else Branch inside, or if one does not exist, goes to the end of the branch.
 p _ string
+C groupBehavior form 23310 Else 23311
 X battle_cbranch_parameters
 I1
 
@@ -92,6 +93,7 @@ I1
 C category 4
 d Indicates that if the containing branch was false, the following code should be executed. (Otherwise, the previous code will be executed, and this will not.)
 p _ string
+C groupBehavior expectHead 13310
 i-1
 I1
 l
@@ -100,5 +102,6 @@ l
 C category 4
 d Indicates the end of a conditional branch.
 p _ string
+C groupBehavior expectHead 13310 23310
 i-1
 l
