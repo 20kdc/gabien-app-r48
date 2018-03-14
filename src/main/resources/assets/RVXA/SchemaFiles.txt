@@ -399,9 +399,8 @@ C name Class.RPG::Tileset @id @name @mode | Tileset #A (M#C): #B
 @pages subwindow arrayAL1 RPG::Troop::Page
 @members subwindow array 0 RPG::Troop::Member
 
-: RPG::Troop
+: RPG::Troop contextDictionary troop_enemy_id troop_enemy_id_base 1 @members 0 @enemy_id enemy_id rpg_troop_core
 C name Class.RPG::Troop @id @name | Troop #A: #B
-+contextDictionary troop_enemy_id troop_enemy_id_base 1 @members 0 @enemy_id enemy_id rpg_troop_core
 
 > File.Troops arrayIx1 subwindow RPG::Troop
 

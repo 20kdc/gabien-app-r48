@@ -601,9 +601,16 @@ public class SDB {
                     if (!schemaDatabase.containsKey(args[0]))
                         throw new RuntimeException("Bad Schema Database: 'a' used to expect item " + args[0] + " that didn't exist.");
                 } else if (c == ':') {
-                    workingObj = new AggregateSchemaElement(new SchemaElement[] {});
-                    outerContext = fPfx + "/" + args[0];
-                    setSDBEntry(args[0], new ObjectClassSchemaElement(args[0], workingObj, 'o'));
+                    if (args.length == 1) {
+                        workingObj = new AggregateSchemaElement(new SchemaElement[]{});
+                        outerContext = fPfx + "/" + args[0];
+                        setSDBEntry(args[0], new ObjectClassSchemaElement(args[0], workingObj, 'o'));
+                    } else {
+                        String backup = outerContext;
+                        outerContext = args[0];
+                        setSDBEntry(args[0], new ObjectClassSchemaElement(args[0], handleChain(args, 1), 'o'));
+                        outerContext = backup;
+                    }
                 } else if (c == '.') {
                     workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                     outerContext = fPfx + "/" + args[0];
