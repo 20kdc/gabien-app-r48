@@ -7,7 +7,10 @@
 
 package r48.schema;
 
-import gabien.ui.*;
+import gabien.ui.IPointer;
+import gabien.ui.UIElement;
+import gabien.ui.UIScrollLayout;
+import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
@@ -53,8 +56,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
             uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
         }
         overrideSet = false;
-        uiSVL.runLayout();
-        uiSVL.setForcedBounds(null, new Rect(uiSVL.getWantedSize()));
+        uiSVL.forceToRecommended(null);
         return uiSVL;
     }
 

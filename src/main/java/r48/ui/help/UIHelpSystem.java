@@ -29,12 +29,13 @@ public class UIHelpSystem extends UIElement.UIPanel {
         page.clear();
         for (int i = 0; i < 8; i++) {
             // You don't want to try translating these and you shouldn't.
+            // I'm pretty sure this is supposed to be a quote from ... *something* from the person who wrote Alice In Wonderland.
+            // Except I probably remembered it wrong.
             // They're meant to get a rough estimate on a good help window size.
             page.add(new HelpElement('.', "T'was brillig in the slithy toves, did Gireth gimble in the wabe.".split(" ")));
             page.add(new HelpElement('.', "All mimsy were the borogroves".split(" ")));
         }
-        runLayout();
-        setForcedBounds(null, new Rect(getWantedSize()));
+        forceToRecommended(null);
         page.clear();
     }
 

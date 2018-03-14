@@ -99,8 +99,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     UIHelpSystem uis = new UIHelpSystem();
                     uis.page.add(new UIHelpSystem.HelpElement('.', title.split(" ")));
                     uis.page.add(new UIHelpSystem.HelpElement('.', result.split(" ")));
-                    uis.runLayout();
-                    uis.setForcedBounds(null, new Rect(uis.getWantedSize()));
+                    uis.forceToRecommended(null);
                     launcher.launchOther(uis);
                 }
             }, FontSizes.schemaButtonTextHeight);
@@ -150,8 +149,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     rc.paramSpecialTags.get(i).applyTo(i, uiSVL, param, launcher, path);
                 }
             }
-            uiSVL.runLayout();
-            uiSVL.setForcedBounds(null, new Rect(uiSVL.getWantedSize()));
+            uiSVL.forceToRecommended(null);
             return uiSVL;
         }
         return mostOfSchema.buildHoldingEditor(target, launcher, path);

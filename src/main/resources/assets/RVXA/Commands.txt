@@ -437,7 +437,7 @@ d Control if the map name is visible or invisible.
 p invisible int_boolean
 
 282: Switch Tileset!
-d CHange the current tileset used for the map. I would suggest making sure they are at least reasonably 'compatible' first.
+d Change the current tileset used for the map. I would suggest making sure they are at least reasonably 'compatible' first.
 p tileset tileset_id
 
 283: Switch Battleback!$
@@ -471,39 +471,32 @@ P 0 _ int
 v 0 troop troop_id
 v 1 troopVar var_id
 p canEscape boolean
-p canLose boolean
-
- Notably, these 4 are optional, but they always show up in a group of 4.
+p losingDoesNotGameover boolean
 
 601: Battle Result Branches Start: If Win
-d The result branches for a battle. Always use these in the full group of 4.
+d This is the beginning of the optional result branches section for a Start Battle (301), should be immediately below it, and contains the win code.
 C groupBehavior expectHead 301
-C groupBehavior expectTail 602
+C groupBehavior expectTail 602 603 604
 C template 602 603 604
 I1
 
 602: Battle Result Branch: If Escape
-C category -1
- Somewhat less ambiguous in the language it's in, I feel :
- Are you not a cat?
-d xu na'i do mlatu
-C groupBehavior expectHead 601
-C groupBehavior expectTail 603
+d This contains the escape code. See 'canEscape' in the relevant Start Battle.
+C groupBehavior expectHead 301 601
+C groupBehavior expectTail 603 604
 i-1
 I1
 
 603: Battle Result Branch: If Lose
-C category -1
-d xu na'i do mlatu
-C groupBehavior expectHead 602
+d This contains the lose code. See 'losingDoesNotGameover' in the relevant Start Battle.
+C groupBehavior expectHead 301 601 602
 C groupBehavior expectTail 604
 i-1
 I1
 
 604: Battle Result Branches End
-C category -1
 d Ends the Battle Result Branches.
-C groupBehavior expectHead 603
+C groupBehavior expectHead 301 601 602 603
 i-1
 
 302: Shop Processing (c.605)

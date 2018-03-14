@@ -40,11 +40,8 @@ public class UIMTBase extends UIElement.UIPanel implements IWindowElement {
         if (inner != null) {
             layoutAddElement(inner);
             if (inConstructor) {
-                // if you're lying about this... >.<
-                // Forces it to establish a wanted size, then uses that
-                inner.runLayout();
-                // This will cause a relayout, which does the rest
-                setForcedBounds(null, new Rect(inner.getWantedSize()));
+                inner.forceToRecommended(this);
+                setForcedBounds(null, new Rect(inner.getSize()));
             } else {
                 runLayout();
             }

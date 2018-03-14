@@ -304,8 +304,7 @@ public class ImageEditorController {
         xyChanger.panelsAdd(new UISplitterLayout(xVal, yVal, false, 1, 2));
         xyChanger.panelsAdd(acceptButton);
 
-        res.runLayout();
-        res.setForcedBounds(null, new Rect(res.getWantedSize()));
+        res.forceToRecommended(null);
         windowMaker.accept(res);
     }
 }
