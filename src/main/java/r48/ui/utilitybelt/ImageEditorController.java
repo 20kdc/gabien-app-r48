@@ -103,34 +103,34 @@ public class ImageEditorController {
     private void initPalette() {
         paletteView.panelsClear();
         final String fbStrB = TXDB.get("Back");
-        final String fbStrA = TXDB.get("Accept");
+        final String fbStrAL = TXDB.get("Load");
+        final String fbStrAS = TXDB.get("Save");
         final String fbStrL = TXDB.get("Load: ");
         final String fbStrS = TXDB.get("Save: ");
         UISplitterLayout saveLoad = new UISplitterLayout(new UITextButton(TXDB.get("Load PNG..."), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
-                windowMaker.accept(new UIFileBrowser(new IConsumer<String>() {
+                windowMaker.accept(AppMain.setFBSize(new UIFileBrowser(new IConsumer<String>() {
                     @Override
                     public void accept(String s) {
                         if (s != null)
                             load(s);
                     }
-                }, fbStrL, fbStrB, fbStrA, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize));
+                }, fbStrL, fbStrB, fbStrAL, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize)));
             }
         }), new UITextButton(TXDB.get("Save PNG..."), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
-                windowMaker.accept(new UIFileBrowser(new IConsumer<String>() {
+                windowMaker.accept(AppMain.setFBSize(new UIFileBrowser(new IConsumer<String>() {
                     @Override
                     public void accept(String s) {
                         if (s != null)
                             save(s);
                     }
-                }, fbStrS, fbStrB, fbStrA, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize));
+                }, fbStrS, fbStrB, fbStrAS, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize)));
             }
         }), false, 0.5d);
         paletteView.panelsAdd(saveLoad);
-        int widthGuess = saveLoad.getWantedSize().width;
         paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Add Colour"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {

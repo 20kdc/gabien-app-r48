@@ -861,4 +861,9 @@ public class AppMain {
         }
         return new LinkedList<String>(mainSet);
     }
+
+    public static UIFileBrowser setFBSize(UIFileBrowser uiFileBrowser) {
+        uiFileBrowser.setForcedBounds(null, new Rect(0, 0, mainWindowWidth / 2, mainWindowHeight / 2));
+        return uiFileBrowser;
+    }
 }
