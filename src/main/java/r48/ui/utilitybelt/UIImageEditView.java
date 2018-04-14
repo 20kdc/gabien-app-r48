@@ -22,8 +22,9 @@ import r48.ui.UIGrid;
  * Though I kind of modified those plans a bit.
  */
 public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldMouseReceiver {
-    public int[] image = new int[1024];
-    public int imageW = 32, imageH = 32, cursorX = 16, cursorY = 16, zoom = FontSizes.getSpriteScale() * 16;
+    // Do not set outside of setImage
+    public ImageEditorImage image = new ImageEditorImage(32, 32, new int[1024], true, true);
+    public int cursorX = 16, cursorY = 16, zoom = FontSizes.getSpriteScale() * 16;
     public boolean camMode = true, tempCamMode = false, dragging;
     public int dragLastX, dragLastY;
     public double camX, camY;
@@ -41,9 +42,15 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         colour = c;
     }
 
+    // Only write to image from here!
+    public void setImage(ImageEditorImage n) {
+        image = n;
+        cursorX = n.width / 2;
+        cursorY = n.height / 2;
+    }
+
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
-
     }
 
     @Override
@@ -71,10 +78,10 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             int i = outerFlip ? 1 : 0;
             outerFlip = !outerFlip;
             for (int ofy = (localGrid.y - (gridH * zoom)); ofy < (viewRct.y + viewRct.height); ofy += localGrid.height) {
-                int o = 0x80;
+                int o = 0xA0;
                 boolean light = ((i & 1) != 0);
                 if (light)
-                    o = 0xC0;
+                    o = 0xFF;
                 // The osb.clearRect call alters the Intersect, but that's fine since it gets reset.
                 intersect.set(viewRct);
                 if (intersect.intersect(ofx, ofy, localGrid.width, localGrid.height))
@@ -83,7 +90,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             }
         }
         IImage tempImg = createImg();
-        osb.blitScaledImage(0, 0, imageW, imageH, viewRct.x, viewRct.y, viewRct.width, viewRct.height, tempImg);
+        osb.blitScaledImage(0, 0, image.width, image.height, viewRct.x, viewRct.y, viewRct.width, viewRct.height, tempImg);
         Art.drawSelectionBox(viewRct.x + (cursorX * zoom), viewRct.y + (cursorY * zoom), zoom, zoom, FontSizes.getSpriteScale(), osb);
         if (showTarget)
             Art.drawTarget(viewRct.x + (targetX * zoom), viewRct.y + (targetY * zoom), zoom, osb);
@@ -125,7 +132,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
 
     private Rect getViewRect() {
         Size bounds = getSize();
-        return new Rect((int) (camX * zoom) + (bounds.width / 2), (int) (camY * zoom) + (bounds.height / 2), imageW * zoom, imageH * zoom);
+        return new Rect((int) (camX * zoom) + (bounds.width / 2), (int) (camY * zoom) + (bounds.height / 2), image.width * zoom, image.height * zoom);
     }
 
     @Override
@@ -188,8 +195,8 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         Rect bounds = getViewRect();
         int nx = UIGrid.sensibleCellDiv(x - bounds.x, zoom);
         int ny = UIGrid.sensibleCellDiv(y - bounds.y, zoom);
-        nx -= UIGrid.sensibleCellDiv(nx, imageW) * imageW;
-        ny -= UIGrid.sensibleCellDiv(ny, imageH) * imageH;
+        nx -= UIGrid.sensibleCellDiv(nx, image.width) * image.width;
+        ny -= UIGrid.sensibleCellDiv(ny, image.height) * image.height;
 
         if (camMode || tempCamMode) {
             if (first) {
@@ -219,6 +226,6 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     }
 
     public IImage createImg() {
-        return GaBIEn.createImage(image, imageW, imageH);
+        return image.rasterize();
     }
 }

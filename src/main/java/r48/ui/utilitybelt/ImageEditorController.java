@@ -8,18 +8,19 @@
 package r48.ui.utilitybelt;
 
 import gabien.GaBIEn;
-import gabien.IImage;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
+import r48.RubyIO;
+import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.io.PathUtils;
 import r48.maptools.UIMTBase;
 import r48.ui.UIAppendButton;
 import r48.ui.UIColourPicker;
 import r48.ui.UIColourSwatch;
 
 import java.io.OutputStream;
-import java.util.LinkedList;
 
 /**
  * Oh, this can't be good news.
@@ -29,23 +30,18 @@ public class ImageEditorController {
     public UISplitterLayout rootView;
     private UIImageEditView imageEditView;
     private UIScrollLayout paletteView;
-    public LinkedList<Integer> palette = new LinkedList<Integer>();
     public int selPaletteIndex = 0;
     public boolean rectangleRunning;
     public int rectanglePoint1X, rectanglePoint1Y;
     public IConsumer<UIElement> windowMaker;
 
+    // This holds a bit of state, so let's just attach it/detach it as we want
+    private final UITextButton sanityButton = new UITextButton(TXDB.get("Adjust"), FontSizes.schemaButtonTextHeight, null).togglable(true);
+    // The current thing holding the sanity button (needed so it can be broken apart on UI rebuild)
+    private UISplitterLayout sanityButtonHolder = null;
+
     public ImageEditorController(IConsumer<UIElement> worldMachine) {
         windowMaker = worldMachine;
-        palette.add(0xFF000000);
-        palette.add(0xFF0000FF);
-        palette.add(0xFF00FF00);
-        palette.add(0xFF00FFFF);
-        palette.add(0xFFFF0000);
-        palette.add(0xFFFF00FF);
-        palette.add(0xFFFFFF00);
-        palette.add(0xFFFFFFFF);
-        palette.add(0x00000000);
         imageEditView = new UIImageEditView(new Runnable() {
             @Override
             public void run() {
@@ -67,10 +63,9 @@ public class ImageEditorController {
             rectanglePoint1X = imageEditView.cursorX;
             rectanglePoint1Y = imageEditView.cursorY;
         }
-        int col = palette.get(selPaletteIndex);
-        for (int i = Math.max(0, Math.min(rectanglePoint1X, imageEditView.cursorX)); i < Math.min(imageEditView.imageW, Math.max(rectanglePoint1X, imageEditView.cursorX) + 1); i++)
-            for (int j = Math.max(0, Math.min(rectanglePoint1Y, imageEditView.cursorY)); j < Math.min(imageEditView.imageH, Math.max(rectanglePoint1Y, imageEditView.cursorY) + 1); j++)
-                imageEditView.image[i + (j * imageEditView.imageW)] = col;
+        for (int i = Math.max(0, Math.min(rectanglePoint1X, imageEditView.cursorX)); i < Math.min(imageEditView.image.width, Math.max(rectanglePoint1X, imageEditView.cursorX) + 1); i++)
+            for (int j = Math.max(0, Math.min(rectanglePoint1Y, imageEditView.cursorY)); j < Math.min(imageEditView.image.height, Math.max(rectanglePoint1Y, imageEditView.cursorY) + 1); j++)
+                imageEditView.image.setPixel(i, j, selPaletteIndex);
         imageEditView.showTarget = false;
         if (rectangleRunning) {
             rectangleRunning = false;
@@ -79,35 +74,33 @@ public class ImageEditorController {
     }
 
     public void load(String filename) {
-        GaBIEn.hintFlushAllTheCaches();
-        IImage im = GaBIEn.getImageEx(filename, true, false);
-        if (im == GaBIEn.getErrorImage()) {
-            AppMain.launchDialog("Failed to load " + filename + ".");
-        } else {
-            imageEditView.imageW = im.getWidth();
-            imageEditView.imageH = im.getHeight();
-            imageEditView.image = im.getPixels();
+        for (ImageEditorFormat ief : ImageEditorFormat.supportedFormats) {
+            ImageEditorImage iei = ief.loadFile(filename);
+            if (iei != null) {
+                imageEditView.setImage(iei);
+                initPalette();
+                return;
+            }
         }
-    }
-
-    public void save(String filename) {
-        try {
-            OutputStream os = GaBIEn.getOutFile(filename);
-            os.write(imageEditView.createImg().createPNG());
-            os.close();
-        } catch (Exception e) {
-            AppMain.launchDialog("Failed to save " + filename + ".");
-        }
+        AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to load #A."), new RubyIO().setString(filename, true)));
     }
 
     private void initPalette() {
         paletteView.panelsClear();
+        if (sanityButtonHolder != null) {
+            sanityButtonHolder.release();
+            sanityButtonHolder = null;
+        }
         final String fbStrB = TXDB.get("Back");
         final String fbStrAL = TXDB.get("Load");
         final String fbStrAS = TXDB.get("Save");
         final String fbStrL = TXDB.get("Load: ");
         final String fbStrS = TXDB.get("Save: ");
-        UISplitterLayout saveLoad = new UISplitterLayout(new UITextButton(TXDB.get("Load PNG..."), FontSizes.schemaButtonTextHeight, new Runnable() {
+
+        // <Load.><Save1>
+        // <Save2><Save3>
+        // <Save4> blank
+        UITextButton firstButton = new UITextButton(TXDB.get("Load"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 windowMaker.accept(AppMain.setFBSize(new UIFileBrowser(new IConsumer<String>() {
@@ -118,19 +111,76 @@ public class ImageEditorController {
                     }
                 }, fbStrL, fbStrB, fbStrAL, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize)));
             }
-        }), new UITextButton(TXDB.get("Save PNG..."), FontSizes.schemaButtonTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                windowMaker.accept(AppMain.setFBSize(new UIFileBrowser(new IConsumer<String>() {
-                    @Override
-                    public void accept(String s) {
-                        if (s != null)
-                            save(s);
+        });
+        for (final ImageEditorFormat format : ImageEditorFormat.supportedFormats) {
+            String tx = format.saveName(imageEditView.image);
+            if (tx == null)
+                continue;
+            UITextButton button = new UITextButton(tx, FontSizes.schemaButtonTextHeight, new Runnable() {
+                @Override
+                public void run() {
+                    if (imageEditView.image.t1Lock) {
+                        // SDL_SetColorKey if surface format is converted to RGB,
+                        // R48 loading b/c of the cheat used to avoid implementing the entire PNG specification,
+                        // probably DirectDraw...
+                        int comparison = imageEditView.image.getPaletteRGB(0) | 0xFF000000;
+                        int palSize = imageEditView.image.paletteSize();
+                        for (int i = 1; i < palSize; i++) {
+                            if (imageEditView.image.getPaletteRGB(i) == comparison) {
+                                AppMain.launchDialog(TXDB.get("One of the colours in the palette is the same as the colourkey. This makes various software go haywire, including R48. Please create a new colour and swap it for the transparency colour."));
+                                return;
+                            }
+                        }
                     }
-                }, fbStrS, fbStrB, fbStrAS, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize)));
+                    if (imageEditView.image.usesPalette()) {
+                        int palSize = imageEditView.image.paletteSize();
+                        boolean done = false;
+                        for (int i = 0; i < palSize; i++) {
+                            int c = imageEditView.image.getPaletteRGB(i);
+                            for (int j = i + 1; j < palSize; j++) {
+                                if (c == imageEditView.image.getPaletteRGB(j)) {
+                                    AppMain.pendingRunnables.add(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            // this is a holdover until v1.1.1 or so
+                                            AppMain.launchDialog(TXDB.get("Two colours in the palette are the same. This confuses R48, so if loaded again, uses of the second instance will become uses of the first. Just a warning."));
+                                        }
+                                    });
+                                    done = true;
+                                    break;
+                                }
+                            }
+                            if (done)
+                                break;
+                        }
+                    }
+                    windowMaker.accept(AppMain.setFBSize(new UIFileBrowser(new IConsumer<String>() {
+                        @Override
+                        public void accept(String s) {
+                            if (s != null) {
+                                try {
+                                    byte[] data = format.saveFile(imageEditView.image);
+                                    OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(s));
+                                    os.write(data);
+                                    os.close();
+                                } catch (Exception e) {
+                                    AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to save #A.") + "\n" + e, new RubyIO().setString(s, true)));
+                                }
+                            }
+                        }
+                    }, fbStrS, fbStrB, fbStrAS, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize)));
+                }
+            });
+            if (firstButton != null) {
+                paletteView.panelsAdd(new UISplitterLayout(firstButton, button, false, 0.5d));
+                firstButton = null;
+            } else {
+                firstButton = button;
             }
-        }), false, 0.5d);
-        paletteView.panelsAdd(saveLoad);
+        }
+        if (firstButton != null)
+            paletteView.panelsAdd(new UISplitterLayout(firstButton, new UIPublicPanel(1, 1), false, 0.5d));
+
         paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Add Colour"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
@@ -139,7 +189,7 @@ public class ImageEditorController {
                     public void accept(Integer integer) {
                         if (integer == null)
                             return;
-                        palette.add(integer);
+                        imageEditView.image.appendToPalette(integer);
                         initPalette();
                     }
                 }, true));
@@ -147,7 +197,7 @@ public class ImageEditorController {
         }), new UITextButton(TXDB.get("From Image"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
-                palette.add(imageEditView.image[imageEditView.cursorX + (imageEditView.cursorY * imageEditView.imageW)]);
+                imageEditView.image.appendToPalette(imageEditView.image.getRGB(imageEditView.cursorX, imageEditView.cursorY));
                 initPalette();
             }
         }), false, 0.5d));
@@ -175,26 +225,27 @@ public class ImageEditorController {
         paletteView.panelsAdd(new UITextButton(TXDB.get("Resize"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
-                showXYChanger(new Rect(0, 0, imageEditView.imageW, imageEditView.imageH), new IConsumer<Rect>() {
+                showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
                     @Override
                     public void accept(Rect rect) {
                         // X/Y is where to put the input on the output.
                         int[] newImage = new int[rect.width * rect.height];
-                        for (int i = 0; i < Math.min(rect.width - rect.x, imageEditView.imageW); i++) {
-                            for (int j = 0; j < Math.min(rect.height - rect.y, imageEditView.imageH); j++) {
+                        for (int i = 0; i < Math.min(rect.width - rect.x, imageEditView.image.width); i++) {
+                            for (int j = 0; j < Math.min(rect.height - rect.y, imageEditView.image.height); j++) {
                                 if (i + rect.x < 0)
                                     continue;
                                 if (j + rect.y < 0)
                                     continue;
-                                int c = imageEditView.image[i + (j * imageEditView.imageW)];
-                                newImage[(i + rect.x) + ((j + rect.y) * rect.width)] = c;
+                                newImage[(i + rect.x) + ((j + rect.y) * rect.width)] = imageEditView.image.getRaw(i, j);
                             }
                         }
                         imageEditView.cursorX = rect.width / 2;
                         imageEditView.cursorY = rect.height / 2;
-                        imageEditView.imageW = rect.width;
-                        imageEditView.imageH = rect.height;
-                        imageEditView.image = newImage;
+                        int[] oldPalette = new int[imageEditView.image.paletteSize()];
+                        for (int i = 0; i < oldPalette.length; i++)
+                            oldPalette[i] = imageEditView.image.getPaletteRGB(i);
+                        imageEditView.setImage(new ImageEditorImage(rect.width, rect.height, newImage, imageEditView.image.usesPalette(), imageEditView.image.t1Lock));
+                        imageEditView.image.changePalette(oldPalette);
                     }
                 }, TXDB.get("Resize..."));
             }
@@ -225,19 +276,27 @@ public class ImageEditorController {
                 }, false));
             }
         }), false, 0.5d));
-        int idx = 0;
-        for (final Integer col : palette) {
+
+        // mode details
+        UILabel cType = new UILabel(imageEditView.image.describeColourFormat(), FontSizes.schemaFieldTextHeight);
+        if (imageEditView.image.usesPalette()) {
+            paletteView.panelsAdd(sanityButtonHolder = new UISplitterLayout(cType, sanityButton, false, 1));
+        } else {
+            paletteView.panelsAdd(cType);
+        }
+
+        for (int idx = 0; idx < imageEditView.image.paletteSize(); idx++) {
             final int fidx = idx;
-            UIElement cPanel = new UIColourSwatch(col);
+            UIElement cPanel = new UIColourSwatch(imageEditView.image.getPaletteRGB(idx));
             if (selPaletteIndex == fidx) {
                 cPanel = new UIAppendButton("X", cPanel, new Runnable() {
                     @Override
                     public void run() {
-                        if (palette.size() > 1) {
+                        if (imageEditView.image.paletteSize() > 1) {
                             selPaletteIndex--;
                             if (selPaletteIndex == -1)
                                 selPaletteIndex++;
-                            palette.remove(fidx);
+                            imageEditView.image.removeFromPalette(fidx, sanityButton.state);
                             initPalette();
                         }
                     }
@@ -246,10 +305,7 @@ public class ImageEditorController {
                 cPanel = new UIAppendButton("~", cPanel, new Runnable() {
                     @Override
                     public void run() {
-                        int thi = palette.get(fidx);
-                        int tha = palette.get(selPaletteIndex);
-                        palette.set(selPaletteIndex, thi);
-                        palette.set(fidx, tha);
+                        imageEditView.image.swapInPalette(selPaletteIndex, fidx, sanityButton.state);
                         initPalette();
                     }
                 }, FontSizes.schemaButtonTextHeight);
@@ -264,7 +320,6 @@ public class ImageEditorController {
                 }
             }), cPanel, false, 0.0d);
             paletteView.panelsAdd(cPanel);
-            idx++;
         }
     }
 

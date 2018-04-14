@@ -9,7 +9,6 @@ package r48.map.imaging;
 
 import gabien.GaBIEn;
 import gabien.IImage;
-import gabienapp.Application;
 import r48.io.PathUtils;
 
 import java.io.ByteArrayInputStream;
@@ -28,13 +27,10 @@ import java.io.UnsupportedEncodingException;
  */
 public class PNG8IImageLoader implements IImageLoader {
 
-    @Override
-    public IImage getImage(String name, boolean panorama) {
-        if (panorama)
-            return null;
+    public static byte[][] getPalette(String s) {
         DataInputStream dis = null;
         try {
-            String ad = PathUtils.autoDetectWindows(name + ".png");
+            String ad = PathUtils.autoDetectWindows(s);
             dis = new DataInputStream(GaBIEn.getInFile(ad));
             // Magic number blahblahblah
             byte[] magic = new byte[8];
@@ -48,13 +44,21 @@ public class PNG8IImageLoader implements IImageLoader {
                 throw new IOException("bad magic byte 2");
             if (magic[3] != (byte) 0x47)
                 throw new IOException("bad magic byte 3");
-            // Ignore the rest, we'd be here all day
-            byte[] pal = getChunk("PLTE", dis);
-            if (pal == null)
+            byte[] hdr = getChunk("IHDR", dis);
+            if (hdr == null) {
+                dis.close();
                 return null;
+            }
+            if (hdr[9] != 3) {
+                dis.close();
+                return null;
+            }
+            byte[] pal = getChunk("PLTE", dis);
+            byte[] trs = null;
+            if (pal != null)
+                trs = getChunk("tRNS", dis);
             dis.close();
-            dis = null;
-            return GaBIEn.getImageCKEx(ad, true, false, pal[0] & 0xFF, pal[1] & 0xFF, pal[2] & 0xFF);
+            return new byte[][] {pal, trs};
         } catch (Exception ioe) {
             try {
                 if (dis != null)
@@ -67,7 +71,18 @@ public class PNG8IImageLoader implements IImageLoader {
         }
     }
 
-    private byte[] getChunk(String ihdr, DataInputStream dis) throws IOException {
+    @Override
+    public IImage getImage(String name, boolean panorama) {
+        if (panorama)
+            return null;
+        name += ".png";
+        byte[][] pal = getPalette(name);
+        if (pal != null)
+            return GaBIEn.getImageCKEx(PathUtils.autoDetectWindows(name), true, false, pal[0][0] & 0xFF, pal[0][1] & 0xFF, pal[0][2] & 0xFF);
+        return null;
+    }
+
+    private static byte[] getChunk(String ihdr, DataInputStream dis) throws IOException {
         int magicWanted = 0;
         int end = 0;
         try {
@@ -86,16 +101,35 @@ public class PNG8IImageLoader implements IImageLoader {
                 byte[] data = new byte[len];
                 if (dis.read(data) != len)
                     throw new IOException("did not read all of chunk");
+                dis.readInt(); // checksum
                 return data;
             } else {
                 dis.skipBytes(len);
             }
-            dis.readInt();
+            dis.readInt(); // checksum
         }
     }
 
     @Override
     public void flushCache() {
 
+    }
+
+    public static int[] convPal(byte[][] palette) {
+        if (palette == null)
+            return null;
+        int[] data = new int[palette[0].length / 3];
+        for (int i = 0; i < palette[0].length; i += 3) {
+            int a = 0xFF;
+            int p = i / 3;
+            if (palette[1] != null)
+                if (p < palette[1].length)
+                    a = palette[1][p] & 0xFF;
+            data[p] = a << 24;
+            data[p] |= (palette[0][i] & 0xFF) << 16;
+            data[p] |= (palette[0][i + 1] & 0xFF) << 8;
+            data[p] |= (palette[0][i + 2] & 0xFF);
+        }
+        return data;
     }
 }

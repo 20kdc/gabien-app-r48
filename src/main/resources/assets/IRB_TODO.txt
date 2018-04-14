@@ -9,24 +9,22 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning:
++ CORE-MAINTAIN
+ + Image editor image system should be where things like backend-Ikachan look,
+   not the other way around!
+ + PNG8I loader (gabien framework shouldn't get involved in this)
+    to fix a bunch of "minor non-issues" (colourkey confusion being an important one)
+ + Native XYZ support in image editor
+   ...of course, we kind of have to guess if XYZ is actually colourkey based...
+ + Figure out why I had to do what I had to do to the set-to-recommended function
+    (UIElement) (frankly the highest priority of them all, if this ends up like Swing...)
+
 + USABILITY-HIGH
- + command-trees
- + all the XP things
+ + command-trees [DONE?]
+ + all the XP things [SOMEWHAT-DONE?]
+
 + USABILITY-MID
- + "SDB1.1"
-  - SDB2 scrapped, would cause major rewriting for no good reason
-  + Keep using SDB2 "Sane Path Syntax" groundwork
-  + DBLoader tokenizer tries to preserve compatibility by making " only applicable at the start of a word
-   + Magically applies to TXDB - Check if this is a good thing, if it is, keep doing it
-    + Are Java & JSON escapes sufficiently compatible? If so, great, TXDB just got better with no added work
-  + Semi-incompatible extension to DB1 format
-  + Can be immediately put to use.
-  + Format changes can still occur via slow progression as per usual,
-     rather than a big change that will break everything
-  + Should serve as an example of how format changes should occur in R48
-  + "C sdb1.1" enables SDB1.1 features in a specific SDB file during transition period
-   + SDB1.1 PathSyntax, ValueSyntax, DisambiguatorSyntax
-    etc.
+ + SDB1.1 Rollout [PARTIAL]
  + SDB Further Documentation Project
   + Should create a useful index to help clean up SDB
 
