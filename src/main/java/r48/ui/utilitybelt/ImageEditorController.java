@@ -277,6 +277,7 @@ public class ImageEditorController {
             ck.onClick = new Runnable() {
                 @Override
                 public void run() {
+                    selPaletteIndex = 0;
                     imageEditView.setImage(new ImageEditorImage(imageEditView.image, ck.state));
                     initPalette();
                 }
@@ -286,6 +287,7 @@ public class ImageEditorController {
             cSwitch = new UISplitterLayout(ck, new UITextButton(TXDB.get("-> 32-bit ARGB"), FontSizes.schemaButtonTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to 32-bit ARGB? The image will no longer contain a palette, which may make editing inconvenient, and some formats will become unavailable."), new Runnable() {
                 @Override
                 public void run() {
+                    selPaletteIndex = 0;
                     ImageEditorImage wip = new ImageEditorImage(imageEditView.image, false, false);
                     imageEditView.setImage(wip);
                     initPalette();
@@ -295,6 +297,7 @@ public class ImageEditorController {
             cSwitch = new UITextButton(TXDB.get("Use Palette"), FontSizes.schemaButtonTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to using a palette? If an exceptional number of colours are used, the image may be hard to edit."), new Runnable() {
                 @Override
                 public void run() {
+                    selPaletteIndex = 0;
                     ImageEditorImage wip = new ImageEditorImage(imageEditView.image, false, true);
                     imageEditView.setImage(wip);
                     initPalette();
