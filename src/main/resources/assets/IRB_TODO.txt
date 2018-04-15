@@ -11,11 +11,7 @@ from highest priority to lowest:
 short-term planning:
 + CORE-MAINTAIN
  + Image editor image system should be where things like backend-Ikachan look,
-   not the other way around!
- + PNG8I loader (gabien framework shouldn't get involved in this)
-    to fix a bunch of "minor non-issues" (colourkey confusion being an important one)
- + Native XYZ support in image editor
-   ...of course, we kind of have to guess if XYZ is actually colourkey based...
+   not the other way around! [Mostly done, BMP support isn't in yet]
  + Figure out why I had to do what I had to do to the set-to-recommended function
     (UIElement) (frankly the highest priority of them all, if this ends up like Swing...)
 

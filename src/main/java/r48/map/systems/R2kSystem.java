@@ -10,13 +10,14 @@ package r48.map.systems;
 import gabien.IImage;
 import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
-import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.imageio.PNG8IImageIOFormat;
+import r48.imageio.XYZImageIOFormat;
 import r48.map.*;
 import r48.map.drawlayers.*;
 import r48.map.events.*;
@@ -40,8 +41,9 @@ import java.util.Map;
 public class R2kSystem extends MapSystem implements IRMMapSystem {
     public R2kSystem() {
         super(new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new ChainedImageLoader(new IImageLoader[] {
-                new XYZImageLoader(),
-                new PNG8IImageLoader(),
+                new ImageIOImageLoader(new XYZImageIOFormat(), ".xyz", true),
+                new ImageIOImageLoader(new PNG8IImageIOFormat(), ".png", true),
+                // EasyRPG extension: arbitrary PNGs
                 new GabienImageLoader(".png")
         }))), true);
     }

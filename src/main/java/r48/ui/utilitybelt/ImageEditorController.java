@@ -14,6 +14,8 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.imageio.ImageIOFormat;
+import r48.imageio.ImageIOImage;
 import r48.io.PathUtils;
 import r48.maptools.UIMTBase;
 import r48.ui.UIAppendButton;
@@ -74,15 +76,27 @@ public class ImageEditorController {
     }
 
     public void load(String filename) {
-        for (ImageEditorFormat ief : ImageEditorFormat.supportedFormats) {
-            ImageEditorImage iei = ief.loadFile(filename);
-            if (iei != null) {
-                imageEditView.setImage(iei);
-                initPalette();
-                return;
+        GaBIEn.hintFlushAllTheCaches();
+        ImageIOImage ioi = ImageIOFormat.tryToLoad(filename, ImageIOFormat.supportedFormats);
+        if (ioi == null) {
+            AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to load #A."), new RubyIO().setString(filename, true)));
+        } else {
+            // Detect assets that use the tRNS chunk correctly
+            boolean detected = false;
+            if (ioi.palette != null) {
+                if ((ioi.palette.get(0) & 0xFF000000) == 0) {
+                    detected = true;
+                    for (int i = 1; i < ioi.palette.size(); i++) {
+                        if ((ioi.palette.get(i) & 0xFF000000) != 0xFF000000) {
+                            detected = false;
+                            break;
+                        }
+                    }
+                }
             }
+            imageEditView.setImage(new ImageEditorImage(ioi, detected));
+            initPalette();
         }
-        AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to load #A."), new RubyIO().setString(filename, true)));
     }
 
     private void initPalette() {
@@ -96,6 +110,14 @@ public class ImageEditorController {
         final String fbStrAS = TXDB.get("Save");
         final String fbStrL = TXDB.get("Load: ");
         final String fbStrS = TXDB.get("Save: ");
+
+        paletteView.panelsAdd(new UITextButton(TXDB.get("New"), FontSizes.schemaButtonTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), new Runnable() {
+            @Override
+            public void run() {
+                imageEditView.setImage(new ImageEditorImage(32, 32));
+                initPalette();
+            }
+        })));
 
         // <Load.><Save1>
         // <Save2><Save3>
@@ -112,48 +134,13 @@ public class ImageEditorController {
                 }, fbStrL, fbStrB, fbStrAL, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize)));
             }
         });
-        for (final ImageEditorFormat format : ImageEditorFormat.supportedFormats) {
+        for (final ImageIOFormat format : ImageIOFormat.supportedFormats) {
             String tx = format.saveName(imageEditView.image);
             if (tx == null)
                 continue;
             UITextButton button = new UITextButton(tx, FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    if (imageEditView.image.t1Lock) {
-                        // SDL_SetColorKey if surface format is converted to RGB,
-                        // R48 loading b/c of the cheat used to avoid implementing the entire PNG specification,
-                        // probably DirectDraw...
-                        int comparison = imageEditView.image.getPaletteRGB(0) | 0xFF000000;
-                        int palSize = imageEditView.image.paletteSize();
-                        for (int i = 1; i < palSize; i++) {
-                            if (imageEditView.image.getPaletteRGB(i) == comparison) {
-                                AppMain.launchDialog(TXDB.get("One of the colours in the palette is the same as the colourkey. This makes various software go haywire, including R48. Please create a new colour and swap it for the transparency colour."));
-                                return;
-                            }
-                        }
-                    }
-                    if (imageEditView.image.usesPalette()) {
-                        int palSize = imageEditView.image.paletteSize();
-                        boolean done = false;
-                        for (int i = 0; i < palSize; i++) {
-                            int c = imageEditView.image.getPaletteRGB(i);
-                            for (int j = i + 1; j < palSize; j++) {
-                                if (c == imageEditView.image.getPaletteRGB(j)) {
-                                    AppMain.pendingRunnables.add(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            // this is a holdover until v1.1.1 or so
-                                            AppMain.launchDialog(TXDB.get("Two colours in the palette are the same. This confuses R48, so if loaded again, uses of the second instance will become uses of the first. Just a warning."));
-                                        }
-                                    });
-                                    done = true;
-                                    break;
-                                }
-                            }
-                            if (done)
-                                break;
-                        }
-                    }
                     windowMaker.accept(AppMain.setFBSize(new UIFileBrowser(new IConsumer<String>() {
                         @Override
                         public void accept(String s) {
@@ -192,7 +179,7 @@ public class ImageEditorController {
                         imageEditView.image.appendToPalette(integer);
                         initPalette();
                     }
-                }, true));
+                }, !imageEditView.image.t1Lock));
             }
         }), new UITextButton(TXDB.get("From Image"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
@@ -241,11 +228,7 @@ public class ImageEditorController {
                         }
                         imageEditView.cursorX = rect.width / 2;
                         imageEditView.cursorY = rect.height / 2;
-                        int[] oldPalette = new int[imageEditView.image.paletteSize()];
-                        for (int i = 0; i < oldPalette.length; i++)
-                            oldPalette[i] = imageEditView.image.getPaletteRGB(i);
-                        imageEditView.setImage(new ImageEditorImage(rect.width, rect.height, newImage, imageEditView.image.usesPalette(), imageEditView.image.t1Lock));
-                        imageEditView.image.changePalette(oldPalette);
+                        imageEditView.setImage(new ImageEditorImage(rect.width, rect.height, newImage, imageEditView.image.palette, imageEditView.image.t1Lock));
                     }
                 }, TXDB.get("Resize..."));
             }
@@ -284,6 +267,41 @@ public class ImageEditorController {
         } else {
             paletteView.panelsAdd(cType);
         }
+
+        UIElement cSwitch;
+
+        // It's like Life Is Strange.
+        // No matter which option you choose, we'll question your decision.
+        if (imageEditView.image.palette != null) {
+            final UITextButton ck = new UITextButton(TXDB.get("Colourkey"), FontSizes.schemaButtonTextHeight, null).togglable(imageEditView.image.t1Lock);
+            ck.onClick = new Runnable() {
+                @Override
+                public void run() {
+                    imageEditView.setImage(new ImageEditorImage(imageEditView.image, ck.state));
+                    initPalette();
+                }
+            };
+            if (!ck.state)
+                ck.onClick = AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to enable Colourkey mode? This mode does not allow partial alpha, and the first colour in the palette becomes transparent."), ck.onClick);
+            cSwitch = new UISplitterLayout(ck, new UITextButton(TXDB.get("-> 32-bit ARGB"), FontSizes.schemaButtonTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to 32-bit ARGB? The image will no longer contain a palette, which may make editing inconvenient, and some formats will become unavailable."), new Runnable() {
+                @Override
+                public void run() {
+                    ImageEditorImage wip = new ImageEditorImage(imageEditView.image, false, false);
+                    imageEditView.setImage(wip);
+                    initPalette();
+                }
+            })), false, 0.5d);
+        } else {
+            cSwitch = new UITextButton(TXDB.get("Use Palette"), FontSizes.schemaButtonTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to using a palette? If an exceptional number of colours are used, the image may be hard to edit."), new Runnable() {
+                @Override
+                public void run() {
+                    ImageEditorImage wip = new ImageEditorImage(imageEditView.image, false, true);
+                    imageEditView.setImage(wip);
+                    initPalette();
+                }
+            }));
+        }
+        paletteView.panelsAdd(cSwitch);
 
         for (int idx = 0; idx < imageEditView.image.paletteSize(); idx++) {
             final int fidx = idx;

@@ -20,6 +20,7 @@ import r48.io.PathUtils;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.map.systems.*;
+import r48.maptools.UIMTBase;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.util.ISchemaHost;
@@ -624,6 +625,35 @@ public class AppMain {
             h = limit;
         svl.setForcedBounds(null, new Rect(0, 0, Math.min(mainWindowWidth, svl.getWantedSize().width), h));
         trueWindowMaker.accept(svl);
+    }
+
+    public static Runnable createLaunchConfirmation(final String s, final Runnable runnable) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                UITextButton accept = new UITextButton(TXDB.get("Accept"), FontSizes.dialogWindowTextHeight, null);
+                UITextButton cancel = new UITextButton(TXDB.get("Cancel"), FontSizes.dialogWindowTextHeight, null);
+                UIElement uie = new UISplitterLayout(new UILabel(s, FontSizes.dialogWindowTextHeight),
+                        new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
+                final UIMTBase mtb = UIMTBase.wrap(null, uie);
+                mtb.titleOverride = TXDB.get("Please confirm...");
+                accept.onClick = new Runnable() {
+                    @Override
+                    public void run() {
+                        runnable.run();
+                        mtb.selfClose = true;
+                    }
+                };
+                cancel.onClick = new Runnable() {
+                    @Override
+                    public void run() {
+                        mtb.selfClose = true;
+                    }
+                };
+                mtb.setForcedBounds(null, new Rect(0, 0, (mainWindowWidth / 3) * 2, mainWindowHeight / 2));
+                trueWindowMaker.accept(mtb);
+            }
+        };
     }
 
     public static void startHelp(Integer integer) {

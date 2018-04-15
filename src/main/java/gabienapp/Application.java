@@ -15,6 +15,7 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
+import r48.imageio.ImageIOFormat;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFontSizeConfigurator;
@@ -351,6 +352,7 @@ public class Application {
         Thread txdbThread = new Thread() {
             @Override
             public void run() {
+                ImageIOFormat.initializeFormats();
                 TXDB.init();
                 boolean canAvoidWait = FontSizes.loadLanguage();
                 // TXDB 'stable', spammed class refs

@@ -23,7 +23,7 @@ import r48.ui.UIGrid;
  */
 public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldMouseReceiver {
     // Do not set outside of setImage
-    public ImageEditorImage image = new ImageEditorImage(32, 32, new int[1024], true, true);
+    public ImageEditorImage image = new ImageEditorImage(32, 32);
     public int cursorX = 16, cursorY = 16, zoom = FontSizes.getSpriteScale() * 16;
     public boolean camMode = true, tempCamMode = false, dragging;
     public int dragLastX, dragLastY;

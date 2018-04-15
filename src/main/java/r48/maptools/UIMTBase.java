@@ -15,7 +15,9 @@ import r48.ui.IWindowElement;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Was used for many things that it shouldn't have been. Now, not so much.
+ * Was used for many things that it shouldn't have been. Now, not so much,
+ *  but frankly it's still too ridiculously convenient.
+ * Maybe make a superclass for the convenient stuff?
  * Created on August 14 2017.
  */
 public class UIMTBase extends UIElement.UIPanel implements IWindowElement {
@@ -25,6 +27,7 @@ public class UIMTBase extends UIElement.UIPanel implements IWindowElement {
 
     public boolean selfClose = false;
     public boolean hasClosed = false;
+    public String titleOverride;
 
     public UIMTBase(IMapToolContext mtc) {
         mapToolContext = mtc;
@@ -68,6 +71,8 @@ public class UIMTBase extends UIElement.UIPanel implements IWindowElement {
 
     @Override
     public String toString() {
+        if (titleOverride != null)
+            return titleOverride;
         if (innerElem != null)
             return innerElem.toString();
         return super.toString();

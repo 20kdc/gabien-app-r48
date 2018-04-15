@@ -30,6 +30,7 @@ public class LuaInterface {
             InputStream ihs = GaBIEn.getResource("luahead.lua");
             byte[] databuf = new byte[ihs.available()];
             if (ihs.read(databuf) != databuf.length) {
+                ihs.close();
                 ohs.close();
                 System.err.println("oh dear");
                 cleanup();
