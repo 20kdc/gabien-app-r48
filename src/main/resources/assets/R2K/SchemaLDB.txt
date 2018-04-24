@@ -672,18 +672,22 @@ e rpg_battlecommand_dir 0 noModify 1 up 2 right 3 down 4 left
 : RPG::BattleCommands
 @auto_placement boolean
 @row_back boolean
-@window_large boolean
+@window_small boolean
+@transparent boolean
 @battle_type rpg_battlecommand_battletype
 @commands subwindow arrayIx1 RPG::BattleCommand
 @death_handler_1 int
 @death_handler_2 int
 @death_event commonevent_or_none_id
-@transparent boolean
-@teleport boolean
-@teleport_id map_id
-@teleport_x int
-@teleport_y int
-@teleport_face rpg_battlecommand_dir
+@death_teleport boolean
++condHide @death_teleport rpg_battlecommands_teleport
+
+.rpg_battlecommands_teleport
+@death_teleport_map map_id
+@death_teleport_x int
+@death_teleport_y int
+@death_teleport_dir rpg_battlecommand_dir
++mapPositionHelper @death_teleport_map @death_teleport_x @death_teleport_y
 
  ---
 

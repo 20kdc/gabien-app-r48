@@ -46,13 +46,13 @@ public class BattleCommands extends R2kObject {
                 new Index(0x0A, commands, "@commands"),
                 new Index(0x0F, deathHandler2, "@death_handler_2"),
                 new Index(0x10, deathEvent, "@death_event"),
-                new Index(0x14, windowSize, "@window_large"),
+                new Index(0x14, windowSize, "@window_small"),
                 new Index(0x18, transparency, "@transparent"),
-                new Index(0x19, teleport, "@teleport"),
-                new Index(0x1A, teleportId, "@teleport_id"),
-                new Index(0x1B, teleportX, "@teleport_x"),
-                new Index(0x1C, teleportY, "@teleport_y"),
-                new Index(0x1D, teleportFace, "@teleport_face"),
+                new Index(0x19, teleport, "@death_teleport"),
+                new Index(0x1A, teleportId, "@death_teleport_map"),
+                new Index(0x1B, teleportX, "@death_teleport_x"),
+                new Index(0x1C, teleportY, "@death_teleport_y"),
+                new Index(0x1D, teleportFace, "@death_teleport_dir"),
         };
     }
 

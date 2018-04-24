@@ -183,13 +183,13 @@ public class SDB {
                                 }
                             });
                         }
-                        if (text.equals("condHide")) {
+                        if (text.equals("condHide") || text.equals("condHide!")) {
                             final String path = args[point++];
                             SchemaElement hide = get();
                             return new HiddenSchemaElement(hide, new IFunction<RubyIO, Boolean>() {
                                 @Override
                                 public Boolean apply(RubyIO rubyIO) {
-                                    return PathSyntax.parse(rubyIO, path, v1p1).type == 'T';
+                                    return PathSyntax.parse(rubyIO, path, v1p1).type == (text.endsWith("!") ? 'F' : 'T');
                                 }
                             });
                         }
