@@ -10,7 +10,7 @@ For a runtime, you can use (EasyRPG Player)[https://easyrpg.org/] (a project not
 
 As this does not use any assets or executables owned by the makers of RPG Maker, this is an independent open-source free game creation system.
 
-So long as one avoids using RPG Maker assets (original or modified - if the official RTP's license applies, you must not use it), abides by the license of EasyRPG Player and dependencies (which applies to EasyRPG Player's executable and related DLLs), the games made this way are releasable (potentially commercially. Yes, copies of GPL'd software can be sold, even on Steam, so long as you abide by the GPL's rules while doing it. See the OneShot remake for an example, as it is based on MKXP.)
+So long as one avoids using RPG Maker assets (original or modified - if the official RTP's license applies, you must not use it), abides by the license of EasyRPG Player and dependencies (which applies to EasyRPG Player's executable and related DLLs), the games made this way are releasable (potentially commercially. Yes, copies of GPL'd software can be sold, even on Steam, so long as you abide by the GPL's rules while doing it. Little Cat Feet's 2016 remake of OneShot, to my knowledge made with RPG Maker XP and MKXP (with their changes to MKXP released), should be a good example of how to do this.)
 
 ## section 2 : why
 
@@ -57,7 +57,7 @@ GitHub Issues are used for feature requests and bug reports.
 For general help, I suggest going to the freenode #easyrpg IRC channel for now.
 It can be accessed on Matrix via the usual matrix.org gateway.
 
-Discord support is currently only available by finding me (20kdc), because I typically use EasyRPG channels for discussion - this isn't a big project yet.
+Discord support is currently only available by finding me (20kdc#9365), because I typically use EasyRPG channels for discussion - this isn't a big project yet.
 
 Upon crash, R48 ought to give you the information and data you need to continue, but no guarantees.
 If you have a lot of unsaved data, it may simply freeze while writing tons of data into the crash file.
@@ -103,7 +103,7 @@ RPG Maker XP: Support was developed by examining OneShot (remake) and Ruby Quest
 RPG Maker VX Ace: Examining Rave Story 2 (PolarStar's version), and Crysalis, plus a table given by Ancurio for the wall ATs.
 Wall AT editing support is slightly inaccurate due to a seemingly inconsistent ruleset, but manual tiling is available should the results be an issue.
 
-Ikachan: I previously worked on a map editor for Ikachan, and the information came in handy.
+Ikachan: Previous experience with modding Ikachan.
 
 Sticky Note Program: This is really just an ancient testbed for the simpler elements of R48, so it's entirely defined by R48.
 
