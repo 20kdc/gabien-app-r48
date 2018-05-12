@@ -68,7 +68,8 @@ public class SDB {
         schemaDatabase.put("int+0", new LowerBoundIntegerSchemaElement(0, 0));
         schemaDatabase.put("int+1", new LowerBoundIntegerSchemaElement(1, 1));
         schemaDatabase.put("index", new AMAISchemaElement());
-        schemaDatabase.put("float", new FloatSchemaElement("0"));
+        schemaDatabase.put("float", new FloatSchemaElement("0", false));
+        schemaDatabase.put("jnum", new FloatSchemaElement("0", true));
         schemaDatabase.put("string", new StringSchemaElement("", '\"'));
         schemaDatabase.put("boolean", new BooleanSchemaElement(false));
         schemaDatabase.put("booleanDefTrue", new BooleanSchemaElement(true));
@@ -152,7 +153,9 @@ public class SDB {
                             return new LowerBoundIntegerSchemaElement(1, n);
                         }
                         if (text.equals("float="))
-                            return new FloatSchemaElement(args[point++]);
+                            return new FloatSchemaElement(args[point++], false);
+                        if (text.equals("jnum="))
+                            return new FloatSchemaElement(args[point++], true);
                         // To translate, or not to? Unfortunately these can point at files.
                         // (later) However, context makes it obvious
                         if (text.equals("string=")) {
@@ -647,14 +650,20 @@ public class SDB {
                 } else if (c == '}') {
                     String intA0 = args[0];
                     boolean opt = false;
-                    // This can be escaped if it matters.
+                    // This shouldn't collide with PathSyntax
                     if (intA0.startsWith("?")) {
                         intA0 = intA0.substring(1);
                         opt = true;
                     }
                     // Note: the unescaping happens in the Path
-                    String t = (v1p1 ? ":{" : "${") + intA0;
-                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, intA0), handleChain(args, 1), v1p1, opt));
+                    // Automatically escape.
+                    if (v1p1) {
+                        String t = ":{" + PathSyntax.poundEscape(intA0);
+                        workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, args[1]), handleChain(args, 2), true, opt));
+                    } else {
+                        String t = "${" + intA0;
+                        workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, intA0), handleChain(args, 1), false, opt));
+                    }
                 } else if (c == '+') {
                     workingObj.aggregate.add(handleChain(args, 0));
                 } else if (c == '>') {

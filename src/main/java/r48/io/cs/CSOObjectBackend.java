@@ -10,6 +10,7 @@ package r48.io.cs;
 import gabien.GaBIEn;
 import r48.RubyIO;
 import r48.io.IObjectBackend;
+import r48.io.JsonObjectBackend;
 import r48.io.PathUtils;
 
 import java.io.*;
@@ -20,13 +21,17 @@ import java.io.*;
  */
 public class CSOObjectBackend implements IObjectBackend {
     public CSObjectBackend cob;
+    public JsonObjectBackend job;
 
     public CSOObjectBackend(String prefix) {
         cob = new CSObjectBackend(prefix);
+        job = new JsonObjectBackend(prefix, "");
     }
 
     @Override
     public RubyIO loadObjectFromFile(String filename) {
+        if (filename.endsWith(".mtd"))
+            return job.loadObjectFromFile(filename);
         RubyIO pxa = cob.loadObjectFromFile(filename + ".pxa");
         if (pxa == null)
             return null;
@@ -46,6 +51,10 @@ public class CSOObjectBackend implements IObjectBackend {
 
     @Override
     public void saveObjectToFile(String filename, RubyIO object) throws IOException {
+        if (filename.endsWith(".mtd")) {
+            job.saveObjectToFile(filename, object);
+            return;
+        }
         cob.saveObjectToFile(filename + ".pxa", object.getInstVarBySymbol("@pxa"));
         cob.saveObjectToFile(filename + ".pxm", object.getInstVarBySymbol("@pxm"));
         savePSPToFile(filename + ".psp", object.getInstVarBySymbol("@psp"));

@@ -799,6 +799,8 @@ public class AppMain {
                     "CSO/BG.png", AppMain.dataPath + s + "BG.png",
                     "CSO/BGM.org", AppMain.dataPath + s + ".org",
                     "CSO/FG.pxa", AppMain.dataPath + s + ".pxa",
+                    "CSO/FG.pxm", AppMain.dataPath + s + ".pxm",
+                    "CSO/FG.psp", AppMain.dataPath + s + ".psp"
             });
         } else {
             mapContext.loadMap(s);

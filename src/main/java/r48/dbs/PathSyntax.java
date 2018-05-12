@@ -15,7 +15,8 @@ import r48.RubyIO;
  * Created on 08/06/17.
  */
 public class PathSyntax {
-    // NOTE: This must not contain \, as that is used for EscapedStringSyntax embedded in hashes
+    // NOTE: This must not contain \, as that is used for EscapedStringSyntax embedded in hashes,
+    //        and it must not contain anything used in ValueSyntax.
     public static char[] breakers = new char[] {'$', '@', ']'};
     public static char[] breakersSDB2 = new char[] {':', '@', ']'};
 

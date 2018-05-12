@@ -60,12 +60,17 @@ public class CSOSystem extends MapSystem {
                         for (String map : GaBIEn.listEntries(adw)) {
                             if (map.toLowerCase().endsWith(".pxm")) {
                                 final String mapFinale = gamemode + "/" + map.substring(0, map.length() - 4);
-                                usl.panelsAdd(new UITextButton(mapFinale, FontSizes.mapInfosTextHeight, new Runnable() {
+                                usl.panelsAdd(new UISplitterLayout(new UITextButton(mapFinale, FontSizes.mapInfosTextHeight, new Runnable() {
                                     @Override
                                     public void run() {
                                         mapBox.loadMap(mapFinale);
                                     }
-                                }));
+                                }), new UITextButton(TXDB.get("Match Info"), FontSizes.mapInfosTextHeight, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        AppMain.launchSchema("CSOMatchData", AppMain.objectDB.getObject(mapFinale + ".mtd", "CSOMatchData"), null);
+                                    }
+                                }), false, 1d));
                             }
                         }
                     }
@@ -82,6 +87,7 @@ public class CSOSystem extends MapSystem {
                         } else {
                             AppMain.csoNewMapMagic(n, false);
                             AppMain.objectDB.getObject(n, "CSOMap");
+                            AppMain.objectDB.getObject(n + ".mtd", "CSOMatchInfo");
                             AppMain.objectDB.ensureAllSaved();
                             AppMain.csoNewMapMagic(n, true);
                             AppMain.launchDialog(TXDB.get("Please go to Map.\nNote: You may need to use ... -> Reload TS after placing/editing the tileset."));
@@ -102,7 +108,6 @@ public class CSOSystem extends MapSystem {
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
         ITileRenderer tr = new NullTileRenderer();
         final IImage quote = GaBIEn.getImageEx("CSO/quote.png", false, true);
-        final IImage tiles = GaBIEn.getImageEx("CSO/tiles.png", false, true);
         IEventGraphicRenderer ev = new IEventGraphicRenderer() {
             @Override
             public int determineEventLayer(RubyIO event) {

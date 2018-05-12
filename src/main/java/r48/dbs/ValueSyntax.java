@@ -15,6 +15,7 @@ import r48.RubyIO;
  * However, " starts a string (no ending "),
  *  : starts a symbol,
  *  and nil means null.
+ * "?" must never become part of this list, and it must never conflict with PathSyntax.
  * Created on 10/06/17.
  */
 public class ValueSyntax {
