@@ -45,4 +45,6 @@ public interface IEventAccess {
     // Yes, this is a cop-out because I can't think of a better design r/n
     // everything else I thought up was just hacky or overabstracting
     Runnable hasSync(RubyIO evK);
+
+    String customEventsName();
 }

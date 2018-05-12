@@ -220,4 +220,9 @@ public class R2kSavefileEventAccess implements IEventAccess {
             };
         return null;
     }
+
+    @Override
+    public String customEventsName() {
+        return TXDB.get("Player/Vehicles/Events");
+    }
 }

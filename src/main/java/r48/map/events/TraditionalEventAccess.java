@@ -25,12 +25,22 @@ public class TraditionalEventAccess implements IEventAccess {
     private final String eventsPath;
     private final int eventIdBase;
     private final String eventSchema;
+    private final String eventsName;
 
     public TraditionalEventAccess(RubyIO base, String path, int b, String schema) {
         mapRoot = base;
         eventsPath = path;
         eventIdBase = b;
         eventSchema = schema;
+        eventsName = TXDB.get("Events");
+    }
+
+    public TraditionalEventAccess(RubyIO base, String path, int b, String schema, String en) {
+        mapRoot = base;
+        eventsPath = path;
+        eventIdBase = b;
+        eventSchema = schema;
+        eventsName = en;
     }
 
     @Override
@@ -83,6 +93,11 @@ public class TraditionalEventAccess implements IEventAccess {
     @Override
     public Runnable hasSync(RubyIO evK) {
         return null;
+    }
+
+    @Override
+    public String customEventsName() {
+        return eventsName;
     }
 
     private int getFreeIndex() {

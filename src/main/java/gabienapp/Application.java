@@ -321,7 +321,9 @@ public class Application {
         double dTTarg = (globalMS / 1000d) - compensationDT;
         while (dT < dTTarg) {
             try {
-                Thread.sleep(globalMS);
+                long ofs = (long) ((dT - dTTarg) * 1000);
+                if (ofs > 0)
+                    Thread.sleep(ofs);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
