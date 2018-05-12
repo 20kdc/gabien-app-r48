@@ -25,12 +25,29 @@ public class StuffRenderer {
     public final IEventGraphicRenderer eventRenderer;
     public final IImageLoader imageLoader;
     public final IMapViewDrawLayer[] layers;
+    public final boolean[] activeDef;
 
     public StuffRenderer(IImageLoader l, ITileRenderer t, IEventGraphicRenderer e, IMapViewDrawLayer[] l2) {
+        this(l, t, e, l2, null);
+    }
+
+    public StuffRenderer(IImageLoader l, ITileRenderer t, IEventGraphicRenderer e, IMapViewDrawLayer[] l2, boolean[] activeDefault) {
         tileRenderer = t;
         eventRenderer = e;
         imageLoader = l;
         layers = l2;
+        if (activeDefault != null) {
+            activeDef = activeDefault;
+        } else {
+            activeDef = new boolean[l2.length];
+            for (int i = 0; i < activeDef.length; i++) {
+                activeDef[i] = true;
+                if (l2[i] instanceof PassabilityMapViewDrawLayer)
+                    activeDef[i] = false;
+                if (l2[i] instanceof GridMapViewDrawLayer)
+                    activeDef[i] = false;
+            }
+        }
     }
 
     public static IMapViewDrawLayer[] prepareTraditional(ITileRenderer itr, int[] tlOrder, IEventGraphicRenderer igr, IImageLoader iil, RubyIO map, IEventAccess events, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {

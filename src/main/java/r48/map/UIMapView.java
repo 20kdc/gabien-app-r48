@@ -12,9 +12,7 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
-import r48.map.drawlayers.GridMapViewDrawLayer;
 import r48.map.drawlayers.IMapViewDrawLayer;
-import r48.map.drawlayers.PassabilityMapViewDrawLayer;
 import r48.map.systems.MapSystem;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
@@ -139,14 +137,7 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
             if (layerVis.length == mapTable.renderer.layers.length)
                 return;
         layerVis = new boolean[mapTable.renderer.layers.length];
-        for (int j = 0; j < layerVis.length; j++) {
-            boolean defaultVis = true;
-            if (mapTable.renderer.layers[j] instanceof PassabilityMapViewDrawLayer)
-                defaultVis = false;
-            if (mapTable.renderer.layers[j] instanceof GridMapViewDrawLayer)
-                defaultVis = false;
-            layerVis[j] = defaultVis;
-        }
+        System.arraycopy(mapTable.renderer.activeDef, 0, layerVis, 0, mapTable.renderer.activeDef.length);
     }
 
     @Override

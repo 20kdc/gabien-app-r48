@@ -123,7 +123,14 @@ public class CSOSystem extends MapSystem {
                     new GridMapViewDrawLayer()
             };
         }
-        return new StuffRenderer(imageLoader, tr, ev, layers);
+        return new StuffRenderer(imageLoader, tr, ev, layers, new boolean[] {
+                true,
+                true,
+                false,
+                true,
+                true,
+                false
+        });
     }
 
     @Override
