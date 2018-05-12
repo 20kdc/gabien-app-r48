@@ -698,6 +698,46 @@ public class AppMain {
         trueWindowMaker.accept(topbar);
     }
 
+    private static void fileCopier(String[] mkdirs, String[] fileCopies) {
+        for (String s : mkdirs)
+            GaBIEn.makeDirectories(PathUtils.autoDetectWindows(AppMain.rootPath + s));
+        for (int i = 0; i < fileCopies.length; i += 2) {
+            String src = fileCopies[i];
+            String dst = fileCopies[i + 1];
+            InputStream inp = GaBIEn.getResource(src);
+            if (inp != null) {
+                String tgt = PathUtils.autoDetectWindows(rootPath + dst);
+                if (GaBIEn.fileOrDirExists(tgt)) {
+                    try {
+                        inp.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    continue;
+                }
+                OutputStream oup = GaBIEn.getOutFile(tgt);
+                if (oup != null) {
+                    try {
+                        byte[] b = new byte[2048];
+                        while (inp.available() > 0)
+                            oup.write(b, 0, inp.read(b));
+                    } catch (IOException ioe) {
+
+                    }
+                    try {
+                        oup.close();
+                    } catch (IOException ioe) {
+
+                    }
+                }
+                try {
+                    inp.close();
+                } catch (IOException ioe) {
+                }
+            }
+        }
+    }
+
     // R2kSystemDefaultsInstallerSchemaElement uses this to indirectly access several things a SchemaElement isn't allowed to access.
     public static void r2kProjectCreationHelperFunction() {
         Runnable deploy = new Runnable() {
@@ -730,34 +770,7 @@ public class AppMain {
                         "R2K/templatetileset.png", "ChipSet/templatetileset.png",
                         "R2K/slime.png", "Monster/monster.png",
                 };
-                for (String s : mkdirs)
-                    GaBIEn.makeDirectories(AppMain.rootPath + s);
-                for (int i = 0; i < fileCopies.length; i += 2) {
-                    String src = fileCopies[i];
-                    String dst = fileCopies[i + 1];
-                    InputStream inp = GaBIEn.getResource(src);
-                    if (inp != null) {
-                        OutputStream oup = GaBIEn.getOutFile(rootPath + dst);
-                        if (oup != null) {
-                            try {
-                                byte[] b = new byte[2048];
-                                while (inp.available() > 0)
-                                    oup.write(b, 0, inp.read(b));
-                            } catch (IOException ioe) {
-
-                            }
-                            try {
-                                oup.close();
-                            } catch (IOException ioe) {
-
-                            }
-                        }
-                        try {
-                            inp.close();
-                        } catch (IOException ioe) {
-                        }
-                    }
-                }
+                fileCopier(mkdirs, fileCopies);
                 // Load map 1, save everything
                 mapContext.loadMap("Map.1");
                 objectDB.ensureAllSaved();
@@ -773,6 +786,16 @@ public class AppMain {
                 deploy,
                 deploy
         }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
+    }
+
+    public static void csoNewMapMagic(String s) {
+        fileCopier(new String[] {
+                GaBIEn.basename(PathUtils.autoDetectWindows(s))
+        }, new String[] {
+                "CSO/FG.png", s + ".png",
+                "CSO/BG.png", s + "BG.png",
+        });
+        mapContext.loadMap(s);
     }
 
     public static void pleaseShutdown() {

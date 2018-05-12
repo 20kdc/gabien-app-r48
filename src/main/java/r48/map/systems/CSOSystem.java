@@ -70,6 +70,25 @@ public class CSOSystem extends MapSystem {
                         }
                     }
                 }
+                final UITextButton refresh = new UITextButton(TXDB.get("Refresh"), FontSizes.mapInfosTextHeight, this);
+                final UITextBox mapName = new UITextBox("FFA/MyMap", FontSizes.mapInfosTextHeight);
+                UITextButton newB = new UITextButton(TXDB.get("New Map"), FontSizes.mapInfosTextHeight, new Runnable() {
+                    @Override
+                    public void run() {
+                        // Ok, so this gets odd. See, if another map already exists, case-insensitive, we need to stop the user.
+                        String n = mapName.text;
+                        if (GaBIEn.fileOrDirExists(PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + n + ".pxa"))) {
+                            AppMain.launchDialog(TXDB.get("A map with this name already exists, so it cannot be created."));
+                        } else {
+                            AppMain.objectDB.getObject(n, "CSOMap");
+                            AppMain.csoNewMapMagic(n);
+                            AppMain.objectDB.ensureAllSaved();
+                            AppMain.launchDialog(TXDB.get("Please go to Map.\nNote: You may need to use ... -> Reload TS after placing/editing the tileset."));
+                            refresh.onClick.run();
+                        }
+                    }
+                });
+                usl.panelsAdd(new UISplitterLayout(mapName, new UISplitterLayout(newB, refresh, false, 1), false, 1));
             }
         };
         refresh.run();
