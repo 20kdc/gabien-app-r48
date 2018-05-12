@@ -15,7 +15,6 @@ import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
-import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -102,7 +101,7 @@ public class EnumSchemaElement extends SchemaElement {
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         liveUpdate();
-        if (IntegerSchemaElement.ensureType(target, (char) defaultVal.type, setDefault)) {
+        if (SchemaElement.ensureType(target, (char) defaultVal.type, setDefault)) {
             target.setDeepClone(defaultVal);
             path.changeOccurred(true);
         }

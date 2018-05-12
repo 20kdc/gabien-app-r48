@@ -14,8 +14,6 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.*;
 import r48.schema.displays.HWNDSchemaElement;
-import r48.schema.integers.IntBooleanSchemaElement;
-import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.LowerBoundIntegerSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBindingSchemaElement;
@@ -227,7 +225,7 @@ class SDBHelpers {
 
             @Override
             public boolean modifyVal(RubyIO trueTarget, boolean setDefault) {
-                return IntegerSchemaElement.ensureType(trueTarget, 'i', setDefault);
+                return SchemaElement.ensureType(trueTarget, 'i', setDefault);
             }
         }, inner);
     }
@@ -275,7 +273,7 @@ class SDBHelpers {
 
             @Override
             public boolean modifyVal(RubyIO trueTarget, boolean setDefault) {
-                return IntegerSchemaElement.ensureType(trueTarget, 'i', setDefault);
+                return SchemaElement.ensureType(trueTarget, 'i', setDefault);
             }
         }, inner);
     }

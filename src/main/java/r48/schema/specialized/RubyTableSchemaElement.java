@@ -186,7 +186,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                 }
             }));
         }
-        return new UISplitterLayout(uig, uiSVL, false, 6, 8);
+        return new UISplitterLayout(uig, uiSVL, false, 1);
     }
 
     // Overridden in super-special tileset versions of this.

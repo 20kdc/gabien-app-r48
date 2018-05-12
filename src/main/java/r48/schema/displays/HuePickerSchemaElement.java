@@ -7,13 +7,11 @@
 
 package r48.schema.displays;
 
-import gabien.ui.UIElement;
+import gabien.ui.IConsumer;
+import gabien.ui.UIPublicPanel;
 import gabien.ui.UISplitterLayout;
-import r48.RubyIO;
 import r48.imagefx.HueShiftImageEffect;
 import r48.schema.integers.IntegerSchemaElement;
-import r48.schema.util.ISchemaHost;
-import r48.schema.util.SchemaPath;
 
 /**
  * Created on 7/31/17.
@@ -24,8 +22,16 @@ public class HuePickerSchemaElement extends IntegerSchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-        return new UISplitterLayout(super.buildHoldingEditor(target, launcher, path), TonePickerSchemaElement.createTotem(new HueShiftImageEffect((int) target.fixnumVal)), true, 0.5);
+    public ActiveInteger buildIntegerEditor(final long oldVal, IntegerSchemaElement.IIntegerContext context) {
+        final UIPublicPanel uie = TonePickerSchemaElement.createTotem(new HueShiftImageEffect((int) oldVal));
+        final ActiveInteger ai2 = super.buildIntegerEditor(oldVal, context);
+        return new ActiveInteger(new UISplitterLayout(ai2.uie, uie, true, 0.5), new IConsumer<Long>() {
+            @Override
+            public void accept(Long aLong) {
+                uie.baseImage = TonePickerSchemaElement.compositeTotem(new HueShiftImageEffect((int) oldVal));
+                ai2.onValueChange.accept(aLong);
+            }
+        });
     }
 
     @Override

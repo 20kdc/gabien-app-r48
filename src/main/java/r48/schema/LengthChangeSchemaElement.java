@@ -11,7 +11,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -50,7 +49,7 @@ public class LengthChangeSchemaElement extends SchemaElement {
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (defaultLen) {
-            if (IntegerSchemaElement.ensureType(target, '[', setDefault)) {
+            if (SchemaElement.ensureType(target, '[', setDefault)) {
                 target.arrVal = new RubyIO[targetLen];
                 for (int i = 0; i < target.arrVal.length; i++)
                     target.arrVal[i] = new RubyIO().setNull();

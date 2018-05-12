@@ -7,7 +7,11 @@
 
 package r48.dbs;
 
+import gabien.GaBIEn;
+import gabien.IGrDriver;
+import gabien.IImage;
 import gabien.ui.IFunction;
+import r48.map.events.RMEventGraphicRenderer;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -16,7 +20,6 @@ import java.util.LinkedList;
  * Created on 04/06/17.
  */
 public class TSDB {
-
     public LinkedList<TSPicture> pictures = new LinkedList<TSPicture>();
     public int[] mapping;
     public int xorDoubleclick = 0;
@@ -31,6 +34,7 @@ public class TSDB {
                     return true;
                 }
             };
+            public String image = "layertab.png";
 
             @Override
             public void newObj(int objId, String objName) throws IOException {
@@ -39,8 +43,10 @@ public class TSDB {
 
             @Override
             public void execCmd(char c, String[] args) throws IOException {
+                if (c == 'I')
+                    image = args[0];
                 if (c == 'p')
-                    pictures.add(new TSPicture(acceptable, Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]), Integer.parseInt(args[7]), Integer.parseInt(args[8])));
+                    pictures.add(new TSPicture(acceptable, compileData(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]), Integer.parseInt(args[7]), Integer.parseInt(args[8]), image));
                 if (c == 'x')
                     xorDoubleclick = Integer.parseInt(args[0]);
                 if (c == 'l') {
@@ -81,13 +87,54 @@ public class TSDB {
         });
     }
 
+    // AND,TARGET,MD
+    // MD 0 is (t & AND) != TARGET
+    // MD 1 is t within inclusive range AND,TARGET
+    private int[] compileData(String arg) {
+        String[] rules = arg.split("/");
+        int[] rout = new int[3 * rules.length];
+        for (int i = 0; i < rules.length; i++) {
+            String[] subs = rules[i].split(",");
+            for (int j = 0; j < subs.length; j++) {
+                if (subs[j].startsWith("0x")) {
+                    rout[(i * 3) + j] = Integer.parseInt(subs[j].substring(2), 16);
+                } else {
+                    rout[(i * 3) + j] = Integer.parseInt(subs[j]);
+                }
+            }
+        }
+        return rout;
+    }
+
+    public void draw(int x, int y, int t, short tiletype, int sprScale, IGrDriver igd) {
+        for (TSDB.TSPicture tsp : pictures) {
+            if (!tsp.acceptable.apply(t))
+                continue;
+            boolean flagValid = tsp.testFlag(tiletype);
+            int rtX = flagValid ? tsp.layertabAX : tsp.layertabIX;
+            int rtY = flagValid ? tsp.layertabAY : tsp.layertabIY;
+            RMEventGraphicRenderer.flexibleSpriteDraw(rtX, rtY, tsp.w, tsp.h, x + (tsp.x * sprScale), y + (tsp.y * sprScale), tsp.w * sprScale, tsp.h * sprScale, 0, GaBIEn.getImageEx(tsp.img, false, true), 0, igd);
+        }
+    }
+
+    public IImage compileSheet(int count, int tileSize) {
+        IGrDriver workingImage = GaBIEn.makeOffscreenBuffer(tileSize * count, tileSize, true);
+        for (int i = 0; i < count; i++)
+            draw(i * tileSize, 0, 0, (short) i, 1, workingImage);
+        IImage img2 = GaBIEn.createImage(workingImage.getPixels(), workingImage.getWidth(), workingImage.getHeight());
+        workingImage.shutdown();
+        return img2;
+    }
+
     public class TSPicture {
-        public int flag, layertabIX, layertabIY, layertabAX, layertabAY, x, y, w, h;
+        public int layertabIX, layertabIY, layertabAX, layertabAY, x, y, w, h;
+        public int[] flagData;
+        public String img;
         public IFunction<Integer, Boolean> acceptable;
 
-        public TSPicture(IFunction<Integer, Boolean> accept, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8) {
+        public TSPicture(IFunction<Integer, Boolean> accept, int[] i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, String image) {
             acceptable = accept;
-            flag = i;
+            flagData = i;
             layertabIX = i1;
             layertabIY = i2;
             layertabAX = i3;
@@ -96,6 +143,25 @@ public class TSDB {
             y = i6;
             w = i7;
             h = i8;
+            img = image;
+        }
+
+        public boolean testFlag(short tiletype) {
+            for (int i = 0; i < flagData.length; i += 3) {
+                switch (flagData[i + 2]) {
+                    case 0:
+                        if ((tiletype & flagData[i]) == flagData[i + 1])
+                            return false;
+                        break;
+                    case 1:
+                        if ((tiletype < flagData[i]) || (tiletype > flagData[i + 1]))
+                            return false;
+                        break;
+                    default:
+                        return false;
+                }
+            }
+            return true;
         }
     }
 }

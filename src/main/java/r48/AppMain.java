@@ -26,7 +26,10 @@ import r48.schema.specialized.IMagicalBinder;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
-import r48.toolsets.*;
+import r48.toolsets.BasicToolset;
+import r48.toolsets.IToolset;
+import r48.toolsets.MapToolset;
+import r48.toolsets.RMToolsToolset;
 import r48.ui.*;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
@@ -208,6 +211,8 @@ public class AppMain {
             system = new IkaSystem();
         } else if (sysBackend.equals("R2k")) {
             system = new R2kSystem();
+        } else if (sysBackend.equals("CSO")) {
+            system = new CSOSystem();
         } else {
             throw new IOException("Unknown MapSystem backend " + sysBackend);
         }
@@ -382,6 +387,7 @@ public class AppMain {
                     @Override
                     public void handleRootDisconnect() {
                         super.handleRootDisconnect();
+                        release();
                         if (b) {
                             insertImmortalTab.accept(uiElement);
                         } else {
@@ -391,7 +397,7 @@ public class AppMain {
                 });
             }
         }));
-        toolsets.add(new ImageEditToolset());
+        //toolsets.add(new ImageEditToolset());
 
         final UITabPane utp = new UITabPane(FontSizes.tabTextHeight, true, true) {
             @Override

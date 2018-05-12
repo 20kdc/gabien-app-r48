@@ -9,7 +9,6 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import r48.RubyIO;
-import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -34,7 +33,7 @@ public class HashObjectSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (IntegerSchemaElement.ensureType(target, '{', setDefault && (!inner))) {
+        if (SchemaElement.ensureType(target, '{', setDefault && (!inner))) {
             target.hashVal = new HashMap<RubyIO, RubyIO>();
             path.changeOccurred(true);
         } else {

@@ -12,12 +12,8 @@ import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.TXDB;
-import r48.schema.AggregateSchemaElement;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
-import r48.schema.util.ISchemaHost;
-import r48.schema.util.SchemaPath;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -34,9 +30,9 @@ public class BitfieldSchemaElement extends IntegerSchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
-        BitfieldTableCellEditor.installEditor(flags, new IConsumer<UIElement>() {
+    public ActiveInteger buildIntegerEditor(long oldVal, final IIntegerContext context) {
+        final UIScrollLayout uiSVL = context.newSVL();
+        final IConsumer<Integer> refresh = BitfieldTableCellEditor.installEditor(flags, new IConsumer<UIElement>() {
             @Override
             public void accept(UIElement element) {
                 uiSVL.panelsAdd(element);
@@ -44,12 +40,19 @@ public class BitfieldSchemaElement extends IntegerSchemaElement {
         }, new AtomicReference<IConsumer<Integer>>(new IConsumer<Integer>() {
             @Override
             public void accept(Integer integer) {
-                target.fixnumVal = integer;
-                path.changeOccurred(false);
+                context.update((long) (int) integer);
             }
-        })).accept((int) target.fixnumVal);
+        }));
+        refresh.accept((int) oldVal);
         uiSVL.panelsAdd(new UILabel(TXDB.get("Manual Edit:"), FontSizes.tableElementTextHeight));
-        uiSVL.panelsAdd(super.buildHoldingEditor(target, launcher, path));
-        return uiSVL;
+        final ActiveInteger ai = super.buildIntegerEditor(oldVal, context);
+        uiSVL.panelsAdd(ai.uie);
+        return new ActiveInteger(uiSVL, new IConsumer<Long>() {
+            @Override
+            public void accept(Long aLong) {
+                refresh.accept((int) (long) aLong);
+                ai.onValueChange.accept(aLong);
+            }
+        });
     }
 }

@@ -9,6 +9,7 @@ package r48.map.events;
 
 import r48.AppMain;
 import r48.RubyIO;
+import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.schema.util.SchemaPath;
 
@@ -20,12 +21,14 @@ import java.util.LinkedList;
  * Created on December 15th 2017
  */
 public class TraditionalEventAccess implements IEventAccess {
-    private final RubyIO mapEvents;
+    private final RubyIO mapRoot;
+    private final String eventsPath;
     private final int eventIdBase;
     private final String eventSchema;
 
-    public TraditionalEventAccess(RubyIO e, int b, String schema) {
-        mapEvents = e;
+    public TraditionalEventAccess(RubyIO base, String path, int b, String schema) {
+        mapRoot = base;
+        eventsPath = path;
         eventIdBase = b;
         eventSchema = schema;
     }
@@ -33,18 +36,20 @@ public class TraditionalEventAccess implements IEventAccess {
     @Override
     public LinkedList<RubyIO> getEventKeys() {
         LinkedList<RubyIO> contents = new LinkedList<RubyIO>();
-        if (mapEvents != null)
-            contents.addAll(mapEvents.hashVal.keySet());
+        RubyIO mapEvents = getMapEvents();
+        contents.addAll(mapEvents.hashVal.keySet());
         return contents;
     }
 
     @Override
     public RubyIO getEvent(RubyIO key) {
+        RubyIO mapEvents = getMapEvents();
         return mapEvents.getHashVal(key);
     }
 
     @Override
     public void delEvent(RubyIO key) {
+        RubyIO mapEvents = getMapEvents();
         mapEvents.removeHashVal(key);
     }
 
@@ -60,6 +65,7 @@ public class TraditionalEventAccess implements IEventAccess {
         RubyIO key = new RubyIO().setFX(getFreeIndex());
         if (eve == null)
             eve = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry(eventSchema), key);
+        RubyIO mapEvents = getMapEvents();
         mapEvents.hashVal.put(key, eve);
         return key;
     }
@@ -81,8 +87,13 @@ public class TraditionalEventAccess implements IEventAccess {
 
     private int getFreeIndex() {
         int unusedIndex = eventIdBase;
+        RubyIO mapEvents = getMapEvents();
         while (mapEvents.getHashVal(new RubyIO().setFX(unusedIndex)) != null)
             unusedIndex++;
         return unusedIndex;
+    }
+
+    public RubyIO getMapEvents() {
+        return PathSyntax.parse(mapRoot, eventsPath, true);
     }
 }

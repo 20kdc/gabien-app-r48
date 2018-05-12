@@ -7,7 +7,10 @@
 
 package r48.schema.arrays;
 
-import gabien.ui.*;
+import gabien.ui.IFunction;
+import gabien.ui.ISupplier;
+import gabien.ui.UIElement;
+import gabien.ui.UIScrollLayout;
 import r48.AppMain;
 import r48.ArrayUtils;
 import r48.RubyIO;
@@ -208,7 +211,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     @Override
     public void modifyVal(RubyIO target, SchemaPath path2, boolean setDefault) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
-        setDefault = IntegerSchemaElement.ensureType(target, '[', setDefault);
+        setDefault = SchemaElement.ensureType(target, '[', setDefault);
         if (target.arrVal == null) {
             setDefault = true;
         } else if (target.arrVal.length < atLeast) {

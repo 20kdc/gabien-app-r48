@@ -19,7 +19,10 @@ import r48.schema.displays.EPGDisplaySchemaElement;
 import r48.schema.displays.HWNDSchemaElement;
 import r48.schema.displays.HuePickerSchemaElement;
 import r48.schema.displays.TonePickerSchemaElement;
-import r48.schema.integers.*;
+import r48.schema.integers.BitfieldSchemaElement;
+import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.integers.LowerBoundIntegerSchemaElement;
+import r48.schema.integers.ROIntegerSchemaElement;
 import r48.schema.specialized.*;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
@@ -525,13 +528,16 @@ public class SDB {
                         }
                         if (text.startsWith("table")) {
                             String eText = text;
+                            boolean disableRsz = eText.endsWith("X");
+                            if (disableRsz)
+                                eText = eText.substring(0, eText.length() - 1);
                             boolean hasFlags = eText.endsWith("F");
                             if (hasFlags)
                                 eText = eText.substring(0, eText.length() - 1);
                             boolean hasDefault = eText.endsWith("D");
                             if (hasDefault)
                                 eText = eText.substring(0, eText.length() - 1);
-                            // combination order is tableSTADF
+                            // combination order is tableSTADFX
 
                             TSDB tilesetAllocations = null;
                             if (eText.equals("tableSTA"))
@@ -564,13 +570,18 @@ public class SDB {
                                     flags.add(args[point++]);
                                 tcf = new BitfieldTableCellEditor(flags.toArray(new String[0]));
                             }
-                            if (eText.equals("tableSTA"))
-                                return new SubwindowSchemaElement(new TilesetAllocTableSchemaElement(tilesetAllocations, iV, wV, hV, dc, aW, aH, aI, tcf, defVals), iVT);
-                            if (eText.equals("tableTS"))
-                                return new SubwindowSchemaElement(new TilesetTableSchemaElement(iV, wV, hV, dc, aW, aH, aI, tcf, defVals), iVT);
-                            if (eText.equals("table"))
-                                return new SubwindowSchemaElement(new RubyTableSchemaElement(iV, wV, hV, dc, aW, aH, aI, tcf, defVals), iVT);
-                            throw new RuntimeException("Unknown table type " + text);
+                            RubyTableSchemaElement r = null;
+                            if (eText.equals("tableSTA")) {
+                                r = new TilesetAllocTableSchemaElement(tilesetAllocations, iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
+                            } else if (eText.equals("tableTS")) {
+                                r = new TilesetTableSchemaElement(iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
+                            } else if (eText.equals("table")) {
+                                r = new RubyTableSchemaElement(iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
+                            } else {
+                                throw new RuntimeException("Unknown table type " + text);
+                            }
+                            r.allowResize &= !disableRsz;
+                            return new SubwindowSchemaElement(r, iVT);
                         }
                         if (text.equals("CTNative"))
                             return new CTNativeSchemaElement(args[point++]);

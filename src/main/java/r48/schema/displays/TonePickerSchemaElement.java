@@ -11,7 +11,8 @@ import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
-import gabien.ui.*;
+import gabien.ui.UIElement;
+import gabien.ui.UIPublicPanel;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -19,7 +20,6 @@ import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.imagefx.IImageEffect;
 import r48.imagefx.ToneImageEffect;
-import r48.schema.HiddenSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -52,12 +52,11 @@ public class TonePickerSchemaElement extends SchemaElement {
         return createTotem(new ToneImageEffect(nr, ng, nb, ns, base));
     }
 
-    public static UIElement createTotem(IImageEffect cfg) {
+    public static IImage compositeTotem(IImageEffect cfg) {
         // The tone picker text height is typically 6, which should equal 64, as a base.
         // How do I make this work? Like this:
 
         int imageUnit = (FontSizes.tonePickerTextHeight * 64) / 6;
-        UIPublicPanel panel = new UIPublicPanel(imageUnit * 2, imageUnit);
         IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(imageUnit * 2, imageUnit, false);
 
         IImage totem = GaBIEn.getImage("tonetotm.png");
@@ -67,8 +66,14 @@ public class TonePickerSchemaElement extends SchemaElement {
         FontManager.drawString(finalComposite, 0, (imageUnit + 1) - FontSizes.tonePickerTextHeight, TXDB.get("TotemSrc."), false, false, FontSizes.tonePickerTextHeight);
         FontManager.drawString(finalComposite, imageUnit, (imageUnit + 1) - FontSizes.tonePickerTextHeight, TXDB.get("Composite"), false, false, FontSizes.tonePickerTextHeight);
 
-        panel.baseImage = GaBIEn.createImage(finalComposite.getPixels(), imageUnit * 2, imageUnit);
         finalComposite.shutdown();
+        return GaBIEn.createImage(finalComposite.getPixels(), imageUnit * 2, imageUnit);
+    }
+
+    public static UIPublicPanel createTotem(IImageEffect cfg) {
+        int imageUnit = (FontSizes.tonePickerTextHeight * 64) / 6;
+        UIPublicPanel panel = new UIPublicPanel(imageUnit * 2, imageUnit);
+        panel.baseImage = compositeTotem(cfg);
         return panel;
     }
 

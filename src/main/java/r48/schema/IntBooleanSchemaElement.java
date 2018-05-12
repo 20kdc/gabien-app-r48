@@ -5,10 +5,9 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.schema.integers;
+package r48.schema;
 
 import r48.RubyIO;
-import r48.schema.BooleanSchemaElement;
 
 /**
  * 0 is false, anything else is true,
@@ -25,7 +24,7 @@ public class IntBooleanSchemaElement extends BooleanSchemaElement {
     }
 
     public boolean modifyValueTruth(RubyIO target, boolean truth) {
-        boolean modified = IntegerSchemaElement.ensureType(target, 'i', false);
+        boolean modified = SchemaElement.ensureType(target, 'i', false);
         long fv = target.fixnumVal;
         target.fixnumVal = truth ? 1 : 0;
         return (fv != target.fixnumVal) || modified;

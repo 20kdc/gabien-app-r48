@@ -14,9 +14,7 @@ import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TSDB;
 import r48.map.StuffRenderer;
-import r48.map.events.RMEventGraphicRenderer;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
-import r48.ui.Art;
 
 /**
  * Tables, now with a tileset background!
@@ -56,14 +54,7 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
         } else {
             osr.tileRenderer.drawTile(0, (short) t, x, y + (height - ts), igd, sprScale);
         }
-        for (TSDB.TSPicture tsp : allocSource.pictures) {
-            if (!tsp.acceptable.apply(t))
-                continue;
-            boolean flagValid = (targ.getTiletype(t % targ.width, t / targ.width, 0) & tsp.flag) != 0;
-            int rtX = flagValid ? tsp.layertabAX : tsp.layertabIX;
-            int rtY = flagValid ? tsp.layertabAY : tsp.layertabIY;
-            RMEventGraphicRenderer.flexibleSpriteDraw(rtX, rtY, tsp.w, tsp.h, x + (tsp.x * sprScale), y + (tsp.y * sprScale), tsp.w * sprScale, tsp.h * sprScale, 0, Art.layerTabs, 0, igd);
-        }
+        allocSource.draw(x, y, t, targ.getTiletype(t % targ.width, t / targ.width, 0), sprScale, igd);
         return osr;
     }
 

@@ -7,15 +7,20 @@
 
 package r48.schema.integers;
 
+import gabien.ui.IConsumer;
 import gabien.ui.UIElement;
 import gabien.ui.UINumberBox;
+import gabien.ui.UIScrollLayout;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 /**
+ * IntegerSchemaElement is a type of schema element that can be used outside of a schema context.
+ * Thus, buildHoldingEditor has been finaled.
  * Created on 12/29/16.
  */
 public class IntegerSchemaElement extends SchemaElement {
@@ -26,17 +31,36 @@ public class IntegerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UINumberBox unb = new UINumberBox(target.fixnumVal, FontSizes.schemaFieldTextHeight);
+    public final UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+        return buildIntegerEditor(target.fixnumVal, new IIntegerContext() {
+            @Override
+            public void update(long n) {
+                target.fixnumVal = filter(n);
+                path.changeOccurred(false);
+            }
+
+            @Override
+            public UIScrollLayout newSVL() {
+                return AggregateSchemaElement.createScrollSavingSVL(path, launcher, IntegerSchemaElement.this, target);
+            }
+        }).uie;
+    }
+
+    public ActiveInteger buildIntegerEditor(long oldVal, final IntegerSchemaElement.IIntegerContext context) {
+        final UINumberBox unb = new UINumberBox(oldVal, FontSizes.schemaFieldTextHeight);
         unb.readOnly = isReadOnly();
         unb.onEdit = new Runnable() {
             @Override
             public void run() {
-                target.fixnumVal = filter(unb.number);
-                path.changeOccurred(false); // does UI update, yadayadayada
+                context.update(unb.number);
             }
         };
-        return unb;
+        return new ActiveInteger(unb, new IConsumer<Long>() {
+            @Override
+            public void accept(Long aLong) {
+                unb.number = aLong;
+            }
+        });
     }
 
     public boolean isReadOnly() {
@@ -47,21 +71,31 @@ public class IntegerSchemaElement extends SchemaElement {
         return i;
     }
 
-    // For lack of a better place.
-    public static boolean ensureType(RubyIO tgt, int t, boolean setDefault) {
-        if (tgt.type != t) {
-            tgt.setNull();
-            tgt.type = t;
-            return true;
-        }
-        return setDefault;
-    }
-
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public final void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (ensureType(target, 'i', setDefault)) {
             target.fixnumVal = defaultInt;
             path.changeOccurred(true);
+        }
+        // It may, or may not, be a good idea to filter the value here.
+        // In any case, I have at least moved the usage of filter to the outer structure,
+        //  so that it is always in use.
+    }
+
+    public interface IIntegerContext {
+        // Causes UI rebuild.
+        void update(long n);
+
+        UIScrollLayout newSVL();
+    }
+
+    public final class ActiveInteger {
+        public final UIElement uie;
+        public final IConsumer<Long> onValueChange;
+
+        public ActiveInteger(UIElement u, IConsumer<Long> ovc) {
+            uie = u;
+            onValueChange = ovc;
         }
     }
 }

@@ -21,6 +21,16 @@ import r48.schema.util.SchemaPath;
  * Created on 12/28/16.
  */
 public abstract class SchemaElement {
+    // For lack of a better place.
+    public static boolean ensureType(RubyIO tgt, int t, boolean setDefault) {
+        if (tgt.type != t) {
+            tgt.setNull();
+            tgt.type = t;
+            return true;
+        }
+        return setDefault;
+    }
+
     // Creates the editor control.
     // Ground rules:
     // 1. If the control changes the value, path.changeOccurred(false) MUST be called.

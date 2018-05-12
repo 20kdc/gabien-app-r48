@@ -11,7 +11,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -60,7 +59,7 @@ public class StringSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (IntegerSchemaElement.ensureType(target, type, setDefault)) {
+        if (SchemaElement.ensureType(target, type, setDefault)) {
             encodeVal(defaultStr, target);
             path.changeOccurred(true);
         } else if (target.strVal == null) {

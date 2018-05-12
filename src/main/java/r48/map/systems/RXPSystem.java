@@ -10,7 +10,6 @@ package r48.map.systems;
 import gabien.IImage;
 import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
-import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.IMapContext;
@@ -108,7 +107,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
             if (AppMain.objectDB.getObject(gum, null) == null)
                 return null;
         final RubyIO map = AppMain.objectDB.getObject(gum, "RPG::Map");
-        final IEventAccess events = new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 1, "RPG::Event");
+        final IEventAccess events = new TraditionalEventAccess(map, "@events", 1, "RPG::Event");
         return new MapViewDetails(gum, "RPG::Map", new IFunction<String, MapViewState>() {
             private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("Tilesets");
             @Override

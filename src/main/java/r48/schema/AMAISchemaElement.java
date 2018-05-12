@@ -9,7 +9,6 @@ package r48.schema;
 
 import r48.RubyIO;
 import r48.dbs.TXDB;
-import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.SchemaPath;
 
 /**
@@ -27,7 +26,7 @@ public class AMAISchemaElement extends OpaqueSchemaElement {
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         boolean overrideIt = true;
-        if (!IntegerSchemaElement.ensureType(target, 'i', setDefault))
+        if (!SchemaElement.ensureType(target, 'i', setDefault))
             overrideIt = !RubyIO.rubyEquals(target, path.lastArrayIndex);
         if (overrideIt) {
             // always must be set to this

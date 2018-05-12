@@ -13,7 +13,6 @@ import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.IProxySchemaElement;
 import r48.dbs.TXDB;
-import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -151,7 +150,7 @@ public class HashSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        setDefault = IntegerSchemaElement.ensureType(target, '{', setDefault);
+        setDefault = SchemaElement.ensureType(target, '{', setDefault);
         if (setDefault) {
             target.hashVal = new HashMap<RubyIO, RubyIO>();
             path.changeOccurred(true);

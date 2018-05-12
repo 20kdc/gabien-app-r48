@@ -15,7 +15,7 @@ import r48.io.r2k.chunks.SparseArrayHR2kStruct;
 import r48.io.r2k.obj.ldb.AnimationFrame;
 import r48.io.r2k.obj.ldb.BAD;
 import r48.io.r2k.obj.ldb.Troop;
-import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.SchemaElement;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -92,7 +92,7 @@ public class LcfMagicalBinder implements IMagicalBinder {
         s.fromRIO(bound);
         byte[] tba = getStructBytes(s);
         // Try to ensure target is a blob.
-        if (IntegerSchemaElement.ensureType(target, 'u', false)) {
+        if (SchemaElement.ensureType(target, 'u', false)) {
             target.setSymlike(className, false);
         } else if (!target.symVal.equals(className)) {
             target.setSymlike(className, false);
@@ -125,7 +125,7 @@ public class LcfMagicalBinder implements IMagicalBinder {
 
     @Override
     public boolean modifyVal(RubyIO trueTarget, boolean setDefault) {
-        boolean mod = IntegerSchemaElement.ensureType(trueTarget, 'u', setDefault);
+        boolean mod = SchemaElement.ensureType(trueTarget, 'u', setDefault);
         if (!mod) {
             // Unmodified - now we know it *was* 'u', check class
             mod = !trueTarget.symVal.equals(className);

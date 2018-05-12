@@ -8,6 +8,7 @@
 package r48.io;
 
 import r48.RubyIO;
+import r48.io.cs.CSOObjectBackend;
 
 import java.io.IOException;
 
@@ -32,11 +33,13 @@ public interface IObjectBackend {
             if (odbBackend.equals("r48")) {
                 return new R48ObjectBackend(rootPath + dataPath, dataExt, true);
             } else if (odbBackend.equals("ika")) {
-                return new IkaObjectBackend(rootPath);
+                return new IkaObjectBackend(rootPath + dataPath);
             } else if (odbBackend.equals("lcf2000")) {
-                return new R2kObjectBackend(rootPath);
+                return new R2kObjectBackend(rootPath + dataPath);
             } else if (odbBackend.equals("json")) {
-                return new JsonObjectBackend(rootPath, dataExt);
+                return new JsonObjectBackend(rootPath + dataPath, dataExt);
+            } else if (odbBackend.equals("cso")) {
+                return new CSOObjectBackend(rootPath + dataPath);
             } else {
                 throw new IOException("Unknown ODB backend " + odbBackend);
             }

@@ -12,6 +12,8 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.integers.TSDBChoiceIntegerSchemaElement;
 import r48.ui.UIGrid;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,6 +53,7 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                     @Override
                     public void accept(Integer integer) {
                         targ.setTiletype(selX, selY, 0, (short) (int) integer);
+                        changeOccurred.run();
                     }
                 });
                 wtm.accept((int) targ.getTiletype(selX, selY, 0));
@@ -63,16 +66,9 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
     // Calls callbacks for various reasons.
     public static IConsumer<Integer> installEditor(final String[] flags, final IConsumer<UIElement> panelAdder, final AtomicReference<IConsumer<Integer>> set) {
         int bit = 1;
-        // Java: "generic array creation warning!"
-        // me: adds specifier
-        // Java: "invalid syntax deadbeat".
-        // This contains a bunch of consumers, the idea being that each is responsible for it's own section (they may not overlap!),
-        //  and the consumers take an AtomicInteger as a common workspace.
-        // They then call on the "confirmButton" (used to be an actual button) to save.
-        // The result should be simple and easy to use, but now I know why Windows is so broken.
-        // GOOD UI PROGRAMMING RESULTS IN LIVING IN A GIANT GAME OF MOUSETRAP.
-        // (Alternatively, a ton of abstraction, but I already abstracted enough today.)
-        final IConsumer<AtomicInteger>[] flagStates = new IConsumer[flags.length];
+        // When the value changes, all of these are called.
+        final Runnable[] flagStates = new Runnable[flags.length];
+        final AtomicInteger currentState = new AtomicInteger();
         for (int i = 0; i < flags.length; i++) {
             final int thisBit = bit;
             if (!flags[i].equals(".")) {
@@ -82,23 +78,38 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                     final String name = a[0].substring(1);
                     final int len = Integer.parseInt(a[1]);
                     final int pwr = 1 << len;
-                    final UINumberBox number = new UINumberBox(0, FontSizes.tableElementTextHeight);
-                    panelAdder.accept(new UISplitterLayout(new UILabel(name, FontSizes.tableElementTextHeight), number, false, 3, 4));
-                    flagStates[i] = new IConsumer<AtomicInteger>() {
+                    IntegerSchemaElement ise = new IntegerSchemaElement(0);
+                    if (a.length > 2) {
+                        if (a[2].startsWith("tsv=")) {
+                            ise = new TSDBChoiceIntegerSchemaElement(0, a[2].substring(4), pwr);
+                        } else {
+                            throw new RuntimeException("bitfield table syntax error, unknown ISE type " + a[2]);
+                        }
+                    }
+                    final IntegerSchemaElement finalIse = ise;
+                    final IntegerSchemaElement.ActiveInteger iai = ise.buildIntegerEditor(0, new IntegerSchemaElement.IIntegerContext() {
                         @Override
-                        public void accept(final AtomicInteger currentState) {
+                        public void update(long n) {
+                            n = finalIse.filter(n);
+                            int r = currentState.get();
+                            r &= ~(thisBit * (pwr - 1));
+                            r |= thisBit * (n & (pwr - 1));
+                            currentState.set(r);
+                            set.get().accept(r);
+                        }
+
+                        @Override
+                        public UIScrollLayout newSVL() {
+                            return new UIScrollLayout(true, FontSizes.generalScrollersize);
+                        }
+                    });
+
+                    panelAdder.accept(new UISplitterLayout(new UILabel(name, FontSizes.tableElementTextHeight), iai.uie, false, 1));
+                    flagStates[i] = new Runnable() {
+                        @Override
+                        public void run() {
                             int v = currentState.get();
-                            number.number = (v / thisBit) & (pwr - 1);
-                            number.onEdit = new Runnable() {
-                                @Override
-                                public void run() {
-                                    int r = currentState.get();
-                                    r &= ~(thisBit * (pwr - 1));
-                                    r |= thisBit * (number.number & (pwr - 1));
-                                    currentState.set(r);
-                                    set.get().accept(r);
-                                }
-                            };
+                            iai.onValueChange.accept((long) ((v / thisBit) & (pwr - 1)));
                         }
                     };
                     bit <<= len;
@@ -106,9 +117,9 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                     // Bool-field
                     final UITextButton flag = new UITextButton(Integer.toHexString(thisBit) + ": " + flags[i], FontSizes.tableElementTextHeight, null).togglable(false);
                     panelAdder.accept(flag);
-                    flagStates[i] = new IConsumer<AtomicInteger>() {
+                    flagStates[i] = new Runnable() {
                         @Override
-                        public void accept(final AtomicInteger currentState) {
+                        public void run() {
                             flag.state = ((currentState.get() & thisBit) != 0);
                             flag.onClick = new Runnable() {
                                 @Override
@@ -124,9 +135,9 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                 }
             } else {
                 // Do-nothing-this-just-uses-up-one-bit-without-bothering-the-user-field
-                flagStates[i] = new IConsumer<AtomicInteger>() {
+                flagStates[i] = new Runnable() {
                     @Override
-                    public void accept(AtomicInteger atomicInteger) {
+                    public void run() {
                     }
                 };
                 bit <<= 1;
@@ -135,9 +146,9 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
         return new IConsumer<Integer>() {
             @Override
             public void accept(Integer i2) {
-                final AtomicInteger currentState = new AtomicInteger(i2);
+                currentState.set(i2);
                 for (int i = 0; i < flagStates.length; i++)
-                    flagStates[i].accept(currentState);
+                    flagStates[i].run();
             }
         };
     }

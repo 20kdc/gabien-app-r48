@@ -14,7 +14,7 @@ import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
-import r48.schema.integers.IntegerSchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.ISpritesheetProvider;
@@ -23,7 +23,7 @@ import r48.ui.UISpritesheetChoice;
 /**
  * Created on 29/07/17.
  */
-public class SpritesheetCoreSchemaElement extends r48.schema.SchemaElement {
+public class SpritesheetCoreSchemaElement extends SchemaElement {
     public String text;
     public int defaultVal;
 
@@ -62,7 +62,7 @@ public class SpritesheetCoreSchemaElement extends r48.schema.SchemaElement {
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         RubyIO actTarg = numberProvider.apply(target);
-        if (IntegerSchemaElement.ensureType(actTarg, 'i', setDefault)) {
+        if (SchemaElement.ensureType(actTarg, 'i', setDefault)) {
             actTarg.fixnumVal = defaultVal;
             path.changeOccurred(true);
         }

@@ -13,7 +13,6 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
-import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -113,7 +112,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         // Just in case.
         // Turns out there was a reason, if not a good one, for array encapsulation - it ensured the object was actually an array.
         // Oops. Well, this resolves it.
-        if (IntegerSchemaElement.ensureType(target, '[', false)) {
+        if (SchemaElement.ensureType(target, '[', false)) {
             target.arrVal = new RubyIO[index + 1];
             for (int i = 0; i < target.arrVal.length; i++)
                 target.arrVal[i] = new RubyIO().setNull();

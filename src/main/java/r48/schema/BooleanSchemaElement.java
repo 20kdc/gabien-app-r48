@@ -33,7 +33,6 @@ public class BooleanSchemaElement extends SchemaElement {
             public void run() {
                 modifyValueTruth(target, utb.state);
                 path.changeOccurred(false);
-                utb.text = utb.state ? TXDB.get("True") : TXDB.get("False");
             }
         };
         return utb;

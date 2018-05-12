@@ -8,7 +8,6 @@
 package r48.map.systems;
 
 import gabien.ui.IFunction;
-import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.map.IEditingToolbarController;
@@ -50,7 +49,7 @@ public class IkaSystem extends MapSystem {
             if (AppMain.objectDB.getObject(gum, null) == null)
                 return null;
         final RubyIO map = AppMain.objectDB.getObject(gum);
-        final IEventAccess events = new TraditionalEventAccess(map.getInstVarBySymbol("@events"), 0, "IkachanEvent");
+        final IEventAccess events = new TraditionalEventAccess(map, "@events", 0, "IkachanEvent");
         return new MapViewDetails(gum, "IkachanMap", new IFunction<String, MapViewState>() {
             @Override
             public MapViewState apply(String s) {

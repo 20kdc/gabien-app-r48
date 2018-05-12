@@ -25,6 +25,7 @@ import java.util.LinkedList;
 public class UIFontSizeConfigurator extends UIElement.UIProxy {
     private final UIScrollLayout outerLayout;
     private int lastFontSizerSize = -1;
+    private int lastSBSize = -1;
 
     public UIFontSizeConfigurator() {
         outerLayout = new UIScrollLayout(true, FontSizes.generalScrollersize);
@@ -39,9 +40,13 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
             iniScroll = outerLayout.scrollbar.scrollPoint;
         if (!force)
             if (lastFontSizerSize == FontSizes.fontSizerTextHeight)
-                return;
+                if (lastSBSize == FontSizes.generalScrollersize)
+                    return;
         lastFontSizerSize = FontSizes.fontSizerTextHeight;
+        lastSBSize = FontSizes.generalScrollersize;
+
         outerLayout.panelsClear();
+        outerLayout.setSBSize(lastSBSize);
         outerLayout.scrollbar.scrollPoint = iniScroll;
         final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
         final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();
