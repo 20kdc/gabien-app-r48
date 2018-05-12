@@ -80,9 +80,10 @@ public class CSOSystem extends MapSystem {
                         if (GaBIEn.fileOrDirExists(PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + n + ".pxa"))) {
                             AppMain.launchDialog(TXDB.get("A map with this name already exists, so it cannot be created."));
                         } else {
+                            AppMain.csoNewMapMagic(n, false);
                             AppMain.objectDB.getObject(n, "CSOMap");
-                            AppMain.csoNewMapMagic(n);
                             AppMain.objectDB.ensureAllSaved();
+                            AppMain.csoNewMapMagic(n, true);
                             AppMain.launchDialog(TXDB.get("Please go to Map.\nNote: You may need to use ... -> Reload TS after placing/editing the tileset."));
                             refresh.onClick.run();
                         }

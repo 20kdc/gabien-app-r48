@@ -708,6 +708,7 @@ public class AppMain {
             if (inp != null) {
                 String tgt = PathUtils.autoDetectWindows(rootPath + dst);
                 if (GaBIEn.fileOrDirExists(tgt)) {
+                    System.err.println("Didn't write " + dst + " as it is already present as " + tgt + ".");
                     try {
                         inp.close();
                     } catch (IOException e) {
@@ -734,6 +735,8 @@ public class AppMain {
                     inp.close();
                 } catch (IOException ioe) {
                 }
+            } else {
+                System.err.println("Didn't write " + dst + " as " + src + " missing.");
             }
         }
     }
@@ -788,15 +791,18 @@ public class AppMain {
         }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
     }
 
-    public static void csoNewMapMagic(String s) {
-        fileCopier(new String[] {
-                GaBIEn.basename(PathUtils.autoDetectWindows(s))
-        }, new String[] {
-                "CSO/FG.png", s + ".png",
-                "CSO/BG.png", s + "BG.png",
-                "CSO/BGM.org", s + ".org"
-        });
-        mapContext.loadMap(s);
+    public static void csoNewMapMagic(String s, boolean st2) {
+        if (!st2) {
+            fileCopier(new String[] {
+            }, new String[] {
+                    "CSO/FG.png", AppMain.dataPath + s + ".png",
+                    "CSO/BG.png", AppMain.dataPath + s + "BG.png",
+                    "CSO/BGM.org", AppMain.dataPath + s + ".org",
+                    "CSO/FG.pxa", AppMain.dataPath + s + ".pxa",
+            });
+        } else {
+            mapContext.loadMap(s);
+        }
     }
 
     public static void pleaseShutdown() {
