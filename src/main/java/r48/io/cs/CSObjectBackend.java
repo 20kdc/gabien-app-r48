@@ -124,8 +124,8 @@ public class CSObjectBackend implements IObjectBackend {
         baos.write((rt.width >> 8) & 0xFF);
         baos.write(rt.height & 0xFF);
         baos.write((rt.height >> 8) & 0xFF);
-        for (int j = 0; j < rt.width; j++)
-            for (int i = 0; i < rt.height; i++)
+        for (int j = 0; j < rt.height; j++)
+            for (int i = 0; i < rt.width; i++)
                 baos.write(rt.getTiletype(i, j, 0));
     }
 

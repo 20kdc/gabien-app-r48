@@ -75,17 +75,26 @@ public class CSOObjectBackend implements IObjectBackend {
         return null;
     }
 
-    private RubyIO parsePSP(String s) {
+    private RubyIO parsePSP(String s) throws IOException {
         RubyIO rio = new RubyIO();
         rio.setHash();
+        s = s.trim();
+        if (s.equals(""))
+            return rio;
         String[] st = s.split(";");
         for (int i = 0; i < st.length; i++) {
             RubyIO elem = new RubyIO();
             elem.setSymlike("SPEvent", true);
-            String[] stp = st[i].split(":");
-            elem.addIVar("@x", new RubyIO().setFX(Long.parseLong(stp[0])));
-            elem.addIVar("@y", new RubyIO().setFX(Long.parseLong(stp[1])));
-            elem.addIVar("@type", new RubyIO().setFX(Long.parseLong(stp[2])));
+            String[] stp = st[i].trim().split(":");
+            if (stp.length != 3)
+                throw new IOException("Unexpected param count...");
+            try {
+                elem.addIVar("@x", new RubyIO().setFX(Long.parseLong(stp[0].trim())));
+                elem.addIVar("@y", new RubyIO().setFX(Long.parseLong(stp[1].trim())));
+                elem.addIVar("@type", new RubyIO().setFX(Long.parseLong(stp[2].trim())));
+            } catch (NumberFormatException nfe) {
+                throw new IOException(nfe);
+            }
             rio.hashVal.put(new RubyIO().setFX(i), elem);
         }
         return rio;
