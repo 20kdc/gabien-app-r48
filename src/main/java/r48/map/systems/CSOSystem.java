@@ -76,7 +76,7 @@ public class CSOSystem extends MapSystem {
                     }
                 }
                 final UITextButton refresh = new UITextButton(TXDB.get("Refresh"), FontSizes.mapInfosTextHeight, this);
-                final UITextBox mapName = new UITextBox("FFA/MyMap", FontSizes.mapInfosTextHeight);
+                final UITextBox mapName = new UITextBox("ffa/MyMap", FontSizes.mapInfosTextHeight);
                 UITextButton newB = new UITextButton(TXDB.get("New Map"), FontSizes.mapInfosTextHeight, new Runnable() {
                     @Override
                     public void run() {

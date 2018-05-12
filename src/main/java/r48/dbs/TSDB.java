@@ -24,6 +24,7 @@ public class TSDB {
     public int[] mapping;
     public int xorDoubleclick = 0;
     public boolean disableHex = false;
+    public int mulW = 1, mulH = 1;
 
     public TSDB(String arg) {
         DBLoader.readFile(arg, new IDatabase() {
@@ -67,6 +68,10 @@ public class TSDB {
                             }
                         };
                     }
+                }
+                if (c == 'X') {
+                    mulW = Integer.parseInt(args[0]);
+                    mulH = Integer.parseInt(args[1]);
                 }
                 if (c == 'z')
                     disableHex = true;

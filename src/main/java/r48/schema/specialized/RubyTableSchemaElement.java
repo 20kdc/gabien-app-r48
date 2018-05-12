@@ -71,9 +71,10 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         final SchemaPath dataBlackboxTarget = path.findLast();
         final SchemaPath.EmbedDataKey blackboxKey = new SchemaPath.EmbedDataKey(this, targV, RubyTableSchemaElement.class, "blackbox");
 
-        int gridSize = getGridSize();
-        final UIGrid uig = new UIGrid(gridSize, gridSize, targ.width * targ.height) {
-            private TileHelper tileHelper;
+        final TileHelper initialTileHelper = baseInitializeHelper(target);
+        Size gridSize = getGridSize(initialTileHelper);
+        final UIGrid uig = new UIGrid(gridSize.width, gridSize.height, targ.width * targ.height) {
+            private TileHelper tileHelper = initialTileHelper;
 
             @Override
             protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
@@ -195,8 +196,17 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         return null;
     }
 
+    public TileHelper baseInitializeHelper(RubyIO target) {
+        return null;
+    }
+
     public short baseFlipBits(short p) {
         return p;
+    }
+
+    public Size getGridSize(TileHelper th) {
+        int g = FontSizes.scaleGrid(32);
+        return new Size(g, g);
     }
 
     @Override
@@ -224,9 +234,5 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         }
         if (changeOccurred)
             index.changeOccurred(true);
-    }
-
-    public int getGridSize() {
-        return FontSizes.scaleGrid(32);
     }
 }

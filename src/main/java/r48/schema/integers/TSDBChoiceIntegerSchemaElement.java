@@ -38,7 +38,7 @@ public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
             @Override
             protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
                 super.drawTile(t, hover, x, y, igd);
-                tsdb.draw(x, y + 8, 0, (short) t, sprScale, igd);
+                tsdb.draw(x, y + (8 * sprScale), 0, (short) t, sprScale, igd);
             }
 
             @Override
