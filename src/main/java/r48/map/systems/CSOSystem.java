@@ -34,6 +34,7 @@ import r48.map.tiles.NullTileRenderer;
  */
 public class CSOSystem extends MapSystem {
     public String spawns = TXDB.get("Player Spawns");
+    public String boops = TXDB.get("+ New Spawn");
     public CSOSystem() {
         super(new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new ChainedImageLoader(new IImageLoader[] {
                 // PNGs are NOT interpreted via PNG8I, ever
@@ -111,7 +112,7 @@ public class CSOSystem extends MapSystem {
             pano = imageLoader.getImage(AppMain.dataPath + str + "BG", true);
             tr = new GenericTileRenderer(imageLoader.getImage(AppMain.dataPath + str, true), 16, 16, 256);
             RubyIO target2 = AppMain.objectDB.getObject(str);
-            TraditionalEventAccess tea = new TraditionalEventAccess(target2, "@psp", 0, "SPEvent", spawns);
+            TraditionalEventAccess tea = new TraditionalEventAccess(target2, "@psp", 0, "SPEvent", spawns, boops);
             // biscuits are not available in this build.
             RubyTable pxmTab = new RubyTable(target2.getInstVarBySymbol("@pxm").userVal);
             RubyTable pxaTab = new RubyTable(target2.getInstVarBySymbol("@pxa").userVal);
@@ -140,7 +141,7 @@ public class CSOSystem extends MapSystem {
             @Override
             public MapViewState apply(String s) {
                 final RubyIO mapRIO = AppMain.objectDB.getObject(gum);
-                return MapViewState.fromRT(rendererFromTso(new RubyIO().setString(gum, true)), gum, new String[] {}, mapRIO, "@pxm", false, new TraditionalEventAccess(mapRIO, "@psp", 0, "SPEvent", spawns));
+                return MapViewState.fromRT(rendererFromTso(new RubyIO().setString(gum, true)), gum, new String[] {}, mapRIO, "@pxm", false, new TraditionalEventAccess(mapRIO, "@psp", 0, "SPEvent", spawns, boops));
             }
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override

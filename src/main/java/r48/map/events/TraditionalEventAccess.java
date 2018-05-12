@@ -25,7 +25,7 @@ public class TraditionalEventAccess implements IEventAccess {
     private final String eventsPath;
     private final int eventIdBase;
     private final String eventSchema;
-    private final String eventsName;
+    private final String eventsName, eventName;
 
     public TraditionalEventAccess(RubyIO base, String path, int b, String schema) {
         mapRoot = base;
@@ -33,14 +33,16 @@ public class TraditionalEventAccess implements IEventAccess {
         eventIdBase = b;
         eventSchema = schema;
         eventsName = TXDB.get("Events");
+        eventName = TXDB.get("+ Add Event");
     }
 
-    public TraditionalEventAccess(RubyIO base, String path, int b, String schema, String en) {
+    public TraditionalEventAccess(RubyIO base, String path, int b, String schema, String en, String en2) {
         mapRoot = base;
         eventsPath = path;
         eventIdBase = b;
         eventSchema = schema;
         eventsName = en;
+        eventName = en2;
     }
 
     @Override
@@ -66,7 +68,7 @@ public class TraditionalEventAccess implements IEventAccess {
     @Override
     public String[] eventTypes() {
         return new String[] {
-                TXDB.get("+ Add Event")
+                eventName
         };
     }
 

@@ -7,14 +7,8 @@
 
 package r48.map;
 
-import gabien.*;
-import gabien.ui.Rect;
-import gabien.ui.UILabel;
-import r48.AppMain;
+import gabien.IGrDriver;
 import r48.FontSizes;
-import r48.RubyIO;
-import r48.dbs.FormatSyntax;
-import r48.dbs.TXDB;
 import r48.ui.Art;
 
 import java.util.Random;
@@ -27,9 +21,6 @@ public class TimeWaster {
     private double moveTime = 16;
     private double iconPlanX = 0;
     private double iconPlanY = 0;
-    private double iconVelX = 0;
-    private double iconVelY = 0;
-    private int points = 0;
     private final int iconSize;
     private Random madness = new Random();
 
@@ -37,13 +28,7 @@ public class TimeWaster {
         iconSize = 64 * FontSizes.getSpriteScale();
     }
 
-    public void draw(IGrDriver igd, IPeripherals ip, int ox, int oy, double deltaTime, int sw, int sh) {
-        int mouseX = -1;
-        int mouseY = -1;
-        if (ip instanceof IDesktopPeripherals) {
-            mouseX = ((IDesktopPeripherals) ip).getMouseX();
-            mouseY = ((IDesktopPeripherals) ip).getMouseY();
-        }
+    public void draw(IGrDriver igd, int ox, int oy, double deltaTime, int sw, int sh) {
         int stage = ((int) (moveTime / 8)) % 6;
         int type = 0;
         int mul = 1;
@@ -66,7 +51,7 @@ public class TimeWaster {
             case 3:
                 type = 2;
                 // set random position
-                doJump(mouseX - ox, mouseY - oy, sw, sh);
+                doJump(sw, sh);
                 mul = darkMul;
                 break;
             case 4:
@@ -79,55 +64,11 @@ public class TimeWaster {
                 break;
         }
         moveTime += deltaTime * mul;
-        Rect b = new Rect(ox + (int) iconPlanX, oy + (int) iconPlanY, iconSize, iconSize);
-        if (type == 0) {
-            if (b.contains(mouseX, mouseY)) {
-                moveTime = 8;
-                if (points != -1)
-                    points++;
-            }
-            if (points >= 9) {
-                // gravity
-                iconPlanX += iconVelX * deltaTime;
-                iconPlanY += iconVelY * deltaTime;
-                iconVelY += deltaTime * iconSize * 2;
-                if (iconPlanY > (sh - iconSize)) {
-                    iconPlanY = (sh - iconSize);
-                    iconVelY = -iconVelY;
-                    if (madness.nextBoolean())
-                        iconVelX = -iconVelX;
-                }
-            }
-        } else {
-            iconVelX = 128;
-            if (madness.nextBoolean())
-                iconVelX = -iconVelX;
-            iconVelY = 0;
-        }
-        if (points < 13)
-            igd.blitScaledImage(type * 64, 0, 64, 64, ox + (int) iconPlanX, oy + (int) iconPlanY, iconSize, iconSize, Art.noMap);
-        if (points > 1) {
-            FontManager.drawString(igd, ox, oy, FormatSyntax.formatExtended(TXDB.get("You have #A points..."), new RubyIO().setFX(points)), false, false, FontSizes.timeWasterTextHeight);
-            String[] pointMsgs = new String[] {
-                    TXDB.get("...you should probably get back to work."),
-                    TXDB.get("...are you lost...?"),
-                    TXDB.get("Ok, so, quick rundown on the interface..."),
-                    TXDB.get("'MapInfos' lets you select a map."),
-                    TXDB.get("'Saves', if it shows up, is for savefiles."),
-                    TXDB.get("All tabs can become windows."),
-                    TXDB.get("All in-R48 windows can become tabs.")
-            };
-            if (points - 2 == pointMsgs.length) {
-                points = -1;
-            } else {
-                // Any GitHub issues on this will be disregarded.
-                FontManager.drawString(igd, ox, oy + FontSizes.timeWasterTextHeight, pointMsgs[points - 2], false, false, FontSizes.timeWasterTextHeight);
-            }
-        }
+        igd.blitScaledImage(type * 64, 0, 64, 64, ox + (int) iconPlanX, oy + (int) iconPlanY, iconSize, iconSize, Art.noMap);
     }
 
     // x/y is a position to stay away from.
-    private void doJump(int x, int y, int w, int h) {
+    private void doJump(int w, int h) {
         // By default, make it impossible to reach.
         iconPlanX = -iconSize;
         iconPlanY = -iconSize;
@@ -135,23 +76,8 @@ public class TimeWaster {
             return;
         if (h < iconSize)
             return;
-        // make it highly unlikely it will hit the same position twice
-        for (int tries = 0; tries < 64; tries++) {
-            iconPlanX = madness.nextInt(w - iconSize);
-            iconPlanY = madness.nextInt(h - iconSize);
-            Rect r2 = new Rect((int) iconPlanX, (int) iconPlanY, iconSize, iconSize);
-            if (!r2.contains(x, y))
-                return;
-            if (!r2.contains(x + iconSize - 1, y))
-                return;
-            if (!r2.contains(x, y + iconSize - 1))
-                return;
-            if (!r2.contains(x + iconSize - 1, y + iconSize - 1))
-                return;
-        }
-        // Fall back to hiding it
-        iconPlanX = -iconSize;
-        iconPlanY = -iconSize;
+        iconPlanX = madness.nextInt(w - iconSize);
+        iconPlanY = madness.nextInt(h - iconSize);
     }
 
 }

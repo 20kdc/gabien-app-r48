@@ -118,7 +118,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
             return;
         }
         Size r = getSize();
-        //timeWaster.draw(igd, peripherals, 0, 0, deltaTimeAccum, r.width, r.height);
+        timeWaster.draw(igd, 0, 0, deltaTimeAccum, r.width, r.height);
         deltaTimeAccum = 0;
     }
 
