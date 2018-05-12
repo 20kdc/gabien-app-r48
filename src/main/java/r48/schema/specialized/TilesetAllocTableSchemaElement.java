@@ -56,7 +56,7 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
         final RubyTable targ = new RubyTable(targV.userVal);
         int ts = osr.tileRenderer.getTileSize();
         int sprScale = FontSizes.getSpriteScale();
-        int height = 32 * sprScale;
+        int height = getGridSize(osr).height;
         if (allocSource.mapping != null) {
             osr.tileRenderer.drawTile(0, (short) allocSource.mapping[t], x, y + (height - (ts * sprScale)), igd, sprScale);
         } else {

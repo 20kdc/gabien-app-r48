@@ -8,6 +8,7 @@
 package r48.schema.specialized;
 
 import gabien.IGrDriver;
+import gabien.ui.Size;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -24,12 +25,20 @@ public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRende
     }
 
     @Override
+    public StuffRenderer baseInitializeHelper(RubyIO target) {
+        return AppMain.system.rendererFromTso(target);
+    }
+
+    @Override
+    public Size getGridSize(StuffRenderer th) {
+        int ts = th.tileRenderer.getTileSize() * FontSizes.getSpriteScale();
+        return new Size(ts, ts);
+    }
+
+    @Override
     public StuffRenderer baseTileDraw(RubyIO target, int t, int x, int y, IGrDriver igd, StuffRenderer osr) {
-        // The whole "variable in, variable out" thing is a safe leak-proof way of caching the helper object.
-        if (osr == null)
-            osr = AppMain.system.rendererFromTso(target);
         int ts = osr.tileRenderer.getTileSize();
-        osr.tileRenderer.drawTile(0, (short) t, x, y + ((32 * FontSizes.getSpriteScale()) - ts), igd, FontSizes.getSpriteScale());
+        osr.tileRenderer.drawTile(0, (short) t, x, y + (getGridSize(osr).height - ts), igd, FontSizes.getSpriteScale());
         return osr;
     }
 }

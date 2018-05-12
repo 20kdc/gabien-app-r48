@@ -86,9 +86,10 @@ public class CSOSystem extends MapSystem {
                             AppMain.launchDialog(TXDB.get("A map with this name already exists, so it cannot be created."));
                         } else {
                             AppMain.csoNewMapMagic(n, false);
-                            AppMain.objectDB.getObject(n, "CSOMap");
-                            AppMain.objectDB.getObject(n + ".mtd", "CSOMatchInfo");
-                            AppMain.objectDB.ensureAllSaved();
+                            RubyIO rio1 = AppMain.objectDB.getObject(n, "CSOMap");
+                            RubyIO rio2 = AppMain.objectDB.getObject(n + ".mtd", "CSOMatchInfo");
+                            AppMain.objectDB.ensureSaved(n, rio1);
+                            AppMain.objectDB.ensureSaved(n + ".mtd", rio2);
                             AppMain.csoNewMapMagic(n, true);
                             AppMain.launchDialog(TXDB.get("Please go to Map.\nNote: You may need to use ... -> Reload TS after placing/editing the tileset."));
                             refresh.onClick.run();
