@@ -794,6 +794,7 @@ public class AppMain {
         }, new String[] {
                 "CSO/FG.png", s + ".png",
                 "CSO/BG.png", s + "BG.png",
+                "CSO/BGM.org", s + ".org"
         });
         mapContext.loadMap(s);
     }
