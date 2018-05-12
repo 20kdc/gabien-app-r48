@@ -56,8 +56,9 @@ public class HelpSystemController {
                         hs.page.add(new UIHelpSystem.HelpElement(c, args));
                 }
             });
+            hs.runLayout();
         } else {
-            System.err.println("Unable to get at help file: ");
+            System.err.println("Unable to get at help file");
         }
         if (onLoad != null)
             onLoad.run();

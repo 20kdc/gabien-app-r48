@@ -55,12 +55,15 @@ public class Art {
 
     public static void drawZoom(IGrDriver igd, boolean b, int x, int y, int size) {
         int m = size / 12;
+        if (m < 1)
+            m = 1;
         igd.clearRect(128, 128, 128, x, y, size, size);
         igd.clearRect(64, 64, 64, x + m, y + m, size - (m * 2), size - (m * 2));
 
+        int pa = (((size + 1) / 2) + m) - ((size / 2) - m);
         if (b)
-            igd.clearRect(255, 255, 255, x + (size / 2) - m, y + (m * 2), m * 2, size - (m * 4));
-        igd.clearRect(255, 255, 255, x + (m * 2), y + (size / 2) - m, size - (m * 4), m * 2);
+            igd.clearRect(255, 255, 255, x + (size / 2) - m, y + (m * 2), pa, size - (m * 4));
+        igd.clearRect(255, 255, 255, x + (m * 2), y + (size / 2) - m, size - (m * 4), pa);
     }
 
     public static void drawDragControl(IGrDriver igd, boolean select, int x, int y, int size) {
