@@ -52,7 +52,9 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
     // Zoom fractions are deliberately converted to this, corrected, and then converted back.
     // Do not set above 8 or possibly 4, can be harmful on large screens.
     private final int tuningZoomWorkingDiv = 4;
+    private final int tuningZoomWorkingDivCtrl = 1;
 
+    public boolean ctrlDown = false;
     public boolean shiftDown = false;
     public IMapViewCallbacks callbacks;
     // Responsible for starting a tool with the given tile.
@@ -143,10 +145,12 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
         shiftDown = false;
+        ctrlDown = false;
         if (peripherals instanceof IDesktopPeripherals) {
             mouseEmulator.mouseX = ((IDesktopPeripherals) peripherals).getMouseX();
             mouseEmulator.mouseY = ((IDesktopPeripherals) peripherals).getMouseY();
             shiftDown = ((IDesktopPeripherals) peripherals).isKeyDown(IGrInDriver.VK_SHIFT);
+            ctrlDown = ((IDesktopPeripherals) peripherals).isKeyDown(IGrInDriver.VK_CONTROL);
         }
     }
 
@@ -342,11 +346,14 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
         Size camR = getSize();
         camX += camR.width / internalScaling(2.0d);
         camY += camR.height / internalScaling(2.0d);
+        int zwd = tuningZoomWorkingDiv;
+        if (ctrlDown)
+            zwd = tuningZoomWorkingDivCtrl;
         // Firstly, convert fraction to tuningZoomWorkingDiv
-        internalScalingMul = (internalScalingMul * tuningZoomWorkingDiv) / internalScalingDiv;
+        internalScalingMul = (internalScalingMul * zwd) / internalScalingDiv;
         if (internalScalingMul < 1)
             internalScalingMul = 1;
-        internalScalingDiv = tuningZoomWorkingDiv;
+        internalScalingDiv = zwd;
         // Secondly, zoom
         if (north) {
             // Zoom in.

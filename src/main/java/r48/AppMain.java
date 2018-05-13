@@ -791,20 +791,16 @@ public class AppMain {
         }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
     }
 
-    public static void csoNewMapMagic(String s, boolean st2) {
-        if (!st2) {
-            fileCopier(new String[] {
-            }, new String[] {
-                    "CSO/FG.png", AppMain.dataPath + s + ".png",
-                    "CSO/BG.png", AppMain.dataPath + s + "BG.png",
-                    "CSO/BGM.org", AppMain.dataPath + s + ".org",
-                    "CSO/FG.pxa", AppMain.dataPath + s + ".pxa",
-                    "CSO/FG.pxm", AppMain.dataPath + s + ".pxm",
-                    "CSO/FG.psp", AppMain.dataPath + s + ".psp"
-            });
-        } else {
-            mapContext.loadMap(s);
-        }
+    public static void csoNewMapMagic(String s) {
+        fileCopier(new String[] {
+        }, new String[] {
+                "CSO/FG.png", AppMain.dataPath + s + ".png",
+                "CSO/BG.png", AppMain.dataPath + s + "BG.png",
+                "CSO/BGM.org", AppMain.dataPath + s + ".org",
+                "CSO/FG.pxa", AppMain.dataPath + s + ".pxa",
+                "CSO/FG.pxm", AppMain.dataPath + s + ".pxm",
+                "CSO/FG.psp", AppMain.dataPath + s + ".psp"
+        });
     }
 
     public static void pleaseShutdown() {

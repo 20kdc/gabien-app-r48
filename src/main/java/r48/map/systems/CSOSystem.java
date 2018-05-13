@@ -54,23 +54,30 @@ public class CSOSystem extends MapSystem {
             @Override
             public void run() {
                 usl.panelsClear();
-                for (String gamemode : GaBIEn.listEntries(PathUtils.autoDetectWindows(AppMain.rootPath + "stages"))) {
-                    String adw = PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + gamemode);
-                    if (GaBIEn.dirExists(adw)) {
-                        for (String map : GaBIEn.listEntries(adw)) {
-                            if (map.toLowerCase().endsWith(".pxm")) {
-                                final String mapFinale = gamemode + "/" + map.substring(0, map.length() - 4);
-                                usl.panelsAdd(new UISplitterLayout(new UITextButton(mapFinale, FontSizes.mapInfosTextHeight, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mapBox.loadMap(mapFinale);
-                                    }
-                                }), new UITextButton(TXDB.get("Match Info"), FontSizes.mapInfosTextHeight, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        AppMain.launchSchema("CSOMatchData", AppMain.objectDB.getObject(mapFinale + ".mtd", "CSOMatchData"), null);
-                                    }
-                                }), false, 1d));
+                String base = PathUtils.autoDetectWindows(AppMain.rootPath + "stages");
+                if (!GaBIEn.dirExists(base))
+                    GaBIEn.makeDirectories(base);
+                if (!GaBIEn.dirExists(base)) {
+                    usl.panelsAdd(new UILabel(TXDB.get("Instability warning: Unable to create stages folder. Remove offending conflicting file and refresh."), FontSizes.mapInfosTextHeight));
+                } else {
+                    for (String gamemode : GaBIEn.listEntries(base)) {
+                        String adw = PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + gamemode);
+                        if (GaBIEn.dirExists(adw)) {
+                            for (String map : GaBIEn.listEntries(adw)) {
+                                if (map.toLowerCase().endsWith(".pxm")) {
+                                    final String mapFinale = gamemode + "/" + map.substring(0, map.length() - 4);
+                                    usl.panelsAdd(new UISplitterLayout(new UITextButton(mapFinale, FontSizes.mapInfosTextHeight, new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mapBox.loadMap(mapFinale);
+                                        }
+                                    }), new UITextButton(TXDB.get("Match Info"), FontSizes.mapInfosTextHeight, new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            AppMain.launchSchema("CSOMatchData", AppMain.objectDB.getObject(mapFinale + ".mtd", "CSOMatchData"), null);
+                                        }
+                                    }), false, 1d));
+                                }
                             }
                         }
                     }
@@ -85,12 +92,14 @@ public class CSOSystem extends MapSystem {
                         if (GaBIEn.fileOrDirExists(PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + n + ".pxa"))) {
                             AppMain.launchDialog(TXDB.get("A map with this name already exists, so it cannot be created."));
                         } else {
-                            AppMain.csoNewMapMagic(n, false);
+                            String dir = GaBIEn.dirname(PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + n + ".pxa"));
+                            GaBIEn.makeDirectories(dir);
+                            AppMain.csoNewMapMagic(n);
                             RubyIO rio1 = AppMain.objectDB.getObject(n, "CSOMap");
                             RubyIO rio2 = AppMain.objectDB.getObject(n + ".mtd", "CSOMatchInfo");
                             AppMain.objectDB.ensureSaved(n, rio1);
                             AppMain.objectDB.ensureSaved(n + ".mtd", rio2);
-                            AppMain.csoNewMapMagic(n, true);
+                            mapBox.loadMap(n);
                             AppMain.launchDialog(TXDB.get("Please go to Map.\nNote: You may need to use ... -> Reload TS after placing/editing the tileset."));
                             refresh.onClick.run();
                         }
