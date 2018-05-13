@@ -8,11 +8,13 @@
 package r48.schema.integers;
 
 import gabien.IGrDriver;
+import gabien.IImage;
 import gabien.ui.IConsumer;
 import gabien.ui.Size;
 import gabien.ui.UIScrollLayout;
 import r48.FontSizes;
 import r48.dbs.TSDB;
+import r48.map.events.RMEventGraphicRenderer;
 import r48.ui.UIGrid;
 
 /**
@@ -20,12 +22,14 @@ import r48.ui.UIGrid;
  * Created on May 11th 2018.
  */
 public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
-    public TSDB tsdb;
+    public IImage tsdb;
     public int maxCount;
+    public int tileSize;
 
     public TSDBChoiceIntegerSchemaElement(long i, String substring, int pwr) {
         super(i);
-        tsdb = new TSDB(substring);
+        tileSize = 16;
+        tsdb = new TSDB(substring).compileSheet(pwr, tileSize);
         maxCount = pwr;
     }
 
@@ -34,11 +38,12 @@ public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
         UIScrollLayout usl = context.newSVL();
         final ActiveInteger ai = super.buildIntegerEditor(oldVal, context);
         final int sprScale = FontSizes.getSpriteScale();
-        final UIGrid uig = new UIGrid(16 * sprScale, 24 * sprScale, maxCount) {
+        final UIGrid uig = new UIGrid(tileSize * sprScale, (tileSize * sprScale) + FontSizes.gridTextHeight + 1, maxCount) {
             @Override
             protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
                 super.drawTile(t, hover, x, y, igd);
-                tsdb.draw(x, y + (8 * sprScale), 0, (short) t, sprScale, igd);
+                y += FontSizes.gridTextHeight + 1;
+                RMEventGraphicRenderer.flexibleSpriteDraw(t * tileSize, 0, tileSize, tileSize, x, y, tileSize * sprScale, tileSize * sprScale, 0, tsdb, 0, igd);
             }
 
             @Override

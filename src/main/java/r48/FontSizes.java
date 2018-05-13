@@ -40,7 +40,7 @@ public class FontSizes {
     public static int blobTextHeight = 16;
 
     // TXDB.get("gridTextHeight")
-    public static int gridTextHeight = 8;
+    public static int gridTextHeight = 6;
     // TXDB.get("tableElementTextHeight")
     public static int tableElementTextHeight = 16;
     // TXDB.get("tableSizeTextHeight")
