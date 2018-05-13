@@ -7,12 +7,17 @@
 
 package r48.map.systems;
 
-import gabien.ui.*;
+import gabien.IGrDriver;
+import gabien.ui.IConsumer;
+import gabien.ui.IFunction;
+import gabien.ui.UIElement;
+import gabien.ui.UIPopupMenu;
 import r48.*;
 import r48.dbs.TXDB;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
 import r48.map.StuffRenderer;
+import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventAccess;
 import r48.map.imaging.IImageLoader;
 
@@ -77,6 +82,12 @@ public abstract class MapSystem {
     // Can throw an exception if the GUM is actually invalid, because GUMs are internal strings and can't be entered by the user.
     public abstract MapViewDetails mapViewRequest(String gum, boolean allowCreate);
 
+    // Some MapSystems (CSOMapSystem) want to update ancillary files in a way that isn't compatible with the IMI-friendly "purist IO backend" stuff.
+    // These files are NON-CRITICAL (thumbnails & such) so the solution is this function, which is triggered on a successful save.
+    public void saveHook(String objectName) {
+
+    }
+
     /*
      * Acts as a wrapper around RubyTable, but also provides a StuffRenderer separately.
      * Calling setTiletype requires modification notification.
@@ -122,6 +133,19 @@ public abstract class MapSystem {
             if (mouseYT >= height)
                 return true;
             return false;
+        }
+
+        public void renderCore(IGrDriver igd, int vCX, int vCY, boolean[] layerVis, int currentLayer, boolean debugToggle) {
+            IMapViewDrawLayer[] layers = renderer.layers;
+            int tileSize = renderer.tileRenderer.getTileSize();
+            int camTR = UIElement.sensibleCellDiv(vCX + igd.getWidth(), tileSize) + 1;
+            int camTB = UIElement.sensibleCellDiv(vCY + igd.getHeight(), tileSize) + 1;
+            int camTX = UIElement.sensibleCellDiv(vCX, tileSize);
+            int camTY = UIElement.sensibleCellDiv(vCY, tileSize);
+            // mouse position constants specifically chosen to reduce chance of overlap
+            for (int i = 0; i < layers.length; i++)
+                if (layerVis[i])
+                    layers[i].draw(vCX, vCY, camTX, camTY, camTR, camTB, 0xC0000000, 0xC0000000, tileSize, currentLayer, null, debugToggle, igd);
         }
 
         public static MapViewState getBlank(String underscoreMapObjectId, String[] ex, IEventAccess iea) {

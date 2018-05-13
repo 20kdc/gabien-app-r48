@@ -26,11 +26,13 @@ import java.util.WeakHashMap;
  */
 public class ObjectDB {
     private final IObjectBackend backend;
+    private final IConsumer<String> saveHook;
     public String binderPrefix;
 
-    public ObjectDB(IObjectBackend b) {
+    public ObjectDB(IObjectBackend b, IConsumer<String> sv) {
         backend = b;
         binderPrefix = b.userspaceBindersPrefix();
+        saveHook = sv;
     }
 
     public HashMap<String, WeakReference<RubyIO>> objectMap = new HashMap<String, WeakReference<RubyIO>>();
@@ -106,7 +108,9 @@ public class ObjectDB {
             // ERROR!
             AppMain.launchDialog(TXDB.get("Error saving object: ") + id + "\n" + ioe);
             ioe.printStackTrace();
+            return;
         }
+        saveHook.accept(id);
     }
 
     public boolean getObjectModified(String id) {

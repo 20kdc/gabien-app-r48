@@ -221,18 +221,6 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
         return GaBIEn.singleWindowApp() || camDragSwitch; // SWA means "make sure the user can use a 1-button mouse w/no hover".
     }
 
-    public void renderCore(IGrDriver igd, int vCX, int vCY) {
-        IMapViewDrawLayer[] layers = mapTable.renderer.layers;
-        int camTR = UIElement.sensibleCellDiv(vCX + igd.getWidth(), tileSize) + 1;
-        int camTB = UIElement.sensibleCellDiv(vCY + igd.getHeight(), tileSize) + 1;
-        int camTX = UIElement.sensibleCellDiv(vCX, tileSize);
-        int camTY = UIElement.sensibleCellDiv(vCY, tileSize);
-        // mouse position constants specifically chosen to reduce chance of overlap
-        for (int i = 0; i < layers.length; i++)
-            if (layerVis[i])
-                layers[i].draw(vCX, vCY, camTX, camTY, camTR, camTB, 0xC0000000, 0xC0000000, tileSize, currentLayer, null, debugToggle, igd);
-    }
-
     private void render(int mouseXT, int mouseYT, int currentLayer, IGrDriver igd) {
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);

@@ -28,6 +28,8 @@ import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.IndirectTileRenderer;
 import r48.map.tiles.NullTileRenderer;
 
+import java.io.OutputStream;
+
 /**
  * It's a secret to everybody.
  * Created on 11th May 2018
@@ -35,11 +37,13 @@ import r48.map.tiles.NullTileRenderer;
 public class CSOSystem extends MapSystem {
     public String spawns = TXDB.get("Player Spawns");
     public String boops = TXDB.get("+ New Spawn");
+    public IImage cts;
     public CSOSystem() {
         super(new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new ChainedImageLoader(new IImageLoader[] {
                 // PNGs are NOT interpreted via PNG8I, ever
                 new GabienImageLoader(".png")
         }))), true);
+        cts = new TSDB("CSO/TileInfo.txt").compileSheet(256, 16);
     }
 
     @Override
@@ -88,7 +92,9 @@ public class CSOSystem extends MapSystem {
                     @Override
                     public void run() {
                         // Ok, so this gets odd. See, if another map already exists, case-insensitive, we need to stop the user.
+                        // And we don't want them to make maps with \ because it'll get confused with /, so that's not allowed.
                         String n = mapName.text;
+                        n = n.replace('\\', '/');
                         if (GaBIEn.fileOrDirExists(PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + n + ".pxa"))) {
                             AppMain.launchDialog(TXDB.get("A map with this name already exists, so it cannot be created."));
                         } else {
@@ -151,10 +157,11 @@ public class CSOSystem extends MapSystem {
             // biscuits are not available in this build.
             RubyTable pxmTab = new RubyTable(target2.getInstVarBySymbol("@pxm").userVal);
             RubyTable pxaTab = new RubyTable(target2.getInstVarBySymbol("@pxa").userVal);
+            // KEEP IN SYNC WITH THUMBNAIL CREATOR
             layers = new IMapViewDrawLayer[] {
                     new PanoramaMapViewDrawLayer(pano, true, true, 0, 0, 0, 0, 0, 0, 1),
                     new TileMapViewDrawLayer(pxmTab, 0, tr),
-                    new TileMapViewDrawLayer(pxmTab, 0, new IndirectTileRenderer(pxaTab, new GenericTileRenderer(new TSDB("CSO/TileInfo.txt").compileSheet(256, 16), 16, 256, 256))),
+                    new TileMapViewDrawLayer(pxmTab, 0, new IndirectTileRenderer(pxaTab, new GenericTileRenderer(cts, 16, 256, 256))),
                     new EventMapViewDrawLayer(0, tea, ev, 16),
                     new EventMapViewDrawLayer(0x7FFFFFFF, tea, ev, 16),
                     new GridMapViewDrawLayer()
@@ -179,7 +186,7 @@ public class CSOSystem extends MapSystem {
         return new MapViewDetails(gum, "CSOMap", new IFunction<String, MapViewState>() {
             @Override
             public MapViewState apply(String s) {
-                return MapViewState.fromRT(rendererFromTso(new RubyIO().setString(gum, true)), gum, new String[] {}, mapRIO, "@pxm", false, new TraditionalEventAccess(mapRIO, "@psp", 0, "SPEvent", spawns, boops));
+                return createMapViewState(gum, mapRIO);
             }
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override
@@ -187,5 +194,46 @@ public class CSOSystem extends MapSystem {
                 return new MapEditingToolbarController(iMapToolContext, false);
             }
         });
+    }
+
+    private MapViewState createMapViewState(String gum, RubyIO mapRIO) {
+        return MapViewState.fromRT(rendererFromTso(new RubyIO().setString(gum, true)), gum, new String[] {}, mapRIO, "@pxm", false, new TraditionalEventAccess(mapRIO, "@psp", 0, "SPEvent", spawns, boops));
+    }
+
+    @Override
+    public void saveHook(String objectName) {
+        final RubyIO mapRIO = AppMain.objectDB.getObject(objectName);
+        if (mapRIO == null)
+            return;
+        if (!objectName.endsWith(".mtd")) {
+            // EXTREMELY HACKY BUT NECESSARY
+            MapViewState mvs = createMapViewState(objectName, mapRIO);
+            int ts = mvs.renderer.tileRenderer.getTileSize();
+            int w = mvs.width * ts;
+            int h = mvs.height * ts;
+            int px = Math.max(0, (426 - w) / 2);
+            int py = Math.max(0, (240 - h) / 2);
+            w = Math.max(w, 426);
+            h = Math.max(h, 240);
+            boolean[] vis = new boolean[mvs.renderer.layers.length];
+            vis[0] = true;
+            vis[1] = true;
+            vis[3] = true;
+            IGrDriver igd = GaBIEn.makeOffscreenBuffer(w, h, true);
+            mvs.renderCore(igd, -px, -py, vis, 0, false);
+            byte[] thumb = igd.createPNG();
+            OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + objectName + "Thumb.png"));
+            try {
+                os.write(thumb);
+                os.close();
+            } catch (Exception e) {
+                try {
+                    os.close();
+                } catch (Exception e2) {
+
+                }
+            }
+            igd.shutdown();
+        }
     }
 }

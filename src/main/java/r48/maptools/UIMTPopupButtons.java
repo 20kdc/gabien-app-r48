@@ -67,7 +67,7 @@ public class UIMTPopupButtons extends UIMTBase {
                     @Override
                     public void run() {
                         IGrDriver igd = GaBIEn.makeOffscreenBuffer(view.tileSize * view.mapTable.width, view.tileSize * view.mapTable.height, true);
-                        view.renderCore(igd, 0, 0);
+                        view.mapTable.renderCore(igd, 0, 0, view.layerVis, view.currentLayer, view.debugToggle);
                         AdHocSaveLoad.prepare();
                         OutputStream os = GaBIEn.getOutFile(Application.BRAND + "/shot.png");
                         if (os != null) {

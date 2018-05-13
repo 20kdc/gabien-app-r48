@@ -199,7 +199,13 @@ public class AppMain {
 
         // initialize everything else that needs initializing, starting with ObjectDB
 
-        objectDB = new ObjectDB(IObjectBackend.Factory.create(odbBackend, rootPath, dataPath, dataExt));
+        objectDB = new ObjectDB(IObjectBackend.Factory.create(odbBackend, rootPath, dataPath, dataExt), new IConsumer<String>() {
+            @Override
+            public void accept(String s) {
+                if (system != null)
+                    system.saveHook(s);
+            }
+        });
 
         if (sysBackend.equals("null")) {
             system = new NullSystem();
