@@ -163,10 +163,13 @@ public class CSOSystem extends MapSystem {
 
     @Override
     public MapViewDetails mapViewRequest(final String gum, boolean allowCreate) {
+        if (!allowCreate)
+            if (AppMain.objectDB.getObject(gum, null) == null)
+                return null;
+        final RubyIO mapRIO = AppMain.objectDB.getObject(gum, "CSOMap");
         return new MapViewDetails(gum, "CSOMap", new IFunction<String, MapViewState>() {
             @Override
             public MapViewState apply(String s) {
-                final RubyIO mapRIO = AppMain.objectDB.getObject(gum);
                 return MapViewState.fromRT(rendererFromTso(new RubyIO().setString(gum, true)), gum, new String[] {}, mapRIO, "@pxm", false, new TraditionalEventAccess(mapRIO, "@psp", 0, "SPEvent", spawns, boops));
             }
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
