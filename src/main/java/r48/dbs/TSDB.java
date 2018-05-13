@@ -118,7 +118,7 @@ public class TSDB {
             boolean flagValid = tsp.testFlag(tiletype);
             int rtX = flagValid ? tsp.layertabAX : tsp.layertabIX;
             int rtY = flagValid ? tsp.layertabAY : tsp.layertabIY;
-            RMEventGraphicRenderer.flexibleSpriteDraw(rtX, rtY, tsp.w, tsp.h, x + (tsp.x * sprScale), y + (tsp.y * sprScale), tsp.w * sprScale, tsp.h * sprScale, 0, GaBIEn.getImageEx(tsp.img, false, true), 0, igd);
+            RMEventGraphicRenderer.flexibleSpriteDraw(rtX, rtY, tsp.w, tsp.h, x + (tsp.x * sprScale), y + (tsp.y * sprScale), tsp.w * sprScale, tsp.h * sprScale, 0, GaBIEn.getImageCKEx(tsp.img, false, true, 255, 0, 255), 0, igd);
         }
     }
 

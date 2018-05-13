@@ -5,26 +5,30 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
  R2k Passability data include file
- using 'l 0 0' disables counter
-
-p 64 16 16 16 24 24 0 8 5
-
-l
 
   FL 1down 2left 4right 8up
   PX up right down left
 
-  F A . B . X Y W H
-p 8 0 0 0 8 0 0 8 8
-p 4 8 0 8 8 8 0 8 8
-p 1 16 0 16 8 0 0 8 8
-p 2 24 0 24 8 8 0 8 8
 
-p 16 0 16 0 24 16 0 8 8
+ using 'l 0 0' disables counter
 
-p 32 16 20 16 28 24 4 8 4
+  F- AX AY BX BY X- Y- W- H-
+p 64 16 16 16 24 24 24 8  5
+l
 
- Removes hexadecimal value indicators (they get in the way)
+  F- AX AY BX BY X- Y- W- H-
+p 8  0  0  0  8  12 2  8  8
+p 1  16 0  16 8  12 22 8  8
+p 2  24 0  24 8  2  12 8  8
+p 4  8  0  8  8  22 12 8  8
+
+p 16 0  16 0  24 0 24 8  8
+
+p 32 16 20 16 28 24 28 8  4
+
+ Allow room for the flags
+X 2 2
+ No hex
 z
 
 x 15

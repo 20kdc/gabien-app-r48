@@ -54,13 +54,15 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
 
         final RubyIO targV = iVar == null ? target : target.getInstVarBySymbol(iVar);
         final RubyTable targ = new RubyTable(targV.userVal);
-        int ts = osr.tileRenderer.getTileSize();
         int sprScale = FontSizes.getSpriteScale();
-        int height = getGridSize(osr).height;
+        int ts = osr.tileRenderer.getTileSize() * sprScale;
+        Size sz = getGridSize(osr);
+        int xx = (sz.width - ts) / 2;
+        int xy = (sz.height - ts) / 2;
         if (allocSource.mapping != null) {
-            osr.tileRenderer.drawTile(0, (short) allocSource.mapping[t], x, y + (height - (ts * sprScale)), igd, sprScale);
+            osr.tileRenderer.drawTile(0, (short) allocSource.mapping[t], x + xx, y + xy, igd, sprScale);
         } else {
-            osr.tileRenderer.drawTile(0, (short) t, x, y + (height - ts), igd, sprScale);
+            osr.tileRenderer.drawTile(0, (short) t, x + xx, y + xy, igd, sprScale);
         }
         allocSource.draw(x, y, t, targ.getTiletype(t % targ.width, t / targ.width, 0), sprScale, igd);
         return osr;

@@ -37,8 +37,11 @@ public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRende
 
     @Override
     public StuffRenderer baseTileDraw(RubyIO target, int t, int x, int y, IGrDriver igd, StuffRenderer osr) {
-        int ts = osr.tileRenderer.getTileSize();
-        osr.tileRenderer.drawTile(0, (short) t, x, y + (getGridSize(osr).height - ts), igd, FontSizes.getSpriteScale());
+        int ts = osr.tileRenderer.getTileSize() * FontSizes.getSpriteScale();
+        Size sz = getGridSize(osr);
+        int xx = (sz.width - ts) / 2;
+        int xy = (sz.height - ts) / 2;
+        osr.tileRenderer.drawTile(0, (short) t, x + xx, y + xy, igd, FontSizes.getSpriteScale());
         return osr;
     }
 }
