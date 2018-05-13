@@ -128,13 +128,27 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 doubleAll.add(new Runnable() {
                     @Override
                     public void run() {
-                        field.accept(field.get() * 2);
+                        int v = field.get() * 2;
+                        if (v == 12)
+                            v = 8;
+                        field.accept(v);
                     }
                 });
                 halfAll.add(new Runnable() {
                     @Override
                     public void run() {
-                        field.accept(field.get() / 2);
+                        int v = field.get() / 2;
+                        int min = 6;
+                        if (field.name.equals("windowFrameHeight"))
+                            min = 8;
+                        if (field.name.equals("tabTextHeight"))
+                            min = 8;
+                        if (v < min)
+                            v = min;
+                        if (field.name.equals("statusBarTextHeight"))
+                            if (v == 8)
+                                v = 6;
+                        field.accept(v);
                     }
                 });
                 UIAdjuster tb = new UIAdjuster(FontSizes.fontSizerTextHeight, field.get(), new IFunction<Long, Long>() {
