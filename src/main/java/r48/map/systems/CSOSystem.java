@@ -96,7 +96,7 @@ public class CSOSystem extends MapSystem {
                             GaBIEn.makeDirectories(dir);
                             AppMain.csoNewMapMagic(n);
                             RubyIO rio1 = AppMain.objectDB.getObject(n, "CSOMap");
-                            RubyIO rio2 = AppMain.objectDB.getObject(n + ".mtd", "CSOMatchInfo");
+                            RubyIO rio2 = AppMain.objectDB.getObject(n + ".mtd", "CSOMatchData");
                             AppMain.objectDB.ensureSaved(n, rio1);
                             AppMain.objectDB.ensureSaved(n + ".mtd", rio2);
                             mapBox.loadMap(n);
