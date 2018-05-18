@@ -15,6 +15,7 @@ import r48.*;
 import r48.dbs.TSDB;
 import r48.dbs.TXDB;
 import r48.io.PathUtils;
+import r48.io.cs.CSOObjectBackend;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController;
@@ -32,6 +33,9 @@ import java.io.OutputStream;
 
 /**
  * It's a secret to everybody.
+ *
+ * NOTE: GUMs here are CSO object names without the "all:" prefix.
+ *
  * Created on 11th May 2018
  */
 public class CSOSystem extends MapSystem {
@@ -68,8 +72,8 @@ public class CSOSystem extends MapSystem {
                         String adw = PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + gamemode);
                         if (GaBIEn.dirExists(adw)) {
                             for (String map : GaBIEn.listEntries(adw)) {
-                                if (map.toLowerCase().endsWith(".pxm")) {
-                                    final String mapFinale = gamemode + "/" + map.substring(0, map.length() - 4);
+                                if (GaBIEn.dirExists(PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + gamemode + "/" + map))) {
+                                    final String mapFinale = gamemode + "/" + map;
                                     usl.panelsAdd(new UISplitterLayout(new UITextButton(mapFinale, FontSizes.mapInfosTextHeight, new Runnable() {
                                         @Override
                                         public void run() {
@@ -78,7 +82,7 @@ public class CSOSystem extends MapSystem {
                                     }), new UITextButton(TXDB.get("Match Info"), FontSizes.mapInfosTextHeight, new Runnable() {
                                         @Override
                                         public void run() {
-                                            AppMain.launchSchema("CSOMatchData", AppMain.objectDB.getObject(mapFinale + ".mtd", "CSOMatchData"), null);
+                                            AppMain.launchSchema("CSOMatchData", AppMain.objectDB.getObject("mtd:" + mapFinale, "CSOMatchData"), null);
                                         }
                                     }), false, 1d));
                                 }
@@ -87,31 +91,35 @@ public class CSOSystem extends MapSystem {
                     }
                 }
                 final UITextButton refresh = new UITextButton(TXDB.get("Refresh"), FontSizes.mapInfosTextHeight, this);
-                final UITextBox mapName = new UITextBox("ffa/MyMap", FontSizes.mapInfosTextHeight);
+                final UITextBox gameMode = new UITextBox("ffa", FontSizes.mapInfosTextHeight);
+                final UITextBox mapName = new UITextBox("MyMap", FontSizes.mapInfosTextHeight);
                 UITextButton newB = new UITextButton(TXDB.get("New Map"), FontSizes.mapInfosTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         // Ok, so this gets odd. See, if another map already exists, case-insensitive, we need to stop the user.
-                        // And we don't want them to make maps with \ because it'll get confused with /, so that's not allowed.
-                        String n = mapName.text;
-                        n = n.replace('\\', '/');
-                        if (GaBIEn.fileOrDirExists(PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + n + ".pxa"))) {
-                            AppMain.launchDialog(TXDB.get("A map with this name already exists, so it cannot be created."));
+                        // We also want to verify that the map name is valid.
+                        String gn = gameMode.text + "/" + mapName.text;
+                        CSOObjectBackend.CSOParsedOP op = CSOObjectBackend.parseObjectName(gn);
+                        CSOObjectBackend.CSOParsedOP op2 = CSOObjectBackend.parseObjectName("mtd:" + gn);
+                        if ((op == null) || (op2 == null)) {
+                            AppMain.launchDialog(TXDB.get("The map name or game mode given wasn't valid."));
+                        } else if (GaBIEn.fileOrDirExists(PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + op.fileName))) {
+                            AppMain.launchDialog(TXDB.get("It seems map with this name already exists, so it cannot be created. (You may have to delete a directory or file with this name.)"));
                         } else {
-                            String dir = GaBIEn.dirname(PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + n + ".pxa"));
+                            String dir = GaBIEn.dirname(PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + op.fileName));
                             GaBIEn.makeDirectories(dir);
-                            AppMain.csoNewMapMagic(n);
-                            RubyIO rio1 = AppMain.objectDB.getObject(n, "CSOMap");
-                            RubyIO rio2 = AppMain.objectDB.getObject(n + ".mtd", "CSOMatchData");
-                            AppMain.objectDB.ensureSaved(n, rio1);
-                            AppMain.objectDB.ensureSaved(n + ".mtd", rio2);
-                            mapBox.loadMap(n);
+                            AppMain.csoNewMapMagic(op.fileName);
+                            RubyIO rio1 = AppMain.objectDB.getObject(gn, "CSOMap");
+                            RubyIO rio2 = AppMain.objectDB.getObject("mtd:" + gn, "CSOMatchData");
+                            AppMain.objectDB.ensureSaved(gn, rio1);
+                            AppMain.objectDB.ensureSaved("mtd:" + gn, rio2);
+                            mapBox.loadMap(gn);
                             AppMain.launchDialog(TXDB.get("Please go to Map.\nNote: You may need to use ... -> Reload TS after placing/editing the tileset."));
                             refresh.onClick.run();
                         }
                     }
                 });
-                usl.panelsAdd(new UISplitterLayout(mapName, new UISplitterLayout(newB, refresh, false, 1), false, 1));
+                usl.panelsAdd(new UISplitterLayout(new UISplitterLayout(gameMode, mapName, false, 0.5d), new UISplitterLayout(newB, refresh, false, 1), false, 1));
             }
         };
         refresh.run();
@@ -150,8 +158,9 @@ public class CSOSystem extends MapSystem {
         }
         if (target != null) {
             String str = target.decString();
-            pano = imageLoader.getImage(AppMain.dataPath + str + "BG", true);
-            tr = new GenericTileRenderer(imageLoader.getImage(AppMain.dataPath + str, true), 16, 16, 256);
+            CSOObjectBackend.CSOParsedOP pop = CSOObjectBackend.parseObjectName(str);
+            pano = imageLoader.getImage(AppMain.dataPath + pop.fileName + "BG", true);
+            tr = new GenericTileRenderer(imageLoader.getImage(AppMain.dataPath + pop.fileName, true), 16, 16, 256);
             RubyIO target2 = AppMain.objectDB.getObject(str);
             TraditionalEventAccess tea = new TraditionalEventAccess(target2, "@psp", 0, "SPEvent", spawns, boops);
             // biscuits are not available in this build.
@@ -202,10 +211,17 @@ public class CSOSystem extends MapSystem {
 
     @Override
     public void saveHook(String objectName) {
-        final RubyIO mapRIO = AppMain.objectDB.getObject(objectName);
-        if (mapRIO == null)
+        CSOObjectBackend.CSOParsedOP op = CSOObjectBackend.parseObjectName(objectName);
+        if (op == null) {
+            System.err.println("CSOSystem had to deal with unknown obj '" + objectName + "', Leo please stop using CSOSystem");
             return;
-        if (!objectName.endsWith(".mtd")) {
+        }
+        final RubyIO mapRIO = AppMain.objectDB.getObject(objectName);
+        if (mapRIO == null) {
+            System.err.println("Hook oddity: saved and then gone?");
+            return;
+        }
+        if (op.subtype == CSOObjectBackend.CSOSubtype.Main) {
             // EXTREMELY HACKY BUT NECESSARY
             MapViewState mvs = createMapViewState(objectName, mapRIO);
             int ts = mvs.renderer.tileRenderer.getTileSize();
@@ -222,7 +238,7 @@ public class CSOSystem extends MapSystem {
             IGrDriver igd = GaBIEn.makeOffscreenBuffer(w, h, true);
             mvs.renderCore(igd, -px, -py, vis, 0, false);
             byte[] thumb = igd.createPNG();
-            OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + objectName + "Thumb.png"));
+            OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "stages/" + op.fileName + "Thumb.png"));
             try {
                 os.write(thumb);
                 os.close();

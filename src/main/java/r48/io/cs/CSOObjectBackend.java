@@ -30,34 +30,46 @@ public class CSOObjectBackend implements IObjectBackend {
 
     @Override
     public RubyIO loadObjectFromFile(String filename) {
-        if (filename.endsWith(".mtd"))
-            return job.loadObjectFromFile(filename);
-        RubyIO pxa = cob.loadObjectFromFile(filename + ".pxa");
-        if (pxa == null)
+        CSOParsedOP parsed = parseObjectName(filename);
+        if (parsed == null)
             return null;
-        RubyIO pxm = cob.loadObjectFromFile(filename + ".pxm");
-        if (pxm == null)
+        if (parsed.subtype == CSOSubtype.MTD) {
+            return job.loadObjectFromFile(parsed.fileName);
+        } else if (parsed.subtype == CSOSubtype.Main) {
+            RubyIO pxa = cob.loadObjectFromFile(filename + ".pxa");
+            if (pxa == null)
+                return null;
+            RubyIO pxm = cob.loadObjectFromFile(filename + ".pxm");
+            if (pxm == null)
+                return null;
+            RubyIO psp = loadPSPFromFile(filename + ".psp");
+            if (psp == null)
+                return null;
+            RubyIO map = new RubyIO();
+            map.setSymlike("CSOMap", true);
+            map.addIVar("@pxa", pxa);
+            map.addIVar("@pxm", pxm);
+            map.addIVar("@psp", psp);
+            return map;
+        } else {
             return null;
-        RubyIO psp = loadPSPFromFile(filename + ".psp");
-        if (psp == null)
-            return null;
-        RubyIO map = new RubyIO();
-        map.setSymlike("CSOMap", true);
-        map.addIVar("@pxa", pxa);
-        map.addIVar("@pxm", pxm);
-        map.addIVar("@psp", psp);
-        return map;
+        }
     }
 
     @Override
     public void saveObjectToFile(String filename, RubyIO object) throws IOException {
-        if (filename.endsWith(".mtd")) {
-            job.saveObjectToFile(filename, object);
-            return;
+        CSOParsedOP parsed = parseObjectName(filename);
+        if (parsed == null)
+            throw new IOException("Invalid object name");
+        if (parsed.subtype == CSOSubtype.MTD) {
+            job.saveObjectToFile(parsed.fileName, object);
+        } else if (parsed.subtype == CSOSubtype.Main) {
+            cob.saveObjectToFile(filename + ".pxa", object.getInstVarBySymbol("@pxa"));
+            cob.saveObjectToFile(filename + ".pxm", object.getInstVarBySymbol("@pxm"));
+            savePSPToFile(filename + ".psp", object.getInstVarBySymbol("@psp"));
+        } else {
+            throw new IOException("Cannot handle this subtype: " + parsed.subtype);
         }
-        cob.saveObjectToFile(filename + ".pxa", object.getInstVarBySymbol("@pxa"));
-        cob.saveObjectToFile(filename + ".pxm", object.getInstVarBySymbol("@pxm"));
-        savePSPToFile(filename + ".psp", object.getInstVarBySymbol("@psp"));
     }
 
     private RubyIO loadPSPFromFile(String s) {
@@ -139,5 +151,40 @@ public class CSOObjectBackend implements IObjectBackend {
     @Override
     public String userspaceBindersPrefix() {
         return null;
+    }
+
+    public static CSOParsedOP parseObjectName(String s) {
+        CSOSubtype cst = CSOSubtype.Main;
+        String g;
+        String m;
+        if (s.startsWith("mtd:")) {
+            cst = CSOSubtype.MTD;
+            s = s.substring(4);
+        }
+        if (s.contains("\\") || s.contains(":"))
+            return null;
+        String[] subs = s.split("/");
+        if (subs.length != 2)
+            return null;
+        g = subs[0];
+        m = subs[1];
+        return new CSOParsedOP(g, m, cst);
+    }
+
+    public static class CSOParsedOP {
+        public final String gameMode, mapName, fileName;
+        public CSOSubtype subtype;
+
+        public CSOParsedOP(String g, String m, CSOSubtype st) {
+            gameMode = g;
+            mapName = m;
+            fileName = g + "/" + m + "/" + m + (st == CSOSubtype.MTD ? ".mtd" : "");
+            subtype = st;
+        }
+    }
+
+    public enum CSOSubtype {
+        Main,
+        MTD
     }
 }
