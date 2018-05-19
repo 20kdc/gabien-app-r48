@@ -36,13 +36,13 @@ public class CSOObjectBackend implements IObjectBackend {
         if (parsed.subtype == CSOSubtype.MTD) {
             return job.loadObjectFromFile(parsed.fileName);
         } else if (parsed.subtype == CSOSubtype.Main) {
-            RubyIO pxa = cob.loadObjectFromFile(filename + ".pxa");
+            RubyIO pxa = cob.loadObjectFromFile(parsed.fileName + ".pxa");
             if (pxa == null)
                 return null;
-            RubyIO pxm = cob.loadObjectFromFile(filename + ".pxm");
+            RubyIO pxm = cob.loadObjectFromFile(parsed.fileName + ".pxm");
             if (pxm == null)
                 return null;
-            RubyIO psp = loadPSPFromFile(filename + ".psp");
+            RubyIO psp = loadPSPFromFile(parsed.fileName + ".psp");
             if (psp == null)
                 return null;
             RubyIO map = new RubyIO();
@@ -64,9 +64,9 @@ public class CSOObjectBackend implements IObjectBackend {
         if (parsed.subtype == CSOSubtype.MTD) {
             job.saveObjectToFile(parsed.fileName, object);
         } else if (parsed.subtype == CSOSubtype.Main) {
-            cob.saveObjectToFile(filename + ".pxa", object.getInstVarBySymbol("@pxa"));
-            cob.saveObjectToFile(filename + ".pxm", object.getInstVarBySymbol("@pxm"));
-            savePSPToFile(filename + ".psp", object.getInstVarBySymbol("@psp"));
+            cob.saveObjectToFile(parsed.fileName + ".pxa", object.getInstVarBySymbol("@pxa"));
+            cob.saveObjectToFile(parsed.fileName + ".pxm", object.getInstVarBySymbol("@pxm"));
+            savePSPToFile(parsed.fileName + ".psp", object.getInstVarBySymbol("@psp"));
         } else {
             throw new IOException("Cannot handle this subtype: " + parsed.subtype);
         }
