@@ -16,18 +16,13 @@ import r48.dbs.TSDB;
 import r48.dbs.TXDB;
 import r48.io.PathUtils;
 import r48.io.cs.CSOObjectBackend;
-import r48.map.IEditingToolbarController;
-import r48.map.IMapToolContext;
-import r48.map.MapEditingToolbarController;
-import r48.map.StuffRenderer;
+import r48.map.*;
 import r48.map.drawlayers.*;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.TraditionalEventAccess;
 import r48.map.imaging.*;
-import r48.map.tiles.GenericTileRenderer;
-import r48.map.tiles.ITileRenderer;
-import r48.map.tiles.IndirectTileRenderer;
-import r48.map.tiles.NullTileRenderer;
+import r48.map.tiles.*;
+import r48.ui.UITileGrid;
 
 import java.io.OutputStream;
 
@@ -132,6 +127,7 @@ public class CSOSystem extends MapSystem {
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
         ITileRenderer tr = new NullTileRenderer();
         final IImage quote = GaBIEn.getImageEx("CSO/quote.png", false, true);
+        final IImage pdir = GaBIEn.getImageEx("CSO/PrtDir.png", false, true);
         IEventGraphicRenderer ev = new IEventGraphicRenderer() {
             @Override
             public int determineEventLayer(RubyIO event) {
@@ -158,7 +154,13 @@ public class CSOSystem extends MapSystem {
             String str = target.decString();
             CSOObjectBackend.CSOParsedOP pop = CSOObjectBackend.parseObjectName(str);
             pano = imageLoader.getImage(AppMain.dataPath + pop.fileName + "BG", true);
-            tr = new GenericTileRenderer(imageLoader.getImage(AppMain.dataPath + pop.fileName, true), 16, 16, 256);
+            // Ensure the primary tile renderer uses the water frame calculation.
+            tr = new GenericTileRenderer(imageLoader.getImage(AppMain.dataPath + pop.fileName, true), 16, 16, 256) {
+                @Override
+                public int getFrame() {
+                    return getWaterFrame();
+                }
+            };
             RubyIO target2 = AppMain.objectDB.getObject(str);
             TraditionalEventAccess tea = new TraditionalEventAccess(target2, "@psp", 0, "SPEvent", spawns, boops);
             // biscuits are not available in this build.
@@ -168,6 +170,48 @@ public class CSOSystem extends MapSystem {
             layers = new IMapViewDrawLayer[] {
                     new PanoramaMapViewDrawLayer(pano, true, true, 0, 0, 0, 0, 0, 0, 1),
                     new TileMapViewDrawLayer(pxmTab, 0, tr, TXDB.get("Tiles")),
+                    new TileMapViewDrawLayer(pxmTab, 0, new IndirectTileRenderer(pxaTab, new ITileRenderer() {
+                        @Override
+                        public int getTileSize() {
+                            return 16;
+                        }
+
+                        @Override
+                        public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale) {
+                            int i = tidx >> 4;
+                            int j = tidx & 15;
+                            if (j < 4) {
+                                // 81/82 are swapped along with A1/A2.
+                                if (j == 1) {
+                                    j = 2;
+                                } else if (j == 2) {
+                                    j = 1;
+                                }
+                                if ((i == 8) || (i == 10))
+                                    IkaTileRenderer.drawPrtDir(getWaterFrame(), j, 16, px, py, spriteScale, pdir, igd);
+                            }
+                        }
+
+                        @Override
+                        public UITileGrid[] createATUIPlanes(UIMapView mv, int sprScale) {
+                            return new UITileGrid[0];
+                        }
+
+                        @Override
+                        public AutoTileTypeField[] indicateATs() {
+                            return new AutoTileTypeField[0];
+                        }
+
+                        @Override
+                        public int getFrame() {
+                            return getWaterFrame();
+                        }
+
+                        @Override
+                        public int getRecommendedWidth() {
+                            return 0;
+                        }
+                    }), TXDB.get("Tile Wind/Water")),
                     new TileMapViewDrawLayer(pxmTab, 0, new IndirectTileRenderer(pxaTab, new GenericTileRenderer(cts, 16, 256, 256)), TXDB.get("Tile Collision")),
                     new EventMapViewDrawLayer(0, tea, ev, 16, ""),
                     new EventMapViewDrawLayer(0x7FFFFFFF, tea, ev, 16, ""),
@@ -175,6 +219,7 @@ public class CSOSystem extends MapSystem {
             };
         }
         return new StuffRenderer(imageLoader, tr, ev, layers, new boolean[] {
+                true,
                 true,
                 true,
                 false,
@@ -232,7 +277,8 @@ public class CSOSystem extends MapSystem {
             boolean[] vis = new boolean[mvs.renderer.layers.length];
             vis[0] = true;
             vis[1] = true;
-            vis[3] = true;
+            vis[2] = true;
+            vis[4] = true;
             IGrDriver igd = GaBIEn.makeOffscreenBuffer(w, h, true);
             mvs.renderCore(igd, -px, -py, vis, 0, false);
             byte[] thumb = igd.createPNG();
@@ -249,5 +295,10 @@ public class CSOSystem extends MapSystem {
             }
             igd.shutdown();
         }
+    }
+
+    public int getWaterFrame() {
+        double time = GaBIEn.getTime();
+        return ((int) (time * 120)) & 0x0F;
     }
 }

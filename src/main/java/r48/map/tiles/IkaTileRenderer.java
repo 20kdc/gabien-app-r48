@@ -55,16 +55,19 @@ public class IkaTileRenderer implements ITileRenderer {
         } else {
             // fun fact, this was probably the most loved feature of IkachanMapEdit.
             // I would be in for a *lynching* if I got rid of it.
-            int frame = getFrame();
-            if (block == 0)
-                igd.blitScaledImage(frame, 0, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
-            if (block == 1)
-                igd.blitScaledImage(ets - frame, 0, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
-            if (block == 2)
-                igd.blitScaledImage(0, frame, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
-            if (block == 3)
-                igd.blitScaledImage(0, ets - frame, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
+            drawPrtDir(getFrame(), block, ets, px, py, spriteScale, i, igd);
         }
+    }
+
+    public static void drawPrtDir(int frame, int block, int ets, int px, int py, int spriteScale, IImage i, IGrDriver igd) {
+        if (block == 0)
+            igd.blitScaledImage(frame, 0, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
+        if (block == 1)
+            igd.blitScaledImage(ets - frame, 0, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
+        if (block == 2)
+            igd.blitScaledImage(0, frame, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
+        if (block == 3)
+            igd.blitScaledImage(0, ets - frame, ets, ets, px, py, ets * spriteScale, ets * spriteScale, i);
     }
 
     @Override
