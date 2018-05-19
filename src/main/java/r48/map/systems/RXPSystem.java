@@ -87,7 +87,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
                     // Z-Emulation
                     accurate,
                     // selection
-                    new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, tileRenderer.getTileSize()),
+                    new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, tileRenderer.getTileSize(), ""),
                     new GridMapViewDrawLayer()
             };
         }

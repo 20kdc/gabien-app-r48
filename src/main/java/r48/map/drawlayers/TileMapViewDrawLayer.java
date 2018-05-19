@@ -9,7 +9,6 @@ package r48.map.drawlayers;
 
 import gabien.FontManager;
 import gabien.IGrDriver;
-import gabien.ui.UILabel;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.FormatSyntax;
@@ -25,16 +24,25 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
     public final RubyTable targetTable;
     public final int tileLayer;
     public final ITileRenderer tr;
+    public final String name;
 
     public TileMapViewDrawLayer(RubyTable table, int i, ITileRenderer itr) {
         targetTable = table;
         tileLayer = i;
         tr = itr;
+        name = FormatSyntax.formatExtended(TXDB.get("Tile Layer #A"), new RubyIO().setFX(tileLayer));
+    }
+
+    public TileMapViewDrawLayer(RubyTable table, int i, ITileRenderer itr, String post) {
+        targetTable = table;
+        tileLayer = i;
+        tr = itr;
+        name = post;
     }
 
     @Override
     public String getName() {
-        return FormatSyntax.formatExtended(TXDB.get("Tile Layer #A"), new RubyIO().setFX(tileLayer));
+        return name;
     }
 
     public boolean shouldDraw(int x, int y, int layer, short value) {

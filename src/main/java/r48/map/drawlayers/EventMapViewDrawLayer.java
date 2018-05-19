@@ -28,19 +28,21 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
     public int layer;
     public IEventGraphicRenderer iegr;
     public int tileSize;
+    public String postfix;
 
-    public EventMapViewDrawLayer(int layer2, IEventAccess eventL, IEventGraphicRenderer e, int ts) {
+    public EventMapViewDrawLayer(int layer2, IEventAccess eventL, IEventGraphicRenderer e, int ts, String post) {
         eventList = eventL;
         layer = layer2;
         iegr = e;
         tileSize = ts;
+        postfix = post;
     }
 
     @Override
     public String getName() {
         if (layer == 0x7FFFFFFF)
             return TXDB.get("Event Selection");
-        return eventList.customEventsName();
+        return eventList.customEventsName() + postfix;
     }
 
     @Override

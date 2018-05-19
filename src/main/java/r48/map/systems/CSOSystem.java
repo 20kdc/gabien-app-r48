@@ -145,9 +145,7 @@ public class CSOSystem extends MapSystem {
 
             @Override
             public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int sprScale) {
-                int scx = 0;
-                if (target.getInstVarBySymbol("@type").fixnumVal < 0)
-                    scx = 1;
+                int scx = (int) (target.getInstVarBySymbol("@type").fixnumVal + 1);
                 igd.blitScaledImage(scx * 16, 0, 16, 16, ox, oy, 16 * sprScale, 16 * sprScale, quote);
             }
         };
@@ -166,13 +164,13 @@ public class CSOSystem extends MapSystem {
             // biscuits are not available in this build.
             RubyTable pxmTab = new RubyTable(target2.getInstVarBySymbol("@pxm").userVal);
             RubyTable pxaTab = new RubyTable(target2.getInstVarBySymbol("@pxa").userVal);
-            // KEEP IN SYNC WITH THUMBNAIL CREATOR
+            // KEEP IN SYNC WITH THUMBNAIL CREATOR VISIBILITY CONTROLS
             layers = new IMapViewDrawLayer[] {
                     new PanoramaMapViewDrawLayer(pano, true, true, 0, 0, 0, 0, 0, 0, 1),
-                    new TileMapViewDrawLayer(pxmTab, 0, tr),
-                    new TileMapViewDrawLayer(pxmTab, 0, new IndirectTileRenderer(pxaTab, new GenericTileRenderer(cts, 16, 256, 256))),
-                    new EventMapViewDrawLayer(0, tea, ev, 16),
-                    new EventMapViewDrawLayer(0x7FFFFFFF, tea, ev, 16),
+                    new TileMapViewDrawLayer(pxmTab, 0, tr, TXDB.get("Tiles")),
+                    new TileMapViewDrawLayer(pxmTab, 0, new IndirectTileRenderer(pxaTab, new GenericTileRenderer(cts, 16, 256, 256)), TXDB.get("Tile Collision")),
+                    new EventMapViewDrawLayer(0, tea, ev, 16, ""),
+                    new EventMapViewDrawLayer(0x7FFFFFFF, tea, ev, 16, ""),
                     new GridMapViewDrawLayer()
             };
         }

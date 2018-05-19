@@ -21,8 +21,8 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
     public final RubyTable lowpass;
     public final RubyTable highpass;
 
-    public R2kTileMapViewDrawLayer(RubyTable tbl, ITileRenderer tr, int targLayer, boolean targUpper, RubyIO ts) {
-        super(tbl, targLayer, tr);
+    public R2kTileMapViewDrawLayer(RubyTable tbl, ITileRenderer tr, int targLayer, boolean targUpper, RubyIO ts, String post) {
+        super(tbl, targLayer, tr, post);
         upper = targUpper;
         lowpass = new RubyTable(ts.getInstVarBySymbol("@lowpass_data").userVal);
         highpass = new RubyTable(ts.getInstVarBySymbol("@highpass_data").userVal);

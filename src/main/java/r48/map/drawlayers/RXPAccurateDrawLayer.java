@@ -210,7 +210,7 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
         public final int pIndex;
 
         public RXPPriorityPlane(int p) {
-            super(mapTable, -1, tiles);
+            super(mapTable, -1, tiles, "INTERNAL - YOU SHOULD NOT SEE THIS");
             pIndex = p;
         }
 
