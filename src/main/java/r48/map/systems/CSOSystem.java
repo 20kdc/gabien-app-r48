@@ -16,12 +16,14 @@ import r48.dbs.TSDB;
 import r48.dbs.TXDB;
 import r48.io.PathUtils;
 import r48.io.cs.CSOObjectBackend;
-import r48.map.*;
+import r48.map.IEditingToolbarController;
+import r48.map.IMapToolContext;
+import r48.map.MapEditingToolbarController;
+import r48.map.StuffRenderer;
 import r48.map.drawlayers.*;
 import r48.map.events.*;
 import r48.map.imaging.*;
 import r48.map.tiles.*;
-import r48.ui.UITileGrid;
 
 import java.io.OutputStream;
 
@@ -161,18 +163,24 @@ public class CSOSystem extends MapSystem {
             RubyIO target2 = AppMain.objectDB.getObject(str);
             IEventAccess tea = createEventAccess(pop);
             RubyTable pxmTab = new RubyTable(target2.getInstVarBySymbol("@pxm").userVal);
-            RubyTable pxaTab = new RubyTable(target2.getInstVarBySymbol("@pxa").userVal);
-            // Used specifically for water.
-            final ITileRenderer subRenderer = new IndirectTileRenderer(pxaTab, new ITileRenderer() {
+            final RubyTable pxaTab = new RubyTable(target2.getInstVarBySymbol("@pxa").userVal);
+            final IImage tiles = GaBIEn.getImageCKEx("CSO/tiles.png", false, true, 255, 0, 255);
+            // Ensure the primary tile renderer uses the FX
+            tr = new GenericTileRenderer(imageLoader.getImage(AppMain.dataPath + pop.fileName, true), 16, 16, 256) {
                 @Override
-                public int getTileSize() {
-                    return 16;
+                public int getFrame() {
+                    return getWaterFrame();
                 }
 
                 @Override
-                public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale) {
-                    int i = tidx >> 4;
-                    int j = tidx & 15;
+                public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
+                    int ntidx = pxaTab.getTiletype(tidx & 0x0F, (tidx >> 4) & 0x0F, 0);
+                    super.drawTile(layer, tidx, px, py, igd, spriteScale, editor);
+                    if (editor)
+                        if ((ntidx == 0) || ((ntidx >= 0x20) && (ntidx <= 0x3F)))
+                            igd.blitScaledImage(16, 0, 16, 16, px, py, 16 * spriteScale, 16 * spriteScale, tiles);
+                    int i = ntidx >> 4;
+                    int j = ntidx & 15;
                     if (j < 4) {
                         // 81/82 are swapped along with A1/A2.
                         if (j == 1) {
@@ -183,39 +191,6 @@ public class CSOSystem extends MapSystem {
                         if ((i == 8) || (i == 10))
                             IkaTileRenderer.drawPrtDir(getWaterFrame(), j, 16, px, py, spriteScale, pdir, igd);
                     }
-                }
-
-                @Override
-                public UITileGrid[] createATUIPlanes(UIMapView mv, int sprScale) {
-                    return new UITileGrid[0];
-                }
-
-                @Override
-                public AutoTileTypeField[] indicateATs() {
-                    return new AutoTileTypeField[0];
-                }
-
-                @Override
-                public int getFrame() {
-                    return getWaterFrame();
-                }
-
-                @Override
-                public int getRecommendedWidth() {
-                    return 0;
-                }
-            });
-            // Ensure the primary tile renderer uses the FX
-            tr = new GenericTileRenderer(imageLoader.getImage(AppMain.dataPath + pop.fileName, true), 16, 16, 256) {
-                @Override
-                public int getFrame() {
-                    return subRenderer.getFrame();
-                }
-
-                @Override
-                public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale) {
-                    super.drawTile(layer, tidx, px, py, igd, spriteScale);
-                    subRenderer.drawTile(layer, tidx, px, py, igd, spriteScale);
                 }
             };
             // KEEP IN SYNC WITH THUMBNAIL CREATOR VISIBILITY CONTROLS

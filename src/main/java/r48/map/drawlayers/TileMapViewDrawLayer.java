@@ -90,7 +90,7 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
                 String t = Integer.toString(tidx, 16);
                 FontManager.drawString(igd, px, py + (tdi * UIMapView.mapDebugTextHeight), t, false, false, UIMapView.mapDebugTextHeight);
             } else {
-                tr.drawTile(tdi, tidx, px, py, igd, 1);
+                tr.drawTile(tdi, tidx, px, py, igd, 1, false);
             }
         }
     }

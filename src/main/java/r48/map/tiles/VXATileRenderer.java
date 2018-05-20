@@ -11,7 +11,6 @@ import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
-import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.ATDB;
@@ -59,7 +58,7 @@ public class VXATileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
         if (tileset == null)
             return; // just don't bother.
         // MKXP repository links to http://www.tktkgame.com/tkool/memo/vx/tile_id.html

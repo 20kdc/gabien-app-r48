@@ -11,7 +11,6 @@ import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
-import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.RubyTable;
@@ -61,7 +60,7 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
         // The logic here is only documented in the mkxp repository, in tilemap.cpp.
         // I really hope it doesn't count as stealing here,
         //  if I would've had to have typed this code ANYWAY

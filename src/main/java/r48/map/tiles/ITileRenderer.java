@@ -26,7 +26,8 @@ public interface ITileRenderer {
     // spriteScale is used in most situations, but not UIMapView.
     // There, it is instead done "in bulk" on an offscreen buffer,
     //  since the offscreen buffer had to be used anyway for *other* efficiency reasons.
-    void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale);
+    // NOTE: The flag "editor" means "anything not a UIMapView"
+    void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor);
 
     // NOTE: The reason sprScale is supplied here is so the tiling tool's width can be increased 'naturally'.
     //       See UIMTAutotile for details.

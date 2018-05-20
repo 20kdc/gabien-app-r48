@@ -79,7 +79,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         RubyIO cName = target.getInstVarBySymbol("@character_name");
         short tId = (short) target.getInstVarBySymbol("@tile_id").fixnumVal;
         if (tId != 0) {
-            tileRenderer.drawTile(0, tId, ox, oy, igd, sprScale);
+            tileRenderer.drawTile(0, tId, ox, oy, igd, sprScale, false);
         } else if (cName.strVal.length > 0) {
             // lower centre of tile, the reference point for characters
             ox += 16;

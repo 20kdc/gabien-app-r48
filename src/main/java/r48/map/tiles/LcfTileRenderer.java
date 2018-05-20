@@ -42,7 +42,7 @@ public class LcfTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
         if (chipset == null)
             return;
         // There are 288 "Common Tiles" (non-AT) divided into upper and lower layer tiles.

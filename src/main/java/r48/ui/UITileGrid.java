@@ -100,7 +100,7 @@ public class UITileGrid extends UIGrid {
             }
             t += def;
         }
-        renderer.tileRenderer.drawTile(layer, (short) t, x, y, igd, spriteScale);
+        renderer.tileRenderer.drawTile(layer, (short) t, x, y, igd, spriteScale, true);
     }
 
     public boolean compatibleWith(UITileGrid lTM) {

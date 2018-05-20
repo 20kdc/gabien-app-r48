@@ -41,7 +41,7 @@ public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRende
         Size sz = getGridSize(osr);
         int xx = (sz.width - ts) / 2;
         int xy = (sz.height - ts) / 2;
-        osr.tileRenderer.drawTile(0, (short) t, x + xx, y + xy, igd, FontSizes.getSpriteScale());
+        osr.tileRenderer.drawTile(0, (short) t, x + xx, y + xy, igd, FontSizes.getSpriteScale(), true);
         return osr;
     }
 }

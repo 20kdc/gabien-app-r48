@@ -31,13 +31,13 @@ public class IndirectTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale) {
+    public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
         int tx = (tidx & 0xFFFF) % indirection.width;
         int ty = (tidx & 0xFFFF) / indirection.width;
         if (indirection.outOfBounds(tx, ty))
             return;
         tidx = indirection.getTiletype(tx, ty, 0);
-        inner.drawTile(layer, tidx, px, py, igd, spriteScale);
+        inner.drawTile(layer, tidx, px, py, igd, spriteScale, editor);
     }
 
     @Override
