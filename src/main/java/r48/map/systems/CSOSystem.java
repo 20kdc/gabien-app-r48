@@ -18,6 +18,7 @@ import r48.io.PathUtils;
 import r48.io.cs.CSOObjectBackend;
 import r48.map.*;
 import r48.map.drawlayers.*;
+import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.TraditionalEventAccess;
 import r48.map.imaging.*;
@@ -162,7 +163,7 @@ public class CSOSystem extends MapSystem {
                 }
             };
             RubyIO target2 = AppMain.objectDB.getObject(str);
-            TraditionalEventAccess tea = new TraditionalEventAccess(target2, "@psp", 0, "SPEvent", spawns, boops);
+            IEventAccess tea = createEventAccess(str);
             // biscuits are not available in this build.
             RubyTable pxmTab = new RubyTable(target2.getInstVarBySymbol("@pxm").userVal);
             RubyTable pxaTab = new RubyTable(target2.getInstVarBySymbol("@pxa").userVal);
@@ -229,6 +230,10 @@ public class CSOSystem extends MapSystem {
         });
     }
 
+    private IEventAccess createEventAccess(String str) {
+        return new TraditionalEventAccess(str, "CSOMap", "@psp", 0, "SPEvent", "@x", "@y", "@name", spawns, boops);
+    }
+
     @Override
     public MapViewDetails mapViewRequest(final String gum, boolean allowCreate) {
         if (!allowCreate)
@@ -249,7 +254,7 @@ public class CSOSystem extends MapSystem {
     }
 
     private MapViewState createMapViewState(String gum, RubyIO mapRIO) {
-        return MapViewState.fromRT(rendererFromTso(new RubyIO().setString(gum, true)), gum, new String[] {}, mapRIO, "@pxm", false, new TraditionalEventAccess(mapRIO, "@psp", 0, "SPEvent", spawns, boops));
+        return MapViewState.fromRT(rendererFromTso(new RubyIO().setString(gum, true)), gum, new String[] {}, mapRIO, "@pxm", false, createEventAccess(gum));
     }
 
     @Override

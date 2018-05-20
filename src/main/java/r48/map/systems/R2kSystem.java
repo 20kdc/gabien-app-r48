@@ -200,7 +200,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
 
                     final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(mapId);
                     RubyIO map = AppMain.objectDB.getObject(objn);
-                    final IEventAccess events = new R2kSavefileEventAccess(root);
+                    final IEventAccess events = new R2kSavefileEventAccess(obj, root, "RPG::Save");
                     if (map == null)
                         return MapViewState.getBlank(null, new String[] {
                                 objn
@@ -255,7 +255,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             if (AppMain.objectDB.getObject(objn, null) == null)
                 return null;
         final RubyIO map = AppMain.objectDB.getObject(objn, "RPG::Map");
-        final IEventAccess iea = new TraditionalEventAccess(map, "@events", 1, "RPG::Event");
+        final IEventAccess iea = new TraditionalEventAccess(objn, "RPG::Map", "@events", 1, "RPG::Event");
         return new MapViewDetails(objn, "RPG::Map", new IFunction<String, MapViewState>() {
             private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("RPG_RT.ldb");
             @Override

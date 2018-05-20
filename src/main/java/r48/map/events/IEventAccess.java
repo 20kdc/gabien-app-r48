@@ -23,8 +23,11 @@ public interface IEventAccess {
     // This should be empty for non-Map event renderers.
     LinkedList<RubyIO> getEventKeys();
 
+    // Should return null on event not available
     RubyIO getEvent(RubyIO key);
 
+    // Should do nothing on event not available
+    // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
     void delEvent(RubyIO key);
 
     // Returns the "add event" strings (strings may or may not be null, but the array must not be null)
@@ -32,12 +35,13 @@ public interface IEventAccess {
 
     // returns one of:
     // null for fail & do nothing
-    // Ruby null for "run the modification notifier"
     // the key
-
+    // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
     RubyIO addEvent(RubyIO eve, int type);
 
-    String getEventSchema(RubyIO key);
+    // {eventSchema, root, rootSchema}
+    // Should return null on event not available
+    String[] getEventSchema(RubyIO key);
 
     int getEventType(RubyIO evK);
 
@@ -46,5 +50,23 @@ public interface IEventAccess {
     // everything else I thought up was just hacky or overabstracting
     Runnable hasSync(RubyIO evK);
 
+    // Name of "Events" panel. Cannot be null
     String customEventsName();
+
+    // Given an event key, return X.
+    // Can error if the event does not exist.
+    long getEventX(RubyIO a);
+
+    // Given an event key, return Y.
+    // Can error if the event does not exist.
+    long getEventY(RubyIO a);
+
+    // Given an event key, set XY.
+    // Does nothing if the event does not exist.
+    // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
+    void setEventXY(RubyIO a, long x, long y);
+
+    // Given an event key, return a name or null.
+    // Can error if the event does not exist.
+    String getEventName(RubyIO a);
 }

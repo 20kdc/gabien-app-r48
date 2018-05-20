@@ -52,14 +52,12 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
         // Event Enable
         // Having it here is more efficient than having it as a tool overlay,
         // and sometimes the user might want to see events when using other tools.
-        LinkedList<RubyIO> ev = new LinkedList<RubyIO>();
-        for (RubyIO r : eventList.getEventKeys())
-            ev.add(eventList.getEvent(r));
+        LinkedList<RubyIO> ev = eventList.getEventKeys();
         Collections.sort(ev, new Comparator<RubyIO>() {
             @Override
             public int compare(RubyIO a, RubyIO b) {
-                int yA = (int) a.getInstVarBySymbol("@y").fixnumVal;
-                int yB = (int) b.getInstVarBySymbol("@y").fixnumVal;
+                int yA = (int) eventList.getEventY(a);
+                int yB = (int) eventList.getEventY(b);
                 if (yA < yB)
                     return -1;
                 if (yA > yB)
@@ -67,9 +65,9 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
                 return 0;
             }
         });
-        for (RubyIO evI : ev) {
-            int x = (int) evI.getInstVarBySymbol("@x").fixnumVal;
-            int y = (int) evI.getInstVarBySymbol("@y").fixnumVal;
+        for (RubyIO evK : ev) {
+            int x = (int) eventList.getEventX(evK);
+            int y = (int) eventList.getEventY(evK);
             if (x < camTX)
                 continue;
             if (y < camTY)
@@ -77,6 +75,9 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
             if (x >= camTR)
                 continue;
             if (y >= camTB)
+                continue;
+            RubyIO evI = eventList.getEvent(evK);
+            if (evI == null)
                 continue;
             int px = (x * eTileSize) - camX;
             int py = (y * eTileSize) - camY;

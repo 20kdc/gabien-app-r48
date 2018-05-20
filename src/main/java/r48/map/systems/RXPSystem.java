@@ -107,7 +107,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
             if (AppMain.objectDB.getObject(gum, null) == null)
                 return null;
         final RubyIO map = AppMain.objectDB.getObject(gum, "RPG::Map");
-        final IEventAccess events = new TraditionalEventAccess(map, "@events", 1, "RPG::Event");
+        final IEventAccess events = new TraditionalEventAccess(gum, "RPG::Map", "@events", 1, "RPG::Event");
         return new MapViewDetails(gum, "RPG::Map", new IFunction<String, MapViewState>() {
             private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("Tilesets");
             @Override

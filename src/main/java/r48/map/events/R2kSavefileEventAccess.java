@@ -28,13 +28,17 @@ import java.util.Map;
  */
 public class R2kSavefileEventAccess implements IEventAccess {
     public final RubyIO saveFileRoot;
+    public final String saveFileRootId;
+    public final String saveFileRootSchema;
 
     // This only contains the living.
     // The ghosts are added dynamically by getEventKeys & getEvent
     public final RubyIO eventsHash = new RubyIO().setHash();
 
-    public R2kSavefileEventAccess(RubyIO root) {
+    public R2kSavefileEventAccess(String rootId, RubyIO root, String rootSchema) {
         saveFileRoot = root;
+        saveFileRootId = rootId;
+        saveFileRootSchema = rootSchema;
         int mapId = (int) getMapId();
         // Inject 'events'
         sfveInjectEvent("Party", mapId, saveFileRoot.getInstVarBySymbol("@party_pos"));
@@ -106,6 +110,7 @@ public class R2kSavefileEventAccess implements IEventAccess {
                 } else {
                     rio.getInstVarBySymbol("@map").fixnumVal = 0;
                     AppMain.launchDialog(TXDB.get("Can't be deleted, but was moved to @map 0 (as close as you can get to deleted)"));
+                    pokeHive();
                 }
             }
         } else {
@@ -124,6 +129,7 @@ public class R2kSavefileEventAccess implements IEventAccess {
                 } else {
                     AppMain.launchDialog(TXDB.get("As the version numbers are in sync, this worked."));
                 }
+                pokeHive();
             }
         }
     }
@@ -169,21 +175,21 @@ public class R2kSavefileEventAccess implements IEventAccess {
     }
 
     @Override
-    public String getEventSchema(RubyIO key) {
+    public String[] getEventSchema(RubyIO key) {
         if (key.type == '"') {
             if (key.decString().equals("Party"))
-                return "RPG::SavePartyLocation";
+                return new String[] {"RPG::SavePartyLocation", saveFileRootId, saveFileRootSchema};
             if (key.decString().equals("Boat"))
-                return "RPG::SaveVehicleLocation";
+                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema};
             if (key.decString().equals("Ship"))
-                return "RPG::SaveVehicleLocation";
+                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema};
             if (key.decString().equals("Airship"))
-                return "RPG::SaveVehicleLocation";
+                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema};
         }
         // Used for ghosts
         if (eventsHash.getHashVal(key) == null)
-            return "OPAQUE";
-        return "RPG::SaveMapEvent";
+            return new String[] {"OPAQUE"};
+        return new String[] {"RPG::SaveMapEvent", saveFileRootId, saveFileRootSchema};
     }
 
     @Override
@@ -215,6 +221,7 @@ public class R2kSavefileEventAccess implements IEventAccess {
                             return;
                         }
                         getSaveEvents().hashVal.put(evK, eventAsSaveEvent(getMapId(), evK, ev));
+                        pokeHive();
                     }
                 }
             };
@@ -224,5 +231,37 @@ public class R2kSavefileEventAccess implements IEventAccess {
     @Override
     public String customEventsName() {
         return TXDB.get("Player/Vehicles/Events");
+    }
+
+    @Override
+    public long getEventX(RubyIO a) {
+        return getEvent(a).getInstVarBySymbol("@x").fixnumVal;
+    }
+
+    @Override
+    public long getEventY(RubyIO a) {
+        return getEvent(a).getInstVarBySymbol("@y").fixnumVal;
+    }
+
+    @Override
+    public void setEventXY(RubyIO a, long x, long y) {
+        RubyIO se = getSaveEvents();
+        a = se.getHashVal(a);
+        if (a == null) {
+            AppMain.launchDialog(TXDB.get("The ghost refuses to budge."));
+            return;
+        }
+        a.getInstVarBySymbol("@x").fixnumVal = x;
+        a.getInstVarBySymbol("@y").fixnumVal = y;
+        pokeHive();
+    }
+
+    @Override
+    public String getEventName(RubyIO a) {
+        return a.getInstVarBySymbol("@name").decString();
+    }
+
+    public void pokeHive() {
+        AppMain.objectDB.objectRootModified(saveFileRoot, new SchemaPath(AppMain.schemas.getSDBEntry(saveFileRootSchema), saveFileRoot));
     }
 }

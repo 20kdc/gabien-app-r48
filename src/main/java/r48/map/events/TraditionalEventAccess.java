@@ -21,28 +21,33 @@ import java.util.LinkedList;
  * Created on December 15th 2017
  */
 public class TraditionalEventAccess implements IEventAccess {
+    private final String mapRootId, mapRootSchema, eventsPath;
     private final RubyIO mapRoot;
-    private final String eventsPath;
     private final int eventIdBase;
     private final String eventSchema;
     private final String eventsName, eventName;
+    private final String propPathX, propPathY, propPathName;
 
-    public TraditionalEventAccess(RubyIO base, String path, int b, String schema) {
-        mapRoot = base;
-        eventsPath = path;
-        eventIdBase = b;
-        eventSchema = schema;
-        eventsName = TXDB.get("Events");
-        eventName = TXDB.get("+ Add Event");
+    public TraditionalEventAccess(String baseOId, String baseSchema, String path, int b, String schema) {
+        this(baseOId, baseSchema, path, b, schema, "@x", "@y", "@name");
     }
 
-    public TraditionalEventAccess(RubyIO base, String path, int b, String schema, String en, String en2) {
-        mapRoot = base;
+    public TraditionalEventAccess(String baseOId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName) {
+        this(baseOId, baseSchema, path, b, schema, pathX, pathY, pathName, TXDB.get("Events"), TXDB.get("+ Add Event"));
+    }
+
+    public TraditionalEventAccess(String baseOId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName, String en, String en2) {
+        mapRootId = baseOId;
+        mapRootSchema = baseSchema;
+        mapRoot = AppMain.objectDB.getObject(mapRootId);
         eventsPath = path;
         eventIdBase = b;
         eventSchema = schema;
         eventsName = en;
         eventName = en2;
+        propPathX = pathX;
+        propPathY = pathY;
+        propPathName = pathName;
     }
 
     @Override
@@ -63,6 +68,7 @@ public class TraditionalEventAccess implements IEventAccess {
     public void delEvent(RubyIO key) {
         RubyIO mapEvents = getMapEvents();
         mapEvents.removeHashVal(key);
+        pokeHive();
     }
 
     @Override
@@ -79,12 +85,17 @@ public class TraditionalEventAccess implements IEventAccess {
             eve = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry(eventSchema), key);
         RubyIO mapEvents = getMapEvents();
         mapEvents.hashVal.put(key, eve);
+        pokeHive();
         return key;
     }
 
     @Override
-    public String getEventSchema(RubyIO key) {
-        return eventSchema;
+    public String[] getEventSchema(RubyIO key) {
+        return new String[] {
+                eventSchema,
+                mapRootId,
+                mapRootSchema
+        };
     }
 
     @Override
@@ -102,6 +113,34 @@ public class TraditionalEventAccess implements IEventAccess {
         return eventsName;
     }
 
+    @Override
+    public long getEventX(RubyIO a) {
+        return PathSyntax.parse(getEvent(a), propPathX, true).fixnumVal;
+    }
+
+    @Override
+    public long getEventY(RubyIO a) {
+        return PathSyntax.parse(getEvent(a), propPathY, true).fixnumVal;
+    }
+
+    @Override
+    public void setEventXY(RubyIO a, long x, long y) {
+        RubyIO ev = getEvent(a);
+        if (ev == null)
+            return;
+        PathSyntax.parse(getEvent(a), propPathX, true).setFX(x);
+        PathSyntax.parse(getEvent(a), propPathY, true).setFX(y);
+        pokeHive();
+    }
+
+    @Override
+    public String getEventName(RubyIO a) {
+        RubyIO iv = PathSyntax.parse(getEvent(a), propPathName, true);
+        if (iv == null)
+            return null;
+        return iv.decString();
+    }
+
     private int getFreeIndex() {
         int unusedIndex = eventIdBase;
         RubyIO mapEvents = getMapEvents();
@@ -112,5 +151,9 @@ public class TraditionalEventAccess implements IEventAccess {
 
     public RubyIO getMapEvents() {
         return PathSyntax.parse(mapRoot, eventsPath, true);
+    }
+
+    private void pokeHive() {
+        AppMain.objectDB.objectRootModified(mapRoot, new SchemaPath(AppMain.schemas.getSDBEntry(mapRootSchema), mapRoot));
     }
 }

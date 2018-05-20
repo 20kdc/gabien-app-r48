@@ -74,12 +74,14 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public void confirmAt(final int x, final int y, final int layer) {
         svl.panelsClear();
         for (final RubyIO evK : mapView.mapTable.eventAccess.getEventKeys()) {
-            final RubyIO evI = mapView.mapTable.eventAccess.getEvent(evK);
-            if (evI.getInstVarBySymbol("@x").fixnumVal == x)
-                if (evI.getInstVarBySymbol("@y").fixnumVal == y) {
+            final long eventX = mapView.mapTable.eventAccess.getEventX(evK);
+            final long eventY = mapView.mapTable.eventAccess.getEventY(evK);
+            String eventName = mapView.mapTable.eventAccess.getEventName(evK);
+            if (eventX == x)
+                if (eventY == y) {
                     String nam = evK.toString();
-                    if (evI.getInstVarBySymbol("@name") != null)
-                        nam = evI.getInstVarBySymbol("@name").decString();
+                    if (eventName != null)
+                        nam = eventName;
 
                     Runnable r = mapView.mapTable.eventAccess.hasSync(evK);
                     if (r == null) {
@@ -88,6 +90,11 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
+                                    confirmAt(x, y, layer);
+                                    return;
+                                }
+                                RubyIO evI = mapView.mapTable.eventAccess.getEvent(evK);
+                                if (evI == null) {
                                     confirmAt(x, y, layer);
                                     return;
                                 }
@@ -101,7 +108,12 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     confirmAt(x, y, layer);
                                     return;
                                 }
-                                mapToolContext.accept(new UIMTEventMover(evI, mapToolContext));
+                                RubyIO evI = mapView.mapTable.eventAccess.getEvent(evK);
+                                if (evI == null) {
+                                    confirmAt(x, y, layer);
+                                    return;
+                                }
+                                mapToolContext.accept(new UIMTEventMover(evK, mapToolContext));
                             }
                         }, FontSizes.eventPickerEntryTextHeight);
                         button = new UIAppendButton(TXDB.get("Clone"), button, new Runnable() {
@@ -111,11 +123,14 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     confirmAt(x, y, layer);
                                     return;
                                 }
+                                RubyIO evI = mapView.mapTable.eventAccess.getEvent(evK);
+                                if (evI == null) {
+                                    confirmAt(x, y, layer);
+                                    return;
+                                }
                                 RubyIO newEvent = new RubyIO().setDeepClone(evI);
                                 if (mapView.mapTable.eventAccess.addEvent(newEvent, mapView.mapTable.eventAccess.getEventType(evK)) == null)
                                     return;
-                                // This'll fix the potential inconsistencies
-                                mapView.passModificationNotification();
                                 mapToolContext.accept(new UIMTEventMover(newEvent, mapToolContext));
                             }
                         }, FontSizes.eventPickerEntryTextHeight);
@@ -126,8 +141,12 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     confirmAt(x, y, layer);
                                     return;
                                 }
+                                RubyIO evI = mapView.mapTable.eventAccess.getEvent(evK);
+                                if (evI == null) {
+                                    confirmAt(x, y, layer);
+                                    return;
+                                }
                                 mapView.mapTable.eventAccess.delEvent(evK);
-                                mapView.passModificationNotification();
                                 confirmAt(x, y, layer);
                             }
                         }, FontSizes.eventPickerEntryTextHeight);
@@ -162,10 +181,6 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                     RubyIO k = mapView.mapTable.eventAccess.addEvent(null, i2);
                     if (k == null)
                         return;
-                    if (k.type == '0') {
-                        mapView.passModificationNotification();
-                        return;
-                    }
                     RubyIO v = mapView.mapTable.eventAccess.getEvent(k);
                     if (v == null)
                         throw new RuntimeException("IEventAccess implementation not sane.");
@@ -178,8 +193,6 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                     }
                     v.getInstVarBySymbol("@x").fixnumVal = x;
                     v.getInstVarBySymbol("@y").fixnumVal = y;
-                    // Note: modification notify before show, to prevent the possibility of the schema info from IEA being wrong
-                    mapView.passModificationNotification();
                     showEvent(k, mapView, v);
                 }
             }));
@@ -197,7 +210,10 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     }
 
     public static void showEvent(RubyIO key, UIMapView map, RubyIO event) {
-        AppMain.launchNonRootSchema(map.map.object, map.map.objectSchema, key, event, map.mapTable.eventAccess.getEventSchema(key), "E" + key, map);
+        String[] root = map.mapTable.eventAccess.getEventSchema(key);
+        if (root == null)
+            return;
+        AppMain.launchNonRootSchema(AppMain.objectDB.getObject(root[1]), root[2], key, event, root[0], "E" + key, map);
     }
 
     public static void showEventDivorced(RubyIO key, RubyIO map, String mapSchema, RubyIO event, String eventSchema) {
