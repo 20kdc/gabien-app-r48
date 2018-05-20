@@ -20,13 +20,13 @@ import r48.map.UIMapView;
  * Created on 1/1/17.
  */
 public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
-    private RubyIO targetEvent;
+    private RubyIO targetEventKey;
     private UIMapView mapView;
 
-    public UIMTEventMover(RubyIO evI, IMapToolContext mv) {
+    public UIMTEventMover(IMapToolContext mv, RubyIO evK) {
         super(mv);
         mapView = mv.getMapView();
-        targetEvent = evI;
+        targetEventKey = evK;
         changeInner(new UILabel(TXDB.get("Click to place event"), FontSizes.dialogWindowTextHeight), true);
     }
 
@@ -56,9 +56,7 @@ public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public void confirmAt(int x, int y, int layer) {
-        targetEvent.getInstVarBySymbol("@x").fixnumVal = x;
-        targetEvent.getInstVarBySymbol("@y").fixnumVal = y;
-        mapView.passModificationNotification();
+        mapView.mapTable.eventAccess.setEventXY(targetEventKey, x, y);
         mapToolContext.accept(new UIMTEventPicker(mapToolContext));
     }
 

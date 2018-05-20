@@ -20,6 +20,7 @@ import r48.map.*;
 import r48.map.drawlayers.*;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
+import r48.map.events.MergingEventAccess;
 import r48.map.events.TraditionalEventAccess;
 import r48.map.imaging.*;
 import r48.map.tiles.*;
@@ -35,8 +36,6 @@ import java.io.OutputStream;
  * Created on 11th May 2018
  */
 public class CSOSystem extends MapSystem {
-    public String spawns = TXDB.get("Player Spawns");
-    public String boops = TXDB.get("+ New Spawn");
     public IImage cts;
     public CSOSystem() {
         super(new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new ChainedImageLoader(new IImageLoader[] {
@@ -142,8 +141,10 @@ public class CSOSystem extends MapSystem {
 
             @Override
             public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int sprScale) {
-                int scx = (int) (target.getInstVarBySymbol("@type").fixnumVal + 1);
-                igd.blitScaledImage(scx * 16, 0, 16, 16, ox, oy, 16 * sprScale, 16 * sprScale, quote);
+                if (target.type == 'o') {
+                    int scx = (int) (target.getInstVarBySymbol("@type").fixnumVal + 1);
+                    igd.blitScaledImage(scx * 16, 0, 16, 16, ox, oy, 16 * sprScale, 16 * sprScale, quote);
+                }
             }
         };
         if (target != null) {
@@ -163,8 +164,7 @@ public class CSOSystem extends MapSystem {
                 }
             };
             RubyIO target2 = AppMain.objectDB.getObject(str);
-            IEventAccess tea = createEventAccess(str);
-            // biscuits are not available in this build.
+            IEventAccess tea = createEventAccess(pop);
             RubyTable pxmTab = new RubyTable(target2.getInstVarBySymbol("@pxm").userVal);
             RubyTable pxaTab = new RubyTable(target2.getInstVarBySymbol("@pxa").userVal);
             // KEEP IN SYNC WITH THUMBNAIL CREATOR VISIBILITY CONTROLS
@@ -230,8 +230,18 @@ public class CSOSystem extends MapSystem {
         });
     }
 
-    private IEventAccess createEventAccess(String str) {
-        return new TraditionalEventAccess(str, "CSOMap", "@psp", 0, "SPEvent", "@x", "@y", "@name", spawns, boops);
+    private IEventAccess createEventAccess(CSOObjectBackend.CSOParsedOP str) {
+        String pspId = str.asSubtype(CSOObjectBackend.CSOSubtype.PSP).toString();
+        String entId = str.asSubtype(CSOObjectBackend.CSOSubtype.ENT).toString();
+        TraditionalEventAccess tea1 = new TraditionalEventAccess(pspId, "CSOPlayerStarts", "", 0, "SPEvent", "@x", "@y", "@name", "", TXDB.get("+ New Spawnpoint"));
+        TraditionalEventAccess tea2 = new TraditionalEventAccess(entId, "CSOEntities", "", 1, "ENTEvent", ":{$x", ":{$y", ":{$type", "", TXDB.get("+ New Entity")) {
+            @Override
+            protected RubyIO convIndex(long unusedIndex) {
+                return new RubyIO().setString(Long.toString(unusedIndex), false);
+            }
+        };
+        // timeTravelForTwo(tea1, tea2)
+        return new MergingEventAccess(TXDB.get("Spawnpoints / Entities"), tea1, tea2);
     }
 
     @Override
@@ -239,11 +249,12 @@ public class CSOSystem extends MapSystem {
         if (!allowCreate)
             if (AppMain.objectDB.getObject(gum, null) == null)
                 return null;
+        final CSOObjectBackend.CSOParsedOP pop = CSOObjectBackend.parseObjectName(gum);
         final RubyIO mapRIO = AppMain.objectDB.getObject(gum, "CSOMap");
         return new MapViewDetails(gum, "CSOMap", new IFunction<String, MapViewState>() {
             @Override
             public MapViewState apply(String s) {
-                return createMapViewState(gum, mapRIO);
+                return createMapViewState(pop, mapRIO);
             }
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override
@@ -253,8 +264,9 @@ public class CSOSystem extends MapSystem {
         });
     }
 
-    private MapViewState createMapViewState(String gum, RubyIO mapRIO) {
-        return MapViewState.fromRT(rendererFromTso(new RubyIO().setString(gum, true)), gum, new String[] {}, mapRIO, "@pxm", false, createEventAccess(gum));
+    // NOTE: Must have subtype Main.
+    private MapViewState createMapViewState(CSOObjectBackend.CSOParsedOP pop, RubyIO mapRIO) {
+        return MapViewState.fromRT(rendererFromTso(new RubyIO().setString(pop.toString(), true)), pop.toString(), new String[] {}, mapRIO, "@pxm", false, createEventAccess(pop));
     }
 
     @Override
@@ -271,7 +283,7 @@ public class CSOSystem extends MapSystem {
         }
         if (op.subtype == CSOObjectBackend.CSOSubtype.Main) {
             // EXTREMELY HACKY BUT NECESSARY
-            MapViewState mvs = createMapViewState(objectName, mapRIO);
+            MapViewState mvs = createMapViewState(op, mapRIO);
             int ts = mvs.renderer.tileRenderer.getTileSize();
             int w = mvs.width * ts;
             int h = mvs.height * ts;

@@ -53,8 +53,9 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         // use this time to cache the essentials, this should vastly speed up drawing
         eventCache.clear();
         for (RubyIO evK : mapView.mapTable.eventAccess.getEventKeys()) {
-            RubyIO evI = mapView.mapTable.eventAccess.getEvent(evK);
-            eventCache.put((evI.getInstVarBySymbol("@x").fixnumVal) + ";" + (evI.getInstVarBySymbol("@y").fixnumVal), evI);
+            long x = mapView.mapTable.eventAccess.getEventX(evK);
+            long y = mapView.mapTable.eventAccess.getEventY(evK);
+            eventCache.put(x + ";" + y, evK);
         }
         return 1;
     }
@@ -113,7 +114,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     confirmAt(x, y, layer);
                                     return;
                                 }
-                                mapToolContext.accept(new UIMTEventMover(evK, mapToolContext));
+                                mapToolContext.accept(new UIMTEventMover(mapToolContext, evK));
                             }
                         }, FontSizes.eventPickerEntryTextHeight);
                         button = new UIAppendButton(TXDB.get("Clone"), button, new Runnable() {
@@ -129,9 +130,10 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     return;
                                 }
                                 RubyIO newEvent = new RubyIO().setDeepClone(evI);
-                                if (mapView.mapTable.eventAccess.addEvent(newEvent, mapView.mapTable.eventAccess.getEventType(evK)) == null)
+                                RubyIO nevK = mapView.mapTable.eventAccess.addEvent(newEvent, mapView.mapTable.eventAccess.getEventType(evK));
+                                if (nevK == null)
                                     return;
-                                mapToolContext.accept(new UIMTEventMover(newEvent, mapToolContext));
+                                mapToolContext.accept(new UIMTEventMover(mapToolContext, nevK));
                             }
                         }, FontSizes.eventPickerEntryTextHeight);
                         button = new UIAppendButton(TXDB.get("Del."), button, new Runnable() {
@@ -159,10 +161,8 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 // It's possible (if unlikely) that this action actually became invalid.
                                 // Consider: confirmAt -> object change -> click Sync
                                 Runnable r = mapView.mapTable.eventAccess.hasSync(evK);
-                                if (r != null) {
+                                if (r != null)
                                     r.run();
-                                    mapView.passModificationNotification();
-                                }
                                 confirmAt(x, y, layer);
                             }
                         }, FontSizes.eventPickerEntryTextHeight);
@@ -191,8 +191,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                             n = "0" + n;
                         evName.encString("EV" + n, false);
                     }
-                    v.getInstVarBySymbol("@x").fixnumVal = x;
-                    v.getInstVarBySymbol("@y").fixnumVal = y;
+                    mapView.mapTable.eventAccess.setEventXY(k, x, y);
                     showEvent(k, mapView, v);
                 }
             }));

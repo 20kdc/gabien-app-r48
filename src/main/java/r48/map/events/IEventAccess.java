@@ -55,18 +55,18 @@ public interface IEventAccess {
 
     // Given an event key, return X.
     // Can error if the event does not exist.
-    long getEventX(RubyIO a);
+    long getEventX(RubyIO key);
 
     // Given an event key, return Y.
     // Can error if the event does not exist.
-    long getEventY(RubyIO a);
+    long getEventY(RubyIO key);
 
     // Given an event key, set XY.
     // Does nothing if the event does not exist.
     // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
-    void setEventXY(RubyIO a, long x, long y);
+    void setEventXY(RubyIO key, long x, long y);
 
     // Given an event key, return a name or null.
     // Can error if the event does not exist.
-    String getEventName(RubyIO a);
+    String getEventName(RubyIO key);
 }

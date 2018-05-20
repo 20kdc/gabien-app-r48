@@ -35,6 +35,10 @@ public class CSOObjectBackend implements IObjectBackend {
             return null;
         if (parsed.subtype == CSOSubtype.MTD) {
             return job.loadObjectFromFile(parsed.fileName);
+        } else if (parsed.subtype == CSOSubtype.ENT) {
+            return job.loadObjectFromFile(parsed.fileName);
+        } else if (parsed.subtype == CSOSubtype.PSP) {
+            return loadPSPFromFile(parsed.fileName);
         } else if (parsed.subtype == CSOSubtype.Main) {
             RubyIO pxa = cob.loadObjectFromFile(parsed.fileName + ".pxa");
             if (pxa == null)
@@ -42,14 +46,10 @@ public class CSOObjectBackend implements IObjectBackend {
             RubyIO pxm = cob.loadObjectFromFile(parsed.fileName + ".pxm");
             if (pxm == null)
                 return null;
-            RubyIO psp = loadPSPFromFile(parsed.fileName + ".psp");
-            if (psp == null)
-                return null;
             RubyIO map = new RubyIO();
             map.setSymlike("CSOMap", true);
             map.addIVar("@pxa", pxa);
             map.addIVar("@pxm", pxm);
-            map.addIVar("@psp", psp);
             return map;
         } else {
             return null;
@@ -63,10 +63,13 @@ public class CSOObjectBackend implements IObjectBackend {
             throw new IOException("Invalid object name");
         if (parsed.subtype == CSOSubtype.MTD) {
             job.saveObjectToFile(parsed.fileName, object);
+        } else if (parsed.subtype == CSOSubtype.ENT) {
+            job.saveObjectToFile(parsed.fileName, object);
+        } else if (parsed.subtype == CSOSubtype.PSP) {
+            savePSPToFile(parsed.fileName, object);
         } else if (parsed.subtype == CSOSubtype.Main) {
             cob.saveObjectToFile(parsed.fileName + ".pxa", object.getInstVarBySymbol("@pxa"));
             cob.saveObjectToFile(parsed.fileName + ".pxm", object.getInstVarBySymbol("@pxm"));
-            savePSPToFile(parsed.fileName + ".psp", object.getInstVarBySymbol("@psp"));
         } else {
             throw new IOException("Cannot handle this subtype: " + parsed.subtype);
         }
@@ -160,6 +163,12 @@ public class CSOObjectBackend implements IObjectBackend {
         if (s.startsWith("mtd:")) {
             cst = CSOSubtype.MTD;
             s = s.substring(4);
+        } else if (s.startsWith("psp:")) {
+            cst = CSOSubtype.PSP;
+            s = s.substring(4);
+        } else if (s.startsWith("ent:")) {
+            cst = CSOSubtype.ENT;
+            s = s.substring(4);
         }
         if (s.contains("\\") || s.contains(":"))
             return null;
@@ -178,13 +187,38 @@ public class CSOObjectBackend implements IObjectBackend {
         public CSOParsedOP(String g, String m, CSOSubtype st) {
             gameMode = g;
             mapName = m;
-            fileName = g + "/" + m + "/" + m + (st == CSOSubtype.MTD ? ".mtd" : "");
+            String pfx = "";
+            if (st == CSOSubtype.MTD)
+                pfx += ".mtd";
+            if (st == CSOSubtype.PSP)
+                pfx += ".psp";
+            if (st == CSOSubtype.ENT)
+                pfx += ".ent";
+            fileName = g + "/" + m + "/" + m + pfx;
             subtype = st;
+        }
+
+        public CSOParsedOP asSubtype(CSOSubtype st) {
+            return new CSOParsedOP(gameMode, mapName, st);
+        }
+
+        @Override
+        public String toString() {
+            String typ = "";
+            if (subtype == CSOSubtype.MTD)
+                typ = "mtd:";
+            if (subtype == CSOSubtype.PSP)
+                typ = "psp:";
+            if (subtype == CSOSubtype.ENT)
+                typ = "ent:";
+            return typ + gameMode + "/" + mapName;
         }
     }
 
     public enum CSOSubtype {
         Main,
-        MTD
+        MTD,
+        PSP,
+        ENT
     }
 }

@@ -39,7 +39,7 @@ public class TraditionalEventAccess implements IEventAccess {
     public TraditionalEventAccess(String baseOId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName, String en, String en2) {
         mapRootId = baseOId;
         mapRootSchema = baseSchema;
-        mapRoot = AppMain.objectDB.getObject(mapRootId);
+        mapRoot = AppMain.objectDB.getObject(mapRootId, baseSchema);
         eventsPath = path;
         eventIdBase = b;
         eventSchema = schema;
@@ -80,7 +80,7 @@ public class TraditionalEventAccess implements IEventAccess {
 
     @Override
     public RubyIO addEvent(RubyIO eve, int type) {
-        RubyIO key = new RubyIO().setFX(getFreeIndex());
+        RubyIO key = getFreeIndex();
         if (eve == null)
             eve = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry(eventSchema), key);
         RubyIO mapEvents = getMapEvents();
@@ -141,12 +141,16 @@ public class TraditionalEventAccess implements IEventAccess {
         return iv.decString();
     }
 
-    private int getFreeIndex() {
-        int unusedIndex = eventIdBase;
+    private RubyIO getFreeIndex() {
+        long unusedIndex = eventIdBase;
         RubyIO mapEvents = getMapEvents();
-        while (mapEvents.getHashVal(new RubyIO().setFX(unusedIndex)) != null)
+        while (mapEvents.getHashVal(convIndex(unusedIndex)) != null)
             unusedIndex++;
-        return unusedIndex;
+        return convIndex(unusedIndex);
+    }
+
+    protected RubyIO convIndex(long unusedIndex) {
+        return new RubyIO().setFX(unusedIndex);
     }
 
     public RubyIO getMapEvents() {
