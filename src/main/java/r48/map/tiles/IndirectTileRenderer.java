@@ -54,7 +54,7 @@ public class IndirectTileRenderer implements ITileRenderer {
 
     @Override
     public int getFrame() {
-        return 0;
+        return inner.getFrame();
     }
 
     @Override
