@@ -11,6 +11,7 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
+import r48.dbs.ValueSyntax;
 import r48.schema.util.SchemaPath;
 
 import java.util.LinkedList;
@@ -94,7 +95,8 @@ public class TraditionalEventAccess implements IEventAccess {
         return new String[] {
                 eventSchema,
                 mapRootId,
-                mapRootSchema
+                mapRootSchema,
+                ValueSyntax.encode(key, true)
         };
     }
 

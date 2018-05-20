@@ -51,7 +51,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
         if (tgo == null) {
             if (!optional)
                 throw new RuntimeException("Error: Made it to PathSchemaElement.buildHoldingEditor when target wasn't there: " + pStr);
-            e2 = new UITextButton(TXDB.get("<Missing - add?>"), FontSizes.schemaButtonTextHeight, new Runnable() {
+            e2 = new UITextButton(TXDB.get("<Not present - Add>"), FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     RubyIO rio = PathSyntax.parse(target, pStr, 1, sdb2);

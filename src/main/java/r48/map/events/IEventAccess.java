@@ -39,7 +39,7 @@ public interface IEventAccess {
     // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
     RubyIO addEvent(RubyIO eve, int type);
 
-    // {eventSchema, root, rootSchema}
+    // {eventSchema, root, rootSchema, keyValueSyntax}
     // Should return null on event not available
     String[] getEventSchema(RubyIO key);
 

@@ -27,4 +27,6 @@ public interface ISchemaHost {
     boolean isActive();
 
     SchemaPath getCurrentObject();
+
+    String getContextGUM();
 }

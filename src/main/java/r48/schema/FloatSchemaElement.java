@@ -95,6 +95,8 @@ public class FloatSchemaElement extends SchemaElement {
                 ok = true;
         if (target.type == 'f')
             ok = true;
+        if (setDefault)
+            ok = false;
         if (!ok) {
             if (!encodeVal(target, def))
                 throw new RuntimeException("Float default must be valid");

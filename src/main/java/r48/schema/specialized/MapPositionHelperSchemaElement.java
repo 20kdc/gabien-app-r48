@@ -38,15 +38,20 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
+        RubyIO pathARIO = null;
+        if (pathA != null)
+            pathARIO = PathSyntax.parse(target, pathA, sdb2);
         final RubyIO[] abc = {
-                PathSyntax.parse(target, pathA, sdb2),
+                pathARIO,
                 PathSyntax.parse(target, pathB, sdb2),
                 PathSyntax.parse(target, pathC, sdb2)
         };
-        for (int i = 0; i < 3; i++)
+        for (int i = (pathA == null ? 1 : 0); i < 3; i++)
             if (abc[i] == null)
-                return new UILabel(TXDB.get("A component is missing."), FontSizes.schemaFieldTextHeight);
-        String mapGUM = AppMain.system.mapReferentToGUM(abc[0]);
+                return new UILabel(TXDB.get("Position editor disabled."), FontSizes.schemaFieldTextHeight);
+        String mapGUM = launcher.getContextGUM();
+        if (abc[0] != null)
+            mapGUM = AppMain.system.mapReferentToGUM(abc[0]);
         if (mapGUM == null)
             return new UILabel(TXDB.get("Can't translate ID to map."), FontSizes.schemaFieldTextHeight);
         // The UIMapView constructor will automatically create missing maps. We don't want this.

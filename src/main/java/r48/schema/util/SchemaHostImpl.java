@@ -185,6 +185,13 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost, IW
     }
 
     @Override
+    public String getContextGUM() {
+        if (contextView != null)
+            return contextView.mapGUM;
+        return null;
+    }
+
+    @Override
     public ISchemaHost newBlank() {
         return new SchemaHostImpl(hostWindows, contextView);
     }

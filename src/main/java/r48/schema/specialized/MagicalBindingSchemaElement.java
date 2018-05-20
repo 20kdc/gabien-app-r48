@@ -136,11 +136,6 @@ public class MagicalBindingSchemaElement extends SchemaElement {
         }
 
         @Override
-        public StuffRenderer getContextRenderer() {
-            return trueHost.getContextRenderer();
-        }
-
-        @Override
         public ISchemaHost newBlank() {
             return trueHost.newBlank();
         }
@@ -153,6 +148,16 @@ public class MagicalBindingSchemaElement extends SchemaElement {
         @Override
         public SchemaPath getCurrentObject() {
             return lastPathVirt;
+        }
+
+        @Override
+        public StuffRenderer getContextRenderer() {
+            return trueHost.getContextRenderer();
+        }
+
+        @Override
+        public String getContextGUM() {
+            return trueHost.getContextGUM();
         }
     }
 }

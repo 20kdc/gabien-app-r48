@@ -10,6 +10,7 @@ package r48.map.events;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.dbs.ValueSyntax;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.schema.util.SchemaPath;
 
@@ -178,18 +179,18 @@ public class R2kSavefileEventAccess implements IEventAccess {
     public String[] getEventSchema(RubyIO key) {
         if (key.type == '"') {
             if (key.decString().equals("Party"))
-                return new String[] {"RPG::SavePartyLocation", saveFileRootId, saveFileRootSchema};
+                return new String[] {"RPG::SavePartyLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key, true)};
             if (key.decString().equals("Boat"))
-                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema};
+                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key, true)};
             if (key.decString().equals("Ship"))
-                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema};
+                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key, true)};
             if (key.decString().equals("Airship"))
-                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema};
+                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key, true)};
         }
         // Used for ghosts
         if (eventsHash.getHashVal(key) == null)
-            return new String[] {"OPAQUE"};
-        return new String[] {"RPG::SaveMapEvent", saveFileRootId, saveFileRootSchema};
+            return new String[] {"OPAQUE", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key, true)};
+        return new String[] {"RPG::SaveMapEvent", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key, true)};
     }
 
     @Override

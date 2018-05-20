@@ -14,6 +14,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.dbs.ValueSyntax;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
@@ -212,6 +213,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         String[] root = map.mapTable.eventAccess.getEventSchema(key);
         if (root == null)
             return;
+        key = ValueSyntax.decode(root[3], true);
         AppMain.launchNonRootSchema(AppMain.objectDB.getObject(root[1]), root[2], key, event, root[0], "E" + key, map);
     }
 

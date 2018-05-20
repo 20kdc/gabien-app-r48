@@ -120,9 +120,9 @@ public class SDB {
                 workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                 if (objId != -1) {
                     commandBufferNames.put(Integer.toString(objId), TXDB.get(outerContext, objName));
-                    commandBufferSchemas.put("i" + objId, workingObj);
+                    commandBufferSchemas.put(Integer.toString(objId), workingObj);
                 } else {
-                    commandBufferSchemas.put("x" + objId, workingObj);
+                    commandBufferSchemas.put("", workingObj);
                 }
                 //MapSystem.out.println("Array definition when inappropriate: " + objName);
             }
@@ -591,9 +591,11 @@ public class SDB {
 
                         if (text.equals("mapPositionHelper")) {
                             String a = args[point++];
+                            if (a.equals("."))
+                                a = null;
                             String b = args[point++];
                             String c = args[point++];
-                            return new MapPositionHelperSchemaElement(a, b, c, false);
+                            return new MapPositionHelperSchemaElement(a, b, c, v1p1);
                         }
                         if (text.equals("eventTileHelper")) {
                             String c = args[point++];
