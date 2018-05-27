@@ -41,8 +41,8 @@ public class ObjectDB {
     //  this locks the object into memory for as long as it's modified.
     public HashSet<RubyIO> modifiedObjects = new HashSet<RubyIO>();
     public HashSet<RubyIO> newlyCreatedObjects = new HashSet<RubyIO>();
-    public WeakHashMap<RubyIO, LinkedList<IConsumer<SchemaPath>>> objectListenersMap = new WeakHashMap<RubyIO, LinkedList<IConsumer<SchemaPath>>>();
-    public HashMap<String, LinkedList<IConsumer<SchemaPath>>> objectRootListenersMap = new HashMap<String, LinkedList<IConsumer<SchemaPath>>>();
+    public WeakHashMap<RubyIO, LinkedList<WeakReference<IConsumer<SchemaPath>>>> objectListenersMap = new WeakHashMap<RubyIO, LinkedList<WeakReference<IConsumer<SchemaPath>>>>();
+    public HashMap<String, LinkedList<WeakReference<IConsumer<SchemaPath>>>> objectRootListenersMap = new HashMap<String, LinkedList<WeakReference<IConsumer<SchemaPath>>>>();
 
     private boolean objectRootModifiedRecursion = false;
 
@@ -133,19 +133,19 @@ public class ObjectDB {
         return false;
     }
 
-    private LinkedList<IConsumer<SchemaPath>> getOrCreateModificationHandlers(RubyIO p) {
-        LinkedList<IConsumer<SchemaPath>> notifyObjectModified = objectListenersMap.get(p);
+    private LinkedList<WeakReference<IConsumer<SchemaPath>>> getOrCreateModificationHandlers(RubyIO p) {
+        LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified = objectListenersMap.get(p);
         if (notifyObjectModified == null) {
-            notifyObjectModified = new LinkedList<IConsumer<SchemaPath>>();
+            notifyObjectModified = new LinkedList<WeakReference<IConsumer<SchemaPath>>>();
             objectListenersMap.put(p, notifyObjectModified);
         }
         return notifyObjectModified;
     }
 
-    private LinkedList<IConsumer<SchemaPath>> getOrCreateRootModificationHandlers(String p) {
-        LinkedList<IConsumer<SchemaPath>> notifyObjectModified = objectRootListenersMap.get(p);
+    private LinkedList<WeakReference<IConsumer<SchemaPath>>> getOrCreateRootModificationHandlers(String p) {
+        LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified = objectRootListenersMap.get(p);
         if (notifyObjectModified == null) {
-            notifyObjectModified = new LinkedList<IConsumer<SchemaPath>>();
+            notifyObjectModified = new LinkedList<WeakReference<IConsumer<SchemaPath>>>();
             objectRootListenersMap.put(p, notifyObjectModified);
         }
         return notifyObjectModified;
@@ -153,21 +153,22 @@ public class ObjectDB {
 
     // Note that these are run at the end of frame,
     //  because there appears to be a performance issue with these being spammed over and over again. Oops.
+    // Also note, these are all weakly referenced.
 
     public void registerModificationHandler(RubyIO root, IConsumer<SchemaPath> handler) {
-        getOrCreateModificationHandlers(root).add(handler);
+        getOrCreateModificationHandlers(root).add(new WeakReference<IConsumer<SchemaPath>>(handler));
     }
 
     public void deregisterModificationHandler(RubyIO root, IConsumer<SchemaPath> handler) {
-        getOrCreateModificationHandlers(root).remove(handler);
+        removeFromGOCMH(getOrCreateModificationHandlers(root), handler);
     }
 
     public void registerModificationHandler(String root, IConsumer<SchemaPath> handler) {
-        getOrCreateRootModificationHandlers(root).add(handler);
+        getOrCreateRootModificationHandlers(root).add(new WeakReference<IConsumer<SchemaPath>>(handler));
     }
 
     public void deregisterModificationHandler(String root, IConsumer<SchemaPath> handler) {
-        getOrCreateRootModificationHandlers(root).remove(handler);
+        removeFromGOCMH(getOrCreateRootModificationHandlers(root), handler);
     }
 
     public void objectRootModified(final RubyIO p, final SchemaPath path) {
@@ -187,32 +188,55 @@ public class ObjectDB {
         // However, if there are modification listeners on this particular object, they get used
         if (reverseObjectMap.containsKey(p))
             modifiedObjects.add(p);
-        LinkedList<IConsumer<SchemaPath>> notifyObjectModified = objectListenersMap.get(p);
-        if (notifyObjectModified != null)
-            for (final IConsumer<SchemaPath> r : new LinkedList<IConsumer<SchemaPath>>(notifyObjectModified))
-                r.accept(path);
+        LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified = objectListenersMap.get(p);
+        handleNotificationList(notifyObjectModified, path);
         String root = getIdByObject(path.findRoot().targetElement);
         if (root != null) {
             notifyObjectModified = objectRootListenersMap.get(root);
-            if (notifyObjectModified != null)
-                for (final IConsumer<SchemaPath> r : new LinkedList<IConsumer<SchemaPath>>(notifyObjectModified))
-                    r.accept(path);
+            handleNotificationList(notifyObjectModified, path);
         }
         objectRootModifiedRecursion = false;
     }
 
+    private void handleNotificationList(LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified, SchemaPath sp) {
+        if (notifyObjectModified == null)
+            return;
+        for (WeakReference<IConsumer<SchemaPath>> spi : new LinkedList<WeakReference<IConsumer<SchemaPath>>>(notifyObjectModified)) {
+            IConsumer<SchemaPath> ics = spi.get();
+            if (ics == null) {
+                notifyObjectModified.remove(spi);
+            } else if (sp != null) {
+                ics.accept(sp);
+            }
+        }
+    }
+
     public int countModificationListeners(RubyIO p) {
         int n = 0;
-        LinkedList<IConsumer<SchemaPath>> notifyObjectModified = objectListenersMap.get(p);
+        LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified = objectListenersMap.get(p);
+        handleNotificationList(notifyObjectModified, null);
         if (notifyObjectModified != null)
             n += notifyObjectModified.size();
         String r = getIdByObject(p);
         if (r != null) {
             notifyObjectModified = objectRootListenersMap.get(r);
+            handleNotificationList(notifyObjectModified, null);
             if (notifyObjectModified != null)
                 n += notifyObjectModified.size();
         }
         return n;
+    }
+
+    private void removeFromGOCMH(LinkedList<WeakReference<IConsumer<SchemaPath>>> orCreateModificationHandlers, IConsumer<SchemaPath> handler) {
+        WeakReference wr = null;
+        for (WeakReference<IConsumer<SchemaPath>> w : orCreateModificationHandlers) {
+            if (w.get() == handler) {
+                wr = w;
+                break;
+            }
+        }
+        if (wr != null)
+            orCreateModificationHandlers.remove(wr);
     }
 
     public void ensureAllSaved() {

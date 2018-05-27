@@ -17,7 +17,6 @@ import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.ui.Art;
-import r48.ui.IWindowElement;
 import r48.ui.UIAppendButton;
 
 import java.util.HashMap;
@@ -25,7 +24,7 @@ import java.util.HashMap;
 /**
  * Created on 12/29/16.
  */
-public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost, IWindowElement {
+public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     public IConsumer<UIElement> hostWindows;
     public SchemaPath innerElem;
     public UIElement innerElemEditor;
@@ -222,7 +221,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost, IW
     }
 
     @Override
-    public void windowClosing() {
+    public void onWindowClose() {
         windowOpen = false;
         if (innerElem != null) {
             AppMain.objectDB.deregisterModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);

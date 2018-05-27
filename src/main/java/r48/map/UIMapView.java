@@ -68,12 +68,16 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
     public OldMouseEmulator mouseEmulator;
     public UILabel.StatusLine statusLine = new UILabel.StatusLine();
 
+    // Regarding how these now work:
+    // Modification listeners have to be held by the things that need to be notified.
+    // This way, they conveniently disappear when the notified things do.
     private IConsumer<SchemaPath> listener = new IConsumer<SchemaPath>() {
         @Override
         public void accept(SchemaPath sp) {
             performRefresh(AppMain.objectDB.getIdByObject(sp.findRoot().targetElement));
         }
     };
+
     private String[] listenAdditionals = new String[0];
 
     public void performRefresh(String cause) {
@@ -101,7 +105,7 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
 
         map = AppMain.system.mapViewRequest(mapN, true);
         mapGUM = mapN;
-        AppMain.objectDB.registerModificationHandler(map.object, listener);
+        AppMain.objectDB.registerModificationHandler(map.objectId, listener);
         performRefresh(null);
 
         // begin!
@@ -131,8 +135,6 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
         int m = (i * internalScalingDiv);
         return (m / internalScalingMul) + (((m % internalScalingMul) != 0) ? 1 : 0);
     }
-
-
 
     public void reinitLayerVis() {
         if (layerVis != null)
@@ -367,11 +369,6 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
         }
         camX -= camR.width / internalScaling(2.0d);
         camY -= camR.height / internalScaling(2.0d);
-    }
-
-    @Override
-    public void handleRootDisconnect() {
-        AppMain.objectDB.deregisterModificationHandler(map.object, listener);
     }
 
     // Used by tools, after they're done doing whatever.

@@ -10,7 +10,6 @@ package r48.maptools;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import r48.map.IMapToolContext;
-import r48.ui.IWindowElement;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -20,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Maybe make a superclass for the convenient stuff?
  * Created on August 14 2017.
  */
-public class UIMTBase extends UIElement.UIPanel implements IWindowElement {
+public class UIMTBase extends UIElement.UIPanel {
     private UIElement innerElem = null;
 
     public final IMapToolContext mapToolContext;
@@ -65,7 +64,7 @@ public class UIMTBase extends UIElement.UIPanel implements IWindowElement {
     }
 
     @Override
-    public void windowClosing() {
+    public void onWindowClose() {
         hasClosed = true;
     }
 
@@ -94,8 +93,9 @@ public class UIMTBase extends UIElement.UIPanel implements IWindowElement {
             }
 
             @Override
-            public void windowClosing() {
-                super.windowClosing();
+            public void onWindowClose() {
+                // Intentional super, as this is a subclass of UIMTBase.
+                super.onWindowClose();
                 cc.run();
             }
         };

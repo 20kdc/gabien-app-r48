@@ -30,7 +30,10 @@ import r48.toolsets.BasicToolset;
 import r48.toolsets.IToolset;
 import r48.toolsets.MapToolset;
 import r48.toolsets.RMToolsToolset;
-import r48.ui.*;
+import r48.ui.Art;
+import r48.ui.Coco;
+import r48.ui.UIAppendButton;
+import r48.ui.UINSVertLayout;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
 
@@ -123,9 +126,8 @@ public class AppMain {
                         @Override
                         public void click() {
                             rootView.removeByUIE(uiElement);
-                            // This will be seen as a tab transfer without explicit force
-                            if (uiElement instanceof IWindowElement)
-                                ((IWindowElement) uiElement).windowClosing();
+                            // We are actually closing (this isn't called by default due to overrides)
+                            uiElement.onWindowClose();
                         }
                     },
                     new UIWindowView.IWVWindowIcon() {
@@ -255,9 +257,9 @@ public class AppMain {
 
             @Override
             public void handleClosedUserWindow(WVWindow wvWindow, boolean selfDestruct) {
+                // If it's not a self-destruct, then behavior was handled by the relevant button.
                 if (selfDestruct)
-                    if (wvWindow.contents instanceof IWindowElement)
-                        ((IWindowElement) wvWindow.contents).windowClosing();
+                    wvWindow.contents.onWindowClose();
             }
         };
         rootView.windowTextHeight = FontSizes.windowFrameHeight;
@@ -367,6 +369,9 @@ public class AppMain {
         toolsets.add(new BasicToolset(new IConsumer<Boolean>() {
             @Override
             public void accept(Boolean aBoolean) {
+                // Real/Virtual window toggle switch.
+                // Real windows use wrapping to ensure onWindowClose doesn't get through,
+                //  since it's easier than making WCUIEC only call onWindowClose in rather specific circumstances.
                 if (aBoolean) {
                     // Real
                     trueWindowMaker = new IConsumer<UIElement>() {
@@ -391,8 +396,8 @@ public class AppMain {
             private void injectReal(final UIElement uiElement, final boolean b) {
                 uiTicker.accept(new UIElement.UIProxy(uiElement, false) {
                     @Override
-                    public void handleRootDisconnect() {
-                        super.handleRootDisconnect();
+                    public void onWindowClose() {
+                        // DO NOT call super.onWindowClose, we aren't actually closing
                         release();
                         if (b) {
                             insertImmortalTab.accept(uiElement);
@@ -408,9 +413,9 @@ public class AppMain {
         final UITabPane utp = new UITabPane(FontSizes.tabTextHeight, true, true) {
             @Override
             public void handleClosedUserTab(UIWindowView.WVWindow wvWindow, boolean selfDestruct) {
+                // If it's not a self-destruct, then behavior was handled by the relevant button.
                 if (selfDestruct)
-                    if (wvWindow.contents instanceof IWindowElement)
-                        ((IWindowElement) wvWindow.contents).windowClosing();
+                    wvWindow.contents.onWindowClose();
             }
         };
         Runnable runVisFrame = new Runnable() {
@@ -470,10 +475,9 @@ public class AppMain {
 
                             @Override
                             public void click() {
-                                utp.removeTab(uiElement); // also does root disconnect
-                                // This will be seen as a tab transfer without explicit force
-                                if (uiElement instanceof IWindowElement)
-                                    ((IWindowElement) uiElement).windowClosing();
+                                utp.removeTab(uiElement);
+                                // Since normal close behavior was turned off, now it needs to be turned on again
+                                uiElement.onWindowClose();
                             }
                         },
                         new UIWindowView.IWVWindowIcon() {

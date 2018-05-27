@@ -150,8 +150,7 @@ public class UIColourPicker extends UIElement.UIPanel {
     }
 
     @Override
-    public void handleRootDisconnect() {
-        super.handleRootDisconnect();
+    public void onWindowClose() {
         if (result != null)
             result.accept(null);
     }
