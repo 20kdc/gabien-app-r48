@@ -177,7 +177,7 @@ public class CSOSystem extends MapSystem {
                     int ntidx = pxaTab.getTiletype(tidx & 0x0F, (tidx >> 4) & 0x0F, 0);
                     super.drawTile(layer, tidx, px, py, igd, spriteScale, editor);
                     if (editor)
-                        if ((ntidx == 0) || ((ntidx >= 0x20) && (ntidx <= 0x3F)))
+                        if ((ntidx >= 0x20) && (ntidx <= 0x3F))
                             igd.blitScaledImage(16, 0, 16, 16, px, py, 16 * spriteScale, 16 * spriteScale, tiles);
                     int i = ntidx >> 4;
                     int j = ntidx & 15;
