@@ -35,7 +35,7 @@ public class UIHelpSystem extends UIElement.UIPanel {
             page.add(new HelpElement('.', "T'was brillig in the slithy toves, did Gireth gimble in the wabe.".split(" ")));
             page.add(new HelpElement('.', "All mimsy were the borogroves".split(" ")));
         }
-        forceToRecommended(null);
+        forceToRecommended();
         page.clear();
     }
 

@@ -158,8 +158,9 @@ public class ImageEditorImage extends ImageIOImage {
             if (palette.size() <= 1)
                 return;
             palette.remove(fidx);
-            if (fidx == 0)
-                palette.set(0, palette.get(0) & 0xFFFFFF);
+            if (t1Lock)
+                if (fidx == 0)
+                    palette.set(0, palette.get(0) & 0xFFFFFF);
             if (sanity)
                 for (int i = 0; i < colourData.length; i++)
                     if (colourData[i] > fidx)

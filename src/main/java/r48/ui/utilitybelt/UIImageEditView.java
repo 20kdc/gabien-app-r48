@@ -31,7 +31,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     public int gridW = 16, gridH = 16, gridOX = 0, gridOY = 0;
     public Runnable colour;
 
-    public boolean showTarget;
+    public boolean showTarget, tiling;
     public int targetX, targetY;
     public int gridColour = 0x200020;
 
@@ -90,7 +90,17 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             }
         }
         IImage tempImg = createImg();
-        osb.blitScaledImage(0, 0, image.width, image.height, viewRct.x, viewRct.y, viewRct.width, viewRct.height, tempImg);
+        int min = 0;
+        int max = 0;
+        if (tiling) {
+            min = -1;
+            max = 1;
+        }
+        for (int i = min; i <= max; i++)
+            for (int j = min; j <= max; j++)
+                osb.blitScaledImage(0, 0, image.width, image.height, viewRct.x + (viewRct.width * i), viewRct.y + (viewRct.height * j), viewRct.width, viewRct.height, tempImg);
+        if (tiling)
+            Art.drawSelectionBox(viewRct.x, viewRct.y, viewRct.width, viewRct.height, FontSizes.getSpriteScale(), osb);
         Art.drawSelectionBox(viewRct.x + (cursorX * zoom), viewRct.y + (cursorY * zoom), zoom, zoom, FontSizes.getSpriteScale(), osb);
         if (showTarget)
             Art.drawTarget(viewRct.x + (targetX * zoom), viewRct.y + (targetY * zoom), zoom, osb);

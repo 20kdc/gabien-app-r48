@@ -209,7 +209,7 @@ public class ImageEditorController {
                 }
             }));
         }
-        paletteView.panelsAdd(new UITextButton(TXDB.get("Resize"), FontSizes.schemaButtonTextHeight, new Runnable() {
+        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Resize"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
@@ -232,7 +232,12 @@ public class ImageEditorController {
                     }
                 }, TXDB.get("Resize..."));
             }
-        }));
+        }), new UITextButton(TXDB.get("Tiling"), FontSizes.schemaButtonTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                imageEditView.tiling = !imageEditView.tiling;
+            }
+        }).togglable(imageEditView.tiling), false, 0.5d));
         paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
@@ -380,7 +385,7 @@ public class ImageEditorController {
         xyChanger.panelsAdd(new UISplitterLayout(xVal, yVal, false, 1, 2));
         xyChanger.panelsAdd(acceptButton);
 
-        res.forceToRecommended(null);
+        res.forceToRecommended();
         windowMaker.accept(res);
     }
 }

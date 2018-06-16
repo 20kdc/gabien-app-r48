@@ -40,13 +40,14 @@ public class UIMTBase extends UIElement.UIPanel {
                 throw new RuntimeException("Stop it! >.<");
         innerElem = inner;
         if (inner != null) {
+            if (inConstructor)
+                inner.forceToRecommended();
             layoutAddElement(inner);
-            if (inConstructor) {
-                inner.forceToRecommended(this);
-                setForcedBounds(null, new Rect(inner.getSize()));
-            } else {
-                // This is just to do the set forced bounds -> set wanted size thing.
+            // This is just to do the set forced bounds -> set wanted size thing.
+            if (!inConstructor) {
                 runLayout();
+            } else {
+                setForcedBounds(null, new Rect(inner.getSize()));
             }
         }
     }

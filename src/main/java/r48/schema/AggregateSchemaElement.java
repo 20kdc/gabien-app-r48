@@ -56,7 +56,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
             uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
         }
         overrideSet = false;
-        uiSVL.forceToRecommended(null);
+        uiSVL.forceToRecommended();
         return uiSVL;
     }
 

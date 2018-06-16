@@ -33,7 +33,7 @@ public class UICellEditingPanel extends UIElement.UIPanel {
         // Filled in here
         halfsplits = new UISplitterLayout[properties.length];
         recreateHalfSplits();
-        forceToRecommended(null);
+        forceToRecommended();
     }
 
     private void recreateHalfSplits() {
