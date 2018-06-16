@@ -33,6 +33,8 @@ public class ImageEditorImage extends ImageIOImage {
     };
     // Set to null on modification.
     private IImage cachedData;
+    // Locks palette index 0 to transparent, others are not.
+    // This is essentially RPG Maker Emulation Mode.
     public final boolean t1Lock;
 
     // The best way to put this is that it provides an extended "view" of a ImageIOImage.

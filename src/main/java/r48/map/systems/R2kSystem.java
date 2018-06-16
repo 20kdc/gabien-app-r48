@@ -16,6 +16,7 @@ import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.imageio.BMP8IImageIOFormat;
 import r48.imageio.PNG8IImageIOFormat;
 import r48.imageio.XYZImageIOFormat;
 import r48.map.*;
@@ -42,6 +43,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
     public R2kSystem() {
         super(new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new ChainedImageLoader(new IImageLoader[] {
                 new ImageIOImageLoader(new XYZImageIOFormat(), ".xyz", true),
+                // This is actually valid, but almost nobody wanted to use BMP over one of PNG or XYZ. Who'd have guessed?
+                new ImageIOImageLoader(new BMP8IImageIOFormat(8), ".bmp", true),
                 new ImageIOImageLoader(new PNG8IImageIOFormat(), ".png", true),
                 // EasyRPG extension: arbitrary PNGs
                 new GabienImageLoader(".png")

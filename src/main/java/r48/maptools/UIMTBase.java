@@ -45,6 +45,7 @@ public class UIMTBase extends UIElement.UIPanel {
                 inner.forceToRecommended(this);
                 setForcedBounds(null, new Rect(inner.getSize()));
             } else {
+                // This is just to do the set forced bounds -> set wanted size thing.
                 runLayout();
             }
         }

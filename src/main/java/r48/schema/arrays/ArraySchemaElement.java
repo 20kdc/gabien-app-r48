@@ -83,7 +83,6 @@ public abstract class ArraySchemaElement extends SchemaElement {
             }
         });
 
-        uiSVL.runLayout();
         return uiSVL;
     }
 

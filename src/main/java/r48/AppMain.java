@@ -26,10 +26,7 @@ import r48.schema.specialized.IMagicalBinder;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
-import r48.toolsets.BasicToolset;
-import r48.toolsets.IToolset;
-import r48.toolsets.MapToolset;
-import r48.toolsets.RMToolsToolset;
+import r48.toolsets.*;
 import r48.ui.Art;
 import r48.ui.Coco;
 import r48.ui.UIAppendButton;
@@ -408,7 +405,7 @@ public class AppMain {
                 });
             }
         }));
-        //toolsets.add(new ImageEditToolset());
+        toolsets.add(new ImageEditToolset());
 
         final UITabPane utp = new UITabPane(FontSizes.tabTextHeight, true, true) {
             @Override
@@ -631,7 +628,6 @@ public class AppMain {
         };
         svl.panelsAdd(uhs);
 
-        svl.runLayout();
         int h = svl.getWantedSize().height;
 
         int limit = rootView.getSize().height - rootView.getWindowFrameHeight();
@@ -667,6 +663,7 @@ public class AppMain {
                     }
                 };
                 mtb.setForcedBounds(null, new Rect(0, 0, (mainWindowWidth / 3) * 2, mainWindowHeight / 2));
+                mtb.setForcedBounds(null, new Rect(0, 0, (mainWindowWidth / 3) * 2, mtb.getWantedSize().height));
                 trueWindowMaker.accept(mtb);
             }
         };

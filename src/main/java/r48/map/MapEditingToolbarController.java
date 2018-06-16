@@ -166,7 +166,6 @@ public class MapEditingToolbarController implements IEditingToolbarController {
             rootLayout.panelsAdd(utb);
             maxH = Math.max(maxH, utb.getWantedSize().height);
         }
-        rootLayout.runLayout();
     }
 
     public void clearTools(int t) {
