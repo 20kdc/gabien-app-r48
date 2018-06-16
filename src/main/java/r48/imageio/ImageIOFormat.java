@@ -37,7 +37,10 @@ public abstract class ImageIOFormat {
         supportedFormats = new ImageIOFormat[] {
                 new XYZImageIOFormat(),
                 new PNG8IImageIOFormat(),
-                new GabienImageIOFormat()
+                new BMP8IImageIOFormat(8),
+                new BMP8IImageIOFormat(4),
+                new BMP8IImageIOFormat(1),
+                new GabienImageIOFormat(),
         };
     }
 

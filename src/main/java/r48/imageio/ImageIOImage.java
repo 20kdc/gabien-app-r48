@@ -13,7 +13,7 @@ import gabien.IImage;
 import java.util.LinkedList;
 
 /**
- * An image in the image editor.
+ * An image loaded via r48.imageio
  * Created on April 13th 2018
  */
 public class ImageIOImage {
