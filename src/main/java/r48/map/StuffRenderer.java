@@ -70,8 +70,9 @@ public class StuffRenderer {
             layers[(i * 2) + 2] = new TileMapViewDrawLayer(rt, tlOrder[i], itr);
             layers[(i * 2) + 3] = new EventMapViewDrawLayer(i, events, igr, itr.getTileSize(), "");
         }
-        layers[layers.length - 2] = new EventMapViewDrawLayer(0x7FFFFFFF, events, igr, itr.getTileSize(), "");
-        layers[layers.length - 1] = new GridMapViewDrawLayer();
+        layers[layers.length - 3] = new EventMapViewDrawLayer(0x7FFFFFFF, events, igr, itr.getTileSize(), "");
+        layers[layers.length - 2] = new GridMapViewDrawLayer();
+        layers[layers.length - 1] = new BorderMapViewDrawLayer(rt.width, rt.height);
         return layers;
     }
 }

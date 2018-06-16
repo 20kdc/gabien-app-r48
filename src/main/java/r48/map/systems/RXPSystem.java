@@ -88,7 +88,8 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
                     accurate,
                     // selection
                     new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, tileRenderer.getTileSize(), ""),
-                    new GridMapViewDrawLayer()
+                    new GridMapViewDrawLayer(),
+                    new BorderMapViewDrawLayer(rt.width, rt.height)
             };
         }
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);

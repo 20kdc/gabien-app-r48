@@ -109,7 +109,6 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
                 if (aloopY)
                     autoLoopY = (int) map.getInstVarBySymbol("@parallax_sy").fixnumVal;
             }
-            layers = new IMapViewDrawLayer[11];
             IImage img = null;
             if (!vxaPano.equals(""))
                 img = imageLoader.getImage("Panorama/" + vxaPano, true);
@@ -119,17 +118,20 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
             // <events>
             // layer 1 upper
             // layer 2 upper
-            layers[0] = new PanoramaMapViewDrawLayer(img, loopX, loopY, autoLoopX, autoLoopY, tbl.width, tbl.height, 320, 240, 1);
-            layers[1] = new R2kTileMapViewDrawLayer(tbl, tileRenderer, 0, false, tileset, TXDB.get("L0 (no Upper flag)"));
-            layers[2] = new R2kTileMapViewDrawLayer(tbl, tileRenderer, 1, false, tileset, TXDB.get("L1 (no Upper flag)"));
-            layers[3] = new EventMapViewDrawLayer(0, events, eventRenderer, 16, TXDB.get(" (Below Player)"));
-            layers[4] = new EventMapViewDrawLayer(1, events, eventRenderer, 16, TXDB.get(" (Player/Same)")); // Player/Same
-            layers[5] = new R2kTileMapViewDrawLayer(tbl, tileRenderer, 0, true, tileset, TXDB.get("L0 (Upper flag)"));
-            layers[6] = new R2kTileMapViewDrawLayer(tbl, tileRenderer, 1, true, tileset, TXDB.get("L1 (Upper flag)"));
-            layers[7] = new EventMapViewDrawLayer(2, events, eventRenderer, 16, TXDB.get(" (Above Player)"));
-            layers[8] = new PassabilityMapViewDrawLayer(new R2kPassabilitySource(tbl, tileset, (scrollFlags & 2) != 0, (scrollFlags & 1) != 0), 16);
-            layers[9] = new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, 16, "");
-            layers[10] = new GridMapViewDrawLayer();
+            layers = new IMapViewDrawLayer[] {
+                new PanoramaMapViewDrawLayer(img, loopX, loopY, autoLoopX, autoLoopY, tbl.width, tbl.height, 320, 240, 1),
+                new R2kTileMapViewDrawLayer(tbl, tileRenderer, 0, false, tileset, TXDB.get("L0 (no Upper flag)")),
+                new R2kTileMapViewDrawLayer(tbl, tileRenderer, 1, false, tileset, TXDB.get("L1 (no Upper flag)")),
+                new EventMapViewDrawLayer(0, events, eventRenderer, 16, TXDB.get(" (Below Player)")),
+                new EventMapViewDrawLayer(1, events, eventRenderer, 16, TXDB.get(" (Player/Same)")), // Player/Same
+                new R2kTileMapViewDrawLayer(tbl, tileRenderer, 0, true, tileset, TXDB.get("L0 (Upper flag)")),
+                new R2kTileMapViewDrawLayer(tbl, tileRenderer, 1, true, tileset, TXDB.get("L1 (Upper flag)")),
+                new EventMapViewDrawLayer(2, events, eventRenderer, 16, TXDB.get(" (Above Player)")),
+                new PassabilityMapViewDrawLayer(new R2kPassabilitySource(tbl, tileset, (scrollFlags & 2) != 0, (scrollFlags & 1) != 0), 16),
+                new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, 16, ""),
+                new GridMapViewDrawLayer(),
+                new BorderMapViewDrawLayer(tbl.width, tbl.height)
+            };
         }
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
     }

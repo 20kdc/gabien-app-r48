@@ -11,6 +11,10 @@ import gabien.IGrDriver;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 
+/**
+ * Since this is used everywhere, it's a good indication of where the "global layers" end.
+ * Unknown creation date.
+ */
 public class GridMapViewDrawLayer implements IMapViewDrawLayer {
     @Override
     public String getName() {

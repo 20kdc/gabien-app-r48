@@ -200,7 +200,8 @@ public class CSOSystem extends MapSystem {
                     new TileMapViewDrawLayer(pxmTab, 0, new IndirectTileRenderer(pxaTab, new GenericTileRenderer(cts, 16, 256, 256)), TXDB.get("Tile Collision")),
                     new EventMapViewDrawLayer(0, tea, ev, 16, ""),
                     new EventMapViewDrawLayer(0x7FFFFFFF, tea, ev, 16, ""),
-                    new GridMapViewDrawLayer()
+                    new GridMapViewDrawLayer(),
+                    new BorderMapViewDrawLayer(pxmTab.width, pxmTab.height)
             };
         }
         return new StuffRenderer(imageLoader, tr, ev, layers, new boolean[] {
@@ -209,7 +210,8 @@ public class CSOSystem extends MapSystem {
                 false,
                 true,
                 true,
-                false
+                false,
+                true
         });
     }
 

@@ -244,6 +244,6 @@ public class Art {
         Inspect, Back, CopyGroupDNU, PasteGroupDNU,
         // "Rectangle" is white & dashed, area is solid-skyblue,
         //  XWhite is white and smaller than XRed.
-        Rectangle, AlsoUnused, XWhite, Unused
+        Rectangle, Stripes, XWhite, Unused
     }
 }
