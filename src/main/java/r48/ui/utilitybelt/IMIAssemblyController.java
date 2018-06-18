@@ -44,7 +44,8 @@ public class IMIAssemblyController {
             public void run() {
                 if (fileBrowserOpen)
                     return;
-                UIFileBrowser fb = AppMain.setFBSize(new UIFileBrowser(new IConsumer<String>() {
+
+                GaBIEn.startFileBrowser(TXDB.get("Add IMI Asset"), false, "", new IConsumer<String>() {
                     @Override
                     public void accept(String s) {
                         fileBrowserOpen = false;
@@ -76,8 +77,7 @@ public class IMIAssemblyController {
                             rebuildFL();
                         }
                     }
-                }, TXDB.get("Add IMI Asset: "), TXDB.get("Back"), TXDB.get("Add Asset"), FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize));
-                wm.accept(fb);
+                });
                 fileBrowserOpen = true;
             }
         });

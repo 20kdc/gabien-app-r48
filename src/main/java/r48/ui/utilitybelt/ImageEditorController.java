@@ -105,11 +105,8 @@ public class ImageEditorController {
             sanityButtonHolder.release();
             sanityButtonHolder = null;
         }
-        final String fbStrB = TXDB.get("Back");
         final String fbStrAL = TXDB.get("Load");
         final String fbStrAS = TXDB.get("Save");
-        final String fbStrL = TXDB.get("Load: ");
-        final String fbStrS = TXDB.get("Save: ");
 
         paletteView.panelsAdd(new UITextButton(TXDB.get("New"), FontSizes.schemaButtonTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), new Runnable() {
             @Override
@@ -125,13 +122,13 @@ public class ImageEditorController {
         UITextButton firstButton = new UITextButton(TXDB.get("Load"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
-                windowMaker.accept(AppMain.setFBSize(new UIFileBrowser(new IConsumer<String>() {
+                GaBIEn.startFileBrowser(fbStrAL, false, "", new IConsumer<String>() {
                     @Override
                     public void accept(String s) {
                         if (s != null)
                             load(s);
                     }
-                }, fbStrL, fbStrB, fbStrAL, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize)));
+                });
             }
         });
         for (final ImageIOFormat format : ImageIOFormat.supportedFormats) {
@@ -141,7 +138,7 @@ public class ImageEditorController {
             UITextButton button = new UITextButton(tx, FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    windowMaker.accept(AppMain.setFBSize(new UIFileBrowser(new IConsumer<String>() {
+                    GaBIEn.startFileBrowser(fbStrAS, true, "", new IConsumer<String>() {
                         @Override
                         public void accept(String s) {
                             if (s != null) {
@@ -155,7 +152,7 @@ public class ImageEditorController {
                                 }
                             }
                         }
-                    }, fbStrS, fbStrB, fbStrAS, FontSizes.schemaButtonTextHeight, FontSizes.generalScrollersize)));
+                    });
                 }
             });
             if (firstButton != null) {

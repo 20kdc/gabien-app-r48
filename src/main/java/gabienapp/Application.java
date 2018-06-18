@@ -202,7 +202,9 @@ public class Application {
             //  which makes it worth keeping.
             boolean backupAvailable = false;
             while (uiTicker.runningWindows().size() > 0) {
-                double dT = handleTick();
+                double dTTarg = (globalMS / 1000d) - compensationDT;
+                double dT = GaBIEn.endFrame(dTTarg);
+                compensationDT = Math.min(dTTarg, dT - dTTarg);
                 try {
                     if (appTicker != null)
                         appTicker.accept(dT);
@@ -316,24 +318,6 @@ public class Application {
         GaBIEn.ensureQuit();
     }
 
-    private static double handleTick() {
-        double dT = GaBIEn.timeDelta(false);
-        double dTTarg = (globalMS / 1000d) - compensationDT;
-        while (dT < dTTarg) {
-            try {
-                long ofs = (long) ((dT - dTTarg) * 1000);
-                if (ofs > 0)
-                    Thread.sleep(ofs);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            dT = GaBIEn.timeDelta(false);
-        }
-        double dTRes = GaBIEn.timeDelta(true);
-        compensationDT = Math.min(dTTarg, dTRes - dTTarg);
-        return dTRes;
-    }
-
     private static Rect runFontLoader() {
         int frames = -10; // Fadeout
         int timer2 = 0; // Baton
@@ -371,7 +355,7 @@ public class Application {
         txdbThread.start();
         while (frames <= 15) {
             gi.flush(); // to kickstart w/h
-            handleTick();
+            GaBIEn.endFrame(globalMS / 1000d);
             gi.clearAll(255, 255, 255);
             int sz = (Math.min(gi.getWidth(), gi.getHeight()) / 4) * 2;
             Rect ltPos = Art.r48ico;

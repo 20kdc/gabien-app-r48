@@ -23,7 +23,7 @@ import r48.imagefx.HueShiftImageEffect;
 public class Art {
 
     // Images
-    public static IImage layerTabs = GaBIEn.getImageCKEx("layertab.png", false, true, 0, 0, 0);
+    public static IImage layerTabs = GaBIEn.getImageCKEx("layertab.png", false, true, 255, 0, 255);
     public static IImage noMap = GaBIEn.getImageCKEx("nomad.png", false, true, 0, 0, 0);
     public static IImage symbolic = GaBIEn.getImageCKEx("symbolic.png", false, true, 0, 0, 0);
     private static IImage colourPal;
