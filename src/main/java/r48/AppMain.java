@@ -627,15 +627,16 @@ public class AppMain {
             }
         };
         svl.panelsAdd(uhs);
-
-        int h = svl.getWantedSize().height;
+        svl.forceToRecommended();
+        Size recSize = svl.getSize();
+        int h = recSize.height;
 
         int limit = rootView.getSize().height - rootView.getWindowFrameHeight();
         limit *= 3;
         limit /= 4;
         if (h > limit)
             h = limit;
-        svl.setForcedBounds(null, new Rect(0, 0, Math.min(mainWindowWidth, svl.getWantedSize().width), h));
+        svl.setForcedBounds(null, new Rect(0, 0, Math.min(mainWindowWidth, recSize.width), h));
         trueWindowMaker.accept(svl);
     }
 

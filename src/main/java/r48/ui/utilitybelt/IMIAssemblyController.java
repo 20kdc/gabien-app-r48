@@ -38,7 +38,17 @@ public class IMIAssemblyController {
                 rebuildFL();
             }
         });
-        fileList = new UIScrollLayout(true, FontSizes.generalScrollersize);
+        fileList = new UIScrollLayout(true, FontSizes.generalScrollersize) {
+            @Override
+            public void setWantedSize(Size size) {
+                int minH = FontSizes.imiAsmAssetTextHeight * 8;
+                if (size.height < minH) {
+                    super.setWantedSize(new Size(size.width, minH));
+                } else {
+                    super.setWantedSize(size);
+                }
+            }
+        };
         UITextButton bAA = new UITextButton(TXDB.get("Add Asset"), FontSizes.imiAsmButtonsTextHeight, new Runnable() {
             @Override
             public void run() {

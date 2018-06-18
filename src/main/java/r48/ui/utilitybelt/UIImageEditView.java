@@ -34,6 +34,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     public boolean showTarget, tiling;
     public int targetX, targetY;
     public int gridColour = 0x200020;
+    public boolean gridST = false;
 
     public OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
     public UILabel.StatusLine statusLine = new UILabel.StatusLine();
@@ -60,35 +61,9 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         // Maybe cache this for perf. Acts like a more precise scissor for now.
         IGrDriver osb = GaBIEn.makeOffscreenBuffer(bounds.width, bounds.height, false);
         osb.clearRect(32, 32, 32, 0, 0, bounds.width, bounds.height);
-        int gcR = (gridColour >> 16) & 0xFF;
-        int gcG = (gridColour >> 8) & 0xFF;
-        int gcB = gridColour & 0xFF;
-        osb.clearRect(gcR / 3, gcG / 3, gcB / 3, viewRct.x, viewRct.y, viewRct.width, viewRct.height);
-        // viewRct is in zoomed osb-local coordinates.
-        // It's the rectangle of the image.
-        // localGrid is in zoomed osb-local coordinates.
-        // It's X/Y is the viewrect x/y + the grid offset - 1 grid cell (so the offset stuff is correct) scaled,
-        //  and it's W/H is the grid size scaled.
-        Rect localGrid = getLocalGridRect(viewRct);
-        boolean outerFlip = false;
-        Intersector intersect = MTIntersector.singleton.get();
-        for (int ofx = (localGrid.x - (gridW * zoom)); ofx < (viewRct.x + viewRct.width); ofx += localGrid.width) {
-            if (!viewRct.intersects(new Rect(ofx, viewRct.y, localGrid.width, viewRct.height)))
-                continue;
-            int i = outerFlip ? 1 : 0;
-            outerFlip = !outerFlip;
-            for (int ofy = (localGrid.y - (gridH * zoom)); ofy < (viewRct.y + viewRct.height); ofy += localGrid.height) {
-                int o = 0xA0;
-                boolean light = ((i & 1) != 0);
-                if (light)
-                    o = 0xFF;
-                // The osb.clearRect call alters the Intersect, but that's fine since it gets reset.
-                intersect.set(viewRct);
-                if (intersect.intersect(ofx, ofy, localGrid.width, localGrid.height))
-                    osb.clearRect((gcR * o) / 255, (gcG * o) / 255, (gcB * o) / 255, intersect.x, intersect.y, intersect.width, intersect.height);
-                i++;
-            }
-        }
+
+        drawGrid(osb, viewRct, false);
+
         IImage tempImg = createImg();
         int min = 0;
         int max = 0;
@@ -99,9 +74,15 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         for (int i = min; i <= max; i++)
             for (int j = min; j <= max; j++)
                 osb.blitScaledImage(0, 0, image.width, image.height, viewRct.x + (viewRct.width * i), viewRct.y + (viewRct.height * j), viewRct.width, viewRct.height, tempImg);
+
+        if (gridST)
+            drawGrid(osb, viewRct, true);
+
         if (tiling)
             Art.drawSelectionBox(viewRct.x, viewRct.y, viewRct.width, viewRct.height, FontSizes.getSpriteScale(), osb);
+
         Art.drawSelectionBox(viewRct.x + (cursorX * zoom), viewRct.y + (cursorY * zoom), zoom, zoom, FontSizes.getSpriteScale(), osb);
+
         if (showTarget)
             Art.drawTarget(viewRct.x + (targetX * zoom), viewRct.y + (targetY * zoom), zoom, osb);
         igd.blitImage(0, 0, bounds.width, bounds.height, 0, 0, osb);
@@ -128,6 +109,51 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         Art.drawZoom(igd, true, zPlus.x, zPlus.y, zPlus.height);
         Art.drawZoom(igd, false, zMinus.x, zMinus.y, zMinus.height);
         Art.drawDragControl(igd, camMode, zDrag.x, zDrag.y, zDrag.height);
+    }
+
+    private void drawGrid(IGrDriver osb, Rect viewRct, boolean cut) {
+        int gcR = (gridColour >> 16) & 0xFF;
+        int gcG = (gridColour >> 8) & 0xFF;
+        int gcB = gridColour & 0xFF;
+        if (!cut)
+            osb.clearRect(gcR / 3, gcG / 3, gcB / 3, viewRct.x, viewRct.y, viewRct.width, viewRct.height);
+        int lineThickness = FontSizes.getSpriteScale() * 2;
+        // viewRct is in zoomed osb-local coordinates.
+        // It's the rectangle of the image.
+        // localGrid is in zoomed osb-local coordinates.
+        // It's X/Y is the viewrect x/y + the grid offset - 1 grid cell (so the offset stuff is correct) scaled,
+        //  and it's W/H is the grid size scaled.
+        Rect localGrid = getLocalGridRect(viewRct);
+        boolean outerFlip = false;
+        Intersector intersect = MTIntersector.singleton.get();
+        for (int ofx = (localGrid.x - (gridW * zoom)); ofx < (viewRct.x + viewRct.width); ofx += localGrid.width) {
+            if (!viewRct.intersects(new Rect(ofx, viewRct.y, localGrid.width, viewRct.height)))
+                continue;
+            int i = outerFlip ? 1 : 0;
+            outerFlip = !outerFlip;
+            for (int ofy = (localGrid.y - (gridH * zoom)); ofy < (viewRct.y + viewRct.height); ofy += localGrid.height) {
+                int o = 0xA0;
+                boolean light = ((i & 1) != 0);
+                if (light)
+                    o = 0xFF;
+                // The osb.clearRect call alters the Intersect, but that's fine since it gets reset.
+                intersect.set(viewRct);
+                if (intersect.intersect(ofx, ofy, localGrid.width, localGrid.height)) {
+                    int rR = (gcR * o) / 255;
+                    int rG = (gcG * o) / 255;
+                    int rB = (gcB * o) / 255;
+                    if (cut) {
+                        osb.clearRect(rR, rG, rB, intersect.x, intersect.y, lineThickness, intersect.height);
+                        osb.clearRect(rR, rG, rB, intersect.x + intersect.width - lineThickness, intersect.y, lineThickness, intersect.height);
+                        osb.clearRect(rR, rG, rB, intersect.x + lineThickness, intersect.y, intersect.width - (lineThickness * 2), lineThickness);
+                        osb.clearRect(rR, rG, rB, intersect.x + lineThickness, intersect.y + intersect.height - lineThickness, intersect.width - (lineThickness * 2), lineThickness);
+                    } else {
+                        osb.clearRect(rR, rG, rB, intersect.x, intersect.y, intersect.width, intersect.height);
+                    }
+                }
+                i++;
+            }
+        }
     }
 
     private Rect getLocalGridRect(Rect viewRct) {

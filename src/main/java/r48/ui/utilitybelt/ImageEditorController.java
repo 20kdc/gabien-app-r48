@@ -235,7 +235,7 @@ public class ImageEditorController {
                 imageEditView.tiling = !imageEditView.tiling;
             }
         }).togglable(imageEditView.tiling), false, 0.5d));
-        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.schemaButtonTextHeight, new Runnable() {
+        UIAppendButton ap = new UIAppendButton(TXDB.get("ST"), new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 showXYChanger(new Rect(imageEditView.gridOX, imageEditView.gridOY, imageEditView.gridW, imageEditView.gridH), new IConsumer<Rect>() {
@@ -260,7 +260,14 @@ public class ImageEditorController {
                     }
                 }, false));
             }
-        }), false, 0.5d));
+        }), false, 0.5d), new Runnable() {
+            @Override
+            public void run() {
+                imageEditView.gridST = !imageEditView.gridST;
+            }
+        }, FontSizes.schemaButtonTextHeight);
+        ap.button.togglable(imageEditView.gridST);
+        paletteView.panelsAdd(ap);
 
         // mode details
         UILabel cType = new UILabel(imageEditView.image.describeColourFormat(), FontSizes.schemaFieldTextHeight);

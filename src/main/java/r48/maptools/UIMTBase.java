@@ -60,7 +60,13 @@ public class UIMTBase extends UIElement.UIPanel {
     @Override
     public void runLayout() {
         if (innerElem != null) {
-            innerElem.setForcedBounds(this, new Rect(getSize()));
+            // If it doesn't change anything, this won't work very well
+            boolean cannotSFB = innerElem.getSize().sizeEquals(getSize());
+            if (!cannotSFB) {
+                innerElem.setForcedBounds(this, new Rect(getSize()));
+            } else {
+                innerElem.runLayoutLoop();
+            }
             setWantedSize(innerElem.getWantedSize());
         }
     }
