@@ -10,7 +10,6 @@ package r48.io;
 import gabien.GaBIEn;
 import r48.RubyIO;
 import r48.RubyTable;
-import r48.io.ika.BM8I;
 import r48.io.ika.NPChar;
 
 import java.io.IOException;
@@ -33,15 +32,16 @@ public class IkaObjectBackend implements IObjectBackend {
         if (filename.equals("Map")) {
             RubyIO rio = new RubyIO().setSymlike("IkachanMap", true);
 
-            BM8I bm = new BM8I();
-            bm.width = 160;
-            bm.height = 120;
-            bm.data = new int[160 * 120];
-            bm.palette = new int[256];
+            byte[] eDataBytes = BMPConnection.prepareBMP(160, 120, 8, 256, false, false);
+            byte[] dataBytes = eDataBytes;
             try {
                 InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(root + "Pbm/Map1.pbm"));
                 if (inp != null) {
-                    bm.loadBitmap(inp);
+                    dataBytes = new byte[inp.available()];
+                    if (inp.read(dataBytes) != dataBytes.length) {
+                        inp.close();
+                        throw new IOException("Available lied");
+                    }
                     inp.close();
                 } else {
                     // This should be covered by the schema defaults.
@@ -52,9 +52,24 @@ public class IkaObjectBackend implements IObjectBackend {
                 ioe.printStackTrace();
             }
 
+            BMPConnection bm;
+            try {
+                bm = new BMPConnection(eDataBytes, BMPConnection.CMode.Normal, 0, false);
+            } catch (IOException ioe) {
+                throw new RuntimeException(ioe);
+            }
+            try {
+                bm = new BMPConnection(dataBytes, BMPConnection.CMode.Normal, 0, false);
+                if (bm.ignoresPalette)
+                    throw new IOException("Must have a palette to do this");
+                if (bm.bpp > 8)
+                    throw new IOException("Can't be above 8bpp");
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
             RubyTable pal = new RubyTable(3, 256, 1, 4, new int[4]);
-            for (int i = 0; i < 256; i++) {
-                int rgba = bm.palette[i];
+            for (int i = 0; i < bm.paletteCol; i++) {
+                int rgba = bm.getPalette(i);
                 pal.setTiletype(i, 0, 0, (short) ((rgba >> 24) & 0xFF));
                 pal.setTiletype(i, 0, 1, (short) ((rgba >> 16) & 0xFF));
                 pal.setTiletype(i, 0, 2, (short) ((rgba >> 8) & 0xFF));
@@ -67,7 +82,7 @@ public class IkaObjectBackend implements IObjectBackend {
 
             for (int i = 0; i < bm.width; i++)
                 for (int j = 0; j < bm.height; j++)
-                    tbl.setTiletype(i, j, 0, (short) bm.data[i + (j * bm.width)]);
+                    tbl.setTiletype(i, j, 0, (short) bm.getPixel(i, j));
 
             rio.addIVar("@data", mapTbl);
             rio.addIVar("@palette", palTbl);
@@ -116,27 +131,24 @@ public class IkaObjectBackend implements IObjectBackend {
     public void saveObjectToFile(String filename, RubyIO object) throws IOException {
         if (filename.equals("Map")) {
             // allow saving
-            BM8I bm8 = new BM8I();
             RubyTable rt = new RubyTable(object.getInstVarBySymbol("@data").userVal);
-            bm8.width = rt.width;
-            bm8.height = rt.height;
-            bm8.data = new int[bm8.width * bm8.height];
-            bm8.palette = new int[256];
+            byte[] dataBytes = BMPConnection.prepareBMP(rt.width, rt.height, 8, 256, false, false);
+            BMPConnection bm8 = new BMPConnection(dataBytes, BMPConnection.CMode.Normal, 0, false);
             for (int i = 0; i < rt.width; i++)
                 for (int j = 0; j < rt.height; j++)
-                    bm8.data[i + (j * rt.width)] = (int) rt.getTiletype(i, j, 0);
+                    bm8.putPixel(i, j, rt.getTiletype(i, j, 0) & 0xFFFF);
             RubyTable rt2 = new RubyTable(object.getInstVarBySymbol("@palette").userVal);
             for (int i = 0; i < 256; i++) {
                 int a = rt2.getTiletype(i, 0, 0) & 0xFF;
                 int r = rt2.getTiletype(i, 0, 1) & 0xFF;
                 int g = rt2.getTiletype(i, 0, 2) & 0xFF;
                 int b = rt2.getTiletype(i, 0, 3) & 0xFF;
-                bm8.palette[i] = (a << 24) | (r << 16) | (g << 8) | b;
+                bm8.putPalette(i, (a << 24) | (r << 16) | (g << 8) | b);
             }
             OutputStream fio = GaBIEn.getOutFile(PathUtils.autoDetectWindows(root + "Pbm/Map1.pbm"));
             if (fio == null)
                 throw new IOException("Unable to open Map1 for writing.");
-            bm8.saveBitmap(fio);
+            fio.write(dataBytes);
             fio.close();
 
             NPChar npc = new NPChar();

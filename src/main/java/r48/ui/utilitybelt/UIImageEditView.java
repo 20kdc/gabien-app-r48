@@ -31,7 +31,8 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     public int gridW = 16, gridH = 16, gridOX = 0, gridOY = 0;
     public Runnable colour;
 
-    public boolean showTarget, tiling;
+    public boolean showTarget;
+    public Rect tiling;
     public int targetX, targetY;
     public int gridColour = 0x200020;
     public boolean gridST = false;
@@ -48,6 +49,8 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         image = n;
         cursorX = n.width / 2;
         cursorY = n.height / 2;
+        camX = 0;
+        camY = 0;
     }
 
     @Override
@@ -58,35 +61,42 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     public void render(IGrDriver igd) {
         Size bounds = getSize();
         Rect viewRct = getViewRect();
-        // Maybe cache this for perf. Acts like a more precise scissor for now.
-        IGrDriver osb = GaBIEn.makeOffscreenBuffer(bounds.width, bounds.height, false);
-        osb.clearRect(32, 32, 32, 0, 0, bounds.width, bounds.height);
 
-        drawGrid(osb, viewRct, false);
+        igd.clearAll(32, 32, 32);
+
+        drawGrid(igd, viewRct, false);
 
         IImage tempImg = createImg();
         int min = 0;
         int max = 0;
-        if (tiling) {
+        if (tiling != null) {
             min = -1;
             max = 1;
         }
+        int ofsX = 0;
+        int ofsY = 0;
+        int ofsW = image.width;
+        int ofsH = image.height;
+        if (tiling != null) {
+            ofsX = tiling.x;
+            ofsY = tiling.y;
+            ofsW = tiling.width;
+            ofsH = tiling.height;
+        }
         for (int i = min; i <= max; i++)
             for (int j = min; j <= max; j++)
-                osb.blitScaledImage(0, 0, image.width, image.height, viewRct.x + (viewRct.width * i), viewRct.y + (viewRct.height * j), viewRct.width, viewRct.height, tempImg);
+                igd.blitScaledImage(ofsX, ofsY, ofsW, ofsH, viewRct.x + (ofsW * zoom * i) + (ofsX * zoom), viewRct.y + (ofsH * zoom * j) + (ofsY * zoom), ofsW * zoom, ofsH * zoom, tempImg);
 
         if (gridST)
-            drawGrid(osb, viewRct, true);
+            drawGrid(igd, viewRct, true);
 
-        if (tiling)
-            Art.drawSelectionBox(viewRct.x, viewRct.y, viewRct.width, viewRct.height, FontSizes.getSpriteScale(), osb);
+        if (tiling != null)
+            Art.drawSelectionBox(viewRct.x + (ofsX * zoom), viewRct.y + (ofsY * zoom), ofsW * zoom, ofsH * zoom, FontSizes.getSpriteScale(), igd);
 
-        Art.drawSelectionBox(viewRct.x + (cursorX * zoom), viewRct.y + (cursorY * zoom), zoom, zoom, FontSizes.getSpriteScale(), osb);
+        Art.drawSelectionBox(viewRct.x + (cursorX * zoom), viewRct.y + (cursorY * zoom), zoom, zoom, FontSizes.getSpriteScale(), igd);
 
         if (showTarget)
-            Art.drawTarget(viewRct.x + (targetX * zoom), viewRct.y + (targetY * zoom), zoom, osb);
-        igd.blitImage(0, 0, bounds.width, bounds.height, 0, 0, osb);
-        osb.shutdown();
+            Art.drawTarget(viewRct.x + (targetX * zoom), viewRct.y + (targetY * zoom), zoom, igd);
 
         Rect zPlus = Art.getZIconRect(false, 0);
         Rect zPlusFull = Art.getZIconRect(true, 0);
@@ -228,11 +238,26 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         if (!dragging)
             return;
 
+        int ofsX = 0;
+        int ofsY = 0;
+        int ofsW = image.width;
+        int ofsH = image.height;
+        if (tiling != null) {
+            ofsX = tiling.x;
+            ofsY = tiling.y;
+            ofsW = tiling.width;
+            ofsH = tiling.height;
+        }
+
         Rect bounds = getViewRect();
         int nx = UIGrid.sensibleCellDiv(x - bounds.x, zoom);
         int ny = UIGrid.sensibleCellDiv(y - bounds.y, zoom);
-        nx -= UIGrid.sensibleCellDiv(nx, image.width) * image.width;
-        ny -= UIGrid.sensibleCellDiv(ny, image.height) * image.height;
+        nx -= ofsX;
+        ny -= ofsY;
+        nx -= UIGrid.sensibleCellDiv(nx, ofsW) * ofsW;
+        ny -= UIGrid.sensibleCellDiv(ny, ofsH) * ofsH;
+        nx += ofsX;
+        ny += ofsY;
 
         if (camMode || tempCamMode) {
             if (first) {

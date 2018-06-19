@@ -33,7 +33,7 @@ public class ImageEditorController {
     private UIImageEditView imageEditView;
     private UIScrollLayout paletteView;
     public int selPaletteIndex = 0;
-    public boolean rectangleRunning;
+    public boolean rectangleRunning, tilingRunning;
     public int rectanglePoint1X, rectanglePoint1Y;
     public IConsumer<UIElement> windowMaker;
 
@@ -61,6 +61,18 @@ public class ImageEditorController {
     }
 
     public void applyCursor() {
+        if (tilingRunning) {
+            tilingRunning = false;
+            imageEditView.showTarget = false;
+            int minX, minY, maxX, maxY;
+            minX = Math.min(rectanglePoint1X, imageEditView.cursorX);
+            minY = Math.min(rectanglePoint1Y, imageEditView.cursorY);
+            maxX = Math.max(rectanglePoint1X, imageEditView.cursorX);
+            maxY = Math.max(rectanglePoint1Y, imageEditView.cursorY);
+            imageEditView.tiling = new Rect(minX, minY, (maxX - minX) + 1, (maxY - minY) + 1);
+            initPalette();
+            return;
+        }
         if (!rectangleRunning) {
             rectanglePoint1X = imageEditView.cursorX;
             rectanglePoint1Y = imageEditView.cursorY;
@@ -185,7 +197,7 @@ public class ImageEditorController {
                 initPalette();
             }
         }), false, 0.5d));
-        if (!rectangleRunning) {
+        if (!(rectangleRunning || tilingRunning)) {
             paletteView.panelsAdd(new UITextButton(TXDB.get("Rectangle"), FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
@@ -201,40 +213,55 @@ public class ImageEditorController {
                 @Override
                 public void run() {
                     rectangleRunning = false;
+                    tilingRunning = false;
                     imageEditView.showTarget = false;
                     initPalette();
                 }
             }));
         }
-        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Resize"), FontSizes.schemaButtonTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
-                    @Override
-                    public void accept(Rect rect) {
-                        // X/Y is where to put the input on the output.
-                        int[] newImage = new int[rect.width * rect.height];
-                        for (int i = 0; i < Math.min(rect.width - rect.x, imageEditView.image.width); i++) {
-                            for (int j = 0; j < Math.min(rect.height - rect.y, imageEditView.image.height); j++) {
-                                if (i + rect.x < 0)
-                                    continue;
-                                if (j + rect.y < 0)
-                                    continue;
-                                newImage[(i + rect.x) + ((j + rect.y) * rect.width)] = imageEditView.image.getRaw(i, j);
+        if (imageEditView.tiling != null) {
+            paletteView.panelsAdd(new UITextButton(TXDB.get("Leave Tiling"), FontSizes.schemaButtonTextHeight, new Runnable() {
+                @Override
+                public void run() {
+                    imageEditView.tiling = null;
+                    initPalette();
+                }
+            }));
+        } else if (!(rectangleRunning || tilingRunning)) {
+            paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Resize"), FontSizes.schemaButtonTextHeight, new Runnable() {
+                @Override
+                public void run() {
+                    showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
+                        @Override
+                        public void accept(Rect rect) {
+                            // X/Y is where to put the input on the output.
+                            int[] newImage = new int[rect.width * rect.height];
+                            for (int i = 0; i < Math.min(rect.width - rect.x, imageEditView.image.width); i++) {
+                                for (int j = 0; j < Math.min(rect.height - rect.y, imageEditView.image.height); j++) {
+                                    if (i + rect.x < 0)
+                                        continue;
+                                    if (j + rect.y < 0)
+                                        continue;
+                                    newImage[(i + rect.x) + ((j + rect.y) * rect.width)] = imageEditView.image.getRaw(i, j);
+                                }
                             }
+                            imageEditView.cursorX = rect.width / 2;
+                            imageEditView.cursorY = rect.height / 2;
+                            imageEditView.setImage(new ImageEditorImage(rect.width, rect.height, newImage, imageEditView.image.palette, imageEditView.image.t1Lock));
                         }
-                        imageEditView.cursorX = rect.width / 2;
-                        imageEditView.cursorY = rect.height / 2;
-                        imageEditView.setImage(new ImageEditorImage(rect.width, rect.height, newImage, imageEditView.image.palette, imageEditView.image.t1Lock));
-                    }
-                }, TXDB.get("Resize..."));
-            }
-        }), new UITextButton(TXDB.get("Tiling"), FontSizes.schemaButtonTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                imageEditView.tiling = !imageEditView.tiling;
-            }
-        }).togglable(imageEditView.tiling), false, 0.5d));
+                    }, TXDB.get("Resize..."));
+                }
+            }), new UITextButton(TXDB.get("Tiling"), FontSizes.schemaButtonTextHeight, new Runnable() {
+                @Override
+                public void run() {
+                    tilingRunning = true;
+                    imageEditView.targetX = rectanglePoint1X = imageEditView.cursorX;
+                    imageEditView.targetY = rectanglePoint1Y = imageEditView.cursorY;
+                    imageEditView.showTarget = true;
+                    initPalette();
+                }
+            }), false, 0.5d));
+        }
         UIAppendButton ap = new UIAppendButton(TXDB.get("ST"), new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
