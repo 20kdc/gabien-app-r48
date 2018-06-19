@@ -180,16 +180,13 @@ public class TXDB {
             return;
         DBLoader.readFile("Systerms/" + languages[languageId] + ".txt", new LangLoadDatabase("r48/"));
         DBLoader.readFile("Systerms/L-" + languages[languageId] + ".txt", new LangLoadDatabase("launcher/"));
+        GaBIEn.wordLoad = TXDB.get("Load");
+        GaBIEn.wordSave = TXDB.get("Save");
     }
 
     public static void loadGamepakLanguage(String gp) {
         // think: R2k/LangTest.txt
-        subspace.clear();
-        ssTexts.clear();
-        if (languageId == 0)
-            return;
-        DBLoader.readFile("Systerms/" + languages[languageId] + ".txt", new LangLoadDatabase("r48/"));
-        DBLoader.readFile("Systerms/L-" + languages[languageId] + ".txt", new LangLoadDatabase("launcher/"));
+        setLanguage();
         try {
             DBLoader.readFile(gp + "Lang" + languages[languageId] + ".txt", new LangLoadDatabase("SDB@"));
         } catch (Exception e) {

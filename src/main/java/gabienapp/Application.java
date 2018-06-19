@@ -57,6 +57,7 @@ public class Application {
 
     public static void gabienmain() throws IOException {
         GaBIEn.appPrefixes = new String[] {BRAND + "/", ""};
+        GaBIEn.sysCoreFontSize = FontSizes.gSysCoreTextHeight;
 
         mobileExtremelySpecialBehavior = GaBIEn.singleWindowApp();
         uiTicker = new WindowCreatingUIElementConsumer();

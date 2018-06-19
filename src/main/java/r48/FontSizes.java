@@ -110,8 +110,9 @@ public class FontSizes {
 
     // TXDB.get("fontSizerTextHeight")
     public static int fontSizerTextHeight = 16;
-    // TXDB.get("timeWasterTextHeight")
-    public static int timeWasterTextHeight = 16;
+
+    // TXDB.get("gSysCoreTextHeight")
+    public static int gSysCoreTextHeight = 16;
 
     // TXDB.get("launcherTextHeight")
     public static int launcherTextHeight = 16;
@@ -239,6 +240,8 @@ public class FontSizes {
         @Override
         public void accept(Integer integer) {
             try {
+                if (name.equals("gSysCoreTextHeight"))
+                    GaBIEn.sysCoreFontSize = integer;
                 intern.setInt(null, integer);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);

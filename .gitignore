@@ -8,6 +8,7 @@
 !translation-diff.sh
 !releaser
 !releaser/*.sh
+!releaser/icon.png
 !src
 !src/
 !src/main
