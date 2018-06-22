@@ -190,15 +190,16 @@
 ./r48/io/r2k/chunks/ArrayR2kInterpretable.class
 ./r48/io/r2k/chunks/R2kObject.class
 ./r48/io/r2k/chunks/ArraySetR2kStruct.class
+./r48/io/BMPConnection.class
 ./r48/io/JsonStringIO.class
 ./r48/io/IObjectBackend.class
 ./r48/io/ika/NPChar$NPCCharacter.class
-./r48/io/ika/BM8I.class
 ./r48/io/ika/NPChar.class
 ./r48/io/cs/CSOObjectBackend$CSOParsedOP.class
 ./r48/io/cs/CSOObjectBackend$CSOSubtype.class
 ./r48/io/cs/CSObjectBackend.class
 ./r48/io/cs/CSOObjectBackend.class
+./r48/io/BMPConnection$CMode.class
 ./r48/io/JsonObjectBackend.class
 ./r48/io/R48ObjectBackend.class
 ./r48/io/IObjectBackend$Factory.class

@@ -57,6 +57,8 @@ public class TonePickerSchemaElement extends SchemaElement {
         // How do I make this work? Like this:
 
         int imageUnit = (FontSizes.tonePickerTextHeight * 64) / 6;
+        if (imageUnit < 1)
+            imageUnit = 1;
         IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(imageUnit * 2, imageUnit, false);
 
         IImage totem = GaBIEn.getImage("tonetotm.png");
@@ -66,8 +68,9 @@ public class TonePickerSchemaElement extends SchemaElement {
         FontManager.drawString(finalComposite, 0, (imageUnit + 1) - FontSizes.tonePickerTextHeight, TXDB.get("TotemSrc."), false, false, FontSizes.tonePickerTextHeight);
         FontManager.drawString(finalComposite, imageUnit, (imageUnit + 1) - FontSizes.tonePickerTextHeight, TXDB.get("Composite"), false, false, FontSizes.tonePickerTextHeight);
 
+        IImage im = GaBIEn.createImage(finalComposite.getPixels(), imageUnit * 2, imageUnit);
         finalComposite.shutdown();
-        return GaBIEn.createImage(finalComposite.getPixels(), imageUnit * 2, imageUnit);
+        return im;
     }
 
     public static UIPublicPanel createTotem(IImageEffect cfg) {
