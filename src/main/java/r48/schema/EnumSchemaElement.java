@@ -95,7 +95,7 @@ public class EnumSchemaElement extends SchemaElement {
                 return FormatSyntax.formatExtended(TXDB.get("#A : #B"), val, new RubyIO().setString(st, true));
             }
         }
-        return FormatSyntax.formatExtended(TXDB.get("#A (?)"), val);
+        return val.toString();
     }
 
     @Override
