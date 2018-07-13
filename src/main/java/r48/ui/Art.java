@@ -239,11 +239,12 @@ public class Art {
         Map, BarV, BarVBranchR, BarCornerUR,
         Target, Area, Expandable, Play,
         Loop, XRed, Div3, Div2,
-        SaveDNU, CopyDNU, PasteDNU, CloneFrame,
+        Save, CopyDNU, PasteDNU, CloneFrame,
         // CopyGroup/PasteGroup have multiple items, while Copy/Paste show blank boxes/paper.
         Inspect, Back, CopyGroupDNU, PasteGroupDNU,
         // "Rectangle" is white & dashed, area is solid-skyblue,
         //  XWhite is white and smaller than XRed.
-        Rectangle, Stripes, XWhite, Unused
+        Rectangle, Stripes, XWhite, Pencil,
+        Camera, New, Folder, Unused
     }
 }
