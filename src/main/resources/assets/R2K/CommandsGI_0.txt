@@ -19,12 +19,14 @@ C category 5
 d A placeholder that allows for insertion.
 p _ string
 Llist
+Lstrict
 
 10: >> E.O.B. insert point
 C category 5
 d A placeholder that allows for insertion.
 p _ string
 Lblock
+Lstrict
 
 12410: //* $
 C category 5
