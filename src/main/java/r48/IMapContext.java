@@ -27,4 +27,7 @@ public interface IMapContext {
 
     // Shuts down internal caching as R48 reverts to the launcher.
     void freeOsbResources();
+
+    // Used indirectly by the image editor when a file is saved.
+    void performCacheFlush();
 }

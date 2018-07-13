@@ -349,6 +349,10 @@ public class AppMain {
         };
     }
 
+    public static void imageEditorSavedFile() {
+        mapContext.performCacheFlush();
+    }
+
     // This can only be done once now that rootView & the tab pane kind of share state.
     // For a proper UI reset, careful nuking is required.
     private static UITabPane initializeTabs(final String gamepak, final IConsumer<UIElement> uiTicker) {

@@ -401,4 +401,15 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
         camX += tileSize * x;
         camY += tileSize * y;
     }
+
+    // Safe to pass null here.
+    public static void performFullCacheFlush(UIMapView view) {
+        AppMain.stuffRendererIndependent.imageLoader.flushCache();
+        if (view != null) {
+            view.mapTable.renderer.imageLoader.flushCache();
+            view.performRefresh(null);
+            view.mapTable.renderer.imageLoader.flushCache();
+            view.reinitLayerVis();
+        }
+    }
 }

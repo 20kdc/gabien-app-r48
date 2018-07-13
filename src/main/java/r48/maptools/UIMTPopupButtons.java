@@ -40,11 +40,7 @@ public class UIMTPopupButtons extends UIMTBase {
                 new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.stuffRendererIndependent.imageLoader.flushCache();
-                        view.mapTable.renderer.imageLoader.flushCache();
-                        view.performRefresh(null);
-                        view.mapTable.renderer.imageLoader.flushCache();
-                        view.reinitLayerVis();
+                        UIMapView.performFullCacheFlush(view);
                     }
                 },
                 new Runnable() {

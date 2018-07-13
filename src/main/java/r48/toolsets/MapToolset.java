@@ -8,11 +8,11 @@
 package r48.toolsets;
 
 import gabien.ui.IConsumer;
-import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.IMapContext;
 import r48.dbs.TXDB;
+import r48.map.UIMapView;
 import r48.map.UIMapViewContainer;
 
 /**
@@ -44,6 +44,12 @@ public class MapToolset implements IToolset {
                 if (mapBox.view == null)
                     return;
                 mapBox.view.freeOsbResources();
+            }
+
+            @Override
+            public void performCacheFlush() {
+                // Can be null safely
+                UIMapView.performFullCacheFlush(mapBox.view);
             }
         };
 
