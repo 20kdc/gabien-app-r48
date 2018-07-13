@@ -18,7 +18,7 @@ C digitCount 5
 C category 5
 d A placeholder that allows for insertion.
 p _ string
-L
+Llist
 
 10: >> E.O.B. insert point
 C category 5
