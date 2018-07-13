@@ -184,10 +184,15 @@
       1. Immediately before an 'l'-type command
       2. At the end of the list.
       However, this can't be deleted due to Map29, E315 (ram nomming moss)
+      ADDITIONAL NOTE: See "strict" which restores the deletion behavior
 
-      Note that usually nothing goes after this, but in specific cases that rule is incorrect.
-      If 'block' follows this, then this is solely defined as a block leave command.
-      (This is due to RM2000/2003 oddities that make it different from the later iterations the R48 system was developed for.)
+      Note that usually nothing goes after this, which sets it as the block and list leave template, and as a block/list leave command,
+       but in specific cases that rule is incorrect.
+      If 'block' follows this, then this is defined as a block leave template and block leave command.
+      If 'list' follows this, then this is defined as a list leave template and list leave command.
+      If 'strict' follows this, then this can only exist to fulfill a block/list leave requirement.
+      (NOTE: Only one of these args is usable on one line for now, just use multiple lines)
+      The reason for this segmentation is due to RM2000/2003 oddities that make it different from the later iterations the R48 system was developed for.
 
   'l' defines this as requiring a block leave before it, for correct indentation.
       This can be safely enforced without 100% knowledge of the command set.

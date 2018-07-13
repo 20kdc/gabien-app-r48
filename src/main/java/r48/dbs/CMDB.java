@@ -414,16 +414,24 @@ public class CMDB {
                 } else if (c == 'l') {
                     rc.needsBlockLeavePre = true;
                 } else if (c == 'L') {
-                    rc.typeBlockLeave = true;
                     if (args.length > 0) {
                         if (args[0].equals("block")) {
                             // block context only
                             blockLeaveCmd = workingCmdId;
-                        } else {
-                            // default context: all
+                            rc.typeBlockLeave = true;
+                        } else if (args[0].equals("list")) {
                             listLeaveCmd = workingCmdId;
-                            blockLeaveCmd = workingCmdId;
+                            rc.typeListLeave = true;
+                        } else if (args[0].equals("strict")) {
+                            rc.typeStrictLeave = true;
                         }
+                        // "none" is neither
+                    } else {
+                        // default context: all
+                        listLeaveCmd = workingCmdId;
+                        blockLeaveCmd = workingCmdId;
+                        rc.typeBlockLeave = true;
+                        rc.typeListLeave = true;
                     }
                 } else if (c == '>') {
                     localAliasing.put(args[0], AppMain.schemas.getSDBEntry(args[1]));

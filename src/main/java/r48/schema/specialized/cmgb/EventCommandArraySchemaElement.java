@@ -75,12 +75,14 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         // NOTE: This method is deliberately awkward to allow for the concurrent modification...
         // Attempting to 'fix' it will only make it worse.
         boolean lastWasBlockLeave = false;
+        boolean lastWasStrictLeave = false;
         int lastCode = -1;
 
         // Indent tracking
         int indent = 0;
 
         // Note that this array can grow as it's being searched.
+        boolean hasValidListLeave = database.listLeaveCmd == -1;
         for (int i = 0; i < arr.size(); i++) {
             RubyIO commandTarg = arr.get(i);
             int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
@@ -120,10 +122,30 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                             continue;
                         }
                     }
+                } else {
+                    if (lastWasBlockLeave && lastWasStrictLeave) {
+                        arr.remove(i - 1);
+                        i--;
+                        modified = true;
+                    }
+                }
+                if (rc.typeListLeave) {
+                    if (i != arr.size() - 1) {
+                        if (rc.typeStrictLeave) {
+                            arr.remove(i);
+                            i--;
+                            modified = true;
+                            continue;
+                        }
+                    } else {
+                        hasValidListLeave = true;
+                    }
                 }
                 lastWasBlockLeave = rc.typeBlockLeave;
+                lastWasStrictLeave = rc.typeStrictLeave;
             } else {
                 lastWasBlockLeave = false;
+                lastWasStrictLeave = false;
             }
             lastCode = code;
         }
@@ -151,17 +173,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
 
         // After it's done with major structural work, add ending block
         if (!continueToBreak) {
-            boolean needsEndingBlock = false;
-            if (array.arrVal.length == 0) {
-                needsEndingBlock = database.listLeaveCmd != -1;
-            } else {
-                if (array.arrVal[array.arrVal.length - 1].getInstVarBySymbol("@code").fixnumVal != database.listLeaveCmd)
-                    needsEndingBlock = database.listLeaveCmd != -1;
-            }
-
-            if (needsEndingBlock) {
+            if (!hasValidListLeave) {
                 // 0 so that the code won't combust from lacking an array
-                RubyIO c = SchemaPath.createDefaultValue(baseElement, new RubyIO().setFX(database.listLeaveCmd));
+                RubyIO c = SchemaPath.createDefaultValue(baseElement, new RubyIO().setFX(arr.size()));
                 c.getInstVarBySymbol("@code").fixnumVal = database.listLeaveCmd;
                 arr.add(c);
                 modified = true;

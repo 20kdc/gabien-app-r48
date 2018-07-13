@@ -43,7 +43,12 @@ public class RPGCommand {
     // Something that can also go before this command instead of a block leave
     public int blockLeaveReplacement = -1;
     public boolean needsBlockLeavePre;
+    // typeBlockLeave fulfills any block leave relation
+    // typeListLeave fulfills the list leave
+    // typeRestrictiveBlockLeave can only exist when it is required to fulfill a leave relation
     public boolean typeBlockLeave;
+    public boolean typeListLeave;
+    public boolean typeStrictLeave;
 
     public String description;
 

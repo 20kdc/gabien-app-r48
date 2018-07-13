@@ -174,11 +174,18 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 ArrayUtils.insertRioElement(target, rio, i);
                 // whack the UI
                 path.changeOccurred(false);
-                // Perform *magic*.
-                // What this means is that the subclass is given everything it needs to, theoretically,
-                //  construct a contrived sequence of schema paths that lead to the 'user' switching into the target element,
-                //  selecting something in there, and popping up a command selection dialog.
-                elementOnCreateMagic(target, i, launcher, ind, path);
+                // We don't actually know the command appeared where we told it to appear.
+                // Rescan.
+                for (int j = 0; j < target.arrVal.length; j++) {
+                    if (target.arrVal[j] == rio) {
+                        // Perform *magic*.
+                        // What this means is that the subclass is given everything it needs to, theoretically,
+                        //  construct a contrived sequence of schema paths that lead to the 'user' switching into the target element,
+                        //  selecting something in there, and popping up a command selection dialog.
+                        elementOnCreateMagic(target, j, launcher, ind, path);
+                        return;
+                    }
+                }
             }
         };
     }
