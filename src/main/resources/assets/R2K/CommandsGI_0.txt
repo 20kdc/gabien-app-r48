@@ -104,7 +104,7 @@ p faceFlipped int_boolean
 
  Control Switches follows. Uhoh.
 
-10210: @@Control Switch{E:{B=1=es @#C .. @#D|{B=2= #[var @#C#]| @#C}} = #E|es}
+10210: @@Control Switch{E:{B=1=es @#C .. @#D|{B=2= #[Var(@#C)| @#C}} = #E|es}
 C category 1
 d Control switches in various ways. Single alters one switch. Range alters a group of switches. Indirect alters one switch, numbered by a variable.
 p _ string
@@ -129,7 +129,7 @@ d Alters the settings on either timer ID 0 (if unspecified) or a given timer. Ca
 p _ string
 X timer_operation_parameters
 
-10310: @@{B:{B=0=Give|Take From}|Give/Take From} Player:{D: {C=0=#D|Var(#D)}} Gold
+10310: @@{B:{B=0=Give|Take From}|Give/Take From} Player:{D: {C=0=#D|Var(@#D)}} Gold
 C category 2
 d Adds or removes gold by a constant amount or the value in a variable.
 p _ string
@@ -138,7 +138,7 @@ p goldIsVar int_boolean
 P 2 goldVar var_id
 v 0 gold int
 
-10320: {F:{B=0=Give|Take From}|Give/Take From} Player:{F: {E=0=#F|Var(#F)} Of} Item{F: {C=0=#D|Var(#D)}}
+10320: @@{F:{B=0=Give|Take From}|Give/Take From} Player:{F: {E=0=@#F|Var(@#F)} Of} Item{F: {C=0=@#D|Var(@#D)}}
 C category 2
 d Adds or removes the amount of an item (selected by ID or the value in a variable) by a constant amount or the value in a variable.
 p _ string
