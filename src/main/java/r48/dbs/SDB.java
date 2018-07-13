@@ -243,7 +243,7 @@ public class SDB {
                             return new EventCommandArraySchemaElement(s1, s2, getCMDB(a), false);
                         }
 
-                        // array[E][P][IdX/AL1/Ix1/IxN]
+                        // array[E][P][IdX/AL1/AX1/Ix1/IxN]
                         if (text.startsWith("array")) {
                             String ending = text.substring(5);
                             SchemaElement enu = null;
@@ -281,9 +281,15 @@ public class SDB {
                                 } else {
                                     return new StandardArraySchemaElement(get(), -1, true, 0, iai);
                                 }
+                            } else if (ending.equals("AX1")) {
+                                if (enu != null) {
+                                    return new ArbIndexedArraySchemaElement(get(), 1, 1, -1, iai, enu);
+                                } else {
+                                    return new ArbIndexedArraySchemaElement(get(), 1, 1, -1, iai);
+                                }
                             } else if (ending.equals("Ix1")) {
                                 if (enu != null) {
-                                    throw new RuntimeException("Incompatible with enumerations!");
+                                    return new ArbIndexedArraySchemaElement(get(), 1, -1, -1, iai, enu);
                                 } else {
                                     return new ArbIndexedArraySchemaElement(get(), 1, -1, -1, iai);
                                 }

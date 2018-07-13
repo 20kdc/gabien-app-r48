@@ -26,6 +26,12 @@ public class ArbIndexedArraySchemaElement extends ArraySchemaElement {
         indexOffset = io;
     }
 
+    public ArbIndexedArraySchemaElement(SchemaElement s, int io, int atLeast, int fixedSize, IArrayInterface uiHelper, SchemaElement o) {
+        super(fixedSize, (atLeast > -1) ? (atLeast + io) : 0, 0, uiHelper, o);
+        subelems = s;
+        indexOffset = io;
+    }
+
     @Override
     protected boolean autoCorrectArray(RubyIO array, SchemaPath path) {
         return false;

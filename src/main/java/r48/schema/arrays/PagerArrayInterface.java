@@ -26,39 +26,39 @@ public class PagerArrayInterface implements IArrayInterface {
         LinkedList<UIElement> uie = new LinkedList<UIElement>();
         for (int i = 0; i < positions.length; i++) {
             final String i2 = Integer.toString(i + 1);
-            if (positions[i].core != null) {
-                // "+", "+>", "-", "Cp.", "Ps."
-                UIScrollLayout barLayout = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
-                if (positions[i].execInsert != null) {
-                    final Runnable r = positions[i].execInsert;
-                    barLayout.panelsAdd(new UITextButton("+", FontSizes.schemaButtonTextHeight, new Runnable() {
+            // "+", "+>", "-", "Cp.", "Ps."
+            UIScrollLayout barLayout = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
+            if (positions[i].execInsert != null) {
+                final Runnable r = positions[i].execInsert;
+                barLayout.panelsAdd(new UITextButton("+", FontSizes.schemaButtonTextHeight, new Runnable() {
+                    @Override
+                    public void run() {
+                        r.run();
+                    }
+                }));
+            }
+            if (i < positions.length - 1) {
+                if (positions[i + 1].execInsert != null) {
+                    final Runnable r = positions[i + 1].execInsert;
+                    barLayout.panelsAdd(new UITextButton("+>", FontSizes.schemaButtonTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             r.run();
                         }
                     }));
                 }
-                if (i < positions.length - 1) {
-                    if (positions[i + 1].execInsert != null) {
-                        final Runnable r = positions[i + 1].execInsert;
-                        barLayout.panelsAdd(new UITextButton("+>", FontSizes.schemaButtonTextHeight, new Runnable() {
-                            @Override
-                            public void run() {
-                                r.run();
-                            }
-                        }));
+            }
+            if (positions[i].execDelete != null) {
+                final ISupplier<Runnable> r = positions[i].execDelete;
+                barLayout.panelsAdd(new UITextButton("-", FontSizes.schemaButtonTextHeight, new Runnable() {
+                    @Override
+                    public void run() {
+                        r.get().run();
                     }
-                }
-                if (positions[i].execDelete != null) {
-                    final ISupplier<Runnable> r = positions[i].execDelete;
-                    barLayout.panelsAdd(new UITextButton("-", FontSizes.schemaButtonTextHeight, new Runnable() {
-                        @Override
-                        public void run() {
-                            r.get().run();
-                        }
-                    }));
-                }
-                final RubyIO[] copyMe = positions[i].elements;
+                }));
+            }
+            final RubyIO[] copyMe = positions[i].elements;
+            if (copyMe != null) {
                 barLayout.panelsAdd(new UITextButton(TXDB.get("Copy"), FontSizes.schemaButtonTextHeight, new Runnable() {
                     @Override
                     public void run() {
@@ -72,23 +72,30 @@ public class PagerArrayInterface implements IArrayInterface {
                         AppMain.theClipboard = rio;
                     }
                 }));
-                if (i < positions.length - 1) {
-                    if (positions[i + 1].execInsertCopiedArray != null) {
-                        final Runnable r = positions[i + 1].execInsertCopiedArray;
-                        barLayout.panelsAdd(new UITextButton(TXDB.get("Paste"), FontSizes.schemaButtonTextHeight, new Runnable() {
-                            @Override
-                            public void run() {
-                                r.run();
-                            }
-                        }));
-                    }
+            }
+            if (i < positions.length - 1) {
+                if (positions[i + 1].execInsertCopiedArray != null) {
+                    final Runnable r = positions[i + 1].execInsertCopiedArray;
+                    barLayout.panelsAdd(new UITextButton(TXDB.get("Paste"), FontSizes.schemaButtonTextHeight, new Runnable() {
+                        @Override
+                        public void run() {
+                            r.run();
+                        }
+                    }));
                 }
+            }
+            if (positions[i].core != null) {
                 uie.add(new UISplitterLayout(barLayout, positions[i].core, true, 0d) {
                     @Override
                     public String toString() {
                         return i2;
                     }
                 });
+            } else if (positions.length == 1) {
+                // If there's only one position here, then it's this one, and this entry is needed for the +>
+                // Thus, return with just this
+                svl.panelsAdd(barLayout);
+                return;
             }
         }
         final IProperty prop2 = prop.apply("page");

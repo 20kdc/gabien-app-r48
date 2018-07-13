@@ -9,11 +9,13 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning:
++ SHAKESPEARE
+ + Hash auto-increment for simple integers
+ + Character creator???
+ + 2k/2k3 template select
+ + Image editor refactor [IN PROGRESS]
+
 + CORE-MAINTAIN
- + Image editor image system should be where things like backend-Ikachan look,
-   not the other way around! [Mostly done, BMP support isn't in yet]
- + Figure out why I had to do what I had to do to the set-to-recommended function
-    (UIElement) (frankly the highest priority of them all, if this ends up like Swing...)
 
 + USABILITY-HIGH
  + command-trees [DONE?]
