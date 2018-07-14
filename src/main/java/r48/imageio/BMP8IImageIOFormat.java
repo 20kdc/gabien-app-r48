@@ -54,11 +54,11 @@ public class BMP8IImageIOFormat extends ImageIOFormat {
 
     @Override
     public ImageIOImage loadFile(byte[] s, IImage gInput) throws IOException {
-        if (actuallyBits != 8)
-            throw new IOException("Just to prevent it being loaded thrice, and to ensure monochrome/etc also works");
         BMPConnection eDreams = new BMPConnection(s, BMPConnection.CMode.Normal, 0, false);
         if (eDreams.ignoresPalette)
             throw new IOException("Shouldn't load image this way ; it's not paletted. Better to use native methods if possible.");
+        if (actuallyBits != eDreams.bpp)
+            throw new IOException("Not the same amount of bits");
         int[] pixels = new int[eDreams.width * eDreams.height];
         for (int i = 0; i < pixels.length; i++)
             pixels[i] = eDreams.getPixel(i % eDreams.width, i / eDreams.width);

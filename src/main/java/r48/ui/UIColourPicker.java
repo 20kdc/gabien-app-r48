@@ -98,8 +98,7 @@ public class UIColourPicker extends UIElement.UIPanel {
         layoutAddElement(swatch);
         layoutAddElement(confirmer);
 
-        runLayout();
-        setForcedBounds(null, new Rect(getWantedSize()));
+        forceToRecommended();
     }
 
     @Override

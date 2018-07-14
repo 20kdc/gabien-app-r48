@@ -15,8 +15,6 @@ import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.imageio.ImageIOFormat;
-import r48.imageio.ImageIOImage;
-import r48.io.PathUtils;
 import r48.maptools.UIMTBase;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
@@ -35,6 +33,7 @@ public class ImageEditorController {
     private UIImageEditView imageEditView;
     private UIScrollLayout paletteView;
     public IConsumer<UIElement> windowMaker;
+    private ImageEditorSaveLoadController slc = new ImageEditorSaveLoadController();
 
     // This holds a bit of state, so let's just attach it/detach it as we want
     private final UITextButton sanityButton = new UITextButton(TXDB.get("Adjust"), FontSizes.schemaButtonTextHeight, null).togglable(true);
@@ -61,24 +60,25 @@ public class ImageEditorController {
 
     public void load(String filename) {
         GaBIEn.hintFlushAllTheCaches();
-        ImageIOImage ioi = ImageIOFormat.tryToLoad(filename, ImageIOFormat.supportedFormats);
+        ImageIOFormat.TryToLoadResult ioi = ImageIOFormat.tryToLoad(filename, ImageIOFormat.supportedFormats);
         if (ioi == null) {
             AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to load #A."), new RubyIO().setString(filename, true)));
         } else {
             // Detect assets that use the tRNS chunk correctly
             boolean detected = false;
-            if (ioi.palette != null) {
-                if ((ioi.palette.get(0) & 0xFF000000) == 0) {
+            if (ioi.iei.palette != null) {
+                if ((ioi.iei.palette.get(0) & 0xFF000000) == 0) {
                     detected = true;
-                    for (int i = 1; i < ioi.palette.size(); i++) {
-                        if ((ioi.palette.get(i) & 0xFF000000) != 0xFF000000) {
+                    for (int i = 1; i < ioi.iei.palette.size(); i++) {
+                        if ((ioi.iei.palette.get(i) & 0xFF000000) != 0xFF000000) {
                             detected = false;
                             break;
                         }
                     }
                 }
             }
-            imageEditView.setImage(new ImageEditorImage(ioi, detected));
+            imageEditView.setImage(new ImageEditorImage(ioi.iei, detected));
+            slc.didSuccessfulLoadSave(filename, ioi.format);
             initPalette();
         }
     }
@@ -120,6 +120,7 @@ public class ImageEditorController {
             @Override
             public void run() {
                 imageEditView.setImage(new ImageEditorImage(32, 32));
+                slc.newFile();
                 initPalette();
             }
         }), FontSizes.schemaButtonTextHeight);
@@ -135,7 +136,23 @@ public class ImageEditorController {
                 });
             }
         }, FontSizes.schemaButtonTextHeight);
-        ul = new UIAppendButton(Art.Symbol.Save, ul, new Runnable() {
+        boolean canDoNormalSave = slc.canSimplySave(imageEditView.image);
+        if (canDoNormalSave) {
+            ul = new UIAppendButton(Art.Symbol.Save, ul, new Runnable() {
+                @Override
+                public void run() {
+                    // Save to existing location
+                    try {
+                        slc.simpleSave(imageEditView.image);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        AppMain.launchDialog(TXDB.get("Failed to save.") + "\n" + e);
+                    }
+                    AppMain.imageEditorSavedFile();
+                }
+            }, FontSizes.schemaButtonTextHeight);
+        }
+        ul = new UIAppendButton(canDoNormalSave ? Art.Symbol.Target : Art.Symbol.Save, ul, new Runnable() {
             @Override
             public void run() {
                 LinkedList<String> items = new LinkedList<String>();
@@ -156,12 +173,15 @@ public class ImageEditorController {
                                             if (format.saveName(imageEditView.image) == null)
                                                 throw new Exception("Became unable to save file between dialog launch and confirmation");
                                             byte[] data = format.saveFile(imageEditView.image);
-                                            OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(s));
+                                            OutputStream os = GaBIEn.getOutFile(s);
                                             os.write(data);
                                             os.close();
+                                            slc.didSuccessfulLoadSave(s, format);
                                         } catch (Exception e) {
                                             AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to save #A.") + "\n" + e, new RubyIO().setString(s, true)));
                                         }
+                                        AppMain.imageEditorSavedFile();
+                                        initPalette();
                                     }
                                 }
                             });

@@ -8,7 +8,7 @@ package r48.map.imaging;
 
 import gabien.IImage;
 import r48.imageio.ImageIOFormat;
-import r48.imageio.ImageIOImage;
+import r48.io.PathUtils;
 
 /**
  * Uses the 'imageio' stuff to load images in a given format.
@@ -27,12 +27,12 @@ public class ImageIOImageLoader implements IImageLoader {
 
     @Override
     public IImage getImage(String name, boolean panorama) {
-        ImageIOImage im = ImageIOFormat.tryToLoad(name + postfix, new ImageIOFormat[] {format});
+        ImageIOFormat.TryToLoadResult im = ImageIOFormat.tryToLoad(PathUtils.autoDetectWindows(name + postfix), new ImageIOFormat[] {format});
         if (im != null) {
             if ((!panorama) && firstPalTransparency)
-                if (im.palette != null)
-                    im.palette.set(0, im.palette.get(0) & 0xFFFFFF);
-            return im.rasterize();
+                if (im.iei.palette != null)
+                    im.iei.palette.set(0, im.iei.palette.get(0) & 0xFFFFFF);
+            return im.iei.rasterize();
         }
         return null;
     }

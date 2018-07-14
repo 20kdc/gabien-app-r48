@@ -44,7 +44,7 @@ public abstract class ImageIOFormat {
         };
     }
 
-    public static ImageIOImage tryToLoad(String filename, ImageIOFormat[] formats) {
+    public static TryToLoadResult tryToLoad(String filename, ImageIOFormat[] formats) {
         filename = PathUtils.autoDetectWindows(filename);
 
         ByteArrayOutputStream dataHolder = new ByteArrayOutputStream();
@@ -82,8 +82,18 @@ public abstract class ImageIOFormat {
                 ioe.printStackTrace();
             }
             if (iei != null)
-                return iei;
+                return new TryToLoadResult(ief, iei);
         }
         return null;
+    }
+
+    public static class TryToLoadResult {
+        public final ImageIOFormat format;
+        public final ImageIOImage iei;
+
+        public TryToLoadResult(ImageIOFormat format, ImageIOImage iei) {
+            this.format = format;
+            this.iei = iei;
+        }
     }
 }
