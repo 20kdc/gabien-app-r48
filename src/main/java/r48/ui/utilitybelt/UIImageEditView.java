@@ -7,13 +7,12 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.IPeripherals;
 import gabien.ui.*;
+import gabienapp.Application;
 import r48.FontSizes;
-import r48.dbs.TXDB;
 import r48.ui.Art;
 import r48.ui.UIGrid;
 
@@ -25,23 +24,28 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     // Do not set outside of setImage
     public ImageEditorImage image = new ImageEditorImage(32, 32);
     public int cursorX = 16, cursorY = 16, zoom = FontSizes.getSpriteScale() * 16;
-    public boolean camMode = true, tempCamMode = false, dragging;
+    public boolean tempCamMode = false, dragging;
     public int dragLastX, dragLastY;
     public double camX, camY;
     public int gridW = 16, gridH = 16, gridOX = 0, gridOY = 0;
-    public Runnable colour;
 
-    public boolean showTarget;
+    public IImageEditorTool currentTool;
+    public int selPaletteIndex;
+
     public Rect tiling;
-    public int targetX, targetY;
     public int gridColour = 0x200020;
     public boolean gridST = false;
 
     public OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
     public UILabel.StatusLine statusLine = new UILabel.StatusLine();
 
-    public UIImageEditView(Runnable c) {
-        colour = c;
+    public Runnable updatePalette;
+
+    public UIImageEditView(IImageEditorTool rootTool, Runnable updatePal) {
+        updatePalette = updatePal;
+        currentTool = rootTool;
+        if (useDragControl())
+            currentTool = new CamImageEditorTool(currentTool);
     }
 
     // Only write to image from here!
@@ -67,12 +71,6 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         drawGrid(igd, viewRct, false);
 
         IImage tempImg = createImg();
-        int min = 0;
-        int max = 0;
-        if (tiling != null) {
-            min = -1;
-            max = 1;
-        }
         int ofsX = 0;
         int ofsY = 0;
         int ofsW = image.width;
@@ -83,9 +81,19 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             ofsW = tiling.width;
             ofsH = tiling.height;
         }
+        int min = 0;
+        int max = 0;
+        int soX = viewRct.x + (ofsX * zoom);
+        int soY = viewRct.y + (ofsY * zoom);
+        int soW = viewRct.x + (ofsX * zoom);
+        int soH = viewRct.y + (ofsY * zoom);
+        if (tiling != null) {
+            min = -1;
+            max = 1;
+        }
         for (int i = min; i <= max; i++)
             for (int j = min; j <= max; j++)
-                igd.blitScaledImage(ofsX, ofsY, ofsW, ofsH, viewRct.x + (ofsW * zoom * i) + (ofsX * zoom), viewRct.y + (ofsH * zoom * j) + (ofsY * zoom), ofsW * zoom, ofsH * zoom, tempImg);
+                igd.blitScaledImage(ofsX, ofsY, ofsW, ofsH, soX + (ofsW * zoom * i), soY + (ofsH * zoom * j), ofsW * zoom, ofsH * zoom, tempImg);
 
         if (gridST)
             drawGrid(igd, viewRct, true);
@@ -93,32 +101,41 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         if (tiling != null)
             Art.drawSelectionBox(viewRct.x + (ofsX * zoom), viewRct.y + (ofsY * zoom), ofsW * zoom, ofsH * zoom, FontSizes.getSpriteScale(), igd);
 
+
+        Rect theSelection = currentTool.getSelection();
+        if (theSelection != null) {
+            if (theSelection.width == 0 && theSelection.height == 0) {
+                Art.drawTarget(viewRct.x + (theSelection.x * zoom), viewRct.y + (theSelection.y * zoom), zoom, igd);
+            } else {
+                Art.drawSelectionBox(viewRct.x + (theSelection.x * zoom), viewRct.y + (theSelection.y * zoom), theSelection.width * zoom, theSelection.height * zoom, FontSizes.getSpriteScale(), igd);
+            }
+        }
+
         Art.drawSelectionBox(viewRct.x + (cursorX * zoom), viewRct.y + (cursorY * zoom), zoom, zoom, FontSizes.getSpriteScale(), igd);
 
-        if (showTarget)
-            Art.drawTarget(viewRct.x + (targetX * zoom), viewRct.y + (targetY * zoom), zoom, igd);
+        boolean dedicatedDragControl = useDragControl();
 
-        Rect zPlus = Art.getZIconRect(false, 0);
-        Rect zPlusFull = Art.getZIconRect(true, 0);
-        Rect zMinus = Art.getZIconRect(false, 1);
-        Rect zDrag = Art.getZIconRect(false, 2);
-        String info = TXDB.get("LMB: Draw/place, others: scroll, camera button: scroll mode");
-        if (GaBIEn.singleWindowApp())
-            info = TXDB.get("Tap/Drag: Draw, camera button: Switch to scrolling");
-        if (camMode) {
-            info = TXDB.get("All mouse buttons position cursor & scroll, camera button goes back to drawing");
-            if (GaBIEn.singleWindowApp())
-                info = TXDB.get("Tap: Position cursor, Drag: Scroll, camera button : go back to drawing");
-        }
-        String text = cursorX + ", " + cursorY + " " + info;
+        String status = cursorX + ", " + cursorY + " " + currentTool.getLocalizedText(dedicatedDragControl);
 
-        int textX = zPlusFull.x + zPlusFull.width;
-        int textW = bounds.width - (textX + ((zPlusFull.width - zPlus.width) / 2));
-        statusLine.draw(text, FontSizes.mapPositionTextHeight, igd, textX, zPlus.y, textW);
+        // shared with UIMapView
 
-        Art.drawZoom(igd, true, zPlus.x, zPlus.y, zPlus.height);
-        Art.drawZoom(igd, false, zMinus.x, zMinus.y, zMinus.height);
-        Art.drawDragControl(igd, camMode, zDrag.x, zDrag.y, zDrag.height);
+        Rect plusRect = Art.getZIconRect(false, 0);
+        Rect plusRectFull = Art.getZIconRect(true, 0); // used for X calc on the label
+        Rect minusRect = Art.getZIconRect(false, 1);
+        Rect dragRect = Art.getZIconRect(false, 2);
+
+        int textX = plusRectFull.x + plusRectFull.width;
+        int textW = getSize().width - (textX + ((plusRectFull.width - plusRect.width) / 2));
+        statusLine.draw(status, FontSizes.mapPositionTextHeight, igd, textX, plusRect.y, textW);
+
+        Art.drawZoom(igd, true, plusRect.x, plusRect.y, plusRect.height);
+        Art.drawZoom(igd, false, minusRect.x, minusRect.y, minusRect.height);
+        if (dedicatedDragControl)
+            Art.drawDragControl(igd, currentTool.getCamModeLT() != null, dragRect.x, dragRect.y, minusRect.height);
+    }
+
+    private boolean useDragControl() {
+        return Application.mobileExtremelySpecialBehavior || (currentTool.getCamModeLT() != null);
     }
 
     private void drawGrid(IGrDriver osb, Rect viewRct, boolean cut) {
@@ -169,10 +186,12 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     private Rect getLocalGridRect(Rect viewRct) {
         int localAnchorX = gridOX % gridW;
         if (localAnchorX != 0)
-            localAnchorX -= gridW * zoom;
+            localAnchorX -= gridW;
         int localAnchorY = gridOY % gridH;
         if (localAnchorY != 0)
-            localAnchorY -= gridH * zoom;
+            localAnchorY -= gridH;
+        localAnchorX *= zoom;
+        localAnchorY *= zoom;
         return new Rect(viewRct.x + localAnchorX, viewRct.y + localAnchorY, gridW * zoom, gridH * zoom);
     }
 
@@ -209,9 +228,17 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
                 handleMousewheel(x, y, false);
                 return;
             }
-            if (Art.getZIconRect(true, 2).contains(x, y)) {
-                camMode = !camMode;
-                return;
+            if (useDragControl()) {
+                if (Art.getZIconRect(true, 2).contains(x, y)) {
+                    IImageEditorTool lt = currentTool.getCamModeLT();
+                    if (lt != null) {
+                        currentTool = lt;
+                    } else if (useDragControl()) {
+                        currentTool = new CamImageEditorTool(currentTool);
+                    }
+                    updatePalette.run();
+                    return;
+                }
             }
         } else {
             tempCamMode = true;
@@ -259,7 +286,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         nx += ofsX;
         ny += ofsY;
 
-        if (camMode || tempCamMode) {
+        if ((currentTool.getCamModeLT() != null) || tempCamMode) {
             if (first) {
                 cursorX = nx;
                 cursorY = ny;
@@ -267,11 +294,21 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             camX += (x - dragLastX) / (double) zoom;
             camY += (y - dragLastY) / (double) zoom;
         } else {
-            boolean perform = first || (nx != cursorX) || (ny != cursorY);
-            cursorX = nx;
-            cursorY = ny;
-            if (perform)
-                colour.run();
+            if (first) {
+                cursorX = nx;
+                cursorY = ny;
+                currentTool.accept(this);
+            } else {
+                boolean perform = (nx != cursorX) || (ny != cursorY);
+                if (perform) {
+                    cursorX = nx;
+                    cursorY = ny;
+                    currentTool.accept(this);
+                    if (Math.abs(nx - cursorX) > Math.abs(ny - cursorY)) {
+                    } else {
+                    }
+                }
+            }
         }
     }
 

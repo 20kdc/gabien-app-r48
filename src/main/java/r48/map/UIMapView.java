@@ -9,6 +9,7 @@ package r48.map;
 
 import gabien.*;
 import gabien.ui.*;
+import gabienapp.Application;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -204,6 +205,8 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
         }
         String status = mapGUM + ";" + mouseXT + ", " + mouseYT + " Z" + internalScalingMul + ":" + internalScalingDiv + "; " + shortcuts;
 
+        // shared with UIImageEditView
+
         Rect plusRect = Art.getZIconRect(false, 0);
         Rect plusRectFull = Art.getZIconRect(true, 0); // used for X calc on the label
         Rect minusRect = Art.getZIconRect(false, 1);
@@ -220,7 +223,7 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
     }
 
     private boolean useDragControl() {
-        return GaBIEn.singleWindowApp() || camDragSwitch; // SWA means "make sure the user can use a 1-button mouse w/no hover".
+        return Application.mobileExtremelySpecialBehavior || camDragSwitch; // SWA means "make sure the user can use a 1-button mouse w/no hover".
     }
 
     private void render(int mouseXT, int mouseYT, int currentLayer, IGrDriver igd) {

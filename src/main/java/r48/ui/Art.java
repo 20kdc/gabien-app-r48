@@ -68,20 +68,22 @@ public class Art {
 
     public static void drawDragControl(IGrDriver igd, boolean select, int x, int y, int size) {
         int m = size / 12;
-        int m2 = size / 4;
 
-        int a = 255;
-        int b = 64;
+        int a = 64;
+        int b = 128;
         if (select) {
+            a = 128;
             b = 255;
-            a = 64;
         }
 
-        igd.clearRect(128, 128, 128, x, y, size, size);
+        igd.clearRect(b, b, b, x, y, size, size);
         igd.clearRect(a, a, a, x + m, y + m, size - (m * 2), size - (m * 2));
 
-        igd.clearRect(b, b, b, x + (size / 2) - m2, y + (m * 2), m2 * 2, size - (m * 4));
-        igd.clearRect(b, b, b, x + (m * 2), y + (size / 2) - m2, size - (m * 4), m2 * 2);
+        //igd.clearRect(b, b, b, x + (size / 2) - m2, y + (m * 2), m2 * 2, size - (m * 4));
+        //igd.clearRect(b, b, b, x + (m * 2), y + (size / 2) - m2, size - (m * 4), m2 * 2);
+
+        int xd = m;
+        Art.drawSymbol(igd, Art.Symbol.Camera, x + m + xd, y + m + xd, size - ((m + xd) * 2), false, select);
     }
 
     // this works decently even on high-DPI (with a sufficient thickness)
@@ -239,7 +241,7 @@ public class Art {
         Map, BarV, BarVBranchR, BarCornerUR,
         Target, Area, Expandable, Play,
         Loop, XRed, Div3, Div2,
-        Save, CopyDNU, PasteDNU, CloneFrame,
+        Save, Copy, PasteDNU, CloneFrame,
         // CopyGroup/PasteGroup have multiple items, while Copy/Paste show blank boxes/paper.
         Inspect, Back, CopyGroupDNU, PasteGroupDNU,
         // "Rectangle" is white & dashed, area is solid-skyblue,

@@ -46,6 +46,7 @@ public class Application {
     protected static UITextBox rootBox;
     protected static WindowCreatingUIElementConsumer uiTicker;
 
+    // This should be set to true if on a device where touch controls are used.
     public static boolean mobileExtremelySpecialBehavior;
 
     public static String secondaryImageLoadLocation = "";
