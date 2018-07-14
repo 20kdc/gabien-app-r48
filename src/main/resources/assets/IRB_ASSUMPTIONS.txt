@@ -8,15 +8,14 @@ The Grand List Of Assumptions
 
 1. If a RubyIO is edited, the relevant SchemaPath, or a parent of it, must be informed somehow.
  (Try to avoid calling "too high", especially near "Deity-Objects" named things like "Database")
-2. For properties and map creation, a map has the schema type RPG::Map. This need not be a class.
-3. The RPGCommand system makes a few assumptions which only RPG Maker-series engines can fulfill, and RGSS engines in particular.
+2. The RPGCommand system makes a few assumptions which only RPG Maker-series engines can fulfill, and RGSS engines in particular.
    @code is always the command code, and is always an integer.
    @indent is always the indentation. (Or indentation is not supported.)
    @parameters is always the parameters array.
    (Other values can be added, but must be referred to via schemas with X-commands to be noticed.)
    Command buffers bypass the restrictions, but are more complicated to use as a result.
-4. A map is always made of square tiles, uses the field @data which is a RubyTable, and *optionally* @width and @height.
-   (This is going to need fixing for C.C. among others)
-5. If it is in hashVal.keySet(), it is immutable. Backends can assume this, for memory reasons.
-6. Events are grid-aligned, and have iVars @name (opt.), @x, @y.
-7. Various RubyTable things.
+3. A map is always made of square tiles.
+4. If it is in hashVal.keySet(), it is immutable. Backends can assume this, for memory reasons.
+5. Events are grid-aligned.
+6. Various things are easier to do if you have RubyTables.
+7. This is a MINOR assumption, but do *try* to keep AMAI (Automatically Modified Array Index) in sync in any class that handles "that kind of object".

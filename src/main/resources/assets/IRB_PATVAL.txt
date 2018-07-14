@@ -18,7 +18,7 @@ text... : integer
 PathSyntax is a syntax for getting a RubyIO relative to another RubyIO.
 Sometimes, it's used relative to the world.
 
-PathSyntax is used in the following SDB1 stuff (mostly as regexes)
+PathSyntax is used in the following SDB1 stuff (this text should be safe to use as regexes, apart from DA{)
   condHide
   C name
   path
