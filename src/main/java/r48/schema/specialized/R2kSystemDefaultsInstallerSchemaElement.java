@@ -7,7 +7,9 @@
 
 package r48.schema.specialized;
 
-import gabien.ui.*;
+import gabien.ui.UIElement;
+import gabien.ui.UISplitterLayout;
+import gabien.ui.UITextButton;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -246,5 +248,25 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
             chr.getInstVarBySymbol("@x").setDeepClone(b);
         if (c != null)
             chr.getInstVarBySymbol("@y").setDeepClone(c);
+    }
+
+    public static void upgradeDatabase(RubyIO root) {
+        // WARNING! This attempts to upgrade a project to 2003 from 2000 while causing as little damage as possible,
+        //  but do consider that it might not actually *work*.
+        RubyIO system = root.getInstVarBySymbol("@system");
+        system.getInstVarBySymbol("@ldb_id").fixnumVal = 2003;
+        if (system.getInstVarBySymbol("@save_count_2k3en") == null)
+            system.addIVar("@save_count_2k3en", new RubyIO().setFX(0));
+        if (system.getInstVarBySymbol("@menu_commands_2k3") == null) {
+            RubyIO mc23 = new RubyIO();
+            mc23.type = '[';
+            mc23.arrVal = new RubyIO[5];
+            mc23.arrVal[0] = new RubyIO().setFX(5);
+            mc23.arrVal[1] = new RubyIO().setFX(1);
+            mc23.arrVal[2] = new RubyIO().setFX(2);
+            mc23.arrVal[3] = new RubyIO().setFX(3);
+            mc23.arrVal[4] = new RubyIO().setFX(4);
+            system.addIVar("@menu_commands_2k3", mc23);
+        }
     }
 }

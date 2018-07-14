@@ -23,14 +23,12 @@ import r48.map.systems.*;
 import r48.maptools.UIMTBase;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
+import r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.*;
-import r48.ui.Art;
-import r48.ui.Coco;
-import r48.ui.UIAppendButton;
-import r48.ui.UINSVertLayout;
+import r48.ui.*;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
 
@@ -667,11 +665,17 @@ public class AppMain {
                         mtb.selfClose = true;
                     }
                 };
-                mtb.setForcedBounds(null, new Rect(0, 0, (mainWindowWidth / 3) * 2, mainWindowHeight / 2));
-                mtb.setForcedBounds(null, new Rect(0, 0, (mainWindowWidth / 3) * 2, mtb.getWantedSize().height));
-                trueWindowMaker.accept(mtb);
+                resizeDialogAndTruelaunch(mtb);
             }
         };
+    }
+
+    private static void resizeDialogAndTruelaunch(UIElement mtb) {
+        // This logic makes sense since we're trying to force a certain width but not a certain height.
+        // It is NOT a bug in gabien-common so long as this code works (that is, the first call immediately prepares a correct wanted size).
+        mtb.setForcedBounds(null, new Rect(0, 0, (mainWindowWidth / 3) * 2, mainWindowHeight / 2));
+        mtb.setForcedBounds(null, new Rect(0, 0, (mainWindowWidth / 3) * 2, mtb.getWantedSize().height));
+        trueWindowMaker.accept(mtb);
     }
 
     public static void startHelp(Integer integer) {
@@ -755,7 +759,7 @@ public class AppMain {
 
     // R2kSystemDefaultsInstallerSchemaElement uses this to indirectly access several things a SchemaElement isn't allowed to access.
     public static void r2kProjectCreationHelperFunction() {
-        Runnable deploy = new Runnable() {
+        final Runnable deploy2k = new Runnable() {
             @Override
             public void run() {
                 // Perform all mkdirs
@@ -784,23 +788,36 @@ public class AppMain {
                         "R2K/System.png", "System/System.png",
                         "R2K/templatetileset.png", "ChipSet/templatetileset.png",
                         "R2K/slime.png", "Monster/monster.png",
+                        "R2K/templateconfig.ini", "RPG_RT.ini"
                 };
                 fileCopier(mkdirs, fileCopies);
                 // Load map 1, save everything
                 mapContext.loadMap("Map.1");
                 objectDB.ensureAllSaved();
-                launchDialog(TXDB.get("2k3 template synthesis complete."));
+                launchDialog(TXDB.get("The synthesis was completed successfully."));
             }
         };
-        trueWindowMaker.accept(new UIAutoclosingPopupMenu(new String[] {
-                TXDB.get("You are creating a RPG Maker 2000/2003 LDB."),
-                TXDB.get("Click here to automatically build skeleton project."),
-                TXDB.get("Otherwise, close this inner window."),
+        resizeDialogAndTruelaunch(new UIChoicesMenu(TXDB.get("Would you like a basic template, and if so, compatible with RPG Maker 2000 or 2003? All assets used for this are part of R48, and thus CC0 (Public Domain)."), new String[] {
+                TXDB.get("2000 Template"),
+                TXDB.get("2003 Template"),
+                TXDB.get("Do Nothing")
         }, new Runnable[] {
-                deploy,
-                deploy,
-                deploy
-        }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
+                deploy2k,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        RubyIO root = objectDB.getObject("RPG_RT.ldb");
+                        R2kSystemDefaultsInstallerSchemaElement.upgradeDatabase(root);
+                        objectDB.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(), root));
+                        deploy2k.run();
+                    }
+                }, new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }
+        }));
     }
 
     public static void csoNewMapMagic(String s) {
