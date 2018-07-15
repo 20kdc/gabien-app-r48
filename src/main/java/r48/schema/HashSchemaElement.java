@@ -137,9 +137,9 @@ public class HashSchemaElement extends SchemaElement {
                 UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(TXDB.get("Add Key"), FontSizes.schemaButtonTextHeight, new Runnable() {
                     @Override
                     public void run() {
-                        if (target.getHashVal(defKeyWorkspace) == null) {
+                        if (target.getHashVal(rio) == null) {
                             RubyIO rio2 = new RubyIO();
-                            RubyIO finWorkspace = new RubyIO().setDeepClone(defKeyWorkspace);
+                            RubyIO finWorkspace = new RubyIO().setDeepClone(rio);
                             valElem.modifyVal(rio2, path.arrayHashIndex(finWorkspace, "{" + getKeyText(finWorkspace) + "}"), true);
                             target.hashVal.put(finWorkspace, rio2);
                             // the deep clone prevents further modification of the key
