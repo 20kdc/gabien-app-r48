@@ -431,7 +431,13 @@ public class SDB {
                         if (text.equals("fileSelector")) {
                             String tx = args[point++];
                             String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx, true));
-                            return new SubwindowSchemaElement(new FileSelectorSchemaElement(tx), getFunctionToReturn(txHR));
+                            return new SubwindowSchemaElement(new FileSelectorSchemaElement(tx, null), getFunctionToReturn(txHR));
+                        }
+                        if (text.equals("imgSelector")) {
+                            String tx = args[point++];
+                            String tx2 = args[point++];
+                            String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx, true));
+                            return new SubwindowSchemaElement(new FileSelectorSchemaElement(tx, tx2), getFunctionToReturn(txHR));
                         }
                         if (text.equals("halfsplit")) {
                             SchemaElement a = get();

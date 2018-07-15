@@ -32,6 +32,9 @@ class SDBHelpers {
     protected HashMap<String, IFunction<String, ISpritesheetProvider>> spritesheets = new HashMap<String, IFunction<String, ISpritesheetProvider>>();
     protected HashMap<String, String> spritesheetN = new HashMap<String, String>();
 
+    // cellW/cellH is the skip size.
+    // useX/useY/useW/useH is what to use of a given cell.
+    // countOvr forces a specific cell count if not -1.
     public ISpritesheetProvider createSpritesheetProviderCore(final String imgTxt, final IImage img, final int useW, final int useH, final int rowCells, final int cellW, final int cellH, final int useX, final int useY, final int countOvr) {
         return new ISpritesheetProvider() {
             @Override
@@ -121,11 +124,11 @@ class SDBHelpers {
                 @Override
                 public ISpritesheetProvider apply(String imgTxt) {
                     final IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
-                    int sprW = img.getWidth() / 12;
-                    int sprH = img.getHeight() / 8;
-                    int cellW = sprW;
-                    int cellH = sprH;
-                    int ovr = -1;
+                    int cellW = img.getWidth() / 4;
+                    int cellH = img.getHeight() / 2;
+                    int sprW = cellW / 3;
+                    int sprH = cellH / 4;
+                    int ovr = 8;
                     if (imgTxt.startsWith("!$") || imgTxt.startsWith("$")) {
                         // Character index doesn't work on these
                         sprW = img.getWidth() / 3;

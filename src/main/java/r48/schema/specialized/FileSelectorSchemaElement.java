@@ -8,7 +8,11 @@
 package r48.schema.specialized;
 
 import gabien.GaBIEn;
-import gabien.ui.*;
+import gabien.IImage;
+import gabien.ui.UIElement;
+import gabien.ui.UILabel;
+import gabien.ui.UIScrollLayout;
+import gabien.ui.UITextButton;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -18,6 +22,8 @@ import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
+import java.util.HashSet;
+
 /**
  * Gives a list of items (removing the final extension).
  * Meant to be used in conjunction with an existing instance variable, example:
@@ -26,19 +32,32 @@ import r48.schema.util.SchemaPath;
  */
 public class FileSelectorSchemaElement extends SchemaElement {
     public final String pathExtender;
+    public final String mustBeImage;
 
-    public FileSelectorSchemaElement(String ext) {
+    public FileSelectorSchemaElement(String ext, String img) {
         pathExtender = ext;
+        mustBeImage = img;
     }
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+        // TODO: UPDATE TO IMAGEEDITOR-FULL FLUSH
+        AppMain.stuffRendererIndependent.imageLoader.flushCache();
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
         String[] strs = GaBIEn.listEntries(PathUtils.autoDetectWindows(AppMain.rootPath + pathExtender));
         if (strs == null)
             return new UILabel("The folder does not exist or was not accessible.", FontSizes.schemaButtonTextHeight);
+        HashSet<String> hitStrs = new HashSet<String>();
         for (String s : strs) {
             final String sStripped = stripExt(s);
+            if (mustBeImage != null) {
+                IImage im = AppMain.stuffRendererIndependent.imageLoader.getImage(mustBeImage + sStripped, false);
+                if (im == GaBIEn.getErrorImage())
+                    continue;
+            }
+            if (hitStrs.contains(sStripped))
+                continue;
+            hitStrs.add(sStripped);
             uiSVL.panelsAdd(new UITextButton(sStripped, FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
@@ -48,6 +67,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
                 }
             }));
         }
+        AppMain.stuffRendererIndependent.imageLoader.flushCache();
         return uiSVL;
     }
 
