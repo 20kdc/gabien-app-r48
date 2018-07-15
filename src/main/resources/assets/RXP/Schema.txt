@@ -136,7 +136,8 @@ E iterate_actor ActorID 0 All
 e iterate_battler0 0 EnemyIx 1 ActorIx
 E iterate_battler1 ID -1 All
 e weather_type 0 none 1 rain 2 storm 3 snow
-e blend_type -1 KeepDestAlpha 0 Normal 1 Add 2 Sub
+ -1 may be supported by MKXP, meaning "KeepDestAlpha", but nobody else supports it.
+e blend_type 0 Normal 1 Add 2 Sub
 
  ---- not quite sure about this bit
 e enemy_action_kind 0 Basic 1 Skill 2 Item
