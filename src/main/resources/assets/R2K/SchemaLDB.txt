@@ -518,7 +518,7 @@ C magicGenpos r2kAnimation @animation_name . . . 30
 : RPG::Tileset
 C name Class.RPG::Tileset @name | #A
 @name string= Template
-@tileset_name { string= templatetileset fileSelector ChipSet/ }
+@tileset_name { string= templatetileset imgSelector ChipSet/ ChipSet/ }
  This is kind of important:
  The highpass data is obvious, lowpass/TID not so much.
  Lowpass/TID allocation is:
@@ -577,9 +577,9 @@ e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 orde
 +subwindow: Transitions rpg_system_transition
 +subwindow: Test\_Parameters rpg_system_testing
 
-@title_name { string fileSelector Title/ }
+@title_name { string imgSelector Title/ Title/ }
 @show_title_2k3 booleanDefTrue
-@gameover_name { string fileSelector GameOver/ }
+@gameover_name { string imgSelector GameOver/ GameOver/ }
 @system_name f_system_name
 @system_box_tiling int_boolean
 @system2_name_2k3 f_system2_name
@@ -601,7 +601,7 @@ e rpg_system_font 0 gothic 1 mincho
 @font_id rpg_system_font
 
 @frame_show_2k3 boolean
-@frame_name_2k3 { string fileSelector Frame/ }
+@frame_name_2k3 { string imgSelector Frame/ Frame/ }
 @invert_animations_2k3 boolean
 
 .rpg_system_testing

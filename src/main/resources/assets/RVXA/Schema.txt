@@ -106,11 +106,11 @@ E iterate_enemy_index EnemyIdx -1 All
  -1 may be supported by MKXP, meaning KeepDestAlpha, but nobody else supports it.
 e blend_type 0 Normal 1 Add 2 Sub
 
-> f_animss_name { string fileSelector Graphics/Animations/ }
-> f_char_name { string fileSelector Graphics/Characters/ }
-> f_face_name { string fileSelector Graphics/Faces/ }
-> f_picture_name { string fileSelector Graphics/Pictures/ }
-> f_parallax_name { string fileSelector Graphics/Parallaxes/ }
+> f_animss_name { string imgSelector Graphics/Animations/ Animations/ }
+> f_char_name { string imgSelector Graphics/Characters/ Characters/ }
+> f_face_name { string imgSelector Graphics/Faces/ Faces/ }
+> f_picture_name { string imgSelector Graphics/Pictures/ Pictures/ }
+> f_parallax_name { string imgSelector Graphics/Parallaxes/ Parallaxes/ }
 
 C spritesheet[ Select character index... ] Characters/ vxaCharacter
 C spritesheet[ Select face index... ] Faces/ 96 96 4 0 0 96 96 0

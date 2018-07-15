@@ -100,18 +100,18 @@ E iterate_enemy_base EnemyID -1 All
        This is an entry in the Enemies table.
 > enemy_id internal_enemyDictionary
 
-> f_pano_name { string fileSelector Graphics/Panoramas/ }
-> f_bb_name { string fileSelector Graphics/Battlebacks/ }
-> f_fog_name { string fileSelector Graphics/Fogs/ }
-> f_char_name { string fileSelector Graphics/Characters/ }
-> f_icon_name { string fileSelector Graphics/Icons/ }
-> f_tileset_name { string fileSelector Graphics/Tilesets/ }
-> f_autotile_name { string fileSelector Graphics/Autotiles/ }
-> f_animss_name { string fileSelector Graphics/Animations/ }
-> f_battler_name { string fileSelector Graphics/Battlers/ }
-> f_ws_name { string fileSelector Graphics/Windowskins/ }
-> f_title_name { string fileSelector Graphics/Titles/ }
-> f_go_name { string fileSelector Graphics/Gameovers/ }
+> f_pano_name { string imgSelector Graphics/Panoramas/ Panoramas/ }
+> f_bb_name { string imgSelector Graphics/Battlebacks/ Battlebacks/ }
+> f_fog_name { string imgSelector Graphics/Fogs/ Fogs/ }
+> f_char_name { string imgSelector Graphics/Characters/ Characters/ }
+> f_icon_name { string imgSelector Graphics/Icons/ Icons/ }
+> f_tileset_name { string imgSelector Graphics/Tilesets/ Tilesets/ }
+> f_autotile_name { string imgSelector Graphics/Autotiles/ Autotiles/ }
+> f_animss_name { string imgSelector Graphics/Animations/ Animations/ }
+> f_battler_name { string imgSelector Graphics/Battlers/ Battlers/ }
+> f_ws_name { string imgSelector Graphics/Windowskins/ Windowskins/ }
+> f_title_name { string imgSelector Graphics/Titles/ Titles/ }
+> f_go_name { string imgSelector Graphics/Gameovers/ Gameovers/ }
 
  Defining the enums.
  In most cases these are global, so just don't move them from here.
