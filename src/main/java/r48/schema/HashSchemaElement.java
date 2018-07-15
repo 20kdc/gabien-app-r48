@@ -62,6 +62,24 @@ public class HashSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
+        final RubyIO rio;
+        if (defKeyWorkspace == null) {
+            rio = SchemaPath.createDefaultValue(keyElem, null);
+        } else {
+            rio = new RubyIO().setDeepClone(defKeyWorkspace);
+        }
+        final SchemaPath rioPath = new SchemaPath(keyElem, rio);
+        if (rio.type == 'i') {
+            while (target.getHashVal(rio) != null) {
+                // Try adding 1
+                long plannedVal = ++rio.fixnumVal;
+                keyElem.modifyVal(rio, rioPath, false);
+                if ((rio.type != 'i') || (rio.fixnumVal != plannedVal)) {
+                    // Let's not try that again
+                    break;
+                }
+            }
+        }
         // similar to the array schema, this is a containing object with access to local information
         Runnable rebuildSection = new Runnable() {
             // "Here come the hax!"
@@ -115,9 +133,7 @@ public class HashSchemaElement extends SchemaElement {
                     }, FontSizes.schemaButtonTextHeight));
                 }
                 // Set up a key workspace.
-                if (defKeyWorkspace == null)
-                    defKeyWorkspace = SchemaPath.createDefaultValue(keyElem, null);
-                UIElement workspace = keyElem.buildHoldingEditor(defKeyWorkspace, launcher, path.otherIndex("(tempWSKey)"));
+                UIElement workspace = keyElem.buildHoldingEditor(rio, launcher, rioPath);
                 UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(TXDB.get("Add Key"), FontSizes.schemaButtonTextHeight, new Runnable() {
                     @Override
                     public void run() {
