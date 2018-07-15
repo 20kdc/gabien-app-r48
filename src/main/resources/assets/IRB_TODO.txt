@@ -9,20 +9,19 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning:
-+ SHAKESPEARE
++ Demetrius's various notes over IRC and such:
  + Hash auto-increment for simple integers
  + Character creator???
- + 2k/2k3 template select
+ + 2k/2k3 template select [IN PROGRESS]
  + Image editor refactor [IN PROGRESS]
- + Camera button changes to make how it works clearer
+ + Camera button changes to make how it works clearer [IN PROGRESS]
+ + "Show all under this indent" for the command view
 
-+ CORE-MAINTAIN
-
-+ USABILITY-HIGH
++ Usability
  + command-trees [DONE?]
  + all the XP things [SOMEWHAT-DONE?]
 
-+ USABILITY-MID
++ Documentation
  + SDB1.1 Rollout [PARTIAL]
  + SDB Further Documentation Project
   + Should create a useful index to help clean up SDB
