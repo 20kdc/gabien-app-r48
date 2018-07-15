@@ -88,7 +88,7 @@ public class HueShiftImageEffect implements IImageEffect {
         return GaBIEn.createImage(array, input.getWidth(), input.getHeight());
     }
 
-    private int processCol(int i) {
+    public int processCol(int i) {
         int or = (i & 0xFF0000) >> 16;
         int og = (i & 0xFF00) >> 8;
         int ob = i & 0xFF;
