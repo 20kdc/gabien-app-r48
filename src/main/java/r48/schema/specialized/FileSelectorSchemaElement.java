@@ -41,6 +41,8 @@ public class FileSelectorSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+        // TODO: UPDATE TO IMAGEEDITOR-FULL FLUSH
+        AppMain.stuffRendererIndependent.imageLoader.flushCache();
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
         String[] strs = GaBIEn.listEntries(PathUtils.autoDetectWindows(AppMain.rootPath + pathExtender));
         if (strs == null)
@@ -65,6 +67,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
                 }
             }));
         }
+        AppMain.stuffRendererIndependent.imageLoader.flushCache();
         return uiSVL;
     }
 
