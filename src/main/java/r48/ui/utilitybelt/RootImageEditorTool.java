@@ -23,12 +23,14 @@ public class RootImageEditorTool implements IImageEditorTool {
         final Class[] toolClasses = new Class[] {
                 RootImageEditorTool.class,
                 RectangleImageEditorTool.class,
-                NopImageEditorTool.class
+                CopyImageEditorTool.class,
+                TileImageEditorTool.class
         };
         Art.Symbol[] toolSymbol = new Art.Symbol[] {
                 Art.Symbol.Pencil,
                 Art.Symbol.Rectangle,
                 Art.Symbol.Copy,
+                Art.Symbol.Stripes
         };
         UIScrollLayout svl = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
         for (int i = 0; i < toolClasses.length; i++) {
@@ -43,7 +45,7 @@ public class RootImageEditorTool implements IImageEditorTool {
                     } catch (IllegalAccessException e) {
                     }
                 }
-            }).togglable(toolClasses[i].isAssignableFrom(oneTool)));
+            }).togglable(toolClasses[i] == oneTool));
         }
         return svl;
     }

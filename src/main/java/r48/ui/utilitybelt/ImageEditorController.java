@@ -45,6 +45,12 @@ public class ImageEditorController {
         imageEditView = new UIImageEditView(new RootImageEditorTool(), new Runnable() {
             @Override
             public void run() {
+                while (true) {
+                    IImageEditorTool tool = imageEditView.currentTool;
+                    imageEditView.currentTool.enter(imageEditView);
+                    if (tool == imageEditView.currentTool)
+                        break;
+                }
                 initPalette();
             }
         });
@@ -146,7 +152,7 @@ public class ImageEditorController {
                         e.printStackTrace();
                         AppMain.launchDialog(TXDB.get("Failed to save.") + "\n" + e);
                     }
-                    AppMain.imageEditorSavedFile();
+                    AppMain.performFullImageFlush();
                 }
             }, FontSizes.schemaButtonTextHeight);
         }
@@ -178,7 +184,7 @@ public class ImageEditorController {
                                         } catch (Exception e) {
                                             AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to save #A.") + "\n" + e, new RubyIO().setString(s, true)));
                                         }
-                                        AppMain.imageEditorSavedFile();
+                                        AppMain.performFullImageFlush();
                                         initPalette();
                                     }
                                 }
@@ -224,6 +230,16 @@ public class ImageEditorController {
         }, FontSizes.schemaButtonTextHeight);
         ap.button.togglable(imageEditView.gridST);
         paletteView.panelsAdd(ap);
+
+        paletteView.panelsAdd(new UITextButton(TXDB.get("Reset View"), FontSizes.schemaButtonTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                imageEditView.camX = 0;
+                imageEditView.camY = 0;
+                imageEditView.tiling = null;
+                initPalette();
+            }
+        }));
 
         paletteView.panelsAdd(imageEditView.currentTool.createToolPalette(imageEditView));
 

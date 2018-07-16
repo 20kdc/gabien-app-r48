@@ -347,7 +347,7 @@ public class AppMain {
         };
     }
 
-    public static void imageEditorSavedFile() {
+    public static void performFullImageFlush() {
         mapContext.performCacheFlush();
     }
 

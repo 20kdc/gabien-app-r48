@@ -16,7 +16,7 @@ import r48.dbs.TXDB;
  */
 public class RectangleImageEditorTool implements IImageEditorTool {
     public boolean stage2;
-    public int p1x, p1y;
+    public int aX, aY;
 
     @Override
     public void enter(UIImageEditView uiev) {
@@ -27,10 +27,28 @@ public class RectangleImageEditorTool implements IImageEditorTool {
     public void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging) {
         if (major && (!dragging)) {
             if (!stage2) {
-                p1x = imp.x;
-                p1y = imp.y;
+                aX = imp.x;
+                aY = imp.y;
+                stage2 = true;
             } else {
+                int bW = (Math.max(aX, imp.x) + 1) - Math.min(aX, imp.x);
+                int bH = (Math.max(aY, imp.y) + 1) - Math.min(aY, imp.y);
+                aX = Math.min(aX, imp.x);
+                aY = Math.min(aY, imp.y);
+                performOperation(view, bW, bH);
+                stage2 = false;
+            }
+        }
+    }
 
+    protected void performOperation(UIImageEditView view, int bW, int bH) {
+        UIImageEditView.ImPoint imp2 = new UIImageEditView.ImPoint(0, 0);
+        for (int i = 0; i < bW; i++) {
+            imp2.x = aX + i;
+            for (int j = 0; j < bH; j++) {
+                imp2.y = aY + j;
+                imp2.updateCorrected(view);
+                view.image.setPixel(imp2.correctedX, imp2.correctedY, view.selPaletteIndex);
             }
         }
     }
@@ -42,11 +60,15 @@ public class RectangleImageEditorTool implements IImageEditorTool {
 
     @Override
     public Rect getSelection() {
-        return new Rect(1, 1, 2, 2);
+        if (stage2)
+            return new Rect(aX, aY, 0, 0);
+        return null;
     }
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
+        if (stage2)
+            return TXDB.get("Press another bounding point to finish.");
         return TXDB.get("Press bounding points to fill.");
     }
 

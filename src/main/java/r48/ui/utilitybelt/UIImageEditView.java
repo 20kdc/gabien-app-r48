@@ -79,19 +79,25 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             ofsW = tiling.width;
             ofsH = tiling.height;
         }
-        int min = 0;
-        int max = 0;
+        int minX = 0;
+        int maxX = 0;
+        int minY = 0;
+        int maxY = 0;
         int soX = viewRct.x + (ofsX * zoom);
         int soY = viewRct.y + (ofsY * zoom);
-        int soW = viewRct.x + (ofsX * zoom);
-        int soH = viewRct.y + (ofsY * zoom);
+        int soIX = bounds.width - soX;
+        int soIY = bounds.height - soY;
+        int soW = ofsW * zoom;
+        int soH = ofsH * zoom;
         if (tiling != null) {
-            min = -1;
-            max = 1;
+            minX = -((soX + (soW - 1)) / soW);
+            maxX = ((soIX + (soW - 1)) / soW);
+            minY = -((soY + (soH - 1)) / soH);
+            maxY = ((soIY + (soW - 1)) / soH);
         }
-        for (int i = min; i <= max; i++)
-            for (int j = min; j <= max; j++)
-                igd.blitScaledImage(ofsX, ofsY, ofsW, ofsH, soX + (ofsW * zoom * i), soY + (ofsH * zoom * j), ofsW * zoom, ofsH * zoom, tempImg);
+        for (int i = minX; i <= maxX; i++)
+            for (int j = minY; j <= maxY; j++)
+                igd.blitScaledImage(ofsX, ofsY, ofsW, ofsH, soX + (soW * i), soY + (soH * j), soW, soH, tempImg);
 
         if (gridST)
             drawGrid(igd, viewRct, true);
@@ -271,10 +277,13 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             camX += (x - dragLastX) / (double) zoom;
             camY += (y - dragLastY) / (double) zoom;
         } else {
+            IImageEditorTool oldTool = currentTool;
             ImPoint imp = new ImPoint(nx, ny);
             if (first) {
                 imp.updateCorrected(this);
                 currentTool.apply(imp, this, true, false);
+                if (oldTool != currentTool)
+                    dragging = false;
             } else {
                 int absX = Math.abs(ax - nx);
                 int absY = Math.abs(ay - ny);
@@ -295,6 +304,10 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
                     imp.y = ay;
                     imp.updateCorrected(this);
                     currentTool.apply(imp, this, false, !first);
+                    if (oldTool != currentTool) {
+                        dragging = false;
+                        return;
+                    }
 
                     subV -= subS;
                     boolean firstApp = true;
@@ -304,6 +317,10 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
                             imp.y = ay;
                             imp.updateCorrected(this);
                             currentTool.apply(imp, this, false, !first);
+                            if (oldTool != currentTool) {
+                                dragging = false;
+                                return;
+                            }
                         }
                         firstApp = false;
                         // Move perpendicular
@@ -332,6 +349,8 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
                 imp.y = ny;
                 imp.updateCorrected(this);
                 currentTool.apply(imp, this, true, !first);
+                if (oldTool != currentTool)
+                    dragging = false;
             }
         }
     }

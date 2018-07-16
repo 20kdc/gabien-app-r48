@@ -114,6 +114,11 @@ public class ImageEditorImage extends ImageIOImage {
         cachedData = null;
     }
 
+    public void setRaw(int x, int y, int selPaletteIndex) {
+        colourData[x + (y * width)] = selPaletteIndex;
+        cachedData = null;
+    }
+
     public int paletteSize() {
         if (palette != null)
             return palette.size();
