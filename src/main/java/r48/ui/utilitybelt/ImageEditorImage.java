@@ -90,6 +90,44 @@ public class ImageEditorImage extends ImageIOImage {
         }
     }
 
+    @Override
+    public ImageEditorImage clone() {
+        LinkedList<Integer> pal = null;
+        if (palette != null)
+            pal = new LinkedList<Integer>(palette);
+        ImageEditorImage iei2 = new ImageEditorImage(width, height, new int[width * height], pal, t1Lock);
+        if (palette == null) {
+            iei2.editorPalette = new int[editorPalette.length];
+            System.arraycopy(editorPalette, 0, iei2.editorPalette, 0, editorPalette.length);
+        }
+        System.arraycopy(colourData, 0, iei2.colourData, 0, iei2.colourData.length);
+        return iei2;
+    }
+
+    public boolean equalToImage(ImageEditorImage iei) {
+        if (iei.palette == null) {
+            if (palette != null)
+                return false;
+        } else {
+            if (palette == null)
+                return false;
+        }
+        if (iei.paletteSize() != paletteSize())
+            return false;
+        int size = paletteSize();
+        for (int i = 0; i < size; i++)
+            if (getPaletteRGB(i) != iei.getPaletteRGB(i))
+                return false;
+        if (iei.width != width)
+            return false;
+        if (iei.height != height)
+            return false;
+        for (int i = 0; i < colourData.length; i++)
+            if (colourData[i] != iei.colourData[i])
+                return false;
+        return true;
+    }
+
     private void handleT1Import() {
         if (palette == null)
             throw new IllegalArgumentException("cannot have null palette & t1lock");

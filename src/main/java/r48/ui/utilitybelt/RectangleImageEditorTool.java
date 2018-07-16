@@ -41,7 +41,13 @@ public class RectangleImageEditorTool implements IImageEditorTool {
         }
     }
 
+    @Override
+    public void endApply(UIImageEditView view) {
+
+    }
+
     protected void performOperation(UIImageEditView view, int bW, int bH) {
+        view.eds.startSection();
         UIImageEditView.ImPoint imp2 = new UIImageEditView.ImPoint(0, 0);
         for (int i = 0; i < bW; i++) {
             imp2.x = aX + i;
@@ -51,6 +57,7 @@ public class RectangleImageEditorTool implements IImageEditorTool {
                 view.image.setPixel(imp2.correctedX, imp2.correctedY, view.selPaletteIndex);
             }
         }
+        view.eds.endSection();
     }
 
     @Override

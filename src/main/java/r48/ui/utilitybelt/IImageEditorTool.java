@@ -20,6 +20,9 @@ public interface IImageEditorTool {
     // dragging means NOT the first point
     void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging);
 
+    // Must always be called after an apply sequence, and must always go to the correct tool.
+    void endApply(UIImageEditView view);
+
     UIElement createToolPalette(UIImageEditView uiev);
 
     // Null: No selection

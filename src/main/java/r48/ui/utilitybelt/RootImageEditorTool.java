@@ -15,6 +15,8 @@ import r48.dbs.TXDB;
  * Created on 13th July 2018.
  */
 public class RootImageEditorTool implements IImageEditorTool {
+    private boolean activeSection = false;
+
     public static UIScrollLayout createToolPalette(final UIImageEditView uiev, Class oneTool) {
         final Class[] toolClasses = new Class[] {
                 RootImageEditorTool.class,
@@ -86,6 +88,16 @@ public class RootImageEditorTool implements IImageEditorTool {
 
     @Override
     public void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging) {
+        if (!activeSection) {
+            activeSection = true;
+            view.eds.startSection();
+        }
         view.image.setPixel(imp.correctedX, imp.correctedY, view.selPaletteIndex);
+    }
+
+    @Override
+    public void endApply(UIImageEditView view) {
+        view.eds.endSection();
+        activeSection = false;
     }
 }

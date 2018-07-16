@@ -42,6 +42,7 @@ public class CopyImageEditorTool implements IImageEditorTool {
             aY = Math.min(aY, imp.y);
             stage++;
         } else {
+            view.eds.startSection();
             UIImageEditView.ImPoint src = new UIImageEditView.ImPoint(0, 0);
             int[] cols = new int[bW * bH];
             for (int i = 0; i < bW; i++) {
@@ -61,7 +62,13 @@ public class CopyImageEditorTool implements IImageEditorTool {
                 }
             }
             stage = 0;
+            view.eds.endSection();
         }
+    }
+
+    @Override
+    public void endApply(UIImageEditView view) {
+
     }
 
     private void transform(UIImageEditView.ImPoint dst, UIImageEditView.ImPoint imp, int i, int j) {

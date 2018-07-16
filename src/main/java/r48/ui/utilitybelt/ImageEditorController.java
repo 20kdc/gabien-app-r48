@@ -32,7 +32,6 @@ public class ImageEditorController {
     private UIImageEditView imageEditView;
     private UIScrollLayout paletteView;
     public IConsumer<UIElement> windowMaker;
-    private ImageEditorSaveLoadController slc = new ImageEditorSaveLoadController();
 
     // This holds a bit of state, so let's just attach it/detach it as we want
     private final UITextButton sanityButton = new UITextButton(TXDB.get("Adjust"), FontSizes.schemaButtonTextHeight, null).togglable(true);
@@ -58,12 +57,34 @@ public class ImageEditorController {
         rootView = new UISplitterLayout(imageEditView, paletteView, false, 1.0d) {
             @Override
             public String toString() {
+                if (imageEditView.eds.imageModified())
+                    return TXDB.get("Image Editor (modified)");
                 return TXDB.get("Image Editor");
             }
         };
     }
 
-    public void load(String filename) {
+    public boolean imageModified() {
+        return imageEditView.eds.imageModified();
+    }
+
+    public void save() {
+        // Used by AppMain for Save All Modified (...)
+        if (!imageEditView.eds.canSimplySave()) {
+            AppMain.launchDialog(TXDB.get("While the image editor contents would be saved, there's nowhere to save them."));
+            return;
+        }
+        // Save to existing location
+        try {
+            imageEditView.eds.simpleSave();
+        } catch (Exception e) {
+            e.printStackTrace();
+            AppMain.launchDialog(TXDB.get("Failed to save.") + "\n" + e);
+        }
+        AppMain.performFullImageFlush();
+    }
+
+    private void load(String filename) {
         GaBIEn.hintFlushAllTheCaches();
         ImageIOFormat.TryToLoadResult ioi = ImageIOFormat.tryToLoad(filename, ImageIOFormat.supportedFormats);
         if (ioi == null) {
@@ -83,7 +104,7 @@ public class ImageEditorController {
                 }
             }
             imageEditView.setImage(new ImageEditorImage(ioi.iei, detected));
-            slc.didSuccessfulLoadSave(filename, ioi.format);
+            imageEditView.eds.didSuccessfulLoad(filename, ioi.format);
             initPalette();
         }
     }
@@ -103,6 +124,7 @@ public class ImageEditorController {
                 showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
                     @Override
                     public void accept(Rect rect) {
+                        imageEditView.eds.startSection();
                         // X/Y is where to put the input on the output.
                         int[] newImage = new int[rect.width * rect.height];
                         for (int i = 0; i < Math.min(rect.width - rect.x, imageEditView.image.width); i++) {
@@ -115,6 +137,7 @@ public class ImageEditorController {
                             }
                         }
                         imageEditView.setImage(new ImageEditorImage(rect.width, rect.height, newImage, imageEditView.image.palette, imageEditView.image.t1Lock));
+                        imageEditView.eds.endSection();
                     }
                 }, TXDB.get("Resize..."));
             }
@@ -122,8 +145,8 @@ public class ImageEditorController {
         ul = new UIAppendButton(TXDB.get("New"), ul, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), new Runnable() {
             @Override
             public void run() {
-                imageEditView.setImage(new ImageEditorImage(32, 32));
-                slc.newFile();
+                imageEditView.setImage(new ImageEditorImage(imageEditView.image.width, imageEditView.image.height));
+                imageEditView.eds.newFile();
                 initPalette();
             }
         }), FontSizes.schemaButtonTextHeight);
@@ -139,19 +162,12 @@ public class ImageEditorController {
                 });
             }
         }, FontSizes.schemaButtonTextHeight);
-        boolean canDoNormalSave = slc.canSimplySave(imageEditView.image);
+        boolean canDoNormalSave = imageEditView.eds.canSimplySave();
         if (canDoNormalSave) {
             ul = new UIAppendButton(TXDB.get("Save"), ul, new Runnable() {
                 @Override
                 public void run() {
-                    // Save to existing location
-                    try {
-                        slc.simpleSave(imageEditView.image);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        AppMain.launchDialog(TXDB.get("Failed to save.") + "\n" + e);
-                    }
-                    AppMain.performFullImageFlush();
+                    save();
                 }
             }, FontSizes.schemaButtonTextHeight);
         }
@@ -179,8 +195,9 @@ public class ImageEditorController {
                                             OutputStream os = GaBIEn.getOutFile(s);
                                             os.write(data);
                                             os.close();
-                                            slc.didSuccessfulLoadSave(s, format);
+                                            imageEditView.eds.didSuccessfulSave(s, format);
                                         } catch (Exception e) {
+                                            e.printStackTrace();
                                             AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to save #A.") + "\n" + e, new RubyIO().setString(s, true)));
                                         }
                                         AppMain.performFullImageFlush();
@@ -196,7 +213,7 @@ public class ImageEditorController {
         }, FontSizes.schemaButtonTextHeight);
         paletteView.panelsAdd(ul);
 
-        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.schemaButtonTextHeight, new Runnable() {
+        ul = new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 showXYChanger(new Rect(imageEditView.gridOX, imageEditView.gridOY, imageEditView.gridW, imageEditView.gridH), new IConsumer<Rect>() {
@@ -221,7 +238,32 @@ public class ImageEditorController {
                     }
                 }, false));
             }
-        }), false, 0.5d));
+        }), false, 0.5d);
+
+        ul = new UIAppendButton(TXDB.get("Undo"), ul, new Runnable() {
+            @Override
+            public void run() {
+                if (imageEditView.eds.hasUndo()) {
+                    imageEditView.setImage(imageEditView.eds.performUndo());
+                    initPalette();
+                } else {
+                    AppMain.launchDialog(TXDB.get("There is nothing to undo."));
+                }
+            }
+        }, FontSizes.schemaButtonTextHeight);
+
+        ul = new UIAppendButton(TXDB.get("Redo"), ul, new Runnable() {
+            @Override
+            public void run() {
+                if (imageEditView.eds.hasRedo()) {
+                    imageEditView.setImage(imageEditView.eds.performRedo());
+                    initPalette();
+                } else {
+                    AppMain.launchDialog(TXDB.get("There is nothing to redo."));
+                }
+            }
+        }, FontSizes.schemaButtonTextHeight);
+        paletteView.panelsAdd(ul);
 
         UIAppendButton ap = new UIAppendButton(TXDB.get("Grid Overlay"), new UITextButton(TXDB.get("Reset View"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
@@ -257,7 +299,9 @@ public class ImageEditorController {
                     public void accept(Integer integer) {
                         if (integer == null)
                             return;
+                        imageEditView.eds.startSection();
                         imageEditView.image.appendToPalette(integer);
+                        imageEditView.eds.endSection();
                         initPalette();
                     }
                 }, !imageEditView.image.t1Lock));
@@ -268,7 +312,9 @@ public class ImageEditorController {
                 imageEditView.currentTool = new AddColourFromImageEditorTool(new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
+                        imageEditView.eds.startSection();
                         imageEditView.image.appendToPalette(integer);
+                        imageEditView.eds.endSection();
                     }
                 });
                 imageEditView.newToolCallback.run();
@@ -285,8 +331,9 @@ public class ImageEditorController {
             ck.onClick = new Runnable() {
                 @Override
                 public void run() {
-                    imageEditView.selPaletteIndex = 0;
+                    imageEditView.eds.startSection();
                     imageEditView.setImage(new ImageEditorImage(imageEditView.image, ck.state));
+                    imageEditView.eds.endSection();
                     initPalette();
                 }
             };
@@ -295,9 +342,10 @@ public class ImageEditorController {
             cSwitch = new UISplitterLayout(ck, new UITextButton(TXDB.get("-> 32-bit ARGB"), FontSizes.schemaButtonTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to 32-bit ARGB? The image will no longer contain a palette, which may make editing inconvenient, and some formats will become unavailable."), new Runnable() {
                 @Override
                 public void run() {
-                    imageEditView.selPaletteIndex = 0;
+                    imageEditView.eds.startSection();
                     ImageEditorImage wip = new ImageEditorImage(imageEditView.image, false, false);
                     imageEditView.setImage(wip);
+                    imageEditView.eds.endSection();
                     initPalette();
                 }
             })), false, 0.5d);
@@ -305,9 +353,10 @@ public class ImageEditorController {
             cSwitch = new UITextButton(TXDB.get("Use Palette"), FontSizes.schemaButtonTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to using a palette? If an exceptional number of colours are used, the image may be hard to edit."), new Runnable() {
                 @Override
                 public void run() {
-                    imageEditView.selPaletteIndex = 0;
+                    imageEditView.eds.startSection();
                     ImageEditorImage wip = new ImageEditorImage(imageEditView.image, false, true);
                     imageEditView.setImage(wip);
+                    imageEditView.eds.endSection();
                     initPalette();
                 }
             }));
@@ -322,10 +371,12 @@ public class ImageEditorController {
                     @Override
                     public void run() {
                         if (imageEditView.image.paletteSize() > 1) {
+                            imageEditView.eds.startSection();
                             imageEditView.selPaletteIndex--;
                             if (imageEditView.selPaletteIndex == -1)
                                 imageEditView.selPaletteIndex++;
                             imageEditView.image.removeFromPalette(fidx, sanityButton.state);
+                            imageEditView.eds.endSection();
                             initPalette();
                         }
                     }
@@ -334,7 +385,9 @@ public class ImageEditorController {
                 cPanel = new UIAppendButton("~", cPanel, new Runnable() {
                     @Override
                     public void run() {
+                        imageEditView.eds.startSection();
                         imageEditView.image.swapInPalette(imageEditView.selPaletteIndex, fidx, sanityButton.state);
+                        imageEditView.eds.endSection();
                         initPalette();
                     }
                 }, FontSizes.schemaButtonTextHeight);

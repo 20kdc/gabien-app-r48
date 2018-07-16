@@ -28,12 +28,20 @@ public class EDImageEditorTool implements IImageEditorTool {
         }
     }
 
-    public void applyCore(UIImageEditView.ImPoint imp, UIImageEditView uiImageEditView) {
-        int rawValue = uiImageEditView.image.getRaw(imp.correctedX, imp.correctedY);
-        uiImageEditView.selPaletteIndex = uiImageEditView.image.rawToPalette(rawValue);
+    @Override
+    public void endApply(UIImageEditView view) {
+
+    }
+
+    // This one is called from UIImageEditView for shift purposes
+    public void applyCore(UIImageEditView.ImPoint imp, UIImageEditView view) {
+        view.eds.startSection();
+        int rawValue = view.image.getRaw(imp.correctedX, imp.correctedY);
+        view.selPaletteIndex = view.image.rawToPalette(rawValue);
+        view.eds.endSection();
         // This did something with the palette. Use the new tool callback to force a state change.
         // This is also used to return to the root image editor tool if necessary.
-        uiImageEditView.newToolCallback.run();
+        view.newToolCallback.run();
     }
 
     @Override

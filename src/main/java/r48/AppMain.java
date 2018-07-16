@@ -86,6 +86,8 @@ public class AppMain {
 
     // ONLY this class should refer to this (I think?)
     private static IMapContext mapContext;
+    private static ImageEditToolset imgContext;
+
     private static UIWindowView rootView;
     private static IConsumer<UIElement> insertTab, insertImmortalTab;
 
@@ -407,7 +409,7 @@ public class AppMain {
                 });
             }
         }));
-        toolsets.add(new ImageEditToolset());
+        toolsets.add(imgContext = new ImageEditToolset());
 
         final UITabPane utp = new UITabPane(FontSizes.tabTextHeight, true, true) {
             @Override
@@ -508,6 +510,9 @@ public class AppMain {
             @Override
             public void run() {
                 objectDB.ensureAllSaved();
+                if (imgContext.imgEdit.imageModified()) {
+                    imgContext.imgEdit.save();
+                }
             }
         }, FontSizes.statusBarTextHeight);
         workspace = new UIAppendButton(TXDB.get("Clipboard"), workspace, new Runnable() {
@@ -853,6 +858,7 @@ public class AppMain {
         if (mapContext != null)
             mapContext.freeOsbResources();
         mapContext = null;
+        imgContext = null;
         rootView = null;
         insertImmortalTab = null;
         insertTab = null;

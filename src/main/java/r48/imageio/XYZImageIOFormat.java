@@ -47,7 +47,9 @@ public class XYZImageIOFormat extends ImageIOFormat {
         DeflaterOutputStream d2 = new DeflaterOutputStream(baos);
         ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
         for (int i = 0; i < 256; i++) {
-            int c = img.palette.get(i);
+            int c = 0;
+            if (img.palette.size() > i)
+                c = img.palette.get(i);
             baos2.write((c >> 16) & 0xFF);
             baos2.write((c >> 8) & 0xFF);
             baos2.write(c & 0xFF);

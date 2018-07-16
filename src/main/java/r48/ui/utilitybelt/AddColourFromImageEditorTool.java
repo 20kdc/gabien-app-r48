@@ -35,6 +35,11 @@ public class AddColourFromImageEditorTool implements IImageEditorTool {
     }
 
     @Override
+    public void endApply(UIImageEditView view) {
+
+    }
+
+    @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
         return null;
     }

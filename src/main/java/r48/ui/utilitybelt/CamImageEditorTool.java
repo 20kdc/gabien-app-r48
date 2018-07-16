@@ -34,6 +34,11 @@ public class CamImageEditorTool implements IImageEditorTool {
     }
 
     @Override
+    public void endApply(UIImageEditView view) {
+
+    }
+
+    @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
         return new UILabel(TXDB.get("In camera tool."), FontSizes.schemaFieldTextHeight);
     }

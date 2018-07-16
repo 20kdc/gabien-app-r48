@@ -19,8 +19,9 @@ import r48.ui.UIGrid;
  * Though I kind of modified those plans a bit.
  */
 public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldMouseReceiver {
-    // Do not set outside of setImage
+    // Do NOT set outside of setImage
     public ImageEditorImage image = new ImageEditorImage(32, 32);
+    public ImageEditorEDS eds = new ImageEditorEDS();
     public int zoom = FontSizes.getSpriteScale() * 16;
     private boolean tempCamMode = false, dragging;
     private boolean shift;
@@ -41,6 +42,8 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     public Runnable newToolCallback;
 
     public UIImageEditView(IImageEditorTool rootTool, Runnable updatePal) {
+        eds.currentImage = image;
+        eds.newFile();
         newToolCallback = updatePal;
         currentTool = rootTool;
         if (useDragControl())
@@ -49,9 +52,11 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
 
     // Only write to image from here!
     public void setImage(ImageEditorImage n) {
+        selPaletteIndex = 0;
+        if (n.paletteSize() > 1)
+            selPaletteIndex = 1;
         image = n;
-        camX = 0;
-        camY = 0;
+        eds.currentImage = n;
     }
 
     @Override
@@ -221,7 +226,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
 
     @Override
     public void handleClick(int x, int y, int button) {
-        dragging = false;
+        handleRelease(x, y);
         if (button == 1) {
             tempCamMode = false;
             if (Art.getZIconRect(true, 0).contains(x, y)) {
@@ -262,7 +267,10 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
 
     @Override
     public void handleRelease(int x, int y) {
-
+        if (dragging) {
+            currentTool.endApply(this);
+            dragging = false;
+        }
     }
 
     public void handleAct(int x, int y, boolean first) {
@@ -289,8 +297,10 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
                     return;
                 }
                 currentTool.apply(imp, this, true, false);
-                if (oldTool != currentTool)
+                if (oldTool != currentTool) {
                     dragging = false;
+                    oldTool.endApply(this);
+                }
             } else {
                 if (shift)
                     return;
@@ -315,6 +325,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
                     currentTool.apply(imp, this, false, !first);
                     if (oldTool != currentTool) {
                         dragging = false;
+                        oldTool.endApply(this);
                         return;
                     }
 
@@ -328,6 +339,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
                             currentTool.apply(imp, this, false, !first);
                             if (oldTool != currentTool) {
                                 dragging = false;
+                                oldTool.endApply(this);
                                 return;
                             }
                         }
@@ -358,8 +370,10 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
                 imp.y = ny;
                 imp.updateCorrected(this);
                 currentTool.apply(imp, this, true, !first);
-                if (oldTool != currentTool)
+                if (oldTool != currentTool) {
                     dragging = false;
+                    oldTool.endApply(this);
+                }
             }
         }
     }
