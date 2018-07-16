@@ -10,7 +10,6 @@ package r48.ui.utilitybelt;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
-import gabienapp.Application;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.ui.Art;
@@ -23,7 +22,7 @@ public class RootImageEditorTool implements IImageEditorTool {
     public static UIElement createToolPalette(final UIImageEditView uiev, Class oneTool) {
         final Class[] toolClasses = new Class[] {
                 RootImageEditorTool.class,
-                NopImageEditorTool.class,
+                RectangleImageEditorTool.class,
                 NopImageEditorTool.class
         };
         Art.Symbol[] toolSymbol = new Art.Symbol[] {
@@ -39,7 +38,7 @@ public class RootImageEditorTool implements IImageEditorTool {
                 public void run() {
                     try {
                         uiev.currentTool = (IImageEditorTool) toolClasses[ic].newInstance();
-                        uiev.updatePalette.run();
+                        uiev.newToolCallback.run();
                     } catch (InstantiationException e) {
                     } catch (IllegalAccessException e) {
                     }
@@ -61,12 +60,9 @@ public class RootImageEditorTool implements IImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        String info = TXDB.get("LMB: Draw/place, others: scroll, camera button: scroll mode");
-        if (Application.mobileExtremelySpecialBehavior)
-            info = TXDB.get("Tap/Drag: Draw, camera button: Switch to scrolling");
-        if (Application.mobileExtremelySpecialBehavior)
-            return TXDB.get("Tap: Position cursor, Drag: Scroll");
-        return TXDB.get("All mouse buttons position cursor & scroll");
+        if (dedicatedDragControl)
+            return TXDB.get("Tap/drag: Draw, Camera button: Pan");
+        return TXDB.get("LMB: Draw, Other: Pan");
     }
 
     @Override
@@ -75,7 +71,12 @@ public class RootImageEditorTool implements IImageEditorTool {
     }
 
     @Override
-    public void accept(UIImageEditView uiImageEditView) {
-        uiImageEditView.image.setPixel(uiImageEditView.cursorX, uiImageEditView.cursorY, uiImageEditView.selPaletteIndex);
+    public void enter(UIImageEditView uiev) {
+
+    }
+
+    @Override
+    public void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging) {
+        view.image.setPixel(imp.correctedX, imp.correctedY, view.selPaletteIndex);
     }
 }

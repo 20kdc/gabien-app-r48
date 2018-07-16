@@ -7,14 +7,19 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.ui.IConsumer;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 
 /**
  * Created on 13th July 2018.
  */
-public interface IImageEditorTool extends IConsumer<UIImageEditView> {
+public interface IImageEditorTool {
+    void enter(UIImageEditView uiev);
+
+    // major means an actual specified point (otherwise a between point)
+    // dragging means NOT the first point
+    void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging);
+
     UIElement createToolPalette(UIImageEditView uiev);
 
     // Null: No selection

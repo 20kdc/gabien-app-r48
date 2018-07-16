@@ -9,19 +9,14 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 
 /**
- * Created on 14th July 2018
+ * Created on 16th July 2018
  */
-public class CamImageEditorTool implements IImageEditorTool {
-    public final IImageEditorTool oldTool;
-
-    public CamImageEditorTool(IImageEditorTool currentTool) {
-        oldTool = currentTool;
-    }
+public class RectangleImageEditorTool implements IImageEditorTool {
+    public boolean stage2;
+    public int p1x, p1y;
 
     @Override
     public void enter(UIImageEditView uiev) {
@@ -30,27 +25,33 @@ public class CamImageEditorTool implements IImageEditorTool {
 
     @Override
     public void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging) {
+        if (major && (!dragging)) {
+            if (!stage2) {
+                p1x = imp.x;
+                p1y = imp.y;
+            } else {
 
+            }
+        }
     }
 
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
-        return new UILabel(TXDB.get("In camera tool."), FontSizes.schemaFieldTextHeight);
+        return RootImageEditorTool.createToolPalette(uiev, RectangleImageEditorTool.class);
     }
 
     @Override
     public Rect getSelection() {
-        return null;
+        return new Rect(1, 1, 2, 2);
     }
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return TXDB.get("Drag: Move around, Camera: Return to old tool");
+        return TXDB.get("Press bounding points to fill.");
     }
 
     @Override
     public IImageEditorTool getCamModeLT() {
-        return oldTool;
+        return null;
     }
-
 }

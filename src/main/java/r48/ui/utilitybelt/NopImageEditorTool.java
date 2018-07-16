@@ -15,6 +15,16 @@ import gabien.ui.UIElement;
  */
 public class NopImageEditorTool implements IImageEditorTool {
     @Override
+    public void enter(UIImageEditView uiev) {
+
+    }
+
+    @Override
+    public void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging) {
+
+    }
+
+    @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
         return RootImageEditorTool.createToolPalette(uiev, NopImageEditorTool.class);
     }
@@ -34,8 +44,4 @@ public class NopImageEditorTool implements IImageEditorTool {
         return null;
     }
 
-    @Override
-    public void accept(UIImageEditView uiImageEditView) {
-
-    }
 }

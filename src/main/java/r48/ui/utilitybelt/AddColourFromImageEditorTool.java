@@ -7,20 +7,19 @@
 
 package r48.ui.utilitybelt;
 
+import gabien.ui.IConsumer;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 
 /**
- * Created on 14th July 2018
+ * Created on 16th July 2018
  */
-public class CamImageEditorTool implements IImageEditorTool {
-    public final IImageEditorTool oldTool;
+public class AddColourFromImageEditorTool implements IImageEditorTool {
+    public final IConsumer<Integer> result;
 
-    public CamImageEditorTool(IImageEditorTool currentTool) {
-        oldTool = currentTool;
+    public AddColourFromImageEditorTool(IConsumer<Integer> finished) {
+        result = finished;
     }
 
     @Override
@@ -30,12 +29,14 @@ public class CamImageEditorTool implements IImageEditorTool {
 
     @Override
     public void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging) {
-
+        result.accept(view.image.getRGB(imp.correctedX, imp.correctedY));
+        view.currentTool = new RootImageEditorTool();
+        view.newToolCallback.run();
     }
 
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
-        return new UILabel(TXDB.get("In camera tool."), FontSizes.schemaFieldTextHeight);
+        return null;
     }
 
     @Override
@@ -45,12 +46,11 @@ public class CamImageEditorTool implements IImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return TXDB.get("Drag: Move around, Camera: Return to old tool");
+        return TXDB.get("Touch a point to add a new palette entry for it.");
     }
 
     @Override
     public IImageEditorTool getCamModeLT() {
-        return oldTool;
+        return null;
     }
-
 }

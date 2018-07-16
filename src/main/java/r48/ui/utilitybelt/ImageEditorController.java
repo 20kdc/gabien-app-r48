@@ -109,8 +109,6 @@ public class ImageEditorController {
                                 newImage[(i + rect.x) + ((j + rect.y) * rect.width)] = imageEditView.image.getRaw(i, j);
                             }
                         }
-                        imageEditView.cursorX = rect.width / 2;
-                        imageEditView.cursorY = rect.height / 2;
                         imageEditView.setImage(new ImageEditorImage(rect.width, rect.height, newImage, imageEditView.image.palette, imageEditView.image.t1Lock));
                     }
                 }, TXDB.get("Resize..."));
@@ -253,8 +251,13 @@ public class ImageEditorController {
         }), new UITextButton(TXDB.get("From Image"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
-                imageEditView.image.appendToPalette(imageEditView.image.getRGB(imageEditView.cursorX, imageEditView.cursorY));
-                initPalette();
+                imageEditView.currentTool = new AddColourFromImageEditorTool(new IConsumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) {
+                        imageEditView.image.appendToPalette(integer);
+                    }
+                });
+                imageEditView.newToolCallback.run();
             }
         }), false, 0.5d));
 

@@ -23,7 +23,7 @@ import r48.ui.UIGrid;
 public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldMouseReceiver {
     // Do not set outside of setImage
     public ImageEditorImage image = new ImageEditorImage(32, 32);
-    public int cursorX = 16, cursorY = 16, zoom = FontSizes.getSpriteScale() * 16;
+    public int zoom = FontSizes.getSpriteScale() * 16;
     public boolean tempCamMode = false, dragging;
     public int dragLastX, dragLastY;
     public double camX, camY;
@@ -39,10 +39,10 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     public OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
     public UILabel.StatusLine statusLine = new UILabel.StatusLine();
 
-    public Runnable updatePalette;
+    public Runnable newToolCallback;
 
     public UIImageEditView(IImageEditorTool rootTool, Runnable updatePal) {
-        updatePalette = updatePal;
+        newToolCallback = updatePal;
         currentTool = rootTool;
         if (useDragControl())
             currentTool = new CamImageEditorTool(currentTool);
@@ -51,8 +51,6 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     // Only write to image from here!
     public void setImage(ImageEditorImage n) {
         image = n;
-        cursorX = n.width / 2;
-        cursorY = n.height / 2;
         camX = 0;
         camY = 0;
     }
@@ -111,11 +109,9 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             }
         }
 
-        Art.drawSelectionBox(viewRct.x + (cursorX * zoom), viewRct.y + (cursorY * zoom), zoom, zoom, FontSizes.getSpriteScale(), igd);
-
         boolean dedicatedDragControl = useDragControl();
 
-        String status = cursorX + ", " + cursorY + " " + currentTool.getLocalizedText(dedicatedDragControl);
+        String status = currentTool.getLocalizedText(dedicatedDragControl);
 
         // shared with UIMapView
 
@@ -236,7 +232,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
                     } else if (useDragControl()) {
                         currentTool = new CamImageEditorTool(currentTool);
                     }
-                    updatePalette.run();
+                    newToolCallback.run();
                     return;
                 }
             }
@@ -265,49 +261,77 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         if (!dragging)
             return;
 
-        int ofsX = 0;
-        int ofsY = 0;
-        int ofsW = image.width;
-        int ofsH = image.height;
-        if (tiling != null) {
-            ofsX = tiling.x;
-            ofsY = tiling.y;
-            ofsW = tiling.width;
-            ofsH = tiling.height;
-        }
-
         Rect bounds = getViewRect();
+        int ax = UIGrid.sensibleCellDiv(dragLastX - bounds.x, zoom);
+        int ay = UIGrid.sensibleCellDiv(dragLastY - bounds.y, zoom);
         int nx = UIGrid.sensibleCellDiv(x - bounds.x, zoom);
         int ny = UIGrid.sensibleCellDiv(y - bounds.y, zoom);
-        nx -= ofsX;
-        ny -= ofsY;
-        nx -= UIGrid.sensibleCellDiv(nx, ofsW) * ofsW;
-        ny -= UIGrid.sensibleCellDiv(ny, ofsH) * ofsH;
-        nx += ofsX;
-        ny += ofsY;
 
         if ((currentTool.getCamModeLT() != null) || tempCamMode) {
-            if (first) {
-                cursorX = nx;
-                cursorY = ny;
-            }
             camX += (x - dragLastX) / (double) zoom;
             camY += (y - dragLastY) / (double) zoom;
         } else {
+            ImPoint imp = new ImPoint(nx, ny);
             if (first) {
-                cursorX = nx;
-                cursorY = ny;
-                currentTool.accept(this);
+                imp.updateCorrected(this);
+                currentTool.apply(imp, this, true, false);
             } else {
-                boolean perform = (nx != cursorX) || (ny != cursorY);
-                if (perform) {
-                    cursorX = nx;
-                    cursorY = ny;
-                    currentTool.accept(this);
-                    if (Math.abs(nx - cursorX) > Math.abs(ny - cursorY)) {
-                    } else {
+                int absX = Math.abs(ax - nx);
+                int absY = Math.abs(ay - ny);
+                /*
+                 * Consider:
+                 * A+X
+                 *    +B
+                 * With a pure integer method, point X would be down by one, we'd go past B
+                 * So instead use this sort of fixed point method.
+                 */
+                int sub = absX;
+
+                int subV = sub;
+                int subS = absY;
+
+                while ((absX > 0) || (absY > 0)) {
+                    imp.x = ax;
+                    imp.y = ay;
+                    imp.updateCorrected(this);
+                    currentTool.apply(imp, this, false, !first);
+
+                    subV -= subS;
+                    boolean firstApp = true;
+                    while ((subV <= 0) && (absY > 0)) {
+                        if (!firstApp) {
+                            imp.x = ax;
+                            imp.y = ay;
+                            imp.updateCorrected(this);
+                            currentTool.apply(imp, this, false, !first);
+                        }
+                        firstApp = false;
+                        // Move perpendicular
+                        if (ay < ny) {
+                            ay++;
+                            absY--;
+                        } else if (ay > ny) {
+                            ay--;
+                            absY--;
+                        }
+                        subV += sub;
+                    }
+                    // Move
+                    if (ax < nx) {
+                        ax++;
+                        absX--;
+                    } else if (ax > nx) {
+                        ax--;
+                        absX--;
                     }
                 }
+
+                if ((ax != nx) || (ay != ny))
+                    System.out.println("Warning " + ax + "," + ay + ":" + nx + "," + ny);
+                imp.x = nx;
+                imp.y = ny;
+                imp.updateCorrected(this);
+                currentTool.apply(imp, this, true, !first);
             }
         }
     }
@@ -325,5 +349,34 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
 
     public IImage createImg() {
         return image.rasterize();
+    }
+
+    public static class ImPoint {
+        public int x, y;
+        public int correctedX, correctedY;
+
+        public ImPoint(int px, int py) {
+            x = px;
+            y = py;
+        }
+
+        public void updateCorrected(UIImageEditView iev) {
+            int ofsX = 0;
+            int ofsY = 0;
+            int ofsW = iev.image.width;
+            int ofsH = iev.image.height;
+            if (iev.tiling != null) {
+                ofsX = iev.tiling.x;
+                ofsY = iev.tiling.y;
+                ofsW = iev.tiling.width;
+                ofsH = iev.tiling.height;
+            }
+            correctedX = x - ofsX;
+            correctedY = y - ofsY;
+            correctedX = UIElement.sensibleCellMod(correctedX, ofsW);
+            correctedY = UIElement.sensibleCellMod(correctedY, ofsH);
+            correctedX += ofsX;
+            correctedY += ofsY;
+        }
     }
 }
