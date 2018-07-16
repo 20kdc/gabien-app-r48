@@ -16,7 +16,6 @@ import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.imageio.ImageIOFormat;
 import r48.maptools.UIMTBase;
-import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UIColourPicker;
 import r48.ui.UIColourSwatch;
@@ -120,7 +119,7 @@ public class ImageEditorController {
                 }, TXDB.get("Resize..."));
             }
         });
-        ul = new UIAppendButton(Art.Symbol.New, ul, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), new Runnable() {
+        ul = new UIAppendButton(TXDB.get("New"), ul, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), new Runnable() {
             @Override
             public void run() {
                 imageEditView.setImage(new ImageEditorImage(32, 32));
@@ -128,7 +127,7 @@ public class ImageEditorController {
                 initPalette();
             }
         }), FontSizes.schemaButtonTextHeight);
-        ul = new UIAppendButton(Art.Symbol.Folder, ul, new Runnable() {
+        ul = new UIAppendButton(TXDB.get("Open"), ul, new Runnable() {
             @Override
             public void run() {
                 GaBIEn.startFileBrowser(fbStrAL, false, "", new IConsumer<String>() {
@@ -142,7 +141,7 @@ public class ImageEditorController {
         }, FontSizes.schemaButtonTextHeight);
         boolean canDoNormalSave = slc.canSimplySave(imageEditView.image);
         if (canDoNormalSave) {
-            ul = new UIAppendButton(Art.Symbol.Save, ul, new Runnable() {
+            ul = new UIAppendButton(TXDB.get("Save"), ul, new Runnable() {
                 @Override
                 public void run() {
                     // Save to existing location
@@ -156,7 +155,7 @@ public class ImageEditorController {
                 }
             }, FontSizes.schemaButtonTextHeight);
         }
-        ul = new UIAppendButton(canDoNormalSave ? Art.Symbol.Target : Art.Symbol.Save, ul, new Runnable() {
+        ul = new UIAppendButton(TXDB.get("Save As"), ul, new Runnable() {
             @Override
             public void run() {
                 LinkedList<String> items = new LinkedList<String>();
@@ -197,7 +196,7 @@ public class ImageEditorController {
         }, FontSizes.schemaButtonTextHeight);
         paletteView.panelsAdd(ul);
 
-        UIAppendButton ap = new UIAppendButton(TXDB.get("ST"), new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.schemaButtonTextHeight, new Runnable() {
+        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.schemaButtonTextHeight, new Runnable() {
             @Override
             public void run() {
                 showXYChanger(new Rect(imageEditView.gridOX, imageEditView.gridOY, imageEditView.gridW, imageEditView.gridH), new IConsumer<Rect>() {
@@ -222,7 +221,16 @@ public class ImageEditorController {
                     }
                 }, false));
             }
-        }), false, 0.5d), new Runnable() {
+        }), false, 0.5d));
+
+        UIAppendButton ap = new UIAppendButton(TXDB.get("Grid Overlay"), new UITextButton(TXDB.get("Reset View"), FontSizes.schemaButtonTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                imageEditView.camX = 0;
+                imageEditView.camY = 0;
+                imageEditView.tiling = null;
+            }
+        }), new Runnable() {
             @Override
             public void run() {
                 imageEditView.gridST = !imageEditView.gridST;
@@ -230,16 +238,6 @@ public class ImageEditorController {
         }, FontSizes.schemaButtonTextHeight);
         ap.button.togglable(imageEditView.gridST);
         paletteView.panelsAdd(ap);
-
-        paletteView.panelsAdd(new UITextButton(TXDB.get("Reset View"), FontSizes.schemaButtonTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                imageEditView.camX = 0;
-                imageEditView.camY = 0;
-                imageEditView.tiling = null;
-                initPalette();
-            }
-        }));
 
         paletteView.panelsAdd(imageEditView.currentTool.createToolPalette(imageEditView));
 

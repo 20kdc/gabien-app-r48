@@ -7,13 +7,9 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
-import gabien.ui.UIScrollLayout;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.dbs.TXDB;
-import r48.ui.Art;
-import r48.ui.UISymbolButton;
 
 /**
  * Created on 13th July 2018.
@@ -24,18 +20,21 @@ public class RootImageEditorTool implements IImageEditorTool {
                 RootImageEditorTool.class,
                 RectangleImageEditorTool.class,
                 CopyImageEditorTool.class,
-                TileImageEditorTool.class
+                TileImageEditorTool.class,
+                EDImageEditorTool.class
         };
-        Art.Symbol[] toolSymbol = new Art.Symbol[] {
-                Art.Symbol.Pencil,
-                Art.Symbol.Rectangle,
-                Art.Symbol.Copy,
-                Art.Symbol.Stripes
+        String[] toolSymbol = new String[] {
+                TXDB.get("Pencil"),
+                TXDB.get("Rectangle"),
+                TXDB.get("Copy"),
+                TXDB.get("TileView"),
+                TXDB.get("Pick Col.")
         };
-        UIScrollLayout svl = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
+        UIScrollLayout svl = new UIScrollLayout(true, FontSizes.mapToolbarScrollersize);
+        UIElement left = null;
         for (int i = 0; i < toolClasses.length; i++) {
             final int ic = i;
-            svl.panelsAdd(new UISymbolButton(toolSymbol[i], FontSizes.schemaButtonTextHeight, new Runnable() {
+            UIElement nx = new UITextButton(toolSymbol[i], FontSizes.schemaButtonTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -45,8 +44,16 @@ public class RootImageEditorTool implements IImageEditorTool {
                     } catch (IllegalAccessException e) {
                     }
                 }
-            }).togglable(toolClasses[i] == oneTool));
+            }).togglable(toolClasses[i] == oneTool);
+            if (left == null) {
+                left = nx;
+            } else {
+                svl.panelsAdd(new UISplitterLayout(left, nx, false, 0.5d));
+                left = null;
+            }
         }
+        if (left != null)
+            svl.panelsAdd(left);
         return svl;
     }
 
@@ -64,7 +71,7 @@ public class RootImageEditorTool implements IImageEditorTool {
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (dedicatedDragControl)
             return TXDB.get("Tap/drag: Draw, Camera button: Pan");
-        return TXDB.get("LMB: Draw, Other: Pan");
+        return TXDB.get("LMB: Draw, Shift-LMB: Grab Colour, Other: Pan");
     }
 
     @Override

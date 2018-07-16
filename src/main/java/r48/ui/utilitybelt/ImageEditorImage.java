@@ -106,6 +106,25 @@ public class ImageEditorImage extends ImageIOImage {
         return cachedData = super.rasterize();
     }
 
+    // Fun wrapper function like thing
+    public int rawToPalette(int rawValue) {
+        // There is a palette, so this must be within that. Right?
+        if (palette != null) {
+            if (rawValue < 0)
+                return 0;
+            if (rawValue >= palette.size())
+                return palette.size() - 1;
+            return rawValue;
+        }
+        // There isn't a palette. If there's anything in the editor palette, use it,
+        //  else just give up and add something.
+        for (int i = 0; i < editorPalette.length; i++)
+            if (editorPalette[i] == rawValue)
+                return i;
+        appendToPalette(rawValue);
+        return editorPalette.length - 1;
+    }
+
     // Sets a pixel by palette index.
     public void setPixel(int x, int y, int selPaletteIndex) {
         if (palette == null)

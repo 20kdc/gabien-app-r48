@@ -7,9 +7,7 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.IGrDriver;
-import gabien.IImage;
-import gabien.IPeripherals;
+import gabien.*;
 import gabien.ui.*;
 import gabienapp.Application;
 import r48.FontSizes;
@@ -24,8 +22,9 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     // Do not set outside of setImage
     public ImageEditorImage image = new ImageEditorImage(32, 32);
     public int zoom = FontSizes.getSpriteScale() * 16;
-    public boolean tempCamMode = false, dragging;
-    public int dragLastX, dragLastY;
+    private boolean tempCamMode = false, dragging;
+    private boolean shift;
+    private int dragLastX, dragLastY;
     public double camX, camY;
     public int gridW = 16, gridH = 16, gridOX = 0, gridOY = 0;
 
@@ -33,11 +32,11 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     public int selPaletteIndex;
 
     public Rect tiling;
-    public int gridColour = 0x200020;
+    public int gridColour = 0x800080;
     public boolean gridST = false;
 
-    public OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
-    public UILabel.StatusLine statusLine = new UILabel.StatusLine();
+    private OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
+    private UILabel.StatusLine statusLine = new UILabel.StatusLine();
 
     public Runnable newToolCallback;
 
@@ -57,6 +56,9 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
 
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+        shift = false;
+        if (peripherals instanceof IDesktopPeripherals)
+            shift = ((IDesktopPeripherals) peripherals).isKeyDown(IGrInDriver.VK_SHIFT);
     }
 
     @Override
@@ -281,10 +283,17 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             ImPoint imp = new ImPoint(nx, ny);
             if (first) {
                 imp.updateCorrected(this);
+                if (shift) {
+                    new EDImageEditorTool().applyCore(imp, this);
+                    dragging = false;
+                    return;
+                }
                 currentTool.apply(imp, this, true, false);
                 if (oldTool != currentTool)
                     dragging = false;
             } else {
+                if (shift)
+                    return;
                 int absX = Math.abs(ax - nx);
                 int absY = Math.abs(ay - ny);
                 /*
