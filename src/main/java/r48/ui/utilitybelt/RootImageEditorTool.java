@@ -15,7 +15,7 @@ import r48.dbs.TXDB;
  * Created on 13th July 2018.
  */
 public class RootImageEditorTool implements IImageEditorTool {
-    public static UIElement createToolPalette(final UIImageEditView uiev, Class oneTool) {
+    public static UIScrollLayout createToolPalette(final UIImageEditView uiev, Class oneTool) {
         final Class[] toolClasses = new Class[] {
                 RootImageEditorTool.class,
                 RectangleImageEditorTool.class,

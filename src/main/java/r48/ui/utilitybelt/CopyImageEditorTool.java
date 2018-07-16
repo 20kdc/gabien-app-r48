@@ -7,8 +7,8 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.ui.Rect;
-import gabien.ui.UIElement;
+import gabien.ui.*;
+import r48.FontSizes;
 import r48.dbs.TXDB;
 
 /**
@@ -18,6 +18,7 @@ public class CopyImageEditorTool implements IImageEditorTool {
     public int stage;
     public int aX, aY;
     public int bW, bH;
+    public boolean flipX, flipY, swapXY;
 
     @Override
     public void enter(UIImageEditView uiev) {
@@ -53,9 +54,8 @@ public class CopyImageEditorTool implements IImageEditorTool {
             }
             UIImageEditView.ImPoint dst = new UIImageEditView.ImPoint(0, 0);
             for (int i = 0; i < bW; i++) {
-                dst.x = imp.x + i;
                 for (int j = 0; j < bH; j++) {
-                    dst.y = imp.y + j;
+                    transform(dst, imp, i, j);
                     dst.updateCorrected(view);
                     view.image.setRaw(dst.correctedX, dst.correctedY, cols[i + (j * bW)]);
                 }
@@ -64,9 +64,44 @@ public class CopyImageEditorTool implements IImageEditorTool {
         }
     }
 
+    private void transform(UIImageEditView.ImPoint dst, UIImageEditView.ImPoint imp, int i, int j) {
+        if (flipX)
+            i = bW - (1 + i);
+        if (flipY)
+            j = bH - (1 + j);
+        if (swapXY) {
+            int k = i;
+            i = j;
+            j = k;
+        }
+        dst.x = imp.x + i;
+        dst.y = imp.y + j;
+    }
+
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
-        return RootImageEditorTool.createToolPalette(uiev, CopyImageEditorTool.class);
+        UIScrollLayout uie = RootImageEditorTool.createToolPalette(uiev, CopyImageEditorTool.class);
+        UITextButton a = new UITextButton(TXDB.get("FlipX"), FontSizes.schemaButtonTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                flipX = !flipX;
+            }
+        }).togglable(flipX);
+        UITextButton b = new UITextButton(TXDB.get("FlipY"), FontSizes.schemaButtonTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                flipY = !flipY;
+            }
+        }).togglable(flipY);
+        UITextButton c = new UITextButton(TXDB.get("SwapXY"), FontSizes.schemaButtonTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                swapXY = !swapXY;
+            }
+        }).togglable(swapXY);
+        UISplitterLayout sl = new UISplitterLayout(a, b, false, 0.5d);
+        uie.panelsAdd(new UISplitterLayout(sl, c, false, 0.6666d));
+        return uie;
     }
 
     @Override
