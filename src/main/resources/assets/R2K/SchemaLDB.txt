@@ -544,6 +544,8 @@ C name Class.RPG::Tileset @name | #A
 +tableSTADF R2K/TSPass144.txt @highpass_data . . 3 144 1 1 15 down left right up upper wall counter
 @anim_cyclic boolean
 @anim_speed int
+ Sets up @highpass_data
+C magicR2kSystemDefaults 2
 
  ---
 
