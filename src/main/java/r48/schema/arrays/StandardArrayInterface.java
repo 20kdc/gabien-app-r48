@@ -71,14 +71,14 @@ public class StandardArrayInterface implements IArrayInterface {
                                     selectedEnd = mi;
                                     containerRCL();
                                 }
-                            }, FontSizes.schemaButtonTextHeight);
+                            }, FontSizes.schemaFieldTextHeight);
                             if (positions[mi].execDelete != null) {
                                 uie = new UIAppendButton("-", uie, new Runnable() {
                                     @Override
                                     public void run() {
                                         positions[mi].execDelete.get().run();
                                     }
-                                }, FontSizes.schemaButtonTextHeight);
+                                }, FontSizes.schemaFieldTextHeight);
                             }
                         } else if (!confirmingSelectionDelete) {
                             // Selection, but not confirming delete
@@ -90,7 +90,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                             confirmingSelectionDelete = true;
                                             containerRCL();
                                         }
-                                    }, FontSizes.schemaButtonTextHeight);
+                                    }, FontSizes.schemaFieldTextHeight);
                                 }
                                 uie = new UIAppendButton(TXDB.get("DeSel"), uie, new Runnable() {
                                     @Override
@@ -98,7 +98,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                         selectedStart = -1;
                                         containerRCL();
                                     }
-                                }, FontSizes.schemaButtonTextHeight);
+                                }, FontSizes.schemaFieldTextHeight);
                                 uie = new UIAppendButton(TXDB.get("Copy Array"), uie, new Runnable() {
                                     @Override
                                     public void run() {
@@ -117,7 +117,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                         selectedStart = -1;
                                         containerRCL();
                                     }
-                                }, FontSizes.schemaButtonTextHeight);
+                                }, FontSizes.schemaFieldTextHeight);
                             } else if ((mi < selectedStart) || (mi > selectedEnd)) {
                                 uie = new UIAppendButton(TXDB.get("Select..."), uie, new Runnable() {
                                     @Override
@@ -128,7 +128,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                             selectedEnd = mi;
                                         containerRCL();
                                     }
-                                }, FontSizes.schemaButtonTextHeight);
+                                }, FontSizes.schemaFieldTextHeight);
                             }
                         } else {
                             // Selection, confirming delete
@@ -139,7 +139,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                         confirmingSelectionDelete = false;
                                         containerRCL();
                                     }
-                                }, FontSizes.schemaButtonTextHeight);
+                                }, FontSizes.schemaFieldTextHeight);
                                 if (positions[selectedStart].execDelete != null) {
                                     // freed up room means a good long "Delete" can be written
                                     uie = new UIAppendButton(TXDB.get("Delete"), uie, new Runnable() {
@@ -185,7 +185,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                             if (term != null)
                                                 term.run();
                                         }
-                                    }, FontSizes.schemaButtonTextHeight);
+                                    }, FontSizes.schemaFieldTextHeight);
                                 }
                             } else if ((mi > selectedStart) && (mi <= selectedEnd)) {
                                 // Only the top one can confirm, others are for cancelling
@@ -195,7 +195,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                         confirmingSelectionDelete = false;
                                         containerRCL();
                                     }
-                                }, FontSizes.schemaButtonTextHeight);
+                                }, FontSizes.schemaFieldTextHeight);
                             }
                         }
                         // Add indexes for clarity.
@@ -233,7 +233,7 @@ public class StandardArrayInterface implements IArrayInterface {
                     return;
                 UIElement uie = new UITextButton(FormatSyntax.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setString(text, true)), FontSizes.schemaArrayAddTextHeight, runnable);
                 if (runnable2 != null)
-                    uie = new UIAppendButton(TXDB.get("Paste Array"), uie, runnable2, FontSizes.schemaButtonTextHeight);
+                    uie = new UIAppendButton(TXDB.get("Paste Array"), uie, runnable2, FontSizes.schemaFieldTextHeight);
                 uiSVL.panelsAdd(uie);
             }
         };

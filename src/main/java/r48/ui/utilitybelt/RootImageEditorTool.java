@@ -36,7 +36,7 @@ public class RootImageEditorTool implements IImageEditorTool {
         UIElement left = null;
         for (int i = 0; i < toolClasses.length; i++) {
             final int ic = i;
-            UIElement nx = new UITextButton(toolSymbol[i], FontSizes.schemaButtonTextHeight, new Runnable() {
+            UIElement nx = new UITextButton(toolSymbol[i], FontSizes.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     try {

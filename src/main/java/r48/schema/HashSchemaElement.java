@@ -130,11 +130,11 @@ public class HashSchemaElement extends SchemaElement {
                             path.changeOccurred(false);
                             // auto-updates
                         }
-                    }, FontSizes.schemaButtonTextHeight));
+                    }, FontSizes.schemaFieldTextHeight));
                 }
                 // Set up a key workspace.
                 UIElement workspace = keyElem.buildHoldingEditor(rio, launcher, rioPath);
-                UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(TXDB.get("Add Key"), FontSizes.schemaButtonTextHeight, new Runnable() {
+                UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(TXDB.get("Add Key"), FontSizes.schemaFieldTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         if (target.getHashVal(rio) == null) {

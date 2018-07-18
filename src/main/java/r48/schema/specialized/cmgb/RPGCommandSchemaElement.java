@@ -69,7 +69,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         final SchemaPath path = path2.tagSEMonitor(target, this, false);
 
         if (showHeader) {
-            UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(database.buildCodename(target, true), FontSizes.schemaButtonTextHeight, new Runnable() {
+            UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(database.buildCodename(target, true), FontSizes.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     navigateToCode(launcher, path2.findLast(), target, new IConsumer<int[]>() {
@@ -102,7 +102,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     uis.forceToRecommended();
                     launcher.launchOther(uis);
                 }
-            }, FontSizes.schemaButtonTextHeight);
+            }, FontSizes.schemaFieldTextHeight);
 
             return new UISplitterLayout(chooseCode, buildSubElem(target, launcher, path), true, 0);
         }

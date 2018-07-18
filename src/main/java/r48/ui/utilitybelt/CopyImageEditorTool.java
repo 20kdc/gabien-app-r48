@@ -88,19 +88,19 @@ public class CopyImageEditorTool implements IImageEditorTool {
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
         UIScrollLayout uie = RootImageEditorTool.createToolPalette(uiev, CopyImageEditorTool.class);
-        UITextButton a = new UITextButton(TXDB.get("FlipX"), FontSizes.schemaButtonTextHeight, new Runnable() {
+        UITextButton a = new UITextButton(TXDB.get("FlipX"), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 flipX = !flipX;
             }
         }).togglable(flipX);
-        UITextButton b = new UITextButton(TXDB.get("FlipY"), FontSizes.schemaButtonTextHeight, new Runnable() {
+        UITextButton b = new UITextButton(TXDB.get("FlipY"), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 flipY = !flipY;
             }
         }).togglable(flipY);
-        UITextButton c = new UITextButton(TXDB.get("SwapXY"), FontSizes.schemaButtonTextHeight, new Runnable() {
+        UITextButton c = new UITextButton(TXDB.get("SwapXY"), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 swapXY = !swapXY;

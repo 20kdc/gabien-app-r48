@@ -8,7 +8,10 @@
 package r48.schema.specialized;
 
 import gabien.GaBIEn;
-import gabien.ui.*;
+import gabien.ui.IFunction;
+import gabien.ui.ISupplier;
+import gabien.ui.UIElement;
+import gabien.ui.UITextButton;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -42,7 +45,7 @@ public class GenposSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost lBase, final SchemaPath pBase) {
-        return new UITextButton(TXDB.get("Graphically edit this..."), FontSizes.schemaButtonTextHeight, new Runnable() {
+        return new UITextButton(TXDB.get("Graphically edit this..."), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 final ISchemaHost launcher = lBase.newBlank();

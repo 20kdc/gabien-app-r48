@@ -242,7 +242,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             group[group.length - 1] = new SchemaElement() {
                 @Override
                 public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-                    return new UITextButton(addText, FontSizes.schemaButtonTextHeight, new Runnable() {
+                    return new UITextButton(addText, FontSizes.schemaFieldTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             RubyIO commandTarg = target.arrVal[start];
@@ -275,7 +275,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         return new HalfsplitSchemaElement(new SchemaElement() {
             @Override
             public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-                int h = UITextButton.getRecommendedTextSize("", FontSizes.schemaButtonTextHeight).height;
+                int h = UITextButton.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight).height;
                 int indent = 0;
                 if (tracker.getInstVarBySymbol("@indent") != null)
                     indent = (int) tracker.getInstVarBySymbol("@indent").fixnumVal;

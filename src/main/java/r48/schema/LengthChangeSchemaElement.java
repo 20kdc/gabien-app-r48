@@ -32,7 +32,7 @@ public class LengthChangeSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         // This was hooked up to a button preserver by accident. Useless because it's a toggle now.
-        UITextButton r = new UITextButton(translatedText, FontSizes.schemaButtonTextHeight, new Runnable() {
+        UITextButton r = new UITextButton(translatedText, FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 RubyIO[] rubies = new RubyIO[targetLen];

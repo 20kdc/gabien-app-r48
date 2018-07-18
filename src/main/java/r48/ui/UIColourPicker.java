@@ -122,7 +122,7 @@ public class UIColourPicker extends UIElement.UIPanel {
         colourPanel.imageScale = true;
         colourPanel.imageSW = 256;
         colourPanel.imageSH = 256;
-        confirmer = new UITextButton(TXDB.get("Set Colour"), FontSizes.schemaButtonTextHeight, new Runnable() {
+        confirmer = new UITextButton(TXDB.get("Set Colour"), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 if (result != null) {

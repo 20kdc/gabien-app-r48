@@ -30,7 +30,7 @@ public class PagerArrayInterface implements IArrayInterface {
             UIScrollLayout barLayout = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
             if (positions[i].execInsert != null) {
                 final Runnable r = positions[i].execInsert;
-                barLayout.panelsAdd(new UITextButton("+", FontSizes.schemaButtonTextHeight, new Runnable() {
+                barLayout.panelsAdd(new UITextButton("+", FontSizes.schemaFieldTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         r.run();
@@ -40,7 +40,7 @@ public class PagerArrayInterface implements IArrayInterface {
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsert != null) {
                     final Runnable r = positions[i + 1].execInsert;
-                    barLayout.panelsAdd(new UITextButton("+>", FontSizes.schemaButtonTextHeight, new Runnable() {
+                    barLayout.panelsAdd(new UITextButton("+>", FontSizes.schemaFieldTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             r.run();
@@ -50,7 +50,7 @@ public class PagerArrayInterface implements IArrayInterface {
             }
             if (positions[i].execDelete != null) {
                 final ISupplier<Runnable> r = positions[i].execDelete;
-                barLayout.panelsAdd(new UITextButton("-", FontSizes.schemaButtonTextHeight, new Runnable() {
+                barLayout.panelsAdd(new UITextButton("-", FontSizes.schemaFieldTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         r.get().run();
@@ -59,7 +59,7 @@ public class PagerArrayInterface implements IArrayInterface {
             }
             final RubyIO[] copyMe = positions[i].elements;
             if (copyMe != null) {
-                barLayout.panelsAdd(new UITextButton(TXDB.get("Copy"), FontSizes.schemaButtonTextHeight, new Runnable() {
+                barLayout.panelsAdd(new UITextButton(TXDB.get("Copy"), FontSizes.schemaFieldTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         RubyIO rio = new RubyIO();
@@ -76,7 +76,7 @@ public class PagerArrayInterface implements IArrayInterface {
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsertCopiedArray != null) {
                     final Runnable r = positions[i + 1].execInsertCopiedArray;
-                    barLayout.panelsAdd(new UITextButton(TXDB.get("Paste"), FontSizes.schemaButtonTextHeight, new Runnable() {
+                    barLayout.panelsAdd(new UITextButton(TXDB.get("Paste"), FontSizes.schemaFieldTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             r.run();

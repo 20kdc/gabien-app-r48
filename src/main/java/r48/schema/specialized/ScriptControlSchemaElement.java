@@ -36,7 +36,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
 
-        final UITextButton importer = new UITextButton(TXDB.get("Import scripts/*.rb"), FontSizes.schemaButtonTextHeight, new Runnable() {
+        final UITextButton importer = new UITextButton(TXDB.get("Import scripts/*.rb"), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -51,7 +51,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
             }
         });
 
-        final UITextButton exporter = new UITextButton(TXDB.get("Export scripts/*.rb"), FontSizes.schemaButtonTextHeight, new Runnable() {
+        final UITextButton exporter = new UITextButton(TXDB.get("Export scripts/*.rb"), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {

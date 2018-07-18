@@ -30,8 +30,6 @@ public class FontSizes {
     public static int schemaPathTextHeight = 16;
     // TXDB.get("schemaFieldTextHeight")
     public static int schemaFieldTextHeight = 16; // also class names
-    // TXDB.get("schemaButtonTextHeight")
-    public static int schemaButtonTextHeight = 16;
     // TXDB.get("schemaArrayAddTextHeight")
     public static int schemaArrayAddTextHeight = 16;
     // TXDB.get("enumChoiceTextHeight")
@@ -117,6 +115,9 @@ public class FontSizes {
     // TXDB.get("launcherTextHeight")
     public static int launcherTextHeight = 16;
 
+    // TXDB.get("imageEditorTextHeight")
+    public static int imageEditorTextHeight = 16; // Compat. check is performed to ensure this doesn't get reset to 16 - see load
+
     // TXDB.get("mapToolbarScrollersize")
     public static int mapToolbarScrollersize = 8;
 
@@ -179,11 +180,18 @@ public class FontSizes {
         // NOTE: Use internal string methods here, this is a game-independent file
         RubyIO dat = AdHocSaveLoad.load("fonts");
         if (dat != null) {
+            boolean shouldResetIETH = false;
             for (FontSizeField fsf : getFields()) {
                 RubyIO f = dat.getInstVarBySymbol("@" + fsf.name);
-                if (f != null)
+                if (f != null) {
                     fsf.accept((int) f.fixnumVal);
+                } else {
+                    if (fsf.name.equals("imageEditorTextHeight"))
+                        shouldResetIETH = true;
+                }
             }
+            if (shouldResetIETH)
+                imageEditorTextHeight = schemaFieldTextHeight;
             RubyIO sys = dat.getInstVarBySymbol("@sysfont");
             if (sys != null) {
                 FontManager.fontOverride = sys.decString();

@@ -7,12 +7,9 @@
 
 package r48.schema;
 
-import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import gabien.ui.UIPublicPanel;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.maptools.UIMTBase;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -53,7 +50,7 @@ public class TypeChangerSchemaElement extends SchemaElement {
                     path.changeOccurred(false);
                     // auto-updates
                 }
-            }, FontSizes.schemaButtonTextHeight);
+            }, FontSizes.schemaFieldTextHeight);
         }
         return holder;
     }
