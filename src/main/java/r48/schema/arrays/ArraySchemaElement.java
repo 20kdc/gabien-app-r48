@@ -97,12 +97,15 @@ public abstract class ArraySchemaElement extends SchemaElement {
             SchemaPath ind = path.arrayHashIndex(new RubyIO().setFX(i), "[" + (i + indexDisplayOffset) + "]");
 
             SchemaElement subelem = getElementSchema(i);
+            int subelemId = 0;
             nextAdvance = getGroupLength(target.arrVal, i);
             boolean hasNIdxSchema = false;
             if (nextAdvance == 0) {
                 nextAdvance = 1;
             } else {
-                subelem = getElementContextualSchema(target.arrVal, i, nextAdvance);
+                ElementContextual ec = getElementContextualSchema(target.arrVal, i, nextAdvance);
+                subelem = ec.element;
+                subelemId = ec.indent;
                 hasNIdxSchema = true;
             }
 
@@ -125,7 +128,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     se = ((IProxySchemaElement) se).getEntry();
                 dispData = ((EnumSchemaElement) se).viewValue(new RubyIO().setFX(i + indexDisplayOffset), true) + " ";
             }
-            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(dispData, copyHelpElems, uie, deleter, addition, clipAddition);
+            IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(dispData, copyHelpElems, uie, subelemId, deleter, addition, clipAddition);
             positions.add(position);
         }
         // The 4 for-loop is to deal with 1-indexing and such
@@ -133,7 +136,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
             int idx = target.arrVal.length + i;
             if (elementPermissionsLevel(idx, target) != 0) {
                 SchemaPath ind = path.arrayHashIndex(new RubyIO().setFX(idx), "[" + (idx + indexDisplayOffset) + "]");
-                IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition((idx + indexDisplayOffset) + " ", null, null, null, getAdditionCallback(target, launcher, idx, path, ind), getClipAdditionCallback(target, idx, path));
+                IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition((idx + indexDisplayOffset) + " ", null, null, 0, null, getAdditionCallback(target, launcher, idx, path, ind), getClipAdditionCallback(target, idx, path));
                 positions.add(position);
                 break;
             }
@@ -261,7 +264,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     groupStep = 1;
                     continue;
                 }
-                getElementContextualSchema(target.arrVal, j, groupStep).modifyVal(target, path, setDefault);
+                getElementContextualSchema(target.arrVal, j, groupStep).element.modifyVal(target, path, setDefault);
             }
             boolean aca = autoCorrectArray(target, path);
             modified = modified || aca;
@@ -299,7 +302,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // Note that this is meant to be used by things messing with getGroupLength, and will not be used otherwise.
     // Also note that for modifyVal purposes this acts *in addition* to getElementSchema,
     //  so that getGroupLength can safely assume that getElementSchema is being followed.
-    protected SchemaElement getElementContextualSchema(RubyIO[] arr, int start, int length) {
+    protected ElementContextual getElementContextualSchema(RubyIO[] arr, int start, int length) {
         throw new RuntimeException("Group length was used, but no contextual schema was defined for it.");
     }
 
@@ -319,5 +322,15 @@ public abstract class ArraySchemaElement extends SchemaElement {
     protected int elementPermissionsLevel(int i, RubyIO target) {
         boolean canDelete = (sizeFixed == -1) && (!(target.arrVal.length <= atLeast));
         return canDelete ? 2 : 1;
+    }
+
+    public static class ElementContextual {
+        public int indent;
+        public SchemaElement element;
+
+        public ElementContextual(int id, SchemaElement elem) {
+            indent = id;
+            element = elem;
+        }
     }
 }

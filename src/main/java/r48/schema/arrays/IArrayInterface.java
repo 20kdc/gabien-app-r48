@@ -56,11 +56,13 @@ public interface IArrayInterface {
         // This is weird but very convenient
         public final ISupplier<Runnable> execDelete;
         public final UIElement core;
+        public int coreIndent;
 
-        public ArrayPosition(String txt, RubyIO[] elem, UIElement cor, ISupplier<Runnable> exeDelete, Runnable exeInsert, Runnable exeInsertCopiedArray) {
+        public ArrayPosition(String txt, RubyIO[] elem, UIElement cor, int subelemId, ISupplier<Runnable> exeDelete, Runnable exeInsert, Runnable exeInsertCopiedArray) {
             text = txt;
             elements = elem;
             core = cor;
+            coreIndent = subelemId;
             execDelete = exeDelete;
             execInsert = exeInsert;
             execInsertCopiedArray = exeInsertCopiedArray;

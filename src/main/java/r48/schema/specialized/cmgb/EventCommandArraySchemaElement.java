@@ -15,7 +15,10 @@ import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.dbs.SDB;
 import r48.dbs.TXDB;
-import r48.schema.*;
+import r48.schema.AggregateSchemaElement;
+import r48.schema.ArrayElementSchemaElement;
+import r48.schema.SchemaElement;
+import r48.schema.SubwindowSchemaElement;
 import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.arrays.StandardArrayInterface;
 import r48.schema.util.ISchemaHost;
@@ -268,27 +271,15 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    protected SchemaElement getElementContextualSchema(RubyIO[] arr, final int start, final int length) {
+    protected ElementContextual getElementContextualSchema(RubyIO[] arr, final int start, final int length) {
         // Record the first RubyIO of the group.
         // getGroupElement seeks for it now, so it "tracks" the group properly despite array changes.
         final RubyIO tracker = arr[start];
-        return new HalfsplitSchemaElement(new SchemaElement() {
-            @Override
-            public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-                int h = UITextButton.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight).height;
-                int indent = 0;
-                if (tracker.getInstVarBySymbol("@indent") != null)
-                    indent = (int) tracker.getInstVarBySymbol("@indent").fixnumVal;
-                if (indent < 0)
-                    indent = 0;
-                return new UIPublicPanel(h * indent, h);
-            }
-
-            @Override
-            public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-
-            }
-        }, getElementContextualSubwindowSchema(tracker, start), 0d);
+        int indent = 0;
+        final RubyIO trackerIndent = tracker.getInstVarBySymbol("@indent");
+        if (trackerIndent != null)
+            indent = (int) trackerIndent.fixnumVal;
+        return new ElementContextual(indent, getElementContextualSubwindowSchema(tracker, start));
     }
 
     private SubwindowSchemaElement getElementContextualSubwindowSchema(final RubyIO tracker, final int start) {

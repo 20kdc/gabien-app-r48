@@ -15,6 +15,7 @@ import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.schema.ArrayElementSchemaElement;
 import r48.ui.UIAppendButton;
+import r48.ui.UIIndentThingy;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -54,24 +55,27 @@ public class StandardArrayInterface implements IArrayInterface {
                 // Work out how big each array index field has to be.
                 final Size maxSizePre = UILabel.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight);
                 final AtomicInteger maxWidth = new AtomicInteger(maxSizePre.width);
+                int indentUnit = UITextButton.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight).height;
                 for (int i = 0; i < positions.length; i++) {
                     final int mi = i;
                     addAdditionButton(positions[mi].execInsert, positions[mi].execInsertCopiedArray, positions[mi].text);
                     UIElement uie = positions[mi].core;
-                    final UIElement originalUIE = uie;
                     if (uie != null) {
+                        // Changes dependent on behavior.
+                        Runnable onClick = null;
+                        final UIElement originalUIE = uie;
                         // NOTE: At the end of this code, editor can only be a pure UIAppendButton group.
                         // The reason for this is because it simplifies releasing it all later.
                         if (selectedStart == -1) {
                             confirmingSelectionDelete = false;
-                            uie = new UIAppendButton(TXDB.get("Sel"), uie, new Runnable() {
+                            onClick = new Runnable() {
                                 @Override
                                 public void run() {
                                     selectedStart = mi;
                                     selectedEnd = mi;
                                     containerRCL();
                                 }
-                            }, FontSizes.schemaFieldTextHeight);
+                            };
                             if (positions[mi].execDelete != null) {
                                 uie = new UIAppendButton("-", uie, new Runnable() {
                                     @Override
@@ -92,13 +96,19 @@ public class StandardArrayInterface implements IArrayInterface {
                                         }
                                     }, FontSizes.schemaFieldTextHeight);
                                 }
-                                uie = new UIAppendButton(TXDB.get("DeSel"), uie, new Runnable() {
+                                onClick = new Runnable() {
                                     @Override
                                     public void run() {
-                                        selectedStart = -1;
+                                        int miL = tracePositionEnd(positions, mi);
+                                        if (selectedEnd >= miL) {
+                                            selectedStart = -1;
+                                        } else {
+                                            selectedStart = mi;
+                                            selectedEnd = miL;
+                                        }
                                         containerRCL();
                                     }
-                                }, FontSizes.schemaFieldTextHeight);
+                                };
                                 uie = new UIAppendButton(TXDB.get("Copy Array"), uie, new Runnable() {
                                     @Override
                                     public void run() {
@@ -119,7 +129,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                     }
                                 }, FontSizes.schemaFieldTextHeight);
                             } else if ((mi < selectedStart) || (mi > selectedEnd)) {
-                                uie = new UIAppendButton(TXDB.get("Select..."), uie, new Runnable() {
+                                onClick = new Runnable() {
                                     @Override
                                     public void run() {
                                         if (mi < selectedStart)
@@ -128,7 +138,15 @@ public class StandardArrayInterface implements IArrayInterface {
                                             selectedEnd = mi;
                                         containerRCL();
                                     }
-                                }, FontSizes.schemaFieldTextHeight);
+                                };
+                            } else {
+                                onClick = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        selectedStart = -1;
+                                        containerRCL();
+                                    }
+                                };
                             }
                         } else {
                             // Selection, confirming delete
@@ -200,7 +218,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         }
                         // Add indexes for clarity.
                         final UIElement editor = uie;
-                        final UIElement label = new ArrayElementSchemaElement.UIOverridableWidthLabel(positions[mi].text, FontSizes.schemaFieldTextHeight, maxWidth, true);
+                        UIElement label = new ArrayElementSchemaElement.UIOverridableWidthLabel(positions[mi].text, FontSizes.schemaFieldTextHeight, maxWidth, true);
                         maxWidth.set(Math.max(label.getWantedSize().width, maxWidth.get()));
                         releasers.add(new Runnable() {
                             @Override
@@ -216,6 +234,19 @@ public class StandardArrayInterface implements IArrayInterface {
                                 }
                             }
                         });
+
+                        // Prepend indent here!
+                        int indent = Math.max(positions[mi].coreIndent, 0);
+                        int selectedForce = 0;
+                        if (selectedStart != -1) {
+                            selectedForce = 32;
+                            if ((selectedStart <= mi) && (selectedEnd >= mi))
+                                selectedForce = 192;
+                            if (selectedStart == mi)
+                                selectedForce = 255;
+                        }
+                        label = new UISplitterLayout(label, new UIIndentThingy(indentUnit, indent, selectedForce, onClick), false, 1);
+
                         final UISplitterLayout outerSplit = new UISplitterLayout(label, editor, false, 0);
                         releasers.add(new Runnable() {
                             @Override
@@ -226,6 +257,15 @@ public class StandardArrayInterface implements IArrayInterface {
                         uiSVL.panelsAdd(outerSplit);
                     }
                 }
+            }
+
+            private int tracePositionEnd(ArrayPosition[] positions, int mi) {
+                int idt = positions[mi].coreIndent;
+                for (int i = mi + 1; i < positions.length; i++)
+                    if (positions[i].coreIndent <= idt)
+                        return i;
+                // If it gets here...
+                return positions.length - 1;
             }
 
             private void addAdditionButton(final Runnable runnable, final Runnable runnable2, final String text) {
