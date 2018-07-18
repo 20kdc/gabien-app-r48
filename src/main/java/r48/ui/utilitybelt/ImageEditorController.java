@@ -142,14 +142,23 @@ public class ImageEditorController {
                 }, TXDB.get("Resize..."));
             }
         });
-        ul = new UIAppendButton(TXDB.get("New"), ul, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), new Runnable() {
+        ul = new UIAppendButton(TXDB.get("New"), ul, new Runnable() {
             @Override
             public void run() {
-                imageEditView.setImage(new ImageEditorImage(imageEditView.image.width, imageEditView.image.height));
-                imageEditView.eds.newFile();
-                initPalette();
+                Runnable actualCore = new Runnable() {
+                    @Override
+                    public void run() {
+                        imageEditView.setImage(new ImageEditorImage(imageEditView.image.width, imageEditView.image.height));
+                        imageEditView.eds.newFile();
+                        initPalette();
+                        AppMain.launchDialog(TXDB.get("New image created (same size as the previous image)"));
+                    }
+                };
+                if (imageEditView.eds.imageModified())
+                    actualCore = AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), actualCore);
+                actualCore.run();
             }
-        }), FontSizes.schemaFieldTextHeight);
+        }, FontSizes.schemaFieldTextHeight);
         ul = new UIAppendButton(TXDB.get("Open"), ul, new Runnable() {
             @Override
             public void run() {
