@@ -58,6 +58,11 @@ f Pbm/Map1.pbm
 e UTF-8
 . Ikachan
 
+0: OSLoc
+f Languages/en.loc
+e UTF-8
+. OneShot (remake) External Localization Files
+
 = "Tests"
 
 0: Sticki

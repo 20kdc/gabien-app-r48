@@ -77,6 +77,7 @@ public class AppMain {
     public static ObjectDB objectDB = null;
     public static ATDB[] autoTiles = new ATDB[0];
     public static SDB schemas = null;
+    public static HashMap<Integer, String> osSHESEDB;
 
     // Backend Services
 
@@ -853,6 +854,7 @@ public class AppMain {
         objectDB = null;
         autoTiles = new ATDB[0];
         schemas = null;
+        osSHESEDB = null;
         stuffRendererIndependent = null;
         system = null;
         if (mapContext != null)

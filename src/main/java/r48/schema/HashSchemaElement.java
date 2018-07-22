@@ -13,6 +13,7 @@ import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.IProxySchemaElement;
 import r48.dbs.TXDB;
+import r48.schema.specialized.OSStrHashMapSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -161,6 +162,8 @@ public class HashSchemaElement extends SchemaElement {
             ke = ((IProxySchemaElement) ke).getEntry();
         if (ke instanceof EnumSchemaElement)
             return ((EnumSchemaElement) ke).viewValue(v, true);
+        if (ke instanceof OSStrHashMapSchemaElement)
+            return OSStrHashMapSchemaElement.decode(v);
         return TXDB.get("Key " + v);
     }
 

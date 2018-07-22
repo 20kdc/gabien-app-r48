@@ -182,7 +182,11 @@ public class BasicToolset implements IToolset {
                                     dos.write(';');
                                     dos.write('\n');
                                     dos.close();
-                                    AppMain.launchDialog(TXDB.get("Wrote locmaps.txt"));
+                                    if (AppMain.dataPath.equals("Languages/")) {
+                                        AppMain.launchDialog(TXDB.get("Wrote locmaps.txt (NOTE: You probably don't actually want to do this! Press this in RXP mode to get the CRCs, then go back to this mode to actually start editing stuff.)"));
+                                    } else {
+                                        AppMain.launchDialog(TXDB.get("Wrote locmaps.txt"));
+                                    }
                                 } catch (IOException ioe) {
                                     throw new RuntimeException(ioe);
                                 }
