@@ -34,9 +34,9 @@ public class LdbSystem extends R2kObject {
     public ArrayR2kStruct<ShortR2kStruct> party = new ArrayR2kStruct<ShortR2kStruct>(partySize, new ISupplier<ShortR2kStruct>() {
         @Override
         public ShortR2kStruct get() {
-            return new ShortR2kStruct(0);
+            return new ShortR2kStruct(1);
         }
-    });
+    }, 1);
 
     // The menuCommandsSize -> menuCommands link is broken here, so it's fixed in the constructor.
     // Really not sure about this, it fixes v0.8 for release I think but I want to have a better look at it later
