@@ -25,14 +25,18 @@ public abstract class R2kObject implements IR2kStruct {
 
     public abstract Index[] getIndices();
 
+    // Equivalent of liblcf's conditional_zero.
+    // If true, then no zero is required and no zero is written.
     public boolean terminatable() {
         return false;
     }
 
+    // If enabled, it's okay for the interpretable for a chunk to not read 100% of the chunk.
     public boolean disableSanity() {
         return false;
     }
 
+    // If enabled, this object is very verbose. Debugging only.
     public boolean logStuff() {
         return false;
     }
