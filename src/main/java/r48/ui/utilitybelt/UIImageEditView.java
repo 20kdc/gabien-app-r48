@@ -9,8 +9,8 @@ package r48.ui.utilitybelt;
 
 import gabien.*;
 import gabien.ui.*;
-import gabienapp.Application;
 import r48.FontSizes;
+import r48.map.UIMapView;
 import r48.ui.Art;
 import r48.ui.UIGrid;
 
@@ -46,7 +46,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         eds.newFile();
         newToolCallback = updatePal;
         currentTool = rootTool;
-        if (useDragControl())
+        if (UIMapView.useDragControl(false))
             currentTool = new CamImageEditorTool(currentTool);
     }
 
@@ -122,7 +122,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             }
         }
 
-        boolean dedicatedDragControl = useDragControl();
+        boolean dedicatedDragControl = UIMapView.useDragControl(currentTool.getCamModeLT() != null);
 
         String status = currentTool.getLocalizedText(dedicatedDragControl);
 
@@ -141,10 +141,6 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         Art.drawZoom(igd, false, minusRect.x, minusRect.y, minusRect.height);
         if (dedicatedDragControl)
             Art.drawDragControl(igd, currentTool.getCamModeLT() != null, dragRect.x, dragRect.y, minusRect.height);
-    }
-
-    private boolean useDragControl() {
-        return Application.mobileExtremelySpecialBehavior || (currentTool.getCamModeLT() != null);
     }
 
     private void drawGrid(IGrDriver osb, Rect viewRct, boolean cut) {
@@ -237,12 +233,13 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
                 handleMousewheel(x, y, false);
                 return;
             }
-            if (useDragControl()) {
+            boolean dragControl = UIMapView.useDragControl(currentTool.getCamModeLT() != null);
+            if (dragControl) {
                 if (Art.getZIconRect(true, 2).contains(x, y)) {
                     IImageEditorTool lt = currentTool.getCamModeLT();
                     if (lt != null) {
                         currentTool = lt;
-                    } else if (useDragControl()) {
+                    } else {
                         currentTool = new CamImageEditorTool(currentTool);
                     }
                     newToolCallback.run();

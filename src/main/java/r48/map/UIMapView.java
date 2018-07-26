@@ -9,7 +9,6 @@ package r48.map;
 
 import gabien.*;
 import gabien.ui.*;
-import gabienapp.Application;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -187,7 +186,7 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
                 igd.blitScaledImage(0, 0, camR.width, camR.height, 0, 0, internalScaling(camR.width), internalScaling(camR.height), offscreenBuf);
             }
         }
-        boolean dedicatedDragControl = useDragControl();
+        boolean dedicatedDragControl = useDragControl(camDragSwitch);
         String shortcuts = TXDB.get("Mouse drag: Scroll, Shift-left: Pick tile.");
         if (dedicatedDragControl)
             shortcuts = TXDB.get("Drag scrolls about.");
@@ -222,8 +221,9 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
             Art.drawDragControl(igd, camDragSwitch, dragRect.x, dragRect.y, minusRect.height);
     }
 
-    private boolean useDragControl() {
-        return Application.mobileExtremelySpecialBehavior || camDragSwitch; // SWA means "make sure the user can use a 1-button mouse w/no hover".
+    public static boolean useDragControl(boolean camDragSwitch) {
+        return true;
+        //return Application.mobileExtremelySpecialBehavior || camDragSwitch; // SWA means "make sure the user can use a 1-button mouse w/no hover".
     }
 
     private void render(int mouseXT, int mouseYT, int currentLayer, IGrDriver igd) {
@@ -286,7 +286,7 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
             handleMousewheel(x, y, false);
             return;
         }
-        if (useDragControl()) {
+        if (useDragControl(camDragSwitch)) {
             if (Art.getZIconRect(true, 2).contains(x, y)) {
                 dragging = false;
                 camDragSwitch = !camDragSwitch;
