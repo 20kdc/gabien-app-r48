@@ -23,7 +23,14 @@ public class Actor extends R2kObject {
     public IntegerR2kStruct charIdx = new IntegerR2kStruct(0);
     public BooleanR2kStruct transparent = new BooleanR2kStruct(false);
     public IntegerR2kStruct initLevel = new IntegerR2kStruct(1);
-    public IntegerR2kStruct finalLevel = new IntegerR2kStruct(99);
+    // Marked as "50|99" in liblcf docs - version differences.
+    // OptionalR2kStruct can at least translate this into something usable.
+    public OptionalR2kStruct<IntegerR2kStruct> finalLevel = new OptionalR2kStruct<IntegerR2kStruct>(new ISupplier<IntegerR2kStruct>() {
+        @Override
+        public IntegerR2kStruct get() {
+            return new IntegerR2kStruct(99);
+        }
+    });
     public BooleanR2kStruct canCrit = new BooleanR2kStruct(true);
     public IntegerR2kStruct critPercent = new IntegerR2kStruct(30);
     public StringR2kStruct faceName = new StringR2kStruct();
@@ -33,8 +40,18 @@ public class Actor extends R2kObject {
     public BooleanR2kStruct autoBattle = new BooleanR2kStruct(false);
     public BooleanR2kStruct superGuard = new BooleanR2kStruct(false);
     public BPB parameters = new BPB();
-    public IntegerR2kStruct initLevelExp = new IntegerR2kStruct(300);
-    public IntegerR2kStruct eachLevelExpP = new IntegerR2kStruct(300);
+    public OptionalR2kStruct<IntegerR2kStruct> initLevelExp = new OptionalR2kStruct<IntegerR2kStruct>(new ISupplier<IntegerR2kStruct>() {
+        @Override
+        public IntegerR2kStruct get() {
+            return new IntegerR2kStruct(300);
+        }
+    });
+    public OptionalR2kStruct<IntegerR2kStruct> eachLevelExpP = new OptionalR2kStruct<IntegerR2kStruct>(new ISupplier<IntegerR2kStruct>() {
+        @Override
+        public IntegerR2kStruct get() {
+            return new IntegerR2kStruct(300);
+        }
+    });
     public IntegerR2kStruct eachLevelExpModC = new IntegerR2kStruct(0);
     public ArrayR2kStruct<ShortR2kStruct> equipment = new ArrayR2kStruct<ShortR2kStruct>(null, new ISupplier<ShortR2kStruct>() {
         @Override
