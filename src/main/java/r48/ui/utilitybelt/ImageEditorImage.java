@@ -241,14 +241,9 @@ public class ImageEditorImage extends ImageIOImage {
             if (sanity) {
                 int selCol = palette.get(selPaletteIndex);
                 int fidCol = palette.get(fidx);
-                if (t1Lock) {
-                    selCol |= 0xFF000000;
-                    fidCol |= 0xFF000000;
-                    if (selPaletteIndex == 0)
-                        fidCol &= 0xFFFFFF;
-                    if (fidx == 0)
-                        selCol &= 0xFFFFFF;
-                }
+                // Sanitize colours for new indexes
+                selCol = sanitizeColour(selCol, fidx);
+                fidCol = sanitizeColour(fidCol, selPaletteIndex);
                 palette.set(selPaletteIndex, fidCol);
                 palette.set(fidx, selCol);
             }
@@ -260,6 +255,23 @@ public class ImageEditorImage extends ImageIOImage {
                 }
             }
             cachedData = null;
+        }
+    }
+
+    private int sanitizeColour(int fidCol, int selPaletteIndex) {
+        if (t1Lock) {
+            fidCol |= 0xFF000000;
+            if (selPaletteIndex == 0)
+                fidCol &= 0xFFFFFF;
+        }
+        return fidCol;
+    }
+
+    public void changePalette(int fidx, int col) {
+        if (palette == null) {
+            editorPalette[fidx] = col;
+        } else {
+            palette.set(fidx, sanitizeColour(col, fidx));
         }
     }
 

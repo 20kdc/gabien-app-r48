@@ -18,7 +18,7 @@ import r48.imageio.ImageIOFormat;
 import r48.maptools.UIMTBase;
 import r48.ui.UIAppendButton;
 import r48.ui.UIColourPicker;
-import r48.ui.UIColourSwatch;
+import r48.ui.UIColourSwatchButton;
 
 import java.io.OutputStream;
 import java.util.LinkedList;
@@ -118,7 +118,7 @@ public class ImageEditorController {
         final String fbStrAL = TXDB.get("Load");
         final String fbStrAS = TXDB.get("Save");
 
-        UIElement ul = new UITextButton(imageEditView.image.width + "x" + imageEditView.image.height, FontSizes.schemaFieldTextHeight, new Runnable() {
+        UIElement ul = new UITextButton(imageEditView.image.width + "x" + imageEditView.image.height, FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
@@ -158,7 +158,7 @@ public class ImageEditorController {
                     actualCore = AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), actualCore);
                 actualCore.run();
             }
-        }, FontSizes.schemaFieldTextHeight);
+        }, FontSizes.imageEditorTextHeight);
         ul = new UIAppendButton(TXDB.get("Open"), ul, new Runnable() {
             @Override
             public void run() {
@@ -170,7 +170,7 @@ public class ImageEditorController {
                     }
                 });
             }
-        }, FontSizes.schemaFieldTextHeight);
+        }, FontSizes.imageEditorTextHeight);
         boolean canDoNormalSave = imageEditView.eds.canSimplySave();
         if (canDoNormalSave) {
             ul = new UIAppendButton(TXDB.get("Save"), ul, new Runnable() {
@@ -178,7 +178,7 @@ public class ImageEditorController {
                 public void run() {
                     save();
                 }
-            }, FontSizes.schemaFieldTextHeight);
+            }, FontSizes.imageEditorTextHeight);
         }
         ul = new UIAppendButton(TXDB.get("Save As"), ul, new Runnable() {
             @Override
@@ -222,7 +222,7 @@ public class ImageEditorController {
         }, FontSizes.schemaFieldTextHeight);
         paletteView.panelsAdd(ul);
 
-        ul = new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        ul = new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 showXYChanger(new Rect(imageEditView.gridOX, imageEditView.gridOY, imageEditView.gridW, imageEditView.gridH), new IConsumer<Rect>() {
@@ -235,7 +235,7 @@ public class ImageEditorController {
                     }
                 }, TXDB.get("Change Grid..."));
             }
-        }), new UITextButton(TXDB.get("Colour"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        }), new UITextButton(TXDB.get("Colour"), FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 windowMaker.accept(new UIColourPicker(new IConsumer<Integer>() {
@@ -259,7 +259,7 @@ public class ImageEditorController {
                     AppMain.launchDialog(TXDB.get("There is nothing to undo."));
                 }
             }
-        }, FontSizes.schemaFieldTextHeight);
+        }, FontSizes.imageEditorTextHeight);
 
         ul = new UIAppendButton(TXDB.get("Redo"), ul, new Runnable() {
             @Override
@@ -271,10 +271,10 @@ public class ImageEditorController {
                     AppMain.launchDialog(TXDB.get("There is nothing to redo."));
                 }
             }
-        }, FontSizes.schemaFieldTextHeight);
+        }, FontSizes.imageEditorTextHeight);
         paletteView.panelsAdd(ul);
 
-        UIAppendButton ap = new UIAppendButton(TXDB.get("Grid Overlay"), new UITextButton(TXDB.get("Reset View"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        UIAppendButton ap = new UIAppendButton(TXDB.get("Grid Overlay"), new UITextButton(TXDB.get("Reset View"), FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 imageEditView.camX = 0;
@@ -286,21 +286,21 @@ public class ImageEditorController {
             public void run() {
                 imageEditView.gridST = !imageEditView.gridST;
             }
-        }, FontSizes.schemaFieldTextHeight);
+        }, FontSizes.imageEditorTextHeight);
         ap.button.togglable(imageEditView.gridST);
         paletteView.panelsAdd(ap);
 
         paletteView.panelsAdd(imageEditView.currentTool.createToolPalette(imageEditView));
 
         // mode details
-        UILabel cType = new UILabel(imageEditView.image.describeColourFormat(), FontSizes.schemaFieldTextHeight);
+        UILabel cType = new UILabel(imageEditView.image.describeColourFormat(), FontSizes.imageEditorTextHeight);
         if (imageEditView.image.usesPalette()) {
             paletteView.panelsAdd(sanityButtonHolder = new UISplitterLayout(cType, sanityButton, false, 1));
         } else {
             paletteView.panelsAdd(cType);
         }
 
-        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Add Colour"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Add Colour"), FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 windowMaker.accept(new UIColourPicker(new IConsumer<Integer>() {
@@ -315,7 +315,7 @@ public class ImageEditorController {
                     }
                 }, !imageEditView.image.t1Lock));
             }
-        }), new UITextButton(TXDB.get("From Image"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        }), new UITextButton(TXDB.get("From Image"), FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 imageEditView.currentTool = new AddColourFromImageEditorTool(new IConsumer<Integer>() {
@@ -336,7 +336,7 @@ public class ImageEditorController {
         // It's like Life Is Strange.
         // No matter which option you choose, we'll question your decision.
         if (imageEditView.image.palette != null) {
-            final UITextButton ck = new UITextButton(TXDB.get("Colourkey"), FontSizes.schemaFieldTextHeight, null).togglable(imageEditView.image.t1Lock);
+            final UITextButton ck = new UITextButton(TXDB.get("Colourkey"), FontSizes.imageEditorTextHeight, null).togglable(imageEditView.image.t1Lock);
             ck.onClick = new Runnable() {
                 @Override
                 public void run() {
@@ -359,7 +359,7 @@ public class ImageEditorController {
                 }
             })), false, 0.5d);
         } else {
-            cSwitch = new UITextButton(TXDB.get("Use Palette"), FontSizes.schemaFieldTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to using a palette? If an exceptional number of colours are used, the image may be hard to edit."), new Runnable() {
+            cSwitch = new UITextButton(TXDB.get("Use Palette"), FontSizes.imageEditorTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to using a palette? If an exceptional number of colours are used, the image may be hard to edit."), new Runnable() {
                 @Override
                 public void run() {
                     imageEditView.eds.startSection();
@@ -374,7 +374,23 @@ public class ImageEditorController {
 
         for (int idx = 0; idx < imageEditView.image.paletteSize(); idx++) {
             final int fidx = idx;
-            UIElement cPanel = new UIColourSwatch(imageEditView.image.getPaletteRGB(idx));
+            UIElement cPanel = new UIColourSwatchButton(imageEditView.image.getPaletteRGB(idx), FontSizes.imageEditorTextHeight, new Runnable() {
+                @Override
+                public void run() {
+                    windowMaker.accept(new UIColourPicker(new IConsumer<Integer>() {
+                        @Override
+                        public void accept(Integer integer) {
+                            if (integer == null)
+                                return;
+                            imageEditView.eds.startSection();
+                            if (fidx < imageEditView.image.paletteSize())
+                                imageEditView.image.changePalette(fidx, integer);
+                            imageEditView.eds.endSection();
+                            initPalette();
+                        }
+                    }, true));
+                }
+            });
             if (imageEditView.selPaletteIndex == fidx) {
                 cPanel = new UIAppendButton("X", cPanel, new Runnable() {
                     @Override
@@ -389,7 +405,7 @@ public class ImageEditorController {
                             initPalette();
                         }
                     }
-                }, FontSizes.schemaFieldTextHeight);
+                }, FontSizes.imageEditorTextHeight);
             } else {
                 cPanel = new UIAppendButton("~", cPanel, new Runnable() {
                     @Override
@@ -399,9 +415,9 @@ public class ImageEditorController {
                         imageEditView.eds.endSection();
                         initPalette();
                     }
-                }, FontSizes.schemaFieldTextHeight);
+                }, FontSizes.imageEditorTextHeight);
             }
-            cPanel = new UISplitterLayout(new UITextButton("<", FontSizes.schemaFieldTextHeight, new Runnable() {
+            cPanel = new UISplitterLayout(new UITextButton("<", FontSizes.imageEditorTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     if (fidx != imageEditView.selPaletteIndex) {
@@ -424,10 +440,10 @@ public class ImageEditorController {
         final UIMTBase res = UIMTBase.wrap(null, xyChanger);
         final UINumberBox wVal, hVal, xVal, yVal;
         final UITextButton acceptButton;
-        wVal = new UINumberBox(targetVal.width, FontSizes.schemaFieldTextHeight);
-        hVal = new UINumberBox(targetVal.height, FontSizes.schemaFieldTextHeight);
-        xVal = new UINumberBox(targetVal.x, FontSizes.schemaFieldTextHeight);
-        yVal = new UINumberBox(targetVal.y, FontSizes.schemaFieldTextHeight);
+        wVal = new UINumberBox(targetVal.width, FontSizes.imageEditorTextHeight);
+        hVal = new UINumberBox(targetVal.height, FontSizes.imageEditorTextHeight);
+        xVal = new UINumberBox(targetVal.x, FontSizes.imageEditorTextHeight);
+        yVal = new UINumberBox(targetVal.y, FontSizes.imageEditorTextHeight);
         hVal.onEdit = wVal.onEdit = new Runnable() {
             @Override
             public void run() {
@@ -436,7 +452,7 @@ public class ImageEditorController {
             }
         };
 
-        acceptButton = new UITextButton(TXDB.get("Accept"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        acceptButton = new UITextButton(TXDB.get("Accept"), FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 Rect r = new Rect((int) xVal.number, (int) yVal.number, Math.max((int) wVal.number, 1), Math.max((int) hVal.number, 1));
@@ -444,9 +460,9 @@ public class ImageEditorController {
                 res.selfClose = true;
             }
         });
-        xyChanger.panelsAdd(new UILabel(TXDB.get("Size"), FontSizes.schemaFieldTextHeight));
+        xyChanger.panelsAdd(new UILabel(TXDB.get("Size"), FontSizes.imageEditorTextHeight));
         xyChanger.panelsAdd(new UISplitterLayout(wVal, hVal, false, 1, 2));
-        xyChanger.panelsAdd(new UILabel(TXDB.get("Offset"), FontSizes.schemaFieldTextHeight));
+        xyChanger.panelsAdd(new UILabel(TXDB.get("Offset"), FontSizes.imageEditorTextHeight));
         xyChanger.panelsAdd(new UISplitterLayout(xVal, yVal, false, 1, 2));
         xyChanger.panelsAdd(acceptButton);
 

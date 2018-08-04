@@ -31,11 +31,15 @@ public class UIColourSwatch extends UIElement {
     @Override
     public void render(IGrDriver igd) {
         Size bounds = getSize();
+        doRender(igd, col, 0, 0, bounds.width, bounds.height);
+    }
+
+    public static void doRender(IGrDriver igd, int col, int x, int y, int width, int height) {
         final int a = ((col & 0xFF000000) >> 24) & 0xFF;
         final int r = (col & 0xFF0000) >> 16;
         final int g = (col & 0xFF00) >> 8;
         final int b = (col & 0xFF);
-        igd.clearRect(r, g, b, 0, 0, bounds.width / 2, bounds.height);
-        igd.clearRect(a, a, a, bounds.width / 2, 0, bounds.width - (bounds.width / 2), bounds.height);
+        igd.clearRect(r, g, b, x, y, width / 2, height);
+        igd.clearRect(a, a, a, (width / 2) + x, y, width - (width / 2), height);
     }
 }
