@@ -187,7 +187,10 @@ public class AppMain {
     public static ImageFXCache imageFXCache = null;
 
     public static IConsumer<Double> initializeAndRun(final String rp, final String gamepak, final WindowCreatingUIElementConsumer uiTicker) throws IOException {
+
         rootPath = rp;
+        GaBIEn.setBrowserDirectory(rp);
+
         // initialize core resources
 
         recommendedDirs = new LinkedList<String>();
