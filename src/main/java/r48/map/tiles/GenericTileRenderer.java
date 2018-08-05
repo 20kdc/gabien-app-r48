@@ -43,7 +43,7 @@ public class GenericTileRenderer implements ITileRenderer {
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv, int sprScale) {
         return new UITileGrid[] {
-                new UITileGrid(mv, 0, tileCount, 0, null, TXDB.get("Tiles"), sprScale)
+                new UITileGrid(mv, 0, tileCount, 0, null, TXDB.get("Tiles"), false, sprScale)
         };
     }
 

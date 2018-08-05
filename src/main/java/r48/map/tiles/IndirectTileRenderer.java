@@ -43,7 +43,7 @@ public class IndirectTileRenderer implements ITileRenderer {
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv, int sprScale) {
         return new UITileGrid[] {
-                new UITileGrid(mv, 0, indirection.width * indirection.height, 0, null, TXDB.get("Tiles"), sprScale)
+                new UITileGrid(mv, 0, indirection.width * indirection.height, 0, null, TXDB.get("Tiles"), false, sprScale)
         };
     }
 

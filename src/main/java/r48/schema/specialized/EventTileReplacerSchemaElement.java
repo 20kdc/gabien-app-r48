@@ -36,7 +36,7 @@ public class EventTileReplacerSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        final UITileGrid r = new UITileGrid(launcher.getContextRenderer(), layer, 0, displayMap.mapping.length, 0, displayMap.mapping, "This text can't be seen.", FontSizes.getSpriteScale());
+        final UITileGrid r = new UITileGrid(launcher.getContextRenderer(), layer, 0, displayMap.mapping.length, 0, displayMap.mapping, "This text can't be seen.", false, FontSizes.getSpriteScale());
         if (PathSyntax.parse(target, charName, sdb2).strVal.length == 0)
             r.setSelected((int) PathSyntax.parse(target, charIdx, sdb2).fixnumVal);
         r.onSelectionChange = new Runnable() {

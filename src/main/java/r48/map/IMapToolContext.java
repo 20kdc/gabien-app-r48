@@ -8,6 +8,7 @@
 package r48.map;
 
 import gabien.ui.UIElement;
+import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTBase;
 
 /**
@@ -19,4 +20,6 @@ public interface IMapToolContext {
     void createWindow(UIElement window);
 
     void accept(UIMTBase nextTool);
+
+    UIMTAutotile showATField();
 }

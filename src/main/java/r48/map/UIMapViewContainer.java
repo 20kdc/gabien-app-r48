@@ -157,6 +157,16 @@ public class UIMapViewContainer extends UIElement.UIPanel {
             public void accept(UIMTBase nextTool) {
                 nextMapTool = nextTool;
             }
+
+            @Override
+            public UIMTAutotile showATField() {
+                if (mapTool instanceof UIMTAutotile) {
+                    ((UIMTAutotile) mapTool).refresh();
+                    return (UIMTAutotile) mapTool;
+                } else {
+                    return (UIMTAutotile) (nextMapTool = new UIMTAutotile(this));
+                }
+            }
         };
 
         final IEditingToolbarController metc = view.map.toolbar.apply(mtc);
@@ -165,7 +175,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
             view.pickTileHelper = new IConsumer<Short>() {
                 @Override
                 public void accept(Short aShort) {
-                    UIMTAutotile atf = new UIMTAutotile(mtc, null);
+                    UIMTAutotile atf = mtc.showATField();
                     atf.selectTile(aShort);
                     nextMapTool = atf;
                 }

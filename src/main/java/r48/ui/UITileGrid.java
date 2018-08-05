@@ -26,16 +26,23 @@ public class UITileGrid extends UIGrid {
     public final int atGroup;
     public final int[] viewMap;
 
+    // Avoid keeping this tab selected when arriving here from another layer
+    public final boolean recommendAvoid;
     private final String toStringRes;
 
-    public UITileGrid(UIMapView mv, int tStart, int tileCount, int aTile, int[] remap, String tiles, int sprScale) {
-        this(mv.mapTable.renderer, mv.currentLayer, tStart, tileCount, aTile, remap, tiles, sprScale);
+    public UITileGrid(UIMapView mv, int tStart, int tileCount, int aTile, int[] remap, String tiles, boolean doNotUse, int sprScale) {
+        this(mv.mapTable.renderer, mv.currentLayer, tStart, tileCount, aTile, remap, tiles, doNotUse, sprScale);
     }
 
-    public UITileGrid(StuffRenderer sr, int l, int tStart, int tileCount, int aTile, int[] remap, String tiles, int sprScale) {
+    public UITileGrid(StuffRenderer sr, int l, int tStart, int tileCount, int aTile, int[] remap, String tiles, boolean doNotUse, int sprScale) {
         super(sr.tileRenderer.getTileSize() * sprScale, sr.tileRenderer.getTileSize() * sprScale, tileCount);
         // Padding for readability. As this padding is on the left, it's last to get removed.
-        toStringRes = " " + tiles;
+        recommendAvoid = doNotUse;
+        if (doNotUse) {
+            toStringRes = " " + tiles + "<X>";
+        } else {
+            toStringRes = " " + tiles;
+        }
         canMultiSelect = aTile == 0;
         renderer = sr;
         layer = l;

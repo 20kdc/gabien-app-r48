@@ -309,7 +309,7 @@ public class VXATileRenderer implements ITileRenderer {
         if (mv.currentLayer == 3) {
             // Shadow Layer
             return new UITileGrid[] {
-                    new UITileGrid(mv, 0x000, 0x100, 0, null, TXDB.get("Don't use this, use the Shadow-Region tool."), sc)
+                    new UITileGrid(mv, 0x000, 0x100, 0, null, TXDB.get("Don't use this, use the Shadow-Region tool."), false, sc)
             };
         } else {
             int[] allATs = new int[0x1800 / 48];
@@ -318,15 +318,15 @@ public class VXATileRenderer implements ITileRenderer {
             return new UITileGrid[] {
                     // Using 16 as the value, though false for most ATs, makes everything work (walls).
                     // Need to introduce another parameter or just set 16 as the display offset. Going with that.
-                    new UITileGrid(mv, 0x800, allATs.length, 48, allATs, "AT", sc),
+                    new UITileGrid(mv, 0x800, allATs.length, 48, allATs, "AT", false, sc),
 
-                    new UITileGrid(mv, 0x000, 0x400, 0, null, "G1", sc),
-                    new UITileGrid(mv, 0x600, 0x100, 0, null, "G2", sc),
+                    new UITileGrid(mv, 0x000, 0x400, 0, null, "G1", false, sc),
+                    new UITileGrid(mv, 0x600, 0x100, 0, null, "G2", false, sc),
 
-                    new UITileGrid(mv, 0x800, 0x300, 0, null, "AT1-M", sc),
-                    new UITileGrid(mv, 0xB00, 0x600, 0, null, "AT2-M", sc),
-                    new UITileGrid(mv, 0x1100, 0x600, 0, null, "AT3-M", sc),
-                    new UITileGrid(mv, 0x1700, 0x900, 0, null, "AT4-M", sc),
+                    new UITileGrid(mv, 0x800, 0x300, 0, null, "AT1-M", false, sc),
+                    new UITileGrid(mv, 0xB00, 0x600, 0, null, "AT2-M", false, sc),
+                    new UITileGrid(mv, 0x1100, 0x600, 0, null, "AT3-M", false, sc),
+                    new UITileGrid(mv, 0x1700, 0x900, 0, null, "AT4-M", false, sc),
             };
         }
     }

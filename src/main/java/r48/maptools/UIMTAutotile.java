@@ -38,7 +38,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     public final UIMapView map;
     public AutoTileTypeField[] atBases;
 
-    public UIMTAutotile(IMapToolContext mv, UIMTAutotile last) {
+    public UIMTAutotile(IMapToolContext mv) {
         super(mv);
         map = mv.getMapView();
         int scale = setupView(true);
@@ -48,17 +48,6 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         setForcedBounds(null, new Rect(0, 0, (map.tileSize * scale * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) + FontSizes.gridScrollersize, FontSizes.scaleGuess(200)));
         if (tabPane.getShortened())
             setForcedBounds(null, new Rect(0, 0, ((map.tileSize * scale * (map.mapTable.renderer.tileRenderer.getRecommendedWidth() + 1)) - 1) + FontSizes.gridScrollersize, FontSizes.scaleGuess(200)));
-        if (last != null) {
-            // Attempt to transfer state.
-            UITileGrid lTM = last.tileMaps[last.tabPane.getTabIndex()];
-            for (int i = 0; i < tileMaps.length; i++) {
-                if (tileMaps[i].compatibleWith(lTM)) {
-                    tileMaps[i].setSelected(lTM.getSelected());
-                    tabPane.selectTab(tileMaps[i]);
-                    break;
-                }
-            }
-        }
     }
 
     private int setupView(boolean inConstructor) {
@@ -118,8 +107,23 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
 
         subtoolBar = uab;
 
-        changeInner(new UINSVertLayout(subtoolBar, tabPane), false);
+        changeInner(new UINSVertLayout(subtoolBar, tabPane), inConstructor);
         return resultScale;
+    }
+
+    public void refresh() {
+        // Attempt to transfer state.
+        UITileGrid lTM = tileMaps[tabPane.getTabIndex()];
+        setupView(false);
+        for (int i = 0; i < tileMaps.length; i++) {
+            if (!tileMaps[i].recommendAvoid) {
+                if (tileMaps[i].compatibleWith(lTM)) {
+                    tileMaps[i].setSelected(lTM.getSelected());
+                    tabPane.selectTab(tileMaps[i]);
+                    break;
+                }
+            }
+        }
     }
 
     // -- Tool stuff --

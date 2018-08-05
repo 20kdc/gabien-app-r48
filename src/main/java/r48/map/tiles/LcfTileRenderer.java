@@ -221,33 +221,33 @@ public class LcfTileRenderer implements ITileRenderer {
         // on L1, upper layer tiles take priority
         if (mv.currentLayer == 0) {
             return new UITileGrid[] {
-                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF", sc),
+                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF", false, sc),
 
-                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER", sc),
+                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER", false, sc),
 
-                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI", sc),
+                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI", false, sc),
 
-                    new UITileGrid(mv, 4000, 600, 0, null, "TEM", sc),
-                    new UITileGrid(mv, 0, 1000, 0, null, "W1M", sc),
-                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M", sc),
-                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M", sc),
-                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER<X>", sc),
+                    new UITileGrid(mv, 4000, 600, 0, null, "TEM", false, sc),
+                    new UITileGrid(mv, 0, 1000, 0, null, "W1M", false, sc),
+                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M", false, sc),
+                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M", false, sc),
+                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER", true, sc),
             };
         } else {
             return new UITileGrid[] {
-                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER", sc),
+                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER", false, sc),
 
-                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF<X>", sc),
+                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF", true, sc),
 
-                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER<X>", sc),
+                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER", true, sc),
 
-                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI<X>", sc),
+                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI", true, sc),
 
-                    new UITileGrid(mv, 0, 1000, 0, null, "W1M<X>", sc),
-                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M<X>", sc),
-                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M<X>", sc),
+                    new UITileGrid(mv, 0, 1000, 0, null, "W1M", true, sc),
+                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M", true, sc),
+                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M", true, sc),
 
-                    new UITileGrid(mv, 4000, 600, 0, null, "TEM<X>", sc),
+                    new UITileGrid(mv, 4000, 600, 0, null, "TEM", true, sc),
             };
         }
     }

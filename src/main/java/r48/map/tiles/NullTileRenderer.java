@@ -29,7 +29,7 @@ public class NullTileRenderer implements ITileRenderer {
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv, int sc) {
         return new UITileGrid[] {
-                new UITileGrid(mv, 0, 1, 0, null, TXDB.get("Tiles Unsupported"), sc)
+                new UITileGrid(mv, 0, 1, 0, null, TXDB.get("Tiles Unsupported"), false, sc)
         };
     }
 
