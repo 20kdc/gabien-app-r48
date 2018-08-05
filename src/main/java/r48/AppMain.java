@@ -327,8 +327,11 @@ public class AppMain {
             @Override
             public void accept(Double deltaTime) {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
-
-                uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO().setFX(objectDB.modifiedObjects.size()), (theClipboard == null) ? new RubyIO().setNull() : theClipboard);
+                if (Application.mobileExtremelySpecialBehavior) {
+                    uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified"), new RubyIO().setFX(objectDB.modifiedObjects.size()));
+                } else {
+                    uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO().setFX(objectDB.modifiedObjects.size()), (theClipboard == null) ? new RubyIO().setNull() : theClipboard);
+                }
                 if (mapContext != null) {
                     String mapId = mapContext.getCurrentMapObject();
                     RubyIO map = null;
@@ -510,7 +513,7 @@ public class AppMain {
     private static UILabel rebuildInnerUI(final String gamepak, final IConsumer<UIElement> uiTicker) {
         UILabel uiStatusLabel = new UILabel(TXDB.get("Loading..."), FontSizes.statusBarTextHeight);
 
-        UIAppendButton workspace = new UIAppendButton(TXDB.get("Save All Modified Files"), uiStatusLabel, new Runnable() {
+        UIAppendButton workspace = new UIAppendButton(TXDB.get("Save Modified"), uiStatusLabel, new Runnable() {
             @Override
             public void run() {
                 objectDB.ensureAllSaved();
