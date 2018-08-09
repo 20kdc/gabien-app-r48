@@ -52,10 +52,13 @@ e choice_index_magic 0 choice 4 invisibleCancel
  They still have to manually bind it together though.
 e choice_index_magic_2 4 invisibleCancel
 E choice_begin_magic choiceIndex+1 0 None 5 invisibleCancel
+
  BEFORE ADDING A "mysteriously set to 1" type for a parameter just before an actor_id,
   have you considered it could be GetActors? - 20kdc to themselves
  ...of course, if it has no relation...
+
 > int_default_1 int= 1
+> int_default_10 int= 10
 > int_default_50 int= 50
 > int_default_100 int= 100
 > int_default_200 int= 200

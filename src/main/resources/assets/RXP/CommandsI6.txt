@@ -57,7 +57,7 @@ p actor iterate_actor
 p modNegate int_boolean
 p modIsVar int_boolean
 P 2 modVar var_id
-v 0 mod int
+v 0 mod int_default_100
 p canKill boolean
 
 312:@@Change Actor{A: #A} SP{A: by [@operate_value_1]}
@@ -68,7 +68,7 @@ p actor iterate_actor
 p modNegate int_boolean
 p modIsVar int_boolean
 P 2 modVar var_id
-v 0 mod int
+v 0 mod int_default_10
 
 313: Change Actor$ State (remove$,state$)
 d Adds/removes a state to/from actor/party.
@@ -90,7 +90,7 @@ p actor iterate_actor
 p modNegate int_boolean
 p modIsVar int_boolean
 P 2 modVar var_id
-v 0 mod int
+v 0 mod int_default_100
 
 316:@@Change Actor{A: #A} Level{A: by [@operate_value_1]}
 d Adds/removes levels to/from actor/party.
@@ -100,7 +100,7 @@ p actor iterate_actor
 p modNegate int_boolean
 p modIsVar int_boolean
 P 2 modVar var_id
-v 0 mod int
+v 0 mod int_default_1
 
 317:@@Change Actor{A: #A} Parameter{A: #B by [@operate_value_2]}
 d Adds/removes parameter points to/from actor/party.
@@ -111,7 +111,7 @@ p param cap_type
 p modNegate int_boolean
 p modIsVar int_boolean
 P 3 modVar var_id
-v 0 mod int
+v 0 mod int_default_10
 
 318: Actor$ (Un =$)learn Skill$
 d Adds/removes a skill to/from an actor.

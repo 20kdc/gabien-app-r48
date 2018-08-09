@@ -172,7 +172,7 @@ d Give or take gold from the player.
 p negate int_boolean
 p amountIsVar int_boolean
 P 1 amountVar var_id
-v 0 amount int
+v 0 amount int_default_100
 
 126:@@Item{A: #A += [@operate_value_1]| Add/Remove}
 d Give or take items from the player.
@@ -180,7 +180,7 @@ p item item_id
 p negate int_boolean
 p amountIsVar int_boolean
 P 2 amountVar var_id
-v 0 amount int
+v 0 amount int_default_1
 
 127:@@Weapon{A: @#A += [@operate_value_1]| Add/Remove}
 d Give or take weapons from the player.
@@ -188,7 +188,7 @@ p item weapon_id
 p negate int_boolean
 p amountIsVar int_boolean
 P 2 amountVar var_id
-v 0 amount int
+v 0 amount int_default_1
 p includeEquipped boolean
 
 128:@@Armour{A: #A += [@operate_value_1]| Add/Remove}
@@ -197,7 +197,7 @@ p item armour_id
 p negate int_boolean
 p amountIsVar int_boolean
 P 2 amountVar var_id
-v 0 amount int
+v 0 amount int_default_1
 p includeEquipped boolean
 
 129:@@{A:{B=0=Remove actor @#A from party|Add actor @#A to party{C=0= without} resetting}|Add/remove actor to party}
@@ -536,7 +536,7 @@ v 0 actor iterate_actor_id
 p negateMod int_boolean
 p modIsVar int_boolean
 P 3 modVar var_id
-v 0 mod int
+v 0 mod int_default_100
 p canKill boolean
 
 312:@@Actor{A: [@iterate_actor_var] MP += [@operate_value_2]| MP +=...}
@@ -547,7 +547,7 @@ v 0 actor iterate_actor_id
 p negateMod int_boolean
 p modIsVar int_boolean
 P 3 modVar var_id
-v 0 mod int
+v 0 mod int_default_10
 
 313:@@{A:{C=0=Add|Remove}|Change} State{A: @#D} on actor{A: [@iterate_actor_var]}
 d Heal or harm a party member by giving them a state.
@@ -571,7 +571,7 @@ v 0 actor iterate_actor_id
 p negateMod int_boolean
 p modIsVar int_boolean
 P 3 modVar var_id
-v 0 mod int
+v 0 mod int_default_100
 p showLevelUp boolean
 
 316:@@LVL of actor{A: [@iterate_actor_var] += [@operate_value_2]}
@@ -582,7 +582,7 @@ v 0 actor iterate_actor_id
 p negateMod int_boolean
 p modIsVar int_boolean
 P 3 modVar var_id
-v 0 mod int
+v 0 mod int_default_1
 p showLevelUp boolean
 
 317:@@Modify parameter{C: @#C} in actor{A: [@iterate_actor_var] by [@operate_value_3]}
@@ -594,7 +594,7 @@ p paramIdx parameter_id
 p negateMod int_boolean
 p modIsVar int_boolean
 P 4 modVar var_id
-v 0 mod int
+v 0 mod int_default_10
 
 318:@@{A:{C=0=Add|Remove}|Change} Skill{A: @#D} on actor{A: [@iterate_actor_var]}
 d Add or remove a skill from/to a party member.
@@ -648,7 +648,7 @@ p enemy iterate_enemy_index
 p negateMod int_boolean
 p modIsVar int_boolean
 P 2 modVar var_id
-v 0 mod int
+v 0 mod int_default_100
 p canKill boolean
 
 332:@@MP of enemy{A: @#A += [@operate_value_1]}
@@ -657,7 +657,7 @@ p enemy iterate_enemy_index
 p negateMod int_boolean
 p modIsVar int_boolean
 P 2 modVar var_id
-v 0 mod int
+v 0 mod int_default_10
 
 333:@@{A:{B=0=Add|Remove}|Change} enemy{A: @#A state @#C| state}
 d Heal or harm an enemy by giving them a state.

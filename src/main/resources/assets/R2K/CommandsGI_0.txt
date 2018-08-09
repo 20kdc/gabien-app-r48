@@ -138,7 +138,7 @@ p _ string
 p takeGold int_boolean
 p goldIsVar int_boolean
 P 2 goldVar var_id
-v 0 gold int
+v 0 gold int_default_100
 
 10320: @@{F:{B=0=Give|Take From}|Give/Take From} Player:{F: {E=0=@#F|Var(@#F)} Of} Item{F: {C=0=@#D|Var(@#D)}}
 C category 2
@@ -150,7 +150,7 @@ P 2 itemVar var_id
 v 0 item item_id
 p countIsVar int_boolean
 P 4 countVar var_id
-v 0 count int
+v 0 count int_default_1
 
 10330: Change Party Member
 C category 2
@@ -173,7 +173,7 @@ v 2 targetVar var_id
 p removeExp int_boolean
 p expIsVar int_boolean
 P 4 expVar var_id
-v 0 exp int
+v 0 exp int_default_100
 
 p showLvlUp int_boolean
 
@@ -189,7 +189,7 @@ v 2 targetVar var_id
 p removeLvl int_boolean
 p lvlIsVar int_boolean
 P 4 lvlVar var_id
-v 0 lvl int
+v 0 lvl int_default_1
 
 p showLvlUp int_boolean
 
@@ -206,7 +206,7 @@ p removePL int_boolean
 p targetParam change_battle_parameter
 p plIsVar int_boolean
 P 5 plVar var_id
-v 0 pl int
+v 0 pl int_default_10
 
 10440: Change Skills
 C category 2
@@ -241,7 +241,7 @@ v 2 targetVar var_id
 p hurtTarget int_boolean
 p amountIsVar int_boolean
 P 4 amountVar var_id
-v 0 amount int
+v 0 amount int_default_100
 
 p allowDeath int_boolean
 
@@ -257,7 +257,7 @@ v 2 targetVar var_id
 p takeSp int_boolean
 p amountIsVar int_boolean
 P 4 amountVar var_id
-v 0 amount int
+v 0 amount int_default_10
 
 10480: Add/Remove State
 C category 2

@@ -13,7 +13,7 @@ p enemyType iterate_enemy
 p modNegate int_boolean
 p modIsVar int_boolean
 P 2 modVar var_id
-v 0 mod int
+v 0 mod int_default_100
 p canKill boolean
 
 332:@@Change Enemy{A: #A} SP{A: by [@operate_value_1]}
@@ -23,7 +23,7 @@ p enemyType iterate_enemy
 p modNegate int_boolean
 p modIsVar int_boolean
 P 2 modVar var_id
-v 0 mod int
+v 0 mod int_default_10
 
 333: Change Enemy$ State (remove$,state$)
 C category 4
