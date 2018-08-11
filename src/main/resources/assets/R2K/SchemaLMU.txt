@@ -5,6 +5,7 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 .EventPage_Condition_Flags
++__bitfield__
 @switch_a boolean
 @switch_b boolean
 @var_>=_or_2k3op boolean

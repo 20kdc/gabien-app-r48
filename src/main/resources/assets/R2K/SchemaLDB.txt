@@ -293,6 +293,7 @@ C name Class.RPG::Enemy @name | #A
  ---
 
 .rpg_troop_pagecondition_flags_a
++__bitfield__
 @switch_a boolean
 @switch_b boolean
 @variable_>=_val boolean
@@ -303,6 +304,7 @@ C name Class.RPG::Enemy @name | #A
 @turn_enemy_2k3 boolean
 
 .rpg_troop_pagecondition_flags_b
++__bitfield__
 @turn_actor boolean
 @command_actor boolean
 
@@ -357,6 +359,7 @@ C name Class.RPG::Troop @name | #A
  ---
 
 .rpg_terrain_specialflags
++__bitfield__
 @back_party boolean
 @back_enemies boolean
 @lat_party boolean

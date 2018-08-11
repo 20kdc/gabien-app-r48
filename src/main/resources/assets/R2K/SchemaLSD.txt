@@ -186,6 +186,7 @@ C name Class.RPG::Interpreter @stack$length | {@{A=0=1|#A}|1|empty|[lang-Common-
 @i subwindow RPG::Interpreter
 
 .rpg_savepicture_flags
++__bitfield__
 @erase_on_mapchange boolean
 @erase_on_battleend boolean
 @unused_1 boolean
