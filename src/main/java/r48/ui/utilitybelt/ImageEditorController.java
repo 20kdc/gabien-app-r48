@@ -238,7 +238,7 @@ public class ImageEditorController {
         }), new UITextButton(TXDB.get("Colour"), FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
-                windowMaker.accept(new UIColourPicker(new IConsumer<Integer>() {
+                windowMaker.accept(new UIColourPicker(TXDB.get("Set Grid Colour..."), imageEditView.gridColour, new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         if (integer == null)
@@ -303,7 +303,7 @@ public class ImageEditorController {
         paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Add Colour"), FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
-                windowMaker.accept(new UIColourPicker(new IConsumer<Integer>() {
+                windowMaker.accept(new UIColourPicker(TXDB.get("Add Palette Colour..."), imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex), new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         if (integer == null)
@@ -377,20 +377,10 @@ public class ImageEditorController {
             UIElement cPanel = new UIColourSwatchButton(imageEditView.image.getPaletteRGB(idx), FontSizes.imageEditorTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    windowMaker.accept(new UIColourPicker(new IConsumer<Integer>() {
-                        @Override
-                        public void accept(Integer integer) {
-                            if (integer == null)
-                                return;
-                            imageEditView.eds.startSection();
-                            if (fidx < imageEditView.image.paletteSize())
-                                imageEditView.image.changePalette(fidx, integer);
-                            imageEditView.eds.endSection();
-                            initPalette();
-                        }
-                    }, true));
+                    imageEditView.selPaletteIndex = fidx;
+                    initPalette();
                 }
-            });
+            }).togglable(imageEditView.selPaletteIndex == fidx);
             if (imageEditView.selPaletteIndex == fidx) {
                 cPanel = new UIAppendButton("X", cPanel, new Runnable() {
                     @Override
@@ -417,13 +407,21 @@ public class ImageEditorController {
                     }
                 }, FontSizes.imageEditorTextHeight);
             }
-            cPanel = new UISplitterLayout(new UITextButton("<", FontSizes.imageEditorTextHeight, new Runnable() {
+            cPanel = new UISplitterLayout(new UITextButton("=", FontSizes.imageEditorTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    if (fidx != imageEditView.selPaletteIndex) {
-                        imageEditView.selPaletteIndex = fidx;
-                        initPalette();
-                    }
+                    windowMaker.accept(new UIColourPicker(TXDB.get("Change Palette Colour..."), imageEditView.image.getPaletteRGB(fidx), new IConsumer<Integer>() {
+                        @Override
+                        public void accept(Integer integer) {
+                            if (integer == null)
+                                return;
+                            imageEditView.eds.startSection();
+                            if (fidx < imageEditView.image.paletteSize())
+                                imageEditView.image.changePalette(fidx, integer);
+                            imageEditView.eds.endSection();
+                            initPalette();
+                        }
+                    }, true));
                 }
             }), cPanel, false, 0.0d);
             paletteView.panelsAdd(cPanel);

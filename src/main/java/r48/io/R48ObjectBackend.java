@@ -309,7 +309,7 @@ public class R48ObjectBackend implements IObjectBackend {
         if (b == '0')
             okay = true;
         if (!okay)
-            throw new IOException("Cannot save " + ((char) rio.type));
+            throw new IOException("Cannot save " + rio.type + " : " + ((char) rio.type));
         if (ivarData)
             saveIVarsCore(dis, rio, objCache, strCache);
         if (shouldWriteObjCacheLate)

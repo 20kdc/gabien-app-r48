@@ -132,10 +132,9 @@ public class ImageEditorImage extends ImageIOImage {
         if (palette == null)
             throw new IllegalArgumentException("cannot have null palette & t1lock");
         // Final pass now all swaps & such are done: Ensure only the first entry is transparent
-        palette.set(0, palette.get(0) & 0xFFFFFF);
         int paletteSize = palette.size();
-        for (int i = 1; i < paletteSize; i++)
-            palette.set(i, palette.get(i) | 0xFF000000);
+        for (int i = 0; i < paletteSize; i++)
+            palette.set(i, sanitizeColour(palette.get(i), i));
     }
 
     public IImage rasterize() {
@@ -201,8 +200,8 @@ public class ImageEditorImage extends ImageIOImage {
             ia[ia.length - 1] = rgb;
             editorPalette = ia;
         } else {
-            if (t1Lock)
-                rgb |= 0xFF000000;
+            int idx = palette.size();
+            rgb = sanitizeColour(rgb, idx);
             palette.add(rgb);
             cachedData = null;
         }
@@ -217,12 +216,12 @@ public class ImageEditorImage extends ImageIOImage {
             System.arraycopy(editorPalette, fidx + 1, ia, fidx, ia.length - fidx);
             editorPalette = ia;
         } else {
-            if (palette.size() <= 1)
+            int paletteSize = palette.size();
+            if (paletteSize <= 1)
                 return;
             palette.remove(fidx);
-            if (t1Lock)
-                if (fidx == 0)
-                    palette.set(0, palette.get(0) & 0xFFFFFF);
+            for (int i = 0; i < paletteSize; i++)
+                palette.set(i, sanitizeColour(palette.get(i), i));
             if (sanity)
                 for (int i = 0; i < colourData.length; i++)
                     if (colourData[i] > fidx)
@@ -273,6 +272,7 @@ public class ImageEditorImage extends ImageIOImage {
         } else {
             palette.set(fidx, sanitizeColour(col, fidx));
         }
+        cachedData = null;
     }
 
     public boolean usesPalette() {
