@@ -85,9 +85,10 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 public void run() {
                     int code = (int) target.getInstVarBySymbol("@code").fixnumVal;
                     RPGCommand rc = database.knownCommands.get(code);
-                    String title = code + " : " + rc.formatName(null, null);
+                    String title = code + " : ";
                     String result = TXDB.get("This command isn't known by the schema's CMDB.");
                     if (rc != null) {
+                        title += rc.formatName(null, null);
                         if (rc.description == null) {
                             result = TXDB.get("This command is known, but no description exists.");
                         } else {

@@ -60,7 +60,7 @@ p weapon weapon_id
 p modNegate int_boolean
 p modIsVar int_boolean
 P 2 modVar var_id
-v 0 mod int int_default_1
+v 0 mod int_default_1
 
 128:@@Modify Armour{A: @#A by [@operate_value_1]}
 C category 2
@@ -69,7 +69,7 @@ p armour armour_id
 p modNegate int_boolean
 p modIsVar int_boolean
 P 2 modVar var_id
-v 0 mod int int_default_1
+v 0 mod int_default_1
 
 129:@@{A:{B=0=Remove actor @#A from party|Add actor @#A to party{C=0= without} resetting}|Add/remove actor to party}
 C category 2
