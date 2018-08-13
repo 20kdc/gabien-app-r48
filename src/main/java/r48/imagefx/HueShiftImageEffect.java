@@ -9,6 +9,7 @@ package r48.imagefx;
 
 import gabien.GaBIEn;
 import gabien.IImage;
+import gabien.ui.UIElement;
 
 /**
  * Hue changing. If you're wondering why a family member seems a little blue, now you know.
@@ -25,7 +26,7 @@ public class HueShiftImageEffect implements IImageEffect {
     public final int shift;
 
     public HueShiftImageEffect(int i) {
-        i %= 360;
+        i = UIElement.sensibleCellMod(i, 360);
         shift = i;
         // 120
         int[] baseA, baseB, baseC;
@@ -88,30 +89,26 @@ public class HueShiftImageEffect implements IImageEffect {
         return GaBIEn.createImage(array, input.getWidth(), input.getHeight());
     }
 
+    // The 'rainbow generator' makes a great test of this code
+    // The matrix as given causes a reduction in value, so the code here compensates for that
+    // NOTE: Similar code is used in UIColourPicker for translating RGB back to HSV
     public int processCol(int i) {
         int or = (i & 0xFF0000) >> 16;
         int og = (i & 0xFF00) >> 8;
         int ob = i & 0xFF;
-        int ogrey = (or + og + ob) / 3;
-        int osaturation = Math.abs(or - ogrey) + Math.abs(og - ogrey) + Math.abs(ob - ogrey);
+        int ovalue = Math.max(Math.max(or, og), ob);
         int r = clamp(((matrix[0] * or) + (matrix[1] * og) + (matrix[2] * ob)) / 255);
         int g = clamp(((matrix[3] * or) + (matrix[4] * og) + (matrix[5] * ob)) / 255);
         int b = clamp(((matrix[6] * or) + (matrix[7] * og) + (matrix[8] * ob)) / 255);
-        int grey = (r + g + b) / 3;
-        int diffR = r - grey;
-        int diffG = g - grey;
-        int diffB = b - grey;
-        int saturation = Math.abs(r - grey) + Math.abs(g - grey) + Math.abs(b - grey);
-        if (saturation != 0) {
-            diffR *= osaturation;
-            diffG *= osaturation;
-            diffB *= osaturation;
-            diffR /= saturation;
-            diffG /= saturation;
-            diffB /= saturation;
-            r = clamp(grey + diffR);
-            g = clamp(grey + diffG);
-            b = clamp(grey + diffB);
+        int value = Math.max(Math.max(r, g), b);
+        if (value != 0) {
+            // ovalue of 0x100 * 0x100 = 0x10000
+            // divided by value 0x100 = 0x100 (no change)
+            // divided by value 0x80 = 0x200 (double)
+            int valueBoostFactor = (ovalue * 255) / value;
+            r = clamp((r * valueBoostFactor) / 255);
+            g = clamp((g * valueBoostFactor) / 255);
+            b = clamp((b * valueBoostFactor) / 255);
         }
         return (i & 0xFF000000) | (r << 16) | (g << 8) | b;
     }

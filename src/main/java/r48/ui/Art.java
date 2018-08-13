@@ -26,7 +26,9 @@ public class Art {
     public static IImage layerTabs = GaBIEn.getImageCKEx("layertab.png", false, true, 255, 0, 255);
     public static IImage noMap = GaBIEn.getImageCKEx("nomad.png", false, true, 0, 0, 0);
     public static IImage symbolic = GaBIEn.getImageCKEx("symbolic.png", false, true, 0, 0, 0);
-    private static IImage colourPal;
+
+    // Generated Images
+    private static IImage colourPal, rainbow;
 
     public static Rect r48ico = new Rect(33, 1, 31, 31);
     public static Rect r48ver = new Rect(33, 48, 31, 16);
@@ -125,30 +127,42 @@ public class Art {
     }
 
     private static IImage genColourPal() {
-        int[] x = new int[256 * 256];
+        int[] img = new int[256 * 256];
         int idx = 0;
-        for (int baseline = 0; baseline < 256; baseline++) {
-            int specWid = 256 - baseline;
-            for (int red = 0; red < 256; red++) {
-                // At specWid 1, ered should always be 255
-                // At specWid 256, ered should equal red.
-                int fromRight = 255 - red;
-                // do transform
-                fromRight *= specWid;
-                fromRight /= 256;
-                // ...
-                int effectiveRed = 255 - fromRight; // reverses fromRight
-                int v = 0xFF000000 | (effectiveRed << 16) | (baseline << 8) | baseline;
-                x[idx++] = v;
+        for (int y = 0; y < 256; y++) {
+            for (int x = 0; x < 256; x++) {
+                // At X0, R = V
+                // At X255, R = S * V
+                int r = 255 - y;
+                int g = ((255 - x) * r) / 255;
+                int v = 0xFF000000 | (r << 16) | (g << 8) | g;
+                img[idx++] = v;
             }
         }
-        return GaBIEn.createImage(x, 256, 256);
+        return GaBIEn.createImage(img, 256, 256);
     }
 
     public static IImage getColourPal(int hue) {
         if (colourPal == null)
             colourPal = genColourPal();
         return AppMain.imageFXCache.process(colourPal, new HueShiftImageEffect(hue));
+    }
+
+    public static int getRainbowHue(int x) {
+        return -((x * 359) / 255);
+    }
+
+    private static IImage genRainbow() {
+        int[] img = new int[256];
+        for (int x = 0; x < 256; x++)
+            img[x] = new HueShiftImageEffect(getRainbowHue(x)).processCol(0xFFFF0000);
+        return GaBIEn.createImage(img, 256, 1);
+    }
+
+    public static IImage getRainbow() {
+        if (rainbow == null)
+            rainbow = genRainbow();
+        return rainbow;
     }
 
     public static void tabWindowIcon(IGrDriver igd, int x, int y, int size) {

@@ -7,6 +7,9 @@
 
 package r48.ui;
 
+import gabien.FontManager;
+import gabien.IGrDriver;
+import gabien.IImage;
 import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.FontSizes;
@@ -41,8 +44,8 @@ public class UIColourPicker extends UIElement.UIProxy {
         tabPane = new UITabPane(FontSizes.imageEditorTextHeight, false, true);
         // IGNORE THE WARNING. There is no way to fix this.
         colourListeners = new IConsumer[] {
-                new UIRGBColourView(),
-                new UIHSVColourView()
+                new UIHSVColourView(FontSizes.getSpriteScale()),
+                new UIRGBColourView()
         };
         UIWindowView.IWVWindowIcon[] noIcons = new UIWindowView.IWVWindowIcon[0];
         for (IConsumer<Integer> ici : colourListeners) {
@@ -152,6 +155,77 @@ public class UIColourPicker extends UIElement.UIProxy {
         }
     }
 
+    private static class UIPickCoordinator extends UIElement {
+        public IImage baseImage;
+        private final int baseW, baseH;
+        private final int imageScale;
+        public Size targetSize;
+        private final IConsumer<Size> resultConsumer;
+
+        public UIPickCoordinator(int bw, int bh, int sc, IConsumer<Size> setter) {
+            super(bw * sc, bh * sc);
+            baseW = bw;
+            baseH = bh;
+            imageScale = sc;
+            resultConsumer = setter;
+        }
+
+        @Override
+        public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+
+        }
+
+        @Override
+        public void render(IGrDriver igd) {
+            int bw = baseImage.getWidth();
+            int bh = baseImage.getHeight();
+            igd.blitScaledImage(0, 0, bw, bh, 0, 0, baseW * imageScale, baseH * imageScale, baseImage);
+            int tsx = targetSize.width * imageScale;
+            int tsy = targetSize.height * imageScale;
+            // *cough* ignore this please
+            if (bh == 1)
+                tsy = (baseH * imageScale) / 2;
+
+            igd.clearRect(0, 0, 0, 0, tsy - imageScale, baseW * imageScale, imageScale);
+            igd.clearRect(0, 0, 0, 0, tsy + imageScale, baseW * imageScale, imageScale);
+
+            igd.clearRect(0, 0, 0, tsx - imageScale, 0, imageScale, baseH * imageScale);
+            igd.clearRect(0, 0, 0, tsx + imageScale, 0, imageScale, baseH * imageScale);
+
+            if (bh == 1) {
+                FontManager.drawString(igd, 0, 0, Integer.toString(targetSize.width), false, false, FontSizes.tonePickerTextHeight);
+            } else {
+                FontManager.drawString(igd, 0, 0, targetSize.width + "," + targetSize.height, false, false, FontSizes.tonePickerTextHeight);
+            }
+        }
+
+        @Override
+        public void handlePointerBegin(IPointer state) {
+            handlePointerUpdate(state);
+        }
+
+        @Override
+        public void handlePointerEnd(IPointer state) {
+            handlePointerUpdate(state);
+        }
+
+        @Override
+        public void handlePointerUpdate(IPointer state) {
+            int rx = state.getX() / imageScale;
+            int ry = state.getY() / imageScale;
+            if (rx < 0)
+                rx = 0;
+            if (ry < 0)
+                ry = 0;
+            if (rx >= baseImage.getWidth())
+                rx = baseImage.getWidth() - 1;
+            if (ry >= baseImage.getHeight())
+                ry = baseImage.getHeight() - 1;
+            targetSize = new Size(rx, ry);
+            resultConsumer.accept(targetSize);
+        }
+    }
+
     // -- ColourViews --
 
     private class UIRGBColourView extends UIProxy implements IConsumer<Integer> {
@@ -254,13 +328,90 @@ public class UIColourPicker extends UIElement.UIProxy {
     }
 
     private class UIHSVColourView extends UIProxy implements IConsumer<Integer> {
-        public UIHSVColourView() {
-            proxySetElement(new UILabel("WIP", FontSizes.imageEditorTextHeight), true);
+        public final UIPickCoordinator svCoordinator, hCoordinator;
+
+        public UIHSVColourView(int sc) {
+            svCoordinator = new UIPickCoordinator(256, 256, sc, new IConsumer<Size>() {
+                @Override
+                public void accept(Size size) {
+                    performSendStuff();
+                }
+            });
+            hCoordinator = new UIPickCoordinator(256, 16, sc, new IConsumer<Size>() {
+                @Override
+                public void accept(Size size) {
+                    svCoordinator.baseImage = Art.getColourPal(Art.getRainbowHue(size.width));
+                    performSendStuff();
+                }
+            });
+            hCoordinator.baseImage = Art.getRainbow();
+            proxySetElement(new UISplitterLayout(svCoordinator, hCoordinator, true, 1), true);
+        }
+
+        private void performSendStuff() {
+            int[] array = svCoordinator.baseImage.getPixels();
+            int col = array[svCoordinator.targetSize.width + (svCoordinator.targetSize.height * 256)];
+            col &= 0xFFFFFF;
+            setColour(this, col);
+            // Use to determine distortions
+            // accept(col);
         }
 
         @Override
-        public void accept(Integer integer) {
+        public void accept(Integer i) {
+            // Attempt to figure out HSV values...
+            // NOTE: It seems this calculates SV incorrectly... *sigh*
+            // you'll have to deal with it for now, colourspaces are weird
+            int r = (i & 0xFF0000) >> 16;
+            int g = (i & 0xFF00) >> 8;
+            int b = i & 0xFF;
 
+            int v = Math.max(Math.max(r, g), b);
+            int mn = Math.min(Math.min(r, g), b);
+            int s = v - mn;
+            // During testing of this alg it seemed that S was somehow implicitly multiplied by V
+            if (v != 0) {
+                s *= 255;
+                s /= v;
+            }
+            // -
+
+            // To work out hue, start by eliminating a lack of saturation/value as a factor
+            r -= mn;
+            g -= mn;
+            b -= mn;
+
+            int h = 0;
+            if (s != 0) {
+                // In 1.0space, R /= S
+                r *= (255 * 255) / s;
+                g *= (255 * 255) / s;
+                b *= (255 * 255) / s;
+                r /= 255;
+                g /= 255;
+                b /= 255;
+                int hScore = 0x7FFFFFFF;
+                // Closest match wins.
+                int[] comparisons = Art.getRainbow().getPixels();
+                for (int j = 0; j < comparisons.length; j++) {
+                    int score = 0;
+                    int t = comparisons[j];
+                    int tr = (t & 0xFF0000) >> 16;
+                    int tg = (t & 0xFF00) >> 8;
+                    int tb = t & 0xFF;
+                    score += Math.abs(r - tr);
+                    score += Math.abs(g - tg);
+                    score += Math.abs(b - tb);
+                    if (hScore > score) {
+                        hScore = score;
+                        h = j;
+                    }
+                }
+            }
+
+            svCoordinator.baseImage = Art.getColourPal(Art.getRainbowHue(h));
+            svCoordinator.targetSize = new Size(s, 255 - v);
+            hCoordinator.targetSize = new Size(h, 0);
         }
 
         @Override
