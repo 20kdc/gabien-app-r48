@@ -49,7 +49,7 @@ public class FormatSyntax {
                     //  at the start and end respectively.
                     // Of course, since the first component is removed instantly,
                     //  the check is for odd.
-                    String val = components.removeFirst();
+                    String val = formatNameExtended(components.removeFirst(), root, parameters, parameterSchemas);
                     String def = "";
                     if ((components.size() & 1) != 0)
                         def = components.removeLast();

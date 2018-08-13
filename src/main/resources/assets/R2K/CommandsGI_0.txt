@@ -645,7 +645,7 @@ C category 3
 d Attempts to temporarily erase this event (if this is, in fact, a map event)
 p _ string
 
-12330: @@Call{B:{B=0= Common Event @#C| Event}| Event}
+12330: @@Call{B:{@#B|commonEvent| Common Event @#C|mapEvent| Map Event @#C, Page #D|indirectMapEvent| Map Event Var(@#C), Page Var(@#D)| #B Event}| Event}
 C category 1
 d Calls a page in another event, or calls a common event.
 p _ string

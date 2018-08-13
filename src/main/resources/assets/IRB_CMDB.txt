@@ -94,7 +94,8 @@
   This can be used for range specification (emulating # in the Original Format, but with flexibility):
    {AB:#A|@#A..@#B}
 
-  The third checks if a parameter, *by the fallback in-built RubyIO toString*, is equal to a literal text string.
+  The third checks if a parameter, interpreted as '#A' where A is the parameter-character, with prefixes always disabled,
+   is equal to a literal text string.
   This should only be used for numbers/enums and booleans, really.
   This can be used as a nicer way to output int_booleans...
   {A=1=(enable)|(disable)}

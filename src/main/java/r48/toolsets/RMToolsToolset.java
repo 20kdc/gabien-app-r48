@@ -8,7 +8,10 @@
 package r48.toolsets;
 
 import gabien.GaBIEn;
-import gabien.ui.*;
+import gabien.ui.IConsumer;
+import gabien.ui.IFunction;
+import gabien.ui.UIElement;
+import gabien.ui.UIPopupMenu;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -252,6 +255,10 @@ public class RMToolsToolset implements IToolset {
                             IRMMapSystem.RMMapData rmd = mapMap.get(id);
                             dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), FormatSyntax.formatExtended(TXDB.get("Map:#A"), new RubyIO().setString(rmd.name, true)));
                             RubyIO map = rmd.map;
+                            // We need to temporarily override map context.
+                            // This'll fix itself by next frame...
+                            AppMain.schemas.updateDictionaries(map);
+                            AppMain.schemas.kickAllDictionariesForMapChange();
                             LinkedList<Integer> orderedEVN = new LinkedList<Integer>();
                             for (RubyIO i : map.getInstVarBySymbol("@events").hashVal.keySet())
                                 orderedEVN.add((int) i.fixnumVal);
@@ -268,6 +275,8 @@ public class RMToolsToolset implements IToolset {
                             }
                             dumper.endFile();
                         }
+                        // Prevent breakage
+                        AppMain.schemas.updateDictionaries(null);
 
                         mapSystem.dumpCustomData(dumper);
 
