@@ -243,7 +243,7 @@ public class RMToolsToolset implements IToolset {
                         for (RubyIO rio : mapSystem.getAllCommonEvents())
                             dumper.dump(rio.getInstVarBySymbol("@name").decString(), rio.getInstVarBySymbol("@list").arrVal, commandsEvent);
                         dumper.endFile();
-                        // Order the maps so that it comes out coherently for valid diffs (OSER Equinox Comparison Project)
+                        // Order the maps so that it comes out coherently for valid diffs (OSER Solstice Comparison Project)
                         LinkedList<Integer> orderedMapInfos = new LinkedList<Integer>();
                         HashMap<Integer, IRMMapSystem.RMMapData> mapMap = new HashMap<Integer, IRMMapSystem.RMMapData>();
                         for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {

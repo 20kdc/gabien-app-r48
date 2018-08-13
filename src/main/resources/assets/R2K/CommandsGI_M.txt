@@ -134,7 +134,7 @@ p target actor_id
 p useCharset2 int_boolean
 p showOldName int_boolean
 
-10810: @@Teleport Player{D: to @#B : #C, #D{E: dir @#E}}
+10810: @@Teleport Player{D: to @[internal_mapDictionary]B : #C, #D{E: dir @#E}}
 C category 2
 d Teleports the player to a given map and position. If in a parallel event, continue running (orphaned from character), otherwise, terminate.
 p _ string
