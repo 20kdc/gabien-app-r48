@@ -11,17 +11,11 @@ from highest priority to lowest:
 short-term planning:
 + Demetrius's various notes over IRC and such:
  + 2k/2k3 template select [IN PROGRESS]
- + Image editor refactor [IN PROGRESS]
- + "Show all under this indent" for the command view
  + Character creator???
 
-+ Usability
- + command-trees [DONE?]
- + all the XP things [SOMEWHAT-DONE?]
-
 + Documentation
- + SDB1.1 Rollout [PARTIAL]
- + SDB Further Documentation Project
+ + SDB1.1 Rollout!
+ + SDB Further Documentation Project ???
   + Should create a useful index to help clean up SDB
 
 + Figure out RXP's oddities(???)

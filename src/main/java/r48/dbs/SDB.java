@@ -105,10 +105,6 @@ public class SDB {
     public void readFile(final String fName) {
         final String fPfx = "SDB@" + fName;
         DBLoader.readFile(fName, new IDatabase() {
-
-            // SDBv1.1
-            boolean v1p1;
-
             AggregateSchemaElement workingObj;
 
             HashMap<String, String> commandBufferNames = new HashMap<String, String>();
@@ -161,7 +157,7 @@ public class SDB {
                         // To translate, or not to? Unfortunately these can point at files.
                         // (later) However, context makes it obvious
                         if (text.equals("string=")) {
-                            String esc = unescapeIfPre11(args[point++]);
+                            String esc = args[point++];
                             return new StringSchemaElement(TXDB.get(outerContext, esc), '\"');
                         }
                         // Before you go using these - They are based on *visual* length, and are not hard limits.
@@ -170,7 +166,7 @@ public class SDB {
                             return new StringLenSchemaElement("", l);
                         }
                         if (text.equals("stringLen=")) {
-                            String esc = unescapeIfPre11(args[point++]);
+                            String esc = args[point++];
                             int l = Integer.parseInt(args[point++]);
                             return new StringLenSchemaElement(TXDB.get(outerContext, esc), l);
                         }
@@ -197,7 +193,7 @@ public class SDB {
                             return new HiddenSchemaElement(hide, new IFunction<RubyIO, Boolean>() {
                                 @Override
                                 public Boolean apply(RubyIO rubyIO) {
-                                    return PathSyntax.parse(rubyIO, path, v1p1).type == (text.endsWith("!") ? 'F' : 'T');
+                                    return PathSyntax.parse(rubyIO, path, true).type == (text.endsWith("!") ? 'F' : 'T');
                                 }
                             });
                         }
@@ -212,7 +208,7 @@ public class SDB {
                                     txt = null;
                             }
                             SchemaElement hide = get();
-                            return new PathSchemaElement(path, txt, hide, v1p1, false);
+                            return new PathSchemaElement(path, txt, hide, true, false);
                         }
                         if (text.equals("optP") || text.equals("optPN")) {
                             String path = args[point++];
@@ -225,7 +221,7 @@ public class SDB {
                                     txt = null;
                             }
                             SchemaElement hide = get();
-                            return new PathSchemaElement(path, txt, hide, v1p1, true);
+                            return new PathSchemaElement(path, txt, hide, true, true);
                         }
 
                         // CS means "control indent if allowed"
@@ -319,12 +315,12 @@ public class SDB {
                             return new DisambiguatorSchemaElement(disambiguatorIndex, disambiguations);
                         }
                         if (text.equals("lengthAdjust")) {
-                            String text2 = unescapeIfPre11(args[point++]);
+                            String text2 = args[point++];
                             int len = Integer.parseInt(args[point++]);
                             return new LengthChangeSchemaElement(TXDB.get(outerContext, text2), len, false);
                         }
                         if (text.equals("lengthAdjustDef")) {
-                            String text2 = unescapeIfPre11(args[point++]);
+                            String text2 = args[point++];
                             int len = Integer.parseInt(args[point++]);
                             return new LengthChangeSchemaElement(TXDB.get(outerContext, text2), len, true);
                         }
@@ -369,7 +365,7 @@ public class SDB {
                             return new SubwindowSchemaElement(get());
                         // subwindow: This\_Is\_A\_Test
                         if (text.equals("subwindow:")) {
-                            String text2 = unescapeIfPre11(args[point++]);
+                            String text2 = args[point++];
                             if (text2.startsWith("@")) {
                                 final String textFinal = text2.substring(1);
                                 return new SubwindowSchemaElement(get(), new IFunction<RubyIO, String>() {
@@ -413,14 +409,14 @@ public class SDB {
                         if (text.startsWith("]?")) {
                             // yay for... well, semi-consistency!
                             String a = text.substring(2);
-                            String b = TXDB.getExUnderscore(outerContext, unescapeIfPre11(args[point++]));
-                            String o = TXDB.get(outerContext, unescapeIfPre11(args[point++]));
+                            String b = TXDB.getExUnderscore(outerContext, args[point++]);
+                            String o = TXDB.get(outerContext, args[point++]);
                             return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), o, false);
                         }
                         if (text.startsWith("]")) {
                             // yay for consistency!
                             String a = text.substring(1);
-                            String b = TXDB.getExUnderscore(outerContext, unescapeIfPre11(args[point++]));
+                            String b = TXDB.getExUnderscore(outerContext, args[point++]);
                             return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), null, false);
                         }
                         // --
@@ -522,7 +518,7 @@ public class SDB {
                                             }
                                             RubyIO p = PathSyntax.parse(host, outer, true);
                                             if (p != null)
-                                                DictionaryUpdaterRunnable.coreLogic(options, createPathMap(inner, true), p, hash, interpret);
+                                                DictionaryUpdaterRunnable.coreLogic(options, createPathMap(inner), p, hash, interpret);
                                             convertOptions();
                                         }
                                     };
@@ -609,7 +605,7 @@ public class SDB {
                                 a = null;
                             String b = args[point++];
                             String c = args[point++];
-                            return new MapPositionHelperSchemaElement(a, b, c, v1p1);
+                            return new MapPositionHelperSchemaElement(a, b, c, true);
                         }
                         if (text.equals("eventTileHelper")) {
                             String c = args[point++];
@@ -624,19 +620,13 @@ public class SDB {
                 }.get();
             }
 
-            private IFunction<RubyIO, RubyIO> createPathMap(final String inner, boolean v1p1) {
+            private IFunction<RubyIO, RubyIO> createPathMap(final String inner) {
                 return new IFunction<RubyIO, RubyIO>() {
                     @Override
                     public RubyIO apply(RubyIO rubyIO) {
                         return PathSyntax.parse(rubyIO, inner, true);
                     }
                 };
-            }
-
-            private String unescapeIfPre11(String arg) {
-                if (v1p1)
-                    return arg;
-                return EscapedStringSyntax.unescape(arg);
             }
 
             @Override
@@ -673,13 +663,8 @@ public class SDB {
                     }
                     // Note: the unescaping happens in the Path
                     // Automatically escape.
-                    if (v1p1) {
-                        String t = ":{" + PathSyntax.poundEscape(intA0);
-                        workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, args[1]), handleChain(args, 2), true, opt));
-                    } else {
-                        String t = "${" + intA0;
-                        workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, intA0), handleChain(args, 1), false, opt));
-                    }
+                    String t = ":{" + PathSyntax.poundEscape(intA0);
+                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, args[1]), handleChain(args, 2), true, opt));
                 } else if (c == '+') {
                     workingObj.aggregate.add(handleChain(args, 0));
                 } else if (c == '>') {
@@ -712,9 +697,9 @@ public class SDB {
                     HashMap<String, String> options = new HashMap<String, String>();
                     for (int i = 2; i < args.length; i += 2) {
                         String ctx = "SDB@" + args[0];
-                        options.put(v1p1 ? args[i] : ValueSyntax.port(args[i]), TXDB.get(ctx, args[i + 1]));
+                        options.put(args[i], TXDB.get(ctx, args[i + 1]));
                     }
-                    EnumSchemaElement e = new EnumSchemaElement(options, ValueSyntax.decode(args[2], v1p1), "INT:" + TXDB.get(args[0], args[1].replace('_', ' ')));
+                    EnumSchemaElement e = new EnumSchemaElement(options, ValueSyntax.decode(args[2], true), "INT:" + TXDB.get(args[0], args[1]));
                     setSDBEntry(args[0], e);
                 } else if (c == 'M') {
                     mergeRunnables.add(new Runnable() {
@@ -743,7 +728,7 @@ public class SDB {
                     } else if (args.length != 5) {
                         throw new RuntimeException("Expects D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID]");
                     }
-                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], createPathMap(root[1], true), args[3].equals("1"), createPathMap(args[4], true), Integer.parseInt(args[1]), interpret));
+                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], createPathMap(root[1]), args[3].equals("1"), createPathMap(args[4]), Integer.parseInt(args[1]), interpret));
                 } else if (c == 'd') {
                     // OLD SYSTEM
                     System.err.println("'d'-format is old. It'll stay around but won't get updated. Use 'D'-format instead. " + args[0]);
@@ -855,7 +840,7 @@ public class SDB {
                             public String apply(RubyIO rubyIO) {
                                 LinkedList<RubyIO> parameters = new LinkedList<RubyIO>();
                                 for (String arg : arguments) {
-                                    RubyIO res = PathSyntax.parse(rubyIO, arg, v1p1);
+                                    RubyIO res = PathSyntax.parse(rubyIO, arg, true);
                                     if (res == null)
                                         break;
                                     parameters.add(res);
@@ -874,8 +859,6 @@ public class SDB {
                         // returns new point
                         helpers.createSpritesheet(args, point, text2);
                     }
-                    if (args[0].equals("SDBv1.1"))
-                        v1p1 = true;
                 } else if (c != ' ') {
                     for (String arg : args)
                         System.err.print(arg + " ");

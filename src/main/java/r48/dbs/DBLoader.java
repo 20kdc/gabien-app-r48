@@ -18,15 +18,19 @@ import java.util.LinkedList;
  * Created on 12/30/16.
  */
 public class DBLoader {
+    public static boolean dbDebugFlagLoading = true;
+
     public static void readFile(String s, IDatabase db) {
-        System.out.println(">>" + s + " as " + db);
+        if (dbDebugFlagLoading)
+            System.out.println(">>" + s + " as " + db);
         try {
             readFile(GaBIEn.getResource(s), db);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        System.out.println("<<" + s);
+        if (dbDebugFlagLoading)
+            System.out.println("<<" + s);
     }
 
     public static void readFile(InputStream helpStream, IDatabase db) {

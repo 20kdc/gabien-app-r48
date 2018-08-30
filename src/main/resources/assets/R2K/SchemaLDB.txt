@@ -103,8 +103,8 @@ E rpg_badia_pose Custom.No 0 none 1 idle 2 rightHand 3 leftHand 4 skillUse 5 dea
 : RPG::Skill
 C name Class.RPG::Skill @name | #A
 +rpg_skill_sect0
-+subwindow: User\_Feedback rpg_skill_sect2
-+subwindow: Cost\_/\_Chance rpg_skill_sect3
++subwindow: "User Feedback" rpg_skill_sect2
++subwindow: "Cost / Chance" rpg_skill_sect3
 +subwindow: Result rpg_skill_sect4
 
 .rpg_skill_sect0
@@ -178,16 +178,16 @@ C name Class.RPG::Item @name | #A
 @animation animation_id
 @type rpg_item_type
 @price int
-+subwindow: Equip\_Stats rpg_item_sect0
++subwindow: "Equip Stats" rpg_item_sect0
 @use_count rpg_item_usecount
 @use_sp_cost int
-@actors_allowed subwindow: If\_unlisted,\_default\_'true' hash actor_id boolean
-+subwindow: Use:\_Skill\_(skillLearn\_on\_2k\_+\_weapon/shield/armour/helmet/accessory\_on\_2k3) rpg_item_sect1
-+subwindow: Use:\_Medicine rpg_item_sect2
-+subwindow: Use:\_Material rpg_item_sect3
-+subwindow: Use:\_Switch rpg_item_sect4
-+subwindow: Weapon\_Data rpg_item_sect-1
-@state_set subwindow: weapon\_adds\_/\_medicine\_removes hash state_id boolean
+@actors_allowed subwindow: "If unlisted, default 'true'" hash actor_id boolean
++subwindow: "Use: Skill (skillLearn on 2k + weapon/shield/armour/helmet/accessory on 2k3)" rpg_item_sect1
++subwindow: "Use: Medicine" rpg_item_sect2
++subwindow: "Use: Material" rpg_item_sect3
++subwindow: "Use: Switch" rpg_item_sect4
++subwindow: "Weapon Data" rpg_item_sect-1
+@state_set subwindow: "weapon adds / medicine removes" hash state_id boolean
 
 .rpg_item_sect-1
 @dead_only boolean
@@ -377,7 +377,7 @@ C name Class.RPG::Terrain @name | #A
 @airship_land booleanDefTrue
 e rpg_terrain_bushdepth 0 normal 1 third 2 half 3 full
 @bush_depth rpg_terrain_bushdepth
-+subwindow: 2K3\_Extra... rpg_terrain_bkg
++subwindow: "2K3 Extra..." rpg_terrain_bkg
 
 .rpg_terrain_bkg
 @footstep_sound_2k3 RPG::Sound
@@ -580,7 +580,7 @@ e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 orde
 +subwindow: Music rpg_system_music
 +subwindow: Sounds rpg_system_sound
 +subwindow: Transitions rpg_system_transition
-+subwindow: Test\_Parameters rpg_system_testing
++subwindow: "Test Parameters" rpg_system_testing
 
 @title_name { string imgSelector Title/ Title/ }
 @show_title_2k3 booleanDefTrue

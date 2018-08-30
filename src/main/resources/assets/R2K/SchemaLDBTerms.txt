@@ -5,16 +5,16 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 .rpg_terms
-]0 annXEncounter string= \_appeared...!
-]1 preemptiveAttack string= A\_preemptive\_attack!
-]2 ranAwaySafely string= Your\_escape\_succeeded.
-]3 failedToEscape string= Your\_escape\_failed.
-]4 wonACombat string= You\_won!
-]5 partyDead string= You\_were\_defeated.
-]6 experience string= experience
-]7 youFound string= You\_found
-]8 xMoney string= money!
-]9 xReceived string= received.
+]0 annXEncounter string= " appeared...!"
+]1 preemptiveAttack string= "A preemptive attack!"
+]2 ranAwaySafely string= "Your escape succeeded."
+]3 failedToEscape string= "Your escape failed."
+]4 wonACombat string= "You won!"
+]5 partyDead string= "You were defeated."
+]6 experience string= "experience"
+]7 youFound string= "You found"
+]8 xMoney string= "money!"
+]9 xReceived string= "received."
 ]10 annXAttacksTheEnemy2KO string
 ]11 annCritEnemyHurt2KO string
 ]12 annCritPlayersHurt2KO string
@@ -55,45 +55,45 @@
 ]46 shop1Done string
 ]47 shop1WTSQuestion string
 ]48 shop1ICoSQuestion string
-]49 shop1Thanks string= Thank\_you\_for\_your\_custom.
+]49 shop1Thanks string= "Thank you for your custom."
 
 ]50 shop2Greet string
 ]51 shop2Impatient string
 ]52 shop2Buy string= Buy
 ]53 shop2Sell string= Sell
 ]54 shop2Leave string= Leave
-]55 shop2WTBQuestion string= How\_many?
-]56 shop2ICoBQuestion string= How\_many?
+]55 shop2WTBQuestion string= "How many?"
+]56 shop2ICoBQuestion string= "How many?"
 ]57 shop2Done string
 ]58 shop2WTSQuestion string
 ]59 shop2ICoSQuestion string
-]60 shop2Thanks string= Thank\_you\_for\_your\_custom.
+]60 shop2Thanks string= "Thank you for your custom."
 
 ]61 shop3Greet string
 ]62 shop3Impatient string
 ]63 shop3Buy string= Buy
 ]64 shop3Sell string= Sell
 ]65 shop3Leave string= Leave
-]66 shop3WTBQuestion string= How\_many?
-]67 shop3ICoBQuestion string= How\_many?
+]66 shop3WTBQuestion string= "How many?"
+]67 shop3ICoBQuestion string= "How many?"
 ]68 shop3Done string
 ]69 shop3WTSQuestion string
 ]70 shop3ICoSQuestion string
-]71 shop3Thanks string= Thank\_you\_for\_your\_custom.
+]71 shop3Thanks string= "Thank you for your custom."
 
-]72 inn1PriceX string= It\_costs\_
-]73 inn1XGoldToSleep string= to\_sleep\_here.
+]72 inn1PriceX string= "It costs "
+]73 inn1XGoldToSleep string= "to sleep here."
 ]74 inn1ConfirmSleep string= Sleep?
 ]75 inn1SleepYes string= Sleep
 ]76 inn1SleepNo string= Don't
-]77 inn2PriceX string= It\_costs\_
-]78 inn2XGoldToSleep string= to\_sleep\_here.
+]77 inn2PriceX string= "It costs "
+]78 inn2XGoldToSleep string= "to sleep here."
 ]79 inn2ConfirmSleep string= Sleep?
 ]80 inn2SleepYes string= Sleep
 ]81 inn2SleepNo string= Don't
 ]82 headOwnedItems string= Owned
 ]83 headEquippedItems string= Equipped
-]84 goldPostfix string= \_Gold
+]84 goldPostfix string= " Gold"
 ]85 cmdFight string= Fight
 ]86 cmdAuto string= Auto
 ]87 cmdEscape string= Escape

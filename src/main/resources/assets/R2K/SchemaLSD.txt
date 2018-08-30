@@ -215,9 +215,9 @@ C name Class.RPG::SavePicture @name @spritesheet_cols_112 @spritesheet_rows_112 
 @lifetime int
 @flags_112 rpg_savepicture_flags
 
-+subwindow: Current\_State rpg_savepicture_state_current
++subwindow: "Current State" rpg_savepicture_state_current
 @move_remain_time int
-+subwindow: Target\_State rpg_savepicture_state_target
++subwindow: "Target State" rpg_savepicture_state_target
 
 .rpg_savepicture_state_current
 @x float

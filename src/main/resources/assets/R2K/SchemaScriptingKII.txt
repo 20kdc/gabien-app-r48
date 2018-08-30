@@ -20,8 +20,8 @@
 ]2 wait int_boolean
 ]4 checkAction int_boolean
 ]5 checkCancel int_boolean
-+lengthAdjust 2k\_<\_1.50 10
-+lengthAdjust 2k\_>=\_1.50 11
++lengthAdjust "2k < 1.50" 10
++lengthAdjust "2k >= 1.50" 11
 +lengthAdjust 2k3 15
 +DA{ :length key_input_information_2ku150 11 key_input_information_2k150 15 key_input_information_2k3 }
 

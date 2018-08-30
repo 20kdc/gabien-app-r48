@@ -75,13 +75,13 @@ Cmd "$Squeek!"
 .JLDV3
 +subwindow: Raw hash string string
 +hashObject $Core1 $Core2
-+path ${"Core1 string
-+path ${"Core2 string
++path :{$Core1 string
++path :{$Core2 string
 
 .JLDV4
 +subwindow: Raw hash int string
 +hashObject 23
-+path ${23 string
++path :{23 string
 
  Footer
 
