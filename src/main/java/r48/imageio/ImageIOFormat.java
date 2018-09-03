@@ -67,6 +67,9 @@ public abstract class ImageIOFormat {
 
                 }
             }
+        } else {
+            // No file data = This image clearly can't be loaded
+            return null;
         }
         byte[] data = dataHolder.toByteArray();
 
