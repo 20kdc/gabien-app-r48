@@ -108,7 +108,7 @@ p duration int
 231: Set/show picture$!
 C category 3
 p pictureId int
-p image string
+p image f_picture_name
 p centred int_boolean
 p posVars int_boolean
 P 3 xVar var_id

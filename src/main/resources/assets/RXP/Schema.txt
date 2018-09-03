@@ -112,6 +112,7 @@ E iterate_enemy_base EnemyID -1 All
 > f_ws_name { string imgSelector Graphics/Windowskins/ Windowskins/ }
 > f_title_name { string imgSelector Graphics/Titles/ Titles/ }
 > f_go_name { string imgSelector Graphics/Gameovers/ Gameovers/ }
+> f_picture_name { string imgSelector Graphics/Pictures/ Pictures/ }
 
  Defining the enums.
  In most cases these are global, so just don't move them from here.

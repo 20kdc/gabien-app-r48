@@ -22,6 +22,10 @@ public class ValueSyntax {
     public static RubyIO decode(String unescape, boolean sdb2) {
         if (unescape.equals("nil"))
             return new RubyIO().setNull();
+        if (unescape.equals("true"))
+            return new RubyIO().setBool(true);
+        if (unescape.equals("false"))
+            return new RubyIO().setBool(false);
         boolean str = unescape.startsWith("\"");
         if (sdb2)
             str = unescape.startsWith("$");
@@ -42,6 +46,10 @@ public class ValueSyntax {
     public static String encode(RubyIO val, boolean sdb2) {
         if (val.type == '0')
             return "nil";
+        if (val.type == 'T')
+            return "true";
+        if (val.type == 'F')
+            return "false";
         String v2 = "";
         if (val.type == '"') {
             v2 = (sdb2 ? "$" : "\"") + val.decString();

@@ -6,10 +6,13 @@
 
 ValueSyntax is a syntax for describing basic Ruby values
  (specifically all the kinds that you have to worry about disambiguations and such with)
-It has three forms, but one is dependent on SDB version (NOTE: All actual SDB files are SDB1.1 now):
+It has six forms, but one is dependent on SDB version (NOTE: All actual SDB files are SDB1.1 now):
 
 '"' text... : string (SDB1)
 '$' text... : string (SDB1.1)
+'nil' : nil
+'true' : true
+'false' : false
 ':' text... : symbol
 text... : integer
 

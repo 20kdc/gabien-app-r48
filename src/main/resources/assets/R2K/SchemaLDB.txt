@@ -502,10 +502,16 @@ e rpg_animationtiming_screenshake 0 noShake 1 target 2 screen
 e rpg_animation_scope 0 target 1 screen
 e rpg_animation_position 0 up 1 middle 2 down
 
+.rpg_animation_bat1
+@animation_name f_battle_name
+.rpg_animation_bat2
+@animation_name f_battle2_name
+
 : RPG::Animation
 C name Class.RPG::Animation @name | #A
 @name string
-@animation_name string
+ Animation source changes dependent on the boolean.
++DA{ @battle2_2k3 rpg_animation_bat1 true rpg_animation_bat2 }
 @battle2_2k3 boolean
 @scope rpg_animation_scope
 @position rpg_animation_position
