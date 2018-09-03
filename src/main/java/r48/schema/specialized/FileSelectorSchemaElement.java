@@ -9,10 +9,7 @@ package r48.schema.specialized;
 
 import gabien.GaBIEn;
 import gabien.IImage;
-import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -21,6 +18,8 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.UIBorderedSubpanel;
+import r48.ui.UIThumbnail;
 
 import java.util.HashSet;
 
@@ -47,25 +46,40 @@ public class FileSelectorSchemaElement extends SchemaElement {
         if (strs == null)
             return new UILabel("The folder does not exist or was not accessible.", FontSizes.schemaFieldTextHeight);
         HashSet<String> hitStrs = new HashSet<String>();
+        UIElement waitingLeft = null;
         for (String s : strs) {
             final String sStripped = stripExt(s);
-            if (mustBeImage != null) {
-                IImage im = AppMain.stuffRendererIndependent.imageLoader.getImage(mustBeImage + sStripped, false);
-                if (im == GaBIEn.getErrorImage())
-                    continue;
-            }
             if (hitStrs.contains(sStripped))
                 continue;
-            hitStrs.add(sStripped);
-            uiSVL.panelsAdd(new UITextButton(sStripped, FontSizes.schemaFieldTextHeight, new Runnable() {
+            UITextButton selectButton = new UITextButton(sStripped, FontSizes.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     target.encString(sStripped, false);
                     path.changeOccurred(false);
                     launcher.switchObject(path.findBack());
                 }
-            }));
+            });
+            UIElement res = null;
+            if (mustBeImage != null) {
+                IImage im = AppMain.stuffRendererIndependent.imageLoader.getImage(mustBeImage + sStripped, false);
+                if (im == GaBIEn.getErrorImage())
+                    continue;
+                hitStrs.add(sStripped);
+                int bw = UIBorderedElement.getRecommendedBorderWidth(FontSizes.schemaFieldTextHeight) * 4;
+                res = new UIBorderedSubpanel(new UISplitterLayout(new UIThumbnail(im), selectButton, true, 1), bw);
+            } else {
+                hitStrs.add(sStripped);
+                res = selectButton;
+            }
+            if (waitingLeft != null) {
+                uiSVL.panelsAdd(new UISplitterLayout(waitingLeft, res, false, 0.5d));
+                waitingLeft = null;
+            } else {
+                waitingLeft = res;
+            }
         }
+        if (waitingLeft != null)
+            uiSVL.panelsAdd(new UISplitterLayout(waitingLeft, new UIPublicPanel(1, 1), false, 0.5d));
         AppMain.performFullImageFlush();
         return uiSVL;
     }

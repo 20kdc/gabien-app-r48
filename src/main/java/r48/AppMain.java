@@ -220,8 +220,6 @@ public class AppMain {
             system = new IkaSystem();
         } else if (sysBackend.equals("R2k")) {
             system = new R2kSystem();
-        } else if (sysBackend.equals("CSO")) {
-            system = new CSOSystem();
         } else {
             throw new IOException("Unknown MapSystem backend " + sysBackend);
         }
@@ -797,6 +795,7 @@ public class AppMain {
                 };
                 String[] fileCopies = {
                         "R2K/char.png", "CharSet/char.png",
+                        "R2K/backdrop.png", "Backdrop/backdrop.png",
                         "R2K/System.png", "System/System.png",
                         "R2K/templatetileset.png", "ChipSet/templatetileset.png",
                         "R2K/slime.png", "Monster/monster.png",
@@ -830,18 +829,6 @@ public class AppMain {
             }
         }
         }));
-    }
-
-    public static void csoNewMapMagic(String s) {
-        fileCopier(new String[] {
-        }, new String[] {
-                "CSO/FG.png", AppMain.dataPath + s + ".png",
-                "CSO/BG.png", AppMain.dataPath + s + "BG.png",
-                "CSO/BGM.org", AppMain.dataPath + s + ".org",
-                "CSO/FG.pxa", AppMain.dataPath + s + ".pxa",
-                "CSO/FG.pxm", AppMain.dataPath + s + ".pxm",
-                "CSO/FG.psp", AppMain.dataPath + s + ".psp"
-        });
     }
 
     public static void pleaseShutdown() {
