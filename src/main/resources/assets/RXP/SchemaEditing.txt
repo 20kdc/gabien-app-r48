@@ -23,7 +23,7 @@ i RCOM/SchemaScript.txt
  Defining Events...
 
 : RPG::Event::Page::Condition
-C name Class.RPG::Event::Page::Condition $ | [RPG::Event::Page::Condition.switchA]A[RPG::Event::Page::Condition.switchB]A[RPG::Event::Page::Condition.var]A[RPG::Event::Page::Condition.selfSwitch]A
+C name Class.RPG::Event::Page::Condition : | [RPG::Event::Page::Condition.switchA]A[RPG::Event::Page::Condition.switchB]A[RPG::Event::Page::Condition.var]A[RPG::Event::Page::Condition.selfSwitch]A
 C name Interp.RPG::Event::Page::Condition.switchA @switch1_valid @switch1_id | {A=T=, Switch @[switch_id]B}
 C name Interp.RPG::Event::Page::Condition.switchB @switch2_valid @switch2_id | {A=T=, Switch @[switch_id]B}
 C name Interp.RPG::Event::Page::Condition.var @variable_valid @variable_id @variable_value | {A=T=, Var @[var_id]B #C}

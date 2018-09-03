@@ -15,7 +15,7 @@ C defineIndent
 s ltp_type concurrent waitOn
 
  Example of new conditionals
-C name Interp.ltp_type $ | {@#A|:concurrent|Concurrent|:waitOn|Wait On...|Unknown #A}
+C name Interp.ltp_type : | {@#A|:concurrent|Concurrent|:waitOn|Wait On...|Unknown #A}
 
 .ams_setting_host
 @indent indent
