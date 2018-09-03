@@ -268,7 +268,7 @@ e rpg_enemyaction_conditiontype 0 always 1 switchActive 2 turnCountInRange 3 liv
 
 : RPG::Enemy
 C name Class.RPG::Enemy @name | #A
-@name stringLen 20
+@name stringLen= Slime 20
 @battler_name f_monster_name
 @battler_hue hue
 @battler_blend_mode boolean
@@ -340,8 +340,8 @@ C name Class.RPG::Enemy @name | #A
 
 : RPG::Troop::Member
 @enemy enemy_id
-@x int
-@y int
+@x int= 160
+@y int= 75
 @invisible boolean
 
 .rpg_troop_core
@@ -612,7 +612,7 @@ e rpg_system_font 0 gothic 1 mincho
 .rpg_system_testing
 @test_condition int
 @test_actor actor_id
-@test_battle_background string
+@test_battle_background f_battleback_name
 @test_battle_data subwindow arrayIx1 RPG::System::TestBattler
 @test_battle_terrain terrain_id
 e rpg_system_testing_battle_formation 0 fromTerrain 1 loose 2 tight

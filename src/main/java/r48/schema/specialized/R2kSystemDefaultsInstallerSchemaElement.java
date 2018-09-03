@@ -126,6 +126,19 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::BattlerAnimationSet"), new RubyIO().setFX(1));
                     sub.getInstVarBySymbol("@name").setString("Default Fallback AnimSet", false);
                     target.getInstVarBySymbol("@battle_anim_sets_2k3").hashVal.put(new RubyIO().setFX(1), sub);
+
+                    // 5. Default enemy data
+                    sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Enemy"), new RubyIO().setFX(1));
+                    target.getInstVarBySymbol("@enemies").hashVal.put(new RubyIO().setFX(1), sub);
+
+                    sub = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Troop"), new RubyIO().setFX(1));
+                    sub.getInstVarBySymbol("@name").encString("Slime x1", false);
+                    sub.getInstVarBySymbol("@members").arrVal = new RubyIO[] {
+                            new RubyIO().setNull(),
+                            SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(1))
+                    };
+                    target.getInstVarBySymbol("@troops").hashVal.put(new RubyIO().setFX(1), sub);
+
                     // Prepare.
                     AppMain.pendingRunnables.add(new Runnable() {
                         @Override

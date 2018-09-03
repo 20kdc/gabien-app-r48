@@ -15,7 +15,7 @@
 @timer_2_2k3 boolean
 
 : RPG::EventPage::Condition
-C name Class.RPG::EventPage::Condition $ | [RPG::EventPage::Condition.switchA]A[RPG::EventPage::Condition.switchB]A[RPG::EventPage::Condition.var]A[RPG::EventPage::Condition.item]A[RPG::EventPage::Condition.actor]A[RPG::EventPage::Condition.timer1]A[RPG::EventPage::Condition.timer2]A
+C name Class.RPG::EventPage::Condition : | [RPG::EventPage::Condition.switchA]A[RPG::EventPage::Condition.switchB]A[RPG::EventPage::Condition.var]A[RPG::EventPage::Condition.item]A[RPG::EventPage::Condition.actor]A[RPG::EventPage::Condition.timer1]A[RPG::EventPage::Condition.timer2]A
 C name Interp.RPG::EventPage::Condition.switchA @valid@switch_a @switch_a | {A=T=, Switch @[switch_id]B}
 C name Interp.RPG::EventPage::Condition.switchB @valid@switch_b @switch_b | {A=T=, Switch @[switch_id]B}
 C name Interp.RPG::EventPage::Condition.var @valid@var_>=_or_2k3op @var_id @var_value @var_compare_op_2k3 | {A=T=, Var @[var_id]B {D:[var_compare_op_2k3]D|>=} #C}
