@@ -14,7 +14,18 @@ import gabien.GaBIEn;
  * Created on November 29th, 2017
  */
 public class PathUtils {
-    // Magically handles case issues.
+    // TO JAPANESE/KOREAN USERS WONDERING WHY THIS BREAKS THEIR DIRECTORY STRUCTURE:
+    // This is Microsoft's fault.
+    // I can't fix this in a way that won't cause other kinds of breakage.
+    // If I disable this, you'll find you can't load games properly.
+    // If you want to remove the Yen sign then you have to switch the Japanese encodings
+    // back to "Cp943C" from "MS932".
+    // IDK if there's a similar mechanism for Korean text.
+    private static char[] allBackslashCandidates = new char[] {
+            '\\', '¥', '₩'
+    };
+
+    // Magically handles case issues & such.
     public static String autoDetectWindows(String s) {
         final String giveUp = s;
         try {
@@ -24,7 +35,8 @@ public class PathUtils {
             // Relative: "([$PATHCHARS]*/)*[$PATHCHARS]*"
             // Windows Absolute: "?:/.*"
             // MLA Absolute / Windows NT Special Path Absolute: "/.*"
-            s = s.replace('\\', '/');
+            for (char ch : allBackslashCandidates)
+                s = s.replace(ch, '/');
             if (s.equals(""))
                 return s;
             if (!s.contains("/"))
@@ -58,10 +70,15 @@ public class PathUtils {
     }
 
     public static String fixRootPath(String rootPath) {
-        if (!rootPath.equals(""))
-            if (!rootPath.endsWith("/"))
-                if (!rootPath.endsWith("\\"))
-                    rootPath += "/";
+        if (!rootPath.equals("")) {
+            // If it ends with any known backslash or forward slash candidate, just return as-is
+            if (rootPath.endsWith("/"))
+                return rootPath;
+            for (char ch : allBackslashCandidates)
+                if (rootPath.endsWith(Character.toString(ch)))
+                    return rootPath;
+            rootPath += "/";
+        }
         return rootPath;
     }
 }

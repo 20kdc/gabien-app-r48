@@ -18,8 +18,8 @@ e UTF-8
 
 0: R2K
 f RPG_RT.ldb
-e Cp943C
-. R2K[3?] (Japanese/CP943C)
+e MS932
+. R2K[3?] (Japanese/MS932)
 
 0: R2K
 f RPG_RT.ldb
