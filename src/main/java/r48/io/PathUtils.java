@@ -45,16 +45,19 @@ public class PathUtils {
             if (GaBIEn.fileOrDirExists(s))
                 return s;
             // Deal with earlier path components...
+            // 'st' is the actual filename.
             String st = GaBIEn.basename(s);
+            String parent;
             // Sanity check.
             if (s.contains("/")) {
                 if (!s.endsWith("/" + st))
-                    throw new RuntimeException("Weird inconsistency in gabien path sanitizer. 'Should never happen' but safety first.");
+                    throw new RuntimeException("Weird inconsistency in gabien path sanitizer. 'Should never happen' but safety first. " + s);
+                parent = autoDetectWindows(s.substring(0, s.length() - (st.length() + 1)));
             } else {
                 // Change things to make sense.
                 s = "./" + st;
+                parent = ".";
             }
-            String parent = autoDetectWindows(s.substring(0, s.length() - (st.length() + 1)));
             String[] subfiles = GaBIEn.listEntries(parent);
             if (subfiles != null)
                 for (String s2 : subfiles)

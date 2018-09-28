@@ -801,5 +801,9 @@ e rpg_bas_speed 0 slow 8 normal 14 fast
 @battle_commands_2k3 subwindow RPG::BattleCommands
 @classes_2k3 subwindow hash int+1 subwindow RPG::Class
 @battle_anim_sets_2k3 subwindow hash int+1 subwindow RPG::BattlerAnimationSet
+ Really Unimportant
++hide optP @unused_27 subwindow array 0 int
++hide optP @unused_28 subwindow array 0 int
++hide optP @unused_31 subwindow array 0 int
  Supplies defaults
 C magicR2kSystemDefaults 0

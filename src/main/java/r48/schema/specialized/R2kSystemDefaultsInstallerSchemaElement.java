@@ -56,13 +56,11 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     for (Map.Entry<RubyIO, RubyIO> evs : map.getInstVarBySymbol("@events").hashVal.entrySet())
                         saveEvs.hashVal.put(evs.getKey(), R2kSavefileEventAccess.eventAsSaveEvent(mapId, evs.getKey(), evs.getValue()));
                     // @system save_count is in-game save count, not actual System @save_count
-                    target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").setDeepClone(map.getInstVarBySymbol("@save_count"));
+                    target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").setDeepClone(getSaveCount(map));
+
                     RubyIO ldbSys = AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@system");
-                    RubyIO saveCount = ldbSys.getInstVarBySymbol("@save_count_2k3en");
-                    if (saveCount == null)
-                        saveCount = ldbSys.getInstVarBySymbol("@save_count_other");
-                    if (saveCount == null)
-                        saveCount = new RubyIO().setFX(0);
+                    RubyIO saveCount = getSaveCount(ldbSys);
+
                     target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@db_save_count").setDeepClone(saveCount);
                     initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@lower_tile_remap"));
                     initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@upper_tile_remap"));
@@ -88,6 +86,15 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
         } else {
             return HiddenSchemaElement.makeHiddenElement();
         }
+    }
+
+    public static RubyIO getSaveCount(RubyIO ldbSys) {
+        RubyIO saveCount = ldbSys.getInstVarBySymbol("@save_count_2k3en");
+        if (saveCount == null)
+            saveCount = ldbSys.getInstVarBySymbol("@save_count_other");
+        if (saveCount == null)
+            saveCount = new RubyIO().setFX(0);
+        return saveCount;
     }
 
     @Override
@@ -217,10 +224,8 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
         RubyIO ldb = AppMain.objectDB.getObject("RPG_RT.ldb");
         RubyIO ldbSys = ldb.getInstVarBySymbol("@system");
 
+        // Copy over stuff that isn't optional (hmm. Should it be optional?)
         target.getInstVarBySymbol("@party").getInstVarBySymbol("@party").setDeepClone(ldbSys.getInstVarBySymbol("@party"));
-        // Unnecessary
-        //savSys.getInstVarBySymbol("@system_name").setDeepClone(ldbSys.getInstVarBySymbol("@system_name"));
-        savSys.getInstVarBySymbol("@system_box_tiling").setDeepClone(ldbSys.getInstVarBySymbol("@system_box_tiling"));
         savSys.getInstVarBySymbol("@font_id").setDeepClone(ldbSys.getInstVarBySymbol("@font_id"));
 
         initializeArrayWithClones(savSys.getInstVarBySymbol("@switches"), ldb.getInstVarBySymbol("@switches").hashVal, new RubyIO().setBool(false));

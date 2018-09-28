@@ -121,7 +121,7 @@ public class HashSchemaElement extends SchemaElement {
                     if (flexible) {
                         hs = new UISplitterLayout(hsA, hsB, true, 0.0d);
                     } else {
-                        hs = new UISplitterLayout(hsA, hsB, false, 1, 4);
+                        hs = new UISplitterLayout(hsA, hsB, false, 0.5d);
                     }
                     uiSV.panelsAdd(new UIAppendButton("-", hs, new Runnable() {
                         @Override

@@ -11,7 +11,7 @@
  Also, usual disclaimer on anything that could be affected by defaults installer applies.
 
 : RPG::SaveTitle
- Yes, this is important.
+ Yes, this is important. Not setting a timestamp leads to a rejected save last I checked
 @timestamp float= 1.0
 @hero_name string
 @hero_level int
@@ -197,7 +197,7 @@ C name Class.RPG::Interpreter @stack:length | {@{A=0=1|#A}|1|empty|[lang-Common-
 
 : RPG::SavePicture
 C name Class.RPG::SavePicture @name @spritesheet_cols_112 @spritesheet_rows_112 @spritesheet_frame_112 @x @y | {A=""=<unused picture>|#A#[#B,#C#]#[#D#] at #E #F}
-@name string
+@name f_picture_name
 @spritesheet_cols_112 int= 1
 @spritesheet_rows_112 int= 1
 @spritesheet_frame_112 int
@@ -379,7 +379,7 @@ C name Class.RPG::SavePartyLocation @character_name @character_index @map @x @y 
 @x int
 @y int
 @encounter_rate int
-@tileset_id tileset_id
+@tileset_id save_tileset_id
 @events subwindow hash int subwindow RPG::SaveMapEvent
 @lower_tile_remap table . . . 3 144 1 1
 @upper_tile_remap table . . . 3 144 1 1
@@ -447,6 +447,8 @@ C name Class.RPG::Save @title@timestamp @title@hero_name @title@hero_level @titl
 
 @main_interpreter subwindow RPG::Interpreter
 @common_events subwindow hash commonevent_id RPG::SaveCommonEvent
+ Really Unimportant
++optP @unused_panorama subwindow array 0 int
 
- NOTE: This also creates a button.
+ NOTE: This also creates buttons
 C magicR2kSystemDefaults 3

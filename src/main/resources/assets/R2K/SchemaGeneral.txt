@@ -79,6 +79,7 @@ C magicR2kSystemDefaults 4
 > troop_enemy_id context? troop_enemy_id int
 
 > tileset_id internal_tilesetDictionary
+> save_tileset_id { hide int= 0 tileset_id }
 > terrain_id internal_terrainDictionary
 
 > actor_id internal_actorDictionary

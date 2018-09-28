@@ -47,7 +47,7 @@ public class Terrain extends R2kObject {
             "@back_enemies",
             "@lat_party",
             "@lat_enemies",
-    });
+    }, 0); // Default left unspecified, assumed 0.
 
     public IntegerR2kStruct specialBackParty = new IntegerR2kStruct(15);
     public IntegerR2kStruct specialBackEnemies = new IntegerR2kStruct(10);

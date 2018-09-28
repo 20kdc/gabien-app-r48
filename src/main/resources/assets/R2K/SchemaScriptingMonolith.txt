@@ -112,7 +112,7 @@ e cbranch_itemcomp_e 0 partyHasItem 1 partyDoesntHaveItem
 e cbranch_actorprop_e 0 inParty 1 name= 2 level>= 3 hp>= 4 knowsSkill 5 hasEquipped 6 hasState
 
 .cbranch_base
-C name cbranch_base ]1 | #A
+C name cbranch_base ]1 | [cbranch_type]A
 ]0 _ string
 ]1 type cbranch_type
 
@@ -140,19 +140,19 @@ C name cbranch_varcomp ]2 ]5 ]3 ]4 | Var#[@[var_id]A#] [cbranch_varcomp_e]B {C=0
 ]4 valB int
 
 .cbranch_timer1
-C name cbranch_timer1 | Timer 1 Compare (...)
+C name cbranch_timer1 ]3 ]2 | Timer1 [cbranch_gele]A #B Seconds
 +cbranch_base
 ]3 comparison cbranch_gele
 ]2 valueSeconds int
 
 .cbranch_goldcomp
-C name cbranch_goldcomp | Gold Compare (...)
+C name cbranch_goldcomp ]3 ]2 | Gold [cbranch_gele]A #B
 +cbranch_base
 ]3 comparison cbranch_gele
 ]2 valueGold int
 
 .cbranch_itemcomp
-C name cbranch_itemcomp | Item Compare (...)
+C name cbranch_itemcomp ]2 ]3 | Item @[item_id]A [cbranch_itemcomp_e]B
 +cbranch_base
 ]3 comparison cbranch_itemcomp_e
 ]2 item item_id
@@ -198,13 +198,13 @@ C name cbranch_vehicle | Vehicle (...)
 ]2 vehicle scripting_vehicletype
 
 .cbranch_timer2
-C name cbranch_timer2 | Timer2 (...)
+C name cbranch_timer2 ]3 ]2 | Timer2 [cbranch_gele]A #B Seconds
 +cbranch_base
 ]3 comparison cbranch_gele
 ]2 valueSeconds int
 
 .cbranch_cherry
-C name cbranch_cherry | Cherry Ext. (...)
+C name cbranch_cherry ]2 | Cherry2K3-E: [cbranch_cherry_e]A
 +cbranch_base
 ]2 property cbranch_cherry_e
 

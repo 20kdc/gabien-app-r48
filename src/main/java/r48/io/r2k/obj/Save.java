@@ -10,9 +10,7 @@ package r48.io.r2k.obj;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.chunks.R2kObject;
-import r48.io.r2k.chunks.SparseArrayAR2kStruct;
-import r48.io.r2k.chunks.SparseArrayHR2kStruct;
+import r48.io.r2k.chunks.*;
 import r48.io.r2k.obj.lsd.*;
 
 /**
@@ -47,6 +45,17 @@ public class Save extends R2kObject {
     });
     public SaveMapInfo mapInfo = new SaveMapInfo();
     public Interpreter mainInterpreter = new Interpreter();
+    public OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>> unusedPanorama = new OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>>(new ISupplier<ArrayR2kStruct<ByteR2kStruct>>() {
+        @Override
+        public ArrayR2kStruct<ByteR2kStruct> get() {
+            return new ArrayR2kStruct<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
+                @Override
+                public ByteR2kStruct get() {
+                    return new ByteR2kStruct(0);
+                }
+            });
+        }
+    });
     public SparseArrayHR2kStruct<R2kObject> commonEvents = new SparseArrayHR2kStruct<R2kObject>(new ISupplier<R2kObject>() {
         @Override
         public R2kObject get() {
@@ -89,7 +98,8 @@ public class Save extends R2kObject {
                 new Index(0x6D, partyItems, "@party"),
                 new Index(0x6E, targets, "@targets"),
                 new Index(0x6F, mapInfo, "@map_info"),
-                //new Index(0x70, panorama, "@panorama"),
+                new Index(0x70, unusedPanorama, "@unused_panorama"),
+                new Index(0x65, system, "@system"),
                 new Index(0x71, mainInterpreter, "@main_interpreter"),
                 new Index(0x72, commonEvents, "@common_events"),
         };

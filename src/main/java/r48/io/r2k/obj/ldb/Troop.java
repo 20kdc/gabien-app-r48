@@ -129,8 +129,8 @@ public class Troop extends R2kObject {
     }
 
     public static class TroopPageCondition extends R2kObject {
-        public BitfieldR2kStruct flagsA = new BitfieldR2kStruct(new String[] {"@switch_a", "@switch_b", "@variable_>=_val", "@turn", "@fatigue", "@enemy_hp", "@actor_hp", "@turn_enemy_2k3"});
-        public BitfieldR2kStruct flagsB = new BitfieldR2kStruct(new String[] {"@turn_actor", "@command_actor"});
+        public BitfieldR2kStruct flagsA = new BitfieldR2kStruct(new String[] {"@switch_a", "@switch_b", "@variable_>=_val", "@turn", "@fatigue", "@enemy_hp", "@actor_hp", "@turn_enemy_2k3"}, 0);
+        public BitfieldR2kStruct flagsB = new BitfieldR2kStruct(new String[] {"@turn_actor", "@command_actor"}, 0);
         public IR2kInterpretable flags = new IR2kInterpretable() {
             @Override
             public void importData(InputStream bais) throws IOException {

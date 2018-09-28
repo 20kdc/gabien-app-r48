@@ -119,6 +119,25 @@ public class Database extends R2kObject {
         }
     });
 
+    public ArrayR2kStruct<ByteR2kStruct> unused27 = new ArrayR2kStruct<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
+        @Override
+        public ByteR2kStruct get() {
+            return new ByteR2kStruct(0);
+        }
+    });
+    public ArrayR2kStruct<ByteR2kStruct> unused28 = new ArrayR2kStruct<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
+        @Override
+        public ByteR2kStruct get() {
+            return new ByteR2kStruct(0);
+        }
+    });
+    public ArrayR2kStruct<ByteR2kStruct> unused31 = new ArrayR2kStruct<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
+        @Override
+        public ByteR2kStruct get() {
+            return new ByteR2kStruct(0);
+        }
+    });
+
     @Override
     public boolean terminatable() {
         return true;
@@ -134,8 +153,7 @@ public class Database extends R2kObject {
     @Override
     public Index[] getIndices() {
         return new Index[] {
-                // ONE OF THESE 3
-                new Index(0x0B, actors, "@actors"), // <---
+                new Index(0x0B, actors, "@actors"),
                 new Index(0x0C, skills, "@skills"),
                 new Index(0x0D, items, "@items"),
                 new Index(0x0E, enemies, "@enemies"),
@@ -152,9 +170,12 @@ public class Database extends R2kObject {
                 new Index(0x18, variables, "@variables"),
                 new Index(0x19, commonEvents, "@common_events"),
                 new Index(0x1A, dbVersion, "@db_version"),
+                new Index(0x1B, unused27, "@unused_27"),
+                new Index(0x1C, unused28, "@unused_28"),
                 new Index(0x1D, battleCommands2k3, "@battle_commands_2k3"),
                 new Index(0x1E, classes2k3, "@classes_2k3"),
                 new Index(0x20, battlerAnimation2k3, "@battle_anim_sets_2k3"),
+                new Index(0x1F, unused31, "@unused_31"),
         };
     }
 

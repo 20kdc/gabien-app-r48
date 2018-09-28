@@ -51,6 +51,7 @@ public class BasicToolset implements IToolset {
                         TXDB.get("New Object via Schema, ODB'AnonObject'"),
                         TXDB.get("Autocorrect Object By Name And Schema"),
                         TXDB.get("Inspect Object (no Schema needed)"),
+                        TXDB.get("Object-Object Comparison"),
                         TXDB.get("Compile IMI Data"),
                         TXDB.get("Retrieve all object strings"),
                         TXDB.get("Set Internal Windows (good)"),
@@ -139,6 +140,43 @@ public class BasicToolset implements IToolset {
                                         } else {
                                             windowMaker.accept(new UITest(obj));
                                         }
+                                    }
+                                }));
+                            }
+                        },
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                windowMaker.accept(new UITextPrompt(TXDB.get("Source Object Name?"), new IConsumer<String>() {
+                                    @Override
+                                    public void accept(String s) {
+                                        final RubyIO objA = AppMain.objectDB.getObject(s);
+                                        windowMaker.accept(new UITextPrompt(TXDB.get("Target Object Name?"), new IConsumer<String>() {
+                                            @Override
+                                            public void accept(String s) {
+                                                final RubyIO objB = AppMain.objectDB.getObject(s);
+                                                if ((objA == null) || (objB == null)) {
+                                                    AppMain.launchDialog(TXDB.get("A file couldn't be read, and R48 cannot create it."));
+                                                } else {
+                                                    try {
+                                                        OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "objcompareAB.txt"));
+                                                        byte[] cid = IMIUtils.createIMIData(objA, objB, "");
+                                                        if (cid != null)
+                                                            os.write(cid);
+                                                        os.close();
+                                                        os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "objcompareBA.txt"));
+                                                        cid = IMIUtils.createIMIData(objB, objA, "");
+                                                        if (cid != null)
+                                                            os.write(cid);
+                                                        os.close();
+                                                        AppMain.launchDialog(TXDB.get("objcompareAB.txt and objcompareBA.txt have been made."));
+                                                        return;
+                                                    } catch (Exception e) {
+                                                        AppMain.launchDialog(TXDB.get("There was an issue somewhere along the line."));
+                                                    }
+                                                }
+                                            }
+                                        }));
                                     }
                                 }));
                             }

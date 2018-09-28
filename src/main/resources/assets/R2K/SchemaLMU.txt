@@ -97,5 +97,6 @@ e map_scroll_type 0 none 1 vertical 2 horizontal 3 horizontal+vertical
 @parallax_sy int
 @events subwindow hash int+1 subwindow RPG::Event
 @top_level boolean
-@save_count int
++optP @save_count_2k3en int
++optP @save_count_other int
 +tableD @data @width @height 3 20 15 2 0 10000

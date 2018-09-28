@@ -17,6 +17,8 @@ import r48.schema.util.SchemaPath;
 import java.util.LinkedList;
 import java.util.Map;
 
+import static r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement.getSaveCount;
+
 /**
  * Created in the early hours of December 18th, 2017
  * Most functionality added (ghhhoooossstttsss!!!) in the late hours of that day.
@@ -71,7 +73,7 @@ public class R2kSavefileEventAccess implements IEventAccess {
         LinkedList<RubyIO> keys = new LinkedList<RubyIO>(eventsHash.hashVal.keySet());
         RubyIO map = getMap();
         if (map != null)
-            if (map.getInstVarBySymbol("@save_count").fixnumVal != saveFileRoot.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").fixnumVal)
+            if (getSaveCount(map).fixnumVal != saveFileRoot.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").fixnumVal)
                 for (RubyIO rio : map.getInstVarBySymbol("@events").hashVal.keySet())
                     if (eventsHash.getHashVal(rio) == null)
                         keys.add(rio); // Add ghost
@@ -123,7 +125,7 @@ public class R2kSavefileEventAccess implements IEventAccess {
                 RubyIO map = getMap();
                 boolean ghost = false;
                 if (map != null)
-                    if (map.getInstVarBySymbol("@save_count").fixnumVal != saveFileRoot.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").fixnumVal)
+                    if (getSaveCount(map).fixnumVal != saveFileRoot.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").fixnumVal)
                         ghost = true;
                 if (ghost) {
                     AppMain.launchDialog(TXDB.get("Transformed to ghost. Re-Syncing it and setting @active to false might get rid of it."));
@@ -245,6 +247,14 @@ public class R2kSavefileEventAccess implements IEventAccess {
     }
 
     @Override
+    public String getEventName(RubyIO a) {
+        RubyIO rio = getEvent(a).getInstVarBySymbol("@name");
+        if (rio == null)
+            return null;
+        return rio.decString();
+    }
+
+    @Override
     public void setEventXY(RubyIO a, long x, long y) {
         RubyIO se = getSaveEvents();
         a = se.getHashVal(a);
@@ -255,11 +265,6 @@ public class R2kSavefileEventAccess implements IEventAccess {
         a.getInstVarBySymbol("@x").fixnumVal = x;
         a.getInstVarBySymbol("@y").fixnumVal = y;
         pokeHive();
-    }
-
-    @Override
-    public String getEventName(RubyIO a) {
-        return a.getInstVarBySymbol("@name").decString();
     }
 
     public void pokeHive() {

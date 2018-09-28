@@ -27,7 +27,7 @@ public class EventPageCondition extends R2kObject {
             "@actor",
             "@timer_1",
             "@timer_2_2k3",
-    });
+    }, 0);
     public IntegerR2kStruct switchAId = new IntegerR2kStruct(1);
     public IntegerR2kStruct switchBId = new IntegerR2kStruct(1);
     public IntegerR2kStruct variableId = new IntegerR2kStruct(1);

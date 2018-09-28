@@ -47,7 +47,7 @@ public class SavePicture extends R2kObject {
             "@mod_tint",
             "@mod_flash",
             "@mod_shake",
-    });
+    }, 0x61); // 0b01100001
     public DoubleR2kStruct targetX = new DoubleR2kStruct();
     public DoubleR2kStruct targetY = new DoubleR2kStruct();
     public IntegerR2kStruct targetMagnify = new IntegerR2kStruct(100);

@@ -43,7 +43,18 @@ public class MapUnit extends R2kObject {
             return new Event();
         }
     });
-    public IntegerR2kStruct magicNumber = new IntegerR2kStruct(0);
+    public OptionalR2kStruct<IntegerR2kStruct> magicNumberA = new OptionalR2kStruct<IntegerR2kStruct>(new ISupplier<IntegerR2kStruct>() {
+        @Override
+        public IntegerR2kStruct get() {
+            return new IntegerR2kStruct(0);
+        }
+    });
+    public OptionalR2kStruct<IntegerR2kStruct> magicNumberB = new OptionalR2kStruct<IntegerR2kStruct>(new ISupplier<IntegerR2kStruct>() {
+        @Override
+        public IntegerR2kStruct get() {
+            return new IntegerR2kStruct(0);
+        }
+    });
 
     @Override
     public Index[] getIndices() {
@@ -64,7 +75,8 @@ public class MapUnit extends R2kObject {
                 new Index(0x47, layer0),
                 new Index(0x48, layer1),
                 new Index(0x51, events, "@events"),
-                new Index(0x5B, magicNumber, "@save_count")
+                new Index(0x5A, magicNumberA, "@save_count_2k3en"),
+                new Index(0x5B, magicNumberB, "@save_count_other")
         };
     }
 

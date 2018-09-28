@@ -17,8 +17,8 @@ public class BitfieldR2kStruct extends ByteR2kStruct {
     // Ascending
     public final String[] flags;
 
-    public BitfieldR2kStruct(String[] f) {
-        super(0);
+    public BitfieldR2kStruct(String[] f, int def) {
+        super(def);
         flags = f;
     }
 
