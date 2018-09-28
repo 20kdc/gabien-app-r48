@@ -4,29 +4,27 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
- Jan 3. 2017. Tuesday. LATE.
- Ok, so I tried implementing this logic sanely,
-  but it didn't work out.
- So I reimplemented it using a set of rules.
- But the rules right now are non-configurable.
- Time to fix that.
- Format of numbers is CCi, where C is the actual display index (what AutoTiles corner IDs get mapped to),
-  and i is the 0-3 index used in rendering.
+ For further documentation on this, see IRB_ATRules.txt
 
- So, essentially: TileNumber on CornerIndex implies <true ANums> and <false ANums>.
+ We shouldn't use these.
 
- Essentially, this is a table that lets you work out
-  what surrounds an AutoTile from how it's composited.
- (For a primer on that, see AutoTiles.txt)
- That is then brute-force-translated with the aid of the main ATDB,
-  in order to get a simple surroundings -> autotile index table.
+C disable 47 48 49
 
- If there are multiple valid outcomes, the tile will be 47'd.
- This usually means you need to add more rules.
- Or the database broke.
+ .ANums
+ 012
+ 3 4
+ 567
 
- (NOTE: Despite this file being way bigger than a binary table, it's also easier to understand. Kinda.
-  I keep copies of the reference charts on every section for a reason.)
+ .Tiles
+ Cr Cut.
+ 0.2
+ 345
+ 678
+ 9**
+
+ .CIs
+ 01
+ 23
 
  Just some basic rules for tiles 0, 2 and 7.
  1. Tile 0 always means that the orthogonal directions it's pointing at aren't connected.
@@ -50,13 +48,10 @@
 072:T356F
 073:T476F
 
- The next two rule sets
-  (divided by these reference headers for, well, reference)
-  are the main rules to handle tiles 3,4,5,6,8,9,10,11.
+ The next two rule sets are the main rules to handle tiles 3,4,5,6,8,9,10,11.
   The rules on orthogonal (4, 6, 8, 10) tiles are:
   1. The 2 outward-facing corners of an orthogonal tile cannot connect in the direction it "faces".
-  2. The 2 outward-facing corners of an orthogonal tile
-      indicate connection *directly adjacent to this corner*.
+  2. The 2 outward-facing corners of an orthogonal tile indicate connection *directly adjacent to this corner*.
 
      To emphasize:
      1234
@@ -82,22 +77,6 @@
  With the default AutoTiles.txt file, no other rules are needed as far as I can tell -
   these rules resolve perfectly well to the correct tiles.
 
- .ANums
- 012
- 3 4
- 567
-
- .Tiles
- Cr Cut.
- 0.2
- 345
- 678
- 9**
-
- .CIs
- 01
- 23
-
 030:TF13
 033:T476F
 
@@ -110,21 +89,7 @@
 060:T1F3
 062:T6F3
 
- .ANums
- 012
- 3 4
- 567
-
- .Tiles
- Cr Cut.
- 0.2
- 345
- 678
- 9**
-
- .CIs
- 01
- 23
+ ---
 
 081:T1F4
 083:T6F4

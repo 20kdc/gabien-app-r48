@@ -151,11 +151,11 @@ D - O
 d O O
 D O O
 47:
-d O O
-D O O
+d _ _
+D _ _
 48:
-d O O
-D O O
+d _ _
+D _ _
 49:
-d O O
-D O O
+d _ _
+D _ _

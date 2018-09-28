@@ -1,0 +1,46 @@
+
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+ AutoTileRules files
+
+Format of numbers is cci:TtFf,
+ where c is the tile number within the image,
+ i is the 0-3 index used in rendering:
+  01
+  23
+ and t/f are a series of directions specified as ('+' being the target tile):
+  012
+  3+4
+  567
+
+For example:
+020:T13F0
+ means tile 2 (the + tile) is used on the top-left corner when up and left are contiguous and up-left isn't.
+
+Here's an example diagram, that's kept in each relevant file for reference.
+You'll want to keep a version of the diagram relevant to the engine on-screen at all times.
+
+ .Tiles (0/1 digit)
+ Cr Cut.
+ 0.2
+ 345
+ 678
+ 9**
+
+So, essentially: TileNumber on CornerIndex implies <true ANums> and <false ANums>.
+
+Essentially, this is a table that lets you work out
+ what surrounds an AutoTile from how it's composited.
+(For a primer on that, see AutoTiles.txt)
+That is then brute-force-translated with the aid of the main ATDB,
+ in order to get a simple surroundings -> autotile index table.
+
+If there are multiple valid outcomes, the tile will be set to 0, and a warning will be emitted.
+This usually means you need to add more rules.
+Or the database broke.
+
+Finally, note that "C disable 47 48 49" stops the resolver from ever using tiles 47, 48 and 49.
+This is useful for tiles that should render properly but can't be used safely.

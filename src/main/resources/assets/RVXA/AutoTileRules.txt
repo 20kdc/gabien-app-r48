@@ -4,29 +4,11 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
- Jan 3. 2017. Tuesday. LATE.
- Ok, so I tried implementing this logic sanely,
-  but it didn't work out.
- So I reimplemented it using a set of rules.
- But the rules right now are non-configurable.
- Time to fix that.
- Format of numbers is CCi, where C is the actual display index (what AutoTiles corner IDs get mapped to),
-  and i is the 0-3 index used in rendering.
+ For information on the format, see the R2KXPCOM version of this file.
 
- So, essentially: TileNumber on CornerIndex implies <true ANums> and <false ANums>.
+ We shouldn't use these:
 
- Essentially, this is a table that lets you work out
-  what surrounds an AutoTile from how it's composited.
- (For a primer on that, see AutoTiles.txt)
- That is then brute-force-translated with the aid of the main ATDB,
-  in order to get a simple surroundings -> autotile index table.
-
- If there are multiple valid outcomes, the tile will be 47'd.
- This usually means you need to add more rules.
- Or the database broke.
-
- (NOTE: Despite this file being way bigger than a binary table, it's also easier to understand. Kinda.
-  I keep copies of the reference charts on every section for a reason.)
+C disable 47 48 49
 
  Just some basic rules for tiles 0, 2 and 7.
  1. Tile 0 always means that the orthogonal directions it's pointing at aren't connected.

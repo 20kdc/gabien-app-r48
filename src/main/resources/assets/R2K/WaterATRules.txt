@@ -23,6 +23,9 @@
  Format:
  TTC (tile, corner) : T<implied true ANums>F<implied false ANums>
 
+ Disable 47-49: we're not allowed to use them (issue #34)
+C disable 47 48 49
+
  vertical
 
 030:T1F3
