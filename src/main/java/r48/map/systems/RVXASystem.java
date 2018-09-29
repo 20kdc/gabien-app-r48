@@ -8,6 +8,8 @@
 package r48.map.systems;
 
 import gabien.ui.IFunction;
+import gabien.ui.Rect;
+import gabien.ui.Size;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.map.IEditingToolbarController;
@@ -27,6 +29,13 @@ import r48.maptools.UIMTShadowLayer;
  * Created on 03/06/17.
  */
 public class RVXASystem extends RXPSystem {
+    @Override
+    protected Rect getIdealGridForCharacter(String basename, Size img) {
+        if (basename.startsWith("$") || basename.startsWith("!$"))
+            return new Rect(0, 0, img.width / 3, img.height / 4);
+        return new Rect(0, 0, img.width / 12, img.height / 8);
+    }
+
     @Override
     public StuffRenderer rendererFromMapAndTso(RubyIO map, RubyIO tso, IEventAccess events) {
         String vxaPano = "";

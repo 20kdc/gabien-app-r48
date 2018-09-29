@@ -8,10 +8,7 @@
 package r48.map.systems;
 
 import gabien.IGrDriver;
-import gabien.ui.IConsumer;
-import gabien.ui.IFunction;
-import gabien.ui.UIElement;
-import gabien.ui.UIPopupMenu;
+import gabien.ui.*;
 import r48.*;
 import r48.dbs.TXDB;
 import r48.map.IEditingToolbarController;
@@ -20,6 +17,8 @@ import r48.map.StuffRenderer;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventAccess;
 import r48.map.imaging.IImageLoader;
+
+import java.util.LinkedList;
 
 /**
  * Responsible for creating NSRs and such.
@@ -43,6 +42,13 @@ public abstract class MapSystem {
         enableMapSubsystem = enableSwitch;
     }
 
+    protected static LinkedList<String> dynamicObjectsFromRM(IRMMapSystem rm) {
+        LinkedList<String> dynobjs = new LinkedList<String>();
+        for (IRMMapSystem.RMMapData rmmd : rm.getAllMaps())
+            dynobjs.add(rmmd.idName);
+        return dynobjs;
+    }
+
     // If null, the map explorer is not enabled.
     public UIElement createMapExplorer(final IConsumer<UIElement> windowMaker, final IMapContext mapBox, final String mapInfos) {
         return new UIPopupMenu(new String[] {
@@ -64,6 +70,12 @@ public abstract class MapSystem {
 
     // If null, the save explorer is not enabled.
     public UIElement createSaveExplorer(final IConsumer<UIElement> windowMaker, final IMapContext mapBox, String saves) {
+        return null;
+    }
+
+    public Rect getIdealGridForImage(String path, Size img) {
+        // NOTE: The implementations of this right now just follow Demetrius's rules, see the additions to issue #20.
+        // System.out.println("IMGDETECTGRID: " + path);
         return null;
     }
 

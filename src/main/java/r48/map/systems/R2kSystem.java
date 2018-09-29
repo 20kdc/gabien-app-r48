@@ -7,10 +7,9 @@
 
 package r48.map.systems;
 
+import gabien.GaBIEn;
 import gabien.IImage;
-import gabien.ui.IConsumer;
-import gabien.ui.IFunction;
-import gabien.ui.UIElement;
+import gabien.ui.*;
 import r48.AppMain;
 import r48.IMapContext;
 import r48.RubyIO;
@@ -39,7 +38,7 @@ import java.util.Map;
  * ...
  * Created on 03/06/17.
  */
-public class R2kSystem extends MapSystem implements IRMMapSystem {
+public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSystem {
     public R2kSystem() {
         super(new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new ChainedImageLoader(new IImageLoader[] {
                 new ImageIOImageLoader(new XYZImageIOFormat(), ".xyz", true),
@@ -69,6 +68,24 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
                 return "Save." + integer;
             }
         }, 1, 99, mapBox, saves);
+    }
+
+    @Override
+    public Rect getIdealGridForImage(String path, Size img) {
+        String id = GaBIEn.basename(GaBIEn.dirname(path));
+        if (id.equalsIgnoreCase("ChipSet"))
+            return new Rect(0, 0, 16, 16);
+        if (id.equalsIgnoreCase("CharSet"))
+            return new Rect(0, 0, 24, 32);
+        if (id.equalsIgnoreCase("Battle"))
+            return new Rect(0, 0, 96, 96);
+        if (id.equalsIgnoreCase("Battle2"))
+            return new Rect(0, 0, 128, 128);
+        if (id.equalsIgnoreCase("BattleCharSet"))
+            return new Rect(0, 0, 48, 48);
+        if (id.equalsIgnoreCase("BattleWeapon"))
+            return new Rect(0, 0, 64, 64);
+        return null;
     }
 
     private String getSaveName(Integer integer) {
@@ -281,5 +298,10 @@ public class R2kSystem extends MapSystem implements IRMMapSystem {
                 return new MapEditingToolbarController(iMapToolContext, false);
             }
         });
+    }
+
+    @Override
+    public LinkedList<String> getDynamicObjects() {
+        return MapSystem.dynamicObjectsFromRM(this);
     }
 }

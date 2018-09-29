@@ -106,6 +106,18 @@ public class ImageEditorController {
             imageEditView.setImage(new ImageEditorImage(ioi.iei, detected));
             imageEditView.eds.didSuccessfulLoad(filename, ioi.format);
             initPalette();
+            final Rect potentialGrid = AppMain.system.getIdealGridForImage(filename, new Size(ioi.iei.width, ioi.iei.height));
+            if (potentialGrid != null) {
+                AppMain.createLaunchConfirmation(TXDB.get("Change grid to suit this asset?"), new Runnable() {
+                    @Override
+                    public void run() {
+                        imageEditView.gridOX = potentialGrid.x;
+                        imageEditView.gridOY = potentialGrid.y;
+                        imageEditView.gridW = potentialGrid.width;
+                        imageEditView.gridH = potentialGrid.height;
+                    }
+                }).run();
+            }
         }
     }
 
@@ -465,6 +477,8 @@ public class ImageEditorController {
         xyChanger.panelsAdd(acceptButton);
 
         res.forceToRecommended();
+        Size tgtSize = res.getSize();
+        res.setForcedBounds(null, new Rect(0, 0, tgtSize.width * 3, tgtSize.height));
         windowMaker.accept(res);
     }
 }

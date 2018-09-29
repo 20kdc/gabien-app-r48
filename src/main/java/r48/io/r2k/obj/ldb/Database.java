@@ -119,24 +119,23 @@ public class Database extends R2kObject {
         }
     });
 
-    public ArrayR2kStruct<ByteR2kStruct> unused27 = new ArrayR2kStruct<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
-        @Override
-        public ByteR2kStruct get() {
-            return new ByteR2kStruct(0);
-        }
-    });
-    public ArrayR2kStruct<ByteR2kStruct> unused28 = new ArrayR2kStruct<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
-        @Override
-        public ByteR2kStruct get() {
-            return new ByteR2kStruct(0);
-        }
-    });
-    public ArrayR2kStruct<ByteR2kStruct> unused31 = new ArrayR2kStruct<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
-        @Override
-        public ByteR2kStruct get() {
-            return new ByteR2kStruct(0);
-        }
-    });
+    public OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>> unused27 = nearOpaque();
+    public OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>> unused28 = nearOpaque();
+    public OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>> unused31 = nearOpaque();
+
+    private static OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>> nearOpaque() {
+        return new OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>>(new ISupplier<ArrayR2kStruct<ByteR2kStruct>>() {
+            @Override
+            public ArrayR2kStruct<ByteR2kStruct> get() {
+                return new ArrayR2kStruct<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
+                    @Override
+                    public ByteR2kStruct get() {
+                        return new ByteR2kStruct(0);
+                    }
+                });
+            }
+        });
+    }
 
     @Override
     public boolean terminatable() {

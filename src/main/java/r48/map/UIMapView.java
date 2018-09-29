@@ -340,7 +340,7 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
         camX += camR.width / internalScaling(2.0d);
         camY += camR.height / internalScaling(2.0d);
         int zwd = tuningZoomWorkingDiv;
-        if (ctrlDown)
+        if (shiftDown || ctrlDown)
             zwd = tuningZoomWorkingDivCtrl;
         // Firstly, convert fraction to tuningZoomWorkingDiv
         internalScalingMul = (internalScalingMul * zwd) / internalScalingDiv;

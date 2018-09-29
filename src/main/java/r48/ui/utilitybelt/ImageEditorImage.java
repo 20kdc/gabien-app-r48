@@ -7,6 +7,8 @@
 
 package r48.ui.utilitybelt;
 
+import gabien.GaBIEn;
+import gabien.IGrDriver;
 import gabien.IImage;
 import r48.dbs.TXDB;
 import r48.imageio.ImageIOImage;
@@ -32,7 +34,7 @@ public class ImageEditorImage extends ImageIOImage {
             0xFFFF00FF
     };
     // Set to null on modification.
-    private IImage cachedData;
+    private IImage cachedD1, cachedD2;
     // Locks palette index 0 to transparent, others are not.
     // This is essentially RPG Maker Emulation Mode.
     public final boolean t1Lock;
@@ -137,10 +139,26 @@ public class ImageEditorImage extends ImageIOImage {
             palette.set(i, sanitizeColour(palette.get(i), i));
     }
 
+    private void clearCachedData() {
+        cachedD1 = null;
+        cachedD2 = null;
+    }
+
     public IImage rasterize() {
-        if (cachedData != null)
-            return cachedData;
-        return cachedData = super.rasterize();
+        if (cachedD1 != null)
+            return cachedD1;
+        return cachedD1 = super.rasterize();
+    }
+
+    public IImage rasterizeDouble() {
+        if (cachedD2 != null)
+            return cachedD2;
+        IImage base = rasterize();
+        IGrDriver osb = GaBIEn.makeOffscreenBuffer(base.getWidth() * 2, base.getHeight() * 2, true);
+        osb.blitTiledImage(0, 0, base.getWidth() * 2, base.getHeight() * 2, base);
+        cachedD2 = GaBIEn.createImage(osb.getPixels(), osb.getWidth(), osb.getHeight());
+        osb.shutdown();
+        return cachedD2;
     }
 
     // Fun wrapper function like thing
@@ -167,12 +185,12 @@ public class ImageEditorImage extends ImageIOImage {
         if (palette == null)
             selPaletteIndex = editorPalette[selPaletteIndex];
         colourData[x + (y * width)] = selPaletteIndex;
-        cachedData = null;
+        clearCachedData();
     }
 
     public void setRaw(int x, int y, int selPaletteIndex) {
         colourData[x + (y * width)] = selPaletteIndex;
-        cachedData = null;
+        clearCachedData();
     }
 
     public int paletteSize() {
@@ -203,7 +221,7 @@ public class ImageEditorImage extends ImageIOImage {
             int idx = palette.size();
             rgb = sanitizeColour(rgb, idx);
             palette.add(rgb);
-            cachedData = null;
+            clearCachedData();
         }
     }
 
@@ -226,7 +244,7 @@ public class ImageEditorImage extends ImageIOImage {
                 for (int i = 0; i < colourData.length; i++)
                     if (colourData[i] > fidx)
                         colourData[i]--;
-            cachedData = null;
+            clearCachedData();
         }
     }
 
@@ -253,7 +271,7 @@ public class ImageEditorImage extends ImageIOImage {
                     colourData[i] = selPaletteIndex;
                 }
             }
-            cachedData = null;
+            clearCachedData();
         }
     }
 
@@ -272,7 +290,7 @@ public class ImageEditorImage extends ImageIOImage {
         } else {
             palette.set(fidx, sanitizeColour(col, fidx));
         }
-        cachedData = null;
+        clearCachedData();
     }
 
     public boolean usesPalette() {

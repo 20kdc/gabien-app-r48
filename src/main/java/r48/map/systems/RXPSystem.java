@@ -7,10 +7,9 @@
 
 package r48.map.systems;
 
+import gabien.GaBIEn;
 import gabien.IImage;
-import gabien.ui.IConsumer;
-import gabien.ui.IFunction;
-import gabien.ui.UIElement;
+import gabien.ui.*;
 import r48.AppMain;
 import r48.IMapContext;
 import r48.RubyIO;
@@ -35,7 +34,7 @@ import java.util.Map;
 /**
  * Created on 03/06/17.
  */
-public class RXPSystem extends MapSystem implements IRMMapSystem {
+public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSystem {
     public RXPSystem() {
         super(new CacheImageLoader(new FixAndSecondaryImageLoader("Graphics/", "", new ChainedImageLoader(new IImageLoader[] {
                 new GabienImageLoader(".png"),
@@ -58,6 +57,24 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
     @Override
     public UIElement createMapExplorer(IConsumer<UIElement> windowMaker, IMapContext mapBox, String mapInfos) {
         return new UIGRMMapInfos(windowMaker, new RXPRMLikeMapInfoBackend(), mapBox, mapInfos);
+    }
+
+    @Override
+    public Rect getIdealGridForImage(String path, Size img) {
+        String id = GaBIEn.basename(GaBIEn.dirname(path));
+        if (id.equalsIgnoreCase("Characters"))
+            return getIdealGridForCharacter(GaBIEn.basename(path), img);
+        if (id.equalsIgnoreCase("Tilesets"))
+            return new Rect(0, 0, 32, 32);
+        if (id.equalsIgnoreCase("Autotiles"))
+            return new Rect(0, 0, 32, 32);
+        if (id.equalsIgnoreCase("Animations"))
+            return new Rect(0, 0, 192, 192);
+        return null;
+    }
+
+    protected Rect getIdealGridForCharacter(String basename, Size img) {
+        return new Rect(0, 0, img.width / 4, img.height / 4);
     }
 
     public StuffRenderer rendererFromMapAndTso(RubyIO map, RubyIO tileset, IEventAccess events) {
@@ -184,5 +201,10 @@ public class RXPSystem extends MapSystem implements IRMMapSystem {
     @Override
     public String mapReferentToGUM(RubyIO mapReferent) {
         return RXPRMLikeMapInfoBackend.sNameFromInt((int) mapReferent.fixnumVal);
+    }
+
+    @Override
+    public LinkedList<String> getDynamicObjects() {
+        return MapSystem.dynamicObjectsFromRM(this);
     }
 }

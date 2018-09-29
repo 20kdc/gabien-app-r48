@@ -75,7 +75,8 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
 
         drawGrid(igd, viewRct, false);
 
-        IImage tempImg = createImg();
+        // This allows for tiling
+        IImage tempImg = image.rasterizeDouble();
         int ofsX = 0;
         int ofsY = 0;
         int ofsW = image.width;
@@ -384,10 +385,6 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             if (zoom < 1)
                 zoom = 1;
         }
-    }
-
-    public IImage createImg() {
-        return image.rasterize();
     }
 
     public static class ImPoint {

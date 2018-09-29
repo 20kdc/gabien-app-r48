@@ -948,10 +948,9 @@ public class AppMain {
         // anything loaded gets added (this allows some bypass of the mechanism)
         HashSet<String> mainSet = new HashSet<String>(objectDB.objectMap.keySet());
         mainSet.addAll(schemas.listFileDefs());
-        if (system instanceof IRMMapSystem) {
-            IRMMapSystem rms = (IRMMapSystem) system;
-            for (IRMMapSystem.RMMapData rio : rms.getAllMaps())
-                mainSet.add(rio.idName);
+        if (system instanceof IDynobjMapSystem) {
+            IDynobjMapSystem idms = (IDynobjMapSystem) system;
+            mainSet.addAll(idms.getDynamicObjects());
         }
         return new LinkedList<String>(mainSet);
     }
