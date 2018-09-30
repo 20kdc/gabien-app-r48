@@ -49,11 +49,11 @@ public class ImageEditorController {
                     if (tool == imageEditView.currentTool)
                         break;
                 }
-                initPalette();
+                initPalette(0);
             }
         });
         paletteView = new UIScrollLayout(true, FontSizes.generalScrollersize);
-        initPalette();
+        initPalette(0);
         rootView = new UISplitterLayout(imageEditView, paletteView, false, 1.0d) {
             @Override
             public String toString() {
@@ -105,7 +105,7 @@ public class ImageEditorController {
             }
             imageEditView.setImage(new ImageEditorImage(ioi.iei, detected));
             imageEditView.eds.didSuccessfulLoad(filename, ioi.format);
-            initPalette();
+            initPalette(0);
             final Rect potentialGrid = AppMain.system.getIdealGridForImage(filename, new Size(ioi.iei.width, ioi.iei.height));
             if (potentialGrid != null) {
                 AppMain.createLaunchConfirmation(TXDB.get("Change grid to suit this asset?"), new Runnable() {
@@ -121,7 +121,8 @@ public class ImageEditorController {
         }
     }
 
-    private void initPalette() {
+    // 0: Any 1: Undo 2: Redo 3: New
+    private void initPalette(int cause) {
         paletteView.panelsClear();
         if (sanityButtonHolder != null) {
             sanityButtonHolder.release();
@@ -154,7 +155,7 @@ public class ImageEditorController {
                 }, TXDB.get("Resize..."));
             }
         });
-        ul = new UIAppendButton(TXDB.get("New"), ul, new Runnable() {
+        ul = pokeOnCause(cause, 3, new UIAppendButton(TXDB.get("New"), ul, new Runnable() {
             @Override
             public void run() {
                 Runnable actualCore = new Runnable() {
@@ -162,7 +163,7 @@ public class ImageEditorController {
                     public void run() {
                         imageEditView.setImage(new ImageEditorImage(imageEditView.image.width, imageEditView.image.height));
                         imageEditView.eds.newFile();
-                        initPalette();
+                        initPalette(3);
                         AppMain.launchDialog(TXDB.get("New image created (same size as the previous image)"));
                     }
                 };
@@ -170,7 +171,7 @@ public class ImageEditorController {
                     actualCore = AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), actualCore);
                 actualCore.run();
             }
-        }, FontSizes.imageEditorTextHeight);
+        }, FontSizes.imageEditorTextHeight));
         ul = new UIAppendButton(TXDB.get("Open"), ul, new Runnable() {
             @Override
             public void run() {
@@ -222,7 +223,7 @@ public class ImageEditorController {
                                             AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to save #A.") + "\n" + e, new RubyIO().setString(s, true)));
                                         }
                                         AppMain.performFullImageFlush();
-                                        initPalette();
+                                        initPalette(0);
                                     }
                                 }
                             });
@@ -261,29 +262,29 @@ public class ImageEditorController {
             }
         }), false, 0.5d);
 
-        ul = new UIAppendButton(TXDB.get("Undo"), ul, new Runnable() {
+        ul = pokeOnCause(cause, 1, new UIAppendButton(TXDB.get("Undo"), ul, new Runnable() {
             @Override
             public void run() {
                 if (imageEditView.eds.hasUndo()) {
                     imageEditView.setImage(imageEditView.eds.performUndo());
-                    initPalette();
+                    initPalette(1);
                 } else {
                     AppMain.launchDialog(TXDB.get("There is nothing to undo."));
                 }
             }
-        }, FontSizes.imageEditorTextHeight);
+        }, FontSizes.imageEditorTextHeight));
 
-        ul = new UIAppendButton(TXDB.get("Redo"), ul, new Runnable() {
+        ul = pokeOnCause(cause, 2, new UIAppendButton(TXDB.get("Redo"), ul, new Runnable() {
             @Override
             public void run() {
                 if (imageEditView.eds.hasRedo()) {
                     imageEditView.setImage(imageEditView.eds.performRedo());
-                    initPalette();
+                    initPalette(2);
                 } else {
                     AppMain.launchDialog(TXDB.get("There is nothing to redo."));
                 }
             }
-        }, FontSizes.imageEditorTextHeight);
+        }, FontSizes.imageEditorTextHeight));
         paletteView.panelsAdd(ul);
 
         UIAppendButton ap = new UIAppendButton(TXDB.get("Grid Overlay"), new UITextButton(TXDB.get("Reset View"), FontSizes.imageEditorTextHeight, new Runnable() {
@@ -323,7 +324,7 @@ public class ImageEditorController {
                         imageEditView.eds.startSection();
                         imageEditView.image.appendToPalette(integer);
                         imageEditView.eds.endSection();
-                        initPalette();
+                        initPalette(0);
                     }
                 }, !imageEditView.image.t1Lock));
             }
@@ -355,7 +356,7 @@ public class ImageEditorController {
                     imageEditView.eds.startSection();
                     imageEditView.setImage(new ImageEditorImage(imageEditView.image, ck.state));
                     imageEditView.eds.endSection();
-                    initPalette();
+                    initPalette(0);
                 }
             };
             if (!ck.state)
@@ -367,7 +368,7 @@ public class ImageEditorController {
                     ImageEditorImage wip = new ImageEditorImage(imageEditView.image, false, false);
                     imageEditView.setImage(wip);
                     imageEditView.eds.endSection();
-                    initPalette();
+                    initPalette(0);
                 }
             })), false, 0.5d);
         } else {
@@ -378,7 +379,7 @@ public class ImageEditorController {
                     ImageEditorImage wip = new ImageEditorImage(imageEditView.image, false, true);
                     imageEditView.setImage(wip);
                     imageEditView.eds.endSection();
-                    initPalette();
+                    initPalette(0);
                 }
             }));
         }
@@ -390,7 +391,7 @@ public class ImageEditorController {
                 @Override
                 public void run() {
                     imageEditView.selPaletteIndex = fidx;
-                    initPalette();
+                    initPalette(0);
                 }
             }).togglable(imageEditView.selPaletteIndex == fidx);
             if (imageEditView.selPaletteIndex == fidx) {
@@ -404,7 +405,7 @@ public class ImageEditorController {
                                 imageEditView.selPaletteIndex++;
                             imageEditView.image.removeFromPalette(fidx, sanityButton.state);
                             imageEditView.eds.endSection();
-                            initPalette();
+                            initPalette(0);
                         }
                     }
                 }, FontSizes.imageEditorTextHeight);
@@ -415,7 +416,7 @@ public class ImageEditorController {
                         imageEditView.eds.startSection();
                         imageEditView.image.swapInPalette(imageEditView.selPaletteIndex, fidx, sanityButton.state);
                         imageEditView.eds.endSection();
-                        initPalette();
+                        initPalette(0);
                     }
                 }, FontSizes.imageEditorTextHeight);
             }
@@ -431,13 +432,19 @@ public class ImageEditorController {
                             if (fidx < imageEditView.image.paletteSize())
                                 imageEditView.image.changePalette(fidx, integer);
                             imageEditView.eds.endSection();
-                            initPalette();
+                            initPalette(0);
                         }
                     }, true));
                 }
             }), cPanel, false, 0.0d);
             paletteView.panelsAdd(cPanel);
         }
+    }
+
+    private UIElement pokeOnCause(int cause, int i, UIAppendButton redo) {
+        if (cause == i)
+            redo.button.enableStateForClick();
+        return redo;
     }
 
     private void showXYChanger(Rect targetVal, final IConsumer<Rect> iConsumer, final String title) {

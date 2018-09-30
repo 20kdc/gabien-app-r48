@@ -121,10 +121,8 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
                 keyStoragePath.getEmbedMap(host).put(myKey, 1d);
             }
         };
-        if (keyStoragePath.getEmbedSP(host, myKey) != 0d) {
-            utb.state = true;
-            utb.pressedTime = 0.5d;
-        }
+        if (keyStoragePath.getEmbedSP(host, myKey) != 0d)
+            utb.enableStateForClick();
         keyStoragePath.getEmbedMap(host).put(myKey, 0d);
     }
 
