@@ -267,7 +267,7 @@ e timer_operation_type 0 setTime 1 setFlagsAndStart 2 stop
 .move_event_array
 ]0 _ string
 ]1 char character_id
-]2 moveFreq int
+]2 moveFreq int= 3
 ]3 repeat int_boolean
 ]4 skippable int_boolean
 
