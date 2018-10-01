@@ -40,14 +40,16 @@ public class UIAppendButton extends UIElement.UIPanel {
     public void runLayout() {
         Size r = getSize();
 
-        Size bgb1 = button.getWantedSize();
-
-        button.setForcedBounds(this, new Rect(r.width - bgb1.width, 0, bgb1.width, bgb1.height));
-        subElement.setForcedBounds(this, new Rect(0, 0, r.width - bgb1.width, r.height));
-
-        // In case of change.
-        bgb1 = button.getWantedSize();
-        Size bgb2 = subElement.getWantedSize();
-        setWantedSize(new Size(bgb1.width + bgb2.width, Math.max(bgb1.height, bgb2.height)));
+        Size bgb1 = subElement.getWantedSize();
+        Size bgb2 = button.getWantedSize();
+        if (bgb1.width + bgb2.width <= r.width) {
+            subElement.setForcedBounds(this, new Rect(0, 0, r.width - bgb2.width, r.height));
+            button.setForcedBounds(this, new Rect(r.width - bgb2.width, 0, bgb2.width, r.height));
+            setWantedSize(new Size(bgb1.width + bgb2.width, Math.max(bgb1.height, bgb2.height)));
+        } else {
+            subElement.setForcedBounds(this, new Rect(0, 0, r.width, r.height - bgb2.height));
+            button.setForcedBounds(this, new Rect(0, r.height - bgb2.height, r.width, bgb2.height));
+            setWantedSize(new Size(Math.max(bgb1.width, bgb2.width), bgb1.height + bgb2.height));
+        }
     }
 }
