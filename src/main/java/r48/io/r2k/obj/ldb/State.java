@@ -101,13 +101,13 @@ public class State extends R2kObject {
 
                 new Index(0x3D, hpChangeMax, "@hp_change_max"),
                 new Index(0x3E, hpChangeVal, "@hp_change_val"),
-                new Index(0x3F, hpChangeMapVal, "@hp_change_map_val"),
-                new Index(0x40, hpChangeMapSteps, "@hp_change_map_steps"),
+                new Index(0x3F, hpChangeMapSteps, "@hp_change_map_steps"),
+                new Index(0x40, hpChangeMapVal, "@hp_change_map_val"),
 
                 new Index(0x41, spChangeMax, "@sp_change_max"),
                 new Index(0x42, spChangeVal, "@sp_change_val"),
-                new Index(0x43, spChangeMapVal, "@sp_change_map_val"),
-                new Index(0x44, spChangeMapSteps, "@sp_change_map_steps")
+                new Index(0x43, spChangeMapSteps, "@sp_change_map_steps"),
+                new Index(0x44, spChangeMapVal, "@sp_change_map_val")
         };
     }
 

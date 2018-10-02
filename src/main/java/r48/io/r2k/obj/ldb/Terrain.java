@@ -55,9 +55,9 @@ public class Terrain extends R2kObject {
     public IntegerR2kStruct specialLatEnemies = new IntegerR2kStruct(5);
 
     public IntegerR2kStruct gridLoc = new IntegerR2kStruct(0);
-    public IntegerR2kStruct gridA = new IntegerR2kStruct(0);
-    public IntegerR2kStruct gridB = new IntegerR2kStruct(0);
-    public IntegerR2kStruct gridC = new IntegerR2kStruct(0);
+    public IntegerR2kStruct gridA = new IntegerR2kStruct(120);
+    public IntegerR2kStruct gridB = new IntegerR2kStruct(392);
+    public IntegerR2kStruct gridC = new IntegerR2kStruct(16000);
 
     @Override
     public Index[] getIndices() {
