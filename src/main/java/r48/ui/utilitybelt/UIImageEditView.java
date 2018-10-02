@@ -27,7 +27,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     private boolean shift;
     private int dragLastX, dragLastY;
     public double camX, camY;
-    public int gridW = 16, gridH = 16, gridOX = 0, gridOY = 0;
+    public Rect grid = new Rect(0, 0, 16, 16);
 
     public IImageEditorTool currentTool;
     public int selPaletteIndex;
@@ -159,12 +159,12 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         Rect localGrid = getLocalGridRect(viewRct);
         boolean outerFlip = false;
         Intersector intersect = MTIntersector.singleton.get();
-        for (int ofx = (localGrid.x - (gridW * zoom)); ofx < (viewRct.x + viewRct.width); ofx += localGrid.width) {
+        for (int ofx = (localGrid.x - (grid.width * zoom)); ofx < (viewRct.x + viewRct.width); ofx += localGrid.width) {
             if (!viewRct.intersects(new Rect(ofx, viewRct.y, localGrid.width, viewRct.height)))
                 continue;
             int i = outerFlip ? 1 : 0;
             outerFlip = !outerFlip;
-            for (int ofy = (localGrid.y - (gridH * zoom)); ofy < (viewRct.y + viewRct.height); ofy += localGrid.height) {
+            for (int ofy = (localGrid.y - (grid.height * zoom)); ofy < (viewRct.y + viewRct.height); ofy += localGrid.height) {
                 int o = 0xA0;
                 boolean light = ((i & 1) != 0);
                 if (light)
@@ -190,15 +190,15 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     }
 
     private Rect getLocalGridRect(Rect viewRct) {
-        int localAnchorX = gridOX % gridW;
+        int localAnchorX = grid.x % grid.width;
         if (localAnchorX != 0)
-            localAnchorX -= gridW;
-        int localAnchorY = gridOY % gridH;
+            localAnchorX -= grid.width;
+        int localAnchorY = grid.y % grid.height;
         if (localAnchorY != 0)
-            localAnchorY -= gridH;
+            localAnchorY -= grid.height;
         localAnchorX *= zoom;
         localAnchorY *= zoom;
-        return new Rect(viewRct.x + localAnchorX, viewRct.y + localAnchorY, gridW * zoom, gridH * zoom);
+        return new Rect(viewRct.x + localAnchorX, viewRct.y + localAnchorY, grid.width * zoom, grid.height * zoom);
     }
 
     private Rect getViewRect() {

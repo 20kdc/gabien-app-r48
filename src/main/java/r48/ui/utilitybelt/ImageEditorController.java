@@ -106,17 +106,17 @@ public class ImageEditorController {
             imageEditView.setImage(new ImageEditorImage(ioi.iei, detected));
             imageEditView.eds.didSuccessfulLoad(filename, ioi.format);
             initPalette(0);
-            final Rect potentialGrid = AppMain.system.getIdealGridForImage(filename, new Size(ioi.iei.width, ioi.iei.height));
+            Size sz = new Size(ioi.iei.width, ioi.iei.height);
+            final Rect potentialGrid = AppMain.system.getIdealGridForImage(filename, sz);
             if (potentialGrid != null) {
-                AppMain.createLaunchConfirmation(TXDB.get("Change grid to suit this asset?"), new Runnable() {
-                    @Override
-                    public void run() {
-                        imageEditView.gridOX = potentialGrid.x;
-                        imageEditView.gridOY = potentialGrid.y;
-                        imageEditView.gridW = potentialGrid.width;
-                        imageEditView.gridH = potentialGrid.height;
-                    }
-                }).run();
+                if (!potentialGrid.rectEquals(imageEditView.grid)) {
+                    AppMain.createLaunchConfirmation(TXDB.get("Change grid to suit this asset?"), new Runnable() {
+                        @Override
+                        public void run() {
+                            imageEditView.grid = potentialGrid;
+                        }
+                    }).run();
+                }
             }
         }
     }
@@ -238,13 +238,10 @@ public class ImageEditorController {
         ul = new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
-                showXYChanger(new Rect(imageEditView.gridOX, imageEditView.gridOY, imageEditView.gridW, imageEditView.gridH), new IConsumer<Rect>() {
+                showXYChanger(imageEditView.grid, new IConsumer<Rect>() {
                     @Override
                     public void accept(Rect rect) {
-                        imageEditView.gridOX = rect.x;
-                        imageEditView.gridOY = rect.y;
-                        imageEditView.gridW = rect.width;
-                        imageEditView.gridH = rect.height;
+                        imageEditView.grid = rect;
                     }
                 }, TXDB.get("Change Grid..."));
             }
