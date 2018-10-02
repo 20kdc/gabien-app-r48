@@ -304,6 +304,7 @@ e rpg_character_transparency 0 off 3 on
 @lock_dir boolean
  These settings have to be the same as the real default ones for the player,
   or an attempt at synthesizing a "blank" WILL fail.
+ This means it's forced to 2,4 by default.
 @move_freq int= 2
 @move_speed int= 4
 @move_route RPG::MoveRoute
@@ -360,7 +361,7 @@ C name Class.RPG::SavePartyLocation @character_name @character_index @map @x @y 
 @vehicle_type rpg_save_vehicletype_opt
 @vehicle_leaving boolean
  Maybe keep in sync with the movespeed default above
-@vehicle_movespeed_backup int= 3
+@vehicle_movespeed_backup eventpage_movespeed
 @menu_activation_waiting boolean
  -1: not panning
  other: panning

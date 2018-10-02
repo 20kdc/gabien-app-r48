@@ -123,6 +123,9 @@ e direction 2 down 4 left 6 right 8 up
 
 e sprite_direction 0 up 1 right 2 down 3 left
 
+> eventpage_movefreq int= 6
+> eventpage_movespeed int= 3
+
 i R2K/SchemaScripting.txt
 
 : Rect
