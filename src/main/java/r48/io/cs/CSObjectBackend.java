@@ -12,6 +12,7 @@ import r48.RubyIO;
 import r48.RubyTable;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
+import r48.io.r2k.R2kUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,7 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Secretive juggling occurs to present the CSO backend out of this.
+ * This is now the only thing remaining out of the CSOEdit experiment.
  * Created on May 11th 2018.
  */
 public class CSObjectBackend implements IObjectBackend {
@@ -33,15 +34,18 @@ public class CSObjectBackend implements IObjectBackend {
     public RubyIO loadObjectFromFile(String filename) {
         InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(pfx + filename));
         if (inp == null) {
-            System.err.println("Couldn't load CSO " + pfx + filename);
+            System.err.println("Couldn't load CS " + pfx + filename);
             return null;
         }
         try {
             RubyIO res = null;
-            if (filename.endsWith("pxm")) {
+            String fnl = filename.toLowerCase();
+            if (fnl.endsWith("pxm")) {
                 res = loadPXM(inp);
-            } else if (filename.endsWith("pxa")) {
+            } else if (fnl.endsWith("pxa")) {
                 res = loadPXA(inp);
+            } else if (fnl.endsWith("stage.tbl")) {
+                res = loadStageTBL(inp);
             }
             inp.close();
             return res;
@@ -53,6 +57,54 @@ public class CSObjectBackend implements IObjectBackend {
             ioe.printStackTrace();
         }
         return null;
+    }
+
+    private RubyIO loadStageTBL(InputStream inp) throws IOException {
+        int stages = inp.available() / 200;
+        RubyIO rio = new RubyIO();
+        rio.type = '[';
+        RubyIO[] stageArray = new RubyIO[stages];
+        rio.arrVal = stageArray;
+        for (int i = 0; i < stageArray.length; i++) {
+            RubyIO tileset = loadFixedFormatString(inp, 0x20);
+            RubyIO filename = loadFixedFormatString(inp, 0x20);
+            int backgroundScroll = inp.read();
+            backgroundScroll |= inp.read() << 8;
+            backgroundScroll |= inp.read() << 16;
+            backgroundScroll |= inp.read() << 24;
+            RubyIO bkg = loadFixedFormatString(inp, 0x20);
+            RubyIO npc1 = loadFixedFormatString(inp, 0x20);
+            RubyIO npc2 = loadFixedFormatString(inp, 0x20);
+            int boss = inp.read();
+            RubyIO name = loadFixedFormatString(inp, 0x23);
+
+            RubyIO rio2 = new RubyIO().setSymlike("Stage", true);
+            rio2.addIVar("@tileset", tileset);
+            rio2.addIVar("@filename", filename);
+            rio2.addIVar("@background_scroll", new RubyIO().setFX(backgroundScroll));
+            rio2.addIVar("@sf_bkg", bkg);
+            rio2.addIVar("@sf_npc1", npc1);
+            rio2.addIVar("@sf_npc2", npc2);
+            rio2.addIVar("@boss", new RubyIO().setFX(boss));
+            rio2.addIVar("@name", name);
+            stageArray[i] = rio2;
+        }
+        return rio;
+    }
+
+    private RubyIO loadFixedFormatString(InputStream inp, int i) throws IOException {
+        byte[] bt = new byte[i];
+        if (inp.read(bt) != i)
+            throw new IOException("Insufficient data");
+        for (int j = 0; j < bt.length; j++) {
+            if (bt[j] == 0) {
+                byte[] nbt = new byte[j];
+                System.arraycopy(bt, 0, nbt, 0, j);
+                bt = nbt;
+                break;
+            }
+        }
+        return new RubyIO().setString(bt, Factory.encoding);
     }
 
     private RubyIO loadPXA(InputStream inp) throws IOException {
@@ -86,10 +138,13 @@ public class CSObjectBackend implements IObjectBackend {
     @Override
     public void saveObjectToFile(String filename, RubyIO object) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        if (filename.endsWith("pxm")) {
+        String fnl = filename.toLowerCase();
+        if (fnl.endsWith("pxm")) {
             savePXM(baos, object);
-        } else if (filename.endsWith("pxa")) {
+        } else if (fnl.endsWith("pxa")) {
             savePXA(baos, object);
+        } else if (fnl.endsWith("stage.tbl")) {
+            saveStageTBL(baos, object);
         } else {
             throw new IOException("I don't know how to save that");
         }
@@ -101,6 +156,30 @@ public class CSObjectBackend implements IObjectBackend {
         } finally {
             os.close();
         }
+    }
+
+    private void saveStageTBL(ByteArrayOutputStream baos, RubyIO o) throws IOException {
+        for (RubyIO rio : o.arrVal) {
+            writeFixedFormatString(baos, rio.getInstVarBySymbol("@tileset"), 0x20);
+            writeFixedFormatString(baos, rio.getInstVarBySymbol("@filename"), 0x20);
+            int backgroundScroll = (int) o.getInstVarBySymbol("@background_scroll").fixnumVal;
+            baos.write(backgroundScroll);
+            baos.write(backgroundScroll >> 8);
+            baos.write(backgroundScroll >> 16);
+            baos.write(backgroundScroll >> 24);
+            writeFixedFormatString(baos, rio.getInstVarBySymbol("@sf_bkg"), 0x20);
+            writeFixedFormatString(baos, rio.getInstVarBySymbol("@sf_npc1"), 0x20);
+            writeFixedFormatString(baos, rio.getInstVarBySymbol("@sf_npc2"), 0x20);
+            baos.write((int) rio.getInstVarBySymbol("@boss").fixnumVal);
+            writeFixedFormatString(baos, rio.getInstVarBySymbol("@name"), 0x23);
+        }
+    }
+
+    private void writeFixedFormatString(ByteArrayOutputStream baos, RubyIO strsym, int i) throws IOException {
+        byte[] bt = new byte[i];
+        byte[] nbt = R2kUtil.encodeLcfString(strsym.decString());
+        System.arraycopy(nbt, 0, bt, 0, Math.min(nbt.length, bt.length - 1));
+        baos.write(bt);
     }
 
     private void savePXA(ByteArrayOutputStream baos, RubyIO o) throws IOException {
