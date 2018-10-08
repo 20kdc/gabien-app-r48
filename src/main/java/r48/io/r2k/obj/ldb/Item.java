@@ -159,7 +159,7 @@ public class Item extends R2kObject {
                 new Index(0x3A, situationBattle, "@switch_usable_in_battle"),
 
                 new Index(0x3D, basAE),
-                new Index(0x3E, aEfx, "@allowed_ac"),
+                new Index(0x3E, aEfx, "@actor_set"),
 
                 new Index(0x3F, basSE),
                 new Index(0x40, sEfx, "@state_set"),

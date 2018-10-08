@@ -182,10 +182,9 @@ C name Class.RPG::Item @name | #A
 @use_count rpg_item_usecount
 @use_sp_cost int
 
-@allowed_ac subwindow: "If unlisted, default 'true'.\nSwitchable between classes/actors in @system/@item_allow_classbased_2k3." hash actor_id boolean
-
-  NOT SUPPORTED YET
-  @allowed_ac subwindow: "If unlisted, default 'true'.\nSwitchable between classes/actors in @system/@item_allow_classbased_2k3." DA{ __SYSTEM_CLASSES__ hash actor_id boolean 1 hash class_id boolean }
++hwnd . R2K/H_ItemActorClass2
+@actor_set subwindow: "Allowed Actors" hash actor_id boolean
+@class_set_2k3 subwindow: "Allowed Classes" hash class_id boolean
 
 +subwindow: "Use: Skill (skillLearn on 2k + weapon/shield/armour/helmet/accessory on 2k3)" rpg_item_sect1
 +subwindow: "Use: Medicine" rpg_item_sect2
@@ -205,7 +204,6 @@ C name Class.RPG::Item @name | #A
 @prevent_crit boolean
 @raise_evasion boolean
 @attr_set subwindow hash attribute_id boolean
-@class_set_2k3 subwindow hash class_id boolean
 @state_chance int
 @state_effect boolean
 @weapon_anim_def_2k3 actor_id
