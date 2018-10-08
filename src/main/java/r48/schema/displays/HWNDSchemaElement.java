@@ -26,12 +26,10 @@ import r48.ui.help.UIHelpSystem;
  */
 public class HWNDSchemaElement extends SchemaElement {
     public final String ivar, file;
-    public final boolean sdb2;
 
-    public HWNDSchemaElement(String iv, String f, boolean sdb2x) {
+    public HWNDSchemaElement(String iv, String f) {
         ivar = iv;
         file = f;
-        sdb2 = sdb2x;
     }
 
     @Override
@@ -45,7 +43,7 @@ public class HWNDSchemaElement extends SchemaElement {
             }
         };
         if (ivar != null) {
-            hsc.loadPage((int) PathSyntax.parse(target, ivar, sdb2).fixnumVal);
+            hsc.loadPage((int) PathSyntax.parse(target, ivar).fixnumVal);
         } else {
             hsc.loadPage(0);
         }

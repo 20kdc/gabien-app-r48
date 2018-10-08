@@ -98,7 +98,7 @@ public class TXDB {
         nameDB.put("lang-Common-valueSyntax", new IFunction<RubyIO, String>() {
             @Override
             public String apply(RubyIO rubyIO) {
-                return ValueSyntax.encode(rubyIO, true);
+                return ValueSyntax.encode(rubyIO);
             }
         });
     }

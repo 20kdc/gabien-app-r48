@@ -181,7 +181,12 @@ C name Class.RPG::Item @name | #A
 +subwindow: "Equip Stats" rpg_item_sect0
 @use_count rpg_item_usecount
 @use_sp_cost int
-@actors_allowed subwindow: "If unlisted, default 'true'" hash actor_id boolean
+
+@allowed_ac subwindow: "If unlisted, default 'true'.\nSwitchable between classes/actors in @system/@item_allow_classbased_2k3." hash actor_id boolean
+
+  NOT SUPPORTED YET
+  @allowed_ac subwindow: "If unlisted, default 'true'.\nSwitchable between classes/actors in @system/@item_allow_classbased_2k3." DA{ __SYSTEM_CLASSES__ hash actor_id boolean 1 hash class_id boolean }
+
 +subwindow: "Use: Skill (skillLearn on 2k + weapon/shield/armour/helmet/accessory on 2k3)" rpg_item_sect1
 +subwindow: "Use: Medicine" rpg_item_sect2
 +subwindow: "Use: Material" rpg_item_sect3
@@ -561,6 +566,7 @@ C magicR2kSystemDefaults 2
 e rpg_system_ldbid 0 RM2000 2003 RM2003
  9 might in fact be a padding item
 e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 order 8 wait 9 unknown/padding/quit
+e rpg_system_itemactorclass2k3 0 Actor 1 Class
 
 : RPG::System::TestBattler
 @actor actor_id
@@ -594,6 +600,10 @@ e rpg_system_menucommand 1 item 2 skill 3 equipment 4 save 5 status 6 row 7 orde
 @system_name f_system_name
 @system_box_tiling int_boolean
 @system2_name_2k3 f_system2_name
+
++hwnd . R2K/H_ItemActorClass
+
+@item_allow_classbased_2k3 rpg_system_itemactorclass2k3
 
 @party subwindow array 0 actor_id
 +optP @menu_commands_2k3 subwindow array 0 rpg_system_menucommand

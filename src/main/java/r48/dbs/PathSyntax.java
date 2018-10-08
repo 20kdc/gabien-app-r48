@@ -15,85 +15,64 @@ import r48.RubyIO;
  * Created on 08/06/17.
  */
 public class PathSyntax {
-    // NOTE: This must not contain \, as that is used for EscapedStringSyntax embedded in hashes,
-    //        and it must not contain anything used in ValueSyntax.
-    public static char[] breakers = new char[] {'$', '@', ']'};
+    // NOTE: This must not contain anything used in ValueSyntax.
     public static char[] breakersSDB2 = new char[] {':', '@', ']'};
 
     // break to next token.
-    public static String[] breakToken(String full, boolean sdb2) {
+    public static String[] breakToken(String full) {
         int plannedIdx = full.length();
         StringBuilder sb = new StringBuilder();
-        if (sdb2) {
-            char[] ch = full.toCharArray();
-            boolean escape = false;
-            for (int i = 0; i < ch.length; i++) {
-                if (escape) {
-                    escape = false;
-                    sb.append(ch[i]);
-                } else if (ch[i] == '#') {
-                    escape = true;
-                } else {
-                    for (char c : breakersSDB2) {
-                        if (c == ch[i]) {
-                            plannedIdx = i;
-                            break;
-                        }
-                    }
-                    if (plannedIdx != full.length())
+        char[] ch = full.toCharArray();
+        boolean escape = false;
+        for (int i = 0; i < ch.length; i++) {
+            if (escape) {
+                escape = false;
+                sb.append(ch[i]);
+            } else if (ch[i] == '#') {
+                escape = true;
+            } else {
+                for (char c : breakersSDB2) {
+                    if (c == ch[i]) {
+                        plannedIdx = i;
                         break;
-                    sb.append(ch[i]);
+                    }
                 }
+                if (plannedIdx != full.length())
+                    break;
+                sb.append(ch[i]);
             }
-            if (plannedIdx == full.length()) {
-                return new String[] {
-                        sb.toString(),
-                        ""
-                };
-            }
+        }
+        if (plannedIdx == full.length()) {
             return new String[] {
                     sb.toString(),
-                    full.substring(plannedIdx)
-            };
-        } else {
-            for (char c : breakers) {
-                int idx = full.indexOf(c);
-                if (idx >= 0)
-                    if (idx < plannedIdx)
-                        plannedIdx = idx;
-            }
-            if (plannedIdx == full.length()) {
-                return new String[] {
-                        full.substring(0, plannedIdx),
-                        ""
-                };
-            }
-            return new String[] {
-                    full.substring(0, plannedIdx),
-                    full.substring(plannedIdx)
+                    ""
             };
         }
+        return new String[] {
+                sb.toString(),
+                full.substring(plannedIdx)
+        };
     }
 
     // Used for missing IV autodetect
-    public static String getAbsoluteIVar(String iv, boolean sdb2) {
+    public static String getAbsoluteIVar(String iv) {
         if (iv.startsWith("@")) {
             String n = iv.substring(1);
-            String[] ivb = breakToken(n, sdb2);
+            String[] ivb = breakToken(n);
             if (ivb[1].equals(""))
                 return "@" + ivb[0];
         }
-        if (iv.startsWith(sdb2 ? ":." : "$:")) {
+        if (iv.startsWith(":.")) {
             String n = iv.substring(2);
-            String[] ivb = breakToken(n, sdb2);
+            String[] ivb = breakToken(n);
             if (ivb[1].equals(""))
                 return ivb[0];
         }
         return null;
     }
 
-    public static RubyIO parse(RubyIO res, String arg, boolean sdb2) {
-        return parse(res, arg, 0, sdb2);
+    public static RubyIO parse(RubyIO res, String arg) {
+        return parse(res, arg, 0);
     }
 
     // Parses the syntax.
@@ -101,21 +80,19 @@ public class PathSyntax {
     // mode 1: GET/ADD
     // mode 2: GET/DEL
     // Note that you detect creation by checking if output type is 0 (which should otherwise never happen)
-    public static RubyIO parse(RubyIO res, String arg, int mode, boolean sdb2) {
+    public static RubyIO parse(RubyIO res, String arg, int mode) {
         String workingArg = arg;
         while (workingArg.length() > 0) {
             char f = workingArg.charAt(0);
             workingArg = workingArg.substring(1);
-            String[] subcomA = breakToken(workingArg, sdb2);
+            String[] subcomA = breakToken(workingArg);
             String subcom = subcomA[0];
             workingArg = subcomA[1];
             boolean specialImmediate = (mode != 0) & (workingArg.length() == 0);
-            if (f == (sdb2 ? ':' : '$')) {
+            if (f == ':') {
                 if (subcom.startsWith("{")) {
                     String esc = subcom.substring(1);
-                    if (!sdb2)
-                        esc = EscapedStringSyntax.unescape(esc);
-                    RubyIO hashVal = ValueSyntax.decode(esc, sdb2);
+                    RubyIO hashVal = ValueSyntax.decode(esc);
                     RubyIO root = res;
                     res = res.getHashVal(hashVal);
                     if (specialImmediate) {

@@ -58,21 +58,21 @@ public class MergingEventAccess implements IEventAccess {
     }
 
     private RubyIO convertEventKey(int i, RubyIO key) {
-        return new RubyIO().setString(((char) ('0' + i)) + ValueSyntax.encode(key, true), true);
+        return new RubyIO().setString(((char) ('0' + i)) + ValueSyntax.encode(key), true);
     }
 
     @Override
     public RubyIO getEvent(RubyIO key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
-        return accesses[in].getEvent(ValueSyntax.decode(ks.substring(1), true));
+        return accesses[in].getEvent(ValueSyntax.decode(ks.substring(1)));
     }
 
     @Override
     public void delEvent(RubyIO key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
-        accesses[in].delEvent(ValueSyntax.decode(ks.substring(1), true));
+        accesses[in].delEvent(ValueSyntax.decode(ks.substring(1)));
     }
 
     @Override
@@ -95,21 +95,21 @@ public class MergingEventAccess implements IEventAccess {
     public String[] getEventSchema(RubyIO key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
-        return accesses[in].getEventSchema(ValueSyntax.decode(ks.substring(1), true));
+        return accesses[in].getEventSchema(ValueSyntax.decode(ks.substring(1)));
     }
 
     @Override
     public int getEventType(RubyIO key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
-        return accesses[in].getEventType(ValueSyntax.decode(ks.substring(1), true)) + accessEVTBases[in];
+        return accesses[in].getEventType(ValueSyntax.decode(ks.substring(1))) + accessEVTBases[in];
     }
 
     @Override
     public Runnable hasSync(RubyIO key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
-        return accesses[in].hasSync(ValueSyntax.decode(ks.substring(1), true));
+        return accesses[in].hasSync(ValueSyntax.decode(ks.substring(1)));
     }
 
     @Override
@@ -121,27 +121,27 @@ public class MergingEventAccess implements IEventAccess {
     public long getEventX(RubyIO a) {
         String ks = a.decString();
         int in = ks.charAt(0) - '0';
-        return accesses[in].getEventX(ValueSyntax.decode(ks.substring(1), true));
+        return accesses[in].getEventX(ValueSyntax.decode(ks.substring(1)));
     }
 
     @Override
     public long getEventY(RubyIO a) {
         String ks = a.decString();
         int in = ks.charAt(0) - '0';
-        return accesses[in].getEventY(ValueSyntax.decode(ks.substring(1), true));
+        return accesses[in].getEventY(ValueSyntax.decode(ks.substring(1)));
     }
 
     @Override
     public void setEventXY(RubyIO a, long x, long y) {
         String ks = a.decString();
         int in = ks.charAt(0) - '0';
-        accesses[in].setEventXY(ValueSyntax.decode(ks.substring(1), true), x, y);
+        accesses[in].setEventXY(ValueSyntax.decode(ks.substring(1)), x, y);
     }
 
     @Override
     public String getEventName(RubyIO a) {
         String ks = a.decString();
         int in = ks.charAt(0) - '0';
-        return accesses[in].getEventName(ValueSyntax.decode(ks.substring(1), true));
+        return accesses[in].getEventName(ValueSyntax.decode(ks.substring(1)));
     }
 }

@@ -96,7 +96,7 @@ public class TraditionalEventAccess implements IEventAccess {
                 eventSchema,
                 mapRootId,
                 mapRootSchema,
-                ValueSyntax.encode(key, true)
+                ValueSyntax.encode(key)
         };
     }
 
@@ -117,12 +117,12 @@ public class TraditionalEventAccess implements IEventAccess {
 
     @Override
     public long getEventX(RubyIO a) {
-        return PathSyntax.parse(getEvent(a), propPathX, true).fixnumVal;
+        return PathSyntax.parse(getEvent(a), propPathX).fixnumVal;
     }
 
     @Override
     public long getEventY(RubyIO a) {
-        return PathSyntax.parse(getEvent(a), propPathY, true).fixnumVal;
+        return PathSyntax.parse(getEvent(a), propPathY).fixnumVal;
     }
 
     @Override
@@ -130,14 +130,14 @@ public class TraditionalEventAccess implements IEventAccess {
         RubyIO ev = getEvent(a);
         if (ev == null)
             return;
-        PathSyntax.parse(getEvent(a), propPathX, true).setFX(x);
-        PathSyntax.parse(getEvent(a), propPathY, true).setFX(y);
+        PathSyntax.parse(getEvent(a), propPathX).setFX(x);
+        PathSyntax.parse(getEvent(a), propPathY).setFX(y);
         pokeHive();
     }
 
     @Override
     public String getEventName(RubyIO a) {
-        RubyIO iv = PathSyntax.parse(getEvent(a), propPathName, true);
+        RubyIO iv = PathSyntax.parse(getEvent(a), propPathName);
         if (iv == null)
             return null;
         return iv.decString();
@@ -156,7 +156,7 @@ public class TraditionalEventAccess implements IEventAccess {
     }
 
     public RubyIO getMapEvents() {
-        return PathSyntax.parse(mapRoot, eventsPath, true);
+        return PathSyntax.parse(mapRoot, eventsPath);
     }
 
     private void pokeHive() {

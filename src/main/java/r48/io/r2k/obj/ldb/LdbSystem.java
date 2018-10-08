@@ -111,6 +111,7 @@ public class LdbSystem extends R2kObject {
     public StringR2kStruct frameName = new StringR2kStruct();
     public BooleanR2kStruct invanim = new BooleanR2kStruct(false);
     public BooleanR2kStruct showTitle = new BooleanR2kStruct(true);
+    public IntegerR2kStruct itemAllowClassbased = new IntegerR2kStruct(0);
 
     public LdbSystem() {
         menuCommandsSize.target = new ISupplier<ArrayR2kInterpretable<ShortR2kStruct>>() {
@@ -176,6 +177,8 @@ public class LdbSystem extends R2kObject {
                 new Index(0x5E, battletestTerrain, "@test_battle_terrain"),
                 new Index(0x5F, battletestFormation, "@test_battle_formation"),
                 new Index(0x60, battletestCondition, "@test_battle_condition"),
+                new Index(0x61, itemAllowClassbased, "@item_allow_classbased_2k3"),
+                // new Index(0x62, backdropSelectionNote, "@backdrop_selection_note"),
                 new Index(0x63, frameShow, "@frame_show_2k3"),
                 new Index(0x64, frameName, "@frame_name_2k3"),
                 new Index(0x65, invanim, "@invert_animations_2k3"),

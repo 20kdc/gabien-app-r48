@@ -76,17 +76,17 @@ class SDBHelpers {
         };
     }
 
-    public SchemaElement makeSpriteSelector(final String varPath, final String imgPath, final String imgPfx, final boolean sdb2) {
+    public SchemaElement makeSpriteSelector(final String varPath, final String imgPath, final String imgPfx) {
         final IFunction<String, ISpritesheetProvider> args2 = spritesheets.get(imgPfx);
         return new SpritesheetCoreSchemaElement(spritesheetN.get(imgPfx), 0, new IFunction<RubyIO, RubyIO>() {
             @Override
             public RubyIO apply(RubyIO rubyIO) {
-                return PathSyntax.parse(rubyIO, varPath, sdb2);
+                return PathSyntax.parse(rubyIO, varPath);
             }
         }, new IFunction<RubyIO, ISpritesheetProvider>() {
             @Override
             public ISpritesheetProvider apply(RubyIO rubyIO) {
-                return args2.apply(PathSyntax.parse(rubyIO, imgPath, sdb2).decString());
+                return args2.apply(PathSyntax.parse(rubyIO, imgPath).decString());
             }
         });
     }
@@ -180,7 +180,7 @@ class SDBHelpers {
                         new ArrayElementSchemaElement(0, TXDB.get("type "), new EnumSchemaElement(types, new RubyIO().setFX(0), "LOCK"), null, false),
                         new DisambiguatorSchemaElement("]0", disambiguations)
                 ),
-                new SubwindowSchemaElement(new HWNDSchemaElement("]0", "R2K/H_Internal_PPP", true), new IFunction<RubyIO, String>() {
+                new SubwindowSchemaElement(new HWNDSchemaElement("]0", "R2K/H_Internal_PPP"), new IFunction<RubyIO, String>() {
                     @Override
                     public String apply(RubyIO rubyIO) {
                         return TXDB.get("Explain this picture mode...");

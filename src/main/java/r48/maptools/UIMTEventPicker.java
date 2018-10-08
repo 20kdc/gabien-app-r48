@@ -213,7 +213,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         String[] root = map.mapTable.eventAccess.getEventSchema(key);
         if (root == null)
             return;
-        key = ValueSyntax.decode(root[3], true);
+        key = ValueSyntax.decode(root[3]);
         AppMain.launchNonRootSchema(AppMain.objectDB.getObject(root[1]), root[2], key, event, root[0], "E" + key, map);
     }
 

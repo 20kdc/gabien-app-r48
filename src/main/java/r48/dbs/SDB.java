@@ -176,7 +176,7 @@ public class SDB {
                             String a = args[point++];
                             if (a.equals("."))
                                 a = null;
-                            return new HWNDSchemaElement(a, args[point++], false);
+                            return new HWNDSchemaElement(a, args[point++]);
                         }
                         if (text.equals("hide")) {
                             SchemaElement hide = get();
@@ -193,7 +193,7 @@ public class SDB {
                             return new HiddenSchemaElement(hide, new IFunction<RubyIO, Boolean>() {
                                 @Override
                                 public Boolean apply(RubyIO rubyIO) {
-                                    return PathSyntax.parse(rubyIO, path, true).type == (text.endsWith("!") ? 'F' : 'T');
+                                    return PathSyntax.parse(rubyIO, path).type == (text.endsWith("!") ? 'F' : 'T');
                                 }
                             });
                         }
@@ -208,7 +208,7 @@ public class SDB {
                                     txt = null;
                             }
                             SchemaElement hide = get();
-                            return new PathSchemaElement(path, txt, hide, true, false);
+                            return new PathSchemaElement(path, txt, hide, false);
                         }
                         if (text.equals("optP") || text.equals("optPN")) {
                             String path = args[point++];
@@ -221,7 +221,7 @@ public class SDB {
                                     txt = null;
                             }
                             SchemaElement hide = get();
-                            return new PathSchemaElement(path, txt, hide, true, true);
+                            return new PathSchemaElement(path, txt, hide, true);
                         }
 
                         // CS means "control indent if allowed"
@@ -358,7 +358,7 @@ public class SDB {
                             // This never got used by anything, so it's set as always-v1p1
                             LinkedList<RubyIO> validKeys = new LinkedList<RubyIO>();
                             while (point < args.length)
-                                validKeys.add(ValueSyntax.decode(args[point++], true));
+                                validKeys.add(ValueSyntax.decode(args[point++]));
                             return new HashObjectSchemaElement(validKeys, text.equals("hashObjectInner"));
                         }
                         if (text.equals("subwindow"))
@@ -448,14 +448,14 @@ public class SDB {
                             final String varPath = args[point++];
                             final String imgPath = args[point++];
                             final String imgPfx = args[point++];
-                            return helpers.makeSpriteSelector(varPath, imgPath, imgPfx, false);
+                            return helpers.makeSpriteSelector(varPath, imgPath, imgPfx);
                         }
                         if (text.equals("r2kTonePicker")) {
                             final String rPath = args[point++];
                             final String gPath = args[point++];
                             final String bPath = args[point++];
                             final String sPath = args[point++];
-                            return new TonePickerSchemaElement(rPath, gPath, bPath, sPath, 100, false);
+                            return new TonePickerSchemaElement(rPath, gPath, bPath, sPath, 100);
                         }
                         if (text.equals("binding")) {
                             String type = args[point++];
@@ -492,7 +492,7 @@ public class SDB {
                             // contextDictionary <ctxId> <default 0 @name rpg_troop_core
                             final String contextName = args[point++];
                             final String base = args[point++];
-                            final RubyIO defVal = ValueSyntax.decode(args[point++], true);
+                            final RubyIO defVal = ValueSyntax.decode(args[point++]);
                             final String outer = args[point++];
                             final boolean hash = args[point++].equals("1");
                             final String inner = args[point++];
@@ -516,7 +516,7 @@ public class SDB {
                                                 // Default val doesn't get carried over since it gets specced here
                                                 buttonText = baseEnum.buttonText;
                                             }
-                                            RubyIO p = PathSyntax.parse(host, outer, true);
+                                            RubyIO p = PathSyntax.parse(host, outer);
                                             if (p != null)
                                                 DictionaryUpdaterRunnable.coreLogic(options, createPathMap(inner), p, hash, interpret);
                                             convertOptions();
@@ -605,14 +605,14 @@ public class SDB {
                                 a = null;
                             String b = args[point++];
                             String c = args[point++];
-                            return new MapPositionHelperSchemaElement(a, b, c, true);
+                            return new MapPositionHelperSchemaElement(a, b, c);
                         }
                         if (text.equals("eventTileHelper")) {
                             String c = args[point++];
                             String d = args[point++];
                             String a = args[point++];
                             String b = args[point++];
-                            return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(b), Integer.parseInt(a), c, d, false), getFunctionToReturn(TXDB.get("Select Tile Graphic...")));
+                            return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(b), Integer.parseInt(a), c, d), getFunctionToReturn(TXDB.get("Select Tile Graphic...")));
                         }
                         // -- If all else fails, it's an ID to be looked up. --
                         return getSDBEntry(text);
@@ -624,7 +624,7 @@ public class SDB {
                 return new IFunction<RubyIO, RubyIO>() {
                     @Override
                     public RubyIO apply(RubyIO rubyIO) {
-                        return PathSyntax.parse(rubyIO, inner, true);
+                        return PathSyntax.parse(rubyIO, inner);
                     }
                 };
             }
@@ -652,7 +652,7 @@ public class SDB {
                 } else if (c == '@') {
                     String t = "@" + PathSyntax.poundEscape(args[0]);
                     // Note: the unescaping happens in the Path
-                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, t), handleChain(args, 1), true, false));
+                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, t), handleChain(args, 1), false));
                 } else if (c == '}') {
                     String intA0 = args[0];
                     boolean opt = false;
@@ -664,7 +664,7 @@ public class SDB {
                     // Note: the unescaping happens in the Path
                     // Automatically escape.
                     String t = ":{" + PathSyntax.poundEscape(intA0);
-                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, args[1]), handleChain(args, 2), true, opt));
+                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, args[1]), handleChain(args, 2), opt));
                 } else if (c == '+') {
                     workingObj.aggregate.add(handleChain(args, 0));
                 } else if (c == '>') {
@@ -691,7 +691,7 @@ public class SDB {
                     for (int i = 1; i < args.length; i++)
                         options.put(":" + args[i], TXDB.get(args[0], args[i]));
 
-                    EnumSchemaElement ese = new EnumSchemaElement(options, ValueSyntax.decode(":" + args[1], true), "SYM:" + TXDB.get("Symbol"));
+                    EnumSchemaElement ese = new EnumSchemaElement(options, ValueSyntax.decode(":" + args[1]), "SYM:" + TXDB.get("Symbol"));
                     setSDBEntry(args[0], ese);
                 } else if (c == 'E') {
                     HashMap<String, String> options = new HashMap<String, String>();
@@ -699,7 +699,7 @@ public class SDB {
                         String ctx = "SDB@" + args[0];
                         options.put(args[i], TXDB.get(ctx, args[i + 1]));
                     }
-                    EnumSchemaElement e = new EnumSchemaElement(options, ValueSyntax.decode(args[2], true), "INT:" + TXDB.get(args[0], args[1]));
+                    EnumSchemaElement e = new EnumSchemaElement(options, ValueSyntax.decode(args[2]), "INT:" + TXDB.get(args[0], args[1]));
                     setSDBEntry(args[0], e);
                 } else if (c == 'M') {
                     mergeRunnables.add(new Runnable() {
@@ -721,7 +721,7 @@ public class SDB {
                     readFile(args[0]);
                 } else if (c == 'D') {
                     // D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [<interpretation ID>]
-                    final String[] root = PathSyntax.breakToken(args[2], true);
+                    final String[] root = PathSyntax.breakToken(args[2]);
                     String interpret = null;
                     if (args.length == 6) {
                         interpret = args[5];
@@ -840,7 +840,7 @@ public class SDB {
                             public String apply(RubyIO rubyIO) {
                                 LinkedList<RubyIO> parameters = new LinkedList<RubyIO>();
                                 for (String arg : arguments) {
-                                    RubyIO res = PathSyntax.parse(rubyIO, arg, true);
+                                    RubyIO res = PathSyntax.parse(rubyIO, arg);
                                     if (res == null)
                                         break;
                                     parameters.add(res);

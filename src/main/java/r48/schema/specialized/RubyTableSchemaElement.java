@@ -63,10 +63,10 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final RubyIO targV = iVar == null ? target : PathSyntax.parse(target, iVar, true);
+        final RubyIO targV = iVar == null ? target : PathSyntax.parse(target, iVar);
         final RubyTable targ = new RubyTable(targV.userVal);
-        final RubyIO width = widthVar == null ? null : PathSyntax.parse(target, widthVar, true);
-        final RubyIO height = heightVar == null ? null : PathSyntax.parse(target, heightVar, true);
+        final RubyIO width = widthVar == null ? null : PathSyntax.parse(target, widthVar);
+        final RubyIO height = heightVar == null ? null : PathSyntax.parse(target, heightVar);
 
         final SchemaPath dataBlackboxTarget = path.findLast();
         final SchemaPath.EmbedDataKey blackboxKey = new SchemaPath.EmbedDataKey(this, targV, RubyTableSchemaElement.class, "blackbox");

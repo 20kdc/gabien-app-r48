@@ -181,18 +181,18 @@ public class R2kSavefileEventAccess implements IEventAccess {
     public String[] getEventSchema(RubyIO key) {
         if (key.type == '"') {
             if (key.decString().equals("Party"))
-                return new String[] {"RPG::SavePartyLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key, true)};
+                return new String[] {"RPG::SavePartyLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
             if (key.decString().equals("Boat"))
-                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key, true)};
+                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
             if (key.decString().equals("Ship"))
-                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key, true)};
+                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
             if (key.decString().equals("Airship"))
-                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key, true)};
+                return new String[] {"RPG::SaveVehicleLocation", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
         }
         // Used for ghosts
         if (eventsHash.getHashVal(key) == null)
-            return new String[] {"OPAQUE", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key, true)};
-        return new String[] {"RPG::SaveMapEvent", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key, true)};
+            return new String[] {"OPAQUE", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
+        return new String[] {"RPG::SaveMapEvent", saveFileRootId, saveFileRootSchema, ValueSyntax.encode(key)};
     }
 
     @Override

@@ -281,11 +281,11 @@ public class CMDB {
                     } else {
                         idx = s;
                     }
-                    final RubyIO v = ValueSyntax.decode(gbStateArgs[gbStatePosition++], true);
+                    final RubyIO v = ValueSyntax.decode(gbStateArgs[gbStatePosition++]);
                     final IGroupBehavior igb = getGroupBehavior();
                     return new IGroupBehavior() {
                         private boolean checkCondition(RubyIO command) {
-                            RubyIO p = PathSyntax.parse(command, idx, true);
+                            RubyIO p = PathSyntax.parse(command, idx);
                             if (p == null)
                                 return false;
                             return inv ^ RubyIO.rubyEquals(p, v);
@@ -466,7 +466,7 @@ public class CMDB {
                         final int[] ikeys = new int[iargs.length];
                         for (int i = 0; i < iargs.length; i++) {
                             ikeys[i] = Integer.parseInt(args[(i * 2) + 1]);
-                            iargs[i] = ValueSyntax.decode(args[(i * 2) + 2], true);
+                            iargs[i] = ValueSyntax.decode(args[(i * 2) + 2]);
                         }
                         rc.indentPost = new IFunction<RubyIO, Integer>() {
                             @Override

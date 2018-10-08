@@ -25,17 +25,15 @@ import r48.ui.UIAppendButton;
 public class PathSchemaElement extends SchemaElement implements IFieldSchemaElement {
     public String pStr;
     public String alias;
-    public boolean sdb2;
     public SchemaElement subElem;
-    public boolean optional = false;
+    public boolean optional;
 
     private boolean fieldWidthOverride = false;
     private int fieldWidth;
 
-    public PathSchemaElement(String iv, String a, SchemaElement sub, boolean sdb2, boolean opt) {
+    public PathSchemaElement(String iv, String a, SchemaElement sub, boolean opt) {
         pStr = iv;
         alias = a;
-        this.sdb2 = sdb2;
         subElem = sub;
         optional = opt;
     }
@@ -46,7 +44,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
         if (alias != null)
             uil = new ArrayElementSchemaElement.UIOverridableWidthLabel(alias + " ", FontSizes.schemaFieldTextHeight, fieldWidth, fieldWidthOverride);
         fieldWidthOverride = false;
-        RubyIO tgo = PathSyntax.parse(target, pStr, 0, sdb2);
+        RubyIO tgo = PathSyntax.parse(target, pStr, 0);
         UIElement e2;
         if (tgo == null) {
             if (!optional)
@@ -54,7 +52,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
             e2 = new UITextButton(TXDB.get("<Not present - Add>"), FontSizes.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    RubyIO rio = PathSyntax.parse(target, pStr, 1, sdb2);
+                    RubyIO rio = PathSyntax.parse(target, pStr, 1);
                     if (rio.type == 0)
                         createIVar(rio, path, false);
                 }
@@ -65,7 +63,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
                 e2 = new UIAppendButton("-", e2, new Runnable() {
                     @Override
                     public void run() {
-                        if (PathSyntax.parse(target, pStr, 2, sdb2) != null)
+                        if (PathSyntax.parse(target, pStr, 2) != null)
                             path.changeOccurred(false);
                     }
                 }, FontSizes.schemaFieldTextHeight);
@@ -90,12 +88,12 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        RubyIO r = PathSyntax.parse(target, pStr, 0, sdb2);
+        RubyIO r = PathSyntax.parse(target, pStr, 0);
         if (r != null) {
             subElem.modifyVal(r, path.otherIndex(alias), setDefault);
         } else {
             if (!optional) {
-                RubyIO rio = PathSyntax.parse(target, pStr, 1, sdb2);
+                RubyIO rio = PathSyntax.parse(target, pStr, 1);
                 if (rio.type == 0)
                     createIVar(rio, path, true);
             }

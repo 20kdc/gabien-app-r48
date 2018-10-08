@@ -54,12 +54,12 @@ public class GenericEventGraphicRenderer implements IEventGraphicRenderer {
 
     @Override
     public RubyIO extractEventGraphic(RubyIO event) {
-        return PathSyntax.parse(event, graphicPath, true);
+        return PathSyntax.parse(event, graphicPath);
     }
 
     @Override
     public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int sprScale) {
-        GGraphicsInfo ggi = renders.get(ValueSyntax.encode(target, true));
+        GGraphicsInfo ggi = renders.get(ValueSyntax.encode(target));
         if (ggi == null)
             return;
         igd.blitScaledImage(ggi.x, ggi.y, ggi.w, ggi.h, ox + ggi.ox, oy + ggi.oy, ggi.w * sprScale, ggi.h * sprScale, source);

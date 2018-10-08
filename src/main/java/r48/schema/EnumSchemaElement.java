@@ -55,7 +55,7 @@ public class EnumSchemaElement extends SchemaElement {
     public void convertOptions() {
         viewOptions = new HashMap<String, RubyIO>();
         for (String si : options.keySet()) {
-            RubyIO dec = ValueSyntax.decode(si, true);
+            RubyIO dec = ValueSyntax.decode(si);
             viewOptions.put(viewValue(dec, true), dec);
         }
     }
@@ -86,7 +86,7 @@ public class EnumSchemaElement extends SchemaElement {
     }
 
     public String viewValue(RubyIO val, boolean prefix) {
-        String v2 = ValueSyntax.encode(val, true);
+        String v2 = ValueSyntax.encode(val);
         if (v2 != null) {
             String st = options.get(v2);
             if (st != null) {

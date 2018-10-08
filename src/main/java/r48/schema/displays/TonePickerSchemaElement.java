@@ -32,23 +32,21 @@ import r48.schema.util.SchemaPath;
 public class TonePickerSchemaElement extends SchemaElement {
     public final String rP, gP, bP, sP;
     public final int base;
-    public final boolean sdb2;
 
-    public TonePickerSchemaElement(String rPath, String gPath, String bPath, String sPath, int b, boolean sdb2x) {
+    public TonePickerSchemaElement(String rPath, String gPath, String bPath, String sPath, int b) {
         rP = rPath;
         gP = gPath;
         bP = bPath;
         sP = sPath;
         base = b;
-        sdb2 = sdb2x;
     }
 
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-        int nr = (int) PathSyntax.parse(target, rP, sdb2).fixnumVal;
-        int ng = (int) PathSyntax.parse(target, gP, sdb2).fixnumVal;
-        int nb = (int) PathSyntax.parse(target, bP, sdb2).fixnumVal;
-        int ns = (int) PathSyntax.parse(target, sP, sdb2).fixnumVal;
+        int nr = (int) PathSyntax.parse(target, rP).fixnumVal;
+        int ng = (int) PathSyntax.parse(target, gP).fixnumVal;
+        int nb = (int) PathSyntax.parse(target, bP).fixnumVal;
+        int ns = (int) PathSyntax.parse(target, sP).fixnumVal;
         return createTotem(new ToneImageEffect(nr, ng, nb, ns, base));
     }
 

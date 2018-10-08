@@ -21,32 +21,19 @@ text... : integer
 PathSyntax is a syntax for getting a RubyIO relative to another RubyIO.
 Sometimes, it's used relative to the world.
 
-PathSyntax is used in the following SDB1 stuff (this text should be safe to use as regexes, apart from DA{)
-  condHide
-  C name
-  path
-  optP
-  spriteSelector
-  flushCommandBuffer
-  DA{
-  SDBHelpers
-
-  ???
-
 PathSyntax text is divided into a start block (which may not be allowed to exist in some cases),
  which if allowed is an ObjectDB ID, and a set of path-components,
- which have to start with '$' (':' for SDB1.1), '@', or ']'.
+ which have to start with ':', '@', or ']'.
 
-A path-component continues until the next instance of a path-component start character,
- unless in SDB1.1, where the escaping is applied at this level,
-  and '#' escapes the next character (including another '#').
+A path-component continues until the next instance of a path-component start character.
+There is a form of escaping applied here: '#' escapes the next character, including another '#'.
 
 Note that a path component may support additions / deletions, or may not.
 Retrieval, addition and deletion are marked with "RAD".
 
 The path-component forms are:
 
-':' (SDB1.1) / '$' (SDB1):
+':':
 
    '{' ValueSyntax : Hash value by key. (RAD)
    '.' text...     : Arbitrary (can be non-@) instance variable (RAD)

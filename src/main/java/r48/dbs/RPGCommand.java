@@ -139,11 +139,11 @@ public class RPGCommand {
 
         public void applyTo(int idx, UIScrollLayout elementList, RubyIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
             if (hasSpritesheet) {
-                SchemaElement scse = AppMain.schemas.helpers.makeSpriteSelector("]" + idx, "]" + spritesheetTargstr, spritesheetId, true);
+                SchemaElement scse = AppMain.schemas.helpers.makeSpriteSelector("]" + idx, "]" + spritesheetTargstr, spritesheetId);
                 elementList.panelsAdd(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
             if (hasTonepicker) {
-                SchemaElement scse = new TonePickerSchemaElement("]" + tpA, "]" + tpB, "]" + tpC, "]" + tpD, tpBase, true);
+                SchemaElement scse = new TonePickerSchemaElement("]" + tpA, "]" + tpB, "]" + tpC, "]" + tpD, tpBase);
                 elementList.panelsAdd(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
         }

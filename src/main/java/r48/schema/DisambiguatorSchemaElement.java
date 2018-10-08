@@ -50,10 +50,10 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     }
 
     private String getDisambigIndex(RubyIO target) {
-        target = PathSyntax.parse(target, dIndex, true);
+        target = PathSyntax.parse(target, dIndex);
         if (target == null)
             return "";
-        return ValueSyntax.encode(target, true);
+        return ValueSyntax.encode(target);
     }
 
     private SchemaElement getSchemaElement(String dVal) {

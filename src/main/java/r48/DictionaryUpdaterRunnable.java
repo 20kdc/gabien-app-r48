@@ -9,7 +9,9 @@ package r48;
 
 import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
-import r48.dbs.*;
+import r48.dbs.FormatSyntax;
+import r48.dbs.TXDB;
+import r48.dbs.ValueSyntax;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
@@ -115,7 +117,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
 
     private static void handleVal(HashMap<String, String> finalMap, IFunction<RubyIO, RubyIO> iVar, RubyIO rio, RubyIO k, String interpret) {
         if (rio.type != '0') {
-            String p = ValueSyntax.encode(k, true);
+            String p = ValueSyntax.encode(k);
             if (p == null)
                 return;
             if (iVar != null)
