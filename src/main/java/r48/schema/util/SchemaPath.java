@@ -9,7 +9,6 @@ package r48.schema.util;
 
 import r48.AppMain;
 import r48.RubyIO;
-import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
 
@@ -59,11 +58,6 @@ public class SchemaPath {
     public WeakHashMap<ISchemaHost, HashMap<EmbedDataKey, Double>> embedData = new WeakHashMap<ISchemaHost, HashMap<EmbedDataKey, Double>>();
 
     public final HashMap<String, SchemaElement> contextualSchemas = new HashMap<String, SchemaElement>();
-
-    private SchemaPath() {
-        parent = null;
-        lastArrayIndex = null;
-    }
 
     private SchemaPath(SchemaPath sp) {
         parent = sp;
@@ -145,24 +139,16 @@ public class SchemaPath {
         return mod;
     }
 
-    // Cheat used to trace 'back' properly.
-    // Used by Enum too, again to trace 'back'.
-    public SchemaPath findBack() {
-        SchemaPath root = this;
-        while (root.parent != null) {
-            root = root.parent;
-            if (root.hasBeenUsed)
-                return root;
-        }
-        return root;
-    }
-
     // Similar to findBack, but includes the current node too.
     // Specifically for scroll value storage.
     public SchemaPath findLast() {
-        if (hasBeenUsed)
-            return this;
-        return findBack();
+        SchemaPath root = this;
+        while (root.parent != null) {
+            if (root.hasBeenUsed)
+                return root;
+            root = root.parent;
+        }
+        return root;
     }
 
     // -- Important Stuff (always used) --

@@ -15,7 +15,9 @@ import r48.map.StuffRenderer;
  * Created on 12/29/16.
  */
 public interface ISchemaHost {
-    void switchObject(SchemaPath nextObject);
+    void pushObject(SchemaPath nextObject);
+
+    void popObject();
 
     void launchOther(UIElement uiTest);
 

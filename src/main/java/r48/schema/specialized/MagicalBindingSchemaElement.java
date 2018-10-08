@@ -9,7 +9,6 @@ package r48.schema.specialized;
 
 import gabien.ui.UIElement;
 import r48.RubyIO;
-import r48.map.StuffRenderer;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -36,9 +35,7 @@ public class MagicalBindingSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final RubyIO trueTarget, ISchemaHost launcher, final SchemaPath truePath) {
         // Use subwatchers to create the backwards binding flow
         SchemaPath sp = createPath(trueTarget, truePath);
-        // Bootstrap. Note the additional level of indirection to make sure you can return to your starting point.
-        SchemaPath vrp = sp.otherIndex("");
-        return sp.editor.buildHoldingEditor(sp.targetElement, new VirtualizedSchemaHost(truePath.findBack(), sp, truePath, sp, launcher), vrp);
+        return sp.editor.buildHoldingEditor(sp.targetElement, launcher, sp);
     }
 
     private SchemaPath createPath(final RubyIO trueTarget, final SchemaPath truePath) {
@@ -75,89 +72,5 @@ public class MagicalBindingSchemaElement extends SchemaElement {
             truePath.changeOccurred(true);
         SchemaPath sp = createPath(trueTarget, truePath);
         sp.editor.modifyVal(sp.targetElement, sp, setDefault);
-    }
-
-    // This is a fake schema host, sandboxing the "inner" root to avoid screwing up things royally.
-    private class VirtualizedSchemaHost implements ISchemaHost {
-        // When we go to the virtual path root, that means we're leaving.
-        public SchemaPath pathRootReal, pathRootVirt, lastPathReal, lastPathVirt;
-        public ISchemaHost trueHost;
-
-        public VirtualizedSchemaHost(SchemaPath prr, SchemaPath prv, SchemaPath lpr, SchemaPath lpv, ISchemaHost parent) {
-            pathRootReal = prr;
-            pathRootVirt = prv;
-
-            lastPathReal = lpr;
-            lastPathVirt = lpv;
-
-            trueHost = parent;
-        }
-
-        @Override
-        public void switchObject(final SchemaPath nextVirt) {
-            // This is where things get weird, to maintain a sense of a virtual stack.
-            if (nextVirt.findBack() == lastPathVirt) {
-                // Forward step?
-                lastPathReal = switchObjectInner(lastPathReal, nextVirt);
-            } else if (nextVirt.findBack() == lastPathVirt.findBack()) {
-                // Side-step?
-                lastPathReal = switchObjectInner(lastPathReal.findBack(), nextVirt);
-            } else {
-                // Backward-step?
-                lastPathReal = switchObjectInner(lastPathReal.findBack().findBack(), nextVirt);
-            }
-            nextVirt.hasBeenUsed = true;
-            lastPathVirt = nextVirt;
-            trueHost.switchObject(lastPathReal);
-        }
-
-        private SchemaPath switchObjectInner(SchemaPath parent, final SchemaPath nextVirt) {
-            return parent.newWindow(new SchemaElement() {
-                @Override
-                public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-                    VirtualizedSchemaHost targ = VirtualizedSchemaHost.this;
-                    if (launcher != trueHost) {
-                        // THIS IS A CLONE! Generate a new VSH.
-                        targ = new VirtualizedSchemaHost(pathRootReal, pathRootVirt, lastPathReal, lastPathVirt, launcher);
-                    }
-                    return nextVirt.editor.buildHoldingEditor(target, targ, nextVirt);
-                }
-
-                @Override
-                public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-                    nextVirt.editor.modifyVal(target, nextVirt, setDefault);
-                }
-            }, nextVirt.targetElement);
-        }
-
-        @Override
-        public void launchOther(UIElement uiTest) {
-            trueHost.launchOther(uiTest);
-        }
-
-        @Override
-        public ISchemaHost newBlank() {
-            return trueHost.newBlank();
-        }
-
-        @Override
-        public boolean isActive() {
-            return trueHost.isActive();
-        }
-
-        @Override
-        public SchemaPath getCurrentObject() {
-            return lastPathVirt;
-        }
-
-        @Override
-        public StuffRenderer getContextRenderer() {
-            return trueHost.getContextRenderer();
-        }
-
-        @Override
-        public String getContextGUM() {
-            return trueHost.getContextGUM();
-        }
     }
 }

@@ -173,7 +173,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             categories[i] = new UIEnumChoice.Category(database.categories[i], llo);
         }
 
-        launcher.switchObject(displayPath.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {
+        launcher.pushObject(displayPath.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {
             @Override
             public void accept(RubyIO integer) {
                 // NOTE: This just uses ints for everything.
@@ -211,9 +211,9 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 // On the one hand, the elements are stale.
                 // On the other hand, the elements will be obliterated anyway before reaching the user.
                 // if zp, then it's a two-stage leave to avoid angering the virtualization god
-                launcher.switchObject(displayPath);
+                launcher.popObject();
                 if (zp)
-                    launcher.switchObject(displayPath.findBack());
+                    launcher.popObject();
             }
         }, categories, TXDB.get("Code"), UIEnumChoice.EntryMode.INT), null, path), target));
     }

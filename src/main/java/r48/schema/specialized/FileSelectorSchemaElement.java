@@ -56,7 +56,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
                 public void run() {
                     target.encString(sStripped, false);
                     path.changeOccurred(false);
-                    launcher.switchObject(path.findBack());
+                    launcher.popObject();
                 }
             });
             UIElement res = null;

@@ -20,6 +20,7 @@ import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
 import java.util.HashMap;
+import java.util.Stack;
 
 /**
  * Created on 12/29/16.
@@ -33,12 +34,13 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     // Note that even if the map view "dies", it's renderer will stay around.
     private final UIMapView contextView;
 
+    private final Stack<SchemaPath> backStack = new Stack<SchemaPath>();
+
     public UILabel pathLabel = new UILabel("", FontSizes.schemaPathTextHeight);
     public UIAppendButton toolbarP = new UIAppendButton(Art.Symbol.Back, pathLabel, new Runnable() {
         @Override
         public void run() {
-            if (innerElem.parent != null)
-                switchObject(innerElem.findBack());
+            popObject();
         }
     }, FontSizes.schemaPathTextHeight);
     public UIAppendButton toolbarCp = new UIAppendButton(TXDB.get("Copy"), toolbarP, new Runnable() {
@@ -122,7 +124,19 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     }
 
     @Override
-    public void switchObject(SchemaPath nextObject) {
+    public void pushObject(SchemaPath nextObject) {
+        if (innerElem != null)
+            backStack.push(innerElem);
+        switchObject(nextObject);
+    }
+
+    @Override
+    public void popObject() {
+        if (backStack.size() > 0)
+            switchObject(backStack.pop());
+    }
+
+    private void switchObject(SchemaPath nextObject) {
         if (innerElem != null)
             AppMain.objectDB.deregisterModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
         while (nextObject.editor == null)
@@ -131,8 +145,6 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
         if (!(windowOpen || stayClosed))
             doLaunch = true;
         innerElem = nextObject;
-        // Do this first, so that findLast has a proper target and can be found during UI build (rather than the per-frame saving)
-        innerElem.hasBeenUsed = true;
         innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
         AppMain.objectDB.registerModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
 

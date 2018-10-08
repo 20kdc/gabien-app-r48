@@ -51,10 +51,10 @@ public class SpritesheetCoreSchemaElement extends SchemaElement {
                     public void accept(Long integer) {
                         actTarg.fixnumVal = integer;
                         innerPath.changeOccurred(false);
-                        launcher.switchObject(innerPath.findBack());
+                        launcher.popObject();
                     }
                 });
-                launcher.switchObject(innerPath);
+                launcher.pushObject(innerPath);
             }
         });
     }

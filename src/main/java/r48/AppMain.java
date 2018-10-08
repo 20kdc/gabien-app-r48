@@ -615,7 +615,7 @@ public class AppMain {
     public static ISchemaHost launchSchema(String s, RubyIO rio, UIMapView context) {
         // Responsible for keeping listeners in place so nothing breaks.
         SchemaHostImpl watcher = new SchemaHostImpl(userWindowMaker, context);
-        watcher.switchObject(new SchemaPath(schemas.getSDBEntry(s), rio));
+        watcher.pushObject(new SchemaPath(schemas.getSDBEntry(s), rio));
         return watcher;
     }
 
@@ -624,7 +624,7 @@ public class AppMain {
         ISchemaHost shi = launchSchema(rootSchema, root, context);
         SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(rootSchema), root);
         sp = sp.arrayHashIndex(arrayIndex, indexText);
-        shi.switchObject(sp.newWindow(AppMain.schemas.getSDBEntry(elementSchema), element));
+        shi.pushObject(sp.newWindow(AppMain.schemas.getSDBEntry(elementSchema), element));
         return shi;
     }
 

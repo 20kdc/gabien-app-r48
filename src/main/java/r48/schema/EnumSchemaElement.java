@@ -72,13 +72,13 @@ public class EnumSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 liveUpdate();
-                launcher.switchObject(path.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {
+                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {
                     @Override
                     public void accept(RubyIO integer) {
                         target.setDeepClone(integer);
                         path.changeOccurred(false);
                         // Enums can affect parent format, so deal with that now.
-                        launcher.switchObject(path.findBack());
+                        launcher.popObject();
                     }
                 }, viewOptions, buttonText, entryMode), null, path), target));
             }
