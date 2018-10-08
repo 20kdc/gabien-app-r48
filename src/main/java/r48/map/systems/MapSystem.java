@@ -10,6 +10,7 @@ package r48.map.systems;
 import gabien.IGrDriver;
 import gabien.ui.*;
 import r48.*;
+import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
@@ -179,7 +180,7 @@ public abstract class MapSystem {
         }
 
         public static MapViewState fromRT(StuffRenderer stuffRenderer, String underscoreMapObjectId, String[] ex, final RubyIO its, final String str, final boolean readOnly, IEventAccess iea) {
-            final RubyIO sz = its.getInstVarBySymbol(str);
+            final RubyIO sz = PathSyntax.parse(its, str);
             final RubyTable rt = new RubyTable(sz.userVal);
             return new MapViewState(stuffRenderer, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, new IFunction<int[], Short>() {
                 @Override
