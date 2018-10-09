@@ -61,30 +61,30 @@ public class FillImageEditorTool implements IImageEditorTool {
 
             if (above && (!below)) {
                 if (autoshade) {
-                    view.image.setRaw(p.x, p.y, autoshadeUDX ? shC : shA);
+                    view.image.setPixel(p.x, p.y, autoshadeUDX ? shC : shA);
                 } else {
-                    view.image.setRaw(p.x, p.y, shB);
+                    view.image.setPixel(p.x, p.y, shB);
                 }
             } else if ((!above) && below) {
                 if (autoshade) {
-                    view.image.setRaw(p.x, p.y, autoshadeUDX ? shA : shC);
+                    view.image.setPixel(p.x, p.y, autoshadeUDX ? shA : shC);
                 } else {
-                    view.image.setRaw(p.x, p.y, shB);
+                    view.image.setPixel(p.x, p.y, shB);
                 }
             } else if (left && (!right)) {
                 if (autoshade) {
-                    view.image.setRaw(p.x, p.y, autoshadeLRX ? shC : shA);
+                    view.image.setPixel(p.x, p.y, autoshadeLRX ? shC : shA);
                 } else {
-                    view.image.setRaw(p.x, p.y, shB);
+                    view.image.setPixel(p.x, p.y, shB);
                 }
             } else if ((!left) && right) {
                 if (autoshade) {
-                    view.image.setRaw(p.x, p.y, autoshadeLRX ? shA : shC);
+                    view.image.setPixel(p.x, p.y, autoshadeLRX ? shA : shC);
                 } else {
-                    view.image.setRaw(p.x, p.y, shB);
+                    view.image.setPixel(p.x, p.y, shB);
                 }
             } else {
-                view.image.setRaw(p.x, p.y, shB);
+                view.image.setPixel(p.x, p.y, shB);
             }
         }
         view.eds.endSection();

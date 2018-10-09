@@ -57,6 +57,12 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             selPaletteIndex = 1;
         image = n;
         eds.currentImage = n;
+        checkTileRectInbounds();
+    }
+
+    private void checkTileRectInbounds() {
+        if (tiling != null)
+            tiling = new Rect(UIElement.sensibleCellMod(tiling.x, image.width), UIElement.sensibleCellMod(tiling.y, image.height), tiling.width, tiling.height);
     }
 
     @Override

@@ -89,6 +89,7 @@ public class ImageEditorEDS {
         return redoBuffers.size() > 0;
     }
 
+    // The image overwrite occurs from imageEditView.setImage.
     public ImageEditorImage performRedo() {
         saveDepth++;
         undoBuffers.add(currentImage);
