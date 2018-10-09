@@ -32,8 +32,7 @@ public class UIAppendButton extends UIElement.UIPanel {
         layoutAddElement(subElement);
         layoutAddElement(button);
 
-        runLayout();
-        setForcedBounds(null, new Rect(getWantedSize()));
+        forceToRecommended();
     }
 
     @Override
@@ -49,7 +48,10 @@ public class UIAppendButton extends UIElement.UIPanel {
         } else {
             subElement.setForcedBounds(this, new Rect(0, 0, r.width, r.height - bgb2.height));
             button.setForcedBounds(this, new Rect(0, r.height - bgb2.height, r.width, bgb2.height));
-            setWantedSize(new Size(Math.max(bgb1.width, bgb2.width), bgb1.height + bgb2.height));
+            // Not a typo! If the width constraint is loosened we could be forced into going back & forth between cases.
+            // This WILL cause an infinite loop in the layout code.
+            // See issue #38 for more details.
+            setWantedSize(new Size(bgb1.width + bgb2.width, bgb1.height + bgb2.height));
         }
     }
 }

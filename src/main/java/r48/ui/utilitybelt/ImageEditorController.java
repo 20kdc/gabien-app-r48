@@ -151,6 +151,7 @@ public class ImageEditorController {
                         }
                         imageEditView.setImage(new ImageEditorImage(rect.width, rect.height, newImage, imageEditView.image.palette, imageEditView.image.t1Lock));
                         imageEditView.eds.endSection();
+                        initPalette(0);
                     }
                 }, TXDB.get("Resize..."));
             }
