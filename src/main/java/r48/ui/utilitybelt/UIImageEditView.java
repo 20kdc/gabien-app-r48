@@ -75,8 +75,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
 
         drawGrid(igd, viewRct, false);
 
-        // This allows for tiling
-        IImage tempImg = image.rasterizeDouble();
+        IImage tempImg = image.rasterize();
         int ofsX = 0;
         int ofsY = 0;
         int ofsW = image.width;
@@ -105,7 +104,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         }
         for (int i = minX; i <= maxX; i++)
             for (int j = minY; j <= maxY; j++)
-                igd.blitScaledImage(ofsX, ofsY, ofsW, ofsH, soX + (soW * i), soY + (soH * j), soW, soH, tempImg);
+                blitTiledScaledImage(igd, ofsX, ofsY, ofsW, ofsH, soX + (soW * i), soY + (soH * j), soW, soH, tempImg);
 
         if (gridST)
             drawGrid(igd, viewRct, true);
@@ -142,6 +141,29 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         Art.drawZoom(igd, false, minusRect.x, minusRect.y, minusRect.height);
         if (dedicatedDragControl)
             Art.drawDragControl(igd, currentTool.getCamModeLT() != null, dragRect.x, dragRect.y, minusRect.height);
+    }
+
+    private void blitTiledScaledImage(IGrDriver igd, int ofsX, int ofsY, int ofsW, int ofsH, int x, int y, int soW, int soH, IImage tempImg) {
+        if (ofsW <= 0 || ofsH <= 0)
+            return;
+        int tiW = tempImg.getWidth();
+        int tiH = tempImg.getHeight();
+        if ((ofsX + ofsW > tiW) || (ofsY + ofsH > tiH)) {
+            // It needs horizontal tiling.
+            int part1W = tiW - ofsX;
+            int part1SW = (soW * part1W) / ofsW;
+            int part1H = tiH - ofsY;
+            int part1SH = (soH * part1H) / ofsH;
+            igd.blitScaledImage(ofsX, ofsY, part1W, part1H, x, y, part1SW, part1SH, tempImg);
+            // -+
+            blitTiledScaledImage(igd, ofsX, (ofsY + part1H) % tiH, part1W, ofsH - part1H, x, y + part1SH, part1SW, soH - part1SH, tempImg);
+            // +-
+            blitTiledScaledImage(igd, (ofsX + part1W) % tiW, ofsY, ofsW - part1W, part1H, x + part1SW, y, soW - part1SW, part1SH, tempImg);
+            // ++
+            blitTiledScaledImage(igd, (ofsX + part1W) % tiW, (ofsY + part1H) % tiH, ofsW - part1W, ofsH - part1H, x + part1SW, y + part1SH, soW - part1SW, soH - part1SH, tempImg);
+        } else {
+            igd.blitScaledImage(ofsX, ofsY, ofsW, ofsH, x, y, soW, soH, tempImg);
+        }
     }
 
     private void drawGrid(IGrDriver osb, Rect viewRct, boolean cut) {

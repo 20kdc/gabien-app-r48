@@ -7,8 +7,6 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.GaBIEn;
-import gabien.IGrDriver;
 import gabien.IImage;
 import r48.dbs.TXDB;
 import r48.imageio.ImageIOImage;
@@ -34,7 +32,7 @@ public class ImageEditorImage extends ImageIOImage {
             0xFFFF00FF
     };
     // Set to null on modification.
-    private IImage cachedD1, cachedD2;
+    private IImage cachedD1;
     // Locks palette index 0 to transparent, others are not.
     // This is essentially RPG Maker Emulation Mode.
     public final boolean t1Lock;
@@ -141,24 +139,12 @@ public class ImageEditorImage extends ImageIOImage {
 
     private void clearCachedData() {
         cachedD1 = null;
-        cachedD2 = null;
     }
 
     public IImage rasterize() {
         if (cachedD1 != null)
             return cachedD1;
         return cachedD1 = super.rasterize();
-    }
-
-    public IImage rasterizeDouble() {
-        if (cachedD2 != null)
-            return cachedD2;
-        IImage base = rasterize();
-        IGrDriver osb = GaBIEn.makeOffscreenBuffer(base.getWidth() * 2, base.getHeight() * 2, true);
-        osb.blitTiledImage(0, 0, base.getWidth() * 2, base.getHeight() * 2, base);
-        cachedD2 = GaBIEn.createImage(osb.getPixels(), osb.getWidth(), osb.getHeight());
-        osb.shutdown();
-        return cachedD2;
     }
 
     // Fun wrapper function like thing

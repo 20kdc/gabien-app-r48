@@ -17,43 +17,31 @@ import java.util.HashSet;
 public class FillAlgorithm {
     public final HashSet<Point> executedPointSet = new HashSet<Point>();
     public HashSet<Point> availablePointSet = new HashSet<Point>();
+    public final IFunction<Point, Point> inBounds;
     public final IFunction<Point, Boolean> matchesFill;
-    public final int width, height;
 
-    public FillAlgorithm(IFunction<Point, Boolean> points, int w, int h) {
+    public FillAlgorithm(IFunction<Point, Point> bounds, IFunction<Point, Boolean> points) {
+        inBounds = bounds;
         matchesFill = points;
-        width = w;
-        height = h;
     }
 
     public void pass() {
         HashSet<Point> aps = new HashSet<Point>(availablePointSet);
         availablePointSet.clear();
         for (Point p : aps) {
-            if (!within(p))
+            p = inBounds.apply(p);
+            if (p == null)
                 continue;
             if (executedPointSet.contains(p))
                 continue;
-            executedPointSet.add(p);
             if (matchesFill.apply(p)) {
+                executedPointSet.add(p);
                 availablePointSet.add(p.offset(0, -1));
                 availablePointSet.add(p.offset(0, 1));
                 availablePointSet.add(p.offset(-1, 0));
                 availablePointSet.add(p.offset(1, 0));
             }
         }
-    }
-
-    public boolean within(Point p) {
-        if (p.x < 0)
-            return false;
-        if (p.y < 0)
-            return false;
-        if (p.x >= width)
-            return false;
-        if (p.y >= height)
-            return false;
-        return true;
     }
 
     public static final class Point {
