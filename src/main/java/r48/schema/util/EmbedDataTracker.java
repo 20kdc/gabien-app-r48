@@ -33,19 +33,23 @@ public class EmbedDataTracker {
     }
 
     public void setEmbed(SchemaPath current, SchemaElement source, RubyIO target, String prop, Object val) {
+        String key = source.hashCode() + "/" + target.hashCode() + "/" + prop;
+        // System.out.println("set " + key + " " + val);
         HashMap<String, Object> hm = mapTree.get(current);
         if (hm == null) {
             hm = new HashMap<String, Object>();
             mapTree.put(current, hm);
         }
-        hm.put(source.hashCode() + "/" + target.hashCode() + "/" + prop, val);
+        hm.put(key, val);
     }
 
     public Object getEmbed(SchemaPath current, SchemaElement source, RubyIO target, String prop, Object def) {
+        String key = source.hashCode() + "/" + target.hashCode() + "/" + prop;
+        // System.out.println("get " + key);
         HashMap<String, Object> hm = mapTree.get(current);
         if (hm == null)
             return def;
-        Object o = hm.get(source.hashCode() + "/" + target.hashCode() + "/" + prop);
+        Object o = hm.get(key);
         if (o == null)
             return def;
         return o;

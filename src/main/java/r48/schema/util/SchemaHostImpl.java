@@ -225,6 +225,16 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     }
 
     @Override
+    public Object getEmbedObject(SchemaPath locale, SchemaElement source, RubyIO target, String prop) {
+        return embedData.getEmbed(locale, source, target, prop, null);
+    }
+
+    @Override
+    public void setEmbedObject(SchemaPath locale, SchemaElement source, RubyIO target, String prop, Object dbl) {
+        embedData.setEmbed(locale, source, target, prop, dbl);
+    }
+
+    @Override
     public ISchemaHost newBlank() {
         return new SchemaHostImpl(hostWindows, contextView);
     }

@@ -28,9 +28,6 @@ public class HashSchemaElement extends SchemaElement {
     public SchemaElement keyElem, valElem;
     public boolean flexible;
 
-    // NOTE: This is cloned from.
-    private RubyIO defKeyWorkspace;
-
     public HashSchemaElement(SchemaElement keySE, SchemaElement opaqueSE, boolean flexible) {
         keyElem = keySE;
         valElem = opaqueSE;
@@ -40,19 +37,30 @@ public class HashSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
-        final RubyIO rio;
-        if (defKeyWorkspace == null) {
-            rio = SchemaPath.createDefaultValue(keyElem, null);
+        RubyIO preWorkspace = (RubyIO) launcher.getEmbedObject(this, target, "keyWorkspace");
+        if (preWorkspace == null) {
+            preWorkspace = SchemaPath.createDefaultValue(keyElem, null);
         } else {
-            rio = new RubyIO().setDeepClone(defKeyWorkspace);
+            preWorkspace = new RubyIO().setDeepClone(preWorkspace);
         }
-        final SchemaPath rioPath = new SchemaPath(keyElem, rio);
-        if (rio.type == 'i') {
-            while (target.getHashVal(rio) != null) {
+        final RubyIO keyWorkspace = preWorkspace;
+
+        final SchemaPath rioPath = new SchemaPath(keyElem, keyWorkspace);
+
+        final SchemaPath setLocalePath = launcher.getCurrentObject();
+        rioPath.additionalModificationCallback = new Runnable() {
+            @Override
+            public void run() {
+                // This may occur from a different page (say, an enum selector), so the more complicated form must be used.
+                launcher.setEmbedObject(setLocalePath, HashSchemaElement.this, target, "keyWorkspace", new RubyIO().setDeepClone(keyWorkspace));
+            }
+        };
+        if (keyWorkspace.type == 'i') {
+            while (target.getHashVal(keyWorkspace) != null) {
                 // Try adding 1
-                long plannedVal = ++rio.fixnumVal;
-                keyElem.modifyVal(rio, rioPath, false);
-                if ((rio.type != 'i') || (rio.fixnumVal != plannedVal)) {
+                long plannedVal = ++keyWorkspace.fixnumVal;
+                keyElem.modifyVal(keyWorkspace, rioPath, false);
+                if ((keyWorkspace.type != 'i') || (keyWorkspace.fixnumVal != plannedVal)) {
                     // Let's not try that again
                     break;
                 }
@@ -114,13 +122,13 @@ public class HashSchemaElement extends SchemaElement {
                     }, FontSizes.schemaFieldTextHeight));
                 }
                 // Set up a key workspace.
-                UIElement workspace = keyElem.buildHoldingEditor(rio, launcher, rioPath);
+                UIElement workspace = keyElem.buildHoldingEditor(keyWorkspace, launcher, rioPath);
                 UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(TXDB.get("Add Key"), FontSizes.schemaFieldTextHeight, new Runnable() {
                     @Override
                     public void run() {
-                        if (target.getHashVal(rio) == null) {
+                        if (target.getHashVal(keyWorkspace) == null) {
                             RubyIO rio2 = new RubyIO();
-                            RubyIO finWorkspace = new RubyIO().setDeepClone(rio);
+                            RubyIO finWorkspace = new RubyIO().setDeepClone(keyWorkspace);
                             valElem.modifyVal(rio2, path.arrayHashIndex(finWorkspace, "{" + getKeyText(finWorkspace) + "}"), true);
                             target.hashVal.put(finWorkspace, rio2);
                             // the deep clone prevents further modification of the key

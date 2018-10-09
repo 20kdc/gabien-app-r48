@@ -40,5 +40,9 @@ public interface ISchemaHost {
 
     Object getEmbedObject(SchemaElement source, RubyIO target, String prop);
 
+    Object getEmbedObject(SchemaPath locale, SchemaElement source, RubyIO target, String prop);
+
     void setEmbedObject(SchemaElement source, RubyIO target, String prop, Object dbl);
+
+    void setEmbedObject(SchemaPath locale, SchemaElement source, RubyIO target, String prop, Object dbl);
 }
