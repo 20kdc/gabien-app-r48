@@ -57,10 +57,6 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             selPaletteIndex = 1;
         image = n;
         eds.currentImage = n;
-        checkTileRectInbounds();
-    }
-
-    private void checkTileRectInbounds() {
         if (tiling != null)
             tiling = new Rect(UIElement.sensibleCellMod(tiling.x, image.width), UIElement.sensibleCellMod(tiling.y, image.height), tiling.width, tiling.height);
     }
@@ -375,13 +371,15 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         }
 
         public void updateCorrected(UIImageEditView iev) {
+            correctedX = x;
+            correctedY = y;
             if (iev.tiling != null) {
                 int ofsX = iev.tiling.x;
                 int ofsY = iev.tiling.y;
                 int ofsW = iev.tiling.width;
                 int ofsH = iev.tiling.height;
-                correctedX = x - ofsX;
-                correctedY = y - ofsY;
+                correctedX -= ofsX;
+                correctedY -= ofsY;
                 correctedX = UIElement.sensibleCellMod(correctedX, ofsW);
                 correctedY = UIElement.sensibleCellMod(correctedY, ofsH);
                 correctedX += ofsX;
