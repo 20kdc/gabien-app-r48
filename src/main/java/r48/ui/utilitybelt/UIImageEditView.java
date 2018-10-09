@@ -271,7 +271,7 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         }
     }
 
-    public void handleAct(int x, int y, boolean first) {
+    public void handleAct(int x, int y, final boolean first) {
         if (!dragging)
             return;
 
@@ -285,8 +285,8 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             camX += (x - dragLastX) / (double) zoom;
             camY += (y - dragLastY) / (double) zoom;
         } else {
-            IImageEditorTool oldTool = currentTool;
-            ImPoint imp = new ImPoint(nx, ny);
+            final IImageEditorTool oldTool = currentTool;
+            final ImPoint imp = new ImPoint(nx, ny);
             if (first) {
                 imp.updateCorrected(this);
                 if (shift) {
@@ -302,76 +302,26 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             } else {
                 if (shift)
                     return;
-                int absX = Math.abs(ax - nx);
-                int absY = Math.abs(ay - ny);
-                /*
-                 * Consider:
-                 * A+X
-                 *    +B
-                 * With a pure integer method, point X would be down by one, we'd go past B
-                 * So instead use this sort of fixed point method.
-                 */
-                int sub = absX;
-
-                int subV = sub;
-                int subS = absY;
-
-                while ((absX > 0) || (absY > 0)) {
-                    imp.x = ax;
-                    imp.y = ay;
-                    imp.updateCorrected(this);
-                    currentTool.apply(imp, this, false, !first);
-                    if (oldTool != currentTool) {
-                        dragging = false;
-                        oldTool.endApply(this);
-                        return;
-                    }
-
-                    subV -= subS;
-                    boolean firstApp = true;
-                    while ((subV <= 0) && (absY > 0)) {
-                        if (!firstApp) {
-                            imp.x = ax;
-                            imp.y = ay;
-                            imp.updateCorrected(this);
-                            currentTool.apply(imp, this, false, !first);
-                            if (oldTool != currentTool) {
-                                dragging = false;
-                                oldTool.endApply(this);
-                                return;
-                            }
+                final LineAlgorithm lineDraw = new LineAlgorithm();
+                lineDraw.ax = ax;
+                lineDraw.ay = ay;
+                IFunction<Boolean, Boolean> plotPoint = new IFunction<Boolean, Boolean>() {
+                    @Override
+                    public Boolean apply(Boolean major) {
+                        imp.x = lineDraw.ax;
+                        imp.y = lineDraw.ay;
+                        imp.updateCorrected(UIImageEditView.this);
+                        currentTool.apply(imp, UIImageEditView.this, major, true);
+                        if (oldTool != currentTool) {
+                            dragging = false;
+                            oldTool.endApply(UIImageEditView.this);
+                            return false;
                         }
-                        firstApp = false;
-                        // Move perpendicular
-                        if (ay < ny) {
-                            ay++;
-                            absY--;
-                        } else if (ay > ny) {
-                            ay--;
-                            absY--;
-                        }
-                        subV += sub;
+                        return true;
                     }
-                    // Move
-                    if (ax < nx) {
-                        ax++;
-                        absX--;
-                    } else if (ax > nx) {
-                        ax--;
-                        absX--;
-                    }
-                }
-
-                if ((ax != nx) || (ay != ny))
-                    System.out.println("Warning " + ax + "," + ay + ":" + nx + "," + ny);
-                imp.x = nx;
-                imp.y = ny;
-                imp.updateCorrected(this);
-                currentTool.apply(imp, this, true, !first);
-                if (oldTool != currentTool) {
-                    dragging = false;
-                    oldTool.endApply(this);
-                }
+                };
+                // Ignore the return value, since returning anyway.
+                lineDraw.run(nx, ny, plotPoint);
             }
         }
     }

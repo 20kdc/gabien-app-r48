@@ -14,75 +14,52 @@ import r48.dbs.TXDB;
 /**
  * Created on 14th July 2018
  */
-public class CopyImageEditorTool implements IImageEditorTool {
-    public int stage;
-    public int aX, aY;
-    public int bW, bH;
+public class CopyImageEditorTool extends StagedImageEditorTool {
     public boolean flipX, flipY, swapXY;
 
-    @Override
-    public void enter(UIImageEditView uiev) {
-
+    public CopyImageEditorTool() {
+        super(3);
     }
 
     @Override
-    public void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging) {
-        if (dragging)
-            return;
-        if (!major)
-            return;
-        if (stage == 0) {
-            aX = imp.x;
-            aY = imp.y;
-            stage++;
-        } else if (stage == 1) {
-            bW = (Math.max(aX, imp.x) + 1) - Math.min(aX, imp.x);
-            bH = (Math.max(aY, imp.y) + 1) - Math.min(aY, imp.y);
-            aX = Math.min(aX, imp.x);
-            aY = Math.min(aY, imp.y);
-            stage++;
-        } else {
-            view.eds.startSection();
-            UIImageEditView.ImPoint src = new UIImageEditView.ImPoint(0, 0);
-            int[] cols = new int[bW * bH];
-            for (int i = 0; i < bW; i++) {
-                src.x = aX + i;
-                for (int j = 0; j < bH; j++) {
-                    src.y = aY + j;
-                    src.updateCorrected(view);
-                    cols[i + (j * bW)] = view.image.getRaw(src.correctedX, src.correctedY);
-                }
+    protected void performOperation(UIImageEditView view) {
+        view.eds.startSection();
+        UIImageEditView.ImPoint src = new UIImageEditView.ImPoint(0, 0);
+
+        Rect bStuff = getRectWithPoints();
+        int targetX = stageXs[2];
+        int targetY = stageYs[2];
+
+        int[] cols = new int[bStuff.width * bStuff.height];
+        for (int i = 0; i < bStuff.width; i++) {
+            src.x = bStuff.x + i;
+            for (int j = 0; j < bStuff.height; j++) {
+                src.y = bStuff.y + j;
+                src.updateCorrected(view);
+                cols[i + (j * bStuff.width)] = view.image.getRaw(src.correctedX, src.correctedY);
             }
-            UIImageEditView.ImPoint dst = new UIImageEditView.ImPoint(0, 0);
-            for (int i = 0; i < bW; i++) {
-                for (int j = 0; j < bH; j++) {
-                    transform(dst, imp, i, j);
-                    dst.updateCorrected(view);
-                    view.image.setRaw(dst.correctedX, dst.correctedY, cols[i + (j * bW)]);
+        }
+        UIImageEditView.ImPoint dst = new UIImageEditView.ImPoint(0, 0);
+        for (int i = 0; i < bStuff.width; i++) {
+            for (int j = 0; j < bStuff.height; j++) {
+                int i2 = i, j2 = j;
+                if (flipX)
+                    i2 = bStuff.width - (1 + i);
+                if (flipY)
+                    j2 = bStuff.height - (1 + j);
+                if (swapXY) {
+                    int k = i2;
+                    i2 = j;
+                    j2 = k;
                 }
+                dst.x = targetX + i2;
+                dst.y = targetY + j2;
+                dst.updateCorrected(view);
+                view.image.setRaw(dst.correctedX, dst.correctedY, cols[i + (j * bStuff.width)]);
             }
-            stage = 0;
-            view.eds.endSection();
         }
-    }
-
-    @Override
-    public void endApply(UIImageEditView view) {
-
-    }
-
-    private void transform(UIImageEditView.ImPoint dst, UIImageEditView.ImPoint imp, int i, int j) {
-        if (flipX)
-            i = bW - (1 + i);
-        if (flipY)
-            j = bH - (1 + j);
-        if (swapXY) {
-            int k = i;
-            i = j;
-            j = k;
-        }
-        dst.x = imp.x + i;
-        dst.y = imp.y + j;
+        stage = 0;
+        view.eds.endSection();
     }
 
     @Override
@@ -112,15 +89,6 @@ public class CopyImageEditorTool implements IImageEditorTool {
     }
 
     @Override
-    public Rect getSelection() {
-        if (stage == 1)
-            return new Rect(aX, aY, 0, 0);
-        if (stage == 2)
-            return new Rect(aX, aY, bW, bH);
-        return null;
-    }
-
-    @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (stage == 0) {
             return TXDB.get("Tap top-left pixel of area to copy.");
@@ -129,11 +97,6 @@ public class CopyImageEditorTool implements IImageEditorTool {
         } else {
             return TXDB.get("Tap top-left pixel of destination.");
         }
-    }
-
-    @Override
-    public IImageEditorTool getCamModeLT() {
-        return null;
     }
 
 }

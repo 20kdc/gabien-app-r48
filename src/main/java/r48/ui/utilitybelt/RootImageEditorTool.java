@@ -21,6 +21,8 @@ public class RootImageEditorTool implements IImageEditorTool {
         final Class[] toolClasses = new Class[] {
                 RootImageEditorTool.class,
                 RectangleImageEditorTool.class,
+                LineImageEditorTool.class,
+                FillImageEditorTool.class,
                 CopyImageEditorTool.class,
                 TileImageEditorTool.class,
                 EDImageEditorTool.class
@@ -28,6 +30,8 @@ public class RootImageEditorTool implements IImageEditorTool {
         String[] toolSymbol = new String[] {
                 TXDB.get("Pencil"),
                 TXDB.get("Rectangle"),
+                TXDB.get("Line"),
+                TXDB.get("Fill"),
                 TXDB.get("Copy"),
                 TXDB.get("TileView"),
                 TXDB.get("Pick Col.")

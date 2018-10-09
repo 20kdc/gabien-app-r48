@@ -238,6 +238,7 @@ public class ImageEditorImage extends ImageIOImage {
             if (paletteSize <= 1)
                 return;
             palette.remove(fidx);
+            paletteSize--;
             for (int i = 0; i < paletteSize; i++)
                 palette.set(i, sanitizeColour(palette.get(i), i));
             if (sanity)
