@@ -44,7 +44,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     @Override
     public UIElement buildHoldingEditor(RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         // Possibly question if this aggregate is useless???
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, impersonatorScroll, target);
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, impersonatorScroll, target);
         // Assist with the layout of "property grids".
         if (!overrideSet)
             overrideFW = getDefaultFieldWidth(target);
@@ -88,42 +88,38 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     // HOWEVER, if the object is regen-on-change w/ subwindows,
     //  this causes awful scroll loss, so instead nab the regenerator (it's not like the regenerator uses it for anything)
     // PREFERABLY avoid regeneration of schema objects that are reusable (RPGCommandSchemaElement was fixed this way)
-    public static UIScrollLayout createScrollSavingSVL(final SchemaPath path, final ISchemaHost host, final SchemaElement elem, final RubyIO target) {
-        final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(elem, target, AggregateSchemaElement.class, "N/scrollSavingSVL");
-        final SchemaPath keyStoragePath = path.findLast();
+    public static UIScrollLayout createScrollSavingSVL(final ISchemaHost host, final SchemaElement elem, final RubyIO target) {
         final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize) {
             @Override
             public void handleMousewheel(int x, int y, boolean north) {
                 super.handleMousewheel(x, y, north);
-                keyStoragePath.getEmbedMap(host).put(myKey, scrollbar.scrollPoint);
+                host.setEmbedDouble(elem, target, "N/scrollSavingSVL", scrollbar.scrollPoint);
             }
 
             @Override
             public void handlePointerEnd(IPointer state) {
                 super.handlePointerEnd(state);
-                keyStoragePath.getEmbedMap(host).put(myKey, scrollbar.scrollPoint);
+                host.setEmbedDouble(elem, target, "N/scrollSavingSVL", scrollbar.scrollPoint);
             }
         };
-        uiSVL.scrollbar.scrollPoint = keyStoragePath.getEmbedSP(host, myKey);
+        uiSVL.scrollbar.scrollPoint = host.getEmbedDouble(elem, target, "N/scrollSavingSVL");
         return uiSVL;
     }
 
     // Only to be used if this button is known to cause changeOccurred.
-    public static void hookButtonForPressPreserve(final SchemaPath path, final ISchemaHost host, final SchemaElement elem, final RubyIO target, final UITextButton utb, final String id) {
-        final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(elem, target, AggregateSchemaElement.class, "B/" + id);
-        final SchemaPath keyStoragePath = path.findLast();
+    public static void hookButtonForPressPreserve(final ISchemaHost host, final SchemaElement elem, final RubyIO target, final UITextButton utb, final String id) {
         final Runnable next = utb.onClick;
         utb.onClick = new Runnable() {
             @Override
             public void run() {
                 if (next != null)
                     next.run();
-                keyStoragePath.getEmbedMap(host).put(myKey, 1d);
+                host.setEmbedDouble(elem, target, "B/" + id, 1d);
             }
         };
-        if (keyStoragePath.getEmbedSP(host, myKey) != 0d)
+        if (host.getEmbedDouble(elem, target, "B/" + id) != 0d)
             utb.enableStateForClick();
-        keyStoragePath.getEmbedMap(host).put(myKey, 0d);
+        host.setEmbedDouble(elem, target, "B/" + id, 0d);
     }
 
     @Override

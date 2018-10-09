@@ -30,7 +30,7 @@ public class CTNativeSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
         RubyCT rct = new RubyCT(target.userVal);
         addField(uiSVL, TXDB.get("R"), 0, rct, path);
         addField(uiSVL, TXDB.get("G"), 8, rct, path);

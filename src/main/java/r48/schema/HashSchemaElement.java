@@ -37,32 +37,9 @@ public class HashSchemaElement extends SchemaElement {
         this.flexible = flexible;
     }
 
-    private SchemaPath.EmbedDataKey getSearchTermCharKey(RubyIO target, int key) {
-        return new SchemaPath.EmbedDataKey(this, target, HashSchemaElement.class, "searchTerm/" + key);
-    }
-    private String getSearchTerm(RubyIO target, ISchemaHost launcher, SchemaPath context) {
-        int p = 0;
-        String s = "";
-        while (true) {
-            double ch = context.getEmbedSP(launcher, getSearchTermCharKey(target, p++));
-            if (ch <= 0)
-                break;
-            s += (char) ch;
-        }
-        return s;
-    }
-    private void setSearchTerm(RubyIO target, ISchemaHost launcher, SchemaPath context, String term) {
-        for (int i = 0; i <= term.length(); i++) {
-            int v = 0;
-            if (i != term.length())
-                v = term.charAt(i);
-            context.getEmbedMap(launcher).put(getSearchTermCharKey(target, i), (double) v);
-        }
-    }
-
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
+        final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
         final RubyIO rio;
         if (defKeyWorkspace == null) {
             rio = SchemaPath.createDefaultValue(keyElem, null);
@@ -91,11 +68,14 @@ public class HashSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 uiSV.panelsClear();
-                final UITextBox searchBox = new UITextBox(getSearchTerm(target, launcher, path), FontSizes.schemaFieldTextHeight);
+                final UITextBox searchBox = new UITextBox("", FontSizes.schemaFieldTextHeight);
+                String oldSearchTerm = (String) launcher.getEmbedObject(HashSchemaElement.this, target, "searchTerm");
+                if (oldSearchTerm != null)
+                    searchBox.text = oldSearchTerm;
                 searchBox.onEdit = new Runnable() {
                     @Override
                     public void run() {
-                        setSearchTerm(target, launcher, path, searchBox.text);
+                        launcher.setEmbedObject(HashSchemaElement.this, target, "searchTerm", searchBox.text);
                         trigger();
                     }
                 };

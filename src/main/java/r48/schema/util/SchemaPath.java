@@ -14,7 +14,6 @@ import r48.schema.specialized.TempDialogSchemaChoice;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.WeakHashMap;
 
 /**
  * Generic schema path object used to keep references to things being edited in play,
@@ -41,6 +40,9 @@ public class SchemaPath {
     // Implies editor and target.
     public boolean monitorsSubelements = false;
 
+    // Should only ever be used by isolated roots such as hashkeys.
+    public Runnable additionalModificationCallback;
+
     // At the root object, this is guaranteed to be the object itself.
     // Otherwise, it should propagate whenever unchanged.
     // lastArray does a similar thing, except it points to the object whose targetElement is the array/hash itself.
@@ -50,12 +52,6 @@ public class SchemaPath {
     // Null for "no human readable index here".
     // The root is always the intended ObjectID index.
     public String hrIndex;
-
-    // ISchemaHost has to set this to true for the breadcrumbs to work properly
-    public boolean hasBeenUsed = false;
-
-    // Used for scroll data & such
-    public WeakHashMap<ISchemaHost, HashMap<EmbedDataKey, Double>> embedData = new WeakHashMap<ISchemaHost, HashMap<EmbedDataKey, Double>>();
 
     public final HashMap<String, SchemaElement> contextualSchemas = new HashMap<String, SchemaElement>();
 
@@ -139,18 +135,6 @@ public class SchemaPath {
         return mod;
     }
 
-    // Similar to findBack, but includes the current node too.
-    // Specifically for scroll value storage.
-    public SchemaPath findLast() {
-        SchemaPath root = this;
-        while (root.parent != null) {
-            if (root.hasBeenUsed)
-                return root;
-            root = root.parent;
-        }
-        return root;
-    }
-
     // -- Important Stuff (always used) --
 
     public SchemaPath arrayHashIndex(RubyIO index, String indexS) {
@@ -207,6 +191,11 @@ public class SchemaPath {
     // "modifyVal" should only be true if being called from modifyVal.
     public void changeOccurred(boolean modifyVal) {
         SchemaPath p = findRoot();
+
+        // Used by isolated roots.
+        if (p.additionalModificationCallback != null)
+            p.additionalModificationCallback.run();
+
         // Attempt to set a "changed flag".
         // This will also nudge the observers.
         AppMain.objectDB.objectRootModified(p.targetElement, this);
@@ -244,52 +233,9 @@ public class SchemaPath {
             return parent.hasTempDialog();
         return false;
     }
-
-    public HashMap<EmbedDataKey, Double> getEmbedMap(ISchemaHost host) {
-        HashMap<EmbedDataKey, Double> map = embedData.get(host);
-        if (map == null) {
-            map = new HashMap<EmbedDataKey, Double>();
-            embedData.put(host, map);
-        }
-        return map;
-    }
-
-    public double getEmbedSP(ISchemaHost host, EmbedDataKey myKey) {
-        Double d = getEmbedMap(host).get(myKey);
-        if (d == null)
-            return 0;
-        return d;
-    }
-
     public SchemaPath contextSchema(String contextName, SchemaElement enumSchemaElement) {
         SchemaPath sp = new SchemaPath(this);
         sp.contextualSchemas.put(contextName, enumSchemaElement);
         return sp;
-    }
-
-    public static class EmbedDataKey {
-        public final SchemaElement key1;
-        public final RubyIO key2;
-        public final String property;
-
-        // propIdClass is so all properties are class-local on top of being schema-element-local.
-        public EmbedDataKey(SchemaElement key1, RubyIO key2, Class propIdClass, String prop) {
-            this.key1 = key1;
-            this.key2 = key2;
-            property = propIdClass + ":" + prop;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (!(o instanceof EmbedDataKey))
-                return false;
-            EmbedDataKey edk = (EmbedDataKey) o;
-            return (edk.key1 == key1) && (edk.key2 == key2) && (edk.property.equals(property));
-        }
-
-        @Override
-        public int hashCode() {
-            return key1.hashCode() + key2.hashCode() + property.hashCode();
-        }
     }
 }

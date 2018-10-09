@@ -16,19 +16,19 @@ import r48.UITest;
 import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
+import r48.schema.SchemaElement;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
-import java.util.HashMap;
 import java.util.Stack;
 
 /**
  * Created on 12/29/16.
  */
 public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
-    public IConsumer<UIElement> hostWindows;
-    public SchemaPath innerElem;
-    public UIElement innerElemEditor;
+    private IConsumer<UIElement> hostWindows;
+    private SchemaPath innerElem;
+    private UIElement innerElemEditor;
 
     // Can be null - if not, the renderer is accessible.
     // Note that even if the map view "dies", it's renderer will stay around.
@@ -36,20 +36,22 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
 
     private final Stack<SchemaPath> backStack = new Stack<SchemaPath>();
 
-    public UILabel pathLabel = new UILabel("", FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarP = new UIAppendButton(Art.Symbol.Back, pathLabel, new Runnable() {
+    private EmbedDataTracker embedData = new EmbedDataTracker();
+
+    private UILabel pathLabel = new UILabel("", FontSizes.schemaPathTextHeight);
+    private UIAppendButton toolbarP = new UIAppendButton(Art.Symbol.Back, pathLabel, new Runnable() {
         @Override
         public void run() {
             popObject();
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarCp = new UIAppendButton(TXDB.get("Copy"), toolbarP, new Runnable() {
+    private UIAppendButton toolbarCp = new UIAppendButton(TXDB.get("Copy"), toolbarP, new Runnable() {
         @Override
         public void run() {
             AppMain.theClipboard = new RubyIO().setDeepClone(innerElem.targetElement);
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarPs = new UIAppendButton(TXDB.get("Paste"), toolbarCp, new Runnable() {
+    private UIAppendButton toolbarPs = new UIAppendButton(TXDB.get("Paste"), toolbarCp, new Runnable() {
         @Override
         public void run() {
             if (AppMain.theClipboard == null) {
@@ -67,7 +69,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
             }
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarS = new UIAppendButton(TXDB.get("Save"), toolbarPs, new Runnable() {
+    private UIAppendButton toolbarS = new UIAppendButton(TXDB.get("Save"), toolbarPs, new Runnable() {
         @Override
         public void run() {
             SchemaPath root = innerElem.findRoot();
@@ -76,13 +78,13 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
             AppMain.objectDB.ensureSaved(root.hrIndex, root.lastArrayIndex);
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarI = new UIAppendButton(Art.Symbol.Inspect, toolbarS, new Runnable() {
+    private UIAppendButton toolbarI = new UIAppendButton(Art.Symbol.Inspect, toolbarS, new Runnable() {
         @Override
         public void run() {
             hostWindows.accept(new UITest(innerElem.targetElement));
         }
     }, FontSizes.schemaPathTextHeight);
-    public UIAppendButton toolbarC = new UIAppendButton(Art.Symbol.CloneFrame, toolbarI, new Runnable() {
+    private UIAppendButton toolbarC = new UIAppendButton(Art.Symbol.CloneFrame, toolbarI, new Runnable() {
         @Override
         public void run() {
             if (innerElem.hasTempDialog()) {
@@ -91,16 +93,16 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
             }
             // This serves to ensure that cloning a window causes it to retain scroll and such,
             // while still keeping it independent.
-            HashMap<SchemaPath.EmbedDataKey, Double> info = innerElem.embedData.get(SchemaHostImpl.this);
             SchemaHostImpl next = new SchemaHostImpl(hostWindows, contextView);
-            if (info != null)
-                innerElem.getEmbedMap(next).putAll(info);
-            next.switchObject(innerElem);
+            next.backStack.addAll(backStack);
+            next.backStack.push(innerElem);
+            next.embedData = new EmbedDataTracker(next.backStack, embedData);
+            next.popObject();
         }
     }, FontSizes.schemaPathTextHeight);
 
     // Used so this doesn't require too much changes when moved about
-    public UIElement toolbarRoot = toolbarC;
+    private UIElement toolbarRoot = toolbarC;
 
     private IConsumer<SchemaPath> nudgeRunnable = new IConsumer<SchemaPath>() {
         @Override
@@ -200,6 +202,26 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
         if (contextView != null)
             return contextView.mapGUM;
         return null;
+    }
+
+    @Override
+    public double getEmbedDouble(SchemaElement source, RubyIO target, String prop) {
+        return (Double) embedData.getEmbed(innerElem, source, target, prop, 0.0d);
+    }
+
+    @Override
+    public void setEmbedDouble(SchemaElement source, RubyIO target, String prop, double dbl) {
+        embedData.setEmbed(innerElem, source, target, prop, dbl);
+    }
+
+    @Override
+    public Object getEmbedObject(SchemaElement source, RubyIO target, String prop) {
+        return embedData.getEmbed(innerElem, source, target, prop, null);
+    }
+
+    @Override
+    public void setEmbedObject(SchemaElement source, RubyIO target, String prop, Object dbl) {
+        embedData.setEmbed(innerElem, source, target, prop, dbl);
     }
 
     @Override

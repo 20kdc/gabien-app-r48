@@ -48,7 +48,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                 }
             }
         });
-        AggregateSchemaElement.hookButtonForPressPreserve(path, launcher, this, target, importer, "import");
+        AggregateSchemaElement.hookButtonForPressPreserve(launcher, this, target, importer, "import");
         return new UISplitterLayout(new UITextButton(TXDB.get("Export/Edit"), FontSizes.blobTextHeight, new Runnable() {
             @Override
             public void run() {

@@ -55,24 +55,20 @@ public abstract class ArraySchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
-
-        final SchemaPath keyStoragePath = path.findLast();
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
 
         uiHelper.provideInterfaceFrom(uiSVL, new IFunction<String, IArrayInterface.IProperty>() {
             @Override
-            public IArrayInterface.IProperty apply(String s) {
-                final SchemaPath.EmbedDataKey myKey = new SchemaPath.EmbedDataKey(myUniqueStateInstance, target, uiHelper.getClass(), s);
-
+            public IArrayInterface.IProperty apply(final String s) {
                 return new IArrayInterface.IProperty() {
                     @Override
                     public void accept(Double v) {
-                        keyStoragePath.getEmbedMap(launcher).put(myKey, v);
+                        launcher.setEmbedDouble(myUniqueStateInstance, target, s, v);
                     }
 
                     @Override
                     public Double get() {
-                        return keyStoragePath.getEmbedSP(launcher, myKey);
+                        return launcher.getEmbedDouble(myUniqueStateInstance, target, s);
                     }
                 };
             }

@@ -110,7 +110,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
             }
         });
 
-        AggregateSchemaElement.hookButtonForPressPreserve(path, launcher, this, target, importer, "import");
+        AggregateSchemaElement.hookButtonForPressPreserve(launcher, this, target, importer, "import");
 
         return new UISplitterLayout(exporter, importer, false, 0.5d);
     }

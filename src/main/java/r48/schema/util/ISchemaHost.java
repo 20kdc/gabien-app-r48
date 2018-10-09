@@ -8,7 +8,9 @@
 package r48.schema.util;
 
 import gabien.ui.UIElement;
+import r48.RubyIO;
 import r48.map.StuffRenderer;
+import r48.schema.SchemaElement;
 
 /**
  * Used to make the Schema interface slightly saner to use
@@ -16,7 +18,6 @@ import r48.map.StuffRenderer;
  */
 public interface ISchemaHost {
     void pushObject(SchemaPath nextObject);
-
     void popObject();
 
     void launchOther(UIElement uiTest);
@@ -31,4 +32,13 @@ public interface ISchemaHost {
     SchemaPath getCurrentObject();
 
     String getContextGUM();
+
+    // Prepare for trouble, and make it a double.
+    double getEmbedDouble(SchemaElement source, RubyIO target, String prop);
+
+    void setEmbedDouble(SchemaElement source, RubyIO target, String prop, double dbl);
+
+    Object getEmbedObject(SchemaElement source, RubyIO target, String prop);
+
+    void setEmbedObject(SchemaElement source, RubyIO target, String prop, Object dbl);
 }

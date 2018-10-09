@@ -26,7 +26,7 @@ public interface IArrayInterface {
     void provideInterfaceFrom(UIScrollLayout svl, IFunction<String, IProperty> state, ISupplier<ArrayPosition[]> positions);
 
     interface IProperty extends ISupplier<Double>, IConsumer<Double> {
-
+        // Get returns 0 if the property doesn't exist, like with the usual double interface
     }
 
     /**

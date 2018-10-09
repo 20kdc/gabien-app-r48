@@ -68,9 +68,6 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         final RubyIO width = widthVar == null ? null : PathSyntax.parse(target, widthVar);
         final RubyIO height = heightVar == null ? null : PathSyntax.parse(target, heightVar);
 
-        final SchemaPath dataBlackboxTarget = path.findLast();
-        final SchemaPath.EmbedDataKey blackboxKey = new SchemaPath.EmbedDataKey(this, targV, RubyTableSchemaElement.class, "blackbox");
-
         final TileHelper initialTileHelper = baseInitializeHelper(target);
         Size gridSize = getGridSize(initialTileHelper);
         final UIGrid uig = new UIGrid(gridSize.width, gridSize.height, targ.width * targ.height) {
@@ -99,12 +96,12 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                 if (v >= 0.99)
                     v = 0.99;
                 v += getSelected();
-                dataBlackboxTarget.getEmbedMap(launcher).put(blackboxKey, v);
+                launcher.setEmbedDouble(RubyTableSchemaElement.this, target, "blackbox", v);
                 super.update(deltaTime, selected, peripherals);
             }
         };
 
-        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, this, target);
+        final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
         final Runnable editorOnSelChange = tableCellEditor.createEditor(uiSVL, targV, uig, new Runnable() {
             @Override
             public void run() {
@@ -135,7 +132,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
 
         // and now time for your daily dose of magic:
         // the scroll value here holds both the selection & the scroll cache.
-        Double selVal = dataBlackboxTarget.getEmbedMap(launcher).get(blackboxKey);
+        Double selVal = (Double) launcher.getEmbedObject(RubyTableSchemaElement.this, target, "blackbox");
         if (selVal == null)
             selVal = -1d;
         // -1d + 0.99 = -0.01d

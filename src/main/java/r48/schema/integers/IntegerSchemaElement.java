@@ -41,7 +41,7 @@ public class IntegerSchemaElement extends SchemaElement {
 
             @Override
             public UIScrollLayout newSVL() {
-                return AggregateSchemaElement.createScrollSavingSVL(path, launcher, IntegerSchemaElement.this, target);
+                return AggregateSchemaElement.createScrollSavingSVL(launcher, IntegerSchemaElement.this, target);
             }
         }).uie;
     }

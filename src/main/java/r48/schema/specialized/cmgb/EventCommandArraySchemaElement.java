@@ -330,8 +330,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         SubwindowSchemaElement targ = getElementContextualSubwindowSchema(target.arrVal[idx], idx);
         path = path.arrayHashIndex(new RubyIO().setFX(idx), "[" + idx + "]");
         path = path.newWindow(targ.heldElement, target);
+        launcher.pushObject(path);
         // Ok, now navigate to the command selector
-        RPGCommandSchemaElement.navigateToCode(launcher, path, target.arrVal[idx], new IConsumer<int[]>() {
+        path = path.newWindow(RPGCommandSchemaElement.navigateToCode(launcher, target.arrVal[idx], new IConsumer<int[]>() {
             @Override
             public void accept(int[] i) {
                 for (int j = 0; j < i.length; j++) {
@@ -341,6 +342,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 }
                 sp.changeOccurred(false);
             }
-        }, path, database);
+        }, path, database), target);
+        launcher.pushObject(path);
     }
 }

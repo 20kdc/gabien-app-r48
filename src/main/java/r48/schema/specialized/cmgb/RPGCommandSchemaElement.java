@@ -72,13 +72,13 @@ public class RPGCommandSchemaElement extends SchemaElement {
             UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(database.buildCodename(target, true), FontSizes.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    navigateToCode(launcher, path2.findLast(), target, new IConsumer<int[]>() {
+                    launcher.pushObject(path2.newWindow(navigateToCode(launcher, target, new IConsumer<int[]>() {
                         @Override
                         public void accept(int[] tmp) {
                             // Templates don't work from here, but the path does
                             path.changeOccurred(false);
                         }
-                    }, path, database);
+                    }, path, database), target));
                 }
             }), new Runnable() {
                 @Override
@@ -116,7 +116,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             if (rc.specialSchema != null)
                 return rc.specialSchema.buildHoldingEditor(target, launcher, path);
             RubyIO param = target.getInstVarBySymbol("@parameters");
-            final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(path, launcher, RPGCommandSchemaElement.this, target);
+            final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, RPGCommandSchemaElement.this, target);
 
             if (target.getInstVarBySymbol("@indent") != null) {
                 if (showHeader) {
@@ -158,9 +158,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
     // Used by EventCommandArray for edit-on-create.
     // NOTE: displayPath is the path of the command window
-    protected static void navigateToCode(final ISchemaHost launcher, final SchemaPath displayPath, final RubyIO target, final IConsumer<int[]> templateAndConfirm, final SchemaPath path, final CMDB database) {
-        if (displayPath.editor == null)
-            throw new RuntimeException("navigateToCode without displayable parent should never happen and will crash after confirm, so this helps w/ debugging.");
+    protected static TempDialogSchemaChoice navigateToCode(final ISchemaHost launcher, final RubyIO target, final IConsumer<int[]> templateAndConfirm, final SchemaPath path, final CMDB database) {
         UIEnumChoice.Category[] categories = new UIEnumChoice.Category[database.categories.length];
         for (int i = 0; i < categories.length; i++) {
             LinkedList<UIEnumChoice.Option> llo = new LinkedList<UIEnumChoice.Option>();
@@ -173,14 +171,13 @@ public class RPGCommandSchemaElement extends SchemaElement {
             categories[i] = new UIEnumChoice.Category(database.categories[i], llo);
         }
 
-        launcher.pushObject(displayPath.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {
+        return new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {
             @Override
             public void accept(RubyIO integer) {
                 // NOTE: This just uses ints for everything.
                 RPGCommand rc = database.knownCommands.get((int) integer.fixnumVal);
                 target.getInstVarBySymbol("@code").fixnumVal = integer.fixnumVal;
                 RubyIO param = target.getInstVarBySymbol("@parameters");
-                boolean zp = false;
                 if (rc != null) {
                     // Notice: Both are used!
                     // Firstly nuke it to whatever the command says for array-len-reduce, then use the X-code to fill in details
@@ -196,26 +193,19 @@ public class RPGCommandSchemaElement extends SchemaElement {
                         schemaElement.modifyVal(target, path, true);
                     }
                     templateAndConfirm.accept(rc.template);
-                    if (rc.specialSchema == null) {
-                        zp = true;
-                        for (IFunction<RubyIO, String> name : rc.paramName) {
-                            if (!name.apply(target).equals("_")) {
-                                zp = false;
+                    if (rc.specialSchema == null)
+                        for (IFunction<RubyIO, String> name : rc.paramName)
+                            if (!name.apply(target).equals("_"))
                                 break;
-                            }
-                        }
-                    }
                 } else {
                     templateAndConfirm.accept(new int[0]);
                 }
                 // On the one hand, the elements are stale.
                 // On the other hand, the elements will be obliterated anyway before reaching the user.
-                // if zp, then it's a two-stage leave to avoid angering the virtualization god
+                // This isn't done automatically by UIEnumChoice.
                 launcher.popObject();
-                if (zp)
-                    launcher.popObject();
             }
-        }, categories, TXDB.get("Code"), UIEnumChoice.EntryMode.INT), null, path), target));
+        }, categories, TXDB.get("Code"), UIEnumChoice.EntryMode.INT), null, path);
     }
 
     @Override
