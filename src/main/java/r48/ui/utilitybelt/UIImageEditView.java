@@ -369,22 +369,20 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         }
 
         public void updateCorrected(UIImageEditView iev) {
-            int ofsX = 0;
-            int ofsY = 0;
-            int ofsW = iev.image.width;
-            int ofsH = iev.image.height;
             if (iev.tiling != null) {
-                ofsX = iev.tiling.x;
-                ofsY = iev.tiling.y;
-                ofsW = iev.tiling.width;
-                ofsH = iev.tiling.height;
+                int ofsX = iev.tiling.x;
+                int ofsY = iev.tiling.y;
+                int ofsW = iev.tiling.width;
+                int ofsH = iev.tiling.height;
+                correctedX = x - ofsX;
+                correctedY = y - ofsY;
+                correctedX = UIElement.sensibleCellMod(correctedX, ofsW);
+                correctedY = UIElement.sensibleCellMod(correctedY, ofsH);
+                correctedX += ofsX;
+                correctedY += ofsY;
             }
-            correctedX = x - ofsX;
-            correctedY = y - ofsY;
-            correctedX = UIElement.sensibleCellMod(correctedX, ofsW);
-            correctedY = UIElement.sensibleCellMod(correctedY, ofsH);
-            correctedX += ofsX;
-            correctedY += ofsY;
+            correctedX = UIElement.sensibleCellMod(correctedX, iev.image.width);
+            correctedY = UIElement.sensibleCellMod(correctedY, iev.image.height);
         }
     }
 }
