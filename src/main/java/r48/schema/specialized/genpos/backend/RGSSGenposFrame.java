@@ -24,6 +24,7 @@ import r48.schema.specialized.MagicalBindingSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
 import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.specialized.genpos.IGenposTweeningProp;
+import r48.schema.specialized.genpos.TableGenposTweeningProp;
 import r48.schema.util.SchemaPath;
 import r48.ui.ISpritesheetProvider;
 
@@ -230,6 +231,8 @@ public class RGSSGenposFrame implements IGenposFrame {
 
     @Override
     public IGenposTweeningProp getCellPropTweening(int ct, int i) {
+        if (i < 7)
+            return new TableGenposTweeningProp(new RubyTable(getFrame().getInstVarBySymbol("@cell_data").userVal), ct, i, 0);
         return null;
     }
 

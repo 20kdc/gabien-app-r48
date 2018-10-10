@@ -20,7 +20,7 @@ public class Animation extends R2kObject {
     public StringR2kStruct name = new StringR2kStruct();
     public StringR2kStruct animationName = new StringR2kStruct();
     public BooleanR2kStruct unknown3 = new BooleanR2kStruct(false);
-    public SparseArrayHR2kStruct<AnimationTiming> timings = new SparseArrayHR2kStruct<AnimationTiming>(new ISupplier<AnimationTiming>() {
+    public SparseArrayAR2kStruct<AnimationTiming> timings = new SparseArrayAR2kStruct<AnimationTiming>(new ISupplier<AnimationTiming>() {
         @Override
         public AnimationTiming get() {
             return new AnimationTiming();

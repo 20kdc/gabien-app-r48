@@ -35,6 +35,7 @@ public interface IGenposFrame {
     SchemaPath getCellProp(int ct, int i);
 
     // Returns null for non-tweenable properties.
+    // Semantics of access to this are the same as with getFrame() in GenposAnim.
     IGenposTweeningProp getCellPropTweening(int ct, int i);
 
     void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y);

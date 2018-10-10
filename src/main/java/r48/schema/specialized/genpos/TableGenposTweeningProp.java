@@ -7,26 +7,30 @@
 
 package r48.schema.specialized.genpos;
 
-import r48.RubyIO;
+import r48.RubyTable;
 
 /**
  * Created on October 10, 2018.
  */
-public class FixnumGenposTweeningProp implements IGenposTweeningProp {
-    public final RubyIO sp;
+public class TableGenposTweeningProp implements IGenposTweeningProp {
+    public final RubyTable rt;
+    public final int x, y, z;
 
-    public FixnumGenposTweeningProp(RubyIO r) {
-        sp = r;
+    public TableGenposTweeningProp(RubyTable rt, int x, int y, int z) {
+        this.rt = rt;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     @Override
     public double getValue() {
-        return sp.fixnumVal;
+        return rt.getTiletype(x, y, z);
     }
 
     @Override
     public void setValue(double value) {
-        sp.fixnumVal = (long) value;
+        rt.setTiletype(x, y, z, (short) value);
     }
 
     @Override

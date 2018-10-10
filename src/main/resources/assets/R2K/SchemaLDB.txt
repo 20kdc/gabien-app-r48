@@ -522,7 +522,7 @@ C name Class.RPG::Animation @name | #A
  the alternative is "worse". for some definitions of "worse".
 @frames binding R2kAnimationFrames subwindow arrayIx1 subwindow RPG::Animation::Frame
  yet another "aaaaaa why is this happening" fix
-@timings subwindow hash int+0 subwindow RPG::Animation::Timing
+@timings subwindow arrayIx1 subwindow RPG::Animation::Timing
 C magicGenpos r2kAnimation @animation_name . . . 30
 
  ---

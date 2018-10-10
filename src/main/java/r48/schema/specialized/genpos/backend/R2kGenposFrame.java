@@ -142,7 +142,7 @@ public class R2kGenposFrame implements IGenposFrame {
     public IGenposTweeningProp getCellPropTweening(int ct, int i) {
         if ((i < 1) || (i > 9))
             return null;
-        return new FixnumGenposTweeningProp(getCellProp(ct, i));
+        return new FixnumGenposTweeningProp(getCellProp(ct, i).targetElement);
     }
 
     @Override
