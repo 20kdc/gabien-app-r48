@@ -812,6 +812,9 @@ public class SDB {
                             dS = null;
                         workingObj.aggregate.add(new GenposSchemaElement(args[1], aS, bS, cS, dS, Integer.parseInt(args[6])));
                     }
+                    if (args[0].equals("magicGP2AccessEXPERIMENTAL")) {
+                        workingObj.aggregate.add(new GP2SchemaElement());
+                    }
                     if (args[0].equals("magicR2kSystemDefaults")) {
                         // Really special schema
                         workingObj.aggregate.add(new R2kSystemDefaultsInstallerSchemaElement(Integer.parseInt(args[1])));
