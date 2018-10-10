@@ -525,9 +525,6 @@ C name Class.RPG::Animation @name | #A
 @timings subwindow hash int+0 subwindow RPG::Animation::Timing
 C magicGenpos r2kAnimation @animation_name . . . 30
 
- In progress.
-C magicGP2AccessEXPERIMENTAL
-
  ---
 
 : RPG::Tileset

@@ -8,7 +8,6 @@
 package r48.schema.specialized.genpos.backend;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
@@ -24,6 +23,7 @@ import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBindingSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
 import r48.schema.specialized.genpos.IGenposFrame;
+import r48.schema.specialized.genpos.IGenposTweeningProp;
 import r48.schema.util.SchemaPath;
 import r48.ui.ISpritesheetProvider;
 
@@ -226,6 +226,11 @@ public class RGSSGenposFrame implements IGenposFrame {
             }
         }, getCellPropSchemas()[i]);
         return path.newWindow(se, getFrame().getInstVarBySymbol("@cell_data"));
+    }
+
+    @Override
+    public IGenposTweeningProp getCellPropTweening(int ct, int i) {
+        return null;
     }
 
     @Override

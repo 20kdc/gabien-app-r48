@@ -78,8 +78,6 @@ public class UISingleFrameView extends UIElement implements OldMouseEmulator.IOl
         if (dragging == 1) {
             if (basePanelAccess.cellSelection.cellNumber != -1) {
                 if (basePanelAccess.frame.getCellCount() > basePanelAccess.cellSelection.cellNumber) {
-                    // RubyIO target = basePanelAccess.frame.getFrame();
-                    // RubyTable rt = new RubyTable(target.getInstVarBySymbol("@cell_data").userVal);
                     final int ofsX = (x - lastMX) + lossX;
                     final int ofsY = (y - lastMY) + lossY;
                     lastMX = x;

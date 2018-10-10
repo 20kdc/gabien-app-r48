@@ -1,0 +1,29 @@
+
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+Genpos, short for 'generic positioning', is a system in R48 responsible for anything where on-screen elements have to be positioned.
+This makes it responsible for troop layout, animations, etc.
+
+Genpos is split into two critical codebases:
+ the Genpos Frame code, handling an IGenposFrame, which is used for unanimated things like troops,
+ and the Genpos Anim code, handling an IGenposAnim, which is used for animated things like battle animations.
+
+It is important to note that an IGenposAnim only ever has one IGenposFrame.
+This IGenposFrame is refreshed in the same way that it would be refreshed if there was a modification notification,
+ when the current animation frame changes.
+
+IGenposAnim handling is rooted at GenposAnimRootPanel,
+ while IGenposFrame handling is rooted at GenposFramePanelController.
+
+Frame index bounds checks occur in the IGenposAnim implementation for now.
+For an example, please see RMGenposAnim.
+
+Tweening works via a GenposAnimTweening instance,
+ which manages the calculated-live tweening metadata.
+
+Tweenable properties are described via the getCellPropTweening function, which is responsible for get/set access.
+An IGenposTweeningManagement class in GenposAnimRootPanel meanwhile is given to the lower levels in order to display the tweening data,
+ and also to make the UICellEditingPanel responsible for holding the KeyTracks (since it gets refreshed every time anything that could make the KeyTracks invalid occurs)

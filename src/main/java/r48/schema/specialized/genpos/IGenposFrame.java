@@ -8,7 +8,6 @@
 package r48.schema.specialized.genpos;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.IFunction;
 import gabien.ui.Rect;
@@ -34,6 +33,9 @@ public interface IGenposFrame {
     // targetElement and the path itself should be used by the caller.
     // Use newWindow.
     SchemaPath getCellProp(int ct, int i);
+
+    // Returns null for non-tweenable properties.
+    IGenposTweeningProp getCellPropTweening(int ct, int i);
 
     void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y);
 

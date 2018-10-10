@@ -5,21 +5,16 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.schema.specialized.genpos2;
-
-import gabien.IGrDriver;
-import gabien.IImage;
-import gabien.ui.Rect;
+package r48.schema.specialized.genpos;
 
 /**
+ * Update notification happens at the modifiedFrames interface.
  * Created on October 10, 2018.
  */
-public interface IGP2Renderer {
-    IImage getBackground(int frame);
+public interface IGenposTweeningProp {
+    double getValue();
 
-    int[] getIndicators(int frame);
+    void setValue(double value);
 
-    Rect getCellSelectionIndicator(GP2Cell selectedCell, int frame);
-
-    void drawCells(int frame, int opx, int opy, IGrDriver igd);
+    boolean round();
 }

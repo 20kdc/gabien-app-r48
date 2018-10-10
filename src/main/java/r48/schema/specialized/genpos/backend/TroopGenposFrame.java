@@ -21,6 +21,7 @@ import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.specialized.genpos.IGenposFrame;
+import r48.schema.specialized.genpos.IGenposTweeningProp;
 import r48.schema.util.SchemaPath;
 
 import java.util.Map;
@@ -114,6 +115,11 @@ public class TroopGenposFrame implements IGenposFrame {
         if (i == 3)
             return memberPath.newWindow(se, member.getInstVarBySymbol("@invisible"));
         throw new RuntimeException("Invalid cell prop.");
+    }
+
+    @Override
+    public IGenposTweeningProp getCellPropTweening(int ct, int i) {
+        return null;
     }
 
     @Override

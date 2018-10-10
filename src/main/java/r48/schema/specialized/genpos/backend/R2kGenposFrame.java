@@ -8,7 +8,6 @@
 package r48.schema.specialized.genpos.backend;
 
 import gabien.IGrDriver;
-import gabien.IGrInDriver;
 import gabien.IImage;
 import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
@@ -21,7 +20,9 @@ import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
+import r48.schema.specialized.genpos.FixnumGenposTweeningProp;
 import r48.schema.specialized.genpos.IGenposFrame;
+import r48.schema.specialized.genpos.IGenposTweeningProp;
 import r48.schema.util.SchemaPath;
 import r48.ui.ISpritesheetProvider;
 
@@ -135,6 +136,13 @@ public class R2kGenposFrame implements IGenposFrame {
                 }
             });
         return memberPath.newWindow(se, member.getInstVarBySymbol(trueIVars[i]));
+    }
+
+    @Override
+    public IGenposTweeningProp getCellPropTweening(int ct, int i) {
+        if ((i < 1) || (i > 9))
+            return null;
+        return new FixnumGenposTweeningProp(getCellProp(ct, i));
     }
 
     @Override

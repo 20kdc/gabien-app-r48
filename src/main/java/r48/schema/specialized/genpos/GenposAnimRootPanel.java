@@ -33,13 +33,31 @@ import r48.ui.UITimeframeControl;
  */
 public class GenposAnimRootPanel extends UIElement.UIProxy {
     public final IGenposAnim target;
+    public final GenposAnimTweening tweening;
     public final GenposFramePanelController framePanelController;
     public final UITimeframeControl timeframe;
 
     public GenposAnimRootPanel(IGenposAnim t, ISchemaHost launcher, int recommendedFramerate) {
         target = t;
+        IGenposFrame frame = target.getFrameDisplay();
+        // NOTE: This does a scan of the frames without calling frameChanged to run interpolation implication
+        tweening = new GenposAnimTweening(t, frame);
+        framePanelController = new GenposFramePanelController(frame, new IGenposTweeningManagement() {
+            @Override
+            public KeyTrack propertyKeytrack(int prop) {
+                return tweening.getTrack(framePanelController.cellSelection.cellNumber, prop);
+            }
 
-        framePanelController = new GenposFramePanelController(target.getFrameDisplay(), launcher);
+            @Override
+            public boolean propertyKeyed(int prop, KeyTrack track) {
+                return track.track[target.getFrameIdx()];
+            }
+
+            @Override
+            public void disablePropertyKey(int prop, KeyTrack track) {
+                tweening.disablePropertyKey(target.getFrameIdx(), framePanelController.cellSelection.cellNumber, prop, track);
+            }
+        }, launcher);
         timeframe = new UITimeframeControl(new ISupplier<Integer>() {
             @Override
             public Integer get() {
@@ -71,7 +89,7 @@ public class GenposAnimRootPanel extends UIElement.UIProxy {
             public void run() {
                 if (target.acceptableForPaste(AppMain.theClipboard)) {
                     target.getFrame().setDeepClone(AppMain.theClipboard);
-                    target.modifiedFrame();
+                    target.modifiedFrames();
                     frameChanged();
                 }
             }

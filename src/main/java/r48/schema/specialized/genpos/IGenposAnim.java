@@ -20,10 +20,11 @@ public interface IGenposAnim {
 
     int getFrameCount();
 
-    // If the frame is modified directly, call modifiedFrame
+    // If the frame is modified directly, call modifiedFrames.
+    // Note that multiple frames can be modified before modifiedFrames is called.
     RubyIO getFrame();
 
-    void modifiedFrame();
+    void modifiedFrames();
 
     // NOTE: You need to setFrameIdx(getFrameIdx()); after these.
     void insertFrame(RubyIO rio);

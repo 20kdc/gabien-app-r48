@@ -29,13 +29,15 @@ public class GenposFramePanelController {
     // For use by the parent.
     public UISplitterLayout rootLayout;
     public IGenposFrame frame;
+    public IGenposTweeningManagement tweening;
 
     // for schema purposes
     public ISchemaHost hostLauncher;
 
     public UITextButton gridToggleButton;
 
-    public GenposFramePanelController(IGenposFrame rootForNow, ISchemaHost launcher) {
+    public GenposFramePanelController(IGenposFrame rootForNow, IGenposTweeningManagement gtm, ISchemaHost launcher) {
+        tweening = gtm;
         hostLauncher = launcher;
         frame = rootForNow;
         editor = new UISingleFrameView(this);
@@ -64,6 +66,5 @@ public class GenposFramePanelController {
         cellSelection.frameChanged();
         editingPanel.somethingChanged();
     }
-
 
 }

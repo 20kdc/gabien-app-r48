@@ -94,7 +94,7 @@ public class UITimeframeControl extends UIElement.UIProxy {
                 playTimer -= frameTime;
                 int oldIdx = getFrameIdx.get();
                 setFrameIdx.accept(oldIdx + 1);
-                if ((oldIdx + 1) != oldIdx)
+                if (getFrameIdx.get() != (oldIdx + 1))
                     if (!loopControllerButton.state) {
                         playControllerButton.state = false;
                         break;

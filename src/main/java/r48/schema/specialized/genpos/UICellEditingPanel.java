@@ -12,6 +12,8 @@ import gabien.ui.*;
 import r48.FontSizes;
 import r48.schema.HiddenSchemaElement;
 import r48.schema.util.SchemaPath;
+import r48.ui.Art;
+import r48.ui.UIAppendButton;
 
 /**
  * The system for editing a given cell.
@@ -42,7 +44,8 @@ public class UICellEditingPanel extends UIElement.UIPanel {
         String[] properties = root.frame.getCellProps();
         for (int i = 0; i < halfsplits.length; i++) {
             UIElement ed = createPropertyEditor(i);
-            halfsplits[i] = new UISplitterLayout(new UILabel(properties[i], FontSizes.schemaFieldTextHeight), ed, false, 3, 5);
+            UIElement leftSide = new UILabel(properties[i], FontSizes.schemaFieldTextHeight);
+            halfsplits[i] = new UISplitterLayout(leftSide, ed, false, 1);
             layoutAddElement(halfsplits[i]);
         }
     }
@@ -51,7 +54,22 @@ public class UICellEditingPanel extends UIElement.UIPanel {
         if (cellSelectionPanel.cellNumber != -1) {
             SchemaPath sp = root.frame.getCellProp(cellSelectionPanel.cellNumber, i);
             // Used to have to 'correct host' here, but host's very existence was bad for window cloning and also totally unnecessary
-            return sp.editor.buildHoldingEditor(sp.targetElement, root.hostLauncher, sp);
+            UIElement uie = sp.editor.buildHoldingEditor(sp.targetElement, root.hostLauncher, sp);
+            if (root.tweening != null) {
+                if (root.frame.getCellPropTweening(cellSelectionPanel.cellNumber, i) != null) {
+                    final IGenposTweeningManagement.KeyTrack keytrack = root.tweening.propertyKeytrack(i);
+                    final boolean keyed = root.tweening.propertyKeyed(i, keytrack);
+                    // This is a 'delete keyframe' button
+                    uie = new UIAppendButton(keyed ? Art.Symbol.Keyframe : Art.Symbol.Tween, uie, new Runnable() {
+                        @Override
+                        public void run() {
+                            if (keyed)
+                                root.tweening.disablePropertyKey(i, keytrack);
+                        }
+                    }, FontSizes.schemaFieldTextHeight);
+                }
+            }
+            return uie;
         }
         return HiddenSchemaElement.makeHiddenElement();
     }

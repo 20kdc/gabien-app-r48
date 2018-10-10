@@ -153,7 +153,7 @@ public class GenposSchemaElement extends SchemaElement {
                         public void run() {
                             path.changeOccurred(false);
                         }
-                    }), launcher);
+                    }), null, launcher);
                     rmarp.frameChanged();
                     // Setup automatic-update safety net
                     safetyWrap(rmarp.rootLayout, launcher, new Runnable() {

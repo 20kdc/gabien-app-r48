@@ -107,7 +107,7 @@ public class RMGenposAnim implements IGenposAnim {
     }
 
     @Override
-    public void modifiedFrame() {
+    public void modifiedFrames() {
         updateNotify.run();
     }
 
