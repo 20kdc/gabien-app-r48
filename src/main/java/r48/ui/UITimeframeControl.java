@@ -5,18 +5,12 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.schema.specialized.genpos;
+package r48.ui;
 
 import gabien.IPeripherals;
-import gabien.ui.UIButton;
-import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import r48.AppMain;
+import gabien.ui.*;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.TXDB;
-import r48.ui.Art;
-import r48.ui.UIAppendButton;
 
 /**
  * Handles frame management, copy/paste, etc.
@@ -25,7 +19,9 @@ import r48.ui.UIAppendButton;
  * Created on 2/17/17.
  */
 public class UITimeframeControl extends UIElement.UIProxy {
-    public GenposAnimRootPanel rootPanel;
+    public final ISupplier<Integer> getFrameIdx, getFrameCount;
+    public final IConsumer<Integer> setFrameIdx;
+
     private double playTimer = 0;
     public int recommendedFramerate;
 
@@ -60,55 +56,25 @@ public class UITimeframeControl extends UIElement.UIProxy {
     // The rest of the toolbar is constructed in the constructor
     public UIElement toolbar = tsController;
 
-    public UITimeframeControl(GenposAnimRootPanel rp, int framerate) {
+    public UITimeframeControl(ISupplier<Integer> gfi, ISupplier<Integer> gfc, IConsumer<Integer> sfi, int framerate) {
+        getFrameIdx = gfi;
+        getFrameCount = gfc;
+        setFrameIdx = sfi;
         playControllerButton.toggle = true;
         loopControllerButton.toggle = true;
         hsControllerButton.toggle = true;
         tsControllerButton.toggle = true;
-        rootPanel = rp;
         recommendedFramerate = framerate;
         toolbar = new UIAppendButton("<", toolbar, new Runnable() {
             @Override
             public void run() {
-                rootPanel.target.setFrameIdx(rootPanel.target.getFrameIdx() - 1);
-                rootPanel.frameChanged();
+                setFrameIdx.accept(getFrameIdx.get() - 1);
             }
         }, FontSizes.rmaTimeframeTextHeight);
         toolbar = new UIAppendButton(">", toolbar, new Runnable() {
             @Override
             public void run() {
-                rootPanel.target.setFrameIdx(rootPanel.target.getFrameIdx() + 1);
-                rootPanel.frameChanged();
-            }
-        }, FontSizes.rmaTimeframeTextHeight);
-        toolbar = new UIAppendButton(TXDB.get("Copy"), toolbar, new Runnable() {
-            @Override
-            public void run() {
-                AppMain.theClipboard = new RubyIO().setDeepClone(rootPanel.target.getFrame());
-            }
-        }, FontSizes.rmaTimeframeTextHeight);
-        toolbar = new UIAppendButton(TXDB.get("Paste"), toolbar, new Runnable() {
-            @Override
-            public void run() {
-                if (rootPanel.target.acceptableForPaste(AppMain.theClipboard)) {
-                    rootPanel.target.getFrame().setDeepClone(AppMain.theClipboard);
-                    rootPanel.target.modifiedFrame();
-                    rootPanel.frameChanged();
-                }
-            }
-        }, FontSizes.rmaTimeframeTextHeight);
-        toolbar = new UIAppendButton("+", toolbar, new Runnable() {
-            @Override
-            public void run() {
-                rootPanel.target.insertFrame(new RubyIO().setDeepClone(rootPanel.target.getFrame()));
-                rootPanel.frameChanged();
-            }
-        }, FontSizes.rmaTimeframeTextHeight);
-        toolbar = new UIAppendButton("-", toolbar, new Runnable() {
-            @Override
-            public void run() {
-                rootPanel.target.deleteFrame();
-                rootPanel.frameChanged();
+                setFrameIdx.accept(getFrameIdx.get() + 1);
             }
         }, FontSizes.rmaTimeframeTextHeight);
 
@@ -126,10 +92,9 @@ public class UITimeframeControl extends UIElement.UIProxy {
                 frameTime *= 3;
             while (playTimer >= frameTime) {
                 playTimer -= frameTime;
-                int oldIdx = rootPanel.target.getFrameIdx();
-                rootPanel.target.setFrameIdx(oldIdx + 1);
-                rootPanel.frameChanged();
-                if ((oldIdx + 1) != rootPanel.target.getFrameIdx())
+                int oldIdx = getFrameIdx.get();
+                setFrameIdx.accept(oldIdx + 1);
+                if ((oldIdx + 1) != oldIdx)
                     if (!loopControllerButton.state) {
                         playControllerButton.state = false;
                         break;
@@ -138,7 +103,7 @@ public class UITimeframeControl extends UIElement.UIProxy {
         } else {
             playTimer = 0;
         }
-        currentFrame.text = (rootPanel.target.getFrameIdx() + 1) + " / " + rootPanel.target.getFrameCount();
+        currentFrame.text = (getFrameIdx.get() + 1) + " / " + getFrameCount.get();
 
         super.update(deltaTime, selected, peripherals);
     }

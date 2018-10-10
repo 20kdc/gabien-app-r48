@@ -7,10 +7,17 @@
 
 package r48.schema.specialized.genpos;
 
+import gabien.ui.IConsumer;
+import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
+import r48.AppMain;
+import r48.FontSizes;
+import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.schema.util.ISchemaHost;
+import r48.ui.UIAppendButton;
+import r48.ui.UITimeframeControl;
 
 /**
  * Animation Software For Serious Animation Purposes.
@@ -33,9 +40,58 @@ public class GenposAnimRootPanel extends UIElement.UIProxy {
         target = t;
 
         framePanelController = new GenposFramePanelController(target.getFrameDisplay(), launcher);
-        timeframe = new UITimeframeControl(this, recommendedFramerate);
+        timeframe = new UITimeframeControl(new ISupplier<Integer>() {
+            @Override
+            public Integer get() {
+                return target.getFrameIdx();
+            }
+        }, new ISupplier<Integer>() {
+            @Override
+            public Integer get() {
+                return target.getFrameCount();
+            }
+        }, new IConsumer<Integer>() {
+            @Override
+            public void accept(Integer integer) {
+                target.setFrameIdx(integer);
+                frameChanged();
+            }
+        }, recommendedFramerate);
 
-        proxySetElement(new UISplitterLayout(timeframe, framePanelController.rootLayout, true, 0), true);
+        UIElement toolbar = timeframe;
+
+        toolbar = new UIAppendButton(TXDB.get("Copy"), toolbar, new Runnable() {
+            @Override
+            public void run() {
+                AppMain.theClipboard = new RubyIO().setDeepClone(target.getFrame());
+            }
+        }, FontSizes.rmaTimeframeTextHeight);
+        toolbar = new UIAppendButton(TXDB.get("Paste"), toolbar, new Runnable() {
+            @Override
+            public void run() {
+                if (target.acceptableForPaste(AppMain.theClipboard)) {
+                    target.getFrame().setDeepClone(AppMain.theClipboard);
+                    target.modifiedFrame();
+                    frameChanged();
+                }
+            }
+        }, FontSizes.rmaTimeframeTextHeight);
+        toolbar = new UIAppendButton("+", toolbar, new Runnable() {
+            @Override
+            public void run() {
+                target.insertFrame(new RubyIO().setDeepClone(target.getFrame()));
+                frameChanged();
+            }
+        }, FontSizes.rmaTimeframeTextHeight);
+        toolbar = new UIAppendButton("-", toolbar, new Runnable() {
+            @Override
+            public void run() {
+                target.deleteFrame();
+                frameChanged();
+            }
+        }, FontSizes.rmaTimeframeTextHeight);
+
+        proxySetElement(new UISplitterLayout(toolbar, framePanelController.rootLayout, true, 0), true);
 
         frameChanged();
     }
