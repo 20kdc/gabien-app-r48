@@ -10,7 +10,6 @@ package r48.ui;
 import gabien.GaBIEn;
 import gabien.IDesktopPeripherals;
 import gabien.IGrInDriver;
-import gabien.IPeripherals;
 import r48.AppMain;
 import r48.dbs.TXDB;
 
@@ -47,6 +46,22 @@ public class Coco {
         String r = new String(combuf);
         if (r.equals("UUDDLRLRBA"))
             launch();
+    }
+
+    public static String getVersion() {
+        try {
+            InputStream r = GaBIEn.getResource("version.txt");
+            if (r != null) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(r));
+                String bb = br.readLine();
+                br.close();
+                return bb;
+            } else {
+                return "NOT-A-RELEASE";
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void launch() {

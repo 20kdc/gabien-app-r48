@@ -17,6 +17,7 @@ import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.imageio.ImageIOFormat;
 import r48.ui.Art;
+import r48.ui.Coco;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFontSizeConfigurator;
 import r48.ui.help.UIHelpSystem;
@@ -232,6 +233,7 @@ public class Application {
                         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         PrintStream ps = new PrintStream(baos, false, "UTF-8");
                         ps.println(TXDB.get("An error has occurred in R48. This is always the result of a bug somewhere."));
+                        ps.println(TXDB.get("Version: " + Coco.getVersion()));
                         ps.println(TXDB.get("If the rest of R48 disappeared, that means a second error occurred, and R48 has shut down to keep this message up."));
                         ps.println(TXDB.get("This is because, if backups failed, then Save would fail anyway - and without these instructions, you're kind of doomed."));
                         if (backupAvailable) {
