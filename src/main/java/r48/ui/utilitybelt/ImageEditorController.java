@@ -45,7 +45,7 @@ public class ImageEditorController {
             public void run() {
                 while (true) {
                     IImageEditorTool tool = imageEditView.currentTool;
-                    imageEditView.currentTool.enter(imageEditView);
+                    imageEditView.currentTool.forceDifferentTool(imageEditView);
                     if (tool == imageEditView.currentTool)
                         break;
                 }

@@ -86,17 +86,20 @@ public class RootImageEditorTool implements IImageEditorTool {
     }
 
     @Override
-    public void enter(UIImageEditView uiev) {
+    public void forceDifferentTool(UIImageEditView uiev) {
 
     }
 
     @Override
-    public void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging) {
+    public void apply(int x, int y, UIImageEditView view, boolean major, boolean dragging) {
         if (!activeSection) {
             activeSection = true;
             view.eds.startSection();
         }
-        view.image.setPixel(imp.correctedX, imp.correctedY, view.selPaletteIndex);
+        FillAlgorithm.Point p = view.correctPoint(x, y);
+        if (p == null)
+            return;
+        view.image.setPixel(p.x, p.y, view.selPaletteIndex);
     }
 
     @Override

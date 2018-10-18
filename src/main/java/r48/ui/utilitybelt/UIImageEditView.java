@@ -61,6 +61,32 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             tiling = new Rect(UIElement.sensibleCellMod(tiling.x, image.width), UIElement.sensibleCellMod(tiling.y, image.height), tiling.width, tiling.height);
     }
 
+    public FillAlgorithm.Point correctPoint(int x, int y) {
+        if (tiling != null) {
+            int ofsX = tiling.x;
+            int ofsY = tiling.y;
+            int ofsW = tiling.width;
+            int ofsH = tiling.height;
+            x -= ofsX;
+            y -= ofsY;
+            x = UIElement.sensibleCellMod(x, ofsW);
+            y = UIElement.sensibleCellMod(y, ofsH);
+            x += ofsX;
+            y += ofsY;
+            x = UIElement.sensibleCellMod(x, image.width);
+            y = UIElement.sensibleCellMod(y, image.height);
+        }
+        if (x < 0)
+            return null;
+        if (y < 0)
+            return null;
+        if (x >= image.width)
+            return null;
+        if (y >= image.height)
+            return null;
+        return new FillAlgorithm.Point(x, y);
+    }
+
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
         shift = false;
@@ -310,15 +336,15 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             camY += (y - dragLastY) / (double) zoom;
         } else {
             final IImageEditorTool oldTool = currentTool;
-            final ImPoint imp = new ImPoint(nx, ny);
             if (first) {
-                imp.updateCorrected(this);
                 if (shift) {
-                    new EDImageEditorTool().applyCore(imp, this);
+                    FillAlgorithm.Point p = correctPoint(nx, ny);
+                    if (p != null)
+                        new EDImageEditorTool().applyCore(p, this);
                     dragging = false;
                     return;
                 }
-                currentTool.apply(imp, this, true, false);
+                currentTool.apply(nx, ny, this, true, false);
                 if (oldTool != currentTool) {
                     dragging = false;
                     oldTool.endApply(this);
@@ -332,10 +358,9 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
                 IFunction<Boolean, Boolean> plotPoint = new IFunction<Boolean, Boolean>() {
                     @Override
                     public Boolean apply(Boolean major) {
-                        imp.x = lineDraw.ax;
-                        imp.y = lineDraw.ay;
-                        imp.updateCorrected(UIImageEditView.this);
-                        currentTool.apply(imp, UIImageEditView.this, major, true);
+                        FillAlgorithm.Point p = correctPoint(lineDraw.ax, lineDraw.ay);
+                        if (p != null)
+                            currentTool.apply(p.x, p.y, UIImageEditView.this, major, true);
                         if (oldTool != currentTool) {
                             dragging = false;
                             oldTool.endApply(UIImageEditView.this);
@@ -358,35 +383,6 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             zoom /= 2;
             if (zoom < 1)
                 zoom = 1;
-        }
-    }
-
-    public static class ImPoint {
-        public int x, y;
-        public int correctedX, correctedY;
-
-        public ImPoint(int px, int py) {
-            x = px;
-            y = py;
-        }
-
-        public void updateCorrected(UIImageEditView iev) {
-            correctedX = x;
-            correctedY = y;
-            if (iev.tiling != null) {
-                int ofsX = iev.tiling.x;
-                int ofsY = iev.tiling.y;
-                int ofsW = iev.tiling.width;
-                int ofsH = iev.tiling.height;
-                correctedX -= ofsX;
-                correctedY -= ofsY;
-                correctedX = UIElement.sensibleCellMod(correctedX, ofsW);
-                correctedY = UIElement.sensibleCellMod(correctedY, ofsH);
-                correctedX += ofsX;
-                correctedY += ofsY;
-            }
-            correctedX = UIElement.sensibleCellMod(correctedX, iev.image.width);
-            correctedY = UIElement.sensibleCellMod(correctedY, iev.image.height);
         }
     }
 }

@@ -17,7 +17,7 @@ import r48.dbs.TXDB;
 public class TileImageEditorTool extends RectangleImageEditorTool {
 
     @Override
-    public void enter(UIImageEditView uiev) {
+    public void forceDifferentTool(UIImageEditView uiev) {
         if (uiev.tiling != null) {
             uiev.tiling = null;
             uiev.currentTool = new RootImageEditorTool();
@@ -26,9 +26,10 @@ public class TileImageEditorTool extends RectangleImageEditorTool {
 
     @Override
     protected void performOperation(UIImageEditView view, int bW, int bH) {
-        UIImageEditView.ImPoint l1 = new UIImageEditView.ImPoint(aX, aY);
-        l1.updateCorrected(view);
-        view.tiling = new Rect(l1.correctedX, l1.correctedY, bW, bH);
+        FillAlgorithm.Point p = view.correctPoint(aX, aY);
+        if (p == null)
+            return;
+        view.tiling = new Rect(p.x, p.y, bW, bH);
         view.currentTool = new RootImageEditorTool();
         view.newToolCallback.run();
     }

@@ -18,28 +18,28 @@ public class FillImageEditorTool implements IImageEditorTool {
     public boolean autoshade, autoshadeLRX, autoshadeUDX;
 
     @Override
-    public void enter(UIImageEditView uiev) {
+    public void forceDifferentTool(UIImageEditView uiev) {
 
     }
 
     @Override
-    public void apply(UIImageEditView.ImPoint imp, final UIImageEditView view, boolean major, boolean dragging) {
+    public void apply(int x, int y, final UIImageEditView view, boolean major, boolean dragging) {
         if ((!major) || dragging)
             return;
         view.eds.startSection();
-        final int spi = view.image.getRaw(imp.correctedX, imp.correctedY);
+
+        // NOTE! THIS DOESN'T USE CORRECTPOINT PROPERLY.
+        // Need to adapt the fill-algorithm to make a very clear distinction between pre-transform and post-transform points while avoiding an infinite loop.
+
+        FillAlgorithm.Point start = view.correctPoint(x, y);
+        if (start == null)
+            return;
+        final int spi = view.image.getRaw(start.x, start.y);
+
         FillAlgorithm fa = new FillAlgorithm(new IFunction<FillAlgorithm.Point, FillAlgorithm.Point>() {
             @Override
             public FillAlgorithm.Point apply(FillAlgorithm.Point point) {
-                UIImageEditView.ImPoint imp = new UIImageEditView.ImPoint(point.x, point.y);
-                imp.updateCorrected(view);
-                if (view.tiling == null) {
-                    if (imp.correctedX != point.x)
-                        return null;
-                    if (imp.correctedY != point.y)
-                        return null;
-                }
-                return new FillAlgorithm.Point(imp.correctedX, imp.correctedY);
+                return view.correctPoint(point.x, point.y);
             }
         }, new IFunction<FillAlgorithm.Point, Boolean>() {
             @Override
@@ -47,7 +47,7 @@ public class FillImageEditorTool implements IImageEditorTool {
                 return view.image.getRaw(point.x, point.y) == spi;
             }
         });
-        fa.availablePointSet.add(new FillAlgorithm.Point(imp.correctedX, imp.correctedY));
+        fa.availablePointSet.add(start);
         while (!fa.availablePointSet.isEmpty())
             fa.pass();
         int shA = Math.max(view.selPaletteIndex - 1, 0);
@@ -90,13 +90,8 @@ public class FillImageEditorTool implements IImageEditorTool {
         view.eds.endSection();
     }
 
-    // Doesn't have to return inbound results, does have to return non-null ones
     private FillAlgorithm.Point tileAS(UIImageEditView view, FillAlgorithm.Point point) {
-        if (view.tiling == null)
-            return point;
-        UIImageEditView.ImPoint imp = new UIImageEditView.ImPoint(point.x, point.y);
-        imp.updateCorrected(view);
-        return new FillAlgorithm.Point(imp.correctedX, imp.correctedY);
+        return view.correctPoint(point.x, point.y);
     }
 
     @Override

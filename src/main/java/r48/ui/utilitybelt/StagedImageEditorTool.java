@@ -22,18 +22,18 @@ public abstract class StagedImageEditorTool implements IImageEditorTool {
     }
 
     @Override
-    public void enter(UIImageEditView uiev) {
-        stage = 0;
+    public void forceDifferentTool(UIImageEditView uiev) {
+
     }
 
     @Override
-    public void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging) {
+    public void apply(int x, int y, UIImageEditView view, boolean major, boolean dragging) {
         if (dragging)
             return;
         if (!major)
             return;
-        stageXs[stage] = imp.x;
-        stageYs[stage] = imp.y;
+        stageXs[stage] = x;
+        stageYs[stage] = y;
         stage++;
         if (stage >= stageXs.length) {
             performOperation(view);

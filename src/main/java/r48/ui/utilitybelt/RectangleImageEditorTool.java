@@ -19,22 +19,22 @@ public class RectangleImageEditorTool implements IImageEditorTool {
     public int aX, aY;
 
     @Override
-    public void enter(UIImageEditView uiev) {
+    public void forceDifferentTool(UIImageEditView uiev) {
 
     }
 
     @Override
-    public void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging) {
+    public void apply(int x, int y, UIImageEditView view, boolean major, boolean dragging) {
         if (major && (!dragging)) {
             if (!stage2) {
-                aX = imp.x;
-                aY = imp.y;
+                aX = x;
+                aY = y;
                 stage2 = true;
             } else {
-                int bW = (Math.max(aX, imp.x) + 1) - Math.min(aX, imp.x);
-                int bH = (Math.max(aY, imp.y) + 1) - Math.min(aY, imp.y);
-                aX = Math.min(aX, imp.x);
-                aY = Math.min(aY, imp.y);
+                int bW = (Math.max(aX, x) + 1) - Math.min(aX, x);
+                int bH = (Math.max(aY, y) + 1) - Math.min(aY, y);
+                aX = Math.min(aX, x);
+                aY = Math.min(aY, y);
                 performOperation(view, bW, bH);
                 stage2 = false;
             }
@@ -48,13 +48,12 @@ public class RectangleImageEditorTool implements IImageEditorTool {
 
     protected void performOperation(UIImageEditView view, int bW, int bH) {
         view.eds.startSection();
-        UIImageEditView.ImPoint imp2 = new UIImageEditView.ImPoint(0, 0);
         for (int i = 0; i < bW; i++) {
-            imp2.x = aX + i;
             for (int j = 0; j < bH; j++) {
-                imp2.y = aY + j;
-                imp2.updateCorrected(view);
-                view.image.setPixel(imp2.correctedX, imp2.correctedY, view.selPaletteIndex);
+                FillAlgorithm.Point p = view.correctPoint(aX + i, aY + j);
+                if (p == null)
+                    continue;
+                view.image.setPixel(p.x, p.y, view.selPaletteIndex);
             }
         }
         view.eds.endSection();

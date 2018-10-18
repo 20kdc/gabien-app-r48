@@ -24,7 +24,6 @@ public class CopyImageEditorTool extends StagedImageEditorTool {
     @Override
     protected void performOperation(UIImageEditView view) {
         view.eds.startSection();
-        UIImageEditView.ImPoint src = new UIImageEditView.ImPoint(0, 0);
 
         Rect bStuff = getRectWithPoints();
         int targetX = stageXs[2];
@@ -32,14 +31,16 @@ public class CopyImageEditorTool extends StagedImageEditorTool {
 
         int[] cols = new int[bStuff.width * bStuff.height];
         for (int i = 0; i < bStuff.width; i++) {
-            src.x = bStuff.x + i;
             for (int j = 0; j < bStuff.height; j++) {
-                src.y = bStuff.y + j;
-                src.updateCorrected(view);
-                cols[i + (j * bStuff.width)] = view.image.getRaw(src.correctedX, src.correctedY);
+                FillAlgorithm.Point p = view.correctPoint(bStuff.x + i, bStuff.y + j);
+                if (p != null) {
+                    cols[i + (j * bStuff.width)] = view.image.getRaw(p.x, p.y);
+                } else {
+                    // This is always a valid value
+                    cols[i + (j * bStuff.width)] = 0;
+                }
             }
         }
-        UIImageEditView.ImPoint dst = new UIImageEditView.ImPoint(0, 0);
         for (int i = 0; i < bStuff.width; i++) {
             for (int j = 0; j < bStuff.height; j++) {
                 int i2 = i, j2 = j;
@@ -52,10 +53,9 @@ public class CopyImageEditorTool extends StagedImageEditorTool {
                     i2 = j;
                     j2 = k;
                 }
-                dst.x = targetX + i2;
-                dst.y = targetY + j2;
-                dst.updateCorrected(view);
-                view.image.setRaw(dst.correctedX, dst.correctedY, cols[i + (j * bStuff.width)]);
+                FillAlgorithm.Point p = view.correctPoint(targetX + i2, targetY + j2);
+                if (p != null)
+                    view.image.setRaw(p.x, p.y, cols[i + (j * bStuff.width)]);
             }
         }
         stage = 0;

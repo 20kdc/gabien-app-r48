@@ -16,15 +16,15 @@ import r48.dbs.TXDB;
  */
 public class EDImageEditorTool implements IImageEditorTool {
     @Override
-    public void enter(UIImageEditView uiev) {
+    public void forceDifferentTool(UIImageEditView uiev) {
 
     }
 
     @Override
-    public void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging) {
+    public void apply(int x, int y, UIImageEditView view, boolean major, boolean dragging) {
         if (major && (!dragging)) {
             view.currentTool = new RootImageEditorTool();
-            applyCore(imp, view);
+            applyCore(view.correctPoint(x, y), view);
         }
     }
 
@@ -34,9 +34,9 @@ public class EDImageEditorTool implements IImageEditorTool {
     }
 
     // This one is called from UIImageEditView for shift purposes
-    public void applyCore(UIImageEditView.ImPoint imp, UIImageEditView view) {
+    public void applyCore(FillAlgorithm.Point correctedPoint, UIImageEditView view) {
         view.eds.startSection();
-        int rawValue = view.image.getRaw(imp.correctedX, imp.correctedY);
+        int rawValue = view.image.getRaw(correctedPoint.x, correctedPoint.y);
         view.selPaletteIndex = view.image.rawToPalette(rawValue);
         view.eds.endSection();
         // This did something with the palette. Use the new tool callback to force a state change.

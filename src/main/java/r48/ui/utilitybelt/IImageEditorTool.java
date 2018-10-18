@@ -14,11 +14,12 @@ import gabien.ui.UIElement;
  * Created on 13th July 2018.
  */
 public interface IImageEditorTool {
-    void enter(UIImageEditView uiev);
+    // Solely for forcing a switch to a different tool. Don't reset here!
+    void forceDifferentTool(UIImageEditView uiev);
 
     // major means an actual specified point (otherwise a between point)
     // dragging means NOT the first point
-    void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging);
+    void apply(int x, int y, UIImageEditView view, boolean major, boolean dragging);
 
     // Must always be called after an apply sequence, and must always go to the correct tool.
     void endApply(UIImageEditView view);

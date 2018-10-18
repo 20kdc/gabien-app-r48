@@ -23,13 +23,16 @@ public class AddColourFromImageEditorTool implements IImageEditorTool {
     }
 
     @Override
-    public void enter(UIImageEditView uiev) {
+    public void forceDifferentTool(UIImageEditView uiev) {
 
     }
 
     @Override
-    public void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging) {
-        result.accept(view.image.getRGB(imp.correctedX, imp.correctedY));
+    public void apply(int x, int y, UIImageEditView view, boolean major, boolean dragging) {
+        FillAlgorithm.Point p = view.correctPoint(x, y);
+        if (p == null)
+            return;
+        result.accept(view.image.getRGB(p.x, p.y));
         view.currentTool = new RootImageEditorTool();
         view.newToolCallback.run();
     }

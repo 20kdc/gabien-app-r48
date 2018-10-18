@@ -31,14 +31,12 @@ public class LineImageEditorTool extends StagedImageEditorTool {
         final LineAlgorithm la = new LineAlgorithm();
         la.ax = stageXs[0];
         la.ay = stageYs[0];
-        final UIImageEditView.ImPoint imp = new UIImageEditView.ImPoint(0, 0);
         la.run(stageXs[1], stageYs[1], new IFunction<Boolean, Boolean>() {
             @Override
             public Boolean apply(Boolean aBoolean) {
-                imp.x = la.ax;
-                imp.y = la.ay;
-                imp.updateCorrected(view);
-                view.image.setPixel(imp.correctedX, imp.correctedY, view.selPaletteIndex);
+                FillAlgorithm.Point p = view.correctPoint(la.ax, la.ay);
+                if (p != null)
+                    view.image.setPixel(p.x, p.y, view.selPaletteIndex);
                 return true;
             }
         });

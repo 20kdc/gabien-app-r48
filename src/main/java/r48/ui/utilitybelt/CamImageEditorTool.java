@@ -24,12 +24,12 @@ public class CamImageEditorTool implements IImageEditorTool {
     }
 
     @Override
-    public void enter(UIImageEditView uiev) {
+    public void forceDifferentTool(UIImageEditView uiev) {
 
     }
 
     @Override
-    public void apply(UIImageEditView.ImPoint imp, UIImageEditView view, boolean major, boolean dragging) {
+    public void apply(int x, int y, UIImageEditView view, boolean major, boolean dragging) {
 
     }
 
