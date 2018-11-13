@@ -23,7 +23,7 @@ import r48.map.systems.IRMMapSystem;
 import r48.maptools.UIMTEventPicker;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
-import r48.ui.UITextPrompt;
+import r48.ui.dialog.UITextPrompt;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;

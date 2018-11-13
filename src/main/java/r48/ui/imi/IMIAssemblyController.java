@@ -5,7 +5,7 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.ui.utilitybelt;
+package r48.ui.imi;
 
 import gabien.GaBIEn;
 import gabien.ui.*;

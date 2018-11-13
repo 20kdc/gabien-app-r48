@@ -28,7 +28,11 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.*;
-import r48.ui.*;
+import r48.ui.Art;
+import r48.ui.Coco;
+import r48.ui.UIAppendButton;
+import r48.ui.UINSVertLayout;
+import r48.ui.dialog.UIChoicesMenu;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
 

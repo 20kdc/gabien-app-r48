@@ -18,7 +18,7 @@ import r48.schema.integers.LowerBoundIntegerSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBindingSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
-import r48.ui.ISpritesheetProvider;
+import r48.ui.dialog.ISpritesheetProvider;
 
 import java.util.HashMap;
 

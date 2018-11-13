@@ -18,9 +18,9 @@ import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBinders;
 import r48.schema.util.SchemaPath;
 import r48.ui.Coco;
-import r48.ui.UIFontSizeConfigurator;
-import r48.ui.UITextPrompt;
-import r48.ui.utilitybelt.IMIAssemblyController;
+import r48.ui.dialog.UIFontSizeConfigurator;
+import r48.ui.dialog.UITextPrompt;
+import r48.ui.imi.IMIAssemblyController;
 
 import java.io.*;
 import java.util.Collections;

@@ -24,7 +24,7 @@ import r48.schema.specialized.genpos.FixnumGenposTweeningProp;
 import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.specialized.genpos.IGenposTweeningProp;
 import r48.schema.util.SchemaPath;
-import r48.ui.ISpritesheetProvider;
+import r48.ui.dialog.ISpritesheetProvider;
 
 /**
  * Created on 29/07/17.

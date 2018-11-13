@@ -15,7 +15,7 @@ import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.schema.ArrayElementSchemaElement;
 import r48.ui.UIAppendButton;
-import r48.ui.UIIndentThingy;
+import r48.ui.spacing.UIIndentThingy;
 
 import java.util.Collections;
 import java.util.HashSet;

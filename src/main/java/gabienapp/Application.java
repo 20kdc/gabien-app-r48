@@ -19,7 +19,7 @@ import r48.imageio.ImageIOFormat;
 import r48.ui.Art;
 import r48.ui.Coco;
 import r48.ui.UIAppendButton;
-import r48.ui.UIFontSizeConfigurator;
+import r48.ui.dialog.UIFontSizeConfigurator;
 import r48.ui.help.UIHelpSystem;
 
 import java.io.ByteArrayOutputStream;

@@ -17,8 +17,8 @@ import r48.dbs.FormatSyntax;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.ui.ISpritesheetProvider;
-import r48.ui.UISpritesheetChoice;
+import r48.ui.dialog.ISpritesheetProvider;
+import r48.ui.dialog.UISpritesheetChoice;
 
 /**
  * Created on 29/07/17.

@@ -18,8 +18,8 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.ui.UIBorderedSubpanel;
 import r48.ui.UIThumbnail;
+import r48.ui.spacing.UIBorderedSubpanel;
 
 import java.util.HashSet;
 

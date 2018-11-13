@@ -26,7 +26,7 @@ import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.specialized.genpos.IGenposTweeningProp;
 import r48.schema.specialized.genpos.TableGenposTweeningProp;
 import r48.schema.util.SchemaPath;
-import r48.ui.ISpritesheetProvider;
+import r48.ui.dialog.ISpritesheetProvider;
 
 /**
  * This exists so that I can try and reuse RMGenposAnim code for the 2k3 animations,

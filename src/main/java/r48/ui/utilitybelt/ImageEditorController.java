@@ -17,8 +17,8 @@ import r48.dbs.TXDB;
 import r48.imageio.ImageIOFormat;
 import r48.maptools.UIMTBase;
 import r48.ui.UIAppendButton;
-import r48.ui.UIColourPicker;
 import r48.ui.UIColourSwatchButton;
+import r48.ui.dialog.UIColourPicker;
 
 import java.io.OutputStream;
 import java.util.LinkedList;
