@@ -48,7 +48,7 @@ public abstract class SaveCharacter extends R2kObject {
     public IntegerR2kStruct unknown47 = new IntegerR2kStruct(0);
     public BooleanR2kStruct flying = new BooleanR2kStruct(false);
     public StringR2kStruct spriteName = new StringR2kStruct();
-    public IntegerR2kStruct spriteId = new IntegerR2kStruct(0);
+    public IntegerR2kStruct spriteId = new IntegerR2kStruct(-1);
     public IntegerR2kStruct movedOnFrame = new IntegerR2kStruct(0);
     public IntegerR2kStruct flashRed = new IntegerR2kStruct(100);
     public IntegerR2kStruct flashGreen = new IntegerR2kStruct(100);

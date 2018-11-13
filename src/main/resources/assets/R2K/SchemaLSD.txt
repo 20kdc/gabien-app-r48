@@ -423,7 +423,7 @@ C name Class.RPG::SavePartyLocation @character_name @character_index @map @x @y 
 @battleanim_id int
 @battleanim_target int
 @battleanim_frame int
-@unknown_2e int
+@battleanim_active boolean
 @battleanim_global boolean
 @weather weather_control_type
 @weather_strength weather_control_strength

@@ -15,7 +15,7 @@ import r48.io.r2k.obj.Music;
 import r48.io.r2k.obj.Sound;
 
 public class SaveSystem extends R2kObject {
-    public IntegerR2kStruct screen = new IntegerR2kStruct(1);
+    public IntegerR2kStruct screen = new IntegerR2kStruct(0);
     public IntegerR2kStruct frameCount = new IntegerR2kStruct(0);
     public StringR2kStruct systemName = new StringR2kStruct();
     // This gets it's default from the database.
@@ -80,6 +80,10 @@ public class SaveSystem extends R2kObject {
 
     // Believe it or not, these are in fact Uint8.
     // How, though...
+    // Later note: I should have clarified this inconsistency,
+    //  but now I'll never know what it means. My guess is:
+    // 1. there's an enum value that depends on this being signed.
+    // 2. EasyRPG had it marked as Uint8 but fixed it, so these notes don't make sense (a good thing)
     public ByteR2kStruct transitionOut = new ByteR2kStruct(1).signed();
     public ByteR2kStruct transitionIn = new ByteR2kStruct(1).signed();
     public ByteR2kStruct battleStartFadeout = new ByteR2kStruct(1).signed();

@@ -31,7 +31,7 @@ public class Interpreter extends R2kObject {
     // Yes, really. Don't trust this
     public ByteR2kStruct kiiVariable = new ByteR2kStruct(0);
     public BooleanR2kStruct kiiTimed  = new BooleanR2kStruct(false);
-    public IntegerR2kStruct kiiTimeVariable = new IntegerR2kStruct(0);
+    public IntegerR2kStruct kiiTimeVariable = new IntegerR2kStruct(-1);
     public BooleanR2kStruct kiiFilterArrowkeys = new BooleanR2kStruct(false);
     public BooleanR2kStruct kiiFilterDecision  = new BooleanR2kStruct(false);
     public BooleanR2kStruct kiiFilterCancel  = new BooleanR2kStruct(false);

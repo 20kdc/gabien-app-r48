@@ -21,7 +21,7 @@ public class SaveMapInfo extends R2kObject {
     public IntegerR2kStruct y = new IntegerR2kStruct(0);
     // I seriously hope this is correct...
     public IntegerR2kStruct encounterRate = new IntegerR2kStruct(-1);
-    public IntegerR2kStruct chipsetId = new IntegerR2kStruct(0);
+    public IntegerR2kStruct chipsetId = new IntegerR2kStruct(-1);
     public SparseArrayHR2kStruct<SaveMapEvent> events = new SparseArrayHR2kStruct<SaveMapEvent>(new ISupplier<SaveMapEvent>() {
         @Override
         public SaveMapEvent get() {

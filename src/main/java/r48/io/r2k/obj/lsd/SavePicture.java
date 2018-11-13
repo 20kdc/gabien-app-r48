@@ -21,6 +21,9 @@ public class SavePicture extends R2kObject {
     public DoubleR2kStruct x = new DoubleR2kStruct();
     public DoubleR2kStruct y = new DoubleR2kStruct();
     public BooleanR2kStruct fixed = new BooleanR2kStruct(false);
+    // EasyRPG says this should have a default of -1 ; I'm not convinced,
+    //  but that said does a case where this is default exist in the wild?
+    // Test with -1, 100, and removed via optional if you want to find out.
     public DoubleR2kStruct magnify = new DoubleR2kStruct(100);
     public DoubleR2kStruct topTransparency = new DoubleR2kStruct();
     public BooleanR2kStruct transparency = new BooleanR2kStruct(false);

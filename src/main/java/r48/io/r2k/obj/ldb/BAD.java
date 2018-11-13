@@ -20,7 +20,7 @@ public class BAD extends R2kObject {
 
     public IntegerR2kStruct moveType = new IntegerR2kStruct(0);
     public IntegerR2kStruct aiType = new IntegerR2kStruct(0);
-    public IntegerR2kStruct pose = new IntegerR2kStruct(0);
+    public IntegerR2kStruct pose = new IntegerR2kStruct(-1);
 
     @Override
     public Index[] getIndices() {

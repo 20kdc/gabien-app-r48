@@ -48,7 +48,7 @@ public class SaveScreen extends R2kObject {
     public IntegerR2kStruct battleanimId = new IntegerR2kStruct(0);
     public IntegerR2kStruct battleanimTarget = new IntegerR2kStruct(0);
     public IntegerR2kStruct battleanimFrame = new IntegerR2kStruct(0);
-    public IntegerR2kStruct battleanim2E = new IntegerR2kStruct(0);
+    public BooleanR2kStruct battleanim2E = new BooleanR2kStruct(false);
     public BooleanR2kStruct battleanimGlobal = new BooleanR2kStruct(false);
 
     public IntegerR2kStruct weather = new IntegerR2kStruct(0);
@@ -86,7 +86,7 @@ public class SaveScreen extends R2kObject {
                 new Index(0x2B, battleanimId, "@battleanim_id"),
                 new Index(0x2C, battleanimTarget, "@battleanim_target"),
                 new Index(0x2D, battleanimFrame, "@battleanim_frame"),
-                new Index(0x2E, battleanim2E, "@unknown_2e"),
+                new Index(0x2E, battleanim2E, "@battleanim_active"),
                 new Index(0x2F, battleanimGlobal, "@battleanim_global"),
 
                 new Index(0x30, weather, "@weather"),
