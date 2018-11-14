@@ -118,29 +118,29 @@ public class AppMain {
     private static IConsumer<UIElement> rootViewWM = new IConsumer<UIElement>() {
         @Override
         public void accept(final UIElement uiElement) {
-            rootView.accept(new UIWindowView.WVWindow(uiElement, new UIWindowView.IWVWindowIcon[] {
-                    new UIWindowView.IWVWindowIcon() {
+            rootView.addShell(new UIWindowView.TabShell(rootView, uiElement, new TabUtils.TabIcon[] {
+                    new TabUtils.TabIcon() {
                         @Override
                         public void draw(IGrDriver igd, int x, int y, int size) {
                             Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
                         }
 
                         @Override
-                        public void click() {
-                            rootView.removeByUIE(uiElement);
+                        public void click(TabUtils.Tab tab) {
+                            rootView.removeTab(tab);
                             // We are actually closing (this isn't called by default due to overrides)
                             uiElement.onWindowClose();
                         }
                     },
-                    new UIWindowView.IWVWindowIcon() {
+                    new TabUtils.TabIcon() {
                         @Override
                         public void draw(IGrDriver igd, int x, int y, int size) {
                             Art.tabWindowIcon(igd, x, y, size);
                         }
 
                         @Override
-                        public void click() {
-                            rootView.removeByUIE(uiElement);
+                        public void click(TabUtils.Tab tab) {
+                            rootView.removeTab(tab);
                             insertTab.accept(uiElement);
                         }
                     }
@@ -150,16 +150,16 @@ public class AppMain {
     private static IConsumer<UIElement> rootViewWMI = new IConsumer<UIElement>() {
         @Override
         public void accept(final UIElement uiElement) {
-            rootView.accept(new UIWindowView.WVWindow(uiElement, new UIWindowView.IWVWindowIcon[] {
-                    new UIWindowView.IWVWindowIcon() {
+            rootView.addShell(new UIWindowView.TabShell(rootView, uiElement, new TabUtils.TabIcon[] {
+                    new TabUtils.TabIcon() {
                         @Override
                         public void draw(IGrDriver igd, int x, int y, int size) {
                             Art.tabWindowIcon(igd, x, y, size);
                         }
 
                         @Override
-                        public void click() {
-                            rootView.removeByUIE(uiElement);
+                        public void click(TabUtils.Tab self) {
+                            rootView.removeTab(self);
                             insertImmortalTab.accept(uiElement);
                         }
                     }
@@ -256,13 +256,6 @@ public class AppMain {
                 mainWindowWidth = r.width;
                 mainWindowHeight = r.height;
                 super.render(igd);
-            }
-
-            @Override
-            public void handleClosedUserWindow(WVWindow wvWindow, boolean selfDestruct) {
-                // If it's not a self-destruct, then behavior was handled by the relevant button.
-                if (selfDestruct)
-                    wvWindow.contents.onWindowClose();
             }
         };
         rootView.windowTextHeight = FontSizes.windowFrameHeight;
@@ -422,7 +415,7 @@ public class AppMain {
 
         final UITabPane utp = new UITabPane(FontSizes.tabTextHeight, true, true) {
             @Override
-            public void handleClosedUserTab(UIWindowView.WVWindow wvWindow, boolean selfDestruct) {
+            public void handleClosedUserTab(TabUtils.Tab wvWindow, boolean selfDestruct) {
                 // If it's not a self-destruct, then behavior was handled by the relevant button.
                 if (selfDestruct)
                     wvWindow.contents.onWindowClose();
@@ -444,16 +437,16 @@ public class AppMain {
         insertImmortalTab = new IConsumer<UIElement>() {
             @Override
             public void accept(final UIElement uiElement) {
-                utp.addTab(new UIWindowView.WVWindow(uiElement, new UIWindowView.IWVWindowIcon[] {
-                        new UIWindowView.IWVWindowIcon() {
+                utp.addTab(new TabUtils.Tab(uiElement, new TabUtils.TabIcon[] {
+                        new TabUtils.TabIcon() {
                             @Override
                             public void draw(IGrDriver igd, int x, int y, int size) {
                                 Art.windowWindowIcon(igd, x, y, size);
                             }
 
                             @Override
-                            public void click() {
-                                utp.removeTab(uiElement);
+                            public void click(TabUtils.Tab self) {
+                                utp.removeTab(self);
                                 Size r = rootView.getSize();
                                 uiElement.setForcedBounds(null, new Rect(0, 0, r.width / 2, r.height / 2));
                                 trueWindowMakerI.accept(uiElement);
@@ -476,29 +469,29 @@ public class AppMain {
         insertTab = new IConsumer<UIElement>() {
             @Override
             public void accept(final UIElement uiElement) {
-                utp.addTab(new UIWindowView.WVWindow(uiElement, new UIWindowView.IWVWindowIcon[] {
-                        new UIWindowView.IWVWindowIcon() {
+                utp.addTab(new TabUtils.Tab(uiElement, new TabUtils.TabIcon[] {
+                        new TabUtils.TabIcon() {
                             @Override
                             public void draw(IGrDriver igd, int x, int y, int size) {
                                 Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
                             }
 
                             @Override
-                            public void click() {
-                                utp.removeTab(uiElement);
-                                // Since normal close behavior was turned off, now it needs to be turned on again
+                            public void click(TabUtils.Tab self) {
+                                utp.removeTab(self);
+                                // Since this was manually removed, this must be called manually.
                                 uiElement.onWindowClose();
                             }
                         },
-                        new UIWindowView.IWVWindowIcon() {
+                        new TabUtils.TabIcon() {
                             @Override
                             public void draw(IGrDriver igd, int x, int y, int size) {
                                 Art.windowWindowIcon(igd, x, y, size);
                             }
 
                             @Override
-                            public void click() {
-                                utp.removeTab(uiElement);
+                            public void click(TabUtils.Tab self) {
+                                utp.removeTab(self);
                                 uiElement.setForcedBounds(null, new Rect(0, 0, mainWindowWidth / 2, mainWindowHeight / 2));
                                 trueWindowMaker.accept(uiElement);
                             }
@@ -611,7 +604,9 @@ public class AppMain {
                 startHelp(0);
             }
         }, FontSizes.statusBarTextHeight);
-        rootView.backing = new UINSVertLayout(workspace, initializeTabs(gamepak, uiTicker));
+        UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, new UINSVertLayout(workspace, initializeTabs(gamepak, uiTicker)));
+        rootView.addShell(backing);
+        rootView.lowerShell(backing);
         return uiStatusLabel;
     }
 

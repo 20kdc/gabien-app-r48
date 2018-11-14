@@ -103,7 +103,7 @@ public class UIEnumChoice extends UIElement.UIProxy {
 
         mainPanel = new UITabPane(FontSizes.tabTextHeight, false, false);
         for (UIElement uie : categoryPanels)
-            mainPanel.addTab(new UIWindowView.WVWindow(uie, new UIWindowView.IWVWindowIcon[] {}));
+            mainPanel.addTab(new TabUtils.Tab(uie, new TabUtils.TabIcon[] {}));
 
         proxySetElement(mainPanel, false);
     }

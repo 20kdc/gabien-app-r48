@@ -108,7 +108,7 @@ public class PagerArrayInterface implements IArrayInterface {
         };
 
         for (UIElement ue : uie)
-            utp.addTab(new UIWindowView.WVWindow(ue, new UIWindowView.IWVWindowIcon[] {}));
+            utp.addTab(new TabUtils.Tab(ue, new TabUtils.TabIcon[] {}));
         svl.panelsAdd(utp);
         int state = (int) ((double) prop2.get());
         if (state < 0)
