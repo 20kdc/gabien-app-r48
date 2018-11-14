@@ -7,9 +7,7 @@
 
 package r48.wm;
 
-import gabien.IDesktopPeripherals;
-import gabien.IGrDriver;
-import gabien.IPeripherals;
+import gabien.*;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.ui.Art;
@@ -47,9 +45,11 @@ public class WindowManager {
     private final UITabPane tabPane;
     private final WindowCreatingUIElementConsumer uiTicker;
     private final LinkedList<UIWindowView> allWindowViews = new LinkedList<UIWindowView>();
+    private IImage modImg;
 
     public WindowManager(UIElement topBar, final WindowCreatingUIElementConsumer uiTick) {
         uiTicker = uiTick;
+        modImg = GaBIEn.createImage(new int[] {0x80000000}, 1, 1);
         rootView = new UIWindowView() {
             @Override
             public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
@@ -220,6 +220,7 @@ public class WindowManager {
     }
 
     public void createMenu(UIElement base, UIElement menu) {
+        UIElement trueBase = base;
         // This function is evil!
         int baseScreenX = 0;
         int baseScreenY = 0;
@@ -239,12 +240,12 @@ public class WindowManager {
             for (UIWindowView.IShell shl : uwv.getShells()) {
                 if (shl instanceof UIWindowView.TabShell) {
                     if (((UIWindowView.TabShell) shl).contents == base) {
-                        createMenuCore(uwv, new Rect(baseScreenX, baseScreenY, baseSize.width, baseSize.height), menu);
+                        createMenuCore(uwv, trueBase, new Rect(baseScreenX, baseScreenY, baseSize.width, baseSize.height), menu);
                         return;
                     }
                 } else if (shl instanceof UIWindowView.ElementShell) {
                     if (((UIWindowView.ElementShell) shl).uie == base) {
-                        createMenuCore(uwv, new Rect(baseScreenX, baseScreenY, baseSize.width, baseSize.height), menu);
+                        createMenuCore(uwv, trueBase, new Rect(baseScreenX, baseScreenY, baseSize.width, baseSize.height), menu);
                         return;
                     }
                 }
@@ -254,7 +255,7 @@ public class WindowManager {
         createWindow(menu);
     }
 
-    private void createMenuCore(final UIWindowView screen, Rect base, UIElement menu) {
+    private void createMenuCore(final UIWindowView screen, final UIElement baseElem, final Rect base, final UIElement menu) {
         Size sz = menu.getSize();
         Rect area = new Rect(screen.getSize());
         Rect[] results = new Rect[] {
@@ -279,6 +280,25 @@ public class WindowManager {
                                 return new IPointerReceiver.NopPointerReceiver();
                             }
                             return ipr;
+                        }
+
+                        @Override
+                        public void render(IGrDriver igd) {
+                            Size sz = screen.getSize();
+                            igd.blitScaledImage(0, 0, 1, 1, 0, 0, sz.width, sz.height, modImg);
+                            int bw = 4;
+                            Rect r = menu.getParentRelativeBounds();
+                            // The border is shown 'behind' the menu base, but the menu is shown over it
+                            UIBorderedElement.drawBorder(igd, 13, bw, r.x - bw, r.y - bw, r.width + (bw * 2), r.height + (bw * 2));
+                            int[] dt = igd.getLocalST();
+                            dt[0] += base.x;
+                            dt[1] += base.y;
+                            igd.updateST();
+                            baseElem.render(igd);
+                            dt[0] -= base.x;
+                            dt[1] -= base.y;
+                            igd.updateST();
+                            super.render(igd);
                         }
                     });
                     return;
