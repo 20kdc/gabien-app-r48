@@ -26,7 +26,6 @@ import java.util.Stack;
  * Created on 12/29/16.
  */
 public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
-    private IConsumer<UIElement> hostWindows;
     private SchemaPath innerElem;
     private UIElement innerElemEditor;
 
@@ -81,7 +80,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     private UIAppendButton toolbarI = new UIAppendButton(Art.Symbol.Inspect, toolbarS, new Runnable() {
         @Override
         public void run() {
-            hostWindows.accept(new UITest(innerElem.targetElement));
+            AppMain.window.createWindow(new UITest(innerElem.targetElement));
         }
     }, FontSizes.schemaPathTextHeight);
     private UIAppendButton toolbarC = new UIAppendButton(Art.Symbol.CloneFrame, toolbarI, new Runnable() {
@@ -93,7 +92,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
             }
             // This serves to ensure that cloning a window causes it to retain scroll and such,
             // while still keeping it independent.
-            SchemaHostImpl next = new SchemaHostImpl(hostWindows, contextView);
+            SchemaHostImpl next = new SchemaHostImpl(contextView);
             next.backStack.addAll(backStack);
             next.backStack.push(innerElem);
             next.embedData = new EmbedDataTracker(next.backStack, embedData);
@@ -115,12 +114,12 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     public boolean stayClosed = false;
     private boolean nudged = false;
 
-    public SchemaHostImpl(IConsumer<UIElement> rootElem, UIMapView rendererSource) {
-        hostWindows = rootElem;
+    public SchemaHostImpl(UIMapView rendererSource) {
         contextView = rendererSource;
         layoutAddElement(toolbarRoot);
         // Why is this scaled by main window size? Answer: Because the alternative is occasional Android version glitches.
-        Rect r = new Rect(0, 0, AppMain.mainWindowWidth / 2, (AppMain.mainWindowHeight / 3) * 2);
+        Size rootSize = AppMain.window.getRootSize();
+        Rect r = new Rect(0, 0, rootSize.width / 2, (rootSize.height / 3) * 2);
         setForcedBounds(null, r);
         setWantedSize(r);
     }
@@ -163,7 +162,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
 
         if (doLaunch) {
             windowOpen = true;
-            hostWindows.accept(this);
+            AppMain.window.createWindow(this);
             AppMain.schemaHostImplRegister(this);
         }
     }
@@ -236,7 +235,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
 
     @Override
     public ISchemaHost newBlank() {
-        return new SchemaHostImpl(hostWindows, contextView);
+        return new SchemaHostImpl(contextView);
     }
 
     @Override
@@ -251,7 +250,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
 
     @Override
     public void launchOther(UIElement uiTest) {
-        hostWindows.accept(uiTest);
+        AppMain.window.createWindow(uiTest);
     }
 
     @Override

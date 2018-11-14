@@ -45,8 +45,8 @@ import java.util.Map;
  * Created on 2/12/17.
  */
 public class RMToolsToolset implements IToolset {
-    final CMDB commandsEvent;
-    final IRMMapSystem mapSystem;
+    private final CMDB commandsEvent;
+    private final IRMMapSystem mapSystem;
 
     public RMToolsToolset(String gamepak) {
         // If this errors, then this shouldn't have been constructed.
@@ -56,7 +56,7 @@ public class RMToolsToolset implements IToolset {
     }
 
     @Override
-    public UIElement[] generateTabs(final IConsumer<UIElement> windowMaker) {
+    public UIElement[] generateTabs() {
         return new UIElement[] {new UIPopupMenu(new String[] {
                 TXDB.get("Locate EventCommand in all Pages"),
                 TXDB.get("See If Autocorrect Modifies Anything"),
@@ -75,7 +75,7 @@ public class RMToolsToolset implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        windowMaker.accept(new UITextPrompt(TXDB.get("Code?"), new IConsumer<String>() {
+                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Code?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 int i;
@@ -142,10 +142,10 @@ public class RMToolsToolset implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        windowMaker.accept(new UITextPrompt(TXDB.get("Find?"), new IConsumer<String>() {
+                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Find?"), new IConsumer<String>() {
                             @Override
                             public void accept(final String find) {
-                                windowMaker.accept(new UITextPrompt(TXDB.get("Replace?"), new IConsumer<String>() {
+                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Replace?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(final String repl) {
                                         LinkedList<String> objects = new LinkedList<String>();

@@ -9,7 +9,10 @@ package r48.map.systems;
 
 import gabien.GaBIEn;
 import gabien.IImage;
-import gabien.ui.*;
+import gabien.ui.IFunction;
+import gabien.ui.Rect;
+import gabien.ui.Size;
+import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.IMapContext;
 import r48.RubyIO;
@@ -55,8 +58,8 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     }
 
     @Override
-    public UIElement createMapExplorer(IConsumer<UIElement> windowMaker, IMapContext mapBox, String mapInfos) {
-        return new UIGRMMapInfos(windowMaker, new RXPRMLikeMapInfoBackend(), mapBox, mapInfos);
+    public UIElement createMapExplorer(IMapContext mapBox, String mapInfos) {
+        return new UIGRMMapInfos(new RXPRMLikeMapInfoBackend(), mapBox, mapInfos);
     }
 
     @Override

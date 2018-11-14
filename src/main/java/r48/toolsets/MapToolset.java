@@ -7,7 +7,6 @@
 
 package r48.toolsets;
 
-import gabien.ui.IConsumer;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.IMapContext;
@@ -23,8 +22,8 @@ public class MapToolset implements IToolset {
     private IMapContext context;
     private final UIElement[] tabs;
 
-    public MapToolset(final IConsumer<UIElement> windowMaker) {
-        final UIMapViewContainer mapBox = new UIMapViewContainer(windowMaker);
+    public MapToolset() {
+        final UIMapViewContainer mapBox = new UIMapViewContainer();
         context = new IMapContext() {
             @Override
             public String getCurrentMapObject() {
@@ -55,9 +54,9 @@ public class MapToolset implements IToolset {
 
         String mapInfos = TXDB.get("MapInfos");
         String saves = TXDB.get("Saves");
-        final UIElement saveEl = AppMain.system.createSaveExplorer(windowMaker, context, saves);
+        final UIElement saveEl = AppMain.system.createSaveExplorer(context, saves);
         if (saveEl != null) {
-            final UIElement mapInfoEl = AppMain.system.createMapExplorer(windowMaker, context, mapInfos);
+            final UIElement mapInfoEl = AppMain.system.createMapExplorer(context, mapInfos);
             if (mapInfoEl != null) {
                 tabs = new UIElement[] {
                         mapBox, mapInfoEl, saveEl
@@ -68,7 +67,7 @@ public class MapToolset implements IToolset {
                 };
             }
         } else {
-            final UIElement mapInfoEl = AppMain.system.createMapExplorer(windowMaker, context, mapInfos);
+            final UIElement mapInfoEl = AppMain.system.createMapExplorer(context, mapInfos);
             if (mapInfoEl != null) {
                 tabs = new UIElement[] {
                         mapBox, mapInfoEl
@@ -82,7 +81,7 @@ public class MapToolset implements IToolset {
     }
 
     @Override
-    public UIElement[] generateTabs(final IConsumer<UIElement> windowMaker) {
+    public UIElement[] generateTabs() {
         return tabs;
     }
 

@@ -7,16 +7,15 @@
 
 package r48.toolsets;
 
-import gabien.ui.IConsumer;
 import gabien.ui.UIElement;
 import r48.ui.utilitybelt.ImageEditorController;
 
 public class ImageEditToolset implements IToolset {
     public ImageEditorController imgEdit;
     @Override
-    public UIElement[] generateTabs(IConsumer<UIElement> windowMaker) {
+    public UIElement[] generateTabs() {
         return new UIElement[] {
-                (imgEdit = new ImageEditorController(windowMaker)).rootView
+                (imgEdit = new ImageEditorController()).rootView
         };
     }
 }

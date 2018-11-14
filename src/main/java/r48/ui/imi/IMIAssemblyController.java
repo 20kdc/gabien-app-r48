@@ -31,7 +31,7 @@ public class IMIAssemblyController {
     private IMIAssemblyProcess assembler;
     private boolean fileBrowserOpen = false;
 
-    public IMIAssemblyController(String s, final IConsumer<UIElement> wm) {
+    public IMIAssemblyController(String s) {
         assembler = new IMIAssemblyProcess(s, new Runnable() {
             @Override
             public void run() {
@@ -140,7 +140,7 @@ public class IMIAssemblyController {
         });
         importSavedManifest();
         rebuildFL();
-        wm.accept(base);
+        AppMain.window.createWindow(base);
     }
 
     private void importSavedManifest() {

@@ -8,9 +8,6 @@
 package r48;
 
 import gabien.GaBIEn;
-import gabien.IDesktopPeripherals;
-import gabien.IGrDriver;
-import gabien.IPeripherals;
 import gabien.ui.*;
 import gabienapp.Application;
 import r48.dbs.*;
@@ -28,13 +25,12 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.*;
-import r48.ui.Art;
-import r48.ui.Coco;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
 import r48.ui.dialog.UIChoicesMenu;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
+import r48.wm.WindowManager;
 
 import java.io.*;
 import java.lang.ref.WeakReference;
@@ -62,8 +58,7 @@ import java.util.*;
  * Created on 12/27/16.
  */
 public class AppMain {
-    // Where new windows go
-    private static IConsumer<UIElement> trueWindowMaker, trueWindowMakerI;
+    public static WindowManager window;
 
     // Scheduled tasks
     public static HashSet<Runnable> pendingRunnables = new HashSet<Runnable>();
@@ -93,80 +88,6 @@ public class AppMain {
     private static IMapContext mapContext;
     private static ImageEditToolset imgContext;
 
-    private static UIWindowView rootView;
-    private static IConsumer<UIElement> insertTab, insertImmortalTab;
-
-    /*
-     * For lack of a better place, this is a description of how window management works in R48.
-     * There are 3 places windows can be.
-     * They can be on the UIWindowView (rootViewWM/rootViewWMI), on the UITabPane (insertTab/insertImmortalTab),
-     *  or 'outside' (See 'new BasicToolset' below).
-     * If a window is removed it's one of:
-     *  a self-destruct, or the user closed it.
-     * For the first two places, these are handled by a callback in the host and in the close icon.
-     * For the third place, the element gets wrapped.
-     */
-    // NOTE: This is never cleaned up and does not carry baggage
-    private static IConsumer<UIElement> userWindowMaker = new IConsumer<UIElement>() {
-        @Override
-        public void accept(UIElement uiElement) {
-            trueWindowMaker.accept(uiElement);
-        }
-    };
-
-    // NOTE: These two are never cleaned up and do not carry baggage
-    private static IConsumer<UIElement> rootViewWM = new IConsumer<UIElement>() {
-        @Override
-        public void accept(final UIElement uiElement) {
-            rootView.addShell(new UIWindowView.TabShell(rootView, uiElement, new TabUtils.TabIcon[] {
-                    new TabUtils.TabIcon() {
-                        @Override
-                        public void draw(IGrDriver igd, int x, int y, int size) {
-                            Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
-                        }
-
-                        @Override
-                        public void click(TabUtils.Tab tab) {
-                            rootView.removeTab(tab);
-                            // We are actually closing (this isn't called by default due to overrides)
-                            uiElement.onWindowClose();
-                        }
-                    },
-                    new TabUtils.TabIcon() {
-                        @Override
-                        public void draw(IGrDriver igd, int x, int y, int size) {
-                            Art.tabWindowIcon(igd, x, y, size);
-                        }
-
-                        @Override
-                        public void click(TabUtils.Tab tab) {
-                            rootView.removeTab(tab);
-                            insertTab.accept(uiElement);
-                        }
-                    }
-            }));
-        }
-    };
-    private static IConsumer<UIElement> rootViewWMI = new IConsumer<UIElement>() {
-        @Override
-        public void accept(final UIElement uiElement) {
-            rootView.addShell(new UIWindowView.TabShell(rootView, uiElement, new TabUtils.TabIcon[] {
-                    new TabUtils.TabIcon() {
-                        @Override
-                        public void draw(IGrDriver igd, int x, int y, int size) {
-                            Art.tabWindowIcon(igd, x, y, size);
-                        }
-
-                        @Override
-                        public void click(TabUtils.Tab self) {
-                            rootView.removeTab(self);
-                            insertImmortalTab.accept(uiElement);
-                        }
-                    }
-            }));
-        }
-    };
-
     // State for in-system copy/paste
     public static RubyIO theClipboard = null;
 
@@ -177,15 +98,8 @@ public class AppMain {
     // All magical binders in use
     public static HashMap<String, IMagicalBinder> magicalBinderCache;
 
-    // Used to scale certain windows.
-    public static int mainWindowWidth;
-    public static int mainWindowHeight;
-
     // Try to ensure these directories exist.
     public static LinkedList<String> recommendedDirs;
-
-    // Manages fullscreeniness.
-    public static Runnable toggleFullscreen;
 
     // Image cache
     public static ImageFXCache imageFXCache = null;
@@ -241,38 +155,13 @@ public class AppMain {
 
         activeHosts = new LinkedList<ISchemaHost>();
 
-        // initialize UI
-        rootView = new UIWindowView() {
-            @Override
-            public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
-                if (peripherals instanceof IDesktopPeripherals)
-                    Coco.run((IDesktopPeripherals) peripherals);
-                super.update(deltaTime, selected, peripherals);
-            }
-
-            @Override
-            public void render(IGrDriver igd) {
-                Size r = getSize();
-                mainWindowWidth = r.width;
-                mainWindowHeight = r.height;
-                super.render(igd);
-            }
-        };
-        rootView.windowTextHeight = FontSizes.windowFrameHeight;
-        rootView.sizerVisual = rootView.windowTextHeight / 2;
-        rootView.sizerActual = rootView.windowTextHeight;
-
-        trueWindowMaker = rootViewWM;
-        trueWindowMakerI = rootViewWMI;
-
-        mainWindowWidth = FontSizes.scaleGuess(800);
-        mainWindowHeight = FontSizes.scaleGuess(600);
-        rootView.setForcedBounds(null, new Rect(0, 0, mainWindowWidth, mainWindowHeight));
-
         // Set up a default stuffRenderer for things to use.
         stuffRendererIndependent = system.rendererFromTso(null);
 
-        final UILabel uiStatusLabel = rebuildInnerUI(gamepak, uiTicker);
+        // initialize UI
+        window = new WindowManager(rebuildInnerUI(), uiTicker);
+
+        initializeTabs(gamepak);
 
         // start possible recommended directory nagger
         final LinkedList<String> createDirs = new LinkedList<String>();
@@ -284,7 +173,7 @@ public class AppMain {
         // Do not do so otherwise (see: OneShot)
         if (objectDB.modifiedObjects.size() > 0) {
             if (createDirs.size() > 0) {
-                rootViewWM.accept(new UIAutoclosingPopupMenu(new String[] {
+                window.createWindow(new UIAutoclosingPopupMenu(new String[] {
                         TXDB.get("This appears to be newly created. Click to create directories.")
                 }, new Runnable[] {
                         new Runnable() {
@@ -299,34 +188,9 @@ public class AppMain {
             }
         }
 
-        // everything ready, start main window
-        toggleFullscreen = new Runnable() {
-            boolean weAreFullscreen = true;
-            Rect preFullscreenRect = null;
-            @Override
-            public void run() {
-                uiTicker.forceRemove(rootView);
-                if (!weAreFullscreen) {
-                    preFullscreenRect = rootView.getParentRelativeBounds();
-                } else {
-                    if (preFullscreenRect != null)
-                        rootView.setForcedBounds(null, preFullscreenRect);
-                }
-                weAreFullscreen = !weAreFullscreen;
-                uiTicker.accept(rootView, 1, weAreFullscreen);
-            }
-        };
-        toggleFullscreen.run();
-
         return new IConsumer<Double>() {
             @Override
             public void accept(Double deltaTime) {
-                // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
-                if (Application.mobileExtremelySpecialBehavior) {
-                    uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified"), new RubyIO().setFX(objectDB.modifiedObjects.size()));
-                } else {
-                    uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO().setFX(objectDB.modifiedObjects.size()), (theClipboard == null) ? new RubyIO().setNull() : theClipboard);
-                }
                 if (mapContext != null) {
                     String mapId = mapContext.getCurrentMapObject();
                     RubyIO map = null;
@@ -355,12 +219,10 @@ public class AppMain {
         mapContext.performCacheFlush();
     }
 
-    // This can only be done once now that rootView & the tab pane kind of share state.
-    // For a proper UI reset, careful nuking is required.
-    private static UITabPane initializeTabs(final String gamepak, final IConsumer<UIElement> uiTicker) {
+    private static void initializeTabs(final String gamepak) {
         LinkedList<IToolset> toolsets = new LinkedList<IToolset>();
         if (system.enableMapSubsystem) {
-            MapToolset mapController = new MapToolset(userWindowMaker);
+            MapToolset mapController = new MapToolset();
             // Really just restricts access to prevent a hax pileup
             mapContext = mapController.getContext();
             toolsets.add(mapController);
@@ -369,158 +231,60 @@ public class AppMain {
         }
         if (system instanceof IRMMapSystem)
             toolsets.add(new RMToolsToolset(gamepak));
-        toolsets.add(new BasicToolset(new IConsumer<Boolean>() {
-            @Override
-            public void accept(Boolean aBoolean) {
-                // Real/Virtual window toggle switch.
-                // Real windows use wrapping to ensure onWindowClose doesn't get through,
-                //  since it's easier than making WCUIEC only call onWindowClose in rather specific circumstances.
-                if (aBoolean) {
-                    // Real
-                    trueWindowMaker = new IConsumer<UIElement>() {
-                        @Override
-                        public void accept(final UIElement uiElement) {
-                            injectReal(uiElement, false);
-                        }
-                    };
-                    trueWindowMakerI = new IConsumer<UIElement>() {
-                        @Override
-                        public void accept(final UIElement uiElement) {
-                            injectReal(uiElement, true);
-                        }
-                    };
-                } else {
-                    // Virtual
-                    trueWindowMaker = rootViewWM;
-                    trueWindowMakerI = rootViewWMI;
-                }
-            }
-
-            private void injectReal(final UIElement uiElement, final boolean b) {
-                uiTicker.accept(new UIElement.UIProxy(uiElement, false) {
-                    @Override
-                    public void onWindowClose() {
-                        // DO NOT call super.onWindowClose, we aren't actually closing
-                        release();
-                        if (b) {
-                            insertImmortalTab.accept(uiElement);
-                        } else {
-                            insertTab.accept(uiElement);
-                        }
-                    }
-                });
-            }
-        }));
+        toolsets.add(new BasicToolset());
         toolsets.add(imgContext = new ImageEditToolset());
 
-        final UITabPane utp = new UITabPane(FontSizes.tabTextHeight, true, true) {
-            @Override
-            public void handleClosedUserTab(TabUtils.Tab wvWindow, boolean selfDestruct) {
-                // If it's not a self-destruct, then behavior was handled by the relevant button.
-                if (selfDestruct)
-                    wvWindow.contents.onWindowClose();
-            }
-        };
         Runnable runVisFrame = new Runnable() {
             @Override
             public void run() {
                 double keys = objectDB.objectMap.keySet().size();
                 if (keys < 1) {
-                    utp.visualizationOrange = 0.0d;
+                    window.setOrange(0.0d);
                 } else {
-                    utp.visualizationOrange = objectDB.modifiedObjects.size() / keys;
+                    window.setOrange(objectDB.modifiedObjects.size() / keys);
                 }
                 pendingRunnables.add(this);
             }
         };
         pendingRunnables.add(runVisFrame);
-        insertImmortalTab = new IConsumer<UIElement>() {
-            @Override
-            public void accept(final UIElement uiElement) {
-                utp.addTab(new TabUtils.Tab(uiElement, new TabUtils.TabIcon[] {
-                        new TabUtils.TabIcon() {
-                            @Override
-                            public void draw(IGrDriver igd, int x, int y, int size) {
-                                Art.windowWindowIcon(igd, x, y, size);
-                            }
-
-                            @Override
-                            public void click(TabUtils.Tab self) {
-                                utp.removeTab(self);
-                                Size r = rootView.getSize();
-                                uiElement.setForcedBounds(null, new Rect(0, 0, r.width / 2, r.height / 2));
-                                trueWindowMakerI.accept(uiElement);
-                            }
-                        }
-                }));
-                utp.selectTab(uiElement);
-            }
-        };
 
         UIElement firstTab = null;
         // Initialize toolsets.
         for (IToolset its : toolsets)
-            for (UIElement uie : its.generateTabs(userWindowMaker)) {
+            for (UIElement uie : its.generateTabs()) {
                 if (firstTab == null)
                     firstTab = uie;
-                insertImmortalTab.accept(uie);
+                window.createWindow(uie, true, true);
             }
-
-        insertTab = new IConsumer<UIElement>() {
-            @Override
-            public void accept(final UIElement uiElement) {
-                utp.addTab(new TabUtils.Tab(uiElement, new TabUtils.TabIcon[] {
-                        new TabUtils.TabIcon() {
-                            @Override
-                            public void draw(IGrDriver igd, int x, int y, int size) {
-                                Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
-                            }
-
-                            @Override
-                            public void click(TabUtils.Tab self) {
-                                utp.removeTab(self);
-                                // Since this was manually removed, this must be called manually.
-                                uiElement.onWindowClose();
-                            }
-                        },
-                        new TabUtils.TabIcon() {
-                            @Override
-                            public void draw(IGrDriver igd, int x, int y, int size) {
-                                Art.windowWindowIcon(igd, x, y, size);
-                            }
-
-                            @Override
-                            public void click(TabUtils.Tab self) {
-                                utp.removeTab(self);
-                                uiElement.setForcedBounds(null, new Rect(0, 0, mainWindowWidth / 2, mainWindowHeight / 2));
-                                trueWindowMaker.accept(uiElement);
-                            }
-                        }
-                }));
-                utp.selectTab(uiElement);
-            }
-        };
-
-        utp.selectTab(firstTab);
-        return utp;
+        window.selectFirstTab();
     }
 
-    private static UILabel rebuildInnerUI(final String gamepak, final IConsumer<UIElement> uiTicker) {
-        UILabel uiStatusLabel = new UILabel(TXDB.get("Loading..."), FontSizes.statusBarTextHeight);
-
+    private static UIElement rebuildInnerUI() {
+        final UILabel uiStatusLabel = new UILabel(TXDB.get("Loading..."), FontSizes.statusBarTextHeight);
+        pendingRunnables.add(new Runnable() {
+            @Override
+            public void run() {
+                // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
+                if (Application.mobileExtremelySpecialBehavior) {
+                    uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified"), new RubyIO().setFX(objectDB.modifiedObjects.size()));
+                } else {
+                    uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO().setFX(objectDB.modifiedObjects.size()), (theClipboard == null) ? new RubyIO().setNull() : theClipboard);
+                }
+                pendingRunnables.add(this);
+            }
+        });
         UIAppendButton workspace = new UIAppendButton(TXDB.get("Save Modified"), uiStatusLabel, new Runnable() {
             @Override
             public void run() {
                 objectDB.ensureAllSaved();
-                if (imgContext.imgEdit.imageModified()) {
+                if (imgContext.imgEdit.imageModified())
                     imgContext.imgEdit.save();
-                }
             }
         }, FontSizes.statusBarTextHeight);
         workspace = new UIAppendButton(TXDB.get("Clipboard"), workspace, new Runnable() {
             @Override
             public void run() {
-                trueWindowMaker.accept(new UIAutoclosingPopupMenu(new String[] {
+                window.createWindow(new UIAutoclosingPopupMenu(new String[] {
                         TXDB.get("Save Clipboard To 'clip.r48'"),
                         TXDB.get("Load Clipboard From 'clip.r48'"),
                         TXDB.get("Inspect Clipboard"),
@@ -555,7 +319,7 @@ public class AppMain {
                                 if (theClipboard == null) {
                                     launchDialog(TXDB.get("There is nothing in the clipboard."));
                                 } else {
-                                    trueWindowMaker.accept(new UITest(theClipboard));
+                                    window.createWindow(new UITest(theClipboard));
                                 }
                             }
                         },
@@ -604,16 +368,13 @@ public class AppMain {
                 startHelp(0);
             }
         }, FontSizes.statusBarTextHeight);
-        UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, new UINSVertLayout(workspace, initializeTabs(gamepak, uiTicker)));
-        rootView.addShell(backing);
-        rootView.lowerShell(backing);
-        return uiStatusLabel;
+        return workspace;
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
     public static ISchemaHost launchSchema(String s, RubyIO rio, UIMapView context) {
         // Responsible for keeping listeners in place so nothing breaks.
-        SchemaHostImpl watcher = new SchemaHostImpl(userWindowMaker, context);
+        SchemaHostImpl watcher = new SchemaHostImpl(context);
         watcher.pushObject(new SchemaPath(schemas.getSDBEntry(s), rio));
         return watcher;
     }
@@ -640,15 +401,22 @@ public class AppMain {
         svl.panelsAdd(uhs);
         svl.forceToRecommended();
         Size recSize = svl.getSize();
+
+        Size rootSize = window.getRootSize();
+
+        int w = recSize.width;
         int h = recSize.height;
 
-        int limit = rootView.getSize().height - rootView.getWindowFrameHeight();
-        limit *= 3;
-        limit /= 4;
+        int limit = (rootSize.width * 3) / 4;
+        if (w > limit)
+            w = limit;
+
+        limit = (rootSize.height * 3) / 4;
         if (h > limit)
             h = limit;
-        svl.setForcedBounds(null, new Rect(0, 0, Math.min(mainWindowWidth, recSize.width), h));
-        trueWindowMaker.accept(svl);
+
+        svl.setForcedBounds(null, new Rect(0, 0, w, h));
+        window.createWindow(svl);
     }
 
     public static Runnable createLaunchConfirmation(final String s, final Runnable runnable) {
@@ -682,9 +450,10 @@ public class AppMain {
     private static void resizeDialogAndTruelaunch(UIElement mtb) {
         // This logic makes sense since we're trying to force a certain width but not a certain height.
         // It is NOT a bug in gabien-common so long as this code works (that is, the first call immediately prepares a correct wanted size).
-        mtb.setForcedBounds(null, new Rect(0, 0, (mainWindowWidth / 3) * 2, mainWindowHeight / 2));
-        mtb.setForcedBounds(null, new Rect(0, 0, (mainWindowWidth / 3) * 2, mtb.getWantedSize().height));
-        trueWindowMaker.accept(mtb);
+        Size rootSize = window.getRootSize();
+        mtb.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, rootSize.height / 2));
+        mtb.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, mtb.getWantedSize().height));
+        window.createWindow(mtb);
     }
 
     public static void startHelp(Integer integer) {
@@ -700,7 +469,7 @@ public class AppMain {
         };
         final UIScrollLayout uus = new UIScrollLayout(true, FontSizes.generalScrollersize);
         uus.panelsAdd(uis);
-        Size rootSize = rootView.getSize();
+        Size rootSize = window.getRootSize();
         final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(TXDB.get("Index"), uil, new Runnable() {
             @Override
             public void run() {
@@ -720,7 +489,7 @@ public class AppMain {
         };
         hsc.loadPage(integer);
         topbar.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, rootSize.height / 2));
-        trueWindowMaker.accept(topbar);
+        window.createWindow(topbar);
     }
 
     private static void fileCopier(String[] mkdirs, String[] fileCopies) {
@@ -835,9 +604,8 @@ public class AppMain {
     }
 
     public static void shutdown() {
-        trueWindowMaker = null;
-        trueWindowMakerI = null;
         pendingRunnables.clear();
+        window = null;
         rootPath = null;
         dataPath = "";
         dataExt = "";
@@ -853,16 +621,12 @@ public class AppMain {
             mapContext.freeOsbResources();
         mapContext = null;
         imgContext = null;
-        rootView = null;
-        insertImmortalTab = null;
-        insertTab = null;
         theClipboard = null;
         imageFXCache = null;
         activeHosts = null;
         magicalBindingCache = null;
         magicalBinderCache = null;
         recommendedDirs = null;
-        toggleFullscreen = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
     }

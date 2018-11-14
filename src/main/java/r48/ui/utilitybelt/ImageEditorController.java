@@ -31,15 +31,13 @@ public class ImageEditorController {
     public UISplitterLayout rootView;
     private UIImageEditView imageEditView;
     private UIScrollLayout paletteView;
-    public IConsumer<UIElement> windowMaker;
 
     // This holds a bit of state, so let's just attach it/detach it as we want
     private final UITextButton sanityButton = new UITextButton(TXDB.get("Adjust"), FontSizes.schemaFieldTextHeight, null).togglable(true);
     // The current thing holding the sanity button (needed so it can be broken apart on UI rebuild)
     private UISplitterLayout sanityButtonHolder = null;
 
-    public ImageEditorController(IConsumer<UIElement> worldMachine) {
-        windowMaker = worldMachine;
+    public ImageEditorController() {
         imageEditView = new UIImageEditView(new RootImageEditorTool(), new Runnable() {
             @Override
             public void run() {
@@ -231,7 +229,7 @@ public class ImageEditorController {
                         }
                     });
                 }
-                windowMaker.accept(new UIAutoclosingPopupMenu(items.toArray(new String[0]), runnables.toArray(new Runnable[0]), FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
+                AppMain.window.createWindow(new UIAutoclosingPopupMenu(items.toArray(new String[0]), runnables.toArray(new Runnable[0]), FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
             }
         }, FontSizes.schemaFieldTextHeight);
         paletteView.panelsAdd(ul);
@@ -249,7 +247,7 @@ public class ImageEditorController {
         }), new UITextButton(TXDB.get("Colour"), FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
-                windowMaker.accept(new UIColourPicker(TXDB.get("Set Grid Colour..."), imageEditView.gridColour, new IConsumer<Integer>() {
+                AppMain.window.createWindow(new UIColourPicker(TXDB.get("Set Grid Colour..."), imageEditView.gridColour, new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         if (integer == null)
@@ -314,7 +312,7 @@ public class ImageEditorController {
         paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Add Colour"), FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
-                windowMaker.accept(new UIColourPicker(TXDB.get("Add Palette Colour..."), imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex), new IConsumer<Integer>() {
+                AppMain.window.createWindow(new UIColourPicker(TXDB.get("Add Palette Colour..."), imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex), new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         if (integer == null)
@@ -421,7 +419,7 @@ public class ImageEditorController {
             cPanel = new UISplitterLayout(new UITextButton("=", FontSizes.imageEditorTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    windowMaker.accept(new UIColourPicker(TXDB.get("Change Palette Colour..."), imageEditView.image.getPaletteRGB(fidx), new IConsumer<Integer>() {
+                    AppMain.window.createWindow(new UIColourPicker(TXDB.get("Change Palette Colour..."), imageEditView.image.getPaletteRGB(fidx), new IConsumer<Integer>() {
                         @Override
                         public void accept(Integer integer) {
                             if (integer == null)
@@ -484,6 +482,6 @@ public class ImageEditorController {
         res.forceToRecommended();
         Size tgtSize = res.getSize();
         res.setForcedBounds(null, new Rect(0, 0, tgtSize.width * 3, tgtSize.height));
-        windowMaker.accept(res);
+        AppMain.window.createWindow(res);
     }
 }

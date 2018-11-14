@@ -37,13 +37,8 @@ import java.util.Map;
  * Created on 04/06/17.
  */
 public class BasicToolset implements IToolset {
-    final IConsumer<Boolean> setWT;
-    public BasicToolset(IConsumer<Boolean> setWindowType) {
-        setWT = setWindowType;
-    }
-
     @Override
-    public UIElement[] generateTabs(final IConsumer<UIElement> windowMaker) {
+    public UIElement[] generateTabs() {
         return new UIElement[] {
                 makeFileList(),
                 new UIPopupMenu(new String[] {
@@ -68,7 +63,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.accept(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
+                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         final RubyIO rio = AppMain.objectDB.getObject(s);
@@ -85,7 +80,7 @@ public class BasicToolset implements IToolset {
                                                     }
                                                 }
                                             }
-                                            windowMaker.accept(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
+                                            AppMain.window.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                                 @Override
                                                 public void accept(String s) {
                                                     AppMain.launchSchema(s, rio, null);
@@ -101,7 +96,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.accept(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
+                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         AppMain.launchSchema(s, SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry(s), new RubyIO().setFX(0)), null);
@@ -112,11 +107,11 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.accept(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
+                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         final RubyIO rio = AppMain.objectDB.getObject(s);
-                                        windowMaker.accept(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
+                                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                             @Override
                                             public void accept(String s) {
                                                 SchemaElement ise = AppMain.schemas.getSDBEntry(s);
@@ -131,14 +126,14 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.accept(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
+                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         RubyIO obj = AppMain.objectDB.getObject(s);
                                         if (obj == null) {
                                             AppMain.launchDialog(TXDB.get("The file couldn't be read, and R48 cannot create it."));
                                         } else {
-                                            windowMaker.accept(new UITest(obj));
+                                            AppMain.window.createWindow(new UITest(obj));
                                         }
                                     }
                                 }));
@@ -147,11 +142,11 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.accept(new UITextPrompt(TXDB.get("Source Object Name?"), new IConsumer<String>() {
+                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Source Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         final RubyIO objA = AppMain.objectDB.getObject(s);
-                                        windowMaker.accept(new UITextPrompt(TXDB.get("Target Object Name?"), new IConsumer<String>() {
+                                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Target Object Name?"), new IConsumer<String>() {
                                             @Override
                                             public void accept(String s) {
                                                 final RubyIO objB = AppMain.objectDB.getObject(s);
@@ -184,11 +179,11 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.accept(new UITextPrompt(TXDB.get("Root path to original game?"), new IConsumer<String>() {
+                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Root path to original game?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         s = PathUtils.fixRootPath(s);
-                                        new IMIAssemblyController(s, windowMaker);
+                                        new IMIAssemblyController(s);
                                     }
                                 }));
                             }
@@ -233,7 +228,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                setWT.accept(false);
+                                AppMain.window.creatingRealWindows = false;
                             }
                         },
                         new Runnable() {
@@ -242,25 +237,25 @@ public class BasicToolset implements IToolset {
                                 if (GaBIEn.singleWindowApp()) { // SWA means no multiple GrInDrivers.
                                     AppMain.launchDialog(TXDB.get("You are running on a platform which does not support multiple windows."));
                                 } else {
-                                    setWT.accept(true);
+                                    AppMain.window.creatingRealWindows = true;
                                 }
                             }
                         },
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.accept(new UIFontSizeConfigurator());
+                                AppMain.window.createWindow(new UIFontSizeConfigurator());
                             }
                         },
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.accept(new UITextPrompt(TXDB.get("Font Size?"), new IConsumer<String>() {
+                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Font Size?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         try {
                                             Integer i = Integer.parseInt(s);
-                                            windowMaker.accept(new UITextBox("", i));
+                                            AppMain.window.createWindow(new UITextBox("", i));
                                         } catch (Exception e) {
                                             AppMain.launchDialog(TXDB.get("Not a valid number."));
                                         }
@@ -277,7 +272,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.accept(new UIObjectDBMonitor());
+                                AppMain.window.createWindow(new UIObjectDBMonitor());
                             }
                         },
                         new Runnable() {
@@ -324,7 +319,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                windowMaker.accept(new UITextPrompt(TXDB.get("Safety Confirmation Prompt"), new IConsumer<String>() {
+                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Safety Confirmation Prompt"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         // Don't translate this, don't lax the restrictions.
@@ -342,7 +337,7 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                AppMain.toggleFullscreen.run();
+                                AppMain.window.toggleFullscreen();
                             }
                         },
                         new Runnable() {

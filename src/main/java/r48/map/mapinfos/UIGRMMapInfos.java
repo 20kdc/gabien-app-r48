@@ -33,7 +33,6 @@ import java.util.LinkedList;
  */
 public class UIGRMMapInfos extends UIElement.UIProxy {
     private final IRMLikeMapInfoBackendWPub operators;
-    private final IConsumer<UIElement> windowMakerGetter;
     private final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
     private final UITreeView utv;
     private int selectedOrder = 0;
@@ -50,13 +49,12 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
         }
     };
 
-    public UIGRMMapInfos(IConsumer<UIElement> wmg, final IRMLikeMapInfoBackendWPub b, IMapContext context, String mapInfos) {
+    public UIGRMMapInfos(final IRMLikeMapInfoBackendWPub b, IMapContext context, String mapInfos) {
         utv = new UITreeView(UIBorderedElement.getRecommendedTextSize("", FontSizes.mapInfosTextHeight).height);
         operators = b;
         mapContext = context;
         toStringRes = mapInfos;
         b.registerModificationHandler(onMapInfoChange);
-        windowMakerGetter = wmg;
         rebuildList();
         proxySetElement(uiSVL, true);
     }
@@ -253,7 +251,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                         return TXDB.get("Map ID?");
                     }
                 };
-                windowMakerGetter.accept(dialog);
+                AppMain.window.createWindow(dialog);
             }
         }));
         uiSVL.panelsAdd(new UITextButton(TXDB.get("<Test Sequence Consistency>"), FontSizes.mapInfosTextHeight, new Runnable() {

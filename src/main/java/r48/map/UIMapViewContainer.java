@@ -24,7 +24,6 @@ import r48.ui.UINSVertLayout;
  * Created on 1/1/17.
  */
 public class UIMapViewContainer extends UIElement.UIPanel {
-    private final IConsumer<UIElement> windowMakerSupplier;
     public UIMapView view;
     private UINSVertLayout viewToolbarSplit;
     // Use when mapTool is being set to null.
@@ -43,10 +42,6 @@ public class UIMapViewContainer extends UIElement.UIPanel {
     private TimeWaster timeWaster = new TimeWaster();
 
     private double deltaTimeAccum = 0;
-
-    public UIMapViewContainer(IConsumer<UIElement> wms) {
-        windowMakerSupplier = wms;
-    }
 
     @Override
     public String toString() {
@@ -100,7 +95,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
                     if (nextMapTool instanceof IMapViewCallbacks)
                         view.callbacks = (IMapViewCallbacks) nextMapTool;
                     mapTool = nextMapTool;
-                    windowMakerSupplier.accept(mapTool);
+                    AppMain.window.createWindow(mapTool);
                 }
             } else {
                 if (mapTool != null) {
@@ -150,7 +145,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
 
             @Override
             public void createWindow(UIElement window) {
-                windowMakerSupplier.accept(window);
+                AppMain.window.createWindow(window);
             }
 
             @Override

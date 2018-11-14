@@ -7,8 +7,6 @@
 
 package r48.toolsets;
 
-import gabien.ui.IConsumer;
-import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 
 /**
@@ -16,5 +14,5 @@ import gabien.ui.UIElement;
  * Created on 2/12/17.
  */
 public interface IToolset {
-    UIElement[] generateTabs(IConsumer<UIElement> windowMaker);
+    UIElement[] generateTabs();
 }
