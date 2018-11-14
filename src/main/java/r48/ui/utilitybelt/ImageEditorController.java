@@ -18,6 +18,7 @@ import r48.imageio.ImageIOFormat;
 import r48.maptools.UIMTBase;
 import r48.ui.UIAppendButton;
 import r48.ui.UIColourSwatchButton;
+import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIColourPicker;
 
 import java.io.OutputStream;
@@ -126,10 +127,14 @@ public class ImageEditorController {
             sanityButtonHolder.release();
             sanityButtonHolder = null;
         }
-        final String fbStrAL = TXDB.get("Load");
+        final String fbStrAL = TXDB.get("Open");
         final String fbStrAS = TXDB.get("Save");
 
-        UIElement ul = new UITextButton(imageEditView.image.width + "x" + imageEditView.image.height, FontSizes.imageEditorTextHeight, new Runnable() {
+        LinkedList<String> menuDetails = new LinkedList<String>();
+        LinkedList<Runnable> menuFuncs = new LinkedList<Runnable>();
+
+        menuDetails.add(TXDB.get("Resize..."));
+        menuFuncs.add(new Runnable() {
             @Override
             public void run() {
                 showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
@@ -154,7 +159,8 @@ public class ImageEditorController {
                 }, TXDB.get("Resize..."));
             }
         });
-        ul = pokeOnCause(cause, 3, new UIAppendButton(TXDB.get("New"), ul, new Runnable() {
+        menuDetails.add(TXDB.get("New"));
+        menuFuncs.add(new Runnable() {
             @Override
             public void run() {
                 Runnable actualCore = new Runnable() {
@@ -170,8 +176,9 @@ public class ImageEditorController {
                     actualCore = AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), actualCore);
                 actualCore.run();
             }
-        }, FontSizes.imageEditorTextHeight));
-        ul = new UIAppendButton(TXDB.get("Open"), ul, new Runnable() {
+        });
+        menuDetails.add(fbStrAL);
+        menuFuncs.add(new Runnable() {
             @Override
             public void run() {
                 GaBIEn.startFileBrowser(fbStrAL, false, "", new IConsumer<String>() {
@@ -182,17 +189,19 @@ public class ImageEditorController {
                     }
                 });
             }
-        }, FontSizes.imageEditorTextHeight);
+        });
         boolean canDoNormalSave = imageEditView.eds.canSimplySave();
         if (canDoNormalSave) {
-            ul = new UIAppendButton(TXDB.get("Save"), ul, new Runnable() {
+            menuDetails.add(fbStrAS);
+            menuFuncs.add(new Runnable() {
                 @Override
                 public void run() {
                     save();
                 }
-            }, FontSizes.imageEditorTextHeight);
+            });
         }
-        ul = new UIAppendButton(TXDB.get("Save As"), ul, new Runnable() {
+        menuDetails.add(TXDB.get("Save As"));
+        menuFuncs.add(new Runnable() {
             @Override
             public void run() {
                 LinkedList<String> items = new LinkedList<String>();
@@ -231,10 +240,10 @@ public class ImageEditorController {
                 }
                 AppMain.window.createWindow(new UIAutoclosingPopupMenu(items.toArray(new String[0]), runnables.toArray(new Runnable[0]), FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
             }
-        }, FontSizes.schemaFieldTextHeight);
-        paletteView.panelsAdd(ul);
+        });
+        paletteView.panelsAdd(new UIMenuButton(TXDB.get("File: ") + imageEditView.image.width + "x" + imageEditView.image.height, FontSizes.imageEditorTextHeight, menuDetails.toArray(new String[0]), menuFuncs.toArray(new Runnable[0])));
 
-        ul = new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.imageEditorTextHeight, new Runnable() {
+        UIElement ul = new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 showXYChanger(imageEditView.grid, new IConsumer<Rect>() {
@@ -257,6 +266,23 @@ public class ImageEditorController {
                 }, false));
             }
         }), false, 0.5d);
+
+        ul = new UIAppendButton(TXDB.get("Overlay"), ul, new Runnable() {
+            @Override
+            public void run() {
+                imageEditView.gridST = !imageEditView.gridST;
+            }
+        }, FontSizes.imageEditorTextHeight).togglable(imageEditView.gridST);
+        paletteView.panelsAdd(ul);
+
+        ul = new UITextButton(TXDB.get("Reset View"), FontSizes.imageEditorTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                imageEditView.camX = 0;
+                imageEditView.camY = 0;
+                imageEditView.tiling = null;
+            }
+        });
 
         ul = pokeOnCause(cause, 1, new UIAppendButton(TXDB.get("Undo"), ul, new Runnable() {
             @Override
@@ -281,23 +307,8 @@ public class ImageEditorController {
                 }
             }
         }, FontSizes.imageEditorTextHeight));
-        paletteView.panelsAdd(ul);
 
-        UIAppendButton ap = new UIAppendButton(TXDB.get("Grid Overlay"), new UITextButton(TXDB.get("Reset View"), FontSizes.imageEditorTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                imageEditView.camX = 0;
-                imageEditView.camY = 0;
-                imageEditView.tiling = null;
-            }
-        }), new Runnable() {
-            @Override
-            public void run() {
-                imageEditView.gridST = !imageEditView.gridST;
-            }
-        }, FontSizes.imageEditorTextHeight);
-        ap.button.togglable(imageEditView.gridST);
-        paletteView.panelsAdd(ap);
+        paletteView.panelsAdd(ul);
 
         paletteView.panelsAdd(imageEditView.currentTool.createToolPalette(imageEditView));
 

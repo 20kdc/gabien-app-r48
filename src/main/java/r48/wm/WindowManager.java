@@ -46,6 +46,7 @@ public class WindowManager {
     private final UIWindowView rootView;
     private final UITabPane tabPane;
     private final WindowCreatingUIElementConsumer uiTicker;
+    private final LinkedList<UIWindowView> allWindowViews = new LinkedList<UIWindowView>();
 
     public WindowManager(UIElement topBar, final WindowCreatingUIElementConsumer uiTick) {
         uiTicker = uiTick;
@@ -74,6 +75,7 @@ public class WindowManager {
         rootView.lowerShell(backing);
 
         uiTicker.accept(rootView, 1, false);
+        allWindowViews.add(rootView);
     }
 
     public void toggleFullscreen() {
@@ -117,6 +119,7 @@ public class WindowManager {
                             }
                         }
                 }));
+                tabPane.selectTab(uie);
             } else {
                 tabPane.addTab(new TabUtils.Tab(uie, new TabUtils.TabIcon[] {
                         new TabUtils.TabIcon() {
@@ -151,7 +154,22 @@ public class WindowManager {
             }
         } else {
             if (creatingRealWindows) {
-                // This is going to be done once Shells are in the 'SHL' form rather than their present form
+                UIWindowView uwv = new UIWindowView() {
+                    @Override
+                    public void onWindowClose() {
+                        allWindowViews.remove(this);
+                        createWindow(uie, true, true);
+                    }
+
+                    @Override
+                    public String toString() {
+                        return uie.toString();
+                    }
+                };
+                allWindowViews.add(uwv);
+                uwv.setForcedBounds(null, new Rect(uie.getSize()));
+                uwv.addShell(new UIWindowView.ScreenShell(uwv, uie));
+                uiTicker.accept(uwv);
             } else {
                 if (immortal) {
                     rootView.addShell(new UIWindowView.TabShell(rootView, uie, new TabUtils.TabIcon[] {
@@ -199,6 +217,76 @@ public class WindowManager {
                 }
             }
         }
+    }
+
+    public void createMenu(UIElement base, UIElement menu) {
+        // This function is evil!
+        int baseScreenX = 0;
+        int baseScreenY = 0;
+        Size baseSize = base.getSize();
+
+        while (true) {
+            Rect r = base.getParentRelativeBounds();
+            baseScreenX += r.x;
+            baseScreenY += r.y;
+            UIElement uie = base.getParent();
+            if (uie == null)
+                break;
+            base = uie;
+        }
+
+        for (UIWindowView uwv : allWindowViews) {
+            for (UIWindowView.IShell shl : uwv.getShells()) {
+                if (shl instanceof UIWindowView.TabShell) {
+                    if (((UIWindowView.TabShell) shl).contents == base) {
+                        createMenuCore(uwv, new Rect(baseScreenX, baseScreenY, baseSize.width, baseSize.height), menu);
+                        return;
+                    }
+                } else if (shl instanceof UIWindowView.ElementShell) {
+                    if (((UIWindowView.ElementShell) shl).uie == base) {
+                        createMenuCore(uwv, new Rect(baseScreenX, baseScreenY, baseSize.width, baseSize.height), menu);
+                        return;
+                    }
+                }
+            }
+        }
+        System.err.println("WindowManager failed to find desktop to deploy context menu.");
+        createWindow(menu);
+    }
+
+    private void createMenuCore(final UIWindowView screen, Rect base, UIElement menu) {
+        Size sz = menu.getSize();
+        Rect area = new Rect(screen.getSize());
+        Rect[] results = new Rect[] {
+                new Rect(base.x, base.y + base.height, sz.width, sz.height),
+                new Rect((base.x + base.width) - sz.width, base.y + base.height, sz.width, sz.height),
+                new Rect(base.x, base.y - sz.height, sz.width, sz.height),
+                new Rect((base.x + base.width) - sz.width, base.y - sz.height, sz.width, sz.height),
+                new Rect((area.width - sz.width) / 2, (area.width - sz.width) / 2, sz.width, sz.height),
+        };
+        for (int i = 0; i < results.length; i++) {
+            Rect r2 = results[i].getIntersection(area);
+            if (r2 != null) {
+                if (r2.rectEquals(results[i])) {
+                    menu.setForcedBounds(null, r2);
+                    screen.addShell(new UIWindowView.ElementShell(screen, menu) {
+                        @Override
+                        public IPointerReceiver provideReceiver(IPointer i) {
+                            IPointerReceiver ipr = super.provideReceiver(i);
+                            if (ipr == null) {
+                                screen.removeShell(this);
+                                uie.onWindowClose();
+                                return new IPointerReceiver.NopPointerReceiver();
+                            }
+                            return ipr;
+                        }
+                    });
+                    return;
+                }
+            }
+        }
+        System.err.println("WindowManager had no room to deploy context menu.");
+        createWindow(menu);
     }
 
     public Size getRootSize() {

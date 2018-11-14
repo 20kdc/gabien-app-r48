@@ -25,6 +25,10 @@ public class UIAppendButton extends UIElement.UIPanel {
         this(new UISymbolButton(s, h2, runnable), holder);
     }
 
+    public UIAppendButton(String s, UIElement holder, String[] text, Runnable[] runnables, int h2) {
+        this(new UIMenuButton(s, h2, text, runnables), holder);
+    }
+
     public UIAppendButton(UIButton s, UIElement holder) {
         button = s;
         subElement = holder;
@@ -53,5 +57,10 @@ public class UIAppendButton extends UIElement.UIPanel {
             // See issue #38 for more details.
             setWantedSize(new Size(bgb1.width + bgb2.width, bgb1.height + bgb2.height));
         }
+    }
+
+    public UIAppendButton togglable(boolean gridST) {
+        button.togglable(gridST);
+        return this;
     }
 }

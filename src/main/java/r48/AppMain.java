@@ -281,10 +281,7 @@ public class AppMain {
                     imgContext.imgEdit.save();
             }
         }, FontSizes.statusBarTextHeight);
-        workspace = new UIAppendButton(TXDB.get("Clipboard"), workspace, new Runnable() {
-            @Override
-            public void run() {
-                window.createWindow(new UIAutoclosingPopupMenu(new String[] {
+        workspace = new UIAppendButton(TXDB.get("Clipboard"), workspace, new String[] {
                         TXDB.get("Save Clipboard To 'clip.r48'"),
                         TXDB.get("Load Clipboard From 'clip.r48'"),
                         TXDB.get("Inspect Clipboard"),
@@ -359,8 +356,6 @@ public class AppMain {
                                 }
                             }
                         }
-                }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
-            }
         }, FontSizes.statusBarTextHeight);
         workspace = new UIAppendButton(TXDB.get("Help"), workspace, new Runnable() {
             @Override
