@@ -100,11 +100,13 @@ public class FontSizes {
     public static int statusBarTextHeight = 16;
     // TXDB.get("tabTextHeight")
     public static int tabTextHeight = 16;
+    // TXDB.get("menuTextHeight")
+    public static int menuTextHeight = 16;
+    // TXDB.get("maintabsScrollersize")
+    public static int maintabsScrollersize = 8;
 
     // TXDB.get("objectDBMonitorTextHeight")
     public static int objectDBMonitorTextHeight = 16;
-    // TXDB.get("menuTextHeight")
-    public static int menuTextHeight = 16;
 
     // TXDB.get("fontSizerTextHeight")
     public static int fontSizerTextHeight = 16;
@@ -180,7 +182,10 @@ public class FontSizes {
         // NOTE: Use internal string methods here, this is a game-independent file
         RubyIO dat = AdHocSaveLoad.load("fonts");
         if (dat != null) {
+            // Compatibility flags
             boolean shouldResetIETH = false;
+            boolean shouldResetWSZ = false;
+
             for (FontSizeField fsf : getFields()) {
                 RubyIO f = dat.getInstVarBySymbol("@" + fsf.name);
                 if (f != null) {
@@ -188,10 +193,16 @@ public class FontSizes {
                 } else {
                     if (fsf.name.equals("imageEditorTextHeight"))
                         shouldResetIETH = true;
+                    if (fsf.name.equals("maintabsScrollersize"))
+                        shouldResetWSZ = true;
                 }
             }
+
             if (shouldResetIETH)
                 imageEditorTextHeight = schemaFieldTextHeight;
+            if (shouldResetWSZ)
+                maintabsScrollersize = mapToolbarScrollersize;
+
             RubyIO sys = dat.getInstVarBySymbol("@sysfont");
             if (sys != null) {
                 FontManager.fontOverride = sys.decString();

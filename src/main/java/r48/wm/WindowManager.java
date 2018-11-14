@@ -68,7 +68,7 @@ public class WindowManager {
         rootView.sizerActual = rootView.windowTextHeight;
         rootView.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(800), FontSizes.scaleGuess(600)));
 
-        tabPane = new UITabPane(FontSizes.tabTextHeight, true, true);
+        tabPane = new UITabPane(FontSizes.tabTextHeight, true, true, FontSizes.maintabsScrollersize);
 
         UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, new UINSVertLayout(topBar, tabPane));
         rootView.addShell(backing);
