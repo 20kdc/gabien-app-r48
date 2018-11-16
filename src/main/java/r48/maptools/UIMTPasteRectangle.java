@@ -8,21 +8,44 @@
 package r48.maptools;
 
 import gabien.IGrDriver;
+import gabien.ui.UIElement;
 import gabien.ui.UILabel;
+import gabien.ui.UITextButton;
+import gabienapp.Application;
 import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
+import r48.ui.UIAppendButton;
 
 /**
+ * NOTE @ 16th November 2018: As this really needs a preview, I've made two sets of behavior, one set dependent on mobile.
+ * This is to patch over the usability issues that have occurred because of other UI edits.
  * Created on September 2, 2017
  */
 public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
 
-    public final RubyTable table;
-    public UILabel innerLabel = new UILabel(TXDB.get("Click at the target, or close this window."), FontSizes.dialogWindowTextHeight);
+    private final RubyTable table;
+    private UILabel innerLabel = new UILabel(TXDB.get("Click at the target, or close this window."), FontSizes.dialogWindowTextHeight);
+
+    private int confirmX, confirmY;
+    private UIElement confirmButton = new UIAppendButton(TXDB.get("Cancel"), new UITextButton(TXDB.get("Confirm"), FontSizes.dialogWindowTextHeight, new Runnable() {
+        @Override
+        public void run() {
+            actualConfirm(confirmX, confirmY);
+            changeInner(innerLabel, false);
+            confirming = false;
+        }
+    }), new Runnable() {
+        @Override
+        public void run() {
+            changeInner(innerLabel, false);
+            confirming = false;
+        }
+    }, FontSizes.dialogWindowTextHeight);
+    private boolean confirming = false;
 
     public UIMTPasteRectangle(IMapToolContext par, RubyTable clipboard) {
         super(par);
@@ -32,8 +55,13 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
-        if (!mouse)
-            return there;
+        if (confirming) {
+            cx = confirmX;
+            cy = confirmY;
+        } else {
+            if (!mouse)
+                return there;
+        }
         if (tx < cx)
             return there;
         if (ty < cy)
@@ -63,7 +91,19 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void confirmAt(int x, int y, int layer) {
+    public void confirmAt(final int x, final int y, final int layer) {
+        if (Application.mobileExtremelySpecialBehavior && !confirming) {
+            // Need to absolutely confirm.
+            confirmX = x;
+            confirmY = y;
+            changeInner(confirmButton, false);
+            confirming = true;
+        } else {
+            actualConfirm(x, y);
+        }
+    }
+
+    private void actualConfirm(int x, int y) {
         UIMapView map = mapToolContext.getMapView();
         for (int l = 0; l < table.planeCount; l++)
             for (int i = 0; i < table.width; i++)
