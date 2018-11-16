@@ -129,13 +129,17 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     // -- Tool stuff --
 
     @Override
-    public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+    public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
         if (layer != currentLayer)
             return there;
+        if (!mouse)
+            return there;
+
         int tab = tabPane.getTabIndex();
         // give up
         if (tab == -1)
             return there;
+
         if ((subtool != 0) || (tileMaps[tab].atGroup != 0)) {
             if (cx == tx)
                 if (cy == ty)

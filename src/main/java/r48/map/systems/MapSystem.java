@@ -14,6 +14,7 @@ import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
+import r48.map.MapViewDrawContext;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventAccess;
@@ -155,10 +156,27 @@ public abstract class MapSystem {
             int camTB = UIElement.sensibleCellDiv(vCY + igd.getHeight(), tileSize) + 1;
             int camTX = UIElement.sensibleCellDiv(vCX, tileSize);
             int camTY = UIElement.sensibleCellDiv(vCY, tileSize);
-            // mouse position constants specifically chosen to reduce chance of overlap
+
+            MapViewDrawContext mvdc = new MapViewDrawContext();
+
+            mvdc.camX = vCX;
+            mvdc.camY = vCY;
+
+            mvdc.tileSize = tileSize;
+            mvdc.camTR = camTR;
+            mvdc.camTB = camTB;
+            mvdc.camTX = camTX;
+            mvdc.camTY = camTY;
+
+            mvdc.mouseAllowed = false;
+
+            mvdc.currentLayer = currentLayer;
+            mvdc.debugToggle = debugToggle;
+            mvdc.igd = igd;
+
             for (int i = 0; i < layers.length; i++)
                 if (layerVis[i])
-                    layers[i].draw(vCX, vCY, camTX, camTY, camTR, camTB, 0xC0000000, 0xC0000000, tileSize, currentLayer, null, debugToggle, igd);
+                    layers[i].draw(mvdc);
         }
 
         public static MapViewState getBlank(String underscoreMapObjectId, String[] ex, IEventAccess iea) {

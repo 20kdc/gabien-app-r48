@@ -8,7 +8,6 @@
 package r48.maptools;
 
 import gabien.IGrDriver;
-import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import r48.FontSizes;
 import r48.RubyTable;
@@ -32,7 +31,9 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+    public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+        if (!mouse)
+            return there;
         if (tx < cx)
             return there;
         if (ty < cy)

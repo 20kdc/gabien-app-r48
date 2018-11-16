@@ -7,9 +7,8 @@
 
 package r48.map.drawlayers;
 
-import gabien.IGrDriver;
 import r48.dbs.TXDB;
-import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 
 /**
  * Since this is used everywhere, it's a good indication of where the "global layers" end.
@@ -22,14 +21,14 @@ public class GridMapViewDrawLayer implements IMapViewDrawLayer {
     }
 
     @Override
-    public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
-        for (int i = camTX; i < camTR; i++) {
-            int a = ((i * eTileSize) + (eTileSize - 1)) - camX;
-            igd.clearRect(0, 0, 0, a, 0, 1, igd.getHeight());
+    public void draw(MapViewDrawContext mvdc) {
+        for (int i = mvdc.camTX; i < mvdc.camTR; i++) {
+            int a = ((i * mvdc.tileSize) + (mvdc.tileSize - 1)) - mvdc.camX;
+            mvdc.igd.clearRect(0, 0, 0, a, 0, 1, mvdc.igd.getHeight());
         }
-        for (int i = camTY; i < camTB; i++) {
-            int a = ((i * eTileSize) + (eTileSize - 1)) - camY;
-            igd.clearRect(0, 0, 0, 0, a, igd.getWidth(), 1);
+        for (int i = mvdc.camTY; i < mvdc.camTB; i++) {
+            int a = ((i * mvdc.tileSize) + (mvdc.tileSize - 1)) - mvdc.camY;
+            mvdc.igd.clearRect(0, 0, 0, 0, a, mvdc.igd.getWidth(), 1);
         }
     }
 }

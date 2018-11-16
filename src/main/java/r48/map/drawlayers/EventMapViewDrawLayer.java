@@ -7,11 +7,10 @@
 
 package r48.map.drawlayers;
 
-import gabien.IGrDriver;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
-import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.ui.Art;
@@ -27,14 +26,12 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
     public IEventAccess eventList;
     public int layer;
     public IEventGraphicRenderer iegr;
-    public int tileSize;
     public String postfix;
 
-    public EventMapViewDrawLayer(int layer2, IEventAccess eventL, IEventGraphicRenderer e, int ts, String post) {
+    public EventMapViewDrawLayer(int layer2, IEventAccess eventL, IEventGraphicRenderer e, String post) {
         eventList = eventL;
         layer = layer2;
         iegr = e;
-        tileSize = ts;
         postfix = post;
     }
 
@@ -46,9 +43,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
     }
 
     @Override
-    public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
-        if (eTileSize != tileSize)
-            return;
+    public void draw(MapViewDrawContext mvdc) {
         // Event Enable
         // Having it here is more efficient than having it as a tool overlay,
         // and sometimes the user might want to see events when using other tools.
@@ -68,28 +63,28 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
         for (RubyIO evK : ev) {
             int x = (int) eventList.getEventX(evK);
             int y = (int) eventList.getEventY(evK);
-            if (x < camTX)
+            if (x < mvdc.camTX)
                 continue;
-            if (y < camTY)
+            if (y < mvdc.camTY)
                 continue;
-            if (x >= camTR)
+            if (x >= mvdc.camTR)
                 continue;
-            if (y >= camTB)
+            if (y >= mvdc.camTB)
                 continue;
             RubyIO evI = eventList.getEvent(evK);
             if (evI == null)
                 continue;
-            int px = (x * eTileSize) - camX;
-            int py = (y * eTileSize) - camY;
+            int px = (x * mvdc.tileSize) - mvdc.camX;
+            int py = (y * mvdc.tileSize) - mvdc.camY;
             if (layer == 0x7FFFFFFF) {
                 if (AppMain.currentlyOpenInEditor(evI))
-                    Art.drawSelectionBox(px - 1, py - 1, eTileSize + 2, eTileSize + 2, 1, igd);
+                    Art.drawSelectionBox(px - 1, py - 1, mvdc.tileSize + 2, mvdc.tileSize + 2, 1, mvdc.igd);
             } else {
                 if (iegr.determineEventLayer(evI) != layer)
                     continue;
                 RubyIO g = iegr.extractEventGraphic(evI);
                 if (g != null)
-                    iegr.drawEventGraphic(g, px, py, igd, 1);
+                    iegr.drawEventGraphic(g, px, py, mvdc.igd, 1);
             }
         }
     }

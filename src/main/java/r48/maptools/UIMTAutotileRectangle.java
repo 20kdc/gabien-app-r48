@@ -9,7 +9,6 @@ package r48.maptools;
 
 import gabien.GaBIEn;
 import gabien.IGrDriver;
-import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -44,7 +43,7 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
     }
 
     @Override
-    public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+    public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
         int minX = Math.min(startX, cx);
         int maxX = Math.max(startX, cx);
         int minY = Math.min(startY, cy);

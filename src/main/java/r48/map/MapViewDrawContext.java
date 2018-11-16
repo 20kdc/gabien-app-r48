@@ -5,17 +5,18 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.map.drawlayers;
+package r48.map;
 
-import r48.map.MapViewDrawContext;
+import gabien.IGrDriver;
 
 /**
- * Responsible for handling the general structure of rendering.
- * Most things can use the Traditional Layer Controller.
- * Created on 08/06/17.
+ * A structure that contains the subset of parameters needed for map view draw layers/etc.
+ * Created on November 15, 2018.
  */
-public interface IMapViewDrawLayer {
-    String getName();
-
-    void draw(MapViewDrawContext mvdc);
+public class MapViewDrawContext {
+    public int camX, camY, camTX, camTY, camTR, camTB, mouseXT, mouseYT, tileSize, currentLayer;
+    public IMapViewCallbacks callbacks;
+    public boolean debugToggle;
+    public IGrDriver igd;
+    public boolean mouseAllowed;
 }

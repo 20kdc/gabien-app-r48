@@ -142,13 +142,13 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 new PanoramaMapViewDrawLayer(img, loopX, loopY, autoLoopX, autoLoopY, tbl.width, tbl.height, 320, 240, 1),
                 new R2kTileMapViewDrawLayer(tbl, tileRenderer, 0, false, tileset, TXDB.get("L0 (no Upper flag)")),
                 new R2kTileMapViewDrawLayer(tbl, tileRenderer, 1, false, tileset, TXDB.get("L1 (no Upper flag)")),
-                new EventMapViewDrawLayer(0, events, eventRenderer, 16, TXDB.get(" (Below Player)")),
-                new EventMapViewDrawLayer(1, events, eventRenderer, 16, TXDB.get(" (Player/Same)")), // Player/Same
+                    new EventMapViewDrawLayer(0, events, eventRenderer, TXDB.get(" (Below Player)")),
+                    new EventMapViewDrawLayer(1, events, eventRenderer, TXDB.get(" (Player/Same)")), // Player/Same
                 new R2kTileMapViewDrawLayer(tbl, tileRenderer, 0, true, tileset, TXDB.get("L0 (Upper flag)")),
                 new R2kTileMapViewDrawLayer(tbl, tileRenderer, 1, true, tileset, TXDB.get("L1 (Upper flag)")),
-                new EventMapViewDrawLayer(2, events, eventRenderer, 16, TXDB.get(" (Above Player)")),
+                    new EventMapViewDrawLayer(2, events, eventRenderer, TXDB.get(" (Above Player)")),
                 new PassabilityMapViewDrawLayer(new R2kPassabilitySource(tbl, tileset, (scrollFlags & 2) != 0, (scrollFlags & 1) != 0), 16),
-                new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, 16, ""),
+                    new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, ""),
                 new GridMapViewDrawLayer(),
                 new BorderMapViewDrawLayer(tbl.width, tbl.height)
             };

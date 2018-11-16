@@ -38,6 +38,9 @@ public class ImageEditorController {
     // The current thing holding the sanity button (needed so it can be broken apart on UI rebuild)
     private UISplitterLayout sanityButtonHolder = null;
 
+    // Used by inner runnables
+    private UIElement fileButtonMenuHook;
+
     public ImageEditorController() {
         imageEditView = new UIImageEditView(new RootImageEditorTool(), new Runnable() {
             @Override
@@ -137,7 +140,7 @@ public class ImageEditorController {
         menuFuncs.add(new Runnable() {
             @Override
             public void run() {
-                showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
+                AppMain.window.createMenu(fileButtonMenuHook, showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
                     @Override
                     public void accept(Rect rect) {
                         imageEditView.eds.startSection();
@@ -156,7 +159,7 @@ public class ImageEditorController {
                         imageEditView.eds.endSection();
                         initPalette(0);
                     }
-                }, TXDB.get("Resize..."));
+                }, TXDB.get("Resize...")));
             }
         });
         menuDetails.add(TXDB.get("New"));
@@ -241,29 +244,31 @@ public class ImageEditorController {
                 AppMain.window.createWindow(new UIAutoclosingPopupMenu(items.toArray(new String[0]), runnables.toArray(new Runnable[0]), FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
             }
         });
-        paletteView.panelsAdd(new UIMenuButton(TXDB.get("File: ") + imageEditView.image.width + "x" + imageEditView.image.height, FontSizes.imageEditorTextHeight, menuDetails.toArray(new String[0]), menuFuncs.toArray(new Runnable[0])));
 
-        UIElement ul = new UISplitterLayout(new UITextButton(TXDB.get("Grid Size"), FontSizes.imageEditorTextHeight, new Runnable() {
+        fileButtonMenuHook = new UIMenuButton(TXDB.get("File: ") + imageEditView.image.width + "x" + imageEditView.image.height, FontSizes.imageEditorTextHeight, menuDetails.toArray(new String[0]), menuFuncs.toArray(new Runnable[0]));
+        paletteView.panelsAdd(fileButtonMenuHook);
+
+        UIElement ul = new UISplitterLayout(new UIMenuButton(TXDB.get("Grid Size"), FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
             @Override
-            public void run() {
-                showXYChanger(imageEditView.grid, new IConsumer<Rect>() {
+            public UIElement get() {
+                return showXYChanger(imageEditView.grid, new IConsumer<Rect>() {
                     @Override
                     public void accept(Rect rect) {
                         imageEditView.grid = rect;
                     }
                 }, TXDB.get("Change Grid..."));
             }
-        }), new UITextButton(TXDB.get("Colour"), FontSizes.imageEditorTextHeight, new Runnable() {
+        }), new UIMenuButton(TXDB.get("Colour"), FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
             @Override
-            public void run() {
-                AppMain.window.createWindow(new UIColourPicker(TXDB.get("Set Grid Colour..."), imageEditView.gridColour, new IConsumer<Integer>() {
+            public UIElement get() {
+                return new UIColourPicker(TXDB.get("Set Grid Colour..."), imageEditView.gridColour, new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         if (integer == null)
                             return;
                         imageEditView.gridColour = integer & 0xFFFFFF;
                     }
-                }, false));
+                }, false);
             }
         }), false, 0.5d);
 
@@ -320,10 +325,10 @@ public class ImageEditorController {
             paletteView.panelsAdd(cType);
         }
 
-        paletteView.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Add Colour"), FontSizes.imageEditorTextHeight, new Runnable() {
+        paletteView.panelsAdd(new UISplitterLayout(new UIMenuButton(TXDB.get("Add Colour"), FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
             @Override
-            public void run() {
-                AppMain.window.createWindow(new UIColourPicker(TXDB.get("Add Palette Colour..."), imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex), new IConsumer<Integer>() {
+            public UIElement get() {
+                return new UIColourPicker(TXDB.get("Add Palette Colour..."), imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex), new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         if (integer == null)
@@ -333,7 +338,7 @@ public class ImageEditorController {
                         imageEditView.eds.endSection();
                         initPalette(0);
                     }
-                }, !imageEditView.image.t1Lock));
+                }, !imageEditView.image.t1Lock);
             }
         }), new UITextButton(TXDB.get("From Image"), FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
@@ -427,10 +432,10 @@ public class ImageEditorController {
                     }
                 }, FontSizes.imageEditorTextHeight);
             }
-            cPanel = new UISplitterLayout(new UITextButton("=", FontSizes.imageEditorTextHeight, new Runnable() {
+            cPanel = new UISplitterLayout(new UIMenuButton("=", FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
                 @Override
-                public void run() {
-                    AppMain.window.createWindow(new UIColourPicker(TXDB.get("Change Palette Colour..."), imageEditView.image.getPaletteRGB(fidx), new IConsumer<Integer>() {
+                public UIElement get() {
+                    return new UIColourPicker(TXDB.get("Change Palette Colour..."), imageEditView.image.getPaletteRGB(fidx), new IConsumer<Integer>() {
                         @Override
                         public void accept(Integer integer) {
                             if (integer == null)
@@ -441,7 +446,7 @@ public class ImageEditorController {
                             imageEditView.eds.endSection();
                             initPalette(0);
                         }
-                    }, true));
+                    }, true);
                 }
             }), cPanel, false, 0.0d);
             paletteView.panelsAdd(cPanel);
@@ -454,7 +459,7 @@ public class ImageEditorController {
         return redo;
     }
 
-    private void showXYChanger(Rect targetVal, final IConsumer<Rect> iConsumer, final String title) {
+    private UIElement showXYChanger(Rect targetVal, final IConsumer<Rect> iConsumer, final String title) {
         UIScrollLayout xyChanger = new UIScrollLayout(true, FontSizes.generalScrollersize) {
             @Override
             public String toString() {
@@ -488,11 +493,16 @@ public class ImageEditorController {
         xyChanger.panelsAdd(new UISplitterLayout(wVal, hVal, false, 1, 2));
         xyChanger.panelsAdd(new UILabel(TXDB.get("Offset"), FontSizes.imageEditorTextHeight));
         xyChanger.panelsAdd(new UISplitterLayout(xVal, yVal, false, 1, 2));
-        xyChanger.panelsAdd(acceptButton);
+        xyChanger.panelsAdd(new UIAppendButton(TXDB.get("Cancel"), acceptButton, new Runnable() {
+            @Override
+            public void run() {
+                res.selfClose = true;
+            }
+        }, FontSizes.imageEditorTextHeight));
 
         res.forceToRecommended();
         Size tgtSize = res.getSize();
         res.setForcedBounds(null, new Rect(0, 0, tgtSize.width * 3, tgtSize.height));
-        AppMain.window.createWindow(res);
+        return res;
     }
 }

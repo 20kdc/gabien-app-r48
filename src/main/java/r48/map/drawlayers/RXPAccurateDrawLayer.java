@@ -7,11 +7,10 @@
 
 package r48.map.drawlayers;
 
-import gabien.IGrDriver;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
-import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 import r48.map.events.IEventAccess;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.tiles.XPTileRenderer;
@@ -138,7 +137,7 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
     }
 
     @Override
-    public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
+    public void draw(MapViewDrawContext mvdc) {
         for (IZSortedObject zso : zSorting) {
             if (zso instanceof RXPPriorityPlane)
                 if (!enableTilesA)
@@ -152,7 +151,7 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
                         continue;
                 }
             }
-            zso.draw(camX, camY, camTX, camTY, camTR, camTB, mouseXT, mouseYT, eTileSize, currentLayer, callbacks, debug, igd);
+            zso.draw(mvdc);
         }
         enableTilesA = false;
         enableEventsA = false;
@@ -181,27 +180,27 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
         }
 
         @Override
-        public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
+        public void draw(MapViewDrawContext mvdc) {
             int x = (int) evI.getInstVarBySymbol("@x").fixnumVal;
             int y = (int) evI.getInstVarBySymbol("@y").fixnumVal;
             // Events vary in size - to stop the most obvious glitching, add some margin.
-            camTX -= 2;
-            camTY -= 2;
-            camTR += 2;
-            camTB += 2;
-            if (x < camTX)
+            mvdc.camTX -= 2;
+            mvdc.camTY -= 2;
+            mvdc.camTR += 2;
+            mvdc.camTB += 2;
+            if (x < mvdc.camTX)
                 return;
-            if (y < camTY)
+            if (y < mvdc.camTY)
                 return;
-            if (x >= camTR)
+            if (x >= mvdc.camTR)
                 return;
-            if (y >= camTB)
+            if (y >= mvdc.camTB)
                 return;
-            int px = (x * eTileSize) - camX;
-            int py = (y * eTileSize) - camY;
+            int px = (x * mvdc.tileSize) - mvdc.camX;
+            int py = (y * mvdc.tileSize) - mvdc.camY;
             RubyIO g = events.extractEventGraphic(evI);
             if (g != null)
-                events.drawEventGraphic(g, px, py, igd, 1);
+                events.drawEventGraphic(g, px, py, mvdc.igd, 1);
         }
     }
 
@@ -259,7 +258,7 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
         }
 
         @Override
-        public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
+        public void draw(MapViewDrawContext mvdc) {
             call.run();
         }
     }

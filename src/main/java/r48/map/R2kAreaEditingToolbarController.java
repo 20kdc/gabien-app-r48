@@ -66,7 +66,7 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
         public boolean definingPoint2;
 
         @Override
-        public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+        public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
             return there;
         }
 

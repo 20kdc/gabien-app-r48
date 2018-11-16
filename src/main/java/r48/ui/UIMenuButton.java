@@ -7,7 +7,9 @@
 
 package r48.ui;
 
+import gabien.ui.ISupplier;
 import gabien.ui.UIAutoclosingPopupMenu;
+import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.AppMain;
 import r48.FontSizes;
@@ -17,14 +19,15 @@ import r48.FontSizes;
  * Created on November 14, 2018.
  */
 public class UIMenuButton extends UITextButton {
-    public UIMenuButton(String s, int h2, final String[] text, final Runnable[] runnables) {
+    public UIMenuButton(String s, int h2, final ISupplier<UIElement> runnable) {
         super(s, h2, null);
         toggle = true;
         onClick = new Runnable() {
             @Override
             public void run() {
                 state = true;
-                AppMain.window.createMenu(UIMenuButton.this, new UIAutoclosingPopupMenu(text, runnables, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true) {
+                UIElement basis = runnable.get();
+                AppMain.window.createMenu(UIMenuButton.this, new UIProxy(basis, false) {
                     @Override
                     public void onWindowClose() {
                         super.onWindowClose();
@@ -33,5 +36,14 @@ public class UIMenuButton extends UITextButton {
                 });
             }
         };
+    }
+
+    public UIMenuButton(String s, int h2, final String[] text, final Runnable[] runnables) {
+        this(s, h2, new ISupplier<UIElement>() {
+            @Override
+            public UIElement get() {
+                return new UIAutoclosingPopupMenu(text, runnables, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true);
+            }
+        });
     }
 }

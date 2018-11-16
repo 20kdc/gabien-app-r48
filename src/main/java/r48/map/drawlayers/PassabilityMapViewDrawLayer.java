@@ -7,10 +7,8 @@
 
 package r48.map.drawlayers;
 
-import gabien.IGrDriver;
-import r48.AppMain;
 import r48.dbs.TXDB;
-import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 import r48.map.pass.IPassabilitySource;
 import r48.ui.Art;
 
@@ -35,15 +33,15 @@ public class PassabilityMapViewDrawLayer implements IMapViewDrawLayer {
     }
 
     @Override
-    public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
-        if (eTileSize != tileSize)
+    public void draw(MapViewDrawContext mvdc) {
+        if (mvdc.tileSize != tileSize)
             return;
-        for (int i = camTX; i < camTR; i++) {
-            for (int j = camTY; j < camTB; j++) {
-                int px = i * eTileSize;
-                int py = j * eTileSize;
-                px -= camX;
-                py -= camY;
+        for (int i = mvdc.camTX; i < mvdc.camTR; i++) {
+            for (int j = mvdc.camTY; j < mvdc.camTB; j++) {
+                int px = i * tileSize;
+                int py = j * tileSize;
+                px -= mvdc.camX;
+                py -= mvdc.camY;
                 int flags = src.getPassability(i, j);
                 if (flags == -1)
                     continue;
@@ -53,13 +51,13 @@ public class PassabilityMapViewDrawLayer implements IMapViewDrawLayer {
                 int tsH = tileSize - 8;
                 int tsQ = (tileSize / 2) - 4;
                 if ((flags & 0x01) == 0)
-                    igd.blitImage(16, 0, 8, 8, px + tsQ, py + tsH, Art.layerTabs);
+                    mvdc.igd.blitImage(16, 0, 8, 8, px + tsQ, py + tsH, Art.layerTabs);
                 if ((flags & 0x02) == 0)
-                    igd.blitImage(8, 0, 8, 8, px + tsH, py + tsQ, Art.layerTabs);
+                    mvdc.igd.blitImage(8, 0, 8, 8, px + tsH, py + tsQ, Art.layerTabs);
                 if ((flags & 0x04) == 0)
-                    igd.blitImage(24, 0, 8, 8, px, py + tsQ, Art.layerTabs);
+                    mvdc.igd.blitImage(24, 0, 8, 8, px, py + tsQ, Art.layerTabs);
                 if ((flags & 0x08) == 0)
-                    igd.blitImage(0, 0, 8, 8, px + tsQ, py, Art.layerTabs);
+                    mvdc.igd.blitImage(0, 0, 8, 8, px + tsQ, py, Art.layerTabs);
             }
         }
     }

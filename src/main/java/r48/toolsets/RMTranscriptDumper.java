@@ -32,6 +32,7 @@ public class RMTranscriptDumper {
     public void start() {
         tableOfContents.clear();
         tableOfContentsIID.clear();
+        output.println("<!DOCTYPE html>");
         output.println("<html><head><title>" + TXDB.get("Exported Transcript") + "</title></head><body><a href=\"#toc\">" + TXDB.get("To Table Of Contents") + "</a>");
     }
 
@@ -99,35 +100,32 @@ public class RMTranscriptDumper {
     }
 
     private String escapeHtml(String s) {
-        String r = "";
-        // Crude mechanism for decoding UTF-16 bullshit.
-        // (gabien.ui just gives up for now until a proper interface between the app (which wants to display things however it wants)
-        //  and the world (which wants the app to display things how it wants) can be found
+        StringBuilder r = new StringBuilder();
+        // Uses Java codePointAt to save some UTF-16 decoding code
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             int cp = s.codePointAt(i);
             String rb = Character.toString(c);
-            if (c != cp) {
-                // Special case
+            // Detect UTF-16 fun
+            if (c != cp)
                 rb += Character.toString(s.charAt(++i));
-            }
             boolean special = false;
-            // These rules are probably too inclusive, but they ought to work
+            // The rules can't be too inclusive because browsers screw up links for no good reason.
             if (c == '<')
                 special = true;
             if (c == '>')
                 special = true;
             if (c == '&')
                 special = true;
-            if (cp > 127)
-                special = true;
             if (special) {
-                r += "&#" + cp + ";";
+                r.append("&#");
+                r.append(cp);
+                r.append(";");
             } else {
-                r += rb;
+                r.append(rb);
             }
         }
-        return r;
+        return r.toString();
     }
 
     public void dumpSVList(String n, RubyIO[] arrVal, int st) {

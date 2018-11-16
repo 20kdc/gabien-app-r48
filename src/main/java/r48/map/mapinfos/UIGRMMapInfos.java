@@ -36,7 +36,6 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
     private final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
     private final UITreeView utv;
     private int selectedOrder = 0;
-    private boolean deleteConfirmation = false;
     private boolean enableOrderHoleDebug = false;
     private IMapContext mapContext;
     private HashSet<Long> notExpanded = new HashSet<Long>();
@@ -106,7 +105,6 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                 @Override
                 public void run() {
                     selectedOrder = order;
-                    deleteConfirmation = false;
                     mapContext.loadMap(operators.translateToGUM(k));
                     rebuildList();
                 }
@@ -166,30 +164,20 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                         operators.triggerEditInfoOf(k);
                     }
                 }, FontSizes.mapInfosTextHeight);
-                if (deleteConfirmation) {
-                    elm = new UIAppendButton(TXDB.get("Delete!"), elm, new Runnable() {
-                        @Override
-                        public void run() {
-                            // Orphan/move up child nodes first
-                            for (Long rk : operators.getHashKeys()) {
-                                RubyIO rio = operators.getHashBID(rk);
-                                if (rio.getInstVarBySymbol("@parent_id").fixnumVal == k)
-                                    rio.getInstVarBySymbol("@parent_id").fixnumVal = parent;
-                            }
-                            operators.removeMap(k);
-                            operators.complete();
-                            rebuildList();
+                elm = new UIAppendButton(TXDB.get("Delete"), elm, new String[] {TXDB.get("Confirm")}, new Runnable[] {new Runnable() {
+                    @Override
+                    public void run() {
+                        // Orphan/move up child nodes first
+                        for (Long rk : operators.getHashKeys()) {
+                            RubyIO rio = operators.getHashBID(rk);
+                            if (rio.getInstVarBySymbol("@parent_id").fixnumVal == k)
+                                rio.getInstVarBySymbol("@parent_id").fixnumVal = parent;
                         }
-                    }, FontSizes.mapInfosTextHeight);
-                } else {
-                    elm = new UIAppendButton(TXDB.get("Delete?"), elm, new Runnable() {
-                        @Override
-                        public void run() {
-                            deleteConfirmation = true;
-                            rebuildList();
-                        }
-                    }, FontSizes.mapInfosTextHeight);
-                }
+                        operators.removeMap(k);
+                        operators.complete();
+                        rebuildList();
+                    }
+                }}, FontSizes.mapInfosTextHeight);
             }
             tree.add(new UITreeView.TreeElement(parentStack.size(), operators.getIconForMap(k), elm, new IConsumer<Integer>() {
                 @Override
@@ -281,7 +269,6 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                 rebuildList();
             }
         }));
-        deleteConfirmation = false;
     }
 
     @Override

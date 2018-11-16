@@ -11,7 +11,6 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.schema.ArrayElementSchemaElement;
 import r48.ui.UIAppendButton;
@@ -58,8 +57,8 @@ public class StandardArrayInterface implements IArrayInterface {
                 int indentUnit = UITextButton.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight).height;
                 for (int i = 0; i < positions.length; i++) {
                     final int mi = i;
-                    addAdditionButton(positions[mi].execInsert, positions[mi].execInsertCopiedArray, positions[mi].text);
                     UIElement uie = positions[mi].core;
+                    boolean clarifyEmpty = false;
                     if (uie != null) {
                         // Changes dependent on behavior.
                         Runnable onClick = null;
@@ -254,8 +253,15 @@ public class StandardArrayInterface implements IArrayInterface {
                                 outerSplit.release();
                             }
                         });
-                        uiSVL.panelsAdd(outerSplit);
+                        uie = outerSplit;
+                    } else {
+                        // This is a blank position.
+                        uie = new UIPublicPanel(0, 0);
+                        clarifyEmpty = true;
                     }
+                    if (selectedStart == -1)
+                        uie = addAdditionButton(uie, clarifyEmpty, positions[mi].execInsert, positions[mi].execInsertCopiedArray, positions[mi].text);
+                    uiSVL.panelsAdd(uie);
                 }
             }
 
@@ -268,13 +274,20 @@ public class StandardArrayInterface implements IArrayInterface {
                 return positions.length - 1;
             }
 
-            private void addAdditionButton(final Runnable runnable, final Runnable runnable2, final String text) {
+            private UIElement addAdditionButton(UIElement uie, boolean clarifyEmpty, final Runnable runnable, final Runnable runnable2, final String text) {
                 if (runnable == null)
-                    return;
-                UIElement uie = new UITextButton(FormatSyntax.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setString(text, true)), FontSizes.schemaArrayAddTextHeight, runnable);
-                if (runnable2 != null)
-                    uie = new UIAppendButton(TXDB.get("Paste Array"), uie, runnable2, FontSizes.schemaFieldTextHeight);
-                uiSVL.panelsAdd(uie);
+                    return uie;
+                LinkedList<String> optText = new LinkedList<String>();
+                LinkedList<Runnable> optRuns = new LinkedList<Runnable>();
+                // This keeps this string in the translation DB in case it's needed again; stuff should be tested first.
+                // FormatSyntax.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setString(text, true))
+                optText.add(clarifyEmpty ? TXDB.get("Add Here") : TXDB.get("Add Before"));
+                optRuns.add(runnable);
+                if (runnable2 != null) {
+                    optText.add(TXDB.get("Paste Array"));
+                    optRuns.add(runnable2);
+                }
+                return new UIAppendButton(TXDB.get("+"), uie, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]), FontSizes.schemaArrayAddTextHeight);
             }
         };
         runCompleteRelayout.run();

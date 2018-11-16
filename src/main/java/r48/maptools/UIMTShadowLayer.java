@@ -49,11 +49,12 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
-        if (cx == tx)
-            if (cy == ty)
-                if (layer == 3)
-                    return (short) flags;
+    public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+        if (mouse)
+            if (cx == tx)
+                if (cy == ty)
+                    if (layer == 3)
+                        return (short) flags;
         return there;
     }
 

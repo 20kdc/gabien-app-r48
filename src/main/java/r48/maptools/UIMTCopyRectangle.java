@@ -9,7 +9,6 @@ package r48.maptools;
 
 import gabien.GaBIEn;
 import gabien.IGrDriver;
-import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.FontSizes;
@@ -43,10 +42,11 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAt(int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
-        if (tx == cx)
-            if (ty == cy)
-                return 0;
+    public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+        if (mouse)
+            if (tx == cx)
+                if (ty == cy)
+                    return 0;
         return there;
     }
 

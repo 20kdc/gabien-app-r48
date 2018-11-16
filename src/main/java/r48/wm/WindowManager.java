@@ -258,12 +258,18 @@ public class WindowManager {
     private void createMenuCore(final UIWindowView screen, final UIElement baseElem, final Rect base, final UIElement menu) {
         Size sz = menu.getSize();
         Rect area = new Rect(screen.getSize());
+        int sanityBorder = Math.min(area.width, area.height) / 8;
+        if (sanityBorder < 1)
+            sanityBorder = 1;
         Rect[] results = new Rect[] {
                 new Rect(base.x, base.y + base.height, sz.width, sz.height),
                 new Rect((base.x + base.width) - sz.width, base.y + base.height, sz.width, sz.height),
                 new Rect(base.x, base.y - sz.height, sz.width, sz.height),
                 new Rect((base.x + base.width) - sz.width, base.y - sz.height, sz.width, sz.height),
                 new Rect((area.width - sz.width) / 2, (area.width - sz.width) / 2, sz.width, sz.height),
+                // There's simply not enough room for the menu in any sane configuration.
+                // Now, the ability to cancel the menu still needs to be maintained, so there's a border here.
+                new Rect(sanityBorder, sanityBorder, area.width - (sanityBorder * 2), area.height - (sanityBorder * 2)),
         };
         for (int i = 0; i < results.length; i++) {
             Rect r2 = results[i].getIntersection(area);
@@ -305,7 +311,7 @@ public class WindowManager {
                 }
             }
         }
-        System.err.println("WindowManager had no room to deploy context menu.");
+        System.err.println("WindowManager failed to deploy context menu despite all fallbacks.");
         createWindow(menu);
     }
 

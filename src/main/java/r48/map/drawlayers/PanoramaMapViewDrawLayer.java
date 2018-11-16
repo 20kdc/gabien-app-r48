@@ -8,11 +8,10 @@
 package r48.map.drawlayers;
 
 import gabien.GaBIEn;
-import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.ui.UIElement;
 import r48.dbs.TXDB;
-import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 
 /**
  * Used for drawing panoramas.
@@ -59,7 +58,7 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
         return TXDB.get("Panorama");
     }
 
-    public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
+    public void draw(MapViewDrawContext mvdc) {
         // Panorama Enable
         if (im != null) {
             int effectiveImWidth = im.getWidth() * panoScale;
@@ -69,8 +68,8 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
             // I give up, this is what I've got now.
             // It works better this way than the other way under some cases.
 
-            int eCamX = camX;
-            int eCamY = camY;
+            int eCamX = mvdc.camX;
+            int eCamY = mvdc.camY;
 
             // ... later:
             // The basis of parallax appears to be "whatever the camera was set to beforehand"
@@ -80,8 +79,8 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
             // This boils down to precisely 4 pixels per second per speed value.
             int centreX = scrW / 2;
             int centreY = scrH / 2;
-            int cxc = camX + (igd.getWidth() / 2);
-            int cyc = camY + (igd.getHeight() / 2);
+            int cxc = mvdc.camX + (mvdc.igd.getWidth() / 2);
+            int cyc = mvdc.camY + (mvdc.igd.getHeight() / 2);
 
             // Yume Nikki's Incredibly Long Climb Up A Very Boring Staircase (map ID 64, just above BLOCK 5),
             //  as a 'true' case, and the Nexus, as a 'false' case
@@ -93,11 +92,11 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
             } else {
                 if (scrW != -1) {
                     // Bind to the centre of the map, get the 'extra'
-                    int mapW = eTileSize * mapTilesW;
+                    int mapW = mvdc.tileSize * mapTilesW;
                     int mapM = mapW - scrW;
                     int mapCM = cxc - (scrW / 2);
                     int exT = effectiveImWidth - scrW;
-                    eCamX = -(igd.getWidth() / 2);
+                    eCamX = -(mvdc.igd.getWidth() / 2);
                     eCamX += effectiveImWidth / 2;
                     if (mapM > 0) {
                         long extra = exT;
@@ -112,11 +111,11 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
                 eCamY -= (((cyc - centreY) * parallaxRatioB) / parallaxRatioA) + ((int) (autoLoopY * 4 * GaBIEn.getTime()));
             } else {
                 if (scrH != -1) {
-                    int mapH = eTileSize * mapTilesH;
+                    int mapH = mvdc.tileSize * mapTilesH;
                     int mapM = mapH - scrH;
                     int mapCM = cyc - (scrH / 2);
                     int exT = effectiveImHeight - scrH;
-                    eCamY = -(igd.getHeight() / 2);
+                    eCamY = -(mvdc.igd.getHeight() / 2);
                     eCamY += effectiveImHeight / 2;
                     if (mapM > 0) {
                         long extra = exT;
@@ -130,8 +129,8 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
 
             int camOTX = UIElement.sensibleCellDiv(eCamX, effectiveImWidth);
             int camOTY = UIElement.sensibleCellDiv(eCamY, effectiveImHeight);
-            int camOTeX = UIElement.sensibleCellDiv(eCamX + igd.getWidth(), effectiveImWidth) + 1;
-            int camOTeY = UIElement.sensibleCellDiv(eCamY + igd.getHeight(), effectiveImHeight) + 1;
+            int camOTeX = UIElement.sensibleCellDiv(eCamX + mvdc.igd.getWidth(), effectiveImWidth) + 1;
+            int camOTeY = UIElement.sensibleCellDiv(eCamY + mvdc.igd.getHeight(), effectiveImHeight) + 1;
 
             // If *nothing's* looping, it's probably 'bound to the map' (YumeNikki Nexus, OneShot Maize).
             // Failing anything else this helps avoid confusion: "where was the actual map again?"
@@ -141,18 +140,18 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
                 camOTeX = 0;
                 camOTY = 0;
                 camOTeY = 0;
-                eCamX = camX;
-                eCamY = camY;
+                eCamX = mvdc.camX;
+                eCamY = mvdc.camY;
             }
 
             if (panoScale != 1) {
                 for (int i = camOTX; i <= camOTeX; i++)
                     for (int j = camOTY; j <= camOTeY; j++)
-                        igd.blitScaledImage(0, 0, im.getWidth(), im.getHeight(), (i * effectiveImWidth) - eCamX, (j * effectiveImHeight) - eCamY, effectiveImWidth, effectiveImHeight, im);
+                        mvdc.igd.blitScaledImage(0, 0, im.getWidth(), im.getHeight(), (i * effectiveImWidth) - eCamX, (j * effectiveImHeight) - eCamY, effectiveImWidth, effectiveImHeight, im);
             } else {
                 int totalW = (camOTeX - camOTX) + 1;
                 int totalH = (camOTeY - camOTY) + 1;
-                igd.blitTiledImage((camOTX * effectiveImWidth) - eCamX, (camOTY * effectiveImHeight) - eCamY, totalW * effectiveImWidth, totalH * effectiveImHeight, im);
+                mvdc.igd.blitTiledImage((camOTX * effectiveImWidth) - eCamX, (camOTY * effectiveImHeight) - eCamY, totalW * effectiveImWidth, totalH * effectiveImHeight, im);
             }
         }
     }

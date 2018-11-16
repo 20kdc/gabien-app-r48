@@ -9,6 +9,7 @@ package r48.map;
 
 import gabien.*;
 import gabien.ui.*;
+import gabienapp.Application;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -65,8 +66,8 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
     private MapViewUpdateScheduler scheduler = new MapViewUpdateScheduler();
     // Managed using finalize for now.
     private IGrDriver offscreenBuf;
-    public OldMouseEmulator mouseEmulator;
-    public UILabel.StatusLine statusLine = new UILabel.StatusLine();
+    private OldMouseEmulator mouseEmulator;
+    private UILabel.StatusLine statusLine = new UILabel.StatusLine();
 
     // Regarding how these now work:
     // Modification listeners have to be held by the things that need to be notified.
@@ -226,6 +227,7 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
         //return Application.mobileExtremelySpecialBehavior || camDragSwitch; // SWA means "make sure the user can use a 1-button mouse w/no hover".
     }
 
+    // mousePT can be null
     private void render(int mouseXT, int mouseYT, int currentLayer, IGrDriver igd) {
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);
@@ -234,9 +236,31 @@ public class UIMapView extends UIElement implements OldMouseEmulator.IOldMouseRe
         int camTB = UIElement.sensibleCellDiv((int) (camY + igd.getHeight()), tileSize) + 1;
         int camTX = UIElement.sensibleCellDiv((int) camX, tileSize);
         int camTY = UIElement.sensibleCellDiv((int) camY, tileSize);
+        MapViewDrawContext mvdc = new MapViewDrawContext();
+
+        mvdc.camX = (int) camX;
+        mvdc.camY = (int) camY;
+
+        mvdc.tileSize = tileSize;
+        mvdc.camTR = camTR;
+        mvdc.camTB = camTB;
+        mvdc.camTX = camTX;
+        mvdc.camTY = camTY;
+
+        // NOTE: Block copy/paste isn't nice this way... add confirmation or something instead?
+        // If so, make sure that camDragSwitch still disables this.
+        mvdc.mouseAllowed = !Application.mobileExtremelySpecialBehavior;
+        mvdc.mouseXT = mouseXT;
+        mvdc.mouseYT = mouseYT;
+
+        mvdc.callbacks = callbacks;
+        mvdc.currentLayer = currentLayer;
+        mvdc.debugToggle = debugToggle;
+        mvdc.igd = igd;
+
         for (int i = 0; i < layers.length; i++)
             if (layerVis[i])
-                layers[i].draw((int) camX, (int) camY, camTX, camTY, camTR, camTB, mouseXT, mouseYT, tileSize, currentLayer, callbacks, debugToggle, igd);
+                layers[i].draw(mvdc);
 
         boolean minimap = internalScalingDiv > 1;
         if (callbacks != null) {

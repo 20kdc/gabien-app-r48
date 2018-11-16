@@ -7,9 +7,8 @@
 
 package r48.map.drawlayers;
 
-import gabien.IGrDriver;
 import r48.dbs.TXDB;
-import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 import r48.ui.Art;
 
 /**
@@ -28,14 +27,14 @@ public class BorderMapViewDrawLayer implements IMapViewDrawLayer {
     }
 
     @Override
-    public void draw(int camX, int camY, int camTX, int camTY, int camTR, int camTB, int mouseXT, int mouseYT, int eTileSize, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd) {
-        for (int i = Math.max(camTX, 0); i < Math.min(camTR, width); i++) {
-            Art.drawSymbol(igd, Art.Symbol.Stripes, (i * eTileSize) - camX, -(camY + eTileSize), eTileSize, false, false);
-            Art.drawSymbol(igd, Art.Symbol.Stripes, (i * eTileSize) - camX, (height * eTileSize) - camY, eTileSize, false, false);
+    public void draw(MapViewDrawContext mvdc) {
+        for (int i = Math.max(mvdc.camTX, 0); i < Math.min(mvdc.camTR, width); i++) {
+            Art.drawSymbol(mvdc.igd, Art.Symbol.Stripes, (i * mvdc.tileSize) - mvdc.camX, -(mvdc.camY + mvdc.tileSize), mvdc.tileSize, false, false);
+            Art.drawSymbol(mvdc.igd, Art.Symbol.Stripes, (i * mvdc.tileSize) - mvdc.camX, (height * mvdc.tileSize) - mvdc.camY, mvdc.tileSize, false, false);
         }
-        for (int j = Math.max(camTY, -1); j < Math.min(camTB, height + 1); j++) {
-            Art.drawSymbol(igd, Art.Symbol.Stripes, -(camX + eTileSize), (j * eTileSize) - camY, eTileSize, false, false);
-            Art.drawSymbol(igd, Art.Symbol.Stripes, (width * eTileSize) - camX, (j * eTileSize) - camY, eTileSize, false, false);
+        for (int j = Math.max(mvdc.camTY, -1); j < Math.min(mvdc.camTB, height + 1); j++) {
+            Art.drawSymbol(mvdc.igd, Art.Symbol.Stripes, -(mvdc.camX + mvdc.tileSize), (j * mvdc.tileSize) - mvdc.camY, mvdc.tileSize, false, false);
+            Art.drawSymbol(mvdc.igd, Art.Symbol.Stripes, (width * mvdc.tileSize) - mvdc.camX, (j * mvdc.tileSize) - mvdc.camY, mvdc.tileSize, false, false);
         }
     }
 }

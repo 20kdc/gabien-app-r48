@@ -65,12 +65,12 @@ public class StuffRenderer {
         if (!vxaPano.equals(""))
             panoImg = iil.getImage(vxaPano, true);
         layers[0] = new PanoramaMapViewDrawLayer(panoImg, lx, ly, alx, aly, rt.width, rt.height, panoSW, panoSH, panoSC);
-        layers[1] = new EventMapViewDrawLayer(-1, events, igr, itr.getTileSize(), TXDB.get(" (Lowest)"));
+        layers[1] = new EventMapViewDrawLayer(-1, events, igr, TXDB.get(" (Lowest)"));
         for (int i = 0; i < rt.planeCount; i++) {
             layers[(i * 2) + 2] = new TileMapViewDrawLayer(rt, tlOrder[i], itr);
-            layers[(i * 2) + 3] = new EventMapViewDrawLayer(i, events, igr, itr.getTileSize(), "");
+            layers[(i * 2) + 3] = new EventMapViewDrawLayer(i, events, igr, "");
         }
-        layers[layers.length - 3] = new EventMapViewDrawLayer(0x7FFFFFFF, events, igr, itr.getTileSize(), "");
+        layers[layers.length - 3] = new EventMapViewDrawLayer(0x7FFFFFFF, events, igr, "");
         layers[layers.length - 2] = new GridMapViewDrawLayer();
         layers[layers.length - 1] = new BorderMapViewDrawLayer(rt.width, rt.height);
         return layers;
