@@ -16,6 +16,7 @@ import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.ui.Art;
 import r48.ui.UIColourSwatch;
+import r48.ui.UIThumbnail;
 
 /**
  * RGBHSV
@@ -116,8 +117,6 @@ public class UIColourPicker extends UIElement.UIProxy {
 
     @Override
     public String toString() {
-        if (wTitle == null)
-            return "a " + getClass().getSimpleName();
         return wTitle;
     }
 
@@ -159,17 +158,20 @@ public class UIColourPicker extends UIElement.UIProxy {
 
     private static class UIPickCoordinator extends UIElement {
         public IImage baseImage;
-        private final int baseW, baseH;
-        private final int imageScale;
+        private final int baseW, baseH, targetScale;
         public Size targetSize;
         private final IConsumer<Size> resultConsumer;
 
         public UIPickCoordinator(int bw, int bh, int sc, IConsumer<Size> setter) {
             super(bw * sc, bh * sc);
+            targetScale = sc;
             baseW = bw;
             baseH = bh;
-            imageScale = sc;
             resultConsumer = setter;
+        }
+
+        public Rect determineInteriorPosition() {
+            return UIThumbnail.getDrawRect(getSize(), baseW, baseH);
         }
 
         @Override
@@ -179,20 +181,21 @@ public class UIColourPicker extends UIElement.UIProxy {
 
         @Override
         public void render(IGrDriver igd) {
+            Rect intPos = determineInteriorPosition();
             int bw = baseImage.getWidth();
             int bh = baseImage.getHeight();
-            igd.blitScaledImage(0, 0, bw, bh, 0, 0, baseW * imageScale, baseH * imageScale, baseImage);
-            int tsx = targetSize.width * imageScale;
-            int tsy = targetSize.height * imageScale;
+            igd.blitScaledImage(0, 0, bw, bh, intPos.x, intPos.y, intPos.width, intPos.height, baseImage);
+            int tsx = intPos.x + ((targetSize.width * intPos.width) / baseW);
+            int tsy = intPos.y + ((targetSize.height * intPos.height) / baseH);
             // *cough* ignore this please
             if (bh == 1)
-                tsy = (baseH * imageScale) / 2;
+                tsy = intPos.y + (intPos.height / 2);
 
-            igd.clearRect(0, 0, 0, 0, tsy - imageScale, baseW * imageScale, imageScale);
-            igd.clearRect(0, 0, 0, 0, tsy + imageScale, baseW * imageScale, imageScale);
+            igd.clearRect(0, 0, 0, intPos.x, tsy - targetScale, intPos.width, targetScale);
+            igd.clearRect(0, 0, 0, intPos.x, tsy + targetScale, intPos.width, targetScale);
 
-            igd.clearRect(0, 0, 0, tsx - imageScale, 0, imageScale, baseH * imageScale);
-            igd.clearRect(0, 0, 0, tsx + imageScale, 0, imageScale, baseH * imageScale);
+            igd.clearRect(0, 0, 0, tsx - targetScale, intPos.y, targetScale, intPos.height);
+            igd.clearRect(0, 0, 0, tsx + targetScale, intPos.y, targetScale, intPos.height);
 
             if (bh == 1) {
                 FontManager.drawString(igd, 0, 0, Integer.toString(targetSize.width), false, false, FontSizes.tonePickerTextHeight);
@@ -213,8 +216,13 @@ public class UIColourPicker extends UIElement.UIProxy {
 
         @Override
         public void handlePointerUpdate(IPointer state) {
-            int rx = state.getX() / imageScale;
-            int ry = state.getY() / imageScale;
+            Rect intPos = determineInteriorPosition();
+            if (intPos.width == 0)
+                return;
+            if (intPos.height == 0)
+                return;
+            int rx = ((state.getX() - intPos.x) * baseW) / intPos.width;
+            int ry = ((state.getY() - intPos.y) * baseH) / intPos.height;
             if (rx < 0)
                 rx = 0;
             if (ry < 0)

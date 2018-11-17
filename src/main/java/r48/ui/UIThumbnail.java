@@ -26,11 +26,11 @@ public class UIThumbnail extends UIElement {
         drawRect = new Rect(0, 0, im.getWidth(), im.getHeight());
     }
 
-    private Rect getDrawRect(Size bounds) {
-        double scale = Math.min((double) bounds.width / viewedImage.getWidth(), (double) bounds.height / viewedImage.getHeight());
+    public static Rect getDrawRect(Size bounds, int contentsW, int contentsH) {
+        double scale = Math.min((double) bounds.width / contentsW, (double) bounds.height / contentsH);
 
-        int bw = (int) (viewedImage.getWidth() * scale);
-        int bh = (int) (viewedImage.getHeight() * scale);
+        int bw = (int) (contentsW * scale);
+        int bh = (int) (contentsH * scale);
 
         int bx = (bounds.width - bw) / 2;
         int by = (bounds.height - bh) / 2;
@@ -40,9 +40,9 @@ public class UIThumbnail extends UIElement {
 
     @Override
     public void runLayout() {
-        drawRect = getDrawRect(getSize());
+        drawRect = getDrawRect(getSize(), viewedImage.getWidth(), viewedImage.getHeight());
         // This treats horizontal size as the 'limiter'
-        Rect tmp = getDrawRect(new Size(getSize().width, viewedImage.getHeight()));
+        Rect tmp = getDrawRect(new Size(getSize().width, viewedImage.getHeight()), viewedImage.getWidth(), viewedImage.getHeight());
         setWantedSize(new Size(viewedImage.getWidth(), tmp.height));
     }
 
