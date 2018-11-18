@@ -10,23 +10,18 @@ package r48.ui.utilitybelt;
 import gabien.*;
 import gabien.ui.*;
 import r48.FontSizes;
-import r48.map.UIMapView;
 import r48.ui.Art;
-import r48.ui.UIGrid;
+import r48.ui.UIPlaneView;
 
 /**
  * Thanks to Tomeno for the general design of this UI in a tablet-friendly pixel-arty way.
  * Though I kind of modified those plans a bit.
  */
-public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldMouseReceiver {
+public class UIImageEditView extends UIPlaneView {
     // Do NOT set outside of setImage
     public ImageEditorImage image = new ImageEditorImage(32, 32);
     public ImageEditorEDS eds = new ImageEditorEDS();
-    public int zoom = FontSizes.getSpriteScale() * 16;
-    private boolean tempCamMode = false, dragging;
     private boolean shift;
-    private int dragLastX, dragLastY;
-    public double camX, camY;
     public Rect grid = new Rect(0, 0, 16, 16);
 
     public IImageEditorTool currentTool;
@@ -36,18 +31,14 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     public int gridColour = 0x800080;
     public boolean gridST = false;
 
-    private OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
-    private UILabel.StatusLine statusLine = new UILabel.StatusLine();
-
     public Runnable newToolCallback;
 
     public UIImageEditView(IImageEditorTool rootTool, Runnable updatePal) {
+        planeZoomMul = FontSizes.getSpriteScale() * 16;
         eds.currentImage = image;
         eds.newFile();
         newToolCallback = updatePal;
-        currentTool = rootTool;
-        if (UIMapView.useDragControl(false))
-            currentTool = new CamImageEditorTool(currentTool);
+        currentTool = new CamImageEditorTool(rootTool);
     }
 
     // Only write to image from here!
@@ -95,6 +86,27 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     }
 
     @Override
+    public String planeGetStatus() {
+        return currentTool.getLocalizedText(true);
+    }
+
+    @Override
+    public boolean planeGetDragLock() {
+        return currentTool.getCamModeLT() != null;
+    }
+
+    @Override
+    public void planeToggleDragLock() {
+        IImageEditorTool lt = currentTool.getCamModeLT();
+        if (lt != null) {
+            currentTool = lt;
+        } else {
+            currentTool = new CamImageEditorTool(currentTool);
+        }
+        newToolCallback.run();
+    }
+
+    @Override
     public void render(IGrDriver igd) {
         Size bounds = getSize();
         Rect viewRct = getViewRect();
@@ -118,12 +130,12 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         int maxX = 0;
         int minY = 0;
         int maxY = 0;
-        int soX = viewRct.x + (ofsX * zoom);
-        int soY = viewRct.y + (ofsY * zoom);
+        int soX = viewRct.x + (int) planeMulZoom(ofsX);
+        int soY = viewRct.y + (int) planeMulZoom(ofsY);
         int soIX = bounds.width - soX;
         int soIY = bounds.height - soY;
-        int soW = ofsW * zoom;
-        int soH = ofsH * zoom;
+        int soW = (int) planeMulZoom(ofsW);
+        int soH = (int) planeMulZoom(ofsH);
         if (tiling != null) {
             minX = -((soX + (soW - 1)) / soW);
             maxX = ((soIX + (soW - 1)) / soW);
@@ -138,37 +150,19 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
             drawGrid(igd, viewRct, true);
 
         if (tiling != null)
-            Art.drawSelectionBox(viewRct.x + (ofsX * zoom), viewRct.y + (ofsY * zoom), ofsW * zoom, ofsH * zoom, FontSizes.getSpriteScale(), igd);
+            Art.drawSelectionBox(viewRct.x + (int) planeMulZoom(ofsX), viewRct.y + (int) planeMulZoom(ofsY), (int) planeMulZoom(ofsW), (int) planeMulZoom(ofsH), FontSizes.getSpriteScale(), igd);
 
 
         Rect theSelection = currentTool.getSelection();
         if (theSelection != null) {
             if (theSelection.width == 0 && theSelection.height == 0) {
-                Art.drawTarget(viewRct.x + (theSelection.x * zoom), viewRct.y + (theSelection.y * zoom), zoom, igd);
+                Art.drawTarget(viewRct.x + (int) planeMulZoom(theSelection.x), viewRct.y + (int) planeMulZoom(theSelection.y), (int) planeMulZoom(1), igd);
             } else {
-                Art.drawSelectionBox(viewRct.x + (theSelection.x * zoom), viewRct.y + (theSelection.y * zoom), theSelection.width * zoom, theSelection.height * zoom, FontSizes.getSpriteScale(), igd);
+                Art.drawSelectionBox(viewRct.x + (int) planeMulZoom(theSelection.x), viewRct.y + (int) planeMulZoom(theSelection.y), (int) planeMulZoom(theSelection.width), (int) planeMulZoom(theSelection.height), FontSizes.getSpriteScale(), igd);
             }
         }
 
-        boolean dedicatedDragControl = UIMapView.useDragControl(currentTool.getCamModeLT() != null);
-
-        String status = currentTool.getLocalizedText(dedicatedDragControl);
-
-        // shared with UIMapView
-
-        Rect plusRect = Art.getZIconRect(false, 0);
-        Rect plusRectFull = Art.getZIconRect(true, 0); // used for X calc on the label
-        Rect minusRect = Art.getZIconRect(false, 1);
-        Rect dragRect = Art.getZIconRect(false, 2);
-
-        int textX = plusRectFull.x + plusRectFull.width;
-        int textW = getSize().width - (textX + ((plusRectFull.width - plusRect.width) / 2));
-        statusLine.draw(status, FontSizes.mapPositionTextHeight, igd, textX, plusRect.y, textW);
-
-        Art.drawZoom(igd, true, plusRect.x, plusRect.y, plusRect.height);
-        Art.drawZoom(igd, false, minusRect.x, minusRect.y, minusRect.height);
-        if (dedicatedDragControl)
-            Art.drawDragControl(igd, currentTool.getCamModeLT() != null, dragRect.x, dragRect.y, minusRect.height);
+        super.render(igd);
     }
 
     private void blitTiledScaledImage(IGrDriver igd, int ofsX, int ofsY, int ofsW, int ofsH, int x, int y, int soW, int soH, IImage tempImg) {
@@ -209,12 +203,12 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         Rect localGrid = getLocalGridRect(viewRct);
         boolean outerFlip = false;
         Intersector intersect = MTIntersector.singleton.get();
-        for (int ofx = (localGrid.x - (grid.width * zoom)); ofx < (viewRct.x + viewRct.width); ofx += localGrid.width) {
+        for (int ofx = (localGrid.x - (int) planeMulZoom(grid.width)); ofx < (viewRct.x + viewRct.width); ofx += localGrid.width) {
             if (!viewRct.intersects(new Rect(ofx, viewRct.y, localGrid.width, viewRct.height)))
                 continue;
             int i = outerFlip ? 1 : 0;
             outerFlip = !outerFlip;
-            for (int ofy = (localGrid.y - (grid.height * zoom)); ofy < (viewRct.y + viewRct.height); ofy += localGrid.height) {
+            for (int ofy = (localGrid.y - (int) planeMulZoom(grid.height)); ofy < (viewRct.y + viewRct.height); ofy += localGrid.height) {
                 int o = 0xA0;
                 boolean light = ((i & 1) != 0);
                 if (light)
@@ -246,133 +240,113 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
         int localAnchorY = grid.y % grid.height;
         if (localAnchorY != 0)
             localAnchorY -= grid.height;
-        localAnchorX *= zoom;
-        localAnchorY *= zoom;
-        return new Rect(viewRct.x + localAnchorX, viewRct.y + localAnchorY, grid.width * zoom, grid.height * zoom);
+        localAnchorX = (int) planeMulZoom(localAnchorX);
+        localAnchorY = (int) planeMulZoom(localAnchorY);
+        return new Rect(viewRct.x + localAnchorX, viewRct.y + localAnchorY, (int) planeMulZoom(grid.width), (int) planeMulZoom(grid.height));
     }
 
+    // Returns a rectangle whose coordinates are the coordinates of the image on-screen.
+    // (The whole image, ignoring tiling; tiling is primarily a scissor with added special effects.)
+    // Everything is derived from this.
     private Rect getViewRect() {
         Size bounds = getSize();
-        return new Rect((int) (camX * zoom) + (bounds.width / 2), (int) (camY * zoom) + (bounds.height / 2), image.width * zoom, image.height * zoom);
+        return new Rect((bounds.width / 2) - (int) planeMulZoom(camX), (bounds.height / 2) - (int) planeMulZoom(camY), (int) planeMulZoom(image.width), (int) planeMulZoom(image.height));
     }
 
     @Override
-    public IPointerReceiver handleNewPointer(IPointer state) {
-        return mouseEmulator;
-    }
+    public IPointerReceiver planeHandleDrawPointer(IPointer state) {
+        return new IPointerReceiver() {
+            int dragLastX, dragLastY;
+            // Setting this to null is used for forceful deactivation.
+            IImageEditorTool lockedTool = currentTool;
 
-    @Override
-    public void handleClick(int x, int y, int button) {
-        handleRelease(x, y);
-        if (button == 1) {
-            tempCamMode = false;
-            if (Art.getZIconRect(true, 0).contains(x, y)) {
-                handleMousewheel(x, y, true);
-                return;
+            @Override
+            public void handlePointerBegin(IPointer state) {
+                dragLastX = state.getX();
+                dragLastY = state.getY();
+                handleAct(state.getX(), state.getY(), true);
             }
-            if (Art.getZIconRect(true, 1).contains(x, y)) {
-                handleMousewheel(x, y, false);
-                return;
+
+            @Override
+            public void handlePointerUpdate(IPointer state) {
+                handleAct(state.getX(), state.getY(), false);
+                dragLastX = state.getX();
+                dragLastY = state.getY();
             }
-            boolean dragControl = UIMapView.useDragControl(currentTool.getCamModeLT() != null);
-            if (dragControl) {
-                if (Art.getZIconRect(true, 2).contains(x, y)) {
-                    IImageEditorTool lt = currentTool.getCamModeLT();
-                    if (lt != null) {
-                        currentTool = lt;
-                    } else {
-                        currentTool = new CamImageEditorTool(currentTool);
-                    }
-                    newToolCallback.run();
-                    return;
-                }
+
+            @Override
+            public void handlePointerEnd(IPointer state) {
+                if (currentTool == lockedTool)
+                    currentTool.endApply(UIImageEditView.this);
             }
-        } else {
-            tempCamMode = true;
-        }
-        dragging = true;
-        dragLastX = x;
-        dragLastY = y;
-        handleAct(x, y, true);
-    }
 
-    @Override
-    public void handleDrag(int x, int y) {
-        handleAct(x, y, false);
-        dragLastX = x;
-        dragLastY = y;
-    }
-
-    @Override
-    public void handleRelease(int x, int y) {
-        if (dragging) {
-            currentTool.endApply(this);
-            dragging = false;
-        }
-    }
-
-    public void handleAct(int x, int y, final boolean first) {
-        if (!dragging)
-            return;
-
-        Rect bounds = getViewRect();
-        int ax = UIGrid.sensibleCellDiv(dragLastX - bounds.x, zoom);
-        int ay = UIGrid.sensibleCellDiv(dragLastY - bounds.y, zoom);
-        int nx = UIGrid.sensibleCellDiv(x - bounds.x, zoom);
-        int ny = UIGrid.sensibleCellDiv(y - bounds.y, zoom);
-
-        if ((currentTool.getCamModeLT() != null) || tempCamMode) {
-            camX += (x - dragLastX) / (double) zoom;
-            camY += (y - dragLastY) / (double) zoom;
-        } else {
-            final IImageEditorTool oldTool = currentTool;
-            if (first) {
-                if (shift) {
-                    FillAlgorithm.Point p = correctPoint(nx, ny);
-                    if (p != null)
-                        new EDImageEditorTool().applyCore(p, this);
-                    dragging = false;
+            public void handleAct(int x, int y, final boolean first) {
+                if (currentTool != lockedTool)
                     return;
-                }
-                currentTool.apply(nx, ny, this, true, false);
-                if (oldTool != currentTool) {
-                    dragging = false;
-                    oldTool.endApply(this);
-                }
-            } else {
-                if (shift)
-                    return;
-                final LineAlgorithm lineDraw = new LineAlgorithm();
-                lineDraw.ax = ax;
-                lineDraw.ay = ay;
-                IFunction<Boolean, Boolean> plotPoint = new IFunction<Boolean, Boolean>() {
-                    @Override
-                    public Boolean apply(Boolean major) {
-                        FillAlgorithm.Point p = correctPoint(lineDraw.ax, lineDraw.ay);
+
+                Rect bounds = getViewRect();
+                int ax = (int) planeDivZoom(dragLastX - bounds.x);
+                int ay = (int) planeDivZoom(dragLastY - bounds.y);
+                int nx = (int) planeDivZoom(x - bounds.x);
+                int ny = (int) planeDivZoom(y - bounds.y);
+
+                if (first) {
+                    if (shift) {
+                        FillAlgorithm.Point p = correctPoint(nx, ny);
                         if (p != null)
-                            currentTool.apply(p.x, p.y, UIImageEditView.this, major, true);
-                        if (oldTool != currentTool) {
-                            dragging = false;
-                            oldTool.endApply(UIImageEditView.this);
-                            return false;
-                        }
-                        return true;
+                            new EDImageEditorTool().applyCore(p, UIImageEditView.this);
+                        lockedTool = null;
+                    } else {
+                        lockedTool.apply(nx, ny, UIImageEditView.this, true, false);
+                        if (currentTool != lockedTool)
+                            lockedTool.endApply(UIImageEditView.this);
                     }
-                };
-                // Ignore the return value, since returning anyway.
-                lineDraw.run(nx, ny, plotPoint);
+                } else {
+                    if (shift)
+                        return;
+                    final LineAlgorithm lineDraw = new LineAlgorithm();
+                    lineDraw.ax = ax;
+                    lineDraw.ay = ay;
+                    IFunction<Boolean, Boolean> plotPoint = new IFunction<Boolean, Boolean>() {
+                        @Override
+                        public Boolean apply(Boolean major) {
+                            FillAlgorithm.Point p = correctPoint(lineDraw.ax, lineDraw.ay);
+                            if (p != null)
+                                lockedTool.apply(p.x, p.y, UIImageEditView.this, major, true);
+                            if (currentTool != lockedTool) {
+                                lockedTool.endApply(UIImageEditView.this);
+                                return false;
+                            }
+                            return true;
+                        }
+                    };
+                    // Ignore the return value, since returning anyway.
+                    lineDraw.run(nx, ny, plotPoint);
+                }
             }
+        };
+    }
+
+    @Override
+    protected void planeZoomLogic(boolean north) {
+        if (north) {
+            if (planeZoomDiv > 1) {
+                planeZoomDiv /= 2;
+            } else {
+                planeZoomMul *= 2;
+            }
+        } else {
+            planeZoomMul /= 2;
+            if (planeZoomMul < 1)
+                planeZoomMul = 1;
         }
     }
 
     @Override
-    public void handleMousewheel(int x, int y, boolean north) {
-        if (north) {
-            zoom *= 2;
-        } else {
-            zoom /= 2;
-            if (zoom < 1)
-                zoom = 1;
-        }
+    protected boolean planeCanZoom(boolean north) {
+        if (!north)
+            if (planeZoomMul == 1)
+                return false;
+        return true;
     }
 }
