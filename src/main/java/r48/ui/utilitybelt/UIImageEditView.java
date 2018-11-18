@@ -257,18 +257,8 @@ public class UIImageEditView extends UIElement implements OldMouseEmulator.IOldM
     }
 
     @Override
-    public void handlePointerBegin(IPointer state) {
-        mouseEmulator.handlePointerBegin(state);
-    }
-
-    @Override
-    public void handlePointerUpdate(IPointer state) {
-        mouseEmulator.handlePointerUpdate(state);
-    }
-
-    @Override
-    public void handlePointerEnd(IPointer state) {
-        mouseEmulator.handlePointerEnd(state);
+    public IPointerReceiver handleNewPointer(IPointer state) {
+        return mouseEmulator;
     }
 
     @Override

@@ -7,10 +7,7 @@
 
 package r48.schema;
 
-import gabien.ui.IPointer;
-import gabien.ui.UIElement;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
@@ -97,9 +94,28 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
             }
 
             @Override
-            public void handlePointerEnd(IPointer state) {
-                super.handlePointerEnd(state);
-                host.setEmbedDouble(elem, target, "N/scrollSavingSVL", scrollbar.scrollPoint);
+            public IPointerReceiver handleNewPointer(IPointer state) {
+                final IPointerReceiver ipr = super.handleNewPointer(state);
+                if (ipr != null) {
+                    return new IPointerReceiver() {
+                        @Override
+                        public void handlePointerBegin(IPointer state) {
+                            ipr.handlePointerBegin(state);
+                        }
+
+                        @Override
+                        public void handlePointerUpdate(IPointer state) {
+                            ipr.handlePointerUpdate(state);
+                        }
+
+                        @Override
+                        public void handlePointerEnd(IPointer state) {
+                            ipr.handlePointerEnd(state);
+                            host.setEmbedDouble(elem, target, "N/scrollSavingSVL", scrollbar.scrollPoint);
+                        }
+                    };
+                }
+                return null;
             }
         };
         uiSVL.scrollbar.scrollPoint = host.getEmbedDouble(elem, target, "N/scrollSavingSVL");

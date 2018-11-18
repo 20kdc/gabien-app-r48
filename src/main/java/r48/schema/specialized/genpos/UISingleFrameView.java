@@ -116,18 +116,8 @@ public class UISingleFrameView extends UIElement implements OldMouseEmulator.IOl
     }
 
     @Override
-    public void handlePointerBegin(IPointer state) {
-        mouseEmulator.handlePointerBegin(state);
-    }
-
-    @Override
-    public void handlePointerUpdate(IPointer state) {
-        mouseEmulator.handlePointerUpdate(state);
-    }
-
-    @Override
-    public void handlePointerEnd(IPointer state) {
-        mouseEmulator.handlePointerEnd(state);
+    public IPointerReceiver handleNewPointer(IPointer state) {
+        return mouseEmulator;
     }
 
     private int offset(int integer, int ofs) {

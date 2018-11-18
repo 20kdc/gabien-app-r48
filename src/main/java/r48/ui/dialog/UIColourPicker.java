@@ -205,34 +205,40 @@ public class UIColourPicker extends UIElement.UIProxy {
         }
 
         @Override
-        public void handlePointerBegin(IPointer state) {
-            handlePointerUpdate(state);
-        }
+        public IPointerReceiver handleNewPointer(IPointer state) {
+            return new IPointerReceiver() {
+                @Override
+                public void handlePointerBegin(IPointer state) {
+                    handlePointerUpdate(state);
+                }
 
-        @Override
-        public void handlePointerEnd(IPointer state) {
-            handlePointerUpdate(state);
-        }
+                @Override
+                public void handlePointerEnd(IPointer state) {
+                    handlePointerUpdate(state);
+                }
 
-        @Override
-        public void handlePointerUpdate(IPointer state) {
-            Rect intPos = determineInteriorPosition();
-            if (intPos.width == 0)
-                return;
-            if (intPos.height == 0)
-                return;
-            int rx = ((state.getX() - intPos.x) * baseW) / intPos.width;
-            int ry = ((state.getY() - intPos.y) * baseH) / intPos.height;
-            if (rx < 0)
-                rx = 0;
-            if (ry < 0)
-                ry = 0;
-            if (rx >= baseImage.getWidth())
-                rx = baseImage.getWidth() - 1;
-            if (ry >= baseImage.getHeight())
-                ry = baseImage.getHeight() - 1;
-            targetSize = new Size(rx, ry);
-            resultConsumer.accept(targetSize);
+                @Override
+                public void handlePointerUpdate(IPointer state) {
+                    Rect intPos = determineInteriorPosition();
+                    if (intPos.width == 0)
+                        return;
+                    if (intPos.height == 0)
+                        return;
+                    int rx = ((state.getX() - intPos.x) * baseW) / intPos.width;
+                    int ry = ((state.getY() - intPos.y) * baseH) / intPos.height;
+                    if (rx < 0)
+                        rx = 0;
+                    if (ry < 0)
+                        ry = 0;
+                    if (rx >= baseImage.getWidth())
+                        rx = baseImage.getWidth() - 1;
+                    if (ry >= baseImage.getHeight())
+                        ry = baseImage.getHeight() - 1;
+                    targetSize = new Size(rx, ry);
+                    resultConsumer.accept(targetSize);
+                }
+
+            };
         }
     }
 

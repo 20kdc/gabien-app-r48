@@ -186,21 +186,12 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
     }
 
     @Override
-    public void handlePointerBegin(IPointer state) {
-        mouseEmulator.handlePointerBegin(state);
-        super.handlePointerBegin(state);
-    }
-
-    @Override
-    public void handlePointerUpdate(IPointer state) {
-        mouseEmulator.handlePointerUpdate(state);
-        super.handlePointerUpdate(state);
-    }
-
-    @Override
-    public void handlePointerEnd(IPointer state) {
-        mouseEmulator.handlePointerEnd(state);
-        super.handlePointerEnd(state);
+    public IPointerReceiver handleNewPointer(IPointer state) {
+        // UIPanel returns null to allow this trick to work.
+        IPointerReceiver ipr = super.handleNewPointer(state);
+        if (ipr != null)
+            return ipr;
+        return mouseEmulator;
     }
 
     private void selectionChanged() {

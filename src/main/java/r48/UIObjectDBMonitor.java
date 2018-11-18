@@ -61,7 +61,8 @@ public class UIObjectDBMonitor extends UIElement {
     }
 
     @Override
-    public void handlePointerBegin(IPointer state) {
+    public IPointerReceiver handleNewPointer(IPointer state) {
         System.gc();
+        return super.handleNewPointer(state);
     }
 }

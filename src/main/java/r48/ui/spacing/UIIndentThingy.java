@@ -10,6 +10,7 @@ package r48.ui.spacing;
 import gabien.IGrDriver;
 import gabien.IPeripherals;
 import gabien.ui.IPointer;
+import gabien.ui.IPointerReceiver;
 import gabien.ui.UIBorderedElement;
 import gabien.ui.UIElement;
 
@@ -44,9 +45,10 @@ public class UIIndentThingy extends UIElement {
     }
 
     @Override
-    public void handlePointerBegin(IPointer state) {
+    public IPointerReceiver handleNewPointer(IPointer state) {
         if (state.getType() == IPointer.PointerType.Generic)
             if (onClick != null)
                 onClick.run();
+        return super.handleNewPointer(state);
     }
 }
