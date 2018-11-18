@@ -134,6 +134,27 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
 
     @Override
     public IPointerReceiver handleNewPointer(IPointer state) {
+        final IPointerReceiver ipr = super.handleNewPointer(state);
+        if (ipr != null)
+            return new IPointerReceiver() {
+                @Override
+                public void handlePointerBegin(IPointer state) {
+                    mouseEmulator.handlePointerBegin(state);
+                    ipr.handlePointerBegin(state);
+                }
+
+                @Override
+                public void handlePointerUpdate(IPointer state) {
+                    mouseEmulator.handlePointerUpdate(state);
+                    ipr.handlePointerEnd(state);
+                }
+
+                @Override
+                public void handlePointerEnd(IPointer state) {
+                    mouseEmulator.handlePointerEnd(state);
+                    ipr.handlePointerEnd(state);
+                }
+            };
         return mouseEmulator;
     }
 

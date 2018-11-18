@@ -7,11 +7,7 @@
 
 package r48.schema;
 
-import gabien.IGrInDriver;
-import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import gabien.ui.UISplitterLayout;
-import gabien.ui.UITextBox;
+import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.schema.util.ISchemaHost;
@@ -31,7 +27,7 @@ public class StringLenSchemaElement extends StringSchemaElement {
     // The logic goes as thus.
     // It's generally ALWAYS wide. (outside the BMP is generally always emoji)
     //
-    boolean isWide(int i) {
+    private boolean isWide(int i) {
         // NON-WIDENESS BY BLOCK:
         // Basic Latin (32-126): NEVER WIDE
         if (isRange(32, 126, i))
@@ -63,31 +59,23 @@ public class StringLenSchemaElement extends StringSchemaElement {
         // Superscripts And Subscripts, Currency Symbols
         if (isRange(7376, 8399, i))
             return false;
-        // <AT THIS POINT I GIVE UP>
+        // <AT THIS POINT I GIVE UP. I HAVE NOT CHECKED ANY OF THE IN-BETWEEN BLOCKS AFTER CURRENCY SYMBOLS.>
+        // Box Drawing, Block Elements, Geometric Shapes
+        if (isRange(9472, 9727, i))
+            return false;
+        // Braille Patterns
+        // Are people using this editor going to use these for their intended purposes?
+        // No. They're too convenient as dot-matrices.
+        // Are they going to use them anyway? Probably.
+        if (isRange(10240, 10495, i))
+            return false;
+        // (Misc.Symbols is full of what we'd call Emoji)
         // Just support halfwidth katakana (Halfwidth and Fullwidth Forms)
         // This is a mixed bag block but with a clear "split"
         if (isRange(65377, 65519, i))
             return false;
         // <NO CODEPOINT PAST HERE OUGHT TO BE CHECKED, IT'S PROBABLY STILL IN FLUX>
         return true;
-    }
-
-    private boolean isRange(int i, int i1, int c) {
-        return (c >= i) && (c <= i1);
-    }
-
-    @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UITextBox utb = (UITextBox) super.buildHoldingEditor(target, launcher, path);
-        UILabel l = new UILabel("-00000", FontSizes.schemaFieldTextHeight) {
-            @Override
-            public void runLayout() {
-                int l1 = measureText(utb.text);
-                text = Integer.toString(len - l1);
-                super.runLayout();
-            }
-        };
-        return new UISplitterLayout(utb, l, false, 1);
     }
 
     private int measureText(String s) {
@@ -100,5 +88,30 @@ public class StringLenSchemaElement extends StringSchemaElement {
             p += isWide(codepoint) ? 2 : 1;
         }
         return p;
+    }
+
+    private boolean isRange(int i, int i1, int c) {
+        return (c >= i) && (c <= i1);
+    }
+
+    @Override
+    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+        final UITextBox utb = (UITextBox) super.buildHoldingEditor(target, launcher, path);
+        utb.feedback = new IFunction<String, String>() {
+            @Override
+            public String apply(String s) {
+                int l1 = measureText(s);
+                return Integer.toString(len - l1);
+            }
+        };
+        UILabel l = new UILabel("-00000", FontSizes.schemaFieldTextHeight) {
+            @Override
+            public void runLayout() {
+                int l1 = measureText(utb.text);
+                text = Integer.toString(len - l1);
+                super.runLayout();
+            }
+        };
+        return new UISplitterLayout(utb, l, false, 1);
     }
 }
