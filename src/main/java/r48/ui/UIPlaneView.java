@@ -11,7 +11,7 @@ import gabien.IGrDriver;
 import gabien.ui.*;
 import r48.FontSizes;
 
-import java.util.HashSet;
+import java.util.HashMap;
 
 /**
  * A new base class for all of the UI code that I keep replicating between UIMapView & UIImageEditView.
@@ -26,7 +26,7 @@ public abstract class UIPlaneView extends UIElement {
     // The centre of the view in planespace.
     public double camX, camY;
 
-    private HashSet<IPointer> dragPointers = new HashSet<IPointer>();
+    private HashMap<IPointer, Size> dragPointers = new HashMap<IPointer, Size>();
     private double dragNexusX, dragNexusY, firstDragDist, firstDragZoom, dragAvgDist;
 
     protected abstract String planeGetStatus();
@@ -99,30 +99,33 @@ public abstract class UIPlaneView extends UIElement {
         return new IPointerReceiver() {
             @Override
             public void handlePointerBegin(IPointer state) {
-                dragPointers.add(state);
+                pokePointer(state);
                 recalcNexus();
                 lockZoom();
+            }
+
+            private void pokePointer(IPointer state) {
+                dragPointers.put(state, new Size(state.getX(), state.getY()));
             }
 
             private void recalcNexus() {
                 dragNexusX = 0;
                 dragNexusY = 0;
                 dragAvgDist = 0;
-                if (dragPointers.size() > 0) {
-                    for (IPointer ip : dragPointers) {
-                        dragNexusX += ip.getX() / dragPointers.size();
-                        dragNexusY += ip.getY() / dragPointers.size();
-                    }
-                    for (IPointer ip : dragPointers) {
-                        double x = ip.getX() - dragNexusX;
-                        double y = ip.getY() - dragNexusY;
-                        dragAvgDist += Math.sqrt((x * x) + (y * y)) / dragPointers.size();
-                    }
+                for (Size ip : dragPointers.values()) {
+                    dragNexusX += ip.width / dragPointers.size();
+                    dragNexusY += ip.height / dragPointers.size();
+                }
+                for (Size ip : dragPointers.values()) {
+                    double x = ip.width - dragNexusX;
+                    double y = ip.height - dragNexusY;
+                    dragAvgDist += Math.sqrt((x * x) + (y * y)) / dragPointers.size();
                 }
             }
 
             @Override
             public void handlePointerUpdate(IPointer state) {
+                pokePointer(state);
                 double oldDNX = dragNexusX;
                 double oldDNY = dragNexusY;
                 recalcNexus();
@@ -157,6 +160,7 @@ public abstract class UIPlaneView extends UIElement {
 
             @Override
             public void handlePointerEnd(IPointer state) {
+                pokePointer(state);
                 dragPointers.remove(state);
                 // Used to prevent any 'rebound'
                 recalcNexus();
