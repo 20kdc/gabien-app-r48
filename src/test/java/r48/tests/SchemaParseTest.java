@@ -9,37 +9,54 @@ package r48.tests;
 
 import gabien.TestKickstart;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.SDB;
 
-import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * Ensures that all schemas parse correctly.
  * Created on November 19, 2018.
  */
+@RunWith(Parameterized.class)
 public class SchemaParseTest {
-    @Test
-    public void testSchemasParse() {
+
+    @Parameterized.Parameters(name = "{0}")
+    public static Collection<Object[]> data() {
+        LinkedList<Object[]> tests = new LinkedList<Object[]>();
         TestKickstart.kickstart();
         final HashSet<String> schemas = new HashSet<String>();
         DBLoader.readFile("Gamepaks.txt", new IDatabase() {
             @Override
-            public void newObj(int objId, final String objName) throws IOException {
+            public void newObj(int objId, final String objName) {
                 schemas.add(objName);
             }
 
             @Override
-            public void execCmd(char c, String[] args) throws IOException {
+            public void execCmd(char c, String[] args) {
 
             }
         });
-        for (String st : schemas) {
-            System.err.println("-- Testing Gamepak " + st + " --");
-            SDB sdb = new SDB();
-            sdb.readFile(st + "/Schema.txt");
-        }
+        for (String st : schemas)
+            tests.add(new Object[] {st});
+        return tests;
+    }
+
+    private final String gamepak;
+
+    public SchemaParseTest(String gp) {
+        gamepak = gp;
+    }
+
+    @Test
+    public void testParses() {
+        TestKickstart.kickstart();
+        SDB sdb = new SDB();
+        sdb.readFile(gamepak + "/Schema.txt");
     }
 }
