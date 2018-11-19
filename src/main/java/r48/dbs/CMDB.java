@@ -8,7 +8,6 @@
 package r48.dbs;
 
 import gabien.ui.IFunction;
-import r48.AppMain;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
@@ -28,7 +27,7 @@ public class CMDB {
     public int listLeaveCmd = -1; // -1 means "no list leave command actually exists".
     public int blockLeaveCmd = 0; // This is 10 on R2k, but that is controlled via Lblock.
 
-    public CMDB(final String readFile) {
+    public CMDB(final SDB sdb, final String readFile) {
         DBLoader.readFile(readFile, new IDatabase() {
             RPGCommand rc;
             int workingCmdId = 0;
@@ -434,9 +433,9 @@ public class CMDB {
                         rc.typeListLeave = true;
                     }
                 } else if (c == '>') {
-                    localAliasing.put(args[0], AppMain.schemas.getSDBEntry(args[1]));
+                    localAliasing.put(args[0], sdb.getSDBEntry(args[1]));
                 } else if ((c == 'X') || (c == 'x')) {
-                    rc.specialSchema = AppMain.schemas.getSDBEntry(args[0]);
+                    rc.specialSchema = sdb.getSDBEntry(args[0]);
                 } else if (c == 'C') {
                     if (args[0].equals("category"))
                         rc.category = Integer.parseInt(args[1]);
@@ -527,7 +526,7 @@ public class CMDB {
             private SchemaElement aliasingAwareSG(String s) {
                 SchemaElement se = localAliasing.get(s);
                 if (se == null)
-                    se = AppMain.schemas.getSDBEntry(s);
+                    se = sdb.getSDBEntry(s);
                 return se;
             }
         });

@@ -36,6 +36,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
     private String lastTarget = null;
     private IConsumer<SchemaPath> kickMe;
 
+    // NOTE: targetDictionary must always be referenced by proxy to ensure setSDBEntry works later.
     public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<RubyIO, RubyIO> iFunction, boolean b, IFunction<RubyIO, RubyIO> ivar, int def, String ip) {
         dict = targetDictionary;
         targ = target;
@@ -44,8 +45,6 @@ public class DictionaryUpdaterRunnable implements Runnable {
         iVar = ivar;
         defaultVal = def;
         interpret = ip;
-        // Cause a proxy to be generated. (NOTE: This *must* be referenced via nocache proxy!)
-        AppMain.schemas.ensureSDBProxy(targetDictionary);
         kickMe = new IConsumer<SchemaPath>() {
             @Override
             public void accept(SchemaPath sp) {

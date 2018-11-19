@@ -95,11 +95,6 @@ public class AppMain {
     private static LinkedList<ISchemaHost> activeHosts;
     // All magical bindings in use
     public static WeakHashMap<RubyIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache;
-    // All magical binders in use
-    public static HashMap<String, IMagicalBinder> magicalBinderCache;
-
-    // Try to ensure these directories exist.
-    public static LinkedList<String> recommendedDirs;
 
     // Image cache
     public static ImageFXCache imageFXCache = null;
@@ -111,10 +106,8 @@ public class AppMain {
 
         // initialize core resources
 
-        recommendedDirs = new LinkedList<String>();
         schemas = new SDB();
         magicalBindingCache = new WeakHashMap<RubyIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>>();
-        magicalBinderCache = new HashMap<String, IMagicalBinder>();
 
         schemas.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
 
@@ -165,7 +158,7 @@ public class AppMain {
 
         // start possible recommended directory nagger
         final LinkedList<String> createDirs = new LinkedList<String>();
-        for (String s : recommendedDirs)
+        for (String s : schemas.recommendedDirs)
             if (!GaBIEn.dirExists(PathUtils.autoDetectWindows(rootPath + s)))
                 createDirs.add(s);
 
@@ -620,8 +613,6 @@ public class AppMain {
         imageFXCache = null;
         activeHosts = null;
         magicalBindingCache = null;
-        magicalBinderCache = null;
-        recommendedDirs = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
     }

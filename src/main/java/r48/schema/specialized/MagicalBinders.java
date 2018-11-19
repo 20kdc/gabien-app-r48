@@ -7,11 +7,8 @@
 
 package r48.schema.specialized;
 
-import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.RubyIO;
-import r48.io.r2k.chunks.SparseArrayHR2kStruct;
-import r48.io.r2k.obj.ldb.BAD;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -25,12 +22,15 @@ import java.util.HashMap;
  * Created on February 11th, 2018
  */
 public class MagicalBinders {
+    // This never has to be cleared as these are application-wide singletons that don't have state.
+    private static HashMap<String, IMagicalBinder> magicalBinderCache = new HashMap<String, IMagicalBinder>();
+
     public static IMagicalBinder getBinderByName(String name) {
-        if (AppMain.magicalBinderCache.containsKey(name))
-            return AppMain.magicalBinderCache.get(name);
+        if (magicalBinderCache.containsKey(name))
+            return magicalBinderCache.get(name);
         IMagicalBinder imb = getBinderByNameCore(name);
         if (imb != null)
-            AppMain.magicalBinderCache.put(name, imb);
+            magicalBinderCache.put(name, imb);
         return imb;
     }
 

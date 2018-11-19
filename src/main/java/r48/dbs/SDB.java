@@ -61,6 +61,8 @@ public class SDB {
 
     private StandardArrayInterface standardArrayUi = new StandardArrayInterface();
 
+    public LinkedList<String> recommendedDirs = new LinkedList<String>();
+
     public SDB() {
         schemaDatabase.put("nil", new OpaqueSchemaElement());
         schemaDatabase.put("int", new IntegerSchemaElement(0));
@@ -732,6 +734,8 @@ public class SDB {
                 } else if (c == 'd') {
                     // OLD SYSTEM
                     System.err.println("'d'-format is old. It'll stay around but won't get updated. Use 'D'-format instead. " + args[0]);
+                    // Cause a proxy to be generated. (NOTE: This *must* be referenced via nocache proxy!)
+                    AppMain.schemas.ensureSDBProxy(args[0]);
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[2], new IFunction<RubyIO, RubyIO>() {
                         @Override
                         public RubyIO apply(RubyIO rubyIO) {
@@ -785,7 +789,7 @@ public class SDB {
                     if (args[0].equals("objectDB"))
                         AppMain.odbBackend = args[1];
                     if (args[0].equals("recommendMkdir"))
-                        AppMain.recommendedDirs.add(args[1]);
+                        recommendedDirs.add(args[1]);
                     if (args[0].equals("dataPath"))
                         AppMain.dataPath = args[1];
                     if (args[0].equals("dataExt"))
@@ -872,7 +876,7 @@ public class SDB {
         CMDB cm = cmdbs.get(arg);
         if (cm != null)
             return cm;
-        CMDB r = new CMDB(arg);
+        CMDB r = new CMDB(this, arg);
         cmdbs.put(arg, r);
         return r;
     }
