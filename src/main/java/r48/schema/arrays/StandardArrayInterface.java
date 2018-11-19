@@ -12,8 +12,8 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
-import r48.schema.ArrayElementSchemaElement;
 import r48.ui.UIAppendButton;
+import r48.ui.UIFieldLayout;
 import r48.ui.spacing.UIIndentThingy;
 
 import java.util.Collections;
@@ -217,7 +217,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         }
                         // Add indexes for clarity.
                         final UIElement editor = uie;
-                        UIElement label = new ArrayElementSchemaElement.UIOverridableWidthLabel(positions[mi].text, FontSizes.schemaFieldTextHeight, maxWidth, true);
+                        UIElement label = new UILabel(positions[mi].text, FontSizes.schemaFieldTextHeight);
                         maxWidth.set(Math.max(label.getWantedSize().width, maxWidth.get()));
                         releasers.add(new Runnable() {
                             @Override
@@ -244,7 +244,7 @@ public class StandardArrayInterface implements IArrayInterface {
                             if (selectedStart == mi)
                                 selectedForce = 255;
                         }
-                        label = new UISplitterLayout(label, new UIIndentThingy(indentUnit, indent, selectedForce, onClick), false, 1);
+                        label = new UIFieldLayout(label, new UIIndentThingy(indentUnit, indent, selectedForce, onClick), maxWidth, true);
 
                         final UISplitterLayout outerSplit = new UISplitterLayout(label, editor, false, 0);
                         releasers.add(new Runnable() {

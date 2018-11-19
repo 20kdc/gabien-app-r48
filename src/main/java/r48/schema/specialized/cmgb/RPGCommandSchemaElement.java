@@ -14,7 +14,10 @@ import r48.dbs.CMDB;
 import r48.dbs.FormatSyntax;
 import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
-import r48.schema.*;
+import r48.schema.AggregateSchemaElement;
+import r48.schema.OpaqueSchemaElement;
+import r48.schema.PathSchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.arrays.StandardArrayInterface;
 import r48.schema.arrays.StandardArraySchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
@@ -23,6 +26,7 @@ import r48.schema.specialized.TempDialogSchemaChoice;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
+import r48.ui.UIFieldLayout;
 import r48.ui.dialog.UIEnumChoice;
 import r48.ui.help.UIHelpSystem;
 
@@ -135,7 +139,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 // Hidden parameters, introduced to deal with the "text as first parameter" thing brought about by R2k
                 if (paramName.equals("_"))
                     continue;
-                labels[i] = new ArrayElementSchemaElement.UIOverridableWidthLabel(paramName + " ", FontSizes.schemaFieldTextHeight, labelWidth, true);
+                labels[i] = new UILabel(paramName + " ", FontSizes.schemaFieldTextHeight);
                 labelWidth.set(Math.max(labelWidth.get(), labels[i].getWantedSize().width));
             }
             for (int i = 0; i < param.arrVal.length; i++) {
@@ -146,7 +150,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 if (labels[i] != null) {
                     SchemaElement ise = rc.getParameterSchema(param, i);
                     UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
-                    uiSVL.panelsAdd(new UISplitterLayout(labels[i], uie, false, 0d));
+                    uiSVL.panelsAdd(new UIFieldLayout(labels[i], uie, labelWidth, true));
                     rc.paramSpecialTags.get(i).applyTo(i, uiSVL, param, launcher, path);
                 }
             }

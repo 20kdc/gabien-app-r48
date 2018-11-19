@@ -9,7 +9,6 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
-import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -18,6 +17,7 @@ import r48.dbs.TXDB;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
+import r48.ui.UIFieldLayout;
 
 /**
  * Created on 9 October 2017 from the ashes of IVarSchemaElement
@@ -42,8 +42,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         UILabel uil = null;
         if (alias != null)
-            uil = new ArrayElementSchemaElement.UIOverridableWidthLabel(alias + " ", FontSizes.schemaFieldTextHeight, fieldWidth, fieldWidthOverride);
-        fieldWidthOverride = false;
+            uil = new UILabel(alias + " ", FontSizes.schemaFieldTextHeight);
         RubyIO tgo = PathSyntax.parse(target, pStr, 0);
         UIElement e2;
         if (tgo == null) {
@@ -68,8 +67,11 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
                     }
                 }, FontSizes.schemaFieldTextHeight);
         }
-        if (uil != null)
-            return new UISplitterLayout(uil, e2, false, 0);
+        if (uil != null) {
+            UIFieldLayout usl = new UIFieldLayout(uil, e2, fieldWidth, fieldWidthOverride);
+            fieldWidthOverride = false;
+            return usl;
+        }
         return e2;
     }
 

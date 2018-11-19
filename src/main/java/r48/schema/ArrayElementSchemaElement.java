@@ -7,7 +7,9 @@
 
 package r48.schema;
 
-import gabien.ui.*;
+import gabien.ui.UIElement;
+import gabien.ui.UILabel;
+import gabien.ui.UITextButton;
 import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -16,8 +18,7 @@ import r48.dbs.TXDB;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
-
-import java.util.concurrent.atomic.AtomicInteger;
+import r48.ui.UIFieldLayout;
 
 /**
  * NOTE: This doesn't provide the array entry object!!!
@@ -71,9 +72,9 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         UIElement core = subSchema.buildHoldingEditor(target.arrVal[index], launcher, path.arrayHashIndex(new RubyIO().setFX(index), "." + name));
 
         if (!name.equals("")) {
-            UILabel label = new UIOverridableWidthLabel(name, FontSizes.schemaFieldTextHeight, fieldWidth, fieldWidthOverride);
+            UILabel label = new UILabel(name, FontSizes.schemaFieldTextHeight);
+            core = new UIFieldLayout(label, core, fieldWidth, fieldWidthOverride);
             fieldWidthOverride = false;
-            core = new UISplitterLayout(label, core, false, 0);
         }
 
         if (optional != null)
@@ -136,29 +137,5 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         subSchema.modifyVal(target.arrVal[index], path.arrayHashIndex(new RubyIO().setFX(index), "." + name), setDefault);
         if (changed)
             path.changeOccurred(true);
-    }
-
-    public static class UIOverridableWidthLabel extends UILabel {
-        final boolean fieldWidthOverride;
-        final AtomicInteger fieldWidth;
-
-        public UIOverridableWidthLabel(String text, int textHeight, int width, boolean override) {
-            this(text, textHeight, new AtomicInteger(width), override);
-        }
-
-        public UIOverridableWidthLabel(String text, int textHeight, AtomicInteger width, boolean override) {
-            super(text, textHeight);
-            fieldWidth = width;
-            fieldWidthOverride = override;
-        }
-
-        @Override
-        public void setWantedSize(Size s) {
-            if (!fieldWidthOverride) {
-                super.setWantedSize(s);
-            } else {
-                super.setWantedSize(new Size(fieldWidth.get(), s.height));
-            }
-        }
     }
 }

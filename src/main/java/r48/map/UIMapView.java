@@ -358,11 +358,8 @@ public class UIMapView extends UIPlaneView {
     }
 
     public void showTile(int x, int y) {
-        Size b = getSize();
-        camX = -b.width / planeMulZoom(2.0d);
-        camY = -b.height / planeMulZoom(2.0d);
-        camX += tileSize * x;
-        camY += tileSize * y;
+        camX = (x * tileSize) + (tileSize / 2);
+        camY = (y * tileSize) + (tileSize / 2);
     }
 
     // Safe to pass null here.
