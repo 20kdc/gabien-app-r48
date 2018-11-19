@@ -283,6 +283,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
         windowOpen = false;
         if (innerElem != null) {
             AppMain.objectDB.deregisterModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
+            validitySupplier = null; // We're not seeing modifications, so don't check validity.
             innerElem = null;
             innerElemEditor = null;
         }
