@@ -7,6 +7,7 @@
 
 package r48.schema.util;
 
+import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import r48.RubyIO;
 import r48.map.StuffRenderer;
@@ -45,4 +46,6 @@ public interface ISchemaHost {
     void setEmbedObject(SchemaElement source, RubyIO target, String prop, Object dbl);
 
     void setEmbedObject(SchemaPath locale, SchemaElement source, RubyIO target, String prop, Object dbl);
+
+    ISupplier<Boolean> getValidity();
 }

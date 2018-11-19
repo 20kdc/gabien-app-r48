@@ -281,7 +281,7 @@ public class AppMain {
                     imgContext.imgEdit.save();
             }
         }, FontSizes.statusBarTextHeight);
-        workspace = new UIAppendButton(TXDB.get("Clipboard"), workspace, new String[] {
+        workspace = new UIAppendButton(TXDB.get("Clipboard"), workspace, null, new String[] {
                         TXDB.get("Save Clipboard To 'clip.r48'"),
                         TXDB.get("Load Clipboard From 'clip.r48'"),
                         TXDB.get("Inspect Clipboard"),

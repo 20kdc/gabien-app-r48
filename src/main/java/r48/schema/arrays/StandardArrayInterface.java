@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class StandardArrayInterface implements IArrayInterface {
     @Override
-    public void provideInterfaceFrom(final UIScrollLayout uiSVL, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
+    public void provideInterfaceFrom(final UIScrollLayout uiSVL, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
         final ArrayPosition[] positions = getPositions.get();
         // this object is needed as a pin to hold things together.
         // It used to be kind of redundant, but now with the selection stuff...
@@ -35,12 +35,11 @@ public class StandardArrayInterface implements IArrayInterface {
             // Only check selectedStart.
             int selectedStart = -1;
             int selectedEnd = -1;
-            boolean confirmingSelectionDelete = false;
 
             // So IPCRESS did end up with one disadvantage: the exact parent tracking means that now this has to be explicitly unbound.
             LinkedList<Runnable> releasers = new LinkedList<Runnable>();
 
-            // Because of name ambiguity, but also whacks uiSVL
+            // Because of name ambiguity. Previous versions also whacked uiSVL (that's no longer necessary)
             public void containerRCL() {
                 run();
             }
@@ -66,7 +65,6 @@ public class StandardArrayInterface implements IArrayInterface {
                         // NOTE: At the end of this code, editor can only be a pure UIAppendButton group.
                         // The reason for this is because it simplifies releasing it all later.
                         if (selectedStart == -1) {
-                            confirmingSelectionDelete = false;
                             onClick = new Runnable() {
                                 @Override
                                 public void run() {
@@ -83,16 +81,57 @@ public class StandardArrayInterface implements IArrayInterface {
                                     }
                                 }, FontSizes.schemaFieldTextHeight);
                             }
-                        } else if (!confirmingSelectionDelete) {
+                        } else {
                             // Selection, but not confirming delete
                             if (selectedStart == mi) {
                                if (positions[selectedStart].execDelete != null) {
-                                    uie = new UIAppendButton("-", uie, new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            confirmingSelectionDelete = true;
-                                            containerRCL();
-                                        }
+                                   final int fixedStart = selectedStart;
+                                   final int fixedEnd = selectedEnd;
+                                   uie = new UIAppendButton("-", uie, valid, new String[] {TXDB.get("Confirm")}, new Runnable[] {
+                                           new Runnable() {
+                                               @Override
+                                               public void run() {
+                                                   ArrayPosition[] effectivePositions = positions;
+                                                   Runnable term = null;
+                                                   // allowedDelete is used to make sure that nothing gets deleted that shouldn't be.
+                                                   // The commented printlns here are for debugging.
+                                                   HashSet<RubyIO> allowedDelete = new HashSet<RubyIO>();
+                                                   for (int j = fixedStart; j <= fixedEnd; j++)
+                                                       if (effectivePositions[j].elements != null)
+                                                           Collections.addAll(allowedDelete, effectivePositions[j].elements);
+                                                   //System.err.println("ST" + selectedStart + ";" + selectedEnd);
+                                                   for (int j = fixedStart; j <= fixedEnd; j++) {
+                                                       //System.err.println(j);
+                                                       if (fixedStart >= effectivePositions.length) {
+                                                           //System.err.println("NR");
+                                                           break;
+                                                       }
+                                                       if (effectivePositions[fixedStart].execDelete == null) {
+                                                           //System.err.println("NED");
+                                                           break;
+                                                       }
+                                                       if (effectivePositions[fixedStart].elements == null) {
+                                                           //System.err.println("NEL");
+                                                           break;
+                                                       }
+                                                       boolean aok = true;
+                                                       for (RubyIO rio : effectivePositions[fixedStart].elements) {
+                                                           if (!allowedDelete.contains(rio)) {
+                                                               aok = false;
+                                                               break;
+                                                           }
+                                                       }
+                                                       if (!aok) {
+                                                           //System.err.println("NOK");
+                                                           break;
+                                                       }
+                                                       term = effectivePositions[fixedStart].execDelete.get();
+                                                       effectivePositions = getPositions.get();
+                                                   }
+                                                   if (term != null)
+                                                       term.run();
+                                               }
+                                           }
                                     }, FontSizes.schemaFieldTextHeight);
                                 }
                                 onClick = new Runnable() {
@@ -146,73 +185,6 @@ public class StandardArrayInterface implements IArrayInterface {
                                         containerRCL();
                                     }
                                 };
-                            }
-                        } else {
-                            // Selection, confirming delete
-                            if (selectedStart == mi) {
-                                uie = new UIAppendButton(TXDB.get(" Cancel "), uie, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        confirmingSelectionDelete = false;
-                                        containerRCL();
-                                    }
-                                }, FontSizes.schemaFieldTextHeight);
-                                if (positions[selectedStart].execDelete != null) {
-                                    // freed up room means a good long "Delete" can be written
-                                    uie = new UIAppendButton(TXDB.get("Delete"), uie, new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            ArrayPosition[] effectivePositions = positions;
-                                            Runnable term = null;
-                                            // allowedDelete is used to make sure that nothing gets deleted that shouldn't be.
-                                            // The commented printlns here are for debugging.
-                                            HashSet<RubyIO> allowedDelete = new HashSet<RubyIO>();
-                                            for (int j = selectedStart; j <= selectedEnd; j++)
-                                                if (effectivePositions[j].elements != null)
-                                                    Collections.addAll(allowedDelete, effectivePositions[j].elements);
-                                            //System.err.println("ST" + selectedStart + ";" + selectedEnd);
-                                            for (int j = selectedStart; j <= selectedEnd; j++) {
-                                                //System.err.println(j);
-                                                if (selectedStart >= effectivePositions.length) {
-                                                    //System.err.println("NR");
-                                                    break;
-                                                }
-                                                if (effectivePositions[selectedStart].execDelete == null) {
-                                                    //System.err.println("NED");
-                                                    break;
-                                                }
-                                                if (effectivePositions[selectedStart].elements == null) {
-                                                    //System.err.println("NEL");
-                                                    break;
-                                                }
-                                                boolean aok = true;
-                                                for (RubyIO rio : effectivePositions[selectedStart].elements) {
-                                                    if (!allowedDelete.contains(rio)) {
-                                                        aok = false;
-                                                        break;
-                                                    }
-                                                }
-                                                if (!aok) {
-                                                    //System.err.println("NOK");
-                                                    break;
-                                                }
-                                                term = effectivePositions[selectedStart].execDelete.get();
-                                                effectivePositions = getPositions.get();
-                                            }
-                                            if (term != null)
-                                                term.run();
-                                        }
-                                    }, FontSizes.schemaFieldTextHeight);
-                                }
-                            } else if ((mi > selectedStart) && (mi <= selectedEnd)) {
-                                // Only the top one can confirm, others are for cancelling
-                                uie = new UIAppendButton(TXDB.get("Cancel..."), uie, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        confirmingSelectionDelete = false;
-                                        containerRCL();
-                                    }
-                                }, FontSizes.schemaFieldTextHeight);
                             }
                         }
                         // Add indexes for clarity.
@@ -287,7 +259,7 @@ public class StandardArrayInterface implements IArrayInterface {
                     optText.add(TXDB.get("Paste Array"));
                     optRuns.add(runnable2);
                 }
-                return new UIAppendButton(TXDB.get("+"), uie, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]), FontSizes.schemaArrayAddTextHeight);
+                return new UIAppendButton(TXDB.get("+"), uie, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]), FontSizes.schemaArrayAddTextHeight);
             }
         };
         runCompleteRelayout.run();

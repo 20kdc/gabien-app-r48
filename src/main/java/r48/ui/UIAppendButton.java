@@ -25,8 +25,8 @@ public class UIAppendButton extends UIElement.UIPanel {
         this(new UISymbolButton(s, h2, runnable), holder);
     }
 
-    public UIAppendButton(String s, UIElement holder, String[] text, Runnable[] runnables, int h2) {
-        this(new UIMenuButton(s, h2, text, runnables), holder);
+    public UIAppendButton(String s, UIElement holder, ISupplier<Boolean> continued, String[] text, Runnable[] runnables, int h2) {
+        this(new UIMenuButton(s, h2, continued, text, runnables), holder);
     }
 
     public UIAppendButton(UIButton s, UIElement holder) {

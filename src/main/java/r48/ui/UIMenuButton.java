@@ -38,11 +38,19 @@ public class UIMenuButton extends UITextButton {
         };
     }
 
-    public UIMenuButton(String s, int h2, final String[] text, final Runnable[] runnables) {
+    public UIMenuButton(String s, int h2, final ISupplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
         this(s, h2, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
-                return new UIAutoclosingPopupMenu(text, runnables, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true);
+                return new UIAutoclosingPopupMenu(text, runnables, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true) {
+                    @Override
+                    public void optionExecute(int b) {
+                        if (continued != null)
+                            if (!continued.get())
+                                return;
+                        super.optionExecute(b);
+                    }
+                };
             }
         });
     }

@@ -21,7 +21,7 @@ import java.util.LinkedList;
  */
 public class PagerArrayInterface implements IArrayInterface {
     @Override
-    public void provideInterfaceFrom(UIScrollLayout svl, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
+    public void provideInterfaceFrom(UIScrollLayout svl, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
         final ArrayPosition[] positions = getPositions.get();
         LinkedList<UIElement> uie = new LinkedList<UIElement>();
         for (int i = 0; i < positions.length; i++) {

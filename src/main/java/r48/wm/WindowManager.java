@@ -158,7 +158,7 @@ public class WindowManager {
                     @Override
                     public void onWindowClose() {
                         allWindowViews.remove(this);
-                        createWindow(uie, true, true);
+                        createWindow(uie, true, immortal);
                     }
 
                     @Override

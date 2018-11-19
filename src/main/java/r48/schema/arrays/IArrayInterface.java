@@ -23,7 +23,7 @@ public interface IArrayInterface {
      * state is tied to a unique SchemaElement held by the ArraySchemaElement for the purposes of holding extra state.
      * Also note that the positions are invalidated when any exec function is called.
      */
-    void provideInterfaceFrom(UIScrollLayout svl, IFunction<String, IProperty> state, ISupplier<ArrayPosition[]> positions);
+    void provideInterfaceFrom(UIScrollLayout svl, ISupplier<Boolean> valid, IFunction<String, IProperty> state, ISupplier<ArrayPosition[]> positions);
 
     interface IProperty extends ISupplier<Double>, IConsumer<Double> {
         // Get returns 0 if the property doesn't exist, like with the usual double interface
@@ -51,9 +51,10 @@ public interface IArrayInterface {
         // 2. Copying (for clipboard)
         public final RubyIO[] elements;
         public final Runnable execInsert, execInsertCopiedArray;
-        // The way this works is that you run a get to perform the delete,
-        //  then run the Runnable to perform the update
-        // This is weird but very convenient
+        // The way this works is that you run a getter to perform the deletions,
+        //  to delete more things run getPositions again,
+        //  then poke modification using the last runnable you get.
+        // See StandardArrayInterface for an example.
         public final ISupplier<Runnable> execDelete;
         public final UIElement core;
         public int coreIndent;

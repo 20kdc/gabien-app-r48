@@ -164,7 +164,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                         operators.triggerEditInfoOf(k);
                     }
                 }, FontSizes.mapInfosTextHeight);
-                elm = new UIAppendButton(TXDB.get("Delete"), elm, new String[] {TXDB.get("Confirm")}, new Runnable[] {new Runnable() {
+                elm = new UIAppendButton(TXDB.get("Delete"), elm, null, new String[] {TXDB.get("Confirm")}, new Runnable[] {new Runnable() {
                     @Override
                     public void run() {
                         // Orphan/move up child nodes first

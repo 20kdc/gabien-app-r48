@@ -110,6 +110,8 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
         }
     };
 
+    private ISupplier<Boolean> validitySupplier;
+
     public boolean windowOpen = false;
     public boolean stayClosed = false;
     private boolean nudged = false;
@@ -145,6 +147,14 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
         boolean doLaunch = false;
         if (!(windowOpen || stayClosed))
             doLaunch = true;
+
+        validitySupplier = new ISupplier<Boolean>() {
+            @Override
+            public Boolean get() {
+                return validitySupplier == this;
+            }
+        };
+
         innerElem = nextObject;
         innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
         AppMain.objectDB.registerModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
@@ -231,6 +241,11 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     @Override
     public void setEmbedObject(SchemaPath locale, SchemaElement source, RubyIO target, String prop, Object dbl) {
         embedData.setEmbed(locale, source, target, prop, dbl);
+    }
+
+    @Override
+    public ISupplier<Boolean> getValidity() {
+        return validitySupplier;
     }
 
     @Override

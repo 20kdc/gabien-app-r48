@@ -40,6 +40,7 @@ public class ImageEditorController {
 
     // Used by inner runnables
     private UIElement fileButtonMenuHook;
+    private Object paletteThing;
 
     public ImageEditorController() {
         imageEditView = new UIImageEditView(new RootImageEditorTool(), new Runnable() {
@@ -125,6 +126,8 @@ public class ImageEditorController {
 
     // 0: Any 1: Undo 2: Redo 3: New
     private void initPalette(int cause) {
+        final Object currentPaletteThing = paletteThing = new Object();
+
         paletteView.panelsClear();
         if (sanityButtonHolder != null) {
             sanityButtonHolder.release();
@@ -245,7 +248,12 @@ public class ImageEditorController {
             }
         });
 
-        fileButtonMenuHook = new UIMenuButton(TXDB.get("File: ") + imageEditView.image.width + "x" + imageEditView.image.height, FontSizes.imageEditorTextHeight, menuDetails.toArray(new String[0]), menuFuncs.toArray(new Runnable[0]));
+        fileButtonMenuHook = new UIMenuButton(TXDB.get("File: ") + imageEditView.image.width + "x" + imageEditView.image.height, FontSizes.imageEditorTextHeight, new ISupplier<Boolean>() {
+            @Override
+            public Boolean get() {
+                return paletteThing == currentPaletteThing;
+            }
+        }, menuDetails.toArray(new String[0]), menuFuncs.toArray(new Runnable[0]));
         paletteView.panelsAdd(fileButtonMenuHook);
 
         UIElement ul = new UISplitterLayout(new UIMenuButton(TXDB.get("Grid Size"), FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
