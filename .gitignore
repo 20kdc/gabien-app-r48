@@ -10,29 +10,17 @@
 !releaser/*.sh
 !releaser/icon.png
 !src
-!src/
-!src/main
-!src/main/
-!src/main/resources
-!src/main/java
 
-# assets
-!src/main/resources/*
-
-# stuff in assets
-!src/main/resources/*/*
-
-# stuff in schema subdirs
-!src/main/resources/*/*/*
-
-!src/main/java/*
-!src/main/java/*/*
-!src/main/java/*/*/*
-!src/main/java/*/*/*/*
-!src/main/java/*/*/*/*/*
-!src/main/java/*/*/*/*/*/*
-!src/main/java/*/*/*/*/*/*/*
-!src/main/java/*/*/*/*/*/*/*/*
+!src/*
+!src/*/*
+!src/*/*/*
+!src/*/*/*/*
+!src/*/*/*/*/*
+!src/*/*/*/*/*/*
+!src/*/*/*/*/*/*/*
+!src/*/*/*/*/*/*/*/*
+!src/*/*/*/*/*/*/*/*/*
+!src/*/*/*/*/*/*/*/*/*/*
 
 # IMI (Integrated Mod Installer)
 # Note that this tree gets mixed together with various bits and pieces by the IMI release process.

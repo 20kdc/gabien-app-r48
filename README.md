@@ -108,3 +108,5 @@ Ikachan: Previous experience with modding Ikachan.
 Sticky Note Program: This is really just an ancient testbed for the simpler elements of R48, so it's entirely defined by R48.
 
 If you're wondering why this is at the bottom, it's because someone suggested an order for the README sections, and didn't put "credits" in it.
+
+Unit testing is done using JUnit, as the test code isn't packaged anyway.

@@ -3,9 +3,15 @@ apply plugin: "eclipse"
 apply plugin: "idea"
 apply plugin: "application"
 
+repositories {
+    // Needed for JUnit.
+    mavenCentral()
+}
+
 dependencies {
     compile files('../gabien-common/build/libs/gabien-common.jar')
     compile files('../gabien-javase/build/libs/gabien-javase.jar')
+    testCompile "junit:junit:4.12"
 }
 
 sourceCompatibility = 1.6
