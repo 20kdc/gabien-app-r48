@@ -7,7 +7,7 @@
 
 package r48;
 
-import java.io.UnsupportedEncodingException;
+import r48.io.data.IRIO;
 
 /**
  * Proper handling for encoding stuff
@@ -18,12 +18,12 @@ import java.io.UnsupportedEncodingException;
  * Created on December 17th 2017
  */
 public class RubyEncodingTranslator {
-    public static void inject(RubyIO rubyIO, String s) {
+    public static void inject(IRIO rubyIO, String s) {
         rubyIO.rmIVar("jEncoding");
         rubyIO.rmIVar("encoding");
         rubyIO.rmIVar("E");
         if (s.equalsIgnoreCase("UTF-8")) {
-            rubyIO.addIVar("E", new RubyIO().setBool(true));
+            rubyIO.addIVar("E").setBool(true);
             return;
         }
         if (s.equalsIgnoreCase("Cp1252")) {
@@ -44,37 +44,25 @@ public class RubyEncodingTranslator {
 
         // Can't translate, use fallback
         // NOTE: This isn't too critically important, *unless a file from an "old" backend is copied to a "new" backend.*
-        rubyIO.addIVar("jEncoding", new RubyIO().setSymlike(s, false));
+        rubyIO.addIVar("jEncoding").setSymbol(s);
     }
 
     // Used to set the encoding iVar as a raw string
-    private static void forceEncoding(RubyIO rubyIO, String s) {
-        RubyIO str = new RubyIO().setNull();
-        str.type = '"';
-        try {
-            str.strVal = s.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-        rubyIO.addIVar("encoding", str);
+    private static void forceEncoding(IRIO rubyIO, String s) {
+        rubyIO.addIVar("encoding").setString(s);
     }
 
     // Returns "Canonical Name for java.io API and java.lang API" as documented on "https://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html".
-    public static String getStringCharset(RubyIO rubyIO) {
-        RubyIO easy = rubyIO.getInstVarBySymbol("E");
+    public static String getStringCharset(IRIO rubyIO) {
+        IRIO easy = rubyIO.getIVar("E");
         if (easy != null)
             return "UTF-8";
-        RubyIO jencoding = rubyIO.getInstVarBySymbol("jEncoding");
+        IRIO jencoding = rubyIO.getIVar("jEncoding");
         if (jencoding != null)
-            return jencoding.symVal;
-        RubyIO encoding = rubyIO.getInstVarBySymbol("encoding");
+            return jencoding.getSymbol();
+        IRIO encoding = rubyIO.getIVar("encoding");
         if (encoding != null) {
-            String s;
-            try {
-                s = new String(encoding.strVal, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
+            String s = encoding.decString();
             // Japanese (see above function to explain the mapping)
             if (s.equalsIgnoreCase("SHIFT-JIS"))
                 return "Cp943C";

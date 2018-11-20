@@ -9,23 +9,17 @@ package r48;
 
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 'Dear [REDACTED].
- * I have recently learned a valuable lesson about friendship.
- * Specifically, that if you are friends with someone who uses Ruby Marshal
- * as anything but a temporary serialization mechanism, and I emphasize TEMPORARY,
- * maybe reconsidering your friendships is a good idea.'
- * Thankfully, I wasn't ever friends with [REDACTED] to begin with, since they're a company.
- * Not a person.
- * I pity the fool who downloads the first poisoned [NAME HERE] savefile.
+ * Being phased out as of November 19th, 2018 (beginning of DM2 implementation)
  * Created on 12/27/16.
  */
-public class RubyIO {
+public class RubyIO extends IRIO {
     /*
      * The Grand List Of Objects R48 Supports:
      * NOTE: All objects can theoretically have iVars.
@@ -59,6 +53,7 @@ public class RubyIO {
 
     // ---- Value creators ----
 
+    @Override
     public RubyIO setNull() {
         type = '0';
         strVal = null;
@@ -73,6 +68,7 @@ public class RubyIO {
         return this;
     }
 
+    @Override
     public RubyIO setFX(long fx) {
         setNull();
         type = 'i';
@@ -80,10 +76,21 @@ public class RubyIO {
         return this;
     }
 
+    @Override
     public RubyIO setBool(boolean b) {
         setNull();
         type = b ? 'T' : 'F';
         return this;
+    }
+
+    @Override
+    public IRIO setSymbol(String s) {
+        return setSymlike(s, false);
+    }
+
+    @Override
+    public IRIO setString(String s) {
+        return setString(s, false);
     }
 
     public RubyIO setString(String s, boolean intern) {
@@ -177,91 +184,6 @@ public class RubyIO {
         return this;
     }
 
-    public static boolean rubyTypeEquals(RubyIO a, RubyIO b) {
-        if (a == b)
-            return true;
-        if (a.type != b.type)
-            return false;
-        if (a.type == 'o')
-            return a.symVal.equals(b.symVal);
-        if (a.type == 'u')
-            return a.symVal.equals(b.symVal);
-        return true;
-    }
-
-    // used to check Hash stuff
-    public static boolean rubyEquals(RubyIO a, RubyIO b) {
-        if (a == b)
-            return true;
-        if (a.type != b.type)
-            return false;
-        // primitive types
-        if (a.type == 'i')
-            return a.fixnumVal == b.fixnumVal;
-        if (a.type == '\"')
-            return a.decString().equals(b.decString());
-        if (a.type == 'f')
-            return a.decString().equals(b.decString());
-        if (a.type == 'l')
-            return new RubyBigNum(a.userVal, true).compare(new RubyBigNum(b.userVal, true)) == 0;
-        if (a.type == ':')
-            return a.symVal.equals(b.symVal);
-        if (a.type == 'T')
-            return true;
-        if (a.type == 'F')
-            return true;
-        if (a.type == '0')
-            return true;
-        return false;
-    }
-
-    @Override
-    public String toString() {
-        // NOTE: The following rules are relied upon by schema name-routines, at least in theory:
-        // 1. "null" means t0.
-        // 2. Any valid number is a number.
-        // 3. T/F are booleans.
-        String data = "";
-        if (type == 'u')
-            return symVal + ";" + userVal.length + "b";
-        if (type == 'o')
-            return symVal;
-        if (type == '[')
-            data = arrVal.length + "]";
-        if (type == ':')
-            data = symVal;
-        if (type == '"')
-            return "\"" + decString() + "\"";
-        if (type == 'f')
-            return decString() + "f";
-        if (type == 'i')
-            return Long.toString(fixnumVal);
-        if (type == 'l') {
-            String str2 = "L";
-            RubyBigNum working = new RubyBigNum(userVal, false);
-            boolean negated = false;
-            if (working.isNegative()) {
-                negated = true;
-                working = working.negate();
-            }
-            if (working.compare(RubyBigNum.ZERO) == 0) {
-                str2 = "0L";
-            } else {
-                while (working.compare(RubyBigNum.ZERO) > 0) {
-                    RubyBigNum[] res = working.divide(RubyBigNum.TEN);
-                    str2 = ((char) ('0' + res[1].truncateToLong())) + str2;
-                    working = res[0];
-                }
-            }
-            if (negated)
-                str2 = "-" + str2;
-            return str2;
-        }
-        if (type == '0')
-            return "null";
-        return ((char) type) + data;
-    }
-
     // Outputs IMI-code for something so that there's a basically human-readable version of it.
     public String toStringLong(String indent) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -276,6 +198,7 @@ public class RubyIO {
         }
     }
 
+    @Override
     public String decString() {
         // ignore the CP-setting madness for now
         // however, if it is to be implemented,
@@ -331,6 +254,7 @@ public class RubyIO {
         // return iVars.get(cmd);
     }
 
+    @Override
     public void rmIVar(String s) {
         if (iVarKeys == null)
             return;
@@ -352,14 +276,14 @@ public class RubyIO {
     // NOTE: this is solely for cases where an external primitive is being thrown in.
     //       in most cases, we already have the RubyIO object by-ref.
     //       (Can't implement equals on RubyIO objects safely due to ObjectDB backreference tracing.)
-    public RubyIO getHashVal(RubyIO rio) {
+    public RubyIO getHashVal(IRIO rio) {
         for (Map.Entry<RubyIO, RubyIO> e : hashVal.entrySet())
             if (rubyEquals(e.getKey(), rio))
                 return e.getValue();
         return null;
     }
 
-    public void removeHashVal(RubyIO rubyIO) {
+    public void removeHashVal(IRIO rubyIO) {
         for (Map.Entry<RubyIO, RubyIO> e : hashVal.entrySet())
             if (rubyEquals(e.getKey(), rubyIO)) {
                 hashVal.remove(e.getKey());
@@ -372,5 +296,48 @@ public class RubyIO {
         byte[] t = new byte[s.length];
         System.arraycopy(s, 0, t, 0, t.length);
         return t;
+    }
+
+    // IRIO compat.
+
+    @Override
+    public IRIO addIVar(String sym) {
+        RubyIO rio = new RubyIO().setNull();
+        addIVar(sym, rio);
+        return rio;
+    }
+
+    @Override
+    public IRIO getIVar(String sym) {
+        return getInstVarBySymbol(sym);
+    }
+
+    @Override
+    public int getType() {
+        return type;
+    }
+
+    @Override
+    public long getFX() {
+        if (type != 'i')
+            throw new RuntimeException("Not fixnum.");
+        return fixnumVal;
+    }
+
+    @Override
+    public String getSymbol() {
+        return symVal;
+    }
+
+    @Override
+    public byte[] getBuffer() {
+        if (strVal != null)
+            return strVal;
+        return userVal;
+    }
+
+    @Override
+    public int getALen() {
+        return arrVal.length;
     }
 }

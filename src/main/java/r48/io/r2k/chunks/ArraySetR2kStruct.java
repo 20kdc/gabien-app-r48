@@ -9,6 +9,7 @@ package r48.io.r2k.chunks;
 
 import gabien.ui.ISupplier;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * Created on 06/06/17.
@@ -29,7 +30,7 @@ public class ArraySetR2kStruct<T extends IR2kStruct> extends ArrayR2kInterpretab
         for (T t : array) {
             RubyIO rio = t.asRIO();
             // remove useless elements
-            if (!RubyIO.rubyEquals(rio, examineElement))
+            if (!IRIO.rubyEquals(rio, examineElement))
                 hash.hashVal.put(new RubyIO().setFX(idx++), rio);
         }
         return hash;

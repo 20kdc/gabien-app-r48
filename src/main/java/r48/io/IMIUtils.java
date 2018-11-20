@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.ui.IConsumer;
 import r48.ArrayUtils;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 import java.io.*;
 import java.util.HashMap;
@@ -61,11 +62,11 @@ public class IMIUtils {
     public static byte[] createIMIData(RubyIO source, RubyIO target, String indent) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
-        if (!RubyIO.rubyTypeEquals(source, target)) {
+        if (!IRIO.rubyTypeEquals(source, target)) {
             createIMIDump(dos, target, indent);
             return baos.toByteArray();
         }
-        if (RubyIO.rubyEquals(source, target))
+        if (IRIO.rubyEquals(source, target))
             return null;
         String id2 = incrementIndent(indent);
         // NOTE: Most types are not patchable. Don't try to patch them.
@@ -220,9 +221,9 @@ public class IMIUtils {
     // This is used to try and make sane diffs of arrays.
     // Note that this is only a heuristic.
     private static int imiCompatibilityIndex(RubyIO source, RubyIO target) {
-        if (!RubyIO.rubyTypeEquals(source, target))
+        if (!IRIO.rubyTypeEquals(source, target))
             return 0;
-        if (RubyIO.rubyEquals(source, target))
+        if (IRIO.rubyEquals(source, target))
             return 0x7FFFFFFF;
         // Particularly common case (cmd params)
         if (source.type == '[') {

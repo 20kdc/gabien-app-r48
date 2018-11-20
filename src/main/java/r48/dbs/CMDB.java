@@ -9,6 +9,7 @@ package r48.dbs;
 
 import gabien.ui.IFunction;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
 import r48.schema.util.SchemaPath;
@@ -287,7 +288,7 @@ public class CMDB {
                             RubyIO p = PathSyntax.parse(command, idx);
                             if (p == null)
                                 return false;
-                            return inv ^ RubyIO.rubyEquals(p, v);
+                            return inv ^ IRIO.rubyEquals(p, v);
                         }
 
                         @Override
@@ -473,7 +474,7 @@ public class CMDB {
                                 for (int i = 0; i < iargs.length; i++) {
                                     if (rubyIO.arrVal.length <= ikeys[i])
                                         continue;
-                                    if (RubyIO.rubyEquals(rubyIO.arrVal[ikeys[i]], iargs[i]))
+                                    if (IRIO.rubyEquals(rubyIO.arrVal[ikeys[i]], iargs[i]))
                                         return 1;
                                 }
                                 return 0;

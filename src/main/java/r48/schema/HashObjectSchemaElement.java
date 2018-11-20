@@ -9,6 +9,7 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -41,7 +42,7 @@ public class HashObjectSchemaElement extends SchemaElement {
             for (RubyIO key : target.hashVal.keySet()) {
                 boolean okay = false;
                 for (RubyIO k2 : allowedKeys) {
-                    if (RubyIO.rubyEquals(key, k2)) {
+                    if (IRIO.rubyEquals(key, k2)) {
                         okay = true;
                         break;
                     }

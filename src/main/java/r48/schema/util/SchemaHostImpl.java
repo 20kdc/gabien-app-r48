@@ -14,6 +14,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.schema.SchemaElement;
@@ -56,7 +57,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
             if (AppMain.theClipboard == null) {
                 AppMain.launchDialog(TXDB.get("There is nothing in the clipboard."));
             } else {
-                if (RubyIO.rubyTypeEquals(innerElem.targetElement, AppMain.theClipboard)) {
+                if (IRIO.rubyTypeEquals(innerElem.targetElement, AppMain.theClipboard)) {
                     innerElem.targetElement.setDeepClone(AppMain.theClipboard);
                     SchemaPath sp = innerElem.findHighestSubwatcher();
                     sp.editor.modifyVal(sp.targetElement, sp, false);

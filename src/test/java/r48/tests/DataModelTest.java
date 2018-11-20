@@ -10,6 +10,7 @@ package r48.tests;
 import org.junit.Assert;
 import org.junit.Test;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * Created on November 19, 2018.
@@ -21,8 +22,8 @@ public class DataModelTest {
         RubyIO rioA = new RubyIO().setString("Hello", true);
         RubyIO rioB = new RubyIO().setString("Goodbye", true);
         RubyIO rioC = new RubyIO().setString("Hello", true);
-        Assert.assertFalse(RubyIO.rubyEquals(rioA, rioB));
-        Assert.assertTrue(RubyIO.rubyEquals(rioA, rioA));
-        Assert.assertTrue(RubyIO.rubyEquals(rioA, rioC));
+        Assert.assertFalse(IRIO.rubyEquals(rioA, rioB));
+        Assert.assertTrue(IRIO.rubyEquals(rioA, rioA));
+        Assert.assertTrue(IRIO.rubyEquals(rioA, rioC));
     }
 }
