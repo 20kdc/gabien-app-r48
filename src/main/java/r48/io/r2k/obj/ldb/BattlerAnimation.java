@@ -51,11 +51,6 @@ public class BattlerAnimation extends R2kObject {
         return rio;
     }
 
-    @Override
-    public void fromRIO(RubyIO src) {
-        fromRIOISF(src);
-    }
-
     // ... #unintentionalJokeOfTheDay
     public static class BAE extends R2kObject {
         public StringR2kStruct name = new StringR2kStruct();
@@ -80,11 +75,6 @@ public class BattlerAnimation extends R2kObject {
             RubyIO rio = new RubyIO().setSymlike("RPG::BattlerAnimation", true);
             asRIOISF(rio);
             return rio;
-        }
-
-        @Override
-        public void fromRIO(RubyIO src) {
-            fromRIOISF(src);
         }
     }
 }

@@ -9,6 +9,7 @@ package r48.io.r2k.struct;
 
 import gabien.ui.ISupplier;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.io.r2k.chunks.ArrayR2kStruct;
 import r48.io.r2k.chunks.IR2kStruct;
 
@@ -43,11 +44,11 @@ public class BPB implements IR2kStruct {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
-        parameters1.fromRIO(src.getInstVarBySymbol("@1to50"));
-        if (src.getInstVarBySymbol("@51to99_2k3") != null) {
+    public void fromRIO(IRIO src) {
+        parameters1.fromRIO(src.getIVar("@1to50"));
+        if (src.getIVar("@51to99_2k3") != null) {
             initP2();
-            parameters2.fromRIO(src.getInstVarBySymbol("@51to99_2k3"));
+            parameters2.fromRIO(src.getIVar("@51to99_2k3"));
         }
     }
 

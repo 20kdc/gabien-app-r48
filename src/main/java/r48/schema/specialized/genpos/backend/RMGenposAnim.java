@@ -66,7 +66,8 @@ public class RMGenposAnim implements IGenposAnim {
                 frames = target.arrVal;
             }
             // Create a frame from scratch to avoid crashing
-            RubyIO copy = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Animation::Frame"), null);
+            RubyIO copy = new RubyIO().setNull();
+            SchemaPath.setDefaultValue(copy, AppMain.schemas.getSDBEntry("RPG::Animation::Frame"), null);
             frameIdx = min - 1;
             insertFrame(copy);
             return copy;

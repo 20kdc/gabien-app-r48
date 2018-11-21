@@ -107,8 +107,4 @@ public class Terrain extends R2kObject {
         return rio;
     }
 
-    @Override
-    public void fromRIO(RubyIO src) {
-        fromRIOISF(src);
-    }
 }

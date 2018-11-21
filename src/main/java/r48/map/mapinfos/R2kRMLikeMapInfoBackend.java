@@ -97,13 +97,15 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         long l = getMapOfOrder(targetOrder);
         if (l == -1)
             l = 0;
-        RubyIO mi = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
-        mi.getInstVarBySymbol("@parent_id").fixnumVal = l;
 
         RubyIO[] resArray = new RubyIO[mapTreeOrders.arrVal.length + 1];
         System.arraycopy(mapTreeOrders.arrVal, 0, resArray, 0, mapTreeOrders.arrVal.length);
         resArray[resArray.length - 1] = new RubyIO().setFX(k);
-        mapTreeHash.hashVal.put(new RubyIO().setFX(k), mi);
+
+        RubyIO mi = mapTreeHash.addHashVal(new RubyIO().setFX(k));
+        SchemaPath.setDefaultValue(mi, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
+        mi.getInstVarBySymbol("@parent_id").fixnumVal = l;
+
         mapTreeOrders.arrVal = resArray;
         return resArray.length - 1;
     }

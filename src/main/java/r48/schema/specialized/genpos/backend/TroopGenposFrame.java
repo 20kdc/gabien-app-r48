@@ -12,7 +12,6 @@ import gabien.IImage;
 import gabien.ui.IFunction;
 import gabien.ui.Rect;
 import r48.AppMain;
-import r48.ArrayUtils;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.imagefx.HueShiftImageEffect;
@@ -82,8 +81,8 @@ public class TroopGenposFrame implements IGenposFrame {
 
     @Override
     public void addCell(int i2) {
-        RubyIO rio = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(i2));
-        ArrayUtils.insertRioElement(troop.getInstVarBySymbol("@members"), rio, i2 + 1);
+        RubyIO rio = troop.getInstVarBySymbol("@members").addAElem(i2 + 1);
+        SchemaPath.setDefaultValue(rio, AppMain.schemas.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(i2 + 1));
         changed.run();
     }
 

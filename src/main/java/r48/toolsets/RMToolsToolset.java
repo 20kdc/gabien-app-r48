@@ -165,11 +165,11 @@ public class RMToolsToolset implements IToolset {
                                             RubyIO rio = AppMain.objectDB.getObject(s);
                                             SchemaElement se = AppMain.schemas.getSDBEntry(objectSchemas.removeFirst());
                                             if (rio != null) {
-                                                int count = BasicToolset.universalStringLocator(rio, new IFunction<RubyIO, Integer>() {
+                                                int count = BasicToolset.universalStringLocator(rio, new IFunction<IRIO, Integer>() {
                                                     @Override
-                                                    public Integer apply(RubyIO rubyIO) {
+                                                    public Integer apply(IRIO rubyIO) {
                                                         if (rubyIO.decString().equals(find)) {
-                                                            rubyIO.encString(repl, false);
+                                                            rubyIO.setString(repl);
                                                             return 1;
                                                         }
                                                         return 0;

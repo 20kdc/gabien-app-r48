@@ -8,6 +8,7 @@
 package r48.io.r2k.chunks;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,12 +44,12 @@ public class DeferredProxyR2kStruct implements IR2kStruct {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         if (data != null)
             throw new RuntimeException("Data already exported.");
         if (inner == null)
             throw new RuntimeException("Data already exported.");
-        data = src;
+        data = new RubyIO().setDeepClone(src);
     }
 
     @Override

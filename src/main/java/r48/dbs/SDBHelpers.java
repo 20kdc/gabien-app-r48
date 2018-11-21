@@ -12,6 +12,7 @@ import gabien.IImage;
 import gabien.ui.IFunction;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.*;
 import r48.schema.displays.HWNDSchemaElement;
 import r48.schema.integers.LowerBoundIntegerSchemaElement;
@@ -189,9 +190,9 @@ class SDBHelpers {
         });
         return new MagicalBindingSchemaElement(new IMagicalBinder() {
             @Override
-            public RubyIO targetToBoundNCache(RubyIO target) {
+            public RubyIO targetToBoundNCache(IRIO target) {
                 // Split PPP address into components
-                long t = target.fixnumVal;
+                long t = target.getFX();
                 long type = 0;
                 if (t >= 10000) {
                     t -= 10000;
@@ -210,25 +211,29 @@ class SDBHelpers {
             }
 
             @Override
-            public boolean applyBoundToTarget(RubyIO bound, RubyIO target) {
+            public boolean applyBoundToTarget(IRIO bound, IRIO target) {
                 // Stitch it back together
-                long type = bound.arrVal[0].fixnumVal;
-                long t = bound.arrVal[1].fixnumVal;
+                long type = bound.getAElem(0).getFX();
+                long t = bound.getAElem(1).getFX();
                 if (type == 2) {
                     t += 50000;
                 } else if (type == 1) {
                     t += 10000;
                 }
-                if (target.fixnumVal != t) {
-                    target.fixnumVal = t;
+                if (target.getFX() != t) {
+                    target.setFX(t);
                     return true;
                 }
                 return false;
             }
 
             @Override
-            public boolean modifyVal(RubyIO trueTarget, boolean setDefault) {
-                return SchemaElement.ensureType(trueTarget, 'i', setDefault);
+            public boolean modifyVal(IRIO trueTarget, boolean setDefault) {
+                if ((trueTarget.getType() != 'i') || setDefault) {
+                    trueTarget.setFX(0);
+                    return true;
+                }
+                return false;
             }
         }, inner);
     }
@@ -244,9 +249,9 @@ class SDBHelpers {
         );
         return new MagicalBindingSchemaElement(new IMagicalBinder() {
             @Override
-            public RubyIO targetToBoundNCache(RubyIO target) {
+            public RubyIO targetToBoundNCache(IRIO target) {
                 // Split PPP address into components
-                long t = target.fixnumVal;
+                long t = target.getFX();
                 long type = 0;
                 if (t >= 10000) {
                     t -= 10000;
@@ -261,22 +266,26 @@ class SDBHelpers {
             }
 
             @Override
-            public boolean applyBoundToTarget(RubyIO bound, RubyIO target) {
+            public boolean applyBoundToTarget(IRIO bound, IRIO target) {
                 // Stitch it back together
-                long type = bound.arrVal[0].fixnumVal;
-                long t = bound.arrVal[1].fixnumVal;
+                long type = bound.getAElem(0).getFX();
+                long t = bound.getAElem(1).getFX();
                 if (type != 0)
                     t += 10000;
-                if (target.fixnumVal != t) {
-                    target.fixnumVal = t;
+                if (target.getFX() != t) {
+                    target.setFX(t);
                     return true;
                 }
                 return false;
             }
 
             @Override
-            public boolean modifyVal(RubyIO trueTarget, boolean setDefault) {
-                return SchemaElement.ensureType(trueTarget, 'i', setDefault);
+            public boolean modifyVal(IRIO trueTarget, boolean setDefault) {
+                if ((trueTarget.getType() != 'i') || setDefault) {
+                    trueTarget.setFX(0);
+                    return true;
+                }
+                return false;
             }
         }, inner);
     }

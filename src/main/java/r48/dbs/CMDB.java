@@ -86,12 +86,12 @@ public class CMDB {
                         }
 
                         @Override
-                        public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                        public boolean correctElement(RubyIO array, int commandIndex, RubyIO command) {
                             return false;
                         }
 
                         @Override
-                        public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(RubyIO arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
                             return false;
                         }
                     };
@@ -108,7 +108,7 @@ public class CMDB {
                         }
 
                         @Override
-                        public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                        public boolean correctElement(RubyIO array, int commandIndex, RubyIO command) {
                             RubyIO res = command.getInstVarBySymbol("@parameters").arrVal[1];
                             long id = command.getInstVarBySymbol("@indent").fixnumVal;
                             long nIdx = 0;
@@ -117,7 +117,7 @@ public class CMDB {
                                 nIdx = 4;
                             } else {
                                 for (int i = commandIndex - 1; i >= 0; i--) {
-                                    RubyIO cmd = array.get(i);
+                                    RubyIO cmd = array.getAElem(i);
                                     if (cmd.getInstVarBySymbol("@indent").fixnumVal == id) {
                                         long code = cmd.getInstVarBySymbol("@code").fixnumVal;
                                         if (code == 10140) {
@@ -138,7 +138,7 @@ public class CMDB {
                         }
 
                         @Override
-                        public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(RubyIO arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
                             return false;
                         }
                     };
@@ -162,12 +162,12 @@ public class CMDB {
                         }
 
                         @Override
-                        public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                        public boolean correctElement(RubyIO array, int commandIndex, RubyIO command) {
                             return false;
                         }
 
                         @Override
-                        public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(RubyIO arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
                             // Form correction
                             RubyIO rio = commandTarg.getInstVarBySymbol("@indent");
                             long topIndent = 0;
@@ -176,8 +176,8 @@ public class CMDB {
 
                             int indexOfLastValid = i;
 
-                            for (int j = i + 1; j < arr.size(); j++) {
-                                RubyIO riox = arr.get(j);
+                            for (int j = i + 1; j < arr.getALen(); j++) {
+                                RubyIO riox = arr.getAElem(j);
                                 RubyIO rioy = riox.getInstVarBySymbol("@indent");
                                 long subIndent = 0;
                                 if (rioy != null)
@@ -206,9 +206,9 @@ public class CMDB {
                                 }
                             }
                             // Didn't find 'top', insert at best-guess
-                            RubyIO cap = SchemaPath.createDefaultValue(baseElement, null);
+                            RubyIO cap = arr.addAElem(indexOfLastValid + 1);
+                            SchemaPath.setDefaultValue(cap, baseElement, null);
                             cap.getInstVarBySymbol("@code").fixnumVal = lastId;
-                            arr.add(indexOfLastValid + 1, cap);
                             return true;
                         }
                     };
@@ -229,12 +229,12 @@ public class CMDB {
                         }
 
                         @Override
-                        public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                        public boolean correctElement(RubyIO array, int commandIndex, RubyIO command) {
                             return false;
                         }
 
                         @Override
-                        public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(RubyIO arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
                             RubyIO rio = commandTarg.getInstVarBySymbol("@indent");
                             long topIndent = 0;
                             if (rio != null)
@@ -245,8 +245,8 @@ public class CMDB {
                             } else {
                                 i--;
                             }
-                            while ((i >= 0) && (i < arr.size())) {
-                                RubyIO riox = arr.get(i);
+                            while ((i >= 0) && (i < arr.getALen())) {
+                                RubyIO riox = arr.getAElem(i);
                                 RubyIO rioy = riox.getInstVarBySymbol("@indent");
                                 long subIndent = 0;
                                 if (rioy != null)
@@ -268,7 +268,7 @@ public class CMDB {
                                 }
                             }
                             // Ran out!
-                            arr.remove(oi);
+                            arr.rmAElem(oi);
                             return true;
                         }
                     };
@@ -304,14 +304,14 @@ public class CMDB {
                         }
 
                         @Override
-                        public boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command) {
+                        public boolean correctElement(RubyIO array, int commandIndex, RubyIO command) {
                             if (!checkCondition(command))
                                 return false;
                             return igb.correctElement(array, commandIndex, command);
                         }
 
                         @Override
-                        public boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(RubyIO arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
                             if (!checkCondition(commandTarg))
                                 return false;
                             return igb.majorCorrectElement(arr, i, commandTarg, baseElement);

@@ -9,13 +9,13 @@ package r48.schema.specialized;
 
 import gabien.ui.ISupplier;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.io.r2k.chunks.IR2kStruct;
 import r48.io.r2k.chunks.SparseArrayAR2kStruct;
 import r48.io.r2k.chunks.SparseArrayHR2kStruct;
 import r48.io.r2k.obj.ldb.AnimationFrame;
 import r48.io.r2k.obj.ldb.BAD;
 import r48.io.r2k.obj.ldb.Troop;
-import r48.schema.SchemaElement;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -76,10 +76,10 @@ public class LcfMagicalBinder implements IMagicalBinder {
     }
 
     @Override
-    public RubyIO targetToBoundNCache(RubyIO target) {
+    public RubyIO targetToBoundNCache(IRIO target) {
         IR2kStruct s = inner.get();
         try {
-            s.importData(new ByteArrayInputStream(target.userVal));
+            s.importData(new ByteArrayInputStream(target.getBuffer()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -87,20 +87,23 @@ public class LcfMagicalBinder implements IMagicalBinder {
     }
 
     @Override
-    public boolean applyBoundToTarget(RubyIO bound, RubyIO target) {
+    public boolean applyBoundToTarget(IRIO bound, IRIO target) {
         IR2kStruct s = inner.get();
         s.fromRIO(bound);
         byte[] tba = getStructBytes(s);
         // Try to ensure target is a blob.
-        if (SchemaElement.ensureType(target, 'u', false)) {
-            target.setSymlike(className, false);
-        } else if (!target.symVal.equals(className)) {
-            target.setSymlike(className, false);
+        boolean setDefault = target.getType() != 'u';
+        if (!setDefault)
+            setDefault = !target.getSymbol().equals(className);
+        if (setDefault) {
+            target.setUser(className, tba);
+            return true;
         } else {
-            if (target.userVal.length == tba.length) {
+            byte[] tb = target.getBuffer();
+            if (tb.length == tba.length) {
                 boolean same = true;
                 for (int i = 0; i < tba.length; i++) {
-                    if (tba[i] != target.userVal[i]) {
+                    if (tba[i] != tb[i]) {
                         same = false;
                         break;
                     }
@@ -109,7 +112,7 @@ public class LcfMagicalBinder implements IMagicalBinder {
                     return false;
             }
         }
-        target.userVal = tba;
+        target.putBuffer(tba);
         return true;
     }
 
@@ -124,18 +127,14 @@ public class LcfMagicalBinder implements IMagicalBinder {
     }
 
     @Override
-    public boolean modifyVal(RubyIO trueTarget, boolean setDefault) {
-        boolean mod = SchemaElement.ensureType(trueTarget, 'u', setDefault);
-        if (!mod) {
-            // Unmodified - now we know it *was* 'u', check class
-            mod = !trueTarget.symVal.equals(className);
-        }
+    public boolean modifyVal(IRIO trueTarget, boolean setDefault) {
+        boolean mod = setDefault || (trueTarget.getType() != 'u');
+        // It's 'u', but check class
+        if (!mod)
+            mod = !trueTarget.getSymbol().equals(className);
         if (mod) {
-            trueTarget.setSymlike(className, false);
-            trueTarget.symVal = className;
-            // This sets up a valid but bad structure,
-            // which then gets properly filled in by the setDefault'd schema.
-            trueTarget.userVal = getStructBytes(inner.get());
+            // This sets up the structure.
+            trueTarget.setUser(className, getStructBytes(inner.get()));
         }
         return mod;
     }

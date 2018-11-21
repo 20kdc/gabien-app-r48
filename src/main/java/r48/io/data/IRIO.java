@@ -44,10 +44,12 @@ public abstract class IRIO {
         }
     }
 
-    // This should always be in UTF-8 encoding.
-    public abstract IRIO setFloat(String s);
+    // This is weird...
+    public abstract IRIO setFloat(byte[] s);
 
     public abstract IRIO setHash();
+
+    public abstract IRIO setHashWithDef();
 
     public abstract IRIO setArray();
 
@@ -92,7 +94,7 @@ public abstract class IRIO {
     // '"', 'f', 'u', 'l'
     public abstract byte[] getBuffer();
 
-    public abstract void setBuffer(byte[] data);
+    public abstract void putBuffer(byte[] data);
 
     // '['
     public abstract int getALen();
@@ -113,6 +115,7 @@ public abstract class IRIO {
 
     public abstract void removeHashVal(IRIO key);
 
+    // '}' only
     public abstract IRIO getHashDefVal();
 
     public IRIO setDeepClone(IRIO clone) {
@@ -128,7 +131,7 @@ public abstract class IRIO {
         } else if (type == '"') {
             setString(clone.getBuffer(), clone.getBufferEnc());
         } else if (type == 'f') {
-            setFloat(clone.decString());
+            setFloat(clone.getBuffer());
         } else if (type == 'o') {
             setObject(clone.getSymbol());
         } else if (type == ':') {
@@ -154,7 +157,8 @@ public abstract class IRIO {
             if (type == '{') {
                 setHash();
             } else {
-                throw new UnsupportedOperationException("Cannot");
+                setHashWithDef();
+                getHashDefVal().setDeepClone(clone.getHashDefVal());
             }
             for (IRIO key : clone.getHashKeys()) {
                 IRIO v = addHashVal(key);

@@ -9,6 +9,7 @@ package r48.io.r2k.struct;
 
 import gabien.ui.ISupplier;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
 import r48.io.r2k.chunks.SparseArrayHR2kStruct;
@@ -85,18 +86,18 @@ public class MapTree implements IR2kStruct {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
-        RubyIO mapInfoHash = src.getInstVarBySymbol("@map_infos");
-        RubyIO mapOrderArray = src.getInstVarBySymbol("@map_order");
+    public void fromRIO(IRIO src) {
+        IRIO mapInfoHash = src.getIVar("@map_infos");
+        IRIO mapOrderArray = src.getIVar("@map_order");
 
         mapInfos.fromRIO(mapInfoHash);
 
-        mapOrder = new int[mapOrderArray.arrVal.length];
+        mapOrder = new int[mapOrderArray.getALen()];
         for (int i = 0; i < mapOrder.length; i++)
-            mapOrder[i] = (int) mapOrderArray.arrVal[i].fixnumVal;
+            mapOrder[i] = (int) mapOrderArray.getAElem(i).getFX();
 
-        activeNode = (int) src.getInstVarBySymbol("@active_node").fixnumVal;
+        activeNode = (int) src.getIVar("@active_node").getFX();
         start = new MapTreeStart();
-        start.fromRIO(src.getInstVarBySymbol("@start"));
+        start.fromRIO(src.getIVar("@start"));
     }
 }

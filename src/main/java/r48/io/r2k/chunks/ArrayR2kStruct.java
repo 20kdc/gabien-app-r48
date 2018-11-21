@@ -9,6 +9,7 @@ package r48.io.r2k.chunks;
 
 import gabien.ui.ISupplier;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * Created on 01/06/17.
@@ -38,11 +39,12 @@ public class ArrayR2kStruct<T extends IR2kStruct> extends ArrayR2kInterpretable<
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         array.clear();
-        for (RubyIO rio : src.arrVal) {
+        int alen = src.getALen();
+        for (int i = 0; i < alen; i++) {
             T x = cons.get();
-            x.fromRIO(rio);
+            x.fromRIO(src.getAElem(i));
             array.add(x);
         }
     }

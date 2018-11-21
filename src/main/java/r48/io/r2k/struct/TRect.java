@@ -8,6 +8,7 @@
 package r48.io.r2k.struct;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
 
@@ -50,10 +51,10 @@ public class TRect implements IR2kStruct {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
-        l = (int) src.getInstVarBySymbol("@left").fixnumVal;
-        u = (int) src.getInstVarBySymbol("@up").fixnumVal;
-        r = (int) src.getInstVarBySymbol("@right").fixnumVal;
-        d = (int) src.getInstVarBySymbol("@down").fixnumVal;
+    public void fromRIO(IRIO src) {
+        l = (int) src.getIVar("@left").getFX();
+        u = (int) src.getIVar("@up").getFX();
+        r = (int) src.getIVar("@right").getFX();
+        d = (int) src.getIVar("@down").getFX();
     }
 }

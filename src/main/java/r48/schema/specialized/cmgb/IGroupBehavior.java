@@ -10,8 +10,6 @@ package r48.schema.specialized.cmgb;
 import r48.RubyIO;
 import r48.schema.SchemaElement;
 
-import java.util.LinkedList;
-
 /**
  * Used in RPGCommand arrays. Tagged onto potential first elements of a group.
  * Created on 6/28/17.
@@ -26,9 +24,9 @@ public interface IGroupBehavior {
 
     // Note that this returning true indicates if modifications occurred.
     // This can add/remove elements on the array.
-    boolean correctElement(LinkedList<RubyIO> array, int commandIndex, RubyIO command);
+    boolean correctElement(RubyIO array, int commandIndex, RubyIO command);
 
     // This second pass is used by certain group-behaviors that *really, really* need accurate indent information to not cause damage.
     // Specifically consider this for behaviors which add/remove commands.
-    boolean majorCorrectElement(LinkedList<RubyIO> arr, int i, RubyIO commandTarg, SchemaElement baseElement);
+    boolean majorCorrectElement(RubyIO arr, int i, RubyIO commandTarg, SchemaElement baseElement);
 }

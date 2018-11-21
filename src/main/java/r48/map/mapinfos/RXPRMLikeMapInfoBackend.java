@@ -110,14 +110,14 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
 
     @Override
     public int createNewMap(long k) {
-        RubyIO mi = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
+        RubyIO mi = mapInfos.addHashVal(new RubyIO().setFX(k));
+        SchemaPath.setDefaultValue(mi, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
         int targetOrder = getLastOrder();
         long l = getMapOfOrder(targetOrder);
         if (l == -1)
             l = 0;
         mi.getInstVarBySymbol("@parent_id").fixnumVal = l;
         mi.getInstVarBySymbol("@order").fixnumVal = targetOrder + 1;
-        mapInfos.hashVal.put(new RubyIO().setFX(k), mi);
         return targetOrder;
     }
 

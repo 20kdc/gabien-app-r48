@@ -95,7 +95,7 @@ public class AppMain {
     // All active schema hosts
     private static LinkedList<ISchemaHost> activeHosts;
     // All magical bindings in use
-    public static WeakHashMap<RubyIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache;
+    public static WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache;
 
     // Image cache
     public static ImageFXCache imageFXCache = null;
@@ -108,7 +108,7 @@ public class AppMain {
         // initialize core resources
 
         schemas = new SDB();
-        magicalBindingCache = new WeakHashMap<RubyIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>>();
+        magicalBindingCache = new WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>>();
 
         schemas.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
 

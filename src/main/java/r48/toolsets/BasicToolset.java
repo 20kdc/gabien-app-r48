@@ -27,7 +27,6 @@ import java.io.*;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * Provides some basic tools for changing the configuration of R48 and doing various bits and pieces.
@@ -100,7 +99,9 @@ public class BasicToolset implements IToolset {
                                 AppMain.window.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
-                                        AppMain.launchSchema(s, SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry(s), new RubyIO().setFX(0)), null);
+                                        RubyIO rio = new RubyIO().setNull();
+                                        SchemaPath.setDefaultValue(rio, AppMain.schemas.getSDBEntry(s), new RubyIO().setFX(0));
+                                        AppMain.launchSchema(s, rio, null);
                                     }
                                 }));
                             }
@@ -199,9 +200,9 @@ public class BasicToolset implements IToolset {
                                     for (String s : AppMain.getAllObjects()) {
                                         RubyIO obj = AppMain.objectDB.getObject(s, null);
                                         if (obj != null) {
-                                            universalStringLocator(obj, new IFunction<RubyIO, Integer>() {
+                                            universalStringLocator(obj, new IFunction<IRIO, Integer>() {
                                                 @Override
-                                                public Integer apply(RubyIO rubyIO) {
+                                                public Integer apply(IRIO rubyIO) {
                                                     text.add(rubyIO.decString());
                                                     return 1;
                                                 }
@@ -374,23 +375,25 @@ public class BasicToolset implements IToolset {
         };
     }
 
-    public static int universalStringLocator(RubyIO rio, IFunction<RubyIO, Integer> string, boolean writing) {
+    public static int universalStringLocator(IRIO rio, IFunction<IRIO, Integer> string, boolean writing) {
         // NOTE: Hash keys, ivar keys are not up for modification.
         int total = 0;
-        if (rio.type == '"')
+        int type = rio.getType();
+        if (type == '"')
             total += string.apply(rio);
-        if ((rio.type == '{') || (rio.type == '}'))
-            for (Map.Entry<IRIO, RubyIO> me : rio.hashVal.entrySet())
-                total += universalStringLocator(me.getValue(), string, writing);
-        if (rio.type == '[')
-            for (RubyIO me : rio.arrVal)
-                total += universalStringLocator(me, string, writing);
-        if (rio.iVarVals != null)
-            for (RubyIO val : rio.iVarVals)
-                total += universalStringLocator(val, string, writing);
+        if ((type == '{') || (type == '}'))
+            for (IRIO me : rio.getHashKeys())
+                total += universalStringLocator(rio.getHashVal(me), string, writing);
+        if (type == '[') {
+            int arrLen = rio.getALen();
+            for (int i = 0; i < arrLen; i++)
+                total += universalStringLocator(rio.getAElem(i), string, writing);
+        }
+        for (String k : rio.getIVars())
+            total += universalStringLocator(rio.getIVar(k), string, writing);
         IMagicalBinder b = MagicalBinders.getBinderFor(rio);
         if (b != null) {
-            RubyIO bound = MagicalBinders.toBoundWithCache(b, rio);
+            IRIO bound = MagicalBinders.toBoundWithCache(b, rio);
             int c = universalStringLocator(bound, string, writing);
             total += c;
             if (writing)

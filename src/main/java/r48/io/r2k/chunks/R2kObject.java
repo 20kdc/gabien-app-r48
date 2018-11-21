@@ -8,6 +8,7 @@
 package r48.io.r2k.chunks;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.R2kUtil;
 
@@ -129,10 +130,15 @@ public abstract class R2kObject implements IR2kStruct {
         R2kUtil.unkToRio(mt, unknownChunks);
     }
 
-    protected void fromRIOISF(RubyIO mt) {
+    @Override
+    public void fromRIO(IRIO src) {
+        fromRIOISF(src);
+    }
+
+    protected void fromRIOISF(IRIO mt) {
         for (Index i : getIndices())
             if (i.rioHelperName != null)
-                ((IR2kStruct) i.chunk).fromRIO(mt.getInstVarBySymbol(i.rioHelperName));
+                ((IR2kStruct) i.chunk).fromRIO(mt.getIVar(i.rioHelperName));
         R2kUtil.rioToUnk(mt, unknownChunks);
     }
 }

@@ -8,6 +8,7 @@
 package r48.io.r2k.chunks;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * Created on 02/06/17.
@@ -34,11 +35,11 @@ public class BitfieldR2kStruct extends ByteR2kStruct {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         int pwr = 1;
         value = 0;
         for (String s : flags) {
-            if (src.getInstVarBySymbol(s).type == 'T')
+            if (src.getIVar(s).getType() == 'T')
                 value |= pwr;
             pwr <<= 1;
         }

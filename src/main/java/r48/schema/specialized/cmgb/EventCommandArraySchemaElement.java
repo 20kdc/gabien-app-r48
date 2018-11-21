@@ -8,7 +8,6 @@
 package r48.schema.specialized.cmgb;
 
 import gabien.ui.*;
-import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
@@ -23,9 +22,6 @@ import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.arrays.StandardArrayInterface;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-
-import java.util.Collections;
-import java.util.LinkedList;
 
 /**
  * ArraySchemaElement + some eventcommand specific stuff to automatically correct issues.
@@ -70,9 +66,6 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         if (debugInfloop)
             System.out.println("---");
 
-        LinkedList<RubyIO> arr = new LinkedList<RubyIO>();
-        Collections.addAll(arr, array.arrVal);
-
         boolean modified = false;
 
         // NOTE: This method is deliberately awkward to allow for the concurrent modification...
@@ -86,8 +79,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
 
         // Note that this array can grow as it's being searched.
         boolean hasValidListLeave = database.listLeaveCmd == -1;
-        for (int i = 0; i < arr.size(); i++) {
-            RubyIO commandTarg = arr.get(i);
+        for (int i = 0; i < array.getALen(); i++) {
+            RubyIO commandTarg = array.getAElem(i);
             int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
             RPGCommand rc = database.knownCommands.get(code);
             if (rc != null) {
@@ -106,16 +99,17 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 indent += rc.indentPost.apply(commandTarg.getInstVarBySymbol("@parameters"));
                 // Group Behavior
                 for (IGroupBehavior groupBehavior : rc.groupBehaviors)
-                    modified |= groupBehavior.correctElement(arr, i, commandTarg);
+                    modified |= groupBehavior.correctElement(array, i, commandTarg);
 
                 if (rc.needsBlockLeavePre) {
                     if (!lastWasBlockLeave) {
                         if (rc.blockLeaveReplacement != lastCode) {
-                            RubyIO c = SchemaPath.createDefaultValue(baseElement, new RubyIO().setFX(0));
+                            RubyIO c = array.addAElem(i);
+                            SchemaPath.setDefaultValue(c, baseElement, new RubyIO().setFX(i));
                             c.getInstVarBySymbol("@code").fixnumVal = database.blockLeaveCmd;
                             if (baseElement.allowControlOfIndent)
                                 c.getInstVarBySymbol("@indent").fixnumVal = indentOld;
-                            arr.add(i, c);
+
                             // About to re-handle the same code.
                             indent = indentOld;
                             lastWasBlockLeave = true;
@@ -127,15 +121,15 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                     }
                 } else {
                     if (lastWasBlockLeave && lastWasStrictLeave) {
-                        arr.remove(i - 1);
+                        array.rmAElem(i - 1);
                         i--;
                         modified = true;
                     }
                 }
                 if (rc.typeListLeave) {
-                    if (i != arr.size() - 1) {
+                    if (i != array.getALen() - 1) {
                         if (rc.typeStrictLeave) {
-                            arr.remove(i);
+                            array.rmAElem(i);
                             i--;
                             modified = true;
                             continue;
@@ -156,13 +150,13 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         // This second pass is used by certain group-behaviors that *really, really* need accurate indent information to not cause damage.
         // Specifically consider this for behaviors which add/remove commands.
         boolean continueToBreak = false;
-        for (int i = 0; i < arr.size(); i++) {
-            RubyIO commandTarg = arr.get(i);
+        for (int i = 0; i < array.getALen(); i++) {
+            RubyIO commandTarg = array.getAElem(i);
             int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
             RPGCommand rc = database.knownCommands.get(code);
             if (rc != null) {
                 for (IGroupBehavior groupBehavior : rc.groupBehaviors) {
-                    if (groupBehavior.majorCorrectElement(arr, i, commandTarg, baseElement)) {
+                    if (groupBehavior.majorCorrectElement(array, i, commandTarg, baseElement)) {
                         // System.err.println(code);
                         modified = true;
                         continueToBreak = true;
@@ -178,15 +172,14 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         if (!continueToBreak) {
             if (!hasValidListLeave) {
                 // 0 so that the code won't combust from lacking an array
-                RubyIO c = SchemaPath.createDefaultValue(baseElement, new RubyIO().setFX(arr.size()));
+                int l = array.getALen();
+                RubyIO c = array.addAElem(l);
+                SchemaPath.setDefaultValue(c, baseElement, new RubyIO().setFX(array.getALen()));
                 c.getInstVarBySymbol("@code").fixnumVal = database.listLeaveCmd;
-                arr.add(c);
                 modified = true;
             }
         }
 
-        if (modified)
-            array.arrVal = arr.toArray(new RubyIO[0]);
         return modified;
     }
 
@@ -253,9 +246,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                             RPGCommand rc = database.knownCommands.get(code);
                             if (rc != null)
                                 for (IGroupBehavior groupBehavior : rc.groupBehaviors) {
-                                    RubyIO ne = SchemaPath.createDefaultValue(baseElement, null);
+                                    RubyIO ne = target.addAElem(start + length);
+                                    SchemaPath.setDefaultValue(ne, baseElement, null);
                                     ne.getInstVarBySymbol("@code").fixnumVal = groupBehavior.getAdditionCode();
-                                    ArrayUtils.insertRioElement(target, ne, start + length);
                                     path.changeOccurred(false);
                                 }
                         }
@@ -336,9 +329,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             @Override
             public void accept(int[] i) {
                 for (int j = 0; j < i.length; j++) {
-                    RubyIO ne = SchemaPath.createDefaultValue(baseElement, null);
+                    RubyIO ne = target.addAElem(idx + j + 1);
+                    SchemaPath.setDefaultValue(ne, baseElement, null);
                     ne.getInstVarBySymbol("@code").fixnumVal = i[j];
-                    ArrayUtils.insertRioElement(target, ne, idx + j + 1);
                 }
                 sp.changeOccurred(false);
             }

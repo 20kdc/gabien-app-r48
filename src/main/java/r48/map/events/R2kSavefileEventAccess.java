@@ -150,8 +150,9 @@ public class R2kSavefileEventAccess implements IEventAccess {
         return null;
     }
 
-    public static RubyIO eventAsSaveEvent(long mapId, IRIO key, RubyIO event) {
-        RubyIO rio = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::SaveMapEvent"), key);
+    public static void eventAsSaveEvent(RubyIO rMap, long mapId, IRIO key, RubyIO event) {
+        RubyIO rio = rMap.addHashVal(key);
+        SchemaPath.setDefaultValue(rio, AppMain.schemas.getSDBEntry("RPG::SaveMapEvent"), key);
         rio.getInstVarBySymbol("@map").setFX(mapId);
         rio.getInstVarBySymbol("@x").setDeepClone(event.getInstVarBySymbol("@x"));
         rio.getInstVarBySymbol("@y").setDeepClone(event.getInstVarBySymbol("@y"));
@@ -175,7 +176,6 @@ public class R2kSavefileEventAccess implements IEventAccess {
             rio.getInstVarBySymbol("@block_other_events").setDeepClone(eventPage.getInstVarBySymbol("@block_other_events"));
             // with any luck the moveroute issue will solve itself. with luck.
         }
-        return rio;
     }
 
     @Override
@@ -224,7 +224,7 @@ public class R2kSavefileEventAccess implements IEventAccess {
                             AppMain.launchDialog(TXDB.get("So, you saw the ghost, got the Map's properties window via System Tools (or you left it up) to delete the event, then came back and pressed Sync? Or has the software just completely broken?!?!?"));
                             return;
                         }
-                        getSaveEvents().hashVal.put(evK, eventAsSaveEvent(getMapId(), evK, ev));
+                        eventAsSaveEvent(getSaveEvents(), getMapId(), evK, ev);
                         pokeHive();
                     }
                 }

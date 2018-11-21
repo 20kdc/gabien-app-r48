@@ -9,6 +9,7 @@ package r48.io.r2k.chunks;
 
 import gabien.ui.ISupplier;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 import java.util.Map;
 
@@ -40,17 +41,16 @@ public class SparseArrayAR2kStruct<T extends IR2kStruct> extends SparseArrayR2kI
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         map.clear();
-        int i = 0;
-        for (RubyIO rio : src.arrVal) {
+        int alen = src.getALen();
+        for (int i = 0; i < alen; i++) {
             // Nulls are used for padding here, don't include them
-            if (rio.type != '0') {
+            if (src.getType() != '0') {
                 T n = constructor.get();
-                n.fromRIO(rio);
+                n.fromRIO(src);
                 map.put(i, n);
             }
-            i++;
         }
     }
 }

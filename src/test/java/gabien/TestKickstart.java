@@ -7,11 +7,43 @@
 
 package gabien;
 
+import gabien.ui.IConsumer;
+import r48.AppMain;
+import r48.RubyIO;
+import r48.dbs.ObjectDB;
+import r48.dbs.SDB;
+import r48.io.IObjectBackend;
+
+import java.io.IOException;
+
 /**
  * Created on November 19, 2018.
  */
 public class TestKickstart {
     public static void kickstart() {
         GaBIEn.internal = new GaBIEnImpl(false);
+        IObjectBackend.Factory.encoding = "UTF-8";
+        // Reset schemas and objectDB
+        AppMain.objectDB = new ObjectDB(new IObjectBackend() {
+            @Override
+            public RubyIO loadObjectFromFile(String filename) {
+                return null;
+            }
+
+            @Override
+            public void saveObjectToFile(String filename, RubyIO object) throws IOException {
+                throw new IOException("Cannot save object in test framework.");
+            }
+
+            @Override
+            public String userspaceBindersPrefix() {
+                return null;
+            }
+        }, new IConsumer<String>() {
+            @Override
+            public void accept(String s) {
+            }
+        });
+        AppMain.schemas = new SDB();
     }
 }

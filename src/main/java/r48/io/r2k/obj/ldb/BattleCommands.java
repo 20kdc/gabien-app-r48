@@ -63,11 +63,6 @@ public class BattleCommands extends R2kObject {
         return rio;
     }
 
-    @Override
-    public void fromRIO(RubyIO src) {
-        fromRIOISF(src);
-    }
-
     public static class BattleCommand extends R2kObject {
         public StringR2kStruct name = new StringR2kStruct();
         public IntegerR2kStruct type = new IntegerR2kStruct(0);
@@ -85,11 +80,6 @@ public class BattleCommands extends R2kObject {
             RubyIO rio = new RubyIO().setSymlike("RPG::BattleCommand", true);
             asRIOISF(rio);
             return rio;
-        }
-
-        @Override
-        public void fromRIO(RubyIO src) {
-            fromRIOISF(src);
         }
     }
 }

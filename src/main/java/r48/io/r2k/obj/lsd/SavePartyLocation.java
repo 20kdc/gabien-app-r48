@@ -66,9 +66,4 @@ public class SavePartyLocation extends SaveCharacter {
         asRIOISF(root);
         return root;
     }
-
-    @Override
-    public void fromRIO(RubyIO src) {
-        fromRIOISF(src);
-    }
 }

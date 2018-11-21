@@ -9,6 +9,7 @@ package r48.io.r2k.struct;
 
 import r48.RubyIO;
 import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
 
@@ -97,28 +98,28 @@ public class EventCommand implements IR2kStruct {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
-        code = (int) src.getInstVarBySymbol("@code").fixnumVal;
-        indent = (int) src.getInstVarBySymbol("@indent").fixnumVal;
-        RubyIO[] params = src.getInstVarBySymbol("@parameters").arrVal;
+    public void fromRIO(IRIO src) {
+        code = (int) src.getIVar("@code").getFX();
+        indent = (int) src.getIVar("@indent").getFX();
+        IRIO params = src.getIVar("@parameters");
         // Just in case.
-        if (params[0].type != '"')
+        if (params.getAElem(0).getType() != '"')
             throw new RuntimeException("CORRUPTION! First parameter must be string. " + code + " " + indent);
-        text = params[0].strVal;
-        parameters = new int[params.length - 1];
-        for (int i = 1; i < params.length; i++) {
-            if (params[i].type != 'i')
+        text = params.getAElem(0).getBuffer();
+        parameters = new int[params.getALen() - 1];
+        for (int i = 0; i < parameters.length; i++) {
+            if (params.getAElem(i + 1).getType() != 'i')
                 throw new RuntimeException("CORRUPTION! Non-first parameter must be int. " + code + " " + indent);
-            parameters[i - 1] = (int) params[i].fixnumVal;
+            parameters[i - 1] = (int) params.getAElem(i + 1).getFX();
         }
         if (code == 11330) {
             moveCommands = new MoveCommand[0];
-            RubyIO n = src.getInstVarBySymbol("@move_commands");
+            IRIO n = src.getIVar("@move_commands");
             if (n != null) {
-                moveCommands = new MoveCommand[n.arrVal.length];
+                moveCommands = new MoveCommand[n.getALen()];
                 for (int i = 0; i < moveCommands.length; i++) {
                     moveCommands[i] = new MoveCommand();
-                    moveCommands[i].fromRIO(n.arrVal[i]);
+                    moveCommands[i].fromRIO(n.getAElem(i));
                 }
             }
         } else {

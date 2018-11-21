@@ -33,9 +33,4 @@ public class Encounter extends R2kObject {
         asRIOISF(mt);
         return mt;
     }
-
-    @Override
-    public void fromRIO(RubyIO src) {
-        fromRIOISF(src);
-    }
 }

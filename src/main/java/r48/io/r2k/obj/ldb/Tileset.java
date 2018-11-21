@@ -10,6 +10,7 @@ package r48.io.r2k.obj.ldb;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.io.data.IRIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.*;
@@ -69,6 +70,7 @@ public class Tileset extends R2kObject {
 
         // 162 = 144 (selective) + 18 (AT Field????)
         RubyTable rt = new RubyTable(3, 162, 1, 1, new int[] {0});
+        // This relies on RubyTable layout to skip some relayout
         System.arraycopy(terrainTbl.dat, 0, rt.innerBytes, 20, terrainTbl.dat.length);
         mt.addIVar("@terrain_id_data", new RubyIO().setUser("Table", rt.innerBytes));
 
@@ -78,13 +80,14 @@ public class Tileset extends R2kObject {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         fromRIOISF(src);
-        RubyIO c = src.getInstVarBySymbol("@terrain_id_data");
+        IRIO c = src.getIVar("@terrain_id_data");
         terrainTbl.dat = new byte[324];
-        System.arraycopy(c.userVal, 20, terrainTbl.dat, 0, terrainTbl.dat.length);
-        lowPassTbl.dat = bitfieldTableRV(src.getInstVarBySymbol("@lowpass_data"));
-        highPassTbl.dat = bitfieldTableRV(src.getInstVarBySymbol("@highpass_data"));
+        // This relies on RubyTable layout to skip some relayout
+        System.arraycopy(c.getBuffer(), 20, terrainTbl.dat, 0, terrainTbl.dat.length);
+        lowPassTbl.dat = bitfieldTableRV(src.getIVar("@lowpass_data"));
+        highPassTbl.dat = bitfieldTableRV(src.getIVar("@highpass_data"));
     }
 
     private RubyIO bitfieldTable(byte[] dat) {
@@ -94,8 +97,8 @@ public class Tileset extends R2kObject {
         return new RubyIO().setUser("Table", rt.innerBytes);
     }
 
-    private byte[] bitfieldTableRV(RubyIO src) {
-        RubyTable rt = new RubyTable(src.userVal);
+    private byte[] bitfieldTableRV(IRIO src) {
+        RubyTable rt = new RubyTable(src.getBuffer());
         byte[] r = new byte[rt.width];
         for (int i = 0; i < r.length; i++)
             r[i] = (byte) rt.getTiletype(i, 0, 0);

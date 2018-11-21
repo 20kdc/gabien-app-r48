@@ -31,12 +31,12 @@ public class SparseArrayHR2kStruct<T extends IR2kStruct> extends SparseArrayR2kI
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         map.clear();
-        for (Map.Entry<IRIO, RubyIO> e : src.hashVal.entrySet()) {
+        for (IRIO e : src.getHashKeys()) {
             T n = constructor.get();
-            n.fromRIO(e.getValue());
-            map.put((int) e.getKey().getFX(), n);
+            n.fromRIO(src.getHashVal(e));
+            map.put((int) e.getFX(), n);
         }
     }
 }

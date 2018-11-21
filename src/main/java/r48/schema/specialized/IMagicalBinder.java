@@ -8,16 +8,17 @@
 package r48.schema.specialized;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * Created on 29/07/17.
  */
 public interface IMagicalBinder {
-    RubyIO targetToBoundNCache(RubyIO target);
+    RubyIO targetToBoundNCache(IRIO target);
 
     // Returns true on change.
-    boolean applyBoundToTarget(RubyIO bound, RubyIO target);
+    boolean applyBoundToTarget(IRIO bound, IRIO target);
 
     // Returns true on change.
-    boolean modifyVal(RubyIO trueTarget, boolean setDefault);
+    boolean modifyVal(IRIO trueTarget, boolean setDefault);
 }

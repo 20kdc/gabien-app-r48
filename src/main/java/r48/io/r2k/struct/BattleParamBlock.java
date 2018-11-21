@@ -8,6 +8,7 @@
 package r48.io.r2k.struct;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
 
@@ -33,9 +34,9 @@ public class BattleParamBlock implements IR2kStruct {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         for (int i = 0; i < 6; i++)
-            array[i] = (short) src.arrVal[i].fixnumVal;
+            array[i] = (short) src.getAElem(i).getFX();
     }
 
     @Override

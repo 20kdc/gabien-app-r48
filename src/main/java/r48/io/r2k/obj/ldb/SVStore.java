@@ -8,6 +8,7 @@
 package r48.io.r2k.obj.ldb;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.chunks.R2kObject;
 import r48.io.r2k.chunks.StringR2kStruct;
@@ -33,7 +34,7 @@ public class SVStore extends R2kObject {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         name.fromRIO(src);
         fromRIOISF(src);
     }

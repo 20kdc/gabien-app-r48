@@ -80,11 +80,6 @@ public class Interpreter extends R2kObject {
         return rio;
     }
 
-    @Override
-    public void fromRIO(RubyIO src) {
-        fromRIOISF(src);
-    }
-
     private class InterpreterStackLevel extends R2kObject {
         public ArraySizeR2kInterpretable<EventCommand> listSize = new ArraySizeR2kInterpretable<EventCommand>();
         public ArrayR2kStruct<EventCommand> list = new ArrayR2kStruct<EventCommand>(listSize, new ISupplier<EventCommand>() {
@@ -122,11 +117,6 @@ public class Interpreter extends R2kObject {
             RubyIO rio = new RubyIO().setSymlike("RPG::InterpreterStackLevel", true);
             asRIOISF(rio);
             return rio;
-        }
-
-        @Override
-        public void fromRIO(RubyIO src) {
-            fromRIOISF(src);
         }
     }
 }

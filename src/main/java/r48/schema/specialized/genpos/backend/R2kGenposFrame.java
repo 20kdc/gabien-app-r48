@@ -13,7 +13,6 @@ import gabien.ui.IFunction;
 import gabien.ui.ISupplier;
 import gabien.ui.Rect;
 import r48.AppMain;
-import r48.ArrayUtils;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.schema.BooleanSchemaElement;
@@ -60,8 +59,8 @@ public class R2kGenposFrame implements IGenposFrame {
 
     @Override
     public void addCell(int i2) {
-        RubyIO rio = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry("RPG::Animation::Cell"), new RubyIO().setFX(i2));
-        ArrayUtils.insertRioElement(frameSource.get().getInstVarBySymbol("@cells"), rio, i2);
+        RubyIO rio = frameSource.get().getInstVarBySymbol("@cells").addAElem(i2);
+        SchemaPath.setDefaultValue(rio, AppMain.schemas.getSDBEntry("RPG::Animation::Cell"), new RubyIO().setFX(i2));
         updateNotify.run();
     }
 

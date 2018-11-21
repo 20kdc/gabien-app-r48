@@ -71,8 +71,4 @@ public class EventPageCondition extends R2kObject {
         return b;
     }
 
-    @Override
-    public void fromRIO(RubyIO src) {
-        fromRIOISF(src);
-    }
 }

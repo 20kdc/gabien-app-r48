@@ -16,6 +16,7 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
@@ -201,24 +202,24 @@ public class RGSSGenposFrame implements IGenposFrame {
         // oh, this'll be *hilarious*. NOT.
         SchemaElement se = new MagicalBindingSchemaElement(new IMagicalBinder() {
             @Override
-            public RubyIO targetToBoundNCache(RubyIO target) {
-                short val = new RubyTable(target.userVal).getTiletype(ct, i, 0);
+            public RubyIO targetToBoundNCache(IRIO target) {
+                short val = new RubyTable(target.getBuffer()).getTiletype(ct, i, 0);
                 return new RubyIO().setFX(val);
             }
 
             @Override
-            public boolean applyBoundToTarget(RubyIO bound, RubyIO target) {
-                short s = new RubyTable(target.userVal).getTiletype(ct, i, 0);
-                short s2 = (short) bound.fixnumVal;
+            public boolean applyBoundToTarget(IRIO bound, IRIO target) {
+                short s = new RubyTable(target.getBuffer()).getTiletype(ct, i, 0);
+                short s2 = (short) bound.getFX();
                 if (s != s2) {
-                    new RubyTable(target.userVal).setTiletype(ct, i, 0, s2);
+                    new RubyTable(target.getBuffer()).setTiletype(ct, i, 0, s2);
                     return true;
                 }
                 return false;
             }
 
             @Override
-            public boolean modifyVal(RubyIO trueTarget, boolean setDefault) {
+            public boolean modifyVal(IRIO trueTarget, boolean setDefault) {
                 // NOTE: THIS SHOULD NEVER HAVE TO OCCUR.
                 // This never gets synthesized.
                 if (setDefault)

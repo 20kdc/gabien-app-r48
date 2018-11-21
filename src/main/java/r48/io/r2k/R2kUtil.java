@@ -162,11 +162,11 @@ public class R2kUtil {
         map.addIVar("@__LCF__unknown", hash);
     }
 
-    public static void rioToUnk(RubyIO mt, HashMap<Integer, byte[]> unknownChunks) {
-        mt = mt.getInstVarBySymbol("@__LCF__unknown");
+    public static void rioToUnk(IRIO mt, HashMap<Integer, byte[]> unknownChunks) {
+        mt = mt.getIVar("@__LCF__unknown");
         if (mt != null)
-            for (Map.Entry<IRIO, RubyIO> e : mt.hashVal.entrySet())
-                unknownChunks.put((int) e.getKey().getFX(), e.getValue().userVal);
+            for (IRIO k : mt.getHashKeys())
+                unknownChunks.put((int) k.getFX(), mt.getHashVal(k).getBuffer());
     }
 
     public static ISupplier<byte[]> supplyBlank(final int i, final byte i1) {

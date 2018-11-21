@@ -37,15 +37,15 @@ public class ArraySetR2kStruct<T extends IR2kStruct> extends ArrayR2kInterpretab
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         int maxIdx = -1;
-        for (IRIO rio : src.hashVal.keySet())
+        for (IRIO rio : src.getHashKeys())
             if (rio.getFX() > maxIdx)
                 maxIdx = (int) rio.getFX();
         array.clear();
         for (int i = 0; i < maxIdx; i++) {
             T v = cons.get();
-            RubyIO potential = src.getHashVal(new RubyIO().setFX(i));
+            IRIO potential = src.getHashVal(new RubyIO().setFX(i));
             if (potential != null)
                 v.fromRIO(potential);
             array.add(v);

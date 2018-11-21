@@ -74,11 +74,6 @@ public class Save extends R2kObject {
                     asRIOISF(root);
                     return root;
                 }
-
-                @Override
-                public void fromRIO(RubyIO src) {
-                    fromRIOISF(src);
-                }
             };
         }
     });
@@ -110,11 +105,6 @@ public class Save extends R2kObject {
         RubyIO root = new RubyIO().setSymlike("RPG::Save", true);
         asRIOISF(root);
         return root;
-    }
-
-    @Override
-    public void fromRIO(RubyIO src) {
-        fromRIOISF(src);
     }
 
     @Override

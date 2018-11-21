@@ -83,10 +83,13 @@ public class TraditionalEventAccess implements IEventAccess {
     @Override
     public RubyIO addEvent(RubyIO eve, int type) {
         RubyIO key = getFreeIndex();
-        if (eve == null)
-            eve = SchemaPath.createDefaultValue(AppMain.schemas.getSDBEntry(eventSchema), key);
         RubyIO mapEvents = getMapEvents();
-        mapEvents.hashVal.put(key, eve);
+        RubyIO eveTarget = mapEvents.addHashVal(key);
+        if (eve == null) {
+            SchemaPath.setDefaultValue(eveTarget, AppMain.schemas.getSDBEntry(eventSchema), key);
+        } else {
+            eveTarget.setDeepClone(eve);
+        }
         pokeHive();
         return key;
     }

@@ -38,9 +38,4 @@ public class SaveTarget extends R2kObject {
         asRIOISF(rio);
         return rio;
     }
-
-    @Override
-    public void fromRIO(RubyIO src) {
-        fromRIOISF(src);
-    }
 }

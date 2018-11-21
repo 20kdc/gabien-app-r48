@@ -8,6 +8,7 @@
 package r48.io.r2k.chunks;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * My goodness, the format is madness.
@@ -21,5 +22,5 @@ import r48.RubyIO;
 public interface IR2kStruct extends IR2kInterpretable {
     RubyIO asRIO();
 
-    void fromRIO(RubyIO src);
+    void fromRIO(IRIO src);
 }

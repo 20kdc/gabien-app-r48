@@ -10,6 +10,7 @@ package r48.io.r2k.obj;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.io.data.IRIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.*;
@@ -89,16 +90,16 @@ public class MapUnit extends R2kObject {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         fromRIOISF(src);
-        decLmuData(src.getInstVarBySymbol("@data"));
+        decLmuData(src.getIVar("@data"));
     }
 
-    private void decLmuData(RubyIO instVarBySymbol) {
+    private void decLmuData(IRIO instVarBySymbol) {
         // Assuming all consistency is fine, width/height are fine too
         layer0.dat = new byte[width.i * height.i * 2];
         layer1.dat = new byte[width.i * height.i * 2];
-        byte[] innerBytes = instVarBySymbol.userVal;
+        byte[] innerBytes = instVarBySymbol.getBuffer();
         System.arraycopy(innerBytes, 20, layer0.dat, 0, layer0.dat.length);
         System.arraycopy(innerBytes, 20 + (width.i * height.i * 2), layer1.dat, 0, layer1.dat.length);
     }

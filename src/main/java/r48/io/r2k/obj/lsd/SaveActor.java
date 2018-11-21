@@ -113,9 +113,4 @@ public class SaveActor extends R2kObject {
         asRIOISF(root);
         return root;
     }
-
-    @Override
-    public void fromRIO(RubyIO src) {
-        fromRIOISF(src);
-    }
 }

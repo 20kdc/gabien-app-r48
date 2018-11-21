@@ -8,6 +8,7 @@
 package r48.io.r2k.chunks;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 import java.io.*;
 
@@ -31,7 +32,7 @@ public class DoubleR2kStruct implements IR2kStruct {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         v = Double.valueOf(src.decString());
     }
 

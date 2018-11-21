@@ -9,6 +9,7 @@ package r48.io.r2k.obj.ldb;
 
 import gabien.ui.ISupplier;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.*;
@@ -62,11 +63,6 @@ public class Troop extends R2kObject {
         return rio;
     }
 
-    @Override
-    public void fromRIO(RubyIO src) {
-        fromRIOISF(src);
-    }
-
     public static class TroopMember extends R2kObject {
         public IntegerR2kStruct enemyId = new IntegerR2kStruct(1);
         public IntegerR2kStruct x = new IntegerR2kStruct(0);
@@ -89,11 +85,6 @@ public class Troop extends R2kObject {
             asRIOISF(rio);
             return rio;
         }
-
-        @Override
-        public void fromRIO(RubyIO src) {
-            fromRIOISF(src);
-        }
     }
 
     public static class TroopPage extends R2kObject {
@@ -111,11 +102,6 @@ public class Troop extends R2kObject {
             RubyIO rio = new RubyIO().setSymlike("RPG::Troop::Page", true);
             asRIOISF(rio);
             return rio;
-        }
-
-        @Override
-        public void fromRIO(RubyIO src) {
-            fromRIOISF(src);
         }
 
         @Override
@@ -179,9 +165,9 @@ public class Troop extends R2kObject {
         }
 
         @Override
-        public void fromRIO(RubyIO src) {
-            flagsA.fromRIO(src.getInstVarBySymbol("@flags_a"));
-            flagsB.fromRIO(src.getInstVarBySymbol("@flags_b_2k3"));
+        public void fromRIO(IRIO src) {
+            flagsA.fromRIO(src.getIVar("@flags_a"));
+            flagsB.fromRIO(src.getIVar("@flags_b_2k3"));
             fromRIOISF(src);
         }
 

@@ -9,6 +9,7 @@ package r48.io.r2k.obj.lsd;
 
 import gabien.ui.ISupplier;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.chunks.*;
 
@@ -105,21 +106,21 @@ public class SaveParty extends R2kObject {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         fromRIOISF(src);
         // inventory
-        RubyIO inv = src.getInstVarBySymbol("@inventory");
-        inventorySize.i = inv.arrVal.length;
+        IRIO inv = src.getIVar("@inventory");
+        inventorySize.i = inv.getALen();
         inventoryIds.array.clear();
         inventoryCounts.array.clear();
         inventoryUsage.array.clear();
-        for (int i = 0; i < inv.arrVal.length; i++) {
+        for (int i = 0; i < inventorySize.i; i++) {
             ShortR2kStruct id = new ShortR2kStruct(0);
             ByteR2kStruct count = new ByteR2kStruct(0);
             ByteR2kStruct usage = new ByteR2kStruct(0);
-            id.fromRIO(inv.arrVal[i].getInstVarBySymbol("@id"));
-            count.fromRIO(inv.arrVal[i].getInstVarBySymbol("@count"));
-            usage.fromRIO(inv.arrVal[i].getInstVarBySymbol("@usage"));
+            id.fromRIO(inv.getAElem(i).getIVar("@id"));
+            count.fromRIO(inv.getAElem(i).getIVar("@count"));
+            usage.fromRIO(inv.getAElem(i).getIVar("@usage"));
             inventoryIds.array.add(id);
             inventoryCounts.array.add(count);
             inventoryUsage.array.add(usage);

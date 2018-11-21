@@ -9,6 +9,7 @@ package r48.io.r2k.struct;
 
 import r48.RubyIO;
 import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
 
@@ -76,14 +77,14 @@ public class MoveCommand implements IR2kStruct {
         return r;
     }
 
-    public void fromRIO(RubyIO rubyIO) {
-        code = (int) rubyIO.getInstVarBySymbol("@code").fixnumVal;
+    public void fromRIO(IRIO rubyIO) {
+        code = (int) rubyIO.getIVar("@code").getFX();
 
-        RubyIO[] p = rubyIO.getInstVarBySymbol("@parameters").arrVal;
-        text = p[0].strVal;
-        a = (int) p[1].fixnumVal;
-        b = (int) p[2].fixnumVal;
-        c = (int) p[3].fixnumVal;
+        IRIO ir = rubyIO.getIVar("@parameters");
+        text = ir.getAElem(0).getBuffer();
+        a = (int) ir.getAElem(1).getFX();
+        b = (int) ir.getAElem(2).getFX();
+        c = (int) ir.getAElem(3).getFX();
     }
 
     @Override

@@ -193,11 +193,6 @@ public class LdbSystem extends R2kObject {
         return rio;
     }
 
-    @Override
-    public void fromRIO(RubyIO src) {
-        fromRIOISF(src);
-    }
-
     public static class TestBattler extends R2kObject {
         public IntegerR2kStruct actor = new IntegerR2kStruct(1);
         public IntegerR2kStruct level = new IntegerR2kStruct(1);
@@ -225,11 +220,6 @@ public class LdbSystem extends R2kObject {
             RubyIO rio = new RubyIO().setSymlike("RPG::System::TestBattler", true);
             asRIOISF(rio);
             return rio;
-        }
-
-        @Override
-        public void fromRIO(RubyIO src) {
-            fromRIOISF(src);
         }
     }
 }

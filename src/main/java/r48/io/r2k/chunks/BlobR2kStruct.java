@@ -9,6 +9,7 @@ package r48.io.r2k.chunks;
 
 import gabien.ui.ISupplier;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
@@ -37,8 +38,8 @@ public class BlobR2kStruct implements IR2kStruct {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
-        dat = src.userVal;
+    public void fromRIO(IRIO src) {
+        dat = src.getBuffer();
     }
 
     @Override

@@ -10,6 +10,7 @@ package r48.io.r2k.obj.lsd;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.io.data.IRIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.chunks.*;
 
@@ -83,10 +84,10 @@ public class SaveMapInfo extends R2kObject {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         fromRIOISF(src);
-        lowerTileRemap.dat = bFromTable(src.getInstVarBySymbol("@lower_tile_remap"));
-        upperTileRemap.dat = bFromTable(src.getInstVarBySymbol("@upper_tile_remap"));
+        lowerTileRemap.dat = bFromTable(src.getIVar("@lower_tile_remap"));
+        upperTileRemap.dat = bFromTable(src.getIVar("@upper_tile_remap"));
     }
 
     private RubyIO bToTable(byte[] dat) {
@@ -96,8 +97,8 @@ public class SaveMapInfo extends R2kObject {
         return new RubyIO().setUser("Table", rt.innerBytes);
     }
 
-    private byte[] bFromTable(RubyIO instVarBySymbol) {
-        RubyTable rt = new RubyTable(instVarBySymbol.userVal);
+    private byte[] bFromTable(IRIO instVarBySymbol) {
+        RubyTable rt = new RubyTable(instVarBySymbol.getBuffer());
         byte[] data = new byte[rt.width];
         for (int i = 0; i < data.length; i++)
             data[i] = (byte) rt.getTiletype(i, 0, 0);

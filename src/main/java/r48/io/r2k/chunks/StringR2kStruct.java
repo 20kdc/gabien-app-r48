@@ -9,6 +9,7 @@ package r48.io.r2k.chunks;
 
 import r48.RubyIO;
 import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
 import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class StringR2kStruct implements IR2kStruct {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
+    public void fromRIO(IRIO src) {
         // This is probably going to last until DataModel2 has taken over a significant part of the code.
         if (!IObjectBackend.Factory.encoding.equals(src.getBufferEnc())) {
             try {
@@ -42,7 +43,7 @@ public class StringR2kStruct implements IR2kStruct {
                 throw new RuntimeException(e);
             }
         } else {
-            data = src.strVal;
+            data = src.getBuffer();
         }
     }
 

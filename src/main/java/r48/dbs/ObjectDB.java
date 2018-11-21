@@ -67,7 +67,8 @@ public class ObjectDB {
                 }
                 SchemaElement ise = AppMain.schemas.getSDBEntry(backupSchema);
                 if (ise != null) {
-                    rio = SchemaPath.createDefaultValue(ise, null);
+                    rio = new RubyIO().setNull();
+                    SchemaPath.setDefaultValue(rio, ise, null);
                     modifiedObjects.add(rio);
                     newlyCreatedObjects.add(rio);
                 } else {

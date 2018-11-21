@@ -83,10 +83,8 @@ public class SchemaPath {
             hrIndex = "AnonObject";
     }
 
-    public static RubyIO createDefaultValue(SchemaElement ise, IRIO arrayIndex) {
-        RubyIO rio = new RubyIO();
-        ise.modifyVal(rio, new SchemaPath(rio, arrayIndex), true);
-        return rio;
+    public static void setDefaultValue(RubyIO target, SchemaElement ise, IRIO arrayIndex) {
+        ise.modifyVal(target, new SchemaPath(target, arrayIndex), true);
     }
 
     public String toString() {

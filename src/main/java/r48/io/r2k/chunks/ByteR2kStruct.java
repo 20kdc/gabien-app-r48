@@ -8,6 +8,7 @@
 package r48.io.r2k.chunks;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
@@ -38,8 +39,8 @@ public class ByteR2kStruct implements IR2kStruct {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
-        value = (byte) (src.fixnumVal);
+    public void fromRIO(IRIO src) {
+        value = (byte) (src.getFX());
     }
 
     @Override

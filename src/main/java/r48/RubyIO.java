@@ -121,9 +121,10 @@ public class RubyIO extends IRIO {
     }
 
     @Override
-    public IRIO setFloat(String s) {
-        setString(s, true);
+    public IRIO setFloat(byte[] s) {
+        setNull();
         type = 'f';
+        strVal = s;
         return this;
     }
 
@@ -148,6 +149,15 @@ public class RubyIO extends IRIO {
         setNull();
         type = '{';
         hashVal = new HashMap<IRIO, RubyIO>();
+        return this;
+    }
+
+    @Override
+    public IRIO setHashWithDef() {
+        setNull();
+        type = '}';
+        hashVal = new HashMap<IRIO, RubyIO>();
+        hashDefVal = new RubyIO().setNull();
         return this;
     }
 
@@ -300,14 +310,14 @@ public class RubyIO extends IRIO {
     // IRIO compat.
 
     @Override
-    public IRIO addIVar(String sym) {
+    public RubyIO addIVar(String sym) {
         RubyIO rio = new RubyIO().setNull();
         addIVar(sym, rio);
         return rio;
     }
 
     @Override
-    public IRIO getIVar(String sym) {
+    public RubyIO getIVar(String sym) {
         return getInstVarBySymbol(sym);
     }
 
@@ -336,7 +346,7 @@ public class RubyIO extends IRIO {
     }
 
     @Override
-    public void setBuffer(byte[] data) {
+    public void putBuffer(byte[] data) {
         userVal = data;
     }
 
@@ -346,12 +356,12 @@ public class RubyIO extends IRIO {
     }
 
     @Override
-    public IRIO getAElem(int i) {
+    public RubyIO getAElem(int i) {
         return arrVal[i];
     }
 
     @Override
-    public IRIO addAElem(int i) {
+    public RubyIO addAElem(int i) {
         RubyIO rio = new RubyIO().setNull();
         RubyIO[] old = arrVal;
         RubyIO[] newArr = new RubyIO[old.length + 1];
@@ -377,7 +387,7 @@ public class RubyIO extends IRIO {
     }
 
     @Override
-    public IRIO addHashVal(IRIO key) {
+    public RubyIO addHashVal(IRIO key) {
         removeHashVal(key);
         RubyIO rt = new RubyIO().setNull();
         hashVal.put(new RubyIO().setDeepClone(key), rt);

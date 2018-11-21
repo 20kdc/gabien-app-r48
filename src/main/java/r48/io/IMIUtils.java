@@ -9,7 +9,6 @@ package r48.io;
 
 import gabien.GaBIEn;
 import gabien.ui.IConsumer;
-import r48.ArrayUtils;
 import r48.RubyIO;
 import r48.io.data.IRIO;
 
@@ -39,7 +38,7 @@ import java.util.Map;
  *           The reason it's done this way is because IMI's pretending to be human-readable.
  * ![char] : Reset current object, then change type *by character-byte*.
  *          (fields are given as appropriate:
- *           i: Semicolon-terminated number which ends object, implemented by the T ending object
+ *           i: Semicolon-terminated number which ends object immediately
  *           ": Byte array (with no starting '"'!)
  *           ':' / 'o': byte array with starting " for sym - syms are encoded in UTF-8.
  *           l: Binary byte array w/ starting " in the slightly-odd format used internally by R48, that removes the length field
@@ -262,31 +261,28 @@ public class IMIUtils {
     private static boolean patchIVs(DataOutputStream dos, RubyIO source, RubyIO target, String indent) throws IOException {
         boolean important = false;
         boolean oughtToNL = false;
-        if (source.iVarKeys != null) {
-            for (int i = 0; i < source.iVarKeys.length; i++) {
-                String name = source.iVarKeys[i];
-                RubyIO present = source.iVarVals[i];
-                RubyIO other = target.getInstVarBySymbol(name);
-                if (other != null) {
-                    byte[] d = createIMIData(present, other, incrementIndent(indent));
-                    if (d != null) {
-                        important = true;
-                        if (oughtToNL) {
-                            dos.writeByte('\n');
-                            oughtToNL = false;
-                        }
-                        dos.writeBytes(indent + "=\"");
-                        writeIMIStringBody(dos, name.getBytes("UTF-8"), false);
-                        dos.write(d);
-                    }
-                } else {
-                    if (oughtToNL)
-                        dos.writeByte('\n');
-                    dos.writeBytes(indent + "-=");
-                    writeIMIStringBody(dos, name.getBytes("UTF-8"), false);
-                    oughtToNL = true;
+        for (String name : source.getIVars()) {
+            RubyIO present = source.getInstVarBySymbol(name);
+            RubyIO other = target.getInstVarBySymbol(name);
+            if (other != null) {
+                byte[] d = createIMIData(present, other, incrementIndent(indent));
+                if (d != null) {
                     important = true;
+                    if (oughtToNL) {
+                        dos.writeByte('\n');
+                        oughtToNL = false;
+                    }
+                    dos.writeBytes(indent + "=\"");
+                    writeIMIStringBody(dos, name.getBytes("UTF-8"), false);
+                    dos.write(d);
                 }
+            } else {
+                if (oughtToNL)
+                    dos.writeByte('\n');
+                dos.writeBytes(indent + "-=");
+                writeIMIStringBody(dos, name.getBytes("UTF-8"), false);
+                oughtToNL = true;
+                important = true;
             }
         }
         // ignore oughtToNL for this
@@ -577,108 +573,108 @@ public class IMIUtils {
         }
     }
 
-    private static void runIMISegment(InputStream inp, RubyIO obj) throws IOException {
+    private static void runIMISegment(InputStream inp, IRIO obj) throws IOException {
         while (true) {
             int cmd = inp.read();
             if (cmd == -1)
                 throw new IOException("Early termination in IMI segment.");
             long tmp1 = 0;
-            RubyIO tmp2 = null;
+            IRIO tmp2 = null;
+            byte[] tmp3;
+            int newType;
             switch (cmd) {
                 case '?':
                     tmp1 = readIMINumber(inp, ':');
-                    if (obj.type != tmp1)
-                        throw new IOException("Object was expected to be of type " + obj.type + " - it was " + obj.type);
+                    if (obj.getType() != tmp1)
+                        throw new IOException("Object was expected to be of type " + tmp1 + " - it was " + obj.getType());
                     break;
                 case '!':
                     obj.setNull();
-                    obj.type = inp.read();
-                    if (obj.type == -1)
+                    newType = inp.read();
+                    if (newType == -1)
                         throw new IOException("Early termination?");
                     // inconsistent formatter madness, just roll with it
-                    switch (obj.type) {
+                    switch (newType) {
                             case 'i':
-                                obj.fixnumVal = readIMINumber(inp, ';');
+                                obj.setFX(readIMINumber(inp, ';'));
                                 // yes, do actually return
                                 return;
                             case '0':
                             case 'T':
                             case 'F':
                                 break;
-                            case '{':
-                                runIMISegment(inp, obj.hashDefVal = new RubyIO());
                             case '}':
-                                obj.hashVal = new HashMap<IRIO, RubyIO>();
+                                obj.setHashWithDef();
+                                runIMISegment(inp, obj.getHashDefVal());
+                                break;
+                        case '{':
+                            obj.setHash();
                                 break;
                             case '[':
-                                obj.arrVal = new RubyIO[0];
+                                obj.setArray();
                                 break;
                             case ':':
                                 if (inp.read() != '\"')
                                     throw new IOException("Syntax error, symbol not followed by utf8barray");
-                                obj.symVal = new String(readIMIStringBody(inp), "UTF-8");
+                                obj.setSymbol(new String(readIMIStringBody(inp), "UTF-8"));
                                 break;
                             case 'u':
                                 if (inp.read() != '\"')
                                     throw new IOException("Syntax error, u not followed by utf8barray");
-                                obj.symVal = new String(readIMIStringBody(inp), "UTF-8");
+                                tmp3 = readIMIStringBody(inp);
                                 if (inp.read() != '\"')
                                     throw new IOException("Syntax error, u-sym not followed by utf8barray 2");
-                                obj.userVal = readIMIStringBody(inp);
+                                obj.setUser(new String(tmp3, "UTF-8"), readIMIStringBody(inp));
                                 break;
                             case 'o':
                                 if (inp.read() != '\"')
                                     throw new IOException("Syntax error, o not followed by utf8barray");
-                                obj.symVal = new String(readIMIStringBody(inp), "UTF-8");
+                                obj.setObject(new String(readIMIStringBody(inp), "UTF-8"));
                                 break;
                             case '\"':
-                                obj.strVal = readIMIStringBody(inp);
+                                // Force into default encoding, then change contents
+                                obj.setString("");
+                                obj.putBuffer(readIMIStringBody(inp));
                                 break;
                             case 'f':
                                 if (inp.read() != '\"')
                                     throw new IOException("Syntax error, f not followed by utf8barray");
-                                obj.strVal = readIMIStringBody(inp);
+                                obj.setFloat(readIMIStringBody(inp));
                                 break;
                             case 'l':
                                 if (inp.read() != '\"')
                                     throw new IOException("Syntax error, l not followed by utf8barray");
-                                obj.userVal = readIMIStringBody(inp);
+                                obj.setBignum(readIMIStringBody(inp));
                                 break;
                             default:
-                                throw new IOException("Don't know how to initialize " + obj.type);
+                                throw new IOException("Don't know how to initialize " + newType);
                     }
                     break;
                 case ']':
-                    runIMISegment(inp, obj.arrVal[(int) readIMINumber(inp, ':')]);
+                    runIMISegment(inp, obj.getAElem((int) readIMINumber(inp, ':')));
                     break;
                 case '=':
                     if (inp.read() != '\"') {
                         throw new IOException("Expected quote after -=");
                     } else {
                         String iv = new String(readIMIStringBody(inp), "UTF-8");
-                        tmp2 = obj.getInstVarBySymbol(iv);
-                        if (tmp2 == null) {
-                            tmp2 = new RubyIO();
-                            obj.addIVar(iv, tmp2);
-                        }
+                        tmp2 = obj.getIVar(iv);
+                        if (tmp2 == null)
+                            tmp2 = obj.addIVar(iv);
                         runIMISegment(inp, tmp2);
                     }
                     break;
                 case '>':
                     tmp2 = new RubyIO();
                     runIMISegment(inp, tmp2);
-                    if (obj.type == '[') {
-                        if (tmp2.type != 'i')
+                    if (obj.getType() == '[') {
+                        if (tmp2.getType() != 'i')
                             throw new IOException("Expected integer index for removal from array");
-                        RubyIO newObj = new RubyIO();
-                        runIMISegment(inp, newObj);
-                        ArrayUtils.insertRioElement(obj, newObj, (int) tmp2.fixnumVal);
+                        runIMISegment(inp, obj.addAElem((int) tmp2.getFX()));
                     } else {
-                        RubyIO newObj = obj.getHashVal(tmp2);
-                        if (newObj == null) {
-                            newObj = new RubyIO();
-                            obj.hashVal.put(tmp2, newObj);
-                        }
+                        IRIO newObj = obj.getHashVal(tmp2);
+                        if (newObj == null)
+                            newObj = obj.addHashVal(tmp2);
                         runIMISegment(inp, newObj);
                     }
                     break;
@@ -694,8 +690,8 @@ public class IMIUtils {
                         case '>':
                             tmp2 = new RubyIO();
                             runIMISegment(inp, tmp2);
-                            if (obj.type == '[') {
-                                if (tmp2.type != 'i')
+                            if (obj.getType() == '[') {
+                                if (tmp2.getType() != 'i')
                                     throw new IOException("Expected integer index for removal from array");
                                 obj.rmAElem((int) tmp2.getFX());
                             } else {

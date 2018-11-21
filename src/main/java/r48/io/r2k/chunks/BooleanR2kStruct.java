@@ -8,6 +8,7 @@
 package r48.io.r2k.chunks;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * Created on 02/06/17.
@@ -23,8 +24,8 @@ public class BooleanR2kStruct extends IntegerR2kStruct {
     }
 
     @Override
-    public void fromRIO(RubyIO src) {
-        i = src.type == 'T' ? 1 : 0;
+    public void fromRIO(IRIO src) {
+        i = src.getType() == 'T' ? 1 : 0;
     }
 
 }

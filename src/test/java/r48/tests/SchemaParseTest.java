@@ -11,9 +11,9 @@ import gabien.TestKickstart;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import r48.AppMain;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
-import r48.dbs.SDB;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -56,7 +56,6 @@ public class SchemaParseTest {
     @Test
     public void testParses() {
         TestKickstart.kickstart();
-        SDB sdb = new SDB();
-        sdb.readFile(gamepak + "/Schema.txt");
+        AppMain.schemas.readFile(gamepak + "/Schema.txt");
     }
 }

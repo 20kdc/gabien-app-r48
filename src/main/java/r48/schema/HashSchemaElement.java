@@ -40,7 +40,8 @@ public class HashSchemaElement extends SchemaElement {
         final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
         RubyIO preWorkspace = (RubyIO) launcher.getEmbedObject(this, target, "keyWorkspace");
         if (preWorkspace == null) {
-            preWorkspace = SchemaPath.createDefaultValue(keyElem, null);
+            preWorkspace = new RubyIO().setNull();
+            SchemaPath.setDefaultValue(preWorkspace, keyElem, null);
         } else {
             preWorkspace = new RubyIO().setDeepClone(preWorkspace);
         }

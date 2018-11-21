@@ -945,4 +945,37 @@ public class SDB {
         for (DictionaryUpdaterRunnable dur : dictionaryUpdaterRunnables)
             dur.run();
     }
+
+    private class NameProxySchemaElement extends SchemaElement implements IProxySchemaElement {
+        private final String tx;
+        private boolean useCache;
+        private SchemaElement cache = null;
+
+        public NameProxySchemaElement(String text, boolean useCach) {
+            tx = text;
+            useCache = useCach;
+        }
+
+        @Override
+        public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+            return getEntry().buildHoldingEditor(target, launcher, path);
+        }
+
+        @Override
+        public SchemaElement getEntry() {
+            if (cache != null)
+                return cache;
+            SchemaElement r = schemaTrueDatabase.get(tx);
+            if (r == null)
+                throw new RuntimeException("Schema used " + tx + ", but it didn't exist when invoked.");
+            if (useCache)
+                cache = r;
+            return r;
+        }
+
+        @Override
+        public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+            getEntry().modifyVal(target, path, setDefault);
+        }
+    }
 }

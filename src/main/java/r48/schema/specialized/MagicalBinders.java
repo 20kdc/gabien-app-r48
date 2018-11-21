@@ -9,6 +9,7 @@ package r48.schema.specialized;
 
 import r48.AppMain;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -45,17 +46,17 @@ public class MagicalBinders {
         return null;
     }
 
-    public static IMagicalBinder getBinderFor(RubyIO rio) {
-        if (rio.type == 'u')
+    public static IMagicalBinder getBinderFor(IRIO rio) {
+        if (rio.getType() == 'u')
             if (AppMain.objectDB.binderPrefix != null)
-                if (rio.symVal.startsWith(AppMain.objectDB.binderPrefix)) {
-                    String bp = rio.symVal.substring(AppMain.objectDB.binderPrefix.length());
+                if (rio.getSymbol().startsWith(AppMain.objectDB.binderPrefix)) {
+                    String bp = rio.getSymbol().substring(AppMain.objectDB.binderPrefix.length());
                     return MagicalBinders.getBinderByName(bp);
                 }
         return null;
     }
 
-    public static RubyIO toBoundWithCache(IMagicalBinder binder, RubyIO trueTarget) {
+    public static RubyIO toBoundWithCache(IMagicalBinder binder, IRIO trueTarget) {
         HashMap<IMagicalBinder, WeakReference<RubyIO>> hm = AppMain.magicalBindingCache.get(trueTarget);
         if (hm == null) {
             hm = new HashMap<IMagicalBinder, WeakReference<RubyIO>>();
