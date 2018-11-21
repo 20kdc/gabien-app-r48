@@ -13,6 +13,7 @@ import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.DictionaryUpdaterRunnable;
 import r48.RubyIO;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.*;
 import r48.schema.arrays.*;
@@ -196,7 +197,7 @@ public class SDB {
                             return new HiddenSchemaElement(hide, new IFunction<RubyIO, Boolean>() {
                                 @Override
                                 public Boolean apply(RubyIO rubyIO) {
-                                    return PathSyntax.parse(rubyIO, path).type == (text.endsWith("!") ? 'F' : 'T');
+                                    return PathSyntax.parse(rubyIO, path).getType() == (text.endsWith("!") ? 'F' : 'T');
                                 }
                             });
                         }
@@ -519,7 +520,7 @@ public class SDB {
                                                 // Default val doesn't get carried over since it gets specced here
                                                 buttonText = baseEnum.buttonText;
                                             }
-                                            RubyIO p = PathSyntax.parse(host, outer);
+                                            IRIO p = PathSyntax.parse(host, outer);
                                             if (p != null)
                                                 DictionaryUpdaterRunnable.coreLogic(options, createPathMap(inner), p, hash, interpret);
                                             convertOptions();
@@ -623,10 +624,10 @@ public class SDB {
                 }.get();
             }
 
-            private IFunction<RubyIO, RubyIO> createPathMap(final String inner) {
-                return new IFunction<RubyIO, RubyIO>() {
+            private IFunction<IRIO, IRIO> createPathMap(final String inner) {
+                return new IFunction<IRIO, IRIO>() {
                     @Override
-                    public RubyIO apply(RubyIO rubyIO) {
+                    public IRIO apply(IRIO rubyIO) {
                         return PathSyntax.parse(rubyIO, inner);
                     }
                 };
@@ -737,11 +738,11 @@ public class SDB {
                     System.err.println("'d'-format is old. It'll stay around but won't get updated. Use 'D'-format instead. " + args[0]);
                     // Cause a proxy to be generated. (NOTE: This *must* be referenced via nocache proxy!)
                     AppMain.schemas.ensureSDBProxy(args[0]);
-                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[2], new IFunction<RubyIO, RubyIO>() {
+                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[2], new IFunction<IRIO, IRIO>() {
                         @Override
-                        public RubyIO apply(RubyIO rubyIO) {
+                        public IRIO apply(IRIO rubyIO) {
                             for (int i = 3; i < args.length; i++)
-                                rubyIO = rubyIO.getInstVarBySymbol(args[i]);
+                                rubyIO = rubyIO.getIVar(args[i]);
                             return rubyIO;
                         }
                     }, false, null, Integer.parseInt(args[1]), null));
@@ -846,7 +847,7 @@ public class SDB {
                                 LinkedList<IRIO> parameters = new LinkedList<IRIO>();
                                 if (rubyIO instanceof RubyIO) {
                                     for (String arg : arguments) {
-                                        RubyIO res = PathSyntax.parse((RubyIO) rubyIO, arg);
+                                        IRIO res = PathSyntax.parse(rubyIO, arg);
                                         if (res == null)
                                             break;
                                         parameters.add(res);
@@ -932,7 +933,7 @@ public class SDB {
             merge.run();
     }
 
-    public void updateDictionaries(RubyIO map) {
+    public void updateDictionaries(IObjectBackend.ILoadedObject map) {
         boolean needsMerge = false;
         for (DictionaryUpdaterRunnable dur : dictionaryUpdaterRunnables)
             needsMerge |= dur.actIfRequired(map);

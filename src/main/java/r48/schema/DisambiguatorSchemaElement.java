@@ -11,6 +11,7 @@ import gabien.ui.UIElement;
 import r48.RubyIO;
 import r48.dbs.PathSyntax;
 import r48.dbs.ValueSyntax;
+import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -49,7 +50,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
         return ise.buildHoldingEditor(target, launcher, path);
     }
 
-    private String getDisambigIndex(RubyIO target) {
+    private String getDisambigIndex(IRIO target) {
         target = PathSyntax.parse(target, dIndex);
         if (target == null)
             return "";

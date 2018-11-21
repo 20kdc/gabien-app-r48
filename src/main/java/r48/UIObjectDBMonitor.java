@@ -12,6 +12,7 @@ import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.io.IObjectBackend;
 
 /**
  * Used to make sure nothing's leaking memory.
@@ -33,7 +34,7 @@ public class UIObjectDBMonitor extends UIElement {
         int oy = 0;
         for (String s : UITest.sortedKeysStr(AppMain.objectDB.objectMap.keySet())) {
             String status = TXDB.get(" [disposed]");
-            RubyIO rio = AppMain.objectDB.objectMap.get(s).get();
+            IObjectBackend.ILoadedObject rio = AppMain.objectDB.objectMap.get(s).get();
             if (rio != null) {
                 status = FormatSyntax.formatExtended(TXDB.get(" #[#AML#]"), new RubyIO().setFX(AppMain.objectDB.countModificationListeners(rio)));
                 if (AppMain.objectDB.getObjectNewlyCreated(s)) {

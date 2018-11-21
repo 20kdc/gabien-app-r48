@@ -7,8 +7,8 @@
 
 package r48.io;
 
-import r48.RubyIO;
 import r48.io.cs.CSObjectBackend;
+import r48.io.data.IRIO;
 
 import java.io.IOException;
 
@@ -19,12 +19,20 @@ import java.io.IOException;
  * Created on 1/27/17.
  */
 public interface IObjectBackend {
-    RubyIO loadObjectFromFile(String filename);
+    // Returns null on failure.
+    ILoadedObject loadObject(String filename);
 
-    void saveObjectToFile(String filename, RubyIO object) throws IOException;
+    // Also returns null on failure.
+    ILoadedObject newObject(String filename);
 
     // Does this backend use userspace binders, and if so, what's the usersym prefix? Can be null.
     String userspaceBindersPrefix();
+
+    interface ILoadedObject {
+        IRIO getObject();
+
+        void save() throws IOException;
+    }
 
     abstract class Factory {
         // Null so that things will error if it's unset.

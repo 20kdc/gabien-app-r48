@@ -14,6 +14,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -22,7 +23,7 @@ import r48.ui.UIFieldLayout;
 /**
  * Created on 9 October 2017 from the ashes of IVarSchemaElement
  */
-public class PathSchemaElement extends SchemaElement implements IFieldSchemaElement {
+public class PathSchemaElement extends IRIOAwareSchemaElement implements IFieldSchemaElement {
     public String pStr;
     public String alias;
     public SchemaElement subElem;
@@ -39,11 +40,11 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         UILabel uil = null;
         if (alias != null)
             uil = new UILabel(alias + " ", FontSizes.schemaFieldTextHeight);
-        RubyIO tgo = PathSyntax.parse(target, pStr, 0);
+        IRIO tgo = PathSyntax.parse(target, pStr, 0);
         UIElement e2;
         if (tgo == null) {
             if (!optional)
@@ -51,9 +52,8 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
             e2 = new UITextButton(TXDB.get("<Not present - Add>"), FontSizes.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    RubyIO rio = PathSyntax.parse(target, pStr, 1);
-                    if (rio.type == 0)
-                        createIVar(rio, path, false);
+                    IRIO rio = PathSyntax.parse(target, pStr, 1);
+                    createIVar(rio, path, false);
                 }
             });
         } else {
@@ -89,20 +89,19 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        RubyIO r = PathSyntax.parse(target, pStr, 0);
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+        IRIO r = PathSyntax.parse(target, pStr, 0);
         if (r != null) {
             subElem.modifyVal(r, path.otherIndex(alias), setDefault);
         } else {
             if (!optional) {
-                RubyIO rio = PathSyntax.parse(target, pStr, 1);
-                if (rio.type == 0)
-                    createIVar(rio, path, true);
+                IRIO rio = PathSyntax.parse(target, pStr, 1);
+                createIVar(rio, path, true);
             }
         }
     }
 
-    private void createIVar(RubyIO r, SchemaPath targetPath, boolean mv) {
+    private void createIVar(IRIO r, SchemaPath targetPath, boolean mv) {
         // being created, so create from scratch no matter what.
         subElem.modifyVal(r, targetPath.otherIndex(alias), mv);
         targetPath.changeOccurred(mv);

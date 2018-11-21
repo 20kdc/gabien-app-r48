@@ -7,7 +7,7 @@
 
 package r48.map.mapinfos;
 
-import r48.RubyIO;
+import r48.io.data.IRIO;
 
 import java.util.Set;
 
@@ -21,7 +21,7 @@ public interface IRMLikeMapInfoBackend {
     // Reading primitives
     Set<Long> getHashKeys();
 
-    RubyIO getHashBID(long k);
+    IRIO getHashBID(long k);
 
     int getOrderOfMap(long k);
 

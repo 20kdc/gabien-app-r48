@@ -43,10 +43,10 @@ public class TonePickerSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-        int nr = (int) PathSyntax.parse(target, rP).fixnumVal;
-        int ng = (int) PathSyntax.parse(target, gP).fixnumVal;
-        int nb = (int) PathSyntax.parse(target, bP).fixnumVal;
-        int ns = (int) PathSyntax.parse(target, sP).fixnumVal;
+        int nr = (int) PathSyntax.parse(target, rP).getFX();
+        int ng = (int) PathSyntax.parse(target, gP).getFX();
+        int nb = (int) PathSyntax.parse(target, bP).getFX();
+        int ns = (int) PathSyntax.parse(target, sP).getFX();
         return createTotem(new ToneImageEffect(nr, ng, nb, ns, base));
     }
 

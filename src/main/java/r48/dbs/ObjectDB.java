@@ -9,8 +9,8 @@ package r48.dbs;
 
 import gabien.ui.IConsumer;
 import r48.AppMain;
-import r48.RubyIO;
 import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -35,30 +35,30 @@ public class ObjectDB {
         saveHook = sv;
     }
 
-    public HashMap<String, WeakReference<RubyIO>> objectMap = new HashMap<String, WeakReference<RubyIO>>();
-    public WeakHashMap<RubyIO, String> reverseObjectMap = new WeakHashMap<RubyIO, String>();
+    public HashMap<String, WeakReference<IObjectBackend.ILoadedObject>> objectMap = new HashMap<String, WeakReference<IObjectBackend.ILoadedObject>>();
+    public WeakHashMap<IObjectBackend.ILoadedObject, String> reverseObjectMap = new WeakHashMap<IObjectBackend.ILoadedObject, String>();
     // The values don't actually matter -
     //  this locks the object into memory for as long as it's modified.
-    public HashSet<RubyIO> modifiedObjects = new HashSet<RubyIO>();
-    public HashSet<RubyIO> newlyCreatedObjects = new HashSet<RubyIO>();
-    public WeakHashMap<RubyIO, LinkedList<WeakReference<IConsumer<SchemaPath>>>> objectListenersMap = new WeakHashMap<RubyIO, LinkedList<WeakReference<IConsumer<SchemaPath>>>>();
+    public HashSet<IObjectBackend.ILoadedObject> modifiedObjects = new HashSet<IObjectBackend.ILoadedObject>();
+    public HashSet<IObjectBackend.ILoadedObject> newlyCreatedObjects = new HashSet<IObjectBackend.ILoadedObject>();
+    public WeakHashMap<IRIO, LinkedList<WeakReference<IConsumer<SchemaPath>>>> objectListenersMap = new WeakHashMap<IRIO, LinkedList<WeakReference<IConsumer<SchemaPath>>>>();
     public HashMap<String, LinkedList<WeakReference<IConsumer<SchemaPath>>>> objectRootListenersMap = new HashMap<String, LinkedList<WeakReference<IConsumer<SchemaPath>>>>();
 
     private boolean objectRootModifiedRecursion = false;
 
-    public String getIdByObject(RubyIO obj) {
+    public String getIdByObject(IObjectBackend.ILoadedObject obj) {
         return reverseObjectMap.get(obj);
     }
 
     // NOTE: Preferably call the one-parameter version,
     //  since that tries to create a sensible default.
-    public RubyIO getObject(String id, String backupSchema) {
+    public IObjectBackend.ILoadedObject getObject(String id, String backupSchema) {
         if (objectMap.containsKey(id)) {
-            RubyIO r = objectMap.get(id).get();
+            IObjectBackend.ILoadedObject r = objectMap.get(id).get();
             if (r != null)
                 return r;
         }
-        RubyIO rio = backend.loadObjectFromFile(id);
+        IObjectBackend.ILoadedObject rio = backend.loadObject(id);
         if (rio == null) {
             if (backupSchema != null) {
                 if (!AppMain.schemas.hasSDBEntry(backupSchema)) {
@@ -67,8 +67,11 @@ public class ObjectDB {
                 }
                 SchemaElement ise = AppMain.schemas.getSDBEntry(backupSchema);
                 if (ise != null) {
-                    rio = new RubyIO().setNull();
-                    SchemaPath.setDefaultValue(rio, ise, null);
+                    rio = backend.newObject(id);
+                    if (rio == null)
+                        return null;
+
+                    SchemaPath.setDefaultValue(rio.getObject(), ise, null);
                     modifiedObjects.add(rio);
                     newlyCreatedObjects.add(rio);
                 } else {
@@ -78,18 +81,18 @@ public class ObjectDB {
                 return null;
             }
         }
-        objectMap.put(id, new WeakReference<RubyIO>(rio));
+        objectMap.put(id, new WeakReference<IObjectBackend.ILoadedObject>(rio));
         reverseObjectMap.put(rio, id);
         return rio;
     }
 
-    public RubyIO getObject(String id) {
+    public IObjectBackend.ILoadedObject getObject(String id) {
         return getObject(id, "File." + id);
     }
 
-    public void ensureSaved(String id, RubyIO rio) {
+    public void ensureSaved(String id, IObjectBackend.ILoadedObject rio) {
         if (objectMap.containsKey(id)) {
-            RubyIO rio2 = objectMap.get(id).get();
+            IObjectBackend.ILoadedObject rio2 = objectMap.get(id).get();
             if (rio2 != null) {
                 if (rio2 != rio) {
                     // Overwriting - clean up.
@@ -100,8 +103,8 @@ public class ObjectDB {
             }
         }
         try {
-            backend.saveObjectToFile(id, rio);
-            objectMap.put(id, new WeakReference<RubyIO>(rio));
+            rio.save();
+            objectMap.put(id, new WeakReference<IObjectBackend.ILoadedObject>(rio));
             reverseObjectMap.put(rio, id);
             modifiedObjects.remove(rio);
             newlyCreatedObjects.remove(rio);
@@ -115,26 +118,26 @@ public class ObjectDB {
     }
 
     public boolean getObjectModified(String id) {
-        WeakReference<RubyIO> riow = objectMap.get(id);
+        WeakReference<IObjectBackend.ILoadedObject> riow = objectMap.get(id);
         if (riow == null)
             return false;
-        RubyIO potentiallyModified = riow.get();
+        IObjectBackend.ILoadedObject potentiallyModified = riow.get();
         if (potentiallyModified != null)
             return modifiedObjects.contains(potentiallyModified);
         return false;
     }
 
     public boolean getObjectNewlyCreated(String id) {
-        WeakReference<RubyIO> riow = objectMap.get(id);
+        WeakReference<IObjectBackend.ILoadedObject> riow = objectMap.get(id);
         if (riow == null)
             return false;
-        RubyIO potentiallyModified = riow.get();
+        IObjectBackend.ILoadedObject potentiallyModified = riow.get();
         if (potentiallyModified != null)
             return newlyCreatedObjects.contains(potentiallyModified);
         return false;
     }
 
-    private LinkedList<WeakReference<IConsumer<SchemaPath>>> getOrCreateModificationHandlers(RubyIO p) {
+    private LinkedList<WeakReference<IConsumer<SchemaPath>>> getOrCreateModificationHandlers(IRIO p) {
         LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified = objectListenersMap.get(p);
         if (notifyObjectModified == null) {
             notifyObjectModified = new LinkedList<WeakReference<IConsumer<SchemaPath>>>();
@@ -156,11 +159,11 @@ public class ObjectDB {
     //  because there appears to be a performance issue with these being spammed over and over again. Oops.
     // Also note, these are all weakly referenced.
 
-    public void registerModificationHandler(RubyIO root, IConsumer<SchemaPath> handler) {
+    public void registerModificationHandler(IRIO root, IConsumer<SchemaPath> handler) {
         getOrCreateModificationHandlers(root).add(new WeakReference<IConsumer<SchemaPath>>(handler));
     }
 
-    public void deregisterModificationHandler(RubyIO root, IConsumer<SchemaPath> handler) {
+    public void deregisterModificationHandler(IRIO root, IConsumer<SchemaPath> handler) {
         removeFromGOCMH(getOrCreateModificationHandlers(root), handler);
     }
 
@@ -172,7 +175,7 @@ public class ObjectDB {
         removeFromGOCMH(getOrCreateRootModificationHandlers(root), handler);
     }
 
-    public void objectRootModified(final RubyIO p, final SchemaPath path) {
+    public void objectRootModified(final IObjectBackend.ILoadedObject p, final SchemaPath path) {
         if (objectRootModifiedRecursion) {
             AppMain.pendingRunnables.add(new Runnable() {
                 @Override
@@ -191,7 +194,7 @@ public class ObjectDB {
             modifiedObjects.add(p);
         LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified = objectListenersMap.get(p);
         handleNotificationList(notifyObjectModified, path);
-        String root = getIdByObject(path.findRoot().targetElement);
+        String root = getIdByObject(path.root);
         if (root != null) {
             notifyObjectModified = objectRootListenersMap.get(root);
             handleNotificationList(notifyObjectModified, path);
@@ -212,7 +215,7 @@ public class ObjectDB {
         }
     }
 
-    public int countModificationListeners(RubyIO p) {
+    public int countModificationListeners(IObjectBackend.ILoadedObject p) {
         int n = 0;
         LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified = objectListenersMap.get(p);
         handleNotificationList(notifyObjectModified, null);
@@ -241,7 +244,7 @@ public class ObjectDB {
     }
 
     public void ensureAllSaved() {
-        for (RubyIO rio : new LinkedList<RubyIO>(modifiedObjects)) {
+        for (IObjectBackend.ILoadedObject rio : new LinkedList<IObjectBackend.ILoadedObject>(modifiedObjects)) {
             String id = getIdByObject(rio);
             if (id != null)
                 ensureSaved(id, rio);

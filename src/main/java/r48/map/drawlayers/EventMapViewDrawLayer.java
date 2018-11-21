@@ -8,7 +8,6 @@
 package r48.map.drawlayers;
 
 import r48.AppMain;
-import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.MapViewDrawContext;
@@ -72,7 +71,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
                 continue;
             if (y >= mvdc.camTB)
                 continue;
-            RubyIO evI = eventList.getEvent(evK);
+            IRIO evI = eventList.getEvent(evK);
             if (evI == null)
                 continue;
             int px = (x * mvdc.tileSize) - mvdc.camX;
@@ -83,7 +82,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
             } else {
                 if (iegr.determineEventLayer(evI) != layer)
                     continue;
-                RubyIO g = iegr.extractEventGraphic(evI);
+                IRIO g = iegr.extractEventGraphic(evI);
                 if (g != null)
                     iegr.drawEventGraphic(g, px, py, mvdc.igd, 1);
             }

@@ -24,8 +24,6 @@ import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.specialized.genpos.IGenposTweeningProp;
 import r48.schema.util.SchemaPath;
 
-import java.util.Map;
-
 /**
  * Created on 28/07/17.
  */
@@ -53,20 +51,23 @@ public class TroopGenposFrame implements IGenposFrame {
         troopPath = path;
         changed = change;
         // Immediately try and get needed resources
-        RubyIO database = AppMain.objectDB.getObject("RPG_RT.ldb");
+        IRIO database = AppMain.objectDB.getObject("RPG_RT.ldb").getObject();
         IImageLoader img = AppMain.stuffRendererIndependent.imageLoader;
-        battleBkg = img.getImage("Backdrop/" + database.getInstVarBySymbol("@system").getInstVarBySymbol("@test_battle_background").decString(), true);
+        battleBkg = img.getImage("Backdrop/" + database.getIVar("@system").getIVar("@test_battle_background").decString(), true);
         long max = 0;
-        for (IRIO rio : database.getInstVarBySymbol("@enemies").hashVal.keySet())
+
+        IRIO enemi = database.getIVar("@enemies");
+
+        for (IRIO rio : enemi.getHashKeys())
             max = Math.max(max, rio.getFX());
         enemies = new IImage[(int) (max + 1)];
-        for (Map.Entry<IRIO, RubyIO> map : database.getInstVarBySymbol("@enemies").hashVal.entrySet())
-            enemies[(int) (map.getKey().getFX())] = readEnemy(map.getValue(), img);
+        for (IRIO map : enemi.getHashKeys())
+            enemies[(int) (map.getFX())] = readEnemy(enemi.getHashVal(map), img);
     }
 
-    private IImage readEnemy(RubyIO value, IImageLoader img) {
-        IImage im = img.getImage("Monster/" + value.getInstVarBySymbol("@battler_name").decString(), false);
-        return AppMain.imageFXCache.process(im, new HueShiftImageEffect((int) value.getInstVarBySymbol("@battler_hue").fixnumVal));
+    private IImage readEnemy(IRIO value, IImageLoader img) {
+        IImage im = img.getImage("Monster/" + value.getIVar("@battler_name").decString(), false);
+        return AppMain.imageFXCache.process(im, new HueShiftImageEffect((int) value.getIVar("@battler_hue").getFX()));
     }
 
     @Override
@@ -148,11 +149,11 @@ public class TroopGenposFrame implements IGenposFrame {
 
     @Override
     public Rect getCellSelectionIndicator(int i) {
-        int x = (int) getCellProp(i, 1).targetElement.fixnumVal;
-        int y = (int) getCellProp(i, 2).targetElement.fixnumVal;
+        int x = (int) getCellProp(i, 1).targetElement.getFX();
+        int y = (int) getCellProp(i, 2).targetElement.getFX();
         int w = 32;
         int h = 32;
-        int enemy = (int) getCellProp(i, 0).targetElement.fixnumVal;
+        int enemy = (int) getCellProp(i, 0).targetElement.getFX();
         IImage enemyImg = enemies[enemy];
         if (enemyImg != null) {
             w = enemyImg.getWidth();
@@ -164,9 +165,9 @@ public class TroopGenposFrame implements IGenposFrame {
     @Override
     public void drawCell(int i, int opx, int opy, IGrDriver igd) {
         // hm.
-        int enemy = (int) getCellProp(i, 0).targetElement.fixnumVal;
-        opx += getCellProp(i, 1).targetElement.fixnumVal;
-        opy += getCellProp(i, 2).targetElement.fixnumVal;
+        int enemy = (int) getCellProp(i, 0).targetElement.getFX();
+        opx += getCellProp(i, 1).targetElement.getFX();
+        opy += getCellProp(i, 2).targetElement.getFX();
         if (enemy < 0)
             return;
         if (enemy >= enemies.length)

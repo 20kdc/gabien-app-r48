@@ -9,11 +9,11 @@ package r48.ui.imi;
 
 import gabien.GaBIEn;
 import r48.AppMain;
-import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
+import r48.io.data.IRIO;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -73,9 +73,9 @@ public class IMIAssemblyProcess {
                         if (dos == null)
                             return;
                         // NOTE: This has no Schema access, which is intentional
-                        RubyIO a = oldGameAccess.loadObjectFromFile(s2);
+                        IRIO a = oldGameAccess.loadObject(s2).getObject();
                         //
-                        RubyIO b = AppMain.objectDB.getObject(s2, null);
+                        IRIO b = AppMain.objectDB.getObject(s2).getObject();
                         try {
                             if (a != null) {
                                 if (b != null) {

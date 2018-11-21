@@ -10,6 +10,8 @@ package r48.map.systems;
 import gabien.ui.IFunction;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController;
@@ -32,7 +34,7 @@ public class IkaSystem extends MapSystem {
         super(new CacheImageLoader(new FixAndSecondaryImageLoader("Pbm/", "", new GabienImageLoader(".pbm", 0, 0, 0))), true);
     }
 
-    public StuffRenderer rendererGeneral(RubyIO map, IEventAccess iea) {
+    public StuffRenderer rendererGeneral(IRIO map, IEventAccess iea) {
         ITileRenderer tileRenderer = new IkaTileRenderer(imageLoader);
         IEventGraphicRenderer eventRenderer = new IkaEventGraphicRenderer(imageLoader);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0}, eventRenderer, imageLoader, map, iea, "Back", true, true, 0, 0, -1, -1, 1));
@@ -48,12 +50,12 @@ public class IkaSystem extends MapSystem {
         if (!allowCreate)
             if (AppMain.objectDB.getObject(gum, null) == null)
                 return null;
-        final RubyIO map = AppMain.objectDB.getObject(gum);
+        final IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(gum);
         final IEventAccess events = new TraditionalEventAccess(gum, "IkachanMap", "@events", 0, "IkachanEvent");
         return new MapViewDetails(gum, "IkachanMap", new IFunction<String, MapViewState>() {
             @Override
             public MapViewState apply(String s) {
-                return MapViewState.fromRT(rendererGeneral(map, events), gum, new String[] {}, map, "@data", false, events);
+                return MapViewState.fromRT(rendererGeneral(map.getObject(), events), gum, new String[] {}, map.getObject(), "@data", false, events);
             }
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override

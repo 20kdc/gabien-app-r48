@@ -12,9 +12,9 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
 import r48.AppMain;
-import r48.RubyIO;
 import r48.dbs.ATDB;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.map.UIMapView;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
@@ -30,24 +30,23 @@ public class VXATileRenderer implements ITileRenderer {
 
     public static final int tileSize = 32;
     public final IImage[] tilesetMaps = new IImage[9];
-    private final RubyIO tileset;
+    private final IRIO tileset;
     // Generated one-pixel image to be blended for shadow
     public IImage shadowImage;
 
-    public VXATileRenderer(IImageLoader il, RubyIO tileset) {
+    public VXATileRenderer(IImageLoader il, IRIO tileset) {
         this.tileset = tileset;
         int[] tinyTile = new int[] {0x80000000};
         shadowImage = GaBIEn.createImage(tinyTile, 1, 1);
         // If the tileset's null, then just give up.
         // The tileset being/not being null is an implementation detail anyway.
         if (tileset != null) {
-            RubyIO[] amNames = tileset.getInstVarBySymbol("@tileset_names").arrVal;
+            IRIO amNames = tileset.getIVar("@tileset_names");
             for (int i = 0; i < tilesetMaps.length; i++) {
-                RubyIO rio = amNames[i];
-                if (rio.strVal.length != 0) {
-                    String expectedAT = rio.decString();
+                IRIO rio = amNames.getAElem(i);
+                String expectedAT = rio.decString();
+                if (expectedAT.length() != 0)
                     tilesetMaps[i] = il.getImage("Tilesets/" + expectedAT, false);
-                }
             }
         }
     }
@@ -107,7 +106,7 @@ public class VXATileRenderer implements ITileRenderer {
                 if (handleMTLayer(tidx, tileSize, px, py, plane + 5, igd, spriteScale))
                     return;
 
-        int mode = (int) tileset.getInstVarBySymbol("@mode").fixnumVal;
+        int mode = (int) tileset.getIVar("@mode").getFX();
 
         // AT Planes (Part 1 and 2). These use AT Type 0 "standard".
 

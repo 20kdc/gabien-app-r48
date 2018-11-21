@@ -9,11 +9,11 @@ package r48.map.events;
 
 import gabien.IGrDriver;
 import gabien.IImage;
-import r48.RubyIO;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.PathSyntax;
 import r48.dbs.ValueSyntax;
+import r48.io.data.IRIO;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -48,17 +48,17 @@ public class GenericEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public int determineEventLayer(RubyIO event) {
+    public int determineEventLayer(IRIO event) {
         return 0;
     }
 
     @Override
-    public RubyIO extractEventGraphic(RubyIO event) {
+    public IRIO extractEventGraphic(IRIO event) {
         return PathSyntax.parse(event, graphicPath);
     }
 
     @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int sprScale) {
+    public void drawEventGraphic(IRIO target, int ox, int oy, IGrDriver igd, int sprScale) {
         GGraphicsInfo ggi = renders.get(ValueSyntax.encode(target));
         if (ggi == null)
             return;

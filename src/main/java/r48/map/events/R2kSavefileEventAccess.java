@@ -11,12 +11,12 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.schema.util.SchemaPath;
 
 import java.util.LinkedList;
-import java.util.Map;
 
 import static r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement.getSaveCount;
 
@@ -31,7 +31,7 @@ import static r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement.get
  *  because the ghosts & map events getting merged by the game has similar results to what happens here.
  */
 public class R2kSavefileEventAccess implements IEventAccess {
-    public final RubyIO saveFileRoot;
+    public final IObjectBackend.ILoadedObject saveFileRoot;
     public final String saveFileRootId;
     public final String saveFileRootSchema;
 
@@ -39,67 +39,72 @@ public class R2kSavefileEventAccess implements IEventAccess {
     // The ghosts are added dynamically by getEventKeys & getEvent
     public final RubyIO eventsHash = new RubyIO().setHash();
 
-    public R2kSavefileEventAccess(String rootId, RubyIO root, String rootSchema) {
+    public R2kSavefileEventAccess(String rootId, IObjectBackend.ILoadedObject root, String rootSchema) {
         saveFileRoot = root;
         saveFileRootId = rootId;
         saveFileRootSchema = rootSchema;
         int mapId = (int) getMapId();
         // Inject 'events'
-        sfveInjectEvent("Party", mapId, saveFileRoot.getInstVarBySymbol("@party_pos"));
-        sfveInjectEvent("Boat", mapId, saveFileRoot.getInstVarBySymbol("@boat_pos"));
-        sfveInjectEvent("Ship", mapId, saveFileRoot.getInstVarBySymbol("@ship_pos"));
-        sfveInjectEvent("Airship", mapId, saveFileRoot.getInstVarBySymbol("@airship_pos"));
+        IRIO sfr = saveFileRoot.getObject();
+        sfveInjectEvent("Party", mapId, sfr.getIVar("@party_pos"));
+        sfveInjectEvent("Boat", mapId, sfr.getIVar("@boat_pos"));
+        sfveInjectEvent("Ship", mapId, sfr.getIVar("@ship_pos"));
+        sfveInjectEvent("Airship", mapId, sfr.getIVar("@airship_pos"));
         // Inject actual events
-        for (Map.Entry<IRIO, RubyIO> kv : getSaveEvents().hashVal.entrySet())
-            if (eventsHash.getHashVal(kv.getKey()) == null)
-                eventsHash.hashVal.put(kv.getKey(), kv.getValue());
+        IRIO se = getSaveEvents();
+        for (IRIO k : se.getHashKeys())
+            if (eventsHash.getHashVal(k) == null)
+                eventsHash.hashVal.put(k, new RubyIO().setDeepClone(se.getHashVal(k)));
     }
 
     private long getMapId() {
-        return saveFileRoot.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map").fixnumVal;
+        return saveFileRoot.getObject().getIVar("@party_pos").getIVar("@map").getFX();
     }
 
-    private RubyIO getSaveEvents() {
-        return saveFileRoot.getInstVarBySymbol("@map_info").getInstVarBySymbol("@events");
+    private IRIO getSaveEvents() {
+        return saveFileRoot.getObject().getIVar("@map_info").getIVar("@events");
     }
 
-    private void sfveInjectEvent(String s, int mapId, RubyIO instVarBySymbol) {
-        if (instVarBySymbol.getInstVarBySymbol("@map").fixnumVal != mapId)
+    private void sfveInjectEvent(String s, int mapId, IRIO instVarBySymbol) {
+        if (instVarBySymbol.getIVar("@map").getFX() != mapId)
             return;
-        eventsHash.hashVal.put(new RubyIO().setString(s, true), instVarBySymbol);
+        eventsHash.hashVal.put(new RubyIO().setString(s, true), new RubyIO().setDeepClone(instVarBySymbol));
     }
 
     @Override
     public LinkedList<IRIO> getEventKeys() {
         LinkedList<IRIO> keys = new LinkedList<IRIO>(eventsHash.hashVal.keySet());
-        RubyIO map = getMap();
+        IRIO map = getMap();
         if (map != null)
-            if (getSaveCount(map).fixnumVal != saveFileRoot.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").fixnumVal)
-                for (IRIO rio : map.getInstVarBySymbol("@events").hashVal.keySet())
+            if (getSaveCount(map).getFX() != saveFileRoot.getObject().getIVar("@party_pos").getIVar("@map_save_count").getFX())
+                for (IRIO rio : map.getIVar("@events").getHashKeys())
                     if (eventsHash.getHashVal(rio) == null)
                         keys.add(rio); // Add ghost
         return keys;
     }
 
     @Override
-    public RubyIO getEvent(IRIO key) {
-        RubyIO v = eventsHash.getHashVal(key);
+    public IRIO getEvent(IRIO key) {
+        IRIO v = eventsHash.getHashVal(key);
         if (v != null)
             return v;
         // Ghost! (?)
-        RubyIO map = getMap();
+        IRIO map = getMap();
         if (map == null)
             return null; // shouldn't happen
         return getMapEvent(map, key);
     }
 
-    private RubyIO getMap() {
-        int mapId = (int) saveFileRoot.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map").fixnumVal;
-        return AppMain.objectDB.getObject(R2kRMLikeMapInfoBackend.sNameFromInt(mapId), null);
+    private IRIO getMap() {
+        int mapId = (int) saveFileRoot.getObject().getIVar("@party_pos").getIVar("@map").getFX();
+        IObjectBackend.ILoadedObject ilo = AppMain.objectDB.getObject(R2kRMLikeMapInfoBackend.sNameFromInt(mapId), null);
+        if (ilo == null)
+            return null;
+        return ilo.getObject();
     }
 
-    private RubyIO getMapEvent(RubyIO map, IRIO key) {
-        return map.getInstVarBySymbol("@events").getHashVal(key);
+    private IRIO getMapEvent(IRIO map, IRIO key) {
+        return map.getIVar("@events").getHashVal(key);
     }
 
     @Override
@@ -108,25 +113,25 @@ public class R2kSavefileEventAccess implements IEventAccess {
             if (key.decString().equals("Player")) {
                 AppMain.launchDialog(TXDB.get("You can't do THAT! ...Who would clean up the mess?"));
             } else {
-                RubyIO rio = getEvent(key);
+                IRIO rio = getEvent(key);
                 if (rio == null) {
                     AppMain.launchDialog(TXDB.get("That's already gone."));
                 } else {
-                    rio.getInstVarBySymbol("@map").fixnumVal = 0;
+                    rio.getIVar("@map").setFX(0);
                     AppMain.launchDialog(TXDB.get("Can't be deleted, but was moved to @map 0 (as close as you can get to deleted)"));
                     pokeHive();
                 }
             }
         } else {
-            RubyIO se = getSaveEvents();
+            IRIO se = getSaveEvents();
             if (se.getHashVal(key) == null) {
                 AppMain.launchDialog(TXDB.get("You're trying to delete a ghost. Yes, I know the Event Picker is slightly unreliable. Poor ghost."));
             } else {
                 se.removeHashVal(key);
-                RubyIO map = getMap();
+                IRIO map = getMap();
                 boolean ghost = false;
                 if (map != null)
-                    if (getSaveCount(map).fixnumVal != saveFileRoot.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").fixnumVal)
+                    if (getSaveCount(map).getFX() != saveFileRoot.getObject().getIVar("@party_pos").getIVar("@map_save_count").getFX())
                         ghost = true;
                 if (ghost) {
                     AppMain.launchDialog(TXDB.get("Transformed to ghost. Re-Syncing it and setting @active to false might get rid of it."));
@@ -150,30 +155,30 @@ public class R2kSavefileEventAccess implements IEventAccess {
         return null;
     }
 
-    public static void eventAsSaveEvent(RubyIO rMap, long mapId, IRIO key, RubyIO event) {
-        RubyIO rio = rMap.addHashVal(key);
+    public static void eventAsSaveEvent(IRIO rMap, long mapId, IRIO key, IRIO event) {
+        IRIO rio = rMap.addHashVal(key);
         SchemaPath.setDefaultValue(rio, AppMain.schemas.getSDBEntry("RPG::SaveMapEvent"), key);
-        rio.getInstVarBySymbol("@map").setFX(mapId);
-        rio.getInstVarBySymbol("@x").setDeepClone(event.getInstVarBySymbol("@x"));
-        rio.getInstVarBySymbol("@y").setDeepClone(event.getInstVarBySymbol("@y"));
+        rio.getIVar("@map").setFX(mapId);
+        rio.getIVar("@x").setDeepClone(event.getIVar("@x"));
+        rio.getIVar("@y").setDeepClone(event.getIVar("@y"));
 
-        RubyIO pages = event.getInstVarBySymbol("@pages");
-        RubyIO eventPage = null;
-        if (pages.arrVal.length >= 2)
-            eventPage = pages.arrVal[1];
+        IRIO pages = event.getIVar("@pages");
+        IRIO eventPage = null;
+        if (pages.getALen() >= 2)
+            eventPage = pages.getAElem(1);
         if (eventPage != null) {
-            rio.getInstVarBySymbol("@character_name").setDeepClone(eventPage.getInstVarBySymbol("@character_name"));
-            rio.getInstVarBySymbol("@character_index").setDeepClone(eventPage.getInstVarBySymbol("@character_index"));
-            rio.getInstVarBySymbol("@character_direction").setDeepClone(eventPage.getInstVarBySymbol("@character_direction"));
+            rio.getIVar("@character_name").setDeepClone(eventPage.getIVar("@character_name"));
+            rio.getIVar("@character_index").setDeepClone(eventPage.getIVar("@character_index"));
+            rio.getIVar("@character_direction").setDeepClone(eventPage.getIVar("@character_direction"));
 
-            rio.getInstVarBySymbol("@dir").setDeepClone(eventPage.getInstVarBySymbol("@character_direction"));
-            rio.getInstVarBySymbol("@transparency").setFX((eventPage.getInstVarBySymbol("@character_blend_mode").type == 'T') ? 3 : 0);
+            rio.getIVar("@dir").setDeepClone(eventPage.getIVar("@character_direction"));
+            rio.getIVar("@transparency").setFX((eventPage.getIVar("@character_blend_mode").getType() == 'T') ? 3 : 0);
 
-            rio.getInstVarBySymbol("@move_freq").setDeepClone(eventPage.getInstVarBySymbol("@move_freq"));
-            rio.getInstVarBySymbol("@move_speed").setDeepClone(eventPage.getInstVarBySymbol("@move_speed"));
+            rio.getIVar("@move_freq").setDeepClone(eventPage.getIVar("@move_freq"));
+            rio.getIVar("@move_speed").setDeepClone(eventPage.getIVar("@move_speed"));
 
-            rio.getInstVarBySymbol("@layer").setDeepClone(eventPage.getInstVarBySymbol("@layer"));
-            rio.getInstVarBySymbol("@block_other_events").setDeepClone(eventPage.getInstVarBySymbol("@block_other_events"));
+            rio.getIVar("@layer").setDeepClone(eventPage.getIVar("@layer"));
+            rio.getIVar("@block_other_events").setDeepClone(eventPage.getIVar("@block_other_events"));
             // with any luck the moveroute issue will solve itself. with luck.
         }
     }
@@ -214,12 +219,12 @@ public class R2kSavefileEventAccess implements IEventAccess {
                         // "Dere's already a ghostie here, and 'e's nomming on biscuits!"
                         AppMain.launchDialog(TXDB.get("The event was already added somehow (but perhaps not synced). The button should now have disappeared."));
                     } else {
-                        RubyIO map = getMap();
+                        IRIO map = getMap();
                         if (map == null) {
                             AppMain.launchDialog(TXDB.get("There's no map to get the event from!"));
                             return;
                         }
-                        RubyIO ev = map.getInstVarBySymbol("@events").getHashVal(evK);
+                        IRIO ev = map.getIVar("@events").getHashVal(evK);
                         if (ev == null) {
                             AppMain.launchDialog(TXDB.get("So, you saw the ghost, got the Map's properties window via System Tools (or you left it up) to delete the event, then came back and pressed Sync? Or has the software just completely broken?!?!?"));
                             return;
@@ -239,17 +244,17 @@ public class R2kSavefileEventAccess implements IEventAccess {
 
     @Override
     public long getEventX(IRIO a) {
-        return getEvent(a).getInstVarBySymbol("@x").fixnumVal;
+        return getEvent(a).getIVar("@x").getFX();
     }
 
     @Override
     public long getEventY(IRIO a) {
-        return getEvent(a).getInstVarBySymbol("@y").fixnumVal;
+        return getEvent(a).getIVar("@y").getFX();
     }
 
     @Override
     public String getEventName(IRIO a) {
-        RubyIO rio = getEvent(a).getInstVarBySymbol("@name");
+        IRIO rio = getEvent(a).getIVar("@name");
         if (rio == null)
             return null;
         return rio.decString();
@@ -257,7 +262,7 @@ public class R2kSavefileEventAccess implements IEventAccess {
 
     @Override
     public void setEventXY(IRIO a, long x, long y) {
-        RubyIO se = getSaveEvents();
+        IRIO se = getSaveEvents();
         a = se.getHashVal(a);
         if (a == null) {
             AppMain.launchDialog(TXDB.get("The ghost refuses to budge."));

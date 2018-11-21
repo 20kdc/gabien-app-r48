@@ -14,6 +14,7 @@ import r48.dbs.CMDB;
 import r48.dbs.FormatSyntax;
 import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.PathSchemaElement;
@@ -198,7 +199,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     }
                     templateAndConfirm.accept(rc.template);
                     if (rc.specialSchema == null)
-                        for (IFunction<RubyIO, String> name : rc.paramName)
+                        for (IFunction<IRIO, String> name : rc.paramName)
                             if (!name.apply(target).equals("_"))
                                 break;
                 } else {

@@ -8,9 +8,9 @@
 package r48.map;
 
 import gabien.IImage;
-import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.map.drawlayers.*;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
@@ -51,10 +51,10 @@ public class StuffRenderer {
         }
     }
 
-    public static IMapViewDrawLayer[] prepareTraditional(ITileRenderer itr, int[] tlOrder, IEventGraphicRenderer igr, IImageLoader iil, RubyIO map, IEventAccess events, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
+    public static IMapViewDrawLayer[] prepareTraditional(ITileRenderer itr, int[] tlOrder, IEventGraphicRenderer igr, IImageLoader iil, IRIO map, IEventAccess events, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
         if (map == null)
             return new IMapViewDrawLayer[0];
-        RubyTable rt = new RubyTable(map.getInstVarBySymbol("@data").userVal);
+        RubyTable rt = new RubyTable(map.getIVar("@data").getBuffer());
         // 0: P
         // 1: E-1
         // 2, 3, [4, 5, [[6, 7]...]]]: Ti, Ei

@@ -25,7 +25,7 @@ public interface IEventAccess {
     LinkedList<IRIO> getEventKeys();
 
     // Should return null on event not available
-    RubyIO getEvent(IRIO key);
+    IRIO getEvent(IRIO key);
 
     // Should do nothing on event not available
     // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*

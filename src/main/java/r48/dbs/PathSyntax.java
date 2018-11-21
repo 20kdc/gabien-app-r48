@@ -8,6 +8,7 @@
 package r48.dbs;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * NOTE: This uses escapes internally to escape from itself.
@@ -71,7 +72,7 @@ public class PathSyntax {
         return null;
     }
 
-    public static RubyIO parse(RubyIO res, String arg) {
+    public static IRIO parse(IRIO res, String arg) {
         return parse(res, arg, 0);
     }
 
@@ -79,8 +80,8 @@ public class PathSyntax {
     // mode 0: GET
     // mode 1: GET/ADD
     // mode 2: GET/DEL
-    // Note that you detect creation by checking if output type is 0 (which should otherwise never happen)
-    public static RubyIO parse(RubyIO res, String arg, int mode) {
+    // Note that you detect creation by using a GET beforehand.
+    public static IRIO parse(IRIO res, String arg, int mode) {
         String workingArg = arg;
         while (workingArg.length() > 0) {
             char f = workingArg.charAt(0);
@@ -92,15 +93,13 @@ public class PathSyntax {
             if (f == ':') {
                 if (subcom.startsWith("{")) {
                     String esc = subcom.substring(1);
-                    RubyIO hashVal = ValueSyntax.decode(esc);
-                    RubyIO root = res;
+                    IRIO hashVal = ValueSyntax.decode(esc);
+                    IRIO root = res;
                     res = res.getHashVal(hashVal);
                     if (specialImmediate) {
                         if (mode == 1) {
-                            if (res == null) {
-                                res = new RubyIO();
-                                root.hashVal.put(hashVal, res);
-                            }
+                            if (res == null)
+                                res = root.addHashVal(hashVal).setNull();
                         } else if (mode == 2) {
                             root.removeHashVal(hashVal);
                         }
@@ -113,10 +112,10 @@ public class PathSyntax {
                             throw new RuntimeException("Cannot delete this. Fix your schema.");
                     if (subcom.equals("length")) {
                         // This is used for length disambiguation.
-                        if (res.arrVal == null) {
+                        if (res.getType() != '[') {
                             res = null;
                         } else {
-                            res = new RubyIO().setFX(res.arrVal.length);
+                            res = new RubyIO().setFX(res.getALen());
                         }
                     } else if (subcom.equals("fail")) {
                         return null;
@@ -134,11 +133,11 @@ public class PathSyntax {
                 if (atl < 0) {
                     res = null;
                     break;
-                } else if (atl >= res.arrVal.length) {
+                } else if (atl >= res.getALen()) {
                     res = null;
                     break;
                 }
-                res = res.arrVal[atl];
+                res = res.getAElem(atl);
             } else {
                 throw new RuntimeException("Bad pathsynt starter " + f + " (did root get separated properly?) code " + arg);
             }
@@ -148,15 +147,13 @@ public class PathSyntax {
         return res;
     }
 
-    private static RubyIO mapIV(RubyIO res, String myst, boolean specialImmediate, int mode) {
-        RubyIO root = res;
-        res = res.getInstVarBySymbol(myst);
+    private static IRIO mapIV(IRIO res, String myst, boolean specialImmediate, int mode) {
+        IRIO root = res;
+        res = res.getIVar(myst);
         if (specialImmediate) {
             if (mode == 1) {
-                if (res == null) {
-                    res = new RubyIO();
-                    root.addIVar(myst, res);
-                }
+                if (res == null)
+                    res = root.addIVar(myst).setNull();
             } else if (mode == 2) {
                 root.rmIVar(myst);
             }

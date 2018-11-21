@@ -19,7 +19,7 @@ import java.io.OutputStream;
 /**
  * Created on 1/27/17.
  */
-public class IkaObjectBackend implements IObjectBackend {
+public class IkaObjectBackend extends OldObjectBackend {
 
     private String root;
 

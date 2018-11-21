@@ -132,9 +132,9 @@ public class RGSSGenposFrame implements IGenposFrame {
 
     private SchemaElement[] getCellPropSchemas() {
         return new SchemaElement[] {
-                new SpritesheetCoreSchemaElement("#A", 0, new IFunction<RubyIO, RubyIO>() {
+                new SpritesheetCoreSchemaElement("#A", 0, new IFunction<IRIO, IRIO>() {
                     @Override
-                    public RubyIO apply(RubyIO rubyIO) {
+                    public IRIO apply(IRIO rubyIO) {
                         return rubyIO;
                     }
                 }, new IFunction<RubyIO, ISpritesheetProvider>() {

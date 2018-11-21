@@ -15,6 +15,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.events.R2kSavefileEventAccess;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
@@ -22,9 +23,6 @@ import r48.schema.HiddenSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Installs a set of sensible defaults on command.
@@ -46,7 +44,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     // Before doing anything stupid...
                     long mapId = target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map").fixnumVal;
                     String mapName = R2kRMLikeMapInfoBackend.sNameFromInt((int) mapId);
-                    RubyIO map = AppMain.objectDB.getObject(mapName, null);
+                    IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(mapName, null);
                     if (map == null) {
                         AppMain.launchDialog(TXDB.get("The map's invalid, so that's not possible."));
                         return;
@@ -54,13 +52,14 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     RubyIO saveEvs = target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@events");
                     saveEvs.hashVal.clear();
                     // Ghosts, become real!
-                    for (Map.Entry<IRIO, RubyIO> evs : map.getInstVarBySymbol("@events").hashVal.entrySet())
-                        R2kSavefileEventAccess.eventAsSaveEvent(saveEvs, mapId, evs.getKey(), evs.getValue());
+                    IRIO hmr = map.getObject().getIVar("@events");
+                    for (IRIO evs : hmr.getHashKeys())
+                        R2kSavefileEventAccess.eventAsSaveEvent(saveEvs, mapId, evs, hmr.getHashVal(evs));
                     // @system save_count is in-game save count, not actual System @save_count
-                    target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").setDeepClone(getSaveCount(map));
+                    target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").setDeepClone(getSaveCount(map.getObject()));
 
-                    RubyIO ldbSys = AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@system");
-                    RubyIO saveCount = getSaveCount(ldbSys);
+                    IRIO ldbSys = AppMain.objectDB.getObject("RPG_RT.ldb").getObject().getIVar("@system");
+                    IRIO saveCount = getSaveCount(ldbSys);
 
                     target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@db_save_count").setDeepClone(saveCount);
                     initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@lower_tile_remap"));
@@ -89,10 +88,10 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
         }
     }
 
-    public static RubyIO getSaveCount(RubyIO ldbSys) {
-        RubyIO saveCount = ldbSys.getInstVarBySymbol("@save_count_2k3en");
+    public static IRIO getSaveCount(IRIO ldbSys) {
+        IRIO saveCount = ldbSys.getIVar("@save_count_2k3en");
         if (saveCount == null)
-            saveCount = ldbSys.getInstVarBySymbol("@save_count_other");
+            saveCount = ldbSys.getIVar("@save_count_other");
         if (saveCount == null)
             saveCount = new RubyIO().setFX(0);
         return saveCount;
@@ -198,7 +197,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
 
     // sets target to the relevant map ID based on vague information
     private void mapIdMagic(RubyIO target, SchemaPath root) {
-        String str = AppMain.objectDB.getIdByObject(root.targetElement);
+        String str = AppMain.objectDB.getIdByObject(root.root);
         if (str == null)
             return;
         if (str.startsWith("Map"))
@@ -211,7 +210,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
             }
         if (str.startsWith("Save"))
             if (str.endsWith(".lsd"))
-                target.setDeepClone(root.targetElement.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map"));
+                target.setDeepClone(root.targetElement.getIVar("@party_pos").getIVar("@map"));
     }
 
     private void saveFileSetup(RubyIO target) {
@@ -221,19 +220,19 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
         setupSaveCharacter(target.getInstVarBySymbol("@airship_pos"), "@airship_map", "@airship_x", "@airship_y");
         // copy over stuff
         RubyIO savSys = target.getInstVarBySymbol("@system");
-        RubyIO ldb = AppMain.objectDB.getObject("RPG_RT.ldb");
-        RubyIO ldbSys = ldb.getInstVarBySymbol("@system");
+        IRIO ldb = AppMain.objectDB.getObject("RPG_RT.ldb").getObject();
+        IRIO ldbSys = ldb.getIVar("@system");
 
         // Copy over stuff that isn't optional (hmm. Should it be optional?)
-        target.getInstVarBySymbol("@party").getInstVarBySymbol("@party").setDeepClone(ldbSys.getInstVarBySymbol("@party"));
-        savSys.getInstVarBySymbol("@font_id").setDeepClone(ldbSys.getInstVarBySymbol("@font_id"));
+        target.getInstVarBySymbol("@party").getInstVarBySymbol("@party").setDeepClone(ldbSys.getIVar("@party"));
+        savSys.getInstVarBySymbol("@font_id").setDeepClone(ldbSys.getIVar("@font_id"));
 
-        initializeArrayWithClones(savSys.getInstVarBySymbol("@switches"), ldb.getInstVarBySymbol("@switches").hashVal, new RubyIO().setBool(false));
-        initializeArrayWithClones(savSys.getInstVarBySymbol("@variables"), ldb.getInstVarBySymbol("@variables").hashVal, new RubyIO().setFX(0));
+        initializeArrayWithClones(savSys.getInstVarBySymbol("@switches"), ldb.getIVar("@switches"), new RubyIO().setBool(false));
+        initializeArrayWithClones(savSys.getInstVarBySymbol("@variables"), ldb.getIVar("@variables"), new RubyIO().setFX(0));
 
         for (String iv : savSys.iVarKeys)
             if (iv.endsWith("_se") || iv.endsWith("_music") || iv.endsWith("_fadein") || iv.endsWith("_fadeout"))
-                savSys.getInstVarBySymbol(iv).setDeepClone(ldbSys.getInstVarBySymbol(iv));
+                savSys.getInstVarBySymbol(iv).setDeepClone(ldbSys.getIVar(iv));
 
         // table init!
         initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@lower_tile_remap"));
@@ -246,9 +245,9 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
             rt.setTiletype(i, 0, 0, (short) i);
     }
 
-    private void initializeArrayWithClones(RubyIO instVarBySymbol, HashMap<IRIO, RubyIO> length, RubyIO rubyIO) {
+    private void initializeArrayWithClones(RubyIO instVarBySymbol, IRIO length, RubyIO rubyIO) {
         int maxVal = 0;
-        for (IRIO rio : length.keySet())
+        for (IRIO rio : length.getHashKeys())
             maxVal = Math.max((int) rio.getFX(), maxVal);
         instVarBySymbol.arrVal = new RubyIO[maxVal];
         for (int i = 0; i < instVarBySymbol.arrVal.length; i++)
@@ -256,10 +255,10 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     }
 
     private void setupSaveCharacter(RubyIO chr, String s, String s1, String s2) {
-        RubyIO lmt = AppMain.objectDB.getObject("RPG_RT.lmt").getInstVarBySymbol("@start");
-        RubyIO a = lmt.getInstVarBySymbol(s);
-        RubyIO b = lmt.getInstVarBySymbol(s1);
-        RubyIO c = lmt.getInstVarBySymbol(s2);
+        IRIO lmt = AppMain.objectDB.getObject("RPG_RT.lmt").getObject().getIVar("@start");
+        IRIO a = lmt.getIVar(s);
+        IRIO b = lmt.getIVar(s1);
+        IRIO c = lmt.getIVar(s2);
         if (a != null)
             chr.getInstVarBySymbol("@map").setDeepClone(a);
         if (b != null)
@@ -268,23 +267,21 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
             chr.getInstVarBySymbol("@y").setDeepClone(c);
     }
 
-    public static void upgradeDatabase(RubyIO root) {
+    public static void upgradeDatabase(IRIO root) {
         // WARNING! This attempts to upgrade a project to 2003 from 2000 while causing as little damage as possible,
         //  but do consider that it might not actually *work*.
-        RubyIO system = root.getInstVarBySymbol("@system");
-        system.getInstVarBySymbol("@ldb_id").fixnumVal = 2003;
-        if (system.getInstVarBySymbol("@save_count_2k3en") == null)
-            system.addIVar("@save_count_2k3en", new RubyIO().setFX(0));
-        if (system.getInstVarBySymbol("@menu_commands_2k3") == null) {
-            RubyIO mc23 = new RubyIO();
-            mc23.type = '[';
-            mc23.arrVal = new RubyIO[5];
-            mc23.arrVal[0] = new RubyIO().setFX(5);
-            mc23.arrVal[1] = new RubyIO().setFX(1);
-            mc23.arrVal[2] = new RubyIO().setFX(2);
-            mc23.arrVal[3] = new RubyIO().setFX(3);
-            mc23.arrVal[4] = new RubyIO().setFX(4);
-            system.addIVar("@menu_commands_2k3", mc23);
+        IRIO system = root.getIVar("@system");
+        system.getIVar("@ldb_id").setFX(2003);
+        if (system.getIVar("@save_count_2k3en") == null)
+            system.addIVar("@save_count_2k3en").setFX(0);
+        if (system.getIVar("@menu_commands_2k3") == null) {
+            IRIO mc23 = system.addIVar("@menu_commands_2k3");
+            mc23.setArray();
+            mc23.addAElem(0).setFX(5);
+            mc23.addAElem(1).setFX(1);
+            mc23.addAElem(2).setFX(2);
+            mc23.addAElem(3).setFX(3);
+            mc23.addAElem(4).setFX(4);
         }
     }
 }

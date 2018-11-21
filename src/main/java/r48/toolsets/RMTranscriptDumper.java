@@ -69,13 +69,15 @@ public class RMTranscriptDumper {
         anchor(null, null);
     }
 
-    public void dump(String name, RubyIO[] code, CMDB database) {
+    public void dump(String name, IRIO code, CMDB database) {
         //anchor(name);
         output.println("<h3>" + escapeHtml(name) + "</h3>");
         output.println("<code><ul>");
         int ci = 0;
-        for (RubyIO cm : code) {
-            int ti = (int) cm.getInstVarBySymbol("@indent").fixnumVal;
+        int alen = code.getALen();
+        for (int i = 0; i < alen; i++) {
+            IRIO cm = code.getAElem(i);
+            int ti = (int) cm.getIVar("@indent").getFX();
             while (ci < ti) {
                 output.print("<ul>");
                 ci++;
@@ -129,16 +131,16 @@ public class RMTranscriptDumper {
         return r.toString();
     }
 
-    public void dumpSVList(String n, RubyIO[] arrVal, int st) {
-        String[] s = new String[arrVal.length];
-        for (int i = 0; i < arrVal.length; i++)
-            s[i] = arrVal[i].toString();
+    public void dumpSVList(String n, IRIO arrVal, int st) {
+        String[] s = new String[arrVal.getALen()];
+        for (int i = 0; i < s.length; i++)
+            s[i] = arrVal.getAElem(i).toString();
         dumpBasicList(n, s, st);
     }
 
-    public void dumpSVListHash(String n, RubyIO arrHashVal) {
+    public void dumpSVListHash(String n, IRIO arrHashVal) {
         LinkedList<Long> l = new LinkedList<Long>();
-        for (IRIO rio : arrHashVal.hashVal.keySet())
+        for (IRIO rio : arrHashVal.getHashKeys())
             l.add(rio.getFX());
         Collections.sort(l);
         output.println("<h3>" + escapeHtml(n) + "</h3>");

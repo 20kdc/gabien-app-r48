@@ -8,7 +8,7 @@
 package r48.map.events;
 
 import gabien.IGrDriver;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * Events need to have a @x, and a @y, (@name is optional) but anything else about them is determined by this and the Schema.
@@ -16,10 +16,10 @@ import r48.RubyIO;
  */
 public interface IEventGraphicRenderer {
     // Only used for EventMapViewDrawLayer
-    int determineEventLayer(RubyIO event);
+    int determineEventLayer(IRIO event);
 
-    RubyIO extractEventGraphic(RubyIO event);
+    IRIO extractEventGraphic(IRIO event);
 
     // while this handles event graphics
-    void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int sprScale);
+    void drawEventGraphic(IRIO target, int ox, int oy, IGrDriver igd, int sprScale);
 }

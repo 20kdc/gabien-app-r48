@@ -8,7 +8,7 @@
 package r48.schema.specialized.tbleditors;
 
 import gabien.ui.UIScrollLayout;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.ui.UIGrid;
 
 /**
@@ -17,5 +17,5 @@ import r48.ui.UIGrid;
 
 public interface ITableCellEditor {
     // Returns the on-selection-changed handler.
-    public Runnable createEditor(final UIScrollLayout base, final RubyIO targV, final UIGrid uig, final Runnable changeOccurred);
+    public Runnable createEditor(final UIScrollLayout base, final IRIO targV, final UIGrid uig, final Runnable changeOccurred);
 }

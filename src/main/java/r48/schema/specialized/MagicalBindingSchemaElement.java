@@ -9,9 +9,13 @@ package r48.schema.specialized;
 
 import gabien.ui.UIElement;
 import r48.RubyIO;
+import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+
+import java.io.IOException;
 
 /**
  * Magical Binding!
@@ -39,7 +43,7 @@ public class MagicalBindingSchemaElement extends SchemaElement {
     }
 
     private SchemaPath createPath(final RubyIO trueTarget, final SchemaPath truePath) {
-        RubyIO bound = MagicalBinders.toBoundWithCache(binder, trueTarget);
+        final RubyIO bound = MagicalBinders.toBoundWithCache(binder, trueTarget);
         SchemaPath sp = new SchemaPath(new SchemaElement() {
             // This is a fake root element used for binding
             @Override
@@ -61,7 +65,17 @@ public class MagicalBindingSchemaElement extends SchemaElement {
                     if (binder.applyBoundToTarget(target, trueTarget))
                         truePath.changeOccurred(setDefault);
             }
-        }, bound);
+        }, new IObjectBackend.ILoadedObject() {
+            @Override
+            public IRIO getObject() {
+                return bound;
+            }
+
+            @Override
+            public void save() throws IOException {
+
+            }
+        });
         sp.contextualSchemas.putAll(truePath.contextualSchemas);
         return sp;
     }

@@ -12,9 +12,9 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
 import r48.AppMain;
-import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.ATDB;
+import r48.io.data.IRIO;
 import r48.map.UIMapView;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
@@ -34,24 +34,23 @@ public class XPTileRenderer implements ITileRenderer {
         return tileSize;
     }
 
-    public XPTileRenderer(IImageLoader imageLoader, RubyIO tileset) {
+    public XPTileRenderer(IImageLoader imageLoader, IRIO tileset) {
         // If the tileset's null, then just give up.
         // The tileset being/not being null is an implementation detail anyway.
         if (tileset != null) {
-            priorities = new RubyTable(tileset.getInstVarBySymbol("@priorities").userVal);
-            RubyIO tn = tileset.getInstVarBySymbol("@tileset_name");
+            priorities = new RubyTable(tileset.getIVar("@priorities").getBuffer());
+            IRIO tn = tileset.getIVar("@tileset_name");
             if (tn != null) {
                 // XP
                 String expectedTS = tn.decString();
                 if (expectedTS.length() != 0)
                     tilesetMaps[0] = imageLoader.getImage("Tilesets/" + expectedTS, false);
-                RubyIO[] amNames = tileset.getInstVarBySymbol("@autotile_names").arrVal;
+                IRIO amNames = tileset.getIVar("@autotile_names");
                 for (int i = 0; i < 7; i++) {
-                    RubyIO rio = amNames[i];
-                    if (rio.strVal.length != 0) {
-                        String expectedAT = rio.decString();
+                    IRIO rio = amNames.getAElem(i);
+                    String expectedAT = rio.decString();
+                    if (expectedAT.length() > 0)
                         tilesetMaps[i + 1] = imageLoader.getImage("Autotiles/" + expectedAT, false);
-                    }
                 }
             }
         } else {

@@ -12,11 +12,11 @@ import gabien.IGrDriver;
 import gabien.IImage;
 import gabienapp.Application;
 import r48.AppMain;
-import r48.RubyIO;
 import r48.imagefx.AlphaControlImageEffect;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
 import r48.imagefx.ToneImageEffect;
+import r48.io.data.IRIO;
 import r48.map.UIMapView;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
@@ -55,40 +55,40 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public int determineEventLayer(RubyIO event) {
+    public int determineEventLayer(IRIO event) {
         if (useVXAExtensionScheme)
-            return (int) event.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@priority_type").fixnumVal;
+            return (int) event.getIVar("@pages").getAElem(0).getIVar("@priority_type").getFX();
         // NOTE: This is actually used specially, by the RXPAccurateDrawLayer.
-        return (event.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@always_on_top").type == 'T') ? 1 : 0;
+        return (event.getIVar("@pages").getAElem(0).getIVar("@always_on_top").getType() == 'T') ? 1 : 0;
     }
 
     @Override
-    public RubyIO extractEventGraphic(RubyIO evI) {
-        return evI.getInstVarBySymbol("@pages").arrVal[0].getInstVarBySymbol("@graphic");
+    public IRIO extractEventGraphic(IRIO evI) {
+        return evI.getIVar("@pages").getAElem(0).getIVar("@graphic");
     }
 
     @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int sprScale) {
-        int pat = (int) target.getInstVarBySymbol("@pattern").fixnumVal;
-        int coreDir = (int) target.getInstVarBySymbol("@direction").fixnumVal;
+    public void drawEventGraphic(IRIO target, int ox, int oy, IGrDriver igd, int sprScale) {
+        int pat = (int) target.getIVar("@pattern").getFX();
+        int coreDir = (int) target.getIVar("@direction").getFX();
         int dir = lookupDirection(coreDir);
         if (dir == -1) {
             dir = 0;
             FontManager.drawString(igd, ox, oy, "D" + coreDir, false, false, UIMapView.mapDebugTextHeight * sprScale);
         }
-        RubyIO cName = target.getInstVarBySymbol("@character_name");
-        short tId = (short) target.getInstVarBySymbol("@tile_id").fixnumVal;
+        IRIO cName = target.getIVar("@character_name");
+        String cNameS = cName.decString();
+        short tId = (short) target.getIVar("@tile_id").getFX();
         if (tId != 0) {
             tileRenderer.drawTile(0, tId, ox, oy, igd, sprScale, false);
-        } else if (cName.strVal.length > 0) {
+        } else if (cNameS.length() > 0) {
             // lower centre of tile, the reference point for characters
             ox += 16;
             oy += 32;
-            String s = cName.decString();
             if (useVXAExtensionScheme)
-                if (!s.startsWith("!"))
+                if (!cNameS.startsWith("!"))
                     oy -= 4;
-            IImage i = imageLoader.getImage("Characters/" + s, false);
+            IImage i = imageLoader.getImage("Characters/" + cNameS, false);
             int sprW = i.getWidth() / patternCount;
             int sprH = i.getHeight() / 4;
             // Direction 2, pattern 0 == 0, ? (safe @ cliffs, page 0)
@@ -99,8 +99,8 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
             if (useVXAExtensionScheme) {
                 sprW = i.getWidth() / 12;
                 sprH = i.getHeight() / 8;
-                int idx = (int) target.getInstVarBySymbol("@character_index").fixnumVal;
-                if (s.startsWith("!$") || s.startsWith("$")) {
+                int idx = (int) target.getIVar("@character_index").getFX();
+                if (cNameS.startsWith("!$") || cNameS.startsWith("$")) {
                     // Character index doesn't work on these
                     sprW = i.getWidth() / 3;
                     sprH = i.getHeight() / 4;
@@ -111,13 +111,13 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
             }
 
             int blendType = 0;
-            RubyIO blendData = target.getInstVarBySymbol("@blend_type");
+            IRIO blendData = target.getIVar("@blend_type");
             if (blendData != null)
-                blendType = (int) blendData.fixnumVal;
-            RubyIO hueCtrl = target.getInstVarBySymbol("@character_hue");
+                blendType = (int) blendData.getFX();
+            IRIO hueCtrl = target.getIVar("@character_hue");
             LinkedList<IImageEffect> hsie = new LinkedList<IImageEffect>();
             if (hueCtrl != null) {
-                int hue = (int) (hueCtrl.fixnumVal);
+                int hue = (int) (hueCtrl.getFX());
                 if (hue != 0)
                     hsie.add(new HueShiftImageEffect(hue));
             }

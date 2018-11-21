@@ -187,7 +187,7 @@ public class AppMain {
             public void accept(Double deltaTime) {
                 if (mapContext != null) {
                     String mapId = mapContext.getCurrentMapObject();
-                    RubyIO map = null;
+                    IObjectBackend.ILoadedObject map = null;
                     if (mapId != null)
                         map = objectDB.getObject(mapId);
                     schemas.updateDictionaries(map);
@@ -361,14 +361,14 @@ public class AppMain {
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
-    public static ISchemaHost launchSchema(String s, RubyIO rio, UIMapView context) {
+    public static ISchemaHost launchSchema(String s, IObjectBackend.ILoadedObject rio, UIMapView context) {
         // Responsible for keeping listeners in place so nothing breaks.
         SchemaHostImpl watcher = new SchemaHostImpl(context);
         watcher.pushObject(new SchemaPath(schemas.getSDBEntry(s), rio));
         return watcher;
     }
 
-    public static ISchemaHost launchNonRootSchema(RubyIO root, String rootSchema, IRIO arrayIndex, RubyIO element, String elementSchema, String indexText, UIMapView context) {
+    public static ISchemaHost launchNonRootSchema(IObjectBackend.ILoadedObject root, String rootSchema, IRIO arrayIndex, IRIO element, String elementSchema, String indexText, UIMapView context) {
         // produce a valid (and false) parent chain, that handles all required guarantees.
         ISchemaHost shi = launchSchema(rootSchema, root, context);
         SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(rootSchema), root);
@@ -574,8 +574,8 @@ public class AppMain {
                 new Runnable() {
                     @Override
                     public void run() {
-                        RubyIO root = objectDB.getObject("RPG_RT.ldb");
-                        R2kSystemDefaultsInstallerSchemaElement.upgradeDatabase(root);
+                        IObjectBackend.ILoadedObject root = objectDB.getObject("RPG_RT.ldb");
+                        R2kSystemDefaultsInstallerSchemaElement.upgradeDatabase(root.getObject());
                         objectDB.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(), root));
                         deploy2k.run();
                     }
@@ -619,7 +619,7 @@ public class AppMain {
     }
 
     // Used for event selection boxes.
-    public static boolean currentlyOpenInEditor(RubyIO r) {
+    public static boolean currentlyOpenInEditor(IRIO r) {
         for (ISchemaHost ish : activeHosts) {
             SchemaPath sp = ish.getCurrentObject();
             while (sp != null) {
@@ -640,10 +640,10 @@ public class AppMain {
     public static void performSystemDump(boolean emergency) {
         RubyIO n = new RubyIO();
         n.setHash();
-        for (RubyIO rio : objectDB.modifiedObjects) {
+        for (IObjectBackend.ILoadedObject rio : objectDB.modifiedObjects) {
             String s = objectDB.getIdByObject(rio);
             if (s != null)
-                n.hashVal.put(new RubyIO().setString(s, true), rio);
+                n.addHashVal(new RubyIO().setString(s, true)).setDeepClone(rio.getObject());
         }
         if (!emergency) {
             RubyIO n2 = new RubyIO();
@@ -676,15 +676,11 @@ public class AppMain {
             sysDump = possibleActualDump;
         for (Map.Entry<IRIO, RubyIO> rio : sysDump.hashVal.entrySet()) {
             String name = rio.getKey().decString();
-            RubyIO root = objectDB.getObject(name);
-            if (root == null) {
-                root = new RubyIO();
-                root.setNull();
-                objectDB.newlyCreatedObjects.add(root);
-                objectDB.objectMap.put(name, new WeakReference<RubyIO>(root));
+            IObjectBackend.ILoadedObject root = objectDB.getObject(name);
+            if (root != null) {
+                root.getObject().setDeepClone(rio.getValue());
+                objectDB.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(), root));
             }
-            root.setDeepClone(rio.getValue());
-            objectDB.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(), root));
         }
         if (possibleActualDump != null) {
             AppMain.launchDialog(TXDB.get("Power failure dump loaded."));

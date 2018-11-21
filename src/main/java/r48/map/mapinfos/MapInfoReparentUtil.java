@@ -20,7 +20,7 @@ public class MapInfoReparentUtil {
 
         // Recursively find the highest order, which ensures the whole tree will be moved.
         for (long key2 : operators.getHashKeys())
-            if (operators.getHashBID(key2).getInstVarBySymbol("@parent_id").fixnumVal == mapId) {
+            if (operators.getHashBID(key2).getIVar("@parent_id").getFX() == mapId) {
                 int order2 = operators.getOrderOfMap(key2);
                 if (order2 > order) {
                     order = order2;
@@ -138,7 +138,7 @@ public class MapInfoReparentUtil {
             if (prevMap != -1)
                 newParent = prevMap;
         }
-        operators.getHashBID(map).getInstVarBySymbol("@parent_id").fixnumVal = newParent;
+        operators.getHashBID(map).getIVar("@parent_id").setFX(newParent);
         return newOrder;
     }
 

@@ -11,6 +11,7 @@ import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.map.tiles.ITileRenderer;
 
 /**
@@ -21,11 +22,11 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
     public final RubyTable lowpass;
     public final RubyTable highpass;
 
-    public R2kTileMapViewDrawLayer(RubyTable tbl, ITileRenderer tr, int targLayer, boolean targUpper, RubyIO ts, String post) {
+    public R2kTileMapViewDrawLayer(RubyTable tbl, ITileRenderer tr, int targLayer, boolean targUpper, IRIO ts, String post) {
         super(tbl, targLayer, tr, post);
         upper = targUpper;
-        lowpass = new RubyTable(ts.getInstVarBySymbol("@lowpass_data").userVal);
-        highpass = new RubyTable(ts.getInstVarBySymbol("@highpass_data").userVal);
+        lowpass = new RubyTable(ts.getIVar("@lowpass_data").getBuffer());
+        highpass = new RubyTable(ts.getIVar("@highpass_data").getBuffer());
     }
 
     @Override

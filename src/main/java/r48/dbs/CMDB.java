@@ -285,7 +285,7 @@ public class CMDB {
                     final IGroupBehavior igb = getGroupBehavior();
                     return new IGroupBehavior() {
                         private boolean checkCondition(RubyIO command) {
-                            RubyIO p = PathSyntax.parse(command, idx);
+                            IRIO p = PathSyntax.parse(command, idx);
                             if (p == null)
                                 return false;
                             return inv ^ IRIO.rubyEquals(p, v);
@@ -328,17 +328,17 @@ public class CMDB {
                 gbStateArgs = null;
                 if (c == 'p') {
                     final String fv = TXDB.getExUnderscore(subContext, args[0]);
-                    rc.paramName.add(new IFunction<RubyIO, String>() {
+                    rc.paramName.add(new IFunction<IRIO, String>() {
                         @Override
-                        public String apply(RubyIO rubyIO) {
+                        public String apply(IRIO rubyIO) {
                             return fv;
                         }
                     });
                     String s = args[1].trim();
                     final SchemaElement se = aliasingAwareSG(s);
-                    rc.paramType.add(new IFunction<RubyIO, SchemaElement>() {
+                    rc.paramType.add(new IFunction<IRIO, SchemaElement>() {
                         @Override
-                        public SchemaElement apply(RubyIO rubyIO) {
+                        public SchemaElement apply(IRIO rubyIO) {
                             return se;
                         }
                     });
@@ -354,16 +354,16 @@ public class CMDB {
                     final String defName = TXDB.getExUnderscore(subContext, args[1]);
                     final int arrayDI = Integer.parseInt(args[0]);
                     final SchemaElement defaultSE = aliasingAwareSG(args[2]);
-                    rc.paramType.add(new IFunction<RubyIO, SchemaElement>() {
+                    rc.paramType.add(new IFunction<IRIO, SchemaElement>() {
                         @Override
-                        public SchemaElement apply(RubyIO rubyIO) {
+                        public SchemaElement apply(IRIO rubyIO) {
                             if (rubyIO == null)
                                 return defaultSE;
-                            if (rubyIO.arrVal == null)
+                            if (rubyIO.getType() != '[')
                                 return defaultSE;
-                            if (rubyIO.arrVal.length <= arrayDI)
+                            if (rubyIO.getALen() <= arrayDI)
                                 return defaultSE;
-                            int p = (int) rubyIO.arrVal[arrayDI].fixnumVal;
+                            int p = (int) rubyIO.getAElem(arrayDI).getFX();
                             SchemaElement ise = h.get(p);
                             if (ise != null)
                                 return ise;
@@ -371,16 +371,16 @@ public class CMDB {
                         }
                     });
 
-                    rc.paramName.add(new IFunction<RubyIO, String>() {
+                    rc.paramName.add(new IFunction<IRIO, String>() {
                         @Override
-                        public String apply(RubyIO rubyIO) {
+                        public String apply(IRIO rubyIO) {
                             if (rubyIO == null)
                                 return defName;
-                            if (rubyIO.arrVal == null)
+                            if (rubyIO.getType() != '[')
                                 return defName;
-                            if (rubyIO.arrVal.length <= arrayDI)
+                            if (rubyIO.getALen() <= arrayDI)
                                 return defName;
-                            int p = (int) rubyIO.arrVal[arrayDI].fixnumVal;
+                            int p = (int) rubyIO.getAElem(arrayDI).getFX();
                             String ise = h2.get(p);
                             if (ise != null)
                                 return ise;
@@ -542,18 +542,18 @@ public class CMDB {
             System.err.println(fails1 + " commands do not have descriptions.");
     }
 
-    public String buildCodename(RubyIO target, boolean indent) {
+    public String buildCodename(IRIO target, boolean indent) {
         String ext = "";
-        int cid = (int) target.getInstVarBySymbol("@code").fixnumVal;
+        int cid = (int) target.getIVar("@code").getFX();
         if (knownCommands.containsKey(cid)) {
             RPGCommand cmd = knownCommands.get(cid);
-            RubyIO params = target.getInstVarBySymbol("@parameters");
-            ext = cmd.formatName(params, params.arrVal);
+            IRIO params = target.getIVar("@parameters");
+            ext = cmd.formatName(params, params.getANewArray());
         }
         String spc = lenForm(cid) + " ";
-        RubyIO indentValue = target.getInstVarBySymbol("@indent");
+        IRIO indentValue = target.getIVar("@indent");
         if ((indentValue != null) && indent) {
-            int len = (int) target.getInstVarBySymbol("@indent").fixnumVal;
+            int len = (int) target.getIVar("@indent").getFX();
             if (len < 0)
                 spc += "(INDTERR" + len + ") ";
         }

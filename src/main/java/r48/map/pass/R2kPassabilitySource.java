@@ -7,8 +7,8 @@
 
 package r48.map.pass;
 
-import r48.RubyIO;
 import r48.RubyTable;
+import r48.io.data.IRIO;
 import r48.map.drawlayers.R2kTileMapViewDrawLayer;
 
 /**
@@ -23,10 +23,10 @@ public class R2kPassabilitySource implements IPassabilitySource {
     public final RubyTable tsLow, tsHigh;
     public final boolean scrollW, scrollH;
 
-    public R2kPassabilitySource(RubyTable rt, RubyIO tileset, boolean w, boolean h) {
+    public R2kPassabilitySource(RubyTable rt, IRIO tileset, boolean w, boolean h) {
         mapTable = rt;
-        tsLow = new RubyTable(tileset.getInstVarBySymbol("@lowpass_data").userVal);
-        tsHigh = new RubyTable(tileset.getInstVarBySymbol("@highpass_data").userVal);
+        tsLow = new RubyTable(tileset.getIVar("@lowpass_data").getBuffer());
+        tsHigh = new RubyTable(tileset.getIVar("@highpass_data").getBuffer());
         scrollW = w;
         scrollH = h;
     }

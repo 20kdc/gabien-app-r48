@@ -11,6 +11,11 @@ from highest priority to lowest:
 short-term planning:
 + Data Model 2
  + 'instanceof RubyIO' is used to indicate areas where I've paused work.
+ + Plan is in 3 stages:
+  + Stage 1: Insert IRIOs at various points throughout the system to flush out RubyIO usage.
+     (Completeish)
+  + Stage 2: Isolate the Schema system so that the 'backbone' can be dealt with.
+  + Stage 3: Convert remaining classes to RubyIOs.
 + Demetrius's various notes over IRC and such:
  + Character creator???
 + OSLoc mode improvements, perhaps?

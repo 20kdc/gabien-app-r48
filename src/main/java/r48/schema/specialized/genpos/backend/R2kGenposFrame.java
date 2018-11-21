@@ -15,6 +15,7 @@ import gabien.ui.Rect;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
@@ -90,9 +91,9 @@ public class R2kGenposFrame implements IGenposFrame {
         if (i == 0)
             se = new BooleanSchemaElement(false);
         if (i == 1)
-            se = new SpritesheetCoreSchemaElement("#A", 0, new IFunction<RubyIO, RubyIO>() {
+            se = new SpritesheetCoreSchemaElement("#A", 0, new IFunction<IRIO, IRIO>() {
                 @Override
-                public RubyIO apply(RubyIO rubyIO) {
+                public IRIO apply(IRIO rubyIO) {
                     return rubyIO;
                 }
             }, new IFunction<RubyIO, ISpritesheetProvider>() {

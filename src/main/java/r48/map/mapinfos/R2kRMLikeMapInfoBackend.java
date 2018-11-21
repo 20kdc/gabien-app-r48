@@ -10,6 +10,7 @@ package r48.map.mapinfos;
 import gabien.ui.IConsumer;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
@@ -22,11 +23,11 @@ import java.util.*;
  */
 public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
     public IConsumer<SchemaPath> modHandler;
-    public RubyIO mapTree = AppMain.objectDB.getObject("RPG_RT.lmt");
+    public IObjectBackend.ILoadedObject mapTree = AppMain.objectDB.getObject("RPG_RT.lmt");
     // Note: The orders table is [order] = map.
     // So swapping orders is probably the easiest operation here.
-    public RubyIO mapTreeHash = mapTree.getInstVarBySymbol("@map_infos");
-    public RubyIO mapTreeOrders = mapTree.getInstVarBySymbol("@map_order");
+    public RubyIO mapTreeHash = (RubyIO) mapTree.getObject().getIVar("@map_infos");
+    public RubyIO mapTreeOrders = (RubyIO) mapTree.getObject().getIVar("@map_order");
 
     public R2kRMLikeMapInfoBackend() {
 
@@ -53,15 +54,15 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     }
 
     public static String sTranslateToGUM(long k) {
-        final RubyIO map = AppMain.objectDB.getObject("RPG_RT.lmt").getInstVarBySymbol("@map_infos").getHashVal(new RubyIO().setFX(k));
-        String pfx = map.getInstVarBySymbol("@type").fixnumVal == 2 ? "Area." : "Map.";
+        final IRIO map = AppMain.objectDB.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos").getHashVal(new RubyIO().setFX(k));
+        String pfx = map.getIVar("@type").getFX() == 2 ? "Area." : "Map.";
         return pfx + k;
     }
 
     @Override
     public void registerModificationHandler(IConsumer<SchemaPath> onMapInfoChange) {
         modHandler = onMapInfoChange;
-        AppMain.objectDB.registerModificationHandler(mapTree, onMapInfoChange);
+        AppMain.objectDB.registerModificationHandler(mapTree.getObject(), onMapInfoChange);
     }
 
     @Override

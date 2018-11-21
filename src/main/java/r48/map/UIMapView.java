@@ -61,7 +61,7 @@ public class UIMapView extends UIPlaneView {
     private IConsumer<SchemaPath> listener = new IConsumer<SchemaPath>() {
         @Override
         public void accept(SchemaPath sp) {
-            performRefresh(AppMain.objectDB.getIdByObject(sp.findRoot().targetElement));
+            performRefresh(AppMain.objectDB.getIdByObject(sp.root));
         }
     };
 

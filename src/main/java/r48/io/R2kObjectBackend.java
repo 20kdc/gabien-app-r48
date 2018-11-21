@@ -24,7 +24,7 @@ import java.io.OutputStream;
  * A beginning?
  * Created on 30/05/17.
  */
-public class R2kObjectBackend implements IObjectBackend {
+public class R2kObjectBackend extends OldObjectBackend {
     public final String root;
 
     public R2kObjectBackend(String rootPath) {

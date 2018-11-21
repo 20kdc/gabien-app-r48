@@ -13,12 +13,14 @@ import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.IProxySchemaElement;
 import r48.dbs.TXDB;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.specialized.OSStrHashMapSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +49,16 @@ public class HashSchemaElement extends SchemaElement {
         }
         final RubyIO keyWorkspace = preWorkspace;
 
-        final SchemaPath rioPath = new SchemaPath(keyElem, keyWorkspace);
+        final SchemaPath rioPath = new SchemaPath(keyElem, new IObjectBackend.ILoadedObject() {
+            @Override
+            public IRIO getObject() {
+                return keyWorkspace;
+            }
+
+            @Override
+            public void save() throws IOException {
+            }
+        });
 
         final SchemaPath setLocalePath = launcher.getCurrentObject();
         rioPath.additionalModificationCallback = new Runnable() {

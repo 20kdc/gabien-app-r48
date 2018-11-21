@@ -8,20 +8,28 @@
 package r48.schema;
 
 import gabien.ui.UIElement;
+import gabien.ui.UILabel;
+import r48.FontSizes;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 /**
- * Used as part of the schema-building framework for object editing.
- * In a way, inspired by a game from Reflexive Entertainment (Rebound : Lost Worlds), of all things.
- * In that game, the editor seemed to use some sort of internal reflection data to allow editing all sorts of game objects.
- * This is a similar case, except we don't have a repository of objects to work with, just a single non-recursive tree.
- * <p/>
- * Created on 12/28/16.
+ * Acts as a bridge so that backbone code can be switched to IRIOs.
+ * (Oh dear it had to be merged to prevent typing issues systemwide)
+ * Created on November 21, 2018.
  */
 public abstract class SchemaElement {
     // For lack of a better place.
+    public static boolean checkType(IRIO tgt, int t, String objType, boolean setDefault) {
+        if (tgt.getType() != t)
+            return true;
+        if (objType != null)
+            if (!tgt.getSymbol().equals(objType))
+                return true;
+        return setDefault;
+    }
     public static boolean ensureType(RubyIO tgt, int t, boolean setDefault) {
         if (tgt.type != t) {
             tgt.setNull();
@@ -30,6 +38,10 @@ public abstract class SchemaElement {
         }
         return setDefault;
     }
+
+    public abstract UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path);
+
+    public abstract void modifyVal(RubyIO target, SchemaPath path, boolean setDefault);
 
     // Creates the editor control.
     // Ground rules:
@@ -55,7 +67,13 @@ public abstract class SchemaElement {
     // These rules were determined by trial and error over 5 and a half days.
     // Before the system was even *completed.*
     // Probably best not to break them.
-    public abstract UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path);
+    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
+        if (target instanceof RubyIO) {
+            return buildHoldingEditor((RubyIO) target, launcher, path);
+        } else {
+            return new UILabel("DO NOT TRANSLATE; COULDN'T MODIFY VALUE, INVOLVED SCHEMA ELEMENT INVOLVED IRIOS", FontSizes.schemaFieldTextHeight);
+        }
+    }
 
     // Modify target to approach the default value, or to correct errors.
     // The type starts as 0 (not '0', but actual numeric 0) and needs to be modified by something to result in a valid object.
@@ -64,5 +82,11 @@ public abstract class SchemaElement {
     // "Primary" types will completely wipe the slate if they're invalid.
     // This means any "annotations" (IVars) will be destroyed, so ensure those are *after* the primary in an aggregate.
     // Hopefully this situation should never affect anything.
-    public abstract void modifyVal(RubyIO target, SchemaPath path, boolean setDefault);
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+        if (target instanceof RubyIO) {
+            modifyVal((RubyIO) target, path, setDefault);
+        } else {
+            System.err.println("Couldn't modify value ; Involved schema element involved IRIOs");
+        }
+    }
 }

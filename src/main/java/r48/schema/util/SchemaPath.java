@@ -9,6 +9,7 @@ package r48.schema.util;
 
 import r48.AppMain;
 import r48.RubyIO;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
@@ -31,11 +32,13 @@ import java.util.LinkedList;
  */
 public class SchemaPath {
     public final SchemaPath parent;
+    // Can be null!
+    public final IObjectBackend.ILoadedObject root;
 
     // If editor is null, targetElement must be null, and vice versa.
     // Host may be there or not.
     public SchemaElement editor;
-    public RubyIO targetElement;
+    public IRIO targetElement;
 
     // Should only ever be set to true by tagSEMonitor.
     // Implies editor and target.
@@ -58,33 +61,33 @@ public class SchemaPath {
 
     private SchemaPath(SchemaPath sp) {
         parent = sp;
+        root = sp.root;
         lastArrayIndex = sp.lastArrayIndex;
         contextualSchemas.putAll(sp.contextualSchemas);
     }
 
 
     // The basic constructor.
-    public SchemaPath(SchemaElement heldElement, RubyIO target) {
+    public SchemaPath(SchemaElement heldElement, IObjectBackend.ILoadedObject root) {
         parent = null;
-        lastArrayIndex = target;
-        hrIndex = AppMain.objectDB.getIdByObject(target);
+        this.root = root;
+        hrIndex = AppMain.objectDB.getIdByObject(root);
         if (hrIndex == null)
             hrIndex = "AnonObject";
         editor = heldElement;
-        targetElement = target;
+        targetElement = lastArrayIndex = root.getObject();
     }
 
     // Used for default value setup bootstrapping.
-    private SchemaPath(RubyIO target, IRIO lai) {
+    private SchemaPath(IRIO lai) {
         parent = null;
+        root = null;
         lastArrayIndex = lai;
-        hrIndex = AppMain.objectDB.getIdByObject(target);
-        if (hrIndex == null)
-            hrIndex = "AnonObject";
+        hrIndex = "AnonObject";
     }
 
-    public static void setDefaultValue(RubyIO target, SchemaElement ise, IRIO arrayIndex) {
-        ise.modifyVal(target, new SchemaPath(target, arrayIndex), true);
+    public static void setDefaultValue(IRIO target, SchemaElement ise, IRIO arrayIndex) {
+        ise.modifyVal(target, new SchemaPath(arrayIndex), true);
     }
 
     public String toString() {
@@ -145,7 +148,7 @@ public class SchemaPath {
 
     // -- Display Stuff (used in buildHoldingEditor) --
 
-    public SchemaPath newWindow(SchemaElement heldElement, RubyIO target) {
+    public SchemaPath newWindow(SchemaElement heldElement, IRIO target) {
         SchemaPath sp = new SchemaPath(this);
         sp.editor = heldElement;
         sp.targetElement = target;
@@ -197,7 +200,7 @@ public class SchemaPath {
 
         // Attempt to set a "changed flag".
         // This will also nudge the observers.
-        AppMain.objectDB.objectRootModified(p.targetElement, this);
+        AppMain.objectDB.objectRootModified(p.root, this);
         // Run an autocorrect on just about everything.
         // Could cause a lagspike, but this is *after* modification anyway,
         //  and worth it for the consistency benefits.

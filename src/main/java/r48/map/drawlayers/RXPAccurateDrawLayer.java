@@ -7,7 +7,6 @@
 
 package r48.map.drawlayers;
 
-import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -73,7 +72,7 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
             zSorting.add(new RXPPriorityPlane(i));
         // Very specific choice of algorithm.
         for (IRIO r : eventList.getEventKeys()) {
-            RubyIO ed = eventList.getEvent(r);
+            IRIO ed = eventList.getEvent(r);
             // Determine Z location.
             boolean isUpper = events.determineEventLayer(ed) != 0;
             // Since the "screen height" rules aren't *quite* being properly held to,
@@ -87,10 +86,10 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
                 // Another thing to check is RQ/Level 5/Hall 1.
                 // Note that while RQ should be a good stress test for this system,
                 //  some maps, such as Map055, appear on TID examination to be incomplete.
-                z = ((ed.getInstVarBySymbol("@y").fixnumVal + 1) * 2) + 1;
-                RubyIO edG = events.extractEventGraphic(ed);
+                z = ((ed.getIVar("@y").getFX() + 1) * 2) + 1;
+                IRIO edG = events.extractEventGraphic(ed);
                 if (edG != null) {
-                    long tid = edG.getInstVarBySymbol("@tile_id").fixnumVal;
+                    long tid = edG.getIVar("@tile_id").getFX();
                     if (tid != 0) {
                         // Get priority...
                         z += getTIDPriority((short) tid);
@@ -161,10 +160,10 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
 
     private class RXPEventPlane implements IZSortedObject {
         public final long z;
-        public final RubyIO evI;
+        public final IRIO evI;
         public final boolean eventUpper;
 
-        public RXPEventPlane(RubyIO event, long z, boolean isUpper) {
+        public RXPEventPlane(IRIO event, long z, boolean isUpper) {
             this.z = z;
             evI = event;
             eventUpper = isUpper;
@@ -182,8 +181,8 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
 
         @Override
         public void draw(MapViewDrawContext mvdc) {
-            int x = (int) evI.getInstVarBySymbol("@x").fixnumVal;
-            int y = (int) evI.getInstVarBySymbol("@y").fixnumVal;
+            int x = (int) evI.getIVar("@x").getFX();
+            int y = (int) evI.getIVar("@y").getFX();
             // Events vary in size - to stop the most obvious glitching, add some margin.
             mvdc.camTX -= 2;
             mvdc.camTY -= 2;
@@ -199,7 +198,7 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
                 return;
             int px = (x * mvdc.tileSize) - mvdc.camX;
             int py = (y * mvdc.tileSize) - mvdc.camY;
-            RubyIO g = events.extractEventGraphic(evI);
+            IRIO g = events.extractEventGraphic(evI);
             if (g != null)
                 events.drawEventGraphic(g, px, py, mvdc.igd, 1);
         }

@@ -16,6 +16,7 @@ import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
@@ -63,10 +64,10 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final RubyIO targV = iVar == null ? target : PathSyntax.parse(target, iVar);
-        final RubyTable targ = new RubyTable(targV.userVal);
-        final RubyIO width = widthVar == null ? null : PathSyntax.parse(target, widthVar);
-        final RubyIO height = heightVar == null ? null : PathSyntax.parse(target, heightVar);
+        final IRIO targV = iVar == null ? target : PathSyntax.parse(target, iVar);
+        final RubyTable targ = new RubyTable(targV.getBuffer());
+        final IRIO width = widthVar == null ? null : PathSyntax.parse(target, widthVar);
+        final IRIO height = heightVar == null ? null : PathSyntax.parse(target, heightVar);
 
         final TileHelper initialTileHelper = baseInitializeHelper(target);
         Size gridSize = getGridSize(initialTileHelper);
@@ -176,10 +177,10 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                         h = 0;
                     RubyTable r2 = targ.resize(w, h, defVals);
                     if (width != null)
-                        width.fixnumVal = w;
+                        width.setFX(w);
                     if (height != null)
-                        height.fixnumVal = h;
-                    targV.userVal = r2.innerBytes;
+                        height.setFX(h);
+                    targV.putBuffer(r2.innerBytes);
                     path.changeOccurred(false);
                 }
             }));

@@ -9,9 +9,9 @@ package r48.schema.specialized.tbleditors;
 
 import gabien.ui.*;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.TSDBChoiceIntegerSchemaElement;
 import r48.ui.UIGrid;
@@ -32,8 +32,8 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
     }
 
     @Override
-    public Runnable createEditor(final UIScrollLayout panel, final RubyIO targV, final UIGrid uig, final Runnable changeOccurred) {
-        final RubyTable targ = new RubyTable(targV.userVal);
+    public Runnable createEditor(final UIScrollLayout panel, final IRIO targV, final UIGrid uig, final Runnable changeOccurred) {
+        final RubyTable targ = new RubyTable(targV.getBuffer());
         final AtomicReference<IConsumer<Integer>> setter = new AtomicReference<IConsumer<Integer>>();
         final IConsumer<Integer> wtm = installEditor(flags, new IConsumer<UIElement>() {
             @Override

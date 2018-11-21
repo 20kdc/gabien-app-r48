@@ -18,7 +18,7 @@ import java.util.LinkedList;
  * Because everybody needs a public domain JSON parser.
  * October 9th, 2017
  */
-public class JsonObjectBackend implements IObjectBackend {
+public class JsonObjectBackend extends OldObjectBackend {
     public String root, ext;
 
     public JsonObjectBackend(String rootPath, String dataExt) {

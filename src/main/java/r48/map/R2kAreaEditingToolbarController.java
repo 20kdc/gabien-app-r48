@@ -14,8 +14,9 @@ import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
 import r48.maptools.UIMTBase;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
@@ -24,11 +25,12 @@ import r48.ui.Art;
  * Created on 11/08/17.
  */
 public class R2kAreaEditingToolbarController implements IEditingToolbarController {
-    public final RubyIO mapInfosRoot, areaInfo;
+    public final IObjectBackend.ILoadedObject mapInfosRoot;
+    public final IRIO areaInfo;
     public final int tileSize;
     public final IMapToolContext mapToolContext;
 
-    public R2kAreaEditingToolbarController(IMapToolContext mtc, RubyIO mapInfos, RubyIO mapInfo) {
+    public R2kAreaEditingToolbarController(IMapToolContext mtc, IObjectBackend.ILoadedObject mapInfos, IRIO mapInfo) {
         tileSize = mtc.getMapView().tileSize;
         mapToolContext = mtc;
         mapInfosRoot = mapInfos;
@@ -93,12 +95,12 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
         }
 
         private Rect getViewedRect() {
-            RubyIO rect = areaInfo.getInstVarBySymbol("@area_rect");
-            RubyIO l = rect.getInstVarBySymbol("@left");
-            RubyIO u = rect.getInstVarBySymbol("@up");
-            RubyIO r = rect.getInstVarBySymbol("@right");
-            RubyIO d = rect.getInstVarBySymbol("@down");
-            return new Rect((int) l.fixnumVal, (int) u.fixnumVal, (int) (r.fixnumVal - l.fixnumVal), (int) (d.fixnumVal - u.fixnumVal));
+            IRIO rect = areaInfo.getIVar("@area_rect");
+            IRIO l = rect.getIVar("@left");
+            IRIO u = rect.getIVar("@up");
+            IRIO r = rect.getIVar("@right");
+            IRIO d = rect.getIVar("@down");
+            return new Rect((int) l.getFX(), (int) u.getFX(), (int) (r.getFX() - l.getFX()), (int) (d.getFX() - u.getFX()));
         }
 
         @Override
@@ -109,15 +111,15 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
                 definingPoint2 = true;
                 label.text = textB;
             } else {
-                RubyIO rect = areaInfo.getInstVarBySymbol("@area_rect");
-                RubyIO l = rect.getInstVarBySymbol("@left");
-                RubyIO u = rect.getInstVarBySymbol("@up");
-                RubyIO r = rect.getInstVarBySymbol("@right");
-                RubyIO d = rect.getInstVarBySymbol("@down");
-                l.fixnumVal = Math.min(firstPointX, x);
-                u.fixnumVal = Math.min(firstPointY, y);
-                r.fixnumVal = Math.max(firstPointX, x) + 1;
-                d.fixnumVal = Math.max(firstPointY, y) + 1;
+                IRIO rect = areaInfo.getIVar("@area_rect");
+                IRIO l = rect.getIVar("@left");
+                IRIO u = rect.getIVar("@up");
+                IRIO r = rect.getIVar("@right");
+                IRIO d = rect.getIVar("@down");
+                l.setFX(Math.min(firstPointX, x));
+                u.setFX(Math.min(firstPointY, y));
+                r.setFX(Math.max(firstPointX, x) + 1);
+                d.setFX(Math.max(firstPointY, y) + 1);
                 AppMain.objectDB.objectRootModified(mapInfosRoot, new SchemaPath(AppMain.schemas.getSDBEntry("RPG::MapTree"), mapInfosRoot));
                 label.text = textA;
                 definingPoint2 = false;

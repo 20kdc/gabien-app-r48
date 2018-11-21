@@ -9,9 +9,13 @@ package r48.toolsets;
 
 import gabien.GaBIEn;
 import gabien.ui.*;
-import r48.*;
+import r48.AppMain;
+import r48.FontSizes;
+import r48.UIObjectDBMonitor;
+import r48.UITest;
 import r48.dbs.TXDB;
 import r48.io.IMIUtils;
+import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
@@ -43,7 +47,6 @@ public class BasicToolset implements IToolset {
                 makeFileList(),
                 new UIPopupMenu(new String[] {
                         TXDB.get("Edit Object"),
-                        TXDB.get("New Object via Schema, ODB'AnonObject'"),
                         TXDB.get("Autocorrect Object By Name And Schema"),
                         TXDB.get("Inspect Object (no Schema needed)"),
                         TXDB.get("Object-Object Comparison"),
@@ -66,18 +69,17 @@ public class BasicToolset implements IToolset {
                                 AppMain.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
-                                        final RubyIO rio = AppMain.objectDB.getObject(s);
+                                        final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
                                         if (AppMain.schemas.hasSDBEntry("File." + s)) {
                                             AppMain.launchSchema("File." + s, rio, null);
                                             return;
                                         }
                                         if (rio != null) {
-                                            if (rio.type == 'o') {
-                                                if (rio.symVal != null) {
-                                                    if (AppMain.schemas.hasSDBEntry(rio.symVal)) {
-                                                        AppMain.launchSchema(rio.symVal, rio, null);
-                                                        return;
-                                                    }
+                                            IRIO r2 = rio.getObject();
+                                            if (r2.getType() == 'o') {
+                                                if (AppMain.schemas.hasSDBEntry(r2.getSymbol())) {
+                                                    AppMain.launchSchema(r2.getSymbol(), rio, null);
+                                                    return;
                                                 }
                                             }
                                             AppMain.window.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
@@ -96,28 +98,15 @@ public class BasicToolset implements IToolset {
                         new Runnable() {
                             @Override
                             public void run() {
-                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
-                                    @Override
-                                    public void accept(String s) {
-                                        RubyIO rio = new RubyIO().setNull();
-                                        SchemaPath.setDefaultValue(rio, AppMain.schemas.getSDBEntry(s), new RubyIO().setFX(0));
-                                        AppMain.launchSchema(s, rio, null);
-                                    }
-                                }));
-                            }
-                        },
-                        new Runnable() {
-                            @Override
-                            public void run() {
                                 AppMain.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
-                                        final RubyIO rio = AppMain.objectDB.getObject(s);
+                                        final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
                                         AppMain.window.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                             @Override
                                             public void accept(String s) {
                                                 SchemaElement ise = AppMain.schemas.getSDBEntry(s);
-                                                ise.modifyVal(rio, new SchemaPath(ise, rio), false);
+                                                ise.modifyVal(rio.getObject(), new SchemaPath(ise, rio), false);
                                                 AppMain.launchDialog(TXDB.get("OK!"));
                                             }
                                         }));
@@ -131,11 +120,11 @@ public class BasicToolset implements IToolset {
                                 AppMain.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
-                                        RubyIO obj = AppMain.objectDB.getObject(s);
+                                        IObjectBackend.ILoadedObject obj = AppMain.objectDB.getObject(s);
                                         if (obj == null) {
                                             AppMain.launchDialog(TXDB.get("The file couldn't be read, and R48 cannot create it."));
                                         } else {
-                                            AppMain.window.createWindow(new UITest(obj));
+                                            AppMain.window.createWindow(new UITest(obj.getObject()));
                                         }
                                     }
                                 }));
@@ -147,22 +136,22 @@ public class BasicToolset implements IToolset {
                                 AppMain.window.createWindow(new UITextPrompt(TXDB.get("Source Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
-                                        final RubyIO objA = AppMain.objectDB.getObject(s);
+                                        final IObjectBackend.ILoadedObject objA = AppMain.objectDB.getObject(s);
                                         AppMain.window.createWindow(new UITextPrompt(TXDB.get("Target Object Name?"), new IConsumer<String>() {
                                             @Override
                                             public void accept(String s) {
-                                                final RubyIO objB = AppMain.objectDB.getObject(s);
+                                                final IObjectBackend.ILoadedObject objB = AppMain.objectDB.getObject(s);
                                                 if ((objA == null) || (objB == null)) {
                                                     AppMain.launchDialog(TXDB.get("A file couldn't be read, and R48 cannot create it."));
                                                 } else {
                                                     try {
                                                         OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "objcompareAB.txt"));
-                                                        byte[] cid = IMIUtils.createIMIData(objA, objB, "");
+                                                        byte[] cid = IMIUtils.createIMIData(objA.getObject(), objB.getObject(), "");
                                                         if (cid != null)
                                                             os.write(cid);
                                                         os.close();
                                                         os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "objcompareBA.txt"));
-                                                        cid = IMIUtils.createIMIData(objB, objA, "");
+                                                        cid = IMIUtils.createIMIData(objB.getObject(), objA.getObject(), "");
                                                         if (cid != null)
                                                             os.write(cid);
                                                         os.close();
@@ -198,9 +187,9 @@ public class BasicToolset implements IToolset {
                                     final DataOutputStream dos = new DataOutputStream(lm);
                                     final HashSet<String> text = new HashSet<String>();
                                     for (String s : AppMain.getAllObjects()) {
-                                        RubyIO obj = AppMain.objectDB.getObject(s, null);
+                                        IObjectBackend.ILoadedObject obj = AppMain.objectDB.getObject(s, null);
                                         if (obj != null) {
-                                            universalStringLocator(obj, new IFunction<IRIO, Integer>() {
+                                            universalStringLocator(obj.getObject(), new IFunction<IRIO, Integer>() {
                                                 @Override
                                                 public Integer apply(IRIO rubyIO) {
                                                     text.add(rubyIO.decString());

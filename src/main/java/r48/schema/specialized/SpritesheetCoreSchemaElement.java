@@ -14,6 +14,8 @@ import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
+import r48.io.data.IRIO;
+import r48.schema.IRIOAwareSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -27,10 +29,10 @@ public class SpritesheetCoreSchemaElement extends SchemaElement {
     public String text;
     public int defaultVal;
 
-    public IFunction<RubyIO, RubyIO> numberProvider;
+    public IFunction<IRIO, IRIO> numberProvider;
     public IFunction<RubyIO, ISpritesheetProvider> provider;
 
-    public SpritesheetCoreSchemaElement(String propTranslated, int def, IFunction<RubyIO, RubyIO> nprov, IFunction<RubyIO, ISpritesheetProvider> core) {
+    public SpritesheetCoreSchemaElement(String propTranslated, int def, IFunction<IRIO, IRIO> nprov, IFunction<RubyIO, ISpritesheetProvider> core) {
         text = propTranslated;
         defaultVal = def;
         numberProvider = nprov;
@@ -40,16 +42,16 @@ public class SpritesheetCoreSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
         final ISpritesheetProvider localProvider = provider.apply(target);
-        final RubyIO actTarg = numberProvider.apply(target);
+        final IRIO actTarg = numberProvider.apply(target);
         return new UITextButton(FormatSyntax.formatExtended(text, actTarg), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 TempDialogSchemaChoice temp = new TempDialogSchemaChoice(null, null, path);
                 final SchemaPath innerPath = path.newWindow(temp, target);
-                temp.heldDialog = new UISpritesheetChoice(actTarg.fixnumVal, localProvider, new IConsumer<Long>() {
+                temp.heldDialog = new UISpritesheetChoice(actTarg.getFX(), localProvider, new IConsumer<Long>() {
                     @Override
                     public void accept(Long integer) {
-                        actTarg.fixnumVal = integer;
+                        actTarg.setFX(integer);
                         innerPath.changeOccurred(false);
                         launcher.popObject();
                     }
@@ -61,9 +63,9 @@ public class SpritesheetCoreSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        RubyIO actTarg = numberProvider.apply(target);
-        if (SchemaElement.ensureType(actTarg, 'i', setDefault)) {
-            actTarg.fixnumVal = defaultVal;
+        IRIO actTarg = numberProvider.apply(target);
+        if (IRIOAwareSchemaElement.checkType(actTarg, 'i', null, setDefault)) {
+            actTarg.setFX(defaultVal);
             path.changeOccurred(true);
         }
     }

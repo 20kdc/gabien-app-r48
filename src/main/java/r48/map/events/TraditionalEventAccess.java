@@ -12,9 +12,11 @@ import r48.RubyIO;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 /**
@@ -24,7 +26,7 @@ import java.util.LinkedList;
  */
 public class TraditionalEventAccess implements IEventAccess {
     private final String mapRootId, mapRootSchema, eventsPath;
-    private final RubyIO mapRoot;
+    private final IObjectBackend.ILoadedObject mapRoot;
     private final int eventIdBase;
     private final String eventSchema;
     private final String eventsName, eventName;
@@ -55,20 +57,20 @@ public class TraditionalEventAccess implements IEventAccess {
     @Override
     public LinkedList<IRIO> getEventKeys() {
         LinkedList<IRIO> contents = new LinkedList<IRIO>();
-        RubyIO mapEvents = getMapEvents();
-        contents.addAll(mapEvents.hashVal.keySet());
+        IRIO mapEvents = getMapEvents();
+        Collections.addAll(contents, mapEvents.getHashKeys());
         return contents;
     }
 
     @Override
-    public RubyIO getEvent(IRIO key) {
-        RubyIO mapEvents = getMapEvents();
+    public IRIO getEvent(IRIO key) {
+        IRIO mapEvents = getMapEvents();
         return mapEvents.getHashVal(key);
     }
 
     @Override
     public void delEvent(IRIO key) {
-        RubyIO mapEvents = getMapEvents();
+        IRIO mapEvents = getMapEvents();
         mapEvents.removeHashVal(key);
         pokeHive();
     }
@@ -83,8 +85,8 @@ public class TraditionalEventAccess implements IEventAccess {
     @Override
     public RubyIO addEvent(RubyIO eve, int type) {
         RubyIO key = getFreeIndex();
-        RubyIO mapEvents = getMapEvents();
-        RubyIO eveTarget = mapEvents.addHashVal(key);
+        IRIO mapEvents = getMapEvents();
+        IRIO eveTarget = mapEvents.addHashVal(key);
         if (eve == null) {
             SchemaPath.setDefaultValue(eveTarget, AppMain.schemas.getSDBEntry(eventSchema), key);
         } else {
@@ -121,17 +123,17 @@ public class TraditionalEventAccess implements IEventAccess {
 
     @Override
     public long getEventX(IRIO a) {
-        return PathSyntax.parse(getEvent(a), propPathX).fixnumVal;
+        return PathSyntax.parse(getEvent(a), propPathX).getFX();
     }
 
     @Override
     public long getEventY(IRIO a) {
-        return PathSyntax.parse(getEvent(a), propPathY).fixnumVal;
+        return PathSyntax.parse(getEvent(a), propPathY).getFX();
     }
 
     @Override
     public void setEventXY(IRIO a, long x, long y) {
-        RubyIO ev = getEvent(a);
+        IRIO ev = getEvent(a);
         if (ev == null)
             return;
         PathSyntax.parse(getEvent(a), propPathX).setFX(x);
@@ -141,7 +143,7 @@ public class TraditionalEventAccess implements IEventAccess {
 
     @Override
     public String getEventName(IRIO a) {
-        RubyIO iv = PathSyntax.parse(getEvent(a), propPathName);
+        IRIO iv = PathSyntax.parse(getEvent(a), propPathName);
         if (iv == null)
             return null;
         return iv.decString();
@@ -149,7 +151,7 @@ public class TraditionalEventAccess implements IEventAccess {
 
     private RubyIO getFreeIndex() {
         long unusedIndex = eventIdBase;
-        RubyIO mapEvents = getMapEvents();
+        IRIO mapEvents = getMapEvents();
         while (mapEvents.getHashVal(convIndex(unusedIndex)) != null)
             unusedIndex++;
         return convIndex(unusedIndex);
@@ -159,8 +161,8 @@ public class TraditionalEventAccess implements IEventAccess {
         return new RubyIO().setFX(unusedIndex);
     }
 
-    public RubyIO getMapEvents() {
-        return PathSyntax.parse(mapRoot, eventsPath);
+    public IRIO getMapEvents() {
+        return PathSyntax.parse(mapRoot.getObject(), eventsPath);
     }
 
     private void pokeHive() {

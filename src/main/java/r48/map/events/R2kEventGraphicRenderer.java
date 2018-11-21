@@ -9,7 +9,7 @@ package r48.map.events;
 
 import gabien.IGrDriver;
 import gabien.IImage;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
 
@@ -33,15 +33,15 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public int determineEventLayer(RubyIO event) {
-        RubyIO eventCore = extractEventGraphic(event);
+    public int determineEventLayer(IRIO event) {
+        IRIO eventCore = extractEventGraphic(event);
         if (eventCore == null)
             return -1;
-        RubyIO active = eventCore.getInstVarBySymbol("@active");
+        IRIO active = eventCore.getIVar("@active");
         if (active != null)
-            if (active.type == 'F')
+            if (active.getType() == 'F')
                 return -1;
-        int ld = (int) eventCore.getInstVarBySymbol("@layer").fixnumVal;
+        int ld = (int) eventCore.getIVar("@layer").getFX();
         if (ld == 0)
             return 0;
         if (ld == 1)
@@ -53,48 +53,48 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public RubyIO extractEventGraphic(RubyIO event) {
-        if (event.symVal == null)
+    public IRIO extractEventGraphic(IRIO event) {
+        if (event.getSymbol() == null)
             return null;
         // Savefile event classes
-        if (event.symVal.equals("RPG::SavePartyLocation"))
+        if (event.getSymbol().equals("RPG::SavePartyLocation"))
             return event;
-        if (event.symVal.equals("RPG::SaveVehicleLocation"))
+        if (event.getSymbol().equals("RPG::SaveVehicleLocation"))
             return event;
-        if (event.symVal.equals("RPG::SaveMapEvent"))
+        if (event.getSymbol().equals("RPG::SaveMapEvent"))
             return event;
         // 'Zero Page' gets in the way here.
-        if (event.getInstVarBySymbol("@pages").arrVal.length <= 1)
+        if (event.getIVar("@pages").getALen() <= 1)
             return null;
-        return event.getInstVarBySymbol("@pages").arrVal[1];
+        return event.getIVar("@pages").getAElem(1);
     }
 
     @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int sprScale) {
-        String cName = target.getInstVarBySymbol("@character_name").decString();
+    public void drawEventGraphic(IRIO target, int ox, int oy, IGrDriver igd, int sprScale) {
+        String cName = target.getIVar("@character_name").decString();
         if (!cName.equals("")) {
             IImage i = imageLoader.getImage("CharSet/" + cName, false);
             int sx = i.getWidth() / 12;
             int sy = i.getHeight() / 8;
             int rsx = scaleLocalToRemote(sx);
             int rsy = scaleLocalToRemote(sy);
-            if (target.getInstVarBySymbol("@character_name").strVal[0] != '$') {
+            if (cName.charAt(0) != '$') {
                 // @16 : 24x32
                 sx = (localTileSize * 3) / 2;
                 sy = localTileSize * 2;
                 rsx = (remoteTileSize * 3) / 2;
                 rsy = remoteTileSize * 2;
             }
-            int idx = ((int) target.getInstVarBySymbol("@character_index").fixnumVal);
+            int idx = ((int) target.getIVar("@character_index").getFX());
             // Direction is apparently in a 0123 format???
             int dir = 2;
-            RubyIO dirVal = target.getInstVarBySymbol("@character_direction");
+            IRIO dirVal = target.getIVar("@character_direction");
             if (dirVal != null)
-                dir = ((int) dirVal.fixnumVal);
+                dir = ((int) dirVal.getFX());
             int pat = 1;
-            RubyIO patVal = target.getInstVarBySymbol("@character_pattern");
+            IRIO patVal = target.getIVar("@character_pattern");
             if (patVal != null)
-                pat = ((int) patVal.fixnumVal);
+                pat = ((int) patVal.getFX());
             int px = ((idx % 4) * 3) + pat;
             int py = ((idx / 4) * 4) + dir;
             // The vertical offset is either 12 or 16?
@@ -103,7 +103,7 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
             RMEventGraphicRenderer.flexibleSpriteDraw(sx * px, sy * py, sx, sy, ox + (((remoteTileSize * sprScale) - (sx * sprScale)) / 2), (oy - (rsy * sprScale)) + (remoteTileSize * sprScale), rsx * sprScale, rsy * sprScale, 0, i, blendType, igd);
         } else {
             // ok, so in this case it's a tile. In the index field.
-            tileRenderer.drawTile(0, (short) (target.getInstVarBySymbol("@character_index").fixnumVal + 10000), ox, oy, igd, sprScale, false);
+            tileRenderer.drawTile(0, (short) (target.getIVar("@character_index").getFX() + 10000), ox, oy, igd, sprScale, false);
         }
     }
 

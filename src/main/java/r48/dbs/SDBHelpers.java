@@ -79,9 +79,9 @@ class SDBHelpers {
 
     public SchemaElement makeSpriteSelector(final String varPath, final String imgPath, final String imgPfx) {
         final IFunction<String, ISpritesheetProvider> args2 = spritesheets.get(imgPfx);
-        return new SpritesheetCoreSchemaElement(spritesheetN.get(imgPfx), 0, new IFunction<RubyIO, RubyIO>() {
+        return new SpritesheetCoreSchemaElement(spritesheetN.get(imgPfx), 0, new IFunction<IRIO, IRIO>() {
             @Override
-            public RubyIO apply(RubyIO rubyIO) {
+            public IRIO apply(IRIO rubyIO) {
                 return PathSyntax.parse(rubyIO, varPath);
             }
         }, new IFunction<RubyIO, ISpritesheetProvider>() {

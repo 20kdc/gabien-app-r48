@@ -7,8 +7,7 @@
 
 package r48.map;
 
-import r48.RubyIO;
-import r48.map.systems.MapSystem;
+import r48.io.data.IRIO;
 
 /**
  * Helps cache tileset objects to reduce disk thrashing
@@ -16,7 +15,7 @@ import r48.map.systems.MapSystem;
  * Created on 14th February 2018.
  */
 public class RTilesetCacheHelper {
-    private RubyIO lastTileset = null;
+    private IRIO lastTileset = null;
     private long lastTsId = -1;
     private int lastMapId = -1;
     private final String tilesetStorage;
@@ -31,7 +30,7 @@ public class RTilesetCacheHelper {
         lastMapId = m;
     }
 
-    public RubyIO receivedChanged(String changed, long currentTsId) {
+    public IRIO receivedChanged(String changed, long currentTsId) {
         if (lastTsId != currentTsId)
             lastTileset = null;
         if (changed == null) {
@@ -42,7 +41,7 @@ public class RTilesetCacheHelper {
         return lastTileset;
     }
 
-    public void insertTileset(long id, RubyIO ts) {
+    public void insertTileset(long id, IRIO ts) {
         if (lastTileset == null) {
             lastTileset = ts;
             lastTsId = id;

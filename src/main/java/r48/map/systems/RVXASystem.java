@@ -12,6 +12,7 @@ import gabien.ui.Rect;
 import gabien.ui.Size;
 import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController;
@@ -37,11 +38,11 @@ public class RVXASystem extends RXPSystem {
     }
 
     @Override
-    public StuffRenderer rendererFromMapAndTso(RubyIO map, RubyIO tso, IEventAccess events) {
+    public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tso, IEventAccess events) {
         String vxaPano = "";
         if (map != null) {
-            vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
-            if (map.getInstVarBySymbol("@parallax_show").type != 'T')
+            vxaPano = map.getIVar("@parallax_name").decString();
+            if (map.getIVar("@parallax_show").getType() != 'T')
                 vxaPano = "";
         }
         if (!vxaPano.equals(""))

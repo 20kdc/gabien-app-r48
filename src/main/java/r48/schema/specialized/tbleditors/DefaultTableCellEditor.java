@@ -10,8 +10,8 @@ package r48.schema.specialized.tbleditors;
 import gabien.ui.UINumberBox;
 import gabien.ui.UIScrollLayout;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.RubyTable;
+import r48.io.data.IRIO;
 import r48.ui.UIGrid;
 
 /**
@@ -19,8 +19,8 @@ import r48.ui.UIGrid;
  */
 public class DefaultTableCellEditor implements ITableCellEditor {
     @Override
-    public Runnable createEditor(final UIScrollLayout panel, final RubyIO targV, final UIGrid uig, final Runnable changeOccurred) {
-        final RubyTable targ = new RubyTable(targV.userVal);
+    public Runnable createEditor(final UIScrollLayout panel, final IRIO targV, final UIGrid uig, final Runnable changeOccurred) {
+        final RubyTable targ = new RubyTable(targV.getBuffer());
         final UINumberBox[] boxes = new UINumberBox[targ.planeCount];
         for (int i = 0; i < boxes.length; i++) {
             boxes[i] = new UINumberBox(targ.getTiletype(0, 0, i), FontSizes.tableElementTextHeight);

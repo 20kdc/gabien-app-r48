@@ -9,7 +9,7 @@ package r48.map.events;
 
 import gabien.IGrDriver;
 import gabien.IImage;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;
 
 /**
@@ -25,18 +25,18 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
     }
 
     @Override
-    public int determineEventLayer(RubyIO event) {
+    public int determineEventLayer(IRIO event) {
         return 0;
     }
 
 
     @Override
-    public RubyIO extractEventGraphic(RubyIO event) {
+    public IRIO extractEventGraphic(IRIO event) {
         return event;
     }
 
     @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int sprScale) {
+    public void drawEventGraphic(IRIO target, int ox, int oy, IGrDriver igd, int sprScale) {
         String[] graphics = new String[] {"Hari", "Isogin", "Kani", "Sleep", "Chibi", "Hoshi", "Dum", "Carry", "Juel", "Ufo"};
         int dsX = 16;
         int dsY = 16;
@@ -44,7 +44,7 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
         int dfY = 0;
         int doX = 0;
         int doY = 0;
-        int type = (int) target.getInstVarBySymbol("@type").fixnumVal;
+        int type = (int) target.getIVar("@type").getFX();
 
         // Deal with specific cases
         if (type == 7) {
@@ -53,7 +53,7 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
             doX = -7;
             doY = -2;
         } else if ((type == 6) || (type == 1)) {
-            dfX = (int) target.getInstVarBySymbol("@tOX").fixnumVal;
+            dfX = (int) target.getIVar("@tOX").getFX();
         } else if (type == 9) {
             dsX = 32;
             dsY = 32;

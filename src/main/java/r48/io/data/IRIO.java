@@ -105,6 +105,13 @@ public abstract class IRIO {
 
     public abstract void rmAElem(int i);
 
+    public IRIO[] getANewArray() {
+        IRIO[] contents = new IRIO[getALen()];
+        for (int i = 0; i < contents.length; i++)
+            contents[i] = getAElem(i);
+        return contents;
+    }
+
     // '{', '}'
     public abstract IRIO[] getHashKeys();
 
@@ -272,4 +279,5 @@ public abstract class IRIO {
             return true;
         return false;
     }
+
 }

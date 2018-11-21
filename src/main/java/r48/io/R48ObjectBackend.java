@@ -20,7 +20,7 @@ import java.util.LinkedList;
  * NOTE! Additions to what this code writes need to be replicated in luahead or LS-mode needs to disable them
  * Created on 1/27/17.
  */
-public class R48ObjectBackend implements IObjectBackend {
+public class R48ObjectBackend extends OldObjectBackend {
     private final String prefix, postfix;
     // should almost always be false - subset for luahead.lua simplicity of implementation
     public final boolean lsMode;

@@ -10,12 +10,12 @@ package r48.map.mapinfos;
 import gabien.ui.IConsumer;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -24,7 +24,7 @@ import java.util.Set;
  */
 public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
     public IConsumer<SchemaPath> modHandler;
-    public RubyIO mapInfos = AppMain.objectDB.getObject("MapInfos");
+    public IObjectBackend.ILoadedObject mapInfos = AppMain.objectDB.getObject("MapInfos");
 
     public static String sNameFromInt(long key) {
         String mapStr = Long.toString(key);
@@ -36,32 +36,33 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     @Override
     public void registerModificationHandler(IConsumer<SchemaPath> onMapInfoChange) {
         modHandler = onMapInfoChange;
-        AppMain.objectDB.registerModificationHandler(mapInfos, onMapInfoChange);
+        AppMain.objectDB.registerModificationHandler(mapInfos.getObject(), onMapInfoChange);
     }
 
     @Override
     public Set<Long> getHashKeys() {
         HashSet<Long> hs = new HashSet<Long>();
-        for (IRIO rio : mapInfos.hashVal.keySet())
+        for (IRIO rio : mapInfos.getObject().getHashKeys())
             hs.add(rio.getFX());
         return hs;
     }
 
     @Override
-    public RubyIO getHashBID(long k) {
-        return mapInfos.getHashVal(new RubyIO().setFX(k));
+    public IRIO getHashBID(long k) {
+        return mapInfos.getObject().getHashVal(new RubyIO().setFX(k));
     }
 
     @Override
     public int getOrderOfMap(long k) {
-        return (int) mapInfos.getHashVal(new RubyIO().setFX(k)).getInstVarBySymbol("@order").fixnumVal;
+        return (int) mapInfos.getObject().getHashVal(new RubyIO().setFX(k)).getIVar("@order").getFX();
     }
 
     @Override
     public long getMapOfOrder(int order) {
-        for (Map.Entry<IRIO, RubyIO> rio : mapInfos.hashVal.entrySet())
-            if (rio.getValue().getInstVarBySymbol("@order").fixnumVal == order)
-                return rio.getKey().getFX();
+        IRIO obj = mapInfos.getObject();
+        for (IRIO rio : obj.getHashKeys())
+            if (obj.getHashVal(obj).getIVar("@order").getFX() == order)
+                return rio.getFX();
         return -1;
     }
 
@@ -84,11 +85,11 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     public void swapOrders(int orderA, int orderB) {
         long a = getMapOfOrder(orderA);
         long b = getMapOfOrder(orderB);
-        RubyIO ao = getHashBID(a).getInstVarBySymbol("@order");
-        RubyIO bo = getHashBID(b).getInstVarBySymbol("@order");
-        long t = bo.fixnumVal;
-        bo.fixnumVal = ao.fixnumVal;
-        ao.fixnumVal = t;
+        IRIO ao = getHashBID(a).getIVar("@order");
+        IRIO bo = getHashBID(b).getIVar("@order");
+        long t = bo.getFX();
+        bo.setFX(ao.getFX());
+        ao.setFX(t);
     }
 
     @Override
@@ -105,19 +106,19 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     @Override
     public void removeMap(long k) {
         MapInfoReparentUtil.removeMapHelperSALT(k, this);
-        mapInfos.removeHashVal(new RubyIO().setFX(k));
+        mapInfos.getObject().removeHashVal(new RubyIO().setFX(k));
     }
 
     @Override
     public int createNewMap(long k) {
-        RubyIO mi = mapInfos.addHashVal(new RubyIO().setFX(k));
+        IRIO mi = mapInfos.getObject().addHashVal(new RubyIO().setFX(k));
         SchemaPath.setDefaultValue(mi, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
         int targetOrder = getLastOrder();
         long l = getMapOfOrder(targetOrder);
         if (l == -1)
             l = 0;
-        mi.getInstVarBySymbol("@parent_id").fixnumVal = l;
-        mi.getInstVarBySymbol("@order").fixnumVal = targetOrder + 1;
+        mi.getIVar("@parent_id").setFX(l);
+        mi.getIVar("@order").setFX(targetOrder + 1);
         return targetOrder;
     }
 

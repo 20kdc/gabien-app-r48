@@ -11,8 +11,8 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
 import r48.AppMain;
-import r48.RubyIO;
 import r48.dbs.ATDB;
+import r48.io.data.IRIO;
 import r48.map.UIMapView;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
@@ -28,9 +28,9 @@ public class LcfTileRenderer implements ITileRenderer {
     public final IImage chipset;
     public static final int tileSize = 16;
 
-    public LcfTileRenderer(IImageLoader imageLoader, RubyIO tso) {
+    public LcfTileRenderer(IImageLoader imageLoader, IRIO tso) {
         if (tso != null) {
-            chipset = imageLoader.getImage("ChipSet/" + tso.getInstVarBySymbol("@tileset_name").decString(), false);
+            chipset = imageLoader.getImage("ChipSet/" + tso.getIVar("@tileset_name").decString(), false);
         } else {
             chipset = null;
         }

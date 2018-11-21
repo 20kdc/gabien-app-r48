@@ -75,7 +75,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
             SchemaPath root = innerElem.findRoot();
             // perform a final verification of the file, just in case? (NOPE: Causes long save times on, say, LDBs)
             // root.editor.modifyVal(root.targetElement, root, false);
-            AppMain.objectDB.ensureSaved(root.hrIndex, root.targetElement);
+            AppMain.objectDB.ensureSaved(root.hrIndex, root.root);
         }
     }, FontSizes.schemaPathTextHeight);
     private UIAppendButton toolbarI = new UIAppendButton(Art.Symbol.Inspect, toolbarS, new Runnable() {

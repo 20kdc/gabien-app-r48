@@ -18,6 +18,7 @@ import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.systems.IRMMapSystem;
@@ -31,7 +32,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * Right now this breaks under R2k for various reasons, first being the versionId assumption.
@@ -69,14 +69,12 @@ public class RMToolsToolset implements IToolset {
                 // Still need to see to the CommonEvents.
                 // next day, um, these tools aren't really doable post-further-modularization (stickynote)
                 // 5th January 2017. Here we go.
-                TXDB.get("Locate incomplete ECs"),
-                TXDB.get("Locate incomplete ECs (CommonEvents)"),
                 TXDB.get("MEV/CEV Transcript Dump (no Troop/Item/etc.)"),
         }, new Runnable[] {
                 new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Code?"), new IConsumer<String>() {
+                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Code (or -1337 for any unknown) ?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 int i;
@@ -88,13 +86,27 @@ public class RMToolsToolset implements IToolset {
                                 }
                                 for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
                                     // Find event!
-                                    for (Map.Entry<IRIO, RubyIO> event : rmd.map.getInstVarBySymbol("@events").hashVal.entrySet()) {
-                                        for (RubyIO page : event.getValue().getInstVarBySymbol("@pages").arrVal) {
-                                            if (page.type == '0')
+                                    IRIO mapEvObj = rmd.map.getObject().getIVar("@events");
+                                    for (IRIO key : mapEvObj.getHashKeys()) {
+                                        IRIO event = mapEvObj.getHashVal(key);
+                                        IRIO pages = event.getIVar("@pages");
+                                        int alen = pages.getALen();
+                                        for (int j = 0; j < alen; j++) {
+                                            IRIO page = pages.getAElem(j);
+                                            if (pages.getType() == '0')
                                                 continue;
-                                            for (RubyIO cmd : page.getInstVarBySymbol("@list").arrVal) {
-                                                if (cmd.getInstVarBySymbol("@code").fixnumVal == i) {
-                                                    UIMTEventPicker.showEventDivorced(event.getKey(), rmd.map, rmd.schemaName, event.getValue(), "RPG::Event");
+                                            IRIO cmds = page.getIVar("@list");
+                                            int alen2 = cmds.getALen();
+                                            for (int k = 0; k < alen2; k++) {
+                                                long cod = cmds.getAElem(k).getIVar("@code").getFX();
+                                                boolean found;
+                                                if (i == -1337) {
+                                                    found = !commandsEvent.knownCommands.containsKey((int) cod);
+                                                } else {
+                                                    found = cod == i;
+                                                }
+                                                if (found) {
+                                                    UIMTEventPicker.showEventDivorced(key, rmd.map, rmd.schemaName, event, "RPG::Event");
                                                     return;
                                                 }
                                             }
@@ -121,7 +133,7 @@ public class RMToolsToolset implements IToolset {
                         }
                         for (final String obj : objects) {
                             System.out.println(obj + "...");
-                            RubyIO map = AppMain.objectDB.getObject(obj);
+                            IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(obj);
                             IConsumer<SchemaPath> modListen = new IConsumer<SchemaPath>() {
                                 @Override
                                 public void accept(SchemaPath path) {
@@ -132,10 +144,10 @@ public class RMToolsToolset implements IToolset {
                                     throw new RuntimeException("MODIFY " + obj + " " + path);
                                 }
                             };
-                            AppMain.objectDB.registerModificationHandler(map, modListen);
+                            AppMain.objectDB.registerModificationHandler(map.getObject(), modListen);
                             SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(objectSchemas.removeFirst()), map);
-                            sp.editor.modifyVal(map, sp, false);
-                            AppMain.objectDB.deregisterModificationHandler(map, modListen);
+                            sp.editor.modifyVal(map.getObject(), sp, false);
+                            AppMain.objectDB.deregisterModificationHandler(map.getObject(), modListen);
                             System.out.println(obj + " done.");
                         }
                     }
@@ -162,10 +174,10 @@ public class RMToolsToolset implements IToolset {
                                         int total = 0;
                                         String log = "";
                                         for (String s : objects) {
-                                            RubyIO rio = AppMain.objectDB.getObject(s);
+                                            IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
                                             SchemaElement se = AppMain.schemas.getSDBEntry(objectSchemas.removeFirst());
                                             if (rio != null) {
-                                                int count = BasicToolset.universalStringLocator(rio, new IFunction<IRIO, Integer>() {
+                                                int count = BasicToolset.universalStringLocator(rio.getObject(), new IFunction<IRIO, Integer>() {
                                                     @Override
                                                     public Integer apply(IRIO rubyIO) {
                                                         if (rubyIO.decString().equals(find)) {
@@ -193,45 +205,6 @@ public class RMToolsToolset implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
-                            // Find event!
-                            for (Map.Entry<IRIO, RubyIO> event : rmd.map.getInstVarBySymbol("@events").hashVal.entrySet()) {
-                                for (RubyIO page : event.getValue().getInstVarBySymbol("@pages").arrVal) {
-                                    if (page.type == '0')
-                                        continue;
-                                    for (RubyIO cmd : page.getInstVarBySymbol("@list").arrVal) {
-                                        if (!commandsEvent.knownCommands.containsKey((int) cmd.getInstVarBySymbol("@code").fixnumVal)) {
-                                            System.out.println(cmd.getInstVarBySymbol("@code").fixnumVal);
-                                            UIMTEventPicker.showEventDivorced(event.getKey(), rmd.map, rmd.schemaName, event.getValue(), "RPG::Event");
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        AppMain.launchDialog(TXDB.get("Not found."));
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        for (RubyIO rio : mapSystem.getAllCommonEvents())
-                            if (rio.type != '0') {
-                                for (RubyIO cmd : rio.getInstVarBySymbol("@list").arrVal) {
-                                    if (!commandsEvent.knownCommands.containsKey((int) cmd.getInstVarBySymbol("@code").fixnumVal)) {
-                                        System.out.println(rio.getInstVarBySymbol("@id").fixnumVal);
-                                        System.out.println(cmd.getInstVarBySymbol("@code").fixnumVal);
-                                        AppMain.launchDialog(TXDB.get("Found an unknown event command - Check the console."));
-                                        return;
-                                    }
-                                }
-                            }
-                        AppMain.launchDialog(TXDB.get("Not found."));
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
                         PrintStream ps = null;
                         try {
                             ps = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "transcript.html"), false, "UTF-8");
@@ -241,8 +214,8 @@ public class RMToolsToolset implements IToolset {
                         RMTranscriptDumper dumper = new RMTranscriptDumper(ps);
                         dumper.start();
                         dumper.startFile("CommonEvents", TXDB.get("Common Events"));
-                        for (RubyIO rio : mapSystem.getAllCommonEvents())
-                            dumper.dump(rio.getInstVarBySymbol("@name").decString(), rio.getInstVarBySymbol("@list").arrVal, commandsEvent);
+                        for (IRIO rio : mapSystem.getAllCommonEvents())
+                            dumper.dump(rio.getIVar("@name").decString(), rio.getIVar("@list"), commandsEvent);
                         dumper.endFile();
                         // Order the maps so that it comes out coherently for valid diffs (OSER Solstice Comparison Project)
                         LinkedList<Integer> orderedMapInfos = new LinkedList<Integer>();
@@ -255,22 +228,25 @@ public class RMToolsToolset implements IToolset {
                         for (int id : orderedMapInfos) {
                             IRMMapSystem.RMMapData rmd = mapMap.get(id);
                             dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), FormatSyntax.formatExtended(TXDB.get("Map:#A"), new RubyIO().setString(rmd.name, true)));
-                            RubyIO map = rmd.map;
+                            IObjectBackend.ILoadedObject map = rmd.map;
                             // We need to temporarily override map context.
                             // This'll fix itself by next frame...
                             AppMain.schemas.updateDictionaries(map);
                             AppMain.schemas.kickAllDictionariesForMapChange();
                             LinkedList<Integer> orderedEVN = new LinkedList<Integer>();
-                            for (IRIO i : map.getInstVarBySymbol("@events").hashVal.keySet())
+                            for (IRIO i : map.getObject().getIVar("@events").getHashKeys())
                                 orderedEVN.add((int) i.getFX());
                             Collections.sort(orderedEVN);
                             for (int k : orderedEVN) {
-                                RubyIO event = map.getInstVarBySymbol("@events").getHashVal(new RubyIO().setFX(k));
+                                IRIO event = map.getObject().getIVar("@events").getHashVal(new RubyIO().setFX(k));
                                 int pageId = 1;
-                                for (RubyIO page : event.getInstVarBySymbol("@pages").arrVal) {
-                                    if (page.type == '0')
+                                IRIO pages = event.getIVar("@pages");
+                                int alen = pages.getALen();
+                                for (int i = 0; i < alen; i++) {
+                                    IRIO page = pages.getAElem(i);
+                                    if (page.getType() == '0')
                                         continue; // 0th page on R2k backend.
-                                    dumper.dump(FormatSyntax.formatExtended(TXDB.get("Ev.#A #C, page #B"), new RubyIO().setFX(k), new RubyIO().setFX(pageId), event.getInstVarBySymbol("@name")), page.getInstVarBySymbol("@list").arrVal, commandsEvent);
+                                    dumper.dump(FormatSyntax.formatExtended(TXDB.get("Ev.#A #C, page #B"), new RubyIO().setFX(k), new RubyIO().setFX(pageId), event.getIVar("@name")), page.getIVar("@list"), commandsEvent);
                                     pageId++;
                                 }
                             }

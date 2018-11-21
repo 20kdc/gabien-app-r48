@@ -11,6 +11,7 @@ import gabien.ui.IFunction;
 import gabien.ui.UIScrollLayout;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.displays.TonePickerSchemaElement;
 import r48.schema.specialized.cmgb.IGroupBehavior;
@@ -28,10 +29,10 @@ public class RPGCommand {
 
     public SchemaElement specialSchema;
 
-    public LinkedList<IFunction<RubyIO, SchemaElement>> paramType = new LinkedList<IFunction<RubyIO, SchemaElement>>();
+    public LinkedList<IFunction<IRIO, SchemaElement>> paramType = new LinkedList<IFunction<IRIO, SchemaElement>>();
     // As the entire paramType cannot be replaced (paramType is relied upon for parameter names), this instead allows supplementing it.
     public LinkedList<SpecialTag> paramSpecialTags = new LinkedList<SpecialTag>();
-    public LinkedList<IFunction<RubyIO, String>> paramName = new LinkedList<IFunction<RubyIO, String>>();
+    public LinkedList<IFunction<IRIO, String>> paramName = new LinkedList<IFunction<IRIO, String>>();
     public int indentPre;
     // This is conditional solely because of Show Inn (R2k).
     public IFunction<RubyIO, Integer> indentPost = new IFunction<RubyIO, Integer>() {
@@ -60,7 +61,7 @@ public class RPGCommand {
     public int category;
 
     // Pass null for parameters if this is for combobox display.
-    public String formatName(RubyIO root, RubyIO[] parameters) {
+    public String formatName(IRIO root, IRIO[] parameters) {
         try {
             if (name.startsWith("@@"))
                 return FormatSyntax.formatNameExtended(name.substring(2), root, parameters, paramType.toArray(new IFunction[0]));
@@ -113,11 +114,11 @@ public class RPGCommand {
         }
     }
 
-    private String interpretLocalParameter(RubyIO root, int pi, RubyIO parameter, boolean prefixEnums) {
+    private String interpretLocalParameter(IRIO root, int pi, IRIO parameter, boolean prefixEnums) {
         return FormatSyntax.interpretParameter(parameter, getParameterSchema(root, pi), prefixEnums);
     }
 
-    public SchemaElement getParameterSchema(RubyIO root, int i) {
+    public SchemaElement getParameterSchema(IRIO root, int i) {
         if (paramType.size() <= i)
             return AppMain.schemas.getSDBEntry("genericScriptParameter");
         return paramType.get(i).apply(root);

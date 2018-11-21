@@ -12,6 +12,8 @@ import gabien.ui.*;
 import r48.*;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
+import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
 import r48.map.MapViewDrawContext;
@@ -83,7 +85,7 @@ public abstract class MapSystem {
 
     // Converts "map_id"-style elements to their GUM strings
     // Returns null if the reference doesn't exist.
-    public String mapReferentToGUM(RubyIO mapReferent) {
+    public String mapReferentToGUM(IRIO mapReferent) {
         return "Map";
     }
 
@@ -197,9 +199,9 @@ public abstract class MapSystem {
             }, iea);
         }
 
-        public static MapViewState fromRT(StuffRenderer stuffRenderer, String underscoreMapObjectId, String[] ex, final RubyIO its, final String str, final boolean readOnly, IEventAccess iea) {
-            final RubyIO sz = PathSyntax.parse(its, str);
-            final RubyTable rt = new RubyTable(sz.userVal);
+        public static MapViewState fromRT(StuffRenderer stuffRenderer, String underscoreMapObjectId, String[] ex, final IRIO its, final String str, final boolean readOnly, IEventAccess iea) {
+            final IRIO sz = PathSyntax.parse(its, str);
+            final RubyTable rt = new RubyTable(sz.getBuffer());
             return new MapViewState(stuffRenderer, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, new IFunction<int[], Short>() {
                 @Override
                 public Short apply(int[] ints) {
@@ -220,11 +222,11 @@ public abstract class MapSystem {
                     int[] defs = new int[ints.length - 2];
                     for (int i = 0; i < defs.length; i++)
                         defs[i] = ints[i + 2];
-                    if (its.getInstVarBySymbol("@width") != null)
-                        its.getInstVarBySymbol("@width").fixnumVal = ints[0];
-                    if (its.getInstVarBySymbol("@height") != null)
-                        its.getInstVarBySymbol("@height").fixnumVal = ints[1];
-                    sz.userVal = rt.resize(ints[0], ints[1], defs).innerBytes;
+                    if (its.getIVar("@width") != null)
+                        its.getIVar("@width").setFX(ints[0]);
+                    if (its.getIVar("@height") != null)
+                        its.getIVar("@height").setFX(ints[1]);
+                    sz.putBuffer(rt.resize(ints[0], ints[1], defs).innerBytes);
                 }
             }, iea);
         }
@@ -258,7 +260,7 @@ public abstract class MapSystem {
         // NOTE: The main modification listener gets inserted on this root,
         //        and changes to the map cause this root to be modified.
         // Additional modification listeners are inserted on a per-State basis.
-        public final RubyIO object;
+        public final IObjectBackend.ILoadedObject object;
         // for UIMapView internals
         public final IFunction<String, MapViewState> rendererRetriever;
         // For editing. This was going to happen ever since recommendedflags started sneaking in, since otherwise the system has to have more copied code for GUM translation

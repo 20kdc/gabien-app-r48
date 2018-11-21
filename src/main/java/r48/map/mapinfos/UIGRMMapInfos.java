@@ -14,6 +14,7 @@ import r48.IMapContext;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
@@ -77,13 +78,13 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
         int lastOrder = 0;
         LinkedList<UITreeView.TreeElement> tree = new LinkedList<UITreeView.TreeElement>();
         for (final Long k : intList) {
-            final RubyIO map = operators.getHashBID(k);
+            final IRIO map = operators.getHashBID(k);
             final int order = operators.getOrderOfMap(k);
             if (lastOrder < order)
                 lastOrder = order;
-            final long parent = map.getInstVarBySymbol("@parent_id").fixnumVal;
+            final long parent = map.getIVar("@parent_id").getFX();
 
-            String name = map.getInstVarBySymbol("@name").decString();
+            String name = map.getIVar("@name").decString();
 
             if (parent == 0) {
                 parentStack.clear();
@@ -153,7 +154,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
 
                             if (!mapInPath(k, operators.getMapOfOrder(parentLastOrder)))
                                 selectedOrder = operators.relocateInOrder(selectedOrder, parentLastOrder + 1);
-                            map.getInstVarBySymbol("@parent_id").fixnumVal = operators.getHashBID(parent).getInstVarBySymbol("@parent_id").fixnumVal;
+                            map.getIVar("@parent_id").setFX(operators.getHashBID(parent).getIVar("@parent_id").getFX());
                             operators.complete();
                         }
                     }, FontSizes.mapInfosTextHeight);
@@ -169,9 +170,9 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                     public void run() {
                         // Orphan/move up child nodes first
                         for (Long rk : operators.getHashKeys()) {
-                            RubyIO rio = operators.getHashBID(rk);
-                            if (rio.getInstVarBySymbol("@parent_id").fixnumVal == k)
-                                rio.getInstVarBySymbol("@parent_id").fixnumVal = parent;
+                            IRIO rio = operators.getHashBID(rk);
+                            if (rio.getIVar("@parent_id").getFX() == k)
+                                rio.getIVar("@parent_id").setFX(parent);
                         }
                         operators.removeMap(k);
                         operators.complete();
@@ -281,8 +282,8 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
         while (pathInnermostId != 0) {
             if (pathInnermostId == mapId)
                 return true;
-            RubyIO path = operators.getHashBID(pathInnermostId);
-            pathInnermostId = path.getInstVarBySymbol("@parent_id").fixnumVal;
+            IRIO path = operators.getHashBID(pathInnermostId);
+            pathInnermostId = path.getIVar("@parent_id").getFX();
         }
         return false;
     }

@@ -7,7 +7,8 @@
 
 package r48.map.systems;
 
-import r48.RubyIO;
+import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
 import r48.toolsets.RMTranscriptDumper;
 
 /**
@@ -20,19 +21,19 @@ public interface IRMMapSystem {
     RMMapData[] getAllMaps();
 
     // Expects @name and @list. Note these have to be in order.
-    RubyIO[] getAllCommonEvents();
+    IRIO[] getAllCommonEvents();
 
     void dumpCustomData(RMTranscriptDumper dumper);
 
     // This identifies an actual RM map, not a GUM
     class RMMapData {
         public final String name;
-        public final RubyIO map;
+        public final IObjectBackend.ILoadedObject map;
         public final int id;
         public final String idName;
         public final String schemaName;
 
-        public RMMapData(String n, RubyIO m, int i, String iN, String sN) {
+        public RMMapData(String n, IObjectBackend.ILoadedObject m, int i, String iN, String sN) {
             name = n;
             map = m;
             id = i;

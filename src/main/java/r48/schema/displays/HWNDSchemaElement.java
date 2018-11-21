@@ -43,7 +43,7 @@ public class HWNDSchemaElement extends SchemaElement {
             }
         };
         if (ivar != null) {
-            hsc.loadPage((int) PathSyntax.parse(target, ivar).fixnumVal);
+            hsc.loadPage((int) PathSyntax.parse(target, ivar).getFX());
         } else {
             hsc.loadPage(0);
         }

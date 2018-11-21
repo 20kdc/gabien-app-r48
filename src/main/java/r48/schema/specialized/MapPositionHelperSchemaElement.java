@@ -15,6 +15,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
 import r48.schema.SchemaElement;
@@ -36,10 +37,10 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
-        RubyIO pathARIO = null;
+        IRIO pathARIO = null;
         if (pathA != null)
             pathARIO = PathSyntax.parse(target, pathA);
-        final RubyIO[] abc = {
+        final IRIO[] abc = {
                 pathARIO,
                 PathSyntax.parse(target, pathB),
                 PathSyntax.parse(target, pathC)
@@ -55,8 +56,8 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
         // The UIMapView constructor will automatically create missing maps. We don't want this.
         if (AppMain.system.mapViewRequest(mapGUM, false) == null)
             return new UILabel(TXDB.get("No such map exists."), FontSizes.schemaFieldTextHeight);
-        final long x = abc[1].fixnumVal;
-        final long y = abc[2].fixnumVal;
+        final long x = abc[1].getFX();
+        final long y = abc[2].getFX();
         final UIMapView umv = new UIMapView(mapGUM, 320, FontSizes.scaleGuess(192));
         umv.callbacks = new IMapViewCallbacks() {
             @Override
@@ -83,8 +84,8 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
 
             @Override
             public void confirmAt(int x, int y, int layer) {
-                abc[1].fixnumVal = x;
-                abc[2].fixnumVal = y;
+                abc[1].setFX(x);
+                abc[2].setFX(y);
                 path.changeOccurred(false);
             }
 

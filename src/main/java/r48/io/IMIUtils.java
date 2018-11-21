@@ -58,7 +58,7 @@ import java.util.Map;
 public class IMIUtils {
     // Return a comparison between two objects.
     // If this returns null, nothing important happened.
-    public static byte[] createIMIData(RubyIO source, RubyIO target, String indent) throws IOException {
+    public static byte[] createIMIData(IRIO source, IRIO target, String indent) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         if (!IRIO.rubyTypeEquals(source, target)) {
@@ -70,29 +70,31 @@ public class IMIUtils {
         String id2 = incrementIndent(indent);
         // NOTE: Most types are not patchable. Don't try to patch them.
         boolean flagMod = false; // did enough change to bother returning the result
-        switch (source.type) {
+        switch (source.getType()) {
             case 'o':
-                if (!source.symVal.equals(target.symVal)) {
+                if (!source.getSymbol().equals(target.getSymbol())) {
                     // unreachable with rubyTypeEquals but just in case
                     flagMod = true;
                     createIMIDump(dos, target, indent);
                 } else {
                     // Objects are "equivalent", run patchIVs()
-                    dos.writeBytes("?" + target.type + ":\n");
+                    dos.writeBytes("?" + target.getType() + ":\n");
                     flagMod |= patchIVs(dos, source, target, id2);
                 }
                 break;
             case 'u':
-                if (!source.symVal.equals(target.symVal)) {
+                if (!source.getSymbol().equals(target.getSymbol())) {
                     // unreachable with rubyTypeEquals but just in case
                     flagMod = true;
                     createIMIDump(dos, target, indent);
                 } else {
                     // check data
                     boolean dataEq = true;
-                    if (source.userVal.length == target.userVal.length) {
-                        for (int i = 0; i < source.userVal.length; i++) {
-                            if (source.userVal[i] != target.userVal[i]) {
+                    byte[] suv = source.getBuffer();
+                    byte[] duv = target.getBuffer();
+                    if (suv.length == duv.length) {
+                        for (int i = 0; i < suv.length; i++) {
+                            if (suv[i] != duv[i]) {
                                 dataEq = true;
                                 break;
                             }
@@ -101,7 +103,7 @@ public class IMIUtils {
                         dataEq = false;
                     }
                     if (dataEq) {
-                        dos.writeBytes("?" + target.type + ":\n");
+                        dos.writeBytes("?" + target.getType() + ":\n");
                         flagMod |= patchIVs(dos, source, target, id2);
                     } else {
                         flagMod = true;
@@ -110,32 +112,33 @@ public class IMIUtils {
                 }
                 break;
             case '[':
-                dos.writeBytes("?" + target.type + ":\n");
+                dos.writeBytes("?" + target.getType() + ":\n");
                 flagMod |= patchArray(dos, source, target, id2);
                 flagMod |= patchIVs(dos, source, target, id2);
                 break;
             case '{':
-                dos.writeBytes("?" + target.type + ":\n");
-                for (IRIO rk : source.hashVal.keySet())
+                dos.writeBytes("?" + target.getType() + ":\n");
+                for (IRIO rk : source.getHashKeys())
                     if (target.getHashVal(rk) == null) {
                         dos.writeBytes(id2 + "->");
                         createIMIDump(dos, target, id2);
                         flagMod = true;
                     }
-                for (Map.Entry<IRIO, RubyIO> me : target.hashVal.entrySet()) {
-                    RubyIO rio = source.getHashVal(me.getKey());
+                for (IRIO meKey : target.getHashKeys()) {
+                    IRIO meVal = target.getHashVal(meKey);
+                    IRIO rio = source.getHashVal(meKey);
                     if (rio == null) {
                         flagMod = true;
                         dos.writeBytes(id2 + ">");
-                        createIMIDump(dos, me.getKey(), id2);
+                        createIMIDump(dos, meKey, id2);
                         dos.writeBytes(id2);
-                        createIMIDump(dos, me.getValue(), id2);
+                        createIMIDump(dos, meVal, id2);
                     } else {
-                        byte[] diff = createIMIData(rio, me.getValue(), id2);
+                        byte[] diff = createIMIData(rio, meVal, id2);
                         if (diff != null) {
                             flagMod = true;
                             dos.writeBytes(id2 + ">");
-                            createIMIDump(dos, me.getKey(), id2);
+                            createIMIDump(dos, meKey, id2);
                             dos.writeBytes(id2);
                             dos.write(diff);
                         }
@@ -152,17 +155,21 @@ public class IMIUtils {
         return baos.toByteArray();
     }
 
-    private static boolean patchArray(DataOutputStream dos, RubyIO source, RubyIO target, String id2) throws IOException {
-        int[] mappingsTarget = new int[target.arrVal.length];
+    private static boolean patchArray(DataOutputStream dos, IRIO source, IRIO target, String id2) throws IOException {
+        int srcAVL = source.getALen();
+        int tgtAVL = target.getALen();
+
+        int[] mappingsTarget = new int[tgtAVL];
         int lowestUsedIndex = -1;
         for (int i = 0; i < mappingsTarget.length; i++)
             mappingsTarget[i] = -1;
-        for (int i = 0; i < source.arrVal.length; i++) {
+
+        for (int i = 0; i < srcAVL; i++) {
             int bestCompatibility = -1;
             int bestCompatibilityIndex = -1;
             int thresholdIncompatible = 0x40000000;
-            for (int j = lowestUsedIndex + 1; j < target.arrVal.length; j++) {
-                int compat = imiCompatibilityIndex(source.arrVal[i], target.arrVal[j]);
+            for (int j = lowestUsedIndex + 1; j < tgtAVL; j++) {
+                int compat = imiCompatibilityIndex(source.getAElem(i), target.getAElem(i));
                 if (compat > bestCompatibility) {
                     bestCompatibility = compat;
                     bestCompatibilityIndex = j;
@@ -180,7 +187,7 @@ public class IMIUtils {
         }
         int currentSourceIndex = 0;
         boolean mod = false;
-        for (int i = 0; i < target.arrVal.length; i++) {
+        for (int i = 0; i < tgtAVL; i++) {
             if (mappingsTarget[i] != -1) {
                 if (mappingsTarget[i] < currentSourceIndex)
                     throw new IOException("Impossible mapping!");
@@ -190,7 +197,7 @@ public class IMIUtils {
                     createIMIDump(dos, new RubyIO().setFX(i), id2);
                     currentSourceIndex++;
                 }
-                byte[] patch = createIMIData(source.arrVal[currentSourceIndex], target.arrVal[i], incrementIndent(id2));
+                byte[] patch = createIMIData(source.getAElem(currentSourceIndex), target.getAElem(i), incrementIndent(id2));
                 if (patch != null) {
                     mod = true;
                     dos.writeBytes(id2 + "]" + i + ":");
@@ -202,14 +209,14 @@ public class IMIUtils {
                 dos.writeBytes(id2 + ">");
                 createIMIDump(dos, new RubyIO().setFX(i), id2);
                 dos.writeBytes(id2);
-                createIMIDump(dos, target.arrVal[i], incrementIndent(id2));
+                createIMIDump(dos, target.getAElem(i), incrementIndent(id2));
             }
         }
         // cleanup
-        while (currentSourceIndex < source.arrVal.length) {
+        while (currentSourceIndex < srcAVL) {
             mod = true;
             dos.writeBytes(id2 + "->");
-            createIMIDump(dos, new RubyIO().setFX(target.arrVal.length), id2);
+            createIMIDump(dos, new RubyIO().setFX(tgtAVL), id2);
             dos.writeBytes("\n");
             currentSourceIndex++;
         }
@@ -219,51 +226,51 @@ public class IMIUtils {
     // Note: 0 means that the objects should NOT be patched.
     // This is used to try and make sane diffs of arrays.
     // Note that this is only a heuristic.
-    private static int imiCompatibilityIndex(RubyIO source, RubyIO target) {
+    private static int imiCompatibilityIndex(IRIO source, IRIO target) {
         if (!IRIO.rubyTypeEquals(source, target))
             return 0;
         if (IRIO.rubyEquals(source, target))
             return 0x7FFFFFFF;
         // Particularly common case (cmd params)
-        if (source.type == '[') {
-            if (source.arrVal.length == target.arrVal.length) {
+        if (source.getType() == '[') {
+            int srcAL = source.getALen();
+            if (srcAL == target.getALen()) {
                 // The Array Compatibility Game Show
-                if (source.arrVal.length == 0)
+                if (srcAL == 0)
                     return 0x7FFFFFFF;
                 long points = 0;
-                for (int i = 0; i < source.arrVal.length; i++)
-                    points += imiCompatibilityIndex(source.arrVal[i], target.arrVal[i]);
-                points /= source.arrVal.length;
+                for (int i = 0; i < srcAL; i++)
+                    points += imiCompatibilityIndex(source.getAElem(i), target.getAElem(i));
+                points /= srcAL;
                 return (int) points;
             } else {
                 return 0x20000000;
             }
         }
-        if (source.iVarKeys == null)
-            return 0x7FFFFFFF;
-        if (source.iVarKeys.length == 0)
+        String[] ivks = source.getIVars();
+        if (ivks.length == 0)
             return 0x7FFFFFFF;
         // We have no clue what to do, so now for the IVar Compatibility Game Show!
         // Scoring is between 0 through 0x7FFFFFFF.
         long points = 0;
-        for (int i = 0; i < source.iVarKeys.length; i++) {
-            String name = source.iVarKeys[i];
-            RubyIO present = source.iVarVals[i];
-            RubyIO other = target.getInstVarBySymbol(name);
+        for (int i = 0; i < ivks.length; i++) {
+            String name = ivks[i];
+            IRIO present = source.getIVar(ivks[i]);
+            IRIO other = target.getIVar(name);
             if (other != null)
                 points += imiCompatibilityIndex(present, other);
         }
-        points /= source.iVarKeys.length;
+        points /= ivks.length;
         return (int) points;
     }
 
     // assumes the current line has no indent
-    private static boolean patchIVs(DataOutputStream dos, RubyIO source, RubyIO target, String indent) throws IOException {
+    private static boolean patchIVs(DataOutputStream dos, IRIO source, IRIO target, String indent) throws IOException {
         boolean important = false;
         boolean oughtToNL = false;
         for (String name : source.getIVars()) {
-            RubyIO present = source.getInstVarBySymbol(name);
-            RubyIO other = target.getInstVarBySymbol(name);
+            IRIO present = source.getIVar(name);
+            IRIO other = target.getIVar(name);
             if (other != null) {
                 byte[] d = createIMIData(present, other, incrementIndent(indent));
                 if (d != null) {
@@ -480,7 +487,7 @@ public class IMIUtils {
     // 'A'-prefix status: R/W asset
     public static void runIMIFile(InputStream inp, String root, IConsumer<String> status) throws IOException {
         IObjectBackend backendFile = null;
-        HashMap<String, RubyIO> newDataMap = new HashMap<String, RubyIO>();
+        HashMap<String, IObjectBackend.ILoadedObject> newDataMap = new HashMap<String, IObjectBackend.ILoadedObject>();
         while (true) {
             int cmd = inp.read();
             if (cmd == -1)
@@ -528,18 +535,18 @@ public class IMIUtils {
                     } else {
                         dataPath = new String(readIMIStringBody(inp), "UTF-8");
                         status.accept("R" + dataPath);
-                        RubyIO obj = backendFile.loadObjectFromFile(dataPath);
+                        IObjectBackend.ILoadedObject obj = backendFile.loadObject(dataPath);
                         status.accept("~" + dataPath);
                         if (obj == null) {
                             if (cmd == '~')
                                 throw new IOException("Unable to continue - expected object " + dataPath + ", it was missing.");
                             // cmd == '+', create file from scratch
-                            obj = new RubyIO().setNull();
+                            obj = backendFile.newObject(dataPath);
                         } else {
                             if (cmd == '+')
                                 throw new IOException("Unable to safely continue - object " + dataPath + " should not exist at this time!");
                         }
-                        runIMISegment(inp, obj);
+                        runIMISegment(inp, obj.getObject());
                         newDataMap.put(dataPath, obj);
                     }
                     break;
@@ -567,9 +574,9 @@ public class IMIUtils {
             }
         }
         // Only *now* actually write data
-        for (Map.Entry<String, RubyIO> rio : newDataMap.entrySet()) {
+        for (Map.Entry<String, IObjectBackend.ILoadedObject> rio : newDataMap.entrySet()) {
             status.accept("W" + rio.getKey());
-            backendFile.saveObjectToFile(rio.getKey(), rio.getValue());
+            rio.getValue().save();
         }
     }
 

@@ -63,7 +63,7 @@ public class MergingEventAccess implements IEventAccess {
     }
 
     @Override
-    public RubyIO getEvent(IRIO key) {
+    public IRIO getEvent(IRIO key) {
         String ks = key.decString();
         int in = ks.charAt(0) - '0';
         return accesses[in].getEvent(ValueSyntax.decode(ks.substring(1)));

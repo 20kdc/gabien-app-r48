@@ -7,26 +7,26 @@
 
 package r48.schema.specialized.genpos;
 
-import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * Created on October 10, 2018.
  */
 public class FixnumGenposTweeningProp implements IGenposTweeningProp {
-    public final RubyIO sp;
+    public final IRIO sp;
 
-    public FixnumGenposTweeningProp(RubyIO r) {
+    public FixnumGenposTweeningProp(IRIO r) {
         sp = r;
     }
 
     @Override
     public double getValue() {
-        return sp.fixnumVal;
+        return sp.getFX();
     }
 
     @Override
     public void setValue(double value) {
-        sp.fixnumVal = (long) value;
+        sp.setFX((long) value);
     }
 
     @Override

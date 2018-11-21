@@ -10,7 +10,7 @@ package r48.io.cs;
 import gabien.GaBIEn;
 import r48.RubyIO;
 import r48.RubyTable;
-import r48.io.IObjectBackend;
+import r48.io.OldObjectBackend;
 import r48.io.PathUtils;
 import r48.io.r2k.R2kUtil;
 
@@ -23,7 +23,7 @@ import java.io.OutputStream;
  * This is now the only thing remaining out of the CSOEdit experiment.
  * Created on May 11th 2018.
  */
-public class CSObjectBackend implements IObjectBackend {
+public class CSObjectBackend extends OldObjectBackend {
     public String pfx;
 
     public CSObjectBackend(String prefix) {

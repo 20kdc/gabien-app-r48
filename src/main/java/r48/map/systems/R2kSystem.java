@@ -21,6 +21,7 @@ import r48.dbs.TXDB;
 import r48.imageio.BMP8IImageIOFormat;
 import r48.imageio.PNG8IImageIOFormat;
 import r48.imageio.XYZImageIOFormat;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.*;
 import r48.map.drawlayers.*;
@@ -36,7 +37,6 @@ import r48.toolsets.RMTranscriptDumper;
 
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * ...
@@ -100,35 +100,35 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     }
 
 
-    private RubyIO tsoById(long id) {
-        return AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@tilesets").getHashVal(new RubyIO().setFX(id));
+    private IRIO tsoById(long id) {
+        return AppMain.objectDB.getObject("RPG_RT.ldb").getObject().getIVar("@tilesets").getHashVal(new RubyIO().setFX(id));
     }
 
     // saveData is optional, and replaces some things.
-    private StuffRenderer rendererFromMapAndTso(RubyIO map, RubyIO tileset, IEventAccess events) {
+    private StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events) {
         ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tileset);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
         // Cannot get enough information without map & tileset
         if ((map != null) && (tileset != null)) {
-            long scrollFlags = map.getInstVarBySymbol("@scroll_type").fixnumVal;
-            RubyTable tbl = new RubyTable(map.getInstVarBySymbol("@data").userVal);
-            String vxaPano = map.getInstVarBySymbol("@parallax_name").decString();
+            long scrollFlags = map.getIVar("@scroll_type").getFX();
+            RubyTable tbl = new RubyTable(map.getIVar("@data").getBuffer());
+            String vxaPano = map.getIVar("@parallax_name").decString();
             boolean loopX = false;
             boolean loopY = false;
             int autoLoopX = 0;
             int autoLoopY = 0;
-            if (map.getInstVarBySymbol("@parallax_flag").type != 'T') {
+            if (map.getIVar("@parallax_flag").getType() != 'T') {
                 vxaPano = "";
             } else {
-                loopX = map.getInstVarBySymbol("@parallax_loop_x").type == 'T';
-                loopY = map.getInstVarBySymbol("@parallax_loop_y").type == 'T';
-                boolean aloopX = map.getInstVarBySymbol("@parallax_loop_x").type == 'T';
-                boolean aloopY = map.getInstVarBySymbol("@parallax_loop_y").type == 'T';
+                loopX = map.getIVar("@parallax_loop_x").getType() == 'T';
+                loopY = map.getIVar("@parallax_loop_y").getType() == 'T';
+                boolean aloopX = map.getIVar("@parallax_loop_x").getType() == 'T';
+                boolean aloopY = map.getIVar("@parallax_loop_y").getType() == 'T';
                 if (aloopX)
-                    autoLoopX = (int) map.getInstVarBySymbol("@parallax_sx").fixnumVal;
+                    autoLoopX = (int) map.getIVar("@parallax_sx").getFX();
                 if (aloopY)
-                    autoLoopY = (int) map.getInstVarBySymbol("@parallax_sy").fixnumVal;
+                    autoLoopY = (int) map.getIVar("@parallax_sy").getFX();
             }
             IImage img = null;
             if (!vxaPano.equals(""))
@@ -167,44 +167,45 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     @Override
     public RMMapData[] getAllMaps() {
         LinkedList<RMMapData> rmdList = new LinkedList<RMMapData>();
-        for (Map.Entry<IRIO, RubyIO> rio : AppMain.objectDB.getObject("RPG_RT.lmt").getInstVarBySymbol("@map_infos").hashVal.entrySet()) {
-            int id = (int) rio.getKey().getFX();
+        IRIO lmti = AppMain.objectDB.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos");
+        for (IRIO key : lmti.getHashKeys()) {
+            int id = (int) key.getFX();
             if (id == 0)
                 continue;
-            RubyIO obj = AppMain.objectDB.getObject(R2kRMLikeMapInfoBackend.sNameFromInt(id));
+            IObjectBackend.ILoadedObject obj = AppMain.objectDB.getObject(R2kRMLikeMapInfoBackend.sNameFromInt(id));
             if (obj == null)
                 continue;
-            RMMapData rmd = new RMMapData(rio.getValue().getInstVarBySymbol("@name").decString(), obj, id, R2kRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
+            RMMapData rmd = new RMMapData(lmti.getHashVal(key).getIVar("@name").decString(), obj, id, R2kRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
             rmdList.add(rmd);
         }
         return rmdList.toArray(new RMMapData[0]);
     }
 
     @Override
-    public RubyIO[] getAllCommonEvents() {
-        RubyIO cev = AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@common_events");
+    public IRIO[] getAllCommonEvents() {
+        IRIO cev = AppMain.objectDB.getObject("RPG_RT.ldb").getObject().getIVar("@common_events");
         LinkedList<Integer> ints = new LinkedList<Integer>();
-        for (IRIO i : cev.hashVal.keySet())
+        for (IRIO i : cev.getHashKeys())
             ints.add((int) i.getFX());
         Collections.sort(ints);
-        LinkedList<RubyIO> l = new LinkedList<RubyIO>();
+        LinkedList<IRIO> l = new LinkedList<IRIO>();
         for (Integer i : ints)
             l.add(cev.getHashVal(new RubyIO().setFX(i)));
-        return l.toArray(new RubyIO[0]);
+        return l.toArray(new IRIO[0]);
     }
 
     @Override
     public void dumpCustomData(RMTranscriptDumper dumper) {
         dumper.startFile("RPG_RT.ldb", TXDB.get("System data (of any importance, anyway)."));
-        RubyIO sys = AppMain.objectDB.getObject("RPG_RT.ldb");
-        dumper.dumpSVListHash("@switches", sys.getInstVarBySymbol("@switches"));
-        dumper.dumpSVListHash("@variables", sys.getInstVarBySymbol("@variables"));
+        IRIO sys = AppMain.objectDB.getObject("RPG_RT.ldb").getObject();
+        dumper.dumpSVListHash("@switches", sys.getIVar("@switches"));
+        dumper.dumpSVListHash("@variables", sys.getIVar("@variables"));
         dumper.endFile();
     }
 
     @Override
-    public String mapReferentToGUM(RubyIO mapReferent) {
-        return R2kRMLikeMapInfoBackend.sTranslateToGUM((int) mapReferent.fixnumVal);
+    public String mapReferentToGUM(IRIO mapReferent) {
+        return R2kRMLikeMapInfoBackend.sTranslateToGUM((int) mapReferent.getFX());
     }
 
     @Override
@@ -216,16 +217,16 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             if (!allowCreate)
                 if (AppMain.objectDB.getObject(obj, null) == null)
                     return null;
-            final RubyIO root = AppMain.objectDB.getObject(obj, "RPG::Save");
+            final IObjectBackend.ILoadedObject root = AppMain.objectDB.getObject(obj, "RPG::Save");
             return new MapViewDetails(obj, "RPG::Save", new IFunction<String, MapViewState>() {
                 private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("RPG_RT.ldb");
                 @Override
                 public MapViewState apply(String changed) {
-                    int mapId = (int) root.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map").fixnumVal;
+                    int mapId = (int) root.getObject().getIVar("@party_pos").getIVar("@map").getFX();
                     tilesetCache.updateMapId(mapId);
 
                     final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(mapId);
-                    RubyIO map = AppMain.objectDB.getObject(objn);
+                    IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(objn);
                     final IEventAccess events = new R2kSavefileEventAccess(obj, root, "RPG::Save");
                     if (map == null)
                         return MapViewState.getBlank(null, new String[] {
@@ -233,17 +234,17 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                         }, events);
 
                     // Map okay - update tileset cache & render
-                    long currentTsId = map.getInstVarBySymbol("@tileset_id").fixnumVal;
-                    RubyIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
+                    long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
+                    IRIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
                     if (lastTileset == null) {
                         lastTileset = tsoById(currentTsId);
                         tilesetCache.insertTileset(currentTsId, lastTileset);
                     }
 
-                    return MapViewState.fromRT(rendererFromMapAndTso(map, lastTileset, events), objn, new String[] {
+                    return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, events), objn, new String[] {
                             objn,
                             "RPG_RT.ldb"
-                    }, map, "@data", true, events);
+                    }, map.getObject(), "@data", true, events);
                 }
             }, new IFunction<IMapToolContext, IEditingToolbarController>() {
                 @Override
@@ -253,12 +254,12 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             });
         }
         // Map, Area
-        final RubyIO root = AppMain.objectDB.getObject("RPG_RT.lmt");
-        final RubyIO mapInfos = root.getInstVarBySymbol("@map_infos");
-        final RubyIO mapInfo = mapInfos.getHashVal(new RubyIO().setFX(v));
+        final IObjectBackend.ILoadedObject root = AppMain.objectDB.getObject("RPG_RT.lmt");
+        final IRIO mapInfos = root.getObject().getIVar("@map_infos");
+        final IRIO mapInfo = mapInfos.getHashVal(new RubyIO().setFX(v));
         try {
-            if (mapInfo.getInstVarBySymbol("@type").fixnumVal == 2) {
-                long parent = mapInfo.getInstVarBySymbol("@parent_id").fixnumVal;
+            if (mapInfo.getIVar("@type").getFX() == 2) {
+                long parent = mapInfo.getIVar("@parent_id").getFX();
                 if (parent == v)
                     return null;
                 MapViewDetails mvd = mapViewRequest("Map." + parent, false);
@@ -280,21 +281,21 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         if (!allowCreate)
             if (AppMain.objectDB.getObject(objn, null) == null)
                 return null;
-        final RubyIO map = AppMain.objectDB.getObject(objn, "RPG::Map");
+        final IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(objn, "RPG::Map");
         final IEventAccess iea = new TraditionalEventAccess(objn, "RPG::Map", "@events", 1, "RPG::Event");
         return new MapViewDetails(objn, "RPG::Map", new IFunction<String, MapViewState>() {
             private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("RPG_RT.ldb");
             @Override
             public MapViewState apply(String changed) {
-                long currentTsId = map.getInstVarBySymbol("@tileset_id").fixnumVal;
-                RubyIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
+                long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
+                IRIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
                 if (lastTileset == null) {
                     lastTileset = tsoById(currentTsId);
                     tilesetCache.insertTileset(currentTsId, lastTileset);
                 }
-                return MapViewState.fromRT(rendererFromMapAndTso(map, lastTileset, iea), objn, new String[] {
+                return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, iea), objn, new String[] {
                         "RPG_RT.ldb"
-                }, map, "@data", false, iea);
+                }, map.getObject(), "@data", false, iea);
             }
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override

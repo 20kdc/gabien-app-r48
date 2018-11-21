@@ -8,7 +8,7 @@
 package r48.map.events;
 
 import gabien.IGrDriver;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * For WIP/no-event handlers.
@@ -16,17 +16,17 @@ import r48.RubyIO;
  */
 public class NullEventGraphicRenderer implements IEventGraphicRenderer {
     @Override
-    public int determineEventLayer(RubyIO event) {
+    public int determineEventLayer(IRIO event) {
         return 0;
     }
 
     @Override
-    public RubyIO extractEventGraphic(RubyIO event) {
+    public IRIO extractEventGraphic(IRIO event) {
         return event;
     }
 
     @Override
-    public void drawEventGraphic(RubyIO target, int ox, int oy, IGrDriver igd, int ss) {
+    public void drawEventGraphic(IRIO target, int ox, int oy, IGrDriver igd, int ss) {
 
     }
 }

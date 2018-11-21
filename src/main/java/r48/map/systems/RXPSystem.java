@@ -18,6 +18,7 @@ import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.*;
 import r48.map.drawlayers.*;
@@ -33,7 +34,6 @@ import r48.map.tiles.XPTileRenderer;
 import r48.toolsets.RMTranscriptDumper;
 
 import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * Created on 03/06/17.
@@ -46,14 +46,14 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         }))), true);
     }
 
-    protected static RubyIO tsoById(long id) {
-        RubyIO tileset = null;
+    protected static IRIO tsoById(long id) {
+        IRIO tileset = null;
         int tid = (int) id;
-        RubyIO tilesets = AppMain.objectDB.getObject("Tilesets");
-        if ((tid >= 0) && (tid < tilesets.arrVal.length))
-            tileset = tilesets.arrVal[tid];
+        IRIO tilesets = AppMain.objectDB.getObject("Tilesets").getObject();
+        if ((tid >= 0) && (tid < tilesets.getALen()))
+            tileset = tilesets.getAElem(tid);
         if (tileset != null)
-            if (tileset.type == '0')
+            if (tileset.getType() == '0')
                 tileset = null;
         return tileset;
     }
@@ -81,19 +81,21 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         return new Rect(0, 0, img.width / 4, img.height / 4);
     }
 
-    public StuffRenderer rendererFromMapAndTso(RubyIO map, RubyIO tileset, IEventAccess events) {
+    public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events) {
         XPTileRenderer tileRenderer = new XPTileRenderer(imageLoader, tileset);
         RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
         String pano = "";
         if (tileset != null) {
-            RubyIO rio = tileset.getInstVarBySymbol("@panorama_name");
-            if (rio != null)
-                if (rio.strVal.length > 0)
-                    pano = "Panoramas/" + rio.decString();
+            IRIO rio = tileset.getIVar("@panorama_name");
+            if (rio != null) {
+                String sv = rio.decString();
+                if (sv.length() > 0)
+                    pano = "Panoramas/" + sv;
+            }
         }
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
         if (map != null) {
-            RubyTable rt = new RubyTable(map.getInstVarBySymbol("@data").userVal);
+            RubyTable rt = new RubyTable(map.getIVar("@data").getBuffer());
             IImage panoImg = null;
             if (!pano.equals(""))
                 panoImg = imageLoader.getImage(pano, true);
@@ -128,21 +130,21 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         if (!allowCreate)
             if (AppMain.objectDB.getObject(gum, null) == null)
                 return null;
-        final RubyIO map = AppMain.objectDB.getObject(gum, "RPG::Map");
+        final IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(gum, "RPG::Map");
         final IEventAccess events = new TraditionalEventAccess(gum, "RPG::Map", "@events", 1, "RPG::Event");
         return new MapViewDetails(gum, "RPG::Map", new IFunction<String, MapViewState>() {
             private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("Tilesets");
             @Override
             public MapViewState apply(String changed) {
-                long currentTsId = map.getInstVarBySymbol("@tileset_id").fixnumVal;
-                RubyIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
+                long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
+                IRIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
                 if (lastTileset == null) {
                     lastTileset = tsoById(currentTsId);
                     tilesetCache.insertTileset(currentTsId, lastTileset);
                 }
-                return MapViewState.fromRT(rendererFromMapAndTso(map, lastTileset, events), gum, new String[] {
+                return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, events), gum, new String[] {
                         "Tilesets"
-                }, map, "@data", false, events);
+                }, map.getObject(), "@data", false, events);
             }
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override
@@ -159,30 +161,37 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     @Override
     public RMMapData[] getAllMaps() {
         LinkedList<RMMapData> rmdList = new LinkedList<RMMapData>();
-        for (Map.Entry<IRIO, RubyIO> rio : AppMain.objectDB.getObject("MapInfos").hashVal.entrySet()) {
-            int id = (int) rio.getKey().getFX();
-            RMMapData rmd = new RMMapData(rio.getValue().getInstVarBySymbol("@name").decString(), AppMain.objectDB.getObject(RXPRMLikeMapInfoBackend.sNameFromInt(id)), id, RXPRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
+        IRIO mi = AppMain.objectDB.getObject("MapInfos").getObject();
+        for (IRIO rio : mi.getHashKeys()) {
+            int id = (int) rio.getFX();
+            RMMapData rmd = new RMMapData(mi.getHashVal(rio).getIVar("@name").decString(), AppMain.objectDB.getObject(RXPRMLikeMapInfoBackend.sNameFromInt(id)), id, RXPRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
             rmdList.add(rmd);
         }
         return rmdList.toArray(new RMMapData[0]);
     }
 
     @Override
-    public RubyIO[] getAllCommonEvents() {
-        LinkedList<RubyIO> rmdList = new LinkedList<RubyIO>();
-        for (RubyIO rio : AppMain.objectDB.getObject("CommonEvents").arrVal)
-            if (rio.type != '0')
-                rmdList.add(rio);
-        return rmdList.toArray(new RubyIO[0]);
+    public IRIO[] getAllCommonEvents() {
+        LinkedList<IRIO> rmdList = new LinkedList<IRIO>();
+        IRIO ilo = AppMain.objectDB.getObject("CommonEvents").getObject();
+        int alen = ilo.getALen();
+        for (int i = 0; i < alen; i++) {
+            IRIO e = ilo.getAElem(i);
+            if (e.getType() != '0')
+                rmdList.add(e);
+        }
+        return rmdList.toArray(new IRIO[0]);
     }
 
     @Override
     public void dumpCustomData(RMTranscriptDumper dumper) {
         dumper.startFile("Items", TXDB.get("The list of items in the game."));
         LinkedList<String> lls = new LinkedList<String>();
-        for (RubyIO page : AppMain.objectDB.getObject("Items").arrVal) {
-            if (page.type != '0') {
-                lls.add(page.getInstVarBySymbol("@name").decString());
+        IRIO items = AppMain.objectDB.getObject("Items").getObject();
+        int itemCount = items.getALen();
+        for (int i = 0; i < itemCount; i++) {
+            if (items.getType() != '0') {
+                lls.add(items.getAElem(i).getIVar("@name").decString());
             } else {
                 lls.add("<NULL>");
             }
@@ -191,20 +200,21 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         dumper.endFile();
 
         dumper.startFile("System", TXDB.get("System data (of any importance, anyway)."));
-        RubyIO sys = AppMain.objectDB.getObject("System");
+        IObjectBackend.ILoadedObject sys = AppMain.objectDB.getObject("System");
 
         dumper.dumpHTML(TXDB.get("Notably, switch and variable lists have a 0th index, but only indexes starting from 1 are actually allowed to be used.") + "<br/>");
-        dumper.dumpHTML(TXDB.get("Magic number:") + sys.getInstVarBySymbol("@magic_number").toString() + "<br/>");
-        dumper.dumpHTML(TXDB.get("Magic number II:") + sys.getInstVarBySymbol("@_").toString() + "<br/>");
+        IRIO sys2 = sys.getObject();
+        dumper.dumpHTML(TXDB.get("Magic number:") + sys2.getIVar("@magic_number").toString() + "<br/>");
+        dumper.dumpHTML(TXDB.get("Magic number II:") + sys2.getIVar("@_").toString() + "<br/>");
 
-        dumper.dumpSVList("@switches", sys.getInstVarBySymbol("@switches").arrVal, 0);
-        dumper.dumpSVList("@variables", sys.getInstVarBySymbol("@variables").arrVal, 0);
+        dumper.dumpSVList("@switches", sys2.getIVar("@switches"), 0);
+        dumper.dumpSVList("@variables", sys2.getIVar("@variables"), 0);
         dumper.endFile();
     }
 
     @Override
-    public String mapReferentToGUM(RubyIO mapReferent) {
-        return RXPRMLikeMapInfoBackend.sNameFromInt((int) mapReferent.fixnumVal);
+    public String mapReferentToGUM(IRIO mapReferent) {
+        return RXPRMLikeMapInfoBackend.sNameFromInt((int) mapReferent.getFX());
     }
 
     @Override
