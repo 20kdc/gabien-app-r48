@@ -67,7 +67,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     }
 
     // used by OCSE
-    public SchemaElement getDisambiguation(RubyIO target) {
+    public SchemaElement getDisambiguation(IRIO target) {
         return getSchemaElement(getDisambigIndex(target));
     }
 

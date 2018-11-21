@@ -7,7 +7,7 @@
 
 package r48.schema;
 
-import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * For anything that looks even vaguely like:
@@ -16,7 +16,7 @@ import r48.RubyIO;
  * Created on 29/06/17.
  */
 public interface IFieldSchemaElement {
-    int getDefaultFieldWidth(RubyIO target);
+    int getDefaultFieldWidth(IRIO target);
 
     // NOTE: This is good for one buildHoldingEditor only.
     void setFieldWidthOverride(int w);

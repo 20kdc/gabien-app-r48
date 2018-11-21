@@ -16,6 +16,7 @@ short-term planning:
      (Completeish)
   + Stage 2: Isolate the Schema system so that the 'backbone' can be dealt with.
   + Stage 3: Convert remaining classes to RubyIOs.
+   + Test this & the Data Model 2 plan in general with the Ikachan backend. What I'm looking for here is to have all the data structures totally 'backend-owned'.
 + Demetrius's various notes over IRC and such:
  + Character creator???
 + OSLoc mode improvements, perhaps?

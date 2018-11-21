@@ -11,7 +11,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -76,7 +75,7 @@ public class PathSchemaElement extends IRIOAwareSchemaElement implements IFieldS
     }
 
     @Override
-    public int getDefaultFieldWidth(RubyIO target) {
+    public int getDefaultFieldWidth(IRIO target) {
         if (alias != null)
             return UILabel.getRecommendedTextSize(alias + " ", FontSizes.schemaFieldTextHeight).width;
         return 0;

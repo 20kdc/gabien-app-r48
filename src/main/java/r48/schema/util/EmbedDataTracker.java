@@ -7,7 +7,7 @@
 
 package r48.schema.util;
 
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 
 import java.util.HashMap;
@@ -32,7 +32,7 @@ public class EmbedDataTracker {
         }
     }
 
-    public void setEmbed(SchemaPath current, SchemaElement source, RubyIO target, String prop, Object val) {
+    public void setEmbed(SchemaPath current, SchemaElement source, IRIO target, String prop, Object val) {
         String key = source.hashCode() + "/" + target.hashCode() + "/" + prop;
         // System.out.println("set " + key + " " + val);
         HashMap<String, Object> hm = mapTree.get(current);
@@ -43,7 +43,7 @@ public class EmbedDataTracker {
         hm.put(key, val);
     }
 
-    public Object getEmbed(SchemaPath current, SchemaElement source, RubyIO target, String prop, Object def) {
+    public Object getEmbed(SchemaPath current, SchemaElement source, IRIO target, String prop, Object def) {
         String key = source.hashCode() + "/" + target.hashCode() + "/" + prop;
         // System.out.println("get " + key);
         HashMap<String, Object> hm = mapTree.get(current);

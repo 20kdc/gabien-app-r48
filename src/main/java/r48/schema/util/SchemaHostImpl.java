@@ -215,32 +215,32 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     }
 
     @Override
-    public double getEmbedDouble(SchemaElement source, RubyIO target, String prop) {
+    public double getEmbedDouble(SchemaElement source, IRIO target, String prop) {
         return (Double) embedData.getEmbed(innerElem, source, target, prop, 0.0d);
     }
 
     @Override
-    public void setEmbedDouble(SchemaElement source, RubyIO target, String prop, double dbl) {
+    public void setEmbedDouble(SchemaElement source, IRIO target, String prop, double dbl) {
         embedData.setEmbed(innerElem, source, target, prop, dbl);
     }
 
     @Override
-    public Object getEmbedObject(SchemaElement source, RubyIO target, String prop) {
+    public Object getEmbedObject(SchemaElement source, IRIO target, String prop) {
         return embedData.getEmbed(innerElem, source, target, prop, null);
     }
 
     @Override
-    public void setEmbedObject(SchemaElement source, RubyIO target, String prop, Object dbl) {
+    public void setEmbedObject(SchemaElement source, IRIO target, String prop, Object dbl) {
         embedData.setEmbed(innerElem, source, target, prop, dbl);
     }
 
     @Override
-    public Object getEmbedObject(SchemaPath locale, SchemaElement source, RubyIO target, String prop) {
+    public Object getEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop) {
         return embedData.getEmbed(locale, source, target, prop, null);
     }
 
     @Override
-    public void setEmbedObject(SchemaPath locale, SchemaElement source, RubyIO target, String prop, Object dbl) {
+    public void setEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop, Object dbl) {
         embedData.setEmbed(locale, source, target, prop, dbl);
     }
 

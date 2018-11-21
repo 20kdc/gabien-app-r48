@@ -10,7 +10,6 @@ package r48.schema;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -20,7 +19,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 12/28/16.
  */
-public class OpaqueSchemaElement extends SchemaElement {
+public class OpaqueSchemaElement extends IRIOAwareSchemaElement {
 
     public String getMessage(IRIO v) {
         return TXDB.get("Can't edit: ") + v;
@@ -36,14 +35,9 @@ public class OpaqueSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
-        return buildHoldingEditor((IRIO) target, launcher, path);
-    }
-
-    @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         // Not a clue, so re-initialize if all else fails.
-        if ((target.type == 0) || setDefault) {
+        if (setDefault) {
             target.setNull();
             path.changeOccurred(true);
         }

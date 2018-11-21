@@ -8,8 +8,9 @@
 package r48.io.data;
 
 import r48.RubyBigNum;
+import r48.io.IMIUtils;
 
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 
 /**
  * Ok, so here's the deal. Data Model 2 implementation attempt 1 *failed miserably*.
@@ -191,6 +192,20 @@ public abstract class IRIO {
         return iVarKeys;
     }
 
+
+    // Outputs IMI-code for something so that there's a basically human-readable version of it.
+    public String toStringLong(String indent) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            IMIUtils.createIMIDump(new DataOutputStream(baos), this, indent);
+            // IMI is really 7-bit but UTF-8 is close enough
+            return new String(baos.toByteArray(), "UTF-8");
+        } catch (Exception ioe) {
+            StringWriter sw = new StringWriter();
+            ioe.printStackTrace(new PrintWriter(sw));
+            return indent + "Couldn't dump: " + ioe + "\n" + sw;
+        }
+    }
 
     @Override
     public String toString() {

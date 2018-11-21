@@ -28,11 +28,11 @@ import java.util.*;
  * Created on 12/27/16.
  */
 public class UITest extends UIElement.UIProxy {
-    public RubyIO currentObj;
+    public IRIO currentObj;
     public String[] navigaList;
-    public RubyIO[] objectList;
+    public IRIO[] objectList;
     int offset = 0;
-    public LinkedList<RubyIO> back = new LinkedList<RubyIO>();
+    public LinkedList<IRIO> back = new LinkedList<IRIO>();
     // the naming got screwed up with the Nth layout redesign.
     // UITest -> outerPanel -> Back/PRINT
     //                      -> masterPanel
@@ -69,38 +69,33 @@ public class UITest extends UIElement.UIProxy {
         setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(320), FontSizes.scaleGuess(240)));
     }
 
-    public void loadObject(final IRIO obj2) {
-        if (!(obj2 instanceof RubyIO)) {
-            masterPanel.panelsClear();
-            masterPanel.panelsAdd(new UILabel("TEMPORARY HOLDOVER DO NOT TRANSLATE", FontSizes.inspectorTextHeight));
-            return;
-        }
-        final RubyIO obj = (RubyIO) obj2;
+    public void loadObject(final IRIO obj) {
         offset = 0;
         currentObj = obj;
         LinkedList<String> strings = new LinkedList<String>();
-        LinkedList<RubyIO> targs = new LinkedList<RubyIO>();
+        LinkedList<IRIO> targs = new LinkedList<IRIO>();
         // -- Actually collate things
-        for (String s : sortedKeysArr(obj.iVarKeys)) {
-            strings.add("IVar " + s + " -> " + obj.getInstVarBySymbol(s));
-            targs.add(obj.getInstVarBySymbol(s));
+        for (String s : sortedKeysArr(obj.getIVars())) {
+            strings.add("IVar " + s + " -> " + obj.getIVar(s));
+            targs.add(obj.getIVar(s));
         }
-        if (obj.hashVal != null) {
-            for (IRIO s : sortedKeys(obj.hashVal.keySet())) {
-                strings.add(s + " -> " + obj.hashVal.get(s));
-                targs.add(obj.hashVal.get(s));
+        if (obj.getType() == '{') {
+            for (IRIO s : sortedKeysIArr(obj.getHashKeys())) {
+                strings.add(s + " -> " + obj.getHashVal(s));
+                targs.add(obj.getHashVal(s));
             }
         }
-        if (obj.arrVal != null) {
-            for (int i = 0; i < obj.arrVal.length; i++) {
-                RubyIO o = obj.arrVal[i];
+        if (obj.getType() == '[') {
+            int alen = obj.getALen();
+            for (int i = 0; i < alen; i++) {
+                IRIO o = obj.getAElem(i);
                 strings.add(i + " -> " + o);
                 targs.add(o);
             }
         }
         // --
         navigaList = strings.toArray(new String[0]);
-        objectList = targs.toArray(new RubyIO[0]);
+        objectList = targs.toArray(new IRIO[0]);
         masterPanel.panelsClear();
         for (int i = 0; i < navigaList.length; i++) {
             final int j = i;
@@ -188,6 +183,13 @@ public class UITest extends UIElement.UIProxy {
         if (iVarKeys != null)
             Collections.addAll(hs, iVarKeys);
         return sortedKeysStr(hs);
+    }
+
+    private LinkedList<IRIO> sortedKeysIArr(IRIO[] iVarKeys) {
+        HashSet<IRIO> hs = new HashSet<IRIO>();
+        if (iVarKeys != null)
+            Collections.addAll(hs, iVarKeys);
+        return sortedKeys(hs);
     }
 
     public static LinkedList<IRIO> sortedKeys(Set<IRIO> rubyIOs) {

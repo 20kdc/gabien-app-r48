@@ -14,6 +14,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -96,7 +97,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     }
 
     @Override
-    public int getDefaultFieldWidth(RubyIO target) {
+    public int getDefaultFieldWidth(IRIO target) {
         return UILabel.getRecommendedTextSize(name + " ", FontSizes.schemaFieldTextHeight).width;
     }
 

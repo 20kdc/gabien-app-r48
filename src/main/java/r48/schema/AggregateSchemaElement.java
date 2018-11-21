@@ -11,6 +11,7 @@ import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
+import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -21,7 +22,7 @@ import java.util.LinkedList;
  * Basically a UI element masquerading as a schema element.
  * Created on 12/29/16.
  */
-public class AggregateSchemaElement extends SchemaElement implements IFieldSchemaElement {
+public class AggregateSchemaElement extends IRIOAwareSchemaElement implements IFieldSchemaElement {
     public final LinkedList<SchemaElement> aggregate = new LinkedList<SchemaElement>();
     public final SchemaElement impersonatorScroll;
 
@@ -39,7 +40,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     }
 
     @Override
-    public UIElement buildHoldingEditor(RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         // Possibly question if this aggregate is useless???
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, impersonatorScroll, target);
         // Assist with the layout of "property grids".
@@ -57,7 +58,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
         return uiSVL;
     }
 
-    private IFieldSchemaElement extractField(SchemaElement ise, RubyIO rio) {
+    private IFieldSchemaElement extractField(SchemaElement ise, IRIO rio) {
         boolean continuing = true;
         while (continuing) {
             continuing = false;
@@ -76,7 +77,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath i, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath i, boolean setDefault) {
         for (SchemaElement ise : aggregate)
             ise.modifyVal(target, i, setDefault);
     }
@@ -85,7 +86,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     // HOWEVER, if the object is regen-on-change w/ subwindows,
     //  this causes awful scroll loss, so instead nab the regenerator (it's not like the regenerator uses it for anything)
     // PREFERABLY avoid regeneration of schema objects that are reusable (RPGCommandSchemaElement was fixed this way)
-    public static UIScrollLayout createScrollSavingSVL(final ISchemaHost host, final SchemaElement elem, final RubyIO target) {
+    public static UIScrollLayout createScrollSavingSVL(final ISchemaHost host, final SchemaElement elem, final IRIO target) {
         final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize) {
             @Override
             public void handleMousewheel(int x, int y, boolean north) {
@@ -139,7 +140,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     }
 
     @Override
-    public int getDefaultFieldWidth(RubyIO target) {
+    public int getDefaultFieldWidth(IRIO target) {
         int maxFW = 1;
         for (SchemaElement ise : aggregate) {
             IFieldSchemaElement possibleField = extractField(ise, target);

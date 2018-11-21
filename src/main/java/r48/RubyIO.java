@@ -7,11 +7,10 @@
 
 package r48;
 
-import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 
-import java.io.*;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -196,20 +195,6 @@ public class RubyIO extends IRIO {
     }
 
     // ----
-
-    // Outputs IMI-code for something so that there's a basically human-readable version of it.
-    public String toStringLong(String indent) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            IMIUtils.createIMIDump(new DataOutputStream(baos), this, indent);
-            // IMI is really 7-bit but UTF-8 is close enough
-            return new String(baos.toByteArray(), "UTF-8");
-        } catch (Exception ioe) {
-            StringWriter sw = new StringWriter();
-            ioe.printStackTrace(new PrintWriter(sw));
-            return indent + "Couldn't dump: " + ioe + "\n" + sw;
-        }
-    }
 
     @Override
     public String getBufferEnc() {

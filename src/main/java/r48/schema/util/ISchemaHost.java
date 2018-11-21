@@ -9,7 +9,7 @@ package r48.schema.util;
 
 import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.schema.SchemaElement;
 
@@ -35,17 +35,17 @@ public interface ISchemaHost {
     String getContextGUM();
 
     // Prepare for trouble, and make it a double.
-    double getEmbedDouble(SchemaElement source, RubyIO target, String prop);
+    double getEmbedDouble(SchemaElement source, IRIO target, String prop);
 
-    void setEmbedDouble(SchemaElement source, RubyIO target, String prop, double dbl);
+    void setEmbedDouble(SchemaElement source, IRIO target, String prop, double dbl);
 
-    Object getEmbedObject(SchemaElement source, RubyIO target, String prop);
+    Object getEmbedObject(SchemaElement source, IRIO target, String prop);
 
-    Object getEmbedObject(SchemaPath locale, SchemaElement source, RubyIO target, String prop);
+    Object getEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop);
 
-    void setEmbedObject(SchemaElement source, RubyIO target, String prop, Object dbl);
+    void setEmbedObject(SchemaElement source, IRIO target, String prop, Object dbl);
 
-    void setEmbedObject(SchemaPath locale, SchemaElement source, RubyIO target, String prop, Object dbl);
+    void setEmbedObject(SchemaPath locale, SchemaElement source, IRIO target, String prop, Object dbl);
 
     ISupplier<Boolean> getValidity();
 }
