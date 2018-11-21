@@ -26,7 +26,7 @@ import java.io.IOException;
 public class AdHocSaveLoad {
     public static void save(String fonts, RubyIO prepare) {
         prepare();
-        R48ObjectBackend rob = new R48ObjectBackend(Application.BRAND + "/", ".r48", false);
+        R48ObjectBackend rob = new R48ObjectBackend(Application.BRAND + "/", ".r48");
         try {
             rob.saveObjectToFile(fonts, prepare);
         } catch (IOException e) {
@@ -36,7 +36,7 @@ public class AdHocSaveLoad {
 
     public static void saveLua(String fonts, RubyIO prepare) {
         prepare();
-        R48ObjectBackend rob = new R48ObjectBackend(Application.BRAND + "/", ".r48", true, true);
+        R48ObjectBackend rob = new R48ObjectBackend(Application.BRAND + "/", ".r48", true);
         try {
             rob.saveObjectToFile(fonts, prepare);
         } catch (IOException e) {
@@ -45,7 +45,7 @@ public class AdHocSaveLoad {
     }
 
     public static RubyIO load(String fonts) {
-        R48ObjectBackend rob = new R48ObjectBackend(Application.BRAND + "/", ".r48", false);
+        R48ObjectBackend rob = new R48ObjectBackend(Application.BRAND + "/", ".r48");
         return rob.loadObjectFromFile(fonts);
     }
 

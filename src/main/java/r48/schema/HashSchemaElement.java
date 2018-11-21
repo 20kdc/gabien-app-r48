@@ -13,6 +13,7 @@ import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.IProxySchemaElement;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.specialized.OSStrHashMapSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -88,19 +89,19 @@ public class HashSchemaElement extends SchemaElement {
                     }
                 };
                 uiSV.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Search Keys:"), FontSizes.schemaFieldTextHeight), searchBox, false, 0d));
-                for (RubyIO key : UITest.sortedKeys(target.hashVal.keySet(), new IFunction<RubyIO, String>() {
+                for (IRIO key : UITest.sortedKeys(target.hashVal.keySet(), new IFunction<IRIO, String>() {
                     @Override
-                    public String apply(RubyIO rubyIO) {
+                    public String apply(IRIO rubyIO) {
                         return getKeyText(rubyIO);
                     }
                 })) {
                     if (!getKeyText(key).contains(searchBox.text))
                         continue;
-                    final RubyIO kss = key;
+                    final IRIO kss = key;
                     // keys are opaque - this prevents MANY issues
                     UIElement hsA = (new OpaqueSchemaElement() {
                         @Override
-                        public String getMessage(RubyIO v) {
+                        public String getMessage(IRIO v) {
                             return getKeyText(v);
                         }
                     }).buildHoldingEditor(key, launcher, path);
@@ -144,7 +145,7 @@ public class HashSchemaElement extends SchemaElement {
         return uiSV;
     }
 
-    private String getKeyText(RubyIO v) {
+    private String getKeyText(IRIO v) {
         SchemaElement ke = keyElem;
         while (ke instanceof IProxySchemaElement)
             ke = ((IProxySchemaElement) ke).getEntry();
@@ -159,14 +160,14 @@ public class HashSchemaElement extends SchemaElement {
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         setDefault = SchemaElement.ensureType(target, '{', setDefault);
         if (setDefault) {
-            target.hashVal = new HashMap<RubyIO, RubyIO>();
+            target.hashVal = new HashMap<IRIO, RubyIO>();
             path.changeOccurred(true);
         } else {
             if (target.hashVal == null) {
-                target.hashVal = new HashMap<RubyIO, RubyIO>();
+                target.hashVal = new HashMap<IRIO, RubyIO>();
                 path.changeOccurred(true);
             }
-            for (Map.Entry<RubyIO, RubyIO> e : target.hashVal.entrySet())
+            for (Map.Entry<IRIO, RubyIO> e : target.hashVal.entrySet())
                 valElem.modifyVal(e.getValue(), path.arrayHashIndex(e.getKey(), "{" + getKeyText(e.getKey()) + "}"), false);
         }
     }

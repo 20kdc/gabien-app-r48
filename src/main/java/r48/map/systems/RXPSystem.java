@@ -18,6 +18,7 @@ import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.map.*;
 import r48.map.drawlayers.*;
 import r48.map.events.IEventAccess;
@@ -158,8 +159,8 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     @Override
     public RMMapData[] getAllMaps() {
         LinkedList<RMMapData> rmdList = new LinkedList<RMMapData>();
-        for (Map.Entry<RubyIO, RubyIO> rio : AppMain.objectDB.getObject("MapInfos").hashVal.entrySet()) {
-            int id = (int) rio.getKey().fixnumVal;
+        for (Map.Entry<IRIO, RubyIO> rio : AppMain.objectDB.getObject("MapInfos").hashVal.entrySet()) {
+            int id = (int) rio.getKey().getFX();
             RMMapData rmd = new RMMapData(rio.getValue().getInstVarBySymbol("@name").decString(), AppMain.objectDB.getObject(RXPRMLikeMapInfoBackend.sNameFromInt(id)), id, RXPRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
             rmdList.add(rmd);
         }

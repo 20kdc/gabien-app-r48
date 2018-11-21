@@ -15,6 +15,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.map.events.R2kSavefileEventAccess;
 import r48.map.mapinfos.R2kRMLikeMapInfoBackend;
 import r48.schema.HiddenSchemaElement;
@@ -53,7 +54,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     RubyIO saveEvs = target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@events");
                     saveEvs.hashVal.clear();
                     // Ghosts, become real!
-                    for (Map.Entry<RubyIO, RubyIO> evs : map.getInstVarBySymbol("@events").hashVal.entrySet())
+                    for (Map.Entry<IRIO, RubyIO> evs : map.getInstVarBySymbol("@events").hashVal.entrySet())
                         saveEvs.hashVal.put(evs.getKey(), R2kSavefileEventAccess.eventAsSaveEvent(mapId, evs.getKey(), evs.getValue()));
                     // @system save_count is in-game save count, not actual System @save_count
                     target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").setDeepClone(getSaveCount(map));
@@ -246,10 +247,10 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
             rt.setTiletype(i, 0, 0, (short) i);
     }
 
-    private void initializeArrayWithClones(RubyIO instVarBySymbol, HashMap<RubyIO, RubyIO> length, RubyIO rubyIO) {
+    private void initializeArrayWithClones(RubyIO instVarBySymbol, HashMap<IRIO, RubyIO> length, RubyIO rubyIO) {
         int maxVal = 0;
-        for (RubyIO rio : length.keySet())
-            maxVal = Math.max((int) rio.fixnumVal, maxVal);
+        for (IRIO rio : length.keySet())
+            maxVal = Math.max((int) rio.getFX(), maxVal);
         instVarBySymbol.arrVal = new RubyIO[maxVal];
         for (int i = 0; i < instVarBySymbol.arrVal.length; i++)
             instVarBySymbol.arrVal[i] = new RubyIO().setDeepClone(rubyIO);

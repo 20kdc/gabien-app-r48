@@ -8,6 +8,7 @@
 package r48.map.events;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 import java.util.LinkedList;
 
@@ -21,14 +22,14 @@ import java.util.LinkedList;
 public interface IEventAccess {
     // Note that you should call the relevant modification trigger after all modifications.
     // This should be empty for non-Map event renderers.
-    LinkedList<RubyIO> getEventKeys();
+    LinkedList<IRIO> getEventKeys();
 
     // Should return null on event not available
-    RubyIO getEvent(RubyIO key);
+    RubyIO getEvent(IRIO key);
 
     // Should do nothing on event not available
     // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
-    void delEvent(RubyIO key);
+    void delEvent(IRIO key);
 
     // Returns the "add event" strings (strings may or may not be null, but the array must not be null)
     String[] eventTypes();
@@ -37,36 +38,36 @@ public interface IEventAccess {
     // null for fail & do nothing
     // the key
     // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
-    RubyIO addEvent(RubyIO eve, int type);
+    IRIO addEvent(RubyIO eve, int type);
 
     // {eventSchema, root, rootSchema, keyValueSyntax}
     // Should return null on event not available
-    String[] getEventSchema(RubyIO key);
+    String[] getEventSchema(IRIO key);
 
-    int getEventType(RubyIO evK);
+    int getEventType(IRIO evK);
 
     // If this returns something, then the event is read-only, but has a button marked "Sync" which is expected to cause modifications
     // Yes, this is a cop-out because I can't think of a better design r/n
     // everything else I thought up was just hacky or overabstracting
-    Runnable hasSync(RubyIO evK);
+    Runnable hasSync(IRIO evK);
 
     // Name of "Events" panel. Cannot be null
     String customEventsName();
 
     // Given an event key, return X.
     // Can error if the event does not exist.
-    long getEventX(RubyIO key);
+    long getEventX(IRIO key);
 
     // Given an event key, return Y.
     // Can error if the event does not exist.
-    long getEventY(RubyIO key);
+    long getEventY(IRIO key);
 
     // Given an event key, set XY.
     // Does nothing if the event does not exist.
     // *EXPECTED TO RUN MODIFICATION ALERTER BY ITSELF*
-    void setEventXY(RubyIO key, long x, long y);
+    void setEventXY(IRIO key, long x, long y);
 
     // Given an event key, return a name or null.
     // Can error if the event does not exist.
-    String getEventName(RubyIO key);
+    String getEventName(IRIO key);
 }

@@ -10,6 +10,7 @@ package r48;
 import gabien.GaBIEn;
 import gabien.ui.*;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBinders;
 import r48.ui.UIAppendButton;
@@ -62,13 +63,19 @@ public class UITest extends UIElement.UIProxy {
         }
     }, FontSizes.inspectorBackTextHeight), masterPanel);
 
-    public UITest(RubyIO obj) {
+    public UITest(IRIO obj) {
         loadObject(obj);
         proxySetElement(outerPanel, false);
         setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(320), FontSizes.scaleGuess(240)));
     }
 
-    public void loadObject(final RubyIO obj) {
+    public void loadObject(final IRIO obj2) {
+        if (!(obj2 instanceof RubyIO)) {
+            masterPanel.panelsClear();
+            masterPanel.panelsAdd(new UILabel("TEMPORARY HOLDOVER DO NOT TRANSLATE", FontSizes.inspectorTextHeight));
+            return;
+        }
+        final RubyIO obj = (RubyIO) obj2;
         offset = 0;
         currentObj = obj;
         LinkedList<String> strings = new LinkedList<String>();
@@ -79,7 +86,7 @@ public class UITest extends UIElement.UIProxy {
             targs.add(obj.getInstVarBySymbol(s));
         }
         if (obj.hashVal != null) {
-            for (RubyIO s : sortedKeys(obj.hashVal.keySet())) {
+            for (IRIO s : sortedKeys(obj.hashVal.keySet())) {
                 strings.add(s + " -> " + obj.hashVal.get(s));
                 targs.add(obj.hashVal.get(s));
             }
@@ -183,19 +190,20 @@ public class UITest extends UIElement.UIProxy {
         return sortedKeysStr(hs);
     }
 
-    public static LinkedList<RubyIO> sortedKeys(Set<RubyIO> rubyIOs) {
-        return sortedKeys(rubyIOs, new IFunction<RubyIO, String>() {
+    public static LinkedList<IRIO> sortedKeys(Set<IRIO> rubyIOs) {
+        return sortedKeys(rubyIOs, new IFunction<IRIO, String>() {
             @Override
-            public String apply(RubyIO rubyIO) {
+            public String apply(IRIO rubyIO) {
                 return rubyIO.toString();
             }
         });
     }
-    public static LinkedList<RubyIO> sortedKeys(Set<RubyIO> rubyIOs, final IFunction<RubyIO, String> toString) {
-        LinkedList<RubyIO> ios = new LinkedList<RubyIO>(rubyIOs);
-        Collections.sort(ios, new Comparator<RubyIO>() {
+
+    public static LinkedList<IRIO> sortedKeys(Set<IRIO> rubyIOs, final IFunction<IRIO, String> toString) {
+        LinkedList<IRIO> ios = new LinkedList<IRIO>(rubyIOs);
+        Collections.sort(ios, new Comparator<IRIO>() {
             @Override
-            public int compare(RubyIO rubyIO, RubyIO t1) {
+            public int compare(IRIO rubyIO, IRIO t1) {
                 return natStrComp(toString.apply(rubyIO), toString.apply(t1));
             }
         });

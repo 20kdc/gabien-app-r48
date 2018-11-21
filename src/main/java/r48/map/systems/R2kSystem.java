@@ -21,6 +21,7 @@ import r48.dbs.TXDB;
 import r48.imageio.BMP8IImageIOFormat;
 import r48.imageio.PNG8IImageIOFormat;
 import r48.imageio.XYZImageIOFormat;
+import r48.io.data.IRIO;
 import r48.map.*;
 import r48.map.drawlayers.*;
 import r48.map.events.*;
@@ -166,8 +167,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     @Override
     public RMMapData[] getAllMaps() {
         LinkedList<RMMapData> rmdList = new LinkedList<RMMapData>();
-        for (Map.Entry<RubyIO, RubyIO> rio : AppMain.objectDB.getObject("RPG_RT.lmt").getInstVarBySymbol("@map_infos").hashVal.entrySet()) {
-            int id = (int) rio.getKey().fixnumVal;
+        for (Map.Entry<IRIO, RubyIO> rio : AppMain.objectDB.getObject("RPG_RT.lmt").getInstVarBySymbol("@map_infos").hashVal.entrySet()) {
+            int id = (int) rio.getKey().getFX();
             if (id == 0)
                 continue;
             RubyIO obj = AppMain.objectDB.getObject(R2kRMLikeMapInfoBackend.sNameFromInt(id));
@@ -183,8 +184,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     public RubyIO[] getAllCommonEvents() {
         RubyIO cev = AppMain.objectDB.getObject("RPG_RT.ldb").getInstVarBySymbol("@common_events");
         LinkedList<Integer> ints = new LinkedList<Integer>();
-        for (RubyIO i : cev.hashVal.keySet())
-            ints.add((int) i.fixnumVal);
+        for (IRIO i : cev.hashVal.keySet())
+            ints.add((int) i.getFX());
         Collections.sort(ints);
         LinkedList<RubyIO> l = new LinkedList<RubyIO>();
         for (Integer i : ints)

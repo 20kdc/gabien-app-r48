@@ -18,6 +18,7 @@ import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.systems.IRMMapSystem;
 import r48.maptools.UIMTEventPicker;
@@ -87,7 +88,7 @@ public class RMToolsToolset implements IToolset {
                                 }
                                 for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
                                     // Find event!
-                                    for (Map.Entry<RubyIO, RubyIO> event : rmd.map.getInstVarBySymbol("@events").hashVal.entrySet()) {
+                                    for (Map.Entry<IRIO, RubyIO> event : rmd.map.getInstVarBySymbol("@events").hashVal.entrySet()) {
                                         for (RubyIO page : event.getValue().getInstVarBySymbol("@pages").arrVal) {
                                             if (page.type == '0')
                                                 continue;
@@ -194,7 +195,7 @@ public class RMToolsToolset implements IToolset {
                     public void run() {
                         for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
                             // Find event!
-                            for (Map.Entry<RubyIO, RubyIO> event : rmd.map.getInstVarBySymbol("@events").hashVal.entrySet()) {
+                            for (Map.Entry<IRIO, RubyIO> event : rmd.map.getInstVarBySymbol("@events").hashVal.entrySet()) {
                                 for (RubyIO page : event.getValue().getInstVarBySymbol("@pages").arrVal) {
                                     if (page.type == '0')
                                         continue;
@@ -260,8 +261,8 @@ public class RMToolsToolset implements IToolset {
                             AppMain.schemas.updateDictionaries(map);
                             AppMain.schemas.kickAllDictionariesForMapChange();
                             LinkedList<Integer> orderedEVN = new LinkedList<Integer>();
-                            for (RubyIO i : map.getInstVarBySymbol("@events").hashVal.keySet())
-                                orderedEVN.add((int) i.fixnumVal);
+                            for (IRIO i : map.getInstVarBySymbol("@events").hashVal.keySet())
+                                orderedEVN.add((int) i.getFX());
                             Collections.sort(orderedEVN);
                             for (int k : orderedEVN) {
                                 RubyIO event = map.getInstVarBySymbol("@events").getHashVal(new RubyIO().setFX(k));

@@ -10,6 +10,7 @@ package r48.toolsets;
 import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 
 import java.io.PrintStream;
 import java.util.Collections;
@@ -137,8 +138,8 @@ public class RMTranscriptDumper {
 
     public void dumpSVListHash(String n, RubyIO arrHashVal) {
         LinkedList<Long> l = new LinkedList<Long>();
-        for (RubyIO rio : arrHashVal.hashVal.keySet())
-            l.add(rio.fixnumVal);
+        for (IRIO rio : arrHashVal.hashVal.keySet())
+            l.add(rio.getFX());
         Collections.sort(l);
         output.println("<h3>" + escapeHtml(n) + "</h3>");
         output.print("<ul>");

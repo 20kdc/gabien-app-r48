@@ -10,6 +10,7 @@ package r48.map.mapinfos;
 import gabien.ui.IConsumer;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 
@@ -164,9 +165,9 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         // The job of this is to hide that there *ever was* a Map 0.
         // Map 0 is reserved.
         HashSet<Long> hs = new HashSet<Long>();
-        for (RubyIO i : mapTreeHash.hashVal.keySet())
-            if (i.fixnumVal != 0)
-                hs.add(i.fixnumVal);
+        for (IRIO i : mapTreeHash.hashVal.keySet())
+            if (i.getFX() != 0)
+                hs.add(i.getFX());
         return hs;
     }
 

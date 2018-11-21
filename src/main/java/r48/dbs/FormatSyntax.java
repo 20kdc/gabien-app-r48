@@ -10,6 +10,7 @@ package r48.dbs;
 import gabien.ui.IFunction;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 
@@ -22,7 +23,7 @@ import java.util.LinkedList;
 public class FormatSyntax {
     // The new format allows for more precise setups,
     // but isn't as neat.
-    public static String formatNameExtended(String name, RubyIO root, RubyIO[] parameters, IFunction<RubyIO, SchemaElement>[] parameterSchemas) {
+    public static String formatNameExtended(String name, IRIO root, IRIO[] parameters, IFunction<IRIO, SchemaElement>[] parameterSchemas) {
         StringBuilder r = new StringBuilder();
         char[] data = name.toCharArray();
         boolean prefixNext = false;
@@ -118,7 +119,7 @@ public class FormatSyntax {
                 if (parameters != null) {
                     if (indexOfAt != 0) {
                         char ch = data[++i];
-                        RubyIO p;
+                        IRIO p;
                         if (ch == '[') {
                             // At this point, it's gone recursive.
                             // Need to safely skip over this lot...
@@ -157,7 +158,7 @@ public class FormatSyntax {
                     } else {
                         // Meta-interpretation syntax
                         String tp = type.substring(1);
-                        IFunction<RubyIO, String> n = TXDB.nameDB.get(tp);
+                        IFunction<IRIO, String> n = TXDB.nameDB.get(tp);
                         if (n == null)
                             throw new RuntimeException("Expected NDB " + tp);
                         r.append(n.apply(root));
@@ -181,7 +182,7 @@ public class FormatSyntax {
         return r.toString();
     }
 
-    private static void determineBooleanComponent(StringBuilder r, LinkedList<String> components, boolean result, RubyIO root, RubyIO[] parameters, IFunction<RubyIO, SchemaElement>[] parameterSchemas) {
+    private static void determineBooleanComponent(StringBuilder r, LinkedList<String> components, boolean result, IRIO root, IRIO[] parameters, IFunction<IRIO, SchemaElement>[] parameterSchemas) {
         for (int i = (result ? 0 : 1); i < components.size(); i += 2)
             r.append(formatNameExtended(components.get(i), root, parameters, parameterSchemas));
     }
@@ -230,9 +231,9 @@ public class FormatSyntax {
         throw new RuntimeException("Hit end-of-data without reaching end character.");
     }
 
-    public static String interpretParameter(RubyIO rubyIO, String st, boolean prefixEnums) {
+    public static String interpretParameter(IRIO rubyIO, String st, boolean prefixEnums) {
         if (st != null) {
-            IFunction<RubyIO, String> handler = TXDB.nameDB.get("Interp." + st);
+            IFunction<IRIO, String> handler = TXDB.nameDB.get("Interp." + st);
             if (handler != null) {
                 return handler.apply(rubyIO);
             } else {
@@ -244,10 +245,10 @@ public class FormatSyntax {
         }
     }
 
-    public static String interpretParameter(RubyIO rubyIO, SchemaElement ise, boolean prefixEnums) {
+    public static String interpretParameter(IRIO rubyIO, SchemaElement ise, boolean prefixEnums) {
         // Basically, Class. overrides go first, then everything else comes after.
-        if (rubyIO.type == 'o') {
-            IFunction<RubyIO, String> handler = TXDB.nameDB.get("Class." + rubyIO.symVal);
+        if (rubyIO.getType() == 'o') {
+            IFunction<IRIO, String> handler = TXDB.nameDB.get("Class." + rubyIO.getSymbol());
             if (handler != null)
                 return handler.apply(rubyIO);
         }
@@ -264,7 +265,7 @@ public class FormatSyntax {
     }
 
     // NOTE: This can return null.
-    public static SchemaElement getParameterDisplaySchemaFromArray(RubyIO root, IFunction<RubyIO, SchemaElement>[] ise, int i) {
+    public static SchemaElement getParameterDisplaySchemaFromArray(IRIO root, IFunction<IRIO, SchemaElement>[] ise, int i) {
         if (ise == null)
             return null;
         if (ise.length <= i)
@@ -272,10 +273,7 @@ public class FormatSyntax {
         return ise[i].apply(root);
     }
 
-    public static String formatExtended(String s, RubyIO... pieces) {
-        RubyIO synthRoot = new RubyIO();
-        synthRoot.type = '[';
-        synthRoot.arrVal = pieces;
-        return formatNameExtended(s, synthRoot, pieces, null);
+    public static String formatExtended(String s, IRIO... pieces) {
+        return formatNameExtended(s, new RubyIO().setNull(), pieces, null);
     }
 }

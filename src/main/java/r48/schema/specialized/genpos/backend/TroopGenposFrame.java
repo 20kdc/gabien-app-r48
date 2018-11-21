@@ -16,6 +16,7 @@ import r48.ArrayUtils;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.imagefx.HueShiftImageEffect;
+import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;
 import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
@@ -57,11 +58,11 @@ public class TroopGenposFrame implements IGenposFrame {
         IImageLoader img = AppMain.stuffRendererIndependent.imageLoader;
         battleBkg = img.getImage("Backdrop/" + database.getInstVarBySymbol("@system").getInstVarBySymbol("@test_battle_background").decString(), true);
         long max = 0;
-        for (RubyIO rio : database.getInstVarBySymbol("@enemies").hashVal.keySet())
-            max = Math.max(max, rio.fixnumVal);
+        for (IRIO rio : database.getInstVarBySymbol("@enemies").hashVal.keySet())
+            max = Math.max(max, rio.getFX());
         enemies = new IImage[(int) (max + 1)];
-        for (Map.Entry<RubyIO, RubyIO> map : database.getInstVarBySymbol("@enemies").hashVal.entrySet())
-            enemies[(int) (map.getKey().fixnumVal)] = readEnemy(map.getValue(), img);
+        for (Map.Entry<IRIO, RubyIO> map : database.getInstVarBySymbol("@enemies").hashVal.entrySet())
+            enemies[(int) (map.getKey().getFX())] = readEnemy(map.getValue(), img);
     }
 
     private IImage readEnemy(RubyIO value, IImageLoader img) {
@@ -88,7 +89,7 @@ public class TroopGenposFrame implements IGenposFrame {
 
     @Override
     public void deleteCell(int i2) {
-        ArrayUtils.removeRioElement(troop.getInstVarBySymbol("@members"), i2 + 1);
+        troop.getInstVarBySymbol("@members").rmAElem(i2 + 1);
         changed.run();
     }
 

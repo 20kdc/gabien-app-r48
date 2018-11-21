@@ -15,6 +15,7 @@ import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
+import r48.io.data.IRIO;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
@@ -29,7 +30,7 @@ import java.util.HashMap;
 public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public UIMapView mapView;
     public UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize);
-    public HashMap<String, RubyIO> eventCache = new HashMap<String, RubyIO>();
+    public HashMap<String, IRIO> eventCache = new HashMap<String, IRIO>();
 
     public UIMTEventPicker(IMapToolContext mv) {
         super(mv);
@@ -53,7 +54,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     public int wantOverlay(boolean minimap) {
         // use this time to cache the essentials, this should vastly speed up drawing
         eventCache.clear();
-        for (RubyIO evK : mapView.mapTable.eventAccess.getEventKeys()) {
+        for (IRIO evK : mapView.mapTable.eventAccess.getEventKeys()) {
             long x = mapView.mapTable.eventAccess.getEventX(evK);
             long y = mapView.mapTable.eventAccess.getEventY(evK);
             eventCache.put(x + ";" + y, evK);
@@ -75,7 +76,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     @Override
     public void confirmAt(final int x, final int y, final int layer) {
         svl.panelsClear();
-        for (final RubyIO evK : mapView.mapTable.eventAccess.getEventKeys()) {
+        for (final IRIO evK : mapView.mapTable.eventAccess.getEventKeys()) {
             final long eventX = mapView.mapTable.eventAccess.getEventX(evK);
             final long eventY = mapView.mapTable.eventAccess.getEventY(evK);
             String eventName = mapView.mapTable.eventAccess.getEventName(evK);
@@ -131,7 +132,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                     return;
                                 }
                                 RubyIO newEvent = new RubyIO().setDeepClone(evI);
-                                RubyIO nevK = mapView.mapTable.eventAccess.addEvent(newEvent, mapView.mapTable.eventAccess.getEventType(evK));
+                                IRIO nevK = mapView.mapTable.eventAccess.addEvent(newEvent, mapView.mapTable.eventAccess.getEventType(evK));
                                 if (nevK == null)
                                     return;
                                 mapToolContext.accept(new UIMTEventMover(mapToolContext, nevK));
@@ -179,7 +180,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
             svl.panelsAdd(new UITextButton(types[i], FontSizes.eventPickerEntryTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    RubyIO k = mapView.mapTable.eventAccess.addEvent(null, i2);
+                    IRIO k = mapView.mapTable.eventAccess.addEvent(null, i2);
                     if (k == null)
                         return;
                     RubyIO v = mapView.mapTable.eventAccess.getEvent(k);
@@ -187,7 +188,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                         throw new RuntimeException("IEventAccess implementation not sane.");
                     RubyIO evName = v.getInstVarBySymbol("@name");
                     if (evName != null) {
-                        String n = Integer.toString((int) k.fixnumVal);
+                        String n = Integer.toString((int) k.getFX());
                         while (n.length() < 4)
                             n = "0" + n;
                         evName.encString("EV" + n, false);
@@ -209,7 +210,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         return FormatSyntax.formatExtended(TXDB.get("Ev.Pick #[#A total#]"), new RubyIO().setFX(eventCache.size()));
     }
 
-    public static void showEvent(RubyIO key, UIMapView map, RubyIO event) {
+    public static void showEvent(IRIO key, UIMapView map, RubyIO event) {
         String[] root = map.mapTable.eventAccess.getEventSchema(key);
         if (root == null)
             return;
@@ -217,7 +218,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         AppMain.launchNonRootSchema(AppMain.objectDB.getObject(root[1]), root[2], key, event, root[0], "E" + key, map);
     }
 
-    public static void showEventDivorced(RubyIO key, RubyIO map, String mapSchema, RubyIO event, String eventSchema) {
+    public static void showEventDivorced(IRIO key, RubyIO map, String mapSchema, RubyIO event, String eventSchema) {
         AppMain.launchNonRootSchema(map, mapSchema, key, event, eventSchema, "E" + key, null);
     }
 }

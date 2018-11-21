@@ -78,11 +78,12 @@ public class IkaObjectBackend implements IObjectBackend {
             RubyIO palTbl = new RubyIO().setUser("Table", pal.innerBytes);
 
             RubyTable tbl = new RubyTable(3, bm.width, bm.height, 1, new int[1]);
-            RubyIO mapTbl = new RubyIO().setUser("Table", tbl.innerBytes);
 
             for (int i = 0; i < bm.width; i++)
                 for (int j = 0; j < bm.height; j++)
                     tbl.setTiletype(i, j, 0, (short) bm.getPixel(i, j));
+
+            RubyIO mapTbl = new RubyIO().setUser("Table", tbl.innerBytes);
 
             rio.addIVar("@data", mapTbl);
             rio.addIVar("@palette", palTbl);

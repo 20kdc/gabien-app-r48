@@ -13,6 +13,7 @@ import r48.io.data.IRIO;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -20,6 +21,9 @@ import java.util.Map;
  * Created on 12/27/16.
  */
 public class RubyIO extends IRIO {
+
+    private static RubyIO[] globalZeroRubyIOs = new RubyIO[0];
+
     /*
      * The Grand List Of Objects R48 Supports:
      * NOTE: All objects can theoretically have iVars.
@@ -41,7 +45,7 @@ public class RubyIO extends IRIO {
     // public HashMap<String, RubyIO> iVars = new HashMap<String, RubyIO>();
     public String[] iVarKeys;
     public RubyIO[] iVarVals;
-    public HashMap<RubyIO, RubyIO> hashVal;
+    public HashMap<IRIO, RubyIO> hashVal;
     public RubyIO hashDefVal;
     public RubyIO[] arrVal;
     public byte[] userVal;
@@ -100,11 +104,19 @@ public class RubyIO extends IRIO {
         return this;
     }
 
+    @Override
     public RubyIO setString(byte[] s, String javaEncoding) {
         setNull();
         type = '"';
         strVal = copyByteArray(s);
         RubyEncodingTranslator.inject(this, javaEncoding);
+        return this;
+    }
+
+    @Override
+    public IRIO setFloat(String s) {
+        setString(s, true);
+        type = 'f';
         return this;
     }
 
@@ -115,74 +127,58 @@ public class RubyIO extends IRIO {
         return this;
     }
 
+    @Override
     public RubyIO setUser(String s, byte[] data) {
         setNull();
         type = 'u';
         symVal = s;
-        userVal = data;
+        userVal = copyByteArray(data);
         return this;
     }
 
+    @Override
     public RubyIO setHash() {
         setNull();
         type = '{';
-        hashVal = new HashMap<RubyIO, RubyIO>();
+        hashVal = new HashMap<IRIO, RubyIO>();
+        return this;
+    }
+
+    @Override
+    public RubyIO setArray() {
+        setNull();
+        type = '[';
+        arrVal = globalZeroRubyIOs;
+        return this;
+    }
+
+    @Override
+    public IRIO setObject(String symbol) {
+        return setSymlike(symbol, true);
+    }
+
+    @Override
+    public IRIO setBignum(byte[] data) {
+        setNull();
+        type = 'l';
+        userVal = copyByteArray(data);
+        return this;
+    }
+
+    @Override
+    public String[] getIVars() {
+        if (iVarKeys == null)
+            return new String[0];
+        return copyStringArray(iVarKeys);
+    }
+
+    @Override
+    public RubyIO setDeepClone(IRIO clone) {
+        super.setDeepClone(clone);
         return this;
     }
 
     // ----
-
-    public RubyIO setShallowClone(RubyIO clone) {
-        type = clone.type;
-        strVal = clone.strVal;
-        symVal = clone.symVal;
-        iVarKeys = null;
-        iVarVals = null;
-        if (clone.iVarKeys != null)
-            for (String s : clone.iVarKeys)
-                addIVar(s, clone.getInstVarBySymbol(s));
-        if (clone.hashVal != null) {
-            hashVal = new HashMap<RubyIO, RubyIO>();
-            hashVal.putAll(clone.hashVal);
-        } else {
-            hashVal = null;
-        }
-        hashDefVal = clone.hashDefVal;
-        if (clone.arrVal != null) {
-            arrVal = new RubyIO[clone.arrVal.length];
-            System.arraycopy(clone.arrVal, 0, arrVal, 0, arrVal.length);
-        } else {
-            arrVal = null;
-        }
-        if (clone.userVal != null) {
-            userVal = new byte[clone.userVal.length];
-            System.arraycopy(clone.userVal, 0, userVal, 0, userVal.length);
-        } else {
-            userVal = null;
-        }
-        fixnumVal = clone.fixnumVal;
-        return this;
-    }
-
-    // That's deep, man. [/decadesIDidntLiveIn]
-    public RubyIO setDeepClone(RubyIO clone) {
-        setShallowClone(clone);
-        if (clone.iVarKeys != null)
-            for (String s : clone.iVarKeys)
-                addIVar(s, new RubyIO().setDeepClone(clone.getInstVarBySymbol(s)));
-        if (hashDefVal != null)
-            hashDefVal = new RubyIO();
-        if (hashVal != null) {
-            hashVal.clear();
-            for (Map.Entry<RubyIO, RubyIO> a : clone.hashVal.entrySet())
-                hashVal.put(new RubyIO().setDeepClone(a.getKey()), new RubyIO().setDeepClone(a.getValue()));
-        }
-        if (arrVal != null)
-            for (int i = 0; i < arrVal.length; i++)
-                arrVal[i] = new RubyIO().setDeepClone(arrVal[i]);
-        // userVal is actually copied over by the shallow clone
-        return this;
-    }
 
     // Outputs IMI-code for something so that there's a basically human-readable version of it.
     public String toStringLong(String indent) {
@@ -211,6 +207,11 @@ public class RubyIO extends IRIO {
             // If this ever occurs, RubyEncodingTranslator's broke
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String getBufferEnc() {
+        return RubyEncodingTranslator.getStringCharset(this);
     }
 
     // intern means "use UTF-8"
@@ -276,15 +277,20 @@ public class RubyIO extends IRIO {
     // NOTE: this is solely for cases where an external primitive is being thrown in.
     //       in most cases, we already have the RubyIO object by-ref.
     //       (Can't implement equals on RubyIO objects safely due to ObjectDB backreference tracing.)
+    @Override
     public RubyIO getHashVal(IRIO rio) {
-        for (Map.Entry<RubyIO, RubyIO> e : hashVal.entrySet())
+        RubyIO basis = hashVal.get(rio);
+        if (basis != null)
+            return basis;
+        for (Map.Entry<IRIO, RubyIO> e : hashVal.entrySet())
             if (rubyEquals(e.getKey(), rio))
                 return e.getValue();
         return null;
     }
 
+    @Override
     public void removeHashVal(IRIO rubyIO) {
-        for (Map.Entry<RubyIO, RubyIO> e : hashVal.entrySet())
+        for (Map.Entry<IRIO, RubyIO> e : hashVal.entrySet())
             if (rubyEquals(e.getKey(), rubyIO)) {
                 hashVal.remove(e.getKey());
                 // hopefully don't trigger a CME
@@ -292,10 +298,11 @@ public class RubyIO extends IRIO {
             }
     }
 
-    public static byte[] copyByteArray(byte[] s) {
-        byte[] t = new byte[s.length];
-        System.arraycopy(s, 0, t, 0, t.length);
-        return t;
+    @Override
+    public IRIO getHashDefVal() {
+        if (getType() != '}')
+            throw new UnsupportedOperationException();
+        return hashDefVal;
     }
 
     // IRIO compat.
@@ -337,7 +344,51 @@ public class RubyIO extends IRIO {
     }
 
     @Override
+    public void setBuffer(byte[] data) {
+        userVal = data;
+    }
+
+    @Override
     public int getALen() {
         return arrVal.length;
+    }
+
+    @Override
+    public IRIO getAElem(int i) {
+        return arrVal[i];
+    }
+
+    @Override
+    public IRIO addAElem(int i) {
+        RubyIO rio = new RubyIO().setNull();
+        RubyIO[] old = arrVal;
+        RubyIO[] newArr = new RubyIO[old.length + 1];
+        System.arraycopy(old, 0, newArr, 0, i);
+        newArr[i] = rio;
+        System.arraycopy(old, i, newArr, i + 1, old.length - i);
+        arrVal = newArr;
+        return rio;
+    }
+
+    @Override
+    public void rmAElem(int i) {
+        RubyIO[] old = arrVal;
+        RubyIO[] newArr = new RubyIO[old.length - 1];
+        System.arraycopy(old, 0, newArr, 0, i);
+        System.arraycopy(old, i + 1, newArr, i + 1 - 1, old.length - (i + 1));
+        arrVal = newArr;
+    }
+
+    @Override
+    public IRIO[] getHashKeys() {
+        return new LinkedList<IRIO>(hashVal.keySet()).toArray(new IRIO[0]);
+    }
+
+    @Override
+    public IRIO addHashVal(IRIO key) {
+        removeHashVal(key);
+        RubyIO rt = new RubyIO().setNull();
+        hashVal.put(new RubyIO().setDeepClone(key), rt);
+        return rt;
     }
 }

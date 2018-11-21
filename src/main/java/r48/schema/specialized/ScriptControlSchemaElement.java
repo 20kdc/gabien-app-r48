@@ -42,7 +42,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
                 try {
                     RubyIO scripts = importScripts();
                     if (scripts != null) {
-                        target.setShallowClone(scripts);
+                        target.setDeepClone(scripts);
                         path.changeOccurred(true);
                     }
                 } catch (IOException ioe) {

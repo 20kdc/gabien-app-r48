@@ -9,7 +9,7 @@ package r48.dbs;
 
 import gabien.GaBIEn;
 import gabien.ui.IFunction;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -29,7 +29,7 @@ public class TXDB {
     private static HashMap<String, String> subspace = new HashMap<String, String>();
 
     // This gets stuff inserted into it by AppMain (via sdb & co), so it has to be flushed in shutdown() there.
-    public static HashMap<String, IFunction<RubyIO, String>> nameDB = new HashMap<String, IFunction<RubyIO, String>>();
+    public static HashMap<String, IFunction<IRIO, String>> nameDB = new HashMap<String, IFunction<IRIO, String>>();
 
     public static void flushNameDB() {
         nameDB.clear();
@@ -37,9 +37,9 @@ public class TXDB {
         // Explicitly for Set Variables use and similar.
         // Yes, if you request it, I'll make a similar TXDB routine for you,
         //  assuming it's not ridiculously complicated.
-        nameDB.put("Interp.lang-Russian-pluralRange", new IFunction<RubyIO, String>() {
+        nameDB.put("Interp.lang-Russian-pluralRange", new IFunction<IRIO, String>() {
             @Override
-            public String apply(RubyIO rubyIO) {
+            public String apply(IRIO rubyIO) {
                 String[] range = rubyIO.decString().split(" ");
                 int v = Integer.valueOf(range[1]);
                 v -= Integer.valueOf(range[0]) - 1;
@@ -51,15 +51,15 @@ public class TXDB {
                 return "2";
             }
         });
-        nameDB.put("Interp.lang-Common-arrayLen", new IFunction<RubyIO, String>() {
+        nameDB.put("Interp.lang-Common-arrayLen", new IFunction<IRIO, String>() {
             @Override
-            public String apply(RubyIO rubyIO) {
-                return Integer.toString(rubyIO.arrVal.length);
+            public String apply(IRIO rubyIO) {
+                return Integer.toString(rubyIO.getALen());
             }
         });
-        nameDB.put("Interp.lang-Common-add", new IFunction<RubyIO, String>() {
+        nameDB.put("Interp.lang-Common-add", new IFunction<IRIO, String>() {
             @Override
-            public String apply(RubyIO rubyIO) {
+            public String apply(IRIO rubyIO) {
                 String[] range = rubyIO.decString().split(" ");
                 int v = 0;
                 for (String s : range)
@@ -67,9 +67,9 @@ public class TXDB {
                 return Integer.toString(v);
             }
         });
-        nameDB.put("Interp.lang-Common-r2kTsConverter", new IFunction<RubyIO, String>() {
+        nameDB.put("Interp.lang-Common-r2kTsConverter", new IFunction<IRIO, String>() {
             @Override
-            public String apply(RubyIO rubyIO) {
+            public String apply(IRIO rubyIO) {
                 double d = Double.parseDouble(rubyIO.decString());
                 // WARNING: THIS IS MADNESS, and could be off by a few seconds.
                 // In practice I tested it and it somehow wasn't off at all.
@@ -95,9 +95,9 @@ public class TXDB {
                 return new Date(v).toString();
             }
         });
-        nameDB.put("lang-Common-valueSyntax", new IFunction<RubyIO, String>() {
+        nameDB.put("lang-Common-valueSyntax", new IFunction<IRIO, String>() {
             @Override
-            public String apply(RubyIO rubyIO) {
+            public String apply(IRIO rubyIO) {
                 return ValueSyntax.encode(rubyIO);
             }
         });

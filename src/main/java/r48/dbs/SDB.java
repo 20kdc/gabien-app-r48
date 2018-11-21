@@ -13,6 +13,7 @@ import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.DictionaryUpdaterRunnable;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.*;
 import r48.schema.arrays.*;
 import r48.schema.displays.EPGDisplaySchemaElement;
@@ -839,15 +840,17 @@ public class SDB {
                         }
                         final String textF = TXDB.get(fPfx + "/" + args[1], text);
 
-                        TXDB.nameDB.put(args[1], new IFunction<RubyIO, String>() {
+                        TXDB.nameDB.put(args[1], new IFunction<IRIO, String>() {
                             @Override
-                            public String apply(RubyIO rubyIO) {
-                                LinkedList<RubyIO> parameters = new LinkedList<RubyIO>();
-                                for (String arg : arguments) {
-                                    RubyIO res = PathSyntax.parse(rubyIO, arg);
-                                    if (res == null)
-                                        break;
-                                    parameters.add(res);
+                            public String apply(IRIO rubyIO) {
+                                LinkedList<IRIO> parameters = new LinkedList<IRIO>();
+                                if (rubyIO instanceof RubyIO) {
+                                    for (String arg : arguments) {
+                                        RubyIO res = PathSyntax.parse((RubyIO) rubyIO, arg);
+                                        if (res == null)
+                                            break;
+                                        parameters.add(res);
+                                    }
                                 }
                                 return FormatSyntax.formatNameExtended(textF, rubyIO, parameters.toArray(new RubyIO[0]), null);
                             }

@@ -10,6 +10,7 @@ package r48.map.drawlayers;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.map.MapViewDrawContext;
 import r48.map.events.IEventAccess;
 import r48.map.events.RMEventGraphicRenderer;
@@ -71,7 +72,7 @@ public class RXPAccurateDrawLayer implements IMapViewDrawLayer {
         for (int i = -1; i < tbl.height + 5; i++)
             zSorting.add(new RXPPriorityPlane(i));
         // Very specific choice of algorithm.
-        for (RubyIO r : eventList.getEventKeys()) {
+        for (IRIO r : eventList.getEventKeys()) {
             RubyIO ed = eventList.getEvent(r);
             // Determine Z location.
             boolean isUpper = events.determineEventLayer(ed) != 0;

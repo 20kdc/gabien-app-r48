@@ -9,10 +9,10 @@ package r48.io;
 
 import gabien.GaBIEn;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 import java.io.*;
 import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * Because everybody needs a public domain JSON parser.
@@ -173,9 +173,10 @@ public class JsonObjectBackend implements IObjectBackend {
         return null;
     }
 
-    private void saveValue(DataOutputStream dos, RubyIO object) throws IOException {
+    private void saveValue(DataOutputStream dos, IRIO object) throws IOException {
         boolean first = true; // for collections
-        switch (object.type) {
+        int alen; // for arrays
+        switch (object.getType()) {
             case 'T':
                 dos.writeBytes("true");
                 break;
@@ -186,7 +187,7 @@ public class JsonObjectBackend implements IObjectBackend {
                 dos.writeBytes("null");
                 break;
             case 'i':
-                dos.writeBytes(Long.toString(object.fixnumVal));
+                dos.writeBytes(Long.toString(object.getFX()));
                 break;
             case 'f':
                 // Eep.
@@ -197,28 +198,29 @@ public class JsonObjectBackend implements IObjectBackend {
                 break;
             case '{':
                 dos.write('{');
-                for (Map.Entry<RubyIO, RubyIO> kv : object.hashVal.entrySet()) {
+                for (IRIO kv : object.getHashKeys()) {
                     if (!first)
                         dos.write(',');
-                    saveValue(dos, kv.getKey());
+                    saveValue(dos, kv);
                     dos.write(':');
-                    saveValue(dos, kv.getValue());
+                    saveValue(dos, object.getHashVal(kv));
                     first = false;
                 }
                 dos.write('}');
                 break;
             case '[':
                 dos.write('[');
-                for (RubyIO rio : object.arrVal) {
+                alen = object.getALen();
+                for (int i = 0; i < alen; i++) {
                     if (!first)
                         dos.write(',');
-                    saveValue(dos, rio);
+                    saveValue(dos, object.getAElem(i));
                     first = false;
                 }
                 dos.write(']');
                 break;
             default:
-                throw new RuntimeException("Cannot convert OT: " + object.type);
+                throw new RuntimeException("Cannot convert OT: " + object.getType());
         }
     }
 }

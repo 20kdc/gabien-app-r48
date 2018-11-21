@@ -10,6 +10,7 @@ package r48.io.r2k;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -164,8 +165,8 @@ public class R2kUtil {
     public static void rioToUnk(RubyIO mt, HashMap<Integer, byte[]> unknownChunks) {
         mt = mt.getInstVarBySymbol("@__LCF__unknown");
         if (mt != null)
-            for (Map.Entry<RubyIO, RubyIO> e : mt.hashVal.entrySet())
-                unknownChunks.put((int) e.getKey().fixnumVal, e.getValue().userVal);
+            for (Map.Entry<IRIO, RubyIO> e : mt.hashVal.entrySet())
+                unknownChunks.put((int) e.getKey().getFX(), e.getValue().userVal);
     }
 
     public static ISupplier<byte[]> supplyBlank(final int i, final byte i1) {

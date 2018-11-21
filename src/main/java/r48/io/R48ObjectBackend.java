@@ -9,13 +9,12 @@ package r48.io;
 
 import gabien.GaBIEn;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * NOTE! Additions to what this code writes need to be replicated in luahead or LS-mode needs to disable them
@@ -23,22 +22,18 @@ import java.util.Set;
  */
 public class R48ObjectBackend implements IObjectBackend {
     private final String prefix, postfix;
-    // should be true unless otherwise needed
-    public final boolean assumeDAG;
     // should almost always be false - subset for luahead.lua simplicity of implementation
     public final boolean lsMode;
 
-    public R48ObjectBackend(String s, String dataExt, boolean aDAG) {
+    public R48ObjectBackend(String s, String dataExt) {
         prefix = s;
         postfix = dataExt;
-        assumeDAG = aDAG;
         lsMode = false;
     }
 
-    public R48ObjectBackend(String s, String dataExt, boolean aDAG, boolean lsm) {
+    public R48ObjectBackend(String s, String dataExt, boolean lsm) {
         prefix = s;
         postfix = dataExt;
-        assumeDAG = aDAG;
         lsMode = lsm;
     }
 
@@ -192,7 +187,7 @@ public class R48ObjectBackend implements IObjectBackend {
         DataOutputStream dis = new DataOutputStream(oup);
         // Marshal v4.8
         dis.write(new byte[] {4, 8});
-        LinkedList<RubyIO> objCache = new LinkedList<RubyIO>();
+        LinkedList<IRIO> objCache = new LinkedList<IRIO>();
         LinkedList<String> strCache = new LinkedList<String>();
         saveValue(dis, object, objCache, strCache);
         dis.close();
@@ -217,9 +212,9 @@ public class R48ObjectBackend implements IObjectBackend {
         }
     }
 
-    private void saveValue(DataOutputStream dis, RubyIO rio, LinkedList<RubyIO> objCache, LinkedList<String> strCache) throws IOException {
+    private void saveValue(DataOutputStream dis, IRIO rio, LinkedList<IRIO> objCache, LinkedList<String> strCache) throws IOException {
         // Deduplicatables
-        int b = rio.type;
+        int b = rio.getType();
         int objIndex = objCache.indexOf(rio);
         if (objIndex != -1) {
             // Seen this object before.
@@ -228,16 +223,16 @@ public class R48ObjectBackend implements IObjectBackend {
             return;
         }
         if (b == ':') {
-            saveSymbol(dis, rio.symVal, strCache);
+            saveSymbol(dis, rio.getSymbol(), strCache);
             return;
         }
         // Everything else.
         // Firstly, pre-process (iVars wrapping)
-        boolean ivarData = rio.iVarKeys != null;
+        String[] iVarKeys = rio.getIVars();
+        boolean ivarData = iVarKeys != null;
         if (ivarData)
-            ivarData = rio.iVarKeys.length > 0;
+            ivarData = iVarKeys.length > 0;
         boolean shouldWriteObjCacheLate = false;
-        boolean okay = false;
         if (b == 'o')
             ivarData = false;
         if (ivarData)
@@ -246,106 +241,82 @@ public class R48ObjectBackend implements IObjectBackend {
         dis.write(b);
         if (b == 'o') {
             objCache.add(rio);
-            saveSymbol(dis, rio.symVal, strCache);
+            saveSymbol(dis, rio.getSymbol(), strCache);
             saveIVarsCore(dis, rio, objCache, strCache);
-            okay = true;
-        }
-        if (b == '{') {
+        } else if (b == '{') {
             objCache.add(rio);
-            saveHashCore(dis, rio.hashVal, objCache, strCache);
-            okay = true;
-        }
-        if (b == '}') {
+            saveHashCore(dis, rio, objCache, strCache);
+        } else if (b == '}') {
             objCache.add(rio);
-            saveHashCore(dis, rio.hashVal, objCache, strCache);
-            saveValue(dis, rio.hashDefVal, objCache, strCache);
-            okay = true;
-        }
-        if (b == '[') {
+            saveHashCore(dis, rio, objCache, strCache);
+            saveValue(dis, rio.getHashDefVal(), objCache, strCache);
+        } else if (b == '[') {
             objCache.add(rio);
-            save32(dis, rio.arrVal.length);
-            for (int i = 0; i < rio.arrVal.length; i++)
-                saveValue(dis, rio.arrVal[i], objCache, strCache);
-            okay = true;
-        }
-        if (b == 'i') {
-            save32(dis, rio.fixnumVal);
-            okay = true;
-        }
-        if (b == '"') {
+            int alen = rio.getALen();
+            save32(dis, alen);
+            for (int i = 0; i < alen; i++)
+                saveValue(dis, rio.getAElem(i), objCache, strCache);
+        } else if (b == 'i') {
+            save32(dis, rio.getFX());
+        } else if ((b == '"') || (b == 'f')) {
             objCache.add(rio);
-            save32(dis, rio.strVal.length);
-            dis.write(rio.strVal);
-            okay = true;
-        }
-        if (b == 'f') {
+            byte[] data = rio.getBuffer();
+            save32(dis, data.length);
+            dis.write(data);
+        } else if (b == 'l') {
             objCache.add(rio);
-            save32(dis, rio.strVal.length);
-            dis.write(rio.strVal);
-            okay = true;
-        }
-        if (b == 'l') {
-            objCache.add(rio);
-            dis.write(rio.userVal[0]);
+            byte[] dat = rio.getBuffer();
+            dis.write(dat[0]);
             // the + 1 is implied thanks to the extra sign byte
-            save32(dis, rio.userVal.length / 2);
-            dis.write(rio.userVal, 1, rio.userVal.length - 1);
+            save32(dis, dat.length / 2);
+            dis.write(dat, 1, dat.length - 1);
             // again, extra sign byte explains the inversion
-            if ((rio.userVal.length & 1) == 0)
+            if ((dat.length & 1) == 0)
                 dis.write(0);
-            okay = true;
-        }
-        if (b == 'u') {
+        } else if (b == 'u') {
             shouldWriteObjCacheLate = true;
-            saveSymbol(dis, rio.symVal, strCache);
-            save32(dis, rio.userVal.length);
-            dis.write(rio.userVal);
-            okay = true;
+            saveSymbol(dis, rio.getSymbol(), strCache);
+            save32(dis, rio.getBuffer().length);
+            dis.write(rio.getBuffer());
+        } else if ((b != 'T') && (b != 'F') && (b != '0')) {
+            throw new IOException("Cannot save " + rio.getType() + " : " + ((char) rio.getType()));
         }
-        if (b == 'T')
-            okay = true;
-        if (b == 'F')
-            okay = true;
-        if (b == '0')
-            okay = true;
-        if (!okay)
-            throw new IOException("Cannot save " + rio.type + " : " + ((char) rio.type));
         if (ivarData)
             saveIVarsCore(dis, rio, objCache, strCache);
         if (shouldWriteObjCacheLate)
             objCache.add(rio);
     }
 
-    private void saveHashCore(DataOutputStream dis, HashMap<RubyIO, RubyIO> iVars, LinkedList<RubyIO> objCache, LinkedList<String> strCache) throws IOException {
-        Set<Map.Entry<RubyIO, RubyIO>> se = iVars.entrySet();
+    private void saveHashCore(DataOutputStream dis, IRIO content, LinkedList<IRIO> objCache, LinkedList<String> strCache) throws IOException {
         // damned if you do (IDE warning), damned if you don't (compiler warning).
-        Map.Entry<RubyIO, RubyIO>[] me = se.toArray(new Map.Entry[0]);
+        IRIO[] me = content.getHashKeys();
         save32(dis, me.length);
-        for (Map.Entry<RubyIO, RubyIO> e : me) {
+        for (IRIO cKey : me) {
             try {
-                saveValue(dis, e.getKey(), objCache, strCache);
-                saveValue(dis, e.getValue(), objCache, strCache);
+                saveValue(dis, cKey, objCache, strCache);
+                saveValue(dis, content.getHashVal(cKey), objCache, strCache);
             } catch (Exception ex) {
-                throw new IOException("Hit catch at HK " + e.getKey(), ex);
+                throw new IOException("Hit catch at HK " + cKey, ex);
             }
         }
     }
 
-    private void saveIVarsCore(DataOutputStream dis, RubyIO iVars, LinkedList<RubyIO> objCache, LinkedList<String> strCache) throws IOException {
-        if (iVars.iVarKeys == null) {
+    private void saveIVarsCore(DataOutputStream dis, IRIO iVars, LinkedList<IRIO> objCache, LinkedList<String> strCache) throws IOException {
+        String[] iVarKeys = iVars.getIVars();
+        if (iVarKeys == null) {
             save32(dis, 0);
             return;
         }
-        save32(dis, iVars.iVarKeys.length);
-        for (int i = 0; i < iVars.iVarKeys.length; i++) {
+        save32(dis, iVarKeys.length);
+        for (int i = 0; i < iVarKeys.length; i++) {
             RubyIO key = new RubyIO();
             key.type = ':';
-            key.symVal = iVars.iVarKeys[i];
+            key.symVal = iVarKeys[i];
             try {
                 saveValue(dis, key, objCache, strCache);
-                saveValue(dis, iVars.iVarVals[i], objCache, strCache);
+                saveValue(dis, iVars.getAElem(i), objCache, strCache);
             } catch (Exception ex) {
-                throw new IOException("Hit catch at IVar " + iVars.iVarKeys[i], ex);
+                throw new IOException("Hit catch at IVar " + iVarKeys[i], ex);
             }
         }
     }
@@ -378,15 +349,11 @@ public class R48ObjectBackend implements IObjectBackend {
             //  in context this actually makes more sense than NOT,
             //  because of some assumptions made by the Schema system.
             // How did I not think of this EARLIER?
-            if (assumeDAG) {
-                rio.setDeepClone(objs.get((int) load32(dis)));
-            } else {
-                rio = objs.get((int) load32(dis));
-            }
+            rio.setDeepClone(objs.get((int) load32(dis)));
         } else if ((b == '{') || (b == '}')) {
             // 1772: Runs entry first thing after creating the hash, nocareivar
             objs.add(rio);
-            rio.hashVal = new HashMap<RubyIO, RubyIO>();
+            rio.hashVal = new HashMap<IRIO, RubyIO>();
             long vars = load32(dis);
             for (long i = 0; i < vars; i++) {
                 RubyIO k = loadValue(dis, objs, syms);

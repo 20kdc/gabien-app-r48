@@ -9,6 +9,7 @@ package r48.schema.util;
 
 import r48.AppMain;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.TempDialogSchemaChoice;
 
@@ -47,7 +48,7 @@ public class SchemaPath {
     // Otherwise, it should propagate whenever unchanged.
     // lastArray does a similar thing, except it points to the object whose targetElement is the array/hash itself.
     // This allows "inside" elements to cause consistency checks.
-    public RubyIO lastArrayIndex;
+    public IRIO lastArrayIndex;
 
     // Null for "no human readable index here".
     // The root is always the intended ObjectID index.
@@ -74,7 +75,7 @@ public class SchemaPath {
     }
 
     // Used for default value setup bootstrapping.
-    private SchemaPath(RubyIO target, RubyIO lai) {
+    private SchemaPath(RubyIO target, IRIO lai) {
         parent = null;
         lastArrayIndex = lai;
         hrIndex = AppMain.objectDB.getIdByObject(target);
@@ -82,7 +83,7 @@ public class SchemaPath {
             hrIndex = "AnonObject";
     }
 
-    public static RubyIO createDefaultValue(SchemaElement ise, RubyIO arrayIndex) {
+    public static RubyIO createDefaultValue(SchemaElement ise, IRIO arrayIndex) {
         RubyIO rio = new RubyIO();
         ise.modifyVal(rio, new SchemaPath(rio, arrayIndex), true);
         return rio;
@@ -137,7 +138,7 @@ public class SchemaPath {
 
     // -- Important Stuff (always used) --
 
-    public SchemaPath arrayHashIndex(RubyIO index, String indexS) {
+    public SchemaPath arrayHashIndex(IRIO index, String indexS) {
         SchemaPath sp = new SchemaPath(this);
         sp.lastArrayIndex = index;
         sp.hrIndex = indexS;

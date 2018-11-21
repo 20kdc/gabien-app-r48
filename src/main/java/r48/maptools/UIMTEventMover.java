@@ -10,8 +10,8 @@ package r48.maptools;
 import gabien.IGrDriver;
 import gabien.ui.UILabel;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
@@ -20,10 +20,10 @@ import r48.map.UIMapView;
  * Created on 1/1/17.
  */
 public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
-    private RubyIO targetEventKey;
+    private IRIO targetEventKey;
     private UIMapView mapView;
 
-    public UIMTEventMover(IMapToolContext mv, RubyIO evK) {
+    public UIMTEventMover(IMapToolContext mv, IRIO evK) {
         super(mv);
         mapView = mv.getMapView();
         targetEventKey = evK;

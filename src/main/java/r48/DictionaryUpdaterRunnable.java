@@ -12,6 +12,7 @@ import gabien.ui.IFunction;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
+import r48.io.data.IRIO;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
@@ -99,7 +100,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
 
     public static void coreLogic(HashMap<String, String> finalMap, IFunction<RubyIO, RubyIO> innerMap, RubyIO target, boolean hash, String interpret) {
         if (hash) {
-            for (Map.Entry<RubyIO, RubyIO> rio : target.hashVal.entrySet())
+            for (Map.Entry<IRIO, RubyIO> rio : target.hashVal.entrySet())
                 handleVal(finalMap, innerMap, rio.getValue(), rio.getKey(), interpret);
         } else {
             for (int i = 0; i < target.arrVal.length; i++) {
@@ -114,7 +115,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
         AppMain.schemas.setSDBEntry(dict, ise);
     }
 
-    private static void handleVal(HashMap<String, String> finalMap, IFunction<RubyIO, RubyIO> iVar, RubyIO rio, RubyIO k, String interpret) {
+    private static void handleVal(HashMap<String, String> finalMap, IFunction<RubyIO, RubyIO> iVar, RubyIO rio, IRIO k, String interpret) {
         if (rio.type != '0') {
             String p = ValueSyntax.encode(k);
             if (p == null)

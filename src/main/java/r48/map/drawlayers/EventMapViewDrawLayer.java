@@ -10,6 +10,7 @@ package r48.map.drawlayers;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.map.MapViewDrawContext;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
@@ -47,10 +48,10 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
         // Event Enable
         // Having it here is more efficient than having it as a tool overlay,
         // and sometimes the user might want to see events when using other tools.
-        LinkedList<RubyIO> ev = eventList.getEventKeys();
-        Collections.sort(ev, new Comparator<RubyIO>() {
+        LinkedList<IRIO> ev = eventList.getEventKeys();
+        Collections.sort(ev, new Comparator<IRIO>() {
             @Override
-            public int compare(RubyIO a, RubyIO b) {
+            public int compare(IRIO a, IRIO b) {
                 int yA = (int) eventList.getEventY(a);
                 int yB = (int) eventList.getEventY(b);
                 if (yA < yB)
@@ -60,7 +61,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
                 return 0;
             }
         });
-        for (RubyIO evK : ev) {
+        for (IRIO evK : ev) {
             int x = (int) eventList.getEventX(evK);
             int y = (int) eventList.getEventY(evK);
             if (x < mvdc.camTX)

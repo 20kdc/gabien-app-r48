@@ -20,7 +20,7 @@ import r48.schema.util.SchemaPath;
 public class AMAISchemaElement extends OpaqueSchemaElement {
 
     @Override
-    public String getMessage(RubyIO v) {
+    public String getMessage(IRIO v) {
         return TXDB.get("Parent Index. ") + v;
     }
 
@@ -31,7 +31,7 @@ public class AMAISchemaElement extends OpaqueSchemaElement {
             overrideIt = !IRIO.rubyEquals(target, path.lastArrayIndex);
         if (overrideIt) {
             // always must be set to this
-            target.setShallowClone(path.lastArrayIndex);
+            target.setDeepClone(path.lastArrayIndex);
             path.changeOccurred(true);
         }
     }

@@ -12,6 +12,7 @@ import r48.RubyIO;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
+import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 
 import java.util.LinkedList;
@@ -52,21 +53,21 @@ public class TraditionalEventAccess implements IEventAccess {
     }
 
     @Override
-    public LinkedList<RubyIO> getEventKeys() {
-        LinkedList<RubyIO> contents = new LinkedList<RubyIO>();
+    public LinkedList<IRIO> getEventKeys() {
+        LinkedList<IRIO> contents = new LinkedList<IRIO>();
         RubyIO mapEvents = getMapEvents();
         contents.addAll(mapEvents.hashVal.keySet());
         return contents;
     }
 
     @Override
-    public RubyIO getEvent(RubyIO key) {
+    public RubyIO getEvent(IRIO key) {
         RubyIO mapEvents = getMapEvents();
         return mapEvents.getHashVal(key);
     }
 
     @Override
-    public void delEvent(RubyIO key) {
+    public void delEvent(IRIO key) {
         RubyIO mapEvents = getMapEvents();
         mapEvents.removeHashVal(key);
         pokeHive();
@@ -91,7 +92,7 @@ public class TraditionalEventAccess implements IEventAccess {
     }
 
     @Override
-    public String[] getEventSchema(RubyIO key) {
+    public String[] getEventSchema(IRIO key) {
         return new String[] {
                 eventSchema,
                 mapRootId,
@@ -101,12 +102,12 @@ public class TraditionalEventAccess implements IEventAccess {
     }
 
     @Override
-    public int getEventType(RubyIO evK) {
+    public int getEventType(IRIO evK) {
         return 0;
     }
 
     @Override
-    public Runnable hasSync(RubyIO evK) {
+    public Runnable hasSync(IRIO evK) {
         return null;
     }
 
@@ -116,17 +117,17 @@ public class TraditionalEventAccess implements IEventAccess {
     }
 
     @Override
-    public long getEventX(RubyIO a) {
+    public long getEventX(IRIO a) {
         return PathSyntax.parse(getEvent(a), propPathX).fixnumVal;
     }
 
     @Override
-    public long getEventY(RubyIO a) {
+    public long getEventY(IRIO a) {
         return PathSyntax.parse(getEvent(a), propPathY).fixnumVal;
     }
 
     @Override
-    public void setEventXY(RubyIO a, long x, long y) {
+    public void setEventXY(IRIO a, long x, long y) {
         RubyIO ev = getEvent(a);
         if (ev == null)
             return;
@@ -136,7 +137,7 @@ public class TraditionalEventAccess implements IEventAccess {
     }
 
     @Override
-    public String getEventName(RubyIO a) {
+    public String getEventName(IRIO a) {
         RubyIO iv = PathSyntax.parse(getEvent(a), propPathName);
         if (iv == null)
             return null;

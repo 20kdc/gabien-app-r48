@@ -16,6 +16,7 @@ import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.IMIUtils;
 import r48.io.PathUtils;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -110,19 +111,21 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
         }
     }
 
-    public static String decode(RubyIO v) {
+    public static String decode(IRIO v) {
         if (AppMain.osSHESEDB == null)
             tryInitOSSHESEDB();
-        if (v.type == 'i')
-            return mainDecode((int) v.fixnumVal);
-        if (v.type == 'l') {
+        int type = v.getType();
+        if (type == 'i')
+            return mainDecode((int) v.getFX());
+        if (type == 'l') {
             int p = 0;
             // crc32: 468dce18
             // byte order:
             //        18CE8D46
-            for (int i = v.userVal.length - 1; i > 0; i--) {
+            byte[] buf = v.getBuffer();
+            for (int i = buf.length - 1; i > 0; i--) {
                 p <<= 8;
-                p |= v.userVal[i] & 0xFF;
+                p |= buf[i] & 0xFF;
             }
             return mainDecode(p);
         }

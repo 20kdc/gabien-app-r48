@@ -9,6 +9,8 @@ package r48.io.data;
 
 import r48.RubyBigNum;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * Ok, so here's the deal. Data Model 2 implementation attempt 1 *failed miserably*.
  * That doesn't mean Data Model 2 is completely unimplementable.
@@ -21,7 +23,7 @@ import r48.RubyBigNum;
 public abstract class IRIO {
     public abstract int getType();
 
-    // Primitive Setters.
+    // Primitive Setters. These make copies of any buffers given, among other things.
     // They return self.
     public abstract IRIO setNull();
 
@@ -33,21 +35,139 @@ public abstract class IRIO {
 
     public abstract IRIO setString(String s);
 
+    // The resulting encoding may not be the one provided.
+    public IRIO setString(byte[] s, String jenc) {
+        try {
+            return setString(new String(s, jenc));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // This should always be in UTF-8 encoding.
+    public abstract IRIO setFloat(String s);
+
+    public abstract IRIO setHash();
+
+    public abstract IRIO setArray();
+
+    public abstract IRIO setObject(String symbol);
+
+    public abstract IRIO setUser(String symbol, byte[] data);
+
+    public abstract IRIO setBignum(byte[] data);
+
+    // IVar Access
+    public abstract String[] getIVars();
+
     public abstract void rmIVar(String sym);
 
     public abstract IRIO addIVar(String sym);
 
     public abstract IRIO getIVar(String sym);
 
+    // 'i'
     public abstract long getFX();
 
+    // '"', 'f' (NOTE: Changing string encoding requires reinitialization of the object.)
     public abstract String decString();
 
+    public abstract String getBufferEnc();
+
+    // ':', 'o'
     public abstract String getSymbol();
 
+    // '"', 'f', 'u', 'l'
     public abstract byte[] getBuffer();
 
+    public abstract void setBuffer(byte[] data);
+
+    // '['
     public abstract int getALen();
+
+    public abstract IRIO getAElem(int i);
+
+    public abstract IRIO addAElem(int i);
+
+    public abstract void rmAElem(int i);
+
+    // '{', '}'
+    public abstract IRIO[] getHashKeys();
+
+    // Actually key-based but marked 'Val' for consistency with the old API
+    public abstract IRIO addHashVal(IRIO key);
+
+    public abstract IRIO getHashVal(IRIO key);
+
+    public abstract void removeHashVal(IRIO key);
+
+    public abstract IRIO getHashDefVal();
+
+    public IRIO setDeepClone(IRIO clone) {
+        int type = clone.getType();
+        if (type == '0') {
+            setNull();
+        } else if (type == 'T') {
+            setBool(true);
+        } else if (type == 'F') {
+            setBool(false);
+        } else if (type == 'i') {
+            setFX(clone.getFX());
+        } else if (type == '"') {
+            setString(clone.getBuffer(), clone.getBufferEnc());
+        } else if (type == 'f') {
+            setFloat(clone.decString());
+        } else if (type == 'o') {
+            setObject(clone.getSymbol());
+        } else if (type == ':') {
+            setSymbol(clone.getSymbol());
+        } else if (type == 'u') {
+            setUser(clone.getSymbol(), clone.getBuffer());
+        } else if (type == 'l') {
+            setBignum(clone.getBuffer());
+        } else if (type == '[') {
+            setArray();
+            int myi = getALen();
+            int ai = clone.getALen();
+            for (int i = 0; i < ai; i++) {
+                IRIO ir;
+                if (myi <= i) {
+                    ir = addAElem(i);
+                } else {
+                    ir = getAElem(i);
+                }
+                ir.setDeepClone(clone.getAElem(i));
+            }
+        } else if ((type == '{') || (type == '}')) {
+            if (type == '{') {
+                setHash();
+            } else {
+                throw new UnsupportedOperationException("Cannot");
+            }
+            for (IRIO key : clone.getHashKeys()) {
+                IRIO v = addHashVal(key);
+                v.setDeepClone(clone.getHashVal(key));
+            }
+        } else {
+            throw new UnsupportedOperationException("Unable to handle this type.");
+        }
+        for (String iv : clone.getIVars())
+            addIVar(iv).setDeepClone(clone.getIVar(iv));
+        return this;
+    }
+
+    public static byte[] copyByteArray(byte[] buffer) {
+        byte[] buffer2 = new byte[buffer.length];
+        System.arraycopy(buffer, 0, buffer2, 0, buffer2.length);
+        return buffer2;
+    }
+
+    public static String[] copyStringArray(String[] iVarKeys) {
+        String[] n2 = new String[iVarKeys.length];
+        System.arraycopy(iVarKeys, 0, n2, 0, n2.length);
+        return iVarKeys;
+    }
+
 
     @Override
     public String toString() {

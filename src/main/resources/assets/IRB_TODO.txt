@@ -9,6 +9,8 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning:
++ Data Model 2
+ + 'instanceof RubyIO' is used to indicate areas where I've paused work.
 + Demetrius's various notes over IRC and such:
  + Character creator???
 + OSLoc mode improvements, perhaps?

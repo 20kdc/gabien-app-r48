@@ -10,6 +10,7 @@ package r48.map.mapinfos;
 import gabien.ui.IConsumer;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 
@@ -41,8 +42,8 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     @Override
     public Set<Long> getHashKeys() {
         HashSet<Long> hs = new HashSet<Long>();
-        for (RubyIO rio : mapInfos.hashVal.keySet())
-            hs.add(rio.fixnumVal);
+        for (IRIO rio : mapInfos.hashVal.keySet())
+            hs.add(rio.getFX());
         return hs;
     }
 
@@ -58,9 +59,9 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
 
     @Override
     public long getMapOfOrder(int order) {
-        for (Map.Entry<RubyIO, RubyIO> rio : mapInfos.hashVal.entrySet())
+        for (Map.Entry<IRIO, RubyIO> rio : mapInfos.hashVal.entrySet())
             if (rio.getValue().getInstVarBySymbol("@order").fixnumVal == order)
-                return rio.getKey().fixnumVal;
+                return rio.getKey().getFX();
         return -1;
     }
 

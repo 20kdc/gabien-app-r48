@@ -13,6 +13,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -21,18 +22,22 @@ import r48.schema.util.SchemaPath;
  */
 public class OpaqueSchemaElement extends SchemaElement {
 
-    public String getMessage(RubyIO v) {
+    public String getMessage(IRIO v) {
         return TXDB.get("Can't edit: ") + v;
     }
 
-    @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         return new UITextButton(getMessage(target), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 launcher.launchOther(new UITest(target));
             }
         });
+    }
+
+    @Override
+    public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+        return buildHoldingEditor((IRIO) target, launcher, path);
     }
 
     @Override

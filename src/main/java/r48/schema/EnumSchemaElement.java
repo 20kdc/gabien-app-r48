@@ -15,6 +15,7 @@ import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
+import r48.io.data.IRIO;
 import r48.schema.specialized.TempDialogSchemaChoice;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -85,7 +86,7 @@ public class EnumSchemaElement extends SchemaElement {
         });
     }
 
-    public String viewValue(RubyIO val, boolean prefix) {
+    public String viewValue(IRIO val, boolean prefix) {
         String v2 = ValueSyntax.encode(val);
         if (v2 != null) {
             String st = options.get(v2);

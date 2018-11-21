@@ -10,7 +10,6 @@ package r48.schema;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
-import r48.ArrayUtils;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
@@ -82,7 +81,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
                 @Override
                 public void run() {
                     if (delRemove) {
-                        ArrayUtils.removeRioElement(target, index);
+                        target.rmAElem(index);
                     } else {
                         // Cut array and call modification alerter.
                         RubyIO[] newArr = new RubyIO[index];

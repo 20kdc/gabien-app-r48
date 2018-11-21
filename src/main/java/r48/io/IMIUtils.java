@@ -117,13 +117,13 @@ public class IMIUtils {
                 break;
             case '{':
                 dos.writeBytes("?" + target.type + ":\n");
-                for (RubyIO rk : source.hashVal.keySet())
+                for (IRIO rk : source.hashVal.keySet())
                     if (target.getHashVal(rk) == null) {
                         dos.writeBytes(id2 + "->");
                         createIMIDump(dos, target, id2);
                         flagMod = true;
                     }
-                for (Map.Entry<RubyIO, RubyIO> me : target.hashVal.entrySet()) {
+                for (Map.Entry<IRIO, RubyIO> me : target.hashVal.entrySet()) {
                     RubyIO rio = source.getHashVal(me.getKey());
                     if (rio == null) {
                         flagMod = true;
@@ -321,89 +321,88 @@ public class IMIUtils {
     }
 
     // Always ends in a newline
-    public static void createIMIDump(DataOutputStream dos, RubyIO target, String indent) throws IOException {
+    public static void createIMIDump(DataOutputStream dos, IRIO target, String indent) throws IOException {
         // Retype
-        dos.writeBytes("!" + ((char) target.type));
+        dos.writeBytes("!" + ((char) target.getType()));
         boolean didNLYet = false;
         int idx = 0;
-        switch (target.type) {
+        int alen = 0;
+        switch (target.getType()) {
             case 'i':
-                dos.writeBytes(Long.toString(target.fixnumVal) + ";\n");
+                dos.writeBytes(Long.toString(target.getFX()) + ";\n");
                 return;
             case '0':
             case 'T':
             case 'F':
                 break;
             case '}':
-                createIMIDump(dos, target.hashDefVal, incrementIndent(indent));
+                createIMIDump(dos, target.getHashDefVal(), incrementIndent(indent));
             case '{':
-                for (Map.Entry<RubyIO, RubyIO> e : target.hashVal.entrySet()) {
+                for (IRIO key : target.getHashKeys()) {
                     if (!didNLYet) {
                         dos.writeByte('\n');
                         didNLYet = true;
                     }
                     dos.writeBytes(indent + ">");
-                    createIMIDump(dos, e.getKey(), incrementIndent(indent));
+                    createIMIDump(dos, key, incrementIndent(indent));
                     dos.writeBytes(incrementIndent(indent));
-                    createIMIDump(dos, e.getValue(), incrementIndent(indent));
+                    createIMIDump(dos, target.getHashVal(key), incrementIndent(indent));
                 }
                 break;
             case '[':
-                for (RubyIO rio : target.arrVal) {
+                alen = target.getALen();
+                for (idx = 0; idx < alen; idx++) {
                     if (!didNLYet) {
                         dos.writeByte('\n');
                         didNLYet = true;
                     }
                     dos.writeBytes(indent + ">");
                     String nxtIndent = incrementIndent(indent);
-                    createIMIDump(dos, new RubyIO().setFX(idx++), nxtIndent);
+                    createIMIDump(dos, new RubyIO().setFX(idx), nxtIndent);
                     dos.writeBytes(nxtIndent);
-                    createIMIDump(dos, rio, nxtIndent);
+                    createIMIDump(dos, target.getAElem(idx), nxtIndent);
                 }
                 break;
             case ':':
                 dos.writeBytes("\"");
-                writeIMIStringBody(dos, target.symVal.getBytes("UTF-8"), false);
+                writeIMIStringBody(dos, target.getSymbol().getBytes("UTF-8"), false);
                 break;
             case 'u':
                 dos.writeBytes("\"");
-                writeIMIStringBody(dos, target.symVal.getBytes("UTF-8"), false);
+                writeIMIStringBody(dos, target.getSymbol().getBytes("UTF-8"), false);
                 dos.writeBytes("\"");
-                writeIMIStringBody(dos, target.userVal, true);
+                writeIMIStringBody(dos, target.getBuffer(), true);
                 break;
             case 'o':
                 dos.writeBytes("\"");
-                writeIMIStringBody(dos, target.symVal.getBytes("UTF-8"), false);
+                writeIMIStringBody(dos, target.getSymbol().getBytes("UTF-8"), false);
                 break;
             case '"':
                 // '"' implied
-                writeIMIStringBody(dos, target.strVal, false);
+                writeIMIStringBody(dos, target.getBuffer(), false);
                 break;
             case 'f':
                 dos.writeBytes("\"");
-                writeIMIStringBody(dos, target.strVal, false);
+                writeIMIStringBody(dos, target.getBuffer(), false);
                 break;
             case 'l':
                 dos.writeByte('\"');
-                writeIMIStringBody(dos, target.userVal, true);
+                writeIMIStringBody(dos, target.getBuffer(), true);
                 return;
             default:
-                throw new IOException("IMI cannot represent this type: " + target.type + " (" + ((char) target.type) + ")");
+                throw new IOException("IMI cannot represent this type: " + target.getType() + " (" + ((char) target.getType()) + ")");
         }
         // Add IVars
-        if (target.iVarKeys != null) {
-            int ivi = 0;
-            for (String s : target.iVarKeys) {
-                if (!didNLYet) {
-                    dos.writeByte('\n');
-                    didNLYet = true;
-                }
-                dos.writeBytes(indent);
-                dos.writeByte('=');
-                dos.writeByte('"');
-                writeIMIStringBody(dos, s.getBytes("UTF-8"), false);
-                createIMIDump(dos, target.iVarVals[ivi++], incrementIndent(indent));
+        for (String s : target.getIVars()) {
+            if (!didNLYet) {
+                dos.writeByte('\n');
+                didNLYet = true;
             }
+            dos.writeBytes(indent);
+            dos.writeByte('=');
+            dos.writeByte('"');
+            writeIMIStringBody(dos, s.getBytes("UTF-8"), false);
+            createIMIDump(dos, target.getIVar(s), incrementIndent(indent));
         }
         if (didNLYet)
             dos.writeBytes(indent);
@@ -609,7 +608,7 @@ public class IMIUtils {
                             case '{':
                                 runIMISegment(inp, obj.hashDefVal = new RubyIO());
                             case '}':
-                                obj.hashVal = new HashMap<RubyIO, RubyIO>();
+                                obj.hashVal = new HashMap<IRIO, RubyIO>();
                                 break;
                             case '[':
                                 obj.arrVal = new RubyIO[0];
@@ -698,7 +697,7 @@ public class IMIUtils {
                             if (obj.type == '[') {
                                 if (tmp2.type != 'i')
                                     throw new IOException("Expected integer index for removal from array");
-                                ArrayUtils.removeRioElement(obj, (int) tmp2.fixnumVal);
+                                obj.rmAElem((int) tmp2.getFX());
                             } else {
                                 obj.removeHashVal(tmp2);
                             }

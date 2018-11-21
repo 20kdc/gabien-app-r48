@@ -67,7 +67,7 @@ public class R2kGenposFrame implements IGenposFrame {
 
     @Override
     public void deleteCell(int i2) {
-        ArrayUtils.removeRioElement(frameSource.get().getInstVarBySymbol("@cells"), i2);
+        frameSource.get().getInstVarBySymbol("@cells").rmAElem(i2);
         updateNotify.run();
     }
 

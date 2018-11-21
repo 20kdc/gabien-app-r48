@@ -149,7 +149,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
             @Override
             public Runnable get() {
                 for (int j = 0; j < thisNextAdvance; j++)
-                    ArrayUtils.removeRioElement(target, mi);
+                    target.rmAElem(mi);
                 return new Runnable() {
                     @Override
                     public void run() {

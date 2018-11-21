@@ -35,11 +35,11 @@ public class HashObjectSchemaElement extends SchemaElement {
     @Override
     public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
         if (SchemaElement.ensureType(target, '{', setDefault && (!inner))) {
-            target.hashVal = new HashMap<RubyIO, RubyIO>();
+            target.hashVal = new HashMap<IRIO, RubyIO>();
             path.changeOccurred(true);
         } else {
-            LinkedList<RubyIO> keys = new LinkedList<RubyIO>();
-            for (RubyIO key : target.hashVal.keySet()) {
+            LinkedList<IRIO> keys = new LinkedList<IRIO>();
+            for (IRIO key : target.hashVal.keySet()) {
                 boolean okay = false;
                 for (RubyIO k2 : allowedKeys) {
                     if (IRIO.rubyEquals(key, k2)) {
@@ -50,7 +50,7 @@ public class HashObjectSchemaElement extends SchemaElement {
                 if (!okay)
                     keys.add(key);
             }
-            for (RubyIO k : keys)
+            for (IRIO k : keys)
                 target.hashVal.remove(k);
             if (keys.size() > 0)
                 path.changeOccurred(true);

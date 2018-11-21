@@ -87,7 +87,7 @@ public class RMGenposAnim implements IGenposAnim {
 
     @Override
     public void deleteFrame() {
-        ArrayUtils.removeRioElement(target, frameIdx);
+        target.rmAElem(frameIdx);
         updateNotify.run();
         frameIdx--;
         getFrame();

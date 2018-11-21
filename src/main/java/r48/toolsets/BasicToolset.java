@@ -13,6 +13,7 @@ import r48.*;
 import r48.dbs.TXDB;
 import r48.io.IMIUtils;
 import r48.io.PathUtils;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBinders;
@@ -379,7 +380,7 @@ public class BasicToolset implements IToolset {
         if (rio.type == '"')
             total += string.apply(rio);
         if ((rio.type == '{') || (rio.type == '}'))
-            for (Map.Entry<RubyIO, RubyIO> me : rio.hashVal.entrySet())
+            for (Map.Entry<IRIO, RubyIO> me : rio.hashVal.entrySet())
                 total += universalStringLocator(me.getValue(), string, writing);
         if (rio.type == '[')
             for (RubyIO me : rio.arrVal)

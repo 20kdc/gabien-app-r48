@@ -39,9 +39,9 @@ public class ArraySetR2kStruct<T extends IR2kStruct> extends ArrayR2kInterpretab
     @Override
     public void fromRIO(RubyIO src) {
         int maxIdx = -1;
-        for (RubyIO rio : src.hashVal.keySet())
-            if (rio.fixnumVal > maxIdx)
-                maxIdx = (int) rio.fixnumVal;
+        for (IRIO rio : src.hashVal.keySet())
+            if (rio.getFX() > maxIdx)
+                maxIdx = (int) rio.getFX();
         array.clear();
         for (int i = 0; i < maxIdx; i++) {
             T v = cons.get();

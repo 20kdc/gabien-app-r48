@@ -14,6 +14,7 @@ import r48.dbs.*;
 import r48.imagefx.ImageFXCache;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
+import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.map.systems.*;
@@ -367,7 +368,7 @@ public class AppMain {
         return watcher;
     }
 
-    public static ISchemaHost launchNonRootSchema(RubyIO root, String rootSchema, RubyIO arrayIndex, RubyIO element, String elementSchema, String indexText, UIMapView context) {
+    public static ISchemaHost launchNonRootSchema(RubyIO root, String rootSchema, IRIO arrayIndex, RubyIO element, String elementSchema, String indexText, UIMapView context) {
         // produce a valid (and false) parent chain, that handles all required guarantees.
         ISchemaHost shi = launchSchema(rootSchema, root, context);
         SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(rootSchema), root);
@@ -673,7 +674,7 @@ public class AppMain {
         RubyIO possibleActualDump = sysDump.getInstVarBySymbol("@current");
         if (possibleActualDump != null)
             sysDump = possibleActualDump;
-        for (Map.Entry<RubyIO, RubyIO> rio : sysDump.hashVal.entrySet()) {
+        for (Map.Entry<IRIO, RubyIO> rio : sysDump.hashVal.entrySet()) {
             String name = rio.getKey().decString();
             RubyIO root = objectDB.getObject(name);
             if (root == null) {

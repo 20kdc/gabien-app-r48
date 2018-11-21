@@ -8,6 +8,7 @@
 package r48.dbs;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * Value syntax. Meant to be used from within EscapedStringSyntax or PathSyntax.
@@ -41,20 +42,21 @@ public class ValueSyntax {
     }
 
     // Returns "" if unencodable. Note that this is for use in hashes.
-    public static String encode(RubyIO val) {
-        if (val.type == '0')
+    public static String encode(IRIO val) {
+        int type = val.getType();
+        if (type == '0')
             return "nil";
-        if (val.type == 'T')
+        if (type == 'T')
             return "true";
-        if (val.type == 'F')
+        if (type == 'F')
             return "false";
         String v2 = "";
-        if (val.type == '"') {
+        if (type == '"') {
             v2 = "$" + val.decString();
-        } else if (val.type == ':') {
-            v2 = ":" + val.symVal;
-        } else if (val.type == 'i') {
-            v2 += val.fixnumVal;
+        } else if (type == ':') {
+            v2 = ":" + val.getSymbol();
+        } else if (type == 'i') {
+            v2 += val.getFX();
         }
         return v2;
     }
