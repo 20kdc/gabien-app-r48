@@ -109,7 +109,14 @@ public class RubyIO extends IRIO {
         setNull();
         type = '"';
         strVal = copyByteArray(s);
-        RubyEncodingTranslator.inject(this, javaEncoding);
+        String st = rubyInjectEncoding(this, javaEncoding);
+        if (!st.equals(javaEncoding)) {
+            try {
+                strVal = new String(s, javaEncoding).getBytes(st);
+            } catch (UnsupportedEncodingException uee) {
+                throw new RuntimeException(uee);
+            }
+        }
         return this;
     }
 
@@ -195,23 +202,8 @@ public class RubyIO extends IRIO {
     }
 
     @Override
-    public String decString() {
-        // ignore the CP-setting madness for now
-        // however, if it is to be implemented,
-        // the specific details are that:
-        // SOME (not all) strings, are tagged with an ":encoding" iVar.
-        // This specifies their encoding.
-        try {
-            return new String(strVal, RubyEncodingTranslator.getStringCharset(this));
-        } catch (UnsupportedEncodingException e) {
-            // If this ever occurs, RubyEncodingTranslator's broke
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public String getBufferEnc() {
-        return RubyEncodingTranslator.getStringCharset(this);
+        return rubyGetEncoding(this);
     }
 
     // intern means "use UTF-8"
@@ -221,7 +213,7 @@ public class RubyIO extends IRIO {
             if (!intern)
                 encoding = IObjectBackend.Factory.encoding;
             strVal = text.getBytes(encoding);
-            RubyEncodingTranslator.inject(this, encoding);
+            rubyInjectEncoding(this, encoding);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -390,5 +382,84 @@ public class RubyIO extends IRIO {
         RubyIO rt = new RubyIO().setNull();
         hashVal.put(new RubyIO().setDeepClone(key), rt);
         return rt;
+    }
+
+    // Returns the resulting encoding.
+    private static String rubyInjectEncoding(RubyIO rubyIO, String s) {
+        rubyIO.rmIVar("jEncoding");
+        rubyIO.rmIVar("encoding");
+        rubyIO.rmIVar("E");
+        if (s.equalsIgnoreCase("UTF-8")) {
+            rubyIO.addIVar("E").setBool(true);
+            return s;
+        }
+        String basicEncoding = null;
+        if (s.equalsIgnoreCase("Cp1252")) {
+            basicEncoding = "Windows-1252";
+        } else if (s.equalsIgnoreCase("MS949")) {
+            // Korean
+            basicEncoding = "CP949";
+        } else if (s.equalsIgnoreCase("Cp943C") || s.equalsIgnoreCase("MS932")) {
+            basicEncoding = "SHIFT-JIS";
+        }
+        if (basicEncoding != null) {
+            RubyIO ri = new RubyIO().setNull();
+            ri.type = '"';
+            try {
+                ri.strVal = basicEncoding.getBytes("UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+            rubyIO.addIVar("encoding", ri);
+            return s;
+        }
+
+        // Can't translate, use fallback
+        // NOTE: This isn't too critically important, *unless a file from an "old" backend is copied to a "new" backend.*
+        rubyIO.addIVar("jEncoding").setSymbol(s);
+        return s;
+    }
+
+    // Returns "Canonical Name for java.io API and java.lang API" as documented on "https://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html".
+    private static String rubyGetEncoding(RubyIO rubyIO) {
+        IRIO easy = rubyIO.getIVar("E");
+        if (easy != null)
+            return "UTF-8";
+        IRIO jencoding = rubyIO.getIVar("jEncoding");
+        if (jencoding != null)
+            return jencoding.getSymbol();
+        IRIO encoding = rubyIO.getIVar("encoding");
+        if (encoding != null) {
+            String s = encoding.decString();
+            // Japanese (see above function to explain the mapping)
+            if (s.equalsIgnoreCase("SHIFT-JIS"))
+                return "Cp943C";
+            // Korean
+            if (s.equalsIgnoreCase("CP949"))
+                return "MS949";
+            if (s.equalsIgnoreCase("CP850")) {
+                // CP850 - OneShot
+                return "Cp850";
+            }
+            // 1. Check known encoding names
+            // 2. Guess the encoding name
+            // 3. Throw monitors at user until they tell us the encoding
+            try {
+                new String(new byte[0], s);
+                // let's just pretend this is a good idea, 'kay?
+                return s;
+            } catch (Exception e) {
+            }
+            s = s.replace('P', 'p');
+            try {
+                new String(new byte[0], s);
+                // ...just in case.
+                return s;
+            } catch (Exception e) {
+            }
+        }
+
+        // Sane default
+        return "UTF-8";
     }
 }

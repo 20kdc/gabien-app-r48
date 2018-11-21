@@ -7,7 +7,6 @@
 
 package r48.io.r2k.chunks;
 
-import r48.RubyEncodingTranslator;
 import r48.RubyIO;
 import r48.io.IObjectBackend;
 import r48.io.r2k.R2kUtil;
@@ -35,7 +34,8 @@ public class StringR2kStruct implements IR2kStruct {
 
     @Override
     public void fromRIO(RubyIO src) {
-        if (!IObjectBackend.Factory.encoding.equals(RubyEncodingTranslator.getStringCharset(src))) {
+        // This is probably going to last until DataModel2 has taken over a significant part of the code.
+        if (!IObjectBackend.Factory.encoding.equals(src.getBufferEnc())) {
             try {
                 data = src.decString().getBytes(IObjectBackend.Factory.encoding);
             } catch (UnsupportedEncodingException e) {

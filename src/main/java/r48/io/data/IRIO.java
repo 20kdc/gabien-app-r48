@@ -70,7 +70,19 @@ public abstract class IRIO {
     public abstract long getFX();
 
     // '"', 'f' (NOTE: Changing string encoding requires reinitialization of the object.)
-    public abstract String decString();
+    public String decString() {
+        // ignore the CP-setting madness for now
+        // however, if it is to be implemented,
+        // the specific details are that:
+        // SOME (not all) strings, are tagged with an ":encoding" iVar.
+        // This specifies their encoding.
+        try {
+            return new String(getBuffer(), getBufferEnc());
+        } catch (UnsupportedEncodingException e) {
+            // If this ever occurs, RubyEncodingTranslator's broke
+            throw new RuntimeException(e);
+        }
+    }
 
     public abstract String getBufferEnc();
 
