@@ -181,9 +181,9 @@ class SDBHelpers {
                         new ArrayElementSchemaElement(0, TXDB.get("type "), new EnumSchemaElement(types, new RubyIO().setFX(0), "LOCK"), null, false),
                         new DisambiguatorSchemaElement("]0", disambiguations)
                 ),
-                new SubwindowSchemaElement(new HWNDSchemaElement("]0", "R2K/H_Internal_PPP"), new IFunction<RubyIO, String>() {
+                new SubwindowSchemaElement(new HWNDSchemaElement("]0", "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {
                     @Override
-                    public String apply(RubyIO rubyIO) {
+                    public String apply(IRIO rubyIO) {
                         return TXDB.get("Explain this picture mode...");
                     }
                 }),

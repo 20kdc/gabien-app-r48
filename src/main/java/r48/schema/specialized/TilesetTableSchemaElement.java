@@ -11,7 +11,7 @@ import gabien.IGrDriver;
 import gabien.ui.Size;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
 
@@ -24,8 +24,7 @@ public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRende
         super(iVar, wVar, hVar, dc, dw, dh, defL, itce, defVal);
     }
 
-    @Override
-    public StuffRenderer baseInitializeHelper(RubyIO target) {
+    public StuffRenderer baseInitializeHelper(IRIO target) {
         return AppMain.system.rendererFromTso(target);
     }
 
@@ -35,8 +34,7 @@ public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRende
         return new Size(ts, ts);
     }
 
-    @Override
-    public StuffRenderer baseTileDraw(RubyIO target, int t, int x, int y, IGrDriver igd, StuffRenderer osr) {
+    public StuffRenderer baseTileDraw(IRIO target, int t, int x, int y, IGrDriver igd, StuffRenderer osr) {
         int ts = osr.tileRenderer.getTileSize() * FontSizes.getSpriteScale();
         Size sz = getGridSize(osr);
         int xx = (sz.width - ts) / 2;

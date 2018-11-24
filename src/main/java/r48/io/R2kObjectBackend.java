@@ -24,11 +24,16 @@ import java.io.OutputStream;
  * A beginning?
  * Created on 30/05/17.
  */
-public class R2kObjectBackend extends OldObjectBackend {
+public class R2kObjectBackend extends OldObjectBackend<RubyIO> {
     public final String root;
 
     public R2kObjectBackend(String rootPath) {
         root = rootPath;
+    }
+
+    @Override
+    public RubyIO newObject() {
+        return new RubyIO().setNull();
     }
 
     @Override

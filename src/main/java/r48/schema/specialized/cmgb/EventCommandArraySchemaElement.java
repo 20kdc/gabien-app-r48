@@ -14,10 +14,8 @@ import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.dbs.SDB;
 import r48.dbs.TXDB;
-import r48.schema.AggregateSchemaElement;
-import r48.schema.ArrayElementSchemaElement;
-import r48.schema.SchemaElement;
-import r48.schema.SubwindowSchemaElement;
+import r48.io.data.IRIO;
+import r48.schema.*;
 import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.arrays.StandardArrayInterface;
 import r48.schema.util.ISchemaHost;
@@ -183,9 +181,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         return modified;
     }
 
-    private int getGroupLengthCore(RubyIO[] arr, int j) {
-        RubyIO commandTarg = arr[j];
-        int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
+    private int getGroupLengthCore(IRIO arr, int j) {
+        IRIO commandTarg = arr.getAElem(j);
+        int code = (int) commandTarg.getIVar("@code").getFX();
         RPGCommand rc = database.knownCommands.get(code);
         int max = 0;
         if (rc != null)
@@ -196,7 +194,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
 
     // Note that this always returns != 0, so all schemas are in fact array-based.
     @Override
-    public int getGroupLength(RubyIO[] arr, int j) {
+    public int getGroupLength(IRIO arr, int j) {
         int l = getGroupLengthCore(arr, j);
         if (l == 0)
             return 1;
@@ -205,15 +203,15 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
 
     @Override
     protected SchemaElement getElementSchema(int j) {
-        return new SubwindowSchemaElement(baseElement, new IFunction<RubyIO, String>() {
+        return new SubwindowSchemaElement(baseElement, new IFunction<IRIO, String>() {
             @Override
-            public String apply(RubyIO rubyIO) {
-                return TXDB.get("This text should not be visible. Grouping is used for all commands.");
+            public String apply(IRIO rubyIO) {
+                return "This text should not be visible. Grouping is used for all commands.";
             }
         });
     }
 
-    private SchemaElement getGroupElement(RubyIO[] arr, final int start, final SchemaElement binding) {
+    private SchemaElement getGroupElement(IRIO arr, final int start, final SchemaElement binding) {
         // Uhoh.
         final int length;
         boolean addRemove = false;
@@ -264,50 +262,51 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    protected ElementContextual getElementContextualSchema(RubyIO[] arr, final int start, final int length) {
+    protected ElementContextual getElementContextualSchema(IRIO arr, final int start, final int length) {
         // Record the first RubyIO of the group.
         // getGroupElement seeks for it now, so it "tracks" the group properly despite array changes.
-        final RubyIO tracker = arr[start];
+        final IRIO tracker = arr.getAElem(start);
         int indent = 0;
-        final RubyIO trackerIndent = tracker.getInstVarBySymbol("@indent");
+        final IRIO trackerIndent = tracker.getIVar("@indent");
         if (trackerIndent != null)
-            indent = (int) trackerIndent.fixnumVal;
+            indent = (int) trackerIndent.getFX();
         return new ElementContextual(indent, getElementContextualSubwindowSchema(tracker, start));
     }
 
-    private SubwindowSchemaElement getElementContextualSubwindowSchema(final RubyIO tracker, final int start) {
+    private SubwindowSchemaElement getElementContextualSubwindowSchema(final IRIO tracker, final int start) {
         // The reason why the inside changes index but the outside doesn't care,
         //  is because the subwindow gets recreated anytime a change happens, while the inside doesn't.
-        return new SubwindowSchemaElement(new SchemaElement() {
-            public int actualStart(RubyIO target) {
-                for (int i = 0; i < target.arrVal.length; i++)
-                    if (target.arrVal[i] == tracker)
+        return new SubwindowSchemaElement(new IRIOAwareSchemaElement() {
+            public int actualStart(IRIO target) {
+                int alen = target.getALen();
+                for (int i = 0; i < alen; i++)
+                    if (target.getAElem(i) == tracker)
                         return i;
                 return -1;
             }
 
             @Override
-            public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+            public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
                 int actualStart = actualStart(target);
                 if (actualStart == -1)
                     return new UILabel(TXDB.get("The command isn't in the list anymore, so it has no context."), FontSizes.schemaFieldTextHeight);
-                return getGroupElement(target.arrVal, actualStart, this).buildHoldingEditor(target, launcher, path);
+                return getGroupElement(target, actualStart, this).buildHoldingEditor(target, launcher, path);
             }
 
             @Override
-            public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+            public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
                 int actualStart = actualStart(target);
                 if (actualStart == -1)
                     return;
-                getGroupElement(target.arrVal, actualStart, this).modifyVal(target, path, setDefault);
+                getGroupElement(target, actualStart, this).modifyVal(target, path, setDefault);
             }
-        }, new IFunction<RubyIO, String>() {
+        }, new IFunction<IRIO, String>() {
             @Override
-            public String apply(RubyIO rubyIO) {
-                String tx = database.buildCodename(rubyIO.arrVal[start], true);
-                int groupLen = getGroupLengthCore(rubyIO.arrVal, start);
+            public String apply(IRIO rubyIO) {
+                String tx = database.buildCodename(rubyIO.getAElem(start), true);
+                int groupLen = getGroupLengthCore(rubyIO, start);
                 for (int i = 1; i < groupLen; i++)
-                    tx += "\n" + database.buildCodename(rubyIO.arrVal[start + i], true);
+                    tx += "\n" + database.buildCodename(rubyIO.getAElem(start + i), true);
                 return tx;
             }
         });

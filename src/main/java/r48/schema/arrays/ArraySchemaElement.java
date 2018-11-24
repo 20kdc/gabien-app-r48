@@ -16,6 +16,7 @@ import r48.ArrayUtils;
 import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
@@ -94,12 +95,12 @@ public abstract class ArraySchemaElement extends SchemaElement {
 
             SchemaElement subelem = getElementSchema(i);
             int subelemId = 0;
-            nextAdvance = getGroupLength(target.arrVal, i);
+            nextAdvance = getGroupLength(target, i);
             boolean hasNIdxSchema = false;
             if (nextAdvance == 0) {
                 nextAdvance = 1;
             } else {
-                ElementContextual ec = getElementContextualSchema(target.arrVal, i, nextAdvance);
+                ElementContextual ec = getElementContextualSchema(target, i, nextAdvance);
                 subelem = ec.element;
                 subelemId = ec.indent;
                 hasNIdxSchema = true;
@@ -255,12 +256,12 @@ public abstract class ArraySchemaElement extends SchemaElement {
             }
             int groupStep;
             for (int j = 0; j < target.arrVal.length; j += groupStep) {
-                groupStep = getGroupLength(target.arrVal, j);
+                groupStep = getGroupLength(target, j);
                 if (groupStep == 0) {
                     groupStep = 1;
                     continue;
                 }
-                getElementContextualSchema(target.arrVal, j, groupStep).element.modifyVal(target, path, setDefault);
+                getElementContextualSchema(target, j, groupStep).element.modifyVal(target, path, setDefault);
             }
             boolean aca = autoCorrectArray(target, path);
             modified = modified || aca;
@@ -298,7 +299,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // Note that this is meant to be used by things messing with getGroupLength, and will not be used otherwise.
     // Also note that for modifyVal purposes this acts *in addition* to getElementSchema,
     //  so that getGroupLength can safely assume that getElementSchema is being followed.
-    protected ElementContextual getElementContextualSchema(RubyIO[] arr, int start, int length) {
+    protected ElementContextual getElementContextualSchema(IRIO arr, int start, int length) {
         throw new RuntimeException("Group length was used, but no contextual schema was defined for it.");
     }
 
@@ -307,7 +308,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // Used to replace groups of elements with a single editor, where this makes sense.
     // If this is non-zero for a given element, then the element schema is assumed to apply to the array.
     // Use with care.
-    protected int getGroupLength(RubyIO[] array, int j) {
+    protected int getGroupLength(IRIO array, int j) {
         return 0;
     }
 

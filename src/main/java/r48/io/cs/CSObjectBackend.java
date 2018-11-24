@@ -23,11 +23,16 @@ import java.io.OutputStream;
  * This is now the only thing remaining out of the CSOEdit experiment.
  * Created on May 11th 2018.
  */
-public class CSObjectBackend extends OldObjectBackend {
+public class CSObjectBackend extends OldObjectBackend<RubyIO> {
     public String pfx;
 
     public CSObjectBackend(String prefix) {
         pfx = prefix;
+    }
+
+    @Override
+    public RubyIO newObject() {
+        return new RubyIO().setNull();
     }
 
     @Override

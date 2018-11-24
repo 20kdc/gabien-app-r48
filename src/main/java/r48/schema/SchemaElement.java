@@ -71,7 +71,7 @@ public abstract class SchemaElement {
         if (target instanceof RubyIO) {
             return buildHoldingEditor((RubyIO) target, launcher, path);
         } else {
-            return new UILabel("DO NOT TRANSLATE; COULDN'T MODIFY VALUE, INVOLVED SCHEMA ELEMENT INVOLVED IRIOS", FontSizes.schemaFieldTextHeight);
+            return new UILabel("DO NOT TRANSLATE; COULDN'T MODIFY VALUE, INVOLVED SCHEMA ELEMENT INVOLVED IRIOS\nSUBSYSTEM: " + getClass() + " @ " + this, FontSizes.schemaFieldTextHeight);
         }
     }
 

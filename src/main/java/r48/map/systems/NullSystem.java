@@ -7,7 +7,7 @@
 
 package r48.map.systems;
 
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventGraphicRenderer;
@@ -29,7 +29,7 @@ public class NullSystem extends MapSystem {
     }
 
     @Override
-    public StuffRenderer rendererFromTso(RubyIO target) {
+    public StuffRenderer rendererFromTso(IRIO target) {
         ITileRenderer tileRenderer = new NullTileRenderer();
         IEventGraphicRenderer eventRenderer = new NullEventGraphicRenderer();
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);

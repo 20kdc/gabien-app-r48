@@ -60,7 +60,7 @@ public class StuffRenderer {
         // 2, 3, [4, 5, [[6, 7]...]]]: Ti, Ei
         // E-2: ES
         // E-1: G
-        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[(rt.planeCount * 2) + 4];
+        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[(rt.planeCount * 2) + 5];
         IImage panoImg = null;
         if (!vxaPano.equals(""))
             panoImg = iil.getImage(vxaPano, true);

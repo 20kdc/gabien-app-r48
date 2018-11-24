@@ -8,6 +8,7 @@
 package r48.schema.specialized.cmgb;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 
 /**
@@ -17,7 +18,7 @@ import r48.schema.SchemaElement;
 public interface IGroupBehavior {
     // The user-visible result of this is the commands one after the other, with a tag to not show indentation on the later commands.
     // If 0, then this group behavior is just for correction purposes.
-    int getGroupLength(RubyIO[] arr, int ind);
+    int getGroupLength(IRIO arr, int ind);
 
     // Gets the correct code to be appendable to the end, if the group has a non-zero length.
     int getAdditionCode();

@@ -10,6 +10,7 @@ package r48.io;
 import gabien.GaBIEn;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.io.ika.IkaMap;
 import r48.io.ika.NPChar;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ import java.io.OutputStream;
 /**
  * Created on 1/27/17.
  */
-public class IkaObjectBackend extends OldObjectBackend {
+public class IkaObjectBackend extends OldObjectBackend<IkaMap> {
 
     private String root;
 
@@ -28,10 +29,13 @@ public class IkaObjectBackend extends OldObjectBackend {
     }
 
     @Override
-    public RubyIO loadObjectFromFile(String filename) {
-        if (filename.equals("Map")) {
-            RubyIO rio = new RubyIO().setSymlike("IkachanMap", true);
+    public IkaMap newObject() {
+        return new IkaMap(160, 120);
+    }
 
+    @Override
+    public IkaMap loadObjectFromFile(String filename) {
+        if (filename.equals("Map")) {
             byte[] eDataBytes = BMPConnection.prepareBMP(160, 120, 8, 256, false, false);
             byte[] dataBytes = eDataBytes;
             try {
@@ -67,7 +71,12 @@ public class IkaObjectBackend extends OldObjectBackend {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
-            RubyTable pal = new RubyTable(3, 256, 1, 4, new int[4]);
+
+            // This sets up the object by itself (DataModel2)
+
+            IkaMap rio = new IkaMap(bm.width, bm.height);
+
+            RubyTable pal = new RubyTable(rio.palette.userVal);
             for (int i = 0; i < bm.paletteCol; i++) {
                 int rgba = bm.getPalette(i);
                 pal.setTiletype(i, 0, 0, (short) ((rgba >> 24) & 0xFF));
@@ -75,21 +84,14 @@ public class IkaObjectBackend extends OldObjectBackend {
                 pal.setTiletype(i, 0, 2, (short) ((rgba >> 8) & 0xFF));
                 pal.setTiletype(i, 0, 3, (short) (rgba & 0xFF));
             }
-            RubyIO palTbl = new RubyIO().setUser("Table", pal.innerBytes);
 
-            RubyTable tbl = new RubyTable(3, bm.width, bm.height, 1, new int[1]);
+            RubyTable tbl = new RubyTable(rio.data.userVal);
 
             for (int i = 0; i < bm.width; i++)
                 for (int j = 0; j < bm.height; j++)
                     tbl.setTiletype(i, j, 0, (short) bm.getPixel(i, j));
 
-            RubyIO mapTbl = new RubyIO().setUser("Table", tbl.innerBytes);
-
-            rio.addIVar("@data", mapTbl);
-            rio.addIVar("@palette", palTbl);
-
-            RubyIO evTbl = new RubyIO().setHash();
-            rio.addIVar("@events", evTbl);
+            RubyIO evTbl = rio.events;
 
             NPChar np = new NPChar();
             try {
@@ -129,16 +131,16 @@ public class IkaObjectBackend extends OldObjectBackend {
     }
 
     @Override
-    public void saveObjectToFile(String filename, RubyIO object) throws IOException {
+    public void saveObjectToFile(String filename, IkaMap object) throws IOException {
         if (filename.equals("Map")) {
             // allow saving
-            RubyTable rt = new RubyTable(object.getInstVarBySymbol("@data").userVal);
+            RubyTable rt = new RubyTable(object.data.userVal);
             byte[] dataBytes = BMPConnection.prepareBMP(rt.width, rt.height, 8, 256, false, false);
             BMPConnection bm8 = new BMPConnection(dataBytes, BMPConnection.CMode.Normal, 0, false);
             for (int i = 0; i < rt.width; i++)
                 for (int j = 0; j < rt.height; j++)
                     bm8.putPixel(i, j, rt.getTiletype(i, j, 0) & 0xFFFF);
-            RubyTable rt2 = new RubyTable(object.getInstVarBySymbol("@palette").userVal);
+            RubyTable rt2 = new RubyTable(object.palette.userVal);
             for (int i = 0; i < 256; i++) {
                 int a = rt2.getTiletype(i, 0, 0) & 0xFF;
                 int r = rt2.getTiletype(i, 0, 1) & 0xFF;
@@ -153,7 +155,7 @@ public class IkaObjectBackend extends OldObjectBackend {
             fio.close();
 
             NPChar npc = new NPChar();
-            RubyIO r = object.getInstVarBySymbol("@events");
+            RubyIO r = object.events;
             for (int i = 0; i < npc.npcTable.length; i++) {
                 RubyIO r2 = r.getHashVal(new RubyIO().setFX(i));
                 if (r2 != null) {

@@ -15,7 +15,6 @@ import gabien.ui.Size;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.IMapContext;
-import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
@@ -119,7 +118,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     }
 
     @Override
-    public StuffRenderer rendererFromTso(RubyIO tso) {
+    public StuffRenderer rendererFromTso(IRIO tso) {
         ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);

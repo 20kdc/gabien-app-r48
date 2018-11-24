@@ -68,10 +68,11 @@ public class CMDB {
                     final int code = Integer.parseInt(gbStateArgs[gbStatePosition++]);
                     return new IGroupBehavior() {
                         @Override
-                        public int getGroupLength(RubyIO[] array, int index) {
+                        public int getGroupLength(IRIO array, int index) {
                             int l = 1;
-                            for (int i = index + 1; i < array.length; i++) {
-                                if (array[i].getInstVarBySymbol("@code").fixnumVal == code) {
+                            int alen = array.getALen();
+                            for (int i = index + 1; i < alen; i++) {
+                                if (array.getAElem(i).getIVar("@code").getFX() == code) {
                                     l++;
                                 } else {
                                     break;
@@ -98,7 +99,7 @@ public class CMDB {
                 } else if (arg.equals("r2k_choice")) {
                     return new IGroupBehavior() {
                         @Override
-                        public int getGroupLength(RubyIO[] array, int index) {
+                        public int getGroupLength(IRIO array, int index) {
                             return 0;
                         }
 
@@ -152,7 +153,7 @@ public class CMDB {
                     final int lastId = Integer.parseInt(gbStateArgs[gbStatePosition++]);
                     return new IGroupBehavior() {
                         @Override
-                        public int getGroupLength(RubyIO[] arr, int ind) {
+                        public int getGroupLength(IRIO arr, int ind) {
                             return 0;
                         }
 
@@ -219,7 +220,7 @@ public class CMDB {
                     final boolean tail = arg.equals("expectTail");
                     return new IGroupBehavior() {
                         @Override
-                        public int getGroupLength(RubyIO[] arr, int ind) {
+                        public int getGroupLength(IRIO arr, int ind) {
                             return 0;
                         }
 
@@ -284,7 +285,7 @@ public class CMDB {
                     final RubyIO v = ValueSyntax.decode(gbStateArgs[gbStatePosition++]);
                     final IGroupBehavior igb = getGroupBehavior();
                     return new IGroupBehavior() {
-                        private boolean checkCondition(RubyIO command) {
+                        private boolean checkCondition(IRIO command) {
                             IRIO p = PathSyntax.parse(command, idx);
                             if (p == null)
                                 return false;
@@ -292,8 +293,8 @@ public class CMDB {
                         }
 
                         @Override
-                        public int getGroupLength(RubyIO[] arr, int ind) {
-                            if (!checkCondition(arr[ind]))
+                        public int getGroupLength(IRIO arr, int ind) {
+                            if (!checkCondition(arr.getAElem(ind)))
                                 return 0;
                             return igb.getGroupLength(arr, ind);
                         }

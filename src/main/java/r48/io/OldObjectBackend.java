@@ -7,7 +7,6 @@
 
 package r48.io;
 
-import r48.RubyIO;
 import r48.io.data.IRIO;
 
 import java.io.IOException;
@@ -15,10 +14,10 @@ import java.io.IOException;
 /**
  * Created on November 21, 2018.
  */
-public abstract class OldObjectBackend implements IObjectBackend {
+public abstract class OldObjectBackend<O extends IRIO> implements IObjectBackend {
     @Override
     public ILoadedObject loadObject(String filename) {
-        RubyIO rio = loadObjectFromFile(filename);
+        O rio = loadObjectFromFile(filename);
         if (rio == null)
             return null;
         return new OldObjectBackendLoadedObject(rio, filename);
@@ -26,12 +25,14 @@ public abstract class OldObjectBackend implements IObjectBackend {
 
     @Override
     public ILoadedObject newObject(String filename) {
-        return new OldObjectBackendLoadedObject(new RubyIO().setNull(), filename);
+        return new OldObjectBackendLoadedObject(newObject(), filename);
     }
 
-    public abstract RubyIO loadObjectFromFile(String filename);
+    public abstract O newObject();
 
-    public abstract void saveObjectToFile(String filename, RubyIO obj) throws IOException;
+    public abstract O loadObjectFromFile(String filename);
+
+    public abstract void saveObjectToFile(String filename, O obj) throws IOException;
 
     @Override
     public String userspaceBindersPrefix() {
@@ -39,10 +40,10 @@ public abstract class OldObjectBackend implements IObjectBackend {
     }
 
     private class OldObjectBackendLoadedObject implements ILoadedObject {
-        private final RubyIO intern;
+        private final O intern;
         private final String fn;
 
-        public OldObjectBackendLoadedObject(RubyIO rio, String filename) {
+        public OldObjectBackendLoadedObject(O rio, String filename) {
             intern = rio;
             fn = filename;
         }

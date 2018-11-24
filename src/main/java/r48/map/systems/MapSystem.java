@@ -9,7 +9,10 @@ package r48.map.systems;
 
 import gabien.IGrDriver;
 import gabien.ui.*;
-import r48.*;
+import r48.AppMain;
+import r48.FontSizes;
+import r48.IMapContext;
+import r48.RubyTable;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
@@ -92,7 +95,7 @@ public abstract class MapSystem {
     // This is used in cases when a StuffRenderer is needed outside of a map.
     // If target is null, then this isn't a tileset object, so it has to just act generically.
     // Otherwise, this is a tileset object, so use that info.
-    public abstract StuffRenderer rendererFromTso(RubyIO target);
+    public abstract StuffRenderer rendererFromTso(IRIO target);
 
     // Used to prepare a UIMapView. Can only return null if allowCreate is false.
     // Can throw an exception if the GUM is actually invalid, because GUMs are internal strings and can't be entered by the user.

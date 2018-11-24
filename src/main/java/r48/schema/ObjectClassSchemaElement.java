@@ -8,9 +8,9 @@
 package r48.schema;
 
 import gabien.ui.UIElement;
-import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
 import r48.dbs.PathSyntax;
+import r48.io.data.IRIO;
 import r48.schema.specialized.RubyTableSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -24,7 +24,7 @@ import java.util.LinkedList;
  * and will report warnings to console if IVars are not dealt with.
  * Created on 12/29/16.
  */
-public class ObjectClassSchemaElement extends SchemaElement {
+public class ObjectClassSchemaElement extends IRIOAwareSchemaElement {
     public SchemaElement backing;
     public String symbol;
     public char type;
@@ -36,21 +36,19 @@ public class ObjectClassSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        if (target.type != type)
-            throw new RuntimeException("Wrong type passed to ObjectClassSchemaElement (should be " + type + " was " + target.type + ")");
-        if (!target.symVal.equals(symbol))
-            throw new RuntimeException("Classable of type " + target.symVal + " passed to OCSE of type " + symbol);
+    public UIElement buildHoldingEditor(IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+        if (target.getType() != type)
+            throw new RuntimeException("Wrong type passed to ObjectClassSchemaElement (should be " + type + " was " + target.getType() + ")");
+        if (!target.getSymbol().equals(symbol))
+            throw new RuntimeException("Classable of type " + target.getSymbol() + " passed to OCSE of type " + symbol);
 
         LinkedList<String> iVars = new LinkedList<String>();
         boolean enableIVarCheck = findAndAddIVars(backing, target, iVars);
         if (enableIVarCheck) {
-            if (target.iVarKeys != null) {
-                for (String s : target.iVarKeys) {
-                    if (!iVars.contains(s)) {
-                        System.out.println("WARNING: iVar " + s + " of " + symbol + " wasn't handled.");
-                        System.out.println("This usually means the schema is incomplete.");
-                    }
+            for (String s : target.getIVars()) {
+                if (!iVars.contains(s)) {
+                    System.out.println("WARNING: iVar " + s + " of " + symbol + " wasn't handled.");
+                    System.out.println("This usually means the schema is incomplete.");
                 }
             }
         }
@@ -58,7 +56,7 @@ public class ObjectClassSchemaElement extends SchemaElement {
         return backing.buildHoldingEditor(target, launcher, path);
     }
 
-    private boolean findAndAddIVars(SchemaElement ise, RubyIO target, LinkedList<String> iVars) {
+    private boolean findAndAddIVars(SchemaElement ise, IRIO target, LinkedList<String> iVars) {
         // Deal with proxies
         boolean proxyHandling = true;
         while (proxyHandling) {
@@ -100,21 +98,12 @@ public class ObjectClassSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        boolean modified = false;
-        if (target.type != type) {
-            target.type = type;
-            modified = true;
-        }
-        if (target.symVal == null) {
-            target.symVal = symbol;
-            modified = true;
-        } else if (!target.symVal.equals(symbol)) {
-            target.symVal = symbol;
-            modified = true;
-        }
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+        setDefault = SchemaElement.checkType(target, type, symbol, setDefault);
+        if (setDefault)
+            target.setObject(symbol);
         backing.modifyVal(target, path, setDefault);
-        if (modified)
+        if (setDefault)
             path.changeOccurred(true);
     }
 }

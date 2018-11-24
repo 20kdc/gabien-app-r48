@@ -12,13 +12,12 @@ import gabien.IGrDriver;
 import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
-import r48.schema.SchemaElement;
+import r48.schema.IRIOAwareSchemaElement;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -37,7 +36,7 @@ import r48.ui.UIGrid;
  * Checking for the monitorsSubelements requirement...
  * no, the resize does the correct corrections, I believe.
  */
-public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
+public class RubyTableSchemaElement<TileHelper> extends IRIOAwareSchemaElement {
     public final int defW;
     public final int defH;
     public final int planes, dimensions;
@@ -63,7 +62,7 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final IRIO targV = iVar == null ? target : PathSyntax.parse(target, iVar);
         final RubyTable targ = new RubyTable(targV.getBuffer());
         final IRIO width = widthVar == null ? null : PathSyntax.parse(target, widthVar);
@@ -190,11 +189,11 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
 
     // Overridden in super-special tileset versions of this.
     // The idea is that TileHelper can contain any helper object needed.
-    public TileHelper baseTileDraw(RubyIO target, int t, int x, int y, IGrDriver igd, TileHelper th) {
+    public TileHelper baseTileDraw(IRIO target, int t, int x, int y, IGrDriver igd, TileHelper th) {
         return null;
     }
 
-    public TileHelper baseInitializeHelper(RubyIO target) {
+    public TileHelper baseInitializeHelper(IRIO target) {
         return null;
     }
 
@@ -208,24 +207,35 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath index, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath index, boolean setDefault) {
+        boolean needChange = setDefault;
+
         if (iVar != null) {
-            RubyIO st = target.getInstVarBySymbol(iVar);
+            IRIO st = PathSyntax.parse(target, iVar);
             if (st == null) {
-                st = new RubyIO(); // will trigger change because type != 'u'
-                target.addIVar(iVar, st);
+                st = PathSyntax.parse(target, iVar, 1);
+                needChange = true;
             }
             target = st;
         }
-        // Not a clue, so re-initialize if all else fails.
-        // (This will definitely trigger if the iVar was missing)
+
+        if (target.getType() != 'u') {
+            needChange = true;
+        } else if (!target.getSymbol().equals("Table")) {
+            needChange = true;
+        }
+
+        // Re-initialize if all else fails.
+        // (This will definitely trigger if the iVar was missing or if setDefault was on)
+
         boolean changeOccurred = false;
-        if (target.type != 'u') {
+        if (needChange) {
             target.setUser("Table", new RubyTable(dimensions, defW, defH, planes, defVals).innerBytes);
             changeOccurred = true;
         }
+
         // Fix up pre v1.0-2 tables (would have existed from the start if I knew about it, but...)
-        RubyTable rt = new RubyTable(target.userVal);
+        RubyTable rt = new RubyTable(target.getBuffer());
         if (rt.dimensionCount != dimensions) {
             rt.innerTable.putInt(0, dimensions);
             changeOccurred = true;

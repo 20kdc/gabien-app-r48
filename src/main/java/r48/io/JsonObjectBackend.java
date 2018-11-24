@@ -18,12 +18,17 @@ import java.util.LinkedList;
  * Because everybody needs a public domain JSON parser.
  * October 9th, 2017
  */
-public class JsonObjectBackend extends OldObjectBackend {
+public class JsonObjectBackend extends OldObjectBackend<RubyIO> {
     public String root, ext;
 
     public JsonObjectBackend(String rootPath, String dataExt) {
         root = rootPath;
         ext = dataExt;
+    }
+
+    @Override
+    public RubyIO newObject() {
+        return new RubyIO().setNull();
     }
 
     @Override

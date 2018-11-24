@@ -97,10 +97,10 @@ public class SDB {
         schemaTrueDatabase.putAll(schemaDatabase);
     }
 
-    private IFunction<RubyIO, String> getFunctionToReturn(final String s) {
-        return new IFunction<RubyIO, String>() {
+    private IFunction<IRIO, String> getFunctionToReturn(final String s) {
+        return new IFunction<IRIO, String>() {
             @Override
-            public String apply(RubyIO rubyIO) {
+            public String apply(IRIO rubyIO) {
                 return s;
             }
         };
@@ -372,9 +372,9 @@ public class SDB {
                             String text2 = args[point++];
                             if (text2.startsWith("@")) {
                                 final String textFinal = text2.substring(1);
-                                return new SubwindowSchemaElement(get(), new IFunction<RubyIO, String>() {
+                                return new SubwindowSchemaElement(get(), new IFunction<IRIO, String>() {
                                     @Override
-                                    public String apply(RubyIO rubyIO) {
+                                    public String apply(IRIO rubyIO) {
                                         return TXDB.nameDB.get("Interp." + textFinal).apply(rubyIO);
                                     }
                                 });
@@ -569,7 +569,7 @@ public class SDB {
                             if (hV.equals("."))
                                 hV = null;
 
-                            IFunction<RubyIO, String> iVT = getFunctionToReturn(iV == null ? TXDB.get("Open Table...") : TXDB.get(outerContext, iV));
+                            IFunction<IRIO, String> iVT = getFunctionToReturn(iV == null ? TXDB.get("Open Table...") : TXDB.get(outerContext, iV));
 
                             int dc = Integer.parseInt(args[point++]);
                             int aW = Integer.parseInt(args[point++]);

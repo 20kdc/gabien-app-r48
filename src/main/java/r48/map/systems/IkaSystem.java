@@ -9,7 +9,6 @@ package r48.map.systems;
 
 import gabien.ui.IFunction;
 import r48.AppMain;
-import r48.RubyIO;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
@@ -41,7 +40,7 @@ public class IkaSystem extends MapSystem {
     }
 
     @Override
-    public StuffRenderer rendererFromTso(RubyIO target) {
+    public StuffRenderer rendererFromTso(IRIO target) {
         return rendererGeneral(null, null);
     }
 

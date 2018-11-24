@@ -10,7 +10,6 @@ package r48.map.systems;
 import gabien.ui.IFunction;
 import gabien.ui.Rect;
 import gabien.ui.Size;
-import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
@@ -54,7 +53,7 @@ public class RVXASystem extends RXPSystem {
     }
 
     @Override
-    public StuffRenderer rendererFromTso(RubyIO tso) {
+    public StuffRenderer rendererFromTso(IRIO tso) {
         ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);

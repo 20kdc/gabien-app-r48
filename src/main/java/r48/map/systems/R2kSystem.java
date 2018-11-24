@@ -158,7 +158,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     }
 
     @Override
-    public StuffRenderer rendererFromTso(RubyIO tso) {
+    public StuffRenderer rendererFromTso(IRIO tso) {
         ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
