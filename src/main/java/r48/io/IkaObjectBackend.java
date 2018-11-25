@@ -8,8 +8,9 @@
 package r48.io;
 
 import gabien.GaBIEn;
-import r48.RubyIO;
 import r48.RubyTable;
+import r48.io.data.IRIOFixedHash;
+import r48.io.ika.IkaEvent;
 import r48.io.ika.IkaMap;
 import r48.io.ika.NPChar;
 
@@ -91,7 +92,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap> {
                 for (int j = 0; j < bm.height; j++)
                     tbl.setTiletype(i, j, 0, (short) bm.getPixel(i, j));
 
-            RubyIO evTbl = rio.events;
+            IRIOFixedHash<Integer, IkaEvent> evTbl = rio.events;
 
             NPChar np = new NPChar();
             try {
@@ -104,25 +105,25 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap> {
             }
             for (int i = 0; i < np.npcTable.length; i++)
                 if (np.npcTable[i].exists)
-                    evTbl.hashVal.put(new RubyIO().setFX(i), convertEventToRuby(np.npcTable[i]));
+                    evTbl.hashVal.put(i, convertEventToRuby(np.npcTable[i]));
 
             return rio;
         }
         return null;
     }
 
-    private RubyIO convertEventToRuby(NPChar.NPCCharacter io) {
-        RubyIO res = new RubyIO().setSymlike("IkachanEvent", true);
+    private IkaEvent convertEventToRuby(NPChar.NPCCharacter io) {
+        IkaEvent res = new IkaEvent();
         int px = rounder(io.posX);
         int py = rounder(io.posY);
-        res.addIVar("@x", new RubyIO().setFX(px));
-        res.addIVar("@y", new RubyIO().setFX(py));
-        res.addIVar("@tOX", new RubyIO().setFX(rounder(io.ofsX) - px));
-        res.addIVar("@tOY", new RubyIO().setFX(rounder(io.ofsY) - py));
-        res.addIVar("@type", new RubyIO().setFX(io.entityType));
-        res.addIVar("@status", new RubyIO().setFX(io.entityStatus));
-        res.addIVar("@scriptId", new RubyIO().setFX(io.eventID));
-        res.addIVar("@collisionType", new RubyIO().setFX(io.collisionType));
+        res.x.val = px;
+        res.y.val = py;
+        res.tox.val = rounder(io.ofsX) - px;
+        res.toy.val = rounder(io.ofsY) - py;
+        res.type.val = io.entityType;
+        res.status.val = io.entityStatus;
+        res.scriptId.val = io.eventID;
+        res.collisionType.val = io.collisionType;
         return res;
     }
 
@@ -155,20 +156,19 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap> {
             fio.close();
 
             NPChar npc = new NPChar();
-            RubyIO r = object.events;
             for (int i = 0; i < npc.npcTable.length; i++) {
-                RubyIO r2 = r.getHashVal(new RubyIO().setFX(i));
+                IkaEvent r2 = object.events.hashVal.get(i);
                 if (r2 != null) {
                     NPChar.NPCCharacter n = npc.npcTable[i];
                     n.exists = true;
-                    n.posX = r2.getInstVarBySymbol("@x").fixnumVal;
-                    n.posY = r2.getInstVarBySymbol("@y").fixnumVal;
-                    n.ofsX = n.posX + r2.getInstVarBySymbol("@tOX").fixnumVal;
-                    n.ofsY = n.posY + r2.getInstVarBySymbol("@tOY").fixnumVal;
-                    n.collisionType = (int) r2.getInstVarBySymbol("@collisionType").fixnumVal;
-                    n.entityStatus = (int) r2.getInstVarBySymbol("@status").fixnumVal;
-                    n.entityType = (int) r2.getInstVarBySymbol("@type").fixnumVal;
-                    n.eventID = (int) r2.getInstVarBySymbol("@scriptId").fixnumVal;
+                    n.posX = r2.x.val;
+                    n.posY = r2.y.val;
+                    n.ofsX = n.posX + r2.tox.val;
+                    n.ofsY = n.posY + r2.toy.val;
+                    n.collisionType = (int) r2.collisionType.val;
+                    n.entityStatus = (int) r2.status.val;
+                    n.entityType = (int) r2.type.val;
+                    n.eventID = (int) r2.scriptId.val;
                 }
             }
             fio = GaBIEn.getOutFile(PathUtils.autoDetectWindows(root + "NPChar.dat"));

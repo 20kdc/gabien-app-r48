@@ -12,9 +12,9 @@ import gabien.ui.UIElement;
 import gabien.ui.UINumberBox;
 import gabien.ui.UIScrollLayout;
 import r48.FontSizes;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
-import r48.schema.SchemaElement;
+import r48.schema.IRIOAwareSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -23,7 +23,7 @@ import r48.schema.util.SchemaPath;
  * Thus, buildHoldingEditor has been finaled.
  * Created on 12/29/16.
  */
-public class IntegerSchemaElement extends SchemaElement {
+public class IntegerSchemaElement extends IRIOAwareSchemaElement {
     public long defaultInt;
 
     public IntegerSchemaElement(long i) {
@@ -31,11 +31,11 @@ public class IntegerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public final UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return buildIntegerEditor(target.fixnumVal, new IIntegerContext() {
+    public final UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+        return buildIntegerEditor(target.getFX(), new IIntegerContext() {
             @Override
             public void update(long n) {
-                target.fixnumVal = filter(n);
+                target.setFX(filter(n));
                 path.changeOccurred(false);
             }
 
@@ -72,9 +72,9 @@ public class IntegerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public final void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (ensureType(target, 'i', setDefault)) {
-            target.fixnumVal = defaultInt;
+    public final void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+        if (checkType(target, 'i', null, setDefault)) {
+            target.setFX(defaultInt);
             path.changeOccurred(true);
         }
         // It may, or may not, be a good idea to filter the value here.

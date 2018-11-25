@@ -7,10 +7,8 @@
 
 package r48.io.ika;
 
-import r48.RubyIO;
 import r48.RubyTable;
-import r48.io.data.IRIO;
-import r48.io.data.IRIOFixedObject;
+import r48.io.data.*;
 
 /**
  * Data Model 2 proof of concept
@@ -22,7 +20,8 @@ public class IkaMap extends IRIOFixedObject {
             "@palette",
             "@events"
     };
-    public RubyIO data, palette, events;
+    public IRIOFixedUser data, palette;
+    public IRIOFixedHash<Integer, IkaEvent> events;
     public final int defaultWidth, defaultHeight;
 
     public IkaMap(int w, int h) {
@@ -35,11 +34,26 @@ public class IkaMap extends IRIOFixedObject {
     @Override
     public IRIO addIVar(String sym) {
         if (sym.equals("@data"))
-            return data = new RubyIO().setUser("Table", new RubyTable(3, defaultWidth, defaultHeight, 1, new int[1]).innerBytes);
+            return data = new IRIOFixedUser("Table", new RubyTable(3, defaultWidth, defaultHeight, 1, new int[1]).innerBytes);
         if (sym.equals("@palette"))
-            return palette = new RubyIO().setUser("Table", new RubyTable(3, 256, 1, 4, new int[4]).innerBytes);
+            return palette = new IRIOFixedUser("Table", new RubyTable(3, 256, 1, 4, new int[4]).innerBytes);
         if (sym.equals("@events"))
-            return events = new RubyIO().setHash();
+            return events = new IRIOFixedHash<Integer, IkaEvent>() {
+                @Override
+                public Integer convertIRIOtoKey(IRIO i) {
+                    return (int) i.getFX();
+                }
+
+                @Override
+                public IRIO convertKeyToIRIO(Integer i) {
+                    return new IRIOFixnum(i);
+                }
+
+                @Override
+                public IkaEvent newValue() {
+                    return new IkaEvent();
+                }
+            };
         return null;
     }
 

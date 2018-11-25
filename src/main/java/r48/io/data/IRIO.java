@@ -65,6 +65,7 @@ public abstract class IRIO {
 
     public abstract void rmIVar(String sym);
 
+    // If an IVar cannot be created, this should return null.
     public abstract IRIO addIVar(String sym);
 
     public abstract IRIO getIVar(String sym);

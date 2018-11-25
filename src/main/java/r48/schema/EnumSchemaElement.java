@@ -28,7 +28,7 @@ import java.util.HashMap;
  * The system is a lot cleaner now it's having the entire UI rebuilt all the time.
  * Created on 12/30/16.
  */
-public class EnumSchemaElement extends SchemaElement {
+public class EnumSchemaElement extends IRIOAwareSchemaElement {
     // Maps ValueSyntax strings to option text
     public HashMap<String, String> options;
     // Maps option text to output RubyIOs
@@ -36,9 +36,9 @@ public class EnumSchemaElement extends SchemaElement {
 
     public String buttonText;
     public UIEnumChoice.EntryMode entryMode;
-    public RubyIO defaultVal;
+    public IRIO defaultVal;
 
-    public EnumSchemaElement(HashMap<String, String> o, RubyIO def, String es) {
+    public EnumSchemaElement(HashMap<String, String> o, IRIO def, String es) {
         options = o;
         if (es.contains(":")) {
             int i = es.indexOf(":");
@@ -68,7 +68,7 @@ public class EnumSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         return new UITextButton(viewValue(target, true), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
@@ -100,9 +100,9 @@ public class EnumSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         liveUpdate();
-        if (SchemaElement.ensureType(target, (char) defaultVal.type, setDefault)) {
+        if (SchemaElement.checkType(target, defaultVal.getType(), null, setDefault)) {
             target.setDeepClone(defaultVal);
             path.changeOccurred(true);
         }
