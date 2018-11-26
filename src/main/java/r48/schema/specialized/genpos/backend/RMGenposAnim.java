@@ -10,6 +10,7 @@ package r48.schema.specialized.genpos.backend;
 import r48.AppMain;
 import r48.ArrayUtils;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.specialized.genpos.IGenposAnim;
 import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.util.SchemaPath;
@@ -54,8 +55,8 @@ public class RMGenposAnim implements IGenposAnim {
         setFrameIdx(getFrameIdx());
     }
 
-    public RubyIO getFrame() {
-        RubyIO[] frames = target.arrVal;
+    public IRIO getFrame() {
+        IRIO[] frames = target.arrVal;
         int min = 0;
         if (ix1)
             min = 1;

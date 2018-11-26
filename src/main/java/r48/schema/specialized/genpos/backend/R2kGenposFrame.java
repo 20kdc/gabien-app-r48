@@ -30,7 +30,7 @@ import r48.ui.dialog.ISpritesheetProvider;
  * Created on 29/07/17.
  */
 public class R2kGenposFrame implements IGenposFrame {
-    public ISupplier<RubyIO> frameSource;
+    public ISupplier<IRIO> frameSource;
     public SpriteCache cache;
     public SchemaPath rootPath;
     public Runnable updateNotify;
@@ -60,14 +60,14 @@ public class R2kGenposFrame implements IGenposFrame {
 
     @Override
     public void addCell(int i2) {
-        RubyIO rio = frameSource.get().getInstVarBySymbol("@cells").addAElem(i2);
+        IRIO rio = frameSource.get().getIVar("@cells").addAElem(i2);
         SchemaPath.setDefaultValue(rio, AppMain.schemas.getSDBEntry("RPG::Animation::Cell"), new RubyIO().setFX(i2));
         updateNotify.run();
     }
 
     @Override
     public void deleteCell(int i2) {
-        frameSource.get().getInstVarBySymbol("@cells").rmAElem(i2);
+        frameSource.get().getIVar("@cells").rmAElem(i2);
         updateNotify.run();
     }
 
@@ -86,7 +86,7 @@ public class R2kGenposFrame implements IGenposFrame {
                 "@transparency"
         };
         SchemaPath memberPath = rootPath.otherIndex("FX").arrayHashIndex(new RubyIO().setFX(ct + 1), "[" + (ct + 1) + "]");
-        RubyIO member = frameSource.get().getInstVarBySymbol("@cells").arrVal[ct + 1];
+        IRIO member = frameSource.get().getIVar("@cells").getAElem(ct + 1);
         SchemaElement se = new IntegerSchemaElement(0);
         if (i == 0)
             se = new BooleanSchemaElement(false);
@@ -135,7 +135,7 @@ public class R2kGenposFrame implements IGenposFrame {
                     };
                 }
             });
-        return memberPath.newWindow(se, member.getInstVarBySymbol(trueIVars[i]));
+        return memberPath.newWindow(se, member.getIVar(trueIVars[i]));
     }
 
     @Override
@@ -147,15 +147,15 @@ public class R2kGenposFrame implements IGenposFrame {
 
     @Override
     public void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y) {
-        RubyIO cell = frameSource.get().getInstVarBySymbol("@cells").arrVal[ct + 1];
-        cell.getInstVarBySymbol("@x").fixnumVal = x.apply((int) cell.getInstVarBySymbol("@x").fixnumVal);
-        cell.getInstVarBySymbol("@y").fixnumVal = y.apply((int) cell.getInstVarBySymbol("@y").fixnumVal);
+        IRIO cell = frameSource.get().getIVar("@cells").getAElem(ct + 1);
+        cell.getIVar("@x").setFX(x.apply((int) cell.getIVar("@x").getFX()));
+        cell.getIVar("@y").setFX(y.apply((int) cell.getIVar("@y").getFX()));
         updateNotify.run();
     }
 
     @Override
     public int getCellCount() {
-        return Math.max(0, frameSource.get().getInstVarBySymbol("@cells").arrVal.length - 1);
+        return Math.max(0, frameSource.get().getIVar("@cells").getALen() - 1);
     }
 
     @Override
@@ -176,28 +176,28 @@ public class R2kGenposFrame implements IGenposFrame {
 
     @Override
     public Rect getCellSelectionIndicator(int i) {
-        RubyIO cell = frameSource.get().getInstVarBySymbol("@cells").arrVal[i + 1];
-        int x = (int) cell.getInstVarBySymbol("@x").fixnumVal;
-        int y = (int) cell.getInstVarBySymbol("@y").fixnumVal;
-        int sc = (int) cell.getInstVarBySymbol("@scale").fixnumVal;
+        IRIO cell = frameSource.get().getIVar("@cells").getAElem(i + 1);
+        int x = (int) cell.getIVar("@x").getFX();
+        int y = (int) cell.getIVar("@y").getFX();
+        int sc = (int) cell.getIVar("@scale").getFX();
         int sz = cache.getScaledImageIconSize(sc);
         return new Rect(x - (sz / 2), y - (sz / 2), sz, sz);
     }
 
     @Override
     public void drawCell(int i, int opx, int opy, IGrDriver igd) {
-        RubyIO cell = frameSource.get().getInstVarBySymbol("@cells").arrVal[i + 1];
-        if (cell.getInstVarBySymbol("@visible").type == 'F')
+        IRIO cell = frameSource.get().getIVar("@cells").getAElem(i + 1);
+        if (cell.getIVar("@visible").getType() == 'F')
             return;
-        int op = (int) cell.getInstVarBySymbol("@transparency").fixnumVal;
+        int op = (int) cell.getIVar("@transparency").getFX();
         op *= 255;
         op /= 100;
         op = 255 - op;
         IImage img = cache.getFramesetCache(false, false, op);
-        int x = (int) cell.getInstVarBySymbol("@x").fixnumVal;
-        int y = (int) cell.getInstVarBySymbol("@y").fixnumVal;
-        int cid = (int) cell.getInstVarBySymbol("@cell_id").fixnumVal;
-        int sc = (int) cell.getInstVarBySymbol("@scale").fixnumVal;
+        int x = (int) cell.getIVar("@x").getFX();
+        int y = (int) cell.getIVar("@y").getFX();
+        int cid = (int) cell.getIVar("@cell_id").getFX();
+        int sc = (int) cell.getIVar("@scale").getFX();
         int sz = cache.getScaledImageIconSize(sc);
         x = opx + x - (sz / 2);
         y = opy + y - (sz / 2);

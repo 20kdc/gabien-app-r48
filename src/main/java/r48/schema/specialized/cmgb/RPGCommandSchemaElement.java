@@ -163,7 +163,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
     // Used by EventCommandArray for edit-on-create.
     // NOTE: displayPath is the path of the command window
-    protected static TempDialogSchemaChoice navigateToCode(final ISchemaHost launcher, final RubyIO target, final IConsumer<int[]> templateAndConfirm, final SchemaPath path, final CMDB database) {
+    protected static TempDialogSchemaChoice navigateToCode(final ISchemaHost launcher, final IRIO target, final IConsumer<int[]> templateAndConfirm, final SchemaPath path, final CMDB database) {
         UIEnumChoice.Category[] categories = new UIEnumChoice.Category[database.categories.length];
         for (int i = 0; i < categories.length; i++) {
             LinkedList<UIEnumChoice.Option> llo = new LinkedList<UIEnumChoice.Option>();
@@ -181,17 +181,17 @@ public class RPGCommandSchemaElement extends SchemaElement {
             public void accept(RubyIO integer) {
                 // NOTE: This just uses ints for everything.
                 RPGCommand rc = database.knownCommands.get((int) integer.fixnumVal);
-                target.getInstVarBySymbol("@code").fixnumVal = integer.fixnumVal;
-                RubyIO param = target.getInstVarBySymbol("@parameters");
+                target.getIVar("@code").setFX(integer.fixnumVal);
+                IRIO param = target.getIVar("@parameters");
                 if (rc != null) {
                     // Notice: Both are used!
                     // Firstly nuke it to whatever the command says for array-len-reduce, then use the X-code to fill in details
-                    param.arrVal = new RubyIO[rc.paramType.size()];
-                    for (int i = 0; i < param.arrVal.length; i++) {
-                        RubyIO rio = new RubyIO();
+                    param.setArray();
+                    int size = rc.paramType.size();
+                    for (int i = 0; i < size; i++) {
+                        IRIO rio = param.addAElem(i);
                         SchemaElement ise = rc.getParameterSchema(param, i);
                         ise.modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), true);
-                        param.arrVal[i] = rio;
                     }
                     if (rc.specialSchema != null) {
                         SchemaElement schemaElement = rc.specialSchema;

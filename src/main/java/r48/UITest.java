@@ -75,12 +75,12 @@ public class UITest extends UIElement.UIProxy {
         LinkedList<String> strings = new LinkedList<String>();
         LinkedList<IRIO> targs = new LinkedList<IRIO>();
         // -- Actually collate things
-        for (String s : sortedKeysArr(obj.getIVars())) {
+        for (String s : sortedKeysStrArr(obj.getIVars())) {
             strings.add("IVar " + s + " -> " + obj.getIVar(s));
             targs.add(obj.getIVar(s));
         }
         if (obj.getType() == '{') {
-            for (IRIO s : sortedKeysIArr(obj.getHashKeys())) {
+            for (IRIO s : sortedKeysArr(obj.getHashKeys())) {
                 strings.add(s + " -> " + obj.getHashVal(s));
                 targs.add(obj.getHashVal(s));
             }
@@ -178,18 +178,11 @@ public class UITest extends UIElement.UIProxy {
         return ios;
     }
 
-    private LinkedList<String> sortedKeysArr(String[] iVarKeys) {
+    public static LinkedList<String> sortedKeysStrArr(String[] iVarKeys) {
         HashSet<String> hs = new HashSet<String>();
         if (iVarKeys != null)
             Collections.addAll(hs, iVarKeys);
         return sortedKeysStr(hs);
-    }
-
-    private LinkedList<IRIO> sortedKeysIArr(IRIO[] iVarKeys) {
-        HashSet<IRIO> hs = new HashSet<IRIO>();
-        if (iVarKeys != null)
-            Collections.addAll(hs, iVarKeys);
-        return sortedKeys(hs);
     }
 
     public static LinkedList<IRIO> sortedKeys(Set<IRIO> rubyIOs) {
@@ -210,5 +203,19 @@ public class UITest extends UIElement.UIProxy {
             }
         });
         return ios;
+    }
+
+    public static LinkedList<IRIO> sortedKeysArr(IRIO[] iVarKeys) {
+        HashSet<IRIO> hs = new HashSet<IRIO>();
+        if (iVarKeys != null)
+            Collections.addAll(hs, iVarKeys);
+        return sortedKeys(hs);
+    }
+
+    public static LinkedList<IRIO> sortedKeysArr(IRIO[] iVarKeys, final IFunction<IRIO, String> toString) {
+        HashSet<IRIO> hs = new HashSet<IRIO>();
+        if (iVarKeys != null)
+            Collections.addAll(hs, iVarKeys);
+        return sortedKeys(hs, toString);
     }
 }

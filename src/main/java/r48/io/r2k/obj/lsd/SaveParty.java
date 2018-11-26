@@ -94,12 +94,13 @@ public class SaveParty extends R2kObject {
         // inventory
         RubyIO inv = new RubyIO();
         inv.type = '[';
-        inv.arrVal = new RubyIO[inventorySize.i];
+        inv.arrVal = new IRIO[inventorySize.i];
         for (int i = 0; i < inv.arrVal.length; i++) {
-            inv.arrVal[i] = new RubyIO().setSymlike("RPG::SaveItem", true);
-            inv.arrVal[i].addIVar("@id", inventoryIds.array.get(i).asRIO());
-            inv.arrVal[i].addIVar("@count", inventoryCounts.array.get(i).asRIO());
-            inv.arrVal[i].addIVar("@usage", inventoryUsage.array.get(i).asRIO());
+            RubyIO sl = new RubyIO().setSymlike("RPG::SaveItem", true);
+            inv.arrVal[i] = sl;
+            sl.addIVar("@id", inventoryIds.array.get(i).asRIO());
+            sl.addIVar("@count", inventoryCounts.array.get(i).asRIO());
+            sl.addIVar("@usage", inventoryUsage.array.get(i).asRIO());
         }
         rio.addIVar("@inventory", inv);
         return rio;

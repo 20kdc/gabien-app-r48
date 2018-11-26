@@ -358,7 +358,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
         } else if ((b == '{') || (b == '}')) {
             // 1772: Runs entry first thing after creating the hash, nocareivar
             objs.add(rio);
-            rio.hashVal = new HashMap<IRIO, RubyIO>();
+            rio.hashVal = new HashMap<IRIO, IRIO>();
             long vars = load32(dis);
             for (long i = 0; i < vars; i++) {
                 RubyIO k = loadValue(dis, objs, syms);

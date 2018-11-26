@@ -87,12 +87,12 @@ public class CMDB {
                         }
 
                         @Override
-                        public boolean correctElement(RubyIO array, int commandIndex, RubyIO command) {
+                        public boolean correctElement(IRIO array, int commandIndex, IRIO command) {
                             return false;
                         }
 
                         @Override
-                        public boolean majorCorrectElement(RubyIO arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, SchemaElement baseElement) {
                             return false;
                         }
                     };
@@ -109,18 +109,18 @@ public class CMDB {
                         }
 
                         @Override
-                        public boolean correctElement(RubyIO array, int commandIndex, RubyIO command) {
-                            RubyIO res = command.getInstVarBySymbol("@parameters").arrVal[1];
-                            long id = command.getInstVarBySymbol("@indent").fixnumVal;
+                        public boolean correctElement(IRIO array, int commandIndex, IRIO command) {
+                            IRIO res = command.getIVar("@parameters").getAElem(1);
+                            long id = command.getIVar("@indent").getFX();
                             long nIdx = 0;
-                            if (res.fixnumVal == 4) {
+                            if (res.getFX() == 4) {
                                 // Always 4.
                                 nIdx = 4;
                             } else {
                                 for (int i = commandIndex - 1; i >= 0; i--) {
-                                    RubyIO cmd = array.getAElem(i);
-                                    if (cmd.getInstVarBySymbol("@indent").fixnumVal == id) {
-                                        long code = cmd.getInstVarBySymbol("@code").fixnumVal;
+                                    IRIO cmd = array.getAElem(i);
+                                    if (cmd.getIVar("@indent").getFX() == id) {
+                                        long code = cmd.getIVar("@code").getFX();
                                         if (code == 10140) {
                                             // Show Choices (term.)
                                             break;
@@ -131,15 +131,15 @@ public class CMDB {
                                     }
                                 }
                             }
-                            if (nIdx != res.fixnumVal) {
-                                res.fixnumVal = nIdx;
+                            if (nIdx != res.getFX()) {
+                                res.setFX(nIdx);
                                 return true;
                             }
                             return false;
                         }
 
                         @Override
-                        public boolean majorCorrectElement(RubyIO arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, SchemaElement baseElement) {
                             return false;
                         }
                     };
@@ -163,32 +163,32 @@ public class CMDB {
                         }
 
                         @Override
-                        public boolean correctElement(RubyIO array, int commandIndex, RubyIO command) {
+                        public boolean correctElement(IRIO array, int commandIndex, IRIO command) {
                             return false;
                         }
 
                         @Override
-                        public boolean majorCorrectElement(RubyIO arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, SchemaElement baseElement) {
                             // Form correction
-                            RubyIO rio = commandTarg.getInstVarBySymbol("@indent");
+                            IRIO rio = commandTarg.getIVar("@indent");
                             long topIndent = 0;
                             if (rio != null)
-                                topIndent = rio.fixnumVal;
+                                topIndent = rio.getFX();
 
                             int indexOfLastValid = i;
 
                             for (int j = i + 1; j < arr.getALen(); j++) {
-                                RubyIO riox = arr.getAElem(j);
-                                RubyIO rioy = riox.getInstVarBySymbol("@indent");
+                                IRIO riox = arr.getAElem(j);
+                                IRIO rioy = riox.getIVar("@indent");
                                 long subIndent = 0;
                                 if (rioy != null)
-                                    subIndent = rioy.fixnumVal;
+                                    subIndent = rioy.getFX();
                                 if (subIndent > topIndent) {
                                     indexOfLastValid = j;
                                     continue;
                                 }
                                 if (subIndent == topIndent) {
-                                    long tid = riox.getInstVarBySymbol("@code").fixnumVal;
+                                    long tid = riox.getIVar("@code").getFX();
                                     if (tid == lastId)
                                         return false;
                                     // If TID does not match a valid follower, BREAK NOW.
@@ -207,9 +207,9 @@ public class CMDB {
                                 }
                             }
                             // Didn't find 'top', insert at best-guess
-                            RubyIO cap = arr.addAElem(indexOfLastValid + 1);
+                            IRIO cap = arr.addAElem(indexOfLastValid + 1);
                             SchemaPath.setDefaultValue(cap, baseElement, null);
-                            cap.getInstVarBySymbol("@code").fixnumVal = lastId;
+                            cap.getIVar("@code").setFX(lastId);
                             return true;
                         }
                     };
@@ -230,16 +230,16 @@ public class CMDB {
                         }
 
                         @Override
-                        public boolean correctElement(RubyIO array, int commandIndex, RubyIO command) {
+                        public boolean correctElement(IRIO array, int commandIndex, IRIO command) {
                             return false;
                         }
 
                         @Override
-                        public boolean majorCorrectElement(RubyIO arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
-                            RubyIO rio = commandTarg.getInstVarBySymbol("@indent");
+                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, SchemaElement baseElement) {
+                            IRIO rio = commandTarg.getIVar("@indent");
                             long topIndent = 0;
                             if (rio != null)
-                                topIndent = rio.fixnumVal;
+                                topIndent = rio.getFX();
                             int oi = i;
                             if (tail) {
                                 i++;
@@ -247,14 +247,14 @@ public class CMDB {
                                 i--;
                             }
                             while ((i >= 0) && (i < arr.getALen())) {
-                                RubyIO riox = arr.getAElem(i);
-                                RubyIO rioy = riox.getInstVarBySymbol("@indent");
+                                IRIO riox = arr.getAElem(i);
+                                IRIO rioy = riox.getIVar("@indent");
                                 long subIndent = 0;
                                 if (rioy != null)
-                                    subIndent = rioy.fixnumVal;
+                                    subIndent = rioy.getFX();
                                 if (subIndent <= topIndent) {
                                     // Check...
-                                    long perm = riox.getInstVarBySymbol("@code").fixnumVal;
+                                    long perm = riox.getIVar("@code").getFX();
                                     // Permitted?
                                     for (int ip : ikeys)
                                         if (perm == ip)
@@ -305,14 +305,14 @@ public class CMDB {
                         }
 
                         @Override
-                        public boolean correctElement(RubyIO array, int commandIndex, RubyIO command) {
+                        public boolean correctElement(IRIO array, int commandIndex, IRIO command) {
                             if (!checkCondition(command))
                                 return false;
                             return igb.correctElement(array, commandIndex, command);
                         }
 
                         @Override
-                        public boolean majorCorrectElement(RubyIO arr, int i, RubyIO commandTarg, SchemaElement baseElement) {
+                        public boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, SchemaElement baseElement) {
                             if (!checkCondition(commandTarg))
                                 return false;
                             return igb.majorCorrectElement(arr, i, commandTarg, baseElement);
@@ -403,9 +403,9 @@ public class CMDB {
                     rc.indentPre = Integer.parseInt(args[0]);
                 } else if (c == 'I') {
                     final int s = Integer.parseInt(args[0]);
-                    rc.indentPost = new IFunction<RubyIO, Integer>() {
+                    rc.indentPost = new IFunction<IRIO, Integer>() {
                         @Override
-                        public Integer apply(RubyIO rubyIO) {
+                        public Integer apply(IRIO rubyIO) {
                             return s;
                         }
                     };
@@ -451,12 +451,12 @@ public class CMDB {
                         digitCount = Integer.parseInt(args[1]);
                     if (args[0].equals("commandIndentConditionalIB")) {
                         final int target = Integer.parseInt(args[1]);
-                        rc.indentPost = new IFunction<RubyIO, Integer>() {
+                        rc.indentPost = new IFunction<IRIO, Integer>() {
                             @Override
-                            public Integer apply(RubyIO rubyIO) {
-                                if (rubyIO.arrVal.length <= target)
+                            public Integer apply(IRIO rubyIO) {
+                                if (rubyIO.getALen() <= target)
                                     return 0;
-                                if (rubyIO.arrVal[target].fixnumVal == 0)
+                                if (rubyIO.getAElem(target).getFX() == 0)
                                     return 0;
                                 return 1;
                             }
@@ -469,13 +469,13 @@ public class CMDB {
                             ikeys[i] = Integer.parseInt(args[(i * 2) + 1]);
                             iargs[i] = ValueSyntax.decode(args[(i * 2) + 2]);
                         }
-                        rc.indentPost = new IFunction<RubyIO, Integer>() {
+                        rc.indentPost = new IFunction<IRIO, Integer>() {
                             @Override
-                            public Integer apply(RubyIO rubyIO) {
+                            public Integer apply(IRIO rubyIO) {
                                 for (int i = 0; i < iargs.length; i++) {
-                                    if (rubyIO.arrVal.length <= ikeys[i])
+                                    if (rubyIO.getALen() <= ikeys[i])
                                         continue;
-                                    if (IRIO.rubyEquals(rubyIO.arrVal[ikeys[i]], iargs[i]))
+                                    if (IRIO.rubyEquals(rubyIO.getAElem(ikeys[i]), iargs[i]))
                                         return 1;
                                 }
                                 return 0;

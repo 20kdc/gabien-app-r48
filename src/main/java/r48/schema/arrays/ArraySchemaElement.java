@@ -199,7 +199,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 if (AppMain.theClipboard != null) {
                     // could have changed
                     if (AppMain.theClipboard.type == '[') {
-                        RubyIO[] finalInsertionRv = AppMain.theClipboard.arrVal;
+                        IRIO[] finalInsertionRv = AppMain.theClipboard.arrVal;
                         for (int j = finalInsertionRv.length - 1; j >= 0; j--)
                             ArrayUtils.insertRioElement(target, new RubyIO().setDeepClone(finalInsertionRv[j]), i);
                         // whack the UI
@@ -246,7 +246,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
         }
         while (true) {
             for (int j = 0; j < target.arrVal.length; j++) {
-                RubyIO rio = target.arrVal[j];
+                IRIO rio = target.arrVal[j];
                 // Fun fact: There's a reason for this not-quite-linear timeline.
                 // It's because otherwise, when the subelement tries to notify the array of the modification,
                 //  it will lead to an infinite loop!

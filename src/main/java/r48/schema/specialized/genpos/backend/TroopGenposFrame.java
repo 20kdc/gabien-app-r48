@@ -105,16 +105,16 @@ public class TroopGenposFrame implements IGenposFrame {
     @Override
     public SchemaPath getCellProp(int ct, int i) {
         SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(new RubyIO().setFX(ct + 1), "[" + (ct + 1) + "]");
-        RubyIO member = troop.getInstVarBySymbol("@members").arrVal[ct + 1];
+        IRIO member = troop.getInstVarBySymbol("@members").arrVal[ct + 1];
         SchemaElement se = getCellPropSchemas()[i];
         if (i == 0)
-            return memberPath.newWindow(se, member.getInstVarBySymbol("@enemy"));
+            return memberPath.newWindow(se, member.getIVar("@enemy"));
         if (i == 1)
-            return memberPath.newWindow(se, member.getInstVarBySymbol("@x"));
+            return memberPath.newWindow(se, member.getIVar("@x"));
         if (i == 2)
-            return memberPath.newWindow(se, member.getInstVarBySymbol("@y"));
+            return memberPath.newWindow(se, member.getIVar("@y"));
         if (i == 3)
-            return memberPath.newWindow(se, member.getInstVarBySymbol("@invisible"));
+            return memberPath.newWindow(se, member.getIVar("@invisible"));
         throw new RuntimeException("Invalid cell prop.");
     }
 
@@ -126,9 +126,9 @@ public class TroopGenposFrame implements IGenposFrame {
     @Override
     public void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y) {
         SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(new RubyIO().setFX(ct + 1), "[" + (ct + 1) + "]");
-        RubyIO member = troop.getInstVarBySymbol("@members").arrVal[ct + 1];
-        member.getInstVarBySymbol("@x").fixnumVal = x.apply((int) member.getInstVarBySymbol("@x").fixnumVal);
-        member.getInstVarBySymbol("@y").fixnumVal = y.apply((int) member.getInstVarBySymbol("@y").fixnumVal);
+        IRIO member = troop.getInstVarBySymbol("@members").arrVal[ct + 1];
+        member.getIVar("@x").setFX(x.apply((int) member.getIVar("@x").getFX()));
+        member.getIVar("@y").setFX(y.apply((int) member.getIVar("@y").getFX()));
         memberPath.changeOccurred(false);
     }
 

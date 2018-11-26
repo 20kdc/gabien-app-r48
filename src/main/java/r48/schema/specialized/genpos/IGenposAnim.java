@@ -8,6 +8,7 @@
 package r48.schema.specialized.genpos;
 
 import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * Takes over some of RMAnimRootPanel's duties.
@@ -22,7 +23,7 @@ public interface IGenposAnim {
 
     // If the frame is modified directly, call modifiedFrames.
     // Note that multiple frames can be modified before modifiedFrames is called.
-    RubyIO getFrame();
+    IRIO getFrame();
 
     void modifiedFrames();
 

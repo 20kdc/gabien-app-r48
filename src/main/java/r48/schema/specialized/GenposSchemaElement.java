@@ -16,6 +16,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.genpos.GenposAnimRootPanel;
 import r48.schema.specialized.genpos.GenposFramePanelController;
@@ -71,9 +72,9 @@ public class GenposSchemaElement extends SchemaElement {
                     });
                     final RGSSGenposFrame frame = new RGSSGenposFrame(sc, path, genposType.equals("vxaAnimation"), updater);
                     final RMGenposAnim anim = new RMGenposAnim(target.getInstVarBySymbol("@frames"), frame, updater, false);
-                    frame.frameSource = new ISupplier<RubyIO>() {
+                    frame.frameSource = new ISupplier<IRIO>() {
                         @Override
-                        public RubyIO get() {
+                        public IRIO get() {
                             return anim.getFrame();
                         }
                     };
@@ -131,9 +132,9 @@ public class GenposSchemaElement extends SchemaElement {
                     final R2kGenposFrame frame = new R2kGenposFrame(sc, path, outbound);
                     final RMGenposAnim anim = new RMGenposAnim(frameBound.get(), frame, outbound, true);
 
-                    frame.frameSource = new ISupplier<RubyIO>() {
+                    frame.frameSource = new ISupplier<IRIO>() {
                         @Override
-                        public RubyIO get() {
+                        public IRIO get() {
                             return anim.getFrame();
                         }
                     };

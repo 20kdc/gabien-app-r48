@@ -44,9 +44,9 @@ public class RubyIO extends IRIO {
     // public HashMap<String, RubyIO> iVars = new HashMap<String, RubyIO>();
     public String[] iVarKeys;
     public RubyIO[] iVarVals;
-    public HashMap<IRIO, RubyIO> hashVal;
+    public HashMap<IRIO, IRIO> hashVal;
     public RubyIO hashDefVal;
-    public RubyIO[] arrVal;
+    public IRIO[] arrVal;
     public byte[] userVal;
     public long fixnumVal;
 
@@ -147,7 +147,7 @@ public class RubyIO extends IRIO {
     public RubyIO setHash() {
         setNull();
         type = '{';
-        hashVal = new HashMap<IRIO, RubyIO>();
+        hashVal = new HashMap<IRIO, IRIO>();
         return this;
     }
 
@@ -155,7 +155,7 @@ public class RubyIO extends IRIO {
     public IRIO setHashWithDef() {
         setNull();
         type = '}';
-        hashVal = new HashMap<IRIO, RubyIO>();
+        hashVal = new HashMap<IRIO, IRIO>();
         hashDefVal = new RubyIO().setNull();
         return this;
     }
@@ -265,11 +265,11 @@ public class RubyIO extends IRIO {
     //       in most cases, we already have the RubyIO object by-ref.
     //       (Can't implement equals on RubyIO objects safely due to ObjectDB backreference tracing.)
     @Override
-    public RubyIO getHashVal(IRIO rio) {
-        RubyIO basis = hashVal.get(rio);
+    public IRIO getHashVal(IRIO rio) {
+        IRIO basis = hashVal.get(rio);
         if (basis != null)
             return basis;
-        for (Map.Entry<IRIO, RubyIO> e : hashVal.entrySet())
+        for (Map.Entry<IRIO, IRIO> e : hashVal.entrySet())
             if (rubyEquals(e.getKey(), rio))
                 return e.getValue();
         return null;
@@ -277,7 +277,7 @@ public class RubyIO extends IRIO {
 
     @Override
     public void removeHashVal(IRIO rubyIO) {
-        for (Map.Entry<IRIO, RubyIO> e : hashVal.entrySet())
+        for (Map.Entry<IRIO, IRIO> e : hashVal.entrySet())
             if (rubyEquals(e.getKey(), rubyIO)) {
                 hashVal.remove(e.getKey());
                 // hopefully don't trigger a CME
@@ -341,15 +341,15 @@ public class RubyIO extends IRIO {
     }
 
     @Override
-    public RubyIO getAElem(int i) {
+    public IRIO getAElem(int i) {
         return arrVal[i];
     }
 
     @Override
     public RubyIO addAElem(int i) {
         RubyIO rio = new RubyIO().setNull();
-        RubyIO[] old = arrVal;
-        RubyIO[] newArr = new RubyIO[old.length + 1];
+        IRIO[] old = arrVal;
+        IRIO[] newArr = new IRIO[old.length + 1];
         System.arraycopy(old, 0, newArr, 0, i);
         newArr[i] = rio;
         System.arraycopy(old, i, newArr, i + 1, old.length - i);
@@ -359,8 +359,8 @@ public class RubyIO extends IRIO {
 
     @Override
     public void rmAElem(int i) {
-        RubyIO[] old = arrVal;
-        RubyIO[] newArr = new RubyIO[old.length - 1];
+        IRIO[] old = arrVal;
+        IRIO[] newArr = new IRIO[old.length - 1];
         System.arraycopy(old, 0, newArr, 0, i);
         System.arraycopy(old, i + 1, newArr, i + 1 - 1, old.length - (i + 1));
         arrVal = newArr;

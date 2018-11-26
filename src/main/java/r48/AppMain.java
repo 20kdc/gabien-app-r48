@@ -674,7 +674,7 @@ public class AppMain {
         RubyIO possibleActualDump = sysDump.getInstVarBySymbol("@current");
         if (possibleActualDump != null)
             sysDump = possibleActualDump;
-        for (Map.Entry<IRIO, RubyIO> rio : sysDump.hashVal.entrySet()) {
+        for (Map.Entry<IRIO, IRIO> rio : sysDump.hashVal.entrySet()) {
             String name = rio.getKey().decString();
             IObjectBackend.ILoadedObject root = objectDB.getObject(name);
             if (root != null) {

@@ -60,13 +60,13 @@ public class ScriptControlSchemaElement extends SchemaElement {
                     OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts/_scripts.txt"));
                     PrintStream ps = new PrintStream(os, false, "UTF-8");
                     for (int i = 0; i < target.arrVal.length; i++) {
-                        String name = target.arrVal[i].arrVal[1].decString();
+                        String name = target.arrVal[i].getAElem(1).decString();
                         // Just in case...
                         name = name.replace(':', '_');
                         name = name.replace('/', '_');
                         name = name.replace('\\', '_');
                         // need to inflate
-                        byte[] inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.arrVal[i].arrVal[2].strVal)));
+                        byte[] inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.arrVal[i].getAElem(2).getBuffer())));
                         // target.arrVal[i].arrVal[2];
 
                         boolean disable = false;
@@ -144,17 +144,16 @@ public class ScriptControlSchemaElement extends SchemaElement {
             scr.arrVal = new RubyIO[3];
             scr.arrVal[0] = new RubyIO().setFX(0);
             scr.arrVal[1] = new RubyIO().setString(s, false);
-            scr.arrVal[2] = new RubyIO();
-            scr.arrVal[2].type = '"';
             DeflaterInputStream def = new DeflaterInputStream(new ByteArrayInputStream(new byte[0]));
-            scr.arrVal[2].strVal = StringBlobSchemaElement.readStream(def);
+            scr.arrVal[2] = new RubyIO().setString(StringBlobSchemaElement.readStream(def), "UTF-8");
             def.close();
             if (ok) {
-                scr.arrVal[2].strVal = loadScript(s);
-                if (scr.arrVal[2].strVal == null) {
+                byte[] data = loadScript(s);
+                if (data == null) {
                     AppMain.launchDialog(TXDB.get("Script missing: ") + s);
                     return null;
                 }
+                scr.arrVal[2].putBuffer(data);
             }
             scripts.add(scr);
         }

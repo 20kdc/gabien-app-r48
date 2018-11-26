@@ -12,6 +12,7 @@ import r48.RubyIO;
 import r48.RubyTable;
 import r48.io.OldObjectBackend;
 import r48.io.PathUtils;
+import r48.io.data.IRIO;
 import r48.io.r2k.R2kUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -164,23 +165,23 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO> {
     }
 
     private void saveStageTBL(ByteArrayOutputStream baos, RubyIO o) throws IOException {
-        for (RubyIO rio : o.arrVal) {
-            writeFixedFormatString(baos, rio.getInstVarBySymbol("@tileset"), 0x20);
-            writeFixedFormatString(baos, rio.getInstVarBySymbol("@filename"), 0x20);
-            int backgroundScroll = (int) o.getInstVarBySymbol("@background_scroll").fixnumVal;
+        for (IRIO rio : o.arrVal) {
+            writeFixedFormatString(baos, rio.getIVar("@tileset"), 0x20);
+            writeFixedFormatString(baos, rio.getIVar("@filename"), 0x20);
+            int backgroundScroll = (int) o.getIVar("@background_scroll").fixnumVal;
             baos.write(backgroundScroll);
             baos.write(backgroundScroll >> 8);
             baos.write(backgroundScroll >> 16);
             baos.write(backgroundScroll >> 24);
-            writeFixedFormatString(baos, rio.getInstVarBySymbol("@sf_bkg"), 0x20);
-            writeFixedFormatString(baos, rio.getInstVarBySymbol("@sf_npc1"), 0x20);
-            writeFixedFormatString(baos, rio.getInstVarBySymbol("@sf_npc2"), 0x20);
-            baos.write((int) rio.getInstVarBySymbol("@boss").fixnumVal);
-            writeFixedFormatString(baos, rio.getInstVarBySymbol("@name"), 0x23);
+            writeFixedFormatString(baos, rio.getIVar("@sf_bkg"), 0x20);
+            writeFixedFormatString(baos, rio.getIVar("@sf_npc1"), 0x20);
+            writeFixedFormatString(baos, rio.getIVar("@sf_npc2"), 0x20);
+            baos.write((int) rio.getIVar("@boss").getFX());
+            writeFixedFormatString(baos, rio.getIVar("@name"), 0x23);
         }
     }
 
-    private void writeFixedFormatString(ByteArrayOutputStream baos, RubyIO strsym, int i) throws IOException {
+    private void writeFixedFormatString(ByteArrayOutputStream baos, IRIO strsym, int i) throws IOException {
         byte[] bt = new byte[i];
         byte[] nbt = R2kUtil.encodeLcfString(strsym.decString());
         System.arraycopy(nbt, 0, bt, 0, Math.min(nbt.length, bt.length - 1));

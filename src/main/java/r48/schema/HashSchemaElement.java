@@ -21,13 +21,11 @@ import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created on 12/29/16.
  */
-public class HashSchemaElement extends SchemaElement {
+public class HashSchemaElement extends IRIOAwareSchemaElement {
     public SchemaElement keyElem, valElem;
     public boolean flexible;
 
@@ -38,7 +36,7 @@ public class HashSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIScrollLayout uiSV = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
         RubyIO preWorkspace = (RubyIO) launcher.getEmbedObject(this, target, "keyWorkspace");
         if (preWorkspace == null) {
@@ -101,7 +99,7 @@ public class HashSchemaElement extends SchemaElement {
                     }
                 };
                 uiSV.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Search Keys:"), FontSizes.schemaFieldTextHeight), searchBox, false, 0d));
-                for (IRIO key : UITest.sortedKeys(target.hashVal.keySet(), new IFunction<IRIO, String>() {
+                for (IRIO key : UITest.sortedKeysArr(target.getHashKeys(), new IFunction<IRIO, String>() {
                     @Override
                     public String apply(IRIO rubyIO) {
                         return getKeyText(rubyIO);
@@ -117,7 +115,7 @@ public class HashSchemaElement extends SchemaElement {
                             return getKeyText(v);
                         }
                     }).buildHoldingEditor(key, launcher, path);
-                    UIElement hsB = valElem.buildHoldingEditor(target.hashVal.get(key), launcher, path.arrayHashIndex(key, "{" + getKeyText(key) + "}"));
+                    UIElement hsB = valElem.buildHoldingEditor(target.getHashVal(key), launcher, path.arrayHashIndex(key, "{" + getKeyText(key) + "}"));
                     UISplitterLayout hs = null;
                     if (flexible) {
                         hs = new UISplitterLayout(hsA, hsB, true, 0.0d);
@@ -128,7 +126,7 @@ public class HashSchemaElement extends SchemaElement {
                         @Override
                         public void run() {
                             // remove
-                            target.hashVal.remove(kss);
+                            target.removeHashVal(kss);
                             path.changeOccurred(false);
                             // auto-updates
                         }
@@ -140,10 +138,9 @@ public class HashSchemaElement extends SchemaElement {
                     @Override
                     public void run() {
                         if (target.getHashVal(keyWorkspace) == null) {
-                            RubyIO rio2 = new RubyIO();
                             RubyIO finWorkspace = new RubyIO().setDeepClone(keyWorkspace);
+                            IRIO rio2 = target.addHashVal(finWorkspace);
                             valElem.modifyVal(rio2, path.arrayHashIndex(finWorkspace, "{" + getKeyText(finWorkspace) + "}"), true);
-                            target.hashVal.put(finWorkspace, rio2);
                             // the deep clone prevents further modification of the key
                             path.changeOccurred(false);
                             // auto-updates
@@ -169,18 +166,15 @@ public class HashSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        setDefault = SchemaElement.ensureType(target, '{', setDefault);
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+        setDefault = SchemaElement.checkType(target, '{', null, setDefault);
         if (setDefault) {
-            target.hashVal = new HashMap<IRIO, RubyIO>();
-            path.changeOccurred(true);
+            target.setHash();
         } else {
-            if (target.hashVal == null) {
-                target.hashVal = new HashMap<IRIO, RubyIO>();
-                path.changeOccurred(true);
+            for (IRIO e : target.getHashKeys()) {
+                IRIO ek = target.getHashVal(e);
+                valElem.modifyVal(ek, path.arrayHashIndex(e, "{" + getKeyText(e) + "}"), false);
             }
-            for (Map.Entry<IRIO, RubyIO> e : target.hashVal.entrySet())
-                valElem.modifyVal(e.getValue(), path.arrayHashIndex(e.getKey(), "{" + getKeyText(e.getKey()) + "}"), false);
         }
     }
 }

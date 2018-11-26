@@ -44,7 +44,7 @@ public class RGSSGenposFrame implements IGenposFrame {
     public SchemaPath path;
 
     // Must be initialized before this is used...
-    public ISupplier<RubyIO> frameSource;
+    public ISupplier<IRIO> frameSource;
 
     public RGSSGenposFrame(SpriteCache sc, SchemaPath basePath, boolean vxaAnimation, Runnable runnable) {
         updateNotify = runnable;
@@ -54,13 +54,13 @@ public class RGSSGenposFrame implements IGenposFrame {
         spriteCache = sc;
     }
 
-    public RubyIO getFrame() {
+    public IRIO getFrame() {
         return frameSource.get();
     }
 
     private RubyTable getTable() {
-        RubyIO frameData = getFrame().getInstVarBySymbol("@cell_data");
-        return new RubyTable(frameData.userVal);
+        IRIO frameData = getFrame().getIVar("@cell_data");
+        return new RubyTable(frameData.getBuffer());
     }
 
     @Override
@@ -89,10 +89,10 @@ public class RGSSGenposFrame implements IGenposFrame {
 
     @Override
     public void deleteCell(int i2) {
-        RubyIO frame = getFrame();
-        RubyIO frameData = frame.getInstVarBySymbol("@cell_data");
-        RubyTable table = new RubyTable(frameData.userVal);
-        frame.getInstVarBySymbol("@cell_max").fixnumVal = table.width - 1;
+        IRIO frame = getFrame();
+        IRIO frameData = frame.getIVar("@cell_data");
+        RubyTable table = new RubyTable(frameData.getBuffer());
+        frame.getIVar("@cell_max").setFX(table.width - 1);
         RubyTable newTable = new RubyTable(3, table.width - 1, 8, 1, new int[1]);
         for (int p = 0; p < 8; p++) {
             for (int j = 0; j < i2; j++)
@@ -100,7 +100,7 @@ public class RGSSGenposFrame implements IGenposFrame {
             for (int j = i2 + 1; j < table.width; j++)
                 newTable.setTiletype(j - 1, p, 0, table.getTiletype(j, p, 0));
         }
-        frameData.userVal = newTable.innerBytes;
+        frameData.putBuffer(newTable.innerBytes);
         updateNotify.run();
     }
 
@@ -111,10 +111,10 @@ public class RGSSGenposFrame implements IGenposFrame {
 
     @Override
     public void addCell(int i2) {
-        RubyIO frame = getFrame();
-        RubyIO frameData = frame.getInstVarBySymbol("@cell_data");
-        RubyTable table = new RubyTable(frameData.userVal);
-        frame.getInstVarBySymbol("@cell_max").fixnumVal = table.width + 1;
+        IRIO frame = getFrame();
+        IRIO frameData = frame.getIVar("@cell_data");
+        RubyTable table = new RubyTable(frameData.getBuffer());
+        frame.getIVar("@cell_max").setFX(table.width + 1);
         RubyTable newTable = new RubyTable(3, table.width + 1, 8, 1, new int[1]);
         short[] initValues = new short[] {
                 1, 0, 0, 100, 0, 0, 255, 1
@@ -126,7 +126,7 @@ public class RGSSGenposFrame implements IGenposFrame {
                 newTable.setTiletype(j + 1, p, 0, table.getTiletype(j, p, 0));
             newTable.setTiletype(i2, p, 0, initValues[p]);
         }
-        frameData.userVal = newTable.innerBytes;
+        frameData.putBuffer(newTable.innerBytes);
         updateNotify.run();
     }
 
@@ -227,19 +227,19 @@ public class RGSSGenposFrame implements IGenposFrame {
                 return false;
             }
         }, getCellPropSchemas()[i]);
-        return path.newWindow(se, getFrame().getInstVarBySymbol("@cell_data"));
+        return path.newWindow(se, getFrame().getIVar("@cell_data"));
     }
 
     @Override
     public IGenposTweeningProp getCellPropTweening(int ct, int i) {
         if (i < 7)
-            return new TableGenposTweeningProp(new RubyTable(getFrame().getInstVarBySymbol("@cell_data").userVal), ct, i, 0);
+            return new TableGenposTweeningProp(new RubyTable(getFrame().getIVar("@cell_data").getBuffer()), ct, i, 0);
         return null;
     }
 
     @Override
     public void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y) {
-        RubyTable rt = new RubyTable(getFrame().getInstVarBySymbol("@cell_data").userVal);
+        RubyTable rt = new RubyTable(getFrame().getIVar("@cell_data").getBuffer());
         rt.setTiletype(ct, 1, 0, (short) ((int) x.apply((int) rt.getTiletype(ct, 1, 0))));
         rt.setTiletype(ct, 2, 0, (short) ((int) y.apply((int) rt.getTiletype(ct, 2, 0))));
         updateNotify.run();

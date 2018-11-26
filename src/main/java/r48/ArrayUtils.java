@@ -14,15 +14,11 @@ import r48.io.data.IRIO;
  * Created on 2/19/17.
  */
 public class ArrayUtils {
-    public static void removeRioElement(IRIO target, int mi) {
-        target.rmAElem(mi);
-    }
-
     public static void insertRioElement(RubyIO target, RubyIO rio, int i) {
-        RubyIO[] old = target.arrVal;
+        IRIO[] old = target.arrVal;
         // If i >= old.length, add nulls (uhoh)
         if (i >= old.length) {
-            RubyIO[] n = new RubyIO[i + 1];
+            IRIO[] n = new IRIO[i + 1];
             for (int j = 0; j < n.length; j++)
                 n[j] = new RubyIO().setNull();
             System.arraycopy(old, 0, n, 0, old.length);
@@ -30,7 +26,7 @@ public class ArrayUtils {
             target.arrVal = n;
             return;
         }
-        RubyIO[] newArr = new RubyIO[old.length + 1];
+        IRIO[] newArr = new IRIO[old.length + 1];
         System.arraycopy(old, 0, newArr, 0, i);
         newArr[i] = rio;
         System.arraycopy(old, i, newArr, i + 1, old.length - i);

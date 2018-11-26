@@ -35,9 +35,9 @@ public class RPGCommand {
     public LinkedList<IFunction<IRIO, String>> paramName = new LinkedList<IFunction<IRIO, String>>();
     public int indentPre;
     // This is conditional solely because of Show Inn (R2k).
-    public IFunction<RubyIO, Integer> indentPost = new IFunction<RubyIO, Integer>() {
+    public IFunction<IRIO, Integer> indentPost = new IFunction<IRIO, Integer>() {
         @Override
-        public Integer apply(RubyIO rubyIO) {
+        public Integer apply(IRIO rubyIO) {
             return 0;
         }
     };

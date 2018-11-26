@@ -35,7 +35,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
 
     @Override
     public void swapOrders(int orderA, int orderB) {
-        RubyIO b = mapTreeOrders.arrVal[orderA];
+        IRIO b = mapTreeOrders.arrVal[orderA];
         mapTreeOrders.arrVal[orderA] = mapTreeOrders.arrVal[orderB];
         mapTreeOrders.arrVal[orderB] = b;
     }
@@ -85,7 +85,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         // Prepare...
         MapInfoReparentUtil.removeMapHelperSALT(k, this);
         // Remove last from array
-        RubyIO[] resArray = new RubyIO[mapTreeOrders.arrVal.length - 1];
+        RubyIO[] resArray = new RubyIO[mapTreeOrders.getALen() - 1];
         System.arraycopy(mapTreeOrders.arrVal, 0, resArray, 0, resArray.length);
         mapTreeOrders.arrVal = resArray;
         // Eliminate from hash
@@ -114,7 +114,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     @Override
     public void complete() {
         // Need to update indent...
-        getHashBID(0).getInstVarBySymbol("@indent").fixnumVal = 0;
+        getHashBID(0).getIVar("@indent").setFX(0);
         LinkedList<Long> intList = new LinkedList<Long>(getHashKeys());
         Collections.sort(intList, new Comparator<Long>() {
             @Override
@@ -131,11 +131,11 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         LinkedList<Long> parentStack = new LinkedList<Long>();
         int lastOrder = 0;
         for (final Long k : intList) {
-            final RubyIO map = getHashBID(k);
+            final IRIO map = getHashBID(k);
             final int order = getOrderOfMap(k);
             if (lastOrder < order)
                 lastOrder = order;
-            final long parent = map.getInstVarBySymbol("@parent_id").fixnumVal;
+            final long parent = map.getIVar("@parent_id").getFX();
             if (parent == 0) {
                 parentStack.clear();
             } else {
@@ -144,7 +144,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
                         parentStack.removeLast();
             }
             parentStack.add(k);
-            map.getInstVarBySymbol("@indent").fixnumVal = parentStack.size();
+            map.getIVar("@indent").setFX(parentStack.size());
         }
         // and done!
         SchemaPath fakePath = new SchemaPath(AppMain.schemas.getSDBEntry("File.RPG_RT.lmt"), mapTree);
@@ -154,8 +154,8 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
 
     @Override
     public Art.Symbol getIconForMap(long k) {
-        final RubyIO map = getHashBID(k);
-        return map.getInstVarBySymbol("@type").fixnumVal == 2 ? Art.Symbol.Area : Art.Symbol.Map;
+        final IRIO map = getHashBID(k);
+        return map.getIVar("@type").getFX() == 2 ? Art.Symbol.Area : Art.Symbol.Map;
     }
 
     @Override
@@ -175,20 +175,20 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     }
 
     @Override
-    public RubyIO getHashBID(long k) {
+    public IRIO getHashBID(long k) {
         return mapTreeHash.getHashVal(new RubyIO().setFX(k));
     }
 
     @Override
     public int getOrderOfMap(long k) {
         for (int i = 0; i < mapTreeOrders.arrVal.length; i++)
-            if (mapTreeOrders.arrVal[i].fixnumVal == k)
+            if (mapTreeOrders.arrVal[i].getFX() == k)
                 return i;
         throw new NullPointerException("No such map " + k);
     }
 
     @Override
     public long getMapOfOrder(int order) {
-        return mapTreeOrders.arrVal[order].fixnumVal;
+        return mapTreeOrders.arrVal[order].getFX();
     }
 }

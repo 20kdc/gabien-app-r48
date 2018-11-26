@@ -78,23 +78,23 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         // Note that this array can grow as it's being searched.
         boolean hasValidListLeave = database.listLeaveCmd == -1;
         for (int i = 0; i < array.getALen(); i++) {
-            RubyIO commandTarg = array.getAElem(i);
-            int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
+            IRIO commandTarg = array.getAElem(i);
+            int code = (int) commandTarg.getIVar("@code").getFX();
             RPGCommand rc = database.knownCommands.get(code);
             if (rc != null) {
                 // Indent stuff
                 final int indentOld = indent;
                 indent += rc.indentPre;
                 if (baseElement.allowControlOfIndent) {
-                    if (indent != commandTarg.getInstVarBySymbol("@indent").fixnumVal) {
-                        commandTarg.getInstVarBySymbol("@indent").fixnumVal = indent;
+                    if (indent != commandTarg.getIVar("@indent").getFX()) {
+                        commandTarg.getIVar("@indent").setFX(indent);
                         modified = true;
                     }
                 }
                 // Used to understand infinite loops
                 if (debugInfloop)
                     System.out.println("i " + i + " " + code + " " + indent);
-                indent += rc.indentPost.apply(commandTarg.getInstVarBySymbol("@parameters"));
+                indent += rc.indentPost.apply(commandTarg.getIVar("@parameters"));
                 // Group Behavior
                 for (IGroupBehavior groupBehavior : rc.groupBehaviors)
                     modified |= groupBehavior.correctElement(array, i, commandTarg);
@@ -149,8 +149,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         // Specifically consider this for behaviors which add/remove commands.
         boolean continueToBreak = false;
         for (int i = 0; i < array.getALen(); i++) {
-            RubyIO commandTarg = array.getAElem(i);
-            int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
+            IRIO commandTarg = array.getAElem(i);
+            int code = (int) commandTarg.getIVar("@code").getFX();
             RPGCommand rc = database.knownCommands.get(code);
             if (rc != null) {
                 for (IGroupBehavior groupBehavior : rc.groupBehaviors) {
@@ -239,8 +239,8 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                     return new UITextButton(addText, FontSizes.schemaFieldTextHeight, new Runnable() {
                         @Override
                         public void run() {
-                            RubyIO commandTarg = target.arrVal[start];
-                            int code = (int) commandTarg.getInstVarBySymbol("@code").fixnumVal;
+                            IRIO commandTarg = target.arrVal[start];
+                            int code = (int) commandTarg.getIVar("@code").getFX();
                             RPGCommand rc = database.knownCommands.get(code);
                             if (rc != null)
                                 for (IGroupBehavior groupBehavior : rc.groupBehaviors) {

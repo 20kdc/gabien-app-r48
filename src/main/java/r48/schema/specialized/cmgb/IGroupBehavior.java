@@ -7,7 +7,6 @@
 
 package r48.schema.specialized.cmgb;
 
-import r48.RubyIO;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 
@@ -25,9 +24,9 @@ public interface IGroupBehavior {
 
     // Note that this returning true indicates if modifications occurred.
     // This can add/remove elements on the array.
-    boolean correctElement(RubyIO array, int commandIndex, RubyIO command);
+    boolean correctElement(IRIO array, int commandIndex, IRIO command);
 
     // This second pass is used by certain group-behaviors that *really, really* need accurate indent information to not cause damage.
     // Specifically consider this for behaviors which add/remove commands.
-    boolean majorCorrectElement(RubyIO arr, int i, RubyIO commandTarg, SchemaElement baseElement);
+    boolean majorCorrectElement(IRIO arr, int i, IRIO commandTarg, SchemaElement baseElement);
 }
