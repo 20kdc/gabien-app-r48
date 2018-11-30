@@ -319,7 +319,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             key.symVal = iVarKeys[i];
             try {
                 saveValue(dis, key, objCache, strCache);
-                saveValue(dis, iVars.getAElem(i), objCache, strCache);
+                saveValue(dis, iVars.getIVar(key.symVal), objCache, strCache);
             } catch (Exception ex) {
                 throw new IOException("Hit catch at IVar " + iVarKeys[i], ex);
             }

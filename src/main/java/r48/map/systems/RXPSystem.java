@@ -189,8 +189,9 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         IRIO items = AppMain.objectDB.getObject("Items").getObject();
         int itemCount = items.getALen();
         for (int i = 0; i < itemCount; i++) {
-            if (items.getType() != '0') {
-                lls.add(items.getAElem(i).getIVar("@name").decString());
+            IRIO item = items.getAElem(i);
+            if (item.getType() != '0') {
+                lls.add(item.getIVar("@name").decString());
             } else {
                 lls.add("<NULL>");
             }
