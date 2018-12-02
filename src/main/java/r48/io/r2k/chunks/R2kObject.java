@@ -136,9 +136,14 @@ public abstract class R2kObject implements IR2kStruct {
     }
 
     protected void fromRIOISF(IRIO mt) {
-        for (Index i : getIndices())
-            if (i.rioHelperName != null)
-                ((IR2kStruct) i.chunk).fromRIO(mt.getIVar(i.rioHelperName));
+        for (Index i : getIndices()) {
+            try {
+                if (i.rioHelperName != null)
+                    ((IR2kStruct) i.chunk).fromRIO(mt.getIVar(i.rioHelperName));
+            } catch (RuntimeException e) {
+                throw new RuntimeException("In " + i + " of " + this, e);
+            }
+        }
         R2kUtil.rioToUnk(mt, unknownChunks);
     }
 }

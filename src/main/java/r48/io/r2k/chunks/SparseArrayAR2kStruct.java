@@ -45,10 +45,15 @@ public class SparseArrayAR2kStruct<T extends IR2kStruct> extends SparseArrayR2kI
         map.clear();
         int alen = src.getALen();
         for (int i = 0; i < alen; i++) {
+            IRIO srcElem = src.getAElem(i);
             // Nulls are used for padding here, don't include them
-            if (src.getType() != '0') {
+            if (srcElem.getType() != '0') {
                 T n = constructor.get();
-                n.fromRIO(src);
+                try {
+                    n.fromRIO(srcElem);
+                } catch (RuntimeException e) {
+                    throw new RuntimeException("In element " + i, e);
+                }
                 map.put(i, n);
             }
         }

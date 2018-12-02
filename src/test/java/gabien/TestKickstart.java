@@ -9,16 +9,46 @@ package gabien;
 
 import gabien.ui.IConsumer;
 import r48.AppMain;
+import r48.RubyIO;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
 import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
+import r48.schema.specialized.IMagicalBinder;
+
+import java.io.*;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.WeakHashMap;
 
 /**
+ * Ties into gabien-javase to create a test workbench.
+ * Unusable outside of it.
  * Created on November 19, 2018.
  */
 public class TestKickstart {
     public static void kickstart() {
-        GaBIEn.internal = new GaBIEnImpl(false);
+        final HashMap<String, byte[]> mockFS = new HashMap<String, byte[]>();
+        GaBIEn.internal = new GaBIEnImpl(false) {
+            @Override
+            public InputStream getFile(String FDialog) {
+                byte[] data = mockFS.get(FDialog);
+                if (data == null)
+                    return null;
+                return new ByteArrayInputStream(data);
+            }
+
+            @Override
+            public OutputStream getOutFile(final String FDialog) {
+                return new ByteArrayOutputStream() {
+                    @Override
+                    public void close() throws IOException {
+                        super.close();
+                        mockFS.put(FDialog, toByteArray());
+                    }
+                };
+            }
+        };
         IObjectBackend.Factory.encoding = "UTF-8";
         // Reset schemas and objectDB
         AppMain.objectDB = new ObjectDB(new IObjectBackend() {
@@ -44,5 +74,6 @@ public class TestKickstart {
             }
         });
         AppMain.schemas = new SDB();
+        AppMain.magicalBindingCache = new WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>>();
     }
 }

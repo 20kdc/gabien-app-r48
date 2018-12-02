@@ -57,5 +57,8 @@ public class SchemaParseTest {
     public void testParses() {
         TestKickstart.kickstart();
         AppMain.schemas.readFile(gamepak + "/Schema.txt");
+        AppMain.schemas.startupSanitizeDictionaries();
+        AppMain.schemas.updateDictionaries(null);
+        AppMain.schemas.confirmAllExpectationsMet();
     }
 }
