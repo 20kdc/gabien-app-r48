@@ -10,11 +10,10 @@ package r48.io.r2k;
 import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.IObjectBackend;
+import r48.io.IntUtils;
 import r48.io.data.IRIO;
 
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.*;
 
 /**
@@ -35,44 +34,9 @@ public class R2kUtil {
 
     // --
 
-    public static int readLcfU8(InputStream src) throws IOException {
-        int i = src.read();
-        if (i < 0)
-            throw new IOException("EOF unexpected");
-        return i;
-    }
-
     // --
 
-    public static int readLcfS32(InputStream src) throws IOException {
-        int b1 = readLcfU8(src);
-        int b2 = readLcfU8(src);
-        int b3 = readLcfU8(src);
-        int b4 = readLcfU8(src);
-        return (b4 << 24) | (b3 << 16) | (b2 << 8) | b1;
-    }
-
-    public static void writeLcfS32(OutputStream os, int i) throws IOException {
-        ByteBuffer t = ByteBuffer.wrap(new byte[4]);
-        t.order(ByteOrder.LITTLE_ENDIAN);
-        t.putInt(i);
-        os.write(t.array());
-    }
-
     // --
-
-    public static int readLcfU16(InputStream src) throws IOException {
-        int b1 = readLcfU8(src);
-        int b2 = readLcfU8(src);
-        return (b2 << 8) | b1;
-    }
-
-    public static void writeLcfU16(OutputStream os, int i) throws IOException {
-        ByteBuffer t = ByteBuffer.wrap(new byte[2]);
-        t.order(ByteOrder.LITTLE_ENDIAN);
-        t.putShort((short) i);
-        os.write(t.array());
-    }
 
     // --
 
@@ -86,7 +50,7 @@ public class R2kUtil {
     public static int readLcfVLI(InputStream src) throws IOException {
         int v = 0;
         while (true) {
-            int b = readLcfU8(src);
+            int b = IntUtils.readU8(src);
             v = v << 7;
             v |= b & 0x7F;
             if ((b & 0x80) == 0)
@@ -119,14 +83,6 @@ public class R2kUtil {
     }
 
     // --
-
-    public static byte[] readLcfBytes(InputStream src, int l) throws IOException {
-        byte[] data = new byte[l];
-        int o = 0;
-        while (o < l)
-            o += src.read(data, o, l - o);
-        return data;
-    }
 
     // For now, assume SHIFT-JIS on all.
     // -- VERIFIED! This is definitely the encoding, check Ib event names

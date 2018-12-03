@@ -8,6 +8,7 @@
 package r48.io.r2k.chunks;
 
 import r48.RubyIO;
+import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.io.r2k.Index;
 import r48.io.r2k.R2kUtil;
@@ -54,7 +55,7 @@ public abstract class R2kObject implements IR2kStruct {
                 break;
             int len = R2kUtil.readLcfVLI(src);
             // System.out.println(this + " -> 0x" + Integer.toHexString(cid) + " [" + len + "]");
-            byte[] data = R2kUtil.readLcfBytes(src, len);
+            byte[] data = IntUtils.readBytes(src, len);
             unknownChunks.put(cid, data);
             // System.out.println("<<");
         }

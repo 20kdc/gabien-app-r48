@@ -9,6 +9,7 @@ package r48.io.r2k.struct;
 
 import r48.RubyIO;
 import r48.io.IObjectBackend;
+import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
@@ -31,7 +32,7 @@ public class EventCommand implements IR2kStruct {
     public void importData(InputStream bais) throws IOException {
         code = R2kUtil.readLcfVLI(bais);
         indent = R2kUtil.readLcfVLI(bais);
-        text = R2kUtil.readLcfBytes(bais, R2kUtil.readLcfVLI(bais));
+        text = IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais));
         if (code != 11330) {
             moveCommands = null;
             parameters = new int[R2kUtil.readLcfVLI(bais)];

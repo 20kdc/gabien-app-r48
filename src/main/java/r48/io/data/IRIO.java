@@ -193,6 +193,17 @@ public abstract class IRIO {
         return iVarKeys;
     }
 
+    public byte[] getBufferInEncoding(String encoding) {
+        String enc = getBufferEnc();
+        if (!enc.equals(encoding)) {
+            try {
+                return decString().getBytes(encoding);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return getBuffer();
+    }
 
     // Outputs IMI-code for something so that there's a basically human-readable version of it.
     public String toStringLong(String indent) {
@@ -295,5 +306,4 @@ public abstract class IRIO {
             return true;
         return false;
     }
-
 }

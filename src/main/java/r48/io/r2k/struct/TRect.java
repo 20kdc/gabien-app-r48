@@ -8,8 +8,8 @@
 package r48.io.r2k.struct;
 
 import r48.RubyIO;
+import r48.io.IntUtils;
 import r48.io.data.IRIO;
-import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
 
 import java.io.IOException;
@@ -25,18 +25,18 @@ public class TRect implements IR2kStruct {
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        l = R2kUtil.readLcfS32(bais);
-        u = R2kUtil.readLcfS32(bais);
-        r = R2kUtil.readLcfS32(bais);
-        d = R2kUtil.readLcfS32(bais);
+        l = IntUtils.readS32(bais);
+        u = IntUtils.readS32(bais);
+        r = IntUtils.readS32(bais);
+        d = IntUtils.readS32(bais);
     }
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
-        R2kUtil.writeLcfS32(baos, l);
-        R2kUtil.writeLcfS32(baos, u);
-        R2kUtil.writeLcfS32(baos, r);
-        R2kUtil.writeLcfS32(baos, d);
+        IntUtils.writeS32(baos, l);
+        IntUtils.writeS32(baos, u);
+        IntUtils.writeS32(baos, r);
+        IntUtils.writeS32(baos, d);
         return false;
     }
 

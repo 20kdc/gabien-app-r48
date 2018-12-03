@@ -8,8 +8,8 @@
 package r48.io.r2k.struct;
 
 import r48.RubyIO;
+import r48.io.IntUtils;
 import r48.io.data.IRIO;
-import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
 
 import java.io.IOException;
@@ -42,13 +42,13 @@ public class BattleParamBlock implements IR2kStruct {
     @Override
     public void importData(InputStream bais) throws IOException {
         for (int i = 0; i < 6; i++)
-            array[i] = (short) R2kUtil.readLcfU16(bais);
+            array[i] = (short) IntUtils.readU16(bais);
     }
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
         for (int i = 0; i < 6; i++)
-            R2kUtil.writeLcfU16(baos, array[i]);
+            IntUtils.writeU16(baos, array[i]);
         return false;
     }
 }

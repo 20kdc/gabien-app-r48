@@ -8,6 +8,7 @@
 package r48.io.r2k.files;
 
 import r48.RubyIO;
+import r48.io.IntUtils;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.obj.ldb.Database;
 
@@ -20,7 +21,7 @@ import java.io.OutputStream;
  */
 public class DatabaseIO {
     public static RubyIO readLdb(InputStream fis) throws IOException {
-        String magic = R2kUtil.decodeLcfString(R2kUtil.readLcfBytes(fis, R2kUtil.readLcfVLI(fis)));
+        String magic = R2kUtil.decodeLcfString(IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfDataBase"))
             System.err.println("Loading a file which pretends to be an LCF database but says " + magic);
         // Try to follow the standard...

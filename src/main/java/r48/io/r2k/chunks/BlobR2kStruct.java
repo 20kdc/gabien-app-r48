@@ -9,8 +9,8 @@ package r48.io.r2k.chunks;
 
 import gabien.ui.ISupplier;
 import r48.RubyIO;
+import r48.io.IntUtils;
 import r48.io.data.IRIO;
-import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +44,7 @@ public class BlobR2kStruct implements IR2kStruct {
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        dat = R2kUtil.readLcfBytes(bais, bais.available());
+        dat = IntUtils.readBytes(bais, bais.available());
     }
 
     @Override

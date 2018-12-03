@@ -10,10 +10,10 @@ package r48.io.cs;
 import gabien.GaBIEn;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.io.IObjectBackend;
 import r48.io.OldObjectBackend;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
-import r48.io.r2k.R2kUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -183,7 +183,7 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO> {
 
     private void writeFixedFormatString(ByteArrayOutputStream baos, IRIO strsym, int i) throws IOException {
         byte[] bt = new byte[i];
-        byte[] nbt = R2kUtil.encodeLcfString(strsym.decString());
+        byte[] nbt = strsym.getBufferInEncoding(IObjectBackend.Factory.encoding);
         System.arraycopy(nbt, 0, bt, 0, Math.min(nbt.length, bt.length - 1));
         baos.write(bt);
     }

@@ -9,13 +9,12 @@ package r48.io.r2k.chunks;
 
 import r48.RubyIO;
 import r48.io.IObjectBackend;
+import r48.io.IntUtils;
 import r48.io.data.IRIO;
-import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 
 /**
  * the difficulty is getting this stuff into memory...
@@ -36,20 +35,12 @@ public class StringR2kStruct implements IR2kStruct {
     @Override
     public void fromRIO(IRIO src) {
         // This is probably going to last until DataModel2 has taken over a significant part of the code.
-        if (!IObjectBackend.Factory.encoding.equals(src.getBufferEnc())) {
-            try {
-                data = src.decString().getBytes(IObjectBackend.Factory.encoding);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            data = src.getBuffer();
-        }
+        data = src.getBufferInEncoding(src.getBufferEnc());
     }
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        data = R2kUtil.readLcfBytes(bais, bais.available());
+        data = IntUtils.readBytes(bais, bais.available());
     }
 
     @Override

@@ -8,6 +8,7 @@
 package r48.io.r2k.files;
 
 import r48.RubyIO;
+import r48.io.IntUtils;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
 import r48.io.r2k.obj.Save;
@@ -22,7 +23,7 @@ import java.io.OutputStream;
  */
 public class SaveDataIO {
     public static RubyIO readLsd(InputStream fis) throws IOException {
-        String magic = R2kUtil.decodeLcfString(R2kUtil.readLcfBytes(fis, R2kUtil.readLcfVLI(fis)));
+        String magic = R2kUtil.decodeLcfString(IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfSaveData"))
             System.err.println("Loading a file which pretends to be an LCF save file but says " + magic);
         // Try to follow the standard...

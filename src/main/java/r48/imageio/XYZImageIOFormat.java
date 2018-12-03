@@ -8,7 +8,7 @@ package r48.imageio;
 
 import gabien.IImage;
 import r48.dbs.TXDB;
-import r48.io.r2k.R2kUtil;
+import r48.io.IntUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,8 +42,8 @@ public class XYZImageIOFormat extends ImageIOFormat {
         baos.write('Y');
         baos.write('Z');
         baos.write('1');
-        R2kUtil.writeLcfU16(baos, img.width);
-        R2kUtil.writeLcfU16(baos, img.height);
+        IntUtils.writeU16(baos, img.width);
+        IntUtils.writeU16(baos, img.height);
         DeflaterOutputStream d2 = new DeflaterOutputStream(baos);
         ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
         for (int i = 0; i < 256; i++) {
@@ -72,21 +72,21 @@ public class XYZImageIOFormat extends ImageIOFormat {
             throw new IOException("Bad magic");
         if (fis.read() != '1')
             throw new IOException("Bad magic");
-        int w = R2kUtil.readLcfU16(fis);
-        int h = R2kUtil.readLcfU16(fis);
+        int w = IntUtils.readU16(fis);
+        int h = IntUtils.readU16(fis);
         // The rest of the file is ZLIB-encoded data, with a trivial format.
         InflaterInputStream iis = new InflaterInputStream(fis);
         LinkedList<Integer> pal = new LinkedList<Integer>();
         for (int i = 0; i < 256; i++) {
-            int r = R2kUtil.readLcfU8(iis);
-            int g = R2kUtil.readLcfU8(iis);
-            int b = R2kUtil.readLcfU8(iis);
+            int r = IntUtils.readU8(iis);
+            int g = IntUtils.readU8(iis);
+            int b = IntUtils.readU8(iis);
             pal.add(0xFF000000 | ((r << 16) | (g << 8) | b));
         }
         int[] img = new int[w * h];
         int ind = 0;
         for (int i = 0; i < w * h; i++)
-            img[ind++] = R2kUtil.readLcfU8(iis);
+            img[ind++] = IntUtils.readU8(iis);
         return new ImageIOImage(w, h, img, pal);
     }
 }

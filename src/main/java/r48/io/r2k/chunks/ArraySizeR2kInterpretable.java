@@ -8,6 +8,7 @@
 package r48.io.r2k.chunks;
 
 import gabien.ui.ISupplier;
+import r48.io.IntUtils;
 import r48.io.r2k.R2kUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -53,7 +54,7 @@ public class ArraySizeR2kInterpretable<T extends IR2kInterpretable> implements I
                 v = R2kUtil.readLcfVLI(bais);
                 break;
             case 1:
-                v = R2kUtil.readLcfU8(bais);
+                v = IntUtils.readU8(bais);
                 break;
             default:
                 throw new RuntimeException("unknown B " + bytes);

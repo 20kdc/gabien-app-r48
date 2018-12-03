@@ -8,8 +8,8 @@
 package r48.io.r2k.chunks;
 
 import r48.RubyIO;
+import r48.io.IntUtils;
 import r48.io.data.IRIO;
-import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,12 +37,12 @@ public class Int32R2kStruct implements IR2kStruct {
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        value = R2kUtil.readLcfS32(bais);
+        value = IntUtils.readS32(bais);
     }
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
-        R2kUtil.writeLcfS32(baos, value);
+        IntUtils.writeS32(baos, value);
         return false;
     }
 }
