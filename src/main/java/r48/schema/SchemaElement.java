@@ -86,7 +86,7 @@ public abstract class SchemaElement {
         if (target instanceof RubyIO) {
             modifyVal((RubyIO) target, path, setDefault);
         } else {
-            System.err.println("Couldn't modify value ; Involved schema element involved IRIOs");
+            System.err.println("Couldn't modify value in " + path + " with " + this + " ; Involved schema element involved IRIOs");
         }
     }
 }

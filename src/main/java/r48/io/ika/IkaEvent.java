@@ -7,6 +7,7 @@
 
 package r48.io.ika;
 
+import r48.io.data.DM2FXOBinding;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedObject;
 import r48.io.data.IRIOFixnum;
@@ -15,19 +16,25 @@ import r48.io.data.IRIOFixnum;
  * Created on November 24, 2018.
  */
 public class IkaEvent extends IRIOFixedObject {
-    public IRIOFixnum x, y, tox, toy, type, status, scriptId, collisionType;
+    @DM2FXOBinding(optional = false, iVar = "@x")
+    public IRIOFixnum x;
+    @DM2FXOBinding(optional = false, iVar = "@y")
+    public IRIOFixnum y;
+    @DM2FXOBinding(optional = false, iVar = "@tOX")
+    public IRIOFixnum tox;
+    @DM2FXOBinding(optional = false, iVar = "@tOY")
+    public IRIOFixnum toy;
+    @DM2FXOBinding(optional = false, iVar = "@type")
+    public IRIOFixnum type;
+    @DM2FXOBinding(optional = false, iVar = "@status")
+    public IRIOFixnum status;
+    @DM2FXOBinding(optional = false, iVar = "@scriptId")
+    public IRIOFixnum scriptId;
+    @DM2FXOBinding(optional = false, iVar = "@collisionType")
+    public IRIOFixnum collisionType;
 
     public IkaEvent() {
-        super("IkachanEvent", new String[] {
-                "@x",
-                "@y",
-                "@tOX",
-                "@tOY",
-                "@type",
-                "@status",
-                "@scriptId",
-                "@collisionType",
-        });
+        super("IkachanEvent");
         initialize();
     }
 
@@ -49,27 +56,6 @@ public class IkaEvent extends IRIOFixedObject {
             return scriptId = new IRIOFixnum(0);
         if (sym.equals("@collisionType"))
             return collisionType = new IRIOFixnum(0);
-        return null;
-    }
-
-    @Override
-    public IRIO getIVar(String sym) {
-        if (sym.equals("@x"))
-            return x;
-        if (sym.equals("@y"))
-            return y;
-        if (sym.equals("@tOX"))
-            return tox;
-        if (sym.equals("@tOY"))
-            return toy;
-        if (sym.equals("@type"))
-            return type;
-        if (sym.equals("@status"))
-            return status;
-        if (sym.equals("@scriptId"))
-            return scriptId;
-        if (sym.equals("@collisionType"))
-            return collisionType;
         return null;
     }
 }

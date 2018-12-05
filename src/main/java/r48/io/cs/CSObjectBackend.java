@@ -32,7 +32,7 @@ public class CSObjectBackend extends OldObjectBackend<RubyIO> {
     }
 
     @Override
-    public RubyIO newObject() {
+    public RubyIO newObjectO(String nt) {
         return new RubyIO().setNull();
     }
 

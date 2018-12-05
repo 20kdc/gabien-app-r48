@@ -7,38 +7,47 @@
 
 package r48.io.r2k.obj;
 
-import r48.RubyIO;
-import r48.io.r2k.Index;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.IRIO;
 import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
 import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.DM2LcfBinding;
+import r48.io.r2k.dm2chk.DM2LcfInteger;
+import r48.io.r2k.dm2chk.DM2R2kObject;
 
 /**
  * As the street-lights are turning on outside...
  * Created on 31/05/17.
  */
-public class Music extends R2kObject {
-    public StringR2kStruct name = new StringR2kStruct();
-    public IntegerR2kStruct fadeTime = new IntegerR2kStruct(0);
-    public IntegerR2kStruct volume = new IntegerR2kStruct(100);
-    public IntegerR2kStruct tempo = new IntegerR2kStruct(100);
-    public IntegerR2kStruct balance = new IntegerR2kStruct(50);
+public class Music extends DM2R2kObject {
+    @DM2FXOBinding(optional = false, iVar = "@name")
+    @DM2LcfBinding(index = 1)
+    public StringR2kStruct name;
+    @DM2FXOBinding(optional = false, iVar = "@fadeTime")
+    @DM2LcfBinding(index = 2)
+    @DM2LcfInteger(0)
+    public IntegerR2kStruct fadeTime;
+    @DM2FXOBinding(optional = false, iVar = "@volume")
+    @DM2LcfBinding(index = 3)
+    @DM2LcfInteger(100)
+    public IntegerR2kStruct volume;
+    @DM2FXOBinding(optional = false, iVar = "@volume")
+    @DM2LcfBinding(index = 4)
+    @DM2LcfInteger(100)
+    public IntegerR2kStruct tempo;
+    @DM2FXOBinding(optional = false, iVar = "@volume")
+    @DM2LcfBinding(index = 5)
+    @DM2LcfInteger(50)
+    public IntegerR2kStruct balance;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, name, "@name"),
-                new Index(0x02, fadeTime, "@fadeTime"),
-                new Index(0x03, volume, "@volume"),
-                new Index(0x04, tempo, "@tempo"),
-                new Index(0x05, balance, "@balance")
-        };
+    public Music() {
+        super("RPG::Music");
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::Music", true);
-        asRIOISF(rio);
-        return rio;
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@name"))
+            return name = new StringR2kStruct();
+        return super.dm2AddIVar(sym);
     }
 }

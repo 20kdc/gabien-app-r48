@@ -7,30 +7,23 @@
 
 package r48.io.r2k.obj;
 
-import r48.RubyIO;
-import r48.io.r2k.Index;
+import r48.io.data.DM2FXOBinding;
 import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
+import r48.io.r2k.dm2chk.DM2LcfBinding;
+import r48.io.r2k.dm2chk.DM2LcfInteger;
+import r48.io.r2k.dm2chk.DM2R2kObject;
 
 /**
  * the world's most boring class
  * Created on 01/06/17.
  */
-public class Encounter extends R2kObject {
-
+public class Encounter extends DM2R2kObject {
+    @DM2FXOBinding(optional = false, iVar = "@troop")
+    @DM2LcfBinding(index = 1)
+    @DM2LcfInteger(0)
     public IntegerR2kStruct troop = new IntegerR2kStruct(0);
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, troop, "@troop")
-        };
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        RubyIO mt = new RubyIO().setSymlike("RPG::Encounter", true);
-        asRIOISF(mt);
-        return mt;
+    public Encounter() {
+        super("RPG::Encounter");
     }
 }

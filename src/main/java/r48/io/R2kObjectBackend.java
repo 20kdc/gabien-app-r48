@@ -9,11 +9,13 @@ package r48.io;
 
 import gabien.GaBIEn;
 import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.files.DatabaseIO;
 import r48.io.r2k.files.MapIO;
 import r48.io.r2k.files.MapTreeIO;
 import r48.io.r2k.files.SaveDataIO;
+import r48.io.r2k.struct.MapTree;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,7 +26,7 @@ import java.io.OutputStream;
  * A beginning?
  * Created on 30/05/17.
  */
-public class R2kObjectBackend extends OldObjectBackend<RubyIO> {
+public class R2kObjectBackend extends OldObjectBackend<IRIO> {
     public final String root;
 
     public R2kObjectBackend(String rootPath) {
@@ -32,12 +34,15 @@ public class R2kObjectBackend extends OldObjectBackend<RubyIO> {
     }
 
     @Override
-    public RubyIO newObject() {
+    public IRIO newObjectO(String fn) {
+        // Non-RubyIO things
+        if (fn.endsWith(".lmt"))
+            return new MapTree();
         return new RubyIO().setNull();
     }
 
     @Override
-    public RubyIO loadObjectFromFile(String filename) {
+    public IRIO loadObjectFromFile(String filename) {
         filename = root + filename;
         String str = PathUtils.autoDetectWindows(filename);
         if (filename.endsWith(".lmu")) {
@@ -58,7 +63,7 @@ public class R2kObjectBackend extends OldObjectBackend<RubyIO> {
                 InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
-                RubyIO r = MapTreeIO.readLmt(fis);
+                IRIO r = MapTreeIO.readLmt(fis);
                 fis.close();
                 return r;
             } catch (Exception e) {
@@ -96,13 +101,13 @@ public class R2kObjectBackend extends OldObjectBackend<RubyIO> {
     }
 
     @Override
-    public void saveObjectToFile(String filename, RubyIO object) throws IOException {
+    public void saveObjectToFile(String filename, IRIO object) throws IOException {
         filename = root + filename;
         String str = PathUtils.autoDetectWindows(filename);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // Note the write occurs before the F.O.S is created for safety
         if (filename.endsWith(".lmu")) {
-            MapIO.writeLmu(baos, object);
+            MapIO.writeLmu(baos, (RubyIO) object);
             OutputStream fos = GaBIEn.getOutFile(str);
             if (fos == null)
                 throw new IOException("Unable to open a file.");
@@ -111,7 +116,7 @@ public class R2kObjectBackend extends OldObjectBackend<RubyIO> {
             return;
         }
         if (filename.endsWith(".lmt")) {
-            MapTreeIO.writeLmt(baos, object);
+            MapTreeIO.writeLmt(baos, (MapTree) object);
             OutputStream fos = GaBIEn.getOutFile(str);
             if (fos == null)
                 throw new IOException("Unable to open a file.");
@@ -120,7 +125,7 @@ public class R2kObjectBackend extends OldObjectBackend<RubyIO> {
             return;
         }
         if (filename.endsWith(".ldb")) {
-            DatabaseIO.writeLdb(baos, object);
+            DatabaseIO.writeLdb(baos, (RubyIO) object);
             OutputStream fos = GaBIEn.getOutFile(str);
             if (fos == null)
                 throw new IOException("Unable to open a file.");
@@ -129,7 +134,7 @@ public class R2kObjectBackend extends OldObjectBackend<RubyIO> {
             return;
         }
         if (filename.endsWith(".lsd")) {
-            SaveDataIO.writeLsd(baos, object);
+            SaveDataIO.writeLsd(baos, (RubyIO) object);
             OutputStream fos = GaBIEn.getOutFile(str);
             if (fos == null)
                 throw new IOException("Unable to open a file.");

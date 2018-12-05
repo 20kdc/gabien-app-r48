@@ -43,13 +43,13 @@ public abstract class IRIOFixedHash<K, V extends IRIO> extends IRIOFixed {
     }
 
     @Override
-    public IRIO getHashVal(IRIO key) {
+    public V getHashVal(IRIO key) {
         K k = convertIRIOtoKey(key);
         return hashVal.get(k);
     }
 
     @Override
-    public IRIO addHashVal(IRIO key) {
+    public V addHashVal(IRIO key) {
         K k = convertIRIOtoKey(key);
         V v = newValue();
         hashVal.put(k, v);

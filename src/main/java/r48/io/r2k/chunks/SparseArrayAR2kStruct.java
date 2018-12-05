@@ -11,6 +11,10 @@ import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.data.IRIO;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -18,9 +22,12 @@ import java.util.Map;
  * Just a reminder to myself when looking at this again and probably worrying about the same thing.
  * Created on 01/06/17.
  */
-public class SparseArrayAR2kStruct<T extends IR2kStruct> extends SparseArrayR2kInterpretable<T> implements IR2kStruct {
+public class SparseArrayAR2kStruct<T extends IR2kStruct> implements IR2kStruct {
+    public final ISupplier<T> constructor;
+    public final HashMap<Integer, T> map = new HashMap<Integer, T>();
+
     public SparseArrayAR2kStruct(ISupplier<T> call) {
-        super(call);
+        constructor = call;
     }
 
     @Override
@@ -57,5 +64,16 @@ public class SparseArrayAR2kStruct<T extends IR2kStruct> extends SparseArrayR2kI
                 map.put(i, n);
             }
         }
+    }
+
+    @Override
+    public void importData(InputStream bais) throws IOException {
+        SparseArrayR2kInterpretable.importData(map, constructor, bais);
+    }
+
+    @Override
+    public boolean exportData(OutputStream baos) throws IOException {
+        SparseArrayR2kInterpretable.exportData(map, baos);
+        return false;
     }
 }

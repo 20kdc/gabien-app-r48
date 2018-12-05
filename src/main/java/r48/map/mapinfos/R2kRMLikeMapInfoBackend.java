@@ -12,6 +12,11 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixedArray;
+import r48.io.data.IRIOFixnum;
+import r48.io.r2k.dm2chk.DM2SparseArrayH;
+import r48.io.r2k.obj.MapInfo;
+import r48.io.r2k.struct.MapTree;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 
@@ -19,6 +24,7 @@ import java.util.*;
 
 /**
  * Just another one of those classes.
+ * (As of midnight between December 4th & December 5th 2018, this is now kind of type-reliant for sanity reasons.)
  * Created on 02/06/17.
  */
 public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
@@ -26,8 +32,8 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     public IObjectBackend.ILoadedObject mapTree = AppMain.objectDB.getObject("RPG_RT.lmt");
     // Note: The orders table is [order] = map.
     // So swapping orders is probably the easiest operation here.
-    public RubyIO mapTreeHash = (RubyIO) mapTree.getObject().getIVar("@map_infos");
-    public RubyIO mapTreeOrders = (RubyIO) mapTree.getObject().getIVar("@map_order");
+    public DM2SparseArrayH<MapInfo> mapTreeHash = ((MapTree) (mapTree.getObject())).mapInfos;
+    public IRIOFixedArray<IRIOFixnum> mapTreeOrders = ((MapTree) (mapTree.getObject())).mapOrder;
 
     public R2kRMLikeMapInfoBackend() {
 
@@ -35,7 +41,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
 
     @Override
     public void swapOrders(int orderA, int orderB) {
-        IRIO b = mapTreeOrders.arrVal[orderA];
+        IRIOFixnum b = (IRIOFixnum) mapTreeOrders.arrVal[orderA];
         mapTreeOrders.arrVal[orderA] = mapTreeOrders.arrVal[orderB];
         mapTreeOrders.arrVal[orderB] = b;
     }
@@ -85,7 +91,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         // Prepare...
         MapInfoReparentUtil.removeMapHelperSALT(k, this);
         // Remove last from array
-        RubyIO[] resArray = new RubyIO[mapTreeOrders.getALen() - 1];
+        IRIOFixnum[] resArray = new IRIOFixnum[mapTreeOrders.getALen() - 1];
         System.arraycopy(mapTreeOrders.arrVal, 0, resArray, 0, resArray.length);
         mapTreeOrders.arrVal = resArray;
         // Eliminate from hash
@@ -99,13 +105,16 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         if (l == -1)
             l = 0;
 
-        RubyIO[] resArray = new RubyIO[mapTreeOrders.arrVal.length + 1];
+        IRIOFixnum[] resArray = new IRIOFixnum[mapTreeOrders.arrVal.length + 1];
         System.arraycopy(mapTreeOrders.arrVal, 0, resArray, 0, mapTreeOrders.arrVal.length);
-        resArray[resArray.length - 1] = new RubyIO().setFX(k);
 
-        RubyIO mi = mapTreeHash.addHashVal(new RubyIO().setFX(k));
+        IRIOFixnum key = new IRIOFixnum(k);
+
+        resArray[resArray.length - 1] = key;
+
+        MapInfo mi = mapTreeHash.addHashVal(key);
         SchemaPath.setDefaultValue(mi, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
-        mi.getInstVarBySymbol("@parent_id").fixnumVal = l;
+        mi.parent.i = (int) l;
 
         mapTreeOrders.arrVal = resArray;
         return resArray.length - 1;
@@ -168,9 +177,9 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         // The job of this is to hide that there *ever was* a Map 0.
         // Map 0 is reserved.
         HashSet<Long> hs = new HashSet<Long>();
-        for (IRIO i : mapTreeHash.hashVal.keySet())
-            if (i.getFX() != 0)
-                hs.add(i.getFX());
+        for (Integer i : mapTreeHash.hashVal.keySet())
+            if (i != 0)
+                hs.add((long) i);
         return hs;
     }
 

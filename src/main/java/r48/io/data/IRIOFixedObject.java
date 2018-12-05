@@ -7,18 +7,31 @@
 
 package r48.io.data;
 
+import java.lang.reflect.Field;
+import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * An IRIO describing a fixed-layout object.
  * Created on November 22, 2018.
  */
 public abstract class IRIOFixedObject extends IRIOFixed {
     private final String objType;
-    private final String[] iv;
+    private final static ConcurrentHashMap<Class, Field[]> classFields = new ConcurrentHashMap<Class, Field[]>();
+    protected final Field[] cachedFields;
 
-    public IRIOFixedObject(String sym, String[] ivs) {
+    public IRIOFixedObject(String sym) {
         super('o');
         objType = sym;
-        iv = ivs;
+        Class c = getClass();
+        Field[] data = classFields.get(c);
+        if (data != null) {
+            cachedFields = data;
+        } else {
+            cachedFields = c.getFields();
+            classFields.put(c, cachedFields);
+        }
+        initialize();
     }
 
     @Override
@@ -30,8 +43,20 @@ public abstract class IRIOFixedObject extends IRIOFixed {
     }
 
     protected void initialize() {
-        for (String s : iv)
-            addIVar(s);
+        try {
+            for (Field f : cachedFields) {
+                DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
+                if (dmx != null) {
+                    if (!dmx.optional()) {
+                        addIVar(dmx.iVar());
+                    } else {
+                        f.set(this, null);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -41,6 +66,56 @@ public abstract class IRIOFixedObject extends IRIOFixed {
 
     @Override
     public String[] getIVars() {
-        return copyStringArray(iv);
+        LinkedList<String> s = new LinkedList<String>();
+        for (Field f : cachedFields) {
+            DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
+            if (dmx != null) {
+                if (dmx.optional()) {
+                    try {
+                        if (f.get(this) == null)
+                            continue;
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                s.add(dmx.iVar());
+            }
+        }
+        return s.toArray(new String[0]);
+    }
+
+    @Override
+    public IRIO getIVar(String sym) {
+        for (Field f : cachedFields) {
+            DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
+            if (dmx != null) {
+                if (dmx.iVar().equals(sym)) {
+                    try {
+                        return (IRIO) f.get(this);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void rmIVar(String sym) {
+        for (Field f : cachedFields) {
+            DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
+            if (dmx != null) {
+                if (dmx.optional() && dmx.iVar().equals(sym)) {
+                    try {
+                        f.set(this, null);
+                        return;
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        super.rmIVar(sym);
     }
 }

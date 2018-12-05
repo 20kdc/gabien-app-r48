@@ -15,17 +15,18 @@ import r48.io.data.*;
  * Created on November 22, 2018.
  */
 public class IkaMap extends IRIOFixedObject {
-    private static String[] vtbl = new String[] {
-            "@data",
-            "@palette",
-            "@events"
-    };
-    public IRIOFixedUser data, palette;
+    @DM2FXOBinding(optional = false, iVar = "@data")
+    public IRIOFixedUser data;
+    @DM2FXOBinding(optional = false, iVar = "@palette")
+    public IRIOFixedUser palette;
+    @DM2FXOBinding(optional = false, iVar = "@events")
     public IRIOFixedHash<Integer, IkaEvent> events;
-    public final int defaultWidth, defaultHeight;
+
+    public final int defaultWidth;
+    public final int defaultHeight;
 
     public IkaMap(int w, int h) {
-        super("IkachanMap", vtbl);
+        super("IkachanMap");
         defaultWidth = w;
         defaultHeight = h;
         initialize();
@@ -54,17 +55,6 @@ public class IkaMap extends IRIOFixedObject {
                     return new IkaEvent();
                 }
             };
-        return null;
-    }
-
-    @Override
-    public IRIO getIVar(String sym) {
-        if (sym.equals("@data"))
-            return data;
-        if (sym.equals("@palette"))
-            return palette;
-        if (sym.equals("@events"))
-            return events;
         return null;
     }
 }

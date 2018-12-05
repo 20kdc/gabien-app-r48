@@ -37,6 +37,7 @@ public abstract class IRIO {
     public abstract IRIO setString(String s);
 
     // The resulting encoding may not be the one provided.
+    // This *should* be overridden for the specific encoding logic.
     public IRIO setString(byte[] s, String jenc) {
         try {
             return setString(new String(s, jenc));

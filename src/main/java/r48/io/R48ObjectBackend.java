@@ -38,7 +38,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
     }
 
     @Override
-    public RubyIO newObject() {
+    public RubyIO newObjectO(String n) {
         return new RubyIO().setNull();
     }
 

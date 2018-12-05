@@ -30,7 +30,7 @@ public class IkaObjectBackend extends OldObjectBackend<IkaMap> {
     }
 
     @Override
-    public IkaMap newObject() {
+    public IkaMap newObjectO(String n) {
         return new IkaMap(160, 120);
     }
 

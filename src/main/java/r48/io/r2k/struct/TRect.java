@@ -9,7 +9,10 @@ package r48.io.r2k.struct;
 
 import r48.RubyIO;
 import r48.io.IntUtils;
+import r48.io.data.DM2FXOBinding;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixedObject;
+import r48.io.data.IRIOFixnum;
 import r48.io.r2k.chunks.IR2kStruct;
 
 import java.io.IOException;
@@ -20,41 +23,57 @@ import java.io.OutputStream;
  * True proof this thing hates me.
  * Created on 31/05/17.
  */
-public class TRect implements IR2kStruct {
-    public int l, u, r, d;
+public class TRect extends IRIOFixedObject implements IR2kStruct {
+    @DM2FXOBinding(optional = false, iVar = "@left")
+    public IRIOFixnum l = new IRIOFixnum(0);
+    @DM2FXOBinding(optional = false, iVar = "@up")
+    public IRIOFixnum u = new IRIOFixnum(0);
+    @DM2FXOBinding(optional = false, iVar = "@right")
+    public IRIOFixnum r = new IRIOFixnum(0);
+    @DM2FXOBinding(optional = false, iVar = "@down")
+    public IRIOFixnum d = new IRIOFixnum(0);
+
+    public TRect() {
+        super("Rect");
+    }
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        l = IntUtils.readS32(bais);
-        u = IntUtils.readS32(bais);
-        r = IntUtils.readS32(bais);
-        d = IntUtils.readS32(bais);
+        l.val = IntUtils.readS32(bais);
+        u.val = IntUtils.readS32(bais);
+        r.val = IntUtils.readS32(bais);
+        d.val = IntUtils.readS32(bais);
     }
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
-        IntUtils.writeS32(baos, l);
-        IntUtils.writeS32(baos, u);
-        IntUtils.writeS32(baos, r);
-        IntUtils.writeS32(baos, d);
+        IntUtils.writeS32(baos, (int) l.val);
+        IntUtils.writeS32(baos, (int) u.val);
+        IntUtils.writeS32(baos, (int) r.val);
+        IntUtils.writeS32(baos, (int) d.val);
         return false;
     }
 
     @Override
     public RubyIO asRIO() {
-        RubyIO rb = new RubyIO().setSymlike("Rect", true);
-        rb.addIVar("@left", new RubyIO().setFX(l));
-        rb.addIVar("@up", new RubyIO().setFX(u));
-        rb.addIVar("@right", new RubyIO().setFX(r));
-        rb.addIVar("@down", new RubyIO().setFX(d));
-        return rb;
+        return new RubyIO().setDeepClone(this);
     }
 
     @Override
     public void fromRIO(IRIO src) {
-        l = (int) src.getIVar("@left").getFX();
-        u = (int) src.getIVar("@up").getFX();
-        r = (int) src.getIVar("@right").getFX();
-        d = (int) src.getIVar("@down").getFX();
+        setDeepClone(src);
+    }
+
+    @Override
+    public IRIO addIVar(String sym) {
+        if (sym.equals("@left"))
+            l = new IRIOFixnum(0);
+        if (sym.equals("@up"))
+            u = new IRIOFixnum(0);
+        if (sym.equals("@right"))
+            r = new IRIOFixnum(0);
+        if (sym.equals("@down"))
+            d = new IRIOFixnum(0);
+        return null;
     }
 }

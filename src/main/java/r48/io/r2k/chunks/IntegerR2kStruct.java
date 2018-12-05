@@ -9,6 +9,7 @@ package r48.io.r2k.chunks;
 
 import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixed;
 import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
@@ -20,11 +21,12 @@ import java.io.OutputStream;
  * NOTE: The default values have to be exact due to RMW
  * Created on 31/05/17.
  */
-public class IntegerR2kStruct implements IR2kStruct {
+public class IntegerR2kStruct extends IRIOFixed implements IR2kStruct {
     public final int di;
     public int i;
 
     public IntegerR2kStruct(int i2) {
+        super('i');
         i = di = i2;
     }
 
@@ -49,5 +51,31 @@ public class IntegerR2kStruct implements IR2kStruct {
     @Override
     public void fromRIO(IRIO src) {
         i = (int) src.getFX();
+    }
+
+    @Override
+    public long getFX() {
+        return i;
+    }
+
+    @Override
+    public IRIO setFX(long iv) {
+        i = (int) iv;
+        return this;
+    }
+
+    @Override
+    public String[] getIVars() {
+        return new String[0];
+    }
+
+    @Override
+    public IRIO addIVar(String sym) {
+        return null;
+    }
+
+    @Override
+    public IRIO getIVar(String sym) {
+        return null;
     }
 }

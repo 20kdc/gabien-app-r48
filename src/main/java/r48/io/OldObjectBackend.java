@@ -12,6 +12,7 @@ import r48.io.data.IRIO;
 import java.io.IOException;
 
 /**
+ * A simpler object backend interface that's somewhat less typesafe (but oh well)
  * Created on November 21, 2018.
  */
 public abstract class OldObjectBackend<O extends IRIO> implements IObjectBackend {
@@ -25,10 +26,10 @@ public abstract class OldObjectBackend<O extends IRIO> implements IObjectBackend
 
     @Override
     public ILoadedObject newObject(String filename) {
-        return new OldObjectBackendLoadedObject(newObject(), filename);
+        return new OldObjectBackendLoadedObject(newObjectO(filename), filename);
     }
 
-    public abstract O newObject();
+    public abstract O newObjectO(String filename);
 
     public abstract O loadObjectFromFile(String filename);
 
