@@ -38,8 +38,8 @@ public class Database extends DM2R2kObject {
     public CompatSparseArrayHR2kStruct<Item> items;
     @DM2FXOBinding("@enemies") @DM2LcfBinding(14) @DM2LcfCompatArray(Enemy.class)
     public CompatSparseArrayHR2kStruct<Enemy> enemies;
-    @DM2FXOBinding("@troops") @DM2LcfBinding(15) @DM2LcfCompatArray(Troop.class)
-    public CompatSparseArrayHR2kStruct<Troop> troops;
+    @DM2FXOBinding("@troops") @DM2LcfBinding(15) @DM2LcfSparseArrayH(Troop.class)
+    public DM2SparseArrayH<Troop> troops;
     @DM2FXOBinding("@terrains") @DM2LcfBinding(16) @DM2LcfCompatArray(Terrain.class)
     public CompatSparseArrayHR2kStruct<Terrain> terrains;
     @DM2FXOBinding("@attributes") @DM2LcfBinding(17) @DM2LcfCompatArray(Attribute.class)

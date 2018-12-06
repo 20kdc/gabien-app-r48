@@ -19,6 +19,8 @@ import r48.schema.util.ISchemaHost;
 import r48.ui.UIAppendButton;
 import r48.ui.UITimeframeControl;
 
+import java.util.HashMap;
+
 /**
  * Animation Software For Serious Animation Purposes.
  * ...for stick figure animation. Ignore the 'RM'.
@@ -37,6 +39,8 @@ public class GenposAnimRootPanel extends UIElement.UIProxy {
     public final GenposFramePanelController framePanelController;
     public final UITimeframeControl timeframe;
 
+    private final HashMap<String, IGenposTweeningManagement.KeyTrack> propTracks = new HashMap<String, IGenposTweeningManagement.KeyTrack>();
+
     public GenposAnimRootPanel(IGenposAnim t, ISchemaHost launcher, int recommendedFramerate) {
         target = t;
         IGenposFrame frame = target.getFrameDisplay();
@@ -45,7 +49,13 @@ public class GenposAnimRootPanel extends UIElement.UIProxy {
         framePanelController = new GenposFramePanelController(frame, new IGenposTweeningManagement() {
             @Override
             public KeyTrack propertyKeytrack(int prop) {
-                return tweening.getTrack(framePanelController.cellSelection.cellNumber, prop);
+                String k = prop + "@" + framePanelController.cellSelection.cellNumber;
+                KeyTrack kt = propTracks.get(k);
+                if (kt != null)
+                    return kt;
+                kt = tweening.getTrack(framePanelController.cellSelection.cellNumber, prop);
+                propTracks.put(k, kt);
+                return kt;
             }
 
             @Override
@@ -126,5 +136,10 @@ public class GenposAnimRootPanel extends UIElement.UIProxy {
         target.setFrameIdx(target.getFrameIdx());
         // Actually start alerting things
         framePanelController.frameChanged();
+    }
+
+    public void incomingModification() {
+        propTracks.clear();
+        frameChanged();
     }
 }

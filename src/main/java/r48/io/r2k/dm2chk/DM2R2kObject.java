@@ -289,6 +289,44 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
                 throw new RuntimeException(e);
             }
         }
+        final DM2LcfSparseArrayA fxd = f.getAnnotation(DM2LcfSparseArrayA.class);
+        if (fxd != null) {
+            try {
+                DM2SparseArrayA<IRIO> irs = new DM2SparseArrayA<IRIO>(new ISupplier<IRIO>() {
+                    @Override
+                    public IRIO get() {
+                        try {
+                            return (IRIO) fxd.value().newInstance();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+                f.set(this, irs);
+                return irs;
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        final DM2LcfSparseArrayH fxe = f.getAnnotation(DM2LcfSparseArrayH.class);
+        if (fxe != null) {
+            try {
+                DM2SparseArrayH<IRIO> irs = new DM2SparseArrayH<IRIO>(new ISupplier<IRIO>() {
+                    @Override
+                    public IRIO get() {
+                        try {
+                            return (IRIO) fxe.value().newInstance();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+                f.set(this, irs);
+                return irs;
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
         if (f.isAnnotationPresent(DM2LcfObject.class)) {
             try {
                 Object o = f.getType().newInstance();

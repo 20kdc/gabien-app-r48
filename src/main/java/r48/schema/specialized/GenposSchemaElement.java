@@ -14,24 +14,21 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
-import r48.schema.SchemaElement;
+import r48.schema.IRIOAwareSchemaElement;
 import r48.schema.specialized.genpos.GenposAnimRootPanel;
 import r48.schema.specialized.genpos.GenposFramePanelController;
 import r48.schema.specialized.genpos.backend.*;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 /**
  * This starts a UI-framework-based special editing package,
  * which calls back to this for edit notifications.
  * Created on 2/17/17. "General Positioning" refactor started on July 28th, 2017.
  */
-public class GenposSchemaElement extends SchemaElement {
+public class GenposSchemaElement extends IRIOAwareSchemaElement {
     private String genposType, a1, a2, b1, b2;
     private int framerate;
 
@@ -45,7 +42,7 @@ public class GenposSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost lBase, final SchemaPath pBase) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost lBase, final SchemaPath pBase) {
         return new UITextButton(TXDB.get("Graphically edit this..."), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
@@ -59,19 +56,19 @@ public class GenposSchemaElement extends SchemaElement {
                             path.changeOccurred(false);
                         }
                     };
-                    final SpriteCache sc = new SpriteCache(target, a1, a2, b1, b2, new IFunction<RubyIO, Integer>() {
+                    final SpriteCache sc = new SpriteCache(target, a1, a2, b1, b2, new IFunction<IRIO, Integer>() {
                         @Override
-                        public Integer apply(RubyIO rubyIO) {
+                        public Integer apply(IRIO rubyIO) {
                             return 192;
                         }
-                    }, new IFunction<RubyIO, String>() {
+                    }, new IFunction<IRIO, String>() {
                         @Override
-                        public String apply(RubyIO rubyIO) {
+                        public String apply(IRIO rubyIO) {
                             return "Animations/";
                         }
                     });
                     final RGSSGenposFrame frame = new RGSSGenposFrame(sc, path, genposType.equals("vxaAnimation"), updater);
-                    final RMGenposAnim anim = new RMGenposAnim(target.getInstVarBySymbol("@frames"), frame, updater, false);
+                    final RMGenposAnim anim = new RMGenposAnim(target.getIVar("@frames"), frame, updater, false);
                     frame.frameSource = new ISupplier<IRIO>() {
                         @Override
                         public IRIO get() {
@@ -83,8 +80,8 @@ public class GenposSchemaElement extends SchemaElement {
                     safetyWrap(rmarp, launcher, new Runnable() {
                         @Override
                         public void run() {
-                            rmarp.frameChanged();
                             sc.prepareFramesetCache();
+                            rmarp.incomingModification();
                         }
                     }, boot, path);
                 } else if (genposType.equals("r2kAnimation")) {
@@ -94,43 +91,40 @@ public class GenposSchemaElement extends SchemaElement {
                     final ISupplier<Boolean> actuallyBattle2 = new ISupplier<Boolean>() {
                         @Override
                         public Boolean get() {
-                            if (AppMain.stuffRendererIndependent.imageLoader.getImage("Battle2/" + target.getInstVarBySymbol("@animation_name").decString(), false) == GaBIEn.getErrorImage())
+                            if (AppMain.stuffRendererIndependent.imageLoader.getImage("Battle2/" + target.getIVar("@animation_name").decString(), false) == GaBIEn.getErrorImage())
                                 return false;
-                            return target.getInstVarBySymbol("@battle2_2k3").type == 'T';
+                            return target.getIVar("@battle2_2k3").getType() == 'T';
                         }
                     };
-                    final SpriteCache sc = new SpriteCache(target, a1, null, null, null, new IFunction<RubyIO, Integer>() {
+                    final SpriteCache sc = new SpriteCache(target, a1, null, null, null, new IFunction<IRIO, Integer>() {
                         @Override
-                        public Integer apply(RubyIO rubyIO) {
+                        public Integer apply(IRIO rubyIO) {
                             if (actuallyBattle2.get())
                                 return 128;
                             return 96;
                         }
-                    }, new IFunction<RubyIO, String>() {
+                    }, new IFunction<IRIO, String>() {
                         @Override
-                        public String apply(RubyIO rubyIO) {
+                        public String apply(IRIO rubyIO) {
                             if (actuallyBattle2.get())
                                 return "Battle2/";
                             return "Battle/";
                         }
                     });
 
-                    final RubyIO framesObject = target.getInstVarBySymbol("@frames");
-                    final IMagicalBinder binder = MagicalBinders.getBinderByName("R2kAnimationFrames");
-                    final AtomicReference<RubyIO> frameBound = new AtomicReference<RubyIO>(MagicalBinders.toBoundWithCache(binder, framesObject));
+                    final IRIO framesObject = target.getIVar("@frames");
 
                     // This handles "outbound" changes made within the animator.
 
                     Runnable outbound = new Runnable() {
                         @Override
                         public void run() {
-                            binder.applyBoundToTarget(frameBound.get(), framesObject);
                             path.changeOccurred(false);
                         }
                     };
 
                     final R2kGenposFrame frame = new R2kGenposFrame(sc, path, outbound);
-                    final RMGenposAnim anim = new RMGenposAnim(frameBound.get(), frame, outbound, true);
+                    final RMGenposAnim anim = new RMGenposAnim(framesObject, frame, outbound, true);
 
                     frame.frameSource = new ISupplier<IRIO>() {
                         @Override
@@ -144,7 +138,7 @@ public class GenposSchemaElement extends SchemaElement {
                         @Override
                         public void run() {
                             // usual stuff
-                            rmarp.frameChanged();
+                            rmarp.incomingModification();
                             sc.prepareFramesetCache();
                         }
                     }, boot, path);
@@ -177,7 +171,7 @@ public class GenposSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         // "How should I know?" *commences shrugging*
     }
 }

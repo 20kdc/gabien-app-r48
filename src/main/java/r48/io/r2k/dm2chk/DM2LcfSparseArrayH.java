@@ -5,22 +5,15 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.io.r2k.obj;
+package r48.io.r2k.dm2chk;
 
-import r48.io.data.DM2FXOBinding;
-import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.dm2chk.DM2LcfBinding;
-import r48.io.r2k.dm2chk.DM2LcfInteger;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * As the street-lights are turning on outside...
- * Created on 31/05/17, based on Sound on December 6th 2018 (see Sound)
+ * Created on December 06, 2018.
  */
-public class Music extends Sound {
-    @DM2FXOBinding("@fadeTime") @DM2LcfBinding(2) @DM2LcfInteger(0)
-    public IntegerR2kStruct fadeTime;
-
-    public Music() {
-        super("RPG::Music");
-    }
+@Retention(RetentionPolicy.RUNTIME)
+public @interface DM2LcfSparseArrayH {
+    Class value();
 }

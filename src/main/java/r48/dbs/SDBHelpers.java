@@ -84,9 +84,9 @@ class SDBHelpers {
             public IRIO apply(IRIO rubyIO) {
                 return PathSyntax.parse(rubyIO, varPath);
             }
-        }, new IFunction<RubyIO, ISpritesheetProvider>() {
+        }, new IFunction<IRIO, ISpritesheetProvider>() {
             @Override
-            public ISpritesheetProvider apply(RubyIO rubyIO) {
+            public ISpritesheetProvider apply(IRIO rubyIO) {
                 return args2.apply(PathSyntax.parse(rubyIO, imgPath).decString());
             }
         });

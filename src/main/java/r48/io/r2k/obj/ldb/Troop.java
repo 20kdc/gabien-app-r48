@@ -9,10 +9,11 @@ package r48.io.r2k.obj.ldb;
 
 import gabien.ui.ISupplier;
 import r48.RubyIO;
+import r48.io.data.DM2FXOBinding;
 import r48.io.data.IRIO;
 import r48.io.r2k.Index;
-import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.*;
+import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.struct.EventCommand;
 
 import java.io.IOException;
@@ -22,68 +23,53 @@ import java.io.OutputStream;
 /**
  * COPY jun6-2017
  */
-public class Troop extends R2kObject {
+public class Troop extends DM2R2kObject {
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
     public StringR2kStruct name = new StringR2kStruct();
-    public SparseArrayAR2kStruct<TroopMember> members = new SparseArrayAR2kStruct<TroopMember>(new ISupplier<TroopMember>() {
-        @Override
-        public TroopMember get() {
-            return new TroopMember();
-        }
-    });
-    public BooleanR2kStruct autoPosition = new BooleanR2kStruct(false);
-    public BooleanR2kStruct appearRandomly = new BooleanR2kStruct(false);
-    public ArraySizeR2kInterpretable<BooleanR2kStruct> terrainSetSize = new ArraySizeR2kInterpretable<BooleanR2kStruct>();
-    public ArraySetR2kStruct<BooleanR2kStruct> terrainSet = new ArraySetR2kStruct<BooleanR2kStruct>(terrainSetSize, new ISupplier<BooleanR2kStruct>() {
-        @Override
-        public BooleanR2kStruct get() {
-            return new BooleanR2kStruct(true);
-        }
-    }, true);
+    @DM2FXOBinding("@members") @DM2LcfBinding(2) @DM2LcfSparseArrayH(TroopMember.class)
+    public DM2SparseArrayH<TroopMember> members;
+    @DM2FXOBinding("@auto_position") @DM2LcfBinding(3) @DM2LcfBoolean(false)
+    public BooleanR2kStruct autoPosition;
+
+    @DM2FXOBinding("@terrain_set") @DM2LcfSizeBinding(4) @DM2LcfBinding(5)
+    public DM2Array<BooleanR2kStruct> terrainSet;
+
+    @DM2FXOBinding("@randomized_memberset_2k3") @DM2LcfBinding(6) @DM2LcfBoolean(false)
+    public BooleanR2kStruct appearRandomly;
+
     // Actually a SparseArrayAR2kStruct<TroopPage>, but this is "heavily-deferred",
     //  thanks to Final Tear 3.
-    public BlobR2kStruct pages = new BlobR2kStruct(R2kUtil.userspaceBinder + "R2kTroopPages", R2kUtil.supplyBlank(1, (byte) 0));
+    @DM2FXOBinding("@pages") @DM2LcfBinding(11) @DM2LcfCompatArray(TroopPage.class)
+    public CompatSparseArrayHR2kStruct<TroopPage> pages;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, name, "@name"),
-                new Index(0x02, members, "@members"),
-                new Index(0x03, autoPosition, "@auto_position"),
-                new Index(0x04, terrainSetSize),
-                new Index(0x05, terrainSet, "@terrain_set"),
-                new Index(0x06, appearRandomly, "@randomized_memberset_2k3"),
-                new Index(0x0B, pages, "@pages")
-        };
+    public Troop() {
+        super("RPG::Troop");
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::Troop", true);
-        asRIOISF(rio);
-        return rio;
-    }
-
-    public static class TroopMember extends R2kObject {
-        public IntegerR2kStruct enemyId = new IntegerR2kStruct(1);
-        public IntegerR2kStruct x = new IntegerR2kStruct(0);
-        public IntegerR2kStruct y = new IntegerR2kStruct(0);
-        public BooleanR2kStruct invis = new BooleanR2kStruct(false);
-
-        @Override
-        public Index[] getIndices() {
-            return new Index[] {
-                    new Index(0x01, enemyId, "@enemy"),
-                    new Index(0x02, x, "@x"),
-                    new Index(0x03, y, "@y"),
-                    new Index(0x04, invis, "@invisible")
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@terrain_set"))
+            return terrainSet = new DM2Array<BooleanR2kStruct>() {
+                @Override
+                public BooleanR2kStruct newValue() {
+                    return new BooleanR2kStruct(true);
+                }
             };
-        }
+        return super.dm2AddIVar(sym);
+    }
 
-        @Override
-        public RubyIO asRIO() {
-            RubyIO rio = new RubyIO().setSymlike("RPG::Troop::Member", true);
-            asRIOISF(rio);
-            return rio;
+    public static class TroopMember extends DM2R2kObject {
+        @DM2FXOBinding("@enemy") @DM2LcfBinding(1) @DM2LcfInteger(1)
+        public IntegerR2kStruct enemyId;
+        @DM2FXOBinding("@x") @DM2LcfBinding(2) @DM2LcfInteger(0)
+        public IntegerR2kStruct x;
+        @DM2FXOBinding("@y") @DM2LcfBinding(3) @DM2LcfInteger(0)
+        public IntegerR2kStruct y;
+        @DM2FXOBinding("@invisible") @DM2LcfBinding(4) @DM2LcfBoolean(false)
+        public BooleanR2kStruct invis;
+
+        public TroopMember() {
+            super("RPG::Troop::Member");
         }
     }
 

@@ -41,12 +41,12 @@ public class TroopGenposFrame implements IGenposFrame {
     };
 
     public IImage battleBkg;
-    public RubyIO troop;
+    public IRIO troop;
     public SchemaPath troopPath;
     public IImage[] enemies;
     public Runnable changed;
 
-    public TroopGenposFrame(RubyIO t, SchemaPath path, Runnable change) {
+    public TroopGenposFrame(IRIO t, SchemaPath path, Runnable change) {
         troop = t;
         troopPath = path;
         changed = change;
@@ -82,14 +82,14 @@ public class TroopGenposFrame implements IGenposFrame {
 
     @Override
     public void addCell(int i2) {
-        RubyIO rio = troop.getInstVarBySymbol("@members").addAElem(i2 + 1);
+        IRIO rio = troop.getIVar("@members").addAElem(i2 + 1);
         SchemaPath.setDefaultValue(rio, AppMain.schemas.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(i2 + 1));
         changed.run();
     }
 
     @Override
     public void deleteCell(int i2) {
-        troop.getInstVarBySymbol("@members").rmAElem(i2 + 1);
+        troop.getIVar("@members").rmAElem(i2 + 1);
         changed.run();
     }
 
@@ -105,7 +105,7 @@ public class TroopGenposFrame implements IGenposFrame {
     @Override
     public SchemaPath getCellProp(int ct, int i) {
         SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(new RubyIO().setFX(ct + 1), "[" + (ct + 1) + "]");
-        IRIO member = troop.getInstVarBySymbol("@members").arrVal[ct + 1];
+        IRIO member = troop.getIVar("@members").getAElem(ct + 1);
         SchemaElement se = getCellPropSchemas()[i];
         if (i == 0)
             return memberPath.newWindow(se, member.getIVar("@enemy"));
@@ -126,7 +126,7 @@ public class TroopGenposFrame implements IGenposFrame {
     @Override
     public void moveCell(int ct, IFunction<Integer, Integer> x, IFunction<Integer, Integer> y) {
         SchemaPath memberPath = troopPath.otherIndex("@members").arrayHashIndex(new RubyIO().setFX(ct + 1), "[" + (ct + 1) + "]");
-        IRIO member = troop.getInstVarBySymbol("@members").arrVal[ct + 1];
+        IRIO member = troop.getIVar("@members").getAElem(ct + 1);
         member.getIVar("@x").setFX(x.apply((int) member.getIVar("@x").getFX()));
         member.getIVar("@y").setFX(y.apply((int) member.getIVar("@y").getFX()));
         memberPath.changeOccurred(false);
@@ -134,7 +134,7 @@ public class TroopGenposFrame implements IGenposFrame {
 
     @Override
     public int getCellCount() {
-        return Math.max(0, troop.getInstVarBySymbol("@members").arrVal.length - 1);
+        return Math.max(0, troop.getIVar("@members").getALen() - 1);
     }
 
     @Override

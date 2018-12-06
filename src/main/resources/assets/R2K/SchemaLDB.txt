@@ -127,7 +127,7 @@ e rpg_skill_scope 0 hurtEnemy 1 hurtAllEnemies 2 healUserActor 3 healAnyActor 4 
 e rpg_skill_fm 0 A 1 B 2 C 3 dodge
 @failure_message_2KO rpg_skill_fm
 @OFED_battler_anim_display_actor actor_id
-@battler_anim_data binding R2kBattlerAnimationMap subwindow hash actor_id RPG::BattlerAnimationData
+@battler_anim_data subwindow hash actor_id RPG::BattlerAnimationData
 
 .rpg_skill_sect3
 @sp_cost_val_normal int
@@ -351,7 +351,7 @@ C name Class.RPG::Enemy @name | #A
 @name string
 @members subwindow arrayIx1 RPG::Troop::Member
 @terrain_set subwindow hash terrain_id boolean
-@pages binding R2kTroopPages subwindow arrayIx1 subwindow RPG::Troop::Page
+@pages subwindow arrayIx1 subwindow RPG::Troop::Page
 @auto_position boolean
 @randomized_memberset_2k3 boolean
 C magicGenpos r2kTroop . . . . 0
@@ -520,7 +520,7 @@ C name Class.RPG::Animation @name | #A
 @position rpg_animation_position
  oh, this is fun. see, r2kAnimation has to be changed to make this work
  the alternative is "worse". for some definitions of "worse".
-@frames binding R2kAnimationFrames subwindow arrayIx1 subwindow RPG::Animation::Frame
+@frames subwindow arrayIx1 subwindow RPG::Animation::Frame
  yet another "aaaaaa why is this happening" fix
 @timings subwindow arrayIx1 subwindow RPG::Animation::Timing
 C magicGenpos r2kAnimation @animation_name . . . 30

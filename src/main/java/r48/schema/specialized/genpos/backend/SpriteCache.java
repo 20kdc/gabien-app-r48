@@ -11,11 +11,11 @@ import gabien.GaBIEn;
 import gabien.IImage;
 import gabien.ui.IFunction;
 import r48.AppMain;
-import r48.RubyIO;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
 import r48.imagefx.MirrorSubspritesImageEffect;
 import r48.imagefx.OpacityImageEffect;
+import r48.io.data.IRIO;
 
 import java.util.LinkedList;
 
@@ -24,15 +24,15 @@ import java.util.LinkedList;
  * Created on 28/07/17.
  */
 public class SpriteCache {
-    public RubyIO target;
+    public IRIO target;
     public String framesetALoc, framesetAHue, framesetBLoc, framesetBHue;
-    public IFunction<RubyIO, Integer> spsDeterminant;
-    public IFunction<RubyIO, String> pfxDeterminant;
+    public IFunction<IRIO, Integer> spsDeterminant;
+    public IFunction<IRIO, String> pfxDeterminant;
 
     private IImage framesetCacheA, framesetCacheB;
     public int spriteSize;
 
-    public SpriteCache(RubyIO targ, String fal, String fah, String fbl, String fbh, IFunction<RubyIO, Integer> spriteSizeDeterminant, IFunction<RubyIO, String> prefixDeterminant) {
+    public SpriteCache(IRIO targ, String fal, String fah, String fbl, String fbh, IFunction<IRIO, Integer> spriteSizeDeterminant, IFunction<IRIO, String> prefixDeterminant) {
         target = targ;
         framesetALoc = fal;
         framesetBLoc = fbl;
@@ -52,19 +52,19 @@ public class SpriteCache {
         spriteSize = spsDeterminant.apply(target);
         framesetCacheA = GaBIEn.getErrorImage();
         if (framesetALoc != null) {
-            String nameA = target.getInstVarBySymbol(framesetALoc).decString();
+            String nameA = target.getIVar(framesetALoc).decString();
             if (nameA.length() != 0)
                 framesetCacheA = AppMain.stuffRendererIndependent.imageLoader.getImage(pfxDeterminant.apply(target) + nameA, false);
             if (framesetAHue != null)
-                framesetCacheA = AppMain.imageFXCache.process(framesetCacheA, new HueShiftImageEffect((int) target.getInstVarBySymbol(framesetAHue).fixnumVal));
+                framesetCacheA = AppMain.imageFXCache.process(framesetCacheA, new HueShiftImageEffect((int) target.getIVar(framesetAHue).getFX()));
         }
         framesetCacheB = GaBIEn.getErrorImage();
         if (framesetBLoc != null) {
-            String nameB = target.getInstVarBySymbol(framesetBLoc).decString();
+            String nameB = target.getIVar(framesetBLoc).decString();
             if (nameB.length() != 0)
                 framesetCacheB = AppMain.stuffRendererIndependent.imageLoader.getImage(pfxDeterminant.apply(target) + nameB, false);
             if (framesetBHue != null)
-                framesetCacheB = AppMain.imageFXCache.process(framesetCacheB, new HueShiftImageEffect((int) target.getInstVarBySymbol(framesetBHue).fixnumVal));
+                framesetCacheB = AppMain.imageFXCache.process(framesetCacheB, new HueShiftImageEffect((int) target.getIVar(framesetBHue).getFX()));
         }
     }
 

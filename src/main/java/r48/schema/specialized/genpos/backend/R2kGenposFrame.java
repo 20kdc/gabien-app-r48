@@ -96,9 +96,9 @@ public class R2kGenposFrame implements IGenposFrame {
                 public IRIO apply(IRIO rubyIO) {
                     return rubyIO;
                 }
-            }, new IFunction<RubyIO, ISpritesheetProvider>() {
+            }, new IFunction<IRIO, ISpritesheetProvider>() {
                 @Override
-                public ISpritesheetProvider apply(final RubyIO rubyIO) {
+                public ISpritesheetProvider apply(final IRIO rubyIO) {
                     return new ISpritesheetProvider() {
                         @Override
                         public int itemWidth() {

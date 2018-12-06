@@ -43,7 +43,7 @@ public class ArraySetR2kStruct<T extends IR2kStruct> extends ArrayR2kInterpretab
             if (rio.getFX() > maxIdx)
                 maxIdx = (int) rio.getFX();
         array.clear();
-        for (int i = 0; i < maxIdx; i++) {
+        for (int i = 0; i <= maxIdx; i++) {
             T v = cons.get();
             IRIO potential = src.getHashVal(new RubyIO().setFX(i));
             if (potential != null)

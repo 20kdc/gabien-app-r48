@@ -7,47 +7,33 @@
 
 package r48.io.r2k.obj.ldb;
 
-import gabien.ui.ISupplier;
-import r48.RubyIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.*;
+import r48.io.data.DM2FXOBinding;
+import r48.io.r2k.chunks.BooleanR2kStruct;
+import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.*;
 
 /**
  * COPY jun6-2017
  */
-public class Animation extends R2kObject {
-    public StringR2kStruct name = new StringR2kStruct();
-    public StringR2kStruct animationName = new StringR2kStruct();
-    public BooleanR2kStruct unknown3 = new BooleanR2kStruct(false);
-    public SparseArrayAR2kStruct<AnimationTiming> timings = new SparseArrayAR2kStruct<AnimationTiming>(new ISupplier<AnimationTiming>() {
-        @Override
-        public AnimationTiming get() {
-            return new AnimationTiming();
-        }
-    });
-    public IntegerR2kStruct scope = new IntegerR2kStruct(0);
-    public IntegerR2kStruct position = new IntegerR2kStruct(2);
+public class Animation extends DM2R2kObject {
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
+    public StringR2kStruct name;
+    @DM2FXOBinding("@animation_name") @DM2LcfBinding(2) @DM2LcfObject
+    public StringR2kStruct animationName;
+    @DM2FXOBinding("@battle2_2k3") @DM2LcfBinding(3) @DM2LcfBoolean(false)
+    public BooleanR2kStruct unknown3;
+    @DM2FXOBinding("@timings") @DM2LcfBinding(6) @DM2LcfSparseArrayA(AnimationTiming.class)
+    public DM2SparseArrayA<AnimationTiming> timings;
+    @DM2FXOBinding("@scope") @DM2LcfBinding(9) @DM2LcfInteger(0)
+    public IntegerR2kStruct scope;
+    @DM2FXOBinding("@position") @DM2LcfBinding(10) @DM2LcfInteger(2)
+    public IntegerR2kStruct position;
     // Actually a SparseArrayA<AnimationFrame>, but thanks to Final Tear 3, has to be deferred.
-    public BlobR2kStruct frames = new BlobR2kStruct(R2kUtil.userspaceBinder + "R2kAnimationFrames", R2kUtil.supplyBlank(1, (byte) 0));
+    @DM2FXOBinding("@frames") @DM2LcfBinding(12) @DM2LcfSparseArrayA(AnimationFrame.class)
+    public DM2SparseArrayA<AnimationFrame> frames;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, name, "@name"),
-                new Index(0x02, animationName, "@animation_name"),
-                new Index(0x03, unknown3, "@battle2_2k3"),
-                new Index(0x06, timings, "@timings"),
-                new Index(0x09, scope, "@scope"),
-                new Index(0x0A, position, "@position"),
-                new Index(0x0C, frames, "@frames"),
-        };
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::Animation", true);
-        asRIOISF(rio);
-        return rio;
+    public Animation() {
+        super("RPG::Animation");
     }
 }

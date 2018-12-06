@@ -12,11 +12,9 @@ import gabien.ui.IFunction;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.io.data.IRIO;
 import r48.schema.IRIOAwareSchemaElement;
-import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.dialog.ISpritesheetProvider;
@@ -25,14 +23,14 @@ import r48.ui.dialog.UISpritesheetChoice;
 /**
  * Created on 29/07/17.
  */
-public class SpritesheetCoreSchemaElement extends SchemaElement {
+public class SpritesheetCoreSchemaElement extends IRIOAwareSchemaElement {
     public String text;
     public int defaultVal;
 
     public IFunction<IRIO, IRIO> numberProvider;
-    public IFunction<RubyIO, ISpritesheetProvider> provider;
+    public IFunction<IRIO, ISpritesheetProvider> provider;
 
-    public SpritesheetCoreSchemaElement(String propTranslated, int def, IFunction<IRIO, IRIO> nprov, IFunction<RubyIO, ISpritesheetProvider> core) {
+    public SpritesheetCoreSchemaElement(String propTranslated, int def, IFunction<IRIO, IRIO> nprov, IFunction<IRIO, ISpritesheetProvider> core) {
         text = propTranslated;
         defaultVal = def;
         numberProvider = nprov;
@@ -40,7 +38,7 @@ public class SpritesheetCoreSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final ISpritesheetProvider localProvider = provider.apply(target);
         final IRIO actTarg = numberProvider.apply(target);
         return new UITextButton(FormatSyntax.formatExtended(text, actTarg), FontSizes.schemaFieldTextHeight, new Runnable() {
@@ -62,9 +60,9 @@ public class SpritesheetCoreSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         IRIO actTarg = numberProvider.apply(target);
-        if (IRIOAwareSchemaElement.checkType(actTarg, 'i', null, setDefault)) {
+        if (checkType(actTarg, 'i', null, setDefault)) {
             actTarg.setFX(defaultVal);
             path.changeOccurred(true);
         }

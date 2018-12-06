@@ -11,11 +11,6 @@ import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.IR2kStruct;
-import r48.io.r2k.chunks.SparseArrayAR2kStruct;
-import r48.io.r2k.chunks.SparseArrayHR2kStruct;
-import r48.io.r2k.obj.ldb.AnimationFrame;
-import r48.io.r2k.obj.ldb.BAD;
-import r48.io.r2k.obj.ldb.Troop;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,48 +26,6 @@ public class LcfMagicalBinder implements IMagicalBinder {
     public LcfMagicalBinder(String cn, ISupplier<IR2kStruct> iSupplier) {
         inner = iSupplier;
         className = cn;
-    }
-
-    protected static IMagicalBinder getTroopPages(String binderPrefix) {
-        return new LcfMagicalBinder(binderPrefix + "R2kTroopPages", new ISupplier<IR2kStruct>() {
-            @Override
-            public IR2kStruct get() {
-                return new SparseArrayAR2kStruct<Troop.TroopPage>(new ISupplier<Troop.TroopPage>() {
-                    @Override
-                    public Troop.TroopPage get() {
-                        return new Troop.TroopPage();
-                    }
-                });
-            }
-        });
-    }
-
-    protected static IMagicalBinder getAnimationFrames(String binderPrefix) {
-        return new LcfMagicalBinder(binderPrefix + "R2kAnimationFrames", new ISupplier<IR2kStruct>() {
-            @Override
-            public IR2kStruct get() {
-                return new SparseArrayAR2kStruct<AnimationFrame>(new ISupplier<AnimationFrame>() {
-                    @Override
-                    public AnimationFrame get() {
-                        return new AnimationFrame();
-                    }
-                });
-            }
-        });
-    }
-
-    protected static IMagicalBinder getBattlerAnimationMap(String binderPrefix) {
-        return new LcfMagicalBinder(binderPrefix + "R2kBattlerAnimationMap", new ISupplier<IR2kStruct>() {
-            @Override
-            public IR2kStruct get() {
-                return new SparseArrayHR2kStruct<BAD>(new ISupplier<BAD>() {
-                    @Override
-                    public BAD get() {
-                        return new BAD();
-                    }
-                });
-            }
-        });
     }
 
     @Override

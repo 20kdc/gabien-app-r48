@@ -12,13 +12,12 @@ import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
-import r48.schema.SchemaElement;
+import r48.schema.IRIOAwareSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
@@ -26,7 +25,7 @@ import r48.ui.Art;
 /**
  * Created on 11/06/17.
  */
-public class MapPositionHelperSchemaElement extends SchemaElement {
+public class MapPositionHelperSchemaElement extends IRIOAwareSchemaElement {
     public final String pathA, pathB, pathC;
 
     public MapPositionHelperSchemaElement(String a, String b, String c) {
@@ -36,7 +35,7 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         IRIO pathARIO = null;
         if (pathA != null)
             pathARIO = PathSyntax.parse(target, pathA);
@@ -99,7 +98,7 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         // Nothing can be done here.
     }
 }

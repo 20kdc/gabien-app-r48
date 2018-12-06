@@ -7,7 +7,6 @@
 
 package r48.schema.specialized.genpos;
 
-import r48.RubyIO;
 import r48.io.data.IRIO;
 
 /**
@@ -27,13 +26,13 @@ public interface IGenposAnim {
 
     void modifiedFrames();
 
-    // NOTE: You need to setFrameIdx(getFrameIdx()); after these.
-    void insertFrame(RubyIO rio);
+    // NOTE: You need to setFrameIdx(getFrameIdx()); after these. modifiedFrames() is implicitly called.
+    void insertFrame(IRIO rio);
 
     void deleteFrame();
 
     // Only called once - the separation helps keep the code sane.
     IGenposFrame getFrameDisplay();
 
-    boolean acceptableForPaste(RubyIO theClipboard);
+    boolean acceptableForPaste(IRIO theClipboard);
 }

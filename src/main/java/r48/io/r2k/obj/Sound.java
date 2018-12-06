@@ -7,38 +7,32 @@
 
 package r48.io.r2k.obj;
 
-import r48.RubyIO;
-import r48.io.r2k.Index;
+import r48.io.data.DM2FXOBinding;
 import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
 import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.DM2LcfBinding;
+import r48.io.r2k.dm2chk.DM2LcfInteger;
+import r48.io.r2k.dm2chk.DM2LcfObject;
+import r48.io.r2k.dm2chk.DM2R2kObject;
 
 /**
- * Created on 06/06/17.
+ * Re-copied off of Music on December 6th 2018, about 20 minutes to midnight
  */
-public class Sound extends R2kObject {
-    public StringR2kStruct name = new StringR2kStruct();
-    public IntegerR2kStruct volume = new IntegerR2kStruct(100);
-    public IntegerR2kStruct tempo = new IntegerR2kStruct(100);
-    public IntegerR2kStruct balance = new IntegerR2kStruct(50);
+public class Sound extends DM2R2kObject {
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
+    public StringR2kStruct name;
+    @DM2FXOBinding("@volume") @DM2LcfBinding(3) @DM2LcfInteger(100)
+    public IntegerR2kStruct volume;
+    @DM2FXOBinding("@tempo") @DM2LcfBinding(4) @DM2LcfInteger(100)
+    public IntegerR2kStruct tempo;
+    @DM2FXOBinding("@balance") @DM2LcfBinding(5) @DM2LcfInteger(50)
+    public IntegerR2kStruct balance;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, name, "@name"),
-                // you know, I'd almost think this and music are the same class
-                // I wonder why
-                // (gap in indexes...)
-                new Index(0x03, volume, "@volume"),
-                new Index(0x04, tempo, "@tempo"),
-                new Index(0x05, balance, "@balance")
-        };
+    public Sound() {
+        super("RPG::Sound");
     }
 
-    @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::Sound", true);
-        asRIOISF(rio);
-        return rio;
+    protected Sound(String n) {
+        super(n);
     }
 }

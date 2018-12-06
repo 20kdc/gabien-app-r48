@@ -37,12 +37,6 @@ public class MagicalBinders {
 
     private static IMagicalBinder getBinderByNameCore(String name) {
         // NOTE: You can't use the actual binder prefix here, too early in init
-        if (name.equals("R2kAnimationFrames"))
-            return LcfMagicalBinder.getAnimationFrames("Binder::");
-        if (name.equals("R2kTroopPages"))
-            return LcfMagicalBinder.getTroopPages("Binder::");
-        if (name.equals("R2kBattlerAnimationMap"))
-            return LcfMagicalBinder.getBattlerAnimationMap("Binder::");
         return null;
     }
 

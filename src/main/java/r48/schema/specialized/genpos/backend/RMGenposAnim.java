@@ -8,9 +8,9 @@
 package r48.schema.specialized.genpos.backend;
 
 import r48.AppMain;
-import r48.ArrayUtils;
 import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.schema.SchemaElement;
 import r48.schema.specialized.genpos.IGenposAnim;
 import r48.schema.specialized.genpos.IGenposFrame;
 import r48.schema.util.SchemaPath;
@@ -40,13 +40,13 @@ import r48.schema.util.SchemaPath;
  */
 public class RMGenposAnim implements IGenposAnim {
     // NOTE: This can be updated, and this is relied upon for cases where a magical binding is closely linked.
-    public RubyIO target;
+    public IRIO target;
     public IGenposFrame perFrame;
     public Runnable updateNotify;
-    public int frameIdx = 0;
-    public boolean ix1 = false;
+    public int frameIdx;
+    public boolean ix1;
 
-    public RMGenposAnim(RubyIO t, IGenposFrame frameHandler, Runnable runnable, boolean index) {
+    public RMGenposAnim(IRIO t, IGenposFrame frameHandler, Runnable runnable, boolean index) {
         perFrame = frameHandler;
         target = t;
         updateNotify = runnable;
@@ -56,16 +56,13 @@ public class RMGenposAnim implements IGenposAnim {
     }
 
     public IRIO getFrame() {
-        IRIO[] frames = target.arrVal;
         int min = 0;
         if (ix1)
             min = 1;
-        if (frames.length <= min) {
+        if (target.getALen() <= min) {
             // Add nulls if necessary
-            while (frames.length < min) {
-                ArrayUtils.insertRioElement(target, new RubyIO().setNull(), 0);
-                frames = target.arrVal;
-            }
+            while (target.getALen() < min)
+                target.addAElem(0);
             // Create a frame from scratch to avoid crashing
             RubyIO copy = new RubyIO().setNull();
             SchemaPath.setDefaultValue(copy, AppMain.schemas.getSDBEntry("RPG::Animation::Frame"), null);
@@ -74,15 +71,15 @@ public class RMGenposAnim implements IGenposAnim {
             return copy;
         }
         if (frameIdx < 0)
-            frameIdx = frames.length - (1 + min);
-        if (frameIdx >= (frames.length - min))
+            frameIdx = target.getALen() - (1 + min);
+        if (frameIdx >= (target.getALen() - min))
             frameIdx = 0;
-        return frames[frameIdx + min];
+        return target.getAElem(frameIdx + min);
     }
 
     @Override
-    public void insertFrame(RubyIO source) {
-        ArrayUtils.insertRioElement(target, source, frameIdx + 1);
+    public void insertFrame(IRIO source) {
+        target.addAElem(frameIdx + 1).setDeepClone(source);
         updateNotify.run();
         frameIdx++;
     }
@@ -101,11 +98,8 @@ public class RMGenposAnim implements IGenposAnim {
     }
 
     @Override
-    public boolean acceptableForPaste(RubyIO theClipboard) {
-        if (AppMain.theClipboard.type == 'o')
-            if (AppMain.theClipboard.symVal.equals("RPG::Animation::Frame"))
-                return true;
-        return false;
+    public boolean acceptableForPaste(IRIO theClipboard) {
+        return !SchemaElement.checkType(theClipboard, 'o', "RPG::Animation::Frame", false);
     }
 
     @Override
@@ -129,6 +123,6 @@ public class RMGenposAnim implements IGenposAnim {
         int min = 0;
         if (ix1)
             min = 1;
-        return target.arrVal.length - min;
+        return target.getALen() - min;
     }
 }
