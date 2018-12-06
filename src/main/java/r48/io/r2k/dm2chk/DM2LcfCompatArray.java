@@ -11,8 +11,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created on December 05, 2018.
+ * Very temporary.
+ * Created on December 06, 2018.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DM2LcfString {
+public @interface DM2LcfCompatArray {
+    Class value();
 }

@@ -20,9 +20,9 @@ import r48.io.r2k.struct.EventCommand;
  */
 public class EventPage extends DM2R2kObject {
     // NOTE TO SELF. YOU HAVE CHECKED THIS AT LEAST THRICE ALREADY. STOP CHECKING THE DEF.VALS.
-    @DM2FXOBinding("@condition") @DM2LcfBinding(2)
+    @DM2FXOBinding("@condition") @DM2LcfBinding(2) @DM2LcfObject
     public EventPageCondition condition;
-    @DM2FXOBinding("@character_name") @DM2LcfBinding(21) @DM2LcfString()
+    @DM2FXOBinding("@character_name") @DM2LcfBinding(21) @DM2LcfObject
     public StringR2kStruct graphicCName;
     @DM2FXOBinding("@character_index") @DM2LcfBinding(22) @DM2LcfInteger(0)
     public IntegerR2kStruct graphicCIndex;
@@ -47,7 +47,7 @@ public class EventPage extends DM2R2kObject {
     public IntegerR2kStruct animType;
     @DM2FXOBinding("@move_speed") @DM2LcfBinding(37) @DM2LcfInteger(3)
     public IntegerR2kStruct moveSpeed;
-    @DM2FXOBinding("@move_route") @DM2LcfBinding(41)
+    @DM2FXOBinding("@move_route") @DM2LcfBinding(41) @DM2LcfObject
     public MoveRoute moveRoute;
 
     @DM2FXOBinding("@list") @DM2LcfSizeBinding(51) @DM2LcfBinding(52)
@@ -59,12 +59,8 @@ public class EventPage extends DM2R2kObject {
 
     @Override
     protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@condition"))
-            return condition = new EventPageCondition();
-        if (sym.equals("@move_route"))
-            return moveRoute = new MoveRoute();
         if (sym.equals("@list"))
-            return list = new DM2Array<EventCommand>(0, false, true) {
+            return list = new DM2Array<EventCommand>() {
                 @Override
                 public EventCommand newValue() {
                     return new EventCommand();

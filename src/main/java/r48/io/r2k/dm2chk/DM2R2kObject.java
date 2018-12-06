@@ -7,6 +7,7 @@
 
 package r48.io.r2k.dm2chk;
 
+import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.*;
@@ -26,6 +27,8 @@ import java.util.Map;
  * false: Packed. All fields are INVALID, apart from packedChunkData.
  * true: Unpacked. Fields become valid, packedChunkData nulled.
  * DM2LcfBinding must be present on all fields that act as serializable chunks.
+ *
+ * NOTE: IRIO Fixed
  *
  * Modified from R2kObject on December 4th 2018.
  */
@@ -257,16 +260,6 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
                 throw new RuntimeException(e);
             }
         }
-        DM2LcfString fxs = f.getAnnotation(DM2LcfString.class);
-        if (fxs != null) {
-            try {
-                StringR2kStruct i = new StringR2kStruct();
-                f.set(this, i);
-                return i;
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
         DM2LcfBoolean fxb = f.getAnnotation(DM2LcfBoolean.class);
         if (fxb != null) {
             try {
@@ -274,6 +267,34 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
                 f.set(this, i);
                 return i;
             } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        final DM2LcfCompatArray fxc = f.getAnnotation(DM2LcfCompatArray.class);
+        if (fxc != null) {
+            try {
+                CompatSparseArrayHR2kStruct<IR2kStruct> irs = new CompatSparseArrayHR2kStruct<IR2kStruct>(new ISupplier<IR2kStruct>() {
+                    @Override
+                    public IR2kStruct get() {
+                        try {
+                            return (IR2kStruct) fxc.value().newInstance();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+                f.set(this, irs);
+                return irs;
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (f.isAnnotationPresent(DM2LcfObject.class)) {
+            try {
+                Object o = f.getType().newInstance();
+                f.set(this, o);
+                return o;
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -300,6 +321,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
     // ---
 
     public void importData(InputStream src) throws IOException {
+        // Doing this sets the object back into the packed state.
         packedChunkData = new HashMap<Integer, byte[]>();
         while (true) {
             if (src.available() == 0)

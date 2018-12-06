@@ -10,17 +10,18 @@ package r48.schema;
 import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
 import r48.FontSizes;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 /**
  * Basically a copy of StringSchemaElement with some modifications
  * ~~Created on 12/29/16.~~ cloned on 15 feb.2017
  */
-public class FloatSchemaElement extends SchemaElement {
+public class FloatSchemaElement extends IRIOAwareSchemaElement {
     public boolean jsonCoerce;
     public String def;
 
@@ -29,24 +30,25 @@ public class FloatSchemaElement extends SchemaElement {
         jsonCoerce = json;
     }
 
-    private String decodeVal(RubyIO target) {
+    private String decodeVal(IRIO target) {
         // Stop at the first null byte.
-        int firstNull = 0;
-        for (int i = 0; i < target.strVal.length; i++) {
-            if (target.strVal[i] == 0)
+        byte[] strVal = target.getBuffer();
+        int firstNull = strVal.length;
+        for (int i = 0; i < strVal.length; i++) {
+            if (strVal[i] == 0) {
+                firstNull = i;
                 break;
-            firstNull = i + 1;
+            }
         }
         byte[] text = new byte[firstNull];
-        System.arraycopy(target.strVal, 0, text, 0, text.length);
+        System.arraycopy(strVal, 0, text, 0, text.length);
         return new String(text, Charset.forName("UTF-8"));
     }
 
-    private boolean encodeVal(RubyIO target, String text) {
+    private boolean encodeVal(IRIO target, String text) {
         if (jsonCoerce) {
             try {
                 long l = Long.parseLong(text);
-                target.type = 'i';
                 target.setFX(l);
                 return true;
             } catch (NumberFormatException e) {
@@ -54,24 +56,24 @@ public class FloatSchemaElement extends SchemaElement {
         }
         try {
             Double.parseDouble(text);
-            target.type = 'f';
-            // Use intern to force UTF-8
-            target.encString(text, true);
+            target.setFloat(text.getBytes("UTF-8"));
             return true;
         } catch (NumberFormatException e) {
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
         return false;
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         final String oldValue;
-        if (target.type == 'f') {
+        if (target.getType() == 'f') {
             oldValue = decodeVal(target);
         } else if (jsonCoerce) {
-            oldValue = Long.toString(target.fixnumVal);
+            oldValue = Long.toString(target.getFX());
         } else {
-            throw new RuntimeException("No JSONCoerce but got a " + target.type + " instead of a float.");
+            throw new RuntimeException("No JSONCoerce but got a " + target.getType() + " instead of a float.");
         }
         final UITextBox utb = new UITextBox(oldValue, FontSizes.schemaFieldTextHeight);
         utb.onEdit = new Runnable() {
@@ -88,12 +90,13 @@ public class FloatSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         boolean ok = false;
+        int typ = target.getType();
         if (jsonCoerce)
-            if (target.type == 'i')
+            if (typ == 'i')
                 ok = true;
-        if (target.type == 'f')
+        if (typ == 'f')
             ok = true;
         if (setDefault)
             ok = false;

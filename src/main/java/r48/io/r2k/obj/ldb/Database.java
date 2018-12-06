@@ -7,181 +7,136 @@
 
 package r48.io.r2k.obj.ldb;
 
-import gabien.ui.ISupplier;
 import r48.RubyIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.chunks.*;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.DM2Optional;
+import r48.io.data.IRIO;
+import r48.io.r2k.chunks.ByteR2kStruct;
+import r48.io.r2k.chunks.CompatSparseArrayHR2kStruct;
+import r48.io.r2k.dm2chk.*;
+import r48.io.r2k.struct.Terms;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Bare minimum needed to get ChipSet data out for now
  * (Later, Jun 6 2017) Ok, THIS class is complete. The others aren't at T.O.W
  * Created on 01/06/17.
  */
-public class Database extends R2kObject {
-    public SparseArrayHR2kStruct<Actor> actors = new SparseArrayHR2kStruct<Actor>(new ISupplier<Actor>() {
-        @Override
-        public Actor get() {
-            return new Actor();
-        }
-    });
-    public SparseArrayHR2kStruct<DeferredProxyR2kStruct> skills = new SparseArrayHR2kStruct<DeferredProxyR2kStruct>(new ISupplier<DeferredProxyR2kStruct>() {
-        @Override
-        public DeferredProxyR2kStruct get() {
-            return new DeferredProxyR2kStruct(new Skill());
-        }
-    });
-    public SparseArrayHR2kStruct<DeferredProxyR2kStruct> items = new SparseArrayHR2kStruct<DeferredProxyR2kStruct>(new ISupplier<DeferredProxyR2kStruct>() {
-        @Override
-        public DeferredProxyR2kStruct get() {
-            return new DeferredProxyR2kStruct(new Item());
-        }
-    });
+public class Database extends DM2R2kObject {
 
-    public SparseArrayHR2kStruct<Enemy> enemies = new SparseArrayHR2kStruct<Enemy>(new ISupplier<Enemy>() {
-        @Override
-        public Enemy get() {
-            return new Enemy();
-        }
-    });
-    public SparseArrayHR2kStruct<DeferredProxyR2kStruct> troops = new SparseArrayHR2kStruct<DeferredProxyR2kStruct>(new ISupplier<DeferredProxyR2kStruct>() {
-        @Override
-        public DeferredProxyR2kStruct get() {
-            return new DeferredProxyR2kStruct(new Troop());
-        }
-    });
-    public SparseArrayHR2kStruct<Terrain> terrains = new SparseArrayHR2kStruct<Terrain>(new ISupplier<Terrain>() {
-        @Override
-        public Terrain get() {
-            return new Terrain();
-        }
-    });
-    public SparseArrayHR2kStruct<Attribute> attributes = new SparseArrayHR2kStruct<Attribute>(new ISupplier<Attribute>() {
-        @Override
-        public Attribute get() {
-            return new Attribute();
-        }
-    });
-    public SparseArrayHR2kStruct<State> states = new SparseArrayHR2kStruct<State>(new ISupplier<State>() {
-        @Override
-        public State get() {
-            return new State();
-        }
-    });
-    public SparseArrayHR2kStruct<DeferredProxyR2kStruct> animations = new SparseArrayHR2kStruct<DeferredProxyR2kStruct>(new ISupplier<DeferredProxyR2kStruct>() {
-        @Override
-        public DeferredProxyR2kStruct get() {
-            return new DeferredProxyR2kStruct(new Animation());
-        }
-    });
-    public SparseArrayHR2kStruct<Tileset> tilesets = new SparseArrayHR2kStruct<Tileset>(new ISupplier<Tileset>() {
-        @Override
-        public Tileset get() {
-            return new Tileset();
-        }
-    });
-    public Terms terms = new Terms();
-    public LdbSystem system = new LdbSystem();
-    public SparseArrayHR2kStruct<SVStore> switches = new SparseArrayHR2kStruct<SVStore>(new ISupplier<SVStore>() {
-        @Override
-        public SVStore get() {
-            return new SVStore();
-        }
-    });
-    public SparseArrayHR2kStruct<SVStore> variables = new SparseArrayHR2kStruct<SVStore>(new ISupplier<SVStore>() {
-        @Override
-        public SVStore get() {
-            return new SVStore();
-        }
-    });
-    public SparseArrayHR2kStruct<DeferredProxyR2kStruct> commonEvents = new SparseArrayHR2kStruct<DeferredProxyR2kStruct>(new ISupplier<DeferredProxyR2kStruct>() {
-        @Override
-        public DeferredProxyR2kStruct get() {
-            return new DeferredProxyR2kStruct(new CommonEvent());
-        }
-    });
-    public ArrayR2kStruct<ByteR2kStruct> dbVersion = new ArrayR2kStruct<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
-        @Override
-        public ByteR2kStruct get() {
-            return new ByteR2kStruct(0);
-        }
-    });
-    public BattleCommands battleCommands2k3 = new BattleCommands();
-    public SparseArrayHR2kStruct<ActorClass> classes2k3 = new SparseArrayHR2kStruct<ActorClass>(new ISupplier<ActorClass>() {
-        @Override
-        public ActorClass get() {
-            return new ActorClass();
-        }
-    });
-    public SparseArrayHR2kStruct<BattlerAnimation> battlerAnimation2k3 = new SparseArrayHR2kStruct<BattlerAnimation>(new ISupplier<BattlerAnimation>() {
-        @Override
-        public BattlerAnimation get() {
-            return new BattlerAnimation();
-        }
-    });
+    public Database() {
+        super("RPG::Database");
+    }
 
-    public OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>> unused27 = nearOpaque();
-    public OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>> unused28 = nearOpaque();
-    public OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>> unused31 = nearOpaque();
+    @DM2FXOBinding("@actors") @DM2LcfBinding(11) @DM2LcfCompatArray(Actor.class)
+    public CompatSparseArrayHR2kStruct<Actor> actors;
+    @DM2FXOBinding("@skills") @DM2LcfBinding(12) @DM2LcfCompatArray(Skill.class)
+    public CompatSparseArrayHR2kStruct<Skill> skills;
+    @DM2FXOBinding("@items") @DM2LcfBinding(13) @DM2LcfCompatArray(Item.class)
+    public CompatSparseArrayHR2kStruct<Item> items;
+    @DM2FXOBinding("@enemies") @DM2LcfBinding(14) @DM2LcfCompatArray(Enemy.class)
+    public CompatSparseArrayHR2kStruct<Enemy> enemies;
+    @DM2FXOBinding("@troops") @DM2LcfBinding(15) @DM2LcfCompatArray(Troop.class)
+    public CompatSparseArrayHR2kStruct<Troop> troops;
+    @DM2FXOBinding("@terrains") @DM2LcfBinding(16) @DM2LcfCompatArray(Terrain.class)
+    public CompatSparseArrayHR2kStruct<Terrain> terrains;
+    @DM2FXOBinding("@attributes") @DM2LcfBinding(17) @DM2LcfCompatArray(Attribute.class)
+    public CompatSparseArrayHR2kStruct<Attribute> attributes;
+    @DM2FXOBinding("@states") @DM2LcfBinding(18) @DM2LcfCompatArray(State.class)
+    public CompatSparseArrayHR2kStruct<Attribute> states;
+    @DM2FXOBinding("@animations") @DM2LcfBinding(19) @DM2LcfCompatArray(Animation.class)
+    public CompatSparseArrayHR2kStruct<Attribute> animations;
+    @DM2FXOBinding("@tilesets") @DM2LcfBinding(20) @DM2LcfCompatArray(Tileset.class)
+    public CompatSparseArrayHR2kStruct<Attribute> tilesets;
 
-    private static OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>> nearOpaque() {
-        return new OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>>(new ISupplier<ArrayR2kStruct<ByteR2kStruct>>() {
+    @DM2FXOBinding("@terms") @DM2LcfBinding(21) @DM2LcfObject
+    public Terms terms;
+
+    // ---
+    @DM2LcfBinding(22) @DM2LcfObject
+    public LdbSystem system;
+    @DM2FXOBinding("@system")
+    public RubyIO systemTempConvert;
+    // ---
+
+    @DM2FXOBinding("@switches") @DM2LcfBinding(23) @DM2LcfCompatArray(SVStore.class)
+    public CompatSparseArrayHR2kStruct<SVStore> switches;
+    @DM2FXOBinding("@variables") @DM2LcfBinding(24) @DM2LcfCompatArray(SVStore.class)
+    public CompatSparseArrayHR2kStruct<SVStore> variables;
+    @DM2FXOBinding("@common_events") @DM2LcfBinding(25) @DM2LcfCompatArray(CommonEvent.class)
+    public CompatSparseArrayHR2kStruct<CommonEvent> commonEvents;
+
+    @DM2FXOBinding("@db_version") @DM2LcfBinding(26)
+    public DM2Array<ByteR2kStruct> dbVersion;
+
+    @DM2LcfBinding(29) @DM2LcfObject
+    public BattleCommands battleCommands2k3;
+    @DM2FXOBinding("@battle_commands_2k3")
+    public RubyIO bcTempConvert;
+
+    @DM2FXOBinding("@classes_2k3") @DM2LcfBinding(30) @DM2LcfCompatArray(ActorClass.class)
+    public CompatSparseArrayHR2kStruct<ActorClass> classes2k3;
+    @DM2FXOBinding("@battle_anim_sets_2k3") @DM2LcfBinding(32) @DM2LcfCompatArray(BattlerAnimation.class)
+    public CompatSparseArrayHR2kStruct<BattlerAnimation> battlerAnimation2k3;
+
+    @DM2Optional @DM2FXOBinding("@unused_27") @DM2LcfBinding(27)
+    public DM2Array<ByteR2kStruct> unused27;
+    @DM2Optional @DM2FXOBinding("@unused_28") @DM2LcfBinding(28)
+    public DM2Array<ByteR2kStruct> unused28;
+    @DM2Optional @DM2FXOBinding("@unused_31") @DM2LcfBinding(31)
+    public DM2Array<ByteR2kStruct> unused31;
+
+    @Override
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@unused_27"))
+            return unused27 = newDM2A();
+        if (sym.equals("@unused_28"))
+            return unused28 = newDM2A();
+        if (sym.equals("@unused_31"))
+            return unused31 = newDM2A();
+        if (sym.equals("@db_version"))
+            return dbVersion = newDM2A();
+        if (sym.equals("@system"))
+            return systemTempConvert = new LdbSystem().asRIO();
+        if (sym.equals("@battle_commands_2k3"))
+            return bcTempConvert = new BattleCommands().asRIO();
+        return super.dm2AddIVar(sym);
+    }
+
+    @Override
+    protected void dm2UnpackFromMapDestructively(HashMap<Integer, byte[]> pcd) {
+        super.dm2UnpackFromMapDestructively(pcd);
+        systemTempConvert = system.asRIO();
+        system = null;
+        bcTempConvert = battleCommands2k3.asRIO();
+        battleCommands2k3 = null;
+    }
+
+    @Override
+    protected HashMap<Integer, byte[]> dm2Pack() throws IOException {
+        system = new LdbSystem();
+        system.fromRIO(systemTempConvert);
+        battleCommands2k3 = new BattleCommands();
+        battleCommands2k3.fromRIO(bcTempConvert);
+        HashMap<Integer, byte[]> res = super.dm2Pack();
+        system = null;
+        battleCommands2k3 = null;
+        return res;
+    }
+
+    private DM2Array<ByteR2kStruct> newDM2A() {
+        return new DM2Array<ByteR2kStruct>() {
             @Override
-            public ArrayR2kStruct<ByteR2kStruct> get() {
-                return new ArrayR2kStruct<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
-                    @Override
-                    public ByteR2kStruct get() {
-                        return new ByteR2kStruct(0);
-                    }
-                });
+            public ByteR2kStruct newValue() {
+                return new ByteR2kStruct(0);
             }
-        });
+        };
     }
 
     @Override
     public boolean terminatable() {
         return true;
-    }
-
-    /*
-     *  @Override
-     *  public boolean logStuff() {
-     *      return true;
-     *  }
-     */
-
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x0B, actors, "@actors"),
-                new Index(0x0C, skills, "@skills"),
-                new Index(0x0D, items, "@items"),
-                new Index(0x0E, enemies, "@enemies"),
-                new Index(0x0F, troops, "@troops"),
-                new Index(0x10, terrains, "@terrains"),
-                new Index(0x11, attributes, "@attributes"),
-                new Index(0x12, states, "@states"),
-                new Index(0x13, animations, "@animations"),
-                new Index(0x14, tilesets, "@tilesets"),
-                new Index(0x15, terms, "@terms"),
-                new Index(0x16, system, "@system"),
-
-                new Index(0x17, switches, "@switches"),
-                new Index(0x18, variables, "@variables"),
-                new Index(0x19, commonEvents, "@common_events"),
-                new Index(0x1A, dbVersion, "@db_version"),
-                new Index(0x1B, unused27, "@unused_27"),
-                new Index(0x1C, unused28, "@unused_28"),
-                new Index(0x1D, battleCommands2k3, "@battle_commands_2k3"),
-                new Index(0x1E, classes2k3, "@classes_2k3"),
-                new Index(0x20, battlerAnimation2k3, "@battle_anim_sets_2k3"),
-                new Index(0x1F, unused31, "@unused_31"),
-        };
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        RubyIO mt = new RubyIO().setSymlike("RPG::Database", true);
-        asRIOISF(mt);
-        return mt;
     }
 }

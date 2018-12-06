@@ -42,7 +42,7 @@ public class MapUnit extends DM2R2kObject {
     public IntegerR2kStruct scrollType;
     @DM2FXOBinding("@parallax_flag") @DM2LcfBinding(31) @DM2LcfBoolean(false)
     public BooleanR2kStruct parallaxFlag;
-    @DM2FXOBinding("@parallax_name") @DM2LcfBinding(32) @DM2LcfString()
+    @DM2FXOBinding("@parallax_name") @DM2LcfBinding(32) @DM2LcfObject
     public StringR2kStruct parallaxName;
     @DM2FXOBinding("@parallax_loop_x") @DM2LcfBinding(33) @DM2LcfBoolean(false)
     public BooleanR2kStruct parallaxLoopX;

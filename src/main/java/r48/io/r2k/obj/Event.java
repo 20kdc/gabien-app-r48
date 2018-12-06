@@ -18,7 +18,7 @@ import r48.io.r2k.dm2chk.*;
  * Created on 31/05/17.
  */
 public class Event extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfString()
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
     public StringR2kStruct name = new StringR2kStruct();
     @DM2FXOBinding("@x") @DM2LcfBinding(2) @DM2LcfInteger(0)
     public IntegerR2kStruct x = new IntegerR2kStruct(0);

@@ -20,7 +20,7 @@ import r48.io.r2k.struct.TRect;
  * Created on 31/05/17.
  */
 public class MapInfo extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfString()
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
     public StringR2kStruct name;
     @DM2FXOBinding("@parent_id") @DM2LcfBinding(2) @DM2LcfInteger(0)
     public IntegerR2kStruct parent;
@@ -36,11 +36,11 @@ public class MapInfo extends DM2R2kObject {
     public BooleanR2kStruct expanded;
     @DM2FXOBinding("@music_type") @DM2LcfBinding(11) @DM2LcfInteger(0)
     public IntegerR2kStruct musicType;
-    @DM2FXOBinding("@music") @DM2LcfBinding(12)
+    @DM2FXOBinding("@music") @DM2LcfBinding(12) @DM2LcfObject
     public Music music;
     @DM2FXOBinding("@background_type") @DM2LcfBinding(21) @DM2LcfInteger(0)
     public IntegerR2kStruct backgroundType;
-    @DM2FXOBinding("@background_name") @DM2LcfBinding(22) @DM2LcfString()
+    @DM2FXOBinding("@background_name") @DM2LcfBinding(22) @DM2LcfObject
     public StringR2kStruct backgroundName;
     @DM2FXOBinding("@teleport_state") @DM2LcfBinding(31) @DM2LcfInteger(0)
     public IntegerR2kStruct teleportState;
@@ -52,7 +52,7 @@ public class MapInfo extends DM2R2kObject {
     public DM2SparseArrayA<Encounter> encounters;
     @DM2FXOBinding("@encounter_steps") @DM2LcfBinding(44) @DM2LcfInteger(25)
     public IntegerR2kStruct encounterSteps;
-    @DM2FXOBinding("@area_rect") @DM2LcfBinding(51)
+    @DM2FXOBinding("@area_rect") @DM2LcfBinding(51) @DM2LcfObject
     public TRect areaRect;
 
     public MapInfo() {
@@ -61,8 +61,6 @@ public class MapInfo extends DM2R2kObject {
 
     @Override
     protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@music"))
-            return music = new Music();
         if (sym.equals("@encounters"))
             return encounters = new DM2SparseArrayA<Encounter>(new ISupplier<Encounter>() {
                 @Override
@@ -70,8 +68,6 @@ public class MapInfo extends DM2R2kObject {
                     return new Encounter();
                 }
             });
-        if (sym.equals("@area_rect"))
-            return areaRect = new TRect();
         return super.dm2AddIVar(sym);
     }
 }

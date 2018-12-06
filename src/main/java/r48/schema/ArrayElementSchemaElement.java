@@ -15,6 +15,7 @@ import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixnum;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -28,7 +29,7 @@ import r48.ui.UIFieldLayout;
  * among other things, '_' as a name will act to make a given parameter invisible.
  * Created on 12/31/16.
  */
-public class ArrayElementSchemaElement extends SchemaElement implements IFieldSchemaElement {
+public class ArrayElementSchemaElement extends IRIOAwareSchemaElement implements IFieldSchemaElement {
     public int index;
     public String name;
     public SchemaElement subSchema;
@@ -48,10 +49,10 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         if (name.equals("_"))
             return HiddenSchemaElement.makeHiddenElement();
-        if (target.arrVal.length <= index) {
+        if (target.getALen() <= index) {
             String tx = TXDB.get("(This index isn't valid - did you modify a group from another window?)");
             if (optional != null)
                 tx = FormatSyntax.formatExtended(TXDB.get("Field #A doesn't exist (default #B)"), new RubyIO().setString(name, true), new RubyIO().setString(optional, true));
@@ -59,17 +60,13 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
                 @Override
                 public void run() {
                     // resize to include and set default
-                    RubyIO[] newArr = new RubyIO[index + 1];
-                    System.arraycopy(target.arrVal, 0, newArr, 0, target.arrVal.length);
-                    for (int i = target.arrVal.length; i < newArr.length; i++)
-                        newArr[i] = new RubyIO().setNull();
-                    subSchema.modifyVal(newArr[index], path.arrayHashIndex(new RubyIO().setFX(index), "." + name), true);
-                    target.arrVal = newArr;
+                    resizeToInclude(target);
+                    subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(new IRIOFixnum(index), "." + name), true);
                     path.changeOccurred(false);
                 }
             });
         }
-        UIElement core = subSchema.buildHoldingEditor(target.arrVal[index], launcher, path.arrayHashIndex(new RubyIO().setFX(index), "." + name));
+        UIElement core = subSchema.buildHoldingEditor(target.getAElem(index), launcher, path.arrayHashIndex(new IRIOFixnum(index), "." + name));
 
         if (!name.equals("")) {
             UILabel label = new UILabel(name, FontSizes.schemaFieldTextHeight);
@@ -84,10 +81,8 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
                     if (delRemove) {
                         target.rmAElem(index);
                     } else {
-                        // Cut array and call modification alerter.
-                        RubyIO[] newArr = new RubyIO[index];
-                        System.arraycopy(target.arrVal, 0, newArr, 0, newArr.length);
-                        target.arrVal = newArr;
+                        while (target.getALen() > index)
+                            target.rmAElem(index);
                     }
                     path.changeOccurred(false);
                 }
@@ -108,34 +103,30 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         boolean changed = false;
         // Just in case.
         // Turns out there was a reason, if not a good one, for array encapsulation - it ensured the object was actually an array.
         // Oops. Well, this resolves it.
-        if (SchemaElement.ensureType(target, '[', false)) {
-            target.arrVal = new RubyIO[index + 1];
-            for (int i = 0; i < target.arrVal.length; i++)
-                target.arrVal[i] = new RubyIO().setNull();
+        if (SchemaElement.checkType(target, '[', null, false)) {
+            target.setArray();
             changed = true;
         }
         // Resize array if required?
-        if (target.arrVal.length <= index) {
-            if (optional == null) {
-                RubyIO[] newArr = new RubyIO[index + 1];
-                System.arraycopy(target.arrVal, 0, newArr, 0, target.arrVal.length);
-                for (int i = target.arrVal.length; i < newArr.length; i++)
-                    newArr[i] = new RubyIO().setNull();
-                target.arrVal = newArr;
-                changed = true;
-            } else {
-                if (changed)
-                    path.changeOccurred(true);
-                return;
-            }
-        }
-        subSchema.modifyVal(target.arrVal[index], path.arrayHashIndex(new RubyIO().setFX(index), "." + name), setDefault);
+        changed |= resizeToInclude(target);
+        if (target.getALen() > index)
+            subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(new IRIOFixnum(index), "." + name), setDefault);
         if (changed)
             path.changeOccurred(true);
+    }
+
+    private boolean resizeToInclude(IRIO target) {
+        boolean changed = false;
+        int alen;
+        while ((alen = target.getALen()) < (index + 1)) {
+            target.addAElem(alen);
+            changed = true;
+        }
+        return changed;
     }
 }

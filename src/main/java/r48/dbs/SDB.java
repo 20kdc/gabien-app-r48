@@ -184,9 +184,9 @@ public class SDB {
                         }
                         if (text.equals("hide")) {
                             SchemaElement hide = get();
-                            return new HiddenSchemaElement(hide, new IFunction<RubyIO, Boolean>() {
+                            return new HiddenSchemaElement(hide, new IFunction<IRIO, Boolean>() {
                                 @Override
-                                public Boolean apply(RubyIO rubyIO) {
+                                public Boolean apply(IRIO rubyIO) {
                                     return false;
                                 }
                             });
@@ -194,9 +194,9 @@ public class SDB {
                         if (text.equals("condHide") || text.equals("condHide!")) {
                             final String path = args[point++];
                             SchemaElement hide = get();
-                            return new HiddenSchemaElement(hide, new IFunction<RubyIO, Boolean>() {
+                            return new HiddenSchemaElement(hide, new IFunction<IRIO, Boolean>() {
                                 @Override
-                                public Boolean apply(RubyIO rubyIO) {
+                                public Boolean apply(IRIO rubyIO) {
                                     return PathSyntax.parse(rubyIO, path).getType() == (text.endsWith("!") ? 'F' : 'T');
                                 }
                             });

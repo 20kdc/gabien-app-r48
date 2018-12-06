@@ -33,6 +33,10 @@ public abstract class DM2Array<V extends IRIO> extends IRIOFixedArray<V> impleme
         trustData = trust;
     }
 
+    public DM2Array() {
+        this(0, false, true);
+    }
+
     @Override
     public void importData(InputStream bais) throws IOException {
         LinkedList<V> array = new LinkedList<V>();

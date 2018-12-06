@@ -72,7 +72,7 @@ public class ActorClass extends R2kObject {
                 new Index(0x48, stateRanks, "@state_ranks"),
                 new Index(0x49, attrRanksSz),
                 new Index(0x4A, attrRanks, "@element_ranks"),
-                new Index(0x50, battleCommands, "@battle_commands")
+                new Index(0x50, battleCommands, "@battle_commands_2k3")
         };
     }
 

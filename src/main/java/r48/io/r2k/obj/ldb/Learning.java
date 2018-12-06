@@ -7,35 +7,27 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.RubyIO;
-import r48.io.r2k.Index;
+import r48.io.data.DM2FXOBinding;
 import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
+import r48.io.r2k.dm2chk.DM2LcfBinding;
+import r48.io.r2k.dm2chk.DM2LcfInteger;
+import r48.io.r2k.dm2chk.DM2R2kObject;
 
 /**
  * Created on 05/06/17.
  */
-public class Learning extends R2kObject {
-    public IntegerR2kStruct level = new IntegerR2kStruct(1);
-    public IntegerR2kStruct skill = new IntegerR2kStruct(1);
+public class Learning extends DM2R2kObject {
+    @DM2FXOBinding("@level") @DM2LcfBinding(1) @DM2LcfInteger(1)
+    public IntegerR2kStruct level;
+    @DM2FXOBinding("@skill") @DM2LcfBinding(2) @DM2LcfInteger(1)
+    public IntegerR2kStruct skill;
+
+    public Learning() {
+        super("RPG::Learning");
+    }
 
     // Skill = Blob;2b 01 04
     public boolean disableSanity() {
         return true;
-    }
-
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, level, "@level"),
-                new Index(0x02, skill, "@skill")
-        };
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::Learning", true);
-        asRIOISF(rio);
-        return rio;
     }
 }

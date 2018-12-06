@@ -726,7 +726,7 @@ C name Class.RPG::Class @name | #A
 @learn_skills subwindow arrayIx1 RPG::Learning
 @state_ranks subwindow hash state_id rpg_statattr_rank
 @element_ranks subwindow hash attribute_id rpg_statattr_rank
-@battle_commands subwindow RPG::BCA
+@battle_commands_2k3 subwindow RPG::BCA
 
  ---
 

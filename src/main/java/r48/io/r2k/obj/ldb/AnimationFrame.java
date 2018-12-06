@@ -8,33 +8,32 @@
 package r48.io.r2k.obj.ldb;
 
 import gabien.ui.ISupplier;
-import r48.RubyIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.chunks.R2kObject;
-import r48.io.r2k.chunks.SparseArrayAR2kStruct;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.IRIO;
+import r48.io.r2k.dm2chk.DM2LcfBinding;
+import r48.io.r2k.dm2chk.DM2R2kObject;
+import r48.io.r2k.dm2chk.DM2SparseArrayA;
 
 /**
  * Created on 07/06/17.
  */
-public class AnimationFrame extends R2kObject {
-    public SparseArrayAR2kStruct<AnimationCell> cells = new SparseArrayAR2kStruct<AnimationCell>(new ISupplier<AnimationCell>() {
-        @Override
-        public AnimationCell get() {
-            return new AnimationCell();
-        }
-    });
+public class AnimationFrame extends DM2R2kObject {
+    @DM2FXOBinding("@cells") @DM2LcfBinding(1)
+    public DM2SparseArrayA<AnimationCell> cells;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, cells, "@cells")
-        };
+    public AnimationFrame() {
+        super("RPG::Animation::Frame");
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::Animation::Frame", true);
-        asRIOISF(rio);
-        return rio;
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@cells"))
+            return cells = new DM2SparseArrayA<AnimationCell>(new ISupplier<AnimationCell>() {
+                @Override
+                public AnimationCell get() {
+                    return new AnimationCell();
+                }
+            });
+        return super.dm2AddIVar(sym);
     }
 }

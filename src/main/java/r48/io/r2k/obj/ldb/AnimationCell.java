@@ -7,47 +7,40 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.RubyIO;
-import r48.io.r2k.Index;
+import r48.io.data.DM2FXOBinding;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
+import r48.io.r2k.dm2chk.DM2LcfBinding;
+import r48.io.r2k.dm2chk.DM2LcfBoolean;
+import r48.io.r2k.dm2chk.DM2LcfInteger;
+import r48.io.r2k.dm2chk.DM2R2kObject;
 
 /**
  * Created on 07/06/17.
  */
-public class AnimationCell extends R2kObject {
-    public BooleanR2kStruct visible = new BooleanR2kStruct(true);
-    public IntegerR2kStruct cellId = new IntegerR2kStruct(0);
-    public IntegerR2kStruct x = new IntegerR2kStruct(0);
-    public IntegerR2kStruct y = new IntegerR2kStruct(0);
-    public IntegerR2kStruct scale = new IntegerR2kStruct(100);
-    public IntegerR2kStruct toneR = new IntegerR2kStruct(100);
-    public IntegerR2kStruct toneG = new IntegerR2kStruct(100);
-    public IntegerR2kStruct toneB = new IntegerR2kStruct(100);
-    public IntegerR2kStruct toneG2 = new IntegerR2kStruct(100);
-    public IntegerR2kStruct transparency = new IntegerR2kStruct(0);
+public class AnimationCell extends DM2R2kObject {
+    @DM2FXOBinding("@visible") @DM2LcfBinding(1) @DM2LcfBoolean(true)
+    public BooleanR2kStruct visible;
+    @DM2FXOBinding("@cell_id") @DM2LcfBinding(2) @DM2LcfInteger(0)
+    public IntegerR2kStruct cellId;
+    @DM2FXOBinding("@x") @DM2LcfBinding(3) @DM2LcfInteger(0)
+    public IntegerR2kStruct x;
+    @DM2FXOBinding("@y") @DM2LcfBinding(4) @DM2LcfInteger(0)
+    public IntegerR2kStruct y;
+    @DM2FXOBinding("@scale") @DM2LcfBinding(5) @DM2LcfInteger(100)
+    public IntegerR2kStruct scale;
+    @DM2FXOBinding("@tone_r") @DM2LcfBinding(6) @DM2LcfInteger(100)
+    public IntegerR2kStruct toneR;
+    @DM2FXOBinding("@tone_g") @DM2LcfBinding(7) @DM2LcfInteger(100)
+    public IntegerR2kStruct toneG;
+    @DM2FXOBinding("@tone_b") @DM2LcfBinding(8) @DM2LcfInteger(100)
+    public IntegerR2kStruct toneB;
+    @DM2FXOBinding("@tone_grey") @DM2LcfBinding(9) @DM2LcfInteger(100)
+    public IntegerR2kStruct toneG2;
+    @DM2FXOBinding("@transparency") @DM2LcfBinding(10) @DM2LcfInteger(0)
+    public IntegerR2kStruct transparency;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, visible, "@visible"),
-                new Index(0x02, cellId, "@cell_id"),
-                new Index(0x03, x, "@x"),
-                new Index(0x04, y, "@y"),
-                new Index(0x05, scale, "@scale"),
-                new Index(0x06, toneR, "@tone_r"),
-                new Index(0x07, toneG, "@tone_g"),
-                new Index(0x08, toneB, "@tone_b"),
-                new Index(0x09, toneG2, "@tone_grey"),
-                new Index(0x0A, transparency, "@transparency"),
-        };
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::Animation::Cell", true);
-        asRIOISF(rio);
-        return rio;
+    public AnimationCell() {
+        super("RPG::Animation::Cell");
     }
 }

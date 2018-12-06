@@ -12,7 +12,7 @@ import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.chunks.StringR2kStruct;
 import r48.io.r2k.dm2chk.DM2LcfBinding;
 import r48.io.r2k.dm2chk.DM2LcfInteger;
-import r48.io.r2k.dm2chk.DM2LcfString;
+import r48.io.r2k.dm2chk.DM2LcfObject;
 import r48.io.r2k.dm2chk.DM2R2kObject;
 
 /**
@@ -20,7 +20,7 @@ import r48.io.r2k.dm2chk.DM2R2kObject;
  * Created on 31/05/17.
  */
 public class Music extends DM2R2kObject {
-    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfString()
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
     public StringR2kStruct name;
     @DM2FXOBinding("@fadeTime") @DM2LcfBinding(2) @DM2LcfInteger(0)
     public IntegerR2kStruct fadeTime;

@@ -9,14 +9,14 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 /**
  * Created on 29/07/17.
  */
-public class HalfsplitSchemaElement extends SchemaElement {
+public class HalfsplitSchemaElement extends IRIOAwareSchemaElement {
     public SchemaElement a, b;
     public double weight = 0.5d;
 
@@ -32,12 +32,12 @@ public class HalfsplitSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
         return new UISplitterLayout(a.buildHoldingEditor(target, launcher, path), b.buildHoldingEditor(target, launcher, path), false, weight);
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         a.modifyVal(target, path, setDefault);
         b.modifyVal(target, path, setDefault);
     }

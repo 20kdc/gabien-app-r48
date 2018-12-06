@@ -10,6 +10,7 @@ package r48.io.r2k.chunks;
 import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixed;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,29 +19,31 @@ import java.io.OutputStream;
 /**
  * Created on 05/06/17.
  */
-public class ByteR2kStruct implements IR2kStruct {
+public class ByteR2kStruct extends IRIOFixed implements IR2kStruct {
     public byte value;
     public boolean signed = false;
 
     public ByteR2kStruct(int v) {
+        super('i');
         value = (byte) v;
+    }
+
+    @Override
+    public IRIO setFX(long fx) {
+        value = (byte) fx;
+        return this;
+    }
+
+    @Override
+    public long getFX() {
+        if (!signed)
+            return value & 0xFF;
+        return value;
     }
 
     public ByteR2kStruct signed() {
         signed = true;
         return this;
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        if (signed)
-            return new RubyIO().setFX(value);
-        return new RubyIO().setFX(value & 0xFF);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        value = (byte) (src.getFX());
     }
 
     @Override
@@ -52,5 +55,30 @@ public class ByteR2kStruct implements IR2kStruct {
     public boolean exportData(OutputStream baos) throws IOException {
         baos.write(value);
         return false;
+    }
+
+    @Override
+    public String[] getIVars() {
+        return new String[0];
+    }
+
+    @Override
+    public IRIO addIVar(String sym) {
+        return null;
+    }
+
+    @Override
+    public IRIO getIVar(String sym) {
+        return null;
+    }
+
+    @Override
+    public RubyIO asRIO() {
+        return new RubyIO().setDeepClone(this);
+    }
+
+    @Override
+    public void fromRIO(IRIO src) {
+        setDeepClone(src);
     }
 }

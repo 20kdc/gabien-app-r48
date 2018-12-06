@@ -10,6 +10,8 @@ package r48.io.r2k.struct;
 import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixed;
+import r48.io.data.IRIOFixnum;
 import r48.io.r2k.chunks.IR2kStruct;
 
 import java.io.IOException;
@@ -20,35 +22,77 @@ import java.io.OutputStream;
  * BPB
  * Created on 06/06/17.
  */
-public class BattleParamBlock implements IR2kStruct {
-    public short[] array = new short[6];
+public class BattleParamBlock extends IRIOFixed implements IR2kStruct {
+    public IRIOFixnum[] array = new IRIOFixnum[] {
+            new IRIOFixnum(0),
+            new IRIOFixnum(0),
+            new IRIOFixnum(0),
+            new IRIOFixnum(0),
+            new IRIOFixnum(0),
+            new IRIOFixnum(0)
+    };
+
+    public BattleParamBlock() {
+        super('[');
+    }
+
+    @Override
+    public IRIO setArray() {
+        for (int i = 0; i < array.length; i++)
+            array[i] = new IRIOFixnum(0);
+        return this;
+    }
 
     @Override
     public RubyIO asRIO() {
-        RubyIO arr = new RubyIO();
-        arr.type = '[';
-        arr.arrVal = new RubyIO[6];
-        for (int i = 0; i < 6; i++)
-            arr.arrVal[i] = new RubyIO().setFX(array[i] & 0xFFFF);
-        return arr;
+        return new RubyIO().setDeepClone(this);
     }
 
     @Override
     public void fromRIO(IRIO src) {
-        for (int i = 0; i < 6; i++)
-            array[i] = (short) src.getAElem(i).getFX();
+        setDeepClone(src);
     }
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        for (int i = 0; i < 6; i++)
-            array[i] = (short) IntUtils.readU16(bais);
+        for (int i = 0; i < array.length; i++)
+            array[i].val = IntUtils.readU16(bais);
     }
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
-        for (int i = 0; i < 6; i++)
-            IntUtils.writeU16(baos, array[i]);
+        for (int i = 0; i < array.length; i++)
+            IntUtils.writeU16(baos, (int) array[i].val);
         return false;
+    }
+
+    @Override
+    public int getALen() {
+        return array.length;
+    }
+
+    @Override
+    public IRIO getAElem(int i) {
+        return array[i];
+    }
+
+    @Override
+    public boolean getAFixedFormat() {
+        return true;
+    }
+
+    @Override
+    public String[] getIVars() {
+        return new String[0];
+    }
+
+    @Override
+    public IRIO addIVar(String sym) {
+        return null;
+    }
+
+    @Override
+    public IRIO getIVar(String sym) {
+        return null;
     }
 }

@@ -11,8 +11,8 @@ import gabien.IGrDriver;
 import gabien.IPeripherals;
 import gabien.ui.IFunction;
 import gabien.ui.UIElement;
-import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
+import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -20,17 +20,17 @@ import r48.schema.util.SchemaPath;
  * Allows for things to disappear & appear as needed.
  * Created on 04/08/17.
  */
-public class HiddenSchemaElement extends SchemaElement implements IProxySchemaElement {
+public class HiddenSchemaElement extends IRIOAwareSchemaElement implements IProxySchemaElement {
     public final SchemaElement content;
-    public final IFunction<RubyIO, Boolean> show;
+    public final IFunction<IRIO, Boolean> show;
 
-    public HiddenSchemaElement(SchemaElement hide, IFunction<RubyIO, Boolean> shouldShow) {
+    public HiddenSchemaElement(SchemaElement hide, IFunction<IRIO, Boolean> shouldShow) {
         content = hide;
         show = shouldShow;
     }
 
     @Override
-    public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
         if (show.apply(target))
             return content.buildHoldingEditor(target, launcher, path);
         return makeHiddenElement();
@@ -51,7 +51,7 @@ public class HiddenSchemaElement extends SchemaElement implements IProxySchemaEl
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         content.modifyVal(target, path, setDefault);
     }
 

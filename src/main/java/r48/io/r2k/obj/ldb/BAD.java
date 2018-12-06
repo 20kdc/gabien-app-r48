@@ -7,34 +7,25 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.RubyIO;
-import r48.io.r2k.Index;
+import r48.io.data.DM2FXOBinding;
 import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
+import r48.io.r2k.dm2chk.DM2LcfBinding;
+import r48.io.r2k.dm2chk.DM2LcfInteger;
+import r48.io.r2k.dm2chk.DM2R2kObject;
 
 /**
  * Battler Animation Data (used by Skill)
  * Created on 06/06/17.
  */
-public class BAD extends R2kObject {
+public class BAD extends DM2R2kObject {
+    @DM2FXOBinding("@move_type") @DM2LcfBinding(5) @DM2LcfInteger(0)
+    public IntegerR2kStruct moveType;
+    @DM2FXOBinding("@has_afterimage") @DM2LcfBinding(6) @DM2LcfInteger(0)
+    public IntegerR2kStruct aiType;
+    @DM2FXOBinding("@pose") @DM2LcfBinding(14) @DM2LcfInteger(-1)
+    public IntegerR2kStruct pose;
 
-    public IntegerR2kStruct moveType = new IntegerR2kStruct(0);
-    public IntegerR2kStruct aiType = new IntegerR2kStruct(0);
-    public IntegerR2kStruct pose = new IntegerR2kStruct(-1);
-
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x05, moveType, "@move_type"),
-                new Index(0x06, aiType, "@has_afterimage"),
-                new Index(0x0E, pose, "@pose"),
-        };
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::BattlerAnimationData", true);
-        asRIOISF(rio);
-        return rio;
+    public BAD() {
+        super("RPG::BattlerAnimationData");
     }
 }
