@@ -15,7 +15,7 @@ package r48.io.data;
  * Created on November 22, 2018.
  */
 public abstract class IRIOFixed extends IRIO {
-    private final int type;
+    protected int type;
 
     public IRIOFixed(int t) {
         type = t;

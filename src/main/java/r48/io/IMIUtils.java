@@ -37,13 +37,17 @@ import java.util.Map;
  * ?[num]: : Enforces that the type is as given *by colon terminated integer*, on pain of patch error.
  *           The reason it's done this way is because IMI's pretending to be human-readable.
  * ![char] : Reset current object, then change type *by character-byte*.
- *          (fields are given as appropriate:
- *           i: Semicolon-terminated number which ends object immediately
- *           ": Byte array (with no starting '"'!)
- *           ':' / 'o': byte array with starting " for sym - syms are encoded in UTF-8.
- *           l: Binary byte array w/ starting " in the slightly-odd format used internally by R48, that removes the length field
- *           }: Default value *immediately* follows as a IMI segment
- *          )
+ *           Unless stated in a given type's field notes, the object continues, even for 0TF.
+ *           Fields are given as appropriate:
+ *            i: Semicolon-terminated number.
+ *                *Ends object immediately.*
+ *            l: Binary byte array w/ starting " in the slightly-odd format used internally by R48, that removes the length field.
+ *                *Ends object immediately.*
+ *            ": Byte array (with no starting '"'!)
+ *            ':' / 'o': byte array with starting " for sym - syms are encoded in UTF-8.
+ *            }: Default value *immediately* follows as a IMI segment.
+ *            u: Byte array with starting " for sym (like 'o') followed by byte array for actual data.
+ *
  * =[k][v]: Create or patch an instance variable. [k] is a UTF-8 byte array - [v] is another IMI segment.
  *          The default value is INVALID (new RubyIO())
  * >[k][v]: Add or patch a hash or array key.
@@ -112,9 +116,30 @@ public class IMIUtils {
                 }
                 break;
             case '[':
-                dos.writeBytes("?" + target.getType() + ":\n");
-                flagMod |= patchArray(dos, source, target, id2);
-                flagMod |= patchIVs(dos, source, target, id2);
+                if (source.getAFixedFormat() || target.getAFixedFormat()) {
+                    // 'Fixed-format' objects *cannot* be safely rearranged without causing potential crashes in IRIO code.
+                    int sal = source.getALen();
+                    if (sal == target.getALen()) {
+                        // Used to ensure that it doesn't patch 100% of the time
+                        dos.writeBytes("?" + target.getType() + ":\n");
+                        for (int i = 0; i < sal; i++) {
+                            byte[] modData = createIMIData(source.getAElem(i), target.getAElem(i), id2);
+                            if (modData != null) {
+                                dos.writeBytes(id2 + "]" + target.getType() + ":\n");
+                                dos.write(modData);
+                                flagMod = true;
+                            }
+                        }
+                        flagMod |= patchIVs(dos, source, target, id2);
+                    } else {
+                        flagMod = true;
+                        createIMIDump(dos, target, indent);
+                    }
+                } else {
+                    dos.writeBytes("?" + target.getType() + ":\n");
+                    flagMod |= patchArray(dos, source, target, id2);
+                    flagMod |= patchIVs(dos, source, target, id2);
+                }
                 break;
             case '{':
                 dos.writeBytes("?" + target.getType() + ":\n");
@@ -159,6 +184,8 @@ public class IMIUtils {
         int srcAVL = source.getALen();
         int tgtAVL = target.getALen();
 
+        // Maps target indexes to source indexes (or -1 if not compatible).
+        // Source indexes must be in ascending order, but may be skipped.
         int[] mappingsTarget = new int[tgtAVL];
         int lowestUsedIndex = -1;
         for (int i = 0; i < mappingsTarget.length; i++)

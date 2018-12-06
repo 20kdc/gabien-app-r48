@@ -11,9 +11,7 @@ import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.*;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.IR2kInterpretable;
-import r48.io.r2k.chunks.IR2kStruct;
-import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.chunks.*;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -28,7 +26,7 @@ import java.util.Map;
  * false: Packed. All fields are INVALID, apart from packedChunkData.
  * true: Unpacked. Fields become valid, packedChunkData nulled.
  * DM2LcfBinding must be present on all fields that act as serializable chunks.
- * Reinitialization of
+ *
  * Modified from R2kObject on December 4th 2018.
  */
 public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
@@ -62,6 +60,19 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
     }
 
     private IRIO trySetFXOChunk(Field f, boolean present) {
+        if (present) {
+            IRIO i = trySetFieldViaAnnotation(f);
+            if (i != null)
+                return i;
+        }
+        DM2FXOBinding fxo = f.getAnnotation(DM2FXOBinding.class);
+        if (fxo != null)
+            if (present || !fxo.optional())
+                return addIVar(fxo.iVar());
+        return null;
+    }
+
+    private IRIO trySetFieldViaAnnotation(Field f) {
         DM2LcfInteger fxi = f.getAnnotation(DM2LcfInteger.class);
         if (fxi != null) {
             try {
@@ -72,10 +83,26 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
                 throw new RuntimeException(e);
             }
         }
-        DM2FXOBinding fxo = f.getAnnotation(DM2FXOBinding.class);
-        if (fxo != null)
-            if (present || !fxo.optional())
-                return addIVar(fxo.iVar());
+        DM2LcfString fxs = f.getAnnotation(DM2LcfString.class);
+        if (fxs != null) {
+            try {
+                StringR2kStruct i = new StringR2kStruct();
+                f.set(this, i);
+                return i;
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        DM2LcfBoolean fxb = f.getAnnotation(DM2LcfBoolean.class);
+        if (fxb != null) {
+            try {
+                BooleanR2kStruct i = new BooleanR2kStruct(fxb.value());
+                f.set(this, i);
+                return i;
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
         return null;
     }
 
@@ -141,6 +168,20 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     if (!iri.exportData(baos))
                         pcd.put(dlb.index(), baos.toByteArray());
+                    DM2LcfSizeBinding dlb2 = f.getAnnotation(DM2LcfSizeBinding.class);
+                    if (dlb2 != null) {
+                        IR2kSizable isi;
+                        try {
+                            isi = (IR2kSizable) f.get(this);
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+                        if (isi != null) {
+                            baos = new ByteArrayOutputStream();
+                            if (!isi.exportSize(baos))
+                                pcd.put(dlb2.value(), baos.toByteArray());
+                        }
+                    }
                 }
             }
         }
@@ -221,7 +262,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
         dm2RmIVar(sym);
     }
 
-    // --- Override These!
+    // --- Override These w/ super calls
 
     protected String[] dm2GetIVars() {
         return super.getIVars();
@@ -232,6 +273,17 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
     }
 
     protected IRIO dm2AddIVar(String sym) {
+        for (Field f : cachedFields) {
+            DM2FXOBinding fxo = f.getAnnotation(DM2FXOBinding.class);
+            if (fxo != null) {
+                if (sym.equals(fxo.iVar())) {
+                    IRIO r = trySetFieldViaAnnotation(f);
+                    if (r != null)
+                        return r;
+                    break;
+                }
+            }
+        }
         return null;
     }
 

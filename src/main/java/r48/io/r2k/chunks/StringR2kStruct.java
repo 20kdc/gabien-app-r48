@@ -30,6 +30,11 @@ public class StringR2kStruct extends IRIOFixed implements IR2kStruct {
         super('"');
     }
 
+    public StringR2kStruct(byte[] dat) {
+        super('"');
+        data = dat;
+    }
+
     @Override
     public IRIO setString(String s) {
         try {

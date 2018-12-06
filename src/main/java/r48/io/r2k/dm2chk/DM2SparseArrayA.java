@@ -10,6 +10,7 @@ package r48.io.r2k.dm2chk;
 import gabien.ui.ISupplier;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedArray;
+import r48.io.data.IRIONullable;
 import r48.io.r2k.chunks.IR2kInterpretable;
 import r48.io.r2k.chunks.SparseArrayR2kInterpretable;
 
@@ -17,12 +18,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Same as DM2SparseArrayH...
+ * Same as DM2SparseArrayH.
+ * A problem arises because the contents must be nullable. IRIONullable was created to resolve this.
  * Created on December 05, 2018.
  */
-public class DM2SparseArrayA<V extends IRIO> extends IRIOFixedArray<V> implements IR2kInterpretable {
+public class DM2SparseArrayA<V extends IRIO> extends IRIOFixedArray<IRIONullable<V>> implements IR2kInterpretable {
     public final ISupplier<V> constructor;
 
     public DM2SparseArrayA(ISupplier<V> cons) {
@@ -30,14 +33,27 @@ public class DM2SparseArrayA<V extends IRIO> extends IRIOFixedArray<V> implement
     }
 
     @Override
-    public V newValue() {
-        return constructor.get();
+    public IRIONullable<V> newValue() {
+        return new IRIONullable<V>(constructor.get(), true);
     }
 
     @Override
     public void importData(InputStream bais) throws IOException {
         HashMap<Integer, V> hashVal = new HashMap<Integer, V>();
         SparseArrayR2kInterpretable.importData(hashVal, constructor, bais);
+        int maxEnt = -1;
+        for (Map.Entry<Integer, V> ent : hashVal.entrySet())
+            if (maxEnt < ent.getKey())
+                maxEnt = ent.getKey();
+        arrVal = new IRIO[maxEnt + 1];
+        for (int i = 0; i < arrVal.length; i++) {
+            V entVal = hashVal.get(i);
+            if (entVal == null) {
+                arrVal[i] = newValue();
+            } else {
+                arrVal[i] = new IRIONullable<V>(entVal, false);
+            }
+        }
     }
 
     @Override
@@ -45,9 +61,9 @@ public class DM2SparseArrayA<V extends IRIO> extends IRIOFixedArray<V> implement
         // Bypass the type checker... :(
         HashMap<Integer, V> hashVal = new HashMap<Integer, V>();
         for (int i = 0; i < arrVal.length; i++) {
-            V v = (V) arrVal[i];
-            if (v != null)
-                hashVal.put(i, v);
+            IRIONullable<V> v = (IRIONullable<V>) arrVal[i];
+            if (!v.nulled)
+                hashVal.put(i, v.target);
         }
         SparseArrayR2kInterpretable.exportData(hashVal, baos);
         return false;

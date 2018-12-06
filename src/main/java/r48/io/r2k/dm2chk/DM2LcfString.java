@@ -5,19 +5,14 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.io.r2k.chunks;
+package r48.io.r2k.dm2chk;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * just doing some restructuring...
- * Created on 01/06/17.
+ * Created on December 05, 2018.
  */
-public interface IR2kInterpretable {
-    void importData(InputStream bais) throws IOException;
-
-    // If this returns true, the chunk is omitted.
-    boolean exportData(OutputStream baos) throws IOException;
+@Retention(RetentionPolicy.RUNTIME)
+public @interface DM2LcfString {
 }

@@ -108,6 +108,11 @@ public abstract class IRIO {
 
     public abstract void rmAElem(int i);
 
+    // If true, safety measures are activated in IMI
+    public boolean getAFixedFormat() {
+        return false;
+    }
+
     public IRIO[] getANewArray() {
         IRIO[] contents = new IRIO[getALen()];
         for (int i = 0; i < contents.length; i++)
@@ -140,6 +145,9 @@ public abstract class IRIO {
             setFX(clone.getFX());
         } else if (type == '"') {
             setString(clone.getBuffer(), clone.getBufferEnc());
+            // Due to Ruby using encoding IVars, but encoding IVars being an inherent property in other cases,
+            //  *DO NOT* support cross-backend IVar retention on strings.
+            return this;
         } else if (type == 'f') {
             setFloat(clone.getBuffer());
         } else if (type == 'o') {
@@ -177,8 +185,13 @@ public abstract class IRIO {
         } else {
             throw new UnsupportedOperationException("Unable to handle this type.");
         }
-        for (String iv : clone.getIVars())
-            addIVar(iv).setDeepClone(clone.getIVar(iv));
+        for (String iv : clone.getIVars()) {
+            try {
+                addIVar(iv).setDeepClone(clone.getIVar(iv));
+            } catch (RuntimeException re) {
+                throw new RuntimeException("In " + iv + " of " + this.getClass() + " from " + clone.getClass(), re);
+            }
+        }
         return this;
     }
 

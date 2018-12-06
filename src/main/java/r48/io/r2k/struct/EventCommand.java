@@ -8,9 +8,8 @@
 package r48.io.r2k.struct;
 
 import r48.RubyIO;
-import r48.io.IObjectBackend;
 import r48.io.IntUtils;
-import r48.io.data.IRIO;
+import r48.io.data.*;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kStruct;
 
@@ -22,109 +21,93 @@ import java.io.OutputStream;
  * What is this again?
  * Created on 31/05/17.
  */
-public class EventCommand implements IR2kStruct {
-    public int code, indent;
-    public byte[] text;
-    public int[] parameters;
-    public MoveCommand[] moveCommands;
+public class EventCommand extends IRIOFixedObject implements IR2kStruct {
+    @DM2FXOBinding(optional = false, iVar = "@code")
+    public IRIOFixnum code;
+
+    @DM2FXOBinding(optional = false, iVar = "@indent")
+    public IRIOFixnum indent;
+
+    @DM2FXOBinding(optional = false, iVar = "@parameters")
+    public ParameterArray parameters;
+
+    @DM2FXOBinding(optional = true, iVar = "@move_commands")
+    public IRIOFixedArray<MoveCommand> moveCommands;
+
+    public EventCommand() {
+        super("RPG::EventCommand");
+    }
+
+    @Override
+    public IRIO addIVar(String sym) {
+        if (sym.equals("@code"))
+            return code = new IRIOFixnum(0);
+        if (sym.equals("@indent"))
+            return indent = new IRIOFixnum(0);
+        if (sym.equals("@parameters"))
+            return parameters = new ParameterArray();
+        if (sym.equals("@move_commands"))
+            return moveCommands = new IRIOFixedArray<MoveCommand>() {
+                @Override
+                public MoveCommand newValue() {
+                    return new MoveCommand();
+                }
+            };
+        return null;
+    }
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        code = R2kUtil.readLcfVLI(bais);
-        indent = R2kUtil.readLcfVLI(bais);
-        text = IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais));
-        if (code != 11330) {
+        code.val = R2kUtil.readLcfVLI(bais);
+        indent.val = R2kUtil.readLcfVLI(bais);
+        parameters.text.data = IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais));
+        if (code.val != 11330) {
             moveCommands = null;
-            parameters = new int[R2kUtil.readLcfVLI(bais)];
-            for (int i = 0; i < parameters.length; i++)
-                parameters[i] = R2kUtil.readLcfVLI(bais);
+            parameters.arrVal = new IRIO[R2kUtil.readLcfVLI(bais)];
+            for (int i = 0; i < parameters.arrVal.length; i++)
+                parameters.arrVal[i] = new IRIOFixnum(R2kUtil.readLcfVLI(bais));
         } else {
             // SPECIAL CASE!!!
             // This does a bunch of scary stuff which doesn't work for fixed-format commands,
             //  and thus really needs special logic.
-            parameters = new int[4];
+            parameters.arrVal = new IRIO[4];
             int[] remainingStream = new int[R2kUtil.readLcfVLI(bais) - 4];
-            for (int i = 0; i < parameters.length; i++)
-                parameters[i] = R2kUtil.readLcfVLI(bais);
+            for (int i = 0; i < parameters.arrVal.length; i++)
+                parameters.arrVal[i] = new IRIOFixnum(R2kUtil.readLcfVLI(bais));
             for (int i = 0; i < remainingStream.length; i++)
                 remainingStream[i] = R2kUtil.readLcfVLI(bais);
-            moveCommands = MoveCommand.fromEmbeddedData(remainingStream);
+            addIVar("@move_commands");
+            moveCommands.arrVal = MoveCommand.fromEmbeddedData(remainingStream);
         }
     }
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
-        R2kUtil.writeLcfVLI(baos, code);
-        R2kUtil.writeLcfVLI(baos, indent);
-        R2kUtil.writeLcfVLI(baos, text.length);
-        baos.write(text);
-        if (code != 11330) {
-            R2kUtil.writeLcfVLI(baos, parameters.length);
-            for (int i = 0; i < parameters.length; i++)
-                R2kUtil.writeLcfVLI(baos, parameters[i]);
+        R2kUtil.writeLcfVLI(baos, (int) code.val);
+        R2kUtil.writeLcfVLI(baos, (int) indent.val);
+        R2kUtil.writeLcfVLI(baos, parameters.text.data.length);
+        baos.write(parameters.text.data);
+        if (code.val != 11330) {
+            R2kUtil.writeLcfVLI(baos, parameters.arrVal.length);
+            for (int i = 0; i < parameters.arrVal.length; i++)
+                R2kUtil.writeLcfVLI(baos, (int) parameters.arrVal[i].getFX());
         } else {
             int[] encoded = MoveCommand.toEmbeddedData(moveCommands);
             R2kUtil.writeLcfVLI(baos, encoded.length + 4);
             for (int i = 0; i < 4; i++)
-                R2kUtil.writeLcfVLI(baos, parameters[i]);
+                R2kUtil.writeLcfVLI(baos, (int) parameters.arrVal[i].getFX());
             for (int i = 0; i < encoded.length; i++)
                 R2kUtil.writeLcfVLI(baos, encoded[i]);
         }
         return false;
     }
 
-    @Override
-    public RubyIO asRIO() {
-        RubyIO mt = new RubyIO().setSymlike("RPG::EventCommand", true);
-        mt.addIVar("@code", new RubyIO().setFX(code));
-        mt.addIVar("@indent", new RubyIO().setFX(indent));
-        RubyIO[] params = new RubyIO[parameters.length + 1];
-        params[0] = new RubyIO().setString(text, IObjectBackend.Factory.encoding);
-        for (int i = 0; i < parameters.length; i++)
-            params[i + 1] = new RubyIO().setFX(parameters[i]);
-        RubyIO paramArr = new RubyIO();
-        paramArr.type = '[';
-        paramArr.arrVal = params;
-        mt.addIVar("@parameters", paramArr);
-        if (code == 11330) {
-            RubyIO[] params2 = new RubyIO[moveCommands.length];
-            for (int i = 0; i < params2.length; i++)
-                params2[i] = moveCommands[i].asRIO();
-            RubyIO param2Arr = new RubyIO();
-            param2Arr.type = '[';
-            param2Arr.arrVal = params2;
-            mt.addIVar("@move_commands", param2Arr);
-        }
-        return mt;
+    public void fromRIO(IRIO rubyIO) {
+        setDeepClone(rubyIO);
     }
 
     @Override
-    public void fromRIO(IRIO src) {
-        code = (int) src.getIVar("@code").getFX();
-        indent = (int) src.getIVar("@indent").getFX();
-        IRIO params = src.getIVar("@parameters");
-        // Just in case.
-        if (params.getAElem(0).getType() != '"')
-            throw new RuntimeException("CORRUPTION! First parameter must be string. " + code + " " + indent);
-        text = params.getAElem(0).getBuffer();
-        parameters = new int[params.getALen() - 1];
-        for (int i = 0; i < parameters.length; i++) {
-            if (params.getAElem(i + 1).getType() != 'i')
-                throw new RuntimeException("CORRUPTION! Non-first parameter must be int. " + code + " " + indent);
-            parameters[i - 1] = (int) params.getAElem(i + 1).getFX();
-        }
-        if (code == 11330) {
-            moveCommands = new MoveCommand[0];
-            IRIO n = src.getIVar("@move_commands");
-            if (n != null) {
-                moveCommands = new MoveCommand[n.getALen()];
-                for (int i = 0; i < moveCommands.length; i++) {
-                    moveCommands[i] = new MoveCommand();
-                    moveCommands[i].fromRIO(n.getAElem(i));
-                }
-            }
-        } else {
-            moveCommands = null;
-        }
+    public RubyIO asRIO() {
+        return new RubyIO().setDeepClone(this);
     }
 }

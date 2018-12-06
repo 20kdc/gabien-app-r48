@@ -8,16 +8,14 @@
 package r48.io.r2k.chunks;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * just doing some restructuring...
- * Created on 01/06/17.
+ * Creates a size chunk. The size chunk will be exported after the primary chunk,
+ * but will appear in the stream before the original chunk.
+ * Created on December 05, 2018.
  */
-public interface IR2kInterpretable {
-    void importData(InputStream bais) throws IOException;
-
-    // If this returns true, the chunk is omitted.
-    boolean exportData(OutputStream baos) throws IOException;
+public interface IR2kSizable {
+    // If this returns true, omit the chunk.
+    boolean exportSize(OutputStream baos) throws IOException;
 }

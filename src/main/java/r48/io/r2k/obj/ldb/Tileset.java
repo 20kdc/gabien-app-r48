@@ -71,11 +71,11 @@ public class Tileset extends R2kObject {
         // 162 = 144 (selective) + 18 (AT Field????)
         RubyTable rt = new RubyTable(3, 162, 1, 1, new int[] {0});
         // This relies on RubyTable layout to skip some relayout
-        System.arraycopy(terrainTbl.dat, 0, rt.innerBytes, 20, terrainTbl.dat.length);
+        System.arraycopy(terrainTbl.userVal, 0, rt.innerBytes, 20, terrainTbl.userVal.length);
         mt.addIVar("@terrain_id_data", new RubyIO().setUser("Table", rt.innerBytes));
 
-        mt.addIVar("@lowpass_data", bitfieldTable(lowPassTbl.dat));
-        mt.addIVar("@highpass_data", bitfieldTable(highPassTbl.dat));
+        mt.addIVar("@lowpass_data", bitfieldTable(lowPassTbl.userVal));
+        mt.addIVar("@highpass_data", bitfieldTable(highPassTbl.userVal));
         return mt;
     }
 
@@ -83,11 +83,11 @@ public class Tileset extends R2kObject {
     public void fromRIO(IRIO src) {
         fromRIOISF(src);
         IRIO c = src.getIVar("@terrain_id_data");
-        terrainTbl.dat = new byte[324];
+        terrainTbl.userVal = new byte[324];
         // This relies on RubyTable layout to skip some relayout
-        System.arraycopy(c.getBuffer(), 20, terrainTbl.dat, 0, terrainTbl.dat.length);
-        lowPassTbl.dat = bitfieldTableRV(src.getIVar("@lowpass_data"));
-        highPassTbl.dat = bitfieldTableRV(src.getIVar("@highpass_data"));
+        System.arraycopy(c.getBuffer(), 20, terrainTbl.userVal, 0, terrainTbl.userVal.length);
+        lowPassTbl.userVal = bitfieldTableRV(src.getIVar("@lowpass_data"));
+        highPassTbl.userVal = bitfieldTableRV(src.getIVar("@highpass_data"));
     }
 
     private RubyIO bitfieldTable(byte[] dat) {

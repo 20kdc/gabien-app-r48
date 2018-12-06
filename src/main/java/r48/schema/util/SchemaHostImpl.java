@@ -21,6 +21,8 @@ import r48.schema.SchemaElement;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Stack;
 
 /**
@@ -58,7 +60,13 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
                 AppMain.launchDialog(TXDB.get("There is nothing in the clipboard."));
             } else {
                 if (IRIO.rubyTypeEquals(innerElem.targetElement, AppMain.theClipboard)) {
-                    innerElem.targetElement.setDeepClone(AppMain.theClipboard);
+                    try {
+                        innerElem.targetElement.setDeepClone(AppMain.theClipboard);
+                    } catch (Exception e) {
+                        StringWriter sw = new StringWriter();
+                        e.printStackTrace(new PrintWriter(sw));
+                        AppMain.launchDialog(TXDB.get("Incompatible clipboard and target.") + "\n" + sw.toString());
+                    }
                     SchemaPath sp = innerElem.findHighestSubwatcher();
                     sp.editor.modifyVal(sp.targetElement, sp, false);
                     innerElem.changeOccurred(false);

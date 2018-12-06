@@ -152,8 +152,14 @@ public class PathSyntax {
         res = res.getIVar(myst);
         if (specialImmediate) {
             if (mode == 1) {
-                if (res == null)
-                    res = root.addIVar(myst).setNull();
+                if (res == null) {
+                    res = root.addIVar(myst);
+                    if (res != null) {
+                        res.setNull();
+                    } else {
+                        System.err.println("Warning: Failed to create IVar " + myst + " in " + root);
+                    }
+                }
             } else if (mode == 2) {
                 root.rmIVar(myst);
             }

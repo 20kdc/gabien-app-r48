@@ -8,40 +8,38 @@
 package r48.io.r2k.obj;
 
 import gabien.ui.ISupplier;
-import r48.RubyIO;
-import r48.io.r2k.Index;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.IRIO;
 import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
-import r48.io.r2k.chunks.SparseArrayAR2kStruct;
 import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.*;
 
 /**
  * Created on 31/05/17.
  */
-public class Event extends R2kObject {
+public class Event extends DM2R2kObject {
+    @DM2FXOBinding(optional = false, iVar = "@name") @DM2LcfBinding(index = 1) @DM2LcfString()
     public StringR2kStruct name = new StringR2kStruct();
+    @DM2FXOBinding(optional = false, iVar = "@x") @DM2LcfBinding(index = 2) @DM2LcfInteger(0)
     public IntegerR2kStruct x = new IntegerR2kStruct(0);
+    @DM2FXOBinding(optional = false, iVar = "@y") @DM2LcfBinding(index = 3) @DM2LcfInteger(0)
     public IntegerR2kStruct y = new IntegerR2kStruct(0);
-    public SparseArrayAR2kStruct<EventPage> pages = new SparseArrayAR2kStruct<EventPage>(new ISupplier<EventPage>() {
-        @Override
-        public EventPage get() {
-            return new EventPage();
-        }
-    });
+    @DM2FXOBinding(optional = false, iVar = "@pages") @DM2LcfBinding(index = 5)
+    public DM2SparseArrayA<EventPage> pages;
 
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, name, "@name"),
-                new Index(0x02, x, "@x"),
-                new Index(0x03, y, "@y"),
-                new Index(0x05, pages, "@pages")
-        };
+    public Event() {
+        super("RPG::Event");
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO mt = new RubyIO().setSymlike("RPG::Event", true);
-        asRIOISF(mt);
-        return mt;
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@pages"))
+            return pages = new DM2SparseArrayA<EventPage>(new ISupplier<EventPage>() {
+                @Override
+                public EventPage get() {
+                    return new EventPage();
+                }
+            });
+        return super.dm2AddIVar(sym);
     }
 }

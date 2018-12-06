@@ -8,40 +8,118 @@
 package r48.io.r2k.chunks;
 
 import r48.RubyIO;
+import r48.io.IntUtils;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixed;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Created on 02/06/17.
  */
-public class BitfieldR2kStruct extends ByteR2kStruct {
+public class BitfieldR2kStruct extends IRIOFixed implements IR2kStruct {
 
     // Ascending
     public final String[] flags;
+    public final BitfieldElement[] flagData;
 
     public BitfieldR2kStruct(String[] f, int def) {
-        super(def);
+        super('o');
         flags = f;
+        flagData = new BitfieldElement[8];
+        for (int i = 0; i < 8; i++)
+            flagData[i] = new BitfieldElement((def & (1 << i)) != 0);
+    }
+
+    public void fromRIO(IRIO rubyIO) {
+        setDeepClone(rubyIO);
     }
 
     @Override
     public RubyIO asRIO() {
-        RubyIO r = new RubyIO().setSymlike("__bitfield__", true);
-        int pwr = 1;
-        for (String s : flags) {
-            r.addIVar(s, new RubyIO().setBool((pwr & value) != 0));
-            pwr <<= 1;
-        }
-        return r;
+        return new RubyIO().setDeepClone(this);
     }
 
     @Override
-    public void fromRIO(IRIO src) {
-        int pwr = 1;
-        value = 0;
-        for (String s : flags) {
-            if (src.getIVar(s).getType() == 'T')
-                value |= pwr;
-            pwr <<= 1;
+    public void importData(InputStream bais) throws IOException {
+        int value = IntUtils.readU8(bais);
+        for (int i = 0; i < 8; i++)
+            flagData[i].setBool((value & (1 << i)) != 0);
+    }
+
+    @Override
+    public boolean exportData(OutputStream baos) throws IOException {
+        int value = 0;
+        for (int i = 0; i < 8; i++)
+            if (flagData[i].getType() == 'T')
+                value |= 1 << i;
+        baos.write(value);
+        return false;
+    }
+
+    @Override
+    public IRIO setObject(String symbol) {
+        if (!symbol.equals("__bitfield__"))
+            return super.setObject(symbol);
+        return this;
+    }
+
+    @Override
+    public String getSymbol() {
+        return "__bitfield__";
+    }
+
+    @Override
+    public String[] getIVars() {
+        return copyStringArray(flags);
+    }
+
+    @Override
+    public IRIO addIVar(String sym) {
+        for (int i = 0; i < flags.length; i++) {
+            String s = flags[i];
+            if (s.equals(sym))
+                return flagData[i] = new BitfieldElement(false);
+        }
+        return null;
+    }
+
+    @Override
+    public IRIO getIVar(String sym) {
+        for (int i = 0; i < flags.length; i++) {
+            String s = flags[i];
+            if (s.equals(sym))
+                return flagData[i];
+        }
+        return null;
+    }
+
+    private static class BitfieldElement extends IRIOFixed {
+        public BitfieldElement(boolean v) {
+            super(v ? 'T' : 'F');
+        }
+
+        @Override
+        public IRIO setBool(boolean b) {
+            type = b ? 'T' : 'F';
+            return this;
+        }
+
+        @Override
+        public String[] getIVars() {
+            return new String[0];
+        }
+
+        @Override
+        public IRIO addIVar(String sym) {
+            return null;
+        }
+
+        @Override
+        public IRIO getIVar(String sym) {
+            return null;
         }
     }
 }

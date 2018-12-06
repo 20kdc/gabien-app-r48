@@ -7,13 +7,10 @@
 
 package r48.io.r2k.obj;
 
-import gabien.ui.ISupplier;
-import r48.RubyIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.chunks.ArrayR2kStruct;
-import r48.io.r2k.chunks.ArraySizeR2kInterpretable;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.IRIO;
 import r48.io.r2k.chunks.BooleanR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
+import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.struct.MoveCommand;
 
 /**
@@ -21,34 +18,28 @@ import r48.io.r2k.struct.MoveCommand;
  * seriously, it's getting ridiculous.
  * Created on 02/06/17.
  */
-public class MoveRoute extends R2kObject {
-    public ArraySizeR2kInterpretable<MoveCommand> listSize = new ArraySizeR2kInterpretable<MoveCommand>();
+public class MoveRoute extends DM2R2kObject {
+    @DM2FXOBinding(optional = false, iVar = "@list") @DM2LcfSizeBinding(11) @DM2LcfBinding(index = 12)
+    public DM2Array<MoveCommand> list;
 
-    public ArrayR2kStruct<MoveCommand> list = new ArrayR2kStruct<MoveCommand>(listSize, new ISupplier<MoveCommand>() {
-        @Override
-        public MoveCommand get() {
-            return new MoveCommand();
-        }
-    }, false);
+    @DM2FXOBinding(optional = false, iVar = "@repeat") @DM2LcfBinding(index = 21) @DM2LcfBoolean(true)
+    public BooleanR2kStruct repeat;
+    @DM2FXOBinding(optional = false, iVar = "@skippable") @DM2LcfBinding(index = 22) @DM2LcfBoolean(false)
+    public BooleanR2kStruct skippable;
 
-    public BooleanR2kStruct repeat = new BooleanR2kStruct(true);
-    public BooleanR2kStruct skippable = new BooleanR2kStruct(false);
-
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x0B, listSize),
-                new Index(0x0C, list, "@list"),
-                new Index(0x15, repeat, "@repeat"),
-                new Index(0x16, skippable, "@skippable"),
-        };
+    public MoveRoute() {
+        super("RPG::MoveRoute");
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::MoveRoute", true);
-        asRIOISF(rio);
-        return rio;
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@list"))
+            return list = new DM2Array<MoveCommand>(0, false, false) {
+                @Override
+                public MoveCommand newValue() {
+                    return new MoveCommand();
+                }
+            };
+        return super.dm2AddIVar(sym);
     }
-
 }

@@ -78,16 +78,16 @@ public class SaveMapInfo extends R2kObject {
     public RubyIO asRIO() {
         RubyIO rio = new RubyIO().setSymlike("RPG::SaveMapInfo", true);
         asRIOISF(rio);
-        rio.addIVar("@lower_tile_remap", bToTable(lowerTileRemap.dat));
-        rio.addIVar("@upper_tile_remap", bToTable(upperTileRemap.dat));
+        rio.addIVar("@lower_tile_remap", bToTable(lowerTileRemap.userVal));
+        rio.addIVar("@upper_tile_remap", bToTable(upperTileRemap.userVal));
         return rio;
     }
 
     @Override
     public void fromRIO(IRIO src) {
         fromRIOISF(src);
-        lowerTileRemap.dat = bFromTable(src.getIVar("@lower_tile_remap"));
-        upperTileRemap.dat = bFromTable(src.getIVar("@upper_tile_remap"));
+        lowerTileRemap.userVal = bFromTable(src.getIVar("@lower_tile_remap"));
+        upperTileRemap.userVal = bFromTable(src.getIVar("@upper_tile_remap"));
     }
 
     private RubyIO bToTable(byte[] dat) {

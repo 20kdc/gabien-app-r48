@@ -11,6 +11,7 @@ import gabien.ui.ISupplier;
 import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixedUser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,36 +21,39 @@ import java.io.OutputStream;
  * Uhoh. These are a lot of classes.
  * Created on 31/05/17.
  */
-public class BlobR2kStruct implements IR2kStruct {
-    public byte[] dat;
-    public String blobClass = "Blob";
-
+public class BlobR2kStruct extends IRIOFixedUser implements IR2kStruct {
+    public BlobR2kStruct(byte[] mkDef) {
+        super("Blob", mkDef);
+    }
     public BlobR2kStruct(ISupplier<byte[]> mkDef) {
-        dat = mkDef.get();
+        super("Blob", mkDef.get());
+    }
+
+    public BlobR2kStruct(String c, byte[] mkDef) {
+        super(c, mkDef);
     }
     public BlobR2kStruct(String c, ISupplier<byte[]> mkDef) {
-        blobClass = c;
-        dat = mkDef.get();
+        super(c, mkDef.get());
     }
 
     @Override
     public RubyIO asRIO() {
-        return new RubyIO().setUser(blobClass, dat);
+        return new RubyIO().setDeepClone(this);
     }
 
     @Override
     public void fromRIO(IRIO src) {
-        dat = src.getBuffer();
+        setDeepClone(src);
     }
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        dat = IntUtils.readBytes(bais, bais.available());
+        userVal = IntUtils.readBytes(bais, bais.available());
     }
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
-        baos.write(dat);
+        baos.write(userVal);
         return false;
     }
 }
