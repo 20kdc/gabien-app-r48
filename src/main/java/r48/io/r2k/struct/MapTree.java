@@ -25,13 +25,13 @@ import java.io.OutputStream;
  * Created on 31/05/17.
  */
 public class MapTree extends IRIOFixedObject implements IR2kInterpretable {
-    @DM2FXOBinding(optional = false, iVar = "@map_infos")
+    @DM2FXOBinding("@map_infos")
     public DM2SparseArrayH<MapInfo> mapInfos;
-    @DM2FXOBinding(optional = false, iVar = "@map_order")
+    @DM2FXOBinding("@map_order")
     public IRIOFixedArray<IRIOFixnum> mapOrder;
-    @DM2FXOBinding(optional = false, iVar = "@active_node")
+    @DM2FXOBinding("@active_node")
     public IntegerR2kStruct activeNode;
-    @DM2FXOBinding(optional = false, iVar = "@start")
+    @DM2FXOBinding("@start")
     public MapTreeStart start;
 
     public MapTree() {

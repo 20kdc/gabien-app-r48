@@ -15,7 +15,5 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DM2FXOBinding {
-    boolean optional();
-
-    String iVar();
+    String value();
 }

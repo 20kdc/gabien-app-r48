@@ -20,39 +20,39 @@ import r48.io.r2k.struct.TRect;
  * Created on 31/05/17.
  */
 public class MapInfo extends DM2R2kObject {
-    @DM2FXOBinding(optional = false, iVar = "@name") @DM2LcfBinding(index = 1) @DM2LcfString()
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfString()
     public StringR2kStruct name;
-    @DM2FXOBinding(optional = false, iVar = "@parent_id") @DM2LcfBinding(index = 2) @DM2LcfInteger(0)
+    @DM2FXOBinding("@parent_id") @DM2LcfBinding(2) @DM2LcfInteger(0)
     public IntegerR2kStruct parent;
-    @DM2FXOBinding(optional = false, iVar = "@indent") @DM2LcfBinding(index = 3) @DM2LcfInteger(0)
+    @DM2FXOBinding("@indent") @DM2LcfBinding(3) @DM2LcfInteger(0)
     public IntegerR2kStruct indent;
-    @DM2FXOBinding(optional = false, iVar = "@type") @DM2LcfBinding(index = 4) @DM2LcfInteger(-1)
+    @DM2FXOBinding("@type") @DM2LcfBinding(4) @DM2LcfInteger(-1)
     public IntegerR2kStruct type;
-    @DM2FXOBinding(optional = false, iVar = "@OFED_edit_pos_x") @DM2LcfBinding(index = 5) @DM2LcfInteger(0)
+    @DM2FXOBinding("@OFED_edit_pos_x") @DM2LcfBinding(5) @DM2LcfInteger(0)
     public IntegerR2kStruct editPosX;
-    @DM2FXOBinding(optional = false, iVar = "@OFED_edit_pos_y") @DM2LcfBinding(index = 6) @DM2LcfInteger(0)
+    @DM2FXOBinding("@OFED_edit_pos_y") @DM2LcfBinding(6) @DM2LcfInteger(0)
     public IntegerR2kStruct editPosY;
-    @DM2FXOBinding(optional = false, iVar = "@OFED_expanded") @DM2LcfBinding(index = 7) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@OFED_expanded") @DM2LcfBinding(7) @DM2LcfBoolean(false)
     public BooleanR2kStruct expanded;
-    @DM2FXOBinding(optional = false, iVar = "@music_type") @DM2LcfBinding(index = 11) @DM2LcfInteger(0)
+    @DM2FXOBinding("@music_type") @DM2LcfBinding(11) @DM2LcfInteger(0)
     public IntegerR2kStruct musicType;
-    @DM2FXOBinding(optional = false, iVar = "@music") @DM2LcfBinding(index = 12)
+    @DM2FXOBinding("@music") @DM2LcfBinding(12)
     public Music music;
-    @DM2FXOBinding(optional = false, iVar = "@background_type") @DM2LcfBinding(index = 21) @DM2LcfInteger(0)
+    @DM2FXOBinding("@background_type") @DM2LcfBinding(21) @DM2LcfInteger(0)
     public IntegerR2kStruct backgroundType;
-    @DM2FXOBinding(optional = false, iVar = "@background_name") @DM2LcfBinding(index = 22) @DM2LcfString()
+    @DM2FXOBinding("@background_name") @DM2LcfBinding(22) @DM2LcfString()
     public StringR2kStruct backgroundName;
-    @DM2FXOBinding(optional = false, iVar = "@teleport_state") @DM2LcfBinding(index = 31) @DM2LcfInteger(0)
+    @DM2FXOBinding("@teleport_state") @DM2LcfBinding(31) @DM2LcfInteger(0)
     public IntegerR2kStruct teleportState;
-    @DM2FXOBinding(optional = false, iVar = "@escape_state") @DM2LcfBinding(index = 32) @DM2LcfInteger(0)
+    @DM2FXOBinding("@escape_state") @DM2LcfBinding(32) @DM2LcfInteger(0)
     public IntegerR2kStruct escapeState;
-    @DM2FXOBinding(optional = false, iVar = "@save_state") @DM2LcfBinding(index = 33) @DM2LcfInteger(0)
+    @DM2FXOBinding("@save_state") @DM2LcfBinding(33) @DM2LcfInteger(0)
     public IntegerR2kStruct saveState;
-    @DM2FXOBinding(optional = false, iVar = "@encounters") @DM2LcfBinding(index = 41)
+    @DM2FXOBinding("@encounters") @DM2LcfBinding(41)
     public DM2SparseArrayA<Encounter> encounters;
-    @DM2FXOBinding(optional = false, iVar = "@encounter_steps") @DM2LcfBinding(index = 44) @DM2LcfInteger(25)
+    @DM2FXOBinding("@encounter_steps") @DM2LcfBinding(44) @DM2LcfInteger(25)
     public IntegerR2kStruct encounterSteps;
-    @DM2FXOBinding(optional = false, iVar = "@area_rect") @DM2LcfBinding(index = 51)
+    @DM2FXOBinding("@area_rect") @DM2LcfBinding(51)
     public TRect areaRect;
 
     public MapInfo() {

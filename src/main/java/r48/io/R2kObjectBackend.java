@@ -15,6 +15,7 @@ import r48.io.r2k.files.DatabaseIO;
 import r48.io.r2k.files.MapIO;
 import r48.io.r2k.files.MapTreeIO;
 import r48.io.r2k.files.SaveDataIO;
+import r48.io.r2k.obj.MapUnit;
 import r48.io.r2k.struct.MapTree;
 
 import java.io.ByteArrayOutputStream;
@@ -38,6 +39,8 @@ public class R2kObjectBackend extends OldObjectBackend<IRIO> {
         // Non-RubyIO things
         if (fn.endsWith(".lmt"))
             return new MapTree();
+        if (fn.endsWith(".lmu"))
+            return new MapUnit();
         return new RubyIO().setNull();
     }
 
@@ -50,7 +53,7 @@ public class R2kObjectBackend extends OldObjectBackend<IRIO> {
                 InputStream fis = GaBIEn.getInFile(str);
                 if (fis == null)
                     return null;
-                RubyIO r = MapIO.readLmu(fis);
+                MapUnit r = MapIO.readLmu(fis);
                 fis.close();
                 return r;
             } catch (Exception e) {
@@ -107,7 +110,7 @@ public class R2kObjectBackend extends OldObjectBackend<IRIO> {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // Note the write occurs before the F.O.S is created for safety
         if (filename.endsWith(".lmu")) {
-            MapIO.writeLmu(baos, (RubyIO) object);
+            MapIO.writeLmu(baos, (MapUnit) object);
             OutputStream fos = GaBIEn.getOutFile(str);
             if (fos == null)
                 throw new IOException("Unable to open a file.");

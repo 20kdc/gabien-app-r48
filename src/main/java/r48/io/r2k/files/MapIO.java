@@ -7,7 +7,6 @@
 
 package r48.io.r2k.files;
 
-import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.obj.MapUnit;
@@ -31,22 +30,20 @@ import java.io.OutputStream;
  * Created on 30/05/17.
  */
 public class MapIO {
-    public static RubyIO readLmu(InputStream fis) throws IOException {
+    public static MapUnit readLmu(InputStream fis) throws IOException {
         String magic = R2kUtil.decodeLcfString(IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfMapUnit"))
             System.err.println("Loading a file which pretends to be an LCF map but says " + magic);
         // Try to follow the standard...
         MapUnit mu = new MapUnit();
         mu.importData(fis);
-        return mu.asRIO();
+        return mu;
     }
 
-    public static void writeLmu(OutputStream fos, RubyIO rio) throws IOException {
+    public static void writeLmu(OutputStream fos, MapUnit rio) throws IOException {
         byte[] d = R2kUtil.encodeLcfString("LcfMapUnit");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
-        MapUnit db = new MapUnit();
-        db.fromRIO(rio);
-        db.exportData(fos);
+        rio.exportData(fos);
     }
 }

@@ -18,13 +18,13 @@ import r48.io.r2k.dm2chk.*;
  * Created on 31/05/17.
  */
 public class Event extends DM2R2kObject {
-    @DM2FXOBinding(optional = false, iVar = "@name") @DM2LcfBinding(index = 1) @DM2LcfString()
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfString()
     public StringR2kStruct name = new StringR2kStruct();
-    @DM2FXOBinding(optional = false, iVar = "@x") @DM2LcfBinding(index = 2) @DM2LcfInteger(0)
+    @DM2FXOBinding("@x") @DM2LcfBinding(2) @DM2LcfInteger(0)
     public IntegerR2kStruct x = new IntegerR2kStruct(0);
-    @DM2FXOBinding(optional = false, iVar = "@y") @DM2LcfBinding(index = 3) @DM2LcfInteger(0)
+    @DM2FXOBinding("@y") @DM2LcfBinding(3) @DM2LcfInteger(0)
     public IntegerR2kStruct y = new IntegerR2kStruct(0);
-    @DM2FXOBinding(optional = false, iVar = "@pages") @DM2LcfBinding(index = 5)
+    @DM2FXOBinding("@pages") @DM2LcfBinding(5)
     public DM2SparseArrayA<EventPage> pages;
 
     public Event() {

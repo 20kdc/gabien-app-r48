@@ -24,14 +24,14 @@ import java.io.OutputStream;
  * Created on 31/05/17.
  */
 public class TRect extends IRIOFixedObject implements IR2kStruct {
-    @DM2FXOBinding(optional = false, iVar = "@left")
-    public IRIOFixnum l = new IRIOFixnum(0);
-    @DM2FXOBinding(optional = false, iVar = "@up")
-    public IRIOFixnum u = new IRIOFixnum(0);
-    @DM2FXOBinding(optional = false, iVar = "@right")
-    public IRIOFixnum r = new IRIOFixnum(0);
-    @DM2FXOBinding(optional = false, iVar = "@down")
-    public IRIOFixnum d = new IRIOFixnum(0);
+    @DM2FXOBinding("@left")
+    public IRIOFixnum l;
+    @DM2FXOBinding("@up")
+    public IRIOFixnum u;
+    @DM2FXOBinding("@right")
+    public IRIOFixnum r;
+    @DM2FXOBinding("@down")
+    public IRIOFixnum d;
 
     public TRect() {
         super("Rect");

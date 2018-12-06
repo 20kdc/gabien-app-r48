@@ -16,21 +16,21 @@ import r48.io.data.IRIOFixnum;
  * Created on November 24, 2018.
  */
 public class IkaEvent extends IRIOFixedObject {
-    @DM2FXOBinding(optional = false, iVar = "@x")
+    @DM2FXOBinding("@x")
     public IRIOFixnum x;
-    @DM2FXOBinding(optional = false, iVar = "@y")
+    @DM2FXOBinding("@y")
     public IRIOFixnum y;
-    @DM2FXOBinding(optional = false, iVar = "@tOX")
+    @DM2FXOBinding("@tOX")
     public IRIOFixnum tox;
-    @DM2FXOBinding(optional = false, iVar = "@tOY")
+    @DM2FXOBinding("@tOY")
     public IRIOFixnum toy;
-    @DM2FXOBinding(optional = false, iVar = "@type")
+    @DM2FXOBinding("@type")
     public IRIOFixnum type;
-    @DM2FXOBinding(optional = false, iVar = "@status")
+    @DM2FXOBinding("@status")
     public IRIOFixnum status;
-    @DM2FXOBinding(optional = false, iVar = "@scriptId")
+    @DM2FXOBinding("@scriptId")
     public IRIOFixnum scriptId;
-    @DM2FXOBinding(optional = false, iVar = "@collisionType")
+    @DM2FXOBinding("@collisionType")
     public IRIOFixnum collisionType;
 
     public IkaEvent() {

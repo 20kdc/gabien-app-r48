@@ -19,26 +19,26 @@ import r48.io.r2k.dm2chk.DM2R2kObject;
  * Created on 02/06/17.
  */
 public class EventPageCondition extends DM2R2kObject {
-    @DM2FXOBinding(optional = false, iVar = "@valid") @DM2LcfBinding(index = 1)
+    @DM2FXOBinding("@valid") @DM2LcfBinding(1)
     public BitfieldR2kStruct bitfield;
-    @DM2FXOBinding(optional = false, iVar = "@switch_a") @DM2LcfBinding(index = 2) @DM2LcfInteger(1)
+    @DM2FXOBinding("@switch_a") @DM2LcfBinding(2) @DM2LcfInteger(1)
     public IntegerR2kStruct switchAId;
-    @DM2FXOBinding(optional = false, iVar = "@switch_b") @DM2LcfBinding(index = 3) @DM2LcfInteger(1)
+    @DM2FXOBinding("@switch_b") @DM2LcfBinding(3) @DM2LcfInteger(1)
     public IntegerR2kStruct switchBId;
-    @DM2FXOBinding(optional = false, iVar = "@var_id") @DM2LcfBinding(index = 4) @DM2LcfInteger(1)
+    @DM2FXOBinding("@var_id") @DM2LcfBinding(4) @DM2LcfInteger(1)
     public IntegerR2kStruct variableId;
-    @DM2FXOBinding(optional = false, iVar = "@var_value") @DM2LcfBinding(index = 5) @DM2LcfInteger(0)
+    @DM2FXOBinding("@var_value") @DM2LcfBinding(5) @DM2LcfInteger(0)
     public IntegerR2kStruct variableVal;
-    @DM2FXOBinding(optional = false, iVar = "@item_id") @DM2LcfBinding(index = 6) @DM2LcfInteger(1)
+    @DM2FXOBinding("@item_id") @DM2LcfBinding(6) @DM2LcfInteger(1)
     public IntegerR2kStruct itemId;
-    @DM2FXOBinding(optional = false, iVar = "@actor_id") @DM2LcfBinding(index = 7) @DM2LcfInteger(1)
+    @DM2FXOBinding("@actor_id") @DM2LcfBinding(7) @DM2LcfInteger(1)
     public IntegerR2kStruct actorId;
-    @DM2FXOBinding(optional = false, iVar = "@timer_1_secs") @DM2LcfBinding(index = 8) @DM2LcfInteger(0)
+    @DM2FXOBinding("@timer_1_secs") @DM2LcfBinding(8) @DM2LcfInteger(0)
     public IntegerR2kStruct timer1Sec;
 
-    @DM2FXOBinding(optional = true, iVar = "@timer_2_secs_2k3") @DM2LcfBinding(index = 9) @DM2LcfInteger(0)
+    @DM2FXOBinding("@timer_2_secs_2k3") @DM2LcfBinding(9) @DM2LcfInteger(0)
     public IntegerR2kStruct timer2Sec;
-    @DM2FXOBinding(optional = true, iVar = "@var_compare_op_2k3") @DM2LcfBinding(index = 10) @DM2LcfInteger(0)
+    @DM2FXOBinding("@var_compare_op_2k3") @DM2LcfBinding(10) @DM2LcfInteger(0)
     public IntegerR2kStruct compareOp;
 
     public EventPageCondition() {

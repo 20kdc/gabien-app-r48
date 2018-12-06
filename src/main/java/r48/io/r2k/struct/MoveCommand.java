@@ -25,9 +25,9 @@ import java.util.Stack;
  * Created on 02/06/17.
  */
 public class MoveCommand extends IRIOFixedObject implements IR2kStruct {
-    @DM2FXOBinding(optional = false, iVar = "@code")
+    @DM2FXOBinding("@code")
     public IRIOFixnum code;
-    @DM2FXOBinding(optional = false, iVar = "@parameters")
+    @DM2FXOBinding("@parameters")
     public ParameterArray parameters;
 
     public MoveCommand() {

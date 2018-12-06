@@ -18,9 +18,7 @@ import r48.io.r2k.dm2chk.DM2R2kObject;
  * Created on 01/06/17.
  */
 public class Encounter extends DM2R2kObject {
-    @DM2FXOBinding(optional = false, iVar = "@troop")
-    @DM2LcfBinding(index = 1)
-    @DM2LcfInteger(0)
+    @DM2FXOBinding("@troop") @DM2LcfBinding(1) @DM2LcfInteger(0)
     public IntegerR2kStruct troop = new IntegerR2kStruct(0);
 
     public Encounter() {

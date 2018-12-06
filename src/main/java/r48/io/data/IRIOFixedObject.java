@@ -47,8 +47,8 @@ public abstract class IRIOFixedObject extends IRIOFixed {
             for (Field f : cachedFields) {
                 DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
                 if (dmx != null) {
-                    if (!dmx.optional()) {
-                        addIVar(dmx.iVar());
+                    if (!f.isAnnotationPresent(DM2Optional.class)) {
+                        addIVar(dmx.value());
                     } else {
                         f.set(this, null);
                     }
@@ -70,7 +70,7 @@ public abstract class IRIOFixedObject extends IRIOFixed {
         for (Field f : cachedFields) {
             DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
             if (dmx != null) {
-                if (dmx.optional()) {
+                if (f.isAnnotationPresent(DM2Optional.class)) {
                     try {
                         if (f.get(this) == null)
                             continue;
@@ -78,7 +78,7 @@ public abstract class IRIOFixedObject extends IRIOFixed {
                         throw new RuntimeException(e);
                     }
                 }
-                s.add(dmx.iVar());
+                s.add(dmx.value());
             }
         }
         return s.toArray(new String[0]);
@@ -89,7 +89,7 @@ public abstract class IRIOFixedObject extends IRIOFixed {
         for (Field f : cachedFields) {
             DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
             if (dmx != null) {
-                if (dmx.iVar().equals(sym)) {
+                if (dmx.value().equals(sym)) {
                     try {
                         return (IRIO) f.get(this);
                     } catch (IllegalAccessException e) {
@@ -106,7 +106,7 @@ public abstract class IRIOFixedObject extends IRIOFixed {
         for (Field f : cachedFields) {
             DM2FXOBinding dmx = f.getAnnotation(DM2FXOBinding.class);
             if (dmx != null) {
-                if (dmx.optional() && dmx.iVar().equals(sym)) {
+                if (dmx.value().equals(sym) && f.isAnnotationPresent(DM2Optional.class)) {
                     try {
                         f.set(this, null);
                         return;

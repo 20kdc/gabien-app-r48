@@ -19,12 +19,12 @@ import r48.io.r2k.struct.MoveCommand;
  * Created on 02/06/17.
  */
 public class MoveRoute extends DM2R2kObject {
-    @DM2FXOBinding(optional = false, iVar = "@list") @DM2LcfSizeBinding(11) @DM2LcfBinding(index = 12)
+    @DM2FXOBinding("@list") @DM2LcfSizeBinding(11) @DM2LcfBinding(12)
     public DM2Array<MoveCommand> list;
 
-    @DM2FXOBinding(optional = false, iVar = "@repeat") @DM2LcfBinding(index = 21) @DM2LcfBoolean(true)
+    @DM2FXOBinding("@repeat") @DM2LcfBinding(21) @DM2LcfBoolean(true)
     public BooleanR2kStruct repeat;
-    @DM2FXOBinding(optional = false, iVar = "@skippable") @DM2LcfBinding(index = 22) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@skippable") @DM2LcfBinding(22) @DM2LcfBoolean(false)
     public BooleanR2kStruct skippable;
 
     public MoveRoute() {

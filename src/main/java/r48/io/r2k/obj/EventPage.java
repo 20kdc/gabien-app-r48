@@ -20,37 +20,37 @@ import r48.io.r2k.struct.EventCommand;
  */
 public class EventPage extends DM2R2kObject {
     // NOTE TO SELF. YOU HAVE CHECKED THIS AT LEAST THRICE ALREADY. STOP CHECKING THE DEF.VALS.
-    @DM2FXOBinding(optional = false, iVar = "@condition") @DM2LcfBinding(index = 2)
+    @DM2FXOBinding("@condition") @DM2LcfBinding(2)
     public EventPageCondition condition;
-    @DM2FXOBinding(optional = false, iVar = "@character_name") @DM2LcfBinding(index = 21) @DM2LcfString()
+    @DM2FXOBinding("@character_name") @DM2LcfBinding(21) @DM2LcfString()
     public StringR2kStruct graphicCName;
-    @DM2FXOBinding(optional = false, iVar = "@character_index") @DM2LcfBinding(index = 22) @DM2LcfInteger(0)
+    @DM2FXOBinding("@character_index") @DM2LcfBinding(22) @DM2LcfInteger(0)
     public IntegerR2kStruct graphicCIndex;
-    @DM2FXOBinding(optional = false, iVar = "@character_direction") @DM2LcfBinding(index = 23) @DM2LcfInteger(2)
+    @DM2FXOBinding("@character_direction") @DM2LcfBinding(23) @DM2LcfInteger(2)
     public IntegerR2kStruct graphicCDirection;
-    @DM2FXOBinding(optional = false, iVar = "@character_pattern") @DM2LcfBinding(index = 24) @DM2LcfInteger(1)
+    @DM2FXOBinding("@character_pattern") @DM2LcfBinding(24) @DM2LcfInteger(1)
     public IntegerR2kStruct graphicCPattern;
-    @DM2FXOBinding(optional = false, iVar = "@character_blend_mode") @DM2LcfBinding(index = 25) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@character_blend_mode") @DM2LcfBinding(25) @DM2LcfBoolean(false)
     public BooleanR2kStruct graphicCBlendMode;
 
-    @DM2FXOBinding(optional = false, iVar = "@move_type") @DM2LcfBinding(index = 31) @DM2LcfInteger(1)
+    @DM2FXOBinding("@move_type") @DM2LcfBinding(31) @DM2LcfInteger(1)
     public IntegerR2kStruct moveType;
-    @DM2FXOBinding(optional = false, iVar = "@move_freq") @DM2LcfBinding(index = 32) @DM2LcfInteger(3)
+    @DM2FXOBinding("@move_freq") @DM2LcfBinding(32) @DM2LcfInteger(3)
     public IntegerR2kStruct moveFreq;
-    @DM2FXOBinding(optional = false, iVar = "@trigger") @DM2LcfBinding(index = 33) @DM2LcfInteger(0)
+    @DM2FXOBinding("@trigger") @DM2LcfBinding(33) @DM2LcfInteger(0)
     public IntegerR2kStruct trigger;
-    @DM2FXOBinding(optional = false, iVar = "@layer") @DM2LcfBinding(index = 34) @DM2LcfInteger(0)
+    @DM2FXOBinding("@layer") @DM2LcfBinding(34) @DM2LcfInteger(0)
     public IntegerR2kStruct layer;
-    @DM2FXOBinding(optional = false, iVar = "@block_other_events") @DM2LcfBinding(index = 35) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@block_other_events") @DM2LcfBinding(35) @DM2LcfBoolean(false)
     public BooleanR2kStruct blocking;
-    @DM2FXOBinding(optional = false, iVar = "@anim_type") @DM2LcfBinding(index = 36) @DM2LcfInteger(0)
+    @DM2FXOBinding("@anim_type") @DM2LcfBinding(36) @DM2LcfInteger(0)
     public IntegerR2kStruct animType;
-    @DM2FXOBinding(optional = false, iVar = "@move_speed") @DM2LcfBinding(index = 37) @DM2LcfInteger(3)
+    @DM2FXOBinding("@move_speed") @DM2LcfBinding(37) @DM2LcfInteger(3)
     public IntegerR2kStruct moveSpeed;
-    @DM2FXOBinding(optional = false, iVar = "@move_route") @DM2LcfBinding(index = 41)
+    @DM2FXOBinding("@move_route") @DM2LcfBinding(41)
     public MoveRoute moveRoute;
 
-    @DM2FXOBinding(optional = false, iVar = "@list") @DM2LcfSizeBinding(51) @DM2LcfBinding(index = 52)
+    @DM2FXOBinding("@list") @DM2LcfSizeBinding(51) @DM2LcfBinding(52)
     public DM2Array<EventCommand> list;
 
     public EventPage() {

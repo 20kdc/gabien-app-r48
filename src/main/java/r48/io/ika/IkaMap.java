@@ -15,11 +15,11 @@ import r48.io.data.*;
  * Created on November 22, 2018.
  */
 public class IkaMap extends IRIOFixedObject {
-    @DM2FXOBinding(optional = false, iVar = "@data")
+    @DM2FXOBinding("@data")
     public IRIOFixedUser data;
-    @DM2FXOBinding(optional = false, iVar = "@palette")
+    @DM2FXOBinding("@palette")
     public IRIOFixedUser palette;
-    @DM2FXOBinding(optional = false, iVar = "@events")
+    @DM2FXOBinding("@events")
     public IRIOFixedHash<Integer, IkaEvent> events;
 
     public final int defaultWidth;

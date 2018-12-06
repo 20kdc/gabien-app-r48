@@ -5,15 +5,15 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.io.r2k.dm2chk;
+package r48.io.data;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created on December 04, 2018.
+ * Indicates that the field may not be present.
+ * Created on December 06, 2018.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DM2LcfBinding {
-    int value();
+public @interface DM2Optional {
 }

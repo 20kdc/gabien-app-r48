@@ -22,16 +22,16 @@ import java.io.OutputStream;
  * Created on 31/05/17.
  */
 public class EventCommand extends IRIOFixedObject implements IR2kStruct {
-    @DM2FXOBinding(optional = false, iVar = "@code")
+    @DM2FXOBinding("@code")
     public IRIOFixnum code;
 
-    @DM2FXOBinding(optional = false, iVar = "@indent")
+    @DM2FXOBinding("@indent")
     public IRIOFixnum indent;
 
-    @DM2FXOBinding(optional = false, iVar = "@parameters")
+    @DM2FXOBinding("@parameters")
     public ParameterArray parameters;
 
-    @DM2FXOBinding(optional = true, iVar = "@move_commands")
+    @DM2Optional @DM2FXOBinding("@move_commands")
     public IRIOFixedArray<MoveCommand> moveCommands;
 
     public EventCommand() {

@@ -30,7 +30,7 @@ import java.util.Map;
  * Modified from R2kObject on December 4th 2018.
  */
 public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
-    @DM2FXOBinding(optional = true, iVar = "@__LCF__unknown")
+    @DM2Optional @DM2FXOBinding("@__LCF__unknown")
     public IRIOFixedHash<Integer, IRIOFixedUser> unknownChunks;
 
     // --
@@ -46,64 +46,6 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
     @Override
     protected final void initialize() {
         // Disable automatic initialization, permanently
-    }
-
-    protected IR2kInterpretable dm2ReinitializeBound(Field f, boolean present) {
-        IRIO res = trySetFXOChunk(f, present);
-        if (res != null)
-            return (IR2kInterpretable) res;
-        try {
-            return (IR2kInterpretable) f.get(this);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private IRIO trySetFXOChunk(Field f, boolean present) {
-        if (present) {
-            IRIO i = trySetFieldViaAnnotation(f);
-            if (i != null)
-                return i;
-        }
-        DM2FXOBinding fxo = f.getAnnotation(DM2FXOBinding.class);
-        if (fxo != null)
-            if (present || !fxo.optional())
-                return addIVar(fxo.iVar());
-        return null;
-    }
-
-    private IRIO trySetFieldViaAnnotation(Field f) {
-        DM2LcfInteger fxi = f.getAnnotation(DM2LcfInteger.class);
-        if (fxi != null) {
-            try {
-                IntegerR2kStruct i = new IntegerR2kStruct(fxi.value());
-                f.set(this, i);
-                return i;
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        DM2LcfString fxs = f.getAnnotation(DM2LcfString.class);
-        if (fxs != null) {
-            try {
-                StringR2kStruct i = new StringR2kStruct();
-                f.set(this, i);
-                return i;
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        DM2LcfBoolean fxb = f.getAnnotation(DM2LcfBoolean.class);
-        if (fxb != null) {
-            try {
-                BooleanR2kStruct i = new BooleanR2kStruct(fxb.value());
-                f.set(this, i);
-                return i;
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return null;
     }
 
     private void setUnknownChunks() {
@@ -167,7 +109,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
                 if (iri != null) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     if (!iri.exportData(baos))
-                        pcd.put(dlb.index(), baos.toByteArray());
+                        pcd.put(dlb.value(), baos.toByteArray());
                     DM2LcfSizeBinding dlb2 = f.getAnnotation(DM2LcfSizeBinding.class);
                     if (dlb2 != null) {
                         IR2kSizable isi;
@@ -199,25 +141,28 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
 
             DM2LcfBinding dlb = f.getAnnotation(DM2LcfBinding.class);
 
+            boolean needsInitialize = !f.isAnnotationPresent(DM2Optional.class);
             if (dlb != null) {
-                byte[] relevantChunk = pcd.remove(dlb.index());
-                IR2kInterpretable iri = dm2ReinitializeBound(f, relevantChunk != null);
+                byte[] relevantChunk = pcd.remove(dlb.value());
                 if (relevantChunk != null) {
                     try {
+                        IR2kInterpretable iri = (IR2kInterpretable) addField(f);
+                        needsInitialize = false;
                         if (iri == null)
-                            throw new RuntimeException("Chunk " + dlb.index() + " ( " + f + " ) wasn't created on time");
+                            throw new RuntimeException("Chunk " + dlb.value() + " ( " + f + " ) wasn't created on time");
+
                         ByteArrayInputStream bais = new ByteArrayInputStream(relevantChunk);
                         iri.importData(bais);
                         if (bais.available() > 0)
                             if (disableSanity())
-                                throw new RuntimeException("Chunk " + dlb.index() + " ( " + f + " ) had too much data");
+                                throw new RuntimeException("Chunk " + dlb.value() + " ( " + f + " ) had too much data");
                     } catch (IOException ioe) {
                         throw new RuntimeException(ioe);
                     }
                 }
-            } else {
-                trySetFXOChunk(f, false);
             }
+            if (needsInitialize)
+                addField(f);
         }
     }
 
@@ -253,11 +198,33 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
             setUnknownChunks();
             return unknownChunks;
         }
+        for (Field f : cachedFields) {
+            DM2FXOBinding fxo = f.getAnnotation(DM2FXOBinding.class);
+            if (fxo != null) {
+                if (sym.equals(fxo.value())) {
+                    IRIO r = (IRIO) dm2AddField(f);
+                    if (r != null)
+                        return r;
+                    break;
+                }
+            }
+        }
         return dm2AddIVar(sym);
     }
 
+    // This function tries to add a field.
+    public final Object addField(Field f) {
+        DM2FXOBinding fxo = f.getAnnotation(DM2FXOBinding.class);
+        if (fxo != null) {
+            IRIO t = dm2AddIVar(fxo.value());
+            if (t != null)
+                return t;
+        }
+        return dm2AddField(f);
+    }
+
     @Override
-    public void rmIVar(String sym) {
+    public final void rmIVar(String sym) {
         dm2Unpack();
         dm2RmIVar(sym);
     }
@@ -272,16 +239,42 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
         return super.getIVar(sym);
     }
 
+    // NOTE: THE ONLY CALLER FOR EITHER OF THESE SHOULD BE addIVar and addField!
     protected IRIO dm2AddIVar(String sym) {
-        for (Field f : cachedFields) {
-            DM2FXOBinding fxo = f.getAnnotation(DM2FXOBinding.class);
-            if (fxo != null) {
-                if (sym.equals(fxo.iVar())) {
-                    IRIO r = trySetFieldViaAnnotation(f);
-                    if (r != null)
-                        return r;
-                    break;
-                }
+        return null;
+    }
+
+    // Must not handle translation into dm2AddIVar due to the 2 callers.
+    // This instead happens in addIVar and addField.
+    protected Object dm2AddField(Field f) {
+        DM2LcfInteger fxi = f.getAnnotation(DM2LcfInteger.class);
+        if (fxi != null) {
+            try {
+                IntegerR2kStruct i = new IntegerR2kStruct(fxi.value());
+                f.set(this, i);
+                return i;
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        DM2LcfString fxs = f.getAnnotation(DM2LcfString.class);
+        if (fxs != null) {
+            try {
+                StringR2kStruct i = new StringR2kStruct();
+                f.set(this, i);
+                return i;
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        DM2LcfBoolean fxb = f.getAnnotation(DM2LcfBoolean.class);
+        if (fxb != null) {
+            try {
+                BooleanR2kStruct i = new BooleanR2kStruct(fxb.value());
+                f.set(this, i);
+                return i;
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
             }
         }
         return null;
