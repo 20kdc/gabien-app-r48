@@ -9,7 +9,7 @@ package r48.schema;
 
 import gabien.ui.*;
 import r48.FontSizes;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -95,7 +95,7 @@ public class StringLenSchemaElement extends StringSchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UITextBox utb = (UITextBox) super.buildHoldingEditor(target, launcher, path);
         utb.feedback = new IFunction<String, String>() {
             @Override

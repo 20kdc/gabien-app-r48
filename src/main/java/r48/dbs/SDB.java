@@ -474,7 +474,7 @@ public class SDB {
                             final SchemaElement insideThat = get();
                             return new SchemaElement() {
                                 @Override
-                                public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+                                public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
                                     return getSchema(path).buildHoldingEditor(target, launcher, path);
                                 }
 
@@ -486,7 +486,7 @@ public class SDB {
                                 }
 
                                 @Override
-                                public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+                                public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
                                     getSchema(path).modifyVal(target, path, setDefault);
                                 }
                             };
@@ -504,11 +504,11 @@ public class SDB {
                             final SchemaElement insideThat = get();
                             return new SchemaElement() {
                                 @Override
-                                public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+                                public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
                                     return insideThat.buildHoldingEditor(target, launcher, applySchema(target, path));
                                 }
 
-                                private SchemaPath applySchema(final RubyIO host, SchemaPath path) {
+                                private SchemaPath applySchema(final IRIO host, SchemaPath path) {
                                     EnumSchemaElement sce = new EnumSchemaElement(new HashMap<String, String>(), defVal, "INT:" + TXDB.get("ID.")) {
                                         @Override
                                         public void liveUpdate() {
@@ -531,7 +531,7 @@ public class SDB {
                                 }
 
                                 @Override
-                                public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+                                public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
                                     insideThat.modifyVal(target, applySchema(target, path), setDefault);
                                 }
                             };
@@ -945,7 +945,7 @@ public class SDB {
             dur.run();
     }
 
-    private class NameProxySchemaElement extends IRIOAwareSchemaElement implements IProxySchemaElement {
+    private class NameProxySchemaElement extends SchemaElement implements IProxySchemaElement {
         private final String tx;
         private boolean useCache;
         private SchemaElement cache = null;

@@ -10,7 +10,6 @@ package r48.dbs;
 import gabien.ui.IFunction;
 import gabien.ui.UIScrollLayout;
 import r48.AppMain;
-import r48.RubyIO;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.displays.TonePickerSchemaElement;
@@ -124,7 +123,7 @@ public class RPGCommand {
         return paramType.get(i).apply(root);
     }
 
-    public String getParameterName(RubyIO root, int i) {
+    public String getParameterName(IRIO root, int i) {
         if (paramName.size() <= i)
             return TXDB.get("UNK.");
         return paramName.get(i).apply(root);
@@ -138,7 +137,7 @@ public class RPGCommand {
         public int spritesheetTargstr;
         public int tpBase;
 
-        public void applyTo(int idx, UIScrollLayout elementList, RubyIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
+        public void applyTo(int idx, UIScrollLayout elementList, IRIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
             if (hasSpritesheet) {
                 SchemaElement scse = AppMain.schemas.helpers.makeSpriteSelector("]" + idx, "]" + spritesheetTargstr, spritesheetId);
                 elementList.panelsAdd(scse.buildHoldingEditor(targetParamArray, launcher, path));

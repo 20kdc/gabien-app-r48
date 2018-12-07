@@ -17,7 +17,7 @@ import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
-import r48.schema.IRIOAwareSchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -36,7 +36,7 @@ import r48.ui.UIGrid;
  * Checking for the monitorsSubelements requirement...
  * no, the resize does the correct corrections, I believe.
  */
-public class RubyTableSchemaElement<TileHelper> extends IRIOAwareSchemaElement {
+public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     public final int defW;
     public final int defH;
     public final int planes, dimensions;

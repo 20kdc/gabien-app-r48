@@ -16,7 +16,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
-import r48.schema.IRIOAwareSchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.specialized.genpos.GenposAnimRootPanel;
 import r48.schema.specialized.genpos.GenposFramePanelController;
 import r48.schema.specialized.genpos.backend.*;
@@ -28,7 +28,7 @@ import r48.schema.util.SchemaPath;
  * which calls back to this for edit notifications.
  * Created on 2/17/17. "General Positioning" refactor started on July 28th, 2017.
  */
-public class GenposSchemaElement extends IRIOAwareSchemaElement {
+public class GenposSchemaElement extends SchemaElement {
     private String genposType, a1, a2, b1, b2;
     private int framerate;
 

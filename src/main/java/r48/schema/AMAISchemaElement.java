@@ -7,7 +7,6 @@
 
 package r48.schema;
 
-import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
@@ -25,11 +24,8 @@ public class AMAISchemaElement extends OpaqueSchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        boolean overrideIt = true;
-        if (!SchemaElement.ensureType(target, 'i', setDefault))
-            overrideIt = !IRIO.rubyEquals(target, path.lastArrayIndex);
-        if (overrideIt) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+        if (checkType(target, 'i', null, setDefault || !IRIO.rubyEquals(target, path.lastArrayIndex))) {
             // always must be set to this
             target.setDeepClone(path.lastArrayIndex);
             path.changeOccurred(true);

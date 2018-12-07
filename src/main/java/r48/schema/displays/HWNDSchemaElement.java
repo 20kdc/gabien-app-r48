@@ -10,8 +10,8 @@ package r48.schema.displays;
 import gabien.ui.IConsumer;
 import gabien.ui.UIElement;
 import r48.AppMain;
-import r48.RubyIO;
 import r48.dbs.PathSyntax;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -33,7 +33,7 @@ public class HWNDSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
         UIHelpSystem uhs = new UIHelpSystem();
         final HelpSystemController hsc = new HelpSystemController(null, file, uhs);
         uhs.onLinkClick = new IConsumer<Integer>() {
@@ -51,6 +51,6 @@ public class HWNDSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
     }
 }

@@ -8,7 +8,6 @@
 package r48.schema.specialized;
 
 import gabien.ui.UIElement;
-import r48.RubyIO;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
@@ -36,24 +35,24 @@ public class MagicalBindingSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO trueTarget, ISchemaHost launcher, final SchemaPath truePath) {
+    public UIElement buildHoldingEditor(final IRIO trueTarget, ISchemaHost launcher, final SchemaPath truePath) {
         // Use subwatchers to create the backwards binding flow
         SchemaPath sp = createPath(trueTarget, truePath);
         return sp.editor.buildHoldingEditor(sp.targetElement, launcher, sp);
     }
 
-    private SchemaPath createPath(final RubyIO trueTarget, final SchemaPath truePath) {
-        final RubyIO bound = MagicalBinders.toBoundWithCache(binder, trueTarget);
+    private SchemaPath createPath(final IRIO trueTarget, final SchemaPath truePath) {
+        final IRIO bound = MagicalBinders.toBoundWithCache(binder, trueTarget);
         SchemaPath sp = new SchemaPath(new SchemaElement() {
             // This is a fake root element used for binding
             @Override
-            public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+            public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
                 path = path.tagSEMonitor(target, this, true);
                 return inner.buildHoldingEditor(target, launcher, path);
             }
 
             @Override
-            public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+            public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
                 // Regarding what's going on here.
                 // If we're being checked "externally" (think Autocorrect check),
                 //  don't export just yet.
@@ -81,7 +80,7 @@ public class MagicalBindingSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(final RubyIO trueTarget, final SchemaPath truePath, boolean setDefault) {
+    public void modifyVal(final IRIO trueTarget, final SchemaPath truePath, boolean setDefault) {
         if (binder.modifyVal(trueTarget, setDefault))
             truePath.changeOccurred(true);
         SchemaPath sp = createPath(trueTarget, truePath);

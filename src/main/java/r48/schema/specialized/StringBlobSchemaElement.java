@@ -15,8 +15,8 @@ import gabienapp.Application;
 import r48.AdHocSaveLoad;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -30,7 +30,7 @@ import java.io.*;
  */
 public class StringBlobSchemaElement extends SchemaElement {
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         final String fpath = Application.BRAND + "/r48.edit.txt";
 
         UITextButton importer = new UITextButton(TXDB.get("Import"), FontSizes.blobTextHeight, new Runnable() {
@@ -39,7 +39,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                 try {
                     AdHocSaveLoad.prepare();
                     InputStream dis = getCompressionInputStream(GaBIEn.getInFile(fpath));
-                    target.strVal = readStream(dis);
+                    target.putBuffer(readStream(dis));
                     dis.close();
                     path.changeOccurred(false);
                 } catch (IOException ioe) {
@@ -55,7 +55,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                 try {
                     AdHocSaveLoad.prepare();
                     OutputStream os = GaBIEn.getOutFile(fpath);
-                    InputStream dis = getDecompressionInputStream(target.strVal);
+                    InputStream dis = getDecompressionInputStream(target.getBuffer());
                     copyStream(dis, os);
                     dis.close();
                     os.close();
@@ -104,12 +104,9 @@ public class StringBlobSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (SchemaElement.ensureType(target, '\"', setDefault)) {
-            target.strVal = createDefaultByteArray();
-            path.changeOccurred(true);
-        } else if (target.strVal == null) {
-            target.strVal = createDefaultByteArray();
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+        if (SchemaElement.checkType(target, '\"', null, setDefault)) {
+            target.putBuffer(createDefaultByteArray());
             path.changeOccurred(true);
         }
     }

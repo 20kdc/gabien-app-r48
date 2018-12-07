@@ -107,7 +107,7 @@ public class RubyIO extends IRIO {
     public RubyIO setString(byte[] s, String javaEncoding) {
         setNull();
         type = '"';
-        strVal = copyByteArray(s);
+        strVal = s;
         String st = rubyInjectEncoding(this, javaEncoding);
         if (!st.equals(javaEncoding)) {
             try {
@@ -139,7 +139,7 @@ public class RubyIO extends IRIO {
         setNull();
         type = 'u';
         symVal = s;
-        userVal = copyByteArray(data);
+        userVal = data;
         return this;
     }
 
@@ -177,7 +177,7 @@ public class RubyIO extends IRIO {
     public IRIO setBignum(byte[] data) {
         setNull();
         type = 'l';
-        userVal = copyByteArray(data);
+        userVal = data;
         return this;
     }
 

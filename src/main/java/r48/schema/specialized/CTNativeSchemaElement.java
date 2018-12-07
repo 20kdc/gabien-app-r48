@@ -10,8 +10,8 @@ package r48.schema.specialized;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyCT;
-import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -29,9 +29,9 @@ public class CTNativeSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
-        RubyCT rct = new RubyCT(target.userVal);
+        RubyCT rct = new RubyCT(target.getBuffer());
         addField(uiSVL, TXDB.get("R"), 0, rct, path);
         addField(uiSVL, TXDB.get("G"), 8, rct, path);
         addField(uiSVL, TXDB.get("B"), 16, rct, path);
@@ -61,10 +61,11 @@ public class CTNativeSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (target.type != 'u') {
-            target.setUser(cls, new byte[32]);
-            RubyCT rct = new RubyCT(target.userVal);
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+        if (checkType(target, 'u', cls, setDefault)) {
+            byte[] buf = new byte[32];
+            target.setUser(cls, buf);
+            RubyCT rct = new RubyCT(buf);
             rct.innerTable.putDouble(0, 0);
             rct.innerTable.putDouble(8, 0);
             rct.innerTable.putDouble(16, 0);

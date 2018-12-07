@@ -19,6 +19,10 @@ import java.io.*;
  * Methods are named as they will be in the final version of DM2.
  * RubyIO will provide stronger type guarantees on them so the code won't break.
  * The plan is: Make haste, carefully.
+ *
+ * -- ADDITIONAL NOTES --
+ * All byte buffers passed into an IRIO must be copied beforehand unless you want the resulting linking.
+ *
  * Created on November 19, 2018.
  */
 public abstract class IRIO {
@@ -38,6 +42,7 @@ public abstract class IRIO {
 
     // The resulting encoding may not be the one provided.
     // This *should* be overridden for the specific encoding logic.
+    // The byte buffer must be copied by the caller.
     public IRIO setString(byte[] s, String jenc) {
         try {
             return setString(new String(s, jenc));
@@ -144,20 +149,20 @@ public abstract class IRIO {
         } else if (type == 'i') {
             setFX(clone.getFX());
         } else if (type == '"') {
-            setString(clone.getBuffer(), clone.getBufferEnc());
+            setString(copyByteArray(clone.getBuffer()), clone.getBufferEnc());
             // Due to Ruby using encoding IVars, but encoding IVars being an inherent property in other cases,
             //  *DO NOT* support cross-backend IVar retention on strings.
             return this;
         } else if (type == 'f') {
-            setFloat(clone.getBuffer());
+            setFloat(copyByteArray(clone.getBuffer()));
         } else if (type == 'o') {
             setObject(clone.getSymbol());
         } else if (type == ':') {
             setSymbol(clone.getSymbol());
         } else if (type == 'u') {
-            setUser(clone.getSymbol(), clone.getBuffer());
+            setUser(clone.getSymbol(), copyByteArray(clone.getBuffer()));
         } else if (type == 'l') {
-            setBignum(clone.getBuffer());
+            setBignum(copyByteArray(clone.getBuffer()));
         } else if (type == '[') {
             setArray();
             int myi = getALen();

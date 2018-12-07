@@ -12,7 +12,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.IMIUtils;
 import r48.io.PathUtils;
@@ -32,7 +31,7 @@ import java.util.HashMap;
  */
 public class OSStrHashMapSchemaElement extends SchemaElement {
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         tryInitOSSHESEDB();
         if (AppMain.osSHESEDB == null)
             AppMain.launchDialog(TXDB.get("This is basically useless without a locmaps.txt file. Please prepare one by going into RXP mode, System Tools, and pressing 'Retrieve all object strings', then return here."));
@@ -98,15 +97,14 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (target.type != 'l') {
-            if (IntegerSchemaElement.ensureType(target, 'i', setDefault)) {
-                target.fixnumVal = 0;
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+        if (target.getType() != 'l') {
+            if (IntegerSchemaElement.checkType(target, 'i', null, setDefault)) {
+                target.setFX(0);
                 path.changeOccurred(true);
             }
         } else if (setDefault) {
-            IntegerSchemaElement.ensureType(target, 'i', setDefault);
-            target.fixnumVal = 0;
+            target.setFX(0);
             path.changeOccurred(true);
         }
     }

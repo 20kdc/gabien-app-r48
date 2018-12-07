@@ -22,7 +22,7 @@ import r48.ui.UIFieldLayout;
 /**
  * Created on 9 October 2017 from the ashes of IVarSchemaElement
  */
-public class PathSchemaElement extends IRIOAwareSchemaElement implements IFieldSchemaElement {
+public class PathSchemaElement extends SchemaElement implements IFieldSchemaElement {
     public String pStr;
     public String alias;
     public SchemaElement subElem;

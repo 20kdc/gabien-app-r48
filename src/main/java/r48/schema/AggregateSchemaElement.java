@@ -9,7 +9,6 @@ package r48.schema;
 
 import gabien.ui.*;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -22,7 +21,7 @@ import java.util.LinkedList;
  * Basically a UI element masquerading as a schema element.
  * Created on 12/29/16.
  */
-public class AggregateSchemaElement extends IRIOAwareSchemaElement implements IFieldSchemaElement {
+public class AggregateSchemaElement extends SchemaElement implements IFieldSchemaElement {
     public final LinkedList<SchemaElement> aggregate = new LinkedList<SchemaElement>();
     public final SchemaElement impersonatorScroll;
 
@@ -124,7 +123,7 @@ public class AggregateSchemaElement extends IRIOAwareSchemaElement implements IF
     }
 
     // Only to be used if this button is known to cause changeOccurred.
-    public static void hookButtonForPressPreserve(final ISchemaHost host, final SchemaElement elem, final RubyIO target, final UITextButton utb, final String id) {
+    public static void hookButtonForPressPreserve(final ISchemaHost host, final SchemaElement elem, final IRIO target, final UITextButton utb, final String id) {
         final Runnable next = utb.onClick;
         utb.onClick = new Runnable() {
             @Override

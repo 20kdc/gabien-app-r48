@@ -11,7 +11,6 @@ import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
-import r48.dbs.FormatSyntax;
 import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -63,7 +62,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path2) {
         // A note here:
         // Using newWindow on path will cause a growing stack issue:
         //  newWindow always returns DIRECTLY to the path, subwindows use Back which 
@@ -88,7 +87,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             }), new Runnable() {
                 @Override
                 public void run() {
-                    int code = (int) target.getInstVarBySymbol("@code").fixnumVal;
+                    int code = (int) target.getIVar("@code").getFX();
                     RPGCommand rc = database.knownCommands.get(code);
                     String title = code + " : ";
                     String result = TXDB.get("This command isn't known by the schema's CMDB.");
@@ -115,15 +114,15 @@ public class RPGCommandSchemaElement extends SchemaElement {
         return buildSubElem(target, launcher, path);
     }
 
-    private UIElement buildSubElem(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
-        RPGCommand rc = database.knownCommands.get((int) target.getInstVarBySymbol("@code").fixnumVal);
+    private UIElement buildSubElem(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
+        RPGCommand rc = database.knownCommands.get((int) target.getIVar("@code").getFX());
         if (rc != null) {
             if (rc.specialSchema != null)
                 return rc.specialSchema.buildHoldingEditor(target, launcher, path);
-            RubyIO param = target.getInstVarBySymbol("@parameters");
+            IRIO param = target.getIVar("@parameters");
             final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, RPGCommandSchemaElement.this, target);
 
-            if (target.getInstVarBySymbol("@indent") != null) {
+            if (target.getIVar("@indent") != null) {
                 if (showHeader) {
                     SchemaElement ise = new PathSchemaElement("@indent", TXDB.get("@indent"), new ROIntegerSchemaElement(0), false);
                     if (!allowControlOfIndent)
@@ -131,11 +130,9 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
                 }
             }
-            UILabel[] labels = new UILabel[param.arrVal.length];
+            UILabel[] labels = new UILabel[param.getALen()];
             AtomicInteger labelWidth = new AtomicInteger();
-            for (int i = 0; i < param.arrVal.length; i++) {
-                if (param.arrVal.length <= i)
-                    continue;
+            for (int i = 0; i < labels.length; i++) {
                 String paramName = rc.getParameterName(param, i);
                 // Hidden parameters, introduced to deal with the "text as first parameter" thing brought about by R2k
                 if (paramName.equals("_"))
@@ -143,14 +140,10 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 labels[i] = new UILabel(paramName + " ", FontSizes.schemaFieldTextHeight);
                 labelWidth.set(Math.max(labelWidth.get(), labels[i].getWantedSize().width));
             }
-            for (int i = 0; i < param.arrVal.length; i++) {
-                if (param.arrVal.length <= i) {
-                    uiSVL.panelsAdd(new UILabel(FormatSyntax.formatExtended(TXDB.get("WARNING: Missing param. #A"), new RubyIO().setFX(i)), FontSizes.schemaFieldTextHeight));
-                    continue;
-                }
+            for (int i = 0; i < labels.length; i++) {
                 if (labels[i] != null) {
                     SchemaElement ise = rc.getParameterSchema(param, i);
-                    UIElement uie = ise.buildHoldingEditor(param.arrVal[i], launcher, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
+                    UIElement uie = ise.buildHoldingEditor(param.getAElem(i), launcher, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"));
                     uiSVL.panelsAdd(new UIFieldLayout(labels[i], uie, labelWidth, true));
                     rc.paramSpecialTags.get(i).applyTo(i, uiSVL, param, launcher, path);
                 }
@@ -214,23 +207,24 @@ public class RPGCommandSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         path = path.tagSEMonitor(target, this, false);
         actualSchema.modifyVal(target, path, setDefault);
-        RPGCommand rc = database.knownCommands.get((int) target.getInstVarBySymbol("@code").fixnumVal);
+        RPGCommand rc = database.knownCommands.get((int) target.getIVar("@code").getFX());
         if (rc != null) {
             if (rc.specialSchema != null) {
                 // The amount of parameters isn't always fully described.
                 // Cutting down on length is done when the command code is set - That's as good as it gets.
                 rc.specialSchema.modifyVal(target, path, setDefault);
             } else {
-                RubyIO param = target.getInstVarBySymbol("@parameters");
+                IRIO param = target.getIVar("@parameters");
                 // All parameters are described, and the SASE will ensure length is precisely equal
                 SchemaElement parametersSanitySchema = new StandardArraySchemaElement(new OpaqueSchemaElement(), rc.paramName.size(), false, 0, new StandardArrayInterface());
                 parametersSanitySchema.modifyVal(param, path, setDefault);
-                for (int i = 0; i < param.arrVal.length; i++) {
+                int alen = param.getALen();
+                for (int i = 0; i < alen; i++) {
                     SchemaElement ise = rc.getParameterSchema(param, i);
-                    ise.modifyVal(param.arrVal[i], path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), setDefault);
+                    ise.modifyVal(param.getAElem(i), path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), setDefault);
                 }
             }
         }

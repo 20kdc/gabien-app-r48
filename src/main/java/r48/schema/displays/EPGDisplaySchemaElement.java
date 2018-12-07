@@ -14,7 +14,7 @@ import gabien.ui.UIElement;
 import r48.FontSizes;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
-import r48.schema.IRIOAwareSchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -22,7 +22,7 @@ import r48.schema.util.SchemaPath;
  * Solely for the express purpose of Event::Page::Graphic schemas
  * Created on 12/29/16.
  */
-public class EPGDisplaySchemaElement extends IRIOAwareSchemaElement {
+public class EPGDisplaySchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, SchemaPath path) {
         final int sprScale = FontSizes.getSpriteScale();

@@ -17,7 +17,7 @@ import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.IMapViewCallbacks;
 import r48.map.UIMapView;
-import r48.schema.IRIOAwareSchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
@@ -25,7 +25,7 @@ import r48.ui.Art;
 /**
  * Created on 11/06/17.
  */
-public class MapPositionHelperSchemaElement extends IRIOAwareSchemaElement {
+public class MapPositionHelperSchemaElement extends SchemaElement {
     public final String pathA, pathB, pathC;
 
     public MapPositionHelperSchemaElement(String a, String b, String c) {

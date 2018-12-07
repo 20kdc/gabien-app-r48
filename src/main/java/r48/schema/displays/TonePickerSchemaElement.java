@@ -15,11 +15,11 @@ import gabien.ui.UIElement;
 import gabien.ui.UIPublicPanel;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.imagefx.IImageEffect;
 import r48.imagefx.ToneImageEffect;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -42,7 +42,7 @@ public class TonePickerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
         int nr = (int) PathSyntax.parse(target, rP).getFX();
         int ng = (int) PathSyntax.parse(target, gP).getFX();
         int nb = (int) PathSyntax.parse(target, bP).getFX();
@@ -79,7 +79,7 @@ public class TonePickerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
 
     }
 }

@@ -10,7 +10,7 @@ package r48.schema;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -30,29 +30,29 @@ public class LengthChangeSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         // This was hooked up to a button preserver by accident. Useless because it's a toggle now.
-        UITextButton r = new UITextButton(translatedText, FontSizes.schemaFieldTextHeight, new Runnable() {
+        return new UITextButton(translatedText, FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
-                RubyIO[] rubies = new RubyIO[targetLen];
-                for (int i = target.arrVal.length; i < rubies.length; i++)
-                    rubies[i] = new RubyIO().setNull();
-                System.arraycopy(target.arrVal, 0, rubies, 0, Math.min(targetLen, target.arrVal.length));
-                target.arrVal = rubies;
+                int alen;
+                for (alen = target.getALen(); alen < targetLen; alen++)
+                    target.addAElem(alen);
+                for (; alen > targetLen; alen--)
+                    target.rmAElem(alen - 1);
                 path.changeOccurred(false);
             }
-        }).togglable(target.arrVal.length == targetLen);
-        return r;
+        }).togglable(target.getALen() == targetLen);
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         if (defaultLen) {
-            if (SchemaElement.ensureType(target, '[', setDefault)) {
-                target.arrVal = new RubyIO[targetLen];
-                for (int i = 0; i < target.arrVal.length; i++)
-                    target.arrVal[i] = new RubyIO().setNull();
+            if (checkType(target, '[', null, setDefault)) {
+                target.setArray();
+                int alen;
+                while ((alen = target.getALen()) < targetLen)
+                    target.addAElem(alen);
                 path.changeOccurred(true);
             }
         }

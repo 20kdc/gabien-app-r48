@@ -25,7 +25,7 @@ import java.io.IOException;
 /**
  * Created on 12/29/16.
  */
-public class HashSchemaElement extends IRIOAwareSchemaElement {
+public class HashSchemaElement extends SchemaElement {
     public SchemaElement keyElem, valElem;
     public boolean flexible;
 

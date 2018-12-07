@@ -24,7 +24,7 @@ import java.util.LinkedList;
  * and will report warnings to console if IVars are not dealt with.
  * Created on 12/29/16.
  */
-public class ObjectClassSchemaElement extends IRIOAwareSchemaElement {
+public class ObjectClassSchemaElement extends SchemaElement {
     public SchemaElement backing;
     public String symbol;
     public char type;

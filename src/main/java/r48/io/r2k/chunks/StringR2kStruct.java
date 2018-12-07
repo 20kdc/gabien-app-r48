@@ -48,7 +48,7 @@ public class StringR2kStruct extends IRIOFixed implements IR2kStruct {
     @Override
     public IRIO setString(byte[] s, String jenc) {
         if (jenc.equals(IObjectBackend.Factory.encoding)) {
-            data = copyByteArray(s);
+            data = s;
             return this;
         }
         return super.setString(s, jenc);

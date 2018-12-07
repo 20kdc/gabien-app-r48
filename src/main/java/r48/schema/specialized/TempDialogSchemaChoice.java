@@ -8,7 +8,7 @@
 package r48.schema.specialized;
 
 import gabien.ui.UIElement;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -34,14 +34,14 @@ public class TempDialogSchemaChoice extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
         if (update != null)
             update.run();
         return heldDialog;
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         if (hPar.editor != null)
             hPar.editor.modifyVal(hPar.targetElement, hPar, setDefault);
         if (update != null)

@@ -15,7 +15,10 @@ import r48.dbs.RPGCommand;
 import r48.dbs.SDB;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
-import r48.schema.*;
+import r48.schema.AggregateSchemaElement;
+import r48.schema.ArrayElementSchemaElement;
+import r48.schema.SchemaElement;
+import r48.schema.SubwindowSchemaElement;
 import r48.schema.arrays.ArraySchemaElement;
 import r48.schema.arrays.StandardArrayInterface;
 import r48.schema.util.ISchemaHost;
@@ -235,18 +238,18 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         if (addRemove) {
             group[group.length - 1] = new SchemaElement() {
                 @Override
-                public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
+                public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
                     return new UITextButton(addText, FontSizes.schemaFieldTextHeight, new Runnable() {
                         @Override
                         public void run() {
-                            IRIO commandTarg = target.arrVal[start];
+                            IRIO commandTarg = target.getAElem(start);
                             int code = (int) commandTarg.getIVar("@code").getFX();
                             RPGCommand rc = database.knownCommands.get(code);
                             if (rc != null)
                                 for (IGroupBehavior groupBehavior : rc.groupBehaviors) {
-                                    RubyIO ne = target.addAElem(start + length);
+                                    IRIO ne = target.addAElem(start + length);
                                     SchemaPath.setDefaultValue(ne, baseElement, null);
-                                    ne.getInstVarBySymbol("@code").fixnumVal = groupBehavior.getAdditionCode();
+                                    ne.getIVar("@code").setFX(groupBehavior.getAdditionCode());
                                     path.changeOccurred(false);
                                 }
                         }
@@ -254,7 +257,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 }
 
                 @Override
-                public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+                public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
                 }
             };
         }
@@ -276,7 +279,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     private SubwindowSchemaElement getElementContextualSubwindowSchema(final IRIO tracker, final int start) {
         // The reason why the inside changes index but the outside doesn't care,
         //  is because the subwindow gets recreated anytime a change happens, while the inside doesn't.
-        return new SubwindowSchemaElement(new IRIOAwareSchemaElement() {
+        return new SubwindowSchemaElement(new SchemaElement() {
             public int actualStart(IRIO target) {
                 int alen = target.getALen();
                 for (int i = 0; i < alen; i++)

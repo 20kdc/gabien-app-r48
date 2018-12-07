@@ -7,7 +7,7 @@
 
 package r48.schema;
 
-import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * 0 is false, anything else is true,
@@ -19,18 +19,26 @@ public class IntBooleanSchemaElement extends BooleanSchemaElement {
         super(defaultVal);
     }
 
-    public boolean determineTruth(RubyIO rubyIO) {
-        return rubyIO.fixnumVal != 0;
+    @Override
+    public boolean determineTruth(IRIO rubyIO) {
+        return rubyIO.getFX() != 0;
     }
 
-    public boolean modifyValueTruth(RubyIO target, boolean truth) {
-        boolean modified = SchemaElement.ensureType(target, 'i', false);
-        long fv = target.fixnumVal;
-        target.fixnumVal = truth ? 1 : 0;
-        return (fv != target.fixnumVal) || modified;
+    @Override
+    public boolean modifyValueTruth(IRIO target, boolean truth) {
+        boolean modified = checkType(target, 'i', null, false);
+        if (!modified)
+            target.setFX(0);
+        long resVal = truth ? 1 : 0;
+        if (target.getFX() != resVal) {
+            target.setFX(resVal);
+            modified = true;
+        }
+        return modified;
     }
 
-    public boolean truthInvalid(RubyIO target) {
-        return target.type != 'i';
+    @Override
+    public boolean truthInvalid(IRIO target) {
+        return target.getType() != 'i';
     }
 }

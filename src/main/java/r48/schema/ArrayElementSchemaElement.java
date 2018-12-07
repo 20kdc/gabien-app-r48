@@ -29,7 +29,7 @@ import r48.ui.UIFieldLayout;
  * among other things, '_' as a name will act to make a given parameter invisible.
  * Created on 12/31/16.
  */
-public class ArrayElementSchemaElement extends IRIOAwareSchemaElement implements IFieldSchemaElement {
+public class ArrayElementSchemaElement extends SchemaElement implements IFieldSchemaElement {
     public int index;
     public String name;
     public SchemaElement subSchema;

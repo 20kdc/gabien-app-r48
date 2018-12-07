@@ -12,8 +12,8 @@ import gabien.IImage;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.io.PathUtils;
+import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -39,7 +39,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         AppMain.performFullImageFlush();
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
         String[] strs = GaBIEn.listEntries(PathUtils.autoDetectWindows(AppMain.rootPath + pathExtender));
@@ -54,7 +54,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
             UITextButton selectButton = new UITextButton(sStripped, FontSizes.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    target.encString(sStripped, false);
+                    target.setString(sStripped);
                     path.changeOccurred(false);
                     launcher.popObject();
                 }
@@ -92,7 +92,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         // Does nothing - this is solely an editor helper element.
     }
 }

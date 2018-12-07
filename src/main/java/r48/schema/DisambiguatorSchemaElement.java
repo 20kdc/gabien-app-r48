@@ -8,7 +8,6 @@
 package r48.schema;
 
 import gabien.ui.UIElement;
-import r48.RubyIO;
 import r48.dbs.PathSyntax;
 import r48.dbs.ValueSyntax;
 import r48.io.data.IRIO;
@@ -43,7 +42,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path2) {
         final SchemaPath path = path2.tagSEMonitor(target, this, true);
         String iv = getDisambigIndex(target);
         SchemaElement ise = getSchemaElement(iv);
@@ -72,7 +71,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path2, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path2, boolean setDefault) {
         final SchemaPath path = path2.tagSEMonitor(target, this, true);
 
         String iv = getDisambigIndex(target);

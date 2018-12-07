@@ -17,7 +17,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 12/29/16.
  */
-public class StringSchemaElement extends IRIOAwareSchemaElement {
+public class StringSchemaElement extends SchemaElement {
     public final String defaultStr;
     public final char type;
 

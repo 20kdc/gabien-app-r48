@@ -28,7 +28,7 @@ import java.util.HashMap;
  * The system is a lot cleaner now it's having the entire UI rebuilt all the time.
  * Created on 12/30/16.
  */
-public class EnumSchemaElement extends IRIOAwareSchemaElement {
+public class EnumSchemaElement extends SchemaElement {
     // Maps ValueSyntax strings to option text
     public HashMap<String, String> options;
     // Maps option text to output RubyIOs

@@ -18,7 +18,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 12/29/16.
  */
-public class BooleanSchemaElement extends IRIOAwareSchemaElement {
+public class BooleanSchemaElement extends SchemaElement {
     public boolean defaultVal = false;
 
     public BooleanSchemaElement(boolean defVal) {

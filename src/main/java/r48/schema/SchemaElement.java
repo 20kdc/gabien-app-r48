@@ -8,9 +8,6 @@
 package r48.schema;
 
 import gabien.ui.UIElement;
-import gabien.ui.UILabel;
-import r48.FontSizes;
-import r48.RubyIO;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -30,18 +27,6 @@ public abstract class SchemaElement {
                 return true;
         return setDefault;
     }
-    public static boolean ensureType(RubyIO tgt, int t, boolean setDefault) {
-        if (tgt.type != t) {
-            tgt.setNull();
-            tgt.type = t;
-            return true;
-        }
-        return setDefault;
-    }
-
-    public abstract UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path);
-
-    public abstract void modifyVal(RubyIO target, SchemaPath path, boolean setDefault);
 
     // Creates the editor control.
     // Ground rules:
@@ -67,13 +52,7 @@ public abstract class SchemaElement {
     // These rules were determined by trial and error over 5 and a half days.
     // Before the system was even *completed.*
     // Probably best not to break them.
-    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
-        if (target instanceof RubyIO) {
-            return buildHoldingEditor((RubyIO) target, launcher, path);
-        } else {
-            return new UILabel("DO NOT TRANSLATE; COULDN'T MODIFY VALUE, INVOLVED SCHEMA ELEMENT INVOLVED IRIOS\nSUBSYSTEM: " + getClass() + " @ " + this, FontSizes.schemaFieldTextHeight);
-        }
-    }
+    public abstract UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path);
 
     // Modify target to approach the default value, or to correct errors.
     // The type starts as 0 (not '0', but actual numeric 0) and needs to be modified by something to result in a valid object.
@@ -82,11 +61,5 @@ public abstract class SchemaElement {
     // "Primary" types will completely wipe the slate if they're invalid.
     // This means any "annotations" (IVars) will be destroyed, so ensure those are *after* the primary in an aggregate.
     // Hopefully this situation should never affect anything.
-    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        if (target instanceof RubyIO) {
-            modifyVal((RubyIO) target, path, setDefault);
-        } else {
-            System.err.println("Couldn't modify value in " + path + " with " + this + " ; Involved schema element involved IRIOs");
-        }
-    }
+    public abstract void modifyVal(IRIO target, SchemaPath path, boolean setDefault);
 }

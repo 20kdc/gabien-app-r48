@@ -26,6 +26,7 @@ import r48.schema.util.SchemaPath;
 
 /**
  * Installs a set of sensible defaults on command.
+ * NOTE: As of IRIOs this does have a slight bit of weirdness ; it assumes setArray for a few elements leaves the array empty, which may not always be the case.
  * Created on 08/06/17.
  */
 public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
@@ -36,34 +37,34 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         if (mode == 3) {
             UITextButton utb1 = new UITextButton(TXDB.get("Reset Events & Version (use after map change)"), FontSizes.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     // Before doing anything stupid...
-                    long mapId = target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map").fixnumVal;
+                    long mapId = target.getIVar("@party_pos").getIVar("@map").getFX();
                     String mapName = R2kRMLikeMapInfoBackend.sNameFromInt((int) mapId);
                     IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(mapName, null);
                     if (map == null) {
                         AppMain.launchDialog(TXDB.get("The map's invalid, so that's not possible."));
                         return;
                     }
-                    RubyIO saveEvs = target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@events");
-                    saveEvs.hashVal.clear();
+                    IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");
+                    saveEvs.setHash();
                     // Ghosts, become real!
                     IRIO hmr = map.getObject().getIVar("@events");
                     for (IRIO evs : hmr.getHashKeys())
                         R2kSavefileEventAccess.eventAsSaveEvent(saveEvs, mapId, evs, hmr.getHashVal(evs));
                     // @system save_count is in-game save count, not actual System @save_count
-                    target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").setDeepClone(getSaveCount(map.getObject()));
+                    target.getIVar("@party_pos").getIVar("@map_save_count").setDeepClone(getSaveCount(map.getObject()));
 
                     IRIO ldbSys = AppMain.objectDB.getObject("RPG_RT.ldb").getObject().getIVar("@system");
                     IRIO saveCount = getSaveCount(ldbSys);
 
-                    target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@db_save_count").setDeepClone(saveCount);
-                    initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@lower_tile_remap"));
-                    initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@upper_tile_remap"));
+                    target.getIVar("@party_pos").getIVar("@db_save_count").setDeepClone(saveCount);
+                    initTable(target.getIVar("@map_info").getIVar("@lower_tile_remap"));
+                    initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
 
                     path.changeOccurred(false);
                     AppMain.launchDialog(TXDB.get("Reset events to map state and set versioning."));
@@ -72,11 +73,11 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
             UITextButton utb2 = new UITextButton(TXDB.get("Try To Get RPG_RT To Reset The Map"), FontSizes.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    RubyIO saveEvs = target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@events");
-                    saveEvs.hashVal.clear();
-                    target.getInstVarBySymbol("@party_pos").getInstVarBySymbol("@map_save_count").setFX(0);
-                    initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@lower_tile_remap"));
-                    initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@upper_tile_remap"));
+                    IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");
+                    saveEvs.setHash();
+                    target.getIVar("@party_pos").getIVar("@map_save_count").setFX(0);
+                    initTable(target.getIVar("@map_info").getIVar("@lower_tile_remap"));
+                    initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
 
                     path.changeOccurred(false);
                     AppMain.launchDialog(TXDB.get("Ok, cleaned up. If RPG_RT loads this save, the map will probably be reset."));
@@ -98,48 +99,46 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         if (setDefault) {
             // Target is RPG::Database.
             // Note that this relies on schema defaults for the most part,
             // it just puts some stuff that isn't so easily definable into place.
             // Tasks:
-            RubyIO sub = null;
+            IRIO sub;
             switch (mode) {
                 case 0:
                     // 1. Install a basic Actor
-                    SchemaPath.setDefaultValue(target.getInstVarBySymbol("@actors").addHashVal(new RubyIO().setFX(1)), AppMain.schemas.getSDBEntry("RPG::Actor"), new RubyIO().setFX(1));
-                    target.getInstVarBySymbol("@system").getInstVarBySymbol("@party").arrVal = new RubyIO[] {
-                            new RubyIO().setFX(1)
-                    };
+                    SchemaPath.setDefaultValue(target.getIVar("@actors").addHashVal(new RubyIO().setFX(1)), AppMain.schemas.getSDBEntry("RPG::Actor"), new RubyIO().setFX(1));
+                    target.getIVar("@system").getIVar("@party").setArray().addAElem(0).setFX(1);
                     // 2. Install a tileset
-                    SchemaPath.setDefaultValue(target.getInstVarBySymbol("@tilesets").addHashVal(new RubyIO().setFX(1)), AppMain.schemas.getSDBEntry("RPG::Tileset"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(target.getIVar("@tilesets").addHashVal(new RubyIO().setFX(1)), AppMain.schemas.getSDBEntry("RPG::Tileset"), new RubyIO().setFX(1));
                     // 3. Setup Terrain
-                    SchemaPath.setDefaultValue(target.getInstVarBySymbol("@terrains").addHashVal(new RubyIO().setFX(1)), AppMain.schemas.getSDBEntry("RPG::Terrain"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(target.getIVar("@terrains").addHashVal(new RubyIO().setFX(1)), AppMain.schemas.getSDBEntry("RPG::Terrain"), new RubyIO().setFX(1));
                     // 4. Battle System initialization
-                    sub = target.getInstVarBySymbol("@animations").addHashVal(new RubyIO().setFX(1));
+                    sub = target.getIVar("@animations").addHashVal(new RubyIO().setFX(1));
                     SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::Animation"), new RubyIO().setFX(1));
-                    sub.getInstVarBySymbol("@name").setString("Default Fallback Animation", false);
+                    sub.getIVar("@name").setString(TXDB.get("Default Fallback Animation"));
 
-                    sub = target.getInstVarBySymbol("@states").addHashVal(new RubyIO().setFX(1));
+                    sub = target.getIVar("@states").addHashVal(new RubyIO().setFX(1));
                     SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::State"), new RubyIO().setFX(1));
                     // These are the minimum settings for death to work correctly.
-                    sub.getInstVarBySymbol("@name").setString("Death", false);
-                    sub.getInstVarBySymbol("@restriction").fixnumVal = 1;
+                    sub.getIVar("@name").setString(TXDB.get("Death"));
+                    sub.getIVar("@restriction").setFX(1);
 
-                    sub = target.getInstVarBySymbol("@battle_anim_sets_2k3").addHashVal(new RubyIO().setFX(1));
+                    sub = target.getIVar("@battle_anim_sets_2k3").addHashVal(new RubyIO().setFX(1));
                     SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::BattlerAnimationSet"), new RubyIO().setFX(1));
-                    sub.getInstVarBySymbol("@name").setString("Default Fallback AnimSet", false);
+                    sub.getIVar("@name").setString(TXDB.get("Default Fallback AnimSet"));
 
                     // 5. Default enemy data
-                    sub = target.getInstVarBySymbol("@enemies").addHashVal(new RubyIO().setFX(1));
+                    sub = target.getIVar("@enemies").addHashVal(new RubyIO().setFX(1));
                     SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::Enemy"), new RubyIO().setFX(1));
 
-                    sub = target.getInstVarBySymbol("@troops").addHashVal(new RubyIO().setFX(1));
+                    sub = target.getIVar("@troops").addHashVal(new RubyIO().setFX(1));
                     SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::Troop"), new RubyIO().setFX(1));
-                    sub.getInstVarBySymbol("@name").encString("Slime x1", false);
+                    sub.getIVar("@name").setString(TXDB.get("Slime x1"));
 
-                    sub = sub.getInstVarBySymbol("@members");
+                    sub = sub.getIVar("@members");
                     sub.addAElem(0).setNull();
                     SchemaPath.setDefaultValue(sub.addAElem(1), AppMain.schemas.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(1));
 
@@ -153,32 +152,31 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     break;
                 case 1:
                     // 1. Fix root
-                    sub = target.getInstVarBySymbol("@map_infos").addHashVal(new RubyIO().setFX(0));
+                    sub = target.getIVar("@map_infos").addHashVal(new RubyIO().setFX(0));
                     SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(0));
-                    sub.getInstVarBySymbol("@name").setString("Root", false);
-                    sub.getInstVarBySymbol("@parent_id").fixnumVal = 0;
-                    sub.getInstVarBySymbol("@type").fixnumVal = 0;
+                    sub.getIVar("@name").setString("Root");
+                    sub.getIVar("@parent_id").setFX(0);
+                    sub.getIVar("@type").setFX(0);
 
                     // 2. Create basic map entry
-                    sub = target.getInstVarBySymbol("@map_infos").addHashVal(new RubyIO().setFX(1));
+                    sub = target.getIVar("@map_infos").addHashVal(new RubyIO().setFX(1));
                     SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(1));
-                    sub.getInstVarBySymbol("@name").setString("First Map", false);
-                    sub.getInstVarBySymbol("@parent_id").fixnumVal = 0;
-                    sub.getInstVarBySymbol("@type").fixnumVal = 1;
+                    sub.getIVar("@name").setString("First Map");
+                    sub.getIVar("@parent_id").setFX(0);
+                    sub.getIVar("@type").setFX(1);
 
                     // 3. Setup order
-                    target.getInstVarBySymbol("@map_order").arrVal = new RubyIO[] {
-                            new RubyIO().setFX(0),
-                            new RubyIO().setFX(1),
-                    };
+                    sub = target.getIVar("@map_order").setArray();
+                    sub.addAElem(0).setFX(0);
+                    sub.addAElem(1).setFX(1);
                     // 4. Setup start
-                    target.getInstVarBySymbol("@start").getInstVarBySymbol("@player_map").fixnumVal = 1;
+                    target.getIVar("@start").getIVar("@player_map").setFX(1);
                     break;
                 case 2:
                     // Nobody expects tilesets to act the way they do on defaults, FIX IT.
                     // I was informed to set upper to false by default, and though I have done that for most tiles,
                     //  my having to do this is a natural consequence.
-                    RubyTable rt = new RubyTable(target.getInstVarBySymbol("@highpass_data").userVal);
+                    RubyTable rt = new RubyTable(target.getIVar("@highpass_data").getBuffer());
                     rt.setTiletype(0, 0, 0, (short) 0x1F);
                     break;
                 case 3:
@@ -196,14 +194,14 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     }
 
     // sets target to the relevant map ID based on vague information
-    private void mapIdMagic(RubyIO target, SchemaPath root) {
+    private void mapIdMagic(IRIO target, SchemaPath root) {
         String str = AppMain.objectDB.getIdByObject(root.root);
         if (str == null)
             return;
         if (str.startsWith("Map"))
             if (str.endsWith(".lmu")) {
                 try {
-                    target.fixnumVal = Integer.parseInt(str.substring(3, str.length() - 4));
+                    target.setFX(Integer.parseInt(str.substring(3, str.length() - 4)));
                 } catch (Exception e) {
                     // nope
                 }
@@ -213,58 +211,57 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                 target.setDeepClone(root.targetElement.getIVar("@party_pos").getIVar("@map"));
     }
 
-    private void saveFileSetup(RubyIO target) {
-        setupSaveCharacter(target.getInstVarBySymbol("@party_pos"), "@player_map", "@player_x", "@player_y");
-        setupSaveCharacter(target.getInstVarBySymbol("@boat_pos"), "@boat_map", "@boat_x", "@boat_y");
-        setupSaveCharacter(target.getInstVarBySymbol("@ship_pos"), "@ship_map", "@ship_x", "@ship_y");
-        setupSaveCharacter(target.getInstVarBySymbol("@airship_pos"), "@airship_map", "@airship_x", "@airship_y");
+    private void saveFileSetup(IRIO target) {
+        setupSaveCharacter(target.getIVar("@party_pos"), "@player_map", "@player_x", "@player_y");
+        setupSaveCharacter(target.getIVar("@boat_pos"), "@boat_map", "@boat_x", "@boat_y");
+        setupSaveCharacter(target.getIVar("@ship_pos"), "@ship_map", "@ship_x", "@ship_y");
+        setupSaveCharacter(target.getIVar("@airship_pos"), "@airship_map", "@airship_x", "@airship_y");
         // copy over stuff
-        RubyIO savSys = target.getInstVarBySymbol("@system");
+        IRIO savSys = target.getIVar("@system");
         IRIO ldb = AppMain.objectDB.getObject("RPG_RT.ldb").getObject();
         IRIO ldbSys = ldb.getIVar("@system");
 
         // Copy over stuff that isn't optional (hmm. Should it be optional?)
-        target.getInstVarBySymbol("@party").getInstVarBySymbol("@party").setDeepClone(ldbSys.getIVar("@party"));
-        savSys.getInstVarBySymbol("@font_id").setDeepClone(ldbSys.getIVar("@font_id"));
+        target.getIVar("@party").getIVar("@party").setDeepClone(ldbSys.getIVar("@party"));
+        savSys.getIVar("@font_id").setDeepClone(ldbSys.getIVar("@font_id"));
 
-        initializeArrayWithClones(savSys.getInstVarBySymbol("@switches"), ldb.getIVar("@switches"), new RubyIO().setBool(false));
-        initializeArrayWithClones(savSys.getInstVarBySymbol("@variables"), ldb.getIVar("@variables"), new RubyIO().setFX(0));
+        initializeArrayWithClones(savSys.getIVar("@switches"), ldb.getIVar("@switches"), new RubyIO().setBool(false));
+        initializeArrayWithClones(savSys.getIVar("@variables"), ldb.getIVar("@variables"), new RubyIO().setFX(0));
 
-        for (String iv : savSys.iVarKeys)
+        for (String iv : savSys.getIVars())
             if (iv.endsWith("_se") || iv.endsWith("_music") || iv.endsWith("_fadein") || iv.endsWith("_fadeout"))
-                savSys.getInstVarBySymbol(iv).setDeepClone(ldbSys.getIVar(iv));
+                savSys.getIVar(iv).setDeepClone(ldbSys.getIVar(iv));
 
         // table init!
-        initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@lower_tile_remap"));
-        initTable(target.getInstVarBySymbol("@map_info").getInstVarBySymbol("@upper_tile_remap"));
+        initTable(target.getIVar("@map_info").getIVar("@lower_tile_remap"));
+        initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
     }
 
-    private void initTable(RubyIO instVarBySymbol) {
-        RubyTable rt = new RubyTable(instVarBySymbol.userVal);
+    private void initTable(IRIO instVarBySymbol) {
+        RubyTable rt = new RubyTable(instVarBySymbol.getBuffer());
         for (int i = 0; i < 0x90; i++)
             rt.setTiletype(i, 0, 0, (short) i);
     }
 
-    private void initializeArrayWithClones(RubyIO instVarBySymbol, IRIO length, RubyIO rubyIO) {
+    private void initializeArrayWithClones(IRIO instVarBySymbol, IRIO length, IRIO rubyIO) {
         int maxVal = 0;
         for (IRIO rio : length.getHashKeys())
             maxVal = Math.max((int) rio.getFX(), maxVal);
-        instVarBySymbol.arrVal = new RubyIO[maxVal];
-        for (int i = 0; i < instVarBySymbol.arrVal.length; i++)
-            instVarBySymbol.arrVal[i] = new RubyIO().setDeepClone(rubyIO);
+        for (int i = 0; i < maxVal; i++)
+            instVarBySymbol.addAElem(i).setDeepClone(rubyIO);
     }
 
-    private void setupSaveCharacter(RubyIO chr, String s, String s1, String s2) {
+    private void setupSaveCharacter(IRIO chr, String s, String s1, String s2) {
         IRIO lmt = AppMain.objectDB.getObject("RPG_RT.lmt").getObject().getIVar("@start");
         IRIO a = lmt.getIVar(s);
         IRIO b = lmt.getIVar(s1);
         IRIO c = lmt.getIVar(s2);
         if (a != null)
-            chr.getInstVarBySymbol("@map").setDeepClone(a);
+            chr.getIVar("@map").setDeepClone(a);
         if (b != null)
-            chr.getInstVarBySymbol("@x").setDeepClone(b);
+            chr.getIVar("@x").setDeepClone(b);
         if (c != null)
-            chr.getInstVarBySymbol("@y").setDeepClone(c);
+            chr.getIVar("@y").setDeepClone(c);
     }
 
     public static void upgradeDatabase(IRIO root) {

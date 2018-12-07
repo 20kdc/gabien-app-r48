@@ -18,7 +18,6 @@ import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
-import r48.schema.IRIOAwareSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -30,7 +29,7 @@ import java.util.LinkedList;
  * Notably, abstracting away sizeFixed and atLeastOne would just be an overcomplication.
  * Created on 12/28/16. Abstractified 16 Feb 2017.
  */
-public abstract class ArraySchemaElement extends IRIOAwareSchemaElement {
+public abstract class ArraySchemaElement extends SchemaElement {
     public int sizeFixed, indexDisplayOffset;
     public int atLeast;
 

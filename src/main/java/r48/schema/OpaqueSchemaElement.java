@@ -19,7 +19,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 12/28/16.
  */
-public class OpaqueSchemaElement extends IRIOAwareSchemaElement {
+public class OpaqueSchemaElement extends SchemaElement {
 
     public String getMessage(IRIO v) {
         return TXDB.get("Can't edit: ") + v;

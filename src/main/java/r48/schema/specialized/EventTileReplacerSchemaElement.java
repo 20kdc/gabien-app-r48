@@ -9,9 +9,9 @@ package r48.schema.specialized;
 
 import gabien.ui.UIElement;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.PathSyntax;
 import r48.dbs.TSDB;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -33,7 +33,7 @@ public class EventTileReplacerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         final UITileGrid r = new UITileGrid(launcher.getContextRenderer(), layer, 0, displayMap.mapping.length, 0, displayMap.mapping, "This text can't be seen.", false, FontSizes.getSpriteScale());
         if (PathSyntax.parse(target, charName).decString().length() == 0)
             r.setSelected((int) PathSyntax.parse(target, charIdx).getFX());
@@ -49,7 +49,7 @@ public class EventTileReplacerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         // Do nothing, shouldn't act as schema, just an embeddable editing component
     }
 }

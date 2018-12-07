@@ -20,7 +20,7 @@ import r48.schema.util.SchemaPath;
  * Allows for things to disappear & appear as needed.
  * Created on 04/08/17.
  */
-public class HiddenSchemaElement extends IRIOAwareSchemaElement implements IProxySchemaElement {
+public class HiddenSchemaElement extends SchemaElement implements IProxySchemaElement {
     public final SchemaElement content;
     public final IFunction<IRIO, Boolean> show;
 

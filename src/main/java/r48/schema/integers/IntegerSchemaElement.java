@@ -14,7 +14,7 @@ import gabien.ui.UIScrollLayout;
 import r48.FontSizes;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
-import r48.schema.IRIOAwareSchemaElement;
+import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -23,7 +23,7 @@ import r48.schema.util.SchemaPath;
  * Thus, buildHoldingEditor has been finaled.
  * Created on 12/29/16.
  */
-public class IntegerSchemaElement extends IRIOAwareSchemaElement {
+public class IntegerSchemaElement extends SchemaElement {
     public long defaultInt;
 
     public IntegerSchemaElement(long i) {

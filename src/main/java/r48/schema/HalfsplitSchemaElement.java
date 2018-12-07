@@ -16,7 +16,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 29/07/17.
  */
-public class HalfsplitSchemaElement extends IRIOAwareSchemaElement {
+public class HalfsplitSchemaElement extends SchemaElement {
     public SchemaElement a, b;
     public double weight = 0.5d;
 

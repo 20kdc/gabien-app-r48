@@ -13,7 +13,6 @@ import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 
 public class HashObjectSchemaElement extends SchemaElement {
@@ -28,18 +27,18 @@ public class HashObjectSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(RubyIO target, ISchemaHost launcher, SchemaPath path) {
+    public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
         return HiddenSchemaElement.makeHiddenElement();
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
-        if (SchemaElement.ensureType(target, '{', setDefault && (!inner))) {
-            target.hashVal = new HashMap<IRIO, IRIO>();
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+        if (checkType(target, '{', null, setDefault && (!inner))) {
+            target.setHash();
             path.changeOccurred(true);
         } else {
             LinkedList<IRIO> keys = new LinkedList<IRIO>();
-            for (IRIO key : target.hashVal.keySet()) {
+            for (IRIO key : target.getHashKeys()) {
                 boolean okay = false;
                 for (RubyIO k2 : allowedKeys) {
                     if (IRIO.rubyEquals(key, k2)) {
@@ -51,7 +50,7 @@ public class HashObjectSchemaElement extends SchemaElement {
                     keys.add(key);
             }
             for (IRIO k : keys)
-                target.hashVal.remove(k);
+                target.removeHashVal(k);
             if (keys.size() > 0)
                 path.changeOccurred(true);
         }

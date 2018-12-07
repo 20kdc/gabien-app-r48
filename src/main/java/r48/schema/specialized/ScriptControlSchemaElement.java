@@ -16,6 +16,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.PathUtils;
+import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -34,7 +35,7 @@ import java.util.zip.InflaterInputStream;
  */
 public class ScriptControlSchemaElement extends SchemaElement {
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
 
         final UITextButton importer = new UITextButton(TXDB.get("Import scripts/*.rb"), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
@@ -59,14 +60,15 @@ public class ScriptControlSchemaElement extends SchemaElement {
                     GaBIEn.makeDirectories(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts"));
                     OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts/_scripts.txt"));
                     PrintStream ps = new PrintStream(os, false, "UTF-8");
-                    for (int i = 0; i < target.arrVal.length; i++) {
-                        String name = target.arrVal[i].getAElem(1).decString();
+                    int alen = target.getALen();
+                    for (int i = 0; i < alen; i++) {
+                        String name = target.getAElem(i).getAElem(1).decString();
                         // Just in case...
                         name = name.replace(':', '_');
                         name = name.replace('/', '_');
                         name = name.replace('\\', '_');
                         // need to inflate
-                        byte[] inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.arrVal[i].getAElem(2).getBuffer())));
+                        byte[] inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.getAElem(i).getAElem(2).getBuffer())));
                         // target.arrVal[i].arrVal[2];
 
                         boolean disable = false;
@@ -176,7 +178,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
 
     }
 }
