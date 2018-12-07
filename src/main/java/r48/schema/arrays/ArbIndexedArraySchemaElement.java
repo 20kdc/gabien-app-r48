@@ -7,7 +7,7 @@
 
 package r48.schema.arrays;
 
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
@@ -33,7 +33,7 @@ public class ArbIndexedArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    protected boolean autoCorrectArray(RubyIO array, SchemaPath path) {
+    protected boolean autoCorrectArray(IRIO array, SchemaPath path) {
         return false;
     }
 
@@ -46,7 +46,7 @@ public class ArbIndexedArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    protected int elementPermissionsLevel(int i, RubyIO target) {
+    protected int elementPermissionsLevel(int i, IRIO target) {
         if (i < indexOffset)
             return 0;
         return super.elementPermissionsLevel(i, target);

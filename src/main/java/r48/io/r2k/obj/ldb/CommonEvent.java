@@ -7,45 +7,43 @@
 
 package r48.io.r2k.obj.ldb;
 
-import gabien.ui.ISupplier;
-import r48.RubyIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.chunks.*;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.IRIO;
+import r48.io.r2k.chunks.BooleanR2kStruct;
+import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.struct.EventCommand;
 
 /**
  * COPY jun6-2017
  * fixed up later that day along with part of Item and all of Skill.
  */
-public class CommonEvent extends R2kObject {
-    public StringR2kStruct name = new StringR2kStruct();
-    public IntegerR2kStruct trigger = new IntegerR2kStruct(0);
-    public BooleanR2kStruct conditionSwitch = new BooleanR2kStruct(false);
-    public IntegerR2kStruct switchId = new IntegerR2kStruct(1);
-    public ArraySizeR2kInterpretable<EventCommand> listSize = new ArraySizeR2kInterpretable<EventCommand>();
-    public ArrayR2kStruct<EventCommand> list = new ArrayR2kStruct<EventCommand>(listSize, new ISupplier<EventCommand>() {
-        @Override
-        public EventCommand get() {
-            return new EventCommand();
-        }
-    });
+public class CommonEvent extends DM2R2kObject {
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
+    public StringR2kStruct name;
+    @DM2FXOBinding("@trigger") @DM2LcfBinding(11) @DM2LcfInteger(0)
+    public IntegerR2kStruct trigger;
+    @DM2FXOBinding("@condition_switch") @DM2LcfBinding(12) @DM2LcfBoolean(false)
+    public BooleanR2kStruct conditionSwitch;
+    @DM2FXOBinding("@condition_switch_id") @DM2LcfBinding(13) @DM2LcfInteger(1)
+    public IntegerR2kStruct switchId;
+    @DM2FXOBinding("@list") @DM2LcfSizeBinding(21) @DM2LcfBinding(22)
+    public DM2Array<EventCommand> list;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, name, "@name"),
-                new Index(0x0B, trigger, "@trigger"),
-                new Index(0x0C, conditionSwitch, "@condition_switch"),
-                new Index(0x0D, switchId, "@condition_switch_id"),
-                new Index(0x15, listSize),
-                new Index(0x16, list, "@list")
-        };
+    public CommonEvent() {
+        super("RPG::CommonEvent");
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::CommonEvent", true);
-        asRIOISF(rio);
-        return rio;
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@list"))
+            return list = new DM2Array<EventCommand>() {
+                @Override
+                public EventCommand newValue() {
+                    return new EventCommand();
+                }
+            };
+        return super.dm2AddIVar(sym);
     }
 }

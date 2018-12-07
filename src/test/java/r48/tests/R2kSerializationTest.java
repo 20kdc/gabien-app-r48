@@ -30,12 +30,21 @@ public class R2kSerializationTest {
         AppMain.schemas.startupSanitizeDictionaries();
         AppMain.schemas.updateDictionaries(null);
         AppMain.schemas.confirmAllExpectationsMet();
+
+        String[] fileDefs = new String[] {
+                "hello.lmu",
+                "world.ldb",
+                "and.lmt",
+                "you.lsd",
+        };
         // Save it, but skip past most of ObjectDB since it will not be queried in future & it uses UI on failure.
-        for (String s : AppMain.schemas.listFileDefs())
-            AppMain.objectDB.getObject(s).save();
+        AppMain.objectDB.getObject("hello.lmu", "RPG::Map").save();
+        AppMain.objectDB.getObject("world.ldb", "RPG::Database").save();
+        AppMain.objectDB.getObject("and.lmt", "RPG::MapTree").save();
+        AppMain.objectDB.getObject("you.lsd", "RPG::Save").save();
         // Kills off the old ObjectDB
         newIOBackend();
-        for (String s : AppMain.schemas.listFileDefs()) {
+        for (String s : fileDefs) {
             IObjectBackend.ILoadedObject i = AppMain.objectDB.getObject(s, null);
             Assert.assertNotNull(i);
         }

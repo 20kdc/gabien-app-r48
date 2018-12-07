@@ -103,6 +103,10 @@ public class Terms extends IRIOFixed implements IR2kStruct {
 
     @Override
     public void importData(InputStream bais) throws IOException {
+        importTermlike(bais, mapping, termArray);
+    }
+
+    public static void importTermlike(InputStream bais, int[] map, StringR2kStruct[] termArray) throws IOException {
         for (int i = 0; i < termArray.length; i++)
             termArray[i] = new StringR2kStruct();
         while (true) {
@@ -111,8 +115,8 @@ public class Terms extends IRIOFixed implements IR2kStruct {
                 break;
             int len = R2kUtil.readLcfVLI(bais);
             byte[] data = IntUtils.readBytes(bais, len);
-            for (int i = 0; i < mapping.length; i++) {
-                if (mapping[i] == idx) {
+            for (int i = 0; i < map.length; i++) {
+                if (map[i] == idx) {
                     termArray[i].importData(new ByteArrayInputStream(data));
                     break;
                 }
@@ -122,15 +126,19 @@ public class Terms extends IRIOFixed implements IR2kStruct {
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
+        exportTermlike(baos, mapping, termArray);
+        return false;
+    }
+
+    public static void exportTermlike(OutputStream baos, int[] map, StringR2kStruct[] termArray) throws IOException {
         for (int i = 0; i < termArray.length; i++) {
             ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
             termArray[i].exportData(baos2);
             byte[] data = baos2.toByteArray();
-            R2kUtil.writeLcfVLI(baos, mapping[i]);
+            R2kUtil.writeLcfVLI(baos, map[i]);
             R2kUtil.writeLcfVLI(baos, data.length);
             baos.write(data);
         }
         baos.write(0);
-        return false;
     }
 }

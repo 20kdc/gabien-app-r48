@@ -12,6 +12,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 
 import java.util.LinkedList;
 
@@ -57,7 +58,7 @@ public class PagerArrayInterface implements IArrayInterface {
                     }
                 }));
             }
-            final RubyIO[] copyMe = positions[i].elements;
+            final IRIO[] copyMe = positions[i].elements;
             if (copyMe != null) {
                 barLayout.panelsAdd(new UITextButton(TXDB.get("Copy"), FontSizes.schemaFieldTextHeight, new Runnable() {
                     @Override
@@ -65,7 +66,7 @@ public class PagerArrayInterface implements IArrayInterface {
                         RubyIO rio = new RubyIO();
                         rio.type = '[';
 
-                        rio.arrVal = new RubyIO[copyMe.length];
+                        rio.arrVal = new IRIO[copyMe.length];
                         for (int j = 0; j < copyMe.length; j++)
                             rio.arrVal[j] = new RubyIO().setDeepClone(copyMe[j]);
 

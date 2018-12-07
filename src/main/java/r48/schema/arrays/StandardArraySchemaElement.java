@@ -7,7 +7,7 @@
 
 package r48.schema.arrays;
 
-import r48.RubyIO;
+import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -38,7 +38,7 @@ public class StandardArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    protected boolean autoCorrectArray(RubyIO array, SchemaPath path) {
+    protected boolean autoCorrectArray(IRIO array, SchemaPath path) {
         return false;
     }
 

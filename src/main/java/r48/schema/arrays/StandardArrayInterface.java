@@ -12,6 +12,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 import r48.ui.spacing.UIIndentThingy;
@@ -95,7 +96,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                                    Runnable term = null;
                                                    // allowedDelete is used to make sure that nothing gets deleted that shouldn't be.
                                                    // The commented printlns here are for debugging.
-                                                   HashSet<RubyIO> allowedDelete = new HashSet<RubyIO>();
+                                                   HashSet<IRIO> allowedDelete = new HashSet<IRIO>();
                                                    for (int j = fixedStart; j <= fixedEnd; j++)
                                                        if (effectivePositions[j].elements != null)
                                                            Collections.addAll(allowedDelete, effectivePositions[j].elements);
@@ -115,7 +116,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                                            break;
                                                        }
                                                        boolean aok = true;
-                                                       for (RubyIO rio : effectivePositions[fixedStart].elements) {
+                                                       for (IRIO rio : effectivePositions[fixedStart].elements) {
                                                            if (!allowedDelete.contains(rio)) {
                                                                aok = false;
                                                                break;
@@ -157,7 +158,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                         LinkedList<RubyIO> resBuild = new LinkedList<RubyIO>();
                                         for (int j = selectedStart; j <= selectedEnd; j++)
                                             if (positions[j].elements != null)
-                                                for (RubyIO rio2 : positions[j].elements)
+                                                for (IRIO rio2 : positions[j].elements)
                                                     resBuild.add(new RubyIO().setDeepClone(rio2));
 
                                         rio.arrVal = resBuild.toArray(new RubyIO[0]);

@@ -37,8 +37,8 @@ public class Troop extends DM2R2kObject {
     @DM2FXOBinding("@randomized_memberset_2k3") @DM2LcfBinding(6) @DM2LcfBoolean(false)
     public BooleanR2kStruct appearRandomly;
 
-    // Actually a SparseArrayAR2kStruct<TroopPage>, but this is "heavily-deferred",
-    //  thanks to Final Tear 3.
+    // Final Tear 3 has these be massive enough that if you try copy/pasting the entire troop database,
+    //  R48 will effectively freeze for a while as it unpacks everything. It will then crash, due to an out of memory error.
     @DM2FXOBinding("@pages") @DM2LcfBinding(11) @DM2LcfCompatArray(TroopPage.class)
     public CompatSparseArrayHR2kStruct<TroopPage> pages;
 

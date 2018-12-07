@@ -5,37 +5,26 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.io.r2k.obj.ldb;
+package r48.io.r2k.struct;
 
-import r48.RubyIO;
-import r48.io.data.IRIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.chunks.R2kObject;
 import r48.io.r2k.chunks.StringR2kStruct;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Created on 05/06/17.
  */
-public class SVStore extends R2kObject {
-    public StringR2kStruct name = new StringR2kStruct();
-
+public class SVStore extends StringR2kStruct {
     @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, name)
-        };
+    public void importData(InputStream bais) throws IOException {
+        Terms.importTermlike(bais, new int[] {1}, new StringR2kStruct[] {this});
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO str = name.asRIO();
-        asRIOISF(str);
-        return str;
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        name.fromRIO(src);
-        fromRIOISF(src);
+    public boolean exportData(OutputStream baos) throws IOException {
+        Terms.exportTermlike(baos, new int[] {1}, new StringR2kStruct[] {this});
+        return false;
     }
 }

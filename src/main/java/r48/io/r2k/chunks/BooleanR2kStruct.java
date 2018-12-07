@@ -16,6 +16,24 @@ import r48.io.data.IRIO;
 public class BooleanR2kStruct extends IntegerR2kStruct {
     public BooleanR2kStruct(boolean i2) {
         super(i2 ? 1 : 0);
+        type = i2 ? 'T' : 'F';
+    }
+
+    @Override
+    public IRIO setFX(long iv) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public long getFX() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public IRIO setBool(boolean b) {
+        i = b ? 1 : 0;
+        type = (i != 0) ? 'T' : 'F';
+        return this;
     }
 
     @Override

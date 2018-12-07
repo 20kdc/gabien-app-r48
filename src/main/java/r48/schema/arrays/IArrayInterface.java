@@ -8,7 +8,7 @@
 package r48.schema.arrays;
 
 import gabien.ui.*;
-import r48.RubyIO;
+import r48.io.data.IRIO;
 
 /**
  * Simplifies the code involved in an array UI by abstracting away the complicated permissions logic.
@@ -49,7 +49,7 @@ public interface IArrayInterface {
         // These are only allowed for two purposes:
         // 1. Comparison (for group-deletion algorithm)
         // 2. Copying (for clipboard)
-        public final RubyIO[] elements;
+        public final IRIO[] elements;
         public final Runnable execInsert, execInsertCopiedArray;
         // The way this works is that you run a getter to perform the deletions,
         //  to delete more things run getPositions again,
@@ -59,7 +59,7 @@ public interface IArrayInterface {
         public final UIElement core;
         public int coreIndent;
 
-        public ArrayPosition(String txt, RubyIO[] elem, UIElement cor, int subelemId, ISupplier<Runnable> exeDelete, Runnable exeInsert, Runnable exeInsertCopiedArray) {
+        public ArrayPosition(String txt, IRIO[] elem, UIElement cor, int subelemId, ISupplier<Runnable> exeDelete, Runnable exeInsert, Runnable exeInsertCopiedArray) {
             text = txt;
             elements = elem;
             core = cor;

@@ -14,6 +14,7 @@ import r48.io.data.IRIO;
 import r48.io.r2k.chunks.ByteR2kStruct;
 import r48.io.r2k.chunks.CompatSparseArrayHR2kStruct;
 import r48.io.r2k.dm2chk.*;
+import r48.io.r2k.struct.SVStore;
 import r48.io.r2k.struct.Terms;
 
 import java.io.IOException;
@@ -32,8 +33,8 @@ public class Database extends DM2R2kObject {
 
     @DM2FXOBinding("@actors") @DM2LcfBinding(11) @DM2LcfCompatArray(Actor.class)
     public CompatSparseArrayHR2kStruct<Actor> actors;
-    @DM2FXOBinding("@skills") @DM2LcfBinding(12) @DM2LcfCompatArray(Skill.class)
-    public CompatSparseArrayHR2kStruct<Skill> skills;
+    @DM2FXOBinding("@skills") @DM2LcfBinding(12) @DM2LcfSparseArrayH(Skill.class)
+    public DM2SparseArrayH<Skill> skills;
     @DM2FXOBinding("@items") @DM2LcfBinding(13) @DM2LcfCompatArray(Item.class)
     public CompatSparseArrayHR2kStruct<Item> items;
     @DM2FXOBinding("@enemies") @DM2LcfBinding(14) @DM2LcfCompatArray(Enemy.class)
@@ -42,14 +43,14 @@ public class Database extends DM2R2kObject {
     public DM2SparseArrayH<Troop> troops;
     @DM2FXOBinding("@terrains") @DM2LcfBinding(16) @DM2LcfCompatArray(Terrain.class)
     public CompatSparseArrayHR2kStruct<Terrain> terrains;
-    @DM2FXOBinding("@attributes") @DM2LcfBinding(17) @DM2LcfCompatArray(Attribute.class)
-    public CompatSparseArrayHR2kStruct<Attribute> attributes;
+    @DM2FXOBinding("@attributes") @DM2LcfBinding(17) @DM2LcfSparseArrayH(Attribute.class)
+    public DM2SparseArrayH<Attribute> attributes;
     @DM2FXOBinding("@states") @DM2LcfBinding(18) @DM2LcfCompatArray(State.class)
-    public CompatSparseArrayHR2kStruct<Attribute> states;
-    @DM2FXOBinding("@animations") @DM2LcfBinding(19) @DM2LcfCompatArray(Animation.class)
-    public CompatSparseArrayHR2kStruct<Attribute> animations;
+    public CompatSparseArrayHR2kStruct<State> states;
+    @DM2FXOBinding("@animations") @DM2LcfBinding(19) @DM2LcfSparseArrayH(Animation.class)
+    public DM2SparseArrayH<Animation> animations;
     @DM2FXOBinding("@tilesets") @DM2LcfBinding(20) @DM2LcfCompatArray(Tileset.class)
-    public CompatSparseArrayHR2kStruct<Attribute> tilesets;
+    public CompatSparseArrayHR2kStruct<Tileset> tilesets;
 
     @DM2FXOBinding("@terms") @DM2LcfBinding(21) @DM2LcfObject
     public Terms terms;
@@ -61,12 +62,12 @@ public class Database extends DM2R2kObject {
     public RubyIO systemTempConvert;
     // ---
 
-    @DM2FXOBinding("@switches") @DM2LcfBinding(23) @DM2LcfCompatArray(SVStore.class)
-    public CompatSparseArrayHR2kStruct<SVStore> switches;
-    @DM2FXOBinding("@variables") @DM2LcfBinding(24) @DM2LcfCompatArray(SVStore.class)
-    public CompatSparseArrayHR2kStruct<SVStore> variables;
-    @DM2FXOBinding("@common_events") @DM2LcfBinding(25) @DM2LcfCompatArray(CommonEvent.class)
-    public CompatSparseArrayHR2kStruct<CommonEvent> commonEvents;
+    @DM2FXOBinding("@switches") @DM2LcfBinding(23) @DM2LcfSparseArrayH(SVStore.class)
+    public DM2SparseArrayH<SVStore> switches;
+    @DM2FXOBinding("@variables") @DM2LcfBinding(24) @DM2LcfSparseArrayH(SVStore.class)
+    public DM2SparseArrayH<SVStore> variables;
+    @DM2FXOBinding("@common_events") @DM2LcfBinding(25) @DM2LcfSparseArrayH(CommonEvent.class)
+    public DM2SparseArrayH<CommonEvent> commonEvents;
 
     @DM2FXOBinding("@db_version") @DM2LcfBinding(26)
     public DM2Array<ByteR2kStruct> dbVersion;

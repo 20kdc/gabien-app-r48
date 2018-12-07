@@ -10,15 +10,15 @@ package r48.schema;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 /**
  * Created on 12/29/16.
  */
-public class BooleanSchemaElement extends SchemaElement {
+public class BooleanSchemaElement extends IRIOAwareSchemaElement {
     public boolean defaultVal = false;
 
     public BooleanSchemaElement(boolean defVal) {
@@ -26,7 +26,7 @@ public class BooleanSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         final UITextButton utb = new UITextButton(determineTruth(target) ? TXDB.get("True") : TXDB.get("False"), FontSizes.schemaFieldTextHeight, null).togglable(determineTruth(target));
         utb.onClick = new Runnable() {
             @Override
@@ -38,26 +38,27 @@ public class BooleanSchemaElement extends SchemaElement {
         return utb;
     }
 
-    public boolean determineTruth(RubyIO rubyIO) {
-        return rubyIO.type == 'T';
+    public boolean determineTruth(IRIO rubyIO) {
+        return rubyIO.getType() == 'T';
     }
 
-    public boolean modifyValueTruth(RubyIO target, boolean truth) {
-        int lastType = target.type;
-        target.type = truth ? 'T' : 'F';
-        return lastType != target.type;
+    public boolean modifyValueTruth(IRIO target, boolean truth) {
+        int lastType = target.getType();
+        target.setBool(truth);
+        return lastType != target.getType();
     }
 
-    public boolean truthInvalid(RubyIO target) {
-        if (target.type == 'T')
+    public boolean truthInvalid(IRIO target) {
+        int t = target.getType();
+        if (t == 'T')
             return false;
-        if (target.type == 'F')
+        if (t == 'F')
             return false;
         return true;
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
         boolean modified = false;
         if (setDefault) {
             modified = modifyValueTruth(target, defaultVal);

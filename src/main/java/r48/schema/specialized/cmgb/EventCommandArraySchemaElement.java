@@ -55,7 +55,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    public boolean autoCorrectArray(RubyIO array, SchemaPath path) {
+    public boolean autoCorrectArray(IRIO array, SchemaPath path) {
         if (!SDB.allowControlOfEventCommandIndent)
             return false;
 
@@ -102,11 +102,11 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                 if (rc.needsBlockLeavePre) {
                     if (!lastWasBlockLeave) {
                         if (rc.blockLeaveReplacement != lastCode) {
-                            RubyIO c = array.addAElem(i);
+                            IRIO c = array.addAElem(i);
                             SchemaPath.setDefaultValue(c, baseElement, new RubyIO().setFX(i));
-                            c.getInstVarBySymbol("@code").fixnumVal = database.blockLeaveCmd;
+                            c.getIVar("@code").setFX(database.blockLeaveCmd);
                             if (baseElement.allowControlOfIndent)
-                                c.getInstVarBySymbol("@indent").fixnumVal = indentOld;
+                                c.getIVar("@indent").setFX(indentOld);
 
                             // About to re-handle the same code.
                             indent = indentOld;
@@ -171,9 +171,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             if (!hasValidListLeave) {
                 // 0 so that the code won't combust from lacking an array
                 int l = array.getALen();
-                RubyIO c = array.addAElem(l);
+                IRIO c = array.addAElem(l);
                 SchemaPath.setDefaultValue(c, baseElement, new RubyIO().setFX(array.getALen()));
-                c.getInstVarBySymbol("@code").fixnumVal = database.listLeaveCmd;
+                c.getIVar("@code").setFX(database.listLeaveCmd);
                 modified = true;
             }
         }
@@ -313,24 +313,27 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    protected void elementOnCreateMagic(final RubyIO target, final int idx, ISchemaHost launcher, SchemaPath ind, SchemaPath path) {
+    protected void elementOnCreateMagic(final IRIO target, final int idx, ISchemaHost launcher, SchemaPath ind, SchemaPath path) {
         final SchemaPath sp = path;
+
+        IRIO targetElem = target.getAElem(idx);
+
         // Notably:
         //  1. the inner-schema always uses the 'path' path.
         //  2. the path constructed must have "back" going to inside the command, then to the array
         //     (so the user knows the command was added anyway)
-        SubwindowSchemaElement targ = getElementContextualSubwindowSchema(target.arrVal[idx], idx);
+        SubwindowSchemaElement targ = getElementContextualSubwindowSchema(targetElem, idx);
         path = path.arrayHashIndex(new RubyIO().setFX(idx), "[" + idx + "]");
         path = path.newWindow(targ.heldElement, target);
         launcher.pushObject(path);
         // Ok, now navigate to the command selector
-        path = path.newWindow(RPGCommandSchemaElement.navigateToCode(launcher, target.arrVal[idx], new IConsumer<int[]>() {
+        path = path.newWindow(RPGCommandSchemaElement.navigateToCode(launcher, targetElem, new IConsumer<int[]>() {
             @Override
             public void accept(int[] i) {
                 for (int j = 0; j < i.length; j++) {
-                    RubyIO ne = target.addAElem(idx + j + 1);
+                    IRIO ne = target.addAElem(idx + j + 1);
                     SchemaPath.setDefaultValue(ne, baseElement, null);
-                    ne.getInstVarBySymbol("@code").fixnumVal = i[j];
+                    ne.getIVar("@code").setFX(i[j]);
                 }
                 sp.changeOccurred(false);
             }

@@ -12,13 +12,13 @@ import gabien.ui.ISupplier;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import r48.AppMain;
-import r48.ArrayUtils;
 import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
+import r48.schema.IRIOAwareSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -30,7 +30,7 @@ import java.util.LinkedList;
  * Notably, abstracting away sizeFixed and atLeastOne would just be an overcomplication.
  * Created on 12/28/16. Abstractified 16 Feb 2017.
  */
-public abstract class ArraySchemaElement extends SchemaElement {
+public abstract class ArraySchemaElement extends IRIOAwareSchemaElement {
     public int sizeFixed, indexDisplayOffset;
     public int atLeast;
 
@@ -54,7 +54,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final RubyIO target, final ISchemaHost launcher, final SchemaPath path2) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path2) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
 
@@ -83,10 +83,11 @@ public abstract class ArraySchemaElement extends SchemaElement {
         return uiSVL;
     }
 
-    private IArrayInterface.ArrayPosition[] getPositions(final RubyIO target, final ISchemaHost launcher, final SchemaPath path) {
+    private IArrayInterface.ArrayPosition[] getPositions(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         int nextAdvance;
         LinkedList<IArrayInterface.ArrayPosition> positions = new LinkedList<IArrayInterface.ArrayPosition>();
-        for (int i = 0; i < target.arrVal.length; i += nextAdvance) {
+        int alen = target.getALen();
+        for (int i = 0; i < alen; i += nextAdvance) {
             nextAdvance = 1;
             int pLevel = elementPermissionsLevel(i, target);
             if (pLevel < 1)
@@ -114,10 +115,9 @@ public abstract class ArraySchemaElement extends SchemaElement {
             if (hasNIdxSchema) {
                 uie = subelem.buildHoldingEditor(target, launcher, path);
             } else {
-                uie = subelem.buildHoldingEditor(target.arrVal[i], launcher, ind);
+                uie = subelem.buildHoldingEditor(target.getAElem(i), launcher, ind);
             }
-            RubyIO[] copyHelpElems = new RubyIO[nextAdvance];
-            System.arraycopy(target.arrVal, i, copyHelpElems, 0, copyHelpElems.length);
+            IRIO[] copyHelpElems = target.getANewArray();
             String dispData = (i + indexDisplayOffset) + " ";
             if (possibleEnumElement != null) {
                 SchemaElement se = possibleEnumElement;
@@ -130,7 +130,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
         }
         // The 4 for-loop is to deal with 1-indexing and such
         for (int i = 0; i < 4; i++) {
-            int idx = target.arrVal.length + i;
+            int idx = target.getALen() + i;
             if (elementPermissionsLevel(idx, target) != 0) {
                 SchemaPath ind = path.arrayHashIndex(new RubyIO().setFX(idx), "[" + (idx + indexDisplayOffset) + "]");
                 IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition((idx + indexDisplayOffset) + " ", null, null, 0, null, getAdditionCallback(target, launcher, idx, path, ind), getClipAdditionCallback(target, idx, path));
@@ -141,7 +141,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
         return positions.toArray(new IArrayInterface.ArrayPosition[0]);
     }
 
-    private ISupplier<Runnable> getRemovalCallback(final int pLevel, final RubyIO target, final ISchemaHost launcher, final int mi, final int thisNextAdvance, final SchemaPath path, final SchemaPath ind) {
+    private ISupplier<Runnable> getRemovalCallback(final int pLevel, final IRIO target, final ISchemaHost launcher, final int mi, final int thisNextAdvance, final SchemaPath path, final SchemaPath ind) {
         if (pLevel < 2)
             return null;
         if (sizeFixed != -1)
@@ -161,23 +161,23 @@ public abstract class ArraySchemaElement extends SchemaElement {
         };
     }
 
-    private Runnable getAdditionCallback(final RubyIO target, final ISchemaHost launcher, final int i, final SchemaPath path, final SchemaPath ind) {
+    private Runnable getAdditionCallback(final IRIO target, final ISchemaHost launcher, final int i, final SchemaPath path, final SchemaPath ind) {
         if (sizeFixed != -1)
             return null;
         return new Runnable() {
             @Override
             public void run() {
-                RubyIO rio = new RubyIO();
                 SchemaElement subelem = getElementSchema(i);
+                IRIO rio = target.addAElem(i);
                 subelem.modifyVal(rio, ind, true);
 
-                ArrayUtils.insertRioElement(target, rio, i);
                 // whack the UI
                 path.changeOccurred(false);
                 // We don't actually know the command appeared where we told it to appear.
                 // Rescan.
-                for (int j = 0; j < target.arrVal.length; j++) {
-                    if (target.arrVal[j] == rio) {
+                int alen = target.getALen();
+                for (int j = 0; j < alen; j++) {
+                    if (target.getAElem(j) == rio) {
                         // Perform *magic*.
                         // What this means is that the subclass is given everything it needs to, theoretically,
                         //  construct a contrived sequence of schema paths that lead to the 'user' switching into the target element,
@@ -190,7 +190,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
         };
     }
 
-    private Runnable getClipAdditionCallback(final RubyIO target, final int i, final SchemaPath path) {
+    private Runnable getClipAdditionCallback(final IRIO target, final int i, final SchemaPath path) {
         if (sizeFixed != -1)
             return null;
         return new Runnable() {
@@ -201,7 +201,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     if (AppMain.theClipboard.type == '[') {
                         IRIO[] finalInsertionRv = AppMain.theClipboard.arrVal;
                         for (int j = finalInsertionRv.length - 1; j >= 0; j--)
-                            ArrayUtils.insertRioElement(target, new RubyIO().setDeepClone(finalInsertionRv[j]), i);
+                            target.addAElem(i).setDeepClone(finalInsertionRv[j]);
                         // whack the UI
                         path.changeOccurred(false);
                     } else {
@@ -215,38 +215,32 @@ public abstract class ArraySchemaElement extends SchemaElement {
     }
 
     @Override
-    public void modifyVal(RubyIO target, SchemaPath path2, boolean setDefault) {
+    public void modifyVal(IRIO target, SchemaPath path2, boolean setDefault) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
-        setDefault = SchemaElement.ensureType(target, '[', setDefault);
-        if (target.arrVal == null) {
+        setDefault = checkType(target, '[', null, setDefault);
+        if (target.getALen() < atLeast)
             setDefault = true;
-        } else if (target.arrVal.length < atLeast) {
-            setDefault = true;
-        }
         if (setDefault) {
-            if (sizeFixed < atLeast) {
-                target.arrVal = new RubyIO[atLeast];
-            } else {
-                target.arrVal = new RubyIO[sizeFixed];
-            }
-            for (int i = 0; i < target.arrVal.length; i++)
-                target.arrVal[i] = new RubyIO();
+            target.setArray();
+            int alen = Math.max(sizeFixed, atLeast);
+            for (int i = 0; i < alen; i++)
+                target.addAElem(i);
         }
         boolean modified = setDefault;
         if (sizeFixed != -1) {
-            if (target.arrVal.length != sizeFixed) {
-                int lenCut = Math.min(sizeFixed, target.arrVal.length);
-                RubyIO[] newArr = new RubyIO[sizeFixed];
-                for (int j = 0; j < newArr.length; j++)
-                    newArr[j] = new RubyIO();
-                System.arraycopy(target.arrVal, 0, newArr, 0, lenCut);
-                target.arrVal = newArr;
+            if (target.getALen() != sizeFixed) {
+                while (target.getALen() > sizeFixed)
+                    target.rmAElem(sizeFixed);
+                int alen;
+                while ((alen = target.getALen()) < sizeFixed)
+                    target.addAElem(alen);
                 modified = true;
             }
         }
         while (true) {
-            for (int j = 0; j < target.arrVal.length; j++) {
-                IRIO rio = target.arrVal[j];
+            int alen = target.getALen();
+            for (int j = 0; j < alen; j++) {
+                IRIO rio = target.getAElem(j);
                 // Fun fact: There's a reason for this not-quite-linear timeline.
                 // It's because otherwise, when the subelement tries to notify the array of the modification,
                 //  it will lead to an infinite loop!
@@ -255,7 +249,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                 getElementSchema(j).modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(j), "[" + j + "]"), setDefault);
             }
             int groupStep;
-            for (int j = 0; j < target.arrVal.length; j += groupStep) {
+            for (int j = 0; j < alen; j += groupStep) {
                 groupStep = getGroupLength(target, j);
                 if (groupStep == 0) {
                     groupStep = 1;
@@ -282,7 +276,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // The element gets created & acknowledged, then this kickstarts the UI for editing details.
     // If the user exits this UI via the "back" method, further contrived sequences can be created to delete the element.
     // As for closing the window... hm.
-    protected void elementOnCreateMagic(RubyIO target, int i, ISchemaHost launcher, SchemaPath ind, SchemaPath path) {
+    protected void elementOnCreateMagic(IRIO target, int i, ISchemaHost launcher, SchemaPath ind, SchemaPath path) {
     }
 
     // Allows performing automatic correction of structural issues,
@@ -293,7 +287,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     //  and don't bother to call super if setDefault is true,
     //  instead doing whatever you need yourself.
     // Also note that if a modification is performed, another check is done so that things like indent processing can run.
-    protected abstract boolean autoCorrectArray(RubyIO array, SchemaPath path);
+    protected abstract boolean autoCorrectArray(IRIO array, SchemaPath path);
 
     // Allows using a custom schema for specific elements in specific contexts in subclasses.
     // Note that this is meant to be used by things messing with getGroupLength, and will not be used otherwise.
@@ -316,8 +310,8 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // 1: Show & allow editing of this element, but disallow deletion.
     // 2: All permissions.
     // (Used to prevent a user shooting themselves in the foot - should not be considered a serious mechanism.)
-    protected int elementPermissionsLevel(int i, RubyIO target) {
-        boolean canDelete = (sizeFixed == -1) && (!(target.arrVal.length <= atLeast));
+    protected int elementPermissionsLevel(int i, IRIO target) {
+        boolean canDelete = (sizeFixed == -1) && (!(target.getALen() <= atLeast));
         return canDelete ? 2 : 1;
     }
 

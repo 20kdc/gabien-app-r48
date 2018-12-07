@@ -845,15 +845,13 @@ public class SDB {
                             @Override
                             public String apply(IRIO rubyIO) {
                                 LinkedList<IRIO> parameters = new LinkedList<IRIO>();
-                                if (rubyIO instanceof RubyIO) {
-                                    for (String arg : arguments) {
-                                        IRIO res = PathSyntax.parse(rubyIO, arg);
-                                        if (res == null)
-                                            break;
-                                        parameters.add(res);
-                                    }
+                                for (String arg : arguments) {
+                                    IRIO res = PathSyntax.parse(rubyIO, arg);
+                                    if (res == null)
+                                        break;
+                                    parameters.add(res);
                                 }
-                                return FormatSyntax.formatNameExtended(textF, rubyIO, parameters.toArray(new RubyIO[0]), null);
+                                return FormatSyntax.formatNameExtended(textF, rubyIO, parameters.toArray(new IRIO[0]), null);
                             }
                         });
                     }

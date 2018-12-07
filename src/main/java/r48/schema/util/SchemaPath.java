@@ -8,7 +8,6 @@
 package r48.schema.util;
 
 import r48.AppMain;
-import r48.RubyIO;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
@@ -163,7 +162,7 @@ public class SchemaPath {
         return sp;
     }
 
-    public SchemaPath tagSEMonitor(RubyIO target, SchemaElement ise, boolean upwards) {
+    public SchemaPath tagSEMonitor(IRIO target, SchemaElement ise, boolean upwards) {
         if (upwards) {
             // This is for DisambiguatorSchemaElement to make sure the entire structure containing a disambiguator gets the tag.
             // This is so that edits to the thing being disambiguated on get caught properly.
