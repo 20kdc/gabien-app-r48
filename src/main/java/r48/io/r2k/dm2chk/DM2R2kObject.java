@@ -73,7 +73,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
     // Packed data management
 
     // May actually return packedChunkData.
-    protected HashMap<Integer, byte[]> dm2Pack() throws IOException {
+    protected final HashMap<Integer, byte[]> dm2Pack() throws IOException {
         if (packedChunkData != null)
             return packedChunkData;
         HashMap<Integer, byte[]> ws = new HashMap<Integer, byte[]>();
@@ -84,7 +84,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
         return ws;
     }
 
-    protected void dm2Unpack() {
+    protected final void dm2Unpack() {
         if (packedChunkData != null) {
             HashMap<Integer, byte[]> pcd = packedChunkData;
             packedChunkData = null;

@@ -7,10 +7,8 @@
 
 package r48.io.r2k.files;
 
-import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.IR2kStruct;
 import r48.io.r2k.obj.Save;
 
 import java.io.IOException;
@@ -22,24 +20,19 @@ import java.io.OutputStream;
  * Created just after midnight, 23rd of November 2017.
  */
 public class SaveDataIO {
-    public static RubyIO readLsd(InputStream fis) throws IOException {
+    public static Save readLsd(InputStream fis) throws IOException {
         String magic = R2kUtil.decodeLcfString(IntUtils.readBytes(fis, R2kUtil.readLcfVLI(fis)));
         if (!magic.equals("LcfSaveData"))
             System.err.println("Loading a file which pretends to be an LCF save file but says " + magic);
-        // Try to follow the standard...
-        IR2kStruct mu = new Save();
-        // ArrayR2kStruct.supremelyTrustDataDebug = true;
+        Save mu = new Save();
         mu.importData(fis);
-        // ArrayR2kStruct.supremelyTrustDataDebug = false;
-        return mu.asRIO();
+        return mu;
     }
 
-    public static void writeLsd(OutputStream fos, RubyIO rio) throws IOException {
+    public static void writeLsd(OutputStream fos, Save rio) throws IOException {
         byte[] d = R2kUtil.encodeLcfString("LcfSaveData");
         R2kUtil.writeLcfVLI(fos, d.length);
         fos.write(d);
-        IR2kStruct db = new Save();
-        db.fromRIO(rio);
-        db.exportData(fos);
+        rio.exportData(fos);
     }
 }

@@ -7,98 +7,103 @@
 
 package r48.io.r2k.obj.ldb;
 
-import gabien.ui.ISupplier;
-import r48.RubyIO;
 import r48.RubyTable;
+import r48.io.data.DM2FXOBinding;
 import r48.io.data.IRIO;
-import r48.io.r2k.Index;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.*;
+import r48.io.r2k.chunks.BlobR2kStruct;
+import r48.io.r2k.chunks.BooleanR2kStruct;
+import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.*;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Another bare-minimum for now
  * Created on 01/06/17.
  */
-public class Tileset extends R2kObject {
-
-    public StringR2kStruct name = new StringR2kStruct();
-    public StringR2kStruct tilesetName = new StringR2kStruct();
+public class Tileset extends DM2R2kObject {
+    @DM2FXOBinding("@name") @DM2LcfBinding(0x01) @DM2LcfObject
+    public StringR2kStruct name;
+    @DM2FXOBinding("@tileset_name") @DM2LcfBinding(0x02) @DM2LcfObject
+    public StringR2kStruct tilesetName;
     // Tables? Tables. Don't need to put these as optional explicitly because not Index-based.
     // ...and anyway, I get the feeling they aren't actually SUPPOSED to be optional.
     // excuse me while I go mess around with the schema.
-    public BlobR2kStruct terrainTbl = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
-            byte[] dat = new byte[324];
-            for (int i = 0; i < dat.length; i += 2)
-                dat[i] = 1;
-            return dat;
-        }
-    });
-    public BlobR2kStruct lowPassTbl = new BlobR2kStruct(R2kUtil.supplyBlank(162, (byte) 15));
-    public BlobR2kStruct highPassTbl = new BlobR2kStruct(new ISupplier<byte[]>() {
-        @Override
-        public byte[] get() {
+    // -- AS OF DM2, some blob transformation occurs similar to SaveMapInfo.
+    @DM2FXOBinding("@terrain_id_data") @DM2LcfBinding(3)
+    public BlobR2kStruct terrainTbl;
+    @DM2FXOBinding("@lowpass_data") @DM2LcfBinding(4)
+    public BlobR2kStruct lowPassTbl;
+    @DM2FXOBinding("@highpass_data") @DM2LcfBinding(5)
+    public BlobR2kStruct highPassTbl;
+
+    @DM2FXOBinding("@anim_cyclic") @DM2LcfBinding(0x0B) @DM2LcfBoolean(false)
+    public BooleanR2kStruct animCyclic;
+    @DM2FXOBinding("@anim_speed") @DM2LcfBinding(0x0C) @DM2LcfInteger(0)
+    public IntegerR2kStruct animSpeed;
+
+    public Tileset() {
+        super("RPG::Tileset");
+    }
+
+    @Override
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@terrain_id_data"))
+            return terrainTbl = new BlobR2kStruct("Table", new RubyTable(3, 162, 1, 1, new int[] {1}).innerBytes);
+        if (sym.equals("@lowpass_data"))
+            return lowPassTbl = new BlobR2kStruct("Table", bitfieldsToTable(R2kUtil.supplyBlank(162, (byte) 15).get()));
+        if (sym.equals("@highpass_data")) {
             byte[] dat = new byte[144];
             for (int i = 0; i < dat.length; i++)
                 dat[i] = 15;
             dat[0] = 31;
-            return dat;
+            return highPassTbl = new BlobR2kStruct("Table", bitfieldsToTable(dat));
         }
-    });
-
-    public BooleanR2kStruct animCyclic = new BooleanR2kStruct(false);
-    public IntegerR2kStruct animSpeed = new IntegerR2kStruct(0);
-
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, name, "@name"),
-                new Index(0x02, tilesetName, "@tileset_name"),
-                new Index(0x03, terrainTbl),
-                new Index(0x04, lowPassTbl),
-                new Index(0x05, highPassTbl),
-                new Index(0x0B, animCyclic, "@anim_cyclic"),
-                new Index(0x0C, animSpeed, "@anim_speed")
-        };
+        return super.dm2AddIVar(sym);
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO mt = new RubyIO().setSymlike("RPG::Tileset", true);
-        asRIOISF(mt);
+    protected void dm2UnpackFromMapDestructively(HashMap<Integer, byte[]> pcd) {
+        byte[] uv = pcd.get(3);
+        if (uv != null) {
+            // 162 = 144 (selective) + 18 (AT Field????)
+            RubyTable rt = new RubyTable(3, 162, 1, 1, new int[] {0});
+            // This relies on RubyTable layout to skip some relayout
+            System.arraycopy(uv, 0, rt.innerBytes, 20, Math.min(uv.length, rt.innerBytes.length - 20));
+            pcd.put(3, rt.innerBytes);
+        }
+        uv = pcd.get(4);
+        if (uv != null)
+            pcd.put(4, bitfieldsToTable(uv));
+        uv = pcd.get(5);
+        if (uv != null)
+            pcd.put(5, bitfieldsToTable(uv));
+        super.dm2UnpackFromMapDestructively(pcd);
+    }
 
-        // 162 = 144 (selective) + 18 (AT Field????)
-        RubyTable rt = new RubyTable(3, 162, 1, 1, new int[] {0});
+    @Override
+    protected void dm2PackIntoMap(HashMap<Integer, byte[]> pcd) throws IOException {
+        super.dm2PackIntoMap(pcd);
+        byte[] uv = new byte[324];
         // This relies on RubyTable layout to skip some relayout
-        System.arraycopy(terrainTbl.userVal, 0, rt.innerBytes, 20, terrainTbl.userVal.length);
-        mt.addIVar("@terrain_id_data", new RubyIO().setUser("Table", rt.innerBytes));
-
-        mt.addIVar("@lowpass_data", bitfieldTable(lowPassTbl.userVal));
-        mt.addIVar("@highpass_data", bitfieldTable(highPassTbl.userVal));
-        return mt;
+        System.arraycopy(terrainTbl.userVal, 20, uv, 0, Math.min(uv.length, terrainTbl.userVal.length - 20));
+        pcd.put(3, uv);
+        pcd.put(4, tableToBitfields(lowPassTbl.userVal));
+        pcd.put(5, tableToBitfields(highPassTbl.userVal));
     }
 
-    @Override
-    public void fromRIO(IRIO src) {
-        fromRIOISF(src);
-        IRIO c = src.getIVar("@terrain_id_data");
-        terrainTbl.userVal = new byte[324];
-        // This relies on RubyTable layout to skip some relayout
-        System.arraycopy(c.getBuffer(), 20, terrainTbl.userVal, 0, terrainTbl.userVal.length);
-        lowPassTbl.userVal = bitfieldTableRV(src.getIVar("@lowpass_data"));
-        highPassTbl.userVal = bitfieldTableRV(src.getIVar("@highpass_data"));
-    }
-
-    private RubyIO bitfieldTable(byte[] dat) {
+    private byte[] bitfieldsToTable(byte[] dat) {
         RubyTable rt = new RubyTable(3, dat.length, 1, 1, new int[] {0});
         for (int i = 0; i < dat.length; i++)
             rt.innerBytes[20 + (i * 2)] = dat[i];
-        return new RubyIO().setUser("Table", rt.innerBytes);
+        return rt.innerBytes;
     }
 
-    private byte[] bitfieldTableRV(IRIO src) {
-        RubyTable rt = new RubyTable(src.getBuffer());
+    private byte[] tableToBitfields(byte[] src) {
+        RubyTable rt = new RubyTable(src);
         byte[] r = new byte[rt.width];
         for (int i = 0; i < r.length; i++)
             r[i] = (byte) rt.getTiletype(i, 0, 0);

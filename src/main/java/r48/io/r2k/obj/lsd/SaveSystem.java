@@ -7,76 +7,98 @@
 
 package r48.io.r2k.obj.lsd;
 
-import gabien.ui.ISupplier;
-import r48.RubyIO;
-import r48.io.r2k.Index;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.DM2Optional;
+import r48.io.data.IRIO;
 import r48.io.r2k.chunks.*;
+import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.obj.Music;
 import r48.io.r2k.obj.Sound;
 
-public class SaveSystem extends R2kObject {
-    public IntegerR2kStruct screen = new IntegerR2kStruct(0);
-    public IntegerR2kStruct frameCount = new IntegerR2kStruct(0);
-    public StringR2kStruct systemName = new StringR2kStruct();
-    // This gets it's default from the database.
-    public OptionalR2kStruct<IntegerR2kStruct> systemBoxStretch = new OptionalR2kStruct<IntegerR2kStruct>(new ISupplier<IntegerR2kStruct>() {
-        @Override
-        public IntegerR2kStruct get() {
-            return new IntegerR2kStruct(0);
-        }
-    });
-    public IntegerR2kStruct fontId = new IntegerR2kStruct(0);
-    public ArraySizeR2kInterpretable<BooleanR2kStruct> switchesSize = new ArraySizeR2kInterpretable<BooleanR2kStruct>(true);
-    public ArrayR2kStruct<BooleanR2kStruct> switches = new ArrayR2kStruct<BooleanR2kStruct>(switchesSize, new ISupplier<BooleanR2kStruct>() {
-        @Override
-        public BooleanR2kStruct get() {
-            return new BooleanR2kStruct(false);
-        }
-    });
-    public ArraySizeR2kInterpretable<Int32R2kStruct> variablesSize = new ArraySizeR2kInterpretable<Int32R2kStruct>(true);
-    public ArrayR2kStruct<Int32R2kStruct> variables = new ArrayR2kStruct<Int32R2kStruct>(variablesSize, new ISupplier<Int32R2kStruct>() {
-        @Override
-        public Int32R2kStruct get() {
-            return new Int32R2kStruct(0);
-        }
-    });
-    public IntegerR2kStruct messageTransparent = new IntegerR2kStruct(0);
-    public IntegerR2kStruct messagePosition = new IntegerR2kStruct(2);
-    public IntegerR2kStruct messagePreventOverlap = new IntegerR2kStruct(1);
-    public IntegerR2kStruct messageContinueEvents = new IntegerR2kStruct(0);
+public class SaveSystem extends DM2R2kObject {
+    @DM2FXOBinding("@screen") @DM2LcfBinding(0x01) @DM2LcfInteger(0)
+    public IntegerR2kStruct screen;
+    @DM2FXOBinding("@frame_count") @DM2LcfBinding(0x0B) @DM2LcfInteger(0)
+    public IntegerR2kStruct frameCount;
+    @DM2FXOBinding("@system_name") @DM2LcfBinding(0x15) @DM2LcfObject
+    public StringR2kStruct systemName;
+    @DM2Optional @DM2FXOBinding("@system_box_tiling") @DM2LcfBinding(0x16) @DM2LcfInteger(0)
+    public IntegerR2kStruct systemBoxStretch;
+    @DM2FXOBinding("@font_id") @DM2LcfBinding(0x17) @DM2LcfInteger(0)
+    public IntegerR2kStruct fontId;
+    @DM2FXOBinding("@switches") @DM2LcfSizeBinding(0x1F) @DM2LcfBinding(0x20)
+    public DM2Array<BooleanR2kStruct> switches;
+    @DM2FXOBinding("@variables") @DM2LcfSizeBinding(0x21) @DM2LcfBinding(0x22)
+    public DM2Array<Int32R2kStruct> variables;
+    @DM2FXOBinding("@message_transparent") @DM2LcfBinding(0x29) @DM2LcfInteger(0)
+    public IntegerR2kStruct messageTransparent;
+    @DM2FXOBinding("@message_position") @DM2LcfBinding(0x2A) @DM2LcfInteger(2)
+    public IntegerR2kStruct messagePosition;
+    @DM2FXOBinding("@message_prevent_overlap") @DM2LcfBinding(0x2B) @DM2LcfInteger(1)
+    public IntegerR2kStruct messagePreventOverlap;
+    @DM2FXOBinding("@message_continue_events") @DM2LcfBinding(0x2C) @DM2LcfInteger(0)
+    public IntegerR2kStruct messageContinueEvents;
 
-    public StringR2kStruct faceName = new StringR2kStruct();
-    public IntegerR2kStruct faceIdx = new IntegerR2kStruct(0);
-    public BooleanR2kStruct faceRight = new BooleanR2kStruct(false);
-    public BooleanR2kStruct faceFlip = new BooleanR2kStruct(false);
+    @DM2FXOBinding("@face_name") @DM2LcfBinding(0x33) @DM2LcfObject
+    public StringR2kStruct faceName;
+    @DM2FXOBinding("@face_index") @DM2LcfBinding(0x34) @DM2LcfInteger(0)
+    public IntegerR2kStruct faceIdx;
+    @DM2FXOBinding("@face_right") @DM2LcfBinding(0x35) @DM2LcfBoolean(false)
+    public BooleanR2kStruct faceRight;
+    @DM2FXOBinding("@face_flip") @DM2LcfBinding(0x36) @DM2LcfBoolean(false)
+    public BooleanR2kStruct faceFlip;
+    @DM2FXOBinding("@transparent") @DM2LcfBinding(0x37) @DM2LcfBoolean(false)
+    public BooleanR2kStruct transparent;
 
-    public BooleanR2kStruct transparent = new BooleanR2kStruct(false);
+    @DM2FXOBinding("@title_music") @DM2LcfBinding(0x47) @DM2LcfObject
+    public Music titleMusic;
+    @DM2FXOBinding("@battle_music") @DM2LcfBinding(0x48) @DM2LcfObject
+    public Music battleMusic;
+    @DM2FXOBinding("@battle_end_music") @DM2LcfBinding(0x49) @DM2LcfObject
+    public Music battleEndMusic;
+    @DM2FXOBinding("@inn_music") @DM2LcfBinding(0x4A) @DM2LcfObject
+    public Music innMusic;
+    @DM2FXOBinding("@rtmusic_current") @DM2LcfBinding(0x4B) @DM2LcfObject
+    public Music currentMusic;
+    @DM2FXOBinding("@rtmusic_vehicle_start") @DM2LcfBinding(0x4C) @DM2LcfObject
+    public Music beforeVehicleMusic;
+    @DM2FXOBinding("@rtmusic_battle_start") @DM2LcfBinding(0x4D) @DM2LcfObject
+    public Music beforeBattleMusic;
+    @DM2FXOBinding("@rtmusic_memorized") @DM2LcfBinding(0x4E) @DM2LcfObject
+    public Music storedMusic;
+    @DM2FXOBinding("@boat_music") @DM2LcfBinding(0x4F) @DM2LcfObject
+    public Music boatMusic;
+    @DM2FXOBinding("@ship_music") @DM2LcfBinding(0x50) @DM2LcfObject
+    public Music shipMusic;
+    @DM2FXOBinding("@airship_music") @DM2LcfBinding(0x51) @DM2LcfObject
+    public Music airshipMusic;
+    @DM2FXOBinding("@gameover_music") @DM2LcfBinding(0x52) @DM2LcfObject
+    public Music gameOverMusic;
 
-    public Music titleMusic = new Music();
-    public Music battleMusic = new Music();
-    public Music battleEndMusic = new Music();
-    public Music innMusic = new Music();
-    public Music currentMusic = new Music();
-    public Music beforeVehicleMusic = new Music();
-    public Music beforeBattleMusic = new Music();
-    public Music storedMusic = new Music();
-    public Music boatMusic = new Music();
-    public Music shipMusic = new Music();
-    public Music airshipMusic = new Music();
-    public Music gameOverMusic = new Music();
-
-    public Sound cursorSound = new Sound();
-    public Sound decisionSound = new Sound();
-    public Sound cancelSound = new Sound();
-    public Sound buzzerSound = new Sound();
-    public Sound battleSound = new Sound();
-    public Sound escapeSound = new Sound();
-    public Sound enemyAttackSound = new Sound();
-    public Sound enemyDamagedSound = new Sound();
-    public Sound actorDamagedSound = new Sound();
-    public Sound dodgeSound = new Sound();
-    public Sound enemyDeathSound = new Sound();
-    public Sound itemSound = new Sound();
+    @DM2FXOBinding("@cursor_se") @DM2LcfBinding(0x5B) @DM2LcfObject
+    public Sound cursorSound;
+    @DM2FXOBinding("@decision_se") @DM2LcfBinding(0x5C) @DM2LcfObject
+    public Sound decisionSound;
+    @DM2FXOBinding("@cancel_se") @DM2LcfBinding(0x5D) @DM2LcfObject
+    public Sound cancelSound;
+    @DM2FXOBinding("@buzzer_se") @DM2LcfBinding(0x5E) @DM2LcfObject
+    public Sound buzzerSound;
+    @DM2FXOBinding("@battle_se") @DM2LcfBinding(0x5F) @DM2LcfObject
+    public Sound battleSound;
+    @DM2FXOBinding("@escape_se") @DM2LcfBinding(0x60) @DM2LcfObject
+    public Sound escapeSound;
+    @DM2FXOBinding("@enemy_attack_se") @DM2LcfBinding(0x61) @DM2LcfObject
+    public Sound enemyAttackSound;
+    @DM2FXOBinding("@enemy_hurt_se") @DM2LcfBinding(0x62) @DM2LcfObject
+    public Sound enemyDamagedSound;
+    @DM2FXOBinding("@actor_hurt_se") @DM2LcfBinding(0x63) @DM2LcfObject
+    public Sound actorDamagedSound;
+    @DM2FXOBinding("@dodge_se") @DM2LcfBinding(0x64) @DM2LcfObject
+    public Sound dodgeSound;
+    @DM2FXOBinding("@enemy_death_se") @DM2LcfBinding(0x65) @DM2LcfObject
+    public Sound enemyDeathSound;
+    @DM2FXOBinding("@item_se") @DM2LcfBinding(0x66) @DM2LcfObject
+    public Sound itemSound;
 
     // Believe it or not, these are in fact Uint8.
     // How, though...
@@ -84,97 +106,77 @@ public class SaveSystem extends R2kObject {
     //  but now I'll never know what it means. My guess is:
     // 1. there's an enum value that depends on this being signed.
     // 2. EasyRPG had it marked as Uint8 but fixed it, so these notes don't make sense (a good thing)
-    public ByteR2kStruct transitionOut = new ByteR2kStruct(1).signed();
-    public ByteR2kStruct transitionIn = new ByteR2kStruct(1).signed();
-    public ByteR2kStruct battleStartFadeout = new ByteR2kStruct(1).signed();
-    public ByteR2kStruct battleStartFadein = new ByteR2kStruct(1).signed();
-    public ByteR2kStruct battleEndFadeout = new ByteR2kStruct(1).signed();
-    public ByteR2kStruct battleEndFadein = new ByteR2kStruct(1).signed();
+    @DM2FXOBinding("@transition_fadeout") @DM2LcfBinding(0x6F)
+    public ByteR2kStruct transitionOut;
+    @DM2FXOBinding("@transition_fadein") @DM2LcfBinding(0x70)
+    public ByteR2kStruct transitionIn;
+    @DM2FXOBinding("@battle_start_fadeout") @DM2LcfBinding(0x71)
+    public ByteR2kStruct battleStartFadeout;
+    @DM2FXOBinding("@battle_start_fadein") @DM2LcfBinding(0x72)
+    public ByteR2kStruct battleStartFadein;
+    @DM2FXOBinding("@battle_end_fadeout") @DM2LcfBinding(0x73)
+    public ByteR2kStruct battleEndFadeout;
+    @DM2FXOBinding("@battle_end_fadein") @DM2LcfBinding(0x74)
+    public ByteR2kStruct battleEndFadein;
 
-    public BooleanR2kStruct canTeleport = new BooleanR2kStruct(true);
-    public BooleanR2kStruct canEscape = new BooleanR2kStruct(true);
-    public BooleanR2kStruct canSave = new BooleanR2kStruct(true);
-    public BooleanR2kStruct canMenu = new BooleanR2kStruct(true);
+    @DM2FXOBinding("@can_teleport") @DM2LcfBinding(0x79) @DM2LcfBoolean(true)
+    public BooleanR2kStruct canTeleport;
+    @DM2FXOBinding("@can_escape") @DM2LcfBinding(0x7A) @DM2LcfBoolean(true)
+    public BooleanR2kStruct canEscape;
+    @DM2FXOBinding("@can_save") @DM2LcfBinding(0x7B) @DM2LcfBoolean(true)
+    public BooleanR2kStruct canSave;
+    @DM2FXOBinding("@can_menu") @DM2LcfBinding(0x7C) @DM2LcfBoolean(true)
+    public BooleanR2kStruct canMenu;
 
-    public StringR2kStruct battleBackground = new StringR2kStruct();
-    public IntegerR2kStruct saveCount = new IntegerR2kStruct(0);
-    public IntegerR2kStruct saveSlot = new IntegerR2kStruct(1);
-    public IntegerR2kStruct atbMode2k3 = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@battle_background") @DM2LcfBinding(0x7D) @DM2LcfObject
+    public StringR2kStruct battleBackground;
+    @DM2FXOBinding("@save_count") @DM2LcfBinding(0x83) @DM2LcfInteger(0)
+    public IntegerR2kStruct saveCount;
+    @DM2FXOBinding("@save_slot") @DM2LcfBinding(0x84) @DM2LcfInteger(1)
+    public IntegerR2kStruct saveSlot;
+    @DM2FXOBinding("@atb_wait_mode_2k3") @DM2LcfBinding(0x8C) @DM2LcfInteger(0)
+    public IntegerR2kStruct atbMode2k3;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, screen, "@screen"),
-                new Index(0x0B, frameCount, "@frame_count"),
-                new Index(0x15, systemName, "@system_name"),
-                new Index(0x16, systemBoxStretch, "@system_box_tiling"),
-                new Index(0x17, fontId, "@font_id"),
-                new Index(0x1F, switchesSize),
-                new Index(0x20, switches, "@switches"),
-                new Index(0x21, variablesSize),
-                new Index(0x22, variables, "@variables"),
-                new Index(0x29, messageTransparent, "@message_transparent"),
-                new Index(0x2A, messagePosition, "@message_position"),
-                new Index(0x2B, messagePreventOverlap, "@message_prevent_overlap"),
-                new Index(0x2C, messageContinueEvents, "@message_continue_events"),
-                new Index(0x33, faceName, "@face_name"),
-                new Index(0x34, faceIdx, "@face_index"),
-                new Index(0x35, faceRight, "@face_right"),
-                new Index(0x36, faceFlip, "@face_flip"),
-                new Index(0x37, transparent, "@transparent"),
-                // 3D is an unknown integer. I'd play with it, but there's never the time!
-                // If there's a way to get a save at a given moment in time with RPG_RT, that'd be SUPER useful.
-                // new Index(0x3D, musicFadeout, "@music_fadeout"),
-                new Index(0x47, titleMusic, "@title_music"),
-                new Index(0x48, battleMusic, "@battle_music"),
-                new Index(0x49, battleEndMusic, "@battle_end_music"),
-                new Index(0x4A, innMusic, "@inn_music"),
-                new Index(0x4B, currentMusic, "@rtmusic_current"),
-                new Index(0x4C, beforeVehicleMusic, "@rtmusic_vehicle_start"),
-                new Index(0x4D, beforeBattleMusic, "@rtmusic_battle_start"),
-                new Index(0x4E, storedMusic, "@rtmusic_memorized"),
-                new Index(0x4F, boatMusic, "@boat_music"),
-                new Index(0x50, shipMusic, "@ship_music"),
-                new Index(0x51, airshipMusic, "@airship_music"),
-                new Index(0x52, gameOverMusic, "@gameover_music"),
-
-                new Index(0x5B, cursorSound, "@cursor_se"),
-                new Index(0x5C, decisionSound, "@decision_se"),
-                new Index(0x5D, cancelSound, "@cancel_se"),
-                new Index(0x5E, buzzerSound, "@buzzer_se"),
-                new Index(0x5F, battleSound, "@battle_se"),
-                new Index(0x60, escapeSound, "@escape_se"),
-
-                new Index(0x61, enemyAttackSound, "@enemy_attack_se"),
-                new Index(0x62, enemyDamagedSound, "@enemy_hurt_se"),
-                new Index(0x63, actorDamagedSound, "@actor_hurt_se"),
-                new Index(0x64, dodgeSound, "@dodge_se"),
-                new Index(0x65, enemyDeathSound, "@enemy_death_se"),
-                new Index(0x66, itemSound, "@item_se"),
-
-                new Index(0x6F, transitionOut, "@transition_fadeout"),
-                new Index(0x70, transitionIn, "@transition_fadein"),
-                new Index(0x71, battleStartFadeout, "@battle_start_fadeout"),
-                new Index(0x72, battleStartFadein, "@battle_start_fadein"),
-                new Index(0x73, battleEndFadeout, "@battle_end_fadeout"),
-                new Index(0x74, battleEndFadein, "@battle_end_fadein"),
-
-                new Index(0x79, canTeleport, "@can_teleport"),
-                new Index(0x7A, canEscape, "@can_escape"),
-                new Index(0x7B, canSave, "@can_save"),
-                new Index(0x7C, canMenu, "@can_menu"),
-
-                new Index(0x7D, battleBackground, "@battle_background"),
-                new Index(0x83, saveCount, "@save_count"),
-                new Index(0x84, saveSlot, "@save_slot"),
-                new Index(0x8C, atbMode2k3, "@atb_wait_mode_2k3"),
-        };
+    public SaveSystem() {
+        super("RPG::SaveSystem");
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::SaveSystem", true);
-        asRIOISF(rio);
-        return rio;
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@switches"))
+            return switches = new DM2Array<BooleanR2kStruct>() {
+                @Override
+                public BooleanR2kStruct newValue() {
+                    return new BooleanR2kStruct(false);
+                }
+            };
+        if (sym.equals("@variables"))
+            return variables = new DM2Array<Int32R2kStruct>() {
+                @Override
+                public Int32R2kStruct newValue() {
+                    return new Int32R2kStruct(0);
+                }
+            };
+        if (sym.equals("@transition_fadeout"))
+            return transitionOut = newSByte();
+        if (sym.equals("@transition_fadein"))
+            return transitionIn = newSByte();
+        if (sym.equals("@battle_start_fadeout"))
+            return battleStartFadeout = newSByte();
+        if (sym.equals("@battle_start_fadein"))
+            return battleStartFadein = newSByte();
+        if (sym.equals("@battle_end_fadeout"))
+            return battleEndFadeout = newSByte();
+        if (sym.equals("@battle_end_fadein"))
+            return battleEndFadein = newSByte();
+        return super.dm2AddIVar(sym);
     }
+
+    private ByteR2kStruct newSByte() {
+        return new ByteR2kStruct(1).signed();
+    }
+
+    // 3D is an unknown integer. I'd play with it, but there's never the time!
+    // If there's a way to get a save at a given moment in time with RPG_RT, that'd be SUPER useful.
+    // new Index(0x3D, musicFadeout, "@music_fadeout"),
 }

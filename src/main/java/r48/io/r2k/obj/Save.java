@@ -7,108 +7,80 @@
 
 package r48.io.r2k.obj;
 
-import gabien.ui.ISupplier;
-import r48.RubyIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.chunks.*;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.DM2Optional;
+import r48.io.data.IRIO;
+import r48.io.r2k.chunks.ByteR2kStruct;
+import r48.io.r2k.chunks.CompatSparseArrayHR2kStruct;
+import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.obj.lsd.*;
 
 /**
  * Savefile
  */
-public class Save extends R2kObject {
-    public SaveTitle title = new SaveTitle();
-    public SaveSystem system = new SaveSystem();
-    public SaveScreen screen = new SaveScreen();
-    public SparseArrayHR2kStruct<SavePicture> pictures = new SparseArrayHR2kStruct<SavePicture>(new ISupplier<SavePicture>() {
-        @Override
-        public SavePicture get() {
-            return new SavePicture();
-        }
-    });
-    public SavePartyLocation partyPos = new SavePartyLocation();
-    public SaveVehicleLocation boatPos = new SaveVehicleLocation();
-    public SaveVehicleLocation shipPos = new SaveVehicleLocation();
-    public SaveVehicleLocation airshipPos = new SaveVehicleLocation();
-    public SparseArrayHR2kStruct<SaveActor> actors = new SparseArrayHR2kStruct<SaveActor>(new ISupplier<SaveActor>() {
-        @Override
-        public SaveActor get() {
-            return new SaveActor();
-        }
-    });
-    public SaveParty partyItems = new SaveParty();
-    public SparseArrayAR2kStruct<SaveTarget> targets = new SparseArrayAR2kStruct<SaveTarget>(new ISupplier<SaveTarget>() {
-        @Override
-        public SaveTarget get() {
-            return new SaveTarget();
-        }
-    });
-    public SaveMapInfo mapInfo = new SaveMapInfo();
-    public Interpreter mainInterpreter = new Interpreter();
-    public OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>> unusedPanorama = new OptionalR2kStruct<ArrayR2kStruct<ByteR2kStruct>>(new ISupplier<ArrayR2kStruct<ByteR2kStruct>>() {
-        @Override
-        public ArrayR2kStruct<ByteR2kStruct> get() {
-            return new ArrayR2kStruct<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
-                @Override
-                public ByteR2kStruct get() {
-                    return new ByteR2kStruct(0);
-                }
-            });
-        }
-    });
-    public SparseArrayHR2kStruct<R2kObject> commonEvents = new SparseArrayHR2kStruct<R2kObject>(new ISupplier<R2kObject>() {
-        @Override
-        public R2kObject get() {
-            return new R2kObject() {
-                public Interpreter interp = new Interpreter();
-                @Override
-                public Index[] getIndices() {
-                    return new Index[] {
-                            new Index(0x01, interp, "@i")
-                    };
-                }
+public class Save extends DM2R2kObject {
+    @DM2FXOBinding("@title") @DM2LcfBinding(0x64) @DM2LcfObject
+    public SaveTitle title;
+    @DM2FXOBinding("@system") @DM2LcfBinding(0x65) @DM2LcfObject
+    public SaveSystem system;
+    @DM2FXOBinding("@screen") @DM2LcfBinding(0x66) @DM2LcfObject
+    public SaveScreen screen;
+    @DM2FXOBinding("@pictures") @DM2LcfBinding(0x67) @DM2LcfObject @DM2LcfCompatArray(SavePicture.class)
+    public CompatSparseArrayHR2kStruct<SavePicture> pictures;
+    @DM2FXOBinding("@party_pos") @DM2LcfBinding(0x68) @DM2LcfObject
+    public SavePartyLocation partyPos;
+    @DM2FXOBinding("@boat_pos") @DM2LcfBinding(0x69) @DM2LcfObject
+    public SaveVehicleLocation boatPos;
+    @DM2FXOBinding("@ship_pos") @DM2LcfBinding(0x6A) @DM2LcfObject
+    public SaveVehicleLocation shipPos;
+    @DM2FXOBinding("@airship_pos") @DM2LcfBinding(0x6B) @DM2LcfObject
+    public SaveVehicleLocation airshipPos;
+    @DM2FXOBinding("@actors") @DM2LcfBinding(0x6C) @DM2LcfCompatArray(SaveActor.class)
+    public CompatSparseArrayHR2kStruct<SaveActor> actors;
+    @DM2FXOBinding("@party") @DM2LcfBinding(0x6D) @DM2LcfObject
+    public SaveParty partyItems;
+    @DM2FXOBinding("@targets") @DM2LcfBinding(0x6E) @DM2LcfSparseArrayA(SaveTarget.class)
+    public DM2SparseArrayA<SaveTarget> targets;
+    @DM2FXOBinding("@map_info") @DM2LcfBinding(0x6F) @DM2LcfObject
+    public SaveMapInfo mapInfo;
+    @DM2Optional @DM2FXOBinding("@unused_panorama") @DM2LcfBinding(0x70)
+    public DM2Array<ByteR2kStruct> unusedPanorama;
+    @DM2FXOBinding("@main_interpreter") @DM2LcfBinding(0x71) @DM2LcfObject
+    public Interpreter mainInterpreter;
+    @DM2FXOBinding("@common_events") @DM2LcfBinding(0x72) @DM2LcfSparseArrayH(SaveCommonEvent.class)
+    public DM2SparseArrayH<SaveCommonEvent> commonEvents;
 
-                @Override
-                public RubyIO asRIO() {
-                    RubyIO root = new RubyIO().setSymlike("RPG::SaveCommonEvent", true);
-                    asRIOISF(root);
-                    return root;
-                }
-            };
-        }
-    });
+    public Save() {
+        super("RPG::Save");
+    }
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x64, title, "@title"),
-                new Index(0x65, system, "@system"),
-                new Index(0x66, screen, "@screen"),
-                new Index(0x67, pictures, "@pictures"),
-                new Index(0x68, partyPos, "@party_pos"),
-                new Index(0x69, boatPos, "@boat_pos"),
-                new Index(0x6A, shipPos, "@ship_pos"),
-                new Index(0x6B, airshipPos, "@airship_pos"),
-                new Index(0x6C, actors, "@actors"),
-                new Index(0x6D, partyItems, "@party"),
-                new Index(0x6E, targets, "@targets"),
-                new Index(0x6F, mapInfo, "@map_info"),
-                new Index(0x70, unusedPanorama, "@unused_panorama"),
-                new Index(0x65, system, "@system"),
-                new Index(0x71, mainInterpreter, "@main_interpreter"),
-                new Index(0x72, commonEvents, "@common_events"),
+    private DM2Array<ByteR2kStruct> newDM2A() {
+        return new DM2Array<ByteR2kStruct>() {
+            @Override
+            public ByteR2kStruct newValue() {
+                return new ByteR2kStruct(0);
+            }
         };
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO root = new RubyIO().setSymlike("RPG::Save", true);
-        asRIOISF(root);
-        return root;
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@unused_panorama"))
+            unusedPanorama = newDM2A();
+        return super.dm2AddIVar(sym);
     }
 
     @Override
     public boolean terminatable() {
         return true;
+    }
+
+    public static class SaveCommonEvent extends DM2R2kObject {
+        @DM2FXOBinding("@i") @DM2LcfBinding(1) @DM2LcfObject
+        public Interpreter interp;
+
+        public SaveCommonEvent() {
+            super("RPG::SaveCommonEvent");
+        }
     }
 }

@@ -31,10 +31,10 @@ public class Database extends DM2R2kObject {
     public DM2SparseArrayH<Actor> actors;
     @DM2FXOBinding("@skills") @DM2LcfBinding(12) @DM2LcfSparseArrayH(Skill.class)
     public DM2SparseArrayH<Skill> skills;
-    @DM2FXOBinding("@items") @DM2LcfBinding(13) @DM2LcfCompatArray(Item.class)
-    public CompatSparseArrayHR2kStruct<Item> items;
-    @DM2FXOBinding("@enemies") @DM2LcfBinding(14) @DM2LcfCompatArray(Enemy.class)
-    public CompatSparseArrayHR2kStruct<Enemy> enemies;
+    @DM2FXOBinding("@items") @DM2LcfBinding(13) @DM2LcfSparseArrayH(Item.class)
+    public DM2SparseArrayH<Item> items;
+    @DM2FXOBinding("@enemies") @DM2LcfBinding(14) @DM2LcfSparseArrayH(Enemy.class)
+    public DM2SparseArrayH<Enemy> enemies;
     @DM2FXOBinding("@troops") @DM2LcfBinding(15) @DM2LcfSparseArrayH(Troop.class)
     public DM2SparseArrayH<Troop> troops;
     @DM2FXOBinding("@terrains") @DM2LcfBinding(16) @DM2LcfCompatArray(Terrain.class)
@@ -45,8 +45,8 @@ public class Database extends DM2R2kObject {
     public CompatSparseArrayHR2kStruct<State> states;
     @DM2FXOBinding("@animations") @DM2LcfBinding(19) @DM2LcfSparseArrayH(Animation.class)
     public DM2SparseArrayH<Animation> animations;
-    @DM2FXOBinding("@tilesets") @DM2LcfBinding(20) @DM2LcfCompatArray(Tileset.class)
-    public CompatSparseArrayHR2kStruct<Tileset> tilesets;
+    @DM2FXOBinding("@tilesets") @DM2LcfBinding(20) @DM2LcfSparseArrayH(Tileset.class)
+    public DM2SparseArrayH<Tileset> tilesets;
 
     @DM2FXOBinding("@terms") @DM2LcfBinding(21) @DM2LcfObject
     public Terms terms;
@@ -71,8 +71,8 @@ public class Database extends DM2R2kObject {
 
     @DM2FXOBinding("@classes_2k3") @DM2LcfBinding(30) @DM2LcfSparseArrayH(ActorClass.class)
     public DM2SparseArrayH<ActorClass> classes2k3;
-    @DM2FXOBinding("@battle_anim_sets_2k3") @DM2LcfBinding(32) @DM2LcfCompatArray(BattlerAnimation.class)
-    public CompatSparseArrayHR2kStruct<BattlerAnimation> battlerAnimation2k3;
+    @DM2FXOBinding("@battle_anim_sets_2k3") @DM2LcfBinding(32) @DM2LcfSparseArrayH(BattlerAnimation.class)
+    public DM2SparseArrayH<BattlerAnimation> battlerAnimation2k3;
 
     @DM2Optional @DM2FXOBinding("@unused_27") @DM2LcfBinding(27)
     public DM2Array<ByteR2kStruct> unused27;

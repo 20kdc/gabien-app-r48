@@ -51,7 +51,7 @@ public class ActorClassBase extends DM2R2kObject {
 
     @DM2FXOBinding("@state_ranks") @DM2LcfSizeBinding(71) @DM2LcfBinding(72)
     public DM2ArraySet<ByteR2kStruct> stateRanks;
-    @DM2FXOBinding("@element_ranks") @DM2LcfSizeBinding(73) @DM2LcfBinding(74)
+    @DM2FXOBinding("@attr_ranks") @DM2LcfSizeBinding(73) @DM2LcfBinding(74)
     public DM2ArraySet<ByteR2kStruct> attrRanks;
 
     @DM2FXOBinding("@battle_commands_2k3") @DM2LcfBinding(80)
@@ -77,7 +77,7 @@ public class ActorClassBase extends DM2R2kObject {
             });
         if (sym.equals("@state_ranks"))
             return stateRanks = byteSet();
-        if (sym.equals("@element_ranks"))
+        if (sym.equals("@attr_ranks"))
             return attrRanks = byteSet();
         if (sym.equals("@battle_commands_2k3"))
             return battleCommands = new DM2Array<Int32R2kStruct>() {

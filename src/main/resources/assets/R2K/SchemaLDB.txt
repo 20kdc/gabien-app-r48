@@ -89,7 +89,7 @@ C name Class.RPG::Actor @name | #A
 @learn_skills subwindow arrayIx1 RPG::Learning
 @editor_use_skillspanel_name boolean
 @state_ranks subwindow hash state_id rpg_statattr_rank
-@element_ranks subwindow hash attribute_id rpg_statattr_rank
+@attr_ranks subwindow hash attribute_id rpg_statattr_rank
 @battle_commands_2k3 subwindow RPG::BCA
 
  ---
@@ -293,7 +293,7 @@ C name Class.RPG::Enemy @name | #A
 @miss boolean
 @levitate boolean
 @state_ranks subwindow hash state_id rpg_statattr_rank
-@element_ranks subwindow hash attribute_id rpg_statattr_rank
+@attr_ranks subwindow hash attribute_id rpg_statattr_rank
 @actions subwindow hash int+0 subwindow RPG::EnemyAction
 
  ---
@@ -725,7 +725,7 @@ C name Class.RPG::Class @name | #A
 +rpg_actorclassbase_levelling
 @learn_skills subwindow arrayIx1 RPG::Learning
 @state_ranks subwindow hash state_id rpg_statattr_rank
-@element_ranks subwindow hash attribute_id rpg_statattr_rank
+@attr_ranks subwindow hash attribute_id rpg_statattr_rank
 @battle_commands_2k3 subwindow RPG::BCA
 
  ---
@@ -741,7 +741,7 @@ e rpg_battleranimation_type 0 battlerCharSet 1 animationId
 @animation_id animation_id
 
 .rpg_bas_animset_base
- This entry doesn't get serialized ; there's code to ensure this.
+ This entry doesn't get serialized so long as OPAQUE == nil ; there's code to ensure this.
 ]0 _ OPAQUE
 ]1 idle subwindow RPG::BattlerAnimation
 ]2 rightHand subwindow RPG::BattlerAnimation

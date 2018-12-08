@@ -7,89 +7,83 @@
 
 package r48.io.r2k.obj.ldb;
 
-import gabien.ui.ISupplier;
-import r48.RubyIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.chunks.*;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.IRIO;
+import r48.io.r2k.chunks.BooleanR2kStruct;
+import r48.io.r2k.chunks.ByteR2kStruct;
+import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.*;
 
 /**
  * COPY jun6-2017
  */
-public class Enemy extends R2kObject {
-    public StringR2kStruct name = new StringR2kStruct();
-    public StringR2kStruct battlerName = new StringR2kStruct();
-    public IntegerR2kStruct battlerHue = new IntegerR2kStruct(0);
-    public IntegerR2kStruct maxHp = new IntegerR2kStruct(10);
-    public IntegerR2kStruct maxSp = new IntegerR2kStruct(10);
-    public IntegerR2kStruct atk = new IntegerR2kStruct(10);
-    public IntegerR2kStruct def = new IntegerR2kStruct(10);
-    public IntegerR2kStruct spi = new IntegerR2kStruct(10);
-    public IntegerR2kStruct agi = new IntegerR2kStruct(10);
-    public BooleanR2kStruct battlerBlendMode = new BooleanR2kStruct(false);
-    public IntegerR2kStruct exp = new IntegerR2kStruct(0);
-    public IntegerR2kStruct gold = new IntegerR2kStruct(0);
-    public IntegerR2kStruct dropId = new IntegerR2kStruct(0);
-    public IntegerR2kStruct dropProb = new IntegerR2kStruct(100);
-    public BooleanR2kStruct criticalHit = new BooleanR2kStruct(false);
-    public IntegerR2kStruct criticalHitChance = new IntegerR2kStruct(30);
-    public BooleanR2kStruct miss = new BooleanR2kStruct(false);
-    public BooleanR2kStruct levitate = new BooleanR2kStruct(false);
+public class Enemy extends DM2R2kObject {
+    @DM2FXOBinding("@name") @DM2LcfBinding(0x01) @DM2LcfObject
+    public StringR2kStruct name;
+    @DM2FXOBinding("@battler_name") @DM2LcfBinding(0x02) @DM2LcfObject
+    public StringR2kStruct battlerName;
+    @DM2FXOBinding("@battler_hue") @DM2LcfBinding(0x03) @DM2LcfInteger(0)
+    public IntegerR2kStruct battlerHue;
+    @DM2FXOBinding("@max_hp") @DM2LcfBinding(0x04) @DM2LcfInteger(10)
+    public IntegerR2kStruct maxHp;
+    @DM2FXOBinding("@max_sp") @DM2LcfBinding(0x05) @DM2LcfInteger(10)
+    public IntegerR2kStruct maxSp;
+    @DM2FXOBinding("@atk") @DM2LcfBinding(0x06) @DM2LcfInteger(10)
+    public IntegerR2kStruct atk;
+    @DM2FXOBinding("@def") @DM2LcfBinding(0x07) @DM2LcfInteger(10)
+    public IntegerR2kStruct def;
+    @DM2FXOBinding("@spi") @DM2LcfBinding(0x08) @DM2LcfInteger(10)
+    public IntegerR2kStruct spi;
+    @DM2FXOBinding("@agi") @DM2LcfBinding(0x09) @DM2LcfInteger(10)
+    public IntegerR2kStruct agi;
+    @DM2FXOBinding("@battler_blend_mode") @DM2LcfBinding(0x0A) @DM2LcfBoolean(false)
+    public BooleanR2kStruct battlerBlendMode;
+    @DM2FXOBinding("@exp") @DM2LcfBinding(0x0B) @DM2LcfInteger(0)
+    public IntegerR2kStruct exp;
+    @DM2FXOBinding("@gold") @DM2LcfBinding(0x0C) @DM2LcfInteger(0)
+    public IntegerR2kStruct gold;
+    @DM2FXOBinding("@drop_item") @DM2LcfBinding(0x0D) @DM2LcfInteger(0)
+    public IntegerR2kStruct dropId;
+    @DM2FXOBinding("@drop_percent") @DM2LcfBinding(0x0E) @DM2LcfInteger(100)
+    public IntegerR2kStruct dropProb;
+    @DM2FXOBinding("@can_crit") @DM2LcfBinding(0x15) @DM2LcfBoolean(false)
+    public BooleanR2kStruct criticalHit;
+    @DM2FXOBinding("@crit_chance") @DM2LcfBinding(0x16) @DM2LcfInteger(30)
+    public IntegerR2kStruct criticalHitChance;
+    @DM2FXOBinding("@miss") @DM2LcfBinding(0x1A) @DM2LcfBoolean(false)
+    public BooleanR2kStruct miss;
+    @DM2FXOBinding("@levitate") @DM2LcfBinding(0x1C) @DM2LcfBoolean(false)
+    public BooleanR2kStruct levitate;
 
-    public ArraySizeR2kInterpretable<ByteR2kStruct> stateRanksSz = new ArraySizeR2kInterpretable<ByteR2kStruct>();
-    public ArraySetR2kStruct<ByteR2kStruct> stateRanks = new ArraySetR2kStruct<ByteR2kStruct>(stateRanksSz, new ISupplier<ByteR2kStruct>() {
-        @Override
-        public ByteR2kStruct get() {
-            return new ByteR2kStruct(2);
-        }
-    }, true);
-    public ArraySizeR2kInterpretable<ByteR2kStruct> attrRanksSz = new ArraySizeR2kInterpretable<ByteR2kStruct>();
-    public ArraySetR2kStruct<ByteR2kStruct> attrRanks = new ArraySetR2kStruct<ByteR2kStruct>(attrRanksSz, new ISupplier<ByteR2kStruct>() {
-        @Override
-        public ByteR2kStruct get() {
-            return new ByteR2kStruct(2);
-        }
-    }, true);
+    @DM2FXOBinding("@state_ranks") @DM2LcfSizeBinding(0x1F) @DM2LcfBinding(0x20)
+    public DM2ArraySet<ByteR2kStruct> stateRanks;
+    @DM2FXOBinding("@attr_ranks") @DM2LcfSizeBinding(0x21) @DM2LcfBinding(0x22)
+    public DM2ArraySet<ByteR2kStruct> attrRanks;
 
-    public SparseArrayHR2kStruct<EnemyAction> enemyActions = new SparseArrayHR2kStruct<EnemyAction>(new ISupplier<EnemyAction>() {
-        @Override
-        public EnemyAction get() {
-            return new EnemyAction();
-        }
-    });
+    @DM2FXOBinding("@actions") @DM2LcfBinding(0x2A) @DM2LcfSparseArrayH(EnemyAction.class)
+    public DM2SparseArrayH<EnemyAction> enemyActions;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, name, "@name"),
-                new Index(0x02, battlerName, "@battler_name"),
-                new Index(0x03, battlerHue, "@battler_hue"),
-                new Index(0x04, maxHp, "@max_hp"),
-                new Index(0x05, maxSp, "@max_sp"),
-                new Index(0x06, atk, "@atk"),
-                new Index(0x07, def, "@def"),
-                new Index(0x08, spi, "@spi"),
-                new Index(0x09, agi, "@agi"),
-                new Index(0x0A, battlerBlendMode, "@battler_blend_mode"),
-                new Index(0x0B, exp, "@exp"),
-                new Index(0x0C, gold, "@gold"),
-                new Index(0x0D, dropId, "@drop_item"),
-                new Index(0x0E, dropProb, "@drop_percent"),
-                new Index(0x15, criticalHit, "@can_crit"),
-                new Index(0x16, criticalHitChance, "@crit_chance"),
-                new Index(0x1A, miss, "@miss"),
-                new Index(0x1C, levitate, "@levitate"),
-                new Index(0x1F, stateRanksSz),
-                new Index(0x20, stateRanks, "@state_ranks"),
-                new Index(0x21, attrRanksSz),
-                new Index(0x22, attrRanks, "@element_ranks"),
-                new Index(0x2A, enemyActions, "@actions"),
-        };
+    public Enemy() {
+        super("RPG::Enemy");
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::Enemy", true);
-        asRIOISF(rio);
-        return rio;
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@state_ranks"))
+            return stateRanks = new DM2ArraySet<ByteR2kStruct>() {
+                @Override
+                public ByteR2kStruct newValue() {
+                    return new ByteR2kStruct(2);
+                }
+            };
+        if (sym.equals("@attr_ranks"))
+            return attrRanks = new DM2ArraySet<ByteR2kStruct>() {
+                @Override
+                public ByteR2kStruct newValue() {
+                    return new ByteR2kStruct(2);
+                }
+            };
+        return super.dm2AddIVar(sym);
     }
 }

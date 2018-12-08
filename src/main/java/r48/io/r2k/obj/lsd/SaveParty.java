@@ -7,124 +7,166 @@
 
 package r48.io.r2k.obj.lsd;
 
-import gabien.ui.ISupplier;
-import r48.RubyIO;
+import r48.io.data.DM2FXOBinding;
 import r48.io.data.IRIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.chunks.*;
+import r48.io.data.IRIOFixedArray;
+import r48.io.data.IRIOFixedObject;
+import r48.io.r2k.chunks.BooleanR2kStruct;
+import r48.io.r2k.chunks.ByteR2kStruct;
+import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.chunks.ShortR2kStruct;
+import r48.io.r2k.dm2chk.*;
 
-public class SaveParty extends R2kObject {
-    public ArraySizeR2kInterpretable<ShortR2kStruct> partySize = new ArraySizeR2kInterpretable<ShortR2kStruct>(true);
-    public ArrayR2kStruct<ShortR2kStruct> party = new ArrayR2kStruct<ShortR2kStruct>(partySize, new ISupplier<ShortR2kStruct>() {
-        @Override
-        public ShortR2kStruct get() {
-            return new ShortR2kStruct(0);
-        }
-    });
-    // NOTE: These *don't* get put in directly
-    public IntegerR2kStruct inventorySize = new IntegerR2kStruct(0);
-    public ArrayR2kInterpretable<ShortR2kStruct> inventoryIds = new ArrayR2kInterpretable<ShortR2kStruct>(null, new ISupplier<ShortR2kStruct>() {
-        @Override
-        public ShortR2kStruct get() {
-            return new ShortR2kStruct(0);
-        }
-    }, true);
-    public ArrayR2kInterpretable<ByteR2kStruct> inventoryCounts = new ArrayR2kInterpretable<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
-        @Override
-        public ByteR2kStruct get() {
-            return new ByteR2kStruct(0);
-        }
-    }, true);
-    public ArrayR2kInterpretable<ByteR2kStruct> inventoryUsage = new ArrayR2kInterpretable<ByteR2kStruct>(null, new ISupplier<ByteR2kStruct>() {
-        @Override
-        public ByteR2kStruct get() {
-            return new ByteR2kStruct(0);
-        }
-    }, true);
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.HashMap;
 
-    public IntegerR2kStruct partyGold = new IntegerR2kStruct(0);
-    public IntegerR2kStruct timer1Seconds = new IntegerR2kStruct(0);
-    public BooleanR2kStruct timer1Active = new BooleanR2kStruct(false);
-    public BooleanR2kStruct timer1Visible = new BooleanR2kStruct(false);
-    public BooleanR2kStruct timer1ActiveDuringBattle = new BooleanR2kStruct(false);
-    public IntegerR2kStruct timer2Seconds = new IntegerR2kStruct(0);
-    public BooleanR2kStruct timer2Active = new BooleanR2kStruct(false);
-    public BooleanR2kStruct timer2Visible = new BooleanR2kStruct(false);
-    public BooleanR2kStruct timer2ActiveDuringBattle = new BooleanR2kStruct(false);
+public class SaveParty extends DM2R2kObject {
+    @DM2FXOBinding("@party") @DM2LcfSizeBinding(1) @DM2LcfBinding(0x02)
+    public DM2Array<ShortR2kStruct> party;
+    // NOTE: These *don't* get put in directly.
+    @DM2LcfBinding(0x0B) @DM2LcfInteger(0)
+    public IntegerR2kStruct inventorySize;
+    @DM2LcfBinding(0x0C)
+    public DM2Array<ShortR2kStruct> inventoryIds;
+    @DM2LcfBinding(0x0D)
+    public DM2Array<ByteR2kStruct> inventoryCounts;
+    @DM2LcfBinding(0x0E)
+    public DM2Array<ByteR2kStruct> inventoryUsage;
 
-    public IntegerR2kStruct battles = new IntegerR2kStruct(0);
-    public IntegerR2kStruct defeats = new IntegerR2kStruct(0);
-    public IntegerR2kStruct escapes = new IntegerR2kStruct(0);
-    public IntegerR2kStruct victories = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@inventory")
+    public IRIOFixedArray<SaveItem> inventoryView;
 
-    public IntegerR2kStruct turns = new IntegerR2kStruct(0);
-    public IntegerR2kStruct steps = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@party_gold") @DM2LcfBinding(0x15) @DM2LcfInteger(0)
+    public IntegerR2kStruct partyGold;
+    @DM2FXOBinding("@timer1_seconds") @DM2LcfBinding(0x17) @DM2LcfInteger(0)
+    public IntegerR2kStruct timer1Seconds;
+    @DM2FXOBinding("@timer1_on") @DM2LcfBinding(0x18) @DM2LcfBoolean(false)
+    public BooleanR2kStruct timer1Active;
+    @DM2FXOBinding("@timer1_visible") @DM2LcfBinding(0x19) @DM2LcfBoolean(false)
+    public BooleanR2kStruct timer1Visible;
+    @DM2FXOBinding("@timer1_on_battle") @DM2LcfBinding(0x1A) @DM2LcfBoolean(false)
+    public BooleanR2kStruct timer1ActiveDuringBattle;
+    @DM2FXOBinding("@timer2_seconds") @DM2LcfBinding(0x1B) @DM2LcfInteger(0)
+    public IntegerR2kStruct timer2Seconds;
+    @DM2FXOBinding("@timer2_on") @DM2LcfBinding(0x1C) @DM2LcfBoolean(false)
+    public BooleanR2kStruct timer2Active;
+    @DM2FXOBinding("@timer2_visible") @DM2LcfBinding(0x1D) @DM2LcfBoolean(false)
+    public BooleanR2kStruct timer2Visible;
+    @DM2FXOBinding("@timer2_on_battle") @DM2LcfBinding(0x1E) @DM2LcfBoolean(false)
+    public BooleanR2kStruct timer2ActiveDuringBattle;
+
+    @DM2FXOBinding("@stats_battles") @DM2LcfBinding(0x20) @DM2LcfInteger(0)
+    public IntegerR2kStruct battles;
+    @DM2FXOBinding("@stats_defeats") @DM2LcfBinding(0x21) @DM2LcfInteger(0)
+    public IntegerR2kStruct defeats;
+    @DM2FXOBinding("@stats_escapes") @DM2LcfBinding(0x22) @DM2LcfInteger(0)
+    public IntegerR2kStruct escapes;
+    @DM2FXOBinding("@stats_victories") @DM2LcfBinding(0x23) @DM2LcfInteger(0)
+    public IntegerR2kStruct victories;
+
+    @DM2FXOBinding("@stats_turns") @DM2LcfBinding(0x29) @DM2LcfInteger(0)
+    public IntegerR2kStruct turns;
+    @DM2FXOBinding("@stats_steps") @DM2LcfBinding(0x2A) @DM2LcfInteger(0)
+    public IntegerR2kStruct steps;
+
+    public SaveParty() {
+        super("RPG::SaveParty");
+    }
 
     @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, partySize),
-                new Index(0x02, party, "@party"),
-                new Index(0x0B, inventorySize),
-                new Index(0x0C, inventoryIds),
-                new Index(0x0D, inventoryCounts),
-                new Index(0x0E, inventoryUsage),
-                new Index(0x15, partyGold, "@party_gold"),
-                new Index(0x17, timer1Seconds, "@timer1_seconds"),
-                new Index(0x18, timer1Active, "@timer1_on"),
-                new Index(0x19, timer1Visible, "@timer1_visible"),
-                new Index(0x1A, timer1ActiveDuringBattle, "@timer1_on_battle"),
-                new Index(0x1B, timer2Seconds, "@timer2_seconds"),
-                new Index(0x1C, timer2Active, "@timer2_on"),
-                new Index(0x1D, timer2Visible, "@timer2_visible"),
-                new Index(0x1E, timer2ActiveDuringBattle, "@timer2_on_battle"),
-                new Index(0x20, battles, "@stats_battles"),
-                new Index(0x21, defeats, "@stats_defeats"),
-                new Index(0x22, escapes, "@stats_escapes"),
-                new Index(0x23, victories, "@stats_victories"),
-                new Index(0x29, turns, "@stats_turns"),
-                new Index(0x2A, steps, "@stats_steps"),
+    protected Object dm2AddField(Field f) {
+        if (f.getName().equals("party"))
+            return party = newShortArray();
+        if (f.getName().equals("inventoryIds"))
+            return inventoryIds = newShortArray();
+        if (f.getName().equals("inventoryCounts"))
+            return inventoryCounts = newByteArray();
+        if (f.getName().equals("inventoryUsage"))
+            return inventoryUsage = newByteArray();
+        if (f.getName().equals("inventoryView"))
+            return inventoryView = new IRIOFixedArray<SaveItem>() {
+                @Override
+                public SaveItem newValue() {
+                    return new SaveItem();
+                }
+            };
+        return super.dm2AddField(f);
+    }
+
+    private DM2Array<ByteR2kStruct> newByteArray() {
+        return new DM2Array<ByteR2kStruct>() {
+            @Override
+            public ByteR2kStruct newValue() {
+                return new ByteR2kStruct(0);
+            }
+        };
+    }
+
+    private DM2Array<ShortR2kStruct> newShortArray() {
+        return new DM2Array<ShortR2kStruct>(0, true, true) {
+            @Override
+            public ShortR2kStruct newValue() {
+                return new ShortR2kStruct(0);
+            }
         };
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::SaveParty", true);
-        asRIOISF(rio);
-        // inventory
-        RubyIO inv = new RubyIO();
-        inv.type = '[';
-        inv.arrVal = new IRIO[inventorySize.i];
-        for (int i = 0; i < inv.arrVal.length; i++) {
-            RubyIO sl = new RubyIO().setSymlike("RPG::SaveItem", true);
-            inv.arrVal[i] = sl;
-            sl.addIVar("@id", inventoryIds.array.get(i).asRIO());
-            sl.addIVar("@count", inventoryCounts.array.get(i).asRIO());
-            sl.addIVar("@usage", inventoryUsage.array.get(i).asRIO());
+    protected void dm2UnpackFromMapDestructively(HashMap<Integer, byte[]> pcd) {
+        super.dm2UnpackFromMapDestructively(pcd);
+        inventoryView.arrVal = new IRIO[inventorySize.i];
+        // This uses the loaded IRIOs as-is to simplify things.
+        for (int i = 0; i < inventoryView.arrVal.length; i++) {
+            SaveItem si = new SaveItem();
+            si.id = (ShortR2kStruct) inventoryIds.arrVal[i];
+            si.count = (ByteR2kStruct) inventoryCounts.arrVal[i];
+            si.usage = (ByteR2kStruct) inventoryUsage.arrVal[i];
+            inventoryView.arrVal[i] = si;
         }
-        rio.addIVar("@inventory", inv);
-        return rio;
+        // Done moving stuff.
+        inventorySize = null;
+        inventoryIds = null;
+        inventoryCounts = null;
+        inventoryUsage = null;
     }
 
     @Override
-    public void fromRIO(IRIO src) {
-        fromRIOISF(src);
-        // inventory
-        IRIO inv = src.getIVar("@inventory");
-        inventorySize.i = inv.getALen();
-        inventoryIds.array.clear();
-        inventoryCounts.array.clear();
-        inventoryUsage.array.clear();
-        for (int i = 0; i < inventorySize.i; i++) {
-            ShortR2kStruct id = new ShortR2kStruct(0);
-            ByteR2kStruct count = new ByteR2kStruct(0);
-            ByteR2kStruct usage = new ByteR2kStruct(0);
-            id.fromRIO(inv.getAElem(i).getIVar("@id"));
-            count.fromRIO(inv.getAElem(i).getIVar("@count"));
-            usage.fromRIO(inv.getAElem(i).getIVar("@usage"));
-            inventoryIds.array.add(id);
-            inventoryCounts.array.add(count);
-            inventoryUsage.array.add(usage);
+    protected void dm2PackIntoMap(HashMap<Integer, byte[]> pcd) throws IOException {
+        inventorySize = new IntegerR2kStruct(0);
+        inventoryIds = newShortArray();
+        inventoryCounts = newByteArray();
+        inventoryUsage = newByteArray();
+        super.dm2PackIntoMap(pcd);
+        inventorySize = null;
+        inventoryIds = null;
+        inventoryCounts = null;
+        inventoryUsage = null;
+    }
+
+    public static class SaveItem extends IRIOFixedObject {
+        @DM2FXOBinding("@id")
+        public ShortR2kStruct id;
+
+        @DM2FXOBinding("@count")
+        public ByteR2kStruct count;
+
+        @DM2FXOBinding("@usage")
+        public ByteR2kStruct usage;
+
+        public SaveItem() {
+            super("RPG::SaveItem");
+        }
+
+        @Override
+        public IRIO addIVar(String sym) {
+            if (sym.equals("@id"))
+                return id = new ShortR2kStruct(0);
+            if (sym.equals("@count"))
+                return count = new ByteR2kStruct(0);
+            if (sym.equals("@usage"))
+                return usage = new ByteR2kStruct(0);
+            return null;
         }
     }
 }

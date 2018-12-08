@@ -7,97 +7,97 @@
 
 package r48.io.r2k.obj.lsd;
 
-import r48.RubyIO;
-import r48.io.r2k.Index;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.IRIO;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.DoubleR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
+import r48.io.r2k.dm2chk.*;
 
 /**
  * Created on 14th December 2017.
  */
-public class SaveScreen extends R2kObject {
-    public IntegerR2kStruct tintEndR = new IntegerR2kStruct(100);
-    public IntegerR2kStruct tintEndG = new IntegerR2kStruct(100);
-    public IntegerR2kStruct tintEndB = new IntegerR2kStruct(100);
-    public IntegerR2kStruct tintEndS = new IntegerR2kStruct(100);
+public class SaveScreen extends DM2R2kObject {
+    @DM2FXOBinding("@tint_end_r") @DM2LcfBinding(0x01) @DM2LcfInteger(100)
+    public IntegerR2kStruct tintEndR;
+    @DM2FXOBinding("@tint_end_g") @DM2LcfBinding(0x02) @DM2LcfInteger(100)
+    public IntegerR2kStruct tintEndG;
+    @DM2FXOBinding("@tint_end_b") @DM2LcfBinding(0x03) @DM2LcfInteger(100)
+    public IntegerR2kStruct tintEndB;
+    @DM2FXOBinding("@tint_end_s") @DM2LcfBinding(0x04) @DM2LcfInteger(100)
+    public IntegerR2kStruct tintEndS;
 
-    public DoubleR2kStruct tintR = new DoubleR2kStruct(100);
-    public DoubleR2kStruct tintG = new DoubleR2kStruct(100);
-    public DoubleR2kStruct tintB = new DoubleR2kStruct(100);
-    public DoubleR2kStruct tintS = new DoubleR2kStruct(100);
-    public IntegerR2kStruct tintFL = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@tint_r") @DM2LcfBinding(0x0B)
+    public DoubleR2kStruct tintR;
+    @DM2FXOBinding("@tint_g") @DM2LcfBinding(0x0C)
+    public DoubleR2kStruct tintG;
+    @DM2FXOBinding("@tint_b") @DM2LcfBinding(0x0D)
+    public DoubleR2kStruct tintB;
+    @DM2FXOBinding("@tint_s") @DM2LcfBinding(0x0E)
+    public DoubleR2kStruct tintS;
+    @DM2FXOBinding("@tint_frames_left") @DM2LcfBinding(0x0F) @DM2LcfInteger(0)
+    public IntegerR2kStruct tintFL;
 
-    public BooleanR2kStruct flashContinuous = new BooleanR2kStruct(false);
-    public IntegerR2kStruct flashR = new IntegerR2kStruct(0);
-    public IntegerR2kStruct flashG = new IntegerR2kStruct(0);
-    public IntegerR2kStruct flashB = new IntegerR2kStruct(0);
-    public DoubleR2kStruct flashPosition = new DoubleR2kStruct(0);
-    public IntegerR2kStruct flashFramesLeft = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@flash_continuous") @DM2LcfBinding(0x14) @DM2LcfBoolean(false)
+    public BooleanR2kStruct flashContinuous;
+    @DM2FXOBinding("@flash_r") @DM2LcfBinding(0x15) @DM2LcfInteger(0)
+    public IntegerR2kStruct flashR;
+    @DM2FXOBinding("@flash_g") @DM2LcfBinding(0x16) @DM2LcfInteger(0)
+    public IntegerR2kStruct flashG;
+    @DM2FXOBinding("@flash_b") @DM2LcfBinding(0x17) @DM2LcfInteger(0)
+    public IntegerR2kStruct flashB;
+    @DM2FXOBinding("@flash_position") @DM2LcfBinding(0x18) @DM2LcfObject
+    public DoubleR2kStruct flashPosition;
+    @DM2FXOBinding("@flash_frames_left") @DM2LcfBinding(0x19) @DM2LcfInteger(0)
+    public IntegerR2kStruct flashFramesLeft;
 
-    public BooleanR2kStruct shakeContinuous = new BooleanR2kStruct(false);
-    public IntegerR2kStruct shakeStrength = new IntegerR2kStruct(0);
-    public IntegerR2kStruct shakeSpeed = new IntegerR2kStruct(0);
-    public IntegerR2kStruct shakeX = new IntegerR2kStruct(0);
-    public IntegerR2kStruct shakeY = new IntegerR2kStruct(0);
-    public IntegerR2kStruct shakeFramesLeft = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@shake_continuous") @DM2LcfBinding(0x1E) @DM2LcfBoolean(false)
+    public BooleanR2kStruct shakeContinuous;
+    @DM2FXOBinding("@shake_strength") @DM2LcfBinding(0x1F) @DM2LcfInteger(0)
+    public IntegerR2kStruct shakeStrength;
+    @DM2FXOBinding("@shake_speed") @DM2LcfBinding(0x20) @DM2LcfInteger(0)
+    public IntegerR2kStruct shakeSpeed;
+    @DM2FXOBinding("@shake_x") @DM2LcfBinding(0x21) @DM2LcfInteger(0)
+    public IntegerR2kStruct shakeX;
+    @DM2FXOBinding("@shake_y") @DM2LcfBinding(0x22) @DM2LcfInteger(0)
+    public IntegerR2kStruct shakeY;
+    @DM2FXOBinding("@shake_frames_left") @DM2LcfBinding(0x23) @DM2LcfInteger(0)
+    public IntegerR2kStruct shakeFramesLeft;
 
-    public IntegerR2kStruct panX = new IntegerR2kStruct(0);
-    public IntegerR2kStruct panY = new IntegerR2kStruct(0);
-    public IntegerR2kStruct battleanimId = new IntegerR2kStruct(0);
-    public IntegerR2kStruct battleanimTarget = new IntegerR2kStruct(0);
-    public IntegerR2kStruct battleanimFrame = new IntegerR2kStruct(0);
-    public BooleanR2kStruct battleanim2E = new BooleanR2kStruct(false);
-    public BooleanR2kStruct battleanimGlobal = new BooleanR2kStruct(false);
+    @DM2FXOBinding("@pan_x") @DM2LcfBinding(0x29) @DM2LcfInteger(0)
+    public IntegerR2kStruct panX;
+    @DM2FXOBinding("@pan_y") @DM2LcfBinding(0x2A) @DM2LcfInteger(0)
+    public IntegerR2kStruct panY;
+    @DM2FXOBinding("@battleanim_id") @DM2LcfBinding(0x2B) @DM2LcfInteger(0)
+    public IntegerR2kStruct battleanimId;
+    @DM2FXOBinding("@battleanim_target") @DM2LcfBinding(0x2C) @DM2LcfInteger(0)
+    public IntegerR2kStruct battleanimTarget;
+    @DM2FXOBinding("@battleanim_frame") @DM2LcfBinding(0x2D) @DM2LcfInteger(0)
+    public IntegerR2kStruct battleanimFrame;
+    @DM2FXOBinding("@battleanim_active") @DM2LcfBinding(0x2E) @DM2LcfBoolean(false)
+    public BooleanR2kStruct battleanim2E;
+    @DM2FXOBinding("@battleanim_global") @DM2LcfBinding(0x2F) @DM2LcfBoolean(false)
+    public BooleanR2kStruct battleanimGlobal;
 
-    public IntegerR2kStruct weather = new IntegerR2kStruct(0);
-    public IntegerR2kStruct weatherStrength = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@weather") @DM2LcfBinding(0x30) @DM2LcfInteger(0)
+    public IntegerR2kStruct weather;
+    @DM2FXOBinding("@weather_strength") @DM2LcfBinding(0x31) @DM2LcfInteger(0)
+    public IntegerR2kStruct weatherStrength;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, tintEndR, "@tint_end_r"),
-                new Index(0x02, tintEndG, "@tint_end_g"),
-                new Index(0x03, tintEndB, "@tint_end_b"),
-                new Index(0x04, tintEndS, "@tint_end_s"),
-                new Index(0x0B, tintR, "@tint_r"),
-                new Index(0x0C, tintG, "@tint_g"),
-                new Index(0x0D, tintB, "@tint_b"),
-                new Index(0x0E, tintS, "@tint_s"),
-                new Index(0x0F, tintFL, "@tint_frames_left"),
-
-                new Index(0x14, flashContinuous, "@flash_continuous"),
-                new Index(0x15, flashR, "@flash_r"),
-                new Index(0x16, flashG, "@flash_g"),
-                new Index(0x17, flashB, "@flash_b"),
-                new Index(0x18, flashPosition, "@flash_position"),
-                new Index(0x19, flashFramesLeft, "@flash_frames_left"),
-
-                new Index(0x1E, shakeContinuous, "@shake_continuous"),
-                new Index(0x1F, shakeStrength, "@shake_strength"),
-                new Index(0x20, shakeSpeed, "@shake_speed"),
-                new Index(0x21, shakeX, "@shake_x"),
-                new Index(0x22, shakeY, "@shake_y"),
-                new Index(0x23, shakeFramesLeft, "@shake_frames_left"),
-
-                new Index(0x29, panX, "@pan_x"),
-                new Index(0x2A, panY, "@pan_y"),
-                new Index(0x2B, battleanimId, "@battleanim_id"),
-                new Index(0x2C, battleanimTarget, "@battleanim_target"),
-                new Index(0x2D, battleanimFrame, "@battleanim_frame"),
-                new Index(0x2E, battleanim2E, "@battleanim_active"),
-                new Index(0x2F, battleanimGlobal, "@battleanim_global"),
-
-                new Index(0x30, weather, "@weather"),
-                new Index(0x31, weatherStrength, "@weather_strength"),
-        };
+    public SaveScreen() {
+        super("RPG::SaveScreen");
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::SaveScreen", true);
-        asRIOISF(rio);
-        return rio;
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@tint_r"))
+            return tintR = new DoubleR2kStruct(100);
+        if (sym.equals("@tint_g"))
+            return tintG = new DoubleR2kStruct(100);
+        if (sym.equals("@tint_b"))
+            return tintB = new DoubleR2kStruct(100);
+        if (sym.equals("@tint_s"))
+            return tintS = new DoubleR2kStruct(100);
+        return super.dm2AddIVar(sym);
     }
 }

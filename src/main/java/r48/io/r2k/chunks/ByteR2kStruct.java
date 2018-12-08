@@ -28,6 +28,10 @@ public class ByteR2kStruct extends IRIOFixed implements IR2kStruct {
         value = (byte) v;
     }
 
+    public ByteR2kStruct() {
+        this(0);
+    }
+
     @Override
     public IRIO setFX(long fx) {
         value = (byte) fx;

@@ -8,185 +8,164 @@
 package r48.io.r2k.obj.ldb;
 
 import gabien.ui.ISupplier;
-import r48.RubyIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.chunks.*;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.IRIO;
+import r48.io.r2k.chunks.BooleanR2kStruct;
+import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.*;
 
 /**
  * Created on 05/06/17.
  */
-public class Item extends R2kObject {
-    public StringR2kStruct name = new StringR2kStruct();
-    public StringR2kStruct description = new StringR2kStruct();
-    public IntegerR2kStruct type = new IntegerR2kStruct(0);
-    public IntegerR2kStruct price = new IntegerR2kStruct(0);
-    public IntegerR2kStruct uses = new IntegerR2kStruct(1);
-    public IntegerR2kStruct atkPoints1 = new IntegerR2kStruct(0);
-    public IntegerR2kStruct defPoints1 = new IntegerR2kStruct(0);
-    public IntegerR2kStruct spiPoints1 = new IntegerR2kStruct(0);
-    public IntegerR2kStruct agiPoints1 = new IntegerR2kStruct(0);
-    public BooleanR2kStruct twoHanded = new BooleanR2kStruct(false);
-    public IntegerR2kStruct spCost = new IntegerR2kStruct(0);
-    public IntegerR2kStruct hit = new IntegerR2kStruct(90);
-    public IntegerR2kStruct crit = new IntegerR2kStruct(0);
-    public IntegerR2kStruct animation = new IntegerR2kStruct(1);
-    public BooleanR2kStruct preemptive = new BooleanR2kStruct(false);
-    public BooleanR2kStruct dualAttack = new BooleanR2kStruct(false);
-    public BooleanR2kStruct attackAll = new BooleanR2kStruct(false);
-    public BooleanR2kStruct ignoreEvade = new BooleanR2kStruct(false);
-    public BooleanR2kStruct preventCrit = new BooleanR2kStruct(false);
-    public BooleanR2kStruct raiseEvasion = new BooleanR2kStruct(false);
-    public BooleanR2kStruct halfSpCost = new BooleanR2kStruct(false);
-    public BooleanR2kStruct noTerrainDamage = new BooleanR2kStruct(false);
-    public BooleanR2kStruct cursed = new BooleanR2kStruct(false);
-    public BooleanR2kStruct entireParty = new BooleanR2kStruct(false);
-    public IntegerR2kStruct recoverHpRate = new IntegerR2kStruct(0);
-    public IntegerR2kStruct recoverHp = new IntegerR2kStruct(0);
-    public IntegerR2kStruct recoverSpRate = new IntegerR2kStruct(0);
-    public IntegerR2kStruct recoverSp = new IntegerR2kStruct(0);
-    public BooleanR2kStruct situationMap1 = new BooleanR2kStruct(false);
-    public BooleanR2kStruct koOnly = new BooleanR2kStruct(false);
-    public IntegerR2kStruct maxHpPoints = new IntegerR2kStruct(0);
-    public IntegerR2kStruct maxSpPoints = new IntegerR2kStruct(0);
-    public IntegerR2kStruct atkPoints2 = new IntegerR2kStruct(0);
-    public IntegerR2kStruct defPoints2 = new IntegerR2kStruct(0);
-    public IntegerR2kStruct spiPoints2 = new IntegerR2kStruct(0);
-    public IntegerR2kStruct agiPoints2 = new IntegerR2kStruct(0);
-    public IntegerR2kStruct useMessage = new IntegerR2kStruct(0);
-    public IntegerR2kStruct skillId = new IntegerR2kStruct(1);
-    public IntegerR2kStruct switchId = new IntegerR2kStruct(1);
-    public BooleanR2kStruct situationMap2 = new BooleanR2kStruct(false);
-    public BooleanR2kStruct situationBattle = new BooleanR2kStruct(false);
+public class Item extends DM2R2kObject {
+    @DM2FXOBinding("@name") @DM2LcfBinding(0x01) @DM2LcfObject
+    public StringR2kStruct name;
+    @DM2FXOBinding("@description") @DM2LcfBinding(0x02) @DM2LcfObject
+    public StringR2kStruct description;
+    @DM2FXOBinding("@type") @DM2LcfBinding(0x03) @DM2LcfInteger(0)
+    public IntegerR2kStruct type;
+    @DM2FXOBinding("@price") @DM2LcfBinding(0x05) @DM2LcfInteger(0)
+    public IntegerR2kStruct price;
+    @DM2FXOBinding("@use_count") @DM2LcfBinding(0x06) @DM2LcfInteger(1)
+    public IntegerR2kStruct uses;
+    @DM2FXOBinding("@equipbuff_atk") @DM2LcfBinding(0x0B) @DM2LcfInteger(0)
+    public IntegerR2kStruct atkPoints1;
+    @DM2FXOBinding("@equipbuff_def") @DM2LcfBinding(0x0C) @DM2LcfInteger(0)
+    public IntegerR2kStruct defPoints1;
+    @DM2FXOBinding("@equipbuff_spi") @DM2LcfBinding(0x0D) @DM2LcfInteger(0)
+    public IntegerR2kStruct spiPoints1;
+    @DM2FXOBinding("@equipbuff_agi") @DM2LcfBinding(0x0E) @DM2LcfInteger(0)
+    public IntegerR2kStruct agiPoints1;
+    @DM2FXOBinding("@two_handed") @DM2LcfBinding(0x0F) @DM2LcfBoolean(false)
+    public BooleanR2kStruct twoHanded;
+    @DM2FXOBinding("@use_sp_cost") @DM2LcfBinding(0x10) @DM2LcfInteger(0)
+    public IntegerR2kStruct spCost;
+    @DM2FXOBinding("@hit_chance") @DM2LcfBinding(0x11) @DM2LcfInteger(90)
+    public IntegerR2kStruct hit;
+    @DM2FXOBinding("@crit_chance") @DM2LcfBinding(0x12) @DM2LcfInteger(0)
+    public IntegerR2kStruct crit;
+    @DM2FXOBinding("@animation") @DM2LcfBinding(0x14) @DM2LcfInteger(1)
+    public IntegerR2kStruct animation;
+    @DM2FXOBinding("@attack_preemptive") @DM2LcfBinding(0x15) @DM2LcfBoolean(false)
+    public BooleanR2kStruct preemptive;
+    @DM2FXOBinding("@dual_attack") @DM2LcfBinding(0x16) @DM2LcfBoolean(false)
+    public BooleanR2kStruct dualAttack;
+    @DM2FXOBinding("@attack_all") @DM2LcfBinding(0x17) @DM2LcfBoolean(false)
+    public BooleanR2kStruct attackAll;
+    @DM2FXOBinding("@ignore_evasion") @DM2LcfBinding(0x18) @DM2LcfBoolean(false)
+    public BooleanR2kStruct ignoreEvade;
+    @DM2FXOBinding("@prevent_crit") @DM2LcfBinding(0x19) @DM2LcfBoolean(false)
+    public BooleanR2kStruct preventCrit;
+    @DM2FXOBinding("@raise_evasion") @DM2LcfBinding(0x1A) @DM2LcfBoolean(false)
+    public BooleanR2kStruct raiseEvasion;
+    @DM2FXOBinding("@half_sp_cost") @DM2LcfBinding(0x1B) @DM2LcfBoolean(false)
+    public BooleanR2kStruct halfSpCost;
+    @DM2FXOBinding("@no_terrain_damage") @DM2LcfBinding(0x1C) @DM2LcfBoolean(false)
+    public BooleanR2kStruct noTerrainDamage;
+    @DM2FXOBinding("@cursed_2k3") @DM2LcfBinding(0x1D) @DM2LcfBoolean(false)
+    public BooleanR2kStruct cursed;
+    @DM2FXOBinding("@entire_party") @DM2LcfBinding(0x1F) @DM2LcfBoolean(false)
+    public BooleanR2kStruct entireParty;
+    @DM2FXOBinding("@recover_hp_rate") @DM2LcfBinding(0x20) @DM2LcfInteger(0)
+    public IntegerR2kStruct recoverHpRate;
+    @DM2FXOBinding("@recover_hp") @DM2LcfBinding(0x21) @DM2LcfInteger(0)
+    public IntegerR2kStruct recoverHp;
+    @DM2FXOBinding("@recover_sp_rate") @DM2LcfBinding(0x22) @DM2LcfInteger(0)
+    public IntegerR2kStruct recoverSpRate;
+    @DM2FXOBinding("@recover_sp") @DM2LcfBinding(0x23) @DM2LcfInteger(0)
+    public IntegerR2kStruct recoverSp;
+    @DM2FXOBinding("@medicine_only_on_map") @DM2LcfBinding(0x25) @DM2LcfBoolean(false)
+    public BooleanR2kStruct situationMap1;
+    @DM2FXOBinding("@dead_only") @DM2LcfBinding(0x26) @DM2LcfBoolean(false)
+    public BooleanR2kStruct koOnly;
+    @DM2FXOBinding("@usebuff_maxhp") @DM2LcfBinding(0x29) @DM2LcfInteger(0)
+    public IntegerR2kStruct maxHpPoints;
+    @DM2FXOBinding("@usebuff_maxsp") @DM2LcfBinding(0x2A) @DM2LcfInteger(0)
+    public IntegerR2kStruct maxSpPoints;
+    @DM2FXOBinding("@usebuff_atk") @DM2LcfBinding(0x2B) @DM2LcfInteger(0)
+    public IntegerR2kStruct atkPoints2;
+    @DM2FXOBinding("@usebuff_def") @DM2LcfBinding(0x2C) @DM2LcfInteger(0)
+    public IntegerR2kStruct defPoints2;
+    @DM2FXOBinding("@usebuff_spi") @DM2LcfBinding(0x2D) @DM2LcfInteger(0)
+    public IntegerR2kStruct spiPoints2;
+    @DM2FXOBinding("@usebuff_agi") @DM2LcfBinding(0x2E) @DM2LcfInteger(0)
+    public IntegerR2kStruct agiPoints2;
+    @DM2FXOBinding("@skill_use_item_msg_2k3") @DM2LcfBinding(0x33) @DM2LcfInteger(0)
+    public IntegerR2kStruct useMessage;
+    @DM2FXOBinding("@skill_id") @DM2LcfBinding(0x35) @DM2LcfInteger(1)
+    public IntegerR2kStruct skillId;
+    @DM2FXOBinding("@switch_id") @DM2LcfBinding(0x37) @DM2LcfInteger(1)
+    public IntegerR2kStruct switchId;
+    @DM2FXOBinding("@switch_usable_on_map") @DM2LcfBinding(0x39) @DM2LcfBoolean(false)
+    public BooleanR2kStruct situationMap2;
+    @DM2FXOBinding("@switch_usable_in_battle") @DM2LcfBinding(0x3A) @DM2LcfBoolean(false)
+    public BooleanR2kStruct situationBattle;
 
     // And now the arrays start
+    @DM2FXOBinding("@actor_set") @DM2LcfSizeBinding(0x3D) @DM2LcfBinding(0x3E)
+    public DM2ArraySet<BooleanR2kStruct> aEfx;
 
-    public ArraySizeR2kInterpretable<BooleanR2kStruct> basAE = new ArraySizeR2kInterpretable<BooleanR2kStruct>();
-    public ArraySetR2kStruct<BooleanR2kStruct> aEfx = new ArraySetR2kStruct<BooleanR2kStruct>(basAE, new ISupplier<BooleanR2kStruct>() {
-        @Override
-        public BooleanR2kStruct get() {
-            return new BooleanR2kStruct(false);
-        }
-    }, true);
+    @DM2FXOBinding("@state_set") @DM2LcfSizeBinding(0x3F) @DM2LcfBinding(0x40)
+    public DM2ArraySet<BooleanR2kStruct> sEfx;
 
-    public ArraySizeR2kInterpretable<BooleanR2kStruct> basSE = new ArraySizeR2kInterpretable<BooleanR2kStruct>();
-    public ArraySetR2kStruct<BooleanR2kStruct> sEfx = new ArraySetR2kStruct<BooleanR2kStruct>(basSE, new ISupplier<BooleanR2kStruct>() {
-        @Override
-        public BooleanR2kStruct get() {
-            return new BooleanR2kStruct(false);
-        }
-    }, true);
-
-    public ArraySizeR2kInterpretable<BooleanR2kStruct> basATE = new ArraySizeR2kInterpretable<BooleanR2kStruct>();
-    public ArraySetR2kStruct<BooleanR2kStruct> atEfx = new ArraySetR2kStruct<BooleanR2kStruct>(basATE, new ISupplier<BooleanR2kStruct>() {
-        @Override
-        public BooleanR2kStruct get() {
-            return new BooleanR2kStruct(true);
-        }
-    }, true);
+    @DM2FXOBinding("@attr_set") @DM2LcfSizeBinding(0x41) @DM2LcfBinding(0x42)
+    public DM2ArraySet<BooleanR2kStruct> atEfx;
 
     // --
 
+
+    @DM2FXOBinding("@state_chance") @DM2LcfBinding(0x43)
     public IntegerR2kStruct stateChance = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@state_effect") @DM2LcfBinding(0x44)
     public BooleanR2kStruct stateEffect = new BooleanR2kStruct(false);
 
+    @DM2FXOBinding("@weapon_anim_def_2k3") @DM2LcfBinding(0x45)
     public IntegerR2kStruct weaponAnimation = new IntegerR2kStruct(1);
-    public SparseArrayHR2kStruct<ItemAnimation> weaponAnimationData = new SparseArrayHR2kStruct<ItemAnimation>(new ISupplier<ItemAnimation>() {
+    @DM2FXOBinding("@weapon_anim_data_2k3") @DM2LcfBinding(0x46)
+    public DM2SparseArrayH<ItemAnimation> weaponAnimationData = new DM2SparseArrayH<ItemAnimation>(new ISupplier<ItemAnimation>() {
         @Override
         public ItemAnimation get() {
             return new ItemAnimation();
         }
     });
 
+    @DM2FXOBinding("@use_skill_2k3") @DM2LcfBinding(0x47)
     public BooleanR2kStruct useSkill = new BooleanR2kStruct(false);
 
+    @DM2FXOBinding("@ranged_return") @DM2LcfBinding(0x4B)
     public IntegerR2kStruct rangedPath = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@ranged_target") @DM2LcfBinding(0x4C)
     public IntegerR2kStruct itemTarget = new IntegerR2kStruct(0);
 
     // --
 
-    public ArraySizeR2kInterpretable<BooleanR2kStruct> basCE = new ArraySizeR2kInterpretable<BooleanR2kStruct>();
-    public ArraySetR2kStruct<BooleanR2kStruct> cEfx = new ArraySetR2kStruct<BooleanR2kStruct>(basCE, new ISupplier<BooleanR2kStruct>() {
-        @Override
-        public BooleanR2kStruct get() {
-            return new BooleanR2kStruct(true);
-        }
-    }, true);
+    @DM2FXOBinding("@class_set_2k3") @DM2LcfSizeBinding(0x48) @DM2LcfBinding(0x49)
+    public DM2ArraySet<BooleanR2kStruct> cEfx;
 
-
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, name, "@name"),
-                new Index(0x02, description, "@description"),
-                new Index(0x03, type, "@type"),
-                new Index(0x05, price, "@price"),
-                new Index(0x06, uses, "@use_count"),
-                new Index(0x0B, atkPoints1, "@equipbuff_atk"),
-                new Index(0x0C, defPoints1, "@equipbuff_def"),
-                new Index(0x0D, spiPoints1, "@equipbuff_spi"),
-                new Index(0x0E, agiPoints1, "@equipbuff_agi"),
-                new Index(0x0F, twoHanded, "@two_handed"),
-                new Index(0x10, spCost, "@use_sp_cost"),
-                new Index(0x11, hit, "@hit_chance"),
-                new Index(0x12, crit, "@crit_chance"),
-                new Index(0x14, animation, "@animation"),
-                new Index(0x15, preemptive, "@attack_preemptive"),
-                new Index(0x16, dualAttack, "@dual_attack"),
-                new Index(0x17, attackAll, "@attack_all"),
-                new Index(0x18, ignoreEvade, "@ignore_evasion"),
-                new Index(0x19, preventCrit, "@prevent_crit"),
-                new Index(0x1A, raiseEvasion, "@raise_evasion"),
-                new Index(0x1B, halfSpCost, "@half_sp_cost"),
-                new Index(0x1C, noTerrainDamage, "@no_terrain_damage"),
-                new Index(0x1D, cursed, "@cursed_2k3"),
-                new Index(0x1F, entireParty, "@entire_party"),
-                new Index(0x20, recoverHpRate, "@recover_hp_rate"),
-                new Index(0x21, recoverHp, "@recover_hp"),
-                new Index(0x22, recoverSpRate, "@recover_sp_rate"),
-                new Index(0x23, recoverSp, "@recover_sp"),
-                new Index(0x25, situationMap1, "@medicine_only_on_map"),
-                new Index(0x26, koOnly, "@dead_only"),
-                new Index(0x29, maxHpPoints, "@usebuff_maxhp"),
-                new Index(0x2A, maxSpPoints, "@usebuff_maxsp"),
-                new Index(0x2B, atkPoints2, "@usebuff_atk"),
-                new Index(0x2C, defPoints2, "@usebuff_def"),
-                new Index(0x2D, spiPoints2, "@usebuff_spi"),
-                new Index(0x2E, agiPoints2, "@usebuff_agi"),
-                new Index(0x33, useMessage, "@skill_use_item_msg_2k3"),
-                new Index(0x35, skillId, "@skill_id"),
-                new Index(0x37, switchId, "@switch_id"),
-                new Index(0x39, situationMap2, "@switch_usable_on_map"),
-                new Index(0x3A, situationBattle, "@switch_usable_in_battle"),
-
-                new Index(0x3D, basAE),
-                new Index(0x3E, aEfx, "@actor_set"),
-
-                new Index(0x3F, basSE),
-                new Index(0x40, sEfx, "@state_set"),
-
-                new Index(0x41, basATE),
-                new Index(0x42, atEfx, "@attr_set"),
-
-                new Index(0x43, stateChance, "@state_chance"),
-                new Index(0x44, stateEffect, "@state_effect"),
-
-                new Index(0x45, weaponAnimation, "@weapon_anim_def_2k3"),
-                new Index(0x46, weaponAnimationData, "@weapon_anim_data_2k3"),
-
-                new Index(0x47, useSkill, "@use_skill_2k3"),
-
-                new Index(0x48, basCE),
-                new Index(0x49, cEfx, "@class_set_2k3"),
-
-                new Index(0x4B, rangedPath, "@ranged_return"),
-                new Index(0x4C, itemTarget, "@ranged_target"),
-        };
+    public Item() {
+        super("RPG::Item");
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::Item", true);
-        asRIOISF(rio);
-        return rio;
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@actor_set"))
+            aEfx = newFlagSet(false);
+        if (sym.equals("@state_set"))
+            sEfx = newFlagSet(false);
+        if (sym.equals("@attr_set"))
+            atEfx = newFlagSet(true);
+        if (sym.equals("@class_set_2k3"))
+            cEfx = newFlagSet(true);
+        return super.dm2AddIVar(sym);
+    }
+
+    private DM2ArraySet<BooleanR2kStruct> newFlagSet(final boolean b) {
+        return new DM2ArraySet<BooleanR2kStruct>() {
+            @Override
+            public BooleanR2kStruct newValue() {
+                return new BooleanR2kStruct(b);
+            }
+        };
     }
 }

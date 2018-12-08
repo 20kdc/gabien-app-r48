@@ -7,45 +7,38 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.RubyIO;
-import r48.io.r2k.Index;
+import r48.io.data.DM2FXOBinding;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
+import r48.io.r2k.dm2chk.DM2LcfBinding;
+import r48.io.r2k.dm2chk.DM2LcfBoolean;
+import r48.io.r2k.dm2chk.DM2LcfInteger;
+import r48.io.r2k.dm2chk.DM2R2kObject;
 
 /**
  * Created on 06/06/17.
  */
-public class ItemAnimation extends R2kObject {
-    public IntegerR2kStruct type = new IntegerR2kStruct(0);
-    public IntegerR2kStruct weaponAnim = new IntegerR2kStruct(0);
-    public IntegerR2kStruct movement = new IntegerR2kStruct(0);
-    public IntegerR2kStruct afterImage = new IntegerR2kStruct(0);
-    public IntegerR2kStruct attacks = new IntegerR2kStruct(0);
-    public BooleanR2kStruct ranged = new BooleanR2kStruct(false);
-    public IntegerR2kStruct rangedAnim = new IntegerR2kStruct(0);
-    public IntegerR2kStruct rangedSpeed = new IntegerR2kStruct(0);
-    public IntegerR2kStruct battleAnim = new IntegerR2kStruct(0);
+public class ItemAnimation extends DM2R2kObject {
+    @DM2FXOBinding("@type") @DM2LcfBinding(0x03) @DM2LcfInteger(0)
+    public IntegerR2kStruct type;
+    @DM2FXOBinding("@weapon_batanim_idx") @DM2LcfBinding(0x04) @DM2LcfInteger(0)
+    public IntegerR2kStruct weaponAnim;
+    @DM2FXOBinding("@movement") @DM2LcfBinding(0x05) @DM2LcfInteger(0)
+    public IntegerR2kStruct movement;
+    @DM2FXOBinding("@has_afterimage") @DM2LcfBinding(0x06) @DM2LcfInteger(0)
+    public IntegerR2kStruct afterImage;
+    @DM2FXOBinding("@loop_count") @DM2LcfBinding(0x07) @DM2LcfInteger(0)
+    public IntegerR2kStruct attacks;
+    @DM2FXOBinding("@ranged") @DM2LcfBinding(0x08) @DM2LcfBoolean(false)
+    public BooleanR2kStruct ranged;
+    @DM2FXOBinding("@ranged_batanim_idx") @DM2LcfBinding(0x09) @DM2LcfInteger(0)
+    public IntegerR2kStruct rangedAnim;
+    @DM2FXOBinding("@ranged_speed") @DM2LcfBinding(0x0C) @DM2LcfInteger(0)
+    public IntegerR2kStruct rangedSpeed;
+    @DM2FXOBinding("@battle_anim") @DM2LcfBinding(0x0D) @DM2LcfInteger(0)
+    public IntegerR2kStruct battleAnim;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x03, type, "@type"),
-                new Index(0x04, weaponAnim, "@weapon_batanim_idx"),
-                new Index(0x05, movement, "@movement"),
-                new Index(0x06, afterImage, "@has_afterimage"),
-                new Index(0x07, attacks, "@loop_count"),
-                new Index(0x08, ranged, "@ranged"),
-                new Index(0x09, rangedAnim, "@ranged_batanim_idx"),
-                new Index(0x0C, rangedSpeed, "@ranged_speed"),
-                new Index(0x0D, battleAnim, "@battle_anim"),
-        };
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::ItemAnimation", true);
-        asRIOISF(rio);
-        return rio;
+    public ItemAnimation() {
+        super("RPG::ItemAnimation");
     }
 }

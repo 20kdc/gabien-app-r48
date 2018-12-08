@@ -8,73 +8,65 @@
 package r48.io.r2k.obj.ldb;
 
 import gabien.ui.ISupplier;
-import r48.RubyIO;
-import r48.io.r2k.Index;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.IRIO;
 import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
-import r48.io.r2k.chunks.SparseArrayAR2kStruct;
 import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.*;
 
 /**
  * COPY jun6-2017
  */
-public class BattlerAnimation extends R2kObject {
-    public StringR2kStruct name = new StringR2kStruct();
-    public IntegerR2kStruct speed = new IntegerR2kStruct(0);
-    public SparseArrayAR2kStruct<BAE> baseData = new SparseArrayAR2kStruct<BAE>(new ISupplier<BAE>() {
-        @Override
-        public BAE get() {
-            return new BAE();
-        }
-    });
-    public SparseArrayAR2kStruct<BAE> weaponData = new SparseArrayAR2kStruct<BAE>(new ISupplier<BAE>() {
-        @Override
-        public BAE get() {
-            return new BAE();
-        }
-    });
+public class BattlerAnimation extends DM2R2kObject {
+    @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
+    public StringR2kStruct name;
+    @DM2FXOBinding("@speed") @DM2LcfBinding(2) @DM2LcfInteger(0)
+    public IntegerR2kStruct speed;
+    @DM2FXOBinding("@base_data") @DM2LcfBinding(10) @DM2LcfSparseArrayA(BAE.class)
+    public DM2SparseArrayA<BAE> baseData;
+    @DM2FXOBinding("@weapon_data") @DM2LcfBinding(11) @DM2LcfSparseArrayA(BAE.class)
+    public DM2SparseArrayA<BAE> weaponData;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, name, "@name"),
-                new Index(0x02, speed, "@speed"),
-                new Index(0x0A, baseData, "@base_data"),
-                new Index(0x0B, weaponData, "@weapon_data"),
-        };
+    public BattlerAnimation() {
+        super("RPG::BattlerAnimationSet");
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::BattlerAnimationSet", true);
-        asRIOISF(rio);
-        return rio;
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@base_data"))
+            return baseData = genDefault();
+        if (sym.equals("@weapon_data"))
+            return weaponData = genDefault();
+        return super.dm2AddIVar(sym);
     }
 
-    // ... #unintentionalJokeOfTheDay
-    public static class BAE extends R2kObject {
-        public StringR2kStruct name = new StringR2kStruct();
-        public StringR2kStruct battlerName = new StringR2kStruct();
-        public IntegerR2kStruct battlerIndex = new IntegerR2kStruct(0);
-        public IntegerR2kStruct animationType = new IntegerR2kStruct(0);
-        public IntegerR2kStruct animationId = new IntegerR2kStruct(1);
+    private DM2SparseArrayA<BAE> genDefault() {
+        DM2SparseArrayA<BAE> b = new DM2SparseArrayA<BAE>(new ISupplier<BAE>() {
+            @Override
+            public BAE get() {
+                return new BAE();
+            }
+        });
+        b.arrVal = new IRIO[33];
+        for (int i = 0; i < b.arrVal.length; i++)
+            b.arrVal[i] = new BAE();
+        return b;
+    }
 
-        @Override
-        public Index[] getIndices() {
-            return new Index[] {
-                    new Index(0x01, name, "@name"),
-                    new Index(0x02, battlerName, "@battler_name"),
-                    new Index(0x03, battlerIndex, "@battler_index"),
-                    new Index(0x04, animationType, "@type"),
-                    new Index(0x05, animationId, "@animation_id")
-            };
-        }
+    public static class BAE extends DM2R2kObject {
+        @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
+        public StringR2kStruct name;
+        @DM2FXOBinding("@battler_name") @DM2LcfBinding(2) @DM2LcfObject
+        public StringR2kStruct battlerName;
+        @DM2FXOBinding("@battler_index") @DM2LcfBinding(3) @DM2LcfInteger(0)
+        public IntegerR2kStruct battlerIndex;
+        @DM2FXOBinding("@type") @DM2LcfBinding(4) @DM2LcfInteger(0)
+        public IntegerR2kStruct animationType;
+        @DM2FXOBinding("@animation_id") @DM2LcfBinding(5) @DM2LcfInteger(1)
+        public IntegerR2kStruct animationId;
 
-        @Override
-        public RubyIO asRIO() {
-            RubyIO rio = new RubyIO().setSymlike("RPG::BattlerAnimation", true);
-            asRIOISF(rio);
-            return rio;
+        public BAE() {
+            super("RPG::BattlerAnimation");
         }
     }
 }
