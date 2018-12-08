@@ -71,7 +71,7 @@ public class BPB extends IRIOFixedObject implements IR2kInterpretable {
             return parameters1;
         }
         if (sym.equals("@51to99_2k3"))
-            parameters2 = new DM2Array<BattleParamBlock>() {
+            return parameters2 = new DM2Array<BattleParamBlock>() {
                 @Override
                 public BattleParamBlock newValue() {
                     return new BattleParamBlock();

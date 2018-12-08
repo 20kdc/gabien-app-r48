@@ -16,6 +16,7 @@ import r48.io.r2k.struct.EventCommand;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 
 /**
  * COPY jun6-2017
@@ -73,7 +74,7 @@ public class Troop extends DM2R2kObject {
     public static class TroopPage extends DM2R2kObject {
         @DM2FXOBinding("@condition") @DM2LcfBinding(2) @DM2LcfObject
         public TroopPageCondition condition;
-        @DM2FXOBinding("@list") @DM2LcfSizeBinding(11) @DM2LcfBinding(12) @DM2LcfObject
+        @DM2FXOBinding("@list") @DM2LcfSizeBinding(11) @DM2LcfBinding(12)
         public DM2Array<EventCommand> list;
 
         public TroopPage() {
@@ -82,9 +83,7 @@ public class Troop extends DM2R2kObject {
 
         @Override
         protected IRIO dm2AddIVar(String sym) {
-            if (sym.equals("@condition"))
-                return condition = new TroopPageCondition();
-            if (sym.equals("@condition"))
+            if (sym.equals("@list"))
                 return list = new DM2Array<EventCommand>() {
                     @Override
                     public EventCommand newValue() {
@@ -100,8 +99,8 @@ public class Troop extends DM2R2kObject {
         public BitfieldR2kStruct flagsA;
         @DM2FXOBinding("@flags_b_2k3")
         public BitfieldR2kStruct flagsB;
-        @DM2LcfBinding(0x01) @DM2LcfObject
-        public FlagsplitInterpretable flags = new FlagsplitInterpretable();
+        @DM2LcfBinding(0x01)
+        public FlagsplitInterpretable flags;
         @DM2FXOBinding("@switch_a_id") @DM2LcfBinding(0x02) @DM2LcfInteger(1)
         public IntegerR2kStruct switchAId;
         @DM2FXOBinding("@switch_b_id") @DM2LcfBinding(0x03) @DM2LcfInteger(1)
@@ -152,10 +151,17 @@ public class Troop extends DM2R2kObject {
         }
 
         @Override
+        protected Object dm2AddField(Field f) {
+            if (f.getName().equals("flags"))
+                return flags = new FlagsplitInterpretable();
+            return super.dm2AddField(f);
+        }
+
+        @Override
         protected IRIO dm2AddIVar(String sym) {
-            if (sym.equals("@flag_a"))
+            if (sym.equals("@flags_a"))
                 return flagsA = new BitfieldR2kStruct(new String[] {"@switch_a", "@switch_b", "@variable_>=_val", "@turn", "@fatigue", "@enemy_hp", "@actor_hp", "@turn_enemy_2k3"}, 0);
-            if (sym.equals("@flag_b_2k3"))
+            if (sym.equals("@flags_b_2k3"))
                 return flagsB = new BitfieldR2kStruct(new String[] {"@turn_actor", "@command_actor"}, 0);
             return super.dm2AddIVar(sym);
         }

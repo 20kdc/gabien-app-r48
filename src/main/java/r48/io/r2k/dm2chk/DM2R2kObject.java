@@ -134,27 +134,49 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
     }
 
     protected void dm2UnpackFromMapDestructively(HashMap<Integer, byte[]> pcd) {
+        // Perform initialization & size chunk removal
         for (Field f : cachedFields) {
-            // Null all fields by default,
-            //  but if they have an LCF or FXO binding try to revive them
-            try {
-                f.set(this, null);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-
+            DM2FXOBinding dlbx = f.getAnnotation(DM2FXOBinding.class);
             DM2LcfBinding dlb = f.getAnnotation(DM2LcfBinding.class);
 
-            boolean needsInitialize = !f.isAnnotationPresent(DM2Optional.class);
+            // Only target fields that are definitely relevant
+            if ((dlbx != null) || (dlb != null)) {
+                // Null all fields by default,
+                //  but if they have an LCF or FXO binding try to revive them
+                try {
+                    f.set(this, null);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+
+                boolean needsInitialize = !f.isAnnotationPresent(DM2Optional.class);
+                if (dlb != null)
+                    if (pcd.containsKey(dlb.value()))
+                        needsInitialize = true;
+
+                if (needsInitialize)
+                    if (addField(f) == null)
+                        throw new RuntimeException("Chunk " + f + " wasn't created on time");
+
+                // Remove any size chunk that does exist without reading it.
+                DM2LcfSizeBinding dlb2 = f.getAnnotation(DM2LcfSizeBinding.class);
+                if (dlb2 != null)
+                    pcd.remove(dlb2.value());
+            }
+        }
+        // Now actually unpack
+        for (Field f : cachedFields) {
+            DM2LcfBinding dlb = f.getAnnotation(DM2LcfBinding.class);
             if (dlb != null) {
                 byte[] relevantChunk = pcd.remove(dlb.value());
                 if (relevantChunk != null) {
                     try {
-                        IR2kInterpretable iri = (IR2kInterpretable) addField(f);
-                        needsInitialize = false;
-                        if (iri == null)
-                            throw new RuntimeException("Chunk " + dlb.value() + " ( " + f + " ) wasn't created on time");
-
+                        IR2kInterpretable iri = null;
+                        try {
+                            iri = (IR2kInterpretable) f.get(this);
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
                         ByteArrayInputStream bais = new ByteArrayInputStream(relevantChunk);
                         iri.importData(bais);
                         if (bais.available() > 0)
@@ -165,13 +187,6 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
                     }
                 }
             }
-            if (needsInitialize)
-                addField(f);
-
-            // Remove any size chunk that does exist without reading it.
-            DM2LcfSizeBinding dlb2 = f.getAnnotation(DM2LcfSizeBinding.class);
-            if (dlb2 != null)
-                pcd.remove(dlb2.value());
         }
     }
 
@@ -301,7 +316,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
                 f.set(this, o);
                 return o;
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException(f.getType().getName(), e);
             }
         }
         return null;
