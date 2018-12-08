@@ -24,13 +24,18 @@ import java.util.LinkedList;
  * Created on December 05, 2018.
  */
 public abstract class DM2Array<V extends IRIO> extends IRIOFixedArray<V> implements IR2kInterpretable, IR2kSizable {
-    public final int sizeMode;
+    public final int sizeMode, defSize;
     public final boolean sizeUnit, trustData;
 
-    public DM2Array(int smode, boolean sunit, boolean trust) {
+    public DM2Array(int smode, boolean sunit, boolean trust, int defSiz) {
         sizeMode = smode;
         sizeUnit = sunit;
         trustData = trust;
+        defSize = defSiz;
+    }
+
+    public DM2Array(int smode, boolean sunit, boolean trust) {
+        this(smode, sunit, trust, 0);
     }
 
     public DM2Array() {

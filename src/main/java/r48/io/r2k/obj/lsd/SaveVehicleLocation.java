@@ -7,40 +7,32 @@
 
 package r48.io.r2k.obj.lsd;
 
-import r48.RubyIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.R2kUtil;
+import r48.io.data.DM2FXOBinding;
 import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.DM2LcfBinding;
+import r48.io.r2k.dm2chk.DM2LcfInteger;
+import r48.io.r2k.dm2chk.DM2LcfObject;
 
 /**
  * You know exactly why this inheritance is needed
  * Created on December 13th, 2017
  */
 public class SaveVehicleLocation extends SaveCharacter {
-    public IntegerR2kStruct vehicleType = new IntegerR2kStruct(0);
-    public IntegerR2kStruct originalMoverouteIndex = new IntegerR2kStruct(0);
-    public IntegerR2kStruct remainingAscent = new IntegerR2kStruct(0);
-    public IntegerR2kStruct remainingDescent = new IntegerR2kStruct(0);
-    public StringR2kStruct sprite2Name = new StringR2kStruct();
-    public IntegerR2kStruct sprite2Index = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@vehicle_type") @DM2LcfBinding(101) @DM2LcfInteger(0)
+    public IntegerR2kStruct vehicleType;
+    @DM2FXOBinding("@original_moveroute_index") @DM2LcfBinding(102) @DM2LcfInteger(0)
+    public IntegerR2kStruct originalMoverouteIndex;
+    @DM2FXOBinding("@remaining_ascent") @DM2LcfBinding(106) @DM2LcfInteger(0)
+    public IntegerR2kStruct remainingAscent;
+    @DM2FXOBinding("@remaining_descent") @DM2LcfBinding(107) @DM2LcfInteger(0)
+    public IntegerR2kStruct remainingDescent;
+    @DM2FXOBinding("@sprite2_name") @DM2LcfBinding(111) @DM2LcfObject
+    public StringR2kStruct sprite2Name;
+    @DM2FXOBinding("@sprite2_index") @DM2LcfBinding(112) @DM2LcfInteger(0)
+    public IntegerR2kStruct sprite2Index;
 
-    @Override
-    public Index[] getIndices() {
-        return R2kUtil.mergeIndices(super.getIndices(), new Index[] {
-                new Index(0x65, vehicleType, "@vehicle_type"),
-                new Index(0x66, originalMoverouteIndex, "@original_moveroute_index"),
-                new Index(0x6A, remainingAscent, "@remaining_ascent"),
-                new Index(0x6B, remainingDescent, "@remaining_descent"),
-                new Index(0x6F, sprite2Name, "@sprite2_name"),
-                new Index(0x70, sprite2Index, "@sprite2_index"),
-        });
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        RubyIO root = new RubyIO().setSymlike("RPG::SaveVehicleLocation", true);
-        asRIOISF(root);
-        return root;
+    public SaveVehicleLocation() {
+        super("RPG::SaveVehicleLocation");
     }
 }

@@ -217,24 +217,19 @@ public abstract class ArraySchemaElement extends SchemaElement {
     public void modifyVal(IRIO target, SchemaPath path2, boolean setDefault) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
         setDefault = checkType(target, '[', null, setDefault);
-        if (target.getALen() < atLeast)
-            setDefault = true;
         if (setDefault) {
             target.setArray();
-            int alen = Math.max(sizeFixed, atLeast);
-            for (int i = 0; i < alen; i++)
-                target.addAElem(i);
+            resizeArrayTo(target, atLeast);
         }
         boolean modified = setDefault;
         if (sizeFixed != -1) {
             if (target.getALen() != sizeFixed) {
-                while (target.getALen() > sizeFixed)
-                    target.rmAElem(sizeFixed);
-                int alen;
-                while ((alen = target.getALen()) < sizeFixed)
-                    target.addAElem(alen);
+                resizeArrayTo(target, sizeFixed);
                 modified = true;
             }
+        } else if (target.getALen() < atLeast) {
+            resizeArrayTo(target, atLeast);
+            modified = true;
         }
         while (true) {
             int alen = target.getALen();
@@ -264,6 +259,14 @@ public abstract class ArraySchemaElement extends SchemaElement {
         }
         if (modified)
             path.changeOccurred(true);
+    }
+
+    public static void resizeArrayTo(IRIO target, int sizeFixed) {
+        while (target.getALen() > sizeFixed)
+            target.rmAElem(sizeFixed);
+        int alen;
+        while ((alen = target.getALen()) < sizeFixed)
+            target.addAElem(alen);
     }
 
     // Used to do the correct tagging so that updates to children will affect the parent

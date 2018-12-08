@@ -56,6 +56,12 @@ C name Interp.rpg_actor_parameter_block ]0 ]1 ]2 ]3 ]4 ]5 | HP:#A MP:#B ATK:#C D
 @face_index int
 +spriteSelector @face_index @face_name FaceSet/
 
+.rpg_actorclassbase_levelling
++hwnd . R2K/H_Levelling
++optP @init_level_exp int= 30
++optP @each_level_exp_mul int= 30
+@each_level_exp_add int
+
 : RPG::Actor
 C name Class.RPG::Actor @name | #A
  Totally not a C&H reference. I added an 'i'.
@@ -63,10 +69,7 @@ C name Class.RPG::Actor @name | #A
 @title stringLen= Survivalist 12
 +subwindow: Graphics/Face actorpage_graphics
 @init_level int= 1
-+hwnd . R2K/H_Levelling
-+optP @init_level_exp int= 30
-+optP @each_level_exp_mul int= 30
-@each_level_exp_add int
++rpg_actorclassbase_levelling
 +optP @final_level int= 1
 @battle_auto boolean
 @battle_super_guard boolean
@@ -718,11 +721,8 @@ C name Class.RPG::Class @name | #A
 @battle_auto boolean
 @battle_super_guard boolean
 @battle_parameters subwindow RPG::BPB
-@battler_animation battleranimation_id
-+hwnd . R2K/H_Levelling
-@init_level_exp int= 30
-@each_level_exp_mul int= 30
-@each_level_exp_add int
+@battler_anim_2k3 battleranimation_id
++rpg_actorclassbase_levelling
 @learn_skills subwindow arrayIx1 RPG::Learning
 @state_ranks subwindow hash state_id rpg_statattr_rank
 @element_ranks subwindow hash attribute_id rpg_statattr_rank

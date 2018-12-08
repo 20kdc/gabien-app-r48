@@ -9,31 +9,56 @@ package r48.io.r2k.chunks;
 
 import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixed;
+import r48.schema.FloatSchemaElement;
 
 import java.io.*;
 
-public class DoubleR2kStruct implements IR2kStruct {
-    public double v = 0;
+public class DoubleR2kStruct extends IRIOFixed implements IR2kStruct {
+    public double v;
 
     public DoubleR2kStruct() {
-
+        super('f');
     }
 
     public DoubleR2kStruct(double v) {
+        this();
         this.v = v;
     }
 
     @Override
+    public IRIO setFloat(byte[] s) {
+        v = Double.parseDouble(FloatSchemaElement.decodeVal(s));
+        return this;
+    }
+
+    @Override
+    public byte[] getBuffer() {
+        try {
+            return Double.toString(v).getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void putBuffer(byte[] data) {
+        v = Double.parseDouble(FloatSchemaElement.decodeVal(data));
+    }
+
+    @Override
+    public String decString() {
+        return super.decString();
+    }
+
+    @Override
     public RubyIO asRIO() {
-        RubyIO d = new RubyIO();
-        d.type = 'f';
-        d.encString(Double.toString(v), true);
-        return d;
+        return new RubyIO().setDeepClone(this);
     }
 
     @Override
     public void fromRIO(IRIO src) {
-        v = Double.valueOf(src.decString());
+        setDeepClone(src);
     }
 
     @Override
@@ -67,5 +92,20 @@ public class DoubleR2kStruct implements IR2kStruct {
         swap(data, 4, 3);
         baos.write(data);
         return false;
+    }
+
+    @Override
+    public String[] getIVars() {
+        return new String[0];
+    }
+
+    @Override
+    public IRIO addIVar(String sym) {
+        return null;
+    }
+
+    @Override
+    public IRIO getIVar(String sym) {
+        return null;
     }
 }

@@ -9,10 +9,9 @@ package r48.io.r2k.obj.ldb;
 
 import gabien.ui.ISupplier;
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DM2Optional;
 import r48.io.data.IRIO;
-import r48.io.r2k.chunks.BooleanR2kStruct;
-import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.chunks.*;
 import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.struct.BPB;
 
@@ -36,20 +35,33 @@ public class ActorClassBase extends DM2R2kObject {
     @DM2FXOBinding("@battle_parameters") @DM2LcfBinding(31)
     public BPB parameters;
 
-    @DM2FXOBinding("@battler_animation") @DM2LcfBinding(62) @DM2LcfInteger(0)
+    @DM2Optional @DM2FXOBinding("@init_level_exp") @DM2LcfBinding(41) @DM2LcfInteger(0)
+    public IntegerR2kStruct initLevelExp;
+    @DM2Optional @DM2FXOBinding("@each_level_exp_mul") @DM2LcfBinding(42) @DM2LcfInteger(0)
+    public IntegerR2kStruct eachLevelExpP;
+    @DM2FXOBinding("@each_level_exp_add") @DM2LcfBinding(43) @DM2LcfInteger(0)
+    public IntegerR2kStruct eachLevelExpModC;
+
+    // 1 or 0...? Different in each.
+    @DM2FXOBinding("@battler_anim_2k3") @DM2LcfBinding(62)
     public IntegerR2kStruct battlerAnimation;
+
     @DM2FXOBinding("@learn_skills") @DM2LcfBinding(63)
     public DM2SparseArrayA<Learning> learnSkills;
 
+    @DM2FXOBinding("@state_ranks") @DM2LcfSizeBinding(71) @DM2LcfBinding(72)
+    public DM2ArraySet<ByteR2kStruct> stateRanks;
+    @DM2FXOBinding("@element_ranks") @DM2LcfSizeBinding(73) @DM2LcfBinding(74)
+    public DM2ArraySet<ByteR2kStruct> attrRanks;
 
-//                new Index(0x47, stateRanksSz),
-//                new Index(0x48, stateRanks, "@state_ranks"),
-//                new Index(0x49, attrRanksSz),
-//                new Index(0x4A, attrRanks, "@element_ranks"),
-//                new Index(0x50, battleCommands, "@battle_commands_2k3")
+    @DM2FXOBinding("@battle_commands_2k3") @DM2LcfBinding(80)
+    public DM2Array<Int32R2kStruct> battleCommands;
 
-    public ActorClassBase(String sym) {
+    private final int battlerAnimationDefault;
+
+    public ActorClassBase(String sym, int bad1) {
         super(sym);
+        battlerAnimationDefault = bad1;
     }
 
     @Override
@@ -63,6 +75,28 @@ public class ActorClassBase extends DM2R2kObject {
                     return new Learning();
                 }
             });
+        if (sym.equals("@state_ranks"))
+            return stateRanks = byteSet();
+        if (sym.equals("@element_ranks"))
+            return attrRanks = byteSet();
+        if (sym.equals("@battle_commands_2k3"))
+            return battleCommands = new DM2Array<Int32R2kStruct>() {
+                @Override
+                public Int32R2kStruct newValue() {
+                    return new Int32R2kStruct(0);
+                }
+            };
+        if (sym.equals("@battler_anim_2k3"))
+            return battlerAnimation = new IntegerR2kStruct(battlerAnimationDefault);
         return super.dm2AddIVar(sym);
+    }
+
+    private DM2ArraySet<ByteR2kStruct> byteSet() {
+        return new DM2ArraySet<ByteR2kStruct>() {
+            @Override
+            public ByteR2kStruct newValue() {
+                return new ByteR2kStruct(2);
+            }
+        };
     }
 }

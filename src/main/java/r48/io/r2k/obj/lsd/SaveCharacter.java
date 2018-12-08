@@ -7,97 +7,103 @@
 
 package r48.io.r2k.obj.lsd;
 
-import r48.io.r2k.Index;
-import r48.io.r2k.chunks.*;
+import r48.io.data.DM2FXOBinding;
+import r48.io.r2k.chunks.BooleanR2kStruct;
+import r48.io.r2k.chunks.DoubleR2kStruct;
+import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.obj.MoveRoute;
 
 /**
  * You know exactly why this inheritance is needed
  * Created on December 13th, 2017
  */
-public abstract class SaveCharacter extends R2kObject {
-    public BooleanR2kStruct active = new BooleanR2kStruct(true);
-    public IntegerR2kStruct mapId = new IntegerR2kStruct(-1);
-    public IntegerR2kStruct x = new IntegerR2kStruct(-1);
-    public IntegerR2kStruct y = new IntegerR2kStruct(-1);
-    public IntegerR2kStruct dir = new IntegerR2kStruct(2);
-    public IntegerR2kStruct spriteDir = new IntegerR2kStruct(2);
-    public IntegerR2kStruct spritePattern = new IntegerR2kStruct(1);
-    public IntegerR2kStruct transparency = new IntegerR2kStruct(0);
-    public IntegerR2kStruct remainingStep = new IntegerR2kStruct(0);
-    public IntegerR2kStruct moveFrequency = new IntegerR2kStruct(2);
-    public IntegerR2kStruct layer = new IntegerR2kStruct(1);
-    public BooleanR2kStruct overlapForbidden = new BooleanR2kStruct(false);
-    public IntegerR2kStruct animType = new IntegerR2kStruct(1);
-    public BooleanR2kStruct lockFacing = new BooleanR2kStruct(false);
-    // WARNING: Inconsistent (SPL has a speed of 4)
-    public IntegerR2kStruct moveSpeed = new IntegerR2kStruct(-1);
-    public MoveRoute moveRoute = new MoveRoute();
-    public BooleanR2kStruct moveRouteInUse = new BooleanR2kStruct(false);
-    public IntegerR2kStruct moveRouteIndex = new IntegerR2kStruct(0);
-    public BooleanR2kStruct moveRouteRepeated = new BooleanR2kStruct(false);
-    // need more info on this!
-    public IntegerR2kStruct animPaused = new IntegerR2kStruct(0);
-    public BooleanR2kStruct through = new BooleanR2kStruct(false);
-    public IntegerR2kStruct waitTimeCounter = new IntegerR2kStruct(0);
-    public IntegerR2kStruct animCount = new IntegerR2kStruct(0);
-    public IntegerR2kStruct waitTime = new IntegerR2kStruct(0);
-    public BooleanR2kStruct jumping = new BooleanR2kStruct(false);
-    public IntegerR2kStruct beginJumpX = new IntegerR2kStruct(0);
-    public IntegerR2kStruct beginJumpY = new IntegerR2kStruct(0);
-    public IntegerR2kStruct unknown47 = new IntegerR2kStruct(0);
-    public BooleanR2kStruct flying = new BooleanR2kStruct(false);
-    public StringR2kStruct spriteName = new StringR2kStruct();
-    public IntegerR2kStruct spriteId = new IntegerR2kStruct(-1);
-    public IntegerR2kStruct movedOnFrame = new IntegerR2kStruct(0);
-    public IntegerR2kStruct flashRed = new IntegerR2kStruct(100);
-    public IntegerR2kStruct flashGreen = new IntegerR2kStruct(100);
-    public IntegerR2kStruct flashBlue = new IntegerR2kStruct(100);
-    public DoubleR2kStruct flashCurrentLevel = new DoubleR2kStruct(0);
-    public IntegerR2kStruct flashTimeLeft = new IntegerR2kStruct(0);
+public abstract class SaveCharacter extends DM2R2kObject {
+    @DM2FXOBinding("@active") @DM2LcfBinding(1) @DM2LcfBoolean(true)
+    public BooleanR2kStruct active;
+    @DM2FXOBinding("@map") @DM2LcfBinding(11) @DM2LcfInteger(-1)
+    public IntegerR2kStruct mapId;
+    @DM2FXOBinding("@x") @DM2LcfBinding(12) @DM2LcfInteger(-1)
+    public IntegerR2kStruct x;
+    @DM2FXOBinding("@y") @DM2LcfBinding(13) @DM2LcfInteger(-1)
+    public IntegerR2kStruct y;
+    @DM2FXOBinding("@dir") @DM2LcfBinding(21) @DM2LcfInteger(2)
+    public IntegerR2kStruct dir;
+    @DM2FXOBinding("@character_direction") @DM2LcfBinding(22) @DM2LcfInteger(2)
+    public IntegerR2kStruct spriteDir;
+    @DM2FXOBinding("@character_pattern") @DM2LcfBinding(23) @DM2LcfInteger(1)
+    public IntegerR2kStruct spritePattern;
+    @DM2FXOBinding("@transparency") @DM2LcfBinding(24) @DM2LcfInteger(0)
+    public IntegerR2kStruct transparency;
+    @DM2FXOBinding("@remaining_step") @DM2LcfBinding(31) @DM2LcfInteger(0)
+    public IntegerR2kStruct remainingStep;
+    @DM2FXOBinding("@move_freq") @DM2LcfBinding(32) @DM2LcfInteger(2)
+    public IntegerR2kStruct moveFrequency;
+    @DM2FXOBinding("@layer") @DM2LcfBinding(33) @DM2LcfInteger(1)
+    public IntegerR2kStruct layer;
+    @DM2FXOBinding("@block_other_events") @DM2LcfBinding(34) @DM2LcfBoolean(false)
+    public BooleanR2kStruct overlapForbidden;
+    @DM2FXOBinding("@anim_type") @DM2LcfBinding(35) @DM2LcfInteger(1)
+    public IntegerR2kStruct animType;
+    @DM2FXOBinding("@lock_dir") @DM2LcfBinding(36) @DM2LcfBoolean(false)
+    public BooleanR2kStruct lockFacing;
+    @DM2FXOBinding("@move_speed") @DM2LcfBinding(37) @DM2LcfInteger(3)
+    public IntegerR2kStruct moveSpeed;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, active, "@active"),
-                new Index(0x0B, mapId, "@map"),
-                new Index(0x0C, x, "@x"),
-                new Index(0x0D, y, "@y"),
-                new Index(0x15, dir, "@dir"),
-                new Index(0x16, spriteDir, "@character_direction"),
-                new Index(0x17, spritePattern, "@character_pattern"),
-                new Index(0x18, transparency, "@transparency"),
-                new Index(0x1F, remainingStep, "@remaining_step"),
-                new Index(0x20, moveFrequency, "@move_freq"),
-                new Index(0x21, layer, "@layer"),
-                new Index(0x22, overlapForbidden, "@block_other_events"),
-                new Index(0x23, animType, "@anim_type"),
-                new Index(0x24, lockFacing, "@lock_dir"),
-                new Index(0x25, moveSpeed, "@move_speed"),
-                new Index(0x29, moveRoute, "@move_route"),
-                new Index(0x2A, moveRouteInUse, "@move_route_overwrite"),
-                new Index(0x2B, moveRouteIndex, "@move_route_position"),
-                new Index(0x2C, moveRouteRepeated, "@move_route_has_looped"),
-                // !!!
-                new Index(0x30, animPaused, "@anim_paused"),
-                new Index(0x33, through, "@through"),
-                new Index(0x34, waitTimeCounter, "@wait_time_counter"),
-                new Index(0x35, animCount, "@anim_count"),
-                new Index(0x36, waitTime, "@wait_time"),
-                new Index(0x3D, jumping, "@jumping"),
-                new Index(0x3E, beginJumpX, "@begin_jump_x"),
-                new Index(0x3F, beginJumpY, "@begin_jump_y"),
-                new Index(0x47, unknown47, "@unknown_47"),
-                new Index(0x48, flying, "@flying"),
-                new Index(0x49, spriteName, "@character_name"),
-                new Index(0x4A, spriteId, "@character_index"),
-                new Index(0x4B, movedOnFrame, "@moved_on_frame"),
-                new Index(0x51, flashRed, "@flash_red"),
-                new Index(0x52, flashGreen, "@flash_green"),
-                new Index(0x53, flashBlue, "@flash_blue"),
-                new Index(0x54, flashCurrentLevel, "@flash_position"),
-                new Index(0x55, flashTimeLeft, "@flash_frames_left"),
-                // !!!
-        };
+    @DM2FXOBinding("@move_route") @DM2LcfBinding(41) @DM2LcfObject
+    public MoveRoute moveRoute;
+    @DM2FXOBinding("@move_route_overwrite") @DM2LcfBinding(42) @DM2LcfBoolean(false)
+    public BooleanR2kStruct moveRouteInUse;
+    @DM2FXOBinding("@move_route_position") @DM2LcfBinding(43) @DM2LcfInteger(0)
+    public IntegerR2kStruct moveRouteIndex;
+    @DM2FXOBinding("@move_route_has_looped") @DM2LcfBinding(44) @DM2LcfBoolean(false)
+    public BooleanR2kStruct moveRouteRepeated;
+
+    // need more info on this!
+    @DM2FXOBinding("@anim_paused") @DM2LcfBinding(48) @DM2LcfInteger(0)
+    public IntegerR2kStruct animPaused;
+
+    @DM2FXOBinding("@through") @DM2LcfBinding(51) @DM2LcfBoolean(false)
+    public BooleanR2kStruct through;
+    @DM2FXOBinding("@wait_time_counter") @DM2LcfBinding(52) @DM2LcfInteger(0)
+    public IntegerR2kStruct waitTimeCounter;
+    @DM2FXOBinding("@anim_count") @DM2LcfBinding(53) @DM2LcfInteger(0)
+    public IntegerR2kStruct animCount;
+    @DM2FXOBinding("@wait_time") @DM2LcfBinding(54) @DM2LcfInteger(0)
+    public IntegerR2kStruct waitTime;
+
+    @DM2FXOBinding("@jumping") @DM2LcfBinding(61) @DM2LcfBoolean(false)
+    public BooleanR2kStruct jumping;
+    @DM2FXOBinding("@begin_jump_x") @DM2LcfBinding(62) @DM2LcfInteger(0)
+    public IntegerR2kStruct beginJumpX;
+    @DM2FXOBinding("@begin_jump_y") @DM2LcfBinding(63) @DM2LcfInteger(0)
+    public IntegerR2kStruct beginJumpY;
+    @DM2FXOBinding("@unknown_47") @DM2LcfBinding(71) @DM2LcfInteger(0)
+    public IntegerR2kStruct unknown47;
+
+    @DM2FXOBinding("@flying") @DM2LcfBinding(72) @DM2LcfBoolean(false)
+    public BooleanR2kStruct flying;
+
+    @DM2FXOBinding("@character_name") @DM2LcfBinding(73) @DM2LcfObject
+    public StringR2kStruct spriteName;
+
+    @DM2FXOBinding("@character_index") @DM2LcfBinding(74) @DM2LcfInteger(-1)
+    public IntegerR2kStruct spriteId;
+    @DM2FXOBinding("@moved_on_frame") @DM2LcfBinding(75) @DM2LcfInteger(0)
+    public IntegerR2kStruct movedOnFrame;
+    @DM2FXOBinding("@flash_red") @DM2LcfBinding(81) @DM2LcfInteger(100)
+    public IntegerR2kStruct flashRed;
+    @DM2FXOBinding("@flash_green") @DM2LcfBinding(82) @DM2LcfInteger(100)
+    public IntegerR2kStruct flashGreen;
+    @DM2FXOBinding("@flash_blue") @DM2LcfBinding(83) @DM2LcfInteger(100)
+    public IntegerR2kStruct flashBlue;
+    @DM2FXOBinding("@flash_position") @DM2LcfBinding(84) @DM2LcfObject
+    public DoubleR2kStruct flashCurrentLevel;
+    @DM2FXOBinding("@flash_frames_left") @DM2LcfBinding(83) @DM2LcfInteger(0)
+    public IntegerR2kStruct flashTimeLeft;
+
+    public SaveCharacter(String s) {
+        super(s);
     }
 }

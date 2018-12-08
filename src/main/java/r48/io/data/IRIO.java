@@ -94,14 +94,16 @@ public abstract class IRIO {
         }
     }
 
+    // '"'
     public abstract String getBufferEnc();
 
     // ':', 'o'
     public abstract String getSymbol();
 
     // '"', 'f', 'u', 'l'
-    public abstract byte[] getBuffer();
 
+    // For 'u', the buffer must be mutable ; for others it is variable.
+    public abstract byte[] getBuffer();
     public abstract void putBuffer(byte[] data);
 
     // '['

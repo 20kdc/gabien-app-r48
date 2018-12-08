@@ -10,6 +10,7 @@ package r48.io.r2k.chunks;
 import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixnum;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,31 +19,29 @@ import java.io.OutputStream;
 /**
  * Created on 05/06/17.
  */
-public class Int32R2kStruct implements IR2kStruct {
-    public int value;
-
+public class Int32R2kStruct extends IRIOFixnum implements IR2kStruct {
     public Int32R2kStruct(int v) {
-        value = v;
+        super(v);
     }
 
     @Override
     public RubyIO asRIO() {
-        return new RubyIO().setFX(value);
+        return new RubyIO().setDeepClone(this);
     }
 
     @Override
     public void fromRIO(IRIO src) {
-        value = (int) (src.getFX());
+        setDeepClone(src);
     }
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        value = IntUtils.readS32(bais);
+        val = IntUtils.readS32(bais);
     }
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
-        IntUtils.writeS32(baos, value);
+        IntUtils.writeS32(baos, (int) val);
         return false;
     }
 }

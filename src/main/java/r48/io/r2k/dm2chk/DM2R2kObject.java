@@ -166,6 +166,11 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
             }
             if (needsInitialize)
                 addField(f);
+
+            // Remove any size chunk that does exist without reading it.
+            DM2LcfSizeBinding dlb2 = f.getAnnotation(DM2LcfSizeBinding.class);
+            if (dlb2 != null)
+                pcd.remove(dlb2.value());
         }
     }
 

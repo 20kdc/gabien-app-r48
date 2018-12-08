@@ -27,7 +27,7 @@ public class IntBooleanSchemaElement extends BooleanSchemaElement {
     @Override
     public boolean modifyValueTruth(IRIO target, boolean truth) {
         boolean modified = checkType(target, 'i', null, false);
-        if (!modified)
+        if (modified)
             target.setFX(0);
         long resVal = truth ? 1 : 0;
         if (target.getFX() != resVal) {

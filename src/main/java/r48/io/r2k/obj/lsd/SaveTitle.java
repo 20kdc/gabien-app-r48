@@ -7,49 +7,44 @@
 
 package r48.io.r2k.obj.lsd;
 
-import r48.RubyIO;
-import r48.io.r2k.Index;
+import r48.io.data.DM2FXOBinding;
 import r48.io.r2k.chunks.DoubleR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
 import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.DM2LcfBinding;
+import r48.io.r2k.dm2chk.DM2LcfInteger;
+import r48.io.r2k.dm2chk.DM2LcfObject;
+import r48.io.r2k.dm2chk.DM2R2kObject;
 
-public class SaveTitle extends R2kObject {
-    public DoubleR2kStruct timestamp = new DoubleR2kStruct();
-    public StringR2kStruct heroName = new StringR2kStruct();
-    public IntegerR2kStruct heroLevel = new IntegerR2kStruct(0);
-    public IntegerR2kStruct heroHp = new IntegerR2kStruct(0);
-    public StringR2kStruct face1Name = new StringR2kStruct();
-    public IntegerR2kStruct face1Idx = new IntegerR2kStruct(0);
-    public StringR2kStruct face2Name = new StringR2kStruct();
-    public IntegerR2kStruct face2Idx = new IntegerR2kStruct(0);
-    public StringR2kStruct face3Name = new StringR2kStruct();
-    public IntegerR2kStruct face3Idx = new IntegerR2kStruct(0);
-    public StringR2kStruct face4Name = new StringR2kStruct();
-    public IntegerR2kStruct face4Idx = new IntegerR2kStruct(0);
+public class SaveTitle extends DM2R2kObject {
+    @DM2FXOBinding("@timestamp") @DM2LcfBinding(1) @DM2LcfObject
+    public DoubleR2kStruct timestamp;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, timestamp, "@timestamp"),
-                new Index(0x0B, heroName, "@hero_name"),
-                new Index(0x0C, heroLevel, "@hero_level"),
-                new Index(0x0D, heroHp, "@hero_hp"),
-                new Index(0x15, face1Name, "@face1_name"),
-                new Index(0x16, face1Idx, "@face1_index"),
-                new Index(0x17, face2Name, "@face2_name"),
-                new Index(0x18, face2Idx, "@face2_index"),
-                new Index(0x19, face3Name, "@face3_name"),
-                new Index(0x1A, face3Idx, "@face3_index"),
-                new Index(0x1B, face4Name, "@face4_name"),
-                new Index(0x1C, face4Idx, "@face4_index"),
-        };
-    }
+    @DM2FXOBinding("@hero_name") @DM2LcfBinding(11) @DM2LcfObject
+    public StringR2kStruct heroName;
+    @DM2FXOBinding("@hero_level") @DM2LcfBinding(12) @DM2LcfInteger(0)
+    public IntegerR2kStruct heroLevel;
+    @DM2FXOBinding("@hero_hp") @DM2LcfBinding(13) @DM2LcfInteger(0)
+    public IntegerR2kStruct heroHp;
 
-    @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::SaveTitle", true);
-        asRIOISF(rio);
-        return rio;
+    @DM2FXOBinding("@face1_name") @DM2LcfBinding(21) @DM2LcfObject
+    public StringR2kStruct face1Name;
+    @DM2FXOBinding("@face1_index") @DM2LcfBinding(22) @DM2LcfInteger(0)
+    public IntegerR2kStruct face1Idx;
+    @DM2FXOBinding("@face2_name") @DM2LcfBinding(23) @DM2LcfObject
+    public StringR2kStruct face2Name;
+    @DM2FXOBinding("@face2_index") @DM2LcfBinding(24) @DM2LcfInteger(0)
+    public IntegerR2kStruct face2Idx;
+    @DM2FXOBinding("@face3_name") @DM2LcfBinding(25) @DM2LcfObject
+    public StringR2kStruct face3Name;
+    @DM2FXOBinding("@face3_index") @DM2LcfBinding(26) @DM2LcfInteger(0)
+    public IntegerR2kStruct face3Idx;
+    @DM2FXOBinding("@face4_name") @DM2LcfBinding(27) @DM2LcfObject
+    public StringR2kStruct face4Name;
+    @DM2FXOBinding("@face4_index") @DM2LcfBinding(28) @DM2LcfInteger(0)
+    public IntegerR2kStruct face4Idx;
+
+    public SaveTitle() {
+        super("RPG::SaveTitle");
     }
 }

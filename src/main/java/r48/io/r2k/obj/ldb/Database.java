@@ -7,7 +7,6 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.RubyIO;
 import r48.io.data.DM2FXOBinding;
 import r48.io.data.DM2Optional;
 import r48.io.data.IRIO;
@@ -16,9 +15,6 @@ import r48.io.r2k.chunks.CompatSparseArrayHR2kStruct;
 import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.struct.SVStore;
 import r48.io.r2k.struct.Terms;
-
-import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * Bare minimum needed to get ChipSet data out for now
@@ -31,8 +27,8 @@ public class Database extends DM2R2kObject {
         super("RPG::Database");
     }
 
-    @DM2FXOBinding("@actors") @DM2LcfBinding(11) @DM2LcfCompatArray(Actor.class)
-    public CompatSparseArrayHR2kStruct<Actor> actors;
+    @DM2FXOBinding("@actors") @DM2LcfBinding(11) @DM2LcfSparseArrayH(Actor.class)
+    public DM2SparseArrayH<Actor> actors;
     @DM2FXOBinding("@skills") @DM2LcfBinding(12) @DM2LcfSparseArrayH(Skill.class)
     public DM2SparseArrayH<Skill> skills;
     @DM2FXOBinding("@items") @DM2LcfBinding(13) @DM2LcfCompatArray(Item.class)
@@ -56,10 +52,8 @@ public class Database extends DM2R2kObject {
     public Terms terms;
 
     // ---
-    @DM2LcfBinding(22) @DM2LcfObject
+    @DM2FXOBinding("@system") @DM2LcfBinding(22) @DM2LcfObject
     public LdbSystem system;
-    @DM2FXOBinding("@system")
-    public RubyIO systemTempConvert;
     // ---
 
     @DM2FXOBinding("@switches") @DM2LcfBinding(23) @DM2LcfSparseArrayH(SVStore.class)
@@ -72,13 +66,11 @@ public class Database extends DM2R2kObject {
     @DM2FXOBinding("@db_version") @DM2LcfBinding(26)
     public DM2Array<ByteR2kStruct> dbVersion;
 
-    @DM2LcfBinding(29) @DM2LcfObject
+    @DM2FXOBinding("@battle_commands_2k3") @DM2LcfBinding(29) @DM2LcfObject
     public BattleCommands battleCommands2k3;
-    @DM2FXOBinding("@battle_commands_2k3")
-    public RubyIO bcTempConvert;
 
-    @DM2FXOBinding("@classes_2k3") @DM2LcfBinding(30) @DM2LcfCompatArray(ActorClass.class)
-    public CompatSparseArrayHR2kStruct<ActorClass> classes2k3;
+    @DM2FXOBinding("@classes_2k3") @DM2LcfBinding(30) @DM2LcfSparseArrayH(ActorClass.class)
+    public DM2SparseArrayH<ActorClass> classes2k3;
     @DM2FXOBinding("@battle_anim_sets_2k3") @DM2LcfBinding(32) @DM2LcfCompatArray(BattlerAnimation.class)
     public CompatSparseArrayHR2kStruct<BattlerAnimation> battlerAnimation2k3;
 
@@ -99,32 +91,7 @@ public class Database extends DM2R2kObject {
             return unused31 = newDM2A();
         if (sym.equals("@db_version"))
             return dbVersion = newDM2A();
-        if (sym.equals("@system"))
-            return systemTempConvert = new LdbSystem().asRIO();
-        if (sym.equals("@battle_commands_2k3"))
-            return bcTempConvert = new BattleCommands().asRIO();
         return super.dm2AddIVar(sym);
-    }
-
-    @Override
-    protected void dm2UnpackFromMapDestructively(HashMap<Integer, byte[]> pcd) {
-        super.dm2UnpackFromMapDestructively(pcd);
-        systemTempConvert = system.asRIO();
-        system = null;
-        bcTempConvert = battleCommands2k3.asRIO();
-        battleCommands2k3 = null;
-    }
-
-    @Override
-    protected HashMap<Integer, byte[]> dm2Pack() throws IOException {
-        system = new LdbSystem();
-        system.fromRIO(systemTempConvert);
-        battleCommands2k3 = new BattleCommands();
-        battleCommands2k3.fromRIO(bcTempConvert);
-        HashMap<Integer, byte[]> res = super.dm2Pack();
-        system = null;
-        battleCommands2k3 = null;
-        return res;
     }
 
     private DM2Array<ByteR2kStruct> newDM2A() {

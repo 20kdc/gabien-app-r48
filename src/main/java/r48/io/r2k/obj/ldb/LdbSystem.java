@@ -7,219 +7,181 @@
 
 package r48.io.r2k.obj.ldb;
 
-import gabien.ui.ISupplier;
-import r48.RubyIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.chunks.*;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.DM2Optional;
+import r48.io.data.IRIO;
+import r48.io.r2k.chunks.BooleanR2kStruct;
+import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.chunks.ShortR2kStruct;
+import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.obj.Music;
 import r48.io.r2k.obj.Sound;
 
 /**
  * COPY jun6-2017
  */
-public class LdbSystem extends R2kObject {
-    public IntegerR2kStruct ldbId = new IntegerR2kStruct(0);
-    public StringR2kStruct boatName = new StringR2kStruct();
-    public StringR2kStruct shipName = new StringR2kStruct();
-    public StringR2kStruct airshipName = new StringR2kStruct();
-    public IntegerR2kStruct boatIndex = new IntegerR2kStruct(0);
-    public IntegerR2kStruct shipIndex = new IntegerR2kStruct(0);
-    public IntegerR2kStruct airshipIndex = new IntegerR2kStruct(0);
-    public StringR2kStruct titleName = new StringR2kStruct();
-    public StringR2kStruct gameoverName = new StringR2kStruct();
-    public StringR2kStruct systemName = new StringR2kStruct();
-    public StringR2kStruct system2Name = new StringR2kStruct();
+public class LdbSystem extends DM2R2kObject {
+    @DM2FXOBinding("@ldb_id") @DM2LcfBinding(0x0A) @DM2LcfInteger(0)
+    public IntegerR2kStruct ldbId;
+    @DM2FXOBinding("@boat_name") @DM2LcfBinding(0x0B) @DM2LcfObject
+    public StringR2kStruct boatName;
+    @DM2FXOBinding("@ship_name") @DM2LcfBinding(0x0C) @DM2LcfObject
+    public StringR2kStruct shipName;
+    @DM2FXOBinding("@airship_name") @DM2LcfBinding(0x0D) @DM2LcfObject
+    public StringR2kStruct airshipName;
+    @DM2FXOBinding("@boat_index") @DM2LcfBinding(0x0E) @DM2LcfInteger(0)
+    public IntegerR2kStruct boatIndex;
+    @DM2FXOBinding("@ship_index") @DM2LcfBinding(0x0F) @DM2LcfInteger(0)
+    public IntegerR2kStruct shipIndex;
+    @DM2FXOBinding("@airship_index") @DM2LcfBinding(0x10) @DM2LcfInteger(0)
+    public IntegerR2kStruct airshipIndex;
+    @DM2FXOBinding("@title_name") @DM2LcfBinding(0x11) @DM2LcfObject
+    public StringR2kStruct titleName;
+    @DM2FXOBinding("@gameover_name") @DM2LcfBinding(0x12) @DM2LcfObject
+    public StringR2kStruct gameoverName;
+    @DM2FXOBinding("@system_name") @DM2LcfBinding(0x13) @DM2LcfObject
+    public StringR2kStruct systemName;
+    @DM2FXOBinding("@system2_name_2k3") @DM2LcfBinding(0x14) @DM2LcfObject
+    public StringR2kStruct system2Name;
 
-    public ArraySizeR2kInterpretable<ShortR2kStruct> partySize = new ArraySizeR2kInterpretable<ShortR2kStruct>(true);
-    public ArrayR2kStruct<ShortR2kStruct> party = new ArrayR2kStruct<ShortR2kStruct>(partySize, new ISupplier<ShortR2kStruct>() {
-        @Override
-        public ShortR2kStruct get() {
-            return new ShortR2kStruct(1);
-        }
-    }, 1);
+    @DM2FXOBinding("@party") @DM2LcfSizeBinding(0x15) @DM2LcfBinding(0x16)
+    public DM2Array<ShortR2kStruct> party;
 
     // The menuCommandsSize -> menuCommands link is broken here, so it's fixed in the constructor.
     // Really not sure about this, it fixes v0.8 for release I think but I want to have a better look at it later
-    public ArraySizeR2kInterpretable<ShortR2kStruct> menuCommandsSize = new ArraySizeR2kInterpretable<ShortR2kStruct>(true);
-    public OptionalR2kStruct<ArrayR2kStruct<ShortR2kStruct>> menuCommands = new OptionalR2kStruct<ArrayR2kStruct<ShortR2kStruct>>(new ISupplier<ArrayR2kStruct<ShortR2kStruct>>() {
-        @Override
-        public ArrayR2kStruct<ShortR2kStruct> get() {
-            return new ArrayR2kStruct<ShortR2kStruct>(menuCommandsSize, new ISupplier<ShortR2kStruct>() {
-                @Override
-                public ShortR2kStruct get() {
-                    return new ShortR2kStruct(0);
-                }
-            });
-        }
-    });
+    @DM2Optional @DM2FXOBinding("@menu_commands_2k3") @DM2LcfSizeBinding(0x1A) @DM2LcfBinding(0x1B)
+    public DM2Array<ShortR2kStruct> menuCommands;
 
-    public Music titleMusic = new Music();
-    public Music battleMusic = new Music();
-    public Music battleEndMusic = new Music();
-    public Music innMusic = new Music();
-    public Music boatMusic = new Music();
-    public Music shipMusic = new Music();
-    public Music airshipMusic = new Music();
-    public Music gameoverMusic = new Music();
+    @DM2FXOBinding("@title_music") @DM2LcfBinding(0x1F) @DM2LcfObject
+    public Music titleMusic;
+    @DM2FXOBinding("@battle_music") @DM2LcfBinding(0x20) @DM2LcfObject
+    public Music battleMusic;
+    @DM2FXOBinding("@battle_end_music") @DM2LcfBinding(0x21) @DM2LcfObject
+    public Music battleEndMusic;
+    @DM2FXOBinding("@inn_music") @DM2LcfBinding(0x22) @DM2LcfObject
+    public Music innMusic;
+    @DM2FXOBinding("@boat_music") @DM2LcfBinding(0x23) @DM2LcfObject
+    public Music boatMusic;
+    @DM2FXOBinding("@ship_music") @DM2LcfBinding(0x24) @DM2LcfObject
+    public Music shipMusic;
+    @DM2FXOBinding("@airship_music") @DM2LcfBinding(0x25) @DM2LcfObject
+    public Music airshipMusic;
+    @DM2FXOBinding("@gameover_music") @DM2LcfBinding(0x26) @DM2LcfObject
+    public Music gameoverMusic;
 
-    public Sound cursorSe = new Sound();
-    public Sound decisionSe = new Sound();
-    public Sound cancelSe = new Sound();
-    public Sound buzzerSe = new Sound();
-    public Sound battleSe = new Sound();
-    public Sound escapeSe = new Sound();
-    public Sound enemyAttackSe = new Sound();
-    public Sound enemyHurtSe = new Sound();
-    public Sound actorHurtSe = new Sound();
-    public Sound dodgeSe = new Sound();
-    public Sound enemyDeathSe = new Sound();
-    public Sound itemSe = new Sound();
-    public IntegerR2kStruct transitionOut = new IntegerR2kStruct(0);
-    public IntegerR2kStruct transitionIn = new IntegerR2kStruct(0);
-    public IntegerR2kStruct battleStartFadeout = new IntegerR2kStruct(0);
-    public IntegerR2kStruct battleStartFadein = new IntegerR2kStruct(0);
-    public IntegerR2kStruct battleEndFadeout = new IntegerR2kStruct(0);
-    public IntegerR2kStruct battleEndFadein = new IntegerR2kStruct(0);
-    public IntegerR2kStruct messageStretch = new IntegerR2kStruct(0);
-    public IntegerR2kStruct fontId = new IntegerR2kStruct(0);
-    public IntegerR2kStruct testCondition = new IntegerR2kStruct(0);
-    public IntegerR2kStruct testActor = new IntegerR2kStruct(0);
-    public StringR2kStruct battletestBackground = new StringR2kStruct();
-    public SparseArrayAR2kStruct<TestBattler> battletestData = new SparseArrayAR2kStruct<TestBattler>(new ISupplier<TestBattler>() {
-        @Override
-        public TestBattler get() {
-            return new TestBattler();
-        }
-    });
-    public OptionalR2kStruct<IntegerR2kStruct> saveCountEn = new OptionalR2kStruct<IntegerR2kStruct>(new ISupplier<IntegerR2kStruct>() {
-        @Override
-        public IntegerR2kStruct get() {
-            return new IntegerR2kStruct(0);
-        }
-    });
-    public OptionalR2kStruct<IntegerR2kStruct> saveCountJp = new OptionalR2kStruct<IntegerR2kStruct>(new ISupplier<IntegerR2kStruct>() {
-        @Override
-        public IntegerR2kStruct get() {
-            return new IntegerR2kStruct(0);
-        }
-    });
-    public IntegerR2kStruct magic = new IntegerR2kStruct(0);
-    public IntegerR2kStruct battletestTerrain = new IntegerR2kStruct(0);
-    public IntegerR2kStruct battletestFormation = new IntegerR2kStruct(0);
-    public IntegerR2kStruct battletestCondition = new IntegerR2kStruct(0);
-    public BooleanR2kStruct frameShow = new BooleanR2kStruct(false);
-    public StringR2kStruct frameName = new StringR2kStruct();
-    public BooleanR2kStruct invanim = new BooleanR2kStruct(false);
-    public BooleanR2kStruct showTitle = new BooleanR2kStruct(true);
-    public IntegerR2kStruct itemAllowClassbased = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@cursor_se") @DM2LcfBinding(0x29) @DM2LcfObject
+    public Sound cursorSe;
+    @DM2FXOBinding("@decision_se") @DM2LcfBinding(0x2A) @DM2LcfObject
+    public Sound decisionSe;
+    @DM2FXOBinding("@cancel_se") @DM2LcfBinding(0x2B) @DM2LcfObject
+    public Sound cancelSe;
+    @DM2FXOBinding("@buzzer_se") @DM2LcfBinding(0x2C) @DM2LcfObject
+    public Sound buzzerSe;
+    @DM2FXOBinding("@battle_se") @DM2LcfBinding(0x2D) @DM2LcfObject
+    public Sound battleSe;
+    @DM2FXOBinding("@escape_se") @DM2LcfBinding(0x2E) @DM2LcfObject
+    public Sound escapeSe;
+    @DM2FXOBinding("@enemy_attack_se") @DM2LcfBinding(0x2F) @DM2LcfObject
+    public Sound enemyAttackSe;
+    @DM2FXOBinding("@enemy_hurt_se") @DM2LcfBinding(0x30) @DM2LcfObject
+    public Sound enemyHurtSe;
+    @DM2FXOBinding("@actor_hurt_se") @DM2LcfBinding(0x31) @DM2LcfObject
+    public Sound actorHurtSe;
+    @DM2FXOBinding("@dodge_se") @DM2LcfBinding(0x32) @DM2LcfObject
+    public Sound dodgeSe;
+    @DM2FXOBinding("@enemy_death_se") @DM2LcfBinding(0x33) @DM2LcfObject
+    public Sound enemyDeathSe;
+    @DM2FXOBinding("@item_se") @DM2LcfBinding(0x34) @DM2LcfObject
+    public Sound itemSe;
+
+    @DM2FXOBinding("@transition_fadeout") @DM2LcfBinding(0x3D) @DM2LcfInteger(0)
+    public IntegerR2kStruct transitionOut;
+    @DM2FXOBinding("@transition_fadein") @DM2LcfBinding(0x3E) @DM2LcfInteger(0)
+    public IntegerR2kStruct transitionIn;
+    @DM2FXOBinding("@battle_start_fadeout") @DM2LcfBinding(0x3F) @DM2LcfInteger(0)
+    public IntegerR2kStruct battleStartFadeout;
+    @DM2FXOBinding("@battle_start_fadein") @DM2LcfBinding(0x40) @DM2LcfInteger(0)
+    public IntegerR2kStruct battleStartFadein;
+    @DM2FXOBinding("@battle_end_fadeout") @DM2LcfBinding(0x41) @DM2LcfInteger(0)
+    public IntegerR2kStruct battleEndFadeout;
+    @DM2FXOBinding("@battle_end_fadein") @DM2LcfBinding(0x42) @DM2LcfInteger(0)
+    public IntegerR2kStruct battleEndFadein;
+
+    @DM2FXOBinding("@system_box_tiling") @DM2LcfBinding(0x47) @DM2LcfInteger(0)
+    public IntegerR2kStruct messageStretch;
+    @DM2FXOBinding("@font_id") @DM2LcfBinding(0x48) @DM2LcfInteger(0)
+    public IntegerR2kStruct fontId;
+    @DM2FXOBinding("@test_condition") @DM2LcfBinding(0x51) @DM2LcfInteger(0)
+    public IntegerR2kStruct testCondition;
+    @DM2FXOBinding("@test_actor") @DM2LcfBinding(0x52) @DM2LcfInteger(0)
+    public IntegerR2kStruct testActor;
+    @DM2FXOBinding("@test_battle_background") @DM2LcfBinding(0x54) @DM2LcfObject
+    public StringR2kStruct battletestBackground;
+    @DM2FXOBinding("@test_battle_data") @DM2LcfBinding(0x55) @DM2LcfSparseArrayA(TestBattler.class)
+    public DM2SparseArrayA<TestBattler> battletestData;
+    @DM2Optional @DM2FXOBinding("@save_count_2k3en") @DM2LcfBinding(0x5A) @DM2LcfInteger(0)
+    public IntegerR2kStruct saveCountEn;
+    @DM2Optional @DM2FXOBinding("@save_count_other") @DM2LcfBinding(0x5B) @DM2LcfInteger(0)
+    public IntegerR2kStruct saveCountJp;
+    @DM2FXOBinding("@test_battle_terrain") @DM2LcfBinding(0x5E) @DM2LcfInteger(0)
+    public IntegerR2kStruct battletestTerrain;
+    @DM2FXOBinding("@test_battle_formation") @DM2LcfBinding(0x5F) @DM2LcfInteger(0)
+    public IntegerR2kStruct battletestFormation;
+    @DM2FXOBinding("@test_battle_condition") @DM2LcfBinding(0x60) @DM2LcfInteger(0)
+    public IntegerR2kStruct battletestCondition;
+    @DM2FXOBinding("@item_allow_classbased_2k3") @DM2LcfBinding(0x61) @DM2LcfInteger(0)
+    public IntegerR2kStruct itemAllowClassbased;
+    @DM2FXOBinding("@frame_show_2k3") @DM2LcfBinding(0x63) @DM2LcfBoolean(false)
+    public BooleanR2kStruct frameShow;
+    @DM2FXOBinding("@frame_name_2k3") @DM2LcfBinding(0x64) @DM2LcfObject
+    public StringR2kStruct frameName;
+    @DM2FXOBinding("@invert_animations_2k3") @DM2LcfBinding(0x65) @DM2LcfBoolean(false)
+    public BooleanR2kStruct invanim;
+    @DM2FXOBinding("@show_title_2k3") @DM2LcfBinding(0x6F) @DM2LcfBoolean(true)
+    public BooleanR2kStruct showTitle;
 
     public LdbSystem() {
-        menuCommandsSize.target = new ISupplier<ArrayR2kInterpretable<ShortR2kStruct>>() {
-            @Override
-            public ArrayR2kInterpretable<ShortR2kStruct> get() {
-                return menuCommands.instance;
-            }
-        };
+        super("RPG::System");
     }
 
     @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x0A, ldbId, "@ldb_id"),
-                new Index(0x0B, boatName, "@boat_name"),
-                new Index(0x0C, shipName, "@ship_name"),
-                new Index(0x0D, airshipName, "@airship_name"),
-                new Index(0x0E, boatIndex, "@boat_index"),
-                new Index(0x0F, shipIndex, "@ship_index"),
-                new Index(0x10, airshipIndex, "@airship_index"),
-                new Index(0x11, titleName, "@title_name"),
-                new Index(0x12, gameoverName, "@gameover_name"),
-                new Index(0x13, systemName, "@system_name"),
-                new Index(0x14, system2Name, "@system2_name_2k3"),
-                new Index(0x15, partySize),
-                new Index(0x16, party, "@party"),
-                new Index(0x1A, menuCommandsSize),
-                new Index(0x1B, menuCommands, "@menu_commands_2k3"),
-                new Index(0x1F, titleMusic, "@title_music"),
-                new Index(0x20, battleMusic, "@battle_music"),
-                new Index(0x21, battleEndMusic, "@battle_end_music"),
-                new Index(0x22, innMusic, "@inn_music"),
-                new Index(0x23, boatMusic, "@boat_music"),
-                new Index(0x24, shipMusic, "@ship_music"),
-                new Index(0x25, airshipMusic, "@airship_music"),
-                new Index(0x26, gameoverMusic, "@gameover_music"),
-                new Index(0x29, cursorSe, "@cursor_se"),
-                new Index(0x2A, decisionSe, "@decision_se"),
-                new Index(0x2B, cancelSe, "@cancel_se"),
-                new Index(0x2C, buzzerSe, "@buzzer_se"),
-                new Index(0x2D, battleSe, "@battle_se"),
-                new Index(0x2E, escapeSe, "@escape_se"),
-                new Index(0x2F, enemyAttackSe, "@enemy_attack_se"),
-                new Index(0x30, enemyHurtSe, "@enemy_hurt_se"),
-                new Index(0x31, actorHurtSe, "@actor_hurt_se"),
-                new Index(0x32, dodgeSe, "@dodge_se"),
-                new Index(0x33, enemyDeathSe, "@enemy_death_se"),
-                new Index(0x34, itemSe, "@item_se"),
-                new Index(0x3D, transitionOut, "@transition_fadeout"),
-                new Index(0x3E, transitionIn, "@transition_fadein"),
-                new Index(0x3F, battleStartFadeout, "@battle_start_fadeout"),
-                new Index(0x40, battleStartFadein, "@battle_start_fadein"),
-                new Index(0x41, battleEndFadeout, "@battle_end_fadeout"),
-                new Index(0x42, battleEndFadein, "@battle_end_fadein"),
-                new Index(0x47, messageStretch, "@system_box_tiling"),
-                new Index(0x48, fontId, "@font_id"),
-                new Index(0x51, testCondition, "@test_condition"),
-                new Index(0x52, testActor, "@test_actor"),
-                new Index(0x54, battletestBackground, "@test_battle_background"),
-                new Index(0x55, battletestData, "@test_battle_data"),
-                new Index(0x5A, saveCountEn, "@save_count_2k3en"),
-                new Index(0x5B, saveCountJp, "@save_count_other"),
-                new Index(0x5E, battletestTerrain, "@test_battle_terrain"),
-                new Index(0x5F, battletestFormation, "@test_battle_formation"),
-                new Index(0x60, battletestCondition, "@test_battle_condition"),
-                new Index(0x61, itemAllowClassbased, "@item_allow_classbased_2k3"),
-                // new Index(0x62, backdropSelectionNote, "@backdrop_selection_note"),
-                new Index(0x63, frameShow, "@frame_show_2k3"),
-                new Index(0x64, frameName, "@frame_name_2k3"),
-                new Index(0x65, invanim, "@invert_animations_2k3"),
-                new Index(0x6F, showTitle, "@show_title_2k3"),
-        };
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::System", true);
-        asRIOISF(rio);
-        return rio;
-    }
-
-    public static class TestBattler extends R2kObject {
-        public IntegerR2kStruct actor = new IntegerR2kStruct(1);
-        public IntegerR2kStruct level = new IntegerR2kStruct(1);
-        public IntegerR2kStruct weaponId = new IntegerR2kStruct(0);
-        public IntegerR2kStruct shieldId = new IntegerR2kStruct(0);
-        public IntegerR2kStruct armourId = new IntegerR2kStruct(0);
-        public IntegerR2kStruct helmetId = new IntegerR2kStruct(0);
-        public IntegerR2kStruct accessoryId = new IntegerR2kStruct(0);
-
-        @Override
-        public Index[] getIndices() {
-            return new Index[] {
-                    new Index(0x01, actor, "@actor"),
-                    new Index(0x02, level, "@level"),
-                    new Index(0x0B, weaponId, "@equip_weapon"),
-                    new Index(0x0C, shieldId, "@equip_shield"),
-                    new Index(0x0D, armourId, "@equip_armour"),
-                    new Index(0x0E, helmetId, "@equip_helmet"),
-                    new Index(0x0F, accessoryId, "@equip_accessory")
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@party"))
+            return party = new DM2Array<ShortR2kStruct>(0, true, true, 1) {
+                @Override
+                public ShortR2kStruct newValue() {
+                    return new ShortR2kStruct(1);
+                }
             };
-        }
+        if (sym.equals("@menu_commands_2k3"))
+            return menuCommands = new DM2Array<ShortR2kStruct>(0, true, true) {
+                @Override
+                public ShortR2kStruct newValue() {
+                    return new ShortR2kStruct(0);
+                }
+            };
+        return super.dm2AddIVar(sym);
+    }
 
-        @Override
-        public RubyIO asRIO() {
-            RubyIO rio = new RubyIO().setSymlike("RPG::System::TestBattler", true);
-            asRIOISF(rio);
-            return rio;
+    public static class TestBattler extends DM2R2kObject {
+        @DM2FXOBinding("@actor") @DM2LcfBinding(0x01) @DM2LcfInteger(1)
+        public IntegerR2kStruct actor;
+        @DM2FXOBinding("@level") @DM2LcfBinding(0x02) @DM2LcfInteger(1)
+        public IntegerR2kStruct level;
+        @DM2FXOBinding("@equip_weapon") @DM2LcfBinding(0x0B) @DM2LcfInteger(0)
+        public IntegerR2kStruct weaponId;
+        @DM2FXOBinding("@equip_shield") @DM2LcfBinding(0x0C) @DM2LcfInteger(0)
+        public IntegerR2kStruct shieldId;
+        @DM2FXOBinding("@equip_armour") @DM2LcfBinding(0x0D) @DM2LcfInteger(0)
+        public IntegerR2kStruct armourId;
+        @DM2FXOBinding("@equip_helmet") @DM2LcfBinding(0x0E) @DM2LcfInteger(0)
+        public IntegerR2kStruct helmetId;
+        @DM2FXOBinding("@equip_accessory") @DM2LcfBinding(0x0F) @DM2LcfInteger(0)
+        public IntegerR2kStruct accessoryId;
+
+        public TestBattler() {
+            super("RPG::System::TestBattler");
         }
     }
 }

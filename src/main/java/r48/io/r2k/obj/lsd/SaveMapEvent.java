@@ -7,36 +7,29 @@
 
 package r48.io.r2k.obj.lsd;
 
-import r48.RubyIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.R2kUtil;
+import r48.io.data.DM2FXOBinding;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.dm2chk.DM2LcfBinding;
+import r48.io.r2k.dm2chk.DM2LcfBoolean;
+import r48.io.r2k.dm2chk.DM2LcfInteger;
+import r48.io.r2k.dm2chk.DM2LcfObject;
 
 /**
  * You know exactly why this inheritance is needed
  * Created on December 13th, 2017
  */
 public class SaveMapEvent extends SaveCharacter {
-    public BooleanR2kStruct running = new BooleanR2kStruct(false);
-    public IntegerR2kStruct originalMoveRouteIndex = new IntegerR2kStruct(0);
-    public BooleanR2kStruct pending = new BooleanR2kStruct(false);
-    public Interpreter interpreter = new Interpreter();
+    @DM2FXOBinding("@running") @DM2LcfBinding(101) @DM2LcfBoolean(false)
+    public BooleanR2kStruct running;
+    @DM2FXOBinding("@original_moveroute_index") @DM2LcfBinding(102) @DM2LcfInteger(0)
+    public IntegerR2kStruct originalMoveRouteIndex;
+    @DM2FXOBinding("@pending") @DM2LcfBinding(103) @DM2LcfBoolean(false)
+    public BooleanR2kStruct pending;
+    @DM2FXOBinding("@interpreter") @DM2LcfBinding(108) @DM2LcfObject
+    public Interpreter interpreter;
 
-    @Override
-    public Index[] getIndices() {
-        return R2kUtil.mergeIndices(super.getIndices(), new Index[] {
-                new Index(0x65, running, "@running"),
-                new Index(0x66, originalMoveRouteIndex, "@original_moveroute_index"),
-                new Index(0x67, pending, "@pending"),
-                new Index(0x6C, interpreter, "@interpreter"),
-        });
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        RubyIO root = new RubyIO().setSymlike("RPG::SaveMapEvent", true);
-        asRIOISF(root);
-        return root;
+    public SaveMapEvent() {
+        super("RPG::SaveMapEvent");
     }
 }

@@ -7,79 +7,57 @@
 
 package r48.io.r2k.obj.ldb;
 
-import gabien.ui.ISupplier;
-import r48.RubyIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.chunks.*;
+import r48.io.data.DM2FXOBinding;
+import r48.io.r2k.chunks.BooleanR2kStruct;
+import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.*;
 
 /**
  * COPY jun6-2017
  */
-public class BattleCommands extends R2kObject {
-    public BooleanR2kStruct placement = new BooleanR2kStruct(false);
-    public IntegerR2kStruct deathHandler1 = new IntegerR2kStruct(0);
-    public BooleanR2kStruct row = new BooleanR2kStruct(false);
-    public IntegerR2kStruct battleType = new IntegerR2kStruct(0);
-    public SparseArrayAR2kStruct<BattleCommand> commands = new SparseArrayAR2kStruct<BattleCommand>(new ISupplier<BattleCommand>() {
-        @Override
-        public BattleCommand get() {
-            return new BattleCommand();
-        }
-    });
-    public IntegerR2kStruct deathHandler2 = new IntegerR2kStruct(0);
-    public IntegerR2kStruct deathEvent = new IntegerR2kStruct(0);
-    public BooleanR2kStruct windowSize = new BooleanR2kStruct(false);
-    public BooleanR2kStruct transparency = new BooleanR2kStruct(false);
-    public BooleanR2kStruct teleport = new BooleanR2kStruct(false);
-    public IntegerR2kStruct teleportId = new IntegerR2kStruct(0);
-    public IntegerR2kStruct teleportX = new IntegerR2kStruct(0);
-    public IntegerR2kStruct teleportY = new IntegerR2kStruct(0);
-    public IntegerR2kStruct teleportFace = new IntegerR2kStruct(0);
+public class BattleCommands extends DM2R2kObject {
+    @DM2FXOBinding("@auto_placement") @DM2LcfBinding(2) @DM2LcfBoolean(false)
+    public BooleanR2kStruct placement;
+    @DM2FXOBinding("@death_handler_1") @DM2LcfBinding(4) @DM2LcfInteger(0)
+    public IntegerR2kStruct deathHandler1;
+    @DM2FXOBinding("@row_back") @DM2LcfBinding(6) @DM2LcfBoolean(false)
+    public BooleanR2kStruct row;
+    @DM2FXOBinding("@battle_type") @DM2LcfBinding(7) @DM2LcfInteger(0)
+    public IntegerR2kStruct battleType;
+    @DM2FXOBinding("@commands") @DM2LcfBinding(10) @DM2LcfSparseArrayA(BattleCommand.class)
+    public DM2SparseArrayA<BattleCommand> commands;
+    @DM2FXOBinding("@death_handler_2") @DM2LcfBinding(15) @DM2LcfInteger(0)
+    public IntegerR2kStruct deathHandler2;
+    @DM2FXOBinding("@death_event") @DM2LcfBinding(16) @DM2LcfInteger(0)
+    public IntegerR2kStruct deathEvent;
+    @DM2FXOBinding("@window_small") @DM2LcfBinding(20) @DM2LcfBoolean(false)
+    public BooleanR2kStruct windowSize;
+    @DM2FXOBinding("@transparent") @DM2LcfBinding(24) @DM2LcfBoolean(false)
+    public BooleanR2kStruct transparency;
+    @DM2FXOBinding("@death_teleport") @DM2LcfBinding(25) @DM2LcfBoolean(false)
+    public BooleanR2kStruct teleport;
+    @DM2FXOBinding("@death_teleport_map") @DM2LcfBinding(26) @DM2LcfInteger(0)
+    public IntegerR2kStruct teleportId;
+    @DM2FXOBinding("@death_teleport_x") @DM2LcfBinding(27) @DM2LcfInteger(0)
+    public IntegerR2kStruct teleportX;
+    @DM2FXOBinding("@death_teleport_y") @DM2LcfBinding(28) @DM2LcfInteger(0)
+    public IntegerR2kStruct teleportY;
+    @DM2FXOBinding("@death_teleport_dir") @DM2LcfBinding(29) @DM2LcfInteger(0)
+    public IntegerR2kStruct teleportFace;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x02, placement, "@auto_placement"),
-                new Index(0x04, deathHandler1, "@death_handler_1"),
-                new Index(0x06, row, "@row_back"),
-                new Index(0x07, battleType, "@battle_type"),
-                new Index(0x0A, commands, "@commands"),
-                new Index(0x0F, deathHandler2, "@death_handler_2"),
-                new Index(0x10, deathEvent, "@death_event"),
-                new Index(0x14, windowSize, "@window_small"),
-                new Index(0x18, transparency, "@transparent"),
-                new Index(0x19, teleport, "@death_teleport"),
-                new Index(0x1A, teleportId, "@death_teleport_map"),
-                new Index(0x1B, teleportX, "@death_teleport_x"),
-                new Index(0x1C, teleportY, "@death_teleport_y"),
-                new Index(0x1D, teleportFace, "@death_teleport_dir"),
-        };
+    public BattleCommands() {
+        super("RPG::BattleCommands");
     }
 
-    @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::BattleCommands", true);
-        asRIOISF(rio);
-        return rio;
-    }
+    public static class BattleCommand extends DM2R2kObject {
+        @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
+        public StringR2kStruct name;
+        @DM2FXOBinding("@type") @DM2LcfBinding(2) @DM2LcfInteger(0)
+        public IntegerR2kStruct type;
 
-    public static class BattleCommand extends R2kObject {
-        public StringR2kStruct name = new StringR2kStruct();
-        public IntegerR2kStruct type = new IntegerR2kStruct(0);
-
-        @Override
-        public Index[] getIndices() {
-            return new Index[] {
-                    new Index(0x01, name, "@name"),
-                    new Index(0x02, type, "@type")
-            };
-        }
-
-        @Override
-        public RubyIO asRIO() {
-            RubyIO rio = new RubyIO().setSymlike("RPG::BattleCommand", true);
-            asRIOISF(rio);
-            return rio;
+        public BattleCommand() {
+            super("RPG::BattleCommand");
         }
     }
 }

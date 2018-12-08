@@ -505,10 +505,10 @@ public class SDB {
                             return new SchemaElement() {
                                 @Override
                                 public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
-                                    return insideThat.buildHoldingEditor(target, launcher, applySchema(target, path));
+                                    return insideThat.buildHoldingEditor(target, launcher, applySchema(target, path, true));
                                 }
 
-                                private SchemaPath applySchema(final IRIO host, SchemaPath path) {
+                                private SchemaPath applySchema(final IRIO host, SchemaPath path, boolean update) {
                                     EnumSchemaElement sce = new EnumSchemaElement(new HashMap<String, String>(), defVal, "INT:" + TXDB.get("ID.")) {
                                         @Override
                                         public void liveUpdate() {
@@ -526,13 +526,14 @@ public class SDB {
                                             convertOptions();
                                         }
                                     };
-                                    sce.liveUpdate();
+                                    if (update)
+                                        sce.liveUpdate();
                                     return path.contextSchema(contextName, sce);
                                 }
 
                                 @Override
                                 public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-                                    insideThat.modifyVal(target, applySchema(target, path), setDefault);
+                                    insideThat.modifyVal(target, applySchema(target, path, false), setDefault);
                                 }
                             };
                         }

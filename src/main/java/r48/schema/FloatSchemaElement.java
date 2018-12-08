@@ -30,9 +30,8 @@ public class FloatSchemaElement extends SchemaElement {
         jsonCoerce = json;
     }
 
-    private String decodeVal(IRIO target) {
+    public static String decodeVal(byte[] strVal) {
         // Stop at the first null byte.
-        byte[] strVal = target.getBuffer();
         int firstNull = strVal.length;
         for (int i = 0; i < strVal.length; i++) {
             if (strVal[i] == 0) {
@@ -45,7 +44,7 @@ public class FloatSchemaElement extends SchemaElement {
         return new String(text, Charset.forName("UTF-8"));
     }
 
-    private boolean encodeVal(IRIO target, String text) {
+    public static boolean encodeVal(IRIO target, String text, boolean jsonCoerce) {
         if (jsonCoerce) {
             try {
                 long l = Long.parseLong(text);
@@ -69,7 +68,7 @@ public class FloatSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         final String oldValue;
         if (target.getType() == 'f') {
-            oldValue = decodeVal(target);
+            oldValue = decodeVal(target.getBuffer());
         } else if (jsonCoerce) {
             oldValue = Long.toString(target.getFX());
         } else {
@@ -79,7 +78,7 @@ public class FloatSchemaElement extends SchemaElement {
         utb.onEdit = new Runnable() {
             @Override
             public void run() {
-                if (encodeVal(target, utb.text)) {
+                if (encodeVal(target, utb.text, jsonCoerce)) {
                     path.changeOccurred(false);
                 } else {
                     utb.text = oldValue;
@@ -101,7 +100,7 @@ public class FloatSchemaElement extends SchemaElement {
         if (setDefault)
             ok = false;
         if (!ok) {
-            if (!encodeVal(target, def))
+            if (!encodeVal(target, def, jsonCoerce))
                 throw new RuntimeException("Float default must be valid");
             path.changeOccurred(true);
         }
