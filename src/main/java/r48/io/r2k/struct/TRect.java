@@ -7,13 +7,12 @@
 
 package r48.io.r2k.struct;
 
-import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.DM2FXOBinding;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedObject;
 import r48.io.data.IRIOFixnum;
-import r48.io.r2k.chunks.IR2kStruct;
+import r48.io.r2k.chunks.IR2kInterpretable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +22,7 @@ import java.io.OutputStream;
  * True proof this thing hates me.
  * Created on 31/05/17.
  */
-public class TRect extends IRIOFixedObject implements IR2kStruct {
+public class TRect extends IRIOFixedObject implements IR2kInterpretable {
     @DM2FXOBinding("@left")
     public IRIOFixnum l;
     @DM2FXOBinding("@up")
@@ -52,16 +51,6 @@ public class TRect extends IRIOFixedObject implements IR2kStruct {
         IntUtils.writeS32(baos, (int) r.val);
         IntUtils.writeS32(baos, (int) d.val);
         return false;
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setDeepClone(this);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        setDeepClone(src);
     }
 
     @Override

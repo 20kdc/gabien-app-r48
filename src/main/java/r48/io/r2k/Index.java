@@ -8,7 +8,6 @@
 package r48.io.r2k;
 
 import r48.io.r2k.chunks.IR2kInterpretable;
-import r48.io.r2k.chunks.IR2kStruct;
 
 /**
  * Created on 31/05/17.
@@ -24,7 +23,7 @@ public class Index {
         rioHelperName = null;
     }
 
-    public Index(int i, IR2kStruct c, String rhn) {
+    public Index(int i, IR2kInterpretable c, String rhn) {
         index = i;
         chunk = c;
         rioHelperName = rhn;

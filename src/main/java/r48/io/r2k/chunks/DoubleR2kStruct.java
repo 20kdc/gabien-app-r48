@@ -7,14 +7,13 @@
 
 package r48.io.r2k.chunks;
 
-import r48.RubyIO;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
 import r48.schema.FloatSchemaElement;
 
 import java.io.*;
 
-public class DoubleR2kStruct extends IRIOFixed implements IR2kStruct {
+public class DoubleR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public double v;
 
     public DoubleR2kStruct() {
@@ -24,6 +23,10 @@ public class DoubleR2kStruct extends IRIOFixed implements IR2kStruct {
     public DoubleR2kStruct(double v) {
         this();
         this.v = v;
+    }
+
+    public DoubleR2kStruct(int v) {
+        this((double) v);
     }
 
     @Override
@@ -49,16 +52,6 @@ public class DoubleR2kStruct extends IRIOFixed implements IR2kStruct {
     @Override
     public String decString() {
         return super.decString();
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setDeepClone(this);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        setDeepClone(src);
     }
 
     @Override

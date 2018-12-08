@@ -12,6 +12,7 @@ import r48.RubyIO;
 import r48.io.IObjectBackend;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
+import r48.io.r2k.chunks.IR2kInterpretable;
 
 import java.io.*;
 import java.util.*;
@@ -154,5 +155,35 @@ public class R2kUtil {
             }
         });
         return lli.toArray(new Index[0]);
+    }
+
+    public static void importSparse(HashMap<Integer, ?> map, ISupplier constructor, InputStream bais) throws IOException {
+        map.clear();
+        int entries = readLcfVLI(bais);
+        for (int i = 0; i < entries; i++) {
+            int k = readLcfVLI(bais);
+            IR2kInterpretable target = (IR2kInterpretable) constructor.get();
+            try {
+                target.importData(bais);
+            } catch (IOException e) {
+                throw new IOException("In element " + i, e);
+            } catch (RuntimeException e) {
+                throw new RuntimeException("In element " + i, e);
+            }
+            // Incredibly unsafe but callers need this to reduce complexity.
+            // One of these warnings vs. many warnings all over the place,
+            //  all over nothing.
+            ((HashMap) map).put(k, target);
+        }
+    }
+
+    public static void exportSparse(HashMap<Integer, ?> map, OutputStream baos) throws IOException {
+        LinkedList<Integer> sort = new LinkedList<Integer>(map.keySet());
+        Collections.sort(sort);
+        writeLcfVLI(baos, sort.size());
+        for (Integer i : sort) {
+            writeLcfVLI(baos, i);
+            ((IR2kInterpretable) map.get(i)).exportData(baos);
+        }
     }
 }

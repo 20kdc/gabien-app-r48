@@ -61,7 +61,7 @@ public class Enemy extends DM2R2kObject {
     @DM2FXOBinding("@attr_ranks") @DM2LcfSizeBinding(0x21) @DM2LcfBinding(0x22)
     public DM2ArraySet<ByteR2kStruct> attrRanks;
 
-    @DM2FXOBinding("@actions") @DM2LcfBinding(0x2A) @DM2LcfSparseArrayH(EnemyAction.class)
+    @DM2FXOBinding("@actions") @DM2LcfBinding(0x2A) @DM2LcfSparseArray(EnemyAction.class)
     public DM2SparseArrayH<EnemyAction> enemyActions;
 
     public Enemy() {

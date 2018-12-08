@@ -7,7 +7,6 @@
 
 package r48.io.r2k.obj.ldb;
 
-import gabien.ui.ISupplier;
 import r48.io.data.DM2FXOBinding;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.BooleanR2kStruct;
@@ -115,28 +114,23 @@ public class Item extends DM2R2kObject {
     // --
 
 
-    @DM2FXOBinding("@state_chance") @DM2LcfBinding(0x43)
-    public IntegerR2kStruct stateChance = new IntegerR2kStruct(0);
-    @DM2FXOBinding("@state_effect") @DM2LcfBinding(0x44)
-    public BooleanR2kStruct stateEffect = new BooleanR2kStruct(false);
+    @DM2FXOBinding("@state_chance") @DM2LcfBinding(0x43) @DM2LcfInteger(0)
+    public IntegerR2kStruct stateChance;
+    @DM2FXOBinding("@state_effect") @DM2LcfBinding(0x44) @DM2LcfBoolean(false)
+    public BooleanR2kStruct stateEffect;
 
-    @DM2FXOBinding("@weapon_anim_def_2k3") @DM2LcfBinding(0x45)
-    public IntegerR2kStruct weaponAnimation = new IntegerR2kStruct(1);
-    @DM2FXOBinding("@weapon_anim_data_2k3") @DM2LcfBinding(0x46)
-    public DM2SparseArrayH<ItemAnimation> weaponAnimationData = new DM2SparseArrayH<ItemAnimation>(new ISupplier<ItemAnimation>() {
-        @Override
-        public ItemAnimation get() {
-            return new ItemAnimation();
-        }
-    });
+    @DM2FXOBinding("@weapon_anim_def_2k3") @DM2LcfBinding(0x45) @DM2LcfInteger(1)
+    public IntegerR2kStruct weaponAnimation;
+    @DM2FXOBinding("@weapon_anim_data_2k3") @DM2LcfBinding(0x46) @DM2LcfSparseArray(ItemAnimation.class)
+    public DM2SparseArrayH<ItemAnimation> weaponAnimationData;
 
-    @DM2FXOBinding("@use_skill_2k3") @DM2LcfBinding(0x47)
-    public BooleanR2kStruct useSkill = new BooleanR2kStruct(false);
+    @DM2FXOBinding("@use_skill_2k3") @DM2LcfBinding(0x47) @DM2LcfBoolean(false)
+    public BooleanR2kStruct useSkill;
 
-    @DM2FXOBinding("@ranged_return") @DM2LcfBinding(0x4B)
-    public IntegerR2kStruct rangedPath = new IntegerR2kStruct(0);
-    @DM2FXOBinding("@ranged_target") @DM2LcfBinding(0x4C)
-    public IntegerR2kStruct itemTarget = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@ranged_return") @DM2LcfBinding(0x4B) @DM2LcfInteger(0)
+    public IntegerR2kStruct rangedPath;
+    @DM2FXOBinding("@ranged_target") @DM2LcfBinding(0x4C) @DM2LcfInteger(0)
+    public IntegerR2kStruct itemTarget;
 
     // --
 
@@ -150,13 +144,13 @@ public class Item extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@actor_set"))
-            aEfx = newFlagSet(false);
+            return aEfx = newFlagSet(false);
         if (sym.equals("@state_set"))
-            sEfx = newFlagSet(false);
+            return sEfx = newFlagSet(false);
         if (sym.equals("@attr_set"))
-            atEfx = newFlagSet(true);
+            return atEfx = newFlagSet(true);
         if (sym.equals("@class_set_2k3"))
-            cEfx = newFlagSet(true);
+            return cEfx = newFlagSet(true);
         return super.dm2AddIVar(sym);
     }
 

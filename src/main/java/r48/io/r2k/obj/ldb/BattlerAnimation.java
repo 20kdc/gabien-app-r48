@@ -22,9 +22,9 @@ public class BattlerAnimation extends DM2R2kObject {
     public StringR2kStruct name;
     @DM2FXOBinding("@speed") @DM2LcfBinding(2) @DM2LcfInteger(0)
     public IntegerR2kStruct speed;
-    @DM2FXOBinding("@base_data") @DM2LcfBinding(10) @DM2LcfSparseArrayA(BAE.class)
+    @DM2FXOBinding("@base_data") @DM2LcfBinding(10) @DM2LcfSparseArray(BAE.class)
     public DM2SparseArrayA<BAE> baseData;
-    @DM2FXOBinding("@weapon_data") @DM2LcfBinding(11) @DM2LcfSparseArrayA(BAE.class)
+    @DM2FXOBinding("@weapon_data") @DM2LcfBinding(11) @DM2LcfSparseArray(BAE.class)
     public DM2SparseArrayA<BAE> weaponData;
 
     public BattlerAnimation() {

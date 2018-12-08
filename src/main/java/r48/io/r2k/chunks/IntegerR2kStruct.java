@@ -7,7 +7,6 @@
 
 package r48.io.r2k.chunks;
 
-import r48.RubyIO;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
 import r48.io.r2k.R2kUtil;
@@ -21,7 +20,7 @@ import java.io.OutputStream;
  * NOTE: The default values have to be exact due to RMW
  * Created on 31/05/17.
  */
-public class IntegerR2kStruct extends IRIOFixed implements IR2kStruct {
+public class IntegerR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public final int di;
     public int i;
 
@@ -41,16 +40,6 @@ public class IntegerR2kStruct extends IRIOFixed implements IR2kStruct {
         //return true;
         R2kUtil.writeLcfVLI(baos, i);
         return false;
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setFX(i);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        i = (int) src.getFX();
     }
 
     @Override

@@ -7,104 +7,102 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.RubyIO;
-import r48.io.r2k.Index;
-import r48.io.r2k.chunks.*;
+import r48.io.data.DM2FXOBinding;
+import r48.io.data.IRIO;
+import r48.io.r2k.chunks.BitfieldR2kStruct;
+import r48.io.r2k.chunks.BooleanR2kStruct;
+import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.obj.Sound;
 
 /**
  * COPY jun6-2017
  */
-public class Terrain extends R2kObject {
-    public StringR2kStruct name = new StringR2kStruct();
-    public IntegerR2kStruct damage = new IntegerR2kStruct(0);
-    public IntegerR2kStruct encounterMod = new IntegerR2kStruct(100);
-    public StringR2kStruct backgroundName = new StringR2kStruct();
-    public BooleanR2kStruct boatPass = new BooleanR2kStruct(false);
-    public BooleanR2kStruct shipPass = new BooleanR2kStruct(false);
-    public BooleanR2kStruct airshipPass = new BooleanR2kStruct(true);
-    public BooleanR2kStruct airshipLand = new BooleanR2kStruct(true);
-    public IntegerR2kStruct bushDepth = new IntegerR2kStruct(0);
-    public Sound footstep = new Sound();
-    public BooleanR2kStruct damageSe = new BooleanR2kStruct(false);
-    public BooleanR2kStruct backgroundType = new BooleanR2kStruct(false);
+public class Terrain extends DM2R2kObject {
+    @DM2FXOBinding("@name") @DM2LcfBinding(0x01) @DM2LcfObject
+    public StringR2kStruct name;
+    @DM2FXOBinding("@damage") @DM2LcfBinding(0x02) @DM2LcfInteger(0)
+    public IntegerR2kStruct damage;
+    @DM2FXOBinding("@encounter%_mod") @DM2LcfBinding(0x03) @DM2LcfInteger(100)
+    public IntegerR2kStruct encounterMod;
+    @DM2FXOBinding("@background_name") @DM2LcfBinding(0x04) @DM2LcfObject
+    public StringR2kStruct backgroundName;
+    @DM2FXOBinding("@boat_pass") @DM2LcfBinding(0x05) @DM2LcfBoolean(false)
+    public BooleanR2kStruct boatPass;
+    @DM2FXOBinding("@ship_pass") @DM2LcfBinding(0x06) @DM2LcfBoolean(false)
+    public BooleanR2kStruct shipPass;
+    @DM2FXOBinding("@airship_pass") @DM2LcfBinding(0x07) @DM2LcfBoolean(true)
+    public BooleanR2kStruct airshipPass;
+    @DM2FXOBinding("@airship_land") @DM2LcfBinding(0x09) @DM2LcfBoolean(true)
+    public BooleanR2kStruct airshipLand;
+    @DM2FXOBinding("@bush_depth") @DM2LcfBinding(0x0B) @DM2LcfInteger(0)
+    public IntegerR2kStruct bushDepth;
+    @DM2FXOBinding("@footstep_sound_2k3") @DM2LcfBinding(0x0F) @DM2LcfObject
+    public Sound footstep;
+    @DM2FXOBinding("@footstep_for_damage_2k3") @DM2LcfBinding(0x10) @DM2LcfBoolean(false)
+    public BooleanR2kStruct damageSe;
+    @DM2FXOBinding("@back_as_frame_2k3") @DM2LcfBinding(0x11) @DM2LcfBoolean(false)
+    public BooleanR2kStruct backgroundType;
+    @DM2FXOBinding("@background_a_name_2k3") @DM2LcfBinding(0x15) @DM2LcfObject
+    public StringR2kStruct backgroundAName;
+    @DM2FXOBinding("@background_a_scrh_2k3") @DM2LcfBinding(0x16) @DM2LcfBoolean(false)
+    public BooleanR2kStruct backgroundAScrH;
 
-    public StringR2kStruct backgroundAName = new StringR2kStruct();
-    public BooleanR2kStruct backgroundAScrH = new BooleanR2kStruct(false);
-    public BooleanR2kStruct backgroundAScrV = new BooleanR2kStruct(false);
-    public IntegerR2kStruct backgroundAScrHSpeed = new IntegerR2kStruct(0);
-    public IntegerR2kStruct backgroundAScrVSpeed = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@background_a_scrv_2k3") @DM2LcfBinding(0x17) @DM2LcfBoolean(false)
+    public BooleanR2kStruct backgroundAScrV;
+    @DM2FXOBinding("@background_a_scrh_speed_2k3") @DM2LcfBinding(0x18) @DM2LcfInteger(0)
+    public IntegerR2kStruct backgroundAScrHSpeed;
+    @DM2FXOBinding("@background_a_scrv_speed_2k3") @DM2LcfBinding(0x19) @DM2LcfInteger(0)
+    public IntegerR2kStruct backgroundAScrVSpeed;
 
-    public BooleanR2kStruct backgroundB = new BooleanR2kStruct(false);
-    public StringR2kStruct backgroundBName = new StringR2kStruct();
-    public BooleanR2kStruct backgroundBScrH = new BooleanR2kStruct(false);
-    public BooleanR2kStruct backgroundBScrV = new BooleanR2kStruct(false);
-    public IntegerR2kStruct backgroundBScrHSpeed = new IntegerR2kStruct(0);
-    public IntegerR2kStruct backgroundBScrVSpeed = new IntegerR2kStruct(0);
+    @DM2FXOBinding("@background_b_exists_2k3") @DM2LcfBinding(0x1E) @DM2LcfBoolean(false)
+    public BooleanR2kStruct backgroundB;
+    @DM2FXOBinding("@background_b_name_2k3") @DM2LcfBinding(0x1F) @DM2LcfObject
+    public StringR2kStruct backgroundBName;
+    @DM2FXOBinding("@background_b_scrh_2k3") @DM2LcfBinding(0x20) @DM2LcfBoolean(false)
+    public BooleanR2kStruct backgroundBScrH;
+    @DM2FXOBinding("@background_b_scrv_2k3") @DM2LcfBinding(0x21) @DM2LcfBoolean(false)
+    public BooleanR2kStruct backgroundBScrV;
+    @DM2FXOBinding("@background_b_scrh_speed_2k3") @DM2LcfBinding(0x22) @DM2LcfInteger(0)
+    public IntegerR2kStruct backgroundBScrHSpeed;
+    @DM2FXOBinding("@background_b_scrv_speed_2k3") @DM2LcfBinding(0x23) @DM2LcfInteger(0)
+    public IntegerR2kStruct backgroundBScrVSpeed;
 
-    public BitfieldR2kStruct specialFlags = new BitfieldR2kStruct(new String[] {
-            "@back_party",
-            "@back_enemies",
-            "@lat_party",
-            "@lat_enemies",
-    }, 0); // Default left unspecified, assumed 0.
+    @DM2FXOBinding("@special_flags_2k3") @DM2LcfBinding(0x28)
+    public BitfieldR2kStruct specialFlags;
 
-    public IntegerR2kStruct specialBackParty = new IntegerR2kStruct(15);
-    public IntegerR2kStruct specialBackEnemies = new IntegerR2kStruct(10);
-    public IntegerR2kStruct specialLatParty = new IntegerR2kStruct(10);
-    public IntegerR2kStruct specialLatEnemies = new IntegerR2kStruct(5);
+    @DM2FXOBinding("@special_back_party_2k3") @DM2LcfBinding(0x29) @DM2LcfInteger(15)
+    public IntegerR2kStruct specialBackParty;
+    @DM2FXOBinding("@special_back_enemies_2k3") @DM2LcfBinding(0x2A) @DM2LcfInteger(10)
+    public IntegerR2kStruct specialBackEnemies;
+    @DM2FXOBinding("@special_lat_party_2k3") @DM2LcfBinding(0x2B) @DM2LcfInteger(10)
+    public IntegerR2kStruct specialLatParty;
+    @DM2FXOBinding("@special_lat_enemies_2k3") @DM2LcfBinding(0x2C) @DM2LcfInteger(5)
+    public IntegerR2kStruct specialLatEnemies;
 
-    public IntegerR2kStruct gridLoc = new IntegerR2kStruct(0);
-    public IntegerR2kStruct gridA = new IntegerR2kStruct(120);
-    public IntegerR2kStruct gridB = new IntegerR2kStruct(392);
-    public IntegerR2kStruct gridC = new IntegerR2kStruct(16000);
+    @DM2FXOBinding("@grid_loc_2k3") @DM2LcfBinding(0x2D) @DM2LcfInteger(0)
+    public IntegerR2kStruct gridLoc;
+    @DM2FXOBinding("@grid_a_2k3") @DM2LcfBinding(0x2E) @DM2LcfInteger(120)
+    public IntegerR2kStruct gridA;
+    @DM2FXOBinding("@grid_b_2k3") @DM2LcfBinding(0x2F) @DM2LcfInteger(392)
+    public IntegerR2kStruct gridB;
+    @DM2FXOBinding("@grid_c_2k3") @DM2LcfBinding(0x30) @DM2LcfInteger(16000)
+    public IntegerR2kStruct gridC;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, name, "@name"),
-                new Index(0x02, damage, "@damage"),
-                new Index(0x03, encounterMod, "@encounter%_mod"),
-                new Index(0x04, backgroundName, "@background_name"),
-                new Index(0x05, boatPass, "@boat_pass"),
-                new Index(0x06, shipPass, "@ship_pass"),
-                new Index(0x07, airshipPass, "@airship_pass"),
-                new Index(0x09, airshipLand, "@airship_land"),
-                new Index(0x0B, bushDepth, "@bush_depth"),
-                new Index(0x0F, footstep, "@footstep_sound_2k3"),
-                new Index(0x10, damageSe, "@footstep_for_damage_2k3"),
-                new Index(0x11, backgroundType, "@back_as_frame_2k3"),
-
-                new Index(0x15, backgroundAName, "@background_a_name_2k3"),
-                new Index(0x16, backgroundAScrH, "@background_a_scrh_2k3"),
-                new Index(0x17, backgroundAScrV, "@background_a_scrv_2k3"),
-                new Index(0x18, backgroundAScrHSpeed, "@background_a_scrh_speed_2k3"),
-                new Index(0x19, backgroundAScrVSpeed, "@background_a_scrv_speed_2k3"),
-
-                new Index(0x1E, backgroundB, "@background_b_exists_2k3"),
-                new Index(0x1F, backgroundBName, "@background_b_name_2k3"),
-                new Index(0x20, backgroundBScrH, "@background_b_scrh_2k3"),
-                new Index(0x21, backgroundBScrV, "@background_b_scrv_2k3"),
-                new Index(0x22, backgroundBScrHSpeed, "@background_b_scrh_speed_2k3"),
-                new Index(0x23, backgroundBScrVSpeed, "@background_b_scrv_speed_2k3"),
-
-                new Index(0x28, specialFlags, "@special_flags_2k3"),
-                new Index(0x29, specialBackParty, "@special_back_party_2k3"),
-                new Index(0x2A, specialBackEnemies, "@special_back_enemies_2k3"),
-                new Index(0x2B, specialLatParty, "@special_lat_party_2k3"),
-                new Index(0x2C, specialLatEnemies, "@special_lat_enemies_2k3"),
-                new Index(0x2D, gridLoc, "@grid_loc_2k3"),
-                new Index(0x2E, gridA, "@grid_a_2k3"),
-                new Index(0x2F, gridB, "@grid_b_2k3"),
-                new Index(0x30, gridC, "@grid_c_2k3"),
-        };
+    public Terrain() {
+        super("RPG::Terrain");
     }
 
     @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::Terrain", true);
-        asRIOISF(rio);
-        return rio;
+    protected IRIO dm2AddIVar(String sym) {
+        if (sym.equals("@special_flags_2k3"))
+            return specialFlags = new BitfieldR2kStruct(new String[] {
+                    "@back_party",
+                    "@back_enemies",
+                    "@lat_party",
+                    "@lat_enemies",
+            }, 0); // Default left unspecified, assumed 0.
+        return super.dm2AddIVar(sym);
     }
-
 }

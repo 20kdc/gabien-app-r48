@@ -25,7 +25,7 @@ public class BattleCommands extends DM2R2kObject {
     public BooleanR2kStruct row;
     @DM2FXOBinding("@battle_type") @DM2LcfBinding(7) @DM2LcfInteger(0)
     public IntegerR2kStruct battleType;
-    @DM2FXOBinding("@commands") @DM2LcfBinding(10) @DM2LcfSparseArrayA(BattleCommand.class)
+    @DM2FXOBinding("@commands") @DM2LcfBinding(10) @DM2LcfSparseArray(BattleCommand.class)
     public DM2SparseArrayA<BattleCommand> commands;
     @DM2FXOBinding("@death_handler_2") @DM2LcfBinding(15) @DM2LcfInteger(0)
     public IntegerR2kStruct deathHandler2;

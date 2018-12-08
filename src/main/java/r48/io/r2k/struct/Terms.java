@@ -7,12 +7,11 @@
 
 package r48.io.r2k.struct;
 
-import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.IR2kStruct;
+import r48.io.r2k.chunks.IR2kInterpretable;
 import r48.io.r2k.chunks.StringR2kStruct;
 
 import java.io.*;
@@ -22,7 +21,7 @@ import java.io.*;
  * Coming back to this on December 6th 2018, this is one annoying class to deal with.
  * For these reasons and more, I'm pretending it's a fixed-size struct.
  */
-public class Terms extends IRIOFixed implements IR2kStruct {
+public class Terms extends IRIOFixed implements IR2kInterpretable {
     public static int[] mapping = {
             0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A,
             0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x14,
@@ -74,16 +73,6 @@ public class Terms extends IRIOFixed implements IR2kStruct {
     @Override
     public boolean getAFixedFormat() {
         return true;
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setDeepClone(this);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        setDeepClone(src);
     }
 
     @Override

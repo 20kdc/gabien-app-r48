@@ -7,11 +7,10 @@
 
 package r48.io.r2k.struct;
 
-import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.*;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.IR2kStruct;
+import r48.io.r2k.chunks.IR2kInterpretable;
 import r48.io.r2k.chunks.StringR2kStruct;
 
 import java.io.IOException;
@@ -24,7 +23,7 @@ import java.util.Stack;
  * A MoveCommand! It lets stuff move.
  * Created on 02/06/17.
  */
-public class MoveCommand extends IRIOFixedObject implements IR2kStruct {
+public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
     @DM2FXOBinding("@code")
     public IRIOFixnum code;
     @DM2FXOBinding("@parameters")
@@ -97,11 +96,6 @@ public class MoveCommand extends IRIOFixedObject implements IR2kStruct {
 
     public void fromRIO(IRIO rubyIO) {
         setDeepClone(rubyIO);
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setDeepClone(this);
     }
 
     @Override

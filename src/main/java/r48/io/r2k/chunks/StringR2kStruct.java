@@ -7,7 +7,6 @@
 
 package r48.io.r2k.chunks;
 
-import r48.RubyIO;
 import r48.io.IObjectBackend;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
@@ -23,7 +22,7 @@ import java.io.UnsupportedEncodingException;
  * (later) and out again.
  * Created on 31/05/17.
  */
-public class StringR2kStruct extends IRIOFixed implements IR2kStruct {
+public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public byte[] data = new byte[0];
 
     public StringR2kStruct() {
@@ -82,17 +81,6 @@ public class StringR2kStruct extends IRIOFixed implements IR2kStruct {
     @Override
     public String getBufferEnc() {
         return IObjectBackend.Factory.encoding;
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setString(data, IObjectBackend.Factory.encoding);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        // This is probably going to last until DataModel2 has taken over a significant part of the code.
-        data = src.getBufferInEncoding(IObjectBackend.Factory.encoding);
     }
 
     @Override

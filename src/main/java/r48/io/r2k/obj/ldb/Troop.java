@@ -23,7 +23,7 @@ import java.io.OutputStream;
 public class Troop extends DM2R2kObject {
     @DM2FXOBinding("@name") @DM2LcfBinding(1) @DM2LcfObject
     public StringR2kStruct name = new StringR2kStruct();
-    @DM2FXOBinding("@members") @DM2LcfBinding(2) @DM2LcfSparseArrayA(TroopMember.class)
+    @DM2FXOBinding("@members") @DM2LcfBinding(2) @DM2LcfSparseArray(TroopMember.class)
     public DM2SparseArrayA<TroopMember> members;
     @DM2FXOBinding("@auto_position") @DM2LcfBinding(3) @DM2LcfBoolean(false)
     public BooleanR2kStruct autoPosition;
@@ -36,7 +36,7 @@ public class Troop extends DM2R2kObject {
 
     // Final Tear 3 has these be massive enough that if you try copy/pasting the entire troop database,
     //  R48 will effectively freeze for a while as it unpacks everything. It will then crash, due to an out of memory error.
-    @DM2FXOBinding("@pages") @DM2LcfBinding(11) @DM2LcfSparseArrayA(TroopPage.class)
+    @DM2FXOBinding("@pages") @DM2LcfBinding(11) @DM2LcfSparseArray(TroopPage.class)
     public DM2SparseArrayA<TroopPage> pages;
 
     public Troop() {

@@ -85,7 +85,7 @@ public class Skill extends DM2R2kObject {
     public BooleanR2kStruct afAtDef;
     @DM2FXOBinding("@OFED_battler_anim_display_actor") @DM2LcfBinding(49) @DM2LcfInteger(1)
     public IntegerR2kStruct defBattlerAnim;
-    @DM2FXOBinding("@battler_anim_data") @DM2LcfBinding(50) @DM2LcfSparseArrayH(BAD.class)
+    @DM2FXOBinding("@battler_anim_data") @DM2LcfBinding(50) @DM2LcfSparseArray(BAD.class)
     public DM2SparseArrayH<BAD> battlerAnimMap;
 
     public Skill() {

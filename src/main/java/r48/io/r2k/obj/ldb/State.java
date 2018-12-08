@@ -7,114 +7,104 @@
 
 package r48.io.r2k.obj.ldb;
 
-import r48.RubyIO;
-import r48.io.r2k.Index;
+import r48.io.data.DM2FXOBinding;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.chunks.R2kObject;
 import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.dm2chk.*;
 
 /**
  * COPY jun6-2017
  */
-public class State extends R2kObject {
-    public StringR2kStruct name = new StringR2kStruct();
-    public IntegerR2kStruct type = new IntegerR2kStruct(0);
-    public IntegerR2kStruct colour = new IntegerR2kStruct(6);
-    public IntegerR2kStruct priority = new IntegerR2kStruct(50);
-    public IntegerR2kStruct restriction = new IntegerR2kStruct(0);
-    public IntegerR2kStruct aRate = new IntegerR2kStruct(100);
-    public IntegerR2kStruct bRate = new IntegerR2kStruct(80);
-    public IntegerR2kStruct cRate = new IntegerR2kStruct(60);
-    public IntegerR2kStruct dRate = new IntegerR2kStruct(30);
-    public IntegerR2kStruct eRate = new IntegerR2kStruct(0);
-    public IntegerR2kStruct holdTurn = new IntegerR2kStruct(0);
-    public IntegerR2kStruct autoReleaseProb = new IntegerR2kStruct(0);
-    public IntegerR2kStruct releaseByDamage = new IntegerR2kStruct(0);
-    public IntegerR2kStruct affectType = new IntegerR2kStruct(0);
-    public BooleanR2kStruct affectAtk = new BooleanR2kStruct(false);
-    public BooleanR2kStruct affectDef = new BooleanR2kStruct(false);
-    public BooleanR2kStruct affectSpi = new BooleanR2kStruct(false);
-    public BooleanR2kStruct affectAgi = new BooleanR2kStruct(false);
-    public IntegerR2kStruct reduceHitRatio = new IntegerR2kStruct(100);
-    public BooleanR2kStruct avoidAttacks = new BooleanR2kStruct(false);
-    public BooleanR2kStruct reflectMagic = new BooleanR2kStruct(false);
-    public BooleanR2kStruct cursed = new BooleanR2kStruct(false);
-    public IntegerR2kStruct battlerAnimationId = new IntegerR2kStruct(100);
-    public BooleanR2kStruct restrictSkill = new BooleanR2kStruct(false);
-    public IntegerR2kStruct restrictSkillLevel = new IntegerR2kStruct(0);
-    public BooleanR2kStruct restrictMagic = new BooleanR2kStruct(false);
-    public IntegerR2kStruct restrictMagicLevel = new IntegerR2kStruct(0);
-    public IntegerR2kStruct hpChangeType = new IntegerR2kStruct(0);
-    public IntegerR2kStruct spChangeType = new IntegerR2kStruct(0);
-    public StringR2kStruct msgActor = new StringR2kStruct();
-    public StringR2kStruct msgEnemy = new StringR2kStruct();
-    public StringR2kStruct msgAlready = new StringR2kStruct();
-    public StringR2kStruct msgAffected = new StringR2kStruct();
-    public StringR2kStruct msgRecovery = new StringR2kStruct();
-    public IntegerR2kStruct hpChangeMax = new IntegerR2kStruct(0);
-    public IntegerR2kStruct hpChangeVal = new IntegerR2kStruct(0);
-    public IntegerR2kStruct hpChangeMapVal = new IntegerR2kStruct(0);
-    public IntegerR2kStruct hpChangeMapSteps = new IntegerR2kStruct(0);
-    public IntegerR2kStruct spChangeMax = new IntegerR2kStruct(0);
-    public IntegerR2kStruct spChangeVal = new IntegerR2kStruct(0);
-    public IntegerR2kStruct spChangeMapVal = new IntegerR2kStruct(0);
-    public IntegerR2kStruct spChangeMapSteps = new IntegerR2kStruct(0);
+public class State extends DM2R2kObject {
+    @DM2FXOBinding("@name") @DM2LcfBinding(0x01) @DM2LcfObject
+    public StringR2kStruct name;
+    @DM2FXOBinding("@persists") @DM2LcfBinding(0x02) @DM2LcfInteger(0)
+    public IntegerR2kStruct type;
+    @DM2FXOBinding("@colour") @DM2LcfBinding(0x03) @DM2LcfInteger(6)
+    public IntegerR2kStruct colour;
+    @DM2FXOBinding("@priority") @DM2LcfBinding(0x04) @DM2LcfInteger(50)
+    public IntegerR2kStruct priority;
+    @DM2FXOBinding("@restriction") @DM2LcfBinding(0x05) @DM2LcfInteger(0)
+    public IntegerR2kStruct restriction;
+    @DM2FXOBinding("@a_rate") @DM2LcfBinding(0x0B) @DM2LcfInteger(100)
+    public IntegerR2kStruct aRate;
+    @DM2FXOBinding("@b_rate") @DM2LcfBinding(0x0C) @DM2LcfInteger(80)
+    public IntegerR2kStruct bRate;
+    @DM2FXOBinding("@c_rate") @DM2LcfBinding(0x0D) @DM2LcfInteger(60)
+    public IntegerR2kStruct cRate;
+    @DM2FXOBinding("@d_rate") @DM2LcfBinding(0x0E) @DM2LcfInteger(30)
+    public IntegerR2kStruct dRate;
+    @DM2FXOBinding("@e_rate") @DM2LcfBinding(0x0F) @DM2LcfInteger(0)
+    public IntegerR2kStruct eRate;
+    @DM2FXOBinding("@hold_turn") @DM2LcfBinding(0x15) @DM2LcfInteger(0)
+    public IntegerR2kStruct holdTurn;
+    @DM2FXOBinding("@auto_release_prob") @DM2LcfBinding(0x16) @DM2LcfInteger(0)
+    public IntegerR2kStruct autoReleaseProb;
+    @DM2FXOBinding("@release_by_damage") @DM2LcfBinding(0x17) @DM2LcfInteger(0)
+    public IntegerR2kStruct releaseByDamage;
+    @DM2FXOBinding("@affect_type_2k3") @DM2LcfBinding(0x1E) @DM2LcfInteger(0)
+    public IntegerR2kStruct affectType;
+    @DM2FXOBinding("@affect_atk") @DM2LcfBinding(0x1F) @DM2LcfBoolean(false)
+    public BooleanR2kStruct affectAtk;
+    @DM2FXOBinding("@affect_def") @DM2LcfBinding(0x20) @DM2LcfBoolean(false)
+    public BooleanR2kStruct affectDef;
+    @DM2FXOBinding("@affect_spi") @DM2LcfBinding(0x21) @DM2LcfBoolean(false)
+    public BooleanR2kStruct affectSpi;
+    @DM2FXOBinding("@affect_agi") @DM2LcfBinding(0x22) @DM2LcfBoolean(false)
+    public BooleanR2kStruct affectAgi;
+    @DM2FXOBinding("@reduce_hit_ratio") @DM2LcfBinding(0x23) @DM2LcfInteger(100)
+    public IntegerR2kStruct reduceHitRatio;
+    @DM2FXOBinding("@avoid_attacks_2k3") @DM2LcfBinding(0x24) @DM2LcfBoolean(false)
+    public BooleanR2kStruct avoidAttacks;
+    @DM2FXOBinding("@reflect_magic_2k3") @DM2LcfBinding(0x25) @DM2LcfBoolean(false)
+    public BooleanR2kStruct reflectMagic;
+    @DM2FXOBinding("@cursed_2k3") @DM2LcfBinding(0x26) @DM2LcfBoolean(false)
+    public BooleanR2kStruct cursed;
+    @DM2FXOBinding("@battler_pose_2k3") @DM2LcfBinding(0x27) @DM2LcfInteger(100)
+    public IntegerR2kStruct battlerAnimationId;
+    @DM2FXOBinding("@restrict_skill") @DM2LcfBinding(0x29) @DM2LcfBoolean(false)
+    public BooleanR2kStruct restrictSkill;
+    @DM2FXOBinding("@restrict_skill_level") @DM2LcfBinding(0x2A) @DM2LcfInteger(100)
+    public IntegerR2kStruct restrictSkillLevel;
+    @DM2FXOBinding("@restrict_magic") @DM2LcfBinding(0x2B) @DM2LcfBoolean(false)
+    public BooleanR2kStruct restrictMagic;
+    @DM2FXOBinding("@restrict_magic_level") @DM2LcfBinding(0x2C) @DM2LcfInteger(0)
+    public IntegerR2kStruct restrictMagicLevel;
+    @DM2FXOBinding("@hp_change_type") @DM2LcfBinding(0x2D) @DM2LcfInteger(0)
+    public IntegerR2kStruct hpChangeType;
+    @DM2FXOBinding("@sp_change_type") @DM2LcfBinding(0x2E) @DM2LcfInteger(0)
+    public IntegerR2kStruct spChangeType;
+    @DM2FXOBinding("@msg_actor") @DM2LcfBinding(0x33) @DM2LcfObject
+    public StringR2kStruct msgActor;
+    @DM2FXOBinding("@msg_enemy") @DM2LcfBinding(0x34) @DM2LcfObject
+    public StringR2kStruct msgEnemy;
+    @DM2FXOBinding("@msg_already") @DM2LcfBinding(0x35) @DM2LcfObject
+    public StringR2kStruct msgAlready;
+    @DM2FXOBinding("@msg_affected") @DM2LcfBinding(0x36) @DM2LcfObject
+    public StringR2kStruct msgAffected;
+    @DM2FXOBinding("@msg_recovery") @DM2LcfBinding(0x37) @DM2LcfObject
+    public StringR2kStruct msgRecovery;
 
-    @Override
-    public Index[] getIndices() {
-        return new Index[] {
-                new Index(0x01, name, "@name"),
-                new Index(0x02, type, "@persists"),
-                new Index(0x03, colour, "@colour"),
-                new Index(0x04, priority, "@priority"),
-                new Index(0x05, restriction, "@restriction"),
-                new Index(0x0B, aRate, "@a_rate"),
-                new Index(0x0C, bRate, "@b_rate"),
-                new Index(0x0D, cRate, "@c_rate"),
-                new Index(0x0E, dRate, "@d_rate"),
-                new Index(0x0F, eRate, "@e_rate"),
-                new Index(0x15, holdTurn, "@hold_turn"),
-                new Index(0x16, autoReleaseProb, "@auto_release_prob"),
-                new Index(0x17, releaseByDamage, "@release_by_damage"),
-                new Index(0x1E, affectType, "@affect_type_2k3"),
-                new Index(0x1F, affectAtk, "@affect_atk"),
-                new Index(0x20, affectDef, "@affect_def"),
-                new Index(0x21, affectSpi, "@affect_spi"),
-                new Index(0x22, affectAgi, "@affect_agi"),
-                new Index(0x23, reduceHitRatio, "@reduce_hit_ratio"),
-                new Index(0x24, avoidAttacks, "@avoid_attacks_2k3"),
-                new Index(0x25, reflectMagic, "@reflect_magic_2k3"),
-                new Index(0x26, cursed, "@cursed_2k3"),
-                new Index(0x27, battlerAnimationId, "@battler_pose_2k3"),
-                new Index(0x29, restrictSkill, "@restrict_skill"),
-                new Index(0x2A, restrictSkillLevel, "@restrict_skill_level"),
-                new Index(0x2B, restrictMagic, "@restrict_magic"),
-                new Index(0x2C, restrictMagicLevel, "@restrict_magic_level"),
-                new Index(0x2D, hpChangeType, "@hp_change_type"),
-                new Index(0x2E, spChangeType, "@sp_change_type"),
-                new Index(0x33, msgActor, "@msg_actor"),
-                new Index(0x34, msgEnemy, "@msg_enemy"),
-                new Index(0x35, msgAlready, "@msg_already"),
-                new Index(0x36, msgAffected, "@msg_affected"),
-                new Index(0x37, msgRecovery, "@msg_recovery"),
+    @DM2FXOBinding("@hp_change_max") @DM2LcfBinding(0x3D) @DM2LcfInteger(0)
+    public IntegerR2kStruct hpChangeMax;
+    @DM2FXOBinding("@hp_change_val") @DM2LcfBinding(0x3E) @DM2LcfInteger(0)
+    public IntegerR2kStruct hpChangeVal;
+    @DM2FXOBinding("@hp_change_map_steps") @DM2LcfBinding(0x3F) @DM2LcfInteger(0)
+    public IntegerR2kStruct hpChangeMapSteps;
+    @DM2FXOBinding("@hp_change_map_val") @DM2LcfBinding(0x40) @DM2LcfInteger(0)
+    public IntegerR2kStruct hpChangeMapVal;
 
-                new Index(0x3D, hpChangeMax, "@hp_change_max"),
-                new Index(0x3E, hpChangeVal, "@hp_change_val"),
-                new Index(0x3F, hpChangeMapSteps, "@hp_change_map_steps"),
-                new Index(0x40, hpChangeMapVal, "@hp_change_map_val"),
+    @DM2FXOBinding("@sp_change_max") @DM2LcfBinding(0x41) @DM2LcfInteger(0)
+    public IntegerR2kStruct spChangeMax;
+    @DM2FXOBinding("@sp_change_val") @DM2LcfBinding(0x42) @DM2LcfInteger(0)
+    public IntegerR2kStruct spChangeVal;
+    @DM2FXOBinding("@sp_change_map_steps") @DM2LcfBinding(0x43) @DM2LcfInteger(0)
+    public IntegerR2kStruct spChangeMapSteps;
+    @DM2FXOBinding("@sp_change_map_val") @DM2LcfBinding(0x44) @DM2LcfInteger(0)
+    public IntegerR2kStruct spChangeMapVal;
 
-                new Index(0x41, spChangeMax, "@sp_change_max"),
-                new Index(0x42, spChangeVal, "@sp_change_val"),
-                new Index(0x43, spChangeMapSteps, "@sp_change_map_steps"),
-                new Index(0x44, spChangeMapVal, "@sp_change_map_val")
-        };
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        RubyIO rio = new RubyIO().setSymlike("RPG::State", true);
-        asRIOISF(rio);
-        return rio;
+    public State() {
+        super("RPG::State");
     }
 }

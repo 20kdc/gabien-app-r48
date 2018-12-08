@@ -8,11 +8,12 @@
 package r48.io.r2k.dm2chk;
 
 import gabien.ui.ISupplier;
-import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.*;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.*;
+import r48.io.r2k.chunks.BooleanR2kStruct;
+import r48.io.r2k.chunks.IR2kInterpretable;
+import r48.io.r2k.chunks.IR2kSizable;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -32,7 +33,7 @@ import java.util.Map;
  *
  * Modified from R2kObject on December 4th 2018.
  */
-public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
+public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
     @DM2Optional @DM2FXOBinding("@__LCF__unknown")
     public IRIOFixedHash<Integer, IRIOFixedUser> unknownChunks;
 
@@ -258,10 +259,10 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
         DM2LcfInteger fxi = f.getAnnotation(DM2LcfInteger.class);
         if (fxi != null) {
             try {
-                IntegerR2kStruct i = new IntegerR2kStruct(fxi.value());
+                Object i = f.getType().getConstructor(int.class).newInstance(fxi.value());
                 f.set(this, i);
                 return i;
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -275,29 +276,10 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
                 throw new RuntimeException(e);
             }
         }
-        final DM2LcfCompatArray fxc = f.getAnnotation(DM2LcfCompatArray.class);
-        if (fxc != null) {
-            try {
-                CompatSparseArrayHR2kStruct<IR2kStruct> irs = new CompatSparseArrayHR2kStruct<IR2kStruct>(new ISupplier<IR2kStruct>() {
-                    @Override
-                    public IR2kStruct get() {
-                        try {
-                            return (IR2kStruct) fxc.value().newInstance();
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
-                f.set(this, irs);
-                return irs;
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        final DM2LcfSparseArrayA fxd = f.getAnnotation(DM2LcfSparseArrayA.class);
+        final DM2LcfSparseArray fxd = f.getAnnotation(DM2LcfSparseArray.class);
         if (fxd != null) {
             try {
-                DM2SparseArrayA<IRIO> irs = new DM2SparseArrayA<IRIO>(new ISupplier<IRIO>() {
+                Object i = f.getType().getConstructor(ISupplier.class).newInstance(new ISupplier<IRIO>() {
                     @Override
                     public IRIO get() {
                         try {
@@ -307,28 +289,9 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
                         }
                     }
                 });
-                f.set(this, irs);
-                return irs;
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        final DM2LcfSparseArrayH fxe = f.getAnnotation(DM2LcfSparseArrayH.class);
-        if (fxe != null) {
-            try {
-                DM2SparseArrayH<IRIO> irs = new DM2SparseArrayH<IRIO>(new ISupplier<IRIO>() {
-                    @Override
-                    public IRIO get() {
-                        try {
-                            return (IRIO) fxe.value().newInstance();
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
-                f.set(this, irs);
-                return irs;
-            } catch (IllegalAccessException e) {
+                f.set(this, i);
+                return i;
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -395,15 +358,5 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kStruct {
         if (!terminatable())
             baos2.write(0);
         return false;
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setDeepClone(this);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        setDeepClone(src);
     }
 }

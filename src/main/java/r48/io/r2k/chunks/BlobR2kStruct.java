@@ -8,9 +8,7 @@
 package r48.io.r2k.chunks;
 
 import gabien.ui.ISupplier;
-import r48.RubyIO;
 import r48.io.IntUtils;
-import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedUser;
 
 import java.io.IOException;
@@ -21,7 +19,7 @@ import java.io.OutputStream;
  * Uhoh. These are a lot of classes.
  * Created on 31/05/17.
  */
-public class BlobR2kStruct extends IRIOFixedUser implements IR2kStruct {
+public class BlobR2kStruct extends IRIOFixedUser implements IR2kInterpretable {
     public BlobR2kStruct(byte[] mkDef) {
         super("Blob", mkDef);
     }
@@ -34,16 +32,6 @@ public class BlobR2kStruct extends IRIOFixedUser implements IR2kStruct {
     }
     public BlobR2kStruct(String c, ISupplier<byte[]> mkDef) {
         super(c, mkDef.get());
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setDeepClone(this);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        setDeepClone(src);
     }
 
     @Override

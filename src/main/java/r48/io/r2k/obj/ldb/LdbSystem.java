@@ -118,7 +118,7 @@ public class LdbSystem extends DM2R2kObject {
     public IntegerR2kStruct testActor;
     @DM2FXOBinding("@test_battle_background") @DM2LcfBinding(0x54) @DM2LcfObject
     public StringR2kStruct battletestBackground;
-    @DM2FXOBinding("@test_battle_data") @DM2LcfBinding(0x55) @DM2LcfSparseArrayA(TestBattler.class)
+    @DM2FXOBinding("@test_battle_data") @DM2LcfBinding(0x55) @DM2LcfSparseArray(TestBattler.class)
     public DM2SparseArrayA<TestBattler> battletestData;
     @DM2Optional @DM2FXOBinding("@save_count_2k3en") @DM2LcfBinding(0x5A) @DM2LcfInteger(0)
     public IntegerR2kStruct saveCountEn;

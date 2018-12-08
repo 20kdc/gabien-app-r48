@@ -19,7 +19,7 @@ import r48.io.r2k.struct.EventCommand;
  * aka 'SaveEventData'
  */
 public class Interpreter extends DM2R2kObject {
-    @DM2FXOBinding("@stack") @DM2LcfBinding(0x01) @DM2LcfSparseArrayA(InterpreterStackLevel.class)
+    @DM2FXOBinding("@stack") @DM2LcfBinding(0x01) @DM2LcfSparseArray(InterpreterStackLevel.class)
     public DM2SparseArrayA<InterpreterStackLevel> commands;
     @DM2FXOBinding("@shown_message") @DM2LcfBinding(0x04) @DM2LcfBoolean(false)
     public BooleanR2kStruct shownMessage;

@@ -23,14 +23,14 @@ public class Animation extends DM2R2kObject {
     public StringR2kStruct animationName;
     @DM2FXOBinding("@battle2_2k3") @DM2LcfBinding(3) @DM2LcfBoolean(false)
     public BooleanR2kStruct unknown3;
-    @DM2FXOBinding("@timings") @DM2LcfBinding(6) @DM2LcfSparseArrayA(AnimationTiming.class)
+    @DM2FXOBinding("@timings") @DM2LcfBinding(6) @DM2LcfSparseArray(AnimationTiming.class)
     public DM2SparseArrayA<AnimationTiming> timings;
     @DM2FXOBinding("@scope") @DM2LcfBinding(9) @DM2LcfInteger(0)
     public IntegerR2kStruct scope;
     @DM2FXOBinding("@position") @DM2LcfBinding(10) @DM2LcfInteger(2)
     public IntegerR2kStruct position;
     // Actually a SparseArrayA<AnimationFrame>, but thanks to Final Tear 3, has to be deferred.
-    @DM2FXOBinding("@frames") @DM2LcfBinding(12) @DM2LcfSparseArrayA(AnimationFrame.class)
+    @DM2FXOBinding("@frames") @DM2LcfBinding(12) @DM2LcfSparseArray(AnimationFrame.class)
     public DM2SparseArrayA<AnimationFrame> frames;
 
     public Animation() {

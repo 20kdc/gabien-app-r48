@@ -7,7 +7,6 @@
 
 package r48.io.r2k.chunks;
 
-import r48.RubyIO;
 import r48.io.data.IRIO;
 
 /**
@@ -35,15 +34,4 @@ public class BooleanR2kStruct extends IntegerR2kStruct {
         type = (i != 0) ? 'T' : 'F';
         return this;
     }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setBool(i != 0);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        i = src.getType() == 'T' ? 1 : 0;
-    }
-
 }

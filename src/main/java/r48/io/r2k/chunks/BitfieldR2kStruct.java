@@ -7,7 +7,6 @@
 
 package r48.io.r2k.chunks;
 
-import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
@@ -19,7 +18,7 @@ import java.io.OutputStream;
 /**
  * Created on 02/06/17.
  */
-public class BitfieldR2kStruct extends IRIOFixed implements IR2kStruct {
+public class BitfieldR2kStruct extends IRIOFixed implements IR2kInterpretable {
 
     // Ascending
     public final String[] flags;
@@ -31,15 +30,6 @@ public class BitfieldR2kStruct extends IRIOFixed implements IR2kStruct {
         flagData = new BitfieldElement[8];
         for (int i = 0; i < 8; i++)
             flagData[i] = new BitfieldElement((def & (1 << i)) != 0);
-    }
-
-    public void fromRIO(IRIO rubyIO) {
-        setDeepClone(rubyIO);
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setDeepClone(this);
     }
 
     @Override

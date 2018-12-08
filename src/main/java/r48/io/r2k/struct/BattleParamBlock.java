@@ -7,12 +7,11 @@
 
 package r48.io.r2k.struct;
 
-import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
 import r48.io.data.IRIOFixnum;
-import r48.io.r2k.chunks.IR2kStruct;
+import r48.io.r2k.chunks.IR2kInterpretable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +21,7 @@ import java.io.OutputStream;
  * BPB
  * Created on 06/06/17.
  */
-public class BattleParamBlock extends IRIOFixed implements IR2kStruct {
+public class BattleParamBlock extends IRIOFixed implements IR2kInterpretable {
     public IRIOFixnum[] array = new IRIOFixnum[] {
             new IRIOFixnum(0),
             new IRIOFixnum(0),
@@ -41,16 +40,6 @@ public class BattleParamBlock extends IRIOFixed implements IR2kStruct {
         for (int i = 0; i < array.length; i++)
             array[i] = new IRIOFixnum(0);
         return this;
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setDeepClone(this);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        setDeepClone(src);
     }
 
     @Override

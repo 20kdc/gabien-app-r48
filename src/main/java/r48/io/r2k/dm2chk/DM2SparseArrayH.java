@@ -11,8 +11,8 @@ import gabien.ui.ISupplier;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedHash;
 import r48.io.data.IRIOFixnum;
+import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
-import r48.io.r2k.chunks.SparseArrayR2kInterpretable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,13 +46,13 @@ public class DM2SparseArrayH<V extends IRIO> extends IRIOFixedHash<Integer, V> i
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        SparseArrayR2kInterpretable.importData(hashVal, constructor, bais);
+        R2kUtil.importSparse(hashVal, constructor, bais);
     }
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
         // Bypass the type checker... :(
-        SparseArrayR2kInterpretable.exportData(hashVal, baos);
+        R2kUtil.exportSparse(hashVal, baos);
         return false;
     }
 }

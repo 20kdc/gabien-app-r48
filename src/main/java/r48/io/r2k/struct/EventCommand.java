@@ -7,11 +7,10 @@
 
 package r48.io.r2k.struct;
 
-import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.*;
 import r48.io.r2k.R2kUtil;
-import r48.io.r2k.chunks.IR2kStruct;
+import r48.io.r2k.chunks.IR2kInterpretable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +20,7 @@ import java.io.OutputStream;
  * What is this again?
  * Created on 31/05/17.
  */
-public class EventCommand extends IRIOFixedObject implements IR2kStruct {
+public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
     @DM2FXOBinding("@code")
     public IRIOFixnum code;
 
@@ -100,14 +99,5 @@ public class EventCommand extends IRIOFixedObject implements IR2kStruct {
                 R2kUtil.writeLcfVLI(baos, encoded[i]);
         }
         return false;
-    }
-
-    public void fromRIO(IRIO rubyIO) {
-        setDeepClone(rubyIO);
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setDeepClone(this);
     }
 }

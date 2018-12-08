@@ -32,7 +32,7 @@ public class SaveMapInfo extends DM2R2kObject {
     public IntegerR2kStruct encounterRate;
     @DM2FXOBinding("@tileset_id") @DM2LcfBinding(0x05) @DM2LcfInteger(-1)
     public IntegerR2kStruct chipsetId;
-    @DM2FXOBinding("@events") @DM2LcfBinding(0x0B) @DM2LcfSparseArrayH(SaveMapEvent.class)
+    @DM2FXOBinding("@events") @DM2LcfBinding(0x0B) @DM2LcfSparseArray(SaveMapEvent.class)
     public DM2SparseArrayH<SaveMapEvent> events;
 
     // Transforms are performed on the LCF data before unpack.

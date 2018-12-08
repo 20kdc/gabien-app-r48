@@ -98,7 +98,7 @@ public abstract class SaveCharacter extends DM2R2kObject {
     public IntegerR2kStruct flashGreen;
     @DM2FXOBinding("@flash_blue") @DM2LcfBinding(83) @DM2LcfInteger(100)
     public IntegerR2kStruct flashBlue;
-    @DM2FXOBinding("@flash_position") @DM2LcfBinding(84) @DM2LcfObject
+    @DM2FXOBinding("@flash_position") @DM2LcfBinding(84) @DM2LcfInteger(0)
     public DoubleR2kStruct flashCurrentLevel;
     @DM2FXOBinding("@flash_frames_left") @DM2LcfBinding(83) @DM2LcfInteger(0)
     public IntegerR2kStruct flashTimeLeft;

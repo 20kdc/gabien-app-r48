@@ -17,7 +17,7 @@ import r48.io.r2k.dm2chk.DM2LcfObject;
 import r48.io.r2k.dm2chk.DM2R2kObject;
 
 public class SaveTitle extends DM2R2kObject {
-    @DM2FXOBinding("@timestamp") @DM2LcfBinding(1) @DM2LcfObject
+    @DM2FXOBinding("@timestamp") @DM2LcfBinding(1) @DM2LcfInteger(0)
     public DoubleR2kStruct timestamp;
 
     @DM2FXOBinding("@hero_name") @DM2LcfBinding(11) @DM2LcfObject

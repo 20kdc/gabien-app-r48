@@ -7,7 +7,6 @@
 
 package r48.io.r2k.chunks;
 
-import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
@@ -19,7 +18,7 @@ import java.io.OutputStream;
 /**
  * Created on 05/06/17.
  */
-public class ShortR2kStruct extends IRIOFixed implements IR2kStruct {
+public class ShortR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public short value;
 
     public ShortR2kStruct(int v) {
@@ -36,16 +35,6 @@ public class ShortR2kStruct extends IRIOFixed implements IR2kStruct {
     public IRIO setFX(long fx) {
         value = (short) fx;
         return this;
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setFX(value);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        value = (short) (src.getFX());
     }
 
     @Override

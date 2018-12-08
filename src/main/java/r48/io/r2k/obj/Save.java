@@ -11,7 +11,6 @@ import r48.io.data.DM2FXOBinding;
 import r48.io.data.DM2Optional;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.ByteR2kStruct;
-import r48.io.r2k.chunks.CompatSparseArrayHR2kStruct;
 import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.obj.lsd.*;
 
@@ -25,8 +24,8 @@ public class Save extends DM2R2kObject {
     public SaveSystem system;
     @DM2FXOBinding("@screen") @DM2LcfBinding(0x66) @DM2LcfObject
     public SaveScreen screen;
-    @DM2FXOBinding("@pictures") @DM2LcfBinding(0x67) @DM2LcfObject @DM2LcfCompatArray(SavePicture.class)
-    public CompatSparseArrayHR2kStruct<SavePicture> pictures;
+    @DM2FXOBinding("@pictures") @DM2LcfBinding(0x67) @DM2LcfSparseArray(SavePicture.class)
+    public DM2SparseArrayH<SavePicture> pictures;
     @DM2FXOBinding("@party_pos") @DM2LcfBinding(0x68) @DM2LcfObject
     public SavePartyLocation partyPos;
     @DM2FXOBinding("@boat_pos") @DM2LcfBinding(0x69) @DM2LcfObject
@@ -35,11 +34,11 @@ public class Save extends DM2R2kObject {
     public SaveVehicleLocation shipPos;
     @DM2FXOBinding("@airship_pos") @DM2LcfBinding(0x6B) @DM2LcfObject
     public SaveVehicleLocation airshipPos;
-    @DM2FXOBinding("@actors") @DM2LcfBinding(0x6C) @DM2LcfCompatArray(SaveActor.class)
-    public CompatSparseArrayHR2kStruct<SaveActor> actors;
+    @DM2FXOBinding("@actors") @DM2LcfBinding(0x6C) @DM2LcfSparseArray(SaveActor.class)
+    public DM2SparseArrayH<SaveActor> actors;
     @DM2FXOBinding("@party") @DM2LcfBinding(0x6D) @DM2LcfObject
     public SaveParty partyItems;
-    @DM2FXOBinding("@targets") @DM2LcfBinding(0x6E) @DM2LcfSparseArrayA(SaveTarget.class)
+    @DM2FXOBinding("@targets") @DM2LcfBinding(0x6E) @DM2LcfSparseArray(SaveTarget.class)
     public DM2SparseArrayA<SaveTarget> targets;
     @DM2FXOBinding("@map_info") @DM2LcfBinding(0x6F) @DM2LcfObject
     public SaveMapInfo mapInfo;
@@ -47,7 +46,7 @@ public class Save extends DM2R2kObject {
     public DM2Array<ByteR2kStruct> unusedPanorama;
     @DM2FXOBinding("@main_interpreter") @DM2LcfBinding(0x71) @DM2LcfObject
     public Interpreter mainInterpreter;
-    @DM2FXOBinding("@common_events") @DM2LcfBinding(0x72) @DM2LcfSparseArrayH(SaveCommonEvent.class)
+    @DM2FXOBinding("@common_events") @DM2LcfBinding(0x72) @DM2LcfSparseArray(SaveCommonEvent.class)
     public DM2SparseArrayH<SaveCommonEvent> commonEvents;
 
     public Save() {

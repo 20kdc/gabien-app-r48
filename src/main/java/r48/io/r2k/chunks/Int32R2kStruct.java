@@ -7,9 +7,7 @@
 
 package r48.io.r2k.chunks;
 
-import r48.RubyIO;
 import r48.io.IntUtils;
-import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
 
 import java.io.IOException;
@@ -19,19 +17,9 @@ import java.io.OutputStream;
 /**
  * Created on 05/06/17.
  */
-public class Int32R2kStruct extends IRIOFixnum implements IR2kStruct {
+public class Int32R2kStruct extends IRIOFixnum implements IR2kInterpretable {
     public Int32R2kStruct(int v) {
         super(v);
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setDeepClone(this);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        setDeepClone(src);
     }
 
     @Override

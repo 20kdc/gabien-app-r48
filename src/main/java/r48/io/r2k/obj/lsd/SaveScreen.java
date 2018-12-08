@@ -8,11 +8,13 @@
 package r48.io.r2k.obj.lsd;
 
 import r48.io.data.DM2FXOBinding;
-import r48.io.data.IRIO;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.DoubleR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
-import r48.io.r2k.dm2chk.*;
+import r48.io.r2k.dm2chk.DM2LcfBinding;
+import r48.io.r2k.dm2chk.DM2LcfBoolean;
+import r48.io.r2k.dm2chk.DM2LcfInteger;
+import r48.io.r2k.dm2chk.DM2R2kObject;
 
 /**
  * Created on 14th December 2017.
@@ -27,13 +29,13 @@ public class SaveScreen extends DM2R2kObject {
     @DM2FXOBinding("@tint_end_s") @DM2LcfBinding(0x04) @DM2LcfInteger(100)
     public IntegerR2kStruct tintEndS;
 
-    @DM2FXOBinding("@tint_r") @DM2LcfBinding(0x0B)
+    @DM2FXOBinding("@tint_r") @DM2LcfBinding(0x0B) @DM2LcfInteger(100)
     public DoubleR2kStruct tintR;
-    @DM2FXOBinding("@tint_g") @DM2LcfBinding(0x0C)
+    @DM2FXOBinding("@tint_g") @DM2LcfBinding(0x0C) @DM2LcfInteger(100)
     public DoubleR2kStruct tintG;
-    @DM2FXOBinding("@tint_b") @DM2LcfBinding(0x0D)
+    @DM2FXOBinding("@tint_b") @DM2LcfBinding(0x0D) @DM2LcfInteger(100)
     public DoubleR2kStruct tintB;
-    @DM2FXOBinding("@tint_s") @DM2LcfBinding(0x0E)
+    @DM2FXOBinding("@tint_s") @DM2LcfBinding(0x0E) @DM2LcfInteger(100)
     public DoubleR2kStruct tintS;
     @DM2FXOBinding("@tint_frames_left") @DM2LcfBinding(0x0F) @DM2LcfInteger(0)
     public IntegerR2kStruct tintFL;
@@ -46,7 +48,7 @@ public class SaveScreen extends DM2R2kObject {
     public IntegerR2kStruct flashG;
     @DM2FXOBinding("@flash_b") @DM2LcfBinding(0x17) @DM2LcfInteger(0)
     public IntegerR2kStruct flashB;
-    @DM2FXOBinding("@flash_position") @DM2LcfBinding(0x18) @DM2LcfObject
+    @DM2FXOBinding("@flash_position") @DM2LcfBinding(0x18) @DM2LcfInteger(0)
     public DoubleR2kStruct flashPosition;
     @DM2FXOBinding("@flash_frames_left") @DM2LcfBinding(0x19) @DM2LcfInteger(0)
     public IntegerR2kStruct flashFramesLeft;
@@ -86,18 +88,5 @@ public class SaveScreen extends DM2R2kObject {
 
     public SaveScreen() {
         super("RPG::SaveScreen");
-    }
-
-    @Override
-    protected IRIO dm2AddIVar(String sym) {
-        if (sym.equals("@tint_r"))
-            return tintR = new DoubleR2kStruct(100);
-        if (sym.equals("@tint_g"))
-            return tintG = new DoubleR2kStruct(100);
-        if (sym.equals("@tint_b"))
-            return tintB = new DoubleR2kStruct(100);
-        if (sym.equals("@tint_s"))
-            return tintS = new DoubleR2kStruct(100);
-        return super.dm2AddIVar(sym);
     }
 }

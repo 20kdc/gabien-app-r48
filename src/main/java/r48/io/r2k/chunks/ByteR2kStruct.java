@@ -7,7 +7,6 @@
 
 package r48.io.r2k.chunks;
 
-import r48.RubyIO;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
@@ -19,7 +18,7 @@ import java.io.OutputStream;
 /**
  * Created on 05/06/17.
  */
-public class ByteR2kStruct extends IRIOFixed implements IR2kStruct {
+public class ByteR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public byte value;
     public boolean signed = false;
 
@@ -74,15 +73,5 @@ public class ByteR2kStruct extends IRIOFixed implements IR2kStruct {
     @Override
     public IRIO getIVar(String sym) {
         return null;
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setDeepClone(this);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        setDeepClone(src);
     }
 }

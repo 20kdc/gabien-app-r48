@@ -11,8 +11,8 @@ import gabien.ui.ISupplier;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedArray;
 import r48.io.data.IRIONullable;
+import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
-import r48.io.r2k.chunks.SparseArrayR2kInterpretable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +40,7 @@ public class DM2SparseArrayA<V extends IRIO> extends IRIOFixedArray<IRIONullable
     @Override
     public void importData(InputStream bais) throws IOException {
         HashMap<Integer, V> hashVal = new HashMap<Integer, V>();
-        SparseArrayR2kInterpretable.importData(hashVal, constructor, bais);
+        R2kUtil.importSparse(hashVal, constructor, bais);
         int maxEnt = -1;
         for (Map.Entry<Integer, V> ent : hashVal.entrySet())
             if (maxEnt < ent.getKey())
@@ -65,7 +65,7 @@ public class DM2SparseArrayA<V extends IRIO> extends IRIOFixedArray<IRIONullable
             if (!v.nulled)
                 hashVal.put(i, v.target);
         }
-        SparseArrayR2kInterpretable.exportData(hashVal, baos);
+        R2kUtil.exportSparse(hashVal, baos);
         return false;
     }
 }

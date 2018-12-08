@@ -7,12 +7,11 @@
 
 package r48.io.r2k.struct;
 
-import r48.RubyIO;
 import r48.io.data.DM2FXOBinding;
 import r48.io.data.DM2Optional;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedObject;
-import r48.io.r2k.chunks.IR2kStruct;
+import r48.io.r2k.chunks.IR2kInterpretable;
 import r48.io.r2k.dm2chk.DM2Array;
 
 import java.io.ByteArrayInputStream;
@@ -24,7 +23,7 @@ import java.io.OutputStream;
  * BPB
  * Created on August 31st 2017
  */
-public class BPB extends IRIOFixedObject implements IR2kStruct {
+public class BPB extends IRIOFixedObject implements IR2kInterpretable {
     @DM2FXOBinding("@1to50")
     public DM2Array<BattleParamBlock> parameters1;
     @DM2Optional @DM2FXOBinding("@51to99_2k3")
@@ -32,16 +31,6 @@ public class BPB extends IRIOFixedObject implements IR2kStruct {
 
     public BPB() {
         super("RPG::BPB");
-    }
-
-    @Override
-    public RubyIO asRIO() {
-        return new RubyIO().setDeepClone(this);
-    }
-
-    @Override
-    public void fromRIO(IRIO src) {
-        setDeepClone(src);
     }
 
     @Override
