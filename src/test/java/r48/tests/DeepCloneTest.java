@@ -22,9 +22,7 @@ import java.io.IOException;
 public class DeepCloneTest {
     @Test
     public void testDeepCloneRPGMap() {
-        TestKickstart.kickstart();
-        AppMain.schemas.readFile("RXP/Schema.txt");
-        AppMain.schemas.updateDictionaries(null);
+        TestKickstart.kickstart("RAM/", "UTF-8", "RXP/");
         RubyIO newObj = new RubyIO().setNull();
         SchemaPath.setDefaultValue(newObj, AppMain.schemas.getSDBEntry("RPG::Map"), null);
         RubyIO newObj2 = new RubyIO().setDeepClone(newObj);

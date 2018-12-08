@@ -11,7 +11,6 @@ import r48.io.IntUtils;
 import r48.io.data.*;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
-import r48.io.r2k.chunks.StringR2kStruct;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -102,11 +101,14 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
     public void importData(InputStream bais) throws IOException {
         code.val = R2kUtil.readLcfVLI(bais);
         addIVar("@parameters");
+        parameters.text.data = IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais));
+        IRIOFixnum a = new IRIOFixnum(R2kUtil.readLcfVLI(bais));
+        IRIOFixnum b = new IRIOFixnum(R2kUtil.readLcfVLI(bais));
+        IRIOFixnum c = new IRIOFixnum(R2kUtil.readLcfVLI(bais));
         parameters.arrVal = new IRIO[] {
-                new StringR2kStruct(IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais))),
-                new IRIOFixnum(R2kUtil.readLcfVLI(bais)),
-                new IRIOFixnum(R2kUtil.readLcfVLI(bais)),
-                new IRIOFixnum(R2kUtil.readLcfVLI(bais))
+                a,
+                b,
+                c
         };
     }
 

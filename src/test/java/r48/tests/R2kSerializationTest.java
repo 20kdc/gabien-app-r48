@@ -8,13 +8,10 @@
 package r48.tests;
 
 import gabien.TestKickstart;
-import gabien.ui.IConsumer;
 import org.junit.Assert;
 import org.junit.Test;
 import r48.AppMain;
-import r48.dbs.ObjectDB;
 import r48.io.IObjectBackend;
-import r48.io.R2kObjectBackend;
 
 import java.io.IOException;
 
@@ -24,12 +21,7 @@ import java.io.IOException;
 public class R2kSerializationTest {
     @Test
     public void testFullIOStack() throws IOException {
-        TestKickstart.kickstart();
-        newIOBackend();
-        AppMain.schemas.readFile("R2K/Schema.txt");
-        AppMain.schemas.startupSanitizeDictionaries();
-        AppMain.schemas.updateDictionaries(null);
-        AppMain.schemas.confirmAllExpectationsMet();
+        TestKickstart.kickstart("RAM/", "UTF-8", "R2K/");
 
         String[] fileDefs = new String[] {
                 "hello.lmu",
@@ -43,21 +35,11 @@ public class R2kSerializationTest {
         AppMain.objectDB.getObject("and.lmt", "RPG::MapTree").save();
         AppMain.objectDB.getObject("you.lsd", "RPG::Save").save();
         // Kills off the old ObjectDB
-        newIOBackend();
+        TestKickstart.resetODB();
+
         for (String s : fileDefs) {
             IObjectBackend.ILoadedObject i = AppMain.objectDB.getObject(s, null);
             Assert.assertNotNull(i);
         }
     }
-
-    private void newIOBackend() {
-        AppMain.objectDB = new ObjectDB(new R2kObjectBackend("/"), new IConsumer<String>() {
-            @Override
-            public void accept(String s) {
-
-            }
-        });
-        IObjectBackend.Factory.encoding = "UTF-8";
-    }
-
 }

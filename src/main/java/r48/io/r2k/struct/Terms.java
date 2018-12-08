@@ -14,7 +14,9 @@ import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
 import r48.io.r2k.chunks.StringR2kStruct;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * "COPY jun6-2017" I have no idea what that means.
@@ -106,7 +108,7 @@ public class Terms extends IRIOFixed implements IR2kInterpretable {
             byte[] data = IntUtils.readBytes(bais, len);
             for (int i = 0; i < map.length; i++) {
                 if (map[i] == idx) {
-                    termArray[i].importData(new ByteArrayInputStream(data));
+                    termArray[i].data = data;
                     break;
                 }
             }
@@ -121,12 +123,9 @@ public class Terms extends IRIOFixed implements IR2kInterpretable {
 
     public static void exportTermlike(OutputStream baos, int[] map, StringR2kStruct[] termArray) throws IOException {
         for (int i = 0; i < termArray.length; i++) {
-            ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
-            termArray[i].exportData(baos2);
-            byte[] data = baos2.toByteArray();
             R2kUtil.writeLcfVLI(baos, map[i]);
-            R2kUtil.writeLcfVLI(baos, data.length);
-            baos.write(data);
+            R2kUtil.writeLcfVLI(baos, termArray[i].data.length);
+            baos.write(termArray[i].data);
         }
         baos.write(0);
     }

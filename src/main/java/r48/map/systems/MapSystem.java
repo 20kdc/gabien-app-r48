@@ -56,6 +56,22 @@ public abstract class MapSystem {
         return dynobjs;
     }
 
+    public static MapSystem create(String sysBackend) {
+        if (sysBackend.equals("null")) {
+            return new NullSystem();
+        } else if (sysBackend.equals("RXP")) {
+            return new RXPSystem();
+        } else if (sysBackend.equals("RVXA")) {
+            return new RVXASystem();
+        } else if (sysBackend.equals("Ika")) {
+            return new IkaSystem();
+        } else if (sysBackend.equals("R2k")) {
+            return new R2kSystem();
+        } else {
+            throw new RuntimeException("Unknown MapSystem backend " + sysBackend);
+        }
+    }
+
     // If null, the map explorer is not enabled.
     public UIElement createMapExplorer(final IMapContext mapBox, final String mapInfos) {
         return new UIPopupMenu(new String[] {

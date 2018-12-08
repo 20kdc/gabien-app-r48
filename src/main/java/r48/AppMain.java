@@ -17,7 +17,9 @@ import r48.io.PathUtils;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
-import r48.map.systems.*;
+import r48.map.systems.IDynobjMapSystem;
+import r48.map.systems.IRMMapSystem;
+import r48.map.systems.MapSystem;
 import r48.maptools.UIMTBase;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
@@ -100,10 +102,8 @@ public class AppMain {
     // Image cache
     public static ImageFXCache imageFXCache = null;
 
-    public static IConsumer<Double> initializeAndRun(final String rp, final String gamepak, final WindowCreatingUIElementConsumer uiTicker) throws IOException {
-
+    public static void initializeCore(final String rp, final String gamepak) {
         rootPath = rp;
-        GaBIEn.setBrowserDirectory(rp);
 
         // initialize core resources
 
@@ -122,19 +122,7 @@ public class AppMain {
             }
         });
 
-        if (sysBackend.equals("null")) {
-            system = new NullSystem();
-        } else if (sysBackend.equals("RXP")) {
-            system = new RXPSystem();
-        } else if (sysBackend.equals("RVXA")) {
-            system = new RVXASystem();
-        } else if (sysBackend.equals("Ika")) {
-            system = new IkaSystem();
-        } else if (sysBackend.equals("R2k")) {
-            system = new R2kSystem();
-        } else {
-            throw new IOException("Unknown MapSystem backend " + sysBackend);
-        }
+        system = MapSystem.create(sysBackend);
 
         // Final internal consistency checks and reading in dictionaries from target
         //  before starting the UI, which can cause external consistency checks
@@ -143,6 +131,12 @@ public class AppMain {
         schemas.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
         schemas.updateDictionaries(null);
         schemas.confirmAllExpectationsMet();
+    }
+
+    public static IConsumer<Double> initializeAndRun(final String rp, final String gamepak, final WindowCreatingUIElementConsumer uiTicker) throws IOException {
+        GaBIEn.setBrowserDirectory(rp);
+
+        initializeCore(rp, gamepak);
 
         // Initialize imageFX before doing anything graphical
         imageFXCache = new ImageFXCache();
@@ -592,9 +586,7 @@ public class AppMain {
         Application.shutdownAllAppMainWindows();
     }
 
-    public static void shutdown() {
-        pendingRunnables.clear();
-        window = null;
+    public static void shutdownCore() {
         rootPath = null;
         dataPath = "";
         dataExt = "";
@@ -604,8 +596,14 @@ public class AppMain {
         autoTiles = new ATDB[0];
         schemas = null;
         osSHESEDB = null;
-        stuffRendererIndependent = null;
         system = null;
+    }
+
+    public static void shutdown() {
+        shutdownCore();
+        pendingRunnables.clear();
+        window = null;
+        stuffRendererIndependent = null;
         if (mapContext != null)
             mapContext.freeOsbResources();
         mapContext = null;

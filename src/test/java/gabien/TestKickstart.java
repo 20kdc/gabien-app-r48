@@ -9,17 +9,11 @@ package gabien;
 
 import gabien.ui.IConsumer;
 import r48.AppMain;
-import r48.RubyIO;
 import r48.dbs.ObjectDB;
-import r48.dbs.SDB;
 import r48.io.IObjectBackend;
-import r48.io.data.IRIO;
-import r48.schema.specialized.IMagicalBinder;
 
 import java.io.*;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.WeakHashMap;
 
 /**
  * Ties into gabien-javase to create a test workbench.
@@ -27,14 +21,24 @@ import java.util.WeakHashMap;
  * Created on November 19, 2018.
  */
 public class TestKickstart {
-    public static void kickstart() {
+    public static void kickstart(final String s2, final String encoding, final String schema) {
+        kickstartRFS();
+        // In case unset.
+        IObjectBackend.Factory.encoding = encoding;
+        AppMain.initializeCore(s2, schema);
+    }
+
+    public static void kickstartRFS() {
         final HashMap<String, byte[]> mockFS = new HashMap<String, byte[]>();
         GaBIEn.internal = new GaBIEnImpl(false) {
             @Override
             public InputStream getFile(String FDialog) {
                 byte[] data = mockFS.get(FDialog);
-                if (data == null)
-                    return null;
+                if (data == null) {
+                    if (FDialog.startsWith("./"))
+                        FDialog = FDialog.substring(2);
+                    return getResource(FDialog);
+                }
                 return new ByteArrayInputStream(data);
             }
 
@@ -49,31 +53,15 @@ public class TestKickstart {
                 };
             }
         };
-        IObjectBackend.Factory.encoding = "UTF-8";
-        // Reset schemas and objectDB
-        AppMain.objectDB = new ObjectDB(new IObjectBackend() {
+        // Cleanup any possible contamination of application state between tests.
+        AppMain.shutdown();
+    }
 
-            @Override
-            public ILoadedObject loadObject(String filename) {
-                return null;
-            }
-
-            @Override
-            public ILoadedObject newObject(String filename) {
-                return null;
-            }
-
-            @Override
-            public String userspaceBindersPrefix() {
-                return null;
-            }
-
-        }, new IConsumer<String>() {
+    public static void resetODB() {
+        AppMain.objectDB = new ObjectDB(IObjectBackend.Factory.create(AppMain.odbBackend, AppMain.rootPath, AppMain.dataPath, AppMain.dataExt), new IConsumer<String>() {
             @Override
             public void accept(String s) {
             }
         });
-        AppMain.schemas = new SDB();
-        AppMain.magicalBindingCache = new WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>>();
     }
 }

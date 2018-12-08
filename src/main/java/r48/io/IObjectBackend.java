@@ -37,7 +37,8 @@ public interface IObjectBackend {
     abstract class Factory {
         // Null so that things will error if it's unset.
         public static String encoding;
-        public static IObjectBackend create(String odbBackend, String rootPath, String dataPath, String dataExt) throws IOException {
+
+        public static IObjectBackend create(String odbBackend, String rootPath, String dataPath, String dataExt) {
             if (odbBackend.equals("r48")) {
                 return new R48ObjectBackend(rootPath + dataPath, dataExt, true);
             } else if (odbBackend.equals("ika")) {
@@ -49,7 +50,7 @@ public interface IObjectBackend {
             } else if (odbBackend.equals("cs")) {
                 return new CSObjectBackend(rootPath + dataPath);
             } else {
-                throw new IOException("Unknown ODB backend " + odbBackend);
+                throw new RuntimeException("Unknown ODB backend " + odbBackend);
             }
         }
     }

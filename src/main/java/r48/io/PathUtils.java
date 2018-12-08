@@ -55,7 +55,6 @@ public class PathUtils {
                 parent = autoDetectWindows(s.substring(0, s.length() - (st.length() + 1)));
             } else {
                 // Change things to make sense.
-                s = "./" + st;
                 parent = ".";
             }
             String[] subfiles = GaBIEn.listEntries(parent);

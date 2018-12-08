@@ -11,7 +11,6 @@ import gabien.TestKickstart;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import r48.AppMain;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 
@@ -29,7 +28,7 @@ public class SchemaParseTest {
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
         LinkedList<Object[]> tests = new LinkedList<Object[]>();
-        TestKickstart.kickstart();
+        TestKickstart.kickstartRFS();
         final HashSet<String> schemas = new HashSet<String>();
         DBLoader.readFile("Gamepaks.txt", new IDatabase() {
             @Override
@@ -55,10 +54,6 @@ public class SchemaParseTest {
 
     @Test
     public void testParses() {
-        TestKickstart.kickstart();
-        AppMain.schemas.readFile(gamepak + "/Schema.txt");
-        AppMain.schemas.startupSanitizeDictionaries();
-        AppMain.schemas.updateDictionaries(null);
-        AppMain.schemas.confirmAllExpectationsMet();
+        TestKickstart.kickstart("RAM/", "UTF-8", gamepak + "/");
     }
 }
