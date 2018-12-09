@@ -21,8 +21,8 @@ import java.io.OutputStream;
 public class BitfieldR2kStruct extends IRIOFixed implements IR2kInterpretable {
 
     // Ascending
-    public final String[] flags;
-    public final BitfieldElement[] flagData;
+    private final String[] flags;
+    private final BitfieldElement[] flagData;
 
     public BitfieldR2kStruct(String[] f, int def) {
         super('o');
@@ -35,8 +35,13 @@ public class BitfieldR2kStruct extends IRIOFixed implements IR2kInterpretable {
     @Override
     public void importData(InputStream bais) throws IOException {
         int value = IntUtils.readU8(bais);
+        importData(value);
+    }
+
+
+    public void importData(int flag) {
         for (int i = 0; i < 8; i++)
-            flagData[i].setBool((value & (1 << i)) != 0);
+            flagData[i].setBool((flag & (1 << i)) != 0);
     }
 
     @Override
@@ -53,6 +58,8 @@ public class BitfieldR2kStruct extends IRIOFixed implements IR2kInterpretable {
     public IRIO setObject(String symbol) {
         if (!symbol.equals("__bitfield__"))
             return super.setObject(symbol);
+        for (int i = 0; i < 8; i++)
+            flagData[i].setBool(false);
         return this;
     }
 

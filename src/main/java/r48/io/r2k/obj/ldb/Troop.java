@@ -9,14 +9,16 @@ package r48.io.r2k.obj.ldb;
 
 import r48.io.data.DM2FXOBinding;
 import r48.io.data.IRIO;
-import r48.io.r2k.chunks.*;
+import r48.io.r2k.chunks.BitfieldR2kStruct;
+import r48.io.r2k.chunks.BooleanR2kStruct;
+import r48.io.r2k.chunks.IntegerR2kStruct;
+import r48.io.r2k.chunks.StringR2kStruct;
 import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.struct.EventCommand;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
+import java.util.HashMap;
 
 /**
  * COPY jun6-2017
@@ -99,8 +101,6 @@ public class Troop extends DM2R2kObject {
         public BitfieldR2kStruct flagsA;
         @DM2FXOBinding("@flags_b_2k3")
         public BitfieldR2kStruct flagsB;
-        @DM2LcfBinding(0x01)
-        public FlagsplitInterpretable flags;
         @DM2FXOBinding("@switch_a_id") @DM2LcfBinding(0x02) @DM2LcfInteger(1)
         public IntegerR2kStruct switchAId;
         @DM2FXOBinding("@switch_b_id") @DM2LcfBinding(0x03) @DM2LcfInteger(1)
@@ -151,10 +151,28 @@ public class Troop extends DM2R2kObject {
         }
 
         @Override
-        protected Object dm2AddField(Field f) {
-            if (f.getName().equals("flags"))
-                return flags = new FlagsplitInterpretable();
-            return super.dm2AddField(f);
+        protected void dm2UnpackFromMapDestructively(HashMap<Integer, byte[]> pcd) {
+            super.dm2UnpackFromMapDestructively(pcd);
+            byte[] flags = pcd.remove(1);
+            if (flags != null) {
+                if (flags.length == 1) {
+                    flagsA.importData(flags[0]);
+                } else if (flags.length == 2) {
+                    flagsA.importData(flags[0]);
+                    flagsB.importData(flags[1]);
+                } else {
+                    throw new RuntimeException("bad flags len " + flags.length);
+                }
+            }
+        }
+
+        @Override
+        protected void dm2PackIntoMap(HashMap<Integer, byte[]> pcd) throws IOException {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            flagsA.exportData(baos);
+            flagsB.exportData(baos);
+            pcd.put(1, baos.toByteArray());
+            super.dm2PackIntoMap(pcd);
         }
 
         @Override
@@ -164,22 +182,6 @@ public class Troop extends DM2R2kObject {
             if (sym.equals("@flags_b_2k3"))
                 return flagsB = new BitfieldR2kStruct(new String[] {"@turn_actor", "@command_actor"}, 0);
             return super.dm2AddIVar(sym);
-        }
-
-        private class FlagsplitInterpretable implements IR2kInterpretable {
-            @Override
-            public void importData(InputStream bais) throws IOException {
-                flagsA.importData(bais);
-                if (bais.available() > 0)
-                    flagsB.importData(bais);
-            }
-
-            @Override
-            public boolean exportData(OutputStream baos) throws IOException {
-                flagsA.exportData(baos);
-                flagsB.exportData(baos);
-                return false;
-            }
         }
     }
 }

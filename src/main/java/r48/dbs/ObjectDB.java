@@ -25,7 +25,8 @@ import java.util.WeakHashMap;
  * Created on 12/29/16.
  */
 public class ObjectDB {
-    private final IObjectBackend backend;
+    // Useful for object shenanigans.
+    public final IObjectBackend backend;
     private final IConsumer<String> saveHook;
     public String binderPrefix;
 

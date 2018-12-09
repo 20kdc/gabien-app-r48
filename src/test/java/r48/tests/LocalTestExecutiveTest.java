@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import r48.AppMain;
-import r48.RubyIO;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.io.IMIUtils;
@@ -46,12 +45,14 @@ public class LocalTestExecutiveTest {
     }
 
     private final String name, friendlyName, schema, charset;
+    private final boolean dynamic;
 
-    public LocalTestExecutiveTest(String nam, String friendlyNam, String sc, String charse) {
+    public LocalTestExecutiveTest(String nam, String friendlyNam, String sc, String charse, String dyn) {
         name = nam;
         friendlyName = friendlyNam;
         schema = sc;
         charset = charse;
+        dynamic = Boolean.valueOf(dyn);
     }
 
     @Test
@@ -59,28 +60,29 @@ public class LocalTestExecutiveTest {
         TestKickstart.kickstart(name + "/", charset, schema + "/");
         for (String s : AppMain.schemas.listFileDefs())
             testObject(s);
-        if (AppMain.system instanceof IDynobjMapSystem)
-            for (String s : ((IDynobjMapSystem) AppMain.system).getDynamicObjects())
-                testObject(s);
+        if (dynamic)
+            if (AppMain.system instanceof IDynobjMapSystem)
+                for (String s : ((IDynobjMapSystem) AppMain.system).getDynamicObjects())
+                    testObject(s);
     }
 
     private void testObject(String s) {
-        System.out.println(s);
-        IObjectBackend.ILoadedObject i = AppMain.objectDB.getObject(s, null);
-        RubyIO conv = new RubyIO().setDeepClone(i.getObject());
         try {
-            byte[] bytes = IMIUtils.createIMIData(i.getObject(), conv, "");
+            System.out.println(s);
+            IObjectBackend.ILoadedObject i = AppMain.objectDB.getObject(s, null);
+            IObjectBackend.ILoadedObject ex = AppMain.objectDB.backend.newObject(s);
+            ex.getObject().setDeepClone(i.getObject());
+            ex.save();
+            ex = null;
+            System.gc();
+            ex = AppMain.objectDB.backend.loadObject(s);
+            byte[] bytes = IMIUtils.createIMIData(i.getObject(), ex.getObject(), "");
             if (bytes != null) {
                 System.out.write(bytes);
                 System.out.flush();
                 throw new RuntimeException("Difference found.");
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        i.getObject().setDeepClone(conv);
-        try {
-            i.save();
+            i.getObject().setDeepClone(ex.getObject());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
