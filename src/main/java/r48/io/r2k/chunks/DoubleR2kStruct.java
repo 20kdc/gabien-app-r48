@@ -7,9 +7,9 @@
 
 package r48.io.r2k.chunks;
 
+import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixed;
-import r48.schema.FloatSchemaElement;
 
 import java.io.*;
 
@@ -31,7 +31,7 @@ public class DoubleR2kStruct extends IRIOFixed implements IR2kInterpretable {
 
     @Override
     public IRIO setFloat(byte[] s) {
-        v = Double.parseDouble(FloatSchemaElement.decodeVal(s));
+        v = Double.parseDouble(IntUtils.decodeRbFloat(s));
         return this;
     }
 
@@ -46,7 +46,7 @@ public class DoubleR2kStruct extends IRIOFixed implements IR2kInterpretable {
 
     @Override
     public void putBuffer(byte[] data) {
-        v = Double.parseDouble(FloatSchemaElement.decodeVal(data));
+        v = Double.parseDouble(IntUtils.decodeRbFloat(data));
     }
 
     @Override

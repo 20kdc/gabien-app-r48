@@ -54,13 +54,13 @@ public class IMIAssemblyProcess {
         try {
             FileOutputStream fos = new FileOutputStream(PathUtils.autoDetectWindows(AppMain.rootPath + "imi.txt.gz"));
             dos = new DataOutputStream(new GZIPOutputStream(fos));
-            dos.writeBytes("I1\"");
+            dos.writeBytes("I2\"");
             IMIUtils.writeIMIStringBody(dos, AppMain.odbBackend.getBytes("UTF-8"), false);
-            dos.writeBytes("\"");
+            dos.writeByte('\"');
             IMIUtils.writeIMIStringBody(dos, AppMain.dataPath.getBytes("UTF-8"), false);
-            dos.writeBytes("\"");
+            dos.writeByte('\"');
             IMIUtils.writeIMIStringBody(dos, AppMain.dataExt.getBytes("UTF-8"), false);
-            dos.writeByte('\n');
+            dos.writeByte('\"');
             IMIUtils.writeIMIStringBody(dos, IObjectBackend.Factory.encoding.getBytes("UTF-8"), false);
             dos.writeByte('\n');
 

@@ -9,7 +9,10 @@ import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
 import r48.map.systems.IDynobjMapSystem;
+import r48.schema.SchemaElement;
+import r48.schema.util.SchemaPath;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -70,8 +73,12 @@ public class LocalTestExecutiveTest {
         try {
             System.out.println(s);
             IObjectBackend.ILoadedObject i = AppMain.objectDB.getObject(s, null);
+            IRIO obj = i.getObject();
+            SchemaElement wse = findSchemaFor(s, obj);
             IObjectBackend.ILoadedObject ex = AppMain.objectDB.backend.newObject(s);
-            ex.getObject().setDeepClone(i.getObject());
+            wse.modifyVal(obj, new SchemaPath(wse, i), false);
+            // Need to find schema for object.
+            ex.getObject().setDeepClone(obj);
             ex.save();
             ex = null;
             System.gc();
@@ -86,6 +93,14 @@ public class LocalTestExecutiveTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private SchemaElement findSchemaFor(String s, IRIO object) {
+        if (AppMain.schemas.hasSDBEntry("File." + s))
+            return AppMain.schemas.getSDBEntry("File." + s);
+        if (object.getType() == 'o')
+            return AppMain.schemas.getSDBEntry(object.getSymbol());
+        throw new RuntimeException("Unable to find schema for tested object " + s + ". Add hard-coded test setup.");
     }
 
 }

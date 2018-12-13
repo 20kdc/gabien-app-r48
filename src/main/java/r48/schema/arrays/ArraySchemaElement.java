@@ -15,6 +15,7 @@ import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.IProxySchemaElement;
 import r48.dbs.TXDB;
+import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
@@ -219,16 +220,17 @@ public abstract class ArraySchemaElement extends SchemaElement {
         setDefault = checkType(target, '[', null, setDefault);
         if (setDefault) {
             target.setArray();
-            resizeArrayTo(target, atLeast);
+            if (target.getALen() < atLeast)
+                IntUtils.resizeArrayTo(target, atLeast);
         }
         boolean modified = setDefault;
         if (sizeFixed != -1) {
             if (target.getALen() != sizeFixed) {
-                resizeArrayTo(target, sizeFixed);
+                IntUtils.resizeArrayTo(target, sizeFixed);
                 modified = true;
             }
         } else if (target.getALen() < atLeast) {
-            resizeArrayTo(target, atLeast);
+            IntUtils.resizeArrayTo(target, atLeast);
             modified = true;
         }
         while (true) {
@@ -259,14 +261,6 @@ public abstract class ArraySchemaElement extends SchemaElement {
         }
         if (modified)
             path.changeOccurred(true);
-    }
-
-    public static void resizeArrayTo(IRIO target, int sizeFixed) {
-        while (target.getALen() > sizeFixed)
-            target.rmAElem(sizeFixed);
-        int alen;
-        while ((alen = target.getALen()) < sizeFixed)
-            target.addAElem(alen);
     }
 
     // Used to do the correct tagging so that updates to children will affect the parent

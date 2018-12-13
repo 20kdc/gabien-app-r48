@@ -13,6 +13,7 @@ import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
+import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.OpaqueSchemaElement;
@@ -181,8 +182,9 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     // Firstly nuke it to whatever the command says for array-len-reduce, then use the X-code to fill in details
                     param.setArray();
                     int size = rc.paramType.size();
+                    IntUtils.resizeArrayTo(param, size);
                     for (int i = 0; i < size; i++) {
-                        IRIO rio = param.addAElem(i);
+                        IRIO rio = param.getAElem(i);
                         SchemaElement ise = rc.getParameterSchema(param, i);
                         ise.modifyVal(rio, path.arrayHashIndex(new RubyIO().setFX(i), "[" + i + "]"), true);
                     }

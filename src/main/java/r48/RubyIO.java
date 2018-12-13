@@ -29,7 +29,7 @@ public class RubyIO extends IRIO {
      *       Serialization support varies, and sometimes iVars may be lost.
      * 0, T, F : singletons. no values set
      * i       : fixnumVal
-     * f, "    : strVal
+     * f, "    : userVal (as immutable)
      * :, o    : symVal
      * u       : symVal, userVal
      * {       : hashVal
@@ -38,7 +38,6 @@ public class RubyIO extends IRIO {
      * l       : userVal (first byte is the +/- byte, remainder is data)
      */
     public int type;
-    public byte[] strVal; // actual meaning depends on iVars. Should be treated as immutable - replace strVal on change
     public String symVal;
     // Reduced for memory usage. *sigh*
     // public HashMap<String, RubyIO> iVars = new HashMap<String, RubyIO>();
@@ -47,6 +46,8 @@ public class RubyIO extends IRIO {
     public HashMap<IRIO, IRIO> hashVal;
     public RubyIO hashDefVal;
     public IRIO[] arrVal;
+    // actual meaning depends on iVars.
+    // For string-likes (f, "): Should be treated as immutable - replace strVal on change
     public byte[] userVal;
     public long fixnumVal;
 
@@ -59,7 +60,6 @@ public class RubyIO extends IRIO {
     @Override
     public RubyIO setNull() {
         type = '0';
-        strVal = null;
         symVal = null;
         iVarKeys = null;
         iVarVals = null;
@@ -107,11 +107,11 @@ public class RubyIO extends IRIO {
     public RubyIO setString(byte[] s, String javaEncoding) {
         setNull();
         type = '"';
-        strVal = s;
+        userVal = s;
         String st = rubyInjectEncoding(this, javaEncoding);
         if (!st.equals(javaEncoding)) {
             try {
-                strVal = new String(s, javaEncoding).getBytes(st);
+                userVal = new String(s, javaEncoding).getBytes(st);
             } catch (UnsupportedEncodingException uee) {
                 throw new RuntimeException(uee);
             }
@@ -120,10 +120,18 @@ public class RubyIO extends IRIO {
     }
 
     @Override
+    public IRIO setStringNoEncodingIVars() {
+        setNull();
+        type = '"';
+        userVal = new byte[0];
+        return this;
+    }
+
+    @Override
     public IRIO setFloat(byte[] s) {
         setNull();
         type = 'f';
-        strVal = s;
+        userVal = s;
         return this;
     }
 
@@ -202,12 +210,12 @@ public class RubyIO extends IRIO {
     }
 
     // intern means "use UTF-8"
-    public RubyIO encString(String text, boolean intern) {
+    private RubyIO encString(String text, boolean intern) {
         try {
             String encoding = "UTF-8";
             if (!intern)
                 encoding = IObjectBackend.Factory.encoding;
-            strVal = text.getBytes(encoding);
+            userVal = text.getBytes(encoding);
             rubyInjectEncoding(this, encoding);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
@@ -325,8 +333,6 @@ public class RubyIO extends IRIO {
 
     @Override
     public byte[] getBuffer() {
-        if (strVal != null)
-            return strVal;
         return userVal;
     }
 
@@ -401,7 +407,7 @@ public class RubyIO extends IRIO {
             RubyIO ri = new RubyIO().setNull();
             ri.type = '"';
             try {
-                ri.strVal = basicEncoding.getBytes("UTF-8");
+                ri.userVal = basicEncoding.getBytes("UTF-8");
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }

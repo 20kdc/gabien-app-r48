@@ -26,7 +26,7 @@ import java.util.Map;
  *  \: Two hex digits follow - this is a raw byte.
  * This is meant to imitate the look of a string.
  * Outer Level Commands:
- * I0[dbBackend][dataPath][dataExt] : Must be the first command. Specifies details via UTF-8 byte arrays.
+ * I2[dbBackend][dataPath][dataExt][encoding] : Must be the first command. Specifies details via UTF-8 byte arrays.
  * ~[file][IMI] : Patch a file (UTF-8 byte array path) with a given IMI segment
  * +[file][IMI] : Create a file (UTF-8 byte array path) with a given IMI segment
  *                (If the file already exists, a patch error has occurred)
@@ -34,7 +34,7 @@ import java.util.Map;
  * (32, 9, 13, 10) : NOP
  * IMI Segment Commands:
  * (32, 9, 13, 10):  NOP
- * ?[num]: : Enforces that the type is as given *by colon terminated integer*, on pain of patch error.
+ * ?[char] : Enforces that the type is as given by character-byte, on pain of patch error.
  *           The reason it's done this way is because IMI's pretending to be human-readable.
  * ![char] : Reset current object, then change type *by character-byte*.
  *           Unless stated in a given type's field notes, the object continues, even for 0TF.
@@ -47,6 +47,10 @@ import java.util.Map;
  *            ':' / 'o': byte array with starting " for sym - syms are encoded in UTF-8.
  *            }: Default value *immediately* follows as a IMI segment.
  *            u: Byte array with starting " for sym (like 'o') followed by byte array for actual data.
+ *            [: Colon-terminated number describing length (due to DM2. uses resize algorithm used by ArraySchemaElement/etc.).
+ *
+ * NOTE: As of DM2, a blank object may not, in fact, be blank.
+ * Thus, the createIMIDump function is more complex.
  *
  * =[k][v]: Create or patch an instance variable. [k] is a UTF-8 byte array - [v] is another IMI segment.
  *          The default value is INVALID (new RubyIO())
@@ -82,7 +86,7 @@ public class IMIUtils {
                     createIMIDump(dos, target, indent);
                 } else {
                     // Objects are "equivalent", run patchIVs()
-                    dos.writeBytes("?" + target.getType() + ":\n");
+                    dos.writeBytes("?" + ((char) target.getType()) + "\n");
                     flagMod |= patchIVs(dos, source, target, id2);
                 }
                 break;
@@ -107,7 +111,7 @@ public class IMIUtils {
                         dataEq = false;
                     }
                     if (dataEq) {
-                        dos.writeBytes("?" + target.getType() + ":\n");
+                        dos.writeBytes("?" + ((char) target.getType()) + "\n");
                         flagMod |= patchIVs(dos, source, target, id2);
                     } else {
                         flagMod = true;
@@ -121,7 +125,7 @@ public class IMIUtils {
                     int sal = source.getALen();
                     if (sal == target.getALen()) {
                         // Used to ensure that it doesn't patch 100% of the time
-                        dos.writeBytes("?" + target.getType() + ":\n");
+                        dos.writeBytes("?" + ((char) target.getType()) + "\n");
                         for (int i = 0; i < sal; i++) {
                             byte[] modData = createIMIData(source.getAElem(i), target.getAElem(i), id2);
                             if (modData != null) {
@@ -136,13 +140,13 @@ public class IMIUtils {
                         createIMIDump(dos, target, indent);
                     }
                 } else {
-                    dos.writeBytes("?" + target.getType() + ":\n");
+                    dos.writeBytes("?" + ((char) target.getType()) + "\n");
                     flagMod |= patchArray(dos, source, target, id2);
                     flagMod |= patchIVs(dos, source, target, id2);
                 }
                 break;
             case '{':
-                dos.writeBytes("?" + target.getType() + ":\n");
+                dos.writeBytes("?" + ((char) target.getType()) + "\n");
                 for (IRIO rk : source.getHashKeys())
                     if (target.getHashVal(rk) == null) {
                         dos.writeBytes(id2 + "->");
@@ -320,7 +324,7 @@ public class IMIUtils {
             }
         }
         // ignore oughtToNL for this
-        dos.writeBytes(";\n");
+        dos.writeBytes(indent + ";\n");
         return important;
     }
 
@@ -374,22 +378,19 @@ public class IMIUtils {
                         didNLYet = true;
                     }
                     dos.writeBytes(indent + ">");
-                    createIMIDump(dos, key, incrementIndent(indent));
-                    dos.writeBytes(incrementIndent(indent));
-                    createIMIDump(dos, target.getHashVal(key), incrementIndent(indent));
+                    String nxtIndent = incrementIndent(indent);
+                    createIMIDump(dos, key, nxtIndent);
+                    dos.writeBytes(nxtIndent);
+                    createIMIDump(dos, target.getHashVal(key), nxtIndent);
                 }
                 break;
             case '[':
                 alen = target.getALen();
+                dos.writeBytes(Integer.toString(target.getALen()) + ":\n");
+                didNLYet = true;
                 for (idx = 0; idx < alen; idx++) {
-                    if (!didNLYet) {
-                        dos.writeByte('\n');
-                        didNLYet = true;
-                    }
-                    dos.writeBytes(indent + ">");
                     String nxtIndent = incrementIndent(indent);
-                    createIMIDump(dos, new RubyIO().setFX(idx), nxtIndent);
-                    dos.writeBytes(nxtIndent);
+                    dos.writeBytes(indent + "]" + idx + ":");
                     createIMIDump(dos, target.getAElem(idx), nxtIndent);
                 }
                 break;
@@ -512,6 +513,7 @@ public class IMIUtils {
     // '~'-prefix status: Modifying file
     // 'W'-prefix status: Writing file
     // 'A'-prefix status: R/W asset
+    // See r48.ui.imi.IMIAssemblyProcess for further details.
     public static void runIMIFile(InputStream inp, String root, IConsumer<String> status) throws IOException {
         IObjectBackend backendFile = null;
         HashMap<String, IObjectBackend.ILoadedObject> newDataMap = new HashMap<String, IObjectBackend.ILoadedObject>();
@@ -523,20 +525,7 @@ public class IMIUtils {
             switch (cmd) {
                 case 'I':
                     switch (inp.read()) {
-                        case '0':
-                            if (inp.read() != '\"')
-                                throw new IOException("Invalid syntax.");
-                            backend = new String(readIMIStringBody(inp), "UTF-8");
-                            if (inp.read() != '\"')
-                                throw new IOException("Invalid syntax.");
-                            dataPath = new String(readIMIStringBody(inp), "UTF-8");
-                            if (inp.read() != '\"')
-                                throw new IOException("Invalid syntax.");
-                            IObjectBackend.Factory.encoding = "UTF-8";
-                            dataExt = new String(readIMIStringBody(inp), "UTF-8");
-                            backendFile = IObjectBackend.Factory.create(backend, root, dataPath, dataExt);
-                            break;
-                        case '1':
+                        case '2':
                             if (inp.read() != '\"')
                                 throw new IOException("Invalid syntax.");
                             backend = new String(readIMIStringBody(inp), "UTF-8");
@@ -607,7 +596,7 @@ public class IMIUtils {
         }
     }
 
-    private static void runIMISegment(InputStream inp, IRIO obj) throws IOException {
+    public static void runIMISegment(InputStream inp, IRIO obj) throws IOException {
         while (true) {
             int cmd = inp.read();
             if (cmd == -1)
@@ -618,7 +607,7 @@ public class IMIUtils {
             int newType;
             switch (cmd) {
                 case '?':
-                    tmp1 = readIMINumber(inp, ':');
+                    tmp1 = inp.read();
                     if (obj.getType() != tmp1)
                         throw new IOException("Object was expected to be of type " + tmp1 + " - it was " + obj.getType());
                     break;
@@ -634,8 +623,11 @@ public class IMIUtils {
                                 // yes, do actually return
                                 return;
                             case '0':
+                                obj.setNull();
+                                break;
                             case 'T':
                             case 'F':
+                                obj.setBool(newType == 'T');
                                 break;
                             case '}':
                                 obj.setHashWithDef();
@@ -646,6 +638,7 @@ public class IMIUtils {
                                 break;
                             case '[':
                                 obj.setArray();
+                                IntUtils.resizeArrayTo(obj, (int) readIMINumber(inp, ':'));
                                 break;
                             case ':':
                                 if (inp.read() != '\"')
@@ -666,8 +659,11 @@ public class IMIUtils {
                                 obj.setObject(new String(readIMIStringBody(inp), "UTF-8"));
                                 break;
                             case '\"':
-                                // Force into default encoding, then change contents
-                                obj.setString("");
+                                // Force into default encoding, then change contents.
+                                // Some object backends use encoding IVars. In this case,
+                                //  things get complicated because we do NOT want their
+                                //  presence or lack of to generate issues.
+                                obj.setStringNoEncodingIVars();
                                 obj.putBuffer(readIMIStringBody(inp));
                                 break;
                             case 'f':

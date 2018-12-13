@@ -8,10 +8,11 @@
 # This part of the script is responsible for creating the IMI Installer.
 # Expects the version name for the final JAR.
 cd ../../gabien-app-r48/instimi &&
-cp -r ../src/main/java/r48/ArrayUtils.java src/main/java/r48/ &&
+rm -rf src/main/java/gabien/ui &&
+rm -rf src/main/java/r48/*.java &&
+rm -rf src/main/java/r48/io &&
 mkdir -p src/main/java/gabien/ui &&
 mkdir -p src/main/java/r48/io &&
-rm -r src/main/java/r48/io &&
 cp -r ../../gabien-common/src/main/java/gabien/ui/IConsumer.java src/main/java/gabien/ui &&
 cp -r ../../gabien-common/src/main/java/gabien/ui/IFunction.java src/main/java/gabien/ui &&
 cp -r ../../gabien-common/src/main/java/gabien/ui/ISupplier.java src/main/java/gabien/ui &&

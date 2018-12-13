@@ -10,12 +10,10 @@ package r48.schema;
 import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
 import r48.FontSizes;
+import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 
 /**
  * Basically a copy of StringSchemaElement with some modifications
@@ -30,45 +28,11 @@ public class FloatSchemaElement extends SchemaElement {
         jsonCoerce = json;
     }
 
-    public static String decodeVal(byte[] strVal) {
-        // Stop at the first null byte.
-        int firstNull = strVal.length;
-        for (int i = 0; i < strVal.length; i++) {
-            if (strVal[i] == 0) {
-                firstNull = i;
-                break;
-            }
-        }
-        byte[] text = new byte[firstNull];
-        System.arraycopy(strVal, 0, text, 0, text.length);
-        return new String(text, Charset.forName("UTF-8"));
-    }
-
-    public static boolean encodeVal(IRIO target, String text, boolean jsonCoerce) {
-        if (jsonCoerce) {
-            try {
-                long l = Long.parseLong(text);
-                target.setFX(l);
-                return true;
-            } catch (NumberFormatException e) {
-            }
-        }
-        try {
-            Double.parseDouble(text);
-            target.setFloat(text.getBytes("UTF-8"));
-            return true;
-        } catch (NumberFormatException e) {
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-        return false;
-    }
-
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         final String oldValue;
         if (target.getType() == 'f') {
-            oldValue = decodeVal(target.getBuffer());
+            oldValue = IntUtils.decodeRbFloat(target.getBuffer());
         } else if (jsonCoerce) {
             oldValue = Long.toString(target.getFX());
         } else {
@@ -78,7 +42,7 @@ public class FloatSchemaElement extends SchemaElement {
         utb.onEdit = new Runnable() {
             @Override
             public void run() {
-                if (encodeVal(target, utb.text, jsonCoerce)) {
+                if (IntUtils.encodeRbFloat(target, utb.text, jsonCoerce)) {
                     path.changeOccurred(false);
                 } else {
                     utb.text = oldValue;
@@ -100,7 +64,7 @@ public class FloatSchemaElement extends SchemaElement {
         if (setDefault)
             ok = false;
         if (!ok) {
-            if (!encodeVal(target, def, jsonCoerce))
+            if (!IntUtils.encodeRbFloat(target, def, jsonCoerce))
                 throw new RuntimeException("Float default must be valid");
             path.changeOccurred(true);
         }

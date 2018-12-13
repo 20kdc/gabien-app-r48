@@ -36,10 +36,8 @@ public class OpaqueSchemaElement extends SchemaElement {
 
     @Override
     public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        // Not a clue, so re-initialize if all else fails.
-        if (setDefault) {
-            target.setNull();
+        // Not a clue.
+        if (setDefault)
             path.changeOccurred(true);
-        }
     }
 }

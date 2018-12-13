@@ -13,7 +13,8 @@
 cd ../../gabien-common &&
 gradle build &&
 cd ../gabien-app-r48 &&
-gradle build &&
+# Testing requires manual IDE intervention at the moment due to LTE.
+gradle build -x test &&
 mkdir -p staging &&
 rm -r staging &&
 mkdir -p staging &&

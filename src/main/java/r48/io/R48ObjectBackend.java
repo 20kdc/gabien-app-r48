@@ -396,14 +396,14 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             byte[] data = new byte[(int) len];
             if (dis.read(data) != len)
                 throw new IOException("Didn't read all of data");
-            rio.strVal = data;
+            rio.userVal = data;
         } else if (b == 'f') {
             objs.add(rio);
             long len = load32(dis);
             byte[] data = new byte[(int) len];
             if (dis.read(data) != len)
                 throw new IOException("Didn't read all of data");
-            rio.strVal = data;
+            rio.userVal = data;
         } else if (b == 'l') {
             objs.add(rio);
             byte posneg = dis.readByte();

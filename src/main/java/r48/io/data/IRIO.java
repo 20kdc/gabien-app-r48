@@ -140,6 +140,12 @@ public abstract class IRIO {
     // '}' only
     public abstract IRIO getHashDefVal();
 
+    // Utils
+
+    public IRIO setStringNoEncodingIVars() {
+        return setString("");
+    }
+
     public IRIO setDeepClone(IRIO clone) {
         int type = clone.getType();
         if (type == '0') {
