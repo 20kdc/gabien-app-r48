@@ -44,7 +44,8 @@ public class SchemaPath {
     public boolean monitorsSubelements = false;
 
     // Should only ever be used by isolated roots such as hashkeys.
-    public Runnable additionalModificationCallback;
+    // Constructor guarantees ensure this.
+    public final Runnable additionalModificationCallback;
 
     // At the root object, this is guaranteed to be the object itself.
     // Otherwise, it should propagate whenever unchanged.
@@ -53,7 +54,7 @@ public class SchemaPath {
     public IRIO lastArrayIndex;
 
     // Null for "no human readable index here".
-    // The root is always the intended ObjectID index.
+    // The root is the intended ObjectID index, but this is a visual property only.
     public String hrIndex;
 
     public final HashMap<String, SchemaElement> contextualSchemas = new HashMap<String, SchemaElement>();
@@ -62,13 +63,18 @@ public class SchemaPath {
         parent = sp;
         root = sp.root;
         lastArrayIndex = sp.lastArrayIndex;
+        additionalModificationCallback = null;
         contextualSchemas.putAll(sp.contextualSchemas);
     }
 
-
-    // The basic constructor.
     public SchemaPath(SchemaElement heldElement, IObjectBackend.ILoadedObject root) {
+        this(heldElement, root, null);
+    }
+
+    // The basic root constructor.
+    public SchemaPath(SchemaElement heldElement, IObjectBackend.ILoadedObject root, Runnable amc) {
         parent = null;
+        additionalModificationCallback = amc;
         this.root = root;
         hrIndex = AppMain.objectDB.getIdByObject(root);
         if (hrIndex == null)
@@ -81,6 +87,7 @@ public class SchemaPath {
     private SchemaPath(IRIO lai) {
         parent = null;
         root = null;
+        additionalModificationCallback = null;
         lastArrayIndex = lai;
         hrIndex = "AnonObject";
     }

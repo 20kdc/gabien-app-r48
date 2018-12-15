@@ -150,7 +150,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
 
     private void switchObject(SchemaPath nextObject) {
         if (innerElem != null)
-            AppMain.objectDB.deregisterModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
+            AppMain.objectDB.deregisterModificationHandler(innerElem.root, nudgeRunnable);
         while (nextObject.editor == null)
             nextObject = nextObject.parent;
         boolean doLaunch = false;
@@ -166,7 +166,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
 
         innerElem = nextObject;
         innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
-        AppMain.objectDB.registerModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
+        AppMain.objectDB.registerModificationHandler(innerElem.root, nudgeRunnable);
 
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
@@ -291,7 +291,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     public void onWindowClose() {
         windowOpen = false;
         if (innerElem != null) {
-            AppMain.objectDB.deregisterModificationHandler(innerElem.findRoot().targetElement, nudgeRunnable);
+            AppMain.objectDB.deregisterModificationHandler(innerElem.findRoot().root, nudgeRunnable);
             validitySupplier = null; // We're not seeing modifications, so don't check validity.
             innerElem = null;
             innerElemEditor = null;

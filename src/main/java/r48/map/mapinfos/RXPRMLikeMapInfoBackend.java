@@ -36,7 +36,7 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     @Override
     public void registerModificationHandler(IConsumer<SchemaPath> onMapInfoChange) {
         modHandler = onMapInfoChange;
-        AppMain.objectDB.registerModificationHandler(mapInfos.getObject(), onMapInfoChange);
+        AppMain.objectDB.registerModificationHandler(mapInfos, onMapInfoChange);
     }
 
     @Override

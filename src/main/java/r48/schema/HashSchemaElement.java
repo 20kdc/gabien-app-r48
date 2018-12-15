@@ -47,6 +47,8 @@ public class HashSchemaElement extends SchemaElement {
         }
         final RubyIO keyWorkspace = preWorkspace;
 
+        final SchemaPath setLocalePath = launcher.getCurrentObject();
+
         final SchemaPath rioPath = new SchemaPath(keyElem, new IObjectBackend.ILoadedObject() {
             @Override
             public IRIO getObject() {
@@ -56,16 +58,14 @@ public class HashSchemaElement extends SchemaElement {
             @Override
             public void save() throws IOException {
             }
-        });
-
-        final SchemaPath setLocalePath = launcher.getCurrentObject();
-        rioPath.additionalModificationCallback = new Runnable() {
+        }, new Runnable() {
             @Override
             public void run() {
                 // This may occur from a different page (say, an enum selector), so the more complicated form must be used.
                 launcher.setEmbedObject(setLocalePath, HashSchemaElement.this, target, "keyWorkspace", new RubyIO().setDeepClone(keyWorkspace));
             }
-        };
+        });
+
         if (keyWorkspace.type == 'i') {
             while (target.getHashVal(keyWorkspace) != null) {
                 // Try adding 1

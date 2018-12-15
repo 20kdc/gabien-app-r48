@@ -10,7 +10,6 @@ package r48.dbs;
 import gabien.ui.IConsumer;
 import r48.AppMain;
 import r48.io.IObjectBackend;
-import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -42,7 +41,7 @@ public class ObjectDB {
     //  this locks the object into memory for as long as it's modified.
     public HashSet<IObjectBackend.ILoadedObject> modifiedObjects = new HashSet<IObjectBackend.ILoadedObject>();
     public HashSet<IObjectBackend.ILoadedObject> newlyCreatedObjects = new HashSet<IObjectBackend.ILoadedObject>();
-    public WeakHashMap<IRIO, LinkedList<WeakReference<IConsumer<SchemaPath>>>> objectListenersMap = new WeakHashMap<IRIO, LinkedList<WeakReference<IConsumer<SchemaPath>>>>();
+    public WeakHashMap<IObjectBackend.ILoadedObject, LinkedList<WeakReference<IConsumer<SchemaPath>>>> objectListenersMap = new WeakHashMap<IObjectBackend.ILoadedObject, LinkedList<WeakReference<IConsumer<SchemaPath>>>>();
     public HashMap<String, LinkedList<WeakReference<IConsumer<SchemaPath>>>> objectRootListenersMap = new HashMap<String, LinkedList<WeakReference<IConsumer<SchemaPath>>>>();
 
     private boolean objectRootModifiedRecursion = false;
@@ -138,7 +137,7 @@ public class ObjectDB {
         return false;
     }
 
-    private LinkedList<WeakReference<IConsumer<SchemaPath>>> getOrCreateModificationHandlers(IRIO p) {
+    private LinkedList<WeakReference<IConsumer<SchemaPath>>> getOrCreateModificationHandlers(IObjectBackend.ILoadedObject p) {
         LinkedList<WeakReference<IConsumer<SchemaPath>>> notifyObjectModified = objectListenersMap.get(p);
         if (notifyObjectModified == null) {
             notifyObjectModified = new LinkedList<WeakReference<IConsumer<SchemaPath>>>();
@@ -160,11 +159,11 @@ public class ObjectDB {
     //  because there appears to be a performance issue with these being spammed over and over again. Oops.
     // Also note, these are all weakly referenced.
 
-    public void registerModificationHandler(IRIO root, IConsumer<SchemaPath> handler) {
+    public void registerModificationHandler(IObjectBackend.ILoadedObject root, IConsumer<SchemaPath> handler) {
         getOrCreateModificationHandlers(root).add(new WeakReference<IConsumer<SchemaPath>>(handler));
     }
 
-    public void deregisterModificationHandler(IRIO root, IConsumer<SchemaPath> handler) {
+    public void deregisterModificationHandler(IObjectBackend.ILoadedObject root, IConsumer<SchemaPath> handler) {
         removeFromGOCMH(getOrCreateModificationHandlers(root), handler);
     }
 

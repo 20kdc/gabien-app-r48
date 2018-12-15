@@ -144,10 +144,10 @@ public class RMToolsToolset implements IToolset {
                                     throw new RuntimeException("MODIFY " + obj + " " + path);
                                 }
                             };
-                            AppMain.objectDB.registerModificationHandler(map.getObject(), modListen);
+                            AppMain.objectDB.registerModificationHandler(map, modListen);
                             SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(objectSchemas.removeFirst()), map);
                             sp.editor.modifyVal(map.getObject(), sp, false);
-                            AppMain.objectDB.deregisterModificationHandler(map.getObject(), modListen);
+                            AppMain.objectDB.deregisterModificationHandler(map, modListen);
                             System.out.println(obj + " done.");
                         }
                     }
