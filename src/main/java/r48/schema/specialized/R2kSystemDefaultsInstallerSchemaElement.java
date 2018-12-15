@@ -156,6 +156,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(0));
                     sub.getIVar("@name").setString("Root");
                     sub.getIVar("@parent_id").setFX(0);
+                    sub.getIVar("@indent").setFX(0);
                     sub.getIVar("@type").setFX(0);
 
                     // 2. Create basic map entry

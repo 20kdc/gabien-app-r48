@@ -15,8 +15,8 @@ e mapinfo_type 1 map 2 area 0 root
 : RPG::MapInfo
 C name Class.RPG::MapInfo @name | MapInfo: #A
 @name string
-@parent_id int= 0
-@indent int= 0
+@parent_id map_id
+@indent int= 1
 @type mapinfo_type
 @OFED_edit_pos_x int
 @OFED_edit_pos_y int
@@ -52,8 +52,8 @@ C name Class.RPG::MapInfo @name | MapInfo: #A
 
 : RPG::MapTree
 @map_infos subwindow hash int+0 subwindow RPG::MapInfo
-@map_order subwindow array 0 int= 0
-@active_node int+0
+@map_order subwindow array 0 map_id
+@active_node map_id
 @start subwindow: "Player/Vehicle Start Point" RPG::Start
  Supplies defaults
 C magicR2kSystemDefaults 1
