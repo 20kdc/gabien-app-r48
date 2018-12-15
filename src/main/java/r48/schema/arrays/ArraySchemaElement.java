@@ -117,7 +117,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
             } else {
                 uie = subelem.buildHoldingEditor(target.getAElem(i), launcher, ind);
             }
-            IRIO[] copyHelpElems = target.getANewArray();
+
             String dispData = (i + indexDisplayOffset) + " ";
             if (possibleEnumElement != null) {
                 SchemaElement se = possibleEnumElement;
@@ -125,6 +125,11 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     se = ((IProxySchemaElement) se).getEntry();
                 dispData = ((EnumSchemaElement) se).viewValue(new RubyIO().setFX(i + indexDisplayOffset), true) + " ";
             }
+
+            IRIO[] copyHelpElems = new IRIO[nextAdvance];
+            for (int j = 0; j < copyHelpElems.length; j++)
+                copyHelpElems[j] = target.getAElem(i + j);
+
             IArrayInterface.ArrayPosition position = new IArrayInterface.ArrayPosition(dispData, copyHelpElems, uie, subelemId, deleter, addition, clipAddition);
             positions.add(position);
         }

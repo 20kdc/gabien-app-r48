@@ -11,8 +11,6 @@ import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.IMapContext;
-import r48.RubyIO;
-import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
@@ -20,10 +18,7 @@ import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
 import r48.ui.UITreeView;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * Helps jump between maps.
@@ -37,11 +32,11 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
     private final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
     private final UITreeView utv;
     private int selectedOrder = 0;
-    private boolean enableOrderHoleDebug = false;
     private IMapContext mapContext;
     private HashSet<Long> notExpanded = new HashSet<Long>();
     private String toStringRes;
 
+    // Cannot actually be converted to local variable due to reference issues
     private IConsumer<SchemaPath> onMapInfoChange = new IConsumer<SchemaPath>() {
         @Override
         public void accept(SchemaPath sp) {
@@ -61,6 +56,14 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
 
     private void rebuildList() {
         uiSVL.panelsClear();
+
+        HashMap<Long, Integer> indent = new HashMap<Long, Integer>();
+        String errors = operators.calculateIndentsAndGetErrors(indent);
+        if (errors != null) {
+            uiSVL.panelsAdd(new UILabel(errors, FontSizes.mapInfosTextHeight));
+            return;
+        }
+
         LinkedList<Long> intList = new LinkedList<Long>(operators.getHashKeys());
         Collections.sort(intList, new Comparator<Long>() {
             @Override
@@ -74,7 +77,6 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                 return 0;
             }
         });
-        LinkedList<Long> parentStack = new LinkedList<Long>();
         int lastOrder = 0;
         LinkedList<UITreeView.TreeElement> tree = new LinkedList<UITreeView.TreeElement>();
         for (final Long k : intList) {
@@ -86,23 +88,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
 
             String name = map.getIVar("@name").decString();
 
-            if (parent == 0) {
-                parentStack.clear();
-            } else {
-                if (parentStack.lastIndexOf(parent) != -1) {
-                    while (parentStack.getLast() != parent)
-                        parentStack.removeLast();
-                } else {
-                    AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Parent Inconsistency Warning @ #A o #B"), new RubyIO().setFX(k), new RubyIO().setFX(order)));
-                    enableOrderHoleDebug = true;
-                }
-            }
-            parentStack.add(k);
-            String spc = "";
-            if (enableOrderHoleDebug)
-                spc = order + " ";
-
-            UITextButton tb = new UITextButton(spc + k + ":" + name + " P" + parent, FontSizes.mapInfosTextHeight, new Runnable() {
+            UIElement elm = new UITextButton(k + ":" + name + " P" + parent, FontSizes.mapInfosTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     selectedOrder = order;
@@ -110,7 +96,6 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                     rebuildList();
                 }
             }).togglable(selectedOrder == order);
-            UIElement elm = tb;
 
             if (selectedOrder == order) {
                 if (parent != 0) {
@@ -180,7 +165,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                     }
                 }}, FontSizes.mapInfosTextHeight);
             }
-            tree.add(new UITreeView.TreeElement(parentStack.size(), operators.getIconForMap(k), elm, new IConsumer<Integer>() {
+            tree.add(new UITreeView.TreeElement(indent.get(k), operators.getIconForMap(k), elm, new IConsumer<Integer>() {
                 @Override
                 public void accept(Integer integer) {
                     int orderFrom = integer + 1;
@@ -241,33 +226,6 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                     }
                 };
                 AppMain.window.createWindow(dialog);
-            }
-        }));
-        uiSVL.panelsAdd(new UITextButton(TXDB.get("<Test Sequence Consistency>"), FontSizes.mapInfosTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                LinkedList<Integer> orders = new LinkedList<Integer>();
-                for (Long map : operators.getHashKeys())
-                    orders.add(operators.getOrderOfMap(map));
-                Collections.sort(orders);
-                String message = TXDB.get("The MapInfos database is sequential.");
-                int lastOrder = 0;
-                for (int i : orders) {
-                    if (i != (lastOrder + 1)) {
-                        if (i <= lastOrder) {
-                            message = TXDB.get("The entries in the MapInfos database contain duplicates.") + " (@" + i + ")";
-                            enableOrderHoleDebug = true;
-                            break;
-                        } else {
-                            message = TXDB.get("The entries in the MapInfos database contain holes.") + " (@" + i + ")";
-                            enableOrderHoleDebug = true;
-                            break;
-                        }
-                    }
-                    lastOrder = i;
-                }
-                AppMain.launchDialog(message);
-                rebuildList();
             }
         }));
     }

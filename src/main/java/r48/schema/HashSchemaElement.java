@@ -19,8 +19,10 @@ import r48.schema.specialized.OSStrHashMapSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
+import r48.ui.UIFieldLayout;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created on 12/29/16.
@@ -99,6 +101,9 @@ public class HashSchemaElement extends SchemaElement {
                     }
                 };
                 uiSV.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Search Keys:"), FontSizes.schemaFieldTextHeight), searchBox, false, 0d));
+
+                AtomicInteger fw = new AtomicInteger(0);
+
                 for (IRIO key : UITest.sortedKeysArr(target.getHashKeys(), new IFunction<IRIO, String>() {
                     @Override
                     public String apply(IRIO rubyIO) {
@@ -109,18 +114,14 @@ public class HashSchemaElement extends SchemaElement {
                         continue;
                     final IRIO kss = key;
                     // keys are opaque - this prevents MANY issues
-                    UIElement hsA = (new OpaqueSchemaElement() {
-                        @Override
-                        public String getMessage(IRIO v) {
-                            return getKeyText(v);
-                        }
-                    }).buildHoldingEditor(key, launcher, path);
+                    UIElement hsA = new UILabel(getKeyText(key), FontSizes.schemaFieldTextHeight);
                     UIElement hsB = valElem.buildHoldingEditor(target.getHashVal(key), launcher, path.arrayHashIndex(key, "{" + getKeyText(key) + "}"));
-                    UISplitterLayout hs = null;
+                    UIElement hs = null;
                     if (flexible) {
                         hs = new UISplitterLayout(hsA, hsB, true, 0.0d);
                     } else {
-                        hs = new UISplitterLayout(hsA, hsB, false, 0.5d);
+                        fw.set(Math.max(fw.get(), hsA.getSize().width));
+                        hs = new UIFieldLayout(hsA, hsB, fw, true);
                     }
                     uiSV.panelsAdd(new UIAppendButton("-", hs, new Runnable() {
                         @Override

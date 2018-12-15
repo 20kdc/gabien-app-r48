@@ -10,13 +10,13 @@ package r48.map.mapinfos;
 import gabien.ui.IConsumer;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Going to have to move it over here
@@ -137,5 +137,72 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     @Override
     public String translateToGUM(long k) {
         return sNameFromInt(k);
+    }
+
+    @Override
+    public String calculateIndentsAndGetErrors(HashMap<Long, Integer> id) {
+        StringBuilder errors = new StringBuilder();
+
+        standardCalculateIndentsAndGetErrors(this, id, errors, 0);
+
+        return errorsToStringOrNull(errors);
+    }
+
+    public static void standardCalculateIndentsAndGetErrors(final IRMLikeMapInfoBackend backend, HashMap<Long, Integer> id, StringBuilder errors, int standardIndentOffset) {
+        LinkedList<Long> maps = new LinkedList<Long>();
+        maps.addAll(backend.getHashKeys());
+
+        Collections.sort(maps, new Comparator<Long>() {
+            @Override
+            public int compare(Long aLong, Long t1) {
+                int a = backend.getOrderOfMap(aLong);
+                int b = backend.getOrderOfMap(t1);
+                if (a < b)
+                    return -1;
+                if (a > b)
+                    return 1;
+                return 0;
+            }
+        });
+
+        LinkedList<Long> parentStack = new LinkedList<Long>();
+        int lastOrder = 0;
+        for (Long map : maps) {
+            IRIO data = backend.getHashBID(map);
+            final long parent = data.getIVar("@parent_id").getFX();
+
+            if (parent == 0) {
+                parentStack.clear();
+            } else {
+                while ((!parentStack.isEmpty()) && (parentStack.getLast() != parent))
+                    parentStack.removeLast();
+                if (parentStack.size() == 0) {
+                    // Not valid!
+                    errors.append(TXDB.get("Parent/order inconsistency error.")).append(" (@").append(map).append(")\n");
+                }
+            }
+
+            id.put(map, parentStack.size());
+
+            IRIO indent = data.getIVar("@indent");
+            // For R2k
+            if (indent != null)
+                if (indent.getFX() != (parentStack.size() + standardIndentOffset))
+                    errors.append(TXDB.get("Indent inconsistent for map: ")).append(map).append('=').append(indent.getFX()).append(" !").append(parentStack.size() + standardIndentOffset).append('\n');
+
+            parentStack.add(map);
+
+            int order = backend.getOrderOfMap(map);
+            if (order != (lastOrder + 1))
+                errors.append(TXDB.get("Order inconsistency: ")).append(map).append('\n');
+            lastOrder = order;
+        }
+    }
+
+    public static String errorsToStringOrNull(StringBuilder errors) {
+        if (errors.length() == 0)
+            return null;
+        errors.append(TXDB.get("These errors must be resolved manually to use this panel."));
+        return errors.toString();
     }
 }

@@ -10,13 +10,9 @@ package r48.map.mapinfos;
 import gabien.ui.IConsumer;
 import r48.AppMain;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixedArray;
-import r48.io.data.IRIOFixnum;
-import r48.io.r2k.dm2chk.DM2SparseArrayH;
-import r48.io.r2k.obj.MapInfo;
-import r48.io.r2k.struct.MapTree;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
 
@@ -32,24 +28,33 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     public IObjectBackend.ILoadedObject mapTree = AppMain.objectDB.getObject("RPG_RT.lmt");
     // Note: The orders table is [order] = map.
     // So swapping orders is probably the easiest operation here.
-    public DM2SparseArrayH<MapInfo> mapTreeHash = ((MapTree) (mapTree.getObject())).mapInfos;
-    public IRIOFixedArray<IRIOFixnum> mapTreeOrders = ((MapTree) (mapTree.getObject())).mapOrder;
 
     public R2kRMLikeMapInfoBackend() {
 
     }
 
+    private IRIO getMapOrders() {
+        return mapTree.getObject().getIVar("@map_order");
+    }
+
+    private IRIO getMapHash() {
+        return mapTree.getObject().getIVar("@map_infos");
+    }
+
     @Override
     public void swapOrders(int orderA, int orderB) {
-        IRIOFixnum b = (IRIOFixnum) mapTreeOrders.arrVal[orderA];
-        mapTreeOrders.arrVal[orderA] = mapTreeOrders.arrVal[orderB];
-        mapTreeOrders.arrVal[orderB] = b;
+        IRIO mapTreeOrders = getMapOrders();
+        IRIO a = mapTreeOrders.getAElem(orderA);
+        IRIO b = mapTreeOrders.getAElem(orderA);
+        long ai = a.getFX();
+        a.setFX(b.getFX());
+        b.setFX(ai);
     }
 
     @Override
     public int getLastOrder() {
         // Note the - 1 to make Order 0 disappear.
-        return mapTreeOrders.arrVal.length - 1;
+        return getMapOrders().getALen() - 1;
     }
 
     public static String sNameFromInt(int i) {
@@ -88,36 +93,34 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
 
     @Override
     public void removeMap(long k) {
-        // Prepare...
+        IRIO mapTreeOrders = getMapOrders();
+        IRIO mapTreeHash = getMapHash();
+
+        // Prepare by making the map last.
         MapInfoReparentUtil.removeMapHelperSALT(k, this);
         // Remove last from array
-        IRIOFixnum[] resArray = new IRIOFixnum[mapTreeOrders.getALen() - 1];
-        System.arraycopy(mapTreeOrders.arrVal, 0, resArray, 0, resArray.length);
-        mapTreeOrders.arrVal = resArray;
+        mapTreeOrders.rmAElem(mapTreeOrders.getALen() - 1);
         // Eliminate from hash
         mapTreeHash.removeHashVal(new RubyIO().setFX(k));
     }
 
     @Override
     public int createNewMap(long k) {
-        int targetOrder = mapTreeOrders.arrVal.length - 1;
+        IRIO mapTreeOrders = getMapOrders();
+        IRIO mapTreeHash = getMapHash();
+
+        int targetOrder = mapTreeOrders.getALen() - 1;
         long l = getMapOfOrder(targetOrder);
         if (l == -1)
             l = 0;
 
-        IRIOFixnum[] resArray = new IRIOFixnum[mapTreeOrders.arrVal.length + 1];
-        System.arraycopy(mapTreeOrders.arrVal, 0, resArray, 0, mapTreeOrders.arrVal.length);
+        IRIO key = mapTreeOrders.addAElem(mapTreeOrders.getALen()).setFX(k);
 
-        IRIOFixnum key = new IRIOFixnum(k);
-
-        resArray[resArray.length - 1] = key;
-
-        MapInfo mi = mapTreeHash.addHashVal(key);
+        IRIO mi = mapTreeHash.addHashVal(key);
         SchemaPath.setDefaultValue(mi, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
-        mi.parent.i = (int) l;
+        mi.getIVar("@parent_id").setFX(l);
 
-        mapTreeOrders.arrVal = resArray;
-        return resArray.length - 1;
+        return (int) k - 1;
     }
 
     @Override
@@ -174,30 +177,70 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
 
     @Override
     public Set<Long> getHashKeys() {
+        IRIO mapTreeHash = getMapHash();
         // The job of this is to hide that there *ever was* a Map 0.
         // Map 0 is reserved.
         HashSet<Long> hs = new HashSet<Long>();
-        for (Integer i : mapTreeHash.hashVal.keySet())
-            if (i != 0)
-                hs.add((long) i);
+        for (IRIO i : mapTreeHash.getHashKeys())
+            if (i.getFX() != 0)
+                hs.add(i.getFX());
         return hs;
     }
 
     @Override
     public IRIO getHashBID(long k) {
-        return mapTreeHash.getHashVal(new RubyIO().setFX(k));
+        return getMapHash().getHashVal(new RubyIO().setFX(k));
     }
 
     @Override
     public int getOrderOfMap(long k) {
-        for (int i = 0; i < mapTreeOrders.arrVal.length; i++)
-            if (mapTreeOrders.arrVal[i].getFX() == k)
+        IRIO mapTreeOrders = getMapOrders();
+        int alen = mapTreeOrders.getALen();
+        for (int i = 0; i < alen; i++)
+            if (mapTreeOrders.getAElem(i).getFX() == k)
                 return i;
-        throw new NullPointerException("No such map " + k);
+        System.err.println("Map " + k + " does not have order");
+        return -1;
     }
 
     @Override
     public long getMapOfOrder(int order) {
-        return mapTreeOrders.arrVal[order].getFX();
+        IRIO mapTreeOrders = getMapOrders();
+        return mapTreeOrders.getAElem(order).getFX();
+    }
+
+    @Override
+    public String calculateIndentsAndGetErrors(HashMap<Long, Integer> id) {
+        StringBuilder errors = new StringBuilder();
+        if (getHashBID(0) == null)
+            errors.append(TXDB.get("Root map (ID 0, type 'root) required!")).append('\n');
+        RXPRMLikeMapInfoBackend.standardCalculateIndentsAndGetErrors(this, id, errors, 1);
+        // Perform further order consistency checks
+        for (Long l : getHashKeys()) {
+            if (getOrderOfMap(l) == -1) {
+                errors.append(TXDB.get("No order for map: "));
+                errors.append(l);
+                errors.append('\n');
+            }
+        }
+        IRIO mapTreeOrders = getMapOrders();
+        int alen = mapTreeOrders.getALen();
+        HashSet<Long> orderMaps = new HashSet<Long>();
+        for (int i = 0; i < alen; i++) {
+            long rt = mapTreeOrders.getAElem(i).getFX();
+            if (orderMaps.contains(rt)) {
+                errors.append(TXDB.get("Order contains map twice: "));
+                errors.append(rt);
+                errors.append('\n');
+            }
+            orderMaps.add(rt);
+            if (getHashBID(rt) == null) {
+                errors.append(TXDB.get("Order expects mapinfos entry: "));
+                errors.append(rt);
+                errors.append('\n');
+            }
+        }
+
+        return RXPRMLikeMapInfoBackend.errorsToStringOrNull(errors);
     }
 }

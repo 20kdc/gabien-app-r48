@@ -9,6 +9,7 @@ package r48.map.mapinfos;
 
 import r48.io.data.IRIO;
 
+import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -23,8 +24,12 @@ public interface IRMLikeMapInfoBackend {
 
     IRIO getHashBID(long k);
 
+    // -1 still means failure.
     int getOrderOfMap(long k);
 
     // -1 means failure.
     long getMapOfOrder(int order);
+
+    // MapInfos should be disabled if this returns non-null.
+    String calculateIndentsAndGetErrors(HashMap<Long, Integer> id);
 }

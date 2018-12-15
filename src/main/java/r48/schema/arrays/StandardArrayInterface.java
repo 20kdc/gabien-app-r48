@@ -160,7 +160,6 @@ public class StandardArrayInterface implements IArrayInterface {
                                             if (positions[j].elements != null)
                                                 for (IRIO rio2 : positions[j].elements)
                                                     resBuild.add(new RubyIO().setDeepClone(rio2));
-
                                         rio.arrVal = resBuild.toArray(new RubyIO[0]);
                                         AppMain.theClipboard = rio;
                                         selectedStart = -1;
