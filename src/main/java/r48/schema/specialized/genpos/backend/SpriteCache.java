@@ -14,7 +14,7 @@ import r48.AppMain;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
 import r48.imagefx.MirrorSubspritesImageEffect;
-import r48.imagefx.OpacityImageEffect;
+import r48.imagefx.MultiplyImageEffect;
 import r48.io.data.IRIO;
 
 import java.util.LinkedList;
@@ -73,7 +73,7 @@ public class SpriteCache {
         if (mirror)
             effectList.add(new MirrorSubspritesImageEffect(spriteSize, 5, 6));
         if (opacity != 255)
-            effectList.add(new OpacityImageEffect(opacity));
+            effectList.add(new MultiplyImageEffect(opacity, 255, 255, 255));
         return AppMain.imageFXCache.process(b ? framesetCacheB : framesetCacheA, effectList);
     }
 }

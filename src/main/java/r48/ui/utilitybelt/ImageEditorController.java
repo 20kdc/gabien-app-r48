@@ -20,6 +20,7 @@ import r48.ui.UIAppendButton;
 import r48.ui.UIColourSwatchButton;
 import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIColourPicker;
+import r48.ui.dmicg.CharacterGeneratorController;
 
 import java.io.OutputStream;
 import java.util.LinkedList;
@@ -245,6 +246,13 @@ public class ImageEditorController {
                     });
                 }
                 AppMain.window.createWindow(new UIAutoclosingPopupMenu(items.toArray(new String[0]), runnables.toArray(new Runnable[0]), FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
+            }
+        });
+        menuDetails.add(TXDB.get("CharacterGen..."));
+        menuFuncs.add(new Runnable() {
+            @Override
+            public void run() {
+                AppMain.window.createWindow(new CharacterGeneratorController().rootView);
             }
         });
 

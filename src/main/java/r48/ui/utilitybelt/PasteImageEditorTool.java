@@ -20,9 +20,18 @@ import java.io.IOException;
  */
 public class PasteImageEditorTool implements IImageEditorTool {
     public boolean flipX, flipY, swapXY;
-    public BMPConnection result;
 
     public PasteImageEditorTool() {
+    }
+
+    @Override
+    public void forceDifferentTool(UIImageEditView uiev) {
+    }
+
+    @Override
+    public void apply(int x, int y, UIImageEditView view, boolean major, boolean dragging) {
+        BMPConnection result = null;
+
         if (AppMain.theClipboard != null) {
             if (AppMain.theClipboard.type == 'u') {
                 if (AppMain.theClipboard.symVal.equals("Image")) {
@@ -34,18 +43,11 @@ public class PasteImageEditorTool implements IImageEditorTool {
                 }
             }
         }
-    }
 
-    @Override
-    public void forceDifferentTool(UIImageEditView uiev) {
-        if (result == null)
-            uiev.currentTool = new RootImageEditorTool();
-    }
-
-    @Override
-    public void apply(int x, int y, UIImageEditView view, boolean major, boolean dragging) {
-        if (result == null)
+        if (result == null) {
+            AppMain.launchDialog(TXDB.get("Object in clipboard not a valid image."));
             return;
+        }
 
         view.eds.startSection();
 
