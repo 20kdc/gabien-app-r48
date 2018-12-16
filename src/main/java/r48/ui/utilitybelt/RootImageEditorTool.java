@@ -24,6 +24,7 @@ public class RootImageEditorTool implements IImageEditorTool {
                 LineImageEditorTool.class,
                 FillImageEditorTool.class,
                 CopyImageEditorTool.class,
+                PasteImageEditorTool.class,
                 TileImageEditorTool.class,
                 EDImageEditorTool.class
         };
@@ -33,6 +34,7 @@ public class RootImageEditorTool implements IImageEditorTool {
                 TXDB.get("Line"),
                 TXDB.get("Fill"),
                 TXDB.get("Copy"),
+                TXDB.get("Paste"),
                 TXDB.get("TileView"),
                 TXDB.get("Pick Col.")
         };

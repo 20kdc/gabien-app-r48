@@ -61,7 +61,7 @@ public class RectangleImageEditorTool implements IImageEditorTool {
 
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
-        return RootImageEditorTool.createToolPalette(uiev, RectangleImageEditorTool.class);
+        return RootImageEditorTool.createToolPalette(uiev, getClass());
     }
 
     @Override

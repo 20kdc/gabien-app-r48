@@ -7,96 +7,53 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.ui.*;
-import r48.FontSizes;
-import r48.dbs.TXDB;
+import r48.AppMain;
+import r48.RubyIO;
+import r48.io.BMPConnection;
+
+import java.io.IOException;
 
 /**
- * Created on 14th July 2018
+ * ...Yes, it uses BMPs. (Using the full ImageIO stack seemed like overcomplicating things a little.)
+ * Created on December 15, 2018.
  */
-public class CopyImageEditorTool extends StagedImageEditorTool {
-    public boolean flipX, flipY, swapXY;
-
-    public CopyImageEditorTool() {
-        super(3);
-    }
-
+public class CopyImageEditorTool extends RectangleImageEditorTool {
     @Override
-    protected void performOperation(UIImageEditView view) {
-        view.eds.startSection();
-
-        Rect bStuff = getRectWithPoints();
-        int targetX = stageXs[2];
-        int targetY = stageYs[2];
-
-        int[] cols = new int[bStuff.width * bStuff.height];
-        for (int i = 0; i < bStuff.width; i++) {
-            for (int j = 0; j < bStuff.height; j++) {
-                FillAlgorithm.Point p = view.correctPoint(bStuff.x + i, bStuff.y + j);
-                if (p != null) {
-                    cols[i + (j * bStuff.width)] = view.image.getRaw(p.x, p.y);
-                } else {
-                    // This is always a valid value
-                    cols[i + (j * bStuff.width)] = 0;
+    protected void performOperation(UIImageEditView view, int bW, int bH) {
+        int palSize = view.image.paletteSize();
+        byte[] data;
+        if (view.image.usesPalette() && (palSize <= 256)) {
+            data = BMPConnection.prepareBMP(bW, bH, 8, view.image.paletteSize(), true, false);
+            try {
+                BMPConnection bc = new BMPConnection(data, BMPConnection.CMode.Normal, 0, false);
+                for (int i = 0; i < palSize; i++)
+                    bc.putPalette(i, view.image.getPaletteRGB(i));
+                for (int j = 0; j < bH; j++) {
+                    for (int i = 0; i < bW; i++) {
+                        FillAlgorithm.Point p = view.correctPoint(aX + i, aY + j);
+                        if (p != null)
+                            bc.putPixel(i, j, view.image.getRaw(p.x, p.y));
+                    }
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        }
-        for (int i = 0; i < bStuff.width; i++) {
-            for (int j = 0; j < bStuff.height; j++) {
-                int i2 = i, j2 = j;
-                if (flipX)
-                    i2 = bStuff.width - (1 + i);
-                if (flipY)
-                    j2 = bStuff.height - (1 + j);
-                if (swapXY) {
-                    int k = i2;
-                    i2 = j;
-                    j2 = k;
-                }
-                FillAlgorithm.Point p = view.correctPoint(targetX + i2, targetY + j2);
-                if (p != null)
-                    view.image.setRaw(p.x, p.y, cols[i + (j * bStuff.width)]);
-            }
-        }
-        stage = 0;
-        view.eds.endSection();
-    }
-
-    @Override
-    public UIElement createToolPalette(UIImageEditView uiev) {
-        UIScrollLayout uie = RootImageEditorTool.createToolPalette(uiev, CopyImageEditorTool.class);
-        UITextButton a = new UITextButton(TXDB.get("FlipX"), FontSizes.schemaFieldTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                flipX = !flipX;
-            }
-        }).togglable(flipX);
-        UITextButton b = new UITextButton(TXDB.get("FlipY"), FontSizes.schemaFieldTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                flipY = !flipY;
-            }
-        }).togglable(flipY);
-        UITextButton c = new UITextButton(TXDB.get("SwapXY"), FontSizes.schemaFieldTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                swapXY = !swapXY;
-            }
-        }).togglable(swapXY);
-        UISplitterLayout sl = new UISplitterLayout(a, b, false, 0.5d);
-        uie.panelsAdd(new UISplitterLayout(sl, c, false, 0.6666d));
-        return uie;
-    }
-
-    @Override
-    public String getLocalizedText(boolean dedicatedDragControl) {
-        if (stage == 0) {
-            return TXDB.get("Tap top-left pixel of area to copy.");
-        } else if (stage == 1) {
-            return TXDB.get("Tap bottom-right pixel of area to copy.");
         } else {
-            return TXDB.get("Tap top-left pixel of destination.");
+            data = BMPConnection.prepareBMP(bW, bH, 32, 0, true, false);
+            try {
+                BMPConnection bc = new BMPConnection(data, BMPConnection.CMode.Normal, 0, false);
+                for (int j = 0; j < bH; j++) {
+                    for (int i = 0; i < bW; i++) {
+                        FillAlgorithm.Point p = view.correctPoint(aX + i, aY + j);
+                        if (p != null)
+                            bc.putPixel(i, j, view.image.getRGB(p.x, p.y));
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
+        AppMain.theClipboard = new RubyIO().setUser("Image", data);
     }
 
 }
