@@ -9,16 +9,9 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning:
-+ Data Model 2
- + 'instanceof RubyIO' is used to indicate areas where I've paused work.
- + Plan is in 3 stages:
-  + Stage 1: Insert IRIOs at various points throughout the system to flush out RubyIO usage.
-     (Completeish)
-  + Stage 2: Isolate the Schema system so that the 'backbone' can be dealt with.
-  + Stage 3: Convert remaining classes to RubyIOs.
-   + Test this & the Data Model 2 plan in general with the Ikachan backend. What I'm looking for here is to have all the data structures totally 'backend-owned'.
 + Demetrius's various notes over IRC and such:
- + Character creator???
+ + Character creator??? [in progress]
+ + Fix Shadow/Region editing (Sub-tile support followed by possible major adjustment to UIMTAutotile workings)
 + OSLoc mode improvements, perhaps?
 
 + Documentation

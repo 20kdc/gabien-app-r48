@@ -212,13 +212,14 @@ public class LcfTileRenderer implements ITileRenderer {
 
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv, int sc) {
-        // There are 12 redundant groups in the set of 80 - or to be specific in the 60 water subgroups.
-        int[] genLcfATs = new int[68];
+        // There are 12 redundant groups in the 60 water subgroups.
+        // There are then 12 autotile groups.
+        int[] genLcfATs = new int[60];
         int ia = 0;
         for (int i = 0; i < 60; i++)
             if ((i % 20) < 16)
                 genLcfATs[ia++] = i * 50;
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 12; i++)
             genLcfATs[ia++] = 4000 + (i * 50);
         // On L0, lower layer tiles take priority,
         // on L1, upper layer tiles take priority
