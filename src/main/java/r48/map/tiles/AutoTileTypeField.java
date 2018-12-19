@@ -13,21 +13,24 @@ package r48.map.tiles;
  */
 public class AutoTileTypeField {
     public final int start, length, databaseId;
+    public final int represent;
     // Note: This can be asymmetric, is processed from the centre tile's point of view,
     //        ought to contain this AT field, and is based on start index.
     private final int[] considerSameAs;
 
-    public AutoTileTypeField(int a, int b, int c) {
+    public AutoTileTypeField(int a, int b, int c, int d) {
         start = a;
         length = b;
         databaseId = c;
+        represent = d;
         considerSameAs = new int[] {start};
     }
 
-    public AutoTileTypeField(int a, int b, int c, int[] considerSame) {
+    public AutoTileTypeField(int a, int b, int c, int d, int[] considerSame) {
         start = a;
         length = b;
         databaseId = c;
+        represent = d;
         considerSameAs = considerSame;
     }
 

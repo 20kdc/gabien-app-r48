@@ -140,14 +140,14 @@ public class XPTileRenderer implements ITileRenderer {
     @Override
     public AutoTileTypeField[] indicateATs() {
         return new AutoTileTypeField[] {
-                new AutoTileTypeField(0, 48, 0),
-                new AutoTileTypeField(48, 48, 0),
-                new AutoTileTypeField(48 * 2, 48, 0),
-                new AutoTileTypeField(48 * 3, 48, 0),
-                new AutoTileTypeField(48 * 4, 48, 0),
-                new AutoTileTypeField(48 * 5, 48, 0),
-                new AutoTileTypeField(48 * 6, 48, 0),
-                new AutoTileTypeField(48 * 7, 48, 0),
+                new AutoTileTypeField(0, 48, 0, 47),
+                new AutoTileTypeField(48, 48, 0, 47),
+                new AutoTileTypeField(48 * 2, 48, 0, 47),
+                new AutoTileTypeField(48 * 3, 48, 0, 47),
+                new AutoTileTypeField(48 * 4, 48, 0, 47),
+                new AutoTileTypeField(48 * 5, 48, 0, 47),
+                new AutoTileTypeField(48 * 6, 48, 0, 47),
+                new AutoTileTypeField(48 * 7, 48, 0, 47),
         };
     }
 

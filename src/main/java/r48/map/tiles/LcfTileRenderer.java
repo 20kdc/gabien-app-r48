@@ -212,16 +212,19 @@ public class LcfTileRenderer implements ITileRenderer {
 
     @Override
     public UITileGrid[] createATUIPlanes(UIMapView mv, int sc) {
-        int[] genLcfATs = new int[80];
+        // There are 12 redundant groups in the set of 80 - or to be specific in the 60 water subgroups.
+        int[] genLcfATs = new int[68];
+        int ia = 0;
         for (int i = 0; i < 60; i++)
-            genLcfATs[i] = i * 50;
+            if ((i % 20) < 16)
+                genLcfATs[ia++] = i * 50;
         for (int i = 0; i < 20; i++)
-            genLcfATs[i + 60] = 4000 + (i * 50);
+            genLcfATs[ia++] = 4000 + (i * 50);
         // On L0, lower layer tiles take priority,
         // on L1, upper layer tiles take priority
         if (mv.currentLayer == 0) {
             return new UITileGrid[] {
-                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF", false, sc),
+                    new UITileGrid(mv, 0, genLcfATs.length, 50, genLcfATs, "ATF", false, sc),
 
                     new UITileGrid(mv, 5000, 144, 0, null, "LOWER", false, sc),
 
@@ -237,7 +240,7 @@ public class LcfTileRenderer implements ITileRenderer {
             return new UITileGrid[] {
                     new UITileGrid(mv, 10000, 144, 0, null, "UPPER", false, sc),
 
-                    new UITileGrid(mv, 0, 80, 50, genLcfATs, "ATF", true, sc),
+                    new UITileGrid(mv, 0, genLcfATs.length, 50, genLcfATs, "ATF", true, sc),
 
                     new UITileGrid(mv, 5000, 144, 0, null, "LOWER", true, sc),
 
@@ -258,10 +261,16 @@ public class LcfTileRenderer implements ITileRenderer {
         int[] waterIndexes = new int[60];
         for (int i = 0; i < waterIndexes.length; i++) {
             waterIndexes[i] = i * 50;
-            attf.add(new AutoTileTypeField(i * 50, 50, 1, waterIndexes));
+            int subgroup = i % 20;
+            // Water should default to hoverlike form
+            int rep = 0;
+            // Some water indexes are better represented with different tiles...
+            if ((subgroup == 0) && (i != 40))
+                rep = 46;
+            attf.add(new AutoTileTypeField(i * 50, 50, 1, rep, waterIndexes));
         }
         for (int i = 4000; i < 4600; i += 50)
-            attf.add(new AutoTileTypeField(i, 50, 0));
+            attf.add(new AutoTileTypeField(i, 50, 0, 49));
         return attf.toArray(new AutoTileTypeField[0]);
     }
 

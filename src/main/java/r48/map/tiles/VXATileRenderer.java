@@ -361,9 +361,9 @@ public class VXATileRenderer implements ITileRenderer {
         }
         AutoTileTypeField[] r = new AutoTileTypeField[atFields.size() + atWFields.size()];
         for (int i = 0; i < atFields.size(); i++)
-            r[i] = new AutoTileTypeField(atFields.get(i), 48, 0);
+            r[i] = new AutoTileTypeField(atFields.get(i), 48, 0, 47);
         for (int i = 0; i < atWFields.size(); i++)
-            r[i + atFields.size()] = new AutoTileTypeField(atWFields.get(i), 48, 1);
+            r[i + atFields.size()] = new AutoTileTypeField(atWFields.get(i), 48, 1, 15);
         return r;
     }
 

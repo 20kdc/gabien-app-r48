@@ -21,6 +21,8 @@ public class UITileGrid extends UIGrid {
     public final int tileStart, layer;
     public final int spriteScale;
     public final StuffRenderer renderer;
+    // Used to implement a feature Demetrius recommended: borders around AT field elements.
+    public final int borderWidth;
 
     // If 0, not an AT Group. Otherwise, this is the size of the AT group.
     public final int atGroup;
@@ -35,7 +37,12 @@ public class UITileGrid extends UIGrid {
     }
 
     public UITileGrid(StuffRenderer sr, int l, int tStart, int tileCount, int aTile, int[] remap, String tiles, boolean doNotUse, int sprScale) {
-        super(sr.tileRenderer.getTileSize() * sprScale, sr.tileRenderer.getTileSize() * sprScale, tileCount);
+        this(sr, sr.tileRenderer.getTileSize() * sprScale, (aTile != 0) ? sprScale : 0, l, tStart, tileCount, aTile, remap, tiles, doNotUse, sprScale);
+    }
+
+    private UITileGrid(StuffRenderer sr, int ets, int bs, int l, int tStart, int tileCount, int aTile, int[] remap, String tiles, boolean doNotUse, int sprScale) {
+        super(ets + (bs * 2), ets + (bs * 2), tileCount);
+        borderWidth = bs;
         // Padding for readability. As this padding is on the left, it's last to get removed.
         recommendAvoid = doNotUse;
         if (doNotUse) {
@@ -47,8 +54,8 @@ public class UITileGrid extends UIGrid {
         renderer = sr;
         layer = l;
         tileStart = tStart;
-        bkgR = 255;
-        bkgB = 255;
+        bkgR = 128;
+        bkgB = 128;
         atGroup = aTile;
         viewMap = remap;
         spriteScale = sprScale;
@@ -95,19 +102,22 @@ public class UITileGrid extends UIGrid {
         t += tileStart;
         if (atGroup != 0) {
             AutoTileTypeField[] attf = renderer.tileRenderer.indicateATs();
-            int target = hover ? 0xFF : 0;
-            int def = hover ? 0 : atGroup - 1; // fallback
+            int def = hover ? 0 : atGroup - 1; // Fallback
             for (AutoTileTypeField at : attf) {
                 if (t >= at.start) {
                     if (t < (at.length + at.start)) {
-                        def = AppMain.autoTiles[at.databaseId].inverseMap[target];
+                        if (hover) {
+                            def = AppMain.autoTiles[at.databaseId].inverseMap[0xFF];
+                        } else {
+                            def = at.represent;
+                        }
                         break;
                     }
                 }
             }
             t += def;
         }
-        renderer.tileRenderer.drawTile(layer, (short) t, x, y, igd, spriteScale, true);
+        renderer.tileRenderer.drawTile(layer, (short) t, x + borderWidth, y + borderWidth, igd, spriteScale, true);
     }
 
     public boolean compatibleWith(UITileGrid lTM) {
