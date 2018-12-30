@@ -34,7 +34,7 @@ import r48.map.pass.R2kPassabilitySource;
 import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.LcfTileRenderer;
 import r48.maptools.UIMTBase;
-import r48.maptools.UIMTFtrGdt01;
+import r48.maptools.deep.UIMTFtrGdt01;
 import r48.toolsets.RMTranscriptDumper;
 
 import java.util.Collections;
