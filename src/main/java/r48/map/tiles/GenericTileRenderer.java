@@ -10,8 +10,8 @@ package r48.map.tiles;
 import gabien.IGrDriver;
 import gabien.IImage;
 import r48.dbs.TXDB;
-import r48.map.UIMapView;
-import r48.ui.UITileGrid;
+import r48.map.tileedit.AutoTileTypeField;
+import r48.map.tileedit.TileEditingTab;
 
 /**
  * Useful for, say, your average Tiled output.
@@ -41,9 +41,9 @@ public class GenericTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public UITileGrid[] createATUIPlanes(UIMapView mv, int sprScale) {
-        return new UITileGrid[] {
-                new UITileGrid(mv, 0, tileCount, 0, null, TXDB.get("Tiles"), false, sprScale)
+    public TileEditingTab[] getEditConfig(int layerIdx) {
+        return new TileEditingTab[] {
+                new TileEditingTab(TXDB.get("Tiles"), false, TileEditingTab.range(0, tileCount))
         };
     }
 

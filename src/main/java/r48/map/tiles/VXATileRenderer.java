@@ -13,12 +13,12 @@ import gabien.IGrDriver;
 import gabien.IImage;
 import r48.AppMain;
 import r48.dbs.ATDB;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.UIMapView;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
-import r48.ui.UITileGrid;
+import r48.map.tileedit.AutoTileTypeField;
+import r48.map.tileedit.TileEditingTab;
 
 import java.util.LinkedList;
 
@@ -303,29 +303,23 @@ public class VXATileRenderer implements ITileRenderer {
         return false;
     }
 
-    @Override
-    public UITileGrid[] createATUIPlanes(UIMapView mv, int sc) {
-        if (mv.currentLayer == 3) {
-            // Shadow Layer
-            return new UITileGrid[] {
-                    new UITileGrid(mv, 0x000, 0x100, 0, null, TXDB.get("Don't use this, use the Shadow-Region tool."), false, sc)
-            };
+    public TileEditingTab[] getEditConfig(int layer) {
+        if (layer == 3) {
+            return new TileEditingTab[0];
         } else {
             int[] allATs = new int[0x1800 / 48];
             for (int i = 0; i < allATs.length; i++)
-                allATs[i] = i * 48;
-            return new UITileGrid[] {
-                    // Using 16 as the value, though false for most ATs, makes everything work (walls).
-                    // Need to introduce another parameter or just set 16 as the display offset. Going with that.
-                    new UITileGrid(mv, 0x800, allATs.length, 48, allATs, "AT", false, sc),
+                allATs[i] = 0x800 + (i * 48);
+            return new TileEditingTab[] {
+                    new TileEditingTab("AT", false, allATs, indicateATs()),
 
-                    new UITileGrid(mv, 0x000, 0x400, 0, null, "G1", false, sc),
-                    new UITileGrid(mv, 0x600, 0x100, 0, null, "G2", false, sc),
+                    new TileEditingTab("G1", false, TileEditingTab.range(0x000, 0x400)),
+                    new TileEditingTab("G2", false, TileEditingTab.range(0x600, 0x100)),
 
-                    new UITileGrid(mv, 0x800, 0x300, 0, null, "AT1-M", false, sc),
-                    new UITileGrid(mv, 0xB00, 0x600, 0, null, "AT2-M", false, sc),
-                    new UITileGrid(mv, 0x1100, 0x600, 0, null, "AT3-M", false, sc),
-                    new UITileGrid(mv, 0x1700, 0x900, 0, null, "AT4-M", false, sc),
+                    new TileEditingTab("AT1-M", false, TileEditingTab.range(0x800, 0x300)),
+                    new TileEditingTab("AT2-M", false, TileEditingTab.range(0xB00, 0x600)),
+                    new TileEditingTab("AT3-M", false, TileEditingTab.range(0x1100, 0x600)),
+                    new TileEditingTab("AT4-M", false, TileEditingTab.range(0x1700, 0x900))
             };
         }
     }

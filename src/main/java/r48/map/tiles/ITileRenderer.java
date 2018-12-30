@@ -8,8 +8,8 @@
 package r48.map.tiles;
 
 import gabien.IGrDriver;
-import r48.map.UIMapView;
-import r48.ui.UITileGrid;
+import r48.map.tileedit.AutoTileTypeField;
+import r48.map.tileedit.TileEditingTab;
 
 /**
  * Used because this changes a LOT
@@ -29,9 +29,8 @@ public interface ITileRenderer {
     // NOTE: The flag "editor" means "anything not a UIMapView"
     void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor);
 
-    // NOTE: The reason sprScale is supplied here is so the tiling tool's width can be increased 'naturally'.
-    //       See UIMTAutotile for details.
-    UITileGrid[] createATUIPlanes(UIMapView mv, int sprScale);
+    // Returning a length of 0 makes the layer uneditable from UIMTAutotile.
+    TileEditingTab[] getEditConfig(int layerIdx);
 
     AutoTileTypeField[] indicateATs();
 

@@ -11,9 +11,9 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
 import r48.dbs.TXDB;
-import r48.map.UIMapView;
 import r48.map.imaging.IImageLoader;
-import r48.ui.UITileGrid;
+import r48.map.tileedit.AutoTileTypeField;
+import r48.map.tileedit.TileEditingTab;
 
 /**
  * Created on 1/27/17.
@@ -71,8 +71,10 @@ public class IkaTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public UITileGrid[] createATUIPlanes(UIMapView mv, int sc) {
-        return new UITileGrid[] {new UITileGrid(mv, 0, 256, 0, null, TXDB.get("Tiles"), false, sc)};
+    public TileEditingTab[] getEditConfig(int layerIdx) {
+        return new TileEditingTab[] {
+                new TileEditingTab(TXDB.get("Tiles"), false, TileEditingTab.range(0, 256))
+        };
     }
 
     @Override

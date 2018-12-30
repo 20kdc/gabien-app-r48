@@ -18,7 +18,8 @@ import r48.io.data.IRIO;
 import r48.map.UIMapView;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
-import r48.ui.UITileGrid;
+import r48.map.tileedit.AutoTileTypeField;
+import r48.map.tileedit.TileEditingTab;
 
 /**
  * Created on 1/27/17.
@@ -116,24 +117,24 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public UITileGrid[] createATUIPlanes(UIMapView mv, int sc) {
+    public TileEditingTab[] getEditConfig(int layerIdx) {
         IImage tm0 = tilesetMaps[0];
         int tileCount = 48;
         if (tm0 != null)
             tileCount = ((tm0.getHeight() / 32) * 8);
-        return new UITileGrid[] {
-                new UITileGrid(mv, 0, 48, 0, null, "NULL", false, sc),
-                new UITileGrid(mv, 0, 7, 48, new int[] {
+        return new TileEditingTab[] {
+                new TileEditingTab("AUTO", false, new int[] {
+                        0,
                         48,
                         48 * 2,
                         48 * 3,
                         48 * 4,
                         48 * 5,
                         48 * 6,
-                        48 * 7,
-                }, "AUTO", false, sc),
-                new UITileGrid(mv, 48 * 8, tileCount, 0, null, "TMAP", false, sc),
-                new UITileGrid(mv, 48, 48 * 7, 0, null, "AT-M", false, sc),
+                        48 * 7
+                }),
+                new TileEditingTab("TMAP", false, TileEditingTab.range(48 * 8, tileCount)),
+                new TileEditingTab("AT-M", false, TileEditingTab.range(48, 48 * 7)),
         };
     }
 

@@ -52,7 +52,7 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
             if (ty >= minY)
                 if (tx <= maxX)
                     if (ty <= maxY)
-                        return parent.getPlaceSelection(tx - startX, ty - startY);
+                        return parent.getTCSelected(tx - startX, ty - startY);
         return there;
     }
 
@@ -82,14 +82,7 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
             int maxX = Math.max(startX, x);
             int minY = Math.min(startY, y);
             int maxY = Math.max(startY, y);
-            for (int i = minX; i <= maxX; i++)
-                for (int j = minY; j <= maxY; j++)
-                    parent.map.mapTable.setTiletype(i, j, parent.map.currentLayer, (short) parent.getPlaceSelection(i - startX, j - startY));
-            if (autotile)
-                for (int i = minX - 1; i <= maxX + 1; i++)
-                    for (int j = minY - 1; j <= maxY + 1; j++)
-                        UIMTAutotile.updateAutotile(parent.map, parent.atBases, i, j, parent.map.currentLayer);
-            parent.map.passModificationNotification();
+            parent.performGeneralRectangle(layer, startX, startY, minX, minY, maxX, maxY);
             parent.selfClose = false;
             parent.hasClosed = false;
             mapToolContext.accept(parent);

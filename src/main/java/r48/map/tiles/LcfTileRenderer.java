@@ -13,10 +13,10 @@ import gabien.IImage;
 import r48.AppMain;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;
-import r48.map.UIMapView;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.imaging.IImageLoader;
-import r48.ui.UITileGrid;
+import r48.map.tileedit.AutoTileTypeField;
+import r48.map.tileedit.TileEditingTab;
 
 import java.util.LinkedList;
 
@@ -211,7 +211,7 @@ public class LcfTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public UITileGrid[] createATUIPlanes(UIMapView mv, int sc) {
+    public TileEditingTab[] getEditConfig(int layerIdx) {
         // There are 12 redundant groups in the 60 water subgroups.
         // There are then 12 autotile groups.
         int[] genLcfATs = new int[60];
@@ -223,35 +223,35 @@ public class LcfTileRenderer implements ITileRenderer {
             genLcfATs[ia++] = 4000 + (i * 50);
         // On L0, lower layer tiles take priority,
         // on L1, upper layer tiles take priority
-        if (mv.currentLayer == 0) {
-            return new UITileGrid[] {
-                    new UITileGrid(mv, 0, genLcfATs.length, 50, genLcfATs, "ATF", false, sc),
-
-                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER", false, sc),
-
-                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI", false, sc),
-
-                    new UITileGrid(mv, 4000, 600, 0, null, "TEM", false, sc),
-                    new UITileGrid(mv, 0, 1000, 0, null, "W1M", false, sc),
-                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M", false, sc),
-                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M", false, sc),
-                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER", true, sc),
+        TileEditingTab atf = new TileEditingTab("ATF", layerIdx != 0, genLcfATs, indicateATs());
+        TileEditingTab lwr = new TileEditingTab("LOWER", layerIdx != 0, TileEditingTab.range(5000, 144));
+        TileEditingTab ani = new TileEditingTab("ANI", layerIdx != 0, new int[] {3000, 3050, 3100});
+        TileEditingTab tem = new TileEditingTab("TEM", layerIdx != 0, TileEditingTab.range(4000, 600));
+        TileEditingTab w1m = new TileEditingTab("W1M", layerIdx != 0, TileEditingTab.range(0, 1000));
+        TileEditingTab w2m = new TileEditingTab("W2M", layerIdx != 0, TileEditingTab.range(1000, 1000));
+        TileEditingTab w3m = new TileEditingTab("W3M", layerIdx != 0, TileEditingTab.range(2000, 1000));
+        TileEditingTab upr = new TileEditingTab("UPPER", layerIdx != 1, TileEditingTab.range(10000, 144));
+        if (layerIdx == 0) {
+            return new TileEditingTab[] {
+                    atf,
+                    lwr,
+                    ani,
+                    tem,
+                    w1m,
+                    w2m,
+                    w3m,
+                    upr
             };
         } else {
-            return new UITileGrid[] {
-                    new UITileGrid(mv, 10000, 144, 0, null, "UPPER", false, sc),
-
-                    new UITileGrid(mv, 0, genLcfATs.length, 50, genLcfATs, "ATF", true, sc),
-
-                    new UITileGrid(mv, 5000, 144, 0, null, "LOWER", true, sc),
-
-                    new UITileGrid(mv, 3000, 3, 0, new int[] {0, 50, 100}, "ANI", true, sc),
-
-                    new UITileGrid(mv, 0, 1000, 0, null, "W1M", true, sc),
-                    new UITileGrid(mv, 1000, 1000, 0, null, "W2M", true, sc),
-                    new UITileGrid(mv, 2000, 1000, 0, null, "W3M", true, sc),
-
-                    new UITileGrid(mv, 4000, 600, 0, null, "TEM", true, sc),
+            return new TileEditingTab[] {
+                    upr,
+                    atf,
+                    lwr,
+                    ani,
+                    tem,
+                    w1m,
+                    w2m,
+                    w3m
             };
         }
     }

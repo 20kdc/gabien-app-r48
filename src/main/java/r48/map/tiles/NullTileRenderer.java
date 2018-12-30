@@ -8,9 +8,8 @@
 package r48.map.tiles;
 
 import gabien.IGrDriver;
-import r48.dbs.TXDB;
-import r48.map.UIMapView;
-import r48.ui.UITileGrid;
+import r48.map.tileedit.AutoTileTypeField;
+import r48.map.tileedit.TileEditingTab;
 
 /**
  * Created on 1/27/17.
@@ -27,12 +26,10 @@ public class NullTileRenderer implements ITileRenderer {
     }
 
     @Override
-    public UITileGrid[] createATUIPlanes(UIMapView mv, int sc) {
-        return new UITileGrid[] {
-                new UITileGrid(mv, 0, 1, 0, null, TXDB.get("Tiles Unsupported"), false, sc)
+    public TileEditingTab[] getEditConfig(int layerIdx) {
+        return new TileEditingTab[] {
         };
     }
-
 
     @Override
     public AutoTileTypeField[] indicateATs() {
