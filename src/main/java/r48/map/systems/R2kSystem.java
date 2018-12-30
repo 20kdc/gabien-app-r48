@@ -33,6 +33,8 @@ import r48.map.mapinfos.UISaveScanMapInfos;
 import r48.map.pass.R2kPassabilitySource;
 import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.LcfTileRenderer;
+import r48.maptools.UIMTBase;
+import r48.maptools.UIMTFtrGdt01;
 import r48.toolsets.RMTranscriptDumper;
 
 import java.util.Collections;
@@ -300,7 +302,16 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override
             public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
-                return new MapEditingToolbarController(iMapToolContext, false);
+                return new MapEditingToolbarController(iMapToolContext, false, new String[] {
+                        TXDB.get("DeepWater")
+                }, new IFunction[] {
+                        new IFunction<IMapToolContext, UIMTBase>() {
+                            @Override
+                            public UIMTBase apply(IMapToolContext o) {
+                                return new UIMTFtrGdt01(o);
+                            }
+                        }
+                });
             }
         });
     }

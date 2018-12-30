@@ -54,6 +54,7 @@ public class UIMapView extends UIPlaneView {
     // Managed using finalize for now.
     private IGrDriver offscreenBuf;
     private int mouseXT, mouseYT;
+    private int mouseXTP, mouseYTP;
 
     // Regarding how these now work:
     // Modification listeners have to be held by the things that need to be notified.
@@ -106,7 +107,9 @@ public class UIMapView extends UIPlaneView {
         double xi = camX + planeDivZoom(x - (wSize.width / 2.0d));
         double yi = camY + planeDivZoom(y - (wSize.height / 2.0d));
         mouseXT = UIElement.sensibleCellDiv((int) xi, tileSize);
+        mouseXTP = UIElement.sensibleCellMod((int) xi, tileSize);
         mouseYT = UIElement.sensibleCellDiv((int) yi, tileSize);
+        mouseYTP = UIElement.sensibleCellMod((int) yi, tileSize);
     }
 
     private int internalScaling(int i) {
@@ -225,7 +228,7 @@ public class UIMapView extends UIPlaneView {
                         if (pickTileHelper != null)
                             pickTileHelper.accept(mapTable.getTileData.apply(new int[] {mouseXT, mouseYT, currentLayer}));
                 } else if (callbacks != null) {
-                    callbacks.confirmAt(mouseXT, mouseYT, currentLayer);
+                    callbacks.confirmAt(mouseXT, mouseYT, mouseXTP, mouseYTP, currentLayer);
                 }
             }
 
@@ -235,7 +238,7 @@ public class UIMapView extends UIPlaneView {
                 if (!shiftDown)
                     if (callbacks != null)
                         if (!callbacks.shouldIgnoreDrag())
-                            callbacks.confirmAt(mouseXT, mouseYT, currentLayer);
+                            callbacks.confirmAt(mouseXT, mouseYT, mouseXTP, mouseYTP, currentLayer);
             }
 
             @Override
@@ -358,8 +361,8 @@ public class UIMapView extends UIPlaneView {
     }
 
     public void showTile(int x, int y) {
-        camX = (x * tileSize) + (tileSize / 2);
-        camY = (y * tileSize) + (tileSize / 2);
+        camX = (x * tileSize) + (tileSize / 2.0);
+        camY = (y * tileSize) + (tileSize / 2.0);
     }
 
     // Safe to pass null here.

@@ -9,7 +9,9 @@ package r48.maptools;
 
 import gabien.FontManager;
 import gabien.IGrDriver;
-import gabien.ui.*;
+import gabien.ui.UILabel;
+import gabien.ui.UINumberBox;
+import gabien.ui.UISplitterLayout;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
@@ -23,38 +25,21 @@ import r48.map.UIMapView;
 public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
     public final UIMapView map;
     private UINumberBox regionId;
-    private int flags = 0;
 
     public UIMTShadowLayer(IMapToolContext mv) {
         super(mv);
         map = mv.getMapView();
-        UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
-        String[] s = new String[] {TXDB.get("Up-Left"), TXDB.get("Up-Right"), TXDB.get("Down-Left"), TXDB.get("Down-Right")};
-        UITextButton[] controlButtons = new UITextButton[4];
-        int power = 1;
-        for (int i = 0; i < 4; i++) {
-            final int thePower = power;
-            controlButtons[i] = new UITextButton(s[i], FontSizes.tableElementTextHeight, new Runnable() {
-                @Override
-                public void run() {
-                    flags ^= thePower;
-                }
-            }).togglable(false);
-            power <<= 1;
-        }
-        uiSVL.panelsAdd(new UISplitterLayout(controlButtons[0], controlButtons[1], false, 1, 2));
-        uiSVL.panelsAdd(new UISplitterLayout(controlButtons[2], controlButtons[3], false, 1, 2));
-        uiSVL.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Region:"), FontSizes.tableElementTextHeight), regionId = new UINumberBox(0, FontSizes.tableElementTextHeight), false, 1, 2));
-        changeInner(uiSVL, true);
+        changeInner(new UISplitterLayout(new UILabel(TXDB.get("Region:"), FontSizes.tableElementTextHeight), regionId = new UINumberBox(0, FontSizes.tableElementTextHeight), false, 1, 2), true);
     }
 
     @Override
     public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+        /*
         if (mouse)
             if (cx == tx)
                 if (cy == ty)
                     if (layer == 3)
-                        return (short) flags;
+                        return (short) flags;*/
         return there;
     }
 
@@ -81,15 +66,23 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void confirmAt(int x, int y, int layer) {
+    public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
         if (map.mapTable.outOfBounds(x, y))
             return;
-        map.mapTable.setTiletype(x, y, 3, (short) (flags | (regionId.number << 8)));
+        int shadowBasis = map.mapTable.getTiletype(x, y, 3) & 0x0F;
+        int sz = map.tileSize / 2;
+        int flagId = 0;
+        if (pixx > sz)
+            flagId++;
+        if (pixy > sz)
+            flagId += 2;
+        shadowBasis ^= 1 << flagId;
+        map.mapTable.setTiletype(x, y, 3, (short) (shadowBasis | (regionId.number << 8)));
         map.passModificationNotification();
     }
 
     @Override
     public boolean shouldIgnoreDrag() {
-        return false;
+        return true;
     }
 }

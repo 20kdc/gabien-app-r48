@@ -75,7 +75,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void confirmAt(final int x, final int y, final int layer) {
+    public void confirmAt(final int x, final int y, int pixx, int pixy, final int layer) {
         svl.panelsClear();
         for (final IRIO evK : mapView.mapTable.eventAccess.getEventKeys()) {
             final long eventX = mapView.mapTable.eventAccess.getEventX(evK);
@@ -94,12 +94,12 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
-                                    confirmAt(x, y, layer);
+                                    confirmAt(x, y, 123, 123, layer);
                                     return;
                                 }
                                 IRIO evI = mapView.mapTable.eventAccess.getEvent(evK);
                                 if (evI == null) {
-                                    confirmAt(x, y, layer);
+                                    confirmAt(x, y, 123, 123, layer);
                                     return;
                                 }
                                 showEvent(evK, mapView, evI);
@@ -109,12 +109,12 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
-                                    confirmAt(x, y, layer);
+                                    confirmAt(x, y, 123, 123, layer);
                                     return;
                                 }
                                 IRIO evI = mapView.mapTable.eventAccess.getEvent(evK);
                                 if (evI == null) {
-                                    confirmAt(x, y, layer);
+                                    confirmAt(x, y, 123, 123, layer);
                                     return;
                                 }
                                 mapToolContext.accept(new UIMTEventMover(mapToolContext, evK));
@@ -124,12 +124,12 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
-                                    confirmAt(x, y, layer);
+                                    confirmAt(x, y, 123, 123, layer);
                                     return;
                                 }
                                 IRIO evI = mapView.mapTable.eventAccess.getEvent(evK);
                                 if (evI == null) {
-                                    confirmAt(x, y, layer);
+                                    confirmAt(x, y, 123, 123, layer);
                                     return;
                                 }
                                 RubyIO newEvent = new RubyIO().setDeepClone(evI);
@@ -143,16 +143,16 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                             @Override
                             public void run() {
                                 if (mapView.mapTable.eventAccess.hasSync(evK) != null) {
-                                    confirmAt(x, y, layer);
+                                    confirmAt(x, y, 123, 123, layer);
                                     return;
                                 }
                                 IRIO evI = mapView.mapTable.eventAccess.getEvent(evK);
                                 if (evI == null) {
-                                    confirmAt(x, y, layer);
+                                    confirmAt(x, y, 123, 123, layer);
                                     return;
                                 }
                                 mapView.mapTable.eventAccess.delEvent(evK);
-                                confirmAt(x, y, layer);
+                                confirmAt(x, y, 123, 123, layer);
                             }
                         }, FontSizes.eventPickerEntryTextHeight);
                         svl.panelsAdd(button);
@@ -166,7 +166,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
                                 Runnable r = mapView.mapTable.eventAccess.hasSync(evK);
                                 if (r != null)
                                     r.run();
-                                confirmAt(x, y, layer);
+                                confirmAt(x, y, 123, 123, layer);
                             }
                         }, FontSizes.eventPickerEntryTextHeight);
                         svl.panelsAdd(button);

@@ -82,7 +82,7 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
             }
 
             @Override
-            public void confirmAt(int x, int y, int layer) {
+            public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
                 abc[1].setFX(x);
                 abc[2].setFX(y);
                 path.changeOccurred(false);

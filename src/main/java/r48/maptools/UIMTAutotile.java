@@ -20,13 +20,13 @@ import r48.map.tileedit.TileEditingTab;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
 import r48.ui.UITileGrid;
+import r48.ui.utilitybelt.FillAlgorithm;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 
 /**
- * Note that once created, it is meant to be locked to the layer it was created for.
- * ... this is kind of getting monolithic with multiple subtools. Oh well.
+ * A monolithic 'all the main editing tools' class. Even a single instance of this class
+ *  has to be adaptable to whatever layer & editing details it ends up with.
  * Created on 12/29/16.
  */
 public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
@@ -219,7 +219,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void confirmAt(int x, int y, int layer) {
+    public void confirmAt(final int x, final int y, int pixx, int pixy, final int layer) {
         if (x < 0)
             return;
         if (y < 0)
@@ -242,34 +242,37 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             // 1. Any two tiles which have the same ID are the same.
             // 2. Any two tiles which are both part of an AT group and that is the same AT group, are the same.
             // 3. Anything else is not the same.
-            HashSet<FloodFillPoint> investigatePoints = new HashSet<FloodFillPoint>();
-            HashSet<FloodFillPoint> handledPoints = new HashSet<FloodFillPoint>();
-            investigatePoints.add(new FloodFillPoint(x, y));
-            int key = map.mapTable.getTiletype(x, y, map.currentLayer);
-            while (investigatePoints.size() > 0) {
-                LinkedList<FloodFillPoint> working = new LinkedList<FloodFillPoint>(investigatePoints);
-                investigatePoints.clear();
-                for (FloodFillPoint ffp : working) {
-                    // work out if this ought to be replaced
-                    if (ffp.contentMatches(key)) {
-                        if (handledPoints.contains(ffp))
-                            continue;
-                        handledPoints.add(ffp);
-                        map.mapTable.setTiletype(ffp.tX, ffp.tY, map.currentLayer, getTCSelected(ffp.tX - x, ffp.tY - y));
-                        investigatePoints.add(new FloodFillPoint(ffp.tX - 1, ffp.tY));
-                        investigatePoints.add(new FloodFillPoint(ffp.tX + 1, ffp.tY));
-                        investigatePoints.add(new FloodFillPoint(ffp.tX, ffp.tY - 1));
-                        investigatePoints.add(new FloodFillPoint(ffp.tX, ffp.tY + 1));
-                    }
+            final int key = map.mapTable.getTiletype(x, y, layer);
+            FillAlgorithm fa = new FillAlgorithm(new IFunction<FillAlgorithm.Point, FillAlgorithm.Point>() {
+                @Override
+                public FillAlgorithm.Point apply(FillAlgorithm.Point point) {
+                    if (map.mapTable.outOfBounds(point.x, point.y))
+                        return null;
+                    return point;
                 }
-            }
-            if (tileTabs[tab].atProcessing) {
-                for (FloodFillPoint ffp : handledPoints) {
+            }, new IFunction<FillAlgorithm.Point, Boolean>() {
+                @Override
+                public Boolean apply(FillAlgorithm.Point point) {
+                    short here = map.mapTable.getTiletype(point.x, point.y, layer);
+                    if (here != key) {
+                        AutoTileTypeField attf = getAutotileType(map, point.x, point.y, layer, atBases, null);
+                        if (attf == null)
+                            return false;
+                        if ((key < attf.start) || (key >= (attf.start + attf.length)))
+                            return false;
+                    }
+                    map.mapTable.setTiletype(point.x, point.y, layer, getTCSelected(point.x - x, point.y - y));
+                    return true;
+                }
+            });
+            fa.availablePointSet.add(new FillAlgorithm.Point(x, y));
+            while (!fa.availablePointSet.isEmpty())
+                fa.pass();
+            if (tileTabs[tab].atProcessing)
+                for (FillAlgorithm.Point ffp : fa.executedPointSet)
                     for (int i = -1; i < 2; i++)
                         for (int j = -1; j < 2; j++)
-                            updateAutotile(map, atBases, ffp.tX + i, ffp.tY + j, layer);
-                }
-            }
+                            updateAutotile(map, atBases, ffp.x + i, ffp.y + j, layer);
             map.passModificationNotification();
             return;
         }
@@ -377,43 +380,4 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         // When using "dangerous" tools, ignore drag.
         return subtool != 0;
     }
-
-    private class FloodFillPoint {
-        public final int tX, tY;
-
-        public FloodFillPoint(int x, int y) {
-            tX = x;
-            tY = y;
-        }
-
-        public boolean contentMatches(int target) {
-            if (map.mapTable.outOfBounds(tX, tY))
-                return false;
-            short here = map.mapTable.getTiletype(tX, tY, map.currentLayer);
-            if (here == target)
-                return true;
-            AutoTileTypeField attf = getAutotileType(map, tX, tY, map.currentLayer, atBases, null);
-            if (attf == null)
-                return false;
-            return (target >= attf.start) && (target < (attf.start + attf.length));
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (!(o instanceof FloodFillPoint))
-                return false;
-            FloodFillPoint ffp = (FloodFillPoint) o;
-            if (ffp.tX != tX)
-                return false;
-            if (ffp.tY != tY)
-                return false;
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            return tX + (tY << 16);
-        }
-    }
-
 }

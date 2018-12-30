@@ -56,7 +56,7 @@ public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void confirmAt(int x, int y, int layer) {
+    public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
         mapView.mapTable.eventAccess.setEventXY(targetEventKey, x, y);
         mapToolContext.accept(new UIMTEventPicker(mapToolContext));
     }

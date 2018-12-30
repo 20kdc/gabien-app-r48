@@ -76,7 +76,7 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
     }
 
     @Override
-    public void confirmAt(int x, int y, int layer) {
+    public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
         if (!parent.map.mapTable.outOfBounds(x, y)) {
             int minX = Math.min(startX, x);
             int maxX = Math.max(startX, x);

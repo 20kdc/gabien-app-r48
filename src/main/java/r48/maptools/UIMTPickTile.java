@@ -50,7 +50,7 @@ public class UIMTPickTile extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void confirmAt(int x, int y, int layer) {
+    public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
         if (!map.mapTable.outOfBounds(x, y))
             map.pickTileHelper.accept(map.mapTable.getTiletype(x, y, layer));
     }

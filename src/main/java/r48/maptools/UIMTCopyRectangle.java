@@ -73,7 +73,7 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void confirmAt(int x, int y, int layer) {
+    public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
         if (stage) {
             UIMapView map = mapToolContext.getMapView();
             if (!map.mapTable.outOfBounds(x, y)) {

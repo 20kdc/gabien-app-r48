@@ -12,6 +12,8 @@ import gabien.ui.IFunction;
 import java.util.HashSet;
 
 /**
+ * inBounds handles wrapping within the same simple 2D geometry.
+ * matchesFill handles determining if a point matches the key, and potentially handles fill execution.
  * Created on October 09, 2018.
  */
 public class FillAlgorithm {

@@ -104,7 +104,7 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
         }
 
         @Override
-        public void confirmAt(int x, int y, int layer) {
+        public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
             if (!definingPoint2) {
                 firstPointX = x;
                 firstPointY = y;

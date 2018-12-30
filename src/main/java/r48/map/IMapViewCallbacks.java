@@ -22,7 +22,7 @@ public interface IMapViewCallbacks {
 
     void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap, int eTileSize);
 
-    void confirmAt(int x, int y, int layer);
+    void confirmAt(int x, int y, int pixx, int pixy, int layer);
 
     boolean shouldIgnoreDrag();
 }
