@@ -50,7 +50,8 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
             public void run() {
                 UIMapView umv = mapToolContext.getMapView();
                 for (FillAlgorithm.Point p : workspace.getAllInvolvedTiles())
-                    umv.mapTable.setTiletype(p.x, p.y, umv.currentLayer, workspace.getOutlineForTile(p.x, p.y).getUsedIdReal());
+                    if (!umv.mapTable.outOfBounds(p.x, p.y))
+                        umv.mapTable.setTiletype(p.x, p.y, umv.currentLayer, workspace.getOutlineForTile(p.x, p.y).getUsedIdReal());
                 umv.passModificationNotification();
                 workspace = new MOutline();
                 placingPen = true;
