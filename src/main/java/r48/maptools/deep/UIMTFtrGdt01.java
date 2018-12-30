@@ -85,16 +85,23 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 int itx = (tx * 2) + i, ity = (ty * 2) + j;
+                int drawMode = 0;
                 if (!placingPen) {
                     Runnable optval = optValidity(itx, ity);
                     boolean gbi = (itx == lcrX) && (ity == lcrY);
-                    int gb = gbi ? 0 : 255;
                     if ((optval != null) || gbi)
-                        igd.clearRect(255, gb, gb, px + (i * ps2) - 1, py + (j * ps2) - 1, 2, 2);
+                        drawMode = gbi ? 2 : 1;
                 } else {
                     if ((i == 1) && (j == 1))
                         continue;
+                    drawMode = 1;
+                }
+                if (drawMode != 0)
+                    igd.clearRect(0, 0, 0, px + (i * ps2) - 2, py + (j * ps2) - 2, 4, 4);
+                if (drawMode == 1) {
                     igd.clearRect(255, 255, 255, px + (i * ps2) - 1, py + (j * ps2) - 1, 2, 2);
+                } else if (drawMode == 2) {
+                    igd.clearRect(255, 0, 0, px + (i * ps2) - 1, py + (j * ps2) - 1, 2, 2);
                 }
             }
         }
@@ -137,13 +144,14 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
         cpcY += ps2 / 2;
         int hsx = sensibleCellMod(cpcX, ps2);
         int hsy = sensibleCellMod(cpcY, ps2);
-        if (hsx < (ps2 / 4))
+        int margin = (ps2 / 3);
+        if (hsx < margin)
             return;
-        if (hsy < (ps2 / 4))
+        if (hsy < margin)
             return;
-        if (hsx >= (ps2 - (ps2 / 4)))
+        if (hsx > (ps2 - margin))
             return;
-        if (hsy >= (ps2 - (ps2 / 4)))
+        if (hsy > (ps2 - margin))
             return;
         cpcX = sensibleCellDiv(cpcX, ps2);
         cpcY = sensibleCellDiv(cpcY, ps2);

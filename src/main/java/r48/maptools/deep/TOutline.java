@@ -18,72 +18,88 @@ public class TOutline {
         basis = null;
     }
 
+    public enum Type {
+        Inward,
+        Outward,
+        Full,
+        Empty
+    }
+
     public TOutline(Type[] base) {
         basis = base;
         // just handles what is necessary
-        if (base[0] == Type.TLCorner) {
+        if (base[0] == Type.Inward) {
             set.add(new Line(0, 0, 1, 0));
             set.add(new Line(1, 0, 0, 1));
             set.add(new Line(0, 1, 0, 0));
-        }
-        if (base[1] == Type.TRCorner) {
-            set.add(new Line(1, 0, 2, 0));
-            set.add(new Line(2, 0, 2, 1));
-            set.add(new Line(2, 1, 1, 0));
-        }
-        if (base[2] == Type.BLCorner) {
-            set.add(new Line(0, 1, 1, 2));
-            set.add(new Line(1, 2, 0, 2));
-            set.add(new Line(0, 2, 0, 1));
-        }
-        if (base[3] == Type.BRCorner) {
-            set.add(new Line(1, 2, 2, 1));
-            set.add(new Line(2, 1, 2, 2));
-            set.add(new Line(2, 2, 1, 2));
-        }
-        // inv
-        if (base[0] == Type.BRCorner)
+        } else if (base[0] == Type.Outward) {
             set.add(new Line(0, 1, 1, 0));
-        if (base[1] == Type.BLCorner)
-            set.add(new Line(1, 0, 2, 1));
-        if (base[2] == Type.TRCorner)
-            set.add(new Line(1, 2, 0, 1));
-        if (base[3] == Type.TLCorner)
-            set.add(new Line(2, 1, 1, 2));
-        // full-edge (ignoring invalid interior)
-        if (base[0] == Type.Full) {
+        } else if (base[0] == Type.Full) {
             set.add(new Line(0, 1, 0, 0));
             set.add(new Line(0, 0, 1, 0));
-        }
-        if (base[1] == Type.Full) {
-            set.add(new Line(1, 0, 2, 0));
-            set.add(new Line(2, 0, 2, 1));
-        }
-        if (base[2] == Type.Full) {
-            set.add(new Line(1, 2, 0, 2));
-            set.add(new Line(0, 2, 0, 1));
-        }
-        if (base[3] == Type.Full) {
-            set.add(new Line(2, 1, 2, 2));
-            set.add(new Line(2, 2, 1, 2));
-        }
-        // And for empty
-        if (base[0] == Type.Empty) {
+        } else if (base[0] == Type.Empty) {
             set.add(new Line(0, 0, 0, 1));
             set.add(new Line(1, 0, 0, 0));
         }
-        if (base[1] == Type.Empty) {
+        if (base[1] == Type.Inward) {
+            set.add(new Line(1, 0, 2, 0));
+            set.add(new Line(2, 0, 2, 1));
+            set.add(new Line(2, 1, 1, 0));
+        } else if (base[1] == Type.Outward) {
+            set.add(new Line(1, 0, 2, 1));
+        } else if (base[1] == Type.Full) {
+            set.add(new Line(1, 0, 2, 0));
+            set.add(new Line(2, 0, 2, 1));
+        } else if (base[1] == Type.Empty) {
             set.add(new Line(2, 0, 1, 0));
             set.add(new Line(2, 1, 2, 0));
         }
-        if (base[2] == Type.Empty) {
+        if (base[2] == Type.Inward) {
+            set.add(new Line(0, 1, 1, 2));
+            set.add(new Line(1, 2, 0, 2));
+            set.add(new Line(0, 2, 0, 1));
+        } else if (base[2] == Type.Outward) {
+            set.add(new Line(1, 2, 0, 1));
+        } else if (base[2] == Type.Full) {
+            set.add(new Line(1, 2, 0, 2));
+            set.add(new Line(0, 2, 0, 1));
+        } else if (base[2] == Type.Empty) {
             set.add(new Line(0, 2, 1, 2));
             set.add(new Line(0, 1, 0, 2));
         }
-        if (base[3] == Type.Empty) {
+        if (base[3] == Type.Inward) {
+            set.add(new Line(1, 2, 2, 1));
+            set.add(new Line(2, 1, 2, 2));
+            set.add(new Line(2, 2, 1, 2));
+        } else if (base[3] == Type.Outward) {
+            set.add(new Line(2, 1, 1, 2));
+        } else if (base[3] == Type.Full) {
+            set.add(new Line(2, 1, 2, 2));
+            set.add(new Line(2, 2, 1, 2));
+        } else if (base[3] == Type.Empty) {
             set.add(new Line(2, 2, 2, 1));
             set.add(new Line(1, 2, 2, 2));
         }
+    }
+
+    public static Type[] getConnectorTypes(int item) {
+        Type fillType = item < 16 ? Type.Empty : Type.Full;
+        Type plantType = item < 16 ? Type.Inward : Type.Outward;
+        Type[] res = new Type[] {
+                fillType,
+                fillType,
+                fillType,
+                fillType,
+        };
+        if ((item & 1) != 0)
+            res[0] = plantType;
+        if ((item & 2) != 0)
+            res[1] = plantType;
+        if ((item & 4) != 0)
+            res[2] = plantType;
+        if ((item & 8) != 0)
+            res[3] = plantType;
+        return res;
     }
 
     static {
@@ -159,45 +175,6 @@ public class TOutline {
         public Line transformFor(int i, int i1) {
             return new Line(a.offset((i * 2), (i1 * 2)), b.offset((i * 2), (i1 * 2)));
         }
-    }
-
-    public enum Type {
-        TLCorner,
-        TRCorner,
-        BLCorner,
-        BRCorner,
-        Full,
-        Empty
-    }
-
-
-    public static Type[] getConnectorTypes(int item) {
-        Type[] res = new Type[] {
-                item >= 16 ? Type.Full : Type.Empty,
-                item >= 16 ? Type.Full : Type.Empty,
-                item >= 16 ? Type.Full : Type.Empty,
-                item >= 16 ? Type.Full : Type.Empty
-        };
-        if (item < 16) {
-            if ((item & 1) != 0)
-                res[0] = Type.TLCorner;
-            if ((item & 2) != 0)
-                res[1] = Type.TRCorner;
-            if ((item & 4) != 0)
-                res[2] = Type.BLCorner;
-            if ((item & 8) != 0)
-                res[3] = Type.BRCorner;
-        } else {
-            if ((item & 1) != 0)
-                res[0] = Type.BRCorner;
-            if ((item & 2) != 0)
-                res[1] = Type.BLCorner;
-            if ((item & 4) != 0)
-                res[2] = Type.TRCorner;
-            if ((item & 8) != 0)
-                res[3] = Type.TLCorner;
-        }
-        return res;
     }
 
     public static boolean isLineValid(Line cl) {
