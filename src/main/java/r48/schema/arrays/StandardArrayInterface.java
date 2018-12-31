@@ -15,6 +15,7 @@ import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
+import r48.ui.UIMenuButton;
 import r48.ui.spacing.UIIndentThingy;
 
 import java.util.Collections;
@@ -55,6 +56,9 @@ public class StandardArrayInterface implements IArrayInterface {
                 final Size maxSizePre = UILabel.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight);
                 final AtomicInteger maxWidth = new AtomicInteger(maxSizePre.width);
                 int indentUnit = UITextButton.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight).height;
+                if (positions.length > 0)
+                    if (selectedStart == -1)
+                        uiSVL.panelsAdd(genAdditionButton(true, positions[0].execInsert, positions[0].execInsertCopiedArray));
                 for (int i = 0; i < positions.length; i++) {
                     final int mi = i;
                     UIElement uie = positions[mi].core;
@@ -74,21 +78,13 @@ public class StandardArrayInterface implements IArrayInterface {
                                     containerRCL();
                                 }
                             };
-                            if (positions[mi].execDelete != null) {
-                                uie = new UIAppendButton("-", uie, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        positions[mi].execDelete.get().run();
-                                    }
-                                }, FontSizes.schemaFieldTextHeight);
-                            }
                         } else {
                             // Selection, but not confirming delete
                             if (selectedStart == mi) {
                                if (positions[selectedStart].execDelete != null) {
                                    final int fixedStart = selectedStart;
                                    final int fixedEnd = selectedEnd;
-                                   uie = new UIAppendButton("-", uie, valid, new String[] {TXDB.get("Confirm")}, new Runnable[] {
+                                   uie = new UIAppendButton("Delete", uie, valid, new String[] {TXDB.get("Confirm")}, new Runnable[] {
                                            new Runnable() {
                                                @Override
                                                public void run() {
@@ -232,7 +228,8 @@ public class StandardArrayInterface implements IArrayInterface {
                         clarifyEmpty = true;
                     }
                     if (selectedStart == -1)
-                        uie = addAdditionButton(uie, clarifyEmpty, positions[mi].execInsert, positions[mi].execInsertCopiedArray, positions[mi].text);
+                        if (mi + 1 < positions.length)
+                            uie = addAdditionButton(uie, clarifyEmpty, positions[mi + 1].execInsert, positions[mi + 1].execInsertCopiedArray);
                     uiSVL.panelsAdd(uie);
                 }
             }
@@ -246,20 +243,29 @@ public class StandardArrayInterface implements IArrayInterface {
                 return positions.length - 1;
             }
 
-            private UIElement addAdditionButton(UIElement uie, boolean clarifyEmpty, final Runnable runnable, final Runnable runnable2, final String text) {
+            // This assumes it's being placed on a button 'before' the position
+            private UIMenuButton genAdditionButton(boolean clarifyEmpty, final Runnable runnable, final Runnable runnable2) {
                 if (runnable == null)
-                    return uie;
+                    return null;
                 LinkedList<String> optText = new LinkedList<String>();
                 LinkedList<Runnable> optRuns = new LinkedList<Runnable>();
                 // This keeps this string in the translation DB in case it's needed again; stuff should be tested first.
                 // FormatSyntax.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setString(text, true))
-                optText.add(clarifyEmpty ? TXDB.get("Add Here") : TXDB.get("Add Before"));
+                optText.add(clarifyEmpty ? TXDB.get("Insert Here...") : TXDB.get("Add Next..."));
                 optRuns.add(runnable);
                 if (runnable2 != null) {
                     optText.add(TXDB.get("Paste Array"));
                     optRuns.add(runnable2);
                 }
-                return new UIAppendButton(TXDB.get("+"), uie, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]), FontSizes.schemaArrayAddTextHeight);
+                return new UIMenuButton(TXDB.get("Add..."), FontSizes.schemaArrayAddTextHeight, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
+            }
+
+            // This assumes it's being placed on a button 'before' the position
+            private UIElement addAdditionButton(UIElement uie, boolean clarifyEmpty, final Runnable runnable, final Runnable runnable2) {
+                UIMenuButton umb = genAdditionButton(clarifyEmpty, runnable, runnable2);
+                if (umb == null)
+                    return uie;
+                return new UIAppendButton(umb, uie);
             }
         };
         runCompleteRelayout.run();
