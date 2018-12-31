@@ -102,22 +102,23 @@ public class WindowManager {
 
     public void createWindow(final UIElement uie, final boolean tab, final boolean immortal) {
         if (tab) {
+            TabUtils.TabIcon windowWindowIcon = new TabUtils.TabIcon() {
+                @Override
+                public void draw(IGrDriver igd, int x, int y, int size) {
+                    Art.windowWindowIcon(igd, x, y, size);
+                }
+
+                @Override
+                public void click(TabUtils.Tab self) {
+                    tabPane.removeTab(self);
+                    Size mainSize = getRootSize();
+                    uie.setForcedBounds(null, new Rect(0, 0, mainSize.width / 2, mainSize.height / 2));
+                    createWindow(uie, false, immortal);
+                }
+            };
             if (immortal) {
                 tabPane.addTab(new TabUtils.Tab(uie, new TabUtils.TabIcon[] {
-                        new TabUtils.TabIcon() {
-                            @Override
-                            public void draw(IGrDriver igd, int x, int y, int size) {
-                                Art.windowWindowIcon(igd, x, y, size);
-                            }
-
-                            @Override
-                            public void click(TabUtils.Tab self) {
-                                tabPane.removeTab(self);
-                                Size mainSize = getRootSize();
-                                uie.setForcedBounds(null, new Rect(0, 0, mainSize.width / 2, mainSize.height / 2));
-                                createWindow(uie, false, true);
-                            }
-                        }
+                        windowWindowIcon
                 }));
                 tabPane.selectTab(uie);
             } else {
@@ -135,20 +136,7 @@ public class WindowManager {
                                 uie.onWindowClose();
                             }
                         },
-                        new TabUtils.TabIcon() {
-                            @Override
-                            public void draw(IGrDriver igd, int x, int y, int size) {
-                                Art.windowWindowIcon(igd, x, y, size);
-                            }
-
-                            @Override
-                            public void click(TabUtils.Tab self) {
-                                tabPane.removeTab(self);
-                                Size mainSize = getRootSize();
-                                uie.setForcedBounds(null, new Rect(0, 0, mainSize.width / 2, mainSize.height / 2));
-                                createWindow(uie, false, true);
-                            }
-                        }
+                        windowWindowIcon
                 }));
                 tabPane.selectTab(uie);
             }
@@ -171,20 +159,21 @@ public class WindowManager {
                 uwv.addShell(new UIWindowView.ScreenShell(uwv, uie));
                 uiTicker.accept(uwv);
             } else {
+                TabUtils.TabIcon tabWindowIcon = new TabUtils.TabIcon() {
+                    @Override
+                    public void draw(IGrDriver igd, int x, int y, int size) {
+                        Art.tabWindowIcon(igd, x, y, size);
+                    }
+
+                    @Override
+                    public void click(TabUtils.Tab tab) {
+                        rootView.removeTab(tab);
+                        createWindow(uie, true, immortal);
+                    }
+                };
                 if (immortal) {
                     rootView.addShell(new UIWindowView.TabShell(rootView, uie, new TabUtils.TabIcon[] {
-                            new TabUtils.TabIcon() {
-                                @Override
-                                public void draw(IGrDriver igd, int x, int y, int size) {
-                                    Art.tabWindowIcon(igd, x, y, size);
-                                }
-
-                                @Override
-                                public void click(TabUtils.Tab tab) {
-                                    rootView.removeTab(tab);
-                                    createWindow(uie, true, true);
-                                }
-                            }
+                            tabWindowIcon
                     }));
                 } else {
                     rootView.addShell(new UIWindowView.TabShell(rootView, uie, new TabUtils.TabIcon[] {
@@ -201,18 +190,7 @@ public class WindowManager {
                                     uie.onWindowClose();
                                 }
                             },
-                            new TabUtils.TabIcon() {
-                                @Override
-                                public void draw(IGrDriver igd, int x, int y, int size) {
-                                    Art.tabWindowIcon(igd, x, y, size);
-                                }
-
-                                @Override
-                                public void click(TabUtils.Tab tab) {
-                                    rootView.removeTab(tab);
-                                    createWindow(uie, true, false);
-                                }
-                            }
+                            tabWindowIcon
                     }));
                 }
             }
