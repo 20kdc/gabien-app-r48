@@ -11,79 +11,62 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.IPeripherals;
-import gabien.ui.Rect;
+import gabien.ui.IPointer;
+import gabien.ui.IPointerReceiver;
 import gabien.ui.Size;
-import gabien.ui.UIElement;
-import gabien.ui.UITextButton;
 import r48.AppMain;
-import r48.FontSizes;
-import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.imagefx.MultiplyImageEffect;
-import r48.io.BMPConnection;
-
-import java.io.IOException;
+import r48.ui.UIPlaneView;
 
 /**
  * Created on December 16, 2018.
  */
-public class UICharGenView extends UIElement.UIPanel {
+public class UICharGenView extends UIPlaneView {
     public String mode, text;
     private final CharacterGeneratorController ctrl;
-    private UITextButton exportButton;
-    private int w, h;
+    public final int genWidth, genHeight;
+    private boolean dragLock = true;
 
     public UICharGenView(String t, final int w, final int h, CharacterGeneratorController control) {
-        this.w = w;
-        this.h = h;
+        this.genWidth = w;
+        this.genHeight = h;
         mode = text = t;
         ctrl = control;
-        exportButton = new UITextButton(TXDB.get("Copy to R48 Clipboard"), FontSizes.schemaFieldTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                // Job of this is to composite results.
-                IGrDriver img = GaBIEn.makeOffscreenBuffer(w, h, true);
-                render(img);
-                int[] tx = img.getPixels();
-                int idx = 0;
-                byte[] buffer = BMPConnection.prepareBMP(w, h, 32, 0, true, false);
-                BMPConnection bc;
-                try {
-                    bc = new BMPConnection(buffer, BMPConnection.CMode.Normal, 0, false);
-                } catch (IOException ioe) {
-                    throw new RuntimeException(ioe);
-                }
-                for (int j = 0; j < h; j++)
-                    for (int i = 0; i < w; i++)
-                        bc.putPixel(i, j, tx[idx++]);
-                AppMain.theClipboard = new RubyIO().setUser("Image", buffer);
-            }
-        });
-        layoutAddElement(exportButton);
-        setWantedSize(new Size(w, h + exportButton.getWantedSize().height));
+        setWantedSize(new Size(w, h));
         forceToRecommended();
     }
 
     @Override
-    public String toString() {
-        return text + " (" + w + "x" + h + ")";
-    }
-
-    @Override
-    public void runLayout() {
-        Size mySize = getSize();
-        Size ebWS = exportButton.getWantedSize();
-        exportButton.setForcedBounds(this, new Rect(0, mySize.height - ebWS.height, mySize.width, ebWS.height));
-    }
-
-    @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
-        super.update(deltaTime, selected, peripherals);
+
     }
 
     @Override
     public void render(IGrDriver igd) {
+        Size mySize = getSize();
+        int ew = (int) planeMulZoom(genWidth);
+        int eh = (int) planeMulZoom(genHeight);
+        int ex = ((mySize.width - ew) / 2) - ((int) planeMulZoom(camX));
+        int ey = ((mySize.height - eh) / 2) - ((int) planeMulZoom(camY));
+
+        int[] st = igd.getLocalST();
+        st[0] += ex;
+        st[1] += ey;
+        igd.updateST();
+        render(igd, ew, eh);
+        st[0] -= ex;
+        st[1] -= ey;
+        igd.updateST();
+
         super.render(igd);
+    }
+
+    @Override
+    public String toString() {
+        return text + " (" + genWidth + "x" + genHeight + ")";
+    }
+
+    public void render(IGrDriver igd, int w, int h) {
         for (CharacterGeneratorController.LayerImage li : ctrl.charLay) {
             if (mode.equals(li.mode)) {
                 CharacterGeneratorController.Layer l = ctrl.charCfg.get(li.layerId);
@@ -95,9 +78,35 @@ public class UICharGenView extends UIElement.UIPanel {
 
                     IImage im = GaBIEn.getImage(li.img);
                     im = AppMain.imageFXCache.process(im, new MultiplyImageEffect(a, r, g, b));
-                    igd.blitImage(0, 0, im.getWidth(), im.getHeight(), 0, 0, im);
+                    int imw = im.getWidth();
+                    int imh = im.getHeight();
+                    int smw = (imw * w) / genWidth;
+                    int smh = (imh * h) / genHeight;
+                    igd.blitScaledImage(0, 0, imw, imh, 0, 0, smw, smh, im);
                 }
             }
         }
+    }
+
+    @Override
+    protected String planeGetStatus() {
+        return null;
+    }
+
+    @Override
+    protected boolean planeGetDragLock() {
+        return dragLock;
+    }
+
+    @Override
+    protected void planeToggleDragLock() {
+        dragLock = !dragLock;
+    }
+
+    @Override
+    protected IPointerReceiver planeHandleDrawPointer(IPointer state) {
+        camX = 0;
+        camY = 0;
+        return null;
     }
 }

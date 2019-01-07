@@ -5,9 +5,11 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
  This file contains character generator modes.
- The ':' specifies mode ID, width, and height.
+ The ':' specifies mode ID, width, height
  The '.' parts contain specific translations.
   See Layers.txt for more details.
+ The '@'s contain specific positions in the larger file.
+ The first given is the default.
 
 : CS 72 128
 . "2k/2k3 Character"

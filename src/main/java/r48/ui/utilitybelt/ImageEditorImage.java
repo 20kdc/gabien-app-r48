@@ -57,11 +57,17 @@ public class ImageEditorImage extends ImageIOImage {
         for (int i = 0; i < copyFrom.colourData.length; i++) {
             int c = copyFrom.getRGB(i, 0);
             if (makePal) {
-                // We're doing it "by the book"
-                int idx = palette.indexOf(c);
-                if (idx == -1) {
-                    appendToPalette(c);
-                    idx = palette.size() - 1;
+                // Upper bit indicates alpha >= 0x80, so c >= 0 means < 0x80 alpha
+                int idx;
+                if (a1Lock && (c >= 0)) {
+                    idx = 0;
+                } else {
+                    // We're doing it "by the book"
+                    idx = palette.indexOf(c);
+                    if (idx == -1) {
+                        appendToPalette(c);
+                        idx = palette.size() - 1;
+                    }
                 }
                 colourData[i] = idx;
             } else {

@@ -326,27 +326,4 @@ public class UIImageEditView extends UIPlaneView {
             }
         };
     }
-
-    @Override
-    protected void planeZoomLogic(boolean north) {
-        if (north) {
-            if (planeZoomDiv > 1) {
-                planeZoomDiv /= 2;
-            } else {
-                planeZoomMul *= 2;
-            }
-        } else {
-            planeZoomMul /= 2;
-            if (planeZoomMul < 1)
-                planeZoomMul = 1;
-        }
-    }
-
-    @Override
-    protected boolean planeCanZoom(boolean north) {
-        if (!north)
-            if (planeZoomMul == 1)
-                return false;
-        return true;
-    }
 }

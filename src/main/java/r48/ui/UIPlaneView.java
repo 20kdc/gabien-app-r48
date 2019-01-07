@@ -38,11 +38,24 @@ public abstract class UIPlaneView extends UIElement {
     protected abstract IPointerReceiver planeHandleDrawPointer(IPointer state);
 
     protected boolean planeCanZoom(boolean north) {
-        return false;
+        if (!north)
+            if (planeZoomMul == 1)
+                return false;
+        return true;
     }
 
     protected void planeZoomLogic(boolean north) {
-
+        if (north) {
+            if (planeZoomDiv > 1) {
+                planeZoomDiv /= 2;
+            } else {
+                planeZoomMul *= 2;
+            }
+        } else {
+            planeZoomMul /= 2;
+            if (planeZoomMul < 1)
+                planeZoomMul = 1;
+        }
     }
 
     protected double planeMulZoom(double n) {
@@ -62,7 +75,9 @@ public abstract class UIPlaneView extends UIElement {
 
         int textX = plusRectFull.x + plusRectFull.width;
         int textW = getSize().width - (textX + ((plusRectFull.width - plusRect.width) / 2));
-        planeStatusLine.draw(planeGetStatus(), FontSizes.mapPositionTextHeight, igd, textX, plusRect.y, textW);
+        String statusText = planeGetStatus();
+        if (statusText != null)
+            planeStatusLine.draw(statusText, FontSizes.mapPositionTextHeight, igd, textX, plusRect.y, textW);
 
         if (planeCanZoom(true))
             Art.drawZoom(igd, true, plusRect.x, plusRect.y, plusRect.height);

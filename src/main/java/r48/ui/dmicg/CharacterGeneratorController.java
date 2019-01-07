@@ -7,16 +7,25 @@
 
 package r48.ui.dmicg;
 
+import gabien.GaBIEn;
+import gabien.IGrDriver;
+import gabien.IImage;
 import gabien.ui.*;
 import r48.AppMain;
 import r48.FontSizes;
+import r48.RubyIO;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.TXDB;
+import r48.imageio.PNG8IImageIOFormat;
+import r48.io.BMPConnection;
+import r48.ui.UIAppendButton;
 import r48.ui.UIColourSwatchButton;
 import r48.ui.dialog.UIColourPicker;
+import r48.ui.utilitybelt.ImageEditorImage;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -32,8 +41,11 @@ public class CharacterGeneratorController {
     public HashMap<String, Layer> charCfg = new HashMap<String, Layer>();
     public LinkedList<LayerImage> charLay = new LinkedList<LayerImage>();
 
+    private final UITabPane modes;
+    private LinkedList<UICharGenView> views = new LinkedList<UICharGenView>();
+
     public CharacterGeneratorController() {
-        final UITabPane modes = new UITabPane(FontSizes.tabTextHeight, true, false);
+        modes = new UITabPane(FontSizes.tabTextHeight, true, false);
         final UIScrollLayout availableOpts = new UIScrollLayout(true, FontSizes.cellSelectScrollersize);
         DBLoader.readFile("CharGen/Modes.txt", new IDatabase() {
             private UICharGenView view;
@@ -46,7 +58,9 @@ public class CharacterGeneratorController {
             @Override
             public void execCmd(char c, String[] args) throws IOException {
                 if (c == ':') {
-                    modes.addTab(new TabUtils.Tab(view = new UICharGenView(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), CharacterGeneratorController.this), new TabUtils.TabIcon[0]));
+                    view = new UICharGenView(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), CharacterGeneratorController.this);
+                    modes.addTab(new TabUtils.Tab(view, new TabUtils.TabIcon[0]));
+                    views.add(view);
                 } else if (c == '.') {
                     if (args.length == 1)
                         view.text = args[0];
@@ -126,7 +140,47 @@ public class CharacterGeneratorController {
                 }
             }
         });
-        rootView = new UISplitterLayout(modes, availableOpts, false, 1) {
+        UIElement modeBar = new UIAppendButton(TXDB.get("Save PNG..."), new UITextButton(TXDB.get("Copy to R48 Clipboard"), FontSizes.schemaFieldTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                IImage img = getCurrentModeImage();
+                int[] tx = img.getPixels();
+                int w = img.getWidth();
+                int h = img.getHeight();
+                int idx = 0;
+                byte[] buffer = BMPConnection.prepareBMP(w, h, 32, 0, true, false);
+                BMPConnection bc;
+                try {
+                    bc = new BMPConnection(buffer, BMPConnection.CMode.Normal, 0, false);
+                } catch (IOException ioe) {
+                    throw new RuntimeException(ioe);
+                }
+                for (int j = 0; j < h; j++)
+                    for (int i = 0; i < w; i++)
+                        bc.putPixel(i, j, tx[idx++]);
+                AppMain.theClipboard = new RubyIO().setUser("Image", buffer);
+            }
+        }), new Runnable() {
+            @Override
+            public void run() {
+                // We have a PNG, ask for a file to stuff it into
+                final byte[] b = createPNG();
+                GaBIEn.startFileBrowser(TXDB.get("Save PNG..."), true, "", new IConsumer<String>() {
+                    @Override
+                    public void accept(String s) {
+                        try {
+                            OutputStream os = GaBIEn.getOutFile(s);
+                            os.write(b);
+                            os.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            AppMain.launchDialog(TXDB.get("Unable to save chargen image."));
+                        }
+                    }
+                });
+            }
+        }, FontSizes.schemaFieldTextHeight);
+        rootView = new UISplitterLayout(new UISplitterLayout(modes, modeBar, true, 1), availableOpts, false, 1) {
             @Override
             public String toString() {
                 return TXDB.get("Character Generator");
@@ -144,6 +198,43 @@ public class CharacterGeneratorController {
                 return 0;
             }
         });
+    }
+
+    private byte[] createPNG() {
+        // This is not going to go well...
+        IImage img = getCurrentModeImage();
+        ImageEditorImage iei = new ImageEditorImage(img.getWidth(), img.getHeight(), img.getPixels(), null, false);
+        ImageEditorImage iei2 = new ImageEditorImage(iei, true, true);
+
+        if (iei2.paletteSize() > 256) {
+            // Cannot make a valid image this complex. Swap out the (2k/2k3 valid) 8I format for another.
+            return img.createPNG();
+        }
+
+        PNG8IImageIOFormat tempFmt = new PNG8IImageIOFormat();
+        try {
+            return tempFmt.saveFile(iei2);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return img.createPNG();
+        }
+    }
+
+    private IImage getCurrentModeImage() {
+        int modesIdx = modes.getTabIndex();
+        if (modesIdx != -1) {
+            UICharGenView cgv = views.get(modes.getTabIndex());
+            int w = cgv.genWidth;
+            int h = cgv.genHeight;
+            IGrDriver ib = GaBIEn.makeOffscreenBuffer(w, h, true);
+
+            cgv.render(ib, cgv.genWidth, cgv.genHeight);
+
+            IImage img = GaBIEn.createImage(ib.getPixels(), w, h);
+            ib.shutdown();
+            return img;
+        }
+        return GaBIEn.createImage(new int[1], 1, 1);
     }
 
     // An image in the system.
