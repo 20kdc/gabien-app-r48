@@ -69,7 +69,7 @@ e eventpage_movetype 0 don't 1 random 2 guardVLine 3 guardHLine 4 chasePlayer 5 
 @move_speed eventpage_movespeed
 @move_route subwindow RPG::MoveRoute
 @block_other_events boolean
-e eventpage_animtype 0 onlyWhenMoving 1 always 2 noActDirchange+onlyWhenMoving 3 noActDirchange+always 4 noActDirchange+never 5 spin
+e eventpage_animtype 0 onlyWhenMoving 1 always 2 noActDirchange+onlyWhenMoving 3 noActDirchange+always 4 noActDirchange+never 5 spin 6 noWalkAnimButStillRotate
 @anim_type eventpage_animtype
 e eventpage_trigger 0 playerInteract 1 playerCollide 2 playerOrEventCollide 3 autorun 4 parallel
 @trigger eventpage_trigger
