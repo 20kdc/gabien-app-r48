@@ -16,6 +16,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
+import r48.ui.UIAppendButton;
 
 import java.util.LinkedList;
 
@@ -117,12 +118,17 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 UIBorderedElement.borderTheme %= UIBorderedElement.BORDER_THEMES;
                 refreshLayout(true);
             }
-        }), new UITextButton(TXDB.get("Enable Blending"), FontSizes.fontSizerTextHeight, new Runnable() {
+        }), new UIAppendButton(TXDB.get("External Windowing"), new UITextButton(TXDB.get("Enable Blending"), FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 Application.allowBlending = !Application.allowBlending;
             }
-        }).togglable(Application.allowBlending), false, 0.5));
+        }).togglable(Application.allowBlending), new Runnable() {
+            @Override
+            public void run() {
+                Application.windowingExternal = !Application.windowingExternal;
+            }
+        }, FontSizes.fontSizerTextHeight).togglable(Application.windowingExternal), false, 0.5));
         try {
             for (final FontSizes.FontSizeField field : FontSizes.getFields()) {
                 doubleAll.add(new Runnable() {

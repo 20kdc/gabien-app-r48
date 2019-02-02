@@ -44,23 +44,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                 final AtomicReference<String> box = new AtomicReference<String>();
                 boxedEncoding = box;
                 res1.add(objName);
-                res2.add(new ISupplier<IGPMenuPanel>() {
-                    @Override
-                    public IGPMenuPanel get() {
-                        if (Application.appTicker == null) {
-                            try {
-                                IObjectBackend.Factory.encoding = box.get();
-                                String rootPath = PathUtils.fixRootPath(Application.rootBox.text);
-                                if (mobileExtremelySpecialBehavior)
-                                    TXDB.loadGamepakLanguage(objName + "/");
-                                Application.appTicker = AppMain.initializeAndRun(rootPath, objName + "/", Application.uiTicker);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        return null;
-                    }
-                });
+                res2.add(new StartupCause(box, objName));
             }
 
             @Override
@@ -100,5 +84,31 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
     public ISupplier<IGPMenuPanel>[] getButtonActs() {
         // *sighs*
         return res2.toArray(new ISupplier[0]);
+    }
+
+    public static class StartupCause implements ISupplier<IGPMenuPanel> {
+        private final AtomicReference<String> box;
+        private final String objName;
+
+        public StartupCause(AtomicReference<String> box, String objName) {
+            this.box = box;
+            this.objName = objName;
+        }
+
+        @Override
+        public IGPMenuPanel get() {
+            if (Application.appTicker == null) {
+                try {
+                    IObjectBackend.Factory.encoding = box.get();
+                    String rootPath = PathUtils.fixRootPath(Application.rootBox.text);
+                    if (mobileExtremelySpecialBehavior)
+                        TXDB.loadGamepakLanguage(objName + "/");
+                    Application.appTicker = AppMain.initializeAndRun(rootPath, objName + "/", Application.uiTicker);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
     }
 }

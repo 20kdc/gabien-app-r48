@@ -40,6 +40,7 @@ public class Application {
 
     // *cough*OneShot*cough*. controlled by FontSizeConfigurator
     public static boolean allowBlending = true;
+    public static boolean windowingExternal = false;
 
     private static IGPMenuPanel rootGPMenuPanel;
 

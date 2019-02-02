@@ -9,6 +9,7 @@ package r48.wm;
 
 import gabien.*;
 import gabien.ui.*;
+import gabienapp.Application;
 import r48.FontSizes;
 import r48.ui.Art;
 import r48.ui.Coco;
@@ -39,13 +40,13 @@ import java.util.LinkedList;
  * Created on November 14, 2018.
  */
 public class WindowManager {
-    public boolean creatingRealWindows;
     private Rect preFullscreenRect = null;
     private final UIWindowView rootView;
     private final UITabPane tabPane;
     private final WindowCreatingUIElementConsumer uiTicker;
     private final LinkedList<UIWindowView> allWindowViews = new LinkedList<UIWindowView>();
     private IImage modImg;
+    private boolean performingScreenTransfer;
 
     public WindowManager(UIElement topBar, final WindowCreatingUIElementConsumer uiTick) {
         uiTicker = uiTick;
@@ -61,6 +62,13 @@ public class WindowManager {
             @Override
             public void render(IGrDriver igd) {
                 super.render(igd);
+            }
+
+            @Override
+            public void onWindowClose() {
+                // This has nasty side effects if the window is merely being transferred around, so check for that.
+                if (!performingScreenTransfer)
+                    super.onWindowClose();
             }
         };
         rootView.windowTextHeight = FontSizes.windowFrameHeight;
@@ -79,6 +87,8 @@ public class WindowManager {
     }
 
     public void toggleFullscreen() {
+        performingScreenTransfer = true;
+
         uiTicker.forceRemove(rootView);
         if (preFullscreenRect == null) {
             preFullscreenRect = rootView.getParentRelativeBounds();
@@ -88,6 +98,8 @@ public class WindowManager {
             preFullscreenRect = null;
             uiTicker.accept(rootView, 1, false);
         }
+
+        performingScreenTransfer = false;
     }
 
     public void selectFirstTab() {
@@ -141,7 +153,7 @@ public class WindowManager {
                 tabPane.selectTab(uie);
             }
         } else {
-            if (creatingRealWindows) {
+            if (Application.windowingExternal && !GaBIEn.singleWindowApp()) {
                 UIWindowView uwv = new UIWindowView() {
                     @Override
                     public void onWindowClose() {

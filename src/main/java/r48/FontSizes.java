@@ -175,6 +175,7 @@ public class FontSizes {
         }
         prepare.addIVar("@theme_variant", new RubyIO().setFX(UIBorderedElement.borderTheme));
         prepare.addIVar("@actual_blending", new RubyIO().setBool(Application.allowBlending));
+        prepare.addIVar("@windowing_external", new RubyIO().setBool(Application.windowingExternal));
         AdHocSaveLoad.save("fonts", prepare);
     }
 
@@ -224,6 +225,9 @@ public class FontSizes {
             RubyIO sys6 = dat.getInstVarBySymbol("@actual_blending");
             if (sys6 != null)
                 Application.allowBlending = sys6.type == 'T';
+            RubyIO sys7 = dat.getInstVarBySymbol("@windowing_external");
+            if (sys7 != null)
+                Application.windowingExternal = sys7.type == 'T';
             return true;
         } else if (first) {
             FontManager.fontOverride = GaBIEn.getFontOverrides()[0];

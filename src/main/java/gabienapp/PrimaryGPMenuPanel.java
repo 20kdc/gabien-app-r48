@@ -14,6 +14,7 @@ import r48.dbs.TXDB;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PrimaryGPMenuPanel implements IGPMenuPanel {
     public LinkedList<String> res1 = new LinkedList<String>();
@@ -42,11 +43,12 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
                 }
             }
         });
+        res1.add(TXDB.get("'No Game' Mode"));
+        res2.add(new CategoryGPMenuPanel.StartupCause(new AtomicReference<String>("UTF-8"), "Null"));
         res1.add(TXDB.get("Dump L-<lang>.txt"));
         res2.add(new ISupplier<IGPMenuPanel>() {
             @Override
             public IGPMenuPanel get() {
-
                 TXDB.performDump("L-", "launcher/");
                 res1.removeLast();
                 res2.removeLast();
