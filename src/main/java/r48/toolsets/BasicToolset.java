@@ -9,28 +9,31 @@ package r48.toolsets;
 
 import gabien.GaBIEn;
 import gabien.ui.*;
-import r48.AppMain;
-import r48.FontSizes;
-import r48.UIObjectDBMonitor;
-import r48.UITest;
+import r48.*;
+import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
+import r48.map.systems.IRMMapSystem;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBinders;
 import r48.schema.util.SchemaPath;
 import r48.ui.Coco;
+import r48.ui.UIAppendButton;
+import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIFontSizeConfigurator;
 import r48.ui.dialog.UITextPrompt;
+import r48.ui.help.HelpSystemController;
+import r48.ui.help.UIHelpSystem;
 import r48.ui.imi.IMIAssemblyController;
+import r48.ui.spacing.UIBorderedSubpanel;
+import r48.ui.utilitybelt.ImageEditorController;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * Provides some basic tools for changing the configuration of R48 and doing various bits and pieces.
@@ -41,32 +44,250 @@ import java.util.LinkedList;
  * Created on 04/06/17.
  */
 public class BasicToolset implements IToolset {
+    private final String gamepak;
+
+    public BasicToolset(String gp) {
+        gamepak = gp;
+    }
+
     @Override
     public UIElement[] generateTabs() {
-        final UIPopupMenu menu = new UIPopupMenu(new String[] {
-                TXDB.get("About"),
-                TXDB.get("Configuration"),
-                TXDB.get("Test Fonts"),
-                TXDB.get("Toggle Fullscreen"),
-                TXDB.get("Object Control Centre"),
-                TXDB.get("Create Mod Installer (IMI) Data"),
-                TXDB.get("Show ODB Memstat"),
-                TXDB.get("Dump Schemaside Translations"),
-                TXDB.get("Recover data from R48 error <INCREDIBLY DAMAGING>..."),
-                TXDB.get("Return to menu"),
+        UIElement menu4 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(TXDB.get("R48 Version"), FontSizes.menuTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                Coco.launch();
+            }
+        }).centred(), FontSizes.menuTextHeight), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(TXDB.get("Help"), FontSizes.menuTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                AppMain.startHelp(0);
+            }
+        }).centred(), FontSizes.menuTextHeight), new UIBorderedSubpanel(new UITextButton(TXDB.get("Configuration"), FontSizes.menuTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                AppMain.window.createWindow(new UIFontSizeConfigurator());
+            }
+        }).centred(), FontSizes.menuTextHeight), false, 0.5), false, 0.333333);
+        UIElement menu5 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(TXDB.get("Image Editor"), FontSizes.menuTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                AppMain.startImgedit();
+            }
+        }).centred(), FontSizes.menuTextHeight), new UISplitterLayout(new UIBorderedSubpanel(createODBRMGestalt(), FontSizes.menuTextHeight), new UIBorderedSubpanel(createOtherButton(), FontSizes.menuTextHeight), false, 0.5), false, 1d / 3d);
+
+        UISplitterLayout menu6 = new UISplitterLayout(menu5, createInitialHelp(), true, 0.5);
+
+        UISplitterLayout menu3 = new UISplitterLayout(menu4, menu6, true, 1d / 3d);
+
+        UISplitterLayout menu8 = new UISplitterLayout(menu3, createStatusBar(), true, 1);
+
+        UIBorderedSubpanel menu3b = new UIBorderedSubpanel(menu8, FontSizes.schemaFieldTextHeight * 4);
+
+        UIElement menu2 = new UISplitterLayout(menu3b, new UIObjectDBMonitor(), true, 1) {
+            @Override
+            public String toString() {
+                return TXDB.get("System Tools");
+            }
+        };
+
+        UIElement fl = makeFileList();
+        if (fl != null)
+            return new UIElement[] {
+                    menu2,
+                    fl
+            };
+        return new UIElement[] {
+                menu2
+        };
+    }
+
+    private UIElement createInitialHelp() {
+        UIHelpSystem uhs = new UIHelpSystem();
+        final HelpSystemController hsc = new HelpSystemController(null, "HelpTips", uhs);
+        Date dt = new Date();
+        int h = dt.getHours();
+        if (h < 7) {
+            hsc.loadPage(990 + new Random().nextInt(10));
+        } else {
+            hsc.loadPage(new Random().nextInt(10));
+        }
+        uhs.onLinkClick = new IConsumer<Integer>() {
+            @Override
+            public void accept(Integer integer) {
+                hsc.loadPage(integer);
+            }
+        };
+        return uhs;
+    }
+
+    private UIElement createODBRMGestalt() {
+        if (AppMain.system instanceof IRMMapSystem) {
+            return new UISplitterLayout(createODBButton(), new RMTools(gamepak).genButton(), true, 0.5);
+        } else {
+            return createODBButton();
+        }
+    }
+
+    private UIElement createODBButton() {
+        return new UIMenuButton(TXDB.get("Object Access"), FontSizes.menuTextHeight, null, new String[] {
+                TXDB.get("Edit Object"),
+                TXDB.get("Autocorrect Object By Name And Schema"),
+                TXDB.get("Inspect Object (no Schema needed)"),
+                TXDB.get("Object-Object Comparison"),
+                TXDB.get("Retrieve all object strings"),
         }, new Runnable[] {
                 new Runnable() {
                     @Override
                     public void run() {
-                        Coco.launch();
+                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
+                            @Override
+                            public void accept(String s) {
+                                final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
+                                if (AppMain.schemas.hasSDBEntry("File." + s)) {
+                                    AppMain.launchSchema("File." + s, rio, null);
+                                    return;
+                                }
+                                if (rio != null) {
+                                    IRIO r2 = rio.getObject();
+                                    if (r2.getType() == 'o') {
+                                        if (AppMain.schemas.hasSDBEntry(r2.getSymbol())) {
+                                            AppMain.launchSchema(r2.getSymbol(), rio, null);
+                                            return;
+                                        }
+                                    }
+                                    AppMain.window.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
+                                        @Override
+                                        public void accept(String s) {
+                                            AppMain.launchSchema(s, rio, null);
+                                        }
+                                    }));
+                                } else {
+                                    AppMain.launchDialog(TXDB.get("The file couldn't be read, and there's no schema to create it."));
+                                }
+                            }
+                        }));
                     }
                 },
                 new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.window.createWindow(new UIFontSizeConfigurator());
+                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
+                            @Override
+                            public void accept(String s) {
+                                final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
+                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
+                                    @Override
+                                    public void accept(String s) {
+                                        SchemaElement ise = AppMain.schemas.getSDBEntry(s);
+                                        ise.modifyVal(rio.getObject(), new SchemaPath(ise, rio), false);
+                                        AppMain.launchDialog(TXDB.get("OK!"));
+                                    }
+                                }));
+                            }
+                        }));
                     }
                 },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
+                            @Override
+                            public void accept(String s) {
+                                IObjectBackend.ILoadedObject obj = AppMain.objectDB.getObject(s);
+                                if (obj == null) {
+                                    AppMain.launchDialog(TXDB.get("The file couldn't be read, and R48 cannot create it."));
+                                } else {
+                                    AppMain.window.createWindow(new UITest(obj.getObject()));
+                                }
+                            }
+                        }));
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Source Object Name?"), new IConsumer<String>() {
+                            @Override
+                            public void accept(String s) {
+                                final IObjectBackend.ILoadedObject objA = AppMain.objectDB.getObject(s);
+                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Target Object Name?"), new IConsumer<String>() {
+                                    @Override
+                                    public void accept(String s) {
+                                        final IObjectBackend.ILoadedObject objB = AppMain.objectDB.getObject(s);
+                                        if ((objA == null) || (objB == null)) {
+                                            AppMain.launchDialog(TXDB.get("A file couldn't be read, and R48 cannot create it."));
+                                        } else {
+                                            try {
+                                                OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "objcompareAB.txt"));
+                                                byte[] cid = IMIUtils.createIMIData(objA.getObject(), objB.getObject(), "");
+                                                if (cid != null)
+                                                    os.write(cid);
+                                                os.close();
+                                                os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "objcompareBA.txt"));
+                                                cid = IMIUtils.createIMIData(objB.getObject(), objA.getObject(), "");
+                                                if (cid != null)
+                                                    os.write(cid);
+                                                os.close();
+                                                AppMain.launchDialog(TXDB.get("objcompareAB.txt and objcompareBA.txt have been made."));
+                                                return;
+                                            } catch (Exception e) {
+                                                AppMain.launchDialog(TXDB.get("There was an issue somewhere along the line."));
+                                            }
+                                        }
+                                    }
+                                }));
+                            }
+                        }));
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            OutputStream lm = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "locmaps.txt"));
+                            final DataOutputStream dos = new DataOutputStream(lm);
+                            final HashSet<String> text = new HashSet<String>();
+                            for (String s : AppMain.getAllObjects()) {
+                                IObjectBackend.ILoadedObject obj = AppMain.objectDB.getObject(s, null);
+                                if (obj != null) {
+                                    universalStringLocator(obj.getObject(), new IFunction<IRIO, Integer>() {
+                                        @Override
+                                        public Integer apply(IRIO rubyIO) {
+                                            text.add(rubyIO.decString());
+                                            return 1;
+                                        }
+                                    }, false);
+                                }
+                            }
+                            for (String st : text) {
+                                dos.writeBytes("\"");
+                                IMIUtils.writeIMIStringBody(dos, st.getBytes("UTF-8"), false);
+                                dos.write('\n');
+                            }
+                            dos.write(';');
+                            dos.write('\n');
+                            dos.close();
+                            if (AppMain.dataPath.equals("Languages/")) {
+                                AppMain.launchDialog(TXDB.get("Wrote locmaps.txt (NOTE: You probably don't actually want to do this! Press this in RXP mode to get the CRCs, then go back to this mode to actually start editing stuff.)"));
+                            } else {
+                                AppMain.launchDialog(TXDB.get("Wrote locmaps.txt"));
+                            }
+                        } catch (IOException ioe) {
+                            throw new RuntimeException(ioe);
+                        }
+                    }
+                }
+        }).centred();
+    }
+
+    private UIElement createOtherButton() {
+        return new UIMenuButton(TXDB.get("Other..."), FontSizes.menuTextHeight, null, new String[] {
+                TXDB.get("Test Fonts"),
+                TXDB.get("Toggle Fullscreen"),
+                TXDB.get("Create Mod Installer (IMI) Data"),
+                TXDB.get("Dump Schemaside Translations"),
+                TXDB.get("Recover data from R48 error <INCREDIBLY DAMAGING>..."),
+        }, new Runnable[] {
                 new Runnable() {
                     @Override
                     public void run() {
@@ -92,160 +313,6 @@ public class BasicToolset implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.window.createWindow(new UIAutoclosingPopupMenu(new String[] {
-                                TXDB.get("Edit Object"),
-                                TXDB.get("Autocorrect Object By Name And Schema"),
-                                TXDB.get("Inspect Object (no Schema needed)"),
-                                TXDB.get("Object-Object Comparison"),
-                                TXDB.get("Retrieve all object strings"),
-                        }, new Runnable[] {
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
-                                            @Override
-                                            public void accept(String s) {
-                                                final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
-                                                if (AppMain.schemas.hasSDBEntry("File." + s)) {
-                                                    AppMain.launchSchema("File." + s, rio, null);
-                                                    return;
-                                                }
-                                                if (rio != null) {
-                                                    IRIO r2 = rio.getObject();
-                                                    if (r2.getType() == 'o') {
-                                                        if (AppMain.schemas.hasSDBEntry(r2.getSymbol())) {
-                                                            AppMain.launchSchema(r2.getSymbol(), rio, null);
-                                                            return;
-                                                        }
-                                                    }
-                                                    AppMain.window.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
-                                                        @Override
-                                                        public void accept(String s) {
-                                                            AppMain.launchSchema(s, rio, null);
-                                                        }
-                                                    }));
-                                                } else {
-                                                    AppMain.launchDialog(TXDB.get("The file couldn't be read, and there's no schema to create it."));
-                                                }
-                                            }
-                                        }));
-                                    }
-                                },
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
-                                            @Override
-                                            public void accept(String s) {
-                                                final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
-                                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
-                                                    @Override
-                                                    public void accept(String s) {
-                                                        SchemaElement ise = AppMain.schemas.getSDBEntry(s);
-                                                        ise.modifyVal(rio.getObject(), new SchemaPath(ise, rio), false);
-                                                        AppMain.launchDialog(TXDB.get("OK!"));
-                                                    }
-                                                }));
-                                            }
-                                        }));
-                                    }
-                                },
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
-                                            @Override
-                                            public void accept(String s) {
-                                                IObjectBackend.ILoadedObject obj = AppMain.objectDB.getObject(s);
-                                                if (obj == null) {
-                                                    AppMain.launchDialog(TXDB.get("The file couldn't be read, and R48 cannot create it."));
-                                                } else {
-                                                    AppMain.window.createWindow(new UITest(obj.getObject()));
-                                                }
-                                            }
-                                        }));
-                                    }
-                                },
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Source Object Name?"), new IConsumer<String>() {
-                                            @Override
-                                            public void accept(String s) {
-                                                final IObjectBackend.ILoadedObject objA = AppMain.objectDB.getObject(s);
-                                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Target Object Name?"), new IConsumer<String>() {
-                                                    @Override
-                                                    public void accept(String s) {
-                                                        final IObjectBackend.ILoadedObject objB = AppMain.objectDB.getObject(s);
-                                                        if ((objA == null) || (objB == null)) {
-                                                            AppMain.launchDialog(TXDB.get("A file couldn't be read, and R48 cannot create it."));
-                                                        } else {
-                                                            try {
-                                                                OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "objcompareAB.txt"));
-                                                                byte[] cid = IMIUtils.createIMIData(objA.getObject(), objB.getObject(), "");
-                                                                if (cid != null)
-                                                                    os.write(cid);
-                                                                os.close();
-                                                                os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "objcompareBA.txt"));
-                                                                cid = IMIUtils.createIMIData(objB.getObject(), objA.getObject(), "");
-                                                                if (cid != null)
-                                                                    os.write(cid);
-                                                                os.close();
-                                                                AppMain.launchDialog(TXDB.get("objcompareAB.txt and objcompareBA.txt have been made."));
-                                                                return;
-                                                            } catch (Exception e) {
-                                                                AppMain.launchDialog(TXDB.get("There was an issue somewhere along the line."));
-                                                            }
-                                                        }
-                                                    }
-                                                }));
-                                            }
-                                        }));
-                                    }
-                                },
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            OutputStream lm = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "locmaps.txt"));
-                                            final DataOutputStream dos = new DataOutputStream(lm);
-                                            final HashSet<String> text = new HashSet<String>();
-                                            for (String s : AppMain.getAllObjects()) {
-                                                IObjectBackend.ILoadedObject obj = AppMain.objectDB.getObject(s, null);
-                                                if (obj != null) {
-                                                    universalStringLocator(obj.getObject(), new IFunction<IRIO, Integer>() {
-                                                        @Override
-                                                        public Integer apply(IRIO rubyIO) {
-                                                            text.add(rubyIO.decString());
-                                                            return 1;
-                                                        }
-                                                    }, false);
-                                                }
-                                            }
-                                            for (String st : text) {
-                                                dos.writeBytes("\"");
-                                                IMIUtils.writeIMIStringBody(dos, st.getBytes("UTF-8"), false);
-                                                dos.write('\n');
-                                            }
-                                            dos.write(';');
-                                            dos.write('\n');
-                                            dos.close();
-                                            if (AppMain.dataPath.equals("Languages/")) {
-                                                AppMain.launchDialog(TXDB.get("Wrote locmaps.txt (NOTE: You probably don't actually want to do this! Press this in RXP mode to get the CRCs, then go back to this mode to actually start editing stuff.)"));
-                                            } else {
-                                                AppMain.launchDialog(TXDB.get("Wrote locmaps.txt"));
-                                            }
-                                        } catch (IOException ioe) {
-                                            throw new RuntimeException(ioe);
-                                        }
-                                    }
-                                }
-                        }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, false));
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
                         AppMain.window.createWindow(new UITextPrompt(TXDB.get("Root path to original game?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
@@ -253,12 +320,6 @@ public class BasicToolset implements IToolset {
                                 new IMIAssemblyController(s);
                             }
                         }));
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        AppMain.window.createWindow(new UIObjectDBMonitor());
                     }
                 },
                 new Runnable() {
@@ -321,28 +382,75 @@ public class BasicToolset implements IToolset {
                         AppMain.launchDialog(TXDB.get("If the backup file is invalid, wasn't created, or is otherwise harmed, this can destroy more data than it saves.") +
                                 "\n" + TXDB.get("Check *everything* before a final save.") + "\n" + TXDB.get("Type 'I understand.' at the prompt behind this window if you WILL do this."));
                     }
+                }
+        }).centred();
+    }
+
+    private static UIElement createStatusBar() {
+        final UILabel uiStatusLabel = new UILabel(TXDB.get("Loading..."), FontSizes.statusBarTextHeight);
+        AppMain.pendingRunnables.add(new Runnable() {
+            @Override
+            public void run() {
+                // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
+                uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO().setFX(AppMain.objectDB.modifiedObjects.size()), (AppMain.theClipboard == null) ? new RubyIO().setNull() : AppMain.theClipboard);
+                AppMain.pendingRunnables.add(this);
+            }
+        });
+        UIAppendButton workspace = new UIAppendButton(TXDB.get("Save Modified"), uiStatusLabel, new Runnable() {
+            @Override
+            public void run() {
+                AppMain.objectDB.ensureAllSaved();
+                for (ImageEditorController iec : AppMain.imgContext)
+                    if (iec.imageModified())
+                        iec.save();
+            }
+        }, FontSizes.statusBarTextHeight);
+        workspace = new UIAppendButton(TXDB.get("Clipboard"), workspace, null, new String[] {
+                TXDB.get("Save Clipboard To 'clip.r48'"),
+                TXDB.get("Load Clipboard From 'clip.r48'"),
+                TXDB.get("Inspect Clipboard")
+        }, new Runnable[] {
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        if (AppMain.theClipboard == null) {
+                            AppMain.launchDialog(TXDB.get("There is nothing in the clipboard."));
+                        } else {
+                            AdHocSaveLoad.save("clip", AppMain.theClipboard);
+                            AppMain.launchDialog(TXDB.get("The clipboard was saved."));
+                        }
+                    }
                 },
                 new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.pleaseShutdown();
+                        RubyIO newClip = AdHocSaveLoad.load("clip");
+                        if (newClip == null) {
+                            AppMain.launchDialog(TXDB.get("The clipboard file is invalid or does not exist."));
+                        } else {
+                            AppMain.theClipboard = newClip;
+                            AppMain.launchDialog(TXDB.get("The clipboard file was loaded."));
+                        }
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        if (AppMain.theClipboard == null) {
+                            AppMain.launchDialog(TXDB.get("There is nothing in the clipboard."));
+                        } else {
+                            AppMain.window.createWindow(new UITest(AppMain.theClipboard));
+                        }
                     }
                 }
-        }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, false) {
+        }, FontSizes.statusBarTextHeight);
+        workspace = new UIAppendButton(TXDB.get("Quit"), workspace, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to return to menu? This will lose unsaved data."), new Runnable() {
             @Override
-            public String toString() {
-                return TXDB.get("System Tools");
+            public void run() {
+                AppMain.pleaseShutdown();
             }
-        };
-        UIElement fl = makeFileList();
-        if (fl != null)
-            return new UIElement[] {
-                    fl,
-                    menu
-            };
-        return new UIElement[] {
-                menu
-        };
+        }), FontSizes.menuTextHeight);
+        return workspace;
     }
 
     private static UIElement makeFileList() {

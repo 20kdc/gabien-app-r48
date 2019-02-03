@@ -79,7 +79,7 @@ public class Coco {
                 AppMain.launchDialog(bb);
                 br.close();
             } else {
-                AppMain.launchDialog(TXDB.get("Not an actual release - you have likely compiled this yourself."));
+                AppMain.launchDialog(TXDB.get("Not an actual release - you have likely compiled this yourself.") + "\n" + TXDB.get("The file 'assets/version.txt' needs to exist for text to appear here."));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -27,14 +27,18 @@ public class UIBorderedSubpanel extends UIElement.UIPanel {
     @Override
     public void runLayout() {
         Size s = getSize();
-        Rect plannedSize = new Rect(bw, bw, s.width - (bw * 2), s.height - (bw * 2));
-        boolean cannotSFB = innerPanel.getSize().sizeEquals(plannedSize);
-        if (!cannotSFB) {
-            innerPanel.setForcedBounds(this, plannedSize);
-        } else {
-            innerPanel.runLayoutLoop();
-        }
         Size s2 = innerPanel.getWantedSize();
+        Rect plannedSize = new Rect(bw, bw, s.width - (bw * 2), s.height - (bw * 2));
+        if ((s2.width > plannedSize.width) || (s2.height > plannedSize.height)) {
+            innerPanel.setForcedBounds(this, new Rect(s));
+        } else {
+            boolean cannotSFB = innerPanel.getSize().sizeEquals(plannedSize);
+            if (!cannotSFB) {
+                innerPanel.setForcedBounds(this, plannedSize);
+            } else {
+                innerPanel.runLayoutLoop();
+            }
+        }
         setWantedSize(new Size(s2.width + (bw * 2), s2.height + (bw * 2)));
     }
 }

@@ -31,7 +31,9 @@ public class UIObjectDBMonitor extends UIElement {
     @Override
     public void render(IGrDriver igd) {
         int step = UILabel.getRecommendedTextSize("", FontSizes.objectDBMonitorTextHeight).height;
-        int oy = 0;
+        int width = getSize().width;
+        UILabel.drawLabel(igd, width, 0, 0, toString(), 1, FontSizes.objectDBMonitorTextHeight);
+        int oy = step;
         for (String s : UITest.sortedKeysStr(AppMain.objectDB.objectMap.keySet())) {
             String status = TXDB.get(" [disposed]");
             IObjectBackend.ILoadedObject rio = AppMain.objectDB.objectMap.get(s).get();
@@ -49,10 +51,10 @@ public class UIObjectDBMonitor extends UIElement {
                     AppMain.objectDB.objectMap.remove(s);
                 }
             }
-            UILabel.drawLabel(igd, getSize().width, 0, oy, s + status, 0, FontSizes.objectDBMonitorTextHeight);
+            UILabel.drawLabel(igd, width, 0, oy, s + status, 0, FontSizes.objectDBMonitorTextHeight);
             oy += step;
         }
-        setWantedSize(new Size(getSize().width, oy));
+        setWantedSize(new Size(width, oy));
     }
 
     @Override

@@ -13,7 +13,6 @@ import gabienapp.Application;
 import r48.FontSizes;
 import r48.ui.Art;
 import r48.ui.Coco;
-import r48.ui.UINSVertLayout;
 
 import java.util.LinkedList;
 
@@ -48,7 +47,7 @@ public class WindowManager {
     private IImage modImg;
     private boolean performingScreenTransfer;
 
-    public WindowManager(UIElement topBar, final WindowCreatingUIElementConsumer uiTick) {
+    public WindowManager(final WindowCreatingUIElementConsumer uiTick) {
         uiTicker = uiTick;
         modImg = GaBIEn.createImage(new int[] {0x80000000}, 1, 1);
         rootView = new UIWindowView() {
@@ -78,7 +77,7 @@ public class WindowManager {
 
         tabPane = new UITabPane(FontSizes.tabTextHeight, true, true, FontSizes.maintabsScrollersize);
 
-        UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, new UINSVertLayout(topBar, tabPane));
+        UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, tabPane);
         rootView.addShell(backing);
         rootView.lowerShell(backing);
 

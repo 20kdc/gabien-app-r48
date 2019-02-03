@@ -10,7 +10,10 @@ package r48;
 import gabien.GaBIEn;
 import gabien.ui.*;
 import gabienapp.Application;
-import r48.dbs.*;
+import r48.dbs.ATDB;
+import r48.dbs.ObjectDB;
+import r48.dbs.SDB;
+import r48.dbs.TXDB;
 import r48.imagefx.ImageFXCache;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
@@ -18,7 +21,6 @@ import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.map.systems.IDynobjMapSystem;
-import r48.map.systems.IRMMapSystem;
 import r48.map.systems.MapSystem;
 import r48.maptools.UIMTBase;
 import r48.schema.OpaqueSchemaElement;
@@ -27,15 +29,20 @@ import r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
-import r48.toolsets.*;
+import r48.toolsets.BasicToolset;
+import r48.toolsets.IToolset;
+import r48.toolsets.MapToolset;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
 import r48.ui.dialog.UIChoicesMenu;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
+import r48.ui.utilitybelt.ImageEditorController;
 import r48.wm.WindowManager;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
@@ -87,15 +94,16 @@ public class AppMain {
     public static StuffRenderer stuffRendererIndependent;
     public static MapSystem system;
 
-    // ONLY this class should refer to this (I think?)
+    // ONLY this class should refer to this (I think?). Can be null.
     private static IMapContext mapContext;
-    private static ImageEditToolset imgContext;
 
     // State for in-system copy/paste
     public static RubyIO theClipboard = null;
 
     // All active schema hosts
     private static LinkedList<ISchemaHost> activeHosts;
+    // All active image editors
+    public static LinkedList<ImageEditorController> imgContext;
     // All magical bindings in use
     public static WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache;
 
@@ -142,12 +150,13 @@ public class AppMain {
         imageFXCache = new ImageFXCache();
 
         activeHosts = new LinkedList<ISchemaHost>();
+        imgContext = new LinkedList<ImageEditorController>();
 
         // Set up a default stuffRenderer for things to use.
         stuffRendererIndependent = system.rendererFromTso(null);
 
         // initialize UI
-        window = new WindowManager(rebuildInnerUI(), uiTicker);
+        window = new WindowManager(uiTicker);
 
         initializeTabs(gamepak);
 
@@ -204,11 +213,15 @@ public class AppMain {
     }
 
     public static void performFullImageFlush() {
-        mapContext.performCacheFlush();
+        if (mapContext != null)
+            mapContext.performCacheFlush();
     }
 
     private static void initializeTabs(final String gamepak) {
         LinkedList<IToolset> toolsets = new LinkedList<IToolset>();
+
+        toolsets.add(new BasicToolset(gamepak));
+
         if (system.enableMapSubsystem) {
             MapToolset mapController = new MapToolset();
             // Really just restricts access to prevent a hax pileup
@@ -217,10 +230,6 @@ public class AppMain {
         } else {
             mapContext = null;
         }
-        if (system instanceof IRMMapSystem)
-            toolsets.add(new RMToolsToolset(gamepak));
-        toolsets.add(new BasicToolset());
-        toolsets.add(imgContext = new ImageEditToolset());
 
         Runnable runVisFrame = new Runnable() {
             @Override
@@ -245,113 +254,6 @@ public class AppMain {
                 window.createWindow(uie, true, true);
             }
         window.selectFirstTab();
-    }
-
-    private static UIElement rebuildInnerUI() {
-        final UILabel uiStatusLabel = new UILabel(TXDB.get("Loading..."), FontSizes.statusBarTextHeight);
-        pendingRunnables.add(new Runnable() {
-            @Override
-            public void run() {
-                // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
-                if (Application.mobileExtremelySpecialBehavior) {
-                    uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified"), new RubyIO().setFX(objectDB.modifiedObjects.size()));
-                } else {
-                    uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO().setFX(objectDB.modifiedObjects.size()), (theClipboard == null) ? new RubyIO().setNull() : theClipboard);
-                }
-                pendingRunnables.add(this);
-            }
-        });
-        UIAppendButton workspace = new UIAppendButton(TXDB.get("Save Modified"), uiStatusLabel, new Runnable() {
-            @Override
-            public void run() {
-                objectDB.ensureAllSaved();
-                if (imgContext.imgEdit.imageModified())
-                    imgContext.imgEdit.save();
-            }
-        }, FontSizes.statusBarTextHeight);
-        workspace = new UIAppendButton(TXDB.get("Clipboard"), workspace, null, new String[] {
-                        TXDB.get("Save Clipboard To 'clip.r48'"),
-                        TXDB.get("Load Clipboard From 'clip.r48'"),
-                        TXDB.get("Inspect Clipboard"),
-                        TXDB.get("Execute Lua from 'script.lua' onto clipboard")
-                }, new Runnable[] {
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                if (theClipboard == null) {
-                                    launchDialog(TXDB.get("There is nothing in the clipboard."));
-                                } else {
-                                    AdHocSaveLoad.save("clip", theClipboard);
-                                    launchDialog(TXDB.get("The clipboard was saved."));
-                                }
-                            }
-                        },
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                RubyIO newClip = AdHocSaveLoad.load("clip");
-                                if (newClip == null) {
-                                    launchDialog(TXDB.get("The clipboard file is invalid or does not exist."));
-                                } else {
-                                    theClipboard = newClip;
-                                    launchDialog(TXDB.get("The clipboard file was loaded."));
-                                }
-                            }
-                        },
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                if (theClipboard == null) {
-                                    launchDialog(TXDB.get("There is nothing in the clipboard."));
-                                } else {
-                                    window.createWindow(new UITest(theClipboard));
-                                }
-                            }
-                        },
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                if (theClipboard == null) {
-                                    launchDialog(TXDB.get("There is nothing in the clipboard."));
-                                } else {
-                                    if (!LuaInterface.luaAvailable()) {
-                                        launchDialog(TXDB.get("Lua isn't installed, so can't use it."));
-                                    } else {
-                                        try {
-                                            BufferedReader br = new BufferedReader(new InputStreamReader(GaBIEn.getInFile("script.lua"), "UTF-8"));
-                                            String t = "";
-                                            while (br.ready())
-                                                t += br.readLine() + "\r\n";
-                                            br.close();
-                                            RubyIO rio = LuaInterface.runLuaCall(theClipboard, t);
-                                            if (rio == null) {
-                                                String s = "";
-                                                try {
-                                                    if (LuaInterface.lastError != null)
-                                                        s = "\n" + new String(LuaInterface.lastError, "UTF-8");
-                                                } catch (Exception e2) {
-                                                    // output clearly unavailable
-                                                }
-                                                launchDialog(TXDB.get("Lua error, or took > 10 seconds. Output:") + s);
-                                            } else {
-                                                theClipboard = rio;
-                                                launchDialog(TXDB.get("Successful - the clipboard was replaced."));
-                                            }
-                                        } catch (Exception e) {
-                                            launchDialog(TXDB.get("An exception occurred? (R48-core files are stored in R48's current directory, not the root path.)"));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-        }, FontSizes.statusBarTextHeight);
-        workspace = new UIAppendButton(TXDB.get("Help"), workspace, new Runnable() {
-            @Override
-            public void run() {
-                startHelp(0);
-            }
-        }, FontSizes.statusBarTextHeight);
-        return workspace;
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
@@ -406,8 +308,8 @@ public class AppMain {
         return new Runnable() {
             @Override
             public void run() {
-                UITextButton accept = new UITextButton(TXDB.get("Accept"), FontSizes.dialogWindowTextHeight, null);
-                UITextButton cancel = new UITextButton(TXDB.get("Cancel"), FontSizes.dialogWindowTextHeight, null);
+                UITextButton accept = new UITextButton(TXDB.get("Accept"), FontSizes.dialogWindowTextHeight, null).centred();
+                UITextButton cancel = new UITextButton(TXDB.get("Cancel"), FontSizes.dialogWindowTextHeight, null).centred();
                 UIElement uie = new UISplitterLayout(new UILabel(s, FontSizes.dialogWindowTextHeight),
                         new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
                 final UIMTBase mtb = UIMTBase.wrap(null, uie);
@@ -439,7 +341,7 @@ public class AppMain {
         window.createWindow(mtb);
     }
 
-    public static void startHelp(Integer integer) {
+    public static void startHelp(int integer) {
         // exception to the rule
         UILabel uil = new UILabel("", FontSizes.helpPathHeight);
         final UIHelpSystem uis = new UIHelpSystem();
@@ -473,6 +375,12 @@ public class AppMain {
         hsc.loadPage(integer);
         topbar.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, rootSize.height / 2));
         window.createWindow(topbar);
+    }
+
+    public static void startImgedit() {
+        ImageEditorController eds = new ImageEditorController();
+        imgContext.add(eds);
+        resizeDialogAndTruelaunch(eds.rootView);
     }
 
     private static void fileCopier(String[] mkdirs, String[] fileCopies) {

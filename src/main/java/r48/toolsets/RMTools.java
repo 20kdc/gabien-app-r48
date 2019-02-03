@@ -11,9 +11,7 @@ import gabien.GaBIEn;
 import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
 import gabien.ui.UIElement;
-import gabien.ui.UIPopupMenu;
 import r48.AppMain;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.FormatSyntax;
@@ -25,6 +23,7 @@ import r48.map.systems.IRMMapSystem;
 import r48.maptools.UIMTEventPicker;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
+import r48.ui.UIMenuButton;
 import r48.ui.dialog.UITextPrompt;
 
 import java.io.PrintStream;
@@ -45,20 +44,19 @@ import java.util.LinkedList;
  *
  * Created on 2/12/17.
  */
-public class RMToolsToolset implements IToolset {
+public class RMTools {
     private final CMDB commandsEvent;
     private final IRMMapSystem mapSystem;
 
-    public RMToolsToolset(String gamepak) {
+    public RMTools(String gamepak) {
         // If this errors, then this shouldn't have been constructed.
         mapSystem = (IRMMapSystem) AppMain.system;
 
         commandsEvent = AppMain.schemas.getCMDB(gamepak + "Commands.txt");
     }
 
-    @Override
-    public UIElement[] generateTabs() {
-        return new UIElement[] {new UIPopupMenu(new String[] {
+    public UIElement genButton() {
+        return new UIMenuButton(TXDB.get("RM-Tools"), 16, null, new String[] {
                 TXDB.get("Locate EventCommand in all Pages"),
                 TXDB.get("See If Autocorrect Modifies Anything"),
                 TXDB.get("Universal String Replace"),
@@ -262,12 +260,6 @@ public class RMToolsToolset implements IToolset {
                         AppMain.launchDialog(TXDB.get("transcript.html was written to the target's folder."));
                     }
                 }
-        }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, false) {
-            @Override
-            public String toString() {
-                return TXDB.get("Tools");
-            }
-        }
-        };
+        }).centred();
     }
 }
