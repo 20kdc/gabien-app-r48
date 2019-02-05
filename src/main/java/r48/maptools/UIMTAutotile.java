@@ -78,7 +78,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
 
         tabPane = new UITabPane(FontSizes.tilesTabTextHeight, true, false, FontSizes.tilesTabScrollersize);
         for (UIElement uie : tileMaps)
-            tabPane.addTab(new TabUtils.Tab(uie, new TabUtils.TabIcon[] {}));
+            tabPane.addTab(new UITabBar.Tab(uie, new UITabBar.TabIcon[] {}));
         atBases = map.mapTable.renderer.tileRenderer.indicateATs();
 
         // Begin subtool bar...

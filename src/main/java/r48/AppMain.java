@@ -32,8 +32,10 @@ import r48.schema.util.SchemaPath;
 import r48.toolsets.BasicToolset;
 import r48.toolsets.IToolset;
 import r48.toolsets.MapToolset;
+import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
+import r48.ui.UISymbolButton;
 import r48.ui.dialog.UIChoicesMenu;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
@@ -156,7 +158,13 @@ public class AppMain {
         stuffRendererIndependent = system.rendererFromTso(null);
 
         // initialize UI
-        window = new WindowManager(uiTicker);
+        final UISymbolButton sym = new UISymbolButton(Art.Symbol.Save, FontSizes.tabTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                saveAllModified();
+            }
+        });
+        window = new WindowManager(uiTicker, null, sym);
 
         initializeTabs(gamepak);
 
@@ -188,6 +196,7 @@ public class AppMain {
         return new IConsumer<Double>() {
             @Override
             public void accept(Double deltaTime) {
+                sym.symbol = hasModified() ? Art.Symbol.Save : Art.Symbol.SaveDisabled;
                 if (mapContext != null) {
                     String mapId = mapContext.getCurrentMapObject();
                     IObjectBackend.ILoadedObject map = null;
@@ -378,9 +387,8 @@ public class AppMain {
     }
 
     public static void startImgedit() {
-        ImageEditorController eds = new ImageEditorController();
-        imgContext.add(eds);
-        resizeDialogAndTruelaunch(eds.rootView);
+        // Registers & unregisters self
+        resizeDialogAndTruelaunch(new ImageEditorController().rootView);
     }
 
     private static void fileCopier(String[] mkdirs, String[] fileCopies) {
@@ -605,5 +613,21 @@ public class AppMain {
             mainSet.addAll(idms.getDynamicObjects());
         }
         return new LinkedList<String>(mainSet);
+    }
+
+    public static void saveAllModified() {
+        AppMain.objectDB.ensureAllSaved();
+        for (ImageEditorController iec : AppMain.imgContext)
+            if (iec.imageModified())
+                iec.save();
+    }
+
+    public static boolean hasModified() {
+        if (AppMain.objectDB.modifiedObjects.size() > 0)
+            return true;
+        for (ImageEditorController iec : AppMain.imgContext)
+            if (iec.imageModified())
+                return true;
+        return false;
     }
 }

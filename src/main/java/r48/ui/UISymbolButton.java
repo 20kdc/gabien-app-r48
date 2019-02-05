@@ -24,7 +24,7 @@ public class UISymbolButton extends UIButton<UISymbolButton> {
         symbol = symbolIndex;
         onClick = runnable;
         // See rationale in gabien-core UILabel. Note, though, that the width is smaller.
-        Rect sz = new Rect(0, 0, fontSize + margin, fontSize + margin);
+        Rect sz = new Rect(0, 0, fontSize + (margin * 2), fontSize + margin);
         setWantedSize(sz);
         setForcedBounds(null, new Rect(sz));
     }

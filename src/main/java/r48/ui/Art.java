@@ -261,6 +261,7 @@ public class Art {
         // "Rectangle" is white & dashed, area is solid-skyblue,
         //  XWhite is white and smaller than XRed.
         Rectangle, Stripes, XWhite, Pencil,
-        Camera, New, Folder, Keyframe, Tween
+        Camera, New, Folder, Keyframe,
+        Tween, SaveDisabled
     }
 }

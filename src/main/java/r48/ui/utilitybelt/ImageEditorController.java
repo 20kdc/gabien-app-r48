@@ -65,7 +65,14 @@ public class ImageEditorController {
                     return TXDB.get("Image Editor (modified)");
                 return TXDB.get("Image Editor");
             }
+
+            @Override
+            public void onWindowClose() {
+                super.onWindowClose();
+                AppMain.imgContext.remove(ImageEditorController.this);
+            }
         };
+        AppMain.imgContext.add(this);
     }
 
     public boolean imageModified() {

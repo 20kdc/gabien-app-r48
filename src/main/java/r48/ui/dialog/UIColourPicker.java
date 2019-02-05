@@ -50,11 +50,11 @@ public class UIColourPicker extends UIElement.UIProxy {
                 new UIHSVColourView(FontSizes.getSpriteScale()),
                 new UIRGBColourView()
         };
-        TabUtils.TabIcon[] noIcons = new TabUtils.TabIcon[0];
+        UITabBar.TabIcon[] noIcons = new UITabBar.TabIcon[0];
         for (IConsumer<Integer> ici : colourListeners) {
             ici.accept(baseCol & 0xFFFFFF);
             // This makes sense. Yup.
-            tabPane.addTab(new TabUtils.Tab((UIElement) ici, noIcons));
+            tabPane.addTab(new UITabBar.Tab((UIElement) ici, noIcons));
         }
         tabPane.handleIncoming();
 

@@ -7,6 +7,8 @@
 0: Tip 0
 . The bar at the top is the tab bar.
 . Windows can be docked to it, and undocked from it.
+. At the top-right is the Save button.
+. It saves all modified files in all windows.
 > 1 Show Another Tip...
 
 1: Tip 1
@@ -203,7 +205,7 @@
 . <USER NAME HERE.>
 . Before we begin, a reminder.
 . Do not sit too close to the screen.
-> 0 Who are you quoting?
+> 0 What are you quoting?
 
 997: Secret Tip H
 . There are ten secret tips in all, but they can only be found...

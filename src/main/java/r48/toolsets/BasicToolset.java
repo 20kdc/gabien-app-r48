@@ -30,7 +30,6 @@ import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
 import r48.ui.imi.IMIAssemblyController;
 import r48.ui.spacing.UIBorderedSubpanel;
-import r48.ui.utilitybelt.ImageEditorController;
 
 import java.io.*;
 import java.util.*;
@@ -396,16 +395,7 @@ public class BasicToolset implements IToolset {
                 AppMain.pendingRunnables.add(this);
             }
         });
-        UIAppendButton workspace = new UIAppendButton(TXDB.get("Save Modified"), uiStatusLabel, new Runnable() {
-            @Override
-            public void run() {
-                AppMain.objectDB.ensureAllSaved();
-                for (ImageEditorController iec : AppMain.imgContext)
-                    if (iec.imageModified())
-                        iec.save();
-            }
-        }, FontSizes.statusBarTextHeight);
-        workspace = new UIAppendButton(TXDB.get("Clipboard"), workspace, null, new String[] {
+        UIAppendButton workspace = new UIAppendButton(TXDB.get("Clipboard"), uiStatusLabel, null, new String[] {
                 TXDB.get("Save Clipboard To 'clip.r48'"),
                 TXDB.get("Load Clipboard From 'clip.r48'"),
                 TXDB.get("Inspect Clipboard")

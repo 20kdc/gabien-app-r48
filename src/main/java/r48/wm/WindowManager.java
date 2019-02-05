@@ -47,7 +47,7 @@ public class WindowManager {
     private IImage modImg;
     private boolean performingScreenTransfer;
 
-    public WindowManager(final WindowCreatingUIElementConsumer uiTick) {
+    public WindowManager(final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR) {
         uiTicker = uiTick;
         modImg = GaBIEn.createImage(new int[] {0x80000000}, 1, 1);
         rootView = new UIWindowView() {
@@ -75,7 +75,7 @@ public class WindowManager {
         rootView.sizerActual = rootView.windowTextHeight;
         rootView.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(800), FontSizes.scaleGuess(600)));
 
-        tabPane = new UITabPane(FontSizes.tabTextHeight, true, true, FontSizes.maintabsScrollersize);
+        tabPane = new UITabPane(FontSizes.tabTextHeight, true, true, FontSizes.maintabsScrollersize, thbrL, thbrR);
 
         UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, tabPane);
         rootView.addShell(backing);
@@ -102,7 +102,7 @@ public class WindowManager {
     }
 
     public void selectFirstTab() {
-        LinkedList<TabUtils.Tab> uie = tabPane.getTabs();
+        LinkedList<UITabBar.Tab> uie = tabPane.getTabs();
         if (uie.size() > 0)
             tabPane.selectTab(uie.getFirst().contents);
     }
@@ -113,14 +113,14 @@ public class WindowManager {
 
     public void createWindow(final UIElement uie, final boolean tab, final boolean immortal) {
         if (tab) {
-            TabUtils.TabIcon windowWindowIcon = new TabUtils.TabIcon() {
+            UITabBar.TabIcon windowWindowIcon = new UITabBar.TabIcon() {
                 @Override
                 public void draw(IGrDriver igd, int x, int y, int size) {
                     Art.windowWindowIcon(igd, x, y, size);
                 }
 
                 @Override
-                public void click(TabUtils.Tab self) {
+                public void click(UITabBar.Tab self) {
                     tabPane.removeTab(self);
                     Size mainSize = getRootSize();
                     uie.setForcedBounds(null, new Rect(0, 0, mainSize.width / 2, mainSize.height / 2));
@@ -128,20 +128,20 @@ public class WindowManager {
                 }
             };
             if (immortal) {
-                tabPane.addTab(new TabUtils.Tab(uie, new TabUtils.TabIcon[] {
+                tabPane.addTab(new UITabBar.Tab(uie, new UITabBar.TabIcon[] {
                         windowWindowIcon
                 }));
                 tabPane.selectTab(uie);
             } else {
-                tabPane.addTab(new TabUtils.Tab(uie, new TabUtils.TabIcon[] {
-                        new TabUtils.TabIcon() {
+                tabPane.addTab(new UITabBar.Tab(uie, new UITabBar.TabIcon[] {
+                        new UITabBar.TabIcon() {
                             @Override
                             public void draw(IGrDriver igd, int x, int y, int size) {
                                 Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
                             }
 
                             @Override
-                            public void click(TabUtils.Tab self) {
+                            public void click(UITabBar.Tab self) {
                                 tabPane.removeTab(self);
                                 // Since this was manually removed, this must be called manually.
                                 uie.onWindowClose();
@@ -170,32 +170,32 @@ public class WindowManager {
                 uwv.addShell(new UIWindowView.ScreenShell(uwv, uie));
                 uiTicker.accept(uwv);
             } else {
-                TabUtils.TabIcon tabWindowIcon = new TabUtils.TabIcon() {
+                UITabBar.TabIcon tabWindowIcon = new UITabBar.TabIcon() {
                     @Override
                     public void draw(IGrDriver igd, int x, int y, int size) {
                         Art.tabWindowIcon(igd, x, y, size);
                     }
 
                     @Override
-                    public void click(TabUtils.Tab tab) {
+                    public void click(UITabBar.Tab tab) {
                         rootView.removeTab(tab);
                         createWindow(uie, true, immortal);
                     }
                 };
                 if (immortal) {
-                    rootView.addShell(new UIWindowView.TabShell(rootView, uie, new TabUtils.TabIcon[] {
+                    rootView.addShell(new UIWindowView.TabShell(rootView, uie, new UITabBar.TabIcon[] {
                             tabWindowIcon
                     }));
                 } else {
-                    rootView.addShell(new UIWindowView.TabShell(rootView, uie, new TabUtils.TabIcon[] {
-                            new TabUtils.TabIcon() {
+                    rootView.addShell(new UIWindowView.TabShell(rootView, uie, new UITabBar.TabIcon[] {
+                            new UITabBar.TabIcon() {
                                 @Override
                                 public void draw(IGrDriver igd, int x, int y, int size) {
                                     Art.drawSymbol(igd, Art.Symbol.XRed, x, y, size, false, false);
                                 }
 
                                 @Override
-                                public void click(TabUtils.Tab tab) {
+                                public void click(UITabBar.Tab tab) {
                                     rootView.removeTab(tab);
                                     // We are actually closing (this isn't called by default for a remotely triggered remove)
                                     uie.onWindowClose();

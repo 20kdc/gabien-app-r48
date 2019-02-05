@@ -59,7 +59,7 @@ public class CharacterGeneratorController {
             public void execCmd(char c, String[] args) throws IOException {
                 if (c == ':') {
                     view = new UICharGenView(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), CharacterGeneratorController.this);
-                    modes.addTab(new TabUtils.Tab(view, new TabUtils.TabIcon[0]));
+                    modes.addTab(new UITabBar.Tab(view, new UITabBar.TabIcon[0]));
                     views.add(view);
                 } else if (c == '.') {
                     if (args.length == 1)
