@@ -51,11 +51,13 @@
 > 8 Show Another Tip...
 
 8: Tip 8
-. There's supposed to be Tip 8 here.
+. The image editor is now started from the 'Image Editor' button on this panel.
+. Previously, only one image editor could be up at a time.
 > 9 Show Another Tip...
 
 9: Tip 9
-. There's supposed to be Tip 9 here.
+. Some software supports 'colour management'.
+. Be wary of such software, as importing and exporting data via it may damage the data.
 > 0 Show Another Tip...
 
 500:

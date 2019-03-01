@@ -104,12 +104,12 @@ public class UIMapView extends UIPlaneView {
 
     private void recalcXYT(int x, int y) {
         Size wSize = getSize();
-        double xi = camX + planeDivZoom(x - (wSize.width / 2.0d));
-        double yi = camY + planeDivZoom(y - (wSize.height / 2.0d));
-        mouseXT = UIElement.sensibleCellDiv((int) xi, tileSize);
-        mouseXTP = UIElement.sensibleCellMod((int) xi, tileSize);
-        mouseYT = UIElement.sensibleCellDiv((int) yi, tileSize);
-        mouseYTP = UIElement.sensibleCellMod((int) yi, tileSize);
+        int xi = (int) Math.floor(camX + planeDivZoom(x - (wSize.width / 2.0d)));
+        int yi = (int) Math.floor(camY + planeDivZoom(y - (wSize.height / 2.0d)));
+        mouseXT = UIElement.sensibleCellDiv(xi, tileSize);
+        mouseXTP = UIElement.sensibleCellMod(xi, tileSize);
+        mouseYT = UIElement.sensibleCellDiv(yi, tileSize);
+        mouseYTP = UIElement.sensibleCellMod(yi, tileSize);
     }
 
     private int internalScaling(int i) {
@@ -287,8 +287,8 @@ public class UIMapView extends UIPlaneView {
 
         // Translate new camX/camY (planespace central coord) into old camX/camY (position of the top-left corner of the screen in planespace)
         Size wSize = getSize();
-        mvdc.camX = (int) (camX - planeDivZoom(wSize.width / 2));
-        mvdc.camY = (int) (camY - planeDivZoom(wSize.height / 2));
+        mvdc.camX = (int) Math.floor(camX - planeDivZoom(wSize.width / 2.0d));
+        mvdc.camY = (int) Math.floor(camY - planeDivZoom(wSize.height / 2.0d));
 
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);

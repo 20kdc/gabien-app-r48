@@ -66,6 +66,11 @@ public abstract class UIPlaneView extends UIElement {
         return (i * planeZoomDiv) / planeZoomMul;
     }
 
+    // Use if each zoom cell is actually meant to be treated as a cell.
+    protected int planeDivZoomFloor(int i) {
+        return sensibleCellDiv(i * planeZoomDiv, planeZoomMul);
+    }
+
     @Override
     public void render(IGrDriver igd) {
         Rect plusRect = Art.getZIconRect(false, 0);

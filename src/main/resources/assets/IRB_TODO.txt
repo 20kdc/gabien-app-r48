@@ -9,9 +9,10 @@ from highest priority to lowest:
 + eventually turn editor into huge gelatinous monstrosity (Working on it)
 
 short-term planning:
++ Map looping support
++ Helpfile rewrite
 + Demetrius's various notes over IRC and such:
  + Character creator??? [in progress]
- + Fix Shadow/Region editing (Sub-tile support followed by possible major adjustment to UIMTAutotile workings)
 + OSLoc mode improvements, perhaps?
 
 + Documentation

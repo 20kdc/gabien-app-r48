@@ -216,16 +216,21 @@ public class UIImageEditView extends UIPlaneView {
                 // The osb.clearRect call alters the Intersect, but that's fine since it gets reset.
                 intersect.set(viewRct);
                 if (intersect.intersect(ofx, ofy, localGrid.width, localGrid.height)) {
+                    int ix = intersect.x;
+                    int iy = intersect.y;
+                    int iw = intersect.width;
+                    int ih = intersect.height;
+
                     int rR = (gcR * o) / 255;
                     int rG = (gcG * o) / 255;
                     int rB = (gcB * o) / 255;
                     if (cut) {
-                        osb.clearRect(rR, rG, rB, intersect.x, intersect.y, lineThickness, intersect.height);
-                        osb.clearRect(rR, rG, rB, intersect.x + intersect.width - lineThickness, intersect.y, lineThickness, intersect.height);
-                        osb.clearRect(rR, rG, rB, intersect.x + lineThickness, intersect.y, intersect.width - (lineThickness * 2), lineThickness);
-                        osb.clearRect(rR, rG, rB, intersect.x + lineThickness, intersect.y + intersect.height - lineThickness, intersect.width - (lineThickness * 2), lineThickness);
+                        osb.clearRect(rR, rG, rB, ix, iy, lineThickness, ih);
+                        osb.clearRect(rR, rG, rB, ix + iw - lineThickness, iy, lineThickness, ih);
+                        osb.clearRect(rR, rG, rB, ix + lineThickness, iy, iw - (lineThickness * 2), lineThickness);
+                        osb.clearRect(rR, rG, rB, ix + lineThickness, iy + ih - lineThickness, iw - (lineThickness * 2), lineThickness);
                     } else {
-                        osb.clearRect(rR, rG, rB, intersect.x, intersect.y, intersect.width, intersect.height);
+                        osb.clearRect(rR, rG, rB, ix, iy, iw, ih);
                     }
                 }
                 i++;
@@ -285,10 +290,10 @@ public class UIImageEditView extends UIPlaneView {
                     return;
 
                 Rect bounds = getViewRect();
-                int ax = (int) planeDivZoom(dragLastX - bounds.x);
-                int ay = (int) planeDivZoom(dragLastY - bounds.y);
-                int nx = (int) planeDivZoom(x - bounds.x);
-                int ny = (int) planeDivZoom(y - bounds.y);
+                int ax = planeDivZoomFloor(dragLastX - bounds.x);
+                int ay = planeDivZoomFloor(dragLastY - bounds.y);
+                int nx = planeDivZoomFloor(x - bounds.x);
+                int ny = planeDivZoomFloor(y - bounds.y);
 
                 if (first) {
                     if (shift) {

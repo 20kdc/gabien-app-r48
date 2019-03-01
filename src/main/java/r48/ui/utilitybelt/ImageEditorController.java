@@ -474,6 +474,7 @@ public class ImageEditorController {
             }), cPanel, false, 0.0d);
             paletteView.panelsAdd(cPanel);
         }
+        paletteView.runLayoutLoop();
     }
 
     private UIElement pokeOnCause(int cause, int i, UIAppendButton redo) {

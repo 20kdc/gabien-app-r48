@@ -80,8 +80,6 @@ public class FontSizes {
     // TXDB.get("textDialogDescTextHeight")
     public static int textDialogDescTextHeight = 16;
 
-    // TXDB.get("helpParagraphStartHeight")
-    public static int helpParagraphStartHeight = 16;
     // TXDB.get("helpTextHeight")
     public static int helpTextHeight = 16;
     // TXDB.get("helpLinkHeight")
