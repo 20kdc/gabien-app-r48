@@ -45,6 +45,11 @@ public class DoubleR2kStruct extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
+    public String getBufferEnc() {
+        return "UTF-8";
+    }
+
+    @Override
     public void putBuffer(byte[] data) {
         v = Double.parseDouble(IntUtils.decodeRbFloat(data));
     }

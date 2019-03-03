@@ -450,6 +450,8 @@ C name Class.RPG::Save @title@timestamp @title@hero_name @title@hero_level @titl
 @common_events subwindow hash commonevent_id RPG::SaveCommonEvent
  Really Unimportant
 +optP @unused_panorama subwindow array 0 int
+ This is 0.6.0.
++optP @easyrpg_player_version_EPL int= 600
 
  NOTE: This also creates buttons
 C magicR2kSystemDefaults 3

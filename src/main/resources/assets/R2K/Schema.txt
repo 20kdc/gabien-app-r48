@@ -8,6 +8,7 @@
  Things postfixed with _2k3 were marked as such in the file format information I got.
  _2KO means '2k only'
  _112 means '2k3 1.12'
+ _EPL means 'EasyRPG Player'
 
 C objectDB lcf2000
 C versionId R2k

@@ -18,36 +18,40 @@ import r48.io.r2k.obj.lsd.*;
  * Savefile
  */
 public class Save extends DM2R2kObject {
-    @DM2FXOBinding("@title") @DM2LcfBinding(0x64) @DM2LcfObject
+    @DM2FXOBinding("@title") @DM2LcfBinding(100) @DM2LcfObject
     public SaveTitle title;
-    @DM2FXOBinding("@system") @DM2LcfBinding(0x65) @DM2LcfObject
+    @DM2FXOBinding("@system") @DM2LcfBinding(101) @DM2LcfObject
     public SaveSystem system;
-    @DM2FXOBinding("@screen") @DM2LcfBinding(0x66) @DM2LcfObject
+    @DM2FXOBinding("@screen") @DM2LcfBinding(102) @DM2LcfObject
     public SaveScreen screen;
-    @DM2FXOBinding("@pictures") @DM2LcfBinding(0x67) @DM2LcfSparseArray(SavePicture.class)
+    @DM2FXOBinding("@pictures") @DM2LcfBinding(103) @DM2LcfSparseArray(SavePicture.class)
     public DM2SparseArrayH<SavePicture> pictures;
-    @DM2FXOBinding("@party_pos") @DM2LcfBinding(0x68) @DM2LcfObject
+    @DM2FXOBinding("@party_pos") @DM2LcfBinding(104) @DM2LcfObject
     public SavePartyLocation partyPos;
-    @DM2FXOBinding("@boat_pos") @DM2LcfBinding(0x69) @DM2LcfObject
+    @DM2FXOBinding("@boat_pos") @DM2LcfBinding(105) @DM2LcfObject
     public SaveVehicleLocation boatPos;
-    @DM2FXOBinding("@ship_pos") @DM2LcfBinding(0x6A) @DM2LcfObject
+    @DM2FXOBinding("@ship_pos") @DM2LcfBinding(106) @DM2LcfObject
     public SaveVehicleLocation shipPos;
-    @DM2FXOBinding("@airship_pos") @DM2LcfBinding(0x6B) @DM2LcfObject
+    @DM2FXOBinding("@airship_pos") @DM2LcfBinding(107) @DM2LcfObject
     public SaveVehicleLocation airshipPos;
-    @DM2FXOBinding("@actors") @DM2LcfBinding(0x6C) @DM2LcfSparseArray(SaveActor.class)
+    @DM2FXOBinding("@actors") @DM2LcfBinding(108) @DM2LcfSparseArray(SaveActor.class)
     public DM2SparseArrayH<SaveActor> actors;
-    @DM2FXOBinding("@party") @DM2LcfBinding(0x6D) @DM2LcfObject
+    @DM2FXOBinding("@party") @DM2LcfBinding(109) @DM2LcfObject
     public SaveParty partyItems;
-    @DM2FXOBinding("@targets") @DM2LcfBinding(0x6E) @DM2LcfSparseArray(SaveTarget.class)
+    @DM2FXOBinding("@targets") @DM2LcfBinding(110) @DM2LcfSparseArray(SaveTarget.class)
     public DM2SparseArrayA<SaveTarget> targets;
-    @DM2FXOBinding("@map_info") @DM2LcfBinding(0x6F) @DM2LcfObject
+    @DM2FXOBinding("@map_info") @DM2LcfBinding(111) @DM2LcfObject
     public SaveMapInfo mapInfo;
-    @DM2Optional @DM2FXOBinding("@unused_panorama") @DM2LcfBinding(0x70)
+    @DM2Optional @DM2FXOBinding("@unused_panorama") @DM2LcfBinding(112)
     public DM2Array<ByteR2kStruct> unusedPanorama;
-    @DM2FXOBinding("@main_interpreter") @DM2LcfBinding(0x71) @DM2LcfObject
+    @DM2FXOBinding("@main_interpreter") @DM2LcfBinding(113) @DM2LcfObject
     public Interpreter mainInterpreter;
-    @DM2FXOBinding("@common_events") @DM2LcfBinding(0x72) @DM2LcfSparseArray(SaveCommonEvent.class)
+    @DM2FXOBinding("@common_events") @DM2LcfBinding(114) @DM2LcfSparseArray(SaveCommonEvent.class)
     public DM2SparseArrayH<SaveCommonEvent> commonEvents;
+
+    // EasyRPG Player version tag.
+    @DM2FXOBinding("@easyrpg_player_version_EPL") @DM2LcfBinding(200) @DM2LcfInteger(600) @DM2Optional
+    public DM2LcfInteger easyrpgPlayerVersion;
 
     public Save() {
         super("RPG::Save");
