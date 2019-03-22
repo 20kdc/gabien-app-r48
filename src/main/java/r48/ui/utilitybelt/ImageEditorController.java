@@ -62,8 +62,8 @@ public class ImageEditorController {
             @Override
             public String toString() {
                 if (imageEditView.eds.imageModified())
-                    return TXDB.get("Image Editor (modified)");
-                return TXDB.get("Image Editor");
+                    return TXDB.get("Image Editor (modified)"); // + " " + imageEditView.eds.getSaveDepth();
+                return TXDB.get("Image Editor"); // + " " + imageEditView.eds.getSaveDepth();
             }
 
             @Override

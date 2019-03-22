@@ -81,6 +81,10 @@ public class ImageEditorEDS {
     public void endSection() {
     }
 
+    public int getSaveDepth() {
+        return saveDepth;
+    }
+
     public boolean hasUndo() {
         return undoBuffers.size() > 0;
     }

@@ -30,6 +30,10 @@ public class PasteImageEditorTool implements IImageEditorTool {
 
     @Override
     public void apply(int x, int y, UIImageEditView view, boolean major, boolean dragging) {
+        if (!major)
+            return;
+        if (dragging)
+            return;
         BMPConnection result = null;
 
         if (AppMain.theClipboard != null) {
