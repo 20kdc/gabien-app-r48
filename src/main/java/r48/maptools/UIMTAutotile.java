@@ -73,7 +73,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                 lText = " " + lText;
             }
 
-            tileMaps[i] = new UITileGrid(map.mapTable.renderer, map.currentLayer, tileTabs[i].atProcessing, tileTabs[i].visTilesNormal, tileTabs[i].visTilesHover, lText, FontSizes.getSpriteScale());
+            tileMaps[i] = new UITileGrid(map.mapTable.renderer, map.currentLayer, tileTabs[i].atProcessing, tileTabs[i].visTilesNormal, tileTabs[i].visTilesHover, lText, resultScale);
         }
 
         tabPane = new UITabPane(FontSizes.tilesTabTextHeight, true, false, FontSizes.tilesTabScrollersize);
