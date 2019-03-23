@@ -19,9 +19,17 @@ import gabien.ui.UIElement;
 public class UIThumbnail extends UIElement {
     public IImage viewedImage;
     private Rect drawRect;
+    private Rect imgRegion;
+    private int wantedW;
 
     public UIThumbnail(IImage im) {
-        super(im.getWidth(), im.getHeight());
+        this(im, im.getWidth(), new Rect(0, 0, im.getWidth(), im.getHeight()));
+    }
+
+    public UIThumbnail(IImage im, int wanted, Rect imgReg) {
+        super(wanted, imgReg.height);
+        wantedW = wanted;
+        imgRegion = imgReg;
         viewedImage = im;
         drawRect = new Rect(0, 0, im.getWidth(), im.getHeight());
     }
@@ -40,10 +48,10 @@ public class UIThumbnail extends UIElement {
 
     @Override
     public void runLayout() {
-        drawRect = getDrawRect(getSize(), viewedImage.getWidth(), viewedImage.getHeight());
+        drawRect = getDrawRect(getSize(), imgRegion.width, imgRegion.height);
         // This treats horizontal size as the 'limiter'
-        Rect tmp = getDrawRect(new Size(getSize().width, viewedImage.getHeight()), viewedImage.getWidth(), viewedImage.getHeight());
-        setWantedSize(new Size(viewedImage.getWidth(), tmp.height));
+        Rect tmp = getDrawRect(new Size(getSize().width, imgRegion.height), imgRegion.width, imgRegion.height);
+        setWantedSize(new Size(wantedW, tmp.height));
     }
 
     @Override
@@ -53,6 +61,6 @@ public class UIThumbnail extends UIElement {
 
     @Override
     public void render(IGrDriver igd) {
-        igd.blitScaledImage(0, 0, viewedImage.getWidth(), viewedImage.getHeight(), drawRect.x, drawRect.y, drawRect.width, drawRect.height, viewedImage);
+        igd.blitScaledImage(0, 0, imgRegion.width, imgRegion.height, drawRect.x, drawRect.y, drawRect.width, drawRect.height, viewedImage);
     }
 }

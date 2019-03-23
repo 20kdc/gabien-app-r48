@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.IImage;
 import gabien.ui.*;
 import r48.FontSizes;
+import r48.ui.UIThumbnail;
 
 import java.util.LinkedList;
 
@@ -29,8 +30,8 @@ public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<Integer
             // I'm pretty sure this is supposed to be a quote from ... *something* from the person who wrote Alice In Wonderland.
             // Except I probably remembered it wrong.
             // They're meant to get a rough estimate on a good help window size.
-            page.add(new HelpElement('.', "T'was brillig in the slithy toves, did Gireth gimble in the wabe.".split(" ")));
-            page.add(new HelpElement('.', "All mimsy were the borogroves".split(" ")));
+            page.add(new HelpElement('.', "T'was brillig in the slithy toves, did Gireth gimble in the wabe."));
+            page.add(new HelpElement('.', "All mimsy were the borogroves"));
         }
         runLayoutLoop();
         forceToRecommended();
@@ -83,7 +84,8 @@ public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<Integer
         public IConsumer<Integer> onLinkClick;
         public final boolean position;
 
-        public HelpElement(char c, String[] args) {
+        public HelpElement(char c, String arg) {
+            String[] args = arg.split(" ");
             if (c == '.') {
                 position = false;
                 StringBuilder sbt = new StringBuilder();
@@ -92,6 +94,14 @@ public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<Integer
                     sbt.append(' ');
                 }
                 element = new UILabel(sbt.toString(), FontSizes.helpTextHeight);
+            } else if (c == 'h') {
+                position = false;
+                StringBuilder sbt = new StringBuilder();
+                for (String s : args) {
+                    sbt.append(s);
+                    sbt.append(' ');
+                }
+                element = new UILabel(sbt.toString(), FontSizes.helpTextHeight).centred();
             } else if (c == '>') {
                 String t = "";
                 boolean first = true;
@@ -123,14 +133,7 @@ public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<Integer
                 final int sw = extended ? Integer.parseInt(args[3]) : r.getWidth();
                 final int sh = extended ? Integer.parseInt(args[4]) : r.getHeight();
                 final int w = FontSizes.scaleGuess(sw);
-                final int h = FontSizes.scaleGuess(sh);
-                UIPublicPanel uie = new UIPublicPanel(w, h);
-                uie.baseImage = r;
-                uie.imageX = xx;
-                uie.imageY = yy;
-                uie.imageScale = true;
-                uie.imageSW = sw;
-                uie.imageSH = sh;
+                UIThumbnail uie = new UIThumbnail(r, w, new Rect(xx, yy, sw, sh));
                 position = c == 'i';
                 element = uie;
             } else {

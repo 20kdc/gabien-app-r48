@@ -283,16 +283,14 @@ public class AppMain {
     }
 
     public static void launchDialog(String s) {
-        UIHelpSystem uhs = new UIHelpSystem();
-        for (String st : s.split("\n"))
-            uhs.page.add(new UIHelpSystem.HelpElement('.', st.split(" ")));
+        UILabel ul = new UILabel(s, FontSizes.textDialogDescTextHeight);
         UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize) {
             @Override
             public String toString() {
                 return TXDB.get("Information");
             }
         };
-        svl.panelsAdd(uhs);
+        svl.panelsAdd(ul);
         svl.forceToRecommended();
         Size recSize = svl.getSize();
 

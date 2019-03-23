@@ -7,32 +7,36 @@
 The help file, though it could easily serve as a Twine-like engine if you so chose.
 
 0: Index
-i HelpImg/0.demo.png
+h
+, R48 Usage Manual
+,
+. Welcome to the R48 usage manual.
+, R48's interface is essentially a miniature desktop.
+p 4
+I HelpImg/0.demo.png
+p 4
+. It's split into the tab bar, with a global 'save' button, and the tab contents.
+, Here, no tab is active, so it's a field of blue squares.
+, Tabs can be turned into floating windows and back with the window-like-button on them.
+, Closable tabs/windows will have a red button on them.
 .
-. Firstly, keep in mind that text fields will revert unless you press enter.
-. The same goes for number fields.
-. This is critical to several operations.
+. R48 expects text or number field edits to be confirmed by pressing enter.
+, Not pressing enter cancels the edit.
 .
-. Secondly, make sure you ran this program from the same directory as the game that you want to edit.
-. Alternatively, make sure that the game path has been set correctly.
-.
-. Third, make sure that you've selected that game's engine at the first menu.
-. If not, closing both this help window and the main window should bring you back there.
-.
-. Before you continue, if you are just starting out and trying to make something to run on EasyRPG with this, read the following.
-> 21 R2k Backend Quickstart
-. While if you just want to use this to increase your gold in a 2k/2k3 game (you know who you are)...
-> 23 R2k Savefiles Quickstart
-.
-. Moving this help window out of the way, the picture on the right should match.
 . The tab names should describe what they do, but in any case, for further detail, see the below pages:
 > 1 Map
 > 2 MapInfos
 > 3 Tools
 > 4 Database Objects
 > 6 System Tools
+.
+. Before you continue, if you are just starting out and trying to make something to run on EasyRPG with this, read the following.
+> 21 R2k Backend Quickstart
+. While if you just want to use this to increase your gold in a 2k/2k3 game (you know who you are)...
+> 23 R2k Savefiles Quickstart
+.
 . Note that to ensure your work is saved, remember to press the button at the top-right to save your work.
-. Furthermore, keep backups. :)
+, Furthermore, keep backups. :)
 > 999 License
 
 1: Map
@@ -369,6 +373,7 @@ p 4
 > 22 System: Alters the general appearance of system frames and text. 160x80.
 . System2: For things used in RPG Maker 2003. 80x96.
 . Title: Title screen images. 320x240.
+> 1 Back to Index
 
 22: R2k Backend 'System' Explaination
 . The "\"System\"" images are 160x80, and follow a complex layout.
@@ -445,6 +450,7 @@ i HelpImg/3.2003save.png
 . Pages should, but do not have to be, ordered.
 . The following 'commands' exist:
 . '.': Write a line of text. Automatic word-break is always on, but line-break also occurs.
+. ',': Adds a line break to the previous line of text without the border.
 . 'p': Generate some amount (given as a number) of blank space.
 .
 . The following two commands draw images.
@@ -455,6 +461,18 @@ i HelpImg/3.2003save.png
 . 'I': Draw a centred image, useful if you want to draw attention to it / give it a margin.
 .
 > 800 back
+
+997: Launcher Documentation
+. R48 can be run in two ways.
+, Firstly, it can be copied to the directory of the game and run from there.
+, And secondly, it can be given the location of the game.
+,
+, R48's launcher looks somewhat like this:
+. Secondly, make sure you ran this program from the same directory as the game that you want to edit.
+. Alternatively, make sure that the game path has been set correctly.
+.
+. Third, make sure that you've selected that game's engine at the first menu.
+. If not, closing both this help window and the main window should bring you back there.
 
 998: Internal Tool Documentation 'RMAnimEditor'
 . Sometimes, you just need to edit a battle animation.

@@ -278,7 +278,7 @@ public class Application {
                         String r = baos.toString("UTF-8").replaceAll("\r", "");
                         UIHelpSystem uhs = new UIHelpSystem();
                         for (String s : r.split("\n"))
-                            uhs.page.add(new UIHelpSystem.HelpElement('.', s.split(" ")));
+                            uhs.page.add(new UIHelpSystem.HelpElement('.', s));
                         UIScrollLayout scroll = new UIScrollLayout(true, FontSizes.generalScrollersize) {
                             @Override
                             public String toString() {

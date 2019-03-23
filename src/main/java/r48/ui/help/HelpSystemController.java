@@ -38,6 +38,7 @@ public class HelpSystemController {
         if (helpStream != null) {
             DBLoader.readFile(helpStream, new IDatabase() {
                 boolean working = false;
+                UIHelpSystem.HelpElement workingElement;
 
                 @Override
                 public void newObj(int objId, String objName) throws IOException {
@@ -52,8 +53,23 @@ public class HelpSystemController {
 
                 @Override
                 public void execCmd(char c, String[] args) throws IOException {
-                    if (working)
-                        hs.page.add(new UIHelpSystem.HelpElement(c, args));
+                    if (working) {
+                        StringBuilder argbuilder = new StringBuilder();
+                        boolean first = true;
+                        for (String s : args) {
+                            if (first) {
+                                first = false;
+                            } else {
+                                argbuilder.append(' ');
+                            }
+                            argbuilder.append(s);
+                        }
+                        if (c == ',') {
+                            ((UILabel) workingElement.element).text += "\n" + argbuilder.toString();
+                        } else {
+                            hs.page.add(workingElement = new UIHelpSystem.HelpElement(c, argbuilder.toString()));
+                        }
+                    }
                 }
             });
             hs.runLayoutLoop();

@@ -103,8 +103,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
                         title += TXDB.get("Unknown Command");
                     }
                     UIHelpSystem uis = new UIHelpSystem();
-                    uis.page.add(new UIHelpSystem.HelpElement('.', title.split(" ")));
-                    uis.page.add(new UIHelpSystem.HelpElement('.', result.split(" ")));
+                    uis.page.add(new UIHelpSystem.HelpElement('.', title));
+                    uis.page.add(new UIHelpSystem.HelpElement('.', result));
                     uis.forceToRecommended();
                     launcher.launchOther(uis);
                 }
