@@ -45,7 +45,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     public void swapOrders(int orderA, int orderB) {
         IRIO mapTreeOrders = getMapOrders();
         IRIO a = mapTreeOrders.getAElem(orderA);
-        IRIO b = mapTreeOrders.getAElem(orderA);
+        IRIO b = mapTreeOrders.getAElem(orderB);
         long ai = a.getFX();
         a.setFX(b.getFX());
         b.setFX(ai);
@@ -66,6 +66,8 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
 
     public static String sTranslateToGUM(long k) {
         final IRIO map = AppMain.objectDB.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos").getHashVal(new RubyIO().setFX(k));
+        if (map == null)
+            return null;
         String pfx = map.getIVar("@type").getFX() == 2 ? "Area." : "Map.";
         return pfx + k;
     }
