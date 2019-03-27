@@ -99,19 +99,24 @@ public class Terms extends IRIOFixed implements IR2kInterpretable {
 
     public static void importTermlike(InputStream bais, int[] map, StringR2kStruct[] termArray) throws IOException {
         for (int i = 0; i < termArray.length; i++)
-            termArray[i] = new StringR2kStruct();
+            if (termArray[i] == null)
+                termArray[i] = new StringR2kStruct();
         while (true) {
             int idx = R2kUtil.readLcfVLI(bais);
             if (idx == 0)
                 break;
             int len = R2kUtil.readLcfVLI(bais);
             byte[] data = IntUtils.readBytes(bais, len);
+            boolean found = false;
             for (int i = 0; i < map.length; i++) {
                 if (map[i] == idx) {
                     termArray[i].data = data;
+                    found = true;
                     break;
                 }
             }
+            if (!found)
+                System.err.println("UNKNOWN TERMLIKE CHUNK: " + idx);
         }
     }
 
