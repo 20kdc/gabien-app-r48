@@ -707,6 +707,8 @@ public class SDB {
                     EnumSchemaElement e = new EnumSchemaElement(options, ValueSyntax.decode(args[2]), "INT:" + TXDB.get(args[0], args[1]));
                     setSDBEntry(args[0], e);
                 } else if (c == 'M') {
+                    // Make a proxy (because we change the backing element all the time)
+                    AppMain.schemas.ensureSDBProxy(args[2]);
                     mergeRunnables.add(new Runnable() {
                         @Override
                         public void run() {
@@ -733,6 +735,7 @@ public class SDB {
                     } else if (args.length != 5) {
                         throw new RuntimeException("Expects D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID]");
                     }
+                    AppMain.schemas.ensureSDBProxy(args[0]);
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], createPathMap(root[1]), args[3].equals("1"), createPathMap(args[4]), Integer.parseInt(args[1]), interpret));
                 } else if (c == 'd') {
                     // OLD SYSTEM
@@ -913,8 +916,13 @@ public class SDB {
 
     // Use if and only if you deliberately need the changing nature of a proxy (this disables the cache)
     public void ensureSDBProxy(String text) {
-        NameProxySchemaElement npse = new NameProxySchemaElement(text, false);
-        schemaDatabase.put(text, npse);
+        if (schemaDatabase.containsKey(text)) {
+            // Implicitly asserts that this is a proxy.
+            ((NameProxySchemaElement) schemaDatabase.get(text)).useCache = false;
+        } else {
+            NameProxySchemaElement npse = new NameProxySchemaElement(text, false);
+            schemaDatabase.put(text, npse);
+        }
     }
 
     public LinkedList<String> listFileDefs() {

@@ -33,7 +33,7 @@ public class EventTileReplacerSchemaElement extends SchemaElement {
     }
 
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UITileGrid r = new UITileGrid(launcher.getContextRenderer(), layer, displayMap.mapping, FontSizes.getSpriteScale());
         if (PathSyntax.parse(target, charName).decString().length() == 0)
             r.setSelected((int) PathSyntax.parse(target, charIdx).getFX());
@@ -43,6 +43,7 @@ public class EventTileReplacerSchemaElement extends SchemaElement {
                 PathSyntax.parse(target, charName).setString("");
                 PathSyntax.parse(target, charIdx).setFX(r.getSelected());
                 path.changeOccurred(false);
+                launcher.popObject();
             }
         };
         return r;

@@ -71,6 +71,9 @@ M internal_itemDictionary item_or_none_id__ item_or_none_id
 +internal_mapDictionary
 C magicR2kSystemDefaults 4
 
+E map_or_none_id__ Map.ID 0 None
+M internal_mapDictionary map_or_none_id__ map_or_none_id
+
 > troop_id internal_troopDictionary
  not to be confused with an enemy within a troop
 > enemy_id internal_enemyDictionary

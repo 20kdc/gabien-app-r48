@@ -12,8 +12,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.dbs.FormatSyntax;
-import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
 import r48.io.data.IRIO;
 import r48.schema.specialized.TempDialogSchemaChoice;
@@ -93,7 +91,7 @@ public class EnumSchemaElement extends SchemaElement {
             if (st != null) {
                 if (!prefix)
                     return st;
-                return FormatSyntax.formatExtended(TXDB.get("#A : #B"), val, new RubyIO().setString(st, true));
+                return val + " : " + st;
             }
         }
         return val.toString();

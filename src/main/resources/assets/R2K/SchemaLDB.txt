@@ -662,12 +662,12 @@ e rpg_system_testing_battle_condition 0 none 1 initiative 2 back 3 surround 4 pi
 @item_se RPG::Sound
 
 .rpg_system_transition
-@transition_fadein transition_type
-@transition_fadeout transition_type
-@battle_start_fadein transition_type
-@battle_start_fadeout transition_type
-@battle_end_fadein transition_type
-@battle_end_fadeout transition_type
+@transition_fadein transition_type_no_default
+@transition_fadeout transition_type_no_default
+@battle_start_fadein transition_type_no_default
+@battle_start_fadeout transition_type_no_default
+@battle_end_fadein transition_type_no_default
+@battle_end_fadeout transition_type_no_default
 
  ---
 
