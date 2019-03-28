@@ -40,10 +40,11 @@ import java.util.LinkedList;
  */
 public class WindowManager {
     private Rect preFullscreenRect = null;
+    // 'protected' elements here are accessible to the testing framework.
     private final UIWindowView rootView;
-    private final UITabPane tabPane;
+    protected final UITabPane tabPane;
     private final WindowCreatingUIElementConsumer uiTicker;
-    private final LinkedList<UIWindowView> allWindowViews = new LinkedList<UIWindowView>();
+    protected final LinkedList<UIWindowView> allWindowViews = new LinkedList<UIWindowView>();
     private IImage modImg;
     private boolean performingScreenTransfer;
 
