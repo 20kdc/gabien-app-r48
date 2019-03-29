@@ -214,7 +214,7 @@ public class GrandTestBuilder {
         for (byte b : dat)
             checksum += b & 0xFF;
         if (expectedChecksum != checksum)
-            throw new RuntimeException("Checksum mismatch. Expected " + checksum);
+            throw new RuntimeException("Checksum mismatch. Got " + checksum);
     }
 
     private byte[] createDump() throws IOException {
@@ -245,9 +245,8 @@ public class GrandTestBuilder {
             IntUtils.writeS32(baos, dl.data.length);
             knownPos += dl.data.length;
         }
-        for (DumpedLump dl : l) {
+        for (DumpedLump dl : l)
             baos.write(dl.data);
-        }
         return baos.toByteArray();
     }
 

@@ -36,9 +36,8 @@ public class GrandWindowManagerUtils {
         if (AppMain.window == null)
             throw new GrandExecutionError("No window manager");
         for (UITabBar.Tab tx : AppMain.window.tabPane.getTabs()) {
-            if (tx.contents == e) {
+            if (tx.contents == e)
                 clickIcon(tx, ico);
-            }
         }
         for (UIWindowView uww : AppMain.window.allWindowViews) {
             for (UIWindowView.IShell sh : uww.getShells()) {

@@ -21,6 +21,7 @@ public class GrandSynthesisTest {
         initSynthesis(gtb);
         editTerm(gtb);
         editMap(gtb);
+        editNewMap(gtb);
 
         // Save & quit
         gtb.thenClick(945, 15);
@@ -83,8 +84,16 @@ public class GrandSynthesisTest {
         gtb.thenIcon("Map0001.lmu*", 0); // Close.
     }
 
+    private void editNewMap(GrandTestBuilder gtb) throws IOException {
+        gtb.thenSelectTab("MapInfos");
+        gtb.thenClick(288, 83);
+        gtb.thenIcon("Map ID?", 1);
+        gtb.thenClick(950, 50);
+        gtb.thenWaitFrame();
+    }
+
     private void runTheTest(GrandTestBuilder gtb) throws IOException {
         gtb.thenWaitFrame();
-        gtb.execute(4542671);
+        gtb.execute(4565975);
     }
 }

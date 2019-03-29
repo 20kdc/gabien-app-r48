@@ -19,6 +19,7 @@ import r48.ui.UINSVertLayout;
 import r48.ui.UITreeView;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Helps jump between maps.
@@ -205,6 +206,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                     }
                 };
                 unusedID.run();
+                final AtomicBoolean close = new AtomicBoolean(false);
                 UIAppendButton prompt = new UIAppendButton(TXDB.get("Confirm"), num, new Runnable() {
                     @Override
                     public void run() {
@@ -217,12 +219,18 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                         operators.complete();
                         mapContext.loadMap(operators.translateToGUM(i));
                         rebuildList();
+                        close.set(true);
                     }
                 }, FontSizes.textDialogFieldTextHeight);
                 UINSVertLayout dialog = new UINSVertLayout(prompt, new UITextButton(TXDB.get("Find unused ID."), FontSizes.textDialogFieldTextHeight, unusedID)) {
                     @Override
                     public String toString() {
                         return TXDB.get("Map ID?");
+                    }
+
+                    @Override
+                    public boolean requestsUnparenting() {
+                        return close.get();
                     }
                 };
                 AppMain.window.createWindow(dialog);
