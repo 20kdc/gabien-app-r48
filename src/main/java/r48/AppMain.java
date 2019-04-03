@@ -348,17 +348,12 @@ public class AppMain {
         window.createWindow(mtb);
     }
 
-    public static void startHelp(int integer) {
+    public static void startHelp(String base, String link) {
         // exception to the rule
         UILabel uil = new UILabel("", FontSizes.helpPathHeight);
         final UIHelpSystem uis = new UIHelpSystem();
-        final HelpSystemController hsc = new HelpSystemController(uil, null, uis);
-        uis.onLinkClick = new IConsumer<Integer>() {
-            @Override
-            public void accept(Integer integer) {
-                hsc.loadPage(integer);
-            }
-        };
+        final HelpSystemController hsc = new HelpSystemController(uil, base, uis);
+        uis.onLinkClick = hsc;
         final UIScrollLayout uus = new UIScrollLayout(true, FontSizes.generalScrollersize);
         uus.panelsAdd(uis);
         Size rootSize = window.getRootSize();
@@ -379,7 +374,7 @@ public class AppMain {
                 uus.scrollbar.scrollPoint = 0;
             }
         };
-        hsc.loadPage(integer);
+        hsc.accept(link);
         topbar.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, rootSize.height / 2));
         window.createWindow(topbar);
     }

@@ -11,6 +11,9 @@ from highest priority to lowest:
 short-term planning:
 + Map looping support
 + Helpfile rewrite
+
+-- DELAYED --
+
 + Demetrius's various notes over IRC and such:
  + Character creator??? [in progress]
 + OSLoc mode improvements, perhaps?
@@ -22,6 +25,7 @@ short-term planning:
 + Figure out RXP's oddities(???)
 
 + send back SavePicture default value fixes, they probably need this (Well, I did mention it, but if anything's happened I don't see it)
+ + Check this again on both sides!!!
 
 - Maybe remove IMI, which I'll rename the WAU.
   Icky, kind of cancerous...

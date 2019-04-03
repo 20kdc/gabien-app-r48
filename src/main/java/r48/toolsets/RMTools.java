@@ -12,6 +12,7 @@ import gabien.ui.IConsumer;
 import gabien.ui.IFunction;
 import gabien.ui.UIElement;
 import r48.AppMain;
+import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.FormatSyntax;
@@ -56,7 +57,7 @@ public class RMTools {
     }
 
     public UIElement genButton() {
-        return new UIMenuButton(TXDB.get("RM-Tools"), 16, null, new String[] {
+        return new UIMenuButton(TXDB.get("RM-Tools"), FontSizes.menuTextHeight, null, new String[] {
                 TXDB.get("Locate EventCommand in all Pages"),
                 TXDB.get("See If Autocorrect Modifies Anything"),
                 TXDB.get("Universal String Replace"),

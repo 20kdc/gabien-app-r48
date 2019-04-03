@@ -124,7 +124,7 @@ e timer_id 0 timer1 1 timer2
  NOTE: This is barely ever used, in contrast to RGSS. In general stuff uses sprite_direction
 e direction 2 down 4 left 6 right 8 up
 
-e sprite_direction 0 up 1 right 2 down 3 left
+e sprite_direction 2 down 0 up 3 left 1 right
 
 > eventpage_movefreq int= 6
 > eventpage_movespeed int= 3

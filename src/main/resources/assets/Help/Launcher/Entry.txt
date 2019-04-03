@@ -4,11 +4,9 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-x "RPG Maker 2000, 2003, or EasyRPG. (Android users, go here.)"
-y "A translation string"
-
-x "RGSS Engines (RPG Maker XP, VX Ace)"
-y "Another translation string"
-
-x "Tests"
-y "Not actually a translation string! Really! Okay, maybe."
+0: Onboarding
+i layertab.png 33 48 31 16 62
+I layertab.png 33 1 31 31 62
+p 8
+. If R48 is not running in the game's directory, enter in a path to that directory.
+, Then, choose the engine the game you want to load is based on, and (if relevant) the text encoding the game uses.

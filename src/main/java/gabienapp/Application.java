@@ -20,7 +20,9 @@ import r48.ui.Art;
 import r48.ui.Coco;
 import r48.ui.UIAppendButton;
 import r48.ui.dialog.UIFontSizeConfigurator;
+import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
+import r48.ui.spacing.UIBorderedSubpanel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,8 +43,6 @@ public class Application {
     // *cough*OneShot*cough*. controlled by FontSizeConfigurator
     public static boolean allowBlending = true;
     public static boolean windowingExternal = false;
-
-    private static IGPMenuPanel rootGPMenuPanel;
 
     protected static IConsumer<Double> appTicker = null;
     protected static UITextBox rootBox;
@@ -122,6 +122,12 @@ public class Application {
 
             final LinkedList<UIElement> basePanels = new LinkedList<UIElement>();
 
+            UIHelpSystem uhs = new UIHelpSystem();
+            HelpSystemController hsc = new HelpSystemController(null, "Help/Launcher/Entry", uhs);
+            hsc.loadPage(0);
+
+            basePanels.add(new UIBorderedSubpanel(uhs, FontSizes.scaleGuess(8)));
+
             basePanels.add(figureOutTopBar(uiTicker, closeHelper));
 
             basePanels.add(new UISplitterLayout(new UILabel(TXDB.get("MS per frame:"), FontSizes.launcherTextHeight), msAdjust, false, 3, 5));
@@ -187,7 +193,7 @@ public class Application {
             // ...
 
             gamepaks.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(640), FontSizes.scaleGuess(480)));
-            menuConstructor.accept(rootGPMenuPanel);
+            menuConstructor.accept(new PrimaryGPMenuPanel());
             uiTicker.accept(gamepaks);
             closeHelper.accept(new Runnable() {
                 @Override
@@ -276,16 +282,13 @@ public class Application {
                         }
 
                         String r = baos.toString("UTF-8").replaceAll("\r", "");
-                        UIHelpSystem uhs = new UIHelpSystem();
-                        for (String s : r.split("\n"))
-                            uhs.page.add(new UIHelpSystem.HelpElement('.', s));
                         UIScrollLayout scroll = new UIScrollLayout(true, FontSizes.generalScrollersize) {
                             @Override
                             public String toString() {
                                 return "Error...";
                             }
                         };
-                        scroll.panelsAdd(uhs);
+                        scroll.panelsAdd(new UILabel(r, FontSizes.helpTextHeight));
                         scroll.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(640), FontSizes.scaleGuess(480)));
                         uiTicker.accept(scroll);
                         failed = scroll;
@@ -354,7 +357,6 @@ public class Application {
                 if (canAvoidWait)
                     if (TXDB.getLanguage().equals("English"))
                         fontsNecessary.set(false);
-                rootGPMenuPanel = new PrimaryGPMenuPanel();
             }
         };
         txdbThread.start();
@@ -387,7 +389,7 @@ public class Application {
             // Doesn't matter if it switches font on the last frame or something, just make sure the application remains running
             if ((!FontManager.fontsReady) && fontsNecessary.get()) {
                 waitingFor = "Loading";
-            } else if ((!txdbDonePrimaryTask.get()) || (rootGPMenuPanel == null)) {
+            } else if (!txdbDonePrimaryTask.get()) {
                 waitingFor = "Loading";
             }
             if (waitingFor == null) {

@@ -49,9 +49,8 @@ public class UIThumbnail extends UIElement {
     @Override
     public void runLayout() {
         drawRect = getDrawRect(getSize(), imgRegion.width, imgRegion.height);
-        // This treats horizontal size as the 'limiter'
-        Rect tmp = getDrawRect(new Size(getSize().width, imgRegion.height), imgRegion.width, imgRegion.height);
-        setWantedSize(new Size(wantedW, tmp.height));
+        int efW = Math.min(getSize().width, wantedW);
+        setWantedSize(new Size(wantedW, (imgRegion.height * efW) / imgRegion.width));
     }
 
     @Override
@@ -61,6 +60,6 @@ public class UIThumbnail extends UIElement {
 
     @Override
     public void render(IGrDriver igd) {
-        igd.blitScaledImage(0, 0, imgRegion.width, imgRegion.height, drawRect.x, drawRect.y, drawRect.width, drawRect.height, viewedImage);
+        igd.blitScaledImage(imgRegion.x, imgRegion.y, imgRegion.width, imgRegion.height, drawRect.x, drawRect.y, drawRect.width, drawRect.height, viewedImage);
     }
 }

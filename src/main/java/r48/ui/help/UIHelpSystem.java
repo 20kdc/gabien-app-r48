@@ -19,8 +19,8 @@ import java.util.LinkedList;
  * Helping things along where needed.
  * Created on 1/25/17.
  */
-public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<Integer> {
-    public IConsumer<Integer> onLinkClick;
+public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<String> {
+    public IConsumer<String> onLinkClick;
 
     public LinkedList<HelpElement> page = new LinkedList<HelpElement>();
 
@@ -46,6 +46,8 @@ public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<Integer
         int y = 0;
         // Acts as a limiting factor at all times, so reset when setting rightY to -1.
         int rightX = s.width;
+        // NOTE: This is set to -1 as a signal that the 'right-side-panel' is no longer being concatenated,
+        //  so a new right-side-panel should be setup at the current anchor.
         int rightY = -1;
         for (HelpElement he : page) {
             if (y >= rightY) {
@@ -75,13 +77,14 @@ public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<Integer
     }
 
     @Override
-    public void accept(Integer integer) {
+    public void accept(String integer) {
         onLinkClick.accept(integer);
     }
 
     public static class HelpElement {
         public final UIElement element;
-        public IConsumer<Integer> onLinkClick;
+        // Set by the UIHelpSystem.
+        private IConsumer<String> onLinkClick;
         public final boolean position;
 
         public HelpElement(char c, String arg) {
@@ -112,7 +115,7 @@ public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<Integer
                         t += s + " ";
                     }
                 }
-                final int index = Integer.parseInt(args[0]);
+                final String index = args[0];
                 position = false;
                 element = new UITextButton(t, FontSizes.helpLinkHeight, new Runnable() {
                     @Override
@@ -127,12 +130,13 @@ public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<Integer
             } else if ((c == 'i') || (c == 'I')) {
                 final IImage r = GaBIEn.getImageEx(args[0], false, true);
                 boolean extended = args.length > 1;
+                boolean extended2 = args.length > 5;
                 // uiGuessScaler takes over
                 final int xx = extended ? Integer.parseInt(args[1]) : 0;
                 final int yy = extended ? Integer.parseInt(args[2]) : 0;
                 final int sw = extended ? Integer.parseInt(args[3]) : r.getWidth();
                 final int sh = extended ? Integer.parseInt(args[4]) : r.getHeight();
-                final int w = FontSizes.scaleGuess(sw);
+                final int w = FontSizes.scaleGuess(extended2 ? Integer.parseInt(args[5]) : sw);
                 UIThumbnail uie = new UIThumbnail(r, w, new Rect(xx, yy, sw, sh));
                 position = c == 'i';
                 element = uie;

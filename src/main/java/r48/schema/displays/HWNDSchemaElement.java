@@ -36,10 +36,10 @@ public class HWNDSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
         UIHelpSystem uhs = new UIHelpSystem();
         final HelpSystemController hsc = new HelpSystemController(null, file, uhs);
-        uhs.onLinkClick = new IConsumer<Integer>() {
+        uhs.onLinkClick = new IConsumer<String>() {
             @Override
-            public void accept(Integer integer) {
-                AppMain.startHelp(integer);
+            public void accept(String integer) {
+                AppMain.startHelp(file, integer);
             }
         };
         if (ivar != null) {

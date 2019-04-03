@@ -8,6 +8,7 @@
 package r48.ui.help;
 
 import gabien.GaBIEn;
+import gabien.ui.IConsumer;
 import gabien.ui.UILabel;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
@@ -20,7 +21,7 @@ import java.io.InputStream;
  * One of those mind-controlling classes that oversees everything!
  * Created on 04/06/17.
  */
-public class HelpSystemController {
+public class HelpSystemController implements IConsumer<String> {
     private UILabel pageName;
     private String helpFile;
     private UIHelpSystem hs;
@@ -28,13 +29,30 @@ public class HelpSystemController {
 
     public HelpSystemController(UILabel pName, String hFile, UIHelpSystem charge) {
         pageName = pName;
-        helpFile = hFile;
+        helpFile = hFile == null ? "Help/Main/Entry" : hFile;
         hs = charge;
+    }
+
+    public void accept(final String link) {
+        if (link.contains(":")) {
+            String[] coms = link.split(":");
+            helpFile = coms[0];
+            loadPage(Integer.parseInt(coms[1]));
+        } else {
+            loadPage(Integer.parseInt(link));
+        }
     }
 
     public void loadPage(final int i) {
         hs.page.clear();
-        InputStream helpStream = getHelpStream();
+        String efl = TXDB.getLanguage();
+        if (efl.equals("English"))
+            efl = "";
+        InputStream helpStream = GaBIEn.getResource(helpFile + efl + ".txt");
+        if (helpStream == null) {
+            hs.page.add(new UIHelpSystem.HelpElement('.', TXDB.get("This helpfile is unavailable in your language; the English version has been displayed.")));
+            helpStream = GaBIEn.getResource(helpFile + ".txt");
+        }
         if (helpStream != null) {
             DBLoader.readFile(helpStream, new IDatabase() {
                 boolean working = false;
@@ -73,25 +91,9 @@ public class HelpSystemController {
                 }
             });
             hs.runLayoutLoop();
-        } else {
-            System.err.println("Unable to get at help file");
         }
         if (onLoad != null)
             onLoad.run();
-    }
-
-    private InputStream getHelpStream() {
-        if (helpFile == null) {
-            // Local language?
-            InputStream inp = GaBIEn.getResource("Help" + TXDB.getLanguage() + ".txt");
-            if (inp == null)
-                return GaBIEn.getResource("Help.txt");
-            return inp;
-        }
-        InputStream inp = GaBIEn.getResource(helpFile + TXDB.getLanguage() + ".txt");
-        if (inp == null)
-            return GaBIEn.getResource(helpFile + ".txt");
-        return inp;
     }
 
 }

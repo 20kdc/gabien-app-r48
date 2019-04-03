@@ -249,13 +249,9 @@ public class TXDB {
         }
 
         private String mergeArgs(String[] args) throws IOException {
-            String s = "";
-            for (String a : args)
-                s += " " + a;
-            s = s.trim();
-            if ((!s.startsWith("\"")) || (!s.endsWith("\"")))
-                throw new IOException("The translation table string " + s + " does not have standard quotation (used to allow prefix/postfix spaces).");
-            return s.substring(1, s.length() - 1);
+            if (args.length != 1)
+                throw new IOException("Expected only one argument per line!");
+            return args[0];
         }
     }
 }

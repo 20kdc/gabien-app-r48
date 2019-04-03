@@ -59,7 +59,7 @@ public class BasicToolset implements IToolset {
         }).centred(), FontSizes.menuTextHeight), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(TXDB.get("Help"), FontSizes.menuTextHeight, new Runnable() {
             @Override
             public void run() {
-                AppMain.startHelp(0);
+                AppMain.startHelp(null, "0");
             }
         }).centred(), FontSizes.menuTextHeight), new UIBorderedSubpanel(new UITextButton(TXDB.get("Configuration"), FontSizes.menuTextHeight, new Runnable() {
             @Override
@@ -102,20 +102,15 @@ public class BasicToolset implements IToolset {
 
     private UIElement createInitialHelp() {
         UIHelpSystem uhs = new UIHelpSystem();
-        final HelpSystemController hsc = new HelpSystemController(null, "HelpTips", uhs);
+        final HelpSystemController hsc = new HelpSystemController(null, "Help/Tips/Entry", uhs);
         Date dt = new Date();
         int h = dt.getHours();
         if (h < 7) {
-            hsc.loadPage(990 + new Random().nextInt(10));
+            hsc.accept("Help/Tips/Secret:" + (990 + new Random().nextInt(10)));
         } else {
             hsc.loadPage(new Random().nextInt(10));
         }
-        uhs.onLinkClick = new IConsumer<Integer>() {
-            @Override
-            public void accept(Integer integer) {
-                hsc.loadPage(integer);
-            }
-        };
+        uhs.onLinkClick = hsc;
         return uhs;
     }
 
@@ -439,7 +434,7 @@ public class BasicToolset implements IToolset {
             public void run() {
                 AppMain.pleaseShutdown();
             }
-        }), FontSizes.menuTextHeight);
+        }), FontSizes.statusBarTextHeight);
         return workspace;
     }
 
