@@ -9,40 +9,40 @@
 C digitCount 2
 
 0: Move North 1 Tile
-d Move(/walk) a tile north!
+d Move(/walk) a tile north.
 X movecommand_default_nothing
 1: Move East 1 Tile
-d Move(/walk) a tile east!
+d Move(/walk) a tile east.
 X movecommand_default_nothing
 2: Move South 1 Tile
-d Move(/walk) a tile south!
+d Move(/walk) a tile south.
 X movecommand_default_nothing
 3: Move West 1 Tile
-d Move(/walk) a tile west!
+d Move(/walk) a tile west.
 X movecommand_default_nothing
 4: Move North-East 1 Tile
-d Move(/walk) a tile north-east!
+d Move(/walk) a tile north-east.
 X movecommand_default_nothing
 5: Move South-East 1 Tile
-d Move(/walk) a tile south-east!
+d Move(/walk) a tile south-east.
 X movecommand_default_nothing
 6: Move South-West 1 Tile
-d Move(/walk) a tile south-west!
+d Move(/walk) a tile south-west.
 X movecommand_default_nothing
 7: Move North-West 1 Tile
-d Move(/walk) a tile north-west!
+d Move(/walk) a tile north-west.
 X movecommand_default_nothing
 8: Move Randomly 1 Tile
-d Move(/walk) a tile in some random direction!
+d Move(/walk) a tile in some random direction.
 X movecommand_default_nothing
 9: Move Towards Player 1 Tile
-d Move(/walk) a tile towards the player!
+d Move(/walk) a tile towards the player.
 X movecommand_default_nothing
 10: Move Away From Player 1 Tile
-d Move(/walk) a tile away from the player!
+d Move(/walk) a tile away from the player.
 X movecommand_default_nothing
 11: Move Forward 1 Tile
-d Move(/walk) a tile in whatever direction the event faces!
+d Move(/walk) a tile in whatever direction the event faces.
 X movecommand_default_nothing
 12: Face North
 d Face north!
@@ -106,21 +106,21 @@ d @move_freq decreases.
 X movecommand_default_nothing
 
 32: @@Switch{B: @#B} On
-d Turn a switch on!
+d Turns a switch on.
 p _ string
 p switch switch_id
 p _ int
 p _ int
 
 33: @@Switch{B: @#B} Off
-d Turn a switch off!
+d Turns a switch off.
 p _ string
 p switch switch_id
 p _ int
 p _ int
 
 34: Set Graphic!$
-d Change graphic to turn your event from a cat without a scarf to a cat *with* a scarf!
+d Change the spritesheet and character index of the event!
 p graphic f_charset_name
 C spritesheet 0 CharSet/
 p index int
@@ -135,16 +135,16 @@ p tempo int
 p balance int
 
 36: Disable Collision
-d Gain the ability to walk through walls!
+d Gain the ability to walk through walls.
 X movecommand_default_nothing
 37: Enable Collision
-d ...Lose the ability to walk through walls.
+d Lose the ability to walk through walls.
 X movecommand_default_nothing
 38: Disable Animation
-d Gain the ability to move without... moving! Um... Disables walking animations, I guess.
+d Disables walking animations.
 X movecommand_default_nothing
 39: Enable Animation
-d Re-enables walking animations!
+d Enables walking animations.
 X movecommand_default_nothing
 40: Decrease Opacity
 d Become less visible.
