@@ -100,7 +100,7 @@ public class GenposAnimRootPanel extends UIElement.UIProxy {
                 if (target.acceptableForPaste(AppMain.theClipboard)) {
                     target.getFrame().setDeepClone(AppMain.theClipboard);
                     target.modifiedFrames();
-                    frameChanged();
+                    incomingModification();
                 }
             }
         }, FontSizes.rmaTimeframeTextHeight);
@@ -108,14 +108,14 @@ public class GenposAnimRootPanel extends UIElement.UIProxy {
             @Override
             public void run() {
                 target.insertFrame(new RubyIO().setDeepClone(target.getFrame()));
-                frameChanged();
+                incomingModification();
             }
         }, FontSizes.rmaTimeframeTextHeight);
         toolbar = new UIAppendButton("-", toolbar, new Runnable() {
             @Override
             public void run() {
                 target.deleteFrame();
-                frameChanged();
+                incomingModification();
             }
         }, FontSizes.rmaTimeframeTextHeight);
 

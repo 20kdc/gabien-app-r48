@@ -110,7 +110,8 @@ public class CharacterGeneratorController {
                             AppMain.window.createMenu(l.swatch, new UIColourPicker(l.naming.text, l.swatch.col, new IConsumer<Integer>() {
                                 @Override
                                 public void accept(Integer integer) {
-                                    l.swatch.col = integer;
+                                    if (integer != null)
+                                        l.swatch.col = integer;
                                 }
                             }, true));
                         }

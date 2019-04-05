@@ -7,10 +7,10 @@
 7: Map Tools
 . This would not be very much of an editor if maps were not editable.
 , For general usage, "\"Tiles\"," and "\"Event List\"," should be enough.
-, The '...' menu contains those things that aren't directly tools, such as the ability to create map screenshots.
+, The '...' menu contains those things that aren't directly tools.
+, This includes the ability to create map screenshots, and the map resizer.
 > 8 Tiles
 > 9 Event List
-> 10 How To Resize A Map
 > Help/Main/Toolsets:1 Back to the Map.
 
 8: Tiles
@@ -27,16 +27,6 @@ i HelpImg/need-image.png
 . Clicking a tile will report all events at that position, and give the option to create a new event there, delete one of the existing events, or move an event.
 > 11 Event Editing Details
 i HelpImg/9.usage.png
-> 7 Back to the Map Tools.
-
-10: How To Resize A Map
-. Note before continuing:
-. In older versions of R48, all tile data was destroyed by this.
-. It isn't the case anymore.
-. Step 1. Click "\"Edit Direct.\"".
-. Step 2. Select "\"@data\"".
-. Step 3. Edit the width/height to the right. (The two numbers next to each other, below the tile number values.)
-. Step 4. Click "\"Resize\"".
 > 7 Back to the Map Tools.
 
 11: Event Editing Details

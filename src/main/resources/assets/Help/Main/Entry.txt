@@ -49,6 +49,10 @@ p 4
 . Step 6. Once you select RPG Maker 2000/2003, there should be 3 modified files, and the screen showing up should contain a grid flashing between different colours.
 . Step 7. Save all modified files, and begin work. You will need a knowledge of how RPG Maker 2000/2003 games are structured to continue, but it should work.
 .
+. Particularly Common Operations:
+> Help/Main/Toolsets:2 To manage maps, check the MapInfos tab.
+. The start location of the player and vehicles is stored in Database Objects / RPG_RT.lmt.
+.
 . General Structure:
 . RPG_RT.ldb and RPG_RT.lmt: Data files used to run the game.
 . RPG_RT.ini: Optional and not handled by R48. Starts with the line "\"[RPG_RT]\"," and ought to contain "\"GameTitle=your title here\"".
@@ -161,27 +165,33 @@ p 4
 
 998: Internal Tool Documentation 'RMAnimEditor'
 . Sometimes, you just need to edit a battle animation.
-. And you can't do that very easily from the standard interface, though it is possible.
-. RMAnimEditor was written for making things easier, but it's kind of weird and doesn't render all cases.
+, And you can't do that very easily from the standard interface, though it is possible.
+, RMAnimEditor was written for making things easier, but it's kind of weird and doesn't render all cases.
 .
 . Notably, this only covers the @frames section.
-. The rest, including timings, must be edited manually.
-. Also keep in mind that the frame numbers displayed are 1-based - timings use a 0-based system, so subtract 1 to get the timing frame.
+, The rest, including timings, must be edited manually.
+, Also keep in mind that the frame numbers displayed are 1-based - timings use a 0-based system, so subtract 1 to get the timing frame.
 .
 . So, without further ado, the layout:
 .
 . At the top is the Timeline Bar.
-. It allows going between frames ('<', '>', 'Play').
-. It allows copying and pasting them ('C', 'P') - pasting overwrites the current frame, it doesn't insert.
-. And it allows inserting a copy of the current frame as the next frame ('+'), and removing the current frame ('-').
+, It allows going between frames ('<', '>', 'Play').
+, It allows copying and pasting them ('C', 'P') - pasting overwrites the current frame, it doesn't insert.
+, And it allows inserting a copy of the current frame as the next frame ('+'), and removing the current frame ('-').
 .
 . In the lower-left is the actual Animation View.
-. A darkened cross on the background is the "\"zero point\"" - coordinates 0, 0 relative to the animation's point on-screen.
-. Right-button-drags across the Animation View will shift it's camera.
-. Left-button-drags will change the X/Y position of the currently selected cell.
+, A darkened cross on the background is the "\"zero point\"" - coordinates 0, 0 relative to the animation's point on-screen.
+, Right-button-drags across the Animation View will shift it's camera.
+, Left-button-drags will change the X/Y position of the currently selected cell.
 .
 . In the lower right is the Cell View.
-. This has two of it's own panels - at the top, it has the properties for the selected cell (or nothing if no cell is selected) - at the bottom, it has the cell list.
+, This has two of it's own panels - at the top, it has the properties for the selected cell (or nothing if no cell is selected) - at the bottom, it has the cell list.
+, Animations in RPG Maker 2000/2003 do not have keyframes, but R48 simulates keyframed animation anyway.
+, As such, each property has a 'keyframe' button. If orange, this is a keyframe; pressing the button will 'delete' it, re-interpolating as necessary.
+, A frame is considered a keyframe if it marks a change in the linear progression of the animation.
+.
+. In particular, changing a property will cause the frames *before and after* to gain keyframe status if they don't have it already.
+, This is because the frames *before and after* still retain the old value of the property.
 .
 . This serves as a hopefully functional toolset for modifying animations.
 
@@ -193,8 +203,8 @@ I layertab.png 33 48 31 16 62
 p 4
 .
 . gabien-app-r48 - Editing program for various formats
-. Written starting in 2016 by contributors (see CREDITS.txt)
-. To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
-. You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+, Written starting in 2016 by contributors (see CREDITS.txt)
+, To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+, You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 .
 > 0 Back to the Index.

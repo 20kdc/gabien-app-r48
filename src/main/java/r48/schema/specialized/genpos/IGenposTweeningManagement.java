@@ -12,7 +12,7 @@ package r48.schema.specialized.genpos;
  * Created on October 10, 2018.
  */
 public interface IGenposTweeningManagement {
-    // NOTE: This is cached. The cache is flushed at frameChanged.
+    // NOTE: This is cached. The cache is flushed at incomingModification.
     KeyTrack propertyKeytrack(int prop);
 
     boolean propertyKeyed(int prop, KeyTrack track);
