@@ -32,6 +32,11 @@ public class UISymbolButton extends UIButton<UISymbolButton> {
     @Override
     public void renderContents(boolean textBlack, IGrDriver igd) {
         int bw = getBorderWidth();
-        Art.drawSymbol(igd, symbol, bw, bw, getSize().height - (bw * 2), false, textBlack);
+        int sw = getSize().width;
+        int sh = getSize().height;
+        int efs = Math.min(sw, sh);
+        int x = (sw - efs) / 2;
+        int y = (sh - efs) / 2;
+        Art.drawSymbol(igd, symbol, bw + x, bw + y, efs - (bw * 2), false, textBlack);
     }
 }

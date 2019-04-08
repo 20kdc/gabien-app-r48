@@ -17,6 +17,8 @@ import gabien.ui.UIElement;
 public class UIBorderedSubpanel extends UIElement.UIPanel {
     private UIElement innerPanel;
     private int bw;
+    private boolean doing2Way = false;
+    private boolean enableBorder = true;
 
     public UIBorderedSubpanel(UIElement ip, int border) {
         innerPanel = ip;
@@ -25,11 +27,34 @@ public class UIBorderedSubpanel extends UIElement.UIPanel {
     }
 
     @Override
-    public void runLayout() {
+    public void runLayoutLoop() {
+        if (doing2Way) {
+            super.runLayoutLoop();
+            return;
+        }
+        doing2Way = true;
+
+        enableBorder = true;
+        super.runLayoutLoop();
+
         Size s = getSize();
         Size s2 = innerPanel.getWantedSize();
         Rect plannedSize = new Rect(bw, bw, s.width - (bw * 2), s.height - (bw * 2));
         if ((s2.width > plannedSize.width) || (s2.height > plannedSize.height)) {
+            enableBorder = false;
+            super.runLayoutLoop();
+        }
+        s2 = innerPanel.getWantedSize();
+
+        doing2Way = false;
+        setWantedSize(new Size(s2.width + (bw * 2), s2.height + (bw * 2)));
+    }
+
+    @Override
+    public void runLayout() {
+        Size s = getSize();
+        Rect plannedSize = new Rect(bw, bw, s.width - (bw * 2), s.height - (bw * 2));
+        if (!enableBorder) {
             innerPanel.setForcedBounds(this, new Rect(s));
         } else {
             boolean cannotSFB = innerPanel.getSize().sizeEquals(plannedSize);
@@ -39,6 +64,5 @@ public class UIBorderedSubpanel extends UIElement.UIPanel {
                 innerPanel.runLayoutLoop();
             }
         }
-        setWantedSize(new Size(s2.width + (bw * 2), s2.height + (bw * 2)));
     }
 }
