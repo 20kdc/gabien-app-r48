@@ -33,8 +33,8 @@ public class GrandSynthesisTest {
 
     private void initSynthesis(GrandTestBuilder gtb) {
         gtb.thenWaitWC(2);
-        gtb.thenClick(358, 233);
-        gtb.thenClick(333, 321);
+        gtb.thenClick(358, 440); // R2k
+        gtb.thenClick(333, 473); // Some encoding or another...
         gtb.thenWaitFrame();
         // Maximize 'Please confirm...'
         gtb.thenIcon(5, 6, 1);

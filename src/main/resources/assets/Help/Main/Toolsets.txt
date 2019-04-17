@@ -10,15 +10,17 @@ I HelpImg/1.diagram.png
 , This is how you modify maps, which are 2D tile-based grids on which objects sit.
 , What the kind of objects are, how big the tiles are, and such, is specific to the engine.
 .
+. The controls differ between touchscreen and desktop.
+, Touchscreen uses a 'camera button' to allow moving around & zooming; when this is off, touching the map will use the current tool.
+, Desktop uses the right mouse button and the mouse wheel.
+.
 . Dragging with the Right Mouse Button allows panning about the map.
 , This is crucial for even basic datamining operations.
 , Clicking with the Left Mouse Button will use the current tool, unless no tool is running, in which case it also pans.
 .
 > Help/Main/MapEdit:7 At the top, a bar is shown. These are the map tools.
 .
-, Pressing the "\"m\"" button will toggle a minimap.
-, This allows faster navigation of the map, or reading messages written with tiles.
-, At the top left, there are zoom controls, and information on what mouse controls are currently available.
+. At the top left, there are zoom controls, and information on what mouse controls are currently available.
 > Help/Main/Entry:0 Back to the Index.
 
 2: MapInfos
