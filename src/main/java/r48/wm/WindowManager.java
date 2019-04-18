@@ -43,7 +43,8 @@ public class WindowManager {
     // 'protected' elements here are accessible to the testing framework.
     private final UIWindowView rootView;
     protected final UITabPane tabPane;
-    private final WindowCreatingUIElementConsumer uiTicker;
+    protected final WindowCreatingUIElementConsumer uiTicker;
+    // It is required by the test system that all UIWindowViews be roots of their own windows.
     protected final LinkedList<UIWindowView> allWindowViews = new LinkedList<UIWindowView>();
     private IImage modImg;
     private boolean performingScreenTransfer;

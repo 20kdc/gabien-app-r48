@@ -24,71 +24,83 @@ public class GrandSynthesisTest {
         editNewMap(gtb);
 
         // Save & quit
-        gtb.thenClick(945, 15);
+        gtb.thenClick("symbol:Save");
         gtb.thenWaitFrame();
         gtb.thenCloseWindow();
         gtb.thenCloseWindow();
         runTheTest(gtb);
     }
 
-    private void initSynthesis(GrandTestBuilder gtb) {
+    private void initSynthesis(GrandTestBuilder gtb) throws IOException {
         gtb.thenWaitWC(2);
-        gtb.thenClick(358, 440); // R2k
-        gtb.thenClick(333, 473); // Some encoding or another...
+        gtb.thenClick("button:RPG Maker 2000, 2003, or EasyRPG. (Android users, go here.)"); // R2k
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:R2K[3?] (UTF-8) (Use for new games or languages not shown.) "); // Some encoding or another...
         gtb.thenWaitFrame();
         // Maximize 'Please confirm...'
         gtb.thenIcon(5, 6, 1);
-        gtb.thenClick(30, 526);
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:2003 Template");
         gtb.thenWaitFrame();
         // Close 'Information'.
         gtb.thenIcon("Information", 0);
     }
 
-    private void editTerm(GrandTestBuilder gtb) {
+    private void editTerm(GrandTestBuilder gtb) throws IOException {
         // Show + Maximize 'RPG_RT.ldb', scroll down, edit first term, and close it
         gtb.thenSelectTab("Database Objects");
-        gtb.thenClick(100, 82);
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:RPG_RT.ldb");
         gtb.thenWaitFrame();
         gtb.thenIcon("RPG_RT.ldb", 1);
-        gtb.thenDrag(940, 86, 940, 523);
-        gtb.thenClick(100, 278);
-        gtb.thenClick(90, 79);
+        gtb.thenWaitFrame();
+        gtb.thenScroll("?:RPG_RT.ldb¥scroll", "label:@terms ¥..¥button");
+        gtb.thenWaitFrame();
+        gtb.thenClick("label:@terms ¥..¥button");
+        gtb.thenWaitFrame();
+        gtb.thenClick("label:annXEncounter¥..¥textbox");
         gtb.thenType(" said hello!");
         gtb.thenIcon("RPG_RT.ldb", 0);
     }
 
-    private void editMap(GrandTestBuilder gtb) {
+    private void editMap(GrandTestBuilder gtb) throws IOException {
         // Work on the map now.
         gtb.thenSelectTab("Map");
-        gtb.thenClick(23, 177); // Disable camera mode.
-        gtb.thenClick(14, 51); // L0
+        gtb.thenWaitFrame();
+        gtb.thenClick("?:r48.map.UIMapView", 32, 96); // Disable camera mode.
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:L0"); // L0
         gtb.thenWaitFrame();
         gtb.thenIcon("T0", 1);
-        gtb.thenClick(35, 414); // AT-General Field 0
+        gtb.thenClick("?: ATF", 35, 350); // AT-General Field 0
         gtb.thenSelectTab("Map");
-        gtb.thenClick(336, 206); // Place tile
+        gtb.thenClick("?:r48.map.UIMapView", 336, 146); // Place tile @ 1, 1
         // Launch event editor, add an event, set the direction to 'down', and stop editing it
-        gtb.thenClick(78, 48); // Events
+        gtb.thenClick("button:Events"); // Events
         gtb.thenWaitFrame();
         gtb.thenIcon("Ev.Pick [0 total]", 1); // Move Ev picker into tab,
         gtb.thenSelectTab("Map"); // then go back to map, to ensure the screen is clear
-        gtb.thenClick(335, 208); // Target point for event
+        gtb.thenClick("?:r48.map.UIMapView", 336, 146); // Target point for event @ 1, 1
         gtb.thenWaitFrame();
         gtb.thenSelectTab("Ev.Pick [0 total]");
-        gtb.thenClick(144, 51); // Add Event
+        gtb.thenClick("button:+ Add Event"); // Add Event
         gtb.thenIcon("Ev.Pick [0 total]", 0);
         gtb.thenIcon("Map0001.lmu*", 1);
-        gtb.thenClick(99, 271); // Graphics
-        gtb.thenClick(62, 204); // Direction
-        gtb.thenClick(224, 177); // Down
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:Graphics"); // Graphics
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:2 : down"); // Direction
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:2 : down"); // Down
         gtb.thenIcon("Map0001.lmu*", 0); // Close.
     }
 
     private void editNewMap(GrandTestBuilder gtb) throws IOException {
         gtb.thenSelectTab("MapInfos");
-        gtb.thenClick(288, 83);
+        gtb.thenClick("button:<Insert New Map>");
         gtb.thenIcon("Map ID?", 1);
-        gtb.thenClick(950, 50);
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:Confirm");
         gtb.thenWaitFrame();
     }
 

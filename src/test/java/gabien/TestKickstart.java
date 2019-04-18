@@ -15,6 +15,7 @@ import r48.AppMain;
 import r48.dbs.ObjectDB;
 import r48.io.IObjectBackend;
 import r48.tests.grand.GrandExecutionError;
+import r48.wm.GrandWindowManagerUtils;
 
 import java.io.*;
 import java.util.HashMap;
@@ -258,8 +259,10 @@ public class TestKickstart {
             boolean b = super.flush();
             while (true) {
                 // An entry returns false (which waits a frame) until it's done, then it returns true
-                if (waitingTestEntries.size() == 0)
+                if (waitingTestEntries.size() == 0) {
+                    GrandWindowManagerUtils.printTree();
                     throw new GrandExecutionError("Ran out of test sequence data.");
+                }
                 ISupplier<Boolean> isb = waitingTestEntries.getFirst();
                 if (!isb.get())
                     break;

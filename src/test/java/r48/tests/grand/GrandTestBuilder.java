@@ -9,8 +9,7 @@ package r48.tests.grand;
 
 import gabien.MobilePeripherals;
 import gabien.TestKickstart;
-import gabien.ui.ISupplier;
-import gabien.ui.UIElement;
+import gabien.ui.*;
 import gabienapp.Application;
 import r48.io.IntUtils;
 import r48.wm.GrandWindowManagerUtils;
@@ -40,14 +39,23 @@ public class GrandTestBuilder {
         });
     }
 
+    public void thenClick(final String id) {
+        thenClick(id, 0, 0);
+    }
+
     public void thenClick(final int i, final int i1) {
+        thenClick(null, i, i1);
+    }
+
+    public void thenClick(final String id, final int ox, final int oy) {
         TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
             boolean waitFrame = true;
 
             @Override
             public Boolean get() {
                 if (waitFrame) {
-                    TestKickstart.pointer = new MobilePeripherals.DummyPointer(i, i1);
+                    Rect ctrl = GrandWindowManagerUtils.getControlRect(id);
+                    TestKickstart.pointer = new MobilePeripherals.DummyPointer(ctrl.x + ox, ctrl.y + oy);
                     waitFrame = false;
                     return false;
                 }
@@ -58,22 +66,49 @@ public class GrandTestBuilder {
     }
 
     public void thenDrag(final int i, final int i1, final int i2, final int i3) {
+        thenDrag(null, i, i1, i2, i3);
+    }
+
+    public void thenDrag(final String n1, final int i, final int i1, final int i2, final int i3) {
+        thenDrag(n1, i, i1, n1, i2, i3);
+    }
+
+    public void thenDrag(final String n1, final int i, final int i1, final String n2, final int i2, final int i3) {
         TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
             int waitFrame = 0;
 
             @Override
             public Boolean get() {
                 if (waitFrame == 0) {
-                    TestKickstart.pointer = new MobilePeripherals.DummyPointer(i, i1);
+                    Rect ctrl = GrandWindowManagerUtils.getControlRect(n1);
+                    TestKickstart.pointer = new MobilePeripherals.DummyPointer(ctrl.x + i, ctrl.y + i1);
                     waitFrame++;
                     return false;
                 } else if (waitFrame == 1) {
-                    TestKickstart.pointer.x = i2;
-                    TestKickstart.pointer.y = i3;
+                    Rect ctrl = GrandWindowManagerUtils.getControlRect(n2);
+                    TestKickstart.pointer.x = ctrl.x + i2;
+                    TestKickstart.pointer.y = ctrl.y + i3;
                     waitFrame++;
                     return false;
                 }
                 TestKickstart.pointer = null;
+                return true;
+            }
+        });
+    }
+
+    public void thenScroll(final String n1, final String n2) {
+        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
+            boolean waitFrame = true;
+
+            @Override
+            public Boolean get() {
+                if (waitFrame) {
+                    UIScrollLayout ctrl = (UIScrollLayout) GrandWindowManagerUtils.getControl(n1);
+                    GrandControlUtils.scroll(ctrl, GrandWindowManagerUtils.getControl(n2));
+                    waitFrame = false;
+                    return false;
+                }
                 return true;
             }
         });
