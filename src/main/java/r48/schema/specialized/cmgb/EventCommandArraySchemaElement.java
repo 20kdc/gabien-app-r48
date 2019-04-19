@@ -42,8 +42,8 @@ import r48.schema.util.SchemaPath;
  * Created on 1/2/17.
  */
 public class EventCommandArraySchemaElement extends ArraySchemaElement {
-    private final CMDB database;
-    private final RPGCommandSchemaElement baseElement;
+    public final CMDB database;
+    public final RPGCommandSchemaElement baseElement;
 
     public EventCommandArraySchemaElement(SchemaElement a, SchemaElement b, CMDB db, boolean indentControl) {
         super(-1, 0, 0, new StandardArrayInterface());

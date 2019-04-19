@@ -11,9 +11,17 @@ import gabien.TestKickstart;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import r48.RubyIO;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
+import r48.dbs.TestDBUtils;
+import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
+import r48.io.data.IRIOFixnum;
+import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
+import r48.schema.util.SchemaPath;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -55,5 +63,27 @@ public class SchemaParseTest {
     @Test
     public void testParses() {
         TestKickstart.kickstart("RAM/", "UTF-8", gamepak + "/");
+        // ... Also does this.
+        // Not really parsing, but a good safety measure none-the-less.
+        for (EventCommandArraySchemaElement st : TestDBUtils.getLoadedCSLs()) {
+            final RubyIO rio = new RubyIO();
+            SchemaPath.setDefaultValue(rio, st, null);
+            RubyIO rio2 = rio.addAElem(0);
+            SchemaPath.setDefaultValue(rio2, st.baseElement, new IRIOFixnum(0));
+            for (int i : st.database.knownCommandOrder) {
+                rio2.getIVar("@code").setFX(i);
+                st.baseElement.modifyVal(rio, new SchemaPath(st, new IObjectBackend.ILoadedObject() {
+                    @Override
+                    public IRIO getObject() {
+                        return rio;
+                    }
+
+                    @Override
+                    public void save() throws IOException {
+
+                    }
+                }), false);
+            }
+        }
     }
 }
