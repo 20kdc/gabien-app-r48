@@ -8,6 +8,7 @@
 package r48.schema.specialized.cmgb;
 
 import gabien.ui.*;
+import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
@@ -29,7 +30,6 @@ import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 import r48.ui.dialog.UIEnumChoice;
-import r48.ui.help.UIHelpSystem;
 
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -102,11 +102,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     } else {
                         title += TXDB.get("Unknown Command");
                     }
-                    UIHelpSystem uis = new UIHelpSystem();
-                    uis.page.add(new UIHelpSystem.HelpElement('.', title));
-                    uis.page.add(new UIHelpSystem.HelpElement('.', result));
-                    uis.forceToRecommended();
-                    launcher.launchOther(uis);
+                    AppMain.launchDialog(title + "\n" + result);
                 }
             }, FontSizes.schemaFieldTextHeight);
 
