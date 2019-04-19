@@ -262,7 +262,14 @@ e timer_operation_type 0 setTime 1 setFlagsAndStart 2 stop
 .move_event_parameters
 @indent indent
 @parameters move_event_array
-+optP @move_commands MoveListEditor
+ This bit really really relies on schema stuff doing it's job.
+ Ok, so what's going on here is that @move_commands is completely ignored in MOST CASES.
+ The exception is THIS ONE COMMAND.
+ To facilitate verification of the added metadata, "+optP @move_commands MoveListEditor" exists in SchemaScripting / RPG::EventCommand.
+ But it's not actually visible to the user because that's the checking-only version of the schema.
+ And then when THIS schema is being used instead, @move_commands is actually forcefully brought into existence.
+ Serialization-wise, @move_commands does not exist.
+@move_commands MoveListEditor
 
 .move_event_array
 ]0 _ string

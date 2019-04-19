@@ -58,7 +58,7 @@ public class SDB {
     private LinkedList<Runnable> mergeRunnables = new LinkedList<Runnable>();
     private LinkedList<String> remainingExpected = new LinkedList<String>();
 
-    private HashMap<String, CMDB> cmdbs = new HashMap<String, CMDB>();
+    protected HashMap<String, CMDB> cmdbs = new HashMap<String, CMDB>();
     public SDBHelpers helpers = new SDBHelpers();
 
     private StandardArrayInterface standardArrayUi = new StandardArrayInterface();

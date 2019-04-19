@@ -153,12 +153,11 @@ public class PathSyntax {
         if (specialImmediate) {
             if (mode == 1) {
                 if (res == null) {
+                    // As of DM2 this is guaranteed to create a defined value,
+                    //  and setting it to null will break things.
                     res = root.addIVar(myst);
-                    if (res != null) {
-                        res.setNull();
-                    } else {
+                    if (res == null)
                         System.err.println("Warning: Failed to create IVar " + myst + " in " + root);
-                    }
                 }
             } else if (mode == 2) {
                 root.rmIVar(myst);

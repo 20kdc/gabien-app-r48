@@ -69,13 +69,15 @@ public class GrandSynthesisTest {
         gtb.thenWaitFrame();
         gtb.thenClick("?:r48.map.UIMapView", 32, 96); // Disable camera mode.
         gtb.thenWaitFrame();
+
         gtb.thenClick("button:L0"); // L0
         gtb.thenWaitFrame();
         gtb.thenIcon("T0", 1);
         gtb.thenClick("?: ATF", 35, 350); // AT-General Field 0
         gtb.thenSelectTab("Map");
         gtb.thenClick("?:r48.map.UIMapView", 336, 146); // Place tile @ 1, 1
-        // Launch event editor, add an event, set the direction to 'down', and stop editing it
+
+        // Launch event editor, add an event, set the direction to 'down', do more stuff, and stop editing it
         gtb.thenClick("button:Events"); // Events
         gtb.thenWaitFrame();
         gtb.thenIcon("Ev.Pick [0 total]", 1); // Move Ev picker into tab,
@@ -92,6 +94,19 @@ public class GrandSynthesisTest {
         gtb.thenClick("button:2 : down"); // Direction
         gtb.thenWaitFrame();
         gtb.thenClick("button:2 : down"); // Down
+        gtb.thenWaitFrame();
+        gtb.thenClick("symbol:Back"); // Back (to leave Graphics)
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:RPG::MoveRoute"); // Into moveroute
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:Route..."); // Continue...
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:Add..."); // Continued...
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:Insert Here..."); // Continued...
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:11;Move Forward 1 Tile"); // Continued...
+        runTheTest(gtb);
         gtb.thenIcon("Map0001.lmu*", 0); // Close.
     }
 

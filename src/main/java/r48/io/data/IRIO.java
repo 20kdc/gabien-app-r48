@@ -72,6 +72,7 @@ public abstract class IRIO {
     public abstract void rmIVar(String sym);
 
     // If an IVar cannot be created, this should return null.
+    // This and the other 'add' functions must create *defined* values (no "getType returns literal decimal 0 rather than '0'")
     public abstract IRIO addIVar(String sym);
 
     public abstract IRIO getIVar(String sym);
