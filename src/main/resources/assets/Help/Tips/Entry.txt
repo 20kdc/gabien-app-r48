@@ -13,7 +13,8 @@
 
 1: Tip 1
 . Demetrius has been doing a lot of the testing for R48.
-, You should probably thank them.
+, You should probably thank him; the critical bugs in v1.3 were found by him.
+, I'm trying to add unit testing, but that'll take a long time.
 > 2 Show Another Tip...
 
 2: Tip 2
