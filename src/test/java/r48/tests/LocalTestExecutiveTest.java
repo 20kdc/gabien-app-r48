@@ -1,6 +1,7 @@
 package r48.tests;
 
 import gabien.TestKickstart;
+import gabien.ui.IConsumer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -78,24 +79,42 @@ public class LocalTestExecutiveTest {
     private void testObject(String s) {
         try {
             System.out.println(s);
-            IObjectBackend.ILoadedObject i = AppMain.objectDB.getObject(s, null);
-            IRIO obj = i.getObject();
-            SchemaElement wse = findSchemaFor(s, obj);
-            IObjectBackend.ILoadedObject ex = AppMain.objectDB.backend.newObject(s);
-            wse.modifyVal(obj, new SchemaPath(wse, i), false);
-            // Need to find schema for object.
-            ex.getObject().setDeepClone(obj);
-            ex.save();
-            ex = null;
-            System.gc();
-            ex = AppMain.objectDB.backend.loadObject(s);
-            byte[] bytes = IMIUtils.createIMIData(i.getObject(), ex.getObject(), "");
-            if (bytes != null) {
-                System.out.write(bytes);
-                System.out.flush();
-                throw new RuntimeException("Difference found.");
+
+            // 'objectUnderTest' is the reference copy. DO NOT ALTER IT UNTIL THE END.
+            IObjectBackend.ILoadedObject objectUnderTest = AppMain.objectDB.getObject(s, null);
+
+            // Create an internal copy, autocorrect it, save it, and then get rid of it.
+            {
+                IObjectBackend.ILoadedObject objectInternalCopy = AppMain.objectDB.backend.newObject(s);
+
+                objectInternalCopy.getObject().setDeepClone(objectUnderTest.getObject());
+
+                SchemaElement wse = findSchemaFor(s, objectUnderTest.getObject());
+                AppMain.objectDB.registerModificationHandler(objectInternalCopy, new IConsumer<SchemaPath>() {
+                    @Override
+                    public void accept(SchemaPath schemaPath) {
+                        throw new RuntimeException("A modification occurred on LTE data. This shouldn't happen.");
+                    }
+                });
+                wse.modifyVal(objectInternalCopy.getObject(), new SchemaPath(wse, objectInternalCopy), false);
+
+                objectInternalCopy.save();
+
+                // This is to TRY to get 'objectInternalCopy' out of memory.
+                objectInternalCopy = null;
+                System.gc();
             }
-            i.getObject().setDeepClone(ex.getObject());
+
+            // Load the autocorrected + saved object, and see if anything went bang.
+            {
+                IObjectBackend.ILoadedObject objectSaveLoaded = AppMain.objectDB.backend.loadObject(s);
+                byte[] bytes = IMIUtils.createIMIData(objectUnderTest.getObject(), objectSaveLoaded.getObject(), "");
+                if (bytes != null) {
+                    System.out.write(bytes);
+                    System.out.flush();
+                    throw new RuntimeException("Difference found.");
+                }
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

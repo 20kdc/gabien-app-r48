@@ -22,10 +22,7 @@ import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 
 /**
- * NOTE: This doesn't provide the array entry object!!!
- * This is because ArrayElementSchemaElement should only exist inside arrayDAM.
- * (Well THAT didn't end up happening. fixing R2k schemascripting...)
- * Also note that since this is meant to emulate the RPGCommand system where that is not usable,
+ * Note that since this is meant to emulate the RPGCommand system where that is not usable,
  * among other things, '_' as a name will act to make a given parameter invisible.
  * Created on 12/31/16.
  */
@@ -113,7 +110,8 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
             changed = true;
         }
         // Resize array if required?
-        changed |= resizeToInclude(target);
+        if (optional == null)
+            changed |= resizeToInclude(target);
         if (target.getALen() > index)
             subSchema.modifyVal(target.getAElem(index), path.arrayHashIndex(new IRIOFixnum(index), "." + name), setDefault);
         if (changed)
