@@ -29,21 +29,27 @@ public class LocalTestExecutiveTest {
     public static Collection<Object[]> data() {
         final LinkedList<Object[]> tests = new LinkedList<Object[]>();
         TestKickstart.kickstartRFS();
-        DBLoader.readFile("LTE.txt", new IDatabase() {
-            @Override
-            public void newObj(int objId, final String objName) {
-            }
-
-            @Override
-            public void execCmd(char c, String[] args) {
-                if (c == '.') {
-                    Object[] whiteLight = new Object[args.length];
-                    for (int i = 0; i < whiteLight.length; i++)
-                        whiteLight[i] = args[i];
-                    tests.add(whiteLight);
+        try {
+            DBLoader.readFile("LTE.txt", new IDatabase() {
+                @Override
+                public void newObj(int objId, final String objName) {
                 }
-            }
-        });
+
+                @Override
+                public void execCmd(char c, String[] args) {
+                    if (c == '.') {
+                        Object[] whiteLight = new Object[args.length];
+                        for (int i = 0; i < whiteLight.length; i++)
+                            whiteLight[i] = args[i];
+                        tests.add(whiteLight);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("Exception during LocalTestExecutive parameterization. Unread tests will not be executed.");
+            System.err.println("If you do not have the LTE files, then this is normal, do not panic.");
+            e.printStackTrace();
+        }
         return tests;
     }
 

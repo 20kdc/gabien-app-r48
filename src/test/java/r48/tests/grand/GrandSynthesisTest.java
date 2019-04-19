@@ -106,7 +106,6 @@ public class GrandSynthesisTest {
         gtb.thenClick("button:Insert Here..."); // Continued...
         gtb.thenWaitFrame();
         gtb.thenClick("button:11;Move Forward 1 Tile"); // Continued...
-        runTheTest(gtb);
         gtb.thenIcon("Map0001.lmu*", 0); // Close.
     }
 
@@ -121,6 +120,6 @@ public class GrandSynthesisTest {
 
     private void runTheTest(GrandTestBuilder gtb) throws IOException {
         gtb.thenWaitFrame();
-        gtb.execute(4565975);
+        gtb.execute(4566046);
     }
 }

@@ -9,10 +9,7 @@ package r48.maptools;
 
 import gabien.GaBIEn;
 import gabien.IGrDriver;
-import gabien.ui.UIAutoclosingPopupMenu;
-import gabien.ui.UINumberBox;
-import gabien.ui.UISplitterLayout;
-import gabien.ui.UITextButton;
+import gabien.ui.*;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
 import r48.AppMain;
@@ -124,6 +121,7 @@ public class UIMTPopupButtons extends UIMTBase {
                 }
             }), true, 0);
             changeInner(root, true);
+            setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(128), getSize().height));
         }
     }
 }
