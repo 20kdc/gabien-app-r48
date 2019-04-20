@@ -829,7 +829,7 @@ public class SDB {
                         // Really special schema
                         workingObj.aggregate.add(new R2kSystemDefaultsInstallerSchemaElement(Integer.parseInt(args[1])));
                     }
-                    if (args[0].equals("name")) {
+                    if (args[0].equals("name") || args[0].equals("logic")) {
                         final LinkedList<String> arguments = new LinkedList<String>();
                         String text = "";
                         boolean nextState = false;
@@ -846,7 +846,7 @@ public class SDB {
                                 }
                             }
                         }
-                        final String textF = TXDB.get(fPfx + "/" + args[1], text);
+                        final String textF = args[0].equals("name") ? TXDB.get(fPfx + "/" + args[1], text) : text;
 
                         TXDB.nameDB.put(args[1], new IFunction<IRIO, String>() {
                             @Override

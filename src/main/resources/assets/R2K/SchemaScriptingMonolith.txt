@@ -317,8 +317,8 @@ e timer_operation_type 0 setTime 1 setFlagsAndStart 2 stop
   I'm reusing the existing FormatSyntax for this job.
 
  This name routine outputs 1 for 'Wait For Action' and 0 otherwise.
-C name Interp.waitForAction_control_pos :length ]1 | {A=3={B=0=1|0}|0}
-C name Interp.waitForAction_control_neg "" | {@[@Interp.waitForAction_control_pos]|0|1|0}
+C logic Interp.waitForAction_control_pos :length ]1 | {A=3={B=0=1|0}|0}
+C logic Interp.waitForAction_control_neg "" | {@[@Interp.waitForAction_control_pos]|0|1|0}
 
 .wait_array
 ]0 _ string
