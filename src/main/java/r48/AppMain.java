@@ -291,24 +291,7 @@ public class AppMain {
             }
         };
         svl.panelsAdd(ul);
-        svl.forceToRecommended();
-        Size recSize = svl.getSize();
-
-        Size rootSize = window.getRootSize();
-
-        int w = recSize.width;
-        int h = recSize.height;
-
-        int limit = (rootSize.width * 3) / 4;
-        if (w > limit)
-            w = limit;
-
-        limit = (rootSize.height * 3) / 4;
-        if (h > limit)
-            h = limit;
-
-        svl.setForcedBounds(null, new Rect(0, 0, w, h));
-        window.createWindow(svl);
+        resizeDialogAndTruelaunch(svl);
     }
 
     public static Runnable createLaunchConfirmation(final String s, final Runnable runnable) {
@@ -343,8 +326,14 @@ public class AppMain {
         // This logic makes sense since we're trying to force a certain width but not a certain height.
         // It is NOT a bug in gabien-common so long as this code works (that is, the first call immediately prepares a correct wanted size).
         Size rootSize = window.getRootSize();
-        mtb.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, rootSize.height / 2));
-        mtb.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, mtb.getWantedSize().height));
+        Size validSize = new Size((rootSize.width * 3) / 4, (rootSize.height * 3) / 4);
+        mtb.setForcedBounds(null, new Rect(validSize));
+        Size recSize = mtb.getWantedSize();
+
+        int w = Math.min(recSize.width, validSize.width);
+        int h = Math.min(recSize.height, validSize.height);
+
+        mtb.setForcedBounds(null, new Rect(0, 0, w, h));
         window.createWindow(mtb);
     }
 

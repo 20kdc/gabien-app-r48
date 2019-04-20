@@ -300,19 +300,51 @@ e timer_operation_type 0 setTime 1 setFlagsAndStart 2 stop
  this hopefully mirrors what user is "supposed" to see,
   without potentially breaking any rules.
 
-e wait_button_id 0 actKey
-E wait_secTenthCount 10ths_of_a_second 0 waitForCondition2k3
-
-.wait_illogical_nowfc
-> wait_illogical_wfc ]?2 wfcCondType_2k3 None wait_button_id
-
 .wait_illogical_parameters
 @indent indent
 @parameters wait_array
+
+ This bit of code's a bit odd.
+ It encounters all sorts of weirdness that has to be resolved.
+ There are 4 combinations of the 2 lengths and secTenthCount that are all valid.
+ Including, importantly, the combination where there's 3 elements but the third is ignored.
+ R48 has to avoid messing with this, avoid getting it wrong, and maintain a sane UI,
+  so "initButton" was invented to force specific settings in juuust the right way.
+
+ Unfortunately initButton comes at a horrible cost.
+ To implement the flexible functionality, it needs a way of specifying arbitrary boolean expressions.
+ And since forcing people to learn EVEN MORE languages is a terrible idea,
+  I'm reusing the existing FormatSyntax for this job.
+
+ This name routine outputs 1 for 'Wait For Action' and 0 otherwise.
+C name Interp.waitForAction_control_pos :length ]1 | {A=3={B=0=1|0}|0}
+C name Interp.waitForAction_control_neg "" | {@[@Interp.waitForAction_control_pos]|0|1|0}
+
 .wait_array
 ]0 _ string
-]1 secTenthCount wait_secTenthCount
-+DA{ ]1 wait_illogical_nowfc 0 wait_illogical_wfc }
++initButton "Wait For X/10 Seconds" "[@Interp.waitForAction_control_neg]" wait_array_subroutine_2
++initButton "Wait For Action (2k3)" "[@Interp.waitForAction_control_pos]" wait_array_subroutine_3
+ This reimplements the same control logic as a disambiguator for the UI/checking,
+  which has to be distinct from the actual initializers because the initializers force stuff
+  that can't be forced safely on existing data.
++DA{ :length wait_array_vis_2 3 DA{ ]1 wait_array_vis_2 0 wait_array_vis_3 } }
+
+.wait_array_vis_2
+]1 secTenthCount int_default_10
+
+.wait_array_vis_3
+]1 _ int
+]2 keyIndexMaybe_2k3 int
+
+ This 'subroutine' ensures the result is WFt...
+.wait_array_subroutine_2
++hide array 2 OPAQUE
+]1 secTenthCount int_default_10
+
+ This 'subroutine' ensures the result is WFA
+.wait_array_subroutine_3
+]1 _ int= 0
+]2 keyIndexMaybe_2k3 int
 
  /- +-
  |  +-

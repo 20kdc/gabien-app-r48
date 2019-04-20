@@ -318,15 +318,18 @@ public class SDB {
                             disambiguations.put("", backup);
                             return new DisambiguatorSchemaElement(disambiguatorIndex, disambiguations);
                         }
-                        if (text.equals("lengthAdjust")) {
+                        if (text.equals("lengthAdjust") || text.equals("lengthAdjustDef")) {
                             String text2 = args[point++];
                             int len = Integer.parseInt(args[point++]);
-                            return new LengthChangeSchemaElement(TXDB.get(outerContext, text2), len, false);
+                            String cond = "{@[@Interp.lang-Common-arrayLen]|" + len + "|1|0}";
+                            SchemaElement reinit = new StandardArraySchemaElement(new OpaqueSchemaElement(), len, 0, 0, null);
+                            return new InitButtonSchemaElement(TXDB.get(outerContext, text2), cond, reinit, false, text.equals("lengthAdjustDef"));
                         }
-                        if (text.equals("lengthAdjustDef")) {
+                        if (text.equals("initButton")) {
                             String text2 = args[point++];
-                            int len = Integer.parseInt(args[point++]);
-                            return new LengthChangeSchemaElement(TXDB.get(outerContext, text2), len, true);
+                            String cond = args[point++];
+                            SchemaElement reinit = get();
+                            return new InitButtonSchemaElement(TXDB.get(outerContext, text2), cond, reinit, true, false);
                         }
                         /*
                          * Command buffers are assembled by putting entries into commandBufferNames (which is ValueSyntax, Text),
