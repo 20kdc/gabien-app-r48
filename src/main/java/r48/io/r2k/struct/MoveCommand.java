@@ -32,6 +32,19 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         super("RPG::MoveCommand");
     }
 
+    // 0x100 is the 'string flag'
+    // remaining lower byte is the amount of parameter ints
+    private static int moveCommandClassifier(int code) {
+        int para = 0;
+        if ((code == 34) || (code == 35))
+            para |= 0x100;
+        if ((code == 32) || (code == 33) || (code == 34) || (code == 35))
+            para += 1;
+        if (code == 35)
+            para += 2;
+        return para;
+    }
+
     public static MoveCommand[] fromEmbeddedData(int[] remainingStream) {
         Stack<Integer> si = new Stack<Integer>();
         for (int i = remainingStream.length - 1; i >= 0; i--)
@@ -52,17 +65,22 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
                     c
             };
 
-            if ((code == 34) || (code == 35)) {
+            int mcc = moveCommandClassifier(code);
+
+            if ((mcc & 0x100) != 0) {
                 mc.parameters.text.data = new byte[si.pop()];
                 for (int i = 0; i < mc.parameters.text.data.length; i++)
                     mc.parameters.text.data[i] = (byte) (int) si.pop();
             }
-            if ((code == 32) || (code == 33) || (code == 34) || (code == 35))
+
+            if ((mcc & 0xFF) > 0)
                 a.val = si.pop();
-            if (code == 35) {
+            if ((mcc & 0xFF) > 1)
                 b.val = si.pop();
+            if ((mcc & 0xFF) > 2)
                 c.val = si.pop();
-            }
+            if ((mcc & 0xFF) > 3)
+                throw new RuntimeException("invalid MCC");
             mcs.add(mc);
         }
         return mcs.toArray(new MoveCommand[0]);
@@ -73,18 +91,24 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         for (IRIO mci : moveCommands.arrVal) {
             MoveCommand mc = (MoveCommand) mci;
             res.add((int) mc.code.val);
-            if ((mc.code.val == 34) || (mc.code.val == 35)) {
+
+            int mcc = moveCommandClassifier((int) mc.code.val);
+
+            if ((mcc & 0x100) != 0) {
                 byte[] text = mc.parameters.text.data;
                 res.add(text.length);
                 for (byte b : text)
                     res.add(((int) b) & 0xFF);
             }
-            if ((mc.code.val == 32) || (mc.code.val == 33) || (mc.code.val == 34) || (mc.code.val == 35))
+
+            if ((mcc & 0xFF) > 0)
                 res.add((int) mc.parameters.arrVal[0].getFX());
-            if (mc.code.val == 35) {
+            if ((mcc & 0xFF) > 1)
                 res.add((int) mc.parameters.arrVal[1].getFX());
+            if ((mcc & 0xFF) > 2)
                 res.add((int) mc.parameters.arrVal[2].getFX());
-            }
+            if ((mcc & 0xFF) > 3)
+                throw new RuntimeException("invalid MCC");
         }
         int[] r = new int[res.size()];
         int idx = 0;
@@ -93,34 +117,42 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         return r;
     }
 
-    public void fromRIO(IRIO rubyIO) {
-        setDeepClone(rubyIO);
-    }
-
     @Override
     public void importData(InputStream bais) throws IOException {
         code.val = R2kUtil.readLcfVLI(bais);
         addIVar("@parameters");
-        parameters.text.data = IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais));
-        IRIOFixnum a = new IRIOFixnum(R2kUtil.readLcfVLI(bais));
-        IRIOFixnum b = new IRIOFixnum(R2kUtil.readLcfVLI(bais));
-        IRIOFixnum c = new IRIOFixnum(R2kUtil.readLcfVLI(bais));
+        IRIOFixnum a = new IRIOFixnum(0);
+        IRIOFixnum b = new IRIOFixnum(0);
+        IRIOFixnum c = new IRIOFixnum(0);
+
         parameters.arrVal = new IRIO[] {
                 a,
                 b,
                 c
         };
+
+        int mcc = moveCommandClassifier((int) code.val);
+
+        if ((mcc & 0x100) != 0)
+            parameters.text.data = IntUtils.readBytes(bais, R2kUtil.readLcfVLI(bais));
+
+        for (int i = 0; i < (mcc & 0xFF); i++)
+            parameters.arrVal[i].setFX(R2kUtil.readLcfVLI(bais));
     }
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
         R2kUtil.writeLcfVLI(baos, (int) code.val);
-        byte[] data = parameters.text.data;
-        R2kUtil.writeLcfVLI(baos, data.length);
-        baos.write(data);
-        R2kUtil.writeLcfVLI(baos, (int) parameters.arrVal[0].getFX());
-        R2kUtil.writeLcfVLI(baos, (int) parameters.arrVal[1].getFX());
-        R2kUtil.writeLcfVLI(baos, (int) parameters.arrVal[2].getFX());
+
+        int mcc = moveCommandClassifier((int) code.val);
+
+        if ((mcc & 0x100) != 0) {
+            byte[] data = parameters.text.data;
+            R2kUtil.writeLcfVLI(baos, data.length);
+            baos.write(data);
+        }
+        for (int i = 0; i < (mcc & 0xFF); i++)
+            R2kUtil.writeLcfVLI(baos, (int) parameters.arrVal[i].getFX());
         return false;
     }
 
