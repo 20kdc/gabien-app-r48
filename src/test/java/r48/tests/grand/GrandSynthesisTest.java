@@ -97,6 +97,10 @@ public class GrandSynthesisTest {
         gtb.thenWaitFrame();
         gtb.thenClick("symbol:Back"); // Back (to leave Graphics)
         gtb.thenWaitFrame();
+        gtb.thenClick("button:0 : don't"); // Setup move type
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:6 : custom"); // Finish that
+        gtb.thenWaitFrame();
         gtb.thenClick("button:RPG::MoveRoute"); // Into moveroute
         gtb.thenWaitFrame();
         gtb.thenClick("button:Route..."); // Continue...
@@ -105,7 +109,28 @@ public class GrandSynthesisTest {
         gtb.thenWaitFrame();
         gtb.thenClick("button:Insert Here..."); // Continued...
         gtb.thenWaitFrame();
-        gtb.thenClick("button:11;Move Forward 1 Tile"); // Continued...
+
+        gtb.thenClick("button:11;Move Forward 1 Tile"); // Set command type
+        gtb.thenWaitFrame();
+        gtb.thenClick("symbol:Back"); // Back (to leave the command)
+        gtb.thenWaitFrame();
+
+        gtb.thenClick("label:0 ¥..¥..¥..¥button:Add..."); // New command...
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:Add Next..."); // Continued...
+        gtb.thenWaitFrame();
+
+        gtb.thenScroll("?:Map0001.lmu*¥?:gabien.ui.UITabPane¥scroll", "button:34;Set Graphic");
+        gtb.thenClick("button:34;Set Graphic"); // Set command type
+        gtb.thenWaitFrame();
+        gtb.thenClick("button:Select character index...");
+        gtb.thenWaitFrame();
+        gtb.thenClick("?:r48.ui.dialog.UISpritesheetChoice¥?:gabien.ui.UIScrollbar¥..", 128, 0);
+        gtb.thenWaitFrame();
+        gtb.thenClick("symbol:Back"); // Back (to leave the spritesheet chooser)
+        gtb.thenClick("symbol:Back"); // Back (to leave the command)
+        gtb.thenWaitFrame();
+
         gtb.thenIcon("Map0001.lmu*", 0); // Close.
     }
 
@@ -120,6 +145,6 @@ public class GrandSynthesisTest {
 
     private void runTheTest(GrandTestBuilder gtb) throws IOException {
         gtb.thenWaitFrame();
-        gtb.execute(4566046);
+        gtb.execute(4566542);
     }
 }

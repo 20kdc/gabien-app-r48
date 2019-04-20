@@ -188,11 +188,9 @@ public class GrandWindowManagerUtils {
     }
 
     private static void addDescendant(UIElement uie, HashMap<UIElement, Rect> hs, Rect screenRect, UIElement s) {
-        Rect intersect = new Rect(uie.getSize()).getIntersection(s.getParentRelativeBounds());
-        if (intersect == null)
-            return;
         // advance!
-        screenRect = new Rect(screenRect.x + intersect.x, screenRect.y + intersect.y, intersect.width, intersect.height);
+        Rect sz = s.getParentRelativeBounds();
+        screenRect = new Rect(screenRect.x + sz.x, screenRect.y + sz.y, sz.width, sz.height);
         addElementAndDescendants(s, hs, screenRect);
     }
 
