@@ -241,13 +241,13 @@ public class GrandTestBuilder {
     public void execute(long expectedChecksum) throws IOException {
         TestKickstart.kickstartRFS();
         Application.gabienmain();
-        FileOutputStream fos = new FileOutputStream("test-debug.pak");
         byte[] dat = createDump();
-        fos.write(dat);
-        fos.close();
         long checksum = 0;
         for (byte b : dat)
             checksum += b & 0xFF;
+        FileOutputStream fos = new FileOutputStream("test-debug" + checksum + ".pak");
+        fos.write(dat);
+        fos.close();
         if (expectedChecksum != checksum)
             throw new RuntimeException("Checksum mismatch. Got " + checksum);
     }

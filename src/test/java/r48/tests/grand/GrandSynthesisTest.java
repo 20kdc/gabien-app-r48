@@ -161,6 +161,6 @@ public class GrandSynthesisTest {
 
     private void runTheTest(GrandTestBuilder gtb) throws IOException {
         gtb.thenWaitFrame();
-        gtb.execute(4566542);
+        gtb.execute(3560659);
     }
 }
