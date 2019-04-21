@@ -238,18 +238,23 @@ public class GrandTestBuilder {
         });
     }
 
-    public void execute(long expectedChecksum) throws IOException {
-        TestKickstart.kickstartRFS();
-        Application.gabienmain();
-        byte[] dat = createDump();
-        long checksum = 0;
-        for (byte b : dat)
-            checksum += b & 0xFF;
-        FileOutputStream fos = new FileOutputStream("test-debug" + checksum + ".pak");
-        fos.write(dat);
-        fos.close();
-        if (expectedChecksum != checksum)
-            throw new RuntimeException("Checksum mismatch. Got " + checksum);
+    public void execute(long expectedChecksum) {
+        try {
+            TestKickstart.kickstartRFS();
+            Application.gabienmain();
+            byte[] dat = createDump();
+            long checksum = 0;
+            for (byte b : dat)
+                checksum += b & 0xFF;
+            FileOutputStream fos = new FileOutputStream("test-debug" + checksum + ".pak");
+            fos.write(dat);
+            fos.close();
+            if (expectedChecksum != -1)
+                if (expectedChecksum != checksum)
+                    throw new RuntimeException("Checksum mismatch. Got " + checksum);
+        } catch (IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
     }
 
     private byte[] createDump() throws IOException {

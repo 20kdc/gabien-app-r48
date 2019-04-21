@@ -203,7 +203,7 @@ public class UITreeView extends UIElement.UIPanel implements OldMouseEmulator.IO
             return -1;
         int cy = 0;
         for (int i = 0; i < elements.length; i++) {
-            if ((y > cy) && (y < cy + elements[i].h))
+            if ((y >= cy) && (y < cy + elements[i].h))
                 return i;
             cy += elements[i].h;
         }

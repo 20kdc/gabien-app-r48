@@ -9,16 +9,14 @@ package r48.tests.grand;
 
 import org.junit.Test;
 
-import java.io.IOException;
-
 /**
  * Created on March 28, 2019.
  */
 public class GrandSynthesisTest {
     @Test
-    public void runGrandSynthesisTest() throws IOException {
+    public void runGrandSynthesisTest() {
         GrandTestBuilder gtb = new GrandTestBuilder();
-        initSynthesis(gtb);
+        GrandInitializers.initSynthesis2k3(gtb);
         editTerm(gtb);
         editMap(gtb);
         editNewMap(gtb);
@@ -31,22 +29,7 @@ public class GrandSynthesisTest {
         runTheTest(gtb);
     }
 
-    private void initSynthesis(GrandTestBuilder gtb) throws IOException {
-        gtb.thenWaitWC(2);
-        gtb.thenClick("button:RPG Maker 2000, 2003, or EasyRPG. (Android users, go here.)"); // R2k
-        gtb.thenWaitFrame();
-        gtb.thenClick("button:R2K[3?] (UTF-8) (Use for new games or languages not shown.) "); // Some encoding or another...
-        gtb.thenWaitFrame();
-        // Maximize 'Please confirm...'
-        gtb.thenIcon(5, 6, 1);
-        gtb.thenWaitFrame();
-        gtb.thenClick("button:2003 Template");
-        gtb.thenWaitFrame();
-        // Close 'Information'.
-        gtb.thenIcon("Information", 0);
-    }
-
-    private void editTerm(GrandTestBuilder gtb) throws IOException {
+    private void editTerm(GrandTestBuilder gtb) {
         // Show + Maximize 'RPG_RT.ldb', scroll down, edit first term, and close it
         gtb.thenSelectTab("Database Objects");
         gtb.thenWaitFrame();
@@ -63,7 +46,7 @@ public class GrandSynthesisTest {
         gtb.thenIcon("RPG_RT.ldb", 0);
     }
 
-    private void editMap(GrandTestBuilder gtb) throws IOException {
+    private void editMap(GrandTestBuilder gtb) {
         // Work on the map now.
         gtb.thenSelectTab("Map");
         gtb.thenWaitFrame();
@@ -150,7 +133,7 @@ public class GrandSynthesisTest {
         gtb.thenWaitFrame();
     }
 
-    private void editNewMap(GrandTestBuilder gtb) throws IOException {
+    private void editNewMap(GrandTestBuilder gtb) {
         gtb.thenSelectTab("MapInfos");
         gtb.thenClick("button:<Insert New Map>");
         gtb.thenIcon("Map ID?", 1);
@@ -159,7 +142,7 @@ public class GrandSynthesisTest {
         gtb.thenWaitFrame();
     }
 
-    private void runTheTest(GrandTestBuilder gtb) throws IOException {
+    private void runTheTest(GrandTestBuilder gtb) {
         gtb.thenWaitFrame();
         gtb.execute(3560659);
     }
