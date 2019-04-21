@@ -88,8 +88,9 @@ public class SDB {
         schemaDatabase.put("internal_EPGD", new EPGDisplaySchemaElement());
         // Note the deliberate avoidance of the expectation checker here.
         SchemaElement vid = new NameProxySchemaElement("var_id", false);
-        schemaDatabase.put("internal_r2kPPPID", helpers.makePicPointerPatchID(vid));
-        schemaDatabase.put("internal_r2kPPPV", helpers.makePicPointerPatchVar(vid));
+        schemaDatabase.put("internal_r2kPPPID", helpers.makePicPointerPatchID(vid, 1));
+        schemaDatabase.put("internal_r2kPPPV", helpers.makePicPointerPatchVar(vid, 0));
+        schemaDatabase.put("internal_r2kPPPVMagnify", helpers.makePicPointerPatchVar(vid, 100));
         schemaDatabase.put("internal_scriptIE", new ScriptControlSchemaElement());
 
         schemaDatabase.put("internal_LF_INDEX", new OSStrHashMapSchemaElement());

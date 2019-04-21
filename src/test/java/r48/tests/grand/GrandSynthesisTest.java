@@ -70,13 +70,20 @@ public class GrandSynthesisTest {
         gtb.thenClick("?:r48.map.UIMapView", 32, 96); // Disable camera mode.
         gtb.thenWaitFrame();
 
+        editMapTile(gtb);
+        editMapEvent(gtb);
+    }
+
+    public void editMapTile(GrandTestBuilder gtb) {
         gtb.thenClick("button:L0"); // L0
         gtb.thenWaitFrame();
         gtb.thenIcon("T0", 1);
         gtb.thenClick("?: ATF", 35, 350); // AT-General Field 0
         gtb.thenSelectTab("Map");
         gtb.thenClick("?:r48.map.UIMapView", 336, 146); // Place tile @ 1, 1
+    }
 
+    public void editMapEvent(GrandTestBuilder gtb) {
         // Launch event editor, add an event, set the direction to 'down', do more stuff, and stop editing it
         gtb.thenClick("button:Events"); // Events
         gtb.thenWaitFrame();
@@ -89,6 +96,12 @@ public class GrandSynthesisTest {
         gtb.thenIcon("Ev.Pick [0 total]", 0);
         gtb.thenIcon("Map0001.lmu*", 1);
         gtb.thenWaitFrame();
+        editMapEventGraphics(gtb);
+        editMapEventMoveRoute(gtb);
+        gtb.thenIcon("Map0001.lmu*", 0); // Close.
+    }
+
+    private void editMapEventGraphics(GrandTestBuilder gtb) {
         gtb.thenClick("button:Graphics"); // Graphics
         gtb.thenWaitFrame();
         gtb.thenClick("button:2 : down"); // Direction
@@ -97,6 +110,9 @@ public class GrandSynthesisTest {
         gtb.thenWaitFrame();
         gtb.thenClick("symbol:Back"); // Back (to leave Graphics)
         gtb.thenWaitFrame();
+    }
+
+    private void editMapEventMoveRoute(GrandTestBuilder gtb) {
         gtb.thenClick("button:0 : don't"); // Setup move type
         gtb.thenWaitFrame();
         gtb.thenClick("button:6 : custom"); // Finish that
@@ -129,9 +145,9 @@ public class GrandSynthesisTest {
         gtb.thenWaitFrame();
         gtb.thenClick("symbol:Back"); // Back (to leave the spritesheet chooser)
         gtb.thenClick("symbol:Back"); // Back (to leave the command)
+        gtb.thenClick("symbol:Back"); // Back (to leave the command list)
+        gtb.thenClick("symbol:Back"); // Back (to leave the moveroute)
         gtb.thenWaitFrame();
-
-        gtb.thenIcon("Map0001.lmu*", 0); // Close.
     }
 
     private void editNewMap(GrandTestBuilder gtb) throws IOException {
