@@ -61,7 +61,7 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     public long getMapOfOrder(int order) {
         IRIO obj = mapInfos.getObject();
         for (IRIO rio : obj.getHashKeys())
-            if (obj.getHashVal(obj).getIVar("@order").getFX() == order)
+            if (obj.getHashVal(rio).getIVar("@order").getFX() == order)
                 return rio.getFX();
         return -1;
     }
@@ -111,12 +111,12 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
 
     @Override
     public int createNewMap(long k) {
-        IRIO mi = mapInfos.getObject().addHashVal(new RubyIO().setFX(k));
-        SchemaPath.setDefaultValue(mi, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
         int targetOrder = getLastOrder();
         long l = getMapOfOrder(targetOrder);
         if (l == -1)
             l = 0;
+        IRIO mi = mapInfos.getObject().addHashVal(new RubyIO().setFX(k));
+        SchemaPath.setDefaultValue(mi, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
         mi.getIVar("@parent_id").setFX(l);
         mi.getIVar("@order").setFX(targetOrder + 1);
         return targetOrder;

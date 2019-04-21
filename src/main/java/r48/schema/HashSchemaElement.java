@@ -141,7 +141,9 @@ public class HashSchemaElement extends SchemaElement {
                         if (target.getHashVal(keyWorkspace) == null) {
                             RubyIO finWorkspace = new RubyIO().setDeepClone(keyWorkspace);
                             IRIO rio2 = target.addHashVal(finWorkspace);
-                            valElem.modifyVal(rio2, path.arrayHashIndex(finWorkspace, "{" + getKeyText(finWorkspace) + "}"), true);
+                            // Don't YET link this value into the schema path stuff.
+                            // If we do that stuff might crash.
+                            SchemaPath.setDefaultValue(rio2, valElem, finWorkspace);
                             // the deep clone prevents further modification of the key
                             path.changeOccurred(false);
                             // auto-updates
