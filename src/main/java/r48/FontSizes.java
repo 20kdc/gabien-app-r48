@@ -26,124 +26,131 @@ public class FontSizes {
     // I'm unsure how these stay in order, but they do.
     // NOTE: TXDB ANNOTATIONS REQUIRED HERE! The comments are still picked up by the translation aid.
 
-    // TXDB.get("schemaPathTextHeight")
-    public static int schemaPathTextHeight = 16;
-    // TXDB.get("schemaFieldTextHeight")
-    public static int schemaFieldTextHeight = 16; // also class names
-    // TXDB.get("schemaArrayAddTextHeight")
-    public static int schemaArrayAddTextHeight = 16;
-    // TXDB.get("enumChoiceTextHeight")
-    public static int enumChoiceTextHeight = 16;
-    // TXDB.get("blobTextHeight")
-    public static int blobTextHeight = 16;
+    @FontSizeDefault(16)
+    public static int schemaPathTextHeight;
+    @FontSizeDefault(16)
+    public static int schemaFieldTextHeight; // also class names
+    @FontSizeDefault(16)
+    public static int schemaArrayAddTextHeight;
+    @FontSizeDefault(16)
+    public static int enumChoiceTextHeight;
+    @FontSizeDefault(16)
+    public static int blobTextHeight;
 
-    // TXDB.get("gridTextHeight")
-    public static int gridTextHeight = 6;
-    // TXDB.get("tableElementTextHeight")
-    public static int tableElementTextHeight = 16;
-    // TXDB.get("tableSizeTextHeight")
-    public static int tableSizeTextHeight = 16;
-    // TXDB.get("tableResizeTextHeight")
-    public static int tableResizeTextHeight = 16;
+    @FontSizeDefault(6)
+    public static int gridTextHeight;
+    @FontSizeDefault(16)
+    public static int tableElementTextHeight;
+    @FontSizeDefault(16)
+    public static int tableSizeTextHeight;
+    @FontSizeDefault(16)
+    public static int tableResizeTextHeight;
 
-    // TXDB.get("mapPositionTextHeight")
-    public static int mapPositionTextHeight = 16;
-    // TXDB.get("mapInfosTextHeight")
-    public static int mapInfosTextHeight = 16; // separate tab!
-    // TXDB.get("mapLayertabTextHeight")
-    public static int mapLayertabTextHeight = 16;
+    @FontSizeDefault(16)
+    public static int mapPositionTextHeight;
+    @FontSizeDefault(16)
+    public static int mapInfosTextHeight; // separate tab!
+    @FontSizeDefault(16)
+    public static int mapLayertabTextHeight;
 
-    // TXDB.get("eventPickerEntryTextHeight")
-    public static int eventPickerEntryTextHeight = 16;
-    // TXDB.get("tilesTabTextHeight")
-    public static int tilesTabTextHeight = 6;
-    // TXDB.get("atSubtoolTextHeight")
-    public static int atSubtoolTextHeight = 8;
+    @FontSizeDefault(16)
+    public static int eventPickerEntryTextHeight;
+    @FontSizeDefault(6)
+    public static int tilesTabTextHeight;
+    @FontSizeDefault(8)
+    public static int atSubtoolTextHeight;
 
-    // TXDB.get("rmaTimeframeTextHeight")
-    public static int rmaTimeframeTextHeight = 16;
-    // TXDB.get("rmaCellTextHeight")
-    public static int rmaCellTextHeight = 16;
+    @FontSizeDefault(16)
+    public static int rmaTimeframeTextHeight;
+    @FontSizeDefault(16)
+    public static int rmaCellTextHeight;
 
-    // TXDB.get("tonePickerTextHeight")
-    public static int tonePickerTextHeight = 6;
+    @FontSizeDefault(6)
+    public static int tonePickerTextHeight;
 
-    // TXDB.get("imiAsmButtonsTextHeight")
-    public static int imiAsmButtonsTextHeight = 16;
-    // TXDB.get("imiAsmAssetTextHeight")
-    public static int imiAsmAssetTextHeight = 16;
+    @FontSizeDefault(16)
+    public static int imiAsmButtonsTextHeight;
+    @FontSizeDefault(16)
+    public static int imiAsmAssetTextHeight;
 
-    // TXDB.get("dialogWindowTextHeight")
-    public static int dialogWindowTextHeight = 16;
-    // TXDB.get("textDialogFieldTextHeight")
-    public static int textDialogFieldTextHeight = 16;
-    // TXDB.get("textDialogDescTextHeight")
-    public static int textDialogDescTextHeight = 16;
+    @FontSizeDefault(16)
+    public static int dialogWindowTextHeight;
+    @FontSizeDefault(16)
+    public static int textDialogFieldTextHeight;
+    @FontSizeDefault(16)
+    public static int textDialogDescTextHeight;
 
-    // TXDB.get("helpTextHeight")
-    public static int helpTextHeight = 16;
-    // TXDB.get("helpLinkHeight")
-    public static int helpLinkHeight = 16;
-    // TXDB.get("helpPathHeight")
-    public static int helpPathHeight = 16;
+    @FontSizeDefault(16)
+    public static int helpTextHeight;
+    @FontSizeDefault(16)
+    public static int helpLinkHeight;
+    @FontSizeDefault(16)
+    public static int helpPathHeight;
 
-    // TXDB.get("inspectorBackTextHeight")
-    public static int inspectorBackTextHeight = 16;
-    // TXDB.get("inspectorTextHeight")
-    public static int inspectorTextHeight = 8;
+    @FontSizeDefault(16)
+    public static int inspectorBackTextHeight;
+    @FontSizeDefault(8)
+    public static int inspectorTextHeight;
 
-    // TXDB.get("windowFrameHeight")
-    public static int windowFrameHeight = 16;
-    // TXDB.get("statusBarTextHeight")
-    public static int statusBarTextHeight = 16;
-    // TXDB.get("tabTextHeight")
-    public static int tabTextHeight = 16;
-    // TXDB.get("menuTextHeight")
-    public static int menuTextHeight = 16;
-    // TXDB.get("maintabsScrollersize")
-    public static int maintabsScrollersize = 8;
+    @FontSizeDefault(16)
+    public static int windowFrameHeight;
+    @FontSizeDefault(16)
+    public static int statusBarTextHeight;
+    @FontSizeDefault(16)
+    public static int tabTextHeight;
+    @FontSizeDefault(16)
+    public static int menuTextHeight;
 
-    // TXDB.get("objectDBMonitorTextHeight")
-    public static int objectDBMonitorTextHeight = 16;
+    @FontSizeDefault(8)
+    public static int maintabsScrollersize;
 
-    // TXDB.get("fontSizerTextHeight")
-    public static int fontSizerTextHeight = 16;
+    @FontSizeDefault(16)
+    public static int objectDBMonitorTextHeight;
+    @FontSizeDefault(16)
+    public static int fontSizerTextHeight;
+    @FontSizeDefault(16)
+    public static int gSysCoreTextHeight; // Has a special hook needed to make this work
+    @FontSizeDefault(16)
+    public static int launcherTextHeight;
+    @FontSizeDefault(16)
+    public static int imageEditorTextHeight; // Compat. check is performed to ensure this doesn't get reset to 16 - see load
 
-    // TXDB.get("gSysCoreTextHeight")
-    public static int gSysCoreTextHeight = 16;
+    @FontSizeDefault(8)
+    public static int mapToolbarScrollersize;
+    @FontSizeDefault(8)
+    public static int tilesTabScrollersize;
+    @FontSizeDefault(8)
+    public static int schemaPagerTabScrollersize;
 
-    // TXDB.get("launcherTextHeight")
-    public static int launcherTextHeight = 16;
+    @FontSizeDefault(24)
+    public static int gridScrollersize;
+    @FontSizeDefault(8)
+    public static int cellSelectScrollersize;
+    @FontSizeDefault(24)
+    public static int generalScrollersize;
+    @FontSizeDefault(24)
+    public static int menuScrollersize;
 
-    // TXDB.get("imageEditorTextHeight")
-    public static int imageEditorTextHeight = 16; // Compat. check is performed to ensure this doesn't get reset to 16 - see load
+    @FontSizeDefault(10)
+    public static int uiGuessScaleTenths;
+    @FontSizeDefault(10)
+    public static int uiGridScaleTenths;
 
-    // TXDB.get("mapToolbarScrollersize")
-    public static int mapToolbarScrollersize = 8;
-
-    // TXDB.get("tilesTabScrollersize")
-    public static int tilesTabScrollersize = 8;
-
-    // TXDB.get("schemaPagerTabScrollersize")
-    public static int schemaPagerTabScrollersize = 8;
-
-    // TXDB.get("gridScrollersize")
-    public static int gridScrollersize = 24;
-
-    // TXDB.get("cellSelectScrollersize")
-    public static int cellSelectScrollersize = 8;
-
-    // TXDB.get("generalScrollersize")
-    public static int generalScrollersize = 24;
-
-    // TXDB.get("menuScrollersize")
-    public static int menuScrollersize = 24;
-
-    // TXDB.get("uiGuessScaleTenths")
-    public static int uiGuessScaleTenths = 10;
-
-    // TXDB.get("uiGridScaleTenths")
-    public static int uiGridScaleTenths = 10;
+    public static void reset() {
+        Application.allowBlending = true;
+        Application.windowingExternal = false;
+        try {
+            for (final Field field : FontSizes.class.getFields())
+                field.setInt(null, field.getAnnotation(FontSizeDefault.class).value());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        FontManager.fontOverride = GaBIEn.getFontOverrides()[0];
+        FontManager.fontOverrideUE8 = false;
+        Application.secondaryImageLoadLocation = "";
+        Application.rootPathBackup = "";
+        Application.windowingExternal = false;
+    }
 
     // This hides the implied reflection for simplicity
     public static LinkedList<FontSizeField> getFields() {

@@ -12,6 +12,7 @@ import gabien.ui.IFunction;
 import gabien.ui.IPointer;
 import gabien.ui.ISupplier;
 import r48.AppMain;
+import r48.FontSizes;
 import r48.dbs.ObjectDB;
 import r48.io.IObjectBackend;
 import r48.tests.grand.GrandExecutionError;
@@ -39,7 +40,7 @@ public class TestKickstart {
     public static MobilePeripherals.DummyPointer pointer;
     public static String maintainText = null;
     public static boolean maintainTextEnter = false;
-    public static int windowCount = 0;
+    public static int windowCount = 1337;
 
     public static void kickstart(final String s2, final String encoding, final String schema) {
         kickstartRFS();
@@ -49,10 +50,9 @@ public class TestKickstart {
     }
 
     public static void kickstartRFS() {
-        FontManager.fontOverride = null;
-        FontManager.fontOverrideUE8 = false;
         FontManager.fontsReady = true;
         GaBIEnImpl.mobileEmulation = true;
+        windowCount = 0;
         mockFS.clear();
         mockDFS.clear();
         GaBIEn.internal = new GaBIEnImpl(false) {
@@ -169,6 +169,8 @@ public class TestKickstart {
         };
         // Cleanup any possible contamination of application state between tests.
         AppMain.shutdown();
+        // Also resets FontManager because that's tied into config.
+        FontSizes.reset();
     }
 
     public static void resetODB() {

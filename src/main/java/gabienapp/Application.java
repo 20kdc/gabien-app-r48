@@ -35,14 +35,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created on 1/27/17.
  */
 public class Application {
-    // The default value of this affects splash screen.
-    // The actual value used for the main application is in gabienmain() below, set after the splash.
-    public static int globalMS = 50;
-    private static double compensationDT = 0;
+    public static int globalMS;
+    private static double compensationDT;
 
-    // *cough*OneShot*cough*. controlled by FontSizeConfigurator
-    public static boolean allowBlending = true;
+    // ----- These are settings that are controlled in FontSizes. -----
+    public static boolean allowBlending;
     public static boolean windowingExternal = false;
+    // -----
 
     protected static IConsumer<Double> appTicker = null;
     protected static UITextBox rootBox;
@@ -59,6 +58,9 @@ public class Application {
     public static final String BRAND = "r48";
 
     public static void gabienmain() throws IOException {
+        globalMS = 50;
+        FontSizes.reset();
+
         GaBIEn.appPrefixes = new String[] {BRAND + "/", ""};
         GaBIEn.sysCoreFontSize = FontSizes.gSysCoreTextHeight;
 

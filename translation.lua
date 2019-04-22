@@ -16,7 +16,15 @@ local function ls(dir)
  p:close()
  return t
 end
+
 local handled = {}
+local function handle(str)
+ if not handled[str] then
+  handled[str] = true
+  print("x " .. str)
+ end
+end
+
 local function findtr(f, e)
  while true do
   local l = f:read()
@@ -47,3 +55,15 @@ local function check(f)
  end
 end
 check("src/main/java")
+print(" - src/main/java/r48/FontSizes.java.fields - ")
+-- FontSizes has extra-special logic
+local f = io.open("src/main/java/r48/FontSizes.java", "r")
+while true do
+ local line = f:read()
+ if not line then break end
+ local field = line:match("public static int .*%;")
+ if field then
+  handle("\"" .. field:sub(19, -2) .. "\"")
+ end
+end
+f:close()
