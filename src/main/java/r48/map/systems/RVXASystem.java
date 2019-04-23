@@ -71,4 +71,9 @@ public class RVXASystem extends RXPSystem {
                 }
         });
     }
+
+    @Override
+    public boolean engineUsesPal0Colourkeys() {
+        return true;
+    }
 }

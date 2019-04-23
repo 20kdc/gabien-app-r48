@@ -123,6 +123,10 @@ public abstract class MapSystem {
 
     }
 
+    public boolean engineUsesPal0Colourkeys() {
+        return false;
+    }
+
     /*
      * Acts as a wrapper around RubyTable, but also provides a StuffRenderer separately.
      * Calling setTiletype requires modification notification.

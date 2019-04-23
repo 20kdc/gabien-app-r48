@@ -221,4 +221,9 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     public LinkedList<String> getDynamicObjects() {
         return MapSystem.dynamicObjectsFromRM(this);
     }
+
+    @Override
+    public boolean engineUsesPal0Colourkeys() {
+        return true;
+    }
 }
