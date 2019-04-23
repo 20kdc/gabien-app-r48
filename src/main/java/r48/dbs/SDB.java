@@ -82,15 +82,12 @@ public class SDB {
         schemaDatabase.put("OPAQUE", new OpaqueSchemaElement());
         schemaDatabase.put("hue", new HuePickerSchemaElement());
 
+        schemaDatabase.put("percent", new LowerBoundIntegerSchemaElement(0, 100));
+
         schemaDatabase.put("zlibBlobEditor", new ZLibBlobSchemaElement());
         schemaDatabase.put("stringBlobEditor", new StringBlobSchemaElement());
 
         schemaDatabase.put("internal_EPGD", new EPGDisplaySchemaElement());
-        // Note the deliberate avoidance of the expectation checker here.
-        SchemaElement vid = new NameProxySchemaElement("var_id", false);
-        schemaDatabase.put("internal_r2kPPPID", helpers.makePicPointerPatchID(vid, 1));
-        schemaDatabase.put("internal_r2kPPPV", helpers.makePicPointerPatchVar(vid, 0));
-        schemaDatabase.put("internal_r2kPPPVMagnify", helpers.makePicPointerPatchVar(vid, 100));
         schemaDatabase.put("internal_scriptIE", new ScriptControlSchemaElement());
 
         schemaDatabase.put("internal_LF_INDEX", new OSStrHashMapSchemaElement());
@@ -175,6 +172,7 @@ public class SDB {
                             int l = Integer.parseInt(args[point++]);
                             return new StringLenSchemaElement(TXDB.get(outerContext, esc), l);
                         }
+
                         //
                         if (text.equals("hwnd")) {
                             // These need their own translation mechanism
@@ -604,6 +602,15 @@ public class SDB {
                             }
                             r.allowResize &= !disableRsz;
                             return new SubwindowSchemaElement(r, iVT);
+                        }
+                        if (text.equals("internal_r2kPPPID")) {
+                            SchemaElement se = get();
+                            return helpers.makePicPointerPatchID(getSDBEntry("var_id"), se);
+                        }
+                        if (text.equals("internal_r2kPPPV")) {
+                            String txt = TXDB.get(outerContext, args[point++]);
+                            SchemaElement se = get();
+                            return helpers.makePicPointerPatchVar(getSDBEntry("var_id"), txt, se);
                         }
                         if (text.equals("CTNative"))
                             return new CTNativeSchemaElement(args[point++]);

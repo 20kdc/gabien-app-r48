@@ -144,6 +144,6 @@ public class GrandSynthesisTest {
 
     private void runTheTest(GrandTestBuilder gtb) {
         gtb.thenWaitFrame();
-        gtb.execute(3560659);
+        gtb.execute(3560759);
     }
 }

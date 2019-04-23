@@ -15,7 +15,6 @@ import r48.RubyIO;
 import r48.io.data.IRIO;
 import r48.schema.*;
 import r48.schema.displays.HWNDSchemaElement;
-import r48.schema.integers.LowerBoundIntegerSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBindingSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
@@ -163,7 +162,7 @@ class SDBHelpers {
         }
     }
 
-    public SchemaElement makePicPointerPatchID(SchemaElement varId, int defVal) {
+    public SchemaElement makePicPointerPatchID(SchemaElement varId, SchemaElement val) {
         // Since this is much too complicated for a mere enum,
         //  use the magical binding to make it more in-line with R48's standards,
         //  with a minimal amount of code
@@ -175,7 +174,7 @@ class SDBHelpers {
         ArrayElementSchemaElement idV = new ArrayElementSchemaElement(1, TXDB.get("idVar"), varId, null, false);
         disambiguations.put("1", idV);
         disambiguations.put("2", idV);
-        disambiguations.put("", new ArrayElementSchemaElement(1, TXDB.get("id "), new LowerBoundIntegerSchemaElement(1, defVal), null, false));
+        disambiguations.put("", new ArrayElementSchemaElement(1, TXDB.get("id "), val, null, false));
         AggregateSchemaElement inner = new AggregateSchemaElement(new SchemaElement[] {
                 new HalfsplitSchemaElement(
                         new ArrayElementSchemaElement(0, TXDB.get("type "), new EnumSchemaElement(types, new RubyIO().setFX(0), "LOCK"), null, false),
@@ -238,10 +237,10 @@ class SDBHelpers {
         }, inner);
     }
 
-    public SchemaElement makePicPointerPatchVar(SchemaElement varId, final int defVal) {
+    public SchemaElement makePicPointerPatchVar(SchemaElement varId, String vname, SchemaElement val) {
         // Less complicated but still more than an enum is reasonable for.
         HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
-        disambiguations.put("0", new ArrayElementSchemaElement(1, TXDB.get("value "), new LowerBoundIntegerSchemaElement(0, defVal), null, false));
+        disambiguations.put("0", new ArrayElementSchemaElement(1, vname, val, null, false));
         disambiguations.put("", new ArrayElementSchemaElement(1, TXDB.get("valueVar "), varId, null, false));
         SchemaElement inner = new HalfsplitSchemaElement(
                 new ArrayElementSchemaElement(0, TXDB.get("isVar "), new IntBooleanSchemaElement(false), null, false),

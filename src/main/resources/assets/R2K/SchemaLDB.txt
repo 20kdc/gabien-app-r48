@@ -79,7 +79,7 @@ C name Class.RPG::Actor @name | #A
 @battle_posy_2k3 int
 @battler_anim_2k3 battleranimation_id
 @can_crit boolean
-@crit_percent int
+@crit_percent percent
 @dual_wield boolean
 @lock_equipment boolean
 @equipment rpg_actor_equipment_block
@@ -135,8 +135,8 @@ e rpg_skill_fm 0 A 1 B 2 C 3 dodge
 .rpg_skill_sect3
 @sp_cost_val_normal int
 @sp_cost_percent_2k3 boolean
-@sp_cost_val_percent_2k3 int
-@hit_chance int= 100
+@sp_cost_val_percent_2k3 percent
+@hit_chance percent
 @base_dmg int
 @phys_dmg_frac20 int
 @mag_dmg_frac20 int
@@ -287,7 +287,7 @@ C name Class.RPG::Enemy @name | #A
 @exp int
 @gold int
 @drop_item item_or_none_id
-@drop_percent int= 100
+@drop_percent percent
 @can_crit boolean
 @crit_chance int
 @miss boolean

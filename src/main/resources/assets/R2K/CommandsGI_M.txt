@@ -199,12 +199,11 @@ C category 3
 d Make an event/the player flash in a given way for a given length of time (given in tenths of a second.)
 p _ string
 p char character_id
- NOTE: Normally 200/200/200/100 is WRONG, but we want it here to make it actually "flash" while making it clear this is a percentage
-p red% int_default_200
-p green% int_default_200
-p blue% int_default_200
-C r2kTonePicker 2 3 4 5
-p saturation% int_default_100
+p red0-31 int_default_31
+p green0-31 int_default_31
+p blue0-31 int_default_31
+C r2kFETonePicker 2 3 4 5
+p saturation0-31 int_default_31
 p timeSecs/10 int_default_1
 p wait int_boolean
 

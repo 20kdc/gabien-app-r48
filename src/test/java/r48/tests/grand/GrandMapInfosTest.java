@@ -29,7 +29,7 @@ public class GrandMapInfosTest {
         gtb.thenClick("symbol:Save");
         gtb.thenCloseWindow();
         gtb.thenCloseWindow();
-        gtb.execute(3581486);
+        gtb.execute(3581586);
     }
 
     @Test

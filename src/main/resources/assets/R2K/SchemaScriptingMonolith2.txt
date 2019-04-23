@@ -76,31 +76,31 @@ e comm_picture_effectmode 0 none 1 rotate 2 waver
 ]5 mapAttach int_boolean
  this is basically a guess
 ]8 maskColour0 int_boolean
-]9 red int= 100
-]10 green int= 100
-]11 blue int= 100
-]12 saturation int= 100
+]9 red% percent
+]10 green% percent
+]11 blue% percent
+]12 saturation% percent
 +r2kTonePicker ]9 ]10 ]11 ]12
 ]13 effectMode comm_picture_effectmode
 +DA{ ]13 ]14 effectPower int 0 ]14 _ int }
 
 .comm_picture_nbo
 ]1 pictureId picture_id
-]6 magnify internal_r2kPPPVMagnify
-]7 topTransparency internal_r2kPPPV
+]6 magnify internal_r2kPPPV "value% " percent
+]7 topTransparency internal_r2kPPPV "value " int+0
 
 .comm_picture_nbn
 ]18 picIdIsVar_112 int_boolean
 +DA{ ]18 ]1 picIdVar var_id 0 ]1 picId picture_id }
 ]21 magnifyIsVar_112 int_boolean
-+DA{ ]21 ]6 magnifyVar var_id 0 ]6 magnify { internal_r2kPPPVMagnify } }
++DA{ ]21 ]6 magnifyVar var_id 0 ]6 magnify { internal_r2kPPPV "value% " percent } }
 ]22 topTransparIsVar_112 int_boolean
-+DA{ ]22 ]7 topTransparVar var_id 0 ]7 topTranspar internal_r2kPPPV }
++DA{ ]22 ]7 topTransparVar var_id 0 ]7 topTranspar internal_r2kPPPV "value " int+0 }
 
  ---
 
 .show_picture_array_foot
-+DA{ :length ]15 bottomTransparency_2k3 internal_r2kPPPV 15 { } }
++DA{ :length ]15 bottomTransparency_2k3 internal_r2kPPPV "value " int+0 15 { } }
 
 .show_picture_array_nbo
 ]0 img f_picture_name
@@ -146,7 +146,7 @@ e show_picture_sheettype 0 singleConstFrame 1 singleVarFrame 2 animation
 .move_picture_array_foot
 ]15 moveSecs/10 int
 ]16 wait int_boolean
-+DA{ :length ]17 bottomTransparency_2k3 internal_r2kPPPV 17 { } }
++DA{ :length ]17 bottomTransparency_2k3 internal_r2kPPPV "value " int+0 17 { } }
 
 .move_picture_array_nbo
 ]0 _ string

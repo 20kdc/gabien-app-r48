@@ -497,6 +497,15 @@ public class CMDB {
                         nextTag.tpC = Integer.parseInt(args[3]);
                         nextTag.tpD = Integer.parseInt(args[4]);
                     }
+                    if (args[0].equals("r2kFETonePicker")) {
+                        // C r2kFETonePicker 0 1 2 3
+                        nextTag.hasTonepicker = true;
+                        nextTag.tpBase = 31;
+                        nextTag.tpA = Integer.parseInt(args[1]);
+                        nextTag.tpB = Integer.parseInt(args[2]);
+                        nextTag.tpC = Integer.parseInt(args[3]);
+                        nextTag.tpD = Integer.parseInt(args[4]);
+                    }
                     if (args[0].equals("groupBehavior")) {
                         gbStatePosition = 1;
                         gbStateArgs = args;
