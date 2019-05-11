@@ -172,6 +172,9 @@ public abstract class ArraySchemaElement extends SchemaElement {
         return new Runnable() {
             @Override
             public void run() {
+                // This is specifically to deal with issues in at-least-1 cases and the like
+                while (target.getALen() < i)
+                    target.addAElem(target.getALen());
                 SchemaElement subelem = getElementSchema(i);
                 IRIO rio = target.addAElem(i);
                 subelem.modifyVal(rio, ind, true);

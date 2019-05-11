@@ -354,7 +354,8 @@ C name Class.RPG::Enemy @name | #A
 @name string
 @members subwindow arrayIx1 RPG::Troop::Member
 @terrain_set subwindow hash terrain_id boolean
-@pages subwindow arrayIx1 subwindow RPG::Troop::Page
+ issue 52 states that RPG Maker 2k3 expects this to be AX1
+@pages subwindow arrayAX1 subwindow RPG::Troop::Page
 @auto_position boolean
 @randomized_memberset_2k3 boolean
 C magicGenpos r2kTroop . . . . 0
@@ -521,9 +522,8 @@ C name Class.RPG::Animation @name | #A
 @battle2_2k3 boolean
 @scope rpg_animation_scope
 @position rpg_animation_position
- oh, this is fun. see, r2kAnimation has to be changed to make this work
- the alternative is "worse". for some definitions of "worse".
-@frames subwindow arrayIx1 subwindow RPG::Animation::Frame
+ issue 52 states that RPG Maker 2k3 expects this to be AX1
+@frames subwindow arrayAX1 subwindow RPG::Animation::Frame
  yet another "aaaaaa why is this happening" fix
 @timings subwindow arrayIx1 subwindow RPG::Animation::Timing
 C magicGenpos r2kAnimation @animation_name . . . 30

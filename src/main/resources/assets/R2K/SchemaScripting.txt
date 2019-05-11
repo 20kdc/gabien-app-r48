@@ -54,9 +54,7 @@ e choice_index_magic 0 choice 4 invisibleCancel
 e choice_index_magic_2 4 invisibleCancel
 E choice_begin_magic choiceIndex+1 0 None 5 invisibleCancel
 
- BEFORE ADDING A "mysteriously set to 1" type for a parameter just before an actor_id,
-  have you considered it could be GetActors? - 20kdc to themselves
- ...of course, if it has no relation...
+ Various constants for use in CMDB.
 
 > int_default_1 int= 1
 > int_default_10 int= 10
