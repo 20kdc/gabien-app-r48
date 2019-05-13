@@ -16,6 +16,7 @@ import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
 
 /**
@@ -33,7 +34,7 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
         /*
         if (mouse)
             if (cx == tx)
@@ -66,7 +67,9 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
+    public void confirmAt(int x, int y, int pixx, int pixy, int layer, boolean first) {
+        if (!first)
+            return;
         if (map.mapTable.outOfBounds(x, y))
             return;
         int shadowBasis = map.mapTable.getTiletype(x, y, 3) & 0x0F;
@@ -79,10 +82,5 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
         shadowBasis ^= 1 << flagId;
         map.mapTable.setTiletype(x, y, 3, (short) (shadowBasis | (regionId.number << 8)));
         map.passModificationNotification();
-    }
-
-    @Override
-    public boolean shouldIgnoreDrag() {
-        return true;
     }
 }

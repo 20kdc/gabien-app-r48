@@ -74,18 +74,18 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
                 py -= mvdc.camY;
                 if (tileLayer == -1) {
                     for (int k = 0; k < targetTable.planeCount; k++)
-                        tileDrawIntern(k, mvdc.mouseAllowed, mvdc.mouseXT, mvdc.mouseYT, mvdc.currentLayer, mvdc.callbacks, mvdc.debugToggle, mvdc.igd, i, j, px, py);
+                        tileDrawIntern(k, mvdc.mouseStatus, mvdc.currentLayer, mvdc.callbacks, mvdc.debugToggle, mvdc.igd, i, j, px, py);
                 } else {
-                    tileDrawIntern(tileLayer, mvdc.mouseAllowed, mvdc.mouseXT, mvdc.mouseYT, mvdc.currentLayer, mvdc.callbacks, mvdc.debugToggle, mvdc.igd, i, j, px, py);
+                    tileDrawIntern(tileLayer, mvdc.mouseStatus, mvdc.currentLayer, mvdc.callbacks, mvdc.debugToggle, mvdc.igd, i, j, px, py);
                 }
             }
         }
     }
 
-    private void tileDrawIntern(int tdi, boolean mouseAllowed, int mouseXT, int mouseYT, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd, int i, int j, int px, int py) {
+    private void tileDrawIntern(int tdi, MapViewDrawContext.MouseStatus mouseAllowed, int currentLayer, IMapViewCallbacks callbacks, boolean debug, IGrDriver igd, int i, int j, int px, int py) {
         short tidx = targetTable.getTiletype(i, j, tdi);
         if (callbacks != null)
-            tidx = callbacks.shouldDrawAt(mouseAllowed, mouseXT, mouseYT, i, j, tidx, tdi, currentLayer);
+            tidx = callbacks.shouldDrawAt(mouseAllowed, i, j, tidx, tdi, currentLayer);
         if (shouldDraw(i, j, tdi, tidx)) {
             if (debug) {
                 String t = Integer.toString(tidx, 16);

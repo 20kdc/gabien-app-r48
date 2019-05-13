@@ -56,6 +56,9 @@ public class UIMapView extends UIPlaneView {
     private int mouseXT, mouseYT;
     private int mouseXTP, mouseYTP;
 
+    // Used to control shouldDrawAt visuals
+    private boolean visCurrentlyDrawing = false;
+
     // Regarding how these now work:
     // Modification listeners have to be held by the things that need to be notified.
     // This way, they conveniently disappear when the notified things do.
@@ -222,13 +225,14 @@ public class UIMapView extends UIPlaneView {
         return new IPointerReceiver() {
             @Override
             public void handlePointerBegin(IPointer state) {
+                visCurrentlyDrawing = true;
                 recalcXYT(state.getX(), state.getY());
                 if (shiftDown) {
                     if (!mapTable.outOfBounds(mouseXT, mouseYT))
                         if (pickTileHelper != null)
                             pickTileHelper.accept(mapTable.getTileData.apply(new int[] {mouseXT, mouseYT, currentLayer}));
                 } else if (callbacks != null) {
-                    callbacks.confirmAt(mouseXT, mouseYT, mouseXTP, mouseYTP, currentLayer);
+                    callbacks.confirmAt(mouseXT, mouseYT, mouseXTP, mouseYTP, currentLayer, true);
                 }
             }
 
@@ -237,13 +241,12 @@ public class UIMapView extends UIPlaneView {
                 recalcXYT(state.getX(), state.getY());
                 if (!shiftDown)
                     if (callbacks != null)
-                        if (!callbacks.shouldIgnoreDrag())
-                            callbacks.confirmAt(mouseXT, mouseYT, mouseXTP, mouseYTP, currentLayer);
+                        callbacks.confirmAt(mouseXT, mouseYT, mouseXTP, mouseYTP, currentLayer, false);
             }
 
             @Override
             public void handlePointerEnd(IPointer state) {
-
+                visCurrentlyDrawing = false;
             }
         };
     }
@@ -306,9 +309,7 @@ public class UIMapView extends UIPlaneView {
 
         // NOTE: Block copy/paste isn't nice this way... add confirmation or something instead?
         // If so, make sure that camDragSwitch still disables this.
-        mvdc.mouseAllowed = !Application.mobileExtremelySpecialBehavior;
-        mvdc.mouseXT = mouseXT;
-        mvdc.mouseYT = mouseYT;
+        mvdc.mouseStatus = Application.mobileExtremelySpecialBehavior ? null : new MapViewDrawContext.MouseStatus(visCurrentlyDrawing, mouseXT, mouseYT);
 
         mvdc.callbacks = callbacks;
         mvdc.currentLayer = currentLayer;

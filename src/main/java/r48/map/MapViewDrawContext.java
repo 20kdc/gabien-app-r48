@@ -14,9 +14,22 @@ import gabien.IGrDriver;
  * Created on November 15, 2018.
  */
 public class MapViewDrawContext {
-    public int camX, camY, camTX, camTY, camTR, camTB, mouseXT, mouseYT, tileSize, currentLayer;
+    public int camX, camY, camTX, camTY, camTR, camTB, tileSize, currentLayer;
     public IMapViewCallbacks callbacks;
     public boolean debugToggle;
     public IGrDriver igd;
-    public boolean mouseAllowed;
+    // Null if the mouse doesn't exist.
+    public MouseStatus mouseStatus;
+
+    public static class MouseStatus {
+        public final boolean pressed;
+        // In tiles.
+        public final int x, y;
+
+        public MouseStatus(boolean pressed, int x, int y) {
+            this.pressed = pressed;
+            this.x = x;
+            this.y = y;
+        }
+    }
 }

@@ -13,6 +13,7 @@ import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
 import r48.maptools.UIMTBase;
 import r48.ui.UIAppendButton;
@@ -65,7 +66,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAt(boolean mouseAllowed, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouseAllowed, int tx, int ty, short there, int layer, int currentLayer) {
         if (layer != currentLayer)
             return there;
         TOutline mo = workspace.getOutlineForTile(tx, ty);
@@ -136,7 +137,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
+    public void confirmAt(int x, int y, int pixx, int pixy, int layer, boolean first) {
         int ps2 = mapToolContext.getMapView().tileSize / 2;
         int cpcX = (x * 2 * ps2) + pixx;
         int cpcY = (y * 2 * ps2) + pixy;
@@ -165,10 +166,5 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
             if (rr != null)
                 rr.run();
         }
-    }
-
-    @Override
-    public boolean shouldIgnoreDrag() {
-        return false;
     }
 }

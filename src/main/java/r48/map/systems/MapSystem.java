@@ -193,8 +193,6 @@ public abstract class MapSystem {
             mvdc.camTX = camTX;
             mvdc.camTY = camTY;
 
-            mvdc.mouseAllowed = false;
-
             mvdc.currentLayer = currentLayer;
             mvdc.debugToggle = debugToggle;
             mvdc.igd = igd;

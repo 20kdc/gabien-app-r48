@@ -14,6 +14,7 @@ import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
@@ -33,6 +34,8 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     // Sub-tools panel
     private UIElement subtoolBar;
     private int subtool = 0;
+    // Set when first = true for all subtools to use.
+    private int anchorX, anchorY;
 
     private UITabPane tabPane;
     private TileEditingTab[] tileTabs;
@@ -161,7 +164,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         }
         int sel = tileMaps[tab].getSelected();
         int[] actTiles = tileTabs[tab].actTiles;
-        int lvm = sel + (px % tileMaps[tab].selWidth) + ((py % tileMaps[tab].selHeight) * tileMaps[tab].getSelectStride());
+        int lvm = sel + UIElement.sensibleCellMod(px, tileMaps[tab].selWidth) + (UIElement.sensibleCellMod(py, tileMaps[tab].selHeight) * tileMaps[tab].getSelectStride());
         if (lvm < 0) {
             System.err.println("Selection calculator error <0 in getTCSelected");
             return 0;
@@ -174,10 +177,12 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
         if (layer != currentLayer)
             return there;
-        if (!mouse)
+        if (mouse == null)
+            return there;
+        if (mouse.pressed)
             return there;
 
         int tab = tabPane.getTabIndex();
@@ -186,21 +191,21 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             return there;
 
         if (subtool != 0) {
-            if (cx == tx)
-                if (cy == ty)
+            if (mouse.x == tx)
+                if (mouse.y == ty)
                     return (short) tileTabs[tab].actTiles[tileMaps[tab].getSelected()];
             return there;
         }
-        if (tx < cx)
+        if (tx < mouse.x)
             return there;
-        if (ty < cy)
+        if (ty < mouse.y)
             return there;
-        if (tx >= cx + tileMaps[tab].selWidth)
+        if (tx >= mouse.x + tileMaps[tab].selWidth)
             return there;
-        if (ty >= cy + tileMaps[tab].selHeight)
+        if (ty >= mouse.y + tileMaps[tab].selHeight)
             return there;
-        int px = tx - cx;
-        int py = ty - cy;
+        int px = tx - mouse.x;
+        int py = ty - mouse.y;
         return getTCSelected(px, py);
     }
 
@@ -219,7 +224,11 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void confirmAt(final int x, final int y, int pixx, int pixy, final int layer) {
+    public void confirmAt(final int x, final int y, int pixx, int pixy, final int layer, boolean first) {
+        if (first) {
+            anchorX = x;
+            anchorY = y;
+        }
         if (x < 0)
             return;
         if (y < 0)
@@ -232,11 +241,20 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         // give up
         if (tab == -1)
             return;
-        if (subtool == 1) {
+        if (subtool == 0) {
+            // Tool 0: Default pen/selection.
+            // Same algorithm as used in the image editor's copy/paste functionality.
+            int rx = x - UIElement.sensibleCellMod(x - anchorX, tileMaps[tab].selWidth);
+            int ry = y - UIElement.sensibleCellMod(y - anchorY, tileMaps[tab].selHeight);
+            performGeneralRectangle(layer, anchorX, anchorY, rx, ry, rx + tileMaps[tab].selWidth - 1, ry + tileMaps[tab].selHeight - 1);
+        } else if (subtool == 1) {
+            if (!first)
+                return;
             // Tool 1: Rectangle
             mapToolContext.accept(new UIMTAutotileRectangle(this, x, y, tileTabs[tab].atProcessing));
-            return;
         } else if (subtool == 2) {
+            if (!first)
+                return;
             // Tool 2: Floodfill.
             // The rules on what is considered the same are:
             // 1. Any two tiles which have the same ID are the same.
@@ -274,11 +292,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                         for (int j = -1; j < 2; j++)
                             updateAutotile(map, atBases, ffp.x + i, ffp.y + j, layer);
             map.passModificationNotification();
-            return;
         }
-
-        // Tool 0: Default pen/selection.
-        performGeneralRectangle(layer, x, y, x, y, x + tileMaps[tab].selWidth - 1, y + tileMaps[tab].selHeight - 1);
     }
 
     public void performGeneralRectangle(int layer, int ox, int oy, int x, int y, int mx, int my) {
@@ -373,11 +387,5 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             }
         }
         System.err.println("Cannot find tile " + aShort);
-    }
-
-    @Override
-    public boolean shouldIgnoreDrag() {
-        // When using "dangerous" tools, ignore drag.
-        return subtool != 0;
     }
 }

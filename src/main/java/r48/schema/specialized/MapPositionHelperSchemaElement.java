@@ -16,6 +16,7 @@ import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -60,7 +61,7 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
         final UIMapView umv = new UIMapView(mapGUM, 320, FontSizes.scaleGuess(192));
         umv.callbacks = new IMapViewCallbacks() {
             @Override
-            public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+            public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
                 return there;
             }
 
@@ -82,15 +83,12 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
             }
 
             @Override
-            public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
+            public void confirmAt(int x, int y, int pixx, int pixy, int layer, boolean first) {
+                if (!first)
+                    return;
                 abc[1].setFX(x);
                 abc[2].setFX(y);
                 path.changeOccurred(false);
-            }
-
-            @Override
-            public boolean shouldIgnoreDrag() {
-                return true;
             }
         };
         umv.showTile((int) x, (int) y);

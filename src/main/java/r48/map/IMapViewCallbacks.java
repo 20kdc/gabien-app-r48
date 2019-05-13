@@ -14,7 +14,7 @@ import gabien.IGrDriver;
  * Created on 12/28/16.
  */
 public interface IMapViewCallbacks {
-    short shouldDrawAt(boolean mouseAllowed, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer);
+    short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer);
 
     int wantOverlay(boolean minimap);
 
@@ -22,7 +22,5 @@ public interface IMapViewCallbacks {
 
     void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap, int eTileSize);
 
-    void confirmAt(int x, int y, int pixx, int pixy, int layer);
-
-    boolean shouldIgnoreDrag();
+    void confirmAt(int x, int y, int pixx, int pixy, int layer, boolean first);
 }

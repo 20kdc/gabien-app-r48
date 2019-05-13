@@ -17,6 +17,7 @@ import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
 import r48.ui.UIAppendButton;
 
@@ -54,13 +55,17 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
+        int cx;
+        int cy;
         if (confirming) {
             cx = confirmX;
             cy = confirmY;
         } else {
-            if (!mouse)
+            if (mouse == null)
                 return there;
+            cx = mouse.x;
+            cy = mouse.y;
         }
         if (tx < cx)
             return there;
@@ -91,7 +96,9 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void confirmAt(final int x, final int y, int pixx, int pixy, final int layer) {
+    public void confirmAt(final int x, final int y, int pixx, int pixy, final int layer, boolean first) {
+        if (!first)
+            return;
         if (Application.mobileExtremelySpecialBehavior && !confirming) {
             // Need to absolutely confirm.
             confirmX = x;
@@ -111,10 +118,5 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
                     if (!map.mapTable.outOfBounds(i + x, j + y))
                         map.mapTable.setTiletype(i + x, j + y, l, table.getTiletype(i, j, l));
         map.passModificationNotification();
-    }
-
-    @Override
-    public boolean shouldIgnoreDrag() {
-        return true;
     }
 }

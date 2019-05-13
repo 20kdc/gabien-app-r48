@@ -68,7 +68,7 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
         public boolean definingPoint2;
 
         @Override
-        public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
+        public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
             return there;
         }
 
@@ -104,7 +104,9 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
         }
 
         @Override
-        public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
+        public void confirmAt(int x, int y, int pixx, int pixy, int layer, boolean first) {
+            if (!first)
+                return;
             if (!definingPoint2) {
                 firstPointX = x;
                 firstPointY = y;
@@ -124,11 +126,6 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
                 label.text = textA;
                 definingPoint2 = false;
             }
-        }
-
-        @Override
-        public boolean shouldIgnoreDrag() {
-            return true;
         }
     }
 }

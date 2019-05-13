@@ -17,6 +17,7 @@ import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
 import r48.ui.UIAppendButton;
 
@@ -42,10 +43,10 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
-        if (mouse)
-            if (tx == cx)
-                if (ty == cy)
+    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
+        if (mouse != null)
+            if (tx == mouse.x)
+                if (ty == mouse.y)
                     return 0;
         return there;
     }
@@ -73,7 +74,9 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
+    public void confirmAt(int x, int y, int pixx, int pixy, int layer, boolean first) {
+        if (!first)
+            return;
         if (stage) {
             UIMapView map = mapToolContext.getMapView();
             if (!map.mapTable.outOfBounds(x, y)) {
@@ -98,10 +101,5 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
             innerLabel.text = TXDB.get("Click on another tile to finish copying.");
             stage = true;
         }
-    }
-
-    @Override
-    public boolean shouldIgnoreDrag() {
-        return true;
     }
 }

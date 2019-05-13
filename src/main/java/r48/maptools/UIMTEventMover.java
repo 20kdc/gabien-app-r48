@@ -14,6 +14,7 @@ import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
 
 /**
@@ -33,10 +34,10 @@ public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
     // tool stuff
 
     @Override
-    public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
-        if (mouse)
-            if (cx == tx)
-                if (cy == ty)
+    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
+        if (mouse != null)
+            if (mouse.x == tx)
+                if (mouse.y == ty)
                     return 0;
         return there;
     }
@@ -56,13 +57,10 @@ public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
+    public void confirmAt(int x, int y, int pixx, int pixy, int layer, boolean first) {
+        if (!first)
+            return;
         mapView.mapTable.eventAccess.setEventXY(targetEventKey, x, y);
         mapToolContext.accept(new UIMTEventPicker(mapToolContext));
-    }
-
-    @Override
-    public boolean shouldIgnoreDrag() {
-        return true;
     }
 }

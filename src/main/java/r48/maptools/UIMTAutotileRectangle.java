@@ -13,6 +13,7 @@ import gabien.ui.UILabel;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
+import r48.map.MapViewDrawContext;
 import r48.ui.UIAppendButton;
 
 /**
@@ -43,16 +44,18 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
     }
 
     @Override
-    public short shouldDrawAt(boolean mouse, int cx, int cy, int tx, int ty, short there, int layer, int currentLayer) {
-        int minX = Math.min(startX, cx);
-        int maxX = Math.max(startX, cx);
-        int minY = Math.min(startY, cy);
-        int maxY = Math.max(startY, cy);
-        if (tx >= minX)
-            if (ty >= minY)
-                if (tx <= maxX)
-                    if (ty <= maxY)
-                        return parent.getTCSelected(tx - startX, ty - startY);
+    public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
+        if (mouse != null) {
+            int minX = Math.min(startX, mouse.x);
+            int maxX = Math.max(startX, mouse.x);
+            int minY = Math.min(startY, mouse.y);
+            int maxY = Math.max(startY, mouse.y);
+            if (tx >= minX)
+                if (ty >= minY)
+                    if (tx <= maxX)
+                        if (ty <= maxY)
+                            return parent.getTCSelected(tx - startX, ty - startY);
+        }
         return there;
     }
 
@@ -76,7 +79,9 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
     }
 
     @Override
-    public void confirmAt(int x, int y, int pixx, int pixy, int layer) {
+    public void confirmAt(int x, int y, int pixx, int pixy, int layer, boolean first) {
+        if (!first)
+            return;
         if (!parent.map.mapTable.outOfBounds(x, y)) {
             int minX = Math.min(startX, x);
             int maxX = Math.max(startX, x);
@@ -87,10 +92,5 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
             parent.hasClosed = false;
             mapToolContext.accept(parent);
         }
-    }
-
-    @Override
-    public boolean shouldIgnoreDrag() {
-        return true;
     }
 }
