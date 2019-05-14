@@ -11,6 +11,7 @@ import gabien.ui.IFunction;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 
@@ -254,8 +255,7 @@ public class FormatSyntax {
         }
         String r = null;
         if (ise != null) {
-            while (ise instanceof IProxySchemaElement)
-                ise = ((IProxySchemaElement) ise).getEntry();
+            ise = AggregateSchemaElement.extractField(ise, rubyIO);
             if (ise instanceof EnumSchemaElement)
                 r = ((EnumSchemaElement) ise).viewValue(rubyIO, prefixEnums);
         }

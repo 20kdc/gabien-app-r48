@@ -43,11 +43,6 @@ import java.util.*;
  * Created on 04/06/17.
  */
 public class BasicToolset implements IToolset {
-    private final String gamepak;
-
-    public BasicToolset(String gp) {
-        gamepak = gp;
-    }
 
     @Override
     public UIElement[] generateTabs() {
@@ -116,7 +111,7 @@ public class BasicToolset implements IToolset {
 
     private UIElement createODBRMGestalt() {
         if (AppMain.system instanceof IRMMapSystem) {
-            return new UISplitterLayout(createODBButton(), new RMTools(gamepak).genButton(), true, 0.5);
+            return new UISplitterLayout(createODBButton(), new RMTools().genButton(), true, 0.5);
         } else {
             return createODBButton();
         }

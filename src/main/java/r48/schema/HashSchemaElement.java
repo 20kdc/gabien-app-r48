@@ -11,7 +11,6 @@ import gabien.ui.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
-import r48.dbs.IProxySchemaElement;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -158,9 +157,7 @@ public class HashSchemaElement extends SchemaElement {
     }
 
     private String getKeyText(IRIO v) {
-        SchemaElement ke = keyElem;
-        while (ke instanceof IProxySchemaElement)
-            ke = ((IProxySchemaElement) ke).getEntry();
+        SchemaElement ke = AggregateSchemaElement.extractField(keyElem, v);
         if (ke instanceof EnumSchemaElement)
             return ((EnumSchemaElement) ke).viewValue(v, true);
         if (ke instanceof OSStrHashMapSchemaElement)

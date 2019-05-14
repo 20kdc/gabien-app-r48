@@ -46,9 +46,9 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
         if (!overrideSet)
             overrideFW = getDefaultFieldWidth(target);
         for (SchemaElement ise : aggregate) {
-            IFieldSchemaElement possibleField = extractField(ise, target);
-            if (possibleField != null)
-                possibleField.setFieldWidthOverride(overrideFW);
+            SchemaElement possibleField = extractField(ise, target);
+            if (possibleField instanceof IFieldSchemaElement)
+                ((IFieldSchemaElement) possibleField).setFieldWidthOverride(overrideFW);
             // still deal with ise because the proxies may have some function
             uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
         }
@@ -57,7 +57,7 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
         return uiSVL;
     }
 
-    private IFieldSchemaElement extractField(SchemaElement ise, IRIO rio) {
+    public static SchemaElement extractField(SchemaElement ise, IRIO rio) {
         boolean continuing = true;
         while (continuing) {
             continuing = false;
@@ -65,14 +65,14 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
                 ise = ((IProxySchemaElement) ise).getEntry();
                 continuing = true;
             }
-            if (ise instanceof DisambiguatorSchemaElement) {
-                ise = ((DisambiguatorSchemaElement) ise).getDisambiguation(rio);
-                continuing = true;
+            if (rio != null) {
+                if (ise instanceof DisambiguatorSchemaElement) {
+                    ise = ((DisambiguatorSchemaElement) ise).getDisambiguation(rio);
+                    continuing = true;
+                }
             }
         }
-        if (ise instanceof IFieldSchemaElement)
-            return (IFieldSchemaElement) ise;
-        return null;
+        return ise;
     }
 
     @Override
@@ -142,9 +142,9 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     public int getDefaultFieldWidth(IRIO target) {
         int maxFW = 1;
         for (SchemaElement ise : aggregate) {
-            IFieldSchemaElement possibleField = extractField(ise, target);
-            if (possibleField != null) {
-                int dfw = possibleField.getDefaultFieldWidth(target);
+            SchemaElement possibleField = extractField(ise, target);
+            if (possibleField instanceof IFieldSchemaElement) {
+                int dfw = ((IFieldSchemaElement) possibleField).getDefaultFieldWidth(target);
                 if (maxFW < dfw)
                     maxFW = dfw;
             }

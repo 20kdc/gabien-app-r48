@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static gabienapp.Application.mobileExtremelySpecialBehavior;
-
 public class CategoryGPMenuPanel implements IGPMenuPanel {
     public LinkedList<String> res1 = new LinkedList<String>();
     public LinkedList<ISupplier<IGPMenuPanel>> res2 = new LinkedList<ISupplier<IGPMenuPanel>>();
@@ -98,15 +96,34 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
         @Override
         public IGPMenuPanel get() {
             if (Application.appTicker == null) {
-                try {
-                    IObjectBackend.Factory.encoding = box.get();
-                    String rootPath = PathUtils.fixRootPath(Application.rootBox.text);
-                    if (mobileExtremelySpecialBehavior)
-                        TXDB.loadGamepakLanguage(objName + "/");
-                    Application.appTicker = AppMain.initializeAndRun(rootPath, objName + "/", Application.uiTicker);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                IObjectBackend.Factory.encoding = box.get();
+                final String rootPath = PathUtils.fixRootPath(Application.rootBox.text);
+
+                // Start fancy loading screen.
+                final UIFancyInit theKickstart = new UIFancyInit();
+                Application.uiTicker.accept(theKickstart);
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            TXDB.loadGamepakLanguage(objName + "/");
+                            AppMain.initializeCore(rootPath, objName + "/");
+                            theKickstart.doneInjector.set(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Application.appTicker = AppMain.initializeUI(Application.uiTicker);
+                                }
+                            });
+                        } catch (final RuntimeException e) {
+                            theKickstart.doneInjector.set(new Runnable() {
+                                @Override
+                                public void run() {
+                                    throw e;
+                                }
+                            });
+                        }
+                    }
+                }.start();
             }
             return null;
         }

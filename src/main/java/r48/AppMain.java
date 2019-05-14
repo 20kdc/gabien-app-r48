@@ -10,6 +10,7 @@ package r48;
 import gabien.GaBIEn;
 import gabien.ui.*;
 import gabienapp.Application;
+import gabienapp.UIFancyInit;
 import r48.dbs.ATDB;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
@@ -139,14 +140,14 @@ public class AppMain {
         //  (...and potentially cause havoc in the process)
 
         schemas.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
+        UIFancyInit.submitToStdoutAndConsoletron(TXDB.get("Initializing dictionaries & creating objects..."));
         schemas.updateDictionaries(null);
         schemas.confirmAllExpectationsMet();
+        UIFancyInit.submitToStdoutAndConsoletron(TXDB.get("Done with core init - if UI is being started, please wait..."));
     }
 
-    public static IConsumer<Double> initializeAndRun(final String rp, final String gamepak, final WindowCreatingUIElementConsumer uiTicker) throws IOException {
-        GaBIEn.setBrowserDirectory(rp);
-
-        initializeCore(rp, gamepak);
+    public static IConsumer<Double> initializeUI(final WindowCreatingUIElementConsumer uiTicker) {
+        GaBIEn.setBrowserDirectory(rootPath);
 
         // Initialize imageFX before doing anything graphical
         imageFXCache = new ImageFXCache();
@@ -166,7 +167,7 @@ public class AppMain {
         });
         window = new WindowManager(uiTicker, null, sym);
 
-        initializeTabs(gamepak);
+        initializeTabs();
 
         // start possible recommended directory nagger
         final LinkedList<String> createDirs = new LinkedList<String>();
@@ -226,10 +227,10 @@ public class AppMain {
             mapContext.performCacheFlush();
     }
 
-    private static void initializeTabs(final String gamepak) {
+    private static void initializeTabs() {
         LinkedList<IToolset> toolsets = new LinkedList<IToolset>();
 
-        toolsets.add(new BasicToolset(gamepak));
+        toolsets.add(new BasicToolset());
 
         if (system.enableMapSubsystem) {
             MapToolset mapController = new MapToolset();

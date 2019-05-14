@@ -22,7 +22,9 @@ import r48.io.data.IRIO;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.systems.IRMMapSystem;
 import r48.maptools.UIMTEventPicker;
+import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
+import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIMenuButton;
 import r48.ui.dialog.UITextPrompt;
@@ -49,11 +51,11 @@ public class RMTools {
     private final CMDB commandsEvent;
     private final IRMMapSystem mapSystem;
 
-    public RMTools(String gamepak) {
+    public RMTools() {
         // If this errors, then this shouldn't have been constructed.
         mapSystem = (IRMMapSystem) AppMain.system;
 
-        commandsEvent = AppMain.schemas.getCMDB(gamepak + "Commands.txt");
+        commandsEvent = ((EventCommandArraySchemaElement) AggregateSchemaElement.extractField(AppMain.schemas.getSDBEntry("EventListEditor"), null)).database;
     }
 
     public UIElement genButton() {

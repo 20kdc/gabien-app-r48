@@ -13,7 +13,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import r48.AppMain;
 import r48.RubyIO;
-import r48.dbs.IProxySchemaElement;
 import r48.dbs.TXDB;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
@@ -120,9 +119,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
 
             String dispData = (i + indexDisplayOffset) + " ";
             if (possibleEnumElement != null) {
-                SchemaElement se = possibleEnumElement;
-                while (se instanceof IProxySchemaElement)
-                    se = ((IProxySchemaElement) se).getEntry();
+                SchemaElement se = AggregateSchemaElement.extractField(possibleEnumElement, null);
                 dispData = ((EnumSchemaElement) se).viewValue(new RubyIO().setFX(i + indexDisplayOffset), true) + " ";
             }
 

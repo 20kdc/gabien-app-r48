@@ -17,6 +17,7 @@ public class GrandInitializers {
         gtb.thenClick("button:RPG Maker 2000, 2003, or EasyRPG. (Android users, go here.)"); // R2k
         gtb.thenWaitFrame();
         gtb.thenClick("button:R2K[3?] (UTF-8) (Use for new games or languages not shown.) "); // Some encoding or another...
+        gtb.thenWaitWC(4);
         gtb.thenWaitFrame();
         // Maximize 'Please confirm...'
         gtb.thenIcon(5, 6, 1);
@@ -32,6 +33,7 @@ public class GrandInitializers {
         gtb.thenClick("button:RGSS Engines (RPG Maker XP, VX Ace)");
         gtb.thenWaitFrame();
         gtb.thenClick("button:RXP");
+        gtb.thenWaitWC(4);
         gtb.thenWaitFrame();
         gtb.thenIcon(4, 5, 1);
         gtb.thenWaitFrame();

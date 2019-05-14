@@ -8,7 +8,6 @@
 package r48.schema;
 
 import gabien.ui.UIElement;
-import r48.dbs.IProxySchemaElement;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.schema.specialized.RubyTableSchemaElement;
@@ -57,19 +56,7 @@ public class ObjectClassSchemaElement extends SchemaElement {
     }
 
     private boolean findAndAddIVars(SchemaElement ise, IRIO target, LinkedList<String> iVars) {
-        // Deal with proxies
-        boolean proxyHandling = true;
-        while (proxyHandling) {
-            proxyHandling = false;
-            if (ise instanceof IProxySchemaElement) {
-                ise = ((IProxySchemaElement) ise).getEntry();
-                proxyHandling = true;
-            }
-            if (ise instanceof DisambiguatorSchemaElement) {
-                ise = ((DisambiguatorSchemaElement) ise).getDisambiguation(target);
-                proxyHandling = true;
-            }
-        }
+        ise = AggregateSchemaElement.extractField(ise, target);
         // Final type disambiguation
         if (ise instanceof PathSchemaElement) {
             // This catches normal iVars, though could cause some harmless spillage
