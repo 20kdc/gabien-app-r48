@@ -47,7 +47,7 @@ public class WindowManager {
     // It is required by the test system that all UIWindowViews be roots of their own windows.
     protected final LinkedList<UIWindowView> allWindowViews = new LinkedList<UIWindowView>();
     private IImage modImg;
-    private boolean performingScreenTransfer;
+    private boolean performingScreenTransfer = true;
 
     public WindowManager(final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR) {
         uiTicker = uiTick;
@@ -83,8 +83,14 @@ public class WindowManager {
         rootView.addShell(backing);
         rootView.lowerShell(backing);
 
-        uiTicker.accept(rootView, 1, false);
         allWindowViews.add(rootView);
+    }
+
+    public void finishInitialization() {
+        if (!performingScreenTransfer)
+            throw new RuntimeException("That's not supposed to happen");
+        uiTicker.accept(rootView, 1, false);
+        performingScreenTransfer = false;
     }
 
     public void toggleFullscreen() {

@@ -140,13 +140,12 @@ public class AppMain {
         //  (...and potentially cause havoc in the process)
 
         schemas.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
-        UIFancyInit.submitToStdoutAndConsoletron(TXDB.get("Initializing dictionaries & creating objects..."));
+        UIFancyInit.submitToConsoletron(TXDB.get("Initializing dictionaries & creating objects..."));
         schemas.updateDictionaries(null);
         schemas.confirmAllExpectationsMet();
-        UIFancyInit.submitToStdoutAndConsoletron(TXDB.get("Done with core init - if UI is being started, please wait..."));
     }
 
-    public static IConsumer<Double> initializeUI(final WindowCreatingUIElementConsumer uiTicker) {
+    public static ISupplier<IConsumer<Double>> initializeUI(final WindowCreatingUIElementConsumer uiTicker) {
         GaBIEn.setBrowserDirectory(rootPath);
 
         // Initialize imageFX before doing anything graphical
@@ -158,6 +157,8 @@ public class AppMain {
         // Set up a default stuffRenderer for things to use.
         stuffRendererIndependent = system.rendererFromTso(null);
 
+        UIFancyInit.submitToConsoletron(TXDB.get("Initializing UI..."));
+
         // initialize UI
         final UISymbolButton sym = new UISymbolButton(Art.Symbol.Save, FontSizes.tabTextHeight, new Runnable() {
             @Override
@@ -168,6 +169,8 @@ public class AppMain {
         window = new WindowManager(uiTicker, null, sym);
 
         initializeTabs();
+
+        UIFancyInit.submitToConsoletron(TXDB.get("Finishing up initialization..."));
 
         // start possible recommended directory nagger
         final LinkedList<String> createDirs = new LinkedList<String>();
@@ -194,30 +197,36 @@ public class AppMain {
             }
         }
 
-        return new IConsumer<Double>() {
+        return new ISupplier<IConsumer<Double>>() {
             @Override
-            public void accept(Double deltaTime) {
-                sym.symbol = hasModified() ? Art.Symbol.Save : Art.Symbol.SaveDisabled;
-                if (mapContext != null) {
-                    String mapId = mapContext.getCurrentMapObject();
-                    IObjectBackend.ILoadedObject map = null;
-                    if (mapId != null)
-                        map = objectDB.getObject(mapId);
-                    schemas.updateDictionaries(map);
-                } else {
-                    schemas.updateDictionaries(null);
-                }
+            public IConsumer<Double> get() {
+                window.finishInitialization();
+                return new IConsumer<Double>() {
+                    @Override
+                    public void accept(Double deltaTime) {
+                        sym.symbol = hasModified() ? Art.Symbol.Save : Art.Symbol.SaveDisabled;
+                        if (mapContext != null) {
+                            String mapId = mapContext.getCurrentMapObject();
+                            IObjectBackend.ILoadedObject map = null;
+                            if (mapId != null)
+                                map = objectDB.getObject(mapId);
+                            schemas.updateDictionaries(map);
+                        } else {
+                            schemas.updateDictionaries(null);
+                        }
 
-                LinkedList<Runnable> runs = new LinkedList<Runnable>(pendingRunnables);
-                pendingRunnables.clear();
-                for (Runnable r : runs)
-                    r.run();
+                        LinkedList<Runnable> runs = new LinkedList<Runnable>(pendingRunnables);
+                        pendingRunnables.clear();
+                        for (Runnable r : runs)
+                            r.run();
 
-                LinkedList<ISchemaHost> newActive = new LinkedList<ISchemaHost>();
-                for (ISchemaHost ac : activeHosts)
-                    if (ac.isActive())
-                        newActive.add(ac);
-                activeHosts = newActive;
+                        LinkedList<ISchemaHost> newActive = new LinkedList<ISchemaHost>();
+                        for (ISchemaHost ac : activeHosts)
+                            if (ac.isActive())
+                                newActive.add(ac);
+                        activeHosts = newActive;
+                    }
+                };
             }
         };
     }
@@ -233,6 +242,7 @@ public class AppMain {
         toolsets.add(new BasicToolset());
 
         if (system.enableMapSubsystem) {
+            UIFancyInit.submitToConsoletron(TXDB.get("Looking for maps and saves (this'll take a while)..."));
             MapToolset mapController = new MapToolset();
             // Really just restricts access to prevent a hax pileup
             mapContext = mapController.getContext();
@@ -257,12 +267,14 @@ public class AppMain {
 
         UIElement firstTab = null;
         // Initialize toolsets.
-        for (IToolset its : toolsets)
+        for (IToolset its : toolsets) {
+            UIFancyInit.submitToConsoletron(TXDB.get("Initializing tab...") + "\n" + its.toString());
             for (UIElement uie : its.generateTabs()) {
                 if (firstTab == null)
                     firstTab = uie;
                 window.createWindow(uie, true, true);
             }
+        }
         window.selectFirstTab();
     }
 

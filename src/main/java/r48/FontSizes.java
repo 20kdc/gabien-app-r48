@@ -138,7 +138,6 @@ public class FontSizes {
 
     public static void reset() {
         Application.allowBlending = true;
-        Application.windowingExternal = false;
         try {
             for (final Field field : FontSizes.class.getFields())
                 field.setInt(null, field.getAnnotation(FontSizeDefault.class).value());

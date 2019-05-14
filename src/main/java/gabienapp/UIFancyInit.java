@@ -7,11 +7,11 @@
 
 package gabienapp;
 
+import gabien.IGrDriver;
 import gabien.IPeripherals;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
-import gabien.ui.UIScrollLayout;
 import r48.FontSizes;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -29,7 +29,8 @@ public class UIFancyInit extends UIElement.UIProxy {
     public static ConcurrentLinkedQueue<String> consoletronDataInput;
     public AtomicReference<Runnable> doneInjector = new AtomicReference<Runnable>();
 
-    private final UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
+    private final UILabel layout = new UILabel("", FontSizes.launcherTextHeight);
+    private int ackDoneInjector = 0;
 
     public UIFancyInit() {
         super();
@@ -38,29 +39,46 @@ public class UIFancyInit extends UIElement.UIProxy {
         setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(400), FontSizes.scaleGuess(300)));
     }
 
-    public static void submitToStdoutAndConsoletron(String text) {
+    public static void submitToConsoletron(String text) {
         ConcurrentLinkedQueue<String> get = consoletronDataInput;
         if (get != null)
             get.add(text);
-        System.out.println(text);
     }
 
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+        // The ordering here is important; the idea is to in *theory* get the consoletronDataInput finished before acknowledging.
+        if (ackDoneInjector == 0)
+            if (doneInjector.get() != null)
+                ackDoneInjector = 1;
         ConcurrentLinkedQueue<String> get = consoletronDataInput;
         if (get != null) {
-            String st = get.poll();
-            if (st != null) {
-                layout.panelsAdd(new UILabel(st, FontSizes.launcherTextHeight));
-                layout.scrollbar.scrollPoint = 1;
+            boolean didThing = false;
+            while (true) {
+                String st = get.poll();
+                if (st != null) {
+                    layout.text = st;
+                    didThing = true;
+                } else {
+                    break;
+                }
             }
+            if (didThing)
+                runLayoutLoop();
         }
         super.update(deltaTime, selected, peripherals);
     }
 
     @Override
+    public void render(IGrDriver igd) {
+        super.render(igd);
+        if (ackDoneInjector >= 1)
+            ackDoneInjector++;
+    }
+
+    @Override
     public boolean requestsUnparenting() {
-        return doneInjector.get() != null;
+        return ackDoneInjector == 10;
     }
 
     @Override

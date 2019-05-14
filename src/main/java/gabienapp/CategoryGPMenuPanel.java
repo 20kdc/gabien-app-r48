@@ -7,6 +7,7 @@
 
 package gabienapp;
 
+import gabien.ui.IConsumer;
 import gabien.ui.ISupplier;
 import r48.AppMain;
 import r48.dbs.DBLoader;
@@ -108,10 +109,11 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                         try {
                             TXDB.loadGamepakLanguage(objName + "/");
                             AppMain.initializeCore(rootPath, objName + "/");
+                            final IConsumer<Double> appTicker = AppMain.initializeUI(Application.uiTicker).get();
                             theKickstart.doneInjector.set(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Application.appTicker = AppMain.initializeUI(Application.uiTicker);
+                                    Application.appTicker = appTicker;
                                 }
                             });
                         } catch (final RuntimeException e) {

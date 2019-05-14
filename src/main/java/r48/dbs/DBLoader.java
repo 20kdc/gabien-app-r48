@@ -8,7 +8,6 @@
 package r48.dbs;
 
 import gabien.GaBIEn;
-import gabienapp.UIFancyInit;
 import r48.io.JsonStringIO;
 
 import java.io.*;
@@ -21,14 +20,14 @@ import java.util.LinkedList;
 public class DBLoader {
 
     public static void readFile(String s, IDatabase db) {
-        UIFancyInit.submitToStdoutAndConsoletron(">>" + s + " as " + db);
+        System.out.println(">>" + s + " as " + db);
         try {
             readFile(GaBIEn.getResource(s), db);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        UIFancyInit.submitToStdoutAndConsoletron("<<" + s);
+        System.out.println("<<" + s);
     }
 
     public static void readFile(InputStream helpStream, IDatabase db) {
