@@ -27,11 +27,11 @@ public class UIThumbnail extends UIElement {
     }
 
     public UIThumbnail(IImage im, int wanted, Rect imgReg) {
-        super(wanted, imgReg.height);
+        super(wanted, (imgReg.height * wanted) / imgReg.width);
         wantedW = wanted;
         imgRegion = imgReg;
         viewedImage = im;
-        drawRect = new Rect(0, 0, im.getWidth(), im.getHeight());
+        drawRect = new Rect(getWantedSize());
     }
 
     public static Rect getDrawRect(Size bounds, int contentsW, int contentsH) {

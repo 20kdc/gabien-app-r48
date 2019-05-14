@@ -25,17 +25,9 @@ public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<String>
     public LinkedList<HelpElement> page = new LinkedList<HelpElement>();
 
     public UIHelpSystem() {
-        for (int i = 0; i < 8; i++) {
-            // You don't want to try translating these and you shouldn't.
-            // I'm pretty sure this is supposed to be a quote from ... *something* from the person who wrote Alice In Wonderland.
-            // Except I probably remembered it wrong.
-            // They're meant to get a rough estimate on a good help window size.
-            page.add(new HelpElement('.', "T'was brillig in the slithy toves, did Gireth gimble in the wabe."));
-            page.add(new HelpElement('.', "All mimsy were the borogroves"));
-        }
-        runLayoutLoop();
-        forceToRecommended();
-        page.clear();
+        Rect sz = new Rect(0, 0, FontSizes.helpTextHeight * 32, FontSizes.helpTextHeight * 32);
+        setWantedSize(sz);
+        setForcedBounds(null, sz);
     }
 
     @Override
