@@ -86,14 +86,10 @@ public class ImageEditorImage extends ImageIOImage {
 
     public ImageEditorImage(int w, int h) {
         super(w, h, new int[w * h], new LinkedList<Integer>());
-        if (palette != null) {
-            for (int c : editorPalette)
-                palette.add(c);
-            t1Lock = true;
-            handleT1Import();
-        } else {
-            t1Lock = false;
-        }
+        for (int c : editorPalette)
+            palette.add(c);
+        t1Lock = true;
+        handleT1Import();
     }
 
     @Override

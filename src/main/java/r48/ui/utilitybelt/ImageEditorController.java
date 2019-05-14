@@ -43,6 +43,9 @@ public class ImageEditorController {
     private UIElement fileButtonMenuHook;
     private Object paletteThing;
 
+    // Warnings
+    private boolean hasWarnedUserAboutRM;
+
     public ImageEditorController() {
         imageEditView = new UIImageEditView(new RootImageEditorTool(), new Runnable() {
             @Override
@@ -207,15 +210,15 @@ public class ImageEditorController {
         boolean canDoNormalSave = imageEditView.eds.canSimplySave();
         if (canDoNormalSave) {
             menuDetails.add(fbStrAS);
-            menuFuncs.add(new Runnable() {
+            menuFuncs.add(addPresaveWarningWrapper(new Runnable() {
                 @Override
                 public void run() {
                     save();
                 }
-            });
+            }));
         }
         menuDetails.add(TXDB.get("Save As"));
-        menuFuncs.add(new Runnable() {
+        menuFuncs.add(addPresaveWarningWrapper(new Runnable() {
             @Override
             public void run() {
                 LinkedList<String> items = new LinkedList<String>();
@@ -254,7 +257,7 @@ public class ImageEditorController {
                 }
                 AppMain.window.createWindow(new UIAutoclosingPopupMenu(items.toArray(new String[0]), runnables.toArray(new Runnable[0]), FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
             }
-        });
+        }));
         menuDetails.add(TXDB.get("CharacterGen..."));
         menuFuncs.add(new Runnable() {
             @Override
@@ -351,7 +354,7 @@ public class ImageEditorController {
         paletteView.panelsAdd(new UISplitterLayout(new UIMenuButton(TXDB.get("Add Colour"), FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
-                return new UIColourPicker(TXDB.get("Add Palette Colour..."), imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex), new IConsumer<Integer>() {
+                return new UIColourPicker(TXDB.get("Add Palette Colour..."), imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex) | 0xFF000000, new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         if (integer == null)
@@ -382,7 +385,7 @@ public class ImageEditorController {
         UIElement cSwitch;
 
         // It's like Life Is Strange.
-        // No matter which option you choose, we'll question your decision.
+        // No matter which option you choose, your decision is questioned...
         if (imageEditView.image.palette != null) {
             final UITextButton ck = new UITextButton(TXDB.get("Colourkey"), FontSizes.imageEditorTextHeight, null).togglable(imageEditView.image.t1Lock);
             ck.onClick = new Runnable() {
@@ -395,7 +398,7 @@ public class ImageEditorController {
                 }
             };
             if (!ck.state)
-                ck.onClick = AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to enable Colourkey mode? This mode does not allow partial alpha, and the first colour in the palette becomes transparent."), ck.onClick);
+                ck.onClick = AppMain.createLaunchConfirmation(TXDB.get("Are you sure? This forces transparency to be 'colour-0-is-transparent'."), ck.onClick);
             cSwitch = new UISplitterLayout(ck, new UITextButton(TXDB.get("-> 32-bit ARGB"), FontSizes.schemaFieldTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to 32-bit ARGB? The image will no longer contain a palette, which may make editing inconvenient, and some formats will become unavailable."), new Runnable() {
                 @Override
                 public void run() {
@@ -407,7 +410,7 @@ public class ImageEditorController {
                 }
             })), false, 0.5d);
         } else {
-            cSwitch = new UITextButton(TXDB.get("Use Palette"), FontSizes.imageEditorTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to using a palette? If an exceptional number of colours are used, the image may be hard to edit."), new Runnable() {
+            cSwitch = new UITextButton(TXDB.get("Use Palette"), FontSizes.imageEditorTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure? This will create a palette entry for every colour in the image."), new Runnable() {
                 @Override
                 public void run() {
                     imageEditView.eds.startSection();
@@ -475,6 +478,24 @@ public class ImageEditorController {
             paletteView.panelsAdd(cPanel);
         }
         paletteView.runLayoutLoop();
+    }
+
+    private Runnable addPresaveWarningWrapper(final Runnable runnable) {
+        // Is this image invalid for the engine?
+        return new Runnable() {
+            @Override
+            public void run() {
+                if (AppMain.system.engineUsesPal0Colourkeys() && imageEditView.image.usesPalette() && !imageEditView.image.t1Lock) {
+                    if (!hasWarnedUserAboutRM) {
+                        AppMain.createLaunchConfirmation(TXDB.get("The engine you're targetting expects indexed-colour images to be colour-keyed. Your image isn't colour-keyed. Continue?"), runnable).run();
+                        hasWarnedUserAboutRM = true;
+                        return;
+                    }
+                }
+                // By default, just do it
+                runnable.run();
+            }
+        };
     }
 
     private UIElement pokeOnCause(int cause, int i, UIAppendButton redo) {
