@@ -8,6 +8,7 @@
 package r48.dbs;
 
 import gabien.GaBIEn;
+import gabienapp.UIFancyInit;
 import r48.io.JsonStringIO;
 
 import java.io.*;
@@ -21,6 +22,7 @@ public class DBLoader {
 
     public static void readFile(String s, IDatabase db) {
         System.out.println(">>" + s + " as " + db);
+        UIFancyInit.submitToConsoletron(TXDB.get("Loading schema...") + s);
         try {
             readFile(GaBIEn.getResource(s), db);
         } catch (Exception e) {
