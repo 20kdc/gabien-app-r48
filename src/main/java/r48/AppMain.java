@@ -376,9 +376,9 @@ public class AppMain {
                 uus.scrollbar.scrollPoint = 0;
             }
         };
-        hsc.accept(link);
         topbar.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, rootSize.height / 2));
         window.createWindow(topbar);
+        hsc.accept(link);
     }
 
     public static void startImgedit() {
