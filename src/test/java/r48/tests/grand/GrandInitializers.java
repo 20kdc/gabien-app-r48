@@ -20,7 +20,7 @@ public class GrandInitializers {
         gtb.thenWaitWC(4);
         gtb.thenWaitFrame();
         // Maximize 'Please confirm...'
-        gtb.thenIcon(5, 6, 1);
+        gtb.thenIcon("Please confirm...", 1);
         gtb.thenWaitFrame();
         gtb.thenClick("button:2003 Template");
         gtb.thenWaitFrame();
@@ -35,11 +35,11 @@ public class GrandInitializers {
         gtb.thenClick("button:RXP");
         gtb.thenWaitWC(4);
         gtb.thenWaitFrame();
-        gtb.thenIcon(4, 5, 1);
+        gtb.thenIcon("gabien.ui.UIAutoclosingPopupMenu", 1);
         gtb.thenWaitFrame();
         gtb.thenClick("button:This appears to be newly created. Click to create directories.");
         gtb.thenWaitFrame();
-        gtb.thenIcon(4, 5, 0);
+        gtb.thenIcon("Information", 0);
         gtb.thenWaitFrame();
     }
 }

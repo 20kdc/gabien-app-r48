@@ -109,11 +109,12 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                         try {
                             TXDB.loadGamepakLanguage(objName + "/");
                             AppMain.initializeCore(rootPath, objName + "/");
-                            final IConsumer<Double> appTicker = AppMain.initializeUI(Application.uiTicker).get();
+                            final ISupplier<IConsumer<Double>> appTickerGen = AppMain.initializeUI(Application.uiTicker);
                             theKickstart.doneInjector.set(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Application.appTicker = appTicker;
+                                    // The .get() must occur here, after the window is absolutely definitely gone.
+                                    Application.appTicker = appTickerGen.get();
                                 }
                             });
                         } catch (final RuntimeException e) {

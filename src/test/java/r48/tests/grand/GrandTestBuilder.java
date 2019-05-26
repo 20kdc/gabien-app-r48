@@ -123,37 +123,17 @@ public class GrandTestBuilder {
         });
     }
 
-    private UIElement getElement(final int widx, final int exwlen) {
-        UIElement[] w = GrandWindowManagerUtils.getAllWindows();
-        if (w.length != exwlen)
-            throw new GrandExecutionError("Expected wlen != actual wlen");
-        if (widx >= w.length)
-            throw new GrandExecutionError("Invalid index...");
-        return w[widx];
-    }
-
     private UIElement getElement(String s) {
         UIElement[] w = GrandWindowManagerUtils.getAllWindows();
-        for (UIElement uie : w)
+        for (UIElement uie : w) {
             if (uie.toString().contains(s))
                 return uie;
+        }
+        System.err.println("---[");
+        for (UIElement uie : w)
+            System.err.println(uie.toString());
+        System.err.println("---]");
         throw new GrandExecutionError("Unable to getElement " + s);
-    }
-
-    public void thenIcon(final int widx, final int exwlen, final int idx) {
-        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
-            boolean waitFrame = true;
-
-            @Override
-            public Boolean get() {
-                if (waitFrame) {
-                    GrandWindowManagerUtils.clickIcon(getElement(widx, exwlen), idx);
-                    waitFrame = false;
-                    return false;
-                }
-                return true;
-            }
-        });
     }
 
     public void thenIcon(final String title, final int idx) {
@@ -164,22 +144,6 @@ public class GrandTestBuilder {
             public Boolean get() {
                 if (waitFrame) {
                     GrandWindowManagerUtils.clickIcon(getElement(title), idx);
-                    waitFrame = false;
-                    return false;
-                }
-                return true;
-            }
-        });
-    }
-
-    public void thenSelectTab(final int widx, final int exwlen) {
-        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
-            boolean waitFrame = true;
-
-            @Override
-            public Boolean get() {
-                if (waitFrame) {
-                    GrandWindowManagerUtils.selectTab(getElement(widx, exwlen));
                     waitFrame = false;
                     return false;
                 }
