@@ -56,9 +56,13 @@ public class StandardArrayInterface implements IArrayInterface {
                 final Size maxSizePre = UILabel.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight);
                 final AtomicInteger maxWidth = new AtomicInteger(maxSizePre.width);
                 int indentUnit = UITextButton.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight).height;
-                if (positions.length > 0)
-                    if (selectedStart == -1)
-                        uiSVL.panelsAdd(genAdditionButton(true, positions[0].execInsert, positions[0].execInsertCopiedArray));
+                if (positions.length > 0) {
+                    if (selectedStart == -1) {
+                        UITextButton button = genAdditionButton(true, positions[0].execInsert, positions[0].execInsertCopiedArray);
+                        if (button != null)
+                            uiSVL.panelsAdd(button);
+                    }
+                }
                 for (int i = 0; i < positions.length; i++) {
                     final int mi = i;
                     UIElement uie = positions[mi].core;
