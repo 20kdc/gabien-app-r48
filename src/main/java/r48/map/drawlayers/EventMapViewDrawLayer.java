@@ -63,13 +63,13 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
         for (IRIO evK : ev) {
             int x = (int) eventList.getEventX(evK);
             int y = (int) eventList.getEventY(evK);
-            if (x < mvdc.camTX)
+            if (x < mvdc.camTX - 2)
                 continue;
-            if (y < mvdc.camTY)
+            if (y < mvdc.camTY - 2)
                 continue;
-            if (x >= mvdc.camTR)
+            if (x >= mvdc.camTR + 2)
                 continue;
-            if (y >= mvdc.camTB)
+            if (y >= mvdc.camTB + 2)
                 continue;
             IRIO evI = eventList.getEvent(evK);
             if (evI == null)

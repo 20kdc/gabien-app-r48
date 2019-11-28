@@ -12,6 +12,7 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
 import r48.AppMain;
+import r48.RubyTable;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;
 import r48.map.UIMapView;
@@ -33,6 +34,7 @@ public class VXATileRenderer implements ITileRenderer {
     private final IRIO tileset;
     // Generated one-pixel image to be blended for shadow
     public IImage shadowImage;
+    public RubyTable flags;
 
     public VXATileRenderer(IImageLoader il, IRIO tileset) {
         this.tileset = tileset;
@@ -41,6 +43,7 @@ public class VXATileRenderer implements ITileRenderer {
         // If the tileset's null, then just give up.
         // The tileset being/not being null is an implementation detail anyway.
         if (tileset != null) {
+            flags = new RubyTable(tileset.getIVar("@flags").getBuffer());
             IRIO amNames = tileset.getIVar("@tileset_names");
             for (int i = 0; i < tilesetMaps.length; i++) {
                 IRIO rio = amNames.getAElem(i);
@@ -48,6 +51,8 @@ public class VXATileRenderer implements ITileRenderer {
                 if (expectedAT.length() != 0)
                     tilesetMaps[i] = il.getImage("Tilesets/" + expectedAT, false);
             }
+        } else {
+            flags = new RubyTable(2, 0, 0, 0, new int[0]);
         }
     }
 

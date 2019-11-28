@@ -103,7 +103,9 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     // works for green docks
                     new PanoramaMapViewDrawLayer(panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
                     // Signal layers (controls Z-Emulation)
-                    accurate.signalLayerTiA,
+                    accurate.tileSignalLayers[0],
+                    accurate.tileSignalLayers[1],
+                    accurate.tileSignalLayers[2],
                     accurate.signalLayerEvA,
                     accurate.signalLayerEvB,
                     // Z-Emulation

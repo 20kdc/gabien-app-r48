@@ -7,16 +7,19 @@
 
 package r48.map.systems;
 
+import gabien.IImage;
 import gabien.ui.IFunction;
 import gabien.ui.Rect;
 import gabien.ui.Size;
+import r48.RubyIO;
+import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController;
 import r48.map.StuffRenderer;
-import r48.map.drawlayers.IMapViewDrawLayer;
+import r48.map.drawlayers.*;
 import r48.map.events.IEventAccess;
 import r48.map.events.IEventGraphicRenderer;
 import r48.map.events.RMEventGraphicRenderer;
@@ -38,18 +41,36 @@ public class RVXASystem extends RXPSystem {
 
     @Override
     public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tso, IEventAccess events) {
-        String vxaPano = "";
+        IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
+        VXATileRenderer tileRenderer = new VXATileRenderer(imageLoader, tso);
+        RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
         if (map != null) {
-            vxaPano = map.getIVar("@parallax_name").decString();
+            String vxaPano = map.getIVar("@parallax_name").decString();
             if (map.getIVar("@parallax_show").getType() != 'T')
                 vxaPano = "";
+            IImage panoImg = null;
+            if (!vxaPano.equals(""))
+                panoImg = imageLoader.getImage("Parallaxes/" + vxaPano, true);
+            RubyTable rt = new RubyTable(map.getIVar("@data").getBuffer());
+            RVXAAccurateDrawLayer accurate = new RVXAAccurateDrawLayer(rt, events, tileRenderer, eventRenderer);
+            layers = new IMapViewDrawLayer[] {
+                    // works for green docks
+                    new PanoramaMapViewDrawLayer(panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
+                    // Signal layers (controls Z-Emulation)
+                    accurate.tileSignalLayers[0],
+                    accurate.tileSignalLayers[1],
+                    accurate.tileSignalLayers[2],
+                    accurate.tileSignalLayers[3],
+                    accurate.signalLayerEvA,
+                    // Z-Emulation
+                    accurate,
+                    // selection
+                    new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, ""),
+                    new GridMapViewDrawLayer(),
+                    new BorderMapViewDrawLayer(rt.width, rt.height)
+            };
         }
-        if (!vxaPano.equals(""))
-            vxaPano = "Parallaxes/" + vxaPano;
-
-        ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tso);
-        IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(tileRenderer, new int[] {0, 1, 3, 2}, eventRenderer, imageLoader, map, events, vxaPano, false, false, 0, 0, -1, -1, 1));
+        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
     }
 
     @Override
