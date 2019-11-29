@@ -52,18 +52,21 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
-        if (map.mapTable.outOfBounds(tx, ty))
-            return;
-        int regionId = (map.mapTable.getTiletype(tx, ty, 3) & 0xFF00) >> 8;
-        int l = FontManager.getLineLength("R" + regionId, UIMapView.mapDebugTextHeight) + 1;
-        igd.clearRect(0, 0, 0, px, py, l, UIMapView.mapDebugTextHeight);
-        FontManager.drawString(igd, px, py, "R" + regionId, true, false, UIMapView.mapDebugTextHeight);
-    }
-
-    @Override
-    public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap, int eTileSize) {
-
+    public void performGlobalOverlay(MapViewDrawContext mvdc, int layer, boolean minimap) {
+        for (int tx = mvdc.camT.x; tx < mvdc.camT.x + mvdc.camT.width; tx++) {
+            if (map.mapTable.outOfBounds(tx, 0))
+                continue;
+            for (int ty = mvdc.camT.y; ty < mvdc.camT.y + mvdc.camT.height; ty++) {
+                if (map.mapTable.outOfBounds(tx, ty))
+                    continue;
+                int px = tx * mvdc.tileSize;
+                int py = ty * mvdc.tileSize;
+                int regionId = (map.mapTable.getTiletype(tx, ty, 3) & 0xFF00) >> 8;
+                int l = FontManager.getLineLength("R" + regionId, UIMapView.mapDebugTextHeight) + 1;
+                mvdc.igd.clearRect(0, 0, 0, px, py, l, UIMapView.mapDebugTextHeight);
+                FontManager.drawString(mvdc.igd, px, py, "R" + regionId, true, false, UIMapView.mapDebugTextHeight);
+            }
+        }
     }
 
     @Override

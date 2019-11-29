@@ -65,17 +65,10 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
     }
 
     @Override
-    public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
-        if (tx == startX)
-            if (ty == startY)
-                if (!minimap)
-                    if ((((int) (GaBIEn.getTime() * 4)) % 2) == 0)
-                        igd.clearRect(0, 0, 255, px, py, parent.map.tileSize, parent.map.tileSize);
-    }
-
-    @Override
-    public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap, int eTileSize) {
-
+    public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
+        if (!minimap)
+            if ((((int) (GaBIEn.getTime() * 4)) % 2) == 0)
+                mvdc.drawIndicator(startX, startY, MapViewDrawContext.IndicatorStyle.SolidBlue);
     }
 
     @Override

@@ -65,14 +65,13 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
-        if (eventCache.containsKey(tx + ";" + ty))
-            Art.drawTarget(px, py, mapView.tileSize, igd);
-    }
-
-    @Override
-    public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap, int eTileSize) {
-
+    public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
+        for (int tx = mvdc.camT.x; tx < mvdc.camT.x + mvdc.camT.width; tx++) {
+            for (int ty = mvdc.camT.y; ty < mvdc.camT.y + mvdc.camT.height; ty++) {
+                if (eventCache.containsKey(tx + ";" + ty))
+                    Art.drawTarget(tx * mvdc.tileSize, ty * mvdc.tileSize, mapView.tileSize, mvdc.igd);
+            }
+        }
     }
 
     @Override

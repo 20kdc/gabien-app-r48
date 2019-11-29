@@ -71,15 +71,8 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
             }
 
             @Override
-            public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
-                if (x == tx)
-                    if (y == ty)
-                        Art.drawTarget(px, py, umv.tileSize, igd);
-            }
-
-            @Override
-            public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap, int eTileSize) {
-
+            public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
+                mvdc.drawIndicator((int) x, (int) y, MapViewDrawContext.IndicatorStyle.Target);
             }
 
             @Override

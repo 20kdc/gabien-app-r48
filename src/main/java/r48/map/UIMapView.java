@@ -286,26 +286,26 @@ public class UIMapView extends UIPlaneView {
 
     // mousePT can be null
     private void render(int currentLayer, IGrDriver igd) {
-        MapViewDrawContext mvdc = new MapViewDrawContext();
 
         // Translate new camX/camY (planespace central coord) into old camX/camY (position of the top-left corner of the screen in planespace)
         Size wSize = getSize();
-        mvdc.camX = (int) Math.floor(camX - planeDivZoom(wSize.width / 2.0d));
-        mvdc.camY = (int) Math.floor(camY - planeDivZoom(wSize.height / 2.0d));
+        int iCamX = (int) Math.floor(camX - planeDivZoom(wSize.width / 2.0d));
+        int iCamY = (int) Math.floor(camY - planeDivZoom(wSize.height / 2.0d));
+
+        MapViewDrawContext mvdc = new MapViewDrawContext(new Rect(iCamX, iCamY, igd.getWidth(), igd.getHeight()), tileSize);
 
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);
-        IMapViewDrawLayer[] layers = mapTable.renderer.layers;
-        int camTR = UIElement.sensibleCellDiv((mvdc.camX + igd.getWidth()), tileSize) + 1;
-        int camTB = UIElement.sensibleCellDiv((mvdc.camY + igd.getHeight()), tileSize) + 1;
-        int camTX = UIElement.sensibleCellDiv(mvdc.camX, tileSize);
-        int camTY = UIElement.sensibleCellDiv(mvdc.camY, tileSize);
 
-        mvdc.tileSize = tileSize;
-        mvdc.camTR = camTR;
-        mvdc.camTB = camTB;
-        mvdc.camTX = camTX;
-        mvdc.camTY = camTY;
+        // Everything is performed in a transformed context to save some headaches.
+        int[] stb = igd.getLocalST();
+        int oldTX = stb[0];
+        int oldTY = stb[1];
+        stb[0] = -iCamX;
+        stb[1] = -iCamY;
+        igd.updateST();
+
+        IMapViewDrawLayer[] layers = mapTable.renderer.layers;
 
         // NOTE: Block copy/paste isn't nice this way... add confirmation or something instead?
         // If so, make sure that camDragSwitch still disables this.
@@ -323,19 +323,12 @@ public class UIMapView extends UIPlaneView {
         boolean minimap = planeZoomDiv > 1;
         if (callbacks != null) {
             int ovlLayers = callbacks.wantOverlay(minimap);
-            for (int l = 0; l < ovlLayers; l++) {
-                for (int i = camTX; i < camTR; i++) {
-                    for (int j = camTY; j < camTB; j++) {
-                        int px = i * tileSize;
-                        int py = j * tileSize;
-                        px -= mvdc.camX;
-                        py -= mvdc.camY;
-                        callbacks.performOverlay(i, j, igd, px, py, l, minimap);
-                    }
-                }
-                callbacks.performGlobalOverlay(igd, -mvdc.camX, -mvdc.camY, l, minimap, tileSize);
-            }
+            for (int l = 0; l < ovlLayers; l++)
+                callbacks.performGlobalOverlay(mvdc, l, minimap);
         }
+        stb[0] = oldTX;
+        stb[1] = oldTY;
+        igd.updateST();
     }
 
     // Used by tools, after they're done doing whatever.

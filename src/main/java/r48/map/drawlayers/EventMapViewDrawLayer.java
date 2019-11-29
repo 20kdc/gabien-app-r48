@@ -63,19 +63,13 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
         for (IRIO evK : ev) {
             int x = (int) eventList.getEventX(evK);
             int y = (int) eventList.getEventY(evK);
-            if (x < mvdc.camTX - 2)
-                continue;
-            if (y < mvdc.camTY - 2)
-                continue;
-            if (x >= mvdc.camTR + 2)
-                continue;
-            if (y >= mvdc.camTB + 2)
+            if (!mvdc.camTMargin.contains(x, y))
                 continue;
             IRIO evI = eventList.getEvent(evK);
             if (evI == null)
                 continue;
-            int px = (x * mvdc.tileSize) - mvdc.camX;
-            int py = (y * mvdc.tileSize) - mvdc.camY;
+            int px = x * mvdc.tileSize;
+            int py = y * mvdc.tileSize;
             if (layer == 0x7FFFFFFF) {
                 if (AppMain.currentlyOpenInEditor(evI))
                     Art.drawSelectionBox(px - 1, py - 1, mvdc.tileSize + 2, mvdc.tileSize + 2, 1, mvdc.igd);

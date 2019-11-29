@@ -22,13 +22,13 @@ public class GridMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public void draw(MapViewDrawContext mvdc) {
-        for (int i = mvdc.camTX; i < mvdc.camTR; i++) {
-            int a = ((i * mvdc.tileSize) + (mvdc.tileSize - 1)) - mvdc.camX;
-            mvdc.igd.clearRect(0, 0, 0, a, 0, 1, mvdc.igd.getHeight());
+        for (int i = mvdc.camT.x; i < mvdc.camT.x + mvdc.camT.width; i++) {
+            int a = (i * mvdc.tileSize) + (mvdc.tileSize - 1);
+            mvdc.igd.clearRect(0, 0, 0, a, mvdc.cam.y, 1, mvdc.igd.getHeight());
         }
-        for (int i = mvdc.camTY; i < mvdc.camTB; i++) {
-            int a = ((i * mvdc.tileSize) + (mvdc.tileSize - 1)) - mvdc.camY;
-            mvdc.igd.clearRect(0, 0, 0, 0, a, mvdc.igd.getWidth(), 1);
+        for (int i = mvdc.camT.y; i < mvdc.camT.y + mvdc.camT.height; i++) {
+            int a = (i * mvdc.tileSize) + (mvdc.tileSize - 1);
+            mvdc.igd.clearRect(0, 0, 0, mvdc.cam.x, a, mvdc.igd.getWidth(), 1);
         }
     }
 }

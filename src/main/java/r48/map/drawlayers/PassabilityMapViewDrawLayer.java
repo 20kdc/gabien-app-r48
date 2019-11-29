@@ -36,12 +36,10 @@ public class PassabilityMapViewDrawLayer implements IMapViewDrawLayer {
     public void draw(MapViewDrawContext mvdc) {
         if (mvdc.tileSize != tileSize)
             return;
-        for (int i = mvdc.camTX; i < mvdc.camTR; i++) {
-            for (int j = mvdc.camTY; j < mvdc.camTB; j++) {
+        for (int i = mvdc.camT.x; i < mvdc.camT.x + mvdc.camT.width; i++) {
+            for (int j = mvdc.camT.y; j < mvdc.camT.y + mvdc.camT.height; j++) {
                 int px = i * tileSize;
                 int py = j * tileSize;
-                px -= mvdc.camX;
-                py -= mvdc.camY;
                 int flags = src.getPassability(i, j);
                 if (flags == -1)
                     continue;

@@ -68,8 +68,8 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
             // I give up, this is what I've got now.
             // It works better this way than the other way under some cases.
 
-            int eCamX = mvdc.camX;
-            int eCamY = mvdc.camY;
+            int eCamX = 0;
+            int eCamY = 0;
 
             // ... later:
             // The basis of parallax appears to be "whatever the camera was set to beforehand"
@@ -79,8 +79,8 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
             // This boils down to precisely 4 pixels per second per speed value.
             int centreX = scrW / 2;
             int centreY = scrH / 2;
-            int cxc = mvdc.camX + (mvdc.igd.getWidth() / 2);
-            int cyc = mvdc.camY + (mvdc.igd.getHeight() / 2);
+            int cxc = mvdc.cam.x + (mvdc.igd.getWidth() / 2);
+            int cyc = mvdc.cam.y + (mvdc.igd.getHeight() / 2);
 
             // Yume Nikki's Incredibly Long Climb Up A Very Boring Staircase (map ID 64, just above BLOCK 5),
             //  as a 'true' case, and the Nexus, as a 'false' case
@@ -127,10 +127,10 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
                 }
             }
 
-            int camOTX = UIElement.sensibleCellDiv(eCamX, effectiveImWidth);
-            int camOTY = UIElement.sensibleCellDiv(eCamY, effectiveImHeight);
-            int camOTeX = UIElement.sensibleCellDiv(eCamX + mvdc.igd.getWidth(), effectiveImWidth) + 1;
-            int camOTeY = UIElement.sensibleCellDiv(eCamY + mvdc.igd.getHeight(), effectiveImHeight) + 1;
+            int camOTX = UIElement.sensibleCellDiv(eCamX + mvdc.cam.x, effectiveImWidth);
+            int camOTY = UIElement.sensibleCellDiv(eCamY + mvdc.cam.y, effectiveImHeight);
+            int camOTeX = UIElement.sensibleCellDiv(eCamX + mvdc.cam.x + mvdc.cam.width, effectiveImWidth) + 1;
+            int camOTeY = UIElement.sensibleCellDiv(eCamY + mvdc.cam.y + mvdc.cam.height, effectiveImHeight) + 1;
 
             // If *nothing's* looping, it's probably 'bound to the map' (YumeNikki Nexus, OneShot Maize).
             // Failing anything else this helps avoid confusion: "where was the actual map again?"
@@ -140,8 +140,8 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
                 camOTeX = 0;
                 camOTY = 0;
                 camOTeY = 0;
-                eCamX = mvdc.camX;
-                eCamY = mvdc.camY;
+                eCamX = 0;
+                eCamY = 0;
             }
 
             if (panoScale != 1) {

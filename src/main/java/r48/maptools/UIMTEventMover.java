@@ -16,6 +16,7 @@ import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
+import r48.ui.Art;
 
 /**
  * Created on 1/1/17.
@@ -35,25 +36,21 @@ public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
-        if (mouse != null)
-            if (mouse.x == tx)
-                if (mouse.y == ty)
-                    return 0;
         return there;
     }
 
     @Override
     public int wantOverlay(boolean minimap) {
-        return 0;
+        return 1;
     }
 
     @Override
-    public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
-    }
-
-    @Override
-    public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap, int eTileSize) {
-
+    public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
+        if (mvdc.mouseStatus != null) {
+            int tx = mvdc.mouseStatus.x / mvdc.tileSize;
+            int ty = mvdc.mouseStatus.y / mvdc.tileSize;
+            Art.drawSelectionBox(tx, ty, mvdc.tileSize, mvdc.tileSize, 1, mvdc.igd);
+        }
     }
 
     @Override

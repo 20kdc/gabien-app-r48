@@ -28,13 +28,13 @@ public class BorderMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public void draw(MapViewDrawContext mvdc) {
-        for (int i = Math.max(mvdc.camTX, 0); i < Math.min(mvdc.camTR, width); i++) {
-            Art.drawSymbol(mvdc.igd, Art.Symbol.Stripes, (i * mvdc.tileSize) - mvdc.camX, -(mvdc.camY + mvdc.tileSize), mvdc.tileSize, false, false);
-            Art.drawSymbol(mvdc.igd, Art.Symbol.Stripes, (i * mvdc.tileSize) - mvdc.camX, (height * mvdc.tileSize) - mvdc.camY, mvdc.tileSize, false, false);
+        for (int i = Math.max(mvdc.camT.x, 0); i < Math.min(mvdc.camT.x + mvdc.camT.width, width); i++) {
+            Art.drawSymbol(mvdc.igd, Art.Symbol.Stripes, i * mvdc.tileSize, -mvdc.tileSize, mvdc.tileSize, false, false);
+            Art.drawSymbol(mvdc.igd, Art.Symbol.Stripes, i * mvdc.tileSize, height * mvdc.tileSize, mvdc.tileSize, false, false);
         }
-        for (int j = Math.max(mvdc.camTY, -1); j < Math.min(mvdc.camTB, height + 1); j++) {
-            Art.drawSymbol(mvdc.igd, Art.Symbol.Stripes, -(mvdc.camX + mvdc.tileSize), (j * mvdc.tileSize) - mvdc.camY, mvdc.tileSize, false, false);
-            Art.drawSymbol(mvdc.igd, Art.Symbol.Stripes, (width * mvdc.tileSize) - mvdc.camX, (j * mvdc.tileSize) - mvdc.camY, mvdc.tileSize, false, false);
+        for (int j = Math.max(mvdc.camT.y, -1); j < Math.min(mvdc.camT.y + mvdc.camT.height, height + 1); j++) {
+            Art.drawSymbol(mvdc.igd, Art.Symbol.Stripes, -mvdc.tileSize, j * mvdc.tileSize, mvdc.tileSize, false, false);
+            Art.drawSymbol(mvdc.igd, Art.Symbol.Stripes, width * mvdc.tileSize, j * mvdc.tileSize, mvdc.tileSize, false, false);
         }
     }
 }

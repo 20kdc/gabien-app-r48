@@ -19,6 +19,7 @@ import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
+import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
 /**
@@ -44,10 +45,6 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {
-        if (mouse != null)
-            if (tx == mouse.x)
-                if (ty == mouse.y)
-                    return 0;
         return there;
     }
 
@@ -57,20 +54,16 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
-        UIMapView map = mapToolContext.getMapView();
+    public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
         if (!stage)
             return;
-        if (tx == startX)
-            if (ty == startY)
-                if (!minimap)
-                    if ((((int) (GaBIEn.getTime() * 4)) % 2) == 0)
-                        igd.clearRect(0, 0, 255, px, py, map.tileSize, map.tileSize);
-    }
-
-    @Override
-    public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap, int eTileSize) {
-
+        UIMapView map = mapToolContext.getMapView();
+        int px = startX * mvdc.tileSize;
+        int py = startY * mvdc.tileSize;
+        if (!minimap)
+            if ((((int) (GaBIEn.getTime() * 4)) % 2) == 0)
+                mvdc.igd.clearRect(0, 0, 255, px, py, map.tileSize, map.tileSize);
+        mvdc.drawMouseIndicator();
     }
 
     @Override

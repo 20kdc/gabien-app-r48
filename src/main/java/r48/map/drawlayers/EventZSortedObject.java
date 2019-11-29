@@ -37,16 +37,10 @@ public class EventZSortedObject implements ZSortingDrawLayer.IZSortedObject {
         int x = (int) evI.getIVar("@x").getFX();
         int y = (int) evI.getIVar("@y").getFX();
         // Events vary in size - to stop the most obvious glitching, add some margin.
-        if (x < mvdc.camTX - 2)
+        if (!mvdc.camTMargin.contains(x, y))
             return;
-        if (y < mvdc.camTY - 2)
-            return;
-        if (x >= mvdc.camTR + 2)
-            return;
-        if (y >= mvdc.camTB + 2)
-            return;
-        int px = (x * mvdc.tileSize) - mvdc.camX;
-        int py = (y * mvdc.tileSize) - mvdc.camY;
+        int px = x * mvdc.tileSize;
+        int py = y * mvdc.tileSize;
         IRIO g = renderer.extractEventGraphic(evI);
         if (g != null)
             renderer.drawEventGraphic(g, px, py, mvdc.igd, 1);

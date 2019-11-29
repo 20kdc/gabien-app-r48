@@ -41,12 +41,7 @@ public class UIMTPickTile extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
-
-    }
-
-    @Override
-    public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap, int eTileSize) {
+    public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
 
     }
 

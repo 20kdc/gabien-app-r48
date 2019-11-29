@@ -81,28 +81,34 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
     }
 
     @Override
-    public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
-        int ps2 = mapToolContext.getMapView().tileSize / 2;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                int itx = (tx * 2) + i, ity = (ty * 2) + j;
-                int drawMode = 0;
-                if (!placingPen) {
-                    Runnable optval = optValidity(itx, ity);
-                    boolean gbi = (itx == lcrX) && (ity == lcrY);
-                    if ((optval != null) || gbi)
-                        drawMode = gbi ? 2 : 1;
-                } else {
-                    if ((i == 1) && (j == 1))
-                        continue;
-                    drawMode = 1;
-                }
-                if (drawMode != 0)
-                    igd.clearRect(0, 0, 0, px + (i * ps2) - 2, py + (j * ps2) - 2, 4, 4);
-                if (drawMode == 1) {
-                    igd.clearRect(255, 255, 255, px + (i * ps2) - 1, py + (j * ps2) - 1, 2, 2);
-                } else if (drawMode == 2) {
-                    igd.clearRect(255, 0, 0, px + (i * ps2) - 1, py + (j * ps2) - 1, 2, 2);
+    public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
+        for (int tx = mvdc.cam.x; tx < mvdc.cam.x + mvdc.cam.width; tx++) {
+            for (int ty = mvdc.cam.y; ty < mvdc.cam.y + mvdc.cam.height; ty++) {
+                int px = tx / mvdc.tileSize;
+                int py = ty / mvdc.tileSize;
+                int ps2 = mapToolContext.getMapView().tileSize / 2;
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        int itx = (tx * 2) + i, ity = (ty * 2) + j;
+                        int drawMode = 0;
+                        if (!placingPen) {
+                            Runnable optval = optValidity(itx, ity);
+                            boolean gbi = (itx == lcrX) && (ity == lcrY);
+                            if ((optval != null) || gbi)
+                                drawMode = gbi ? 2 : 1;
+                        } else {
+                            if ((i == 1) && (j == 1))
+                                continue;
+                            drawMode = 1;
+                        }
+                        if (drawMode != 0)
+                            mvdc.igd.clearRect(0, 0, 0, px + (i * ps2) - 2, py + (j * ps2) - 2, 4, 4);
+                        if (drawMode == 1) {
+                            mvdc.igd.clearRect(255, 255, 255, px + (i * ps2) - 1, py + (j * ps2) - 1, 2, 2);
+                        } else if (drawMode == 2) {
+                            mvdc.igd.clearRect(255, 0, 0, px + (i * ps2) - 1, py + (j * ps2) - 1, 2, 2);
+                        }
+                    }
                 }
             }
         }
@@ -129,11 +135,6 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
                 }
             };
         return null;
-    }
-
-    @Override
-    public void performGlobalOverlay(IGrDriver igd, int px, int py, int l, boolean minimap, int eTileSize) {
-
     }
 
     @Override

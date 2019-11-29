@@ -177,21 +177,8 @@ public abstract class MapSystem {
         public void renderCore(IGrDriver igd, int vCX, int vCY, boolean[] layerVis, int currentLayer, boolean debugToggle) {
             IMapViewDrawLayer[] layers = renderer.layers;
             int tileSize = renderer.tileRenderer.getTileSize();
-            int camTR = UIElement.sensibleCellDiv(vCX + igd.getWidth(), tileSize) + 1;
-            int camTB = UIElement.sensibleCellDiv(vCY + igd.getHeight(), tileSize) + 1;
-            int camTX = UIElement.sensibleCellDiv(vCX, tileSize);
-            int camTY = UIElement.sensibleCellDiv(vCY, tileSize);
 
-            MapViewDrawContext mvdc = new MapViewDrawContext();
-
-            mvdc.camX = vCX;
-            mvdc.camY = vCY;
-
-            mvdc.tileSize = tileSize;
-            mvdc.camTR = camTR;
-            mvdc.camTB = camTB;
-            mvdc.camTX = camTX;
-            mvdc.camTY = camTY;
+            MapViewDrawContext mvdc = new MapViewDrawContext(new Rect(vCX, vCY, igd.getWidth(), igd.getHeight()), tileSize);
 
             mvdc.currentLayer = currentLayer;
             mvdc.debugToggle = debugToggle;

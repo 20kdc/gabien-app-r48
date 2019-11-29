@@ -8,18 +8,58 @@
 package r48.map;
 
 import gabien.IGrDriver;
+import gabien.ui.Rect;
+import gabien.ui.UIElement;
+import r48.ui.Art;
 
 /**
  * A structure that contains the subset of parameters needed for map view draw layers/etc.
  * Created on November 15, 2018.
  */
 public class MapViewDrawContext {
-    public int camX, camY, camTX, camTY, camTR, camTB, tileSize, currentLayer;
+    public final int tileSize;
+    public final Rect cam;
+    public final Rect camT;
+    public final Rect camTMargin;
+    public int currentLayer;
     public IMapViewCallbacks callbacks;
     public boolean debugToggle;
     public IGrDriver igd;
     // Null if the mouse doesn't exist.
     public MouseStatus mouseStatus;
+
+    public MapViewDrawContext(Rect camera, int ts) {
+        tileSize = ts;
+        cam = camera;
+        int camTR = UIElement.sensibleCellDiv(cam.x + cam.width, tileSize) + 1;
+        int camTB = UIElement.sensibleCellDiv(cam.y + cam.height, tileSize) + 1;
+        int camTX = UIElement.sensibleCellDiv(cam.x, tileSize);
+        int camTY = UIElement.sensibleCellDiv(cam.y, tileSize);
+        camT = new Rect(camTX, camTY, camTR - camTX, camTB - camTY);
+        camTMargin = new Rect(camTX - 2, camTY - 2, camT.width + 4, camT.height + 4);
+    }
+
+    public void drawMouseIndicator() {
+        if (mouseStatus != null)
+            drawIndicator(mouseStatus.x, mouseStatus.y, IndicatorStyle.Selection);
+    }
+    public void drawIndicator(int tx, int ty, IndicatorStyle solid) {
+        int px = tx * tileSize;
+        int py = ty * tileSize;
+        if (solid == IndicatorStyle.SolidBlue) {
+            igd.clearRect(0, 0, 255, px, py, tileSize, tileSize);
+        } else if (solid == IndicatorStyle.Target) {
+            Art.drawTarget(px, py, tileSize, igd);
+        } else {
+            Art.drawSelectionBox(px, py, tileSize, tileSize, 1, igd);
+        }
+    }
+
+    public enum IndicatorStyle {
+        Selection,
+        SolidBlue,
+        Target;
+    }
 
     public static class MouseStatus {
         public final boolean pressed;

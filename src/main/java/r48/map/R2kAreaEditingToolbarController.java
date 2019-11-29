@@ -78,19 +78,13 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
         }
 
         @Override
-        public void performOverlay(int tx, int ty, IGrDriver igd, int px, int py, int ol, boolean minimap) {
+        public void performGlobalOverlay(MapViewDrawContext mvdc, int l, boolean minimap) {
             if (definingPoint2)
-                if (tx == firstPointX)
-                    if (ty == firstPointY)
-                        Art.drawTarget(px, py, tileSize, igd);
-        }
-
-        @Override
-        public void performGlobalOverlay(IGrDriver igd, int px, int py, int ol, boolean minimap, int eTileSize) {
+                mvdc.drawIndicator(firstPointX, firstPointY, MapViewDrawContext.IndicatorStyle.Target);
             int x = (int) (GaBIEn.getTime() * 4);
             if ((x & 1) == 0) {
                 Rect r = getViewedRect();
-                Art.drawSelectionBox(px + (r.x * eTileSize) - 1, py + (r.y * eTileSize) - 1, (r.width * eTileSize) + 2, (r.height * eTileSize) + 2, 1, igd);
+                Art.drawSelectionBox((r.x * tileSize) - 1, (r.y * tileSize) - 1, (r.width * mvdc.tileSize) + 2, (r.height * mvdc.tileSize) + 2, 1, mvdc.igd);
             }
         }
 

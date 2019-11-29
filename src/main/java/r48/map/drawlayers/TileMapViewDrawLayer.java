@@ -56,22 +56,20 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public void draw(MapViewDrawContext mvdc) {
-        for (int j = mvdc.camTY; j < mvdc.camTB; j++) {
+        for (int j = mvdc.camT.y; j < mvdc.camT.y + mvdc.camT.height; j++) {
             if (j < 0)
                 continue;
             if (j >= targetTable.height)
                 continue;
             if (!shouldDrawRow(j, mvdc.currentLayer))
                 continue;
-            for (int i = mvdc.camTX; i < mvdc.camTR; i++) {
+            for (int i = mvdc.camT.x; i < mvdc.camT.x + mvdc.camT.width; i++) {
                 if (i < 0)
                     continue;
                 if (i >= targetTable.width)
                     continue;
                 int px = i * mvdc.tileSize;
                 int py = j * mvdc.tileSize;
-                px -= mvdc.camX;
-                py -= mvdc.camY;
                 if (tileLayer == -1) {
                     for (int k = 0; k < targetTable.planeCount; k++)
                         tileDrawIntern(k, mvdc.mouseStatus, mvdc.currentLayer, mvdc.callbacks, mvdc.debugToggle, mvdc.igd, i, j, px, py);
