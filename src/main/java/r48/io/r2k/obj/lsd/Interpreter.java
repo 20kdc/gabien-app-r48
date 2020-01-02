@@ -67,7 +67,7 @@ public class Interpreter extends DM2R2kObject {
         super("RPG::Interpreter");
     }
 
-    private class InterpreterStackLevel extends DM2R2kObject {
+    public static class InterpreterStackLevel extends DM2R2kObject {
         @DM2FXOBinding("@list") @DM2LcfSizeBinding(0x1) @DM2LcfBinding(0x02) @DM2LcfBoolean(false)
         public DM2Array<EventCommand> list;
         @DM2FXOBinding("@index") @DM2LcfBinding(0x0B) @DM2LcfInteger(0)

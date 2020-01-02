@@ -69,7 +69,7 @@ public class Save extends DM2R2kObject {
     @Override
     protected IRIO dm2AddIVar(String sym) {
         if (sym.equals("@unused_panorama"))
-            unusedPanorama = newDM2A();
+            return unusedPanorama = newDM2A();
         return super.dm2AddIVar(sym);
     }
 
