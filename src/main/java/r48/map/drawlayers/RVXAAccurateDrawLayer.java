@@ -31,7 +31,7 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
 
     public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvA = new ZSortingDrawLayer.SignalMapViewLayer(TXDB.get("Event Layers"));
 
-    private static final int[] layerPreference = new int[] {0, 3, 1, 2};
+    private static final int[] layerPreference = new int[] {0, 1, 3, 2};
 
     public RVXAAccurateDrawLayer(RubyTable tbl, IEventAccess eventList, VXATileRenderer tils, RMEventGraphicRenderer ev) {
         super(tbl, 4);
