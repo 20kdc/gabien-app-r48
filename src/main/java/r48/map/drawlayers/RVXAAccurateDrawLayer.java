@@ -31,6 +31,8 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
 
     public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvA = new ZSortingDrawLayer.SignalMapViewLayer(TXDB.get("Event Layers"));
 
+    private static final int[] layerPreference = new int[] {0, 3, 1, 2};
+
     public RVXAAccurateDrawLayer(RubyTable tbl, IEventAccess eventList, VXATileRenderer tils, RMEventGraphicRenderer ev) {
         super(tbl, 4);
         tiles = tils;
@@ -66,7 +68,7 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
         public final int pIndex;
 
         public RVXAPriorityPlane(int p) {
-            super(mapTable, -1, tiles, "INTERNAL - YOU SHOULD NOT SEE THIS");
+            super(mapTable, layerPreference, tiles, "INTERNAL - YOU SHOULD NOT SEE THIS");
             pIndex = p;
         }
 
@@ -94,11 +96,17 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
         public boolean shouldDraw(int x, int y, int layer, short value) {
             if (!tileSignalLayers[layer].active)
                 return false;
-            int pri = 0;
-            int flags = tiles.flags.getTiletype(value & 0xFFFF, 0, 0);
-            if ((flags & 16) != 0)
-                pri += 4;
-            int targPIndex = y + pri;
+            int targPIndex = y;
+            if (layer != 3) {
+                // Normal layers
+                int pri = 0;
+                int flags = tiles.flags.getTiletype(value & 0xFFFF, 0, 0);
+                if ((flags & 16) != 0)
+                    pri += 4;
+                targPIndex += pri;
+            } else {
+                // no priority
+            }
             return targPIndex == pIndex;
         }
     }

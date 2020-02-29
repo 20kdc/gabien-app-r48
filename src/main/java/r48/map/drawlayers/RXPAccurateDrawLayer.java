@@ -38,6 +38,8 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
     public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvA = new ZSortingDrawLayer.SignalMapViewLayer(TXDB.get("Event Layers (lower)"));
     public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvB = new ZSortingDrawLayer.SignalMapViewLayer(TXDB.get("Event Layers (upper)"));
 
+    private static final int[] layerPreference = new int[] {0, 1, 2};
+
     public RXPAccurateDrawLayer(RubyTable tbl, IEventAccess eventList, XPTileRenderer tils, RMEventGraphicRenderer ev) {
         super(tbl, tbl.planeCount);
         tiles = tils;
@@ -107,7 +109,7 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
         public final int pIndex;
 
         public RXPPriorityPlane(int p) {
-            super(mapTable, -1, tiles, "INTERNAL - YOU SHOULD NOT SEE THIS");
+            super(mapTable, layerPreference, tiles, "INTERNAL - YOU SHOULD NOT SEE THIS");
             pIndex = p;
         }
 

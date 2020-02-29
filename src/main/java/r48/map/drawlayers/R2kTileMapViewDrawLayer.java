@@ -23,7 +23,7 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
     public final RubyTable highpass;
 
     public R2kTileMapViewDrawLayer(RubyTable tbl, ITileRenderer tr, int targLayer, boolean targUpper, IRIO ts, String post) {
-        super(tbl, targLayer, tr, post);
+        super(tbl, new int[] {targLayer}, tr, post);
         upper = targUpper;
         lowpass = new RubyTable(ts.getIVar("@lowpass_data").getBuffer());
         highpass = new RubyTable(ts.getIVar("@highpass_data").getBuffer());
@@ -31,7 +31,7 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return FormatSyntax.formatExtended(TXDB.get("Tile L#A ({B=T='upper'/'wall' tileset flags|general})"), new RubyIO().setFX(tileLayer), new RubyIO().setBool(upper));
+        return FormatSyntax.formatExtended(TXDB.get("Tile L#A ({B=T='upper'/'wall' tileset flags|general})"), new RubyIO().setFX(tileLayers[0]), new RubyIO().setBool(upper));
     }
 
     @Override

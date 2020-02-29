@@ -23,20 +23,17 @@ import r48.map.tiles.ITileRenderer;
  */
 public class TileMapViewDrawLayer implements IMapViewDrawLayer {
     public final RubyTable targetTable;
-    public final int tileLayer;
+    public final int[] tileLayers;
     public final ITileRenderer tr;
     public final String name;
 
     public TileMapViewDrawLayer(RubyTable table, int i, ITileRenderer itr) {
-        targetTable = table;
-        tileLayer = i;
-        tr = itr;
-        name = FormatSyntax.formatExtended(TXDB.get("Tile Layer #A"), new RubyIO().setFX(tileLayer));
+        this(table, new int[] {i}, itr, FormatSyntax.formatExtended(TXDB.get("Tile Layer #A"), new RubyIO().setFX(i)));
     }
 
-    public TileMapViewDrawLayer(RubyTable table, int i, ITileRenderer itr, String post) {
+    public TileMapViewDrawLayer(RubyTable table, int[] i, ITileRenderer itr, String post) {
         targetTable = table;
-        tileLayer = i;
+        tileLayers = i;
         tr = itr;
         name = post;
     }
@@ -70,12 +67,8 @@ public class TileMapViewDrawLayer implements IMapViewDrawLayer {
                     continue;
                 int px = i * mvdc.tileSize;
                 int py = j * mvdc.tileSize;
-                if (tileLayer == -1) {
-                    for (int k = 0; k < targetTable.planeCount; k++)
-                        tileDrawIntern(k, mvdc.mouseStatus, mvdc.currentLayer, mvdc.callbacks, mvdc.debugToggle, mvdc.igd, i, j, px, py);
-                } else {
+                for (int tileLayer : tileLayers)
                     tileDrawIntern(tileLayer, mvdc.mouseStatus, mvdc.currentLayer, mvdc.callbacks, mvdc.debugToggle, mvdc.igd, i, j, px, py);
-                }
             }
         }
     }
