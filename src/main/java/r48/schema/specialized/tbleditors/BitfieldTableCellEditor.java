@@ -32,32 +32,27 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
     }
 
     @Override
-    public Runnable createEditor(final UIScrollLayout panel, final IRIO targV, final UIGrid uig, final Runnable changeOccurred) {
-        final RubyTable targ = new RubyTable(targV.getBuffer());
-        final AtomicReference<IConsumer<Integer>> setter = new AtomicReference<IConsumer<Integer>>();
-        final IConsumer<Integer> wtm = installEditor(flags, new IConsumer<UIElement>() {
+    public Runnable createEditor(final UIScrollLayout base, final int[] planes, final Runnable changeOccurred) {
+        final IConsumer<Integer> editor1 = installEditor(flags, new IConsumer<UIElement>() {
             @Override
             public void accept(UIElement element) {
-                panel.panelsAdd(element);
+                base.panelsAdd(element);
             }
-        }, setter);
-        panel.panelsAdd(new UILabel(TXDB.get("Manual Edit:"), FontSizes.tableElementTextHeight));
-        final Runnable manualControl = new DefaultTableCellEditor().createEditor(panel, targV, uig, changeOccurred);
-        return new Runnable() {
+        }, new AtomicReference<IConsumer<Integer>>(new IConsumer<Integer>() {
             @Override
+            public void accept(Integer t) {
+                planes[0] = t;
+                changeOccurred.run();
+            }
+        }));
+        editor1.accept(planes[0]);
+        base.panelsAdd(new UILabel(TXDB.get("Manual Edit:"), FontSizes.tableElementTextHeight));
+        final Runnable editor2 = new DefaultTableCellEditor().createEditor(base, planes, changeOccurred);
+        
+        return new Runnable() {
             public void run() {
-                int sel = uig.getSelected();
-                final int selX = sel % targ.width;
-                final int selY = sel / targ.width;
-                setter.set(new IConsumer<Integer>() {
-                    @Override
-                    public void accept(Integer integer) {
-                        targ.setTiletype(selX, selY, 0, (short) (int) integer);
-                        changeOccurred.run();
-                    }
-                });
-                wtm.accept((int) targ.getTiletype(selX, selY, 0));
-                manualControl.run();
+                editor1.accept(planes[0]);
+                editor2.run();
             }
         };
     }

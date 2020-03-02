@@ -102,9 +102,15 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
         };
 
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
-        final Runnable editorOnSelChange = tableCellEditor.createEditor(uiSVL, targV, uig, new Runnable() {
+        final int[] planeValues = new int[targ.planeCount];
+        final Runnable editorOnSelChange = tableCellEditor.createEditor(uiSVL, planeValues, new Runnable() {
             @Override
             public void run() {
+                int sel = uig.getSelected();
+                int tX = sel % targ.width;
+                int tY = sel / targ.width;
+                for (int i = 0; i < planeValues.length; i++)
+                    targ.setTiletype(tX, tY, i, (short) planeValues[i]);
                 path.changeOccurred(false);
             }
         });
@@ -116,10 +122,12 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
                 int sel = uig.getSelected();
                 int oldSel = selectionOnLastCall;
                 selectionOnLastCall = sel;
+                int tX = sel % targ.width;
+                int tY = sel / targ.width;
+                for (int i = 0; i < planeValues.length; i++)
+                    planeValues[i] = targ.getTiletype(tX, tY, i);
                 editorOnSelChange.run();
                 if (oldSel == sel) {
-                    int tX = sel % targ.width;
-                    int tY = sel / targ.width;
                     short p = targ.getTiletype(tX, tY, 0);
                     short p2 = baseFlipBits(p);
                     if (p != p2) {

@@ -7,6 +7,7 @@
 
 package r48.schema.specialized.tbleditors;
 
+import gabien.ui.IConsumer;
 import gabien.ui.UIScrollLayout;
 import r48.io.data.IRIO;
 import r48.ui.UIGrid;
@@ -16,6 +17,7 @@ import r48.ui.UIGrid;
  */
 
 public interface ITableCellEditor {
-    // Returns the on-selection-changed handler.
-    public Runnable createEditor(final UIScrollLayout base, final IRIO targV, final UIGrid uig, final Runnable changeOccurred);
+    // Appends the editing UI to a UIScrollLayout (assumed vertical).
+    // Returns the handler for when the cell changes.
+    public Runnable createEditor(UIScrollLayout base, int[] planes, Runnable changeOccurred);
 }
