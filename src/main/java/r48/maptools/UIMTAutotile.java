@@ -54,7 +54,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         if (tabPane.getShortened())
             setForcedBounds(null, new Rect(0, 0, ((map.tileSize * scale * (map.mapTable.renderer.tileRenderer.getRecommendedWidth() + 1)) - 1) + FontSizes.gridScrollersize, FontSizes.scaleGuess(200)));
     }
-
+    
     private int setupView(boolean inConstructor) {
         // Logic here:
         // UIMTAutotile's tools really don't work well as symbols, so that's been abandoned,
@@ -272,7 +272,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                         AutoTileTypeField attf = getAutotileType(map, point.x, point.y, layer, atBases, null);
                         if (attf == null)
                             return false;
-                        if ((key < attf.start) || (key >= (attf.start + attf.length)))
+                        if (!attf.contains(key))
                             return false;
                     }
                     map.mapTable.setTiletype(point.x, point.y, layer, getTCSelected(point.x - x, point.y - y));

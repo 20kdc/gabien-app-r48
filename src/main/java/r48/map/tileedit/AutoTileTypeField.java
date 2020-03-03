@@ -42,4 +42,8 @@ public class AutoTileTypeField {
                 return true;
         return false;
     }
+
+    public boolean contains(int tile) {
+        return ((tile >= start) && (tile < (start + length)));
+    }
 }

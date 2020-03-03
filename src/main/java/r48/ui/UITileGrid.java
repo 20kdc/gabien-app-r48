@@ -33,7 +33,7 @@ public class UITileGrid extends UIGrid {
         this(sr, 0, l, false, remap, remap, "Nts/UITileGrid", sprScale);
     }
 
-    private UITileGrid(StuffRenderer sr, int bs, int l, boolean cms, int[] mapN, int[] mapH, String tiles, int sprScale) {
+    public UITileGrid(StuffRenderer sr, int bs, int l, boolean cms, int[] mapN, int[] mapH, String tiles, int sprScale) {
         super(1337, 1337, mapN.length);
         if (mapN.length != mapH.length)
             throw new IndexOutOfBoundsException("n!=Ir2");

@@ -17,7 +17,6 @@ import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
-import r48.schema.SchemaElement;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -36,34 +35,24 @@ import r48.ui.UIGrid;
  * Checking for the monitorsSubelements requirement...
  * no, the resize does the correct corrections, I believe.
  */
-public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
-    public final int defW;
-    public final int defH;
-    public final int planes, dimensions;
-    public final String iVar, widthVar, heightVar;
+public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaElement {
+    public final String widthVar, heightVar;
     public final ITableCellEditor tableCellEditor;
-
-    public final int[] defVals;
 
     public boolean allowTextdraw = true;
     public boolean allowResize = true;
 
     // NOTE: Doesn't need SDB2-PS compat because it only just started using PS, thankfully
     public RubyTableSchemaElement(String iVar, String wVar, String hVar, int dim, int dw, int dh, int defL, ITableCellEditor tcl, int[] defV) {
-        this.iVar = iVar;
+        super(dw, dh, defL, dim, iVar, defV);
         widthVar = wVar;
         heightVar = hVar;
-        defW = dw;
-        defH = dh;
-        planes = defL;
-        dimensions = dim;
         tableCellEditor = tcl;
-        defVals = defV;
     }
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final IRIO targV = iVar == null ? target : PathSyntax.parse(target, iVar);
+        final IRIO targV = extractTarget(target);
         final RubyTable targ = new RubyTable(targV.getBuffer());
         final IRIO width = widthVar == null ? null : PathSyntax.parse(target, widthVar);
         final IRIO height = heightVar == null ? null : PathSyntax.parse(target, heightVar);
@@ -212,43 +201,5 @@ public class RubyTableSchemaElement<TileHelper> extends SchemaElement {
     public Size getGridSize(TileHelper th) {
         int g = FontSizes.scaleGrid(32);
         return new Size(g, g);
-    }
-
-    @Override
-    public void modifyVal(IRIO target, SchemaPath index, boolean setDefault) {
-        boolean needChange = setDefault;
-
-        if (iVar != null) {
-            IRIO st = PathSyntax.parse(target, iVar);
-            if (st == null) {
-                st = PathSyntax.parse(target, iVar, 1);
-                needChange = true;
-            }
-            target = st;
-        }
-
-        if (target.getType() != 'u') {
-            needChange = true;
-        } else if (!target.getSymbol().equals("Table")) {
-            needChange = true;
-        }
-
-        // Re-initialize if all else fails.
-        // (This will definitely trigger if the iVar was missing or if setDefault was on)
-
-        boolean changeOccurred = false;
-        if (needChange) {
-            target.setUser("Table", new RubyTable(dimensions, defW, defH, planes, defVals).innerBytes);
-            changeOccurred = true;
-        }
-
-        // Fix up pre v1.0-2 tables (would have existed from the start if I knew about it, but...)
-        RubyTable rt = new RubyTable(target.getBuffer());
-        if (rt.dimensionCount != dimensions) {
-            rt.innerTable.putInt(0, dimensions);
-            changeOccurred = true;
-        }
-        if (changeOccurred)
-            index.changeOccurred(true);
     }
 }

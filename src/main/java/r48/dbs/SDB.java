@@ -603,6 +603,16 @@ public class SDB {
                             r.allowResize &= !disableRsz;
                             return new SubwindowSchemaElement(r, iVT);
                         }
+                        if (text.equals("internal_vxaTilesetFlags")) {
+                            // Need to work out a nice way to handle this.
+                            // For now, kick the problem Java-side so that it can at least be worked on.
+                            String[] flags = new String[] {
+                                "blockDown", "blockLeft", "blockRight", "blockUp",
+                                "'star'", "ladder", "submerge", "'counter'",
+                                "poison", "noBoat", "noShip", "noAShip", "[terrainTag;8"
+                            };
+                            return new FancyCategorizedTilesetRubyTableSchemaElement(8192, 1, 1, 1, "@flags", new int[] {0}, new BitfieldTableCellEditor(flags));
+                        }
                         if (text.equals("internal_r2kPPPID")) {
                             SchemaElement se = get();
                             return helpers.makePicPointerPatchID(getSDBEntry("var_id"), se);

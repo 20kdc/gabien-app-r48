@@ -10,7 +10,7 @@ package r48.schema;
 import gabien.ui.UIElement;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
-import r48.schema.specialized.RubyTableSchemaElement;
+import r48.schema.specialized.BaseRubyTableSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
@@ -65,10 +65,10 @@ public class ObjectClassSchemaElement extends SchemaElement {
                 iVars.add(n);
             return true;
         }
-        if (ise instanceof RubyTableSchemaElement) {
-            if (((RubyTableSchemaElement) ise).iVar.equals("."))
+        if (ise instanceof BaseRubyTableSchemaElement) {
+            if (((BaseRubyTableSchemaElement) ise).iVar.equals("."))
                 return false;
-            iVars.add(((RubyTableSchemaElement) ise).iVar);
+            iVars.add(((BaseRubyTableSchemaElement) ise).iVar);
             return true;
         }
         if (ise instanceof HalfsplitSchemaElement)
