@@ -10,6 +10,7 @@ package r48.ui.utilitybelt;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
+import gabien.ui.UIPublicPanel;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 
@@ -40,7 +41,7 @@ public class CamImageEditorTool implements IImageEditorTool {
 
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
-        return new UILabel(TXDB.get("In camera tool."), FontSizes.schemaFieldTextHeight);
+        return new UIPublicPanel(0, 0);
     }
 
     @Override

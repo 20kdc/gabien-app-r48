@@ -193,12 +193,6 @@ public class ImageEditorImage extends ImageIOImage {
         return palette.get(idx);
     }
 
-    public String describeColourFormat() {
-        if (t1Lock)
-            return TXDB.get("Colourkey Indexed");
-        return (palette != null) ? TXDB.get("Indexed") : TXDB.get("32-bit ARGB");
-    }
-
     public void appendToPalette(int rgb) {
         if (palette == null) {
             int[] ia = new int[editorPalette.length + 1];

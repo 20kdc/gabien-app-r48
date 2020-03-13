@@ -257,11 +257,13 @@ public class Art {
         Loop, XRed, Div3, Div2,
         Save, Copy, PasteDNU, CloneFrame,
         // CopyGroup/PasteGroup have multiple items, while Copy/Paste show blank boxes/paper.
-        Inspect, Back, CopyGroupDNU, PasteGroupDNU,
+        Inspect, Back, CopyRectangle, PasteRectangle,
         // "Rectangle" is white & dashed, area is solid-skyblue,
         //  XWhite is white and smaller than XRed.
         Rectangle, Stripes, XWhite, Pencil,
         Camera, New, Folder, Keyframe,
-        Tween, SaveDisabled
+        Tween, SaveDisabled, Forward, Eyedropper,
+        // "Fill" is for a flood fill, so it's a bucket
+        Line, Fill
     }
 }

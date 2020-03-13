@@ -10,6 +10,8 @@ package r48.ui.utilitybelt;
 import gabien.ui.*;
 import r48.FontSizes;
 import r48.dbs.TXDB;
+import r48.ui.UISymbolButton;
+import r48.ui.Art.Symbol;
 
 /**
  * Created on 13th July 2018.
@@ -28,21 +30,21 @@ public class RootImageEditorTool implements IImageEditorTool {
                 TileImageEditorTool.class,
                 EDImageEditorTool.class
         };
-        String[] toolSymbol = new String[] {
-                TXDB.get("Pencil"),
-                TXDB.get("Rectangle"),
-                TXDB.get("Line"),
-                TXDB.get("Fill"),
-                TXDB.get("Copy"),
-                TXDB.get("Paste"),
-                TXDB.get("TileView"),
-                TXDB.get("Pick Col.")
+        Symbol[] toolSymbol = new Symbol[] {
+                Symbol.Pencil,
+                Symbol.Rectangle,
+                Symbol.Line,
+                Symbol.Fill,
+                Symbol.CopyRectangle,
+                Symbol.PasteRectangle,
+                Symbol.Area,
+                Symbol.Eyedropper
         };
         UIScrollLayout svl = new UIScrollLayout(true, FontSizes.mapToolbarScrollersize);
         UIElement left = null;
         for (int i = 0; i < toolClasses.length; i++) {
             final int ic = i;
-            UIElement nx = new UITextButton(toolSymbol[i], FontSizes.schemaFieldTextHeight, new Runnable() {
+            UIElement nx = new UISymbolButton(toolSymbol[i], FontSizes.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     try {

@@ -19,6 +19,8 @@ import r48.maptools.UIMTBase;
 import r48.ui.UIAppendButton;
 import r48.ui.UIColourSwatchButton;
 import r48.ui.UIMenuButton;
+import r48.ui.Art.Symbol;
+import r48.ui.UISymbolButton;
 import r48.ui.dialog.UIColourPicker;
 import r48.ui.dmicg.CharacterGeneratorController;
 
@@ -150,7 +152,7 @@ public class ImageEditorController {
         LinkedList<String> menuDetails = new LinkedList<String>();
         LinkedList<Runnable> menuFuncs = new LinkedList<Runnable>();
 
-        menuDetails.add(TXDB.get("Resize..."));
+        menuDetails.add(imageEditView.image.width + "x" + imageEditView.image.height);
         menuFuncs.add(new Runnable() {
             @Override
             public void run() {
@@ -176,6 +178,45 @@ public class ImageEditorController {
                 }, TXDB.get("Resize...")));
             }
         });
+        if (imageEditView.image.usesPalette()) {
+            menuDetails.add(TXDB.get("Indexed"));
+            menuFuncs.add(AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to 32-bit ARGB? The image will no longer contain a palette, which may make editing inconvenient, and some formats will become unavailable."), new Runnable() {
+                @Override
+                public void run() {
+                    imageEditView.eds.startSection();
+                    ImageEditorImage wip = new ImageEditorImage(imageEditView.image, false, false);
+                    imageEditView.setImage(wip);
+                    imageEditView.eds.endSection();
+                    initPalette(0);
+                }
+            }));
+            if (imageEditView.image.t1Lock) {
+                menuDetails.add(TXDB.get("Colourkey On"));
+            } else {
+                menuDetails.add(TXDB.get("Colourkey Off"));
+            }
+            menuFuncs.add(new Runnable() {
+                @Override
+                public void run() {
+                    imageEditView.eds.startSection();
+                    imageEditView.setImage(new ImageEditorImage(imageEditView.image, !imageEditView.image.t1Lock));
+                    imageEditView.eds.endSection();
+                    initPalette(0);
+                }
+            });
+        } else {
+            menuDetails.add(TXDB.get("ARGB (32-bit)"));
+            menuFuncs.add(AppMain.createLaunchConfirmation(TXDB.get("Are you sure? This will create a palette entry for every colour in the image."), new Runnable() {
+                @Override
+                public void run() {
+                    imageEditView.eds.startSection();
+                    ImageEditorImage wip = new ImageEditorImage(imageEditView.image, false, true);
+                    imageEditView.setImage(wip);
+                    imageEditView.eds.endSection();
+                    initPalette(0);
+                }
+            }));
+        }
         menuDetails.add(TXDB.get("New"));
         menuFuncs.add(new Runnable() {
             @Override
@@ -266,7 +307,7 @@ public class ImageEditorController {
             }
         });
 
-        fileButtonMenuHook = new UIMenuButton(TXDB.get("File: ") + imageEditView.image.width + "x" + imageEditView.image.height, FontSizes.imageEditorTextHeight, new ISupplier<Boolean>() {
+        fileButtonMenuHook = new UIMenuButton(TXDB.get("File..."), FontSizes.imageEditorTextHeight, new ISupplier<Boolean>() {
             @Override
             public Boolean get() {
                 return paletteThing == currentPaletteThing;
@@ -274,39 +315,60 @@ public class ImageEditorController {
         }, menuDetails.toArray(new String[0]), menuFuncs.toArray(new Runnable[0]));
         paletteView.panelsAdd(fileButtonMenuHook);
 
-        UIElement ul = new UISplitterLayout(new UIMenuButton(TXDB.get("Grid Size"), FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
+        paletteView.panelsAdd(new UIMenuButton(TXDB.get("Grid..."), FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
-                return showXYChanger(imageEditView.grid, new IConsumer<Rect>() {
+                // The grid changer used to be using the same XY changer as resizing, then that became impractical.
+                // Probably for the better, this may in some circumstances allow a runtime view...
+                UIScrollLayout verticalLayout = new UIScrollLayout(true, FontSizes.generalScrollersize);
+                final UINumberBox gridX, gridY, gridW, gridH;
+                gridX = new UINumberBox(imageEditView.grid.x, FontSizes.imageEditorTextHeight);
+                gridY = new UINumberBox(imageEditView.grid.y, FontSizes.imageEditorTextHeight);
+                gridW = new UINumberBox(imageEditView.grid.width, FontSizes.imageEditorTextHeight);
+                gridH = new UINumberBox(imageEditView.grid.height, FontSizes.imageEditorTextHeight);
+                Runnable sendUpdates = new Runnable() {
                     @Override
-                    public void accept(Rect rect) {
-                        imageEditView.grid = rect;
+                    public void run() {
+                        imageEditView.grid = new Rect((int) gridX.number, (int) gridY.number, (int) gridW.number, (int) gridH.number);
                     }
-                }, TXDB.get("Change Grid..."));
-            }
-        }), new UIMenuButton(TXDB.get("Colour"), FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
-            @Override
-            public UIElement get() {
-                return new UIColourPicker(TXDB.get("Set Grid Colour..."), imageEditView.gridColour, new IConsumer<Integer>() {
+                };
+                gridX.onEdit = sendUpdates;
+                gridY.onEdit = sendUpdates;
+                gridW.onEdit = sendUpdates;
+                gridH.onEdit = sendUpdates;
+                verticalLayout.panelsAdd(new UILabel(TXDB.get("Grid Size:"), FontSizes.imageEditorTextHeight));
+                verticalLayout.panelsAdd(new UISplitterLayout(gridX, gridY, false, 0.5d));
+                verticalLayout.panelsAdd(new UILabel(TXDB.get("Grid Offset:"), FontSizes.imageEditorTextHeight));
+                verticalLayout.panelsAdd(new UISplitterLayout(gridW, gridH, false, 0.5d));
+                // This is the colour of the grid.
+                final UIColourSwatchButton uicsb = new UIColourSwatchButton(imageEditView.gridColour, FontSizes.imageEditorTextHeight, null);
+                uicsb.onClick = new Runnable() {
                     @Override
-                    public void accept(Integer integer) {
-                        if (integer == null)
-                            return;
-                        imageEditView.gridColour = integer & 0xFFFFFF;
+                    public void run() {
+                        AppMain.window.createMenu(uicsb, new UIColourPicker(TXDB.get("Grid Colour"), imageEditView.gridColour, new IConsumer<Integer>() {
+                            @Override
+                            public void accept(Integer t) {
+                                if (t != null)
+                                    imageEditView.gridColour = t & 0xFFFFFF;
+                            }
+                        }, false));
                     }
-                }, false);
+                };
+                verticalLayout.panelsAdd(uicsb);
+                // Finally, grid overlay control.
+                verticalLayout.panelsAdd(new UITextButton(TXDB.get("Overlay"), FontSizes.imageEditorTextHeight, new Runnable() {
+                    @Override
+                    public void run() {
+                        imageEditView.gridST = !imageEditView.gridST;
+                    }
+                }).togglable(imageEditView.gridST));
+                // And finish.
+                verticalLayout.forceToRecommended();
+                return verticalLayout;
             }
-        }), false, 0.5d);
+        }));
 
-        ul = new UIAppendButton(TXDB.get("Overlay"), ul, new Runnable() {
-            @Override
-            public void run() {
-                imageEditView.gridST = !imageEditView.gridST;
-            }
-        }, FontSizes.imageEditorTextHeight).togglable(imageEditView.gridST);
-        paletteView.panelsAdd(ul);
-
-        ul = new UITextButton(TXDB.get("Reset View"), FontSizes.imageEditorTextHeight, new Runnable() {
+        UIElement ul = new UISymbolButton(Symbol.Target, FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 imageEditView.camX = 0;
@@ -315,7 +377,7 @@ public class ImageEditorController {
             }
         });
 
-        ul = pokeOnCause(cause, 1, new UIAppendButton(TXDB.get("Undo"), ul, new Runnable() {
+        ul = pokeOnCause(cause, 1, new UIAppendButton(Symbol.Back, ul, new Runnable() {
             @Override
             public void run() {
                 if (imageEditView.eds.hasUndo()) {
@@ -327,7 +389,7 @@ public class ImageEditorController {
             }
         }, FontSizes.imageEditorTextHeight));
 
-        ul = pokeOnCause(cause, 2, new UIAppendButton(TXDB.get("Redo"), ul, new Runnable() {
+        ul = pokeOnCause(cause, 2, new UIAppendButton(Symbol.Forward, ul, new Runnable() {
             @Override
             public void run() {
                 if (imageEditView.eds.hasRedo()) {
@@ -344,14 +406,12 @@ public class ImageEditorController {
         paletteView.panelsAdd(imageEditView.currentTool.createToolPalette(imageEditView));
 
         // mode details
-        UILabel cType = new UILabel(imageEditView.image.describeColourFormat(), FontSizes.imageEditorTextHeight);
         if (imageEditView.image.usesPalette()) {
+            UILabel cType = new UILabel(TXDB.get("Pal. "), FontSizes.imageEditorTextHeight);
             paletteView.panelsAdd(sanityButtonHolder = new UISplitterLayout(cType, sanityButton, false, 1));
-        } else {
-            paletteView.panelsAdd(cType);
         }
 
-        paletteView.panelsAdd(new UISplitterLayout(new UIMenuButton(TXDB.get("Add Colour"), FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
+        paletteView.panelsAdd(new UISplitterLayout(new UIMenuButton("+", FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
                 return new UIColourPicker(TXDB.get("Add Palette Colour..."), imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex) | 0xFF000000, new IConsumer<Integer>() {
@@ -366,7 +426,7 @@ public class ImageEditorController {
                     }
                 }, !imageEditView.image.t1Lock);
             }
-        }), new UITextButton(TXDB.get("From Image"), FontSizes.imageEditorTextHeight, new Runnable() {
+        }), new UISymbolButton(Symbol.Eyedropper, FontSizes.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 imageEditView.currentTool = new AddColourFromImageEditorTool(new IConsumer<Integer>() {
@@ -380,48 +440,6 @@ public class ImageEditorController {
                 imageEditView.newToolCallback.run();
             }
         }), false, 0.5d));
-
-
-        UIElement cSwitch;
-
-        // It's like Life Is Strange.
-        // No matter which option you choose, your decision is questioned...
-        if (imageEditView.image.palette != null) {
-            final UITextButton ck = new UITextButton(TXDB.get("Colourkey"), FontSizes.imageEditorTextHeight, null).togglable(imageEditView.image.t1Lock);
-            ck.onClick = new Runnable() {
-                @Override
-                public void run() {
-                    imageEditView.eds.startSection();
-                    imageEditView.setImage(new ImageEditorImage(imageEditView.image, ck.state));
-                    imageEditView.eds.endSection();
-                    initPalette(0);
-                }
-            };
-            if (!ck.state)
-                ck.onClick = AppMain.createLaunchConfirmation(TXDB.get("Are you sure? This forces transparency to be 'colour-0-is-transparent'."), ck.onClick);
-            cSwitch = new UISplitterLayout(ck, new UITextButton(TXDB.get("-> 32-bit ARGB"), FontSizes.schemaFieldTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to 32-bit ARGB? The image will no longer contain a palette, which may make editing inconvenient, and some formats will become unavailable."), new Runnable() {
-                @Override
-                public void run() {
-                    imageEditView.eds.startSection();
-                    ImageEditorImage wip = new ImageEditorImage(imageEditView.image, false, false);
-                    imageEditView.setImage(wip);
-                    imageEditView.eds.endSection();
-                    initPalette(0);
-                }
-            })), false, 0.5d);
-        } else {
-            cSwitch = new UITextButton(TXDB.get("Use Palette"), FontSizes.imageEditorTextHeight, AppMain.createLaunchConfirmation(TXDB.get("Are you sure? This will create a palette entry for every colour in the image."), new Runnable() {
-                @Override
-                public void run() {
-                    imageEditView.eds.startSection();
-                    ImageEditorImage wip = new ImageEditorImage(imageEditView.image, false, true);
-                    imageEditView.setImage(wip);
-                    imageEditView.eds.endSection();
-                    initPalette(0);
-                }
-            }));
-        }
-        paletteView.panelsAdd(cSwitch);
 
         for (int idx = 0; idx < imageEditView.image.paletteSize(); idx++) {
             final int fidx = idx;

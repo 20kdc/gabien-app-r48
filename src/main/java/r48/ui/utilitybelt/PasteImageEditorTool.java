@@ -138,7 +138,7 @@ public class PasteImageEditorTool implements IImageEditorTool {
                 flipX = !flipX;
             }
         }).togglable(flipX);
-        UITextButton b = new UITextButton(TXDB.get("FlipY"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        UITextButton b = new UITextButton(TXDB.get("Y"), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 flipY = !flipY;
