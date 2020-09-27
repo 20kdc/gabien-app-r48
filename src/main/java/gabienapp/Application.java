@@ -67,7 +67,7 @@ public class Application {
         mobileExtremelySpecialBehavior = GaBIEn.singleWindowApp();
         uiTicker = new WindowCreatingUIElementConsumer();
         // runFontLoader tries to do as much loading as possible there
-        Rect splashSize = runFontLoader();
+        int uiScaleTenths = runFontLoader();
         // Set globalMS to intended value
         globalMS = 33;
 
@@ -82,8 +82,7 @@ public class Application {
         // The 'true' here is so that it will load in "late" defaults (fontOverride)
         boolean fontsLoaded = FontSizes.load(true);
         if (!fontsLoaded)
-            if (GaBIEn.singleWindowApp()) // SWA always means we need to adapt to local screen size, and should generally cut down as many usability issues as possible
-                autoDetectCorrectUISizeOnSWA(splashSize.width, splashSize.height);
+            autoDetectCorrectUISize(uiScaleTenths);
 
         // Note the mass-recreate.
         while (true) {
@@ -328,7 +327,7 @@ public class Application {
         GaBIEn.ensureQuit();
     }
 
-    private static Rect runFontLoader() {
+    private static int runFontLoader() {
         int frames = -10; // Fadeout
         int timer2 = 0; // Baton
         String movement = " "; // the baton is 'thrown'
@@ -415,26 +414,28 @@ public class Application {
             int c = Math.max(0, Math.min(255, 25 * frames)) << 24;
             gi.blitScaledImage(0, 0, 1, 1, 0, 0, gi.getWidth(), gi.getHeight(), GaBIEn.createImage(new int[] {c}, 1, 1));
         }
-        Rect r = new Rect(0, 0, gi.getWidth(), gi.getHeight());
+        int r = gi.estimateUIScaleTenths();
         gi.shutdown();
         return r;
     }
 
-    private static void autoDetectCorrectUISizeOnSWA(int w, int h) {
+    private static void autoDetectCorrectUISize(int uiGuessScaleTenths) {
         // The above triggered a flush, which would cause the initial resize on SWPs.
-        // Note that using 30 rather than 60 means UI elements get a size increase (useful for phones).
-        FontSizes.uiGuessScaleTenths = Math.max(10, Math.min(w, h) / 30);
-
+        // That then allowed it to estimate a correct scale which ended up here.
+        FontSizes.uiGuessScaleTenths = uiGuessScaleTenths;
+        boolean mobile = GaBIEn.singleWindowApp();
         for (FontSizes.FontSizeField fsf : FontSizes.getFields()) {
             // as this is a touch device, map 8 to 16 (6 is for things that really matter)
-            if (fsf.get() == 8)
-                fsf.accept(16);
+            if (mobile)
+                if (fsf.get() == 8)
+                    fsf.accept(16);
             // uiGuessScaleTenths was set manually.
             if (!fsf.name.equals("uiGuessScaleTenths"))
                 fsf.accept(FontSizes.scaleGuess(fsf.get()));
         }
         // exceptions
-        FontSizes.tilesTabTextHeight *= 2;
+        if (mobile)
+            FontSizes.tilesTabTextHeight *= 2;
     }
 
     private static UIElement figureOutTopBar(final WindowCreatingUIElementConsumer uiTicker, final IConsumer<Runnable> closeHelper) {
