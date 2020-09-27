@@ -55,7 +55,7 @@ public class TestKickstart {
         windowCount = 0;
         mockFS.clear();
         mockDFS.clear();
-        GaBIEn.internal = new GaBIEnImpl(false) {
+        GaBIEnImpl impl = new GaBIEnImpl(false) {
 
             @Override
             public String[] getFontOverrides() {
@@ -167,6 +167,9 @@ public class TestKickstart {
                 return 16;
             }
         };
+        GaBIEn.internal = impl;
+        GaBIEn.internalFileBrowser = impl;
+        GaBIEn.internalWindowing = impl;
         // Cleanup any possible contamination of application state between tests.
         AppMain.shutdown();
         // Also resets FontManager because that's tied into config.
