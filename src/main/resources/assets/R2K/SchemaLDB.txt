@@ -131,6 +131,7 @@ e rpg_skill_fm 0 A 1 B 2 C 3 dodge
 @failure_message_2KO rpg_skill_fm
 @OFED_battler_anim_display_actor actor_id
 @battler_anim_data subwindow hash actor_id RPG::BattlerAnimationData
++optP @easyrpg_battle_message_2k3 string
 
 .rpg_skill_sect3
 @sp_cost_val_normal int
@@ -184,6 +185,7 @@ C name Class.RPG::Item @name | #A
 +subwindow: "Equip Stats" rpg_item_sect0
 @use_count rpg_item_usecount
 @use_sp_cost int
++optP @easyrpg_using_message string
 
 +hwnd . R2K/H_ItemActorClass2
 @actor_set subwindow: "Allowed Actors" hash actor_id boolean
@@ -799,7 +801,7 @@ e rpg_bas_speed 0 slow 8 normal 14 fast
 @states subwindow hash int+1 subwindow RPG::State
 @animations subwindow hash int+1 subwindow RPG::Animation
 @tilesets subwindow hash int+1 subwindow RPG::Tileset
-@terms subwindow rpg_terms
+@terms subwindow RPG::Terms
 @system subwindow RPG::System
 @switches subwindow hash int+1 string
 @variables subwindow hash int+1 string
