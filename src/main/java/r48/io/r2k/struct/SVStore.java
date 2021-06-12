@@ -7,7 +7,9 @@
 
 package r48.io.r2k.struct;
 
+import r48.io.IntUtils;
 import r48.io.r2k.chunks.StringR2kStruct;
+import r48.io.r2k.R2kUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,12 +21,44 @@ import java.io.OutputStream;
 public class SVStore extends StringR2kStruct {
     @Override
     public void importData(InputStream bais) throws IOException {
-        Terms.importTermlike(bais, new int[] {1}, new StringR2kStruct[] {this});
+        SVStore.importTermlike(bais, new int[] {1}, new StringR2kStruct[] {this});
     }
 
     @Override
     public boolean exportData(OutputStream baos) throws IOException {
-        Terms.exportTermlike(baos, new int[] {1}, new StringR2kStruct[] {this});
+        SVStore.exportTermlike(baos, new int[] {1}, new StringR2kStruct[] {this});
         return false;
+    }
+
+    public static void importTermlike(InputStream bais, int[] map, StringR2kStruct[] termArray) throws IOException {
+        for (int i = 0; i < termArray.length; i++)
+            if (termArray[i] == null)
+                termArray[i] = new StringR2kStruct();
+        while (true) {
+            int idx = R2kUtil.readLcfVLI(bais);
+            if (idx == 0)
+                break;
+            int len = R2kUtil.readLcfVLI(bais);
+            byte[] data = IntUtils.readBytes(bais, len);
+            boolean found = false;
+            for (int i = 0; i < map.length; i++) {
+                if (map[i] == idx) {
+                    termArray[i].data = data;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+                System.err.println("UNKNOWN TERMLIKE CHUNK: " + idx);
+        }
+    }
+
+    public static void exportTermlike(OutputStream baos, int[] map, StringR2kStruct[] termArray) throws IOException {
+        for (int i = 0; i < termArray.length; i++) {
+            R2kUtil.writeLcfVLI(baos, map[i]);
+            R2kUtil.writeLcfVLI(baos, termArray[i].data.length);
+            baos.write(termArray[i].data);
+        }
+        baos.write(0);
     }
 }

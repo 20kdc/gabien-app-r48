@@ -8,6 +8,7 @@
 package r48.io.r2k.obj.ldb;
 
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DM2Optional;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
@@ -100,6 +101,8 @@ public class Item extends DM2R2kObject {
     public BooleanR2kStruct situationMap2;
     @DM2FXOBinding("@switch_usable_in_battle") @DM2LcfBinding(0x3A) @DM2LcfBoolean(false)
     public BooleanR2kStruct situationBattle;
+    @DM2Optional @DM2FXOBinding("@easyrpg_using_message") @DM2LcfBinding(0xC9) @DM2LcfObject
+    public StringR2kStruct easyrpgUsingMessage;
 
     // And now the arrays start
     @DM2FXOBinding("@actor_set") @DM2LcfSizeBinding(0x3D) @DM2LcfBinding(0x3E)

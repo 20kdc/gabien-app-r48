@@ -4,135 +4,151 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-.rpg_terms
-]0 annXEncounter string= " appeared...!"
-]1 preemptiveAttack string= "A preemptive attack!"
-]2 ranAwaySafely string= "Your escape succeeded."
-]3 failedToEscape string= "Your escape failed."
-]4 wonACombat string= "You won!"
-]5 partyDead string= "You were defeated."
-]6 experience string= "experience"
-]7 youFound string= "You found"
-]8 xMoney string= "money!"
-]9 xReceived string= "received."
-]10 annXAttacksTheEnemy2KO string
-]11 annCritEnemyHurt2KO string
-]12 annCritPlayersHurt2KO string
-]13 annXGuarding2KO string
-]14 annXDoesNothing2KO string
-]15 annXReadies2Attacks2KO string
-]16 annXSelfDestructs2KO string
-]17 annXRunsAway2KO string
-]18 annXTransforms2KO string
-]19 annEHurtForXHP2KO string
-]20 annXMissedE2KO string
-]21 annPHurtForXHP2KO string
-]22 annXMissedP2KO string
-]23 annXFloppedSkillA2KO string
-]24 annXFloppedSkillB2KO string
-]25 annXFloppedSkillC2KO string
-]26 annXDodged2KO string
-]27 annUsesItem2KO string
-]28 annXRecovered2KO string
-]29 paramInc2KO string
-]30 paramDec2KO string
-]31 annXHPAbsorbedFromE2KO string
-]32 annXHPAbsorbedFromP2KO string
-]33 resistInc2KO string
-]34 resistDec2KO string
-]35 levelUp string
-]36 annLearnedX string
-]37 battleStart string
-]38 floatTxtMiss2k3 string
-
-]39 shop1Greet string
-]40 shop1Impatient string
-]41 shop1Buy string= Buy
-]42 shop1Sell string= Sell
-]43 shop1Leave string= Leave
-]44 shop1WTBQuestion string
-]45 shop1ICoBQuestion string
-]46 shop1Done string
-]47 shop1WTSQuestion string
-]48 shop1ICoSQuestion string
-]49 shop1Thanks string= "Thank you for your custom."
-
-]50 shop2Greet string
-]51 shop2Impatient string
-]52 shop2Buy string= Buy
-]53 shop2Sell string= Sell
-]54 shop2Leave string= Leave
-]55 shop2WTBQuestion string= "How many?"
-]56 shop2ICoBQuestion string= "How many?"
-]57 shop2Done string
-]58 shop2WTSQuestion string
-]59 shop2ICoSQuestion string
-]60 shop2Thanks string= "Thank you for your custom."
-
-]61 shop3Greet string
-]62 shop3Impatient string
-]63 shop3Buy string= Buy
-]64 shop3Sell string= Sell
-]65 shop3Leave string= Leave
-]66 shop3WTBQuestion string= "How many?"
-]67 shop3ICoBQuestion string= "How many?"
-]68 shop3Done string
-]69 shop3WTSQuestion string
-]70 shop3ICoSQuestion string
-]71 shop3Thanks string= "Thank you for your custom."
-
-]72 inn1PriceX string= "It costs "
-]73 inn1XGoldToSleep string= "to sleep here."
-]74 inn1ConfirmSleep string= Sleep?
-]75 inn1SleepYes string= Sleep
-]76 inn1SleepNo string= Don't
-]77 inn2PriceX string= "It costs "
-]78 inn2XGoldToSleep string= "to sleep here."
-]79 inn2ConfirmSleep string= Sleep?
-]80 inn2SleepYes string= Sleep
-]81 inn2SleepNo string= Don't
-]82 headOwnedItems string= Owned
-]83 headEquippedItems string= Equipped
-]84 goldPostfix string= " Gold"
-]85 cmdFight string= Fight
-]86 cmdAuto string= Auto
-]87 cmdEscape string= Escape
-]88 cmdAttack2KO string= Attack
-]89 cmdDefend2KO string= Defend
-]90 cmdItemX string= Item
-]91 cmdSkill string= Skill
-]92 optEquipment string= Equipment
-]93 optSave string= Save
-]94 optStopGame string= Title
-]95 optStart string= Begin
-]96 optLoad string= Load
-]97 optExitApp string= Exit
-]98 menuStatus string= Status
-]99 menuRow string= Row
-]100 menuOrder string= Order
-]101 menuWaitOn string= WaitOn
-]102 menuWaitOff string= WaitOff
-]103 batStatLevel string= Level
-]104 batStatHP string= HP
-]105 batStatSP string= SP
-]106 batStatNoStateFx string= No.StateFx
-]107 exp2ch string= XP
-]108 lvl2ch string= Lv
-]109 hp2ch string= HP
-]110 sp2ch string= SP
-]111 spCost string= Sp.Cost
-]112 statAtk string= ATK
-]113 statDef string= DEF
-]114 statSpi string= SPI
-]115 statAgi string= AGI
-]116 equipWeapon string= Weapon
-]117 equipShield string= Shield
-]118 equipArmour string= Armour
-]119 equipHelmet string= Helmet
-]120 equipAccessory string= Accessory
-]121 saveSlot string= Save...
-]122 loadSlot string= Load...
-]123 file string= File
-]124 exitGame string= Exit?
-]125 yes string= Yes
-]126 no string= No
+: RPG::Terms
++path :.annXEncounter string= " appeared...!"
++path :.preemptiveAttack string= "A preemptive attack!"
++path :.ranAwaySafely string= "Your escape succeeded."
++path :.failedToEscape string= "Your escape failed."
++path :.wonACombat string= "You won!"
++path :.partyDead string= "You were defeated."
++path :.experience string= "experience"
++path :.youFound string= "You found"
++path :.xMoney string= "money!"
++path :.xReceived string= "received."
++path :.annXAttacksTheEnemy2KO string
++path :.annCritEnemyHurt2KO string
++path :.annCritPlayersHurt2KO string
++path :.annXGuarding2KO string
++path :.annXDoesNothing2KO string
++path :.annXReadies2Attacks2KO string
++path :.annXSelfDestructs2KO string
++path :.annXRunsAway2KO string
++path :.annXTransforms2KO string
++path :.annEHurtForXHP2KO string
++path :.annXMissedE2KO string
++path :.annPHurtForXHP2KO string
++path :.annXMissedP2KO string
++path :.annXFloppedSkillA2KO string
++path :.annXFloppedSkillB2KO string
++path :.annXFloppedSkillC2KO string
++path :.annXDodged2KO string
++path :.annUsesItem2KO string
++path :.annXRecovered2KO string
++path :.paramInc2KO string
++path :.paramDec2KO string
++path :.annXHPAbsorbedFromE2KO string
++path :.annXHPAbsorbedFromP2KO string
++path :.resistInc2KO string
++path :.resistDec2KO string
++path :.levelUp string
++path :.annLearnedX string
++path :.battleStart string
++path :.floatTxtMiss2k3 string
++path :.shop1Greet string
++path :.shop1Impatient string
++path :.shop1Buy string= Buy
++path :.shop1Sell string= Sell
++path :.shop1Leave string= Leave
++path :.shop1WTBQuestion string
++path :.shop1ICoBQuestion string
++path :.shop1Done string
++path :.shop1WTSQuestion string
++path :.shop1ICoSQuestion string
++path :.shop1Thanks string= "Thank you for your custom."
++path :.shop2Greet string
++path :.shop2Impatient string
++path :.shop2Buy string= Buy
++path :.shop2Sell string= Sell
++path :.shop2Leave string= Leave
++path :.shop2WTBQuestion string= "How many?"
++path :.shop2ICoBQuestion string= "How many?"
++path :.shop2Done string
++path :.shop2WTSQuestion string
++path :.shop2ICoSQuestion string
++path :.shop2Thanks string= "Thank you for your custom."
++path :.shop3Greet string
++path :.shop3Impatient string
++path :.shop3Buy string= Buy
++path :.shop3Sell string= Sell
++path :.shop3Leave string= Leave
++path :.shop3WTBQuestion string= "How many?"
++path :.shop3ICoBQuestion string= "How many?"
++path :.shop3Done string
++path :.shop3WTSQuestion string
++path :.shop3ICoSQuestion string
++path :.shop3Thanks string= "Thank you for your custom."
++path :.inn1PriceX string= "It costs "
++path :.inn1XGoldToSleep string= "to sleep here."
++path :.inn1ConfirmSleep string= Sleep?
++path :.inn1SleepYes string= Sleep
++path :.inn1SleepNo string= Don't
++path :.inn2PriceX string= "It costs "
++path :.inn2XGoldToSleep string= "to sleep here."
++path :.inn2ConfirmSleep string= Sleep?
++path :.inn2SleepYes string= Sleep
++path :.inn2SleepNo string= Don't
++path :.headOwnedItems string= Owned
++path :.headEquippedItems string= Equipped
++path :.goldPostfix string= " Gold"
++path :.cmdFight string= Fight
++path :.cmdAuto string= Auto
++path :.cmdEscape string= Escape
++path :.cmdAttack2KO string= Attack
++path :.cmdDefend2KO string= Defend
++path :.cmdItemX string= Item
++path :.cmdSkill string= Skill
++path :.optEquipment string= Equipment
++path :.optSave string= Save
++path :.optStopGame string= Title
++path :.optStart string= Begin
++path :.optLoad string= Load
++path :.optExitApp string= Exit
++path :.menuStatus string= Status
++path :.menuRow string= Row
++path :.menuOrder string= Order
++path :.menuWaitOn string= WaitOn
++path :.menuWaitOff string= WaitOff
++path :.batStatLevel string= Level
++path :.batStatHP string= HP
++path :.batStatSP string= SP
++path :.batStatNoStateFx string= No.StateFx
++path :.exp2ch string= XP
++path :.lvl2ch string= Lv
++path :.hp2ch string= HP
++path :.sp2ch string= SP
++path :.spCost string= Sp.Cost
++path :.statAtk string= ATK
++path :.statDef string= DEF
++path :.statSpi string= SPI
++path :.statAgi string= AGI
++path :.equipWeapon string= Weapon
++path :.equipShield string= Shield
++path :.equipArmour string= Armour
++path :.equipHelmet string= Helmet
++path :.equipAccessory string= Accessory
++path :.saveSlot string= Save...
++path :.loadSlot string= Load...
++path :.file string= File
++path :.exitGame string= Exit?
++path :.yes string= Yes
++path :.no string= No
++optP :.easyrpgItemNumberSeparator string
++optP :.easyrpgSkillCostSeparator string
++optP :.easyrpgEquipmentArrow string
++optP :.easyrpgStatusSceneName string
++optP :.easyrpgStatusSceneClass string
++optP :.easyrpgStatusSceneTitle string
++optP :.easyrpgStatusSceneCondition string
++optP :.easyrpgStatusSceneFront string
++optP :.easyrpgStatusSceneBack string
++optP :.easyrpgOrderSceneConfirm string
++optP :.easyrpgOrderSceneRedo string
++optP :.easyrpgAnnBattleDoubleAttack2k3 string
++optP :.easyrpgAnnBattleDefend2k3 string
++optP :.easyrpgAnnBattleObserve2k3 string
++optP :.easyrpgAnnBattleCharge2k3 string
++optP :.easyrpgAnnBattleSelfdestruct2k3 string
++optP :.easyrpgAnnBattleEscape2k3 string
++optP :.easyrpgAnnBattleSpecialCombatBack2k3 string
++optP :.easyrpgAnnBattleSkill2k3 string
++optP :.easyrpgAnnBattleItem2k3 string

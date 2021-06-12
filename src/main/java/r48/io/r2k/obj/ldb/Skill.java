@@ -8,6 +8,7 @@
 package r48.io.r2k.obj.ldb;
 
 import r48.io.data.DM2FXOBinding;
+import r48.io.data.DM2Optional;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.BooleanR2kStruct;
 import r48.io.r2k.chunks.IntegerR2kStruct;
@@ -87,6 +88,8 @@ public class Skill extends DM2R2kObject {
     public IntegerR2kStruct defBattlerAnim;
     @DM2FXOBinding("@battler_anim_data") @DM2LcfBinding(50) @DM2LcfSparseArray(BAD.class)
     public DM2SparseArrayH<BAD> battlerAnimMap;
+    @DM2Optional @DM2FXOBinding("@easyrpg_battle_message_2k3") @DM2LcfBinding(0xC9) @DM2LcfObject
+    public StringR2kStruct easyrpgBattleMessage2k3;
 
     public Skill() {
         super("RPG::Skill");
