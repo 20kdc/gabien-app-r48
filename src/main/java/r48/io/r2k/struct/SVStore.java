@@ -21,44 +21,26 @@ import java.io.OutputStream;
 public class SVStore extends StringR2kStruct {
     @Override
     public void importData(InputStream bais) throws IOException {
-        SVStore.importTermlike(bais, new int[] {1}, new StringR2kStruct[] {this});
-    }
-
-    @Override
-    public boolean exportData(OutputStream baos) throws IOException {
-        SVStore.exportTermlike(baos, new int[] {1}, new StringR2kStruct[] {this});
-        return false;
-    }
-
-    public static void importTermlike(InputStream bais, int[] map, StringR2kStruct[] termArray) throws IOException {
-        for (int i = 0; i < termArray.length; i++)
-            if (termArray[i] == null)
-                termArray[i] = new StringR2kStruct();
         while (true) {
             int idx = R2kUtil.readLcfVLI(bais);
             if (idx == 0)
                 break;
             int len = R2kUtil.readLcfVLI(bais);
             byte[] data = IntUtils.readBytes(bais, len);
-            boolean found = false;
-            for (int i = 0; i < map.length; i++) {
-                if (map[i] == idx) {
-                    termArray[i].data = data;
-                    found = true;
-                    break;
-                }
+            if (idx == 1) {
+                this.data = data;
+            } else {
+                System.err.println("UNKNOWN SVStore CHUNK: " + idx);
             }
-            if (!found)
-                System.err.println("UNKNOWN TERMLIKE CHUNK: " + idx);
         }
     }
 
-    public static void exportTermlike(OutputStream baos, int[] map, StringR2kStruct[] termArray) throws IOException {
-        for (int i = 0; i < termArray.length; i++) {
-            R2kUtil.writeLcfVLI(baos, map[i]);
-            R2kUtil.writeLcfVLI(baos, termArray[i].data.length);
-            baos.write(termArray[i].data);
-        }
+    @Override
+    public boolean exportData(OutputStream baos) throws IOException {
+        R2kUtil.writeLcfVLI(baos, 1);
+        R2kUtil.writeLcfVLI(baos, data.length);
+        baos.write(data);
         baos.write(0);
+        return false;
     }
 }
