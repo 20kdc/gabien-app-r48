@@ -72,17 +72,7 @@ public class SchemaParseTest {
             SchemaPath.setDefaultValue(rio2, st.baseElement, new IRIOFixnum(0));
             for (int i : st.database.knownCommandOrder) {
                 rio2.getIVar("@code").setFX(i);
-                st.baseElement.modifyVal(rio, new SchemaPath(st, new IObjectBackend.ILoadedObject() {
-                    @Override
-                    public IRIO getObject() {
-                        return rio;
-                    }
-
-                    @Override
-                    public void save() throws IOException {
-
-                    }
-                }), false);
+                st.baseElement.modifyVal(rio, new SchemaPath(st, new IObjectBackend.MockLoadedObject(rio)), false);
             }
         }
     }

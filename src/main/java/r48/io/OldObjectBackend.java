@@ -41,7 +41,7 @@ public abstract class OldObjectBackend<O extends IRIO> implements IObjectBackend
     }
 
     private class OldObjectBackendLoadedObject implements ILoadedObject {
-        private final O intern;
+        private O intern;
         private final String fn;
 
         public OldObjectBackendLoadedObject(O rio, String filename) {
@@ -57,6 +57,17 @@ public abstract class OldObjectBackend<O extends IRIO> implements IObjectBackend
         @Override
         public void save() throws IOException {
             saveObjectToFile(fn, intern);
+        }
+
+        @Override
+        public boolean overwriteWith(ILoadedObject other) {
+            if (other.getClass() == getClass()) {
+                if (((OldObjectBackendLoadedObject) other).intern.getClass() == intern.getClass()) {
+                    intern = ((OldObjectBackendLoadedObject) other).intern;
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

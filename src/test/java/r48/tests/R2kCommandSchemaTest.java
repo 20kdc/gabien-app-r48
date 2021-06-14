@@ -62,17 +62,7 @@ public class R2kCommandSchemaTest {
         TestKickstart.kickstart("RAM/", "UTF-8", "R2K/");
         rpgEvInst = new Event();
         rpgEv = AppMain.schemas.getSDBEntry("RPG::Event");
-        rpgEvP = new SchemaPath(rpgEv, new IObjectBackend.ILoadedObject() {
-            @Override
-            public IRIO getObject() {
-                return rpgEvInst;
-            }
-
-            @Override
-            public void save() throws IOException {
-
-            }
-        });
+        rpgEvP = new SchemaPath(rpgEv, new IObjectBackend.MockLoadedObject(rpgEvInst));
         rpgEv.modifyVal(rpgEvInst, rpgEvP, true);
     }
 

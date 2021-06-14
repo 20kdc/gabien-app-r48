@@ -9,6 +9,7 @@ package r48.schema.specialized;
 
 import gabien.ui.UIElement;
 import r48.io.IObjectBackend;
+import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -73,6 +74,11 @@ public class MagicalBindingSchemaElement extends SchemaElement {
             @Override
             public void save() throws IOException {
 
+            }
+
+            @Override
+            public boolean overwriteWith(ILoadedObject other) {
+                return false;
             }
         });
         sp.contextualSchemas.putAll(truePath.contextualSchemas);

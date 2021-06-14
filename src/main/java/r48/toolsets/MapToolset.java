@@ -25,6 +25,8 @@ public class MapToolset implements IToolset {
     public MapToolset() {
         final UIMapViewContainer mapBox = new UIMapViewContainer();
         context = new IMapContext() {
+            private String theGum = null;
+
             @Override
             public String getCurrentMapObject() {
                 if (mapBox.view == null)
@@ -35,6 +37,7 @@ public class MapToolset implements IToolset {
             @Override
             public void loadMap(String gum) {
                 System.out.println("Game Unique Map:" + gum);
+                theGum = gum;
                 mapBox.loadMap(gum);
             }
 
@@ -49,6 +52,10 @@ public class MapToolset implements IToolset {
             public void performCacheFlush() {
                 // Can be null safely
                 UIMapView.performFullCacheFlush(mapBox.view);
+            }
+
+            @Override
+            public void performIRIOFlush() {
             }
         };
 

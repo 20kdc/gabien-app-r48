@@ -13,6 +13,7 @@ import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
+import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.IRIO;
 import r48.schema.specialized.OSStrHashMapSchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -50,16 +51,7 @@ public class HashSchemaElement extends SchemaElement {
 
         final SchemaPath setLocalePath = launcher.getCurrentObject();
 
-        final SchemaPath rioPath = new SchemaPath(keyElem, new IObjectBackend.ILoadedObject() {
-            @Override
-            public IRIO getObject() {
-                return keyWorkspace;
-            }
-
-            @Override
-            public void save() throws IOException {
-            }
-        }, new Runnable() {
+        final SchemaPath rioPath = new SchemaPath(keyElem, new IObjectBackend.MockLoadedObject(keyWorkspace), new Runnable() {
             @Override
             public void run() {
                 // This may occur from a different page (say, an enum selector), so the more complicated form must be used.

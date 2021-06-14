@@ -30,4 +30,7 @@ public interface IMapContext {
 
     // Used indirectly by the image editor when a file is saved.
     void performCacheFlush();
+
+    // Flushes IRIO references, while trying to preserve as much as possible.
+    void performIRIOFlush();
 }

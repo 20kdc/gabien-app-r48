@@ -30,8 +30,33 @@ public interface IObjectBackend {
 
     interface ILoadedObject {
         IRIO getObject();
+        // Overwrites this object with another if possible.
+        // Returns false if not possible (slowpath)
+        boolean overwriteWith(ILoadedObject other);
 
         void save() throws IOException;
+    }
+
+    public class MockLoadedObject implements ILoadedObject {
+        private final IRIO obj;
+
+        public MockLoadedObject(IRIO o) {
+            obj = o;
+        }
+
+        @Override
+        public IRIO getObject() {
+            return obj;
+        }
+
+        @Override
+        public void save() throws IOException {
+        }
+
+        @Override
+        public boolean overwriteWith(ILoadedObject other) {
+            return false;
+        }
     }
 
     abstract class Factory {

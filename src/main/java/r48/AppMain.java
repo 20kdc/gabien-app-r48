@@ -166,7 +166,23 @@ public class AppMain {
                 saveAllModified();
             }
         });
-        window = new WindowManager(uiTicker, null, sym);
+        final UISymbolButton sym2 = new UISymbolButton(Art.Symbol.Back, FontSizes.tabTextHeight, createLaunchConfirmation(TXDB.get("Reverting changes will lose all unsaved work and will reset many windows."), new Runnable() {
+            @Override
+            public void run() {
+                performSystemDump(false);
+                // Shutdown schema hosts
+                for (ISchemaHost ish : activeHosts) {
+                    ish.shutdown();
+                }
+                // We're prepared for revert, do the thing
+                objectDB.revertEverything();
+                // Map editor will have fixed itself because it watches the roots and does full reinits when anything even remotely changes
+                // But do this as well
+                schemas.kickAllDictionariesForMapChange();
+            }
+        }));
+        UISplitterLayout usl = new UISplitterLayout(sym, sym2, false, 0.5);
+        window = new WindowManager(uiTicker, null, usl);
 
         initializeTabs();
 
@@ -557,7 +573,7 @@ public class AppMain {
         if (!emergency) {
             RubyIO n2 = new RubyIO();
             n2.setString(TXDB.get("R48 Non-Emergency Backup File. This file can be used in place of r48.error.YOUR_SAVED_DATA.r48 in case of power failure or corrupting error. Assuming you actually save often it won't get too big - otherwise you need the reliability."), true);
-            RubyIO n3 = AdHocSaveLoad.load("r48.pfail.YOUR_SAVED_DATA");
+            RubyIO n3 = AdHocSaveLoad.load("r48.revert.YOUR_SAVED_DATA");
             if (n3 != null) {
                 // Unlink for disk space & memory usage reasons.
                 // Already this is going to eat RAM.
@@ -569,7 +585,7 @@ public class AppMain {
         }
         if (emergency)
             System.err.println("emergency dump is now actually occurring. Good luck.");
-        AdHocSaveLoad.save(emergency ? "r48.error.YOUR_SAVED_DATA" : "r48.pfail.YOUR_SAVED_DATA", n);
+        AdHocSaveLoad.save(emergency ? "r48.error.YOUR_SAVED_DATA" : "r48.revert.YOUR_SAVED_DATA", n);
         if (emergency)
             System.err.println("emergency dump is complete.");
     }

@@ -11,6 +11,8 @@ import gabien.ui.IConsumer;
 import gabienapp.UIFancyInit;
 import r48.AppMain;
 import r48.io.IObjectBackend;
+import r48.io.data.IRIO;
+import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -251,5 +253,33 @@ public class ObjectDB {
             if (id != null)
                 ensureSaved(id, rio);
         }
+    }
+
+    public void revertEverything() {
+        // Any object that can be reverted, revert it.
+        // Mark them all down for removal from modifiedObjects later.
+        LinkedList<IObjectBackend.ILoadedObject> pokedObjects = new LinkedList<IObjectBackend.ILoadedObject>();
+        for (IObjectBackend.ILoadedObject lo : modifiedObjects) {
+            String id = getIdByObject(lo);
+            if (id != null) {
+                IObjectBackend.ILoadedObject newVal = backend.loadObject(id);
+                if (newVal != null) {
+                    // Try doing things just by overwriting the internals, otherwise deep-clone
+                    if (!lo.overwriteWith(newVal))
+                        lo.getObject().setDeepClone(newVal.getObject());
+                    pokedObjects.add(lo);
+                }
+            }
+        }
+        // Perform modification listeners.
+        for (IObjectBackend.ILoadedObject lo : pokedObjects) {
+            // Use an opaque schema element because we really don't have a good one here.
+            // We don't use changeOccurred because that would activate schema processing, which is also undesired here.
+            objectRootModified(lo, new SchemaPath(new OpaqueSchemaElement(), lo));
+        }
+        // Remove from modifiedObjects - they don't count as modified.
+        modifiedObjects.removeAll(pokedObjects);
+        pokedObjects = null;
+        System.gc();
     }
 }

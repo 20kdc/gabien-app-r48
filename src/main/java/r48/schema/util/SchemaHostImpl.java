@@ -290,6 +290,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     @Override
     public void onWindowClose() {
         windowOpen = false;
+        stayClosed = true;
         if (innerElem != null) {
             AppMain.objectDB.deregisterModificationHandler(innerElem.findRoot().root, nudgeRunnable);
             validitySupplier = null; // We're not seeing modifications, so don't check validity.
@@ -298,5 +299,15 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
         }
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
+    }
+
+    @Override
+    public void shutdown() {
+        stayClosed = true;
+    }
+
+    @Override
+    public boolean requestsUnparenting() {
+        return stayClosed;
     }
 }
