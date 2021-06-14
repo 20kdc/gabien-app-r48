@@ -184,21 +184,11 @@ v 0 amount int_default_1
 
 127:@@Weapon{A: @#A += [@operate_value_1]| Add/Remove}
 d Give or take weapons from the player.
-p item weapon_id
-p negate int_boolean
-p amountIsVar int_boolean
-P 2 amountVar var_id
-v 0 amount int_default_1
-p includeEquipped boolean
+X weapon_add_remove_parameters
 
 128:@@Armour{A: #A += [@operate_value_1]| Add/Remove}
 d Give or take armour from the player.
-p item armour_id
-p negate int_boolean
-p amountIsVar int_boolean
-P 2 amountVar var_id
-v 0 amount int_default_1
-p includeEquipped boolean
+X armour_add_remove_parameters
 
 129:@@{A:{B=0=Remove actor @#A from party|Add actor @#A to party{C=0= without} resetting}|Add/remove actor to party}
 d Adds or removes a party member from/to the player's party.

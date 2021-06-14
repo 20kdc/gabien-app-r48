@@ -150,3 +150,30 @@ E force_action_target TargetIdx -2 Last -1 Random
 
 .onoff_timer_stop
 ]0 stop int_boolean
+
+.equippable_add_remove_parameters_array
+]1 negate int_boolean
+]2 amountIsVar int_boolean
++DA{ ]2 equippable_add_remove_parameters_array_amount_var 0 equippable_add_remove_parameters_array_amount }
++]?4 includeEquipped unknown boolean
+
+.equippable_add_remove_parameters_array_amount
+]3 amount int_default_1
+.equippable_add_remove_parameters_array_amount_var
+]3 amountVar var_id
+
+.weapon_add_remove_parameters
+@indent indent
+@parameters weapon_add_remove_parameters_array
+
+.weapon_add_remove_parameters_array
+]0 item weapon_id
++equippable_add_remove_parameters_array
+
+.armour_add_remove_parameters
+@indent indent
+@parameters armour_add_remove_parameters_array
+
+.armour_add_remove_parameters_array
+]0 item armour_id
++equippable_add_remove_parameters_array

@@ -93,7 +93,7 @@ public class LocalTestExecutiveTest {
                 AppMain.objectDB.registerModificationHandler(objectInternalCopy, new IConsumer<SchemaPath>() {
                     @Override
                     public void accept(SchemaPath schemaPath) {
-                        throw new RuntimeException("A modification occurred on LTE data. This shouldn't happen.");
+                        throw new RuntimeException("A modification occurred on LTE data. This shouldn't happen: " + schemaPath.toString());
                     }
                 });
                 wse.modifyVal(objectInternalCopy.getObject(), new SchemaPath(wse, objectInternalCopy), false);
