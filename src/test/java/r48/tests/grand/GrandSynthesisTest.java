@@ -41,7 +41,7 @@ public class GrandSynthesisTest {
         gtb.thenWaitFrame();
         gtb.thenClick("label:@terms ¥..¥button");
         gtb.thenWaitFrame();
-        gtb.thenClick("label:annXEncounter¥..¥textbox");
+        gtb.thenClick("label::.annXEncounter ¥..¥textbox");
         gtb.thenType(" said hello!");
         gtb.thenIcon("RPG_RT.ldb", 0);
     }
