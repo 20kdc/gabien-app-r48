@@ -109,7 +109,9 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
             switch (mode) {
                 case 0:
                     // 1. Install a basic Actor
-                    SchemaPath.setDefaultValue(target.getIVar("@actors").addHashVal(new RubyIO().setFX(1)), AppMain.schemas.getSDBEntry("RPG::Actor"), new RubyIO().setFX(1));
+                    sub = target.getIVar("@actors").addHashVal(new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::Actor"), new RubyIO().setFX(1));
+                    sub.getIVar("@face_name").setString("faceset");
                     target.getIVar("@system").getIVar("@party").setArray().addAElem(0).setFX(1);
                     // 2. Install a tileset
                     SchemaPath.setDefaultValue(target.getIVar("@tilesets").addHashVal(new RubyIO().setFX(1)), AppMain.schemas.getSDBEntry("RPG::Tileset"), new RubyIO().setFX(1));

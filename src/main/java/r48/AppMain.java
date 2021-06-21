@@ -473,6 +473,7 @@ public class AppMain {
                 };
                 String[] fileCopies = {
                         "R2K/char.png", "CharSet/char.png",
+                        "R2K/faceset.png", "FaceSet/faceset.png",
                         "R2K/backdrop.png", "Backdrop/backdrop.png",
                         "R2K/System.png", "System/System.png",
                         "R2K/templatetileset.png", "ChipSet/templatetileset.png",
