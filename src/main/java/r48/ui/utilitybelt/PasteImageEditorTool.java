@@ -20,6 +20,7 @@ import java.io.IOException;
  */
 public class PasteImageEditorTool implements IImageEditorTool {
     public boolean flipX, flipY, swapXY;
+    public boolean rawCopy = true;
 
     public PasteImageEditorTool() {
     }
@@ -54,14 +55,12 @@ public class PasteImageEditorTool implements IImageEditorTool {
         }
 
         view.eds.startSection();
-
-        // Final raw data...
-        int[] cols = new int[result.width * result.height];
-
+        // Firstly, check if colour mapping is needed.
+        // If not a raw copy, colour mapping isn't allowed.
         boolean performColourMap = true;
         boolean imageUsesPal = view.image.usesPalette();
         int imagePalSize = view.image.paletteSize();
-        if ((!result.ignoresPalette) && imageUsesPal) {
+        if ((!result.ignoresPalette) && imageUsesPal && rawCopy) {
             if (result.paletteCol == imagePalSize) {
                 performColourMap = false;
                 for (int i = 0; i < result.paletteCol; i++)
@@ -69,33 +68,7 @@ public class PasteImageEditorTool implements IImageEditorTool {
                         performColourMap = true;
             }
         }
-        for (int i = 0; i < result.width; i++) {
-            for (int j = 0; j < result.height; j++) {
-                if (performColourMap) {
-                    int argb = result.getPixel(i, j);
-                    if (!result.ignoresPalette)
-                        argb = result.getPalette(argb);
-                    if (imageUsesPal) {
-                        int distance = Integer.MAX_VALUE;
-                        int best = 0;
-                        for (int k = 0; k < imagePalSize; k++) {
-                            int argb2 = view.image.getPaletteRGB(k);
-                            int ndist = colourDistance(argb, argb2);
-                            if (ndist < distance) {
-                                best = k;
-                                distance = ndist;
-                            }
-                        }
-                        cols[i + (j * result.width)] = best;
-                    } else {
-                        cols[i + (j * result.width)] = argb;
-                    }
-                } else {
-                    // known to be a valid index
-                    cols[i + (j * result.width)] = result.getPixel(i, j);
-                }
-            }
-        }
+        // Secondly, perform the main copy loop.
         for (int i = 0; i < result.width; i++) {
             for (int j = 0; j < result.height; j++) {
                 int i2 = i, j2 = j;
@@ -109,8 +82,63 @@ public class PasteImageEditorTool implements IImageEditorTool {
                     j2 = k;
                 }
                 FillAlgorithm.Point p = view.correctPoint(x + i2, y + j2);
-                if (p != null)
-                    view.image.setRaw(p.x, p.y, cols[i + (j * result.width)]);
+                if (p != null) {
+                    // For each pixel...
+                    int res;
+                    if (performColourMap) {
+                        // Input
+                        int argb = result.getPixel(i, j);
+                        if (!result.ignoresPalette)
+                            argb = result.getPalette(argb);
+                        // If not a raw copy, modify for blending
+                        if (!rawCopy) {
+                            int argbSurface = view.image.getRGB(p.x, p.y);
+                            // split
+                            int a1 = (argbSurface >> 24) & 0xFF;
+                            int a2 = (argb >> 24) & 0xFF;
+                            int r1 = (argbSurface >> 16) & 0xFF;
+                            int r2 = (argb >> 16) & 0xFF;
+                            int g1 = (argbSurface >> 8) & 0xFF;
+                            int g2 = (argb >> 8) & 0xFF;
+                            int b1 = (argbSurface >> 0) & 0xFF;
+                            int b2 = (argb >> 0) & 0xFF;
+                            // calculate
+                            int f1 = (a1 * (0xFF - a2)) / 0xFF;
+                            int f2 = a2;
+                            int a3 = a2 + f1;
+                            if (a3 > 0xFF)
+                                a3 = 0xFF;
+                            int a3d = a3;
+                            if (a3d == 0)
+                                a3d = 1;
+                            int r3 = ((f1 * r1) + (f2 * r2)) / a3d;
+                            int g3 = ((f1 * g1) + (f2 * g2)) / a3d;
+                            int b3 = ((f1 * b1) + (f2 * b2)) / a3d;
+                            // join
+                            argb = (a3 << 24) | (r3 << 16) | (g3 << 8) | (b3 << 0);
+                        }
+                        // Output
+                        if (imageUsesPal) {
+                            int distance = Integer.MAX_VALUE;
+                            int best = 0;
+                            for (int k = 0; k < imagePalSize; k++) {
+                                int argb2 = view.image.getPaletteRGB(k);
+                                int ndist = colourDistance(argb, argb2);
+                                if (ndist < distance) {
+                                    best = k;
+                                    distance = ndist;
+                                }
+                            }
+                            res = best;
+                        } else {
+                            res = argb;
+                        }
+                    } else {
+                        // known to be a valid index
+                        res = result.getPixel(i, j);
+                    }
+                    view.image.setRaw(p.x, p.y, res);
+                }
             }
         }
         view.eds.endSection();
@@ -126,7 +154,6 @@ public class PasteImageEditorTool implements IImageEditorTool {
 
     @Override
     public void endApply(UIImageEditView view) {
-
     }
 
     @Override
@@ -150,8 +177,15 @@ public class PasteImageEditorTool implements IImageEditorTool {
                 swapXY = !swapXY;
             }
         }).togglable(swapXY);
+        UITextButton d = new UITextButton(TXDB.get("Raw Copy"), FontSizes.schemaFieldTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                rawCopy = !rawCopy;
+            }
+        }).togglable(rawCopy);
         UISplitterLayout sl = new UISplitterLayout(a, b, false, 0.5d);
         uie.panelsAdd(new UISplitterLayout(sl, c, false, 0.6666d));
+        uie.panelsAdd(d);
         return uie;
     }
 
