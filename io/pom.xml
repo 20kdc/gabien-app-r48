@@ -11,11 +11,12 @@
 	<name>R48 IO</name>
 	<description>Underlying IO library of R48</description>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
-	</properties>
+	<parent>
+		<groupId>t20kdc.hs2</groupId>
+		<artifactId>r48-parent-project</artifactId>
+		<version>0.666-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
 
 	<dependencies>
 		<dependency>
