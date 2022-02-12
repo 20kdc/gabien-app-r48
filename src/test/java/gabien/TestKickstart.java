@@ -246,7 +246,7 @@ public class TestKickstart {
         @Override
         public boolean flush() {
             try {
-                FileOutputStream debugOut = new FileOutputStream("test-debug.png");
+                FileOutputStream debugOut = new FileOutputStream("test-out/debug.png");
                 debugOut.write(createPNG());
                 debugOut.close();
             } catch (Exception e) {

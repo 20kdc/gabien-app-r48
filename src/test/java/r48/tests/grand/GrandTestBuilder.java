@@ -210,7 +210,7 @@ public class GrandTestBuilder {
             long checksum = 0;
             for (byte b : dat)
                 checksum += b & 0xFF;
-            FileOutputStream fos = new FileOutputStream("test-debug" + checksum + ".pak");
+            FileOutputStream fos = new FileOutputStream("test-out/debug" + checksum + ".pak");
             fos.write(dat);
             fos.close();
             // Checksum checking has been disabled due to general unreliability of the checksum algorithm over various changes.

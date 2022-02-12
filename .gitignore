@@ -59,3 +59,8 @@
 # These files are to be COPIED OVER.
 instimi/src/main/resources/CREDITS.txt
 instimi/src/main/resources/COPYING.txt
+
+# Test dir
+!test-out
+!test-out/placeholder
+
