@@ -8,6 +8,7 @@
 package gabien;
 
 import gabien.uslx.append.*;
+import gabien.uslx.vfs.FSBackend;
 import gabien.uslx.append.*;
 import gabien.ui.IPointer;
 import gabien.uslx.append.*;
@@ -55,42 +56,18 @@ public class TestKickstart {
         windowCount = 0;
         mockFS.clear();
         mockDFS.clear();
-        GaBIEnImpl impl = new GaBIEnImpl(false) {
+        final GaBIEnImpl impl = new GaBIEnImpl(false) {
 
             @Override
             public String[] getFontOverrides() {
                 return new String[] {
-                        GaBIEnImpl.getDefaultFont()
+                    GaBIEnImpl.getDefaultFont()
                 };
             }
 
             @Override
             public void ensureQuit() {
 
-            }
-
-            @Override
-            public void rmFile(String s) {
-                if (s.endsWith("/"))
-                    throw new RuntimeException("Not valid");
-                if (mockDFS.contains(s)) {
-                    for (String st : new HashSet<String>(mockDFS))
-                        if (st.startsWith(s + "/"))
-                            mockDFS.remove(st);
-                    mockDFS.remove(s);
-                } else {
-                    mockFS.remove(s);
-                }
-            }
-
-            @Override
-            public void makeDirectories(String s) {
-                if (s.endsWith("/"))
-                    throw new RuntimeException("Not valid");
-                String dn = GaBIEn.dirname(s);
-                if (!dn.equals(""))
-                    makeDirectories(dn);
-                mockDFS.add(s);
             }
 
             @Override
@@ -128,28 +105,6 @@ public class TestKickstart {
             }
 
             @Override
-            public InputStream getFile(String FDialog) {
-                byte[] data = mockFS.get(FDialog);
-                if (data == null) {
-                    if (FDialog.startsWith("./"))
-                        FDialog = FDialog.substring(2);
-                    return getResource(FDialog);
-                }
-                return new ByteArrayInputStream(data);
-            }
-
-            @Override
-            public OutputStream getOutFile(final String FDialog) {
-                return new ByteArrayOutputStream() {
-                    @Override
-                    public void close() throws IOException {
-                        super.close();
-                        mockFS.put(FDialog, toByteArray());
-                    }
-                };
-            }
-
-            @Override
             public IGrInDriver makeGrIn(String name, int w, int h, WindowSpecs ws) {
                 ws.resizable = false;
                 w = 960;
@@ -168,6 +123,61 @@ public class TestKickstart {
             }
         };
         GaBIEn.internal = impl;
+        GaBIEn.mutableDataFS = new FSBackend() {
+
+            @Override
+            public XState getState(String fileName) {
+                throw new RuntimeException("wouldn't be called");
+            }
+
+            @Override
+            public InputStream openRead(String fileName) throws IOException {
+                byte[] data = mockFS.get(fileName);
+                if (data == null) {
+                    if (fileName.startsWith("./"))
+                        fileName = fileName.substring(2);
+                    return impl.getResource(fileName);
+                }
+                return new ByteArrayInputStream(data);
+            }
+
+            @Override
+            public OutputStream openWrite(final String fileName) throws IOException {
+                return new ByteArrayOutputStream() {
+                    @Override
+                    public void close() throws IOException {
+                        super.close();
+                        mockFS.put(fileName, toByteArray());
+                    }
+                };
+            }
+
+            @Override
+            public void changeTime(String fileName, long time) {
+            }
+
+            @Override
+            public void delete(String fileName) {
+                if (fileName.endsWith("/"))
+                    throw new RuntimeException("Not valid");
+                if (mockDFS.contains(fileName)) {
+                    for (String st : new HashSet<String>(mockDFS))
+                        if (st.startsWith(fileName + "/"))
+                            mockDFS.remove(st);
+                    mockDFS.remove(fileName);
+                } else {
+                    mockFS.remove(fileName);
+                }
+            }
+
+            @Override
+            public void mkdir(String fileName) {
+                if (fileName.endsWith("/"))
+                    throw new RuntimeException("Not valid");
+                mockDFS.add(fileName);
+            }
+            
+        };
         GaBIEn.internalFileBrowser = impl;
         GaBIEn.internalWindowing = impl;
         // Cleanup any possible contamination of application state between tests.

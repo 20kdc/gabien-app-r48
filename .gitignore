@@ -36,5 +36,6 @@ imi/src/main/resources/CREDITS.txt
 imi/src/main/resources/COPYING.txt
 
 # Test dir
-!test-out
-!test-out/placeholder
+!app/test-out
+!app/test-out/placeholder
+
