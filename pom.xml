@@ -36,7 +36,6 @@
 	<modules>
 		<module>app</module>
 		<module>io</module>
-		<module>imi</module>
 	</modules>
 </project>
 

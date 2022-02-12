@@ -37,16 +37,17 @@ To start using R48 for independent game development:
 
 ## section 4 : build
 
-*BUILD PROCESS IS A BIT OF A MESS RIGHT NOW. SEE gabien-common AND TAKE NOTES FROM THERE.*
+Build process is a bit of a mess right now. See gabien-common and take notes from there.
+
+What's definitely worth keeping in mind, however, is that the release scripts assume `gabien-common`, `gabien-android`, and `gabien-app-r48` are all in the same directory.
 
 ## section 5 : support
 
 GitHub Issues are used for feature requests and bug reports.
 
-For general help, I suggest going to the freenode #easyrpg IRC channel for now.
-It can be accessed on Matrix via the usual matrix.org gateway.
+I'm `@20kdc:matrix.org` on Matrix right now but that might change.
 
-Discord support is currently only available by finding me (20kdc#9365), because I typically use EasyRPG channels for discussion - this isn't a big project yet.
+Support over Discord is currently only available by finding me (`20kdc#9365`).
 
 Upon crash, R48 ought to give you the information and data you need to continue, but no guarantees.
 If you have a lot of unsaved data, it may simply freeze while writing tons of data into the crash file.

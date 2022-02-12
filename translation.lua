@@ -54,10 +54,10 @@ local function check(f)
   end
  end
 end
-check("src/main/java")
-print(" - src/main/java/r48/FontSizes.java.fields - ")
+check("app/src/main/java")
+print(" - app/src/main/java/r48/FontSizes.java.fields - ")
 -- FontSizes has extra-special logic
-local f = io.open("src/main/java/r48/FontSizes.java", "r")
+local f = io.open("app/src/main/java/r48/FontSizes.java", "r")
 while true do
  local line = f:read()
  if not line then break end
