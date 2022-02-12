@@ -7,7 +7,7 @@
 
 package r48.schema;
 
-import gabien.ui.IFunction;
+import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;

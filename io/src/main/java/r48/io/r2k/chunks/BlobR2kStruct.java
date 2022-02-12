@@ -7,7 +7,7 @@
 
 package r48.io.r2k.chunks;
 
-import gabien.ui.ISupplier;
+import gabien.uslx.append.*;
 import r48.io.IntUtils;
 import r48.io.data.IRIOFixedUser;
 

@@ -7,7 +7,7 @@
 
 package r48.schema.displays;
 
-import gabien.ui.IConsumer;
+import gabien.uslx.append.*;
 import gabien.ui.UIPublicPanel;
 import gabien.ui.UISplitterLayout;
 import r48.imagefx.HueShiftImageEffect;

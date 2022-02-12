@@ -8,7 +8,7 @@
 package r48.io;
 
 import gabien.GaBIEn;
-import gabien.ui.IConsumer;
+import gabien.uslx.append.*;
 import r48.RubyIO;
 import r48.io.data.IRIO;
 

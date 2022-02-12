@@ -11,6 +11,7 @@ import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.IPeripherals;
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import r48.ui.Art;
 
 /**

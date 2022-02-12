@@ -10,6 +10,7 @@ package r48.ui.help;
 import gabien.GaBIEn;
 import gabien.IImage;
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import r48.FontSizes;
 import r48.ui.UIThumbnail;
 

@@ -9,7 +9,7 @@ package r48.schema;
 
 import gabien.IGrDriver;
 import gabien.IPeripherals;
-import gabien.ui.IFunction;
+import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;

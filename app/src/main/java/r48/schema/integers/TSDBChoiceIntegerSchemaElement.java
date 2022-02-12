@@ -9,7 +9,7 @@ package r48.schema.integers;
 
 import gabien.IGrDriver;
 import gabien.IImage;
-import gabien.ui.IConsumer;
+import gabien.uslx.append.*;
 import gabien.ui.Size;
 import gabien.ui.UIScrollLayout;
 import r48.FontSizes;

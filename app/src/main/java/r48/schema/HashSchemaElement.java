@@ -8,6 +8,7 @@
 package r48.schema;
 
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;

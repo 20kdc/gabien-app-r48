@@ -9,6 +9,7 @@ package r48;
 
 import gabien.GaBIEn;
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.specialized.IMagicalBinder;

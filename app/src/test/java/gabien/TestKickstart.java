@@ -7,10 +7,10 @@
 
 package gabien;
 
-import gabien.ui.IConsumer;
-import gabien.ui.IFunction;
+import gabien.uslx.append.*;
+import gabien.uslx.append.*;
 import gabien.ui.IPointer;
-import gabien.ui.ISupplier;
+import gabien.uslx.append.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.ObjectDB;

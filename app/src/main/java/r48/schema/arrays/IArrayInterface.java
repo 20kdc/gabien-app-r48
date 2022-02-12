@@ -8,6 +8,7 @@
 package r48.schema.arrays;
 
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import r48.io.data.IRIO;
 
 /**

@@ -10,6 +10,7 @@ package r48.tests.grand;
 import gabien.MobilePeripherals;
 import gabien.TestKickstart;
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import gabienapp.Application;
 import r48.io.IntUtils;
 import r48.wm.GrandWindowManagerUtils;

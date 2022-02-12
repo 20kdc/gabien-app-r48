@@ -8,6 +8,7 @@
 package r48.ui;
 
 import gabien.ui.*;
+import gabien.uslx.append.*;
 
 /**
  * Just a useful tool for constructing UI stuff.

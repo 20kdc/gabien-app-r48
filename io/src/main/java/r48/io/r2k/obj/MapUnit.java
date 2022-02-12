@@ -7,7 +7,7 @@
 
 package r48.io.r2k.obj;
 
-import gabien.ui.ISupplier;
+import gabien.uslx.append.*;
 import r48.RubyTable;
 import r48.io.data.DM2FXOBinding;
 import r48.io.data.DM2Optional;

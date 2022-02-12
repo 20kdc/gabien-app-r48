@@ -7,8 +7,8 @@
 
 package r48.schema.arrays;
 
-import gabien.ui.IFunction;
-import gabien.ui.ISupplier;
+import gabien.uslx.append.*;
+import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import r48.AppMain;

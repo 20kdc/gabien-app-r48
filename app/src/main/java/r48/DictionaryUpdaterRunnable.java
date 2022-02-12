@@ -7,8 +7,8 @@
 
 package r48;
 
-import gabien.ui.IConsumer;
-import gabien.ui.IFunction;
+import gabien.uslx.append.*;
+import gabien.uslx.append.*;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;

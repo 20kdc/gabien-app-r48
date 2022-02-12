@@ -11,6 +11,7 @@ import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.IPeripherals;
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import gabienapp.Application;
 import r48.FontSizes;
 import r48.RubyIO;

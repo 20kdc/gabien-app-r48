@@ -12,6 +12,7 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.WindowSpecs;
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;

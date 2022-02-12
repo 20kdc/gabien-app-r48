@@ -7,7 +7,7 @@
 
 package gabienapp;
 
-import gabien.ui.ISupplier;
+import gabien.uslx.append.*;
 
 public interface IGPMenuPanel {
     String[] getButtonText();

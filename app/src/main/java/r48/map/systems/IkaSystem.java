@@ -7,7 +7,7 @@
 
 package r48.map.systems;
 
-import gabien.ui.IFunction;
+import gabien.uslx.append.*;
 import r48.AppMain;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;

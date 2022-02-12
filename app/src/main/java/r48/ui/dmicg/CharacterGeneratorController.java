@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;

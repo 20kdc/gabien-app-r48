@@ -7,7 +7,7 @@
 
 package r48.map.mapinfos;
 
-import gabien.ui.IConsumer;
+import gabien.uslx.append.*;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;

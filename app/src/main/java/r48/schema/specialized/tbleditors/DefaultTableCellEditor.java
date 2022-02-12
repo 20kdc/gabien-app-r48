@@ -9,7 +9,7 @@ package r48.schema.specialized.tbleditors;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import gabien.ui.IConsumer;
+import gabien.uslx.append.*;
 import gabien.ui.UINumberBox;
 import gabien.ui.UIScrollLayout;
 import r48.FontSizes;

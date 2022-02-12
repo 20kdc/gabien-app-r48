@@ -7,7 +7,7 @@
 
 package r48.ui;
 
-import gabien.ui.ISupplier;
+import gabien.uslx.append.*;
 import gabien.ui.UIAutoclosingPopupMenu;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;

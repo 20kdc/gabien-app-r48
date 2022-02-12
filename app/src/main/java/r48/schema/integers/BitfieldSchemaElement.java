@@ -7,7 +7,7 @@
 
 package r48.schema.integers;
 
-import gabien.ui.IConsumer;
+import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;

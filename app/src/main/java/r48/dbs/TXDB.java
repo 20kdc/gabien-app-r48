@@ -8,7 +8,7 @@
 package r48.dbs;
 
 import gabien.GaBIEn;
-import gabien.ui.IFunction;
+import gabien.uslx.append.*;
 import r48.io.data.IRIO;
 
 import java.io.IOException;

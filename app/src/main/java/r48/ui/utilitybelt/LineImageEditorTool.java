@@ -7,7 +7,7 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.ui.IFunction;
+import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import r48.dbs.TXDB;
 

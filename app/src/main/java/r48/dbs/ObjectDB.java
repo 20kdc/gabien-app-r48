@@ -7,7 +7,7 @@
 
 package r48.dbs;
 
-import gabien.ui.IConsumer;
+import gabien.uslx.append.*;
 import gabienapp.UIFancyInit;
 import r48.AppMain;
 import r48.io.IObjectBackend;

@@ -8,6 +8,7 @@
 package r48.map;
 
 import gabien.*;
+import gabien.uslx.append.*;
 import gabien.ui.*;
 import gabienapp.Application;
 import r48.AppMain;

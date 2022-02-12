@@ -7,7 +7,7 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.ui.IFunction;
+import gabien.uslx.append.*;
 
 /**
  * The Totally Not A Derivative Of That Algorithm Meddling Kids And Their Dog Use For Line Drawing Algorithm.

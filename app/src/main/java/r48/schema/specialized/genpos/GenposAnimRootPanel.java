@@ -7,8 +7,8 @@
 
 package r48.schema.specialized.genpos;
 
-import gabien.ui.IConsumer;
-import gabien.ui.ISupplier;
+import gabien.uslx.append.*;
+import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import r48.AppMain;

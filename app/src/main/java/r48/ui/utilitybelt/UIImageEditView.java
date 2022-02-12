@@ -9,6 +9,7 @@ package r48.ui.utilitybelt;
 
 import gabien.*;
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import r48.FontSizes;
 import r48.ui.Art;
 import r48.ui.UIPlaneView;

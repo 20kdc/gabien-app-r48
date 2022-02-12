@@ -9,6 +9,7 @@ package r48.toolsets;
 
 import gabien.GaBIEn;
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import r48.*;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;

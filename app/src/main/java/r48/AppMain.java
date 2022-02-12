@@ -9,6 +9,7 @@ package r48;
 
 import gabien.GaBIEn;
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import gabienapp.Application;
 import gabienapp.UIFancyInit;
 import r48.dbs.ATDB;

@@ -7,7 +7,7 @@
 
 package r48.schema.util;
 
-import gabien.ui.ISupplier;
+import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;

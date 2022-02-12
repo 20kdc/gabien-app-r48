@@ -11,7 +11,7 @@ Classes in this folder are not allowed to refer to other R48/Gabien classes,
  r48.Ruby*
  r48.ArrayUtils
  gabien.GaBIEn (There's a fake GaBIEn class for IO in the instimi tree)
- gabien.ui.IConsumer/IFunction/ISupplier
+ gabien.uslx.append.*/IFunction/ISupplier
 
 This is so that if plan IMI goes through properly, the installer can be cut down in size.
 This is also why dataPath, dataExt and odbBackend are explicitly recorded:

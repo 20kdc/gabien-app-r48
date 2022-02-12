@@ -7,7 +7,7 @@
 
 package r48.dbs;
 
-import gabien.ui.IFunction;
+import gabien.uslx.append.*;
 import gabien.ui.UIScrollLayout;
 import r48.AppMain;
 import r48.io.data.IRIO;

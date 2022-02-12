@@ -7,7 +7,7 @@
 
 package r48.map;
 
-import gabien.ui.IFunction;
+import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UITextButton;

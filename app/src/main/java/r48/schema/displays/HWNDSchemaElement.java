@@ -7,7 +7,7 @@
 
 package r48.schema.displays;
 
-import gabien.ui.IConsumer;
+import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.dbs.PathSyntax;

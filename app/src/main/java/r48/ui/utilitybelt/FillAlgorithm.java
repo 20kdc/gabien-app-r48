@@ -7,7 +7,7 @@
 
 package r48.ui.utilitybelt;
 
-import gabien.ui.IFunction;
+import gabien.uslx.append.*;
 
 import java.util.HashSet;
 

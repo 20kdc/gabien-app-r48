@@ -7,7 +7,7 @@
 
 package r48.io.r2k;
 
-import gabien.ui.ISupplier;
+import gabien.uslx.append.*;
 import r48.RubyIO;
 import r48.io.IObjectBackend;
 import r48.io.IntUtils;

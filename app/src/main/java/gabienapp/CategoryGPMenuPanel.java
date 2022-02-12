@@ -7,8 +7,7 @@
 
 package gabienapp;
 
-import gabien.ui.IConsumer;
-import gabien.ui.ISupplier;
+import gabien.uslx.append.*;
 import r48.AppMain;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;

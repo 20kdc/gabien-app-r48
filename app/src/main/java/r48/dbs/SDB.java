@@ -7,8 +7,8 @@
 
 package r48.dbs;
 
-import gabien.ui.IFunction;
-import gabien.ui.ISupplier;
+import gabien.uslx.append.*;
+import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.DictionaryUpdaterRunnable;

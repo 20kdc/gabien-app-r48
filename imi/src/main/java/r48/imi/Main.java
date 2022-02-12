@@ -8,7 +8,7 @@
 package r48.imi;
 
 import gabien.GaBIEn;
-import gabien.ui.IConsumer;
+import gabien.uslx.append.*;
 import r48.io.IMIUtils;
 import r48.io.PathUtils;
 

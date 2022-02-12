@@ -8,6 +8,7 @@
 package r48.schema.specialized.tbleditors;
 
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.TXDB;

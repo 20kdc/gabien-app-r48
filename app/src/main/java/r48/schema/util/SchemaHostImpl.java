@@ -9,6 +9,7 @@ package r48.schema.util;
 
 import gabien.IPeripherals;
 import gabien.ui.*;
+import gabien.uslx.append.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;

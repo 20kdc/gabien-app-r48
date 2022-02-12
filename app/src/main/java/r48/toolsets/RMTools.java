@@ -8,8 +8,8 @@
 package r48.toolsets;
 
 import gabien.GaBIEn;
-import gabien.ui.IConsumer;
-import gabien.ui.IFunction;
+import gabien.uslx.append.*;
+import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.FontSizes;

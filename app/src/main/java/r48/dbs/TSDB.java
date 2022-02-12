@@ -10,7 +10,7 @@ package r48.dbs;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
-import gabien.ui.IFunction;
+import gabien.uslx.append.*;
 import r48.map.events.RMEventGraphicRenderer;
 
 import java.io.IOException;

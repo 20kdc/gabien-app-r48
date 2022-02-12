@@ -1,7 +1,7 @@
 package r48.tests;
 
 import gabien.TestKickstart;
-import gabien.ui.IConsumer;
+import gabien.uslx.append.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

@@ -7,7 +7,7 @@
 
 package r48.schema;
 
-import gabien.ui.IConsumer;
+import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
