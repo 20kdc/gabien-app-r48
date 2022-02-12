@@ -40,5 +40,7 @@ echo "You should have received a copy of the CC0 Public Domain Dedication along 
 echo "" >> staging-version.txt &&
 cat CREDITS.txt >> staging-version.txt &&
 echo "" >> staging-version.txt &&
-mv staging-version.txt staging/assets/version.txt
+mv staging-version.txt staging/assets/version.txt &&
+# get rid of the MANIFEST.MF file because it'll overwrite the backend's
+rm -f staging/META-INF/MANIFEST.MF
 

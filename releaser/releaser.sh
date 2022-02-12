@@ -27,8 +27,8 @@ fi
 ./releaser-pre.sh $1 $2 &&
 ./releaser-desktop.sh $1 &&
 # Android
-cd ../../gabien-android &&
-./releaser.sh R48 t20kdc.experimental.r48 $1 $2 ../gabien-app-r48/staging ../gabien-app-r48/releaser/icon.png android.permission.WRITE_EXTERNAL_STORAGE &&
-mv result.apk ../gabien-app-r48/$1.apk &&
+cd ../../gabien-common/android &&
+./releaser.sh R48 t20kdc.experimental.r48 $1 $2 ../../gabien-app-r48/staging ../../gabien-app-r48/releaser/icon.png android.permission.WRITE_EXTERNAL_STORAGE &&
+mv result.apk ../../gabien-app-r48/$1.apk &&
 echo "All builds completed successfully. Please move to testing phase."
 
