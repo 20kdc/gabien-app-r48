@@ -12,6 +12,7 @@ import gabien.ui.IConsumer;
 import r48.io.IMIUtils;
 import r48.io.PathUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
@@ -28,9 +29,18 @@ import java.util.zip.ZipOutputStream;
  * I.M.I.
  * "The sequence has begun - It's too late.
  *  The machine comes alive - It's awake."
- * Created on December 1st.
+ * Created on December 1st. (Presumably 2017 since that's the year of the fake GaBIEn.java file)
  */
 public class Main {
+    public static BufferedImage getImage(String s) {
+        try {
+            return ImageIO.read(GaBIEn.getResource(s));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        }
+    }
+
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
@@ -50,7 +60,7 @@ public class Main {
         Branding.init();
         final JFrame imi = new JFrame(Branding.lines[0]);
         imi.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        BufferedImage brand = GaBIEn.getImage("branding.png");
+        BufferedImage brand = getImage("branding.png");
         imi.setIconImage(brand);
         int scale = 1;
         while ((brand.getHeight() * scale) < 240)

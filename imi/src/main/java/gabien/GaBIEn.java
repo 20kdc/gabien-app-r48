@@ -20,15 +20,6 @@ public class GaBIEn {
         return ClassLoader.getSystemClassLoader().getResourceAsStream(s);
     }
 
-    public static BufferedImage getImage(String s) {
-        try {
-            return ImageIO.read(getResource(s));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-        }
-    }
-
     public static InputStream getInFile(String f) {
         try {
             return new FileInputStream(f);

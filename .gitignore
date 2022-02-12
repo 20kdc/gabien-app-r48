@@ -9,58 +9,32 @@
 !releaser
 !releaser/*.sh
 !releaser/icon.png
-!src
 
-!src/*
-!src/*/*
-!src/*/*/*
-!src/*/*/*/*
-!src/*/*/*/*/*
-!src/*/*/*/*/*/*
-!src/*/*/*/*/*/*/*
-!src/*/*/*/*/*/*/*/*
-!src/*/*/*/*/*/*/*/*/*
-!src/*/*/*/*/*/*/*/*/*/*
+# Main application
+!app
+!app/pom.xml
+!app/src
+!app/src/**
+
+# IO library
+!io
+!io/pom.xml
+!io/src
+!io/src/**
 
 # IMI (Integrated Mod Installer)
 # Note that this tree gets mixed together with various bits and pieces by the IMI release process.
 
-!instimi
-!instimi/
-!instimi/build.gradle
-!instimi/src
-!instimi/src/
-!instimi/src/main
-!instimi/src/main/
-!instimi/src/main/java
-!instimi/src/main/java/
-
-# Fake-GaBIEn class (the rest of the gabien folder is copied from gabien-common during build)
-!instimi/src/main/java/gabien
-!instimi/src/main/java/gabien/
-!instimi/src/main/java/gabien/GaBIEn.java
-
-# IMI classes
-!instimi/src/main/java/r48
-!instimi/src/main/java/r48/
-!instimi/src/main/java/r48/imi
-!instimi/src/main/java/r48/imi/
-!instimi/src/main/java/r48/imi/*
-
-!instimi/src/main/resources
-!instimi/src/main/resources/
-!instimi/src/main/resources/branding.png
-!instimi/src/main/resources/branding.txt
-!instimi/src/main/resources/manifest.txt
-# This is important in case someone can't run the shell scripts
-!instimi/src/main/resources/world.txt
+!imi
+!imi/pom.xml
+!imi/src
+!imi/src/**
 
 # Git is being a git about this, make it clear.
 # These files are to be COPIED OVER.
-instimi/src/main/resources/CREDITS.txt
-instimi/src/main/resources/COPYING.txt
+imi/src/main/resources/CREDITS.txt
+imi/src/main/resources/COPYING.txt
 
 # Test dir
 !test-out
 !test-out/placeholder
-

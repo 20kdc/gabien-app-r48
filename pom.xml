@@ -4,38 +4,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>t20kdc.hs2</groupId>
-	<artifactId>gabien-app-r48</artifactId>
+	<groupId>t20kdc.r48</groupId>
+	<artifactId>r48-parent-project</artifactId>
+	<packaging>pom</packaging>
 	<version>0.666-SNAPSHOT</version> <!-- NEVER CHANGE THIS. This entire set of libraries is unstable and SHOULD NOT be system-packed. -->
 
-	<name>gabien-app-r48</name>
-	<description>Application</description>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>t20kdc.hs2</groupId>
-			<artifactId>gabien-common</artifactId>
-			<version>0.666-SNAPSHOT</version>
-		</dependency>
-		<!-- test-only : in particular, we don't want to rely on gabien-javase during normal builds due to Android support -->
-		<dependency>
-			<groupId>t20kdc.hs2</groupId>
-			<artifactId>gabien-javase</artifactId>
-			<version>0.666-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	<modules>
+		<module>app</module>
+		<module>io</module>
+		<module>imi</module>
+	</modules>
 </project>
 
