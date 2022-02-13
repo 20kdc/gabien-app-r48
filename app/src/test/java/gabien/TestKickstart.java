@@ -71,40 +71,6 @@ public class TestKickstart {
             }
 
             @Override
-            public boolean fileOrDirExists(String s) {
-                if (s.endsWith("/"))
-                    throw new RuntimeException("Not valid");
-                return mockDFS.contains(s) || mockFS.containsKey(s);
-            }
-
-            @Override
-            public boolean dirExists(String s) {
-                if (s.endsWith("/"))
-                    throw new RuntimeException("Not valid");
-                return mockDFS.contains(s);
-            }
-
-            // NOT a completely compliant result!!!
-            @Override
-            public String[] listEntries(String s) {
-                if (!s.endsWith("/"))
-                    s += "/";
-                LinkedList<String> str = new LinkedList<String>();
-                for (String st : mockDFS)
-                    listEntry(st, str, s);
-                for (String st : mockFS.keySet())
-                    listEntry(st, str, s);
-                return str.toArray(new String[0]);
-            }
-
-            private void listEntry(String st, LinkedList<String> str, String s) {
-                String dn = GaBIEn.dirname(st);
-                String bn = GaBIEn.basename(st);
-                if (dn.equals(s))
-                    str.add(bn);
-            }
-
-            @Override
             public IGrInDriver makeGrIn(String name, int w, int h, WindowSpecs ws) {
                 ws.resizable = false;
                 w = 960;
@@ -124,10 +90,38 @@ public class TestKickstart {
         };
         GaBIEn.internal = impl;
         GaBIEn.mutableDataFS = new FSBackend() {
-
             @Override
             public XState getState(String fileName) {
-                throw new RuntimeException("wouldn't be called");
+                String dirName = fileName;
+                if (!dirName.endsWith("/"))
+                    dirName += "/";
+                if (mockDFS.contains(dirName)) {
+                    File dirRepFile = new File(dirName);
+                    LinkedList<String> out = new LinkedList<String>();
+                    for (String v : mockFS.keySet())
+                        listEntry(v, out, dirRepFile, "");
+                    for (String v : mockDFS)
+                        listEntry(v, out, dirRepFile, "/");
+                    return new DirectoryState(out.toArray(new String[0]));
+                } else if (mockFS.containsKey(fileName)) {
+                    return new FileState(mockFS.get(fileName).length);
+                }
+                return null;
+            }
+
+            @Override
+            public String nameOf(String fileName) {
+                return new File(fileName).getName();
+            }
+
+            @Override
+            public String parentOf(String fileName) {
+                return new File(fileName).getParent();
+            }
+
+            private void listEntry(String st, LinkedList<String> str, File dirRepFile, String sfx) {
+                if (dirRepFile.equals(new File(st).getParentFile()))
+                    str.add(nameOf(st) + sfx);
             }
 
             @Override

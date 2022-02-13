@@ -64,9 +64,12 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public Rect getIdealGridForImage(String path, Size img) {
-        String id = GaBIEn.basename(GaBIEn.dirname(path));
+        String pop = GaBIEn.parentOf(path);
+        if (pop == null)
+            return null;
+        String id = GaBIEn.nameOf(pop);
         if (id.equalsIgnoreCase("Characters"))
-            return getIdealGridForCharacter(GaBIEn.basename(path), img);
+            return getIdealGridForCharacter(GaBIEn.nameOf(path), img);
         if (id.equalsIgnoreCase("Tilesets"))
             return new Rect(0, 0, 32, 32);
         if (id.equalsIgnoreCase("Autotiles"))

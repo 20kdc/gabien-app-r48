@@ -78,7 +78,10 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public Rect getIdealGridForImage(String path, Size img) {
-        String id = GaBIEn.basename(GaBIEn.dirname(path));
+        String pop = GaBIEn.parentOf(path);
+        if (pop == null)
+            return null;
+        String id = GaBIEn.nameOf(pop);
         if (id.equalsIgnoreCase("ChipSet"))
             return new Rect(0, 0, 16, 16);
         if (id.equalsIgnoreCase("CharSet"))

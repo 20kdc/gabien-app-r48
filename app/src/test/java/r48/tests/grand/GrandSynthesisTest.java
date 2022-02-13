@@ -91,7 +91,7 @@ public class GrandSynthesisTest {
         gtb.thenWaitFrame();
         gtb.thenClick("button:2 : down"); // Down
         gtb.thenWaitFrame();
-        gtb.thenClick("symbol:Back"); // Back (to leave Graphics)
+        gtb.thenClick("?:Map0001.lmu*¥symbol:Back"); // Back (to leave Graphics)
         gtb.thenWaitFrame();
     }
 
@@ -111,7 +111,7 @@ public class GrandSynthesisTest {
 
         gtb.thenClick("button:11;Move Forward 1 Tile"); // Set command type
         gtb.thenWaitFrame();
-        gtb.thenClick("symbol:Back"); // Back (to leave the command)
+        gtb.thenClick("?:Map0001.lmu*¥symbol:Back"); // Back (to leave the command)
         gtb.thenWaitFrame();
 
         gtb.thenClick("label:0 ¥..¥..¥..¥button:Add..."); // New command...
@@ -126,10 +126,10 @@ public class GrandSynthesisTest {
         gtb.thenWaitFrame();
         gtb.thenClick("?:r48.ui.dialog.UISpritesheetChoice¥?:gabien.ui.UIScrollbar¥..", 128, 0);
         gtb.thenWaitFrame();
-        gtb.thenClick("symbol:Back"); // Back (to leave the spritesheet chooser)
-        gtb.thenClick("symbol:Back"); // Back (to leave the command)
-        gtb.thenClick("symbol:Back"); // Back (to leave the command list)
-        gtb.thenClick("symbol:Back"); // Back (to leave the moveroute)
+        gtb.thenClick("?:Map0001.lmu*¥symbol:Back"); // Back (to leave the spritesheet chooser)
+        gtb.thenClick("?:Map0001.lmu*¥symbol:Back"); // Back (to leave the command)
+        gtb.thenClick("?:Map0001.lmu*¥symbol:Back"); // Back (to leave the command list)
+        gtb.thenClick("?:Map0001.lmu*¥symbol:Back"); // Back (to leave the moveroute)
         gtb.thenWaitFrame();
     }
 

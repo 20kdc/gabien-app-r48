@@ -46,7 +46,7 @@ public class PathUtils {
                 return s;
             // Deal with earlier path components...
             // 'st' is the actual filename.
-            String st = GaBIEn.basename(s);
+            String st = GaBIEn.nameOf(s);
             String parent;
             // Sanity check.
             if (s.contains("/")) {
