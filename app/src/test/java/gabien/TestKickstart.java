@@ -99,9 +99,9 @@ public class TestKickstart {
                     File dirRepFile = new File(dirName);
                     LinkedList<String> out = new LinkedList<String>();
                     for (String v : mockFS.keySet())
-                        listEntry(v, out, dirRepFile, "");
+                        listEntry(v, out, dirRepFile);
                     for (String v : mockDFS)
-                        listEntry(v, out, dirRepFile, "/");
+                        listEntry(v, out, dirRepFile);
                     return new DirectoryState(out.toArray(new String[0]));
                 } else if (mockFS.containsKey(fileName)) {
                     return new FileState(mockFS.get(fileName).length);
@@ -119,9 +119,9 @@ public class TestKickstart {
                 return new File(fileName).getParent();
             }
 
-            private void listEntry(String st, LinkedList<String> str, File dirRepFile, String sfx) {
+            private void listEntry(String st, LinkedList<String> str, File dirRepFile) {
                 if (dirRepFile.equals(new File(st).getParentFile()))
-                    str.add(nameOf(st) + sfx);
+                    str.add(nameOf(st));
             }
 
             @Override
