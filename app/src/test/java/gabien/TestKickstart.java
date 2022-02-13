@@ -119,6 +119,11 @@ public class TestKickstart {
                 return new File(fileName).getParent();
             }
 
+            @Override
+            public String absolutePathOf(String fileName) {
+                return fileName;
+            }
+
             private void listEntry(String st, LinkedList<String> str, File dirRepFile) {
                 if (dirRepFile.equals(new File(st).getParentFile()))
                     str.add(nameOf(st));
