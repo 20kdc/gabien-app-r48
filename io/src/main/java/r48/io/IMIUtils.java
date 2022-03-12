@@ -200,7 +200,7 @@ public class IMIUtils {
             int bestCompatibilityIndex = -1;
             int thresholdIncompatible = 0x40000000;
             for (int j = lowestUsedIndex + 1; j < tgtAVL; j++) {
-                int compat = imiCompatibilityIndex(source.getAElem(i), target.getAElem(i));
+                int compat = imiCompatibilityIndex(source.getAElem(i), target.getAElem(j));
                 if (compat > bestCompatibility) {
                     bestCompatibility = compat;
                     bestCompatibilityIndex = j;
