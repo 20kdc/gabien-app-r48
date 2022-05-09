@@ -19,6 +19,7 @@ C recommendMkdir Graphics/Characters
 C recommendMkdir Graphics/Faces
 C recommendMkdir Graphics/Pictures
 C recommendMkdir Graphics/Parallaxes
+C recommendMkdir Graphics/Tilesets
  NOTE: Possibly others to add?
 
 C recommendMkdir Audio/BGM
@@ -111,6 +112,7 @@ e blend_type 0 Normal 1 Add 2 Sub
 > f_face_name { string imgSelector Graphics/Faces/ Faces/ }
 > f_picture_name { string imgSelector Graphics/Pictures/ Pictures/ }
 > f_parallax_name { string imgSelector Graphics/Parallaxes/ Parallaxes/ }
+> f_tileset_name { string imgSelector Graphics/Tilesets/ Tilesets/ }
 
 C spritesheet[ Select character index... ] Characters/ vxaCharacter
 C spritesheet[ Select face index... ] Faces/ 96 96 4 0 0 96 96 0

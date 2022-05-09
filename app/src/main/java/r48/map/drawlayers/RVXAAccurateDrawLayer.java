@@ -100,9 +100,13 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
             if (layer != 3) {
                 // Normal layers
                 int pri = 0;
-                int flags = tiles.flags.getTiletype(value & 0xFFFF, 0, 0);
-                if ((flags & 16) != 0)
-                    pri += 4;
+                if (!tiles.flags.outOfBounds(value & 0xFFFF, 0)) {
+                    int flags = tiles.flags.getTiletype(value & 0xFFFF, 0, 0);
+                    if ((flags & 16) != 0)
+                        pri += 4;
+                } else {
+                    System.err.println("WARNING: Corrupt/malsized VXA priority table (what are you playing at?)");
+                }
                 targPIndex += pri;
             } else {
                 // no priority

@@ -347,15 +347,15 @@ C name Class.RPG::State @id @name | State #A: #B
 
 .RPG::Tileset.names
 +hide array 9 string
-]0 A1 string
-]1 A2 string
-]2 A3 string
-]3 A4 string
-]4 A5 string
-]5 B string
-]6 C string
-]7 D string
-]8 E string
+]0 A1 f_tileset_name
+]1 A2 f_tileset_name
+]2 A3 f_tileset_name
+]3 A4 f_tileset_name
+]4 A5 f_tileset_name
+]5 B f_tileset_name
+]6 C f_tileset_name
+]7 D f_tileset_name
+]8 E f_tileset_name
 
 : RPG::Tileset
 C name Class.RPG::Tileset @id @name @mode | Tileset #A (M#C): #B
