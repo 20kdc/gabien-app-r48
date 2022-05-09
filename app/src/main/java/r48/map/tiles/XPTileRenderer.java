@@ -132,7 +132,7 @@ public class XPTileRenderer implements ITileRenderer {
                         48 * 5,
                         48 * 6,
                         48 * 7
-                }),
+                }, indicateATs()),
                 new TileEditingTab("TMAP", false, TileEditingTab.range(48 * 8, tileCount)),
                 new TileEditingTab("AT-M", false, TileEditingTab.range(48, 48 * 7)),
         };

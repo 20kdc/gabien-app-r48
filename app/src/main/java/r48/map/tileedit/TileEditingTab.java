@@ -61,4 +61,8 @@ public final class TileEditingTab {
                 return false;
         return true;
     }
+
+    public boolean inActTilesRange(int i) {
+        return (i >= 0) && (i < actTiles.length);
+    }
 }

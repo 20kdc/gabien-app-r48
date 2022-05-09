@@ -163,9 +163,10 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
             System.err.println("getTCSelected called with -1 getTabIndex! This is a minor bug.");
             return 0;
         }
-        int sel = tileMaps[tab].getSelected();
+        UITileGrid map = tileMaps[tab];
+        int sel = map.getSelected();
         int[] actTiles = tileTabs[tab].actTiles;
-        int lvm = sel + UIElement.sensibleCellMod(px, tileMaps[tab].selWidth) + (UIElement.sensibleCellMod(py, tileMaps[tab].selHeight) * tileMaps[tab].getSelectStride());
+        int lvm = sel + UIElement.sensibleCellMod(px, map.selWidth) + (UIElement.sensibleCellMod(py, map.selHeight) * map.getSelectStride());
         if (lvm < 0) {
             System.err.println("Selection calculator error <0 in getTCSelected");
             return 0;
@@ -191,22 +192,27 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         if (tab == -1)
             return there;
 
+        UITileGrid map = tileMaps[tab];
+
         if (subtool != 0) {
-            if (mouse.x == tx)
-                if (mouse.y == ty)
-                    return (short) tileTabs[tab].actTiles[tileMaps[tab].getSelected()];
+            if ((mouse.x == tx) && (mouse.y == ty)) {
+                TileEditingTab tabInst = tileTabs[tab];
+                int selectedLocalTileIndex = map.getSelected();
+                if (tabInst.inActTilesRange(selectedLocalTileIndex))
+                    return (short) tabInst.actTiles[selectedLocalTileIndex];
+            }
             return there;
         }
-        if (tx < mouse.x)
-            return there;
-        if (ty < mouse.y)
-            return there;
-        if (tx >= mouse.x + tileMaps[tab].selWidth)
-            return there;
-        if (ty >= mouse.y + tileMaps[tab].selHeight)
-            return there;
         int px = tx - mouse.x;
         int py = ty - mouse.y;
+        if (px < 0)
+            return there;
+        if (py < 0)
+            return there;
+        if (px >= map.selWidth)
+            return there;
+        if (py >= map.selHeight)
+            return there;
         return getTCSelected(px, py);
     }
 
@@ -366,7 +372,11 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         // give up
         if (tab == -1)
             return "???";
-        return "T" + tileTabs[tab].actTiles[tileMaps[tab].getSelected()];
+        TileEditingTab tabInst = tileTabs[tab];
+        int selectedLocalTileIndex = tileMaps[tab].getSelected();
+        if (!tabInst.inActTilesRange(selectedLocalTileIndex))
+            return "TMFAULT/" + tab + "/" + selectedLocalTileIndex;
+        return "T" + tabInst.actTiles[selectedLocalTileIndex];
     }
 
     public void selectTile(short aShort) {
