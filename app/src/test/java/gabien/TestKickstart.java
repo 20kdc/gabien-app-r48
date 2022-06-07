@@ -230,7 +230,7 @@ public class TestKickstart {
                 }
 
                 @Override
-                public String maintain(int x, int y, int width, String text, IFunction<String, String> feedback) {
+                public String maintain(int x, int y, int w, int h, String text, int textHeight, IFunction<String, String> feedback) {
                     boolean settingNew = true;
                     if (internalMaintainText != null)
                         if (internalMaintainText.equals(text))
