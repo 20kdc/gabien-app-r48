@@ -45,12 +45,16 @@ public class TRect extends IRIOFixedObject implements IR2kInterpretable {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
+    public boolean canOmitChunk() {
+        return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
         IntUtils.writeS32(baos, (int) l.val);
         IntUtils.writeS32(baos, (int) u.val);
         IntUtils.writeS32(baos, (int) r.val);
         IntUtils.writeS32(baos, (int) d.val);
-        return false;
     }
 
     @Override

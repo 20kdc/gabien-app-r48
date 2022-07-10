@@ -79,7 +79,12 @@ public class DoubleR2kStruct extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
+    public boolean canOmitChunk() {
+        return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
         ByteArrayOutputStream preswap = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(preswap);
         dos.writeDouble(v);
@@ -89,7 +94,6 @@ public class DoubleR2kStruct extends IRIOFixed implements IR2kInterpretable {
         swap(data, 5, 2);
         swap(data, 4, 3);
         baos.write(data);
-        return false;
     }
 
     @Override

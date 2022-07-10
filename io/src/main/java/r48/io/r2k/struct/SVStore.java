@@ -36,11 +36,15 @@ public class SVStore extends StringR2kStruct {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
+    public boolean canOmitChunk() {
+        return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
         R2kUtil.writeLcfVLI(baos, 1);
         R2kUtil.writeLcfVLI(baos, data.length);
         baos.write(data);
         baos.write(0);
-        return false;
     }
 }

@@ -75,7 +75,12 @@ public class MapTree extends IRIOFixedObject implements IR2kInterpretable {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
+    public boolean canOmitChunk() {
+        return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
         mapInfos.exportData(baos);
         // the rest of it
         R2kUtil.writeLcfVLI(baos, mapOrder.arrVal.length);
@@ -83,6 +88,5 @@ public class MapTree extends IRIOFixedObject implements IR2kInterpretable {
             R2kUtil.writeLcfVLI(baos, (int) ((IRIOFixnum) mapOrder.arrVal[i]).val);
         activeNode.exportData(baos);
         start.exportData(baos);
-        return false;
     }
 }

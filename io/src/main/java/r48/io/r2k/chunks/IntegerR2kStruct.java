@@ -35,11 +35,15 @@ public class IntegerR2kStruct extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
-        //if (i == di)
-        //return true;
-        R2kUtil.writeLcfVLI(baos, i);
+    public boolean canOmitChunk() {
+        // return i == di;
+        // false always for now
         return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
+        R2kUtil.writeLcfVLI(baos, i);
     }
 
     @Override

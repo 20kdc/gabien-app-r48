@@ -7,6 +7,9 @@
 
 package r48.io.r2k.chunks;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import r48.io.data.IRIO;
 
 /**
@@ -16,6 +19,12 @@ public class BooleanR2kStruct extends IntegerR2kStruct {
     public BooleanR2kStruct(boolean i2) {
         super(i2 ? 1 : 0);
         type = i2 ? 'T' : 'F';
+    }
+
+    @Override
+    public void importData(InputStream bais) throws IOException {
+        super.importData(bais);
+        type = (i != 0) ? 'T' : 'F';
     }
 
     @Override
@@ -31,7 +40,7 @@ public class BooleanR2kStruct extends IntegerR2kStruct {
     @Override
     public IRIO setBool(boolean b) {
         i = b ? 1 : 0;
-        type = (i != 0) ? 'T' : 'F';
+        type = b ? 'T' : 'F';
         return this;
     }
 }

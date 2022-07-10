@@ -141,7 +141,12 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
+    public boolean canOmitChunk() {
+        return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
         R2kUtil.writeLcfVLI(baos, (int) code.val);
 
         int mcc = moveCommandClassifier((int) code.val);
@@ -153,7 +158,6 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
         }
         for (int i = 0; i < (mcc & 0xFF); i++)
             R2kUtil.writeLcfVLI(baos, (int) parameters.arrVal[i].getFX());
-        return false;
     }
 
     @Override

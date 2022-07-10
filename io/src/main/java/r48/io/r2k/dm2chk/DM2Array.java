@@ -62,14 +62,18 @@ public abstract class DM2Array<V extends IRIO> extends IRIOFixedArray<V> impleme
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
-        for (IRIO v : arrVal)
-            ((IR2kInterpretable) v).exportData(baos);
+    public boolean canOmitChunk() {
         return false;
     }
 
     @Override
-    public boolean exportSize(OutputStream baos) throws IOException {
+    public void exportData(OutputStream baos) throws IOException {
+        for (IRIO v : arrVal)
+            ((IR2kInterpretable) v).exportData(baos);
+    }
+
+    @Override
+    public void exportSize(OutputStream baos) throws IOException {
         int v = arrVal.length;
         if (!sizeUnit) {
             ByteArrayOutputStream b2 = new ByteArrayOutputStream();
@@ -88,6 +92,5 @@ public abstract class DM2Array<V extends IRIO> extends IRIOFixedArray<V> impleme
             default:
                 throw new RuntimeException("unknown B " + sizeMode);
         }
-        return false;
     }
 }

@@ -18,6 +18,10 @@ import java.io.OutputStream;
 public interface IR2kInterpretable {
     void importData(InputStream bais) throws IOException;
 
-    // If this returns true, the chunk is omitted.
-    boolean exportData(OutputStream baos) throws IOException;
+    /**
+     * If this returns true, the chunk can be omitted due to default value shenanigans
+     */
+    boolean canOmitChunk();
+
+    void exportData(OutputStream baos) throws IOException;
 }

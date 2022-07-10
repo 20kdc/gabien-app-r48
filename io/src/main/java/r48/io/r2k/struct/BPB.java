@@ -49,11 +49,15 @@ public class BPB extends IRIOFixedObject implements IR2kInterpretable {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
+    public boolean canOmitChunk() {
+        return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
         parameters1.exportData(baos);
         if (parameters2 != null)
             parameters2.exportData(baos);
-        return false;
     }
 
     @Override

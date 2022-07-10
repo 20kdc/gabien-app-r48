@@ -89,8 +89,12 @@ public class StringR2kStruct extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
-        baos.write(data);
+    public boolean canOmitChunk() {
         return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
+        baos.write(data);
     }
 }

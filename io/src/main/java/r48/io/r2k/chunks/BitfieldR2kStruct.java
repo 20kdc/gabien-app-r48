@@ -45,13 +45,17 @@ public class BitfieldR2kStruct extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
+    public boolean canOmitChunk() {
+        return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
         int value = 0;
         for (int i = 0; i < 8; i++)
             if (flagData[i].getType() == 'T')
                 value |= 1 << i;
         baos.write(value);
-        return false;
     }
 
     @Override

@@ -50,9 +50,13 @@ public class DM2SparseArrayH<V extends IRIO> extends IRIOFixedHash<Integer, V> i
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
+    public boolean canOmitChunk() {
+        return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
         // Bypass the type checker... :(
         R2kUtil.exportSparse(hashVal, baos);
-        return false;
     }
 }

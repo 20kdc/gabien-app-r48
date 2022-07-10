@@ -66,7 +66,12 @@ public abstract class DM2ArraySet<V extends IRIO> extends IRIOFixedHash<Integer,
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
+    public boolean canOmitChunk() {
+        return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
         int maxIdx = -1;
         for (Integer rio : hashVal.keySet())
             if (rio > maxIdx)
@@ -78,12 +83,10 @@ public abstract class DM2ArraySet<V extends IRIO> extends IRIOFixedHash<Integer,
                 v = newValue();
             ((IR2kInterpretable) v).exportData(baos);
         }
-        return false;
     }
 
     @Override
-    public boolean exportSize(OutputStream baos) throws IOException {
-
+    public void exportSize(OutputStream baos) throws IOException {
         int v;
         if (!sizeUnit) {
             ByteArrayOutputStream b2 = new ByteArrayOutputStream();
@@ -107,6 +110,5 @@ public abstract class DM2ArraySet<V extends IRIO> extends IRIOFixedHash<Integer,
             default:
                 throw new RuntimeException("unknown B " + sizeMode);
         }
-        return false;
     }
 }

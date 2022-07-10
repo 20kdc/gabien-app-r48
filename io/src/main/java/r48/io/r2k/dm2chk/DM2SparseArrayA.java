@@ -57,7 +57,12 @@ public class DM2SparseArrayA<V extends IRIO> extends IRIOFixedArray<IRIONullable
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
+    public boolean canOmitChunk() {
+        return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
         // Bypass the type checker... :(
         HashMap<Integer, V> hashVal = new HashMap<Integer, V>();
         for (int i = 0; i < arrVal.length; i++) {
@@ -66,6 +71,5 @@ public class DM2SparseArrayA<V extends IRIO> extends IRIOFixedArray<IRIONullable
                 hashVal.put(i, v.target);
         }
         R2kUtil.exportSparse(hashVal, baos);
-        return false;
     }
 }

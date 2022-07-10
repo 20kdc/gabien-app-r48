@@ -43,9 +43,13 @@ public class ShortR2kStruct extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
-        IntUtils.writeU16(baos, value);
+    public boolean canOmitChunk() {
         return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
+        IntUtils.writeU16(baos, value);
     }
 
     @Override

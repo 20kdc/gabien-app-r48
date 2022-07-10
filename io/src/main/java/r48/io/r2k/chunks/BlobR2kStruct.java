@@ -40,8 +40,12 @@ public class BlobR2kStruct extends IRIOFixedUser implements IR2kInterpretable {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
-        baos.write(userVal);
+    public boolean canOmitChunk() {
         return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
+        baos.write(userVal);
     }
 }

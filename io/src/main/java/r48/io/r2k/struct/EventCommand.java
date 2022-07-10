@@ -81,7 +81,12 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
+    public boolean canOmitChunk() {
+        return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
         R2kUtil.writeLcfVLI(baos, (int) code.val);
         R2kUtil.writeLcfVLI(baos, (int) indent.val);
         R2kUtil.writeLcfVLI(baos, parameters.text.data.length);
@@ -98,6 +103,5 @@ public class EventCommand extends IRIOFixedObject implements IR2kInterpretable {
             for (int i = 0; i < encoded.length; i++)
                 R2kUtil.writeLcfVLI(baos, encoded[i]);
         }
-        return false;
     }
 }

@@ -16,6 +16,5 @@ import java.io.OutputStream;
  * Created on December 05, 2018.
  */
 public interface IR2kSizable {
-    // If this returns true, omit the chunk.
-    boolean exportSize(OutputStream baos) throws IOException;
+    void exportSize(OutputStream baos) throws IOException;
 }

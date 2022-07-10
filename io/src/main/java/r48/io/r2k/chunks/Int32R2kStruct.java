@@ -28,8 +28,12 @@ public class Int32R2kStruct extends IRIOFixnum implements IR2kInterpretable {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
-        IntUtils.writeS32(baos, (int) val);
+    public boolean canOmitChunk() {
         return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
+        IntUtils.writeS32(baos, (int) val);
     }
 }

@@ -111,9 +111,11 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
                     throw new RuntimeException(e);
                 }
                 if (iri != null) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    if (!iri.exportData(baos))
+                    if (!iri.canOmitChunk()) {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        iri.exportData(baos);
                         pcd.put(dlb.value(), baos.toByteArray());
+                    }
                     DM2LcfSizeBinding dlb2 = f.getAnnotation(DM2LcfSizeBinding.class);
                     if (dlb2 != null) {
                         IR2kSizable isi;
@@ -123,9 +125,9 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
                             throw new RuntimeException(e);
                         }
                         if (isi != null) {
-                            baos = new ByteArrayOutputStream();
-                            if (!isi.exportSize(baos))
-                                pcd.put(dlb2.value(), baos.toByteArray());
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            isi.exportSize(baos);
+                            pcd.put(dlb2.value(), baos.toByteArray());
                         }
                     }
                 }
@@ -359,19 +361,24 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
         }
     }
 
-    public boolean exportData(OutputStream baos2) throws IOException {
+    @Override
+    public boolean canOmitChunk() {
+        return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
         HashMap<Integer, byte[]> packed = dm2Pack();
         // Collate all chunks
         LinkedList<Integer> keys = new LinkedList<Integer>(packed.keySet());
         Collections.sort(keys);
         for (Integer i : keys) {
             byte[] data = packed.get(i);
-            R2kUtil.writeLcfVLI(baos2, i);
-            R2kUtil.writeLcfVLI(baos2, data.length);
-            baos2.write(data);
+            R2kUtil.writeLcfVLI(baos, i);
+            R2kUtil.writeLcfVLI(baos, data.length);
+            baos.write(data);
         }
         if (!terminatable())
-            baos2.write(0);
-        return false;
+            baos.write(0);
     }
 }

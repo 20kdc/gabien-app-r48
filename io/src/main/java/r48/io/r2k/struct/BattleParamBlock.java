@@ -49,10 +49,14 @@ public class BattleParamBlock extends IRIOFixed implements IR2kInterpretable {
     }
 
     @Override
-    public boolean exportData(OutputStream baos) throws IOException {
+    public boolean canOmitChunk() {
+        return false;
+    }
+
+    @Override
+    public void exportData(OutputStream baos) throws IOException {
         for (int i = 0; i < array.length; i++)
             IntUtils.writeU16(baos, (int) array[i].val);
-        return false;
     }
 
     @Override
