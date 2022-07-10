@@ -97,7 +97,7 @@ public class Item extends DM2R2kObject {
     public IntegerR2kStruct skillId;
     @DM2FXOBinding("@switch_id") @DM2LcfBinding(0x37) @DM2LcfInteger(1)
     public IntegerR2kStruct switchId;
-    @DM2FXOBinding("@switch_usable_on_map") @DM2LcfBinding(0x39) @DM2LcfBoolean(false)
+    @DM2FXOBinding("@switch_usable_on_map") @DM2LcfBinding(0x39) @DM2LcfBoolean(true)
     public BooleanR2kStruct situationMap2;
     @DM2FXOBinding("@switch_usable_in_battle") @DM2LcfBinding(0x3A) @DM2LcfBoolean(false)
     public BooleanR2kStruct situationBattle;

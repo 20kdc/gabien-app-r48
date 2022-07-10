@@ -249,7 +249,7 @@ C name Class.RPG::Item @name | #A
 
 .rpg_item_sect4
 @switch_usable_in_battle boolean
-@switch_usable_on_map boolean
+@switch_usable_on_map booleanDefTrue
 @switch_id switch_id
 
  ---
