@@ -11,6 +11,7 @@ import r48.io.data.DM2FXOBinding;
 import r48.io.data.DM2Optional;
 import r48.io.data.IRIO;
 import r48.io.r2k.chunks.ByteR2kStruct;
+import r48.io.r2k.chunks.IntegerR2kStruct;
 import r48.io.r2k.dm2chk.*;
 import r48.io.r2k.obj.lsd.*;
 
@@ -51,7 +52,7 @@ public class Save extends DM2R2kObject {
 
     // EasyRPG Player version tag.
     @DM2FXOBinding("@easyrpg_player_version_EPL") @DM2LcfBinding(200) @DM2LcfInteger(600) @DM2Optional
-    public DM2LcfInteger easyrpgPlayerVersion;
+    public IntegerR2kStruct easyrpgPlayerVersion;
 
     public Save() {
         super("RPG::Save");

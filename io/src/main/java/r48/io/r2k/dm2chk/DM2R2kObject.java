@@ -272,7 +272,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
 
     // Must not handle translation into dm2AddIVar due to the 2 callers.
     // This instead happens in addIVar and addField.
-    protected Object dm2AddField(Field f) {
+    protected Object dm2AddField(final Field f) {
         DM2LcfInteger fxi = f.getAnnotation(DM2LcfInteger.class);
         if (fxi != null) {
             try {
@@ -280,7 +280,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
                 f.set(this, i);
                 return i;
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("At field: " + f, e);
             }
         }
         DM2LcfBoolean fxb = f.getAnnotation(DM2LcfBoolean.class);
@@ -290,7 +290,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
                 f.set(this, i);
                 return i;
             } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("At field: " + f, e);
             }
         }
         final DM2LcfSparseArray fxd = f.getAnnotation(DM2LcfSparseArray.class);
@@ -302,14 +302,14 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
                         try {
                             return (IRIO) fxd.value().newInstance();
                         } catch (Exception e) {
-                            throw new RuntimeException(e);
+                            throw new RuntimeException("At field: " + f, e);
                         }
                     }
                 });
                 f.set(this, i);
                 return i;
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("At field: " + f, e);
             }
         }
         if (f.isAnnotationPresent(DM2LcfObject.class)) {
@@ -318,7 +318,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
                 f.set(this, o);
                 return o;
             } catch (Exception e) {
-                throw new RuntimeException(f.getType().getName(), e);
+                throw new RuntimeException("At field: " + f, e);
             }
         }
         return null;

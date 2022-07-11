@@ -48,21 +48,33 @@ public class UISaveScanMapInfos extends UIElement.UIProxy {
     public void reload() {
         mainLayout.panelsClear();
         for (int i = first; i <= last; i++) {
-            IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(objectMapping.apply(i), null);
-            final String gum = gumMapping.apply(i);
-            if (rio != null) {
-                mainLayout.panelsAdd(new UITextButton(FormatSyntax.formatExtended(TXDB.get("#A : #B"), new RubyIO().setString(gum, true), rio.getObject()), FontSizes.mapInfosTextHeight, new Runnable() {
+            final int fi = i;
+            try {
+                IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(objectMapping.apply(i), null);
+                final String gum = gumMapping.apply(i);
+                if (rio != null) {
+                    mainLayout.panelsAdd(new UITextButton(FormatSyntax.formatExtended(TXDB.get("#A : #B"), new RubyIO().setString(gum, true), rio.getObject()), FontSizes.mapInfosTextHeight, new Runnable() {
+                        @Override
+                        public void run() {
+                            context.loadMap(gum);
+                        }
+                    }));
+                } else {
+                    mainLayout.panelsAdd(new UIAppendButton(TXDB.get("New..."), new UILabel(FormatSyntax.formatExtended(TXDB.get("#A (Unavailable)"), new RubyIO().setString(gum, true)), FontSizes.mapInfosTextHeight), new Runnable() {
+                        @Override
+                        public void run() {
+                            context.loadMap(gum);
+                            reload();
+                        }
+                    }, FontSizes.mapInfosTextHeight));
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                UILabel warning = new UILabel(TXDB.get("Internal error in R48 or with file."), FontSizes.mapInfosTextHeight);
+                mainLayout.panelsAdd(new UIAppendButton(TXDB.get("Attempt Load Anyway"), warning, new Runnable() {
                     @Override
                     public void run() {
-                        context.loadMap(gum);
-                    }
-                }));
-            } else {
-                mainLayout.panelsAdd(new UIAppendButton(TXDB.get("New..."), new UILabel(FormatSyntax.formatExtended(TXDB.get("#A (Unavailable)"), new RubyIO().setString(gum, true)), FontSizes.mapInfosTextHeight), new Runnable() {
-                    @Override
-                    public void run() {
-                        context.loadMap(gum);
-                        reload();
+                        context.loadMap(gumMapping.apply(fi));
                     }
                 }, FontSizes.mapInfosTextHeight));
             }
