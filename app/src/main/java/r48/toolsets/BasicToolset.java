@@ -29,7 +29,6 @@ import r48.ui.dialog.UIFontSizeConfigurator;
 import r48.ui.dialog.UITextPrompt;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
-import r48.ui.imi.IMIAssemblyController;
 import r48.ui.spacing.UIBorderedSubpanel;
 
 import java.io.*;
@@ -274,7 +273,6 @@ public class BasicToolset implements IToolset {
         return new UIMenuButton(TXDB.get("Other..."), FontSizes.menuTextHeight, null, new String[] {
                 TXDB.get("Test Fonts"),
                 TXDB.get("Toggle Fullscreen"),
-                TXDB.get("Create Mod Installer (IMI) Data"),
                 TXDB.get("Dump Schemaside Translations"),
                 TXDB.get("Recover data from R48 error <INCREDIBLY DAMAGING>..."),
         }, new Runnable[] {
@@ -298,18 +296,6 @@ public class BasicToolset implements IToolset {
                     @Override
                     public void run() {
                         AppMain.window.toggleFullscreen();
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Root path to original game?"), new IConsumer<String>() {
-                            @Override
-                            public void accept(String s) {
-                                s = PathUtils.fixRootPath(s);
-                                new IMIAssemblyController(s);
-                            }
-                        }));
                     }
                 },
                 new Runnable() {
