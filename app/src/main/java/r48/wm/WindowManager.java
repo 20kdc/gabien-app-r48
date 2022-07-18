@@ -9,12 +9,16 @@ package r48.wm;
 
 import gabien.*;
 import gabien.ui.*;
+import gabien.ui.UIWindowView.TabShell;
 import gabienapp.Application;
 import r48.FontSizes;
 import r48.ui.Art;
 import r48.ui.Coco;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * For lack of a better place, this is a description of how window management works in R48:
@@ -48,6 +52,7 @@ public class WindowManager {
     protected final LinkedList<UIWindowView> allWindowViews = new LinkedList<UIWindowView>();
     private IImage modImg;
     private boolean performingScreenTransfer = true;
+    public final HashMap<String, Rect> recordedWindowPositions = new HashMap<String, Rect>();
 
     public WindowManager(final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR) {
         uiTicker = uiTick;
@@ -119,7 +124,16 @@ public class WindowManager {
         createWindow(uie, false, false);
     }
 
+    public void createWindow(final UIElement uie, final @Nullable String disposition) {
+        createWindow(uie, false, false, disposition);
+    }
+
     public void createWindow(final UIElement uie, final boolean tab, final boolean immortal) {
+        createWindow(uie, tab, immortal, uie.getClass().getSimpleName());
+    }
+
+    public void createWindow(final UIElement uie, final boolean tab, final boolean immortal, final @Nullable String disposition) {
+        // Now decide what to actually do.
         if (tab) {
             UITabBar.TabIcon windowWindowIcon = new UITabBar.TabIcon() {
                 @Override
@@ -190,12 +204,13 @@ public class WindowManager {
                         createWindow(uie, true, immortal);
                     }
                 };
+                UITabBar.TabIcon[] tabIcons;
                 if (immortal) {
-                    rootView.addShell(new UIWindowView.TabShell(rootView, uie, new UITabBar.TabIcon[] {
+                    tabIcons = new UITabBar.TabIcon[] {
                             tabWindowIcon
-                    }));
+                    };
                 } else {
-                    rootView.addShell(new UIWindowView.TabShell(rootView, uie, new UITabBar.TabIcon[] {
+                    tabIcons = new UITabBar.TabIcon[] {
                             new UITabBar.TabIcon() {
                                 @Override
                                 public void draw(IGrDriver igd, int x, int y, int size) {
@@ -210,8 +225,23 @@ public class WindowManager {
                                 }
                             },
                             tabWindowIcon
-                    }));
+                    };
                 }
+                Rect r = null;
+                if (disposition != null)
+                    r = recordedWindowPositions.get(disposition);
+
+                TabShell tabShell = new UIWindowView.TabShell(rootView, uie, tabIcons) {
+                    @Override
+                    public void windowBoundsCheck() {
+                        super.windowBoundsCheck();
+                        if (disposition != null)
+                            recordedWindowPositions.put(disposition, contents.getParentRelativeBounds());
+                    }
+                };
+                if (r != null)
+                    uie.setForcedBounds(null, r);
+                rootView.addShell(tabShell);
             }
         }
     }
