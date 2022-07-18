@@ -18,6 +18,7 @@ import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
 import r48.map.systems.IRMMapSystem;
+import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBinders;
@@ -124,6 +125,7 @@ public class BasicToolset implements IToolset {
                 TXDB.get("Inspect Object (no Schema needed)"),
                 TXDB.get("Object-Object Comparison"),
                 TXDB.get("Retrieve all object strings"),
+                TXDB.get("PRINT.txt Into Object"),
         }, new Runnable[] {
                 new Runnable() {
                     @Override
@@ -264,6 +266,37 @@ public class BasicToolset implements IToolset {
                         } catch (IOException ioe) {
                             throw new RuntimeException(ioe);
                         }
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
+                            @Override
+                            public void accept(String s) {
+                                final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
+                                final InputStream is = GaBIEn.getInFile(UITest.getPrintPath());
+                                if (rio == null) {
+                                    AppMain.launchDialog(TXDB.get("The target file couldn't be read, and there's no schema to create it."));
+                                } else if (is == null) {
+                                    AppMain.launchDialog(TXDB.get("The PRINT.txt file couldn't be read."));
+                                } else {
+                                    try {
+                                        IRIO irio = rio.getObject();
+                                        IMIUtils.runIMISegment(is, irio);
+                                        AppMain.objectDB.objectRootModified(rio, new SchemaPath(new OpaqueSchemaElement(), rio));
+                                        AppMain.launchDialog(TXDB.get("It is done."));
+                                    } catch (Exception ioe) {
+                                        try {
+                                            is.close();
+                                        } catch (Exception ex) {
+                                        }
+                                        ioe.printStackTrace();
+                                        AppMain.launchDialog(TXDB.get("There was an issue somewhere along the line."));
+                                    }
+                                }
+                            }
+                        }));
                     }
                 }
         }).centred();

@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.dbs.TXDB;
+import r48.io.PathUtils;
 import r48.io.data.IRIO;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBinders;
@@ -48,7 +49,7 @@ public class UITest extends UIElement.UIProxy {
         @Override
         public void run() {
             try {
-                OutputStream fos = GaBIEn.getOutFile("PRINT.txt");
+                OutputStream fos = GaBIEn.getOutFile(getPrintPath());
                 PrintStream ps = new PrintStream(fos);
                 ps.print(currentObj.toStringLong(""));
                 fos.close();
@@ -63,6 +64,10 @@ public class UITest extends UIElement.UIProxy {
             AppMain.launchDialog(currentObj.toStringLong(""));
         }
     }, FontSizes.inspectorBackTextHeight), masterPanel);
+
+    public static String getPrintPath() {
+        return PathUtils.autoDetectWindows(AppMain.rootPath + "PRINT.txt");
+    }
 
     public UITest(IRIO obj) {
         loadObject(obj);

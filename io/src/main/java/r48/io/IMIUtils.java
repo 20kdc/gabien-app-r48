@@ -509,93 +509,6 @@ public class IMIUtils {
         }
     }
 
-    // 'R'-prefix status: Reading file
-    // '~'-prefix status: Modifying file
-    // 'W'-prefix status: Writing file
-    // 'A'-prefix status: R/W asset
-    // See r48.ui.imi.IMIAssemblyProcess for further details.
-    public static void runIMIFile(InputStream inp, String root, IConsumer<String> status) throws IOException {
-        IObjectBackend backendFile = null;
-        HashMap<String, IObjectBackend.ILoadedObject> newDataMap = new HashMap<String, IObjectBackend.ILoadedObject>();
-        while (true) {
-            int cmd = inp.read();
-            if (cmd == -1)
-                break;
-            String backend, dataPath, dataExt;
-            switch (cmd) {
-                case 'I':
-                    switch (inp.read()) {
-                        case '2':
-                            if (inp.read() != '\"')
-                                throw new IOException("Invalid syntax.");
-                            backend = new String(readIMIStringBody(inp), "UTF-8");
-                            if (inp.read() != '\"')
-                                throw new IOException("Invalid syntax.");
-                            dataPath = new String(readIMIStringBody(inp), "UTF-8");
-                            if (inp.read() != '\"')
-                                throw new IOException("Invalid syntax.");
-                            dataExt = new String(readIMIStringBody(inp), "UTF-8");
-                            if (inp.read() != '\"')
-                                throw new IOException("Invalid syntax.");
-                            IObjectBackend.Factory.encoding = new String(readIMIStringBody(inp), "UTF-8");
-                            backendFile = IObjectBackend.Factory.create(backend, root, dataPath, dataExt);
-                            break;
-                        default:
-                            throw new IOException("The IMI code given is incompatible with this program.");
-                    }
-                    break;
-                case '+':
-                case '~':
-                    if (inp.read() != '\"') {
-                        throw new IOException("Invalid syntax.");
-                    } else {
-                        dataPath = new String(readIMIStringBody(inp), "UTF-8");
-                        status.accept("R" + dataPath);
-                        IObjectBackend.ILoadedObject obj = backendFile.loadObject(dataPath);
-                        status.accept("~" + dataPath);
-                        if (obj == null) {
-                            if (cmd == '~')
-                                throw new IOException("Unable to continue - expected object " + dataPath + ", it was missing.");
-                            // cmd == '+', create file from scratch
-                            obj = backendFile.newObject(dataPath);
-                        } else {
-                            if (cmd == '+')
-                                throw new IOException("Unable to safely continue - object " + dataPath + " should not exist at this time!");
-                        }
-                        runIMISegment(inp, obj.getObject());
-                        newDataMap.put(dataPath, obj);
-                    }
-                    break;
-                case 'F':
-                    if (inp.read() != '\"') {
-                        throw new IOException("Invalid syntax.");
-                    } else {
-                        dataPath = new String(readIMIStringBody(inp), "UTF-8");
-                        if (inp.read() != '\"')
-                            throw new IOException("Invalid syntax.");
-                        status.accept("A" + dataPath);
-                        byte[] results = readIMIStringBody(inp);
-                        OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(root + dataPath));
-                        os.write(results);
-                        os.close();
-                    }
-                    break;
-                case 13:
-                case 10:
-                case 9:
-                case 32:
-                    break;
-                default:
-                    throw new IOException("IMI outer interpreter encountered " + cmd + ", which is unknown.");
-            }
-        }
-        // Only *now* actually write data
-        for (Map.Entry<String, IObjectBackend.ILoadedObject> rio : newDataMap.entrySet()) {
-            status.accept("W" + rio.getKey());
-            rio.getValue().save();
-        }
-    }
-
     public static void runIMISegment(InputStream inp, IRIO obj) throws IOException {
         while (true) {
             int cmd = inp.read();
@@ -612,7 +525,6 @@ public class IMIUtils {
                         throw new IOException("Object was expected to be of type " + tmp1 + " - it was " + obj.getType());
                     break;
                 case '!':
-                    obj.setNull();
                     newType = inp.read();
                     if (newType == -1)
                         throw new IOException("Early termination?");
