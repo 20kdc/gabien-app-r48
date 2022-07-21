@@ -20,14 +20,15 @@ import gabien.ui.UIElement;
  * Created on July 18th, 2018
  */
 public class UIIndentThingy extends UIElement {
-    public final int indent, unit;
+    public final int indent, unit, selectUnit;
     public int selected;
     public Runnable onClick;
 
-    public UIIndentThingy(int u, int i, int s, Runnable on) {
-        super((i * u) + u, u);
+    public UIIndentThingy(int u, int su, int i, int s, Runnable on) {
+        super((i * u) + su, u);
         indent = i;
         unit = u;
+        selectUnit = su;
         selected = s;
         onClick = on;
     }
@@ -38,10 +39,11 @@ public class UIIndentThingy extends UIElement {
 
     @Override
     public void render(IGrDriver igd) {
-        int bW = Math.max(unit / 6, 1);
-        UIBorderedElement.drawBorder(igd, (selected > 32) ? 1 : 0, bW, 0, 0, unit, getSize().height);
-        igd.clearRect(selected / 3, (selected * 2) / 3, selected, bW, bW, unit - (bW * 2), getSize().height - (bW * 2));
-        igd.clearRect(selected / 2, (selected * 5) / 6, selected, bW * 2, bW * 2, unit - (bW * 4), getSize().height - (bW * 4));
+        int bW = Math.max(selectUnit / 6, 1);
+        int height = getSize().height;
+        UIBorderedElement.drawBorder(igd, (selected > 32) ? 1 : 0, bW, 0, 0, selectUnit, height);
+        igd.clearRect(selected / 3, (selected * 2) / 3, selected, bW, bW, selectUnit - (bW * 2), height - (bW * 2));
+        igd.clearRect(selected / 2, (selected * 5) / 6, selected, bW * 2, bW * 2, selectUnit- (bW * 4), height - (bW * 4));
     }
 
     @Override

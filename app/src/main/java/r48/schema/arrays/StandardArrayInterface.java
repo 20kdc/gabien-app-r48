@@ -29,6 +29,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 25th October 2017.
  */
 public class StandardArrayInterface implements IArrayInterface {
+    public boolean hasIndexLabels = true;
+
+    public StandardArrayInterface withoutIndexLabels() {
+        hasIndexLabels = false;
+        return this;
+    }
+    
     @Override
     public void provideInterfaceFrom(final UIScrollLayout uiSVL, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
         final ArrayPosition[] positions = getPositions.get();
@@ -56,7 +63,8 @@ public class StandardArrayInterface implements IArrayInterface {
                 // Work out how big each array index field has to be.
                 final Size maxSizePre = UILabel.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight);
                 final AtomicInteger maxWidth = new AtomicInteger(maxSizePre.width);
-                int indentUnit = UITextButton.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight).height;
+                int selectButtonUnit = UITextButton.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight).height;
+                int indentUnit = FontSizes.scaleGuess(8);
                 if (positions.length > 0) {
                     if (selectedStart == -1) {
                         UITextButton button = genAdditionButton(true, positions[0].execInsert, positions[0].execInsertCopiedArray);
@@ -190,8 +198,11 @@ public class StandardArrayInterface implements IArrayInterface {
                         }
                         // Add indexes for clarity.
                         final UIElement editor = uie;
-                        UIElement label = new UILabel(positions[mi].text, FontSizes.schemaFieldTextHeight);
-                        maxWidth.set(Math.max(label.getWantedSize().width, maxWidth.get()));
+                        UIElement label = null;
+                        if (false) {
+                            label = new UILabel(positions[mi].text, FontSizes.schemaFieldTextHeight);
+                            maxWidth.set(Math.max(label.getWantedSize().width, maxWidth.get()));
+                        }
                         releasers.add(new Runnable() {
                             @Override
                             public void run() {
@@ -217,7 +228,12 @@ public class StandardArrayInterface implements IArrayInterface {
                             if (selectedStart == mi)
                                 selectedForce = 255;
                         }
-                        label = new UIFieldLayout(label, new UIIndentThingy(indentUnit, indent, selectedForce, onClick), maxWidth, true);
+                        UIElement indentThingy = new UIIndentThingy(indentUnit, selectButtonUnit, indent, selectedForce, onClick);
+                        if (label != null) {
+                            label = new UIFieldLayout(label, indentThingy, maxWidth, true);
+                        } else {
+                            label = indentThingy;
+                        }
 
                         final UISplitterLayout outerSplit = new UISplitterLayout(label, editor, false, 0);
                         releasers.add(new Runnable() {
