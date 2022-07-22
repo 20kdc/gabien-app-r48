@@ -69,11 +69,6 @@ public class FontSizes {
     public static int tonePickerTextHeight;
 
     @FontSizeDefault(16)
-    public static int imiAsmButtonsTextHeight;
-    @FontSizeDefault(16)
-    public static int imiAsmAssetTextHeight;
-
-    @FontSizeDefault(16)
     public static int dialogWindowTextHeight;
     @FontSizeDefault(16)
     public static int textDialogFieldTextHeight;
