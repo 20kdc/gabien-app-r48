@@ -9,6 +9,7 @@ package r48.ui.utilitybelt;
 
 import r48.AppMain;
 import r48.RubyIO;
+import r48.dbs.TXDB;
 import r48.io.BMPConnection;
 
 import java.io.IOException;
@@ -54,6 +55,13 @@ public class CopyImageEditorTool extends RectangleImageEditorTool {
             }
         }
         AppMain.theClipboard = new RubyIO().setUser("Image", data);
+    }
+
+    @Override
+    public String getLocalizedText(boolean dedicatedDragControl) {
+        if (stage2)
+            return TXDB.get("Press another bounding point to finish.");
+        return TXDB.get("Press bounding points to copy.");
     }
 
 }
