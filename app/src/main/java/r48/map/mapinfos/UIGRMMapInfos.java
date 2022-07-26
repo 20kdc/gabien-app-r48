@@ -33,6 +33,9 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
     private final IRMLikeMapInfoBackendWPub operators;
     private final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
     private final UITreeView utv;
+    private final UITextBox searchBarBox = new UITextBox("", FontSizes.mapInfosTextHeight);
+    private final UISplitterLayout searchBar = new UISplitterLayout(new UILabel("Search: ", FontSizes.mapInfosTextHeight), searchBarBox, false, 0); 
+    private String lastSearchTerm = "";
     private int selectedOrder = 0;
     private IMapContext mapContext;
     private HashSet<Long> notExpanded = new HashSet<Long>();
@@ -52,6 +55,13 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
         mapContext = context;
         toStringRes = mapInfos;
         b.registerModificationHandler(onMapInfoChange);
+        searchBarBox.onEdit = new Runnable() {
+            @Override
+            public void run() {
+                lastSearchTerm = searchBarBox.text;
+                rebuildList();
+            }
+        };
         rebuildList();
         proxySetElement(uiSVL, true);
     }
@@ -81,6 +91,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
         });
         int lastOrder = 0;
         LinkedList<UITreeView.TreeElement> tree = new LinkedList<UITreeView.TreeElement>();
+        final boolean searching = !lastSearchTerm.equals("");
         for (final Long k : intList) {
             final IRIO map = operators.getHashBID(k);
             final int order = operators.getOrderOfMap(k);
@@ -90,86 +101,15 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
 
             String name = map.getIVar("@name").decString();
 
-            UIElement elm = new UITextButton(k + ":" + name + " P" + parent, FontSizes.mapInfosTextHeight, new Runnable() {
-                @Override
-                public void run() {
-                    selectedOrder = order;
-                    mapContext.loadMap(operators.translateToGUM(k));
-                    rebuildList();
-                }
-            }).togglable(selectedOrder == order);
-
-            if (selectedOrder == order) {
-                if (parent != 0) {
-                    // This used to be two operations, but, eh.
-                    elm = new UIAppendButton(TXDB.get("Move Out "), elm, new Runnable() {
-                        @Override
-                        public void run() {
-                            final int parentLastOrder = MapInfoReparentUtil.findChildrenLastOrder(parent, operators);
-                            // Firstly, keep in mind relocateInOrder orders are relative to the CURRENT STATE.
-                            // This is what keeps them relatively consistent to use.
-                            // So, anyway. If *the selected order* is on the path to the parent's last order,
-                            // that is, a case such as:
-                            // 1
-                            //  2
-                            //  3 <selected!>
-                            //   4
-                            // then relocating is going to act weird because relative to the current state we're trying to make a reference loop.
-                            // But that's fine, since we're at the end anyway.
-                            // 1
-                            //  2
-                            // 3 <selected!>
-                            //  4
-                            // Just nudge the parent_id.
-                            // Meanwhile for this:
-                            // 1
-                            //  2 <selected!>
-                            //  3
-                            //   4
-                            // We need to move to the bottom...
-                            // 1
-                            //  3
-                            //   4
-                            //    2 <selected!>
-                            // And then fix the parent_id.
-                            // 1
-                            //  3
-                            //   4
-                            // 2 <selected!>
-                            // relocateInOrder will handle the case of 2 having any children.
-                            // (In the previous case of 3, which did have children, it was just a parent_id nudge anyway)
-
-                            if (!mapInPath(k, operators.getMapOfOrder(parentLastOrder)))
-                                selectedOrder = operators.relocateInOrder(selectedOrder, parentLastOrder + 1);
-                            map.getIVar("@parent_id").setFX(operators.getHashBID(parent).getIVar("@parent_id").getFX());
-                            operators.complete();
-                        }
-                    }, FontSizes.mapInfosTextHeight);
-                }
-                elm = new UIAppendButton(TXDB.get("Edit Info. "), elm, new Runnable() {
-                    @Override
-                    public void run() {
-                        operators.triggerEditInfoOf(k);
-                    }
-                }, FontSizes.mapInfosTextHeight);
-                elm = new UIAppendButton(TXDB.get("Delete"), elm, null, new String[] {TXDB.get("Confirm")}, new Runnable[] {new Runnable() {
-                    @Override
-                    public void run() {
-                        // Orphan/move up child nodes first
-                        for (Long rk : operators.getHashKeys()) {
-                            IRIO rio = operators.getHashBID(rk);
-                            if (rio.getIVar("@parent_id").getFX() == k)
-                                rio.getIVar("@parent_id").setFX(parent);
-                        }
-                        operators.removeMap(k);
-                        operators.complete();
-                        rebuildList();
-                    }
-                }}, FontSizes.mapInfosTextHeight);
-            }
+            if (searching && !name.contains(lastSearchTerm))
+                continue;
+            
+            UIElement elm = extractedElement(k, map, order, parent, name);
             tree.add(new UITreeView.TreeElement(indent.get(k), operators.getIconForMap(k), elm, new IConsumer<Integer>() {
                 @Override
                 public void accept(Integer integer) {
+                    if (searching)
+                        return;
                     int orderFrom = integer + 1;
                     if (orderFrom > 0)
                         if (!operators.wouldRelocatingInOrderFail(orderFrom, order + 1)) {
@@ -179,9 +119,11 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                             rebuildList();
                         }
                 }
-            }, !notExpanded.contains(k), new Runnable() {
+            }, searching || !notExpanded.contains(k), new Runnable() {
                 @Override
                 public void run() {
+                    if (searching)
+                        return;
                     if (notExpanded.contains(k)) {
                         notExpanded.remove(k);
                     } else {
@@ -192,6 +134,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
             }));
         }
         utv.setElements(tree.toArray(new UITreeView.TreeElement[0]));
+        uiSVL.panelsAdd(searchBar);
         uiSVL.panelsAdd(utv);
         uiSVL.panelsAdd(new UITextButton(TXDB.get("<Insert New Map>"), FontSizes.mapInfosTextHeight, new Runnable() {
             @Override
@@ -237,6 +180,87 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                 AppMain.window.createWindow(dialog);
             }
         }));
+    }
+
+    private UIElement extractedElement(final Long k, final IRIO map, final int order, final long parent, String name) {
+        UIElement elm = new UITextButton(k + ":" + name + " P" + parent, FontSizes.mapInfosTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                selectedOrder = order;
+                mapContext.loadMap(operators.translateToGUM(k));
+                rebuildList();
+            }
+        }).togglable(selectedOrder == order);
+
+        if (selectedOrder == order) {
+            if (parent != 0) {
+                // This used to be two operations, but, eh.
+                elm = new UIAppendButton(TXDB.get("Move Out "), elm, new Runnable() {
+                    @Override
+                    public void run() {
+                        final int parentLastOrder = MapInfoReparentUtil.findChildrenLastOrder(parent, operators);
+                        // Firstly, keep in mind relocateInOrder orders are relative to the CURRENT STATE.
+                        // This is what keeps them relatively consistent to use.
+                        // So, anyway. If *the selected order* is on the path to the parent's last order,
+                        // that is, a case such as:
+                        // 1
+                        //  2
+                        //  3 <selected!>
+                        //   4
+                        // then relocating is going to act weird because relative to the current state we're trying to make a reference loop.
+                        // But that's fine, since we're at the end anyway.
+                        // 1
+                        //  2
+                        // 3 <selected!>
+                        //  4
+                        // Just nudge the parent_id.
+                        // Meanwhile for this:
+                        // 1
+                        //  2 <selected!>
+                        //  3
+                        //   4
+                        // We need to move to the bottom...
+                        // 1
+                        //  3
+                        //   4
+                        //    2 <selected!>
+                        // And then fix the parent_id.
+                        // 1
+                        //  3
+                        //   4
+                        // 2 <selected!>
+                        // relocateInOrder will handle the case of 2 having any children.
+                        // (In the previous case of 3, which did have children, it was just a parent_id nudge anyway)
+
+                        if (!mapInPath(k, operators.getMapOfOrder(parentLastOrder)))
+                            selectedOrder = operators.relocateInOrder(selectedOrder, parentLastOrder + 1);
+                        map.getIVar("@parent_id").setFX(operators.getHashBID(parent).getIVar("@parent_id").getFX());
+                        operators.complete();
+                    }
+                }, FontSizes.mapInfosTextHeight);
+            }
+            elm = new UIAppendButton(TXDB.get("Edit Info. "), elm, new Runnable() {
+                @Override
+                public void run() {
+                    operators.triggerEditInfoOf(k);
+                }
+            }, FontSizes.mapInfosTextHeight);
+            elm = new UIAppendButton(TXDB.get("Delete"), elm, null, new String[] {TXDB.get("Confirm")}, new Runnable[] {new Runnable() {
+                @Override
+                public void run() {
+                    // Orphan/move up child nodes first
+                    for (Long rk : operators.getHashKeys()) {
+                        IRIO rio = operators.getHashBID(rk);
+                        if (rio.getIVar("@parent_id").getFX() == k)
+                            rio.getIVar("@parent_id").setFX(parent);
+                    }
+                    operators.removeMap(k);
+                    operators.complete();
+                    rebuildList();
+                }
+            }}, FontSizes.mapInfosTextHeight);
+        }
+        return elm;
     }
 
     @Override
