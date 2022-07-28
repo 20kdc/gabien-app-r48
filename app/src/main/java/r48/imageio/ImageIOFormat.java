@@ -20,6 +20,12 @@ import java.io.InputStream;
  * Created on April 13th 2018
  */
 public abstract class ImageIOFormat {
+    public final boolean knowsColourKey;
+
+    public ImageIOFormat(boolean ck) {
+        knowsColourKey = ck;
+    }
+
     // The 'save' button details (or null if no save system exists)
     public abstract String saveName(ImageIOImage img);
 
@@ -85,7 +91,7 @@ public abstract class ImageIOFormat {
                 ioe.printStackTrace();
             }
             if (iei != null)
-                return new TryToLoadResult(ief, iei);
+                return new TryToLoadResult(ief, iei, ief.knowsColourKey);
         }
         return null;
     }
@@ -93,10 +99,12 @@ public abstract class ImageIOFormat {
     public static class TryToLoadResult {
         public final ImageIOFormat format;
         public final ImageIOImage iei;
+        public final boolean wouldKnowIfColourKey;
 
-        public TryToLoadResult(ImageIOFormat format, ImageIOImage iei) {
+        public TryToLoadResult(ImageIOFormat format, ImageIOImage iei, boolean knowsColourKey) {
             this.format = format;
             this.iei = iei;
+            this.wouldKnowIfColourKey = knowsColourKey;
         }
     }
 }

@@ -23,6 +23,7 @@ public class BMP8IImageIOFormat extends ImageIOFormat {
     public int actuallyBits;
 
     public BMP8IImageIOFormat(int actuallyB) {
+        super(false);
         actuallyBits = actuallyB;
     }
 

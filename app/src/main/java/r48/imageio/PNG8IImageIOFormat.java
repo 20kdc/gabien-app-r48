@@ -19,6 +19,10 @@ import java.util.zip.InflaterOutputStream;
  * Created on April 14th 2018.
  */
 public class PNG8IImageIOFormat extends ImageIOFormat {
+    public PNG8IImageIOFormat() {
+        super(true);
+    }
+    
     public static boolean supports(ImageIOImage img) {
         if (img.palette != null)
             return img.palette.size() <= 256;

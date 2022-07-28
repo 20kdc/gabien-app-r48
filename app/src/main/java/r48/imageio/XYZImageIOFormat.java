@@ -22,6 +22,10 @@ import java.util.zip.InflaterInputStream;
  * Created on 31/05/17.
  */
 public class XYZImageIOFormat extends ImageIOFormat {
+    public XYZImageIOFormat() {
+        super(false);
+    }
+
     public static boolean supports(ImageIOImage img) {
         if (img.palette != null)
             return img.palette.size() <= 256;

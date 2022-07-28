@@ -107,20 +107,37 @@ public class ImageEditorController {
         if (ioi == null) {
             AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to load #A."), new RubyIO().setString(filename, true)));
         } else {
-            // Detect assets that use the tRNS chunk correctly
-            boolean detected = false;
-            if (ioi.iei.palette != null) {
-                if ((ioi.iei.palette.get(0) & 0xFF000000) == 0) {
-                    detected = true;
-                    for (int i = 1; i < ioi.iei.palette.size(); i++) {
-                        if ((ioi.iei.palette.get(i) & 0xFF000000) != 0xFF000000) {
-                            detected = false;
-                            break;
+            boolean detectedCK = false;
+            if (ioi.wouldKnowIfColourKey) {
+                // Detect assets that use the tRNS chunk correctly
+                if (ioi.iei.palette != null) {
+                    if ((ioi.iei.palette.get(0) & 0xFF000000) == 0) {
+                        detectedCK = true;
+                        for (int i = 1; i < ioi.iei.palette.size(); i++) {
+                            if ((ioi.iei.palette.get(i) & 0xFF000000) != 0xFF000000) {
+                                detectedCK = false;
+                                break;
+                            }
                         }
                     }
                 }
+            } else {
+                // Heuristics time
+                String filenameL = filename.toLowerCase().replace('\\', '/');
+                detectedCK |= filenameL.contains("/battle/");
+                detectedCK |= filenameL.contains("/battle2/");
+                detectedCK |= filenameL.contains("/battlecharset/");
+                detectedCK |= filenameL.contains("/battleweapon/");
+                detectedCK |= filenameL.contains("/charset/");
+                detectedCK |= filenameL.contains("/chipset/");
+                detectedCK |= filenameL.contains("/faceset/");
+                detectedCK |= filenameL.contains("/frame/");
+                detectedCK |= filenameL.contains("/monster/");
+                detectedCK |= filenameL.contains("/picture/");
+                detectedCK |= filenameL.contains("/system/");
+                detectedCK |= filenameL.contains("/system2/");
             }
-            imageEditView.setImage(new ImageEditorImage(ioi.iei, detected));
+            imageEditView.setImage(new ImageEditorImage(ioi.iei, detectedCK));
             imageEditView.eds.didSuccessfulLoad(filename, ioi.format);
             initPalette(0);
             Size sz = new Size(ioi.iei.width, ioi.iei.height);

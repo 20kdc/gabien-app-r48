@@ -16,6 +16,10 @@ import java.io.IOException;
  * Created on April 14th 2018.
  */
 public class GabienImageIOFormat extends ImageIOFormat {
+    public GabienImageIOFormat() {
+        super(true);
+    }
+
     @Override
     public String saveName(ImageIOImage img) {
         // Don't recommend saving in this format if indexed is possible.
