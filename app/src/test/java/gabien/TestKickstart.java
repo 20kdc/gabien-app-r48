@@ -230,23 +230,28 @@ public class TestKickstart {
                 }
 
                 @Override
-                public String maintain(int x, int y, int w, int h, String text, int textHeight, IFunction<String, String> feedback) {
-                    boolean settingNew = true;
-                    if (internalMaintainText != null)
-                        if (internalMaintainText.equals(text))
-                            settingNew = false;
-                    if (settingNew) {
-                        System.out.println("Maintain set= " + text);
-                        internalMaintainText = text;
-                        maintainText = text;
-                    }
-                    didMaintainThisFrame = true;
-                    return maintainText;
-                }
+                public ITextEditingSession openTextEditingSession() {
+                    return new ITextEditingSession() {
+                        @Override
+                        public String maintain(int x, int y, int w, int h, String text, int textHeight, IFunction<String, String> feedback) {
+                            boolean settingNew = true;
+                            if (internalMaintainText != null)
+                                if (internalMaintainText.equals(text))
+                                    settingNew = false;
+                            if (settingNew) {
+                                System.out.println("Maintain set= " + text);
+                                internalMaintainText = text;
+                                maintainText = text;
+                            }
+                            didMaintainThisFrame = true;
+                            return maintainText;
+                        }
 
-                @Override
-                public boolean isEnterJustPressed() {
-                    return maintainTextEnter;
+                        @Override
+                        public boolean isEnterJustPressed() {
+                            return maintainTextEnter;
+                        }
+                    };
                 }
             };
             windows.add(this);
