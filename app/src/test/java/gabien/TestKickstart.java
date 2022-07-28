@@ -24,6 +24,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Ties into gabien-javase to create a test workbench.
  * Unusable outside of it.
@@ -201,7 +204,7 @@ public class TestKickstart {
         public TestGrInDriver(String name, WindowSpecs ws, IWindowGrBackend t) {
             super(name, ws, t);
             windowCount++;
-            peripherals = new IPeripherals() {
+            peripherals = new IGJSEPeripheralsInternal() {
                 private int ofsX, ofsY;
 
                 @Override
@@ -230,10 +233,11 @@ public class TestKickstart {
                 }
 
                 @Override
-                public ITextEditingSession openTextEditingSession() {
+                public ITextEditingSession openTextEditingSession(@NonNull String text, boolean multiLine, int textHeight, @Nullable IFunction<String, String> feedback) {
                     return new ITextEditingSession() {
+                        boolean sessionDeadYet = false;
                         @Override
-                        public String maintain(int x, int y, int w, int h, String text, int textHeight, IFunction<String, String> feedback) {
+                        public String maintain(int x, int y, int w, int h, String text) {
                             boolean settingNew = true;
                             if (internalMaintainText != null)
                                 if (internalMaintainText.equals(text))
@@ -254,9 +258,24 @@ public class TestKickstart {
 
                         @Override
                         public void endSession() {
-                            // uuuh something something something "when it gets rewritten"
+                            sessionDeadYet = true;
+                        }
+
+                        @Override
+                        public boolean isSessionDead() {
+                            return sessionDeadYet;
                         }
                     };
+                }
+
+                @Override
+                public String aroundTheBorderworldMaintain(TextboxMaintainer tm, int x, int y, int w, int h, String text) {
+                    return text;
+                }
+
+                @Override
+                public void finishRemovingEditingSession() {
+                    // nuh UH!
                 }
             };
             windows.add(this);
