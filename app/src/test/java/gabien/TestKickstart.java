@@ -251,6 +251,11 @@ public class TestKickstart {
                         public boolean isEnterJustPressed() {
                             return maintainTextEnter;
                         }
+
+                        @Override
+                        public void endSession() {
+                            // uuuh something something something "when it gets rewritten"
+                        }
                     };
                 }
             };
