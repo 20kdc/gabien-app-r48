@@ -317,7 +317,7 @@ public class BasicToolset implements IToolset {
                             public void accept(String s) {
                                 try {
                                     Integer i = Integer.parseInt(s);
-                                    AppMain.window.createWindow(new UITextBox("", i));
+                                    AppMain.window.createWindow(new UITextBox("", i).setMultiLine());
                                 } catch (Exception e) {
                                     AppMain.launchDialog(TXDB.get("Not a valid number."));
                                 }
