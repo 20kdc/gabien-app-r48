@@ -38,7 +38,7 @@ public class EventPageCondition extends DM2R2kObject {
 
     @DM2FXOBinding("@timer_2_secs_2k3") @DM2LcfBinding(9) @DM2LcfInteger(0)
     public IntegerR2kStruct timer2Sec;
-    @DM2FXOBinding("@var_compare_op_2k3") @DM2LcfBinding(10) @DM2LcfInteger(0)
+    @DM2FXOBinding("@var_compare_op_2k3") @DM2LcfBinding(10) @DM2LcfInteger(1)
     public IntegerR2kStruct compareOp;
 
     public EventPageCondition() {
