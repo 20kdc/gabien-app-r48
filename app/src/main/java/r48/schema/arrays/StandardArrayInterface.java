@@ -94,54 +94,16 @@ public class StandardArrayInterface implements IArrayInterface {
                         } else {
                             // Selection, but not confirming delete
                             if (selectedStart == mi) {
-                               if (positions[selectedStart].execDelete != null) {
-                                   final int fixedStart = selectedStart;
-                                   final int fixedEnd = selectedEnd;
-                                   uie = new UIAppendButton("Delete", uie, valid, new String[] {TXDB.get("Confirm")}, new Runnable[] {
-                                           new Runnable() {
-                                               @Override
-                                               public void run() {
-                                                   ArrayPosition[] effectivePositions = positions;
-                                                   Runnable term = null;
-                                                   // allowedDelete is used to make sure that nothing gets deleted that shouldn't be.
-                                                   // The commented printlns here are for debugging.
-                                                   HashSet<IRIO> allowedDelete = new HashSet<IRIO>();
-                                                   for (int j = fixedStart; j <= fixedEnd; j++)
-                                                       if (effectivePositions[j].elements != null)
-                                                           Collections.addAll(allowedDelete, effectivePositions[j].elements);
-                                                   //System.err.println("ST" + selectedStart + ";" + selectedEnd);
-                                                   for (int j = fixedStart; j <= fixedEnd; j++) {
-                                                       //System.err.println(j);
-                                                       if (fixedStart >= effectivePositions.length) {
-                                                           //System.err.println("NR");
-                                                           break;
-                                                       }
-                                                       if (effectivePositions[fixedStart].execDelete == null) {
-                                                           //System.err.println("NED");
-                                                           break;
-                                                       }
-                                                       if (effectivePositions[fixedStart].elements == null) {
-                                                           //System.err.println("NEL");
-                                                           break;
-                                                       }
-                                                       boolean aok = true;
-                                                       for (IRIO rio : effectivePositions[fixedStart].elements) {
-                                                           if (!allowedDelete.contains(rio)) {
-                                                               aok = false;
-                                                               break;
-                                                           }
-                                                       }
-                                                       if (!aok) {
-                                                           //System.err.println("NOK");
-                                                           break;
-                                                       }
-                                                       term = effectivePositions[fixedStart].execDelete.get();
-                                                       effectivePositions = getPositions.get();
-                                                   }
-                                                   if (term != null)
-                                                       term.run();
-                                               }
-                                           }
+                                final int fixedStart = selectedStart;
+                                final int fixedEnd = selectedEnd;
+                                if (positions[fixedStart].execDelete != null) {
+                                    uie = new UIAppendButton("Delete", uie, valid, new String[] {TXDB.get("Confirm")}, new Runnable[] {
+                                        new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                deleteRange(fixedStart, fixedEnd);
+                                            }
+                                        }
                                     }, FontSizes.schemaFieldTextHeight);
                                 }
                                 onClick = new Runnable() {
@@ -157,22 +119,19 @@ public class StandardArrayInterface implements IArrayInterface {
                                         containerRCL();
                                     }
                                 };
-                                uie = new UIAppendButton(TXDB.get("Copy Array"), uie, new Runnable() {
+                                uie = new UIAppendButton(TXDB.get("Copy"), uie, new Runnable() {
                                     @Override
                                     public void run() {
-                                        // the clipboard is very lenient...
-                                        RubyIO rio = new RubyIO();
-                                        rio.type = '[';
-
-                                        LinkedList<RubyIO> resBuild = new LinkedList<RubyIO>();
-                                        for (int j = selectedStart; j <= selectedEnd; j++)
-                                            if (positions[j].elements != null)
-                                                for (IRIO rio2 : positions[j].elements)
-                                                    resBuild.add(new RubyIO().setDeepClone(rio2));
-                                        rio.arrVal = resBuild.toArray(new RubyIO[0]);
-                                        AppMain.theClipboard = rio;
+                                        copyRange(fixedStart, fixedEnd);
                                         selectedStart = -1;
                                         containerRCL();
+                                    }
+                                }, FontSizes.schemaFieldTextHeight);
+                                uie = new UIAppendButton(TXDB.get("Cut Array"), uie, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        copyRange(fixedStart, fixedEnd);
+                                        deleteRange(fixedStart, fixedEnd);
                                     }
                                 }, FontSizes.schemaFieldTextHeight);
                             } else if ((mi < selectedStart) || (mi > selectedEnd)) {
@@ -253,6 +212,62 @@ public class StandardArrayInterface implements IArrayInterface {
                             uie = addAdditionButton(uie, clarifyEmpty, positions[mi + 1].execInsert, positions[mi + 1].execInsertCopiedArray);
                     uiSVL.panelsAdd(uie);
                 }
+            }
+
+            private void copyRange(int fixedStart, int fixedEnd) {
+                // the clipboard is very lenient...
+                RubyIO rio = new RubyIO();
+                rio.type = '[';
+
+                LinkedList<RubyIO> resBuild = new LinkedList<RubyIO>();
+                for (int j = fixedStart; j <= fixedEnd; j++)
+                    if (positions[j].elements != null)
+                        for (IRIO rio2 : positions[j].elements)
+                            resBuild.add(new RubyIO().setDeepClone(rio2));
+                rio.arrVal = resBuild.toArray(new RubyIO[0]);
+                AppMain.theClipboard = rio;
+            }
+
+            private void deleteRange(int fixedStart, int fixedEnd) {
+                ArrayPosition[] effectivePositions = positions;
+                Runnable term = null;
+                // allowedDelete is used to make sure that nothing gets deleted that shouldn't be.
+                // The commented printlns here are for debugging.
+                HashSet<IRIO> allowedDelete = new HashSet<IRIO>();
+                for (int j = fixedStart; j <= fixedEnd; j++)
+                    if (effectivePositions[j].elements != null)
+                        Collections.addAll(allowedDelete, effectivePositions[j].elements);
+                //System.err.println("ST" + selectedStart + ";" + selectedEnd);
+                for (int j = fixedStart; j <= fixedEnd; j++) {
+                    //System.err.println(j);
+                    if (fixedStart >= effectivePositions.length) {
+                        //System.err.println("NR");
+                        break;
+                    }
+                    if (effectivePositions[fixedStart].execDelete == null) {
+                        //System.err.println("NED");
+                        break;
+                    }
+                    if (effectivePositions[fixedStart].elements == null) {
+                        //System.err.println("NEL");
+                        break;
+                    }
+                    boolean aok = true;
+                    for (IRIO rio : effectivePositions[fixedStart].elements) {
+                        if (!allowedDelete.contains(rio)) {
+                            aok = false;
+                            break;
+                        }
+                    }
+                    if (!aok) {
+                        //System.err.println("NOK");
+                        break;
+                    }
+                    term = effectivePositions[fixedStart].execDelete.get();
+                    effectivePositions = getPositions.get();
+                }
+                if (term != null)
+                    term.run();
             }
 
             private int tracePositionEnd(ArrayPosition[] positions, int mi) {
