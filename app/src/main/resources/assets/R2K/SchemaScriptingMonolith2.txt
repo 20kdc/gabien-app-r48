@@ -104,6 +104,7 @@ e comm_picture_effectmode 0 none 1 rotate 2 waver
 
 .show_picture_array_nbo
 ]0 img f_picture_name
++r2kTonePickerPreview ]9 ]10 ]11 ]12 ]0 Picture/
 +comm_picture_nbo
 
 e show_picture_maplayer 0 invisible 1 aboveParallax 2 aboveLowerTiles 3 aboveLowerEvents 4 aboveMidEvents 5 aboveUpperTiles 6 aboveUpperEvents 7 aboveWeather 8 aboveAnimations 9 aboveTextbox 10 aboveTimers
@@ -112,6 +113,7 @@ e show_picture_sheettype 0 singleConstFrame 1 singleVarFrame 2 animation
 
 .show_picture_array_nbn
 ]0 img f_picture_name
++r2kTonePickerPreview ]9 ]10 ]11 ]12 ]0 Picture/
  15: bottomTransparency (marked Ignored in Ghabry's sheet)
  16, 17: useless
 ]16 _ int

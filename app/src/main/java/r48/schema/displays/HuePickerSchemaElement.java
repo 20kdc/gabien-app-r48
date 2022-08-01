@@ -8,6 +8,7 @@
 package r48.schema.displays;
 
 import gabien.uslx.append.*;
+import gabien.IImage;
 import gabien.ui.UIPublicPanel;
 import gabien.ui.UISplitterLayout;
 import r48.imagefx.HueShiftImageEffect;
@@ -23,12 +24,13 @@ public class HuePickerSchemaElement extends IntegerSchemaElement {
 
     @Override
     public ActiveInteger buildIntegerEditor(final long oldVal, IntegerSchemaElement.IIntegerContext context) {
-        final UIPublicPanel uie = TonePickerSchemaElement.createTotem(new HueShiftImageEffect((int) oldVal));
+        final IImage totem = TonePickerSchemaElement.getOneTrueTotem();
+        final UIPublicPanel uie = TonePickerSchemaElement.createTotemStandard(totem, new HueShiftImageEffect((int) oldVal));
         final ActiveInteger ai2 = super.buildIntegerEditor(oldVal, context);
         return new ActiveInteger(new UISplitterLayout(ai2.uie, uie, true, 0.5), new IConsumer<Long>() {
             @Override
             public void accept(Long aLong) {
-                uie.baseImage = TonePickerSchemaElement.compositeTotem(new HueShiftImageEffect((int) oldVal));
+                uie.baseImage = TonePickerSchemaElement.compositeTotem(totem, new HueShiftImageEffect((int) oldVal));
                 ai2.onValueChange.accept(aLong);
             }
         });

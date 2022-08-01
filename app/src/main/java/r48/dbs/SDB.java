@@ -462,6 +462,14 @@ public class SDB {
                             final String bPath = args[point++];
                             final String sPath = args[point++];
                             return new TonePickerSchemaElement(rPath, gPath, bPath, sPath, 100);
+                        } else if (text.equals("r2kTonePickerPreview")) {
+                            final String rPath = args[point++];
+                            final String gPath = args[point++];
+                            final String bPath = args[point++];
+                            final String sPath = args[point++];
+                            final String iPath = args[point++];
+                            final String iPrefix = args[point++];
+                            return new TonePickerSchemaElement.Thumbnail(rPath, gPath, bPath, sPath, 100, iPath, iPrefix);
                         }
                         if (text.equals("binding")) {
                             String type = args[point++];
