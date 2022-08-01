@@ -7,6 +7,8 @@
 
 package r48.schema;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.ui.UIElement;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -53,6 +55,17 @@ public abstract class SchemaElement {
     // Before the system was even *completed.*
     // Probably best not to break them.
     public abstract UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path);
+
+    /**
+     * Gets the window title suffix for this schema element.
+     * This is done by schema element as it allows specifying custom logic for specific elements.
+     * Note that this should NOT generate sub-paths.
+     * But going "sideways" (passing the element to parts of an aggregate/etc. in the same object) is fine.
+     * It's important to return null on failure.
+     */
+    public @Nullable String windowTitleSuffix(SchemaPath path) {
+        return null;
+    }
 
     // Modify target to approach the default value, or to correct errors.
     // The type starts as 0 (not '0', but actual numeric 0) and needs to be modified by something to result in a valid object.

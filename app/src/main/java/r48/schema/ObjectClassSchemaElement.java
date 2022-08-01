@@ -93,4 +93,9 @@ public class ObjectClassSchemaElement extends SchemaElement {
         if (setDefault)
             path.changeOccurred(true);
     }
+
+    @Override
+    public String windowTitleSuffix(SchemaPath path) {
+        return backing.windowTitleSuffix(path);
+    }
 }

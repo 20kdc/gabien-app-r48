@@ -17,6 +17,8 @@ import r48.schema.util.SchemaPath;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Basically a UI element masquerading as a schema element.
  * Created on 12/29/16.
@@ -156,5 +158,15 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     public void setFieldWidthOverride(int w) {
         overrideFW = w;
         overrideSet = true;
+    }
+
+    @Override
+    public @Nullable String windowTitleSuffix(SchemaPath path) {
+        for (SchemaElement ise : aggregate) {
+            String res = ise.windowTitleSuffix(path);
+            if (res != null)
+                return res;
+        }
+        return null;
     }
 }

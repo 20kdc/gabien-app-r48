@@ -16,6 +16,9 @@ import r48.schema.specialized.TempDialogSchemaChoice;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Generic schema path object used to keep references to things being edited in play,
  * and allow "go to the parent object" functionality.
@@ -245,5 +248,20 @@ public class SchemaPath {
         SchemaPath sp = new SchemaPath(this);
         sp.contextualSchemas.put(contextName, enumSchemaElement);
         return sp;
+    }
+
+    /**
+     * Returns the window title suffix, if any.
+     */
+    public @NonNull String windowTitleSuffix() {
+        String parentSuffix = "";
+        if (parent != null)
+            parentSuffix = parent.windowTitleSuffix();
+        if (editor != null) {
+            String attemptedEditorSuffix = editor.windowTitleSuffix(this);
+            if (attemptedEditorSuffix != null)
+                return parentSuffix + ":" + attemptedEditorSuffix;
+        }
+        return parentSuffix;
     }
 }

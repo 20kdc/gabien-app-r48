@@ -21,6 +21,7 @@ import r48.schema.displays.EPGDisplaySchemaElement;
 import r48.schema.displays.HWNDSchemaElement;
 import r48.schema.displays.HuePickerSchemaElement;
 import r48.schema.displays.TonePickerSchemaElement;
+import r48.schema.displays.WindowTitleAttachmentSchemaElement;
 import r48.schema.integers.BitfieldSchemaElement;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.LowerBoundIntegerSchemaElement;
@@ -647,6 +648,10 @@ public class SDB {
                             String a = args[point++];
                             String b = args[point++];
                             return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(b), Integer.parseInt(a), c, d), getFunctionToReturn(TXDB.get("Select Tile Graphic...")));
+                        }
+                        if (text.equals("windowTitleAttachment")) {
+                            String txt = TXDB.get(outerContext, args[point++]);
+                            return new WindowTitleAttachmentSchemaElement(txt);
                         }
                         // -- If all else fails, it's an ID to be looked up. --
                         return getSDBEntry(text);

@@ -282,9 +282,13 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     public String toString() {
         if (innerElem == null)
             return TXDB.get("Loading...");
-        String name = innerElem.findRoot().toString();
-        if (AppMain.objectDB.getObjectModified(name))
-            return name + "*";
+        String rootName = AppMain.objectDB.getIdByObject(innerElem.root);
+        if (rootName == null)
+            rootName = "AnonObject";
+        String name = rootName;
+        name += innerElem.windowTitleSuffix();
+        if (AppMain.objectDB.getObjectModified(rootName))
+            name += "*";
         return name;
     }
 
