@@ -18,13 +18,18 @@ import r48.io.data.IRIO;
  */
 public interface IArrayInterface {
 
+    public interface Host {
+        void panelsClear();
+        void panelsAdd(UIElement element);
+    }
+
     /*
      * Create the interface.
      * Note that svl is dedicated to this interface - the only reason it's built like this is so SchemaPath won't be unnecessarily 'leaked' for scroll stuff.
      * state is tied to a unique SchemaElement held by the ArraySchemaElement for the purposes of holding extra state.
      * Also note that the positions are invalidated when any exec function is called.
      */
-    void provideInterfaceFrom(UIScrollLayout svl, ISupplier<Boolean> valid, IFunction<String, IProperty> state, ISupplier<ArrayPosition[]> positions);
+    void provideInterfaceFrom(Host svl, ISupplier<Boolean> valid, IFunction<String, IProperty> state, ISupplier<ArrayPosition[]> positions);
 
     interface IProperty extends ISupplier<Double>, IConsumer<Double> {
         // Get returns 0 if the property doesn't exist, like with the usual double interface

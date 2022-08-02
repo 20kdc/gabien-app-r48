@@ -37,7 +37,7 @@ public class StandardArrayInterface implements IArrayInterface {
     }
     
     @Override
-    public void provideInterfaceFrom(final UIScrollLayout uiSVL, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
+    public void provideInterfaceFrom(final Host uiSVL, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
         final ArrayPosition[] positions = getPositions.get();
         // this object is needed as a pin to hold things together.
         // It used to be kind of redundant, but now with the selection stuff...
@@ -158,7 +158,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         // Add indexes for clarity.
                         final UIElement editor = uie;
                         UIElement label = null;
-                        if (false) {
+                        if (hasIndexLabels) {
                             label = new UILabel(positions[mi].text, FontSizes.schemaFieldTextHeight);
                             maxWidth.set(Math.max(label.getWantedSize().width, maxWidth.get()));
                         }

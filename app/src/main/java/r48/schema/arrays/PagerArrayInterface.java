@@ -22,8 +22,44 @@ import java.util.LinkedList;
  * 25th October 2017.
  */
 public class PagerArrayInterface implements IArrayInterface {
+    public StandardArrayInterface regularArrayInterface = new StandardArrayInterface();
     @Override
-    public void provideInterfaceFrom(UIScrollLayout svl, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
+    public void provideInterfaceFrom(final Host svl, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
+        // work out if we want to be in regular array mode
+        final IProperty regularArrayMode = prop.apply("regularArrayMode");
+        final boolean regularArrayModeCurrent = ((int) ((double) regularArrayMode.get())) != 0;
+        Runnable swapModeAndReset = new Runnable() {
+            @Override
+            public void run() {
+                if (regularArrayModeCurrent) {
+                    regularArrayMode.accept(0d);
+                } else {
+                    regularArrayMode.accept(1d);
+                }
+                svl.panelsClear();
+                provideInterfaceFrom(svl, valid, prop, getPositions);
+            }
+        };
+        if (regularArrayModeCurrent) {
+            // regular array mode
+            final UITextButton swapModeButton = new UITextButton(TXDB.get("Mode: Regular Array"), FontSizes.schemaFieldTextHeight, swapModeAndReset);
+            svl.panelsAdd(swapModeButton);
+            regularArrayInterface.provideInterfaceFrom(new Host() {
+                
+                @Override
+                public void panelsClear() {
+                    svl.panelsClear();
+                    svl.panelsAdd(swapModeButton);
+                }
+                
+                @Override
+                public void panelsAdd(UIElement element) {
+                    svl.panelsAdd(element);
+                }
+            }, valid, prop, getPositions);
+            return;
+        }
+
         final ArrayPosition[] positions = getPositions.get();
         LinkedList<UIElement> uie = new LinkedList<UIElement>();
         for (int i = 0; i < positions.length; i++) {
@@ -86,6 +122,7 @@ public class PagerArrayInterface implements IArrayInterface {
                     }));
                 }
             }
+            barLayout.panelsAdd(new UITextButton(TXDB.get("Mode: Pager"), FontSizes.schemaFieldTextHeight, swapModeAndReset));
             if (positions[i].core != null) {
                 uie.add(new UISplitterLayout(barLayout, positions[i].core, true, 0d) {
                     @Override
