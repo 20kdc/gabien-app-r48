@@ -26,6 +26,7 @@ import r48.schema.util.SchemaPath;
 import r48.ui.Coco;
 import r48.ui.UIAppendButton;
 import r48.ui.UIMenuButton;
+import r48.ui.audioplayer.UIAudioPlayer;
 import r48.ui.dialog.UIFontSizeConfigurator;
 import r48.ui.dialog.UITextPrompt;
 import r48.ui.help.HelpSystemController;
@@ -308,6 +309,7 @@ public class BasicToolset implements IToolset {
                 TXDB.get("Toggle Fullscreen"),
                 TXDB.get("Dump Schemaside Translations"),
                 TXDB.get("Recover data from R48 error <INCREDIBLY DAMAGING>..."),
+                TXDB.get("Audio Player...")
         }, new Runnable[] {
                 new Runnable() {
                     @Override
@@ -390,6 +392,17 @@ public class BasicToolset implements IToolset {
                         }));
                         AppMain.launchDialog(TXDB.get("If the backup file is invalid, wasn't created, or is otherwise harmed, this can destroy more data than it saves.") +
                                 "\n" + TXDB.get("Check *everything* before a final save.") + "\n" + TXDB.get("Type 'I understand.' at the prompt behind this window if you WILL do this."));
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Filename?"), new IConsumer<String>() {
+                            @Override
+                            public void accept(String s) {
+                                AppMain.window.createWindow(UIAudioPlayer.create(s));
+                            }
+                        }));
                     }
                 }
         }).centred();
