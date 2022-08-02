@@ -33,8 +33,8 @@ D internal_battlecommandDictionary 1 RPG_RT.ldb@battle_commands_2k3@commands 0 @
  NOTE: The default here is blank, this just stops it crashing
 > f_save_charset_name { string imgSelector CharSet/ CharSet/ }
 > f_faceset_name { string imgSelector FaceSet/ FaceSet/ }
-> f_music_name { string= (OFF) fileSelector Music/ }
-> f_sound_name { string= (OFF) fileSelector Sound/ }
+> f_music_name { string= (OFF) fileSelector Music/ soundPlayer Music/ }
+> f_sound_name { string= (OFF) fileSelector Sound/ soundPlayer Sound/ }
 > f_system_name { string= System imgSelector System/ System/ }
  NOTE: The default here is blank, this makes it use the game-picked System
 > f_save_system_name { string imgSelector System/ System/ }

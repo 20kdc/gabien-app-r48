@@ -20,6 +20,7 @@ import r48.schema.arrays.*;
 import r48.schema.displays.EPGDisplaySchemaElement;
 import r48.schema.displays.HWNDSchemaElement;
 import r48.schema.displays.HuePickerSchemaElement;
+import r48.schema.displays.SoundPlayerSchemaElement;
 import r48.schema.displays.TonePickerSchemaElement;
 import r48.schema.displays.WindowTitleAttachmentSchemaElement;
 import r48.schema.integers.BitfieldSchemaElement;
@@ -652,6 +653,10 @@ public class SDB {
                         if (text.equals("windowTitleAttachment")) {
                             String txt = TXDB.get(outerContext, args[point++]);
                             return new WindowTitleAttachmentSchemaElement(txt);
+                        }
+                        if (text.equals("soundPlayer")) {
+                            String a = args[point++];
+                            return new SoundPlayerSchemaElement(a);
                         }
                         // -- If all else fails, it's an ID to be looked up. --
                         return getSDBEntry(text);
