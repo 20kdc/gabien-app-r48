@@ -13,6 +13,9 @@ import org.junit.Test;
  * Created on March 28, 2019.
  */
 public class GrandSynthesisTest {
+    public static final String ev0001WName = "Map0001.lmu:\"EV0001\"*";
+    public static final String ev0001Prefix = "?:" + ev0001WName + "¥";
+    public static final String ev0001Back = ev0001Prefix + "symbol:Back";
     @Test
     public void runGrandSynthesisTest() {
         GrandTestBuilder gtb = new GrandTestBuilder();
@@ -30,6 +33,7 @@ public class GrandSynthesisTest {
     }
 
     private void editTerm(GrandTestBuilder gtb) {
+        gtb.thenSetPhase("GrandSynthesisTest:editTerm");
         // Show + Maximize 'RPG_RT.ldb', scroll down, edit first term, and close it
         gtb.thenSelectTab("Database Objects");
         gtb.thenWaitFrame();
@@ -47,6 +51,7 @@ public class GrandSynthesisTest {
     }
 
     private void editMap(GrandTestBuilder gtb) {
+        gtb.thenSetPhase("GrandSynthesisTest:editMap");
         // Work on the map now.
         gtb.thenSelectTab("Map");
         gtb.thenWaitFrame();
@@ -58,6 +63,7 @@ public class GrandSynthesisTest {
     }
 
     public void editMapTile(GrandTestBuilder gtb) {
+        gtb.thenSetPhase("GrandSynthesisTest:editMapTile");
         gtb.thenClick("button:L0"); // L0
         gtb.thenWaitFrame();
         gtb.thenIcon("T0", 1);
@@ -67,6 +73,7 @@ public class GrandSynthesisTest {
     }
 
     public void editMapEvent(GrandTestBuilder gtb) {
+        gtb.thenSetPhase("GrandSynthesisTest:editMapEvent");
         // Launch event editor, add an event, set the direction to 'down', do more stuff, and stop editing it
         gtb.thenClick("button:Events"); // Events
         gtb.thenWaitFrame();
@@ -77,25 +84,28 @@ public class GrandSynthesisTest {
         gtb.thenSelectTab("Ev.Pick [0 total]");
         gtb.thenClick("button:+ Add Event"); // Add Event
         gtb.thenIcon("Ev.Pick [0 total]", 0);
-        gtb.thenIcon("Map0001.lmu*", 1);
+        gtb.thenIcon(ev0001WName, 1);
         gtb.thenWaitFrame();
         editMapEventGraphics(gtb);
         editMapEventMoveRoute(gtb);
-        gtb.thenIcon("Map0001.lmu*", 0); // Close.
+        gtb.thenSetPhase("GrandSynthesisTest:editMapEvent (closing)");
+        gtb.thenIcon(ev0001WName, 0); // Close.
     }
 
     private void editMapEventGraphics(GrandTestBuilder gtb) {
+        gtb.thenSetPhase("GrandSynthesisTest:editMapEventGraphics");
         gtb.thenClick("button:Graphics"); // Graphics
         gtb.thenWaitFrame();
         gtb.thenClick("button:2 : down"); // Direction
         gtb.thenWaitFrame();
         gtb.thenClick("button:2 : down"); // Down
         gtb.thenWaitFrame();
-        gtb.thenClick("?:Map0001.lmu*¥symbol:Back"); // Back (to leave Graphics)
+        gtb.thenClick(ev0001Back); // Back (to leave Graphics)
         gtb.thenWaitFrame();
     }
 
     private void editMapEventMoveRoute(GrandTestBuilder gtb) {
+        gtb.thenSetPhase("GrandSynthesisTest:editMapEventMoveRoute");
         gtb.thenClick("button:0 : don't"); // Setup move type
         gtb.thenWaitFrame();
         gtb.thenClick("button:6 : custom"); // Finish that
@@ -111,7 +121,7 @@ public class GrandSynthesisTest {
 
         gtb.thenClick("button:11;Move Forward 1 Tile"); // Set command type
         gtb.thenWaitFrame();
-        gtb.thenClick("?:Map0001.lmu*¥symbol:Back"); // Back (to leave the command)
+        gtb.thenClick(ev0001Back); // Back (to leave the command)
         gtb.thenWaitFrame();
 
         gtb.thenClick("button:11 Move Forward 1 Tile¥..¥..¥button:Add..."); // New command...
@@ -119,21 +129,21 @@ public class GrandSynthesisTest {
         gtb.thenClick("button:Add Next..."); // Continued...
         gtb.thenWaitFrame();
 
-        gtb.thenScroll("?:Map0001.lmu*¥?:gabien.ui.UITabPane¥scroll", "button:34;Set Graphic");
+        gtb.thenScroll(ev0001Prefix + "?:gabien.ui.UITabPane¥scroll", "button:34;Set Graphic");
         gtb.thenClick("button:34;Set Graphic"); // Set command type
         gtb.thenWaitFrame();
         gtb.thenClick("button:Select character index...");
         gtb.thenWaitFrame();
         gtb.thenClick("?:r48.ui.dialog.UISpritesheetChoice¥?:gabien.ui.UIScrollbar¥..", 128, 0);
         gtb.thenWaitFrame();
-        gtb.thenClick("?:Map0001.lmu*¥symbol:Back"); // Back (to leave the spritesheet chooser)
-        gtb.thenClick("?:Map0001.lmu*¥symbol:Back"); // Back (to leave the command)
-        gtb.thenClick("?:Map0001.lmu*¥symbol:Back"); // Back (to leave the command list)
-        gtb.thenClick("?:Map0001.lmu*¥symbol:Back"); // Back (to leave the moveroute)
+        gtb.thenClick(ev0001Back); // Back (to leave the command)
+        gtb.thenClick(ev0001Back); // Back (to leave the command list)
+        gtb.thenClick(ev0001Back); // Back (to leave the moveroute)
         gtb.thenWaitFrame();
     }
 
     private void editNewMap(GrandTestBuilder gtb) {
+        gtb.thenSetPhase("GrandSynthesisTest:editNewMap");
         gtb.thenSelectTab("MapInfos");
         gtb.thenClick("button:<Insert New Map>");
         gtb.thenIcon("Map ID?", 1);

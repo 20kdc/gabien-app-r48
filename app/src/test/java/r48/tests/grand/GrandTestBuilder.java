@@ -40,6 +40,16 @@ public class GrandTestBuilder {
         });
     }
 
+    public void thenSetPhase(final String phase) {
+        TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
+            @Override
+            public Boolean get() {
+                TestKickstart.currentTestPhase = phase;
+                return true;
+            }
+        });
+    }
+
     public void thenClick(final String id) {
         thenClick(id, 0, 0);
     }
@@ -134,7 +144,7 @@ public class GrandTestBuilder {
         for (UIElement uie : w)
             System.err.println(uie.toString());
         System.err.println("---]");
-        throw new GrandExecutionError("Unable to getElement " + s);
+        throw new GrandExecutionError("Unable to getElement " + s + " during phase " + TestKickstart.currentTestPhase);
     }
 
     public void thenIcon(final String title, final int idx) {

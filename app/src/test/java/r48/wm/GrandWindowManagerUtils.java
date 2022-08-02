@@ -7,6 +7,7 @@
 
 package r48.wm;
 
+import gabien.TestKickstart;
 import gabien.ui.*;
 import gabienapp.GrandLauncherUtils;
 import r48.AppMain;
@@ -107,10 +108,10 @@ public class GrandWindowManagerUtils {
                 }
             }
             if (!ok)
-                throw new GrandExecutionError("Unable to get: '" + id + "' (part: '" + ptr + "')");
+                throw new GrandExecutionError("Unable to get: '" + id + "' (part: '" + ptr + "') in phase " + TestKickstart.currentTestPhase);
         }
         if (currentRoot == null)
-            throw new GrandExecutionError("Empty selector");
+            throw new GrandExecutionError("Empty selector in phase " + TestKickstart.currentTestPhase);
         return currentRoot;
     }
 

@@ -13,6 +13,7 @@ package r48.tests.grand;
  */
 public class GrandInitializers {
     public static void initSynthesis2k3(GrandTestBuilder gtb) {
+        gtb.thenSetPhase("initSynthesis2k3");
         gtb.thenWaitWC(2);
         gtb.thenClick("button:RPG Maker 2000, 2003, or EasyRPG. (Android users, go here.)"); // R2k
         gtb.thenWaitFrame();
@@ -29,6 +30,7 @@ public class GrandInitializers {
     }
 
     public static void initSynthesisRXP(GrandTestBuilder gtb) {
+        gtb.thenSetPhase("initSynthesisRXP");
         gtb.thenWaitWC(2);
         gtb.thenClick("button:RGSS Engines (RPG Maker XP, VX Ace)");
         gtb.thenWaitFrame();

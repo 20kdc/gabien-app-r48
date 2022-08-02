@@ -33,6 +33,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * Created on November 19, 2018.
  */
 public class TestKickstart {
+    public static String currentTestPhase;
     public static LinkedList<ISupplier<Boolean>> waitingTestEntries = new LinkedList<ISupplier<Boolean>>();
     public static IConsumer<String> waitingFileDialog = null;
 
@@ -47,6 +48,7 @@ public class TestKickstart {
     public static int windowCount = 1337;
 
     public static void kickstart(final String s2, final String encoding, final String schema) {
+        currentTestPhase = "Initial Phase";
         kickstartRFS();
         // In case unset.
         IObjectBackend.Factory.encoding = encoding;
