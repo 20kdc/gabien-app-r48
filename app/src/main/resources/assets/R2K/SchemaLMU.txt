@@ -77,7 +77,8 @@ e eventpage_trigger 0 playerInteract 1 playerCollide 2 playerOrEventCollide 3 au
 
 : RPG::Event
 C name Class.RPG::Event : @name @x @y | #B (#C, #D)
-+windowTitleAttachment "Ev#A [@Class.RPG::Event]"
+C name Interp.RPG::Event.windowTitleName @name | #A
++windowTitleAttachment "[@Interp.RPG::Event.windowTitleName]"
 @name string
 @x int
 @y int
