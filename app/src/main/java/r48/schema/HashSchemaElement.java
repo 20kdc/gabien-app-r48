@@ -12,6 +12,7 @@ import gabien.uslx.append.*;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
+import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.IObjectBackend.ILoadedObject;
@@ -92,7 +93,7 @@ public class HashSchemaElement extends SchemaElement {
                         trigger();
                     }
                 };
-                uiSV.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Search Keys:"), FontSizes.schemaFieldTextHeight), searchBox, false, 0d));
+                uiSV.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Search:"), FontSizes.schemaFieldTextHeight), searchBox, false, 0d));
 
                 AtomicInteger fw = new AtomicInteger(0);
 
@@ -102,12 +103,18 @@ public class HashSchemaElement extends SchemaElement {
                         return getKeyText(rubyIO);
                     }
                 })) {
-                    if (!getKeyText(key).contains(searchBox.text))
+
+                    IRIO value = target.getHashVal(key);
+                    boolean relevantToSearch = false;
+                    relevantToSearch |= getKeyText(key).contains(searchBox.text);
+                    relevantToSearch |= FormatSyntax.interpretParameter(value, valElem, true).contains(searchBox.text);
+                    if (!relevantToSearch)
                         continue;
+
                     final IRIO kss = key;
                     // keys are opaque - this prevents MANY issues
                     UIElement hsA = new UILabel(getKeyText(key), FontSizes.schemaFieldTextHeight);
-                    UIElement hsB = valElem.buildHoldingEditor(target.getHashVal(key), launcher, path.arrayHashIndex(key, "{" + getKeyText(key) + "}"));
+                    UIElement hsB = valElem.buildHoldingEditor(value, launcher, path.arrayHashIndex(key, "{" + getKeyText(key) + "}"));
                     UIElement hs = null;
                     if (flexible) {
                         hs = new UISplitterLayout(hsA, hsB, true, 0.0d);
@@ -155,7 +162,7 @@ public class HashSchemaElement extends SchemaElement {
             return ((EnumSchemaElement) ke).viewValue(v, true);
         if (ke instanceof OSStrHashMapSchemaElement)
             return OSStrHashMapSchemaElement.decode(v);
-        return TXDB.get("Key " + v);
+        return TXDB.get("Key ") + v;
     }
 
     @Override
