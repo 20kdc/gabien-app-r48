@@ -34,6 +34,11 @@ public class MapEditingToolbarController implements IEditingToolbarController {
     }
 
     public MapEditingToolbarController(final IMapToolContext viewGiver, boolean rd, String[] toolNames, final IFunction<IMapToolContext, UIMTBase>[] toolFuncs) {
+        // Usual stupid complaints, please ignore (if you add the diamond w/ or w/o types the compiler errors)
+        this(viewGiver, rd, new String[] {}, new IFunction[0], new String[] {}, new IConsumer[0]);
+    }
+
+    public MapEditingToolbarController(final IMapToolContext viewGiver, boolean rd, String[] toolNames, final IFunction<IMapToolContext, UIMTBase>[] toolFuncs, final String[] addendumNames, final IConsumer<IMapToolContext>[] addendumFuncs) {
         readonlyTiles = rd;
 
         final UIMapView view = viewGiver.getMapView();
@@ -155,7 +160,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
             @Override
             public void run() {
                 clearTools(thisButton);
-                viewGiver.accept(new UIMTPopupButtons(viewGiver, readonlyTiles));
+                viewGiver.accept(new UIMTPopupButtons(viewGiver, readonlyTiles, addendumNames, addendumFuncs));
             }
         }).togglable(false));
 

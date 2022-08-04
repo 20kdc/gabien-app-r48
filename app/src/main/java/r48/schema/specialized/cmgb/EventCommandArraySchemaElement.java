@@ -185,21 +185,10 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         return modified;
     }
 
-    private int getGroupLengthCore(IRIO arr, int j) {
-        IRIO commandTarg = arr.getAElem(j);
-        int code = (int) commandTarg.getIVar("@code").getFX();
-        RPGCommand rc = database.knownCommands.get(code);
-        int max = 0;
-        if (rc != null)
-            for (IGroupBehavior groupBehavior : rc.groupBehaviors)
-                max = Math.max(max, groupBehavior.getGroupLength(arr, j));
-        return max;
-    }
-
     // Note that this always returns != 0, so all schemas are in fact array-based.
     @Override
     public int getGroupLength(IRIO arr, int j) {
-        int l = getGroupLengthCore(arr, j);
+        int l = database.getGroupLengthCore(arr, j);
         if (l == 0)
             return 1;
         return l;
@@ -219,7 +208,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         // Uhoh.
         final int length;
         boolean addRemove = false;
-        int p = getGroupLengthCore(arr, start);
+        int p = database.getGroupLengthCore(arr, start);
         if (p == 0) {
             length = 1;
         } else {
@@ -277,10 +266,28 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         return new ElementContextual(indent, getElementContextualSubwindowSchema(tracker, start));
     }
 
+    /**
+     * Note that this expects the command IRIO passed in as the first argument.
+     * It also expects the command index as the second argument.
+     * The reason why the schema element changes index but the outside uses a fixed one,
+     *  is because the subwindow gets recreated anytime a change happens, while the inside doesn't.
+     * The IRIO used for this element is expected to be the list.
+     */
     private SubwindowSchemaElement getElementContextualSubwindowSchema(final IRIO tracker, final int start) {
-        // The reason why the inside changes index but the outside doesn't care,
-        //  is because the subwindow gets recreated anytime a change happens, while the inside doesn't.
-        return new SubwindowSchemaElement(new SchemaElement() {
+        return new SubwindowSchemaElement(getElementContextualWindowSchema(tracker), new IFunction<IRIO, String>() {
+            @Override
+            public String apply(IRIO rubyIO) {
+                return database.buildGroupCodename(rubyIO, start);
+            }
+        });
+    }
+    /**
+     * Public because this is used by stuff like Find Translatables to get "access" into editing a command.
+     * Note that this expects the command IRIO (this acts as the "array index").
+     * The IRIO used for this element is expected to be the list.
+     */
+    public SchemaElement getElementContextualWindowSchema(final IRIO tracker) {
+        return new SchemaElement() {
             public int actualStart(IRIO target) {
                 int alen = target.getALen();
                 for (int i = 0; i < alen; i++)
@@ -304,16 +311,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                     return;
                 getGroupElement(target, actualStart, this).modifyVal(target, path, setDefault);
             }
-        }, new IFunction<IRIO, String>() {
-            @Override
-            public String apply(IRIO rubyIO) {
-                String tx = database.buildCodename(rubyIO.getAElem(start), true);
-                int groupLen = getGroupLengthCore(rubyIO, start);
-                for (int i = 1; i < groupLen; i++)
-                    tx += "\n" + database.buildCodename(rubyIO.getAElem(start + i), true);
-                return tx;
-            }
-        });
+        };
     }
 
     @Override

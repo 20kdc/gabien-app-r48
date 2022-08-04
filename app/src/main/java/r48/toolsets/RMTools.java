@@ -94,7 +94,7 @@ public class RMTools {
                                         int alen = pages.getALen();
                                         for (int j = 0; j < alen; j++) {
                                             IRIO page = pages.getAElem(j);
-                                            if (pages.getType() == '0')
+                                            if (page.getType() == '0')
                                                 continue;
                                             IRIO cmds = page.getIVar("@list");
                                             int alen2 = cmds.getALen();

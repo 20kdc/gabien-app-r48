@@ -13,16 +13,23 @@ import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
+import gabien.ui.UILabel;
+import gabien.ui.UIScrollLayout;
+import gabien.ui.UITextButton;
 import r48.AppMain;
+import r48.FontSizes;
 import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.dbs.CMDB;
 import r48.dbs.TXDB;
 import r48.imageio.BMP8IImageIOFormat;
 import r48.imageio.PNG8IImageIOFormat;
 import r48.imageio.XYZImageIOFormat;
 import r48.io.IObjectBackend;
+import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixnum;
 import r48.map.*;
 import r48.map.drawlayers.*;
 import r48.map.events.*;
@@ -35,6 +42,10 @@ import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.LcfTileRenderer;
 import r48.maptools.UIMTBase;
 import r48.maptools.deep.UIMTFtrGdt01;
+import r48.schema.AggregateSchemaElement;
+import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
+import r48.schema.util.ISchemaHost;
+import r48.schema.util.SchemaPath;
 import r48.toolsets.RMTranscriptDumper;
 
 import java.util.Collections;
@@ -314,9 +325,71 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                                 return new UIMTFtrGdt01(o);
                             }
                         }
+                }, new String[] {
+                        TXDB.get("Find Translatables")
+                }, new IConsumer[] {
+                        new IConsumer<IMapToolContext>() {
+                            @Override
+                            public void accept(IMapToolContext t) {
+                                findTranslatables(map, t);
+                            }
+                        }
                 });
             }
         });
+    }
+
+    public void findTranslatables(IObjectBackend.ILoadedObject ilo, IMapToolContext ctx) {
+        UIScrollLayout translatables = new UIScrollLayout(true, FontSizes.generalScrollersize);
+        CMDB cmdb = AppMain.schemas.getCMDB("R2K/Commands.txt");
+
+        IRIO events = ilo.getObject().getIVar("@events");
+        for (IRIO eventKey : events.getHashKeys()) {
+            IRIO event = events.getHashVal(eventKey);
+            IRIO pageList = event.getIVar("@pages");
+            for (int page = 0; page < pageList.getALen(); page++) {
+                IRIO pageObj = pageList.getAElem(page);
+                if (pageObj.getType() == '0')
+                    continue;
+                IRIO eventList = pageObj.getIVar("@list");
+                for (int i = 0; i < eventList.getALen(); i++) {
+                    IRIO cmd = eventList.getAElem(i);
+                    if (cmd.getIVar("@code").getFX() == 10110) {
+                        addTranslatable(translatables, cmdb, ilo, ctx, event, eventKey, page, pageObj, eventList, i, cmd);
+                    }
+                }
+            }
+        }
+
+        translatables.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(400), FontSizes.scaleGuess(300)));
+        AppMain.window.createWindow(translatables, "findTranslatables");
+    }
+
+    private void addTranslatable(UIScrollLayout translatables, final CMDB cmdb, final ILoadedObject root, final IMapToolContext ctx, final IRIO event, final IRIO eventKey, final int pageIndex, final IRIO pageObj, final IRIO listObj, final int codeIndex, final IRIO command) {
+        String text = cmdb.buildGroupCodename(listObj, codeIndex);
+        translatables.panelsAdd(new UITextButton(text, FontSizes.schemaFieldTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                ISchemaHost shi = AppMain.launchSchema("RPG::Map", root, ctx.getMapView());
+                SchemaPath sp = shi.getCurrentObject();
+                // enter event
+                sp = sp.arrayHashIndex(eventKey, "E" + eventKey.toString());
+                sp = sp.newWindow(AppMain.schemas.getSDBEntry("RPG::Event"), event);
+                shi.pushObject(sp);
+                // enter page
+                sp = sp.arrayHashIndex(new IRIOFixnum(pageIndex), "P" + pageIndex);
+                sp = sp.newWindow(AppMain.schemas.getSDBEntry("RPG::EventPage"), pageObj);
+                shi.pushObject(sp);
+                // enter list
+                EventCommandArraySchemaElement ecase = (EventCommandArraySchemaElement) AggregateSchemaElement.extractField(AppMain.schemas.getSDBEntry("EventListEditor"), null);
+                sp = sp.newWindow(ecase, listObj);
+                shi.pushObject(sp);
+                // enter command
+                sp = sp.arrayHashIndex(new IRIOFixnum(codeIndex), "C" + codeIndex);
+                sp = sp.newWindow(ecase.getElementContextualWindowSchema(command), listObj);
+                shi.pushObject(sp);
+            }
+        }));
     }
 
     @Override

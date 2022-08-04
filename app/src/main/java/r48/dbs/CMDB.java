@@ -570,10 +570,32 @@ public class CMDB {
         return spc + ext;
     }
 
+    public String buildGroupCodename(IRIO rubyIO, int start) {
+        String tx = buildCodename(rubyIO.getAElem(start), true);
+        int groupLen = getGroupLengthCore(rubyIO, start);
+        for (int i = 1; i < groupLen; i++)
+            tx += "\n" + buildCodename(rubyIO.getAElem(start + i), true);
+        return tx;
+    }
+
     private String lenForm(int cid) {
         String spc = Integer.toString(cid);
         while (spc.length() < digitCount)
             spc = "0" + spc;
         return spc;
+    }
+
+    /**
+     * Can return 0, implying ungrouped.
+     */
+    public int getGroupLengthCore(IRIO arr, int j) {
+        IRIO commandTarg = arr.getAElem(j);
+        int code = (int) commandTarg.getIVar("@code").getFX();
+        RPGCommand rc = knownCommands.get(code);
+        int max = 0;
+        if (rc != null)
+            for (IGroupBehavior groupBehavior : rc.groupBehaviors)
+                max = Math.max(max, groupBehavior.getGroupLength(arr, j));
+        return max;
     }
 }

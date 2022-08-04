@@ -10,6 +10,7 @@ package r48.maptools;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.ui.*;
+import gabien.uslx.append.IConsumer;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
 import r48.AppMain;
@@ -24,16 +25,19 @@ import java.io.OutputStream;
  * Created on 18/06/17.
  */
 public class UIMTPopupButtons extends UIMTBase {
-    public UIMTPopupButtons(final IMapToolContext mtc, final boolean disableResize) {
+    public UIMTPopupButtons(final IMapToolContext mtc, final boolean disableResize, final String[] addendumNames, final IConsumer<IMapToolContext>[] addendumFuncs) {
         super(mtc);
+
         final UIMapView view = mtc.getMapView();
-        UIAutoclosingPopupMenu u = new UIAutoclosingPopupMenu(new String[] {
+
+        String[] mainNames = new String[] {
                 TXDB.get("Reload Panorama/TS"),
                 TXDB.get("Properties"),
                 TXDB.get("Resize"),
                 TXDB.get("Export shot.png"),
                 TXDB.get("Show/Hide Tile IDs")
-        }, new Runnable[] {
+        };
+        Runnable[] mainRunnables = new Runnable[] {
                 new Runnable() {
                     @Override
                     public void run() {
@@ -83,7 +87,25 @@ public class UIMTPopupButtons extends UIMTBase {
                         view.debugToggle = !view.debugToggle;
                     }
                 }
-        }, FontSizes.dialogWindowTextHeight, FontSizes.menuScrollersize, true);
+        };
+
+        String[] allNames = new String[mainNames.length + addendumNames.length];
+        System.arraycopy(mainNames, 0, allNames, 0, mainNames.length);
+        System.arraycopy(addendumNames, 0, allNames, mainNames.length, addendumNames.length);
+
+        Runnable[] allRunnables = new Runnable[mainRunnables.length + addendumFuncs.length];
+        System.arraycopy(mainRunnables, 0, allRunnables, 0, mainRunnables.length);
+        for (int i = 0; i < addendumFuncs.length; i++) {
+            final IConsumer<IMapToolContext> wrapped = addendumFuncs[i];
+            allRunnables[i + mainRunnables.length] = new Runnable() {
+                @Override
+                public void run() {
+                    wrapped.accept(mtc);
+                }
+            };
+        }
+
+        UIAutoclosingPopupMenu u = new UIAutoclosingPopupMenu(allNames, allRunnables, FontSizes.dialogWindowTextHeight, FontSizes.menuScrollersize, true);
         changeInner(u, true);
     }
 
