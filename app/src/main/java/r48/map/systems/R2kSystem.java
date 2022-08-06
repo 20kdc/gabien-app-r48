@@ -353,7 +353,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 for (int i = 0; i < eventList.getALen(); i++) {
                     IRIO cmd = eventList.getAElem(i);
                     long cmdCode = cmd.getIVar("@code").getFX();
-                    if ((cmdCode == 10110) || (cmdCode == 10140)) {
+                    if ((cmdCode == 10110) || (cmdCode == 20140)) {
                         addTranslatable(translatables, cmdb, ilo, ctx, event, eventKey, page, pageObj, eventList, i, cmd);
                     }
                 }
