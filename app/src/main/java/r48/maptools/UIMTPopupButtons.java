@@ -10,6 +10,7 @@ package r48.maptools;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.ui.*;
+import gabien.ui.UIPopupMenu.Entry;
 import gabien.uslx.append.IConsumer;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
@@ -17,6 +18,8 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
+import r48.map.MapEditingToolbarController;
+import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.UIMapView;
 
 import java.io.OutputStream;
@@ -25,44 +28,40 @@ import java.io.OutputStream;
  * Created on 18/06/17.
  */
 public class UIMTPopupButtons extends UIMTBase {
-    public UIMTPopupButtons(final IMapToolContext mtc, final boolean disableResize, final String[] addendumNames, final IConsumer<IMapToolContext>[] addendumFuncs) {
+    public UIMTPopupButtons(final IMapToolContext mtc, final boolean disableResize, final ToolButton[] addendum) {
         super(mtc);
 
         final UIMapView view = mtc.getMapView();
 
-        String[] mainNames = new String[] {
-                TXDB.get("Reload Panorama/TS"),
-                TXDB.get("Properties"),
-                TXDB.get("Resize"),
-                TXDB.get("Export shot.png"),
-                TXDB.get("Show/Hide Tile IDs")
-        };
-        Runnable[] mainRunnables = new Runnable[] {
-                new Runnable() {
+        ToolButton[] mainToolButtons = {
+                new ToolButton(TXDB.get("Reload Panorama/TS")) {
                     @Override
-                    public void run() {
+                    public UIMTBase apply(IMapToolContext a) {
                         UIMapView.performFullCacheFlush(view);
+                        return null;
                     }
                 },
-                new Runnable() {
+                new ToolButton(TXDB.get("Properties")) {
                     @Override
-                    public void run() {
+                    public UIMTBase apply(IMapToolContext a) {
                         AppMain.launchSchema(view.map.objectSchema, view.map.object, view);
+                        return null;
                     }
                 },
-                new Runnable() {
+                new ToolButton(TXDB.get("Resize")) {
                     @Override
-                    public void run() {
+                    public UIMTBase apply(IMapToolContext a) {
                         if (disableResize) {
                             AppMain.launchDialog(TXDB.get("Tiles are apparently readonly, so resizing is not possible."));
                         } else {
-                            mtc.accept(new UIMTMapResizer(mtc));
+                            return new UIMTMapResizer(mtc);
                         }
+                        return null;
                     }
                 },
-                new Runnable() {
+                new ToolButton(TXDB.get("Export shot.png")) {
                     @Override
-                    public void run() {
+                    public UIMTBase apply(IMapToolContext a) {
                         IGrDriver igd = GaBIEn.makeOffscreenBuffer(view.tileSize * view.mapTable.width, view.tileSize * view.mapTable.height, true);
                         view.mapTable.renderCore(igd, 0, 0, view.layerVis, view.currentLayer, view.debugToggle);
                         AdHocSaveLoad.prepare();
@@ -79,33 +78,36 @@ public class UIMTPopupButtons extends UIMTBase {
                             AppMain.launchDialog(TXDB.get("Failed to open file."));
                         }
                         igd.shutdown();
+                        return null;
                     }
                 },
-                new Runnable() {
+                new ToolButton(TXDB.get("Show/Hide Tile IDs")) {
                     @Override
-                    public void run() {
+                    public UIMTBase apply(IMapToolContext a) {
                         view.debugToggle = !view.debugToggle;
+                        return null;
                     }
                 }
         };
 
-        String[] allNames = new String[mainNames.length + addendumNames.length];
-        System.arraycopy(mainNames, 0, allNames, 0, mainNames.length);
-        System.arraycopy(addendumNames, 0, allNames, mainNames.length, addendumNames.length);
+        ToolButton[] allToolButtons = new ToolButton[mainToolButtons.length + addendum.length];
+        System.arraycopy(mainToolButtons, 0, allToolButtons, 0, mainToolButtons.length);
+        System.arraycopy(addendum, 0, allToolButtons, mainToolButtons.length, addendum.length);
 
-        Runnable[] allRunnables = new Runnable[mainRunnables.length + addendumFuncs.length];
-        System.arraycopy(mainRunnables, 0, allRunnables, 0, mainRunnables.length);
-        for (int i = 0; i < addendumFuncs.length; i++) {
-            final IConsumer<IMapToolContext> wrapped = addendumFuncs[i];
-            allRunnables[i + mainRunnables.length] = new Runnable() {
+        UIPopupMenu.Entry[] allEntries = new UIPopupMenu.Entry[allToolButtons.length];
+        for (int i = 0; i < allEntries.length; i++) {
+            final ToolButton tb = allToolButtons[i];
+            allEntries[i] = new Entry(tb.text, new Runnable() {
                 @Override
                 public void run() {
-                    wrapped.accept(mtc);
+                    UIMTBase ub = tb.apply(mtc);
+                    if (ub != null)
+                        mtc.accept(ub);
                 }
-            };
+            });
         }
 
-        UIAutoclosingPopupMenu u = new UIAutoclosingPopupMenu(allNames, allRunnables, FontSizes.dialogWindowTextHeight, FontSizes.menuScrollersize, true);
+        UIAutoclosingPopupMenu u = new UIAutoclosingPopupMenu(allEntries, FontSizes.dialogWindowTextHeight, FontSizes.menuScrollersize, true);
         changeInner(u, true);
     }
 

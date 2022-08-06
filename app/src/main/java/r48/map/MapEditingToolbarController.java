@@ -29,16 +29,14 @@ public class MapEditingToolbarController implements IEditingToolbarController {
     private final boolean readonlyTiles;
 
     public MapEditingToolbarController(final IMapToolContext viewGiver, boolean rd) {
-        // Usual stupid complaints, please ignore (if you add the diamond w/ or w/o types the compiler errors)
-        this(viewGiver, rd, new String[] {}, new IFunction[0]);
+        this(viewGiver, rd, new ToolButton[0]);
     }
 
-    public MapEditingToolbarController(final IMapToolContext viewGiver, boolean rd, String[] toolNames, final IFunction<IMapToolContext, UIMTBase>[] toolFuncs) {
-        // Usual stupid complaints, please ignore (if you add the diamond w/ or w/o types the compiler errors)
-        this(viewGiver, rd, new String[] {}, new IFunction[0], new String[] {}, new IConsumer[0]);
+    public MapEditingToolbarController(final IMapToolContext viewGiver, boolean rd, ToolButton[] toolFuncs) {
+        this(viewGiver, rd, new ToolButton[0], new ToolButton[0]);
     }
 
-    public MapEditingToolbarController(final IMapToolContext viewGiver, boolean rd, String[] toolNames, final IFunction<IMapToolContext, UIMTBase>[] toolFuncs, final String[] addendumNames, final IConsumer<IMapToolContext>[] addendumFuncs) {
+    public MapEditingToolbarController(final IMapToolContext viewGiver, boolean rd, final ToolButton[] toolFuncs, final ToolButton[] addendum) {
         readonlyTiles = rd;
 
         final UIMapView view = viewGiver.getMapView();
@@ -60,9 +58,9 @@ public class MapEditingToolbarController implements IEditingToolbarController {
                 tools.add(button);
             }
         }
-        for (int i = 0; i < toolNames.length; i++) {
+        for (int i = 0; i < toolFuncs.length; i++) {
             final int toolId = i;
-            tools.add(new UITextButton(toolNames[i], FontSizes.mapLayertabTextHeight, new Runnable() {
+            tools.add(new UITextButton(toolFuncs[i].text, FontSizes.mapLayertabTextHeight, new Runnable() {
                 final int thisButton = tools.size();
 
                 @Override
@@ -160,7 +158,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
             @Override
             public void run() {
                 clearTools(thisButton);
-                viewGiver.accept(new UIMTPopupButtons(viewGiver, readonlyTiles, addendumNames, addendumFuncs));
+                viewGiver.accept(new UIMTPopupButtons(viewGiver, readonlyTiles, addendum));
             }
         }).togglable(false));
 
@@ -192,5 +190,12 @@ public class MapEditingToolbarController implements IEditingToolbarController {
     @Override
     public boolean allowPickTile() {
         return !readonlyTiles;
+    }
+
+    public abstract static class ToolButton implements IFunction<IMapToolContext, UIMTBase> {
+        public final String text;
+        public ToolButton(String txt) {
+            text = txt;
+        }
     }
 }

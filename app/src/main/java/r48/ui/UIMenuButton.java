@@ -10,6 +10,8 @@ package r48.ui;
 import gabien.uslx.append.*;
 import gabien.ui.UIAutoclosingPopupMenu;
 import gabien.ui.UIElement;
+import gabien.ui.UIPopupMenu;
+import gabien.ui.UIPopupMenu.Entry;
 import gabien.ui.UITextButton;
 import r48.AppMain;
 import r48.FontSizes;
@@ -43,6 +45,27 @@ public class UIMenuButton extends UITextButton {
             @Override
             public UIElement get() {
                 return new UIAutoclosingPopupMenu(text, runnables, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true) {
+                    @Override
+                    public void optionExecute(int b) {
+                        if (continued != null)
+                            if (!continued.get())
+                                return;
+                        super.optionExecute(b);
+                    }
+                };
+            }
+        });
+    }
+
+    public UIMenuButton(String s, int h2, final ISupplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
+        this(s, h2, continued, new ArrayIterable<UIPopupMenu.Entry>(runnables));
+    }
+
+    public UIMenuButton(String s, int h2, final ISupplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
+        this(s, h2, new ISupplier<UIElement>() {
+            @Override
+            public UIElement get() {
+                return new UIAutoclosingPopupMenu(runnables, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true) {
                     @Override
                     public void optionExecute(int b) {
                         if (continued != null)

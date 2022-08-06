@@ -31,6 +31,7 @@ import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
 import r48.map.*;
+import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.drawlayers.*;
 import r48.map.events.*;
 import r48.map.imaging.*;
@@ -316,22 +317,19 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         }, new IFunction<IMapToolContext, IEditingToolbarController>() {
             @Override
             public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
-                return new MapEditingToolbarController(iMapToolContext, false, new String[] {
-                        TXDB.get("DeepWater")
-                }, new IFunction[] {
-                        new IFunction<IMapToolContext, UIMTBase>() {
+                return new MapEditingToolbarController(iMapToolContext, false, new ToolButton[] {
+                        new ToolButton(TXDB.get("DeepWater")) {
                             @Override
-                            public UIMTBase apply(IMapToolContext o) {
-                                return new UIMTFtrGdt01(o);
+                            public UIMTBase apply(IMapToolContext a) {
+                                return new UIMTFtrGdt01(a);
                             }
                         }
-                }, new String[] {
-                        TXDB.get("Find Translatables")
-                }, new IConsumer[] {
-                        new IConsumer<IMapToolContext>() {
+                }, new ToolButton[] {
+                        new ToolButton(TXDB.get("Find Translatables")) {
                             @Override
-                            public void accept(IMapToolContext t) {
-                                findTranslatables(map, t);
+                            public UIMTBase apply(IMapToolContext a) {
+                                findTranslatables(map, a);
+                                return null;
                             }
                         }
                 });

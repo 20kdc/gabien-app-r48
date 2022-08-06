@@ -18,6 +18,7 @@ import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController;
+import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.*;
 import r48.map.events.IEventAccess;
@@ -81,10 +82,8 @@ public class RVXASystem extends RXPSystem {
     }
 
     protected IEditingToolbarController mapEditingToolbar(IMapToolContext iMapToolContext) {
-        return new MapEditingToolbarController(iMapToolContext, false, new String[] {
-                TXDB.get("Shadow/Region")
-        }, new IFunction[] {
-                new IFunction<IMapToolContext, UIMTBase>() {
+        return new MapEditingToolbarController(iMapToolContext, false, new ToolButton[] {
+                new ToolButton(TXDB.get("Shadow/Region")) {
                     @Override
                     public UIMTBase apply(IMapToolContext o) {
                         return new UIMTShadowLayer(o);
