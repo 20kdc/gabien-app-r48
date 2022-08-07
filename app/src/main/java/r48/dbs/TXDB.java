@@ -182,6 +182,7 @@ public class TXDB {
         DBLoader.readFile("Systerms/L-" + languages[languageId] + ".txt", new LangLoadDatabase("launcher/"));
         GaBIEn.wordLoad = TXDB.get("Load");
         GaBIEn.wordSave = TXDB.get("Save");
+        GaBIEn.wordInvalidFileName = TXDB.get("Invalid or missing file name.");
     }
 
     public static void loadGamepakLanguage(String gp) {

@@ -304,7 +304,7 @@ public class ImageEditorController {
                                             imageEditView.eds.didSuccessfulSave(s, format);
                                         } catch (Exception e) {
                                             e.printStackTrace();
-                                            AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to save #A.") + "\n" + e, new RubyIO().setString(s, true)));
+                                            AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to save #A."), new RubyIO().setString(s, true)) + "\n" + e);
                                         }
                                         AppMain.performFullImageFlush();
                                         initPalette(0);
