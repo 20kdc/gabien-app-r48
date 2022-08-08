@@ -161,12 +161,15 @@ p index int
 p _ int
 p _ int
 
-35: Play Sound Effect$
-d Play a sound effect.
+ note: this, and it's schema, is shared between MC/35 and EC/11550
+
+35: Play Sound$
+d Plays a sound effect.
 p sound f_sound_name
-p volume int
-p tempo int
-p balance int
+p volume int_default_100
+p tempo int_default_100
+p balance int_default_50
+x play_sound_parameters
 
 36: Disable Collision
 d Gain the ability to walk through walls.

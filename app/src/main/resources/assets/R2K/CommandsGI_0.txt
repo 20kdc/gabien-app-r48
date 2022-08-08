@@ -303,16 +303,19 @@ X wait_illogical_parameters
 
 11510: Play BGM$
 d Plays some background music.
-p music f_music_name
+p bgm f_music_name
 p fadeTime int
 p volume int_default_100
 p tempo int_default_100
 p balance int_default_50
+x play_bgm_parameters
 
 11520: Fade Out BGM
 d Fades out the background music.
 p _ string
 p fadeTime int
+
+ note: this, and it's schema, is shared between MC/35 and EC/11550
 
 11550: Play Sound$
 d Plays a sound effect.
@@ -320,6 +323,7 @@ p sound f_sound_name
 p volume int_default_100
 p tempo int_default_100
 p balance int_default_50
+x play_sound_parameters
 
 12310: End Event Processing
 d Jump to the end of the code, thus, stop running it.
@@ -372,10 +376,11 @@ p index int
 d Change a System BGM.
 p bgm f_music_name
 p bgmId change_sys_bgm_id
-p fadein int
+p fadeTime int
 p volume int_default_100
 p tempo int_default_100
 p balance int_default_50
+x change_system_bgm_parameters
 
  NT. OS uses below for hax, so it gets priority on the "should we name this right today" roulette wheel
 
@@ -386,6 +391,7 @@ p sfxId change_sys_sfx_id
 p volume int_default_100
 p tempo int_default_100
 p balance int_default_50
+x change_system_sfx_parameters
 
 10680: Change Sys.GFX
 d Change the current set of graphics used by the system.

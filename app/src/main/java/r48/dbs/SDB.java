@@ -39,6 +39,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * The ultimate database, more or less, since this houses the data definitions needed to do things like edit Events.
  * Kinda required for reading maps.
@@ -135,6 +137,17 @@ public class SDB {
                     // Kind of a pain, *unless* you have a surrounding instance.
                     public int point = start;
 
+                    /**
+                     * Gets a PathSyntax that can be substituted by null by replacing it with "."
+                     * Null in these cases means unavailable information.
+                     */
+                    public @Nullable String getNullablePathSyntax() {
+                        String val = args[point++];
+                        if (val.equals("."))
+                            return null;
+                        return val;
+                    }
+
                     @Override
                     public SchemaElement get() {
                         final String text = args[point++];
@@ -178,9 +191,7 @@ public class SDB {
                         //
                         if (text.equals("hwnd")) {
                             // These need their own translation mechanism
-                            String a = args[point++];
-                            if (a.equals("."))
-                                a = null;
+                            String a = getNullablePathSyntax();
                             return new HWNDSchemaElement(a, args[point++]);
                         }
                         if (text.equals("hide")) {
@@ -572,15 +583,9 @@ public class SDB {
                             TSDB tilesetAllocations = null;
                             if (eText.equals("tableSTA"))
                                 tilesetAllocations = new TSDB(args[point++]);
-                            String iV = args[point++];
-                            if (iV.equals("."))
-                                iV = null;
-                            String wV = args[point++];
-                            if (wV.equals("."))
-                                wV = null;
-                            String hV = args[point++];
-                            if (hV.equals("."))
-                                hV = null;
+                            String iV = getNullablePathSyntax();
+                            String wV = getNullablePathSyntax();
+                            String hV = getNullablePathSyntax();
 
                             IFunction<IRIO, String> iVT = getFunctionToReturn(iV == null ? TXDB.get("Open Table...") : TXDB.get(outerContext, iV));
 
@@ -656,7 +661,15 @@ public class SDB {
                         }
                         if (text.equals("soundPlayer")) {
                             String a = args[point++];
-                            return new SoundPlayerSchemaElement(a);
+                            return new SoundPlayerSchemaElement(a, "", null, null, null);
+                        }
+                        if (text.equals("soundPlayerComplex")) {
+                            String prefix = args[point++];
+                            String namePath = args[point++];
+                            String volumePath = getNullablePathSyntax();
+                            String tempoPath = getNullablePathSyntax();
+                            String balancePath = getNullablePathSyntax();
+                            return new SoundPlayerSchemaElement(prefix, namePath, volumePath, tempoPath, balancePath);
                         }
                         // -- If all else fails, it's an ID to be looked up. --
                         return getSDBEntry(text);

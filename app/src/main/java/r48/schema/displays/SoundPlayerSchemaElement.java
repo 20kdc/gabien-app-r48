@@ -7,8 +7,11 @@
 
 package r48.schema.displays;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.ui.UIElement;
 import r48.FontSizes;
+import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
@@ -22,14 +25,27 @@ import r48.ui.audioplayer.UIAudioPlayer;
  */
 public class SoundPlayerSchemaElement extends SchemaElement {
     public final String prefix;
+    public final String namePath;
+    public final @Nullable String volumePath;
+    public final @Nullable String tempoPath;
+    public final @Nullable String balancePath;
 
-    public SoundPlayerSchemaElement(String pfx) {
+    public SoundPlayerSchemaElement(String pfx, String nP, @Nullable String vP, @Nullable String tP, @Nullable String bP) {
         prefix = pfx;
+        namePath = nP;
+        volumePath = vP;
+        tempoPath = tP;
+        balancePath = bP;
     }
 
     @Override
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
-        return UIAudioPlayer.create(prefix + target.decString());
+        IRIO nameObj = PathSyntax.parse(target, namePath);
+        IRIO tempoObj = tempoPath == null ? null : PathSyntax.parse(target, tempoPath);
+        double tempo = 1;
+        if (tempoObj != null)
+            tempo = tempoObj.getFX() / 100d;
+        return UIAudioPlayer.create(prefix + nameObj.decString(), tempo);
     }
 
     @Override

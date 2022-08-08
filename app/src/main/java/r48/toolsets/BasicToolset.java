@@ -400,7 +400,7 @@ public class BasicToolset implements IToolset {
                         AppMain.window.createWindow(new UITextPrompt(TXDB.get("Filename?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
-                                AppMain.window.createWindow(UIAudioPlayer.create(s));
+                                AppMain.window.createWindow(UIAudioPlayer.create(s, 1));
                             }
                         }));
                     }

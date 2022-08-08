@@ -54,8 +54,10 @@ public class UIAudioPlayer extends UIProxy {
 
     private final UIScrollbar seeker = new UIScrollbar(false, FontSizes.generalScrollersize);
     private double lastSeekerScrollPoint;
+    private double speed;
 
-    public UIAudioPlayer(AudioIOSource data) {
+    public UIAudioPlayer(AudioIOSource data, double spd) {
+        speed = spd;
         source = new StreamingAudioDiscreteSample(data);
         audioThreadBuffer = new float[data.crSet.channels];
         UIScrollLayout svl = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
@@ -86,7 +88,7 @@ public class UIAudioPlayer extends UIProxy {
                         int secondChannel = audioThreadBuffer.length > 1 ? 1 : 0;
                         data[ptr++] = (short) (AudioIOFormat.cF64toS32(audioThreadBuffer[0]) >> 16);
                         data[ptr++] = (short) (AudioIOFormat.cF64toS32(audioThreadBuffer[secondChannel]) >> 16);
-                        position += source.sampleRate / 22050d;
+                        position += (source.sampleRate / 22050d) * speed;
                     }
                     if (source.length != 0)
                         if (loopButton.state && position >= source.length)
@@ -115,10 +117,10 @@ public class UIAudioPlayer extends UIProxy {
         lastSeekerScrollPoint = seeker.scrollPoint;
     }
 
-    public static UIElement create(String filename) {
+    public static UIElement create(String filename, double speed) {
         try {
             InputStream tryWav = GaBIEn.getInFile(PathUtils.autoDetectWindows(AppMain.rootPath + filename + ".wav"));
-            return new UIAudioPlayer(WavIO.readWAV(tryWav, true));
+            return new UIAudioPlayer(WavIO.readWAV(tryWav, true), speed);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -33,8 +33,11 @@ D internal_battlecommandDictionary 1 RPG_RT.ldb@battle_commands_2k3@commands 0 @
  NOTE: The default here is blank, this just stops it crashing
 > f_save_charset_name { string imgSelector CharSet/ CharSet/ }
 > f_faceset_name { string imgSelector FaceSet/ FaceSet/ }
+ "nap" versions are without audio preview
 > f_music_name { string= (OFF) fileSelector Music/ soundPlayer Music/ }
+> f_music_name_nap { string= (OFF) fileSelector Music/ }
 > f_sound_name { string= (OFF) fileSelector Sound/ soundPlayer Sound/ }
+> f_sound_name_nap { string= (OFF) fileSelector Sound/ }
 > f_system_name { string= System imgSelector System/ System/ }
  NOTE: The default here is blank, this makes it use the game-picked System
 > f_save_system_name { string imgSelector System/ System/ }
@@ -141,14 +144,16 @@ i R2K/SchemaScripting.txt
 : __bitfield__
 
 : RPG::Music
-@name f_music_name
+@name f_music_name_nap
++soundPlayerComplex Music/ @name @volume @tempo @balance
 @fadeTime int
 @volume int= 100
 @tempo int= 100
 @balance int= 50
 
 : RPG::Sound
-@name f_sound_name
+@name f_sound_name_nap
++soundPlayerComplex Sound/ @name @volume @tempo @balance
 @volume int= 100
 @tempo int= 100
 @balance int= 50
