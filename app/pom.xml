@@ -31,6 +31,11 @@
 		</dependency>
 		<dependency>
 			<groupId>t20kdc.hs2</groupId>
+			<artifactId>gabien-media</artifactId>
+			<version>0.666-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>t20kdc.hs2</groupId>
 			<artifactId>r48-io</artifactId>
 			<version>0.666-SNAPSHOT</version>
 		</dependency>

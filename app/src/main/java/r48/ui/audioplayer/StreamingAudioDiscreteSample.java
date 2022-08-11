@@ -14,10 +14,7 @@ import java.nio.ByteOrder;
 import java.util.LinkedList;
 
 import gabien.uslx.append.TemporaryResultsBuffer;
-import gabien.uslx.audio.AudioIOCRFmt;
-import gabien.uslx.audio.AudioIOFormat;
-import gabien.uslx.audio.AudioIOSource;
-import gabien.uslx.audio.DiscreteSample;
+import gabien.media.audio.*;
 
 /**
  * Audio player memory usage and such optimization

@@ -21,6 +21,7 @@ mkdir -p staging &&
 cd staging &&
 # Note that JavaSE never gets put into staging - instead R48 and Common are injected into the JavaSE Jar.
 unzip -o ../../gabien-common/uslx/target/gabien-uslx-0.666-SNAPSHOT.jar &&
+unzip -o ../../gabien-common/media/target/gabien-media-0.666-SNAPSHOT.jar &&
 unzip -o ../../gabien-common/common/target/gabien-common-0.666-SNAPSHOT.jar &&
 unzip -o ../io/target/r48-io-0.666-SNAPSHOT.jar &&
 unzip -o ../app/target/r48-app-0.666-SNAPSHOT.jar &&
