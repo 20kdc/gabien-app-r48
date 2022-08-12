@@ -170,7 +170,7 @@ public class AppMain {
         final UISymbolButton sym2 = new UISymbolButton(Art.Symbol.Back, FontSizes.tabTextHeight, createLaunchConfirmation(TXDB.get("Reverting changes will lose all unsaved work and will reset many windows."), new Runnable() {
             @Override
             public void run() {
-                performSystemDump(false);
+                performSystemDump(false, "revert file");
                 // Shutdown schema hosts
                 for (ISchemaHost ish : activeHosts) {
                     ish.shutdown();
@@ -564,9 +564,10 @@ public class AppMain {
 
     // Is this messy? Yes. Is it required? After someone lost some work to R48? YES IT DEFINITELY IS.
     // Later: I've reduced the amount of backups performed because it appears spikes were occurring all the time.
-    public static void performSystemDump(boolean emergency) {
+    public static void performSystemDump(boolean emergency, String addendumData) {
         RubyIO n = new RubyIO();
         n.setHash();
+        n.addIVar("@description").setString(addendumData, true);
         for (IObjectBackend.ILoadedObject rio : objectDB.modifiedObjects) {
             String s = objectDB.getIdByObject(rio);
             if (s != null)

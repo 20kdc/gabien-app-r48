@@ -13,6 +13,7 @@ import gabien.IGrInDriver;
 import gabien.WindowSpecs;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.AdHocSaveLoad;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -29,6 +30,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -229,7 +232,15 @@ public class Application {
                         System.err.println("See, performSystemDump sometimes locks up. Ironic, I know. (Later: Turns out what was happening was 1.9MB of data going through slow serialization routines.)");
                         Exception fErr = null;
                         try {
-                            AppMain.performSystemDump(true);
+                            StringWriter sw = new StringWriter();
+                            try {
+                                PrintWriter pw = new PrintWriter(sw);
+                                e.printStackTrace(pw);
+                                pw.flush();
+                            } catch (Exception e2) {
+                                sw.append("\n(exception during exception print)\n");
+                            }
+                            AppMain.performSystemDump(true, "exception: " + sw.toString());
                             backupAvailable = true;
                         } catch (Exception finalErr) {
                             System.err.println("Failed to backup:");
@@ -269,7 +280,7 @@ public class Application {
                         ps.flush();
                         System.err.println("Prepared contents...");
                         try {
-                            OutputStream fos = GaBIEn.getOutFile("r48.error.txt");
+                            OutputStream fos = GaBIEn.getOutFile(AdHocSaveLoad.PREFIX + "r48.error.txt");
                             baos.writeTo(fos);
                             fos.close();
                             System.err.println("Save OK!");

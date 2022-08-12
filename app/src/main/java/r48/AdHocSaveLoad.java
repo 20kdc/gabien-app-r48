@@ -24,9 +24,10 @@ import java.io.IOException;
  * Created on 12/08/17.
  */
 public class AdHocSaveLoad {
+    public static String PREFIX = Application.BRAND + "/";
     public static void save(String fonts, RubyIO prepare) {
         prepare();
-        R48ObjectBackend rob = new R48ObjectBackend(Application.BRAND + "/", ".r48");
+        R48ObjectBackend rob = new R48ObjectBackend(PREFIX, ".r48");
         try {
             rob.saveObjectToFile(fonts, prepare);
         } catch (IOException e) {
@@ -36,7 +37,7 @@ public class AdHocSaveLoad {
 
     public static void saveLua(String fonts, RubyIO prepare) {
         prepare();
-        R48ObjectBackend rob = new R48ObjectBackend(Application.BRAND + "/", ".r48", true);
+        R48ObjectBackend rob = new R48ObjectBackend(PREFIX, ".r48", true);
         try {
             rob.saveObjectToFile(fonts, prepare);
         } catch (IOException e) {
@@ -45,11 +46,11 @@ public class AdHocSaveLoad {
     }
 
     public static RubyIO load(String fonts) {
-        R48ObjectBackend rob = new R48ObjectBackend(Application.BRAND + "/", ".r48");
+        R48ObjectBackend rob = new R48ObjectBackend(PREFIX, ".r48");
         return rob.loadObjectFromFile(fonts);
     }
 
     public static void prepare() {
-        GaBIEn.makeDirectories(Application.BRAND);
+        GaBIEn.makeDirectories(PREFIX);
     }
 }
