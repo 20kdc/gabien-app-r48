@@ -140,7 +140,6 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
             if ((mcc & 0x100) != 0) {
                 byte[] text = mc.parameters.text.data;
                 addMetaInteger(res, text.length);
-                res.add(text.length);
                 for (byte b : text)
                     res.add(((int) b) & 0xFF);
             }
