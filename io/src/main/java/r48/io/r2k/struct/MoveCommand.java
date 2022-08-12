@@ -15,8 +15,13 @@ import r48.io.r2k.chunks.IR2kInterpretable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
+
+import gabien.uslx.append.ArrayIterable;
+import gabien.uslx.append.IntArrayIterable;
 
 /**
  * A MoveCommand! It lets stuff move.
@@ -46,12 +51,50 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
     }
 
     public static MoveCommand[] fromEmbeddedData(int[] remainingStream) {
-        Stack<Integer> si = new Stack<Integer>();
-        for (int i = remainingStream.length - 1; i >= 0; i--)
-            si.push(remainingStream[i]);
+        try {
+            return fromEmbeddedDataInside(remainingStream);
+        } catch (Exception ex) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("In MoveCommand stream");
+            for (int i : remainingStream) {
+                sb.append(' ');
+                sb.append(i);
+            }
+            throw new RuntimeException(sb.toString(), ex);
+        }
+    }
+
+    // public for tests
+    public static int popMetaInteger(Iterator<Integer> si) {
+        int res = 0;
+        while (true) {
+            int val = si.next();
+            res = (res << 7) | (val & 0x7F);
+            if ((val & 0x80) == 0)
+                break;
+        }
+        return res;
+    }
+
+    // also public for tests
+    public static void addMetaInteger(List<Integer> si, int val) {
+        addMetaInteger(si, val, false);
+    }
+
+    private static void addMetaInteger(List<Integer> si, int val, boolean markLast) {
+        if ((val & 0xFFFFFF80) != 0)
+            addMetaInteger(si, (val >> 7) & 0x01FFFFFF, true);
+        val &= 0x7F;
+        if (markLast)
+            val |= 0x80;
+        si.add(val);
+    }
+
+    private static MoveCommand[] fromEmbeddedDataInside(int[] remainingStream) {
+        Iterator<Integer> si = new IntArrayIterable.ArrayIterator(remainingStream);
         LinkedList<MoveCommand> mcs = new LinkedList<MoveCommand>();
-        while (!si.empty()) {
-            int code = si.pop();
+        while (si.hasNext()) {
+            int code = si.next();
             MoveCommand mc = new MoveCommand();
             mc.code.val = code;
 
@@ -68,17 +111,17 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
             int mcc = moveCommandClassifier(code);
 
             if ((mcc & 0x100) != 0) {
-                mc.parameters.text.data = new byte[si.pop()];
+                mc.parameters.text.data = new byte[popMetaInteger(si)];
                 for (int i = 0; i < mc.parameters.text.data.length; i++)
-                    mc.parameters.text.data[i] = (byte) (int) si.pop();
+                    mc.parameters.text.data[i] = (byte) (int) si.next();
             }
 
             if ((mcc & 0xFF) > 0)
-                a.val = si.pop();
+                a.val = popMetaInteger(si);
             if ((mcc & 0xFF) > 1)
-                b.val = si.pop();
+                b.val = popMetaInteger(si);
             if ((mcc & 0xFF) > 2)
-                c.val = si.pop();
+                c.val = popMetaInteger(si);
             if ((mcc & 0xFF) > 3)
                 throw new RuntimeException("invalid MCC");
             mcs.add(mc);
@@ -96,17 +139,18 @@ public class MoveCommand extends IRIOFixedObject implements IR2kInterpretable {
 
             if ((mcc & 0x100) != 0) {
                 byte[] text = mc.parameters.text.data;
+                addMetaInteger(res, text.length);
                 res.add(text.length);
                 for (byte b : text)
                     res.add(((int) b) & 0xFF);
             }
 
             if ((mcc & 0xFF) > 0)
-                res.add((int) mc.parameters.arrVal[0].getFX());
+                addMetaInteger(res, (int) mc.parameters.arrVal[0].getFX());
             if ((mcc & 0xFF) > 1)
-                res.add((int) mc.parameters.arrVal[1].getFX());
+                addMetaInteger(res, (int) mc.parameters.arrVal[1].getFX());
             if ((mcc & 0xFF) > 2)
-                res.add((int) mc.parameters.arrVal[2].getFX());
+                addMetaInteger(res, (int) mc.parameters.arrVal[2].getFX());
             if ((mcc & 0xFF) > 3)
                 throw new RuntimeException("invalid MCC");
         }
