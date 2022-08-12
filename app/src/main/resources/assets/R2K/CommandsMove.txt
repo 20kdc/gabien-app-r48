@@ -169,7 +169,7 @@ p sound f_sound_name
 p volume int_default_100
 p tempo int_default_100
 p balance int_default_50
-x play_sound_parameters
+x play_sound_move_parameters
 
 36: Disable Collision
 d Gain the ability to walk through walls.

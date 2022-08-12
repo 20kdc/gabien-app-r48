@@ -95,6 +95,8 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
         } else {
             if (!optional) {
                 IRIO rio = PathSyntax.parse(target, pStr, 1);
+                if (rio == null)
+                    throw new RuntimeException("failed create during modifyVal, " + pStr);
                 createIVar(rio, path, true);
             }
         }

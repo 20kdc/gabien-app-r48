@@ -21,6 +21,9 @@
 @indent indent
 @parameters play_sound_array
 
+.play_sound_move_parameters
+@parameters play_sound_array
+
 
 .change_system_sfx_array
 ]1 sfxId change_sys_sfx_id
