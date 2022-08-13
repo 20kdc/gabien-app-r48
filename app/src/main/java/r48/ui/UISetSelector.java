@@ -45,6 +45,7 @@ public class UISetSelector<T> extends UIProxy {
         for (T o : entries) {
             final T fo = o;
             final UITextButton utb = new UITextButton(o.toString(), FontSizes.dialogWindowTextHeight, null);
+            utb.togglable(false);
             utb.onClick = new Runnable() {
                 @Override
                 public void run() {

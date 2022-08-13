@@ -65,7 +65,7 @@ public interface IObjectBackend {
 
         public static IObjectBackend create(String odbBackend, String rootPath, String dataPath, String dataExt) {
             if (odbBackend.equals("r48")) {
-                return new R48ObjectBackend(rootPath + dataPath, dataExt, true);
+                return new R48ObjectBackend(rootPath + dataPath, dataExt);
             } else if (odbBackend.equals("ika")) {
                 return new IkaObjectBackend(rootPath + dataPath);
             } else if (odbBackend.equals("lcf2000")) {

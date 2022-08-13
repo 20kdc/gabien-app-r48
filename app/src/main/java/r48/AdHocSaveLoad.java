@@ -13,6 +13,8 @@ import r48.io.R48ObjectBackend;
 
 import java.io.IOException;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Similar to the Art and ArrayUtils classes, this is a class with all static methods just for holding purposes.
  * The reason for this in particular is that it must work outside of a R48 application context (Read as : anything static in AppMain)
@@ -35,17 +37,7 @@ public class AdHocSaveLoad {
         }
     }
 
-    public static void saveLua(String fonts, RubyIO prepare) {
-        prepare();
-        R48ObjectBackend rob = new R48ObjectBackend(PREFIX, ".r48", true);
-        try {
-            rob.saveObjectToFile(fonts, prepare);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static RubyIO load(String fonts) {
+    public static @Nullable RubyIO load(String fonts) {
         R48ObjectBackend rob = new R48ObjectBackend(PREFIX, ".r48");
         return rob.loadObjectFromFile(fonts);
     }

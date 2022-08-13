@@ -7,8 +7,10 @@
 package r48.ui.dialog;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
@@ -19,6 +21,7 @@ import gabien.ui.UIElement.UIProxy;
 import gabien.ui.UILabel;
 import gabien.uslx.append.ArrayIterable;
 import gabien.uslx.append.IFunction;
+import r48.AdHocSaveLoad;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -61,9 +64,32 @@ public class UIRMUniversalStringLocator extends UIProxy {
     private UISetSelector<ObjectInfo> setSelector;
 
     public UIRMUniversalStringLocator() {
+        Iterable<ObjectInfo> oi = AppMain.getObjectInfos();
+        setSelector = new UISetSelector<ObjectInfo>(oi);
+
+        // load config if possible
+        IRIO replacer = AdHocSaveLoad.load("replacer");
+
+        if (replacer != null) {
+            IRIO replacements = replacer.getIVar("@replacements");
+            for (IRIO hk : replacements.getHashKeys())
+                settings.put(hk.decString(), replacements.getHashVal(hk).decString());
+    
+            IRIO files = replacer.getIVar("@files");
+            Set<ObjectInfo> sset = new HashSet<ObjectInfo>();
+            for (IRIO fk : files.getANewArray()) {
+                String fileId = fk.decString();
+                for (ObjectInfo oi2 : oi) {
+                    if (oi2.idName.equals(fileId)) {
+                        sset.add(oi2);
+                    }
+                }
+            }
+            setSelector.updateSet(sset);
+        }
+
         refreshContents();
         
-        setSelector = new UISetSelector<ObjectInfo>(AppMain.getObjectInfos());
         proxySetElement(new UISplitterLayout(layout, setSelector, false, 0.5), true);
     }
 
@@ -75,7 +101,7 @@ public class UIRMUniversalStringLocator extends UIProxy {
     private void refreshContents() {
         layout.panelsClear();
 
-        LinkedList<String> keys = new LinkedList<String>(settings.keySet());
+        final LinkedList<String> keys = new LinkedList<String>(settings.keySet());
         for (String key : keys) {
             final String keyF = key;
             String value = settings.get(key);
@@ -90,6 +116,24 @@ public class UIRMUniversalStringLocator extends UIProxy {
         layout.panelsAdd(adderA);
         layout.panelsAdd(adderB);
         layout.panelsAdd(adderC);
+        layout.panelsAdd(new UITextButton(TXDB.get("Save Config."), FontSizes.dialogWindowTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                RubyIO rio = new RubyIO();
+                rio.setObject("R48::UniversalStringLocatorSettings");
+                RubyIO replacements = rio.addIVar("@replacements");
+                replacements.setHash();
+                for (String key : keys) {
+                    RubyIO hkv = replacements.addHashVal(new RubyIO().setString(key, true));
+                    hkv.setString(settings.get(key), true);
+                }
+                RubyIO files = rio.addIVar("@files");
+                files.setArray();
+                for (ObjectInfo oi : setSelector.getSet())
+                    files.addAElem(files.getALen()).setString(oi.idName, true);
+                AdHocSaveLoad.save("replacer", rio);
+            }
+        }));
 
         layout.panelsAdd(new UITextButton(TXDB.get("Confirm & Replace"), FontSizes.dialogWindowTextHeight, new Runnable() {
             @Override

@@ -22,19 +22,10 @@ import java.util.LinkedList;
  */
 public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
     private final String prefix, postfix;
-    // should almost always be false - subset for luahead.lua simplicity of implementation
-    public final boolean lsMode;
 
     public R48ObjectBackend(String s, String dataExt) {
         prefix = s;
         postfix = dataExt;
-        lsMode = false;
-    }
-
-    public R48ObjectBackend(String s, String dataExt, boolean lsm) {
-        prefix = s;
-        postfix = dataExt;
-        lsMode = lsm;
     }
 
     @Override
@@ -87,19 +78,6 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
         return a | (dis.readUnsignedByte() << 8);
     }
 
-    // Lua Subset (For communication with luahead.lua)
-    public static void save32LSM(DataOutputStream dis, long v) throws IOException {
-        boolean neg = false;
-        if (v < 0)
-            neg = true;
-        if (neg) {
-            dis.write(-4);
-        } else {
-            dis.write(4);
-        }
-        save32LE(dis, v, 4);
-    }
-
     public static void save32STM(DataOutputStream dis, long v) throws IOException {
         if (v == 0) {
             dis.write(0);
@@ -140,11 +118,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
     }
 
     public void save32(DataOutputStream dis, long v) throws IOException {
-        if (lsMode) {
-            save32LSM(dis, v);
-        } else {
-            save32STM(dis, v);
-        }
+        save32STM(dis, v);
     }
 
     private static void save32LE(DataOutputStream dis, long v, int bytes) throws IOException {
