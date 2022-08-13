@@ -89,7 +89,10 @@ public class RMTools {
                                 }
                                 for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
                                     // Find event!
-                                    IRIO mapEvObj = rmd.map.getObject().getIVar("@events");
+                                    IObjectBackend.ILoadedObject ilo = rmd.getILO(false);
+                                    if (ilo == null)
+                                        continue;
+                                    IRIO mapEvObj = ilo.getObject().getIVar("@events");
                                     for (IRIO key : mapEvObj.getHashKeys()) {
                                         IRIO event = mapEvObj.getHashVal(key);
                                         IRIO pages = event.getIVar("@pages");
@@ -109,7 +112,7 @@ public class RMTools {
                                                     found = cod == i;
                                                 }
                                                 if (found) {
-                                                    UIMTEventPicker.showEventDivorced(key, rmd.map, rmd.schemaName, event, "RPG::Event");
+                                                    UIMTEventPicker.showEventDivorced(key, ilo, rmd.schemaName, event, "RPG::Event");
                                                     return;
                                                 }
                                             }
@@ -127,7 +130,9 @@ public class RMTools {
                         LinkedList<ObjectInfo> objects = AppMain.getObjectInfos();
                         for (final ObjectInfo obj : objects) {
                             System.out.println(obj + "...");
-                            IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(obj.idName);
+                            IObjectBackend.ILoadedObject map = obj.getILO(false);
+                            if (map == null)
+                                continue;
                             IConsumer<SchemaPath> modListen = new IConsumer<SchemaPath>() {
                                 @Override
                                 public void accept(SchemaPath path) {
@@ -177,8 +182,10 @@ public class RMTools {
                         Collections.sort(orderedMapInfos);
                         for (int id : orderedMapInfos) {
                             IRMMapSystem.RMMapData rmd = mapMap.get(id);
+                            IObjectBackend.ILoadedObject map = rmd.getILO(false);
+                            if (map == null)
+                                continue;
                             dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), FormatSyntax.formatExtended(TXDB.get("Map:#A"), new RubyIO().setString(rmd.name, true)));
-                            IObjectBackend.ILoadedObject map = rmd.map;
                             // We need to temporarily override map context.
                             // This'll fix itself by next frame...
                             AppMain.schemas.updateDictionaries(map);

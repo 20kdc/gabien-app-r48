@@ -190,10 +190,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             int id = (int) key.getFX();
             if (id == 0)
                 continue;
-            IObjectBackend.ILoadedObject obj = AppMain.objectDB.getObject(R2kRMLikeMapInfoBackend.sNameFromInt(id));
-            if (obj == null)
-                continue;
-            RMMapData rmd = new RMMapData(lmti.getHashVal(key).getIVar("@name").decString(), obj, id, R2kRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
+            RMMapData rmd = new RMMapData(lmti.getHashVal(key).getIVar("@name").decString(), id, R2kRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
             rmdList.add(rmd);
         }
         return rmdList.toArray(new RMMapData[0]);

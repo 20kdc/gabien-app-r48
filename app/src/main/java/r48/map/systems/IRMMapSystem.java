@@ -28,13 +28,11 @@ public interface IRMMapSystem extends IDynobjMapSystem {
 
     // This identifies an actual RM map, not a GUM
     class RMMapData extends ObjectInfo {
-        public final IObjectBackend.ILoadedObject map;
         public final String name;
         public final int id;
 
-        public RMMapData(String n, IObjectBackend.ILoadedObject m, int i, String iN, String sN) {
+        public RMMapData(String n, int i, String iN, String sN) {
             super(iN, sN);
-            map = m;
             name = n;
             id = i;
         }

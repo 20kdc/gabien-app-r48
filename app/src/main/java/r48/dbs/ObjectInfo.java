@@ -7,6 +7,7 @@
 
 package r48.dbs;
 
+import r48.AppMain;
 import r48.io.IObjectBackend;
 
 /**
@@ -29,5 +30,9 @@ public class ObjectInfo {
 
     public String toString() {
         return idName;
+    }
+
+    public IObjectBackend.ILoadedObject getILO(boolean create) {
+        return AppMain.objectDB.getObject(idName, create ? schemaName : null);
     }
 }
