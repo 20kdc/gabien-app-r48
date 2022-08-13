@@ -12,6 +12,7 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.*;
 import r48.dbs.FormatSyntax;
+import r48.dbs.ObjectInfo;
 import r48.dbs.TXDB;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
@@ -467,18 +468,21 @@ public class BasicToolset implements IToolset {
     }
 
     private static UIElement makeFileList() {
-        LinkedList<String> s = AppMain.schemas.listFileDefs();
+        LinkedList<ObjectInfo> s = AppMain.schemas.listFileDefs();
         if (s.size() == 0)
             return null;
+        LinkedList<String> str = new LinkedList<String>();
         LinkedList<Runnable> r = new LinkedList<Runnable>();
-        for (final String s2 : s)
+        for (final ObjectInfo s2 : s) {
+            str.add(s2.toString());
             r.add(new Runnable() {
                 @Override
                 public void run() {
-                    AppMain.launchSchema("File." + s2, AppMain.objectDB.getObject(s2), null);
+                    AppMain.launchSchema(s2.schemaName, AppMain.objectDB.getObject(s2.idName), null);
                 }
             });
-        return new UIPopupMenu(s.toArray(new String[0]), r.toArray(new Runnable[0]), FontSizes.menuTextHeight, FontSizes.menuScrollersize, false) {
+        }
+        return new UIPopupMenu(str.toArray(new String[0]), r.toArray(new Runnable[0]), FontSizes.menuTextHeight, FontSizes.menuScrollersize, false) {
             @Override
             public String toString() {
                 return TXDB.get("Database Objects");

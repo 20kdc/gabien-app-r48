@@ -5,18 +5,29 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.map.systems;
+package r48.dbs;
 
-import r48.dbs.ObjectInfo;
+import r48.io.IObjectBackend;
 
 /**
- * A Map System that has additional dynamic objects.
- * Created on September 04, 2018.
+ * Created on 13th August, 2022.
  */
-public interface IDynobjMapSystem {
+public class ObjectInfo {
     /**
-     * Returns all dynamic object IDs that are part of the game.
-     * Object IDs that are not part of the game (save files) do not count.
+     * Object ID
      */
-    ObjectInfo[] getDynamicObjects();
+    public final String idName;
+    /**
+     * Object Schema
+     */
+    public final String schemaName;
+
+    public ObjectInfo(String iN, String sN) {
+        idName = iN;
+        schemaName = sN;
+    }
+
+    public String toString() {
+        return idName;
+    }
 }

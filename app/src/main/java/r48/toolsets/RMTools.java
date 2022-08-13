@@ -16,6 +16,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.FormatSyntax;
+import r48.dbs.ObjectInfo;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -27,6 +28,7 @@ import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIMenuButton;
+import r48.ui.dialog.UIRMUniversalStringLocator;
 import r48.ui.dialog.UITextPrompt;
 
 import java.io.PrintStream;
@@ -122,19 +124,10 @@ public class RMTools {
                 new Runnable() {
                     @Override
                     public void run() {
-                        LinkedList<String> objects = new LinkedList<String>();
-                        LinkedList<String> objectSchemas = new LinkedList<String>();
-                        for (String s : AppMain.schemas.listFileDefs()) {
-                            objects.add(s);
-                            objectSchemas.add("File." + s);
-                        }
-                        for (IRMMapSystem.RMMapData rio : mapSystem.getAllMaps()) {
-                            objects.add(rio.idName);
-                            objectSchemas.add(rio.schemaName);
-                        }
-                        for (final String obj : objects) {
+                        LinkedList<ObjectInfo> objects = AppMain.getObjectInfos();
+                        for (final ObjectInfo obj : objects) {
                             System.out.println(obj + "...");
-                            IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(obj);
+                            IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(obj.idName);
                             IConsumer<SchemaPath> modListen = new IConsumer<SchemaPath>() {
                                 @Override
                                 public void accept(SchemaPath path) {
@@ -146,7 +139,7 @@ public class RMTools {
                                 }
                             };
                             AppMain.objectDB.registerModificationHandler(map, modListen);
-                            SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(objectSchemas.removeFirst()), map);
+                            SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(obj.schemaName), map);
                             sp.editor.modifyVal(map.getObject(), sp, false);
                             AppMain.objectDB.deregisterModificationHandler(map, modListen);
                             System.out.println(obj + " done.");
@@ -156,51 +149,7 @@ public class RMTools {
                 new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Find?"), new IConsumer<String>() {
-                            @Override
-                            public void accept(final String find) {
-                                AppMain.window.createWindow(new UITextPrompt(TXDB.get("Replace?"), new IConsumer<String>() {
-                                    @Override
-                                    public void accept(final String repl) {
-                                        LinkedList<String> objects = new LinkedList<String>();
-                                        LinkedList<String> objectSchemas = new LinkedList<String>();
-                                        for (String s : AppMain.schemas.listFileDefs()) {
-                                            objects.add(s);
-                                            objectSchemas.add("File." + s);
-                                        }
-                                        for (IRMMapSystem.RMMapData rio : mapSystem.getAllMaps()) {
-                                            objects.add(rio.idName);
-                                            objectSchemas.add(rio.schemaName);
-                                        }
-                                        int total = 0;
-                                        String log = "";
-                                        for (String s : objects) {
-                                            IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
-                                            SchemaElement se = AppMain.schemas.getSDBEntry(objectSchemas.removeFirst());
-                                            if (rio != null) {
-                                                int count = BasicToolset.universalStringLocator(rio.getObject(), new IFunction<IRIO, Integer>() {
-                                                    @Override
-                                                    public Integer apply(IRIO rubyIO) {
-                                                        if (rubyIO.decString().equals(find)) {
-                                                            rubyIO.setString(repl);
-                                                            return 1;
-                                                        }
-                                                        return 0;
-                                                    }
-                                                }, true);
-                                                total += count;
-                                                if (count > 0) {
-                                                    SchemaPath sp = new SchemaPath(se, rio);
-                                                    sp.changeOccurred(false);
-                                                    log += "\n" + s + ": " + count;
-                                                }
-                                            }
-                                        }
-                                        AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Made #A total string adjustments."), new RubyIO().setFX(total)) + log);
-                                    }
-                                }));
-                            }
-                        }));
+                        AppMain.window.createWindow(new UIRMUniversalStringLocator());
                     }
                 },
                 new Runnable() {

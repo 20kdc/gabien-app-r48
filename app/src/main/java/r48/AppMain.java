@@ -13,6 +13,7 @@ import gabien.uslx.append.*;
 import gabienapp.Application;
 import gabienapp.UIFancyInit;
 import r48.dbs.ATDB;
+import r48.dbs.ObjectInfo;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
 import r48.dbs.TXDB;
@@ -621,12 +622,25 @@ public class AppMain {
     public static LinkedList<String> getAllObjects() {
         // anything loaded gets added (this allows some bypass of the mechanism)
         HashSet<String> mainSet = new HashSet<String>(objectDB.objectMap.keySet());
-        mainSet.addAll(schemas.listFileDefs());
+        for (ObjectInfo oi : schemas.listFileDefs())
+            mainSet.add(oi.idName);
         if (system instanceof IDynobjMapSystem) {
             IDynobjMapSystem idms = (IDynobjMapSystem) system;
-            mainSet.addAll(idms.getDynamicObjects());
+            for (ObjectInfo dobj : idms.getDynamicObjects())
+                mainSet.add(dobj.idName);
         }
         return new LinkedList<String>(mainSet);
+    }
+
+    // Attempts to ascertain all known objects
+    public static LinkedList<ObjectInfo> getObjectInfos() {
+        LinkedList<ObjectInfo> oi = schemas.listFileDefs();
+        if (system instanceof IDynobjMapSystem) {
+            IDynobjMapSystem idms = (IDynobjMapSystem) system;
+            for (ObjectInfo dobj : idms.getDynamicObjects())
+                oi.add(dobj);
+        }
+        return oi;
     }
 
     public static void saveAllModified() {

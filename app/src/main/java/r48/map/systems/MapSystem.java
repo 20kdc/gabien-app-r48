@@ -14,6 +14,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.IMapContext;
 import r48.RubyTable;
+import r48.dbs.ObjectInfo;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
@@ -50,11 +51,12 @@ public abstract class MapSystem {
         enableMapSubsystem = enableSwitch;
     }
 
-    protected static LinkedList<String> dynamicObjectsFromRM(IRMMapSystem rm) {
-        LinkedList<String> dynobjs = new LinkedList<String>();
-        for (IRMMapSystem.RMMapData rmmd : rm.getAllMaps())
-            dynobjs.add(rmmd.idName);
-        return dynobjs;
+    protected static ObjectInfo[] dynamicObjectsFromRM(IRMMapSystem rm) {
+        IRMMapSystem.RMMapData[] maps = rm.getAllMaps();
+        ObjectInfo[] dobj = new ObjectInfo[maps.length];
+        for (int i = 0; i < dobj.length; i++)
+            dobj[i] = maps[i];
+        return dobj;
     }
 
     public static MapSystem create(String sysBackend) {

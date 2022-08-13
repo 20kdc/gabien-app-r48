@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import r48.AppMain;
 import r48.dbs.DBLoader;
+import r48.dbs.ObjectInfo;
 import r48.dbs.IDatabase;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
@@ -74,12 +75,12 @@ public class LocalTestExecutiveTest {
     @Test
     public void test() {
         TestKickstart.kickstart(name + "/", charset, schema + "/");
-        for (String s : AppMain.schemas.listFileDefs())
-            testObject(s);
+        for (ObjectInfo s : AppMain.schemas.listFileDefs())
+            testObject(s.idName);
         if (dynamic)
             if (AppMain.system instanceof IDynobjMapSystem)
-                for (String s : ((IDynobjMapSystem) AppMain.system).getDynamicObjects())
-                    testObject(s);
+                for (ObjectInfo s : ((IDynobjMapSystem) AppMain.system).getDynamicObjects())
+                    testObject(s.idName);
     }
 
     private void testObject(String s) {

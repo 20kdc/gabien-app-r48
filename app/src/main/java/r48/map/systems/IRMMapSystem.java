@@ -7,6 +7,7 @@
 
 package r48.map.systems;
 
+import r48.dbs.ObjectInfo;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.toolsets.RMTranscriptDumper;
@@ -15,7 +16,7 @@ import r48.toolsets.RMTranscriptDumper;
  * Membership implies being an RM engine and some of the universal constants associated with that.
  * Created on 10/06/17.
  */
-public interface IRMMapSystem {
+public interface IRMMapSystem extends IDynobjMapSystem {
     // Expects @events containing events with @pages containing @list.
     // Pages can have null holes in it because R2k.
     RMMapData[] getAllMaps();
@@ -26,19 +27,20 @@ public interface IRMMapSystem {
     void dumpCustomData(RMTranscriptDumper dumper);
 
     // This identifies an actual RM map, not a GUM
-    class RMMapData {
-        public final String name;
+    class RMMapData extends ObjectInfo {
         public final IObjectBackend.ILoadedObject map;
+        public final String name;
         public final int id;
-        public final String idName;
-        public final String schemaName;
 
         public RMMapData(String n, IObjectBackend.ILoadedObject m, int i, String iN, String sN) {
-            name = n;
+            super(iN, sN);
             map = m;
+            name = n;
             id = i;
-            idName = iN;
-            schemaName = sN;
+        }
+
+        public String toString() {
+            return idName + ": " + name;
         }
     }
 }

@@ -22,6 +22,7 @@ import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.CMDB;
+import r48.dbs.ObjectInfo;
 import r48.dbs.TXDB;
 import r48.imageio.BMP8IImageIOFormat;
 import r48.imageio.PNG8IImageIOFormat;
@@ -392,7 +393,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     }
 
     @Override
-    public LinkedList<String> getDynamicObjects() {
+    public ObjectInfo[] getDynamicObjects() {
         return MapSystem.dynamicObjectsFromRM(this);
     }
 

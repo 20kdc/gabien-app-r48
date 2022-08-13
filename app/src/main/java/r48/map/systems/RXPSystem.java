@@ -16,6 +16,7 @@ import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.IMapContext;
 import r48.RubyTable;
+import r48.dbs.ObjectInfo;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -223,7 +224,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     }
 
     @Override
-    public LinkedList<String> getDynamicObjects() {
+    public ObjectInfo[] getDynamicObjects() {
         return MapSystem.dynamicObjectsFromRM(this);
     }
 

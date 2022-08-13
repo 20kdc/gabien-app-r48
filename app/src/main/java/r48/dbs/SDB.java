@@ -38,6 +38,7 @@ import r48.schema.util.SchemaPath;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -977,11 +978,11 @@ public class SDB {
         }
     }
 
-    public LinkedList<String> listFileDefs() {
-        LinkedList<String> fd = new LinkedList<String>();
+    public LinkedList<ObjectInfo> listFileDefs() {
+        LinkedList<ObjectInfo> fd = new LinkedList<ObjectInfo>();
         for (String s : schemaDatabase.keySet())
             if (s.startsWith("File."))
-                fd.add(s.substring(5));
+                fd.add(new ObjectInfo(s.substring(5), s));
         return fd;
     }
 
