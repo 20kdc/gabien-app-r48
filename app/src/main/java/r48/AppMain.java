@@ -48,6 +48,8 @@ import r48.wm.WindowManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
@@ -313,6 +315,11 @@ public class AppMain {
         return shi;
     }
 
+    public static void launchDialog(String s, Throwable e) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        AppMain.launchDialog(s + "\n" + sw.toString());
+    }
     public static void launchDialog(String s) {
         UILabel ul = new UILabel(s, FontSizes.textDialogDescTextHeight);
         UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize) {

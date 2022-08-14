@@ -216,8 +216,13 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     // could have changed
                     if (AppMain.theClipboard.type == '[') {
                         IRIO[] finalInsertionRv = AppMain.theClipboard.arrVal;
-                        for (int j = finalInsertionRv.length - 1; j >= 0; j--)
-                            target.addAElem(i).setDeepClone(finalInsertionRv[j]);
+                        try {
+                            for (int j = finalInsertionRv.length - 1; j >= 0; j--) {
+                                target.addAElem(i).setDeepClone(finalInsertionRv[j]);
+                            }
+                        } catch (Exception e) {
+                            AppMain.launchDialog(TXDB.get("Incompatible clipboard and target."), e);
+                        }
                         // whack the UI
                         path.changeOccurred(false);
                     } else {

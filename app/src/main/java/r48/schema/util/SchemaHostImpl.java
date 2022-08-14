@@ -64,12 +64,8 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
                     try {
                         innerElem.targetElement.setDeepClone(AppMain.theClipboard);
                     } catch (Exception e) {
-                        StringWriter sw = new StringWriter();
-                        e.printStackTrace(new PrintWriter(sw));
-                        AppMain.launchDialog(TXDB.get("Incompatible clipboard and target.") + "\n" + sw.toString());
+                        AppMain.launchDialog(TXDB.get("Incompatible clipboard and target."), e);
                     }
-                    SchemaPath sp = innerElem.findHighestSubwatcher();
-                    sp.editor.modifyVal(sp.targetElement, sp, false);
                     innerElem.changeOccurred(false);
                     switchObject(innerElem);
                 } else {

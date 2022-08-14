@@ -201,15 +201,6 @@ public class SchemaPath {
     // Emphasis on the "may", though.
     // "modifyVal" should only be true if being called from modifyVal.
     public void changeOccurred(boolean modifyVal) {
-        SchemaPath p = findRoot();
-
-        // Used by isolated roots.
-        if (p.additionalModificationCallback != null)
-            p.additionalModificationCallback.run();
-
-        // Attempt to set a "changed flag".
-        // This will also nudge the observers.
-        AppMain.objectDB.objectRootModified(p.root, this);
         // Run an autocorrect on just about everything.
         // Could cause a lagspike, but this is *after* modification anyway,
         //  and worth it for the consistency benefits.
@@ -229,11 +220,25 @@ public class SchemaPath {
         // As it is, notification handlers are always stuff that can be delayed until later,
         // so it's being delayed to EOF. Using a HashSet.
 
-        if (!modifyVal) {
-            SchemaPath sw = findHighestSubwatcher();
-            if (sw.editor != null)
-                sw.editor.modifyVal(sw.targetElement, sw, false);
-        }
+        if (!modifyVal)
+            pokeHighestSubwatcherEditor();
+
+        // Now that we've done that...
+        SchemaPath p = findRoot();
+
+        // Used by isolated roots.
+        if (p.additionalModificationCallback != null)
+            p.additionalModificationCallback.run();
+
+        // Attempt to set a "changed flag".
+        // This will also nudge the observers.
+        AppMain.objectDB.objectRootModified(p.root, this);
+    }
+
+    public void pokeHighestSubwatcherEditor() {
+        SchemaPath sw = findHighestSubwatcher();
+        if (sw.editor != null)
+            sw.editor.modifyVal(sw.targetElement, sw, false);
     }
 
     // If this is true, a temp dialog (unique UIElement) is in use and thus this can't be cloned.
