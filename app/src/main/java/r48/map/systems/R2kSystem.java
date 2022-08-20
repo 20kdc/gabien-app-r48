@@ -23,6 +23,7 @@ import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.CMDB;
 import r48.dbs.ObjectInfo;
+import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
 import r48.imageio.BMP8IImageIOFormat;
 import r48.imageio.PNG8IImageIOFormat;
@@ -335,8 +336,26 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         });
     }
 
-    public void findTranslatables(IObjectBackend.ILoadedObject ilo, IMapToolContext ctx) {
-        UIScrollLayout translatables = new UIScrollLayout(true, FontSizes.generalScrollersize);
+    public void findTranslatables(final IObjectBackend.ILoadedObject ilo, IMapToolContext ctx) {
+        final LinkedList<Runnable> textUpdaters = new LinkedList<Runnable>();
+
+        final IConsumer<SchemaPath> csp = new IConsumer<SchemaPath>() {
+            @Override
+            public void accept(SchemaPath t) {
+                for (Runnable r : textUpdaters)
+                    r.run();
+            }
+        };
+        AppMain.objectDB.registerModificationHandler(ilo, csp);
+
+        UIScrollLayout translatables = new UIScrollLayout(true, FontSizes.generalScrollersize) {
+            @Override
+            public void onWindowClose() {
+                super.onWindowClose();
+                AppMain.objectDB.deregisterModificationHandler(ilo, csp);
+            }
+        };
+
         CMDB cmdb = AppMain.schemas.getCMDB("R2K/Commands.txt");
 
         IRIO events = ilo.getObject().getIVar("@events");
@@ -351,8 +370,10 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 for (int i = 0; i < eventList.getALen(); i++) {
                     IRIO cmd = eventList.getAElem(i);
                     long cmdCode = cmd.getIVar("@code").getFX();
-                    if ((cmdCode == 10110) || (cmdCode == 20140)) {
-                        addTranslatable(translatables, cmdb, ilo, ctx, event, eventKey, page, pageObj, eventList, i, cmd);
+                    RPGCommand cmdDetail = cmdb.knownCommands.get((Integer) (int) cmdCode);
+                    if (cmdDetail.isTranslatable) {
+                        Runnable tu = addTranslatable(translatables, cmdb, ilo, ctx, event, eventKey, page, pageObj, eventList, i, cmd);
+                        textUpdaters.add(tu);
                     }
                 }
             }
@@ -362,9 +383,9 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         AppMain.window.createWindow(translatables, "findTranslatables");
     }
 
-    private void addTranslatable(UIScrollLayout translatables, final CMDB cmdb, final ILoadedObject root, final IMapToolContext ctx, final IRIO event, final IRIO eventKey, final int pageIndex, final IRIO pageObj, final IRIO listObj, final int codeIndex, final IRIO command) {
+    private Runnable addTranslatable(UIScrollLayout translatables, final CMDB cmdb, final ILoadedObject root, final IMapToolContext ctx, final IRIO event, final IRIO eventKey, final int pageIndex, final IRIO pageObj, final IRIO listObj, final int codeIndex, final IRIO command) {
         String text = cmdb.buildGroupCodename(listObj, codeIndex);
-        translatables.panelsAdd(new UITextButton(text, FontSizes.schemaFieldTextHeight, new Runnable() {
+        final UITextButton button = new UITextButton(text, FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 ISchemaHost shi = AppMain.launchSchema("RPG::Map", root, ctx.getMapView());
@@ -386,7 +407,14 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 sp = sp.newWindow(ecase.getElementContextualWindowSchema(command), listObj);
                 shi.pushObject(sp);
             }
-        }));
+        });
+        translatables.panelsAdd(button);
+        return new Runnable() {
+            @Override
+            public void run() {
+                button.text = cmdb.buildGroupCodename(listObj, codeIndex);
+            }
+        };
     }
 
     @Override

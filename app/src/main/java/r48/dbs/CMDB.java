@@ -518,6 +518,8 @@ public class CMDB {
                         for (int i = 1; i < args.length; i++)
                             rc.template[i - 1] = Integer.parseInt(args[i]);
                     }
+                    if (args[0].equals("translatable"))
+                        rc.isTranslatable = true;
                 } else if (c == '#') {
                     String oldFile = baseFile;
                     baseFile = args[0];

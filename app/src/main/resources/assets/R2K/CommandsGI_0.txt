@@ -41,6 +41,7 @@ p text string
 
 10110: Say$
 C category 0
+C translatable
 d Begins a message to show to the player.
 p text textbox_string
 C groupBehavior messagebox 20110
@@ -62,6 +63,7 @@ I1
 
 20140: @@... On Choice:{B: {B=4=Cancel|#A} (index @[choice_index_magic_2]B)}
 C category 0
+C translatable
 d A choice. If the player selects this choice, the code between this and the next choice runs. If the text is blank, this is a 'cancel' choice (and should be last)
 p text string
 p choiceIndex choice_index_magic
@@ -337,12 +339,14 @@ p _ string
 
 10610: @@{B:Change @[actor_id]B's Name: #A|Change Actor Name}
 C category 2
+C translatable
 d Change the name of a party member.
 p name string
 p actor actor_id
 
 10620: @@{B:Change @[actor_id]B's Title: #A|Change Actor Title}
 C category 2
+C translatable
 d Change the title of a party member.
 p title string
 p actor actor_id

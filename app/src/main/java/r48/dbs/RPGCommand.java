@@ -59,6 +59,9 @@ public class RPGCommand {
     public int[] template = new int[0];
     public int category;
 
+    // For Find Translatables functionality
+    public boolean isTranslatable;
+
     // Pass null for parameters if this is for combobox display.
     public String formatName(IRIO root, IRIO[] parameters) {
         try {

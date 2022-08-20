@@ -266,3 +266,6 @@
 
    C template <IDs...>
     Sets up a template to follow this command with when inserted.
+
+   C translatable
+    Marks this command as translatable.
