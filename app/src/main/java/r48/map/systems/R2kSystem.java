@@ -22,6 +22,7 @@ import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.CMDB;
+import r48.dbs.FormatSyntax;
 import r48.dbs.ObjectInfo;
 import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
@@ -327,7 +328,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                         new ToolButton(TXDB.get("Find Translatables")) {
                             @Override
                             public UIMTBase apply(IMapToolContext a) {
-                                findTranslatables(map, a);
+                                findTranslatables(objn, map, a);
                                 return null;
                             }
                         }
@@ -336,7 +337,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         });
     }
 
-    public void findTranslatables(final IObjectBackend.ILoadedObject ilo, IMapToolContext ctx) {
+    public void findTranslatables(final String objIdName, final IObjectBackend.ILoadedObject ilo, IMapToolContext ctx) {
         final LinkedList<Runnable> textUpdaters = new LinkedList<Runnable>();
 
         final IConsumer<SchemaPath> csp = new IConsumer<SchemaPath>() {
@@ -353,6 +354,11 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             public void onWindowClose() {
                 super.onWindowClose();
                 AppMain.objectDB.deregisterModificationHandler(ilo, csp);
+            }
+
+            @Override
+            public String toString() {
+                return FormatSyntax.formatExtended(TXDB.get("Translatables in: #A"), new RubyIO().setString(objIdName, true));
             }
         };
 
