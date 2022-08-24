@@ -179,7 +179,6 @@ public class GrandTestBuilder {
         });
     }
 
-
     public void thenType(final String s) {
         TestKickstart.waitingTestEntries.add(new ISupplier<Boolean>() {
             boolean waitFrame = true;
