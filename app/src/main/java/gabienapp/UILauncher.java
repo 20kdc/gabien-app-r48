@@ -103,27 +103,25 @@ public class UILauncher extends UIProxy {
 
         configure.panelsAdd(new UILabel(TXDB.get("Path To Game (if you aren't running R48 in the game folder):"), FontSizes.launcherTextHeight));
 
-        final UITextBox rootBox = new UITextBox(Application.rootPathBackup, FontSizes.launcherTextHeight);
-
-        configure.panelsAdd(new UISplitterLayout(rootBox, new UITextButton(TXDB.get("Save"), FontSizes.launcherTextHeight, new Runnable() {
+        final UIGamePathList rootBox = new UIGamePathList(Application.rootPathBackup) {
             @Override
-            public void run() {
-                Application.rootPathBackup = rootBox.text;
+            public void modified() {
+                super.modified();
                 FontSizes.save();
             }
-        }), false, 1));
+        };
+        configure.panelsAdd(rootBox);
 
         configure.panelsAdd(new UILabel(TXDB.get("Secondary Image Load Location:"), FontSizes.launcherTextHeight));
 
-        final UITextBox sillBox = new UITextBox(Application.secondaryImageLoadLocationBackup, FontSizes.launcherTextHeight);
-
-        configure.panelsAdd(new UISplitterLayout(sillBox, new UITextButton(TXDB.get("Save"), FontSizes.launcherTextHeight, new Runnable() {
+        final UIGamePathList sillBox = new UIGamePathList(Application.secondaryImageLoadLocationBackup) {
             @Override
-            public void run() {
-                Application.secondaryImageLoadLocationBackup = sillBox.text;
+            public void modified() {
+                super.modified();
                 FontSizes.save();
             }
-        }), false, 1));
+        };
+        configure.panelsAdd(sillBox);
 
         basePanels.add(new UILabel(TXDB.get("Choose Target Engine:"), FontSizes.launcherTextHeight));
 
@@ -144,7 +142,7 @@ public class UILauncher extends UIProxy {
                     gamepaks.panelsAdd(new UITextButton(names[i], FontSizes.launcherTextHeight, new Runnable() {
                         @Override
                         public void run() {
-                            accept(r.apply(new LauncherState(rootBox.text, sillBox.text)));
+                            accept(r.apply(new LauncherState(rootBox.text.text, sillBox.text.text)));
                         }
                     }));
                 }

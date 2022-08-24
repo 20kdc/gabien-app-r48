@@ -56,9 +56,9 @@ public class Application {
     public static boolean mobileExtremelySpecialBehavior;
 
     // This is the secondary image path which is *defaulted to*.
-    public static String secondaryImageLoadLocationBackup = "";
+    public static final LinkedList<String> secondaryImageLoadLocationBackup = new LinkedList<String>();
     // This is the root path which is *defaulted to*.
-    public static String rootPathBackup = "";
+    public static final LinkedList<String> rootPathBackup = new LinkedList<String>();
 
     // used for directory name so R48 stops polluting any workspace it's used in.
     public static final String BRAND = "r48";
@@ -83,7 +83,7 @@ public class Application {
          * If EasyRPG Player has an issue with this, please bring it up at any time, and I will change this.
          */
         if (mobileExtremelySpecialBehavior)
-            rootPathBackup = "easyrpg/games/R48 Game";
+            rootPathBackup.add("easyrpg/games/R48 Game");
 
         // The 'true' here is so that it will load in "late" defaults (fontOverride)
         boolean fontsLoaded = FontSizes.load(true);

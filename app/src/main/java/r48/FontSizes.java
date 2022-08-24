@@ -14,6 +14,7 @@ import gabien.uslx.append.*;
 import gabien.ui.UIBorderedElement;
 import gabienapp.Application;
 import r48.dbs.TXDB;
+import r48.io.data.IRIO;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -141,8 +142,8 @@ public class FontSizes {
         }
         FontManager.fontOverride = GaBIEn.getFontOverrides()[0];
         FontManager.fontOverrideUE8 = false;
-        Application.secondaryImageLoadLocationBackup = "";
-        Application.rootPathBackup = "";
+        Application.secondaryImageLoadLocationBackup.clear();
+        Application.rootPathBackup.clear();
         Application.windowingExternal = false;
     }
 
@@ -165,8 +166,9 @@ public class FontSizes {
         for (FontSizeField fsf : getFields())
             prepare.addIVar("@" + fsf.name, new RubyIO().setFX(fsf.get()));
 
-        prepare.addIVar("@secondary_images", new RubyIO().setString(Application.secondaryImageLoadLocationBackup, true));
-        prepare.addIVar("@saved_rootpath", new RubyIO().setString(Application.rootPathBackup, true));
+        prepare.addIVar("@secondary_images_list", encodeStringList(Application.secondaryImageLoadLocationBackup));
+        prepare.addIVar("@saved_rootpath_list", encodeStringList(Application.rootPathBackup));
+
         prepare.addIVar("@lang", new RubyIO().setString(TXDB.getLanguage(), true));
         if (FontManager.fontOverride != null) {
             prepare.addIVar("@sysfont", new RubyIO().setString(FontManager.fontOverride, true));
@@ -176,6 +178,15 @@ public class FontSizes {
         prepare.addIVar("@actual_blending", new RubyIO().setBool(Application.allowBlending));
         prepare.addIVar("@windowing_external", new RubyIO().setBool(Application.windowingExternal));
         AdHocSaveLoad.save("fonts", prepare);
+    }
+
+    private static RubyIO encodeStringList(LinkedList<String> values) {
+        RubyIO arr = new RubyIO().setArray();
+        arr.arrVal = new IRIO[values.size()];
+        int idx = 0;
+        for (String s : values)
+            arr.arrVal[idx++] = new RubyIO().setString(s, true);
+        return arr;
     }
 
     public static boolean load(boolean first) {
@@ -212,12 +223,27 @@ public class FontSizes {
             RubyIO sys2 = dat.getInstVarBySymbol("@sysfont_ue8");
             if (sys2 != null)
                 FontManager.fontOverrideUE8 = sys2.type == 'T';
+            // old paths
             RubyIO sys3 = dat.getInstVarBySymbol("@secondary_images");
             if (sys3 != null)
-                Application.secondaryImageLoadLocationBackup = sys3.decString();
+                Application.secondaryImageLoadLocationBackup.add(sys3.decString());
             RubyIO sys4 = dat.getInstVarBySymbol("@saved_rootpath");
             if (sys4 != null)
-                Application.rootPathBackup = sys4.decString();
+                Application.rootPathBackup.add(sys4.decString());
+            // new paths
+            RubyIO sys3a = dat.getInstVarBySymbol("@secondary_images_list");
+            if (sys3a != null) {
+                Application.secondaryImageLoadLocationBackup.clear();
+                for (IRIO rio : sys3a.arrVal)
+                    Application.secondaryImageLoadLocationBackup.add(rio.decString());
+            }
+            RubyIO sys4a = dat.getInstVarBySymbol("@saved_rootpath_list");
+            if (sys4a != null) {
+                Application.rootPathBackup.clear();
+                for (IRIO rio : sys4a.arrVal)
+                    Application.rootPathBackup.add(rio.decString());
+            }
+            // ...
             RubyIO sys5 = dat.getInstVarBySymbol("@theme_variant");
             if (sys5 != null)
                 UIBorderedElement.borderTheme = (int) sys5.fixnumVal;
