@@ -12,5 +12,14 @@ import gabien.uslx.append.*;
 public interface IGPMenuPanel {
     String[] getButtonText();
 
-    ISupplier<IGPMenuPanel>[] getButtonActs();
+    IFunction<LauncherState, IGPMenuPanel>[] getButtonActs();
+
+    public class LauncherState {
+        public String rootPath;
+        public String secondaryImagePath;
+        public LauncherState(String rp, String sip) {
+            rootPath = rp;
+            secondaryImagePath = sip;
+        }
+    }
 }

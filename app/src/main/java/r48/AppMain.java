@@ -83,6 +83,7 @@ public class AppMain {
     //private static UILabel uiStatusLabel;
 
     public static String rootPath = null;
+    public static String secondaryImagePath = null;
     public static String dataPath = "";
     public static String dataExt = "";
     public static String odbBackend = "<you forgot to select a backend>";
@@ -117,8 +118,9 @@ public class AppMain {
     // Image cache
     public static ImageFXCache imageFXCache = null;
 
-    public static void initializeCore(final String rp, final String gamepak) {
+    public static void initializeCore(final String rp, final String sip, final String gamepak) {
         rootPath = rp;
+        secondaryImagePath = sip;
 
         // initialize core resources
 
@@ -525,6 +527,7 @@ public class AppMain {
 
     public static void shutdownCore() {
         rootPath = null;
+        secondaryImagePath = null;
         dataPath = "";
         dataExt = "";
         odbBackend = "<you forgot to select a backend>";

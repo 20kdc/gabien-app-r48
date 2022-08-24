@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class PrimaryGPMenuPanel implements IGPMenuPanel {
     public LinkedList<String> res1 = new LinkedList<String>();
-    public LinkedList<ISupplier<IGPMenuPanel>> res2 = new LinkedList<ISupplier<IGPMenuPanel>>();
+    public LinkedList<IFunction<LauncherState, IGPMenuPanel>> res2 = new LinkedList<IFunction<LauncherState, IGPMenuPanel>>();
 
     public PrimaryGPMenuPanel() {
         // Loads everything
@@ -33,9 +33,9 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
                 if (c == '=') {
                     final CategoryGPMenuPanel cat = new CategoryGPMenuPanel(PrimaryGPMenuPanel.this, args[0]);
                     res1.add(TXDB.get("launcher", args[0]));
-                    res2.add(new ISupplier<IGPMenuPanel>() {
+                    res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
                         @Override
-                        public IGPMenuPanel get() {
+                        public IGPMenuPanel apply(LauncherState ls) {
                             return cat;
                         }
                     });
@@ -45,9 +45,9 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
         res1.add(TXDB.get("'No Game' Mode"));
         res2.add(new CategoryGPMenuPanel.StartupCause(new AtomicReference<String>("UTF-8"), "Null"));
         res1.add(TXDB.get("Dump L-<lang>.txt"));
-        res2.add(new ISupplier<IGPMenuPanel>() {
+        res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
             @Override
-            public IGPMenuPanel get() {
+            public IGPMenuPanel apply(LauncherState ls) {
                 TXDB.performDump("L-", "launcher/");
                 res1.removeLast();
                 res2.removeLast();
@@ -62,8 +62,8 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
     }
 
     @Override
-    public ISupplier<IGPMenuPanel>[] getButtonActs() {
+    public IFunction<LauncherState, IGPMenuPanel>[] getButtonActs() {
         // *sighs*
-        return res2.toArray(new ISupplier[0]);
+        return res2.toArray(new IFunction[0]);
     }
 }

@@ -29,8 +29,8 @@ public class FixAndSecondaryImageLoader implements IImageLoader {
     public IImage getImage(String name, boolean panorama) {
         IImage base = loader.getImage(AppMain.rootPath + prefix + name + postfix, panorama);
         if (base == null)
-            if (Application.secondaryImageLoadLocation.length() > 0)
-                base = loader.getImage(Application.secondaryImageLoadLocation + prefix + name + postfix, panorama);
+            if (AppMain.secondaryImagePath.length() > 0)
+                base = loader.getImage(AppMain.secondaryImagePath + prefix + name + postfix, panorama);
         return base;
     }
 

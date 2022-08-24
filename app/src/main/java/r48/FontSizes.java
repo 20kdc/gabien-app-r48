@@ -141,7 +141,7 @@ public class FontSizes {
         }
         FontManager.fontOverride = GaBIEn.getFontOverrides()[0];
         FontManager.fontOverrideUE8 = false;
-        Application.secondaryImageLoadLocation = "";
+        Application.secondaryImageLoadLocationBackup = "";
         Application.rootPathBackup = "";
         Application.windowingExternal = false;
     }
@@ -165,7 +165,7 @@ public class FontSizes {
         for (FontSizeField fsf : getFields())
             prepare.addIVar("@" + fsf.name, new RubyIO().setFX(fsf.get()));
 
-        prepare.addIVar("@secondary_images", new RubyIO().setString(Application.secondaryImageLoadLocation, true));
+        prepare.addIVar("@secondary_images", new RubyIO().setString(Application.secondaryImageLoadLocationBackup, true));
         prepare.addIVar("@saved_rootpath", new RubyIO().setString(Application.rootPathBackup, true));
         prepare.addIVar("@lang", new RubyIO().setString(TXDB.getLanguage(), true));
         if (FontManager.fontOverride != null) {
@@ -214,7 +214,7 @@ public class FontSizes {
                 FontManager.fontOverrideUE8 = sys2.type == 'T';
             RubyIO sys3 = dat.getInstVarBySymbol("@secondary_images");
             if (sys3 != null)
-                Application.secondaryImageLoadLocation = sys3.decString();
+                Application.secondaryImageLoadLocationBackup = sys3.decString();
             RubyIO sys4 = dat.getInstVarBySymbol("@saved_rootpath");
             if (sys4 != null)
                 Application.rootPathBackup = sys4.decString();

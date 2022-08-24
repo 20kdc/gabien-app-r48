@@ -12,6 +12,8 @@ import gabien.GaBIEn;
 import gabien.IGrInDriver;
 import gabien.WindowSpecs;
 import gabien.ui.*;
+import gabien.ui.UITabBar.Tab;
+import gabien.ui.UITabBar.TabIcon;
 import gabien.uslx.append.*;
 import r48.AdHocSaveLoad;
 import r48.AppMain;
@@ -48,13 +50,13 @@ public class Application {
     // -----
 
     protected static IConsumer<Double> appTicker = null;
-    protected static UITextBox rootBox;
     protected static WindowCreatingUIElementConsumer uiTicker;
 
     // This should be set to true if on a device where touch controls are used.
     public static boolean mobileExtremelySpecialBehavior;
 
-    public static String secondaryImageLoadLocation = "";
+    // This is the secondary image path which is *defaulted to*.
+    public static String secondaryImageLoadLocationBackup = "";
     // This is the root path which is *defaulted to*.
     public static String rootPathBackup = "";
 
@@ -91,122 +93,7 @@ public class Application {
         // Note the mass-recreate.
         while (true) {
             final AtomicBoolean gamepaksRequestClose = new AtomicBoolean(false);
-            final UIScrollLayout gamepaks = new UIScrollLayout(true, FontSizes.generalScrollersize) {
-                @Override
-                public boolean requestsUnparenting() {
-                    return gamepaksRequestClose.get();
-                }
-            };
-            // this can't be good
-            // Ok, explaination for this. Giving it a runnable, it will hold it until called again, and then it will run it and remove it.
-            final IConsumer<Runnable> closeHelper = new IConsumer<Runnable>() {
-                private Runnable r;
-
-                @Override
-                public void accept(Runnable runnable) {
-                    if (runnable != null) {
-                        r = runnable;
-                    } else {
-                        r.run();
-                        r = null;
-                    }
-                }
-            };
-
-            UIAdjuster msAdjust = new UIAdjuster(FontSizes.launcherTextHeight, globalMS, new IFunction<Long, Long>() {
-                @Override
-                public Long apply(Long aLong) {
-                    int gms = (int) (long) aLong;
-                    if (gms < 1)
-                        gms = 1;
-                    globalMS = gms;
-                    return (long) gms;
-                }
-            });
-            msAdjust.accept(Integer.toString(globalMS));
-
-            final LinkedList<UIElement> basePanels = new LinkedList<UIElement>();
-
-            UIHelpSystem uhs = new UIHelpSystem();
-            HelpSystemController hsc = new HelpSystemController(null, "Help/Launcher/Entry", uhs);
-            hsc.loadPage(0);
-
-            basePanels.add(new UIBorderedSubpanel(uhs, FontSizes.scaleGuess(8)));
-
-            basePanels.add(figureOutTopBar(uiTicker, closeHelper));
-
-            basePanels.add(new UISplitterLayout(new UILabel(TXDB.get("MS per frame:"), FontSizes.launcherTextHeight), msAdjust, false, 3, 5));
-
-            basePanels.add(new UILabel(TXDB.get("Path To Game (if you aren't running R48 in the game folder):"), FontSizes.launcherTextHeight));
-
-            rootBox = new UITextBox(rootPathBackup, FontSizes.launcherTextHeight);
-
-            basePanels.add(new UISplitterLayout(rootBox, new UITextButton(TXDB.get("Save"), FontSizes.launcherTextHeight, new Runnable() {
-                @Override
-                public void run() {
-                    rootPathBackup = rootBox.text;
-                    FontSizes.save();
-                }
-            }), false, 1));
-
-            basePanels.add(new UILabel(TXDB.get("Secondary Image Load Location:"), FontSizes.launcherTextHeight));
-
-            final UITextBox sillBox = new UITextBox(secondaryImageLoadLocation, FontSizes.launcherTextHeight);
-            sillBox.onEdit = new Runnable() {
-                @Override
-                public void run() {
-                    secondaryImageLoadLocation = sillBox.text.replace('\\', '/');
-                    if (secondaryImageLoadLocation.length() != 0)
-                        if (!secondaryImageLoadLocation.endsWith("/"))
-                            secondaryImageLoadLocation += "/";
-                    sillBox.text = secondaryImageLoadLocation;
-                }
-            };
-
-            basePanels.add(new UISplitterLayout(sillBox, new UITextButton(TXDB.get("Save"), FontSizes.launcherTextHeight, new Runnable() {
-                @Override
-                public void run() {
-                    FontSizes.save();
-                }
-            }), false, 1));
-
-            basePanels.add(new UILabel(TXDB.get("Choose Target Engine:"), FontSizes.launcherTextHeight));
-
-            final IConsumer<IGPMenuPanel> menuConstructor = new IConsumer<IGPMenuPanel>() {
-                @Override
-                public void accept(IGPMenuPanel igpMenuPanel) {
-                    gamepaks.panelsClear();
-                    for (UIElement uie : basePanels)
-                        gamepaks.panelsAdd(uie);
-                    if (igpMenuPanel == null) {
-                        closeHelper.accept(null);
-                        return;
-                    }
-                    String[] names = igpMenuPanel.getButtonText();
-                    ISupplier<IGPMenuPanel>[] runs = igpMenuPanel.getButtonActs();
-                    for (int i = 0; i < names.length; i++) {
-                        final ISupplier<IGPMenuPanel> r = runs[i];
-                        gamepaks.panelsAdd(new UITextButton(names[i], FontSizes.launcherTextHeight, new Runnable() {
-                            @Override
-                            public void run() {
-                                accept(r.get());
-                            }
-                        }));
-                    }
-                }
-            };
-            // ...
-
-            gamepaks.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(640), FontSizes.scaleGuess(480)));
-            menuConstructor.accept(new PrimaryGPMenuPanel());
-            uiTicker.accept(gamepaks);
-            closeHelper.accept(new Runnable() {
-                @Override
-                public void run() {
-                    gamepaksRequestClose.set(true);
-                }
-            });
-
+            uiTicker.accept(new UILauncher(gamepaksRequestClose));
             // This is the identity of the error window that 'brings the system down softly'.
             UIElement failed = null;
             // ok, so, 'what is going on with the flags', you might ask?
@@ -448,40 +335,6 @@ public class Application {
         // exceptions
         if (mobile)
             FontSizes.tilesTabTextHeight *= 2;
-    }
-
-    private static UIElement figureOutTopBar(final WindowCreatingUIElementConsumer uiTicker, final IConsumer<Runnable> closeHelper) {
-        UIElement whatever = new UITextButton(TXDB.get("Quit R48"), FontSizes.launcherTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                GaBIEn.ensureQuit();
-            }
-        });
-        if (!GaBIEn.singleWindowApp()) { // SWA means we can't create windows
-            whatever = new UISplitterLayout(whatever, new UITextButton(TXDB.get("Configuration"), FontSizes.launcherTextHeight, new Runnable() {
-                @Override
-                public void run() {
-                    uiTicker.accept(new UIFontSizeConfigurator());
-                    closeHelper.accept(null);
-                }
-            }), false, 1, 2);
-        }
-
-        return new UIAppendButton(TXDB.getLanguage(), whatever, new Runnable() {
-            @Override
-            public void run() {
-                // Unfortunately, if done quickly enough, the font will not load in time.
-                // (Java "lazily" loads fonts.
-                //  gabien-javase works around this bug - lazy loading appears to result in Java devs not caring about font load speed -
-                //  and by the time it matters it's usually loaded, but, well, suffice to say this hurts my translatability plans a little.
-                //  Not that it'll stop them, but it's annoying.)
-                // This associates a lag with switching language, when it's actually due to Java being slow at loading a font.
-                // (I'm slightly glad I'm not the only one this happens for, but unhappy that it's an issue.)
-                // Unfortunately, a warning message cannot be shown to the user, as the warning message would itself trigger lag-for-font-load.
-                TXDB.nextLanguage();
-                closeHelper.accept(null);
-            }
-        }, FontSizes.launcherTextHeight);
     }
 
     // Only use from AppMain's "pleaseShutdown"

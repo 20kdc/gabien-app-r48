@@ -21,13 +21,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CategoryGPMenuPanel implements IGPMenuPanel {
     public LinkedList<String> res1 = new LinkedList<String>();
-    public LinkedList<ISupplier<IGPMenuPanel>> res2 = new LinkedList<ISupplier<IGPMenuPanel>>();
+    public LinkedList<IFunction<LauncherState, IGPMenuPanel>> res2 = new LinkedList<IFunction<LauncherState, IGPMenuPanel>>();
 
     public CategoryGPMenuPanel(final IGPMenuPanel root, final String category) {
         res1.add(TXDB.get("Back..."));
-        res2.add(new ISupplier<IGPMenuPanel>() {
+        res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
             @Override
-            public IGPMenuPanel get() {
+            public IGPMenuPanel apply(LauncherState ls) {
                 return root;
             }
         });
@@ -79,12 +79,12 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
     }
 
     @Override
-    public ISupplier<IGPMenuPanel>[] getButtonActs() {
+    public IFunction<LauncherState,IGPMenuPanel>[] getButtonActs() {
         // *sighs*
-        return res2.toArray(new ISupplier[0]);
+        return res2.toArray(new IFunction[0]);
     }
 
-    public static class StartupCause implements ISupplier<IGPMenuPanel> {
+    public static class StartupCause implements IFunction<LauncherState, IGPMenuPanel> {
         private final AtomicReference<String> box;
         private final String objName;
 
@@ -94,10 +94,11 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
         }
 
         @Override
-        public IGPMenuPanel get() {
+        public IGPMenuPanel apply(LauncherState ls) {
             if (Application.appTicker == null) {
                 IObjectBackend.Factory.encoding = box.get();
-                final String rootPath = PathUtils.fixRootPath(Application.rootBox.text);
+                final String rootPath = PathUtils.fixRootPath(ls.rootPath);
+                final String silPath = PathUtils.fixRootPath(ls.secondaryImagePath);
 
                 // Start fancy loading screen.
                 final UIFancyInit theKickstart = new UIFancyInit();
@@ -107,7 +108,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                     public void run() {
                         try {
                             TXDB.loadGamepakLanguage(objName + "/");
-                            AppMain.initializeCore(rootPath, objName + "/");
+                            AppMain.initializeCore(rootPath, silPath, objName + "/");
                             final ISupplier<IConsumer<Double>> appTickerGen = AppMain.initializeUI(Application.uiTicker);
                             theKickstart.doneInjector.set(new Runnable() {
                                 @Override
