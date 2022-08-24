@@ -7,6 +7,7 @@
 
 package r48.schema.arrays;
 
+import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.AppMain;
@@ -138,13 +139,20 @@ public class PagerArrayInterface implements IArrayInterface {
             }
         }
         final IProperty prop2 = prop.apply("page");
+        final IProperty scrollProp = prop.apply("pageTabScroll");
         UITabPane utp = new UITabPane(FontSizes.tabTextHeight, false, false, FontSizes.schemaPagerTabScrollersize) {
             @Override
             public void selectTab(UIElement i) {
                 super.selectTab(i);
                 prop2.accept((double) getTabIndex());
             }
+            @Override
+            public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+                super.update(deltaTime, selected, peripherals);
+                scrollProp.accept(getScrollPoint());
+            }
         };
+        utp.setScrollPoint(scrollProp.get());
 
         for (UIElement ue : uie)
             utp.addTab(new UITabBar.Tab(ue, new UITabBar.TabIcon[] {}));
