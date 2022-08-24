@@ -84,7 +84,7 @@ public class TestKickstart {
             }
 
             @Override
-            public void startFileBrowser(String text, boolean saving, String exts, IConsumer<String> result) {
+            public void startFileBrowser(String text, boolean saving, String exts, IConsumer<String> result, String initialName) {
                 waitingFileDialog = result;
             }
 

@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Controls "background" systems: undo/redo buffers, save filename
  * Created on 14th July 2018
@@ -45,6 +47,10 @@ public class ImageEditorEDS {
         if (currentFileFormat.saveName(currentImage) == null)
             return false;
         return true;
+    }
+
+    public @Nullable String getSimpleSaveTarget() {
+        return currentFileName;
     }
 
     public void simpleSave() throws IOException {

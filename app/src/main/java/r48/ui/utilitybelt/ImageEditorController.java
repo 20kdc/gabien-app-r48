@@ -290,6 +290,13 @@ public class ImageEditorController {
                     runnables.add(new Runnable() {
                         @Override
                         public void run() {
+                            String initialName = "";
+                            String sss = imageEditView.eds.getSimpleSaveTarget();
+                            if (sss != null) {
+                                GaBIEn.setBrowserDirectory(GaBIEn.absolutePathOf(GaBIEn.parentOf(sss)));
+                                if (imageEditView.eds.canSimplySave())
+                                    initialName = GaBIEn.nameOf(sss);
+                            }
                             GaBIEn.startFileBrowser(fbStrAS, true, "", new IConsumer<String>() {
                                 @Override
                                 public void accept(String s) {
@@ -310,7 +317,7 @@ public class ImageEditorController {
                                         initPalette(0);
                                     }
                                 }
-                            });
+                            }, initialName);
                         }
                     });
                 }
