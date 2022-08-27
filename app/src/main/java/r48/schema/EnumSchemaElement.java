@@ -102,7 +102,7 @@ public class EnumSchemaElement extends SchemaElement {
     }
 
     public static UIEnumChoice.Option makeStandardOption(RubyIO val, String text, @Nullable IConsumer<String> edit) {
-        return new UIEnumChoice.Option(val.toString(), text, val, edit);
+        return new UIEnumChoice.Option(val.toString() + " : ", text, val, edit);
     }
 
     public String viewValue(IRIO val, boolean prefix) {
