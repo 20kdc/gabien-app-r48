@@ -34,6 +34,8 @@ import r48.schema.specialized.tbleditors.DefaultTableCellEditor;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.dialog.UIEnumChoice;
+import r48.ui.dialog.UIEnumChoice.EntryMode;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -351,7 +353,7 @@ public class SDB {
                         if (text.equals("flushCommandBuffer")) {
                             // time to flush it!
                             String disambiguationIVar = args[point++];
-                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, new RubyIO().setFX(0), "INT:" + TXDB.get("Code")));
+                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, new RubyIO().setFX(0), EntryMode.INT, TXDB.get("Code")));
                             HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<String, String>();
                             commandBufferSchemas = new HashMap<String, SchemaElement>();
@@ -360,7 +362,7 @@ public class SDB {
                         if (text.equals("flushCommandBufferStr")) {
                             // time to flush it!
                             String disambiguationIVar = args[point++];
-                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, new RubyIO().setString("", true), "STR:" + TXDB.get("Code")));
+                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, new RubyIO().setString("", true), EntryMode.STR, TXDB.get("Code")));
                             HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<String, String>();
                             commandBufferSchemas = new HashMap<String, SchemaElement>();
@@ -533,21 +535,21 @@ public class SDB {
                                 }
 
                                 private SchemaPath applySchema(final IRIO host, SchemaPath path, boolean update) {
-                                    EnumSchemaElement sce = new EnumSchemaElement(new HashMap<String, String>(), defVal, "INT:" + TXDB.get("ID.")) {
+                                    EnumSchemaElement sce = new EnumSchemaElement(new HashMap<String, String>(), defVal, EntryMode.INT, TXDB.get("ID.")) {
                                         @Override
                                         public void liveUpdate() {
-                                            options.clear();
+                                            viewOptions.clear();
                                             if (!base.equals(".")) {
                                                 EnumSchemaElement baseEnum = (EnumSchemaElement) schemaTrueDatabase.get(base);
-                                                options.putAll(baseEnum.options);
+                                                viewOptions.addAll(baseEnum.viewOptions);
                                                 entryMode = baseEnum.entryMode;
                                                 // Default val doesn't get carried over since it gets specced here
                                                 buttonText = baseEnum.buttonText;
                                             }
                                             IRIO p = PathSyntax.parse(host, outer);
                                             if (p != null)
-                                                DictionaryUpdaterRunnable.coreLogic(options, createPathMap(inner), p, hash, interpret);
-                                            convertOptions();
+                                                DictionaryUpdaterRunnable.coreLogic(viewOptions, createPathMap(inner), p, hash, interpret);
+                                            convertViewToLookup();
                                         }
                                     };
                                     if (update)
@@ -741,7 +743,7 @@ public class SDB {
                         options.put(Integer.toString(k), TXDB.get(ctx, args[i + 1]));
                     }
                     // INT: is part of the format
-                    EnumSchemaElement e = new EnumSchemaElement(options, new RubyIO().setFX(defVal), "INT:" + TXDB.get("Integer"));
+                    EnumSchemaElement e = new EnumSchemaElement(options, new RubyIO().setFX(defVal), EntryMode.INT, TXDB.get("Integer"));
                     setSDBEntry(args[0], e);
                 } else if (c == 's') {
                     // Symbols
@@ -749,7 +751,7 @@ public class SDB {
                     for (int i = 1; i < args.length; i++)
                         options.put(":" + args[i], TXDB.get(args[0], args[i]));
 
-                    EnumSchemaElement ese = new EnumSchemaElement(options, ValueSyntax.decode(":" + args[1]), "SYM:" + TXDB.get("Symbol"));
+                    EnumSchemaElement ese = new EnumSchemaElement(options, ValueSyntax.decode(":" + args[1]), EntryMode.SYM, TXDB.get("Symbol"));
                     setSDBEntry(args[0], ese);
                 } else if (c == 'E') {
                     HashMap<String, String> options = new HashMap<String, String>();
@@ -757,21 +759,21 @@ public class SDB {
                         String ctx = "SDB@" + args[0];
                         options.put(args[i], TXDB.get(ctx, args[i + 1]));
                     }
-                    EnumSchemaElement e = new EnumSchemaElement(options, ValueSyntax.decode(args[2]), "INT:" + TXDB.get(args[0], args[1]));
+                    EnumSchemaElement e = new EnumSchemaElement(options, ValueSyntax.decode(args[2]), EntryMode.INT, TXDB.get(args[0], args[1]));
                     setSDBEntry(args[0], e);
                 } else if (c == 'M') {
                     // Make a proxy (because we change the backing element all the time)
-                    AppMain.schemas.ensureSDBProxy(args[2]);
+                    ensureSDBProxy(args[2]);
                     mergeRunnables.add(new Runnable() {
                         @Override
                         public void run() {
                             // Proxies are bad for this.
                             EnumSchemaElement mergeA = (EnumSchemaElement) schemaTrueDatabase.get(args[0]);
                             EnumSchemaElement mergeB = (EnumSchemaElement) schemaTrueDatabase.get(args[1]);
-                            HashMap<String, String> finalMap = new HashMap<String, String>();
-                            finalMap.putAll(mergeA.options);
-                            finalMap.putAll(mergeB.options);
-                            SchemaElement ise = new EnumSchemaElement(finalMap, mergeB.defaultVal, mergeB.buttonText);
+                            HashMap<String, UIEnumChoice.Option> finalMap = new HashMap<String, UIEnumChoice.Option>();
+                            finalMap.putAll(mergeA.lookupOptions);
+                            finalMap.putAll(mergeB.lookupOptions);
+                            SchemaElement ise = new EnumSchemaElement(finalMap.values(), mergeB.defaultVal, mergeB.entryMode, mergeB.buttonText);
                             setSDBEntry(args[2], ise);
                         }
                     });
@@ -788,13 +790,13 @@ public class SDB {
                     } else if (args.length != 5) {
                         throw new RuntimeException("Expects D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID]");
                     }
-                    AppMain.schemas.ensureSDBProxy(args[0]);
+                    ensureSDBProxy(args[0]);
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], createPathMap(root[1]), args[3].equals("1"), createPathMap(args[4]), Integer.parseInt(args[1]), interpret));
                 } else if (c == 'd') {
                     // OLD SYSTEM
                     System.err.println("'d'-format is old. It'll stay around but won't get updated. Use 'D'-format instead. " + args[0]);
                     // Cause a proxy to be generated. (NOTE: This *must* be referenced via nocache proxy!)
-                    AppMain.schemas.ensureSDBProxy(args[0]);
+                    ensureSDBProxy(args[0]);
                     dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[2], new IFunction<IRIO, IRIO>() {
                         @Override
                         public IRIO apply(IRIO rubyIO) {

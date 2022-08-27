@@ -20,10 +20,14 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.dialog.UIEnumChoice;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Enum. There was something here about it being important to switch into a new view, but in practice stuff changed.
@@ -32,40 +36,44 @@ import java.util.LinkedList;
  */
 public class EnumSchemaElement extends SchemaElement {
     // Maps ValueSyntax strings to option text
-    public HashMap<String, String> options;
-    // Maps option text to output RubyIOs
-    private LinkedList<UIEnumChoice.Option> viewOptions;
+    public final HashMap<String, UIEnumChoice.Option> lookupOptions = new HashMap<String, UIEnumChoice.Option>();
+    // Options for use in enum choice dialogs
+    public final LinkedList<UIEnumChoice.Option> viewOptions = new LinkedList<UIEnumChoice.Option>();
 
     public String buttonText;
     public UIEnumChoice.EntryMode entryMode;
     public IRIO defaultVal;
 
-    public EnumSchemaElement(HashMap<String, String> o, IRIO def, String es) {
-        options = o;
-        if (es.contains(":")) {
-            int i = es.indexOf(":");
-            buttonText = es.substring(i + 1);
-            es = es.substring(0, i);
-            entryMode = UIEnumChoice.EntryMode.valueOf(es);
-        } else {
-            buttonText = es;
-            entryMode = UIEnumChoice.EntryMode.INT;
-        }
-        convertOptions();
+    public EnumSchemaElement(HashMap<String, String> o, IRIO def, UIEnumChoice.EntryMode em, String bt) {
+        for (Map.Entry<String, String> mapping : o.entrySet())
+            lookupOptions.put(mapping.getKey(), makeStandardOption(ValueSyntax.decode(mapping.getKey()), mapping.getValue(), null));
+        convertLookupToView();
+        // continue
+        entryMode = em;
+        buttonText = bt;
         defaultVal = def;
     }
 
-    public void convertOptions() {
-        viewOptions = new LinkedList<UIEnumChoice.Option>();
-        for (String si : options.keySet()) {
-            RubyIO dec = ValueSyntax.decode(si);
-            viewOptions.add(new UIEnumChoice.Option(viewValue(dec, true), dec));
-        }
-        Collections.sort(viewOptions, new Comparator<UIEnumChoice.Option>() {
-            public int compare(UIEnumChoice.Option o1, UIEnumChoice.Option o2) {
-                return UITest.natStrComp(o1.textMerged, o2.textMerged);
-            }
-        });
+    public EnumSchemaElement(Collection<UIEnumChoice.Option> opts, IRIO def, UIEnumChoice.EntryMode em, String bt) {
+        viewOptions.addAll(opts);
+        Collections.sort(viewOptions, UIEnumChoice.COMPARATOR_OPTION);
+        convertViewToLookup();
+        // continue
+        entryMode = em;
+        buttonText = bt;
+        defaultVal = def;
+    }
+
+    public void convertLookupToView() {
+        viewOptions.clear();
+        viewOptions.addAll(lookupOptions.values());
+        Collections.sort(viewOptions, UIEnumChoice.COMPARATOR_OPTION);
+    }
+
+    public void convertViewToLookup() {
+        lookupOptions.clear();
+        for (UIEnumChoice.Option o : viewOptions)
+            lookupOptions.put(ValueSyntax.encode(o.value), o);
     }
 
     // Overridden by variants that update whenever needed.
@@ -93,14 +101,18 @@ public class EnumSchemaElement extends SchemaElement {
         });
     }
 
+    public static UIEnumChoice.Option makeStandardOption(RubyIO val, String text, @Nullable IConsumer<String> edit) {
+        return new UIEnumChoice.Option(val.toString(), text, val, edit);
+    }
+
     public String viewValue(IRIO val, boolean prefix) {
         String v2 = ValueSyntax.encode(val);
         if (v2 != null) {
-            String st = options.get(v2);
+            UIEnumChoice.Option st = lookupOptions.get(v2);
             if (st != null) {
                 if (!prefix)
-                    return st;
-                return val + " : " + st;
+                    return st.textSuffix;
+                return st.textMerged;
             }
         }
         return val.toString();

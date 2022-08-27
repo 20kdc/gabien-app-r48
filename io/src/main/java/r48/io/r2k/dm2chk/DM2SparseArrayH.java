@@ -11,6 +11,7 @@ import gabien.uslx.append.*;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedHash;
 import r48.io.data.IRIOFixnum;
+import r48.io.data.RORIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
 
@@ -30,7 +31,7 @@ public class DM2SparseArrayH<V extends IRIO> extends IRIOFixedHash<Integer, V> i
     }
 
     @Override
-    public Integer convertIRIOtoKey(IRIO i) {
+    public Integer convertIRIOtoKey(RORIO i) {
         return (int) i.getFX();
     }
 

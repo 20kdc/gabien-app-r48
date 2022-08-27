@@ -216,21 +216,21 @@ public class IRIONullable<V extends IRIO> extends IRIO {
     }
 
     @Override
-    public IRIO addHashVal(IRIO key) {
+    public IRIO addHashVal(RORIO key) {
         if (nulled)
             throw new UnsupportedOperationException();
         return target.addHashVal(key);
     }
 
     @Override
-    public IRIO getHashVal(IRIO key) {
+    public IRIO getHashVal(RORIO key) {
         if (nulled)
             throw new UnsupportedOperationException();
         return target.getHashVal(key);
     }
 
     @Override
-    public void removeHashVal(IRIO key) {
+    public void removeHashVal(RORIO key) {
         if (nulled)
             throw new UnsupportedOperationException();
         target.removeHashVal(key);

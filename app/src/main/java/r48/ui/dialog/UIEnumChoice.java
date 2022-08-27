@@ -15,6 +15,7 @@ import r48.UITest;
 import r48.dbs.TXDB;
 import r48.ui.UIAppendButton;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -31,19 +32,8 @@ public class UIEnumChoice extends UIElement.UIProxy {
     private boolean wantsSelfClose = false;
 
     // entryText defaults to "Manual."
-    public UIEnumChoice(final IConsumer<RubyIO> result, final HashMap<String, RubyIO> options, String entryText, EntryMode entryType) {
-        this(result, mapOptions(options), entryText, entryType);
-    }
-
     public UIEnumChoice(final IConsumer<RubyIO> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
         this(result, new Category[] {new Category(TXDB.get("Options"), options)}, entryText, entryType);
-    }
-
-    public static LinkedList<Option> mapOptions(HashMap<String, RubyIO> o) {
-        LinkedList<Option> llo = new LinkedList<Option>();
-        for (String s : UITest.sortedKeysStr(o.keySet()))
-            llo.add(new Option(s, o.get(s)));
-        return llo;
     }
 
     public UIEnumChoice(final IConsumer<RubyIO> result, final Category[] order, String entryText, EntryMode entryType) {
@@ -171,6 +161,12 @@ public class UIEnumChoice extends UIElement.UIProxy {
             options = o.toArray(new Option[0]);
         }
     }
+
+    public static final Comparator<Option> COMPARATOR_OPTION = new Comparator<UIEnumChoice.Option>() {
+        public int compare(UIEnumChoice.Option o1, UIEnumChoice.Option o2) {
+            return UITest.natStrComp(o1.textMerged, o2.textMerged);
+        }
+    };
 
     public static final class Option {
         public final String textPrefix;

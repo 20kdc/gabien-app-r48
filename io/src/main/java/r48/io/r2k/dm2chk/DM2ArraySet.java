@@ -10,6 +10,7 @@ package r48.io.r2k.dm2chk;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixedHash;
 import r48.io.data.IRIOFixnum;
+import r48.io.data.RORIO;
 import r48.io.r2k.R2kUtil;
 import r48.io.r2k.chunks.IR2kInterpretable;
 import r48.io.r2k.chunks.IR2kSizable;
@@ -37,7 +38,7 @@ public abstract class DM2ArraySet<V extends IRIO> extends IRIOFixedHash<Integer,
     }
 
     @Override
-    public Integer convertIRIOtoKey(IRIO i) {
+    public Integer convertIRIOtoKey(RORIO i) {
         return (int) i.getFX();
     }
 

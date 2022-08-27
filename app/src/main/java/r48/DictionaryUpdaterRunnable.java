@@ -17,8 +17,12 @@ import r48.io.data.IRIO;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
+import r48.ui.dialog.UIEnumChoice;
+import r48.ui.dialog.UIEnumChoice.EntryMode;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * Used to build convenient dictionaries for selecting things.
@@ -58,7 +62,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
         if (actNow) {
             actNow = false;
             // actually update
-            HashMap<String, String> finalMap = new HashMap<String, String>();
+            LinkedList<UIEnumChoice.Option> finalMap = new LinkedList<UIEnumChoice.Option>();
             IRIO target;
             String targetName;
             if (targ.equals("__MAP__")) {
@@ -108,7 +112,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
         return false;
     }
 
-    public static void coreLogic(HashMap<String, String> finalMap, IFunction<IRIO, IRIO> innerMap, IRIO target, boolean hash, String interpret) {
+    public static void coreLogic(LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> innerMap, IRIO target, boolean hash, String interpret) {
         if (hash) {
             for (IRIO key : target.getHashKeys())
                 handleVal(finalMap, innerMap, target.getHashVal(key), key, interpret);
@@ -121,24 +125,28 @@ public class DictionaryUpdaterRunnable implements Runnable {
         }
     }
 
-    private void finalizeVals(HashMap<String, String> finalMap) {
-        SchemaElement ise = new EnumSchemaElement(finalMap, new RubyIO().setFX(defaultVal), "INT:" + TXDB.get("ID."));
+    private void finalizeVals(LinkedList<UIEnumChoice.Option> finalMap) {
+        Collections.sort(finalMap, UIEnumChoice.COMPARATOR_OPTION);
+        SchemaElement ise = new EnumSchemaElement(finalMap, new RubyIO().setFX(defaultVal), EntryMode.INT, TXDB.get("ID."));
         AppMain.schemas.setSDBEntry(dict, ise);
     }
 
-    private static void handleVal(HashMap<String, String> finalMap, IFunction<IRIO, IRIO> iVar, IRIO rio, IRIO k, String interpret) {
+    private static void handleVal(LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> iVar, IRIO rio, IRIO k, String interpret) {
         int type = rio.getType();
         if (type != '0') {
             String p = ValueSyntax.encode(k);
+            RubyIO kc = ValueSyntax.decode(p);
             if (p == null)
                 return;
             if (iVar != null)
                 rio = iVar.apply(rio);
+            String text;
             if (type == '\"') {
-                finalMap.put(p, rio.decString());
+                text = rio.decString();
             } else {
-                finalMap.put(p, FormatSyntax.interpretParameter(rio, interpret, false));
+                text = FormatSyntax.interpretParameter(rio, interpret, false);
             }
+            finalMap.add(EnumSchemaElement.makeStandardOption(kc, text, null));
         }
     }
 
@@ -148,6 +156,6 @@ public class DictionaryUpdaterRunnable implements Runnable {
     }
 
     public void sanitize() {
-        finalizeVals(new HashMap<String, String>());
+        finalizeVals(new LinkedList<UIEnumChoice.Option>());
     }
 }

@@ -104,17 +104,19 @@ public class HashSchemaElement extends SchemaElement {
                     }
                 })) {
 
+                    final String keyText = getKeyText(key);
                     IRIO value = target.getHashVal(key);
+
                     boolean relevantToSearch = false;
-                    relevantToSearch |= getKeyText(key).contains(searchBox.text);
+                    relevantToSearch |= keyText.contains(searchBox.text);
                     relevantToSearch |= FormatSyntax.interpretParameter(value, valElem, true).contains(searchBox.text);
                     if (!relevantToSearch)
                         continue;
 
                     final IRIO kss = key;
                     // keys are opaque - this prevents MANY issues
-                    UIElement hsA = new UILabel(getKeyText(key), FontSizes.schemaFieldTextHeight);
-                    UIElement hsB = valElem.buildHoldingEditor(value, launcher, path.arrayHashIndex(key, "{" + getKeyText(key) + "}"));
+                    UIElement hsA = new UILabel(keyText, FontSizes.schemaFieldTextHeight);
+                    UIElement hsB = valElem.buildHoldingEditor(value, launcher, path.arrayHashIndex(key, "{" + keyText + "}"));
                     UIElement hs = null;
                     if (flexible) {
                         hs = new UISplitterLayout(hsA, hsB, true, 0.0d);

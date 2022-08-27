@@ -41,7 +41,7 @@ public class IkaMap extends IRIOFixedObject {
         if (sym.equals("@events"))
             return events = new IRIOFixedHash<Integer, IkaEvent>() {
                 @Override
-                public Integer convertIRIOtoKey(IRIO i) {
+                public Integer convertIRIOtoKey(RORIO i) {
                     return (int) i.getFX();
                 }
 

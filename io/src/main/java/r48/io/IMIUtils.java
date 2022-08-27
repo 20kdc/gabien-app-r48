@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.uslx.append.*;
 import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 
 import java.io.*;
 import java.util.HashMap;
@@ -355,7 +356,7 @@ public class IMIUtils {
     }
 
     // Always ends in a newline
-    public static void createIMIDump(DataOutputStream dos, IRIO target, String indent) throws IOException {
+    public static void createIMIDump(DataOutputStream dos, RORIO target, String indent) throws IOException {
         // Retype
         dos.writeBytes("!" + ((char) target.getType()));
         boolean didNLYet = false;
@@ -372,7 +373,7 @@ public class IMIUtils {
             case '}':
                 createIMIDump(dos, target.getHashDefVal(), incrementIndent(indent));
             case '{':
-                for (IRIO key : target.getHashKeys()) {
+                for (RORIO key : target.getHashKeys()) {
                     if (!didNLYet) {
                         dos.writeByte('\n');
                         didNLYet = true;

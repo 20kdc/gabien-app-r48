@@ -142,17 +142,17 @@ public abstract class IRIOFixed extends IRIO {
     }
 
     @Override
-    public IRIO addHashVal(IRIO key) {
+    public IRIO addHashVal(RORIO key) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public IRIO getHashVal(IRIO key) {
+    public IRIO getHashVal(RORIO key) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void removeHashVal(IRIO key) {
+    public void removeHashVal(RORIO key) {
         throw new UnsupportedOperationException();
     }
 

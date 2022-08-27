@@ -55,7 +55,7 @@ public class DM2R2kObject extends IRIOFixedObject implements IR2kInterpretable {
     private void setUnknownChunks() {
         unknownChunks = new IRIOFixedHash<Integer, IRIOFixedUser>() {
             @Override
-            public Integer convertIRIOtoKey(IRIO i) {
+            public Integer convertIRIOtoKey(RORIO i) {
                 return (int) i.getFX();
             }
 

@@ -21,7 +21,7 @@ public abstract class IRIOFixedHash<K, V extends IRIO> extends IRIOFixed {
         super('{');
     }
 
-    public abstract K convertIRIOtoKey(IRIO i);
+    public abstract K convertIRIOtoKey(RORIO i);
 
     public abstract IRIO convertKeyToIRIO(K i);
 
@@ -43,13 +43,13 @@ public abstract class IRIOFixedHash<K, V extends IRIO> extends IRIOFixed {
     }
 
     @Override
-    public V getHashVal(IRIO key) {
+    public V getHashVal(RORIO key) {
         K k = convertIRIOtoKey(key);
         return hashVal.get(k);
     }
 
     @Override
-    public V addHashVal(IRIO key) {
+    public V addHashVal(RORIO key) {
         K k = convertIRIOtoKey(key);
         V v = newValue();
         hashVal.put(k, v);
@@ -57,7 +57,7 @@ public abstract class IRIOFixedHash<K, V extends IRIO> extends IRIOFixed {
     }
 
     @Override
-    public void removeHashVal(IRIO key) {
+    public void removeHashVal(RORIO key) {
         K k = convertIRIOtoKey(key);
         hashVal.remove(k);
     }

@@ -9,6 +9,7 @@ package r48;
 
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -197,7 +198,7 @@ public class RubyIO extends IRIO {
     }
 
     @Override
-    public RubyIO setDeepClone(IRIO clone) {
+    public RubyIO setDeepClone(RORIO clone) {
         super.setDeepClone(clone);
         return this;
     }
@@ -273,7 +274,7 @@ public class RubyIO extends IRIO {
     //       in most cases, we already have the RubyIO object by-ref.
     //       (Can't implement equals on RubyIO objects safely due to ObjectDB backreference tracing.)
     @Override
-    public IRIO getHashVal(IRIO rio) {
+    public IRIO getHashVal(RORIO rio) {
         IRIO basis = hashVal.get(rio);
         if (basis != null)
             return basis;
@@ -284,7 +285,7 @@ public class RubyIO extends IRIO {
     }
 
     @Override
-    public void removeHashVal(IRIO rubyIO) {
+    public void removeHashVal(RORIO rubyIO) {
         for (Map.Entry<IRIO, IRIO> e : hashVal.entrySet())
             if (rubyEquals(e.getKey(), rubyIO)) {
                 hashVal.remove(e.getKey());
@@ -378,7 +379,7 @@ public class RubyIO extends IRIO {
     }
 
     @Override
-    public RubyIO addHashVal(IRIO key) {
+    public RubyIO addHashVal(RORIO key) {
         removeHashVal(key);
         RubyIO rt = new RubyIO().setNull();
         hashVal.put(new RubyIO().setDeepClone(key), rt);
