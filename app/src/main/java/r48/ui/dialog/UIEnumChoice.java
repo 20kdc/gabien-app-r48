@@ -13,9 +13,13 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.TXDB;
+import r48.ui.UIAppendButton;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Used for RPG Command Selection.
@@ -28,10 +32,14 @@ public class UIEnumChoice extends UIElement.UIProxy {
 
     // entryText defaults to "Manual."
     public UIEnumChoice(final IConsumer<RubyIO> result, final HashMap<String, RubyIO> options, String entryText, EntryMode entryType) {
-        this(result, new Category[] {new Category(TXDB.get("Options"), mapOptions(options))}, entryText, entryType);
+        this(result, mapOptions(options), entryText, entryType);
     }
 
-    private static LinkedList<Option> mapOptions(HashMap<String, RubyIO> o) {
+    public UIEnumChoice(final IConsumer<RubyIO> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
+        this(result, new Category[] {new Category(TXDB.get("Options"), options)}, entryText, entryType);
+    }
+
+    public static LinkedList<Option> mapOptions(HashMap<String, RubyIO> o) {
         LinkedList<Option> llo = new LinkedList<Option>();
         for (String s : UITest.sortedKeysStr(o.keySet()))
             llo.add(new Option(s, o.get(s)));
@@ -49,14 +57,43 @@ public class UIEnumChoice extends UIElement.UIProxy {
                 }
             };
             for (final Option o : order[i].options) {
-                categoryPanels[i].panelsAdd(new UITextButton(o.key, FontSizes.enumChoiceTextHeight, new Runnable() {
+                final UITextButton button = new UITextButton(o.textPrefix + o.textSuffix, FontSizes.enumChoiceTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         if (!wantsSelfClose)
                             result.accept(o.value);
                         wantsSelfClose = true;
                     }
-                }));
+                });
+                UIElement element = button;
+                if (o.editSuffix != null) {
+                    final UIAppendButton switcheroo = new UIAppendButton(TXDB.get(" Edit"), element, null, FontSizes.enumChoiceTextHeight);
+                    final UITextBox textbox = new UITextBox(o.textSuffix, FontSizes.enumChoiceTextHeight);
+                    final AtomicBoolean ab = new AtomicBoolean(false);
+                    switcheroo.button.onClick = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (ab.get()) {
+                                ab.set(false);
+                                switcheroo.setSubElement(button);
+                            } else {
+                                ab.set(true);
+                                switcheroo.setSubElement(textbox);
+                            }
+                        }
+                    };
+                    textbox.onEdit = new Runnable() {
+                        @Override
+                        public void run() {
+                            ((UITextButton) switcheroo.button).text = o.textPrefix + textbox.text;
+                            o.editSuffix.accept(textbox.text);
+                            ab.set(false);
+                            switcheroo.setSubElement(button);
+                        }
+                    };
+                    element = switcheroo;
+                }
+                categoryPanels[i].panelsAdd(element);
             }
         }
 
@@ -136,12 +173,26 @@ public class UIEnumChoice extends UIElement.UIProxy {
     }
 
     public static final class Option {
-        public final String key;
+        public final String textPrefix;
+        public final String textSuffix;
+        public final String textMerged;
         public final RubyIO value;
+        public final @Nullable IConsumer<String> editSuffix;
 
         public Option(String s, RubyIO integer) {
-            key = s;
+            textPrefix = s;
+            textSuffix = "";
+            textMerged = s;
             value = integer;
+            editSuffix = null;
+        }
+
+        public Option(String pfx, String sfx, RubyIO integer, @Nullable IConsumer<String> edit) {
+            textPrefix = pfx;
+            textSuffix = sfx;
+            textMerged = pfx + sfx;
+            value = integer;
+            editSuffix = edit;
         }
     }
 }

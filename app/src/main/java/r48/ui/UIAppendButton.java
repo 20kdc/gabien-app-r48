@@ -16,7 +16,7 @@ import gabien.uslx.append.*;
  */
 public class UIAppendButton extends UIElement.UIPanel {
     public final UIButton button;
-    public final UIElement subElement;
+    private UIElement subElement;
 
     public UIAppendButton(String s, UIElement holder, Runnable runnable, int h2) {
         this(new UITextButton(s, h2, runnable), holder);
@@ -38,6 +38,17 @@ public class UIAppendButton extends UIElement.UIPanel {
         layoutAddElement(button);
 
         forceToRecommended();
+    }
+
+    public void setSubElement(UIElement n) {
+        layoutRemoveElement(subElement);
+        subElement = n;
+        layoutAddElement(n);
+        runLayoutLoop();
+    }
+
+    public UIElement getSubElement() {
+        return subElement;
     }
 
     @Override

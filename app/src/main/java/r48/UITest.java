@@ -30,6 +30,13 @@ import java.util.*;
  * Created on 12/27/16.
  */
 public class UITest extends UIElement.UIProxy {
+    public static final Comparator<String> COMPARATOR_NATSTRCOMP = new Comparator<String>() {
+        @Override
+        public int compare(String t0, String t1) {
+            return natStrComp(t0, t1);
+        }
+    };
+    
     public IRIO currentObj;
     public String[] navigaList;
     public IRIO[] objectList;
@@ -175,12 +182,7 @@ public class UITest extends UIElement.UIProxy {
 
     public static LinkedList<String> sortedKeysStr(Set<String> keys) {
         LinkedList<String> ios = new LinkedList<String>(keys);
-        Collections.sort(ios, new Comparator<String>() {
-            @Override
-            public int compare(String t0, String t1) {
-                return natStrComp(t0, t1);
-            }
-        });
+        Collections.sort(ios, COMPARATOR_NATSTRCOMP);
         return ios;
     }
 

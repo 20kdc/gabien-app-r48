@@ -12,6 +12,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.UITest;
 import r48.dbs.ValueSyntax;
 import r48.io.data.IRIO;
 import r48.schema.specialized.TempDialogSchemaChoice;
@@ -19,7 +20,10 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.dialog.UIEnumChoice;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * Enum. There was something here about it being important to switch into a new view, but in practice stuff changed.
@@ -30,7 +34,7 @@ public class EnumSchemaElement extends SchemaElement {
     // Maps ValueSyntax strings to option text
     public HashMap<String, String> options;
     // Maps option text to output RubyIOs
-    public HashMap<String, RubyIO> viewOptions;
+    private LinkedList<UIEnumChoice.Option> viewOptions;
 
     public String buttonText;
     public UIEnumChoice.EntryMode entryMode;
@@ -52,11 +56,16 @@ public class EnumSchemaElement extends SchemaElement {
     }
 
     public void convertOptions() {
-        viewOptions = new HashMap<String, RubyIO>();
+        viewOptions = new LinkedList<UIEnumChoice.Option>();
         for (String si : options.keySet()) {
             RubyIO dec = ValueSyntax.decode(si);
-            viewOptions.put(viewValue(dec, true), dec);
+            viewOptions.add(new UIEnumChoice.Option(viewValue(dec, true), dec));
         }
+        Collections.sort(viewOptions, new Comparator<UIEnumChoice.Option>() {
+            public int compare(UIEnumChoice.Option o1, UIEnumChoice.Option o2) {
+                return UITest.natStrComp(o1.textMerged, o2.textMerged);
+            }
+        });
     }
 
     // Overridden by variants that update whenever needed.

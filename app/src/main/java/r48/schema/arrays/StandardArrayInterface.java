@@ -169,7 +169,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                 while (edit != originalUIE) {
                                     if (edit instanceof UIAppendButton) {
                                         ((UIAppendButton) edit).release();
-                                        edit = ((UIAppendButton) edit).subElement;
+                                        edit = ((UIAppendButton) edit).getSubElement();
                                     } else {
                                         throw new RuntimeException("Append chain didn't lead to element, oh dear");
                                     }
