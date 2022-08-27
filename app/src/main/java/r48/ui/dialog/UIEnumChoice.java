@@ -57,7 +57,7 @@ public class UIEnumChoice extends UIElement.UIProxy {
                 });
                 UIElement element = button;
                 if (o.editSuffix != null) {
-                    final UIAppendButton switcheroo = new UIAppendButton(TXDB.get(" Edit"), element, null, FontSizes.enumChoiceTextHeight);
+                    final UIAppendButton switcheroo = new UIAppendButton(TXDB.get(" Name"), element, null, FontSizes.enumChoiceTextHeight);
                     final UITextBox textbox = new UITextBox(o.textSuffix, FontSizes.enumChoiceTextHeight);
                     final AtomicBoolean ab = new AtomicBoolean(false);
                     switcheroo.button.onClick = new Runnable() {
@@ -75,7 +75,7 @@ public class UIEnumChoice extends UIElement.UIProxy {
                     textbox.onEdit = new Runnable() {
                         @Override
                         public void run() {
-                            ((UITextButton) switcheroo.button).text = o.textPrefix + textbox.text;
+                            button.text = o.textPrefix + textbox.text;
                             o.editSuffix.accept(textbox.text);
                             ab.set(false);
                             switcheroo.setSubElement(button);

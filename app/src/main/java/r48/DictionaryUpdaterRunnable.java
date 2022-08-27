@@ -15,6 +15,7 @@ import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.EnumSchemaElement;
+import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.dialog.UIEnumChoice;
@@ -23,6 +24,8 @@ import r48.ui.dialog.UIEnumChoice.EntryMode;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Used to build convenient dictionaries for selecting things.
@@ -61,30 +64,31 @@ public class DictionaryUpdaterRunnable implements Runnable {
     public boolean actIfRequired(IObjectBackend.ILoadedObject map) {
         if (actNow) {
             actNow = false;
+
             // actually update
             LinkedList<UIEnumChoice.Option> finalMap = new LinkedList<UIEnumChoice.Option>();
-            IRIO target;
+
+            final IObjectBackend.ILoadedObject targetILO;
             String targetName;
+
             if (targ.equals("__MAP__")) {
                 if (map != null) {
-                    target = map.getObject();
+                    targetILO = map;
                     targetName = AppMain.objectDB.getIdByObject(map);
                     if (targetName == null)
                         targetName = "__MAPANONOBJECT-ML-FAIL__";
                 } else {
-                    target = null;
+                    targetILO = null;
                     targetName = "__MAPFAIL__";
                 }
             } else {
-                IObjectBackend.ILoadedObject ilo = AppMain.objectDB.getObject(targ);
-                if (ilo != null) {
-                    target = ilo.getObject();
-                } else {
-                    target = null;
-                }
+                targetILO = AppMain.objectDB.getObject(targ);
                 targetName = targ;
             }
-            if (target != null) {
+
+            if (targetILO != null) {
+                IRIO target = targetILO.getObject();
+
                 boolean reregister = true;
                 if (lastTarget != null) {
                     if (!lastTarget.equals(targetName)) {
@@ -95,13 +99,22 @@ public class DictionaryUpdaterRunnable implements Runnable {
                 }
                 if (reregister)
                     AppMain.objectDB.registerModificationHandler(targetName, kickMe);
+
                 lastTarget = targetName;
+
                 if (fieldA != null)
                     target = fieldA.apply(target);
+
                 if (target == null)
                     return true; // :(
+
                 try {
-                    coreLogic(finalMap, iVar, target, hash, interpret);
+                    coreLogic(finalMap, iVar, new Runnable() {
+                        @Override
+                        public void run() {
+                            AppMain.objectDB.objectRootModified(targetILO, new SchemaPath(new OpaqueSchemaElement(), targetILO));
+                        }
+                    }, target, hash, interpret);
                 } catch (Exception e) {
                     throw new RuntimeException("During DUR " + dict, e);
                 }
@@ -112,15 +125,15 @@ public class DictionaryUpdaterRunnable implements Runnable {
         return false;
     }
 
-    public static void coreLogic(LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> innerMap, IRIO target, boolean hash, String interpret) {
+    public static void coreLogic(LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> innerMap, @Nullable Runnable editMade, IRIO target, boolean hash, String interpret) {
         if (hash) {
             for (IRIO key : target.getHashKeys())
-                handleVal(finalMap, innerMap, target.getHashVal(key), key, interpret);
+                handleVal(finalMap, innerMap, editMade, target.getHashVal(key), key, interpret);
         } else {
             int alen = target.getALen();
             for (int i = 0; i < alen; i++) {
                 IRIO rio = target.getAElem(i);
-                handleVal(finalMap, innerMap, rio, new RubyIO().setFX(i), interpret);
+                handleVal(finalMap, innerMap, editMade, rio, new RubyIO().setFX(i), interpret);
             }
         }
     }
@@ -131,22 +144,31 @@ public class DictionaryUpdaterRunnable implements Runnable {
         AppMain.schemas.setSDBEntry(dict, ise);
     }
 
-    private static void handleVal(LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> iVar, IRIO rio, IRIO k, String interpret) {
+    private static void handleVal(LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> iVar, final @Nullable Runnable editMade, IRIO rio, IRIO k, String interpret) {
         int type = rio.getType();
         if (type != '0') {
             String p = ValueSyntax.encode(k);
             RubyIO kc = ValueSyntax.decode(p);
             if (p == null)
                 return;
-            if (iVar != null)
-                rio = iVar.apply(rio);
+            final IRIO mappedRIO = (iVar != null) ? iVar.apply(rio) : rio;
             String text;
-            if (type == '\"') {
-                text = rio.decString();
+            IConsumer<String> editor = null;
+            if (mappedRIO.getType() == '\"') {
+                text = mappedRIO.decString();
+                if (editMade != null) {
+                    editor = new IConsumer<String>() {
+                        @Override
+                        public void accept(String t) {
+                            mappedRIO.setString(t);
+                            editMade.run();
+                        }
+                    };
+                }
             } else {
                 text = FormatSyntax.interpretParameter(rio, interpret, false);
             }
-            finalMap.add(EnumSchemaElement.makeStandardOption(kc, text, null));
+            finalMap.add(EnumSchemaElement.makeStandardOption(kc, text, editor));
         }
     }
 

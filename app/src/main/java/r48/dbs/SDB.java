@@ -548,7 +548,7 @@ public class SDB {
                                             }
                                             IRIO p = PathSyntax.parse(host, outer);
                                             if (p != null)
-                                                DictionaryUpdaterRunnable.coreLogic(viewOptions, createPathMap(inner), p, hash, interpret);
+                                                DictionaryUpdaterRunnable.coreLogic(viewOptions, createPathMap(inner), null, p, hash, interpret);
                                             convertViewToLookup();
                                         }
                                     };
