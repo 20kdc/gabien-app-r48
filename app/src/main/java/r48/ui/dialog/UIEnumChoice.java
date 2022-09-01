@@ -13,6 +13,7 @@ import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.TXDB;
+import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 
 import java.util.Comparator;
@@ -174,6 +175,7 @@ public class UIEnumChoice extends UIElement.UIProxy {
         public final String textMerged;
         public final RubyIO value;
         public final @Nullable IConsumer<String> editSuffix;
+        public final @Nullable SchemaPath furtherDataButton;
 
         public Option(String s, RubyIO integer) {
             textPrefix = s;
@@ -181,14 +183,16 @@ public class UIEnumChoice extends UIElement.UIProxy {
             textMerged = s;
             value = integer;
             editSuffix = null;
+            furtherDataButton = null;
         }
 
-        public Option(String pfx, String sfx, RubyIO integer, @Nullable IConsumer<String> edit) {
+        public Option(String pfx, String sfx, RubyIO integer, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
             textPrefix = pfx;
             textSuffix = sfx;
             textMerged = pfx + sfx;
             value = integer;
             editSuffix = edit;
+            furtherDataButton = fdb;
         }
     }
 }

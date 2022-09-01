@@ -18,6 +18,8 @@ import r48.io.data.IRIO;
 import r48.schema.specialized.TempDialogSchemaChoice;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.ui.Art;
+import r48.ui.UIAppendButton;
 import r48.ui.dialog.UIEnumChoice;
 
 import java.util.Collection;
@@ -46,7 +48,7 @@ public class EnumSchemaElement extends SchemaElement {
 
     public EnumSchemaElement(HashMap<String, String> o, IRIO def, UIEnumChoice.EntryMode em, String bt) {
         for (Map.Entry<String, String> mapping : o.entrySet())
-            lookupOptions.put(mapping.getKey(), makeStandardOption(ValueSyntax.decode(mapping.getKey()), mapping.getValue(), null));
+            lookupOptions.put(mapping.getKey(), makeStandardOption(ValueSyntax.decode(mapping.getKey()), mapping.getValue(), null, null));
         convertLookupToView();
         // continue
         entryMode = em;
@@ -84,7 +86,8 @@ public class EnumSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(viewValue(target, true), FontSizes.schemaFieldTextHeight, new Runnable() {
+        final UIEnumChoice.Option opt = findOption(target);
+        UITextButton button = new UITextButton(viewValue(target, true, opt), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 liveUpdate();
@@ -99,21 +102,39 @@ public class EnumSchemaElement extends SchemaElement {
                 }, viewOptions, buttonText, entryMode), null, path), target));
             }
         });
+        if (opt != null) {
+            if (opt.furtherDataButton != null)
+                return new UIAppendButton(Art.Symbol.CloneFrame, button, new Runnable() {
+                    @Override
+                    public void run() {
+                        launcher.newBlank().pushObject(opt.furtherDataButton);
+                    }
+                }, FontSizes.schemaFieldTextHeight);
+        }
+        return button;
     }
 
-    public static UIEnumChoice.Option makeStandardOption(RubyIO val, String text, @Nullable IConsumer<String> edit) {
-        return new UIEnumChoice.Option(val.toString() + " : ", text, val, edit);
+    public static UIEnumChoice.Option makeStandardOption(RubyIO val, String text, @Nullable IConsumer<String> edit, @Nullable SchemaPath fdb) {
+        return new UIEnumChoice.Option(val.toString() + " : ", text, val, edit, fdb);
+    }
+
+    public @Nullable UIEnumChoice.Option findOption(IRIO val) {
+        String v2 = ValueSyntax.encode(val);
+        UIEnumChoice.Option st = null;
+        if (v2 != null)
+            st = lookupOptions.get(v2);
+        return st;
     }
 
     public String viewValue(IRIO val, boolean prefix) {
-        String v2 = ValueSyntax.encode(val);
-        if (v2 != null) {
-            UIEnumChoice.Option st = lookupOptions.get(v2);
-            if (st != null) {
-                if (!prefix)
-                    return st.textSuffix;
-                return st.textMerged;
-            }
+        return viewValue(val, prefix, findOption(val));
+    }
+
+    public String viewValue(IRIO val, boolean prefix, @Nullable UIEnumChoice.Option option) {
+        if (option != null) {
+            if (!prefix)
+                return option.textSuffix;
+            return option.textMerged;
         }
         return val.toString();
     }

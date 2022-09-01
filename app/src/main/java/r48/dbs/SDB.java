@@ -548,7 +548,7 @@ public class SDB {
                                             }
                                             IRIO p = PathSyntax.parse(host, outer);
                                             if (p != null)
-                                                DictionaryUpdaterRunnable.coreLogic(viewOptions, createPathMap(inner), null, p, hash, interpret);
+                                                DictionaryUpdaterRunnable.coreLogic(viewOptions, createPathMap(inner), null, null, p, hash, interpret);
                                             convertViewToLookup();
                                         }
                                     };
@@ -782,16 +782,22 @@ public class SDB {
                 } else if (c == 'i') {
                     readFile(args[0]);
                 } else if (c == 'D') {
-                    // D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [<interpretation ID>]
+                    // D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID / empty string] [data schema]
                     final String[] root = PathSyntax.breakToken(args[2]);
                     String interpret = null;
-                    if (args.length == 6) {
+                    SchemaElement dataSchema = null;
+                    if (args.length == 7) {
+                        interpret = args[5];
+                        if (interpret.length() == 0)
+                            interpret = null;
+                        dataSchema = getSDBEntry(args[6]);
+                    } else if (args.length == 6) {
                         interpret = args[5];
                     } else if (args.length != 5) {
-                        throw new RuntimeException("Expects D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID]");
+                        throw new RuntimeException("Expects D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID / empty string] [data schema]");
                     }
                     ensureSDBProxy(args[0]);
-                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], createPathMap(root[1]), args[3].equals("1"), createPathMap(args[4]), Integer.parseInt(args[1]), interpret));
+                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], createPathMap(root[1]), args[3].equals("1"), createPathMap(args[4]), Integer.parseInt(args[1]), interpret, dataSchema));
                 } else if (c == 'd') {
                     // OLD SYSTEM
                     System.err.println("'d'-format is old. It'll stay around but won't get updated. Use 'D'-format instead. " + args[0]);
@@ -804,7 +810,7 @@ public class SDB {
                                 rubyIO = rubyIO.getIVar(args[i]);
                             return rubyIO;
                         }
-                    }, false, null, Integer.parseInt(args[1]), null));
+                    }, false, null, Integer.parseInt(args[1]), null, null));
                 } else if (c == 'A') {
                     // This is needed so the engine actually understands which autotiles map to what
                     int p = 0;

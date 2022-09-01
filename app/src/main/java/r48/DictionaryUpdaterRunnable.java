@@ -43,9 +43,10 @@ public class DictionaryUpdaterRunnable implements Runnable {
     public final String interpret;
     private String lastTarget = null;
     private IConsumer<SchemaPath> kickMe;
+    public final SchemaElement dataSchema;
 
     // NOTE: targetDictionary must always be referenced by proxy to ensure setSDBEntry works later.
-    public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<IRIO, IRIO> iFunction, boolean b, IFunction<IRIO, IRIO> ivar, int def, String ip) {
+    public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<IRIO, IRIO> iFunction, boolean b, IFunction<IRIO, IRIO> ivar, int def, String ip, SchemaElement ds) {
         dict = targetDictionary;
         targ = target;
         fieldA = iFunction;
@@ -59,6 +60,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
                 actNow = true;
             }
         };
+        dataSchema = ds;
     }
 
     public boolean actIfRequired(IObjectBackend.ILoadedObject map) {
@@ -109,12 +111,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
                     return true; // :(
 
                 try {
-                    coreLogic(finalMap, iVar, new Runnable() {
-                        @Override
-                        public void run() {
-                            AppMain.objectDB.objectRootModified(targetILO, new SchemaPath(new OpaqueSchemaElement(), targetILO));
-                        }
-                    }, target, hash, interpret);
+                    coreLogic(finalMap, iVar, targetILO, dataSchema, target, hash, interpret);
                 } catch (Exception e) {
                     throw new RuntimeException("During DUR " + dict, e);
                 }
@@ -125,15 +122,15 @@ public class DictionaryUpdaterRunnable implements Runnable {
         return false;
     }
 
-    public static void coreLogic(LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> innerMap, @Nullable Runnable editMade, IRIO target, boolean hash, String interpret) {
+    public static void coreLogic(LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> innerMap, final @Nullable IObjectBackend.ILoadedObject targetILO, @Nullable SchemaElement dataSchema, IRIO target, boolean hash, String interpret) {
         if (hash) {
             for (IRIO key : target.getHashKeys())
-                handleVal(finalMap, innerMap, editMade, target.getHashVal(key), key, interpret);
+                handleVal(finalMap, innerMap, targetILO, dataSchema, target.getHashVal(key), key, interpret);
         } else {
             int alen = target.getALen();
             for (int i = 0; i < alen; i++) {
                 IRIO rio = target.getAElem(i);
-                handleVal(finalMap, innerMap, editMade, rio, new RubyIO().setFX(i), interpret);
+                handleVal(finalMap, innerMap, targetILO, dataSchema, rio, new RubyIO().setFX(i), interpret);
             }
         }
     }
@@ -144,31 +141,37 @@ public class DictionaryUpdaterRunnable implements Runnable {
         AppMain.schemas.setSDBEntry(dict, ise);
     }
 
-    private static void handleVal(LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> iVar, final @Nullable Runnable editMade, IRIO rio, IRIO k, String interpret) {
+    private static void handleVal(LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> iVar, final @Nullable IObjectBackend.ILoadedObject targetILO, final @Nullable SchemaElement dataSchema, IRIO rio, IRIO k, String interpret) {
         int type = rio.getType();
         if (type != '0') {
+            // Key details
             String p = ValueSyntax.encode(k);
             RubyIO kc = ValueSyntax.decode(p);
             if (p == null)
                 return;
+            // Actual found name
             final IRIO mappedRIO = (iVar != null) ? iVar.apply(rio) : rio;
+            // Data schema path
+            final SchemaPath rootSchemaPath = targetILO == null ? null : new SchemaPath(new OpaqueSchemaElement(), targetILO);
+            final SchemaPath dataSchemaPath = ((rootSchemaPath == null) || (dataSchema == null)) ? null : rootSchemaPath.arrayHashIndex(kc, p).newWindow(dataSchema, rio);
+            // Details
             String text;
             IConsumer<String> editor = null;
             if (mappedRIO.getType() == '\"') {
                 text = mappedRIO.decString();
-                if (editMade != null) {
+                if (rootSchemaPath != null) {
                     editor = new IConsumer<String>() {
                         @Override
                         public void accept(String t) {
                             mappedRIO.setString(t);
-                            editMade.run();
+                            AppMain.objectDB.objectRootModified(targetILO, rootSchemaPath);
                         }
                     };
                 }
             } else {
                 text = FormatSyntax.interpretParameter(rio, interpret, false);
             }
-            finalMap.add(EnumSchemaElement.makeStandardOption(kc, text, editor));
+            finalMap.add(EnumSchemaElement.makeStandardOption(kc, text, editor, dataSchemaPath));
         }
     }
 

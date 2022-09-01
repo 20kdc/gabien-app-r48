@@ -6,28 +6,28 @@
 
 A R2K/AutoTiles.txt R2KXPCOM/AutoTileRules.txt R2K/WaterATs.txt R2K/WaterATRules.txt
 
-D internal_mapDictionary 1 RPG_RT.lmt@map_infos 1 @name
-D internal_eventDictionary 1 __MAP__@events 1 @name
+D internal_mapDictionary 1 RPG_RT.lmt@map_infos 1 @name "" RPG::MapInfo
+D internal_eventDictionary 1 __MAP__@events 1 @name "" RPG::Event
 
 D internal_variableDictionary 1 RPG_RT.ldb@variables 1 :
 D internal_switchDictionary 1 RPG_RT.ldb@switches 1 :
 
-D internal_tilesetDictionary 1 RPG_RT.ldb@tilesets 1 @name
-D internal_terrainDictionary 1 RPG_RT.ldb@terrains 1 @name
-D internal_itemDictionary 1 RPG_RT.ldb@items 1 @name
-D internal_troopDictionary 1 RPG_RT.ldb@troops 1 @name
-D internal_skillDictionary 1 RPG_RT.ldb@skills 1 @name
-D internal_stateDictionary 1 RPG_RT.ldb@states 1 @name
-D internal_cevDictionary 1 RPG_RT.ldb@common_events 1 @name
-D internal_classDictionary 1 RPG_RT.ldb@classes_2k3 1 @name
-D internal_animDictionary 1 RPG_RT.ldb@animations 1 @name
-D internal_enemyDictionary 1 RPG_RT.ldb@enemies 1 @name
+D internal_tilesetDictionary 1 RPG_RT.ldb@tilesets 1 @name "" RPG::Tileset
+D internal_terrainDictionary 1 RPG_RT.ldb@terrains 1 @name "" RPG::Terrain
+D internal_itemDictionary 1 RPG_RT.ldb@items 1 @name "" RPG::Item
+D internal_troopDictionary 1 RPG_RT.ldb@troops 1 @name "" RPG::Troop
+D internal_skillDictionary 1 RPG_RT.ldb@skills 1 @name "" RPG::Skill
+D internal_stateDictionary 1 RPG_RT.ldb@states 1 @name "" RPG::State
+D internal_cevDictionary 1 RPG_RT.ldb@common_events 1 @name "" RPG::CommonEvent
+D internal_classDictionary 1 RPG_RT.ldb@classes_2k3 1 @name "" RPG::Class
+D internal_animDictionary 1 RPG_RT.ldb@animations 1 @name "" RPG::Animation
+D internal_enemyDictionary 1 RPG_RT.ldb@enemies 1 @name "" RPG::Enemy 
 
-D internal_actorDictionary 1 RPG_RT.ldb@actors 1 @name
-D internal_attributeDictionary 1 RPG_RT.ldb@attributes 1 @name
-D internal_battleanimationDictionary 1 RPG_RT.ldb@battle_anim_sets_2k3 1 @name
+D internal_actorDictionary 1 RPG_RT.ldb@actors 1 @name "" RPG::Actor
+D internal_attributeDictionary 1 RPG_RT.ldb@attributes 1 @name "" RPG::Attribute
+D internal_battleanimationDictionary 1 RPG_RT.ldb@battle_anim_sets_2k3 1 @name "" RPG::BattlerAnimationSet
 
-D internal_battlecommandDictionary 1 RPG_RT.ldb@battle_commands_2k3@commands 0 @name
+D internal_battlecommandDictionary 1 RPG_RT.ldb@battle_commands_2k3@commands 0 @name "" RPG::BattleCommand
 
 > f_charset_name { string= char imgSelector CharSet/ CharSet/ }
  NOTE: The default here is blank, this just stops it crashing
