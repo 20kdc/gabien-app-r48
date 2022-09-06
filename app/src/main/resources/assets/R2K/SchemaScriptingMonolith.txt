@@ -383,7 +383,7 @@ e teleport_event_dir 0 ignored 1 up 2 right 3 down 4 left
 
 .teleport_event_parameters
 @indent indent
-@parameters DA{ ]1 teleport_event 0 teleport_event_novars }
+@parameters DA{ ]2 teleport_event 0 teleport_event_novars }
 
 .teleport_event
 ]0 _ string
@@ -399,6 +399,7 @@ e teleport_event_dir 0 ignored 1 up 2 right 3 down 4 left
 ]3 x int
 ]4 y int
 +]?5 dir2k3 ignored teleport_event_dir
++mapPositionHelper . ]3 ]4
 
  -+- -+-
   |   |

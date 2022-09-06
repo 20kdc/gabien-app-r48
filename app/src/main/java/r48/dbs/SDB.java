@@ -644,9 +644,7 @@ public class SDB {
                             return new CTNativeSchemaElement(args[point++]);
 
                         if (text.equals("mapPositionHelper")) {
-                            String a = args[point++];
-                            if (a.equals("."))
-                                a = null;
+                            String a = getNullablePathSyntax();
                             String b = args[point++];
                             String c = args[point++];
                             return new MapPositionHelperSchemaElement(a, b, c);
