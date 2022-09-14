@@ -26,6 +26,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Stack;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Created on 12/29/16.
  */
@@ -35,7 +37,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
 
     // Can be null - if not, the renderer is accessible.
     // Note that even if the map view "dies", it's renderer will stay around.
-    private final UIMapView contextView;
+    private final @Nullable UIMapView contextView;
 
     private final Stack<SchemaPath> backStack = new Stack<SchemaPath>();
 
@@ -122,7 +124,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     public boolean stayClosed = false;
     private boolean nudged = false;
 
-    public SchemaHostImpl(UIMapView rendererSource) {
+    public SchemaHostImpl(@Nullable UIMapView rendererSource) {
         contextView = rendererSource;
         layoutAddElement(toolbarRoot);
         // Why is this scaled by main window size? Answer: Because the alternative is occasional Android version glitches.

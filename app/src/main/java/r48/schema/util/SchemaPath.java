@@ -70,7 +70,7 @@ public class SchemaPath {
         contextualSchemas.putAll(sp.contextualSchemas);
     }
 
-    public SchemaPath(SchemaElement heldElement, IObjectBackend.ILoadedObject root) {
+    public SchemaPath(@NonNull SchemaElement heldElement, @NonNull IObjectBackend.ILoadedObject root) {
         this(heldElement, root, null);
     }
 

@@ -19,6 +19,7 @@ import r48.RubyTable;
 import r48.dbs.ObjectInfo;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
+import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.IRIO;
 import r48.map.*;
 import r48.map.drawlayers.*;
@@ -176,9 +177,14 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     }
 
     @Override
+    public ILoadedObject getCommonEventRoot() {
+        return AppMain.objectDB.getObject("CommonEvents");
+    }
+
+    @Override
     public IRIO[] getAllCommonEvents() {
         LinkedList<IRIO> rmdList = new LinkedList<IRIO>();
-        IRIO ilo = AppMain.objectDB.getObject("CommonEvents").getObject();
+        IRIO ilo = getCommonEventRoot().getObject();
         int alen = ilo.getALen();
         for (int i = 0; i < alen; i++) {
             IRIO e = ilo.getAElem(i);

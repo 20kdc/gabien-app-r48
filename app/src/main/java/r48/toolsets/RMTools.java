@@ -10,22 +10,30 @@ package r48.toolsets;
 import gabien.GaBIEn;
 import gabien.uslx.append.*;
 import gabien.uslx.append.*;
+import gabien.ui.Rect;
 import gabien.ui.UIElement;
+import gabien.ui.UIScrollLayout;
+import gabien.ui.UITextButton;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.FormatSyntax;
 import r48.dbs.ObjectInfo;
+import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
+import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixnum;
+import r48.map.IMapToolContext;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.systems.IRMMapSystem;
 import r48.maptools.UIMTEventPicker;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
+import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIRMUniversalStringLocator;
@@ -63,6 +71,7 @@ public class RMTools {
     public UIElement genButton() {
         return new UIMenuButton(TXDB.get("RM-Tools"), FontSizes.menuTextHeight, null, new String[] {
                 TXDB.get("Locate EventCommand in all Pages"),
+                TXDB.get("Find Translatables in Common Events"),
                 TXDB.get("See If Autocorrect Modifies Anything"),
                 TXDB.get("Universal String Replace"),
                 // 3:24 PM, third day of 2017.
@@ -122,6 +131,14 @@ public class RMTools {
                                 AppMain.launchDialog(TXDB.get("Not found."));
                             }
                         }));
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        RMFindTranslatables rft = new RMFindTranslatables(mapSystem.getCommonEventRoot());
+                        rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents());
+                        rft.finish();
                     }
                 },
                 new Runnable() {

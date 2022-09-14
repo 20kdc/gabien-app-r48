@@ -50,6 +50,7 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.toolsets.RMFindTranslatables;
 import r48.toolsets.RMTranscriptDumper;
 
 import java.util.Collections;
@@ -199,8 +200,13 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     }
 
     @Override
+    public ILoadedObject getCommonEventRoot() {
+        return AppMain.objectDB.getObject("RPG_RT.ldb");
+    }
+
+    @Override
     public IRIO[] getAllCommonEvents() {
-        IRIO cev = AppMain.objectDB.getObject("RPG_RT.ldb").getObject().getIVar("@common_events");
+        IRIO cev = getCommonEventRoot().getObject().getIVar("@common_events");
         LinkedList<Integer> ints = new LinkedList<Integer>();
         for (IRIO i : cev.getHashKeys())
             ints.add((int) i.getFX());
@@ -328,99 +334,15 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                         new ToolButton(TXDB.get("Find Translatables")) {
                             @Override
                             public UIMTBase apply(IMapToolContext a) {
-                                findTranslatables(objn, map, a);
+                                RMFindTranslatables rft = new RMFindTranslatables(map);
+                                rft.addSitesFromMap(a.getMapView());
+                                rft.finish();
                                 return null;
                             }
                         }
                 });
             }
         });
-    }
-
-    public void findTranslatables(final String objIdName, final IObjectBackend.ILoadedObject ilo, IMapToolContext ctx) {
-        final LinkedList<Runnable> textUpdaters = new LinkedList<Runnable>();
-
-        final IConsumer<SchemaPath> csp = new IConsumer<SchemaPath>() {
-            @Override
-            public void accept(SchemaPath t) {
-                for (Runnable r : textUpdaters)
-                    r.run();
-            }
-        };
-        AppMain.objectDB.registerModificationHandler(ilo, csp);
-
-        UIScrollLayout translatables = new UIScrollLayout(true, FontSizes.generalScrollersize) {
-            @Override
-            public void onWindowClose() {
-                super.onWindowClose();
-                AppMain.objectDB.deregisterModificationHandler(ilo, csp);
-            }
-
-            @Override
-            public String toString() {
-                return FormatSyntax.formatExtended(TXDB.get("Translatables in: #A"), new RubyIO().setString(objIdName, true));
-            }
-        };
-
-        CMDB cmdb = AppMain.schemas.getCMDB("R2K/Commands.txt");
-
-        IRIO events = ilo.getObject().getIVar("@events");
-        for (IRIO eventKey : events.getHashKeys()) {
-            IRIO event = events.getHashVal(eventKey);
-            IRIO pageList = event.getIVar("@pages");
-            for (int page = 0; page < pageList.getALen(); page++) {
-                IRIO pageObj = pageList.getAElem(page);
-                if (pageObj.getType() == '0')
-                    continue;
-                IRIO eventList = pageObj.getIVar("@list");
-                for (int i = 0; i < eventList.getALen(); i++) {
-                    IRIO cmd = eventList.getAElem(i);
-                    long cmdCode = cmd.getIVar("@code").getFX();
-                    RPGCommand cmdDetail = cmdb.knownCommands.get((Integer) (int) cmdCode);
-                    if (cmdDetail.isTranslatable) {
-                        Runnable tu = addTranslatable(translatables, cmdb, ilo, ctx, event, eventKey, page, pageObj, eventList, i, cmd);
-                        textUpdaters.add(tu);
-                    }
-                }
-            }
-        }
-
-        translatables.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(400), FontSizes.scaleGuess(300)));
-        AppMain.window.createWindow(translatables, "findTranslatables");
-    }
-
-    private Runnable addTranslatable(UIScrollLayout translatables, final CMDB cmdb, final ILoadedObject root, final IMapToolContext ctx, final IRIO event, final IRIO eventKey, final int pageIndex, final IRIO pageObj, final IRIO listObj, final int codeIndex, final IRIO command) {
-        String text = cmdb.buildGroupCodename(listObj, codeIndex);
-        final UITextButton button = new UITextButton(text, FontSizes.schemaFieldTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                ISchemaHost shi = AppMain.launchSchema("RPG::Map", root, ctx.getMapView());
-                SchemaPath sp = shi.getCurrentObject();
-                // enter event
-                sp = sp.arrayHashIndex(eventKey, "E" + eventKey.toString());
-                sp = sp.newWindow(AppMain.schemas.getSDBEntry("RPG::Event"), event);
-                shi.pushObject(sp);
-                // enter page
-                sp = sp.arrayHashIndex(new IRIOFixnum(pageIndex), "P" + pageIndex);
-                sp = sp.newWindow(AppMain.schemas.getSDBEntry("RPG::EventPage"), pageObj);
-                shi.pushObject(sp);
-                // enter list
-                EventCommandArraySchemaElement ecase = (EventCommandArraySchemaElement) AggregateSchemaElement.extractField(AppMain.schemas.getSDBEntry("EventListEditor"), null);
-                sp = sp.newWindow(ecase, listObj);
-                shi.pushObject(sp);
-                // enter command
-                sp = sp.arrayHashIndex(new IRIOFixnum(codeIndex), "C" + codeIndex);
-                sp = sp.newWindow(ecase.getElementContextualWindowSchema(command), listObj);
-                shi.pushObject(sp);
-            }
-        });
-        translatables.panelsAdd(button);
-        return new Runnable() {
-            @Override
-            public void run() {
-                button.text = cmdb.buildGroupCodename(listObj, codeIndex);
-            }
-        };
     }
 
     @Override

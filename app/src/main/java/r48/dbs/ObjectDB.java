@@ -22,6 +22,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.WeakHashMap;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Not quite a database, but not quite not a database either.
  * Created on 12/29/16.
@@ -49,8 +52,14 @@ public class ObjectDB {
 
     private boolean objectRootModifiedRecursion = false;
 
-    public String getIdByObject(IObjectBackend.ILoadedObject obj) {
+    public @Nullable String getIdByObject(IObjectBackend.ILoadedObject obj) {
         return reverseObjectMap.get(obj);
+    }
+    public @NonNull String getIdByObjectOrThrow(IObjectBackend.ILoadedObject obj) {
+        String id = reverseObjectMap.get(obj);
+        if (id == null)
+            throw new RuntimeException("Unable to get ID of " + obj.toString());
+        return id;
     }
 
     // NOTE: Preferably call the one-parameter version,

@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
@@ -990,6 +991,19 @@ public class SDB {
             if (s.startsWith("File."))
                 fd.add(new ObjectInfo(s.substring(5), s));
         return fd;
+    }
+
+    public @Nullable SchemaElement findSchemaFor(@NonNull IObjectBackend.ILoadedObject ilo) {
+        return findSchemaFor(AppMain.objectDB.getIdByObject(ilo), ilo.getObject());
+    }
+
+    public @Nullable SchemaElement findSchemaFor(@Nullable String objId, @NonNull IRIO object) {
+        if (objId != null)
+            if (AppMain.schemas.hasSDBEntry("File." + objId))
+                return AppMain.schemas.getSDBEntry("File." + objId);
+        if (object.getType() == 'o')
+            return AppMain.schemas.getSDBEntry(object.getSymbol());
+        return null;
     }
 
     public void startupSanitizeDictionaries() {

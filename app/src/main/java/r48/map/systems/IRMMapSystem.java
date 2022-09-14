@@ -21,7 +21,14 @@ public interface IRMMapSystem extends IDynobjMapSystem {
     // Pages can have null holes in it because R2k.
     RMMapData[] getAllMaps();
 
-    // Expects @name and @list. Note these have to be in order.
+    /**
+     * The ILoadedObject that covers all getAllCommonEvents elements.
+     */
+    IObjectBackend.ILoadedObject getCommonEventRoot(); 
+
+    /**
+     * Expects @name and @list. Note these have to be in order.
+     */
     IRIO[] getAllCommonEvents();
 
     void dumpCustomData(RMTranscriptDumper dumper);
