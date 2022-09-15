@@ -281,6 +281,18 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             }
         });
     }
+
+    /**
+     * Finds the instance tracker in target.
+     */
+    public static int findActualStart(IRIO target, IRIO tracker) {
+        int alen = target.getALen();
+        for (int i = 0; i < alen; i++)
+            if (target.getAElem(i) == tracker)
+                return i;
+        return -1;
+    }
+
     /**
      * Public because this is used by stuff like Find Translatables to get "access" into editing a command.
      * Note that this expects the command IRIO (this acts as the "array index").
@@ -288,17 +300,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
      */
     public SchemaElement getElementContextualWindowSchema(final IRIO tracker) {
         return new SchemaElement() {
-            public int actualStart(IRIO target) {
-                int alen = target.getALen();
-                for (int i = 0; i < alen; i++)
-                    if (target.getAElem(i) == tracker)
-                        return i;
-                return -1;
-            }
-
             @Override
             public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
-                int actualStart = actualStart(target);
+                int actualStart = findActualStart(target, tracker);
                 if (actualStart == -1)
                     return new UILabel(TXDB.get("The command isn't in the list anymore, so it has no context."), FontSizes.schemaFieldTextHeight);
                 return getGroupElement(target, actualStart, this).buildHoldingEditor(target, launcher, path);
@@ -306,7 +310,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
 
             @Override
             public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-                int actualStart = actualStart(target);
+                int actualStart = findActualStart(target, tracker);
                 if (actualStart == -1)
                     return;
                 getGroupElement(target, actualStart, this).modifyVal(target, path, setDefault);

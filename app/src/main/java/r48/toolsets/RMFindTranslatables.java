@@ -175,7 +175,12 @@ public class RMFindTranslatables {
         return new Site(button) {
             @Override
             public void run() {
-                button.text = cmdb.buildGroupCodename(listObj, codeIndex);
+                int idx = EventCommandArraySchemaElement.findActualStart(listObj, command);
+                if (idx != -1) {
+                    button.text = cmdb.buildGroupCodename(listObj, codeIndex);
+                } else {
+                    button.text = cmdb.buildCodename(command, false);
+                }
             }
         };
     }
