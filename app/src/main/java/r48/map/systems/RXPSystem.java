@@ -32,7 +32,7 @@ import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.mapinfos.UIGRMMapInfos;
 import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.XPTileRenderer;
-import r48.toolsets.RMTranscriptDumper;
+import r48.toolsets.utils.RMTranscriptDumper;
 
 import java.util.LinkedList;
 

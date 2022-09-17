@@ -1,0 +1,87 @@
+/*
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+package r48.toolsets.utils;
+
+import org.eclipse.jdt.annotation.Nullable;
+
+import gabien.IPeripherals;
+import gabien.ui.Rect;
+import gabien.ui.UIElement;
+import gabien.ui.UIScrollLayout;
+import gabien.ui.UIElement.UIProxy;
+import gabien.uslx.append.IConsumer;
+import gabien.uslx.append.ISupplier;
+import r48.AppMain;
+import r48.FontSizes;
+import r48.RubyIO;
+import r48.dbs.FormatSyntax;
+import r48.dbs.TXDB;
+import r48.io.IObjectBackend;
+import r48.schema.util.SchemaPath;
+
+/**
+ * Created on 17th September 2022
+ */
+public class UICommandSites extends UIProxy {
+    private final ISupplier<CommandSite[]> refresh;
+    private final IObjectBackend.ILoadedObject[] roots;
+
+    private final UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
+    private boolean needsRefresh = false;
+    private String objIdName;
+
+    private final IConsumer<SchemaPath> consumer = new IConsumer<SchemaPath>() {
+        @Override
+        public void accept(SchemaPath t) {
+            needsRefresh = true;
+        }
+    };
+
+    public UICommandSites(String name, ISupplier<CommandSite[]> supplier, IObjectBackend.ILoadedObject[] r) {
+        objIdName = name;
+        refresh = supplier;
+        roots = r;
+        for (IObjectBackend.ILoadedObject ilo : roots)
+            AppMain.objectDB.registerModificationHandler(ilo, consumer);
+        doRefresh();
+        proxySetElement(layout, true);
+        setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(400), FontSizes.scaleGuess(300)));
+    }
+
+    public void show() {
+        AppMain.window.createWindow(this, "findTranslatables");
+    }
+
+    @Override
+    public String toString() {
+        return FormatSyntax.formatExtended(TXDB.get("Translatables in: #A"), new RubyIO().setString(objIdName, true));
+    }
+
+    public void doRefresh() {
+        CommandSite[] sites = refresh.get();
+        layout.panelsClear();
+        for (CommandSite cs : sites)
+            layout.panelsAdd(cs.element);
+    }
+
+    @Override
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+        super.update(deltaTime, selected, peripherals);
+        if (needsRefresh) {
+            needsRefresh = false;
+            doRefresh();
+        }
+    }
+
+    @Override
+    public void onWindowClose() {
+        super.onWindowClose();
+        for (IObjectBackend.ILoadedObject ilo : roots)
+            AppMain.objectDB.deregisterModificationHandler(ilo, consumer);
+    }
+}

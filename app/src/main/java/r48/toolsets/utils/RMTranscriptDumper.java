@@ -5,7 +5,7 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.toolsets;
+package r48.toolsets.utils;
 
 import r48.RubyIO;
 import r48.dbs.CMDB;

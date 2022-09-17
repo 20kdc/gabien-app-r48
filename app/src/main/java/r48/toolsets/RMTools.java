@@ -35,6 +35,10 @@ import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
+import r48.toolsets.utils.CommandSite;
+import r48.toolsets.utils.RMFindTranslatables;
+import r48.toolsets.utils.RMTranscriptDumper;
+import r48.toolsets.utils.UICommandSites;
 import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIRMUniversalStringLocator;
 import r48.ui.dialog.UITextPrompt;
@@ -136,9 +140,18 @@ public class RMTools {
                 new Runnable() {
                     @Override
                     public void run() {
-                        RMFindTranslatables rft = new RMFindTranslatables(mapSystem.getCommonEventRoot());
-                        rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents());
-                        rft.finish();
+                        final IObjectBackend.ILoadedObject ilo = mapSystem.getCommonEventRoot();
+                        UICommandSites ucs = new UICommandSites(AppMain.objectDB.getIdByObject(ilo), new ISupplier<CommandSite[]>() {
+                            @Override
+                            public CommandSite[] get() {
+                                RMFindTranslatables rft = new RMFindTranslatables(ilo);
+                                rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents());
+                                return rft.toArray();
+                            }
+                        }, new IObjectBackend.ILoadedObject[] {
+                            ilo
+                        });
+                        ucs.show();
                     }
                 },
                 new Runnable() {

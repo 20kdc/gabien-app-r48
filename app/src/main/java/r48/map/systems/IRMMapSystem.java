@@ -10,7 +10,7 @@ package r48.map.systems;
 import r48.dbs.ObjectInfo;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
-import r48.toolsets.RMTranscriptDumper;
+import r48.toolsets.utils.RMTranscriptDumper;
 
 /**
  * Membership implies being an RM engine and some of the universal constants associated with that.

@@ -49,6 +49,11 @@ public class UIMapView extends UIPlaneView {
     // Responsible for starting a tool with the given tile.
     public IConsumer<Short> pickTileHelper = null;
 
+    /**
+     * set from UIMapViewContainer 
+     */
+    public boolean viewRenderDisableSwitch = false;
+
     public final int tileSize;
 
     private MapViewUpdateScheduler scheduler = new MapViewUpdateScheduler();
@@ -258,7 +263,7 @@ public class UIMapView extends UIPlaneView {
         char[] visConfig = new char[layerVis.length];
         for (int i = 0; i < layerVis.length; i++)
             visConfig[i] = layerVis[i] ? 'T' : 'F';
-        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + debugToggle + "_" + mapTable.renderer.tileRenderer.getFrame() + "_" + mapTable.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + callbacks + "_" + planeZoomMul + "_" + planeZoomDiv;
+        String config = camR.width + "_" + camR.height + "_" + camX + "_" + camY + "_" + mouseXT + "_" + mouseYT + "_" + debugToggle + "_" + mapTable.renderer.tileRenderer.getFrame() + "_" + mapTable.hashCode() + "_" + currentLayer + "_" + new String(visConfig) + "_" + callbacks + "_" + planeZoomMul + "_" + planeZoomDiv + "_" + viewRenderDisableSwitch;
         if (scheduler.needsUpdate(config)) {
             boolean remakeBuf = true;
             if (offscreenBuf != null)
@@ -314,9 +319,10 @@ public class UIMapView extends UIPlaneView {
         mvdc.debugToggle = debugToggle;
         mvdc.igd = igd;
 
-        for (int i = 0; i < layers.length; i++)
-            if (layerVis[i])
-                layers[i].draw(mvdc);
+        if (!viewRenderDisableSwitch)
+            for (int i = 0; i < layers.length; i++)
+                if (layerVis[i])
+                    layers[i].draw(mvdc);
 
         boolean minimap = planeZoomDiv > 1;
         if (callbacks != null) {

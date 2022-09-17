@@ -5,7 +5,7 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.toolsets;
+package r48.toolsets.utils;
 
 import java.util.LinkedList;
 
@@ -42,45 +42,15 @@ import r48.schema.util.SchemaPath;
 public class RMFindTranslatables {
     public final @NonNull String objIdName;
     public final @NonNull IObjectBackend.ILoadedObject objRoot;
-    public final LinkedList<Site> sites = new LinkedList<Site>();
+    public final LinkedList<CommandSite> sites = new LinkedList<CommandSite>();
 
     public RMFindTranslatables(final IObjectBackend.ILoadedObject ilo) {
         objIdName = AppMain.objectDB.getIdByObjectOrThrow(ilo);
         objRoot = ilo;
     }
 
-    public void finish() {
-        final LinkedList<Runnable> textUpdaters = new LinkedList<Runnable>();
-
-        final IConsumer<SchemaPath> csp = new IConsumer<SchemaPath>() {
-            @Override
-            public void accept(SchemaPath t) {
-                for (Runnable r : textUpdaters)
-                    r.run();
-            }
-        };
-        AppMain.objectDB.registerModificationHandler(objRoot, csp);
-
-        UIScrollLayout translatables = new UIScrollLayout(true, FontSizes.generalScrollersize) {
-            @Override
-            public void onWindowClose() {
-                super.onWindowClose();
-                AppMain.objectDB.deregisterModificationHandler(objRoot, csp);
-            }
-
-            @Override
-            public String toString() {
-                return FormatSyntax.formatExtended(TXDB.get("Translatables in: #A"), new RubyIO().setString(objIdName, true));
-            }
-        };
-
-        for (Site s : sites) {
-            translatables.panelsAdd(s.element);
-            textUpdaters.add(s);
-        }
-
-        translatables.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(400), FontSizes.scaleGuess(300)));
-        AppMain.window.createWindow(translatables, "findTranslatables");
+    public CommandSite[] toArray() {
+        return sites.toArray(new CommandSite[0]);
     }
 
     public void addSitesFromMap(final @Nullable UIMapView ctx) {
@@ -143,7 +113,7 @@ public class RMFindTranslatables {
             long cmdCode = cmd.getIVar("@code").getFX();
             RPGCommand cmdDetail = cmdbEditor.database.knownCommands.get((Integer) (int) cmdCode);
             if (cmdDetail.isTranslatable) {
-                Site tu = siteFromContext(cmdbEditor, ctx, eventList, i, cmd, basePaths);
+                CommandSite tu = siteFromContext(cmdbEditor, ctx, eventList, i, cmd, basePaths);
                 sites.add(tu);
             }
         }
@@ -153,7 +123,7 @@ public class RMFindTranslatables {
         return (EventCommandArraySchemaElement) AggregateSchemaElement.extractField(AppMain.schemas.getSDBEntry(cmdbEditor), null);
     }
 
-    public static Site siteFromContext(final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath[] basePaths) {
+    public static CommandSite siteFromContext(final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath[] basePaths) {
         final CMDB cmdb = cmdbEditor.database;
         String text = cmdb.buildGroupCodename(listObj, codeIndex);
         final UITextButton button = new UITextButton(text, FontSizes.schemaFieldTextHeight, new Runnable() {
@@ -172,7 +142,7 @@ public class RMFindTranslatables {
                 shi.pushObject(sp);
             }
         });
-        return new Site(button) {
+        return new CommandSite(button) {
             @Override
             public void run() {
                 int idx = EventCommandArraySchemaElement.findActualStart(listObj, command);
@@ -183,12 +153,5 @@ public class RMFindTranslatables {
                 }
             }
         };
-    }
-
-    public abstract static class Site implements Runnable {
-        public final UIElement element;
-        public Site(UIElement b) {
-            element = b;
-        }
     }
 }

@@ -5,24 +5,20 @@
  * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package r48.map;
+package r48.toolsets.utils;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
-import r48.maptools.UIMTAutotile;
-import r48.maptools.UIMTBase;
 
 /**
- * Created on August 14th 2017, #blameIDEA, etcetc.
+ * Clickable site button.
+ * Runnable represents a text updater (unused functionality as of right now, it kept malfunctioning)
+ * Moved from inner class on 17th September 2022
  */
-public interface IMapToolContext {
-    UIMapView getMapView();
-
-    void createWindow(UIElement window);
-
-    void accept(UIMTBase nextTool);
-
-    UIMTAutotile showATField();
-
-    boolean getMasterRenderDisableSwitch();
-    void setMasterRenderDisableSwitch(boolean value);
+public abstract class CommandSite implements Runnable {
+    public final UIElement element;
+    public CommandSite(UIElement b) {
+        element = b;
+    }
 }

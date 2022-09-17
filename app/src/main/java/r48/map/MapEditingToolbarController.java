@@ -88,6 +88,12 @@ public class MapEditingToolbarController implements IEditingToolbarController {
             public void run() {
                 clearTools(thisButton);
                 UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize);
+                svl.panelsAdd(new UITextButton(TXDB.get("Disable rendering (even across maps!)"), FontSizes.mapLayertabTextHeight, new Runnable() {
+                    @Override
+                    public void run() {
+                        viewGiver.setMasterRenderDisableSwitch(!viewGiver.getMasterRenderDisableSwitch());
+                    }
+                }).togglable(viewGiver.getMasterRenderDisableSwitch()));
                 for (int i = 0; i < view.mapTable.renderer.layers.length; i++) {
                     final int fi = i;
                     UITextButton layerVis = new UITextButton(view.mapTable.renderer.layers[i].getName(), FontSizes.mapLayertabTextHeight, new Runnable() {

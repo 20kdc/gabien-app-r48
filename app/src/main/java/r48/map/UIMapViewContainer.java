@@ -43,6 +43,8 @@ public class UIMapViewContainer extends UIElement.UIPanel {
 
     private double deltaTimeAccum = 0;
 
+    private boolean masterRenderDisableSwitch = false;
+
     @Override
     public String toString() {
         return TXDB.get("Map");
@@ -137,6 +139,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
         // Creating the MapView and such causes quite a few side-effects (specifically global StuffRenderer kick-in-the-pants).
         // Also kick the dictionaries because of the event dictionary.
         view = new UIMapView(gum, b.width, b.height);
+        view.viewRenderDisableSwitch = masterRenderDisableSwitch;
         final IMapToolContext mtc = new IMapToolContext() {
             @Override
             public UIMapView getMapView() {
@@ -161,6 +164,18 @@ public class UIMapViewContainer extends UIElement.UIPanel {
                 } else {
                     return (UIMTAutotile) (nextMapTool = new UIMTAutotile(this));
                 }
+            }
+
+            @Override
+            public boolean getMasterRenderDisableSwitch() {
+                return masterRenderDisableSwitch;
+            }
+
+            @Override
+            public void setMasterRenderDisableSwitch(boolean value) {
+                masterRenderDisableSwitch = value;
+                if (view != null)
+                    view.viewRenderDisableSwitch = value;
             }
         };
 
