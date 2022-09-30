@@ -33,7 +33,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
     }
 
     public MapEditingToolbarController(final IMapToolContext viewGiver, boolean rd, ToolButton[] toolFuncs) {
-        this(viewGiver, rd, new ToolButton[0], new ToolButton[0]);
+        this(viewGiver, rd, toolFuncs, new ToolButton[0]);
     }
 
     public MapEditingToolbarController(final IMapToolContext viewGiver, boolean rd, final ToolButton[] toolFuncs, final ToolButton[] addendum) {

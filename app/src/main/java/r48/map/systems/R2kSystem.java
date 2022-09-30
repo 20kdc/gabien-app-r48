@@ -50,10 +50,7 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.toolsets.utils.CommandSite;
-import r48.toolsets.utils.RMFindTranslatables;
 import r48.toolsets.utils.RMTranscriptDumper;
-import r48.toolsets.utils.UICommandSites;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -333,23 +330,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                             }
                         }
                 }, new ToolButton[] {
-                        new ToolButton(TXDB.get("Find Translatables")) {
-                            @Override
-                            public UIMTBase apply(final IMapToolContext a) {
-                                UICommandSites ucs = new UICommandSites(objn, new ISupplier<CommandSite[]>() {
-                                    @Override
-                                    public CommandSite[] get() {
-                                        RMFindTranslatables rft = new RMFindTranslatables(map);
-                                        rft.addSitesFromMap(a.getMapView());
-                                        return rft.toArray();
-                                    }
-                                }, new IObjectBackend.ILoadedObject[] {
-                                    map
-                                });
-                                ucs.show();
-                                return null;
-                            }
-                        }
+                        new FindTranslatablesToolButton()
                 });
             }
         });

@@ -14,6 +14,7 @@ L
 
 101:@@Start Text {A:w/face #A:#B ({C=1=no }bkg, #D)|(c.401/102/103/104)}
 d Begins a segment of text.
+C translatable
 p faceName f_face_name
 C spritesheet 0 Faces/
 p faceIndex int
@@ -27,6 +28,7 @@ p text string
 
 102:@@Show Choices {A:: [choice_array]A {B=1=(can cancel)}|(c.402/403/404)}
 d Show a set of choices to the user, potentially allowing the cancel button.
+C translatable
 p choices string_array
 p cancellable int_boolean
 C groupBehavior form 402 "Choice" 403 "Cancelled" 404
@@ -75,6 +77,7 @@ C groupBehavior messagebox 405
 
 405: Scrtx.$
 d Continue some scrolling text.
+C translatable
 p text string
 
 108: //*$
@@ -602,6 +605,7 @@ p weaponId|armourId equipment_id
 
 320:Rename Actor$!
 d Rename a party member in a way the player can't abuse.
+C translatable
 p actor actor_id
 p name string
 
@@ -629,6 +633,7 @@ p charIdx int
 
 324: Change$ Nickname!
 d Change the nickname of a party member. Why they have nicknames, I do not know...
+C translatable
 p actor actor_id
 p nickname string
 

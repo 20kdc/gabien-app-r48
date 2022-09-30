@@ -81,6 +81,7 @@ public class RVXASystem extends RXPSystem {
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 
+    @Override
     protected IEditingToolbarController mapEditingToolbar(IMapToolContext iMapToolContext) {
         return new MapEditingToolbarController(iMapToolContext, false, new ToolButton[] {
                 new ToolButton(TXDB.get("Shadow/Region")) {
@@ -89,6 +90,8 @@ public class RVXASystem extends RXPSystem {
                         return new UIMTShadowLayer(o);
                     }
                 }
+        }, new ToolButton[] {
+                new FindTranslatablesToolButton()
         });
     }
 
