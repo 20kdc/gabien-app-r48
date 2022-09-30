@@ -330,7 +330,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                             }
                         }
                 }, new ToolButton[] {
-                        new FindTranslatablesToolButton()
+                        new FindTranslatablesToolButton("RPG::EventPage")
                 });
             }
         });

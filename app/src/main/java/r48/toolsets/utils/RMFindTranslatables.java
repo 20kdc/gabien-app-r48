@@ -53,7 +53,7 @@ public class RMFindTranslatables {
         return sites.toArray(new CommandSite[0]);
     }
 
-    public void addSitesFromMap(final @Nullable UIMapView ctx) {
+    public void addSitesFromMap(final @Nullable UIMapView ctx, String eventPage) {
         final SchemaPath rootSchemaPath = new SchemaPath(AppMain.schemas.getSDBEntry("RPG::Map"), objRoot);
 
         IRIO events = objRoot.getObject().getIVar("@events");
@@ -73,7 +73,7 @@ public class RMFindTranslatables {
                 // enter page
                 final SchemaPath pageSchemaPath = eventSchemaPath
                         .arrayHashIndex(new IRIOFixnum(page), "P" + page)
-                        .newWindow(AppMain.schemas.getSDBEntry("RPG::EventPage"), pageObj);
+                        .newWindow(AppMain.schemas.getSDBEntry(eventPage), pageObj);
 
                 IRIO eventList = pageObj.getIVar("@list");
                 addSitesFromList(getEventCommandArraySchemaElement("EventListEditor"), ctx, eventList, new SchemaPath[] {

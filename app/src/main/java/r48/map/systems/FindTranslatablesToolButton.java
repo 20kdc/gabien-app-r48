@@ -23,8 +23,10 @@ import r48.toolsets.utils.UICommandSites;
  * Extracted from R2kSystem on 30th September 2022
  */
 public final class FindTranslatablesToolButton extends ToolButton {
-    public FindTranslatablesToolButton() {
+    public final String ep;
+    public FindTranslatablesToolButton(String e) {
         super(TXDB.get("Find Translatables"));
+        ep = e;
     }
 
     @Override
@@ -35,7 +37,7 @@ public final class FindTranslatablesToolButton extends ToolButton {
             @Override
             public CommandSite[] get() {
                 RMFindTranslatables rft = new RMFindTranslatables(map);
-                rft.addSitesFromMap(a.getMapView());
+                rft.addSitesFromMap(a.getMapView(), ep);
                 return rft.toArray();
             }
         }, new IObjectBackend.ILoadedObject[] {

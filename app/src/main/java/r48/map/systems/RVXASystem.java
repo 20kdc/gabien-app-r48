@@ -91,7 +91,7 @@ public class RVXASystem extends RXPSystem {
                     }
                 }
         }, new ToolButton[] {
-                new FindTranslatablesToolButton()
+                new FindTranslatablesToolButton("RPG::Event::Page")
         });
     }
 
