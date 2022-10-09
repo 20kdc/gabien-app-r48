@@ -6,6 +6,8 @@
  */
 package r48.ui.dialog;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -46,6 +48,7 @@ import r48.ui.UISetSelector;
 public class UIRMUniversalStringLocator extends UIProxy {
     private UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
     private boolean done = false;
+    private boolean partialMatches = false;
     private HashMap<String, String> settings = new HashMap<String, String>();
 
     private UITextBox adderK = new UITextBox("", FontSizes.dialogWindowTextHeight);
@@ -86,6 +89,11 @@ public class UIRMUniversalStringLocator extends UIProxy {
                 }
             }
             setSelector.updateSet(sset);
+
+            IRIO partial = replacer.getIVar("@partial");
+            if (partial != null) {
+                partialMatches = partial.getType() == 'T';
+            }
         }
 
         refreshContents();
@@ -116,11 +124,19 @@ public class UIRMUniversalStringLocator extends UIProxy {
         layout.panelsAdd(adderA);
         layout.panelsAdd(adderB);
         layout.panelsAdd(adderC);
+        layout.panelsAdd(new UITextButton(TXDB.get("Partial Replace (dangerous)"), FontSizes.dialogWindowTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                partialMatches = !partialMatches;
+            }
+        }).togglable(partialMatches));
         layout.panelsAdd(new UITextButton(TXDB.get("Save Config."), FontSizes.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 RubyIO rio = new RubyIO();
                 rio.setObject("R48::UniversalStringLocatorSettings");
+                RubyIO partial = rio.addIVar("@partial");
+                partial.setBool(partialMatches);
                 RubyIO replacements = rio.addIVar("@replacements");
                 replacements.setHash();
                 for (String key : keys) {
@@ -146,18 +162,72 @@ public class UIRMUniversalStringLocator extends UIProxy {
                     SchemaElement se = AppMain.schemas.getSDBEntry(objInfo.schemaName);
                     if (rio != null) {
                         files++;
-                        int count = BasicToolset.universalStringLocator(rio.getObject(), new IFunction<IRIO, Integer>() {
-                            @Override
-                            public Integer apply(IRIO rubyIO) {
-                                String dec = rubyIO.decString();
-                                String replace = settings.get(dec);
-                                if (replace != null) {
-                                    rubyIO.setString(replace);
-                                    return 1;
+                        int count;
+                        if (partialMatches) {
+                            final LinkedList<Map.Entry<String, String>> ent = new LinkedList<Map.Entry<String, String>>(settings.entrySet());
+                            // longer first!
+                            Collections.sort(ent, new Comparator<Map.Entry<String, String>>() {
+                                public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
+                                    int l1 = o1.getKey().length();
+                                    int l2 = o2.getKey().length();
+                                    // note inverse
+                                    if (l1 < l2)
+                                        return 1;
+                                    if (l1 > l2)
+                                        return -1;
+                                    return 0;
                                 }
-                                return 0;
-                            }
-                        }, true);
+                            });
+                            count = BasicToolset.universalStringLocator(rio.getObject(), new IFunction<IRIO, Integer>() {
+                                @Override
+                                public Integer apply(IRIO rubyIO) {
+                                    StringBuilder res = new StringBuilder();
+                                    String dec = rubyIO.decString();
+                                    int pos = 0;
+                                    int len = dec.length();
+                                    while (pos < len) {
+                                        String foundChk = null;
+                                        int foundSkip = 0;
+                                        for (Map.Entry<String, String> apply : ent) {
+                                            String key = apply.getKey();
+                                            // nope
+                                            if (key.equals(""))
+                                                continue;
+                                            if (dec.startsWith(key, pos)) {
+                                                foundChk = apply.getValue();
+                                                foundSkip = key.length();
+                                                break;
+                                            }
+                                        }
+                                        if (foundChk != null) {
+                                            res.append(foundChk);
+                                            pos += foundSkip;
+                                        } else {
+                                            res.append(dec.charAt(pos++));
+                                        }
+                                    }
+                                    String resStr = res.toString();
+                                    if (!resStr.equals(dec)) {
+                                        rubyIO.setString(resStr);
+                                        return 1;
+                                    }
+                                    return 0;
+                                }
+                            }, true);
+                        } else {
+                            count = BasicToolset.universalStringLocator(rio.getObject(), new IFunction<IRIO, Integer>() {
+                                @Override
+                                public Integer apply(IRIO rubyIO) {
+                                    String dec = rubyIO.decString();
+                                    String replace = settings.get(dec);
+                                    if (replace != null) {
+                                        rubyIO.setString(replace);
+                                        return 1;
+                                    }
+                                    return 0;
+                                }
+                            }, true);
+                        }
                         total += count;
                         if (count > 0) {
                             SchemaPath sp = new SchemaPath(se, rio);
