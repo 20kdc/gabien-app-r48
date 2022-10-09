@@ -19,6 +19,9 @@ public interface IGroupBehavior {
     // If 0, then this group behavior is just for correction purposes.
     int getGroupLength(IRIO arr, int ind);
 
+    // If true, this behaviour has an addition code.
+    boolean handlesAddition();
+
     // Gets the correct code to be appendable to the end, if the group has a non-zero length.
     int getAdditionCode();
 

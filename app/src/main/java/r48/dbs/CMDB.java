@@ -82,6 +82,11 @@ public class CMDB {
                         }
 
                         @Override
+                        public boolean handlesAddition() {
+                            return true;
+                        }
+
+                        @Override
                         public int getAdditionCode() {
                             return code;
                         }
@@ -101,6 +106,11 @@ public class CMDB {
                         @Override
                         public int getGroupLength(IRIO array, int index) {
                             return 0;
+                        }
+
+                        @Override
+                        public boolean handlesAddition() {
+                            return false;
                         }
 
                         @Override
@@ -155,6 +165,11 @@ public class CMDB {
                         @Override
                         public int getGroupLength(IRIO arr, int ind) {
                             return 0;
+                        }
+
+                        @Override
+                        public boolean handlesAddition() {
+                            return false;
                         }
 
                         @Override
@@ -222,6 +237,11 @@ public class CMDB {
                         @Override
                         public int getGroupLength(IRIO arr, int ind) {
                             return 0;
+                        }
+
+                        @Override
+                        public boolean handlesAddition() {
+                            return false;
                         }
 
                         @Override
@@ -297,6 +317,11 @@ public class CMDB {
                             if (!checkCondition(arr.getAElem(ind)))
                                 return 0;
                             return igb.getGroupLength(arr, ind);
+                        }
+
+                        @Override
+                        public boolean handlesAddition() {
+                            return igb.handlesAddition();
                         }
 
                         @Override
@@ -520,6 +545,8 @@ public class CMDB {
                     }
                     if (args[0].equals("translatable"))
                         rc.isTranslatable = true;
+                    if (args[0].equals("textArg"))
+                        rc.textArg = Integer.parseInt(args[1]);
                 } else if (c == '#') {
                     String oldFile = baseFile;
                     baseFile = args[0];

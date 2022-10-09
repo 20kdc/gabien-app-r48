@@ -41,14 +41,16 @@ p text string
 
 10110: Say$
 C category 0
-C translatable
 d Begins a message to show to the player.
+C translatable
+C textArg 0
 p text textbox_string
 C groupBehavior messagebox 20110
 
 20110: Say (cont.)$
 C category 0
 d Continues a 10110 'Say' - should only be used from there.
+C textArg 0
 p text textbox_string
 
  Need to automate this later.

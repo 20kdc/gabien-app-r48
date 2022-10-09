@@ -152,7 +152,7 @@ public class UIEnumChoice extends UIElement.UIProxy {
 
     // The absolute advanced API for use by RPGCommand stuff
 
-    public static final class Category<X> {
+    public static final class Category {
         public final String translatedName;
         public final Option[] options;
 

@@ -24,6 +24,7 @@ C groupBehavior messagebox 401
 
 401: Tx.$
 d Continues the text.
+C textArg 0
 p text string
 
 102:@@Show Choices {A:: [choice_array]A {B=1=(can cancel)}|(c.402/403/404)}

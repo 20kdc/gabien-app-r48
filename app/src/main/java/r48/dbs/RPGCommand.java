@@ -62,6 +62,9 @@ public class RPGCommand {
     // For Find Translatables functionality
     public boolean isTranslatable;
 
+    // For copy all text
+    public int textArg = -1;
+
     // Pass null for parameters if this is for combobox display.
     public String formatName(IRIO root, IRIO[] parameters) {
         try {

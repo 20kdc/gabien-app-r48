@@ -9,17 +9,21 @@
 101: Say$
 C category 0
 d Begins showing a message.
+C translatable
+C textArg 0
 p text string
 C groupBehavior messagebox 401
 
 401: Say(Cont.)$
 C category 0
 d Continues a message.
+C textArg 0
 p text string
 
 102:@@Show Choices: {A:[choice_array]A {B=1=(can cancel)}|(c.402/403/404)}
 C category 0
 d Shows a set of choices to the player. A block, made up of this, 402, 403, and 404.
+C translatable
 p choices string_array
 p cancellable int_boolean
 I1

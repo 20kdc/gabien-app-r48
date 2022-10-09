@@ -7,8 +7,10 @@
 
 package r48.schema.specialized.cmgb;
 
+import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
@@ -208,6 +210,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         // Uhoh.
         final int length;
         boolean addRemove = false;
+        boolean canCopyText = false;
         int p = database.getGroupLengthCore(arr, start);
         if (p == 0) {
             length = 1;
@@ -215,21 +218,33 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             length = p;
             addRemove = true;
         }
-        int iSize = addRemove ? 1 : 0;
-        SchemaElement[] group = new SchemaElement[length + iSize];
+        SchemaElement[] group = new SchemaElement[length + 1];
         RPGCommandSchemaElement rcse = baseElement;
-        for (int i = 0; i < group.length - iSize; i++) {
+        for (int i = 0; i < group.length - 1; i++) {
+            IRIO commandTarg = arr.getAElem(start + i);
+            int code = (int) commandTarg.getIVar("@code").getFX();
+            RPGCommand rc = database.knownCommands.get(code);
+            // make group element
             boolean elemAddRemove = addRemove && (i != 0);
             group[i] = new ArrayElementSchemaElement(start + i, "", rcse, elemAddRemove ? "" : null, elemAddRemove);
             if (i == 0)
                 rcse = rcse.hideHeaderVer();
+            // specifics
+            if (rc != null) {
+                if (rc.textArg != -1)
+                    canCopyText = true;
+            }
         }
         final String addText = TXDB.get("Add to group...");
-        if (addRemove) {
-            group[group.length - 1] = new SchemaElement() {
-                @Override
-                public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
-                    return new UITextButton(addText, FontSizes.schemaFieldTextHeight, new Runnable() {
+        final String copyText = TXDB.get("Copy text to clipboard");
+        final boolean addRemoveF = addRemove;
+        final boolean cctF = canCopyText;
+        group[group.length - 1] = new SchemaElement() {
+            @Override
+            public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+                UIScrollLayout usl = new UIScrollLayout(true, FontSizes.generalScrollersize);
+                if (addRemoveF) {
+                    usl.panelsAdd(new UITextButton(addText, FontSizes.schemaFieldTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             IRIO commandTarg = target.getAElem(start);
@@ -237,20 +252,45 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                             RPGCommand rc = database.knownCommands.get(code);
                             if (rc != null)
                                 for (IGroupBehavior groupBehavior : rc.groupBehaviors) {
-                                    IRIO ne = target.addAElem(start + length);
-                                    SchemaPath.setDefaultValue(ne, baseElement, null);
-                                    ne.getIVar("@code").setFX(groupBehavior.getAdditionCode());
-                                    path.changeOccurred(false);
+                                    if (groupBehavior.handlesAddition()) {
+                                        IRIO ne = target.addAElem(start + length);
+                                        SchemaPath.setDefaultValue(ne, baseElement, null);
+                                        ne.getIVar("@code").setFX(groupBehavior.getAdditionCode());
+                                        path.changeOccurred(false);
+                                        break;
+                                    }
                                 }
                         }
-                    });
+                    }));
                 }
+                if (cctF) {
+                    usl.panelsAdd(new UITextButton(copyText, FontSizes.schemaFieldTextHeight, new Runnable() {
+                        @Override
+                        public void run() {
+                            StringBuilder total = new StringBuilder();
+                            for (int i = 0; i < length; i++) {
+                                IRIO commandTarg = target.getAElem(start + i);
+                                int code = (int) commandTarg.getIVar("@code").getFX();
+                                RPGCommand rc = database.knownCommands.get(code);
+                                if (rc != null) {
+                                    if (rc.textArg != -1) {
+                                        total.append(commandTarg.getIVar("@parameters").getAElem(rc.textArg).decString());
+                                        total.append('\n');
+                                    }
+                                }
+                            }
+                            GaBIEn.clipboard.copyText(total.toString());
+                            AppMain.launchDialog(TXDB.get("Copied to clipboard."));
+                        }
+                    }));
+                }
+                return usl;
+            }
 
-                @Override
-                public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-                }
-            };
-        }
+            @Override
+            public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
+            }
+        };
         return new AggregateSchemaElement(group, binding);
     }
 
