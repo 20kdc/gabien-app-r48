@@ -138,8 +138,6 @@ public class UIRMUniversalStringLocator extends UIProxy {
         layout.panelsAdd(new UITextButton(TXDB.get("Confirm & Replace"), FontSizes.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
-                LinkedList<ObjectInfo> objects = AppMain.getObjectInfos();
-
                 int total = 0;
                 int files = 0;
                 String log = "";

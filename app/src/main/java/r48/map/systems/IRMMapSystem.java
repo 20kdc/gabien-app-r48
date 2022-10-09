@@ -7,9 +7,12 @@
 
 package r48.map.systems;
 
+import java.util.Comparator;
+
 import r48.dbs.ObjectInfo;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
+import r48.map.systems.IRMMapSystem.RMMapData;
 import r48.toolsets.utils.RMTranscriptDumper;
 
 /**
@@ -47,5 +50,16 @@ public interface IRMMapSystem extends IDynobjMapSystem {
         public String toString() {
             return idName + ": " + name;
         }
+
+        public static final Comparator<RMMapData> COMPARATOR = new Comparator<RMMapData>() {
+            @Override
+            public int compare(RMMapData arg0, RMMapData arg1) {
+                if (arg0.id < arg1.id)
+                    return -1;
+                if (arg0.id > arg1.id)
+                    return 1;
+                return 0;
+            }
+        };
     }
 }

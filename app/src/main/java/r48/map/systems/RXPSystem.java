@@ -34,6 +34,8 @@ import r48.map.tiles.ITileRenderer;
 import r48.map.tiles.XPTileRenderer;
 import r48.toolsets.utils.RMTranscriptDumper;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 /**
@@ -173,6 +175,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             RMMapData rmd = new RMMapData(mi.getHashVal(rio).getIVar("@name").decString(), id, RXPRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
             rmdList.add(rmd);
         }
+        Collections.sort(rmdList, RMMapData.COMPARATOR);
         return rmdList.toArray(new RMMapData[0]);
     }
 
