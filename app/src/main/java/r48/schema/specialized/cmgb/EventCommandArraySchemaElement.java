@@ -280,7 +280,6 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                                 }
                             }
                             GaBIEn.clipboard.copyText(total.toString());
-                            AppMain.launchDialog(TXDB.get("Copied to clipboard."));
                         }
                     }));
                 }
