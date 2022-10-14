@@ -1,0 +1,59 @@
+
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+Also applies to MV.
+
+All ranges specified are inclusive.
+
+Water animation is the good ol' "waving in and out" animation, 0121.
+
+Waterfalls are a bit tricky.
+They fit in a 2x3 AT slot, but they're actually 3 separate AT sets laid out vertically.
+The animation is 012.
+
++ 0x0001:0x1FFF : All tiles
+	+ 0x0001:0x07FF : Individual (non-AT) tiles
+		+ 0x0001:0x03FF : B/C/D/E - 4 sheets, each sheet containing 256 tiles
+			These are TS indices 5, 6, 7, 8
+			Each 256-tile sheet is laid out as two 128-tile columns.
+			The columns are 8 tiles in width and go down the usual 16 rows.
+			VXATileRenderer.handleMTLayer handles this.
+		+ 0x0400:0x05FF : Would be part of the above, but the tileset slots don't exist for it.
+		+ 0x0600:0x07FF : Sheet A5
+			Like the above, but repeats TS index 4 twice. 
+	+ 0x0800:0x1FFF : Autotiles
+		These are divided into 48-long AT fields.
+		These groups of 48 can be using one of three AT field sets, regular, wall, and waterfall.
+		+ 0x0800:0x0AFF : Sheet A1 (TS index 0) (16 groups theoretical)
+			The sheet is arranged as 8x4 AT sets, 2x3 tiles each.
+			Note that coordinates here are given in the AT set grid.
+			To help understand this, a diagram of the groups (marked in hex) is at the bottom of this file.
+			As for the various groups:
+			General: This is best understood as 4 sets in a cycle of 4.
+				0...: Regular AT, water animation - x groupNum & 4, y (groupNum >> 3) * 2
+				1...: Waterfall AT, 3-frame loop - x 3 + (groupNum & 4), y (groupNum >> 3) * 2
+				2/3: Like 0/1 but add 1 to the Y.
+			However, there are three "overrides" near the start:
+			Group 1: Regular AT, water animation 0,3
+			Group 2: Regular AT set 3,0
+			Group 3: Regular AT set 3,1
+		+ 0x0B00:0x10FF : Sheet A2 (TS index 1) (32 groups theoretical)
+			The sheet is arranged as 8x4 regular AT sets, 2x3 tiles each.
+			Mapping from group numbers to coordinates is just ordinary row-major.
+		+ 0x1100:0x16FF : Sheet A3 (TS index 2) (32 groups theoretical)
+			The sheet is arranged as 8x4 wall AT sets, 2x2 tiles each.
+			Mapping from group numbers to coordinates is just ordinary row-major.
+		+ 0x1700:0x1FFF : Sheet A4 (TS index 3) (48 groups theoretical)
+			The sheet is arranged as a row of 8 regular AT sets, followed by a row of 8 wall AT sets.
+			This occurs 3 times, making the complete 48 groups.
+			The ordering is row-major as usual.
+
+A1 AT Field Allocation:
+
+	00024445
+	11136667
+	8889CCCD
+	AAABEEEF

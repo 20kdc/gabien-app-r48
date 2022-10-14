@@ -11,6 +11,7 @@ import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
+import gabien.ui.Rect;
 import r48.AppMain;
 import r48.RubyTable;
 import r48.dbs.ATDB;
@@ -35,6 +36,10 @@ public class VXATileRenderer implements ITileRenderer {
     // Generated one-pixel image to be blended for shadow
     public IImage shadowImage;
     public RubyTable flags;
+    /**
+     * See prepareATTF function for details
+     */
+    private final ExpandedATTF[] preparedATTF;
 
     public VXATileRenderer(IImageLoader il, IRIO tileset) {
         this.tileset = tileset;
@@ -54,6 +59,7 @@ public class VXATileRenderer implements ITileRenderer {
         } else {
             flags = new RubyTable(2, 0, 0, 0, new int[0]);
         }
+        preparedATTF = prepareATTF();
     }
 
     @Override
@@ -65,17 +71,8 @@ public class VXATileRenderer implements ITileRenderer {
     public void drawTile(int layer, short tidx, int px, int py, IGrDriver igd, int spriteScale, boolean editor) {
         if (tileset == null)
             return; // just don't bother.
-        // MKXP repository links to http://www.tktkgame.com/tkool/memo/vx/tile_id.html
-        // It's in Japanese but via translation at least explains that:
-        // 1. Autotiles are different. Very different.
-        //    (There *seem* to still be 48-tile planes, however.
-        //     There are just additional less comprehensible planes.)
-        // Gist of it is that autotiles are now in the higher sections (0x800+),
-        //  0x0YY/0x1YY/0x2YY/0x3YY are the "upper layer" detail planes (not sure what's going on here)
-        //  0x600-0x67F seems to be the closest thing I could find to "normal".
-
-        // -------------IGNORE THE ABOVE------------------
         // [EPC] (use this to find other bits of documentation)
+        // - See IRB_VXA_TILES for a full ID listing!
         // - Plane 0x08 is special - every other row is skipped.
         //   Why? Because animation!
         // - Some tiles (Crysalis :: Limenas Inn, counter) can warp reality.
@@ -100,50 +97,102 @@ public class VXATileRenderer implements ITileRenderer {
             return;
         }
 
-        if (tidx == 0)
-            return; // magical exception
+        // Check all-tiles range.
+        // Note 0x0000 is omitted.
+        if ((tidx < 0x0001) || (tidx > 0x1FFF))
+            return;
 
         int plane = tidx & 0xFF00;
-        plane /= 0x100;
+        plane >>= 8;
 
-        if (plane >= 0)
-            if (plane < 4)
-                if (handleMTLayer(tidx, tileSize, px, py, plane + 5, igd, spriteScale))
+        // First 8 planes are just handleMTLayer stuff on a specific sheet.
+        // This covers 0x0001:0x07FF
+        int[] tsi = new int[] {5, 6, 7, 8, -1, -1, 4, 4};
+        if (plane >= 0x00 && plane < 0x08) {
+            int ok = tsi[plane];
+            if (ok != -1)
+                if (handleMTLayer(tidx, tileSize, px, py, ok, igd, spriteScale))
                     return;
-
-        int mode = (int) tileset.getIVar("@mode").getFX();
-
-        // AT Planes (Part 1 and 2). These use AT Type 0 "standard".
-
-        // Notice only 3 planes are allocated - that's 2 rows of 3 ATs.
-        if (plane >= 8)
-            if (plane <= 0x0A)
-                if (handleSATLayer(tidx, 0x0800, tileSize, px, py, 0, igd, mode, spriteScale))
-                    return;
-
-        if (plane >= 0x0B)
-            if (plane <= 0x10)
-                if (handleSATLayer(tidx, 0x0B00, tileSize, px, py, 1, igd, mode, spriteScale))
-                    return;
-
-        // Secondary 'Wall' AT Planes (Part 3 and 4). These use AT Type 1 "wall".
-
-        if (plane >= 0x11)
-            if (plane <= 0x16)
-                if (handleSATLayer(tidx, 0x1100, tileSize, px, py, 2, igd, mode, spriteScale))
-                    return;
-        if (plane >= 0x17)
-            if (plane <= 0x1F)
-                if (handleSATLayer(tidx, 0x1700, tileSize, px, py, 3, igd, mode, spriteScale))
-                    return;
-
-        // Plane 6 (Part 5)
-
-        if (plane == 6)
-            if (handleMTLayer(tidx, tileSize, px, py, 4, igd, spriteScale))
+        } else if (plane >= 0x08 && plane < 0x20) {
+            int frame = getFrame();
+            ExpandedATTF attf = preparedATTF[(((int) tidx) - 0x0800) / 48];
+            int fX = attf.fieldTileSpace.x, fY = attf.fieldTileSpace.y;
+            frame %= attf.anim.length / 2;
+            frame *= 2;
+            fX += attf.anim[frame];
+            fY += attf.anim[frame + 1];
+            if (handleATLayer(tidx, attf.start, tileSize, px, py, attf.tilesetIdx, igd, attf.databaseId, fX, fY, spriteScale))
                 return;
+        }
 
         FontManager.drawString(igd, px, py, Integer.toHexString(tidx), false, false, UIMapView.mapDebugTextHeight);
+    }
+
+    /**
+     * Prepares the expanded ATTFs.
+     * These are used for drawing.
+     * Most importantly, they are a continuous array covering all of 0x0800 and stopping before 0x2000.
+     * This keeps lookups fast. 
+     */
+    private ExpandedATTF[] prepareATTF() {
+        ExpandedATTF[] attf = new ExpandedATTF[128];
+        int[] animNone = new int[] {0, 0};
+        int[] animWater = new int[] {0, 0, 2, 0, 4, 0, 2, 0};
+        int[] animWaterfall = new int[] {0, 0, 0, 1, 0, 2};
+        for (int i = 0; i < attf.length; i++) {
+            int base = 0x0800 + (i * 48);
+            if (i == 1) {
+                // A1 - override groundmatter 1
+                attf[i] = ExpandedATTF.vxGeneral(base, 0, 0, 3, animWater);
+            } else if ((i == 2) || (i == 3)) {
+                // A1 - override groundmatter 2/3
+                attf[i] = ExpandedATTF.vxGeneral(base, 0, 6, (i & 1) * 3, animNone);
+            } else if (i >= 0 && i < 16) {
+                // A1 - general
+                // base for major quadrant (upper 2 bits)
+                int baseX = (i & 4) << 1;
+                int baseY = (i / 8) * 6;
+                // apply row offset
+                baseY += (i & 2) != 0 ? 3 : 0;
+                // water/waterfall control
+                if ((i & 1) == 0) {
+                    // water
+                    attf[i] = ExpandedATTF.vxGeneral(base, 0, baseX, baseY, animWater);
+                } else {
+                    // waterfall
+                    attf[i] = ExpandedATTF.vxWaterfall(base, 0, baseX + 6, baseY, animWaterfall);
+                }
+            } else if (i >= 16 && i < 48) {
+                // A2
+                int rel = i - 16;
+                int relX = rel % 8;
+                int relY = rel / 8;
+                attf[i] = ExpandedATTF.vxGeneral(base, 1, relX * 2, relY * 3, animNone);
+            } else if (i >= 48 && i < 80) {
+                // A3
+                int rel = i - 48;
+                int relX = rel % 8;
+                int relY = rel / 8;
+                attf[i] = ExpandedATTF.vxWall(base, 2, relX * 2, relY * 2, animNone);
+            } else if (i >= 80 && i < 128) {
+                // A4
+                int rel = i - 80;
+                int relX = rel % 8;
+                int relY = rel / 8;
+                // "major row" number
+                int relYM = relY >> 1;
+                // "major row" base tile Y
+                int relYMT = relYM * 5;
+                if ((relY & 1) == 0) {
+                    // ceiling
+                    attf[i] = ExpandedATTF.vxGeneral(base, 3, relX * 2, relYMT, animNone);
+                } else {
+                    // wall
+                    attf[i] = ExpandedATTF.vxWall(base, 3, relX * 2, relYMT + 3, animNone);
+                }
+            }
+        }
+        return attf;
     }
 
     private void drawShadowTileFlag(short tidx, int i, int i1, int i2, IGrDriver igd, int st) {
@@ -151,6 +200,9 @@ public class VXATileRenderer implements ITileRenderer {
             igd.blitScaledImage(0, 0, 1, 1, i1, i2, st, st, shadowImage);
     }
 
+    /**
+     * Handles 2-column 256-tile sheets
+     */
     private boolean handleMTLayer(short tidx, int ets, int px, int py, int tm, IGrDriver igd, int spriteScale) {
         int t = tidx & 0xFF;
         IImage planeImage = tilesetMaps[tm];
@@ -170,112 +222,16 @@ public class VXATileRenderer implements ITileRenderer {
         return false;
     }
 
-    private boolean handleSATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrDriver igd, int mode, int spriteScale) {
-        int atField = 0;
-        int atCW = 2;
-        int atCH = 3;
-        int atOX = 0;
-        int atOY = 0;
-        /**
-         * THE EXTRA SUPER IMPORTANT NOTES ON Tilemap 3.
-         * [EPC] (use this to find other bits of documentation)
-         *
-         * After much orderly and totally not insanity-causing investigation, I've come to the conclusion this is organized in "sheets" of 0x180 tiles.
-         * The sheets are interleaved.
-         * The naming convention I put in place for them is random, but:
-         * A-type sheets are wall sheets, and have lots of invalid tiles.
-         * B-type sheets are the ATs on top sheets.
-         * The interleaving goes as thus: 0x1700, the first sheet, is a B-type sheet.
-         * After that, at 0x1880, the second sheet starts: an A-type sheet.
-         * Yes, I know, A/B is the wrong way around.
-         *
-         * NT II.
-         *
-         * Within the B-type sheets, it's as you'd expect: there isn't any spare room,
-         * it's just all 8 48tile AT fields one after the other.
-         * Within the A-type sheets, however...
-         * It's 16 valid tiles, then 32 invalid tiles, to make up a 48tile AT field.
-         * Yup, it's a 16-tile AT field expanded to 48. Because why not.
-         *
-         */
-
-        if (tm == 3) {
-            // WALL NOTES.
-            // IDX of Col 4, Row 2. 1c12, 1c18.
-            // IDX of Col 5, Row 2. 1c47, 1c4d.
-            if (base == 0x1700) {
-                int saBank = 0; // 1-indexed. Represents walls.
-                int sbBank = 0; // also 1-indexed Represents ATs.
-                if ((tidx >= 0x1700) && (tidx < 0x1880)) {
-                    base = 0x1700;
-                    sbBank = 1;
-                }
-                if ((tidx >= 0x1880) && (tidx < 0x1A00)) {
-                    base = 0x1880;
-                    saBank = 1;
-                }
-                if ((tidx >= 0x1A00) && (tidx < 0x1B80)) {
-                    base = 0x1A00;
-                    sbBank = 2;
-                }
-                if ((tidx >= 0x1B80) && (tidx < 0x1D00)) {
-                    base = 0x1B80;
-                    saBank = 2;
-                }
-                if ((tidx >= 0x1D00) && (tidx < 0x1E80)) {
-                    base = 0x1D00;
-                    sbBank = 3;
-                }
-                if ((tidx >= 0x1E80) && (tidx < 0x2000)) {
-                    base = 0x1E80;
-                    saBank = 3;
-                }
-                if (saBank != 0) {
-                    atField = 1;
-                    atCW = 2;
-                    atCH = 5;
-                    atOX = 0;
-                    atOY = 3 + (5 * (saBank - 1));
-                }
-                if (sbBank != 0) {
-                    atField = 0;
-                    atCW = 2;
-                    atCH = 5;
-                    atOX = 0;
-                    atOY = 5 * (sbBank - 1);
-                }
-            }
-        } else if (tm == 2) {
-            // [EPC] (use this to find other bits of documentation)
-            // This is super simple and seems to do the job
-            atField = 1;
-            atCW = 2;
-            atCH = 2;
-            atOX = 0;
-            atOY = 0;
-        } else if (tm == 0) {
-            // Every other row is skipped for animation purposes.
-            atCH = 6;
-        }
-        return handleATLayer(tidx, base, ets, px, py, tm, igd, atField, atCW, atCH, atOX, atOY, 48, spriteScale);
-    }
-
-    private boolean handleATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrDriver igd, int atF, int atCW, int atCH, int atOX, int atOY, int div, int spriteScale) {
+    private boolean handleATLayer(short tidx, int base, int ets, int px, int py, int tm, IGrDriver igd, int atF, int atOX, int atOY, int spriteScale) {
         int tin = tidx - base;
         if (tin < 0)
             return false;
-        int atid = tin % div;
-        int apid = tin / div;
-        int pox = apid % 8;
-        int poy = apid / 8;
-        pox *= tileSize * atCW;
-        poy *= tileSize * atCH;
-        pox += tileSize * atOX;
-        poy += tileSize * atOY;
+        int pox = tileSize * atOX;
+        int poy = tileSize * atOY;
         IImage planeImg = tilesetMaps[tm];
         if (planeImg != null) {
             if ((ets == tileSize) && (AppMain.autoTiles[atF] != null)) {
-                ATDB.Autotile at = AppMain.autoTiles[atF].entries[atid];
+                ATDB.Autotile at = AppMain.autoTiles[atF].entries[tin];
                 if (at != null) {
                     int cSize = (ets / 2) * spriteScale;
                     int cSizeI = tileSize / 2;
@@ -334,45 +290,60 @@ public class VXATileRenderer implements ITileRenderer {
         // If you can't read the boring documentation I highlighted above,
         //  or just want AT information on the other banks (since they're basic but confusing),
         //  either go here or createATUIPlanes. Or both.
-        LinkedList<Integer> atFields = new LinkedList<Integer>();
-        LinkedList<Integer> atWFields = new LinkedList<Integer>();
-        for (int i = 0; i < 32; i++) {
-            int resultingAddr = i * 48;
-
-            if (i < 8) {
-                // AT fields for T.M. 3!
-                atFields.add(resultingAddr + 0x1700);
-                atFields.add(resultingAddr + 0x1A00);
-                atFields.add(resultingAddr + 0x1D00);
-                atWFields.add(resultingAddr + 0x1880);
-                atWFields.add(resultingAddr + 0x1B80);
-                atWFields.add(resultingAddr + 0x1E80);
-            }
-            // T.M. 2 AT fields!
-            atWFields.add(resultingAddr + 0x1100);
-            // The rest
-            int resultingEndAddr = resultingAddr + 47;
-            // May need update in future.
-            if (resultingEndAddr < 0x300)
-                atFields.add(0x800 + resultingAddr);
-            if (resultingEndAddr < 0x600)
-                atFields.add(0xB00 + resultingAddr);
-        }
-        AutoTileTypeField[] r = new AutoTileTypeField[atFields.size() + atWFields.size()];
-        for (int i = 0; i < atFields.size(); i++)
-            r[i] = new AutoTileTypeField(atFields.get(i), 48, 0, 47);
-        for (int i = 0; i < atWFields.size(); i++)
-            r[i + atFields.size()] = new AutoTileTypeField(atWFields.get(i), 48, 1, 15);
+        AutoTileTypeField[] r = new AutoTileTypeField[preparedATTF.length];
+        for (int i = 0; i < r.length; i++)
+            r[i] = preparedATTF[i];
         return r;
     }
 
     @Override
     public int getFrame() {
-        return 0;
+        double gt = GaBIEn.getTime() * 2;
+        if (gt < 0)
+            gt = 0;
+        // one three-frame cycle and one four-frame cycle
+        // so multiply them and so they'll sync up
+        gt %= 12;
+        return (int) gt;
     }
 
     @Override
     public int getRecommendedWidth() {
         return 8;
+    }
+
+    public static class ExpandedATTF extends AutoTileTypeField {
+        /**
+         * Index of tileset sheet
+         */
+        public final int tilesetIdx;
+        /**
+         * Field coordinates, kind of
+         */
+        public final Rect fieldTileSpace;
+        /**
+         * Animation offsets in fields
+         */
+        public final int[] anim;
+
+        public ExpandedATTF(int base, int databaseId, int represent, int tsi, Rect f, int[] a) {
+            super(base, 48, databaseId, represent);
+            tilesetIdx = tsi;
+            fieldTileSpace = f;
+            anim = a;
+        }
+
+        public static ExpandedATTF vxGeneral(int base, int tsi, int x, int y, int[] a) {
+            return new ExpandedATTF(base, 0, 47, tsi, new Rect(x, y, 2, 3), a);
+        }
+
+        public static ExpandedATTF vxWall(int base, int tsi, int x, int y, int[] a) {
+            return new ExpandedATTF(base, 1, 15, tsi, new Rect(x, y, 2, 2), a);
+        }
+
+        public static ExpandedATTF vxWaterfall(int base, int tsi, int x, int y, int[] a) {
+            // fake it for now...
+            return new ExpandedATTF(base, 2, 0, tsi, new Rect(x, y, 2, 1), a);
+        }
     }
 }

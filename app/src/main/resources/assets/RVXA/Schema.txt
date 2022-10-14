@@ -27,7 +27,7 @@ C recommendMkdir Audio/BGS
 C recommendMkdir Audio/ME
 C recommendMkdir Audio/SE
 
-A RVXA/AutoTiles.txt RVXA/AutoTileRules.txt RVXA/WallAT.txt $WallATs$
+A RVXA/AutoTiles.txt RVXA/AutoTileRules.txt RVXA/WallAT.txt $WallATs$ RVXA/WaterfallAT.txt .
 C allowIndentControl
 C defineIndent
 
