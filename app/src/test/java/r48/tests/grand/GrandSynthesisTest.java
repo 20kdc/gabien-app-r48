@@ -13,7 +13,7 @@ import org.junit.Test;
  * Created on March 28, 2019.
  */
 public class GrandSynthesisTest {
-    public static final String ev0001WName = "Map0001.lmu:\"EV0001\"*";
+    public static final String ev0001WName = "Map0001.lmu*";
     public static final String ev0001Prefix = "?:" + ev0001WName + "¥";
     public static final String ev0001Back = ev0001Prefix + "symbol:Back";
     @Test
