@@ -86,7 +86,7 @@ public class RMTranscriptDumper {
                 output.print("</ul>");
                 ci--;
             }
-            output.println("<li>" + escapeHtml(database.buildCodename(cm, false)) + "</li>");
+            output.println("<li>" + escapeHtml(database.buildCodename(cm, false, true)) + "</li>");
         }
         output.println("</ul></code>");
         //anchor(null);

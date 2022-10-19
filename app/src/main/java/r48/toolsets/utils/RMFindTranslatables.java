@@ -125,7 +125,7 @@ public class RMFindTranslatables {
 
     public static CommandSite siteFromContext(final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath[] basePaths) {
         final CMDB cmdb = cmdbEditor.database;
-        String text = cmdb.buildGroupCodename(listObj, codeIndex);
+        String text = cmdb.buildGroupCodename(listObj, codeIndex, true);
         final UITextButton button = new UITextButton(text, FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
@@ -147,9 +147,9 @@ public class RMFindTranslatables {
             public void run() {
                 int idx = EventCommandArraySchemaElement.findActualStart(listObj, command);
                 if (idx != -1) {
-                    button.text = cmdb.buildGroupCodename(listObj, codeIndex);
+                    button.text = cmdb.buildGroupCodename(listObj, codeIndex, true);
                 } else {
-                    button.text = cmdb.buildCodename(command, false);
+                    button.text = cmdb.buildCodename(command, false, true);
                 }
             }
         };

@@ -7,6 +7,8 @@
 
 package r48.schema.specialized.cmgb;
 
+import java.util.HashMap;
+
 import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
@@ -294,7 +296,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     }
 
     @Override
-    protected ElementContextual getElementContextualSchema(IRIO arr, final int start, final int length) {
+    protected ElementContextual getElementContextualSchema(IRIO arr, final int start, final int length, final HashMap<Integer, Integer> indentAnchors) {
         // Record the first RubyIO of the group.
         // getGroupElement seeks for it now, so it "tracks" the group properly despite array changes.
         final IRIO tracker = arr.getAElem(start);
@@ -302,7 +304,25 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         final IRIO trackerIndent = tracker.getIVar("@indent");
         if (trackerIndent != null)
             indent = (int) trackerIndent.getFX();
-        return new ElementContextual(indent, getElementContextualSubwindowSchema(tracker, start));
+        RPGCommand cmd = database.entryOf(tracker);
+        boolean anchor = false;
+        boolean shouldShowAnchor = false;
+        if (cmd != null) {
+            anchor = cmd.isAnchor(tracker);
+            shouldShowAnchor = cmd.isAnchorVis(tracker);
+        }
+        String st = "";
+        if (shouldShowAnchor) {
+            if (anchor) {
+                st = "@" + start + " ";
+                indentAnchors.put(indent, start);
+            } else {
+                Integer lai = indentAnchors.get(indent);
+                if (lai != null)
+                    st = "@" + lai + " ";
+            }
+        }
+        return new ElementContextual(indent, getElementContextualSubwindowSchema(tracker, start, st));
     }
 
     /**
@@ -312,11 +332,11 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
      *  is because the subwindow gets recreated anytime a change happens, while the inside doesn't.
      * The IRIO used for this element is expected to be the list.
      */
-    private SubwindowSchemaElement getElementContextualSubwindowSchema(final IRIO tracker, final int start) {
+    private SubwindowSchemaElement getElementContextualSubwindowSchema(final IRIO tracker, final int start, final String displayPrefix) {
         return new SubwindowSchemaElement(getElementContextualWindowSchema(tracker), new IFunction<IRIO, String>() {
             @Override
             public String apply(IRIO rubyIO) {
-                return database.buildGroupCodename(rubyIO, start);
+                return displayPrefix + database.buildGroupCodename(rubyIO, start, false);
             }
         });
     }
@@ -367,7 +387,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         //  1. the inner-schema always uses the 'path' path.
         //  2. the path constructed must have "back" going to inside the command, then to the array
         //     (so the user knows the command was added anyway)
-        SubwindowSchemaElement targ = getElementContextualSubwindowSchema(targetElem, idx);
+        SubwindowSchemaElement targ = getElementContextualSubwindowSchema(targetElem, idx, "");
         path = path.arrayHashIndex(new RubyIO().setFX(idx), "[" + idx + "]");
         path = path.newWindow(targ.heldElement, target);
         launcher.pushObject(path);

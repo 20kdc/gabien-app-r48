@@ -75,7 +75,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         final SchemaPath path = path2.tagSEMonitor(target, this, false);
 
         if (showHeader) {
-            UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(database.buildCodename(target, true), FontSizes.schemaFieldTextHeight, new Runnable() {
+            UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(database.buildCodename(target, true, true), FontSizes.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     launcher.pushObject(path2.newWindow(navigateToCode(launcher, target, new IConsumer<int[]>() {

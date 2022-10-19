@@ -581,7 +581,7 @@ public class CMDB {
             System.err.println(fails1 + " commands do not have descriptions.");
     }
 
-    public String buildCodename(IRIO target, boolean indent) {
+    public String buildCodename(IRIO target, boolean indent, boolean full) {
         String ext = "";
         int cid = (int) target.getIVar("@code").getFX();
         if (knownCommands.containsKey(cid)) {
@@ -589,7 +589,7 @@ public class CMDB {
             IRIO params = target.getIVar("@parameters");
             ext = cmd.formatName(params, params.getANewArray());
         }
-        String spc = lenForm(cid) + " ";
+        String spc = full ? lenForm(cid) + " " : "";
         IRIO indentValue = target.getIVar("@indent");
         if ((indentValue != null) && indent) {
             int len = (int) target.getIVar("@indent").getFX();
@@ -599,11 +599,11 @@ public class CMDB {
         return spc + ext;
     }
 
-    public String buildGroupCodename(IRIO rubyIO, int start) {
-        String tx = buildCodename(rubyIO.getAElem(start), true);
+    public String buildGroupCodename(IRIO rubyIO, int start, boolean full) {
+        String tx = buildCodename(rubyIO.getAElem(start), true, full);
         int groupLen = getGroupLengthCore(rubyIO, start);
         for (int i = 1; i < groupLen; i++)
-            tx += "\n" + buildCodename(rubyIO.getAElem(start + i), true);
+            tx += "\n" + buildCodename(rubyIO.getAElem(start + i), true, full);
         return tx;
     }
 
@@ -619,12 +619,19 @@ public class CMDB {
      */
     public int getGroupLengthCore(IRIO arr, int j) {
         IRIO commandTarg = arr.getAElem(j);
-        int code = (int) commandTarg.getIVar("@code").getFX();
-        RPGCommand rc = knownCommands.get(code);
+        RPGCommand rc = entryOf(commandTarg);
         int max = 0;
         if (rc != null)
             for (IGroupBehavior groupBehavior : rc.groupBehaviors)
                 max = Math.max(max, groupBehavior.getGroupLength(arr, j));
         return max;
+    }
+
+    /**
+     * Can return null if the entry isn't there.
+     */
+    public RPGCommand entryOf(IRIO command) {
+        int code = (int) command.getIVar("@code").getFX();
+        return knownCommands.get(code);
     }
 }

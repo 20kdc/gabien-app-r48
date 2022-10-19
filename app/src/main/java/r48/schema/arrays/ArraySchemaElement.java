@@ -24,6 +24,7 @@ import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
@@ -97,6 +98,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
         int nextAdvance;
         LinkedList<IArrayInterface.ArrayPosition> positions = new LinkedList<IArrayInterface.ArrayPosition>();
         int alen = target.getALen();
+        HashMap<Integer, Integer> indentAnchors = new HashMap<Integer, Integer>();
         for (int i = 0; i < alen; i += nextAdvance) {
             nextAdvance = 1;
             int pLevel = elementPermissionsLevel(i, target);
@@ -111,7 +113,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
             if (nextAdvance == 0) {
                 nextAdvance = 1;
             } else {
-                ElementContextual ec = getElementContextualSchema(target, i, nextAdvance);
+                ElementContextual ec = getElementContextualSchema(target, i, nextAdvance, indentAnchors);
                 subelem = ec.element;
                 subelemId = ec.indent;
                 hasNIdxSchema = true;
@@ -254,6 +256,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
             IntUtils.resizeArrayTo(target, atLeast);
             modified = true;
         }
+        HashMap<Integer, Integer> indentAnchors = new HashMap<Integer, Integer>();
         while (true) {
             int alen = target.getALen();
             for (int j = 0; j < alen; j++) {
@@ -272,7 +275,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
                     groupStep = 1;
                     continue;
                 }
-                getElementContextualSchema(target, j, groupStep).element.modifyVal(target, path, setDefault);
+                getElementContextualSchema(target, j, groupStep, indentAnchors).element.modifyVal(target, path, setDefault);
             }
             boolean aca = autoCorrectArray(target, path);
             modified = modified || aca;
@@ -310,7 +313,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // Note that this is meant to be used by things messing with getGroupLength, and will not be used otherwise.
     // Also note that for modifyVal purposes this acts *in addition* to getElementSchema,
     //  so that getGroupLength can safely assume that getElementSchema is being followed.
-    protected ElementContextual getElementContextualSchema(IRIO arr, int start, int length) {
+    protected ElementContextual getElementContextualSchema(IRIO arr, int start, int length, final HashMap<Integer, Integer> indentAnchors) {
         throw new RuntimeException("Group length was used, but no contextual schema was defined for it.");
     }
 

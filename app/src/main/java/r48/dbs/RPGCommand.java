@@ -135,6 +135,14 @@ public class RPGCommand {
         return paramName.get(i).apply(root);
     }
 
+    public boolean isAnchor(IRIO root) {
+        return (indentPre + (indentPost.apply(root))) > 0;
+    }
+
+    public boolean isAnchorVis(IRIO root) {
+        return indentPre != 0 || (indentPost.apply(root) != 0);
+    }
+
     public static class SpecialTag {
         public boolean hasTonepicker;
         public int tpA, tpB, tpC, tpD;
