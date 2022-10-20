@@ -180,11 +180,14 @@ C name Class.RPG::MapInfo @order @name | MapInfo: #B (order #A)
 > File.MapInfos hash int subwindow RPG::MapInfo
 
 .scriptBlob
+ This value seems essentially completely random, even for the same content.
 ]0 maybeChecksum int
 ]1 name string
 ]2 zlibBlob zlibBlobEditor
 
-> File.Scripts array 0 scriptBlob
+.File.Scripts
++internal_scriptIE
++array 0 scriptBlob
 
 : RPG::Skill
 C name Class.RPG::Skill @id @name | Skill #A: #B

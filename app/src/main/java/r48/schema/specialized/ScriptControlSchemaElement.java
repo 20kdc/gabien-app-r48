@@ -10,6 +10,7 @@ package r48.schema.specialized;
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
+import gabien.ui.UITextBox;
 import gabien.ui.UITextButton;
 import r48.AppMain;
 import r48.FontSizes;
@@ -23,6 +24,7 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.zip.DeflaterInputStream;
@@ -114,7 +116,40 @@ public class ScriptControlSchemaElement extends SchemaElement {
 
         AggregateSchemaElement.hookButtonForPressPreserve(launcher, this, target, importer, "import");
 
-        return new UISplitterLayout(exporter, importer, false, 0.5d);
+        UISplitterLayout impExp = new UISplitterLayout(exporter, importer, false, 0.5d);
+
+        final UITextBox searchText = new UITextBox("", FontSizes.schemaFieldTextHeight);
+        UISplitterLayout search = new UISplitterLayout(searchText, new UITextButton(TXDB.get("Search"), FontSizes.schemaFieldTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                StringBuilder results = new StringBuilder();
+                results.append(TXDB.get("Search Results:"));
+                results.append("\n");
+                String searchFor = searchText.text;
+                int alen = target.getALen();
+                for (int i = 0; i < alen; i++) {
+                    String name = target.getAElem(i).getAElem(1).decString();
+                    // need to inflate
+                    byte[] inflated = null;
+                    try {
+                        inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.getAElem(i).getAElem(2).getBuffer())));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (inflated == null)
+                        continue;
+                    String res = new String(inflated, StandardCharsets.UTF_8);
+                    if (res.contains(searchFor)) {
+                        results.append(i);
+                        results.append(": ");
+                        results.append(name);
+                        results.append("\n");
+                    }
+                }
+                AppMain.launchDialog(results.toString());
+            }
+        }), true, 0);
+        return new UISplitterLayout(impExp, search, true, 0);
     }
 
     private RubyIO importScripts() throws IOException {
