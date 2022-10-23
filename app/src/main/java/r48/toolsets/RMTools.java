@@ -42,6 +42,7 @@ import r48.toolsets.utils.UICommandSites;
 import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIRMUniversalStringLocator;
 import r48.ui.dialog.UITextPrompt;
+import r48.ui.dialog.UITranscriptControl;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -190,63 +191,7 @@ public class RMTools {
                 new Runnable() {
                     @Override
                     public void run() {
-                        PrintStream ps = null;
-                        try {
-                            ps = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "transcript.html"), false, "UTF-8");
-                        } catch (UnsupportedEncodingException e) {
-                            throw new RuntimeException(e);
-                        }
-                        RMTranscriptDumper dumper = new RMTranscriptDumper(ps);
-                        dumper.start();
-                        dumper.startFile("CommonEvents", TXDB.get("Common Events"));
-                        for (IRIO rio : mapSystem.getAllCommonEvents())
-                            dumper.dump(rio.getIVar("@name").decString(), rio.getIVar("@list"), commandsEvent);
-                        dumper.endFile();
-                        // Order the maps so that it comes out coherently for valid diffs (OSER Solstice Comparison Project)
-                        LinkedList<Integer> orderedMapInfos = new LinkedList<Integer>();
-                        HashMap<Integer, IRMMapSystem.RMMapData> mapMap = new HashMap<Integer, IRMMapSystem.RMMapData>();
-                        for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
-                            orderedMapInfos.add(rmd.id);
-                            mapMap.put(rmd.id, rmd);
-                        }
-                        Collections.sort(orderedMapInfos);
-                        for (int id : orderedMapInfos) {
-                            IRMMapSystem.RMMapData rmd = mapMap.get(id);
-                            IObjectBackend.ILoadedObject map = rmd.getILO(false);
-                            if (map == null)
-                                continue;
-                            dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), FormatSyntax.formatExtended(TXDB.get("Map:#A"), new RubyIO().setString(rmd.name, true)));
-                            // We need to temporarily override map context.
-                            // This'll fix itself by next frame...
-                            AppMain.schemas.updateDictionaries(map);
-                            AppMain.schemas.kickAllDictionariesForMapChange();
-                            LinkedList<Integer> orderedEVN = new LinkedList<Integer>();
-                            for (IRIO i : map.getObject().getIVar("@events").getHashKeys())
-                                orderedEVN.add((int) i.getFX());
-                            Collections.sort(orderedEVN);
-                            for (int k : orderedEVN) {
-                                IRIO event = map.getObject().getIVar("@events").getHashVal(new RubyIO().setFX(k));
-                                int pageId = 1;
-                                IRIO pages = event.getIVar("@pages");
-                                int alen = pages.getALen();
-                                for (int i = 0; i < alen; i++) {
-                                    IRIO page = pages.getAElem(i);
-                                    if (page.getType() == '0')
-                                        continue; // 0th page on R2k backend.
-                                    dumper.dump(FormatSyntax.formatExtended(TXDB.get("Ev.#A #C, page #B"), new RubyIO().setFX(k), new RubyIO().setFX(pageId), event.getIVar("@name")), page.getIVar("@list"), commandsEvent);
-                                    pageId++;
-                                }
-                            }
-                            dumper.endFile();
-                        }
-                        // Prevent breakage
-                        AppMain.schemas.updateDictionaries(null);
-
-                        mapSystem.dumpCustomData(dumper);
-
-                        dumper.end();
-                        ps.close();
-                        AppMain.launchDialog(TXDB.get("transcript.html was written to the target's folder."));
+                        AppMain.window.createWindow(new UITranscriptControl(mapSystem, commandsEvent));
                     }
                 }
         }).centred();
