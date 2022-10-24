@@ -49,7 +49,7 @@ public class UIRMUniversalStringLocator extends UIProxy {
     private UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
     private boolean done = false;
     private boolean partialMatches = false;
-    private HashMap<String, String> settings = new HashMap<String, String>();
+    private LinkedList<Replacement> settings = new LinkedList<Replacement>();
 
     private UITextBox adderK = new UITextBox("", FontSizes.dialogWindowTextHeight);
     private UITextBox adderV = new UITextBox("", FontSizes.dialogWindowTextHeight);
@@ -59,7 +59,8 @@ public class UIRMUniversalStringLocator extends UIProxy {
     private UIElement adderC = new UITextButton(TXDB.get("Add replacement"), FontSizes.dialogWindowTextHeight, new Runnable() {
         @Override
         public void run() {
-            settings.put(adderK.text, adderV.text);
+            settingsRemoveByKey(adderK.text);
+            settings.add(new Replacement(adderK.text, adderV.text));
             refreshContents();
         }
     });
@@ -74,9 +75,16 @@ public class UIRMUniversalStringLocator extends UIProxy {
         IRIO replacer = AdHocSaveLoad.load("replacer");
 
         if (replacer != null) {
+            // old: AVC 71
             IRIO replacements = replacer.getIVar("@replacements");
-            for (IRIO hk : replacements.getHashKeys())
-                settings.put(hk.decString(), replacements.getHashVal(hk).decString());
+            if (replacements != null)
+                for (IRIO hk : replacements.getHashKeys())
+                    settings.add(new Replacement(hk.decString(), replacements.getHashVal(hk).decString()));
+            // new: AVC 72
+            replacements = replacer.getIVar("@replacements_list");
+            if (replacements != null)
+                for (IRIO hk : replacements.getANewArray())
+                    settings.add(new Replacement(hk.getIVar("@key").decString(), hk.getIVar("@value").decString()));
     
             IRIO files = replacer.getIVar("@files");
             Set<ObjectInfo> sset = new HashSet<ObjectInfo>();
@@ -101,6 +109,15 @@ public class UIRMUniversalStringLocator extends UIProxy {
         proxySetElement(new UISplitterLayout(layout, setSelector, false, 0.5), true);
     }
 
+    private void settingsRemoveByKey(String text) {
+        Replacement res = null;
+        for (Replacement r : settings)
+            if (r.key.equals(text))
+                res = r;
+        if (res != null)
+            settings.remove(res);
+    }
+
     @Override
     public boolean requestsUnparenting() {
         return done; 
@@ -109,14 +126,11 @@ public class UIRMUniversalStringLocator extends UIProxy {
     private void refreshContents() {
         layout.panelsClear();
 
-        final LinkedList<String> keys = new LinkedList<String>(settings.keySet());
-        for (String key : keys) {
-            final String keyF = key;
-            String value = settings.get(key);
-            layout.panelsAdd(new UIAppendButton("-", new UILabel(key + " -> " + value, FontSizes.dialogWindowTextHeight), new Runnable() {
+        for (final Replacement key : settings) {
+            layout.panelsAdd(new UIAppendButton("-", new UILabel(key.key + " -> " + key.value, FontSizes.dialogWindowTextHeight), new Runnable() {
                 @Override
                 public void run() {
-                    settings.remove(keyF);
+                    settings.remove(key);
                     refreshContents();
                 }
             }, FontSizes.dialogWindowTextHeight));
@@ -137,11 +151,13 @@ public class UIRMUniversalStringLocator extends UIProxy {
                 rio.setObject("R48::UniversalStringLocatorSettings");
                 RubyIO partial = rio.addIVar("@partial");
                 partial.setBool(partialMatches);
-                RubyIO replacements = rio.addIVar("@replacements");
-                replacements.setHash();
-                for (String key : keys) {
-                    RubyIO hkv = replacements.addHashVal(new RubyIO().setString(key, true));
-                    hkv.setString(settings.get(key), true);
+                RubyIO replacements = rio.addIVar("@replacements_list");
+                replacements.setArray();
+                for (Replacement key : settings) {
+                    RubyIO replacement = replacements.addAElem(replacements.getALen());
+                    replacement.setObject("R48::UniversalStringLocatorReplacement");
+                    replacement.addIVar("@key").setString(key.key, true);
+                    replacement.addIVar("@value").setString(key.value, true);
                 }
                 RubyIO files = rio.addIVar("@files");
                 files.setArray();
@@ -164,12 +180,12 @@ public class UIRMUniversalStringLocator extends UIProxy {
                         files++;
                         int count;
                         if (partialMatches) {
-                            final LinkedList<Map.Entry<String, String>> ent = new LinkedList<Map.Entry<String, String>>(settings.entrySet());
+                            final LinkedList<Replacement> ent = new LinkedList<Replacement>(settings);
                             // longer first!
-                            Collections.sort(ent, new Comparator<Map.Entry<String, String>>() {
-                                public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
-                                    int l1 = o1.getKey().length();
-                                    int l2 = o2.getKey().length();
+                            Collections.sort(ent, new Comparator<Replacement>() {
+                                public int compare(Replacement o1, Replacement o2) {
+                                    int l1 = o1.key.length();
+                                    int l2 = o2.key.length();
                                     // note inverse
                                     if (l1 < l2)
                                         return 1;
@@ -188,13 +204,13 @@ public class UIRMUniversalStringLocator extends UIProxy {
                                     while (pos < len) {
                                         String foundChk = null;
                                         int foundSkip = 0;
-                                        for (Map.Entry<String, String> apply : ent) {
-                                            String key = apply.getKey();
+                                        for (Replacement apply : ent) {
+                                            String key = apply.key;
                                             // nope
                                             if (key.equals(""))
                                                 continue;
                                             if (dec.startsWith(key, pos)) {
-                                                foundChk = apply.getValue();
+                                                foundChk = apply.value;
                                                 foundSkip = key.length();
                                                 break;
                                             }
@@ -215,11 +231,14 @@ public class UIRMUniversalStringLocator extends UIProxy {
                                 }
                             }, true);
                         } else {
+                            final HashMap<String, String> map = new HashMap<String, String>();
+                            for (Replacement r : settings)
+                                map.put(r.key, r.value);
                             count = BasicToolset.universalStringLocator(rio.getObject(), new IFunction<IRIO, Integer>() {
                                 @Override
                                 public Integer apply(IRIO rubyIO) {
                                     String dec = rubyIO.decString();
-                                    String replace = settings.get(dec);
+                                    String replace = map.get(dec);
                                     if (replace != null) {
                                         rubyIO.setString(replace);
                                         return 1;
@@ -240,5 +259,13 @@ public class UIRMUniversalStringLocator extends UIProxy {
                 done = true;
             }
         }));
+    }
+
+    public class Replacement {
+        public final String key, value;
+        public Replacement(String text, String text2) {
+            key = text;
+            value = text2;
+        }
     }
 }
