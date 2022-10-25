@@ -10,12 +10,14 @@ package r48.schema.specialized;
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
+import gabien.ui.UITextBox;
 import gabien.ui.UITextButton;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
+import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
@@ -23,6 +25,7 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Generic string blob (no compression on this one)
@@ -30,7 +33,7 @@ import java.io.*;
  */
 public class StringBlobSchemaElement extends SchemaElement {
     @Override
-    public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
+    public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final String fpath = Application.BRAND + "/r48.edit.txt";
 
         UITextButton importer = new UITextButton(TXDB.get("Import"), FontSizes.blobTextHeight, new Runnable() {
@@ -49,7 +52,7 @@ public class StringBlobSchemaElement extends SchemaElement {
             }
         });
         AggregateSchemaElement.hookButtonForPressPreserve(launcher, this, target, importer, "import");
-        return new UISplitterLayout(new UITextButton(TXDB.get("Export/Edit"), FontSizes.blobTextHeight, new Runnable() {
+        UISplitterLayout usl = new UISplitterLayout(new UITextButton(TXDB.get("Export/Edit"), FontSizes.blobTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -66,7 +69,37 @@ public class StringBlobSchemaElement extends SchemaElement {
                     AppMain.launchDialog(TXDB.get("Wasn't able to export.") + "\n" + ioe);
                 }
             }
-        }), importer, false, 0.5d);
+        }), importer, false, 0.5d); 
+        return new UISplitterLayout(usl, new UITextButton(TXDB.get("Edit Here"), FontSizes.blobTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                final UITextBox utb = new UITextBox("", FontSizes.schemaFieldTextHeight).setMultiLine();
+                Runnable update = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            utb.text = readContentString(target);
+                        } catch (IOException e) {
+                            AppMain.launchDialog(TXDB.get("Cannot read"), e);
+                        }
+                    }
+                };
+                update.run();
+                UIElement ui = new UISplitterLayout(utb, new UITextButton(TXDB.get("Confirm"), FontSizes.schemaFieldTextHeight, new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            writeContentString(target, utb.text);
+                        } catch (IOException e) {
+                            AppMain.launchDialog(TXDB.get("Cannot write"), e);
+                            return;
+                        }
+                        path.changeOccurred(false);
+                    }
+                }), true, 1);
+                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(ui, update, path), target));
+            }
+        }), false, 1);
     }
 
     public static byte[] readStream(InputStream dis) throws IOException {
@@ -97,6 +130,17 @@ public class StringBlobSchemaElement extends SchemaElement {
 
     protected InputStream getDecompressionInputStream(byte[] b) {
         return new ByteArrayInputStream(b);
+    }
+
+    private String readContentString(IRIO target) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        copyStream(getDecompressionInputStream(target.getBuffer()), baos);
+        return new String(baos.toByteArray(), IObjectBackend.Factory.encoding);
+    }
+    private void writeContentString(IRIO target, String text) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        copyStream(getCompressionInputStream(new ByteArrayInputStream(text.getBytes(IObjectBackend.Factory.encoding))), baos);
+        target.putBuffer(baos.toByteArray());
     }
 
     protected byte[] createDefaultByteArray() {

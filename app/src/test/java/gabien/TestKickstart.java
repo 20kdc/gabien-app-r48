@@ -20,6 +20,7 @@ import r48.tests.grand.GrandExecutionError;
 import r48.wm.GrandWindowManagerUtils;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
