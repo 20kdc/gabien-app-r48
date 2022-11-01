@@ -227,10 +227,14 @@ public class WindowManager {
                             tabWindowIcon
                     };
                 }
+
+                // Disposition logic
                 Rect r = null;
                 if (disposition != null)
                     r = recordedWindowPositions.get(disposition);
 
+                // Make the shell, then apply disposition override
+                // This is because TabShell sanitizes the size on init
                 TabShell tabShell = new UIWindowView.TabShell(rootView, uie, tabIcons) {
                     @Override
                     public void windowBoundsCheck() {

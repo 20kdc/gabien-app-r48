@@ -11,17 +11,18 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Set;
 
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
+import gabien.ui.UITabBar.Tab;
+import gabien.ui.UITabBar.TabIcon;
+import gabien.ui.UITabPane;
 import gabien.ui.UITextBox;
 import gabien.ui.UITextButton;
 import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIProxy;
 import gabien.ui.UILabel;
-import gabien.uslx.append.ArrayIterable;
 import gabien.uslx.append.IFunction;
 import r48.AdHocSaveLoad;
 import r48.AppMain;
@@ -33,8 +34,6 @@ import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
-import r48.map.systems.IDynobjMapSystem;
-import r48.map.systems.IRMMapSystem;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.BasicToolset;
@@ -47,23 +46,8 @@ import r48.ui.UISetSelector;
  */
 public class UIRMUniversalStringLocator extends UIProxy {
     private UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
-    private boolean done = false;
-    private boolean partialMatches = false;
-    private LinkedList<Replacement> settings = new LinkedList<Replacement>();
-
-    private UITextBox adderK = new UITextBox("", FontSizes.dialogWindowTextHeight);
-    private UITextBox adderV = new UITextBox("", FontSizes.dialogWindowTextHeight);
-
-    private UIElement adderA = new UISplitterLayout(new UILabel("From: ", FontSizes.dialogWindowTextHeight), adderK, false, 0);
-    private UIElement adderB = new UISplitterLayout(new UILabel("To: ", FontSizes.dialogWindowTextHeight), adderV, false, 0);
-    private UIElement adderC = new UITextButton(TXDB.get("Add replacement"), FontSizes.dialogWindowTextHeight, new Runnable() {
-        @Override
-        public void run() {
-            settingsRemoveByKey(adderK.text);
-            settings.add(new Replacement(adderK.text, adderV.text));
-            refreshContents();
-        }
-    });
+    private RListPanel settingsFull = new RListPanel(TXDB.get("Full"));
+    private RListPanel settingsPartial = new RListPanel(TXDB.get("Partial"));
 
     private UISetSelector<ObjectInfo> setSelector;
 
@@ -75,17 +59,6 @@ public class UIRMUniversalStringLocator extends UIProxy {
         IRIO replacer = AdHocSaveLoad.load("replacer");
 
         if (replacer != null) {
-            // old: AVC 71
-            IRIO replacements = replacer.getIVar("@replacements");
-            if (replacements != null)
-                for (IRIO hk : replacements.getHashKeys())
-                    settings.add(new Replacement(hk.decString(), replacements.getHashVal(hk).decString()));
-            // new: AVC 72
-            replacements = replacer.getIVar("@replacements_list");
-            if (replacements != null)
-                for (IRIO hk : replacements.getANewArray())
-                    settings.add(new Replacement(hk.getIVar("@key").decString(), hk.getIVar("@value").decString()));
-    
             IRIO files = replacer.getIVar("@files");
             Set<ObjectInfo> sset = new HashSet<ObjectInfo>();
             for (IRIO fk : files.getANewArray()) {
@@ -98,67 +71,52 @@ public class UIRMUniversalStringLocator extends UIProxy {
             }
             setSelector.updateSet(sset);
 
+            // before AVC 74, all replacements are either partial or not-partial
+            RListPanel oldImportTarget = settingsFull;
             IRIO partial = replacer.getIVar("@partial");
-            if (partial != null) {
-                partialMatches = partial.getType() == 'T';
-            }
+            if (partial != null)
+                if (partial.getType() == 'T')
+                    oldImportTarget = settingsPartial;
+            // old: AVC 71
+            IRIO replacements = replacer.getIVar("@replacements");
+            if (replacements != null)
+                oldImportTarget.loadFromHash(replacements);
+            // new: AVC 72
+            replacements = replacer.getIVar("@replacements_list");
+            if (replacements != null)
+                oldImportTarget.loadFromList(replacements);
+            // after AVC 74, replacements are split into two lists
+            replacements = replacer.getIVar("@replacements_full");
+            if (replacements != null)
+                settingsFull.loadFromList(replacements);
+            replacements = replacer.getIVar("@replacements_partial");
+            if (replacements != null)
+                settingsPartial.loadFromList(replacements);
         }
 
         refreshContents();
         
-        proxySetElement(new UISplitterLayout(layout, setSelector, false, 0.5), true);
-    }
-
-    private void settingsRemoveByKey(String text) {
-        Replacement res = null;
-        for (Replacement r : settings)
-            if (r.key.equals(text))
-                res = r;
-        if (res != null)
-            settings.remove(res);
-    }
-
-    @Override
-    public boolean requestsUnparenting() {
-        return done; 
+        proxySetElement(new UISplitterLayout(layout, setSelector, false, 0.5), false);
     }
 
     private void refreshContents() {
         layout.panelsClear();
 
-        for (final Replacement key : settings) {
-            layout.panelsAdd(new UIAppendButton("-", new UILabel(key.key + " -> " + key.value, FontSizes.dialogWindowTextHeight), new Runnable() {
-                @Override
-                public void run() {
-                    settings.remove(key);
-                    refreshContents();
-                }
-            }, FontSizes.dialogWindowTextHeight));
-        }
-        layout.panelsAdd(adderA);
-        layout.panelsAdd(adderB);
-        layout.panelsAdd(adderC);
-        layout.panelsAdd(new UITextButton(TXDB.get("Partial Replace (dangerous)"), FontSizes.dialogWindowTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                partialMatches = !partialMatches;
-            }
-        }).togglable(partialMatches));
+        settingsFull.refreshContents();
+        settingsPartial.refreshContents();
+
+        UITabPane utp = new UITabPane(FontSizes.schemaPagerTabScrollersize, false, false);
+        utp.addTab(new Tab(settingsFull, new TabIcon[0]));
+        utp.addTab(new Tab(settingsPartial, new TabIcon[0]));
+        layout.panelsAdd(utp);
+
         layout.panelsAdd(new UITextButton(TXDB.get("Save Config."), FontSizes.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 RubyIO rio = new RubyIO();
                 rio.setObject("R48::UniversalStringLocatorSettings");
-                RubyIO partial = rio.addIVar("@partial");
-                partial.setBool(partialMatches);
-                RubyIO replacements = rio.addIVar("@replacements_list");
-                replacements.setArray();
-                for (Replacement key : settings) {
-                    RubyIO replacement = replacements.addAElem(replacements.getALen());
-                    replacement.setObject("R48::UniversalStringLocatorReplacement");
-                    replacement.addIVar("@key").setString(key.key, true);
-                    replacement.addIVar("@value").setString(key.value, true);
-                }
+                settingsFull.saveTo(rio.addIVar("@replacements_full"));
+                settingsPartial.saveTo(rio.addIVar("@replacements_partial"));
                 RubyIO files = rio.addIVar("@files");
                 files.setArray();
                 for (ObjectInfo oi : setSelector.getSet())
@@ -178,75 +136,66 @@ public class UIRMUniversalStringLocator extends UIProxy {
                     SchemaElement se = AppMain.schemas.getSDBEntry(objInfo.schemaName);
                     if (rio != null) {
                         files++;
-                        int count;
-                        if (partialMatches) {
-                            final LinkedList<Replacement> ent = new LinkedList<Replacement>(settings);
-                            // longer first!
-                            Collections.sort(ent, new Comparator<Replacement>() {
-                                public int compare(Replacement o1, Replacement o2) {
-                                    int l1 = o1.key.length();
-                                    int l2 = o2.key.length();
-                                    // note inverse
-                                    if (l1 < l2)
-                                        return 1;
-                                    if (l1 > l2)
-                                        return -1;
-                                    return 0;
+                        // full replacements
+                        final HashMap<String, String> mapFull = new HashMap<String, String>();
+                        for (Replacement r : settingsFull.settings)
+                            mapFull.put(r.key, r.value);
+                        // partial replacements - longer first!
+                        final LinkedList<Replacement> ent = new LinkedList<Replacement>(settingsPartial.settings);
+                        Collections.sort(ent, new Comparator<Replacement>() {
+                            public int compare(Replacement o1, Replacement o2) {
+                                int l1 = o1.key.length();
+                                int l2 = o2.key.length();
+                                // note inverse
+                                if (l1 < l2)
+                                    return 1;
+                                if (l1 > l2)
+                                    return -1;
+                                return 0;
+                            }
+                        });
+                        // now do it!
+                        int count = BasicToolset.universalStringLocator(rio.getObject(), new IFunction<IRIO, Integer>() {
+                            @Override
+                            public Integer apply(IRIO rubyIO) {
+                                StringBuilder res = new StringBuilder();
+                                String dec = rubyIO.decString();
+                                String fullReplace = mapFull.get(dec);
+                                if (fullReplace != null) {
+                                    rubyIO.setString(fullReplace);
+                                    return 1;
                                 }
-                            });
-                            count = BasicToolset.universalStringLocator(rio.getObject(), new IFunction<IRIO, Integer>() {
-                                @Override
-                                public Integer apply(IRIO rubyIO) {
-                                    StringBuilder res = new StringBuilder();
-                                    String dec = rubyIO.decString();
-                                    int pos = 0;
-                                    int len = dec.length();
-                                    while (pos < len) {
-                                        String foundChk = null;
-                                        int foundSkip = 0;
-                                        for (Replacement apply : ent) {
-                                            String key = apply.key;
-                                            // nope
-                                            if (key.equals(""))
-                                                continue;
-                                            if (dec.startsWith(key, pos)) {
-                                                foundChk = apply.value;
-                                                foundSkip = key.length();
-                                                break;
-                                            }
+                                int pos = 0;
+                                int len = dec.length();
+                                while (pos < len) {
+                                    String foundChk = null;
+                                    int foundSkip = 0;
+                                    for (Replacement apply : ent) {
+                                        String key = apply.key;
+                                        // nope
+                                        if (key.equals(""))
+                                            continue;
+                                        if (dec.startsWith(key, pos)) {
+                                            foundChk = apply.value;
+                                            foundSkip = key.length();
+                                            break;
                                         }
-                                        if (foundChk != null) {
-                                            res.append(foundChk);
-                                            pos += foundSkip;
-                                        } else {
-                                            res.append(dec.charAt(pos++));
-                                        }
                                     }
-                                    String resStr = res.toString();
-                                    if (!resStr.equals(dec)) {
-                                        rubyIO.setString(resStr);
-                                        return 1;
+                                    if (foundChk != null) {
+                                        res.append(foundChk);
+                                        pos += foundSkip;
+                                    } else {
+                                        res.append(dec.charAt(pos++));
                                     }
-                                    return 0;
                                 }
-                            }, true);
-                        } else {
-                            final HashMap<String, String> map = new HashMap<String, String>();
-                            for (Replacement r : settings)
-                                map.put(r.key, r.value);
-                            count = BasicToolset.universalStringLocator(rio.getObject(), new IFunction<IRIO, Integer>() {
-                                @Override
-                                public Integer apply(IRIO rubyIO) {
-                                    String dec = rubyIO.decString();
-                                    String replace = map.get(dec);
-                                    if (replace != null) {
-                                        rubyIO.setString(replace);
-                                        return 1;
-                                    }
-                                    return 0;
+                                String resStr = res.toString();
+                                if (!resStr.equals(dec)) {
+                                    rubyIO.setString(resStr);
+                                    return 1;
                                 }
-                            }, true);
-                        }
+                                return 0;
+                            }
+                        }, true);
                         total += count;
                         if (count > 0) {
                             SchemaPath sp = new SchemaPath(se, rio);
@@ -256,12 +205,91 @@ public class UIRMUniversalStringLocator extends UIProxy {
                     }
                 }
                 AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Made #A total string adjustments across #B files."), new IRIOFixnum(total), new IRIOFixnum(files)) + log);
-                done = true;
             }
         }));
     }
 
-    public class Replacement {
+    public static class RListPanel extends UIProxy {
+        private UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
+        private LinkedList<Replacement> settings = new LinkedList<Replacement>();
+
+        private UITextBox adderK = new UITextBox("", FontSizes.dialogWindowTextHeight);
+        private UITextBox adderV = new UITextBox("", FontSizes.dialogWindowTextHeight);
+
+        private UIElement adderA = new UISplitterLayout(new UILabel("From: ", FontSizes.dialogWindowTextHeight), adderK, false, 0);
+        private UIElement adderB = new UISplitterLayout(new UILabel("To: ", FontSizes.dialogWindowTextHeight), adderV, false, 0);
+        private UIElement adderC = new UITextButton(TXDB.get("Add replacement"), FontSizes.dialogWindowTextHeight, new Runnable() {
+            @Override
+            public void run() {
+                settingsRemoveByKey(adderK.text);
+                settings.add(new Replacement(adderK.text, adderV.text));
+                refreshContents();
+            }
+        });
+
+        private final String title;
+
+        public RListPanel(String string) {
+            title = string;
+            refreshContents();
+            proxySetElement(layout, true);
+        }
+
+        @Override
+        public String toString() {
+            return title;
+        }
+
+        public void saveTo(RubyIO replacements) {
+            replacements.setArray();
+            for (Replacement key : settings) {
+                RubyIO replacement = replacements.addAElem(replacements.getALen());
+                replacement.setObject("R48::UniversalStringLocatorReplacement");
+                replacement.addIVar("@key").setString(key.key, true);
+                replacement.addIVar("@value").setString(key.value, true);
+            }
+        }
+
+        private void loadFromHash(IRIO irio) {
+            for (IRIO hk : irio.getHashKeys())
+                settings.add(new Replacement(hk.decString(), irio.getHashVal(hk).decString()));
+        }
+
+        private void loadFromList(IRIO irio) {
+            for (IRIO hk : irio.getANewArray())
+                settings.add(new Replacement(hk.getIVar("@key").decString(), hk.getIVar("@value").decString()));
+        }
+
+        private void settingsRemoveByKey(String text) {
+            Replacement res = null;
+            for (Replacement r : settings)
+                if (r.key.equals(text))
+                    res = r;
+            if (res != null)
+                settings.remove(res);
+        }
+
+        private void refreshContents() {
+            layout.panelsClear();
+
+            for (final Replacement key : settings) {
+                UIElement keyLine = new UILabel(key.key + " -> " + key.value, FontSizes.dialogWindowTextHeight);
+                keyLine = new UIAppendButton("-", keyLine, new Runnable() {
+                    @Override
+                    public void run() {
+                        settings.remove(key);
+                        refreshContents();
+                    }
+                }, FontSizes.dialogWindowTextHeight);
+                layout.panelsAdd(keyLine);
+            }
+            layout.panelsAdd(adderA);
+            layout.panelsAdd(adderB);
+            layout.panelsAdd(adderC);
+        }
+    }
+
+    public static class Replacement {
         public final String key, value;
         public Replacement(String text, String text2) {
             key = text;
