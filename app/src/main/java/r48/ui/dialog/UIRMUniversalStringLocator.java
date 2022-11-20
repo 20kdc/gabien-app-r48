@@ -20,9 +20,11 @@ import gabien.ui.UITabBar.TabIcon;
 import gabien.ui.UITabPane;
 import gabien.ui.UITextBox;
 import gabien.ui.UITextButton;
+import gabien.IPeripherals;
 import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIProxy;
 import gabien.ui.UILabel;
+import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.IFunction;
 import r48.AdHocSaveLoad;
 import r48.AppMain;
@@ -50,10 +52,19 @@ public class UIRMUniversalStringLocator extends UIProxy {
     private RListPanel settingsPartial = new RListPanel(TXDB.get("Partial"));
 
     private UISetSelector<ObjectInfo> setSelector;
+    private boolean scheduleSetSelectorUpdate = false;
+    private IConsumer<SchemaPath> refreshOnObjectChange = new IConsumer<SchemaPath>() {
+        @Override
+        public void accept(SchemaPath t) {
+            scheduleSetSelectorUpdate = true;
+        }
+    };
 
     public UIRMUniversalStringLocator() {
         Iterable<ObjectInfo> oi = AppMain.getObjectInfos();
         setSelector = new UISetSelector<ObjectInfo>(oi);
+        for (ObjectInfo ii : oi)
+            AppMain.objectDB.registerModificationHandler(ii.idName, refreshOnObjectChange);
 
         // load config if possible
         IRIO replacer = AdHocSaveLoad.load("replacer");
@@ -97,6 +108,15 @@ public class UIRMUniversalStringLocator extends UIProxy {
         refreshContents();
         
         proxySetElement(new UISplitterLayout(layout, setSelector, false, 0.5), false);
+    }
+
+    @Override
+    public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
+        if (scheduleSetSelectorUpdate) {
+            scheduleSetSelectorUpdate = false;
+            setSelector.refreshButtonText();
+        }
+        super.update(deltaTime, selected, peripherals);
     }
 
     private void refreshContents() {

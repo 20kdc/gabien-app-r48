@@ -9,6 +9,7 @@ package r48.ui;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 
 import gabien.ui.UIElement;
@@ -75,5 +76,10 @@ public class UISetSelector<T> extends UIProxy {
         set.clear();
         set.addAll(newSet);
         refreshContents();
+    }
+    public void refreshButtonText() {
+        // System.out.println("Refreshing button text!!!");
+        for (Map.Entry<T, UITextButton> buttons : setButtons.entrySet())
+            buttons.getValue().text = buttons.getKey().toString();
     }
 }

@@ -9,6 +9,7 @@ package r48.map.systems;
 
 import java.util.Comparator;
 
+import gabien.uslx.append.ISupplier;
 import r48.dbs.ObjectInfo;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -38,17 +39,17 @@ public interface IRMMapSystem extends IDynobjMapSystem {
 
     // This identifies an actual RM map, not a GUM
     class RMMapData extends ObjectInfo {
-        public final String name;
+        public final ISupplier<String> nameSupplier;
         public final int id;
 
-        public RMMapData(String n, int i, String iN, String sN) {
+        public RMMapData(ISupplier<String> n, int i, String iN, String sN) {
             super(iN, sN);
-            name = n;
+            nameSupplier = n;
             id = i;
         }
 
         public String toString() {
-            return idName + ": " + name;
+            return idName + ": " + getName();
         }
 
         public static final Comparator<RMMapData> COMPARATOR = new Comparator<RMMapData>() {
@@ -61,5 +62,9 @@ public interface IRMMapSystem extends IDynobjMapSystem {
                 return 0;
             }
         };
+
+        public String getName() {
+            return nameSupplier.get();
+        }
     }
 }

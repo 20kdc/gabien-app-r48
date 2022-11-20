@@ -170,9 +170,18 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     public RMMapData[] getAllMaps() {
         LinkedList<RMMapData> rmdList = new LinkedList<RMMapData>();
         IRIO mi = AppMain.objectDB.getObject("MapInfos").getObject();
-        for (IRIO rio : mi.getHashKeys()) {
+        for (final IRIO rio : mi.getHashKeys()) {
             int id = (int) rio.getFX();
-            RMMapData rmd = new RMMapData(mi.getHashVal(rio).getIVar("@name").decString(), id, RXPRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
+            RMMapData rmd = new RMMapData(new ISupplier<String>() {
+                @Override
+                public String get() {
+                    IRIO miLocal = AppMain.objectDB.getObject("MapInfos").getObject();
+                    IRIO mapInfo = miLocal.getHashVal(rio);
+                    if (mapInfo == null)
+                        return TXDB.get("<map removed from RPG_RT.lmt>");
+                    return mapInfo.getIVar("@name").decString();
+                }
+            }, id, RXPRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
             rmdList.add(rmd);
         }
         Collections.sort(rmdList, RMMapData.COMPARATOR);

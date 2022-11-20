@@ -132,7 +132,7 @@ public class UITranscriptControl extends UIProxy {
 
         public TCMap(IRMMapSystem.RMMapData rm) {
             rmd = rm;
-            whatDoWeCallThis = FormatSyntax.formatExtended(TXDB.get("Map:#A"), new RubyIO().setString(rmd.name, true));
+            whatDoWeCallThis = FormatSyntax.formatExtended(TXDB.get("Map:#A"), new RubyIO().setString(rmd.getName(), true));
         }
 
         @Override
