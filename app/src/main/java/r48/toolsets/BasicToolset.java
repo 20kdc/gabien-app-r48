@@ -102,6 +102,7 @@ public class BasicToolset implements IToolset {
         UIHelpSystem uhs = new UIHelpSystem();
         final HelpSystemController hsc = new HelpSystemController(null, "Help/Tips/Entry", uhs);
         Date dt = new Date();
+        @SuppressWarnings("deprecation")
         int h = dt.getHours();
         if (h < 7) {
             hsc.accept("Help/Tips/Secret:" + (990 + new Random().nextInt(10)));

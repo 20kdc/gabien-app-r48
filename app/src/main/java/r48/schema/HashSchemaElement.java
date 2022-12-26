@@ -15,7 +15,6 @@ import r48.UITest;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
-import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.IRIO;
 import r48.schema.specialized.OSStrHashMapSchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -23,7 +22,6 @@ import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**

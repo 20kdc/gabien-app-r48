@@ -22,8 +22,6 @@ import r48.schema.SchemaElement;
 import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Stack;
 
 import org.eclipse.jdt.annotation.Nullable;

@@ -7,7 +7,6 @@
 
 package r48.schema.specialized;
 
-import gabien.IGrDriver;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import r48.AppMain;
@@ -21,7 +20,6 @@ import r48.map.UIMapView;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
-import r48.ui.Art;
 
 /**
  * Created on 11/06/17.

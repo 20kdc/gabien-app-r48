@@ -7,10 +7,7 @@
 
 package r48.schema.specialized.tbleditors;
 
-import gabien.uslx.append.*;
 import gabien.ui.UIScrollLayout;
-import r48.io.data.IRIO;
-import r48.ui.UIGrid;
 
 /**
  * Created on 2/18/17.

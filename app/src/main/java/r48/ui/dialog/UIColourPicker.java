@@ -41,6 +41,7 @@ public class UIColourPicker extends UIElement.UIProxy {
     private final Size numberBoxMinimumSize = UILabel.getRecommendedTextSize("_255_", FontSizes.imageEditorTextHeight);
     private boolean shuttingDown = false;
 
+    @SuppressWarnings("unchecked")
     public UIColourPicker(String purpose, int baseCol, final IConsumer<Integer> iConsumer, boolean alpha) {
         super();
         currentColour = new UIColourSwatch(baseCol);

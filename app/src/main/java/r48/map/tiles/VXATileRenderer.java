@@ -22,8 +22,6 @@ import r48.map.imaging.IImageLoader;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
 
-import java.util.LinkedList;
-
 /**
  * This uses a totally different system from XP, based around 5 AT sheets and 4 primary sheets.
  * Created on 1/27/17.

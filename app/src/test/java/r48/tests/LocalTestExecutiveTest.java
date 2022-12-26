@@ -61,7 +61,9 @@ public class LocalTestExecutiveTest {
         return tests;
     }
 
-    private final String name, friendlyName, schema, charset;
+    private final String name;
+    @SuppressWarnings("unused")
+    private final String friendlyName, schema, charset;
     private final boolean dynamic;
 
     public LocalTestExecutiveTest(String nam, String friendlyNam, String sc, String charse, String dyn) {

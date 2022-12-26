@@ -17,7 +17,6 @@ import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 

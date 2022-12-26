@@ -7,7 +7,6 @@
 
 package r48.maptools;
 
-import gabien.IGrDriver;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.AppMain;
@@ -88,12 +87,12 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         // Begin subtool bar...
 
         subtool = 0;
-        final LinkedList<UIButton> options = new LinkedList<UIButton>();
+        final LinkedList<UIButton<?>> options = new LinkedList<UIButton<?>>();
 
         UITextButton baseTool = new UITextButton(TXDB.get("Pen"), FontSizes.atSubtoolTextHeight, new Runnable() {
             @Override
             public void run() {
-                for (UIButton utb : options)
+                for (UIButton<?> utb : options)
                     utb.state = false;
                 options.get(0).state = true;
                 subtool = 0;
@@ -104,7 +103,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         UIAppendButton uab = new UIAppendButton(TXDB.get("Rectangle"), baseTool, new Runnable() {
             @Override
             public void run() {
-                for (UIButton utb : options)
+                for (UIButton<?> utb : options)
                     utb.state = false;
                 options.get(1).state = true;
                 subtool = 1;
@@ -116,7 +115,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         uab = new UIAppendButton(TXDB.get("Fill"), uab, new Runnable() {
             @Override
             public void run() {
-                for (UIButton utb : options)
+                for (UIButton<?> utb : options)
                     utb.state = false;
                 options.get(2).state = true;
                 subtool = 2;

@@ -10,7 +10,6 @@ package r48;
 import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.uslx.append.*;
-import gabien.uslx.append.*;
 import gabien.ui.UIBorderedElement;
 import gabienapp.Application;
 import r48.dbs.TXDB;

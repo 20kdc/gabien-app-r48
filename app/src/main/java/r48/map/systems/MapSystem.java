@@ -27,8 +27,6 @@ import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.events.IEventAccess;
 import r48.map.imaging.IImageLoader;
 
-import java.util.LinkedList;
-
 /**
  * Responsible for creating NSRs and such.
  * Everything that makes R48 a map editor hangs off of this.

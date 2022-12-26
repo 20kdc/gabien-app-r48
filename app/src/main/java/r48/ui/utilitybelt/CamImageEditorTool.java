@@ -9,9 +9,7 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import gabien.ui.UILabel;
 import gabien.ui.UIPublicPanel;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 
 /**

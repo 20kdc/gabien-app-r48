@@ -9,7 +9,6 @@ package r48.map.systems;
 import gabien.uslx.append.ISupplier;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
-import r48.io.IObjectBackend.ILoadedObject;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.UIMapView;

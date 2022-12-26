@@ -8,7 +8,6 @@
 package r48.schema.specialized;
 
 import gabien.ui.UIElement;
-import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITabBar;

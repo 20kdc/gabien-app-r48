@@ -9,9 +9,7 @@ package gabien;
 
 import gabien.uslx.append.*;
 import gabien.uslx.vfs.FSBackend;
-import gabien.uslx.append.*;
 import gabien.ui.IPointer;
-import gabien.uslx.append.*;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.ObjectDB;
@@ -20,7 +18,6 @@ import r48.tests.grand.GrandExecutionError;
 import r48.wm.GrandWindowManagerUtils;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -208,6 +205,8 @@ public class TestKickstart {
             super(name, ws, t);
             windowCount++;
             peripherals = new IGJSEPeripheralsInternal() {
+                // Suppressed warnings because we might end up needing these
+                @SuppressWarnings("unused")
                 private int ofsX, ofsY;
 
                 @Override

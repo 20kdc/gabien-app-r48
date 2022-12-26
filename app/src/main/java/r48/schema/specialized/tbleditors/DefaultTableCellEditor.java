@@ -7,15 +7,9 @@
 
 package r48.schema.specialized.tbleditors;
 
-import java.util.concurrent.atomic.AtomicReference;
-
-import gabien.uslx.append.*;
 import gabien.ui.UINumberBox;
 import gabien.ui.UIScrollLayout;
 import r48.FontSizes;
-import r48.RubyTable;
-import r48.io.data.IRIO;
-import r48.ui.UIGrid;
 
 /**
  * Created on 18/2/17.

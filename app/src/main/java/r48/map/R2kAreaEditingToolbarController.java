@@ -8,7 +8,6 @@
 package r48.map;
 
 import gabien.GaBIEn;
-import gabien.IGrDriver;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;

@@ -9,7 +9,6 @@ package r48.schema.specialized;
 
 import gabien.GaBIEn;
 import gabien.uslx.append.*;
-import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.AppMain;

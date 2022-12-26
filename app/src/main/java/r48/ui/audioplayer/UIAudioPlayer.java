@@ -8,8 +8,6 @@
 package r48.ui.audioplayer;
 
 import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import gabien.GaBIEn;
 import gabien.IPeripherals;

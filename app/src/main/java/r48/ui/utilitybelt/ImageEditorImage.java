@@ -8,7 +8,6 @@
 package r48.ui.utilitybelt;
 
 import gabien.IImage;
-import r48.dbs.TXDB;
 import r48.imageio.ImageIOImage;
 
 import java.util.LinkedList;

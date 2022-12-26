@@ -35,7 +35,6 @@ import r48.map.tiles.XPTileRenderer;
 import r48.toolsets.utils.RMTranscriptDumper;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 
 /**

@@ -8,11 +8,9 @@ package r48.ui;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIProxy;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UITextButton;

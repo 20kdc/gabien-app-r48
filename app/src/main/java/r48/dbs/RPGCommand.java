@@ -66,6 +66,7 @@ public class RPGCommand {
     public int textArg = -1;
 
     // Pass null for parameters if this is for combobox display.
+    @SuppressWarnings("unchecked")
     public String formatName(IRIO root, IRIO[] parameters) {
         try {
             if (name.startsWith("@@"))

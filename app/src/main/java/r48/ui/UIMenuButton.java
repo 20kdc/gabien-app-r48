@@ -11,7 +11,6 @@ import gabien.uslx.append.*;
 import gabien.ui.UIAutoclosingPopupMenu;
 import gabien.ui.UIElement;
 import gabien.ui.UIPopupMenu;
-import gabien.ui.UIPopupMenu.Entry;
 import gabien.ui.UITextButton;
 import r48.AppMain;
 import r48.FontSizes;

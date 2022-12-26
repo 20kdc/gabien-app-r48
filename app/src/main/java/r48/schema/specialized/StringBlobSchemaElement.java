@@ -25,7 +25,6 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Generic string blob (no compression on this one)

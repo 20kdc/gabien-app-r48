@@ -7,7 +7,6 @@
 
 package r48.maptools;
 
-import gabien.IGrDriver;
 import gabien.ui.UILabel;
 import r48.FontSizes;
 import r48.dbs.TXDB;

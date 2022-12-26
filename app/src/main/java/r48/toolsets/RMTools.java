@@ -7,47 +7,28 @@
 
 package r48.toolsets;
 
-import gabien.GaBIEn;
 import gabien.uslx.append.*;
-import gabien.uslx.append.*;
-import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import gabien.ui.UIScrollLayout;
-import gabien.ui.UITextButton;
 import r48.AppMain;
 import r48.FontSizes;
-import r48.RubyIO;
 import r48.dbs.CMDB;
-import r48.dbs.FormatSyntax;
 import r48.dbs.ObjectInfo;
-import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
-import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.IRIO;
-import r48.io.data.IRIOFixnum;
-import r48.map.IMapToolContext;
-import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
 import r48.map.systems.IRMMapSystem;
 import r48.maptools.UIMTEventPicker;
 import r48.schema.AggregateSchemaElement;
-import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
-import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.utils.CommandSite;
 import r48.toolsets.utils.RMFindTranslatables;
-import r48.toolsets.utils.RMTranscriptDumper;
 import r48.toolsets.utils.UICommandSites;
 import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIRMUniversalStringLocator;
 import r48.ui.dialog.UITextPrompt;
 import r48.ui.dialog.UITranscriptControl;
 
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 /**

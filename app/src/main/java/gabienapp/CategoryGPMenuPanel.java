@@ -78,6 +78,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
         return res1.toArray(new String[0]);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public IFunction<LauncherState,IGPMenuPanel>[] getButtonActs() {
         // *sighs*

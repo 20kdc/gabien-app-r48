@@ -18,8 +18,6 @@ import r48.io.r2k.obj.Event;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
-import java.io.IOException;
-
 /**
  * Created on April 18, 2019.
  */

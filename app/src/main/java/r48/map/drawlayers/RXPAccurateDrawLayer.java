@@ -10,14 +10,9 @@ package r48.map.drawlayers;
 import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
-import r48.map.MapViewDrawContext;
 import r48.map.events.IEventAccess;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.map.tiles.XPTileRenderer;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
 
 /**
  * After looking closely at the system as part of the "reimagined-pancake" writeup,

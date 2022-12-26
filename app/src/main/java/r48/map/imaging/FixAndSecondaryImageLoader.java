@@ -8,7 +8,6 @@
 package r48.map.imaging;
 
 import gabien.IImage;
-import gabienapp.Application;
 import r48.AppMain;
 
 /**

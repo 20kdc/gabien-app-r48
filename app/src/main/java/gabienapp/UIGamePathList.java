@@ -13,7 +13,6 @@ import gabien.ui.UITextButton;
 import java.util.List;
 
 import gabien.ui.UIElement.UIProxy;
-import gabien.ui.UILabel;
 import r48.FontSizes;
 import r48.ui.UIAppendButton;
 

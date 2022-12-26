@@ -10,9 +10,7 @@ package r48.schema.displays;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
-import r48.FontSizes;
 import r48.dbs.PathSyntax;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;

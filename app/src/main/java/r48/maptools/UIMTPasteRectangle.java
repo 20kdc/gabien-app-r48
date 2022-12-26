@@ -7,7 +7,6 @@
 
 package r48.maptools;
 
-import gabien.IGrDriver;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;

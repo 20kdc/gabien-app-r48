@@ -33,26 +33,26 @@ public class UITimeframeControl extends UIElement.UIProxy {
         public void run() {
         }
     }, FontSizes.rmaTimeframeTextHeight);
-    public UIButton playControllerButton = playController.button;
+    public UIButton<?> playControllerButton = playController.button;
     public UIAppendButton loopController = new UIAppendButton(Art.Symbol.Loop, playController, new Runnable() {
         @Override
         public void run() {
         }
     }, FontSizes.rmaTimeframeTextHeight);
-    public UIButton loopControllerButton = loopController.button;
+    public UIButton<?> loopControllerButton = loopController.button;
     public UIAppendButton hsController = new UIAppendButton(Art.Symbol.Div2, loopController, new Runnable() {
         @Override
         public void run() {
         }
     }, FontSizes.rmaTimeframeTextHeight);
-    public UIButton hsControllerButton = hsController.button;
+    public UIButton<?> hsControllerButton = hsController.button;
 
     public UIAppendButton tsController = new UIAppendButton(Art.Symbol.Div3, hsController, new Runnable() {
         @Override
         public void run() {
         }
     }, FontSizes.rmaTimeframeTextHeight);
-    public UIButton tsControllerButton = tsController.button;
+    public UIButton<?> tsControllerButton = tsController.button;
 
     // The rest of the toolbar is constructed in the constructor
     public UIElement toolbar = tsController;

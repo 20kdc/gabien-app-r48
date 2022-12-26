@@ -13,7 +13,6 @@ import gabien.uslx.append.ISupplier;
 import r48.dbs.ObjectInfo;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
-import r48.map.systems.IRMMapSystem.RMMapData;
 import r48.toolsets.utils.RMTranscriptDumper;
 
 /**

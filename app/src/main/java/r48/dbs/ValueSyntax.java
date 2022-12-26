@@ -8,7 +8,6 @@
 package r48.dbs;
 
 import r48.RubyIO;
-import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 
 /**

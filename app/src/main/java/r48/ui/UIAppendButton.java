@@ -15,7 +15,7 @@ import gabien.uslx.append.*;
  * Created on 12/29/16.
  */
 public class UIAppendButton extends UIElement.UIPanel {
-    public final UIButton button;
+    public final UIButton<?> button;
     private UIElement subElement;
 
     public UIAppendButton(String s, UIElement holder, Runnable runnable, int h2) {
@@ -30,7 +30,7 @@ public class UIAppendButton extends UIElement.UIPanel {
         this(new UIMenuButton(s, h2, continued, text, runnables), holder);
     }
 
-    public UIAppendButton(UIButton s, UIElement holder) {
+    public UIAppendButton(UIButton<?> s, UIElement holder) {
         button = s;
         subElement = holder;
         // This specific order was chosen because labels on the left can overflow and get in the way of the button.

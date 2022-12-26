@@ -11,7 +11,6 @@ import gabien.uslx.append.*;
 import gabienapp.UIFancyInit;
 import r48.AppMain;
 import r48.io.IObjectBackend;
-import r48.io.data.IRIO;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
@@ -245,7 +244,7 @@ public class ObjectDB {
     }
 
     private void removeFromGOCMH(LinkedList<WeakReference<IConsumer<SchemaPath>>> orCreateModificationHandlers, IConsumer<SchemaPath> handler) {
-        WeakReference wr = null;
+        WeakReference<IConsumer<SchemaPath>> wr = null;
         for (WeakReference<IConsumer<SchemaPath>> w : orCreateModificationHandlers) {
             if (w.get() == handler) {
                 wr = w;

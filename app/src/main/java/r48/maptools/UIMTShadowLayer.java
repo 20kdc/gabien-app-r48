@@ -8,7 +8,6 @@
 package r48.maptools;
 
 import gabien.FontManager;
-import gabien.IGrDriver;
 import gabien.ui.UILabel;
 import gabien.ui.UINumberBox;
 import gabien.ui.UISplitterLayout;

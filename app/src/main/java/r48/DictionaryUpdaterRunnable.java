@@ -8,7 +8,6 @@
 package r48;
 
 import gabien.uslx.append.*;
-import gabien.uslx.append.*;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
@@ -22,7 +21,6 @@ import r48.ui.dialog.UIEnumChoice;
 import r48.ui.dialog.UIEnumChoice.EntryMode;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.Nullable;

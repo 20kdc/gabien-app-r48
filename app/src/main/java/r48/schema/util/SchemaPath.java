@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Generic schema path object used to keep references to things being edited in play,

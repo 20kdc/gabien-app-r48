@@ -19,7 +19,8 @@ import r48.ui.Art.Symbol;
 public class RootImageEditorTool implements IImageEditorTool {
     private boolean activeSection = false;
 
-    public static UIScrollLayout createToolPalette(final UIImageEditView uiev, Class oneTool) {
+    public static UIScrollLayout createToolPalette(final UIImageEditView uiev, Class<?> oneTool) {
+        @SuppressWarnings("rawtypes")
         final Class[] toolClasses = new Class[] {
                 RootImageEditorTool.class,
                 RectangleImageEditorTool.class,

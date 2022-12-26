@@ -11,14 +11,12 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.ui.*;
 import gabien.ui.UIPopupMenu.Entry;
-import gabien.uslx.append.IConsumer;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
-import r48.map.MapEditingToolbarController;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.UIMapView;
 

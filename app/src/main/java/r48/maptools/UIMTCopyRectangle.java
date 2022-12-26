@@ -8,7 +8,6 @@
 package r48.maptools;
 
 import gabien.GaBIEn;
-import gabien.IGrDriver;
 import gabien.ui.UILabel;
 import r48.AppMain;
 import r48.FontSizes;
@@ -19,7 +18,6 @@ import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
 import r48.map.UIMapView;
-import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
 /**

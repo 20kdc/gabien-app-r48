@@ -7,11 +7,8 @@
 
 package r48.toolsets.utils;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 import gabien.IPeripherals;
 import gabien.ui.Rect;
-import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UIElement.UIProxy;
 import gabien.uslx.append.IConsumer;

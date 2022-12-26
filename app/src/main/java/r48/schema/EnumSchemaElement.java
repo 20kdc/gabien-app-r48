@@ -12,7 +12,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.UITest;
 import r48.dbs.ValueSyntax;
 import r48.io.data.IRIO;
 import r48.schema.specialized.TempDialogSchemaChoice;
@@ -24,7 +23,6 @@ import r48.ui.dialog.UIEnumChoice;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;

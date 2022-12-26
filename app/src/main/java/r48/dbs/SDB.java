@@ -8,7 +8,6 @@
 package r48.dbs;
 
 import gabien.uslx.append.*;
-import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import r48.AppMain;
 import r48.DictionaryUpdaterRunnable;
@@ -40,7 +39,6 @@ import r48.ui.dialog.UIEnumChoice.EntryMode;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -609,13 +607,14 @@ public class SDB {
                                     flags.add(args[point++]);
                                 tcf = new BitfieldTableCellEditor(flags.toArray(new String[0]));
                             }
+                            @SuppressWarnings("rawtypes")
                             RubyTableSchemaElement r = null;
                             if (eText.equals("tableSTA")) {
                                 r = new TilesetAllocTableSchemaElement(tilesetAllocations, iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
                             } else if (eText.equals("tableTS")) {
                                 r = new TilesetTableSchemaElement(iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
                             } else if (eText.equals("table")) {
-                                r = new RubyTableSchemaElement(iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
+                                r = new RubyTableSchemaElement<Object>(iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
                             } else {
                                 throw new RuntimeException("Unknown table type " + text);
                             }

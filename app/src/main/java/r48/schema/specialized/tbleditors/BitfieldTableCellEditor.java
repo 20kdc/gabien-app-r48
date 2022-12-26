@@ -10,12 +10,9 @@ package r48.schema.specialized.tbleditors;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.FontSizes;
-import r48.RubyTable;
 import r48.dbs.TXDB;
-import r48.io.data.IRIO;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.TSDBChoiceIntegerSchemaElement;
-import r48.ui.UIGrid;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
