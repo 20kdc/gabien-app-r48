@@ -8,6 +8,7 @@
 package r48.io;
 
 import gabien.GaBIEn;
+import gabien.uslx.append.HexByteEncoding;
 import r48.RubyIO;
 import r48.io.data.IRIO;
 
@@ -153,6 +154,7 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             dis.close();
             return rio;
         } catch (Exception ioe) {
+            System.err.println("In file " + filename + ":");
             ioe.printStackTrace();
             return null;
         }
@@ -402,7 +404,13 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
         } else if (b == 'F') {
         } else if (b == '0') {
         } else {
-            throw new IOException("Unknown Marshal " + ((char) b));
+            // Unknown Marshal value. This implies we totally desynced.
+            int cA = dis.read();
+            int cB = dis.read();
+            int cC = dis.read();
+            int cD = dis.read();
+            String hex = HexByteEncoding.toHexString(b, cA, cB, cC, cD);
+            throw new IOException("Unknown Marshal " + ((char) b) + ": " + hex);
         }
         if (handlingInstVars) {
             long vars = load32(dis);
@@ -416,5 +424,4 @@ public class R48ObjectBackend extends OldObjectBackend<RubyIO> {
             objs.add(rio);
         return rio;
     }
-
 }
