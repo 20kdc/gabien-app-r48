@@ -20,7 +20,15 @@ import gabien.ui.UIElement;
  * Created on July 18th, 2018
  */
 public class UIIndentThingy extends UIElement {
+    public static final int SELECTED_NONE = 0;
+    public static final int SELECTED_NOT_THIS = 32;
+    public static final int SELECTED_HEAD = 255;
+    public static final int SELECTED_TRAIL = 192;
+
     public final int indent, unit, selectUnit;
+    /**
+     * Selection force. 0 is minimum, 255 is maximum.
+     */
     public int selected;
     public Runnable onClick;
 

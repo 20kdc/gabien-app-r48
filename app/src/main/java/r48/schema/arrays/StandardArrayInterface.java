@@ -179,13 +179,13 @@ public class StandardArrayInterface implements IArrayInterface {
 
                         // Prepend indent here!
                         int indent = Math.max(positions[mi].coreIndent, 0);
-                        int selectedForce = 0;
+                        int selectedForce = UIIndentThingy.SELECTED_NONE;
                         if (selectedStart != -1) {
-                            selectedForce = 32;
+                            selectedForce = UIIndentThingy.SELECTED_NOT_THIS;
                             if ((selectedStart <= mi) && (selectedEnd >= mi))
-                                selectedForce = 192;
+                                selectedForce = UIIndentThingy.SELECTED_TRAIL;
                             if (selectedStart == mi)
-                                selectedForce = 255;
+                                selectedForce = UIIndentThingy.SELECTED_HEAD;
                         }
                         UIElement indentThingy = new UIIndentThingy(indentUnit, selectButtonUnit, indent, selectedForce, onClick);
                         if (label != null) {

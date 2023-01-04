@@ -12,10 +12,13 @@ import java.util.Map;
 import java.util.Set;
 
 import gabien.ui.UIElement.UIProxy;
+import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
+import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
 import r48.dbs.TXDB;
+import r48.ui.spacing.UIIndentThingy;
 
 /**
  * Set selector given toStringable targets
@@ -23,10 +26,11 @@ import r48.dbs.TXDB;
  */
 public class UISetSelector<T> extends UIProxy {
     private HashSet<T> set = new HashSet<T>();
-    private HashMap<T, UITextButton> setButtons = new HashMap<T, UITextButton>();
+    private HashMap<T, UIIndentThingy> setButtons = new HashMap<T, UIIndentThingy>();
+    private HashMap<T, UILabel> setLabels = new HashMap<T, UILabel>();
     private UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
     public UISetSelector(final Iterable<T> entries) {
-        layout.panelsAdd(new UITextButton(TXDB.get("All Selected"), FontSizes.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(TXDB.get("Select All"), FontSizes.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 for (T x : entries)
@@ -34,38 +38,40 @@ public class UISetSelector<T> extends UIProxy {
                 refreshContents();
             }
         }));
-        layout.panelsAdd(new UITextButton(TXDB.get("All Deselected"), FontSizes.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(TXDB.get("Deselect All"), FontSizes.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 set.clear();
                 refreshContents();
             }
         }));
+        int labelHeight = UILabel.getRecommendedTextSize("", FontSizes.dialogWindowTextHeight).height;
         for (T o : entries) {
             final T fo = o;
-            final UITextButton utb = new UITextButton(o.toString(), FontSizes.dialogWindowTextHeight, null);
-            utb.togglable(false);
-            utb.onClick = new Runnable() {
+            final UILabel ul = new UILabel(o.toString(), FontSizes.dialogWindowTextHeight);
+            final UIIndentThingy utb = new UIIndentThingy(0, labelHeight, 0, 0, new Runnable() {
                 @Override
                 public void run() {
-                    if (utb.state) {
-                        set.add(fo);
-                    } else {
+                    if (set.contains(fo)) {
                         set.remove(fo);
+                    } else {
+                        set.add(fo);
                     }
                     refreshContents();
                 }
-            };
-            layout.panelsAdd(utb);
+            });
+            layout.panelsAdd(new UISplitterLayout(utb, ul, false, 0));
             setButtons.put(o, utb);
+            setLabels.put(o, ul);
         }
         proxySetElement(layout, true);
+        refreshContents();
     }
     private void refreshContents() {
-        for (UITextButton utb : setButtons.values())
-            utb.state = false;
+        for (UIIndentThingy utb : setButtons.values())
+            utb.selected = UIIndentThingy.SELECTED_NOT_THIS;
         for (Object o : set)
-            setButtons.get(o).state = true;
+            setButtons.get(o).selected = UIIndentThingy.SELECTED_HEAD;
     }
     public Set<T> getSet() {
         return new HashSet<T>(set);
@@ -77,7 +83,7 @@ public class UISetSelector<T> extends UIProxy {
     }
     public void refreshButtonText() {
         // System.out.println("Refreshing button text!!!");
-        for (Map.Entry<T, UITextButton> buttons : setButtons.entrySet())
+        for (Map.Entry<T, UILabel> buttons : setLabels.entrySet())
             buttons.getValue().text = buttons.getKey().toString();
     }
 }
