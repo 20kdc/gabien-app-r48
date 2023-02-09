@@ -58,17 +58,14 @@ public class ScriptControlSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 try {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(TXDB.get("Script export complete!") + "\n");
                     HashSet<String> used = new HashSet<String>();
                     GaBIEn.makeDirectories(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts"));
                     OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts/_scripts.txt"));
                     PrintStream ps = new PrintStream(os, false, "UTF-8");
                     int alen = target.getALen();
                     for (int i = 0; i < alen; i++) {
-                        String name = target.getAElem(i).getAElem(1).decString();
-                        // Just in case...
-                        name = name.replace(':', '_');
-                        name = name.replace('/', '_');
-                        name = name.replace('\\', '_');
                         // need to inflate
                         byte[] inflated = StringBlobSchemaElement.readStream(new InflaterInputStream(new ByteArrayInputStream(target.getAElem(i).getAElem(2).getBuffer())));
                         // target.arrVal[i].arrVal[2];
@@ -84,33 +81,69 @@ public class ScriptControlSchemaElement extends SchemaElement {
                             disable = true;
                         }
 
-                        if (!disable)
-                            if (name.equals(""))
-                                name = "UNTITLED";
-                        // This approach isn't the same, but should be theoretically more reliable. Theoretically.
-                        if (!disable) {
-                            String oldName = name;
-                            int counter = 2;
-                            while (used.contains(name.toLowerCase()))
-                                name = oldName + " (" + (counter++) + ")";
-                            used.add(name.toLowerCase());
-                        } else if (!name.equals("")) {
-                            // Name prefix.
-                            name = "# " + name;
+                        String name = target.getAElem(i).getAElem(1).decString();
+
+                        // If it's disabled, just deal with it
+                        if (disable) {
+                            if (!name.equals("")) {
+                                ps.println("# " + name);
+                            } else {
+                                ps.println("");
+                            }
+                            continue;
                         }
 
-                        ps.println(name);
-                        if (!disable) {
-                            OutputStream os2 = GaBIEn.getOutFile(PathUtils.autoDetectWindows("scripts/" + name + ".rb"));
-                            os2.write(inflated);
-                            os2.close();
+                        // do early changes to name
+                        name = name.replace(':', '_');
+                        name = name.replace('/', '_');
+                        name = name.replace('\\', '_');
+                        if (name.equals(""))
+                            name = "UNTITLED";
+
+                        // try with current name...
+                        if (tryWrite(name, inflated, used, ps))
+                            continue;
+
+                        // ok, that didn't work, try with altered name
+                        char[] adjusted = name.toCharArray();
+                        for (int j = 0; j < adjusted.length; j++)
+                            if (!Character.isAlphabetic(adjusted[j]))
+                                adjusted[j] = '_';
+
+                        String name2 = new String(adjusted);
+                        if (tryWrite(name2, inflated, used, ps)) {
+                            sb.append(TXDB.get("Script name had to be adjusted: "));
+                            sb.append(name);
+                            sb.append(" -> ");
+                            sb.append(name2);
+                            sb.append("\n");
+                            continue;
                         }
+                        sb.append(TXDB.get("Script could not be written: "));
+                        sb.append(name);
+                        sb.append("\n");
                     }
                     ps.close();
-                    AppMain.launchDialog(TXDB.get("Script export complete!"));
+                    AppMain.launchDialog(sb.toString());
                 } catch (IOException ioe) {
                     AppMain.launchDialog(TXDB.get("Couldn't export scripts due to IOException: ") + ioe);
                 }
+            }
+            private boolean tryWrite(String name, byte[] inflated, HashSet<String> used, PrintStream ps) throws IOException {
+                // do anti-collision here
+                String oldName = name;
+                int counter = 2;
+                while (used.contains(name.toLowerCase()))
+                    name = oldName + " (" + (counter++) + ")";
+                // continue
+                OutputStream os2 = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts/" + name + ".rb"));
+                if (os2 == null)
+                    return false;
+                os2.write(inflated);
+                os2.close();
+                used.add(name.toLowerCase());
+                ps.println(name);
+                return true;
             }
         });
 
