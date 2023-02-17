@@ -24,6 +24,7 @@ import r48.schema.SchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBinders;
 import r48.schema.util.SchemaPath;
+import r48.toolsets.utils.UITestGraphicsStuff;
 import r48.ui.Coco;
 import r48.ui.UIAppendButton;
 import r48.ui.UIMenuButton;
@@ -308,6 +309,7 @@ public class BasicToolset implements IToolset {
     private UIElement createOtherButton() {
         return new UIMenuButton(TXDB.get("Other..."), FontSizes.menuTextHeight, null, new String[] {
                 TXDB.get("Test Fonts"),
+                TXDB.get("Test Graphics Stuff"),
                 TXDB.get("Toggle Fullscreen"),
                 TXDB.get("Dump Schemaside Translations"),
                 TXDB.get("Recover data from R48 error <INCREDIBLY DAMAGING>..."),
@@ -327,6 +329,12 @@ public class BasicToolset implements IToolset {
                                 }
                             }
                         }));
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        AppMain.window.createWindow(new UITestGraphicsStuff());
                     }
                 },
                 new Runnable() {
