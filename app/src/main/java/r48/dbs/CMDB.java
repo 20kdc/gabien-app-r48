@@ -295,18 +295,18 @@ public class CMDB {
                     };
                 } else if (arg.equals("condition")) {
                     String s = gbStateArgs[gbStatePosition++];
-                    final String idx;
+                    final PathSyntax idx;
                     final boolean inv;
                     if (inv = s.startsWith("!")) {
-                        idx = s.substring(1);
+                        idx = PathSyntax.compile(s.substring(1));
                     } else {
-                        idx = s;
+                        idx = PathSyntax.compile(s);
                     }
                     final RubyIO v = ValueSyntax.decode(gbStateArgs[gbStatePosition++]);
                     final IGroupBehavior igb = getGroupBehavior();
                     return new IGroupBehavior() {
                         private boolean checkCondition(IRIO command) {
-                            IRIO p = PathSyntax.parse(command, idx);
+                            IRIO p = idx.get(command);
                             if (p == null)
                                 return false;
                             return inv ^ IRIO.rubyEquals(p, v);

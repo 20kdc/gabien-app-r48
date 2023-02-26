@@ -154,11 +154,11 @@ public class RPGCommand {
 
         public void applyTo(int idx, UIScrollLayout elementList, IRIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
             if (hasSpritesheet) {
-                SchemaElement scse = AppMain.schemas.helpers.makeSpriteSelector("]" + idx, "]" + spritesheetTargstr, spritesheetId);
+                SchemaElement scse = AppMain.schemas.helpers.makeSpriteSelector(PathSyntax.compile("]" + idx), PathSyntax.compile("]" + spritesheetTargstr), spritesheetId);
                 elementList.panelsAdd(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
             if (hasTonepicker) {
-                SchemaElement scse = new TonePickerSchemaElement("]" + tpA, "]" + tpB, "]" + tpC, "]" + tpD, tpBase);
+                SchemaElement scse = new TonePickerSchemaElement(PathSyntax.compile("]" + tpA), PathSyntax.compile("]" + tpB), PathSyntax.compile("]" + tpC), PathSyntax.compile("]" + tpD), tpBase);
                 elementList.panelsAdd(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
         }

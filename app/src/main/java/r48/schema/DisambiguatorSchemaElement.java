@@ -28,8 +28,7 @@ import java.util.HashMap;
  * Created on 12/31/16.
  */
 public class DisambiguatorSchemaElement extends SchemaElement {
-    // PathSyntax
-    public String dIndex;
+    public PathSyntax dIndex;
 
     // ValueSyntax
     // "" is default
@@ -37,7 +36,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     public HashMap<String, SchemaElement> dTable;
 
     public DisambiguatorSchemaElement(String disambiguatorIndex, HashMap<String, SchemaElement> disambiguations) {
-        dIndex = disambiguatorIndex;
+        dIndex = PathSyntax.compile(disambiguatorIndex);
         dTable = disambiguations;
     }
 
@@ -50,7 +49,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     }
 
     private String getDisambigIndex(IRIO target) {
-        target = PathSyntax.parse(target, dIndex);
+        target = dIndex.get(target);
         if (target == null)
             return "";
         return ValueSyntax.encode(target);

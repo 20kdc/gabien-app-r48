@@ -77,17 +77,17 @@ class SDBHelpers {
         };
     }
 
-    public SchemaElement makeSpriteSelector(final String varPath, final String imgPath, final String imgPfx) {
+    public SchemaElement makeSpriteSelector(final PathSyntax varPath, final PathSyntax imgPath, final String imgPfx) {
         final IFunction<String, ISpritesheetProvider> args2 = spritesheets.get(imgPfx);
         return new SpritesheetCoreSchemaElement(spritesheetN.get(imgPfx), 0, new IFunction<IRIO, IRIO>() {
             @Override
             public IRIO apply(IRIO rubyIO) {
-                return PathSyntax.parse(rubyIO, varPath);
+                return varPath.get(rubyIO);
             }
         }, new IFunction<IRIO, ISpritesheetProvider>() {
             @Override
             public ISpritesheetProvider apply(IRIO rubyIO) {
-                return args2.apply(PathSyntax.parse(rubyIO, imgPath).decString());
+                return args2.apply(imgPath.get(rubyIO).decString());
             }
         });
     }
@@ -181,7 +181,7 @@ class SDBHelpers {
                         new ArrayElementSchemaElement(0, TXDB.get("type "), new EnumSchemaElement(types, new RubyIO().setFX(0), EntryMode.LOCK, ""), null, false),
                         new DisambiguatorSchemaElement("]0", disambiguations)
                 ),
-                new SubwindowSchemaElement(new HWNDSchemaElement("]0", "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {
+                new SubwindowSchemaElement(new HWNDSchemaElement(PathSyntax.compile("]0"), "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {
                     @Override
                     public String apply(IRIO rubyIO) {
                         return TXDB.get("Explain this picture mode...");

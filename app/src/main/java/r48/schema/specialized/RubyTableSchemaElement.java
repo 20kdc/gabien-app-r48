@@ -36,14 +36,14 @@ import r48.ui.UIGrid;
  * no, the resize does the correct corrections, I believe.
  */
 public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaElement {
-    public final String widthVar, heightVar;
+    public final PathSyntax widthVar, heightVar;
     public final ITableCellEditor tableCellEditor;
 
     public boolean allowTextdraw = true;
     public boolean allowResize = true;
 
     // NOTE: Doesn't need SDB2-PS compat because it only just started using PS, thankfully
-    public RubyTableSchemaElement(String iVar, String wVar, String hVar, int dim, int dw, int dh, int defL, ITableCellEditor tcl, int[] defV) {
+    public RubyTableSchemaElement(PathSyntax iVar, PathSyntax wVar, PathSyntax hVar, int dim, int dw, int dh, int defL, ITableCellEditor tcl, int[] defV) {
         super(dw, dh, defL, dim, iVar, defV);
         widthVar = wVar;
         heightVar = hVar;
@@ -54,8 +54,8 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final IRIO targV = extractTarget(target);
         final RubyTable targ = new RubyTable(targV.getBuffer());
-        final IRIO width = widthVar == null ? null : PathSyntax.parse(target, widthVar);
-        final IRIO height = heightVar == null ? null : PathSyntax.parse(target, heightVar);
+        final IRIO width = widthVar == null ? null : widthVar.get(target);
+        final IRIO height = heightVar == null ? null : heightVar.get(target);
 
         final TileHelper initialTileHelper = baseInitializeHelper(target);
         Size gridSize = getGridSize(initialTileHelper);

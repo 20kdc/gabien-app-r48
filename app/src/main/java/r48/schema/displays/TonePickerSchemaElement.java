@@ -31,10 +31,10 @@ import r48.ui.UIThumbnail;
  * Created on 31/07/17.
  */
 public class TonePickerSchemaElement extends SchemaElement {
-    public final String rP, gP, bP, sP;
+    public final PathSyntax rP, gP, bP, sP;
     public final int base;
 
-    public TonePickerSchemaElement(String rPath, String gPath, String bPath, String sPath, int b) {
+    public TonePickerSchemaElement(PathSyntax rPath, PathSyntax gPath, PathSyntax bPath, PathSyntax sPath, int b) {
         rP = rPath;
         gP = gPath;
         bP = bPath;
@@ -44,10 +44,10 @@ public class TonePickerSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
-        int nr = (int) PathSyntax.parse(target, rP).getFX();
-        int ng = (int) PathSyntax.parse(target, gP).getFX();
-        int nb = (int) PathSyntax.parse(target, bP).getFX();
-        int ns = (int) PathSyntax.parse(target, sP).getFX();
+        int nr = (int) rP.get(target).getFX();
+        int ng = (int) gP.get(target).getFX();
+        int nb = (int) bP.get(target).getFX();
+        int ns = (int) sP.get(target).getFX();
         return createTotem(target, new ToneImageEffect(nr, ng, nb, ns, base));
     }
 
@@ -92,8 +92,9 @@ public class TonePickerSchemaElement extends SchemaElement {
     }
     
     public static class Thumbnail extends TonePickerSchemaElement {
-        public final String iPath, iPrefix;
-        public Thumbnail(String rPath, String gPath, String bPath, String sPath, int b, String iPth, String iPfx) {
+        public final PathSyntax iPath;
+        public final String iPrefix;
+        public Thumbnail(PathSyntax rPath, PathSyntax gPath, PathSyntax bPath, PathSyntax sPath, int b, PathSyntax iPth, String iPfx) {
             super(rPath, gPath, bPath, sPath, b);
             iPath = iPth;
             iPrefix = iPfx;
@@ -101,7 +102,7 @@ public class TonePickerSchemaElement extends SchemaElement {
 
         @Override
         public UIElement createTotem(IRIO target, IImageEffect cfg) {
-            String imagePath = iPrefix + PathSyntax.parse(target, iPath).decString();
+            String imagePath = iPrefix + iPath.get(target).decString();
             IImage totem = AppMain.stuffRendererIndependent.imageLoader.getImage(imagePath, false);
             IImage img = compositeTotem(totem, cfg);
             UIThumbnail panel = new UIThumbnail(img);

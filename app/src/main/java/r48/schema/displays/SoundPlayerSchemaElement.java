@@ -23,12 +23,12 @@ import r48.ui.audioplayer.UIAudioPlayer;
  */
 public class SoundPlayerSchemaElement extends SchemaElement {
     public final String prefix;
-    public final String namePath;
-    public final @Nullable String volumePath;
-    public final @Nullable String tempoPath;
-    public final @Nullable String balancePath;
+    public final PathSyntax namePath;
+    public final @Nullable PathSyntax volumePath;
+    public final @Nullable PathSyntax tempoPath;
+    public final @Nullable PathSyntax balancePath;
 
-    public SoundPlayerSchemaElement(String pfx, String nP, @Nullable String vP, @Nullable String tP, @Nullable String bP) {
+    public SoundPlayerSchemaElement(String pfx, PathSyntax nP, @Nullable PathSyntax vP, @Nullable PathSyntax tP, @Nullable PathSyntax bP) {
         prefix = pfx;
         namePath = nP;
         volumePath = vP;
@@ -38,8 +38,8 @@ public class SoundPlayerSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
-        IRIO nameObj = PathSyntax.parse(target, namePath);
-        IRIO tempoObj = tempoPath == null ? null : PathSyntax.parse(target, tempoPath);
+        IRIO nameObj = namePath.get(target);
+        IRIO tempoObj = tempoPath == null ? null : tempoPath.get(target);
         double tempo = 1;
         if (tempoObj != null)
             tempo = tempoObj.getFX() / 100d;

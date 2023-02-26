@@ -23,9 +23,9 @@ import r48.ui.UITileGrid;
 public class EventTileReplacerSchemaElement extends SchemaElement {
     public final TSDB displayMap;
     public final int layer;
-    public final String charName, charIdx;
+    public final PathSyntax charName, charIdx;
 
-    public EventTileReplacerSchemaElement(TSDB dmap, int l, String idx, String n) {
+    public EventTileReplacerSchemaElement(TSDB dmap, int l, PathSyntax idx, PathSyntax n) {
         displayMap = dmap;
         layer = l;
         charName = n;
@@ -35,13 +35,13 @@ public class EventTileReplacerSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UITileGrid r = new UITileGrid(launcher.getContextRenderer(), layer, displayMap.mapping, FontSizes.getSpriteScale());
-        if (PathSyntax.parse(target, charName).decString().length() == 0)
-            r.setSelected((int) PathSyntax.parse(target, charIdx).getFX());
+        if (charName.get(target).decString().length() == 0)
+            r.setSelected((int) charIdx.get(target).getFX());
         r.onSelectionChange = new Runnable() {
             @Override
             public void run() {
-                PathSyntax.parse(target, charName).setString("");
-                PathSyntax.parse(target, charIdx).setFX(r.getSelected());
+                charName.get(target).setString("");
+                charIdx.get(target).setFX(r.getSelected());
                 path.changeOccurred(false);
                 launcher.popObject();
             }

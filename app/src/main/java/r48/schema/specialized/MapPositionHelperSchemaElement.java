@@ -25,9 +25,9 @@ import r48.schema.util.SchemaPath;
  * Created on 11/06/17.
  */
 public class MapPositionHelperSchemaElement extends SchemaElement {
-    public final String pathA, pathB, pathC;
+    public final PathSyntax pathA, pathB, pathC;
 
-    public MapPositionHelperSchemaElement(String a, String b, String c) {
+    public MapPositionHelperSchemaElement(PathSyntax a, PathSyntax b, PathSyntax c) {
         pathA = a;
         pathB = b;
         pathC = c;
@@ -37,11 +37,11 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         IRIO pathARIO = null;
         if (pathA != null)
-            pathARIO = PathSyntax.parse(target, pathA);
+            pathARIO = pathA.get(target);
         final IRIO[] abc = {
                 pathARIO,
-                PathSyntax.parse(target, pathB),
-                PathSyntax.parse(target, pathC)
+                pathB.get(target),
+                pathC.get(target)
         };
         for (int i = (pathA == null ? 1 : 0); i < 3; i++)
             if (abc[i] == null)

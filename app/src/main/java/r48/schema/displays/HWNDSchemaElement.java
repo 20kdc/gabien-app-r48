@@ -25,9 +25,10 @@ import r48.ui.help.UIHelpSystem;
  * Created on 2/15/17.
  */
 public class HWNDSchemaElement extends SchemaElement {
-    public final String ivar, file;
+    public final PathSyntax ivar;
+    public final String file;
 
-    public HWNDSchemaElement(String iv, String f) {
+    public HWNDSchemaElement(PathSyntax iv, String f) {
         ivar = iv;
         file = f;
     }
@@ -43,7 +44,7 @@ public class HWNDSchemaElement extends SchemaElement {
             }
         };
         if (ivar != null) {
-            hsc.loadPage((int) PathSyntax.parse(target, ivar).getFX());
+            hsc.loadPage((int) ivar.get(target).getFX());
         } else {
             hsc.loadPage(0);
         }

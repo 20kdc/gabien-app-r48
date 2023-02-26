@@ -143,11 +143,18 @@ public class SDB {
                      * Gets a PathSyntax that can be substituted by null by replacing it with "."
                      * Null in these cases means unavailable information.
                      */
-                    public @Nullable String getNullablePathSyntax() {
+                    public @Nullable PathSyntax getNullablePathSyntax() {
                         String val = args[point++];
                         if (val.equals("."))
                             return null;
-                        return val;
+                        return PathSyntax.compile(val);
+                    }
+
+                    /**
+                     * Gets a PathSyntax.
+                     */
+                    public @NonNull PathSyntax getPathSyntax() {
+                        return PathSyntax.compile(args[point++]);
                     }
 
                     @Override
@@ -193,7 +200,7 @@ public class SDB {
                         //
                         if (text.equals("hwnd")) {
                             // These need their own translation mechanism
-                            String a = getNullablePathSyntax();
+                            PathSyntax a = getNullablePathSyntax();
                             return new HWNDSchemaElement(a, args[point++]);
                         }
                         if (text.equals("hide")) {
@@ -206,12 +213,12 @@ public class SDB {
                             });
                         }
                         if (text.equals("condHide") || text.equals("condHide!")) {
-                            final String path = args[point++];
+                            final PathSyntax path = getPathSyntax();
                             SchemaElement hide = get();
                             return new HiddenSchemaElement(hide, new IFunction<IRIO, Boolean>() {
                                 @Override
                                 public Boolean apply(IRIO rubyIO) {
-                                    return PathSyntax.parse(rubyIO, path).getType() == (text.endsWith("!") ? 'F' : 'T');
+                                    return path.get(rubyIO).getType() == (text.endsWith("!") ? 'F' : 'T');
                                 }
                             });
                         }
@@ -466,23 +473,23 @@ public class SDB {
                         if (text.equals("spriteSelector")) {
                             // C spritesheet[ Select face index... ] FaceSets/ 48 48 4 0 0 48 48 0
                             // +spriteSelector @face_index @face_name FaceSets/
-                            final String varPath = args[point++];
-                            final String imgPath = args[point++];
+                            final PathSyntax varPath = getPathSyntax();
+                            final PathSyntax imgPath = getPathSyntax();
                             final String imgPfx = args[point++];
                             return helpers.makeSpriteSelector(varPath, imgPath, imgPfx);
                         }
                         if (text.equals("r2kTonePicker")) {
-                            final String rPath = args[point++];
-                            final String gPath = args[point++];
-                            final String bPath = args[point++];
-                            final String sPath = args[point++];
+                            final PathSyntax rPath = getPathSyntax();
+                            final PathSyntax gPath = getPathSyntax();
+                            final PathSyntax bPath = getPathSyntax();
+                            final PathSyntax sPath = getPathSyntax();
                             return new TonePickerSchemaElement(rPath, gPath, bPath, sPath, 100);
                         } else if (text.equals("r2kTonePickerPreview")) {
-                            final String rPath = args[point++];
-                            final String gPath = args[point++];
-                            final String bPath = args[point++];
-                            final String sPath = args[point++];
-                            final String iPath = args[point++];
+                            final PathSyntax rPath = getPathSyntax();
+                            final PathSyntax gPath = getPathSyntax();
+                            final PathSyntax bPath = getPathSyntax();
+                            final PathSyntax sPath = getPathSyntax();
+                            final PathSyntax iPath = getPathSyntax();
                             final String iPrefix = args[point++];
                             return new TonePickerSchemaElement.Thumbnail(rPath, gPath, bPath, sPath, 100, iPath, iPrefix);
                         }
@@ -522,9 +529,9 @@ public class SDB {
                             final String contextName = args[point++];
                             final String base = args[point++];
                             final RubyIO defVal = ValueSyntax.decode(args[point++]);
-                            final String outer = args[point++];
+                            final PathSyntax outer = getPathSyntax();
                             final boolean hash = args[point++].equals("1");
-                            final String inner = args[point++];
+                            final PathSyntax inner = getPathSyntax();
                             final String interpret = args[point++];
                             final SchemaElement insideThat = get();
                             return new SchemaElement() {
@@ -545,9 +552,9 @@ public class SDB {
                                                 // Default val doesn't get carried over since it gets specced here
                                                 buttonText = baseEnum.buttonText;
                                             }
-                                            IRIO p = PathSyntax.parse(host, outer);
+                                            IRIO p = outer.get(host);
                                             if (p != null)
-                                                DictionaryUpdaterRunnable.coreLogic(viewOptions, createPathMap(inner), null, null, p, hash, interpret);
+                                                DictionaryUpdaterRunnable.coreLogic(viewOptions, inner, null, null, p, hash, interpret);
                                             convertViewToLookup();
                                         }
                                     };
@@ -585,11 +592,11 @@ public class SDB {
                             TSDB tilesetAllocations = null;
                             if (eText.equals("tableSTA"))
                                 tilesetAllocations = new TSDB(args[point++]);
-                            String iV = getNullablePathSyntax();
-                            String wV = getNullablePathSyntax();
-                            String hV = getNullablePathSyntax();
+                            PathSyntax iV = getNullablePathSyntax();
+                            PathSyntax wV = getNullablePathSyntax();
+                            PathSyntax hV = getNullablePathSyntax();
 
-                            IFunction<IRIO, String> iVT = getFunctionToReturn(iV == null ? TXDB.get("Open Table...") : TXDB.get(outerContext, iV));
+                            IFunction<IRIO, String> iVT = getFunctionToReturn(iV == null ? TXDB.get("Open Table...") : TXDB.get(outerContext, iV.decompiled));
 
                             int dc = Integer.parseInt(args[point++]);
                             int aW = Integer.parseInt(args[point++]);
@@ -629,7 +636,8 @@ public class SDB {
                                 "'star'", "ladder", "submerge", "'counter'",
                                 "poison", "noBoat", "noShip", "noAShip", "[terrainTag;8"
                             };
-                            return new FancyCategorizedTilesetRubyTableSchemaElement(8192, 1, 1, 1, "@flags", new int[] {0}, new BitfieldTableCellEditor(flags));
+                            PathSyntax fp = PathSyntax.compile("@flags");
+                            return new FancyCategorizedTilesetRubyTableSchemaElement(8192, 1, 1, 1, fp, new int[] {0}, new BitfieldTableCellEditor(flags));
                         }
                         if (text.equals("internal_r2kPPPID")) {
                             SchemaElement se = get();
@@ -644,14 +652,14 @@ public class SDB {
                             return new CTNativeSchemaElement(args[point++]);
 
                         if (text.equals("mapPositionHelper")) {
-                            String a = getNullablePathSyntax();
-                            String b = args[point++];
-                            String c = args[point++];
+                            PathSyntax a = getNullablePathSyntax();
+                            PathSyntax b = getPathSyntax();
+                            PathSyntax c = getPathSyntax();
                             return new MapPositionHelperSchemaElement(a, b, c);
                         }
                         if (text.equals("eventTileHelper")) {
-                            String c = args[point++];
-                            String d = args[point++];
+                            PathSyntax c = getPathSyntax();
+                            PathSyntax d = getPathSyntax();
                             String a = args[point++];
                             String b = args[point++];
                             return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(b), Integer.parseInt(a), c, d), getFunctionToReturn(TXDB.get("Select Tile Graphic...")));
@@ -662,29 +670,20 @@ public class SDB {
                         }
                         if (text.equals("soundPlayer")) {
                             String a = args[point++];
-                            return new SoundPlayerSchemaElement(a, "", null, null, null);
+                            return new SoundPlayerSchemaElement(a, PathSyntax.compile(""), null, null, null);
                         }
                         if (text.equals("soundPlayerComplex")) {
                             String prefix = args[point++];
-                            String namePath = args[point++];
-                            String volumePath = getNullablePathSyntax();
-                            String tempoPath = getNullablePathSyntax();
-                            String balancePath = getNullablePathSyntax();
+                            PathSyntax namePath = getPathSyntax();
+                            PathSyntax volumePath = getNullablePathSyntax();
+                            PathSyntax tempoPath = getNullablePathSyntax();
+                            PathSyntax balancePath = getNullablePathSyntax();
                             return new SoundPlayerSchemaElement(prefix, namePath, volumePath, tempoPath, balancePath);
                         }
                         // -- If all else fails, it's an ID to be looked up. --
                         return getSDBEntry(text);
                     }
                 }.get();
-            }
-
-            private IFunction<IRIO, IRIO> createPathMap(final String inner) {
-                return new IFunction<IRIO, IRIO>() {
-                    @Override
-                    public IRIO apply(IRIO rubyIO) {
-                        return PathSyntax.parse(rubyIO, inner);
-                    }
-                };
             }
 
             @Override
@@ -795,7 +794,7 @@ public class SDB {
                         throw new RuntimeException("Expects D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID / empty string] [data schema]");
                     }
                     ensureSDBProxy(args[0]);
-                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], createPathMap(root[1]), args[3].equals("1"), createPathMap(args[4]), Integer.parseInt(args[1]), interpret, dataSchema));
+                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], PathSyntax.compile(root[1]), args[3].equals("1"), PathSyntax.compile(args[4]), Integer.parseInt(args[1]), interpret, dataSchema));
                 } else if (c == 'd') {
                     // OLD SYSTEM
                     System.err.println("'d'-format is old. It'll stay around but won't get updated. Use 'D'-format instead. " + args[0]);
@@ -904,12 +903,17 @@ public class SDB {
                         }
                         final String textF = args[0].equals("name") ? TXDB.get(fPfx + "/" + args[1], text) : text;
 
+                        final PathSyntax[] argumentsPS = new PathSyntax[arguments.size()];
+                        int idx = 0;
+                        for (String ps : arguments)
+                            argumentsPS[idx++] = PathSyntax.compile(ps);
+
                         TXDB.nameDB.put(args[1], new IFunction<IRIO, String>() {
                             @Override
                             public String apply(IRIO rubyIO) {
                                 LinkedList<IRIO> parameters = new LinkedList<IRIO>();
-                                for (String arg : arguments) {
-                                    IRIO res = PathSyntax.parse(rubyIO, arg);
+                                for (PathSyntax arg : argumentsPS) {
+                                    IRIO res = arg.get(rubyIO);
                                     if (res == null)
                                         break;
                                     parameters.add(res);

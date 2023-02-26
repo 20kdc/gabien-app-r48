@@ -28,12 +28,12 @@ public abstract class BaseRubyTableSchemaElement extends SchemaElement {
     public final @Nullable PathSyntax iVar;
     public final int[] defVals;
 
-    public BaseRubyTableSchemaElement(int dw, int dh, int p, int d, String iV, int[] defaults) {
+    public BaseRubyTableSchemaElement(int dw, int dh, int p, int d, @Nullable PathSyntax iV, int[] defaults) {
         defW = dw;
         defH = dh;
         planes = p;
         dimensions = d;
-        iVar = iV == null ? null : PathSyntax.compile(iV);
+        iVar = iV;
         defVals = defaults;
     }
     

@@ -209,7 +209,8 @@ public abstract class MapSystem {
         }
 
         public static MapViewState fromRT(StuffRenderer stuffRenderer, String underscoreMapObjectId, String[] ex, final IRIO its, final String str, final boolean readOnly, IEventAccess iea) {
-            final IRIO sz = PathSyntax.parse(its, str);
+            // This happens once in a blue moon, it's fine
+            final IRIO sz = PathSyntax.compile(str).get(its);
             final RubyTable rt = new RubyTable(sz.getBuffer());
             return new MapViewState(stuffRenderer, underscoreMapObjectId, ex, rt.width, rt.height, rt.planeCount, new IFunction<int[], Short>() {
                 @Override

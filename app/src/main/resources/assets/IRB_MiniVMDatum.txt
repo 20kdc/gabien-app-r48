@@ -1,0 +1,37 @@
+
+ * gabien-app-r48 - Editing program for various formats
+ * Written starting in 2016 by contributors (see CREDITS.txt)
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
+
+"MiniVM" is not to be confused with any other "MiniVM".
+If you feel there is a danger of confusion, feel free to refer to it as SortOfLispLikeButNotReallyInternalR48VM.
+
+"Datum" is not to be confused with any other "Datum".
+If you feel there is a danger of confusion, feel free to refer to it as R48TerribleS-ExpressionObjectNotation.
+
+MiniVM & Datum: What, why, and how
+ 26th February, 2023
+
+Datum is an S-expression language being positioned as the future replacement for DBLoader.
+Datum's main use, at least at first, is going to be trying to break down the parts of R48 that are just awful.
+
+MiniVM is a system for efficient scripting within R48.
+
+It's meant to:
++ improve PathSyntax performance
++ be applicable to future cases where it's preferrable to move code out of the R48 Java body
+
+The assumption is that it will be used with the Datum project in future to create a Lisp-styled language.
+This is going to start with the PathSyntax takeover.
+
+MiniVM execution is based on a tree of expressions.
+Expressions are executed with a context and a set of 8 "local variables" as arguments.
+The purpose of implementing local variables as individual arguments rather than an array is for GC performance reasons.
+These local variables, as such, operate in a Lisp "let"-style fashion. Changes never propagate outwards.
+The upside is that trees may be safely nested to implement function calls without an explicit call mechanism.
+
+Some notes:
++ If more than 8 local variables, or mutable local variables, are needed, this is why the context exists.
+  However it would be advisable to keep context creation to an absolute minimum.
+  If possible most expressions should be executed with a null or immutable default context.

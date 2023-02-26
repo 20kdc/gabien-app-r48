@@ -7,6 +7,7 @@
 
 package r48.dbs;
 
+import gabien.uslx.append.IFunction;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.minivm.MVMCArrayGetImm;
@@ -24,32 +25,52 @@ import r48.minivm.MVMCPathHashDel;
  * With that in mind, do not escape this w/EscapedStringSyntax. It's not necessary.
  * Created on 08/06/17, heavily refactored 26 February 2023.
  */
-public final class PathSyntax {
+public final class PathSyntax implements IFunction<IRIO, IRIO> {
     // MiniVM programs for the various PathSyntax operations.
     private final MVMCExpr getProgram, addProgram, delProgram;
+    public final String decompiled;
 
     // NOTE: This must not contain anything used in ValueSyntax.
     public static char[] breakersSDB2 = new char[] {':', '@', ']'};
 
-    private PathSyntax(MVMCExpr g, MVMCExpr a, MVMCExpr d) {
+    private PathSyntax(MVMCExpr g, MVMCExpr a, MVMCExpr d, String dc) {
         getProgram = g;
         assert g.isPure;
         addProgram = a;
         delProgram = d;
+        decompiled = dc;
+    }
+
+    @Override
+    public IRIO apply(IRIO a) {
+        return get(a);
     }
 
     public final RORIO get(RORIO ro) {
         return get((IRIO) ro);
     }
 
+    /**
+     * Translates the input IRIO to the target IRIO, or null if an issue was encountered.
+     */
     public final IRIO get(IRIO v) {
         return getProgram.execute(null, v, null, null, null, null, null, null, null);
     }
 
+    /**
+     * Translates the input IRIO to the output.
+     * If it does not exist, adds the hash key/ivar.
+     * Returns null if an issue was encountered.
+     */
     public final IRIO add(IRIO v) {
         return addProgram.execute(null, v, null, null, null, null, null, null, null);
     }
 
+    /**
+     * Translates the input IRIO to the output.
+     * Then removes the "final component", i.e. specific ivar/hash entry.
+     * Returns null if an issue was encountered.
+     */
     public final IRIO del(IRIO v) {
         return delProgram.execute(null, v, null, null, null, null, null, null, null);
     }
@@ -92,18 +113,13 @@ public final class PathSyntax {
 
     // Used for missing IV autodetect
     public static String getAbsoluteIVar(PathSyntax iv) {
-        if (iv.getProgram instanceof MVMCGetIVar)
-            return ((MVMCGetIVar) iv.getProgram).key;
+        if (iv.getProgram instanceof MVMCGetIVar) {
+            MVMCGetIVar sb = ((MVMCGetIVar) iv.getProgram);
+            if (sb.base != MVMCExpr.getL0)
+                return null;
+            return sb.key;
+        }
         return null;
-    }
-
-    /**
-     * Deprecated because PathSyntax is being moved to a compilation-based system.
-     */
-    @Deprecated
-    public static IRIO parse(IRIO res, String arg) {
-        PathSyntax ps = compile(MVMCExpr.getL0, arg);
-        return ps.get(res);
     }
 
     public static PathSyntax compile(String arg) {
@@ -114,7 +130,7 @@ public final class PathSyntax {
         return compile(basePS.getProgram, arg);
     }
 
-    public static PathSyntax compile(MVMCExpr base, String arg) {
+    private static PathSyntax compile(MVMCExpr base, String arg) {
         // System.out.println("compiled pathsyntax " + arg);
         String workingArg = arg;
         while (workingArg.length() > 0) {
@@ -131,7 +147,7 @@ public final class PathSyntax {
                     IRIO hashVal = ValueSyntax.decode(esc);
                     MVMCExpr currentGet = new MVMCGetHashValImm(base, hashVal);
                     if (lastElement)
-                        return new PathSyntax(currentGet, new MVMCPathHashAdd(base, hashVal), new MVMCPathHashDel(base, hashVal));
+                        return new PathSyntax(currentGet, new MVMCPathHashAdd(base, hashVal), new MVMCPathHashDel(base, hashVal), arg);
                     base = currentGet;
                 } else if (subcom.startsWith(".")) {
                     queuedIV = subcom.substring(1);
@@ -139,11 +155,11 @@ public final class PathSyntax {
                     if (subcom.equals("length")) {
                         base = new MVMCArrayLength(base);
                         if (lastElement)
-                            return new PathSyntax(base, base, new MVMCError("Cannot delete array length. Fix your schema."));
+                            return new PathSyntax(base, base, new MVMCError("Cannot delete array length. Fix your schema."), arg);
                     } else if (subcom.equals("fail")) {
                         base = new MVMCExpr.Const(null);
                         if (lastElement)
-                            return new PathSyntax(base, base, base);
+                            return new PathSyntax(base, base, base, arg);
                     } else if (subcom.length() != 0) {
                         throw new RuntimeException("$-command must be '$' (self), '${\"someSFormatTextForHVal' (hash string), '${123' (hash number), '$:someIval' ('raw' iVar), '$length', '$fail'");
                     }
@@ -154,7 +170,7 @@ public final class PathSyntax {
                 final int atl = Integer.parseInt(subcom);
                 base = new MVMCArrayGetImm(base, atl);
                 if (lastElement)
-                    return new PathSyntax(base, base, new MVMCError("Cannot delete array element. Fix your schema."));
+                    return new PathSyntax(base, base, new MVMCError("Cannot delete array element. Fix your schema."), arg);
             } else {
                 throw new RuntimeException("Bad pathsynt starter " + f + " (did root get separated properly?) code " + arg);
             }
@@ -188,11 +204,11 @@ public final class PathSyntax {
                             res.rmIVar(iv);
                             return ivv;
                         }
-                    });
+                    }, arg);
                 base = currentGet;
             }
         }
-        return new PathSyntax(base, base, new MVMCError("Cannot delete empty/self path. Fix your schema."));
+        return new PathSyntax(base, base, new MVMCError("Cannot delete empty/self path. Fix your schema."), arg);
     }
 
     // Used by SDB stuff that generates paths.

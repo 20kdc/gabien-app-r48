@@ -4,15 +4,14 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
-from highest priority to lowest:
-+ finish full 2k3 editor (Done)
-+ eventually turn editor into huge gelatinous monstrosity (Working on it)
-
-short-term planning:
-+ Map looping support
-+ Helpfile rewrite
++ Make increasing use of Datum/MiniVM to clean up R48
+ + PathSyntax minivm (in progress)
+ + Datum-based language to compile to minivm (not even started yet)
 
 -- DELAYED --
+
++ Map looping support
++ Helpfile rewrite
 
 + Demetrius's various notes over IRC and such:
  + Nicer pattern-tiling map editing similar to the way paste works in the image editor
@@ -28,6 +27,3 @@ short-term planning:
 
 + send back SavePicture default value fixes, they probably need this (Well, I did mention it, but if anything's happened I don't see it)
  + Check this again on both sides!!!
-
-- Maybe remove IMI, which I'll rename the WAU.
-  Icky, kind of cancerous...

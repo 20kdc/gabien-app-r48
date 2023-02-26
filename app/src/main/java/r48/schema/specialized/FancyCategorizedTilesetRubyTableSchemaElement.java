@@ -15,6 +15,7 @@ import gabien.ui.UITabPane;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyTable;
+import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.tileedit.AutoTileTypeField;
@@ -32,7 +33,7 @@ import r48.ui.UITileGrid;
 public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTableSchemaElement {
     public final ITableCellEditor editor;
     
-    public FancyCategorizedTilesetRubyTableSchemaElement(int dw, int dh, int p, int d, String iV, int[] defaults, ITableCellEditor editor) {
+    public FancyCategorizedTilesetRubyTableSchemaElement(int dw, int dh, int p, int d, PathSyntax iV, int[] defaults, ITableCellEditor editor) {
         super(dw, dh, p, d, iV, defaults);
         this.editor = editor;
     }

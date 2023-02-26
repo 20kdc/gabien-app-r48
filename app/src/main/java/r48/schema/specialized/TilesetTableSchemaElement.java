@@ -11,6 +11,7 @@ import gabien.IGrDriver;
 import gabien.ui.Size;
 import r48.AppMain;
 import r48.FontSizes;
+import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
@@ -20,7 +21,7 @@ import r48.schema.specialized.tbleditors.ITableCellEditor;
  * Created on 1/4/17.
  */
 public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRenderer> {
-    public TilesetTableSchemaElement(String iVar, String wVar, String hVar, int dc, int dw, int dh, int defL, ITableCellEditor itce, int[] defVal) {
+    public TilesetTableSchemaElement(PathSyntax iVar, PathSyntax wVar, PathSyntax hVar, int dc, int dw, int dh, int defL, ITableCellEditor itce, int[] defVal) {
         super(iVar, wVar, hVar, dc, dw, dh, defL, itce, defVal);
     }
 
