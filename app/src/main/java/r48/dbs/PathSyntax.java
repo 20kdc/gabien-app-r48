@@ -54,7 +54,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
      * Translates the input IRIO to the target IRIO, or null if an issue was encountered.
      */
     public final IRIO get(IRIO v) {
-        return getProgram.execute(null, v, null, null, null, null, null, null, null);
+        return (IRIO) getProgram.execute(null, v, null, null, null, null, null, null, null);
     }
 
     /**
@@ -63,7 +63,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
      * Returns null if an issue was encountered.
      */
     public final IRIO add(IRIO v) {
-        return addProgram.execute(null, v, null, null, null, null, null, null, null);
+        return (IRIO) addProgram.execute(null, v, null, null, null, null, null, null, null);
     }
 
     /**
@@ -72,7 +72,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
      * Returns null if an issue was encountered.
      */
     public final IRIO del(IRIO v) {
-        return delProgram.execute(null, v, null, null, null, null, null, null, null);
+        return (IRIO) delProgram.execute(null, v, null, null, null, null, null, null, null);
     }
 
     // break to next token.
@@ -181,8 +181,8 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
                 if (lastElement)
                     return new PathSyntax(currentGet, new MVMCExpr(false) {
                         @Override
-                        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
-                            IRIO res = parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+                        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                            IRIO res = (IRIO) parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                             if (res == null)
                                 return null;
                             IRIO ivv = res.getIVar(iv);
@@ -196,8 +196,8 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
                         }
                     }, new MVMCExpr(false) {
                         @Override
-                        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
-                            IRIO res = parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+                        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                            IRIO res = (IRIO) parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                             if (res == null)
                                 return null;
                             IRIO ivv = res.getIVar(iv);

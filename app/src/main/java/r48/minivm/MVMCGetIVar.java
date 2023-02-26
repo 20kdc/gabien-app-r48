@@ -23,8 +23,8 @@ public class MVMCGetIVar extends MVMCExpr {
     }
 
     @Override
-    public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
-        IRIO res = base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+    public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        IRIO res = (IRIO) base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         if (res == null)
             return null;
         return res.getIVar(key);

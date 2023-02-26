@@ -6,8 +6,6 @@
  */
 package r48.minivm;
 
-import r48.io.data.IRIO;
-
 /**
  * MiniVM error stuff
  * Created 26th February 2023.
@@ -20,7 +18,7 @@ public final class MVMCError extends MVMCExpr {
     }
 
     @Override
-    public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+    public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
         throw new RuntimeException(message);
     }
 }

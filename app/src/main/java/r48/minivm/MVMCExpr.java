@@ -10,7 +10,7 @@ import r48.io.data.IRIO;
 
 /**
  * MiniVM compiled expression.
- * MiniVM handles IRIOs with null being an "undefined" value.
+ * MiniVM throws around Objects.
  * Created 26th February 2023.
  */
 public abstract class MVMCExpr {
@@ -18,7 +18,7 @@ public abstract class MVMCExpr {
     public MVMCExpr(boolean pure) {
         isPure = pure;
     }
-    public abstract IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7);
+    public abstract Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7);
 
     /**
      * Constant.
@@ -30,56 +30,56 @@ public abstract class MVMCExpr {
             value = v;
         }
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return value;
         }
     }
 
     public static final MVMCExpr getL0 = new MVMCExpr(true) {
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l0;
         }
     };
     public static final MVMCExpr getL1 = new MVMCExpr(true) {
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l1;
         }
     };
     public static final MVMCExpr getL2 = new MVMCExpr(true) {
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l2;
         }
     };
     public static final MVMCExpr getL3 = new MVMCExpr(true) {
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l3;
         }
     };
     public static final MVMCExpr getL4 = new MVMCExpr(true) {
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l4;
         }
     };
     public static final MVMCExpr getL5 = new MVMCExpr(true) {
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l5;
         }
     };
     public static final MVMCExpr getL6 = new MVMCExpr(true) {
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l6;
         }
     };
     public static final MVMCExpr getL7 = new MVMCExpr(true) {
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l7;
         }
     };
@@ -119,7 +119,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l0 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -129,7 +129,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l1 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -139,7 +139,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l2 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -149,7 +149,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l3 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -159,7 +159,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l4 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -169,7 +169,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l5 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -179,7 +179,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l6 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -189,7 +189,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l7 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
