@@ -32,10 +32,10 @@ public final class FindTranslatablesToolButton extends ToolButton {
     public UIMTBase apply(final IMapToolContext a) {
         UIMapView umv = a.getMapView();
         final IObjectBackend.ILoadedObject map = umv.map.object;
-        UICommandSites ucs = new UICommandSites(umv.map.objectId, new ISupplier<CommandSite[]>() {
+        UICommandSites ucs = new UICommandSites(umv.app, umv.map.objectId, new ISupplier<CommandSite[]>() {
             @Override
             public CommandSite[] get() {
-                RMFindTranslatables rft = new RMFindTranslatables(map);
+                RMFindTranslatables rft = new RMFindTranslatables(umv.app, map);
                 rft.addSitesFromMap(a.getMapView(), ep);
                 return rft.toArray();
             }

@@ -10,9 +10,9 @@ package r48.toolsets.utils;
 import gabien.IPeripherals;
 import gabien.ui.Rect;
 import gabien.ui.UIScrollLayout;
-import gabien.ui.UIElement.UIProxy;
 import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.ISupplier;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -24,7 +24,7 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 17th September 2022
  */
-public class UICommandSites extends UIProxy {
+public class UICommandSites extends App.Prx {
     private final ISupplier<CommandSite[]> refresh;
     private final IObjectBackend.ILoadedObject[] roots;
 
@@ -39,7 +39,8 @@ public class UICommandSites extends UIProxy {
         }
     };
 
-    public UICommandSites(String name, ISupplier<CommandSite[]> supplier, IObjectBackend.ILoadedObject[] r) {
+    public UICommandSites(App app, String name, ISupplier<CommandSite[]> supplier, IObjectBackend.ILoadedObject[] r) {
+        super(app);
         objIdName = name;
         refresh = supplier;
         roots = r;
@@ -51,7 +52,7 @@ public class UICommandSites extends UIProxy {
     }
 
     public void show() {
-        AppMain.window.createWindow(this, "findTranslatables");
+        app.window.createWindow(this, "findTranslatables");
     }
 
     @Override

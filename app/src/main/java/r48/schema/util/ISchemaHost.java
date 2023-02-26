@@ -9,6 +9,7 @@ package r48.schema.util;
 
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
+import r48.App;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.schema.SchemaElement;
@@ -52,4 +53,7 @@ public interface ISchemaHost {
     // Used to shutdown all schema hosts during a revert.
     // No-op if the host isn't active.
     void shutdown();
+
+    // Yet another way to get an App to avoid pipelining
+    App getApp();
 }

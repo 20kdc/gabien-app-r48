@@ -10,6 +10,7 @@ package gabien;
 import gabien.uslx.append.*;
 import gabien.uslx.vfs.FSBackend;
 import gabien.ui.IPointer;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.ObjectDB;
@@ -186,7 +187,8 @@ public class TestKickstart {
     }
 
     public static void resetODB() {
-        AppMain.objectDB = new ObjectDB(IObjectBackend.Factory.create(AppMain.odbBackend, AppMain.rootPath, AppMain.dataPath, AppMain.dataExt), new IConsumer<String>() {
+        App app = AppMain.instance;
+        AppMain.objectDB = new ObjectDB(IObjectBackend.Factory.create(app.odbBackend, AppMain.rootPath, app.dataPath, app.dataExt), new IConsumer<String>() {
             @Override
             public void accept(String s) {
 

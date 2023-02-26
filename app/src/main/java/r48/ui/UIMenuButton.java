@@ -12,6 +12,7 @@ import gabien.ui.UIAutoclosingPopupMenu;
 import gabien.ui.UIElement;
 import gabien.ui.UIPopupMenu;
 import gabien.ui.UITextButton;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 
@@ -20,7 +21,7 @@ import r48.FontSizes;
  * Created on November 14, 2018.
  */
 public class UIMenuButton extends UITextButton {
-    public UIMenuButton(String s, int h2, final ISupplier<UIElement> runnable) {
+    public UIMenuButton(App app, String s, int h2, final ISupplier<UIElement> runnable) {
         super(s, h2, null);
         toggle = true;
         onClick = new Runnable() {
@@ -28,7 +29,7 @@ public class UIMenuButton extends UITextButton {
             public void run() {
                 state = true;
                 UIElement basis = runnable.get();
-                AppMain.window.createMenu(UIMenuButton.this, new UIProxy(basis, false) {
+                app.window.createMenu(UIMenuButton.this, new UIProxy(basis, false) {
                     @Override
                     public void onWindowClose() {
                         super.onWindowClose();
@@ -39,8 +40,8 @@ public class UIMenuButton extends UITextButton {
         };
     }
 
-    public UIMenuButton(String s, int h2, final ISupplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
-        this(s, h2, new ISupplier<UIElement>() {
+    public UIMenuButton(App app, String s, int h2, final ISupplier<Boolean> continued, final String[] text, final Runnable[] runnables) {
+        this(app, s, h2, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
                 return new UIAutoclosingPopupMenu(text, runnables, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true) {
@@ -56,12 +57,12 @@ public class UIMenuButton extends UITextButton {
         });
     }
 
-    public UIMenuButton(String s, int h2, final ISupplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
-        this(s, h2, continued, new ArrayIterable<UIPopupMenu.Entry>(runnables));
+    public UIMenuButton(App app, String s, int h2, final ISupplier<Boolean> continued, UIPopupMenu.Entry[] runnables) {
+        this(app, s, h2, continued, new ArrayIterable<UIPopupMenu.Entry>(runnables));
     }
 
-    public UIMenuButton(String s, int h2, final ISupplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
-        this(s, h2, new ISupplier<UIElement>() {
+    public UIMenuButton(App app, String s, int h2, final ISupplier<Boolean> continued, final Iterable<UIPopupMenu.Entry> runnables) {
+        this(app, s, h2, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
                 return new UIAutoclosingPopupMenu(runnables, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true) {

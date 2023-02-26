@@ -13,6 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UITextButton;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.CMDB;
@@ -32,12 +33,13 @@ import r48.schema.util.SchemaPath;
 /**
  * Created on 14th September 2022 to house findTranslatables code.
  */
-public class RMFindTranslatables {
+public class RMFindTranslatables extends App.Svc {
     public final @NonNull String objIdName;
     public final @NonNull IObjectBackend.ILoadedObject objRoot;
     public final LinkedList<CommandSite> sites = new LinkedList<CommandSite>();
 
-    public RMFindTranslatables(final IObjectBackend.ILoadedObject ilo) {
+    public RMFindTranslatables(App app, final IObjectBackend.ILoadedObject ilo) {
+        super(app);
         objIdName = AppMain.objectDB.getIdByObjectOrThrow(ilo);
         objRoot = ilo;
     }
@@ -106,7 +108,7 @@ public class RMFindTranslatables {
             long cmdCode = cmd.getIVar("@code").getFX();
             RPGCommand cmdDetail = cmdbEditor.database.knownCommands.get((Integer) (int) cmdCode);
             if (cmdDetail.isTranslatable) {
-                CommandSite tu = siteFromContext(cmdbEditor, ctx, eventList, i, cmd, basePaths);
+                CommandSite tu = siteFromContext(app, cmdbEditor, ctx, eventList, i, cmd, basePaths);
                 sites.add(tu);
             }
         }
@@ -116,13 +118,13 @@ public class RMFindTranslatables {
         return (EventCommandArraySchemaElement) AggregateSchemaElement.extractField(AppMain.schemas.getSDBEntry(cmdbEditor), null);
     }
 
-    public static CommandSite siteFromContext(final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath[] basePaths) {
+    public static CommandSite siteFromContext(App app, final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath[] basePaths) {
         final CMDB cmdb = cmdbEditor.database;
         String text = cmdb.buildGroupCodename(listObj, codeIndex, true);
         final UITextButton button = new UITextButton(text, FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
-                ISchemaHost shi = new SchemaHostImpl(mapView);
+                ISchemaHost shi = new SchemaHostImpl(app, mapView);
                 for (SchemaPath sp : basePaths)
                     shi.pushObject(sp);
                 SchemaPath sp = shi.getCurrentObject();

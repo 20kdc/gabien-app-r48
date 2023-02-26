@@ -9,6 +9,7 @@ package r48.schema;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
@@ -30,8 +31,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class HashSchemaElement extends SchemaElement {
     public SchemaElement keyElem, valElem;
     public boolean flexible;
+    public final App app;
 
-    public HashSchemaElement(SchemaElement keySE, SchemaElement opaqueSE, boolean flexible) {
+    public HashSchemaElement(App app, SchemaElement keySE, SchemaElement opaqueSE, boolean flexible) {
+        this.app = app;
         keyElem = keySE;
         valElem = opaqueSE;
         this.flexible = flexible;
@@ -161,7 +164,7 @@ public class HashSchemaElement extends SchemaElement {
         if (ke instanceof EnumSchemaElement)
             return ((EnumSchemaElement) ke).viewValue(v, true);
         if (ke instanceof OSStrHashMapSchemaElement)
-            return OSStrHashMapSchemaElement.decode(v);
+            return OSStrHashMapSchemaElement.decode(app, v);
         return TXDB.get("Key ") + v;
     }
 

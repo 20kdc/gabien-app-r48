@@ -56,7 +56,7 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
             return new UILabel(TXDB.get("No such map exists."), FontSizes.schemaFieldTextHeight);
         final long x = abc[1].getFX();
         final long y = abc[2].getFX();
-        final UIMapView umv = new UIMapView(mapGUM, 320, FontSizes.scaleGuess(192));
+        final UIMapView umv = new UIMapView(launcher.getApp(), mapGUM, 320, FontSizes.scaleGuess(192));
         umv.callbacks = new IMapViewCallbacks() {
             @Override
             public short shouldDrawAt(MapViewDrawContext.MouseStatus mouse, int tx, int ty, short there, int layer, int currentLayer) {

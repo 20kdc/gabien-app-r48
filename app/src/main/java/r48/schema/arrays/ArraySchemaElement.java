@@ -10,6 +10,7 @@ package r48.schema.arrays;
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
+import r48.App;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -57,6 +58,7 @@ public abstract class ArraySchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path2) {
         final SchemaPath path = monitorsSubelements() ? path2.tagSEMonitor(target, this, false) : path2;
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
+        final App app = launcher.getApp();
 
         uiHelper.provideInterfaceFrom(new Host() {
             @Override
@@ -67,6 +69,11 @@ public abstract class ArraySchemaElement extends SchemaElement {
             @Override
             public void panelsAdd(UIElement element) {
                 uiSVL.panelsAdd(element);
+            }
+
+            @Override
+            public App getApp() {
+                return app;
             }
         }, launcher.getValidity(), new IFunction<String, IArrayInterface.IProperty>() {
             @Override

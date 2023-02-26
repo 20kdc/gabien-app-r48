@@ -10,6 +10,7 @@ package r48.ui.utilitybelt;
 import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -32,7 +33,7 @@ import java.util.LinkedList;
  * Oh, this can't be good news.
  * - 7th October, 2017
  */
-public class ImageEditorController {
+public class ImageEditorController extends App.Svc {
     public UISplitterLayout rootView;
     private UIImageEditView imageEditView;
     private UIScrollLayout paletteView;
@@ -49,7 +50,8 @@ public class ImageEditorController {
     // Warnings
     private boolean hasWarnedUserAboutRM;
 
-    public ImageEditorController() {
+    public ImageEditorController(App app) {
+        super(app);
         imageEditView = new UIImageEditView(new RootImageEditorTool(), new Runnable() {
             @Override
             public void run() {
@@ -174,7 +176,7 @@ public class ImageEditorController {
         menuFuncs.add(new Runnable() {
             @Override
             public void run() {
-                AppMain.window.createMenu(fileButtonMenuHook, showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
+                app.window.createMenu(fileButtonMenuHook, showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
                     @Override
                     public void accept(Rect rect) {
                         imageEditView.eds.startSection();
@@ -321,18 +323,18 @@ public class ImageEditorController {
                         }
                     });
                 }
-                AppMain.window.createWindow(new UIAutoclosingPopupMenu(items.toArray(new String[0]), runnables.toArray(new Runnable[0]), FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
+                app.window.createWindow(new UIAutoclosingPopupMenu(items.toArray(new String[0]), runnables.toArray(new Runnable[0]), FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
             }
         }));
         menuDetails.add(TXDB.get("CharacterGen..."));
         menuFuncs.add(new Runnable() {
             @Override
             public void run() {
-                AppMain.window.createWindow(new CharacterGeneratorController().rootView);
+                app.window.createWindow(new CharacterGeneratorController(app).rootView);
             }
         });
 
-        fileButtonMenuHook = new UIMenuButton(TXDB.get("File..."), FontSizes.imageEditorTextHeight, new ISupplier<Boolean>() {
+        fileButtonMenuHook = new UIMenuButton(app, TXDB.get("File..."), FontSizes.imageEditorTextHeight, new ISupplier<Boolean>() {
             @Override
             public Boolean get() {
                 return paletteThing == currentPaletteThing;
@@ -340,7 +342,7 @@ public class ImageEditorController {
         }, menuDetails.toArray(new String[0]), menuFuncs.toArray(new Runnable[0]));
         paletteView.panelsAdd(fileButtonMenuHook);
 
-        paletteView.panelsAdd(new UIMenuButton(TXDB.get("Grid..."), FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
+        paletteView.panelsAdd(new UIMenuButton(app, TXDB.get("Grid..."), FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
                 // The grid changer used to be using the same XY changer as resizing, then that became impractical.
@@ -370,7 +372,7 @@ public class ImageEditorController {
                 uicsb.onClick = new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.window.createMenu(uicsb, new UIColourPicker(TXDB.get("Grid Colour"), imageEditView.gridColour, new IConsumer<Integer>() {
+                        app.window.createMenu(uicsb, new UIColourPicker(TXDB.get("Grid Colour"), imageEditView.gridColour, new IConsumer<Integer>() {
                             @Override
                             public void accept(Integer t) {
                                 if (t != null)
@@ -436,7 +438,7 @@ public class ImageEditorController {
             paletteView.panelsAdd(sanityButtonHolder = new UISplitterLayout(cType, sanityButton, false, 1));
         }
 
-        paletteView.panelsAdd(new UISplitterLayout(new UIMenuButton("+", FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
+        paletteView.panelsAdd(new UISplitterLayout(new UIMenuButton(app, "+", FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
                 return new UIColourPicker(TXDB.get("Add Palette Colour..."), imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex) | 0xFF000000, new IConsumer<Integer>() {
@@ -501,7 +503,7 @@ public class ImageEditorController {
                     }
                 }, FontSizes.imageEditorTextHeight);
             }
-            cPanel = new UISplitterLayout(new UIMenuButton("=", FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
+            cPanel = new UISplitterLayout(new UIMenuButton(app, "=", FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
                 @Override
                 public UIElement get() {
                     return new UIColourPicker(TXDB.get("Change Palette Colour..."), imageEditView.image.getPaletteRGB(fidx), new IConsumer<Integer>() {

@@ -10,6 +10,7 @@ package r48.map.mapinfos;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.AppMain;
+import r48.App;
 import r48.FontSizes;
 import r48.IMapContext;
 import r48.dbs.TXDB;
@@ -29,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p/>
  * Created on 1/1/17. Copied for Generic RM Map Infos on Jun 2 2017.
  */
-public class UIGRMMapInfos extends UIElement.UIProxy {
+public class UIGRMMapInfos extends App.Prx {
     private final IRMLikeMapInfoBackendWPub operators;
     private final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
     private final UITreeView utv;
@@ -50,6 +51,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
     };
 
     public UIGRMMapInfos(final IRMLikeMapInfoBackendWPub b, IMapContext context, String mapInfos) {
+        super(context.getApp());
         utv = new UITreeView(UIBorderedElement.getRecommendedTextSize("", FontSizes.mapInfosTextHeight).height);
         operators = b;
         mapContext = context;
@@ -177,7 +179,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                         return close.get();
                     }
                 };
-                AppMain.window.createWindow(dialog);
+                mapContext.getApp().window.createWindow(dialog);
             }
         }));
     }
@@ -245,7 +247,7 @@ public class UIGRMMapInfos extends UIElement.UIProxy {
                     operators.triggerEditInfoOf(k);
                 }
             }, FontSizes.mapInfosTextHeight);
-            elm = new UIAppendButton(TXDB.get("Delete"), elm, null, new String[] {TXDB.get("Confirm")}, new Runnable[] {new Runnable() {
+            elm = new UIAppendButton(app, TXDB.get("Delete"), elm, null, new String[] {TXDB.get("Confirm")}, new Runnable[] {new Runnable() {
                 @Override
                 public void run() {
                     // Orphan/move up child nodes first

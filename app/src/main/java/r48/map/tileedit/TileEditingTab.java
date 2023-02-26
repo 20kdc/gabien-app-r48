@@ -1,6 +1,6 @@
 package r48.map.tileedit;
 
-import r48.AppMain;
+import r48.App;
 
 /**
  * Created on December 29, 2018.
@@ -21,7 +21,7 @@ public final class TileEditingTab {
         visTilesHover = type;
     }
 
-    public TileEditingTab(String text, boolean dnu, int[] typea, AutoTileTypeField[] attf) {
+    public TileEditingTab(App app, String text, boolean dnu, int[] typea, AutoTileTypeField[] attf) {
         int[] typeb = new int[typea.length];
         int[] typec = new int[typea.length];
         for (int i = 0; i < typea.length; i++) {
@@ -32,7 +32,7 @@ public final class TileEditingTab {
                 if (t >= at.start) {
                     if (t < (at.length + at.start)) {
                         typeb[i] += at.represent;
-                        typec[i] += AppMain.autoTiles[at.databaseId].inverseMap[0xFF];
+                        typec[i] += app.autoTiles[at.databaseId].inverseMap[0xFF];
                         break;
                     }
                 }

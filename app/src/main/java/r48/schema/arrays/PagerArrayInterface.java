@@ -10,6 +10,7 @@ package r48.schema.arrays;
 import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -45,6 +46,7 @@ public class PagerArrayInterface implements IArrayInterface {
             // regular array mode
             final UITextButton swapModeButton = new UITextButton(TXDB.get("Mode: Regular Array"), FontSizes.schemaFieldTextHeight, swapModeAndReset);
             svl.panelsAdd(swapModeButton);
+            final App app = svl.getApp();
             regularArrayInterface.provideInterfaceFrom(new Host() {
                 
                 @Override
@@ -56,6 +58,11 @@ public class PagerArrayInterface implements IArrayInterface {
                 @Override
                 public void panelsAdd(UIElement element) {
                     svl.panelsAdd(element);
+                }
+
+                @Override
+                public App getApp() {
+                    return app;
                 }
             }, valid, prop, getPositions);
             return;

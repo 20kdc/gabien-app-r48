@@ -11,7 +11,7 @@ import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
-import r48.AppMain;
+import r48.App;
 import r48.RubyTable;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;
@@ -24,7 +24,7 @@ import r48.map.tileedit.TileEditingTab;
 /**
  * Created on 1/27/17.
  */
-public class XPTileRenderer implements ITileRenderer {
+public class XPTileRenderer extends App.Svc implements ITileRenderer {
     public final IImage[] tilesetMaps = new IImage[8];
 
     public static final int tileSize = 32;
@@ -35,7 +35,8 @@ public class XPTileRenderer implements ITileRenderer {
         return tileSize;
     }
 
-    public XPTileRenderer(IImageLoader imageLoader, IRIO tileset) {
+    public XPTileRenderer(App app, IImageLoader imageLoader, IRIO tileset) {
+        super(app);
         // If the tileset's null, then just give up.
         // The tileset being/not being null is an implementation detail anyway.
         if (tileset != null) {
@@ -77,7 +78,7 @@ public class XPTileRenderer implements ITileRenderer {
                 int animSets = tilesetMaps[atMap].getWidth() / 96;
                 if (animSets > 0)
                     animControl = (96 * (getFrame() % animSets));
-                didDraw = didDraw || generalOldRMATField(animControl, 0, tidx, 0, tileSize, px, py, igd, tilesetMaps[atMap], spriteScale);
+                didDraw = didDraw || generalOldRMATField(animControl, 0, tidx, app.autoTiles[0], tileSize, px, py, igd, tilesetMaps[atMap], spriteScale);
             } else {
                 didDraw = true; // It's invisible, so it should just be considered drawn no matter what
             }
@@ -94,11 +95,11 @@ public class XPTileRenderer implements ITileRenderer {
     }
 
     // Used by 2k3 support too, since it follows the same AT design
-    public static boolean generalOldRMATField(int tox, int toy, int subfield, int atFieldType, int fTileSize, int px, int py, IGrDriver igd, IImage img, int spriteScale) {
-        if (AppMain.autoTiles[atFieldType] != null) {
-            if (subfield >= AppMain.autoTiles[atFieldType].entries.length)
+    public static boolean generalOldRMATField(int tox, int toy, int subfield, ATDB atFieldType, int fTileSize, int px, int py, IGrDriver igd, IImage img, int spriteScale) {
+        if (atFieldType != null) {
+            if (subfield >= atFieldType.entries.length)
                 return false;
-            ATDB.Autotile at = AppMain.autoTiles[atFieldType].entries[subfield];
+            ATDB.Autotile at = atFieldType.entries[subfield];
             if (at != null) {
                 int cSize = fTileSize / 2;
                 for (int sA = 0; sA < 2; sA++)
@@ -123,7 +124,7 @@ public class XPTileRenderer implements ITileRenderer {
         if (tm0 != null)
             tileCount = ((tm0.getHeight() / 32) * 8);
         return new TileEditingTab[] {
-                new TileEditingTab("AUTO", false, new int[] {
+                new TileEditingTab(app, "AUTO", false, new int[] {
                         0,
                         48,
                         48 * 2,

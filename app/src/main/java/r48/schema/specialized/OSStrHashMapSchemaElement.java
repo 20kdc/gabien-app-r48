@@ -10,6 +10,7 @@ package r48.schema.specialized;
 import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -32,8 +33,9 @@ import java.util.HashMap;
 public class OSStrHashMapSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
-        tryInitOSSHESEDB();
-        if (AppMain.osSHESEDB == null)
+        App app = launcher.getApp();
+        tryInitOSSHESEDB(app);
+        if (app.osSHESEDB == null)
             AppMain.launchDialog(TXDB.get("This is basically useless without a locmaps.txt file. Please prepare one by going into RXP mode, System Tools, and pressing 'Retrieve all object strings', then return here."));
         final UITextBox utb = new UITextBox("", FontSizes.schemaFieldTextHeight);
         utb.onEdit = new Runnable() {
@@ -50,7 +52,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
         return utb;
     }
 
-    public static void tryInitOSSHESEDB() {
+    public static void tryInitOSSHESEDB(App app) {
         InputStream inp = null;
         try {
             inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(AppMain.rootPath + "locmaps.txt"));
@@ -70,7 +72,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
                 bigMap.put(hashString(data), dataStr);
             }
             inp.close();
-            AppMain.osSHESEDB = bigMap;
+            app.osSHESEDB = bigMap;
             // Insert strings here that won't be covered by the locmap
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,12 +111,12 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
         }
     }
 
-    public static String decode(IRIO v) {
-        if (AppMain.osSHESEDB == null)
-            tryInitOSSHESEDB();
+    public static String decode(App app, IRIO v) {
+        if (app.osSHESEDB == null)
+            tryInitOSSHESEDB(app);
         int type = v.getType();
         if (type == 'i')
-            return mainDecode((int) v.getFX());
+            return mainDecode(app, (int) v.getFX());
         if (type == 'l') {
             int p = 0;
             // crc32: 468dce18
@@ -125,15 +127,15 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
                 p <<= 8;
                 p |= buf[i] & 0xFF;
             }
-            return mainDecode(p);
+            return mainDecode(app, p);
         }
         return v.toString();
     }
 
-    private static String mainDecode(int fixnumVal) {
-        if (AppMain.osSHESEDB == null)
+    private static String mainDecode(App app, int fixnumVal) {
+        if (app.osSHESEDB == null)
             return TXDB.get("[NO DB AVAILABLE]");
-        String r = AppMain.osSHESEDB.get(fixnumVal);
+        String r = app.osSHESEDB.get(fixnumVal);
         if (r == null)
             return TXDB.get("[UNKNOWN STRING. I just don't know what went wrong...]");
         return r;

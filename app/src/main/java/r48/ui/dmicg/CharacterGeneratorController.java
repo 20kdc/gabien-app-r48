@@ -12,6 +12,7 @@ import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -37,7 +38,7 @@ import java.util.LinkedList;
  * Demetrius wants this, so I'm doing this.
  * Created on December 16, 2018.
  */
-public class CharacterGeneratorController {
+public class CharacterGeneratorController extends App.Svc {
     public UIElement rootView;
     public HashMap<String, Layer> charCfg = new HashMap<String, Layer>();
     public LinkedList<LayerImage> charLay = new LinkedList<LayerImage>();
@@ -45,7 +46,8 @@ public class CharacterGeneratorController {
     private final UITabPane modes;
     private LinkedList<UICharGenView> views = new LinkedList<UICharGenView>();
 
-    public CharacterGeneratorController() {
+    public CharacterGeneratorController(App app) {
+        super(app);
         modes = new UITabPane(FontSizes.tabTextHeight, true, false);
         final UIScrollLayout availableOpts = new UIScrollLayout(true, FontSizes.cellSelectScrollersize);
         DBLoader.readFile("CharGen/Modes.txt", new IDatabase() {
@@ -108,7 +110,7 @@ public class CharacterGeneratorController {
                     l.swatch.onClick = new Runnable() {
                         @Override
                         public void run() {
-                            AppMain.window.createMenu(l.swatch, new UIColourPicker(l.naming.text, l.swatch.col, new IConsumer<Integer>() {
+                            app.window.createMenu(l.swatch, new UIColourPicker(l.naming.text, l.swatch.col, new IConsumer<Integer>() {
                                 @Override
                                 public void accept(Integer integer) {
                                     if (integer != null)
@@ -188,7 +190,7 @@ public class CharacterGeneratorController {
                 return TXDB.get("Character Generator");
             }
         };
-        Size sz = AppMain.window.getRootSize();
+        Size sz = app.window.getRootSize();
         rootView.setForcedBounds(null, new Rect(0, 0, sz.width / 2, sz.height / 2));
         Collections.sort(charLay, new Comparator<LayerImage>() {
             @Override

@@ -8,6 +8,7 @@
 package r48.map.systems;
 
 import gabien.uslx.append.*;
+import r48.App;
 import r48.AppMain;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -29,8 +30,8 @@ import r48.map.tiles.IkaTileRenderer;
  * Created on 03/06/17.
  */
 public class IkaSystem extends MapSystem {
-    public IkaSystem() {
-        super(new CacheImageLoader(new FixAndSecondaryImageLoader("Pbm/", "", new GabienImageLoader(".pbm", 0, 0, 0))), true);
+    public IkaSystem(App app) {
+        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader("Pbm/", "", new GabienImageLoader(".pbm", 0, 0, 0))), true);
     }
 
     public StuffRenderer rendererGeneral(IRIO map, IEventAccess iea) {

@@ -13,6 +13,7 @@ import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
+import r48.App;
 import r48.AppMain;
 import r48.IMapContext;
 import r48.RubyTable;
@@ -41,8 +42,8 @@ import java.util.LinkedList;
  * Created on 03/06/17.
  */
 public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSystem {
-    public RXPSystem() {
-        super(new CacheImageLoader(new FixAndSecondaryImageLoader("Graphics/", "", new ChainedImageLoader(new IImageLoader[] {
+    public RXPSystem(App app) {
+        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader("Graphics/", "", new ChainedImageLoader(new IImageLoader[] {
                 new GabienImageLoader(".png"),
                 new GabienImageLoader(".jpg"),
         }))), true);
@@ -87,7 +88,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     }
 
     public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events) {
-        XPTileRenderer tileRenderer = new XPTileRenderer(imageLoader, tileset);
+        XPTileRenderer tileRenderer = new XPTileRenderer(app, imageLoader, tileset);
         RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
         String pano = "";
         if (tileset != null) {
@@ -127,7 +128,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public StuffRenderer rendererFromTso(IRIO tso) {
-        ITileRenderer tileRenderer = new XPTileRenderer(imageLoader, tso);
+        ITileRenderer tileRenderer = new XPTileRenderer(app, imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }

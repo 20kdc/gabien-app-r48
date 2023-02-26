@@ -7,6 +7,7 @@
 
 package r48.map.systems;
 
+import r48.App;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.drawlayers.IMapViewDrawLayer;
@@ -22,10 +23,10 @@ import r48.map.tiles.NullTileRenderer;
  * Created on 03/06/17.
  */
 public class NullSystem extends MapSystem {
-    public NullSystem() {
+    public NullSystem(App app) {
         // Redundant cache as error safety net.
         // Having an explicit "ErrorSafetyNetImageLoader" would just complicate things.
-        super(new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new GabienImageLoader(""))), false);
+        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new GabienImageLoader(""))), false);
     }
 
     @Override

@@ -9,6 +9,7 @@ package r48.schema.arrays;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.io.data.IRIO;
 
 /**
@@ -21,6 +22,7 @@ public interface IArrayInterface {
     public interface Host {
         void panelsClear();
         void panelsAdd(UIElement element);
+        App getApp();
     }
 
     /*

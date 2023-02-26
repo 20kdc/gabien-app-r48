@@ -9,6 +9,7 @@ package r48.dbs;
 
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
+import r48.App;
 import r48.AppMain;
 import r48.DictionaryUpdaterRunnable;
 import r48.RubyIO;
@@ -48,7 +49,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * Kinda required for reading maps.
  * Created on 12/30/16.
  */
-public class SDB {
+public class SDB extends App.Svc {
     // The very unsafe option which will turn on all sorts of automatic script helper functions.
     // Some of which currently WILL destroy scripts. 315, map29
     // Ok, so I've checked in various ways and done a full restore from virgin copy.
@@ -71,7 +72,8 @@ public class SDB {
 
     public LinkedList<String> recommendedDirs = new LinkedList<String>();
 
-    public SDB() {
+    public SDB(App app) {
+        super(app);
         schemaDatabase.put("nil", new OpaqueSchemaElement());
         schemaDatabase.put("int", new IntegerSchemaElement(0));
         schemaDatabase.put("roint", new ROIntegerSchemaElement(0));
@@ -376,11 +378,11 @@ public class SDB {
                         }
                         if (text.equals("hash")) {
                             SchemaElement k = get();
-                            return new HashSchemaElement(k, get(), false);
+                            return new HashSchemaElement(app, k, get(), false);
                         }
                         if (text.equals("hashFlex")) {
                             SchemaElement k = get();
-                            return new HashSchemaElement(k, get(), true);
+                            return new HashSchemaElement(app, k, get(), true);
                         }
                         if (text.equals("hashObject") || text.equals("hashObjectInner")) {
                             // This never got used by anything, so it's set as always-v1p1
@@ -811,15 +813,15 @@ public class SDB {
                 } else if (c == 'A') {
                     // This is needed so the engine actually understands which autotiles map to what
                     int p = 0;
-                    AppMain.autoTiles = new ATDB[args.length / 2];
+                    app.autoTiles = new ATDB[args.length / 2];
                     for (int i = 0; i < args.length; i += 2) {
-                        AppMain.autoTiles[p] = new ATDB(args[i]);
+                        app.autoTiles[p] = new ATDB(args[i]);
                         // This is needed to make actual autotile *placement* work.
                         // In theory, it's independent of the AutoTiles setup,
                         //  so long as the AutoTiles setup's using the same sprite-sheets.
                         // In practice, it's only been tested with the default AutoTiles.txt setup.
                         if (!args[i + 1].equals("."))
-                            AppMain.autoTiles[p].calculateInverseMap(args[i + 1]);
+                            app.autoTiles[p].calculateInverseMap(args[i + 1]);
                         p++;
                     }
                 } else if (c == 'C') {
@@ -851,15 +853,15 @@ public class SDB {
                         schemaTrueDatabase.put("indent", schemaDatabase.get("indent"));
                     }
                     if (args[0].equals("objectDB"))
-                        AppMain.odbBackend = args[1];
+                        app.odbBackend = args[1];
                     if (args[0].equals("recommendMkdir"))
                         recommendedDirs.add(args[1]);
                     if (args[0].equals("dataPath"))
-                        AppMain.dataPath = args[1];
+                        app.dataPath = args[1];
                     if (args[0].equals("dataExt"))
-                        AppMain.dataExt = args[1];
+                        app.dataExt = args[1];
                     if (args[0].equals("versionId"))
-                        AppMain.sysBackend = args[1];
+                        app.sysBackend = args[1];
                     if (args[0].equals("defaultCB")) {
                         workingObj = new AggregateSchemaElement(new SchemaElement[] {});
                         commandBufferSchemas.put("x default", workingObj);

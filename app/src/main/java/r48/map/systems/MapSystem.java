@@ -11,6 +11,7 @@ import gabien.IGrDriver;
 import gabien.uslx.append.*;
 import gabien.ui.*;
 import r48.AppMain;
+import r48.App;
 import r48.FontSizes;
 import r48.IMapContext;
 import r48.RubyTable;
@@ -35,7 +36,7 @@ import r48.map.imaging.IImageLoader;
  * ...if it's a good idea is not my place to say. :)
  * Created on 03/06/17.
  */
-public abstract class MapSystem {
+public abstract class MapSystem extends App.Svc {
 
     // All implementations will probably use a common image loader across the mapsystem.
     // It's not an absolute, but it's pretty likely.
@@ -44,7 +45,8 @@ public abstract class MapSystem {
     //  apart from the generic StuffRenderers
     public final boolean enableMapSubsystem;
 
-    public MapSystem(IImageLoader imgLoad, boolean enableSwitch) {
+    public MapSystem(App app, IImageLoader imgLoad, boolean enableSwitch) {
+        super(app);
         imageLoader = imgLoad;
         enableMapSubsystem = enableSwitch;
     }
@@ -57,17 +59,17 @@ public abstract class MapSystem {
         return dobj;
     }
 
-    public static MapSystem create(String sysBackend) {
+    public static MapSystem create(App app, String sysBackend) {
         if (sysBackend.equals("null")) {
-            return new NullSystem();
+            return new NullSystem(app);
         } else if (sysBackend.equals("RXP")) {
-            return new RXPSystem();
+            return new RXPSystem(app);
         } else if (sysBackend.equals("RVXA")) {
-            return new RVXASystem();
+            return new RVXASystem(app);
         } else if (sysBackend.equals("Ika")) {
-            return new IkaSystem();
+            return new IkaSystem(app);
         } else if (sysBackend.equals("R2k")) {
-            return new R2kSystem();
+            return new R2kSystem(app);
         } else {
             throw new RuntimeException("Unknown MapSystem backend " + sysBackend);
         }

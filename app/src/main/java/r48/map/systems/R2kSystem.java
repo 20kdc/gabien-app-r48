@@ -13,6 +13,7 @@ import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
+import r48.App;
 import r48.AppMain;
 import r48.IMapContext;
 import r48.RubyIO;
@@ -48,8 +49,8 @@ import java.util.LinkedList;
  * Created on 03/06/17.
  */
 public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSystem {
-    public R2kSystem() {
-        super(new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new ChainedImageLoader(new IImageLoader[] {
+    public R2kSystem(App app) {
+        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new ChainedImageLoader(new IImageLoader[] {
                 new ImageIOImageLoader(new XYZImageIOFormat(), ".xyz", true),
                 // This is actually valid, but almost nobody wanted to use BMP over one of PNG or XYZ. Who'd have guessed?
                 new ImageIOImageLoader(new BMP8IImageIOFormat(8), ".bmp", true),
@@ -114,7 +115,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     // saveData is optional, and replaces some things.
     private StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events) {
-        ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tileset);
+        ITileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader, tileset);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
         // Cannot get enough information without map & tileset
@@ -167,7 +168,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public StuffRenderer rendererFromTso(IRIO tso) {
-        ITileRenderer tileRenderer = new LcfTileRenderer(imageLoader, tso);
+        ITileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }

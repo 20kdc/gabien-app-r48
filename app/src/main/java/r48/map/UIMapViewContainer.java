@@ -13,6 +13,7 @@ import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
+import r48.App;
 import r48.AppMain;
 import r48.dbs.TXDB;
 import r48.maptools.UIMTAutotile;
@@ -44,6 +45,12 @@ public class UIMapViewContainer extends UIElement.UIPanel {
     private double deltaTimeAccum = 0;
 
     private boolean masterRenderDisableSwitch = false;
+
+    public final App app;
+
+    public UIMapViewContainer(App app) {
+        this.app = app;
+    }
 
     @Override
     public String toString() {
@@ -97,7 +104,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
                     if (nextMapTool instanceof IMapViewCallbacks)
                         view.callbacks = (IMapViewCallbacks) nextMapTool;
                     mapTool = nextMapTool;
-                    AppMain.window.createWindow(mapTool);
+                    app.window.createWindow(mapTool);
                 }
             } else {
                 if (mapTool != null) {
@@ -138,7 +145,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
         Size b = getSize();
         // Creating the MapView and such causes quite a few side-effects (specifically global StuffRenderer kick-in-the-pants).
         // Also kick the dictionaries because of the event dictionary.
-        view = new UIMapView(gum, b.width, b.height);
+        view = new UIMapView(app, gum, b.width, b.height);
         view.viewRenderDisableSwitch = masterRenderDisableSwitch;
         final IMapToolContext mtc = new IMapToolContext() {
             @Override
@@ -148,7 +155,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
 
             @Override
             public void createWindow(UIElement window) {
-                AppMain.window.createWindow(window);
+                app.window.createWindow(window);
             }
 
             @Override

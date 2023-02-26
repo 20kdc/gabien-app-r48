@@ -33,4 +33,7 @@ public interface IMapContext {
 
     // Flushes IRIO references, while trying to preserve as much as possible.
     void performIRIOFlush();
+
+    // Helps prevent an awful lot of object pipelining.
+    App getApp();
 }

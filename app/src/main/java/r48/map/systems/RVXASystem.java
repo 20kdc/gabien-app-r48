@@ -10,6 +10,7 @@ package r48.map.systems;
 import gabien.IImage;
 import gabien.ui.Rect;
 import gabien.ui.Size;
+import r48.App;
 import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -31,6 +32,10 @@ import r48.maptools.UIMTShadowLayer;
  * Created on 03/06/17.
  */
 public class RVXASystem extends RXPSystem {
+    public RVXASystem(App app) {
+        super(app);
+    }
+
     @Override
     protected Rect getIdealGridForCharacter(String basename, Size img) {
         if (basename.startsWith("$") || basename.startsWith("!$"))
@@ -41,7 +46,7 @@ public class RVXASystem extends RXPSystem {
     @Override
     public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tso, IEventAccess events) {
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
-        VXATileRenderer tileRenderer = new VXATileRenderer(imageLoader, tso);
+        VXATileRenderer tileRenderer = new VXATileRenderer(app, imageLoader, tso);
         RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
         if (map != null) {
             String vxaPano = map.getIVar("@parallax_name").decString();
@@ -74,7 +79,7 @@ public class RVXASystem extends RXPSystem {
 
     @Override
     public StuffRenderer rendererFromTso(IRIO tso) {
-        ITileRenderer tileRenderer = new VXATileRenderer(imageLoader, tso);
+        ITileRenderer tileRenderer = new VXATileRenderer(app, imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
         return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }

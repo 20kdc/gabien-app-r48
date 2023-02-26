@@ -9,6 +9,7 @@ package r48.toolsets;
 
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.CMDB;
@@ -43,11 +44,12 @@ import java.util.LinkedList;
  *
  * Created on 2/12/17.
  */
-public class RMTools {
+public class RMTools extends App.Svc {
     private final CMDB commandsEvent;
     private final IRMMapSystem mapSystem;
 
-    public RMTools() {
+    public RMTools(App app) {
+        super(app);
         // If this errors, then this shouldn't have been constructed.
         mapSystem = (IRMMapSystem) AppMain.system;
 
@@ -55,7 +57,7 @@ public class RMTools {
     }
 
     public UIElement genButton() {
-        return new UIMenuButton(TXDB.get("RM-Tools"), FontSizes.menuTextHeight, null, new String[] {
+        return new UIMenuButton(app, TXDB.get("RM-Tools"), FontSizes.menuTextHeight, null, new String[] {
                 TXDB.get("Locate EventCommand in all Pages"),
                 TXDB.get("Find Translatables in Common Events"),
                 TXDB.get("See If Autocorrect Modifies Anything"),
@@ -72,7 +74,7 @@ public class RMTools {
                 new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.window.createWindow(new UITextPrompt(TXDB.get("Code (or -1337 for any unknown) ?"), new IConsumer<String>() {
+                        app.window.createWindow(new UITextPrompt(TXDB.get("Code (or -1337 for any unknown) ?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 int i;
@@ -123,10 +125,10 @@ public class RMTools {
                     @Override
                     public void run() {
                         final IObjectBackend.ILoadedObject ilo = mapSystem.getCommonEventRoot();
-                        UICommandSites ucs = new UICommandSites(AppMain.objectDB.getIdByObject(ilo), new ISupplier<CommandSite[]>() {
+                        UICommandSites ucs = new UICommandSites(app, AppMain.objectDB.getIdByObject(ilo), new ISupplier<CommandSite[]>() {
                             @Override
                             public CommandSite[] get() {
-                                RMFindTranslatables rft = new RMFindTranslatables(ilo);
+                                RMFindTranslatables rft = new RMFindTranslatables(app, ilo);
                                 rft.addSitesFromCommonEvents(mapSystem.getAllCommonEvents());
                                 return rft.toArray();
                             }
@@ -166,13 +168,13 @@ public class RMTools {
                 new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.window.createWindow(new UIRMUniversalStringLocator());
+                        app.window.createWindow(new UIRMUniversalStringLocator());
                     }
                 },
                 new Runnable() {
                     @Override
                     public void run() {
-                        AppMain.window.createWindow(new UITranscriptControl(mapSystem, commandsEvent));
+                        app.window.createWindow(new UITranscriptControl(mapSystem, commandsEvent));
                     }
                 }
         }).centred();

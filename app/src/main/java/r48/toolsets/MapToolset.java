@@ -8,6 +8,7 @@
 package r48.toolsets;
 
 import gabien.ui.UIElement;
+import r48.App;
 import r48.AppMain;
 import r48.IMapContext;
 import r48.dbs.TXDB;
@@ -18,12 +19,13 @@ import r48.map.UIMapViewContainer;
  * This is what AppMain holds to get at the current map, basically
  * Created on 2/12/17.
  */
-public class MapToolset implements IToolset {
+public class MapToolset extends App.Svc implements IToolset {
     private IMapContext context;
     private final UIElement[] tabs;
 
-    public MapToolset() {
-        final UIMapViewContainer mapBox = new UIMapViewContainer();
+    public MapToolset(App app) {
+        super(app);
+        final UIMapViewContainer mapBox = new UIMapViewContainer(app);
         context = new IMapContext() {
             @Override
             public String getCurrentMapObject() {
@@ -53,6 +55,11 @@ public class MapToolset implements IToolset {
 
             @Override
             public void performIRIOFlush() {
+            }
+
+            @Override
+            public App getApp() {
+                return app;
             }
         };
 

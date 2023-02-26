@@ -9,7 +9,6 @@ package r48.maptools;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
@@ -360,7 +359,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                     index |= power;
                 power <<= 1;
             }
-        int recommendedTile = AppMain.autoTiles[myAT.databaseId].inverseMap[index] + myAT.start;
+        int recommendedTile = map.app.autoTiles[myAT.databaseId].inverseMap[index] + myAT.start;
         map.mapTable.setTiletype(x, y, layer, (short) recommendedTile);
         map.passModificationNotification();
     }

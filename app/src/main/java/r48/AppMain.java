@@ -12,7 +12,6 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import gabienapp.Application;
 import gabienapp.UIFancyInit;
-import r48.dbs.ATDB;
 import r48.dbs.ObjectInfo;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
@@ -75,7 +74,7 @@ import java.util.*;
  * Created on 12/27/16.
  */
 public class AppMain {
-    public static WindowManager window;
+    public static App instance;
 
     // Scheduled tasks
     public static HashSet<Runnable> pendingRunnables = new HashSet<Runnable>();
@@ -84,17 +83,10 @@ public class AppMain {
 
     public static String rootPath = null;
     public static String secondaryImagePath = null;
-    public static String dataPath = "";
-    public static String dataExt = "";
-    public static String odbBackend = "<you forgot to select a backend>";
-    // Null system backend will always "work"
-    public static String sysBackend = "null";
 
     // Databases
     public static ObjectDB objectDB = null;
-    public static ATDB[] autoTiles = new ATDB[0];
     public static SDB schemas = null;
-    public static HashMap<Integer, String> osSHESEDB;
 
     // Backend Services
 
@@ -119,19 +111,21 @@ public class AppMain {
     public static ImageFXCache imageFXCache = null;
 
     public static void initializeCore(final String rp, final String sip, final String gamepak) {
+        instance = new App();
+
         rootPath = rp;
         secondaryImagePath = sip;
 
         // initialize core resources
 
-        schemas = new SDB();
+        schemas = new SDB(instance);
         magicalBindingCache = new WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>>();
 
         schemas.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
 
         // initialize everything else that needs initializing, starting with ObjectDB
 
-        objectDB = new ObjectDB(IObjectBackend.Factory.create(odbBackend, rootPath, dataPath, dataExt), new IConsumer<String>() {
+        objectDB = new ObjectDB(IObjectBackend.Factory.create(instance.odbBackend, rootPath, instance.dataPath, instance.dataExt), new IConsumer<String>() {
             @Override
             public void accept(String s) {
                 if (system != null)
@@ -139,7 +133,7 @@ public class AppMain {
             }
         });
 
-        system = MapSystem.create(sysBackend);
+        system = MapSystem.create(instance, instance.sysBackend);
 
         // Final internal consistency checks and reading in dictionaries from target
         //  before starting the UI, which can cause external consistency checks
@@ -188,7 +182,7 @@ public class AppMain {
             }
         }));
         UISplitterLayout usl = new UISplitterLayout(sym, sym2, false, 0.5);
-        window = new WindowManager(uiTicker, null, usl);
+        instance.window = new WindowManager(uiTicker, null, usl);
 
         initializeTabs();
 
@@ -204,7 +198,7 @@ public class AppMain {
         // Do not do so otherwise (see: OneShot)
         if (objectDB.modifiedObjects.size() > 0) {
             if (createDirs.size() > 0) {
-                window.createWindow(new UIAutoclosingPopupMenu(new String[] {
+                instance.window.createWindow(new UIAutoclosingPopupMenu(new String[] {
                         TXDB.get("This appears to be newly created. Click to create directories.")
                 }, new Runnable[] {
                         new Runnable() {
@@ -222,7 +216,7 @@ public class AppMain {
         return new ISupplier<IConsumer<Double>>() {
             @Override
             public IConsumer<Double> get() {
-                window.finishInitialization();
+                instance.window.finishInitialization();
                 return new IConsumer<Double>() {
                     @Override
                     public void accept(Double deltaTime) {
@@ -261,11 +255,11 @@ public class AppMain {
     private static void initializeTabs() {
         LinkedList<IToolset> toolsets = new LinkedList<IToolset>();
 
-        toolsets.add(new BasicToolset());
+        toolsets.add(new BasicToolset(instance));
 
         if (system.enableMapSubsystem) {
             UIFancyInit.submitToConsoletron(TXDB.get("Looking for maps and saves (this'll take a while)..."));
-            MapToolset mapController = new MapToolset();
+            MapToolset mapController = new MapToolset(instance);
             // Really just restricts access to prevent a hax pileup
             mapContext = mapController.getContext();
             toolsets.add(mapController);
@@ -278,9 +272,9 @@ public class AppMain {
             public void run() {
                 double keys = objectDB.objectMap.keySet().size();
                 if (keys < 1) {
-                    window.setOrange(0.0d);
+                    instance.window.setOrange(0.0d);
                 } else {
-                    window.setOrange(objectDB.modifiedObjects.size() / keys);
+                    instance.window.setOrange(objectDB.modifiedObjects.size() / keys);
                 }
                 pendingRunnables.add(this);
             }
@@ -294,16 +288,16 @@ public class AppMain {
             for (UIElement uie : its.generateTabs()) {
                 if (firstTab == null)
                     firstTab = uie;
-                window.createWindow(uie, true, true);
+                instance.window.createWindow(uie, true, true);
             }
         }
-        window.selectFirstTab();
+        instance.window.selectFirstTab();
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
     public static ISchemaHost launchSchema(String s, IObjectBackend.ILoadedObject rio, UIMapView context) {
         // Responsible for keeping listeners in place so nothing breaks.
-        SchemaHostImpl watcher = new SchemaHostImpl(context);
+        SchemaHostImpl watcher = new SchemaHostImpl(instance, context);
         watcher.pushObject(new SchemaPath(schemas.getSDBEntry(s), rio));
         return watcher;
     }
@@ -365,7 +359,7 @@ public class AppMain {
     private static void resizeDialogAndTruelaunch(UIElement mtb) {
         // This logic makes sense since we're trying to force a certain width but not a certain height.
         // It is NOT a bug in gabien-common so long as this code works (that is, the first call immediately prepares a correct wanted size).
-        Size rootSize = window.getRootSize();
+        Size rootSize = instance.window.getRootSize();
         Size validSize = new Size((rootSize.width * 3) / 4, (rootSize.height * 3) / 4);
         mtb.setForcedBounds(null, new Rect(validSize));
         Size recSize = mtb.getWantedSize();
@@ -374,7 +368,7 @@ public class AppMain {
         int h = Math.min(recSize.height, validSize.height);
 
         mtb.setForcedBounds(null, new Rect(0, 0, w, h));
-        window.createWindow(mtb);
+        instance.window.createWindow(mtb);
     }
 
     public static void startHelp(String base, String link) {
@@ -385,7 +379,7 @@ public class AppMain {
         uis.onLinkClick = hsc;
         final UIScrollLayout uus = new UIScrollLayout(true, FontSizes.generalScrollersize);
         uus.panelsAdd(uis);
-        Size rootSize = window.getRootSize();
+        Size rootSize = instance.window.getRootSize();
         final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(TXDB.get("Index"), uil, new Runnable() {
             @Override
             public void run() {
@@ -404,13 +398,13 @@ public class AppMain {
             }
         };
         topbar.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, rootSize.height / 2));
-        window.createWindow(topbar);
+        instance.window.createWindow(topbar);
         hsc.accept(link);
     }
 
     public static void startImgedit() {
         // Registers & unregisters self
-        resizeDialogAndTruelaunch(new ImageEditorController().rootView);
+        resizeDialogAndTruelaunch(new ImageEditorController(instance).rootView);
     }
 
     private static void fileCopier(String[] mkdirs, String[] fileCopies) {
@@ -526,23 +520,17 @@ public class AppMain {
     }
 
     public static void shutdownCore() {
+        instance = null;
         rootPath = null;
         secondaryImagePath = null;
-        dataPath = "";
-        dataExt = "";
-        odbBackend = "<you forgot to select a backend>";
-        sysBackend = "null";
         objectDB = null;
-        autoTiles = new ATDB[0];
         schemas = null;
-        osSHESEDB = null;
         system = null;
     }
 
     public static void shutdown() {
         shutdownCore();
         pendingRunnables.clear();
-        window = null;
         stuffRendererIndependent = null;
         if (mapContext != null)
             mapContext.freeOsbResources();

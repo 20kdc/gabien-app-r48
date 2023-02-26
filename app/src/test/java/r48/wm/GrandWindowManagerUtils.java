@@ -10,6 +10,7 @@ package r48.wm;
 import gabien.TestKickstart;
 import gabien.ui.*;
 import gabienapp.GrandLauncherUtils;
+import r48.App;
 import r48.AppMain;
 import r48.tests.grand.GrandExecutionError;
 import r48.ui.UISymbolButton;
@@ -22,13 +23,18 @@ import java.util.Set;
  * Created on March 28, 2019.
  */
 public class GrandWindowManagerUtils {
+    public static App getApp() {
+        return AppMain.instance;
+    }
+
     public static UIElement[] getAllWindows() {
+        App app = getApp();
         LinkedList<UIElement> ll = new LinkedList<UIElement>();
-        if (AppMain.window == null)
+        if (app.window == null)
             throw new GrandExecutionError("No window manager");
-        for (UITabBar.Tab uww : AppMain.window.tabPane.getTabs())
+        for (UITabBar.Tab uww : app.window.tabPane.getTabs())
             ll.add(uww.contents);
-        for (UIWindowView uww : AppMain.window.allWindowViews)
+        for (UIWindowView uww : app.window.allWindowViews)
             for (UIWindowView.IShell sh : uww.getShells())
                 if (sh instanceof UIWindowView.TabShell)
                     ll.add(((UIWindowView.TabShell) sh).contents);
@@ -36,13 +42,14 @@ public class GrandWindowManagerUtils {
     }
 
     public static void clickIcon(UIElement e, int ico) {
-        if (AppMain.window == null)
+        App app = getApp();
+        if (app.window == null)
             throw new GrandExecutionError("No window manager");
-        for (UITabBar.Tab tx : AppMain.window.tabPane.getTabs()) {
+        for (UITabBar.Tab tx : app.window.tabPane.getTabs()) {
             if (tx.contents == e)
                 clickIcon(tx, ico);
         }
-        for (UIWindowView uww : AppMain.window.allWindowViews) {
+        for (UIWindowView uww : app.window.allWindowViews) {
             for (UIWindowView.IShell sh : uww.getShells()) {
                 if (sh instanceof UIWindowView.TabShell) {
                     if (((UIWindowView.TabShell) sh).contents == e) {
@@ -59,7 +66,7 @@ public class GrandWindowManagerUtils {
     }
 
     public static void selectTab(UIElement element) {
-        AppMain.window.tabPane.selectTab(element);
+        getApp().window.tabPane.selectTab(element);
     }
 
     // --- Control-Finding-based access. ---

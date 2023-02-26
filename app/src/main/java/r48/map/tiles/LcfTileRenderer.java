@@ -10,7 +10,7 @@ package r48.map.tiles;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
-import r48.AppMain;
+import r48.App;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;
 import r48.map.events.RMEventGraphicRenderer;
@@ -24,11 +24,12 @@ import java.util.LinkedList;
  * I slept, finished MapUnit, and began writing this class.
  * Created on 31/05/17.
  */
-public class LcfTileRenderer implements ITileRenderer {
+public class LcfTileRenderer extends App.Svc implements ITileRenderer {
     public final IImage chipset;
     public static final int tileSize = 16;
 
-    public LcfTileRenderer(IImageLoader imageLoader, IRIO tso) {
+    public LcfTileRenderer(App app, IImageLoader imageLoader, IRIO tso) {
+        super(app);
         if (tso != null) {
             chipset = imageLoader.getImage("ChipSet/" + tso.getIVar("@tileset_name").decString(), false);
         } else {
@@ -68,7 +69,7 @@ public class LcfTileRenderer implements ITileRenderer {
 
             int fx = ((field % 2) * 3) + ((field / 8) * 6);
             int fy = ((field / 2) % 4) * 4;
-            XPTileRenderer.generalOldRMATField(fx * tileSize, fy * tileSize, subfield, 0, tileSize, px, py, igd, chipset, spriteScale);
+            XPTileRenderer.generalOldRMATField(fx * tileSize, fy * tileSize, subfield, app.autoTiles[0], tileSize, px, py, igd, chipset, spriteScale);
             //igd.drawText(px, py, 255, 255, 255, 8, Integer.toString(field));
         }
 
@@ -154,7 +155,7 @@ public class LcfTileRenderer implements ITileRenderer {
 
         char[] charTbl = {' ', '+', 'O', '|', '-'};
 
-        ATDB adb = AppMain.autoTiles[1];
+        ATDB adb = app.autoTiles[1];
         char ul = charTbl[adb.entries[innerSubfield].corners[0]];
         char ur = charTbl[adb.entries[innerSubfield].corners[1]];
         char ll = charTbl[adb.entries[innerSubfield].corners[2]];
@@ -223,7 +224,7 @@ public class LcfTileRenderer implements ITileRenderer {
             genLcfATs[ia++] = 4000 + (i * 50);
         // On L0, lower layer tiles take priority,
         // on L1, upper layer tiles take priority
-        TileEditingTab atf = new TileEditingTab("ATF", layerIdx != 0, genLcfATs, indicateATs());
+        TileEditingTab atf = new TileEditingTab(app, "ATF", layerIdx != 0, genLcfATs, indicateATs());
         TileEditingTab lwr = new TileEditingTab("LOWER", layerIdx != 0, TileEditingTab.range(5000, 144));
         TileEditingTab ani = new TileEditingTab("ANI", layerIdx != 0, new int[] {3000, 3050, 3100});
         TileEditingTab tem = new TileEditingTab("TEM", layerIdx != 0, TileEditingTab.range(4000, 600));

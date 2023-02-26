@@ -12,7 +12,7 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.ui.Rect;
-import r48.AppMain;
+import r48.App;
 import r48.RubyTable;
 import r48.dbs.ATDB;
 import r48.io.data.IRIO;
@@ -26,7 +26,7 @@ import r48.map.tileedit.TileEditingTab;
  * This uses a totally different system from XP, based around 5 AT sheets and 4 primary sheets.
  * Created on 1/27/17.
  */
-public class VXATileRenderer implements ITileRenderer {
+public class VXATileRenderer extends App.Svc implements ITileRenderer {
 
     public static final int tileSize = 32;
     public final IImage[] tilesetMaps = new IImage[9];
@@ -39,7 +39,8 @@ public class VXATileRenderer implements ITileRenderer {
      */
     private final ExpandedATTF[] preparedATTF;
 
-    public VXATileRenderer(IImageLoader il, IRIO tileset) {
+    public VXATileRenderer(App app, IImageLoader il, IRIO tileset) {
+        super(app);
         this.tileset = tileset;
         int[] tinyTile = new int[] {0x80000000};
         shadowImage = GaBIEn.createImage(tinyTile, 1, 1);
@@ -228,8 +229,8 @@ public class VXATileRenderer implements ITileRenderer {
         int poy = tileSize * atOY;
         IImage planeImg = tilesetMaps[tm];
         if (planeImg != null) {
-            if ((ets == tileSize) && (AppMain.autoTiles[atF] != null)) {
-                ATDB.Autotile at = AppMain.autoTiles[atF].entries[tin];
+            if ((ets == tileSize) && (app.autoTiles[atF] != null)) {
+                ATDB.Autotile at = app.autoTiles[atF].entries[tin];
                 if (at != null) {
                     int cSize = (ets / 2) * spriteScale;
                     int cSizeI = tileSize / 2;
@@ -270,7 +271,7 @@ public class VXATileRenderer implements ITileRenderer {
             for (int i = 0; i < allATs.length; i++)
                 allATs[i] = 0x800 + (i * 48);
             return new TileEditingTab[] {
-                    new TileEditingTab("AT", false, allATs, indicateATs()),
+                    new TileEditingTab(app, "AT", false, allATs, indicateATs()),
 
                     new TileEditingTab("G1", false, TileEditingTab.range(0x000, 0x400)),
                     new TileEditingTab("G2", false, TileEditingTab.range(0x600, 0x100)),

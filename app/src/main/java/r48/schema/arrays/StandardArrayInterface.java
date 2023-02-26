@@ -9,6 +9,7 @@ package r48.schema.arrays;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -39,6 +40,7 @@ public class StandardArrayInterface implements IArrayInterface {
     @Override
     public void provideInterfaceFrom(final Host uiSVL, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
         final ArrayPosition[] positions = getPositions.get();
+        final App app = uiSVL.getApp();
         // this object is needed as a pin to hold things together.
         // It used to be kind of redundant, but now with the selection stuff...
         final Runnable runCompleteRelayout = new Runnable() {
@@ -97,7 +99,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                 final int fixedStart = selectedStart;
                                 final int fixedEnd = selectedEnd;
                                 if (positions[fixedStart].execDelete != null) {
-                                    uie = new UIAppendButton("Delete", uie, valid, new String[] {TXDB.get("Confirm")}, new Runnable[] {
+                                    uie = new UIAppendButton(app, "Delete", uie, valid, new String[] {TXDB.get("Confirm")}, new Runnable[] {
                                         new Runnable() {
                                             @Override
                                             public void run() {
@@ -293,7 +295,7 @@ public class StandardArrayInterface implements IArrayInterface {
                     optText.add(TXDB.get("Paste Array"));
                     optRuns.add(runnable2);
                 }
-                return new UIMenuButton(TXDB.get("Add..."), FontSizes.schemaArrayAddTextHeight, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
+                return new UIMenuButton(uiSVL.getApp(), TXDB.get("Add..."), FontSizes.schemaArrayAddTextHeight, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
             }
 
             // This assumes it's being placed on a button 'before' the position

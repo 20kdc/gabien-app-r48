@@ -9,6 +9,7 @@ package r48.ui;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.App;
 
 /**
  * Just a useful tool for constructing UI stuff.
@@ -26,8 +27,8 @@ public class UIAppendButton extends UIElement.UIPanel {
         this(new UISymbolButton(s, h2, runnable), holder);
     }
 
-    public UIAppendButton(String s, UIElement holder, ISupplier<Boolean> continued, String[] text, Runnable[] runnables, int h2) {
-        this(new UIMenuButton(s, h2, continued, text, runnables), holder);
+    public UIAppendButton(App app, String s, UIElement holder, ISupplier<Boolean> continued, String[] text, Runnable[] runnables, int h2) {
+        this(new UIMenuButton(app, s, h2, continued, text, runnables), holder);
     }
 
     public UIAppendButton(UIButton<?> s, UIElement holder) {
