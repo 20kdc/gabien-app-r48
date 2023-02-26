@@ -179,7 +179,7 @@ class SDBHelpers {
         AggregateSchemaElement inner = new AggregateSchemaElement(new SchemaElement[] {
                 new HalfsplitSchemaElement(
                         new ArrayElementSchemaElement(0, TXDB.get("type "), new EnumSchemaElement(types, new RubyIO().setFX(0), EntryMode.LOCK, ""), null, false),
-                        new DisambiguatorSchemaElement("]0", disambiguations)
+                        new DisambiguatorSchemaElement(PathSyntax.compile("]0"), disambiguations)
                 ),
                 new SubwindowSchemaElement(new HWNDSchemaElement(PathSyntax.compile("]0"), "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {
                     @Override
@@ -245,7 +245,7 @@ class SDBHelpers {
         disambiguations.put("", new ArrayElementSchemaElement(1, TXDB.get("valueVar "), varId, null, false));
         SchemaElement inner = new HalfsplitSchemaElement(
                 new ArrayElementSchemaElement(0, TXDB.get("isVar "), new IntBooleanSchemaElement(false), null, false),
-                new DisambiguatorSchemaElement("]0", disambiguations)
+                new DisambiguatorSchemaElement(PathSyntax.compile("]0"), disambiguations)
         );
         return new MagicalBindingSchemaElement(new IMagicalBinder() {
             @Override

@@ -35,8 +35,8 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     // there's some special translation stuff for SDB1 compat
     public HashMap<String, SchemaElement> dTable;
 
-    public DisambiguatorSchemaElement(String disambiguatorIndex, HashMap<String, SchemaElement> disambiguations) {
-        dIndex = PathSyntax.compile(disambiguatorIndex);
+    public DisambiguatorSchemaElement(PathSyntax disambiguatorIndex, HashMap<String, SchemaElement> disambiguations) {
+        dIndex = disambiguatorIndex;
         dTable = disambiguations;
     }
 

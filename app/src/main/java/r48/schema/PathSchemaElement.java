@@ -31,8 +31,8 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     private boolean fieldWidthOverride = false;
     private int fieldWidth;
 
-    public PathSchemaElement(String iv, String a, SchemaElement sub, boolean opt) {
-        pStr = PathSyntax.compile(iv);
+    public PathSchemaElement(PathSyntax iv, String a, SchemaElement sub, boolean opt) {
+        pStr = iv;
         alias = a;
         subElem = sub;
         optional = opt;

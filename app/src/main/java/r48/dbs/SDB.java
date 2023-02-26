@@ -223,10 +223,10 @@ public class SDB {
                             });
                         }
                         if (text.equals("path") || text.equals("pathN")) {
-                            String path = args[point++];
+                            PathSyntax path = getPathSyntax();
                             String txt = "";
                             if (!text.endsWith("N")) {
-                                txt = TXDB.get(outerContext, path);
+                                txt = TXDB.get(outerContext, path.decompiled);
                             } else {
                                 txt = TXDB.getExUnderscore(outerContext, args[point++]);
                                 if (txt.equals("_"))
@@ -236,10 +236,10 @@ public class SDB {
                             return new PathSchemaElement(path, txt, hide, false);
                         }
                         if (text.equals("optP") || text.equals("optPN")) {
-                            String path = args[point++];
+                            PathSyntax path = getPathSyntax();
                             String txt = "";
                             if (!text.endsWith("N")) {
-                                txt = TXDB.get(outerContext, path);
+                                txt = TXDB.get(outerContext, path.decompiled);
                             } else {
                                 txt = TXDB.getExUnderscore(outerContext, args[point++]);
                                 if (txt.equals("_"))
@@ -331,7 +331,7 @@ public class SDB {
                             }
                         }
                         if (text.equals("DA{")) {
-                            String disambiguatorIndex = args[point++];
+                            PathSyntax disambiguatorIndex = getPathSyntax();
                             SchemaElement backup = get();
                             HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
                             while (!args[point].equals("}"))
@@ -358,7 +358,7 @@ public class SDB {
                          */
                         if (text.equals("flushCommandBuffer")) {
                             // time to flush it!
-                            String disambiguationIVar = args[point++];
+                            PathSyntax disambiguationIVar = getPathSyntax();
                             setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, new RubyIO().setFX(0), EntryMode.INT, TXDB.get("Code")));
                             HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<String, String>();
@@ -367,7 +367,7 @@ public class SDB {
                         }
                         if (text.equals("flushCommandBufferStr")) {
                             // time to flush it!
-                            String disambiguationIVar = args[point++];
+                            PathSyntax disambiguationIVar = getPathSyntax();
                             setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, new RubyIO().setString("", true), EntryMode.STR, TXDB.get("Code")));
                             HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<String, String>();
@@ -707,9 +707,9 @@ public class SDB {
                     outerContext = fPfx + "/" + args[0];
                     setSDBEntry(args[0], workingObj);
                 } else if (c == '@') {
-                    String t = "@" + PathSyntax.poundEscape(args[0]);
+                    PathSyntax t = PathSyntax.compile("@" + PathSyntax.poundEscape(args[0]));
                     // Note: the unescaping happens in the Path
-                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, t), handleChain(args, 1), false));
+                    workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, t.decompiled), handleChain(args, 1), false));
                 } else if (c == '}') {
                     String intA0 = args[0];
                     boolean opt = false;
@@ -720,7 +720,7 @@ public class SDB {
                     }
                     // Note: the unescaping happens in the Path
                     // Automatically escape.
-                    String t = ":{" + PathSyntax.poundEscape(intA0);
+                    PathSyntax t = PathSyntax.compile(":{" + PathSyntax.poundEscape(intA0));
                     workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, args[1]), handleChain(args, 2), opt));
                 } else if (c == '+') {
                     workingObj.aggregate.add(handleChain(args, 0));

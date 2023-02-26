@@ -13,6 +13,7 @@ import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
+import r48.dbs.PathSyntax;
 import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
 import r48.io.IntUtils;
@@ -122,9 +123,10 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
             if (target.getIVar("@indent") != null) {
                 if (showHeader) {
-                    SchemaElement ise = new PathSchemaElement("@indent", TXDB.get("@indent"), new ROIntegerSchemaElement(0), false);
+                    PathSyntax indent = PathSyntax.compile("@indent");
+                    SchemaElement ise = new PathSchemaElement(indent, TXDB.get("@indent"), new ROIntegerSchemaElement(0), false);
                     if (!allowControlOfIndent)
-                        ise = new PathSchemaElement("@indent", TXDB.get("@indent"), new IntegerSchemaElement(0), false);
+                        ise = new PathSchemaElement(indent, TXDB.get("@indent"), new IntegerSchemaElement(0), false);
                     uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
                 }
             }
