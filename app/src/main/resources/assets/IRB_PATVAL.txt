@@ -45,3 +45,5 @@ The path-component forms are:
 ']':
 
    text...         : Array index integer (RA.)
+
+As of v1.5, PathSyntaxes are now compiled into a new MiniVM form to reduce the amount of pointless string processing.

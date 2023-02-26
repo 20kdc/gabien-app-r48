@@ -12,7 +12,6 @@ import gabien.ui.Size;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyTable;
-import r48.dbs.PathSyntax;
 import r48.dbs.TSDB;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
@@ -53,7 +52,7 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
             if (t > allocSource.mapping.length)
                 return osr; // :(
 
-        final IRIO targV = iVar == null ? target : PathSyntax.parse(target, iVar);
+        final IRIO targV = iVar == null ? target : iVar.get(target);
         final RubyTable targ = new RubyTable(targV.getBuffer());
         int sprScale = FontSizes.getSpriteScale();
         int ts = osr.tileRenderer.getTileSize() * sprScale;

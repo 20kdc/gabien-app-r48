@@ -7,6 +7,8 @@
 
 package r48.schema.specialized;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
@@ -23,7 +25,7 @@ public abstract class BaseRubyTableSchemaElement extends SchemaElement {
     public final int defH;
     public final int planes;
     public final int dimensions;
-    public final String iVar;
+    public final @Nullable PathSyntax iVar;
     public final int[] defVals;
 
     public BaseRubyTableSchemaElement(int dw, int dh, int p, int d, String iV, int[] defaults) {
@@ -31,12 +33,12 @@ public abstract class BaseRubyTableSchemaElement extends SchemaElement {
         defH = dh;
         planes = p;
         dimensions = d;
-        iVar = iV;
+        iVar = iV == null ? null : PathSyntax.compile(iV);
         defVals = defaults;
     }
     
     public IRIO extractTarget(IRIO target) {
-        return iVar == null ? target : PathSyntax.parse(target, iVar);
+        return iVar == null ? target : iVar.get(target);
     }
 
     @Override
@@ -44,9 +46,9 @@ public abstract class BaseRubyTableSchemaElement extends SchemaElement {
         boolean needChange = setDefault;
     
         if (iVar != null) {
-            IRIO st = PathSyntax.parse(target, iVar);
+            IRIO st = iVar.get(target);
             if (st == null) {
-                st = PathSyntax.parse(target, iVar, 1);
+                st = iVar.add(target);
                 needChange = true;
             }
             target = st;

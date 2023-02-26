@@ -25,12 +25,12 @@ import java.util.LinkedList;
  * Created on December 15th 2017
  */
 public class TraditionalEventAccess implements IEventAccess {
-    private final String mapRootId, mapRootSchema, eventsPath;
+    private final String mapRootId, mapRootSchema;
     private final IObjectBackend.ILoadedObject mapRoot;
     private final int eventIdBase;
     private final String eventSchema;
     private final String eventsName, eventName;
-    private final String propPathX, propPathY, propPathName;
+    private final PathSyntax propPathX, propPathY, propPathName, eventsPath;
 
     public TraditionalEventAccess(String baseOId, String baseSchema, String path, int b, String schema) {
         this(baseOId, baseSchema, path, b, schema, "@x", "@y", "@name");
@@ -44,14 +44,14 @@ public class TraditionalEventAccess implements IEventAccess {
         mapRootId = baseOId;
         mapRootSchema = baseSchema;
         mapRoot = AppMain.objectDB.getObject(mapRootId, baseSchema);
-        eventsPath = path;
+        eventsPath = PathSyntax.compile(path);
         eventIdBase = b;
         eventSchema = schema;
         eventsName = en;
         eventName = en2;
-        propPathX = pathX;
-        propPathY = pathY;
-        propPathName = pathName;
+        propPathX = PathSyntax.compile(pathX);
+        propPathY = PathSyntax.compile(pathY);
+        propPathName = PathSyntax.compile(pathName);
     }
 
     @Override
@@ -123,12 +123,12 @@ public class TraditionalEventAccess implements IEventAccess {
 
     @Override
     public long getEventX(IRIO a) {
-        return PathSyntax.parse(getEvent(a), propPathX).getFX();
+        return propPathX.get(getEvent(a)).getFX();
     }
 
     @Override
     public long getEventY(IRIO a) {
-        return PathSyntax.parse(getEvent(a), propPathY).getFX();
+        return propPathY.get(getEvent(a)).getFX();
     }
 
     @Override
@@ -136,14 +136,14 @@ public class TraditionalEventAccess implements IEventAccess {
         IRIO ev = getEvent(a);
         if (ev == null)
             return;
-        PathSyntax.parse(getEvent(a), propPathX).setFX(x);
-        PathSyntax.parse(getEvent(a), propPathY).setFX(y);
+        propPathX.get(getEvent(a)).setFX(x);
+        propPathY.get(getEvent(a)).setFX(y);
         pokeHive();
     }
 
     @Override
     public String getEventName(IRIO a) {
-        IRIO iv = PathSyntax.parse(getEvent(a), propPathName);
+        IRIO iv = propPathName.get(getEvent(a));
         if (iv == null)
             return null;
         return iv.decString();
@@ -162,7 +162,7 @@ public class TraditionalEventAccess implements IEventAccess {
     }
 
     public IRIO getMapEvents() {
-        return PathSyntax.parse(mapRoot.getObject(), eventsPath);
+        return eventsPath.get(mapRoot.getObject());
     }
 
     private void pokeHive() {

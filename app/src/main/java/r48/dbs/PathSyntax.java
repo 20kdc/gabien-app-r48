@@ -7,17 +7,52 @@
 
 package r48.dbs;
 
-import r48.RubyIO;
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
+import r48.minivm.MVMCArrayGetImm;
+import r48.minivm.MVMCArrayLength;
+import r48.minivm.MVMCContext;
+import r48.minivm.MVMCError;
+import r48.minivm.MVMCExpr;
+import r48.minivm.MVMCGetHashValImm;
+import r48.minivm.MVMCGetIVar;
+import r48.minivm.MVMCPathHashAdd;
+import r48.minivm.MVMCPathHashDel;
 
 /**
  * NOTE: This uses escapes internally to escape from itself.
  * With that in mind, do not escape this w/EscapedStringSyntax. It's not necessary.
- * Created on 08/06/17.
+ * Created on 08/06/17, heavily refactored 26 February 2023.
  */
-public class PathSyntax {
+public final class PathSyntax {
+    // MiniVM programs for the various PathSyntax operations.
+    private final MVMCExpr getProgram, addProgram, delProgram;
+
     // NOTE: This must not contain anything used in ValueSyntax.
     public static char[] breakersSDB2 = new char[] {':', '@', ']'};
+
+    private PathSyntax(MVMCExpr g, MVMCExpr a, MVMCExpr d) {
+        getProgram = g;
+        assert g.isPure;
+        addProgram = a;
+        delProgram = d;
+    }
+
+    public final RORIO get(RORIO ro) {
+        return get((IRIO) ro);
+    }
+
+    public final IRIO get(IRIO v) {
+        return getProgram.execute(null, v, null, null, null, null, null, null, null);
+    }
+
+    public final IRIO add(IRIO v) {
+        return addProgram.execute(null, v, null, null, null, null, null, null, null);
+    }
+
+    public final IRIO del(IRIO v) {
+        return delProgram.execute(null, v, null, null, null, null, null, null, null);
+    }
 
     // break to next token.
     public static String[] breakToken(String full) {
@@ -56,32 +91,31 @@ public class PathSyntax {
     }
 
     // Used for missing IV autodetect
-    public static String getAbsoluteIVar(String iv) {
-        if (iv.startsWith("@")) {
-            String n = iv.substring(1);
-            String[] ivb = breakToken(n);
-            if (ivb[1].equals(""))
-                return "@" + ivb[0];
-        }
-        if (iv.startsWith(":.")) {
-            String n = iv.substring(2);
-            String[] ivb = breakToken(n);
-            if (ivb[1].equals(""))
-                return ivb[0];
-        }
+    public static String getAbsoluteIVar(PathSyntax iv) {
+        if (iv.getProgram instanceof MVMCGetIVar)
+            return ((MVMCGetIVar) iv.getProgram).key;
         return null;
     }
 
+    /**
+     * Deprecated because PathSyntax is being moved to a compilation-based system.
+     */
+    @Deprecated
     public static IRIO parse(IRIO res, String arg) {
-        return parse(res, arg, 0);
+        PathSyntax ps = compile(MVMCExpr.getL0, arg);
+        return ps.get(res);
     }
 
-    // Parses the syntax.
-    // mode 0: GET
-    // mode 1: GET/ADD
-    // mode 2: GET/DEL
-    // Note that you detect creation by using a GET beforehand.
-    public static IRIO parse(IRIO res, String arg, int mode) {
+    public static PathSyntax compile(String arg) {
+        return compile(MVMCExpr.getL0, arg);
+    }
+
+    public static PathSyntax compile(PathSyntax basePS, String arg) {
+        return compile(basePS.getProgram, arg);
+    }
+
+    public static PathSyntax compile(MVMCExpr base, String arg) {
+        // System.out.println("compiled pathsyntax " + arg);
         String workingArg = arg;
         while (workingArg.length() > 0) {
             char f = workingArg.charAt(0);
@@ -89,81 +123,76 @@ public class PathSyntax {
             String[] subcomA = breakToken(workingArg);
             String subcom = subcomA[0];
             workingArg = subcomA[1];
-            boolean specialImmediate = (mode != 0) & (workingArg.length() == 0);
+            boolean lastElement = (workingArg.length() == 0);
+            String queuedIV = null;
             if (f == ':') {
                 if (subcom.startsWith("{")) {
                     String esc = subcom.substring(1);
                     IRIO hashVal = ValueSyntax.decode(esc);
-                    IRIO root = res;
-                    res = res.getHashVal(hashVal);
-                    if (specialImmediate) {
-                        if (mode == 1) {
-                            if (res == null)
-                                res = root.addHashVal(hashVal).setNull();
-                        } else if (mode == 2) {
-                            root.removeHashVal(hashVal);
-                        }
-                    }
+                    MVMCExpr currentGet = new MVMCGetHashValImm(base, hashVal);
+                    if (lastElement)
+                        return new PathSyntax(currentGet, new MVMCPathHashAdd(base, hashVal), new MVMCPathHashDel(base, hashVal));
+                    base = currentGet;
                 } else if (subcom.startsWith(".")) {
-                    res = mapIV(res, subcom.substring(1), specialImmediate, mode);
+                    queuedIV = subcom.substring(1);
                 } else {
-                    if (specialImmediate)
-                        if (mode == 2)
-                            throw new RuntimeException("Cannot delete this. Fix your schema.");
                     if (subcom.equals("length")) {
-                        // This is used for length disambiguation.
-                        if (res.getType() != '[') {
-                            res = null;
-                        } else {
-                            res = new RubyIO().setFX(res.getALen());
-                        }
+                        base = new MVMCArrayLength(base);
+                        if (lastElement)
+                            return new PathSyntax(base, base, new MVMCError("Cannot delete array length. Fix your schema."));
                     } else if (subcom.equals("fail")) {
-                        return null;
+                        base = new MVMCExpr.Const(null);
+                        if (lastElement)
+                            return new PathSyntax(base, base, base);
                     } else if (subcom.length() != 0) {
                         throw new RuntimeException("$-command must be '$' (self), '${\"someSFormatTextForHVal' (hash string), '${123' (hash number), '$:someIval' ('raw' iVar), '$length', '$fail'");
                     }
                 }
             } else if (f == '@') {
-                res = mapIV(res, "@" + subcom, specialImmediate, mode);
+                queuedIV = "@" + subcom;
             } else if (f == ']') {
-                if (specialImmediate)
-                    if (mode == 2)
-                        throw new RuntimeException("Cannot delete this. Fix your schema.");
-                int atl = Integer.parseInt(subcom);
-                if (atl < 0) {
-                    res = null;
-                    break;
-                } else if (atl >= res.getALen()) {
-                    res = null;
-                    break;
-                }
-                res = res.getAElem(atl);
+                final int atl = Integer.parseInt(subcom);
+                base = new MVMCArrayGetImm(base, atl);
+                if (lastElement)
+                    return new PathSyntax(base, base, new MVMCError("Cannot delete array element. Fix your schema."));
             } else {
                 throw new RuntimeException("Bad pathsynt starter " + f + " (did root get separated properly?) code " + arg);
             }
-            if (res == null)
-                return null;
-        }
-        return res;
-    }
-
-    private static IRIO mapIV(IRIO res, String myst, boolean specialImmediate, int mode) {
-        IRIO root = res;
-        res = res.getIVar(myst);
-        if (specialImmediate) {
-            if (mode == 1) {
-                if (res == null) {
-                    // As of DM2 this is guaranteed to create a defined value,
-                    //  and setting it to null will break things.
-                    res = root.addIVar(myst);
-                    if (res == null)
-                        System.err.println("Warning: Failed to create IVar " + myst + " in " + root);
-                }
-            } else if (mode == 2) {
-                root.rmIVar(myst);
+            if (queuedIV != null) {
+                final String iv = queuedIV;
+                MVMCExpr currentGet = new MVMCGetIVar(base, queuedIV);
+                final MVMCExpr parent = base;
+                if (lastElement)
+                    return new PathSyntax(currentGet, new MVMCExpr(false) {
+                        @Override
+                        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+                            IRIO res = parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+                            if (res == null)
+                                return null;
+                            IRIO ivv = res.getIVar(iv);
+                            // As of DM2 this is guaranteed to create a defined value,
+                            //  and setting it to null will break things.
+                            if (ivv == null)
+                                ivv = res.addIVar(iv);
+                            if (ivv == null)
+                                System.err.println("Warning: Failed to create IVar " + iv + " in " + res);
+                            return ivv;
+                        }
+                    }, new MVMCExpr(false) {
+                        @Override
+                        public IRIO execute(MVMCContext ctx, IRIO l0, IRIO l1, IRIO l2, IRIO l3, IRIO l4, IRIO l5, IRIO l6, IRIO l7) {
+                            IRIO res = parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+                            if (res == null)
+                                return null;
+                            IRIO ivv = res.getIVar(iv);
+                            res.rmIVar(iv);
+                            return ivv;
+                        }
+                    });
+                base = currentGet;
             }
         }
-        return res;
+        return new PathSyntax(base, base, new MVMCError("Cannot delete empty/self path. Fix your schema."));
     }
 
     // Used by SDB stuff that generates paths.

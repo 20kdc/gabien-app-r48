@@ -23,7 +23,7 @@ import r48.ui.UIFieldLayout;
  * Created on 9 October 2017 from the ashes of IVarSchemaElement
  */
 public class PathSchemaElement extends SchemaElement implements IFieldSchemaElement {
-    public String pStr;
+    public final PathSyntax pStr;
     public String alias;
     public SchemaElement subElem;
     public boolean optional;
@@ -32,7 +32,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     private int fieldWidth;
 
     public PathSchemaElement(String iv, String a, SchemaElement sub, boolean opt) {
-        pStr = iv;
+        pStr = PathSyntax.compile(iv);
         alias = a;
         subElem = sub;
         optional = opt;
@@ -43,7 +43,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
         UILabel uil = null;
         if (alias != null)
             uil = new UILabel(alias + " ", FontSizes.schemaFieldTextHeight);
-        IRIO tgo = PathSyntax.parse(target, pStr, 0);
+        IRIO tgo = pStr.get(target);
         UIElement e2;
         if (tgo == null) {
             if (!optional)
@@ -51,7 +51,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
             e2 = new UITextButton(TXDB.get("<Not present - Add>"), FontSizes.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    IRIO rio = PathSyntax.parse(target, pStr, 1);
+                    IRIO rio = pStr.add(target);
                     createIVar(rio, path, false);
                 }
             });
@@ -61,7 +61,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
                 e2 = new UIAppendButton("-", e2, new Runnable() {
                     @Override
                     public void run() {
-                        if (PathSyntax.parse(target, pStr, 2) != null)
+                        if (pStr.del(target) != null)
                             path.changeOccurred(false);
                     }
                 }, FontSizes.schemaFieldTextHeight);
@@ -89,12 +89,12 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
 
     @Override
     public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
-        IRIO r = PathSyntax.parse(target, pStr, 0);
+        IRIO r = pStr.get(target);
         if (r != null) {
             subElem.modifyVal(r, path.otherIndex(alias), setDefault);
         } else {
             if (!optional) {
-                IRIO rio = PathSyntax.parse(target, pStr, 1);
+                IRIO rio = pStr.add(target);
                 if (rio == null)
                     throw new RuntimeException("failed create during modifyVal, " + pStr);
                 createIVar(rio, path, true);

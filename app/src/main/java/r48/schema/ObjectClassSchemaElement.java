@@ -66,9 +66,9 @@ public class ObjectClassSchemaElement extends SchemaElement {
             return true;
         }
         if (ise instanceof BaseRubyTableSchemaElement) {
-            if (((BaseRubyTableSchemaElement) ise).iVar.equals("."))
-                return false;
-            iVars.add(((BaseRubyTableSchemaElement) ise).iVar);
+            String n = PathSyntax.getAbsoluteIVar(((BaseRubyTableSchemaElement) ise).iVar);
+            if (n != null)
+                iVars.add(n);
             return true;
         }
         if (ise instanceof HalfsplitSchemaElement)
