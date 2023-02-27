@@ -298,7 +298,7 @@ public class Application {
     private static void autoDetectCorrectUISize(int uiGuessScaleTenths) {
         // The above triggered a flush, which would cause the initial resize on SWPs.
         // That then allowed it to estimate a correct scale which ended up here.
-        app.f.uiGuessScaleTenths = uiGuessScaleTenths;
+        c.f.uiGuessScaleTenths = uiGuessScaleTenths;
         boolean mobile = GaBIEn.singleWindowApp();
         for (FontSizeField fsf : c.f.getFields()) {
             // as this is a touch device, map 8 to 16 (6 is for things that really matter)
@@ -307,11 +307,11 @@ public class Application {
                     fsf.accept(16);
             // uiGuessScaleTenths was set manually.
             if (!fsf.name.equals("uiGuessScaleTenths"))
-                fsf.accept(app.f.scaleGuess(fsf.get()));
+                fsf.accept(c.f.scaleGuess(fsf.get()));
         }
         // exceptions
         if (mobile)
-            app.f.tilesTabTextHeight *= 2;
+            c.f.tilesTabTextHeight *= 2;
     }
 
     private static void shutdownAllAppMainWindows() {
