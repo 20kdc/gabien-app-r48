@@ -11,7 +11,6 @@ import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.ValueSyntax;
 import r48.io.data.IRIO;
@@ -88,11 +87,11 @@ public class EnumSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final UIEnumChoice.Option opt = findOption(target);
-        UITextButton button = new UITextButton(viewValue(target, true, opt), FontSizes.schemaFieldTextHeight, new Runnable() {
+        UITextButton button = new UITextButton(viewValue(target, true, opt), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 liveUpdate();
-                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, new UIEnumChoice(new IConsumer<RubyIO>() {
+                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, new UIEnumChoice(app, new IConsumer<RubyIO>() {
                     @Override
                     public void accept(RubyIO integer) {
                         target.setDeepClone(integer);
@@ -110,7 +109,7 @@ public class EnumSchemaElement extends SchemaElement {
                     public void run() {
                         launcher.newBlank().pushObject(opt.furtherDataButton);
                     }
-                }, FontSizes.schemaFieldTextHeight);
+                }, app.f.schemaFieldTextHeight);
         }
         return button;
     }

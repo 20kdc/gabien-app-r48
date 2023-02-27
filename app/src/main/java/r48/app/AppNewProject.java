@@ -114,7 +114,7 @@ public class AppNewProject extends App.Svc {
                 app.ui.launchDialog(TXDB.get("The synthesis was completed successfully."));
             }
         };
-        app.ui.wm.createWindowSH(new UIChoicesMenu(TXDB.get("Would you like a basic template, and if so, compatible with RPG Maker 2000 or 2003? All assets used for this are part of R48, and thus public-domain."), new String[] {
+        app.ui.wm.createWindowSH(new UIChoicesMenu(app, TXDB.get("Would you like a basic template, and if so, compatible with RPG Maker 2000 or 2003? All assets used for this are part of R48, and thus public-domain."), new String[] {
                 TXDB.get("2000 Template"),
                 TXDB.get("2003 Template"),
                 TXDB.get("Do Nothing")

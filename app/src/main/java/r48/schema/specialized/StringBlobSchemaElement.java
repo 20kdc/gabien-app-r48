@@ -15,7 +15,6 @@ import gabien.ui.UITextButton;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -39,7 +38,7 @@ public class StringBlobSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final String fpath = Application.BRAND + "/r48.edit.txt";
 
-        UITextButton importer = new UITextButton(TXDB.get("Import"), FontSizes.blobTextHeight, new Runnable() {
+        UITextButton importer = new UITextButton(TXDB.get("Import"), app.f.blobTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -55,7 +54,7 @@ public class StringBlobSchemaElement extends SchemaElement {
             }
         });
         AggregateSchemaElement.hookButtonForPressPreserve(launcher, this, target, importer, "import");
-        UISplitterLayout usl = new UISplitterLayout(new UITextButton(TXDB.get("Export/Edit"), FontSizes.blobTextHeight, new Runnable() {
+        UISplitterLayout usl = new UISplitterLayout(new UITextButton(TXDB.get("Export/Edit"), app.f.blobTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -73,10 +72,10 @@ public class StringBlobSchemaElement extends SchemaElement {
                 }
             }
         }), importer, false, 0.5d); 
-        return new UISplitterLayout(usl, new UITextButton(TXDB.get("Edit Here"), FontSizes.blobTextHeight, new Runnable() {
+        return new UISplitterLayout(usl, new UITextButton(TXDB.get("Edit Here"), app.f.blobTextHeight, new Runnable() {
             @Override
             public void run() {
-                final UITextBox utb = new UITextBox("", FontSizes.schemaFieldTextHeight).setMultiLine();
+                final UITextBox utb = new UITextBox("", app.f.schemaFieldTextHeight).setMultiLine();
                 Runnable update = new Runnable() {
                     @Override
                     public void run() {
@@ -88,7 +87,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                     }
                 };
                 update.run();
-                UIElement ui = new UISplitterLayout(utb, new UITextButton(TXDB.get("Confirm"), FontSizes.schemaFieldTextHeight, new Runnable() {
+                UIElement ui = new UISplitterLayout(utb, new UITextButton(TXDB.get("Confirm"), app.f.schemaFieldTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         try {

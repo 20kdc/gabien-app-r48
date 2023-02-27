@@ -11,12 +11,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import gabien.ui.UIElement.UIProxy;
 import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
-import r48.FontSizes;
+import r48.App;
 import r48.dbs.TXDB;
 import r48.ui.spacing.UIIndentThingy;
 
@@ -24,13 +23,14 @@ import r48.ui.spacing.UIIndentThingy;
  * Set selector given toStringable targets
  * Created on 13th August 2022.
  */
-public class UISetSelector<T> extends UIProxy {
+public class UISetSelector<T> extends App.Prx {
     private HashSet<T> set = new HashSet<T>();
     private HashMap<T, UIIndentThingy> setButtons = new HashMap<T, UIIndentThingy>();
     private HashMap<T, UILabel> setLabels = new HashMap<T, UILabel>();
-    private UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
-    public UISetSelector(final Iterable<T> entries) {
-        layout.panelsAdd(new UITextButton(TXDB.get("Select All"), FontSizes.dialogWindowTextHeight, new Runnable() {
+    private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalScrollersize);
+    public UISetSelector(App app, final Iterable<T> entries) {
+        super(app);
+        layout.panelsAdd(new UITextButton(TXDB.get("Select All"), app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 for (T x : entries)
@@ -38,17 +38,17 @@ public class UISetSelector<T> extends UIProxy {
                 refreshContents();
             }
         }));
-        layout.panelsAdd(new UITextButton(TXDB.get("Deselect All"), FontSizes.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(TXDB.get("Deselect All"), app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 set.clear();
                 refreshContents();
             }
         }));
-        int labelHeight = UILabel.getRecommendedTextSize("", FontSizes.dialogWindowTextHeight).height;
+        int labelHeight = UILabel.getRecommendedTextSize("", app.f.dialogWindowTextHeight).height;
         for (T o : entries) {
             final T fo = o;
-            final UILabel ul = new UILabel(o.toString(), FontSizes.dialogWindowTextHeight);
+            final UILabel ul = new UILabel(o.toString(), app.f.dialogWindowTextHeight);
             final UIIndentThingy utb = new UIIndentThingy(0, labelHeight, 0, 0, new Runnable() {
                 @Override
                 public void run() {

@@ -12,7 +12,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
-import r48.FontSizes;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -45,13 +44,13 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         UILabel uil = null;
         if (alias != null)
-            uil = new UILabel(alias + " ", FontSizes.schemaFieldTextHeight);
+            uil = new UILabel(alias + " ", app.f.schemaFieldTextHeight);
         IRIO tgo = pStr.get(target);
         UIElement e2;
         if (tgo == null) {
             if (!optional)
                 throw new RuntimeException("Error: Made it to PathSchemaElement.buildHoldingEditor when target wasn't there: " + pStr);
-            e2 = new UITextButton(TXDB.get("<Not present - Add>"), FontSizes.schemaFieldTextHeight, new Runnable() {
+            e2 = new UITextButton(TXDB.get("<Not present - Add>"), app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     IRIO rio = pStr.add(target);
@@ -67,7 +66,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
                         if (pStr.del(target) != null)
                             path.changeOccurred(false);
                     }
-                }, FontSizes.schemaFieldTextHeight);
+                }, app.f.schemaFieldTextHeight);
         }
         if (uil != null) {
             UIFieldLayout usl = new UIFieldLayout(uil, e2, fieldWidth, fieldWidthOverride);
@@ -80,7 +79,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     @Override
     public int getDefaultFieldWidth(IRIO target) {
         if (alias != null)
-            return UILabel.getRecommendedTextSize(alias + " ", FontSizes.schemaFieldTextHeight).width;
+            return UILabel.getRecommendedTextSize(alias + " ", app.f.schemaFieldTextHeight).width;
         return 0;
     }
 

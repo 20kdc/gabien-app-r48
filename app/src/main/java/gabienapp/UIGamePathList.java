@@ -13,7 +13,7 @@ import gabien.ui.UITextButton;
 import java.util.List;
 
 import gabien.ui.UIElement.UIProxy;
-import r48.FontSizes;
+import r48.cfg.Config;
 import r48.ui.UIAppendButton;
 
 /**
@@ -22,22 +22,26 @@ import r48.ui.UIAppendButton;
 public class UIGamePathList extends UIProxy {
     public final List<String> values;
     private UIScrollLayout layout;
-    public final UITextBox text = new UITextBox("", FontSizes.launcherTextHeight);
-    private final UIAppendButton appendButton = new UIAppendButton("+", text, new Runnable() {
-        @Override
-        public void run() {
-            if (!values.contains(text.text)) {
-                values.add(text.text);
-                modified();
-            }
-        }
-    }, FontSizes.launcherTextHeight);
+    public final UITextBox text;
+    private final UIAppendButton appendButton;
+    public final Config c;
 
-    public UIGamePathList(List<String> val) {
+    public UIGamePathList(Config c, List<String> val) {
+        this.c = c;
+        text = new UITextBox("", c.f.launcherTextHeight);
+        appendButton = new UIAppendButton("+", text, new Runnable() {
+            @Override
+            public void run() {
+                if (!values.contains(text.text)) {
+                    values.add(text.text);
+                    modified();
+                }
+            }
+        }, c.f.launcherTextHeight);
         if (val.size() > 0)
             text.text = val.get(val.size() - 1);
         values = val;
-        layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
+        layout = new UIScrollLayout(true, c.f.generalScrollersize);
         refresh();
         proxySetElement(layout, true);
     }
@@ -45,7 +49,7 @@ public class UIGamePathList extends UIProxy {
     public void refresh() {
         layout.panelsClear();
         for (final String v : values) {
-            UITextButton mainButton = new UITextButton(v, FontSizes.launcherTextHeight, new Runnable() {
+            UITextButton mainButton = new UITextButton(v, c.f.launcherTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     text.text = v;
@@ -60,7 +64,7 @@ public class UIGamePathList extends UIProxy {
                     values.remove(v);
                     modified();
                 }
-            }, FontSizes.launcherTextHeight));
+            }, c.f.launcherTextHeight));
         }
         layout.panelsAdd(appendButton);
     }

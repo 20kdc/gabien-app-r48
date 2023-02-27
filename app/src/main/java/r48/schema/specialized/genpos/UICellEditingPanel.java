@@ -9,7 +9,7 @@ package r48.schema.specialized.genpos;
 
 import gabien.IPeripherals;
 import gabien.ui.*;
-import r48.FontSizes;
+import r48.App;
 import r48.schema.HiddenSchemaElement;
 import r48.schema.util.SchemaPath;
 import r48.ui.Art;
@@ -19,7 +19,7 @@ import r48.ui.UIAppendButton;
  * The system for editing a given cell.
  * Created on 2/17/17.
  */
-public class UICellEditingPanel extends UIElement.UIPanel {
+public class UICellEditingPanel extends App.Pan {
     public UICellSelectionPanel cellSelectionPanel;
     public GenposFramePanelController root;
     public UISplitterLayout[] halfsplits;
@@ -29,6 +29,7 @@ public class UICellEditingPanel extends UIElement.UIPanel {
     public int lastCCN = -1;
 
     public UICellEditingPanel(UICellSelectionPanel csp, GenposFramePanelController rmAnimRootPanel) {
+        super(csp.app);
         root = rmAnimRootPanel;
         cellSelectionPanel = csp;
         String[] properties = root.frame.getCellProps();
@@ -44,7 +45,7 @@ public class UICellEditingPanel extends UIElement.UIPanel {
         String[] properties = root.frame.getCellProps();
         for (int i = 0; i < halfsplits.length; i++) {
             UIElement ed = createPropertyEditor(i);
-            UIElement leftSide = new UILabel(properties[i], FontSizes.schemaFieldTextHeight);
+            UIElement leftSide = new UILabel(properties[i], app.f.schemaFieldTextHeight);
             halfsplits[i] = new UISplitterLayout(leftSide, ed, false, 1);
             layoutAddElement(halfsplits[i]);
         }
@@ -66,7 +67,7 @@ public class UICellEditingPanel extends UIElement.UIPanel {
                             if (keyed)
                                 root.tweening.disablePropertyKey(i, keytrack);
                         }
-                    }, FontSizes.schemaFieldTextHeight);
+                    }, app.f.schemaFieldTextHeight);
                 }
             }
             return uie;

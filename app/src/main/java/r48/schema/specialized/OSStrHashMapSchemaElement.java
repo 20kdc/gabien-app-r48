@@ -11,7 +11,6 @@ import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.io.IMIUtils;
 import r48.io.PathUtils;
@@ -39,7 +38,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
         tryInitOSSHESEDB(app);
         if (app.osSHESEDB == null)
             app.ui.launchDialog(TXDB.get("This is basically useless without a locmaps.txt file. Please prepare one by going into RXP mode, System Tools, and pressing 'Retrieve all object strings', then return here."));
-        final UITextBox utb = new UITextBox("", FontSizes.schemaFieldTextHeight);
+        final UITextBox utb = new UITextBox("", app.f.schemaFieldTextHeight);
         utb.onEdit = new Runnable() {
             @Override
             public void run() {

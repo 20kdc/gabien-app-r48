@@ -27,7 +27,6 @@ import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.IFunction;
 import r48.AdHocSaveLoad;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.ObjectInfo;
 import r48.dbs.TXDB;
@@ -45,9 +44,9 @@ import r48.ui.UISetSelector;
  * Created on 13th August 2022.
  */
 public class UIRMUniversalStringLocator extends App.Prx {
-    private UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
-    private RListPanel settingsFull = new RListPanel(TXDB.get("Full"));
-    private RListPanel settingsPartial = new RListPanel(TXDB.get("Partial"));
+    private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalScrollersize);
+    private RListPanel settingsFull = new RListPanel(app, TXDB.get("Full"));
+    private RListPanel settingsPartial = new RListPanel(app, TXDB.get("Partial"));
 
     private UISetSelector<ObjectInfo> setSelector;
     private boolean scheduleSetSelectorUpdate = false;
@@ -61,7 +60,7 @@ public class UIRMUniversalStringLocator extends App.Prx {
     public UIRMUniversalStringLocator(App app) {
         super(app);
         Iterable<ObjectInfo> oi = app.getObjectInfos();
-        setSelector = new UISetSelector<ObjectInfo>(oi);
+        setSelector = new UISetSelector<ObjectInfo>(app, oi);
         for (ObjectInfo ii : oi)
             app.odb.registerModificationHandler(ii.idName, refreshOnObjectChange);
 
@@ -124,12 +123,12 @@ public class UIRMUniversalStringLocator extends App.Prx {
         settingsFull.refreshContents();
         settingsPartial.refreshContents();
 
-        UITabPane utp = new UITabPane(FontSizes.schemaPagerTabScrollersize, false, false);
+        UITabPane utp = new UITabPane(app.f.schemaPagerTabScrollersize, false, false);
         utp.addTab(new Tab(settingsFull, new TabIcon[0]));
         utp.addTab(new Tab(settingsPartial, new TabIcon[0]));
         layout.panelsAdd(utp);
 
-        layout.panelsAdd(new UITextButton(TXDB.get("Save Config."), FontSizes.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(TXDB.get("Save Config."), app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 RubyIO rio = new RubyIO();
@@ -144,7 +143,7 @@ public class UIRMUniversalStringLocator extends App.Prx {
             }
         }));
 
-        layout.panelsAdd(new UITextButton(TXDB.get("Confirm & Replace"), FontSizes.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(TXDB.get("Confirm & Replace"), app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 int total = 0;
@@ -228,16 +227,16 @@ public class UIRMUniversalStringLocator extends App.Prx {
         }));
     }
 
-    public static class RListPanel extends UIProxy {
-        private UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
+    public static class RListPanel extends App.Prx {
+        private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalScrollersize);
         private LinkedList<Replacement> settings = new LinkedList<Replacement>();
 
-        private UITextBox adderK = new UITextBox("", FontSizes.dialogWindowTextHeight);
-        private UITextBox adderV = new UITextBox("", FontSizes.dialogWindowTextHeight);
+        private UITextBox adderK = new UITextBox("", app.f.dialogWindowTextHeight);
+        private UITextBox adderV = new UITextBox("", app.f.dialogWindowTextHeight);
 
-        private UIElement adderA = new UISplitterLayout(new UILabel("From: ", FontSizes.dialogWindowTextHeight), adderK, false, 0);
-        private UIElement adderB = new UISplitterLayout(new UILabel("To: ", FontSizes.dialogWindowTextHeight), adderV, false, 0);
-        private UIElement adderC = new UITextButton(TXDB.get("Add replacement"), FontSizes.dialogWindowTextHeight, new Runnable() {
+        private UIElement adderA = new UISplitterLayout(new UILabel("From: ", app.f.dialogWindowTextHeight), adderK, false, 0);
+        private UIElement adderB = new UISplitterLayout(new UILabel("To: ", app.f.dialogWindowTextHeight), adderV, false, 0);
+        private UIElement adderC = new UITextButton(TXDB.get("Add replacement"), app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 settingsRemoveByKey(adderK.text);
@@ -248,7 +247,8 @@ public class UIRMUniversalStringLocator extends App.Prx {
 
         private final String title;
 
-        public RListPanel(String string) {
+        public RListPanel(App app, String string) {
+            super(app);
             title = string;
             refreshContents();
             proxySetElement(layout, true);
@@ -292,14 +292,14 @@ public class UIRMUniversalStringLocator extends App.Prx {
             layout.panelsClear();
 
             for (final Replacement key : settings) {
-                UIElement keyLine = new UILabel(key.key + " -> " + key.value, FontSizes.dialogWindowTextHeight);
+                UIElement keyLine = new UILabel(key.key + " -> " + key.value, app.f.dialogWindowTextHeight);
                 keyLine = new UIAppendButton("-", keyLine, new Runnable() {
                     @Override
                     public void run() {
                         settings.remove(key);
                         refreshContents();
                     }
-                }, FontSizes.dialogWindowTextHeight);
+                }, app.f.dialogWindowTextHeight);
                 layout.panelsAdd(keyLine);
             }
             layout.panelsAdd(adderA);

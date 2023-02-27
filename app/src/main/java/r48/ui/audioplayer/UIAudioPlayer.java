@@ -13,14 +13,12 @@ import gabien.GaBIEn;
 import gabien.IPeripherals;
 import gabien.IRawAudioDriver.IRawAudioSource;
 import gabien.ui.UIElement;
-import gabien.ui.UIElement.UIProxy;
 import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UIScrollbar;
 import gabien.ui.UISplitterLayout;
 import gabien.media.audio.*;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.io.PathUtils;
 import r48.ui.Art;
@@ -30,14 +28,14 @@ import r48.ui.UISymbolButton;
  * Audio player!
  * Created on 2nd August 2022.
  */
-public class UIAudioPlayer extends UIProxy {
+public class UIAudioPlayer extends App.Prx {
     // These two are only interacted with from the audio thread.
     public final StreamingAudioDiscreteSample source;
     public volatile double position;
     private boolean playing;
     private final float[] audioThreadBuffer;
 
-    private final UISymbolButton playButton = new UISymbolButton(Art.Symbol.Play, FontSizes.schemaFieldTextHeight, new Runnable() {
+    private final UISymbolButton playButton = new UISymbolButton(Art.Symbol.Play, app.f.schemaFieldTextHeight, new Runnable() {
         @Override
         public void run() {
             if (position > source.length)
@@ -46,18 +44,19 @@ public class UIAudioPlayer extends UIProxy {
         }
     }).togglable(false);
 
-    private final UISymbolButton loopButton = new UISymbolButton(Art.Symbol.Loop, FontSizes.schemaFieldTextHeight, null).togglable(false);
+    private final UISymbolButton loopButton = new UISymbolButton(Art.Symbol.Loop, app.f.schemaFieldTextHeight, null).togglable(false);
 
-    private final UIScrollbar seeker = new UIScrollbar(false, FontSizes.generalScrollersize);
+    private final UIScrollbar seeker = new UIScrollbar(false, app.f.generalScrollersize);
     private double lastSeekerScrollPoint;
     private double speed;
 
-    public UIAudioPlayer(AudioIOSource data, double spd) {
+    public UIAudioPlayer(App app, AudioIOSource data, double spd) {
+        super(app);
         speed = spd;
         source = new StreamingAudioDiscreteSample(data);
         audioThreadBuffer = new float[data.crSet.channels];
-        UIScrollLayout svl = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
-        svl.panelsAdd(new UISymbolButton(Art.Symbol.Back, FontSizes.schemaFieldTextHeight, new Runnable() {
+        UIScrollLayout svl = new UIScrollLayout(false, app.f.mapToolbarScrollersize);
+        svl.panelsAdd(new UISymbolButton(Art.Symbol.Back, app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 position = 0;
@@ -116,11 +115,11 @@ public class UIAudioPlayer extends UIProxy {
     public static UIElement create(App app, String filename, double speed) {
         try {
             InputStream tryWav = GaBIEn.getInFile(PathUtils.autoDetectWindows(app.rootPath + filename + ".wav"));
-            return new UIAudioPlayer(WavIO.readWAV(tryWav, true), speed);
+            return new UIAudioPlayer(app, WavIO.readWAV(tryWav, true), speed);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new UILabel(TXDB.get("Unable to load sound."), FontSizes.schemaFieldTextHeight);
+        return new UILabel(TXDB.get("Unable to load sound."), app.f.schemaFieldTextHeight);
     }
 
     @Override

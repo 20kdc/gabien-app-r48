@@ -11,7 +11,6 @@ import gabien.IGrDriver;
 import gabien.uslx.append.*;
 import gabien.ui.*;
 import r48.App;
-import r48.FontSizes;
 import r48.IMapContext;
 import r48.RubyTable;
 import r48.dbs.ObjectInfo;
@@ -85,7 +84,7 @@ public abstract class MapSystem extends App.Svc {
                         mapBox.loadMap("Map");
                     }
                 }
-        }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, false) {
+        }, app.f.menuTextHeight, app.f.menuScrollersize, false) {
             @Override
             public String toString() {
                 return mapInfos;

@@ -14,7 +14,6 @@ import gabien.ui.UIPopupMenu.Entry;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController.ToolButton;
@@ -106,7 +105,7 @@ public class UIMTPopupButtons extends UIMTBase {
             });
         }
 
-        UIAutoclosingPopupMenu u = new UIAutoclosingPopupMenu(allEntries, FontSizes.dialogWindowTextHeight, FontSizes.menuScrollersize, true);
+        UIAutoclosingPopupMenu u = new UIAutoclosingPopupMenu(allEntries, app.f.dialogWindowTextHeight, app.f.menuScrollersize, true);
         changeInner(u, true);
     }
 
@@ -114,8 +113,8 @@ public class UIMTPopupButtons extends UIMTBase {
         private UIMTMapResizer(final IMapToolContext mtc) {
             super(mtc);
             final UIMapView view = mtc.getMapView();
-            final UINumberBox a = new UINumberBox(view.mapTable.width, FontSizes.textDialogFieldTextHeight);
-            final UINumberBox b = new UINumberBox(view.mapTable.height, FontSizes.textDialogFieldTextHeight);
+            final UINumberBox a = new UINumberBox(view.mapTable.width, app.f.textDialogFieldTextHeight);
+            final UINumberBox b = new UINumberBox(view.mapTable.height, app.f.textDialogFieldTextHeight);
             a.onEdit = new Runnable() {
                 @Override
                 public void run() {
@@ -130,7 +129,7 @@ public class UIMTPopupButtons extends UIMTBase {
                         b.number = 1;
                 }
             };
-            UISplitterLayout root = new UISplitterLayout(new UISplitterLayout(a, b, false, 0.5d), new UITextButton("Resize", FontSizes.textDialogFieldTextHeight, new Runnable() {
+            UISplitterLayout root = new UISplitterLayout(new UISplitterLayout(a, b, false, 0.5d), new UITextButton("Resize", app.f.textDialogFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     int w = (int) a.number;
@@ -144,7 +143,7 @@ public class UIMTPopupButtons extends UIMTBase {
                 }
             }), true, 0);
             changeInner(root, true);
-            setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(128), getSize().height));
+            setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(128), getSize().height));
         }
     }
 }

@@ -12,7 +12,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UINumberBox;
 import gabien.ui.UIScrollLayout;
 import r48.App;
-import r48.FontSizes;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
@@ -49,7 +48,7 @@ public class IntegerSchemaElement extends SchemaElement {
     }
 
     public ActiveInteger buildIntegerEditor(long oldVal, final IntegerSchemaElement.IIntegerContext context) {
-        final UINumberBox unb = new UINumberBox(oldVal, FontSizes.schemaFieldTextHeight);
+        final UINumberBox unb = new UINumberBox(oldVal, app.f.schemaFieldTextHeight);
         unb.readOnly = isReadOnly();
         unb.onEdit = new Runnable() {
             @Override

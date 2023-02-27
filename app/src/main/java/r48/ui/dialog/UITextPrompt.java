@@ -9,21 +9,22 @@ package r48.ui.dialog;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import r48.FontSizes;
+import r48.App;
 import r48.dbs.TXDB;
 
 /**
  * Created on 12/31/16.
  */
-public class UITextPrompt extends UIElement.UIProxy {
+public class UITextPrompt extends App.Prx {
 
-    public UITextBox utb = new UITextBox("", FontSizes.textDialogFieldTextHeight);
-    public UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize);
+    public UITextBox utb = new UITextBox("", app.f.textDialogFieldTextHeight);
+    public UIScrollLayout uiSVL = new UIScrollLayout(true, app.f.generalScrollersize);
     public boolean wantClose = false;
 
-    public UITextPrompt(final String s, final IConsumer<String> iConsumer) {
-        uiSVL.panelsAdd(new UILabel(s, FontSizes.textDialogDescTextHeight));
-        uiSVL.panelsAdd(new UISplitterLayout(utb, new UITextButton(TXDB.get("OK"), FontSizes.textDialogFieldTextHeight, new Runnable() {
+    public UITextPrompt(App app, final String s, final IConsumer<String> iConsumer) {
+        super(app);
+        uiSVL.panelsAdd(new UILabel(s, app.f.textDialogDescTextHeight));
+        uiSVL.panelsAdd(new UISplitterLayout(utb, new UITextButton(TXDB.get("OK"), app.f.textDialogFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 iConsumer.accept(utb.text);

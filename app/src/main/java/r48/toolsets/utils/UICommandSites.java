@@ -13,7 +13,6 @@ import gabien.ui.UIScrollLayout;
 import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.ISupplier;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
@@ -26,7 +25,7 @@ public class UICommandSites extends App.Prx {
     private final ISupplier<CommandSite[]> refresh;
     private final IObjectBackend.ILoadedObject[] roots;
 
-    private final UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
+    private final UIScrollLayout layout = new UIScrollLayout(true, app.f.generalScrollersize);
     private boolean needsRefresh = false;
     private String objIdName;
 
@@ -46,7 +45,7 @@ public class UICommandSites extends App.Prx {
             app.odb.registerModificationHandler(ilo, consumer);
         doRefresh();
         proxySetElement(layout, true);
-        setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(400), FontSizes.scaleGuess(300)));
+        setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(400), app.f.scaleGuess(300)));
     }
 
     public void show() {

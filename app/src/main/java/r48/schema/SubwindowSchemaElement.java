@@ -14,7 +14,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
-import r48.FontSizes;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -49,14 +48,14 @@ public class SubwindowSchemaElement extends SchemaElement implements IProxySchem
         // This is never meant to *actually* scroll.
         String text = nameGetter.apply(target);
         String[] lines = text.split("\n");
-        UIElement r = new UITextButton(lines[0], FontSizes.schemaFieldTextHeight, new Runnable() {
+        UIElement r = new UITextButton(lines[0], app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 launcher.pushObject(path.newWindow(heldElement, target));
             }
         });
         for (int i = 1; i < lines.length; i++)
-            r = new UINSVertLayout(r, new UILabel(lines[i], FontSizes.schemaFieldTextHeight));
+            r = new UINSVertLayout(r, new UILabel(lines[i], app.f.schemaFieldTextHeight));
         return r;
     }
 

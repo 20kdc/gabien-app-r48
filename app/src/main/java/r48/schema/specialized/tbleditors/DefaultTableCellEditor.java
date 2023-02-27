@@ -9,18 +9,21 @@ package r48.schema.specialized.tbleditors;
 
 import gabien.ui.UINumberBox;
 import gabien.ui.UIScrollLayout;
-import r48.FontSizes;
+import r48.App;
 
 /**
  * Created on 18/2/17.
  */
-public class DefaultTableCellEditor implements ITableCellEditor {
+public class DefaultTableCellEditor extends App.Svc implements ITableCellEditor {
+    public DefaultTableCellEditor(App app) {
+        super(app);
+    }
     @Override
     public Runnable createEditor(final UIScrollLayout base, final int[] planes, final Runnable changeOccurred) {
         final UINumberBox[] numbers = new UINumberBox[planes.length];
         for (int i = 0; i < planes.length; i++) {
             final int index = i;
-            final UINumberBox box = new UINumberBox(planes[i], FontSizes.tableElementTextHeight);
+            final UINumberBox box = new UINumberBox(planes[i], app.f.tableElementTextHeight);
             numbers[i] = box;
             box.onEdit = new Runnable() {
                 @Override

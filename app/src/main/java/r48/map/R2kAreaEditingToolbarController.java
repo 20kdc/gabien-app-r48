@@ -12,7 +12,6 @@ import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -23,13 +22,14 @@ import r48.ui.Art;
 /**
  * Created on 11/08/17.
  */
-public class R2kAreaEditingToolbarController implements IEditingToolbarController {
+public class R2kAreaEditingToolbarController extends App.Svc implements IEditingToolbarController {
     public final IObjectBackend.ILoadedObject mapInfosRoot;
     public final IRIO areaInfo;
     public final int tileSize;
     public final IMapToolContext mapToolContext;
 
     public R2kAreaEditingToolbarController(IMapToolContext mtc, IObjectBackend.ILoadedObject mapInfos, IRIO mapInfo) {
+        super(mtc.getMapView().app);
         tileSize = mtc.getMapView().tileSize;
         mapToolContext = mtc;
         mapInfosRoot = mapInfos;
@@ -43,7 +43,7 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
 
     @Override
     public UIElement getBar() {
-        return new UILabel(TXDB.get("Editing Area..."), FontSizes.mapLayertabTextHeight);
+        return new UILabel(TXDB.get("Editing Area..."), app.f.mapLayertabTextHeight);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
 
         public UIMTAreaTool() {
             super(R2kAreaEditingToolbarController.this.mapToolContext);
-            label = new UILabel(textA, FontSizes.dialogWindowTextHeight);
+            label = new UILabel(textA, app.f.dialogWindowTextHeight);
             changeInner(label, true);
         }
 

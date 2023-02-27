@@ -9,8 +9,7 @@ package r48.ui;
 
 import gabien.IGrDriver;
 import gabien.ui.*;
-import r48.FontSizes;
-
+import r48.App;
 import java.util.HashMap;
 
 /**
@@ -28,6 +27,12 @@ public abstract class UIPlaneView extends UIElement {
 
     private HashMap<IPointer, Size> dragPointers = new HashMap<IPointer, Size>();
     private double dragNexusX, dragNexusY, firstDragDist, firstDragZoom, dragAvgDist;
+
+    public final App app;
+
+    public UIPlaneView(App app) {
+        this.app = app;
+    }
 
     protected abstract String planeGetStatus();
 
@@ -73,16 +78,16 @@ public abstract class UIPlaneView extends UIElement {
 
     @Override
     public void render(IGrDriver igd) {
-        Rect plusRect = Art.getZIconRect(false, 0);
-        Rect plusRectFull = Art.getZIconRect(true, 0); // used for X calc on the label
-        Rect minusRect = Art.getZIconRect(false, 1);
-        Rect dragRect = Art.getZIconRect(false, 2);
+        Rect plusRect = Art.getZIconRect(app, false, 0);
+        Rect plusRectFull = Art.getZIconRect(app, true, 0); // used for X calc on the label
+        Rect minusRect = Art.getZIconRect(app, false, 1);
+        Rect dragRect = Art.getZIconRect(app, false, 2);
 
         int textX = plusRectFull.x + plusRectFull.width;
         int textW = getSize().width - (textX + ((plusRectFull.width - plusRect.width) / 2));
         String statusText = planeGetStatus();
         if (statusText != null)
-            planeStatusLine.draw(statusText, FontSizes.mapPositionTextHeight, igd, textX, plusRect.y, textW);
+            planeStatusLine.draw(statusText, app.f.mapPositionTextHeight, igd, textX, plusRect.y, textW);
 
         if (planeCanZoom(true))
             Art.drawZoom(igd, true, plusRect.x, plusRect.y, plusRect.height);
@@ -100,11 +105,11 @@ public abstract class UIPlaneView extends UIElement {
         int x = state.getX();
         int y = state.getY();
         Size bSize = getSize();
-        if (planeCanZoom(true) && Art.getZIconRect(true, 0).contains(x, y)) {
+        if (planeCanZoom(true) && Art.getZIconRect(app, true, 0).contains(x, y)) {
             handleMousewheel(bSize.width / 2, bSize.height / 2, true);
-        } else if (planeCanZoom(false) && Art.getZIconRect(true, 1).contains(x, y)) {
+        } else if (planeCanZoom(false) && Art.getZIconRect(app, true, 1).contains(x, y)) {
             handleMousewheel(bSize.width / 2, bSize.height / 2, false);
-        } else if (Art.getZIconRect(true, 2).contains(x, y)) {
+        } else if (Art.getZIconRect(app, true, 2).contains(x, y)) {
             planeToggleDragLock();
         } else if (planeGetDragLock()) {
             return handleDragPointer();

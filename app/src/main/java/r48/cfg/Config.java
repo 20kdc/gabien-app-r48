@@ -71,6 +71,6 @@ public class Config {
         FontManager.fontOverride = fontOverride;
         FontManager.fontOverrideUE8 = fontOverrideUE8;
         UIBorderedElement.borderTheme = borderTheme;
-        GaBIEn.sysCoreFontSize = FontSizes.gSysCoreTextHeight;
+        GaBIEn.sysCoreFontSize = f.gSysCoreTextHeight;
     }
 }

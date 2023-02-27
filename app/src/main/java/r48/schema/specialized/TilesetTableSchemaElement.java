@@ -10,7 +10,6 @@ package r48.schema.specialized;
 import gabien.IGrDriver;
 import gabien.ui.Size;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
@@ -31,16 +30,16 @@ public class TilesetTableSchemaElement extends RubyTableSchemaElement<StuffRende
 
     @Override
     public Size getGridSize(StuffRenderer th) {
-        int ts = th.tileRenderer.getTileSize() * FontSizes.getSpriteScale();
+        int ts = th.tileRenderer.getTileSize() * app.f.getSpriteScale();
         return new Size(ts, ts);
     }
 
     public StuffRenderer baseTileDraw(IRIO target, int t, int x, int y, IGrDriver igd, StuffRenderer osr) {
-        int ts = osr.tileRenderer.getTileSize() * FontSizes.getSpriteScale();
+        int ts = osr.tileRenderer.getTileSize() * app.f.getSpriteScale();
         Size sz = getGridSize(osr);
         int xx = (sz.width - ts) / 2;
         int xy = (sz.height - ts) / 2;
-        osr.tileRenderer.drawTile(0, (short) t, x + xx, y + xy, igd, FontSizes.getSpriteScale(), true);
+        osr.tileRenderer.drawTile(0, (short) t, x + xx, y + xy, igd, app.f.getSpriteScale(), true);
         return osr;
     }
 }

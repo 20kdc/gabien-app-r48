@@ -18,7 +18,6 @@ import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.TXDB;
@@ -33,7 +32,7 @@ import r48.ui.UISetSelector;
  * Created 23rd October 2022.
  */
 public class UITranscriptControl extends App.Prx {
-    private UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
+    private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalScrollersize);
     private boolean done = false;
 
     private UISetSelector<TranscriptComponent> setSelector;
@@ -60,7 +59,7 @@ public class UITranscriptControl extends App.Prx {
             components.add(new TCMap(mapMap.get(id)));
         components.add(new TCCustomData());
 
-        setSelector = new UISetSelector<TranscriptComponent>(components);
+        setSelector = new UISetSelector<TranscriptComponent>(app, components);
 
         refreshContents();
         
@@ -75,7 +74,7 @@ public class UITranscriptControl extends App.Prx {
     private void refreshContents() {
         layout.panelsClear();
 
-        layout.panelsAdd(new UITextButton(TXDB.get("Confirm"), FontSizes.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(TXDB.get("Confirm"), app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 PrintStream ps = null;

@@ -13,7 +13,6 @@ import gabien.ui.UISplitterLayout;
 import gabien.ui.UITabBar;
 import gabien.ui.UITabPane;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
@@ -46,15 +45,15 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
         final AutoTileTypeField[] atFields = renderer.tileRenderer.indicateATs();
         final UIElement[] tileTabElements = new UIElement[tileTabs.length];
         final UITileGrid[] tileTabGrids = new UITileGrid[tileTabs.length];
-        int spriteScale = FontSizes.getSpriteScale();
+        int spriteScale = app.f.getSpriteScale();
         // -- Assemble tab pane --
-        final UITabPane tabPane = new UITabPane(FontSizes.tilesTabTextHeight, true, false, FontSizes.tilesTabScrollersize);
+        final UITabPane tabPane = new UITabPane(app.f.tilesTabTextHeight, true, false, app.f.tilesTabScrollersize);
         for (int i = 0; i < tileTabs.length; i++) {
             final TileEditingTab tab = tileTabs[i];
             // Multi-select is allowed on everything.
-            final UITileGrid tileGrid = new UITileGrid(renderer, 0, 0, true, tab.visTilesNormal, tab.visTilesHover, " " + tab.localizedText + " ", spriteScale);
+            final UITileGrid tileGrid = new UITileGrid(app, renderer, 0, 0, true, tab.visTilesNormal, tab.visTilesHover, " " + tab.localizedText + " ", spriteScale);
             
-            UIScrollLayout fields = new UIScrollLayout(true, FontSizes.generalScrollersize);
+            UIScrollLayout fields = new UIScrollLayout(true, app.f.generalScrollersize);
             final int[] values = new int[targ.planeCount];
             
             final Runnable onChange = editor.createEditor(fields, values, new Runnable() {

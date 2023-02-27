@@ -14,7 +14,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
@@ -120,7 +119,7 @@ public class RMFindTranslatables extends App.Svc {
     public static CommandSite siteFromContext(App app, final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath[] basePaths) {
         final CMDB cmdb = cmdbEditor.database;
         String text = cmdb.buildGroupCodename(listObj, codeIndex, true);
-        final UITextButton button = new UITextButton(text, FontSizes.schemaFieldTextHeight, new Runnable() {
+        final UITextButton button = new UITextButton(text, app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 ISchemaHost shi = new SchemaHostImpl(app, mapView);

@@ -193,6 +193,6 @@ public class FontSizes {
     }
 
     public static int getSpriteScale() {
-        return ((FontSizes.uiGuessScaleTenths + 5) / 10);
+        return ((uiGuessScaleTenths + 5) / 10);
     }
 }

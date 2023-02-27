@@ -45,8 +45,8 @@ public class UITest extends App.Prx {
     // the naming got screwed up with the Nth layout redesign.
     // UITest -> outerPanel -> Back/PRINT
     //                      -> masterPanel
-    public UIScrollLayout masterPanel = new UIScrollLayout(true, FontSizes.generalScrollersize);
-    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(TXDB.get("PTS"), new UIAppendButton(TXDB.get("PTF"), new UITextButton(TXDB.get("Back..."), FontSizes.inspectorBackTextHeight, new Runnable() {
+    public UIScrollLayout masterPanel = new UIScrollLayout(true, app.f.generalScrollersize);
+    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(TXDB.get("PTS"), new UIAppendButton(TXDB.get("PTF"), new UITextButton(TXDB.get("Back..."), app.f.inspectorBackTextHeight, new Runnable() {
         @Override
         public void run() {
             if (back.size() > 0)
@@ -65,12 +65,12 @@ public class UITest extends App.Prx {
                 app.ui.launchDialog(TXDB.get("Could not print.") + "\n" + e);
             }
         }
-    }, FontSizes.inspectorBackTextHeight), new Runnable() {
+    }, app.f.inspectorBackTextHeight), new Runnable() {
         @Override
         public void run() {
             app.ui.launchDialog(currentObj.toStringLong(""));
         }
-    }, FontSizes.inspectorBackTextHeight), masterPanel);
+    }, app.f.inspectorBackTextHeight), masterPanel);
 
     public static String getPrintPath(App app) {
         return PathUtils.autoDetectWindows(app.rootPath + "PRINT.txt");
@@ -80,7 +80,7 @@ public class UITest extends App.Prx {
         super(app);
         loadObject(obj);
         proxySetElement(outerPanel, false);
-        setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(320), FontSizes.scaleGuess(240)));
+        setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(320), app.f.scaleGuess(240)));
     }
 
     public void loadObject(final IRIO obj) {
@@ -113,7 +113,7 @@ public class UITest extends App.Prx {
         masterPanel.panelsClear();
         for (int i = 0; i < navigaList.length; i++) {
             final int j = i;
-            UIElement button = new UITextButton(navigaList[i], FontSizes.inspectorTextHeight, new Runnable() {
+            UIElement button = new UITextButton(navigaList[i], app.f.inspectorTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     back.addLast(obj);
@@ -128,7 +128,7 @@ public class UITest extends App.Prx {
                         back.addLast(obj);
                         loadObject(MagicalBinders.toBoundWithCache(app, b, objectList[j]));
                     }
-                }, FontSizes.inspectorTextHeight);
+                }, app.f.inspectorTextHeight);
             masterPanel.panelsAdd(button);
         }
     }

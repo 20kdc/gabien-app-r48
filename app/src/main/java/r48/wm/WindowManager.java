@@ -11,7 +11,6 @@ import gabien.*;
 import gabien.ui.*;
 import gabien.ui.UIWindowView.TabShell;
 import r48.App;
-import r48.FontSizes;
 import r48.app.AppCore;
 import r48.ui.Art;
 
@@ -81,12 +80,12 @@ public class WindowManager extends AppCore.Csv {
                     super.onWindowClose();
             }
         };
-        rootView.windowTextHeight = FontSizes.windowFrameHeight;
+        rootView.windowTextHeight = app.f.windowFrameHeight;
         rootView.sizerVisual = rootView.windowTextHeight / 2;
         rootView.sizerActual = rootView.windowTextHeight;
-        rootView.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(800), FontSizes.scaleGuess(600)));
+        rootView.setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(800), app.f.scaleGuess(600)));
 
-        tabPane = new UITabPane(FontSizes.tabTextHeight, true, true, FontSizes.maintabsScrollersize, thbrL, thbrR);
+        tabPane = new UITabPane(app.f.tabTextHeight, true, true, app.f.maintabsScrollersize, thbrL, thbrR);
 
         UIWindowView.IShell backing = new UIWindowView.ScreenShell(rootView, tabPane);
         rootView.addShell(backing);

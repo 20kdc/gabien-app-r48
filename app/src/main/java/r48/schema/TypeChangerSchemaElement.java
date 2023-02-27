@@ -9,7 +9,6 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import r48.App;
-import r48.FontSizes;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -49,7 +48,7 @@ public class TypeChangerSchemaElement extends SchemaElement {
                     path.changeOccurred(false);
                     // auto-updates
                 }
-            }, FontSizes.schemaFieldTextHeight);
+            }, app.f.schemaFieldTextHeight);
         }
         return holder;
     }

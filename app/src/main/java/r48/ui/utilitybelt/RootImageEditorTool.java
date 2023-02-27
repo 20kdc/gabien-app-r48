@@ -8,7 +8,7 @@
 package r48.ui.utilitybelt;
 
 import gabien.ui.*;
-import r48.FontSizes;
+import r48.App;
 import r48.dbs.TXDB;
 import r48.ui.UISymbolButton;
 import r48.ui.Art.Symbol;
@@ -20,6 +20,7 @@ public class RootImageEditorTool implements IImageEditorTool {
     private boolean activeSection = false;
 
     public static UIScrollLayout createToolPalette(final UIImageEditView uiev, Class<?> oneTool) {
+        App app = uiev.app;
         @SuppressWarnings("rawtypes")
         final Class[] toolClasses = new Class[] {
                 RootImageEditorTool.class,
@@ -41,11 +42,11 @@ public class RootImageEditorTool implements IImageEditorTool {
                 Symbol.Area,
                 Symbol.Eyedropper
         };
-        UIScrollLayout svl = new UIScrollLayout(true, FontSizes.mapToolbarScrollersize);
+        UIScrollLayout svl = new UIScrollLayout(true, app.f.mapToolbarScrollersize);
         UIElement left = null;
         for (int i = 0; i < toolClasses.length; i++) {
             final int ic = i;
-            UIElement nx = new UISymbolButton(toolSymbol[i], FontSizes.schemaFieldTextHeight, new Runnable() {
+            UIElement nx = new UISymbolButton(toolSymbol[i], app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     try {

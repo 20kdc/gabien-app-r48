@@ -8,7 +8,6 @@
 package r48.maptools;
 
 import gabien.ui.UILabel;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
@@ -20,7 +19,7 @@ import r48.map.UIMapView;
  * Created on 09/06/17.
  */
 public class UIMTPickTile extends UIMTBase implements IMapViewCallbacks {
-    public UILabel innerLabel = new UILabel(TXDB.get("Click on a tile to pick it."), FontSizes.dialogWindowTextHeight);
+    public UILabel innerLabel = new UILabel(TXDB.get("Click on a tile to pick it."), app.f.dialogWindowTextHeight);
     public final UIMapView map;
 
     public UIMTPickTile(IMapToolContext m) {

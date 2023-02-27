@@ -10,7 +10,6 @@ package r48.schema.specialized.cmgb;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.PathSyntax;
@@ -77,7 +76,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         final SchemaPath path = path2.tagSEMonitor(target, this, false);
 
         if (showHeader) {
-            UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(database.buildCodename(target, true, true), FontSizes.schemaFieldTextHeight, new Runnable() {
+            UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     launcher.pushObject(path2.newWindow(navigateToCode(launcher, target, new IConsumer<int[]>() {
@@ -107,7 +106,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     }
                     app.ui.launchDialog(title + "\n" + result);
                 }
-            }, FontSizes.schemaFieldTextHeight);
+            }, app.f.schemaFieldTextHeight);
 
             return new UISplitterLayout(chooseCode, buildSubElem(target, launcher, path), true, 0);
         }
@@ -138,7 +137,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 // Hidden parameters, introduced to deal with the "text as first parameter" thing brought about by R2k
                 if (paramName.equals("_"))
                     continue;
-                labels[i] = new UILabel(paramName + " ", FontSizes.schemaFieldTextHeight);
+                labels[i] = new UILabel(paramName + " ", app.f.schemaFieldTextHeight);
                 labelWidth.set(Math.max(labelWidth.get(), labels[i].getWantedSize().width));
             }
             for (int i = 0; i < labels.length; i++) {
@@ -170,7 +169,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
             categories[i] = new UIEnumChoice.Category(database.categories[i], llo);
         }
 
-        return new TempDialogSchemaChoice(launcher.getApp(), new UIEnumChoice(new IConsumer<RubyIO>() {
+        final App app = launcher.getApp();
+        return new TempDialogSchemaChoice(app, new UIEnumChoice(app, new IConsumer<RubyIO>() {
             @Override
             public void accept(RubyIO integer) {
                 // NOTE: This just uses ints for everything.

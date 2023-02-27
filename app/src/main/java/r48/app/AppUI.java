@@ -23,7 +23,6 @@ import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.ISupplier;
 import r48.App;
-import r48.FontSizes;
 import r48.IMapContext;
 import r48.dbs.TXDB;
 import r48.imagefx.ImageFXCache;
@@ -42,6 +41,7 @@ import r48.ui.Art;
 import r48.ui.UIAppendButton;
 import r48.ui.UINSVertLayout;
 import r48.ui.UISymbolButton;
+import r48.ui.dialog.UITextPrompt;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
 import r48.ui.utilitybelt.ImageEditorController;
@@ -87,13 +87,13 @@ public class AppUI extends App.Svc {
         app.stuffRendererIndependent = app.system.rendererFromTso(null);
 
         // initialize UI
-        final UISymbolButton sym = new UISymbolButton(Art.Symbol.Save, FontSizes.tabTextHeight, new Runnable() {
+        final UISymbolButton sym = new UISymbolButton(Art.Symbol.Save, app.f.tabTextHeight, new Runnable() {
             @Override
             public void run() {
                 saveAllModified();
             }
         });
-        final UISymbolButton sym2 = new UISymbolButton(Art.Symbol.Back, FontSizes.tabTextHeight, createLaunchConfirmation(TXDB.get("Reverting changes will lose all unsaved work and will reset many windows."), new Runnable() {
+        final UISymbolButton sym2 = new UISymbolButton(Art.Symbol.Back, app.f.tabTextHeight, createLaunchConfirmation(TXDB.get("Reverting changes will lose all unsaved work and will reset many windows."), new Runnable() {
             @Override
             public void run() {
                 AppMain.performSystemDump(app, false, "revert file");
@@ -135,7 +135,7 @@ public class AppUI extends App.Svc {
                                 app.ui.launchDialog(TXDB.get("Done!"));
                             }
                         }
-                }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
+                }, app.f.menuTextHeight, app.f.menuScrollersize, true));
             }
         }
 
@@ -226,9 +226,9 @@ public class AppUI extends App.Svc {
         return new Runnable() {
             @Override
             public void run() {
-                UITextButton accept = new UITextButton(TXDB.get("Accept"), FontSizes.dialogWindowTextHeight, null).centred();
-                UITextButton cancel = new UITextButton(TXDB.get("Cancel"), FontSizes.dialogWindowTextHeight, null).centred();
-                UIElement uie = new UISplitterLayout(new UILabel(s, FontSizes.dialogWindowTextHeight),
+                UITextButton accept = new UITextButton(TXDB.get("Accept"), app.f.dialogWindowTextHeight, null).centred();
+                UITextButton cancel = new UITextButton(TXDB.get("Cancel"), app.f.dialogWindowTextHeight, null).centred();
+                UIElement uie = new UISplitterLayout(new UILabel(s, app.f.dialogWindowTextHeight),
                         new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
                 final UIMTBase mtb = UIMTBase.wrap(null, uie);
                 mtb.titleOverride = TXDB.get("Please confirm...");
@@ -265,11 +265,11 @@ public class AppUI extends App.Svc {
 
     public void startHelp(String base, String link) {
         // exception to the rule
-        UILabel uil = new UILabel("", FontSizes.helpPathHeight);
-        final UIHelpSystem uis = new UIHelpSystem();
+        UILabel uil = new UILabel("", app.f.helpPathHeight);
+        final UIHelpSystem uis = new UIHelpSystem(app.c);
         final HelpSystemController hsc = new HelpSystemController(uil, base, uis);
         uis.onLinkClick = hsc;
-        final UIScrollLayout uus = new UIScrollLayout(true, FontSizes.generalScrollersize);
+        final UIScrollLayout uus = new UIScrollLayout(true, app.f.generalScrollersize);
         uus.panelsAdd(uis);
         Size rootSize = wm.getRootSize();
         final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(TXDB.get("Index"), uil, new Runnable() {
@@ -277,7 +277,7 @@ public class AppUI extends App.Svc {
             public void run() {
                 hsc.loadPage(0);
             }
-        }, FontSizes.helpPathHeight), uus) {
+        }, app.f.helpPathHeight), uus) {
             @Override
             public String toString() {
                 return TXDB.get("Help Window");
@@ -326,8 +326,8 @@ public class AppUI extends App.Svc {
     }
 
     public void launchDialog(String s) {
-        UILabel ul = new UILabel(s, FontSizes.textDialogDescTextHeight);
-        UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize) {
+        UILabel ul = new UILabel(s, app.f.textDialogDescTextHeight);
+        UIScrollLayout svl = new UIScrollLayout(true, app.f.generalScrollersize) {
             @Override
             public String toString() {
                 return TXDB.get("Information");
@@ -335,6 +335,10 @@ public class AppUI extends App.Svc {
         };
         svl.panelsAdd(ul);
         wm.createWindowSH(svl);
+    }
+
+    public void launchPrompt(String text, IConsumer<String> consumer) {
+        wm.createWindow(new UITextPrompt(app, text, consumer));
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.

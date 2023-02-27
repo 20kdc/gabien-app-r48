@@ -8,7 +8,6 @@
 package r48.maptools.deep;
 
 import gabien.ui.UITextButton;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
@@ -29,7 +28,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
     public UIMTFtrGdt01(IMapToolContext o) {
         super(o);
 
-        changeInner(new UIAppendButton(TXDB.get("Confirm"), new UIAppendButton(TXDB.get("Raise Pen"), new UITextButton(TXDB.get("Undo"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        changeInner(new UIAppendButton(TXDB.get("Confirm"), new UIAppendButton(TXDB.get("Raise Pen"), new UITextButton(TXDB.get("Undo"), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 TOutline.Line l = workspace.removeLast();
@@ -45,7 +44,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
             public void run() {
                 placingPen = true;
             }
-        }, FontSizes.schemaFieldTextHeight), new Runnable() {
+        }, app.f.schemaFieldTextHeight), new Runnable() {
             @Override
             public void run() {
                 UIMapView umv = mapToolContext.getMapView();
@@ -56,7 +55,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
                 workspace = new MOutline();
                 placingPen = true;
             }
-        }, FontSizes.schemaFieldTextHeight), true);
+        }, app.f.schemaFieldTextHeight), true);
     }
 
     @Override

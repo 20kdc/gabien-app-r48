@@ -8,7 +8,7 @@
 package r48.map;
 
 import gabien.IGrDriver;
-import r48.FontSizes;
+import r48.App;
 import r48.ui.Art;
 
 import java.util.Random;
@@ -24,8 +24,8 @@ public class TimeWaster {
     private final int iconSize;
     private Random madness = new Random();
 
-    public TimeWaster() {
-        iconSize = 64 * FontSizes.getSpriteScale();
+    public TimeWaster(App app) {
+        iconSize = 64 * app.f.getSpriteScale();
     }
 
     public void draw(IGrDriver igd, int ox, int oy, double deltaTime, int sw, int sh) {

@@ -12,7 +12,6 @@ import gabien.IPeripherals;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
 import r48.App;
-import r48.FontSizes;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.schema.SchemaElement;
@@ -30,7 +29,7 @@ public class EPGDisplaySchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, SchemaPath path) {
-        final int sprScale = FontSizes.getSpriteScale();
+        final int sprScale = app.f.getSpriteScale();
         UIElement display = new UIElement(64, 96 * sprScale) {
             @Override
             public void update(double deltaTime, boolean selected, IPeripherals peripherals) {

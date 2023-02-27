@@ -10,7 +10,6 @@ package r48.schema.specialized;
 import gabien.IGrDriver;
 import gabien.ui.Size;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
 import r48.dbs.TSDB;
@@ -38,7 +37,7 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
         int th = tw;
         tw *= allocSource.mulW;
         th *= allocSource.mulH;
-        int ss = FontSizes.getSpriteScale();
+        int ss = app.f.getSpriteScale();
         return new Size(tw * ss, th * ss);
     }
 
@@ -55,7 +54,7 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
 
         final IRIO targV = iVar == null ? target : iVar.get(target);
         final RubyTable targ = new RubyTable(targV.getBuffer());
-        int sprScale = FontSizes.getSpriteScale();
+        int sprScale = app.f.getSpriteScale();
         int ts = osr.tileRenderer.getTileSize() * sprScale;
         Size sz = getGridSize(osr);
         int xx = (sz.width - ts) / 2;

@@ -12,7 +12,6 @@ import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
@@ -44,7 +43,7 @@ public class GenposSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost lBase, final SchemaPath pBase) {
         final App app = lBase.getApp();
-        return new UITextButton(TXDB.get("Graphically edit this..."), FontSizes.schemaFieldTextHeight, new Runnable() {
+        return new UITextButton(TXDB.get("Graphically edit this..."), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 final ISchemaHost launcher = lBase.newBlank();

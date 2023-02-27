@@ -10,7 +10,6 @@ package r48.schema;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.TXDB;
@@ -81,7 +80,7 @@ public class HashSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 uiSV.panelsClear();
-                final UITextBox searchBox = new UITextBox("", FontSizes.schemaFieldTextHeight);
+                final UITextBox searchBox = new UITextBox("", app.f.schemaFieldTextHeight);
                 String oldSearchTerm = (String) launcher.getEmbedObject(HashSchemaElement.this, target, "searchTerm");
                 if (oldSearchTerm != null)
                     searchBox.text = oldSearchTerm;
@@ -92,7 +91,7 @@ public class HashSchemaElement extends SchemaElement {
                         trigger();
                     }
                 };
-                uiSV.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Search:"), FontSizes.schemaFieldTextHeight), searchBox, false, 0d));
+                uiSV.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Search:"), app.f.schemaFieldTextHeight), searchBox, false, 0d));
 
                 AtomicInteger fw = new AtomicInteger(0);
 
@@ -114,7 +113,7 @@ public class HashSchemaElement extends SchemaElement {
 
                     final IRIO kss = key;
                     // keys are opaque - this prevents MANY issues
-                    UIElement hsA = new UILabel(keyText, FontSizes.schemaFieldTextHeight);
+                    UIElement hsA = new UILabel(keyText, app.f.schemaFieldTextHeight);
                     UIElement hsB = valElem.buildHoldingEditor(value, launcher, path.arrayHashIndex(key, "{" + keyText + "}"));
                     UIElement hs = null;
                     if (flexible) {
@@ -131,11 +130,11 @@ public class HashSchemaElement extends SchemaElement {
                             path.changeOccurred(false);
                             // auto-updates
                         }
-                    }, FontSizes.schemaFieldTextHeight));
+                    }, app.f.schemaFieldTextHeight));
                 }
                 // Set up a key workspace.
                 UIElement workspace = keyElem.buildHoldingEditor(keyWorkspace, launcher, rioPath);
-                UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(TXDB.get("Add Key"), FontSizes.schemaFieldTextHeight, new Runnable() {
+                UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(TXDB.get("Add Key"), app.f.schemaFieldTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         if (target.getHashVal(keyWorkspace) == null) {

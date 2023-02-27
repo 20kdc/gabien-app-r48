@@ -11,7 +11,6 @@ import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -44,7 +43,7 @@ public class PagerArrayInterface implements IArrayInterface {
         };
         if (regularArrayModeCurrent) {
             // regular array mode
-            final UITextButton swapModeButton = new UITextButton(TXDB.get("Mode: Regular Array"), FontSizes.schemaFieldTextHeight, swapModeAndReset);
+            final UITextButton swapModeButton = new UITextButton(TXDB.get("Mode: Regular Array"), app.f.schemaFieldTextHeight, swapModeAndReset);
             svl.panelsAdd(swapModeButton);
             regularArrayInterface.provideInterfaceFrom(new Host() {
                 
@@ -72,10 +71,10 @@ public class PagerArrayInterface implements IArrayInterface {
         for (int i = 0; i < positions.length; i++) {
             final String i2 = Integer.toString(i + 1);
             // "+", "+>", "-", "Cp.", "Ps."
-            UIScrollLayout barLayout = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
+            UIScrollLayout barLayout = new UIScrollLayout(false, app.f.mapToolbarScrollersize);
             if (positions[i].execInsert != null) {
                 final Runnable r = positions[i].execInsert;
-                barLayout.panelsAdd(new UITextButton("+", FontSizes.schemaFieldTextHeight, new Runnable() {
+                barLayout.panelsAdd(new UITextButton("+", app.f.schemaFieldTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         r.run();
@@ -85,7 +84,7 @@ public class PagerArrayInterface implements IArrayInterface {
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsert != null) {
                     final Runnable r = positions[i + 1].execInsert;
-                    barLayout.panelsAdd(new UITextButton("+>", FontSizes.schemaFieldTextHeight, new Runnable() {
+                    barLayout.panelsAdd(new UITextButton("+>", app.f.schemaFieldTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             r.run();
@@ -95,7 +94,7 @@ public class PagerArrayInterface implements IArrayInterface {
             }
             if (positions[i].execDelete != null) {
                 final ISupplier<Runnable> r = positions[i].execDelete;
-                barLayout.panelsAdd(new UITextButton("-", FontSizes.schemaFieldTextHeight, new Runnable() {
+                barLayout.panelsAdd(new UITextButton("-", app.f.schemaFieldTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         r.get().run();
@@ -104,7 +103,7 @@ public class PagerArrayInterface implements IArrayInterface {
             }
             final IRIO[] copyMe = positions[i].elements;
             if (copyMe != null) {
-                barLayout.panelsAdd(new UITextButton(TXDB.get("Copy"), FontSizes.schemaFieldTextHeight, new Runnable() {
+                barLayout.panelsAdd(new UITextButton(TXDB.get("Copy"), app.f.schemaFieldTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         RubyIO rio = new RubyIO();
@@ -121,7 +120,7 @@ public class PagerArrayInterface implements IArrayInterface {
             if (i < positions.length - 1) {
                 if (positions[i + 1].execInsertCopiedArray != null) {
                     final Runnable r = positions[i + 1].execInsertCopiedArray;
-                    barLayout.panelsAdd(new UITextButton(TXDB.get("Paste"), FontSizes.schemaFieldTextHeight, new Runnable() {
+                    barLayout.panelsAdd(new UITextButton(TXDB.get("Paste"), app.f.schemaFieldTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             r.run();
@@ -129,7 +128,7 @@ public class PagerArrayInterface implements IArrayInterface {
                     }));
                 }
             }
-            barLayout.panelsAdd(new UITextButton(TXDB.get("Mode: Pager"), FontSizes.schemaFieldTextHeight, swapModeAndReset));
+            barLayout.panelsAdd(new UITextButton(TXDB.get("Mode: Pager"), app.f.schemaFieldTextHeight, swapModeAndReset));
             if (positions[i].core != null) {
                 uie.add(new UISplitterLayout(barLayout, positions[i].core, true, 0d) {
                     @Override
@@ -146,7 +145,7 @@ public class PagerArrayInterface implements IArrayInterface {
         }
         final IProperty prop2 = prop.apply("page");
         final IProperty scrollProp = prop.apply("pageTabScroll");
-        UITabPane utp = new UITabPane(FontSizes.tabTextHeight, false, false, FontSizes.schemaPagerTabScrollersize) {
+        UITabPane utp = new UITabPane(app.f.tabTextHeight, false, false, app.f.schemaPagerTabScrollersize) {
             @Override
             public void selectTab(UIElement i) {
                 super.selectTab(i);

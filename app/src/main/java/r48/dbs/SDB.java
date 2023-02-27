@@ -607,7 +607,7 @@ public class SDB extends App.Svc {
                             int aH = Integer.parseInt(args[point++]);
                             int aI = Integer.parseInt(args[point++]);
                             int[] defVals = new int[aI];
-                            ITableCellEditor tcf = new DefaultTableCellEditor();
+                            ITableCellEditor tcf = new DefaultTableCellEditor(app);
                             if (hasDefault)
                                 for (int i = 0; i < defVals.length; i++)
                                     defVals[i] = Integer.parseInt(args[point++]);

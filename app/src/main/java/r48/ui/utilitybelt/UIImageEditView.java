@@ -11,7 +11,6 @@ import gabien.*;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.FontSizes;
 import r48.ui.Art;
 import r48.ui.UIPlaneView;
 
@@ -35,11 +34,9 @@ public class UIImageEditView extends UIPlaneView {
 
     public Runnable newToolCallback;
 
-    public final App app;
-
     public UIImageEditView(App app, IImageEditorTool rootTool, Runnable updatePal) {
-        this.app = app;
-        planeZoomMul = FontSizes.getSpriteScale() * 16;
+        super(app);
+        planeZoomMul = app.f.getSpriteScale() * 16;
         eds.currentImage = image;
         eds.newFile();
         newToolCallback = updatePal;
@@ -155,7 +152,7 @@ public class UIImageEditView extends UIPlaneView {
             drawGrid(igd, viewRct, true);
 
         if (tiling != null)
-            Art.drawSelectionBox(viewRct.x + (int) planeMulZoom(ofsX), viewRct.y + (int) planeMulZoom(ofsY), (int) planeMulZoom(ofsW), (int) planeMulZoom(ofsH), FontSizes.getSpriteScale(), igd);
+            Art.drawSelectionBox(viewRct.x + (int) planeMulZoom(ofsX), viewRct.y + (int) planeMulZoom(ofsY), (int) planeMulZoom(ofsW), (int) planeMulZoom(ofsH), app.f.getSpriteScale(), igd);
 
 
         Rect theSelection = currentTool.getSelection();
@@ -163,7 +160,7 @@ public class UIImageEditView extends UIPlaneView {
             if (theSelection.width == 0 && theSelection.height == 0) {
                 Art.drawTarget(viewRct.x + (int) planeMulZoom(theSelection.x), viewRct.y + (int) planeMulZoom(theSelection.y), (int) planeMulZoom(1), igd);
             } else {
-                Art.drawSelectionBox(viewRct.x + (int) planeMulZoom(theSelection.x), viewRct.y + (int) planeMulZoom(theSelection.y), (int) planeMulZoom(theSelection.width), (int) planeMulZoom(theSelection.height), FontSizes.getSpriteScale(), igd);
+                Art.drawSelectionBox(viewRct.x + (int) planeMulZoom(theSelection.x), viewRct.y + (int) planeMulZoom(theSelection.y), (int) planeMulZoom(theSelection.width), (int) planeMulZoom(theSelection.height), app.f.getSpriteScale(), igd);
             }
         }
 
@@ -206,7 +203,7 @@ public class UIImageEditView extends UIPlaneView {
         int gcB = gridColour & 0xFF;
         if (!cut)
             osb.clearRect(gcR / 3, gcG / 3, gcB / 3, viewRct.x, viewRct.y, viewRct.width, viewRct.height);
-        int lineThickness = FontSizes.getSpriteScale() * 2;
+        int lineThickness = app.f.getSpriteScale() * 2;
         // viewRct is in zoomed osb-local coordinates.
         // It's the rectangle of the image.
         // localGrid is in zoomed osb-local coordinates.

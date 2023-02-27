@@ -10,7 +10,6 @@ package r48.toolsets;
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.CMDB;
 import r48.dbs.ObjectInfo;
 import r48.dbs.TXDB;
@@ -26,7 +25,6 @@ import r48.toolsets.utils.RMFindTranslatables;
 import r48.toolsets.utils.UICommandSites;
 import r48.ui.UIMenuButton;
 import r48.ui.dialog.UIRMUniversalStringLocator;
-import r48.ui.dialog.UITextPrompt;
 import r48.ui.dialog.UITranscriptControl;
 
 import java.util.LinkedList;
@@ -56,7 +54,7 @@ public class RMTools extends App.Svc {
     }
 
     public UIElement genButton() {
-        return new UIMenuButton(app, TXDB.get("RM-Tools"), FontSizes.menuTextHeight, null, new String[] {
+        return new UIMenuButton(app, TXDB.get("RM-Tools"), app.f.menuTextHeight, null, new String[] {
                 TXDB.get("Locate EventCommand in all Pages"),
                 TXDB.get("Find Translatables in Common Events"),
                 TXDB.get("See If Autocorrect Modifies Anything"),
@@ -73,7 +71,7 @@ public class RMTools extends App.Svc {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Code (or -1337 for any unknown) ?"), new IConsumer<String>() {
+                        app.ui.launchPrompt(TXDB.get("Code (or -1337 for any unknown) ?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 int i;
@@ -117,7 +115,7 @@ public class RMTools extends App.Svc {
                                 }
                                 app.ui.launchDialog(TXDB.get("Not found."));
                             }
-                        }));
+                        });
                     }
                 },
                 new Runnable() {

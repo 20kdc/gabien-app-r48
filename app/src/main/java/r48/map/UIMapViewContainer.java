@@ -39,7 +39,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
     // Map tool switch happens at the start of each frame, so it stays out of the way of windowing code.
     private UIMTBase mapTool = null;
 
-    private TimeWaster timeWaster = new TimeWaster();
+    private final TimeWaster timeWaster;
 
     private double deltaTimeAccum = 0;
 
@@ -49,6 +49,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
 
     public UIMapViewContainer(App app) {
         this.app = app;
+        timeWaster = new TimeWaster(app);
     }
 
     @Override

@@ -10,7 +10,6 @@ package r48.schema;
 import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
 import r48.App;
-import r48.FontSizes;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -40,7 +39,7 @@ public class FloatSchemaElement extends SchemaElement {
         } else {
             throw new RuntimeException("No JSONCoerce but got a " + target.getType() + " instead of a float.");
         }
-        final UITextBox utb = new UITextBox(oldValue, FontSizes.schemaFieldTextHeight);
+        final UITextBox utb = new UITextBox(oldValue, app.f.schemaFieldTextHeight);
         utb.onEdit = new Runnable() {
             @Override
             public void run() {

@@ -12,7 +12,7 @@ import gabien.IDesktopPeripherals;
 import gabien.IGrDriver;
 import gabien.IPeripherals;
 import gabien.ui.*;
-import r48.FontSizes;
+import r48.App;
 
 /**
  * Notably, despite the name of "uiGridScaleTenths", this does NOT actually do the grid size adjustment.
@@ -35,13 +35,17 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
 
     private int tmWidth = 8;
 
-    public UIScrollbar uivScrollbar = new UIScrollbar(true, FontSizes.gridScrollersize);
+    public UIScrollbar uivScrollbar;
 
     public Runnable onSelectionChange = null;
     public OldMouseEmulator mouseEmulator = new OldMouseEmulator(this);
 
-    public UIGrid(int tSizeW, int tSizeH, int tCount) {
-        super(FontSizes.scaleGuess(320), FontSizes.scaleGuess(200));
+    public final App app;
+
+    public UIGrid(App app, int tSizeW, int tSizeH, int tCount) {
+        super(app.f.scaleGuess(320), app.f.scaleGuess(200));
+        this.app = app;
+        uivScrollbar = new UIScrollbar(true, app.f.gridScrollersize);
         tileSizeW = tSizeW;
         tileSizeH = tSizeH;
         tileCount = tCount;
@@ -105,7 +109,7 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
                 igd.clearRect(128, 0, 128, px, py, tileSizeW, tileSizeH);
             drawTile(p, p == mouseSel, px, py, igd);
             if (p == selTile)
-                Art.drawSelectionBox(px, py, tileSizeW, tileSizeH, FontSizes.getSpriteScale(), igd);
+                Art.drawSelectionBox(px, py, tileSizeW, tileSizeH, app.f.getSpriteScale(), igd);
             pi++;
         }
         for (int ty = 0; ty < selHeight; ty++) {
@@ -117,14 +121,14 @@ public class UIGrid extends UIElement.UIPanel implements OldMouseEmulator.IOldMo
                     continue;
                 if (py >= r.height)
                     continue;
-                Art.drawSelectionBox(px, py, tileSizeW, tileSizeH, FontSizes.getSpriteScale(), igd);
+                Art.drawSelectionBox(px, py, tileSizeW, tileSizeH, app.f.getSpriteScale(), igd);
                 pi++;
             }
         }
     }
 
     protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
-        FontManager.drawString(igd, x, y + 1, Integer.toHexString(t).toUpperCase(), false, false, FontSizes.gridTextHeight);
+        FontManager.drawString(igd, x, y + 1, Integer.toHexString(t).toUpperCase(), false, false, app.f.gridTextHeight);
     }
 
     @Override

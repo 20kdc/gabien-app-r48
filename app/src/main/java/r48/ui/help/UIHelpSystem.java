@@ -10,8 +10,9 @@ package r48.ui.help;
 import gabien.GaBIEn;
 import gabien.IImage;
 import gabien.ui.*;
+import gabien.ui.UIElement.UIPanel;
 import gabien.uslx.append.*;
-import r48.FontSizes;
+import r48.cfg.Config;
 import r48.ui.UIThumbnail;
 
 import java.util.LinkedList;
@@ -20,13 +21,16 @@ import java.util.LinkedList;
  * Helping things along where needed.
  * Created on 1/25/17.
  */
-public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<String> {
+public class UIHelpSystem extends UIPanel implements IConsumer<String> {
     public IConsumer<String> onLinkClick;
 
     public LinkedList<HelpElement> page = new LinkedList<HelpElement>();
 
-    public UIHelpSystem() {
-        Rect sz = new Rect(0, 0, FontSizes.helpTextHeight * 32, FontSizes.helpTextHeight * 32);
+    public final Config c;
+
+    public UIHelpSystem(Config c) {
+        this.c = c;
+        Rect sz = new Rect(0, 0, c.f.helpTextHeight * 32, c.f.helpTextHeight * 32);
         setWantedSize(sz);
         setForcedBounds(null, sz);
     }
@@ -80,25 +84,25 @@ public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<String>
         private IConsumer<String> onLinkClick;
         public final boolean position;
 
-        public HelpElement(char c, String arg) {
+        public HelpElement(Config c, char ch, String arg) {
             String[] args = arg.split(" ");
-            if (c == '.') {
+            if (ch == '.') {
                 position = false;
                 StringBuilder sbt = new StringBuilder();
                 for (String s : args) {
                     sbt.append(s);
                     sbt.append(' ');
                 }
-                element = new UILabel(sbt.toString(), FontSizes.helpTextHeight);
-            } else if (c == 'h') {
+                element = new UILabel(sbt.toString(), c.f.helpTextHeight);
+            } else if (ch == 'h') {
                 position = false;
                 StringBuilder sbt = new StringBuilder();
                 for (String s : args) {
                     sbt.append(s);
                     sbt.append(' ');
                 }
-                element = new UILabel(sbt.toString(), FontSizes.helpTextHeight).centred();
-            } else if (c == '>') {
+                element = new UILabel(sbt.toString(), c.f.helpTextHeight).centred();
+            } else if (ch == '>') {
                 String t = "";
                 boolean first = true;
                 for (String s : args) {
@@ -110,17 +114,17 @@ public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<String>
                 }
                 final String index = args[0];
                 position = false;
-                element = new UITextButton(t, FontSizes.helpLinkHeight, new Runnable() {
+                element = new UITextButton(t, c.f.helpLinkHeight, new Runnable() {
                     @Override
                     public void run() {
                         if (onLinkClick != null)
                             onLinkClick.accept(index);
                     }
                 });
-            } else if (c == 'p') {
+            } else if (ch == 'p') {
                 position = false;
-                element = new UIPublicPanel(0, FontSizes.scaleGuess(Integer.parseInt(args[0])));
-            } else if ((c == 'i') || (c == 'I')) {
+                element = new UIPublicPanel(0, c.f.scaleGuess(Integer.parseInt(args[0])));
+            } else if ((ch == 'i') || (ch == 'I')) {
                 final IImage r = GaBIEn.getImageEx(args[0], false, true);
                 boolean extended = args.length > 1;
                 boolean extended2 = args.length > 5;
@@ -129,9 +133,9 @@ public class UIHelpSystem extends UIElement.UIPanel implements IConsumer<String>
                 final int yy = extended ? Integer.parseInt(args[2]) : 0;
                 final int sw = extended ? Integer.parseInt(args[3]) : r.getWidth();
                 final int sh = extended ? Integer.parseInt(args[4]) : r.getHeight();
-                final int w = FontSizes.scaleGuess(extended2 ? Integer.parseInt(args[5]) : sw);
+                final int w = c.f.scaleGuess(extended2 ? Integer.parseInt(args[5]) : sw);
                 UIThumbnail uie = new UIThumbnail(r, w, new Rect(xx, yy, sw, sh));
-                position = c == 'i';
+                position = ch == 'i';
                 element = uie;
             } else {
                 throw new RuntimeException("Cannot handle!");

@@ -10,7 +10,6 @@ package r48.schema;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.FontSizes;
 import r48.UITest;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -30,7 +29,7 @@ public class OpaqueSchemaElement extends SchemaElement {
     }
 
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        return new UITextButton(getMessage(target), FontSizes.schemaFieldTextHeight, new Runnable() {
+        return new UITextButton(getMessage(target), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 launcher.launchOther(new UITest(launcher.getApp(), target));

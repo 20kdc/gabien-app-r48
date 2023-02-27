@@ -10,7 +10,6 @@ package r48.schema.arrays;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -62,10 +61,10 @@ public class StandardArrayInterface implements IArrayInterface {
                     r.run();
                 releasers.clear();
                 // Work out how big each array index field has to be.
-                final Size maxSizePre = UILabel.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight);
+                final Size maxSizePre = UILabel.getRecommendedTextSize("", app.f.schemaFieldTextHeight);
                 final AtomicInteger maxWidth = new AtomicInteger(maxSizePre.width);
-                int selectButtonUnit = UITextButton.getRecommendedTextSize("", FontSizes.schemaFieldTextHeight).height;
-                int indentUnit = FontSizes.scaleGuess(8);
+                int selectButtonUnit = UITextButton.getRecommendedTextSize("", app.f.schemaFieldTextHeight).height;
+                int indentUnit = app.f.scaleGuess(8);
                 if (positions.length > 0) {
                     if (selectedStart == -1) {
                         UITextButton button = genAdditionButton(true, positions[0].execInsert, positions[0].execInsertCopiedArray);
@@ -105,7 +104,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                                 deleteRange(fixedStart, fixedEnd);
                                             }
                                         }
-                                    }, FontSizes.schemaFieldTextHeight);
+                                    }, app.f.schemaFieldTextHeight);
                                 }
                                 onClick = new Runnable() {
                                     @Override
@@ -127,14 +126,14 @@ public class StandardArrayInterface implements IArrayInterface {
                                         selectedStart = -1;
                                         containerRCL();
                                     }
-                                }, FontSizes.schemaFieldTextHeight);
+                                }, app.f.schemaFieldTextHeight);
                                 uie = new UIAppendButton(TXDB.get("Cut Array"), uie, new Runnable() {
                                     @Override
                                     public void run() {
                                         copyRange(fixedStart, fixedEnd);
                                         deleteRange(fixedStart, fixedEnd);
                                     }
-                                }, FontSizes.schemaFieldTextHeight);
+                                }, app.f.schemaFieldTextHeight);
                             } else if ((mi < selectedStart) || (mi > selectedEnd)) {
                                 onClick = new Runnable() {
                                     @Override
@@ -160,7 +159,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         final UIElement editor = uie;
                         UIElement label = null;
                         if (hasIndexLabels) {
-                            label = new UILabel(positions[mi].text, FontSizes.schemaFieldTextHeight);
+                            label = new UILabel(positions[mi].text, app.f.schemaFieldTextHeight);
                             maxWidth.set(Math.max(label.getWantedSize().width, maxWidth.get()));
                         }
                         releasers.add(new Runnable() {
@@ -294,7 +293,7 @@ public class StandardArrayInterface implements IArrayInterface {
                     optText.add(TXDB.get("Paste Array"));
                     optRuns.add(runnable2);
                 }
-                return new UIMenuButton(uiSVL.getApp(), TXDB.get("Add..."), FontSizes.schemaArrayAddTextHeight, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
+                return new UIMenuButton(uiSVL.getApp(), TXDB.get("Add..."), app.f.schemaArrayAddTextHeight, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
             }
 
             // This assumes it's being placed on a button 'before' the position

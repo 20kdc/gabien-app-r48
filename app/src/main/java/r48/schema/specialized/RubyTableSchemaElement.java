@@ -12,7 +12,6 @@ import gabien.IGrDriver;
 import gabien.IPeripherals;
 import gabien.ui.*;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
@@ -60,7 +59,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
 
         final TileHelper initialTileHelper = baseInitializeHelper(target);
         Size gridSize = getGridSize(initialTileHelper);
-        final UIGrid uig = new UIGrid(gridSize.width, gridSize.height, targ.width * targ.height) {
+        final UIGrid uig = new UIGrid(app, gridSize.width, gridSize.height, targ.width * targ.height) {
             private TileHelper tileHelper = initialTileHelper;
 
             @Override
@@ -71,9 +70,9 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
                     return;
                 tileHelper = baseTileDraw(target, t, x, y, igd, tileHelper);
                 if (allowTextdraw) {
-                    igd.clearRect(0, 0, 0, x, y, tileSizeW, FontSizes.gridTextHeight);
+                    igd.clearRect(0, 0, 0, x, y, tileSizeW, app.f.gridTextHeight);
                     for (int i = 0; i < targ.planeCount; i++)
-                        FontManager.drawString(igd, x, y + (i * FontSizes.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, false, FontSizes.gridTextHeight);
+                        FontManager.drawString(igd, x, y + (i * app.f.gridTextHeight), Integer.toHexString(targ.getTiletype(t % targ.width, t / targ.width, i) & 0xFFFF), false, false, app.f.gridTextHeight);
                 }
             }
 
@@ -145,7 +144,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
         uig.uivScrollbar.scrollPoint = lastScrollCache;
 
         if (allowResize) {
-            final UINumberBox wNB = new UINumberBox(targ.width, FontSizes.tableSizeTextHeight);
+            final UINumberBox wNB = new UINumberBox(targ.width, app.f.tableSizeTextHeight);
             wNB.onEdit = new Runnable() {
                 @Override
                 public void run() {
@@ -153,7 +152,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
                         wNB.number = 0;
                 }
             };
-            final UINumberBox hNB = new UINumberBox(targ.height, FontSizes.tableSizeTextHeight);
+            final UINumberBox hNB = new UINumberBox(targ.height, app.f.tableSizeTextHeight);
             hNB.onEdit = new Runnable() {
                 @Override
                 public void run() {
@@ -163,7 +162,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
             };
             UIElement uie = new UISplitterLayout(wNB, hNB, false, 1, 2);
             uiSVL.panelsAdd(uie);
-            uiSVL.panelsAdd(new UITextButton(TXDB.get("Resize"), FontSizes.tableResizeTextHeight, new Runnable() {
+            uiSVL.panelsAdd(new UITextButton(TXDB.get("Resize"), app.f.tableResizeTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     int w = (int) wNB.number;
@@ -200,7 +199,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
     }
 
     public Size getGridSize(TileHelper th) {
-        int g = FontSizes.scaleGrid(32);
+        int g = app.f.scaleGrid(32);
         return new Size(g, g);
     }
 }

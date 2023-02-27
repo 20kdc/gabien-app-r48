@@ -11,7 +11,6 @@ import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.TXDB;
@@ -29,7 +28,7 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * Created on 12/29/16.
  */
-public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
+public class SchemaHostImpl extends App.Pan implements ISchemaHost {
     private SchemaPath innerElem;
     private UIElement innerElemEditor;
 
@@ -41,19 +40,19 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
 
     private EmbedDataTracker embedData = new EmbedDataTracker();
 
-    private UILabel pathLabel = new UILabel("", FontSizes.schemaPathTextHeight);
+    private UILabel pathLabel = new UILabel("", app.f.schemaPathTextHeight);
     private UIAppendButton toolbarP = new UIAppendButton(Art.Symbol.Back, pathLabel, new Runnable() {
         @Override
         public void run() {
             popObject();
         }
-    }, FontSizes.schemaPathTextHeight);
+    }, app.f.schemaPathTextHeight);
     private UIAppendButton toolbarCp = new UIAppendButton(TXDB.get("Copy"), toolbarP, new Runnable() {
         @Override
         public void run() {
             app.theClipboard = new RubyIO().setDeepClone(innerElem.targetElement);
         }
-    }, FontSizes.schemaPathTextHeight);
+    }, app.f.schemaPathTextHeight);
     private UIAppendButton toolbarPs = new UIAppendButton(TXDB.get("Paste"), toolbarCp, new Runnable() {
         @Override
         public void run() {
@@ -73,7 +72,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
                 }
             }
         }
-    }, FontSizes.schemaPathTextHeight);
+    }, app.f.schemaPathTextHeight);
     private UIAppendButton toolbarS = new UIAppendButton(TXDB.get("Save"), toolbarPs, new Runnable() {
         @Override
         public void run() {
@@ -82,13 +81,13 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
             // root.editor.modifyVal(root.targetElement, root, false);
             app.odb.ensureSaved(root.hrIndex, root.root);
         }
-    }, FontSizes.schemaPathTextHeight);
+    }, app.f.schemaPathTextHeight);
     private UIAppendButton toolbarI = new UIAppendButton(Art.Symbol.Inspect, toolbarS, new Runnable() {
         @Override
         public void run() {
             app.ui.wm.createWindow(new UITest(app, innerElem.targetElement));
         }
-    }, FontSizes.schemaPathTextHeight);
+    }, app.f.schemaPathTextHeight);
     private UIAppendButton toolbarC = new UIAppendButton(Art.Symbol.CloneFrame, toolbarI, new Runnable() {
         @Override
         public void run() {
@@ -104,7 +103,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
             next.embedData = new EmbedDataTracker(next.backStack, embedData);
             next.popObject();
         }
-    }, FontSizes.schemaPathTextHeight);
+    }, app.f.schemaPathTextHeight);
 
     // Used so this doesn't require too much changes when moved about
     private UIElement toolbarRoot = toolbarC;
@@ -122,10 +121,8 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     public boolean stayClosed = false;
     private boolean nudged = false;
 
-    public final App app;
-
     public SchemaHostImpl(App app, @Nullable UIMapView rendererSource) {
-        this.app = app;
+        super(app);
         contextView = rendererSource;
         layoutAddElement(toolbarRoot);
         // Why is this scaled by main window size? Answer: Because the alternative is occasional Android version glitches.

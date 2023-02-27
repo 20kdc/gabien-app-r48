@@ -14,7 +14,6 @@ import gabien.IImage;
 import gabien.ui.UIElement;
 import gabien.ui.UIPublicPanel;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.imagefx.IImageEffect;
@@ -56,7 +55,7 @@ public class TonePickerSchemaElement extends SchemaElement {
         // The tone picker text height is typically 6, which should equal 64, as a base.
         // How do I make this work? Like this:
 
-        int imageUnit = (FontSizes.tonePickerTextHeight * 64) / 6;
+        int imageUnit = (app.f.tonePickerTextHeight * 64) / 6;
         if (imageUnit < 1)
             imageUnit = 1;
         IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(imageUnit * 2, imageUnit, false);
@@ -64,8 +63,8 @@ public class TonePickerSchemaElement extends SchemaElement {
         finalComposite.blitScaledImage(0, 0, 256, 256, 0, 0, imageUnit, imageUnit, totem);
         finalComposite.blitImage(0, 0, imageUnit, imageUnit, imageUnit, 0, app.ui.imageFXCache.process(finalComposite, cfg));
 
-        FontManager.drawString(finalComposite, 0, (imageUnit + 1) - FontSizes.tonePickerTextHeight, TXDB.get("TotemSrc."), false, false, FontSizes.tonePickerTextHeight);
-        FontManager.drawString(finalComposite, imageUnit, (imageUnit + 1) - FontSizes.tonePickerTextHeight, TXDB.get("Composite"), false, false, FontSizes.tonePickerTextHeight);
+        FontManager.drawString(finalComposite, 0, (imageUnit + 1) - app.f.tonePickerTextHeight, TXDB.get("TotemSrc."), false, false, app.f.tonePickerTextHeight);
+        FontManager.drawString(finalComposite, imageUnit, (imageUnit + 1) - app.f.tonePickerTextHeight, TXDB.get("Composite"), false, false, app.f.tonePickerTextHeight);
 
         IImage im = GaBIEn.createImage(finalComposite.getPixels(), imageUnit * 2, imageUnit);
         finalComposite.shutdown();

@@ -11,6 +11,8 @@ import java.util.HashSet;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.ui.UIElement;
+import gabien.ui.UIElement.UIPanel;
 import gabien.ui.UIElement.UIProxy;
 import gabien.uslx.append.IConsumer;
 import r48.app.AppCore;
@@ -62,6 +64,25 @@ public final class App extends AppCore {
     public static class Prx extends UIProxy {
         public final @NonNull App app;
         public Prx(@NonNull App app) {
+            this.app = app;
+        }
+    }
+
+    public static abstract class Pan extends UIPanel {
+        public final @NonNull App app;
+        public Pan(@NonNull App app) {
+            this.app = app;
+        }
+    }
+
+    public static abstract class Elm extends UIElement {
+        public final @NonNull App app;
+
+        public Elm(@NonNull App app) {
+            this.app = app;
+        }
+
+        public Elm(@NonNull App app, int i, int j) {
             this.app = app;
         }
     }

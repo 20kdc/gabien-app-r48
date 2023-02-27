@@ -15,7 +15,7 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.AdHocSaveLoad;
 import r48.App;
-import r48.FontSizes;
+import r48.FontSizes.FontSizeField;
 import r48.app.AppMain;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
@@ -40,6 +40,7 @@ public class Application {
 
     protected static IConsumer<Double> appTicker = null;
     static App app = null;
+    static Config c = null;
     protected static WindowCreatingUIElementConsumer uiTicker;
 
     // This should be set to true if on a device where touch controls are used.
@@ -51,7 +52,7 @@ public class Application {
     public static void gabienmain() throws IOException {
         mobileExtremelySpecialBehavior = GaBIEn.singleWindowApp();
         globalMS = 50;
-        Config c = new Config(mobileExtremelySpecialBehavior);
+        c = new Config(mobileExtremelySpecialBehavior);
         c.applyUIGlobals();
 
         GaBIEn.appPrefixes = new String[] {BRAND + "/", ""};
@@ -65,7 +66,7 @@ public class Application {
         // The 'true' here is so that it will load in "late" defaults (fontOverride)
         boolean fontsLoaded = ConfigIO.load(true, c);
         if (!fontsLoaded)
-            autoDetectCorrectUISize(c, uiScaleTenths);
+            autoDetectCorrectUISize(uiScaleTenths);
 
         // Note the mass-recreate.
         while (true) {
@@ -159,14 +160,14 @@ public class Application {
                         }
 
                         String r = baos.toString("UTF-8").replaceAll("\r", "");
-                        UIScrollLayout scroll = new UIScrollLayout(true, FontSizes.generalScrollersize) {
+                        UIScrollLayout scroll = new UIScrollLayout(true, app.f.generalScrollersize) {
                             @Override
                             public String toString() {
                                 return "Error...";
                             }
                         };
-                        scroll.panelsAdd(new UILabel(r, FontSizes.helpTextHeight));
-                        scroll.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(640), FontSizes.scaleGuess(480)));
+                        scroll.panelsAdd(new UILabel(r, app.f.helpTextHeight));
+                        scroll.setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(640), app.f.scaleGuess(480)));
                         uiTicker.accept(scroll);
                         failed = scroll;
                         System.err.println("Well, that worked at least");
@@ -224,7 +225,7 @@ public class Application {
             @Override
             public void run() {
                 TXDB.init();
-                boolean canAvoidWait = FontSizes.loadLanguage();
+                boolean canAvoidWait = c.f.loadLanguage();
                 // TXDB 'stable', spammed class refs
                 txdbDonePrimaryTask.set(true);
                 // If we're setup correctly: English never needs the font-loading.
@@ -294,23 +295,23 @@ public class Application {
         return r;
     }
 
-    private static void autoDetectCorrectUISize(Config c, int uiGuessScaleTenths) {
+    private static void autoDetectCorrectUISize(int uiGuessScaleTenths) {
         // The above triggered a flush, which would cause the initial resize on SWPs.
         // That then allowed it to estimate a correct scale which ended up here.
-        FontSizes.uiGuessScaleTenths = uiGuessScaleTenths;
+        app.f.uiGuessScaleTenths = uiGuessScaleTenths;
         boolean mobile = GaBIEn.singleWindowApp();
-        for (FontSizes.FontSizeField fsf : c.f.getFields()) {
+        for (FontSizeField fsf : c.f.getFields()) {
             // as this is a touch device, map 8 to 16 (6 is for things that really matter)
             if (mobile)
                 if (fsf.get() == 8)
                     fsf.accept(16);
             // uiGuessScaleTenths was set manually.
             if (!fsf.name.equals("uiGuessScaleTenths"))
-                fsf.accept(FontSizes.scaleGuess(fsf.get()));
+                fsf.accept(app.f.scaleGuess(fsf.get()));
         }
         // exceptions
         if (mobile)
-            FontSizes.tilesTabTextHeight *= 2;
+            app.f.tilesTabTextHeight *= 2;
     }
 
     private static void shutdownAllAppMainWindows() {

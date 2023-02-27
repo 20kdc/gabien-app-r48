@@ -10,7 +10,6 @@ package r48.maptools;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
-import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
@@ -27,10 +26,10 @@ import r48.ui.UIAppendButton;
 public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
 
     private final RubyTable table;
-    private UILabel innerLabel = new UILabel(TXDB.get("Click at the target, or close this window."), FontSizes.dialogWindowTextHeight);
+    private UILabel innerLabel = new UILabel(TXDB.get("Click at the target, or close this window."), app.f.dialogWindowTextHeight);
 
     private int confirmX, confirmY;
-    private UIElement confirmButton = new UIAppendButton(TXDB.get("Cancel"), new UITextButton(TXDB.get("Confirm"), FontSizes.dialogWindowTextHeight, new Runnable() {
+    private UIElement confirmButton = new UIAppendButton(TXDB.get("Cancel"), new UITextButton(TXDB.get("Confirm"), app.f.dialogWindowTextHeight, new Runnable() {
         @Override
         public void run() {
             actualConfirm(confirmX, confirmY);
@@ -43,7 +42,7 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
             changeInner(innerLabel, false);
             confirming = false;
         }
-    }, FontSizes.dialogWindowTextHeight);
+    }, app.f.dialogWindowTextHeight);
     private boolean confirming = false;
 
     public UIMTPasteRectangle(IMapToolContext par, RubyTable clipboard) {

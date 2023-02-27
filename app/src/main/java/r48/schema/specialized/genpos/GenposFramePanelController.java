@@ -12,7 +12,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import gabien.IImage;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
-import r48.FontSizes;
+import r48.App;
 import r48.dbs.TXDB;
 import r48.schema.util.ISchemaHost;
 import r48.ui.UINSVertLayout;
@@ -39,6 +39,7 @@ public class GenposFramePanelController {
     public UITextButton gridToggleButton;
 
     public GenposFramePanelController(IGenposFrame rootForNow, IGenposTweeningManagement gtm, @NonNull ISchemaHost launcher) {
+        App app = launcher.getApp();
         tweening = gtm;
         hostLauncher = launcher;
         frame = rootForNow;
@@ -51,7 +52,7 @@ public class GenposFramePanelController {
         cellSelection = new UICellSelectionPanel(launcher.getApp(), rootForNow);
 
         editingPanel = new UICellEditingPanel(cellSelection, this);
-        gridToggleButton = new UITextButton(TXDB.get("8px Grid"), FontSizes.rmaCellTextHeight, new Runnable() {
+        gridToggleButton = new UITextButton(TXDB.get("8px Grid"), app.f.rmaCellTextHeight, new Runnable() {
             @Override
             public void run() {
                 // Do nothing.

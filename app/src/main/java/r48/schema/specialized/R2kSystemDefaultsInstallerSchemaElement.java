@@ -11,7 +11,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
@@ -40,7 +39,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         if (mode == 3) {
-            UITextButton utb1 = new UITextButton(TXDB.get("Reset Events & Version (use after map change)"), FontSizes.schemaFieldTextHeight, new Runnable() {
+            UITextButton utb1 = new UITextButton(TXDB.get("Reset Events & Version (use after map change)"), app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     // Before doing anything stupid...
@@ -71,7 +70,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     app.ui.launchDialog(TXDB.get("Reset events to map state and set versioning."));
                 }
             });
-            UITextButton utb2 = new UITextButton(TXDB.get("Try To Get RPG_RT To Reset The Map"), FontSizes.schemaFieldTextHeight, new Runnable() {
+            UITextButton utb2 = new UITextButton(TXDB.get("Try To Get RPG_RT To Reset The Map"), app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");

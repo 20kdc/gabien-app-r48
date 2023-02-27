@@ -13,7 +13,6 @@ import gabien.IImage;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
@@ -47,8 +46,8 @@ public class CharacterGeneratorController extends App.Svc {
 
     public CharacterGeneratorController(App app) {
         super(app);
-        modes = new UITabPane(FontSizes.tabTextHeight, true, false);
-        final UIScrollLayout availableOpts = new UIScrollLayout(true, FontSizes.cellSelectScrollersize);
+        modes = new UITabPane(app.f.tabTextHeight, true, false);
+        final UIScrollLayout availableOpts = new UIScrollLayout(true, app.f.cellSelectScrollersize);
         DBLoader.readFile(app, "CharGen/Modes.txt", new IDatabase() {
             private UICharGenView view;
 
@@ -89,7 +88,7 @@ public class CharacterGeneratorController extends App.Svc {
 
                     final LinkedList<String> layerGroups = new LinkedList<String>();
 
-                    l.naming = new UITextButton(args[0], FontSizes.rmaCellTextHeight, new Runnable() {
+                    l.naming = new UITextButton(args[0], app.f.rmaCellTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             if (!l.enabled) {
@@ -105,7 +104,7 @@ public class CharacterGeneratorController extends App.Svc {
                             l.naming.state = l.enabled;
                         }
                     }).togglable(l.enabled);
-                    l.swatch = new UIColourSwatchButton((int) Long.parseLong(args[1], 16), FontSizes.schemaFieldTextHeight, null);
+                    l.swatch = new UIColourSwatchButton((int) Long.parseLong(args[1], 16), app.f.schemaFieldTextHeight, null);
                     l.swatch.onClick = new Runnable() {
                         @Override
                         public void run() {
@@ -143,7 +142,7 @@ public class CharacterGeneratorController extends App.Svc {
                 }
             }
         });
-        UIElement modeBar = new UIAppendButton(TXDB.get("Save PNG..."), new UITextButton(TXDB.get("Copy to R48 Clipboard"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        UIElement modeBar = new UIAppendButton(TXDB.get("Save PNG..."), new UITextButton(TXDB.get("Copy to R48 Clipboard"), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 IImage img = getCurrentModeImage();
@@ -182,7 +181,7 @@ public class CharacterGeneratorController extends App.Svc {
                     }
                 });
             }
-        }, FontSizes.schemaFieldTextHeight);
+        }, app.f.schemaFieldTextHeight);
         rootView = new UISplitterLayout(new UISplitterLayout(modes, modeBar, true, 1), availableOpts, false, 1) {
             @Override
             public String toString() {

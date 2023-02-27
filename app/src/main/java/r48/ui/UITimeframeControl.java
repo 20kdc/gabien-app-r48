@@ -10,7 +10,7 @@ package r48.ui;
 import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import r48.FontSizes;
+import r48.App;
 import r48.dbs.TXDB;
 
 /**
@@ -19,85 +19,81 @@ import r48.dbs.TXDB;
  * Notably, the actual current frame number is stored by the Root Panel since everything needs that.
  * Created on 2/17/17.
  */
-public class UITimeframeControl extends UIElement.UIProxy {
+public class UITimeframeControl extends App.Prx {
     public final ISupplier<Integer> getFrameIdx, getFrameCount;
     public final IConsumer<Integer> setFrameIdx;
 
     private double playTimer = 0;
     public int recommendedFramerate;
 
-    public UILabel currentFrame = new UILabel(TXDB.get("Loading..."), FontSizes.rmaTimeframeTextHeight);
+    public UILabel currentFrame = new UILabel(TXDB.get("Loading..."), app.f.rmaTimeframeTextHeight);
 
     public UIAppendButton playController = new UIAppendButton(Art.Symbol.Play, currentFrame, new Runnable() {
         @Override
         public void run() {
         }
-    }, FontSizes.rmaTimeframeTextHeight);
-    public UIButton<?> playControllerButton = playController.button;
+    }, app.f.rmaTimeframeTextHeight);
     public UIAppendButton loopController = new UIAppendButton(Art.Symbol.Loop, playController, new Runnable() {
         @Override
         public void run() {
         }
-    }, FontSizes.rmaTimeframeTextHeight);
-    public UIButton<?> loopControllerButton = loopController.button;
+    }, app.f.rmaTimeframeTextHeight);
     public UIAppendButton hsController = new UIAppendButton(Art.Symbol.Div2, loopController, new Runnable() {
         @Override
         public void run() {
         }
-    }, FontSizes.rmaTimeframeTextHeight);
-    public UIButton<?> hsControllerButton = hsController.button;
-
+    }, app.f.rmaTimeframeTextHeight);
     public UIAppendButton tsController = new UIAppendButton(Art.Symbol.Div3, hsController, new Runnable() {
         @Override
         public void run() {
         }
-    }, FontSizes.rmaTimeframeTextHeight);
-    public UIButton<?> tsControllerButton = tsController.button;
+    }, app.f.rmaTimeframeTextHeight);
 
     // The rest of the toolbar is constructed in the constructor
     public UIElement toolbar = tsController;
 
-    public UITimeframeControl(ISupplier<Integer> gfi, ISupplier<Integer> gfc, IConsumer<Integer> sfi, int framerate) {
+    public UITimeframeControl(App app, ISupplier<Integer> gfi, ISupplier<Integer> gfc, IConsumer<Integer> sfi, int framerate) {
+        super(app);
         getFrameIdx = gfi;
         getFrameCount = gfc;
         setFrameIdx = sfi;
-        playControllerButton.toggle = true;
-        loopControllerButton.toggle = true;
-        hsControllerButton.toggle = true;
-        tsControllerButton.toggle = true;
+        playController.button.toggle = true;
+        loopController.button.toggle = true;
+        hsController.button.toggle = true;
+        tsController.button.toggle = true;
         recommendedFramerate = framerate;
         toolbar = new UIAppendButton("<", toolbar, new Runnable() {
             @Override
             public void run() {
                 setFrameIdx.accept(getFrameIdx.get() - 1);
             }
-        }, FontSizes.rmaTimeframeTextHeight);
+        }, app.f.rmaTimeframeTextHeight);
         toolbar = new UIAppendButton(">", toolbar, new Runnable() {
             @Override
             public void run() {
                 setFrameIdx.accept(getFrameIdx.get() + 1);
             }
-        }, FontSizes.rmaTimeframeTextHeight);
+        }, app.f.rmaTimeframeTextHeight);
 
         proxySetElement(toolbar, true);
     }
 
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
-        if (playControllerButton.state) {
+        if (playController.button.state) {
             playTimer += deltaTime;
             double frameTime = 1.0d / recommendedFramerate;
-            if (hsControllerButton.state)
+            if (hsController.button.state)
                 frameTime *= 2;
-            if (tsControllerButton.state)
+            if (tsController.button.state)
                 frameTime *= 3;
             while (playTimer >= frameTime) {
                 playTimer -= frameTime;
                 int oldIdx = getFrameIdx.get();
                 setFrameIdx.accept(oldIdx + 1);
                 if (getFrameIdx.get() != (oldIdx + 1))
-                    if (!loopControllerButton.state) {
-                        playControllerButton.state = false;
+                    if (!loopController.button.state) {
+                        playController.button.state = false;
                         break;
                     }
             }

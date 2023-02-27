@@ -9,7 +9,6 @@ package r48.schema;
 
 import gabien.ui.*;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -91,7 +90,8 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     //  this causes awful scroll loss, so instead nab the regenerator (it's not like the regenerator uses it for anything)
     // PREFERABLY avoid regeneration of schema objects that are reusable (RPGCommandSchemaElement was fixed this way)
     public static UIScrollLayout createScrollSavingSVL(final ISchemaHost host, final SchemaElement elem, final IRIO target) {
-        final UIScrollLayout uiSVL = new UIScrollLayout(true, FontSizes.generalScrollersize) {
+        final App app = host.getApp();
+        final UIScrollLayout uiSVL = new UIScrollLayout(true, app.f.generalScrollersize) {
             @Override
             public void handleMousewheel(int x, int y, boolean north) {
                 super.handleMousewheel(x, y, north);

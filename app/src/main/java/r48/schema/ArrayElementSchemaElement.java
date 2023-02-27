@@ -11,7 +11,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -54,7 +53,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
             String tx = TXDB.get("(This index isn't valid - did you modify a group from another window?)");
             if (optional != null)
                 tx = app.fmt.formatExtended(TXDB.get("Field #A doesn't exist (default #B)"), new RubyIO().setString(name, true), new RubyIO().setString(optional, true));
-            return new UITextButton(tx, FontSizes.schemaFieldTextHeight, new Runnable() {
+            return new UITextButton(tx, app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     // resize to include and set default
@@ -67,7 +66,7 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         UIElement core = subSchema.buildHoldingEditor(target.getAElem(index), launcher, path.arrayHashIndex(new IRIOFixnum(index), "." + name));
 
         if (!name.equals("")) {
-            UILabel label = new UILabel(name, FontSizes.schemaFieldTextHeight);
+            UILabel label = new UILabel(name, app.f.schemaFieldTextHeight);
             core = new UIFieldLayout(label, core, fieldWidth, fieldWidthOverride);
             fieldWidthOverride = false;
         }
@@ -84,14 +83,14 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
                     }
                     path.changeOccurred(false);
                 }
-            }, FontSizes.schemaFieldTextHeight);
+            }, app.f.schemaFieldTextHeight);
 
         return core;
     }
 
     @Override
     public int getDefaultFieldWidth(IRIO target) {
-        return UILabel.getRecommendedTextSize(name + " ", FontSizes.schemaFieldTextHeight).width;
+        return UILabel.getRecommendedTextSize(name + " ", app.f.schemaFieldTextHeight).width;
     }
 
     @Override

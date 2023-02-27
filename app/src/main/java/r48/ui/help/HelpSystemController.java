@@ -13,6 +13,7 @@ import gabien.ui.UILabel;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.TXDB;
+import r48.cfg.Config;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,8 +27,10 @@ public class HelpSystemController implements IConsumer<String> {
     private String helpFile;
     private UIHelpSystem hs;
     public Runnable onLoad;
+    public final Config c;
 
     public HelpSystemController(UILabel pName, String hFile, UIHelpSystem charge) {
+        c = charge.c;
         pageName = pName;
         helpFile = hFile == null ? "Help/Main/Entry" : hFile;
         hs = charge;
@@ -50,7 +53,7 @@ public class HelpSystemController implements IConsumer<String> {
             efl = "";
         InputStream helpStream = GaBIEn.getResource(helpFile + efl + ".txt");
         if (helpStream == null) {
-            hs.page.add(new UIHelpSystem.HelpElement('.', TXDB.get("This helpfile is unavailable in your language; the English version has been displayed.")));
+            hs.page.add(new UIHelpSystem.HelpElement(c, '.', TXDB.get("This helpfile is unavailable in your language; the English version has been displayed.")));
             helpStream = GaBIEn.getResource(helpFile + ".txt");
         }
         if (helpStream != null) {
@@ -70,7 +73,7 @@ public class HelpSystemController implements IConsumer<String> {
                 }
 
                 @Override
-                public void execCmd(char c, String[] args) throws IOException {
+                public void execCmd(char ch, String[] args) throws IOException {
                     if (working) {
                         StringBuilder argbuilder = new StringBuilder();
                         boolean first = true;
@@ -82,10 +85,10 @@ public class HelpSystemController implements IConsumer<String> {
                             }
                             argbuilder.append(s);
                         }
-                        if (c == ',') {
+                        if (ch == ',') {
                             ((UILabel) workingElement.element).text += "\n" + argbuilder.toString();
                         } else {
-                            hs.page.add(workingElement = new UIHelpSystem.HelpElement(c, argbuilder.toString()));
+                            hs.page.add(workingElement = new UIHelpSystem.HelpElement(c, ch, argbuilder.toString()));
                         }
                     }
                 }

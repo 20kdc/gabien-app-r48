@@ -10,7 +10,6 @@ package r48.schema.specialized;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
-import r48.FontSizes;
 import r48.dbs.PathSyntax;
 import r48.dbs.TSDB;
 import r48.io.data.IRIO;
@@ -37,7 +36,7 @@ public class EventTileReplacerSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UITileGrid r = new UITileGrid(launcher.getContextRenderer(), layer, displayMap.mapping, FontSizes.getSpriteScale());
+        final UITileGrid r = new UITileGrid(app, launcher.getContextRenderer(), layer, displayMap.mapping, app.f.getSpriteScale());
         if (charName.get(target).decString().length() == 0)
             r.setSelected((int) charIdx.get(target).getFX());
         r.onSelectionChange = new Runnable() {

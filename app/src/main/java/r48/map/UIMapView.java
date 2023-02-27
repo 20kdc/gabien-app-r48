@@ -25,8 +25,6 @@ import r48.ui.UIPlaneView;
  * Created on 12/27/16.
  */
 public class UIMapView extends UIPlaneView {
-    public final App app;
-
     // This is drawn within the tile view. I.E. It's in content-pixels, not device-pixels
     public static final int mapDebugTextHeight = 6;
 
@@ -99,7 +97,7 @@ public class UIMapView extends UIPlaneView {
     public boolean[] layerVis;
 
     public UIMapView(App app, String mapN, int i, int i1) {
-        this.app = app;
+        super(app);
         Rect fakeWorldRect = new Rect(0, 0, i, i1);
         setWantedSize(fakeWorldRect);
         setForcedBounds(null, fakeWorldRect);

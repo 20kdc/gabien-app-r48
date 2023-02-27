@@ -11,7 +11,6 @@ import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.FontSizes;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -41,12 +40,12 @@ public class SpritesheetCoreSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final ISpritesheetProvider localProvider = provider.apply(target);
         final IRIO actTarg = numberProvider.apply(target);
-        return new UITextButton(app.fmt.formatExtended(text, actTarg), FontSizes.schemaFieldTextHeight, new Runnable() {
+        return new UITextButton(app.fmt.formatExtended(text, actTarg), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, null, path);
                 final SchemaPath innerPath = path.newWindow(temp, target);
-                temp.heldDialog = new UISpritesheetChoice(actTarg.getFX(), localProvider, new IConsumer<Long>() {
+                temp.heldDialog = new UISpritesheetChoice(app, actTarg.getFX(), localProvider, new IConsumer<Long>() {
                     @Override
                     public void accept(Long integer) {
                         actTarg.setFX(integer);

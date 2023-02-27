@@ -13,7 +13,6 @@ import gabien.uslx.append.*;
 import gabien.ui.Size;
 import gabien.ui.UIScrollLayout;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.TSDB;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.ui.UIGrid;
@@ -38,12 +37,12 @@ public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
     public ActiveInteger buildIntegerEditor(long oldVal, final IIntegerContext context) {
         UIScrollLayout usl = context.newSVL();
         final ActiveInteger ai = super.buildIntegerEditor(oldVal, context);
-        final int sprScale = FontSizes.getSpriteScale();
-        final UIGrid uig = new UIGrid(tileSize * sprScale, (tileSize * sprScale) + FontSizes.gridTextHeight + 1, maxCount) {
+        final int sprScale = app.f.getSpriteScale();
+        final UIGrid uig = new UIGrid(app, tileSize * sprScale, (tileSize * sprScale) + app.f.gridTextHeight + 1, maxCount) {
             @Override
             protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
                 super.drawTile(t, hover, x, y, igd);
-                y += FontSizes.gridTextHeight + 1;
+                y += app.f.gridTextHeight + 1;
                 RMEventGraphicRenderer.flexibleSpriteDraw(app, t * tileSize, 0, tileSize, tileSize, x, y, tileSize * sprScale, tileSize * sprScale, 0, tsdb, 0, igd);
             }
 

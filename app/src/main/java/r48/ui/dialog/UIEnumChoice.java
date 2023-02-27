@@ -9,7 +9,7 @@ package r48.ui.dialog;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import r48.FontSizes;
+import r48.App;
 import r48.RubyIO;
 import r48.UITest;
 import r48.dbs.TXDB;
@@ -26,28 +26,29 @@ import org.eclipse.jdt.annotation.Nullable;
  * Used for RPG Command Selection.
  * Created on 12/30/16.
  */
-public class UIEnumChoice extends UIElement.UIProxy {
+public class UIEnumChoice extends App.Prx {
     private final UIScrollLayout[] categoryPanels;
     private final UITabPane mainPanel;
     private boolean wantsSelfClose = false;
 
     // entryText defaults to "Manual."
-    public UIEnumChoice(final IConsumer<RubyIO> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
-        this(result, new Category[] {new Category(TXDB.get("Options"), options)}, entryText, entryType);
+    public UIEnumChoice(App app, final IConsumer<RubyIO> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
+        this(app, result, new Category[] {new Category(TXDB.get("Options"), options)}, entryText, entryType);
     }
 
-    public UIEnumChoice(final IConsumer<RubyIO> result, final Category[] order, String entryText, EntryMode entryType) {
+    public UIEnumChoice(App app, final IConsumer<RubyIO> result, final Category[] order, String entryText, EntryMode entryType) {
+        super(app);
         categoryPanels = new UIScrollLayout[order.length];
         for (int i = 0; i < categoryPanels.length; i++) {
             final String name = order[i].translatedName;
-            categoryPanels[i] = new UIScrollLayout(true, FontSizes.generalScrollersize) {
+            categoryPanels[i] = new UIScrollLayout(true, app.f.generalScrollersize) {
                 @Override
                 public String toString() {
                     return name;
                 }
             };
             for (final Option o : order[i].options) {
-                final UITextButton button = new UITextButton(o.textPrefix + o.textSuffix, FontSizes.enumChoiceTextHeight, new Runnable() {
+                final UITextButton button = new UITextButton(o.textPrefix + o.textSuffix, app.f.enumChoiceTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         if (!wantsSelfClose)
@@ -57,8 +58,8 @@ public class UIEnumChoice extends UIElement.UIProxy {
                 });
                 UIElement element = button;
                 if (o.editSuffix != null) {
-                    final UIAppendButton switcheroo = new UIAppendButton(TXDB.get(" Name"), element, null, FontSizes.enumChoiceTextHeight);
-                    final UITextBox textbox = new UITextBox(o.textSuffix, FontSizes.enumChoiceTextHeight);
+                    final UIAppendButton switcheroo = new UIAppendButton(TXDB.get(" Name"), element, null, app.f.enumChoiceTextHeight);
+                    final UITextBox textbox = new UITextBox(o.textSuffix, app.f.enumChoiceTextHeight);
                     final AtomicBoolean ab = new AtomicBoolean(false);
                     switcheroo.button.onClick = new Runnable() {
                         @Override
@@ -92,8 +93,8 @@ public class UIEnumChoice extends UIElement.UIProxy {
 
         UISplitterLayout finalSplit = null;
         if (entryType == EntryMode.STR) {
-            final UITextBox nb = new UITextBox("", FontSizes.schemaFieldTextHeight);
-            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, FontSizes.schemaFieldTextHeight, new Runnable() {
+            final UITextBox nb = new UITextBox("", app.f.schemaFieldTextHeight);
+            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
@@ -102,8 +103,8 @@ public class UIEnumChoice extends UIElement.UIProxy {
                 }
             }), false, 1, 3);
         } else if (entryType == EntryMode.SYM) {
-            final UITextBox nb = new UITextBox("", FontSizes.schemaFieldTextHeight);
-            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, FontSizes.schemaFieldTextHeight, new Runnable() {
+            final UITextBox nb = new UITextBox("", app.f.schemaFieldTextHeight);
+            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     if (!wantsSelfClose) {
@@ -116,8 +117,8 @@ public class UIEnumChoice extends UIElement.UIProxy {
                 }
             }), false, 1, 3);
         } else if (entryType == EntryMode.INT) {
-            final UINumberBox nb = new UINumberBox(0, FontSizes.schemaFieldTextHeight);
-            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, FontSizes.schemaFieldTextHeight, new Runnable() {
+            final UINumberBox nb = new UINumberBox(0, app.f.schemaFieldTextHeight);
+            finalSplit = new UISplitterLayout(nb, new UITextButton(entryText, app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     if (!wantsSelfClose)
@@ -129,7 +130,7 @@ public class UIEnumChoice extends UIElement.UIProxy {
         if (finalSplit != null)
             categoryPanels[categoryPanels.length - 1].panelsAdd(finalSplit);
 
-        mainPanel = new UITabPane(FontSizes.tabTextHeight, false, false);
+        mainPanel = new UITabPane(app.f.tabTextHeight, false, false);
         for (UIElement uie : categoryPanels)
             mainPanel.addTab(new UITabBar.Tab(uie, new UITabBar.TabIcon[] {}));
         mainPanel.handleIncoming();

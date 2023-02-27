@@ -10,7 +10,6 @@ package r48.schema.specialized.tbleditors;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.TSDBChoiceIntegerSchemaElement;
@@ -46,8 +45,8 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
             }
         }));
         editor1.accept(planes[0]);
-        base.panelsAdd(new UILabel(TXDB.get("Manual Edit:"), FontSizes.tableElementTextHeight));
-        final Runnable editor2 = new DefaultTableCellEditor().createEditor(base, planes, changeOccurred);
+        base.panelsAdd(new UILabel(TXDB.get("Manual Edit:"), app.f.tableElementTextHeight));
+        final Runnable editor2 = new DefaultTableCellEditor(app).createEditor(base, planes, changeOccurred);
         
         return new Runnable() {
             public void run() {
@@ -95,11 +94,11 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
 
                         @Override
                         public UIScrollLayout newSVL() {
-                            return new UIScrollLayout(true, FontSizes.generalScrollersize);
+                            return new UIScrollLayout(true, app.f.generalScrollersize);
                         }
                     });
 
-                    panelAdder.accept(new UISplitterLayout(new UILabel(name, FontSizes.tableElementTextHeight), iai.uie, false, 1));
+                    panelAdder.accept(new UISplitterLayout(new UILabel(name, app.f.tableElementTextHeight), iai.uie, false, 1));
                     flagStates[i] = new Runnable() {
                         @Override
                         public void run() {
@@ -110,7 +109,7 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
                     bit <<= len;
                 } else {
                     // Bool-field
-                    final UITextButton flag = new UITextButton(Integer.toHexString(thisBit) + ": " + flags[i], FontSizes.tableElementTextHeight, null).togglable(false);
+                    final UITextButton flag = new UITextButton(Integer.toHexString(thisBit) + ": " + flags[i], app.f.tableElementTextHeight, null).togglable(false);
                     panelAdder.accept(flag);
                     flagStates[i] = new Runnable() {
                         @Override

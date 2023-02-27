@@ -8,7 +8,7 @@
 package r48.ui.dialog;
 
 import gabien.ui.*;
-import r48.FontSizes;
+import r48.App;
 import r48.dbs.TXDB;
 
 /**
@@ -23,14 +23,14 @@ import r48.dbs.TXDB;
 public class UIChoicesMenu extends UIElement.UIProxy {
     private boolean selfClose = false;
 
-    public UIChoicesMenu(String s, String[] strings, final Runnable[] runnables) {
-        UILabel topLabel = new UILabel(s, FontSizes.dialogWindowTextHeight);
-        UIScrollLayout label = new UIScrollLayout(true, FontSizes.menuScrollersize);
+    public UIChoicesMenu(App app, String s, String[] strings, final Runnable[] runnables) {
+        UILabel topLabel = new UILabel(s, app.f.dialogWindowTextHeight);
+        UIScrollLayout label = new UIScrollLayout(true, app.f.menuScrollersize);
         label.panelsAdd(topLabel);
-        UIScrollLayout usl = new UIScrollLayout(false, FontSizes.menuScrollersize);
+        UIScrollLayout usl = new UIScrollLayout(false, app.f.menuScrollersize);
         for (int i = 0; i < strings.length; i++) {
             final int fi = i;
-            usl.panelsAdd(new UITextButton(strings[i], FontSizes.dialogWindowTextHeight, new Runnable() {
+            usl.panelsAdd(new UITextButton(strings[i], app.f.dialogWindowTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     runnables[fi].run();

@@ -13,7 +13,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UIPopupMenu;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.FontSizes;
 
 /**
  * Shows a context menu.
@@ -43,7 +42,7 @@ public class UIMenuButton extends UITextButton {
         this(app, s, h2, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
-                return new UIAutoclosingPopupMenu(text, runnables, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true) {
+                return new UIAutoclosingPopupMenu(text, runnables, app.f.menuTextHeight, app.f.menuScrollersize, true) {
                     @Override
                     public void optionExecute(int b) {
                         if (continued != null)
@@ -64,7 +63,7 @@ public class UIMenuButton extends UITextButton {
         this(app, s, h2, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
-                return new UIAutoclosingPopupMenu(runnables, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true) {
+                return new UIAutoclosingPopupMenu(runnables, app.f.menuTextHeight, app.f.menuScrollersize, true) {
                     @Override
                     public void optionExecute(int b) {
                         if (continued != null)

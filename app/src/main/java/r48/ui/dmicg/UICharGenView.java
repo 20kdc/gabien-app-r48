@@ -27,6 +27,7 @@ public class UICharGenView extends UIPlaneView {
     private boolean dragLock = true;
 
     public UICharGenView(String t, final int w, final int h, CharacterGeneratorController control) {
+        super(control.app);
         this.genWidth = w;
         this.genHeight = h;
         mode = text = t;

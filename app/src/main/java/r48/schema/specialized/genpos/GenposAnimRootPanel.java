@@ -11,7 +11,6 @@ import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.schema.util.ISchemaHost;
@@ -68,7 +67,7 @@ public class GenposAnimRootPanel extends App.Prx {
                 tweening.disablePropertyKey(target.getFrameIdx(), framePanelController.cellSelection.cellNumber, prop, track);
             }
         }, launcher);
-        timeframe = new UITimeframeControl(new ISupplier<Integer>() {
+        timeframe = new UITimeframeControl(app, new ISupplier<Integer>() {
             @Override
             public Integer get() {
                 return target.getFrameIdx();
@@ -93,7 +92,7 @@ public class GenposAnimRootPanel extends App.Prx {
             public void run() {
                 app.theClipboard = new RubyIO().setDeepClone(target.getFrame());
             }
-        }, FontSizes.rmaTimeframeTextHeight);
+        }, app.f.rmaTimeframeTextHeight);
         toolbar = new UIAppendButton(TXDB.get("Paste"), toolbar, new Runnable() {
             @Override
             public void run() {
@@ -103,21 +102,21 @@ public class GenposAnimRootPanel extends App.Prx {
                     incomingModification();
                 }
             }
-        }, FontSizes.rmaTimeframeTextHeight);
+        }, app.f.rmaTimeframeTextHeight);
         toolbar = new UIAppendButton("+", toolbar, new Runnable() {
             @Override
             public void run() {
                 target.insertFrame(new RubyIO().setDeepClone(target.getFrame()));
                 incomingModification();
             }
-        }, FontSizes.rmaTimeframeTextHeight);
+        }, app.f.rmaTimeframeTextHeight);
         toolbar = new UIAppendButton("-", toolbar, new Runnable() {
             @Override
             public void run() {
                 target.deleteFrame();
                 incomingModification();
             }
-        }, FontSizes.rmaTimeframeTextHeight);
+        }, app.f.rmaTimeframeTextHeight);
 
         proxySetElement(new UISplitterLayout(toolbar, framePanelController.rootLayout, true, 0), true);
 

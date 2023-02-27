@@ -9,7 +9,6 @@ package r48.maptools;
 
 import gabien.GaBIEn;
 import gabien.ui.UILabel;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
@@ -24,14 +23,14 @@ public class UIMTAutotileRectangle extends UIMTBase implements IMapViewCallbacks
     public final int startX, startY;
     public final boolean autotile;
 
-    public UIAppendButton innerLabel = new UIAppendButton(TXDB.get("Cancel"), new UILabel(TXDB.get("Click on a tile to finish the rectangle, or:"), FontSizes.dialogWindowTextHeight), new Runnable() {
+    public UIAppendButton innerLabel = new UIAppendButton(TXDB.get("Cancel"), new UILabel(TXDB.get("Click on a tile to finish the rectangle, or:"), app.f.dialogWindowTextHeight), new Runnable() {
         @Override
         public void run() {
             parent.selfClose = false;
             parent.hasClosed = false;
             mapToolContext.accept(parent);
         }
-    }, FontSizes.dialogWindowTextHeight);
+    }, app.f.dialogWindowTextHeight);
 
     public UIMTAutotileRectangle(UIMTAutotile par, int x, int y, boolean at) {
         super(par.mapToolContext);

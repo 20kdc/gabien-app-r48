@@ -13,7 +13,6 @@ import gabien.IImage;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import r48.App;
-import r48.FontSizes;
 import r48.imagefx.HueShiftImageEffect;
 
 /**
@@ -38,17 +37,17 @@ public class Art {
     private static final int dotLineAni = 2;
 
     // This controls the layout of (in particular) zoom
-    public static int getZIconSize() {
-        return UILabel.getRecommendedTextSize("", FontSizes.mapPositionTextHeight).height;
+    public static int getZIconSize(App app) {
+        return UILabel.getRecommendedTextSize("", app.f.mapPositionTextHeight).height;
     }
 
-    public static int getZIconMargin() {
-        return FontSizes.scaleGuess(4);
+    public static int getZIconMargin(App app) {
+        return app.f.scaleGuess(4);
     }
 
-    public static Rect getZIconRect(boolean click, int x) {
-        int zbs = getZIconSize();
-        int zbm = getZIconMargin();
+    public static Rect getZIconRect(App app, boolean click, int x) {
+        int zbs = getZIconSize(app);
+        int zbm = getZIconMargin(app);
         int ry = (x * ((zbm * 2) + zbs));
         if (click)
             return new Rect(0, ry, zbs + (zbm * 2), zbs + (zbm * 2));

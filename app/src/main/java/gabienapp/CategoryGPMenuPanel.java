@@ -107,7 +107,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                 final String silPath = PathUtils.fixRootPath(ls.secondaryImagePath);
 
                 // Start fancy loading screen.
-                final UIFancyInit theKickstart = new UIFancyInit();
+                final UIFancyInit theKickstart = new UIFancyInit(c);
                 Application.uiTicker.accept(theKickstart);
                 new Thread() {
                     @Override

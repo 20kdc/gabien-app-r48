@@ -9,7 +9,6 @@ package r48.maptools;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
@@ -49,9 +48,9 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         // Properly set the tab pane into gear, then see if it's still having issues displaying tabs.
         // If so, give it as much extra space as possible without messing with the tile-count-width.
         tabPane.handleIncoming();
-        setForcedBounds(null, new Rect(0, 0, (map.tileSize * scale * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) + FontSizes.gridScrollersize, FontSizes.scaleGuess(200)));
+        setForcedBounds(null, new Rect(0, 0, (map.tileSize * scale * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) + app.f.gridScrollersize, app.f.scaleGuess(200)));
         if (tabPane.getShortened())
-            setForcedBounds(null, new Rect(0, 0, ((map.tileSize * scale * (map.mapTable.renderer.tileRenderer.getRecommendedWidth() + 1)) - 1) + FontSizes.gridScrollersize, FontSizes.scaleGuess(200)));
+            setForcedBounds(null, new Rect(0, 0, ((map.tileSize * scale * (map.mapTable.renderer.tileRenderer.getRecommendedWidth() + 1)) - 1) + app.f.gridScrollersize, app.f.scaleGuess(200)));
     }
     
     private int setupView(boolean inConstructor) {
@@ -60,7 +59,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         //  but the current text squeeze is bad.
         // The solution is to go for the core problem, which is the contents being too small for the UI.
         // The maths are chosen such that 8x32 is sufficient, but anything below that gets a boost.
-        int resultScale = FontSizes.getSpriteScale();
+        int resultScale = app.f.getSpriteScale();
         if ((map.tileSize * map.mapTable.renderer.tileRenderer.getRecommendedWidth()) < 256)
             resultScale *= 2;
 
@@ -75,10 +74,10 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                 lText = " " + lText;
             }
 
-            tileMaps[i] = new UITileGrid(map.mapTable.renderer, map.currentLayer, tileTabs[i].atProcessing, tileTabs[i].visTilesNormal, tileTabs[i].visTilesHover, lText, resultScale);
+            tileMaps[i] = new UITileGrid(app, map.mapTable.renderer, map.currentLayer, tileTabs[i].atProcessing, tileTabs[i].visTilesNormal, tileTabs[i].visTilesHover, lText, resultScale);
         }
 
-        tabPane = new UITabPane(FontSizes.tilesTabTextHeight, true, false, FontSizes.tilesTabScrollersize);
+        tabPane = new UITabPane(app.f.tilesTabTextHeight, true, false, app.f.tilesTabScrollersize);
         for (UIElement uie : tileMaps)
             tabPane.addTab(new UITabBar.Tab(uie, new UITabBar.TabIcon[] {}));
         atBases = map.mapTable.renderer.tileRenderer.indicateATs();
@@ -88,7 +87,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         subtool = 0;
         final LinkedList<UIButton<?>> options = new LinkedList<UIButton<?>>();
 
-        UITextButton baseTool = new UITextButton(TXDB.get("Pen"), FontSizes.atSubtoolTextHeight, new Runnable() {
+        UITextButton baseTool = new UITextButton(TXDB.get("Pen"), app.f.atSubtoolTextHeight, new Runnable() {
             @Override
             public void run() {
                 for (UIButton<?> utb : options)
@@ -107,7 +106,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                 options.get(1).state = true;
                 subtool = 1;
             }
-        }, FontSizes.atSubtoolTextHeight);
+        }, app.f.atSubtoolTextHeight);
         uab.button.toggle = true;
         options.add(uab.button);
 
@@ -119,7 +118,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
                 options.get(2).state = true;
                 subtool = 2;
             }
-        }, FontSizes.atSubtoolTextHeight);
+        }, app.f.atSubtoolTextHeight);
         uab.button.toggle = true;
         options.add(uab.button);
 

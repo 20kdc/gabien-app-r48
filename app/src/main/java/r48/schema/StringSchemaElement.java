@@ -10,7 +10,6 @@ package r48.schema;
 import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
 import r48.App;
-import r48.FontSizes;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -31,7 +30,7 @@ public class StringSchemaElement extends SchemaElement {
     // Note the type must be UITextBox - This is so StringLenSchemaElement can latch on.
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        final UITextBox tb = new UITextBox(decodeVal(target), FontSizes.schemaFieldTextHeight);
+        final UITextBox tb = new UITextBox(decodeVal(target), app.f.schemaFieldTextHeight);
         tb.onEdit = new Runnable() {
             @Override
             public void run() {

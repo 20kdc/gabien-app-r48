@@ -14,7 +14,6 @@ import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.ui.Art;
 import r48.ui.UIColourSwatch;
@@ -39,7 +38,7 @@ public class UIColourPicker extends App.Prx {
     private final UITabPane tabPane;
     private final IConsumer<Integer>[] colourListeners;
     private final UINumberBox alphaBox;
-    private final Size numberBoxMinimumSize = UILabel.getRecommendedTextSize("_255_", FontSizes.imageEditorTextHeight);
+    private final Size numberBoxMinimumSize = UILabel.getRecommendedTextSize("_255_", app.f.imageEditorTextHeight);
     private boolean shuttingDown = false;
 
     @SuppressWarnings("unchecked")
@@ -47,10 +46,10 @@ public class UIColourPicker extends App.Prx {
         super(app);
         currentColour = new UIColourSwatch(baseCol);
         wTitle = purpose;
-        tabPane = new UITabPane(FontSizes.imageEditorTextHeight, false, true);
+        tabPane = new UITabPane(app.f.imageEditorTextHeight, false, true);
         // IGNORE THE WARNING. There is no way to fix this.
         colourListeners = new IConsumer[] {
-                new UIHSVColourView(FontSizes.getSpriteScale()),
+                new UIHSVColourView(app.f.getSpriteScale()),
                 new UIRGBColourView()
         };
         UITabBar.TabIcon[] noIcons = new UITabBar.TabIcon[0];
@@ -67,7 +66,7 @@ public class UIColourPicker extends App.Prx {
         UISplitterLayout s2Layout = new UISplitterLayout(new UIColourSwatch(baseCol), currentColour, true, 0.5d) {
             @Override
             public void setWantedSize(Size size) {
-                int v = FontSizes.imageEditorTextHeight * 2;
+                int v = app.f.imageEditorTextHeight * 2;
                 super.setWantedSize(new Size(v, v));
             }
         };
@@ -86,12 +85,12 @@ public class UIColourPicker extends App.Prx {
             leftCoreLayout = s2Layout;
         } else {
             // alphaBox is referred to elsewhere so it's kept around, but this isn't
-            UISplitterLayout a0Layout = new UISplitterLayout(new UILabel("Alpha", FontSizes.imageEditorTextHeight), alphaBox, false, 0);
+            UISplitterLayout a0Layout = new UISplitterLayout(new UILabel("Alpha", app.f.imageEditorTextHeight), alphaBox, false, 0);
             leftCoreLayout = new UISplitterLayout(s2Layout, a0Layout, true, 1d);
         }
 
         // left/right layouts are stuff above ok/cancel buttons
-        UISplitterLayout leftLayout = new UISplitterLayout(leftCoreLayout, new UITextButton(TXDB.get("Ok"), FontSizes.imageEditorTextHeight, new Runnable() {
+        UISplitterLayout leftLayout = new UISplitterLayout(leftCoreLayout, new UITextButton(TXDB.get("Ok"), app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 if (!shuttingDown) {
@@ -100,7 +99,7 @@ public class UIColourPicker extends App.Prx {
                 }
             }
         }), true, 1);
-        UISplitterLayout rightLayout = new UISplitterLayout(tabPane, new UITextButton(TXDB.get("Cancel"), FontSizes.imageEditorTextHeight, new Runnable() {
+        UISplitterLayout rightLayout = new UISplitterLayout(tabPane, new UITextButton(TXDB.get("Cancel"), app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 if (!shuttingDown) {
@@ -135,7 +134,7 @@ public class UIColourPicker extends App.Prx {
 
     private class UIChannelBox extends UINumberBox {
         public UIChannelBox(long number) {
-            super(number, FontSizes.imageEditorTextHeight);
+            super(number, app.f.imageEditorTextHeight);
         }
 
         @Override
@@ -149,8 +148,8 @@ public class UIColourPicker extends App.Prx {
     }
 
     private static class UIChannelLabel extends UILabel {
-        public UIChannelLabel(String txt) {
-            super(txt, FontSizes.imageEditorTextHeight);
+        public UIChannelLabel(App app, String txt) {
+            super(txt, app.f.imageEditorTextHeight);
         }
 
         @Override
@@ -159,14 +158,14 @@ public class UIColourPicker extends App.Prx {
         }
     }
 
-    private static class UIPickCoordinator extends UIElement {
+    private static class UIPickCoordinator extends App.Elm {
         public IImage baseImage;
         private final int baseW, baseH, targetScale;
         public Size targetSize;
         private final IConsumer<Size> resultConsumer;
 
-        public UIPickCoordinator(int bw, int bh, int sc, IConsumer<Size> setter) {
-            super(bw * sc, bh * sc);
+        public UIPickCoordinator(App app, int bw, int bh, int sc, IConsumer<Size> setter) {
+            super(app, bw * sc, bh * sc);
             targetScale = sc;
             baseW = bw;
             baseH = bh;
@@ -201,9 +200,9 @@ public class UIColourPicker extends App.Prx {
             igd.clearRect(0, 0, 0, tsx + targetScale, intPos.y, targetScale, intPos.height);
 
             if (bh == 1) {
-                FontManager.drawString(igd, 0, 0, Integer.toString(targetSize.width), false, false, FontSizes.tonePickerTextHeight);
+                FontManager.drawString(igd, 0, 0, Integer.toString(targetSize.width), false, false, app.f.tonePickerTextHeight);
             } else {
-                FontManager.drawString(igd, 0, 0, targetSize.width + "," + targetSize.height, false, false, FontSizes.tonePickerTextHeight);
+                FontManager.drawString(igd, 0, 0, targetSize.width + "," + targetSize.height, false, false, app.f.tonePickerTextHeight);
             }
         }
 
@@ -274,20 +273,20 @@ public class UIColourPicker extends App.Prx {
             bA = new UIChannelBox(0);
             bA.onEdit = onAEdit;
 
-            rB = new UIScrollbar(false, FontSizes.generalScrollersize);
-            gB = new UIScrollbar(false, FontSizes.generalScrollersize);
-            bB = new UIScrollbar(false, FontSizes.generalScrollersize);
+            rB = new UIScrollbar(false, app.f.generalScrollersize);
+            gB = new UIScrollbar(false, app.f.generalScrollersize);
+            bB = new UIScrollbar(false, app.f.generalScrollersize);
 
             UISplitterLayout rC = new UISplitterLayout(rA, rB, false, 0);
             UISplitterLayout gC = new UISplitterLayout(gA, gB, false, 0);
             UISplitterLayout bC = new UISplitterLayout(bA, bB, false, 0);
 
-            UISplitterLayout r = new UISplitterLayout(new UIChannelLabel("R"), rC, false, 0);
-            UISplitterLayout g = new UISplitterLayout(new UIChannelLabel("G"), gC, false, 0);
-            UISplitterLayout b = new UISplitterLayout(new UIChannelLabel("B"), bC, false, 0);
+            UISplitterLayout r = new UISplitterLayout(new UIChannelLabel(app, "R"), rC, false, 0);
+            UISplitterLayout g = new UISplitterLayout(new UIChannelLabel(app, "G"), gC, false, 0);
+            UISplitterLayout b = new UISplitterLayout(new UIChannelLabel(app, "B"), bC, false, 0);
 
             UISplitterLayout rgSplit = new UISplitterLayout(r, g, true, 0);
-            UISplitterLayout b0Split = new UISplitterLayout(b, new UILabel(TXDB.get("(NOTE: HSV may be better if precision isn't an issue.)"), FontSizes.imageEditorTextHeight), true, 0);
+            UISplitterLayout b0Split = new UISplitterLayout(b, new UILabel(TXDB.get("(NOTE: HSV may be better if precision isn't an issue.)"), app.f.imageEditorTextHeight), true, 0);
             UISplitterLayout rbSplit = new UISplitterLayout(rgSplit, b0Split, true, 0);
             proxySetElement(rbSplit, true);
         }
@@ -350,13 +349,13 @@ public class UIColourPicker extends App.Prx {
         public final UIPickCoordinator svCoordinator, hCoordinator;
 
         public UIHSVColourView(int sc) {
-            svCoordinator = new UIPickCoordinator(256, 256, sc, new IConsumer<Size>() {
+            svCoordinator = new UIPickCoordinator(app, 256, 256, sc, new IConsumer<Size>() {
                 @Override
                 public void accept(Size size) {
                     performSendStuff();
                 }
             });
-            hCoordinator = new UIPickCoordinator(256, 16, sc, new IConsumer<Size>() {
+            hCoordinator = new UIPickCoordinator(app, 256, 16, sc, new IConsumer<Size>() {
                 @Override
                 public void accept(Size size) {
                     svCoordinator.baseImage = Art.getColourPal(app, Art.getRainbowHue(size.width));

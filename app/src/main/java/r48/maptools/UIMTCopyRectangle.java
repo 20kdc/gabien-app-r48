@@ -9,7 +9,6 @@ package r48.maptools;
 
 import gabien.GaBIEn;
 import gabien.ui.UILabel;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.TXDB;
@@ -27,13 +26,13 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
     public int startX, startY;
     public boolean stage;
 
-    public UILabel innerLabel = new UILabel(TXDB.get("Click on a tile to start the rectangle, or:"), FontSizes.dialogWindowTextHeight);
+    public UILabel innerLabel = new UILabel(TXDB.get("Click on a tile to start the rectangle, or:"), app.f.dialogWindowTextHeight);
     public UIAppendButton inner = new UIAppendButton(TXDB.get("Cancel"), innerLabel, new Runnable() {
         @Override
         public void run() {
             mapToolContext.accept(null);
         }
-    }, FontSizes.dialogWindowTextHeight);
+    }, app.f.dialogWindowTextHeight);
 
     public UIMTCopyRectangle(IMapToolContext par) {
         super(par);

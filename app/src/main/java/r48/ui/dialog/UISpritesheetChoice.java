@@ -10,7 +10,7 @@ package r48.ui.dialog;
 import gabien.IGrDriver;
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import r48.FontSizes;
+import r48.App;
 import r48.dbs.TXDB;
 import r48.ui.UIGrid;
 
@@ -22,11 +22,11 @@ public class UISpritesheetChoice extends UIElement.UIProxy {
     public UISplitterLayout rootLayout;
     public UIGrid spriteGrid;
 
-    public UISpritesheetChoice(long oldVal, final ISpritesheetProvider provider, final IConsumer<Long> consumer) {
-        spriteGrid = new UIGrid(provider.itemWidth() * FontSizes.getSpriteScale(), provider.itemHeight() * FontSizes.getSpriteScale(), provider.itemCount()) {
+    public UISpritesheetChoice(App app, long oldVal, final ISpritesheetProvider provider, final IConsumer<Long> consumer) {
+        spriteGrid = new UIGrid(app, provider.itemWidth() * app.f.getSpriteScale(), provider.itemHeight() * app.f.getSpriteScale(), provider.itemCount()) {
             @Override
             protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
-                provider.drawItem(provider.mapIdxToVal(t), x, y, FontSizes.getSpriteScale(), igd);
+                provider.drawItem(provider.mapIdxToVal(t), x, y, app.f.getSpriteScale(), igd);
             }
         };
         spriteGrid.setSelected(provider.mapValToIdx(oldVal));
@@ -36,8 +36,8 @@ public class UISpritesheetChoice extends UIElement.UIProxy {
                 consumer.accept(provider.mapIdxToVal(spriteGrid.getSelected()));
             }
         };
-        final UINumberBox nb = new UINumberBox(oldVal, FontSizes.dialogWindowTextHeight);
-        UISplitterLayout msp = new UISplitterLayout(nb, new UITextButton(TXDB.get("Sprite Num."), FontSizes.dialogWindowTextHeight, new Runnable() {
+        final UINumberBox nb = new UINumberBox(oldVal, app.f.dialogWindowTextHeight);
+        UISplitterLayout msp = new UISplitterLayout(nb, new UITextButton(TXDB.get("Sprite Num."), app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 consumer.accept(nb.number);

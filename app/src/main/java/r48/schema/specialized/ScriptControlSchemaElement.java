@@ -13,7 +13,6 @@ import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextBox;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.PathUtils;
@@ -43,7 +42,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
 
-        final UITextButton importer = new UITextButton(TXDB.get("Import scripts/*.rb"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        final UITextButton importer = new UITextButton(TXDB.get("Import scripts/*.rb"), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -58,7 +57,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
             }
         });
 
-        final UITextButton exporter = new UITextButton(TXDB.get("Export scripts/*.rb"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        final UITextButton exporter = new UITextButton(TXDB.get("Export scripts/*.rb"), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 try {
@@ -155,8 +154,8 @@ public class ScriptControlSchemaElement extends SchemaElement {
 
         UISplitterLayout impExp = new UISplitterLayout(exporter, importer, false, 0.5d);
 
-        final UITextBox searchText = new UITextBox("", FontSizes.schemaFieldTextHeight);
-        UISplitterLayout search = new UISplitterLayout(searchText, new UITextButton(TXDB.get("Search"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        final UITextBox searchText = new UITextBox("", app.f.schemaFieldTextHeight);
+        UISplitterLayout search = new UISplitterLayout(searchText, new UITextButton(TXDB.get("Search"), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 StringBuilder results = new StringBuilder();

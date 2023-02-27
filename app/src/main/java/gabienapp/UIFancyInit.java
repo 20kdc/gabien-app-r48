@@ -13,7 +13,7 @@ import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.uslx.append.IConsumer;
-import r48.FontSizes;
+import r48.cfg.Config;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,14 +30,15 @@ public class UIFancyInit extends UIElement.UIProxy implements IConsumer<String> 
     private ConcurrentLinkedQueue<String> consoletronDataInput;
     public AtomicReference<Runnable> doneInjector = new AtomicReference<Runnable>();
 
-    private final UILabel layout = new UILabel("", FontSizes.launcherTextHeight);
+    private final UILabel layout;
     private int ackDoneInjector = 0;
 
-    public UIFancyInit() {
+    public UIFancyInit(Config c) {
         super();
+        layout = new UILabel("", c.f.launcherTextHeight);
         consoletronDataInput = new ConcurrentLinkedQueue<String>();
         proxySetElement(layout, false);
-        setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(400), FontSizes.scaleGuess(300)));
+        setForcedBounds(null, new Rect(0, 0, c.f.scaleGuess(400), c.f.scaleGuess(300)));
     }
 
     @Override

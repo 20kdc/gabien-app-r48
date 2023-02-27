@@ -11,7 +11,6 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
-import r48.FontSizes;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -44,7 +43,7 @@ public class InitButtonSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
-        UITextButton utb = new UITextButton(text, FontSizes.schemaFieldTextHeight, new Runnable() {
+        UITextButton utb = new UITextButton(text, app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 // This is going to show up as a modifyVal changeOccurred, so it needs to be run again

@@ -11,7 +11,6 @@ import gabien.FontManager;
 import gabien.ui.UILabel;
 import gabien.ui.UINumberBox;
 import gabien.ui.UISplitterLayout;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
@@ -29,7 +28,7 @@ public class UIMTShadowLayer extends UIMTBase implements IMapViewCallbacks {
     public UIMTShadowLayer(IMapToolContext mv) {
         super(mv);
         map = mv.getMapView();
-        changeInner(new UISplitterLayout(new UILabel(TXDB.get("Region:"), FontSizes.tableElementTextHeight), regionId = new UINumberBox(0, FontSizes.tableElementTextHeight), false, 1, 2), true);
+        changeInner(new UISplitterLayout(new UILabel(TXDB.get("Region:"), app.f.tableElementTextHeight), regionId = new UINumberBox(0, app.f.tableElementTextHeight), false, 1, 2), true);
     }
 
     @Override

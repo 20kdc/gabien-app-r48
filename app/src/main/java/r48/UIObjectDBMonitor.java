@@ -21,7 +21,7 @@ public class UIObjectDBMonitor extends UIElement {
     public final App app;
     public UIObjectDBMonitor(App app) {
         this.app = app;
-        setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(320), FontSizes.scaleGuess(240)));
+        setForcedBounds(null, new Rect(0, 0, app.f.scaleGuess(320), app.f.scaleGuess(240)));
     }
 
     @Override
@@ -31,9 +31,9 @@ public class UIObjectDBMonitor extends UIElement {
 
     @Override
     public void render(IGrDriver igd) {
-        int step = UILabel.getRecommendedTextSize("", FontSizes.objectDBMonitorTextHeight).height;
+        int step = UILabel.getRecommendedTextSize("", app.f.objectDBMonitorTextHeight).height;
         int width = getSize().width;
-        UILabel.drawLabel(igd, width, 0, 0, toString(), 1, FontSizes.objectDBMonitorTextHeight);
+        UILabel.drawLabel(igd, width, 0, 0, toString(), 1, app.f.objectDBMonitorTextHeight);
         int oy = step;
         for (String s : UITest.sortedKeysStr(app.odb.objectMap.keySet())) {
             String status = TXDB.get(" [disposed]");
@@ -52,7 +52,7 @@ public class UIObjectDBMonitor extends UIElement {
                     app.odb.objectMap.remove(s);
                 }
             }
-            UILabel.drawLabel(igd, width, 0, oy, s + status, 0, FontSizes.objectDBMonitorTextHeight);
+            UILabel.drawLabel(igd, width, 0, oy, s + status, 0, app.f.objectDBMonitorTextHeight);
             oy += step;
         }
         setWantedSize(new Size(width, oy));

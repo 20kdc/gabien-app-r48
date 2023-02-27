@@ -9,7 +9,6 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.*;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.io.BMPConnection;
 
@@ -160,25 +159,25 @@ public class PasteImageEditorTool extends App.Svc implements IImageEditorTool {
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
         UIScrollLayout uie = RootImageEditorTool.createToolPalette(uiev, PasteImageEditorTool.class);
-        UITextButton a = new UITextButton(TXDB.get("FlipX"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        UITextButton a = new UITextButton(TXDB.get("FlipX"), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 flipX = !flipX;
             }
         }).togglable(flipX);
-        UITextButton b = new UITextButton(TXDB.get("Y"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        UITextButton b = new UITextButton(TXDB.get("Y"), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 flipY = !flipY;
             }
         }).togglable(flipY);
-        UITextButton c = new UITextButton(TXDB.get("SwapXY"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        UITextButton c = new UITextButton(TXDB.get("SwapXY"), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 swapXY = !swapXY;
             }
         }).togglable(swapXY);
-        UITextButton d = new UITextButton(TXDB.get("Raw Copy"), FontSizes.schemaFieldTextHeight, new Runnable() {
+        UITextButton d = new UITextButton(TXDB.get("Raw Copy"), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 rawCopy = !rawCopy;

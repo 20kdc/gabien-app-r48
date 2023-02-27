@@ -26,7 +26,6 @@ import gabien.ui.UITabBar.TabIcon;
 import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.IFunction;
 import gabienapp.IGPMenuPanel.LauncherState;
-import r48.FontSizes;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.dbs.TXDB;
@@ -43,9 +42,9 @@ public class UILauncher extends UIProxy {
     private final AtomicBoolean gamepaksRequestClose;
     public UILauncher(Config c, final AtomicBoolean grc) {
         gamepaksRequestClose = grc;
-        final UITabPane tabPane = new UITabPane(FontSizes.tabTextHeight, false, false);
+        final UITabPane tabPane = new UITabPane(c.f.tabTextHeight, false, false);
 
-        final UIScrollLayout configure = new UIScrollLayout(true, FontSizes.generalScrollersize) {
+        final UIScrollLayout configure = new UIScrollLayout(true, c.f.generalScrollersize) {
             @Override
             public String toString() {
                 return TXDB.get("Configure");
@@ -53,7 +52,7 @@ public class UILauncher extends UIProxy {
         };
         tabPane.addTab(new Tab(configure, new TabIcon[0]));
 
-        final UIScrollLayout gamepaks = new UIScrollLayout(true, FontSizes.generalScrollersize) {
+        final UIScrollLayout gamepaks = new UIScrollLayout(true, c.f.generalScrollersize) {
             @Override
             public String toString() {
                 return TXDB.get("Select Engine");
@@ -77,7 +76,7 @@ public class UILauncher extends UIProxy {
             }
         };
 
-        UIAdjuster msAdjust = new UIAdjuster(FontSizes.launcherTextHeight, Application.globalMS, new IFunction<Long, Long>() {
+        UIAdjuster msAdjust = new UIAdjuster(c.f.launcherTextHeight, Application.globalMS, new IFunction<Long, Long>() {
             @Override
             public Long apply(Long aLong) {
                 int gms = (int) (long) aLong;
@@ -91,19 +90,19 @@ public class UILauncher extends UIProxy {
 
         final LinkedList<UIElement> basePanels = new LinkedList<UIElement>();
 
-        UIHelpSystem uhs = new UIHelpSystem();
+        UIHelpSystem uhs = new UIHelpSystem(c);
         HelpSystemController hsc = new HelpSystemController(null, "Help/Launcher/Entry", uhs);
         hsc.loadPage(0);
 
-        configure.panelsAdd(new UIBorderedSubpanel(uhs, FontSizes.scaleGuess(8)));
+        configure.panelsAdd(new UIBorderedSubpanel(uhs, c.f.scaleGuess(8)));
 
         configure.panelsAdd(figureOutTopBar(c, Application.uiTicker, closeHelper));
 
-        configure.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("MS per frame:"), FontSizes.launcherTextHeight), msAdjust, false, 3, 5));
+        configure.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("MS per frame:"), c.f.launcherTextHeight), msAdjust, false, 3, 5));
 
-        configure.panelsAdd(new UILabel(TXDB.get("Path To Game (if you aren't running R48 in the game folder):"), FontSizes.launcherTextHeight));
+        configure.panelsAdd(new UILabel(TXDB.get("Path To Game (if you aren't running R48 in the game folder):"), c.f.launcherTextHeight));
 
-        final UIGamePathList rootBox = new UIGamePathList(c.rootPathBackup) {
+        final UIGamePathList rootBox = new UIGamePathList(c, c.rootPathBackup) {
             @Override
             public void modified() {
                 super.modified();
@@ -112,9 +111,9 @@ public class UILauncher extends UIProxy {
         };
         configure.panelsAdd(rootBox);
 
-        configure.panelsAdd(new UILabel(TXDB.get("Secondary Image Load Location:"), FontSizes.launcherTextHeight));
+        configure.panelsAdd(new UILabel(TXDB.get("Secondary Image Load Location:"), c.f.launcherTextHeight));
 
-        final UIGamePathList sillBox = new UIGamePathList(c.secondaryImageLoadLocationBackup) {
+        final UIGamePathList sillBox = new UIGamePathList(c, c.secondaryImageLoadLocationBackup) {
             @Override
             public void modified() {
                 super.modified();
@@ -123,7 +122,7 @@ public class UILauncher extends UIProxy {
         };
         configure.panelsAdd(sillBox);
 
-        basePanels.add(new UILabel(TXDB.get("Choose Target Engine:"), FontSizes.launcherTextHeight));
+        basePanels.add(new UILabel(TXDB.get("Choose Target Engine:"), c.f.launcherTextHeight));
 
         final IConsumer<IGPMenuPanel> menuConstructor = new IConsumer<IGPMenuPanel>() {
             @Override
@@ -139,7 +138,7 @@ public class UILauncher extends UIProxy {
                 IFunction<LauncherState, IGPMenuPanel>[] runs = igpMenuPanel.getButtonActs();
                 for (int i = 0; i < names.length; i++) {
                     final IFunction<LauncherState, IGPMenuPanel> r = runs[i];
-                    gamepaks.panelsAdd(new UITextButton(names[i], FontSizes.launcherTextHeight, new Runnable() {
+                    gamepaks.panelsAdd(new UITextButton(names[i], c.f.launcherTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             accept(r.apply(new LauncherState(rootBox.text.text, sillBox.text.text)));
@@ -149,7 +148,7 @@ public class UILauncher extends UIProxy {
             }
         };
 
-        configure.panelsAdd(new UISplitterLayout(new UIPublicPanel(0, 0), new UITextButton(TXDB.get("Continue"), FontSizes.launcherTextHeight, new Runnable() {
+        configure.panelsAdd(new UISplitterLayout(new UIPublicPanel(0, 0), new UITextButton(TXDB.get("Continue"), c.f.launcherTextHeight, new Runnable() {
             @Override
             public void run() {
                 tabPane.selectTab(gamepaks);
@@ -157,7 +156,7 @@ public class UILauncher extends UIProxy {
         }), false, 1));
         // ...
 
-        tabPane.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(640), FontSizes.scaleGuess(480)));
+        tabPane.setForcedBounds(null, new Rect(0, 0, c.f.scaleGuess(640), c.f.scaleGuess(480)));
         menuConstructor.accept(new PrimaryGPMenuPanel(c));
         closeHelper.accept(new Runnable() {
             @Override
@@ -174,14 +173,14 @@ public class UILauncher extends UIProxy {
     }
 
     private static UIElement figureOutTopBar(final Config c, final WindowCreatingUIElementConsumer uiTicker, final IConsumer<Runnable> closeHelper) {
-        UIElement whatever = new UITextButton(TXDB.get("Quit R48"), FontSizes.launcherTextHeight, new Runnable() {
+        UIElement whatever = new UITextButton(TXDB.get("Quit R48"), c.f.launcherTextHeight, new Runnable() {
             @Override
             public void run() {
                 GaBIEn.ensureQuit();
             }
         });
         if (!GaBIEn.singleWindowApp()) { // SWA means we can't create windows
-            whatever = new UISplitterLayout(whatever, new UITextButton(TXDB.get("Configuration"), FontSizes.launcherTextHeight, new Runnable() {
+            whatever = new UISplitterLayout(whatever, new UITextButton(TXDB.get("Configuration"), c.f.launcherTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     uiTicker.accept(new UIFontSizeConfigurator(c, () -> {
@@ -206,6 +205,6 @@ public class UILauncher extends UIProxy {
                 TXDB.nextLanguage();
                 closeHelper.accept(null);
             }
-        }, FontSizes.launcherTextHeight);
+        }, c.f.launcherTextHeight);
     }
 }

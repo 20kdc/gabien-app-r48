@@ -12,7 +12,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
 
@@ -45,7 +44,7 @@ public class BitfieldSchemaElement extends IntegerSchemaElement {
             }
         }));
         refresh.accept((int) oldVal);
-        uiSVL.panelsAdd(new UILabel(TXDB.get("Manual Edit:"), FontSizes.tableElementTextHeight));
+        uiSVL.panelsAdd(new UILabel(TXDB.get("Manual Edit:"), app.f.tableElementTextHeight));
         final ActiveInteger ai = super.buildIntegerEditor(oldVal, context);
         uiSVL.panelsAdd(ai.uie);
         return new ActiveInteger(uiSVL, new IConsumer<Long>() {

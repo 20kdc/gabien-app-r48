@@ -13,7 +13,6 @@ import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
@@ -244,9 +243,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         group[group.length - 1] = new SchemaElement(app) {
             @Override
             public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
-                UIScrollLayout usl = new UIScrollLayout(true, FontSizes.generalScrollersize);
+                UIScrollLayout usl = new UIScrollLayout(true, app.f.generalScrollersize);
                 if (addRemoveF) {
-                    usl.panelsAdd(new UITextButton(addText, FontSizes.schemaFieldTextHeight, new Runnable() {
+                    usl.panelsAdd(new UITextButton(addText, app.f.schemaFieldTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             IRIO commandTarg = target.getAElem(start);
@@ -266,7 +265,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
                     }));
                 }
                 if (cctF) {
-                    usl.panelsAdd(new UITextButton(copyText, FontSizes.schemaFieldTextHeight, new Runnable() {
+                    usl.panelsAdd(new UITextButton(copyText, app.f.schemaFieldTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             StringBuilder total = new StringBuilder();
@@ -363,7 +362,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
                 int actualStart = findActualStart(target, tracker);
                 if (actualStart == -1)
-                    return new UILabel(TXDB.get("The command isn't in the list anymore, so it has no context."), FontSizes.schemaFieldTextHeight);
+                    return new UILabel(TXDB.get("The command isn't in the list anymore, so it has no context."), app.f.schemaFieldTextHeight);
                 return getGroupElement(target, actualStart, this).buildHoldingEditor(target, launcher, path);
             }
 

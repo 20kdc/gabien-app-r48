@@ -9,7 +9,7 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import r48.FontSizes;
+import r48.App;
 import r48.dbs.TXDB;
 
 /**
@@ -102,21 +102,22 @@ public class FillImageEditorTool implements IImageEditorTool {
 
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
+        App app = uiev.app;
         UIElement uie = RootImageEditorTool.createToolPalette(uiev, FillImageEditorTool.class);
-        UIScrollLayout usl = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
-        usl.panelsAdd(new UITextButton(TXDB.get("Autoshade"), FontSizes.imageEditorTextHeight, new Runnable() {
+        UIScrollLayout usl = new UIScrollLayout(false, app.f.mapToolbarScrollersize);
+        usl.panelsAdd(new UITextButton(TXDB.get("Autoshade"), app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 autoshade = !autoshade;
             }
         }).togglable(autoshade));
-        usl.panelsAdd(new UITextButton(TXDB.get("LR"), FontSizes.imageEditorTextHeight, new Runnable() {
+        usl.panelsAdd(new UITextButton(TXDB.get("LR"), app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 autoshadeLRX = !autoshadeLRX;
             }
         }).togglable(autoshadeLRX));
-        usl.panelsAdd(new UITextButton(TXDB.get("UD"), FontSizes.imageEditorTextHeight, new Runnable() {
+        usl.panelsAdd(new UITextButton(TXDB.get("UD"), app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 autoshadeUDX = !autoshadeUDX;

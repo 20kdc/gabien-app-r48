@@ -10,7 +10,6 @@ package r48.schema;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -29,7 +28,7 @@ public class BooleanSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
-        final UITextButton utb = new UITextButton(determineTruth(target) ? TXDB.get("True") : TXDB.get("False"), FontSizes.schemaFieldTextHeight, null).togglable(determineTruth(target));
+        final UITextButton utb = new UITextButton(determineTruth(target) ? TXDB.get("True") : TXDB.get("False"), app.f.schemaFieldTextHeight, null).togglable(determineTruth(target));
         utb.onClick = new Runnable() {
             @Override
             public void run() {

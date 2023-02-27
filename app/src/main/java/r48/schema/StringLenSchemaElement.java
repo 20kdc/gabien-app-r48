@@ -10,7 +10,6 @@ package r48.schema;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.FontSizes;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -106,7 +105,7 @@ public class StringLenSchemaElement extends StringSchemaElement {
                 return Integer.toString(len - l1);
             }
         };
-        UILabel l = new UILabel("-00000", FontSizes.schemaFieldTextHeight) {
+        UILabel l = new UILabel("-00000", app.f.schemaFieldTextHeight) {
             @Override
             public void runLayout() {
                 int l1 = measureText(utb.text);
