@@ -8,6 +8,7 @@
 package r48.map.mapinfos;
 
 import gabien.uslx.append.*;
+import r48.App;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -22,9 +23,13 @@ import java.util.*;
  * Going to have to move it over here
  * Created on 02/06/17.
  */
-public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
+public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
     public IConsumer<SchemaPath> modHandler;
-    public IObjectBackend.ILoadedObject mapInfos = AppMain.objectDB.getObject("MapInfos");
+    public IObjectBackend.ILoadedObject mapInfos;
+    public RXPRMLikeMapInfoBackend(App app) {
+        super(app);
+        mapInfos = app.odb.getObject("MapInfos");
+    }
 
     public static String sNameFromInt(long key) {
         String mapStr = Long.toString(key);
@@ -36,7 +41,7 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     @Override
     public void registerModificationHandler(IConsumer<SchemaPath> onMapInfoChange) {
         modHandler = onMapInfoChange;
-        AppMain.objectDB.registerModificationHandler(mapInfos, onMapInfoChange);
+        app.odb.registerModificationHandler(mapInfos, onMapInfoChange);
     }
 
     @Override
@@ -125,7 +130,7 @@ public class RXPRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     @Override
     public void complete() {
         SchemaPath fakePath = new SchemaPath(AppMain.schemas.getSDBEntry("File.MapInfos"), mapInfos);
-        AppMain.objectDB.objectRootModified(mapInfos, fakePath);
+        app.odb.objectRootModified(mapInfos, fakePath);
         modHandler.accept(fakePath);
     }
 

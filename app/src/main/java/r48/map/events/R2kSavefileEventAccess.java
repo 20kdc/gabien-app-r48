@@ -7,6 +7,7 @@
 
 package r48.map.events;
 
+import r48.App;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -30,7 +31,7 @@ import static r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement.get
  * An additional benefit of this is that it's bascally behavior-accurate,
  *  because the ghosts & map events getting merged by the game has similar results to what happens here.
  */
-public class R2kSavefileEventAccess implements IEventAccess {
+public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     public final IObjectBackend.ILoadedObject saveFileRoot;
     public final String saveFileRootId;
     public final String saveFileRootSchema;
@@ -39,7 +40,8 @@ public class R2kSavefileEventAccess implements IEventAccess {
     // The ghosts are added dynamically by getEventKeys & getEvent
     public final RubyIO eventsHash = new RubyIO().setHash();
 
-    public R2kSavefileEventAccess(String rootId, IObjectBackend.ILoadedObject root, String rootSchema) {
+    public R2kSavefileEventAccess(App app, String rootId, IObjectBackend.ILoadedObject root, String rootSchema) {
+        super(app);
         saveFileRoot = root;
         saveFileRootId = rootId;
         saveFileRootSchema = rootSchema;
@@ -97,7 +99,7 @@ public class R2kSavefileEventAccess implements IEventAccess {
 
     private IRIO getMap() {
         int mapId = (int) saveFileRoot.getObject().getIVar("@party_pos").getIVar("@map").getFX();
-        IObjectBackend.ILoadedObject ilo = AppMain.objectDB.getObject(R2kRMLikeMapInfoBackend.sNameFromInt(mapId), null);
+        IObjectBackend.ILoadedObject ilo = app.odb.getObject(R2kRMLikeMapInfoBackend.sNameFromInt(mapId), null);
         if (ilo == null)
             return null;
         return ilo.getObject();
@@ -274,6 +276,6 @@ public class R2kSavefileEventAccess implements IEventAccess {
     }
 
     public void pokeHive() {
-        AppMain.objectDB.objectRootModified(saveFileRoot, new SchemaPath(AppMain.schemas.getSDBEntry(saveFileRootSchema), saveFileRoot));
+        app.odb.objectRootModified(saveFileRoot, new SchemaPath(AppMain.schemas.getSDBEntry(saveFileRootSchema), saveFileRoot));
     }
 }

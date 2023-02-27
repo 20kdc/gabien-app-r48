@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -115,7 +116,8 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
                 u.setFX(Math.min(firstPointY, y));
                 r.setFX(Math.max(firstPointX, x) + 1);
                 d.setFX(Math.max(firstPointY, y) + 1);
-                AppMain.objectDB.objectRootModified(mapInfosRoot, new SchemaPath(AppMain.schemas.getSDBEntry("RPG::MapTree"), mapInfosRoot));
+                App app = mapToolContext.getMapView().app;
+                app.odb.objectRootModified(mapInfosRoot, new SchemaPath(AppMain.schemas.getSDBEntry("RPG::MapTree"), mapInfosRoot));
                 label.text = textA;
                 definingPoint2 = false;
             }

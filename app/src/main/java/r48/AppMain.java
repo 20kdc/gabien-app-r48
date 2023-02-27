@@ -54,9 +54,6 @@ import java.util.*;
 public class AppMain {
     // The last AppMain static variable, in the process of being phased out.
     public static App instance;
-
-    // Databases
-    public static ObjectDB objectDB = null;
     public static SDB schemas = null;
 
     public static void initializeCore(final String rp, final String sip, final String gamepak) {
@@ -74,7 +71,7 @@ public class AppMain {
 
         // initialize everything else that needs initializing, starting with ObjectDB
         IObjectBackend backend = IObjectBackend.Factory.create(instance.odbBackend, instance.rootPath, instance.dataPath, instance.dataExt);
-        objectDB = instance.odb = new ObjectDB(schemas.opaque, backend, (s) -> {
+        instance.odb = new ObjectDB(schemas.opaque, backend, (s) -> {
             if (instance.system != null)
                 instance.system.saveHook(s);
         });
@@ -144,7 +141,6 @@ public class AppMain {
         if (instance != null)
             instance.shutdown();
         instance = null;
-        objectDB = null;
         schemas = null;
     }
 
@@ -160,8 +156,8 @@ public class AppMain {
         RubyIO n = new RubyIO();
         n.setHash();
         n.addIVar("@description").setString(addendumData, true);
-        for (IObjectBackend.ILoadedObject rio : objectDB.modifiedObjects) {
-            String s = objectDB.getIdByObject(rio);
+        for (IObjectBackend.ILoadedObject rio : instance.odb.modifiedObjects) {
+            String s = instance.odb.getIdByObject(rio);
             if (s != null)
                 n.addHashVal(new RubyIO().setString(s, true)).setDeepClone(rio.getObject());
         }
@@ -196,10 +192,10 @@ public class AppMain {
             sysDump = possibleActualDump;
         for (Map.Entry<IRIO, IRIO> rio : sysDump.hashVal.entrySet()) {
             String name = rio.getKey().decString();
-            IObjectBackend.ILoadedObject root = objectDB.getObject(name);
+            IObjectBackend.ILoadedObject root = instance.odb.getObject(name);
             if (root != null) {
                 root.getObject().setDeepClone(rio.getValue());
-                objectDB.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(instance), root));
+                instance.odb.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(instance), root));
             }
         }
         if (possibleActualDump != null) {

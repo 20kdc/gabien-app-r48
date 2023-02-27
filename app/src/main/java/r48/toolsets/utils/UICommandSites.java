@@ -45,7 +45,7 @@ public class UICommandSites extends App.Prx {
         refresh = supplier;
         roots = r;
         for (IObjectBackend.ILoadedObject ilo : roots)
-            AppMain.objectDB.registerModificationHandler(ilo, consumer);
+            app.odb.registerModificationHandler(ilo, consumer);
         doRefresh();
         proxySetElement(layout, true);
         setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(400), FontSizes.scaleGuess(300)));
@@ -80,6 +80,6 @@ public class UICommandSites extends App.Prx {
     public void onWindowClose() {
         super.onWindowClose();
         for (IObjectBackend.ILoadedObject ilo : roots)
-            AppMain.objectDB.deregisterModificationHandler(ilo, consumer);
+            app.odb.deregisterModificationHandler(ilo, consumer);
     }
 }

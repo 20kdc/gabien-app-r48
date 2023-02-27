@@ -75,7 +75,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
             if (targ.equals("__MAP__")) {
                 if (map != null) {
                     targetILO = map;
-                    targetName = AppMain.objectDB.getIdByObject(map);
+                    targetName = app.odb.getIdByObject(map);
                     if (targetName == null)
                         targetName = "__MAPANONOBJECT-ML-FAIL__";
                 } else {
@@ -83,7 +83,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
                     targetName = "__MAPFAIL__";
                 }
             } else {
-                targetILO = AppMain.objectDB.getObject(targ);
+                targetILO = app.odb.getObject(targ);
                 targetName = targ;
             }
 
@@ -93,13 +93,13 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
                 boolean reregister = true;
                 if (lastTarget != null) {
                     if (!lastTarget.equals(targetName)) {
-                        AppMain.objectDB.deregisterModificationHandler(lastTarget, kickMe);
+                        app.odb.deregisterModificationHandler(lastTarget, kickMe);
                     } else {
                         reregister = false;
                     }
                 }
                 if (reregister)
-                    AppMain.objectDB.registerModificationHandler(targetName, kickMe);
+                    app.odb.registerModificationHandler(targetName, kickMe);
 
                 lastTarget = targetName;
 
@@ -163,7 +163,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
                         @Override
                         public void accept(String t) {
                             mappedRIO.setString(t);
-                            AppMain.objectDB.objectRootModified(targetILO, rootSchemaPath);
+                            app.odb.objectRootModified(targetILO, rootSchemaPath);
                         }
                     };
                 }

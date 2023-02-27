@@ -49,10 +49,10 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         }))), true);
     }
 
-    protected static IRIO tsoById(long id) {
+    protected static IRIO tsoById(App app, long id) {
         IRIO tileset = null;
         int tid = (int) id;
-        IRIO tilesets = AppMain.objectDB.getObject("Tilesets").getObject();
+        IRIO tilesets = app.odb.getObject("Tilesets").getObject();
         if ((tid >= 0) && (tid < tilesets.getALen()))
             tileset = tilesets.getAElem(tid);
         if (tileset != null)
@@ -63,7 +63,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public UIElement createMapExplorer(IMapContext mapBox, String mapInfos) {
-        return new UIGRMMapInfos(new RXPRMLikeMapInfoBackend(), mapBox, mapInfos);
+        return new UIGRMMapInfos(new RXPRMLikeMapInfoBackend(app), mapBox, mapInfos);
     }
 
     @Override
@@ -136,18 +136,18 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     @Override
     public MapViewDetails mapViewRequest(final String gum, boolean allowCreate) {
         if (!allowCreate)
-            if (AppMain.objectDB.getObject(gum, null) == null)
+            if (app.odb.getObject(gum, null) == null)
                 return null;
-        final IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(gum, "RPG::Map");
-        final IEventAccess events = new TraditionalEventAccess(gum, "RPG::Map", "@events", 1, "RPG::Event");
-        return new MapViewDetails(gum, "RPG::Map", new IFunction<String, MapViewState>() {
+        final IObjectBackend.ILoadedObject map = app.odb.getObject(gum, "RPG::Map");
+        final IEventAccess events = new TraditionalEventAccess(app, gum, "RPG::Map", "@events", 1, "RPG::Event");
+        return new MapViewDetails(app, gum, "RPG::Map", new IFunction<String, MapViewState>() {
             private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("Tilesets");
             @Override
             public MapViewState apply(String changed) {
                 long currentTsId = map.getObject().getIVar("@tileset_id").getFX();
                 IRIO lastTileset = tilesetCache.receivedChanged(changed, currentTsId);
                 if (lastTileset == null) {
-                    lastTileset = tsoById(currentTsId);
+                    lastTileset = tsoById(app, currentTsId);
                     tilesetCache.insertTileset(currentTsId, lastTileset);
                 }
                 return MapViewState.fromRT(rendererFromMapAndTso(map.getObject(), lastTileset, events), gum, new String[] {
@@ -169,7 +169,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     @Override
     public RMMapData[] getAllMaps() {
         LinkedList<RMMapData> rmdList = new LinkedList<RMMapData>();
-        IRIO mi = AppMain.objectDB.getObject("MapInfos").getObject();
+        IRIO mi = app.odb.getObject("MapInfos").getObject();
         for (final IRIO rio : mi.getHashKeys()) {
             int id = (int) rio.getFX();
             RMMapData rmd = new RMMapData(app, new ISupplier<String>() {
@@ -190,7 +190,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public ILoadedObject getCommonEventRoot() {
-        return AppMain.objectDB.getObject("CommonEvents");
+        return app.odb.getObject("CommonEvents");
     }
 
     @Override
@@ -210,7 +210,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     public void dumpCustomData(RMTranscriptDumper dumper) {
         dumper.startFile("Items", TXDB.get("The list of items in the game."));
         LinkedList<String> lls = new LinkedList<String>();
-        IRIO items = AppMain.objectDB.getObject("Items").getObject();
+        IRIO items = app.odb.getObject("Items").getObject();
         int itemCount = items.getALen();
         for (int i = 0; i < itemCount; i++) {
             IRIO item = items.getAElem(i);
@@ -224,7 +224,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         dumper.endFile();
 
         dumper.startFile("System", TXDB.get("System data (of any importance, anyway)."));
-        IObjectBackend.ILoadedObject sys = AppMain.objectDB.getObject("System");
+        IObjectBackend.ILoadedObject sys = app.odb.getObject("System");
 
         dumper.dumpHTML(TXDB.get("Notably, switch and variable lists have a 0th index, but only indexes starting from 1 are actually allowed to be used.") + "<br/>");
         IRIO sys2 = sys.getObject();

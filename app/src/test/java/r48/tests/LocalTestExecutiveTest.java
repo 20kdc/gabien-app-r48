@@ -11,6 +11,8 @@ import gabien.uslx.append.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import r48.App;
 import r48.AppMain;
 import r48.dbs.DBLoader;
 import r48.dbs.ObjectInfo;
@@ -83,18 +85,19 @@ public class LocalTestExecutiveTest {
     private void testObject(String s) {
         try {
             System.out.println(s);
+            App app = AppMain.instance;
 
             // 'objectUnderTest' is the reference copy. DO NOT ALTER IT UNTIL THE END.
-            IObjectBackend.ILoadedObject objectUnderTest = AppMain.objectDB.getObject(s, null);
+            IObjectBackend.ILoadedObject objectUnderTest = app.odb.getObject(s, null);
 
             // Create an internal copy, autocorrect it, save it, and then get rid of it.
             {
-                IObjectBackend.ILoadedObject objectInternalCopy = AppMain.objectDB.backend.newObject(s);
+                IObjectBackend.ILoadedObject objectInternalCopy = app.odb.backend.newObject(s);
 
                 objectInternalCopy.getObject().setDeepClone(objectUnderTest.getObject());
 
                 SchemaElement wse = findSchemaFor(s, objectUnderTest.getObject());
-                AppMain.objectDB.registerModificationHandler(objectInternalCopy, new IConsumer<SchemaPath>() {
+                app.odb.registerModificationHandler(objectInternalCopy, new IConsumer<SchemaPath>() {
                     @Override
                     public void accept(SchemaPath schemaPath) {
                         throw new RuntimeException("A modification occurred on LTE data. This shouldn't happen: " + schemaPath.toString());
@@ -111,7 +114,7 @@ public class LocalTestExecutiveTest {
 
             // Load the autocorrected + saved object, and see if anything went bang.
             {
-                IObjectBackend.ILoadedObject objectSaveLoaded = AppMain.objectDB.backend.loadObject(s);
+                IObjectBackend.ILoadedObject objectSaveLoaded = app.odb.backend.loadObject(s);
                 byte[] bytes = IMIUtils.createIMIData(objectUnderTest.getObject(), objectSaveLoaded.getObject(), "");
                 if (bytes != null) {
                     System.out.write(bytes);

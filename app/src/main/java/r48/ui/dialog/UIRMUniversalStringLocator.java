@@ -65,7 +65,7 @@ public class UIRMUniversalStringLocator extends App.Prx {
         Iterable<ObjectInfo> oi = app.getObjectInfos();
         setSelector = new UISetSelector<ObjectInfo>(oi);
         for (ObjectInfo ii : oi)
-            AppMain.objectDB.registerModificationHandler(ii.idName, refreshOnObjectChange);
+            app.odb.registerModificationHandler(ii.idName, refreshOnObjectChange);
 
         // load config if possible
         IRIO replacer = AdHocSaveLoad.load("replacer");
@@ -153,7 +153,7 @@ public class UIRMUniversalStringLocator extends App.Prx {
                 int files = 0;
                 String log = "";
                 for (ObjectInfo objInfo : setSelector.getSet()) {
-                    IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(objInfo.idName);
+                    IObjectBackend.ILoadedObject rio = app.odb.getObject(objInfo.idName);
                     SchemaElement se = AppMain.schemas.getSDBEntry(objInfo.schemaName);
                     if (rio != null) {
                         files++;

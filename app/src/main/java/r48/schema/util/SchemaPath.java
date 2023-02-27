@@ -7,7 +7,7 @@
 
 package r48.schema.util;
 
-import r48.AppMain;
+import r48.App;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Generic schema path object used to keep references to things being edited in play,
@@ -31,7 +32,7 @@ import org.eclipse.jdt.annotation.NonNull;
  * this makes navigation slightly more user-friendly.
  * Created on 12/29/16.
  */
-public class SchemaPath {
+public class SchemaPath extends App.Svc {
     public final SchemaPath parent;
     // Can be null!
     public final IObjectBackend.ILoadedObject root;
@@ -62,6 +63,7 @@ public class SchemaPath {
     public final HashMap<String, SchemaElement> contextualSchemas = new HashMap<String, SchemaElement>();
 
     private SchemaPath(SchemaPath sp) {
+        super(sp.app);
         parent = sp;
         root = sp.root;
         lastArrayIndex = sp.lastArrayIndex;
@@ -74,11 +76,12 @@ public class SchemaPath {
     }
 
     // The basic root constructor.
-    public SchemaPath(SchemaElement heldElement, IObjectBackend.ILoadedObject root, Runnable amc) {
+    public SchemaPath(@NonNull SchemaElement heldElement, @NonNull IObjectBackend.ILoadedObject root, @Nullable Runnable amc) {
+        super(heldElement.app);
         parent = null;
         additionalModificationCallback = amc;
         this.root = root;
-        hrIndex = AppMain.objectDB.getIdByObject(root);
+        hrIndex = app.odb.getIdByObject(root);
         if (hrIndex == null)
             hrIndex = "AnonObject";
         editor = heldElement;
@@ -86,7 +89,8 @@ public class SchemaPath {
     }
 
     // Used for default value setup bootstrapping.
-    private SchemaPath(IRIO lai) {
+    private SchemaPath(App app, IRIO lai) {
+        super(app);
         parent = null;
         root = null;
         additionalModificationCallback = null;
@@ -95,7 +99,7 @@ public class SchemaPath {
     }
 
     public static void setDefaultValue(IRIO target, SchemaElement ise, IRIO arrayIndex) {
-        ise.modifyVal(target, new SchemaPath(arrayIndex), true);
+        ise.modifyVal(target, new SchemaPath(ise.app, arrayIndex), true);
     }
 
     public String toString() {
@@ -231,7 +235,7 @@ public class SchemaPath {
 
         // Attempt to set a "changed flag".
         // This will also nudge the observers.
-        AppMain.objectDB.objectRootModified(p.root, this);
+        app.odb.objectRootModified(p.root, this);
     }
 
     public void pokeHighestSubwatcherEditor() {

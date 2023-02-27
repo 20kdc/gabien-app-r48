@@ -278,10 +278,10 @@ public abstract class MapSystem extends App.Svc {
         // For editing. This was going to happen ever since recommendedflags started sneaking in, since otherwise the system has to have more copied code for GUM translation
         public final IFunction<IMapToolContext, IEditingToolbarController> toolbar;
 
-        public MapViewDetails(String o, String os, IFunction<String, MapViewState> mvs, IFunction<IMapToolContext, IEditingToolbarController> tb) {
+        public MapViewDetails(App app, String o, String os, IFunction<String, MapViewState> mvs, IFunction<IMapToolContext, IEditingToolbarController> tb) {
             objectId = o;
             objectSchema = os;
-            object = AppMain.objectDB.getObject(o, os);
+            object = app.odb.getObject(o, os);
             rendererRetriever = mvs;
             toolbar = tb;
         }

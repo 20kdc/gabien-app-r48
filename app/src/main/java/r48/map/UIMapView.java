@@ -77,7 +77,7 @@ public class UIMapView extends UIPlaneView {
     private IConsumer<SchemaPath> listener = new IConsumer<SchemaPath>() {
         @Override
         public void accept(SchemaPath sp) {
-            performRefresh(AppMain.objectDB.getIdByObject(sp.root));
+            performRefresh(app.odb.getIdByObject(sp.root));
         }
     };
 
@@ -88,12 +88,12 @@ public class UIMapView extends UIPlaneView {
         //  since it'll have to run on any edits.
         for (String s : listenAdditionals)
             if (!map.objectId.equals(s))
-                AppMain.objectDB.deregisterModificationHandler(s, listener);
+                app.odb.deregisterModificationHandler(s, listener);
         mapTable = map.rendererRetriever.apply(cause);
         listenAdditionals = mapTable.refreshOnObjectChange;
         for (String s : listenAdditionals)
             if (!map.objectId.equals(s))
-                AppMain.objectDB.registerModificationHandler(s, listener);
+                app.odb.registerModificationHandler(s, listener);
         reinitLayerVis();
         scheduler.forceNextUpdate = true;
     }
@@ -108,7 +108,7 @@ public class UIMapView extends UIPlaneView {
 
         map = app.system.mapViewRequest(mapN, true);
         mapGUM = mapN;
-        AppMain.objectDB.registerModificationHandler(map.objectId, listener);
+        app.odb.registerModificationHandler(map.objectId, listener);
         performRefresh(null);
 
         tileSize = mapTable.renderer.tileRenderer.getTileSize();
@@ -345,7 +345,7 @@ public class UIMapView extends UIPlaneView {
     // Used by tools, after they're done doing whatever.
     // Basically a convenience method.
     public void passModificationNotification() {
-        AppMain.objectDB.objectRootModified(map.object, new SchemaPath(AppMain.schemas.getSDBEntry(map.objectSchema), map.object));
+        app.odb.objectRootModified(map.object, new SchemaPath(AppMain.schemas.getSDBEntry(map.objectSchema), map.object));
     }
 
     @Override

@@ -210,7 +210,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         if (root == null)
             return;
         key = ValueSyntax.decode(root[3]);
-        AppMain.launchNonRootSchema(AppMain.objectDB.getObject(root[1]), root[2], key, event, root[0], "E" + key, map);
+        AppMain.launchNonRootSchema(map.app.odb.getObject(root[1]), root[2], key, event, root[0], "E" + key, map);
     }
 
     public static void showEventDivorced(IRIO key, IObjectBackend.ILoadedObject map, String mapSchema, IRIO event, String eventSchema) {

@@ -1002,7 +1002,7 @@ public class SDB extends App.Svc {
     }
 
     public @Nullable SchemaElement findSchemaFor(@NonNull IObjectBackend.ILoadedObject ilo) {
-        return findSchemaFor(AppMain.objectDB.getIdByObject(ilo), ilo.getObject());
+        return findSchemaFor(app.odb.getIdByObject(ilo), ilo.getObject());
     }
 
     public @Nullable SchemaElement findSchemaFor(@Nullable String objId, @NonNull IRIO object) {

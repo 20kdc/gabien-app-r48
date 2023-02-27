@@ -122,9 +122,9 @@ public class AppNewProject extends App.Svc {
                 new Runnable() {
                     @Override
                     public void run() {
-                        IObjectBackend.ILoadedObject root = AppMain.objectDB.getObject("RPG_RT.ldb");
+                        IObjectBackend.ILoadedObject root = app.odb.getObject("RPG_RT.ldb");
                         R2kSystemDefaultsInstallerSchemaElement.upgradeDatabase(root.getObject());
-                        AppMain.objectDB.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(app), root));
+                        app.odb.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(app), root));
                         deploy2k.run();
                     }
                 }, new Runnable() {

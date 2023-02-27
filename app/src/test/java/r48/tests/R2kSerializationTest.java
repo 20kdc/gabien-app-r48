@@ -10,6 +10,8 @@ package r48.tests;
 import gabien.TestKickstart;
 import org.junit.Assert;
 import org.junit.Test;
+
+import r48.App;
 import r48.AppMain;
 import r48.io.IObjectBackend;
 
@@ -29,16 +31,17 @@ public class R2kSerializationTest {
                 "and.lmt",
                 "you.lsd",
         };
+        App app = AppMain.instance;
         // Save it, but skip past most of ObjectDB since it will not be queried in future & it uses UI on failure.
-        AppMain.objectDB.getObject("hello.lmu", "RPG::Map").save();
-        AppMain.objectDB.getObject("world.ldb", "RPG::Database").save();
-        AppMain.objectDB.getObject("and.lmt", "RPG::MapTree").save();
-        AppMain.objectDB.getObject("you.lsd", "RPG::Save").save();
+        app.odb.getObject("hello.lmu", "RPG::Map").save();
+        app.odb.getObject("world.ldb", "RPG::Database").save();
+        app.odb.getObject("and.lmt", "RPG::MapTree").save();
+        app.odb.getObject("you.lsd", "RPG::Save").save();
         // Kills off the old ObjectDB
         TestKickstart.resetODB();
 
         for (String s : fileDefs) {
-            IObjectBackend.ILoadedObject i = AppMain.objectDB.getObject(s, null);
+            IObjectBackend.ILoadedObject i = app.odb.getObject(s, null);
             Assert.assertNotNull(i);
         }
     }

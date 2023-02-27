@@ -7,9 +7,11 @@
 
 package r48.map.mapinfos;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import r48.AppMain;
+import r48.App;
 import r48.FontSizes;
 import r48.IMapContext;
 import r48.RubyIO;
@@ -22,14 +24,15 @@ import r48.ui.UIAppendButton;
  * A 'flat' explorer showing just map information.
  * Created sometime in December 2017 (whoops!)
  */
-public class UISaveScanMapInfos extends UIElement.UIProxy {
+public class UISaveScanMapInfos extends App.Prx {
     public final UIScrollLayout mainLayout = new UIScrollLayout(true, FontSizes.generalScrollersize);
     public final IFunction<Integer, String> objectMapping, gumMapping;
     public final IMapContext context;
     public final int first, last;
     private final String toStringRes;
 
-    public UISaveScanMapInfos(IFunction<Integer, String> map, IFunction<Integer, String> gummap, int f, int l, IMapContext ctx, String saves) {
+    public UISaveScanMapInfos(IFunction<Integer, String> map, IFunction<Integer, String> gummap, int f, int l, @NonNull IMapContext ctx, String saves) {
+        super(ctx.getApp());
         objectMapping = map;
         gumMapping = gummap;
         context = ctx;
@@ -50,7 +53,7 @@ public class UISaveScanMapInfos extends UIElement.UIProxy {
         for (int i = first; i <= last; i++) {
             final int fi = i;
             try {
-                IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(objectMapping.apply(i), null);
+                IObjectBackend.ILoadedObject rio = app.odb.getObject(objectMapping.apply(i), null);
                 final String gum = gumMapping.apply(i);
                 if (rio != null) {
                     mainLayout.panelsAdd(new UITextButton(FormatSyntax.formatExtended(TXDB.get("#A : #B"), new RubyIO().setString(gum, true), rio.getObject()), FontSizes.mapInfosTextHeight, new Runnable() {

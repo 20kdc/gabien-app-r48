@@ -14,7 +14,6 @@ import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
 import r48.App;
-import r48.AppMain;
 import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
@@ -62,7 +61,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public UIElement createMapExplorer(IMapContext context, String mapInfos) {
-        return new UIGRMMapInfos(new R2kRMLikeMapInfoBackend(), context, mapInfos);
+        return new UIGRMMapInfos(new R2kRMLikeMapInfoBackend(app), context, mapInfos);
     }
 
     @Override
@@ -110,7 +109,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
 
     private IRIO tsoById(long id) {
-        return AppMain.objectDB.getObject("RPG_RT.ldb").getObject().getIVar("@tilesets").getHashVal(new RubyIO().setFX(id));
+        return app.odb.getObject("RPG_RT.ldb").getObject().getIVar("@tilesets").getHashVal(new RubyIO().setFX(id));
     }
 
     // saveData is optional, and replaces some things.
@@ -176,7 +175,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     @Override
     public RMMapData[] getAllMaps() {
         LinkedList<RMMapData> rmdList = new LinkedList<RMMapData>();
-        IRIO lmti = AppMain.objectDB.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos");
+        IRIO lmti = app.odb.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos");
         for (final IRIO key : lmti.getHashKeys()) {
             int id = (int) key.getFX();
             if (id == 0)
@@ -198,7 +197,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public ILoadedObject getCommonEventRoot() {
-        return AppMain.objectDB.getObject("RPG_RT.ldb");
+        return app.odb.getObject("RPG_RT.ldb");
     }
 
     @Override
@@ -217,7 +216,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     @Override
     public void dumpCustomData(RMTranscriptDumper dumper) {
         dumper.startFile("RPG_RT.ldb", TXDB.get("System data (of any importance, anyway)."));
-        IRIO sys = AppMain.objectDB.getObject("RPG_RT.ldb").getObject();
+        IRIO sys = app.odb.getObject("RPG_RT.ldb").getObject();
         dumper.dumpSVListHash("@switches", sys.getIVar("@switches"));
         dumper.dumpSVListHash("@variables", sys.getIVar("@variables"));
         dumper.endFile();
@@ -225,7 +224,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public String mapReferentToGUM(IRIO mapReferent) {
-        return R2kRMLikeMapInfoBackend.sTranslateToGUM((int) mapReferent.getFX());
+        return R2kRMLikeMapInfoBackend.sTranslateToGUM(app, (int) mapReferent.getFX());
     }
 
     @Override
@@ -235,10 +234,10 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         if (gp[0].equals("Save")) {
             final String obj = getSaveName(v);
             if (!allowCreate)
-                if (AppMain.objectDB.getObject(obj, null) == null)
+                if (app.odb.getObject(obj, null) == null)
                     return null;
-            final IObjectBackend.ILoadedObject root = AppMain.objectDB.getObject(obj, "RPG::Save");
-            return new MapViewDetails(obj, "RPG::Save", new IFunction<String, MapViewState>() {
+            final IObjectBackend.ILoadedObject root = app.odb.getObject(obj, "RPG::Save");
+            return new MapViewDetails(app, obj, "RPG::Save", new IFunction<String, MapViewState>() {
                 private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("RPG_RT.ldb");
                 @Override
                 public MapViewState apply(String changed) {
@@ -246,8 +245,8 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     tilesetCache.updateMapId(mapId);
 
                     final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(mapId);
-                    IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(objn);
-                    final IEventAccess events = new R2kSavefileEventAccess(obj, root, "RPG::Save");
+                    IObjectBackend.ILoadedObject map = app.odb.getObject(objn);
+                    final IEventAccess events = new R2kSavefileEventAccess(app, obj, root, "RPG::Save");
                     if (map == null)
                         return MapViewState.getBlank(app, null, new String[] {
                                 objn
@@ -274,7 +273,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             });
         }
         // Map, Area
-        final IObjectBackend.ILoadedObject root = AppMain.objectDB.getObject("RPG_RT.lmt");
+        final IObjectBackend.ILoadedObject root = app.odb.getObject("RPG_RT.lmt");
         final IRIO mapInfos = root.getObject().getIVar("@map_infos");
         final IRIO mapInfo = mapInfos.getHashVal(new RubyIO().setFX(v));
         try {
@@ -285,7 +284,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 MapViewDetails mvd = mapViewRequest("Map." + parent, false);
                 if (mvd == null)
                     return null;
-                return new MapViewDetails(mvd.objectId, mvd.objectSchema, mvd.rendererRetriever, new IFunction<IMapToolContext, IEditingToolbarController>() {
+                return new MapViewDetails(app, mvd.objectId, mvd.objectSchema, mvd.rendererRetriever, new IFunction<IMapToolContext, IEditingToolbarController>() {
                     @Override
                     public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
                         return new R2kAreaEditingToolbarController(iMapToolContext, root, mapInfo);
@@ -299,11 +298,11 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         }
         final String objn = R2kRMLikeMapInfoBackend.sNameFromInt(v);
         if (!allowCreate)
-            if (AppMain.objectDB.getObject(objn, null) == null)
+            if (app.odb.getObject(objn, null) == null)
                 return null;
-        final IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(objn, "RPG::Map");
-        final IEventAccess iea = new TraditionalEventAccess(objn, "RPG::Map", "@events", 1, "RPG::Event");
-        return new MapViewDetails(objn, "RPG::Map", new IFunction<String, MapViewState>() {
+        final IObjectBackend.ILoadedObject map = app.odb.getObject(objn, "RPG::Map");
+        final IEventAccess iea = new TraditionalEventAccess(app, objn, "RPG::Map", "@events", 1, "RPG::Event");
+        return new MapViewDetails(app, objn, "RPG::Map", new IFunction<String, MapViewState>() {
             private RTilesetCacheHelper tilesetCache = new RTilesetCacheHelper("RPG_RT.ldb");
             @Override
             public MapViewState apply(String changed) {

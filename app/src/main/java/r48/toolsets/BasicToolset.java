@@ -93,7 +93,7 @@ public class BasicToolset extends App.Svc implements IToolset {
             }
         };
 
-        UIElement fl = makeFileList();
+        UIElement fl = makeFileList(app);
         if (fl != null)
             return new UIElement[] {
                     menu2,
@@ -142,7 +142,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
-                                final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
+                                final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
                                 if (AppMain.schemas.hasSDBEntry("File." + s)) {
                                     AppMain.launchSchema("File." + s, rio, null);
                                     return;
@@ -174,7 +174,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
-                                final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
+                                final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
                                 app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
@@ -193,7 +193,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
-                                IObjectBackend.ILoadedObject obj = AppMain.objectDB.getObject(s);
+                                IObjectBackend.ILoadedObject obj = app.odb.getObject(s);
                                 if (obj == null) {
                                     AppMain.launchDialog(TXDB.get("The file couldn't be read, and R48 cannot create it."));
                                 } else {
@@ -209,11 +209,11 @@ public class BasicToolset extends App.Svc implements IToolset {
                         app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Source Object Name?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
-                                final IObjectBackend.ILoadedObject objA = AppMain.objectDB.getObject(s);
+                                final IObjectBackend.ILoadedObject objA = app.odb.getObject(s);
                                 app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Target Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
-                                        final IObjectBackend.ILoadedObject objB = AppMain.objectDB.getObject(s);
+                                        final IObjectBackend.ILoadedObject objB = app.odb.getObject(s);
                                         if ((objA == null) || (objB == null)) {
                                             AppMain.launchDialog(TXDB.get("A file couldn't be read, and R48 cannot create it."));
                                         } else {
@@ -248,7 +248,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                             final DataOutputStream dos = new DataOutputStream(lm);
                             final HashSet<String> text = new HashSet<String>();
                             for (String s : app.getAllObjects()) {
-                                IObjectBackend.ILoadedObject obj = AppMain.objectDB.getObject(s, null);
+                                IObjectBackend.ILoadedObject obj = app.odb.getObject(s, null);
                                 if (obj != null) {
                                     universalStringLocator(app, obj.getObject(), new IFunction<IRIO, Integer>() {
                                         @Override
@@ -283,7 +283,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
-                                final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
+                                final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
                                 final InputStream is = GaBIEn.getInFile(UITest.getPrintPath(app));
                                 if (rio == null) {
                                     AppMain.launchDialog(TXDB.get("The target file couldn't be read, and there's no schema to create it."));
@@ -293,7 +293,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                     try {
                                         IRIO irio = rio.getObject();
                                         IMIUtils.runIMISegment(is, irio);
-                                        AppMain.objectDB.objectRootModified(rio, new SchemaPath(new OpaqueSchemaElement(app), rio));
+                                        app.odb.objectRootModified(rio, new SchemaPath(new OpaqueSchemaElement(app), rio));
                                         AppMain.launchDialog(TXDB.get("It is done."));
                                     } catch (Exception ioe) {
                                         try {
@@ -430,7 +430,7 @@ public class BasicToolset extends App.Svc implements IToolset {
             public void run() {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
                 IRIO clipGet = (app.theClipboard == null) ? new RubyIO().setNull() : app.theClipboard;
-                uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new IRIOFixnum(AppMain.objectDB.modifiedObjects.size()), clipGet);
+                uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new IRIOFixnum(app.odb.modifiedObjects.size()), clipGet);
                 app.uiPendingRunnables.add(this);
             }
         });
@@ -482,7 +482,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         return workspace;
     }
 
-    private static UIElement makeFileList() {
+    private static UIElement makeFileList(App app) {
         LinkedList<ObjectInfo> s = AppMain.schemas.listFileDefs();
         if (s.size() == 0)
             return null;
@@ -493,7 +493,7 @@ public class BasicToolset extends App.Svc implements IToolset {
             r.add(new Runnable() {
                 @Override
                 public void run() {
-                    AppMain.launchSchema(s2.schemaName, AppMain.objectDB.getObject(s2.idName), null);
+                    AppMain.launchSchema(s2.schemaName, app.odb.getObject(s2.idName), null);
                 }
             });
         }

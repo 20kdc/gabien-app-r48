@@ -40,7 +40,7 @@ public class RMFindTranslatables extends App.Svc {
 
     public RMFindTranslatables(App app, final IObjectBackend.ILoadedObject ilo) {
         super(app);
-        objIdName = AppMain.objectDB.getIdByObjectOrThrow(ilo);
+        objIdName = app.odb.getIdByObjectOrThrow(ilo);
         objRoot = ilo;
     }
 

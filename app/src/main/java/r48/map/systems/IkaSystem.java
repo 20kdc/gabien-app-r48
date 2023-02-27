@@ -9,7 +9,6 @@ package r48.map.systems;
 
 import gabien.uslx.append.*;
 import r48.App;
-import r48.AppMain;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
@@ -48,11 +47,11 @@ public class IkaSystem extends MapSystem {
     @Override
     public MapViewDetails mapViewRequest(final String gum, boolean allowCreate) {
         if (!allowCreate)
-            if (AppMain.objectDB.getObject(gum, null) == null)
+            if (app.odb.getObject(gum, null) == null)
                 return null;
-        final IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(gum);
-        final IEventAccess events = new TraditionalEventAccess(gum, "IkachanMap", "@events", 0, "IkachanEvent");
-        return new MapViewDetails(gum, "IkachanMap", new IFunction<String, MapViewState>() {
+        final IObjectBackend.ILoadedObject map = app.odb.getObject(gum);
+        final IEventAccess events = new TraditionalEventAccess(app, gum, "IkachanMap", "@events", 0, "IkachanEvent");
+        return new MapViewDetails(app, gum, "IkachanMap", new IFunction<String, MapViewState>() {
             @Override
             public MapViewState apply(String s) {
                 return MapViewState.fromRT(rendererGeneral(map.getObject(), events), gum, new String[] {}, map.getObject(), "@data", false, events);

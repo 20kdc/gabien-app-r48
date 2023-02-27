@@ -125,7 +125,7 @@ public class RMTools extends App.Svc {
                     @Override
                     public void run() {
                         final IObjectBackend.ILoadedObject ilo = mapSystem.getCommonEventRoot();
-                        UICommandSites ucs = new UICommandSites(app, AppMain.objectDB.getIdByObject(ilo), new ISupplier<CommandSite[]>() {
+                        UICommandSites ucs = new UICommandSites(app, app.odb.getIdByObject(ilo), new ISupplier<CommandSite[]>() {
                             @Override
                             public CommandSite[] get() {
                                 RMFindTranslatables rft = new RMFindTranslatables(app, ilo);
@@ -157,10 +157,10 @@ public class RMTools extends App.Svc {
                                     throw new RuntimeException("MODIFY " + obj + " " + path);
                                 }
                             };
-                            AppMain.objectDB.registerModificationHandler(map, modListen);
+                            app.odb.registerModificationHandler(map, modListen);
                             SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(obj.schemaName), map);
                             sp.editor.modifyVal(map.getObject(), sp, false);
-                            AppMain.objectDB.deregisterModificationHandler(map, modListen);
+                            app.odb.deregisterModificationHandler(map, modListen);
                             System.out.println(obj + " done.");
                         }
                     }

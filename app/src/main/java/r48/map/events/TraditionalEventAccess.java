@@ -7,6 +7,7 @@
 
 package r48.map.events;
 
+import r48.App;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.PathSyntax;
@@ -24,7 +25,7 @@ import java.util.LinkedList;
  * This instance can be reused.
  * Created on December 15th 2017
  */
-public class TraditionalEventAccess implements IEventAccess {
+public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     private final String mapRootId, mapRootSchema;
     private final IObjectBackend.ILoadedObject mapRoot;
     private final int eventIdBase;
@@ -32,18 +33,19 @@ public class TraditionalEventAccess implements IEventAccess {
     private final String eventsName, eventName;
     private final PathSyntax propPathX, propPathY, propPathName, eventsPath;
 
-    public TraditionalEventAccess(String baseOId, String baseSchema, String path, int b, String schema) {
-        this(baseOId, baseSchema, path, b, schema, "@x", "@y", "@name");
+    public TraditionalEventAccess(App app, String baseOId, String baseSchema, String path, int b, String schema) {
+        this(app, baseOId, baseSchema, path, b, schema, "@x", "@y", "@name");
     }
 
-    public TraditionalEventAccess(String baseOId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName) {
-        this(baseOId, baseSchema, path, b, schema, pathX, pathY, pathName, TXDB.get("Events"), TXDB.get("+ Add Event"));
+    public TraditionalEventAccess(App app, String baseOId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName) {
+        this(app, baseOId, baseSchema, path, b, schema, pathX, pathY, pathName, TXDB.get("Events"), TXDB.get("+ Add Event"));
     }
 
-    public TraditionalEventAccess(String baseOId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName, String en, String en2) {
+    public TraditionalEventAccess(App app, String baseOId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName, String en, String en2) {
+        super(app);
         mapRootId = baseOId;
         mapRootSchema = baseSchema;
-        mapRoot = AppMain.objectDB.getObject(mapRootId, baseSchema);
+        mapRoot = app.odb.getObject(mapRootId, baseSchema);
         eventsPath = PathSyntax.compile(path);
         eventIdBase = b;
         eventSchema = schema;
@@ -166,6 +168,6 @@ public class TraditionalEventAccess implements IEventAccess {
     }
 
     private void pokeHive() {
-        AppMain.objectDB.objectRootModified(mapRoot, new SchemaPath(AppMain.schemas.getSDBEntry(mapRootSchema), mapRoot));
+        app.odb.objectRootModified(mapRoot, new SchemaPath(AppMain.schemas.getSDBEntry(mapRootSchema), mapRoot));
     }
 }

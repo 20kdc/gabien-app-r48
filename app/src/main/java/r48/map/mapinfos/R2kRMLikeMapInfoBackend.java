@@ -8,6 +8,7 @@
 package r48.map.mapinfos;
 
 import gabien.uslx.append.*;
+import r48.App;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -23,14 +24,15 @@ import java.util.*;
  * (As of midnight between December 4th & December 5th 2018, this is now kind of type-reliant for sanity reasons.)
  * Created on 02/06/17.
  */
-public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
+public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBackendWPub, IRMLikeMapInfoBackendWPriv {
     public IConsumer<SchemaPath> modHandler;
-    public IObjectBackend.ILoadedObject mapTree = AppMain.objectDB.getObject("RPG_RT.lmt");
+    public IObjectBackend.ILoadedObject mapTree = app.odb.getObject("RPG_RT.lmt");
     // Note: The orders table is [order] = map.
     // So swapping orders is probably the easiest operation here.
 
-    public R2kRMLikeMapInfoBackend() {
-
+    public R2kRMLikeMapInfoBackend(App app) {
+        super(app);
+        mapTree = app.odb.getObject("RPG_RT.lmt");
     }
 
     private IRIO getMapOrders() {
@@ -64,8 +66,8 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         return "Map" + m + ".lmu";
     }
 
-    public static String sTranslateToGUM(long k) {
-        final IRIO map = AppMain.objectDB.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos").getHashVal(new RubyIO().setFX(k));
+    public static String sTranslateToGUM(App app, long k) {
+        final IRIO map = app.odb.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos").getHashVal(new RubyIO().setFX(k));
         if (map == null)
             return null;
         String pfx = map.getIVar("@type").getFX() == 2 ? "Area." : "Map.";
@@ -75,7 +77,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
     @Override
     public void registerModificationHandler(IConsumer<SchemaPath> onMapInfoChange) {
         modHandler = onMapInfoChange;
-        AppMain.objectDB.registerModificationHandler(mapTree, onMapInfoChange);
+        app.odb.registerModificationHandler(mapTree, onMapInfoChange);
     }
 
     @Override
@@ -162,7 +164,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
         }
         // and done!
         SchemaPath fakePath = new SchemaPath(AppMain.schemas.getSDBEntry("File.RPG_RT.lmt"), mapTree);
-        AppMain.objectDB.objectRootModified(mapTree, fakePath);
+        app.odb.objectRootModified(mapTree, fakePath);
         modHandler.accept(fakePath);
     }
 
@@ -174,7 +176,7 @@ public class R2kRMLikeMapInfoBackend implements IRMLikeMapInfoBackendWPub, IRMLi
 
     @Override
     public String translateToGUM(long k) {
-        return sTranslateToGUM(k);
+        return sTranslateToGUM(app, k);
     }
 
     @Override
