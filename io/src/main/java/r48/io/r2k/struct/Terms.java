@@ -9,7 +9,6 @@ package r48.io.r2k.struct;
 
 import r48.io.data.DM2FXOBinding;
 import r48.io.data.DM2Optional;
-import r48.io.data.IRIO;
 import r48.io.r2k.chunks.StringR2kStruct;
 import r48.io.r2k.dm2chk.*;
 

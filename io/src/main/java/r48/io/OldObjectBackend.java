@@ -59,6 +59,7 @@ public abstract class OldObjectBackend<O extends IRIO> implements IObjectBackend
             saveObjectToFile(fn, intern);
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public boolean overwriteWith(ILoadedObject other) {
             if (other.getClass() == getClass()) {

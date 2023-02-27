@@ -4,9 +4,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>t20kdc.hs2</groupId>
 	<artifactId>r48-io</artifactId>
-	<version>0.666-SNAPSHOT</version> <!-- NEVER CHANGE THIS. This entire set of libraries is unstable and SHOULD NOT be system-packed. -->
 
 	<name>R48 IO</name>
 	<description>Underlying IO library of R48</description>

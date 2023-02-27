@@ -17,13 +17,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class IRIOFixedObject extends IRIOFixed {
     private final String objType;
-    private final static ConcurrentHashMap<Class, Field[]> classFields = new ConcurrentHashMap<Class, Field[]>();
+    private final static ConcurrentHashMap<Class<?>, Field[]> classFields = new ConcurrentHashMap<>();
     protected final Field[] cachedFields;
 
     public IRIOFixedObject(String sym) {
         super('o');
         objType = sym;
-        Class c = getClass();
+        Class<?> c = getClass();
         Field[] data = classFields.get(c);
         if (data != null) {
             cachedFields = data;

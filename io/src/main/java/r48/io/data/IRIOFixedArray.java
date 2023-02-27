@@ -30,6 +30,7 @@ public abstract class IRIOFixedArray<T extends IRIO> extends IRIOFixed {
         return arrVal.length;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T getAElem(int i) {
         return (T) arrVal[i];

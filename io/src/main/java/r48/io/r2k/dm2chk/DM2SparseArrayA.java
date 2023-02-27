@@ -39,7 +39,7 @@ public class DM2SparseArrayA<V extends IRIO> extends IRIOFixedArray<IRIONullable
 
     @Override
     public void importData(InputStream bais) throws IOException {
-        HashMap<Integer, V> hashVal = new HashMap<Integer, V>();
+        HashMap<Integer, V> hashVal = new HashMap<>();
         R2kUtil.importSparse(hashVal, constructor, bais);
         int maxEnt = -1;
         for (Map.Entry<Integer, V> ent : hashVal.entrySet())
@@ -64,8 +64,9 @@ public class DM2SparseArrayA<V extends IRIO> extends IRIOFixedArray<IRIONullable
     @Override
     public void exportData(OutputStream baos) throws IOException {
         // Bypass the type checker... :(
-        HashMap<Integer, V> hashVal = new HashMap<Integer, V>();
+        HashMap<Integer, V> hashVal = new HashMap<>();
         for (int i = 0; i < arrVal.length; i++) {
+            @SuppressWarnings("unchecked")
             IRIONullable<V> v = (IRIONullable<V>) arrVal[i];
             if (!v.nulled)
                 hashVal.put(i, v.target);

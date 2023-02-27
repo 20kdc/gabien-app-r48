@@ -7,15 +7,11 @@
 
 package r48.io;
 
-import gabien.GaBIEn;
-import gabien.uslx.append.*;
 import r48.RubyIO;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Support for the mostly ASCII 'IMI' format

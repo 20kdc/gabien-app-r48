@@ -157,14 +157,14 @@ public class R2kUtil {
         return lli.toArray(new Index[0]);
     }
 
-    public static void importSparse(HashMap<Integer, ?> map, ISupplier constructor, InputStream bais) throws IOException {
+    public static <T> void importSparse(HashMap<Integer, T> map, ISupplier<T> constructor, InputStream bais) throws IOException {
         map.clear();
         int entries = readLcfVLI(bais);
         for (int i = 0; i < entries; i++) {
             int k = readLcfVLI(bais);
-            IR2kInterpretable target = (IR2kInterpretable) constructor.get();
+            T target = constructor.get();
             try {
-                target.importData(bais);
+                ((IR2kInterpretable) target).importData(bais);
             } catch (IOException e) {
                 throw new IOException("In element " + i, e);
             } catch (RuntimeException e) {
@@ -173,7 +173,7 @@ public class R2kUtil {
             // Incredibly unsafe but callers need this to reduce complexity.
             // One of these warnings vs. many warnings all over the place,
             //  all over nothing.
-            ((HashMap) map).put(k, target);
+            map.put(k, target);
         }
     }
 
