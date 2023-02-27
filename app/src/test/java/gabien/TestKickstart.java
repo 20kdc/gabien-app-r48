@@ -46,12 +46,12 @@ public class TestKickstart {
     public static boolean maintainTextEnter = false;
     public static int windowCount = 1337;
 
-    public static void kickstart(final String s2, final String encoding, final String schema) {
+    public static App kickstart(final String s2, final String encoding, final String schema) {
         currentTestPhase = "Initial Phase";
         kickstartRFS();
         // In case unset.
         IObjectBackend.Factory.encoding = encoding;
-        AppMain.initializeCore(s2, "", schema, (s) -> {});
+        return AppMain.initializeCore(s2, "", schema, (s) -> {});
     }
 
     public static void kickstartRFS() {
@@ -181,15 +181,14 @@ public class TestKickstart {
         GaBIEn.internalWindowing = impl;
         GaBIEn.setupAssets();
         // Cleanup any possible contamination of application state between tests.
-        AppMain.shutdown();
+        AppMain.shutdown(null);
         // Also resets FontManager because that's tied into config.
         FontSizes.reset();
     }
 
-    public static void resetODB() {
-        App app = AppMain.instance;
+    public static void resetODB(App app) {
         IObjectBackend backend = IObjectBackend.Factory.create(app.odbBackend, app.rootPath, app.dataPath, app.dataExt);
-        app.odb = app.odb = new ObjectDB(app, backend, (s) -> {});
+        app.odb = new ObjectDB(app, backend, (s) -> {});
     }
 
     public static class TestGrInDriver extends gabien.GrInDriver {

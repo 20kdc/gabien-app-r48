@@ -11,7 +11,6 @@ import gabien.TestKickstart;
 import org.junit.Test;
 
 import r48.App;
-import r48.app.AppMain;
 import r48.dbs.CMDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -31,46 +30,44 @@ public class R2kCommandSchemaTest {
 
     @Test
     public void testEventCommands() {
-        beginCommandProcedure();
-        runMainCommandProcedure("RPG::EventCommand", "R2K/Commands.txt", rpgEvInst.getIVar("@pages").getAElem(1).getIVar("@list"));
+        App app = beginCommandProcedure();
+        runMainCommandProcedure(app, "RPG::EventCommand", "R2K/Commands.txt", rpgEvInst.getIVar("@pages").getAElem(1).getIVar("@list"));
     }
 
     @Test
     public void testMoveCommands() {
-        beginCommandProcedure();
-        runMainCommandProcedure("RPG::MoveCommand", "R2K/CommandsMove.txt", rpgEvInst.getIVar("@pages").getAElem(1).getIVar("@move_route").getIVar("@list"));
+        App app = beginCommandProcedure();
+        runMainCommandProcedure(app, "RPG::MoveCommand", "R2K/CommandsMove.txt", rpgEvInst.getIVar("@pages").getAElem(1).getIVar("@move_route").getIVar("@list"));
     }
 
     @Test
     public void testMoveCommandsEmbeddedInEventCommand() {
-        beginCommandProcedure();
+        App app = beginCommandProcedure();
         IRIO lst = rpgEvInst.getIVar("@pages").getAElem(1).getIVar("@list");
-        IRIO res = addCommandInto("RPG::EventCommand", lst);
+        IRIO res = addCommandInto(app, "RPG::EventCommand", lst);
         res.getIVar("@code").setFX(11330);
         rpgEv.modifyVal(rpgEvInst, rpgEvP, false);
-        runMainCommandProcedure("RPG::MoveCommand", "R2K/CommandsMove.txt", res.getIVar("@move_commands"));
+        runMainCommandProcedure(app, "RPG::MoveCommand", "R2K/CommandsMove.txt", res.getIVar("@move_commands"));
     }
 
-    private IRIO addCommandInto(String listType, IRIO iVar) {
+    private IRIO addCommandInto(App app, String listType, IRIO iVar) {
         IRIO res = iVar.addAElem(0);
-        App app = AppMain.instance;
         SchemaPath.setDefaultValue(res, app.sdb.getSDBEntry(listType), new IRIOFixnum(0));
         rpgEv.modifyVal(rpgEvInst, rpgEvP, false);
         return res;
     }
 
-    private void beginCommandProcedure() {
-        TestKickstart.kickstart("RAM/", "UTF-8", "R2K/");
+    private App beginCommandProcedure() {
+        App app = TestKickstart.kickstart("RAM/", "UTF-8", "R2K/");
         rpgEvInst = new Event();
-        App app = AppMain.instance;
         rpgEv = app.sdb.getSDBEntry("RPG::Event");
         rpgEvP = new SchemaPath(rpgEv, new IObjectBackend.MockLoadedObject(rpgEvInst));
         rpgEv.modifyVal(rpgEvInst, rpgEvP, true);
+        return app;
     }
 
-    private void runMainCommandProcedure(String cmdt, String cmd, IRIO iVar) {
-        IRIO res = addCommandInto(cmdt, iVar);
-        App app = AppMain.instance;
+    private void runMainCommandProcedure(App app, String cmdt, String cmd, IRIO iVar) {
+        IRIO res = addCommandInto(app, cmdt, iVar);
         CMDB cmdb = app.sdb.getCMDB(cmd);
         for (int i : cmdb.knownCommandOrder) {
             res.getIVar("@code").setFX(i);

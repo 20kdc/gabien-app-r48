@@ -109,8 +109,8 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                     public void run() {
                         try {
                             TXDB.loadGamepakLanguage(objName + "/");
-                            AppMain.initializeCore(rootPath, silPath, objName + "/", theKickstart);
-                            final ISupplier<IConsumer<Double>> appTickerGen = AppMain.initializeUI(Application.uiTicker);
+                            Application.app = AppMain.initializeCore(rootPath, silPath, objName + "/", theKickstart);
+                            final ISupplier<IConsumer<Double>> appTickerGen = AppMain.initializeUI(Application.app, Application.uiTicker);
                             theKickstart.doneInjector.set(new Runnable() {
                                 @Override
                                 public void run() {

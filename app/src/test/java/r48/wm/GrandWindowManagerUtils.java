@@ -11,7 +11,6 @@ import gabien.TestKickstart;
 import gabien.ui.*;
 import gabienapp.GrandLauncherUtils;
 import r48.App;
-import r48.app.AppMain;
 import r48.tests.grand.GrandExecutionError;
 import r48.ui.UISymbolButton;
 
@@ -24,7 +23,7 @@ import java.util.Set;
  */
 public class GrandWindowManagerUtils {
     public static App getApp() {
-        return AppMain.instance;
+        return GrandLauncherUtils.getApp();
     }
 
     public static UIElement[] getAllWindows() {
@@ -66,7 +65,8 @@ public class GrandWindowManagerUtils {
     }
 
     public static void selectTab(UIElement element) {
-        getApp().ui.wm.tabPane.selectTab(element);
+        App app = getApp();
+        app.ui.wm.tabPane.selectTab(element);
     }
 
     // --- Control-Finding-based access. ---

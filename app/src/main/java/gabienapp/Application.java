@@ -14,6 +14,7 @@ import gabien.WindowSpecs;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.AdHocSaveLoad;
+import r48.App;
 import r48.FontSizes;
 import r48.app.AppMain;
 import r48.dbs.TXDB;
@@ -42,6 +43,7 @@ public class Application {
     // -----
 
     protected static IConsumer<Double> appTicker = null;
+    static App app = null;
     protected static WindowCreatingUIElementConsumer uiTicker;
 
     // This should be set to true if on a device where touch controls are used.
@@ -119,7 +121,7 @@ public class Application {
                             } catch (Exception e2) {
                                 sw.append("\n(exception during exception print)\n");
                             }
-                            AppMain.performSystemDump(true, "exception: " + sw.toString());
+                            AppMain.performSystemDump(app, true, "exception: " + sw.toString());
                             backupAvailable = true;
                         } catch (Exception finalErr) {
                             System.err.println("Failed to backup:");
@@ -200,7 +202,7 @@ public class Application {
                         }
                         appTicker = null;
                         try {
-                            AppMain.shutdown();
+                            AppMain.shutdown(app);
                         } catch (Exception e4) {
 
                         }
@@ -213,7 +215,7 @@ public class Application {
                 break;
             appTicker = null;
             // Cleanup application memory
-            AppMain.shutdown();
+            AppMain.shutdown(app);
         }
         GaBIEn.ensureQuit();
     }

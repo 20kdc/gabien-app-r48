@@ -25,63 +25,61 @@ import r48.schema.util.SchemaPath;
 import java.util.*;
 
 /**
- * The static variable holding class.
+ * Used to contain static variables, now just initialization routines.
+ * This is theoretically roughly one of the oldest classes in the project, but has been phased out.
  * Created on 12/27/16. Being phased out as of 26th February 2023.
  */
 public class AppMain {
-    // The last AppMain static variables, in the process of being phased out.
-    public static App instance;
-
-    public static void initializeCore(final String rp, final String sip, final String gamepak, final IConsumer<String> progress) {
-        instance = new App(rp, sip, progress);
+    public static App initializeCore(final String rp, final String sip, final String gamepak, final IConsumer<String> progress) {
+        final App app = new App(rp, sip, progress);
 
         // initialize core resources
 
-        instance.sdb = new SDB(instance);
+        app.sdb = new SDB(app);
 
-        instance.sdb.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
+        app.sdb.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
 
         // initialize everything else that needs initializing, starting with ObjectDB
-        IObjectBackend backend = IObjectBackend.Factory.create(instance.odbBackend, instance.rootPath, instance.dataPath, instance.dataExt);
-        instance.odb = new ObjectDB(instance, backend, (s) -> {
-            if (instance.system != null)
-                instance.system.saveHook(s);
+        IObjectBackend backend = IObjectBackend.Factory.create(app.odbBackend, app.rootPath, app.dataPath, app.dataExt);
+        app.odb = new ObjectDB(app, backend, (s) -> {
+            if (app.system != null)
+                app.system.saveHook(s);
         });
 
-        instance.system = MapSystem.create(instance, instance.sysBackend);
+        app.system = MapSystem.create(app, app.sysBackend);
 
         // Final internal consistency checks and reading in dictionaries from target
         //  before starting the UI, which can cause external consistency checks
         //  (...and potentially cause havoc in the process)
 
-        instance.sdb.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
+        app.sdb.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
         progress.accept(TXDB.get("Initializing dictionaries & creating objects..."));
-        instance.sdb.updateDictionaries(null);
-        instance.sdb.confirmAllExpectationsMet();
+        app.sdb.updateDictionaries(null);
+        app.sdb.confirmAllExpectationsMet();
+        return app;
     }
 
-    public static ISupplier<IConsumer<Double>> initializeUI(final WindowCreatingUIElementConsumer uiTicker) {
-        instance.np = new AppNewProject(instance);
-        instance.ui = new AppUI(instance);
-        return instance.ui.initialize(uiTicker);
+    public static ISupplier<IConsumer<Double>> initializeUI(App app, final WindowCreatingUIElementConsumer uiTicker) {
+        app.np = new AppNewProject(app);
+        app.ui = new AppUI(app);
+        return app.ui.initialize(uiTicker);
     }
 
-    public static void shutdown() {
-        if (instance != null)
-            instance.shutdown();
-        instance = null;
+    public static void shutdown(App app) {
+        if (app != null)
+            app.shutdown();
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
     }
 
     // Is this messy? Yes. Is it required? After someone lost some work to R48? YES IT DEFINITELY IS.
     // Later: I've reduced the amount of backups performed because it appears spikes were occurring all the time.
-    public static void performSystemDump(boolean emergency, String addendumData) {
+    public static void performSystemDump(App app, boolean emergency, String addendumData) {
         RubyIO n = new RubyIO();
         n.setHash();
         n.addIVar("@description").setString(addendumData, true);
-        for (IObjectBackend.ILoadedObject rio : instance.odb.modifiedObjects) {
-            String s = instance.odb.getIdByObject(rio);
+        for (IObjectBackend.ILoadedObject rio : app.odb.modifiedObjects) {
+            String s = app.odb.getIdByObject(rio);
             if (s != null)
                 n.addHashVal(new RubyIO().setString(s, true)).setDeepClone(rio.getObject());
         }
@@ -105,10 +103,10 @@ public class AppMain {
             System.err.println("emergency dump is complete.");
     }
 
-    public static void reloadSystemDump() {
+    public static void reloadSystemDump(App app) {
         RubyIO sysDump = AdHocSaveLoad.load("r48.error.YOUR_SAVED_DATA");
         if (sysDump == null) {
-            instance.ui.launchDialog(TXDB.get("The system dump was unloadable. It should be: r48.error.YOUR_SAVED_DATA.r48"));
+            app.ui.launchDialog(TXDB.get("The system dump was unloadable. It should be: r48.error.YOUR_SAVED_DATA.r48"));
             return;
         }
         RubyIO possibleActualDump = sysDump.getInstVarBySymbol("@current");
@@ -116,16 +114,16 @@ public class AppMain {
             sysDump = possibleActualDump;
         for (Map.Entry<IRIO, IRIO> rio : sysDump.hashVal.entrySet()) {
             String name = rio.getKey().decString();
-            IObjectBackend.ILoadedObject root = instance.odb.getObject(name);
+            IObjectBackend.ILoadedObject root = app.odb.getObject(name);
             if (root != null) {
                 root.getObject().setDeepClone(rio.getValue());
-                instance.odb.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(instance), root));
+                app.odb.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(app), root));
             }
         }
         if (possibleActualDump != null) {
-            instance.ui.launchDialog(TXDB.get("Power failure dump loaded."));
+            app.ui.launchDialog(TXDB.get("Power failure dump loaded."));
         } else {
-            instance.ui.launchDialog(TXDB.get("Error dump loaded."));
+            app.ui.launchDialog(TXDB.get("Error dump loaded."));
         }
     }
 }

@@ -8,6 +8,7 @@
 package gabienapp;
 
 import gabien.ui.WindowCreatingUIElementConsumer;
+import r48.App;
 
 /**
  * Created on April 18, 2019.
@@ -15,5 +16,9 @@ import gabien.ui.WindowCreatingUIElementConsumer;
 public class GrandLauncherUtils {
     public static WindowCreatingUIElementConsumer getTicker() {
         return Application.uiTicker;
+    }
+
+    public static App getApp() {
+        return Application.app;
     }
 }

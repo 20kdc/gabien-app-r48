@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import r48.App;
-import r48.app.AppMain;
 import r48.dbs.DBLoader;
 import r48.dbs.ObjectInfo;
 import r48.dbs.IDatabase;
@@ -77,16 +76,14 @@ public class LocalTestExecutiveTest {
 
     @Test
     public void test() {
-        TestKickstart.kickstart(name + "/", charset, schema + "/");
-        App app = AppMain.instance;
+        App app = TestKickstart.kickstart(name + "/", charset, schema + "/");
         for (ObjectInfo s : dynamic ? app.getObjectInfos() : app.sdb.listFileDefs())
-            testObject(s.idName);
+            testObject(app, s.idName);
     }
 
-    private void testObject(String s) {
+    private void testObject(App app, String s) {
         try {
             System.out.println(s);
-            App app = AppMain.instance;
 
             // 'objectUnderTest' is the reference copy. DO NOT ALTER IT UNTIL THE END.
             IObjectBackend.ILoadedObject objectUnderTest = app.odb.getObject(s, null);
@@ -97,7 +94,7 @@ public class LocalTestExecutiveTest {
 
                 objectInternalCopy.getObject().setDeepClone(objectUnderTest.getObject());
 
-                SchemaElement wse = findSchemaFor(s, objectUnderTest.getObject());
+                SchemaElement wse = findSchemaFor(app, s, objectUnderTest.getObject());
                 app.odb.registerModificationHandler(objectInternalCopy, new IConsumer<SchemaPath>() {
                     @Override
                     public void accept(SchemaPath schemaPath) {
@@ -128,8 +125,7 @@ public class LocalTestExecutiveTest {
         }
     }
 
-    private SchemaElement findSchemaFor(String s, IRIO object) {
-        App app = AppMain.instance;
+    private SchemaElement findSchemaFor(App app, String s, IRIO object) {
         if (app.sdb.hasSDBEntry("File." + s))
             return app.sdb.getSDBEntry("File." + s);
         if (object.getType() == 'o')

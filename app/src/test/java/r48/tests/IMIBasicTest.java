@@ -10,8 +10,8 @@ package r48.tests;
 import gabien.TestKickstart;
 import org.junit.Test;
 
+import r48.App;
 import r48.RubyIO;
-import r48.app.AppMain;
 import r48.io.IMIUtils;
 import r48.schema.util.SchemaPath;
 
@@ -26,10 +26,10 @@ import java.io.IOException;
 public class IMIBasicTest {
     @Test
     public void testEncode2kDatabase() {
-        TestKickstart.kickstart("RAM/", "UTF-8", "R2K/");
+        App app = TestKickstart.kickstart("RAM/", "UTF-8", "R2K/");
         // Use RubyIOs both in and out to deal with encoding oddities
         RubyIO newObj = new RubyIO().setNull();
-        SchemaPath.setDefaultValue(newObj, AppMain.instance.sdb.getSDBEntry("RPG::Database"), null);
+        SchemaPath.setDefaultValue(newObj, app.sdb.getSDBEntry("RPG::Database"), null);
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             IMIUtils.createIMIDump(new DataOutputStream(baos), newObj, "");

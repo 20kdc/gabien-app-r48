@@ -401,7 +401,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                 // If they aren't willing to put in the effort to type it, whatever that effort may be,
                                 //  then they won't be careful enough using this - and will probably ruin even more of their data.
                                 if (s.equals("I understand."))
-                                    AppMain.reloadSystemDump();
+                                    AppMain.reloadSystemDump(app);
                             }
                         }));
                         app.ui.launchDialog(TXDB.get("If the backup file is invalid, wasn't created, or is otherwise harmed, this can destroy more data than it saves.") +

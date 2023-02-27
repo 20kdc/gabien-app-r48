@@ -10,8 +10,8 @@ package r48.tests;
 import gabien.TestKickstart;
 import org.junit.Test;
 
+import r48.App;
 import r48.RubyIO;
-import r48.app.AppMain;
 import r48.io.IMIUtils;
 import r48.schema.util.SchemaPath;
 
@@ -23,9 +23,9 @@ import java.io.IOException;
 public class DeepCloneTest {
     @Test
     public void testDeepCloneRPGMap() {
-        TestKickstart.kickstart("RAM/", "UTF-8", "RXP/");
+        App app = TestKickstart.kickstart("RAM/", "UTF-8", "RXP/");
         RubyIO newObj = new RubyIO().setNull();
-        SchemaPath.setDefaultValue(newObj, AppMain.instance.sdb.getSDBEntry("RPG::Map"), null);
+        SchemaPath.setDefaultValue(newObj, app.sdb.getSDBEntry("RPG::Map"), null);
         RubyIO newObj2 = new RubyIO().setDeepClone(newObj);
         try {
             byte[] dat = IMIUtils.createIMIData(newObj, newObj2, "");

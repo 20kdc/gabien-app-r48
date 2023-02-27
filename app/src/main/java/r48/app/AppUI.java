@@ -91,7 +91,7 @@ public class AppUI extends App.Svc {
         final UISymbolButton sym2 = new UISymbolButton(Art.Symbol.Back, FontSizes.tabTextHeight, createLaunchConfirmation(TXDB.get("Reverting changes will lose all unsaved work and will reset many windows."), new Runnable() {
             @Override
             public void run() {
-                AppMain.performSystemDump(false, "revert file");
+                AppMain.performSystemDump(app, false, "revert file");
                 // Shutdown schema hosts
                 for (ISchemaHost ish : activeHosts)
                     ish.shutdown();

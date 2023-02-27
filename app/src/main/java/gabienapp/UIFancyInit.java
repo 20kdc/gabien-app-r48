@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class UIFancyInit extends UIElement.UIProxy implements IConsumer<String> {
     // Don't get particularly worked up about memory-safety here, it's not exactly *essential* and so long as the copy-to-local works...
-    public static ConcurrentLinkedQueue<String> consoletronDataInput;
+    private ConcurrentLinkedQueue<String> consoletronDataInput;
     public AtomicReference<Runnable> doneInjector = new AtomicReference<Runnable>();
 
     private final UILabel layout = new UILabel("", FontSizes.launcherTextHeight);

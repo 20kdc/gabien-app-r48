@@ -12,7 +12,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import r48.App;
-import r48.app.AppMain;
 import r48.io.IObjectBackend;
 
 import java.io.IOException;
@@ -23,7 +22,7 @@ import java.io.IOException;
 public class R2kSerializationTest {
     @Test
     public void testFullIOStack() throws IOException {
-        TestKickstart.kickstart("RAM/", "UTF-8", "R2K/");
+        App app = TestKickstart.kickstart("RAM/", "UTF-8", "R2K/");
 
         String[] fileDefs = new String[] {
                 "hello.lmu",
@@ -31,14 +30,13 @@ public class R2kSerializationTest {
                 "and.lmt",
                 "you.lsd",
         };
-        App app = AppMain.instance;
         // Save it, but skip past most of ObjectDB since it will not be queried in future & it uses UI on failure.
         app.odb.getObject("hello.lmu", "RPG::Map").save();
         app.odb.getObject("world.ldb", "RPG::Database").save();
         app.odb.getObject("and.lmt", "RPG::MapTree").save();
         app.odb.getObject("you.lsd", "RPG::Save").save();
         // Kills off the old ObjectDB
-        TestKickstart.resetODB();
+        TestKickstart.resetODB(app);
 
         for (String s : fileDefs) {
             IObjectBackend.ILoadedObject i = app.odb.getObject(s, null);
