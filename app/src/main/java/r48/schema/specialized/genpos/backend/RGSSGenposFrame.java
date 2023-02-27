@@ -14,7 +14,6 @@ import gabien.ui.Rect;
 import r48.App;
 import r48.RubyIO;
 import r48.RubyTable;
-import r48.app.AppMain;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.events.RMEventGraphicRenderer;

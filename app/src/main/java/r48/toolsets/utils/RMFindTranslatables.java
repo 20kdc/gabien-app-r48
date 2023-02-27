@@ -15,7 +15,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.ui.UITextButton;
 import r48.App;
 import r48.FontSizes;
-import r48.app.AppMain;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;

@@ -15,7 +15,6 @@ import gabien.uslx.append.*;
 import gabien.ui.*;
 import gabienapp.Application;
 import r48.App;
-import r48.app.AppMain;
 import r48.dbs.TXDB;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.systems.MapSystem;

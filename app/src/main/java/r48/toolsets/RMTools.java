@@ -11,7 +11,6 @@ import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import r48.App;
 import r48.FontSizes;
-import r48.app.AppMain;
 import r48.dbs.CMDB;
 import r48.dbs.ObjectInfo;
 import r48.dbs.TXDB;

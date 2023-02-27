@@ -13,7 +13,6 @@ import r48.App;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.UITest;
-import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;

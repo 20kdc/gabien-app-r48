@@ -15,7 +15,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
-import r48.dbs.FormatSyntax;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;

@@ -9,7 +9,6 @@ package r48.map.events;
 
 import r48.App;
 import r48.RubyIO;
-import r48.app.AppMain;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;

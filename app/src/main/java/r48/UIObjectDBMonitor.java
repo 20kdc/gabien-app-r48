@@ -10,7 +10,6 @@ package r48;
 import gabien.IGrDriver;
 import gabien.IPeripherals;
 import gabien.ui.*;
-import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 

@@ -9,7 +9,6 @@ package r48.imageio;
 import gabien.IImage;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.io.BMPConnection;
 

@@ -8,7 +8,6 @@ package r48.map.drawlayers;
 
 import r48.App;
 import r48.RubyTable;
-import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.io.data.IRIOFixnum;
 
