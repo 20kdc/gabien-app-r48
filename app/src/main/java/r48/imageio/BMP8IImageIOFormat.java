@@ -7,6 +7,7 @@
 package r48.imageio;
 
 import gabien.IImage;
+import r48.App;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
@@ -22,8 +23,8 @@ import java.util.LinkedList;
 public class BMP8IImageIOFormat extends ImageIOFormat {
     public int actuallyBits;
 
-    public BMP8IImageIOFormat(int actuallyB) {
-        super(false);
+    public BMP8IImageIOFormat(App app, int actuallyB) {
+        super(app, false);
         actuallyBits = actuallyB;
     }
 
@@ -36,7 +37,7 @@ public class BMP8IImageIOFormat extends ImageIOFormat {
             return null;
         if (img.palette.size() > (1 << actuallyBits))
             return null;
-        return FormatSyntax.formatExtended(TXDB.get("Save BMP-#AI"), new RubyIO().setFX(actuallyBits));
+        return app.fmt.formatExtended(TXDB.get("Save BMP-#AI"), new RubyIO().setFX(actuallyBits));
     }
 
     @Override

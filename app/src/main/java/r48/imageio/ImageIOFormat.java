@@ -9,6 +9,8 @@ package r48.imageio;
 
 import gabien.GaBIEn;
 import gabien.IImage;
+import r48.App;
+import r48.app.AppCore;
 import r48.io.PathUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -19,10 +21,11 @@ import java.io.InputStream;
  * Describes an image format (save/load buttons)
  * Created on April 13th 2018
  */
-public abstract class ImageIOFormat {
+public abstract class ImageIOFormat extends App.Csv {
     public final boolean knowsColourKey;
 
-    public ImageIOFormat(boolean ck) {
+    public ImageIOFormat(AppCore app, boolean ck) {
+        super(app);
         knowsColourKey = ck;
     }
 
@@ -36,17 +39,14 @@ public abstract class ImageIOFormat {
     // gInput is null (rather than the error image reference) or the system image loader output.
     public abstract ImageIOImage loadFile(byte[] s, IImage gInput) throws IOException;
 
-    // The list of supported formats.
-    public static ImageIOFormat[] supportedFormats = new ImageIOFormat[0];
-
-    public static void initializeFormats() {
-        supportedFormats = new ImageIOFormat[] {
-                new XYZImageIOFormat(),
-                new PNG8IImageIOFormat(),
-                new BMP8IImageIOFormat(8),
-                new BMP8IImageIOFormat(4),
-                new BMP8IImageIOFormat(1),
-                new GabienImageIOFormat(),
+    public static ImageIOFormat[] initializeFormats(App app) {
+        return new ImageIOFormat[] {
+                new XYZImageIOFormat(app),
+                new PNG8IImageIOFormat(app),
+                new BMP8IImageIOFormat(app, 8),
+                new BMP8IImageIOFormat(app, 4),
+                new BMP8IImageIOFormat(app, 1),
+                new GabienImageIOFormat(app),
         };
     }
 

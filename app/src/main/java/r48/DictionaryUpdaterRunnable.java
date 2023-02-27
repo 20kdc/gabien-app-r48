@@ -138,7 +138,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
     private void finalizeVals(LinkedList<UIEnumChoice.Option> finalMap) {
         Collections.sort(finalMap, UIEnumChoice.COMPARATOR_OPTION);
         SchemaElement ise = new EnumSchemaElement(app, finalMap, new RubyIO().setFX(defaultVal), EntryMode.INT, TXDB.get("ID."));
-        AppMain.schemas.setSDBEntry(dict, ise);
+        app.sdb.setSDBEntry(dict, ise);
     }
 
     private static void handleVal(App app, LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> iVar, final @Nullable IObjectBackend.ILoadedObject targetILO, final @Nullable SchemaElement dataSchema, IRIO rio, IRIO k, String interpret) {
@@ -169,7 +169,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
                     };
                 }
             } else {
-                text = FormatSyntax.interpretParameter(rio, interpret, false);
+                text = app.fmt.interpretParameter(rio, interpret, false);
             }
             finalMap.add(EnumSchemaElement.makeStandardOption(kc, text, editor, dataSchemaPath));
         }

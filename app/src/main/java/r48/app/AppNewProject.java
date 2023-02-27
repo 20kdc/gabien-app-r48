@@ -110,7 +110,7 @@ public class AppNewProject extends App.Svc {
                 fileCopier(mkdirs, fileCopies);
                 // Load map 1, save everything
                 app.ui.mapContext.loadMap("Map.1");
-                app.odb.ensureAllSaved(app);
+                app.odb.ensureAllSaved();
                 app.ui.launchDialog(TXDB.get("The synthesis was completed successfully."));
             }
         };

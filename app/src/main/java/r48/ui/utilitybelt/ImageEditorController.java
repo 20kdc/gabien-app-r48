@@ -13,7 +13,6 @@ import gabien.uslx.append.*;
 import r48.App;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.imageio.ImageIOFormat;
 import r48.maptools.UIMTBase;
@@ -104,9 +103,9 @@ public class ImageEditorController extends App.Svc {
 
     private void load(String filename) {
         GaBIEn.hintFlushAllTheCaches();
-        ImageIOFormat.TryToLoadResult ioi = ImageIOFormat.tryToLoad(filename, ImageIOFormat.supportedFormats);
+        ImageIOFormat.TryToLoadResult ioi = ImageIOFormat.tryToLoad(filename, app.imageIOFormats);
         if (ioi == null) {
-            app.ui.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to load #A."), new RubyIO().setString(filename, true)));
+            app.ui.launchDialog(app.fmt.formatExtended(TXDB.get("Failed to load #A."), new RubyIO().setString(filename, true)));
         } else {
             boolean detectedCK = false;
             if (ioi.wouldKnowIfColourKey) {
@@ -283,7 +282,7 @@ public class ImageEditorController extends App.Svc {
             public void run() {
                 LinkedList<String> items = new LinkedList<String>();
                 LinkedList<Runnable> runnables = new LinkedList<Runnable>();
-                for (final ImageIOFormat format : ImageIOFormat.supportedFormats) {
+                for (final ImageIOFormat format : app.imageIOFormats) {
                     String tx = format.saveName(imageEditView.image);
                     if (tx == null)
                         continue;
@@ -312,7 +311,7 @@ public class ImageEditorController extends App.Svc {
                                             imageEditView.eds.didSuccessfulSave(s, format);
                                         } catch (Exception e) {
                                             e.printStackTrace();
-                                            app.ui.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to save #A."), new RubyIO().setString(s, true)) + "\n" + e);
+                                            app.ui.launchDialog(app.fmt.formatExtended(TXDB.get("Failed to save #A."), new RubyIO().setString(s, true)) + "\n" + e);
                                         }
                                         app.ui.performFullImageFlush();
                                         initPalette(0);

@@ -69,7 +69,7 @@ public class GenposSchemaElement extends SchemaElement {
                         }
                     });
                     final RGSSGenposFrame frame = new RGSSGenposFrame(app, sc, path, genposType.equals("vxaAnimation"), updater);
-                    final RMGenposAnim anim = new RMGenposAnim(target.getIVar("@frames"), frame, updater, false);
+                    final RMGenposAnim anim = new RMGenposAnim(app, target.getIVar("@frames"), frame, updater, false);
                     frame.frameSource = new ISupplier<IRIO>() {
                         @Override
                         public IRIO get() {
@@ -125,7 +125,7 @@ public class GenposSchemaElement extends SchemaElement {
                     };
 
                     final R2kGenposFrame frame = new R2kGenposFrame(app, sc, path, outbound);
-                    final RMGenposAnim anim = new RMGenposAnim(framesObject, frame, outbound, true);
+                    final RMGenposAnim anim = new RMGenposAnim(app, framesObject, frame, outbound, true);
 
                     frame.frameSource = new ISupplier<IRIO>() {
                         @Override

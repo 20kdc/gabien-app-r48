@@ -56,14 +56,14 @@ public class UISaveScanMapInfos extends App.Prx {
                 IObjectBackend.ILoadedObject rio = app.odb.getObject(objectMapping.apply(i), null);
                 final String gum = gumMapping.apply(i);
                 if (rio != null) {
-                    mainLayout.panelsAdd(new UITextButton(FormatSyntax.formatExtended(TXDB.get("#A : #B"), new RubyIO().setString(gum, true), rio.getObject()), FontSizes.mapInfosTextHeight, new Runnable() {
+                    mainLayout.panelsAdd(new UITextButton(app.fmt.formatExtended(TXDB.get("#A : #B"), new RubyIO().setString(gum, true), rio.getObject()), FontSizes.mapInfosTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             context.loadMap(gum);
                         }
                     }));
                 } else {
-                    mainLayout.panelsAdd(new UIAppendButton(TXDB.get("New..."), new UILabel(FormatSyntax.formatExtended(TXDB.get("#A (Unavailable)"), new RubyIO().setString(gum, true)), FontSizes.mapInfosTextHeight), new Runnable() {
+                    mainLayout.panelsAdd(new UIAppendButton(TXDB.get("New..."), new UILabel(app.fmt.formatExtended(TXDB.get("#A (Unavailable)"), new RubyIO().setString(gum, true)), FontSizes.mapInfosTextHeight), new Runnable() {
                         @Override
                         public void run() {
                             context.loadMap(gum);

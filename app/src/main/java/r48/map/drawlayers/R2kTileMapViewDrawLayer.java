@@ -7,9 +7,9 @@
 
 package r48.map.drawlayers;
 
+import r48.App;
 import r48.RubyIO;
 import r48.RubyTable;
-import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.tiles.ITileRenderer;
@@ -22,8 +22,8 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
     public final RubyTable lowpass;
     public final RubyTable highpass;
 
-    public R2kTileMapViewDrawLayer(RubyTable tbl, ITileRenderer tr, int targLayer, boolean targUpper, IRIO ts, String post) {
-        super(tbl, new int[] {targLayer}, tr, post);
+    public R2kTileMapViewDrawLayer(App app, RubyTable tbl, ITileRenderer tr, int targLayer, boolean targUpper, IRIO ts, String post) {
+        super(app, tbl, new int[] {targLayer}, tr, post);
         upper = targUpper;
         lowpass = new RubyTable(ts.getIVar("@lowpass_data").getBuffer());
         highpass = new RubyTable(ts.getIVar("@highpass_data").getBuffer());
@@ -31,7 +31,7 @@ public class R2kTileMapViewDrawLayer extends TileMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return FormatSyntax.formatExtended(TXDB.get("Tile L#A ({B=T='upper'/'wall' tileset flags|general})"), new RubyIO().setFX(tileLayers[0]), new RubyIO().setBool(upper));
+        return app.fmt.formatExtended(TXDB.get("Tile L#A ({B=T='upper'/'wall' tileset flags|general})"), new RubyIO().setFX(tileLayers[0]), new RubyIO().setBool(upper));
     }
 
     @Override

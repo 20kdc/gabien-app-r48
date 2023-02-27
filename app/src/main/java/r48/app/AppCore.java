@@ -12,9 +12,11 @@ import java.util.LinkedList;
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.dbs.ATDB;
+import r48.dbs.FormatSyntax;
 import r48.dbs.ObjectDB;
 import r48.dbs.ObjectInfo;
 import r48.dbs.SDB;
+import r48.imageio.ImageIOFormat;
 import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
 
@@ -25,7 +27,9 @@ import r48.map.systems.MapSystem;
 public class AppCore {
     public ObjectDB odb;
     public SDB sdb;
+    public FormatSyntax fmt;
     public MapSystem system;
+    public ImageIOFormat[] imageIOFormats;
 
     public ATDB[] autoTiles = new ATDB[0];
     public String odbBackend = "<you forgot to select a backend>";
@@ -40,7 +44,7 @@ public class AppCore {
     public LinkedList<String> getAllObjects() {
         // anything loaded gets added (this allows some bypass of the mechanism)
         HashSet<String> mainSet = new HashSet<String>(odb.objectMap.keySet());
-        for (ObjectInfo oi : AppMain.schemas.listFileDefs())
+        for (ObjectInfo oi : sdb.listFileDefs())
             mainSet.add(oi.idName);
         if (system instanceof IDynobjMapSystem) {
             IDynobjMapSystem idms = (IDynobjMapSystem) system;
@@ -52,7 +56,7 @@ public class AppCore {
 
     // Attempts to ascertain all known objects
     public LinkedList<ObjectInfo> getObjectInfos() {
-        LinkedList<ObjectInfo> oi = AppMain.schemas.listFileDefs();
+        LinkedList<ObjectInfo> oi = sdb.listFileDefs();
         if (system instanceof IDynobjMapSystem) {
             IDynobjMapSystem idms = (IDynobjMapSystem) system;
             for (ObjectInfo dobj : idms.getDynamicObjects())

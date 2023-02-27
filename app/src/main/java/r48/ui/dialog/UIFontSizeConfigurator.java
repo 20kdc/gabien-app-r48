@@ -14,8 +14,6 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import gabienapp.Application;
 import r48.FontSizes;
-import r48.RubyIO;
-import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.ui.UIAppendButton;
 
@@ -112,7 +110,8 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
             }
         };
         outerLayout.panelsAdd(new UISplitterLayout(fontButton, fontButtonAppend, false, 0.5));
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(FormatSyntax.formatExtended(TXDB.get("Theme: #A"), new RubyIO().setFX(UIBorderedElement.borderTheme)), FontSizes.fontSizerTextHeight, new Runnable() {
+        String themeTxt = TXDB.get("Theme: #A").replaceAll("#A", String.valueOf(UIBorderedElement.borderTheme));
+        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(themeTxt, FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 UIBorderedElement.borderTheme++;

@@ -25,7 +25,7 @@ public class DeepCloneTest {
     public void testDeepCloneRPGMap() {
         TestKickstart.kickstart("RAM/", "UTF-8", "RXP/");
         RubyIO newObj = new RubyIO().setNull();
-        SchemaPath.setDefaultValue(newObj, AppMain.schemas.getSDBEntry("RPG::Map"), null);
+        SchemaPath.setDefaultValue(newObj, AppMain.instance.sdb.getSDBEntry("RPG::Map"), null);
         RubyIO newObj2 = new RubyIO().setDeepClone(newObj);
         try {
             byte[] dat = IMIUtils.createIMIData(newObj, newObj2, "");

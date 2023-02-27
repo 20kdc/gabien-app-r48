@@ -40,6 +40,6 @@ public class WindowTitleAttachmentSchemaElement extends SchemaElement {
 
     @Override
     public @Nullable String windowTitleSuffix(SchemaPath path) {
-        return FormatSyntax.formatNameExtended(suffixRoutine, path.targetElement, new IRIO[] {path.lastArrayIndex}, null);
+        return app.fmt.formatNameExtended(suffixRoutine, path.targetElement, new IRIO[] {path.lastArrayIndex}, null);
     }
 }

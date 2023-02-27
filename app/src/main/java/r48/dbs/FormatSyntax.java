@@ -9,7 +9,7 @@ package r48.dbs;
 
 import gabien.uslx.append.*;
 import r48.RubyIO;
-import r48.app.AppMain;
+import r48.app.AppCore;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
@@ -21,10 +21,13 @@ import java.util.LinkedList;
  * Yet another class solely to hold a common syntax in an obvious place.
  * Created on 11/06/17.
  */
-public class FormatSyntax {
+public class FormatSyntax extends AppCore.Csv {
+    public FormatSyntax(AppCore app) {
+        super(app);
+    }
     // The new format allows for more precise setups,
     // but isn't as neat.
-    public static String formatNameExtended(String name, IRIO root, IRIO[] parameters, IFunction<IRIO, SchemaElement>[] parameterSchemas) {
+    public String formatNameExtended(String name, IRIO root, IRIO[] parameters, IFunction<IRIO, SchemaElement>[] parameterSchemas) {
         StringBuilder r = new StringBuilder();
         char[] data = name.toCharArray();
         boolean prefixNext = false;
@@ -183,7 +186,7 @@ public class FormatSyntax {
         return r.toString();
     }
 
-    private static void determineBooleanComponent(StringBuilder r, LinkedList<String> components, boolean result, IRIO root, IRIO[] parameters, IFunction<IRIO, SchemaElement>[] parameterSchemas) {
+    private void determineBooleanComponent(StringBuilder r, LinkedList<String> components, boolean result, IRIO root, IRIO[] parameters, IFunction<IRIO, SchemaElement>[] parameterSchemas) {
         for (int i = (result ? 0 : 1); i < components.size(); i += 2)
             r.append(formatNameExtended(components.get(i), root, parameters, parameterSchemas));
     }
@@ -232,13 +235,13 @@ public class FormatSyntax {
         throw new RuntimeException("Hit end-of-data without reaching end character.");
     }
 
-    public static String interpretParameter(IRIO rubyIO, String st, boolean prefixEnums) {
+    public String interpretParameter(IRIO rubyIO, String st, boolean prefixEnums) {
         if (st != null) {
             IFunction<IRIO, String> handler = TXDB.nameDB.get("Interp." + st);
             if (handler != null) {
                 return handler.apply(rubyIO);
             } else {
-                SchemaElement ise = AppMain.schemas.getSDBEntry(st);
+                SchemaElement ise = app.sdb.getSDBEntry(st);
                 return interpretParameter(rubyIO, ise, prefixEnums);
             }
         } else {
@@ -246,7 +249,7 @@ public class FormatSyntax {
         }
     }
 
-    public static String interpretParameter(IRIO rubyIO, SchemaElement ise, boolean prefixEnums) {
+    public String interpretParameter(IRIO rubyIO, SchemaElement ise, boolean prefixEnums) {
         // Basically, Class. overrides go first, then everything else comes after.
         if (rubyIO.getType() == 'o') {
             IFunction<IRIO, String> handler = TXDB.nameDB.get("Class." + rubyIO.getSymbol());
@@ -273,7 +276,7 @@ public class FormatSyntax {
         return ise[i].apply(root);
     }
 
-    public static String formatExtended(String s, IRIO... pieces) {
+    public String formatExtended(String s, IRIO... pieces) {
         return formatNameExtended(s, new RubyIO().setNull(), pieces, null);
     }
 }

@@ -9,9 +9,12 @@ package r48.maptools;
 
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
+import r48.App;
 import r48.map.IMapToolContext;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Was used for many things that it shouldn't have been. Now, not so much,
@@ -23,13 +26,15 @@ public class UIMTBase extends UIElement.UIPanel {
     private UIElement innerElem = null;
 
     public final IMapToolContext mapToolContext;
+    public final App app;
 
     public boolean selfClose = false;
     public boolean hasClosed = false;
     public String titleOverride;
 
-    public UIMTBase(IMapToolContext mtc) {
+    public UIMTBase(@NonNull IMapToolContext mtc) {
         mapToolContext = mtc;
+        app = mtc.getMapView().app;
     }
 
     protected void changeInner(UIElement inner, boolean inConstructor) {

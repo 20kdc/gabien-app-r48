@@ -117,7 +117,7 @@ public class R2kAreaEditingToolbarController implements IEditingToolbarControlle
                 r.setFX(Math.max(firstPointX, x) + 1);
                 d.setFX(Math.max(firstPointY, y) + 1);
                 App app = mapToolContext.getMapView().app;
-                app.odb.objectRootModified(mapInfosRoot, new SchemaPath(AppMain.schemas.getSDBEntry("RPG::MapTree"), mapInfosRoot));
+                app.odb.objectRootModified(mapInfosRoot, new SchemaPath(app.sdb.getSDBEntry("RPG::MapTree"), mapInfosRoot));
                 label.text = textA;
                 definingPoint2 = false;
             }

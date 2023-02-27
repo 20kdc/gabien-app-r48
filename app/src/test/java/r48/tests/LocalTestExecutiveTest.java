@@ -78,7 +78,8 @@ public class LocalTestExecutiveTest {
     @Test
     public void test() {
         TestKickstart.kickstart(name + "/", charset, schema + "/");
-        for (ObjectInfo s : dynamic ? AppMain.instance.getObjectInfos() : AppMain.schemas.listFileDefs())
+        App app = AppMain.instance;
+        for (ObjectInfo s : dynamic ? app.getObjectInfos() : app.sdb.listFileDefs())
             testObject(s.idName);
     }
 
@@ -128,10 +129,11 @@ public class LocalTestExecutiveTest {
     }
 
     private SchemaElement findSchemaFor(String s, IRIO object) {
-        if (AppMain.schemas.hasSDBEntry("File." + s))
-            return AppMain.schemas.getSDBEntry("File." + s);
+        App app = AppMain.instance;
+        if (app.sdb.hasSDBEntry("File." + s))
+            return app.sdb.getSDBEntry("File." + s);
         if (object.getType() == 'o')
-            return AppMain.schemas.getSDBEntry(object.getSymbol());
+            return app.sdb.getSDBEntry(object.getSymbol());
         throw new RuntimeException("Unable to find schema for tested object " + s + ". Add hard-coded test setup.");
     }
 

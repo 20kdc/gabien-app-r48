@@ -54,7 +54,7 @@ public class StuffRenderer {
         }
     }
 
-    public static IMapViewDrawLayer[] prepareTraditional(ITileRenderer itr, int[] tlOrder, IEventGraphicRenderer igr, IImageLoader iil, IRIO map, IEventAccess events, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
+    public static IMapViewDrawLayer[] prepareTraditional(App app, ITileRenderer itr, int[] tlOrder, IEventGraphicRenderer igr, IImageLoader iil, IRIO map, IEventAccess events, String vxaPano, boolean lx, boolean ly, int alx, int aly, int panoSW, int panoSH, int panoSC) {
         if (map == null)
             return new IMapViewDrawLayer[0];
         RubyTable rt = new RubyTable(map.getIVar("@data").getBuffer());
@@ -70,7 +70,7 @@ public class StuffRenderer {
         layers[0] = new PanoramaMapViewDrawLayer(panoImg, lx, ly, alx, aly, rt.width, rt.height, panoSW, panoSH, panoSC);
         layers[1] = new EventMapViewDrawLayer(-1, events, igr, TXDB.get(" (Lowest)"));
         for (int i = 0; i < rt.planeCount; i++) {
-            layers[(i * 2) + 2] = new TileMapViewDrawLayer(rt, tlOrder[i], itr);
+            layers[(i * 2) + 2] = new TileMapViewDrawLayer(app, rt, tlOrder[i], itr);
             layers[(i * 2) + 3] = new EventMapViewDrawLayer(i, events, igr, "");
         }
         layers[layers.length - 3] = new EventMapViewDrawLayer(0x7FFFFFFF, events, igr, "");

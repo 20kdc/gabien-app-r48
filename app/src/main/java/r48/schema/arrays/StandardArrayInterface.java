@@ -287,7 +287,7 @@ public class StandardArrayInterface implements IArrayInterface {
                 LinkedList<String> optText = new LinkedList<String>();
                 LinkedList<Runnable> optRuns = new LinkedList<Runnable>();
                 // This keeps this string in the translation DB in case it's needed again; stuff should be tested first.
-                // FormatSyntax.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setString(text, true))
+                // app.fmt.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setString(text, true))
                 optText.add(clarifyEmpty ? TXDB.get("Insert Here...") : TXDB.get("Add Next..."));
                 optRuns.add(runnable);
                 if (runnable2 != null) {

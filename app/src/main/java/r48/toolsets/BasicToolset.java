@@ -143,14 +143,14 @@ public class BasicToolset extends App.Svc implements IToolset {
                             @Override
                             public void accept(String s) {
                                 final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
-                                if (AppMain.schemas.hasSDBEntry("File." + s)) {
+                                if (app.sdb.hasSDBEntry("File." + s)) {
                                     app.ui.launchSchema("File." + s, rio, null);
                                     return;
                                 }
                                 if (rio != null) {
                                     IRIO r2 = rio.getObject();
                                     if (r2.getType() == 'o') {
-                                        if (AppMain.schemas.hasSDBEntry(r2.getSymbol())) {
+                                        if (app.sdb.hasSDBEntry(r2.getSymbol())) {
                                             app.ui.launchSchema(r2.getSymbol(), rio, null);
                                             return;
                                         }
@@ -178,7 +178,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                 app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
-                                        SchemaElement ise = AppMain.schemas.getSDBEntry(s);
+                                        SchemaElement ise = app.sdb.getSDBEntry(s);
                                         ise.modifyVal(rio.getObject(), new SchemaPath(ise, rio), false);
                                         app.ui.launchDialog(TXDB.get("OK!"));
                                     }
@@ -430,7 +430,7 @@ public class BasicToolset extends App.Svc implements IToolset {
             public void run() {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
                 IRIO clipGet = (app.theClipboard == null) ? new RubyIO().setNull() : app.theClipboard;
-                uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new IRIOFixnum(app.odb.modifiedObjects.size()), clipGet);
+                uiStatusLabel.text = app.fmt.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new IRIOFixnum(app.odb.modifiedObjects.size()), clipGet);
                 app.uiPendingRunnables.add(this);
             }
         });
@@ -483,7 +483,7 @@ public class BasicToolset extends App.Svc implements IToolset {
     }
 
     private static UIElement makeFileList(App app) {
-        LinkedList<ObjectInfo> s = AppMain.schemas.listFileDefs();
+        LinkedList<ObjectInfo> s = app.sdb.listFileDefs();
         if (s.size() == 0)
             return null;
         LinkedList<String> str = new LinkedList<String>();

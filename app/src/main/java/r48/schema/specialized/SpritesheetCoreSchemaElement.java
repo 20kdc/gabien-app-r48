@@ -42,7 +42,7 @@ public class SpritesheetCoreSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final ISpritesheetProvider localProvider = provider.apply(target);
         final IRIO actTarg = numberProvider.apply(target);
-        return new UITextButton(FormatSyntax.formatExtended(text, actTarg), FontSizes.schemaFieldTextHeight, new Runnable() {
+        return new UITextButton(app.fmt.formatExtended(text, actTarg), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, null, path);

@@ -54,7 +54,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
      * Translates the input IRIO to the target IRIO, or null if an issue was encountered.
      */
     public final IRIO get(IRIO v) {
-        return (IRIO) getProgram.execute(null, v, null, null, null, null, null, null, null);
+        return (IRIO) getProgram.exc(null, v);
     }
 
     /**
@@ -63,7 +63,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
      * Returns null if an issue was encountered.
      */
     public final IRIO add(IRIO v) {
-        return (IRIO) addProgram.execute(null, v, null, null, null, null, null, null, null);
+        return (IRIO) addProgram.exc(null, v);
     }
 
     /**
@@ -72,7 +72,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
      * Returns null if an issue was encountered.
      */
     public final IRIO del(IRIO v) {
-        return (IRIO) delProgram.execute(null, v, null, null, null, null, null, null, null);
+        return (IRIO) delProgram.exc(null, v);
     }
 
     // break to next token.

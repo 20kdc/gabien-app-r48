@@ -49,7 +49,7 @@ public class RMFindTranslatables extends App.Svc {
     }
 
     public void addSitesFromMap(final @Nullable UIMapView ctx, String eventPage) {
-        final SchemaPath rootSchemaPath = new SchemaPath(AppMain.schemas.getSDBEntry("RPG::Map"), objRoot);
+        final SchemaPath rootSchemaPath = new SchemaPath(app.sdb.getSDBEntry("RPG::Map"), objRoot);
 
         IRIO events = objRoot.getObject().getIVar("@events");
         for (IRIO eventKey : events.getHashKeys()) {
@@ -57,7 +57,7 @@ public class RMFindTranslatables extends App.Svc {
 
             final SchemaPath eventSchemaPath = rootSchemaPath
                     .arrayHashIndex(eventKey, "E" + eventKey.toString())
-                    .newWindow(AppMain.schemas.getSDBEntry("RPG::Event"), event);
+                    .newWindow(app.sdb.getSDBEntry("RPG::Event"), event);
 
             IRIO pageList = event.getIVar("@pages");
             for (int page = 0; page < pageList.getALen(); page++) {
@@ -68,10 +68,10 @@ public class RMFindTranslatables extends App.Svc {
                 // enter page
                 final SchemaPath pageSchemaPath = eventSchemaPath
                         .arrayHashIndex(new IRIOFixnum(page), "P" + page)
-                        .newWindow(AppMain.schemas.getSDBEntry(eventPage), pageObj);
+                        .newWindow(app.sdb.getSDBEntry(eventPage), pageObj);
 
                 IRIO eventList = pageObj.getIVar("@list");
-                addSitesFromList(getEventCommandArraySchemaElement("EventListEditor"), ctx, eventList, new SchemaPath[] {
+                addSitesFromList(getEventCommandArraySchemaElement(app, "EventListEditor"), ctx, eventList, new SchemaPath[] {
                         rootSchemaPath,
                         eventSchemaPath,
                         pageSchemaPath
@@ -81,14 +81,14 @@ public class RMFindTranslatables extends App.Svc {
     }
 
     public void addSitesFromCommonEvents(IRIO[] commonEvents) {
-        SchemaElement sch = AppMain.schemas.findSchemaFor(objIdName, objRoot.getObject());
+        SchemaElement sch = app.sdb.findSchemaFor(objIdName, objRoot.getObject());
         if (sch == null) {
             app.ui.launchDialog(TXDB.get("Somehow, the common events file does not have a schema."));
         } else {
             SchemaPath rootSP = new SchemaPath(sch, objRoot);
-            EventCommandArraySchemaElement ecase = RMFindTranslatables.getEventCommandArraySchemaElement("EventListEditor");
+            EventCommandArraySchemaElement ecase = RMFindTranslatables.getEventCommandArraySchemaElement(app, "EventListEditor");
             for (IRIO rio : commonEvents) {
-                SchemaElement cevElm = AppMain.schemas.findSchemaFor(null, rio);
+                SchemaElement cevElm = app.sdb.findSchemaFor(null, rio);
                 if (cevElm == null) {
                     app.ui.launchDialog(TXDB.get("Unable to determine common event schema, looks like that refactor will have to happen now"));
                     return;
@@ -114,8 +114,8 @@ public class RMFindTranslatables extends App.Svc {
         }
     }
 
-    public static EventCommandArraySchemaElement getEventCommandArraySchemaElement(String cmdbEditor) {
-        return (EventCommandArraySchemaElement) AggregateSchemaElement.extractField(AppMain.schemas.getSDBEntry(cmdbEditor), null);
+    public static EventCommandArraySchemaElement getEventCommandArraySchemaElement(App app, String cmdbEditor) {
+        return (EventCommandArraySchemaElement) AggregateSchemaElement.extractField(app.sdb.getSDBEntry(cmdbEditor), null);
     }
 
     public static CommandSite siteFromContext(App app, final EventCommandArraySchemaElement cmdbEditor, final @Nullable UIMapView mapView, final IRIO listObj, final int codeIndex, final IRIO command, final SchemaPath[] basePaths) {

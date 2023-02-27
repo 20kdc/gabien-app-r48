@@ -121,7 +121,7 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
         IRIO key = mapTreeOrders.addAElem(mapTreeOrders.getALen()).setFX(k);
 
         IRIO mi = mapTreeHash.addHashVal(key);
-        SchemaPath.setDefaultValue(mi, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
+        SchemaPath.setDefaultValue(mi, app.sdb.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
         mi.getIVar("@parent_id").setFX(l);
 
         return (int) k - 1;
@@ -163,7 +163,7 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
             map.getIVar("@indent").setFX(parentStack.size());
         }
         // and done!
-        SchemaPath fakePath = new SchemaPath(AppMain.schemas.getSDBEntry("File.RPG_RT.lmt"), mapTree);
+        SchemaPath fakePath = new SchemaPath(app.sdb.getSDBEntry("File.RPG_RT.lmt"), mapTree);
         app.odb.objectRootModified(mapTree, fakePath);
         modHandler.accept(fakePath);
     }

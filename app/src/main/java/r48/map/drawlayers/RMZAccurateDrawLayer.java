@@ -6,6 +6,7 @@
  */
 package r48.map.drawlayers;
 
+import r48.App;
 import r48.RubyTable;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
@@ -20,11 +21,11 @@ public class RMZAccurateDrawLayer extends ZSortingDrawLayer {
     public final RubyTable mapTable;
     public SignalMapViewLayer[] tileSignalLayers;
 
-    public RMZAccurateDrawLayer(RubyTable tbl, int layers) {
+    public RMZAccurateDrawLayer(App app, RubyTable tbl, int layers) {
         mapTable = tbl;
         tileSignalLayers = new SignalMapViewLayer[layers];
         for (int i = 0; i < tileSignalLayers.length; i++) {
-            tileSignalLayers[i] = new SignalMapViewLayer(FormatSyntax.formatExtended(TXDB.get("Tile Layer #A"), new IRIOFixnum(i)));
+            tileSignalLayers[i] = new SignalMapViewLayer(app.fmt.formatExtended(TXDB.get("Tile Layer #A"), new IRIOFixnum(i)));
             signals.add(tileSignalLayers[i]);
         }
         Collections.addAll(signals, tileSignalLayers);

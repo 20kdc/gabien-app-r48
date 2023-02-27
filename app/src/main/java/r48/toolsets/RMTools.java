@@ -53,7 +53,7 @@ public class RMTools extends App.Svc {
         // If this errors, then this shouldn't have been constructed.
         mapSystem = (IRMMapSystem) app.system;
 
-        commandsEvent = ((EventCommandArraySchemaElement) AggregateSchemaElement.extractField(AppMain.schemas.getSDBEntry("EventListEditor"), null)).database;
+        commandsEvent = ((EventCommandArraySchemaElement) AggregateSchemaElement.extractField(app.sdb.getSDBEntry("EventListEditor"), null)).database;
     }
 
     public UIElement genButton() {
@@ -158,7 +158,7 @@ public class RMTools extends App.Svc {
                                 }
                             };
                             app.odb.registerModificationHandler(map, modListen);
-                            SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(obj.schemaName), map);
+                            SchemaPath sp = new SchemaPath(app.sdb.getSDBEntry(obj.schemaName), map);
                             sp.editor.modifyVal(map.getObject(), sp, false);
                             app.odb.deregisterModificationHandler(map, modListen);
                             System.out.println(obj + " done.");

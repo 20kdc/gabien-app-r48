@@ -9,7 +9,7 @@ package r48.dbs;
 
 import gabien.uslx.append.*;
 import gabien.ui.UIScrollLayout;
-import r48.app.AppMain;
+import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.displays.TonePickerSchemaElement;
@@ -23,7 +23,7 @@ import java.util.LinkedList;
  * RPGCommand database entry.
  * Created on 12/30/16.
  */
-public class RPGCommand {
+public class RPGCommand extends App.Svc {
     public String name;
 
     public SchemaElement specialSchema;
@@ -65,12 +65,16 @@ public class RPGCommand {
     // For copy all text
     public int textArg = -1;
 
+    public RPGCommand(App app) {
+        super(app);
+    }
+
     // Pass null for parameters if this is for combobox display.
     @SuppressWarnings("unchecked")
     public String formatName(IRIO root, IRIO[] parameters) {
         try {
             if (name.startsWith("@@"))
-                return FormatSyntax.formatNameExtended(name.substring(2), root, parameters, paramType.toArray(new IFunction[0]));
+                return app.fmt.formatNameExtended(name.substring(2), root, parameters, paramType.toArray(new IFunction[0]));
             boolean prefixes = true;
             if (name.startsWith("@P")) {
                 prefixes = false;
@@ -121,12 +125,12 @@ public class RPGCommand {
     }
 
     private String interpretLocalParameter(IRIO root, int pi, IRIO parameter, boolean prefixEnums) {
-        return FormatSyntax.interpretParameter(parameter, getParameterSchema(root, pi), prefixEnums);
+        return app.fmt.interpretParameter(parameter, getParameterSchema(root, pi), prefixEnums);
     }
 
     public SchemaElement getParameterSchema(IRIO root, int i) {
         if (paramType.size() <= i)
-            return AppMain.schemas.getSDBEntry("genericScriptParameter");
+            return app.sdb.getSDBEntry("genericScriptParameter");
         return paramType.get(i).apply(root);
     }
 
@@ -153,8 +157,9 @@ public class RPGCommand {
         public int tpBase;
 
         public void applyTo(int idx, UIScrollLayout elementList, IRIO targetParamArray, ISchemaHost launcher, SchemaPath path) {
+            App app = launcher.getApp();
             if (hasSpritesheet) {
-                SchemaElement scse = AppMain.schemas.helpers.makeSpriteSelector(PathSyntax.compile("]" + idx), PathSyntax.compile("]" + spritesheetTargstr), spritesheetId);
+                SchemaElement scse = app.sdb.helpers.makeSpriteSelector(PathSyntax.compile("]" + idx), PathSyntax.compile("]" + spritesheetTargstr), spritesheetId);
                 elementList.panelsAdd(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
             if (hasTonepicker) {

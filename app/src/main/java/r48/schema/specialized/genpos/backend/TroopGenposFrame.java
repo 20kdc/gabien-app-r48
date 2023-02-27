@@ -86,7 +86,7 @@ public class TroopGenposFrame implements IGenposFrame {
     @Override
     public void addCell(int i2) {
         IRIO rio = troop.getIVar("@members").addAElem(i2 + 1);
-        SchemaPath.setDefaultValue(rio, AppMain.schemas.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(i2 + 1));
+        SchemaPath.setDefaultValue(rio, app.sdb.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(i2 + 1));
         changed.run();
     }
 
@@ -98,7 +98,7 @@ public class TroopGenposFrame implements IGenposFrame {
 
     private SchemaElement[] getCellPropSchemas() {
         return new SchemaElement[] {
-                AppMain.schemas.getSDBEntry("enemy_id"),
+                app.sdb.getSDBEntry("enemy_id"),
                 new IntegerSchemaElement(app, 0),
                 new IntegerSchemaElement(app, 0),
                 new BooleanSchemaElement(app, false)

@@ -29,7 +29,7 @@ public class IMIBasicTest {
         TestKickstart.kickstart("RAM/", "UTF-8", "R2K/");
         // Use RubyIOs both in and out to deal with encoding oddities
         RubyIO newObj = new RubyIO().setNull();
-        SchemaPath.setDefaultValue(newObj, AppMain.schemas.getSDBEntry("RPG::Database"), null);
+        SchemaPath.setDefaultValue(newObj, AppMain.instance.sdb.getSDBEntry("RPG::Database"), null);
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             IMIUtils.createIMIDump(new DataOutputStream(baos), newObj, "");

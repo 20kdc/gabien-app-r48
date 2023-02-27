@@ -7,6 +7,7 @@
 
 package r48.map.drawlayers;
 
+import r48.App;
 import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -28,13 +29,13 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
     private static final int[] layerPreference = new int[] {0, 1, 3, 2};
 
     public RVXAAccurateDrawLayer(RubyTable tbl, IEventAccess eventList, VXATileRenderer tils, RMEventGraphicRenderer ev) {
-        super(tbl, 4);
+        super(tils.app, tbl, 4);
         tiles = tils;
         events = ev;
         signals.add(signalLayerEvA);
         // -1 is the "ground plane".
         for (int i = -1; i < tbl.height + 5; i++)
-            zSorting.add(new RVXAPriorityPlane(i));
+            zSorting.add(new RVXAPriorityPlane(tils.app, i));
         // Very specific choice of algorithm.
         for (IRIO r : eventList.getEventKeys()) {
             IRIO ed = eventList.getEvent(r);
@@ -61,8 +62,8 @@ public class RVXAAccurateDrawLayer extends RMZAccurateDrawLayer {
         // priority + tile Y
         public final int pIndex;
 
-        public RVXAPriorityPlane(int p) {
-            super(mapTable, layerPreference, tiles, "INTERNAL - YOU SHOULD NOT SEE THIS");
+        public RVXAPriorityPlane(App app, int p) {
+            super(app, mapTable, layerPreference, tiles, "INTERNAL - YOU SHOULD NOT SEE THIS");
             pIndex = p;
         }
 

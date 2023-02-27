@@ -10,9 +10,7 @@ package r48.dbs;
 import gabien.uslx.append.*;
 import gabienapp.UIFancyInit;
 import r48.App;
-import r48.app.AppMain;
 import r48.io.IObjectBackend;
-import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -29,15 +27,14 @@ import org.eclipse.jdt.annotation.Nullable;
  * Not quite a database, but not quite not a database either.
  * Created on 12/29/16.
  */
-public class ObjectDB {
+public class ObjectDB extends App.Svc {
     // Useful for object shenanigans.
     public final IObjectBackend backend;
     private final IConsumer<String> saveHook;
     public String binderPrefix;
-    public final OpaqueSchemaElement pokingStick;
 
-    public ObjectDB(OpaqueSchemaElement pokingStick, IObjectBackend b, IConsumer<String> sv) {
-        this.pokingStick = pokingStick;
+    public ObjectDB(App app, IObjectBackend b, IConsumer<String> sv) {
+        super(app);
         backend = b;
         binderPrefix = b.userspaceBindersPrefix();
         saveHook = sv;
@@ -77,11 +74,11 @@ public class ObjectDB {
         IObjectBackend.ILoadedObject rio = backend.loadObject(id);
         if (rio == null) {
             if (backupSchema != null) {
-                if (!AppMain.schemas.hasSDBEntry(backupSchema)) {
+                if (!app.sdb.hasSDBEntry(backupSchema)) {
                     System.err.println("Could not find backup schema for object " + id);
                     return null;
                 }
-                SchemaElement ise = AppMain.schemas.getSDBEntry(backupSchema);
+                SchemaElement ise = app.sdb.getSDBEntry(backupSchema);
                 if (ise != null) {
                     rio = backend.newObject(id);
                     if (rio == null)
@@ -106,7 +103,7 @@ public class ObjectDB {
         return getObject(id, "File." + id);
     }
 
-    public void ensureSaved(App app, String id, IObjectBackend.ILoadedObject rio) {
+    public void ensureSaved(String id, IObjectBackend.ILoadedObject rio) {
         if (objectMap.containsKey(id)) {
             IObjectBackend.ILoadedObject rio2 = objectMap.get(id).get();
             if (rio2 != null) {
@@ -266,11 +263,11 @@ public class ObjectDB {
             orCreateModificationHandlers.remove(wr);
     }
 
-    public void ensureAllSaved(App app) {
+    public void ensureAllSaved() {
         for (IObjectBackend.ILoadedObject rio : new LinkedList<IObjectBackend.ILoadedObject>(modifiedObjects)) {
             String id = getIdByObject(rio);
             if (id != null)
-                ensureSaved(app, id, rio);
+                ensureSaved(id, rio);
         }
     }
 
@@ -294,7 +291,7 @@ public class ObjectDB {
         for (IObjectBackend.ILoadedObject lo : pokedObjects) {
             // Use an opaque schema element because we really don't have a good one here.
             // We don't use changeOccurred because that would activate schema processing, which is also undesired here.
-            objectRootModified(lo, new SchemaPath(pokingStick, lo));
+            objectRootModified(lo, new SchemaPath(app.sdb.opaque, lo));
         }
         // Remove from modifiedObjects - they don't count as modified.
         modifiedObjects.removeAll(pokedObjects);

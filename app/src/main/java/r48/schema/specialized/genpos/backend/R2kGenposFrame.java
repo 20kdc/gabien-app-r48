@@ -62,7 +62,7 @@ public class R2kGenposFrame extends App.Svc implements IGenposFrame {
     @Override
     public void addCell(int i2) {
         IRIO rio = frameSource.get().getIVar("@cells").addAElem(i2);
-        SchemaPath.setDefaultValue(rio, AppMain.schemas.getSDBEntry("RPG::Animation::Cell"), new RubyIO().setFX(i2));
+        SchemaPath.setDefaultValue(rio, app.sdb.getSDBEntry("RPG::Animation::Cell"), new RubyIO().setFX(i2));
         updateNotify.run();
     }
 

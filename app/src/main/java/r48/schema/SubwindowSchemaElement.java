@@ -30,7 +30,7 @@ public class SubwindowSchemaElement extends SchemaElement implements IProxySchem
     public IFunction<IRIO, String> nameGetter = new IFunction<IRIO, String>() {
         @Override
         public String apply(IRIO rubyIO) {
-            return FormatSyntax.interpretParameter(rubyIO, heldElement, true);
+            return app.fmt.interpretParameter(rubyIO, heldElement, true);
         }
     };
 

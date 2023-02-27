@@ -8,16 +8,16 @@
 package r48.schema.specialized.genpos;
 
 import gabien.ui.*;
+import r48.App;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.ui.UIAppendButton;
 
 /**
  * Created on 2/17/17.
  */
-public class UICellSelectionPanel extends UIElement.UIProxy {
+public class UICellSelectionPanel extends App.Prx {
     // Instead, using getCell will ensure it gets corrected.
     public int cellNumber = -1;
     public int cellChangeNotificationNumber = 0;
@@ -26,7 +26,8 @@ public class UICellSelectionPanel extends UIElement.UIProxy {
 
     public UIScrollLayout selectionPanel = new UIScrollLayout(true, FontSizes.cellSelectScrollersize);
 
-    public UICellSelectionPanel(IGenposFrame rmAnimRootPanel) {
+    public UICellSelectionPanel(App app, IGenposFrame rmAnimRootPanel) {
+        super(app);
         root = rmAnimRootPanel;
         proxySetElement(selectionPanel, true);
     }
@@ -38,7 +39,7 @@ public class UICellSelectionPanel extends UIElement.UIProxy {
             final int i2 = i;
             addAdditionButton(i2);
             String prefix = cellNumber == i2 ? ">" : " ";
-            UIElement button = new UITextButton(prefix + FormatSyntax.formatExtended(TXDB.get("Cell #A"), new RubyIO().setFX(i)), FontSizes.rmaCellTextHeight, new Runnable() {
+            UIElement button = new UITextButton(prefix + app.fmt.formatExtended(TXDB.get("Cell #A"), new RubyIO().setFX(i)), FontSizes.rmaCellTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     cellNumber = i2;

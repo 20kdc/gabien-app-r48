@@ -189,7 +189,7 @@ public class TestKickstart {
     public static void resetODB() {
         App app = AppMain.instance;
         IObjectBackend backend = IObjectBackend.Factory.create(app.odbBackend, app.rootPath, app.dataPath, app.dataExt);
-        app.odb = app.odb = new ObjectDB(AppMain.schemas.opaque, backend, (s) -> {});
+        app.odb = app.odb = new ObjectDB(app, backend, (s) -> {});
     }
 
     public static class TestGrInDriver extends gabien.GrInDriver {

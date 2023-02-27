@@ -7,8 +7,8 @@
 
 package r48.schema.specialized.genpos.backend;
 
+import r48.App;
 import r48.RubyIO;
-import r48.app.AppMain;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.genpos.IGenposAnim;
@@ -38,7 +38,7 @@ import r48.schema.util.SchemaPath;
  * <p/>
  * Created on 2/17/17.
  */
-public class RMGenposAnim implements IGenposAnim {
+public class RMGenposAnim extends App.Svc implements IGenposAnim {
     // NOTE: This can be updated, and this is relied upon for cases where a magical binding is closely linked.
     public IRIO target;
     public IGenposFrame perFrame;
@@ -46,7 +46,8 @@ public class RMGenposAnim implements IGenposAnim {
     public int frameIdx;
     public boolean ix1;
 
-    public RMGenposAnim(IRIO t, IGenposFrame frameHandler, Runnable runnable, boolean index) {
+    public RMGenposAnim(App app, IRIO t, IGenposFrame frameHandler, Runnable runnable, boolean index) {
+        super(app);
         perFrame = frameHandler;
         target = t;
         updateNotify = runnable;
@@ -65,7 +66,7 @@ public class RMGenposAnim implements IGenposAnim {
                 target.addAElem(0);
             // Create a frame from scratch to avoid crashing
             RubyIO copy = new RubyIO().setNull();
-            SchemaPath.setDefaultValue(copy, AppMain.schemas.getSDBEntry("RPG::Animation::Frame"), null);
+            SchemaPath.setDefaultValue(copy, app.sdb.getSDBEntry("RPG::Animation::Frame"), null);
             frameIdx = min - 1;
             insertFrame(copy);
             return copy;

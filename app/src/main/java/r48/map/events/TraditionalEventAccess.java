@@ -90,7 +90,7 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
         IRIO mapEvents = getMapEvents();
         IRIO eveTarget = mapEvents.addHashVal(key);
         if (eve == null) {
-            SchemaPath.setDefaultValue(eveTarget, AppMain.schemas.getSDBEntry(eventSchema), key);
+            SchemaPath.setDefaultValue(eveTarget, app.sdb.getSDBEntry(eventSchema), key);
         } else {
             eveTarget.setDeepClone(eve);
         }
@@ -168,6 +168,6 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     private void pokeHive() {
-        app.odb.objectRootModified(mapRoot, new SchemaPath(AppMain.schemas.getSDBEntry(mapRootSchema), mapRoot));
+        app.odb.objectRootModified(mapRoot, new SchemaPath(app.sdb.getSDBEntry(mapRootSchema), mapRoot));
     }
 }

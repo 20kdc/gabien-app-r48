@@ -461,13 +461,13 @@ public class SDB extends App.Svc {
                         // This includes anything of type 'u'.
                         if (text.equals("fileSelector")) {
                             String tx = args[point++];
-                            String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx, true));
+                            String txHR = app.fmt.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx, true));
                             return new SubwindowSchemaElement(new FileSelectorSchemaElement(app, tx, null), getFunctionToReturn(txHR));
                         }
                         if (text.equals("imgSelector")) {
                             String tx = args[point++];
                             String tx2 = args[point++];
-                            String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx, true));
+                            String txHR = app.fmt.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx, true));
                             return new SubwindowSchemaElement(new FileSelectorSchemaElement(app, tx, tx2), getFunctionToReturn(txHR));
                         }
                         if (text.equals("halfsplit")) {
@@ -923,7 +923,7 @@ public class SDB extends App.Svc {
                                         break;
                                     parameters.add(res);
                                 }
-                                return FormatSyntax.formatNameExtended(textF, rubyIO, parameters.toArray(new IRIO[0]), null);
+                                return app.fmt.formatNameExtended(textF, rubyIO, parameters.toArray(new IRIO[0]), null);
                             }
                         });
                     }
@@ -1007,10 +1007,10 @@ public class SDB extends App.Svc {
 
     public @Nullable SchemaElement findSchemaFor(@Nullable String objId, @NonNull IRIO object) {
         if (objId != null)
-            if (AppMain.schemas.hasSDBEntry("File." + objId))
-                return AppMain.schemas.getSDBEntry("File." + objId);
+            if (app.sdb.hasSDBEntry("File." + objId))
+                return app.sdb.getSDBEntry("File." + objId);
         if (object.getType() == 'o')
-            return AppMain.schemas.getSDBEntry(object.getSymbol());
+            return app.sdb.getSDBEntry(object.getSymbol());
         return null;
     }
 

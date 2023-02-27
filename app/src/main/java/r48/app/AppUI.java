@@ -100,7 +100,7 @@ public class AppUI extends App.Svc {
                 app.odb.revertEverything();
                 // Map editor will have fixed itself because it watches the roots and does full reinits when anything even remotely changes
                 // But do this as well
-                AppMain.schemas.kickAllDictionariesForMapChange();
+                app.sdb.kickAllDictionariesForMapChange();
             }
         }));
         UISplitterLayout usl = new UISplitterLayout(sym, sym2, false, 0.5);
@@ -112,7 +112,7 @@ public class AppUI extends App.Svc {
 
         // start possible recommended directory nagger
         final LinkedList<String> createDirs = new LinkedList<String>();
-        for (String s : AppMain.schemas.recommendedDirs)
+        for (String s : app.sdb.recommendedDirs)
             if (!GaBIEn.dirExists(PathUtils.autoDetectWindows(app.rootPath + s)))
                 createDirs.add(s);
 
@@ -148,9 +148,9 @@ public class AppUI extends App.Svc {
                             IObjectBackend.ILoadedObject map = null;
                             if (mapId != null)
                                 map = app.odb.getObject(mapId);
-                            AppMain.schemas.updateDictionaries(map);
+                            app.sdb.updateDictionaries(map);
                         } else {
-                            AppMain.schemas.updateDictionaries(null);
+                            app.sdb.updateDictionaries(null);
                         }
 
                         app.odb.runPendingModifications();
@@ -295,7 +295,7 @@ public class AppUI extends App.Svc {
     }
 
     public void saveAllModified() {
-        app.odb.ensureAllSaved(app);
+        app.odb.ensureAllSaved();
         for (ImageEditorController iec : imgContext)
             if (iec.imageModified())
                 iec.save();

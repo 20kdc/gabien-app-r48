@@ -194,7 +194,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
                 new IntegerSchemaElement(app, 0),
                 new IntegerSchemaElement(app, 0),
                 new IntegerSchemaElement(app, 0),
-                AppMain.schemas.getSDBEntry("blend_type")
+                app.sdb.getSDBEntry("blend_type")
         };
     }
 

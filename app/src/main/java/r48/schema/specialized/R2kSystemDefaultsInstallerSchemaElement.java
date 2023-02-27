@@ -57,7 +57,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     // Ghosts, become real!
                     IRIO hmr = map.getObject().getIVar("@events");
                     for (IRIO evs : hmr.getHashKeys())
-                        R2kSavefileEventAccess.eventAsSaveEvent(saveEvs, mapId, evs, hmr.getHashVal(evs));
+                        R2kSavefileEventAccess.eventAsSaveEvent(app, saveEvs, mapId, evs, hmr.getHashVal(evs));
                     // @system save_count is in-game save count, not actual System @save_count
                     target.getIVar("@party_pos").getIVar("@map_save_count").setDeepClone(getSaveCount(map.getObject()));
 
@@ -112,39 +112,39 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                 case 0:
                     // 1. Install a basic Actor
                     sub = target.getIVar("@actors").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::Actor"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Actor"), new RubyIO().setFX(1));
                     sub.getIVar("@face_name").setString("faceset");
                     target.getIVar("@system").getIVar("@party").setArray().addAElem(0).setFX(1);
                     // 2. Install a tileset
-                    SchemaPath.setDefaultValue(target.getIVar("@tilesets").addHashVal(new RubyIO().setFX(1)), AppMain.schemas.getSDBEntry("RPG::Tileset"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(target.getIVar("@tilesets").addHashVal(new RubyIO().setFX(1)), app.sdb.getSDBEntry("RPG::Tileset"), new RubyIO().setFX(1));
                     // 3. Setup Terrain
-                    SchemaPath.setDefaultValue(target.getIVar("@terrains").addHashVal(new RubyIO().setFX(1)), AppMain.schemas.getSDBEntry("RPG::Terrain"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(target.getIVar("@terrains").addHashVal(new RubyIO().setFX(1)), app.sdb.getSDBEntry("RPG::Terrain"), new RubyIO().setFX(1));
                     // 4. Battle System initialization
                     sub = target.getIVar("@animations").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::Animation"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Animation"), new RubyIO().setFX(1));
                     sub.getIVar("@name").setString(TXDB.get("Default Fallback Animation"));
 
                     sub = target.getIVar("@states").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::State"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::State"), new RubyIO().setFX(1));
                     // These are the minimum settings for death to work correctly.
                     sub.getIVar("@name").setString(TXDB.get("Death"));
                     sub.getIVar("@restriction").setFX(1);
 
                     sub = target.getIVar("@battle_anim_sets_2k3").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::BattlerAnimationSet"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::BattlerAnimationSet"), new RubyIO().setFX(1));
                     sub.getIVar("@name").setString(TXDB.get("Default Fallback AnimSet"));
 
                     // 5. Default enemy data
                     sub = target.getIVar("@enemies").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::Enemy"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Enemy"), new RubyIO().setFX(1));
 
                     sub = target.getIVar("@troops").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::Troop"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Troop"), new RubyIO().setFX(1));
                     sub.getIVar("@name").setString(TXDB.get("Slime x1"));
 
                     sub = sub.getIVar("@members");
                     sub.addAElem(0).setNull();
-                    SchemaPath.setDefaultValue(sub.addAElem(1), AppMain.schemas.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(sub.addAElem(1), app.sdb.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(1));
 
                     // Prepare.
                     app.uiPendingRunnables.add(new Runnable() {
@@ -157,7 +157,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                 case 1:
                     // 1. Fix root
                     sub = target.getIVar("@map_infos").addHashVal(new RubyIO().setFX(0));
-                    SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(0));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(0));
                     sub.getIVar("@name").setString("Root");
                     sub.getIVar("@parent_id").setFX(0);
                     sub.getIVar("@indent").setFX(0);
@@ -165,7 +165,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
 
                     // 2. Create basic map entry
                     sub = target.getIVar("@map_infos").addHashVal(new RubyIO().setFX(1));
-                    SchemaPath.setDefaultValue(sub, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(1));
+                    SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(1));
                     sub.getIVar("@name").setString("First Map");
                     sub.getIVar("@parent_id").setFX(0);
                     sub.getIVar("@type").setFX(1);

@@ -11,7 +11,6 @@ import gabien.ui.*;
 import r48.App;
 import r48.FontSizes;
 import r48.RubyIO;
-import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
@@ -204,7 +203,7 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
 
     @Override
     public String toString() {
-        return FormatSyntax.formatExtended(TXDB.get("Ev.Pick #[#A total#]"), new RubyIO().setFX(eventCache.size()));
+        return app.fmt.formatExtended(TXDB.get("Ev.Pick #[#A total#]"), new RubyIO().setFX(eventCache.size()));
     }
 
     public static void showEvent(IRIO key, @NonNull UIMapView map, IRIO event) {

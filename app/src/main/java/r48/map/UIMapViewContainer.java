@@ -201,7 +201,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
 
         viewToolbarSplit = new UINSVertLayout(metc.getBar(), view);
         layoutAddElement(viewToolbarSplit);
-        AppMain.schemas.kickAllDictionariesForMapChange();
+        app.sdb.kickAllDictionariesForMapChange();
         internalNoToolCallback = new Runnable() {
             @Override
             public void run() {

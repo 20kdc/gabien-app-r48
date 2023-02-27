@@ -14,9 +14,11 @@ import gabienapp.UIFancyInit;
 import r48.AdHocSaveLoad;
 import r48.App;
 import r48.RubyIO;
+import r48.dbs.FormatSyntax;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
 import r48.dbs.TXDB;
+import r48.imageio.ImageIOFormat;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.systems.MapSystem;
@@ -38,6 +40,8 @@ public class AppMain {
 
     public static void initializeCore(final String rp, final String sip, final String gamepak) {
         instance = new App();
+        instance.fmt = new FormatSyntax(instance);
+        instance.imageIOFormats = ImageIOFormat.initializeFormats(instance);
 
         instance.rootPath = rp;
         instance.secondaryImagePath = sip;
@@ -51,7 +55,7 @@ public class AppMain {
 
         // initialize everything else that needs initializing, starting with ObjectDB
         IObjectBackend backend = IObjectBackend.Factory.create(instance.odbBackend, instance.rootPath, instance.dataPath, instance.dataExt);
-        instance.odb = new ObjectDB(schemas.opaque, backend, (s) -> {
+        instance.odb = new ObjectDB(instance, backend, (s) -> {
             if (instance.system != null)
                 instance.system.saveHook(s);
         });

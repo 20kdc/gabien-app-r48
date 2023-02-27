@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import r48.RubyIO;
+import r48.app.AppMain;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.TestDBUtils;
@@ -63,7 +64,7 @@ public class SchemaParseTest {
         TestKickstart.kickstart("RAM/", "UTF-8", gamepak + "/");
         // ... Also does this.
         // Not really parsing, but a good safety measure none-the-less.
-        for (EventCommandArraySchemaElement st : TestDBUtils.getLoadedCSLs()) {
+        for (EventCommandArraySchemaElement st : TestDBUtils.getLoadedCSLs(AppMain.instance)) {
             final RubyIO rio = new RubyIO();
             SchemaPath.setDefaultValue(rio, st, null);
             RubyIO rio2 = rio.addAElem(0);

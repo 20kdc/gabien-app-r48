@@ -10,6 +10,7 @@ package r48.tests;
 import gabien.TestKickstart;
 import org.junit.Test;
 
+import r48.App;
 import r48.app.AppMain;
 import r48.dbs.CMDB;
 import r48.io.IObjectBackend;
@@ -52,7 +53,8 @@ public class R2kCommandSchemaTest {
 
     private IRIO addCommandInto(String listType, IRIO iVar) {
         IRIO res = iVar.addAElem(0);
-        SchemaPath.setDefaultValue(res, AppMain.schemas.getSDBEntry(listType), new IRIOFixnum(0));
+        App app = AppMain.instance;
+        SchemaPath.setDefaultValue(res, app.sdb.getSDBEntry(listType), new IRIOFixnum(0));
         rpgEv.modifyVal(rpgEvInst, rpgEvP, false);
         return res;
     }
@@ -60,14 +62,16 @@ public class R2kCommandSchemaTest {
     private void beginCommandProcedure() {
         TestKickstart.kickstart("RAM/", "UTF-8", "R2K/");
         rpgEvInst = new Event();
-        rpgEv = AppMain.schemas.getSDBEntry("RPG::Event");
+        App app = AppMain.instance;
+        rpgEv = app.sdb.getSDBEntry("RPG::Event");
         rpgEvP = new SchemaPath(rpgEv, new IObjectBackend.MockLoadedObject(rpgEvInst));
         rpgEv.modifyVal(rpgEvInst, rpgEvP, true);
     }
 
     private void runMainCommandProcedure(String cmdt, String cmd, IRIO iVar) {
         IRIO res = addCommandInto(cmdt, iVar);
-        CMDB cmdb = AppMain.schemas.getCMDB(cmd);
+        App app = AppMain.instance;
+        CMDB cmdb = app.sdb.getCMDB(cmd);
         for (int i : cmdb.knownCommandOrder) {
             res.getIVar("@code").setFX(i);
             rpgEv.modifyVal(rpgEvInst, rpgEvP, true);

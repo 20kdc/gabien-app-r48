@@ -154,7 +154,7 @@ public class UIRMUniversalStringLocator extends App.Prx {
                 String log = "";
                 for (ObjectInfo objInfo : setSelector.getSet()) {
                     IObjectBackend.ILoadedObject rio = app.odb.getObject(objInfo.idName);
-                    SchemaElement se = AppMain.schemas.getSDBEntry(objInfo.schemaName);
+                    SchemaElement se = app.sdb.getSDBEntry(objInfo.schemaName);
                     if (rio != null) {
                         files++;
                         // full replacements
@@ -225,7 +225,7 @@ public class UIRMUniversalStringLocator extends App.Prx {
                         }
                     }
                 }
-                app.ui.launchDialog(FormatSyntax.formatExtended(TXDB.get("Made #A total string adjustments across #B files."), new IRIOFixnum(total), new IRIOFixnum(files)) + log);
+                app.ui.launchDialog(app.fmt.formatExtended(TXDB.get("Made #A total string adjustments across #B files."), new IRIOFixnum(total), new IRIOFixnum(files)) + log);
             }
         }));
     }

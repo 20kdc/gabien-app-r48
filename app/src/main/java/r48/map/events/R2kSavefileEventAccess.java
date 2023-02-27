@@ -9,7 +9,6 @@ package r48.map.events;
 
 import r48.App;
 import r48.RubyIO;
-import r48.app.AppMain;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
@@ -157,9 +156,9 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
         return null;
     }
 
-    public static void eventAsSaveEvent(IRIO rMap, long mapId, IRIO key, IRIO event) {
+    public static void eventAsSaveEvent(App app, IRIO rMap, long mapId, IRIO key, IRIO event) {
         IRIO rio = rMap.addHashVal(key);
-        SchemaPath.setDefaultValue(rio, AppMain.schemas.getSDBEntry("RPG::SaveMapEvent"), key);
+        SchemaPath.setDefaultValue(rio, app.sdb.getSDBEntry("RPG::SaveMapEvent"), key);
         rio.getIVar("@map").setFX(mapId);
         rio.getIVar("@x").setDeepClone(event.getIVar("@x"));
         rio.getIVar("@y").setDeepClone(event.getIVar("@y"));
@@ -231,7 +230,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
                             app.ui.launchDialog(TXDB.get("So, you saw the ghost, got the Map's properties window via System Tools (or you left it up) to delete the event, then came back and pressed Sync? Or has the software just completely broken?!?!?"));
                             return;
                         }
-                        eventAsSaveEvent(getSaveEvents(), getMapId(), evK, ev);
+                        eventAsSaveEvent(app, getSaveEvents(), getMapId(), evK, ev);
                         pokeHive();
                     }
                 }
@@ -276,6 +275,6 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     }
 
     public void pokeHive() {
-        app.odb.objectRootModified(saveFileRoot, new SchemaPath(AppMain.schemas.getSDBEntry(saveFileRootSchema), saveFileRoot));
+        app.odb.objectRootModified(saveFileRoot, new SchemaPath(app.sdb.getSDBEntry(saveFileRootSchema), saveFileRoot));
     }
 }

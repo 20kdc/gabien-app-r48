@@ -121,7 +121,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
         if (l == -1)
             l = 0;
         IRIO mi = mapInfos.getObject().addHashVal(new RubyIO().setFX(k));
-        SchemaPath.setDefaultValue(mi, AppMain.schemas.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
+        SchemaPath.setDefaultValue(mi, app.sdb.getSDBEntry("RPG::MapInfo"), new RubyIO().setFX(k));
         mi.getIVar("@parent_id").setFX(l);
         mi.getIVar("@order").setFX(targetOrder + 1);
         return targetOrder;
@@ -129,7 +129,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
 
     @Override
     public void complete() {
-        SchemaPath fakePath = new SchemaPath(AppMain.schemas.getSDBEntry("File.MapInfos"), mapInfos);
+        SchemaPath fakePath = new SchemaPath(app.sdb.getSDBEntry("File.MapInfos"), mapInfos);
         app.odb.objectRootModified(mapInfos, fakePath);
         modHandler.accept(fakePath);
     }

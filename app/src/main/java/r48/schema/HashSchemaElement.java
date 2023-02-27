@@ -109,7 +109,7 @@ public class HashSchemaElement extends SchemaElement {
 
                     boolean relevantToSearch = false;
                     relevantToSearch |= keyText.contains(searchBox.text);
-                    relevantToSearch |= FormatSyntax.interpretParameter(value, valElem, true).contains(searchBox.text);
+                    relevantToSearch |= app.fmt.interpretParameter(value, valElem, true).contains(searchBox.text);
                     if (!relevantToSearch)
                         continue;
 

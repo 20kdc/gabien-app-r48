@@ -58,7 +58,7 @@ public class InitButtonSchemaElement extends SchemaElement {
     }
 
     private boolean evaluateCondition(IRIO target) {
-        return !FormatSyntax.formatNameExtended(condition, target, new IRIO[0], null).equals("0");
+        return !app.fmt.formatNameExtended(condition, target, new IRIO[0], null).equals("0");
     }
 
     @Override

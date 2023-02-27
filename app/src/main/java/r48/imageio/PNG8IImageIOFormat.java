@@ -7,6 +7,7 @@
 package r48.imageio;
 
 import gabien.IImage;
+import r48.App;
 import r48.dbs.TXDB;
 
 import java.io.*;
@@ -19,8 +20,8 @@ import java.util.zip.InflaterOutputStream;
  * Created on April 14th 2018.
  */
 public class PNG8IImageIOFormat extends ImageIOFormat {
-    public PNG8IImageIOFormat() {
-        super(true);
+    public PNG8IImageIOFormat(App app) {
+        super(app, true);
     }
     
     public static boolean supports(ImageIOImage img) {

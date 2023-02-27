@@ -45,7 +45,7 @@ public class CMDB {
 
             @Override
             public void newObj(int objId, String objName) {
-                rc = new RPGCommand();
+                rc = new RPGCommand(sdb.app);
                 rc.category = categories.length - 1;
                 subContext = "CMDB@" + baseFile + "." + lenForm(objId);
                 // Names use NDB syntax, thus, separate context

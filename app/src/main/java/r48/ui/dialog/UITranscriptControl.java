@@ -94,8 +94,8 @@ public class UITranscriptControl extends App.Prx {
                         tc.dump(dumper);;
 
                 // Prevent breakage
-                AppMain.schemas.updateDictionaries(null);
-                AppMain.schemas.kickAllDictionariesForMapChange();
+                app.sdb.updateDictionaries(null);
+                app.sdb.kickAllDictionariesForMapChange();
 
                 dumper.end();
                 ps.close();
@@ -133,7 +133,7 @@ public class UITranscriptControl extends App.Prx {
 
         public TCMap(IRMMapSystem.RMMapData rm) {
             rmd = rm;
-            whatDoWeCallThis = FormatSyntax.formatExtended(TXDB.get("Map:#A"), new RubyIO().setString(rmd.getName(), true));
+            whatDoWeCallThis = app.fmt.formatExtended(TXDB.get("Map:#A"), new RubyIO().setString(rmd.getName(), true));
         }
 
         @Override
@@ -144,8 +144,8 @@ public class UITranscriptControl extends App.Prx {
             dumper.startFile(RXPRMLikeMapInfoBackend.sNameFromInt(rmd.id), whatDoWeCallThis);
             // We need to temporarily override map context.
             // This'll fix itself by next frame...
-            AppMain.schemas.updateDictionaries(map);
-            AppMain.schemas.kickAllDictionariesForMapChange();
+            app.sdb.updateDictionaries(map);
+            app.sdb.kickAllDictionariesForMapChange();
             LinkedList<Integer> orderedEVN = new LinkedList<Integer>();
             for (IRIO i : map.getObject().getIVar("@events").getHashKeys())
                 orderedEVN.add((int) i.getFX());
@@ -159,7 +159,7 @@ public class UITranscriptControl extends App.Prx {
                     IRIO page = pages.getAElem(i);
                     if (page.getType() == '0')
                         continue; // 0th page on R2k backend.
-                    dumper.dump(FormatSyntax.formatExtended(TXDB.get("Ev.#A #C, page #B"), new RubyIO().setFX(k), new RubyIO().setFX(pageId), event.getIVar("@name")), page.getIVar("@list"), commandsEvent);
+                    dumper.dump(app.fmt.formatExtended(TXDB.get("Ev.#A #C, page #B"), new RubyIO().setFX(k), new RubyIO().setFX(pageId), event.getIVar("@name")), page.getIVar("@list"), commandsEvent);
                     pageId++;
                 }
             }

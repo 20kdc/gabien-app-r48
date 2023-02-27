@@ -50,10 +50,10 @@ import java.util.LinkedList;
 public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSystem {
     public R2kSystem(App app) {
         super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "", "", new ChainedImageLoader(new IImageLoader[] {
-                new ImageIOImageLoader(new XYZImageIOFormat(), ".xyz", true),
+                new ImageIOImageLoader(new XYZImageIOFormat(app), ".xyz", true),
                 // This is actually valid, but almost nobody wanted to use BMP over one of PNG or XYZ. Who'd have guessed?
-                new ImageIOImageLoader(new BMP8IImageIOFormat(8), ".bmp", true),
-                new ImageIOImageLoader(new PNG8IImageIOFormat(), ".png", true),
+                new ImageIOImageLoader(new BMP8IImageIOFormat(app, 8), ".bmp", true),
+                new ImageIOImageLoader(new PNG8IImageIOFormat(app), ".png", true),
                 // EasyRPG extension: arbitrary PNGs
                 new GabienImageLoader(".png")
         }))), true);
@@ -149,12 +149,12 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             // layer 2 upper
             layers = new IMapViewDrawLayer[] {
                 new PanoramaMapViewDrawLayer(img, loopX, loopY, autoLoopX, autoLoopY, tbl.width, tbl.height, 320, 240, 1),
-                new R2kTileMapViewDrawLayer(tbl, tileRenderer, 0, false, tileset, TXDB.get("L0 (no Upper flag)")),
-                new R2kTileMapViewDrawLayer(tbl, tileRenderer, 1, false, tileset, TXDB.get("L1 (no Upper flag)")),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, false, tileset, TXDB.get("L0 (no Upper flag)")),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, false, tileset, TXDB.get("L1 (no Upper flag)")),
                     new EventMapViewDrawLayer(0, events, eventRenderer, TXDB.get(" (Below Player)")),
                     new EventMapViewDrawLayer(1, events, eventRenderer, TXDB.get(" (Player/Same)")), // Player/Same
-                new R2kTileMapViewDrawLayer(tbl, tileRenderer, 0, true, tileset, TXDB.get("L0 (Upper flag)")),
-                new R2kTileMapViewDrawLayer(tbl, tileRenderer, 1, true, tileset, TXDB.get("L1 (Upper flag)")),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, true, tileset, TXDB.get("L0 (Upper flag)")),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, true, tileset, TXDB.get("L1 (Upper flag)")),
                     new EventMapViewDrawLayer(2, events, eventRenderer, TXDB.get(" (Above Player)")),
                 new PassabilityMapViewDrawLayer(new R2kPassabilitySource(tbl, tileset, (scrollFlags & 2) != 0, (scrollFlags & 1) != 0), 16),
                     new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, ""),
