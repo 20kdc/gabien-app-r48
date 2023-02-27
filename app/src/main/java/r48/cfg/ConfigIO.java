@@ -8,13 +8,10 @@ package r48.cfg;
 
 import java.util.LinkedList;
 
-import gabien.FontManager;
 import gabien.GaBIEn;
-import gabien.ui.UIBorderedElement;
 import r48.AdHocSaveLoad;
 import r48.RubyIO;
 import r48.cfg.FontSizes.FontSizeField;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 
 /**
@@ -35,12 +32,12 @@ public class ConfigIO {
         prepare.addIVar("@secondary_images_list", encodeStringList(c.secondaryImageLoadLocationBackup));
         prepare.addIVar("@saved_rootpath_list", encodeStringList(c.rootPathBackup));
 
-        prepare.addIVar("@lang", new RubyIO().setString(TXDB.getLanguage(), true));
+        prepare.addIVar("@lang", new RubyIO().setString(c.language, true));
         if (c.fontOverride != null) {
             prepare.addIVar("@sysfont", new RubyIO().setString(c.fontOverride, true));
             prepare.addIVar("@sysfont_ue8", new RubyIO().setBool(c.fontOverrideUE8));
         }
-        prepare.addIVar("@theme_variant", new RubyIO().setFX(UIBorderedElement.borderTheme));
+        prepare.addIVar("@theme_variant", new RubyIO().setFX(c.borderTheme));
         prepare.addIVar("@actual_blending", new RubyIO().setBool(c.allowBlending));
         prepare.addIVar("@windowing_external", new RubyIO().setBool(c.windowingExternal));
         AdHocSaveLoad.save("fonts", prepare);
@@ -88,7 +85,7 @@ public class ConfigIO {
             }
             RubyIO sys2 = dat.getInstVarBySymbol("@sysfont_ue8");
             if (sys2 != null)
-                FontManager.fontOverrideUE8 = sys2.type == 'T';
+                c.fontOverrideUE8 = sys2.type == 'T';
             // old paths
             RubyIO sys3 = dat.getInstVarBySymbol("@secondary_images");
             if (sys3 != null)
@@ -112,7 +109,7 @@ public class ConfigIO {
             // ...
             RubyIO sys5 = dat.getInstVarBySymbol("@theme_variant");
             if (sys5 != null)
-                UIBorderedElement.borderTheme = (int) sys5.fixnumVal;
+                c.borderTheme = (int) sys5.fixnumVal;
             RubyIO sys6 = dat.getInstVarBySymbol("@actual_blending");
             if (sys6 != null)
                 c.allowBlending = sys6.type == 'T';

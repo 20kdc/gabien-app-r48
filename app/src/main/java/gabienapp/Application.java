@@ -225,7 +225,7 @@ public class Application {
             @Override
             public void run() {
                 TXDB.init();
-                boolean canAvoidWait = c.f.loadLanguage();
+                boolean canAvoidWait = c.loadLanguage();
                 // TXDB 'stable', spammed class refs
                 txdbDonePrimaryTask.set(true);
                 // If we're setup correctly: English never needs the font-loading.

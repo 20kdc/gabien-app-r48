@@ -9,9 +9,6 @@ package r48.cfg;
 
 import gabien.GaBIEn;
 import gabien.uslx.append.*;
-import r48.AdHocSaveLoad;
-import r48.RubyIO;
-import r48.dbs.TXDB;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -136,21 +133,6 @@ public class FontSizes {
             if (field.getType() == int.class)
                 fields.add(new FontSizeField(field));
         return fields;
-    }
-
-    // Notably, language is loaded early, and is not loaded along with font sizes in general.
-    // This is so that TXDB & such can start up.
-    // Returns true if sysfont is disabled (see caller in Application)
-    public static boolean loadLanguage() {
-        RubyIO dat = AdHocSaveLoad.load("fonts");
-        boolean sysfontDisabled = false;
-        if (dat != null) {
-            sysfontDisabled = dat.getInstVarBySymbol("@sysfont") == null;
-            RubyIO sys = dat.getInstVarBySymbol("@lang");
-            if (sys != null)
-                TXDB.setLanguage(sys.decString());
-        }
-        return sysfontDisabled;
     }
 
     public class FontSizeField implements IConsumer<Integer>, ISupplier<Integer> {

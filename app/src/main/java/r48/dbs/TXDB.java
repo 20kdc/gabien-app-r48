@@ -159,10 +159,10 @@ public class TXDB {
         return s.substring(s.indexOf('/') + 1);
     }
 
-    public static void nextLanguage() {
-        languageId++;
-        languageId %= languages.length;
-        setLanguage();
+    public static String getNextLanguage() {
+        int nli = languageId + 1;
+        nli %= languages.length;
+        return languages[nli];
     }
     public static void setLanguage(String s) {
         for (int i = 0; i < languages.length; i++) {

@@ -14,6 +14,7 @@ import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.ui.UIBorderedElement;
 import r48.cfg.FontSizes.FontSizeField;
+import r48.dbs.TXDB;
 
 /**
  * Here goes nothing...
@@ -29,6 +30,9 @@ public class Config {
     public final LinkedList<String> secondaryImageLoadLocationBackup = new LinkedList<String>();
     // This is the root path which is *defaulted to*.
     public final LinkedList<String> rootPathBackup = new LinkedList<String>();
+
+    // TXDB global thing, requires special handling, just roll with it
+    public String language;
 
     // UI globals, see applyUIGlobals
     public @Nullable String fontOverride;
@@ -56,6 +60,8 @@ public class Config {
         secondaryImageLoadLocationBackup.clear();
         rootPathBackup.clear();
 
+        language = "English";
+
         // If single-window, assume we're on Android,
         //  so the user probably wants to be able to use EasyRPG Player
         // If EasyRPG Player has an issue with this, please bring it up at any time, and I will change this.
@@ -71,5 +77,16 @@ public class Config {
         FontManager.fontOverrideUE8 = fontOverrideUE8;
         UIBorderedElement.borderTheme = borderTheme;
         GaBIEn.sysCoreFontSize = f.gSysCoreTextHeight;
+    }
+
+    /**
+     * ported from FontSizes
+     * Notably, language is loaded early, and is not loaded along with font sizes in general.
+     * This is so that TXDB & such can start up.
+     * Returns true if sysfont is disabled (see caller in Application)
+     */
+    public boolean loadLanguage() {
+        TXDB.setLanguage(language);
+        return fontOverride == null;
     }
 }

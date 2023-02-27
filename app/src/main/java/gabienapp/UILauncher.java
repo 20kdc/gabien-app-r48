@@ -202,7 +202,9 @@ public class UILauncher extends UIProxy {
                 // This associates a lag with switching language, when it's actually due to Java being slow at loading a font.
                 // (I'm slightly glad I'm not the only one this happens for, but unhappy that it's an issue.)
                 // Unfortunately, a warning message cannot be shown to the user, as the warning message would itself trigger lag-for-font-load.
-                TXDB.nextLanguage();
+                String lang = TXDB.getNextLanguage();
+                c.language = lang;
+                TXDB.setLanguage(lang);
                 closeHelper.accept(null);
             }
         }, c.f.launcherTextHeight);
