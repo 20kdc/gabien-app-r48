@@ -53,12 +53,8 @@ import java.util.*;
  * Created on 12/27/16.
  */
 public class AppMain {
+    // The last AppMain static variable, in the process of being phased out.
     public static App instance;
-
-    //private static UILabel uiStatusLabel;
-
-    public static String rootPath = null;
-    public static String secondaryImagePath = null;
 
     // Databases
     public static ObjectDB objectDB = null;
@@ -72,25 +68,22 @@ public class AppMain {
     // State for in-system copy/paste
     public static RubyIO theClipboard = null;
 
-    // All magical bindings in use
-    public static WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache;
-
     public static void initializeCore(final String rp, final String sip, final String gamepak) {
         instance = new App();
 
-        rootPath = rp;
-        secondaryImagePath = sip;
+        instance.rootPath = rp;
+        instance.secondaryImagePath = sip;
 
         // initialize core resources
 
         schemas = new SDB(instance);
-        magicalBindingCache = new WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>>();
+        instance.magicalBindingCache = new WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>>();
 
         schemas.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
 
         // initialize everything else that needs initializing, starting with ObjectDB
 
-        objectDB = instance.odb = new ObjectDB(IObjectBackend.Factory.create(instance.odbBackend, rootPath, instance.dataPath, instance.dataExt), new IConsumer<String>() {
+        objectDB = instance.odb = new ObjectDB(IObjectBackend.Factory.create(instance.odbBackend, instance.rootPath, instance.dataPath, instance.dataExt), new IConsumer<String>() {
             @Override
             public void accept(String s) {
                 if (instance.system != null)
@@ -163,8 +156,6 @@ public class AppMain {
         if (instance != null)
             instance.shutdown();
         instance = null;
-        rootPath = null;
-        secondaryImagePath = null;
         objectDB = null;
         schemas = null;
     }
@@ -173,7 +164,6 @@ public class AppMain {
         shutdownCore();
         stuffRendererIndependent = null;
         theClipboard = null;
-        magicalBindingCache = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
     }

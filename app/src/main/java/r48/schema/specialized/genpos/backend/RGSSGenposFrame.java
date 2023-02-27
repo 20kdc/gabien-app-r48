@@ -201,7 +201,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
     @Override
     public SchemaPath getCellProp(final int ct, final int i) {
         // oh, this'll be *hilarious*. NOT.
-        SchemaElement se = new MagicalBindingSchemaElement(new IMagicalBinder() {
+        SchemaElement se = new MagicalBindingSchemaElement(app, new IMagicalBinder() {
             @Override
             public RubyIO targetToBoundNCache(IRIO target) {
                 short val = new RubyTable(target.getBuffer()).getTiletype(ct, i, 0);

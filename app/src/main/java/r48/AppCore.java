@@ -27,6 +27,8 @@ public class AppCore {
 
     public ATDB[] autoTiles = new ATDB[0];
     public String odbBackend = "<you forgot to select a backend>";
+    public String rootPath;
+    public String secondaryImagePath;
     // Null system backend will always "work"
     public String sysBackend = "null";
     public String dataPath = "";

@@ -55,7 +55,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
     public static void tryInitOSSHESEDB(App app) {
         InputStream inp = null;
         try {
-            inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(AppMain.rootPath + "locmaps.txt"));
+            inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(app.rootPath + "locmaps.txt"));
             if (inp == null)
                 return;
             HashMap<Integer, String> bigMap = new HashMap<Integer, String>();

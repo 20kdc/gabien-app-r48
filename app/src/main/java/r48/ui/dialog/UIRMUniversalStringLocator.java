@@ -176,7 +176,7 @@ public class UIRMUniversalStringLocator extends App.Prx {
                             }
                         });
                         // now do it!
-                        int count = BasicToolset.universalStringLocator(rio.getObject(), new IFunction<IRIO, Integer>() {
+                        int count = BasicToolset.universalStringLocator(app, rio.getObject(), new IFunction<IRIO, Integer>() {
                             @Override
                             public Integer apply(IRIO rubyIO) {
                                 StringBuilder res = new StringBuilder();

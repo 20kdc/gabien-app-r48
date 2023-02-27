@@ -13,7 +13,6 @@ import gabien.IImage;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.imagefx.HueShiftImageEffect;
 

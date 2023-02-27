@@ -17,7 +17,7 @@ import gabien.GaBIEn;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
-import gabien.ui.UIElement.UIProxy;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -34,7 +34,7 @@ import r48.ui.UISetSelector;
 /**
  * Created 23rd October 2022.
  */
-public class UITranscriptControl extends UIProxy {
+public class UITranscriptControl extends App.Prx {
     private UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
     private boolean done = false;
 
@@ -44,7 +44,8 @@ public class UITranscriptControl extends UIProxy {
     private final IRMMapSystem mapSystem;
     private final CMDB commandsEvent;
 
-    public UITranscriptControl(IRMMapSystem ms, CMDB ce) {
+    public UITranscriptControl(App app, IRMMapSystem ms, CMDB ce) {
+        super(app);
         mapSystem = ms;
         commandsEvent = ce;
 
@@ -81,7 +82,7 @@ public class UITranscriptControl extends UIProxy {
             public void run() {
                 PrintStream ps = null;
                 try {
-                    ps = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "transcript.html"), false, "UTF-8");
+                    ps = new PrintStream(GaBIEn.getOutFile(app.rootPath + "transcript.html"), false, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }

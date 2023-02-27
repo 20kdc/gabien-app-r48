@@ -19,7 +19,7 @@ import gabien.ui.UIScrollLayout;
 import gabien.ui.UIScrollbar;
 import gabien.ui.UISplitterLayout;
 import gabien.media.audio.*;
-import r48.AppMain;
+import r48.App;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.io.PathUtils;
@@ -113,9 +113,9 @@ public class UIAudioPlayer extends UIProxy {
         lastSeekerScrollPoint = seeker.scrollPoint;
     }
 
-    public static UIElement create(String filename, double speed) {
+    public static UIElement create(App app, String filename, double speed) {
         try {
-            InputStream tryWav = GaBIEn.getInFile(PathUtils.autoDetectWindows(AppMain.rootPath + filename + ".wav"));
+            InputStream tryWav = GaBIEn.getInFile(PathUtils.autoDetectWindows(app.rootPath + filename + ".wav"));
             return new UIAudioPlayer(WavIO.readWAV(tryWav, true), speed);
         } catch (Exception e) {
             e.printStackTrace();

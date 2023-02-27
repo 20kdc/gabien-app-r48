@@ -6,12 +6,16 @@
  */
 package r48;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.WeakHashMap;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement.UIProxy;
+import r48.io.data.IRIO;
+import r48.schema.specialized.IMagicalBinder;
 
 /**
  * An attempt to move as much as possible out of static variables.
@@ -24,6 +28,9 @@ public final class App extends AppCore {
     // these init during UI init!
     public AppUI ui;
     public AppNewProject np;
+
+    // All magical bindings in use
+    public WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache;
 
     public void shutdown() {
         if (ui != null) {

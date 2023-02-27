@@ -14,7 +14,6 @@ import gabien.IPeripherals;
 import gabien.ui.IPointer;
 import gabien.ui.IPointerReceiver;
 import gabien.ui.Size;
-import r48.AppMain;
 import r48.imagefx.MultiplyImageEffect;
 import r48.ui.UIPlaneView;
 

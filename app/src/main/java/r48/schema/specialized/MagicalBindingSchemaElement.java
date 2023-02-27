@@ -8,6 +8,7 @@
 package r48.schema.specialized;
 
 import gabien.ui.UIElement;
+import r48.App;
 import r48.io.IObjectBackend;
 import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.IRIO;
@@ -29,8 +30,10 @@ import java.io.IOException;
 public class MagicalBindingSchemaElement extends SchemaElement {
     public SchemaElement inner;
     public IMagicalBinder binder;
+    public final App app;
 
-    public MagicalBindingSchemaElement(IMagicalBinder b, SchemaElement inn) {
+    public MagicalBindingSchemaElement(App app, IMagicalBinder b, SchemaElement inn) {
+        this.app = app;
         binder = b;
         inner = inn;
     }
@@ -43,7 +46,7 @@ public class MagicalBindingSchemaElement extends SchemaElement {
     }
 
     private SchemaPath createPath(final IRIO trueTarget, final SchemaPath truePath) {
-        final IRIO bound = MagicalBinders.toBoundWithCache(binder, trueTarget);
+        final IRIO bound = MagicalBinders.toBoundWithCache(app, binder, trueTarget);
         SchemaPath sp = new SchemaPath(new SchemaElement() {
             // This is a fake root element used for binding
             @Override

@@ -31,7 +31,7 @@ import r48.map.tiles.IkaTileRenderer;
  */
 public class IkaSystem extends MapSystem {
     public IkaSystem(App app) {
-        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader("Pbm/", "", new GabienImageLoader(".pbm", 0, 0, 0))), true);
+        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "Pbm/", "", new GabienImageLoader(".pbm", 0, 0, 0))), true);
     }
 
     public StuffRenderer rendererGeneral(IRIO map, IEventAccess iea) {

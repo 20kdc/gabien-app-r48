@@ -196,7 +196,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                 if (obj == null) {
                                     AppMain.launchDialog(TXDB.get("The file couldn't be read, and R48 cannot create it."));
                                 } else {
-                                    app.ui.wm.createWindow(new UITest(obj.getObject()));
+                                    app.ui.wm.createWindow(new UITest(app, obj.getObject()));
                                 }
                             }
                         }));
@@ -217,12 +217,12 @@ public class BasicToolset extends App.Svc implements IToolset {
                                             AppMain.launchDialog(TXDB.get("A file couldn't be read, and R48 cannot create it."));
                                         } else {
                                             try {
-                                                OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "objcompareAB.txt"));
+                                                OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "objcompareAB.txt"));
                                                 byte[] cid = IMIUtils.createIMIData(objA.getObject(), objB.getObject(), "");
                                                 if (cid != null)
                                                     os.write(cid);
                                                 os.close();
-                                                os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "objcompareBA.txt"));
+                                                os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "objcompareBA.txt"));
                                                 cid = IMIUtils.createIMIData(objB.getObject(), objA.getObject(), "");
                                                 if (cid != null)
                                                     os.write(cid);
@@ -243,13 +243,13 @@ public class BasicToolset extends App.Svc implements IToolset {
                     @Override
                     public void run() {
                         try {
-                            OutputStream lm = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "locmaps.txt"));
+                            OutputStream lm = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "locmaps.txt"));
                             final DataOutputStream dos = new DataOutputStream(lm);
                             final HashSet<String> text = new HashSet<String>();
                             for (String s : app.getAllObjects()) {
                                 IObjectBackend.ILoadedObject obj = AppMain.objectDB.getObject(s, null);
                                 if (obj != null) {
-                                    universalStringLocator(obj.getObject(), new IFunction<IRIO, Integer>() {
+                                    universalStringLocator(app, obj.getObject(), new IFunction<IRIO, Integer>() {
                                         @Override
                                         public Integer apply(IRIO rubyIO) {
                                             text.add(rubyIO.decString());
@@ -283,7 +283,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                             @Override
                             public void accept(String s) {
                                 final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
-                                final InputStream is = GaBIEn.getInFile(UITest.getPrintPath());
+                                final InputStream is = GaBIEn.getInFile(UITest.getPrintPath(app));
                                 if (rio == null) {
                                     AppMain.launchDialog(TXDB.get("The target file couldn't be read, and there's no schema to create it."));
                                 } else if (is == null) {
@@ -355,8 +355,8 @@ public class BasicToolset extends App.Svc implements IToolset {
                         PrintStream psA = null;
                         PrintStream psB = null;
                         try {
-                            psA = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "Lang" + TXDB.getLanguage() + ".txt"), false, "UTF-8");
-                            psB = new PrintStream(GaBIEn.getOutFile(AppMain.rootPath + "Cmtx" + TXDB.getLanguage() + ".txt"), false, "UTF-8");
+                            psA = new PrintStream(GaBIEn.getOutFile(app.rootPath + "Lang" + TXDB.getLanguage() + ".txt"), false, "UTF-8");
+                            psB = new PrintStream(GaBIEn.getOutFile(app.rootPath + "Cmtx" + TXDB.getLanguage() + ".txt"), false, "UTF-8");
                         } catch (UnsupportedEncodingException e) {
                             throw new RuntimeException(e);
                         }
@@ -414,7 +414,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Filename?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
-                                app.ui.wm.createWindow(UIAudioPlayer.create(s, 1));
+                                app.ui.wm.createWindow(UIAudioPlayer.create(app, s, 1));
                             }
                         }));
                     }
@@ -466,7 +466,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         if (AppMain.theClipboard == null) {
                             AppMain.launchDialog(TXDB.get("There is nothing in the clipboard."));
                         } else {
-                            app.ui.wm.createWindow(new UITest(AppMain.theClipboard));
+                            app.ui.wm.createWindow(new UITest(app, AppMain.theClipboard));
                         }
                     }
                 }
@@ -503,7 +503,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         };
     }
 
-    public static int universalStringLocator(IRIO rio, IFunction<IRIO, Integer> string, boolean writing) {
+    public static int universalStringLocator(App app, IRIO rio, IFunction<IRIO, Integer> string, boolean writing) {
         // NOTE: Hash keys, ivar keys are not up for modification.
         int total = 0;
         int type = rio.getType();
@@ -511,18 +511,18 @@ public class BasicToolset extends App.Svc implements IToolset {
             total += string.apply(rio);
         if ((type == '{') || (type == '}'))
             for (IRIO me : rio.getHashKeys())
-                total += universalStringLocator(rio.getHashVal(me), string, writing);
+                total += universalStringLocator(app, rio.getHashVal(me), string, writing);
         if (type == '[') {
             int arrLen = rio.getALen();
             for (int i = 0; i < arrLen; i++)
-                total += universalStringLocator(rio.getAElem(i), string, writing);
+                total += universalStringLocator(app, rio.getAElem(i), string, writing);
         }
         for (String k : rio.getIVars())
-            total += universalStringLocator(rio.getIVar(k), string, writing);
+            total += universalStringLocator(app, rio.getIVar(k), string, writing);
         IMagicalBinder b = MagicalBinders.getBinderFor(rio);
         if (b != null) {
-            IRIO bound = MagicalBinders.toBoundWithCache(b, rio);
-            int c = universalStringLocator(bound, string, writing);
+            IRIO bound = MagicalBinders.toBoundWithCache(app, b, rio);
+            int c = universalStringLocator(app, bound, string, writing);
             total += c;
             if (writing)
                 if (c != 0)

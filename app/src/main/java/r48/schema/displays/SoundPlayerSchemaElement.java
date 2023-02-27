@@ -10,6 +10,7 @@ package r48.schema.displays;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
+import r48.App;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
@@ -27,8 +28,10 @@ public class SoundPlayerSchemaElement extends SchemaElement {
     public final @Nullable PathSyntax volumePath;
     public final @Nullable PathSyntax tempoPath;
     public final @Nullable PathSyntax balancePath;
+    public final App app;
 
-    public SoundPlayerSchemaElement(String pfx, PathSyntax nP, @Nullable PathSyntax vP, @Nullable PathSyntax tP, @Nullable PathSyntax bP) {
+    public SoundPlayerSchemaElement(App app, String pfx, PathSyntax nP, @Nullable PathSyntax vP, @Nullable PathSyntax tP, @Nullable PathSyntax bP) {
+        this.app = app;
         prefix = pfx;
         namePath = nP;
         volumePath = vP;
@@ -43,7 +46,7 @@ public class SoundPlayerSchemaElement extends SchemaElement {
         double tempo = 1;
         if (tempoObj != null)
             tempo = tempoObj.getFX() / 100d;
-        return UIAudioPlayer.create(prefix + nameObj.decString(), tempo);
+        return UIAudioPlayer.create(app, prefix + nameObj.decString(), tempo);
     }
 
     @Override

@@ -64,7 +64,7 @@ public class AppUI extends App.Svc {
     }
 
     public ISupplier<IConsumer<Double>> initialize(WindowCreatingUIElementConsumer uiTicker) {
-        GaBIEn.setBrowserDirectory(AppMain.rootPath);
+        GaBIEn.setBrowserDirectory(app.rootPath);
 
         // Initialize imageFX before doing anything graphical
         imageFXCache = new ImageFXCache();
@@ -107,7 +107,7 @@ public class AppUI extends App.Svc {
         // start possible recommended directory nagger
         final LinkedList<String> createDirs = new LinkedList<String>();
         for (String s : AppMain.schemas.recommendedDirs)
-            if (!GaBIEn.dirExists(PathUtils.autoDetectWindows(AppMain.rootPath + s)))
+            if (!GaBIEn.dirExists(PathUtils.autoDetectWindows(app.rootPath + s)))
                 createDirs.add(s);
 
         // Only trigger create directories prompt if the database is *clearly* missing objects.
@@ -121,7 +121,7 @@ public class AppUI extends App.Svc {
                             @Override
                             public void run() {
                                 for (String st : createDirs)
-                                    GaBIEn.makeDirectories(PathUtils.autoDetectWindows(AppMain.rootPath + st));
+                                    GaBIEn.makeDirectories(PathUtils.autoDetectWindows(app.rootPath + st));
                                 AppMain.launchDialog(TXDB.get("Done!"));
                             }
                         }

@@ -43,7 +43,7 @@ import java.util.LinkedList;
  */
 public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSystem {
     public RXPSystem(App app) {
-        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader("Graphics/", "", new ChainedImageLoader(new IImageLoader[] {
+        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "Graphics/", "", new ChainedImageLoader(new IImageLoader[] {
                 new GabienImageLoader(".png"),
                 new GabienImageLoader(".jpg"),
         }))), true);

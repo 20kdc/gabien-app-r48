@@ -96,7 +96,7 @@ public class SDB extends App.Svc {
         schemaDatabase.put("stringBlobEditor", new StringBlobSchemaElement());
 
         schemaDatabase.put("internal_EPGD", new EPGDisplaySchemaElement());
-        schemaDatabase.put("internal_scriptIE", new ScriptControlSchemaElement());
+        schemaDatabase.put("internal_scriptIE", new ScriptControlSchemaElement(app));
 
         schemaDatabase.put("internal_LF_INDEX", new OSStrHashMapSchemaElement());
 
@@ -459,13 +459,13 @@ public class SDB extends App.Svc {
                         if (text.equals("fileSelector")) {
                             String tx = args[point++];
                             String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx, true));
-                            return new SubwindowSchemaElement(new FileSelectorSchemaElement(tx, null), getFunctionToReturn(txHR));
+                            return new SubwindowSchemaElement(new FileSelectorSchemaElement(app, tx, null), getFunctionToReturn(txHR));
                         }
                         if (text.equals("imgSelector")) {
                             String tx = args[point++];
                             String tx2 = args[point++];
                             String txHR = FormatSyntax.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx, true));
-                            return new SubwindowSchemaElement(new FileSelectorSchemaElement(tx, tx2), getFunctionToReturn(txHR));
+                            return new SubwindowSchemaElement(new FileSelectorSchemaElement(app, tx, tx2), getFunctionToReturn(txHR));
                         }
                         if (text.equals("halfsplit")) {
                             SchemaElement a = get();
@@ -500,7 +500,7 @@ public class SDB extends App.Svc {
                             IMagicalBinder binder = MagicalBinders.getBinderByName(type);
                             if (binder == null)
                                 throw new RuntimeException("Unknown binding " + type);
-                            return new MagicalBindingSchemaElement(binder, get());
+                            return new MagicalBindingSchemaElement(app, binder, get());
                         }
                         if (text.equals("context?")) {
                             // context? <id> <default>
@@ -643,12 +643,12 @@ public class SDB extends App.Svc {
                         }
                         if (text.equals("internal_r2kPPPID")) {
                             SchemaElement se = get();
-                            return helpers.makePicPointerPatchID(getSDBEntry("var_id"), se);
+                            return helpers.makePicPointerPatchID(app, getSDBEntry("var_id"), se);
                         }
                         if (text.equals("internal_r2kPPPV")) {
                             String txt = TXDB.get(outerContext, args[point++]);
                             SchemaElement se = get();
-                            return helpers.makePicPointerPatchVar(getSDBEntry("var_id"), txt, se);
+                            return helpers.makePicPointerPatchVar(app, getSDBEntry("var_id"), txt, se);
                         }
                         if (text.equals("CTNative"))
                             return new CTNativeSchemaElement(args[point++]);
@@ -672,7 +672,7 @@ public class SDB extends App.Svc {
                         }
                         if (text.equals("soundPlayer")) {
                             String a = args[point++];
-                            return new SoundPlayerSchemaElement(a, PathSyntax.compile(""), null, null, null);
+                            return new SoundPlayerSchemaElement(app, a, PathSyntax.compile(""), null, null, null);
                         }
                         if (text.equals("soundPlayerComplex")) {
                             String prefix = args[point++];
@@ -680,7 +680,7 @@ public class SDB extends App.Svc {
                             PathSyntax volumePath = getNullablePathSyntax();
                             PathSyntax tempoPath = getNullablePathSyntax();
                             PathSyntax balancePath = getNullablePathSyntax();
-                            return new SoundPlayerSchemaElement(prefix, namePath, volumePath, tempoPath, balancePath);
+                            return new SoundPlayerSchemaElement(app, prefix, namePath, volumePath, tempoPath, balancePath);
                         }
                         // -- If all else fails, it's an ID to be looked up. --
                         return getSDBEntry(text);

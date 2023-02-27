@@ -50,7 +50,7 @@ import java.util.LinkedList;
  */
 public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSystem {
     public R2kSystem(App app) {
-        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader("", "", new ChainedImageLoader(new IImageLoader[] {
+        super(app, new CacheImageLoader(new FixAndSecondaryImageLoader(app, "", "", new ChainedImageLoader(new IImageLoader[] {
                 new ImageIOImageLoader(new XYZImageIOFormat(), ".xyz", true),
                 // This is actually valid, but almost nobody wanted to use BMP over one of PNG or XYZ. Who'd have guessed?
                 new ImageIOImageLoader(new BMP8IImageIOFormat(8), ".bmp", true),

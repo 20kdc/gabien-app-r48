@@ -10,6 +10,7 @@ package r48.dbs;
 import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.io.data.IRIO;
@@ -163,7 +164,7 @@ class SDBHelpers {
         }
     }
 
-    public SchemaElement makePicPointerPatchID(SchemaElement varId, SchemaElement val) {
+    public SchemaElement makePicPointerPatchID(App app, SchemaElement varId, SchemaElement val) {
         // Since this is much too complicated for a mere enum,
         //  use the magical binding to make it more in-line with R48's standards,
         //  with a minimal amount of code
@@ -188,7 +189,7 @@ class SDBHelpers {
                     }
                 }),
         });
-        return new MagicalBindingSchemaElement(new IMagicalBinder() {
+        return new MagicalBindingSchemaElement(app, new IMagicalBinder() {
             @Override
             public RubyIO targetToBoundNCache(IRIO target) {
                 // Split PPP address into components
@@ -238,7 +239,7 @@ class SDBHelpers {
         }, inner);
     }
 
-    public SchemaElement makePicPointerPatchVar(SchemaElement varId, String vname, SchemaElement val) {
+    public SchemaElement makePicPointerPatchVar(App app, SchemaElement varId, String vname, SchemaElement val) {
         // Less complicated but still more than an enum is reasonable for.
         HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
         disambiguations.put("0", new ArrayElementSchemaElement(1, vname, val, null, false));
@@ -247,7 +248,7 @@ class SDBHelpers {
                 new ArrayElementSchemaElement(0, TXDB.get("isVar "), new IntBooleanSchemaElement(false), null, false),
                 new DisambiguatorSchemaElement(PathSyntax.compile("]0"), disambiguations)
         );
-        return new MagicalBindingSchemaElement(new IMagicalBinder() {
+        return new MagicalBindingSchemaElement(app, new IMagicalBinder() {
             @Override
             public RubyIO targetToBoundNCache(IRIO target) {
                 // Split PPP address into components

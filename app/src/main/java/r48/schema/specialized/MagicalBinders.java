@@ -7,6 +7,7 @@
 
 package r48.schema.specialized;
 
+import r48.App;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.io.data.IRIO;
@@ -50,11 +51,11 @@ public class MagicalBinders {
         return null;
     }
 
-    public static RubyIO toBoundWithCache(IMagicalBinder binder, IRIO trueTarget) {
-        HashMap<IMagicalBinder, WeakReference<RubyIO>> hm = AppMain.magicalBindingCache.get(trueTarget);
+    public static RubyIO toBoundWithCache(App app, IMagicalBinder binder, IRIO trueTarget) {
+        HashMap<IMagicalBinder, WeakReference<RubyIO>> hm = app.magicalBindingCache.get(trueTarget);
         if (hm == null) {
             hm = new HashMap<IMagicalBinder, WeakReference<RubyIO>>();
-            AppMain.magicalBindingCache.put(trueTarget, hm);
+            app.magicalBindingCache.put(trueTarget, hm);
         }
         WeakReference<RubyIO> b = hm.get(binder);
         RubyIO v = null;

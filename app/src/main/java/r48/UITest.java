@@ -29,7 +29,7 @@ import java.util.*;
  * ...which is why it's now missing the useful left/right scroll control and the "DS" (save currently viewed object) button.
  * Created on 12/27/16.
  */
-public class UITest extends UIElement.UIProxy {
+public class UITest extends App.Prx {
     public static final Comparator<String> COMPARATOR_NATSTRCOMP = new Comparator<String>() {
         @Override
         public int compare(String t0, String t1) {
@@ -56,7 +56,7 @@ public class UITest extends UIElement.UIProxy {
         @Override
         public void run() {
             try {
-                OutputStream fos = GaBIEn.getOutFile(getPrintPath());
+                OutputStream fos = GaBIEn.getOutFile(getPrintPath(app));
                 PrintStream ps = new PrintStream(fos);
                 ps.print(currentObj.toStringLong(""));
                 fos.close();
@@ -72,11 +72,12 @@ public class UITest extends UIElement.UIProxy {
         }
     }, FontSizes.inspectorBackTextHeight), masterPanel);
 
-    public static String getPrintPath() {
-        return PathUtils.autoDetectWindows(AppMain.rootPath + "PRINT.txt");
+    public static String getPrintPath(App app) {
+        return PathUtils.autoDetectWindows(app.rootPath + "PRINT.txt");
     }
 
-    public UITest(IRIO obj) {
+    public UITest(App app, IRIO obj) {
+        super(app);
         loadObject(obj);
         proxySetElement(outerPanel, false);
         setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(320), FontSizes.scaleGuess(240)));
@@ -125,7 +126,7 @@ public class UITest extends UIElement.UIProxy {
                     @Override
                     public void run() {
                         back.addLast(obj);
-                        loadObject(MagicalBinders.toBoundWithCache(b, objectList[j]));
+                        loadObject(MagicalBinders.toBoundWithCache(app, b, objectList[j]));
                     }
                 }, FontSizes.inspectorTextHeight);
             masterPanel.panelsAdd(button);

@@ -30,13 +30,13 @@ public class AppNewProject extends App.Svc {
 
     private void fileCopier(String[] mkdirs, String[] fileCopies) {
         for (String s : mkdirs)
-            GaBIEn.makeDirectories(PathUtils.autoDetectWindows(AppMain.rootPath + s));
+            GaBIEn.makeDirectories(PathUtils.autoDetectWindows(app.rootPath + s));
         for (int i = 0; i < fileCopies.length; i += 2) {
             String src = fileCopies[i];
             String dst = fileCopies[i + 1];
             InputStream inp = GaBIEn.getResource(src);
             if (inp != null) {
-                String tgt = PathUtils.autoDetectWindows(AppMain.rootPath + dst);
+                String tgt = PathUtils.autoDetectWindows(app.rootPath + dst);
                 if (GaBIEn.fileOrDirExists(tgt)) {
                     System.err.println("Didn't write " + dst + " as it is already present as " + tgt + ".");
                     try {

@@ -188,7 +188,7 @@ public class TestKickstart {
 
     public static void resetODB() {
         App app = AppMain.instance;
-        AppMain.objectDB = app.odb = new ObjectDB(IObjectBackend.Factory.create(app.odbBackend, AppMain.rootPath, app.dataPath, app.dataExt), new IConsumer<String>() {
+        AppMain.objectDB = app.odb = new ObjectDB(IObjectBackend.Factory.create(app.odbBackend, app.rootPath, app.dataPath, app.dataExt), new IConsumer<String>() {
             @Override
             public void accept(String s) {
 

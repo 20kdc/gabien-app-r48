@@ -12,6 +12,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextBox;
 import gabien.ui.UITextButton;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -36,6 +37,11 @@ import java.util.zip.InflaterInputStream;
  * Created on January 28th, 2018.
  */
 public class ScriptControlSchemaElement extends SchemaElement {
+    public final App app;
+    public ScriptControlSchemaElement(App app) {
+        this.app = app;
+    }
+
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
 
@@ -61,8 +67,8 @@ public class ScriptControlSchemaElement extends SchemaElement {
                     StringBuilder sb = new StringBuilder();
                     sb.append(TXDB.get("Script export complete!") + "\n");
                     HashSet<String> used = new HashSet<String>();
-                    GaBIEn.makeDirectories(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts"));
-                    OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts/_scripts.txt"));
+                    GaBIEn.makeDirectories(PathUtils.autoDetectWindows(app.rootPath + "scripts"));
+                    OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
                     PrintStream ps = new PrintStream(os, false, "UTF-8");
                     int alen = target.getALen();
                     for (int i = 0; i < alen; i++) {
@@ -136,7 +142,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
                 while (used.contains(name.toLowerCase()))
                     name = oldName + " (" + (counter++) + ")";
                 // continue
-                OutputStream os2 = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts/" + name + ".rb"));
+                OutputStream os2 = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/" + name + ".rb"));
                 if (os2 == null)
                     return false;
                 os2.write(inflated);
@@ -189,7 +195,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
         // A particular difference that's going to show up here is that empty-named or #-prefixed files won't get removed.
         // This way, the conversion is bi-directional.
         LinkedList<RubyIO> scripts = new LinkedList<RubyIO>();
-        InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts/_scripts.txt"));
+        InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
         if (inp == null) {
             AppMain.launchDialog(TXDB.get("It appears scripts/_scripts.txt does not exist. It acts as an index."));
             return null;
@@ -235,7 +241,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
     }
 
     private byte[] loadScript(String s) throws IOException {
-        InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(AppMain.rootPath + "scripts/" + s + ".rb"));
+        InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/" + s + ".rb"));
         if (inp == null)
             return null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

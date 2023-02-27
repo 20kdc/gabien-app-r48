@@ -29,7 +29,7 @@ public class OpaqueSchemaElement extends SchemaElement {
         return new UITextButton(getMessage(target), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
-                launcher.launchOther(new UITest(target));
+                launcher.launchOther(new UITest(launcher.getApp(), target));
             }
         });
     }

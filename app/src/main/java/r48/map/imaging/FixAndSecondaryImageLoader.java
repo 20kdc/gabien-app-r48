@@ -8,17 +8,18 @@
 package r48.map.imaging;
 
 import gabien.IImage;
-import r48.AppMain;
+import r48.App;
 
 /**
  * The second-to-outermost layer.
  * Written on October 26th 2017.
  */
-public class FixAndSecondaryImageLoader implements IImageLoader {
+public class FixAndSecondaryImageLoader extends App.Svc implements IImageLoader {
     public final String prefix, postfix;
     public final IImageLoader loader;
 
-    public FixAndSecondaryImageLoader(String pre, String post, IImageLoader underlying) {
+    public FixAndSecondaryImageLoader(App app, String pre, String post, IImageLoader underlying) {
+        super(app);
         prefix = pre;
         postfix = post;
         loader = underlying;
@@ -26,10 +27,10 @@ public class FixAndSecondaryImageLoader implements IImageLoader {
 
     @Override
     public IImage getImage(String name, boolean panorama) {
-        IImage base = loader.getImage(AppMain.rootPath + prefix + name + postfix, panorama);
+        IImage base = loader.getImage(app.rootPath + prefix + name + postfix, panorama);
         if (base == null)
-            if (AppMain.secondaryImagePath.length() > 0)
-                base = loader.getImage(AppMain.secondaryImagePath + prefix + name + postfix, panorama);
+            if (app.secondaryImagePath.length() > 0)
+                base = loader.getImage(app.secondaryImagePath + prefix + name + postfix, panorama);
         return base;
     }
 

@@ -174,7 +174,7 @@ public class RMTools extends App.Svc {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.ui.wm.createWindow(new UITranscriptControl(mapSystem, commandsEvent));
+                        app.ui.wm.createWindow(new UITranscriptControl(app, mapSystem, commandsEvent));
                     }
                 }
         }).centred();
