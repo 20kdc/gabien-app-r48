@@ -184,7 +184,9 @@ public class UILauncher extends UIProxy {
             whatever = new UISplitterLayout(whatever, new UITextButton(TXDB.get("Configuration"), FontSizes.launcherTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    uiTicker.accept(new UIFontSizeConfigurator(c));
+                    uiTicker.accept(new UIFontSizeConfigurator(c, () -> {
+                        c.applyUIGlobals();
+                    }));
                     closeHelper.accept(null);
                 }
             }), false, 1, 2);

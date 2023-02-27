@@ -29,7 +29,7 @@ public class ConfigIO {
         RubyIO prepare = new RubyIO();
         prepare.type = 'o';
         prepare.symVal = "R48::FontConfig";
-        for (FontSizeField fsf : c.fontSizes.getFields())
+        for (FontSizeField fsf : c.f.getFields())
             prepare.addIVar("@" + fsf.name, new RubyIO().setFX(fsf.get()));
 
         prepare.addIVar("@secondary_images_list", encodeStringList(c.secondaryImageLoadLocationBackup));
@@ -63,7 +63,7 @@ public class ConfigIO {
             boolean shouldResetIETH = false;
             boolean shouldResetWSZ = false;
 
-            for (FontSizeField fsf : c.fontSizes.getFields()) {
+            for (FontSizeField fsf : c.f.getFields()) {
                 RubyIO f = dat.getInstVarBySymbol("@" + fsf.name);
                 if (f != null) {
                     fsf.accept((int) f.fixnumVal);
@@ -76,9 +76,9 @@ public class ConfigIO {
             }
 
             if (shouldResetIETH)
-                c.fontSizes.imageEditorTextHeight = c.fontSizes.schemaFieldTextHeight;
+                c.f.imageEditorTextHeight = c.f.schemaFieldTextHeight;
             if (shouldResetWSZ)
-                c.fontSizes.maintabsScrollersize = c.fontSizes.mapToolbarScrollersize;
+                c.f.maintabsScrollersize = c.f.mapToolbarScrollersize;
 
             RubyIO sys = dat.getInstVarBySymbol("@sysfont");
             if (sys != null) {

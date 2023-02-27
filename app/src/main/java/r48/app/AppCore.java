@@ -59,7 +59,7 @@ public class AppCore {
 
     public AppCore(Config cfg, @NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
         c = cfg;
-        f = c.fontSizes;
+        f = c.f;
         rootPath = rp;
         secondaryImagePath = sip;
         loadProgress = lp;

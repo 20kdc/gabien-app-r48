@@ -52,7 +52,7 @@ public class TestKickstart {
         // In case unset.
         IObjectBackend.Factory.encoding = encoding;
         Config c = new Config(false);
-        c.apply();
+        c.applyUIGlobals();
         return AppMain.initializeCore(c, s2, "", schema, (s) -> {});
     }
 
@@ -185,7 +185,7 @@ public class TestKickstart {
         // Cleanup any possible contamination of application state between tests.
         AppMain.shutdown(null);
         // Reset GaBIEn stuff
-        new Config(false).apply();
+        new Config(false).applyUIGlobals();
     }
 
     public static void resetODB(App app) {

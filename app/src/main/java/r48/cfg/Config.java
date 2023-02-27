@@ -21,7 +21,7 @@ import r48.FontSizes.FontSizeField;
  * Created 27th February 2023
  */
 public class Config {
-    public final FontSizes fontSizes = new FontSizes();
+    public final FontSizes f = new FontSizes();
 
     public boolean allowBlending;
     public boolean windowingExternal;
@@ -31,7 +31,7 @@ public class Config {
     // This is the root path which is *defaulted to*.
     public final LinkedList<String> rootPathBackup = new LinkedList<String>();
 
-    // globals & statics
+    // UI globals, see applyUIGlobals
     public @Nullable String fontOverride;
     public boolean fontOverrideUE8;
     public int borderTheme;
@@ -42,7 +42,7 @@ public class Config {
 
     public void reset(boolean isMobile) {
         try {
-            for (final FontSizeField field : fontSizes.getFields())
+            for (final FontSizeField field : f.getFields())
                 field.accept(field.defValue);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -64,7 +64,10 @@ public class Config {
             rootPathBackup.add("easyrpg/games/R48 Game");
     }
 
-    public void apply() {
+    /**
+     * Applies changes.
+     */
+    public void applyUIGlobals() {
         FontManager.fontOverride = fontOverride;
         FontManager.fontOverrideUE8 = fontOverrideUE8;
         UIBorderedElement.borderTheme = borderTheme;

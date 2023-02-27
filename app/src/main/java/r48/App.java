@@ -36,6 +36,9 @@ public final class App extends AppCore {
 
     // State for in-system copy/paste
     public RubyIO theClipboard = null;
+    public final Runnable applyConfigChange = () -> {
+        c.applyUIGlobals();
+    };
 
     public App(Config c, String rp, String sip, IConsumer<String> loadProgress) {
         super(c, rp, sip, loadProgress);

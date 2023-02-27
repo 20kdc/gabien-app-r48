@@ -52,7 +52,7 @@ public class Application {
         mobileExtremelySpecialBehavior = GaBIEn.singleWindowApp();
         globalMS = 50;
         Config c = new Config(mobileExtremelySpecialBehavior);
-        c.apply();
+        c.applyUIGlobals();
 
         GaBIEn.appPrefixes = new String[] {BRAND + "/", ""};
 
@@ -299,7 +299,7 @@ public class Application {
         // That then allowed it to estimate a correct scale which ended up here.
         FontSizes.uiGuessScaleTenths = uiGuessScaleTenths;
         boolean mobile = GaBIEn.singleWindowApp();
-        for (FontSizes.FontSizeField fsf : c.fontSizes.getFields()) {
+        for (FontSizes.FontSizeField fsf : c.f.getFields()) {
             // as this is a touch device, map 8 to 16 (6 is for things that really matter)
             if (mobile)
                 if (fsf.get() == 8)

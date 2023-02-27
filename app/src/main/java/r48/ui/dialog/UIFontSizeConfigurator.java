@@ -11,7 +11,7 @@ import gabien.GaBIEn;
 import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import r48.FontSizes;
+import r48.FontSizes.FontSizeField;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.dbs.TXDB;
@@ -26,14 +26,16 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
     private final UIScrollLayout outerLayout;
     private int lastFontSizerSize = -1;
     private int lastSBSize = -1;
-    public final Config config;
+    public final Config c;
+    public final Runnable apply;
 
-    public UIFontSizeConfigurator(Config c) {
-        config = c;
-        outerLayout = new UIScrollLayout(true, FontSizes.generalScrollersize);
+    public UIFontSizeConfigurator(Config c, Runnable apply) {
+        this.c = c;
+        this.apply = apply;
+        outerLayout = new UIScrollLayout(true, c.f.generalScrollersize);
         refreshLayout(true);
         proxySetElement(outerLayout, false);
-        setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(320), FontSizes.scaleGuess(240)));
+        setForcedBounds(null, new Rect(0, 0, c.f.scaleGuess(320), c.f.scaleGuess(240)));
     }
 
     public void refreshLayout(boolean force) {
@@ -41,101 +43,104 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         if (outerLayout != null)
             iniScroll = outerLayout.scrollbar.scrollPoint;
         if (!force)
-            if (lastFontSizerSize == config.fontSizes.fontSizerTextHeight)
-                if (lastSBSize == config.fontSizes.generalScrollersize)
+            if (lastFontSizerSize == c.f.fontSizerTextHeight)
+                if (lastSBSize == c.f.generalScrollersize)
                     return;
-        lastFontSizerSize = config.fontSizes.fontSizerTextHeight;
-        lastSBSize = config.fontSizes.generalScrollersize;
+        lastFontSizerSize = c.f.fontSizerTextHeight;
+        lastSBSize = c.f.generalScrollersize;
 
         outerLayout.panelsClear();
         outerLayout.setSBSize(lastSBSize);
         outerLayout.scrollbar.scrollPoint = iniScroll;
         final LinkedList<Runnable> doubleAll = new LinkedList<Runnable>();
         final LinkedList<Runnable> halfAll = new LinkedList<Runnable>();
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton("*2", FontSizes.fontSizerTextHeight, new Runnable() {
+        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton("*2", c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 for (Runnable r : doubleAll)
                     r.run();
+                apply.run();
                 refreshLayout(false);
             }
-        }), new UITextButton("/2", FontSizes.fontSizerTextHeight, new Runnable() {
+        }), new UITextButton("/2", c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 for (Runnable r : halfAll)
                     r.run();
+                apply.run();
                 refreshLayout(false);
             }
         }), false, 1, 2));
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Save"), FontSizes.fontSizerTextHeight, new Runnable() {
+        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Save"), c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
-                ConfigIO.save(config);
+                ConfigIO.save(c);
             }
-        }), new UITextButton(TXDB.get("Load"), FontSizes.fontSizerTextHeight, new Runnable() {
+        }), new UITextButton(TXDB.get("Load"), c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
-                ConfigIO.load(false, config);
-                config.apply();
+                ConfigIO.load(false, c);
+                apply.run();
                 refreshLayout(true);
             }
         }), false, 1, 2));
-        UITextButton fontButton = new UITextButton("", FontSizes.fontSizerTextHeight, new Runnable() {
+        UITextButton fontButton = new UITextButton("", c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
-                if (config.fontOverride != null) {
-                    config.fontOverride = null;
+                if (c.fontOverride != null) {
+                    c.fontOverride = null;
                 } else {
-                    config.fontOverride = GaBIEn.getFontOverrides()[0];
+                    c.fontOverride = GaBIEn.getFontOverrides()[0];
                 }
-                config.apply();
+                apply.run();
             }
         }) {
             @Override
             public void updateContents(double deltaTime, boolean selected, IPeripherals peripherals) {
                 text = TXDB.get("Font: ");
-                if (config.fontOverride != null) {
-                    text += config.fontOverride;
+                if (c.fontOverride != null) {
+                    text += c.fontOverride;
                 } else {
                     text += TXDB.get("Internal w/fallbacks");
                 }
                 super.updateContents(deltaTime, selected, peripherals);
             }
         };
-        final UITextButton fontButtonAppend = new UITextButton(TXDB.get("Even for height <= 8"), FontSizes.fontSizerTextHeight, new Runnable() {
+        final UITextButton fontButtonAppend = new UITextButton(TXDB.get("Even for height <= 8"), c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
             }
-        }).togglable(config.fontOverrideUE8);
+        }).togglable(c.fontOverrideUE8);
         fontButtonAppend.onClick = new Runnable() {
             @Override
             public void run() {
-                config.fontOverrideUE8 = fontButtonAppend.state;
-                config.apply();
+                c.fontOverrideUE8 = fontButtonAppend.state;
+                apply.run();
             }
         };
         outerLayout.panelsAdd(new UISplitterLayout(fontButton, fontButtonAppend, false, 0.5));
-        String themeTxt = TXDB.get("Theme: #A").replaceAll("#A", String.valueOf(UIBorderedElement.borderTheme));
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(themeTxt, FontSizes.fontSizerTextHeight, new Runnable() {
+        String themeTxt = TXDB.get("Theme: #A").replaceAll("#A", String.valueOf(c.borderTheme));
+        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(themeTxt, c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
-                UIBorderedElement.borderTheme++;
-                UIBorderedElement.borderTheme %= UIBorderedElement.BORDER_THEMES;
+                c.borderTheme++;
+                c.borderTheme %= UIBorderedElement.BORDER_THEMES;
+                apply.run();
                 refreshLayout(true);
             }
-        }), new UIAppendButton(TXDB.get("External Windowing"), new UITextButton(TXDB.get("Enable Blending"), FontSizes.fontSizerTextHeight, new Runnable() {
+        }), new UIAppendButton(TXDB.get("External Windowing"), new UITextButton(TXDB.get("Enable Blending"), c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
-                config.allowBlending = !config.allowBlending;
+                c.allowBlending = !c.allowBlending;
             }
-        }).togglable(config.allowBlending), new Runnable() {
+        }).togglable(c.allowBlending), new Runnable() {
             @Override
             public void run() {
-                config.windowingExternal = !config.windowingExternal;
+                c.windowingExternal = !c.windowingExternal;
             }
-        }, FontSizes.fontSizerTextHeight).togglable(config.windowingExternal), false, 0.5));
+        }, c.f.fontSizerTextHeight).togglable(c.windowingExternal), false, 0.5));
         try {
-            for (final FontSizes.FontSizeField field : config.fontSizes.getFields()) {
+            for (final FontSizeField field : c.f.getFields()) {
                 doubleAll.add(new Runnable() {
                     @Override
                     public void run() {
@@ -162,20 +167,21 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                         field.accept(v);
                     }
                 });
-                UIAdjuster tb = new UIAdjuster(FontSizes.fontSizerTextHeight, field.get(), new IFunction<Long, Long>() {
+                UIAdjuster tb = new UIAdjuster(c.f.fontSizerTextHeight, field.get(), new IFunction<Long, Long>() {
                     @Override
                     public Long apply(Long aLong) {
                         int nv = (int) (long) aLong;
                         if (nv < 1)
                             nv = 1;
                         field.accept(nv);
+                        apply.run();
                         refreshLayout(false);
                         return (long) nv;
                     }
                 });
                 tb.accept(Integer.toString(field.get()));
                 // NOTE: This is correct behavior due to an 'agreement' in FontSizes that this should be correct
-                outerLayout.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("r48", field.name), FontSizes.fontSizerTextHeight), tb, false, 4, 5));
+                outerLayout.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("r48", field.name), c.f.fontSizerTextHeight), tb, false, 4, 5));
             }
         } catch (Exception e) {
             e.printStackTrace();
