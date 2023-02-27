@@ -39,7 +39,7 @@ public class LocalTestExecutiveTest {
         final LinkedList<Object[]> tests = new LinkedList<Object[]>();
         TestKickstart.kickstartRFS();
         try {
-            DBLoader.readFile("LTE.txt", new IDatabase() {
+            DBLoader.readFile(null, "LTE.txt", new IDatabase() {
                 @Override
                 public void newObj(int objId, final String objName) {
                 }

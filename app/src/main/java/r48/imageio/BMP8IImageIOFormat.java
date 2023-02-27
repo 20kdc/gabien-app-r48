@@ -7,8 +7,8 @@
 package r48.imageio;
 
 import gabien.IImage;
-import r48.App;
 import r48.RubyIO;
+import r48.app.AppCore;
 import r48.dbs.TXDB;
 import r48.io.BMPConnection;
 
@@ -22,7 +22,7 @@ import java.util.LinkedList;
 public class BMP8IImageIOFormat extends ImageIOFormat {
     public int actuallyBits;
 
-    public BMP8IImageIOFormat(App app, int actuallyB) {
+    public BMP8IImageIOFormat(AppCore app, int actuallyB) {
         super(app, false);
         actuallyBits = actuallyB;
     }

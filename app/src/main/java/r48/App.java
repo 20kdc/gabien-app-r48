@@ -6,21 +6,18 @@
  */
 package r48;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.WeakHashMap;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement.UIProxy;
+import gabien.uslx.append.IConsumer;
 import gabienapp.Application;
 import r48.app.AppCore;
 import r48.app.AppNewProject;
 import r48.app.AppUI;
-import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
-import r48.schema.specialized.IMagicalBinder;
 
 /**
  * An attempt to move as much as possible out of static variables.
@@ -40,8 +37,9 @@ public final class App extends AppCore {
     // State for in-system copy/paste
     public RubyIO theClipboard = null;
 
-    // All magical bindings in use
-    public WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache;
+    public App(String rp, String sip, IConsumer<String> loadProgress) {
+        super(rp, sip, loadProgress);
+    }
 
     public void shutdown() {
         if (ui != null) {

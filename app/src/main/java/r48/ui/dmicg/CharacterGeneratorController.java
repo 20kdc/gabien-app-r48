@@ -49,7 +49,7 @@ public class CharacterGeneratorController extends App.Svc {
         super(app);
         modes = new UITabPane(FontSizes.tabTextHeight, true, false);
         final UIScrollLayout availableOpts = new UIScrollLayout(true, FontSizes.cellSelectScrollersize);
-        DBLoader.readFile("CharGen/Modes.txt", new IDatabase() {
+        DBLoader.readFile(app, "CharGen/Modes.txt", new IDatabase() {
             private UICharGenView view;
 
             @Override
@@ -72,7 +72,7 @@ public class CharacterGeneratorController extends App.Svc {
                 }
             }
         });
-        DBLoader.readFile("CharGen/Layers.txt", new IDatabase() {
+        DBLoader.readFile(app, "CharGen/Layers.txt", new IDatabase() {
             private Layer target;
             private String mode = "Default";
             private final HashMap<String, LinkedList<Layer>> groupsToLayers = new HashMap<String, LinkedList<Layer>>();

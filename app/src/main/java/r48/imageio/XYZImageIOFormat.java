@@ -7,7 +7,7 @@
 package r48.imageio;
 
 import gabien.IImage;
-import r48.App;
+import r48.app.AppCore;
 import r48.dbs.TXDB;
 import r48.io.IntUtils;
 
@@ -23,7 +23,7 @@ import java.util.zip.InflaterInputStream;
  * Created on 31/05/17.
  */
 public class XYZImageIOFormat extends ImageIOFormat {
-    public XYZImageIOFormat(App app) {
+    public XYZImageIOFormat(AppCore app) {
         super(app, false);
     }
 

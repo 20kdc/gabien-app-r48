@@ -6,19 +6,27 @@
  */
 package r48.app;
 
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.WeakHashMap;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
+import gabien.uslx.append.IConsumer;
+import r48.RubyIO;
 import r48.dbs.ATDB;
 import r48.dbs.FormatSyntax;
 import r48.dbs.ObjectDB;
 import r48.dbs.ObjectInfo;
 import r48.dbs.SDB;
 import r48.imageio.ImageIOFormat;
+import r48.io.data.IRIO;
 import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
+import r48.schema.specialized.IMagicalBinder;
 
 /**
  * An attempt to move as much as possible out of static variables.
@@ -31,14 +39,27 @@ public class AppCore {
     public MapSystem system;
     public ImageIOFormat[] imageIOFormats;
 
+    // All magical bindings in use
+    public WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache = new WeakHashMap<>();
+
     public ATDB[] autoTiles = new ATDB[0];
     public String odbBackend = "<you forgot to select a backend>";
-    public String rootPath;
-    public String secondaryImagePath;
+    public final @NonNull String rootPath;
+    public final @Nullable String secondaryImagePath;
     // Null system backend will always "work"
     public String sysBackend = "null";
     public String dataPath = "";
     public String dataExt = "";
+
+    public final @NonNull IConsumer<String> loadProgress;
+
+    public AppCore(@NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
+        rootPath = rp;
+        secondaryImagePath = sip;
+        loadProgress = lp;
+        fmt = new FormatSyntax(this);
+        imageIOFormats = ImageIOFormat.initializeFormats(this);
+    }
 
     // Attempts to ascertain all known objects
     public LinkedList<String> getAllObjects() {

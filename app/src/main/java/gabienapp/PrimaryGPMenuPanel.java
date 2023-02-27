@@ -22,7 +22,7 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
 
     public PrimaryGPMenuPanel() {
         // Loads everything
-        DBLoader.readFile("Gamepaks.txt", new IDatabase() {
+        DBLoader.readFile(null, "Gamepaks.txt", new IDatabase() {
             @Override
             public void newObj(int objId, String objName) throws IOException {
 

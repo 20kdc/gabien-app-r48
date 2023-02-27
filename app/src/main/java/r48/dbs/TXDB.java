@@ -105,7 +105,7 @@ public class TXDB {
 
     public static void init() {
         final LinkedList<String> languageLL = new LinkedList<String>();
-        DBLoader.readFile("Translations.txt", new IDatabase() {
+        DBLoader.readFile(null, "Translations.txt", new IDatabase() {
             @Override
             public void newObj(int objId, String objName) throws IOException {
 
@@ -178,8 +178,8 @@ public class TXDB {
         ssTexts.clear();
         if (languageId == 0)
             return;
-        DBLoader.readFile("Systerms/" + languages[languageId] + ".txt", new LangLoadDatabase("r48/"));
-        DBLoader.readFile("Systerms/L-" + languages[languageId] + ".txt", new LangLoadDatabase("launcher/"));
+        DBLoader.readFile(null, "Systerms/" + languages[languageId] + ".txt", new LangLoadDatabase("r48/"));
+        DBLoader.readFile(null, "Systerms/L-" + languages[languageId] + ".txt", new LangLoadDatabase("launcher/"));
         GaBIEn.wordLoad = TXDB.get("Load");
         GaBIEn.wordSave = TXDB.get("Save");
         GaBIEn.wordInvalidFileName = TXDB.get("Invalid or missing file name.");
@@ -189,11 +189,11 @@ public class TXDB {
         // think: R2k/LangTest.txt
         setLanguage();
         try {
-            DBLoader.readFile(gp + "Lang" + languages[languageId] + ".txt", new LangLoadDatabase("SDB@"));
+            DBLoader.readFile(null, gp + "Lang" + languages[languageId] + ".txt", new LangLoadDatabase("SDB@"));
         } catch (Exception e) {
         }
         try {
-            DBLoader.readFile(gp + "Cmtx" + languages[languageId] + ".txt", new LangLoadDatabase("CMDB@"));
+            DBLoader.readFile(null, gp + "Cmtx" + languages[languageId] + ".txt", new LangLoadDatabase("CMDB@"));
         } catch (Exception e) {
         }
     }

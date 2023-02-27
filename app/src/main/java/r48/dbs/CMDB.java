@@ -8,6 +8,7 @@
 package r48.dbs;
 
 import gabien.uslx.append.*;
+import r48.App;
 import r48.RubyIO;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
@@ -20,7 +21,7 @@ import java.util.LinkedList;
 /**
  * Created on 12/30/16.
  */
-public class CMDB {
+public class CMDB extends App.Svc {
     public int digitCount = 3;
     public String[] categories = new String[] {TXDB.get("Commands")};
     public HashMap<Integer, RPGCommand> knownCommands = new HashMap<Integer, RPGCommand>();
@@ -29,7 +30,8 @@ public class CMDB {
     public int blockLeaveCmd = 0; // This is 10 on R2k, but that is controlled via Lblock.
 
     public CMDB(final SDB sdb, final String readFile) {
-        DBLoader.readFile(readFile, new IDatabase() {
+        super(sdb.app);
+        DBLoader.readFile(app, readFile, new IDatabase() {
             RPGCommand rc;
             int workingCmdId = 0;
             RPGCommand.SpecialTag nextTag = null;
@@ -550,7 +552,7 @@ public class CMDB {
                 } else if (c == '#') {
                     String oldFile = baseFile;
                     baseFile = args[0];
-                    DBLoader.readFile(args[0], this);
+                    DBLoader.readFile(app, args[0], this);
                     baseFile = oldFile;
                 } else if (c != ' ') {
                     // Aha! Defining comments as a != ought to shut up the warnings!

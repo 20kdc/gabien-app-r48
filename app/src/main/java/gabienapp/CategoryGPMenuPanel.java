@@ -31,7 +31,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                 return root;
             }
         });
-        DBLoader.readFile("Gamepaks.txt", new IDatabase() {
+        DBLoader.readFile(null, "Gamepaks.txt", new IDatabase() {
             AtomicReference<String> boxedEncoding; // it's a boxed object, so...
             boolean doWeCare = false;
 
@@ -109,7 +109,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                     public void run() {
                         try {
                             TXDB.loadGamepakLanguage(objName + "/");
-                            AppMain.initializeCore(rootPath, silPath, objName + "/");
+                            AppMain.initializeCore(rootPath, silPath, objName + "/", theKickstart);
                             final ISupplier<IConsumer<Double>> appTickerGen = AppMain.initializeUI(Application.uiTicker);
                             theKickstart.doneInjector.set(new Runnable() {
                                 @Override

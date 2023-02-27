@@ -12,6 +12,7 @@ import gabien.IPeripherals;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
+import gabien.uslx.append.IConsumer;
 import r48.FontSizes;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -24,7 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Frankly... this code may as well not be run outside of Android, but for testing purposes it's good to keep the codepaths the same
  * Created on May 14, 2019.
  */
-public class UIFancyInit extends UIElement.UIProxy {
+public class UIFancyInit extends UIElement.UIProxy implements IConsumer<String> {
     // Don't get particularly worked up about memory-safety here, it's not exactly *essential* and so long as the copy-to-local works...
     public static ConcurrentLinkedQueue<String> consoletronDataInput;
     public AtomicReference<Runnable> doneInjector = new AtomicReference<Runnable>();
@@ -39,10 +40,11 @@ public class UIFancyInit extends UIElement.UIProxy {
         setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(400), FontSizes.scaleGuess(300)));
     }
 
-    public static void submitToConsoletron(String text) {
+    @Override
+    public void accept(String t) {
         ConcurrentLinkedQueue<String> get = consoletronDataInput;
         if (get != null)
-            get.add(text);
+            get.add(t);
     }
 
     @Override

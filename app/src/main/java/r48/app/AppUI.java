@@ -22,7 +22,6 @@ import gabien.ui.UITextButton;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.ISupplier;
-import gabienapp.UIFancyInit;
 import r48.App;
 import r48.FontSizes;
 import r48.IMapContext;
@@ -70,6 +69,8 @@ public class AppUI extends App.Svc {
     }
 
     public ISupplier<IConsumer<Double>> initialize(WindowCreatingUIElementConsumer uiTicker) {
+        app.loadProgress.accept(TXDB.get("Initializing UI..."));
+
         GaBIEn.setBrowserDirectory(app.rootPath);
 
         // Initialize imageFX before doing anything graphical
@@ -79,8 +80,6 @@ public class AppUI extends App.Svc {
 
         // Set up a default stuffRenderer for things to use.
         app.stuffRendererIndependent = app.system.rendererFromTso(null);
-
-        UIFancyInit.submitToConsoletron(TXDB.get("Initializing UI..."));
 
         // initialize UI
         final UISymbolButton sym = new UISymbolButton(Art.Symbol.Save, FontSizes.tabTextHeight, new Runnable() {
@@ -108,7 +107,7 @@ public class AppUI extends App.Svc {
 
         initializeTabs();
 
-        UIFancyInit.submitToConsoletron(TXDB.get("Finishing up initialization..."));
+        app.loadProgress.accept(TXDB.get("Finishing up initialization..."));
 
         // start possible recommended directory nagger
         final LinkedList<String> createDirs = new LinkedList<String>();
@@ -177,7 +176,7 @@ public class AppUI extends App.Svc {
         toolsets.add(new BasicToolset(app));
 
         if (app.system.enableMapSubsystem) {
-            UIFancyInit.submitToConsoletron(TXDB.get("Looking for maps and saves (this'll take a while)..."));
+            app.loadProgress.accept(TXDB.get("Looking for maps and saves (this'll take a while)..."));
             MapToolset mapController = new MapToolset(app);
             // Really just restricts access to prevent a hax pileup
             mapContext = mapController.getContext();
@@ -203,7 +202,7 @@ public class AppUI extends App.Svc {
         UIElement firstTab = null;
         // Initialize toolsets.
         for (IToolset its : toolsets) {
-            UIFancyInit.submitToConsoletron(TXDB.get("Initializing tab...") + "\n" + its.toString());
+            app.loadProgress.accept(TXDB.get("Initializing tab...") + "\n" + its.toString());
             for (UIElement uie : its.generateTabs()) {
                 if (firstTab == null)
                     firstTab = uie;

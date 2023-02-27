@@ -7,7 +7,7 @@
 package r48.imageio;
 
 import gabien.IImage;
-import r48.App;
+import r48.app.AppCore;
 import r48.dbs.TXDB;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.io.IOException;
  * Created on April 14th 2018.
  */
 public class GabienImageIOFormat extends ImageIOFormat {
-    public GabienImageIOFormat(App app) {
+    public GabienImageIOFormat(AppCore app) {
         super(app, true);
     }
 

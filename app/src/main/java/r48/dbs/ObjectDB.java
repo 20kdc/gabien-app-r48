@@ -8,7 +8,6 @@
 package r48.dbs;
 
 import gabien.uslx.append.*;
-import gabienapp.UIFancyInit;
 import r48.App;
 import r48.io.IObjectBackend;
 import r48.schema.SchemaElement;
@@ -70,7 +69,7 @@ public class ObjectDB extends App.Svc {
             if (r != null)
                 return r;
         }
-        UIFancyInit.submitToConsoletron(TXDB.get("Loading object... ") + "\n" + id);
+        app.loadProgress.accept(TXDB.get("Loading object... ") + "\n" + id);
         IObjectBackend.ILoadedObject rio = backend.loadObject(id);
         if (rio == null) {
             if (backupSchema != null) {

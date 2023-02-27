@@ -37,7 +37,7 @@ public class SchemaParseTest {
         LinkedList<Object[]> tests = new LinkedList<Object[]>();
         TestKickstart.kickstartRFS();
         final HashSet<String> schemas = new HashSet<String>();
-        DBLoader.readFile("Gamepaks.txt", new IDatabase() {
+        DBLoader.readFile(null, "Gamepaks.txt", new IDatabase() {
             @Override
             public void newObj(int objId, final String objName) {
                 schemas.add(objName);

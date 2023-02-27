@@ -29,7 +29,7 @@ public class TSDB extends App.Svc {
 
     public TSDB(App app, String arg) {
         super(app);
-        DBLoader.readFile(arg, new IDatabase() {
+        DBLoader.readFile(app, arg, new IDatabase() {
 
             public IFunction<Integer, Boolean> acceptable = new IFunction<Integer, Boolean>() {
                 @Override
@@ -82,7 +82,7 @@ public class TSDB extends App.Svc {
                 if (c == 'i')
                     mapping[Integer.parseInt(args[0])] = Integer.parseInt(args[1]);
                 if (c == '>')
-                    DBLoader.readFile(args[0], this);
+                    DBLoader.readFile(app, args[0], this);
                 if (c == 'r') {
                     int ofs1 = Integer.parseInt(args[0]);
                     int ofs2 = Integer.parseInt(args[1]);

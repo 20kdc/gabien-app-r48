@@ -10,23 +10,18 @@ package r48.app;
 import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import gabienapp.UIFancyInit;
 import r48.AdHocSaveLoad;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.FormatSyntax;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
 import r48.dbs.TXDB;
-import r48.imageio.ImageIOFormat;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.systems.MapSystem;
 import r48.schema.OpaqueSchemaElement;
-import r48.schema.specialized.IMagicalBinder;
 import r48.schema.util.SchemaPath;
 
-import java.lang.ref.WeakReference;
 import java.util.*;
 
 /**
@@ -36,22 +31,15 @@ import java.util.*;
 public class AppMain {
     // The last AppMain static variables, in the process of being phased out.
     public static App instance;
-    public static SDB schemas = null;
 
-    public static void initializeCore(final String rp, final String sip, final String gamepak) {
-        instance = new App();
-        instance.fmt = new FormatSyntax(instance);
-        instance.imageIOFormats = ImageIOFormat.initializeFormats(instance);
-
-        instance.rootPath = rp;
-        instance.secondaryImagePath = sip;
+    public static void initializeCore(final String rp, final String sip, final String gamepak, final IConsumer<String> progress) {
+        instance = new App(rp, sip, progress);
 
         // initialize core resources
 
-        instance.sdb = schemas = new SDB(instance);
-        instance.magicalBindingCache = new WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>>();
+        instance.sdb = new SDB(instance);
 
-        schemas.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
+        instance.sdb.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
 
         // initialize everything else that needs initializing, starting with ObjectDB
         IObjectBackend backend = IObjectBackend.Factory.create(instance.odbBackend, instance.rootPath, instance.dataPath, instance.dataExt);
@@ -66,10 +54,10 @@ public class AppMain {
         //  before starting the UI, which can cause external consistency checks
         //  (...and potentially cause havoc in the process)
 
-        schemas.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
-        UIFancyInit.submitToConsoletron(TXDB.get("Initializing dictionaries & creating objects..."));
-        schemas.updateDictionaries(null);
-        schemas.confirmAllExpectationsMet();
+        instance.sdb.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
+        progress.accept(TXDB.get("Initializing dictionaries & creating objects..."));
+        instance.sdb.updateDictionaries(null);
+        instance.sdb.confirmAllExpectationsMet();
     }
 
     public static ISupplier<IConsumer<Double>> initializeUI(final WindowCreatingUIElementConsumer uiTicker) {
@@ -82,7 +70,6 @@ public class AppMain {
         if (instance != null)
             instance.shutdown();
         instance = null;
-        schemas = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
     }

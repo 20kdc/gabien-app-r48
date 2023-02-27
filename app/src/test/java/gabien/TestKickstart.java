@@ -51,7 +51,7 @@ public class TestKickstart {
         kickstartRFS();
         // In case unset.
         IObjectBackend.Factory.encoding = encoding;
-        AppMain.initializeCore(s2, "", schema);
+        AppMain.initializeCore(s2, "", schema, (s) -> {});
     }
 
     public static void kickstartRFS() {

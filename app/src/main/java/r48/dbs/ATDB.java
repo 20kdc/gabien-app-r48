@@ -9,6 +9,8 @@ package r48.dbs;
 
 import java.util.LinkedList;
 
+import r48.app.AppCore;
+
 /**
  * Autotile Database, used to deal with those pesky AutoTile issues
  * <p/>
@@ -18,7 +20,7 @@ import java.util.LinkedList;
  * <p/>
  * Created on 12/28/16.
  */
-public class ATDB {
+public class ATDB extends AppCore.Csv {
     public final String loadFile;
     // 50 is the biggest seen so far.
     public Autotile[] entries = new Autotile[50];
@@ -52,9 +54,10 @@ public class ATDB {
         return 0;
     }
 
-    public ATDB(String file) {
+    public ATDB(AppCore app, String file) {
+        super(app);
         loadFile = file;
-        DBLoader.readFile(file, new IDatabase() {
+        DBLoader.readFile(app, file, new IDatabase() {
             Autotile current = null;
             // for 'x'-type one-line-space-delimited entries
             int autoIncrementingId = 0;
@@ -128,7 +131,7 @@ public class ATDB {
 
     public void calculateInverseMapRulesEngine(String file) {
         final LinkedList<Integer> avoidThese = new LinkedList<Integer>();
-        DBLoader.readFile(file, new IDatabase() {
+        DBLoader.readFile(app, file, new IDatabase() {
             @Override
             public void newObj(int objId, String objName) {
                 boolean[] mustTrue = new boolean[8];

@@ -116,7 +116,7 @@ public class SDB extends App.Svc {
 
     public void readFile(final String fName) {
         final String fPfx = "SDB@" + fName;
-        DBLoader.readFile(fName, new IDatabase() {
+        DBLoader.readFile(app, fName, new IDatabase() {
             AggregateSchemaElement workingObj;
 
             HashMap<String, String> commandBufferNames = new HashMap<String, String>();
@@ -817,7 +817,7 @@ public class SDB extends App.Svc {
                     int p = 0;
                     app.autoTiles = new ATDB[args.length / 2];
                     for (int i = 0; i < args.length; i += 2) {
-                        app.autoTiles[p] = new ATDB(args[i]);
+                        app.autoTiles[p] = new ATDB(app, args[i]);
                         // This is needed to make actual autotile *placement* work.
                         // In theory, it's independent of the AutoTiles setup,
                         //  so long as the AutoTiles setup's using the same sprite-sheets.
