@@ -8,6 +8,7 @@
 package r48.ui.utilitybelt;
 
 import gabien.ui.*;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -18,11 +19,12 @@ import java.io.IOException;
 /**
  * Created on 14th July 2018
  */
-public class PasteImageEditorTool implements IImageEditorTool {
+public class PasteImageEditorTool extends App.Svc implements IImageEditorTool {
     public boolean flipX, flipY, swapXY;
     public boolean rawCopy = true;
 
-    public PasteImageEditorTool() {
+    public PasteImageEditorTool(App app) {
+        super(app);
     }
 
     @Override
@@ -37,12 +39,12 @@ public class PasteImageEditorTool implements IImageEditorTool {
             return;
         BMPConnection result = null;
 
-        if (AppMain.theClipboard != null) {
-            if (AppMain.theClipboard.type == 'u') {
-                if (AppMain.theClipboard.symVal.equals("Image")) {
+        if (app.theClipboard != null) {
+            if (app.theClipboard.type == 'u') {
+                if (app.theClipboard.symVal.equals("Image")) {
                     // Everything valid so far...
                     try {
-                        result = new BMPConnection(AppMain.theClipboard.userVal, BMPConnection.CMode.Normal, 0, false);
+                        result = new BMPConnection(app.theClipboard.userVal, BMPConnection.CMode.Normal, 0, false);
                     } catch (IOException ioe) {
                     }
                 }

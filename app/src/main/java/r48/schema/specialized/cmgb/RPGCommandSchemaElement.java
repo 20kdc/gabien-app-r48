@@ -9,6 +9,7 @@ package r48.schema.specialized.cmgb;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -54,7 +55,10 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
     private RPGCommandSchemaElement hiddenHeadVer;
 
-    public RPGCommandSchemaElement(SchemaElement ise, SchemaElement mos, CMDB db, boolean allowIndentControl, boolean showHdr) {
+    public final App app;
+
+    public RPGCommandSchemaElement(App app, SchemaElement ise, SchemaElement mos, CMDB db, boolean allowIndentControl, boolean showHdr) {
+        this.app = app;
         actualSchema = ise;
         mostOfSchema = mos;
         database = db;
@@ -220,7 +224,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             } else {
                 IRIO param = target.getIVar("@parameters");
                 // All parameters are described, and the SASE will ensure length is precisely equal
-                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(new OpaqueSchemaElement(), rc.paramName.size(), false, 0, new StandardArrayInterface());
+                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(app, new OpaqueSchemaElement(), rc.paramName.size(), false, 0, new StandardArrayInterface());
                 parametersSanitySchema.modifyVal(param, path, setDefault);
                 int alen = param.getALen();
                 for (int i = 0; i < alen; i++) {
@@ -234,7 +238,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
     public RPGCommandSchemaElement hideHeaderVer() {
         if (hiddenHeadVer != null)
             return hiddenHeadVer;
-        RPGCommandSchemaElement rcse = new RPGCommandSchemaElement(actualSchema, mostOfSchema, database, allowControlOfIndent, false);
+        RPGCommandSchemaElement rcse = new RPGCommandSchemaElement(app, actualSchema, mostOfSchema, database, allowControlOfIndent, false);
         hiddenHeadVer = rcse;
         return rcse;
     }

@@ -15,6 +15,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement.UIProxy;
 import r48.io.data.IRIO;
+import r48.map.StuffRenderer;
 import r48.schema.specialized.IMagicalBinder;
 
 /**
@@ -28,6 +29,12 @@ public final class App extends AppCore {
     // these init during UI init!
     public AppUI ui;
     public AppNewProject np;
+
+    // The global context-independent stuffRenderer. *Only use outside of maps.*
+    public StuffRenderer stuffRendererIndependent;
+
+    // State for in-system copy/paste
+    public RubyIO theClipboard = null;
 
     // All magical bindings in use
     public WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache;

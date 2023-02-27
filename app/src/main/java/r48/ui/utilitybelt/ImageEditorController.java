@@ -52,7 +52,7 @@ public class ImageEditorController extends App.Svc {
 
     public ImageEditorController(App app) {
         super(app);
-        imageEditView = new UIImageEditView(new RootImageEditorTool(), new Runnable() {
+        imageEditView = new UIImageEditView(app, new RootImageEditorTool(), new Runnable() {
             @Override
             public void run() {
                 while (true) {

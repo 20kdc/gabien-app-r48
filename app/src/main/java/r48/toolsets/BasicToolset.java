@@ -18,6 +18,7 @@ import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
+import r48.io.data.IRIOFixnum;
 import r48.map.systems.IRMMapSystem;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
@@ -428,7 +429,8 @@ public class BasicToolset extends App.Svc implements IToolset {
             @Override
             public void run() {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
-                uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO().setFX(AppMain.objectDB.modifiedObjects.size()), (AppMain.theClipboard == null) ? new RubyIO().setNull() : AppMain.theClipboard);
+                IRIO clipGet = (app.theClipboard == null) ? new RubyIO().setNull() : app.theClipboard;
+                uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new IRIOFixnum(AppMain.objectDB.modifiedObjects.size()), clipGet);
                 app.uiPendingRunnables.add(this);
             }
         });
@@ -440,10 +442,10 @@ public class BasicToolset extends App.Svc implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        if (AppMain.theClipboard == null) {
+                        if (app.theClipboard == null) {
                             AppMain.launchDialog(TXDB.get("There is nothing in the clipboard."));
                         } else {
-                            AdHocSaveLoad.save("clip", AppMain.theClipboard);
+                            AdHocSaveLoad.save("clip", app.theClipboard);
                             AppMain.launchDialog(TXDB.get("The clipboard was saved."));
                         }
                     }
@@ -455,7 +457,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         if (newClip == null) {
                             AppMain.launchDialog(TXDB.get("The clipboard file is invalid or does not exist."));
                         } else {
-                            AppMain.theClipboard = newClip;
+                            app.theClipboard = newClip;
                             AppMain.launchDialog(TXDB.get("The clipboard file was loaded."));
                         }
                     }
@@ -463,10 +465,10 @@ public class BasicToolset extends App.Svc implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        if (AppMain.theClipboard == null) {
+                        if (app.theClipboard == null) {
                             AppMain.launchDialog(TXDB.get("There is nothing in the clipboard."));
                         } else {
-                            app.ui.wm.createWindow(new UITest(app, AppMain.theClipboard));
+                            app.ui.wm.createWindow(new UITest(app, app.theClipboard));
                         }
                     }
                 }

@@ -12,6 +12,7 @@ import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UITextButton;
 import r48.AppMain;
+import r48.App;
 import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.TXDB;
@@ -23,7 +24,7 @@ import java.util.LinkedList;
  * The standard map editing toolbar is the responsibility of this class.
  * Created on 11/08/17.
  */
-public class MapEditingToolbarController implements IEditingToolbarController {
+public class MapEditingToolbarController extends App.Svc implements IEditingToolbarController {
     private UIScrollLayout rootLayout = new UIScrollLayout(false, FontSizes.mapToolbarScrollersize);
     private final LinkedList<UITextButton> tools = new LinkedList<UITextButton>();
     private final boolean readonlyTiles;
@@ -37,6 +38,7 @@ public class MapEditingToolbarController implements IEditingToolbarController {
     }
 
     public MapEditingToolbarController(final IMapToolContext viewGiver, boolean rd, final ToolButton[] toolFuncs, final ToolButton[] addendum) {
+        super(viewGiver.getMapView().app);
         readonlyTiles = rd;
 
         final UIMapView view = viewGiver.getMapView();
@@ -135,19 +137,19 @@ public class MapEditingToolbarController implements IEditingToolbarController {
 
                 @Override
                 public void run() {
-                    if (AppMain.theClipboard == null) {
+                    if (app.theClipboard == null) {
                         AppMain.launchDialog("Unable - there is no clipboard.");
                         return;
                     }
-                    if (AppMain.theClipboard.type != 'u') {
+                    if (app.theClipboard.type != 'u') {
                         AppMain.launchDialog("Unable - the clipboard must contain a section of map data - This is not a usertype.");
                         return;
                     }
-                    if (!AppMain.theClipboard.symVal.equals("Table")) {
+                    if (!app.theClipboard.symVal.equals("Table")) {
                         AppMain.launchDialog("Unable - the clipboard must contain a section of map data - This is not a Table.");
                         return;
                     }
-                    RubyTable rt = new RubyTable(AppMain.theClipboard.userVal);
+                    RubyTable rt = new RubyTable(app.theClipboard.userVal);
                     if (rt.planeCount != viewGiver.getMapView().mapTable.planeCount) {
                         AppMain.launchDialog("Unable - the map data must contain the same amount of layers for transfer.");
                         return;

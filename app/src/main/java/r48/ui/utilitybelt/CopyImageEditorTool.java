@@ -7,7 +7,6 @@
 
 package r48.ui.utilitybelt;
 
-import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
 import r48.io.BMPConnection;
@@ -54,7 +53,7 @@ public class CopyImageEditorTool extends RectangleImageEditorTool {
                 throw new RuntimeException(e);
             }
         }
-        AppMain.theClipboard = new RubyIO().setUser("Image", data);
+        view.app.theClipboard = new RubyIO().setUser("Image", data);
     }
 
     @Override

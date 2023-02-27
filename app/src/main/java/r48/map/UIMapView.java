@@ -7,6 +7,9 @@
 
 package r48.map;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import gabien.*;
 import gabien.uslx.append.*;
 import gabien.ui.*;
@@ -368,8 +371,8 @@ public class UIMapView extends UIPlaneView {
     }
 
     // Safe to pass null here.
-    public static void performFullCacheFlush(UIMapView view) {
-        AppMain.stuffRendererIndependent.imageLoader.flushCache();
+    public static void performFullCacheFlush(@NonNull App app, @Nullable UIMapView view) {
+        app.stuffRendererIndependent.imageLoader.flushCache();
         if (view != null) {
             view.mapTable.renderer.imageLoader.flushCache();
             view.performRefresh(null);

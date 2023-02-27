@@ -64,7 +64,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
             });
             UIElement res = null;
             if (mustBeImage != null) {
-                IImage im = AppMain.stuffRendererIndependent.imageLoader.getImage(mustBeImage + sStripped, false);
+                IImage im = launcher.getApp().stuffRendererIndependent.imageLoader.getImage(mustBeImage + sStripped, false);
                 if (im == GaBIEn.getErrorImage())
                     continue;
                 hitStrs.add(sStripped);

@@ -72,7 +72,7 @@ public class AppUI extends App.Svc {
         imgContext = new LinkedList<ImageEditorController>();
 
         // Set up a default stuffRenderer for things to use.
-        AppMain.stuffRendererIndependent = app.system.rendererFromTso(null);
+        app.stuffRendererIndependent = app.system.rendererFromTso(null);
 
         UIFancyInit.submitToConsoletron(TXDB.get("Initializing UI..."));
 

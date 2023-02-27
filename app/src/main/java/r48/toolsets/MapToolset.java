@@ -49,7 +49,7 @@ public class MapToolset extends App.Svc implements IToolset {
             @Override
             public void performCacheFlush() {
                 // Can be null safely
-                UIMapView.performFullCacheFlush(mapBox.view);
+                UIMapView.performFullCacheFlush(app, mapBox.view);
             }
 
             @Override

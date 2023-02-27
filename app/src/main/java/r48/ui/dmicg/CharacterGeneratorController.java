@@ -162,7 +162,7 @@ public class CharacterGeneratorController extends App.Svc {
                 for (int j = 0; j < h; j++)
                     for (int i = 0; i < w; i++)
                         bc.putPixel(i, j, tx[idx++]);
-                AppMain.theClipboard = new RubyIO().setUser("Image", buffer);
+                app.theClipboard = new RubyIO().setUser("Image", buffer);
             }
         }), new Runnable() {
             @Override

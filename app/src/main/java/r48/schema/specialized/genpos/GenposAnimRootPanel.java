@@ -10,7 +10,7 @@ package r48.schema.specialized.genpos;
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
-import r48.AppMain;
+import r48.App;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -32,7 +32,7 @@ import java.util.HashMap;
  * C: Cell Editor
  * Created on 2/17/17.
  */
-public class GenposAnimRootPanel extends UIElement.UIProxy {
+public class GenposAnimRootPanel extends App.Prx {
     public final IGenposAnim target;
     public final GenposAnimTweening tweening;
     public final GenposFramePanelController framePanelController;
@@ -41,6 +41,7 @@ public class GenposAnimRootPanel extends UIElement.UIProxy {
     private final HashMap<String, IGenposTweeningManagement.KeyTrack> propTracks = new HashMap<String, IGenposTweeningManagement.KeyTrack>();
 
     public GenposAnimRootPanel(IGenposAnim t, ISchemaHost launcher, int recommendedFramerate) {
+        super(launcher.getApp());
         target = t;
         IGenposFrame frame = target.getFrameDisplay();
         // NOTE: This does a scan of the frames without calling frameChanged to run interpolation implication
@@ -90,14 +91,14 @@ public class GenposAnimRootPanel extends UIElement.UIProxy {
         toolbar = new UIAppendButton(TXDB.get("Copy"), toolbar, new Runnable() {
             @Override
             public void run() {
-                AppMain.theClipboard = new RubyIO().setDeepClone(target.getFrame());
+                app.theClipboard = new RubyIO().setDeepClone(target.getFrame());
             }
         }, FontSizes.rmaTimeframeTextHeight);
         toolbar = new UIAppendButton(TXDB.get("Paste"), toolbar, new Runnable() {
             @Override
             public void run() {
-                if (target.acceptableForPaste(AppMain.theClipboard)) {
-                    target.getFrame().setDeepClone(AppMain.theClipboard);
+                if (target.acceptableForPaste(app.theClipboard)) {
+                    target.getFrame().setDeepClone(app.theClipboard);
                     target.modifiedFrames();
                     incomingModification();
                 }

@@ -12,7 +12,6 @@ import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -92,7 +91,7 @@ public class GenposSchemaElement extends SchemaElement {
                     final ISupplier<Boolean> actuallyBattle2 = new ISupplier<Boolean>() {
                         @Override
                         public Boolean get() {
-                            if (AppMain.stuffRendererIndependent.imageLoader.getImage("Battle2/" + target.getIVar("@animation_name").decString(), false) == GaBIEn.getErrorImage())
+                            if (app.stuffRendererIndependent.imageLoader.getImage("Battle2/" + target.getIVar("@animation_name").decString(), false) == GaBIEn.getErrorImage())
                                 return false;
                             return target.getIVar("@battle2_2k3").getType() == 'T';
                         }

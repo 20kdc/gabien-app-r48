@@ -10,6 +10,7 @@ package r48.ui.utilitybelt;
 import gabien.*;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.FontSizes;
 import r48.ui.Art;
 import r48.ui.UIPlaneView;
@@ -34,7 +35,10 @@ public class UIImageEditView extends UIPlaneView {
 
     public Runnable newToolCallback;
 
-    public UIImageEditView(IImageEditorTool rootTool, Runnable updatePal) {
+    public final App app;
+
+    public UIImageEditView(App app, IImageEditorTool rootTool, Runnable updatePal) {
+        this.app = app;
         planeZoomMul = FontSizes.getSpriteScale() * 16;
         eds.currentImage = image;
         eds.newFile();

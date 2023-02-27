@@ -9,7 +9,6 @@ package r48.maptools;
 
 import gabien.GaBIEn;
 import gabien.ui.UILabel;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
@@ -83,7 +82,7 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
                                 rt.setTiletype(i - minX, j - minY, l, map.mapTable.getTiletype(i, j, l));
                 RubyIO rb = new RubyIO();
                 rb.setUser("Table", rt.innerBytes);
-                AppMain.theClipboard = rb;
+                map.app.theClipboard = rb;
                 mapToolContext.accept(null);
             }
         } else {

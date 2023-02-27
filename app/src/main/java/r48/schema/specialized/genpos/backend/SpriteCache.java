@@ -11,7 +11,6 @@ import gabien.GaBIEn;
 import gabien.IImage;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.AppMain;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
 import r48.imagefx.MirrorSubspritesImageEffect;
@@ -56,7 +55,7 @@ public class SpriteCache extends App.Svc {
         if (framesetALoc != null) {
             String nameA = target.getIVar(framesetALoc).decString();
             if (nameA.length() != 0)
-                framesetCacheA = AppMain.stuffRendererIndependent.imageLoader.getImage(pfxDeterminant.apply(target) + nameA, false);
+                framesetCacheA = app.stuffRendererIndependent.imageLoader.getImage(pfxDeterminant.apply(target) + nameA, false);
             if (framesetAHue != null)
                 framesetCacheA = app.ui.imageFXCache.process(framesetCacheA, new HueShiftImageEffect((int) target.getIVar(framesetAHue).getFX()));
         }
@@ -64,7 +63,7 @@ public class SpriteCache extends App.Svc {
         if (framesetBLoc != null) {
             String nameB = target.getIVar(framesetBLoc).decString();
             if (nameB.length() != 0)
-                framesetCacheB = AppMain.stuffRendererIndependent.imageLoader.getImage(pfxDeterminant.apply(target) + nameB, false);
+                framesetCacheB = app.stuffRendererIndependent.imageLoader.getImage(pfxDeterminant.apply(target) + nameB, false);
             if (framesetBHue != null)
                 framesetCacheB = app.ui.imageFXCache.process(framesetCacheB, new HueShiftImageEffect((int) target.getIVar(framesetBHue).getFX()));
         }

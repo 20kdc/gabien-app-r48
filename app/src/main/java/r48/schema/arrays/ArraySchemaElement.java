@@ -42,15 +42,18 @@ public abstract class ArraySchemaElement extends SchemaElement {
     // Used for pager state
     private IntegerSchemaElement myUniqueStateInstance = new IntegerSchemaElement(0);
 
-    public ArraySchemaElement(int fixedSize, int al1, int ido, IArrayInterface uiHelp) {
+    public final App app;
+
+    public ArraySchemaElement(App app, int fixedSize, int al1, int ido, IArrayInterface uiHelp) {
+        this.app = app;
         sizeFixed = fixedSize;
         atLeast = al1;
         indexDisplayOffset = ido;
         uiHelper = uiHelp;
     }
 
-    public ArraySchemaElement(int fixedSize, int al1, int ido, IArrayInterface uiHelp, SchemaElement enumer) {
-        this(fixedSize, al1, ido, uiHelp);
+    public ArraySchemaElement(App app, int fixedSize, int al1, int ido, IArrayInterface uiHelp, SchemaElement enumer) {
+        this(app, fixedSize, al1, ido, uiHelp);
         possibleEnumElement = enumer;
     }
 
@@ -220,10 +223,10 @@ public abstract class ArraySchemaElement extends SchemaElement {
         return new Runnable() {
             @Override
             public void run() {
-                if (AppMain.theClipboard != null) {
+                if (app.theClipboard != null) {
                     // could have changed
-                    if (AppMain.theClipboard.type == '[') {
-                        IRIO[] finalInsertionRv = AppMain.theClipboard.arrVal;
+                    if (app.theClipboard.type == '[') {
+                        IRIO[] finalInsertionRv = app.theClipboard.arrVal;
                         try {
                             for (int j = finalInsertionRv.length - 1; j >= 0; j--) {
                                 target.addAElem(i).setDeepClone(finalInsertionRv[j]);

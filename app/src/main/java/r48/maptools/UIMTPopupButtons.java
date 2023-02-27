@@ -35,7 +35,7 @@ public class UIMTPopupButtons extends UIMTBase {
                 new ToolButton(TXDB.get("Reload Panorama/TS")) {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
-                        UIMapView.performFullCacheFlush(view);
+                        UIMapView.performFullCacheFlush(view.app, view);
                         return null;
                     }
                 },

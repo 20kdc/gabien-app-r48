@@ -52,18 +52,18 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     private UIAppendButton toolbarCp = new UIAppendButton(TXDB.get("Copy"), toolbarP, new Runnable() {
         @Override
         public void run() {
-            AppMain.theClipboard = new RubyIO().setDeepClone(innerElem.targetElement);
+            app.theClipboard = new RubyIO().setDeepClone(innerElem.targetElement);
         }
     }, FontSizes.schemaPathTextHeight);
     private UIAppendButton toolbarPs = new UIAppendButton(TXDB.get("Paste"), toolbarCp, new Runnable() {
         @Override
         public void run() {
-            if (AppMain.theClipboard == null) {
+            if (app.theClipboard == null) {
                 AppMain.launchDialog(TXDB.get("There is nothing in the clipboard."));
             } else {
-                if (IRIO.rubyTypeEquals(innerElem.targetElement, AppMain.theClipboard)) {
+                if (IRIO.rubyTypeEquals(innerElem.targetElement, app.theClipboard)) {
                     try {
-                        innerElem.targetElement.setDeepClone(AppMain.theClipboard);
+                        innerElem.targetElement.setDeepClone(app.theClipboard);
                     } catch (Exception e) {
                         AppMain.launchDialog(TXDB.get("Incompatible clipboard and target."), e);
                     }
@@ -213,7 +213,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     public StuffRenderer getContextRenderer() {
         if (contextView != null)
             return contextView.mapTable.renderer;
-        return AppMain.stuffRendererIndependent;
+        return app.stuffRendererIndependent;
     }
 
     @Override

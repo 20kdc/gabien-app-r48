@@ -249,7 +249,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(objn);
                     final IEventAccess events = new R2kSavefileEventAccess(obj, root, "RPG::Save");
                     if (map == null)
-                        return MapViewState.getBlank(null, new String[] {
+                        return MapViewState.getBlank(app, null, new String[] {
                                 objn
                         }, events);
 

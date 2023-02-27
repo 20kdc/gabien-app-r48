@@ -10,7 +10,6 @@ package r48.schema.arrays;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -227,7 +226,7 @@ public class StandardArrayInterface implements IArrayInterface {
                         for (IRIO rio2 : positions[j].elements)
                             resBuild.add(new RubyIO().setDeepClone(rio2));
                 rio.arrVal = resBuild.toArray(new RubyIO[0]);
-                AppMain.theClipboard = rio;
+                app.theClipboard = rio;
             }
 
             private void deleteRange(int fixedStart, int fixedEnd) {

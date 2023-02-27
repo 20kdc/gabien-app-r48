@@ -258,14 +258,14 @@ public class SDB extends App.Svc {
                             s1 = get();
                             s2 = get();
                             String a = args[point++];
-                            return new EventCommandArraySchemaElement(s1, s2, getCMDB(a), allowControlOfEventCommandIndent);
+                            return new EventCommandArraySchemaElement(app, s1, s2, getCMDB(a), allowControlOfEventCommandIndent);
                         }
                         if (text.equals("arrayMS")) {
                             SchemaElement s1, s2;
                             s1 = get();
                             s2 = get();
                             String a = args[point++];
-                            return new EventCommandArraySchemaElement(s1, s2, getCMDB(a), false);
+                            return new EventCommandArraySchemaElement(app, s1, s2, getCMDB(a), false);
                         }
 
                         // array[E][P][IdX/AL1/AX1/Ix1/IxN]
@@ -286,9 +286,9 @@ public class SDB extends App.Svc {
                                 if (n == 0)
                                     n = -1;
                                 if (enu != null) {
-                                    return new StandardArraySchemaElement(get(), n, false, 0, iai, enu);
+                                    return new StandardArraySchemaElement(app, get(), n, false, 0, iai, enu);
                                 } else {
-                                    return new StandardArraySchemaElement(get(), n, false, 0, iai);
+                                    return new StandardArraySchemaElement(app, get(), n, false, 0, iai);
                                 }
                             } else if (ending.equals("IdX")) {
                                 int x = Integer.parseInt(args[point++]);
@@ -296,27 +296,27 @@ public class SDB extends App.Svc {
                                 if (n == 0)
                                     n = -1;
                                 if (enu != null) {
-                                    return new StandardArraySchemaElement(get(), n, false, x, iai, enu);
+                                    return new StandardArraySchemaElement(app, get(), n, false, x, iai, enu);
                                 } else {
-                                    return new StandardArraySchemaElement(get(), n, false, x, iai);
+                                    return new StandardArraySchemaElement(app, get(), n, false, x, iai);
                                 }
                             } else if (ending.equals("AL1")) {
                                 if (enu != null) {
-                                    return new StandardArraySchemaElement(get(), -1, true, 0, iai, enu);
+                                    return new StandardArraySchemaElement(app, get(), -1, true, 0, iai, enu);
                                 } else {
-                                    return new StandardArraySchemaElement(get(), -1, true, 0, iai);
+                                    return new StandardArraySchemaElement(app, get(), -1, true, 0, iai);
                                 }
                             } else if (ending.equals("AX1")) {
                                 if (enu != null) {
-                                    return new ArbIndexedArraySchemaElement(get(), 1, 1, -1, iai, enu);
+                                    return new ArbIndexedArraySchemaElement(app, get(), 1, 1, -1, iai, enu);
                                 } else {
-                                    return new ArbIndexedArraySchemaElement(get(), 1, 1, -1, iai);
+                                    return new ArbIndexedArraySchemaElement(app, get(), 1, 1, -1, iai);
                                 }
                             } else if (ending.equals("Ix1")) {
                                 if (enu != null) {
-                                    return new ArbIndexedArraySchemaElement(get(), 1, -1, -1, iai, enu);
+                                    return new ArbIndexedArraySchemaElement(app, get(), 1, -1, -1, iai, enu);
                                 } else {
-                                    return new ArbIndexedArraySchemaElement(get(), 1, -1, -1, iai);
+                                    return new ArbIndexedArraySchemaElement(app, get(), 1, -1, -1, iai);
                                 }
                             } else if (ending.equals("IxN")) {
                                 int ofx = Integer.parseInt(args[point++]);
@@ -326,7 +326,7 @@ public class SDB extends App.Svc {
                                 if (enu != null) {
                                     throw new RuntimeException("Incompatible with enumerations!");
                                 } else {
-                                    return new ArbIndexedArraySchemaElement(get(), ofx, -1, sz, iai);
+                                    return new ArbIndexedArraySchemaElement(app, get(), ofx, -1, sz, iai);
                                 }
                             } else {
                                 throw new RuntimeException("Cannot handle array ending " + ending);
@@ -345,7 +345,7 @@ public class SDB extends App.Svc {
                             String text2 = args[point++];
                             int len = Integer.parseInt(args[point++]);
                             String cond = "{@[@Interp.lang-Common-arrayLen]|" + len + "|1|0}";
-                            SchemaElement reinit = new StandardArraySchemaElement(new OpaqueSchemaElement(), len, 0, 0, null);
+                            SchemaElement reinit = new StandardArraySchemaElement(app, new OpaqueSchemaElement(), len, 0, 0, null);
                             return new InitButtonSchemaElement(TXDB.get(outerContext, text2), cond, reinit, false, text.equals("lengthAdjustDef"));
                         }
                         if (text.equals("initButton")) {
@@ -932,7 +932,7 @@ public class SDB extends App.Svc {
                             text2 += " " + args[point++];
                         point++; // skip ]
                         // returns new point
-                        helpers.createSpritesheet(args, point, text2);
+                        helpers.createSpritesheet(app, args, point, text2);
                     }
                 } else if (c != ' ') {
                     for (String arg : args)

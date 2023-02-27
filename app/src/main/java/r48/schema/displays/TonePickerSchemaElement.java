@@ -14,7 +14,6 @@ import gabien.IImage;
 import gabien.ui.UIElement;
 import gabien.ui.UIPublicPanel;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
@@ -104,7 +103,7 @@ public class TonePickerSchemaElement extends SchemaElement {
         @Override
         public UIElement createTotem(App app, IRIO target, IImageEffect cfg) {
             String imagePath = iPrefix + iPath.get(target).decString();
-            IImage totem = AppMain.stuffRendererIndependent.imageLoader.getImage(imagePath, false);
+            IImage totem = app.stuffRendererIndependent.imageLoader.getImage(imagePath, false);
             IImage img = compositeTotem(app, totem, cfg);
             UIThumbnail panel = new UIThumbnail(img);
             return panel;

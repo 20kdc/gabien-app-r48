@@ -11,7 +11,6 @@ import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -27,6 +26,7 @@ public class PagerArrayInterface implements IArrayInterface {
     public StandardArrayInterface regularArrayInterface = new StandardArrayInterface();
     @Override
     public void provideInterfaceFrom(final Host svl, final ISupplier<Boolean> valid, final IFunction<String, IProperty> prop, final ISupplier<ArrayPosition[]> getPositions) {
+        final App app = svl.getApp();
         // work out if we want to be in regular array mode
         final IProperty regularArrayMode = prop.apply("regularArrayMode");
         final boolean regularArrayModeCurrent = ((int) ((double) regularArrayMode.get())) != 0;
@@ -46,7 +46,6 @@ public class PagerArrayInterface implements IArrayInterface {
             // regular array mode
             final UITextButton swapModeButton = new UITextButton(TXDB.get("Mode: Regular Array"), FontSizes.schemaFieldTextHeight, swapModeAndReset);
             svl.panelsAdd(swapModeButton);
-            final App app = svl.getApp();
             regularArrayInterface.provideInterfaceFrom(new Host() {
                 
                 @Override
@@ -115,7 +114,7 @@ public class PagerArrayInterface implements IArrayInterface {
                         for (int j = 0; j < copyMe.length; j++)
                             rio.arrVal[j] = new RubyIO().setDeepClone(copyMe[j]);
 
-                        AppMain.theClipboard = rio;
+                        app.theClipboard = rio;
                     }
                 }));
             }

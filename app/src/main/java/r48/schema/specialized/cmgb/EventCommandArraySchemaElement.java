@@ -12,6 +12,7 @@ import java.util.HashMap;
 import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
@@ -49,9 +50,9 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
     public final CMDB database;
     public final RPGCommandSchemaElement baseElement;
 
-    public EventCommandArraySchemaElement(SchemaElement a, SchemaElement b, CMDB db, boolean indentControl) {
-        super(-1, 0, 0, new StandardArrayInterface().withoutIndexLabels());
-        baseElement = new RPGCommandSchemaElement(a, b, db, indentControl, true);
+    public EventCommandArraySchemaElement(App app, SchemaElement a, SchemaElement b, CMDB db, boolean indentControl) {
+        super(app, -1, 0, 0, new StandardArrayInterface().withoutIndexLabels());
+        baseElement = new RPGCommandSchemaElement(app, a, b, db, indentControl, true);
         // gets rid of subwindows & proxies
         database = db;
     }

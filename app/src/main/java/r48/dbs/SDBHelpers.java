@@ -93,7 +93,7 @@ class SDBHelpers {
         });
     }
 
-    public int createSpritesheet(String[] args, int point, String text2) {
+    public int createSpritesheet(App app, String[] args, int point, String text2) {
         final String imgPfx = args[point];
         spritesheetN.put(args[point], TXDB.get(args[point] + "sprites", text2));
         if (args[point + 1].equals("r2kCharacter")) {
@@ -103,7 +103,7 @@ class SDBHelpers {
                     final boolean extended = imgTxt.startsWith("$");
                     int effectiveW = 288;
                     int effectiveH = 256;
-                    final IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
+                    final IImage img = app.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
                     if (extended) {
                         // EasyRPG Extended Mode
                         effectiveW = img.getWidth();
@@ -125,7 +125,7 @@ class SDBHelpers {
             spritesheets.put(args[point], new IFunction<String, ISpritesheetProvider>() {
                 @Override
                 public ISpritesheetProvider apply(String imgTxt) {
-                    final IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
+                    final IImage img = app.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
                     int cellW = img.getWidth() / 4;
                     int cellH = img.getHeight() / 2;
                     int sprW = cellW / 3;
@@ -156,7 +156,7 @@ class SDBHelpers {
             spritesheets.put(args[point], new IFunction<String, ISpritesheetProvider>() {
                 @Override
                 public ISpritesheetProvider apply(final String imgTxt) {
-                    final IImage img = AppMain.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
+                    final IImage img = app.stuffRendererIndependent.imageLoader.getImage(imgPfx + imgTxt, false);
                     return createSpritesheetProviderCore(imgTxt, img, useW, useH, rowCells, cellW, cellH, useX, useY, -1);
                 }
             });

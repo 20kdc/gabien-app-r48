@@ -17,7 +17,6 @@ import r48.dbs.SDB;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
-import r48.map.StuffRenderer;
 import r48.map.UIMapView;
 import r48.map.systems.MapSystem;
 import r48.schema.OpaqueSchemaElement;
@@ -59,14 +58,6 @@ public class AppMain {
     // Databases
     public static ObjectDB objectDB = null;
     public static SDB schemas = null;
-
-    // Backend Services
-
-    // The global context-independent stuffRenderer. *Only use outside of maps.*
-    public static StuffRenderer stuffRendererIndependent;
-
-    // State for in-system copy/paste
-    public static RubyIO theClipboard = null;
 
     public static void initializeCore(final String rp, final String sip, final String gamepak) {
         instance = new App();
@@ -162,8 +153,6 @@ public class AppMain {
 
     public static void shutdown() {
         shutdownCore();
-        stuffRendererIndependent = null;
-        theClipboard = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
     }

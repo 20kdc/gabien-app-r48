@@ -192,8 +192,8 @@ public abstract class MapSystem extends App.Svc {
                     layers[i].draw(mvdc);
         }
 
-        public static MapViewState getBlank(String underscoreMapObjectId, String[] ex, IEventAccess iea) {
-            return new MapViewState(AppMain.stuffRendererIndependent, underscoreMapObjectId, ex, 0, 0, 0, new IFunction<int[], Short>() {
+        public static MapViewState getBlank(App app, String underscoreMapObjectId, String[] ex, IEventAccess iea) {
+            return new MapViewState(app.stuffRendererIndependent, underscoreMapObjectId, ex, 0, 0, 0, new IFunction<int[], Short>() {
                 @Override
                 public Short apply(int[] ints) {
                     return 0;
