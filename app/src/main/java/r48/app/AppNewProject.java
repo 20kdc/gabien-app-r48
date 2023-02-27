@@ -4,13 +4,14 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48;
+package r48.app;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import gabien.GaBIEn;
+import r48.App;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
@@ -109,8 +110,8 @@ public class AppNewProject extends App.Svc {
                 fileCopier(mkdirs, fileCopies);
                 // Load map 1, save everything
                 app.ui.mapContext.loadMap("Map.1");
-                app.odb.ensureAllSaved();
-                AppMain.launchDialog(TXDB.get("The synthesis was completed successfully."));
+                app.odb.ensureAllSaved(app);
+                app.ui.launchDialog(TXDB.get("The synthesis was completed successfully."));
             }
         };
         app.ui.wm.createWindowSH(new UIChoicesMenu(TXDB.get("Would you like a basic template, and if so, compatible with RPG Maker 2000 or 2003? All assets used for this are part of R48, and thus public-domain."), new String[] {

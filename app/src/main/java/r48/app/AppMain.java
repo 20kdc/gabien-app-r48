@@ -5,23 +5,23 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48;
+package r48.app;
 
 import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import gabienapp.UIFancyInit;
+import r48.AdHocSaveLoad;
+import r48.App;
+import r48.RubyIO;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
-import r48.map.UIMapView;
 import r48.map.systems.MapSystem;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
-import r48.schema.util.ISchemaHost;
-import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
 
 import java.lang.ref.WeakReference;
@@ -32,7 +32,7 @@ import java.util.*;
  * Created on 12/27/16. Being phased out as of 26th February 2023.
  */
 public class AppMain {
-    // The last AppMain static variable, in the process of being phased out.
+    // The last AppMain static variables, in the process of being phased out.
     public static App instance;
     public static SDB schemas = null;
 
@@ -44,7 +44,7 @@ public class AppMain {
 
         // initialize core resources
 
-        schemas = new SDB(instance);
+        instance.sdb = schemas = new SDB(instance);
         instance.magicalBindingCache = new WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>>();
 
         schemas.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
@@ -72,27 +72,6 @@ public class AppMain {
         instance.np = new AppNewProject(instance);
         instance.ui = new AppUI(instance);
         return instance.ui.initialize(uiTicker);
-    }
-
-    // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
-    public static ISchemaHost launchSchema(String s, IObjectBackend.ILoadedObject rio, UIMapView context) {
-        // Responsible for keeping listeners in place so nothing breaks.
-        SchemaHostImpl watcher = new SchemaHostImpl(instance, context);
-        watcher.pushObject(new SchemaPath(schemas.getSDBEntry(s), rio));
-        return watcher;
-    }
-
-    public static ISchemaHost launchNonRootSchema(IObjectBackend.ILoadedObject root, String rootSchema, IRIO arrayIndex, IRIO element, String elementSchema, String indexText, UIMapView context) {
-        // produce a valid (and false) parent chain, that handles all required guarantees.
-        ISchemaHost shi = launchSchema(rootSchema, root, context);
-        SchemaPath sp = new SchemaPath(AppMain.schemas.getSDBEntry(rootSchema), root);
-        sp = sp.arrayHashIndex(arrayIndex, indexText);
-        shi.pushObject(sp.newWindow(AppMain.schemas.getSDBEntry(elementSchema), element));
-        return shi;
-    }
-
-    public static void launchDialog(String s) {
-        instance.ui.launchDialog(s);
     }
 
     public static void shutdown() {
@@ -138,7 +117,7 @@ public class AppMain {
     public static void reloadSystemDump() {
         RubyIO sysDump = AdHocSaveLoad.load("r48.error.YOUR_SAVED_DATA");
         if (sysDump == null) {
-            AppMain.launchDialog(TXDB.get("The system dump was unloadable. It should be: r48.error.YOUR_SAVED_DATA.r48"));
+            instance.ui.launchDialog(TXDB.get("The system dump was unloadable. It should be: r48.error.YOUR_SAVED_DATA.r48"));
             return;
         }
         RubyIO possibleActualDump = sysDump.getInstVarBySymbol("@current");
@@ -153,9 +132,9 @@ public class AppMain {
             }
         }
         if (possibleActualDump != null) {
-            AppMain.launchDialog(TXDB.get("Power failure dump loaded."));
+            instance.ui.launchDialog(TXDB.get("Power failure dump loaded."));
         } else {
-            AppMain.launchDialog(TXDB.get("Error dump loaded."));
+            instance.ui.launchDialog(TXDB.get("Error dump loaded."));
         }
     }
 }

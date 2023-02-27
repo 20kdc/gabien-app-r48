@@ -13,7 +13,7 @@ import gabien.ui.*;
 import gabien.ui.UIPopupMenu.Entry;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
-import r48.AppMain;
+import r48.App;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
@@ -30,6 +30,7 @@ public class UIMTPopupButtons extends UIMTBase {
         super(mtc);
 
         final UIMapView view = mtc.getMapView();
+        final App app = view.app;
 
         ToolButton[] mainToolButtons = {
                 new ToolButton(TXDB.get("Reload Panorama/TS")) {
@@ -42,7 +43,7 @@ public class UIMTPopupButtons extends UIMTBase {
                 new ToolButton(TXDB.get("Properties")) {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
-                        AppMain.launchSchema(view.map.objectSchema, view.map.object, view);
+                        app.ui.launchSchema(view.map.objectSchema, view.map.object, view);
                         return null;
                     }
                 },
@@ -50,7 +51,7 @@ public class UIMTPopupButtons extends UIMTBase {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
                         if (disableResize) {
-                            AppMain.launchDialog(TXDB.get("Tiles are apparently readonly, so resizing is not possible."));
+                            app.ui.launchDialog(TXDB.get("Tiles are apparently readonly, so resizing is not possible."));
                         } else {
                             return new UIMTMapResizer(mtc);
                         }
@@ -68,12 +69,12 @@ public class UIMTPopupButtons extends UIMTBase {
                             try {
                                 os.write(igd.createPNG());
                                 os.close();
-                                AppMain.launchDialog(TXDB.get("Wrote 'shot.png' in R48 settings directory."));
+                                app.ui.launchDialog(TXDB.get("Wrote 'shot.png' in R48 settings directory."));
                             } catch (Exception e) {
-                                AppMain.launchDialog(TXDB.get("Failed for... ") + e);
+                                app.ui.launchDialog(TXDB.get("Failed for... ") + e);
                             }
                         } else {
-                            AppMain.launchDialog(TXDB.get("Failed to open file."));
+                            app.ui.launchDialog(TXDB.get("Failed to open file."));
                         }
                         igd.shutdown();
                         return null;

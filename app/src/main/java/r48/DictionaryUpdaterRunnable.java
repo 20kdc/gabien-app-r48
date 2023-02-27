@@ -8,6 +8,7 @@
 package r48;
 
 import gabien.uslx.append.*;
+import r48.app.AppMain;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;

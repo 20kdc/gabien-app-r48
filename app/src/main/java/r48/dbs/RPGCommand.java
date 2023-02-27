@@ -9,7 +9,7 @@ package r48.dbs;
 
 import gabien.uslx.append.*;
 import gabien.ui.UIScrollLayout;
-import r48.AppMain;
+import r48.app.AppMain;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.displays.TonePickerSchemaElement;

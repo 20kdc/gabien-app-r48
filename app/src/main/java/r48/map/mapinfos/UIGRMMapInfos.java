@@ -9,7 +9,6 @@ package r48.map.mapinfos;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import r48.AppMain;
 import r48.App;
 import r48.FontSizes;
 import r48.IMapContext;
@@ -158,7 +157,7 @@ public class UIGRMMapInfos extends App.Prx {
                     public void run() {
                         long i = num.number;
                         if (operators.getHashBID(i) != null) {
-                            AppMain.launchDialog(TXDB.get("That ID is already in use."));
+                            app.ui.launchDialog(TXDB.get("That ID is already in use."));
                             return;
                         }
                         selectedOrder = operators.createNewMap(i);

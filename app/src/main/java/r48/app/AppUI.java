@@ -4,7 +4,7 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48;
+package r48.app;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,11 +23,15 @@ import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.ISupplier;
 import gabienapp.UIFancyInit;
+import r48.App;
+import r48.FontSizes;
+import r48.IMapContext;
 import r48.dbs.TXDB;
 import r48.imagefx.ImageFXCache;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
+import r48.map.UIMapView;
 import r48.maptools.UIMTBase;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
@@ -100,7 +104,7 @@ public class AppUI extends App.Svc {
             }
         }));
         UISplitterLayout usl = new UISplitterLayout(sym, sym2, false, 0.5);
-        wm = new WindowManager(uiTicker, null, usl);
+        wm = new WindowManager(app, uiTicker, null, usl);
 
         initializeTabs();
 
@@ -124,7 +128,7 @@ public class AppUI extends App.Svc {
                             public void run() {
                                 for (String st : createDirs)
                                     GaBIEn.makeDirectories(PathUtils.autoDetectWindows(app.rootPath + st));
-                                AppMain.launchDialog(TXDB.get("Done!"));
+                                app.ui.launchDialog(TXDB.get("Done!"));
                             }
                         }
                 }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
@@ -291,7 +295,7 @@ public class AppUI extends App.Svc {
     }
 
     public void saveAllModified() {
-        app.odb.ensureAllSaved();
+        app.odb.ensureAllSaved(app);
         for (ImageEditorController iec : imgContext)
             if (iec.imageModified())
                 iec.save();
@@ -327,5 +331,22 @@ public class AppUI extends App.Svc {
         };
         svl.panelsAdd(ul);
         wm.createWindowSH(svl);
+    }
+
+    // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
+    public ISchemaHost launchSchema(String s, IObjectBackend.ILoadedObject rio, UIMapView context) {
+        // Responsible for keeping listeners in place so nothing breaks.
+        SchemaHostImpl watcher = new SchemaHostImpl(app, context);
+        watcher.pushObject(new SchemaPath(app.sdb.getSDBEntry(s), rio));
+        return watcher;
+    }
+
+    public ISchemaHost launchNonRootSchema(IObjectBackend.ILoadedObject root, String rootSchema, IRIO arrayIndex, IRIO element, String elementSchema, String indexText, UIMapView context) {
+        // produce a valid (and false) parent chain, that handles all required guarantees.
+        ISchemaHost shi = launchSchema(rootSchema, root, context);
+        SchemaPath sp = new SchemaPath(app.sdb.getSDBEntry(rootSchema), root);
+        sp = sp.arrayHashIndex(arrayIndex, indexText);
+        shi.pushObject(sp.newWindow(app.sdb.getSDBEntry(elementSchema), element));
+        return shi;
     }
 }

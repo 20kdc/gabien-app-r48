@@ -14,12 +14,12 @@ import gabien.WindowSpecs;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.AdHocSaveLoad;
-import r48.AppMain;
 import r48.FontSizes;
+import r48.app.AppMain;
 import r48.dbs.TXDB;
 import r48.imageio.ImageIOFormat;
 import r48.ui.Art;
-import r48.ui.Coco;
+import r48.wm.Coco;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

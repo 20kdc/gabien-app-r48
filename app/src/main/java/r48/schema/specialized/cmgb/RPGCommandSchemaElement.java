@@ -10,7 +10,6 @@ package r48.schema.specialized.cmgb;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.CMDB;
@@ -106,7 +105,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     } else {
                         title += TXDB.get("Unknown Command");
                     }
-                    AppMain.launchDialog(title + "\n" + result);
+                    app.ui.launchDialog(title + "\n" + result);
                 }
             }, FontSizes.schemaFieldTextHeight);
 

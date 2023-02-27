@@ -11,7 +11,6 @@ import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.AppMain;
 import r48.RubyIO;
 import r48.io.data.IRIO;
 import r48.schema.*;
@@ -56,7 +55,7 @@ class SDBHelpers extends App.Svc {
             public int itemCount() {
                 // Use this to inform the user of image issues
                 if (imgTxt.equals(""))
-                    AppMain.launchDialog(TXDB.get("The image wasn't specified."));
+                    app.ui.launchDialog(TXDB.get("The image wasn't specified."));
                 if (countOvr != -1)
                     return countOvr;
                 return ((img.getHeight() + (cellH - 1)) / cellH) * rowCells;

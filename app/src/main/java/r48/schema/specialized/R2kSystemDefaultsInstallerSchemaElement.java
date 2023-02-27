@@ -11,10 +11,10 @@ import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.RubyTable;
+import r48.app.AppMain;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -49,7 +49,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     String mapName = R2kRMLikeMapInfoBackend.sNameFromInt((int) mapId);
                     IObjectBackend.ILoadedObject map = app.odb.getObject(mapName, null);
                     if (map == null) {
-                        AppMain.launchDialog(TXDB.get("The map's invalid, so that's not possible."));
+                        app.ui.launchDialog(TXDB.get("The map's invalid, so that's not possible."));
                         return;
                     }
                     IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");
@@ -69,7 +69,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
 
                     path.changeOccurred(false);
-                    AppMain.launchDialog(TXDB.get("Reset events to map state and set versioning."));
+                    app.ui.launchDialog(TXDB.get("Reset events to map state and set versioning."));
                 }
             });
             UITextButton utb2 = new UITextButton(TXDB.get("Try To Get RPG_RT To Reset The Map"), FontSizes.schemaFieldTextHeight, new Runnable() {
@@ -82,7 +82,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
 
                     path.changeOccurred(false);
-                    AppMain.launchDialog(TXDB.get("Ok, cleaned up. If RPG_RT loads this save, the map will probably be reset."));
+                    app.ui.launchDialog(TXDB.get("Ok, cleaned up. If RPG_RT loads this save, the map will probably be reset."));
                 }
             });
             return new UISplitterLayout(utb1, utb2, true, 0.5d);

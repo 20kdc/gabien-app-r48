@@ -7,7 +7,7 @@
 
 package r48.dbs;
 
-import r48.AppMain;
+import r48.app.AppMain;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.cmgb.EventCommandArraySchemaElement;
 

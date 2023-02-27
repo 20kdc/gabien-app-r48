@@ -8,8 +8,8 @@
 package r48.map.events;
 
 import r48.App;
-import r48.AppMain;
 import r48.RubyIO;
+import r48.app.AppMain;
 import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
@@ -113,21 +113,21 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
     public void delEvent(IRIO key) {
         if (key.getType() == '"') {
             if (key.decString().equals("Player")) {
-                AppMain.launchDialog(TXDB.get("You can't do THAT! ...Who would clean up the mess?"));
+                app.ui.launchDialog(TXDB.get("You can't do THAT! ...Who would clean up the mess?"));
             } else {
                 IRIO rio = getEvent(key);
                 if (rio == null) {
-                    AppMain.launchDialog(TXDB.get("That's already gone."));
+                    app.ui.launchDialog(TXDB.get("That's already gone."));
                 } else {
                     rio.getIVar("@map").setFX(0);
-                    AppMain.launchDialog(TXDB.get("Can't be deleted, but was moved to @map 0 (as close as you can get to deleted)"));
+                    app.ui.launchDialog(TXDB.get("Can't be deleted, but was moved to @map 0 (as close as you can get to deleted)"));
                     pokeHive();
                 }
             }
         } else {
             IRIO se = getSaveEvents();
             if (se.getHashVal(key) == null) {
-                AppMain.launchDialog(TXDB.get("You're trying to delete a ghost. Yes, I know the Event Picker is slightly unreliable. Poor ghost."));
+                app.ui.launchDialog(TXDB.get("You're trying to delete a ghost. Yes, I know the Event Picker is slightly unreliable. Poor ghost."));
             } else {
                 se.removeHashVal(key);
                 IRIO map = getMap();
@@ -136,9 +136,9 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
                     if (getSaveCount(map).getFX() != saveFileRoot.getObject().getIVar("@party_pos").getIVar("@map_save_count").getFX())
                         ghost = true;
                 if (ghost) {
-                    AppMain.launchDialog(TXDB.get("Transformed to ghost. Re-Syncing it and setting @active to false might get rid of it."));
+                    app.ui.launchDialog(TXDB.get("Transformed to ghost. Re-Syncing it and setting @active to false might get rid of it."));
                 } else {
-                    AppMain.launchDialog(TXDB.get("As the version numbers are in sync, this worked."));
+                    app.ui.launchDialog(TXDB.get("As the version numbers are in sync, this worked."));
                 }
                 pokeHive();
             }
@@ -153,7 +153,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
 
     @Override
     public RubyIO addEvent(RubyIO eve, int type) {
-        AppMain.launchDialog(TXDB.get("Couldn't add the event."));
+        app.ui.launchDialog(TXDB.get("Couldn't add the event."));
         return null;
     }
 
@@ -219,16 +219,16 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
                     // "Naw! Ghostie want biscuits!"
                     if (eventsHash.getHashVal(evK) != null) {
                         // "Dere's already a ghostie here, and 'e's nomming on biscuits!"
-                        AppMain.launchDialog(TXDB.get("The event was already added somehow (but perhaps not synced). The button should now have disappeared."));
+                        app.ui.launchDialog(TXDB.get("The event was already added somehow (but perhaps not synced). The button should now have disappeared."));
                     } else {
                         IRIO map = getMap();
                         if (map == null) {
-                            AppMain.launchDialog(TXDB.get("There's no map to get the event from!"));
+                            app.ui.launchDialog(TXDB.get("There's no map to get the event from!"));
                             return;
                         }
                         IRIO ev = map.getIVar("@events").getHashVal(evK);
                         if (ev == null) {
-                            AppMain.launchDialog(TXDB.get("So, you saw the ghost, got the Map's properties window via System Tools (or you left it up) to delete the event, then came back and pressed Sync? Or has the software just completely broken?!?!?"));
+                            app.ui.launchDialog(TXDB.get("So, you saw the ghost, got the Map's properties window via System Tools (or you left it up) to delete the event, then came back and pressed Sync? Or has the software just completely broken?!?!?"));
                             return;
                         }
                         eventAsSaveEvent(getSaveEvents(), getMapId(), evK, ev);
@@ -267,7 +267,7 @@ public class R2kSavefileEventAccess extends App.Svc implements IEventAccess {
         IRIO se = getSaveEvents();
         a = se.getHashVal(a);
         if (a == null) {
-            AppMain.launchDialog(TXDB.get("The ghost refuses to budge."));
+            app.ui.launchDialog(TXDB.get("The ghost refuses to budge."));
             return;
         }
         a.getIVar("@x").setFX(x);

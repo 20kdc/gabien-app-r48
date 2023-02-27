@@ -11,7 +11,6 @@ import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UITextButton;
-import r48.AppMain;
 import r48.App;
 import r48.FontSizes;
 import r48.RubyTable;
@@ -138,20 +137,20 @@ public class MapEditingToolbarController extends App.Svc implements IEditingTool
                 @Override
                 public void run() {
                     if (app.theClipboard == null) {
-                        AppMain.launchDialog("Unable - there is no clipboard.");
+                        app.ui.launchDialog("Unable - there is no clipboard.");
                         return;
                     }
                     if (app.theClipboard.type != 'u') {
-                        AppMain.launchDialog("Unable - the clipboard must contain a section of map data - This is not a usertype.");
+                        app.ui.launchDialog("Unable - the clipboard must contain a section of map data - This is not a usertype.");
                         return;
                     }
                     if (!app.theClipboard.symVal.equals("Table")) {
-                        AppMain.launchDialog("Unable - the clipboard must contain a section of map data - This is not a Table.");
+                        app.ui.launchDialog("Unable - the clipboard must contain a section of map data - This is not a Table.");
                         return;
                     }
                     RubyTable rt = new RubyTable(app.theClipboard.userVal);
                     if (rt.planeCount != viewGiver.getMapView().mapTable.planeCount) {
-                        AppMain.launchDialog("Unable - the map data must contain the same amount of layers for transfer.");
+                        app.ui.launchDialog("Unable - the map data must contain the same amount of layers for transfer.");
                         return;
                     }
                     clearTools(thisButton);

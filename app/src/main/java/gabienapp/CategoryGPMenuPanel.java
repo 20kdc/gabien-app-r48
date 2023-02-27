@@ -8,7 +8,7 @@
 package gabienapp;
 
 import gabien.uslx.append.*;
-import r48.AppMain;
+import r48.app.AppMain;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.TXDB;

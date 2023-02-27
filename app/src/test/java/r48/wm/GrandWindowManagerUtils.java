@@ -11,7 +11,7 @@ import gabien.TestKickstart;
 import gabien.ui.*;
 import gabienapp.GrandLauncherUtils;
 import r48.App;
-import r48.AppMain;
+import r48.app.AppMain;
 import r48.tests.grand.GrandExecutionError;
 import r48.ui.UISymbolButton;
 

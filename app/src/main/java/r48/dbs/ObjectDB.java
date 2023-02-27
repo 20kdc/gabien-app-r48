@@ -9,7 +9,8 @@ package r48.dbs;
 
 import gabien.uslx.append.*;
 import gabienapp.UIFancyInit;
-import r48.AppMain;
+import r48.App;
+import r48.app.AppMain;
 import r48.io.IObjectBackend;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.SchemaElement;
@@ -105,7 +106,7 @@ public class ObjectDB {
         return getObject(id, "File." + id);
     }
 
-    public void ensureSaved(String id, IObjectBackend.ILoadedObject rio) {
+    public void ensureSaved(App app, String id, IObjectBackend.ILoadedObject rio) {
         if (objectMap.containsKey(id)) {
             IObjectBackend.ILoadedObject rio2 = objectMap.get(id).get();
             if (rio2 != null) {
@@ -125,7 +126,7 @@ public class ObjectDB {
             newlyCreatedObjects.remove(rio);
         } catch (Exception ioe) {
             // ERROR!
-            AppMain.launchDialog(TXDB.get("Error saving object: ") + id + "\n" + ioe);
+            app.ui.launchDialog(TXDB.get("Error saving object: ") + id + "\n" + ioe);
             ioe.printStackTrace();
             return;
         }
@@ -265,11 +266,11 @@ public class ObjectDB {
             orCreateModificationHandlers.remove(wr);
     }
 
-    public void ensureAllSaved() {
+    public void ensureAllSaved(App app) {
         for (IObjectBackend.ILoadedObject rio : new LinkedList<IObjectBackend.ILoadedObject>(modifiedObjects)) {
             String id = getIdByObject(rio);
             if (id != null)
-                ensureSaved(id, rio);
+                ensureSaved(app, id, rio);
         }
     }
 

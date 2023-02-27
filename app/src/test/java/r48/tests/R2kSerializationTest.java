@@ -12,7 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import r48.App;
-import r48.AppMain;
+import r48.app.AppMain;
 import r48.io.IObjectBackend;
 
 import java.io.IOException;

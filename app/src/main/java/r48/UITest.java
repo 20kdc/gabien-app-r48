@@ -60,15 +60,15 @@ public class UITest extends App.Prx {
                 PrintStream ps = new PrintStream(fos);
                 ps.print(currentObj.toStringLong(""));
                 fos.close();
-                AppMain.launchDialog(TXDB.get("PRINT.txt written!"));
+                app.ui.launchDialog(TXDB.get("PRINT.txt written!"));
             } catch (Exception e) {
-                AppMain.launchDialog(TXDB.get("Could not print.") + "\n" + e);
+                app.ui.launchDialog(TXDB.get("Could not print.") + "\n" + e);
             }
         }
     }, FontSizes.inspectorBackTextHeight), new Runnable() {
         @Override
         public void run() {
-            AppMain.launchDialog(currentObj.toStringLong(""));
+            app.ui.launchDialog(currentObj.toStringLong(""));
         }
     }, FontSizes.inspectorBackTextHeight), masterPanel);
 

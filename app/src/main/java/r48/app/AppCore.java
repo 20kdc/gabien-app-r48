@@ -4,7 +4,7 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48;
+package r48.app;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -14,6 +14,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import r48.dbs.ATDB;
 import r48.dbs.ObjectDB;
 import r48.dbs.ObjectInfo;
+import r48.dbs.SDB;
 import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
 
@@ -23,6 +24,7 @@ import r48.map.systems.MapSystem;
  */
 public class AppCore {
     public ObjectDB odb;
+    public SDB sdb;
     public MapSystem system;
 
     public ATDB[] autoTiles = new ATDB[0];

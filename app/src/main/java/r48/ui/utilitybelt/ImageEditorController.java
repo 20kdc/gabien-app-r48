@@ -11,7 +11,6 @@ import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
@@ -90,7 +89,7 @@ public class ImageEditorController extends App.Svc {
     public void save() {
         // Used by AppMain for Save All Modified (...)
         if (!imageEditView.eds.canSimplySave()) {
-            AppMain.launchDialog(TXDB.get("While the image editor contents would be saved, there's nowhere to save them."));
+            app.ui.launchDialog(TXDB.get("While the image editor contents would be saved, there's nowhere to save them."));
             return;
         }
         // Save to existing location
@@ -98,7 +97,7 @@ public class ImageEditorController extends App.Svc {
             imageEditView.eds.simpleSave();
         } catch (Exception e) {
             e.printStackTrace();
-            AppMain.launchDialog(TXDB.get("Failed to save.") + "\n" + e);
+            app.ui.launchDialog(TXDB.get("Failed to save.") + "\n" + e);
         }
         app.ui.performFullImageFlush();
     }
@@ -107,7 +106,7 @@ public class ImageEditorController extends App.Svc {
         GaBIEn.hintFlushAllTheCaches();
         ImageIOFormat.TryToLoadResult ioi = ImageIOFormat.tryToLoad(filename, ImageIOFormat.supportedFormats);
         if (ioi == null) {
-            AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to load #A."), new RubyIO().setString(filename, true)));
+            app.ui.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to load #A."), new RubyIO().setString(filename, true)));
         } else {
             boolean detectedCK = false;
             if (ioi.wouldKnowIfColourKey) {
@@ -247,7 +246,7 @@ public class ImageEditorController extends App.Svc {
                         imageEditView.setImage(new ImageEditorImage(imageEditView.image.width, imageEditView.image.height));
                         imageEditView.eds.newFile();
                         initPalette(3);
-                        AppMain.launchDialog(TXDB.get("New image created (same size as the previous image)"));
+                        app.ui.launchDialog(TXDB.get("New image created (same size as the previous image)"));
                     }
                 };
                 if (imageEditView.eds.imageModified())
@@ -313,7 +312,7 @@ public class ImageEditorController extends App.Svc {
                                             imageEditView.eds.didSuccessfulSave(s, format);
                                         } catch (Exception e) {
                                             e.printStackTrace();
-                                            AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to save #A."), new RubyIO().setString(s, true)) + "\n" + e);
+                                            app.ui.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to save #A."), new RubyIO().setString(s, true)) + "\n" + e);
                                         }
                                         app.ui.performFullImageFlush();
                                         initPalette(0);
@@ -411,7 +410,7 @@ public class ImageEditorController extends App.Svc {
                     imageEditView.setImage(imageEditView.eds.performUndo());
                     initPalette(1);
                 } else {
-                    AppMain.launchDialog(TXDB.get("There is nothing to undo."));
+                    app.ui.launchDialog(TXDB.get("There is nothing to undo."));
                 }
             }
         }, FontSizes.imageEditorTextHeight));
@@ -423,7 +422,7 @@ public class ImageEditorController extends App.Svc {
                     imageEditView.setImage(imageEditView.eds.performRedo());
                     initPalette(2);
                 } else {
-                    AppMain.launchDialog(TXDB.get("There is nothing to redo."));
+                    app.ui.launchDialog(TXDB.get("There is nothing to redo."));
                 }
             }
         }, FontSizes.imageEditorTextHeight));

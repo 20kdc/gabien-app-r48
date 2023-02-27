@@ -7,8 +7,8 @@
 
 package r48.schema.specialized.genpos.backend;
 
-import r48.AppMain;
 import r48.RubyIO;
+import r48.app.AppMain;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.specialized.genpos.IGenposAnim;

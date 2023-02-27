@@ -27,9 +27,9 @@ import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.IFunction;
 import r48.AdHocSaveLoad;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.app.AppMain;
 import r48.dbs.ObjectInfo;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
@@ -225,7 +225,7 @@ public class UIRMUniversalStringLocator extends App.Prx {
                         }
                     }
                 }
-                AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Made #A total string adjustments across #B files."), new IRIOFixnum(total), new IRIOFixnum(files)) + log);
+                app.ui.launchDialog(FormatSyntax.formatExtended(TXDB.get("Made #A total string adjustments across #B files."), new IRIOFixnum(total), new IRIOFixnum(files)) + log);
             }
         }));
     }

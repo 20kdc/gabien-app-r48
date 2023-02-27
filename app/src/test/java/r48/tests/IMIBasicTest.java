@@ -9,8 +9,9 @@ package r48.tests;
 
 import gabien.TestKickstart;
 import org.junit.Test;
-import r48.AppMain;
+
 import r48.RubyIO;
+import r48.app.AppMain;
 import r48.io.IMIUtils;
 import r48.schema.util.SchemaPath;
 

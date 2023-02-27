@@ -14,8 +14,8 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
+import r48.app.AppMain;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
 import r48.dbs.TXDB;
@@ -83,14 +83,14 @@ public class RMFindTranslatables extends App.Svc {
     public void addSitesFromCommonEvents(IRIO[] commonEvents) {
         SchemaElement sch = AppMain.schemas.findSchemaFor(objIdName, objRoot.getObject());
         if (sch == null) {
-            AppMain.launchDialog(TXDB.get("Somehow, the common events file does not have a schema."));
+            app.ui.launchDialog(TXDB.get("Somehow, the common events file does not have a schema."));
         } else {
             SchemaPath rootSP = new SchemaPath(sch, objRoot);
             EventCommandArraySchemaElement ecase = RMFindTranslatables.getEventCommandArraySchemaElement("EventListEditor");
             for (IRIO rio : commonEvents) {
                 SchemaElement cevElm = AppMain.schemas.findSchemaFor(null, rio);
                 if (cevElm == null) {
-                    AppMain.launchDialog(TXDB.get("Unable to determine common event schema, looks like that refactor will have to happen now"));
+                    app.ui.launchDialog(TXDB.get("Unable to determine common event schema, looks like that refactor will have to happen now"));
                     return;
                 }
                 SchemaPath commonEventSP = rootSP.newWindow(cevElm, rio);

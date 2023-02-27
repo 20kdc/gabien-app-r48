@@ -13,7 +13,6 @@ import gabien.IImage;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.DBLoader;
@@ -178,7 +177,7 @@ public class CharacterGeneratorController extends App.Svc {
                             os.close();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            AppMain.launchDialog(TXDB.get("Unable to save chargen image."));
+                            app.ui.launchDialog(TXDB.get("Unable to save chargen image."));
                         }
                     }
                 });

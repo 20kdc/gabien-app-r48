@@ -18,9 +18,9 @@ import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
+import r48.app.AppMain;
 import r48.dbs.CMDB;
 import r48.dbs.FormatSyntax;
 import r48.dbs.TXDB;
@@ -99,7 +99,7 @@ public class UITranscriptControl extends App.Prx {
 
                 dumper.end();
                 ps.close();
-                AppMain.launchDialog(TXDB.get("transcript.html was written to the target's folder."));
+                app.ui.launchDialog(TXDB.get("transcript.html was written to the target's folder."));
                 done = true;
             }
         }));

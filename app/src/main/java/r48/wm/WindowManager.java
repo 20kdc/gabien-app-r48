@@ -11,9 +11,9 @@ import gabien.*;
 import gabien.ui.*;
 import gabien.ui.UIWindowView.TabShell;
 import gabienapp.Application;
+import r48.App;
 import r48.FontSizes;
 import r48.ui.Art;
-import r48.ui.Coco;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -53,15 +53,17 @@ public class WindowManager {
     private IImage modImg;
     private boolean performingScreenTransfer = true;
     public final HashMap<String, Rect> recordedWindowPositions = new HashMap<String, Rect>();
+    public final Coco coco;
 
-    public WindowManager(final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR) {
+    public WindowManager(App app, final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR) {
+        coco = new Coco(app);
         uiTicker = uiTick;
         modImg = GaBIEn.createImage(new int[] {0x80000000}, 1, 1);
         rootView = new UIWindowView() {
             @Override
             public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
                 if (peripherals instanceof IDesktopPeripherals)
-                    Coco.run((IDesktopPeripherals) peripherals);
+                    coco.run((IDesktopPeripherals) peripherals);
                 super.update(deltaTime, selected, peripherals);
             }
 

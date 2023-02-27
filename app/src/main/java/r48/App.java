@@ -15,6 +15,9 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement.UIProxy;
 import gabienapp.Application;
+import r48.app.AppCore;
+import r48.app.AppNewProject;
+import r48.app.AppUI;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.schema.specialized.IMagicalBinder;

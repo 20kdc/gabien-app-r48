@@ -14,7 +14,7 @@ import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
 import r48.App;
-import r48.AppMain;
+import r48.app.AppMain;
 import r48.dbs.TXDB;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTBase;

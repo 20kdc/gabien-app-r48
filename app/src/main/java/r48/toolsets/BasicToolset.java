@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.*;
+import r48.app.AppMain;
 import r48.dbs.FormatSyntax;
 import r48.dbs.ObjectInfo;
 import r48.dbs.TXDB;
@@ -26,7 +27,6 @@ import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBinders;
 import r48.schema.util.SchemaPath;
 import r48.toolsets.utils.UITestGraphicsStuff;
-import r48.ui.Coco;
 import r48.ui.UIAppendButton;
 import r48.ui.UIMenuButton;
 import r48.ui.audioplayer.UIAudioPlayer;
@@ -58,7 +58,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         UIElement menu4 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(TXDB.get("R48 Version"), FontSizes.menuTextHeight, new Runnable() {
             @Override
             public void run() {
-                Coco.launch();
+                app.ui.wm.coco.launch();
             }
         }).centred(), FontSizes.menuTextHeight), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(TXDB.get("Help"), FontSizes.menuTextHeight, new Runnable() {
             @Override
@@ -144,25 +144,25 @@ public class BasicToolset extends App.Svc implements IToolset {
                             public void accept(String s) {
                                 final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
                                 if (AppMain.schemas.hasSDBEntry("File." + s)) {
-                                    AppMain.launchSchema("File." + s, rio, null);
+                                    app.ui.launchSchema("File." + s, rio, null);
                                     return;
                                 }
                                 if (rio != null) {
                                     IRIO r2 = rio.getObject();
                                     if (r2.getType() == 'o') {
                                         if (AppMain.schemas.hasSDBEntry(r2.getSymbol())) {
-                                            AppMain.launchSchema(r2.getSymbol(), rio, null);
+                                            app.ui.launchSchema(r2.getSymbol(), rio, null);
                                             return;
                                         }
                                     }
                                     app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                         @Override
                                         public void accept(String s) {
-                                            AppMain.launchSchema(s, rio, null);
+                                            app.ui.launchSchema(s, rio, null);
                                         }
                                     }));
                                 } else {
-                                    AppMain.launchDialog(TXDB.get("The file couldn't be read, and there's no schema to create it."));
+                                    app.ui.launchDialog(TXDB.get("The file couldn't be read, and there's no schema to create it."));
                                 }
                             }
                         }));
@@ -180,7 +180,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                     public void accept(String s) {
                                         SchemaElement ise = AppMain.schemas.getSDBEntry(s);
                                         ise.modifyVal(rio.getObject(), new SchemaPath(ise, rio), false);
-                                        AppMain.launchDialog(TXDB.get("OK!"));
+                                        app.ui.launchDialog(TXDB.get("OK!"));
                                     }
                                 }));
                             }
@@ -195,7 +195,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                             public void accept(String s) {
                                 IObjectBackend.ILoadedObject obj = app.odb.getObject(s);
                                 if (obj == null) {
-                                    AppMain.launchDialog(TXDB.get("The file couldn't be read, and R48 cannot create it."));
+                                    app.ui.launchDialog(TXDB.get("The file couldn't be read, and R48 cannot create it."));
                                 } else {
                                     app.ui.wm.createWindow(new UITest(app, obj.getObject()));
                                 }
@@ -215,7 +215,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                     public void accept(String s) {
                                         final IObjectBackend.ILoadedObject objB = app.odb.getObject(s);
                                         if ((objA == null) || (objB == null)) {
-                                            AppMain.launchDialog(TXDB.get("A file couldn't be read, and R48 cannot create it."));
+                                            app.ui.launchDialog(TXDB.get("A file couldn't be read, and R48 cannot create it."));
                                         } else {
                                             try {
                                                 OutputStream os = GaBIEn.getOutFile(PathUtils.autoDetectWindows(app.rootPath + "objcompareAB.txt"));
@@ -228,10 +228,10 @@ public class BasicToolset extends App.Svc implements IToolset {
                                                 if (cid != null)
                                                     os.write(cid);
                                                 os.close();
-                                                AppMain.launchDialog(TXDB.get("objcompareAB.txt and objcompareBA.txt have been made."));
+                                                app.ui.launchDialog(TXDB.get("objcompareAB.txt and objcompareBA.txt have been made."));
                                                 return;
                                             } catch (Exception e) {
-                                                AppMain.launchDialog(TXDB.get("There was an issue somewhere along the line."));
+                                                app.ui.launchDialog(TXDB.get("There was an issue somewhere along the line."));
                                             }
                                         }
                                     }
@@ -268,9 +268,9 @@ public class BasicToolset extends App.Svc implements IToolset {
                             dos.write('\n');
                             dos.close();
                             if (app.dataPath.equals("Languages/")) {
-                                AppMain.launchDialog(TXDB.get("Wrote locmaps.txt (NOTE: You probably don't actually want to do this! Press this in RXP mode to get the CRCs, then go back to this mode to actually start editing stuff.)"));
+                                app.ui.launchDialog(TXDB.get("Wrote locmaps.txt (NOTE: You probably don't actually want to do this! Press this in RXP mode to get the CRCs, then go back to this mode to actually start editing stuff.)"));
                             } else {
-                                AppMain.launchDialog(TXDB.get("Wrote locmaps.txt"));
+                                app.ui.launchDialog(TXDB.get("Wrote locmaps.txt"));
                             }
                         } catch (IOException ioe) {
                             throw new RuntimeException(ioe);
@@ -286,22 +286,22 @@ public class BasicToolset extends App.Svc implements IToolset {
                                 final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
                                 final InputStream is = GaBIEn.getInFile(UITest.getPrintPath(app));
                                 if (rio == null) {
-                                    AppMain.launchDialog(TXDB.get("The target file couldn't be read, and there's no schema to create it."));
+                                    app.ui.launchDialog(TXDB.get("The target file couldn't be read, and there's no schema to create it."));
                                 } else if (is == null) {
-                                    AppMain.launchDialog(TXDB.get("The PRINT.txt file couldn't be read."));
+                                    app.ui.launchDialog(TXDB.get("The PRINT.txt file couldn't be read."));
                                 } else {
                                     try {
                                         IRIO irio = rio.getObject();
                                         IMIUtils.runIMISegment(is, irio);
                                         app.odb.objectRootModified(rio, new SchemaPath(new OpaqueSchemaElement(app), rio));
-                                        AppMain.launchDialog(TXDB.get("It is done."));
+                                        app.ui.launchDialog(TXDB.get("It is done."));
                                     } catch (Exception ioe) {
                                         try {
                                             is.close();
                                         } catch (Exception ex) {
                                         }
                                         ioe.printStackTrace();
-                                        AppMain.launchDialog(TXDB.get("There was an issue somewhere along the line."));
+                                        app.ui.launchDialog(TXDB.get("There was an issue somewhere along the line."));
                                     }
                                 }
                             }
@@ -330,7 +330,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                     Integer i = Integer.parseInt(s);
                                     app.ui.wm.createWindow(new UITextBox("", i).setMultiLine());
                                 } catch (Exception e) {
-                                    AppMain.launchDialog(TXDB.get("Not a valid number."));
+                                    app.ui.launchDialog(TXDB.get("Not a valid number."));
                                 }
                             }
                         }));
@@ -386,7 +386,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         }
                         psA.close();
                         psB.close();
-                        AppMain.launchDialog(TXDB.get("Wrote Lang and Cmtx files to R48 startup directory (to be put in schema dir.)"));
+                        app.ui.launchDialog(TXDB.get("Wrote Lang and Cmtx files to R48 startup directory (to be put in schema dir.)"));
                     }
                 },
                 new Runnable() {
@@ -405,7 +405,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                     AppMain.reloadSystemDump();
                             }
                         }));
-                        AppMain.launchDialog(TXDB.get("If the backup file is invalid, wasn't created, or is otherwise harmed, this can destroy more data than it saves.") +
+                        app.ui.launchDialog(TXDB.get("If the backup file is invalid, wasn't created, or is otherwise harmed, this can destroy more data than it saves.") +
                                 "\n" + TXDB.get("Check *everything* before a final save.") + "\n" + TXDB.get("Type 'I understand.' at the prompt behind this window if you WILL do this."));
                     }
                 },
@@ -443,10 +443,10 @@ public class BasicToolset extends App.Svc implements IToolset {
                     @Override
                     public void run() {
                         if (app.theClipboard == null) {
-                            AppMain.launchDialog(TXDB.get("There is nothing in the clipboard."));
+                            app.ui.launchDialog(TXDB.get("There is nothing in the clipboard."));
                         } else {
                             AdHocSaveLoad.save("clip", app.theClipboard);
-                            AppMain.launchDialog(TXDB.get("The clipboard was saved."));
+                            app.ui.launchDialog(TXDB.get("The clipboard was saved."));
                         }
                     }
                 },
@@ -455,10 +455,10 @@ public class BasicToolset extends App.Svc implements IToolset {
                     public void run() {
                         RubyIO newClip = AdHocSaveLoad.load("clip");
                         if (newClip == null) {
-                            AppMain.launchDialog(TXDB.get("The clipboard file is invalid or does not exist."));
+                            app.ui.launchDialog(TXDB.get("The clipboard file is invalid or does not exist."));
                         } else {
                             app.theClipboard = newClip;
-                            AppMain.launchDialog(TXDB.get("The clipboard file was loaded."));
+                            app.ui.launchDialog(TXDB.get("The clipboard file was loaded."));
                         }
                     }
                 },
@@ -466,7 +466,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     @Override
                     public void run() {
                         if (app.theClipboard == null) {
-                            AppMain.launchDialog(TXDB.get("There is nothing in the clipboard."));
+                            app.ui.launchDialog(TXDB.get("There is nothing in the clipboard."));
                         } else {
                             app.ui.wm.createWindow(new UITest(app, app.theClipboard));
                         }
@@ -493,7 +493,7 @@ public class BasicToolset extends App.Svc implements IToolset {
             r.add(new Runnable() {
                 @Override
                 public void run() {
-                    AppMain.launchSchema(s2.schemaName, app.odb.getObject(s2.idName), null);
+                    app.ui.launchSchema(s2.schemaName, app.odb.getObject(s2.idName), null);
                 }
             });
         }

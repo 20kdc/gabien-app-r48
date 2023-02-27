@@ -8,7 +8,7 @@
 package r48.maptools;
 
 import gabien.ui.*;
-import r48.AppMain;
+import r48.App;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
@@ -24,6 +24,8 @@ import r48.ui.Art;
 import r48.ui.UIAppendButton;
 
 import java.util.HashMap;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Created on 12/29/16.
@@ -205,15 +207,15 @@ public class UIMTEventPicker extends UIMTBase implements IMapViewCallbacks {
         return FormatSyntax.formatExtended(TXDB.get("Ev.Pick #[#A total#]"), new RubyIO().setFX(eventCache.size()));
     }
 
-    public static void showEvent(IRIO key, UIMapView map, IRIO event) {
+    public static void showEvent(IRIO key, @NonNull UIMapView map, IRIO event) {
         String[] root = map.mapTable.eventAccess.getEventSchema(key);
         if (root == null)
             return;
         key = ValueSyntax.decode(root[3]);
-        AppMain.launchNonRootSchema(map.app.odb.getObject(root[1]), root[2], key, event, root[0], "E" + key, map);
+        map.app.ui.launchNonRootSchema(map.app.odb.getObject(root[1]), root[2], key, event, root[0], "E" + key, map);
     }
 
-    public static void showEventDivorced(IRIO key, IObjectBackend.ILoadedObject map, String mapSchema, IRIO event, String eventSchema) {
-        AppMain.launchNonRootSchema(map, mapSchema, key, event, eventSchema, "E" + key, null);
+    public static void showEventDivorced(App app, IRIO key, IObjectBackend.ILoadedObject map, String mapSchema, IRIO event, String eventSchema) {
+        app.ui.launchNonRootSchema(map, mapSchema, key, event, eventSchema, "E" + key, null);
     }
 }

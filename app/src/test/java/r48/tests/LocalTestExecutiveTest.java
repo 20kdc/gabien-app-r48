@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import r48.App;
-import r48.AppMain;
+import r48.app.AppMain;
 import r48.dbs.DBLoader;
 import r48.dbs.ObjectInfo;
 import r48.dbs.IDatabase;

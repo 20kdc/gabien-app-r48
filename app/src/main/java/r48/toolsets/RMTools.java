@@ -10,8 +10,8 @@ package r48.toolsets;
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
+import r48.app.AppMain;
 import r48.dbs.CMDB;
 import r48.dbs.ObjectInfo;
 import r48.dbs.TXDB;
@@ -81,7 +81,7 @@ public class RMTools extends App.Svc {
                                 try {
                                     i = Integer.parseInt(s);
                                 } catch (Exception e) {
-                                    AppMain.launchDialog(TXDB.get("Not a valid number."));
+                                    app.ui.launchDialog(TXDB.get("Not a valid number."));
                                     return;
                                 }
                                 for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
@@ -109,14 +109,14 @@ public class RMTools extends App.Svc {
                                                     found = cod == i;
                                                 }
                                                 if (found) {
-                                                    UIMTEventPicker.showEventDivorced(key, ilo, rmd.schemaName, event, "RPG::Event");
+                                                    UIMTEventPicker.showEventDivorced(app, key, ilo, rmd.schemaName, event, "RPG::Event");
                                                     return;
                                                 }
                                             }
                                         }
                                     }
                                 }
-                                AppMain.launchDialog(TXDB.get("Not found."));
+                                app.ui.launchDialog(TXDB.get("Not found."));
                             }
                         }));
                     }

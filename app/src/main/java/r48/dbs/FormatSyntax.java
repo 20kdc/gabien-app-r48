@@ -8,8 +8,8 @@
 package r48.dbs;
 
 import gabien.uslx.append.*;
-import r48.AppMain;
 import r48.RubyIO;
+import r48.app.AppMain;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;

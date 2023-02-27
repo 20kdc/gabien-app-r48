@@ -9,7 +9,6 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.*;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.io.BMPConnection;
@@ -52,7 +51,7 @@ public class PasteImageEditorTool extends App.Svc implements IImageEditorTool {
         }
 
         if (result == null) {
-            AppMain.launchDialog(TXDB.get("Object in clipboard not a valid image."));
+            app.ui.launchDialog(TXDB.get("Object in clipboard not a valid image."));
             return;
         }
 

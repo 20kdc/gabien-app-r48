@@ -9,8 +9,8 @@ package r48.map.mapinfos;
 
 import gabien.uslx.append.*;
 import r48.App;
-import r48.AppMain;
 import r48.RubyIO;
+import r48.app.AppMain;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -92,7 +92,7 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
 
     @Override
     public void triggerEditInfoOf(long k) {
-        AppMain.launchNonRootSchema(mapTree, "RPG::MapTree", new RubyIO().setFX(k), getHashBID(k), "RPG::MapInfo", "M" + k, null);
+        app.ui.launchNonRootSchema(mapTree, "RPG::MapTree", new RubyIO().setFX(k), getHashBID(k), "RPG::MapInfo", "M" + k, null);
     }
 
     @Override

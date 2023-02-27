@@ -9,7 +9,8 @@ package r48.tests;
 
 import gabien.TestKickstart;
 import org.junit.Test;
-import r48.AppMain;
+
+import r48.app.AppMain;
 import r48.dbs.CMDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;

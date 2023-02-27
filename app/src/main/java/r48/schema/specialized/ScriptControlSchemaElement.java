@@ -13,7 +13,6 @@ import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextBox;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -54,7 +53,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
                         path.changeOccurred(true);
                     }
                 } catch (IOException ioe) {
-                    AppMain.launchDialog(TXDB.get("An IOException occurred."));
+                    app.ui.launchDialog(TXDB.get("An IOException occurred."));
                 }
             }
         });
@@ -129,9 +128,9 @@ public class ScriptControlSchemaElement extends SchemaElement {
                         sb.append("\n");
                     }
                     ps.close();
-                    AppMain.launchDialog(sb.toString());
+                    app.ui.launchDialog(sb.toString());
                 } catch (IOException ioe) {
-                    AppMain.launchDialog(TXDB.get("Couldn't export scripts due to IOException: ") + ioe);
+                    app.ui.launchDialog(TXDB.get("Couldn't export scripts due to IOException: ") + ioe);
                 }
             }
             private boolean tryWrite(String name, byte[] inflated, HashSet<String> used, PrintStream ps) throws IOException {
@@ -184,7 +183,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
                         results.append("\n");
                     }
                 }
-                AppMain.launchDialog(results.toString());
+                app.ui.launchDialog(results.toString());
             }
         }), true, 0);
         return new UISplitterLayout(impExp, search, true, 0);
@@ -196,7 +195,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
         LinkedList<RubyIO> scripts = new LinkedList<RubyIO>();
         InputStream inp = GaBIEn.getInFile(PathUtils.autoDetectWindows(app.rootPath + "scripts/_scripts.txt"));
         if (inp == null) {
-            AppMain.launchDialog(TXDB.get("It appears scripts/_scripts.txt does not exist. It acts as an index."));
+            app.ui.launchDialog(TXDB.get("It appears scripts/_scripts.txt does not exist. It acts as an index."));
             return null;
         }
         BufferedReader br = new BufferedReader(new InputStreamReader(inp, "UTF-8"));
@@ -225,7 +224,7 @@ public class ScriptControlSchemaElement extends SchemaElement {
             if (ok) {
                 byte[] data = loadScript(s);
                 if (data == null) {
-                    AppMain.launchDialog(TXDB.get("Script missing: ") + s);
+                    app.ui.launchDialog(TXDB.get("Script missing: ") + s);
                     return null;
                 }
                 scr.arrVal[2].putBuffer(data);
