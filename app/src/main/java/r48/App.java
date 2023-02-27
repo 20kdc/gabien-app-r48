@@ -7,26 +7,31 @@
 package r48;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement.UIProxy;
-import r48.dbs.ATDB;
-import r48.wm.WindowManager;
 
 /**
  * An attempt to move as much as possible out of static variables.
  * Created 26th February, 2023
  */
-public final class App {
-    public ATDB[] autoTiles = new ATDB[0];
-    public WindowManager window;
-    public String odbBackend = "<you forgot to select a backend>";
-    // Null system backend will always "work"
-    public String sysBackend = "null";
-    public String dataPath = "";
-    public String dataExt = "";
+public final class App extends AppCore {
     public HashMap<Integer, String> osSHESEDB;
+    // scheduled tasks for when UI is around, not in UI because it may not init (ever, even!)
+    public HashSet<Runnable> uiPendingRunnables = new HashSet<Runnable>();
+    // these init during UI init!
+    public AppUI ui;
+    public AppNewProject np;
+
+    public void shutdown() {
+        if (ui != null) {
+            if (ui.mapContext != null)
+                ui.mapContext.freeOsbResources();
+            ui.mapContext = null;
+        }
+    }
 
     public static class Svc {
         public final @NonNull App app;

@@ -179,7 +179,7 @@ public class UIGRMMapInfos extends App.Prx {
                         return close.get();
                     }
                 };
-                mapContext.getApp().window.createWindow(dialog);
+                mapContext.getApp().ui.wm.createWindow(dialog);
             }
         }));
     }

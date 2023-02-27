@@ -52,7 +52,7 @@ public class UICommandSites extends App.Prx {
     }
 
     public void show() {
-        app.window.createWindow(this, "findTranslatables");
+        app.ui.wm.createWindow(this, "findTranslatables");
     }
 
     @Override

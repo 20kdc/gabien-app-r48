@@ -74,14 +74,14 @@ public class RVXASystem extends RXPSystem {
                     new BorderMapViewDrawLayer(rt.width, rt.height)
             };
         }
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
+        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, layers);
     }
 
     @Override
     public StuffRenderer rendererFromTso(IRIO tso) {
         ITileRenderer tileRenderer = new VXATileRenderer(app, imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
+        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 
     @Override

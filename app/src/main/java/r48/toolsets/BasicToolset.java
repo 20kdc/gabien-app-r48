@@ -62,18 +62,18 @@ public class BasicToolset extends App.Svc implements IToolset {
         }).centred(), FontSizes.menuTextHeight), new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(TXDB.get("Help"), FontSizes.menuTextHeight, new Runnable() {
             @Override
             public void run() {
-                AppMain.startHelp(null, "0");
+                app.ui.startHelp(null, "0");
             }
         }).centred(), FontSizes.menuTextHeight), new UIBorderedSubpanel(new UITextButton(TXDB.get("Configuration"), FontSizes.menuTextHeight, new Runnable() {
             @Override
             public void run() {
-                app.window.createWindow(new UIFontSizeConfigurator());
+                app.ui.wm.createWindow(new UIFontSizeConfigurator());
             }
         }).centred(), FontSizes.menuTextHeight), false, 0.5), false, 0.333333);
         UIElement menu5 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(TXDB.get("Image Editor"), FontSizes.menuTextHeight, new Runnable() {
             @Override
             public void run() {
-                AppMain.startImgedit();
+                app.ui.startImgedit();
             }
         }).centred(), FontSizes.menuTextHeight), new UISplitterLayout(new UIBorderedSubpanel(createODBRMGestalt(), FontSizes.menuTextHeight), new UIBorderedSubpanel(createOtherButton(), FontSizes.menuTextHeight), false, 0.5), false, 1d / 3d);
 
@@ -119,7 +119,7 @@ public class BasicToolset extends App.Svc implements IToolset {
     }
 
     private UIElement createODBRMGestalt() {
-        if (AppMain.system instanceof IRMMapSystem) {
+        if (app.system instanceof IRMMapSystem) {
             return new UISplitterLayout(createODBButton(), new RMTools(app).genButton(), true, 0.5);
         } else {
             return createODBButton();
@@ -138,7 +138,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
+                        app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
@@ -154,7 +154,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                             return;
                                         }
                                     }
-                                    app.window.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
+                                    app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                         @Override
                                         public void accept(String s) {
                                             AppMain.launchSchema(s, rio, null);
@@ -170,11 +170,11 @@ public class BasicToolset extends App.Svc implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
+                        app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
-                                app.window.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
+                                app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Schema ID?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         SchemaElement ise = AppMain.schemas.getSDBEntry(s);
@@ -189,14 +189,14 @@ public class BasicToolset extends App.Svc implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
+                        app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 IObjectBackend.ILoadedObject obj = AppMain.objectDB.getObject(s);
                                 if (obj == null) {
                                     AppMain.launchDialog(TXDB.get("The file couldn't be read, and R48 cannot create it."));
                                 } else {
-                                    app.window.createWindow(new UITest(obj.getObject()));
+                                    app.ui.wm.createWindow(new UITest(obj.getObject()));
                                 }
                             }
                         }));
@@ -205,11 +205,11 @@ public class BasicToolset extends App.Svc implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.window.createWindow(new UITextPrompt(TXDB.get("Source Object Name?"), new IConsumer<String>() {
+                        app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Source Object Name?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 final IObjectBackend.ILoadedObject objA = AppMain.objectDB.getObject(s);
-                                app.window.createWindow(new UITextPrompt(TXDB.get("Target Object Name?"), new IConsumer<String>() {
+                                app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Target Object Name?"), new IConsumer<String>() {
                                     @Override
                                     public void accept(String s) {
                                         final IObjectBackend.ILoadedObject objB = AppMain.objectDB.getObject(s);
@@ -246,7 +246,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                             OutputStream lm = GaBIEn.getOutFile(PathUtils.autoDetectWindows(AppMain.rootPath + "locmaps.txt"));
                             final DataOutputStream dos = new DataOutputStream(lm);
                             final HashSet<String> text = new HashSet<String>();
-                            for (String s : AppMain.getAllObjects()) {
+                            for (String s : app.getAllObjects()) {
                                 IObjectBackend.ILoadedObject obj = AppMain.objectDB.getObject(s, null);
                                 if (obj != null) {
                                     universalStringLocator(obj.getObject(), new IFunction<IRIO, Integer>() {
@@ -279,7 +279,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.window.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
+                        app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Object Name?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 final IObjectBackend.ILoadedObject rio = AppMain.objectDB.getObject(s);
@@ -322,12 +322,12 @@ public class BasicToolset extends App.Svc implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.window.createWindow(new UITextPrompt(TXDB.get("Font Size?"), new IConsumer<String>() {
+                        app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Font Size?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 try {
                                     Integer i = Integer.parseInt(s);
-                                    app.window.createWindow(new UITextBox("", i).setMultiLine());
+                                    app.ui.wm.createWindow(new UITextBox("", i).setMultiLine());
                                 } catch (Exception e) {
                                     AppMain.launchDialog(TXDB.get("Not a valid number."));
                                 }
@@ -338,13 +338,13 @@ public class BasicToolset extends App.Svc implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.window.createWindow(new UITestGraphicsStuff());
+                        app.ui.wm.createWindow(new UITestGraphicsStuff());
                     }
                 },
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.window.toggleFullscreen();
+                        app.ui.wm.toggleFullscreen();
                     }
                 },
                 new Runnable() {
@@ -391,7 +391,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.window.createWindow(new UITextPrompt(TXDB.get("Safety Confirmation Prompt"), new IConsumer<String>() {
+                        app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Safety Confirmation Prompt"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 // Don't translate this, don't lax the restrictions.
@@ -411,10 +411,10 @@ public class BasicToolset extends App.Svc implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.window.createWindow(new UITextPrompt(TXDB.get("Filename?"), new IConsumer<String>() {
+                        app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Filename?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
-                                app.window.createWindow(UIAudioPlayer.create(s, 1));
+                                app.ui.wm.createWindow(UIAudioPlayer.create(s, 1));
                             }
                         }));
                     }
@@ -424,12 +424,12 @@ public class BasicToolset extends App.Svc implements IToolset {
 
     private static UIElement createStatusBar(App app) {
         final UILabel uiStatusLabel = new UILabel(TXDB.get("Loading..."), FontSizes.statusBarTextHeight);
-        AppMain.pendingRunnables.add(new Runnable() {
+        app.uiPendingRunnables.add(new Runnable() {
             @Override
             public void run() {
                 // Why throw the full format syntax parser on this? Consistency, plus I can extend this format further if need be.
                 uiStatusLabel.text = FormatSyntax.formatExtended(TXDB.get("#A modified. Clipboard: #B"), new RubyIO().setFX(AppMain.objectDB.modifiedObjects.size()), (AppMain.theClipboard == null) ? new RubyIO().setNull() : AppMain.theClipboard);
-                AppMain.pendingRunnables.add(this);
+                app.uiPendingRunnables.add(this);
             }
         });
         UIAppendButton workspace = new UIAppendButton(app, TXDB.get("Clipboard"), uiStatusLabel, null, new String[] {
@@ -466,12 +466,12 @@ public class BasicToolset extends App.Svc implements IToolset {
                         if (AppMain.theClipboard == null) {
                             AppMain.launchDialog(TXDB.get("There is nothing in the clipboard."));
                         } else {
-                            app.window.createWindow(new UITest(AppMain.theClipboard));
+                            app.ui.wm.createWindow(new UITest(AppMain.theClipboard));
                         }
                     }
                 }
         }, FontSizes.statusBarTextHeight);
-        workspace = new UIAppendButton(TXDB.get("Quit"), workspace, AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to return to menu? This will lose unsaved data."), new Runnable() {
+        workspace = new UIAppendButton(TXDB.get("Quit"), workspace, app.ui.createLaunchConfirmation(TXDB.get("Are you sure you want to return to menu? This will lose unsaved data."), new Runnable() {
             @Override
             public void run() {
                 AppMain.pleaseShutdown();

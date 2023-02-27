@@ -181,7 +181,7 @@ public abstract class MapSystem extends App.Svc {
             IMapViewDrawLayer[] layers = renderer.layers;
             int tileSize = renderer.tileRenderer.getTileSize();
 
-            MapViewDrawContext mvdc = new MapViewDrawContext(new Rect(vCX, vCY, igd.getWidth(), igd.getHeight()), tileSize);
+            MapViewDrawContext mvdc = new MapViewDrawContext(renderer.app, new Rect(vCX, vCY, igd.getWidth(), igd.getHeight()), tileSize);
 
             mvdc.currentLayer = currentLayer;
             mvdc.debugToggle = debugToggle;

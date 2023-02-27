@@ -9,7 +9,6 @@ package r48.toolsets;
 
 import gabien.ui.UIElement;
 import r48.App;
-import r48.AppMain;
 import r48.IMapContext;
 import r48.dbs.TXDB;
 import r48.map.UIMapView;
@@ -65,9 +64,9 @@ public class MapToolset extends App.Svc implements IToolset {
 
         String mapInfos = TXDB.get("MapInfos");
         String saves = TXDB.get("Saves");
-        final UIElement saveEl = AppMain.system.createSaveExplorer(context, saves);
+        final UIElement saveEl = app.system.createSaveExplorer(context, saves);
         if (saveEl != null) {
-            final UIElement mapInfoEl = AppMain.system.createMapExplorer(context, mapInfos);
+            final UIElement mapInfoEl = app.system.createMapExplorer(context, mapInfos);
             if (mapInfoEl != null) {
                 tabs = new UIElement[] {
                         mapBox, mapInfoEl, saveEl
@@ -78,7 +77,7 @@ public class MapToolset extends App.Svc implements IToolset {
                 };
             }
         } else {
-            final UIElement mapInfoEl = AppMain.system.createMapExplorer(context, mapInfos);
+            final UIElement mapInfoEl = app.system.createMapExplorer(context, mapInfos);
             if (mapInfoEl != null) {
                 tabs = new UIElement[] {
                         mapBox, mapInfoEl

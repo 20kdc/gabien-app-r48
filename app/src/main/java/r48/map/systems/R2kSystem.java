@@ -163,14 +163,14 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                 new BorderMapViewDrawLayer(tbl.width, tbl.height)
             };
         }
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, layers);
+        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, layers);
     }
 
     @Override
     public StuffRenderer rendererFromTso(IRIO tso) {
         ITileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader, tso);
         IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
-        return new StuffRenderer(imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
+        return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 
     @Override

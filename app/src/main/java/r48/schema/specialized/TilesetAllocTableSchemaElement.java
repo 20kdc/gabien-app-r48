@@ -9,7 +9,7 @@ package r48.schema.specialized;
 
 import gabien.IGrDriver;
 import gabien.ui.Size;
-import r48.AppMain;
+import r48.App;
 import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
@@ -23,10 +23,12 @@ import r48.schema.specialized.tbleditors.ITableCellEditor;
  * Created on 1/4/17.
  */
 public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<StuffRenderer> {
-    public TSDB allocSource;
+    public final TSDB allocSource;
+    public final App app;
 
-    public TilesetAllocTableSchemaElement(TSDB source, PathSyntax iVar, PathSyntax wVar, PathSyntax hVar, int dc, int dw, int dh, int defL, ITableCellEditor itce, int[] defVal) {
+    public TilesetAllocTableSchemaElement(App app, TSDB source, PathSyntax iVar, PathSyntax wVar, PathSyntax hVar, int dc, int dw, int dh, int defL, ITableCellEditor itce, int[] defVal) {
         super(iVar, wVar, hVar, dc, dw, dh, defL, itce, defVal);
+        this.app = app;
         allocSource = source;
         allowResize = allocSource.mapping == null;
         allowTextdraw = !allocSource.disableHex;
@@ -44,7 +46,7 @@ public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<Stuff
 
     @Override
     public StuffRenderer baseInitializeHelper(IRIO target) {
-        return AppMain.system.rendererFromTso(target);
+        return app.system.rendererFromTso(target);
     }
 
     @Override

@@ -12,7 +12,6 @@ import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITabBar;
 import gabien.ui.UITabPane;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
@@ -41,7 +40,7 @@ public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTable
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final RubyTable targ = new RubyTable(extractTarget(target).getBuffer());
-        final StuffRenderer renderer = AppMain.system.rendererFromTso(target);
+        final StuffRenderer renderer = launcher.getApp().system.rendererFromTso(target);
         final TileEditingTab[] tileTabs = renderer.tileRenderer.getEditConfig(0);
         final AutoTileTypeField[] atFields = renderer.tileRenderer.indicateATs();
         final UIElement[] tileTabElements = new UIElement[tileTabs.length];

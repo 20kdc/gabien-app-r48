@@ -22,11 +22,11 @@ import gabien.ui.UITextBox;
 import gabien.ui.UITextButton;
 import gabien.IPeripherals;
 import gabien.ui.UIElement;
-import gabien.ui.UIElement.UIProxy;
 import gabien.ui.UILabel;
 import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.IFunction;
 import r48.AdHocSaveLoad;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -46,7 +46,7 @@ import r48.ui.UISetSelector;
  * Universal string locator fun
  * Created on 13th August 2022.
  */
-public class UIRMUniversalStringLocator extends UIProxy {
+public class UIRMUniversalStringLocator extends App.Prx {
     private UIScrollLayout layout = new UIScrollLayout(true, FontSizes.generalScrollersize);
     private RListPanel settingsFull = new RListPanel(TXDB.get("Full"));
     private RListPanel settingsPartial = new RListPanel(TXDB.get("Partial"));
@@ -60,8 +60,9 @@ public class UIRMUniversalStringLocator extends UIProxy {
         }
     };
 
-    public UIRMUniversalStringLocator() {
-        Iterable<ObjectInfo> oi = AppMain.getObjectInfos();
+    public UIRMUniversalStringLocator(App app) {
+        super(app);
+        Iterable<ObjectInfo> oi = app.getObjectInfos();
         setSelector = new UISetSelector<ObjectInfo>(oi);
         for (ObjectInfo ii : oi)
             AppMain.objectDB.registerModificationHandler(ii.idName, refreshOnObjectChange);

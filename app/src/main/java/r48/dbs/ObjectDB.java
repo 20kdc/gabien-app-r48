@@ -48,6 +48,7 @@ public class ObjectDB {
     public HashSet<IObjectBackend.ILoadedObject> newlyCreatedObjects = new HashSet<IObjectBackend.ILoadedObject>();
     public WeakHashMap<IObjectBackend.ILoadedObject, LinkedList<WeakReference<IConsumer<SchemaPath>>>> objectListenersMap = new WeakHashMap<IObjectBackend.ILoadedObject, LinkedList<WeakReference<IConsumer<SchemaPath>>>>();
     public HashMap<String, LinkedList<WeakReference<IConsumer<SchemaPath>>>> objectRootListenersMap = new HashMap<String, LinkedList<WeakReference<IConsumer<SchemaPath>>>>();
+    private HashSet<Runnable> pendingModifications = new HashSet<Runnable>();
 
     private boolean objectRootModifiedRecursion = false;
 
@@ -187,9 +188,16 @@ public class ObjectDB {
         removeFromGOCMH(getOrCreateRootModificationHandlers(root), handler);
     }
 
+    public void runPendingModifications() {
+        LinkedList<Runnable> runs = new LinkedList<Runnable>(pendingModifications);
+        pendingModifications.clear();
+        for (Runnable r : runs)
+            r.run();
+    }
+
     public void objectRootModified(final IObjectBackend.ILoadedObject p, final SchemaPath path) {
         if (objectRootModifiedRecursion) {
-            AppMain.pendingRunnables.add(new Runnable() {
+            pendingModifications.add(new Runnable() {
                 @Override
                 public void run() {
                     // in case of mysterious error

@@ -87,7 +87,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     private UIAppendButton toolbarI = new UIAppendButton(Art.Symbol.Inspect, toolbarS, new Runnable() {
         @Override
         public void run() {
-            app.window.createWindow(new UITest(innerElem.targetElement));
+            app.ui.wm.createWindow(new UITest(innerElem.targetElement));
         }
     }, FontSizes.schemaPathTextHeight);
     private UIAppendButton toolbarC = new UIAppendButton(Art.Symbol.CloneFrame, toolbarI, new Runnable() {
@@ -130,7 +130,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
         contextView = rendererSource;
         layoutAddElement(toolbarRoot);
         // Why is this scaled by main window size? Answer: Because the alternative is occasional Android version glitches.
-        Size rootSize = app.window.getRootSize();
+        Size rootSize = app.ui.wm.getRootSize();
         Rect r = new Rect(0, 0, rootSize.width / 2, (rootSize.height / 3) * 2);
         setForcedBounds(null, r);
         setWantedSize(r);
@@ -182,8 +182,8 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
 
         if (doLaunch) {
             windowOpen = true;
-            app.window.createWindow(this);
-            AppMain.schemaHostImplRegister(this);
+            app.ui.wm.createWindow(this);
+            app.ui.schemaHostImplRegister(this);
         }
     }
 
@@ -275,7 +275,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
 
     @Override
     public void launchOther(UIElement uiTest) {
-        app.window.createWindow(uiTest);
+        app.ui.wm.createWindow(uiTest);
     }
 
     @Override

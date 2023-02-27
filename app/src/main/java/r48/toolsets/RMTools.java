@@ -51,7 +51,7 @@ public class RMTools extends App.Svc {
     public RMTools(App app) {
         super(app);
         // If this errors, then this shouldn't have been constructed.
-        mapSystem = (IRMMapSystem) AppMain.system;
+        mapSystem = (IRMMapSystem) app.system;
 
         commandsEvent = ((EventCommandArraySchemaElement) AggregateSchemaElement.extractField(AppMain.schemas.getSDBEntry("EventListEditor"), null)).database;
     }
@@ -74,7 +74,7 @@ public class RMTools extends App.Svc {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.window.createWindow(new UITextPrompt(TXDB.get("Code (or -1337 for any unknown) ?"), new IConsumer<String>() {
+                        app.ui.wm.createWindow(new UITextPrompt(TXDB.get("Code (or -1337 for any unknown) ?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 int i;
@@ -141,7 +141,7 @@ public class RMTools extends App.Svc {
                 new Runnable() {
                     @Override
                     public void run() {
-                        LinkedList<ObjectInfo> objects = AppMain.getObjectInfos();
+                        LinkedList<ObjectInfo> objects = app.getObjectInfos();
                         for (final ObjectInfo obj : objects) {
                             System.out.println(obj + "...");
                             IObjectBackend.ILoadedObject map = obj.getILO(false);
@@ -168,13 +168,13 @@ public class RMTools extends App.Svc {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.window.createWindow(new UIRMUniversalStringLocator());
+                        app.ui.wm.createWindow(new UIRMUniversalStringLocator(app));
                     }
                 },
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.window.createWindow(new UITranscriptControl(mapSystem, commandsEvent));
+                        app.ui.wm.createWindow(new UITranscriptControl(mapSystem, commandsEvent));
                     }
                 }
         }).centred();

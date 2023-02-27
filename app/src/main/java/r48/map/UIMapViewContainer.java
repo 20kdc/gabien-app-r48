@@ -104,7 +104,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
                     if (nextMapTool instanceof IMapViewCallbacks)
                         view.callbacks = (IMapViewCallbacks) nextMapTool;
                     mapTool = nextMapTool;
-                    app.window.createWindow(mapTool);
+                    app.ui.wm.createWindow(mapTool);
                 }
             } else {
                 if (mapTool != null) {
@@ -155,7 +155,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
 
             @Override
             public void createWindow(UIElement window) {
-                app.window.createWindow(window);
+                app.ui.wm.createWindow(window);
             }
 
             @Override

@@ -77,12 +77,8 @@ public class LocalTestExecutiveTest {
     @Test
     public void test() {
         TestKickstart.kickstart(name + "/", charset, schema + "/");
-        for (ObjectInfo s : AppMain.schemas.listFileDefs())
+        for (ObjectInfo s : AppMain.instance.getObjectInfos())
             testObject(s.idName);
-        if (dynamic)
-            if (AppMain.system instanceof IDynobjMapSystem)
-                for (ObjectInfo s : ((IDynobjMapSystem) AppMain.system).getDynamicObjects())
-                    testObject(s.idName);
     }
 
     private void testObject(String s) {

@@ -12,41 +12,21 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import gabienapp.Application;
 import gabienapp.UIFancyInit;
-import r48.dbs.ObjectInfo;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
 import r48.dbs.TXDB;
 import r48.imagefx.ImageFXCache;
 import r48.io.IObjectBackend;
-import r48.io.PathUtils;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
-import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
-import r48.maptools.UIMTBase;
 import r48.schema.OpaqueSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
-import r48.schema.specialized.R2kSystemDefaultsInstallerSchemaElement;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
-import r48.toolsets.BasicToolset;
-import r48.toolsets.IToolset;
-import r48.toolsets.MapToolset;
-import r48.ui.Art;
-import r48.ui.UIAppendButton;
-import r48.ui.UINSVertLayout;
-import r48.ui.UISymbolButton;
-import r48.ui.dialog.UIChoicesMenu;
-import r48.ui.help.HelpSystemController;
-import r48.ui.help.UIHelpSystem;
-import r48.ui.utilitybelt.ImageEditorController;
-import r48.wm.WindowManager;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.ref.WeakReference;
@@ -76,9 +56,6 @@ import java.util.*;
 public class AppMain {
     public static App instance;
 
-    // Scheduled tasks
-    public static HashSet<Runnable> pendingRunnables = new HashSet<Runnable>();
-
     //private static UILabel uiStatusLabel;
 
     public static String rootPath = null;
@@ -92,18 +69,10 @@ public class AppMain {
 
     // The global context-independent stuffRenderer. *Only use outside of maps.*
     public static StuffRenderer stuffRendererIndependent;
-    public static MapSystem system;
-
-    // ONLY this class should refer to this (I think?). Can be null.
-    private static IMapContext mapContext;
 
     // State for in-system copy/paste
     public static RubyIO theClipboard = null;
 
-    // All active schema hosts
-    private static LinkedList<ISchemaHost> activeHosts;
-    // All active image editors
-    public static LinkedList<ImageEditorController> imgContext;
     // All magical bindings in use
     public static WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache;
 
@@ -125,15 +94,15 @@ public class AppMain {
 
         // initialize everything else that needs initializing, starting with ObjectDB
 
-        objectDB = new ObjectDB(IObjectBackend.Factory.create(instance.odbBackend, rootPath, instance.dataPath, instance.dataExt), new IConsumer<String>() {
+        objectDB = instance.odb = new ObjectDB(IObjectBackend.Factory.create(instance.odbBackend, rootPath, instance.dataPath, instance.dataExt), new IConsumer<String>() {
             @Override
             public void accept(String s) {
-                if (system != null)
-                    system.saveHook(s);
+                if (instance.system != null)
+                    instance.system.saveHook(s);
             }
         });
 
-        system = MapSystem.create(instance, instance.sysBackend);
+        instance.system = MapSystem.create(instance, instance.sysBackend);
 
         // Final internal consistency checks and reading in dictionaries from target
         //  before starting the UI, which can cause external consistency checks
@@ -146,152 +115,14 @@ public class AppMain {
     }
 
     public static ISupplier<IConsumer<Double>> initializeUI(final WindowCreatingUIElementConsumer uiTicker) {
-        GaBIEn.setBrowserDirectory(rootPath);
-
-        // Initialize imageFX before doing anything graphical
-        imageFXCache = new ImageFXCache();
-
-        activeHosts = new LinkedList<ISchemaHost>();
-        imgContext = new LinkedList<ImageEditorController>();
-
-        // Set up a default stuffRenderer for things to use.
-        stuffRendererIndependent = system.rendererFromTso(null);
-
-        UIFancyInit.submitToConsoletron(TXDB.get("Initializing UI..."));
-
-        // initialize UI
-        final UISymbolButton sym = new UISymbolButton(Art.Symbol.Save, FontSizes.tabTextHeight, new Runnable() {
-            @Override
-            public void run() {
-                saveAllModified();
-            }
-        });
-        final UISymbolButton sym2 = new UISymbolButton(Art.Symbol.Back, FontSizes.tabTextHeight, createLaunchConfirmation(TXDB.get("Reverting changes will lose all unsaved work and will reset many windows."), new Runnable() {
-            @Override
-            public void run() {
-                performSystemDump(false, "revert file");
-                // Shutdown schema hosts
-                for (ISchemaHost ish : activeHosts) {
-                    ish.shutdown();
-                }
-                // We're prepared for revert, do the thing
-                objectDB.revertEverything();
-                // Map editor will have fixed itself because it watches the roots and does full reinits when anything even remotely changes
-                // But do this as well
-                schemas.kickAllDictionariesForMapChange();
-            }
-        }));
-        UISplitterLayout usl = new UISplitterLayout(sym, sym2, false, 0.5);
-        instance.window = new WindowManager(uiTicker, null, usl);
-
-        initializeTabs();
-
-        UIFancyInit.submitToConsoletron(TXDB.get("Finishing up initialization..."));
-
-        // start possible recommended directory nagger
-        final LinkedList<String> createDirs = new LinkedList<String>();
-        for (String s : schemas.recommendedDirs)
-            if (!GaBIEn.dirExists(PathUtils.autoDetectWindows(rootPath + s)))
-                createDirs.add(s);
-
-        // Only trigger create directories prompt if the database is *clearly* missing objects.
-        // Do not do so otherwise (see: OneShot)
-        if (objectDB.modifiedObjects.size() > 0) {
-            if (createDirs.size() > 0) {
-                instance.window.createWindow(new UIAutoclosingPopupMenu(new String[] {
-                        TXDB.get("This appears to be newly created. Click to create directories.")
-                }, new Runnable[] {
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                for (String st : createDirs)
-                                    GaBIEn.makeDirectories(PathUtils.autoDetectWindows(rootPath + st));
-                                launchDialog(TXDB.get("Done!"));
-                            }
-                        }
-                }, FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
-            }
-        }
-
-        return new ISupplier<IConsumer<Double>>() {
-            @Override
-            public IConsumer<Double> get() {
-                instance.window.finishInitialization();
-                return new IConsumer<Double>() {
-                    @Override
-                    public void accept(Double deltaTime) {
-                        sym.symbol = hasModified() ? Art.Symbol.Save : Art.Symbol.SaveDisabled;
-                        if (mapContext != null) {
-                            String mapId = mapContext.getCurrentMapObject();
-                            IObjectBackend.ILoadedObject map = null;
-                            if (mapId != null)
-                                map = objectDB.getObject(mapId);
-                            schemas.updateDictionaries(map);
-                        } else {
-                            schemas.updateDictionaries(null);
-                        }
-
-                        LinkedList<Runnable> runs = new LinkedList<Runnable>(pendingRunnables);
-                        pendingRunnables.clear();
-                        for (Runnable r : runs)
-                            r.run();
-
-                        LinkedList<ISchemaHost> newActive = new LinkedList<ISchemaHost>();
-                        for (ISchemaHost ac : activeHosts)
-                            if (ac.isActive())
-                                newActive.add(ac);
-                        activeHosts = newActive;
-                    }
-                };
-            }
-        };
+        instance.np = new AppNewProject(instance);
+        instance.ui = new AppUI(instance);
+        return instance.ui.initialize(uiTicker);
     }
 
     public static void performFullImageFlush() {
-        if (mapContext != null)
-            mapContext.performCacheFlush();
-    }
-
-    private static void initializeTabs() {
-        LinkedList<IToolset> toolsets = new LinkedList<IToolset>();
-
-        toolsets.add(new BasicToolset(instance));
-
-        if (system.enableMapSubsystem) {
-            UIFancyInit.submitToConsoletron(TXDB.get("Looking for maps and saves (this'll take a while)..."));
-            MapToolset mapController = new MapToolset(instance);
-            // Really just restricts access to prevent a hax pileup
-            mapContext = mapController.getContext();
-            toolsets.add(mapController);
-        } else {
-            mapContext = null;
-        }
-
-        Runnable runVisFrame = new Runnable() {
-            @Override
-            public void run() {
-                double keys = objectDB.objectMap.keySet().size();
-                if (keys < 1) {
-                    instance.window.setOrange(0.0d);
-                } else {
-                    instance.window.setOrange(objectDB.modifiedObjects.size() / keys);
-                }
-                pendingRunnables.add(this);
-            }
-        };
-        pendingRunnables.add(runVisFrame);
-
-        UIElement firstTab = null;
-        // Initialize toolsets.
-        for (IToolset its : toolsets) {
-            UIFancyInit.submitToConsoletron(TXDB.get("Initializing tab...") + "\n" + its.toString());
-            for (UIElement uie : its.generateTabs()) {
-                if (firstTab == null)
-                    firstTab = uie;
-                instance.window.createWindow(uie, true, true);
-            }
-        }
-        instance.window.selectFirstTab();
+        if (instance.ui.mapContext != null)
+            instance.ui.mapContext.performCacheFlush();
     }
 
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
@@ -325,194 +156,7 @@ public class AppMain {
             }
         };
         svl.panelsAdd(ul);
-        resizeDialogAndTruelaunch(svl);
-    }
-
-    public static Runnable createLaunchConfirmation(final String s, final Runnable runnable) {
-        return new Runnable() {
-            @Override
-            public void run() {
-                UITextButton accept = new UITextButton(TXDB.get("Accept"), FontSizes.dialogWindowTextHeight, null).centred();
-                UITextButton cancel = new UITextButton(TXDB.get("Cancel"), FontSizes.dialogWindowTextHeight, null).centred();
-                UIElement uie = new UISplitterLayout(new UILabel(s, FontSizes.dialogWindowTextHeight),
-                        new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
-                final UIMTBase mtb = UIMTBase.wrap(null, uie);
-                mtb.titleOverride = TXDB.get("Please confirm...");
-                accept.onClick = new Runnable() {
-                    @Override
-                    public void run() {
-                        runnable.run();
-                        mtb.selfClose = true;
-                    }
-                };
-                cancel.onClick = new Runnable() {
-                    @Override
-                    public void run() {
-                        mtb.selfClose = true;
-                    }
-                };
-                resizeDialogAndTruelaunch(mtb);
-            }
-        };
-    }
-
-    private static void resizeDialogAndTruelaunch(UIElement mtb) {
-        // This logic makes sense since we're trying to force a certain width but not a certain height.
-        // It is NOT a bug in gabien-common so long as this code works (that is, the first call immediately prepares a correct wanted size).
-        Size rootSize = instance.window.getRootSize();
-        Size validSize = new Size((rootSize.width * 3) / 4, (rootSize.height * 3) / 4);
-        mtb.setForcedBounds(null, new Rect(validSize));
-        Size recSize = mtb.getWantedSize();
-
-        int w = Math.min(recSize.width, validSize.width);
-        int h = Math.min(recSize.height, validSize.height);
-
-        mtb.setForcedBounds(null, new Rect(0, 0, w, h));
-        instance.window.createWindow(mtb);
-    }
-
-    public static void startHelp(String base, String link) {
-        // exception to the rule
-        UILabel uil = new UILabel("", FontSizes.helpPathHeight);
-        final UIHelpSystem uis = new UIHelpSystem();
-        final HelpSystemController hsc = new HelpSystemController(uil, base, uis);
-        uis.onLinkClick = hsc;
-        final UIScrollLayout uus = new UIScrollLayout(true, FontSizes.generalScrollersize);
-        uus.panelsAdd(uis);
-        Size rootSize = instance.window.getRootSize();
-        final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(TXDB.get("Index"), uil, new Runnable() {
-            @Override
-            public void run() {
-                hsc.loadPage(0);
-            }
-        }, FontSizes.helpPathHeight), uus) {
-            @Override
-            public String toString() {
-                return TXDB.get("Help Window");
-            }
-        };
-        hsc.onLoad = new Runnable() {
-            @Override
-            public void run() {
-                uus.scrollbar.scrollPoint = 0;
-            }
-        };
-        topbar.setForcedBounds(null, new Rect(0, 0, (rootSize.width / 3) * 2, rootSize.height / 2));
-        instance.window.createWindow(topbar);
-        hsc.accept(link);
-    }
-
-    public static void startImgedit() {
-        // Registers & unregisters self
-        resizeDialogAndTruelaunch(new ImageEditorController(instance).rootView);
-    }
-
-    private static void fileCopier(String[] mkdirs, String[] fileCopies) {
-        for (String s : mkdirs)
-            GaBIEn.makeDirectories(PathUtils.autoDetectWindows(AppMain.rootPath + s));
-        for (int i = 0; i < fileCopies.length; i += 2) {
-            String src = fileCopies[i];
-            String dst = fileCopies[i + 1];
-            InputStream inp = GaBIEn.getResource(src);
-            if (inp != null) {
-                String tgt = PathUtils.autoDetectWindows(rootPath + dst);
-                if (GaBIEn.fileOrDirExists(tgt)) {
-                    System.err.println("Didn't write " + dst + " as it is already present as " + tgt + ".");
-                    try {
-                        inp.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    continue;
-                }
-                OutputStream oup = GaBIEn.getOutFile(tgt);
-                if (oup != null) {
-                    try {
-                        byte[] b = new byte[2048];
-                        while (inp.available() > 0)
-                            oup.write(b, 0, inp.read(b));
-                    } catch (IOException ioe) {
-
-                    }
-                    try {
-                        oup.close();
-                    } catch (IOException ioe) {
-
-                    }
-                }
-                try {
-                    inp.close();
-                } catch (IOException ioe) {
-                }
-            } else {
-                System.err.println("Didn't write " + dst + " as " + src + " missing.");
-            }
-        }
-    }
-
-    // R2kSystemDefaultsInstallerSchemaElement uses this to indirectly access several things a SchemaElement isn't allowed to access.
-    public static void r2kProjectCreationHelperFunction() {
-        final Runnable deploy2k = new Runnable() {
-            @Override
-            public void run() {
-                // Perform all mkdirs
-                String[] mkdirs = {
-                        "Backdrop",
-                        "Battle",
-                        "Battle2",
-                        "BattleCharSet",
-                        "BattleWeapon",
-                        "CharSet",
-                        "ChipSet",
-                        "FaceSet",
-                        "Frame",
-                        "GameOver",
-                        "Monster",
-                        "Music",
-                        "Panorama",
-                        "Picture",
-                        "Sound",
-                        "System",
-                        "System2",
-                        "Title"
-                };
-                String[] fileCopies = {
-                        "R2K/char.png", "CharSet/char.png",
-                        "R2K/faceset.png", "FaceSet/faceset.png",
-                        "R2K/backdrop.png", "Backdrop/backdrop.png",
-                        "R2K/System.png", "System/System.png",
-                        "R2K/templatetileset.png", "ChipSet/templatetileset.png",
-                        "R2K/slime.png", "Monster/monster.png",
-                        "R2K/templateconfig.ini", "RPG_RT.ini"
-                };
-                fileCopier(mkdirs, fileCopies);
-                // Load map 1, save everything
-                mapContext.loadMap("Map.1");
-                objectDB.ensureAllSaved();
-                launchDialog(TXDB.get("The synthesis was completed successfully."));
-            }
-        };
-        resizeDialogAndTruelaunch(new UIChoicesMenu(TXDB.get("Would you like a basic template, and if so, compatible with RPG Maker 2000 or 2003? All assets used for this are part of R48, and thus public-domain."), new String[] {
-                TXDB.get("2000 Template"),
-                TXDB.get("2003 Template"),
-                TXDB.get("Do Nothing")
-        }, new Runnable[] {
-                deploy2k,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        IObjectBackend.ILoadedObject root = objectDB.getObject("RPG_RT.ldb");
-                        R2kSystemDefaultsInstallerSchemaElement.upgradeDatabase(root.getObject());
-                        objectDB.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(), root));
-                        deploy2k.run();
-                    }
-                }, new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }
-        }));
+        instance.ui.wm.createWindowSH(svl);
     }
 
     public static void pleaseShutdown() {
@@ -520,45 +164,23 @@ public class AppMain {
     }
 
     public static void shutdownCore() {
+        if (instance != null)
+            instance.shutdown();
         instance = null;
         rootPath = null;
         secondaryImagePath = null;
         objectDB = null;
         schemas = null;
-        system = null;
     }
 
     public static void shutdown() {
         shutdownCore();
-        pendingRunnables.clear();
         stuffRendererIndependent = null;
-        if (mapContext != null)
-            mapContext.freeOsbResources();
-        mapContext = null;
-        imgContext = null;
         theClipboard = null;
         imageFXCache = null;
-        activeHosts = null;
         magicalBindingCache = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
-    }
-
-    // Used for event selection boxes.
-    public static boolean currentlyOpenInEditor(IRIO r) {
-        for (ISchemaHost ish : activeHosts) {
-            SchemaPath sp = ish.getCurrentObject();
-            while (sp != null) {
-                if (sp.targetElement == r)
-                    return true;
-                sp = sp.parent;
-            }
-        }
-        return false;
-    }
-
-    public static void schemaHostImplRegister(SchemaHostImpl shi) {
-        activeHosts.add(shi);
     }
 
     // Is this messy? Yes. Is it required? After someone lost some work to R48? YES IT DEFINITELY IS.
@@ -614,46 +236,5 @@ public class AppMain {
         } else {
             AppMain.launchDialog(TXDB.get("Error dump loaded."));
         }
-    }
-
-    // Attempts to ascertain all known objects
-    public static LinkedList<String> getAllObjects() {
-        // anything loaded gets added (this allows some bypass of the mechanism)
-        HashSet<String> mainSet = new HashSet<String>(objectDB.objectMap.keySet());
-        for (ObjectInfo oi : schemas.listFileDefs())
-            mainSet.add(oi.idName);
-        if (system instanceof IDynobjMapSystem) {
-            IDynobjMapSystem idms = (IDynobjMapSystem) system;
-            for (ObjectInfo dobj : idms.getDynamicObjects())
-                mainSet.add(dobj.idName);
-        }
-        return new LinkedList<String>(mainSet);
-    }
-
-    // Attempts to ascertain all known objects
-    public static LinkedList<ObjectInfo> getObjectInfos() {
-        LinkedList<ObjectInfo> oi = schemas.listFileDefs();
-        if (system instanceof IDynobjMapSystem) {
-            IDynobjMapSystem idms = (IDynobjMapSystem) system;
-            for (ObjectInfo dobj : idms.getDynamicObjects())
-                oi.add(dobj);
-        }
-        return oi;
-    }
-
-    public static void saveAllModified() {
-        AppMain.objectDB.ensureAllSaved();
-        for (ImageEditorController iec : AppMain.imgContext)
-            if (iec.imageModified())
-                iec.save();
-    }
-
-    public static boolean hasModified() {
-        if (AppMain.objectDB.modifiedObjects.size() > 0)
-            return true;
-        for (ImageEditorController iec : AppMain.imgContext)
-            if (iec.imageModified())
-                return true;
-        return false;
     }
 }

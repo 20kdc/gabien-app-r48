@@ -30,11 +30,11 @@ public class GrandWindowManagerUtils {
     public static UIElement[] getAllWindows() {
         App app = getApp();
         LinkedList<UIElement> ll = new LinkedList<UIElement>();
-        if (app.window == null)
+        if (app.ui.wm == null)
             throw new GrandExecutionError("No window manager");
-        for (UITabBar.Tab uww : app.window.tabPane.getTabs())
+        for (UITabBar.Tab uww : app.ui.wm.tabPane.getTabs())
             ll.add(uww.contents);
-        for (UIWindowView uww : app.window.allWindowViews)
+        for (UIWindowView uww : app.ui.wm.allWindowViews)
             for (UIWindowView.IShell sh : uww.getShells())
                 if (sh instanceof UIWindowView.TabShell)
                     ll.add(((UIWindowView.TabShell) sh).contents);
@@ -43,13 +43,13 @@ public class GrandWindowManagerUtils {
 
     public static void clickIcon(UIElement e, int ico) {
         App app = getApp();
-        if (app.window == null)
+        if (app.ui.wm == null)
             throw new GrandExecutionError("No window manager");
-        for (UITabBar.Tab tx : app.window.tabPane.getTabs()) {
+        for (UITabBar.Tab tx : app.ui.wm.tabPane.getTabs()) {
             if (tx.contents == e)
                 clickIcon(tx, ico);
         }
-        for (UIWindowView uww : app.window.allWindowViews) {
+        for (UIWindowView uww : app.ui.wm.allWindowViews) {
             for (UIWindowView.IShell sh : uww.getShells()) {
                 if (sh instanceof UIWindowView.TabShell) {
                     if (((UIWindowView.TabShell) sh).contents == e) {
@@ -66,7 +66,7 @@ public class GrandWindowManagerUtils {
     }
 
     public static void selectTab(UIElement element) {
-        getApp().window.tabPane.selectTab(element);
+        getApp().ui.wm.tabPane.selectTab(element);
     }
 
     // --- Control-Finding-based access. ---

@@ -120,6 +120,21 @@ public class WindowManager {
             tabPane.selectTab(uie.getFirst().contents);
     }
 
+    public void createWindowSH(final UIElement mtb) {
+        // This logic makes sense since we're trying to force a certain width but not a certain height.
+        // It is NOT a bug in gabien-common so long as this code works (that is, the first call immediately prepares a correct wanted size).
+        Size rootSize = getRootSize();
+        Size validSize = new Size((rootSize.width * 3) / 4, (rootSize.height * 3) / 4);
+        mtb.setForcedBounds(null, new Rect(validSize));
+        Size recSize = mtb.getWantedSize();
+
+        int w = Math.min(recSize.width, validSize.width);
+        int h = Math.min(recSize.height, validSize.height);
+
+        mtb.setForcedBounds(null, new Rect(0, 0, w, h));
+        createWindow(mtb);
+    }
+
     public void createWindow(final UIElement uie) {
         createWindow(uie, false, false);
     }

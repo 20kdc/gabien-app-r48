@@ -8,6 +8,7 @@
 package r48.map;
 
 import gabien.IImage;
+import r48.App;
 import r48.RubyTable;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -22,17 +23,19 @@ import r48.map.tiles.ITileRenderer;
  * Created on 03/06/17.
  */
 public class StuffRenderer {
+    public final App app;
     public final ITileRenderer tileRenderer;
     public final IEventGraphicRenderer eventRenderer;
     public final IImageLoader imageLoader;
     public final IMapViewDrawLayer[] layers;
     public final boolean[] activeDef;
 
-    public StuffRenderer(IImageLoader l, ITileRenderer t, IEventGraphicRenderer e, IMapViewDrawLayer[] l2) {
-        this(l, t, e, l2, null);
+    public StuffRenderer(App app, IImageLoader l, ITileRenderer t, IEventGraphicRenderer e, IMapViewDrawLayer[] l2) {
+        this(app, l, t, e, l2, null);
     }
 
-    public StuffRenderer(IImageLoader l, ITileRenderer t, IEventGraphicRenderer e, IMapViewDrawLayer[] l2, boolean[] activeDefault) {
+    public StuffRenderer(App app, IImageLoader l, ITileRenderer t, IEventGraphicRenderer e, IMapViewDrawLayer[] l2, boolean[] activeDefault) {
+        this.app = app;
         tileRenderer = t;
         eventRenderer = e;
         imageLoader = l;

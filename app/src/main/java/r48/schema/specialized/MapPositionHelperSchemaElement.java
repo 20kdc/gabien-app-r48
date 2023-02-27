@@ -9,7 +9,6 @@ package r48.schema.specialized;
 
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
@@ -48,11 +47,11 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
                 return new UILabel(TXDB.get("Position editor disabled."), FontSizes.schemaFieldTextHeight);
         String mapGUM = launcher.getContextGUM();
         if (abc[0] != null)
-            mapGUM = AppMain.system.mapReferentToGUM(abc[0]);
+            mapGUM = launcher.getApp().system.mapReferentToGUM(abc[0]);
         if (mapGUM == null)
             return new UILabel(TXDB.get("Can't translate ID to map."), FontSizes.schemaFieldTextHeight);
         // The UIMapView constructor will automatically create missing maps. We don't want this.
-        if (AppMain.system.mapViewRequest(mapGUM, false) == null)
+        if (launcher.getApp().system.mapViewRequest(mapGUM, false) == null)
             return new UILabel(TXDB.get("No such map exists."), FontSizes.schemaFieldTextHeight);
         final long x = abc[1].getFX();
         final long y = abc[2].getFX();

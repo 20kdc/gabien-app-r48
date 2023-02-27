@@ -13,7 +13,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UIPopupMenu;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 
 /**
@@ -29,7 +28,7 @@ public class UIMenuButton extends UITextButton {
             public void run() {
                 state = true;
                 UIElement basis = runnable.get();
-                app.window.createMenu(UIMenuButton.this, new UIProxy(basis, false) {
+                app.ui.wm.createMenu(UIMenuButton.this, new UIProxy(basis, false) {
                     @Override
                     public void onWindowClose() {
                         super.onWindowClose();

@@ -619,9 +619,9 @@ public class SDB extends App.Svc {
                             @SuppressWarnings("rawtypes")
                             RubyTableSchemaElement r = null;
                             if (eText.equals("tableSTA")) {
-                                r = new TilesetAllocTableSchemaElement(tilesetAllocations, iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
+                                r = new TilesetAllocTableSchemaElement(app, tilesetAllocations, iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
                             } else if (eText.equals("tableTS")) {
-                                r = new TilesetTableSchemaElement(iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
+                                r = new TilesetTableSchemaElement(app, iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
                             } else if (eText.equals("table")) {
                                 r = new RubyTableSchemaElement<Object>(iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
                             } else {

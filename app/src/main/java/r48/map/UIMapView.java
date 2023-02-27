@@ -103,7 +103,7 @@ public class UIMapView extends UIPlaneView {
         setWantedSize(fakeWorldRect);
         setForcedBounds(null, fakeWorldRect);
 
-        map = AppMain.system.mapViewRequest(mapN, true);
+        map = app.system.mapViewRequest(mapN, true);
         mapGUM = mapN;
         AppMain.objectDB.registerModificationHandler(map.objectId, listener);
         performRefresh(null);
@@ -299,7 +299,7 @@ public class UIMapView extends UIPlaneView {
         int iCamX = (int) Math.floor(camX - planeDivZoom(wSize.width / 2.0d));
         int iCamY = (int) Math.floor(camY - planeDivZoom(wSize.height / 2.0d));
 
-        MapViewDrawContext mvdc = new MapViewDrawContext(new Rect(iCamX, iCamY, igd.getWidth(), igd.getHeight()), tileSize);
+        MapViewDrawContext mvdc = new MapViewDrawContext(app, new Rect(iCamX, iCamY, igd.getWidth(), igd.getHeight()), tileSize);
 
         // The offscreen image implicitly crops.
         igd.clearAll(0, 0, 0);

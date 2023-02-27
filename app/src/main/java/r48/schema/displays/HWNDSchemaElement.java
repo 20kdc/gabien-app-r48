@@ -9,7 +9,6 @@ package r48.schema.displays;
 
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
-import r48.AppMain;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
@@ -40,7 +39,7 @@ public class HWNDSchemaElement extends SchemaElement {
         uhs.onLinkClick = new IConsumer<String>() {
             @Override
             public void accept(String integer) {
-                AppMain.startHelp(file, integer);
+                launcher.getApp().ui.startHelp(file, integer);
             }
         };
         if (ivar != null) {

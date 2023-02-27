@@ -77,10 +77,10 @@ public class ImageEditorController extends App.Svc {
             @Override
             public void onWindowClose() {
                 super.onWindowClose();
-                AppMain.imgContext.remove(ImageEditorController.this);
+                app.ui.imgContext.remove(ImageEditorController.this);
             }
         };
-        AppMain.imgContext.add(this);
+        app.ui.imgContext.add(this);
     }
 
     public boolean imageModified() {
@@ -143,10 +143,10 @@ public class ImageEditorController extends App.Svc {
             imageEditView.eds.didSuccessfulLoad(filename, ioi.format);
             initPalette(0);
             Size sz = new Size(ioi.iei.width, ioi.iei.height);
-            final Rect potentialGrid = AppMain.system.getIdealGridForImage(filename, sz);
+            final Rect potentialGrid = app.system.getIdealGridForImage(filename, sz);
             if (potentialGrid != null) {
                 if (!potentialGrid.rectEquals(imageEditView.grid)) {
-                    AppMain.createLaunchConfirmation(TXDB.get("Change grid to suit this asset?"), new Runnable() {
+                    app.ui.createLaunchConfirmation(TXDB.get("Change grid to suit this asset?"), new Runnable() {
                         @Override
                         public void run() {
                             imageEditView.grid = potentialGrid;
@@ -176,7 +176,7 @@ public class ImageEditorController extends App.Svc {
         menuFuncs.add(new Runnable() {
             @Override
             public void run() {
-                app.window.createMenu(fileButtonMenuHook, showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
+                app.ui.wm.createMenu(fileButtonMenuHook, showXYChanger(new Rect(0, 0, imageEditView.image.width, imageEditView.image.height), new IConsumer<Rect>() {
                     @Override
                     public void accept(Rect rect) {
                         imageEditView.eds.startSection();
@@ -200,7 +200,7 @@ public class ImageEditorController extends App.Svc {
         });
         if (imageEditView.image.usesPalette()) {
             menuDetails.add(TXDB.get("Indexed"));
-            menuFuncs.add(AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to 32-bit ARGB? The image will no longer contain a palette, which may make editing inconvenient, and some formats will become unavailable."), new Runnable() {
+            menuFuncs.add(app.ui.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to 32-bit ARGB? The image will no longer contain a palette, which may make editing inconvenient, and some formats will become unavailable."), new Runnable() {
                 @Override
                 public void run() {
                     imageEditView.eds.startSection();
@@ -226,7 +226,7 @@ public class ImageEditorController extends App.Svc {
             });
         } else {
             menuDetails.add(TXDB.get("ARGB (32-bit)"));
-            menuFuncs.add(AppMain.createLaunchConfirmation(TXDB.get("Are you sure? This will create a palette entry for every colour in the image."), new Runnable() {
+            menuFuncs.add(app.ui.createLaunchConfirmation(TXDB.get("Are you sure? This will create a palette entry for every colour in the image."), new Runnable() {
                 @Override
                 public void run() {
                     imageEditView.eds.startSection();
@@ -251,7 +251,7 @@ public class ImageEditorController extends App.Svc {
                     }
                 };
                 if (imageEditView.eds.imageModified())
-                    actualCore = AppMain.createLaunchConfirmation(TXDB.get("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), actualCore);
+                    actualCore = app.ui.createLaunchConfirmation(TXDB.get("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), actualCore);
                 actualCore.run();
             }
         });
@@ -323,14 +323,14 @@ public class ImageEditorController extends App.Svc {
                         }
                     });
                 }
-                app.window.createWindow(new UIAutoclosingPopupMenu(items.toArray(new String[0]), runnables.toArray(new Runnable[0]), FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
+                app.ui.wm.createWindow(new UIAutoclosingPopupMenu(items.toArray(new String[0]), runnables.toArray(new Runnable[0]), FontSizes.menuTextHeight, FontSizes.menuScrollersize, true));
             }
         }));
         menuDetails.add(TXDB.get("CharacterGen..."));
         menuFuncs.add(new Runnable() {
             @Override
             public void run() {
-                app.window.createWindow(new CharacterGeneratorController(app).rootView);
+                app.ui.wm.createWindow(new CharacterGeneratorController(app).rootView);
             }
         });
 
@@ -372,7 +372,7 @@ public class ImageEditorController extends App.Svc {
                 uicsb.onClick = new Runnable() {
                     @Override
                     public void run() {
-                        app.window.createMenu(uicsb, new UIColourPicker(TXDB.get("Grid Colour"), imageEditView.gridColour, new IConsumer<Integer>() {
+                        app.ui.wm.createMenu(uicsb, new UIColourPicker(TXDB.get("Grid Colour"), imageEditView.gridColour, new IConsumer<Integer>() {
                             @Override
                             public void accept(Integer t) {
                                 if (t != null)
@@ -530,9 +530,9 @@ public class ImageEditorController extends App.Svc {
         return new Runnable() {
             @Override
             public void run() {
-                if (AppMain.system.engineUsesPal0Colourkeys() && imageEditView.image.usesPalette() && !imageEditView.image.t1Lock) {
+                if (app.system.engineUsesPal0Colourkeys() && imageEditView.image.usesPalette() && !imageEditView.image.t1Lock) {
                     if (!hasWarnedUserAboutRM) {
-                        AppMain.createLaunchConfirmation(TXDB.get("The engine you're targetting expects indexed-colour images to be colour-keyed. Your image isn't colour-keyed. Continue?"), runnable).run();
+                        app.ui.createLaunchConfirmation(TXDB.get("The engine you're targetting expects indexed-colour images to be colour-keyed. Your image isn't colour-keyed. Continue?"), runnable).run();
                         hasWarnedUserAboutRM = true;
                         return;
                     }

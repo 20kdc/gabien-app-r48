@@ -145,10 +145,10 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     SchemaPath.setDefaultValue(sub.addAElem(1), AppMain.schemas.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(1));
 
                     // Prepare.
-                    AppMain.pendingRunnables.add(new Runnable() {
+                    AppMain.instance.uiPendingRunnables.add(new Runnable() {
                         @Override
                         public void run() {
-                            AppMain.r2kProjectCreationHelperFunction();
+                            AppMain.instance.np.r2kProjectCreationHelperFunction();
                         }
                     });
                     break;

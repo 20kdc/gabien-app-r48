@@ -110,7 +110,7 @@ public class CharacterGeneratorController extends App.Svc {
                     l.swatch.onClick = new Runnable() {
                         @Override
                         public void run() {
-                            app.window.createMenu(l.swatch, new UIColourPicker(l.naming.text, l.swatch.col, new IConsumer<Integer>() {
+                            app.ui.wm.createMenu(l.swatch, new UIColourPicker(l.naming.text, l.swatch.col, new IConsumer<Integer>() {
                                 @Override
                                 public void accept(Integer integer) {
                                     if (integer != null)
@@ -190,7 +190,7 @@ public class CharacterGeneratorController extends App.Svc {
                 return TXDB.get("Character Generator");
             }
         };
-        Size sz = app.window.getRootSize();
+        Size sz = app.ui.wm.getRootSize();
         rootView.setForcedBounds(null, new Rect(0, 0, sz.width / 2, sz.height / 2));
         Collections.sort(charLay, new Comparator<LayerImage>() {
             @Override

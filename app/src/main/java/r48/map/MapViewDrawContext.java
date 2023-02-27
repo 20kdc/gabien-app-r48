@@ -10,6 +10,7 @@ package r48.map;
 import gabien.IGrDriver;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
+import r48.App;
 import r48.ui.Art;
 
 /**
@@ -17,6 +18,7 @@ import r48.ui.Art;
  * Created on November 15, 2018.
  */
 public class MapViewDrawContext {
+    public final App app;
     public final int tileSize;
     public final Rect cam;
     public final Rect camT;
@@ -28,7 +30,8 @@ public class MapViewDrawContext {
     // Null if the mouse doesn't exist.
     public MouseStatus mouseStatus;
 
-    public MapViewDrawContext(Rect camera, int ts) {
+    public MapViewDrawContext(App app, Rect camera, int ts) {
+        this.app = app;
         tileSize = ts;
         cam = camera;
         int camTR = UIElement.sensibleCellDiv(cam.x + cam.width, tileSize) + 1;

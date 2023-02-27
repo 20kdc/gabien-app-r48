@@ -7,7 +7,6 @@
 
 package r48.map.drawlayers;
 
-import r48.AppMain;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.MapViewDrawContext;
@@ -71,7 +70,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
             int px = x * mvdc.tileSize;
             int py = y * mvdc.tileSize;
             if (layer == 0x7FFFFFFF) {
-                if (AppMain.currentlyOpenInEditor(evI))
+                if (mvdc.app.ui.currentlyOpenInEditor(evI))
                     Art.drawSelectionBox(px - 1, py - 1, mvdc.tileSize + 2, mvdc.tileSize + 2, 1, mvdc.igd);
             } else {
                 if (iegr.determineEventLayer(evI) != layer)
