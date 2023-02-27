@@ -13,10 +13,10 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement.UIProxy;
 import gabien.uslx.append.IConsumer;
-import gabienapp.Application;
 import r48.app.AppCore;
 import r48.app.AppNewProject;
 import r48.app.AppUI;
+import r48.cfg.Config;
 import r48.map.StuffRenderer;
 
 /**
@@ -37,8 +37,8 @@ public final class App extends AppCore {
     // State for in-system copy/paste
     public RubyIO theClipboard = null;
 
-    public App(String rp, String sip, IConsumer<String> loadProgress) {
-        super(rp, sip, loadProgress);
+    public App(Config c, String rp, String sip, IConsumer<String> loadProgress) {
+        super(c, rp, sip, loadProgress);
     }
 
     public void shutdown() {
@@ -47,10 +47,6 @@ public final class App extends AppCore {
                 ui.mapContext.freeOsbResources();
             ui.mapContext = null;
         }
-    }
-
-    public void pleaseShutdown() {
-        Application.shutdownAllAppMainWindows();
     }
 
     public static class Svc {

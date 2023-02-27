@@ -10,7 +10,6 @@ package r48.maptools;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
-import gabienapp.Application;
 import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.TXDB;
@@ -93,7 +92,7 @@ public class UIMTPasteRectangle extends UIMTBase implements IMapViewCallbacks {
     public void confirmAt(final int x, final int y, int pixx, int pixy, final int layer, boolean first) {
         if (!first)
             return;
-        if (Application.mobileExtremelySpecialBehavior && !confirming) {
+        if (app.ui.isMobile && !confirming) {
             // Need to absolutely confirm.
             confirmX = x;
             confirmY = y;

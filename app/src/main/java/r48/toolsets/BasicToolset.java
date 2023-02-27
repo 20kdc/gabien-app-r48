@@ -67,7 +67,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         }).centred(), FontSizes.menuTextHeight), new UIBorderedSubpanel(new UITextButton(TXDB.get("Configuration"), FontSizes.menuTextHeight, new Runnable() {
             @Override
             public void run() {
-                app.ui.wm.createWindow(new UIFontSizeConfigurator());
+                app.ui.wm.createWindow(new UIFontSizeConfigurator(app.c));
             }
         }).centred(), FontSizes.menuTextHeight), false, 0.5), false, 0.333333);
         UIElement menu5 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(TXDB.get("Image Editor"), FontSizes.menuTextHeight, new Runnable() {
@@ -475,7 +475,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         workspace = new UIAppendButton(TXDB.get("Quit"), workspace, app.ui.createLaunchConfirmation(TXDB.get("Are you sure you want to return to menu? This will lose unsaved data."), new Runnable() {
             @Override
             public void run() {
-                app.pleaseShutdown();
+                app.ui.wm.pleaseShutdown();
             }
         }), FontSizes.statusBarTextHeight);
         return workspace;

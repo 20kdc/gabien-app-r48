@@ -7,13 +7,9 @@
 
 package r48;
 
-import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.uslx.append.*;
-import gabien.ui.UIBorderedElement;
-import gabienapp.Application;
 import r48.dbs.TXDB;
-import r48.io.data.IRIO;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -131,132 +127,13 @@ public class FontSizes {
     @FontSizeDefault(10)
     public static int uiGridScaleTenths;
 
-    public static void reset() {
-        Application.allowBlending = true;
-        try {
-            for (final Field field : FontSizes.class.getFields())
-                field.setInt(null, field.getAnnotation(FontSizeDefault.class).value());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        FontManager.fontOverride = GaBIEn.getFontOverrides()[0];
-        FontManager.fontOverrideUE8 = false;
-        Application.secondaryImageLoadLocationBackup.clear();
-        Application.rootPathBackup.clear();
-        Application.windowingExternal = false;
-    }
-
     // This hides the implied reflection for simplicity
-    public static LinkedList<FontSizeField> getFields() {
+    public LinkedList<FontSizeField> getFields() {
         LinkedList<FontSizeField> fields = new LinkedList<FontSizeField>();
         for (final Field field : FontSizes.class.getFields())
             if (field.getType() == int.class)
                 fields.add(new FontSizeField(field));
         return fields;
-    }
-
-    // Notably, THESE IGNORE ROOT PATH!!!!
-    // This is on purpose.
-
-    public static void save() {
-        RubyIO prepare = new RubyIO();
-        prepare.type = 'o';
-        prepare.symVal = "R48::FontConfig";
-        for (FontSizeField fsf : getFields())
-            prepare.addIVar("@" + fsf.name, new RubyIO().setFX(fsf.get()));
-
-        prepare.addIVar("@secondary_images_list", encodeStringList(Application.secondaryImageLoadLocationBackup));
-        prepare.addIVar("@saved_rootpath_list", encodeStringList(Application.rootPathBackup));
-
-        prepare.addIVar("@lang", new RubyIO().setString(TXDB.getLanguage(), true));
-        if (FontManager.fontOverride != null) {
-            prepare.addIVar("@sysfont", new RubyIO().setString(FontManager.fontOverride, true));
-            prepare.addIVar("@sysfont_ue8", new RubyIO().setBool(FontManager.fontOverrideUE8));
-        }
-        prepare.addIVar("@theme_variant", new RubyIO().setFX(UIBorderedElement.borderTheme));
-        prepare.addIVar("@actual_blending", new RubyIO().setBool(Application.allowBlending));
-        prepare.addIVar("@windowing_external", new RubyIO().setBool(Application.windowingExternal));
-        AdHocSaveLoad.save("fonts", prepare);
-    }
-
-    private static RubyIO encodeStringList(LinkedList<String> values) {
-        RubyIO arr = new RubyIO().setArray();
-        arr.arrVal = new IRIO[values.size()];
-        int idx = 0;
-        for (String s : values)
-            arr.arrVal[idx++] = new RubyIO().setString(s, true);
-        return arr;
-    }
-
-    public static boolean load(boolean first) {
-        // NOTE: Use internal string methods here, this is a game-independent file
-        RubyIO dat = AdHocSaveLoad.load("fonts");
-        if (dat != null) {
-            // Compatibility flags
-            boolean shouldResetIETH = false;
-            boolean shouldResetWSZ = false;
-
-            for (FontSizeField fsf : getFields()) {
-                RubyIO f = dat.getInstVarBySymbol("@" + fsf.name);
-                if (f != null) {
-                    fsf.accept((int) f.fixnumVal);
-                } else {
-                    if (fsf.name.equals("imageEditorTextHeight"))
-                        shouldResetIETH = true;
-                    if (fsf.name.equals("maintabsScrollersize"))
-                        shouldResetWSZ = true;
-                }
-            }
-
-            if (shouldResetIETH)
-                imageEditorTextHeight = schemaFieldTextHeight;
-            if (shouldResetWSZ)
-                maintabsScrollersize = mapToolbarScrollersize;
-
-            RubyIO sys = dat.getInstVarBySymbol("@sysfont");
-            if (sys != null) {
-                FontManager.fontOverride = sys.decString();
-            } else {
-                FontManager.fontOverride = null;
-            }
-            RubyIO sys2 = dat.getInstVarBySymbol("@sysfont_ue8");
-            if (sys2 != null)
-                FontManager.fontOverrideUE8 = sys2.type == 'T';
-            // old paths
-            RubyIO sys3 = dat.getInstVarBySymbol("@secondary_images");
-            if (sys3 != null)
-                Application.secondaryImageLoadLocationBackup.add(sys3.decString());
-            RubyIO sys4 = dat.getInstVarBySymbol("@saved_rootpath");
-            if (sys4 != null)
-                Application.rootPathBackup.add(sys4.decString());
-            // new paths
-            RubyIO sys3a = dat.getInstVarBySymbol("@secondary_images_list");
-            if (sys3a != null) {
-                Application.secondaryImageLoadLocationBackup.clear();
-                for (IRIO rio : sys3a.arrVal)
-                    Application.secondaryImageLoadLocationBackup.add(rio.decString());
-            }
-            RubyIO sys4a = dat.getInstVarBySymbol("@saved_rootpath_list");
-            if (sys4a != null) {
-                Application.rootPathBackup.clear();
-                for (IRIO rio : sys4a.arrVal)
-                    Application.rootPathBackup.add(rio.decString());
-            }
-            // ...
-            RubyIO sys5 = dat.getInstVarBySymbol("@theme_variant");
-            if (sys5 != null)
-                UIBorderedElement.borderTheme = (int) sys5.fixnumVal;
-            RubyIO sys6 = dat.getInstVarBySymbol("@actual_blending");
-            if (sys6 != null)
-                Application.allowBlending = sys6.type == 'T';
-            RubyIO sys7 = dat.getInstVarBySymbol("@windowing_external");
-            if (sys7 != null)
-                Application.windowingExternal = sys7.type == 'T';
-            return true;
-        } else if (first) {
-            FontManager.fontOverride = GaBIEn.getFontOverrides()[0];
-        }
-        return false;
     }
 
     // Notably, language is loaded early, and is not loaded along with font sizes in general.
@@ -277,10 +154,12 @@ public class FontSizes {
     public static class FontSizeField implements IConsumer<Integer>, ISupplier<Integer> {
         // untranslated
         public final String name;
+        public final int defValue;
         private final Field intern;
 
         public FontSizeField(Field i) {
             name = i.getName();
+            defValue = i.getAnnotation(FontSizeDefault.class).value();
             intern = i;
         }
 

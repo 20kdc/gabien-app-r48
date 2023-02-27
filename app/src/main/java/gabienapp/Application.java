@@ -17,6 +17,8 @@ import r48.AdHocSaveLoad;
 import r48.App;
 import r48.FontSizes;
 import r48.app.AppMain;
+import r48.cfg.Config;
+import r48.cfg.ConfigIO;
 import r48.dbs.TXDB;
 import r48.ui.Art;
 import r48.wm.Coco;
@@ -27,7 +29,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -37,57 +38,39 @@ public class Application {
     public static int globalMS;
     private static double compensationDT;
 
-    // ----- These are settings that are controlled in FontSizes. -----
-    public static boolean allowBlending;
-    public static boolean windowingExternal = false;
-    // -----
-
     protected static IConsumer<Double> appTicker = null;
     static App app = null;
     protected static WindowCreatingUIElementConsumer uiTicker;
 
     // This should be set to true if on a device where touch controls are used.
-    public static boolean mobileExtremelySpecialBehavior;
-
-    // This is the secondary image path which is *defaulted to*.
-    public static final LinkedList<String> secondaryImageLoadLocationBackup = new LinkedList<String>();
-    // This is the root path which is *defaulted to*.
-    public static final LinkedList<String> rootPathBackup = new LinkedList<String>();
+    static boolean mobileExtremelySpecialBehavior;
 
     // used for directory name so R48 stops polluting any workspace it's used in.
     public static final String BRAND = "r48";
 
     public static void gabienmain() throws IOException {
+        mobileExtremelySpecialBehavior = GaBIEn.singleWindowApp();
         globalMS = 50;
-        FontSizes.reset();
+        Config c = new Config(mobileExtremelySpecialBehavior);
+        c.apply();
 
         GaBIEn.appPrefixes = new String[] {BRAND + "/", ""};
-        GaBIEn.sysCoreFontSize = FontSizes.gSysCoreTextHeight;
 
-        mobileExtremelySpecialBehavior = GaBIEn.singleWindowApp();
         uiTicker = new WindowCreatingUIElementConsumer();
         // runFontLoader tries to do as much loading as possible there
         int uiScaleTenths = runFontLoader();
         // Set globalMS to intended value
         globalMS = 33;
 
-        /*
-         * If single-window, assume we're on Android,
-         *  so the user probably wants to be able to use EasyRPG Player
-         * If EasyRPG Player has an issue with this, please bring it up at any time, and I will change this.
-         */
-        if (mobileExtremelySpecialBehavior)
-            rootPathBackup.add("easyrpg/games/R48 Game");
-
         // The 'true' here is so that it will load in "late" defaults (fontOverride)
-        boolean fontsLoaded = FontSizes.load(true);
+        boolean fontsLoaded = ConfigIO.load(true, c);
         if (!fontsLoaded)
-            autoDetectCorrectUISize(uiScaleTenths);
+            autoDetectCorrectUISize(c, uiScaleTenths);
 
         // Note the mass-recreate.
         while (true) {
             final AtomicBoolean gamepaksRequestClose = new AtomicBoolean(false);
-            uiTicker.accept(new UILauncher(gamepaksRequestClose));
+            uiTicker.accept(new UILauncher(c, gamepaksRequestClose));
             // This is the identity of the error window that 'brings the system down softly'.
             UIElement failed = null;
             // ok, so, 'what is going on with the flags', you might ask?
@@ -311,12 +294,12 @@ public class Application {
         return r;
     }
 
-    private static void autoDetectCorrectUISize(int uiGuessScaleTenths) {
+    private static void autoDetectCorrectUISize(Config c, int uiGuessScaleTenths) {
         // The above triggered a flush, which would cause the initial resize on SWPs.
         // That then allowed it to estimate a correct scale which ended up here.
         FontSizes.uiGuessScaleTenths = uiGuessScaleTenths;
         boolean mobile = GaBIEn.singleWindowApp();
-        for (FontSizes.FontSizeField fsf : FontSizes.getFields()) {
+        for (FontSizes.FontSizeField fsf : c.fontSizes.getFields()) {
             // as this is a touch device, map 8 to 16 (6 is for things that really matter)
             if (mobile)
                 if (fsf.get() == 8)
@@ -330,8 +313,7 @@ public class Application {
             FontSizes.tilesTabTextHeight *= 2;
     }
 
-    // Only use from AppMain's "pleaseShutdown"
-    public static void shutdownAllAppMainWindows() {
+    private static void shutdownAllAppMainWindows() {
         for (UIElement uie : uiTicker.runningWindows())
             uiTicker.forceRemove(uie);
     }

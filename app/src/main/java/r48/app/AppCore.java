@@ -16,7 +16,9 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.uslx.append.IConsumer;
+import r48.FontSizes;
 import r48.RubyIO;
+import r48.cfg.Config;
 import r48.dbs.ATDB;
 import r48.dbs.FormatSyntax;
 import r48.dbs.ObjectDB;
@@ -33,6 +35,8 @@ import r48.schema.specialized.IMagicalBinder;
  * Pulled out of App, 27th February, 2023
  */
 public class AppCore {
+    public final Config c;
+    public final FontSizes f;
     public ObjectDB odb;
     public SDB sdb;
     public FormatSyntax fmt;
@@ -53,7 +57,9 @@ public class AppCore {
 
     public final @NonNull IConsumer<String> loadProgress;
 
-    public AppCore(@NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
+    public AppCore(Config cfg, @NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
+        c = cfg;
+        f = c.fontSizes;
         rootPath = rp;
         secondaryImagePath = sip;
         loadProgress = lp;

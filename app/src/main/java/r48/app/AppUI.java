@@ -58,14 +58,19 @@ public class AppUI extends App.Svc {
     // All active image editors
     public LinkedList<ImageEditorController> imgContext;
 
+    // Indicates if R48 is running on a mobile or mobile-like platform.
+    // In this event, adjusts UI to be more touch-friendly.
+    public final boolean isMobile;
+
     // Image cache
     public ImageFXCache imageFXCache;
 
     // This is the main map context. Expect this to randomly be null and try to avoid accessing it.
     public IMapContext mapContext;
 
-    public AppUI(App app) {
+    public AppUI(App app, boolean mobile) {
         super(app);
+        isMobile = mobile;
     }
 
     public ISupplier<IConsumer<Double>> initialize(WindowCreatingUIElementConsumer uiTicker) {

@@ -9,6 +9,7 @@ package gabienapp;
 
 import gabien.uslx.append.*;
 import r48.app.AppMain;
+import r48.cfg.Config;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.TXDB;
@@ -22,8 +23,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public class CategoryGPMenuPanel implements IGPMenuPanel {
     public LinkedList<String> res1 = new LinkedList<String>();
     public LinkedList<IFunction<LauncherState, IGPMenuPanel>> res2 = new LinkedList<IFunction<LauncherState, IGPMenuPanel>>();
+    public final Config c;
 
-    public CategoryGPMenuPanel(final IGPMenuPanel root, final String category) {
+    public CategoryGPMenuPanel(Config c, final IGPMenuPanel root, final String category) {
+        this.c = c;
         res1.add(TXDB.get("Back..."));
         res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
             @Override
@@ -42,7 +45,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                 final AtomicReference<String> box = new AtomicReference<String>();
                 boxedEncoding = box;
                 res1.add(objName);
-                res2.add(new StartupCause(box, objName));
+                res2.add(new StartupCause(c, box, objName));
             }
 
             @Override
@@ -88,8 +91,10 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
     public static class StartupCause implements IFunction<LauncherState, IGPMenuPanel> {
         private final AtomicReference<String> box;
         private final String objName;
+        private final Config c;
 
-        public StartupCause(AtomicReference<String> box, String objName) {
+        public StartupCause(Config c, AtomicReference<String> box, String objName) {
+            this.c = c;
             this.box = box;
             this.objName = objName;
         }
@@ -109,8 +114,8 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                     public void run() {
                         try {
                             TXDB.loadGamepakLanguage(objName + "/");
-                            Application.app = AppMain.initializeCore(rootPath, silPath, objName + "/", theKickstart);
-                            final ISupplier<IConsumer<Double>> appTickerGen = AppMain.initializeUI(Application.app, Application.uiTicker);
+                            Application.app = AppMain.initializeCore(c, rootPath, silPath, objName + "/", theKickstart);
+                            final ISupplier<IConsumer<Double>> appTickerGen = AppMain.initializeUI(Application.app, Application.uiTicker, Application.mobileExtremelySpecialBehavior);
                             theKickstart.doneInjector.set(new Runnable() {
                                 @Override
                                 public void run() {

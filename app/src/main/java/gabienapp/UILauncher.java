@@ -27,6 +27,8 @@ import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.IFunction;
 import gabienapp.IGPMenuPanel.LauncherState;
 import r48.FontSizes;
+import r48.cfg.Config;
+import r48.cfg.ConfigIO;
 import r48.dbs.TXDB;
 import r48.ui.UIAppendButton;
 import r48.ui.dialog.UIFontSizeConfigurator;
@@ -39,7 +41,7 @@ import r48.ui.spacing.UIBorderedSubpanel;
  */
 public class UILauncher extends UIProxy {
     private final AtomicBoolean gamepaksRequestClose;
-    public UILauncher(final AtomicBoolean grc) {
+    public UILauncher(Config c, final AtomicBoolean grc) {
         gamepaksRequestClose = grc;
         final UITabPane tabPane = new UITabPane(FontSizes.tabTextHeight, false, false);
 
@@ -95,28 +97,28 @@ public class UILauncher extends UIProxy {
 
         configure.panelsAdd(new UIBorderedSubpanel(uhs, FontSizes.scaleGuess(8)));
 
-        configure.panelsAdd(figureOutTopBar(Application.uiTicker, closeHelper));
+        configure.panelsAdd(figureOutTopBar(c, Application.uiTicker, closeHelper));
 
         configure.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("MS per frame:"), FontSizes.launcherTextHeight), msAdjust, false, 3, 5));
 
         configure.panelsAdd(new UILabel(TXDB.get("Path To Game (if you aren't running R48 in the game folder):"), FontSizes.launcherTextHeight));
 
-        final UIGamePathList rootBox = new UIGamePathList(Application.rootPathBackup) {
+        final UIGamePathList rootBox = new UIGamePathList(c.rootPathBackup) {
             @Override
             public void modified() {
                 super.modified();
-                FontSizes.save();
+                ConfigIO.save(c);
             }
         };
         configure.panelsAdd(rootBox);
 
         configure.panelsAdd(new UILabel(TXDB.get("Secondary Image Load Location:"), FontSizes.launcherTextHeight));
 
-        final UIGamePathList sillBox = new UIGamePathList(Application.secondaryImageLoadLocationBackup) {
+        final UIGamePathList sillBox = new UIGamePathList(c.secondaryImageLoadLocationBackup) {
             @Override
             public void modified() {
                 super.modified();
-                FontSizes.save();
+                ConfigIO.save(c);
             }
         };
         configure.panelsAdd(sillBox);
@@ -156,7 +158,7 @@ public class UILauncher extends UIProxy {
         // ...
 
         tabPane.setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(640), FontSizes.scaleGuess(480)));
-        menuConstructor.accept(new PrimaryGPMenuPanel());
+        menuConstructor.accept(new PrimaryGPMenuPanel(c));
         closeHelper.accept(new Runnable() {
             @Override
             public void run() {
@@ -171,7 +173,7 @@ public class UILauncher extends UIProxy {
         return gamepaksRequestClose.get();
     }
 
-    private static UIElement figureOutTopBar(final WindowCreatingUIElementConsumer uiTicker, final IConsumer<Runnable> closeHelper) {
+    private static UIElement figureOutTopBar(final Config c, final WindowCreatingUIElementConsumer uiTicker, final IConsumer<Runnable> closeHelper) {
         UIElement whatever = new UITextButton(TXDB.get("Quit R48"), FontSizes.launcherTextHeight, new Runnable() {
             @Override
             public void run() {
@@ -182,7 +184,7 @@ public class UILauncher extends UIProxy {
             whatever = new UISplitterLayout(whatever, new UITextButton(TXDB.get("Configuration"), FontSizes.launcherTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    uiTicker.accept(new UIFontSizeConfigurator());
+                    uiTicker.accept(new UIFontSizeConfigurator(c));
                     closeHelper.accept(null);
                 }
             }), false, 1, 2);

@@ -7,13 +7,13 @@
 
 package r48.ui.dialog;
 
-import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import gabienapp.Application;
 import r48.FontSizes;
+import r48.cfg.Config;
+import r48.cfg.ConfigIO;
 import r48.dbs.TXDB;
 import r48.ui.UIAppendButton;
 
@@ -26,8 +26,10 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
     private final UIScrollLayout outerLayout;
     private int lastFontSizerSize = -1;
     private int lastSBSize = -1;
+    public final Config config;
 
-    public UIFontSizeConfigurator() {
+    public UIFontSizeConfigurator(Config c) {
+        config = c;
         outerLayout = new UIScrollLayout(true, FontSizes.generalScrollersize);
         refreshLayout(true);
         proxySetElement(outerLayout, false);
@@ -39,11 +41,11 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         if (outerLayout != null)
             iniScroll = outerLayout.scrollbar.scrollPoint;
         if (!force)
-            if (lastFontSizerSize == FontSizes.fontSizerTextHeight)
-                if (lastSBSize == FontSizes.generalScrollersize)
+            if (lastFontSizerSize == config.fontSizes.fontSizerTextHeight)
+                if (lastSBSize == config.fontSizes.generalScrollersize)
                     return;
-        lastFontSizerSize = FontSizes.fontSizerTextHeight;
-        lastSBSize = FontSizes.generalScrollersize;
+        lastFontSizerSize = config.fontSizes.fontSizerTextHeight;
+        lastSBSize = config.fontSizes.generalScrollersize;
 
         outerLayout.panelsClear();
         outerLayout.setSBSize(lastSBSize);
@@ -68,30 +70,32 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Save"), FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
-                FontSizes.save();
+                ConfigIO.save(config);
             }
         }), new UITextButton(TXDB.get("Load"), FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
-                FontSizes.load(false);
+                ConfigIO.load(false, config);
+                config.apply();
                 refreshLayout(true);
             }
         }), false, 1, 2));
         UITextButton fontButton = new UITextButton("", FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
-                if (FontManager.fontOverride != null) {
-                    FontManager.fontOverride = null;
+                if (config.fontOverride != null) {
+                    config.fontOverride = null;
                 } else {
-                    FontManager.fontOverride = GaBIEn.getFontOverrides()[0];
+                    config.fontOverride = GaBIEn.getFontOverrides()[0];
                 }
+                config.apply();
             }
         }) {
             @Override
             public void updateContents(double deltaTime, boolean selected, IPeripherals peripherals) {
                 text = TXDB.get("Font: ");
-                if (FontManager.fontOverride != null) {
-                    text += FontManager.fontOverride;
+                if (config.fontOverride != null) {
+                    text += config.fontOverride;
                 } else {
                     text += TXDB.get("Internal w/fallbacks");
                 }
@@ -102,11 +106,12 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
             @Override
             public void run() {
             }
-        }).togglable(FontManager.fontOverrideUE8);
+        }).togglable(config.fontOverrideUE8);
         fontButtonAppend.onClick = new Runnable() {
             @Override
             public void run() {
-                FontManager.fontOverrideUE8 = fontButtonAppend.state;
+                config.fontOverrideUE8 = fontButtonAppend.state;
+                config.apply();
             }
         };
         outerLayout.panelsAdd(new UISplitterLayout(fontButton, fontButtonAppend, false, 0.5));
@@ -121,16 +126,16 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         }), new UIAppendButton(TXDB.get("External Windowing"), new UITextButton(TXDB.get("Enable Blending"), FontSizes.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
-                Application.allowBlending = !Application.allowBlending;
+                config.allowBlending = !config.allowBlending;
             }
-        }).togglable(Application.allowBlending), new Runnable() {
+        }).togglable(config.allowBlending), new Runnable() {
             @Override
             public void run() {
-                Application.windowingExternal = !Application.windowingExternal;
+                config.windowingExternal = !config.windowingExternal;
             }
-        }, FontSizes.fontSizerTextHeight).togglable(Application.windowingExternal), false, 0.5));
+        }, FontSizes.fontSizerTextHeight).togglable(config.windowingExternal), false, 0.5));
         try {
-            for (final FontSizes.FontSizeField field : FontSizes.getFields()) {
+            for (final FontSizes.FontSizeField field : config.fontSizes.getFields()) {
                 doubleAll.add(new Runnable() {
                     @Override
                     public void run() {

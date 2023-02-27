@@ -13,6 +13,7 @@ import gabien.uslx.append.*;
 import r48.AdHocSaveLoad;
 import r48.App;
 import r48.RubyIO;
+import r48.cfg.Config;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
 import r48.dbs.TXDB;
@@ -30,8 +31,8 @@ import java.util.*;
  * Created on 12/27/16. Being phased out as of 26th February 2023.
  */
 public class AppMain {
-    public static App initializeCore(final String rp, final String sip, final String gamepak, final IConsumer<String> progress) {
-        final App app = new App(rp, sip, progress);
+    public static App initializeCore(Config c, final String rp, final String sip, final String gamepak, final IConsumer<String> progress) {
+        final App app = new App(c, rp, sip, progress);
 
         // initialize core resources
 
@@ -59,9 +60,9 @@ public class AppMain {
         return app;
     }
 
-    public static ISupplier<IConsumer<Double>> initializeUI(App app, final WindowCreatingUIElementConsumer uiTicker) {
+    public static ISupplier<IConsumer<Double>> initializeUI(App app, final WindowCreatingUIElementConsumer uiTicker, boolean mobile) {
         app.np = new AppNewProject(app);
-        app.ui = new AppUI(app);
+        app.ui = new AppUI(app, mobile);
         return app.ui.initialize(uiTicker);
     }
 

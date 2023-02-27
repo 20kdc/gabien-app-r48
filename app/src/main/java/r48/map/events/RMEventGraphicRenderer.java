@@ -10,7 +10,6 @@ package r48.map.events;
 import gabien.FontManager;
 import gabien.IGrDriver;
 import gabien.IImage;
-import gabienapp.Application;
 import r48.App;
 import r48.imagefx.AlphaControlImageEffect;
 import r48.imagefx.HueShiftImageEffect;
@@ -139,7 +138,7 @@ public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRend
             doBlendType = true;
         }
         if (doBlend) {
-            if (!Application.allowBlending) {
+            if (!app.c.allowBlending) {
                 doBlend = false;
                 i = app.ui.imageFXCache.process(i, new AlphaControlImageEffect(doBlendType));
             }

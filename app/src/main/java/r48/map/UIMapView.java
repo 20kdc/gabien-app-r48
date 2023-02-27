@@ -13,7 +13,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.*;
 import gabien.uslx.append.*;
 import gabien.ui.*;
-import gabienapp.Application;
 import r48.App;
 import r48.dbs.TXDB;
 import r48.map.drawlayers.IMapViewDrawLayer;
@@ -158,7 +157,7 @@ public class UIMapView extends UIPlaneView {
         if (camDragSwitch) {
             shortcuts = TXDB.get("Drag to pan. Camera button: Return.");
         } else if (callbacks == null) {
-            if ((pickTileHelper != null) && (!Application.mobileExtremelySpecialBehavior)) {
+            if ((pickTileHelper != null) && (!app.ui.isMobile)) {
                 shortcuts = TXDB.get("Drag to pan. Shift-left: Pick tile. Camera button: Scroll.");
             } else {
                 shortcuts = TXDB.get("Drag to pan.");
@@ -318,7 +317,7 @@ public class UIMapView extends UIPlaneView {
 
         // NOTE: Block copy/paste isn't nice this way... add confirmation or something instead?
         // If so, make sure that camDragSwitch still disables this.
-        mvdc.mouseStatus = Application.mobileExtremelySpecialBehavior ? null : new MapViewDrawContext.MouseStatus(visCurrentlyDrawing, mouseXT, mouseYT);
+        mvdc.mouseStatus = app.ui.isMobile ? null : new MapViewDrawContext.MouseStatus(visCurrentlyDrawing, mouseXT, mouseYT);
 
         mvdc.callbacks = callbacks;
         mvdc.currentLayer = currentLayer;

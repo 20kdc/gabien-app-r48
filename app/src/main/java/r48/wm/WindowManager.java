@@ -10,9 +10,9 @@ package r48.wm;
 import gabien.*;
 import gabien.ui.*;
 import gabien.ui.UIWindowView.TabShell;
-import gabienapp.Application;
 import r48.App;
 import r48.FontSizes;
+import r48.app.AppCore;
 import r48.ui.Art;
 
 import java.util.HashMap;
@@ -42,12 +42,12 @@ import org.eclipse.jdt.annotation.Nullable;
  * <p>
  * Created on November 14, 2018.
  */
-public class WindowManager {
+public class WindowManager extends AppCore.Csv {
     private Rect preFullscreenRect = null;
     // 'protected' elements here are accessible to the testing framework.
     private final UIWindowView rootView;
     protected final UITabPane tabPane;
-    protected final WindowCreatingUIElementConsumer uiTicker;
+    private final TrackedUITicker uiTicker;
     // It is required by the test system that all UIWindowViews be roots of their own windows.
     protected final LinkedList<UIWindowView> allWindowViews = new LinkedList<UIWindowView>();
     private IImage modImg;
@@ -56,14 +56,16 @@ public class WindowManager {
     public final Coco coco;
 
     public WindowManager(App app, final WindowCreatingUIElementConsumer uiTick, UIElement thbrL, UIElement thbrR) {
+        super(app);
         coco = new Coco(app);
-        uiTicker = uiTick;
+        uiTicker = new TrackedUITicker(uiTick);
         modImg = GaBIEn.createImage(new int[] {0x80000000}, 1, 1);
         rootView = new UIWindowView() {
             @Override
             public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
                 if (peripherals instanceof IDesktopPeripherals)
                     coco.run((IDesktopPeripherals) peripherals);
+                uiTicker.shakeOffDeadWindows();
                 super.update(deltaTime, selected, peripherals);
             }
 
@@ -93,10 +95,16 @@ public class WindowManager {
         allWindowViews.add(rootView);
     }
 
+    // BEWARE: Presently closes even non-App windows
+    public void pleaseShutdown() {
+        for (UIElement uie : uiTicker.runningWindows())
+            uiTicker.forceRemove(uie);
+    }
+
     public void finishInitialization() {
         if (!performingScreenTransfer)
             throw new RuntimeException("That's not supposed to happen");
-        uiTicker.accept(rootView, 1, false);
+        uiTicker.accept(rootView, false);
         performingScreenTransfer = false;
     }
 
@@ -106,11 +114,11 @@ public class WindowManager {
         uiTicker.forceRemove(rootView);
         if (preFullscreenRect == null) {
             preFullscreenRect = rootView.getParentRelativeBounds();
-            uiTicker.accept(rootView, 1, true);
+            uiTicker.accept(rootView, true);
         } else {
             rootView.setForcedBounds(null, preFullscreenRect);
             preFullscreenRect = null;
-            uiTicker.accept(rootView, 1, false);
+            uiTicker.accept(rootView, false);
         }
 
         performingScreenTransfer = false;
@@ -191,7 +199,7 @@ public class WindowManager {
                 tabPane.selectTab(uie);
             }
         } else {
-            if (Application.windowingExternal && !GaBIEn.singleWindowApp()) {
+            if (app.c.windowingExternal && !GaBIEn.singleWindowApp()) {
                 UIWindowView uwv = new UIWindowView() {
                     @Override
                     public void onWindowClose() {
@@ -207,7 +215,7 @@ public class WindowManager {
                 allWindowViews.add(uwv);
                 uwv.setForcedBounds(null, new Rect(uie.getSize()));
                 uwv.addShell(new UIWindowView.ScreenShell(uwv, uie));
-                uiTicker.accept(uwv);
+                uiTicker.accept(uwv, false);
             } else {
                 UITabBar.TabIcon tabWindowIcon = new UITabBar.TabIcon() {
                     @Override

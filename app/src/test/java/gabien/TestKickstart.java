@@ -11,8 +11,8 @@ import gabien.uslx.append.*;
 import gabien.uslx.vfs.FSBackend;
 import gabien.ui.IPointer;
 import r48.App;
-import r48.FontSizes;
 import r48.app.AppMain;
+import r48.cfg.Config;
 import r48.dbs.ObjectDB;
 import r48.io.IObjectBackend;
 import r48.tests.grand.GrandExecutionError;
@@ -51,7 +51,9 @@ public class TestKickstart {
         kickstartRFS();
         // In case unset.
         IObjectBackend.Factory.encoding = encoding;
-        return AppMain.initializeCore(s2, "", schema, (s) -> {});
+        Config c = new Config(false);
+        c.apply();
+        return AppMain.initializeCore(c, s2, "", schema, (s) -> {});
     }
 
     public static void kickstartRFS() {
@@ -182,8 +184,8 @@ public class TestKickstart {
         GaBIEn.setupAssets();
         // Cleanup any possible contamination of application state between tests.
         AppMain.shutdown(null);
-        // Also resets FontManager because that's tied into config.
-        FontSizes.reset();
+        // Reset GaBIEn stuff
+        new Config(false).apply();
     }
 
     public static void resetODB(App app) {
