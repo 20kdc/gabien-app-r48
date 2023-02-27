@@ -9,6 +9,7 @@ package r48.map.events;
 
 import gabien.IGrDriver;
 import gabien.IImage;
+import r48.App;
 import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;
 import r48.map.tiles.ITileRenderer;
@@ -17,7 +18,7 @@ import r48.map.tiles.ITileRenderer;
  * An interlude.
  * Created on 31/05/17.
  */
-public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
+public class R2kEventGraphicRenderer extends App.Svc implements IEventGraphicRenderer {
     public final IImageLoader imageLoader;
     public final ITileRenderer tileRenderer;
     // Idea is, if 2x is needed, this is set in the constructor.
@@ -26,7 +27,8 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
     public final int localTileSize = 16;
     private final int remoteTileSize;
 
-    public R2kEventGraphicRenderer(IImageLoader imageLoad, ITileRenderer tr) {
+    public R2kEventGraphicRenderer(App app, IImageLoader imageLoad, ITileRenderer tr) {
+        super(app);
         tileRenderer = tr;
         imageLoader = imageLoad;
         remoteTileSize = tileRenderer.getTileSize();
@@ -100,7 +102,7 @@ public class R2kEventGraphicRenderer implements IEventGraphicRenderer {
             // The vertical offset is either 12 or 16?
             // 16 causes papers to be weirdly offset, 12 causes lift doors to be out of place
             int blendType = 0;
-            RMEventGraphicRenderer.flexibleSpriteDraw(sx * px, sy * py, sx, sy, ox + (((remoteTileSize * sprScale) - (sx * sprScale)) / 2), (oy - (rsy * sprScale)) + (remoteTileSize * sprScale), rsx * sprScale, rsy * sprScale, 0, i, blendType, igd);
+            RMEventGraphicRenderer.flexibleSpriteDraw(app, sx * px, sy * py, sx, sy, ox + (((remoteTileSize * sprScale) - (sx * sprScale)) / 2), (oy - (rsy * sprScale)) + (remoteTileSize * sprScale), rsx * sprScale, rsy * sprScale, 0, i, blendType, igd);
         } else {
             // ok, so in this case it's a tile. In the index field.
             tileRenderer.drawTile(0, (short) (target.getIVar("@character_index").getFX() + 10000), ox, oy, igd, sprScale, false);

@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -42,6 +43,7 @@ public class GenposSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost lBase, final SchemaPath pBase) {
+        final App app = lBase.getApp();
         return new UITextButton(TXDB.get("Graphically edit this..."), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
@@ -55,7 +57,7 @@ public class GenposSchemaElement extends SchemaElement {
                             path.changeOccurred(false);
                         }
                     };
-                    final SpriteCache sc = new SpriteCache(target, a1, a2, b1, b2, new IFunction<IRIO, Integer>() {
+                    final SpriteCache sc = new SpriteCache(app, target, a1, a2, b1, b2, new IFunction<IRIO, Integer>() {
                         @Override
                         public Integer apply(IRIO rubyIO) {
                             return 192;
@@ -66,7 +68,7 @@ public class GenposSchemaElement extends SchemaElement {
                             return "Animations/";
                         }
                     });
-                    final RGSSGenposFrame frame = new RGSSGenposFrame(sc, path, genposType.equals("vxaAnimation"), updater);
+                    final RGSSGenposFrame frame = new RGSSGenposFrame(app, sc, path, genposType.equals("vxaAnimation"), updater);
                     final RMGenposAnim anim = new RMGenposAnim(target.getIVar("@frames"), frame, updater, false);
                     frame.frameSource = new ISupplier<IRIO>() {
                         @Override
@@ -95,7 +97,7 @@ public class GenposSchemaElement extends SchemaElement {
                             return target.getIVar("@battle2_2k3").getType() == 'T';
                         }
                     };
-                    final SpriteCache sc = new SpriteCache(target, a1, null, null, null, new IFunction<IRIO, Integer>() {
+                    final SpriteCache sc = new SpriteCache(app, target, a1, null, null, null, new IFunction<IRIO, Integer>() {
                         @Override
                         public Integer apply(IRIO rubyIO) {
                             if (actuallyBattle2.get())
@@ -142,7 +144,7 @@ public class GenposSchemaElement extends SchemaElement {
                         }
                     }, boot, path);
                 } else if (genposType.equals("r2kTroop")) {
-                    final GenposFramePanelController rmarp = new GenposFramePanelController(new TroopGenposFrame(target, path, new Runnable() {
+                    final GenposFramePanelController rmarp = new GenposFramePanelController(new TroopGenposFrame(app, target, path, new Runnable() {
                         @Override
                         public void run() {
                             path.changeOccurred(false);

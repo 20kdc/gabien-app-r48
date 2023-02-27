@@ -10,6 +10,7 @@ package r48.map.events;
 import gabien.FontManager;
 import gabien.IGrDriver;
 import gabien.IImage;
+import r48.App;
 import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;
 
@@ -17,11 +18,12 @@ import r48.map.imaging.IImageLoader;
  * Ikachan's event graphic renderer
  * Created on 1/27/17.
  */
-public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
+public class IkaEventGraphicRenderer extends App.Svc implements IEventGraphicRenderer {
 
     private final IImageLoader imageLoader;
 
-    public IkaEventGraphicRenderer(IImageLoader il) {
+    public IkaEventGraphicRenderer(App app, IImageLoader il) {
+        super(app);
         imageLoader = il;
     }
 
@@ -78,7 +80,7 @@ public class IkaEventGraphicRenderer implements IEventGraphicRenderer {
         if (!fail) {
             String r = graphics[type];
             IImage im = imageLoader.getImage(r, false);
-            RMEventGraphicRenderer.flexibleSpriteDraw(dfX * dsX, dfY * dsY, dsX, dsY, ox + (doX * sprScale), oy + (doY * sprScale), dsX * sprScale, dsY * sprScale, 0, im, 0, igd);
+            RMEventGraphicRenderer.flexibleSpriteDraw(app, dfX * dsX, dfY * dsY, dsX, dsY, ox + (doX * sprScale), oy + (doY * sprScale), dsX * sprScale, dsY * sprScale, 0, im, 0, igd);
             fail = false;
         }
         if (fail)

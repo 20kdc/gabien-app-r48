@@ -9,6 +9,7 @@ package r48.schema.specialized.tbleditors;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.schema.integers.IntegerSchemaElement;
@@ -22,16 +23,17 @@ import java.util.concurrent.atomic.AtomicReference;
  * (As of sep-19-2017, has static methods for use by BitfieldSchemaElement, which uses the same syntax)
  * Created on 2/18/17.
  */
-public class BitfieldTableCellEditor implements ITableCellEditor {
+public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor {
     public final String[] flags;
 
-    public BitfieldTableCellEditor(String[] strings) {
+    public BitfieldTableCellEditor(App app, String[] strings) {
+        super(app);
         flags = strings;
     }
 
     @Override
     public Runnable createEditor(final UIScrollLayout base, final int[] planes, final Runnable changeOccurred) {
-        final IConsumer<Integer> editor1 = installEditor(flags, new IConsumer<UIElement>() {
+        final IConsumer<Integer> editor1 = installEditor(app, flags, new IConsumer<UIElement>() {
             @Override
             public void accept(UIElement element) {
                 base.panelsAdd(element);
@@ -57,7 +59,7 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
 
     // Returns 'update' runnable (which you should immediately run when ready).
     // Calls callbacks for various reasons.
-    public static IConsumer<Integer> installEditor(final String[] flags, final IConsumer<UIElement> panelAdder, final AtomicReference<IConsumer<Integer>> set) {
+    public static IConsumer<Integer> installEditor(App app, final String[] flags, final IConsumer<UIElement> panelAdder, final AtomicReference<IConsumer<Integer>> set) {
         int bit = 1;
         // When the value changes, all of these are called.
         final Runnable[] flagStates = new Runnable[flags.length];
@@ -74,7 +76,7 @@ public class BitfieldTableCellEditor implements ITableCellEditor {
                     IntegerSchemaElement ise = new IntegerSchemaElement(0);
                     if (a.length > 2) {
                         if (a[2].startsWith("tsv=")) {
-                            ise = new TSDBChoiceIntegerSchemaElement(0, a[2].substring(4), pwr);
+                            ise = new TSDBChoiceIntegerSchemaElement(app, 0, a[2].substring(4), pwr);
                         } else {
                             throw new RuntimeException("bitfield table syntax error, unknown ISE type " + a[2]);
                         }

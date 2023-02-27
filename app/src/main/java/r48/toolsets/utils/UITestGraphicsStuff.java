@@ -8,6 +8,7 @@
 package r48.toolsets.utils;
 
 import gabien.IPeripherals;
+import r48.App;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.schema.displays.TonePickerSchemaElement;
 import gabien.IGrDriver;
@@ -18,6 +19,11 @@ import gabien.ui.UIElement;
  * Created 17th February 2023
  */
 public class UITestGraphicsStuff extends UIElement {
+    public final App app;
+    public UITestGraphicsStuff(App app) {
+        this.app = app;
+    }
+
     @Override
     public void update(double deltaTime, boolean selected, IPeripherals peripherals) {
     }
@@ -28,7 +34,7 @@ public class UITestGraphicsStuff extends UIElement {
             int angle = j * 22;
             IImage tst = TonePickerSchemaElement.getOneTrueTotem();
             for (int i = 0; i < 3; i++)
-                RMEventGraphicRenderer.flexibleSpriteDraw(0, 0, tst.getWidth(), tst.getHeight(), j * 128, i * 64, tst.getWidth(), tst.getHeight(), angle, tst, i, igd);
+                RMEventGraphicRenderer.flexibleSpriteDraw(app, 0, 0, tst.getWidth(), tst.getHeight(), j * 128, i * 64, tst.getWidth(), tst.getHeight(), angle, tst, i, igd);
         }
     }
 }

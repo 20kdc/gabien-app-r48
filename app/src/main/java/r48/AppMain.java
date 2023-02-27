@@ -15,7 +15,6 @@ import gabienapp.UIFancyInit;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
 import r48.dbs.TXDB;
-import r48.imagefx.ImageFXCache;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
@@ -75,9 +74,6 @@ public class AppMain {
 
     // All magical bindings in use
     public static WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache;
-
-    // Image cache
-    public static ImageFXCache imageFXCache = null;
 
     public static void initializeCore(final String rp, final String sip, final String gamepak) {
         instance = new App();
@@ -177,7 +173,6 @@ public class AppMain {
         shutdownCore();
         stuffRendererIndependent = null;
         theClipboard = null;
-        imageFXCache = null;
         magicalBindingCache = null;
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();

@@ -77,7 +77,7 @@ public class UICharGenView extends UIPlaneView {
                     int b = l.swatch.col & 0xFF;
 
                     IImage im = GaBIEn.getImage(li.img);
-                    im = AppMain.imageFXCache.process(im, new MultiplyImageEffect(a, r, g, b));
+                    im = ctrl.app.ui.imageFXCache.process(im, new MultiplyImageEffect(a, r, g, b));
                     int imw = im.getWidth();
                     int imh = im.getHeight();
                     int smw = (imw * w) / genWidth;

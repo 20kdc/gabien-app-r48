@@ -12,6 +12,7 @@ import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.ui.Rect;
 import gabien.ui.UILabel;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.imagefx.HueShiftImageEffect;
@@ -142,10 +143,10 @@ public class Art {
         return GaBIEn.createImage(img, 256, 256);
     }
 
-    public static IImage getColourPal(int hue) {
+    public static IImage getColourPal(App app, int hue) {
         if (colourPal == null)
             colourPal = genColourPal();
-        return AppMain.imageFXCache.process(colourPal, new HueShiftImageEffect(hue));
+        return app.ui.imageFXCache.process(colourPal, new HueShiftImageEffect(hue));
     }
 
     public static int getRainbowHue(int x) {

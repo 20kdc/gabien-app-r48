@@ -69,7 +69,7 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
 
             int fx = ((field % 2) * 3) + ((field / 8) * 6);
             int fy = ((field / 2) % 4) * 4;
-            XPTileRenderer.generalOldRMATField(fx * tileSize, fy * tileSize, subfield, app.autoTiles[0], tileSize, px, py, igd, chipset, spriteScale);
+            XPTileRenderer.generalOldRMATField(app, fx * tileSize, fy * tileSize, subfield, app.autoTiles[0], tileSize, px, py, igd, chipset, spriteScale);
             //igd.drawText(px, py, 255, 255, 255, 8, Integer.toString(field));
         }
 
@@ -89,7 +89,7 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
             s = Math.floor(s);
             int f = (int) s;
             f %= 4;
-            RMEventGraphicRenderer.flexibleSpriteDraw((tileSize * 3) + (field * tileSize), (tileSize * 4) + (f * tileSize), tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, chipset, 0, igd);
+            RMEventGraphicRenderer.flexibleSpriteDraw(app, (tileSize * 3) + (field * tileSize), (tileSize * 4) + (f * tileSize), tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, chipset, 0, igd);
         }
 
         // Water tiles are yet another 50-entry AT field, seemingly of a different type.
@@ -199,7 +199,7 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
                 toy = tileSize * 3;
                 break;
         }
-        RMEventGraphicRenderer.flexibleSpriteDraw(tox + cx, toy + cy, etc, etc, px + (cx * spriteScale), py + (cy * spriteScale), etc * spriteScale, etc * spriteScale, 0, chipset, 0, igd);
+        RMEventGraphicRenderer.flexibleSpriteDraw(app, tox + cx, toy + cy, etc, etc, px + (cx * spriteScale), py + (cy * spriteScale), etc * spriteScale, etc * spriteScale, 0, chipset, 0, igd);
     }
 
     private void handleCommonPage(int base, int ofsPage, short tidx, int px, int py, IGrDriver igd, IImage chipset, int spriteScale) {
@@ -208,7 +208,7 @@ public class LcfTileRenderer extends App.Svc implements ITileRenderer {
         ti += ofsPage * 144;
         int tx = (ti % 6) + ((ti / 96) * 6);
         int ty = ((ti / 6) % 16);
-        RMEventGraphicRenderer.flexibleSpriteDraw(((tx + 12) * tileSize), ty * tileSize, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, chipset, 0, igd);
+        RMEventGraphicRenderer.flexibleSpriteDraw(app, ((tx + 12) * tileSize), ty * tileSize, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, chipset, 0, igd);
     }
 
     @Override

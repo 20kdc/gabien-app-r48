@@ -53,8 +53,11 @@ public class AppUI extends App.Svc {
     // All active image editors
     public LinkedList<ImageEditorController> imgContext;
 
-    // This is weird. Expect this to randomly be null.
-    IMapContext mapContext;
+    // Image cache
+    public ImageFXCache imageFXCache;
+
+    // This is the main map context. Expect this to randomly be null and try to avoid accessing it.
+    public IMapContext mapContext;
 
     public AppUI(App app) {
         super(app);
@@ -64,7 +67,7 @@ public class AppUI extends App.Svc {
         GaBIEn.setBrowserDirectory(AppMain.rootPath);
 
         // Initialize imageFX before doing anything graphical
-        AppMain.imageFXCache = new ImageFXCache();
+        imageFXCache = new ImageFXCache();
 
         imgContext = new LinkedList<ImageEditorController>();
 

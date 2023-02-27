@@ -338,7 +338,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.ui.wm.createWindow(new UITestGraphicsStuff());
+                        app.ui.wm.createWindow(new UITestGraphicsStuff(app));
                     }
                 },
                 new Runnable() {

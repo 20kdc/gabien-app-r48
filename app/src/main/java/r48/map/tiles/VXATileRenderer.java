@@ -215,7 +215,7 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
                 tgtY -= 16;
                 tgtX += 8;
             }
-            RMEventGraphicRenderer.flexibleSpriteDraw(tgtX * tileSize, tgtY * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, planeImage, 0, igd);
+            RMEventGraphicRenderer.flexibleSpriteDraw(app, tgtX * tileSize, tgtY * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, planeImage, 0, igd);
             return true;
         }
         return false;
@@ -251,12 +251,12 @@ public class VXATileRenderer extends App.Svc implements ITileRenderer {
                             int sY = (sB * cSizeI);
                             int s2X = sA * cSize;
                             int s2Y = sB * cSize;
-                            RMEventGraphicRenderer.flexibleSpriteDraw(tx + pox + sX, ty + poy + sY, cSizeI, cSizeI, px + s2X, py + s2Y, cSize, cSize, 0, planeImg, 0, igd);
+                            RMEventGraphicRenderer.flexibleSpriteDraw(app, tx + pox + sX, ty + poy + sY, cSizeI, cSizeI, px + s2X, py + s2Y, cSize, cSize, 0, planeImg, 0, igd);
                         }
                     return true;
                 }
             } else {
-                RMEventGraphicRenderer.flexibleSpriteDraw(tileSize, 2 * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, planeImg, 0, igd);
+                RMEventGraphicRenderer.flexibleSpriteDraw(app, tileSize, 2 * tileSize, ets, ets, px, py, ets * spriteScale, ets * spriteScale, 0, planeImg, 0, igd);
                 return true;
             }
         }

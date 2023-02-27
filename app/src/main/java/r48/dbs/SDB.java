@@ -88,7 +88,7 @@ public class SDB extends App.Svc {
         schemaDatabase.put("int_boolean", new IntBooleanSchemaElement(false));
         schemaDatabase.put("int_booleanDefTrue", new IntBooleanSchemaElement(true));
         schemaDatabase.put("OPAQUE", new OpaqueSchemaElement());
-        schemaDatabase.put("hue", new HuePickerSchemaElement());
+        schemaDatabase.put("hue", new HuePickerSchemaElement(app));
 
         schemaDatabase.put("percent", new LowerBoundIntegerSchemaElement(0, 100));
 
@@ -576,7 +576,7 @@ public class SDB extends App.Svc {
                             LinkedList<String> flags = new LinkedList<String>();
                             while (point < args.length)
                                 flags.add(args[point++]);
-                            return new BitfieldSchemaElement(i, flags.toArray(new String[0]));
+                            return new BitfieldSchemaElement(app, i, flags.toArray(new String[0]));
                         }
                         if (text.startsWith("table")) {
                             String eText = text;
@@ -593,7 +593,7 @@ public class SDB extends App.Svc {
 
                             TSDB tilesetAllocations = null;
                             if (eText.equals("tableSTA"))
-                                tilesetAllocations = new TSDB(args[point++]);
+                                tilesetAllocations = new TSDB(app, args[point++]);
                             PathSyntax iV = getNullablePathSyntax();
                             PathSyntax wV = getNullablePathSyntax();
                             PathSyntax hV = getNullablePathSyntax();
@@ -614,7 +614,7 @@ public class SDB extends App.Svc {
                                 LinkedList<String> flags = new LinkedList<String>();
                                 while (point < args.length)
                                     flags.add(args[point++]);
-                                tcf = new BitfieldTableCellEditor(flags.toArray(new String[0]));
+                                tcf = new BitfieldTableCellEditor(app, flags.toArray(new String[0]));
                             }
                             @SuppressWarnings("rawtypes")
                             RubyTableSchemaElement r = null;
@@ -639,7 +639,7 @@ public class SDB extends App.Svc {
                                 "poison", "noBoat", "noShip", "noAShip", "[terrainTag;8"
                             };
                             PathSyntax fp = PathSyntax.compile("@flags");
-                            return new FancyCategorizedTilesetRubyTableSchemaElement(8192, 1, 1, 1, fp, new int[] {0}, new BitfieldTableCellEditor(flags));
+                            return new FancyCategorizedTilesetRubyTableSchemaElement(8192, 1, 1, 1, fp, new int[] {0}, new BitfieldTableCellEditor(app, flags));
                         }
                         if (text.equals("internal_r2kPPPID")) {
                             SchemaElement se = get();
@@ -664,7 +664,7 @@ public class SDB extends App.Svc {
                             PathSyntax d = getPathSyntax();
                             String a = args[point++];
                             String b = args[point++];
-                            return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(b), Integer.parseInt(a), c, d), getFunctionToReturn(TXDB.get("Select Tile Graphic...")));
+                            return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(app, b), Integer.parseInt(a), c, d), getFunctionToReturn(TXDB.get("Select Tile Graphic...")));
                         }
                         if (text.equals("windowTitleAttachment")) {
                             String txt = TXDB.get(outerContext, args[point++]);

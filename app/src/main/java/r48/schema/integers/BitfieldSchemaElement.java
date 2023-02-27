@@ -11,6 +11,7 @@ import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
+import r48.App;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.schema.specialized.tbleditors.BitfieldTableCellEditor;
@@ -23,16 +24,18 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class BitfieldSchemaElement extends IntegerSchemaElement {
     public final String[] flags;
+    public final App app;
 
-    public BitfieldSchemaElement(int def, String[] f) {
+    public BitfieldSchemaElement(App app, int def, String[] f) {
         super(def);
+        this.app = app;
         flags = f;
     }
 
     @Override
     public ActiveInteger buildIntegerEditor(long oldVal, final IIntegerContext context) {
         final UIScrollLayout uiSVL = context.newSVL();
-        final IConsumer<Integer> refresh = BitfieldTableCellEditor.installEditor(flags, new IConsumer<UIElement>() {
+        final IConsumer<Integer> refresh = BitfieldTableCellEditor.installEditor(app, flags, new IConsumer<UIElement>() {
             @Override
             public void accept(UIElement element) {
                 uiSVL.panelsAdd(element);

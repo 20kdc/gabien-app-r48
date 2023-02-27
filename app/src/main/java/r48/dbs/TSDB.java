@@ -11,6 +11,7 @@ import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.map.events.RMEventGraphicRenderer;
 
 import java.io.IOException;
@@ -19,14 +20,15 @@ import java.util.LinkedList;
 /**
  * Created on 04/06/17.
  */
-public class TSDB {
+public class TSDB extends App.Svc {
     public LinkedList<TSPicture> pictures = new LinkedList<TSPicture>();
     public int[] mapping;
     public int xorDoubleclick = 0;
     public boolean disableHex = false;
     public int mulW = 1, mulH = 1;
 
-    public TSDB(String arg) {
+    public TSDB(App app, String arg) {
+        super(app);
         DBLoader.readFile(arg, new IDatabase() {
 
             public IFunction<Integer, Boolean> acceptable = new IFunction<Integer, Boolean>() {
@@ -118,7 +120,7 @@ public class TSDB {
             boolean flagValid = tsp.testFlag(tiletype);
             int rtX = flagValid ? tsp.layertabAX : tsp.layertabIX;
             int rtY = flagValid ? tsp.layertabAY : tsp.layertabIY;
-            RMEventGraphicRenderer.flexibleSpriteDraw(rtX, rtY, tsp.w, tsp.h, x + (tsp.x * sprScale), y + (tsp.y * sprScale), tsp.w * sprScale, tsp.h * sprScale, 0, GaBIEn.getImageCKEx(tsp.img, false, true, 255, 0, 255), 0, igd);
+            RMEventGraphicRenderer.flexibleSpriteDraw(app, rtX, rtY, tsp.w, tsp.h, x + (tsp.x * sprScale), y + (tsp.y * sprScale), tsp.w * sprScale, tsp.h * sprScale, 0, GaBIEn.getImageCKEx(tsp.img, false, true, 255, 0, 255), 0, igd);
         }
     }
 

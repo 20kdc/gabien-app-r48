@@ -47,7 +47,7 @@ public class RVXASystem extends RXPSystem {
     public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tso, IEventAccess events) {
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
         VXATileRenderer tileRenderer = new VXATileRenderer(app, imageLoader, tso);
-        RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
+        RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, true);
         if (map != null) {
             String vxaPano = map.getIVar("@parallax_name").decString();
             if (map.getIVar("@parallax_show").getType() != 'T')
@@ -80,7 +80,7 @@ public class RVXASystem extends RXPSystem {
     @Override
     public StuffRenderer rendererFromTso(IRIO tso) {
         ITileRenderer tileRenderer = new VXATileRenderer(app, imageLoader, tso);
-        IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, true);
+        IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, true);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 

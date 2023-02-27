@@ -11,6 +11,7 @@ import gabien.uslx.append.*;
 import gabien.IImage;
 import gabien.ui.UIPublicPanel;
 import gabien.ui.UISplitterLayout;
+import r48.App;
 import r48.imagefx.HueShiftImageEffect;
 import r48.schema.integers.IntegerSchemaElement;
 
@@ -18,19 +19,21 @@ import r48.schema.integers.IntegerSchemaElement;
  * Created on 7/31/17.
  */
 public class HuePickerSchemaElement extends IntegerSchemaElement {
-    public HuePickerSchemaElement() {
+    public final App app;
+    public HuePickerSchemaElement(App app) {
         super(0);
+        this.app = app;
     }
 
     @Override
     public ActiveInteger buildIntegerEditor(final long oldVal, IntegerSchemaElement.IIntegerContext context) {
         final IImage totem = TonePickerSchemaElement.getOneTrueTotem();
-        final UIPublicPanel uie = TonePickerSchemaElement.createTotemStandard(totem, new HueShiftImageEffect((int) oldVal));
+        final UIPublicPanel uie = TonePickerSchemaElement.createTotemStandard(app, totem, new HueShiftImageEffect((int) oldVal));
         final ActiveInteger ai2 = super.buildIntegerEditor(oldVal, context);
         return new ActiveInteger(new UISplitterLayout(ai2.uie, uie, true, 0.5), new IConsumer<Long>() {
             @Override
             public void accept(Long aLong) {
-                uie.baseImage = TonePickerSchemaElement.compositeTotem(totem, new HueShiftImageEffect((int) oldVal));
+                uie.baseImage = TonePickerSchemaElement.compositeTotem(app, totem, new HueShiftImageEffect((int) oldVal));
                 ai2.onValueChange.accept(aLong);
             }
         });

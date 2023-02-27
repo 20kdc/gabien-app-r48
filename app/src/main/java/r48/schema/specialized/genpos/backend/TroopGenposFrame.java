@@ -11,6 +11,7 @@ import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.uslx.append.*;
 import gabien.ui.Rect;
+import r48.App;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -40,13 +41,15 @@ public class TroopGenposFrame implements IGenposFrame {
             320, 240
     };
 
+    public final App app;
     public IImage battleBkg;
     public IRIO troop;
     public SchemaPath troopPath;
     public IImage[] enemies;
     public Runnable changed;
 
-    public TroopGenposFrame(IRIO t, SchemaPath path, Runnable change) {
+    public TroopGenposFrame(App app, IRIO t, SchemaPath path, Runnable change) {
+        this.app = app;
         troop = t;
         troopPath = path;
         changed = change;
@@ -67,7 +70,7 @@ public class TroopGenposFrame implements IGenposFrame {
 
     private IImage readEnemy(IRIO value, IImageLoader img) {
         IImage im = img.getImage("Monster/" + value.getIVar("@battler_name").decString(), false);
-        return AppMain.imageFXCache.process(im, new HueShiftImageEffect((int) value.getIVar("@battler_hue").getFX()));
+        return app.ui.imageFXCache.process(im, new HueShiftImageEffect((int) value.getIVar("@battler_hue").getFX()));
     }
 
     @Override

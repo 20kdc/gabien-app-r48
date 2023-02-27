@@ -89,7 +89,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     public StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events) {
         XPTileRenderer tileRenderer = new XPTileRenderer(app, imageLoader, tileset);
-        RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
+        RMEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, false);
         String pano = "";
         if (tileset != null) {
             IRIO rio = tileset.getIVar("@panorama_name");
@@ -129,7 +129,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     @Override
     public StuffRenderer rendererFromTso(IRIO tso) {
         ITileRenderer tileRenderer = new XPTileRenderer(app, imageLoader, tso);
-        IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(imageLoader, tileRenderer, false);
+        IEventGraphicRenderer eventRenderer = new RMEventGraphicRenderer(app, imageLoader, tileRenderer, false);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 

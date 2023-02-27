@@ -110,7 +110,7 @@ public class CharacterGeneratorController extends App.Svc {
                     l.swatch.onClick = new Runnable() {
                         @Override
                         public void run() {
-                            app.ui.wm.createMenu(l.swatch, new UIColourPicker(l.naming.text, l.swatch.col, new IConsumer<Integer>() {
+                            app.ui.wm.createMenu(l.swatch, new UIColourPicker(app, l.naming.text, l.swatch.col, new IConsumer<Integer>() {
                                 @Override
                                 public void accept(Integer integer) {
                                     if (integer != null)

@@ -78,7 +78,7 @@ public class XPTileRenderer extends App.Svc implements ITileRenderer {
                 int animSets = tilesetMaps[atMap].getWidth() / 96;
                 if (animSets > 0)
                     animControl = (96 * (getFrame() % animSets));
-                didDraw = didDraw || generalOldRMATField(animControl, 0, tidx, app.autoTiles[0], tileSize, px, py, igd, tilesetMaps[atMap], spriteScale);
+                didDraw = didDraw || generalOldRMATField(app, animControl, 0, tidx, app.autoTiles[0], tileSize, px, py, igd, tilesetMaps[atMap], spriteScale);
             } else {
                 didDraw = true; // It's invisible, so it should just be considered drawn no matter what
             }
@@ -91,11 +91,11 @@ public class XPTileRenderer extends App.Svc implements ITileRenderer {
         int tx = tidx % tsh;
         int ty = tidx / tsh;
         if (tilesetMaps[0] != null)
-            RMEventGraphicRenderer.flexibleSpriteDraw(tx * tileSize, ty * tileSize, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, tilesetMaps[0], 0, igd);
+            RMEventGraphicRenderer.flexibleSpriteDraw(app, tx * tileSize, ty * tileSize, tileSize, tileSize, px, py, tileSize * spriteScale, tileSize * spriteScale, 0, tilesetMaps[0], 0, igd);
     }
 
     // Used by 2k3 support too, since it follows the same AT design
-    public static boolean generalOldRMATField(int tox, int toy, int subfield, ATDB atFieldType, int fTileSize, int px, int py, IGrDriver igd, IImage img, int spriteScale) {
+    public static boolean generalOldRMATField(App app, int tox, int toy, int subfield, ATDB atFieldType, int fTileSize, int px, int py, IGrDriver igd, IImage img, int spriteScale) {
         if (atFieldType != null) {
             if (subfield >= atFieldType.entries.length)
                 return false;
@@ -109,7 +109,7 @@ public class XPTileRenderer extends App.Svc implements ITileRenderer {
                         int ty = ti / 3;
                         int sX = (sA * cSize);
                         int sY = (sB * cSize);
-                        RMEventGraphicRenderer.flexibleSpriteDraw((tx * fTileSize) + sX + tox, (ty * fTileSize) + sY + toy, cSize, cSize, px + (sX * spriteScale), py + (sY * spriteScale), cSize * spriteScale, cSize * spriteScale, 0, img, 0, igd);
+                        RMEventGraphicRenderer.flexibleSpriteDraw(app, (tx * fTileSize) + sX + tox, (ty * fTileSize) + sY + toy, cSize, cSize, px + (sX * spriteScale), py + (sY * spriteScale), cSize * spriteScale, cSize * spriteScale, 0, img, 0, igd);
                     }
                 return true;
             }

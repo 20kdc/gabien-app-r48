@@ -116,7 +116,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     // saveData is optional, and replaces some things.
     private StuffRenderer rendererFromMapAndTso(IRIO map, IRIO tileset, IEventAccess events) {
         ITileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader, tileset);
-        IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
+        IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(app, imageLoader, tileRenderer);
         IMapViewDrawLayer[] layers = new IMapViewDrawLayer[0];
         // Cannot get enough information without map & tileset
         if ((map != null) && (tileset != null)) {
@@ -169,7 +169,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
     @Override
     public StuffRenderer rendererFromTso(IRIO tso) {
         ITileRenderer tileRenderer = new LcfTileRenderer(app, imageLoader, tso);
-        IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(imageLoader, tileRenderer);
+        IEventGraphicRenderer eventRenderer = new R2kEventGraphicRenderer(app, imageLoader, tileRenderer);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, new IMapViewDrawLayer[0]);
     }
 

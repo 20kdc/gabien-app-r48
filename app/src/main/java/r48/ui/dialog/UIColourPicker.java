@@ -13,6 +13,7 @@ import gabien.IImage;
 import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.ui.Art;
@@ -30,7 +31,7 @@ import r48.ui.UIThumbnail;
  * +--+--+
  * Remade on August 12th, 2018
  */
-public class UIColourPicker extends UIElement.UIProxy {
+public class UIColourPicker extends App.Prx {
     private final String wTitle;
 
     // This is the colour that we agree every ColourPickerPanel has.
@@ -42,8 +43,8 @@ public class UIColourPicker extends UIElement.UIProxy {
     private boolean shuttingDown = false;
 
     @SuppressWarnings("unchecked")
-    public UIColourPicker(String purpose, int baseCol, final IConsumer<Integer> iConsumer, boolean alpha) {
-        super();
+    public UIColourPicker(App app, String purpose, int baseCol, final IConsumer<Integer> iConsumer, boolean alpha) {
+        super(app);
         currentColour = new UIColourSwatch(baseCol);
         wTitle = purpose;
         tabPane = new UITabPane(FontSizes.imageEditorTextHeight, false, true);
@@ -358,7 +359,7 @@ public class UIColourPicker extends UIElement.UIProxy {
             hCoordinator = new UIPickCoordinator(256, 16, sc, new IConsumer<Size>() {
                 @Override
                 public void accept(Size size) {
-                    svCoordinator.baseImage = Art.getColourPal(Art.getRainbowHue(size.width));
+                    svCoordinator.baseImage = Art.getColourPal(app, Art.getRainbowHue(size.width));
                     performSendStuff();
                 }
             });
@@ -427,7 +428,7 @@ public class UIColourPicker extends UIElement.UIProxy {
                 }
             }
 
-            svCoordinator.baseImage = Art.getColourPal(Art.getRainbowHue(h));
+            svCoordinator.baseImage = Art.getColourPal(app, Art.getRainbowHue(h));
             svCoordinator.targetSize = new Size(s, 255 - v);
             hCoordinator.targetSize = new Size(h, 0);
         }

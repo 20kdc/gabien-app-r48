@@ -372,7 +372,7 @@ public class ImageEditorController extends App.Svc {
                 uicsb.onClick = new Runnable() {
                     @Override
                     public void run() {
-                        app.ui.wm.createMenu(uicsb, new UIColourPicker(TXDB.get("Grid Colour"), imageEditView.gridColour, new IConsumer<Integer>() {
+                        app.ui.wm.createMenu(uicsb, new UIColourPicker(app, TXDB.get("Grid Colour"), imageEditView.gridColour, new IConsumer<Integer>() {
                             @Override
                             public void accept(Integer t) {
                                 if (t != null)
@@ -441,7 +441,7 @@ public class ImageEditorController extends App.Svc {
         paletteView.panelsAdd(new UISplitterLayout(new UIMenuButton(app, "+", FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
-                return new UIColourPicker(TXDB.get("Add Palette Colour..."), imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex) | 0xFF000000, new IConsumer<Integer>() {
+                return new UIColourPicker(app, TXDB.get("Add Palette Colour..."), imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex) | 0xFF000000, new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         if (integer == null)
@@ -506,7 +506,7 @@ public class ImageEditorController extends App.Svc {
             cPanel = new UISplitterLayout(new UIMenuButton(app, "=", FontSizes.imageEditorTextHeight, new ISupplier<UIElement>() {
                 @Override
                 public UIElement get() {
-                    return new UIColourPicker(TXDB.get("Change Palette Colour..."), imageEditView.image.getPaletteRGB(fidx), new IConsumer<Integer>() {
+                    return new UIColourPicker(app, TXDB.get("Change Palette Colour..."), imageEditView.image.getPaletteRGB(fidx), new IConsumer<Integer>() {
                         @Override
                         public void accept(Integer integer) {
                             if (integer == null)

@@ -11,7 +11,7 @@ import gabien.FontManager;
 import gabien.IGrDriver;
 import gabien.IImage;
 import gabienapp.Application;
-import r48.AppMain;
+import r48.App;
 import r48.imagefx.AlphaControlImageEffect;
 import r48.imagefx.HueShiftImageEffect;
 import r48.imagefx.IImageEffect;
@@ -26,14 +26,15 @@ import java.util.LinkedList;
 /**
  * Created on 1/27/17.
  */
-public class RMEventGraphicRenderer implements IEventGraphicRenderer {
+public class RMEventGraphicRenderer extends App.Svc implements IEventGraphicRenderer {
 
     private int patternCount = 4;
     private boolean useVXAExtensionScheme = false;
     public final IImageLoader imageLoader;
     private final ITileRenderer tileRenderer;
 
-    public RMEventGraphicRenderer(IImageLoader img, ITileRenderer tile, boolean vxa) {
+    public RMEventGraphicRenderer(App app, IImageLoader img, ITileRenderer tile, boolean vxa) {
+        super(app);
         imageLoader = img;
         tileRenderer = tile;
         if (vxa) {
@@ -123,12 +124,12 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
             }
             if (blendType != 0)
                 hsie.add(new ToneImageEffect(1, 1, 1, 2, 2));
-            i = AppMain.imageFXCache.process(i, hsie);
-            flexibleSpriteDraw(tx * sprW, ty * sprH, sprW, sprH, ox - ((sprW * sprScale) / 2), oy - (sprH * sprScale), sprW * sprScale, sprH * sprScale, 0, i, blendType, igd);
+            i = app.ui.imageFXCache.process(i, hsie);
+            flexibleSpriteDraw(app, tx * sprW, ty * sprH, sprW, sprH, ox - ((sprW * sprScale) / 2), oy - (sprH * sprScale), sprW * sprScale, sprH * sprScale, 0, i, blendType, igd);
         }
     }
 
-    public static void flexibleSpriteDraw(int srcx, int srcy, int srcw, int srch, int x, int y, int acw, int ach, int angle, IImage i, int blendType, IGrDriver igd) {
+    public static void flexibleSpriteDraw(App app, int srcx, int srcy, int srcw, int srch, int x, int y, int acw, int ach, int angle, IImage i, int blendType, IGrDriver igd) {
         boolean doBlend = false;
         boolean doBlendType = false;
         if (blendType == 1)
@@ -140,7 +141,7 @@ public class RMEventGraphicRenderer implements IEventGraphicRenderer {
         if (doBlend) {
             if (!Application.allowBlending) {
                 doBlend = false;
-                i = AppMain.imageFXCache.process(i, new AlphaControlImageEffect(doBlendType));
+                i = app.ui.imageFXCache.process(i, new AlphaControlImageEffect(doBlendType));
             }
         }
         if (doBlend) {

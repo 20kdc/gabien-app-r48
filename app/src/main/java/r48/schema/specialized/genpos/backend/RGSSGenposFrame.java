@@ -11,6 +11,7 @@ import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.uslx.append.*;
 import gabien.ui.Rect;
+import r48.App;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.RubyTable;
@@ -33,7 +34,7 @@ import r48.ui.dialog.ISpritesheetProvider;
  * while keeping this unreusable code here.
  * Created on 29/07/17.
  */
-public class RGSSGenposFrame implements IGenposFrame {
+public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
     public SpriteCache spriteCache;
 
     // used for indicator setup
@@ -45,7 +46,8 @@ public class RGSSGenposFrame implements IGenposFrame {
     // Must be initialized before this is used...
     public ISupplier<IRIO> frameSource;
 
-    public RGSSGenposFrame(SpriteCache sc, SchemaPath basePath, boolean vxaAnimation, Runnable runnable) {
+    public RGSSGenposFrame(App app, SpriteCache sc, SchemaPath basePath, boolean vxaAnimation, Runnable runnable) {
+        super(app);
         updateNotify = runnable;
         vxaAnim = vxaAnimation;
         path = basePath;
@@ -297,7 +299,7 @@ public class RGSSGenposFrame implements IGenposFrame {
         int blendType = rt.getTiletype(i, 7, 0);
         int cellX = (cell % 5) * 192;
         int cellY = (cell / 5) * 192;
-        RMEventGraphicRenderer.flexibleSpriteDraw(cellX, cellY, 192, 192, opx + ofx, opy + ofy, ts, ts, angle, scaleImage, blendType, igd);
+        RMEventGraphicRenderer.flexibleSpriteDraw(app, cellX, cellY, 192, 192, opx + ofx, opy + ofy, ts, ts, angle, scaleImage, blendType, igd);
     }
 
     @Override

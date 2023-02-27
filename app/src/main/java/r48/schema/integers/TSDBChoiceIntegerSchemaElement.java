@@ -12,6 +12,7 @@ import gabien.IImage;
 import gabien.uslx.append.*;
 import gabien.ui.Size;
 import gabien.ui.UIScrollLayout;
+import r48.App;
 import r48.FontSizes;
 import r48.dbs.TSDB;
 import r48.map.events.RMEventGraphicRenderer;
@@ -25,11 +26,13 @@ public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
     public IImage tsdb;
     public int maxCount;
     public int tileSize;
+    public final App app;
 
-    public TSDBChoiceIntegerSchemaElement(long i, String substring, int pwr) {
+    public TSDBChoiceIntegerSchemaElement(App app, long i, String substring, int pwr) {
         super(i);
+        this.app = app;
         tileSize = 16;
-        tsdb = new TSDB(substring).compileSheet(pwr, tileSize);
+        tsdb = new TSDB(app, substring).compileSheet(pwr, tileSize);
         maxCount = pwr;
     }
 
@@ -43,7 +46,7 @@ public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
             protected void drawTile(int t, boolean hover, int x, int y, IGrDriver igd) {
                 super.drawTile(t, hover, x, y, igd);
                 y += FontSizes.gridTextHeight + 1;
-                RMEventGraphicRenderer.flexibleSpriteDraw(t * tileSize, 0, tileSize, tileSize, x, y, tileSize * sprScale, tileSize * sprScale, 0, tsdb, 0, igd);
+                RMEventGraphicRenderer.flexibleSpriteDraw(app, t * tileSize, 0, tileSize, tileSize, x, y, tileSize * sprScale, tileSize * sprScale, 0, tsdb, 0, igd);
             }
 
             @Override

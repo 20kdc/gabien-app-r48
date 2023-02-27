@@ -13,6 +13,7 @@ import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.ui.UIElement;
 import gabien.ui.UIPublicPanel;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.PathSyntax;
@@ -48,10 +49,10 @@ public class TonePickerSchemaElement extends SchemaElement {
         int ng = (int) gP.get(target).getFX();
         int nb = (int) bP.get(target).getFX();
         int ns = (int) sP.get(target).getFX();
-        return createTotem(target, new ToneImageEffect(nr, ng, nb, ns, base));
+        return createTotem(launcher.getApp(), target, new ToneImageEffect(nr, ng, nb, ns, base));
     }
 
-    public static IImage compositeTotem(IImage totem, IImageEffect cfg) {
+    public static IImage compositeTotem(App app, IImage totem, IImageEffect cfg) {
         // The tone picker text height is typically 6, which should equal 64, as a base.
         // How do I make this work? Like this:
 
@@ -61,7 +62,7 @@ public class TonePickerSchemaElement extends SchemaElement {
         IGrDriver finalComposite = GaBIEn.makeOffscreenBuffer(imageUnit * 2, imageUnit, false);
 
         finalComposite.blitScaledImage(0, 0, 256, 256, 0, 0, imageUnit, imageUnit, totem);
-        finalComposite.blitImage(0, 0, imageUnit, imageUnit, imageUnit, 0, AppMain.imageFXCache.process(finalComposite, cfg));
+        finalComposite.blitImage(0, 0, imageUnit, imageUnit, imageUnit, 0, app.ui.imageFXCache.process(finalComposite, cfg));
 
         FontManager.drawString(finalComposite, 0, (imageUnit + 1) - FontSizes.tonePickerTextHeight, TXDB.get("TotemSrc."), false, false, FontSizes.tonePickerTextHeight);
         FontManager.drawString(finalComposite, imageUnit, (imageUnit + 1) - FontSizes.tonePickerTextHeight, TXDB.get("Composite"), false, false, FontSizes.tonePickerTextHeight);
@@ -75,15 +76,15 @@ public class TonePickerSchemaElement extends SchemaElement {
         return GaBIEn.getImage("tonetotm.png");
     }
 
-    public static UIPublicPanel createTotemStandard(IImage totem, IImageEffect cfg) {
-        IImage img = compositeTotem(totem, cfg);
+    public static UIPublicPanel createTotemStandard(App app, IImage totem, IImageEffect cfg) {
+        IImage img = compositeTotem(app, totem, cfg);
         UIPublicPanel panel = new UIPublicPanel(img.getWidth(), img.getHeight());
         panel.baseImage = img;
         return panel;
     }
 
-    public UIElement createTotem(IRIO target, IImageEffect cfg) {
-        return createTotemStandard(getOneTrueTotem(), cfg);
+    public UIElement createTotem(App app, IRIO target, IImageEffect cfg) {
+        return createTotemStandard(app, getOneTrueTotem(), cfg);
     }
 
     @Override
@@ -101,10 +102,10 @@ public class TonePickerSchemaElement extends SchemaElement {
         }
 
         @Override
-        public UIElement createTotem(IRIO target, IImageEffect cfg) {
+        public UIElement createTotem(App app, IRIO target, IImageEffect cfg) {
             String imagePath = iPrefix + iPath.get(target).decString();
             IImage totem = AppMain.stuffRendererIndependent.imageLoader.getImage(imagePath, false);
-            IImage img = compositeTotem(totem, cfg);
+            IImage img = compositeTotem(app, totem, cfg);
             UIThumbnail panel = new UIThumbnail(img);
             return panel;
         }
