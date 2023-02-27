@@ -476,7 +476,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         workspace = new UIAppendButton(TXDB.get("Quit"), workspace, app.ui.createLaunchConfirmation(TXDB.get("Are you sure you want to return to menu? This will lose unsaved data."), new Runnable() {
             @Override
             public void run() {
-                AppMain.pleaseShutdown();
+                app.pleaseShutdown();
             }
         }), FontSizes.statusBarTextHeight);
         return workspace;

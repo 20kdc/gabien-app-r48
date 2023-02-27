@@ -10,7 +10,6 @@ package r48;
 import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import gabienapp.Application;
 import gabienapp.UIFancyInit;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
@@ -25,31 +24,12 @@ import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaHostImpl;
 import r48.schema.util.SchemaPath;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
 /**
- * Pre-release development notice. 31 Dec, 2016.
- * I'll finish some commands before releasing, but this is still going to be released a bit early.
- * Several schemas are missing. I guess it's okay enough that the schemas that do exist, well, exist...
- * ... but it would be nice if everything was in place. Oh well.
- * At least something good will come out of this year.
- * I've added the original Inspector (UITest) as a launchable thing so that examining data to write new schemas is possible.
- * Hopefully the system is flexible enough to support everything now, at least more or less.
- * In any case, if you're reading this you're examining the code.
- * This class holds the static members for several critical databases,
- * needed to keep the system running.
- * So, uh, don't lose it.
- * <p/>
- * -- NOTE: This is a 2017 version of the code,
- * since I decided to actually finish it.
- * If I do get around to releasing it,
- * well, you'll find the new features yourself,
- * I'm sure of it. --
- * <p/>
- * Created on 12/27/16.
+ * The static variable holding class.
+ * Created on 12/27/16. Being phased out as of 26th February 2023.
  */
 public class AppMain {
     // The last AppMain static variable, in the process of being phased out.
@@ -94,11 +74,6 @@ public class AppMain {
         return instance.ui.initialize(uiTicker);
     }
 
-    public static void performFullImageFlush() {
-        if (instance.ui.mapContext != null)
-            instance.ui.mapContext.performCacheFlush();
-    }
-
     // Notably, you can't use this for non-roots because you'll end up bypassing ObjectDB.
     public static ISchemaHost launchSchema(String s, IObjectBackend.ILoadedObject rio, UIMapView context) {
         // Responsible for keeping listeners in place so nothing breaks.
@@ -116,36 +91,15 @@ public class AppMain {
         return shi;
     }
 
-    public static void launchDialog(String s, Throwable e) {
-        StringWriter sw = new StringWriter();
-        e.printStackTrace(new PrintWriter(sw));
-        AppMain.launchDialog(s + "\n" + sw.toString());
-    }
     public static void launchDialog(String s) {
-        UILabel ul = new UILabel(s, FontSizes.textDialogDescTextHeight);
-        UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize) {
-            @Override
-            public String toString() {
-                return TXDB.get("Information");
-            }
-        };
-        svl.panelsAdd(ul);
-        instance.ui.wm.createWindowSH(svl);
+        instance.ui.launchDialog(s);
     }
 
-    public static void pleaseShutdown() {
-        Application.shutdownAllAppMainWindows();
-    }
-
-    public static void shutdownCore() {
+    public static void shutdown() {
         if (instance != null)
             instance.shutdown();
         instance = null;
         schemas = null;
-    }
-
-    public static void shutdown() {
-        shutdownCore();
         TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
     }

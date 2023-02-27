@@ -14,7 +14,6 @@ import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
 import r48.App;
-import r48.AppMain;
 import r48.IMapContext;
 import r48.RubyTable;
 import r48.dbs.ObjectInfo;

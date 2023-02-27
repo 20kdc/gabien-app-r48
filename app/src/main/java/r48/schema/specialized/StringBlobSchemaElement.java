@@ -15,7 +15,6 @@ import gabien.ui.UITextButton;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
@@ -51,7 +50,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                     path.changeOccurred(false);
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
-                    AppMain.launchDialog(TXDB.get("Wasn't able to import 'r48.edit.txt' from the R48 settings folder.") + "\n" + ioe);
+                    app.ui.launchDialog(TXDB.get("Wasn't able to import 'r48.edit.txt' from the R48 settings folder.") + "\n" + ioe);
                 }
             }
         });
@@ -67,10 +66,10 @@ public class StringBlobSchemaElement extends SchemaElement {
                     dis.close();
                     os.close();
                     if (!GaBIEn.tryStartTextEditor(fpath))
-                        AppMain.launchDialog(TXDB.get("Unable to start the editor! Wrote to the file 'r48.edit.txt' in the R48 settings folder."));
+                        app.ui.launchDialog(TXDB.get("Unable to start the editor! Wrote to the file 'r48.edit.txt' in the R48 settings folder."));
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
-                    AppMain.launchDialog(TXDB.get("Wasn't able to export.") + "\n" + ioe);
+                    app.ui.launchDialog(TXDB.get("Wasn't able to export.") + "\n" + ioe);
                 }
             }
         }), importer, false, 0.5d); 
@@ -84,7 +83,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                         try {
                             utb.text = readContentString(target);
                         } catch (IOException e) {
-                            AppMain.launchDialog(TXDB.get("Cannot read"), e);
+                            app.ui.launchDialog(TXDB.get("Cannot read"), e);
                         }
                     }
                 };
@@ -95,7 +94,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                         try {
                             writeContentString(target, utb.text);
                         } catch (IOException e) {
-                            AppMain.launchDialog(TXDB.get("Cannot write"), e);
+                            app.ui.launchDialog(TXDB.get("Cannot write"), e);
                             return;
                         }
                         path.changeOccurred(false);

@@ -14,6 +14,7 @@ import java.util.WeakHashMap;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.ui.UIElement.UIProxy;
+import gabienapp.Application;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.schema.specialized.IMagicalBinder;
@@ -45,6 +46,10 @@ public final class App extends AppCore {
                 ui.mapContext.freeOsbResources();
             ui.mapContext = null;
         }
+    }
+
+    public void pleaseShutdown() {
+        Application.shutdownAllAppMainWindows();
     }
 
     public static class Svc {

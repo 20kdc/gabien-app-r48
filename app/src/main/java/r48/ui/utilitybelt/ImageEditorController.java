@@ -100,7 +100,7 @@ public class ImageEditorController extends App.Svc {
             e.printStackTrace();
             AppMain.launchDialog(TXDB.get("Failed to save.") + "\n" + e);
         }
-        AppMain.performFullImageFlush();
+        app.ui.performFullImageFlush();
     }
 
     private void load(String filename) {
@@ -315,7 +315,7 @@ public class ImageEditorController extends App.Svc {
                                             e.printStackTrace();
                                             AppMain.launchDialog(FormatSyntax.formatExtended(TXDB.get("Failed to save #A."), new RubyIO().setString(s, true)) + "\n" + e);
                                         }
-                                        AppMain.performFullImageFlush();
+                                        app.ui.performFullImageFlush();
                                         initPalette(0);
                                     }
                                 }

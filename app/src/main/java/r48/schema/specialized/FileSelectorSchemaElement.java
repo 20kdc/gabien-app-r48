@@ -11,7 +11,6 @@ import gabien.GaBIEn;
 import gabien.IImage;
 import gabien.ui.*;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
@@ -42,7 +41,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
 
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
-        AppMain.performFullImageFlush();
+        app.ui.performFullImageFlush();
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
         String[] strs = GaBIEn.listEntries(PathUtils.autoDetectWindows(app.rootPath + pathExtender));
         if (strs == null)
@@ -82,7 +81,7 @@ public class FileSelectorSchemaElement extends SchemaElement {
         }
         if (waitingLeft != null)
             uiSVL.panelsAdd(new UISplitterLayout(waitingLeft, new UIPublicPanel(1, 1), false, 0.5d));
-        AppMain.performFullImageFlush();
+        app.ui.performFullImageFlush();
         return uiSVL;
     }
 

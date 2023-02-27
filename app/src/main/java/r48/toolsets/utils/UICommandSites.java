@@ -13,7 +13,6 @@ import gabien.ui.UIScrollLayout;
 import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.ISupplier;
 import r48.App;
-import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;

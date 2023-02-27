@@ -6,6 +6,8 @@
  */
 package r48;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.LinkedList;
 
 import gabien.GaBIEn;
@@ -302,5 +304,28 @@ public class AppUI extends App.Svc {
             if (iec.imageModified())
                 return true;
         return false;
+    }
+
+    public void performFullImageFlush() {
+        if (mapContext != null)
+            mapContext.performCacheFlush();
+    }
+
+    public void launchDialog(String s, Throwable e) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        launchDialog(s + "\n" + sw.toString());
+    }
+
+    public void launchDialog(String s) {
+        UILabel ul = new UILabel(s, FontSizes.textDialogDescTextHeight);
+        UIScrollLayout svl = new UIScrollLayout(true, FontSizes.generalScrollersize) {
+            @Override
+            public String toString() {
+                return TXDB.get("Information");
+            }
+        };
+        svl.panelsAdd(ul);
+        wm.createWindowSH(svl);
     }
 }

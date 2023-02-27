@@ -59,18 +59,18 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
         @Override
         public void run() {
             if (app.theClipboard == null) {
-                AppMain.launchDialog(TXDB.get("There is nothing in the clipboard."));
+                app.ui.launchDialog(TXDB.get("There is nothing in the clipboard."));
             } else {
                 if (IRIO.rubyTypeEquals(innerElem.targetElement, app.theClipboard)) {
                     try {
                         innerElem.targetElement.setDeepClone(app.theClipboard);
                     } catch (Exception e) {
-                        AppMain.launchDialog(TXDB.get("Incompatible clipboard and target."), e);
+                        app.ui.launchDialog(TXDB.get("Incompatible clipboard and target."), e);
                     }
                     innerElem.changeOccurred(false);
                     switchObject(innerElem);
                 } else {
-                    AppMain.launchDialog(TXDB.get("Incompatible clipboard and target."));
+                    app.ui.launchDialog(TXDB.get("Incompatible clipboard and target."));
                 }
             }
         }
