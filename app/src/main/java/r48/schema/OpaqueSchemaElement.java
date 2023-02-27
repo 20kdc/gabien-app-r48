@@ -9,6 +9,7 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
+import r48.App;
 import r48.FontSizes;
 import r48.UITest;
 import r48.dbs.TXDB;
@@ -20,6 +21,9 @@ import r48.schema.util.SchemaPath;
  * Created on 12/28/16.
  */
 public class OpaqueSchemaElement extends SchemaElement {
+    public OpaqueSchemaElement(App app) {
+        super(app);
+    }
 
     public String getMessage(IRIO v) {
         return TXDB.get("Can't edit: ") + v;

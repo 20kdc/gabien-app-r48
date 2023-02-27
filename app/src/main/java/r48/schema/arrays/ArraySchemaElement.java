@@ -40,12 +40,11 @@ public abstract class ArraySchemaElement extends SchemaElement {
     public SchemaElement possibleEnumElement;
 
     // Used for pager state
-    private IntegerSchemaElement myUniqueStateInstance = new IntegerSchemaElement(0);
-
-    public final App app;
+    private IntegerSchemaElement myUniqueStateInstance;
 
     public ArraySchemaElement(App app, int fixedSize, int al1, int ido, IArrayInterface uiHelp) {
-        this.app = app;
+        super(app);
+        myUniqueStateInstance = new IntegerSchemaElement(app, 0);
         sizeFixed = fixedSize;
         atLeast = al1;
         indexDisplayOffset = ido;

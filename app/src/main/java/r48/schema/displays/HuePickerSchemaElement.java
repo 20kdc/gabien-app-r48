@@ -19,10 +19,8 @@ import r48.schema.integers.IntegerSchemaElement;
  * Created on 7/31/17.
  */
 public class HuePickerSchemaElement extends IntegerSchemaElement {
-    public final App app;
     public HuePickerSchemaElement(App app) {
-        super(0);
-        this.app = app;
+        super(app, 0);
     }
 
     @Override

@@ -7,6 +7,8 @@
 
 package r48.schema;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
@@ -31,7 +33,8 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
     private boolean fieldWidthOverride = false;
     private int fieldWidth;
 
-    public PathSchemaElement(PathSyntax iv, String a, SchemaElement sub, boolean opt) {
+    public PathSchemaElement(PathSyntax iv, String a, @NonNull SchemaElement sub, boolean opt) {
+        super(sub.app);
         pStr = iv;
         alias = a;
         subElem = sub;

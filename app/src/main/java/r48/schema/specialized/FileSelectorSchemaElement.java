@@ -33,10 +33,9 @@ import java.util.HashSet;
 public class FileSelectorSchemaElement extends SchemaElement {
     public final String pathExtender;
     public final String mustBeImage;
-    public final App app;
 
     public FileSelectorSchemaElement(App app, String ext, String img) {
-        this.app = app;
+        super(app);
         pathExtender = ext;
         mustBeImage = img;
     }

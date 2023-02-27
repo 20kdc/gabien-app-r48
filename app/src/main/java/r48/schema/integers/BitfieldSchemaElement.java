@@ -24,11 +24,9 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class BitfieldSchemaElement extends IntegerSchemaElement {
     public final String[] flags;
-    public final App app;
 
     public BitfieldSchemaElement(App app, int def, String[] f) {
-        super(def);
-        this.app = app;
+        super(app, def);
         flags = f;
     }
 

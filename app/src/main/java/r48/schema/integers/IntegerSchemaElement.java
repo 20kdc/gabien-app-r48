@@ -11,6 +11,7 @@ import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UINumberBox;
 import gabien.ui.UIScrollLayout;
+import r48.App;
 import r48.FontSizes;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
@@ -26,7 +27,8 @@ import r48.schema.util.SchemaPath;
 public class IntegerSchemaElement extends SchemaElement {
     public long defaultInt;
 
-    public IntegerSchemaElement(long i) {
+    public IntegerSchemaElement(App app, long i) {
+        super(app);
         defaultInt = i;
     }
 

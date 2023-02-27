@@ -66,39 +66,42 @@ public class SDB extends App.Svc {
     private LinkedList<String> remainingExpected = new LinkedList<String>();
 
     protected HashMap<String, CMDB> cmdbs = new HashMap<String, CMDB>();
-    public SDBHelpers helpers = new SDBHelpers();
+    public final SDBHelpers helpers;
 
     private StandardArrayInterface standardArrayUi = new StandardArrayInterface();
 
     public LinkedList<String> recommendedDirs = new LinkedList<String>();
+    public final OpaqueSchemaElement opaque;
 
     public SDB(App app) {
         super(app);
-        schemaDatabase.put("nil", new OpaqueSchemaElement());
-        schemaDatabase.put("int", new IntegerSchemaElement(0));
-        schemaDatabase.put("roint", new ROIntegerSchemaElement(0));
-        schemaDatabase.put("int+0", new LowerBoundIntegerSchemaElement(0, 0));
-        schemaDatabase.put("int+1", new LowerBoundIntegerSchemaElement(1, 1));
-        schemaDatabase.put("index", new AMAISchemaElement());
-        schemaDatabase.put("float", new FloatSchemaElement("0", false));
-        schemaDatabase.put("jnum", new FloatSchemaElement("0", true));
-        schemaDatabase.put("string", new StringSchemaElement("", '\"'));
-        schemaDatabase.put("boolean", new BooleanSchemaElement(false));
-        schemaDatabase.put("booleanDefTrue", new BooleanSchemaElement(true));
-        schemaDatabase.put("int_boolean", new IntBooleanSchemaElement(false));
-        schemaDatabase.put("int_booleanDefTrue", new IntBooleanSchemaElement(true));
-        schemaDatabase.put("OPAQUE", new OpaqueSchemaElement());
+        helpers = new SDBHelpers(app);
+        opaque = new OpaqueSchemaElement(app);
+        schemaDatabase.put("nil", opaque);
+        schemaDatabase.put("int", new IntegerSchemaElement(app, 0));
+        schemaDatabase.put("roint", new ROIntegerSchemaElement(app, 0));
+        schemaDatabase.put("int+0", new LowerBoundIntegerSchemaElement(app, 0, 0));
+        schemaDatabase.put("int+1", new LowerBoundIntegerSchemaElement(app, 1, 1));
+        schemaDatabase.put("index", new AMAISchemaElement(app));
+        schemaDatabase.put("float", new FloatSchemaElement(app, "0", false));
+        schemaDatabase.put("jnum", new FloatSchemaElement(app, "0", true));
+        schemaDatabase.put("string", new StringSchemaElement(app, "", '\"'));
+        schemaDatabase.put("boolean", new BooleanSchemaElement(app, false));
+        schemaDatabase.put("booleanDefTrue", new BooleanSchemaElement(app, true));
+        schemaDatabase.put("int_boolean", new IntBooleanSchemaElement(app, false));
+        schemaDatabase.put("int_booleanDefTrue", new IntBooleanSchemaElement(app, true));
+        schemaDatabase.put("OPAQUE", opaque);
         schemaDatabase.put("hue", new HuePickerSchemaElement(app));
 
-        schemaDatabase.put("percent", new LowerBoundIntegerSchemaElement(0, 100));
+        schemaDatabase.put("percent", new LowerBoundIntegerSchemaElement(app, 0, 100));
 
-        schemaDatabase.put("zlibBlobEditor", new ZLibBlobSchemaElement());
-        schemaDatabase.put("stringBlobEditor", new StringBlobSchemaElement());
+        schemaDatabase.put("zlibBlobEditor", new ZLibBlobSchemaElement(app));
+        schemaDatabase.put("stringBlobEditor", new StringBlobSchemaElement(app));
 
-        schemaDatabase.put("internal_EPGD", new EPGDisplaySchemaElement());
+        schemaDatabase.put("internal_EPGD", new EPGDisplaySchemaElement(app));
         schemaDatabase.put("internal_scriptIE", new ScriptControlSchemaElement(app));
 
-        schemaDatabase.put("internal_LF_INDEX", new OSStrHashMapSchemaElement());
+        schemaDatabase.put("internal_LF_INDEX", new OSStrHashMapSchemaElement(app));
 
         schemaTrueDatabase.putAll(schemaDatabase);
     }
@@ -125,7 +128,7 @@ public class SDB extends App.Svc {
             @Override
             public void newObj(int objId, String objName) {
                 outerContext = fPfx + "/commandBuffer";
-                workingObj = new AggregateSchemaElement(new SchemaElement[] {});
+                workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
                 if (objId != -1) {
                     commandBufferNames.put(Integer.toString(objId), TXDB.get(outerContext, objName));
                     commandBufferSchemas.put(Integer.toString(objId), workingObj);
@@ -164,46 +167,46 @@ public class SDB extends App.Svc {
                         final String text = args[point++];
                         if (text.equals("roint=")) {
                             int n = Integer.parseInt(args[point++]);
-                            return new ROIntegerSchemaElement(n);
+                            return new ROIntegerSchemaElement(app, n);
                         }
                         if (text.equals("int=")) {
                             int n = Integer.parseInt(args[point++]);
-                            return new IntegerSchemaElement(n);
+                            return new IntegerSchemaElement(app, n);
                         }
                         if (text.equals("int+0=")) {
                             int n = Integer.parseInt(args[point++]);
-                            return new LowerBoundIntegerSchemaElement(0, n);
+                            return new LowerBoundIntegerSchemaElement(app, 0, n);
                         }
                         if (text.equals("int+1=")) {
                             int n = Integer.parseInt(args[point++]);
-                            return new LowerBoundIntegerSchemaElement(1, n);
+                            return new LowerBoundIntegerSchemaElement(app, 1, n);
                         }
                         if (text.equals("float="))
-                            return new FloatSchemaElement(args[point++], false);
+                            return new FloatSchemaElement(app, args[point++], false);
                         if (text.equals("jnum="))
-                            return new FloatSchemaElement(args[point++], true);
+                            return new FloatSchemaElement(app, args[point++], true);
                         // To translate, or not to? Unfortunately these can point at files.
                         // (later) However, context makes it obvious
                         if (text.equals("string=")) {
                             String esc = args[point++];
-                            return new StringSchemaElement(TXDB.get(outerContext, esc), '\"');
+                            return new StringSchemaElement(app, TXDB.get(outerContext, esc), '\"');
                         }
                         // Before you go using these - They are based on *visual* length, and are not hard limits.
                         if (text.equals("stringLen")) {
                             int l = Integer.parseInt(args[point++]);
-                            return new StringLenSchemaElement("", l);
+                            return new StringLenSchemaElement(app, "", l);
                         }
                         if (text.equals("stringLen=")) {
                             String esc = args[point++];
                             int l = Integer.parseInt(args[point++]);
-                            return new StringLenSchemaElement(TXDB.get(outerContext, esc), l);
+                            return new StringLenSchemaElement(app, TXDB.get(outerContext, esc), l);
                         }
 
                         //
                         if (text.equals("hwnd")) {
                             // These need their own translation mechanism
                             PathSyntax a = getNullablePathSyntax();
-                            return new HWNDSchemaElement(a, args[point++]);
+                            return new HWNDSchemaElement(app, a, args[point++]);
                         }
                         if (text.equals("hide")) {
                             SchemaElement hide = get();
@@ -339,13 +342,13 @@ public class SDB extends App.Svc {
                             while (!args[point].equals("}"))
                                 disambiguations.put(args[point++], get());
                             disambiguations.put("", backup);
-                            return new DisambiguatorSchemaElement(disambiguatorIndex, disambiguations);
+                            return new DisambiguatorSchemaElement(app, disambiguatorIndex, disambiguations);
                         }
                         if (text.equals("lengthAdjust") || text.equals("lengthAdjustDef")) {
                             String text2 = args[point++];
                             int len = Integer.parseInt(args[point++]);
                             String cond = "{@[@Interp.lang-Common-arrayLen]|" + len + "|1|0}";
-                            SchemaElement reinit = new StandardArraySchemaElement(app, new OpaqueSchemaElement(), len, 0, 0, null);
+                            SchemaElement reinit = new StandardArraySchemaElement(app, new OpaqueSchemaElement(app), len, 0, 0, null);
                             return new InitButtonSchemaElement(TXDB.get(outerContext, text2), cond, reinit, false, text.equals("lengthAdjustDef"));
                         }
                         if (text.equals("initButton")) {
@@ -361,20 +364,20 @@ public class SDB extends App.Svc {
                         if (text.equals("flushCommandBuffer")) {
                             // time to flush it!
                             PathSyntax disambiguationIVar = getPathSyntax();
-                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, new RubyIO().setFX(0), EntryMode.INT, TXDB.get("Code")));
+                            setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, new RubyIO().setFX(0), EntryMode.INT, TXDB.get("Code")));
                             HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<String, String>();
                             commandBufferSchemas = new HashMap<String, SchemaElement>();
-                            return new DisambiguatorSchemaElement(disambiguationIVar, baseSE);
+                            return new DisambiguatorSchemaElement(app, disambiguationIVar, baseSE);
                         }
                         if (text.equals("flushCommandBufferStr")) {
                             // time to flush it!
                             PathSyntax disambiguationIVar = getPathSyntax();
-                            setSDBEntry(args[point++], new EnumSchemaElement(commandBufferNames, new RubyIO().setString("", true), EntryMode.STR, TXDB.get("Code")));
+                            setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, new RubyIO().setString("", true), EntryMode.STR, TXDB.get("Code")));
                             HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                             commandBufferNames = new HashMap<String, String>();
                             commandBufferSchemas = new HashMap<String, SchemaElement>();
-                            return new DisambiguatorSchemaElement(disambiguationIVar, baseSE);
+                            return new DisambiguatorSchemaElement(app, disambiguationIVar, baseSE);
                         }
                         if (text.equals("hash")) {
                             SchemaElement k = get();
@@ -389,7 +392,7 @@ public class SDB extends App.Svc {
                             LinkedList<RubyIO> validKeys = new LinkedList<RubyIO>();
                             while (point < args.length)
                                 validKeys.add(ValueSyntax.decode(args[point++]));
-                            return new HashObjectSchemaElement(validKeys, text.equals("hashObjectInner"));
+                            return new HashObjectSchemaElement(app, validKeys, text.equals("hashObjectInner"));
                         }
                         if (text.equals("subwindow"))
                             return new SubwindowSchemaElement(get());
@@ -411,7 +414,7 @@ public class SDB extends App.Svc {
 
                         if (text.equals("{")) {
                             // Aggregate
-                            AggregateSchemaElement subag = new AggregateSchemaElement(new SchemaElement[] {});
+                            AggregateSchemaElement subag = new AggregateSchemaElement(app, new SchemaElement[] {});
                             SchemaElement ise = get();
                             while (ise != null) {
                                 subag.aggregate.add(ise);
@@ -432,7 +435,7 @@ public class SDB extends App.Svc {
                                 strs.add(b);
                                 scms.add(a);
                             }
-                            return new TypeChangerSchemaElement(strs.toArray(new String[0]), scms.toArray(new SchemaElement[0]));
+                            return new TypeChangerSchemaElement(app, strs.toArray(new String[0]), scms.toArray(new SchemaElement[0]));
                         }
 
                         // -- These two must be in this order.
@@ -441,13 +444,13 @@ public class SDB extends App.Svc {
                             String a = text.substring(2);
                             String b = TXDB.getExUnderscore(outerContext, args[point++]);
                             String o = TXDB.get(outerContext, args[point++]);
-                            return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), o, false);
+                            return new ArrayElementSchemaElement(app, Integer.parseInt(a), b, get(), o, false);
                         }
                         if (text.startsWith("]")) {
                             // yay for consistency!
                             String a = text.substring(1);
                             String b = TXDB.getExUnderscore(outerContext, args[point++]);
-                            return new ArrayElementSchemaElement(Integer.parseInt(a), b, get(), null, false);
+                            return new ArrayElementSchemaElement(app, Integer.parseInt(a), b, get(), null, false);
                         }
                         // --
 
@@ -485,7 +488,7 @@ public class SDB extends App.Svc {
                             final PathSyntax gPath = getPathSyntax();
                             final PathSyntax bPath = getPathSyntax();
                             final PathSyntax sPath = getPathSyntax();
-                            return new TonePickerSchemaElement(rPath, gPath, bPath, sPath, 100);
+                            return new TonePickerSchemaElement(app, rPath, gPath, bPath, sPath, 100);
                         } else if (text.equals("r2kTonePickerPreview")) {
                             final PathSyntax rPath = getPathSyntax();
                             final PathSyntax gPath = getPathSyntax();
@@ -493,7 +496,7 @@ public class SDB extends App.Svc {
                             final PathSyntax sPath = getPathSyntax();
                             final PathSyntax iPath = getPathSyntax();
                             final String iPrefix = args[point++];
-                            return new TonePickerSchemaElement.Thumbnail(rPath, gPath, bPath, sPath, 100, iPath, iPrefix);
+                            return new TonePickerSchemaElement.Thumbnail(app, rPath, gPath, bPath, sPath, 100, iPath, iPrefix);
                         }
                         if (text.equals("binding")) {
                             String type = args[point++];
@@ -506,7 +509,7 @@ public class SDB extends App.Svc {
                             // context? <id> <default>
                             final String idx = args[point++];
                             final SchemaElement insideThat = get();
-                            return new SchemaElement() {
+                            return new SchemaElement(app) {
                                 @Override
                                 public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
                                     return getSchema(path).buildHoldingEditor(target, launcher, path);
@@ -536,14 +539,14 @@ public class SDB extends App.Svc {
                             final PathSyntax inner = getPathSyntax();
                             final String interpret = args[point++];
                             final SchemaElement insideThat = get();
-                            return new SchemaElement() {
+                            return new SchemaElement(app) {
                                 @Override
                                 public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
                                     return insideThat.buildHoldingEditor(target, launcher, applySchema(target, path, true));
                                 }
 
                                 private SchemaPath applySchema(final IRIO host, SchemaPath path, boolean update) {
-                                    EnumSchemaElement sce = new EnumSchemaElement(new HashMap<String, String>(), defVal, EntryMode.INT, TXDB.get("ID.")) {
+                                    EnumSchemaElement sce = new EnumSchemaElement(app, new HashMap<String, String>(), defVal, EntryMode.INT, TXDB.get("ID.")) {
                                         @Override
                                         public void liveUpdate() {
                                             viewOptions.clear();
@@ -556,7 +559,7 @@ public class SDB extends App.Svc {
                                             }
                                             IRIO p = outer.get(host);
                                             if (p != null)
-                                                DictionaryUpdaterRunnable.coreLogic(viewOptions, inner, null, null, p, hash, interpret);
+                                                DictionaryUpdaterRunnable.coreLogic(app, viewOptions, inner, null, null, p, hash, interpret);
                                             convertViewToLookup();
                                         }
                                     };
@@ -623,7 +626,7 @@ public class SDB extends App.Svc {
                             } else if (eText.equals("tableTS")) {
                                 r = new TilesetTableSchemaElement(app, iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
                             } else if (eText.equals("table")) {
-                                r = new RubyTableSchemaElement<Object>(iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
+                                r = new RubyTableSchemaElement<Object>(app, iV, wV, hV, dc, aW, aH, aI, tcf, defVals);
                             } else {
                                 throw new RuntimeException("Unknown table type " + text);
                             }
@@ -639,25 +642,25 @@ public class SDB extends App.Svc {
                                 "poison", "noBoat", "noShip", "noAShip", "[terrainTag;8"
                             };
                             PathSyntax fp = PathSyntax.compile("@flags");
-                            return new FancyCategorizedTilesetRubyTableSchemaElement(8192, 1, 1, 1, fp, new int[] {0}, new BitfieldTableCellEditor(app, flags));
+                            return new FancyCategorizedTilesetRubyTableSchemaElement(app, 8192, 1, 1, 1, fp, new int[] {0}, new BitfieldTableCellEditor(app, flags));
                         }
                         if (text.equals("internal_r2kPPPID")) {
                             SchemaElement se = get();
-                            return helpers.makePicPointerPatchID(app, getSDBEntry("var_id"), se);
+                            return helpers.makePicPointerPatchID(getSDBEntry("var_id"), se);
                         }
                         if (text.equals("internal_r2kPPPV")) {
                             String txt = TXDB.get(outerContext, args[point++]);
                             SchemaElement se = get();
-                            return helpers.makePicPointerPatchVar(app, getSDBEntry("var_id"), txt, se);
+                            return helpers.makePicPointerPatchVar(getSDBEntry("var_id"), txt, se);
                         }
                         if (text.equals("CTNative"))
-                            return new CTNativeSchemaElement(args[point++]);
+                            return new CTNativeSchemaElement(app, args[point++]);
 
                         if (text.equals("mapPositionHelper")) {
                             PathSyntax a = getNullablePathSyntax();
                             PathSyntax b = getPathSyntax();
                             PathSyntax c = getPathSyntax();
-                            return new MapPositionHelperSchemaElement(a, b, c);
+                            return new MapPositionHelperSchemaElement(app, a, b, c);
                         }
                         if (text.equals("eventTileHelper")) {
                             PathSyntax c = getPathSyntax();
@@ -668,7 +671,7 @@ public class SDB extends App.Svc {
                         }
                         if (text.equals("windowTitleAttachment")) {
                             String txt = TXDB.get(outerContext, args[point++]);
-                            return new WindowTitleAttachmentSchemaElement(txt);
+                            return new WindowTitleAttachmentSchemaElement(app, txt);
                         }
                         if (text.equals("soundPlayer")) {
                             String a = args[point++];
@@ -695,7 +698,7 @@ public class SDB extends App.Svc {
                         throw new RuntimeException("Bad Schema Database: 'a' used to expect item " + args[0] + " that didn't exist.");
                 } else if (c == ':') {
                     if (args.length == 1) {
-                        workingObj = new AggregateSchemaElement(new SchemaElement[]{});
+                        workingObj = new AggregateSchemaElement(app, new SchemaElement[]{});
                         outerContext = fPfx + "/" + args[0];
                         setSDBEntry(args[0], new ObjectClassSchemaElement(args[0], workingObj, 'o'));
                     } else {
@@ -705,7 +708,7 @@ public class SDB extends App.Svc {
                         outerContext = backup;
                     }
                 } else if (c == '.') {
-                    workingObj = new AggregateSchemaElement(new SchemaElement[] {});
+                    workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
                     outerContext = fPfx + "/" + args[0];
                     setSDBEntry(args[0], workingObj);
                 } else if (c == '@') {
@@ -742,7 +745,7 @@ public class SDB extends App.Svc {
                         options.put(Integer.toString(k), TXDB.get(ctx, args[i + 1]));
                     }
                     // INT: is part of the format
-                    EnumSchemaElement e = new EnumSchemaElement(options, new RubyIO().setFX(defVal), EntryMode.INT, TXDB.get("Integer"));
+                    EnumSchemaElement e = new EnumSchemaElement(app, options, new RubyIO().setFX(defVal), EntryMode.INT, TXDB.get("Integer"));
                     setSDBEntry(args[0], e);
                 } else if (c == 's') {
                     // Symbols
@@ -750,7 +753,7 @@ public class SDB extends App.Svc {
                     for (int i = 1; i < args.length; i++)
                         options.put(":" + args[i], TXDB.get(args[0], args[i]));
 
-                    EnumSchemaElement ese = new EnumSchemaElement(options, ValueSyntax.decode(":" + args[1]), EntryMode.SYM, TXDB.get("Symbol"));
+                    EnumSchemaElement ese = new EnumSchemaElement(app, options, ValueSyntax.decode(":" + args[1]), EntryMode.SYM, TXDB.get("Symbol"));
                     setSDBEntry(args[0], ese);
                 } else if (c == 'E') {
                     HashMap<String, String> options = new HashMap<String, String>();
@@ -758,7 +761,7 @@ public class SDB extends App.Svc {
                         String ctx = "SDB@" + args[0];
                         options.put(args[i], TXDB.get(ctx, args[i + 1]));
                     }
-                    EnumSchemaElement e = new EnumSchemaElement(options, ValueSyntax.decode(args[2]), EntryMode.INT, TXDB.get(args[0], args[1]));
+                    EnumSchemaElement e = new EnumSchemaElement(app, options, ValueSyntax.decode(args[2]), EntryMode.INT, TXDB.get(args[0], args[1]));
                     setSDBEntry(args[0], e);
                 } else if (c == 'M') {
                     // Make a proxy (because we change the backing element all the time)
@@ -772,12 +775,12 @@ public class SDB extends App.Svc {
                             HashMap<String, UIEnumChoice.Option> finalMap = new HashMap<String, UIEnumChoice.Option>();
                             finalMap.putAll(mergeA.lookupOptions);
                             finalMap.putAll(mergeB.lookupOptions);
-                            SchemaElement ise = new EnumSchemaElement(finalMap.values(), mergeB.defaultVal, mergeB.entryMode, mergeB.buttonText);
+                            SchemaElement ise = new EnumSchemaElement(app, finalMap.values(), mergeB.defaultVal, mergeB.entryMode, mergeB.buttonText);
                             setSDBEntry(args[2], ise);
                         }
                     });
                 } else if (c == ']') {
-                    workingObj.aggregate.add(new ArrayElementSchemaElement(Integer.parseInt(args[0]), TXDB.get(outerContext, args[1]), handleChain(args, 2), null, false));
+                    workingObj.aggregate.add(new ArrayElementSchemaElement(app, Integer.parseInt(args[0]), TXDB.get(outerContext, args[1]), handleChain(args, 2), null, false));
                 } else if (c == 'i') {
                     readFile(args[0]);
                 } else if (c == 'D') {
@@ -796,13 +799,13 @@ public class SDB extends App.Svc {
                         throw new RuntimeException("Expects D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID / empty string] [data schema]");
                     }
                     ensureSDBProxy(args[0]);
-                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], root[0], PathSyntax.compile(root[1]), args[3].equals("1"), PathSyntax.compile(args[4]), Integer.parseInt(args[1]), interpret, dataSchema));
+                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(app, args[0], root[0], PathSyntax.compile(root[1]), args[3].equals("1"), PathSyntax.compile(args[4]), Integer.parseInt(args[1]), interpret, dataSchema));
                 } else if (c == 'd') {
                     // OLD SYSTEM
                     System.err.println("'d'-format is old. It'll stay around but won't get updated. Use 'D'-format instead. " + args[0]);
                     // Cause a proxy to be generated. (NOTE: This *must* be referenced via nocache proxy!)
                     ensureSDBProxy(args[0]);
-                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(args[0], args[2], new IFunction<IRIO, IRIO>() {
+                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(app, args[0], args[2], new IFunction<IRIO, IRIO>() {
                         @Override
                         public IRIO apply(IRIO rubyIO) {
                             for (int i = 3; i < args.length; i++)
@@ -830,7 +833,7 @@ public class SDB extends App.Svc {
                         // It's not used right now, so it's safe to move it over.
                         // The new syntax is Cmd <DisambiguatorSyntax> ["Name!"]
                         outerContext = fPfx + "/commandBuffer";
-                        workingObj = new AggregateSchemaElement(new SchemaElement[] {});
+                        workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
                         String val = args[1];
                         String nam = val;
                         if (args.length == 3) {
@@ -846,9 +849,9 @@ public class SDB extends App.Svc {
                         allowControlOfEventCommandIndent = true;
                     if (args[0].equals("defineIndent")) {
                         if (allowControlOfEventCommandIndent) {
-                            schemaDatabase.put("indent", new ROIntegerSchemaElement(0));
+                            schemaDatabase.put("indent", new ROIntegerSchemaElement(app, 0));
                         } else {
-                            schemaDatabase.put("indent", new IntegerSchemaElement(0));
+                            schemaDatabase.put("indent", new IntegerSchemaElement(app, 0));
                         }
                         schemaTrueDatabase.put("indent", schemaDatabase.get("indent"));
                     }
@@ -863,7 +866,7 @@ public class SDB extends App.Svc {
                     if (args[0].equals("versionId"))
                         app.sysBackend = args[1];
                     if (args[0].equals("defaultCB")) {
-                        workingObj = new AggregateSchemaElement(new SchemaElement[] {});
+                        workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
                         commandBufferSchemas.put("x default", workingObj);
                     }
                     if (args[0].equals("magicGenpos")) {
@@ -880,11 +883,11 @@ public class SDB extends App.Svc {
                             cS = null;
                         if (dS.equals("."))
                             dS = null;
-                        workingObj.aggregate.add(new GenposSchemaElement(args[1], aS, bS, cS, dS, Integer.parseInt(args[6])));
+                        workingObj.aggregate.add(new GenposSchemaElement(app, args[1], aS, bS, cS, dS, Integer.parseInt(args[6])));
                     }
                     if (args[0].equals("magicR2kSystemDefaults")) {
                         // Really special schema
-                        workingObj.aggregate.add(new R2kSystemDefaultsInstallerSchemaElement(Integer.parseInt(args[1])));
+                        workingObj.aggregate.add(new R2kSystemDefaultsInstallerSchemaElement(app, Integer.parseInt(args[1])));
                     }
                     if (args[0].equals("name") || args[0].equals("logic")) {
                         final LinkedList<String> arguments = new LinkedList<String>();
@@ -932,7 +935,7 @@ public class SDB extends App.Svc {
                             text2 += " " + args[point++];
                         point++; // skip ]
                         // returns new point
-                        helpers.createSpritesheet(app, args, point, text2);
+                        helpers.createSpritesheet(args, point, text2);
                     }
                 } else if (c != ' ') {
                     for (String arg : args)
@@ -974,7 +977,7 @@ public class SDB extends App.Svc {
             return schemaDatabase.get(text);
         // Notably, the proxy is put in the database so the expectation is only added once.
         remainingExpected.add(text);
-        SchemaElement ise = new NameProxySchemaElement(text, true);
+        SchemaElement ise = new NameProxySchemaElement(app, text, true);
         schemaDatabase.put(text, ise);
         return ise;
     }
@@ -985,7 +988,7 @@ public class SDB extends App.Svc {
             // Implicitly asserts that this is a proxy.
             ((NameProxySchemaElement) schemaDatabase.get(text)).useCache = false;
         } else {
-            NameProxySchemaElement npse = new NameProxySchemaElement(text, false);
+            NameProxySchemaElement npse = new NameProxySchemaElement(app, text, false);
             schemaDatabase.put(text, npse);
         }
     }
@@ -994,7 +997,7 @@ public class SDB extends App.Svc {
         LinkedList<ObjectInfo> fd = new LinkedList<ObjectInfo>();
         for (String s : schemaDatabase.keySet())
             if (s.startsWith("File."))
-                fd.add(new ObjectInfo(s.substring(5), s));
+                fd.add(new ObjectInfo(app, s.substring(5), s));
         return fd;
     }
 
@@ -1037,7 +1040,8 @@ public class SDB extends App.Svc {
         private boolean useCache;
         private SchemaElement cache = null;
 
-        public NameProxySchemaElement(String text, boolean useCach) {
+        public NameProxySchemaElement(App app, String text, boolean useCach) {
+            super(app);
             tx = text;
             useCache = useCach;
         }

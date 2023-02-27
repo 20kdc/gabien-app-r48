@@ -73,13 +73,10 @@ public class AppMain {
         schemas.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
 
         // initialize everything else that needs initializing, starting with ObjectDB
-
-        objectDB = instance.odb = new ObjectDB(IObjectBackend.Factory.create(instance.odbBackend, instance.rootPath, instance.dataPath, instance.dataExt), new IConsumer<String>() {
-            @Override
-            public void accept(String s) {
-                if (instance.system != null)
-                    instance.system.saveHook(s);
-            }
+        IObjectBackend backend = IObjectBackend.Factory.create(instance.odbBackend, instance.rootPath, instance.dataPath, instance.dataExt);
+        objectDB = instance.odb = new ObjectDB(schemas.opaque, backend, (s) -> {
+            if (instance.system != null)
+                instance.system.saveHook(s);
         });
 
         instance.system = MapSystem.create(instance, instance.sysBackend);
@@ -202,7 +199,7 @@ public class AppMain {
             IObjectBackend.ILoadedObject root = objectDB.getObject(name);
             if (root != null) {
                 root.getObject().setDeepClone(rio.getValue());
-                objectDB.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(), root));
+                objectDB.objectRootModified(root, new SchemaPath(new OpaqueSchemaElement(instance), root));
             }
         }
         if (possibleActualDump != null) {

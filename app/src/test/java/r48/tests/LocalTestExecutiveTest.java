@@ -18,7 +18,6 @@ import r48.dbs.IDatabase;
 import r48.io.IMIUtils;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
-import r48.map.systems.IDynobjMapSystem;
 import r48.schema.SchemaElement;
 import r48.schema.util.SchemaPath;
 
@@ -77,7 +76,7 @@ public class LocalTestExecutiveTest {
     @Test
     public void test() {
         TestKickstart.kickstart(name + "/", charset, schema + "/");
-        for (ObjectInfo s : AppMain.instance.getObjectInfos())
+        for (ObjectInfo s : dynamic ? AppMain.instance.getObjectInfos() : AppMain.schemas.listFileDefs())
             testObject(s.idName);
     }
 

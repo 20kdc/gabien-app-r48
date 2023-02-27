@@ -8,6 +8,7 @@
 package r48.schema;
 
 import gabien.ui.UIElement;
+import r48.App;
 import r48.dbs.PathSyntax;
 import r48.dbs.ValueSyntax;
 import r48.io.data.IRIO;
@@ -35,7 +36,8 @@ public class DisambiguatorSchemaElement extends SchemaElement {
     // there's some special translation stuff for SDB1 compat
     public HashMap<String, SchemaElement> dTable;
 
-    public DisambiguatorSchemaElement(PathSyntax disambiguatorIndex, HashMap<String, SchemaElement> disambiguations) {
+    public DisambiguatorSchemaElement(App app, PathSyntax disambiguatorIndex, HashMap<String, SchemaElement> disambiguations) {
+        super(app);
         dIndex = disambiguatorIndex;
         dTable = disambiguations;
     }
@@ -60,7 +62,7 @@ public class DisambiguatorSchemaElement extends SchemaElement {
         if (r == null)
             r = dTable.get("");
         if (r == null)
-            r = new AggregateSchemaElement(new SchemaElement[0]);
+            r = new AggregateSchemaElement(app, new SchemaElement[0]);
         return r;
     }
 

@@ -172,10 +172,10 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         IRIO mi = AppMain.objectDB.getObject("MapInfos").getObject();
         for (final IRIO rio : mi.getHashKeys()) {
             int id = (int) rio.getFX();
-            RMMapData rmd = new RMMapData(new ISupplier<String>() {
+            RMMapData rmd = new RMMapData(app, new ISupplier<String>() {
                 @Override
                 public String get() {
-                    IRIO miLocal = AppMain.objectDB.getObject("MapInfos").getObject();
+                    IRIO miLocal = app.odb.getObject("MapInfos").getObject();
                     IRIO mapInfo = miLocal.getHashVal(rio);
                     if (mapInfo == null)
                         return TXDB.get("<map removed from RPG_RT.lmt>");

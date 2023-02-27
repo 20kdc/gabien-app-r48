@@ -28,10 +28,9 @@ public class SoundPlayerSchemaElement extends SchemaElement {
     public final @Nullable PathSyntax volumePath;
     public final @Nullable PathSyntax tempoPath;
     public final @Nullable PathSyntax balancePath;
-    public final App app;
 
     public SoundPlayerSchemaElement(App app, String pfx, PathSyntax nP, @Nullable PathSyntax vP, @Nullable PathSyntax tP, @Nullable PathSyntax bP) {
-        this.app = app;
+        super(app);
         prefix = pfx;
         namePath = nP;
         volumePath = vP;

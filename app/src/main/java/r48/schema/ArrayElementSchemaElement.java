@@ -10,6 +10,7 @@ package r48.schema;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
+import r48.App;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.FormatSyntax;
@@ -37,7 +38,8 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
     private boolean fieldWidthOverride = false;
     private int fieldWidth;
 
-    public ArrayElementSchemaElement(int ind, String niceName, SchemaElement ise, String opt, boolean dr) {
+    public ArrayElementSchemaElement(App app, int ind, String niceName, SchemaElement ise, String opt, boolean dr) {
+        super(app);
         index = ind;
         name = niceName;
         subSchema = ise;

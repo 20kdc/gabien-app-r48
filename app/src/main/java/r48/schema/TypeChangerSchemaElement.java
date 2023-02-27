@@ -8,6 +8,7 @@
 package r48.schema;
 
 import gabien.ui.UIElement;
+import r48.App;
 import r48.FontSizes;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -21,7 +22,8 @@ public class TypeChangerSchemaElement extends SchemaElement {
     public SchemaElement[] targets;
     public String[] typeString;
 
-    public TypeChangerSchemaElement(String[] types, SchemaElement[] tgt) {
+    public TypeChangerSchemaElement(App app, String[] types, SchemaElement[] tgt) {
+        super(app);
         typeString = types;
         targets = tgt;
     }
@@ -30,7 +32,7 @@ public class TypeChangerSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(final IRIO targetValue, final ISchemaHost launcher, final SchemaPath path) {
         int rei = getRelevantElementId(targetValue);
 
-        SchemaElement targetS = new OpaqueSchemaElement();
+        SchemaElement targetS = new OpaqueSchemaElement(app);
         if (rei != -1)
             targetS = targets[rei];
 

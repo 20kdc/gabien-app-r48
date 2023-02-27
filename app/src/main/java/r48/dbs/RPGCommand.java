@@ -158,7 +158,7 @@ public class RPGCommand {
                 elementList.panelsAdd(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
             if (hasTonepicker) {
-                SchemaElement scse = new TonePickerSchemaElement(PathSyntax.compile("]" + tpA), PathSyntax.compile("]" + tpB), PathSyntax.compile("]" + tpC), PathSyntax.compile("]" + tpD), tpBase);
+                SchemaElement scse = new TonePickerSchemaElement(launcher.getApp(), PathSyntax.compile("]" + tpA), PathSyntax.compile("]" + tpB), PathSyntax.compile("]" + tpC), PathSyntax.compile("]" + tpD), tpBase);
                 elementList.panelsAdd(scse.buildHoldingEditor(targetParamArray, launcher, path));
             }
         }

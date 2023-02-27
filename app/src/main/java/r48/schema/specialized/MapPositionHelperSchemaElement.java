@@ -9,6 +9,7 @@ package r48.schema.specialized;
 
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
+import r48.App;
 import r48.FontSizes;
 import r48.dbs.PathSyntax;
 import r48.dbs.TXDB;
@@ -26,7 +27,8 @@ import r48.schema.util.SchemaPath;
 public class MapPositionHelperSchemaElement extends SchemaElement {
     public final PathSyntax pathA, pathB, pathC;
 
-    public MapPositionHelperSchemaElement(PathSyntax a, PathSyntax b, PathSyntax c) {
+    public MapPositionHelperSchemaElement(App app, PathSyntax a, PathSyntax b, PathSyntax c) {
+        super(app);
         pathA = a;
         pathB = b;
         pathC = c;

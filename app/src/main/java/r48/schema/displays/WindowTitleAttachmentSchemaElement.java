@@ -10,6 +10,7 @@ package r48.schema.displays;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
+import r48.App;
 import r48.dbs.FormatSyntax;
 import r48.io.data.IRIO;
 import r48.schema.HiddenSchemaElement;
@@ -23,7 +24,8 @@ import r48.schema.util.SchemaPath;
 public class WindowTitleAttachmentSchemaElement extends SchemaElement {
     public final String suffixRoutine;
 
-    public WindowTitleAttachmentSchemaElement(String sr) {
+    public WindowTitleAttachmentSchemaElement(App app, String sr) {
+        super(app);
         suffixRoutine = sr;
     }
 

@@ -7,6 +7,8 @@
 
 package r48.schema;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.FontSizes;
@@ -32,7 +34,8 @@ public class InitButtonSchemaElement extends SchemaElement {
     private final SchemaElement reinitializer;
     private final boolean defaulting, asDefault;
 
-    public InitButtonSchemaElement(String text2, String cond, SchemaElement reinit, boolean runDef, boolean def) {
+    public InitButtonSchemaElement(String text2, String cond, @NonNull SchemaElement reinit, boolean runDef, boolean def) {
+        super(reinit.app);
         text = text2;
         condition = cond;
         reinitializer = reinit;

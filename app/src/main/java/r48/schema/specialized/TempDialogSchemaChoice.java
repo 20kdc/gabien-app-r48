@@ -8,6 +8,7 @@
 package r48.schema.specialized;
 
 import gabien.ui.UIElement;
+import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
 import r48.schema.util.ISchemaHost;
@@ -27,7 +28,8 @@ public class TempDialogSchemaChoice extends SchemaElement {
     public Runnable update;
     public SchemaPath hPar;
 
-    public TempDialogSchemaChoice(UIElement held, Runnable updater, SchemaPath hr) {
+    public TempDialogSchemaChoice(App app, UIElement held, Runnable updater, SchemaPath hr) {
+        super(app);
         heldDialog = held;
         update = updater;
         hPar = hr;

@@ -34,7 +34,8 @@ public class TonePickerSchemaElement extends SchemaElement {
     public final PathSyntax rP, gP, bP, sP;
     public final int base;
 
-    public TonePickerSchemaElement(PathSyntax rPath, PathSyntax gPath, PathSyntax bPath, PathSyntax sPath, int b) {
+    public TonePickerSchemaElement(App app, PathSyntax rPath, PathSyntax gPath, PathSyntax bPath, PathSyntax sPath, int b) {
+        super(app);
         rP = rPath;
         gP = gPath;
         bP = bPath;
@@ -48,7 +49,7 @@ public class TonePickerSchemaElement extends SchemaElement {
         int ng = (int) gP.get(target).getFX();
         int nb = (int) bP.get(target).getFX();
         int ns = (int) sP.get(target).getFX();
-        return createTotem(launcher.getApp(), target, new ToneImageEffect(nr, ng, nb, ns, base));
+        return createTotem(target, new ToneImageEffect(nr, ng, nb, ns, base));
     }
 
     public static IImage compositeTotem(App app, IImage totem, IImageEffect cfg) {
@@ -82,7 +83,7 @@ public class TonePickerSchemaElement extends SchemaElement {
         return panel;
     }
 
-    public UIElement createTotem(App app, IRIO target, IImageEffect cfg) {
+    public UIElement createTotem(IRIO target, IImageEffect cfg) {
         return createTotemStandard(app, getOneTrueTotem(), cfg);
     }
 
@@ -94,14 +95,14 @@ public class TonePickerSchemaElement extends SchemaElement {
     public static class Thumbnail extends TonePickerSchemaElement {
         public final PathSyntax iPath;
         public final String iPrefix;
-        public Thumbnail(PathSyntax rPath, PathSyntax gPath, PathSyntax bPath, PathSyntax sPath, int b, PathSyntax iPth, String iPfx) {
-            super(rPath, gPath, bPath, sPath, b);
+        public Thumbnail(App app, PathSyntax rPath, PathSyntax gPath, PathSyntax bPath, PathSyntax sPath, int b, PathSyntax iPth, String iPfx) {
+            super(app, rPath, gPath, bPath, sPath, b);
             iPath = iPth;
             iPrefix = iPfx;
         }
 
         @Override
-        public UIElement createTotem(App app, IRIO target, IImageEffect cfg) {
+        public UIElement createTotem(IRIO target, IImageEffect cfg) {
             String imagePath = iPrefix + iPath.get(target).decString();
             IImage totem = app.stuffRendererIndependent.imageLoader.getImage(imagePath, false);
             IImage img = compositeTotem(app, totem, cfg);

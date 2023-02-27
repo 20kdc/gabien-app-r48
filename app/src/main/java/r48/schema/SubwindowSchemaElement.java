@@ -8,6 +8,9 @@
 package r48.schema;
 
 import gabien.uslx.append.*;
+
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
@@ -31,11 +34,13 @@ public class SubwindowSchemaElement extends SchemaElement implements IProxySchem
         }
     };
 
-    public SubwindowSchemaElement(SchemaElement encap) {
+    public SubwindowSchemaElement(@NonNull SchemaElement encap) {
+        super(encap.app);
         heldElement = encap;
     }
 
-    public SubwindowSchemaElement(SchemaElement encap, IFunction<IRIO, String> naming) {
+    public SubwindowSchemaElement(@NonNull SchemaElement encap, IFunction<IRIO, String> naming) {
+        super(encap.app);
         heldElement = encap;
         nameGetter = naming;
     }

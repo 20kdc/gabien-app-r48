@@ -10,6 +10,7 @@ package r48.schema.specialized;
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.RubyIO;
@@ -32,7 +33,8 @@ import r48.schema.util.SchemaPath;
 public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     public int mode = 0;
 
-    public R2kSystemDefaultsInstallerSchemaElement(int i) {
+    public R2kSystemDefaultsInstallerSchemaElement(App app, int i) {
+        super(app);
         mode = i;
     }
 
@@ -45,7 +47,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     // Before doing anything stupid...
                     long mapId = target.getIVar("@party_pos").getIVar("@map").getFX();
                     String mapName = R2kRMLikeMapInfoBackend.sNameFromInt((int) mapId);
-                    IObjectBackend.ILoadedObject map = AppMain.objectDB.getObject(mapName, null);
+                    IObjectBackend.ILoadedObject map = app.odb.getObject(mapName, null);
                     if (map == null) {
                         AppMain.launchDialog(TXDB.get("The map's invalid, so that's not possible."));
                         return;
@@ -59,7 +61,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     // @system save_count is in-game save count, not actual System @save_count
                     target.getIVar("@party_pos").getIVar("@map_save_count").setDeepClone(getSaveCount(map.getObject()));
 
-                    IRIO ldbSys = AppMain.objectDB.getObject("RPG_RT.ldb").getObject().getIVar("@system");
+                    IRIO ldbSys = app.odb.getObject("RPG_RT.ldb").getObject().getIVar("@system");
                     IRIO saveCount = getSaveCount(ldbSys);
 
                     target.getIVar("@party_pos").getIVar("@db_save_count").setDeepClone(saveCount);
@@ -145,10 +147,10 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     SchemaPath.setDefaultValue(sub.addAElem(1), AppMain.schemas.getSDBEntry("RPG::Troop::Member"), new RubyIO().setFX(1));
 
                     // Prepare.
-                    AppMain.instance.uiPendingRunnables.add(new Runnable() {
+                    app.uiPendingRunnables.add(new Runnable() {
                         @Override
                         public void run() {
-                            AppMain.instance.np.r2kProjectCreationHelperFunction();
+                            app.np.r2kProjectCreationHelperFunction();
                         }
                     });
                     break;
@@ -198,7 +200,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
 
     // sets target to the relevant map ID based on vague information
     private void mapIdMagic(IRIO target, SchemaPath root) {
-        String str = AppMain.objectDB.getIdByObject(root.root);
+        String str = app.odb.getIdByObject(root.root);
         if (str == null)
             return;
         if (str.startsWith("Map"))
@@ -221,7 +223,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
         setupSaveCharacter(target.getIVar("@airship_pos"), "@airship_map", "@airship_x", "@airship_y");
         // copy over stuff
         IRIO savSys = target.getIVar("@system");
-        IRIO ldb = AppMain.objectDB.getObject("RPG_RT.ldb").getObject();
+        IRIO ldb = app.odb.getObject("RPG_RT.ldb").getObject();
         IRIO ldbSys = ldb.getIVar("@system");
 
         // Copy over stuff that isn't optional (hmm. Should it be optional?)
@@ -255,7 +257,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     }
 
     private void setupSaveCharacter(IRIO chr, String s, String s1, String s2) {
-        IRIO lmt = AppMain.objectDB.getObject("RPG_RT.lmt").getObject().getIVar("@start");
+        IRIO lmt = app.odb.getObject("RPG_RT.lmt").getObject().getIVar("@start");
         IRIO a = lmt.getIVar(s);
         IRIO b = lmt.getIVar(s1);
         IRIO c = lmt.getIVar(s2);

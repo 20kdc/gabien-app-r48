@@ -9,6 +9,7 @@ package r48.schema;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
+import r48.App;
 import r48.FontSizes;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -20,8 +21,8 @@ import r48.schema.util.SchemaPath;
 public class StringLenSchemaElement extends StringSchemaElement {
     public int len;
 
-    public StringLenSchemaElement(String arg, int l) {
-        super(arg, '"');
+    public StringLenSchemaElement(App app, String arg, int l) {
+        super(app, arg, '"');
         len = l;
     }
 

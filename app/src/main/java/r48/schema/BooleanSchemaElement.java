@@ -9,6 +9,7 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
+import r48.App;
 import r48.FontSizes;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
@@ -21,7 +22,8 @@ import r48.schema.util.SchemaPath;
 public class BooleanSchemaElement extends SchemaElement {
     public boolean defaultVal = false;
 
-    public BooleanSchemaElement(boolean defVal) {
+    public BooleanSchemaElement(App app, boolean defVal) {
+        super(app);
         defaultVal = defVal;
     }
 

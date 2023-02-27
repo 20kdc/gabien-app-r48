@@ -31,10 +31,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class HashSchemaElement extends SchemaElement {
     public SchemaElement keyElem, valElem;
     public boolean flexible;
-    public final App app;
 
     public HashSchemaElement(App app, SchemaElement keySE, SchemaElement opaqueSE, boolean flexible) {
-        this.app = app;
+        super(app);
         keyElem = keySE;
         valElem = opaqueSE;
         this.flexible = flexible;

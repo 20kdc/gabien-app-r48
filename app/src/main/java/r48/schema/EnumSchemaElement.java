@@ -10,6 +10,7 @@ package r48.schema;
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
+import r48.App;
 import r48.FontSizes;
 import r48.RubyIO;
 import r48.dbs.ValueSyntax;
@@ -44,7 +45,8 @@ public class EnumSchemaElement extends SchemaElement {
     public UIEnumChoice.EntryMode entryMode;
     public IRIO defaultVal;
 
-    public EnumSchemaElement(HashMap<String, String> o, IRIO def, UIEnumChoice.EntryMode em, String bt) {
+    public EnumSchemaElement(App app, HashMap<String, String> o, IRIO def, UIEnumChoice.EntryMode em, String bt) {
+        super(app);
         for (Map.Entry<String, String> mapping : o.entrySet())
             lookupOptions.put(mapping.getKey(), makeStandardOption(ValueSyntax.decode(mapping.getKey()), mapping.getValue(), null, null));
         convertLookupToView();
@@ -54,7 +56,8 @@ public class EnumSchemaElement extends SchemaElement {
         defaultVal = def;
     }
 
-    public EnumSchemaElement(Collection<UIEnumChoice.Option> opts, IRIO def, UIEnumChoice.EntryMode em, String bt) {
+    public EnumSchemaElement(App app, Collection<UIEnumChoice.Option> opts, IRIO def, UIEnumChoice.EntryMode em, String bt) {
+        super(app);
         viewOptions.addAll(opts);
         Collections.sort(viewOptions, UIEnumChoice.COMPARATOR_OPTION);
         convertViewToLookup();
@@ -89,7 +92,7 @@ public class EnumSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 liveUpdate();
-                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {
+                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, new UIEnumChoice(new IConsumer<RubyIO>() {
                     @Override
                     public void accept(RubyIO integer) {
                         target.setDeepClone(integer);

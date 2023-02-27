@@ -7,6 +7,8 @@
 
 package r48.schema.specialized;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.UIElement;
 import r48.FontSizes;
 import r48.dbs.PathSyntax;
@@ -25,7 +27,8 @@ public class EventTileReplacerSchemaElement extends SchemaElement {
     public final int layer;
     public final PathSyntax charName, charIdx;
 
-    public EventTileReplacerSchemaElement(TSDB dmap, int l, PathSyntax idx, PathSyntax n) {
+    public EventTileReplacerSchemaElement(@NonNull TSDB dmap, int l, PathSyntax idx, PathSyntax n) {
+        super(dmap.app);
         displayMap = dmap;
         layer = l;
         charName = n;

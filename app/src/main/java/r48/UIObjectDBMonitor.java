@@ -19,7 +19,9 @@ import r48.io.IObjectBackend;
  * Created on 12/29/16.
  */
 public class UIObjectDBMonitor extends UIElement {
-    public UIObjectDBMonitor() {
+    public final App app;
+    public UIObjectDBMonitor(App app) {
+        this.app = app;
         setForcedBounds(null, new Rect(0, 0, FontSizes.scaleGuess(320), FontSizes.scaleGuess(240)));
     }
 
@@ -34,21 +36,21 @@ public class UIObjectDBMonitor extends UIElement {
         int width = getSize().width;
         UILabel.drawLabel(igd, width, 0, 0, toString(), 1, FontSizes.objectDBMonitorTextHeight);
         int oy = step;
-        for (String s : UITest.sortedKeysStr(AppMain.objectDB.objectMap.keySet())) {
+        for (String s : UITest.sortedKeysStr(app.odb.objectMap.keySet())) {
             String status = TXDB.get(" [disposed]");
-            IObjectBackend.ILoadedObject rio = AppMain.objectDB.objectMap.get(s).get();
+            IObjectBackend.ILoadedObject rio = app.odb.objectMap.get(s).get();
             if (rio != null) {
-                status = FormatSyntax.formatExtended(TXDB.get(" #[#AML#]"), new RubyIO().setFX(AppMain.objectDB.countModificationListeners(rio)));
-                if (AppMain.objectDB.getObjectNewlyCreated(s)) {
+                status = FormatSyntax.formatExtended(TXDB.get(" #[#AML#]"), new RubyIO().setFX(app.odb.countModificationListeners(rio)));
+                if (app.odb.getObjectNewlyCreated(s)) {
                     status += TXDB.get(" [created]");
-                } else if (AppMain.objectDB.getObjectModified(s)) {
+                } else if (app.odb.getObjectModified(s)) {
                     status += TXDB.get(" [modified]");
                 }
             } else {
-                if (AppMain.objectDB.getObjectModified(s)) {
+                if (app.odb.getObjectModified(s)) {
                     status += TXDB.get(" [modifications lost, should never occur!]");
                 } else {
-                    AppMain.objectDB.objectMap.remove(s);
+                    app.odb.objectMap.remove(s);
                 }
             }
             UILabel.drawLabel(igd, width, 0, oy, s + status, 0, FontSizes.objectDBMonitorTextHeight);

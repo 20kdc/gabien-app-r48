@@ -7,6 +7,7 @@
 
 package r48.schema;
 
+import r48.App;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
@@ -17,6 +18,9 @@ import r48.schema.util.SchemaPath;
  * Created on 12/29/16.
  */
 public class AMAISchemaElement extends OpaqueSchemaElement {
+    public AMAISchemaElement(App app) {
+        super(app);
+    }
 
     @Override
     public String getMessage(IRIO v) {

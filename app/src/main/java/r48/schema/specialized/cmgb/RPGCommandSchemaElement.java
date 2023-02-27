@@ -55,10 +55,8 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
     private RPGCommandSchemaElement hiddenHeadVer;
 
-    public final App app;
-
     public RPGCommandSchemaElement(App app, SchemaElement ise, SchemaElement mos, CMDB db, boolean allowIndentControl, boolean showHdr) {
-        this.app = app;
+        super(app);
         actualSchema = ise;
         mostOfSchema = mos;
         database = db;
@@ -128,9 +126,9 @@ public class RPGCommandSchemaElement extends SchemaElement {
             if (target.getIVar("@indent") != null) {
                 if (showHeader) {
                     PathSyntax indent = PathSyntax.compile("@indent");
-                    SchemaElement ise = new PathSchemaElement(indent, TXDB.get("@indent"), new ROIntegerSchemaElement(0), false);
+                    SchemaElement ise = new PathSchemaElement(indent, TXDB.get("@indent"), new ROIntegerSchemaElement(app, 0), false);
                     if (!allowControlOfIndent)
-                        ise = new PathSchemaElement(indent, TXDB.get("@indent"), new IntegerSchemaElement(0), false);
+                        ise = new PathSchemaElement(indent, TXDB.get("@indent"), new IntegerSchemaElement(app, 0), false);
                     uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
                 }
             }
@@ -173,7 +171,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             categories[i] = new UIEnumChoice.Category(database.categories[i], llo);
         }
 
-        return new TempDialogSchemaChoice(new UIEnumChoice(new IConsumer<RubyIO>() {
+        return new TempDialogSchemaChoice(launcher.getApp(), new UIEnumChoice(new IConsumer<RubyIO>() {
             @Override
             public void accept(RubyIO integer) {
                 // NOTE: This just uses ints for everything.
@@ -224,7 +222,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
             } else {
                 IRIO param = target.getIVar("@parameters");
                 // All parameters are described, and the SASE will ensure length is precisely equal
-                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(app, new OpaqueSchemaElement(), rc.paramName.size(), false, 0, new StandardArrayInterface());
+                SchemaElement parametersSanitySchema = new StandardArraySchemaElement(app, new OpaqueSchemaElement(app), rc.paramName.size(), false, 0, new StandardArrayInterface());
                 parametersSanitySchema.modifyVal(param, path, setDefault);
                 int alen = param.getALen();
                 for (int i = 0; i < alen; i++) {

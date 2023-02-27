@@ -11,6 +11,7 @@ import gabien.FontManager;
 import gabien.IGrDriver;
 import gabien.IPeripherals;
 import gabien.ui.*;
+import r48.App;
 import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
@@ -43,8 +44,8 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
     public boolean allowResize = true;
 
     // NOTE: Doesn't need SDB2-PS compat because it only just started using PS, thankfully
-    public RubyTableSchemaElement(PathSyntax iVar, PathSyntax wVar, PathSyntax hVar, int dim, int dw, int dh, int defL, ITableCellEditor tcl, int[] defV) {
-        super(dw, dh, defL, dim, iVar, defV);
+    public RubyTableSchemaElement(App app, PathSyntax iVar, PathSyntax wVar, PathSyntax hVar, int dim, int dw, int dh, int defL, ITableCellEditor tcl, int[] defV) {
+        super(app, dw, dh, defL, dim, iVar, defV);
         widthVar = wVar;
         heightVar = hVar;
         tableCellEditor = tcl;

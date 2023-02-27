@@ -8,6 +8,7 @@
 package r48.schema.specialized;
 
 import gabien.ui.*;
+import r48.App;
 import r48.FontSizes;
 import r48.RubyCT;
 import r48.dbs.TXDB;
@@ -24,7 +25,8 @@ import r48.schema.util.SchemaPath;
 public class CTNativeSchemaElement extends SchemaElement {
     public final String cls;
 
-    public CTNativeSchemaElement(String c) {
+    public CTNativeSchemaElement(App app, String c) {
+        super(app);
         cls = c;
     }
 

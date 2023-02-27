@@ -12,6 +12,7 @@ import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITabBar;
 import gabien.ui.UITabPane;
+import r48.App;
 import r48.FontSizes;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
@@ -32,8 +33,8 @@ import r48.ui.UITileGrid;
 public class FancyCategorizedTilesetRubyTableSchemaElement extends BaseRubyTableSchemaElement {
     public final ITableCellEditor editor;
     
-    public FancyCategorizedTilesetRubyTableSchemaElement(int dw, int dh, int p, int d, PathSyntax iV, int[] defaults, ITableCellEditor editor) {
-        super(dw, dh, p, d, iV, defaults);
+    public FancyCategorizedTilesetRubyTableSchemaElement(App app, int dw, int dh, int p, int d, PathSyntax iV, int[] defaults, ITableCellEditor editor) {
+        super(app, dw, dh, p, d, iV, defaults);
         this.editor = editor;
     }
 

@@ -7,12 +7,14 @@
 
 package r48.schema.integers;
 
+import r48.App;
+
 /**
  * Created on 12/29/16.
  */
 public class ROIntegerSchemaElement extends IntegerSchemaElement {
-    public ROIntegerSchemaElement(int i) {
-        super(i);
+    public ROIntegerSchemaElement(App app, int i) {
+        super(app, i);
     }
 
     @Override

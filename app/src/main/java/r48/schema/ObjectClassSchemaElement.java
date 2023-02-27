@@ -16,6 +16,8 @@ import r48.schema.util.SchemaPath;
 
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * Ensures some fields required to be an object or userdata are in place.
  * Notably,
@@ -28,7 +30,8 @@ public class ObjectClassSchemaElement extends SchemaElement {
     public String symbol;
     public char type;
 
-    public ObjectClassSchemaElement(String clsSym, SchemaElement back, char typ) {
+    public ObjectClassSchemaElement(String clsSym, @NonNull SchemaElement back, char typ) {
+        super(back.app);
         symbol = clsSym;
         backing = back;
         type = typ;

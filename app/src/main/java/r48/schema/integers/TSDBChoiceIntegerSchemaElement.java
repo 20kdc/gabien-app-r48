@@ -26,11 +26,9 @@ public class TSDBChoiceIntegerSchemaElement extends IntegerSchemaElement {
     public IImage tsdb;
     public int maxCount;
     public int tileSize;
-    public final App app;
 
     public TSDBChoiceIntegerSchemaElement(App app, long i, String substring, int pwr) {
-        super(i);
-        this.app = app;
+        super(app, i);
         tileSize = 16;
         tsdb = new TSDB(app, substring).compileSheet(pwr, tileSize);
         maxCount = pwr;

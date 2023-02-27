@@ -8,6 +8,7 @@
 package r48.schema;
 
 import gabien.ui.*;
+import r48.App;
 import r48.FontSizes;
 import r48.dbs.IProxySchemaElement;
 import r48.io.data.IRIO;
@@ -30,12 +31,14 @@ public class AggregateSchemaElement extends SchemaElement implements IFieldSchem
     private int overrideFW = -1;
     private boolean overrideSet = false;
 
-    public AggregateSchemaElement(SchemaElement[] ag) {
+    public AggregateSchemaElement(App app, SchemaElement[] ag) {
+        super(app);
         Collections.addAll(aggregate, ag);
         impersonatorScroll = this;
     }
 
-    public AggregateSchemaElement(SchemaElement[] ag, SchemaElement fake) {
+    public AggregateSchemaElement(App app, SchemaElement[] ag, SchemaElement fake) {
+        super(app);
         Collections.addAll(aggregate, ag);
         impersonatorScroll = fake;
     }

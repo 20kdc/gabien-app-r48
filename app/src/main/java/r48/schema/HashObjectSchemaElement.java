@@ -8,6 +8,7 @@
 package r48.schema;
 
 import gabien.ui.UIElement;
+import r48.App;
 import r48.RubyIO;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
@@ -21,7 +22,8 @@ public class HashObjectSchemaElement extends SchemaElement {
     // disables setDefault
     public final boolean inner;
 
-    public HashObjectSchemaElement(LinkedList<RubyIO> allowedKey, boolean hashObjectInner) {
+    public HashObjectSchemaElement(App app, LinkedList<RubyIO> allowedKey, boolean hashObjectInner) {
+        super(app);
         allowedKeys = allowedKey;
         inner = hashObjectInner;
     }

@@ -7,13 +7,13 @@
 
 package r48.dbs;
 
-import r48.AppMain;
+import r48.App;
 import r48.io.IObjectBackend;
 
 /**
  * Created on 13th August, 2022.
  */
-public class ObjectInfo {
+public class ObjectInfo extends App.Svc {
     /**
      * Object ID
      */
@@ -23,7 +23,8 @@ public class ObjectInfo {
      */
     public final String schemaName;
 
-    public ObjectInfo(String iN, String sN) {
+    public ObjectInfo(App app, String iN, String sN) {
+        super(app);
         idName = iN;
         schemaName = sN;
     }
@@ -33,6 +34,6 @@ public class ObjectInfo {
     }
 
     public IObjectBackend.ILoadedObject getILO(boolean create) {
-        return AppMain.objectDB.getObject(idName, create ? schemaName : null);
+        return app.odb.getObject(idName, create ? schemaName : null);
     }
 }

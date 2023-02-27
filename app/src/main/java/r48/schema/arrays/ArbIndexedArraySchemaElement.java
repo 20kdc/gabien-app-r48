@@ -42,7 +42,7 @@ public class ArbIndexedArraySchemaElement extends ArraySchemaElement {
     protected SchemaElement getElementSchema(int j) {
         // Opaque will always *default* to NIL if the result would otherwise be completely invalid data.
         if (j < indexOffset)
-            return new OpaqueSchemaElement();
+            return new OpaqueSchemaElement(app);
         return subelems;
     }
 

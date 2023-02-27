@@ -33,8 +33,10 @@ public class ObjectDB {
     public final IObjectBackend backend;
     private final IConsumer<String> saveHook;
     public String binderPrefix;
+    public final OpaqueSchemaElement pokingStick;
 
-    public ObjectDB(IObjectBackend b, IConsumer<String> sv) {
+    public ObjectDB(OpaqueSchemaElement pokingStick, IObjectBackend b, IConsumer<String> sv) {
+        this.pokingStick = pokingStick;
         backend = b;
         binderPrefix = b.userspaceBindersPrefix();
         saveHook = sv;
@@ -291,7 +293,7 @@ public class ObjectDB {
         for (IObjectBackend.ILoadedObject lo : pokedObjects) {
             // Use an opaque schema element because we really don't have a good one here.
             // We don't use changeOccurred because that would activate schema processing, which is also undesired here.
-            objectRootModified(lo, new SchemaPath(new OpaqueSchemaElement(), lo));
+            objectRootModified(lo, new SchemaPath(pokingStick, lo));
         }
         // Remove from modifiedObjects - they don't count as modified.
         modifiedObjects.removeAll(pokedObjects);

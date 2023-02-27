@@ -37,9 +37,8 @@ import java.util.zip.InflaterInputStream;
  * Created on January 28th, 2018.
  */
 public class ScriptControlSchemaElement extends SchemaElement {
-    public final App app;
     public ScriptControlSchemaElement(App app) {
-        this.app = app;
+        super(app);
     }
 
     @Override

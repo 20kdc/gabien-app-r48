@@ -181,10 +181,10 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             int id = (int) key.getFX();
             if (id == 0)
                 continue;
-            RMMapData rmd = new RMMapData(new ISupplier<String>() {
+            RMMapData rmd = new RMMapData(app, new ISupplier<String>() {
                 @Override
                 public String get() {
-                    IRIO lmtiLocal = AppMain.objectDB.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos");
+                    IRIO lmtiLocal = app.odb.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos");
                     IRIO mapInfo = lmtiLocal.getHashVal(key);
                     if (mapInfo == null)
                         return TXDB.get("<map removed from RPG_RT.lmt>");

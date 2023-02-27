@@ -30,10 +30,9 @@ import java.io.IOException;
 public class MagicalBindingSchemaElement extends SchemaElement {
     public SchemaElement inner;
     public IMagicalBinder binder;
-    public final App app;
 
     public MagicalBindingSchemaElement(App app, IMagicalBinder b, SchemaElement inn) {
-        this.app = app;
+        super(app);
         binder = b;
         inner = inn;
     }
@@ -47,7 +46,7 @@ public class MagicalBindingSchemaElement extends SchemaElement {
 
     private SchemaPath createPath(final IRIO trueTarget, final SchemaPath truePath) {
         final IRIO bound = MagicalBinders.toBoundWithCache(app, binder, trueTarget);
-        SchemaPath sp = new SchemaPath(new SchemaElement() {
+        SchemaPath sp = new SchemaPath(new SchemaElement(app) {
             // This is a fake root element used for binding
             @Override
             public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {

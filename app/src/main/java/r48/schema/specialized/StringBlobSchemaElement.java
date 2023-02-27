@@ -14,6 +14,7 @@ import gabien.ui.UITextBox;
 import gabien.ui.UITextButton;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
+import r48.App;
 import r48.AppMain;
 import r48.FontSizes;
 import r48.dbs.TXDB;
@@ -31,6 +32,10 @@ import java.io.*;
  * Created on 2/16/17.
  */
 public class StringBlobSchemaElement extends SchemaElement {
+    public StringBlobSchemaElement(App app) {
+        super(app);
+    }
+
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {
         final String fpath = Application.BRAND + "/r48.edit.txt";
@@ -96,7 +101,7 @@ public class StringBlobSchemaElement extends SchemaElement {
                         path.changeOccurred(false);
                     }
                 }), true, 1);
-                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(ui, update, path), target));
+                launcher.pushObject(path.newWindow(new TempDialogSchemaChoice(app, ui, update, path), target));
             }
         }), false, 1);
     }

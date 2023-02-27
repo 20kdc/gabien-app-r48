@@ -54,7 +54,7 @@ public class TroopGenposFrame implements IGenposFrame {
         troopPath = path;
         changed = change;
         // Immediately try and get needed resources
-        IRIO database = AppMain.objectDB.getObject("RPG_RT.ldb").getObject();
+        IRIO database = app.odb.getObject("RPG_RT.ldb").getObject();
         IImageLoader img = app.stuffRendererIndependent.imageLoader;
         battleBkg = img.getImage("Backdrop/" + database.getIVar("@system").getIVar("@test_battle_background").decString(), true);
         long max = 0;
@@ -99,9 +99,9 @@ public class TroopGenposFrame implements IGenposFrame {
     private SchemaElement[] getCellPropSchemas() {
         return new SchemaElement[] {
                 AppMain.schemas.getSDBEntry("enemy_id"),
-                new IntegerSchemaElement(0),
-                new IntegerSchemaElement(0),
-                new BooleanSchemaElement(false)
+                new IntegerSchemaElement(app, 0),
+                new IntegerSchemaElement(app, 0),
+                new BooleanSchemaElement(app, false)
         };
     }
 

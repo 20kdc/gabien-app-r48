@@ -81,7 +81,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
             SchemaPath root = innerElem.findRoot();
             // perform a final verification of the file, just in case? (NOPE: Causes long save times on, say, LDBs)
             // root.editor.modifyVal(root.targetElement, root, false);
-            AppMain.objectDB.ensureSaved(root.hrIndex, root.root);
+            app.odb.ensureSaved(root.hrIndex, root.root);
         }
     }, FontSizes.schemaPathTextHeight);
     private UIAppendButton toolbarI = new UIAppendButton(Art.Symbol.Inspect, toolbarS, new Runnable() {
@@ -151,7 +151,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
 
     private void switchObject(SchemaPath nextObject) {
         if (innerElem != null)
-            AppMain.objectDB.deregisterModificationHandler(innerElem.root, nudgeRunnable);
+            app.odb.deregisterModificationHandler(innerElem.root, nudgeRunnable);
         while (nextObject.editor == null)
             nextObject = nextObject.parent;
         boolean doLaunch = false;
@@ -167,7 +167,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
 
         innerElem = nextObject;
         innerElemEditor = innerElem.editor.buildHoldingEditor(innerElem.targetElement, this, innerElem);
-        AppMain.objectDB.registerModificationHandler(innerElem.root, nudgeRunnable);
+        app.odb.registerModificationHandler(innerElem.root, nudgeRunnable);
 
         for (UIElement uie : layoutGetElements())
             layoutRemoveElement(uie);
@@ -282,12 +282,12 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
     public String toString() {
         if (innerElem == null)
             return TXDB.get("Loading...");
-        String rootName = AppMain.objectDB.getIdByObject(innerElem.root);
+        String rootName = app.odb.getIdByObject(innerElem.root);
         if (rootName == null)
             rootName = "AnonObject";
         String name = rootName;
         name += innerElem.windowTitleSuffix();
-        if (AppMain.objectDB.getObjectModified(rootName))
+        if (app.odb.getObjectModified(rootName))
             name += "*";
         return name;
     }
@@ -297,7 +297,7 @@ public class SchemaHostImpl extends UIElement.UIPanel implements ISchemaHost {
         windowOpen = false;
         stayClosed = true;
         if (innerElem != null) {
-            AppMain.objectDB.deregisterModificationHandler(innerElem.findRoot().root, nudgeRunnable);
+            app.odb.deregisterModificationHandler(innerElem.findRoot().root, nudgeRunnable);
             validitySupplier = null; // We're not seeing modifications, so don't check validity.
             innerElem = null;
             innerElemEditor = null;

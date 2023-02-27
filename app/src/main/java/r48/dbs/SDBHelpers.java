@@ -29,7 +29,10 @@ import java.util.HashMap;
  * for creating schema elements
  * Created on Sunday September 17th, 2017
  */
-class SDBHelpers {
+class SDBHelpers extends App.Svc {
+    SDBHelpers(App app) {
+        super(app);
+    }
     // Spritesheet definitions are quite opaque lists of numbers defining how a grid sheet should appear. See spriteSelector.
     protected HashMap<String, IFunction<String, ISpritesheetProvider>> spritesheets = new HashMap<String, IFunction<String, ISpritesheetProvider>>();
     protected HashMap<String, String> spritesheetN = new HashMap<String, String>();
@@ -80,7 +83,7 @@ class SDBHelpers {
 
     public SchemaElement makeSpriteSelector(final PathSyntax varPath, final PathSyntax imgPath, final String imgPfx) {
         final IFunction<String, ISpritesheetProvider> args2 = spritesheets.get(imgPfx);
-        return new SpritesheetCoreSchemaElement(spritesheetN.get(imgPfx), 0, new IFunction<IRIO, IRIO>() {
+        return new SpritesheetCoreSchemaElement(app, spritesheetN.get(imgPfx), 0, new IFunction<IRIO, IRIO>() {
             @Override
             public IRIO apply(IRIO rubyIO) {
                 return varPath.get(rubyIO);
@@ -93,7 +96,7 @@ class SDBHelpers {
         });
     }
 
-    public int createSpritesheet(App app, String[] args, int point, String text2) {
+    public int createSpritesheet(String[] args, int point, String text2) {
         final String imgPfx = args[point];
         spritesheetN.put(args[point], TXDB.get(args[point] + "sprites", text2));
         if (args[point + 1].equals("r2kCharacter")) {
@@ -164,7 +167,7 @@ class SDBHelpers {
         }
     }
 
-    public SchemaElement makePicPointerPatchID(App app, SchemaElement varId, SchemaElement val) {
+    public SchemaElement makePicPointerPatchID(SchemaElement varId, SchemaElement val) {
         // Since this is much too complicated for a mere enum,
         //  use the magical binding to make it more in-line with R48's standards,
         //  with a minimal amount of code
@@ -173,16 +176,16 @@ class SDBHelpers {
         types.put("1", TXDB.get("From Id Var. (PPP/EasyRPG/2k3 1.12)"));
         types.put("2", TXDB.get("From Id/Name Suffix Var. Pair (PPP/EasyRPG/2k3 1.12)"));
         HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
-        ArrayElementSchemaElement idV = new ArrayElementSchemaElement(1, TXDB.get("idVar"), varId, null, false);
+        ArrayElementSchemaElement idV = new ArrayElementSchemaElement(app, 1, TXDB.get("idVar"), varId, null, false);
         disambiguations.put("1", idV);
         disambiguations.put("2", idV);
-        disambiguations.put("", new ArrayElementSchemaElement(1, TXDB.get("id "), val, null, false));
-        AggregateSchemaElement inner = new AggregateSchemaElement(new SchemaElement[] {
+        disambiguations.put("", new ArrayElementSchemaElement(app, 1, TXDB.get("id "), val, null, false));
+        AggregateSchemaElement inner = new AggregateSchemaElement(app, new SchemaElement[] {
                 new HalfsplitSchemaElement(
-                        new ArrayElementSchemaElement(0, TXDB.get("type "), new EnumSchemaElement(types, new RubyIO().setFX(0), EntryMode.LOCK, ""), null, false),
-                        new DisambiguatorSchemaElement(PathSyntax.compile("]0"), disambiguations)
+                        new ArrayElementSchemaElement(app, 0, TXDB.get("type "), new EnumSchemaElement(app, types, new RubyIO().setFX(0), EntryMode.LOCK, ""), null, false),
+                        new DisambiguatorSchemaElement(app, PathSyntax.compile("]0"), disambiguations)
                 ),
-                new SubwindowSchemaElement(new HWNDSchemaElement(PathSyntax.compile("]0"), "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {
+                new SubwindowSchemaElement(new HWNDSchemaElement(app, PathSyntax.compile("]0"), "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {
                     @Override
                     public String apply(IRIO rubyIO) {
                         return TXDB.get("Explain this picture mode...");
@@ -239,14 +242,14 @@ class SDBHelpers {
         }, inner);
     }
 
-    public SchemaElement makePicPointerPatchVar(App app, SchemaElement varId, String vname, SchemaElement val) {
+    public SchemaElement makePicPointerPatchVar(SchemaElement varId, String vname, SchemaElement val) {
         // Less complicated but still more than an enum is reasonable for.
         HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
-        disambiguations.put("0", new ArrayElementSchemaElement(1, vname, val, null, false));
-        disambiguations.put("", new ArrayElementSchemaElement(1, TXDB.get("valueVar "), varId, null, false));
+        disambiguations.put("0", new ArrayElementSchemaElement(app, 1, vname, val, null, false));
+        disambiguations.put("", new ArrayElementSchemaElement(app, 1, TXDB.get("valueVar "), varId, null, false));
         SchemaElement inner = new HalfsplitSchemaElement(
-                new ArrayElementSchemaElement(0, TXDB.get("isVar "), new IntBooleanSchemaElement(false), null, false),
-                new DisambiguatorSchemaElement(PathSyntax.compile("]0"), disambiguations)
+                new ArrayElementSchemaElement(app, 0, TXDB.get("isVar "), new IntBooleanSchemaElement(app, false), null, false),
+                new DisambiguatorSchemaElement(app, PathSyntax.compile("]0"), disambiguations)
         );
         return new MagicalBindingSchemaElement(app, new IMagicalBinder() {
             @Override

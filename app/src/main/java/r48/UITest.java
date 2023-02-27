@@ -120,7 +120,7 @@ public class UITest extends App.Prx {
                     loadObject(objectList[j]);
                 }
             });
-            final IMagicalBinder b = MagicalBinders.getBinderFor(objectList[j]);
+            final IMagicalBinder b = MagicalBinders.getBinderFor(app, objectList[j]);
             if (b != null)
                 button = new UIAppendButton(TXDB.get("Binding"), button, new Runnable() {
                     @Override

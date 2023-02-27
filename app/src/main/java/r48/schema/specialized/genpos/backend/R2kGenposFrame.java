@@ -11,6 +11,7 @@ import gabien.IGrDriver;
 import gabien.IImage;
 import gabien.uslx.append.*;
 import gabien.ui.Rect;
+import r48.App;
 import r48.AppMain;
 import r48.RubyIO;
 import r48.dbs.TXDB;
@@ -28,13 +29,14 @@ import r48.ui.dialog.ISpritesheetProvider;
 /**
  * Created on 29/07/17.
  */
-public class R2kGenposFrame implements IGenposFrame {
+public class R2kGenposFrame extends App.Svc implements IGenposFrame {
     public ISupplier<IRIO> frameSource;
     public SpriteCache cache;
     public SchemaPath rootPath;
     public Runnable updateNotify;
 
-    public R2kGenposFrame(SpriteCache spriteCache, SchemaPath path, Runnable updater) {
+    public R2kGenposFrame(App app, SpriteCache spriteCache, SchemaPath path, Runnable updater) {
+        super(app);
         cache = spriteCache;
         rootPath = path;
         updateNotify = updater;
@@ -86,11 +88,11 @@ public class R2kGenposFrame implements IGenposFrame {
         };
         SchemaPath memberPath = rootPath.otherIndex("FX").arrayHashIndex(new RubyIO().setFX(ct + 1), "[" + (ct + 1) + "]");
         IRIO member = frameSource.get().getIVar("@cells").getAElem(ct + 1);
-        SchemaElement se = new IntegerSchemaElement(0);
+        SchemaElement se = new IntegerSchemaElement(app, 0);
         if (i == 0)
-            se = new BooleanSchemaElement(false);
+            se = new BooleanSchemaElement(app, false);
         if (i == 1)
-            se = new SpritesheetCoreSchemaElement("#A", 0, new IFunction<IRIO, IRIO>() {
+            se = new SpritesheetCoreSchemaElement(app, "#A", 0, new IFunction<IRIO, IRIO>() {
                 @Override
                 public IRIO apply(IRIO rubyIO) {
                     return rubyIO;

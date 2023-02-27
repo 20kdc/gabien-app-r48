@@ -133,7 +133,7 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
 
     private SchemaElement[] getCellPropSchemas() {
         return new SchemaElement[] {
-                new SpritesheetCoreSchemaElement("#A", 0, new IFunction<IRIO, IRIO>() {
+                new SpritesheetCoreSchemaElement(app, "#A", 0, new IFunction<IRIO, IRIO>() {
                     @Override
                     public IRIO apply(IRIO rubyIO) {
                         return rubyIO;
@@ -188,12 +188,12 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
                         };
                     }
                 }),
-                new IntegerSchemaElement(0),
-                new IntegerSchemaElement(0),
-                new IntegerSchemaElement(0),
-                new IntegerSchemaElement(0),
-                new IntegerSchemaElement(0),
-                new IntegerSchemaElement(0),
+                new IntegerSchemaElement(app, 0),
+                new IntegerSchemaElement(app, 0),
+                new IntegerSchemaElement(app, 0),
+                new IntegerSchemaElement(app, 0),
+                new IntegerSchemaElement(app, 0),
+                new IntegerSchemaElement(app, 0),
                 AppMain.schemas.getSDBEntry("blend_type")
         };
     }

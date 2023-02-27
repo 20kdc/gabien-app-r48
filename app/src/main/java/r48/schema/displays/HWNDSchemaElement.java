@@ -9,6 +9,7 @@ package r48.schema.displays;
 
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
+import r48.App;
 import r48.dbs.PathSyntax;
 import r48.io.data.IRIO;
 import r48.schema.SchemaElement;
@@ -27,7 +28,8 @@ public class HWNDSchemaElement extends SchemaElement {
     public final PathSyntax ivar;
     public final String file;
 
-    public HWNDSchemaElement(PathSyntax iv, String f) {
+    public HWNDSchemaElement(App app, PathSyntax iv, String f) {
+        super(app);
         ivar = iv;
         file = f;
     }

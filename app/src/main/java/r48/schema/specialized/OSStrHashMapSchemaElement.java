@@ -31,6 +31,9 @@ import java.util.HashMap;
  * Written on December 1st, 2017.
  */
 public class OSStrHashMapSchemaElement extends SchemaElement {
+    public OSStrHashMapSchemaElement(App app) {
+        super(app);
+    }
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         App app = launcher.getApp();

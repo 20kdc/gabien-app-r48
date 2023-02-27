@@ -9,6 +9,7 @@ package r48.schema;
 
 import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
+import r48.App;
 import r48.FontSizes;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
@@ -23,7 +24,8 @@ public class FloatSchemaElement extends SchemaElement {
     public boolean jsonCoerce;
     public String def;
 
-    public FloatSchemaElement(String arg, boolean json) {
+    public FloatSchemaElement(App app, String arg, boolean json) {
+        super(app);
         def = arg;
         jsonCoerce = json;
     }

@@ -24,11 +24,9 @@ import r48.schema.specialized.tbleditors.ITableCellEditor;
  */
 public class TilesetAllocTableSchemaElement extends RubyTableSchemaElement<StuffRenderer> {
     public final TSDB allocSource;
-    public final App app;
 
     public TilesetAllocTableSchemaElement(App app, TSDB source, PathSyntax iVar, PathSyntax wVar, PathSyntax hVar, int dc, int dw, int dh, int defL, ITableCellEditor itce, int[] defVal) {
-        super(iVar, wVar, hVar, dc, dw, dh, defL, itce, defVal);
-        this.app = app;
+        super(app, iVar, wVar, hVar, dc, dw, dh, defL, itce, defVal);
         allocSource = source;
         allowResize = allocSource.mapping == null;
         allowTextdraw = !allocSource.disableHex;

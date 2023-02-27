@@ -73,7 +73,7 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
                     final String name = a[0].substring(1);
                     final int len = Integer.parseInt(a[1]);
                     final int pwr = 1 << len;
-                    IntegerSchemaElement ise = new IntegerSchemaElement(0);
+                    IntegerSchemaElement ise = new IntegerSchemaElement(app, 0);
                     if (a.length > 2) {
                         if (a[2].startsWith("tsv=")) {
                             ise = new TSDBChoiceIntegerSchemaElement(app, 0, a[2].substring(4), pwr);

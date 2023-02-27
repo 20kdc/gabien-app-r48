@@ -7,6 +7,8 @@
 
 package r48.schema;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.IGrDriver;
 import gabien.IPeripherals;
 import gabien.uslx.append.*;
@@ -24,7 +26,8 @@ public class HiddenSchemaElement extends SchemaElement implements IProxySchemaEl
     public final SchemaElement content;
     public final IFunction<IRIO, Boolean> show;
 
-    public HiddenSchemaElement(SchemaElement hide, IFunction<IRIO, Boolean> shouldShow) {
+    public HiddenSchemaElement(@NonNull SchemaElement hide, IFunction<IRIO, Boolean> shouldShow) {
+        super(hide.app);
         content = hide;
         show = shouldShow;
     }

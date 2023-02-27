@@ -29,7 +29,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * Used to build convenient dictionaries for selecting things.
  * Created on 1/3/17.
  */
-public class DictionaryUpdaterRunnable implements Runnable {
+public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
     // act soon after init.
     private boolean actNow = true;
     public final String dict, targ;
@@ -44,7 +44,8 @@ public class DictionaryUpdaterRunnable implements Runnable {
     public final SchemaElement dataSchema;
 
     // NOTE: targetDictionary must always be referenced by proxy to ensure setSDBEntry works later.
-    public DictionaryUpdaterRunnable(String targetDictionary, String target, IFunction<IRIO, IRIO> iFunction, boolean b, IFunction<IRIO, IRIO> ivar, int def, String ip, SchemaElement ds) {
+    public DictionaryUpdaterRunnable(App app, String targetDictionary, String target, IFunction<IRIO, IRIO> iFunction, boolean b, IFunction<IRIO, IRIO> ivar, int def, String ip, SchemaElement ds) {
+        super(app);
         dict = targetDictionary;
         targ = target;
         fieldA = iFunction;
@@ -109,7 +110,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
                     return true; // :(
 
                 try {
-                    coreLogic(finalMap, iVar, targetILO, dataSchema, target, hash, interpret);
+                    coreLogic(app, finalMap, iVar, targetILO, dataSchema, target, hash, interpret);
                 } catch (Exception e) {
                     throw new RuntimeException("During DUR " + dict, e);
                 }
@@ -120,26 +121,26 @@ public class DictionaryUpdaterRunnable implements Runnable {
         return false;
     }
 
-    public static void coreLogic(LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> innerMap, final @Nullable IObjectBackend.ILoadedObject targetILO, @Nullable SchemaElement dataSchema, IRIO target, boolean hash, String interpret) {
+    public static void coreLogic(App app, LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> innerMap, final @Nullable IObjectBackend.ILoadedObject targetILO, @Nullable SchemaElement dataSchema, IRIO target, boolean hash, String interpret) {
         if (hash) {
             for (IRIO key : target.getHashKeys())
-                handleVal(finalMap, innerMap, targetILO, dataSchema, target.getHashVal(key), key, interpret);
+                handleVal(app, finalMap, innerMap, targetILO, dataSchema, target.getHashVal(key), key, interpret);
         } else {
             int alen = target.getALen();
             for (int i = 0; i < alen; i++) {
                 IRIO rio = target.getAElem(i);
-                handleVal(finalMap, innerMap, targetILO, dataSchema, rio, new RubyIO().setFX(i), interpret);
+                handleVal(app, finalMap, innerMap, targetILO, dataSchema, rio, new RubyIO().setFX(i), interpret);
             }
         }
     }
 
     private void finalizeVals(LinkedList<UIEnumChoice.Option> finalMap) {
         Collections.sort(finalMap, UIEnumChoice.COMPARATOR_OPTION);
-        SchemaElement ise = new EnumSchemaElement(finalMap, new RubyIO().setFX(defaultVal), EntryMode.INT, TXDB.get("ID."));
+        SchemaElement ise = new EnumSchemaElement(app, finalMap, new RubyIO().setFX(defaultVal), EntryMode.INT, TXDB.get("ID."));
         AppMain.schemas.setSDBEntry(dict, ise);
     }
 
-    private static void handleVal(LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> iVar, final @Nullable IObjectBackend.ILoadedObject targetILO, final @Nullable SchemaElement dataSchema, IRIO rio, IRIO k, String interpret) {
+    private static void handleVal(App app, LinkedList<UIEnumChoice.Option> finalMap, IFunction<IRIO, IRIO> iVar, final @Nullable IObjectBackend.ILoadedObject targetILO, final @Nullable SchemaElement dataSchema, IRIO rio, IRIO k, String interpret) {
         int type = rio.getType();
         if (type != '0') {
             // Key details
@@ -150,7 +151,7 @@ public class DictionaryUpdaterRunnable implements Runnable {
             // Actual found name
             final IRIO mappedRIO = (iVar != null) ? iVar.apply(rio) : rio;
             // Data schema path
-            final SchemaPath rootSchemaPath = targetILO == null ? null : new SchemaPath(new OpaqueSchemaElement(), targetILO);
+            final SchemaPath rootSchemaPath = targetILO == null ? null : new SchemaPath(new OpaqueSchemaElement(app), targetILO);
             final SchemaPath dataSchemaPath = ((rootSchemaPath == null) || (dataSchema == null)) ? null : rootSchemaPath.arrayHashIndex(kc, p).newWindow(dataSchema, rio);
             // Details
             String text;

@@ -228,7 +228,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             RPGCommand rc = database.knownCommands.get(code);
             // make group element
             boolean elemAddRemove = addRemove && (i != 0);
-            group[i] = new ArrayElementSchemaElement(start + i, "", rcse, elemAddRemove ? "" : null, elemAddRemove);
+            group[i] = new ArrayElementSchemaElement(app, start + i, "", rcse, elemAddRemove ? "" : null, elemAddRemove);
             if (i == 0)
                 rcse = rcse.hideHeaderVer();
             // specifics
@@ -241,7 +241,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
         final String copyText = TXDB.get("Copy text to clipboard");
         final boolean addRemoveF = addRemove;
         final boolean cctF = canCopyText;
-        group[group.length - 1] = new SchemaElement() {
+        group[group.length - 1] = new SchemaElement(app) {
             @Override
             public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
                 UIScrollLayout usl = new UIScrollLayout(true, FontSizes.generalScrollersize);
@@ -292,7 +292,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
             public void modifyVal(IRIO target, SchemaPath path, boolean setDefault) {
             }
         };
-        return new AggregateSchemaElement(group, binding);
+        return new AggregateSchemaElement(app, group, binding);
     }
 
     @Override
@@ -358,7 +358,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
      * The IRIO used for this element is expected to be the list.
      */
     public SchemaElement getElementContextualWindowSchema(final IRIO tracker) {
-        return new SchemaElement() {
+        return new SchemaElement(app) {
             @Override
             public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
                 int actualStart = findActualStart(target, tracker);

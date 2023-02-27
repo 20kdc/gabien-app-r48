@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.InflaterInputStream;
 
+import r48.App;
+
 /**
  * Kind of hacky that it calls straight out to Desktop,
  * but it's better for convenience,
@@ -21,6 +23,10 @@ import java.util.zip.InflaterInputStream;
  * Created on 1/5/17.
  */
 public class ZLibBlobSchemaElement extends StringBlobSchemaElement {
+
+    public ZLibBlobSchemaElement(App app) {
+        super(app);
+    }
 
     @Override
     protected InputStream getCompressionInputStream(InputStream file) {

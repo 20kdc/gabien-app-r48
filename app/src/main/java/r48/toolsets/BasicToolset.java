@@ -86,7 +86,7 @@ public class BasicToolset extends App.Svc implements IToolset {
 
         UIBorderedSubpanel menu3b = new UIBorderedSubpanel(menu8, FontSizes.schemaFieldTextHeight * 4);
 
-        UIElement menu2 = new UISplitterLayout(menu3b, new UIObjectDBMonitor(), true, 1) {
+        UIElement menu2 = new UISplitterLayout(menu3b, new UIObjectDBMonitor(app), true, 1) {
             @Override
             public String toString() {
                 return TXDB.get("System Tools");
@@ -293,7 +293,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                     try {
                                         IRIO irio = rio.getObject();
                                         IMIUtils.runIMISegment(is, irio);
-                                        AppMain.objectDB.objectRootModified(rio, new SchemaPath(new OpaqueSchemaElement(), rio));
+                                        AppMain.objectDB.objectRootModified(rio, new SchemaPath(new OpaqueSchemaElement(app), rio));
                                         AppMain.launchDialog(TXDB.get("It is done."));
                                     } catch (Exception ioe) {
                                         try {
@@ -521,7 +521,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         }
         for (String k : rio.getIVars())
             total += universalStringLocator(app, rio.getIVar(k), string, writing);
-        IMagicalBinder b = MagicalBinders.getBinderFor(rio);
+        IMagicalBinder b = MagicalBinders.getBinderFor(app, rio);
         if (b != null) {
             IRIO bound = MagicalBinders.toBoundWithCache(app, b, rio);
             int c = universalStringLocator(app, bound, string, writing);

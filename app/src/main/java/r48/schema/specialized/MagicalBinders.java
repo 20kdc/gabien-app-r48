@@ -8,7 +8,6 @@
 package r48.schema.specialized;
 
 import r48.App;
-import r48.AppMain;
 import r48.RubyIO;
 import r48.io.data.IRIO;
 
@@ -41,11 +40,11 @@ public class MagicalBinders {
         return null;
     }
 
-    public static IMagicalBinder getBinderFor(IRIO rio) {
+    public static IMagicalBinder getBinderFor(App app, IRIO rio) {
         if (rio.getType() == 'u')
-            if (AppMain.objectDB.binderPrefix != null)
-                if (rio.getSymbol().startsWith(AppMain.objectDB.binderPrefix)) {
-                    String bp = rio.getSymbol().substring(AppMain.objectDB.binderPrefix.length());
+            if (app.odb.binderPrefix != null)
+                if (rio.getSymbol().startsWith(app.odb.binderPrefix)) {
+                    String bp = rio.getSymbol().substring(app.odb.binderPrefix.length());
                     return MagicalBinders.getBinderByName(bp);
                 }
         return null;

@@ -7,6 +7,8 @@
 
 package r48.schema;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import r48.io.data.IRIO;
@@ -20,12 +22,14 @@ public class HalfsplitSchemaElement extends SchemaElement {
     public SchemaElement a, b;
     public double weight = 0.5d;
 
-    public HalfsplitSchemaElement(SchemaElement va, SchemaElement vb) {
+    public HalfsplitSchemaElement(@NonNull SchemaElement va, @NonNull SchemaElement vb) {
+        super(va.app);
         a = va;
         b = vb;
     }
 
-    public HalfsplitSchemaElement(SchemaElement va, SchemaElement vb, double wei) {
+    public HalfsplitSchemaElement(@NonNull SchemaElement va, @NonNull SchemaElement vb, double wei) {
+        super(va.app);
         a = va;
         b = vb;
         weight = wei;

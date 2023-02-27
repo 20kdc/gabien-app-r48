@@ -31,7 +31,8 @@ public class GenposSchemaElement extends SchemaElement {
     private String genposType, a1, a2, b1, b2;
     private int framerate;
 
-    public GenposSchemaElement(String type, String arg, String arg1, String arg2, String arg3, int fps) {
+    public GenposSchemaElement(App app, String type, String arg, String arg1, String arg2, String arg3, int fps) {
+        super(app);
         genposType = type;
         a1 = arg;
         a2 = arg1;
@@ -47,7 +48,7 @@ public class GenposSchemaElement extends SchemaElement {
             @Override
             public void run() {
                 final ISchemaHost launcher = lBase.newBlank();
-                TempDialogSchemaChoice boot = new TempDialogSchemaChoice(null, null, pBase);
+                TempDialogSchemaChoice boot = new TempDialogSchemaChoice(app, null, null, pBase);
                 final SchemaPath path = pBase.newWindow(boot, target);
                 if (genposType.equals("vxaAnimation") || genposType.equals("xpAnimation")) {
                     Runnable updater = new Runnable() {
@@ -123,7 +124,7 @@ public class GenposSchemaElement extends SchemaElement {
                         }
                     };
 
-                    final R2kGenposFrame frame = new R2kGenposFrame(sc, path, outbound);
+                    final R2kGenposFrame frame = new R2kGenposFrame(app, sc, path, outbound);
                     final RMGenposAnim anim = new RMGenposAnim(framesObject, frame, outbound, true);
 
                     frame.frameSource = new ISupplier<IRIO>() {

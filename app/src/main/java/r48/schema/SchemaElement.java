@@ -10,6 +10,7 @@ package r48.schema;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.ui.UIElement;
+import r48.App;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -19,7 +20,11 @@ import r48.schema.util.SchemaPath;
  * (Oh dear it had to be merged to prevent typing issues systemwide)
  * Created on November 21, 2018.
  */
-public abstract class SchemaElement {
+public abstract class SchemaElement extends App.Svc {
+    public SchemaElement(App app) {
+        super(app);
+    }
+
     // For lack of a better place.
     public static boolean checkType(IRIO tgt, int t, String objType, boolean setDefault) {
         if (tgt.getType() != t)

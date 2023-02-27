@@ -10,6 +10,7 @@ package r48.schema.specialized;
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
+import r48.App;
 import r48.FontSizes;
 import r48.dbs.FormatSyntax;
 import r48.io.data.IRIO;
@@ -29,7 +30,8 @@ public class SpritesheetCoreSchemaElement extends SchemaElement {
     public IFunction<IRIO, IRIO> numberProvider;
     public IFunction<IRIO, ISpritesheetProvider> provider;
 
-    public SpritesheetCoreSchemaElement(String propTranslated, int def, IFunction<IRIO, IRIO> nprov, IFunction<IRIO, ISpritesheetProvider> core) {
+    public SpritesheetCoreSchemaElement(App app, String propTranslated, int def, IFunction<IRIO, IRIO> nprov, IFunction<IRIO, ISpritesheetProvider> core) {
+        super(app);
         text = propTranslated;
         defaultVal = def;
         numberProvider = nprov;
@@ -43,7 +45,7 @@ public class SpritesheetCoreSchemaElement extends SchemaElement {
         return new UITextButton(FormatSyntax.formatExtended(text, actTarg), FontSizes.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
-                TempDialogSchemaChoice temp = new TempDialogSchemaChoice(null, null, path);
+                TempDialogSchemaChoice temp = new TempDialogSchemaChoice(app, null, null, path);
                 final SchemaPath innerPath = path.newWindow(temp, target);
                 temp.heldDialog = new UISpritesheetChoice(actTarg.getFX(), localProvider, new IConsumer<Long>() {
                     @Override

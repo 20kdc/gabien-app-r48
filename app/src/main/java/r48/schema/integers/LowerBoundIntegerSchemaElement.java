@@ -7,6 +7,8 @@
 
 package r48.schema.integers;
 
+import r48.App;
+
 /**
  * Useful for hash keys.
  * Created on 02/06/17.
@@ -14,8 +16,8 @@ package r48.schema.integers;
 public class LowerBoundIntegerSchemaElement extends IntegerSchemaElement {
     public int lowerBound;
 
-    public LowerBoundIntegerSchemaElement(int bound, int i) {
-        super(i);
+    public LowerBoundIntegerSchemaElement(App app, int bound, int i) {
+        super(app, i);
         lowerBound = bound;
     }
 

@@ -11,6 +11,7 @@ import gabien.IGrDriver;
 import gabien.IPeripherals;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
+import r48.App;
 import r48.FontSizes;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
@@ -23,6 +24,10 @@ import r48.schema.util.SchemaPath;
  * Created on 12/29/16.
  */
 public class EPGDisplaySchemaElement extends SchemaElement {
+    public EPGDisplaySchemaElement(App app) {
+        super(app);
+    }
+
     @Override
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, SchemaPath path) {
         final int sprScale = FontSizes.getSpriteScale();
