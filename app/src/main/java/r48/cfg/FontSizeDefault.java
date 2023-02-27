@@ -5,7 +5,7 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48;
+package r48.cfg;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

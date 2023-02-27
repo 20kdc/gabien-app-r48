@@ -13,7 +13,7 @@ import gabien.GaBIEn;
 import gabien.ui.UIBorderedElement;
 import r48.AdHocSaveLoad;
 import r48.RubyIO;
-import r48.FontSizes.FontSizeField;
+import r48.cfg.FontSizes.FontSizeField;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 

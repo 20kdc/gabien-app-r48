@@ -13,8 +13,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.ui.UIBorderedElement;
-import r48.FontSizes;
-import r48.FontSizes.FontSizeField;
+import r48.cfg.FontSizes.FontSizeField;
 
 /**
  * Here goes nothing...

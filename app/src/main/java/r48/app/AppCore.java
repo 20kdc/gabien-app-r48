@@ -16,9 +16,9 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import gabien.uslx.append.IConsumer;
-import r48.FontSizes;
 import r48.RubyIO;
 import r48.cfg.Config;
+import r48.cfg.FontSizes;
 import r48.dbs.ATDB;
 import r48.dbs.FormatSyntax;
 import r48.dbs.ObjectDB;

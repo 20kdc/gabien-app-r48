@@ -5,10 +5,12 @@
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
 
-package r48;
+package r48.cfg;
 
 import gabien.GaBIEn;
 import gabien.uslx.append.*;
+import r48.AdHocSaveLoad;
+import r48.RubyIO;
 import r48.dbs.TXDB;
 
 import java.lang.reflect.Field;
@@ -23,109 +25,109 @@ public class FontSizes {
     // NOTE: TXDB ANNOTATIONS REQUIRED HERE! The comments are still picked up by the translation aid.
 
     @FontSizeDefault(16)
-    public static int schemaPathTextHeight;
+    public int schemaPathTextHeight;
     @FontSizeDefault(16)
-    public static int schemaFieldTextHeight; // also class names
+    public int schemaFieldTextHeight; // also class names
     @FontSizeDefault(16)
-    public static int schemaArrayAddTextHeight;
+    public int schemaArrayAddTextHeight;
     @FontSizeDefault(16)
-    public static int enumChoiceTextHeight;
+    public int enumChoiceTextHeight;
     @FontSizeDefault(16)
-    public static int blobTextHeight;
+    public int blobTextHeight;
 
     @FontSizeDefault(6)
-    public static int gridTextHeight;
+    public int gridTextHeight;
     @FontSizeDefault(16)
-    public static int tableElementTextHeight;
+    public int tableElementTextHeight;
     @FontSizeDefault(16)
-    public static int tableSizeTextHeight;
+    public int tableSizeTextHeight;
     @FontSizeDefault(16)
-    public static int tableResizeTextHeight;
+    public int tableResizeTextHeight;
 
     @FontSizeDefault(16)
-    public static int mapPositionTextHeight;
+    public int mapPositionTextHeight;
     @FontSizeDefault(16)
-    public static int mapInfosTextHeight; // separate tab!
+    public int mapInfosTextHeight; // separate tab!
     @FontSizeDefault(16)
-    public static int mapLayertabTextHeight;
+    public int mapLayertabTextHeight;
 
     @FontSizeDefault(16)
-    public static int eventPickerEntryTextHeight;
+    public int eventPickerEntryTextHeight;
     @FontSizeDefault(6)
-    public static int tilesTabTextHeight;
+    public int tilesTabTextHeight;
     @FontSizeDefault(8)
-    public static int atSubtoolTextHeight;
+    public int atSubtoolTextHeight;
 
     @FontSizeDefault(16)
-    public static int rmaTimeframeTextHeight;
+    public int rmaTimeframeTextHeight;
     @FontSizeDefault(16)
-    public static int rmaCellTextHeight;
+    public int rmaCellTextHeight;
 
     @FontSizeDefault(6)
-    public static int tonePickerTextHeight;
+    public int tonePickerTextHeight;
 
     @FontSizeDefault(16)
-    public static int dialogWindowTextHeight;
+    public int dialogWindowTextHeight;
     @FontSizeDefault(16)
-    public static int textDialogFieldTextHeight;
+    public int textDialogFieldTextHeight;
     @FontSizeDefault(16)
-    public static int textDialogDescTextHeight;
+    public int textDialogDescTextHeight;
 
     @FontSizeDefault(16)
-    public static int helpTextHeight;
+    public int helpTextHeight;
     @FontSizeDefault(16)
-    public static int helpLinkHeight;
+    public int helpLinkHeight;
     @FontSizeDefault(16)
-    public static int helpPathHeight;
+    public int helpPathHeight;
 
     @FontSizeDefault(16)
-    public static int inspectorBackTextHeight;
+    public int inspectorBackTextHeight;
     @FontSizeDefault(8)
-    public static int inspectorTextHeight;
+    public int inspectorTextHeight;
 
     @FontSizeDefault(16)
-    public static int windowFrameHeight;
+    public int windowFrameHeight;
     @FontSizeDefault(16)
-    public static int statusBarTextHeight;
+    public int statusBarTextHeight;
     @FontSizeDefault(16)
-    public static int tabTextHeight;
+    public int tabTextHeight;
     @FontSizeDefault(16)
-    public static int menuTextHeight;
-
-    @FontSizeDefault(8)
-    public static int maintabsScrollersize;
-
-    @FontSizeDefault(16)
-    public static int objectDBMonitorTextHeight;
-    @FontSizeDefault(16)
-    public static int fontSizerTextHeight;
-    @FontSizeDefault(16)
-    public static int gSysCoreTextHeight; // Has a special hook needed to make this work
-    @FontSizeDefault(16)
-    public static int launcherTextHeight;
-    @FontSizeDefault(16)
-    public static int imageEditorTextHeight; // Compat. check is performed to ensure this doesn't get reset to 16 - see load
+    public int menuTextHeight;
 
     @FontSizeDefault(8)
-    public static int mapToolbarScrollersize;
+    public int maintabsScrollersize;
+
+    @FontSizeDefault(16)
+    public int objectDBMonitorTextHeight;
+    @FontSizeDefault(16)
+    public int fontSizerTextHeight;
+    @FontSizeDefault(16)
+    public int gSysCoreTextHeight; // Has a special hook needed to make this work
+    @FontSizeDefault(16)
+    public int launcherTextHeight;
+    @FontSizeDefault(16)
+    public int imageEditorTextHeight; // Compat. check is performed to ensure this doesn't get reset to 16 - see load
+
     @FontSizeDefault(8)
-    public static int tilesTabScrollersize;
+    public int mapToolbarScrollersize;
     @FontSizeDefault(8)
-    public static int schemaPagerTabScrollersize;
+    public int tilesTabScrollersize;
+    @FontSizeDefault(8)
+    public int schemaPagerTabScrollersize;
 
     @FontSizeDefault(24)
-    public static int gridScrollersize;
+    public int gridScrollersize;
     @FontSizeDefault(8)
-    public static int cellSelectScrollersize;
+    public int cellSelectScrollersize;
     @FontSizeDefault(24)
-    public static int generalScrollersize;
+    public int generalScrollersize;
     @FontSizeDefault(24)
-    public static int menuScrollersize;
+    public int menuScrollersize;
 
     @FontSizeDefault(10)
-    public static int uiGuessScaleTenths;
+    public int uiGuessScaleTenths;
     @FontSizeDefault(10)
-    public static int uiGridScaleTenths;
+    public int uiGridScaleTenths;
 
     // This hides the implied reflection for simplicity
     public LinkedList<FontSizeField> getFields() {
@@ -151,7 +153,7 @@ public class FontSizes {
         return sysfontDisabled;
     }
 
-    public static class FontSizeField implements IConsumer<Integer>, ISupplier<Integer> {
+    public class FontSizeField implements IConsumer<Integer>, ISupplier<Integer> {
         // untranslated
         public final String name;
         public final int defValue;
@@ -168,7 +170,7 @@ public class FontSizes {
             try {
                 if (name.equals("gSysCoreTextHeight"))
                     GaBIEn.sysCoreFontSize = integer;
-                intern.setInt(null, integer);
+                intern.setInt(FontSizes.this, integer);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
@@ -177,22 +179,22 @@ public class FontSizes {
         @Override
         public Integer get() {
             try {
-                return intern.getInt(null);
+                return intern.getInt(FontSizes.this);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    public static int scaleGuess(int defaultVal) {
+    public int scaleGuess(int defaultVal) {
         return (defaultVal * uiGuessScaleTenths) / 10;
     }
 
-    public static int scaleGrid(int defaultVal) {
+    public int scaleGrid(int defaultVal) {
         return (defaultVal * uiGridScaleTenths) / 10;
     }
 
-    public static int getSpriteScale() {
+    public int getSpriteScale() {
         return ((uiGuessScaleTenths + 5) / 10);
     }
 }
