@@ -403,7 +403,7 @@ public class SDB extends App.Svc {
                                 return new SubwindowSchemaElement(get(), new IFunction<IRIO, String>() {
                                     @Override
                                     public String apply(IRIO rubyIO) {
-                                        return TXDB.nameDB.get("Interp." + textFinal).apply(rubyIO);
+                                        return app.fmt.nameDB.get("Interp." + textFinal).apply(rubyIO);
                                     }
                                 });
                             } else {
@@ -912,7 +912,7 @@ public class SDB extends App.Svc {
                         for (String ps : arguments)
                             argumentsPS[idx++] = PathSyntax.compile(ps);
 
-                        TXDB.nameDB.put(args[1], new IFunction<IRIO, String>() {
+                        app.fmt.nameDB.put(args[1], new IFunction<IRIO, String>() {
                             @Override
                             public String apply(IRIO rubyIO) {
                                 LinkedList<IRIO> parameters = new LinkedList<IRIO>();

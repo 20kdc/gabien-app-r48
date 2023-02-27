@@ -351,39 +351,6 @@ public class BasicToolset extends App.Svc implements IToolset {
                     public void run() {
                         TXDB.performDump("Lang", "SDB@");
                         TXDB.performDump("Cmtx", "CMDB@");
-                        PrintStream psA = null;
-                        PrintStream psB = null;
-                        try {
-                            psA = new PrintStream(GaBIEn.getOutFile(app.rootPath + "Lang" + TXDB.getLanguage() + ".txt"), false, "UTF-8");
-                            psB = new PrintStream(GaBIEn.getOutFile(app.rootPath + "Cmtx" + TXDB.getLanguage() + ".txt"), false, "UTF-8");
-                        } catch (UnsupportedEncodingException e) {
-                            throw new RuntimeException(e);
-                        }
-                        LinkedList<String> t = new LinkedList<String>(TXDB.ssTexts);
-                        Collections.sort(t);
-                        for (String s : t) {
-                            String key = TXDB.stripContext(s);
-                            String ctx = s.substring(0, s.length() - (key.length() + 1));
-                            if (s.startsWith("SDB@")) {
-                                psA.println("x \"" + s.substring(4) + "\"");
-                                if (TXDB.has(s)) {
-                                    psA.println("y \"" + TXDB.get(ctx, key) + "\"");
-                                } else {
-                                    psA.println(" TODO");
-                                    psA.println("y \"" + key + "\"");
-                                }
-                            } else if (s.startsWith("CMDB@")) {
-                                psB.println("x \"" + s.substring(5) + "\"");
-                                if (TXDB.has(s)) {
-                                    psB.println("y \"" + TXDB.get(ctx, key) + "\"");
-                                } else {
-                                    psB.println(" TODO");
-                                    psB.println("y \"" + key + "\"");
-                                }
-                            }
-                        }
-                        psA.close();
-                        psB.close();
                         app.ui.launchDialog(TXDB.get("Wrote Lang and Cmtx files to R48 startup directory (to be put in schema dir.)"));
                     }
                 },

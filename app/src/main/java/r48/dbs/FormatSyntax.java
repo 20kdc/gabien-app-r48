@@ -15,6 +15,8 @@ import r48.schema.AggregateSchemaElement;
 import r48.schema.EnumSchemaElement;
 import r48.schema.SchemaElement;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
@@ -22,8 +24,78 @@ import java.util.LinkedList;
  * Created on 11/06/17.
  */
 public class FormatSyntax extends AppCore.Csv {
+    public HashMap<String, IFunction<IRIO, String>> nameDB = new HashMap<>();
+
     public FormatSyntax(AppCore app) {
         super(app);
+        // Usage: {@[lang-Russian-pluralRange][#A #B]|0|plural-form-0|1|plural-form-1|2|plural-form-2}
+        // Explicitly for Set Variables use and similar.
+        // Yes, if you request it, I'll make a similar TXDB routine for you,
+        //  assuming it's not ridiculously complicated.
+        nameDB.put("Interp.lang-Russian-pluralRange", new IFunction<IRIO, String>() {
+            @Override
+            public String apply(IRIO rubyIO) {
+                String[] range = rubyIO.decString().split(" ");
+                int v = Integer.valueOf(range[1]);
+                v -= Integer.valueOf(range[0]) - 1;
+                int i = v % 10;
+                if ((i == 1) && (v != 11))
+                    return "0";
+                if ((i >= 2) && (i <= 4) && ((v / 10) != 1))
+                    return "1";
+                return "2";
+            }
+        });
+        nameDB.put("Interp.lang-Common-arrayLen", new IFunction<IRIO, String>() {
+            @Override
+            public String apply(IRIO rubyIO) {
+                return Integer.toString(rubyIO.getALen());
+            }
+        });
+        nameDB.put("Interp.lang-Common-add", new IFunction<IRIO, String>() {
+            @Override
+            public String apply(IRIO rubyIO) {
+                String[] range = rubyIO.decString().split(" ");
+                int v = 0;
+                for (String s : range)
+                    v += Integer.valueOf(s);
+                return Integer.toString(v);
+            }
+        });
+        nameDB.put("Interp.lang-Common-r2kTsConverter", new IFunction<IRIO, String>() {
+            @Override
+            public String apply(IRIO rubyIO) {
+                double d = Double.parseDouble(rubyIO.decString());
+                // WARNING: THIS IS MADNESS, and could be off by a few seconds.
+                // In practice I tested it and it somehow wasn't off at all.
+                // Command used given here:
+                // [gamemanj@archways ~]$ date --date="12/30/1899 12:00 am" +%s
+                // -2209161600
+                // since we want ms, 3 more 0s have been added
+                long v = -2209161600000L;
+                long dayLen = 24L * 60L * 60L * 1000L;
+                // Ok, so, firstly, fractional part is considered completely separately and absolutely.
+                double fractional = Math.abs(d);
+                fractional -= Math.floor(fractional);
+                // Now get rid of fractional in the "right way" (round towards 0)
+                if (d < 0) {
+                    d += fractional;
+                } else {
+                    d -= fractional;
+                }
+                v += ((long) d) * dayLen;
+                v += (long) (fractional * dayLen);
+
+                // NOTE: This converts to local time zone.
+                return new Date(v).toString();
+            }
+        });
+        nameDB.put("lang-Common-valueSyntax", new IFunction<IRIO, String>() {
+            @Override
+            public String apply(IRIO rubyIO) {
+                return ValueSyntax.encode(rubyIO);
+            }
+        });
     }
     // The new format allows for more precise setups,
     // but isn't as neat.
@@ -162,7 +234,7 @@ public class FormatSyntax extends AppCore.Csv {
                     } else {
                         // Meta-interpretation syntax
                         String tp = type.substring(1);
-                        IFunction<IRIO, String> n = TXDB.nameDB.get(tp);
+                        IFunction<IRIO, String> n = nameDB.get(tp);
                         if (n == null)
                             throw new RuntimeException("Expected NDB " + tp);
                         r.append(n.apply(root));
@@ -237,7 +309,7 @@ public class FormatSyntax extends AppCore.Csv {
 
     public String interpretParameter(IRIO rubyIO, String st, boolean prefixEnums) {
         if (st != null) {
-            IFunction<IRIO, String> handler = TXDB.nameDB.get("Interp." + st);
+            IFunction<IRIO, String> handler = nameDB.get("Interp." + st);
             if (handler != null) {
                 return handler.apply(rubyIO);
             } else {
@@ -252,7 +324,7 @@ public class FormatSyntax extends AppCore.Csv {
     public String interpretParameter(IRIO rubyIO, SchemaElement ise, boolean prefixEnums) {
         // Basically, Class. overrides go first, then everything else comes after.
         if (rubyIO.getType() == 'o') {
-            IFunction<IRIO, String> handler = TXDB.nameDB.get("Class." + rubyIO.getSymbol());
+            IFunction<IRIO, String> handler = nameDB.get("Class." + rubyIO.getSymbol());
             if (handler != null)
                 return handler.apply(rubyIO);
         }

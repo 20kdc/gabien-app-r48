@@ -69,7 +69,6 @@ public class AppMain {
     public static void shutdown(App app) {
         if (app != null)
             app.shutdown();
-        TXDB.flushNameDB();
         GaBIEn.hintFlushAllTheCaches();
     }
 
