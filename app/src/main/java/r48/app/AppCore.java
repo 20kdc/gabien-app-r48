@@ -61,8 +61,8 @@ public class AppCore {
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public AppCore(Config cfg, @NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
-        c = cfg;
+    public AppCore(InterlaunchGlobals ilg, @NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
+        c = ilg.c;
         f = c.f;
         rootPath = rp;
         secondaryImagePath = sip;

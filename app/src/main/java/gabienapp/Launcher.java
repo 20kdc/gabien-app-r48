@@ -12,6 +12,7 @@ import gabien.ui.UIElement;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabienapp.state.LSMain;
 import gabienapp.state.LSSplashScreen;
+import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.cfg.FontSizes.FontSizeField;
@@ -25,6 +26,7 @@ public class Launcher {
     public final boolean isMobile;
     public final Config c;
     public final WindowCreatingUIElementConsumer uiTicker;
+    public final InterlaunchGlobals ilg;
     public State currentState;
 
     public int globalMS = 50;
@@ -36,6 +38,7 @@ public class Launcher {
         c = new Config(isMobile);
         c.applyUIGlobals();
         uiTicker = new WindowCreatingUIElementConsumer();
+        ilg = new InterlaunchGlobals(c);
         // Setup initial state
         currentState = new LSSplashScreen(this, () -> {
             TXDB.init();

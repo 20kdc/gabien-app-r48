@@ -12,6 +12,7 @@ import gabien.uslx.vfs.FSBackend;
 import gabien.ui.IPointer;
 import r48.App;
 import r48.app.AppMain;
+import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
 import r48.dbs.ObjectDB;
 import r48.io.IObjectBackend;
@@ -53,7 +54,8 @@ public class TestKickstart {
         IObjectBackend.Factory.encoding = encoding;
         Config c = new Config(false);
         c.applyUIGlobals();
-        return AppMain.initializeCore(c, s2, "", schema, (s) -> {});
+        InterlaunchGlobals ilg = new InterlaunchGlobals(c);
+        return AppMain.initializeCore(ilg, s2, "", schema, (s) -> {});
     }
 
     public static void kickstartRFS() {

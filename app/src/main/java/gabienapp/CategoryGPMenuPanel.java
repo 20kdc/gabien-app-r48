@@ -124,7 +124,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                             TXDB.loadGamepakLanguage(objName + "/");
                             // Regarding thread safety, this should be safe enough because app is kept here.
                             // It's then transferred out.
-                            App app = AppMain.initializeCore(ls.lun.c, rootPath, silPath, objName + "/", theKickstart);
+                            App app = AppMain.initializeCore(ls.lun.ilg, rootPath, silPath, objName + "/", theKickstart);
                             AppMain.initializeUI(app, ls.lun.uiTicker, ls.lun.isMobile);
                             theKickstart.doneInjector.set(new Runnable() {
                                 @Override

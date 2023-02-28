@@ -20,7 +20,7 @@ import r48.app.AppCore;
 import r48.app.AppNewProject;
 import r48.app.AppUI;
 import r48.app.IAppAsSeenByLauncher;
-import r48.cfg.Config;
+import r48.app.InterlaunchGlobals;
 import r48.map.StuffRenderer;
 
 /**
@@ -48,8 +48,8 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public App(Config c, String rp, String sip, IConsumer<String> loadProgress) {
-        super(c, rp, sip, loadProgress);
+    public App(InterlaunchGlobals ilg, String rp, String sip, IConsumer<String> loadProgress) {
+        super(ilg, rp, sip, loadProgress);
     }
 
     /**
