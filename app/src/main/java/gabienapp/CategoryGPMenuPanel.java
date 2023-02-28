@@ -111,6 +111,9 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                 final String rootPath = PathUtils.fixRootPath(ls2.rootPath);
                 final String silPath = PathUtils.fixRootPath(ls2.secondaryImagePath);
 
+                final LSInApp lia = new LSInApp(ls.lun);
+                ls.lun.currentState = lia;
+
                 // Start fancy loading screen.
                 final UIFancyInit theKickstart = new UIFancyInit(ls.lun.c);
                 ls.lun.uiTicker.accept(theKickstart);
@@ -119,14 +122,15 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                     public void run() {
                         try {
                             TXDB.loadGamepakLanguage(objName + "/");
+                            // Regarding thread safety, this should be safe enough because app is kept here.
+                            // It's then transferred out.
                             App app = AppMain.initializeCore(ls.lun.c, rootPath, silPath, objName + "/", theKickstart);
-                            final ISupplier<IConsumer<Double>> appTickerGen = AppMain.initializeUI(app, ls.lun.uiTicker, ls.lun.isMobile);
-                            final LSInApp lia = new LSInApp(ls.lun, app);
+                            AppMain.initializeUI(app, ls.lun.uiTicker, ls.lun.isMobile);
                             theKickstart.doneInjector.set(new Runnable() {
                                 @Override
                                 public void run() {
-                                    // The .get() must occur here, after the window is absolutely definitely gone.
-                                    lia.appTicker = appTickerGen.get();
+                                    lia.app = app;
+                                    app.ui.finishInitialization();
                                 }
                             });
                         } catch (final RuntimeException e) {

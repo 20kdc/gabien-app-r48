@@ -57,6 +57,10 @@ public class AppCore {
 
     public final @NonNull IConsumer<String> loadProgress;
 
+    /**
+     * Initialize App.
+     * Warning: Occurs off main thread.
+     */
     public AppCore(Config cfg, @NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
         c = cfg;
         f = c.f;

@@ -24,6 +24,7 @@ import gabien.ui.WindowCreatingUIElementConsumer;
 import r48.AdHocSaveLoad;
 import r48.App;
 import r48.app.AppMain;
+import r48.app.IAppAsSeenByLauncher;
 import r48.dbs.TXDB;
 import r48.wm.Coco;
 
@@ -41,7 +42,7 @@ public class ErrorHandler {
     }
 
     // If this returns true, the app must be stopped
-    public boolean handle(@Nullable App app, Exception e, WindowCreatingUIElementConsumer uiTicker) {
+    public boolean handle(@Nullable IAppAsSeenByLauncher app, Exception e, WindowCreatingUIElementConsumer uiTicker) {
         // ok, so, 'what is going on with the flags', you might ask?
         // Well:
         // backupAvailable describes the state of the LAST backup made
@@ -62,7 +63,7 @@ public class ErrorHandler {
                     } catch (Exception e2) {
                         sw.append("\n(exception during exception print)\n");
                     }
-                    AppMain.performSystemDump(app, true, "exception: " + sw.toString());
+                    AppMain.performSystemDump((App) app, true, "exception: " + sw.toString());
                 } catch (Exception finalErr) {
                     System.err.println("Failed to backup:");
                     finalErr.printStackTrace();

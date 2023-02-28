@@ -21,7 +21,6 @@ import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.uslx.append.IConsumer;
-import gabien.uslx.append.ISupplier;
 import r48.App;
 import r48.IMapContext;
 import r48.dbs.TXDB;
@@ -68,12 +67,14 @@ public class AppUI extends App.Svc {
     // This is the main map context. Expect this to randomly be null and try to avoid accessing it.
     public IMapContext mapContext;
 
+    private UISymbolButton saveButtonSym;
+
     public AppUI(App app, boolean mobile) {
         super(app);
         isMobile = mobile;
     }
 
-    public ISupplier<IConsumer<Double>> initialize(WindowCreatingUIElementConsumer uiTicker) {
+    public void initialize(WindowCreatingUIElementConsumer uiTicker) {
         app.loadProgress.accept(TXDB.get("Initializing UI..."));
 
         GaBIEn.setBrowserDirectory(app.rootPath);
@@ -87,7 +88,7 @@ public class AppUI extends App.Svc {
         app.stuffRendererIndependent = app.system.rendererFromTso(null);
 
         // initialize UI
-        final UISymbolButton sym = new UISymbolButton(Art.Symbol.Save, app.f.tabTextHeight, new Runnable() {
+        saveButtonSym = new UISymbolButton(Art.Symbol.Save, app.f.tabTextHeight, new Runnable() {
             @Override
             public void run() {
                 saveAllModified();
@@ -107,7 +108,7 @@ public class AppUI extends App.Svc {
                 app.sdb.kickAllDictionariesForMapChange();
             }
         }));
-        UISplitterLayout usl = new UISplitterLayout(sym, sym2, false, 0.5);
+        UISplitterLayout usl = new UISplitterLayout(saveButtonSym, sym2, false, 0.5);
         wm = new WindowManager(app, uiTicker, null, usl);
 
         initializeTabs();
@@ -138,41 +139,36 @@ public class AppUI extends App.Svc {
                 }, app.f.menuTextHeight, app.f.menuScrollersize, true));
             }
         }
+    }
 
-        return new ISupplier<IConsumer<Double>>() {
-            @Override
-            public IConsumer<Double> get() {
-                wm.finishInitialization();
-                return new IConsumer<Double>() {
-                    @Override
-                    public void accept(Double deltaTime) {
-                        sym.symbol = hasModified() ? Art.Symbol.Save : Art.Symbol.SaveDisabled;
-                        if (mapContext != null) {
-                            String mapId = mapContext.getCurrentMapObject();
-                            IObjectBackend.ILoadedObject map = null;
-                            if (mapId != null)
-                                map = app.odb.getObject(mapId);
-                            app.sdb.updateDictionaries(map);
-                        } else {
-                            app.sdb.updateDictionaries(null);
-                        }
+    public void finishInitialization() {
+        wm.finishInitialization();
+    }
 
-                        app.odb.runPendingModifications();
+    public void tick(double dT) {
+        saveButtonSym.symbol = hasModified() ? Art.Symbol.Save : Art.Symbol.SaveDisabled;
+        if (mapContext != null) {
+            String mapId = mapContext.getCurrentMapObject();
+            IObjectBackend.ILoadedObject map = null;
+            if (mapId != null)
+                map = app.odb.getObject(mapId);
+            app.sdb.updateDictionaries(map);
+        } else {
+            app.sdb.updateDictionaries(null);
+        }
 
-                        LinkedList<Runnable> runs = new LinkedList<Runnable>(app.uiPendingRunnables);
-                        app.uiPendingRunnables.clear();
-                        for (Runnable r : runs)
-                            r.run();
+        app.odb.runPendingModifications();
 
-                        LinkedList<ISchemaHost> newActive = new LinkedList<ISchemaHost>();
-                        for (ISchemaHost ac : activeHosts)
-                            if (ac.isActive())
-                                newActive.add(ac);
-                        activeHosts = newActive;
-                    }
-                };
-            }
-        };
+        LinkedList<Runnable> runs = new LinkedList<Runnable>(app.uiPendingRunnables);
+        app.uiPendingRunnables.clear();
+        for (Runnable r : runs)
+            r.run();
+
+        LinkedList<ISchemaHost> newActive = new LinkedList<ISchemaHost>();
+        for (ISchemaHost ac : activeHosts)
+            if (ac.isActive())
+                newActive.add(ac);
+        activeHosts = newActive;
     }
 
     private void initializeTabs() {

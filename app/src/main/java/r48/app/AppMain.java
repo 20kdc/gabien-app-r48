@@ -7,7 +7,6 @@
 
 package r48.app;
 
-import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.AdHocSaveLoad;
@@ -28,7 +27,7 @@ import java.util.*;
 /**
  * Used to contain static variables, now just initialization routines.
  * This is theoretically roughly one of the oldest classes in the project, but has been phased out.
- * Created on 12/27/16. Being phased out as of 26th February 2023.
+ * Created on 12/27/16. Being phased out as of 26th February 2023, reduced to static methods as of the 28th.
  */
 public class AppMain {
     public static App initializeCore(Config c, final String rp, final String sip, final String gamepak, final IConsumer<String> progress) {
@@ -60,16 +59,10 @@ public class AppMain {
         return app;
     }
 
-    public static ISupplier<IConsumer<Double>> initializeUI(App app, final WindowCreatingUIElementConsumer uiTicker, boolean mobile) {
+    public static void initializeUI(App app, final WindowCreatingUIElementConsumer uiTicker, boolean mobile) {
         app.np = new AppNewProject(app);
         app.ui = new AppUI(app, mobile);
-        return app.ui.initialize(uiTicker);
-    }
-
-    public static void shutdown(App app) {
-        if (app != null)
-            app.shutdown();
-        GaBIEn.hintFlushAllTheCaches();
+        app.ui.initialize(uiTicker);
     }
 
     // Is this messy? Yes. Is it required? After someone lost some work to R48? YES IT DEFINITELY IS.

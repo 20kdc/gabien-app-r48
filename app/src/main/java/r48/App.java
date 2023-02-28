@@ -11,6 +11,7 @@ import java.util.HashSet;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.UIElement.UIPanel;
 import gabien.ui.UIElement.UIProxy;
@@ -18,6 +19,7 @@ import gabien.uslx.append.IConsumer;
 import r48.app.AppCore;
 import r48.app.AppNewProject;
 import r48.app.AppUI;
+import r48.app.IAppAsSeenByLauncher;
 import r48.cfg.Config;
 import r48.map.StuffRenderer;
 
@@ -25,7 +27,7 @@ import r48.map.StuffRenderer;
  * An attempt to move as much as possible out of static variables.
  * Created 26th February, 2023
  */
-public final class App extends AppCore {
+public final class App extends AppCore implements IAppAsSeenByLauncher {
     public HashMap<Integer, String> osSHESEDB;
     // scheduled tasks for when UI is around, not in UI because it may not init (ever, even!)
     public HashSet<Runnable> uiPendingRunnables = new HashSet<Runnable>();
@@ -42,8 +44,23 @@ public final class App extends AppCore {
         c.applyUIGlobals();
     };
 
+    /**
+     * Initialize App.
+     * Warning: Occurs off main thread.
+     */
     public App(Config c, String rp, String sip, IConsumer<String> loadProgress) {
         super(c, rp, sip, loadProgress);
+    }
+
+    /**
+     * Finishes initialization on main thread just before ticking begins.
+     */
+    public void finishInitOnMainThread() {
+        ui.finishInitialization();
+    }
+
+    public void tick(double dT) {
+        ui.tick(dT);
     }
 
     public void shutdown() {
@@ -52,6 +69,7 @@ public final class App extends AppCore {
                 ui.mapContext.freeOsbResources();
             ui.mapContext = null;
         }
+        GaBIEn.hintFlushAllTheCaches();
     }
 
     public static class Svc {

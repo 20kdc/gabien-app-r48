@@ -7,12 +7,10 @@
 package gabienapp.state;
 
 import gabien.ui.UIElement;
-import gabien.uslx.append.IConsumer;
 import gabienapp.ErrorHandler;
 import gabienapp.Launcher;
 import gabienapp.Launcher.State;
-import r48.App;
-import r48.app.AppMain;
+import r48.app.IAppAsSeenByLauncher;
 
 /**
  * Main state of the launcher.
@@ -21,12 +19,11 @@ import r48.app.AppMain;
 public class LSInApp extends State {
     final ErrorHandler errorHandler;
 
-    public IConsumer<Double> appTicker = null;
-    public App app = null;
+    public boolean disableAppTicker = false;
+    public IAppAsSeenByLauncher app = null;
 
-    public LSInApp(Launcher lun, App app) {
+    public LSInApp(Launcher lun) {
         super(lun);
-        this.app = app;
         errorHandler = new ErrorHandler(lun);
     }
 
@@ -34,9 +31,8 @@ public class LSInApp extends State {
     public void tick(double dT) {
         if (lun.uiTicker.runningWindows().size() == 0) {
             // Cleanup application memory
-            AppMain.shutdown(app);
-            app = null;
-            appTicker = null;
+            if (app != null)
+                app.shutdown();
             // Next state
             lun.currentState = null;
             if (errorHandler.failed != null)
@@ -45,8 +41,9 @@ public class LSInApp extends State {
             return;
         }
         try {
-            if (appTicker != null)
-                appTicker.accept(dT);
+            if (!disableAppTicker)
+                if (app != null)
+                    app.tick(dT);
             lun.uiTicker.runTick(dT);
         } catch (Exception e) {
             if (errorHandler.handle(app, e, lun.uiTicker)) {
@@ -61,9 +58,10 @@ public class LSInApp extends State {
                         }
                     }
                 }
-                appTicker = null;
+                disableAppTicker = true;
                 try {
-                    AppMain.shutdown(app);
+                    if (app != null)
+                        app.shutdown();
                 } catch (Exception e4) {
 
                 }

@@ -24,7 +24,7 @@ public class GrandLauncherUtils {
     public static App getApp() {
         Launcher.State cs = launcher.currentState;
         if (cs instanceof LSInApp)
-            return ((LSInApp) cs).app;
+            return (App) ((LSInApp) cs).app;
         return null;
     }
 }

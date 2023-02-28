@@ -182,8 +182,6 @@ public class TestKickstart {
         GaBIEn.internalFileBrowser = impl;
         GaBIEn.internalWindowing = impl;
         GaBIEn.setupAssets();
-        // Cleanup any possible contamination of application state between tests.
-        AppMain.shutdown(null);
         // Reset GaBIEn stuff
         new Config(false).applyUIGlobals();
     }
