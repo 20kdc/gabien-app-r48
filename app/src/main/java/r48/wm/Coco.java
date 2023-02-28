@@ -64,7 +64,8 @@ public class Coco extends App.Svc {
                 return "NOT-A-RELEASE";
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return "EXCEPTION";
         }
     }
 

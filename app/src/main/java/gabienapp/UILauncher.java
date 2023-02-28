@@ -7,7 +7,6 @@
 package gabienapp;
 
 import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import gabien.GaBIEn;
 import gabien.ui.Rect;
@@ -26,9 +25,11 @@ import gabien.ui.UITabBar.TabIcon;
 import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.IFunction;
 import gabienapp.IGPMenuPanel.LauncherState;
+import gabienapp.state.LSMain;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.dbs.TXDB;
+import r48.tr.LanguageList;
 import r48.ui.UIAppendButton;
 import r48.ui.dialog.UIFontSizeConfigurator;
 import r48.ui.help.HelpSystemController;
@@ -39,9 +40,10 @@ import r48.ui.spacing.UIBorderedSubpanel;
  * Split from Application on 24th August 2022.
  */
 public class UILauncher extends UIProxy {
-    private final AtomicBoolean gamepaksRequestClose;
-    public UILauncher(Config c, final AtomicBoolean grc) {
-        gamepaksRequestClose = grc;
+    private boolean gamepaksRequestClose = false;
+    public UILauncher(final LSMain ls) {
+        final Launcher lun = ls.lun;
+        Config c = lun.c;
         final UITabPane tabPane = new UITabPane(c.f.tabTextHeight, false, false);
 
         final UIScrollLayout configure = new UIScrollLayout(true, c.f.generalScrollersize) {
@@ -76,17 +78,17 @@ public class UILauncher extends UIProxy {
             }
         };
 
-        UIAdjuster msAdjust = new UIAdjuster(c.f.launcherTextHeight, Application.globalMS, new IFunction<Long, Long>() {
+        UIAdjuster msAdjust = new UIAdjuster(c.f.launcherTextHeight, lun.globalMS, new IFunction<Long, Long>() {
             @Override
             public Long apply(Long aLong) {
                 int gms = (int) (long) aLong;
                 if (gms < 1)
                     gms = 1;
-                Application.globalMS = gms;
+                lun.globalMS = gms;
                 return (long) gms;
             }
         });
-        msAdjust.accept(Integer.toString(Application.globalMS));
+        msAdjust.accept(Integer.toString(lun.globalMS));
 
         final LinkedList<UIElement> basePanels = new LinkedList<UIElement>();
 
@@ -96,7 +98,7 @@ public class UILauncher extends UIProxy {
 
         configure.panelsAdd(new UIBorderedSubpanel(uhs, c.f.scaleGuess(8)));
 
-        configure.panelsAdd(figureOutTopBar(c, Application.uiTicker, closeHelper));
+        configure.panelsAdd(figureOutTopBar(c, lun.uiTicker, closeHelper));
 
         configure.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("MS per frame:"), c.f.launcherTextHeight), msAdjust, false, 3, 5));
 
@@ -157,11 +159,11 @@ public class UILauncher extends UIProxy {
         // ...
 
         tabPane.setForcedBounds(null, new Rect(0, 0, c.f.scaleGuess(640), c.f.scaleGuess(480)));
-        menuConstructor.accept(new PrimaryGPMenuPanel(c));
+        menuConstructor.accept(new PrimaryGPMenuPanel(ls));
         closeHelper.accept(new Runnable() {
             @Override
             public void run() {
-                gamepaksRequestClose.set(true);
+                gamepaksRequestClose = true;
             }
         });
         proxySetElement(tabPane, false);
@@ -169,7 +171,7 @@ public class UILauncher extends UIProxy {
 
     @Override
     public boolean requestsUnparenting() {
-        return gamepaksRequestClose.get();
+        return gamepaksRequestClose;
     }
 
     private static UIElement figureOutTopBar(final Config c, final WindowCreatingUIElementConsumer uiTicker, final IConsumer<Runnable> closeHelper) {
@@ -202,7 +204,7 @@ public class UILauncher extends UIProxy {
                 // This associates a lag with switching language, when it's actually due to Java being slow at loading a font.
                 // (I'm slightly glad I'm not the only one this happens for, but unhappy that it's an issue.)
                 // Unfortunately, a warning message cannot be shown to the user, as the warning message would itself trigger lag-for-font-load.
-                String lang = TXDB.getNextLanguage();
+                String lang = LanguageList.getNextLanguage(TXDB.getLanguage());
                 c.language = lang;
                 TXDB.setLanguage(lang);
                 closeHelper.accept(null);

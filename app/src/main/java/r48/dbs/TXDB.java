@@ -9,11 +9,9 @@ package r48.dbs;
 
 import gabien.GaBIEn;
 import r48.tr.ITranslator;
+import r48.tr.LanguageList;
 import r48.tr.NullTranslator;
 import r48.tr.Translator;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Text Database. This is NOT a per-system database, and is static for a reason. This covers R48 Javaside strings.
@@ -23,24 +21,10 @@ import java.util.*;
  */
 public class TXDB {
     private static ITranslator currentTranslator = new NullTranslator();
-    private static String[] languages = new String[] {"English"};
-    private static int languageId = 0;
+    private static String currentLanguage = "English";
 
     public static void init() {
-        final LinkedList<String> languageLL = new LinkedList<String>();
-        DBLoader.readFile(null, "Translations.txt", new IDatabase() {
-            @Override
-            public void newObj(int objId, String objName) throws IOException {
-
-            }
-
-            @Override
-            public void execCmd(char c, String[] args) throws IOException {
-                if (c == 'l')
-                    languageLL.add(args[0]);
-            }
-        });
-        languages = languageLL.toArray(new String[0]);
+        currentLanguage = "English";
     }
 
     // NOTE: Translation items of the form get("Blahblah") (note: comments are scanned too) cannot include backslash escapes.
@@ -65,28 +49,22 @@ public class TXDB {
         return s.substring(s.indexOf('/') + 1);
     }
 
-    public static String getNextLanguage() {
-        int nli = languageId + 1;
-        nli %= languages.length;
-        return languages[nli];
-    }
     public static void setLanguage(String s) {
-        for (int i = 0; i < languages.length; i++) {
-            if (languages[i].equals(s)) {
-                languageId = i;
-                setLanguage();
-                break;
-            }
+        if (LanguageList.hasLanguage(s)) {
+            currentLanguage = s;
+        } else {
+            currentLanguage = "English";
         }
+        setLanguage();
     }
     public static void setLanguage() {
-        if (languageId == 0) {
+        if (currentLanguage.equals("English")) {
             currentTranslator = new NullTranslator();
         } else {
-            currentTranslator = new Translator(languages[languageId]);
+            currentTranslator = new Translator(currentLanguage);
         }
-        currentTranslator.read("Systerms/" + languages[languageId] + ".txt", "r48/");
-        currentTranslator.read("Systerms/L-" + languages[languageId] + ".txt", "launcher/");
+        currentTranslator.read("Systerms/" + currentLanguage + ".txt", "r48/");
+        currentTranslator.read("Systerms/L-" + currentLanguage + ".txt", "launcher/");
         GaBIEn.wordLoad = TXDB.get("Load");
         GaBIEn.wordSave = TXDB.get("Save");
         GaBIEn.wordInvalidFileName = TXDB.get("Invalid or missing file name.");
@@ -96,17 +74,17 @@ public class TXDB {
         // think: R2k/LangTest.txt
         setLanguage();
         try {
-            currentTranslator.read(gp + "Lang" + languages[languageId] + ".txt", "SDB@");
+            currentTranslator.read(gp + "Lang" + currentLanguage + ".txt", "SDB@");
         } catch (Exception e) {
         }
         try {
-            currentTranslator.read(gp + "Cmtx" + languages[languageId] + ".txt", "CMDB@");
+            currentTranslator.read(gp + "Cmtx" + currentLanguage + ".txt", "CMDB@");
         } catch (Exception e) {
         }
     }
 
     public static String getLanguage() {
-        return languages[languageId];
+        return currentLanguage;
     }
 
     public static void performDump(String fnPrefix, String ctxPrefix) {

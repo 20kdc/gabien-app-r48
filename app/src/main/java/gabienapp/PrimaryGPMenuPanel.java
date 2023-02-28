@@ -8,7 +8,7 @@
 package gabienapp;
 
 import gabien.uslx.append.*;
-import r48.cfg.Config;
+import gabienapp.state.LSMain;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
 import r48.dbs.TXDB;
@@ -21,7 +21,7 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
     public LinkedList<String> res1 = new LinkedList<String>();
     public LinkedList<IFunction<LauncherState, IGPMenuPanel>> res2 = new LinkedList<IFunction<LauncherState, IGPMenuPanel>>();
 
-    public PrimaryGPMenuPanel(final Config cfg) {
+    public PrimaryGPMenuPanel(final LSMain ls) {
         // Loads everything
         DBLoader.readFile(null, "Gamepaks.txt", new IDatabase() {
             @Override
@@ -32,7 +32,7 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
             @Override
             public void execCmd(char c, String[] args) throws IOException {
                 if (c == '=') {
-                    final CategoryGPMenuPanel cat = new CategoryGPMenuPanel(cfg, PrimaryGPMenuPanel.this, args[0]);
+                    final CategoryGPMenuPanel cat = new CategoryGPMenuPanel(ls, PrimaryGPMenuPanel.this, args[0]);
                     res1.add(TXDB.get("launcher", args[0]));
                     res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
                         @Override
@@ -44,7 +44,7 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
             }
         });
         res1.add(TXDB.get("'No Game' Mode"));
-        res2.add(new CategoryGPMenuPanel.StartupCause(cfg, new AtomicReference<String>("UTF-8"), "Null"));
+        res2.add(new CategoryGPMenuPanel.StartupCause(ls, new AtomicReference<String>("UTF-8"), "Null"));
         res1.add(TXDB.get("Dump L-<lang>.txt"));
         res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
             @Override

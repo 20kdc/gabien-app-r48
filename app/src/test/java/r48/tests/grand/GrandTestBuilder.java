@@ -11,7 +11,8 @@ import gabien.MobilePeripherals;
 import gabien.TestKickstart;
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import gabienapp.Application;
+import gabienapp.GrandLauncherUtils;
+import gabienapp.Launcher;
 import r48.io.IntUtils;
 import r48.wm.GrandWindowManagerUtils;
 
@@ -215,7 +216,8 @@ public class GrandTestBuilder {
     public void execute(long expectedChecksum) {
         try {
             TestKickstart.kickstartRFS();
-            Application.gabienmain();
+            GrandLauncherUtils.launcher = new Launcher();
+            GrandLauncherUtils.launcher.run();
             byte[] dat = createDump();
             long checksum = 0;
             for (byte b : dat)

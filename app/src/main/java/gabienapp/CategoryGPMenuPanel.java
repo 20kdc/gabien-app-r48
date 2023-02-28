@@ -8,6 +8,9 @@
 package gabienapp;
 
 import gabien.uslx.append.*;
+import gabienapp.state.LSInApp;
+import gabienapp.state.LSMain;
+import r48.App;
 import r48.app.AppMain;
 import r48.cfg.Config;
 import r48.dbs.DBLoader;
@@ -23,10 +26,12 @@ import java.util.concurrent.atomic.AtomicReference;
 public class CategoryGPMenuPanel implements IGPMenuPanel {
     public LinkedList<String> res1 = new LinkedList<String>();
     public LinkedList<IFunction<LauncherState, IGPMenuPanel>> res2 = new LinkedList<IFunction<LauncherState, IGPMenuPanel>>();
+    public final LSMain ls;
     public final Config c;
 
-    public CategoryGPMenuPanel(Config c, final IGPMenuPanel root, final String category) {
-        this.c = c;
+    public CategoryGPMenuPanel(LSMain ls, final IGPMenuPanel root, final String category) {
+        this.ls = ls;
+        this.c = ls.lun.c;
         res1.add(TXDB.get("Back..."));
         res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
             @Override
@@ -45,7 +50,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                 final AtomicReference<String> box = new AtomicReference<String>();
                 boxedEncoding = box;
                 res1.add(objName);
-                res2.add(new StartupCause(c, box, objName));
+                res2.add(new StartupCause(ls, box, objName));
             }
 
             @Override
@@ -91,36 +96,37 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
     public static class StartupCause implements IFunction<LauncherState, IGPMenuPanel> {
         private final AtomicReference<String> box;
         private final String objName;
-        private final Config c;
+        private final LSMain ls;
 
-        public StartupCause(Config c, AtomicReference<String> box, String objName) {
-            this.c = c;
+        public StartupCause(LSMain ls, AtomicReference<String> box, String objName) {
+            this.ls = ls;
             this.box = box;
             this.objName = objName;
         }
 
         @Override
-        public IGPMenuPanel apply(LauncherState ls) {
-            if (Application.appTicker == null) {
+        public IGPMenuPanel apply(LauncherState ls2) {
+            if (ls.lun.currentState == ls) {
                 IObjectBackend.Factory.encoding = box.get();
-                final String rootPath = PathUtils.fixRootPath(ls.rootPath);
-                final String silPath = PathUtils.fixRootPath(ls.secondaryImagePath);
+                final String rootPath = PathUtils.fixRootPath(ls2.rootPath);
+                final String silPath = PathUtils.fixRootPath(ls2.secondaryImagePath);
 
                 // Start fancy loading screen.
-                final UIFancyInit theKickstart = new UIFancyInit(c);
-                Application.uiTicker.accept(theKickstart);
+                final UIFancyInit theKickstart = new UIFancyInit(ls.lun.c);
+                ls.lun.uiTicker.accept(theKickstart);
                 new Thread() {
                     @Override
                     public void run() {
                         try {
                             TXDB.loadGamepakLanguage(objName + "/");
-                            Application.app = AppMain.initializeCore(c, rootPath, silPath, objName + "/", theKickstart);
-                            final ISupplier<IConsumer<Double>> appTickerGen = AppMain.initializeUI(Application.app, Application.uiTicker, Application.mobileExtremelySpecialBehavior);
+                            App app = AppMain.initializeCore(ls.lun.c, rootPath, silPath, objName + "/", theKickstart);
+                            final ISupplier<IConsumer<Double>> appTickerGen = AppMain.initializeUI(app, ls.lun.uiTicker, ls.lun.isMobile);
+                            final LSInApp lia = new LSInApp(ls.lun, app);
                             theKickstart.doneInjector.set(new Runnable() {
                                 @Override
                                 public void run() {
                                     // The .get() must occur here, after the window is absolutely definitely gone.
-                                    Application.appTicker = appTickerGen.get();
+                                    lia.appTicker = appTickerGen.get();
                                 }
                             });
                         } catch (final RuntimeException e) {
