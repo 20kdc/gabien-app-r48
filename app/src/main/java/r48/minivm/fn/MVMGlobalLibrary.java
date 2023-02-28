@@ -6,10 +6,16 @@
  */
 package r48.minivm.fn;
 
+import java.util.LinkedList;
+
 import gabien.datum.DatumSymbol;
 import r48.app.InterlaunchGlobals;
+import r48.dbs.PathSyntax;
 import r48.minivm.MVMCompileScope;
 import r48.minivm.MVMEnvironment;
+import r48.minivm.MVMEnvironment.Slot;
+import r48.minivm.MVMFn;
+import r48.minivm.MVMHelpable;
 import r48.minivm.MVMMacro;
 import r48.minivm.expr.MVMCExpr;
 
@@ -19,7 +25,15 @@ import r48.minivm.expr.MVMCExpr;
  */
 public class MVMGlobalLibrary {
     public static void add(MVMEnvironment ctx, InterlaunchGlobals ilg) {
-        ctx.defineSlot(new DatumSymbol("quote")).v = new Quote();
+        // Scheme library
+        ctx.defineSlot(new DatumSymbol("quote")).v = new Quote()
+                .attachHelp("(quote A) | 'A : A is not evaluated. Allows expressing complex structures inline.");
+        // Data Model library
+        ctx.defineSlot(new DatumSymbol("dm-at")).v = new DMAt()
+                .attachHelp("(dm-at TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or null)");
+        // Help library
+        ctx.defineSlot(new DatumSymbol("help")).v = new Help(ctx)
+                .attachHelp("(help [TOPIC]) : Helpful information on the given value (if any), or lists symbols in the root context.");
     }
 
     public static final class Quote extends MVMMacro {
@@ -33,5 +47,49 @@ public class MVMGlobalLibrary {
                 throw new RuntimeException("quote expects exactly 1 arg");
             return new MVMCExpr.Const(call[1]);
         }
+    }
+
+    public static final class Help extends MVMFn.Fixed {
+        final MVMEnvironment ctx;
+        public Help(MVMEnvironment ctx) {
+            super("help");
+            this.ctx = ctx;
+        }
+
+        @Override
+        public Object callDirect() {
+            LinkedList<DatumSymbol> ds = new LinkedList<>();
+            for (Slot s : ctx.listSlots())
+                ds.add(s.s);
+            return ds;
+        }
+
+        @Override
+        public Object callDirect(Object a0) {
+            if (a0 instanceof MVMHelpable)
+                return ((MVMHelpable) a0).help;
+            return null;
+        }
+    }
+
+    public static final class DMAt extends MVMMacro {
+        public DMAt() {
+            super("dm-at");
+        }
+
+        @Override
+        public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
+            if (call.length != 3)
+                throw new RuntimeException("dm-at expects exactly 2 args (target path)");
+            return PathSyntax.compile(cs.context, cs.compile(call[1]), coerceToString(call[2])).getProgram;
+        }
+    }
+
+    public static String coerceToString(Object object) {
+        if (object instanceof String)
+            return (String) object;
+        if (object instanceof DatumSymbol)
+            return ((DatumSymbol) object).id;
+        return object.toString();
     }
 }

@@ -7,6 +7,7 @@
 package r48.minivm;
 
 import java.io.InputStreamReader;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -103,9 +104,13 @@ public final class MVMEnvironment {
     public @NonNull Slot defineSlot(DatumSymbol d) {
         if (values.containsKey(d))
             throw new RuntimeException("Cannot redefine: " + d);
-        Slot s = new Slot();
+        Slot s = new Slot(d);
         values.put(d, s);
         return s;
+    }
+
+    public Collection<Slot> listSlots() {
+        return values.values();
     }
 
     /**
@@ -113,9 +118,11 @@ public final class MVMEnvironment {
      * Slots are also the expressions for retrieving them for execution efficiency reasons.
      */
     public final static class Slot extends MVMCExpr {
+        public final DatumSymbol s;
         public Object v;
 
-        public Slot() {
+        public Slot(DatumSymbol s) {
+            this.s = s;
         }
 
         @Override

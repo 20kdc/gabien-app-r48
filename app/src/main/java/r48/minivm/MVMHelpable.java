@@ -6,21 +6,19 @@
  */
 package r48.minivm;
 
-import r48.minivm.expr.MVMCExpr;
-
 /**
- * MiniVM macro bound into a neat little package.
+ * Convenience
  * Created 28th February 2023.
  */
-public abstract class MVMMacro extends MVMHelpable {
-    public MVMMacro(String nh) {
-        super(nh);
+public abstract class MVMHelpable {
+    public final String nameHint;
+    public String help;
+    public MVMHelpable(String nh) {
+        this.nameHint = nh;
     }
 
-    public abstract MVMCExpr compile(MVMCompileScope cs, Object[] call);
-
-    @Override
-    public String toString() {
-        return "macro " + nameHint;
+    public MVMHelpable attachHelp(String text) {
+        help = text;
+        return this;
     }
 }

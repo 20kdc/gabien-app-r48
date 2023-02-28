@@ -31,7 +31,8 @@ import r48.minivm.expr.MVMCPathHashDel;
  */
 public final class PathSyntax implements IFunction<IRIO, IRIO> {
     // MiniVM programs for the various PathSyntax operations.
-    private final MVMCExpr getProgram, addProgram, delProgram;
+    public final MVMCExpr getProgram;
+    private final MVMCExpr addProgram, delProgram;
     public final String decompiled;
     public final MVMEnvironment parentContext;
 
@@ -139,7 +140,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
         return compile(basePS.parentContext, basePS.getProgram, arg);
     }
 
-    private static PathSyntax compile(MVMEnvironment parentContext, MVMCExpr base, String arg) {
+    public static PathSyntax compile(MVMEnvironment parentContext, MVMCExpr base, String arg) {
         // System.out.println("compiled pathsyntax " + arg);
         String workingArg = arg;
         while (workingArg.length() > 0) {

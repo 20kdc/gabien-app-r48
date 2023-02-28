@@ -16,6 +16,7 @@ import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.cfg.FontSizes.FontSizeField;
+import r48.minivm.MVMEnvironment;
 
 /**
  * Rethink of how this should work for code reasons.
@@ -25,8 +26,11 @@ public class Launcher {
     public final boolean isMobile;
     public final Config c;
     public final WindowCreatingUIElementConsumer uiTicker;
-    public final InterlaunchGlobals ilg;
     public State currentState;
+
+    // Warning: These two are not finished until during splash screen (and off-thread at that)
+    public volatile MVMEnvironment vmCtx;
+    public volatile InterlaunchGlobals ilg;
 
     public int globalMS = 50;
     private double compensationDT;
@@ -38,10 +42,9 @@ public class Launcher {
         final boolean fontsLoaded = ConfigIO.load(true, c);
         c.applyUIGlobals();
         uiTicker = new WindowCreatingUIElementConsumer();
-        ilg = new InterlaunchGlobals(c);
         // Setup initial state
         currentState = new LSSplashScreen(this, () -> {
-            ilg.updateLanguage();
+            ilg = new InterlaunchGlobals(c, (vm) -> vmCtx = vm);
             boolean canAvoidWait = c.fontOverride == null;
             // If we're setup correctly: English never needs the font-loading.
             // The reason it's important we use the correct language for this is because if font-loading is slow,

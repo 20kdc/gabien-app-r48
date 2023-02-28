@@ -54,7 +54,7 @@ public class TestKickstart {
         IObjectBackend.Factory.encoding = encoding;
         Config c = new Config(false);
         c.applyUIGlobals();
-        InterlaunchGlobals ilg = new InterlaunchGlobals(c);
+        InterlaunchGlobals ilg = new InterlaunchGlobals(c, (vm) -> {});
         return AppMain.initializeCore(ilg, s2, "", schema, (s) -> {});
     }
 

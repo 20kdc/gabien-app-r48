@@ -8,9 +8,11 @@
 package gabienapp;
 
 import gabien.uslx.append.*;
+import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
+import r48.ui.dialog.UIReadEvaluatePrintLoop;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -44,6 +46,17 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
         });
         res1.add(ls.tr("'No Game' Mode"));
         res2.add(new CategoryGPMenuPanel.StartupCause(ls, new AtomicReference<String>("UTF-8"), "Null"));
+        res1.add(ls.tr("Access Launcher REPL"));
+        res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
+            @Override
+            public IGPMenuPanel apply(LauncherState ls2) {
+                UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(ls.c, ls.lun.vmCtx);
+                repl.write(ls.tr("R48 Launcher REPL"));
+                ls.lun.uiTicker.accept(repl);
+                ls.lun.currentState = new LSInApp(ls.lun);
+                return null;
+            }
+        });
         res1.add(ls.tr("Dump L-<lang>.txt"));
         res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
             @Override

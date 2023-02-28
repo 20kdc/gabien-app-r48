@@ -7,6 +7,7 @@
 package r48.app;
 
 import gabien.GaBIEn;
+import gabien.uslx.append.IConsumer;
 import r48.cfg.Config;
 import r48.minivm.MVMEnvironment;
 import r48.minivm.fn.MVMGlobalLibrary;
@@ -16,18 +17,29 @@ import r48.tr.NullTranslator;
 import r48.tr.Translator;
 
 /**
- * Globals shared between launcher and app
+ * Globals shared between launcher and app.
+ * Notably, updateLanguage must be called at least once before this can really be called finished.
  * Created 28th February, 2023
  */
 public class InterlaunchGlobals {
     public final Config c;
-    private MVMEnvironment langVm;
     private ITranslator translator = new NullTranslator();
+    private MVMEnvironment langVM;
+    private IConsumer<MVMEnvironment> reportVMChanges;
 
-    public InterlaunchGlobals(Config c) {
+    public InterlaunchGlobals(Config c, IConsumer<MVMEnvironment> report) {
         this.c = c;
-        langVm = new MVMEnvironment();
-        MVMGlobalLibrary.add(langVm, this);
+        reportVMChanges = report;
+        updateLanguage();
+    }
+
+    /**
+     * Creates a VM environment.
+     */
+    public MVMEnvironment createCurrentLanguageVM() {
+        MVMEnvironment langVM = new MVMEnvironment();
+        MVMGlobalLibrary.add(langVM, this);
+        return langVM;
     }
 
     /**
@@ -40,6 +52,9 @@ public class InterlaunchGlobals {
         if (!LanguageList.hasLanguage(lang))
             lang = "English";
         c.language = lang;
+        // ---
+        langVM = createCurrentLanguageVM();
+        reportVMChanges.accept(langVM);
         if (lang.equals("English")) {
             translator = new NullTranslator();
         } else {

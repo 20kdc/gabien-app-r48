@@ -10,10 +10,9 @@ package r48.minivm;
  * MiniVM function bound into a neat little package.
  * Created 28th February 2023.
  */
-public abstract class MVMFn {
-    public final String nameHint;
+public abstract class MVMFn extends MVMHelpable {
     public MVMFn(String nh) {
-        nameHint = nh;
+        super(nh);
     }
 
     public abstract Object callDirect();
