@@ -300,9 +300,9 @@ public class CMDB extends App.Svc {
                     final PathSyntax idx;
                     final boolean inv;
                     if (inv = s.startsWith("!")) {
-                        idx = PathSyntax.compile(s.substring(1));
+                        idx = PathSyntax.compile(app.vmCtx, s.substring(1));
                     } else {
-                        idx = PathSyntax.compile(s);
+                        idx = PathSyntax.compile(app.vmCtx, s);
                     }
                     final RubyIO v = ValueSyntax.decode(gbStateArgs[gbStatePosition++]);
                     final IGroupBehavior igb = getGroupBehavior();

@@ -6,6 +6,8 @@
  */
 package r48.minivm;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import r48.io.data.IRIO;
 
 /**
@@ -23,7 +25,7 @@ public final class MVMCPathHashAdd extends MVMCExpr {
     }
 
     @Override
-    public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+    public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
         IRIO root = (IRIO) addBase.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         if (root == null)
             return null;

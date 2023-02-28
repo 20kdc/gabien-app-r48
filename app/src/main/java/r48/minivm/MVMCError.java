@@ -6,6 +6,8 @@
  */
 package r48.minivm;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * MiniVM error stuff
  * Created 26th February 2023.
@@ -18,7 +20,7 @@ public final class MVMCError extends MVMCExpr {
     }
 
     @Override
-    public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+    public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
         throw new RuntimeException(message);
     }
 }

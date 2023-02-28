@@ -11,6 +11,6 @@ package r48.minivm;
  * Dummy for now but useful for possible expansion.
  * Created 26th February 2023.
  */
-public interface MVMCContext {
+public final class MVMCContext {
 
 }

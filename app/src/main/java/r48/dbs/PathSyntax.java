@@ -7,7 +7,10 @@
 
 package r48.dbs;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.uslx.append.IFunction;
+import r48.App;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.minivm.MVMCArrayGetImm;
@@ -29,11 +32,13 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
     // MiniVM programs for the various PathSyntax operations.
     private final MVMCExpr getProgram, addProgram, delProgram;
     public final String decompiled;
+    public final MVMCContext parentContext;
 
     // NOTE: This must not contain anything used in ValueSyntax.
     public static char[] breakersSDB2 = new char[] {':', '@', ']'};
 
-    private PathSyntax(MVMCExpr g, MVMCExpr a, MVMCExpr d, String dc) {
+    private PathSyntax(MVMCContext parentContext, MVMCExpr g, MVMCExpr a, MVMCExpr d, String dc) {
+        this.parentContext = parentContext;
         getProgram = g;
         assert g.isPure;
         addProgram = a;
@@ -54,7 +59,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
      * Translates the input IRIO to the target IRIO, or null if an issue was encountered.
      */
     public final IRIO get(IRIO v) {
-        return (IRIO) getProgram.exc(null, v);
+        return (IRIO) getProgram.exc(parentContext, v);
     }
 
     /**
@@ -63,7 +68,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
      * Returns null if an issue was encountered.
      */
     public final IRIO add(IRIO v) {
-        return (IRIO) addProgram.exc(null, v);
+        return (IRIO) addProgram.exc(parentContext, v);
     }
 
     /**
@@ -72,7 +77,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
      * Returns null if an issue was encountered.
      */
     public final IRIO del(IRIO v) {
-        return (IRIO) delProgram.exc(null, v);
+        return (IRIO) delProgram.exc(parentContext, v);
     }
 
     // break to next token.
@@ -122,15 +127,19 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
         return null;
     }
 
-    public static PathSyntax compile(String arg) {
-        return compile(MVMCExpr.getL0, arg);
+    public static PathSyntax compile(App parentContext, String arg) {
+        return compile(parentContext.vmCtx, MVMCExpr.getL0, arg);
+    }
+
+    public static PathSyntax compile(MVMCContext parentContext, String arg) {
+        return compile(parentContext, MVMCExpr.getL0, arg);
     }
 
     public static PathSyntax compile(PathSyntax basePS, String arg) {
-        return compile(basePS.getProgram, arg);
+        return compile(basePS.parentContext, basePS.getProgram, arg);
     }
 
-    private static PathSyntax compile(MVMCExpr base, String arg) {
+    private static PathSyntax compile(MVMCContext parentContext, MVMCExpr base, String arg) {
         // System.out.println("compiled pathsyntax " + arg);
         String workingArg = arg;
         while (workingArg.length() > 0) {
@@ -147,7 +156,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
                     IRIO hashVal = ValueSyntax.decode(esc);
                     MVMCExpr currentGet = new MVMCGetHashValImm(base, hashVal);
                     if (lastElement)
-                        return new PathSyntax(currentGet, new MVMCPathHashAdd(base, hashVal), new MVMCPathHashDel(base, hashVal), arg);
+                        return new PathSyntax(parentContext, currentGet, new MVMCPathHashAdd(base, hashVal), new MVMCPathHashDel(base, hashVal), arg);
                     base = currentGet;
                 } else if (subcom.startsWith(".")) {
                     queuedIV = subcom.substring(1);
@@ -155,11 +164,11 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
                     if (subcom.equals("length")) {
                         base = new MVMCArrayLength(base);
                         if (lastElement)
-                            return new PathSyntax(base, base, new MVMCError("Cannot delete array length. Fix your schema."), arg);
+                            return new PathSyntax(parentContext, base, base, new MVMCError("Cannot delete array length. Fix your schema."), arg);
                     } else if (subcom.equals("fail")) {
                         base = new MVMCExpr.Const(null);
                         if (lastElement)
-                            return new PathSyntax(base, base, base, arg);
+                            return new PathSyntax(parentContext, base, base, base, arg);
                     } else if (subcom.length() != 0) {
                         throw new RuntimeException("$-command must be '$' (self), '${\"someSFormatTextForHVal' (hash string), '${123' (hash number), '$:someIval' ('raw' iVar), '$length', '$fail'");
                     }
@@ -170,7 +179,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
                 final int atl = Integer.parseInt(subcom);
                 base = new MVMCArrayGetImm(base, atl);
                 if (lastElement)
-                    return new PathSyntax(base, base, new MVMCError("Cannot delete array element. Fix your schema."), arg);
+                    return new PathSyntax(parentContext, base, base, new MVMCError("Cannot delete array element. Fix your schema."), arg);
             } else {
                 throw new RuntimeException("Bad pathsynt starter " + f + " (did root get separated properly?) code " + arg);
             }
@@ -179,9 +188,9 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
                 MVMCExpr currentGet = new MVMCGetIVar(base, queuedIV);
                 final MVMCExpr parent = base;
                 if (lastElement)
-                    return new PathSyntax(currentGet, new MVMCExpr(false) {
+                    return new PathSyntax(parentContext, currentGet, new MVMCExpr(false) {
                         @Override
-                        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                             IRIO res = (IRIO) parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                             if (res == null)
                                 return null;
@@ -196,7 +205,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
                         }
                     }, new MVMCExpr(false) {
                         @Override
-                        public Object execute(MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                             IRIO res = (IRIO) parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                             if (res == null)
                                 return null;
@@ -208,7 +217,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
                 base = currentGet;
             }
         }
-        return new PathSyntax(base, base, new MVMCError("Cannot delete empty/self path. Fix your schema."), arg);
+        return new PathSyntax(parentContext, base, base, new MVMCError("Cannot delete empty/self path. Fix your schema."), arg);
     }
 
     // Used by SDB stuff that generates paths.

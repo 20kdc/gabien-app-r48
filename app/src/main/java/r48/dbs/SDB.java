@@ -114,6 +114,10 @@ public class SDB extends App.Svc {
         };
     }
 
+    private PathSyntax compilePS(String text) {
+        return PathSyntax.compile(app, text);
+    }
+
     public void readFile(final String fName) {
         final String fPfx = "SDB@" + fName;
         DBLoader.readFile(app, fName, new IDatabase() {
@@ -151,14 +155,14 @@ public class SDB extends App.Svc {
                         String val = args[point++];
                         if (val.equals("."))
                             return null;
-                        return PathSyntax.compile(val);
+                        return compilePS(val);
                     }
 
                     /**
                      * Gets a PathSyntax.
                      */
                     public @NonNull PathSyntax getPathSyntax() {
-                        return PathSyntax.compile(args[point++]);
+                        return compilePS(args[point++]);
                     }
 
                     @Override
@@ -640,7 +644,7 @@ public class SDB extends App.Svc {
                                 "'star'", "ladder", "submerge", "'counter'",
                                 "poison", "noBoat", "noShip", "noAShip", "[terrainTag;8"
                             };
-                            PathSyntax fp = PathSyntax.compile("@flags");
+                            PathSyntax fp = compilePS("@flags");
                             return new FancyCategorizedTilesetRubyTableSchemaElement(app, 8192, 1, 1, 1, fp, new int[] {0}, new BitfieldTableCellEditor(app, flags));
                         }
                         if (text.equals("internal_r2kPPPID")) {
@@ -674,7 +678,7 @@ public class SDB extends App.Svc {
                         }
                         if (text.equals("soundPlayer")) {
                             String a = args[point++];
-                            return new SoundPlayerSchemaElement(app, a, PathSyntax.compile(""), null, null, null);
+                            return new SoundPlayerSchemaElement(app, a, compilePS(""), null, null, null);
                         }
                         if (text.equals("soundPlayerComplex")) {
                             String prefix = args[point++];
@@ -711,7 +715,7 @@ public class SDB extends App.Svc {
                     outerContext = fPfx + "/" + args[0];
                     setSDBEntry(args[0], workingObj);
                 } else if (c == '@') {
-                    PathSyntax t = PathSyntax.compile("@" + PathSyntax.poundEscape(args[0]));
+                    PathSyntax t = compilePS("@" + PathSyntax.poundEscape(args[0]));
                     // Note: the unescaping happens in the Path
                     workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, t.decompiled), handleChain(args, 1), false));
                 } else if (c == '}') {
@@ -724,7 +728,7 @@ public class SDB extends App.Svc {
                     }
                     // Note: the unescaping happens in the Path
                     // Automatically escape.
-                    PathSyntax t = PathSyntax.compile(":{" + PathSyntax.poundEscape(intA0));
+                    PathSyntax t = compilePS(":{" + PathSyntax.poundEscape(intA0));
                     workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, args[1]), handleChain(args, 2), opt));
                 } else if (c == '+') {
                     workingObj.aggregate.add(handleChain(args, 0));
@@ -798,7 +802,7 @@ public class SDB extends App.Svc {
                         throw new RuntimeException("Expects D <name> <default value> <outer path, including root> <'1' means hash> <inner path> [interpretation ID / empty string] [data schema]");
                     }
                     ensureSDBProxy(args[0]);
-                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(app, args[0], root[0], PathSyntax.compile(root[1]), args[3].equals("1"), PathSyntax.compile(args[4]), Integer.parseInt(args[1]), interpret, dataSchema));
+                    dictionaryUpdaterRunnables.add(new DictionaryUpdaterRunnable(app, args[0], root[0], compilePS(root[1]), args[3].equals("1"), compilePS(args[4]), Integer.parseInt(args[1]), interpret, dataSchema));
                 } else if (c == 'd') {
                     // OLD SYSTEM
                     System.err.println("'d'-format is old. It'll stay around but won't get updated. Use 'D'-format instead. " + args[0]);
@@ -910,7 +914,7 @@ public class SDB extends App.Svc {
                         final PathSyntax[] argumentsPS = new PathSyntax[arguments.size()];
                         int idx = 0;
                         for (String ps : arguments)
-                            argumentsPS[idx++] = PathSyntax.compile(ps);
+                            argumentsPS[idx++] = compilePS(ps);
 
                         app.fmt.nameDB.put(args[1], new IFunction<IRIO, String>() {
                             @Override

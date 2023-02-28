@@ -123,7 +123,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
 
             if (target.getIVar("@indent") != null) {
                 if (showHeader) {
-                    PathSyntax indent = PathSyntax.compile("@indent");
+                    PathSyntax indent = PathSyntax.compile(app, "@indent");
                     SchemaElement ise = new PathSchemaElement(indent, TXDB.get("@indent"), new ROIntegerSchemaElement(app, 0), false);
                     if (!allowControlOfIndent)
                         ise = new PathSchemaElement(indent, TXDB.get("@indent"), new IntegerSchemaElement(app, 0), false);

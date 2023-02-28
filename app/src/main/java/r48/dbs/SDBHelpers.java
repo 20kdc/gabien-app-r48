@@ -182,9 +182,9 @@ class SDBHelpers extends App.Svc {
         AggregateSchemaElement inner = new AggregateSchemaElement(app, new SchemaElement[] {
                 new HalfsplitSchemaElement(
                         new ArrayElementSchemaElement(app, 0, TXDB.get("type "), new EnumSchemaElement(app, types, new RubyIO().setFX(0), EntryMode.LOCK, ""), null, false),
-                        new DisambiguatorSchemaElement(app, PathSyntax.compile("]0"), disambiguations)
+                        new DisambiguatorSchemaElement(app, PathSyntax.compile(app, "]0"), disambiguations)
                 ),
-                new SubwindowSchemaElement(new HWNDSchemaElement(app, PathSyntax.compile("]0"), "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {
+                new SubwindowSchemaElement(new HWNDSchemaElement(app, PathSyntax.compile(app, "]0"), "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {
                     @Override
                     public String apply(IRIO rubyIO) {
                         return TXDB.get("Explain this picture mode...");
@@ -248,7 +248,7 @@ class SDBHelpers extends App.Svc {
         disambiguations.put("", new ArrayElementSchemaElement(app, 1, TXDB.get("valueVar "), varId, null, false));
         SchemaElement inner = new HalfsplitSchemaElement(
                 new ArrayElementSchemaElement(app, 0, TXDB.get("isVar "), new IntBooleanSchemaElement(app, false), null, false),
-                new DisambiguatorSchemaElement(app, PathSyntax.compile("]0"), disambiguations)
+                new DisambiguatorSchemaElement(app, PathSyntax.compile(app, "]0"), disambiguations)
         );
         return new MagicalBindingSchemaElement(app, new IMagicalBinder() {
             @Override

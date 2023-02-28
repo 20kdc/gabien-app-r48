@@ -22,6 +22,7 @@ import r48.app.AppUI;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
 import r48.map.StuffRenderer;
+import r48.minivm.MVMCContext;
 
 /**
  * An attempt to move as much as possible out of static variables.
@@ -43,6 +44,9 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
     public final Runnable applyConfigChange = () -> {
         c.applyUIGlobals();
     };
+
+    // VM context
+    public final MVMCContext vmCtx = new MVMCContext();
 
     /**
      * Initialize App.
