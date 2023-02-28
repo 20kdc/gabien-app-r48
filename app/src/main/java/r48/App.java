@@ -22,8 +22,8 @@ import r48.app.AppUI;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
 import r48.map.StuffRenderer;
-import r48.minivm.MVMContext;
-import r48.minivm.MVMGlobalLibrary;
+import r48.minivm.MVMEnvironment;
+import r48.minivm.fn.MVMGlobalLibrary;
 
 /**
  * An attempt to move as much as possible out of static variables.
@@ -47,7 +47,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
     };
 
     // VM context
-    public final MVMContext vmCtx = new MVMContext();
+    public final MVMEnvironment vmCtx = new MVMEnvironment();
 
     /**
      * Initialize App.

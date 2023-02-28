@@ -8,23 +8,23 @@ package r48.minivm.expr;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import r48.minivm.MVMContext;
-import r48.minivm.MVMContext.Slot;
+import r48.minivm.MVMEnvironment.Slot;
+import r48.minivm.MVMScope;
 
 /**
  * Sets a value into a Slot.
+ * Created 28th February 2023.
  */
 public class MVMCSetSlot extends MVMCExpr {
     public final Slot slot;
     public final MVMCExpr value;
     public MVMCSetSlot(Slot s, MVMCExpr val) {
-        super(false);
         slot = s;
         value = val;
     }
 
     @Override
-    public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+    public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
         return slot.v = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
     }
 }

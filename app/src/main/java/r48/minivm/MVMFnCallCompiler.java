@@ -16,38 +16,39 @@ import r48.minivm.expr.MVMCExpr;
  */
 public class MVMFnCallCompiler {
 
-    public static MVMCExpr compile(final MVMFn mvmFn, MVMCompileScope cs, MVMCExpr[] exprs) {
-        boolean isPure = mvmFn.isPure;
-        for (int i = 0; i < exprs.length; i++)
-            isPure &= exprs[i].isPure;
+    public static MVMCExpr compile(MVMCompileScope cs, MVMCExpr call, MVMCExpr[] exprs) {
         if (exprs.length == 0) {
-            return new MVMCExpr(isPure) {
+            return new MVMCExpr() {
                 @Override
-                public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                    MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
                     return mvmFn.callDirect();
                 }
             };
         } else if (exprs.length == 1) {
-            return new MVMCExpr(isPure) {
+            return new MVMCExpr() {
                 @Override
-                public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                    MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
                     Object v0 = exprs[0].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     return mvmFn.callDirect(v0);
                 }
             };
         } else if (exprs.length == 2) {
-            return new MVMCExpr(isPure) {
+            return new MVMCExpr() {
                 @Override
-                public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                    MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
                     Object v0 = exprs[0].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     Object v1 = exprs[1].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     return mvmFn.callDirect(v0, v1);
                 }
             };
         } else if (exprs.length == 3) {
-            return new MVMCExpr(isPure) {
+            return new MVMCExpr() {
                 @Override
-                public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                    MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
                     Object v0 = exprs[0].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     Object v1 = exprs[1].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     Object v2 = exprs[2].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
@@ -55,9 +56,10 @@ public class MVMFnCallCompiler {
                 }
             };
         } else if (exprs.length == 4) {
-            return new MVMCExpr(isPure) {
+            return new MVMCExpr() {
                 @Override
-                public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                    MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
                     Object v0 = exprs[0].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     Object v1 = exprs[1].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     Object v2 = exprs[2].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
@@ -66,9 +68,10 @@ public class MVMFnCallCompiler {
                 }
             };
         } else {
-            return new MVMCExpr(isPure) {
+            return new MVMCExpr() {
                 @Override
-                public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                    MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
                     Object[] v = new Object[exprs.length];
                     for (int i = 0; i < v.length; i++)
                         v[i] = exprs[i].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
@@ -78,4 +81,7 @@ public class MVMFnCallCompiler {
         }
     }
 
+    public static MVMFn asFn(Object execute) {
+        return (MVMFn) execute;
+    }
 }

@@ -6,37 +6,14 @@
  */
 package r48.minivm;
 
-import r48.minivm.expr.MVMCExpr;
-import r48.minivm.expr.MVMCExpr.Const;
-
 /**
  * MiniVM function bound into a neat little package.
  * Created 28th February 2023.
  */
-public abstract class MVMFn extends MVMMacro {
-    public final boolean isPure;
-
-    public MVMFn(String nh, boolean pure) {
-        super(nh);
-        isPure = pure;
-    }
-
-    /**
-     * Checks the number and constant types of arguments.
-     */
-    public abstract void checkArgs(Const[] consts);
-
-    @Override
-    public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
-        final MVMCExpr[] exprs = new MVMCExpr[call.length - 1];
-        Const[] exprC = new Const[exprs.length];
-        for (int i = 0; i < call.length - 1; i++) {
-            exprs[i] = cs.compile(call[i + 1]);
-            if (exprs[i] instanceof Const)
-                exprC[i] = (Const) exprs[i];
-        }
-        checkArgs(exprC);
-        return MVMFnCallCompiler.compile(this, cs, exprs);
+public abstract class MVMFn {
+    public final String nameHint;
+    public MVMFn(String nh) {
+        nameHint = nh;
     }
 
     public abstract Object callDirect();
@@ -55,8 +32,8 @@ public abstract class MVMFn extends MVMMacro {
      * Always uses callIndirect.
      */
     public static abstract class VA extends MVMFn {
-        public VA(String nh, boolean pure) {
-            super(nh, pure);
+        public VA(String nh) {
+            super(nh);
         }
 
         public final Object callDirect() {
@@ -80,8 +57,8 @@ public abstract class MVMFn extends MVMMacro {
      * Always uses callDirect.
      */
     public static abstract class Fixed extends MVMFn {
-        public Fixed(String nh, boolean pure) {
-            super(nh, pure);
+        public Fixed(String nh) {
+            super(nh);
         }
 
         public Object callDirect() {
@@ -120,18 +97,11 @@ public abstract class MVMFn extends MVMMacro {
      * For mathematical operations and such.
      */
     public static abstract class ChainOp<V> extends MVMFn {
-        public ChainOp(String nh, boolean pure) {
-            super(nh, pure);
+        public ChainOp(String nh) {
+            super(nh);
         }
 
         public abstract V checkParticipant(Object v);
-
-        @Override
-        public void checkArgs(Const[] consts) {
-            for (Const c : consts)
-                if (c != null)
-                    checkParticipant(c.value);
-        }
 
         public abstract Object loneOp(V a);
         public abstract V twoOp(V a, V b);

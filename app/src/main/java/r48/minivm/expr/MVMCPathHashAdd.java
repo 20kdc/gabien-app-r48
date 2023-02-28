@@ -9,7 +9,7 @@ package r48.minivm.expr;
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.IRIO;
-import r48.minivm.MVMContext;
+import r48.minivm.MVMScope;
 
 /**
  * MiniVM path hash stuff
@@ -20,13 +20,12 @@ public final class MVMCPathHashAdd extends MVMCExpr {
     private final IRIO hashVal;
 
     public MVMCPathHashAdd(MVMCExpr addBase, IRIO hashVal) {
-        super(false);
         this.addBase = addBase;
         this.hashVal = hashVal;
     }
 
     @Override
-    public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+    public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
         IRIO root = (IRIO) addBase.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         if (root == null)
             return null;

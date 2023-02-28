@@ -30,6 +30,7 @@ import r48.ui.UIAppendButton;
 import r48.ui.UIMenuButton;
 import r48.ui.audioplayer.UIAudioPlayer;
 import r48.ui.dialog.UIFontSizeConfigurator;
+import r48.ui.dialog.UIReadEvaluatePrintLoop;
 import r48.ui.help.HelpSystemController;
 import r48.ui.help.UIHelpSystem;
 import r48.ui.spacing.UIBorderedSubpanel;
@@ -316,7 +317,8 @@ public class BasicToolset extends App.Svc implements IToolset {
                 TXDB.get("Toggle Fullscreen"),
                 TXDB.get("Dump Schemaside Translations"),
                 TXDB.get("Recover data from R48 error <INCREDIBLY DAMAGING>..."),
-                TXDB.get("Audio Player...")
+                TXDB.get("Audio Player..."),
+                TXDB.get("REPL..."),
         }, new Runnable[] {
                 new Runnable() {
                     @Override
@@ -384,6 +386,11 @@ public class BasicToolset extends App.Svc implements IToolset {
                             }
                         });
                     }
+                },
+                () -> {
+                    UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(app.c, app.vmCtx);
+                    repl.write("R48 Application REPL");
+                    app.ui.wm.createWindow(repl);
                 }
         }).centred();
     }

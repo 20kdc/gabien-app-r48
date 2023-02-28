@@ -13,7 +13,8 @@ import gabien.uslx.append.IFunction;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
-import r48.minivm.MVMContext;
+import r48.minivm.MVMEnvironment;
+import r48.minivm.MVMScope;
 import r48.minivm.expr.MVMCArrayGetImm;
 import r48.minivm.expr.MVMCArrayLength;
 import r48.minivm.expr.MVMCError;
@@ -32,15 +33,14 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
     // MiniVM programs for the various PathSyntax operations.
     private final MVMCExpr getProgram, addProgram, delProgram;
     public final String decompiled;
-    public final MVMContext parentContext;
+    public final MVMEnvironment parentContext;
 
     // NOTE: This must not contain anything used in ValueSyntax.
     public static char[] breakersSDB2 = new char[] {':', '@', ']'};
 
-    private PathSyntax(MVMContext parentContext, MVMCExpr g, MVMCExpr a, MVMCExpr d, String dc) {
+    private PathSyntax(MVMEnvironment parentContext, MVMCExpr g, MVMCExpr a, MVMCExpr d, String dc) {
         this.parentContext = parentContext;
         getProgram = g;
-        assert g.isPure;
         addProgram = a;
         delProgram = d;
         decompiled = dc;
@@ -59,7 +59,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
      * Translates the input IRIO to the target IRIO, or null if an issue was encountered.
      */
     public final IRIO get(IRIO v) {
-        return (IRIO) getProgram.exc(parentContext, v);
+        return (IRIO) getProgram.exc(MVMScope.ROOT, v);
     }
 
     /**
@@ -68,7 +68,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
      * Returns null if an issue was encountered.
      */
     public final IRIO add(IRIO v) {
-        return (IRIO) addProgram.exc(parentContext, v);
+        return (IRIO) addProgram.exc(MVMScope.ROOT, v);
     }
 
     /**
@@ -77,7 +77,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
      * Returns null if an issue was encountered.
      */
     public final IRIO del(IRIO v) {
-        return (IRIO) delProgram.exc(parentContext, v);
+        return (IRIO) delProgram.exc(MVMScope.ROOT, v);
     }
 
     // break to next token.
@@ -131,7 +131,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
         return compile(parentContext.vmCtx, MVMCExpr.getL0, arg);
     }
 
-    public static PathSyntax compile(MVMContext parentContext, String arg) {
+    public static PathSyntax compile(MVMEnvironment parentContext, String arg) {
         return compile(parentContext, MVMCExpr.getL0, arg);
     }
 
@@ -139,7 +139,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
         return compile(basePS.parentContext, basePS.getProgram, arg);
     }
 
-    private static PathSyntax compile(MVMContext parentContext, MVMCExpr base, String arg) {
+    private static PathSyntax compile(MVMEnvironment parentContext, MVMCExpr base, String arg) {
         // System.out.println("compiled pathsyntax " + arg);
         String workingArg = arg;
         while (workingArg.length() > 0) {
@@ -188,9 +188,9 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
                 MVMCExpr currentGet = new MVMCGetIVar(base, queuedIV);
                 final MVMCExpr parent = base;
                 if (lastElement)
-                    return new PathSyntax(parentContext, currentGet, new MVMCExpr(false) {
+                    return new PathSyntax(parentContext, currentGet, new MVMCExpr() {
                         @Override
-                        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                        public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                             IRIO res = (IRIO) parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                             if (res == null)
                                 return null;
@@ -203,9 +203,9 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
                                 System.err.println("Warning: Failed to create IVar " + iv + " in " + res);
                             return ivv;
                         }
-                    }, new MVMCExpr(false) {
+                    }, new MVMCExpr() {
                         @Override
-                        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+                        public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                             IRIO res = (IRIO) parent.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                             if (res == null)
                                 return null;

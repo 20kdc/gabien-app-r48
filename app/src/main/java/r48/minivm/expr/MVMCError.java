@@ -8,7 +8,7 @@ package r48.minivm.expr;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import r48.minivm.MVMContext;
+import r48.minivm.MVMScope;
 
 /**
  * MiniVM error stuff
@@ -17,12 +17,11 @@ import r48.minivm.MVMContext;
 public final class MVMCError extends MVMCExpr {
     public final String message;
     public MVMCError(String err) {
-        super(true);
         message = err;
     }
 
     @Override
-    public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+    public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
         throw new RuntimeException(message);
     }
 }

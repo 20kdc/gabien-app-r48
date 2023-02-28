@@ -20,18 +20,18 @@ import gabien.datum.DatumSymbol;
 import r48.minivm.expr.MVMCExpr;
 
 /**
- * MiniVM context.
+ * MiniVM environment.
  * Created 26th February 2023 but only fleshed out 28th.
  */
-public final class MVMContext {
-    private final @Nullable MVMContext parent;
+public final class MVMEnvironment {
+    private final @Nullable MVMEnvironment parent;
     private final HashMap<DatumSymbol, Slot> values = new HashMap<>();
 
-    public MVMContext() {
+    public MVMEnvironment() {
         parent = null;
     }
 
-    public MVMContext(MVMContext p) {
+    public MVMEnvironment(MVMEnvironment p) {
         parent = p;
     }
 
@@ -79,9 +79,9 @@ public final class MVMContext {
      * Evaluates an object
      */
     public Object evalObject(Object obj) {
-        MVMCompileScope mcs = new MVMCompileScope(this);
+        MVMCompileScope mcs = new MVMCompileScope(this, true);
         MVMCExpr exp = mcs.compile(obj);
-        return exp.exc(MVMContext.this);
+        return exp.exc(MVMScope.ROOT);
     }
 
     public @Nullable Slot getSlot(DatumSymbol d) {
@@ -116,11 +116,10 @@ public final class MVMContext {
         public Object v;
 
         public Slot() {
-            super(true);
         }
 
         @Override
-        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return v;
         }
     }
