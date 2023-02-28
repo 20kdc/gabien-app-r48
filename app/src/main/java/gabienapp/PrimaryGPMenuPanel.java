@@ -11,7 +11,6 @@ import gabien.uslx.append.*;
 import gabienapp.state.LSMain;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
-import r48.dbs.TXDB;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -33,7 +32,7 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
             public void execCmd(char c, String[] args) throws IOException {
                 if (c == '=') {
                     final CategoryGPMenuPanel cat = new CategoryGPMenuPanel(ls, PrimaryGPMenuPanel.this, args[0]);
-                    res1.add(TXDB.get("launcher", args[0]));
+                    res1.add(ls.trL(args[0]));
                     res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
                         @Override
                         public IGPMenuPanel apply(LauncherState ls) {
@@ -43,13 +42,13 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
                 }
             }
         });
-        res1.add(TXDB.get("'No Game' Mode"));
+        res1.add(ls.tr("'No Game' Mode"));
         res2.add(new CategoryGPMenuPanel.StartupCause(ls, new AtomicReference<String>("UTF-8"), "Null"));
-        res1.add(TXDB.get("Dump L-<lang>.txt"));
+        res1.add(ls.tr("Dump L-<lang>.txt"));
         res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
             @Override
-            public IGPMenuPanel apply(LauncherState ls) {
-                TXDB.performDump("L-", "launcher/");
+            public IGPMenuPanel apply(LauncherState ls2) {
+                ls.translationDump("L-", "launcher/");
                 res1.removeLast();
                 res2.removeLast();
                 return PrimaryGPMenuPanel.this;

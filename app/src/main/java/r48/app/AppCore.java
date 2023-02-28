@@ -35,6 +35,7 @@ import r48.schema.specialized.IMagicalBinder;
  * Pulled out of App, 27th February, 2023
  */
 public class AppCore {
+    public final InterlaunchGlobals ilg;
     public final Config c;
     public final FontSizes f;
     public ObjectDB odb;
@@ -62,6 +63,7 @@ public class AppCore {
      * Warning: Occurs off main thread.
      */
     public AppCore(InterlaunchGlobals ilg, @NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
+        this.ilg = ilg;
         c = ilg.c;
         f = c.f;
         rootPath = rp;

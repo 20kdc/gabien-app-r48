@@ -262,7 +262,7 @@ public class AppUI extends App.Svc {
     public void startHelp(String base, String link) {
         // exception to the rule
         UILabel uil = new UILabel("", app.f.helpPathHeight);
-        final UIHelpSystem uis = new UIHelpSystem(app.c);
+        final UIHelpSystem uis = new UIHelpSystem(app.ilg);
         final HelpSystemController hsc = new HelpSystemController(uil, base, uis);
         uis.onLinkClick = hsc;
         final UIScrollLayout uus = new UIScrollLayout(true, app.f.generalScrollersize);

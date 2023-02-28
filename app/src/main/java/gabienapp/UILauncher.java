@@ -28,7 +28,6 @@ import gabienapp.IGPMenuPanel.LauncherState;
 import gabienapp.state.LSMain;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
-import r48.dbs.TXDB;
 import r48.tr.LanguageList;
 import r48.ui.UIAppendButton;
 import r48.ui.dialog.UIFontSizeConfigurator;
@@ -49,7 +48,7 @@ public class UILauncher extends UIProxy {
         final UIScrollLayout configure = new UIScrollLayout(true, c.f.generalScrollersize) {
             @Override
             public String toString() {
-                return TXDB.get("Configure");
+                return ls.tr("Configure");
             }
         };
         tabPane.addTab(new Tab(configure, new TabIcon[0]));
@@ -57,26 +56,10 @@ public class UILauncher extends UIProxy {
         final UIScrollLayout gamepaks = new UIScrollLayout(true, c.f.generalScrollersize) {
             @Override
             public String toString() {
-                return TXDB.get("Select Engine");
+                return ls.tr("Select Engine");
             }
         };
         tabPane.addTab(new Tab(gamepaks, new TabIcon[0]));
-
-        // this can't be good
-        // Ok, explaination for this. Giving it a runnable, it will hold it until called again, and then it will run it and remove it.
-        final IConsumer<Runnable> closeHelper = new IConsumer<Runnable>() {
-            private Runnable r;
-
-            @Override
-            public void accept(Runnable runnable) {
-                if (runnable != null) {
-                    r = runnable;
-                } else {
-                    r.run();
-                    r = null;
-                }
-            }
-        };
 
         UIAdjuster msAdjust = new UIAdjuster(c.f.launcherTextHeight, lun.globalMS, new IFunction<Long, Long>() {
             @Override
@@ -92,17 +75,17 @@ public class UILauncher extends UIProxy {
 
         final LinkedList<UIElement> basePanels = new LinkedList<UIElement>();
 
-        UIHelpSystem uhs = new UIHelpSystem(c);
+        UIHelpSystem uhs = new UIHelpSystem(lun.ilg);
         HelpSystemController hsc = new HelpSystemController(null, "Help/Launcher/Entry", uhs);
         hsc.loadPage(0);
 
         configure.panelsAdd(new UIBorderedSubpanel(uhs, c.f.scaleGuess(8)));
 
-        configure.panelsAdd(figureOutTopBar(c, lun.uiTicker, closeHelper));
+        configure.panelsAdd(figureOutTopBar(lun));
 
-        configure.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("MS per frame:"), c.f.launcherTextHeight), msAdjust, false, 3, 5));
+        configure.panelsAdd(new UISplitterLayout(new UILabel(ls.tr("MS per frame:"), c.f.launcherTextHeight), msAdjust, false, 3, 5));
 
-        configure.panelsAdd(new UILabel(TXDB.get("Path To Game (if you aren't running R48 in the game folder):"), c.f.launcherTextHeight));
+        configure.panelsAdd(new UILabel(ls.tr("Path To Game (if you aren't running R48 in the game folder):"), c.f.launcherTextHeight));
 
         final UIGamePathList rootBox = new UIGamePathList(c, c.rootPathBackup) {
             @Override
@@ -113,7 +96,7 @@ public class UILauncher extends UIProxy {
         };
         configure.panelsAdd(rootBox);
 
-        configure.panelsAdd(new UILabel(TXDB.get("Secondary Image Load Location:"), c.f.launcherTextHeight));
+        configure.panelsAdd(new UILabel(ls.tr("Secondary Image Load Location:"), c.f.launcherTextHeight));
 
         final UIGamePathList sillBox = new UIGamePathList(c, c.secondaryImageLoadLocationBackup) {
             @Override
@@ -124,7 +107,7 @@ public class UILauncher extends UIProxy {
         };
         configure.panelsAdd(sillBox);
 
-        basePanels.add(new UILabel(TXDB.get("Choose Target Engine:"), c.f.launcherTextHeight));
+        basePanels.add(new UILabel(ls.tr("Choose Target Engine:"), c.f.launcherTextHeight));
 
         final IConsumer<IGPMenuPanel> menuConstructor = new IConsumer<IGPMenuPanel>() {
             @Override
@@ -133,7 +116,7 @@ public class UILauncher extends UIProxy {
                 for (UIElement uie : basePanels)
                     gamepaks.panelsAdd(uie);
                 if (igpMenuPanel == null) {
-                    closeHelper.accept(null);
+                    gamepaksRequestClose = true;
                     return;
                 }
                 String[] names = igpMenuPanel.getButtonText();
@@ -150,7 +133,7 @@ public class UILauncher extends UIProxy {
             }
         };
 
-        configure.panelsAdd(new UISplitterLayout(new UIPublicPanel(0, 0), new UITextButton(TXDB.get("Continue"), c.f.launcherTextHeight, new Runnable() {
+        configure.panelsAdd(new UISplitterLayout(new UIPublicPanel(0, 0), new UITextButton(ls.tr("Continue"), c.f.launcherTextHeight, new Runnable() {
             @Override
             public void run() {
                 tabPane.selectTab(gamepaks);
@@ -160,12 +143,6 @@ public class UILauncher extends UIProxy {
 
         tabPane.setForcedBounds(null, new Rect(0, 0, c.f.scaleGuess(640), c.f.scaleGuess(480)));
         menuConstructor.accept(new PrimaryGPMenuPanel(ls));
-        closeHelper.accept(new Runnable() {
-            @Override
-            public void run() {
-                gamepaksRequestClose = true;
-            }
-        });
         proxySetElement(tabPane, false);
     }
 
@@ -174,26 +151,28 @@ public class UILauncher extends UIProxy {
         return gamepaksRequestClose;
     }
 
-    private static UIElement figureOutTopBar(final Config c, final WindowCreatingUIElementConsumer uiTicker, final IConsumer<Runnable> closeHelper) {
-        UIElement whatever = new UITextButton(TXDB.get("Quit R48"), c.f.launcherTextHeight, new Runnable() {
+    private UIElement figureOutTopBar(final Launcher lun) {
+        final Config c = lun.c;
+        final WindowCreatingUIElementConsumer uiTicker = lun.uiTicker;
+        UIElement whatever = new UITextButton(lun.ilg.tr("Quit R48"), c.f.launcherTextHeight, new Runnable() {
             @Override
             public void run() {
                 GaBIEn.ensureQuit();
             }
         });
         if (!GaBIEn.singleWindowApp()) { // SWA means we can't create windows
-            whatever = new UISplitterLayout(whatever, new UITextButton(TXDB.get("Configuration"), c.f.launcherTextHeight, new Runnable() {
+            whatever = new UISplitterLayout(whatever, new UITextButton(lun.ilg.tr("Configuration"), c.f.launcherTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     uiTicker.accept(new UIFontSizeConfigurator(c, () -> {
                         c.applyUIGlobals();
                     }));
-                    closeHelper.accept(null);
+                    gamepaksRequestClose = true;
                 }
             }), false, 1, 2);
         }
 
-        return new UIAppendButton(TXDB.getLanguage(), whatever, new Runnable() {
+        return new UIAppendButton(lun.c.language, whatever, new Runnable() {
             @Override
             public void run() {
                 // Unfortunately, if done quickly enough, the font will not load in time.
@@ -204,10 +183,10 @@ public class UILauncher extends UIProxy {
                 // This associates a lag with switching language, when it's actually due to Java being slow at loading a font.
                 // (I'm slightly glad I'm not the only one this happens for, but unhappy that it's an issue.)
                 // Unfortunately, a warning message cannot be shown to the user, as the warning message would itself trigger lag-for-font-load.
-                String lang = LanguageList.getNextLanguage(TXDB.getLanguage());
-                c.language = lang;
-                TXDB.setLanguage(lang);
-                closeHelper.accept(null);
+                c.language = LanguageList.getNextLanguage(c.language);
+                lun.ilg.updateLanguage();
+                lun.currentState = new LSMain(lun);
+                gamepaksRequestClose = true;
             }
         }, c.f.launcherTextHeight);
     }

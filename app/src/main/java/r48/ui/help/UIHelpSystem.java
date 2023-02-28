@@ -12,6 +12,7 @@ import gabien.IImage;
 import gabien.ui.*;
 import gabien.ui.UIElement.UIPanel;
 import gabien.uslx.append.*;
+import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
 import r48.ui.UIThumbnail;
 
@@ -27,9 +28,11 @@ public class UIHelpSystem extends UIPanel implements IConsumer<String> {
     public LinkedList<HelpElement> page = new LinkedList<HelpElement>();
 
     public final Config c;
+    public final InterlaunchGlobals ilg;
 
-    public UIHelpSystem(Config c) {
-        this.c = c;
+    public UIHelpSystem(InterlaunchGlobals ilg) {
+        this.c = ilg.c;
+        this.ilg = ilg;
         Rect sz = new Rect(0, 0, c.f.helpTextHeight * 32, c.f.helpTextHeight * 32);
         setWantedSize(sz);
         setForcedBounds(null, sz);

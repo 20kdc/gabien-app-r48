@@ -15,7 +15,6 @@ import r48.app.AppMain;
 import r48.cfg.Config;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 
@@ -32,7 +31,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
     public CategoryGPMenuPanel(LSMain ls, final IGPMenuPanel root, final String category) {
         this.ls = ls;
         this.c = ls.lun.c;
-        res1.add(TXDB.get("Back..."));
+        res1.add(ls.tr("Back..."));
         res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
             @Override
             public IGPMenuPanel apply(LauncherState ls) {
@@ -65,7 +64,7 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                     String rn = "";
                     for (String s : args)
                         rn += s + " ";
-                    res1.set(res1.size() - 1, TXDB.get("launcher", rn));
+                    res1.set(res1.size() - 1, ls.trL(rn));
                 }
                 if (c == 'e')
                     boxedEncoding.set(args[0]);
@@ -121,7 +120,6 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                     @Override
                     public void run() {
                         try {
-                            TXDB.loadGamepakLanguage(objName + "/");
                             // Regarding thread safety, this should be safe enough because app is kept here.
                             // It's then transferred out.
                             App app = AppMain.initializeCore(ls.lun.ilg, rootPath, silPath, objName + "/", theKickstart);

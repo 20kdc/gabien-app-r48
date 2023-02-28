@@ -14,7 +14,6 @@ import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.ui.UIBorderedElement;
 import r48.cfg.FontSizes.FontSizeField;
-import r48.dbs.TXDB;
 
 /**
  * Here goes nothing...
@@ -77,16 +76,5 @@ public class Config {
         FontManager.fontOverrideUE8 = fontOverrideUE8;
         UIBorderedElement.borderTheme = borderTheme;
         GaBIEn.sysCoreFontSize = f.gSysCoreTextHeight;
-    }
-
-    /**
-     * ported from FontSizes
-     * Notably, language is loaded early, and is not loaded along with font sizes in general.
-     * This is so that TXDB & such can start up.
-     * Returns true if sysfont is disabled (see caller in Application)
-     */
-    public boolean loadLanguage() {
-        TXDB.setLanguage(language);
-        return fontOverride == null;
     }
 }

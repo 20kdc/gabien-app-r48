@@ -7,7 +7,6 @@
 
 package r48.dbs;
 
-import gabien.GaBIEn;
 import r48.tr.ITranslator;
 import r48.tr.LanguageList;
 import r48.tr.NullTranslator;
@@ -65,9 +64,6 @@ public class TXDB {
         }
         currentTranslator.read("Systerms/" + currentLanguage + ".txt", "r48/");
         currentTranslator.read("Systerms/L-" + currentLanguage + ".txt", "launcher/");
-        GaBIEn.wordLoad = TXDB.get("Load");
-        GaBIEn.wordSave = TXDB.get("Save");
-        GaBIEn.wordInvalidFileName = TXDB.get("Invalid or missing file name.");
     }
 
     public static void loadGamepakLanguage(String gp) {

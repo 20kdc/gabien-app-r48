@@ -103,7 +103,7 @@ public class BasicToolset extends App.Svc implements IToolset {
     }
 
     private UIElement createInitialHelp() {
-        UIHelpSystem uhs = new UIHelpSystem(app.c);
+        UIHelpSystem uhs = new UIHelpSystem(app.ilg);
         final HelpSystemController hsc = new HelpSystemController(null, "Help/Tips/Entry", uhs);
         Date dt = new Date();
         @SuppressWarnings("deprecation")

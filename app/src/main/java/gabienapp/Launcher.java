@@ -16,7 +16,6 @@ import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.cfg.FontSizes.FontSizeField;
-import r48.dbs.TXDB;
 
 /**
  * Rethink of how this should work for code reasons.
@@ -36,26 +35,26 @@ public class Launcher {
         GaBIEn.appPrefixes = new String[] {Application.BRAND + "/", ""};
         isMobile = GaBIEn.singleWindowApp();
         c = new Config(isMobile);
+        final boolean fontsLoaded = ConfigIO.load(true, c);
         c.applyUIGlobals();
         uiTicker = new WindowCreatingUIElementConsumer();
         ilg = new InterlaunchGlobals(c);
         // Setup initial state
         currentState = new LSSplashScreen(this, () -> {
-            TXDB.init();
-            boolean canAvoidWait = c.loadLanguage();
+            ilg.updateLanguage();
+            boolean canAvoidWait = c.fontOverride == null;
             // If we're setup correctly: English never needs the font-loading.
             // The reason it's important we use the correct language for this is because if font-loading is slow,
             //  we WILL (not may, WILL) freeze up until ready.
             boolean fontsNecessary = true;
             if (canAvoidWait)
-                if (TXDB.getLanguage().equals("English"))
+                if (c.language.equals("English"))
                     fontsNecessary = false;
             if (fontsNecessary)
                 while (!FontManager.fontsReady)
                     Thread.yield();
         }, (uiScaleTenths) -> {
             globalMS = 33;
-            boolean fontsLoaded = ConfigIO.load(true, c);
             if (!fontsLoaded)
                 autoDetectCorrectUISize(uiScaleTenths);
             currentState = new LSMain(this);
@@ -98,10 +97,30 @@ public class Launcher {
 
     public abstract static class State {
         public final Launcher lun;
+        public final Config c;
         public State(Launcher lun) {
             this.lun = lun;
+            this.c = lun.c;
         }
 
         public abstract void tick(double dT);
+
+        /**
+         * Convenience function for translation.
+         */
+        public final String tr(String text) {
+            return lun.ilg.tr(text);
+        }
+
+        /**
+         * Continued translation convenience.
+         */
+        public String trL(String text) {
+            return lun.ilg.trL(text);
+        }
+
+        public void translationDump(String string, String string2) {
+            lun.ilg.translationDump(string, string2);
+        }
     }
 }

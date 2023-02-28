@@ -66,7 +66,7 @@ public class CharacterGeneratorController extends App.Svc {
                     if (args.length == 1)
                         view.text = args[0];
                     if (args.length == 2)
-                        if (TXDB.getLanguage().equals(args[0]))
+                        if (app.c.language.equals(args[0]))
                             view.text = args[1];
                 }
             }
@@ -137,7 +137,7 @@ public class CharacterGeneratorController extends App.Svc {
                     if (args.length == 1)
                         target.naming.text = args[0];
                     if (args.length == 2)
-                        if (TXDB.getLanguage().equals(args[0]))
+                        if (app.c.language.equals(args[0]))
                             target.naming.text = args[1];
                 }
             }
