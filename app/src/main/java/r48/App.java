@@ -22,7 +22,8 @@ import r48.app.AppUI;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
 import r48.map.StuffRenderer;
-import r48.minivm.MVMCContext;
+import r48.minivm.MVMContext;
+import r48.minivm.MVMGlobalLibrary;
 
 /**
  * An attempt to move as much as possible out of static variables.
@@ -46,7 +47,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
     };
 
     // VM context
-    public final MVMCContext vmCtx = new MVMCContext();
+    public final MVMContext vmCtx = new MVMContext();
 
     /**
      * Initialize App.
@@ -54,6 +55,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
      */
     public App(InterlaunchGlobals ilg, String rp, String sip, IConsumer<String> loadProgress) {
         super(ilg, rp, sip, loadProgress);
+        MVMGlobalLibrary.add(vmCtx, ilg);
     }
 
     /**

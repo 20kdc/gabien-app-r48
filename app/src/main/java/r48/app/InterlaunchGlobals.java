@@ -8,6 +8,8 @@ package r48.app;
 
 import gabien.GaBIEn;
 import r48.cfg.Config;
+import r48.minivm.MVMContext;
+import r48.minivm.MVMGlobalLibrary;
 import r48.tr.ITranslator;
 import r48.tr.LanguageList;
 import r48.tr.NullTranslator;
@@ -19,10 +21,13 @@ import r48.tr.Translator;
  */
 public class InterlaunchGlobals {
     public final Config c;
+    private MVMContext langVm;
     private ITranslator translator = new NullTranslator();
 
     public InterlaunchGlobals(Config c) {
         this.c = c;
+        langVm = new MVMContext();
+        MVMGlobalLibrary.add(langVm, this);
     }
 
     /**

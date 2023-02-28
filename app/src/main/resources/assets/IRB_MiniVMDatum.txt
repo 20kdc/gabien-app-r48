@@ -31,7 +31,20 @@ The purpose of implementing local variables as individual arguments rather than 
 These local variables, as such, operate in a Lisp "let"-style fashion. Changes never propagate outwards.
 The upside is that trees may be safely nested to implement function calls without an explicit call mechanism.
 
-Some notes:
-+ If more than 8 local variables, or mutable local variables, are needed, this is why the context exists.
-  However it would be advisable to keep context creation to an absolute minimum.
-  If possible most expressions should be executed with a null or immutable default context.
+Functions in MiniVM have "fast-call" capability up to 4 args. See MVMFn.
+
+MiniVM Datum Language:
+This extends MiniVM into a usable general-purpose script language.
+Here's the basics of how it operates:
+1. All expressions go through a phase of compilation into MiniVM code. This occurs as early as possible, always.
+2. Contexts map symbols to slots (slots being mutable variable holders).
+3. Execution of a file occurs as one separate compile/run cycle per outer-level value.
+   This helps with error tracking and is also critical to... (next pt.)
+4. Macro availability is defined by what's in the current context when the macro is compiled.
+5. Operations that need to act like they handle top-level code will be macros that ultimately act more like functions.
+   (They may even be made into functions with macros defined to wrap them.)
+   `in-new-context`: Creates a context at runtime, individual compile/execute like top-level code
+   `include`: Again, done at runtime with individual compile/execute
+6. If a function is in scope during compilation, that function is directly bound in a macro-like way.
+   This only changes execution semantics if the function is later replaced (the replacement will not apply).
+   Importantly, this is used as an opportunity to check the arguments of the function call.

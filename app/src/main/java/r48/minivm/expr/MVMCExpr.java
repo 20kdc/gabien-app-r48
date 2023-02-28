@@ -4,11 +4,11 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.minivm;
+package r48.minivm.expr;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import r48.io.data.IRIO;
+import r48.minivm.MVMContext;
 
 /**
  * MiniVM compiled expression.
@@ -20,92 +20,92 @@ public abstract class MVMCExpr {
     public MVMCExpr(boolean pure) {
         isPure = pure;
     }
-    public final Object exc(@NonNull MVMCContext ctx) {
+    public final Object exc(@NonNull MVMContext ctx) {
         return execute(ctx, null, null, null, null, null, null, null, null);
     }
-    public final Object exc(@NonNull MVMCContext ctx, Object l0) {
+    public final Object exc(@NonNull MVMContext ctx, Object l0) {
         return execute(ctx, l0, null, null, null, null, null, null, null);
     }
-    public final Object exc(@NonNull MVMCContext ctx, Object l0, Object l1) {
+    public final Object exc(@NonNull MVMContext ctx, Object l0, Object l1) {
         return execute(ctx, l0, l1, null, null, null, null, null, null);
     }
-    public final Object exc(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2) {
+    public final Object exc(@NonNull MVMContext ctx, Object l0, Object l1, Object l2) {
         return execute(ctx, l0, l1, l2, null, null, null, null, null);
     }
-    public final Object exc(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3) {
+    public final Object exc(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3) {
         return execute(ctx, l0, l1, l2, l3, null, null, null, null);
     }
-    public final Object exc(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4) {
+    public final Object exc(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4) {
         return execute(ctx, l0, l1, l2, l3, l4, null, null, null);
     }
-    public final Object exc(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5) {
+    public final Object exc(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5) {
         return execute(ctx, l0, l1, l2, l3, l4, l5, null, null);
     }
-    public final Object exc(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6) {
+    public final Object exc(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6) {
         return execute(ctx, l0, l1, l2, l3, l4, l5, l6, null);
     }
-    public abstract Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7);
+    public abstract Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7);
 
     /**
      * Constant.
      */
     public static class Const extends MVMCExpr {
-        public final IRIO value;
-        public Const(IRIO v) {
+        public final Object value;
+        public Const(Object v) {
             super(true);
             value = v;
         }
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return value;
         }
     }
 
     public static final MVMCExpr getL0 = new MVMCExpr(true) {
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l0;
         }
     };
     public static final MVMCExpr getL1 = new MVMCExpr(true) {
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l1;
         }
     };
     public static final MVMCExpr getL2 = new MVMCExpr(true) {
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l2;
         }
     };
     public static final MVMCExpr getL3 = new MVMCExpr(true) {
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l3;
         }
     };
     public static final MVMCExpr getL4 = new MVMCExpr(true) {
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l4;
         }
     };
     public static final MVMCExpr getL5 = new MVMCExpr(true) {
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l5;
         }
     };
     public static final MVMCExpr getL6 = new MVMCExpr(true) {
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l6;
         }
     };
     public static final MVMCExpr getL7 = new MVMCExpr(true) {
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l7;
         }
     };
@@ -145,7 +145,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l0 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -155,7 +155,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l1 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -165,7 +165,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l2 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -175,7 +175,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l3 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -185,7 +185,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l4 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -195,7 +195,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l5 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -205,7 +205,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l6 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
@@ -215,7 +215,7 @@ public abstract class MVMCExpr {
             super(value, ret);
         }
         @Override
-        public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+        public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l7 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }

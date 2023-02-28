@@ -6,21 +6,14 @@
  */
 package r48.minivm;
 
-import org.eclipse.jdt.annotation.NonNull;
+import r48.app.InterlaunchGlobals;
 
 /**
- * MiniVM error stuff
- * Created 26th February 2023.
+ * MiniVM standard library.
+ * Created 28th February 2023.
  */
-public final class MVMCError extends MVMCExpr {
-    public final String message;
-    public MVMCError(String err) {
-        super(true);
-        message = err;
-    }
-
-    @Override
-    public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-        throw new RuntimeException(message);
+public class MVMGlobalLibrary {
+    public static void add(MVMContext ctx, InterlaunchGlobals ilg) {
+        
     }
 }

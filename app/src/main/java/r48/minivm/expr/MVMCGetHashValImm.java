@@ -4,32 +4,34 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.minivm;
+package r48.minivm.expr;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.IRIO;
+import r48.io.data.RORIO;
+import r48.minivm.MVMContext;
 
 /**
- * MiniVM PathSyntax IVar getter.
+ * MiniVM PathSyntax immediate hash value getter.
  * Created 26th February 2023.
  */
-public class MVMCGetIVar extends MVMCExpr {
+public class MVMCGetHashValImm extends MVMCExpr {
     public final MVMCExpr base;
-    public final String key;
+    public final RORIO key;
 
-    public MVMCGetIVar(MVMCExpr base, String k) {
+    public MVMCGetHashValImm(MVMCExpr base, RORIO k) {
         super(base.isPure);
         this.base = base;
         key = k;
     }
 
     @Override
-    public Object execute(@NonNull MVMCContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
+    public Object execute(@NonNull MVMContext ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
         IRIO res = (IRIO) base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         if (res == null)
             return null;
-        return res.getIVar(key);
+        return res.getHashVal(key);
     }
 
 }
