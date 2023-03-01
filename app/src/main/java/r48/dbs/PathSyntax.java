@@ -16,7 +16,7 @@ import gabien.uslx.append.IFunction;
 import r48.App;
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
-import r48.minivm.MVMEnvironment;
+import r48.minivm.MVMEnv;
 import r48.minivm.MVMScope;
 import r48.minivm.expr.MVMCArrayGetImm;
 import r48.minivm.expr.MVMCArrayLength;
@@ -37,12 +37,12 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
     public final MVMCExpr getProgram;
     private final MVMCExpr addProgram, delProgram;
     public final String decompiled;
-    public final MVMEnvironment parentContext;
+    public final MVMEnv parentContext;
 
     // NOTE: This must not contain anything used in ValueSyntax.
     public static char[] breakersSDB2 = new char[] {':', '@', ']'};
 
-    private PathSyntax(MVMEnvironment parentContext, MVMCExpr g, MVMCExpr a, MVMCExpr d, String dc) {
+    private PathSyntax(MVMEnv parentContext, MVMCExpr g, MVMCExpr a, MVMCExpr d, String dc) {
         this.parentContext = parentContext;
         getProgram = g;
         addProgram = a;
@@ -135,7 +135,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
         return compile(parentContext.vmCtx, MVMCExpr.getL0, arg);
     }
 
-    public static PathSyntax compile(MVMEnvironment parentContext, String arg) {
+    public static PathSyntax compile(MVMEnv parentContext, String arg) {
         return compile(parentContext, MVMCExpr.getL0, arg);
     }
 
@@ -143,7 +143,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
         return compile(basePS.parentContext, basePS.getProgram, arg);
     }
 
-    public static PathSyntax compile(MVMEnvironment parentContext, MVMCExpr base, String arg) {
+    public static PathSyntax compile(MVMEnv parentContext, MVMCExpr base, String arg) {
         // System.out.println("compiled pathsyntax " + arg);
         String workingArg = arg;
         while (workingArg.length() > 0) {

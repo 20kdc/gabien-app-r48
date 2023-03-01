@@ -14,14 +14,12 @@ import org.eclipse.jdt.annotation.NonNull;
 import static gabien.datum.DatumTreeUtils.*;
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.ISupplier;
-import r48.minivm.MVMCompileFrame;
-import r48.minivm.MVMCompileScope;
-import r48.minivm.MVMEnvironment;
-import r48.minivm.MVMFn;
-import r48.minivm.MVMMacro;
+import r48.minivm.MVMEnv;
 import r48.minivm.MVMScope;
-import r48.minivm.MVMSubScope;
-import r48.minivm.MVMSubScope.LocalRoot;
+import r48.minivm.compiler.MVMCompileFrame;
+import r48.minivm.compiler.MVMCompileScope;
+import r48.minivm.compiler.MVMSubScope;
+import r48.minivm.compiler.MVMSubScope.LocalRoot;
 import r48.minivm.expr.MVMCBegin;
 import r48.minivm.expr.MVMCExpr;
 
@@ -30,7 +28,7 @@ import r48.minivm.expr.MVMCExpr;
  * Created 28th February 2023.
  */
 public class MVMBasicsLibrary {
-    public static void add(MVMEnvironment ctx) {
+    public static void add(MVMEnv ctx) {
         // Scheme library
         ctx.defineSlot(new DatumSymbol("quote")).v = new Quote()
                 .attachHelp("(quote A) | 'A : A is not evaluated. Allows expressing complex structures inline.");

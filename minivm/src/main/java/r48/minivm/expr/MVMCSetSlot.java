@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import r48.minivm.MVMEnvironment.Slot;
+import r48.minivm.MVMEnv.Slot;
 import r48.minivm.MVMScope;
 
 /**

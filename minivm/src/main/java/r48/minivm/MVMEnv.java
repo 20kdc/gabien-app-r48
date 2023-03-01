@@ -8,7 +8,6 @@ package r48.minivm;
 
 import static gabien.datum.DatumTreeUtils.sym;
 
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,56 +16,31 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import gabien.GaBIEn;
 import gabien.datum.DatumDecodingVisitor;
 import gabien.datum.DatumReaderTokenSource;
 import gabien.datum.DatumSymbol;
-import gabien.uslx.append.IConsumer;
+import r48.minivm.compiler.MVMCompileScope;
+import r48.minivm.compiler.MVMToplevelScope;
 import r48.minivm.expr.MVMCExpr;
 
 /**
  * MiniVM environment.
  * Created 26th February 2023 but only fleshed out 28th.
  */
-public final class MVMEnvironment {
-    private final @Nullable MVMEnvironment parent;
+public class MVMEnv {
+    private final @Nullable MVMEnv parent;
     private final HashMap<DatumSymbol, Slot> values = new HashMap<>();
-    private final IConsumer<String> loadProgress;
 
-    public MVMEnvironment(IConsumer<String> loadProgress) {
+    public MVMEnv() {
         parent = null;
-        this.loadProgress = loadProgress;
     }
 
-    public MVMEnvironment(MVMEnvironment p) {
+    protected MVMEnv(MVMEnv p) {
         parent = p;
-        loadProgress = p.loadProgress;
     }
 
-    /**
-     * Loads the given file into this context.
-     */
-    public void include(String filename) {
-        System.out.println(">>" + filename);
-        if (loadProgress != null)
-            loadProgress.accept(filename);
-        try {
-            InputStreamReader ins = GaBIEn.getTextResource(filename);
-            DatumDecodingVisitor ddv = new DatumDecodingVisitor() {
-                @Override
-                public void visitTree(Object obj) {
-                    evalObject(obj);
-                }
-                @Override
-                public void visitEnd() {
-                }
-            };
-            DatumReaderTokenSource drts = new DatumReaderTokenSource(ins);
-            drts.visit(ddv);
-        } catch (Exception ex) {
-            throw new RuntimeException("During MVM read-in @ " + filename, ex);
-        }
-        System.out.println("<<" + filename);
+    public MVMEnv extend() {
+        return new MVMEnv(this);
     }
 
     /**

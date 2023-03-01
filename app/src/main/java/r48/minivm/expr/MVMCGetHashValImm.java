@@ -14,8 +14,8 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
-import r48.minivm.MVMFn;
 import r48.minivm.MVMScope;
+import r48.minivm.fn.MVMFn;
 
 /**
  * MiniVM PathSyntax immediate hash value getter.

@@ -6,10 +6,9 @@
  */
 package r48.minivm.fn;
 
-import r48.minivm.MVMCompileFrame;
-import r48.minivm.MVMFn;
 import r48.minivm.MVMScope;
-import r48.minivm.MVMSubScope;
+import r48.minivm.compiler.MVMCompileFrame;
+import r48.minivm.compiler.MVMSubScope;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCLocal;
 

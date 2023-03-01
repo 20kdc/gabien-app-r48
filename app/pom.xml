@@ -42,6 +42,11 @@
 			<artifactId>r48-io</artifactId>
 			<version>0.666-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>t20kdc.hs2</groupId>
+			<artifactId>r48-minivm</artifactId>
+			<version>0.666-SNAPSHOT</version>
+		</dependency>
 		<!-- stuff that we don't want to implicitly pack 100% of the time -->
 		<dependency>
 			<groupId>t20kdc.hs2</groupId>

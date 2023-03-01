@@ -14,8 +14,8 @@ import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import r48.cfg.Config;
-import r48.minivm.MVMEnvironment;
-import r48.minivm.MVMFn;
+import r48.minivm.MVMEnv;
+import r48.minivm.fn.MVMFn;
 
 /**
  * REPL for accessing MiniVM.
@@ -26,7 +26,7 @@ public class UIReadEvaluatePrintLoop extends UIProxy {
     public final UIScrollLayout view;
     public final UIChatBox text;
 
-    public UIReadEvaluatePrintLoop(Config c, MVMEnvironment vmCtx) {
+    public UIReadEvaluatePrintLoop(Config c, MVMEnv vmCtx) {
         this.c = c;
         text = new UIChatBox("", c.f.dialogWindowTextHeight);
         text.onSubmit = (txt) -> {

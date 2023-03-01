@@ -9,7 +9,8 @@ package r48.app;
 import gabien.GaBIEn;
 import gabien.uslx.append.IConsumer;
 import r48.cfg.Config;
-import r48.minivm.MVMEnvironment;
+import r48.minivm.MVMEnv;
+import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMGlobalLibrary;
 import r48.tr.ITranslator;
 import r48.tr.LanguageList;
@@ -24,10 +25,10 @@ import r48.tr.Translator;
 public class InterlaunchGlobals {
     public final Config c;
     private ITranslator translator = new NullTranslator();
-    private MVMEnvironment langVM;
-    private IConsumer<MVMEnvironment> reportVMChanges;
+    private MVMEnvR48 langVM;
+    private IConsumer<MVMEnv> reportVMChanges;
 
-    public InterlaunchGlobals(Config c, IConsumer<MVMEnvironment> report, IConsumer<String> loadProgress) {
+    public InterlaunchGlobals(Config c, IConsumer<MVMEnv> report, IConsumer<String> loadProgress) {
         this.c = c;
         reportVMChanges = report;
         updateLanguage(loadProgress);
@@ -36,8 +37,8 @@ public class InterlaunchGlobals {
     /**
      * Creates a VM environment.
      */
-    public MVMEnvironment createCurrentLanguageVM(IConsumer<String> loadProgress) {
-        MVMEnvironment langVM = new MVMEnvironment(loadProgress);
+    public MVMEnvR48 createCurrentLanguageVM(IConsumer<String> loadProgress) {
+        MVMEnvR48 langVM = new MVMEnvR48(loadProgress);
         MVMGlobalLibrary.add(langVM, this);
         return langVM;
     }

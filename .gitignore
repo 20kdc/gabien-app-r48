@@ -22,18 +22,11 @@
 !io/src
 !io/src/**
 
-# IMI (Integrated Mod Installer)
-# Note that this tree gets mixed together with various bits and pieces by the IMI release process.
-
-!imi
-!imi/pom.xml
-!imi/src
-!imi/src/**
-
-# Git is being a git about this, make it clear.
-# These files are to be COPIED OVER.
-imi/src/main/resources/CREDITS.txt
-imi/src/main/resources/COPYING.txt
+# MiniVM library
+!minivm
+!minivm/pom.xml
+!minivm/src
+!minivm/src/**
 
 # Test dir
 !app/test-out

@@ -16,7 +16,7 @@ import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.cfg.FontSizes.FontSizeField;
-import r48.minivm.MVMEnvironment;
+import r48.minivm.MVMEnv;
 
 /**
  * Rethink of how this should work for code reasons.
@@ -29,7 +29,7 @@ public class Launcher {
     public State currentState;
 
     // Warning: These two are not finished until during splash screen (and off-thread at that)
-    public volatile MVMEnvironment vmCtx;
+    public volatile MVMEnv vmCtx;
     public volatile InterlaunchGlobals ilg;
 
     public int globalMS = 50;

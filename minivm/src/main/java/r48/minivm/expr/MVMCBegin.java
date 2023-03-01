@@ -12,8 +12,8 @@ import static gabien.datum.DatumTreeUtils.*;
 
 import java.util.LinkedList;
 
-import r48.minivm.MVMCompileScope;
 import r48.minivm.MVMScope;
+import r48.minivm.compiler.MVMCompileScope;
 
 /**
  * MiniVM begin

@@ -11,8 +11,9 @@ import java.util.Arrays;
 import org.eclipse.jdt.annotation.NonNull;
 
 import static gabien.datum.DatumTreeUtils.*;
-import r48.minivm.MVMFn;
+
 import r48.minivm.MVMScope;
+import r48.minivm.fn.MVMFn;
 
 /**
  * MiniVM compiled expression.

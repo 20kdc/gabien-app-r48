@@ -36,6 +36,7 @@
 	<modules>
 		<module>app</module>
 		<module>io</module>
+		<module>minivm</module>
 	</modules>
 </project>
 

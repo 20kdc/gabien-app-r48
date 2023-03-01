@@ -9,9 +9,8 @@ package r48.minivm.fn;
 import gabien.datum.DatumSymbol;
 import r48.app.InterlaunchGlobals;
 import r48.dbs.PathSyntax;
-import r48.minivm.MVMCompileScope;
-import r48.minivm.MVMEnvironment;
-import r48.minivm.MVMMacro;
+import r48.minivm.MVMEnv;
+import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.expr.MVMCExpr;
 
 /**
@@ -19,7 +18,7 @@ import r48.minivm.expr.MVMCExpr;
  * Created 28th February 2023.
  */
 public class MVMGlobalLibrary {
-    public static void add(MVMEnvironment ctx, InterlaunchGlobals ilg) {
+    public static void add(MVMEnv ctx, InterlaunchGlobals ilg) {
         MVMBasicsLibrary.add(ctx);
         MVMIntegrationLibrary.add(ctx);
         // Data Model library

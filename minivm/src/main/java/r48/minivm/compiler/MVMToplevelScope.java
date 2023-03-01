@@ -4,11 +4,12 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.minivm;
+package r48.minivm.compiler;
 
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.ISupplier;
-import r48.minivm.MVMEnvironment.Slot;
+import r48.minivm.MVMEnv;
+import r48.minivm.MVMEnv.Slot;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCSetSlot;
 
@@ -17,7 +18,7 @@ import r48.minivm.expr.MVMCSetSlot;
  * Created 1st March 2023.
  */
 public class MVMToplevelScope extends MVMCompileScope {
-    public MVMToplevelScope(MVMEnvironment ctx) {
+    public MVMToplevelScope(MVMEnv ctx) {
         super(ctx);
     }
     private MVMToplevelScope(MVMToplevelScope tls) {
