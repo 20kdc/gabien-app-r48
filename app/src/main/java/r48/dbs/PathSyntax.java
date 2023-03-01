@@ -7,8 +7,11 @@
 
 package r48.dbs;
 
+import java.util.Arrays;
+
 import org.eclipse.jdt.annotation.NonNull;
 
+import gabien.datum.DatumSymbol;
 import gabien.uslx.append.IFunction;
 import r48.App;
 import r48.io.data.IRIO;
@@ -204,6 +207,11 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
                                 System.err.println("Warning: Failed to create IVar " + iv + " in " + res);
                             return ivv;
                         }
+
+                        @Override
+                        public Object disasm() {
+                            return Arrays.asList(new DatumSymbol("pathAddIVar"), parent.disasm(), iv);
+                        }
                     }, new MVMCExpr() {
                         @Override
                         public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
@@ -213,6 +221,11 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
                             IRIO ivv = res.getIVar(iv);
                             res.rmIVar(iv);
                             return ivv;
+                        }
+
+                        @Override
+                        public Object disasm() {
+                            return Arrays.asList(new DatumSymbol("pathDelIVar"), parent.disasm(), iv);
                         }
                     }, arg);
                 base = currentGet;

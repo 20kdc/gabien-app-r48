@@ -6,7 +6,10 @@
  */
 package r48.minivm;
 
+import static gabien.datum.DatumTreeUtils.sym;
+
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -136,6 +139,11 @@ public final class MVMEnvironment {
         @Override
         public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return v;
+        }
+
+        @Override
+        public Object disasm() {
+            return Arrays.asList(sym("slot"), s);
         }
     }
 }

@@ -6,6 +6,10 @@
  */
 package r48.minivm.expr;
 
+import static gabien.datum.DatumTreeUtils.sym;
+
+import java.util.Arrays;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.IRIO;
@@ -32,4 +36,8 @@ public class MVMCGetIVar extends MVMCExpr {
         return res.getIVar(key);
     }
 
+    @Override
+    public Object disasm() {
+        return Arrays.asList(sym("getIVar"), base.disasm(), key);
+    }
 }

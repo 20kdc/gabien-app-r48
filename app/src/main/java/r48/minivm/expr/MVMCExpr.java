@@ -6,8 +6,12 @@
  */
 package r48.minivm.expr;
 
+import java.util.Arrays;
+
 import org.eclipse.jdt.annotation.NonNull;
 
+import static gabien.datum.DatumTreeUtils.*;
+import r48.minivm.MVMFn;
 import r48.minivm.MVMScope;
 
 /**
@@ -41,6 +45,11 @@ public abstract class MVMCExpr {
         return execute(ctx, l0, l1, l2, l3, l4, l5, l6, null);
     }
     public abstract Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7);
+    /**
+     * Disassembles the expression for user analysis.
+     * This is NOT a safe round-trip.
+     */
+    public abstract Object disasm();
 
     /**
      * Constant.
@@ -55,6 +64,10 @@ public abstract class MVMCExpr {
         public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return value;
         }
+        @Override
+        public Object disasm() {
+            return MVMFn.asUserReadableString(value);
+        }
     }
 
     // These two manipulate the L0 slot. This is used by "hand-written" code using the VM like PathSyntax.
@@ -62,6 +75,10 @@ public abstract class MVMCExpr {
         @Override
         public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             return l0;
+        }
+        @Override
+        public Object disasm() {
+            return sym("getL0");
         }
     };
     private static abstract class Set extends MVMCExpr {
@@ -79,6 +96,10 @@ public abstract class MVMCExpr {
         public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
             l0 = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+        }
+        @Override
+        public Object disasm() {
+            return Arrays.asList(sym("setL0"), value.disasm(), ret.disasm());
         }
     }
 }

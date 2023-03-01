@@ -6,6 +6,10 @@
  */
 package r48.minivm.expr;
 
+import static gabien.datum.DatumTreeUtils.sym;
+
+import java.util.Arrays;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.minivm.MVMScope;
@@ -23,5 +27,10 @@ public final class MVMCError extends MVMCExpr {
     @Override
     public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
         throw new RuntimeException(message);
+    }
+
+    @Override
+    public Object disasm() {
+        return Arrays.asList(sym("error"), message);
     }
 }

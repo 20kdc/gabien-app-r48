@@ -6,9 +6,14 @@
  */
 package r48.minivm.expr;
 
+import static gabien.datum.DatumTreeUtils.sym;
+
+import java.util.Arrays;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.IRIO;
+import r48.minivm.MVMFn;
 import r48.minivm.MVMScope;
 
 /**
@@ -32,5 +37,10 @@ public final class MVMCPathHashDel extends MVMCExpr {
         IRIO res = root.getHashVal(hashVal);
         root.removeHashVal(hashVal);
         return res;
+    }
+
+    @Override
+    public Object disasm() {
+        return Arrays.asList(sym("pathHashDel"), delBase.disasm(), MVMFn.asUserReadableString(hashVal));
     }
 }

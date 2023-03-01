@@ -6,10 +6,15 @@
  */
 package r48.minivm.expr;
 
+import static gabien.datum.DatumTreeUtils.sym;
+
+import java.util.Arrays;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.IRIO;
 import r48.io.data.RORIO;
+import r48.minivm.MVMFn;
 import r48.minivm.MVMScope;
 
 /**
@@ -33,4 +38,8 @@ public class MVMCGetHashValImm extends MVMCExpr {
         return res.getHashVal(key);
     }
 
+    @Override
+    public Object disasm() {
+        return Arrays.asList(sym("getHashValImm"), base.disasm(), MVMFn.asUserReadableString(key));
+    }
 }

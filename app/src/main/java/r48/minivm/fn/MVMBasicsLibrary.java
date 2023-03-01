@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import static gabien.datum.DatumTreeUtils.*;
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.ISupplier;
 import r48.minivm.MVMCompileFrame;
@@ -47,7 +48,7 @@ public class MVMBasicsLibrary {
      * This is because otherwise the local base changes and things start to go very wrong very quickly. 
      */
     public static MVMCExpr lambda(String hint, MVMCompileScope mcs, Object[] argsUC, Object[] call, int base) {
-        MVMSubScope lambdaFrame = mcs.extendWithFrame();
+        MVMSubScope lambdaSc = mcs.extendWithFrame();
         final LocalRoot[] roots = new LocalRoot[argsUC.length];
         for (int i = 0; i < argsUC.length; i++) {
             Object arg = argsUC[i];
@@ -55,15 +56,20 @@ public class MVMBasicsLibrary {
                 throw new RuntimeException("arg " + MVMFn.asUserReadableString(arg) + " expected to be sym");
             DatumSymbol aSym = (DatumSymbol) arg;
             // actual arg logic
-            roots[i] = lambdaFrame.newLocal(aSym);
+            roots[i] = lambdaSc.newLocal(aSym);
         }
         // compiled lambda code, but expects to be framed in an MVMFn in the context of the creation
-        final MVMCExpr compiledLambda = new MVMCBegin(lambdaFrame, call, base, call.length - base);
-        final MVMCompileFrame rootFrame = lambdaFrame.frame;
+        int exprs = call.length - base;
+        final MVMCExpr compiledLambda = exprs == 1 ? lambdaSc.compile(call[base]) : new MVMCBegin(lambdaSc, call, base, exprs);
+        final MVMCompileFrame rootFrame = lambdaSc.frame;
         return new MVMCExpr() {
             @Override
             public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                 return new MVMLambdaFn(hint, ctx, compiledLambda, roots, rootFrame);
+            }
+            @Override
+            public Object disasm() {
+                return Arrays.asList(sym("lambda"), rootFrame.isExpectedToExist(), compiledLambda.disasm());
             }
         };
     }
@@ -157,7 +163,7 @@ public class MVMBasicsLibrary {
                 throw new RuntimeException("Lambda args list needs to actually be an args list");
             @SuppressWarnings("unchecked")
             List<Object> args = (List<Object>) call[1];
-            return lambda(MVMFn.asUserReadableString(call), cs, args.toArray(), call, 1);
+            return lambda(MVMFn.asUserReadableString(call), cs, args.toArray(), call, 2);
         }
     }
 }

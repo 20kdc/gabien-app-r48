@@ -6,6 +6,10 @@
  */
 package r48.minivm;
 
+import static gabien.datum.DatumTreeUtils.sym;
+
+import java.util.LinkedList;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.minivm.expr.MVMCExpr;
@@ -24,6 +28,11 @@ public class MVMFnCallCompiler {
                     MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
                     return mvmFn.callDirect();
                 }
+
+                @Override
+                public Object disasm() {
+                    return makeDisassembly(call, exprs);
+                }
             };
         } else if (exprs.length == 1) {
             return new MVMCExpr() {
@@ -32,6 +41,11 @@ public class MVMFnCallCompiler {
                     MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
                     Object v0 = exprs[0].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     return mvmFn.callDirect(v0);
+                }
+
+                @Override
+                public Object disasm() {
+                    return makeDisassembly(call, exprs);
                 }
             };
         } else if (exprs.length == 2) {
@@ -43,6 +57,11 @@ public class MVMFnCallCompiler {
                     Object v1 = exprs[1].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     return mvmFn.callDirect(v0, v1);
                 }
+
+                @Override
+                public Object disasm() {
+                    return makeDisassembly(call, exprs);
+                }
             };
         } else if (exprs.length == 3) {
             return new MVMCExpr() {
@@ -53,6 +72,11 @@ public class MVMFnCallCompiler {
                     Object v1 = exprs[1].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     Object v2 = exprs[2].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     return mvmFn.callDirect(v0, v1, v2);
+                }
+
+                @Override
+                public Object disasm() {
+                    return makeDisassembly(call, exprs);
                 }
             };
         } else if (exprs.length == 4) {
@@ -66,6 +90,11 @@ public class MVMFnCallCompiler {
                     Object v3 = exprs[3].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     return mvmFn.callDirect(v0, v1, v2, v3);
                 }
+
+                @Override
+                public Object disasm() {
+                    return makeDisassembly(call, exprs);
+                }
             };
         } else {
             return new MVMCExpr() {
@@ -77,8 +106,22 @@ public class MVMFnCallCompiler {
                         v[i] = exprs[i].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     return mvmFn.callIndirect(v);
                 }
+
+                @Override
+                public Object disasm() {
+                    return makeDisassembly(call, exprs);
+                }
             };
         }
+    }
+
+    public static Object makeDisassembly(MVMCExpr call, MVMCExpr[] exprs) {
+        LinkedList<Object> obj = new LinkedList<>();
+        obj.add(sym("call"));
+        obj.add(call.disasm());
+        for (MVMCExpr ex : exprs)
+            obj.add(ex.disasm());
+        return obj;
     }
 
     public static MVMFn asFn(Object execute) {

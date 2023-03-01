@@ -6,6 +6,10 @@
  */
 package r48.minivm.expr;
 
+import static gabien.datum.DatumTreeUtils.sym;
+
+import java.util.Arrays;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.minivm.MVMScope;
@@ -79,10 +83,15 @@ public final class MVMCLocal {
                 return ctx.get(frameID, localID);
             }
         }
+
+        @Override
+        public Object disasm() {
+            return Arrays.asList(sym("localRead"), frameID, localID);
+        }
     }
-    public final class Write extends MVMCExpr {
+    public final class Let extends MVMCExpr {
         public final MVMCExpr val, ret;
-        public Write(MVMCExpr v, MVMCExpr r) {
+        public Let(MVMCExpr v, MVMCExpr r) {
             val = v;
             ret = r;
         }
@@ -115,9 +124,14 @@ public final class MVMCLocal {
             }
             return ret.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         }
+
+        @Override
+        public Object disasm() {
+            return Arrays.asList(sym("localLet"), frameID, localID, val.disasm(), ret.disasm());
+        }
     }
 
-    public MVMCExpr write(MVMCExpr val) {
+    public MVMCExpr write(final MVMCExpr val) {
         if (frameID == -1)
             throw new RuntimeException("A local being written cannot be fast. Deoptimize it.");
         final int fID = frameID;
@@ -128,6 +142,11 @@ public final class MVMCLocal {
                 Object v = val.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                 ctx.set(fID, lID, val);
                 return v;
+            }
+
+            @Override
+            public Object disasm() {
+                return Arrays.asList(sym("localWrite"), frameID, localID, val.disasm());
             }
         };
     }

@@ -6,8 +6,11 @@
  */
 package r48.minivm.expr;
 
+import java.util.Arrays;
+
 import org.eclipse.jdt.annotation.NonNull;
 
+import static gabien.datum.DatumTreeUtils.*;
 import r48.io.data.IRIO;
 import r48.minivm.MVMScope;
 
@@ -36,4 +39,8 @@ public class MVMCArrayGetImm extends MVMCExpr {
         return res.getAElem(index);
     }
 
+    @Override
+    public Object disasm() {
+        return Arrays.asList(sym("arrayGetImm"), base.disasm(), index);
+    }
 }

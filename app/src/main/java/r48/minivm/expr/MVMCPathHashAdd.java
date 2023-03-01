@@ -6,9 +6,14 @@
  */
 package r48.minivm.expr;
 
+import static gabien.datum.DatumTreeUtils.sym;
+
+import java.util.Arrays;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.IRIO;
+import r48.minivm.MVMFn;
 import r48.minivm.MVMScope;
 
 /**
@@ -33,5 +38,10 @@ public final class MVMCPathHashAdd extends MVMCExpr {
         if (res == null)
             res = root.addHashVal(hashVal).setNull();
         return res;
+    }
+
+    @Override
+    public Object disasm() {
+        return Arrays.asList(sym("pathHashAdd"), addBase.disasm(), MVMFn.asUserReadableString(hashVal));
     }
 }

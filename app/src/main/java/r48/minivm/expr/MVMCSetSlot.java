@@ -6,6 +6,10 @@
  */
 package r48.minivm.expr;
 
+import static gabien.datum.DatumTreeUtils.sym;
+
+import java.util.Arrays;
+
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.minivm.MVMEnvironment.Slot;
@@ -26,5 +30,10 @@ public class MVMCSetSlot extends MVMCExpr {
     @Override
     public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
         return slot.v = value.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
+    }
+
+    @Override
+    public Object disasm() {
+        return Arrays.asList(sym("setSlot"), slot.s, value.disasm());
     }
 }

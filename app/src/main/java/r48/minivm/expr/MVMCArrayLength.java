@@ -8,6 +8,10 @@ package r48.minivm.expr;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import static gabien.datum.DatumTreeUtils.*;
+
+import java.util.Arrays;
+
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
 import r48.minivm.MVMScope;
@@ -32,5 +36,10 @@ public final class MVMCArrayLength extends MVMCExpr {
         if (root.getType() != '[')
             return null;
         return new IRIOFixnum(root.getALen());
+    }
+
+    @Override
+    public Object disasm() {
+        return Arrays.asList(sym("arrayLength"), addBase.disasm());
     }
 }

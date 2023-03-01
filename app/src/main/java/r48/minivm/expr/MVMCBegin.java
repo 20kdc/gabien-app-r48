@@ -8,6 +8,10 @@ package r48.minivm.expr;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import static gabien.datum.DatumTreeUtils.*;
+
+import java.util.LinkedList;
+
 import r48.minivm.MVMCompileScope;
 import r48.minivm.MVMScope;
 
@@ -34,5 +38,14 @@ public final class MVMCBegin extends MVMCExpr {
         for (MVMCExpr ex : exprs)
             val = ex.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
         return val;
+    }
+
+    @Override
+    public Object disasm() {
+        LinkedList<Object> obj = new LinkedList<>();
+        obj.add(sym("begin"));
+        for (MVMCExpr ex : exprs)
+            obj.add(ex.disasm());
+        return obj;
     }
 }

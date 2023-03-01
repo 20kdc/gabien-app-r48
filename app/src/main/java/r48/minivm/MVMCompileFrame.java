@@ -83,7 +83,15 @@ public final class MVMCompileFrame {
      * In the former case, in the latter case it's because otherwise frame IDs are upset. 
      */
     public void markExpectedToExist() {
-        parent.markExpectedToExist();
+        if (parent != null)
+            parent.markExpectedToExist();
         expectedToExist = true;
+    }
+
+    /**
+     * Used for debugging more than anything else. See the wrap* functions.
+     */
+    public boolean isExpectedToExist() {
+        return expectedToExist;
     }
 }
