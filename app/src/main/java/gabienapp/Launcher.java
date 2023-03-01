@@ -44,7 +44,9 @@ public class Launcher {
         uiTicker = new WindowCreatingUIElementConsumer();
         // Setup initial state
         currentState = new LSSplashScreen(this, () -> {
-            ilg = new InterlaunchGlobals(c, (vm) -> vmCtx = vm);
+            ilg = new InterlaunchGlobals(c, (vm) -> vmCtx = vm, (str) -> {
+                // this would presumably go to the splash screen
+            });
             boolean canAvoidWait = c.fontOverride == null;
             // If we're setup correctly: English never needs the font-loading.
             // The reason it's important we use the correct language for this is because if font-loading is slow,

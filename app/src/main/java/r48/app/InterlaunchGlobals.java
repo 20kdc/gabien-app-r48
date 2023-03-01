@@ -27,17 +27,17 @@ public class InterlaunchGlobals {
     private MVMEnvironment langVM;
     private IConsumer<MVMEnvironment> reportVMChanges;
 
-    public InterlaunchGlobals(Config c, IConsumer<MVMEnvironment> report) {
+    public InterlaunchGlobals(Config c, IConsumer<MVMEnvironment> report, IConsumer<String> loadProgress) {
         this.c = c;
         reportVMChanges = report;
-        updateLanguage();
+        updateLanguage(loadProgress);
     }
 
     /**
      * Creates a VM environment.
      */
-    public MVMEnvironment createCurrentLanguageVM() {
-        MVMEnvironment langVM = new MVMEnvironment();
+    public MVMEnvironment createCurrentLanguageVM(IConsumer<String> loadProgress) {
+        MVMEnvironment langVM = new MVMEnvironment(loadProgress);
         MVMGlobalLibrary.add(langVM, this);
         return langVM;
     }
@@ -47,13 +47,13 @@ public class InterlaunchGlobals {
      * Will reset language to English if not found.
      * If the app is running you're expected to figure that out yourself.
      */
-    public void updateLanguage() {
+    public void updateLanguage(IConsumer<String> loadProgress) {
         String lang = c.language;
         if (!LanguageList.hasLanguage(lang))
             lang = "English";
         c.language = lang;
         // ---
-        langVM = createCurrentLanguageVM();
+        langVM = createCurrentLanguageVM(loadProgress);
         reportVMChanges.accept(langVM);
         if (lang.equals("English")) {
             translator = new NullTranslator();

@@ -6,16 +6,16 @@
  */
 package r48.ui.dialog;
 
-import gabien.datum.DatumWriter;
 import gabien.ui.Rect;
 import gabien.ui.Size;
+import gabien.ui.UIChatBox;
 import gabien.ui.UIElement.UIProxy;
 import gabien.ui.UILabel;
 import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
-import gabien.ui.UITextBox;
 import r48.cfg.Config;
 import r48.minivm.MVMEnvironment;
+import r48.minivm.MVMFn;
 
 /**
  * REPL for accessing MiniVM.
@@ -24,28 +24,30 @@ import r48.minivm.MVMEnvironment;
 public class UIReadEvaluatePrintLoop extends UIProxy {
     public final Config c;
     public final UIScrollLayout view;
-    public final UITextBox text;
+    public final UIChatBox text;
 
     public UIReadEvaluatePrintLoop(Config c, MVMEnvironment vmCtx) {
         this.c = c;
-        text = new UITextBox("", c.f.dialogWindowTextHeight).setNoDiscard();
-        text.onEnter = () -> {
-            String txt = text.text;
-            text.text = "";
+        text = new UIChatBox("", c.f.dialogWindowTextHeight);
+        text.onSubmit = (txt) -> {
             write("> " + txt);
             Object res = null;
             try {
                 res = vmCtx.evalString(txt);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                write(ex.toString());
+                StringBuilder sb = new StringBuilder();
+                sb.append("!");
+                Throwable ex2 = ex;
+                while (ex2 != null) {
+                    sb.append(" ");
+                    sb.append(ex2.getLocalizedMessage());
+                    ex2 = ex2.getCause();
+                }
+                write(sb.toString());
                 return;
             }
-            try {
-                write("= " + DatumWriter.objectToString(res));
-            } catch (Exception ex) {
-                write("=? " + res.toString());
-            }
+            write("= " + MVMFn.asUserReadableString(res));
         };
         view = new UIScrollLayout(true, c.f.generalScrollersize);
         proxySetElement(new UISplitterLayout(view, text, true, 1), false);

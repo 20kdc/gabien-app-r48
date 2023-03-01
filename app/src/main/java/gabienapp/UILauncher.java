@@ -184,7 +184,9 @@ public class UILauncher extends UIProxy {
                 // (I'm slightly glad I'm not the only one this happens for, but unhappy that it's an issue.)
                 // Unfortunately, a warning message cannot be shown to the user, as the warning message would itself trigger lag-for-font-load.
                 c.language = LanguageList.getNextLanguage(c.language);
-                lun.ilg.updateLanguage();
+                lun.ilg.updateLanguage((str) -> {
+                    // one can imagine the splash screen being used here, but not for now
+                });
                 lun.currentState = new LSMain(lun);
                 gamepaksRequestClose = true;
             }

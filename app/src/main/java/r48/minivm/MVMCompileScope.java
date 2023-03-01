@@ -12,40 +12,60 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.datum.DatumSymbol;
-import gabien.datum.DatumWriter;
+import gabien.uslx.append.ISupplier;
 import r48.minivm.MVMEnvironment.Slot;
 import r48.minivm.expr.MVMCExpr;
+import r48.minivm.expr.MVMCScopeFrame;
 
 /**
  * The compiler lives here!
  * Created 28th February 2023.
  */
-public final class MVMCompileScope {
+public abstract class MVMCompileScope {
     public final MVMEnvironment context;
-    // If this is a top-level compile scope. This changes definition behaviour.
-    public final boolean isTopLevel;
-    public final boolean[] fastLocalsAlloc = new boolean[8];
-    public final HashMap<DatumSymbol, Local> locals;
+    // Changes as stuff is added to the scope. Locals that haven't been defined "yet" compile-time aren't in here yet.
+    protected final HashMap<DatumSymbol, Local> locals;
+    protected final boolean[] fastLocalsAlloc = new boolean[8];
 
-    public MVMCompileScope(MVMEnvironment ctx, boolean topLevel) {
+    public MVMCompileScope(MVMEnvironment ctx) {
         context = ctx;
-        isTopLevel = topLevel;
         locals = new HashMap<>();
     }
     public MVMCompileScope(MVMCompileScope cs) {
-        this(cs, cs.context);
-    }
-    public MVMCompileScope(MVMCompileScope cs, MVMEnvironment ctx) {
-        context = ctx;
-        isTopLevel = false;
+        context = cs.context;
         locals = new HashMap<>(cs.locals);
         System.arraycopy(cs.fastLocalsAlloc, 0, fastLocalsAlloc, 0, 8);
     }
 
-    public MVMCExpr compile(Object o) {
-        if (o instanceof String || o instanceof Boolean || o instanceof Number || o == null) {
-            return new MVMCExpr.Const(o);
-        } else if (o instanceof DatumSymbol) {
+    /**
+     * Compiles a define in this scope.
+     * Note the supplier. The define/local must be in place before the expression is given.
+     */
+    public abstract MVMCExpr compileDefine(DatumSymbol sym, ISupplier<MVMCExpr> value);
+
+    /**
+     * Extends with a formal frame boundary.
+     * This means you're responsible for frame.wrapRoot!
+     */
+    public abstract MVMSubScope extendWithFrame();
+
+    /**
+     * Extends in a chill manner.
+     */
+    public abstract MVMCompileScope extendNoFrame();
+
+    /**
+     * Just assume a fast local comes from somewhere.
+     */
+    public void forceFastLocal(DatumSymbol aSym, int i) {
+        locals.put(aSym, new Local(null, i));
+    }
+
+    /**
+     * Compiles an object.
+     */
+    public final MVMCExpr compile(Object o) {
+        if (o instanceof DatumSymbol) {
             // Local
             Local lcl = locals.get(o);
             if (lcl != null)
@@ -68,31 +88,91 @@ public final class MVMCompileScope {
                 Object sv = ((Slot) oa1v).v;
                 if (sv instanceof MVMMacro) {
                     // Macro compile tiiiiimmmeeeee
-                    return ((MVMMacro) sv).compile(this, oa);
+                    MVMCExpr macroRes = ((MVMMacro) sv).compile(this, oa);
+                    if (macroRes == null)
+                        return new MVMCExpr.Const(null);
+                    return macroRes;
                 }
             }
             final MVMCExpr[] exprs = new MVMCExpr[oa.length - 1];
             for (int i = 0; i < exprs.length; i++)
                 exprs[i] = compile(oa[i + 1]);
             return MVMFnCallCompiler.compile(this, oa1v, exprs);
+        } else {
+            return new MVMCExpr.Const(o);
         }
-        throw new RuntimeException("Couldn't compile " + o.getClass() + ": " + DatumWriter.objectToString(o));
+    }
+
+    /**
+     * A "physical frame".
+     */
+    public static final class Frame {
+        /**
+         * The actual, real frame ID as supplied to MVMScope functions.
+         */
+        public final int frameID;
+
+        /**
+         * Amount of allocated locals.
+         */
+        private int allocatedLocals;
+
+        /**
+         * If child frames exist.
+         */
+        private boolean hasChildren;
+
+        protected Frame() {
+            // The first frame ID is always 1, because 0 is reserved for the true (empty) root scope.
+            frameID = 1;
+        }
+
+        protected Frame(Frame par) {
+            frameID = par.frameID + 1;
+            par.hasChildren = true;
+        }
+
+        /**
+         * Allocates a local.
+         */
+        public Local allocateLocal() {
+            return new Local(this, allocatedLocals++);
+        }
+
+        /**
+         * Ensures that, assuming the given expression is a root, the frame exists.
+         */
+        public MVMCExpr wrapRoot(MVMCExpr base) {
+            return isExpectedToReallyExist() ? new MVMCScopeFrame(base, allocatedLocals) : base;
+        }
+
+        /**
+         * If true, this frame is expected to really exist.
+         * This occurs if there are either locals in it or sub-frames exist.
+         * In the former case, in the latter case it's because otherwise frame IDs are upset. 
+         */
+        public boolean isExpectedToReallyExist() {
+            return hasChildren && (allocatedLocals > 0);
+        }
     }
 
     public static final class Local {
-        public final boolean isFastLocal;
-        public final int id;
-        public Local(boolean f, int id) {
-            isFastLocal = f;
-            this.id = id;
+        // Frame. If null, this is a fast local.
+        public final Frame parent;
+        // Local ID 
+        public final int localID;
+        public Local(Frame f, int id) {
+            parent = f;
+            localID = id;
         }
         public MVMCExpr getter() {
-            if (isFastLocal)
-                return MVMCExpr.getL[id];
+            if (parent == null)
+                return MVMCExpr.getL[localID];
+            final int parentFrameID = parent.frameID;
             return new MVMCExpr() {
                 @Override
                 public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-                    return ctx.get(id);
+                    return ctx.get(parentFrameID, localID);
                 }
             };
         }

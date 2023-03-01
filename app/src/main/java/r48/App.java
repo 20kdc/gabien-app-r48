@@ -21,6 +21,7 @@ import r48.app.AppNewProject;
 import r48.app.AppUI;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
+import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
 import r48.minivm.MVMEnvironment;
 import r48.minivm.fn.MVMGlobalLibrary;
@@ -47,7 +48,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
     };
 
     // VM context
-    public final MVMEnvironment vmCtx = new MVMEnvironment();
+    public final MVMEnvironment vmCtx;
 
     /**
      * Initialize App.
@@ -55,6 +56,9 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
      */
     public App(InterlaunchGlobals ilg, String rp, String sip, IConsumer<String> loadProgress) {
         super(ilg, rp, sip, loadProgress);
+        vmCtx = new MVMEnvironment((str) -> {
+            loadProgress.accept(TXDB.get("Loading... ") + str);
+        });
         MVMGlobalLibrary.add(vmCtx, ilg);
     }
 

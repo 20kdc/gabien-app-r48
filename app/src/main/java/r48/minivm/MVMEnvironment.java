@@ -18,6 +18,7 @@ import gabien.GaBIEn;
 import gabien.datum.DatumDecodingVisitor;
 import gabien.datum.DatumReaderTokenSource;
 import gabien.datum.DatumSymbol;
+import gabien.uslx.append.IConsumer;
 import r48.minivm.expr.MVMCExpr;
 
 /**
@@ -27,19 +28,25 @@ import r48.minivm.expr.MVMCExpr;
 public final class MVMEnvironment {
     private final @Nullable MVMEnvironment parent;
     private final HashMap<DatumSymbol, Slot> values = new HashMap<>();
+    private final IConsumer<String> loadProgress;
 
-    public MVMEnvironment() {
+    public MVMEnvironment(IConsumer<String> loadProgress) {
         parent = null;
+        this.loadProgress = loadProgress;
     }
 
     public MVMEnvironment(MVMEnvironment p) {
         parent = p;
+        loadProgress = p.loadProgress;
     }
 
     /**
      * Loads the given file into this context.
      */
     public void include(String filename) {
+        System.out.println(">>" + filename);
+        if (loadProgress != null)
+            loadProgress.accept(filename);
         try {
             InputStreamReader ins = GaBIEn.getTextResource(filename);
             DatumDecodingVisitor ddv = new DatumDecodingVisitor() {
@@ -54,8 +61,9 @@ public final class MVMEnvironment {
             DatumReaderTokenSource drts = new DatumReaderTokenSource(ins);
             drts.visit(ddv);
         } catch (Exception ex) {
-            throw new RuntimeException("During MVM read-in @ " + filename);
+            throw new RuntimeException("During MVM read-in @ " + filename, ex);
         }
+        System.out.println("<<" + filename);
     }
 
     /**
@@ -80,7 +88,7 @@ public final class MVMEnvironment {
      * Evaluates an object
      */
     public Object evalObject(Object obj) {
-        MVMCompileScope mcs = new MVMCompileScope(this, true);
+        MVMCompileScope mcs = new MVMToplevelScope(this);
         MVMCExpr exp = mcs.compile(obj);
         return exp.exc(MVMScope.ROOT);
     }

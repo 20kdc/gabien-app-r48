@@ -12,42 +12,28 @@ package r48.minivm;
  */
 public final class MVMScope {
     public static final MVMScope ROOT = new MVMScope();
-    // To avoid allocating one object per variable, slots are grouped into blocks. Each MVMScope is one block.
-    // The elements of the slots array are simply the blocks.
-    // Slot indices are the indexes of slots within the block.
+    // To avoid allocating one object per variable, slots are grouped into frames. Each MVMScope is one frame.
+    // The elements of the outer slots array are simply the frames.
+    // So a slot is indexed as [frame][slot].
+    // Blocks are ordered outermost-in (so that block number is independent of the accessor's depth).
     private final Object[][] slots;
-    private final int[] slotIndices;
 
     private MVMScope() {
         slots = new Object[0][];
-        slotIndices = new int[0];
     }
-    private MVMScope(MVMScope base, int addedAlloc) {
-        slots = new Object[base.slots.length + addedAlloc][];
-        slotIndices = new int[base.slots.length + addedAlloc];
+    public MVMScope(MVMScope base, int alloc) {
+        slots = new Object[base.slots.length + 1][];
         System.arraycopy(base.slots, 0, slots, 0, base.slots.length);
-        System.arraycopy(base.slotIndices, 0, slotIndices, 0, base.slotIndices.length);
-        int slotIdx = base.slots.length;
-        Object[] myStorage = new Object[addedAlloc];
-        for (int i = 0; i < addedAlloc; i++) {
-            slots[slotIdx] = myStorage;
-            slotIndices[slotIdx] = i;
-            slotIdx++;
-        }
-    }
-    public MVMScope extend(int addedAlloc) {
-        if (addedAlloc == 0)
-            return this;
-        return new MVMScope(this, addedAlloc);
+        slots[base.slots.length] = new Object[alloc];
     }
 
-    public Object get(int i) {
-        Object[] base = slots[i];
-        return base[slotIndices[i]];
+    public Object get(int f, int i) {
+        Object[] base = slots[f];
+        return base[i];
     }
 
-    public void set(int i, Object v) {
-        Object[] base = slots[i];
-        base[slotIndices[i]] = v;
+    public void set(int f, int i, Object v) {
+        Object[] base = slots[f];
+        base[i] = v;
     }
 }

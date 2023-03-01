@@ -6,6 +6,8 @@
  */
 package r48.minivm;
 
+import gabien.datum.DatumWriter;
+
 /**
  * MiniVM function bound into a neat little package.
  * Created 28th February 2023.
@@ -13,6 +15,22 @@ package r48.minivm;
 public abstract class MVMFn extends MVMHelpable {
     public MVMFn(String nh) {
         super(nh);
+    }
+
+    public static String asUserReadableString(Object v) {
+        try {
+            return DatumWriter.objectToString(v);
+        } catch (Exception ex) {
+            if (v == null) {
+                return "?congratulations, it broke";
+            } else {
+                try {
+                    return "?" + v.toString();
+                } catch (Exception ex2) {
+                    return "?toString error in " + v.getClass();
+                }
+            }
+        }
     }
 
     public abstract Object callDirect();
