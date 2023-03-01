@@ -21,10 +21,12 @@ public final class MVMScope {
     private MVMScope() {
         slots = new Object[0][];
     }
-    public MVMScope(MVMScope base, int alloc) {
-        slots = new Object[base.slots.length + 1][];
+    public MVMScope(MVMScope base, int expectedFrameID, int alloc) {
+        if (base.slots.length > expectedFrameID)
+            throw new RuntimeException("Scope ID " + expectedFrameID + " already exists in base scope.");
+        slots = new Object[expectedFrameID + 1][];
         System.arraycopy(base.slots, 0, slots, 0, base.slots.length);
-        slots[base.slots.length] = new Object[alloc];
+        slots[expectedFrameID] = new Object[alloc];
     }
 
     public Object get(int f, int i) {

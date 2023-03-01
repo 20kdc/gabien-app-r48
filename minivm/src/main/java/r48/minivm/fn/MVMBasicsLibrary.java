@@ -81,7 +81,7 @@ public class MVMBasicsLibrary {
             }
             @Override
             public Object disasm() {
-                return Arrays.asList(sym("lambda"), rootFrame.isExpectedToExist(), compiledLambda.disasm());
+                return Arrays.asList(sym("λ"), rootFrame.isExpectedToExist(), compiledLambda.disasm());
             }
         };
     }
@@ -188,8 +188,10 @@ public class MVMBasicsLibrary {
         public Object callDirect(Object a0) {
             if (a0 instanceof MVMCExpr)
                 return ((MVMCExpr) a0).disasm();
-            if (a0 instanceof MVMLambdaFn)
-                return ((MVMLambdaFn) a0).content.disasm();
+            if (a0 instanceof MVMLambdaFn) {
+                MVMLambdaFn l = (MVMLambdaFn) a0;
+                return Arrays.asList(sym("λi"), l.rootFrame.isExpectedToExist(), l.content.disasm());
+            }
             throw new RuntimeException("Can't disassemble " + MVMFn.asUserReadableString(a0));
         }
     }

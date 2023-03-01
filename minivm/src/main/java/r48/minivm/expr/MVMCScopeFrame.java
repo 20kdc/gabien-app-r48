@@ -20,21 +20,23 @@ import r48.minivm.MVMScope;
  */
 public class MVMCScopeFrame extends MVMCExpr {
     public final MVMCExpr base;
+    public final int frameID;
     public final int size;
 
-    public MVMCScopeFrame(MVMCExpr base, int size) {
+    public MVMCScopeFrame(MVMCExpr base, int frameID, int size) {
         this.base = base;
+        this.frameID = frameID;
         this.size = size;
     }
 
     @Override
     public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-        ctx = new MVMScope(ctx, size);
+        ctx = new MVMScope(ctx, frameID, size);
         return base.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
     }
 
     @Override
     public Object disasm() {
-        return Arrays.asList(sym("scopeFrame"), base.disasm(), size);
+        return Arrays.asList(sym("scopeFrame"), base.disasm(), frameID, size);
     }
 }

@@ -61,8 +61,10 @@ public class MVMTests {
     @Test
     public void testLambdas() {
         MVMEnv env = prepEnv();
-        env.evalString("(define testsym (lambda () (define test 123) (lambda () test)))");
+        // Note the several layers of lambdas.
+        // This is to keep an eye on the scoping.
+        env.evalString("(define (testsym) (lambda () (define test 123) (lambda () test)))");
         disasm(env, "testLambdas", "testsym");
-        assertEquals(123L, env.evalString("(testsym)"));
+        assertEquals(123L, env.evalString("(((testsym)))"));
     }
 }

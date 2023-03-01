@@ -140,7 +140,7 @@ public final class MVMCLocal {
             @Override
             public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                 Object v = val.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-                ctx.set(fID, lID, val);
+                ctx.set(fID, lID, v);
                 return v;
             }
 

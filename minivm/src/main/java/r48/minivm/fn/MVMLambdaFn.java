@@ -36,7 +36,11 @@ public class MVMLambdaFn extends MVMFn {
 
     @Override
     public Object callDirect() {
-        return execSmall(0, null, null, null, null);
+        // no args, fast-path
+        if (argL.length != 0)
+            throw new RuntimeException(this + " expects " + argL.length + " args, not 0");
+        MVMScope sc = rootFrame.wrapRuntimeScope(scope);
+        return content.execute(sc, null, null, null, null, null, null, null, null);
     }
 
     @Override

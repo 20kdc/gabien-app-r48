@@ -6,8 +6,6 @@
  */
 package r48.minivm.compiler;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 import r48.minivm.MVMScope;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCLocal;
@@ -33,18 +31,12 @@ public final class MVMCompileFrame {
      */
     private boolean expectedToExist;
 
-    /**
-     * Parent frame.
-     */
-    private @Nullable MVMCompileFrame parent;
-
     protected MVMCompileFrame() {
         // The first frame ID is always 1, because 0 is reserved for the true (empty) root scope.
         frameID = 1;
     }
 
     protected MVMCompileFrame(MVMCompileFrame par) {
-        parent = par;
         frameID = par.frameID + 1;
     }
 
@@ -68,14 +60,14 @@ public final class MVMCompileFrame {
      * Ensures that, assuming the given expression is a root, the frame exists.
      */
     public MVMCExpr wrapRoot(MVMCExpr base) {
-        return expectedToExist ? new MVMCScopeFrame(base, allocatedLocals) : base;
+        return expectedToExist ? new MVMCScopeFrame(base, frameID, allocatedLocals) : base;
     }
 
     /**
      * MVMCScopeFrame but "outside".
      */
     public MVMScope wrapRuntimeScope(MVMScope scope) {
-        return expectedToExist ? new MVMScope(scope, allocatedLocals) : scope;
+        return expectedToExist ? new MVMScope(scope, frameID, allocatedLocals) : scope;
     }
 
     /**
@@ -84,8 +76,6 @@ public final class MVMCompileFrame {
      * In the former case, in the latter case it's because otherwise frame IDs are upset. 
      */
     public void markExpectedToExist() {
-        if (parent != null)
-            parent.markExpectedToExist();
         expectedToExist = true;
     }
 
