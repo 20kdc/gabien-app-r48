@@ -13,12 +13,14 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.ISupplier;
+import r48.minivm.MVMCompileFrame;
 import r48.minivm.MVMCompileScope;
 import r48.minivm.MVMEnvironment;
 import r48.minivm.MVMFn;
 import r48.minivm.MVMMacro;
 import r48.minivm.MVMScope;
 import r48.minivm.MVMSubScope;
+import r48.minivm.MVMSubScope.LocalRoot;
 import r48.minivm.expr.MVMCBegin;
 import r48.minivm.expr.MVMCExpr;
 
@@ -46,21 +48,22 @@ public class MVMBasicsLibrary {
      */
     public static MVMCExpr lambda(String hint, MVMCompileScope mcs, Object[] argsUC, Object[] call, int base) {
         MVMSubScope lambdaFrame = mcs.extendWithFrame();
+        final LocalRoot[] roots = new LocalRoot[argsUC.length];
         for (int i = 0; i < argsUC.length; i++) {
             Object arg = argsUC[i];
             if (!(arg instanceof DatumSymbol))
                 throw new RuntimeException("arg " + MVMFn.asUserReadableString(arg) + " expected to be sym");
             DatumSymbol aSym = (DatumSymbol) arg;
             // actual arg logic
-            lambdaFrame.forceFastLocal(aSym, i);
+            roots[i] = lambdaFrame.newLocal(aSym);
         }
         // compiled lambda code, but expects to be framed in an MVMFn in the context of the creation
-        final MVMCExpr compiledLambda = lambdaFrame.frame.wrapRoot(new MVMCBegin(lambdaFrame, call, base, call.length - base));
-        final int argCount = argsUC.length;
+        final MVMCExpr compiledLambda = new MVMCBegin(lambdaFrame, call, base, call.length - base);
+        final MVMCompileFrame rootFrame = lambdaFrame.frame;
         return new MVMCExpr() {
             @Override
             public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-                return new MVMLambdaFn(hint, ctx, compiledLambda, argCount);
+                return new MVMLambdaFn(hint, ctx, compiledLambda, roots, rootFrame);
             }
         };
     }

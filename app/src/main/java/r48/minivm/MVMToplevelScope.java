@@ -35,7 +35,7 @@ public class MVMToplevelScope extends MVMCompileScope {
     }
 
     @Override
-    public MVMToplevelScope extendNoFrame() {
+    public MVMToplevelScope extendMayFrame() {
         return new MVMToplevelScope(this);
     }
 

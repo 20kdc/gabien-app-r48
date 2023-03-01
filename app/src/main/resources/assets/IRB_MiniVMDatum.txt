@@ -47,3 +47,7 @@ Here's the basics of how it operates:
    + Fast locals are done using the 8 MiniVM registers
    + Scoped locals are carefully pre-compiled to still be performant, but do GC alloc
    + Environment variables are implemented via magic
+
+   Fast locals and scoped locals are both represented by MVMCLocal.
+   This is mutable so that it can be deoptimized later in compilation.
+   This allows creating many locals as fast locals and deoptimizing them if they are accessed in an incompatible way.

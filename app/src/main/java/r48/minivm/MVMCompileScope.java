@@ -6,16 +6,12 @@
  */
 package r48.minivm;
 
-import java.util.HashMap;
 import java.util.List;
-
-import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.ISupplier;
 import r48.minivm.MVMEnvironment.Slot;
 import r48.minivm.expr.MVMCExpr;
-import r48.minivm.expr.MVMCScopeFrame;
 
 /**
  * The compiler lives here!
@@ -23,18 +19,12 @@ import r48.minivm.expr.MVMCScopeFrame;
  */
 public abstract class MVMCompileScope {
     public final MVMEnvironment context;
-    // Changes as stuff is added to the scope. Locals that haven't been defined "yet" compile-time aren't in here yet.
-    protected final HashMap<DatumSymbol, Local> locals;
-    protected final boolean[] fastLocalsAlloc = new boolean[8];
 
     public MVMCompileScope(MVMEnvironment ctx) {
         context = ctx;
-        locals = new HashMap<>();
     }
     public MVMCompileScope(MVMCompileScope cs) {
         context = cs.context;
-        locals = new HashMap<>(cs.locals);
-        System.arraycopy(cs.fastLocalsAlloc, 0, fastLocalsAlloc, 0, 8);
     }
 
     /**
@@ -52,13 +42,14 @@ public abstract class MVMCompileScope {
     /**
      * Extends in a chill manner.
      */
-    public abstract MVMCompileScope extendNoFrame();
+    public abstract MVMCompileScope extendMayFrame();
 
-    /**
-     * Just assume a fast local comes from somewhere.
-     */
-    public void forceFastLocal(DatumSymbol aSym, int i) {
-        locals.put(aSym, new Local(null, i));
+    public MVMCExpr readLookup(DatumSymbol ds) {
+        // Context
+        Slot s = context.getSlot(ds);
+        if (s != null)
+            return s;
+        throw new RuntimeException("Undefined symbol: " + ds);
     }
 
     /**
@@ -66,15 +57,7 @@ public abstract class MVMCompileScope {
      */
     public final MVMCExpr compile(Object o) {
         if (o instanceof DatumSymbol) {
-            // Local
-            Local lcl = locals.get(o);
-            if (lcl != null)
-                return lcl.getter();
-            // Context
-            Slot s = context.getSlot((DatumSymbol) o);
-            if (s != null)
-                return s;
-            throw new RuntimeException("Undefined symbol: " + o);
+            return readLookup((DatumSymbol) o);
         } else if (o instanceof List) {
             @SuppressWarnings("unchecked")
             Object[] oa = ((List<Object>) o).toArray();
@@ -101,81 +84,5 @@ public abstract class MVMCompileScope {
         } else {
             return new MVMCExpr.Const(o);
         }
-    }
-
-    /**
-     * A "physical frame".
-     */
-    public static final class Frame {
-        /**
-         * The actual, real frame ID as supplied to MVMScope functions.
-         */
-        public final int frameID;
-
-        /**
-         * Amount of allocated locals.
-         */
-        private int allocatedLocals;
-
-        /**
-         * If child frames exist.
-         */
-        private boolean hasChildren;
-
-        protected Frame() {
-            // The first frame ID is always 1, because 0 is reserved for the true (empty) root scope.
-            frameID = 1;
-        }
-
-        protected Frame(Frame par) {
-            frameID = par.frameID + 1;
-            par.hasChildren = true;
-        }
-
-        /**
-         * Allocates a local.
-         */
-        public Local allocateLocal() {
-            return new Local(this, allocatedLocals++);
-        }
-
-        /**
-         * Ensures that, assuming the given expression is a root, the frame exists.
-         */
-        public MVMCExpr wrapRoot(MVMCExpr base) {
-            return isExpectedToReallyExist() ? new MVMCScopeFrame(base, allocatedLocals) : base;
-        }
-
-        /**
-         * If true, this frame is expected to really exist.
-         * This occurs if there are either locals in it or sub-frames exist.
-         * In the former case, in the latter case it's because otherwise frame IDs are upset. 
-         */
-        public boolean isExpectedToReallyExist() {
-            return hasChildren && (allocatedLocals > 0);
-        }
-    }
-
-    public static final class Local {
-        // Frame. If null, this is a fast local.
-        public final Frame parent;
-        // Local ID 
-        public final int localID;
-        public Local(Frame f, int id) {
-            parent = f;
-            localID = id;
-        }
-        public MVMCExpr getter() {
-            if (parent == null)
-                return MVMCExpr.getL[localID];
-            final int parentFrameID = parent.frameID;
-            return new MVMCExpr() {
-                @Override
-                public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
-                    return ctx.get(parentFrameID, localID);
-                }
-            };
-        }
-        // setter deliberately omitted, it works differently between the kinds of local
     }
 }

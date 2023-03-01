@@ -6,9 +6,12 @@
  */
 package r48.minivm.fn;
 
+import r48.minivm.MVMCompileFrame;
 import r48.minivm.MVMFn;
 import r48.minivm.MVMScope;
+import r48.minivm.MVMSubScope;
 import r48.minivm.expr.MVMCExpr;
+import r48.minivm.expr.MVMCLocal;
 
 /**
  * Function that wraps an expression, passing arguments via the vars.
@@ -17,14 +20,14 @@ import r48.minivm.expr.MVMCExpr;
 public class MVMLambdaFn extends MVMFn {
     public final MVMScope scope;
     public final MVMCExpr content;
-    public final int argCount;
-    public MVMLambdaFn(String nh, MVMScope scope, MVMCExpr content, int ac) {
+    public final MVMSubScope.LocalRoot[] argL;
+    public final MVMCompileFrame rootFrame;
+    public MVMLambdaFn(String nh, MVMScope scope, MVMCExpr content, MVMSubScope.LocalRoot[] args, MVMCompileFrame rootFrame) {
         super(nh);
         this.scope = scope;
         this.content = content;
-        argCount = ac;
-        if (argCount > 8)
-            throw new RuntimeException("lambda " + nh + " has too many args");
+        this.argL = args;
+        this.rootFrame = rootFrame;
     }
 
     @Override
@@ -34,64 +37,132 @@ public class MVMLambdaFn extends MVMFn {
 
     @Override
     public Object callDirect() {
-        if (argCount != 0)
-            throw new RuntimeException(this + " expects " + argCount + " args, not 0");
-        return content.exc(scope);
+        return execSmall(0, null, null, null, null);
     }
 
     @Override
     public Object callDirect(Object a0) {
-        if (argCount != 1)
-            throw new RuntimeException(this + " expects " + argCount + " args, not 1");
-        return content.exc(scope, a0);
+        return execSmall(1, a0, null, null, null);
     }
 
     @Override
     public Object callDirect(Object a0, Object a1) {
-        if (argCount != 2)
-            throw new RuntimeException(this + " expects " + argCount + " args, not 2");
-        return content.exc(scope, a0, a1);
+        return execSmall(2, a0, a1, null, null);
     }
 
     @Override
     public Object callDirect(Object a0, Object a1, Object a2) {
-        if (argCount != 3)
-            throw new RuntimeException(this + " expects " + argCount + " args, not 3");
-        return content.exc(scope, a0, a1, a2);
+        return execSmall(3, a0, a1, a2, null);
     }
 
     @Override
     public Object callDirect(Object a0, Object a1, Object a2, Object a3) {
-        if (argCount != 4)
-            throw new RuntimeException(this + " expects " + argCount + " args, not 4");
-        return content.exc(scope, a0, a1, a2, a3);
+        return execSmall(4, a0, a1, a2, a3);
     }
 
     @Override
-    public Object callIndirect(Object[] args) {
-        if (args.length != argCount)
-            throw new RuntimeException(this + " expects " + argCount + " args, not " + args.length);
-        switch (args.length) {
-        case 0:
-            return content.exc(scope);
-        case 1:
-            return content.exc(scope, args[0]);
-        case 2:
-            return content.exc(scope, args[0], args[1]);
-        case 3:
-            return content.exc(scope, args[0], args[1], args[2]);
-        case 4:
-            return content.exc(scope, args[0], args[1], args[2], args[3]);
-        case 5:
-            return content.exc(scope, args[0], args[1], args[2], args[3], args[4]);
-        case 6:
-            return content.exc(scope, args[0], args[1], args[2], args[3], args[4], args[5]);
-        case 7:
-            return content.exc(scope, args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
-        case 8:
-            return content.execute(scope, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
-        default:
-            throw new RuntimeException("Impossible!");
+    public Object callIndirect(Object[] argv) {
+        if (argv.length != argL.length)
+            throw new RuntimeException(this + " expects " + argL.length + " args, not " + argv.length);
+        MVMScope sc = rootFrame.wrapRuntimeScope(scope);
+        Object l0 = null, l1 = null, l2 = null, l3 = null, l4 = null, l5 = null, l6 = null, l7 = null;
+        // load args into locals
+        for (int i = 0; i < argv.length; i++) {
+            Object aV = argv[i];
+            MVMCLocal cLocal = argL[i].local;
+            switch (cLocal.getFastSlot()) {
+            case 0:
+                l0 = aV;
+                break;
+            case 1:
+                l1 = aV;
+                break;
+            case 2:
+                l2 = aV;
+                break;
+            case 3:
+                l3 = aV;
+                break;
+            case 4:
+                l4 = aV;
+                break;
+            case 5:
+                l5 = aV;
+                break;
+            case 6:
+                l6 = aV;
+                break;
+            case 7:
+                l7 = aV;
+                break;
+            default:
+                cLocal.directWrite(sc, aV);
+                break;
+            }
         }
+        // run!
+        return content.execute(sc, l0, l1, l2, l3, l4, l5, l6, l7);
+    }
+
+    /**
+     * Executes the lambda for a small number of arguments.
+     */
+    public Object execSmall(int ac, Object a0, Object a1, Object a2, Object a3) {
+        if (ac != argL.length)
+            throw new RuntimeException(this + " expects " + argL.length + " args, not " + ac);
+        MVMScope sc = rootFrame.wrapRuntimeScope(scope);
+        Object l0 = null, l1 = null, l2 = null, l3 = null, l4 = null, l5 = null, l6 = null, l7 = null;
+        // load args into locals
+        for (int i = 0; i < ac; i++) {
+            Object aV;
+            switch (i) {
+            case 0:
+                aV = a0;
+                break;
+            case 1:
+                aV = a1;
+                break;
+            case 2:
+                aV = a2;
+                break;
+            case 3:
+                aV = a3;
+                break;
+            default:
+                throw new RuntimeException("Shouldn't be calling execSmall for > 4 args");
+            }
+            MVMCLocal cLocal = argL[i].local;
+            switch (cLocal.getFastSlot()) {
+            case 0:
+                l0 = aV;
+                break;
+            case 1:
+                l1 = aV;
+                break;
+            case 2:
+                l2 = aV;
+                break;
+            case 3:
+                l3 = aV;
+                break;
+            case 4:
+                l4 = aV;
+                break;
+            case 5:
+                l5 = aV;
+                break;
+            case 6:
+                l6 = aV;
+                break;
+            case 7:
+                l7 = aV;
+                break;
+            default:
+                cLocal.directWrite(sc, aV);
+                break;
+            }
+        }
+        // run!
+        return content.execute(sc, l0, l1, l2, l3, l4, l5, l6, l7);
     }
 }
