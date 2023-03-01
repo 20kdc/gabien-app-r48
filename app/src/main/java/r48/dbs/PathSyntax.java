@@ -34,8 +34,7 @@ import r48.minivm.expr.MVMCPathHashDel;
  */
 public final class PathSyntax implements IFunction<IRIO, IRIO> {
     // MiniVM programs for the various PathSyntax operations.
-    public final MVMCExpr getProgram;
-    private final MVMCExpr addProgram, delProgram;
+    public final MVMCExpr getProgram, addProgram, delProgram;
     public final String decompiled;
     public final MVMEnv parentContext;
 

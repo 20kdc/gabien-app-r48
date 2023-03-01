@@ -11,6 +11,7 @@ import static gabien.datum.DatumTreeUtils.sym;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -30,17 +31,24 @@ import r48.minivm.expr.MVMCExpr;
 public class MVMEnv {
     private final @Nullable MVMEnv parent;
     private final HashMap<DatumSymbol, Slot> values = new HashMap<>();
+    private final AtomicLong gensymCounter;
 
     public MVMEnv() {
         parent = null;
+        gensymCounter = new AtomicLong();
     }
 
     protected MVMEnv(MVMEnv p) {
         parent = p;
+        gensymCounter = p.gensymCounter;
     }
 
     public MVMEnv extend() {
         return new MVMEnv(this);
+    }
+
+    public final DatumSymbol gensym() {
+        return new DatumSymbol(" g" + (gensymCounter.getAndIncrement()));
     }
 
     /**

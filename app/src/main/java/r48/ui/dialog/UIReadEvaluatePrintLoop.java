@@ -25,9 +25,11 @@ public class UIReadEvaluatePrintLoop extends UIProxy {
     public final Config c;
     public final UIScrollLayout view;
     public final UIChatBox text;
+    public final String title;
 
-    public UIReadEvaluatePrintLoop(Config c, MVMEnv vmCtx) {
+    public UIReadEvaluatePrintLoop(Config c, MVMEnv vmCtx, String title) {
         this.c = c;
+        this.title = title;
         text = new UIChatBox("", c.f.dialogWindowTextHeight);
         text.onSubmit = (txt) -> {
             write("> " + txt);
@@ -41,6 +43,8 @@ public class UIReadEvaluatePrintLoop extends UIProxy {
                 Throwable ex2 = ex;
                 while (ex2 != null) {
                     sb.append(" ");
+                    sb.append(ex2.getClass().getSimpleName());
+                    sb.append(":");
                     sb.append(ex2.getLocalizedMessage());
                     ex2 = ex2.getCause();
                 }
@@ -50,10 +54,16 @@ public class UIReadEvaluatePrintLoop extends UIProxy {
             write("= " + MVMFn.asUserReadableString(res));
         };
         view = new UIScrollLayout(true, c.f.generalScrollersize);
+        write(title);
         proxySetElement(new UISplitterLayout(view, text, true, 1), false);
         Size sz = new Size(c.f.scaleGuess(400), c.f.scaleGuess(300));
         setWantedSize(sz);
         setForcedBounds(null, new Rect(sz));
+    }
+
+    @Override
+    public String toString() {
+        return title;
     }
 
     public void write(String string) {

@@ -15,7 +15,7 @@ import static gabien.datum.DatumTreeUtils.*;
 import org.junit.Test;
 
 import r48.minivm.MVMEnv;
-import r48.minivm.fn.MVMBasicsLibrary;
+import r48.minivm.fn.MVMCoreLibraries;
 import r48.minivm.fn.MVMFn;
 
 /**
@@ -24,7 +24,7 @@ import r48.minivm.fn.MVMFn;
 public class MVMTests {
     private MVMEnv prepEnv() {
         MVMEnv env = new MVMEnv();
-        MVMBasicsLibrary.add(env);
+        MVMCoreLibraries.add(env);
         return env;
     }
     private void disasm(MVMEnv env, String p, String sym) {

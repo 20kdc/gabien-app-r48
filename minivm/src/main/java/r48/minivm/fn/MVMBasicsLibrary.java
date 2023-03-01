@@ -18,6 +18,7 @@ import r48.minivm.MVMEnv;
 import r48.minivm.MVMScope;
 import r48.minivm.compiler.MVMCompileFrame;
 import r48.minivm.compiler.MVMCompileScope;
+import r48.minivm.compiler.MVMFnCallCompiler;
 import r48.minivm.compiler.MVMSubScope;
 import r48.minivm.compiler.MVMSubScope.LocalRoot;
 import r48.minivm.expr.MVMCBegin;
@@ -30,16 +31,26 @@ import r48.minivm.expr.MVMCExpr;
 public class MVMBasicsLibrary {
     public static void add(MVMEnv ctx) {
         // Scheme library
-        ctx.defineSlot(new DatumSymbol("quote")).v = new Quote()
+        ctx.defineSlot(sym("quote")).v = new Quote()
                 .attachHelp("(quote A) | 'A : A is not evaluated. Allows expressing complex structures inline.");
-        ctx.defineSlot(new DatumSymbol("list")).v = new ListFn()
+        ctx.defineSlot(sym("list")).v = new ListFn()
                 .attachHelp("(list V...) : Creates a list of values.");
-        ctx.defineSlot(new DatumSymbol("define")).v = new Define()
+        ctx.defineSlot(sym("define")).v = new Define()
                 .attachHelp("(define K V) | function define: (define (K ARG...) STMT...) | bulk define: (define K V K V...) : Defines mutable variables or functions. Bulk define is an R48 extension.");
-        ctx.defineSlot(new DatumSymbol("lambda")).v = new Lambda()
+        ctx.defineSlot(sym("lambda")).v = new Lambda()
                 .attachHelp("(lambda (ARG...) STMT...) : Creates first-class functions.");
-        // debug
-        ctx.defineSlot(new DatumSymbol("mvm-disasm")).v = new Disasm()
+        // Custom: Clojureisms
+        ctx.defineSlot(sym("string->class")).v = new Str2Class()
+                .attachHelp("(string->class V) : Gets the given class, or null if unable.");
+        ctx.defineSlot(sym("instance?")).v = new InstanceQ()
+                .attachHelp("(instance? C V) : Class.isInstance(V)");
+        // Custom: Macro facilities
+        ctx.defineSlot(sym("procedure->macro")).v = new Macroify()
+                .attachHelp("(procedure->macro V) : Wraps a procedure (ARG...) to make it a macro. The returned code is compiled normally.");
+        ctx.defineSlot(sym("gensym")).v = new Gensym(ctx)
+                .attachHelp("(gensym) : Creates a new uniqueish symbol.");
+        // Custom: Debug
+        ctx.defineSlot(sym("mvm-disasm")).v = new Disasm()
                 .attachHelp("(mvm-disasm LAMBDA) : Disassembles the given lambda.");
     }
 
@@ -180,6 +191,64 @@ public class MVMBasicsLibrary {
             if (a0 instanceof MVMLambdaFn)
                 return ((MVMLambdaFn) a0).content.disasm();
             throw new RuntimeException("Can't disassemble " + MVMFn.asUserReadableString(a0));
+        }
+    }
+
+    public static final class InstanceQ extends MVMFn.Fixed {
+        public InstanceQ() {
+            super("instance?");
+        }
+
+        @Override
+        public Object callDirect(Object a0, Object a1) {
+            return ((Class<?>) a0).isInstance(a1);
+        }
+    }
+
+    public static final class Str2Class extends MVMFn.Fixed {
+        public Str2Class() {
+            super("string->class");
+        }
+
+        @Override
+        public Object callDirect(Object a0) {
+            try {
+                return Class.forName((String) a0);
+            } catch (ClassNotFoundException e) {
+                return null;
+            }
+        }
+    }
+
+    public static final class Macroify extends MVMFn.Fixed {
+        public Macroify() {
+            super("procedure->macro");
+        }
+
+        @Override
+        public Object callDirect(Object a0) {
+            final MVMFn fn = MVMFnCallCompiler.asFn(a0);
+            return new MVMMacro(fn.nameHint) {
+                @Override
+                public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
+                    // for future compatibility
+                    call[0] = cs;
+                    return cs.compile(fn.callIndirect(call));
+                }
+            };
+        }
+    }
+
+    public static final class Gensym extends MVMFn.Fixed {
+        public final MVMEnv env;
+        public Gensym(MVMEnv env) {
+            super("gensym");
+            this.env = env;
+        }
+
+        @Override
+        public Object callDirect() {
+            return env.gensym();
         }
     }
 }

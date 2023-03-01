@@ -50,8 +50,8 @@ public class PrimaryGPMenuPanel implements IGPMenuPanel {
         res2.add(new IFunction<LauncherState, IGPMenuPanel>() {
             @Override
             public IGPMenuPanel apply(LauncherState ls2) {
-                UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(ls.c, ls.lun.vmCtx);
-                repl.write(ls.tr("R48 Launcher REPL"));
+                String title = ls.tr("R48 Launcher REPL");
+                UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(ls.c, ls.lun.vmCtx, title);
                 ls.lun.uiTicker.accept(repl);
                 ls.lun.currentState = new LSInApp(ls.lun);
                 return null;

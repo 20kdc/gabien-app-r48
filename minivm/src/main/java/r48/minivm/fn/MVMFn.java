@@ -75,6 +75,9 @@ public abstract class MVMFn extends MVMHelpable {
             throw cError(ex);
         }
     }
+    /**
+     * Indirect call. Arguments array owned by the callee to do what it wishes with.
+     */
     public final Object clIndirect(Object[] args) {
         try {
             return callIndirect(args);
@@ -88,6 +91,9 @@ public abstract class MVMFn extends MVMHelpable {
     protected abstract Object callDirect(Object a0, Object a1);
     protected abstract Object callDirect(Object a0, Object a1, Object a2);
     protected abstract Object callDirect(Object a0, Object a1, Object a2, Object a3);
+    /**
+     * Indirect call. Arguments array owned by the callee to do what it wishes with.
+     */
     protected abstract Object callIndirect(Object[] args);
 
     @Override

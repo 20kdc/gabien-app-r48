@@ -19,23 +19,42 @@ import r48.minivm.expr.MVMCExpr;
  */
 public class MVMGlobalLibrary {
     public static void add(MVMEnv ctx, InterlaunchGlobals ilg) {
-        MVMBasicsLibrary.add(ctx);
+        MVMCoreLibraries.add(ctx);
         MVMIntegrationLibrary.add(ctx);
         // Data Model library
-        ctx.defineSlot(new DatumSymbol("dm-at")).v = new DMAt()
-                .attachHelp("(dm-at TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or null)");
+        ctx.defineSlot(new DatumSymbol("dm-at")).v = new DMAt(0)
+                .attachHelp("(dm-at TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), #nil on failure");
+        ctx.defineSlot(new DatumSymbol("dm-add-at")).v = new DMAt(1)
+                .attachHelp("(dm-add-at TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), adds entry if possible, #nil on failure");
+        ctx.defineSlot(new DatumSymbol("dm-del-at")).v = new DMAt(2)
+                .attachHelp("(dm-del-at TARGET PATH) : Looks up PATH (must be literal PathSyntax) from TARGET (must be IRIO or #nil), deletes entry, #nil on failure");
     }
 
     public static final class DMAt extends MVMMacro {
-        public DMAt() {
-            super("dm-at");
+        public final int mode;
+        private static String tName(int mode) {
+            String name = "dm-at";
+            if (mode == 1)
+                name = "dm-add-at";
+            if (mode == 2)
+                name = "dm-del-at";
+            return name;
+        }
+        public DMAt(int mode) {
+            super(tName(mode));
+            this.mode = mode;
         }
 
         @Override
         public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
             if (call.length != 3)
-                throw new RuntimeException("dm-at expects exactly 2 args (target path)");
-            return PathSyntax.compile(cs.context, cs.compile(call[1]), coerceToString(call[2])).getProgram;
+                throw new RuntimeException(nameHint + " expects exactly 2 args (target path)");
+            PathSyntax ps = PathSyntax.compile(cs.context, cs.compile(call[1]), coerceToString(call[2]));
+            if (mode == 1)
+                return ps.addProgram;
+            if (mode == 2)
+                return ps.delProgram;
+            return ps.getProgram;
         }
     }
 

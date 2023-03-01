@@ -388,8 +388,8 @@ public class BasicToolset extends App.Svc implements IToolset {
                     }
                 },
                 () -> {
-                    UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(app.c, app.vmCtx);
-                    repl.write(TXDB.get("R48 Application REPL"));
+                    String title = TXDB.get("R48 Application REPL");
+                    UIReadEvaluatePrintLoop repl = new UIReadEvaluatePrintLoop(app.c, app.vmCtx, title);
                     app.ui.wm.createWindow(repl);
                 }
         }).centred();

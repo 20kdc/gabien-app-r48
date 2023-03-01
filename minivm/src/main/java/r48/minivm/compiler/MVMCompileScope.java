@@ -69,20 +69,27 @@ public abstract class MVMCompileScope {
             // Call of some kind.
             // What we have to do here is compile the first value, and then retroactively work out if it's a macro.
             MVMCExpr oa1v = compile(oa[0]);
+            Object effectiveValueForMacroLookup = null;
             if (oa1v instanceof Slot) {
-                Object sv = ((Slot) oa1v).v;
-                if (sv instanceof MVMMacro) {
-                    // Macro compile tiiiiimmmeeeee
-                    MVMCExpr macroRes = ((MVMMacro) sv).compile(this, oa);
-                    if (macroRes == null)
-                        return new MVMCExpr.Const(null);
-                    return macroRes;
-                }
+                effectiveValueForMacroLookup = ((Slot) oa1v).v;
+            } else if (oa1v instanceof MVMCExpr.Const) {
+                effectiveValueForMacroLookup = ((MVMCExpr.Const) oa1v).value;
+            }
+            if (effectiveValueForMacroLookup instanceof MVMMacro) {
+                // Macro compile tiiiiimmmeeeee
+                MVMCExpr macroRes = ((MVMMacro) effectiveValueForMacroLookup).compile(this, oa);
+                if (macroRes == null)
+                    return new MVMCExpr.Const(null);
+                return macroRes;
             }
             final MVMCExpr[] exprs = new MVMCExpr[oa.length - 1];
             for (int i = 0; i < exprs.length; i++)
                 exprs[i] = compile(oa[i + 1]);
             return MVMFnCallCompiler.compile(this, oa1v, exprs);
+        } else if (o instanceof MVMCExpr) {
+            // Expression compiles to itself.
+            // If you're even messing around with these objects, you're expected to know what you're doing.
+            return (MVMCExpr) o;
         } else {
             return new MVMCExpr.Const(o);
         }
