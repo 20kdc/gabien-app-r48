@@ -27,8 +27,6 @@ public class MVMIntegrationLibrary {
                 .attachHelp("(include FILE) : Includes the given file-path. This occurs at compile-time and magically counts as top-level even if it shouldn't.");
         ctx.defineSlot(new DatumSymbol("log")).v = new Log()
                 .attachHelp("(log V...) : Logs the given values.");
-        ctx.defineSlot(new DatumSymbol("mvm-disasm")).v = new Disasm()
-                .attachHelp("(mvm-disasm LAMBDA) : Disassembles the given lambda.");
     }
     public static final class Help extends MVMFn.Fixed {
         final MVMEnv ctx;
@@ -77,20 +75,6 @@ public class MVMIntegrationLibrary {
             for (Object arg : args)
                 System.out.println("MVM Log: " + MVMFn.asUserReadableString(arg));
             return null;
-        }
-    }
-    public static final class Disasm extends MVMFn.Fixed {
-        public Disasm() {
-            super("mvm-disasm");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            if (a0 instanceof MVMCExpr)
-                return ((MVMCExpr) a0).disasm();
-            if (a0 instanceof MVMLambdaFn)
-                return ((MVMLambdaFn) a0).content.disasm();
-            throw new RuntimeException("Can't disassemble " + MVMFn.asUserReadableString(a0));
         }
     }
 }

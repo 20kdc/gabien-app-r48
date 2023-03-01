@@ -28,7 +28,7 @@ public class MVMFnCallCompiler {
                 @Override
                 public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                     MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
-                    return mvmFn.callDirect();
+                    return mvmFn.clDirect();
                 }
 
                 @Override
@@ -42,7 +42,7 @@ public class MVMFnCallCompiler {
                 public Object execute(@NonNull MVMScope ctx, Object l0, Object l1, Object l2, Object l3, Object l4, Object l5, Object l6, Object l7) {
                     MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
                     Object v0 = exprs[0].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-                    return mvmFn.callDirect(v0);
+                    return mvmFn.clDirect(v0);
                 }
 
                 @Override
@@ -57,7 +57,7 @@ public class MVMFnCallCompiler {
                     MVMFn mvmFn = asFn(call.execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7));
                     Object v0 = exprs[0].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     Object v1 = exprs[1].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-                    return mvmFn.callDirect(v0, v1);
+                    return mvmFn.clDirect(v0, v1);
                 }
 
                 @Override
@@ -73,7 +73,7 @@ public class MVMFnCallCompiler {
                     Object v0 = exprs[0].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     Object v1 = exprs[1].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     Object v2 = exprs[2].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-                    return mvmFn.callDirect(v0, v1, v2);
+                    return mvmFn.clDirect(v0, v1, v2);
                 }
 
                 @Override
@@ -90,7 +90,7 @@ public class MVMFnCallCompiler {
                     Object v1 = exprs[1].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     Object v2 = exprs[2].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
                     Object v3 = exprs[3].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-                    return mvmFn.callDirect(v0, v1, v2, v3);
+                    return mvmFn.clDirect(v0, v1, v2, v3);
                 }
 
                 @Override
@@ -106,7 +106,7 @@ public class MVMFnCallCompiler {
                     Object[] v = new Object[exprs.length];
                     for (int i = 0; i < v.length; i++)
                         v[i] = exprs[i].execute(ctx, l0, l1, l2, l3, l4, l5, l6, l7);
-                    return mvmFn.callIndirect(v);
+                    return mvmFn.clIndirect(v);
                 }
 
                 @Override

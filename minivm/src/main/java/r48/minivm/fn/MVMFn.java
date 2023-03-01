@@ -33,12 +33,62 @@ public abstract class MVMFn extends MVMHelpable {
         }
     }
 
-    public abstract Object callDirect();
-    public abstract Object callDirect(Object a0);
-    public abstract Object callDirect(Object a0, Object a1);
-    public abstract Object callDirect(Object a0, Object a1, Object a2);
-    public abstract Object callDirect(Object a0, Object a1, Object a2, Object a3);
-    public abstract Object callIndirect(Object[] args);
+    private RuntimeException cError(Exception ex2) {
+        RuntimeException ex = new RuntimeException("@" + nameHint, ex2);
+        // try to avoid spamming the console please
+        ex.setStackTrace(new StackTraceElement[0]);
+        return ex;
+    }
+
+    public final Object clDirect() {
+        try {
+            return callDirect();
+        } catch (Exception ex) {
+            throw cError(ex);
+        }
+    }
+    public final Object clDirect(Object a0) {
+        try {
+            return callDirect(a0);
+        } catch (Exception ex) {
+            throw cError(ex);
+        }
+    }
+    public final Object clDirect(Object a0, Object a1) {
+        try {
+            return callDirect(a0, a1);
+        } catch (Exception ex) {
+            throw cError(ex);
+        }
+    }
+    public final Object clDirect(Object a0, Object a1, Object a2) {
+        try {
+            return callDirect(a0, a1, a2);
+        } catch (Exception ex) {
+            throw cError(ex);
+        }
+    }
+    public final Object clDirect(Object a0, Object a1, Object a2, Object a3) {
+        try {
+            return callDirect(a0, a1, a2, a3);
+        } catch (Exception ex) {
+            throw cError(ex);
+        }
+    }
+    public final Object clIndirect(Object[] args) {
+        try {
+            return callIndirect(args);
+        } catch (Exception ex) {
+            throw cError(ex);
+        }
+    }
+
+    protected abstract Object callDirect();
+    protected abstract Object callDirect(Object a0);
+    protected abstract Object callDirect(Object a0, Object a1);
+    protected abstract Object callDirect(Object a0, Object a1, Object a2);
+    protected abstract Object callDirect(Object a0, Object a1, Object a2, Object a3);
+    protected abstract Object callIndirect(Object[] args);
 
     @Override
     public String toString() {

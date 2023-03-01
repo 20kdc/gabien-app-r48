@@ -38,6 +38,9 @@ public class MVMBasicsLibrary {
                 .attachHelp("(define K V) | function define: (define (K ARG...) STMT...) | bulk define: (define K V K V...) : Defines mutable variables or functions. Bulk define is an R48 extension.");
         ctx.defineSlot(new DatumSymbol("lambda")).v = new Lambda()
                 .attachHelp("(lambda (ARG...) STMT...) : Creates first-class functions.");
+        // debug
+        ctx.defineSlot(new DatumSymbol("mvm-disasm")).v = new Disasm()
+                .attachHelp("(mvm-disasm LAMBDA) : Disassembles the given lambda.");
     }
 
     /**
@@ -162,6 +165,21 @@ public class MVMBasicsLibrary {
             @SuppressWarnings("unchecked")
             List<Object> args = (List<Object>) call[1];
             return lambda(MVMFn.asUserReadableString(call), cs, args.toArray(), call, 2);
+        }
+    }
+
+    public static final class Disasm extends MVMFn.Fixed {
+        public Disasm() {
+            super("mvm-disasm");
+        }
+
+        @Override
+        public Object callDirect(Object a0) {
+            if (a0 instanceof MVMCExpr)
+                return ((MVMCExpr) a0).disasm();
+            if (a0 instanceof MVMLambdaFn)
+                return ((MVMLambdaFn) a0).content.disasm();
+            throw new RuntimeException("Can't disassemble " + MVMFn.asUserReadableString(a0));
         }
     }
 }
