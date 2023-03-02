@@ -14,8 +14,8 @@ import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnv.Slot;
 import r48.minivm.MVMU;
 import r48.minivm.compiler.MVMCompileScope;
-import r48.minivm.compiler.MVMFnCallCompiler;
 import r48.minivm.expr.MVMCExpr;
+import r48.minivm.expr.MVMCMacroify;
 
 /**
  * MiniVM standard library.
@@ -29,13 +29,16 @@ public class MVMExtensionsLibrary {
         ctx.defineSlot(sym("instance?")).v = new InstanceQ()
                 .attachHelp("(instance? C V) : Class.isInstance(V)");
         // Custom: Macro facilities
-        ctx.defineSlot(sym("procedure->macro")).v = new Macroify()
-                .attachHelp("(procedure->macro V) : Wraps a procedure (ARG...) to make it a macro. The returned code is compiled normally.");
+        // This should be roughly compatible with the Scheme 9 from Empty Space implementation.
+        ctx.defineSlot(sym("define-syntax")).v = new Macroify()
+                .attachHelp("(define-syntax (NAME ARG... [. VA]) PROC) : Defines a macro, given tree elements and assembles the replacement tree element. Only really makes sense at top-level.");
         // Custom: Debug
         ctx.defineSlot(sym("mvm-disasm")).v = new Disasm()
                 .attachHelp("(mvm-disasm LAMBDA) : Disassembles the given lambda.");
         ctx.defineSlot(sym("help")).v = new Help(ctx)
                 .attachHelp("(help [TOPIC]) : Helpful information on the given value (if any), or lists symbols in the root context.");
+        ctx.defineSlot(sym("help-set!")).v = new HelpSet()
+                .attachHelp("(help-set! TOPIC VALUE) : Sets information on the given value.");
     }
 
     public static final class Disasm extends MVMFn.Fixed {
@@ -81,22 +84,17 @@ public class MVMExtensionsLibrary {
         }
     }
 
-    public static final class Macroify extends MVMFn.Fixed {
+    public static final class Macroify extends MVMMacro {
         public Macroify() {
-            super("procedure->macro");
+            super("define-syntax");
         }
 
         @Override
-        public Object callDirect(Object a0) {
-            final MVMFn fn = MVMFnCallCompiler.asFn(a0);
-            return new MVMMacro(fn.nameHint) {
-                @Override
-                public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
-                    // for future compatibility
-                    call[0] = cs;
-                    return cs.compile(fn.callIndirect(call));
-                }
-            };
+        public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
+            return MVMBasicsLibrary.compileFnDefine(cs, call, (head, args) -> {
+                final MVMCExpr fnx = MVMBasicsLibrary.lambda(head.toString(), cs, args, call, 1);
+                return new MVMCMacroify(fnx);
+            });
         }
     }
 
@@ -120,6 +118,17 @@ public class MVMExtensionsLibrary {
             if (a0 instanceof MVMHelpable)
                 return ((MVMHelpable) a0).help;
             return null;
+        }
+    }
+
+    public static final class HelpSet extends MVMFn.Fixed {
+        public HelpSet() {
+            super("help-set!");
+        }
+
+        @Override
+        public Object callDirect(Object a0, Object a1) {
+            return ((MVMHelpable) a0).attachHelp((String) a1);
         }
     }
 }

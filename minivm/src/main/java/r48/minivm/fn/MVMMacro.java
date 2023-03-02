@@ -21,7 +21,8 @@ public abstract class MVMMacro extends MVMHelpable {
     /**
      * Compiles a macro in the given scope.
      * There is a guarantee that the object array passed is owned by the receiver.
-     * The first object of the call array is undefined.
+     * The call array contains the arguments that follow the first argument.
+     * The first argument is not passed.
      */
     public abstract MVMCExpr compile(MVMCompileScope cs, Object[] call);
 

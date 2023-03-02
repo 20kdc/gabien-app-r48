@@ -5,3 +5,7 @@
 
 ; MiniVM global additions
 
+(define (list . v) v)
+(help-set! list "(list V...) : Creates a list of values.")
+
+; (define-syntax define-group (procedure->macro (lambda ())))

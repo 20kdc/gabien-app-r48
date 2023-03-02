@@ -67,4 +67,32 @@ public class MVMTests {
         disasm(env, "testLambdas", "testsym");
         assertEquals(123L, env.evalString("(((testsym)))"));
     }
+
+    @Test
+    public void testLambdasVA() {
+        MVMEnv env = prepEnv();
+        env.evalString("(define (list . v) v)");
+        env.evalString("(define (va0 . a0) (list a0))");
+        env.evalString("(define (va1 a0 . a1) (list a0 a1))");
+        env.evalString("(define (va2 a0 a1 . a2) (list a0 a1 a2))");
+        env.evalString("(define (va3 a0 a1 a2 . a3) (list a0 a1 a2 a3))");
+        env.evalString("(define (va4 a0 a1 a2 a3 . a4) (list a0 a1 a2 a3 a4))");
+        env.evalString("(define (va5 a0 a1 a2 a3 a4 . a5) (list a0 a1 a2 a3 a4 a5))");
+        assertEquals(MVMU.l(MVMU.l(0L)), env.evalString("(va0 0)"));
+        assertEquals(MVMU.l(0L, MVMU.l(1L)), env.evalString("(va1 0 1)"));
+        assertEquals(MVMU.l(0L, 1L, MVMU.l(2L)), env.evalString("(va2 0 1 2)"));
+        assertEquals(MVMU.l(0L, 1L, 2L, MVMU.l(3L)), env.evalString("(va3 0 1 2 3)"));
+        assertEquals(MVMU.l(0L, 1L, 2L, 3L, MVMU.l(4L)), env.evalString("(va4 0 1 2 3 4)"));
+        assertEquals(MVMU.l(0L, 1L, 2L, 3L, 4L, MVMU.l(5L)), env.evalString("(va5 0 1 2 3 4 5)"));
+    }
+
+    @Test
+    public void testMacros() {
+        MVMEnv env = prepEnv();
+        env.evalString("(define (list . v) v)");
+        env.evalString("(define-syntax (teu c b a) (list a b c))");
+        env.evalString("(define (test-teu) (teu 6 5 +))");
+        assertEquals(11L, env.evalString("(test-teu)"));
+        disasm(env, "testMacros", "test-teu");
+    }
 }

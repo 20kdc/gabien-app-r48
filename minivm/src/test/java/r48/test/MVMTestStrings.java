@@ -11,27 +11,20 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import r48.minivm.MVMEnv;
-import r48.minivm.fn.MVMCoreLibraries;
 
 /**
  * Created 2nd March 2023
  */
 public class MVMTestStrings {
-    public static MVMEnv prepEnv() {
-        MVMEnv env = new MVMEnv();
-        MVMCoreLibraries.add(env);
-        return env;
-    }
-
     @Test
     public void testRoundtrip() {
-        MVMEnv env = prepEnv();
+        MVMEnv env = MVMTests.prepEnv();
         assertEquals("Test string", env.evalString("(list->string (string->list \"Test string\"))"));
     }
 
     @Test
     public void testSubstring() {
-        MVMEnv env = prepEnv();
+        MVMEnv env = MVMTests.prepEnv();
         assertEquals("strin", env.evalString("(substring \"Test string\" 5 10)"));
     }
 }

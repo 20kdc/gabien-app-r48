@@ -43,24 +43,31 @@ public class MVMLambdaFn extends MVMFn {
         return content.execute(sc, null, null, null, null, null, null, null, null);
     }
 
+    /**
+     * This exists for the benefit of MVMLambdaVAFn.
+     */
+    public final Object callL5(Object a0, Object a1, Object a2, Object a3, Object a4) {
+        return execSmall(5, a0, a1, a2, a3, a4);
+    }
+
     @Override
     public Object callDirect(Object a0) {
-        return execSmall(1, a0, null, null, null);
+        return execSmall(1, a0, null, null, null, null);
     }
 
     @Override
     public Object callDirect(Object a0, Object a1) {
-        return execSmall(2, a0, a1, null, null);
+        return execSmall(2, a0, a1, null, null, null);
     }
 
     @Override
     public Object callDirect(Object a0, Object a1, Object a2) {
-        return execSmall(3, a0, a1, a2, null);
+        return execSmall(3, a0, a1, a2, null, null);
     }
 
     @Override
     public Object callDirect(Object a0, Object a1, Object a2, Object a3) {
-        return execSmall(4, a0, a1, a2, a3);
+        return execSmall(4, a0, a1, a2, a3, null);
     }
 
     @Override
@@ -110,7 +117,7 @@ public class MVMLambdaFn extends MVMFn {
     /**
      * Executes the lambda for a small number of arguments.
      */
-    public Object execSmall(int ac, Object a0, Object a1, Object a2, Object a3) {
+    public Object execSmall(int ac, Object a0, Object a1, Object a2, Object a3, Object a4) {
         if (ac != argL.length)
             throw new RuntimeException(this + " expects " + argL.length + " args, not " + ac);
         MVMScope sc = rootFrame.wrapRuntimeScope(scope);
@@ -130,6 +137,9 @@ public class MVMLambdaFn extends MVMFn {
                 break;
             case 3:
                 aV = a3;
+                break;
+            case 4:
+                aV = a4;
                 break;
             default:
                 throw new RuntimeException("Shouldn't be calling execSmall for > 4 args");

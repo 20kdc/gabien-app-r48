@@ -63,18 +63,30 @@ public abstract class MVMCompileScope {
             return readLookup((DatumSymbol) o);
         } else if (o instanceof List) {
             @SuppressWarnings("unchecked")
-            Object[] oa = ((List<Object>) o).toArray();
+            List<Object> ol = (List<Object>) o;
+            int olSize = ol.size();
             // Tradition states this is AOK, shush...
-            if (oa.length == 0)
+            if (olSize == 0)
                 return new MVMCNewEmptyList();
+            // Split into ol1o (first arg) and oa (rest of args)
+            Object[] oa = new Object[olSize - 1];
+            int idx = -1;
+            Object ol1o = null;
+            for (Object obj : ol) {
+                if (idx == -1)
+                    ol1o = obj;
+                else
+                    oa[idx] = obj;
+                idx++;
+            }
             // Call of some kind.
             // What we have to do here is compile the first value, and then retroactively work out if it's a macro.
-            MVMCExpr oa1v = compile(oa[0]);
+            MVMCExpr ol1v = compile(ol1o);
             Object effectiveValueForMacroLookup = null;
-            if (oa1v instanceof Slot) {
-                effectiveValueForMacroLookup = ((Slot) oa1v).v;
-            } else if (oa1v instanceof MVMCExpr.Const) {
-                effectiveValueForMacroLookup = ((MVMCExpr.Const) oa1v).value;
+            if (ol1v instanceof Slot) {
+                effectiveValueForMacroLookup = ((Slot) ol1v).v;
+            } else if (ol1v instanceof MVMCExpr.Const) {
+                effectiveValueForMacroLookup = ((MVMCExpr.Const) ol1v).value;
             }
             if (effectiveValueForMacroLookup instanceof MVMMacro) {
                 // Macro compile tiiiiimmmeeeee
@@ -83,10 +95,10 @@ public abstract class MVMCompileScope {
                     return new MVMCExpr.Const(null);
                 return macroRes;
             }
-            final MVMCExpr[] exprs = new MVMCExpr[oa.length - 1];
+            final MVMCExpr[] exprs = new MVMCExpr[oa.length];
             for (int i = 0; i < exprs.length; i++)
-                exprs[i] = compile(oa[i + 1]);
-            return MVMFnCallCompiler.compile(this, oa1v, exprs);
+                exprs[i] = compile(oa[i]);
+            return MVMFnCallCompiler.compile(this, ol1v, exprs);
         } else if (o instanceof MVMCExpr) {
             // Expression compiles to itself.
             // If you're even messing around with these objects, you're expected to know what you're doing.

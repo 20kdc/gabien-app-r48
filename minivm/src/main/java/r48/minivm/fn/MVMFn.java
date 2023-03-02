@@ -15,7 +15,7 @@ public abstract class MVMFn extends MVMHelpable {
         super(nh);
     }
 
-    private RuntimeException cError(Exception ex2) {
+    protected RuntimeException cError(Exception ex2) {
         RuntimeException ex = new RuntimeException("@" + nameHint, ex2);
         // try to avoid spamming the console please
         ex.setStackTrace(new StackTraceElement[0]);

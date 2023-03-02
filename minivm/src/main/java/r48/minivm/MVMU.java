@@ -130,6 +130,16 @@ public class MVMU {
     }
 
     /**
+     * Creates a LinkedList from part of an array.
+     */
+    public static LinkedList<Object> lArr(Object[] args, int base, int length) {
+        LinkedList<Object> ll = new LinkedList<>();
+        for (int i = 0; i < length; i++)
+            ll.add(args[base + i]);
+        return ll;
+    }
+
+    /**
      * Creates a LinkedList from fixed elements and an array.
      */
     public static LinkedList<Object> lArr(Object a, Object[] args) {
