@@ -32,8 +32,8 @@ public final class MVMCompileFrame {
     private boolean expectedToExist;
 
     protected MVMCompileFrame() {
-        // The first frame ID is always 1, because 0 is reserved for the true (empty) root scope.
-        frameID = 1;
+        // Rejoice! The root scope doesn't have a frame ID these days, so ID 0 is usable.
+        frameID = 0;
     }
 
     protected MVMCompileFrame(MVMCompileFrame par) {

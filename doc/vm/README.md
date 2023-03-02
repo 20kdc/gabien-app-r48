@@ -46,25 +46,29 @@ References to locals are resolved to numeric IDs that can be reasonably efficien
 
 But first, some rationale:
 
-+ The reason that the environment is *not* built using this approach is mainly because more code may be compiled into an environment at any time. In this event attaching it to the existing scope system would require universal ArrayList use for type consistency. It is however a guarantee that the local sizes of any code being compiled as a single unit can be precisely measured before any code is executed.
++ The reason that the environment is *not* built using this approach is mainly because more code may be compiled into an environment at any time. In this event attaching it to the existing scope system would require universal ArrayList use for type consistency. Meanwhile the existing scope system relies on a guarantee that the local sizes of any code being compiled as a single unit can be precisely measured before any code is executed.
 
 + Another interesting side effect is that environment lookups are potentially faster than locals. As all function calls are environment lookups, this is a good thing, and avoids the `local print = _ENV.print` problem.
 
-+ Of course, other less inconsistent approaches exist -- if you can require a function's environment reference never changes, you can auto-optimize the environment such that a slot approach is feasible while still making it fit the API of a table, and then apply similar logic to descendant environments with, i.e. a prototyping system -- but for reasons that will become apparent later in this document, these were not reasonable courses of action.
++ Of course, other less inconsistent approaches exist -- if you can require a function's environment reference never changes, you can auto-optimize the environment such that a slot approach is feasible while still making it fit the API of a table, and then apply similar logic to descendant environments with, i.e. a prototyping system -- but the requirements of fast locals (see later in this document) made these not reasonable courses of action.
 
 ## Operation Of Scopes
 
-There is a single immutable global static root scope, `MVMScope.ROOT`, known as "Frame 0". As this is completely immutable, the fact it's static can be ignored in favour of the memory use benefits.
+A scope does *not* make direct reference to its parent scope in a "chaining" approach. Instead, all scopes contain an array mapping frame IDs to frames. Each frame is an array of objects.
 
-A scope does not make direct reference to its parent scope in a "chaining" approach. Instead, all scopes contain an array (which may contain nulls for frames that do not need to actually formally exist) of all frames. Each frame is an array of objects. If the array of objects would be of zero length, the frame isn't created in the first place, *and the enclosing scope won't be created either.*
+If the array of objects would be of zero length, no frame is created, and a scope won't ever be created solely to house a frame that also does not exist. However, scopes may be created for frames that do exist descended from frames that don't exist. Frames that don't exist are left as null, and never read. Remember, these only occupy a few empty slots in small arrays being allocated anyway -- this is less wasteful than the alternatives, while still avoiding a two-pass compiler.
 
-To allow scopes to be created despite parent scopes being missing, scopes are created with whichever closest ancestor exists (with the missing frames being `null`), a frame ID (the index in the array of all frames to which this scope introduces a frame), and the amount of locals within that frame.
+There is a single immutable global static final root scope, `MVMScope.ROOT`, effectively a constant like `null` but without the downside of requiring specific checks. This scope, and only this scope (it wouldn't be a formal error to create other scopes with this property, but it would be wasteful), contains *no frames*.
+
+Descendant scopes are created with their parent scope, a frame ID (the index in the array of all frames to which this scope introduces a frame), and the amount of locals within that frame. The parent scope isn't kept around, it's simply used as a source to copy the previous frames from.
+
+Most importantly: It's a very regular occurrance for descendant scopes to skip over frames between them and their parent.
 
 Therefore, take a case where a lambda has been created within another lambda, and the inner lambda requires a frame, but the outer lambda does not. This is a normal situation the MVM compiler will likely regularly encounter.
 
-In this case, the outer lambda is Frame 1 (remember, Frame 0 is reserved for root), and the inner lambda is Frame 2. When the outer lambda is called, the scope remains the root scope, and the inner lambda is bound *to that root scope*.
+In this case, the outer lambda is Frame 0, and the inner lambda is Frame 1. When the outer lambda is called, the scope remains the root scope, and the inner lambda is bound *to that root scope*. The inner lambda, on execution, then creates a scope from this root scope with frame ID 1.
 
-If the inner lambda needed to inherit any values from the outer lambda, the outer lambda would have had frame locals and a scope -- notably, the inner lambda does not need to have it's own scope to inherit values from the outer lambda, so a call to a lambda defined as `(lambda () x)` will never allocate memory outside of exceptional conditions (almost certainly literally exceptional).
+If the inner lambda needed to inherit any values from the outer lambda, the outer lambda would have had frame locals and a scope -- notably, the inner lambda does not need to have it's own scope to inherit values from the outer lambda, so a call to a lambda defined as `(lambda () x)` will never allocate memory outside of exceptional conditions (almost certainly literally exceptional). The lambda is bound to the parent scope, but does not define any locals that need a dedicated frame.
 
 ## Fast Locals
 
@@ -79,5 +83,3 @@ Fast locals are considered to have a frame ID of -1. Allocating them an ID like 
 MVM does not de-optimize old locals after running out of fast locals, but fast locals that have been de-optimized at the time the local is being allocated count as free slots.
 
 The main use of fast locals is for lambda arguments. By providing lambda arguments as fast locals, functions that are simply single expressions operating on their arguments directly do not need to allocate stack space.
-
-
