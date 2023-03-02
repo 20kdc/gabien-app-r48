@@ -18,7 +18,6 @@ import r48.minivm.MVMEnv;
 import r48.minivm.MVMScope;
 import r48.minivm.compiler.MVMCompileFrame;
 import r48.minivm.compiler.MVMCompileScope;
-import r48.minivm.compiler.MVMFnCallCompiler;
 import r48.minivm.compiler.MVMSubScope;
 import r48.minivm.compiler.MVMSubScope.LocalRoot;
 import r48.minivm.expr.MVMCBegin;
@@ -39,19 +38,9 @@ public class MVMBasicsLibrary {
                 .attachHelp("(define K V) | function define: (define (K ARG...) STMT...) | bulk define: (define K V K V...) : Defines mutable variables or functions. Bulk define is an R48 extension.");
         ctx.defineSlot(sym("lambda")).v = new Lambda()
                 .attachHelp("(lambda (ARG...) STMT...) : Creates first-class functions.");
-        // Custom: Clojureisms
-        ctx.defineSlot(sym("string->class")).v = new Str2Class()
-                .attachHelp("(string->class V) : Gets the given class, or null if unable.");
-        ctx.defineSlot(sym("instance?")).v = new InstanceQ()
-                .attachHelp("(instance? C V) : Class.isInstance(V)");
-        // Custom: Macro facilities
-        ctx.defineSlot(sym("procedure->macro")).v = new Macroify()
-                .attachHelp("(procedure->macro V) : Wraps a procedure (ARG...) to make it a macro. The returned code is compiled normally.");
+        // not strictly standard in Scheme, but is standard in Common Lisp, but exact details differ
         ctx.defineSlot(sym("gensym")).v = new Gensym(ctx)
                 .attachHelp("(gensym) : Creates a new uniqueish symbol.");
-        // Custom: Debug
-        ctx.defineSlot(sym("mvm-disasm")).v = new Disasm()
-                .attachHelp("(mvm-disasm LAMBDA) : Disassembles the given lambda.");
     }
 
     /**
@@ -176,68 +165,6 @@ public class MVMBasicsLibrary {
             @SuppressWarnings("unchecked")
             List<Object> args = (List<Object>) call[1];
             return lambda(MVMFn.asUserReadableString(call), cs, args.toArray(), call, 2);
-        }
-    }
-
-    public static final class Disasm extends MVMFn.Fixed {
-        public Disasm() {
-            super("mvm-disasm");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            if (a0 instanceof MVMCExpr)
-                return ((MVMCExpr) a0).disasm();
-            if (a0 instanceof MVMLambdaFn) {
-                MVMLambdaFn l = (MVMLambdaFn) a0;
-                return Arrays.asList(sym("λi"), l.rootFrame.isExpectedToExist(), l.content.disasm());
-            }
-            throw new RuntimeException("Can't disassemble " + MVMFn.asUserReadableString(a0));
-        }
-    }
-
-    public static final class InstanceQ extends MVMFn.Fixed {
-        public InstanceQ() {
-            super("instance?");
-        }
-
-        @Override
-        public Object callDirect(Object a0, Object a1) {
-            return ((Class<?>) a0).isInstance(a1);
-        }
-    }
-
-    public static final class Str2Class extends MVMFn.Fixed {
-        public Str2Class() {
-            super("string->class");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            try {
-                return Class.forName((String) a0);
-            } catch (ClassNotFoundException e) {
-                return null;
-            }
-        }
-    }
-
-    public static final class Macroify extends MVMFn.Fixed {
-        public Macroify() {
-            super("procedure->macro");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            final MVMFn fn = MVMFnCallCompiler.asFn(a0);
-            return new MVMMacro(fn.nameHint) {
-                @Override
-                public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
-                    // for future compatibility
-                    call[0] = cs;
-                    return cs.compile(fn.callIndirect(call));
-                }
-            };
         }
     }
 

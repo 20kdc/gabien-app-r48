@@ -29,6 +29,7 @@ import gabienapp.state.LSMain;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.tr.LanguageList;
+import r48.tr.pages.TrGlobal;
 import r48.ui.UIAppendButton;
 import r48.ui.dialog.UIFontSizeConfigurator;
 import r48.ui.help.HelpSystemController;
@@ -42,6 +43,7 @@ public class UILauncher extends UIProxy {
     private boolean gamepaksRequestClose = false;
     public UILauncher(final LSMain ls) {
         final Launcher lun = ls.lun;
+        final TrGlobal tr = lun.ilg.tr;
         Config c = lun.c;
         final UITabPane tabPane = new UITabPane(c.f.tabTextHeight, false, false);
 
@@ -133,7 +135,7 @@ public class UILauncher extends UIProxy {
             }
         };
 
-        configure.panelsAdd(new UISplitterLayout(new UIPublicPanel(0, 0), new UITextButton(ls.tr("Continue"), c.f.launcherTextHeight, new Runnable() {
+        configure.panelsAdd(new UISplitterLayout(new UIPublicPanel(0, 0), new UITextButton(tr.bContinue, c.f.launcherTextHeight, new Runnable() {
             @Override
             public void run() {
                 tabPane.selectTab(gamepaks);

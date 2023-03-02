@@ -6,16 +6,13 @@
  */
 package r48.minivm;
 
-import java.io.InputStreamReader;
-
-import gabien.GaBIEn;
-import gabien.datum.DatumDecodingVisitor;
-import gabien.datum.DatumReaderTokenSource;
 import gabien.uslx.append.IConsumer;
+import r48.dbs.DatumLoader;
 
 /**
  * MiniVM environment.
  * Created 26th February 2023 but only fleshed out 28th.
+ * Include/loadProgress split from MiniVM core 1st March 2023.
  */
 public final class MVMEnvR48 extends MVMEnv {
     private final IConsumer<String> loadProgress;
@@ -33,26 +30,18 @@ public final class MVMEnvR48 extends MVMEnv {
     /**
      * Loads the given file into this context.
      */
-    public void include(String filename) {
-        System.out.println(">>" + filename);
-        if (loadProgress != null)
-            loadProgress.accept(filename);
-        try {
-            InputStreamReader ins = GaBIEn.getTextResource(filename);
-            DatumDecodingVisitor ddv = new DatumDecodingVisitor() {
-                @Override
-                public void visitTree(Object obj) {
-                    evalObject(obj);
-                }
-                @Override
-                public void visitEnd() {
-                }
-            };
-            DatumReaderTokenSource drts = new DatumReaderTokenSource(ins);
-            drts.visit(ddv);
-        } catch (Exception ex) {
-            throw new RuntimeException("During MVM read-in @ " + filename, ex);
-        }
-        System.out.println("<<" + filename);
+    public void include(String filename, boolean opt) {
+        IConsumer<Object> eval = (obj) -> {
+            evalObject(obj);
+        }; 
+        boolean attempt = DatumLoader.read(filename + ".scm", loadProgress, eval);
+        if (!attempt)
+            attempt = DatumLoader.read(filename + ".txt", loadProgress, eval);
+        if ((!opt) && !attempt)
+            throw new RuntimeException("Expected " + filename + "(.scm|.txt) to exist");
+        // don't care if this doesn't exist
+        DatumLoader.read(filename + ".aux.scm", loadProgress, (obj) -> {
+            evalObject(obj);
+        });
     }
 }

@@ -4,18 +4,19 @@
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
  */
-package r48.minivm.fn;
+package r48.tr.pages;
 
-import r48.minivm.MVMEnv;
+import r48.tr.TrPage;
 
 /**
- * MiniVM standard library.
- * Created 1st March 2023.
+ * Translation page for the launcher and global functionality.
+ * Created 2nd March 2023.
  */
-public class MVMCoreLibraries {
-    public static void add(MVMEnv ctx) {
-        MVMBasicsLibrary.add(ctx);
-        MVMExtensionsLibrary.add(ctx);
-        MVMMathsLibrary.add(ctx);
-    }
+public class TrGlobal extends TrPage {
+    // gabien
+    public String wordLoad;
+    public String wordSave;
+    public String wordInvalidFileName;
+    // launcher
+    public String bContinue;
 }

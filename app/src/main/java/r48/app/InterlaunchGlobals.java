@@ -16,6 +16,7 @@ import r48.tr.ITranslator;
 import r48.tr.LanguageList;
 import r48.tr.NullTranslator;
 import r48.tr.Translator;
+import r48.tr.pages.TrGlobal;
 
 /**
  * Globals shared between launcher and app.
@@ -24,6 +25,7 @@ import r48.tr.Translator;
  */
 public class InterlaunchGlobals {
     public final Config c;
+    public final TrGlobal tr = new TrGlobal();
     private ITranslator translator = new NullTranslator();
     private MVMEnvR48 langVM;
     private IConsumer<MVMEnv> reportVMChanges;
@@ -40,6 +42,10 @@ public class InterlaunchGlobals {
     public MVMEnvR48 createCurrentLanguageVM(IConsumer<String> loadProgress) {
         MVMEnvR48 langVM = new MVMEnvR48(loadProgress);
         MVMGlobalLibrary.add(langVM, this);
+        langVM.include("vm/global", false);
+        // if the language author wants English fallback, they'll just (include "terms/English")
+        langVM.include("terms/" + c.language, true);
+        //langVM.include("Systerms/" +  + ".scm");
         return langVM;
     }
 
@@ -55,6 +61,7 @@ public class InterlaunchGlobals {
         c.language = lang;
         // ---
         langVM = createCurrentLanguageVM(loadProgress);
+        tr.fillFromVM(langVM);
         reportVMChanges.accept(langVM);
         if (lang.equals("English")) {
             translator = new NullTranslator();
@@ -63,9 +70,9 @@ public class InterlaunchGlobals {
         }
         translator.read("Systerms/" + lang + ".txt", "r48/");
         translator.read("Systerms/L-" + lang + ".txt", "launcher/");
-        GaBIEn.wordLoad = tr("Load");
-        GaBIEn.wordSave = tr("Save");
-        GaBIEn.wordInvalidFileName = tr("Invalid or missing file name.");
+        GaBIEn.wordLoad = tr.wordLoad;
+        GaBIEn.wordSave = tr.wordSave;
+        GaBIEn.wordInvalidFileName = tr.wordInvalidFileName;
     }
 
     /**

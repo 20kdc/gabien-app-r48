@@ -6,11 +6,8 @@
  */
 package r48.minivm.fn;
 
-import java.util.LinkedList;
-
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
-import r48.minivm.MVMEnv.Slot;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.expr.MVMCExpr;
@@ -21,34 +18,10 @@ import r48.minivm.expr.MVMCExpr;
  */
 public class MVMIntegrationLibrary {
     public static void add(MVMEnv ctx) {
-        ctx.defineSlot(new DatumSymbol("help")).v = new Help(ctx)
-                .attachHelp("(help [TOPIC]) : Helpful information on the given value (if any), or lists symbols in the root context.");
         ctx.defineSlot(new DatumSymbol("include")).v = new Include()
-                .attachHelp("(include FILE) : Includes the given file-path. This occurs at compile-time and magically counts as top-level even if it shouldn't.");
+                .attachHelp("(include FILE) : Includes the given file. This occurs at compile-time and magically counts as top-level even if it shouldn't. The filename has \".scm\" appended, and a second file is checked for with \".aux.scm\" appended for user additions.");
         ctx.defineSlot(new DatumSymbol("log")).v = new Log()
                 .attachHelp("(log V...) : Logs the given values.");
-    }
-    public static final class Help extends MVMFn.Fixed {
-        final MVMEnv ctx;
-        public Help(MVMEnv ctx) {
-            super("help");
-            this.ctx = ctx;
-        }
-
-        @Override
-        public Object callDirect() {
-            LinkedList<DatumSymbol> ds = new LinkedList<>();
-            for (Slot s : ctx.listSlots())
-                ds.add(s.s);
-            return ds;
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            if (a0 instanceof MVMHelpable)
-                return ((MVMHelpable) a0).help;
-            return null;
-        }
     }
     public static final class Include extends MVMMacro {
         public Include() {
@@ -60,7 +33,7 @@ public class MVMIntegrationLibrary {
             MVMEnvR48 r48 = (MVMEnvR48) cs.context;
             for (int i = 1; i < call.length; i++) {
                 String s = (String) call[i];
-                r48.include(s);
+                r48.include(s, false);
             }
             return null;
         }
