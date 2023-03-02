@@ -6,8 +6,6 @@
  */
 package r48.minivm.expr;
 
-import java.util.Arrays;
-
 import org.eclipse.jdt.annotation.NonNull;
 
 import static gabien.datum.DatumTreeUtils.*;
@@ -100,7 +98,7 @@ public abstract class MVMCExpr {
         }
         @Override
         public Object disasm() {
-            return Arrays.asList(sym("setL0"), value.disasm(), ret.disasm());
+            return MVMU.l(sym("setL0"), value.disasm(), ret.disasm());
         }
     }
 }

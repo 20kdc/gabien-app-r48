@@ -8,8 +8,6 @@ package r48.minivm.expr;
 
 import static gabien.datum.DatumTreeUtils.sym;
 
-import java.util.Arrays;
-
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.IRIO;
@@ -40,6 +38,6 @@ public class MVMCGetHashValImm extends MVMCExpr {
 
     @Override
     public Object disasm() {
-        return Arrays.asList(sym("getHashValImm"), base.disasm(), MVMU.userStr(key));
+        return MVMU.l(sym("getHashValImm"), base.disasm(), MVMU.userStr(key));
     }
 }

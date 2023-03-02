@@ -8,11 +8,10 @@ package r48.minivm.expr;
 
 import static gabien.datum.DatumTreeUtils.sym;
 
-import java.util.Arrays;
-
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.minivm.MVMScope;
+import r48.minivm.MVMU;
 
 /**
  * MiniVM error stuff
@@ -31,6 +30,6 @@ public final class MVMCError extends MVMCExpr {
 
     @Override
     public Object disasm() {
-        return Arrays.asList(sym("error"), message);
+        return MVMU.l(sym("error"), message);
     }
 }

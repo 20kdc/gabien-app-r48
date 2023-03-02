@@ -8,11 +8,10 @@ package r48.minivm.expr;
 
 import static gabien.datum.DatumTreeUtils.sym;
 
-import java.util.Arrays;
-
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.minivm.MVMScope;
+import r48.minivm.MVMU;
 
 /**
  * Used to create a formal stack frame when necessary.
@@ -37,6 +36,6 @@ public class MVMCScopeFrame extends MVMCExpr {
 
     @Override
     public Object disasm() {
-        return Arrays.asList(sym("scopeFrame"), base.disasm(), frameID, size);
+        return MVMU.l(sym("scopeFrame"), base.disasm(), frameID, size);
     }
 }

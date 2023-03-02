@@ -8,12 +8,11 @@ package r48.minivm.expr;
 
 import static gabien.datum.DatumTreeUtils.sym;
 
-import java.util.Arrays;
-
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.IRIO;
 import r48.minivm.MVMScope;
+import r48.minivm.MVMU;
 
 /**
  * MiniVM PathSyntax IVar getter.
@@ -38,6 +37,6 @@ public class MVMCGetIVar extends MVMCExpr {
 
     @Override
     public Object disasm() {
-        return Arrays.asList(sym("getIVar"), base.disasm(), key);
+        return MVMU.l(sym("getIVar"), base.disasm(), key);
     }
 }

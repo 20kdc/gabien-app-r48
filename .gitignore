@@ -10,6 +10,10 @@
 !releaser/*.sh
 !releaser/icon.png
 
+# Documentation
+!doc
+!doc/**
+
 # Main application
 !app
 !app/pom.xml

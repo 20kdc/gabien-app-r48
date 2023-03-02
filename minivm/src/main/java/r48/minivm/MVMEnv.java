@@ -8,7 +8,6 @@ package r48.minivm;
 
 import static gabien.datum.DatumTreeUtils.sym;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -94,6 +93,9 @@ public class MVMEnv {
         return defineSlot(d);
     }
 
+    /**
+     * Beware: This defines the slot "here and now", with shadowing, which is not how (define) works. Use ensureSlot.
+     */
     public @NonNull Slot defineSlot(DatumSymbol d) {
         if (values.containsKey(d))
             throw new RuntimeException("Cannot redefine: " + d);
@@ -125,7 +127,7 @@ public class MVMEnv {
 
         @Override
         public Object disasm() {
-            return Arrays.asList(sym("slot"), s);
+            return MVMU.l(sym("slot"), s);
         }
     }
 }

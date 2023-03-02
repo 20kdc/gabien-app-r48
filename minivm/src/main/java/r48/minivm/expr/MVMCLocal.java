@@ -13,6 +13,7 @@ import java.util.Arrays;
 import org.eclipse.jdt.annotation.NonNull;
 
 import r48.minivm.MVMScope;
+import r48.minivm.MVMU;
 
 /**
  * MiniVM local handle.
@@ -86,7 +87,7 @@ public final class MVMCLocal {
 
         @Override
         public Object disasm() {
-            return Arrays.asList(sym("localRead"), frameID, localID);
+            return MVMU.l(sym("localRead"), frameID, localID);
         }
     }
     public final class Let extends MVMCExpr {

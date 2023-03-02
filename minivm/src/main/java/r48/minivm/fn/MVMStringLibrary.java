@@ -6,7 +6,7 @@
  */
 package r48.minivm.fn;
 
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import gabien.datum.DatumSymbol;
@@ -231,11 +231,12 @@ public class MVMStringLibrary {
 
         @Override
         public Object callDirect(Object a0) {
+            LinkedList<Character> llc = new LinkedList<>();
             String s = (String) a0;
-            Object[] obj = new Object[s.length()];
-            for (int i = 0; i < obj.length; i++)
-                obj[i] = s.charAt(i);
-            return Arrays.asList(obj);
+            int sl = s.length();
+            for (int i = 0; i < sl; i++)
+                llc.add(s.charAt(i));
+            return llc;
         }
     }
 

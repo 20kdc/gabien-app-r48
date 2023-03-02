@@ -7,8 +7,6 @@
 
 package r48.dbs;
 
-import java.util.Arrays;
-
 import org.eclipse.jdt.annotation.NonNull;
 
 import gabien.datum.DatumSymbol;
@@ -18,6 +16,7 @@ import r48.io.data.IRIO;
 import r48.io.data.RORIO;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMScope;
+import r48.minivm.MVMU;
 import r48.minivm.expr.MVMCArrayGetImm;
 import r48.minivm.expr.MVMCArrayLength;
 import r48.minivm.expr.MVMCError;
@@ -209,7 +208,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
 
                         @Override
                         public Object disasm() {
-                            return Arrays.asList(new DatumSymbol("pathAddIVar"), parent.disasm(), iv);
+                            return MVMU.l(new DatumSymbol("pathAddIVar"), parent.disasm(), iv);
                         }
                     }, new MVMCExpr() {
                         @Override
@@ -224,7 +223,7 @@ public final class PathSyntax implements IFunction<IRIO, IRIO> {
 
                         @Override
                         public Object disasm() {
-                            return Arrays.asList(new DatumSymbol("pathDelIVar"), parent.disasm(), iv);
+                            return MVMU.l(new DatumSymbol("pathDelIVar"), parent.disasm(), iv);
                         }
                     }, arg);
                 base = currentGet;

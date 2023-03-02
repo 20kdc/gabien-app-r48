@@ -6,7 +6,6 @@
  */
 package r48.minivm.fn;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -71,7 +70,7 @@ public class MVMBasicsLibrary {
             }
             @Override
             public Object disasm() {
-                return Arrays.asList(sym("λ"), rootFrame.isExpectedToExist(), compiledLambda.disasm());
+                return MVMU.l(sym("λ"), rootFrame.isExpectedToExist(), compiledLambda.disasm());
             }
         };
     }

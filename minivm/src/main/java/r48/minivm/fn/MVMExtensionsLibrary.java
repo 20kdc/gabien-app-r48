@@ -6,7 +6,6 @@
  */
 package r48.minivm.fn;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 
 import static gabien.datum.DatumTreeUtils.*;
@@ -50,7 +49,7 @@ public class MVMExtensionsLibrary {
                 return ((MVMCExpr) a0).disasm();
             if (a0 instanceof MVMLambdaFn) {
                 MVMLambdaFn l = (MVMLambdaFn) a0;
-                return Arrays.asList(sym("λi"), l.rootFrame.isExpectedToExist(), l.content.disasm());
+                return MVMU.l(sym("λi"), l.rootFrame.isExpectedToExist(), l.content.disasm());
             }
             throw new RuntimeException("Can't disassemble " + MVMU.userStr(a0));
         }

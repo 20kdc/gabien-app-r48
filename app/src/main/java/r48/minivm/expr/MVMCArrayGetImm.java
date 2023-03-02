@@ -6,13 +6,12 @@
  */
 package r48.minivm.expr;
 
-import java.util.Arrays;
-
 import org.eclipse.jdt.annotation.NonNull;
 
 import static gabien.datum.DatumTreeUtils.*;
 import r48.io.data.IRIO;
 import r48.minivm.MVMScope;
+import r48.minivm.MVMU;
 
 /**
  * MiniVM PathSyntax immediate array value getter.
@@ -41,6 +40,6 @@ public class MVMCArrayGetImm extends MVMCExpr {
 
     @Override
     public Object disasm() {
-        return Arrays.asList(sym("arrayGetImm"), base.disasm(), index);
+        return MVMU.l(sym("arrayGetImm"), base.disasm(), index);
     }
 }

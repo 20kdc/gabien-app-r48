@@ -10,11 +10,10 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import static gabien.datum.DatumTreeUtils.*;
 
-import java.util.Arrays;
-
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
 import r48.minivm.MVMScope;
+import r48.minivm.MVMU;
 
 /**
  * MiniVM array stuff
@@ -40,6 +39,6 @@ public final class MVMCArrayLength extends MVMCExpr {
 
     @Override
     public Object disasm() {
-        return Arrays.asList(sym("arrayLength"), addBase.disasm());
+        return MVMU.l(sym("arrayLength"), addBase.disasm());
     }
 }
