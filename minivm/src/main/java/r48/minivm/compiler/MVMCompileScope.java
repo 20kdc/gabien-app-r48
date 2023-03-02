@@ -14,6 +14,7 @@ import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnv.Slot;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCNewEmptyList;
+import r48.minivm.expr.MVMCSetSlot;
 import r48.minivm.fn.MVMMacro;
 
 /**
@@ -47,11 +48,25 @@ public abstract class MVMCompileScope {
      */
     public abstract MVMCompileScope extendMayFrame();
 
+    /**
+     * Compiles a symbol read.
+     */
     public MVMCExpr readLookup(DatumSymbol ds) {
         // Context
         Slot s = context.getSlot(ds);
         if (s != null)
             return s;
+        throw new RuntimeException("Undefined symbol: " + ds);
+    }
+
+    /**
+     * Compiles a symbol write.
+     */
+    public MVMCExpr writeLookup(DatumSymbol ds, MVMCExpr compile) {
+        // Context
+        Slot s = context.getSlot(ds);
+        if (s != null)
+            return new MVMCSetSlot(s, compile);
         throw new RuntimeException("Undefined symbol: " + ds);
     }
 

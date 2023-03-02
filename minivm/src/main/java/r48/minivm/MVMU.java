@@ -188,4 +188,18 @@ public class MVMU {
             ll.add(o);
         return ll;
     }
+
+    /**
+     * If something is truthy.
+     */
+    public static boolean isTruthy(Object v) {
+        return !((v instanceof Boolean) && (false == (Boolean) v));
+    }
+
+    /**
+     * If something is truthy.
+     */
+    public static boolean isFalsy(Object v) {
+        return (v instanceof Boolean) && (false == (Boolean) v);
+    }
 }

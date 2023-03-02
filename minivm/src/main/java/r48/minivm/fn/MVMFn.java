@@ -58,7 +58,8 @@ public abstract class MVMFn extends MVMHelpable {
         }
     }
     /**
-     * Indirect call. Arguments array owned by the callee to do what it wishes with.
+     * Indirect call. Arguments array mutably borrowed by the callee for arbitrary shenanigans.
+     * But the reference mustn't leak. It's done this way for for-each's sake.
      */
     public final Object clIndirect(Object[] args) {
         try {
@@ -74,7 +75,8 @@ public abstract class MVMFn extends MVMHelpable {
     protected abstract Object callDirect(Object a0, Object a1, Object a2);
     protected abstract Object callDirect(Object a0, Object a1, Object a2, Object a3);
     /**
-     * Indirect call. Arguments array owned by the callee to do what it wishes with.
+     * Indirect call. Arguments array mutably borrowed by the callee for arbitrary shenanigans.
+     * But the reference mustn't leak. It's done this way for for-each's sake.
      */
     protected abstract Object callIndirect(Object[] args);
 

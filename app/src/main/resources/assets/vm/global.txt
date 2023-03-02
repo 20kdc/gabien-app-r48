@@ -8,4 +8,14 @@
 (define (list . v) v)
 (help-set! list "(list V...) : Creates a list of values.")
 
-; (define-syntax define-group (procedure->macro (lambda ())))
+(define-syntax (define-group prefix . entries)
+	; TODO :D
+	(define n 0)
+	(for-each (lambda (tmp)
+		(log tmp)
+		(set! n (+ n 1))
+	) entries)
+	(log n)
+)
+
+(define-group bleh a b c)

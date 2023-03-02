@@ -77,6 +77,15 @@ public class MVMSubScope extends MVMCompileScope {
     }
 
     @Override
+    public MVMCExpr writeLookup(DatumSymbol ds, MVMCExpr compile) {
+        // Local
+        Local lcl = locals.get(ds);
+        if (lcl != null)
+            return lcl.setter(compile);
+        return super.writeLookup(ds, compile);
+    }
+
+    @Override
     public MVMCExpr compileDefine(DatumSymbol sym, ISupplier<MVMCExpr> value) {
         LocalRoot local = new LocalRoot();
         locals.put(sym, local);

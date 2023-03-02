@@ -23,6 +23,7 @@ import r48.minivm.compiler.MVMSubScope;
 import r48.minivm.compiler.MVMSubScope.LocalRoot;
 import r48.minivm.expr.MVMCBegin;
 import r48.minivm.expr.MVMCExpr;
+import r48.minivm.expr.MVMCIf;
 
 /**
  * MiniVM standard library.
@@ -37,6 +38,10 @@ public class MVMBasicsLibrary {
                 .attachHelp("(define K V) | function define: (define (K ARG... [. VA]) STMT...) | bulk define: (define K V K V...) : Defines mutable variables or functions. Bulk define is an R48 extension.");
         ctx.defineSlot(sym("lambda")).v = new Lambda()
                 .attachHelp("(lambda (ARG... [. VA]) STMT...) : Creates first-class functions. The symbol . splits main args from a var-arg list arg.");
+        ctx.defineSlot(sym("if")).v = new If()
+                .attachHelp("(if C T [F]) : Conditional primitive.");
+        ctx.defineSlot(sym("set!")).v = new Set()
+                .attachHelp("(set! VAR V) : Sets a variable.");
         // not strictly standard in Scheme, but is standard in Common Lisp, but exact details differ
         ctx.defineSlot(sym("gensym")).v = new Gensym(ctx)
                 .attachHelp("(gensym) : Creates a new uniqueish symbol.");
@@ -193,6 +198,36 @@ public class MVMBasicsLibrary {
             @SuppressWarnings("unchecked")
             List<Object> args = (List<Object>) call[0];
             return lambda(MVMU.userStr(call), cs, args.toArray(), call, 1);
+        }
+    }
+
+    public static final class If extends MVMMacro {
+        public If() {
+            super("if");
+        }
+
+        @Override
+        public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
+            if (call.length < 2)
+                throw new RuntimeException("If needs at least the condition and true branch");
+            else if (call.length > 3)
+                throw new RuntimeException("If cannot have too many parameters");
+            else if (call.length == 2)
+                return new MVMCIf(cs.compile(call[0]), cs.compile(call[1]), new MVMCExpr.Const(null));
+            return new MVMCIf(cs.compile(call[0]), cs.compile(call[1]), cs.compile(call[2]));
+        }
+    }
+
+    public static final class Set extends MVMMacro {
+        public Set() {
+            super("set!");
+        }
+
+        @Override
+        public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
+            if (call.length != 2)
+                throw new RuntimeException("Set needs variable name and value, no more or less");
+            return cs.writeLookup((DatumSymbol) call[0], cs.compile(call[1]));
         }
     }
 
