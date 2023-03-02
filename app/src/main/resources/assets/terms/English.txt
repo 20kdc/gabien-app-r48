@@ -5,14 +5,9 @@
 
 ; English text
 
-(define TrGlobal.bContinue "Continue")
-(define TrGlobal.wordLoad "Load")
-(define TrGlobal.wordSave "Save")
-(define TrGlobal.wordInvalidFileName "Invalid or missing file name.")
-
-;(define-group TrGlobal
-;	bContinue "Continue"
-;	wordLoad "Load"
-;	wordSave "Save"
-;	wordInvalidFileName "Invalid or missing file name."
-;)
+(define-group TrGlobal
+	bContinue "Continue"
+	wordLoad "Load"
+	wordSave "Save"
+	wordInvalidFileName "Invalid or missing file name."
+)

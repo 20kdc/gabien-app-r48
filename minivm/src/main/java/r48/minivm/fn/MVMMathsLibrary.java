@@ -14,10 +14,30 @@ import r48.minivm.MVMEnv;
  * Created 1st March 2023.
  */
 public class MVMMathsLibrary {
+    private static final Long resM1 = -1L;
+    private static final Long res0 = 0L;
+    private static final Long res1 = 1L;
     public static void add(MVMEnv ctx) {
         // Scheme library
         ctx.defineSlot(new DatumSymbol("+")).v = new Add()
                 .attachHelp("(+ V...) : Adds various values. If none given, returns 0.");
+        ctx.defineSlot(new DatumSymbol("number-compare")).v = new MVMFn.Fixed("number-compare") {
+            @Override
+            public Object callDirect(Object a0, Object a1) {
+                int res;
+                if (a0 instanceof Float || a0 instanceof Double || a1 instanceof Float || a1 instanceof Double)
+                    res = Double.compare(((Number) a0).doubleValue(), ((Number) a1).doubleValue());
+                else
+                    res = Long.compare(((Number) a0).longValue(), ((Number) a1).longValue());
+                if (res < 0)
+                    return resM1;
+                else if (res > 0)
+                    return res1;
+                else
+                    return res0;
+            }
+        }
+                .attachHelp("(number-compare A B) : Compares two numbers, returning integers -1 (A < B) to 1 (A > B).");
     }
 
     public static final class Add extends MVMFn.ChainOp<Number> {

@@ -34,6 +34,8 @@ public class MVMBasicsLibrary {
         // Scheme library
         ctx.defineSlot(sym("quote")).v = new Quote()
                 .attachHelp("(quote A) | 'A : A is not evaluated. Allows expressing complex structures inline.");
+        ctx.defineSlot(sym("begin")).v = new Begin()
+                .attachHelp("(begin ...) : Runs a series of expressions and returns the result from the last.");
         ctx.defineSlot(sym("define")).v = new Define()
                 .attachHelp("(define K V) | function define: (define (K ARG... [. VA]) STMT...) | bulk define: (define K V K V...) : Defines mutable variables or functions. Bulk define is an R48 extension.");
         ctx.defineSlot(sym("lambda")).v = new Lambda()
@@ -42,6 +44,11 @@ public class MVMBasicsLibrary {
                 .attachHelp("(if C T [F]) : Conditional primitive.");
         ctx.defineSlot(sym("set!")).v = new Set()
                 .attachHelp("(set! VAR V) : Sets a variable.");
+        ctx.defineSlot(sym("equal?")).v = new EqualQ()
+                .attachHelp("(equal? A B) : Checks two values for Java value equality.");
+        // this is definitely not in-spec, but what can 'ya do?
+        ctx.defineSlot(sym("eq?")).v = new EqQ()
+                .attachHelp("(eq? A B) : Checks two values for Java pointer equality.");
         // not strictly standard in Scheme, but is standard in Common Lisp, but exact details differ
         ctx.defineSlot(sym("gensym")).v = new Gensym(ctx)
                 .attachHelp("(gensym) : Creates a new uniqueish symbol.");
@@ -153,6 +160,17 @@ public class MVMBasicsLibrary {
         }
     }
 
+    public static final class Begin extends MVMMacro {
+        public Begin() {
+            super("begin");
+        }
+
+        @Override
+        public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
+            return new MVMCBegin(cs, call, 0, call.length);
+        }
+    }
+
     public static final class Define extends MVMMacro {
         public Define() {
             super("define");
@@ -228,6 +246,33 @@ public class MVMBasicsLibrary {
             if (call.length != 2)
                 throw new RuntimeException("Set needs variable name and value, no more or less");
             return cs.writeLookup((DatumSymbol) call[0], cs.compile(call[1]));
+        }
+    }
+
+    public static final class EqualQ extends MVMFn.Fixed {
+        public EqualQ() {
+            super("equal?");
+        }
+
+        @Override
+        public Object callDirect(Object a0, Object a1) {
+            if (a0 == a1)
+                return true;
+            else if (a0 == null)
+                return false;
+            else
+                return a0.equals(a1);
+        }
+    }
+
+    public static final class EqQ extends MVMFn.Fixed {
+        public EqQ() {
+            super("eq?");
+        }
+
+        @Override
+        public Object callDirect(Object a0, Object a1) {
+            return a0 == a1;
         }
     }
 

@@ -24,6 +24,8 @@ public class MVMListsLibrary {
                 .attachHelp("(for-each F L...) : Given a group of lists, iterates over all of them simultaneously, calling F with each set of results.");
         ctx.defineSlot(new DatumSymbol("append")).v = new Append()
                 .attachHelp("(append L...) : Creates a new list from a set of appended lists.");
+        ctx.defineSlot(new DatumSymbol("append!")).v = new AppendM()
+                .attachHelp("(append! T L...) : Modifies an existing list to append a set of lists.");
     }
 
     public static final class ForEach extends MVMFn {
@@ -165,6 +167,58 @@ public class MVMListsLibrary {
             List<Object> target = MVMU.l();
             for (Object obj : args)
                 target.addAll((List<Object>) obj);
+            return target;
+        }
+    }
+
+    public static final class AppendM extends MVMFn {
+        public AppendM() {
+            super("append!");
+        }
+
+        @Override
+        protected Object callDirect() {
+            throw new RuntimeException("append! must have a target list");
+        }
+
+        @Override
+        protected Object callDirect(Object a0) {
+            return a0;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected Object callDirect(Object a0, Object a1) {
+            List<Object> target = (List<Object>) a0;
+            target.addAll((List<Object>) a1);
+            return target;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected Object callDirect(Object a0, Object a1, Object a2) {
+            List<Object> target = (List<Object>) a0;
+            target.addAll((List<Object>) a1);
+            target.addAll((List<Object>) a2);
+            return target;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected Object callDirect(Object a0, Object a1, Object a2, Object a3) {
+            List<Object> target = (List<Object>) a0;
+            target.addAll((List<Object>) a1);
+            target.addAll((List<Object>) a2);
+            target.addAll((List<Object>) a3);
+            return target;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected Object callIndirect(Object[] args) {
+            List<Object> target = (List<Object>) args[0];
+            for (int i = 1; i < args.length; i++)
+                target.addAll((List<Object>) args[i]);
             return target;
         }
     }

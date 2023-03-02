@@ -9,13 +9,27 @@
 (help-set! list "(list V...) : Creates a list of values.")
 
 (define-syntax (define-group prefix . entries)
-	; TODO :D
-	(define n 0)
-	(for-each (lambda (tmp)
-		(log tmp)
-		(set! n (+ n 1))
+	(define result (list begin))
+	(define hasKey #f)
+	(define key #nil)
+	(for-each (lambda (value)
+		(if hasKey
+			(begin
+				(append! result (list (list
+					define
+					(string->symbol
+						(string-append (symbol->string prefix) "." (symbol->string key))
+					)
+					value
+				)))
+				(set! hasKey #f)
+			)
+			(begin
+				(set! key value)
+				(set! hasKey #t)
+			)
+		)
 	) entries)
-	(log n)
+	result
 )
-
-(define-group bleh a b c)
+(help-set! define-group "(define-group PREFIX K... V...) : Defines a prefixed group of values as key/value pairs with a given symbol prefix.")
