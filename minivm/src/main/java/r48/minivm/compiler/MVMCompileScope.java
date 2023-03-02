@@ -13,6 +13,7 @@ import gabien.uslx.append.ISupplier;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnv.Slot;
 import r48.minivm.expr.MVMCExpr;
+import r48.minivm.expr.MVMCNewEmptyList;
 import r48.minivm.fn.MVMMacro;
 
 /**
@@ -65,7 +66,7 @@ public abstract class MVMCompileScope {
             Object[] oa = ((List<Object>) o).toArray();
             // Tradition states this is AOK, shush...
             if (oa.length == 0)
-                return new MVMCExpr.Const(oa);
+                return new MVMCNewEmptyList();
             // Call of some kind.
             // What we have to do here is compile the first value, and then retroactively work out if it's a macro.
             MVMCExpr oa1v = compile(oa[0]);

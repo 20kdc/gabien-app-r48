@@ -26,7 +26,9 @@ Read-only or fixed-size list kinds are acceptable but may cause unusual behaviou
 
 In practice, the base type of MiniVM is the Java Object.
 
-## Basic Flow Of Execution
+## VM
+
+### Basic Flow Of Execution
 
 MiniVM code is made up of *functions* and *expressions*.
 
@@ -52,7 +54,7 @@ But first, some rationale:
 
 + Of course, other less inconsistent approaches exist -- if you can require a function's environment reference never changes, you can auto-optimize the environment such that a slot approach is feasible while still making it fit the API of a table, and then apply similar logic to descendant environments with, i.e. a prototyping system -- but the requirements of fast locals (see later in this document) made these not reasonable courses of action.
 
-## Operation Of Scopes
+### Operation Of Scopes
 
 A scope does *not* make direct reference to its parent scope in a "chaining" approach. Instead, all scopes contain an array mapping frame IDs to frames. Each frame is an array of objects.
 
@@ -70,7 +72,7 @@ In this case, the outer lambda is Frame 0, and the inner lambda is Frame 1. When
 
 If the inner lambda needed to inherit any values from the outer lambda, the outer lambda would have had frame locals and a scope -- notably, the inner lambda does not need to have it's own scope to inherit values from the outer lambda, so a call to a lambda defined as `(lambda () x)` will never allocate memory outside of exceptional conditions (almost certainly literally exceptional). The lambda is bound to the parent scope, but does not define any locals that need a dedicated frame.
 
-## Fast Locals
+### Fast Locals
 
 Fast Locals are the optimization MVM provides over other options.
 
@@ -83,3 +85,29 @@ Fast locals are considered to have a frame ID of -1. Allocating them an ID like 
 MVM does not de-optimize old locals after running out of fast locals, but fast locals that have been de-optimized at the time the local is being allocated count as free slots.
 
 The main use of fast locals is for lambda arguments. By providing lambda arguments as fast locals, functions that are simply single expressions operating on their arguments directly do not need to allocate stack space.
+
+## Language
+
+The language is based around a core compiler primitive, following the rules:
+
+```
+Supply an input value and a compiler scope.
+Based on the kind of input:
+Symbol:
+  if local exists, i.e. some-local: Local Read
+  else if in environment, i.e. string-append: Slot
+  else: Undefined symbol error
+List:
+  if empty:
+    return New Empty List
+  else:
+    compile 1st object
+    if it's a slot or constant, get the current value. if it is a macro:
+      execute macro, i.e. (lambda () "123") becomes a lambda call
+    else:
+      compile function call, i.e. (+ 1 2 3)
+Expr:
+  returned directly
+```
+
+This core compiler primitive is initially run with a *top-level compiler scope*. Compiler scopes are different from VM scopes -- they exist at different times -- but compiler scopes control the creation and management of frames, and thus scopes. Top-level compiler scopes are different still. Most compiler scopes use VM scopes and fast locals, but top-level compiler scopes do not -- names defined using `define` there become environment slots.
