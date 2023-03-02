@@ -15,20 +15,20 @@ import static gabien.datum.DatumTreeUtils.*;
 import org.junit.Test;
 
 import r48.minivm.MVMEnv;
+import r48.minivm.MVMU;
 import r48.minivm.fn.MVMCoreLibraries;
-import r48.minivm.fn.MVMFn;
 
 /**
- * Created 1st March
+ * Created 1st March 2023
  */
 public class MVMTests {
-    private MVMEnv prepEnv() {
+    public static MVMEnv prepEnv() {
         MVMEnv env = new MVMEnv();
         MVMCoreLibraries.add(env);
         return env;
     }
-    private void disasm(MVMEnv env, String p, String sym) {
-        System.out.println(p + ": " + MVMFn.asUserReadableString(env.evalString("(mvm-disasm " + sym + ")")));
+    public static void disasm(MVMEnv env, String p, String sym) {
+        System.out.println(p + ": " + MVMU.userStr(env.evalString("(mvm-disasm " + sym + ")")));
     }
 
     @Test

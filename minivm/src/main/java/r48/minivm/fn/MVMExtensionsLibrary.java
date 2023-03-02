@@ -13,6 +13,7 @@ import static gabien.datum.DatumTreeUtils.*;
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnv.Slot;
+import r48.minivm.MVMU;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.compiler.MVMFnCallCompiler;
 import r48.minivm.expr.MVMCExpr;
@@ -51,7 +52,7 @@ public class MVMExtensionsLibrary {
                 MVMLambdaFn l = (MVMLambdaFn) a0;
                 return Arrays.asList(sym("λi"), l.rootFrame.isExpectedToExist(), l.content.disasm());
             }
-            throw new RuntimeException("Can't disassemble " + MVMFn.asUserReadableString(a0));
+            throw new RuntimeException("Can't disassemble " + MVMU.userStr(a0));
         }
     }
 

@@ -14,7 +14,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.IRIO;
 import r48.minivm.MVMScope;
-import r48.minivm.fn.MVMFn;
+import r48.minivm.MVMU;
 
 /**
  * MiniVM path hash stuff
@@ -41,6 +41,6 @@ public final class MVMCPathHashDel extends MVMCExpr {
 
     @Override
     public Object disasm() {
-        return Arrays.asList(sym("pathHashDel"), delBase.disasm(), MVMFn.asUserReadableString(hashVal));
+        return Arrays.asList(sym("pathHashDel"), delBase.disasm(), MVMU.userStr(hashVal));
     }
 }

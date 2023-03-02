@@ -14,6 +14,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import static gabien.datum.DatumTreeUtils.*;
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.ISupplier;
+import r48.minivm.MVMU;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMScope;
 import r48.minivm.compiler.MVMCompileFrame;
@@ -54,7 +55,7 @@ public class MVMBasicsLibrary {
         for (int i = 0; i < argsUC.length; i++) {
             Object arg = argsUC[i];
             if (!(arg instanceof DatumSymbol))
-                throw new RuntimeException("arg " + MVMFn.asUserReadableString(arg) + " expected to be sym");
+                throw new RuntimeException("arg " + MVMU.userStr(arg) + " expected to be sym");
             DatumSymbol aSym = (DatumSymbol) arg;
             // actual arg logic
             roots[i] = lambdaSc.newLocal(aSym);
@@ -95,7 +96,7 @@ public class MVMBasicsLibrary {
 
         @Override
         public Object callIndirect(Object[] args) {
-            return Arrays.asList(args);
+            return MVMU.lArr(args);
         }
     }
 
@@ -141,7 +142,7 @@ public class MVMBasicsLibrary {
 
         private MVMCExpr compileIndividualDefine(MVMCompileScope cs, Object k, ISupplier<MVMCExpr> v) {
             if (!(k instanceof DatumSymbol))
-                throw new RuntimeException(MVMFn.asUserReadableString(k) + " expected to be sym");
+                throw new RuntimeException(MVMU.userStr(k) + " expected to be sym");
             DatumSymbol k2 = (DatumSymbol) k;
             try {
                 return cs.compileDefine(k2, v);
@@ -164,7 +165,7 @@ public class MVMBasicsLibrary {
                 throw new RuntimeException("Lambda args list needs to actually be an args list");
             @SuppressWarnings("unchecked")
             List<Object> args = (List<Object>) call[1];
-            return lambda(MVMFn.asUserReadableString(call), cs, args.toArray(), call, 2);
+            return lambda(MVMU.userStr(call), cs, args.toArray(), call, 2);
         }
     }
 

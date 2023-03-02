@@ -9,6 +9,7 @@ package r48.minivm.fn;
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
+import r48.minivm.MVMU;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.expr.MVMCExpr;
 
@@ -46,7 +47,7 @@ public class MVMIntegrationLibrary {
         @Override
         public Object callIndirect(Object[] args) {
             for (Object arg : args)
-                System.out.println("MVM Log: " + MVMFn.asUserReadableString(arg));
+                System.out.println("MVM Log: " + MVMU.userStr(arg));
             return null;
         }
     }

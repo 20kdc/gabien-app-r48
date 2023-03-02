@@ -17,5 +17,6 @@ public class MVMCoreLibraries {
         MVMBasicsLibrary.add(ctx);
         MVMExtensionsLibrary.add(ctx);
         MVMMathsLibrary.add(ctx);
+        MVMStringLibrary.add(ctx);
     }
 }

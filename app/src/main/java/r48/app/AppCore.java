@@ -29,6 +29,7 @@ import r48.io.data.IRIO;
 import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
 import r48.schema.specialized.IMagicalBinder;
+import r48.tr.pages.TrGlobal;
 
 /**
  * An attempt to move as much as possible out of static variables.
@@ -36,8 +37,11 @@ import r48.schema.specialized.IMagicalBinder;
  */
 public class AppCore {
     public final InterlaunchGlobals ilg;
+    // Sub-objects
     public final Config c;
     public final FontSizes f;
+    public final TrGlobal tr;
+    // Main
     public ObjectDB odb;
     public SDB sdb;
     public FormatSyntax fmt;
@@ -66,6 +70,7 @@ public class AppCore {
         this.ilg = ilg;
         c = ilg.c;
         f = c.f;
+        tr = ilg.tr;
         rootPath = rp;
         secondaryImagePath = sip;
         loadProgress = lp;

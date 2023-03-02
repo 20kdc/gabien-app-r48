@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import static gabien.datum.DatumTreeUtils.*;
 
 import r48.minivm.MVMScope;
-import r48.minivm.fn.MVMFn;
+import r48.minivm.MVMU;
 
 /**
  * MiniVM compiled expression.
@@ -67,7 +67,7 @@ public abstract class MVMCExpr {
         }
         @Override
         public Object disasm() {
-            return MVMFn.asUserReadableString(value);
+            return MVMU.userStr(value);
         }
     }
 

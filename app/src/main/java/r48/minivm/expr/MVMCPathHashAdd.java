@@ -14,6 +14,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 import r48.io.data.IRIO;
 import r48.minivm.MVMScope;
+import r48.minivm.MVMU;
 import r48.minivm.fn.MVMFn;
 
 /**
@@ -42,6 +43,6 @@ public final class MVMCPathHashAdd extends MVMCExpr {
 
     @Override
     public Object disasm() {
-        return Arrays.asList(sym("pathHashAdd"), addBase.disasm(), MVMFn.asUserReadableString(hashVal));
+        return Arrays.asList(sym("pathHashAdd"), addBase.disasm(), MVMU.userStr(hashVal));
     }
 }

@@ -15,7 +15,7 @@ import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import r48.cfg.Config;
 import r48.minivm.MVMEnv;
-import r48.minivm.fn.MVMFn;
+import r48.minivm.MVMU;
 
 /**
  * REPL for accessing MiniVM.
@@ -51,7 +51,7 @@ public class UIReadEvaluatePrintLoop extends UIProxy {
                 write(sb.toString());
                 return;
             }
-            write("= " + MVMFn.asUserReadableString(res));
+            write("= " + MVMU.userStr(res));
         };
         view = new UIScrollLayout(true, c.f.generalScrollersize);
         write(title);
