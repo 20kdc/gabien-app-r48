@@ -41,6 +41,8 @@ public class AppMain {
         app.sdb = new SDB(app);
 
         app.sdb.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
+        app.vmCtx.include(gamepak + "init", true);
+        app.vmCtx.include(gamepak + "lang." + ilg.c.language, true);
 
         // initialize everything else that needs initializing, starting with ObjectDB
         IObjectBackend backend = IObjectBackend.Factory.create(app.odbBackend, app.rootPath, app.dataPath, app.dataExt);

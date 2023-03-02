@@ -17,7 +17,7 @@ import r48.minivm.expr.MVMCExpr;
  * MiniVM standard library.
  * Created 28th February 2023.
  */
-public class MVMGlobalLibrary {
+public class MVMR48GlobalLibraries {
     public static void add(MVMEnv ctx, InterlaunchGlobals ilg) {
         MVMCoreLibraries.add(ctx);
         MVMIntegrationLibrary.add(ctx);

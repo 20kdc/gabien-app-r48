@@ -24,7 +24,7 @@ import r48.app.InterlaunchGlobals;
 import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
 import r48.minivm.MVMEnvR48;
-import r48.minivm.fn.MVMGlobalLibrary;
+import r48.minivm.fn.MVMR48GlobalLibraries;
 
 /**
  * An attempt to move as much as possible out of static variables.
@@ -59,7 +59,8 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
         vmCtx = new MVMEnvR48((str) -> {
             loadProgress.accept(TXDB.get("Loading... ") + str);
         });
-        MVMGlobalLibrary.add(vmCtx, ilg);
+        MVMR48GlobalLibraries.add(vmCtx, ilg);
+        vmCtx.include("vm/global", false);
     }
 
     /**

@@ -11,7 +11,7 @@ import gabien.uslx.append.IConsumer;
 import r48.cfg.Config;
 import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnvR48;
-import r48.minivm.fn.MVMGlobalLibrary;
+import r48.minivm.fn.MVMR48GlobalLibraries;
 import r48.tr.ITranslator;
 import r48.tr.LanguageList;
 import r48.tr.NullTranslator;
@@ -37,19 +37,6 @@ public class InterlaunchGlobals {
     }
 
     /**
-     * Creates a VM environment.
-     */
-    public MVMEnvR48 createCurrentLanguageVM(IConsumer<String> loadProgress) {
-        MVMEnvR48 langVM = new MVMEnvR48(loadProgress);
-        MVMGlobalLibrary.add(langVM, this);
-        langVM.include("vm/global", false);
-        // if the language author wants English fallback, they'll just (include "terms/English")
-        langVM.include("terms/" + c.language, true);
-        //langVM.include("Systerms/" +  + ".scm");
-        return langVM;
-    }
-
-    /**
      * Sets the language of ILG to the given one.
      * Will reset language to English if not found.
      * If the app is running you're expected to figure that out yourself.
@@ -60,7 +47,11 @@ public class InterlaunchGlobals {
             lang = "English";
         c.language = lang;
         // ---
-        langVM = createCurrentLanguageVM(loadProgress);
+        langVM = new MVMEnvR48(loadProgress);
+        MVMR48GlobalLibraries.add(langVM, this);
+        langVM.include("vm/global", false);
+        // if the language author wants English fallback, they'll just (include "terms/English")
+        langVM.include("terms/" + c.language, true);
         tr.fillFromVM(langVM);
         reportVMChanges.accept(langVM);
         if (lang.equals("English")) {
