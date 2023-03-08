@@ -16,7 +16,6 @@ import r48.App;
 import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
-import r48.dbs.SDB;
 import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
@@ -63,7 +62,7 @@ public class EventCommandArraySchemaElement extends ArraySchemaElement {
 
     @Override
     public boolean autoCorrectArray(IRIO array, SchemaPath path) {
-        if (!SDB.allowControlOfEventCommandIndent)
+        if (!app.sdb.allowControlOfEventCommandIndent)
             return false;
 
         boolean debugInfloop = false;

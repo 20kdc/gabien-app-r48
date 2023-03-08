@@ -8,6 +8,7 @@ package r48.minivm;
 
 import java.util.LinkedList;
 
+import gabien.datum.DatumSymbol;
 import gabien.datum.DatumWriter;
 
 /**
@@ -54,6 +55,18 @@ public class MVMU {
                 }
             }
         }
+    }
+
+    /**
+     * Allows either a symbol or a string as a string, or uses toString otherwise.
+     * This is strictly speaking only defined for symbols, strings, and numbers.
+     */
+    public static String coerceToString(Object object) {
+        if (object instanceof String)
+            return (String) object;
+        if (object instanceof DatumSymbol)
+            return ((DatumSymbol) object).id;
+        return object.toString();
     }
 
     /**

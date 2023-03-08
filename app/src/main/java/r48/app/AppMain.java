@@ -14,6 +14,7 @@ import r48.App;
 import r48.RubyIO;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
+import r48.dbs.SDBOldParser;
 import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -40,7 +41,7 @@ public class AppMain {
 
         app.sdb = new SDB(app);
 
-        app.sdb.readFile(gamepak + "Schema.txt"); // This does a lot of IO, for one line.
+        SDBOldParser.readFile(app, gamepak + "Schema.txt"); // This does a lot of IO, for one line.
         app.vmCtx.include(gamepak + "init", true);
         app.vmCtx.include(gamepak + "lang." + ilg.c.language, true);
 
@@ -50,6 +51,9 @@ public class AppMain {
             if (app.system != null)
                 app.system.saveHook(s);
         });
+
+        if (app.odb == null)
+            throw new RuntimeException("The Object Database wasn't initialized.");
 
         app.system = MapSystem.create(app, app.sysBackend);
 
