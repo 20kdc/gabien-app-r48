@@ -12,6 +12,7 @@ import gabien.uslx.append.*;
 import gabien.ui.UILabel;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
+import r48.tr.LanguageList;
 import r48.cfg.Config;
 
 import java.io.IOException;
@@ -48,11 +49,11 @@ public class HelpSystemController implements IConsumer<String> {
     public void loadPage(final int i) {
         hs.page.clear();
         String efl = c.language;
-        if (efl.equals("English"))
+        if (efl.equals(LanguageList.helpLang))
             efl = "";
         InputStream helpStream = GaBIEn.getResource(helpFile + efl + ".txt");
         if (helpStream == null) {
-            hs.page.add(new UIHelpSystem.HelpElement(c, '.', hs.ilg.tr("This helpfile is unavailable in your language; the English version has been displayed.")));
+            hs.page.add(new UIHelpSystem.HelpElement(c, '.', hs.ilg.t.g.helpUnavailable));
             helpStream = GaBIEn.getResource(helpFile + ".txt");
         }
         if (helpStream != null) {

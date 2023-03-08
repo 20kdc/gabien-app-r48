@@ -14,9 +14,10 @@ import r48.tr.TrPage;
  */
 public class TrGlobal extends TrPage {
     // gabien
-    public String wordLoad;
-    public String wordSave;
-    public String wordInvalidFileName;
+    public String wordLoad, wordSave, wordInvalidFileName;
     // launcher
-    public String bContinue;
+    public String bContinue, bConfigure, bSelectEngine, lFrameMS, lGamePath, lSecondaryPath, lChooseEngine;
+    public String bConfig, bQuit;
+    // help
+    public String helpUnavailable;
 }

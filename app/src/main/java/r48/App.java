@@ -54,8 +54,8 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public App(InterlaunchGlobals ilg, String rp, String sip, IConsumer<String> loadProgress) {
-        super(ilg, rp, sip, loadProgress);
+    public App(InterlaunchGlobals ilg, String gp, String rp, String sip, IConsumer<String> loadProgress) {
+        super(ilg, gp, rp, sip, loadProgress);
         vmCtx = new MVMEnvR48((str) -> {
             loadProgress.accept(TXDB.get("Loading... ") + str);
         });

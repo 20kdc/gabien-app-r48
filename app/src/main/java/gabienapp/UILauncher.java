@@ -25,6 +25,7 @@ import gabien.ui.UITabBar.TabIcon;
 import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.IFunction;
 import gabienapp.IGPMenuPanel.LauncherState;
+import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
@@ -43,14 +44,14 @@ public class UILauncher extends UIProxy {
     private boolean gamepaksRequestClose = false;
     public UILauncher(final LSMain ls) {
         final Launcher lun = ls.lun;
-        final TrGlobal tr = lun.ilg.tr;
+        final TrGlobal tr = lun.ilg.t.g;
         Config c = lun.c;
         final UITabPane tabPane = new UITabPane(c.f.tabTextHeight, false, false);
 
         final UIScrollLayout configure = new UIScrollLayout(true, c.f.generalScrollersize) {
             @Override
             public String toString() {
-                return ls.tr("Configure");
+                return tr.bConfigure;
             }
         };
         tabPane.addTab(new Tab(configure, new TabIcon[0]));
@@ -58,7 +59,7 @@ public class UILauncher extends UIProxy {
         final UIScrollLayout gamepaks = new UIScrollLayout(true, c.f.generalScrollersize) {
             @Override
             public String toString() {
-                return ls.tr("Select Engine");
+                return tr.bSelectEngine;
             }
         };
         tabPane.addTab(new Tab(gamepaks, new TabIcon[0]));
@@ -85,9 +86,9 @@ public class UILauncher extends UIProxy {
 
         configure.panelsAdd(figureOutTopBar(lun));
 
-        configure.panelsAdd(new UISplitterLayout(new UILabel(ls.tr("MS per frame:"), c.f.launcherTextHeight), msAdjust, false, 3, 5));
+        configure.panelsAdd(new UISplitterLayout(new UILabel(tr.lFrameMS, c.f.launcherTextHeight), msAdjust, false, 3, 5));
 
-        configure.panelsAdd(new UILabel(ls.tr("Path To Game (if you aren't running R48 in the game folder):"), c.f.launcherTextHeight));
+        configure.panelsAdd(new UILabel(tr.lGamePath, c.f.launcherTextHeight));
 
         final UIGamePathList rootBox = new UIGamePathList(c, c.rootPathBackup) {
             @Override
@@ -98,7 +99,7 @@ public class UILauncher extends UIProxy {
         };
         configure.panelsAdd(rootBox);
 
-        configure.panelsAdd(new UILabel(ls.tr("Secondary Image Load Location:"), c.f.launcherTextHeight));
+        configure.panelsAdd(new UILabel(tr.lSecondaryPath, c.f.launcherTextHeight));
 
         final UIGamePathList sillBox = new UIGamePathList(c, c.secondaryImageLoadLocationBackup) {
             @Override
@@ -109,7 +110,7 @@ public class UILauncher extends UIProxy {
         };
         configure.panelsAdd(sillBox);
 
-        basePanels.add(new UILabel(ls.tr("Choose Target Engine:"), c.f.launcherTextHeight));
+        basePanels.add(new UILabel(tr.lChooseEngine, c.f.launcherTextHeight));
 
         final IConsumer<IGPMenuPanel> menuConstructor = new IConsumer<IGPMenuPanel>() {
             @Override
@@ -155,20 +156,22 @@ public class UILauncher extends UIProxy {
 
     private UIElement figureOutTopBar(final Launcher lun) {
         final Config c = lun.c;
+        final TrGlobal tr = lun.ilg.t.g;
         final WindowCreatingUIElementConsumer uiTicker = lun.uiTicker;
-        UIElement whatever = new UITextButton(lun.ilg.tr("Quit R48"), c.f.launcherTextHeight, new Runnable() {
+        UIElement whatever = new UITextButton(tr.bQuit, c.f.launcherTextHeight, new Runnable() {
             @Override
             public void run() {
                 GaBIEn.ensureQuit();
             }
         });
         if (!GaBIEn.singleWindowApp()) { // SWA means we can't create windows
-            whatever = new UISplitterLayout(whatever, new UITextButton(lun.ilg.tr("Configuration"), c.f.launcherTextHeight, new Runnable() {
+            whatever = new UISplitterLayout(whatever, new UITextButton(tr.bConfig, c.f.launcherTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     uiTicker.accept(new UIFontSizeConfigurator(c, () -> {
                         c.applyUIGlobals();
                     }));
+                    lun.currentState = new LSInApp(lun);
                     gamepaksRequestClose = true;
                 }
             }), false, 1, 2);
@@ -185,7 +188,7 @@ public class UILauncher extends UIProxy {
                 // This associates a lag with switching language, when it's actually due to Java being slow at loading a font.
                 // (I'm slightly glad I'm not the only one this happens for, but unhappy that it's an issue.)
                 // Unfortunately, a warning message cannot be shown to the user, as the warning message would itself trigger lag-for-font-load.
-                c.language = LanguageList.getNextLanguage(c.language);
+                c.language = LanguageList.getNextLanguage(c.language).id;
                 lun.ilg.updateLanguage((str) -> {
                     // one can imagine the splash screen being used here, but not for now
                 });

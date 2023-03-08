@@ -6,8 +6,20 @@
 ; English text
 
 (define-group TrGlobal
-	bContinue "Continue"
 	wordLoad "Load"
 	wordSave "Save"
 	wordInvalidFileName "Invalid or missing file name."
+
+	bContinue "Continue"
+	bConfigure "Configure"
+	bSelectEngine "Select Engine"
+	bConfig "Configuration"
+	bQuit "Quit R48"
+
+	lFrameMS "MS per frame:"
+	lGamePath "Path To Game (if you aren't running R48 in the game folder):"
+	lSecondaryPath "Secondary Image Load Location:"
+	lChooseEngine "Choose Target Engine:"
+
+	helpUnavailable "This helpfile is unavailable in your language; the English version has been displayed."
 )

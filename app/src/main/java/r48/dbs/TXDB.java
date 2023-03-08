@@ -8,9 +8,7 @@
 package r48.dbs;
 
 import r48.tr.ITranslator;
-import r48.tr.LanguageList;
 import r48.tr.NullTranslator;
-import r48.tr.Translator;
 
 /**
  * Text Database. This is NOT a per-system database, and is static for a reason. This covers R48 Javaside strings.
@@ -20,10 +18,9 @@ import r48.tr.Translator;
  */
 public class TXDB {
     private static ITranslator currentTranslator = new NullTranslator();
-    private static String currentLanguage = "English";
 
-    public static void init() {
-        currentLanguage = "English";
+    public static void inject(ITranslator dynTr) {
+        currentTranslator = dynTr;
     }
 
     // NOTE: Translation items of the form get("Blahblah") (note: comments are scanned too) cannot include backslash escapes.
@@ -46,41 +43,6 @@ public class TXDB {
 
     public static String stripContext(String s) {
         return s.substring(s.indexOf('/') + 1);
-    }
-
-    public static void setLanguage(String s) {
-        if (LanguageList.hasLanguage(s)) {
-            currentLanguage = s;
-        } else {
-            currentLanguage = "English";
-        }
-        setLanguage();
-    }
-    public static void setLanguage() {
-        if (currentLanguage.equals("English")) {
-            currentTranslator = new NullTranslator();
-        } else {
-            currentTranslator = new Translator(currentLanguage);
-        }
-        currentTranslator.read("Systerms/" + currentLanguage + ".txt", "r48/");
-        currentTranslator.read("Systerms/L-" + currentLanguage + ".txt", "launcher/");
-    }
-
-    public static void loadGamepakLanguage(String gp) {
-        // think: R2k/LangTest.txt
-        setLanguage();
-        try {
-            currentTranslator.read(gp + "Lang" + currentLanguage + ".txt", "SDB@");
-        } catch (Exception e) {
-        }
-        try {
-            currentTranslator.read(gp + "Cmtx" + currentLanguage + ".txt", "CMDB@");
-        } catch (Exception e) {
-        }
-    }
-
-    public static String getLanguage() {
-        return currentLanguage;
     }
 
     public static void performDump(String fnPrefix, String ctxPrefix) {

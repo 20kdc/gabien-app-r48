@@ -16,7 +16,7 @@ import r48.tr.ITranslator;
 import r48.tr.LanguageList;
 import r48.tr.NullTranslator;
 import r48.tr.Translator;
-import r48.tr.pages.TrGlobal;
+import r48.tr.pages.TrRoot;
 
 /**
  * Globals shared between launcher and app.
@@ -25,7 +25,7 @@ import r48.tr.pages.TrGlobal;
  */
 public class InterlaunchGlobals {
     public final Config c;
-    public final TrGlobal tr = new TrGlobal();
+    public final TrRoot t = new TrRoot();
     private ITranslator translator = new NullTranslator();
     private MVMEnvR48 langVM;
     private IConsumer<MVMEnv> reportVMChanges;
@@ -38,32 +38,32 @@ public class InterlaunchGlobals {
 
     /**
      * Sets the language of ILG to the given one.
-     * Will reset language to English if not found.
+     * Will reset language if not found.
      * If the app is running you're expected to figure that out yourself.
      */
     public void updateLanguage(IConsumer<String> loadProgress) {
         String lang = c.language;
-        if (!LanguageList.hasLanguage(lang))
-            lang = "English";
+        if (LanguageList.getLangInfo(lang) == null)
+            lang = LanguageList.defaultLang;
         c.language = lang;
         // ---
         langVM = new MVMEnvR48(loadProgress);
         MVMR48GlobalLibraries.add(langVM, this);
         langVM.include("vm/global", false);
-        // if the language author wants English fallback, they'll just (include "terms/English")
-        langVM.include("terms/" + c.language, true);
-        tr.fillFromVM(langVM);
+        // if the language author wants English fallback, they'll just (include "terms/eng/init")
+        langVM.include("terms/" + c.language + "/init", true);
+        t.fillFromVM(langVM);
         reportVMChanges.accept(langVM);
-        if (lang.equals("English")) {
+        if (lang.equals(LanguageList.hardcodedLang)) {
             translator = new NullTranslator();
         } else {
             translator = new Translator(lang);
         }
         translator.read("Systerms/" + lang + ".txt", "r48/");
         translator.read("Systerms/L-" + lang + ".txt", "launcher/");
-        GaBIEn.wordLoad = tr.wordLoad;
-        GaBIEn.wordSave = tr.wordSave;
-        GaBIEn.wordInvalidFileName = tr.wordInvalidFileName;
+        GaBIEn.wordLoad = t.g.wordLoad;
+        GaBIEn.wordSave = t.g.wordSave;
+        GaBIEn.wordInvalidFileName = t.g.wordInvalidFileName;
     }
 
     /**

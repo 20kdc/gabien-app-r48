@@ -1,10 +1,18 @@
-
+/*
  * gabien-app-r48 - Editing program for various formats
  * Written starting in 2016 by contributors (see CREDITS.txt)
  * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
  * A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
+ */
+package r48.tr.pages;
 
- The list of translations. "English" is the original language R48 was written for, so it doesn't have a file.
+import r48.tr.TrPage;
 
-l English
-l Test
+/**
+ * Central hub for translation pages.
+ * Elements should be single-letter.
+ * Created March 8th 2023.
+ */
+public class TrRoot extends TrPage {
+    public final TrGlobal g = new TrGlobal();
+}

@@ -29,19 +29,24 @@ import r48.io.data.IRIO;
 import r48.map.systems.IDynobjMapSystem;
 import r48.map.systems.MapSystem;
 import r48.schema.specialized.IMagicalBinder;
-import r48.tr.pages.TrGlobal;
+import r48.tr.ITranslator;
+import r48.tr.LanguageList;
+import r48.tr.NullTranslator;
+import r48.tr.Translator;
+import r48.tr.pages.TrRoot;
 
 /**
  * An attempt to move as much as possible out of static variables.
  * Pulled out of App, 27th February, 2023
  */
 public class AppCore {
-    public final InterlaunchGlobals ilg;
+    public final @NonNull InterlaunchGlobals ilg;
     // Sub-objects
-    public final Config c;
-    public final FontSizes f;
-    public final TrGlobal tr;
+    public final @NonNull Config c;
+    public final @NonNull FontSizes f;
+    public final @NonNull TrRoot t;
     // Main
+    public final @NonNull ITranslator d; // dynamic string translation
     public ObjectDB odb;
     public SDB sdb;
     public FormatSyntax fmt;
@@ -66,16 +71,37 @@ public class AppCore {
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public AppCore(InterlaunchGlobals ilg, @NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
+    public AppCore(@NonNull InterlaunchGlobals ilg, @NonNull String gp, @NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
         this.ilg = ilg;
         c = ilg.c;
         f = c.f;
-        tr = ilg.tr;
+        t = ilg.t;
         rootPath = rp;
         secondaryImagePath = sip;
         loadProgress = lp;
         fmt = new FormatSyntax(this);
         imageIOFormats = ImageIOFormat.initializeFormats(this);
+        d = createGPTranslatorForLang(c.language, gp);
+    }
+
+    private static ITranslator createGPTranslatorForLang(String lang, String gp) {
+        ITranslator currentTranslator;
+        if (lang.equals(LanguageList.hardcodedLang)) {
+            currentTranslator = new NullTranslator();
+        } else {
+            currentTranslator = new Translator(lang);
+        }
+        currentTranslator.read("Systerms/" + lang + ".txt", "r48/");
+        currentTranslator.read("Systerms/L-" + lang + ".txt", "launcher/");
+        try {
+            currentTranslator.read(gp + "Lang" + lang + ".txt", "SDB@");
+        } catch (Exception e) {
+        }
+        try {
+            currentTranslator.read(gp + "Cmtx" + lang + ".txt", "CMDB@");
+        } catch (Exception e) {
+        }
+        return currentTranslator;
     }
 
     // Attempts to ascertain all known objects

@@ -31,11 +31,8 @@ import java.util.*;
  */
 public class AppMain {
     public static App initializeCore(InterlaunchGlobals ilg, final String rp, final String sip, final String gamepak, final IConsumer<String> progress) {
-        TXDB.init();
-        TXDB.setLanguage(ilg.c.language);
-        TXDB.loadGamepakLanguage(gamepak);
-
-        final App app = new App(ilg, rp, sip, progress);
+        final App app = new App(ilg, gamepak, rp, sip, progress);
+        TXDB.inject(app.d);
 
         // initialize core resources
 

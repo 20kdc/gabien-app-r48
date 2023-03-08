@@ -8,10 +8,17 @@
 package r48.tr;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
+import java.util.List;
 
-import r48.dbs.DBLoader;
-import r48.dbs.IDatabase;
+import org.eclipse.jdt.annotation.Nullable;
+
+import gabien.GaBIEn;
+import gabien.datum.DatumDecodingVisitor;
+import gabien.datum.DatumKVDVisitor;
+import gabien.datum.DatumReaderTokenSource;
+import gabien.datum.DatumVisitor;
 
 /**
  * Intended to pull even more functionality out of TXDB.
@@ -19,40 +26,86 @@ import r48.dbs.IDatabase;
  * Created 27th February 2023.
  */
 public class LanguageList {
-    private static final String[] languages = createLanguageList();
+    /**
+     * Default language ID. This is the fallback if the current language is not defined.
+     */
+    public static final String defaultLang = "eng";
+    /**
+     * Default language for legacy gettext-style translation APIs.
+     */
+    public static final String hardcodedLang = "eng";
+    /**
+     * Language the default/fallback help text is considered to be written in.
+     */
+    public static final String helpLang = "eng";
 
-    private static String[] createLanguageList() {
-        final LinkedList<String> languageLL = new LinkedList<String>();
-        DBLoader.readFile(null, "Translations.txt", new IDatabase() {
-            @Override
-            public void newObj(int objId, String objName) throws IOException {
+    private static final LangInfo[] languages = createLanguageList();
 
-            }
-
-            @Override
-            public void execCmd(char c, String[] args) throws IOException {
-                if (c == 'l')
-                    languageLL.add(args[0]);
-            }
-        });
-        return languageLL.toArray(new String[0]);
+    private static void addFn(LinkedList<LangInfo> tgt, String fn) {
+        try (InputStreamReader isr = GaBIEn.getTextResource(fn)) {
+            if (isr == null)
+                return;
+            new DatumReaderTokenSource(isr).visit(new DatumKVDVisitor() {
+                @Override
+                public DatumVisitor handle(String key) {
+                    // sure!
+                    return new DatumDecodingVisitor() {
+                        
+                        @Override
+                        public void visitEnd() {
+                        }
+                        
+                        @Override
+                        public void visitTree(Object obj) {
+                            if (obj instanceof List) {
+                                @SuppressWarnings("unchecked")
+                                List<Object> lo = (List<Object>) obj;
+                                if (lo.size() != 2)
+                                    throw new RuntimeException("LangInfo struct needs 2 strings, check upstream terms/index.txt");
+                                String sa = (String) lo.get(0);
+                                String sb = (String) lo.get(1);
+                                tgt.add(new LangInfo(key, sa, sb));
+                            }
+                        }
+                    };
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static String getNextLanguage(String language) {
+    private static LangInfo[] createLanguageList() {
+        final LinkedList<LangInfo> languageLL = new LinkedList<LangInfo>();
+        addFn(languageLL, "terms/index.txt");
+        addFn(languageLL, "terms/index.aux.scm");
+        return languageLL.toArray(new LangInfo[0]);
+    }
+
+    public static LangInfo getNextLanguage(String language) {
         boolean nextIsNext = false;
         for (int i = 0; i < languages.length; i++) {
             if (nextIsNext)
                 return languages[i];
-            if (languages[i].equals(language))
+            if (languages[i].id.equals(language))
                 nextIsNext = true;
         }
         return languages[0];
     }
 
-    public static boolean hasLanguage(String language) {
+    public static @Nullable LangInfo getLangInfo(String language) {
         for (int i = 0; i < languages.length; i++)
-            if (languages[i].equals(language))
-                return true;
-        return false;
+            if (languages[i].id.equals(language))
+                return languages[i];
+        return null;
+    }
+
+    public static final class LangInfo {
+        public final String id, globalName, localName;
+        public LangInfo(String i, String gn, String ln) {
+            id = i;
+            globalName = gn;
+            localName = ln;
+        }
     }
 }

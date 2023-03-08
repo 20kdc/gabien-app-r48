@@ -14,13 +14,16 @@ import r48.io.JsonStringIO;
 import java.io.*;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Handles the basic database syntax.
  * Created on 12/30/16.
  */
 public class DBLoader {
 
-    public static void readFile(AppCore app, String s, IDatabase db) {
+    public static void readFile(@Nullable AppCore app, @NonNull String s, @NonNull IDatabase db) {
         System.out.println(">>" + s + " as " + db);
         if (app != null)
             app.loadProgress.accept(TXDB.get("Loading schema...") + s);

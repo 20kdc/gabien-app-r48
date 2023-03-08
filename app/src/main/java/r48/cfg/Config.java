@@ -14,6 +14,7 @@ import gabien.FontManager;
 import gabien.GaBIEn;
 import gabien.ui.UIBorderedElement;
 import r48.cfg.FontSizes.FontSizeField;
+import r48.tr.LanguageList;
 
 /**
  * Here goes nothing...
@@ -30,7 +31,7 @@ public class Config {
     // This is the root path which is *defaulted to*.
     public final LinkedList<String> rootPathBackup = new LinkedList<String>();
 
-    // TXDB global thing, requires special handling, just roll with it
+    // Requires special handling when changed, can only be changed from launcher as it reboots part of ILG
     public String language;
 
     // UI globals, see applyUIGlobals
@@ -59,7 +60,7 @@ public class Config {
         secondaryImageLoadLocationBackup.clear();
         rootPathBackup.clear();
 
-        language = "English";
+        language = LanguageList.defaultLang;
 
         // If single-window, assume we're on Android,
         //  so the user probably wants to be able to use EasyRPG Player
