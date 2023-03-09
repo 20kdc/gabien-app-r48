@@ -72,7 +72,7 @@ public class Launcher {
             double dTTarg = (globalMS / 1000d) - compensationDT;
             double dT = GaBIEn.endFrame(dTTarg);
             compensationDT = Math.min(dTTarg, dT - dTTarg);
-            currentState.tick(compensationDT);
+            currentState.tick(dT);
         }
         GaBIEn.ensureQuit();
     }

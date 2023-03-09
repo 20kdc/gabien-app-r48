@@ -24,6 +24,11 @@
 	helpUnavailable "This helpfile is unavailable in your language; the English version has been displayed."
 
 	loadingProgress (fl1 "Loading... " a0)
+	loadingDCO "Initializing dictionaries & creating objects..."
+	msgNonEmergencyBackup "R48 Non-Emergency Backup File. This file can be used in place of r48.error.YOUR_SAVED_DATA.r48 in case of power failure or corrupting error. Assuming you actually save often it won't get too big - otherwise you need the reliability."
+	dlgNoSysDump "The system dump was unloadable. It should be: r48.error.YOUR_SAVED_DATA.r48"
+	dlgReloadPFD "Power failure dump loaded."
+	dlgReloadED "Error dump loaded."
 )
 
 (define-group TrAppUI
@@ -34,8 +39,11 @@
 	infoTitle "Information"
 	errorTitle "Error"
 	done "Done!"
-	confirmAccept "Accept"
-	confirmCancel "Cancel"
+	(confirm_
+		title "Please confirm..."
+		accept "Accept"
+		cancel "Cancel"
+	)
 	contextError (fl2 a0 "\n" a1)
 	helpTitle "Help Window"
 	helpIndex "Index"
@@ -44,6 +52,28 @@
 	notRelease (..
 		"Not an actual release - you have likely compiled this yourself.\n"
 		"The file 'assets/version.txt' needs to exist for text to appear here."
+	)
+	(odb_
+		disposed " [disposed]"
+		created " [created]"
+		modified " [modified]"
+		lost " [modifications lost, should never occur!]"
+		listeners (fl1 " [" a0 "ML]")
+	)
+	(test_
+		binding "Binding"
+		prOk "PRINT.txt written!"
+		prFail "Could not print."
+		PTS "PTS"
+		PTF "PTF"
+		back "Back..."
+	)
+	(np_
+		synthOk "The synthesis was completed successfully."
+		synth2kQ "Would you like a basic template, and if so, compatible with RPG Maker 2000 or 2003? All assets used for this are part of R48, and thus public-domain."
+		r2k0 "2000 Template"
+		r2k3 "2003 Template"
+		nothing "Do Nothing"
 	)
 )
 

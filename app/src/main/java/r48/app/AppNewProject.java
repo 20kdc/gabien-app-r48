@@ -12,7 +12,6 @@ import java.io.OutputStream;
 
 import gabien.GaBIEn;
 import r48.App;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
 import r48.schema.OpaqueSchemaElement;
@@ -111,13 +110,13 @@ public class AppNewProject extends App.Svc {
                 // Load map 1, save everything
                 app.ui.mapContext.loadMap("Map.1");
                 app.odb.ensureAllSaved();
-                app.ui.launchDialog(TXDB.get("The synthesis was completed successfully."));
+                app.ui.launchDialog(T.u.np_synthOk);
             }
         };
-        app.ui.wm.createWindowSH(new UIChoicesMenu(app, TXDB.get("Would you like a basic template, and if so, compatible with RPG Maker 2000 or 2003? All assets used for this are part of R48, and thus public-domain."), new String[] {
-                TXDB.get("2000 Template"),
-                TXDB.get("2003 Template"),
-                TXDB.get("Do Nothing")
+        app.ui.wm.createWindowSH(new UIChoicesMenu(app, T.u.np_synth2kQ, new String[] {
+                T.u.np_r2k0,
+                T.u.np_r2k3,
+                T.u.np_nothing
         }, new Runnable[] {
                 deploy2k,
                 new Runnable() {

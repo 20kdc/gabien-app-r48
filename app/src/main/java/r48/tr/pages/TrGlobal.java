@@ -22,4 +22,7 @@ public class TrGlobal extends TrPage {
     public String helpUnavailable;
     // app
     public FF1 loadingProgress;
+    public String loadingDCO;
+    public String msgNonEmergencyBackup;
+    public String dlgReloadPFD, dlgReloadED, dlgNoSysDump;
 }

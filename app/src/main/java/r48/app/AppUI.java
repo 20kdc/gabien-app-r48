@@ -23,7 +23,6 @@ import gabien.ui.WindowCreatingUIElementConsumer;
 import gabien.uslx.append.IConsumer;
 import r48.App;
 import r48.IMapContext;
-import r48.dbs.TXDB;
 import r48.imagefx.ImageFXCache;
 import r48.io.IObjectBackend;
 import r48.io.PathUtils;
@@ -222,12 +221,12 @@ public class AppUI extends App.Svc {
         return new Runnable() {
             @Override
             public void run() {
-                UITextButton accept = new UITextButton(T.u.confirmAccept, app.f.dialogWindowTextHeight, null).centred();
-                UITextButton cancel = new UITextButton(T.u.confirmCancel, app.f.dialogWindowTextHeight, null).centred();
+                UITextButton accept = new UITextButton(T.u.confirm_accept, app.f.dialogWindowTextHeight, null).centred();
+                UITextButton cancel = new UITextButton(T.u.confirm_cancel, app.f.dialogWindowTextHeight, null).centred();
                 UIElement uie = new UISplitterLayout(new UILabel(s, app.f.dialogWindowTextHeight),
                         new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
                 final UIMTBase mtb = UIMTBase.wrap(null, uie);
-                mtb.titleOverride = TXDB.get("Please confirm...");
+                mtb.titleOverride = T.u.confirm_title;
                 accept.onClick = new Runnable() {
                     @Override
                     public void run() {

@@ -58,8 +58,8 @@ public class AppMain {
         //  before starting the UI, which can cause external consistency checks
         //  (...and potentially cause havoc in the process)
 
+        progress.accept(app.t.g.loadingDCO);
         app.sdb.startupSanitizeDictionaries(); // in case an object using dictionaries has to be created to use dictionaries
-        progress.accept(TXDB.get("Initializing dictionaries & creating objects..."));
         app.sdb.updateDictionaries(null);
         app.sdb.confirmAllExpectationsMet();
         return app;
@@ -84,7 +84,7 @@ public class AppMain {
         }
         if (!emergency) {
             RubyIO n2 = new RubyIO();
-            n2.setString(TXDB.get("R48 Non-Emergency Backup File. This file can be used in place of r48.error.YOUR_SAVED_DATA.r48 in case of power failure or corrupting error. Assuming you actually save often it won't get too big - otherwise you need the reliability."), true);
+            n2.setString(app.t.g.msgNonEmergencyBackup, true);
             RubyIO n3 = AdHocSaveLoad.load("r48.revert.YOUR_SAVED_DATA");
             if (n3 != null) {
                 // Unlink for disk space & memory usage reasons.
@@ -105,7 +105,7 @@ public class AppMain {
     public static void reloadSystemDump(App app) {
         RubyIO sysDump = AdHocSaveLoad.load("r48.error.YOUR_SAVED_DATA");
         if (sysDump == null) {
-            app.ui.launchDialog(TXDB.get("The system dump was unloadable. It should be: r48.error.YOUR_SAVED_DATA.r48"));
+            app.ui.launchDialog(app.t.g.dlgNoSysDump);
             return;
         }
         RubyIO possibleActualDump = sysDump.getInstVarBySymbol("@current");
@@ -120,9 +120,9 @@ public class AppMain {
             }
         }
         if (possibleActualDump != null) {
-            app.ui.launchDialog(TXDB.get("Power failure dump loaded."));
+            app.ui.launchDialog(app.t.g.dlgReloadPFD);
         } else {
-            app.ui.launchDialog(TXDB.get("Error dump loaded."));
+            app.ui.launchDialog(app.t.g.dlgReloadED);
         }
     }
 }

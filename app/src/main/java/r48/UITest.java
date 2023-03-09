@@ -10,7 +10,6 @@ package r48;
 import gabien.GaBIEn;
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import r48.dbs.TXDB;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
 import r48.schema.specialized.IMagicalBinder;
@@ -46,7 +45,7 @@ public class UITest extends App.Prx {
     // UITest -> outerPanel -> Back/PRINT
     //                      -> masterPanel
     public UIScrollLayout masterPanel = new UIScrollLayout(true, app.f.generalScrollersize);
-    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(TXDB.get("PTS"), new UIAppendButton(TXDB.get("PTF"), new UITextButton(TXDB.get("Back..."), app.f.inspectorBackTextHeight, new Runnable() {
+    public UINSVertLayout outerPanel = new UINSVertLayout(new UIAppendButton(T.u.test_PTS, new UIAppendButton(T.u.test_PTF, new UITextButton(T.u.test_back, app.f.inspectorBackTextHeight, new Runnable() {
         @Override
         public void run() {
             if (back.size() > 0)
@@ -60,9 +59,9 @@ public class UITest extends App.Prx {
                 PrintStream ps = new PrintStream(fos);
                 ps.print(currentObj.toStringLong(""));
                 fos.close();
-                app.ui.launchDialog(TXDB.get("PRINT.txt written!"));
+                app.ui.launchDialog(T.u.test_prOk);
             } catch (Exception e) {
-                app.ui.launchDialog(TXDB.get("Could not print.") + "\n" + e);
+                app.ui.launchDialog(T.u.test_prFail, e);
             }
         }
     }, app.f.inspectorBackTextHeight), new Runnable() {
@@ -122,7 +121,7 @@ public class UITest extends App.Prx {
             });
             final IMagicalBinder b = MagicalBinders.getBinderFor(app, objectList[j]);
             if (b != null)
-                button = new UIAppendButton(TXDB.get("Binding"), button, new Runnable() {
+                button = new UIAppendButton(T.u.test_binding, button, new Runnable() {
                     @Override
                     public void run() {
                         back.addLast(obj);
