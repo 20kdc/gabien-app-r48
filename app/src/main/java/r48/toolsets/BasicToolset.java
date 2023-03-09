@@ -351,8 +351,8 @@ public class BasicToolset extends App.Svc implements IToolset {
                 new Runnable() {
                     @Override
                     public void run() {
-                        TXDB.performDump("Lang", "SDB@");
-                        TXDB.performDump("Cmtx", "CMDB@");
+                        app.performTranslatorDump("Lang", "SDB@");
+                        app.performTranslatorDump("Cmtx", "CMDB@");
                         app.ui.launchDialog(TXDB.get("Wrote Lang and Cmtx files to R48 startup directory (to be put in schema dir.)"));
                     }
                 },
@@ -363,9 +363,6 @@ public class BasicToolset extends App.Svc implements IToolset {
                             @Override
                             public void accept(String s) {
                                 // Don't translate this, don't lax the restrictions.
-                                //  (For a natively English user, the case-sensitivity and punctuation will be enough to stop them.
-                                //   And just to clarify, I *am* essentially calling most native speakers of English these days,
-                                //   myself included, the kind of people who would consider such a thing to be daunting.)
                                 // If they aren't willing to put in the effort to type it, whatever that effort may be,
                                 //  then they won't be careful enough using this - and will probably ruin even more of their data.
                                 if (s.equals("I understand."))
@@ -373,7 +370,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                             }
                         });
                         app.ui.launchDialog(TXDB.get("If the backup file is invalid, wasn't created, or is otherwise harmed, this can destroy more data than it saves.") +
-                                "\n" + TXDB.get("Check *everything* before a final save.") + "\n" + TXDB.get("Type 'I understand.' at the prompt behind this window if you WILL do this."));
+                                "\n" + TXDB.get("Check *everything* before a final save.") + "\n" + TXDB.get("Type 'I understand.' at the prompt behind this window if you HAVE done this."));
                     }
                 },
                 new Runnable() {

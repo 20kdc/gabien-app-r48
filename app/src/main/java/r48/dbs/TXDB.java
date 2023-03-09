@@ -45,7 +45,4 @@ public class TXDB {
         return s.substring(s.indexOf('/') + 1);
     }
 
-    public static void performDump(String fnPrefix, String ctxPrefix) {
-        currentTranslator.dump(fnPrefix, ctxPrefix);
-    }
 }

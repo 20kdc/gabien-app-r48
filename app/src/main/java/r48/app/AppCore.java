@@ -84,6 +84,33 @@ public class AppCore {
         d = createGPTranslatorForLang(c.language, gp);
     }
 
+    /**
+     * Legacy static translation
+     */
+    public String tr(String text) {
+        return d.tr("r48", text);
+    }
+
+    /**
+     * Legacy dynamic translation
+     */
+    public String tr(String context, String text) {
+        return d.tr(context.replace('/', '-'), text);
+    }
+
+    /**
+     * Legacy dynamic translation
+     */
+    public String trExUnderscore(String context, String text) {
+        if (text.equals("_"))
+            return "_";
+        return tr(context, text);
+    }
+
+    public void performTranslatorDump(String fnPrefix, String ctxPrefix) {
+        d.dump(fnPrefix, ctxPrefix);
+    }
+
     private static ITranslator createGPTranslatorForLang(String lang, String gp) {
         ITranslator currentTranslator;
         if (lang.equals(LanguageList.hardcodedLang)) {
