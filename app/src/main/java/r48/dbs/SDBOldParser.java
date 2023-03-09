@@ -88,7 +88,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
         outerContext = fPfx + "/commandBuffer";
         workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
         if (objId != -1) {
-            commandBufferNames.put(Integer.toString(objId), TXDB.get(outerContext, objName));
+            commandBufferNames.put(Integer.toString(objId), app.td(outerContext, objName));
             commandBufferSchemas.put(Integer.toString(objId), workingObj);
         } else {
             commandBufferSchemas.put("", workingObj);
@@ -147,7 +147,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 // (later) However, context makes it obvious
                 if (text.equals("string=")) {
                     String esc = args[point++];
-                    return new StringSchemaElement(app, TXDB.get(outerContext, esc), '\"');
+                    return new StringSchemaElement(app, app.td(outerContext, esc), '\"');
                 }
                 // Before you go using these - They are based on *visual* length, and are not hard limits.
                 if (text.equals("stringLen")) {
@@ -157,7 +157,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (text.equals("stringLen=")) {
                     String esc = args[point++];
                     int l = Integer.parseInt(args[point++]);
-                    return new StringLenSchemaElement(app, TXDB.get(outerContext, esc), l);
+                    return new StringLenSchemaElement(app, app.td(outerContext, esc), l);
                 }
 
                 //
@@ -189,9 +189,9 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     PathSyntax path = getPathSyntax();
                     String txt = "";
                     if (!text.endsWith("N")) {
-                        txt = TXDB.get(outerContext, path.decompiled);
+                        txt = app.td(outerContext, path.decompiled);
                     } else {
-                        txt = TXDB.getExUnderscore(outerContext, args[point++]);
+                        txt = app.trExUnderscore(outerContext, args[point++]);
                         if (txt.equals("_"))
                             txt = null;
                     }
@@ -202,9 +202,9 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     PathSyntax path = getPathSyntax();
                     String txt = "";
                     if (!text.endsWith("N")) {
-                        txt = TXDB.get(outerContext, path.decompiled);
+                        txt = app.td(outerContext, path.decompiled);
                     } else {
-                        txt = TXDB.getExUnderscore(outerContext, args[point++]);
+                        txt = app.trExUnderscore(outerContext, args[point++]);
                         if (txt.equals("_"))
                             txt = null;
                     }
@@ -307,13 +307,13 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     int len = Integer.parseInt(args[point++]);
                     String cond = "{@[@Interp.lang-Common-arrayLen]|" + len + "|1|0}";
                     SchemaElement reinit = new StandardArraySchemaElement(app, new OpaqueSchemaElement(app), len, 0, 0, null);
-                    return new InitButtonSchemaElement(TXDB.get(outerContext, text2), cond, reinit, false, text.equals("lengthAdjustDef"));
+                    return new InitButtonSchemaElement(app.td(outerContext, text2), cond, reinit, false, text.equals("lengthAdjustDef"));
                 }
                 if (text.equals("initButton")) {
                     String text2 = args[point++];
                     String cond = args[point++];
                     SchemaElement reinit = get();
-                    return new InitButtonSchemaElement(TXDB.get(outerContext, text2), cond, reinit, true, false);
+                    return new InitButtonSchemaElement(app.td(outerContext, text2), cond, reinit, true, false);
                 }
                 /*
                  * Command buffers are assembled by putting entries into commandBufferNames (which is ValueSyntax, Text),
@@ -366,7 +366,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                             }
                         });
                     } else {
-                        return new SubwindowSchemaElement(get(), getFunctionToReturn(TXDB.get(outerContext, text2)));
+                        return new SubwindowSchemaElement(get(), getFunctionToReturn(app.td(outerContext, text2)));
                     }
                 }
 
@@ -400,14 +400,14 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (text.startsWith("]?")) {
                     // yay for... well, semi-consistency!
                     String a = text.substring(2);
-                    String b = TXDB.getExUnderscore(outerContext, args[point++]);
-                    String o = TXDB.get(outerContext, args[point++]);
+                    String b = app.trExUnderscore(outerContext, args[point++]);
+                    String o = app.td(outerContext, args[point++]);
                     return new ArrayElementSchemaElement(app, Integer.parseInt(a), b, get(), o, false);
                 }
                 if (text.startsWith("]")) {
                     // yay for consistency!
                     String a = text.substring(1);
-                    String b = TXDB.getExUnderscore(outerContext, args[point++]);
+                    String b = app.trExUnderscore(outerContext, args[point++]);
                     return new ArrayElementSchemaElement(app, Integer.parseInt(a), b, get(), null, false);
                 }
                 // --
@@ -559,7 +559,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     PathSyntax wV = getNullablePathSyntax();
                     PathSyntax hV = getNullablePathSyntax();
 
-                    IFunction<IRIO, String> iVT = getFunctionToReturn(iV == null ? T.s.bOpenTable : TXDB.get(outerContext, iV.decompiled));
+                    IFunction<IRIO, String> iVT = getFunctionToReturn(iV == null ? T.s.bOpenTable : app.td(outerContext, iV.decompiled));
 
                     int dc = Integer.parseInt(args[point++]);
                     int aW = Integer.parseInt(args[point++]);
@@ -607,7 +607,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     return sdb.helpers.makePicPointerPatchID(getSDBEntry("var_id"), se);
                 }
                 if (text.equals("internal_r2kPPPV")) {
-                    String txt = TXDB.get(outerContext, args[point++]);
+                    String txt = app.td(outerContext, args[point++]);
                     SchemaElement se = get();
                     return sdb.helpers.makePicPointerPatchVar(getSDBEntry("var_id"), txt, se);
                 }
@@ -628,7 +628,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(app, b), Integer.parseInt(a), c, d), getFunctionToReturn(T.s.selectTileGraphic));
                 }
                 if (text.equals("windowTitleAttachment")) {
-                    String txt = TXDB.get(outerContext, args[point++]);
+                    String txt = app.td(outerContext, args[point++]);
                     return new WindowTitleAttachmentSchemaElement(app, txt);
                 }
                 if (text.equals("soundPlayer")) {
@@ -672,7 +672,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
         } else if (c == '@') {
             PathSyntax t = compilePS("@" + PathSyntax.poundEscape(args[0]));
             // Note: the unescaping happens in the Path
-            workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, t.decompiled), handleChain(args, 1), false));
+            workingObj.aggregate.add(new PathSchemaElement(t, app.td(outerContext, t.decompiled), handleChain(args, 1), false));
         } else if (c == '}') {
             String intA0 = args[0];
             boolean opt = false;
@@ -684,7 +684,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             // Note: the unescaping happens in the Path
             // Automatically escape.
             PathSyntax t = compilePS(":{" + PathSyntax.poundEscape(intA0));
-            workingObj.aggregate.add(new PathSchemaElement(t, TXDB.get(outerContext, args[1]), handleChain(args, 2), opt));
+            workingObj.aggregate.add(new PathSchemaElement(t, app.td(outerContext, args[1]), handleChain(args, 2), opt));
         } else if (c == '+') {
             workingObj.aggregate.add(handleChain(args, 0));
         } else if (c == '>') {
@@ -700,7 +700,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (i == 1)
                     defVal = k;
                 String ctx = "SDB@" + args[0];
-                options.put(Integer.toString(k), TXDB.get(ctx, args[i + 1]));
+                options.put(Integer.toString(k), app.td(ctx, args[i + 1]));
             }
             // INT: is part of the format
             EnumSchemaElement e = new EnumSchemaElement(app, options, new RubyIO().setFX(defVal), EntryMode.INT, T.s.enum_int);
@@ -709,7 +709,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             // Symbols
             HashMap<String, String> options = new HashMap<String, String>();
             for (int i = 1; i < args.length; i++)
-                options.put(":" + args[i], TXDB.get(args[0], args[i]));
+                options.put(":" + args[i], app.td(args[0], args[i]));
 
             EnumSchemaElement ese = new EnumSchemaElement(app, options, ValueSyntax.decode(":" + args[1]), EntryMode.SYM, T.s.enum_sym);
             setSDBEntry(args[0], ese);
@@ -717,9 +717,9 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             HashMap<String, String> options = new HashMap<String, String>();
             for (int i = 2; i < args.length; i += 2) {
                 String ctx = "SDB@" + args[0];
-                options.put(args[i], TXDB.get(ctx, args[i + 1]));
+                options.put(args[i], app.td(ctx, args[i + 1]));
             }
-            EnumSchemaElement e = new EnumSchemaElement(app, options, ValueSyntax.decode(args[2]), EntryMode.INT, TXDB.get(args[0], args[1]));
+            EnumSchemaElement e = new EnumSchemaElement(app, options, ValueSyntax.decode(args[2]), EntryMode.INT, app.td(args[0], args[1]));
             setSDBEntry(args[0], e);
         } else if (c == 'M') {
             // Make a proxy (because we change the backing element all the time)
@@ -734,7 +734,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 return new EnumSchemaElement(app, finalMap.values(), mergeB.defaultVal, mergeB.entryMode, mergeB.buttonText);
             });
         } else if (c == ']') {
-            workingObj.aggregate.add(new ArrayElementSchemaElement(app, Integer.parseInt(args[0]), TXDB.get(outerContext, args[1]), handleChain(args, 2), null, false));
+            workingObj.aggregate.add(new ArrayElementSchemaElement(app, Integer.parseInt(args[0]), app.td(outerContext, args[1]), handleChain(args, 2), null, false));
         } else if (c == 'i') {
             readFile(app, args[0]);
         } else if (c == 'D') {
@@ -793,7 +793,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 } else if (args.length != 2) {
                     throw new RuntimeException("Cmd <Disambiguator> [<Name>]");
                 }
-                nam = TXDB.get(outerContext + "/" + val, nam);
+                nam = app.td(outerContext + "/" + val, nam);
                 commandBufferNames.put(val, nam);
                 commandBufferSchemas.put(val, workingObj);
             }
@@ -852,7 +852,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                         }
                     }
                 }
-                final String textF = args[0].equals("name") ? TXDB.get(fPfx + "/" + args[1], text) : text;
+                final String textF = args[0].equals("name") ? app.td(fPfx + "/" + args[1], text) : text;
 
                 final PathSyntax[] argumentsPS = new PathSyntax[arguments.size()];
                 int idx = 0;

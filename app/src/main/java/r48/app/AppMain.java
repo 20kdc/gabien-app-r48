@@ -15,7 +15,6 @@ import r48.RubyIO;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
 import r48.dbs.SDBOldParser;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.systems.MapSystem;
@@ -32,7 +31,6 @@ import java.util.*;
 public class AppMain {
     public static App initializeCore(InterlaunchGlobals ilg, final String rp, final String sip, final String gamepak, final IConsumer<String> progress) {
         final App app = new App(ilg, gamepak, rp, sip, progress);
-        TXDB.inject(app.d);
 
         // initialize core resources
 

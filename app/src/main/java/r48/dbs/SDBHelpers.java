@@ -98,7 +98,7 @@ class SDBHelpers extends App.Svc {
 
     public int createSpritesheet(String[] args, int point, String text2) {
         final String imgPfx = args[point];
-        spritesheetN.put(args[point], TXDB.get(args[point] + "sprites", text2));
+        spritesheetN.put(args[point], app.td(args[point] + "sprites", text2));
         if (args[point + 1].equals("r2kCharacter")) {
             spritesheets.put(args[point], new IFunction<String, ISpritesheetProvider>() {
                 @Override

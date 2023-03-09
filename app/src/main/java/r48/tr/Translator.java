@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import gabien.GaBIEn;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
-import r48.dbs.TXDB;
 
 /**
  * Class that contains an instance of a dynamic translation database.
@@ -109,8 +108,9 @@ public class Translator implements ITranslator {
             if (c == 'x')
                 target = impliedPrefix + mergeArgs(args);
             if (c == 'y') {
-                String key = TXDB.stripContext(target);
-                String ctx = target.substring(0, target.length() - (key.length() + 1));
+                int splitIdx = target.indexOf('/');
+                String key = target.substring(splitIdx + 1);
+                String ctx = target.substring(0, splitIdx);
                 put(ctx, key, mergeArgs(args));
             }
         }

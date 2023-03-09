@@ -51,7 +51,7 @@ public class CMDB extends App.Svc {
                 rc.category = categories.length - 1;
                 subContext = "CMDB@" + baseFile + "." + lenForm(objId);
                 // Names use NDB syntax, thus, separate context
-                rc.name = TXDB.get(subContext + "-", objName);
+                rc.name = app.td(subContext + "-", objName);
                 if (knownCommands.containsKey(objId))
                     throw new RuntimeException("Redefined " + objId);
                 knownCommands.put(objId, rc);
@@ -160,7 +160,7 @@ public class CMDB extends App.Svc {
                     final int[] subIds = new int[translatedNames.length];
                     for (int i = 0; i < translatedNames.length; i++) {
                         subIds[i] = Integer.parseInt(gbStateArgs[gbStatePosition++]);
-                        translatedNames[i] = TXDB.get(subContext, gbStateArgs[gbStatePosition++]);
+                        translatedNames[i] = app.td(subContext, gbStateArgs[gbStatePosition++]);
                     }
                     final int lastId = Integer.parseInt(gbStateArgs[gbStatePosition++]);
                     return new IGroupBehavior() {
@@ -355,7 +355,7 @@ public class CMDB extends App.Svc {
                 gbStatePosition = -1;
                 gbStateArgs = null;
                 if (c == 'p') {
-                    final String fv = TXDB.getExUnderscore(subContext, args[0]);
+                    final String fv = app.trExUnderscore(subContext, args[0]);
                     rc.paramName.add(new IFunction<IRIO, String>() {
                         @Override
                         public String apply(IRIO rubyIO) {
@@ -379,7 +379,7 @@ public class CMDB extends App.Svc {
                     // Pv-syntax:
                     // P arrayDI defaultName defaultType
                     // v specificVal name type
-                    final String defName = TXDB.getExUnderscore(subContext, args[1]);
+                    final String defName = app.trExUnderscore(subContext, args[1]);
                     final int arrayDI = Integer.parseInt(args[0]);
                     final SchemaElement defaultSE = aliasingAwareSG(args[2]);
                     rc.paramType.add(new IFunction<IRIO, SchemaElement>() {
@@ -420,12 +420,12 @@ public class CMDB extends App.Svc {
                     // v specificVal name type
                     final int idx = Integer.parseInt(args[0]);
                     currentPvH.put(idx, aliasingAwareSG(args[2]));
-                    currentPvH2.put(idx, TXDB.getExUnderscore(subContext, args[1]));
+                    currentPvH2.put(idx, app.trExUnderscore(subContext, args[1]));
                 } else if (c == 'd') {
                     String desc = "";
                     for (String s : args)
                         desc += " " + s;
-                    rc.description = TXDB.get(subContext + ".", desc.trim());
+                    rc.description = app.td(subContext + ".", desc.trim());
                 } else if (c == 'i') {
                     rc.indentPre = Integer.parseInt(args[0]);
                 } else if (c == 'I') {
@@ -472,7 +472,7 @@ public class CMDB extends App.Svc {
                         categories = new String[args.length - 1];
                         // No longer using EscapedStringSyntax, so sanity has been restored (yay!)
                         for (int i = 1; i < args.length; i++)
-                            categories[i - 1] = TXDB.get(subContext + ".categories", args[i]);
+                            categories[i - 1] = app.td(subContext + ".categories", args[i]);
                     }
                     if (args[0].equals("digitCount"))
                         digitCount = Integer.parseInt(args[1]);
