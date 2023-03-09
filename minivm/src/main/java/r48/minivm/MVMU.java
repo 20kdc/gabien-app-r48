@@ -7,6 +7,7 @@
 package r48.minivm;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import gabien.datum.DatumSymbol;
 import gabien.datum.DatumWriter;
@@ -38,6 +39,13 @@ public class MVMU {
         throw new RuntimeException(n + " not an integer");
     }
 
+    /**
+     * Ensure the object is a list.
+     */
+    @SuppressWarnings("unchecked")
+    public static List<Object> cList(Object o) {
+        return (List<Object>) o;
+    }
     /**
      * User-readable string at any cost, do not use for serialization!
      */

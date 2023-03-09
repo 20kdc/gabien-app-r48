@@ -12,6 +12,7 @@ import java.lang.reflect.Type;
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv.Slot;
 import r48.minivm.MVMEnvR48;
+import r48.minivm.fn.MVMFn;
 
 /**
  * Translation page base.
@@ -40,14 +41,71 @@ public class TrPage {
     private final Object calculateValueFor(MVMEnvR48 env, String cName, String name, Type type) {
         name = cName + "." + name;
         Slot s = env.getSlot(new DatumSymbol(name));
+        if (s == null)
+            return missingTerm(name, type);
+        Object v = s.v;
+        if (v == null)
+            return missingTerm(name, type);
         if (type == String.class) {
-            if (s != null)
-                if (s.v instanceof String)
-                    return s.v;
-            System.err.println("TrPage: Missing term " + name);
-            return "!!!" + name + "!!!";
+            if (v instanceof String)
+                return v;
+        } else if (type == FF1.class) {
+            if (v instanceof MVMFn) {
+                MVMFn f = (MVMFn) v;
+                return (FF1) (a) -> (String) f.clDirect(a);
+            }
+        } else if (type == FF2.class) {
+            if (v instanceof MVMFn) {
+                MVMFn f = (MVMFn) v;
+                return (FF2) (a, b) -> (String) f.clDirect(a, b);
+            }
+        } else if (type == FF3.class) {
+            if (v instanceof MVMFn) {
+                MVMFn f = (MVMFn) v;
+                return (FF3) (a, b, c) -> (String) f.clDirect(a, b, c);
+            }
+        } else if (type == FF4.class) {
+            if (v instanceof MVMFn) {
+                MVMFn f = (MVMFn) v;
+                return (FF4) (a, b, c, d) -> (String) f.clDirect(a, b, c, d);
+            }
         } else {
             throw new RuntimeException("TrPage: Unable to handle " + name + " type " + type);
         }
+        return missingTerm(name, type);
+    }
+
+    private final Object missingTerm(String name, Type type) {
+        System.err.println("TrPage: Missing term " + name);
+        String msg = "!!!" + name + "!!!";
+        if (type == String.class) {
+            return msg;
+        } else if (type == FF1.class) {
+            return (FF1) (a) -> msg;
+        } else if (type == FF2.class) {
+            return (FF2) (a, b) -> msg;
+        } else if (type == FF3.class) {
+            return (FF3) (a, b, c) -> msg;
+        } else if (type == FF4.class) {
+            return (FF4) (a, b, c, d) -> msg;
+        } else {
+            throw new RuntimeException("TrPage: Unable to handle " + name + " type " + type);
+        }
+    }
+
+    public interface FF1 {
+        String r(Object a0);
+    }
+
+    public interface FF2 {
+        String r(Object a0, Object a1);
+    }
+
+    public interface FF3 {
+        String r(Object a0, Object a1, Object a2);
+    }
+
+    public interface FF4 {
+        String r(Object a0, Object a1, Object a2, Object a3);
     }
 }

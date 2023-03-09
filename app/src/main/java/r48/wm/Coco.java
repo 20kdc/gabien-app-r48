@@ -11,14 +11,13 @@ import gabien.GaBIEn;
 import gabien.IDesktopPeripherals;
 import gabien.IGrInDriver;
 import r48.App;
-import r48.dbs.TXDB;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Manager for Konami code response.
+ * Manager for easter egg of unspecified origin response.
  * Created on 07/06/17.
  */
 public class Coco extends App.Svc {
@@ -84,7 +83,7 @@ public class Coco extends App.Svc {
                 app.ui.launchDialog(bb);
                 br.close();
             } else {
-                app.ui.launchDialog(TXDB.get("Not an actual release - you have likely compiled this yourself.") + "\n" + TXDB.get("The file 'assets/version.txt' needs to exist for text to appear here."));
+                app.ui.launchDialog(T.u.notRelease);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

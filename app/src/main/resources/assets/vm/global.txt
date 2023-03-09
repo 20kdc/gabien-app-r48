@@ -5,10 +5,21 @@
 
 ; MiniVM global additions
 
+; all Java classes we care about
+(define java.util.List (string->class "java.util.List"))
+
+; obvious operations
+
 (define (list . v) v)
 (help-set! list "(list V...) : Creates a list of values.")
 
-(define-syntax (define-group prefix . entries)
+(define (list? v) (instance? java.util.List v))
+(help-set! list? "(list? V) : Returns true if V is a list.")
+
+; other stuff
+
+; for sane namespacing
+(define-syntax (define-prefix prefix . entries)
 	(define result (list begin))
 	(define hasKey #f)
 	(define key #nil)
@@ -18,18 +29,72 @@
 				(append! result (list (list
 					define
 					(string->symbol
-						(string-append (symbol->string prefix) "." (symbol->string key))
+						(string-append (symbol->string prefix) (symbol->string key))
 					)
 					value
 				)))
 				(set! hasKey #f)
 			)
-			(begin
-				(set! key value)
-				(set! hasKey #t)
+			(if (list? value)
+				; the key is a list, so it's actually a sub-group
+				(append! result (list
+					(append
+						(list
+							define-prefix
+							(string->symbol
+								(string-append (symbol->string prefix) (symbol->string (list-ref value 0)))
+							)
+						)
+						(sublist value 1 (list-length value))
+					)
+				))
+				(begin
+					; otherwise, this is really a key
+					(set! key value)
+					(set! hasKey #t)
+				)
 			)
 		)
 	) entries)
 	result
 )
-(help-set! define-group "(define-group PREFIX K... V...) : Defines a prefixed group of values as key/value pairs with a given symbol prefix.")
+(help-set! define-prefix (string-append
+	"(define-prefix PREFIX K/V...) : "
+	"Defines a prefixed group of values as key/value pairs with a given symbol prefix.\n"
+	"Example would be (define-prefix abc def 123 ghi 456). This creates abcdef = 123 and abcghi = 456.\n"
+	"If a key is a list, then the first element of that is an additional prefix to append to the first.\n"
+	"Therefore, (define-prefix a (b c 1 d 2)) creates abc = 1 and abd = 2."
+))
+
+(define-syntax (define-group prefix . entries)
+	(append
+		(list define-prefix
+			(string->symbol (string-append (symbol->string prefix) "."))
+		)
+		entries
+	)
+)
+(help-set! define-group "(define-group PREFIX K/V...) : See define-prefix, but the outer prefix has a dot appended.")
+
+; for quick formatting
+(define-syntax (.. . entries)
+	(define result (list string-append))
+	(for-each (lambda (entry)
+		(append! result (list (list value->string entry)))
+	) entries)
+	result
+)
+(help-set! .. "(.. V...) : Macro that wraps each parameter in value->string and the whole in string-append.")
+
+; for very quick formatting
+(define-syntax (fl1 . entries) (list lambda '(a0) (append '(..) entries)))
+(help-set! fl1 "(fl1 V...) : Formatting Lambda 1: equivalent to (lambda (a0) (.. V...))")
+
+(define-syntax (fl2 . entries) (list lambda '(a0 a1) (append '(..) entries)))
+(help-set! fl2 "(fl2 V...) : Formatting Lambda 2: equivalent to (lambda (a0 a1) (.. V...))")
+
+(define-syntax (fl3 . entries) (list lambda '(a0 a1 a2) (append '(..) entries)))
+(help-set! fl3 "(fl3 V...) : Formatting Lambda 3: equivalent to (lambda (a0 a1 a2) (.. V...))")
+
+(define-syntax (fl4 . entries) (list lambda '(a0 a1 a2 a3) (append '(..) entries)))
+(help-set! fl4 "(fl4 V...) : Formatting Lambda 4: equivalent to (lambda (a0 a1 a2 a3) (.. V...))")

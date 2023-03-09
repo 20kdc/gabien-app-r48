@@ -21,10 +21,10 @@ import r48.app.AppNewProject;
 import r48.app.AppUI;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
-import r48.dbs.TXDB;
 import r48.map.StuffRenderer;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.fn.MVMR48GlobalLibraries;
+import r48.tr.pages.TrRoot;
 
 /**
  * An attempt to move as much as possible out of static variables.
@@ -57,7 +57,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
     public App(InterlaunchGlobals ilg, String gp, String rp, String sip, IConsumer<String> loadProgress) {
         super(ilg, gp, rp, sip, loadProgress);
         vmCtx = new MVMEnvR48((str) -> {
-            loadProgress.accept(TXDB.get("Loading... ") + str);
+            loadProgress.accept(t.g.loadingProgress.r(str));
         });
         MVMR48GlobalLibraries.add(vmCtx, ilg);
         vmCtx.include("vm/global", false);
@@ -85,34 +85,46 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
 
     public static class Svc {
         public final @NonNull App app;
+        /**
+         * This is a special exception to the usual style rules.
+         */
+        public final @NonNull TrRoot T;
         public Svc(@NonNull App app) {
             this.app = app;
+            T = app.t;
         }
     }
 
     public static class Prx extends UIProxy {
         public final @NonNull App app;
+        public final @NonNull TrRoot T;
         public Prx(@NonNull App app) {
             this.app = app;
+            T = app.t;
         }
     }
 
     public static abstract class Pan extends UIPanel {
         public final @NonNull App app;
+        public final @NonNull TrRoot T;
         public Pan(@NonNull App app) {
             this.app = app;
+            T = app.t;
         }
     }
 
     public static abstract class Elm extends UIElement {
         public final @NonNull App app;
-
+        public final @NonNull TrRoot T;
         public Elm(@NonNull App app) {
             this.app = app;
+            T = app.t;
         }
 
         public Elm(@NonNull App app, int i, int j) {
+            super(i, j);
             this.app = app;
+            T = app.t;
         }
     }
 }

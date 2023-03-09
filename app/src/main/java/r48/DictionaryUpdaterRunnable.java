@@ -8,7 +8,6 @@
 package r48;
 
 import gabien.uslx.append.*;
-import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -135,7 +134,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
 
     private void finalizeVals(LinkedList<UIEnumChoice.Option> finalMap) {
         Collections.sort(finalMap, UIEnumChoice.COMPARATOR_OPTION);
-        SchemaElement ise = new EnumSchemaElement(app, finalMap, new RubyIO().setFX(defaultVal), EntryMode.INT, TXDB.get("ID."));
+        SchemaElement ise = new EnumSchemaElement(app, finalMap, new RubyIO().setFX(defaultVal), EntryMode.INT, T.s.enumID);
         app.sdb.setSDBEntry(dict, ise);
     }
 

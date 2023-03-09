@@ -22,4 +22,31 @@
 	lChooseEngine "Choose Target Engine:"
 
 	helpUnavailable "This helpfile is unavailable in your language; the English version has been displayed."
+
+	loadingProgress (fl1 "Loading... " a0)
+)
+
+(define-group TrAppUI
+	init "Initializing UI..."
+	init2 ""
+	initTab (fl1 "Initializing tab: " a0)
+	initMapScan "Looking for maps and saves (this'll take a while)..."
+	infoTitle "Information"
+	errorTitle "Error"
+	done "Done!"
+	confirmAccept "Accept"
+	confirmCancel "Cancel"
+	contextError (fl2 a0 "\n" a1)
+	helpTitle "Help Window"
+	helpIndex "Index"
+	newDirs "This appears to be newly created. Click to create directories."
+	revertWarn "Reverting changes will lose all unsaved work and will reset many windows."
+	notRelease (..
+		"Not an actual release - you have likely compiled this yourself.\n"
+		"The file 'assets/version.txt' needs to exist for text to appear here."
+	)
+)
+
+(define-group TrSchema
+	enumID "ID."
 )

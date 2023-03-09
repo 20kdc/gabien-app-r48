@@ -75,7 +75,7 @@ public class AppUI extends App.Svc {
     }
 
     public void initialize(WindowCreatingUIElementConsumer uiTicker) {
-        app.loadProgress.accept(TXDB.get("Initializing UI..."));
+        app.loadProgress.accept(T.u.init);
 
         GaBIEn.setBrowserDirectory(app.rootPath);
 
@@ -94,7 +94,7 @@ public class AppUI extends App.Svc {
                 saveAllModified();
             }
         });
-        final UISymbolButton sym2 = new UISymbolButton(Art.Symbol.Back, app.f.tabTextHeight, createLaunchConfirmation(TXDB.get("Reverting changes will lose all unsaved work and will reset many windows."), new Runnable() {
+        final UISymbolButton sym2 = new UISymbolButton(Art.Symbol.Back, app.f.tabTextHeight, createLaunchConfirmation(T.u.revertWarn, new Runnable() {
             @Override
             public void run() {
                 AppMain.performSystemDump(app, false, "revert file");
@@ -113,7 +113,7 @@ public class AppUI extends App.Svc {
 
         initializeTabs();
 
-        app.loadProgress.accept(TXDB.get("Finishing up initialization..."));
+        app.loadProgress.accept(T.u.init2);
 
         // start possible recommended directory nagger
         final LinkedList<String> createDirs = new LinkedList<String>();
@@ -126,14 +126,14 @@ public class AppUI extends App.Svc {
         if (app.odb.modifiedObjects.size() > 0) {
             if (createDirs.size() > 0) {
                 wm.createWindow(new UIAutoclosingPopupMenu(new String[] {
-                        TXDB.get("This appears to be newly created. Click to create directories.")
+                        T.u.newDirs
                 }, new Runnable[] {
                         new Runnable() {
                             @Override
                             public void run() {
                                 for (String st : createDirs)
                                     GaBIEn.makeDirectories(PathUtils.autoDetectWindows(app.rootPath + st));
-                                app.ui.launchDialog(TXDB.get("Done!"));
+                                launchDoneDialog();
                             }
                         }
                 }, app.f.menuTextHeight, app.f.menuScrollersize, true));
@@ -177,7 +177,7 @@ public class AppUI extends App.Svc {
         toolsets.add(new BasicToolset(app));
 
         if (app.system.enableMapSubsystem) {
-            app.loadProgress.accept(TXDB.get("Looking for maps and saves (this'll take a while)..."));
+            app.loadProgress.accept(T.u.initMapScan);
             MapToolset mapController = new MapToolset(app);
             // Really just restricts access to prevent a hax pileup
             mapContext = mapController.getContext();
@@ -203,7 +203,7 @@ public class AppUI extends App.Svc {
         UIElement firstTab = null;
         // Initialize toolsets.
         for (IToolset its : toolsets) {
-            app.loadProgress.accept(TXDB.get("Initializing tab...") + "\n" + its.toString());
+            app.loadProgress.accept(T.u.initTab.r(its.toString()));
             for (UIElement uie : its.generateTabs()) {
                 if (firstTab == null)
                     firstTab = uie;
@@ -222,8 +222,8 @@ public class AppUI extends App.Svc {
         return new Runnable() {
             @Override
             public void run() {
-                UITextButton accept = new UITextButton(TXDB.get("Accept"), app.f.dialogWindowTextHeight, null).centred();
-                UITextButton cancel = new UITextButton(TXDB.get("Cancel"), app.f.dialogWindowTextHeight, null).centred();
+                UITextButton accept = new UITextButton(T.u.confirmAccept, app.f.dialogWindowTextHeight, null).centred();
+                UITextButton cancel = new UITextButton(T.u.confirmCancel, app.f.dialogWindowTextHeight, null).centred();
                 UIElement uie = new UISplitterLayout(new UILabel(s, app.f.dialogWindowTextHeight),
                         new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
                 final UIMTBase mtb = UIMTBase.wrap(null, uie);
@@ -268,7 +268,7 @@ public class AppUI extends App.Svc {
         final UIScrollLayout uus = new UIScrollLayout(true, app.f.generalScrollersize);
         uus.panelsAdd(uis);
         Size rootSize = wm.getRootSize();
-        final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(TXDB.get("Index"), uil, new Runnable() {
+        final UINSVertLayout topbar = new UINSVertLayout(new UIAppendButton(T.u.helpIndex, uil, new Runnable() {
             @Override
             public void run() {
                 hsc.loadPage(0);
@@ -276,7 +276,7 @@ public class AppUI extends App.Svc {
         }, app.f.helpPathHeight), uus) {
             @Override
             public String toString() {
-                return TXDB.get("Help Window");
+                return T.u.helpTitle;
             }
         };
         hsc.onLoad = new Runnable() {
@@ -318,19 +318,26 @@ public class AppUI extends App.Svc {
     public void launchDialog(String s, Throwable e) {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
-        launchDialog(s + "\n" + sw.toString());
+        launchDialog(T.u.contextError.r(s, sw.toString()), T.u.errorTitle);
     }
 
     public void launchDialog(String s) {
+        launchDialog(s, T.u.infoTitle);
+    }
+    public void launchDialog(String s, String title) {
         UILabel ul = new UILabel(s, app.f.textDialogDescTextHeight);
         UIScrollLayout svl = new UIScrollLayout(true, app.f.generalScrollersize) {
             @Override
             public String toString() {
-                return TXDB.get("Information");
+                return title;
             }
         };
         svl.panelsAdd(ul);
         wm.createWindowSH(svl);
+    }
+
+    public void launchDoneDialog() {
+        launchDialog(T.u.done);
     }
 
     public void launchPrompt(String text, IConsumer<String> consumer) {

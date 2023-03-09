@@ -9,17 +9,15 @@ package r48.tr.pages;
 import r48.tr.TrPage;
 
 /**
- * Translation page for the launcher and global functionality.
+ * Translation page for AppUI.
  * Created 2nd March 2023.
  */
-public class TrGlobal extends TrPage {
-    // gabien
-    public String wordLoad, wordSave, wordInvalidFileName;
-    // launcher
-    public String bContinue, bConfigure, bSelectEngine, lFrameMS, lGamePath, lSecondaryPath, lChooseEngine;
-    public String bConfig, bQuit;
-    // help
-    public String helpUnavailable;
-    // app
-    public FF1 loadingProgress;
+public class TrAppUI extends TrPage {
+    public String init, init2, initMapScan;
+    public FF1 initTab;
+    public String infoTitle, errorTitle, done, confirmAccept, confirmCancel;
+    public FF2 contextError;
+    public String helpTitle, helpIndex, newDirs;
+    public String revertWarn;
+    public String notRelease;
 }

@@ -6,8 +6,11 @@
  */
 package r48.minivm.fn;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
@@ -26,6 +29,12 @@ public class MVMListsLibrary {
                 .attachHelp("(append L...) : Creates a new list from a set of appended lists.");
         ctx.defineSlot(new DatumSymbol("append!")).v = new AppendM()
                 .attachHelp("(append! T L...) : Modifies an existing list to append a set of lists.");
+        ctx.defineSlot(new DatumSymbol("sublist")).v = new Sublist()
+                .attachHelp("(sublist L START END) : Substring, but on lists!");
+        ctx.defineSlot(new DatumSymbol("list-length")).v = new Len()
+                .attachHelp("(list-length L) : List length");
+        ctx.defineSlot(new DatumSymbol("list-ref")).v = new Ref()
+                .attachHelp("(list-ref L I) : List get");
     }
 
     public static final class ForEach extends MVMFn {
@@ -216,10 +225,54 @@ public class MVMListsLibrary {
         @SuppressWarnings("unchecked")
         @Override
         protected Object callIndirect(Object[] args) {
-            List<Object> target = (List<Object>) args[0];
+            List<Object> target = MVMU.cList(args[0]);
             for (int i = 1; i < args.length; i++)
                 target.addAll((List<Object>) args[i]);
             return target;
+        }
+    }
+
+    public static final class Sublist extends MVMFn.Fixed {
+        public Sublist() {
+            super("sublist");
+        }
+
+        @Override
+        public Object callDirect(Object a0, Object a1, Object a2) {
+            List<Object> lo = MVMU.cList(a0);
+            int s = MVMU.cInt(a1);
+            int e = MVMU.cInt(a2);
+            int c = e - s;
+            if (c <= 0)
+                return new LinkedList<Object>();
+            // this is betting on a few things, but... worth it, hopefully. if not then oh well
+            ArrayList<Object> copy = new ArrayList<>(c);
+            ListIterator<Object> li = lo.listIterator(s);
+            for (int i = s; i < e; i++)
+                copy.add(li.next());
+            return copy;
+        }
+    }
+
+    public static final class Len extends MVMFn.Fixed {
+        public Len() {
+            super("list-length");
+        }
+
+        @Override
+        public Object callDirect(Object a0) {
+            return MVMU.cList(a0).size();
+        }
+    }
+
+    public static final class Ref extends MVMFn.Fixed {
+        public Ref() {
+            super("list-ref");
+        }
+
+        @Override
+        public Object callDirect(Object a0, Object a1) {
+            return MVMU.cList(a0).get(MVMU.cInt(a1));
         }
     }
 }

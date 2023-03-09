@@ -15,4 +15,6 @@ import r48.tr.TrPage;
  */
 public class TrRoot extends TrPage {
     public final TrGlobal g = new TrGlobal();
+    public final TrAppUI u = new TrAppUI();
+    public final TrSchema s = new TrSchema();
 }
