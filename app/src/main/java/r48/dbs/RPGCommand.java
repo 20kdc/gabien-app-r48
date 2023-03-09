@@ -136,7 +136,7 @@ public class RPGCommand extends App.Svc {
 
     public String getParameterName(IRIO root, int i) {
         if (paramName.size() <= i)
-            return TXDB.get("UNK.");
+            return T.s.cmdb_unkParamName;
         return paramName.get(i).apply(root);
     }
 

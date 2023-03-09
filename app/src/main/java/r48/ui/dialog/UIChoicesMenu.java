@@ -9,7 +9,6 @@ package r48.ui.dialog;
 
 import gabien.ui.*;
 import r48.App;
-import r48.dbs.TXDB;
 
 /**
  * Builds simple choice dialogs along the lines of:
@@ -20,10 +19,11 @@ import r48.dbs.TXDB;
  * <p>
  * Created on July 14th, 2018
  */
-public class UIChoicesMenu extends UIElement.UIProxy {
+public class UIChoicesMenu extends App.Prx {
     private boolean selfClose = false;
 
     public UIChoicesMenu(App app, String s, String[] strings, final Runnable[] runnables) {
+        super(app);
         UILabel topLabel = new UILabel(s, app.f.dialogWindowTextHeight);
         UIScrollLayout label = new UIScrollLayout(true, app.f.menuScrollersize);
         label.panelsAdd(topLabel);
@@ -48,6 +48,6 @@ public class UIChoicesMenu extends UIElement.UIProxy {
 
     @Override
     public String toString() {
-        return TXDB.get("Please confirm...");
+        return T.t.confirm;
     }
 }

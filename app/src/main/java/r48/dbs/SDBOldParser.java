@@ -322,7 +322,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (text.equals("flushCommandBuffer")) {
                     // time to flush it!
                     PathSyntax disambiguationIVar = getPathSyntax();
-                    setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, new RubyIO().setFX(0), EntryMode.INT, TXDB.get("Code")));
+                    setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, new RubyIO().setFX(0), EntryMode.INT, T.s.enum_code));
                     HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                     commandBufferNames = new HashMap<String, String>();
                     commandBufferSchemas = new HashMap<String, SchemaElement>();
@@ -331,7 +331,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 if (text.equals("flushCommandBufferStr")) {
                     // time to flush it!
                     PathSyntax disambiguationIVar = getPathSyntax();
-                    setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, new RubyIO().setString("", true), EntryMode.STR, TXDB.get("Code")));
+                    setSDBEntry(args[point++], new EnumSchemaElement(app, commandBufferNames, new RubyIO().setString("", true), EntryMode.STR, T.s.enum_code));
                     HashMap<String, SchemaElement> baseSE = commandBufferSchemas;
                     commandBufferNames = new HashMap<String, String>();
                     commandBufferSchemas = new HashMap<String, SchemaElement>();
@@ -419,13 +419,13 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 // This includes anything of type 'u'.
                 if (text.equals("fileSelector")) {
                     String tx = args[point++];
-                    String txHR = app.fmt.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx, true));
+                    String txHR = T.s.bFileBrowser.r(tx);
                     return new SubwindowSchemaElement(new FileSelectorSchemaElement(app, tx, null), getFunctionToReturn(txHR));
                 }
                 if (text.equals("imgSelector")) {
                     String tx = args[point++];
                     String tx2 = args[point++];
-                    String txHR = app.fmt.formatExtended(TXDB.get("Browse #A"), new RubyIO().setString(tx, true));
+                    String txHR = T.s.bFileBrowser.r(tx);
                     return new SubwindowSchemaElement(new FileSelectorSchemaElement(app, tx, tx2), getFunctionToReturn(txHR));
                 }
                 if (text.equals("halfsplit")) {
@@ -504,7 +504,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                         }
 
                         private SchemaPath applySchema(final IRIO host, SchemaPath path, boolean update) {
-                            EnumSchemaElement sce = new EnumSchemaElement(app, new HashMap<String, String>(), defVal, EntryMode.INT, TXDB.get("ID.")) {
+                            EnumSchemaElement sce = new EnumSchemaElement(app, new HashMap<String, String>(), defVal, EntryMode.INT, T.s.enum_id) {
                                 @Override
                                 public void liveUpdate() {
                                     viewOptions.clear();
@@ -559,7 +559,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     PathSyntax wV = getNullablePathSyntax();
                     PathSyntax hV = getNullablePathSyntax();
 
-                    IFunction<IRIO, String> iVT = getFunctionToReturn(iV == null ? TXDB.get("Open Table...") : TXDB.get(outerContext, iV.decompiled));
+                    IFunction<IRIO, String> iVT = getFunctionToReturn(iV == null ? T.s.bOpenTable : TXDB.get(outerContext, iV.decompiled));
 
                     int dc = Integer.parseInt(args[point++]);
                     int aW = Integer.parseInt(args[point++]);
@@ -625,7 +625,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                     PathSyntax d = getPathSyntax();
                     String a = args[point++];
                     String b = args[point++];
-                    return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(app, b), Integer.parseInt(a), c, d), getFunctionToReturn(TXDB.get("Select Tile Graphic...")));
+                    return new SubwindowSchemaElement(new EventTileReplacerSchemaElement(new TSDB(app, b), Integer.parseInt(a), c, d), getFunctionToReturn(T.s.selectTileGraphic));
                 }
                 if (text.equals("windowTitleAttachment")) {
                     String txt = TXDB.get(outerContext, args[point++]);
@@ -703,7 +703,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
                 options.put(Integer.toString(k), TXDB.get(ctx, args[i + 1]));
             }
             // INT: is part of the format
-            EnumSchemaElement e = new EnumSchemaElement(app, options, new RubyIO().setFX(defVal), EntryMode.INT, TXDB.get("Integer"));
+            EnumSchemaElement e = new EnumSchemaElement(app, options, new RubyIO().setFX(defVal), EntryMode.INT, T.s.enum_int);
             setSDBEntry(args[0], e);
         } else if (c == 's') {
             // Symbols
@@ -711,7 +711,7 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             for (int i = 1; i < args.length; i++)
                 options.put(":" + args[i], TXDB.get(args[0], args[i]));
 
-            EnumSchemaElement ese = new EnumSchemaElement(app, options, ValueSyntax.decode(":" + args[1]), EntryMode.SYM, TXDB.get("Symbol"));
+            EnumSchemaElement ese = new EnumSchemaElement(app, options, ValueSyntax.decode(":" + args[1]), EntryMode.SYM, T.s.enum_sym);
             setSDBEntry(args[0], ese);
         } else if (c == 'E') {
             HashMap<String, String> options = new HashMap<String, String>();

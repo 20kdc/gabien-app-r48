@@ -16,7 +16,6 @@ import r48.App;
 import r48.RubyIO;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
-import r48.dbs.TXDB;
 import r48.imageio.PNG8IImageIOFormat;
 import r48.io.BMPConnection;
 import r48.ui.UIAppendButton;
@@ -142,7 +141,7 @@ public class CharacterGeneratorController extends App.Svc {
                 }
             }
         });
-        UIElement modeBar = new UIAppendButton(TXDB.get("Save PNG..."), new UITextButton(TXDB.get("Copy to R48 Clipboard"), app.f.schemaFieldTextHeight, new Runnable() {
+        UIElement modeBar = new UIAppendButton(T.u.cg_savePNG, new UITextButton(T.u.cg_copyR48, app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 IImage img = getCurrentModeImage();
@@ -167,7 +166,7 @@ public class CharacterGeneratorController extends App.Svc {
             public void run() {
                 // We have a PNG, ask for a file to stuff it into
                 final byte[] b = createPNG();
-                GaBIEn.startFileBrowser(TXDB.get("Save PNG..."), true, "", new IConsumer<String>() {
+                GaBIEn.startFileBrowser(T.u.cg_savePNG, true, "", new IConsumer<String>() {
                     @Override
                     public void accept(String s) {
                         try {
@@ -176,7 +175,7 @@ public class CharacterGeneratorController extends App.Svc {
                             os.close();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            app.ui.launchDialog(TXDB.get("Unable to save chargen image."));
+                            app.ui.launchDialog(e);
                         }
                     }
                 });
@@ -185,7 +184,7 @@ public class CharacterGeneratorController extends App.Svc {
         rootView = new UISplitterLayout(new UISplitterLayout(modes, modeBar, true, 1), availableOpts, false, 1) {
             @Override
             public String toString() {
-                return TXDB.get("Character Generator");
+                return T.t.charGen;
             }
         };
         Size sz = app.ui.wm.getRootSize();

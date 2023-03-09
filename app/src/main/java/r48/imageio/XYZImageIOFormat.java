@@ -8,7 +8,6 @@ package r48.imageio;
 
 import gabien.IImage;
 import r48.app.AppCore;
-import r48.dbs.TXDB;
 import r48.io.IntUtils;
 
 import java.io.ByteArrayInputStream;
@@ -36,7 +35,7 @@ public class XYZImageIOFormat extends ImageIOFormat {
     @Override
     public String saveName(ImageIOImage img) {
         if (supports(img))
-            return TXDB.get("Save XYZ");
+            return T.g.img_xyz;
         return null;
     }
 

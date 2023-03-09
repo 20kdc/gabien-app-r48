@@ -13,5 +13,14 @@ import r48.tr.TrPage;
  * Created 8th March 2023.
  */
 public class TrSchema extends TrPage {
-    public String enumID;
+    public String enum_id, enum_int, enum_sym, enum_code;
+    public String cmdb_defCatName;
+    public String cmdb_unkParamName;
+    public FF1 bFileBrowser;
+    public String bOpenTable;
+    public String selectTileGraphic;
+    public String ppp_constant, ppp_idVar, ppp_idNSfx;
+    public String ppp_idVarFN, ppp_idFN, ppp_typeFN;
+    public String ppp_explain;
+    public String ppp_valueVarFN, ppp_isVarFN;
 }

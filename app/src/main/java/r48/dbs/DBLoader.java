@@ -26,7 +26,7 @@ public class DBLoader {
     public static void readFile(@Nullable AppCore app, @NonNull String s, @NonNull IDatabase db) {
         System.out.println(">>" + s + " as " + db);
         if (app != null)
-            app.loadProgress.accept(TXDB.get("Loading schema...") + s);
+            app.loadProgress.accept(app.t.g.loadingProgress.r(s));
         try {
             readFile(GaBIEn.getResource(s), db);
         } catch (Exception e) {

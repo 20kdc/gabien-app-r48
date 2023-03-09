@@ -16,7 +16,6 @@ import gabien.ui.UIScrollLayout;
 import gabien.ui.UISplitterLayout;
 import gabien.ui.UITextButton;
 import r48.App;
-import r48.dbs.TXDB;
 import r48.ui.spacing.UIIndentThingy;
 
 /**
@@ -30,7 +29,7 @@ public class UISetSelector<T> extends App.Prx {
     private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalScrollersize);
     public UISetSelector(App app, final Iterable<T> entries) {
         super(app);
-        layout.panelsAdd(new UITextButton(TXDB.get("Select All"), app.f.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(T.u.set_selAll, app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 for (T x : entries)
@@ -38,7 +37,7 @@ public class UISetSelector<T> extends App.Prx {
                 refreshContents();
             }
         }));
-        layout.panelsAdd(new UITextButton(TXDB.get("Deselect All"), app.f.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(T.u.set_deSelAll, app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 set.clear();

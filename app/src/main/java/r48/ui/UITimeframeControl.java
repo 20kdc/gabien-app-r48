@@ -11,7 +11,6 @@ import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.dbs.TXDB;
 
 /**
  * Handles frame management, copy/paste, etc.
@@ -26,7 +25,7 @@ public class UITimeframeControl extends App.Prx {
     private double playTimer = 0;
     public int recommendedFramerate;
 
-    public UILabel currentFrame = new UILabel(TXDB.get("Loading..."), app.f.rmaTimeframeTextHeight);
+    public UILabel currentFrame = new UILabel("", app.f.rmaTimeframeTextHeight);
 
     public UIAppendButton playController = new UIAppendButton(Art.Symbol.Play, currentFrame, new Runnable() {
         @Override
@@ -100,7 +99,7 @@ public class UITimeframeControl extends App.Prx {
         } else {
             playTimer = 0;
         }
-        currentFrame.text = (getFrameIdx.get() + 1) + " / " + getFrameCount.get();
+        currentFrame.text = T.u.frameDisplay.r(getFrameIdx.get(), getFrameCount.get());
 
         super.update(deltaTime, selected, peripherals);
     }

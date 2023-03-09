@@ -131,8 +131,10 @@ public class AppCore {
 
     public static class Csv {
         public final @NonNull AppCore app;
+        public final @NonNull TrRoot T;
         public Csv(@NonNull AppCore app) {
             this.app = app;
+            T = app.t;
         }
     }
 }

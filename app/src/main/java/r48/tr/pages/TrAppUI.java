@@ -15,13 +15,20 @@ import r48.tr.TrPage;
 public class TrAppUI extends TrPage {
     public String init, init2, initMapScan;
     public FF1 initTab;
-    public String infoTitle, errorTitle, done, confirm_title, confirm_accept, confirm_cancel;
+    public String done, confirm_accept, confirm_cancel;
     public FF2 contextError;
     public String helpTitle, helpIndex, newDirs;
     public String revertWarn;
     public String notRelease;
     public String odb_disposed, odb_created, odb_modified, odb_lost;
-    public FF1 odb_listeners;
+    public FF1 odb_listeners, odb_saveErr, odb_loadObj;
     public String test_binding, test_prFail, test_prOk, test_PTS, test_PTF, test_back;
     public String np_synthOk, np_synth2kQ, np_r2k0, np_r2k3, np_nothing;
+    public String spr_num, spr_msgNoImage;
+    public String soundFail;
+    public String cg_savePNG;
+    public String cg_copyR48;
+    public FF2 frameDisplay;
+    public String set_selAll, set_deSelAll;
+    public String lAlphaChannel;
 }

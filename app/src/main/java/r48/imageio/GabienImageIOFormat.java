@@ -8,7 +8,6 @@ package r48.imageio;
 
 import gabien.IImage;
 import r48.app.AppCore;
-import r48.dbs.TXDB;
 
 import java.io.IOException;
 
@@ -26,7 +25,7 @@ public class GabienImageIOFormat extends ImageIOFormat {
         // Don't recommend saving in this format if indexed is possible.
         if (PNG8IImageIOFormat.supports(img))
             return null;
-        return TXDB.get("Save PNG-32T");
+        return T.g.img_png32;
     }
 
     @Override

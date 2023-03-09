@@ -18,6 +18,7 @@ import r48.schema.displays.HWNDSchemaElement;
 import r48.schema.specialized.IMagicalBinder;
 import r48.schema.specialized.MagicalBindingSchemaElement;
 import r48.schema.specialized.SpritesheetCoreSchemaElement;
+import r48.tr.pages.TrSchema;
 import r48.ui.dialog.ISpritesheetProvider;
 import r48.ui.dialog.UIEnumChoice.EntryMode;
 
@@ -55,7 +56,7 @@ class SDBHelpers extends App.Svc {
             public int itemCount() {
                 // Use this to inform the user of image issues
                 if (imgTxt.equals(""))
-                    app.ui.launchDialog(TXDB.get("The image wasn't specified."));
+                    app.ui.launchDialog(T.u.spr_msgNoImage);
                 if (countOvr != -1)
                     return countOvr;
                 return ((img.getHeight() + (cellH - 1)) / cellH) * rowCells;
@@ -167,27 +168,28 @@ class SDBHelpers extends App.Svc {
     }
 
     public SchemaElement makePicPointerPatchID(SchemaElement varId, SchemaElement val) {
+        final TrSchema S = varId.T.s;
         // Since this is much too complicated for a mere enum,
         //  use the magical binding to make it more in-line with R48's standards,
         //  with a minimal amount of code
         HashMap<String, String> types = new HashMap<String, String>();
-        types.put("0", TXDB.get("Constant"));
-        types.put("1", TXDB.get("From Id Var. (PPP/EasyRPG/2k3 1.12)"));
-        types.put("2", TXDB.get("From Id/Name Suffix Var. Pair (PPP/EasyRPG/2k3 1.12)"));
+        types.put("0", S.ppp_constant);
+        types.put("1", S.ppp_idVar);
+        types.put("2", S.ppp_idNSfx);
         HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
-        ArrayElementSchemaElement idV = new ArrayElementSchemaElement(app, 1, TXDB.get("idVar"), varId, null, false);
+        ArrayElementSchemaElement idV = new ArrayElementSchemaElement(app, 1, S.ppp_idVarFN, varId, null, false);
         disambiguations.put("1", idV);
         disambiguations.put("2", idV);
-        disambiguations.put("", new ArrayElementSchemaElement(app, 1, TXDB.get("id "), val, null, false));
+        disambiguations.put("", new ArrayElementSchemaElement(app, 1, S.ppp_idFN, val, null, false));
         AggregateSchemaElement inner = new AggregateSchemaElement(app, new SchemaElement[] {
                 new HalfsplitSchemaElement(
-                        new ArrayElementSchemaElement(app, 0, TXDB.get("type "), new EnumSchemaElement(app, types, new RubyIO().setFX(0), EntryMode.LOCK, ""), null, false),
+                        new ArrayElementSchemaElement(app, 0, S.ppp_typeFN, new EnumSchemaElement(app, types, new RubyIO().setFX(0), EntryMode.LOCK, ""), null, false),
                         new DisambiguatorSchemaElement(app, PathSyntax.compile(app, "]0"), disambiguations)
                 ),
                 new SubwindowSchemaElement(new HWNDSchemaElement(app, PathSyntax.compile(app, "]0"), "R2K/H_Internal_PPP"), new IFunction<IRIO, String>() {
                     @Override
                     public String apply(IRIO rubyIO) {
-                        return TXDB.get("Explain this picture mode...");
+                        return S.ppp_explain;
                     }
                 }),
         });
@@ -243,11 +245,12 @@ class SDBHelpers extends App.Svc {
 
     public SchemaElement makePicPointerPatchVar(SchemaElement varId, String vname, SchemaElement val) {
         // Less complicated but still more than an enum is reasonable for.
+        final TrSchema S = varId.T.s;
         HashMap<String, SchemaElement> disambiguations = new HashMap<String, SchemaElement>();
         disambiguations.put("0", new ArrayElementSchemaElement(app, 1, vname, val, null, false));
-        disambiguations.put("", new ArrayElementSchemaElement(app, 1, TXDB.get("valueVar "), varId, null, false));
+        disambiguations.put("", new ArrayElementSchemaElement(app, 1, S.ppp_valueVarFN, varId, null, false));
         SchemaElement inner = new HalfsplitSchemaElement(
-                new ArrayElementSchemaElement(app, 0, TXDB.get("isVar "), new IntBooleanSchemaElement(app, false), null, false),
+                new ArrayElementSchemaElement(app, 0, S.ppp_isVarFN, new IntBooleanSchemaElement(app, false), null, false),
                 new DisambiguatorSchemaElement(app, PathSyntax.compile(app, "]0"), disambiguations)
         );
         return new MagicalBindingSchemaElement(app, new IMagicalBinder() {

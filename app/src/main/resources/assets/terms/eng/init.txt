@@ -10,10 +10,13 @@
 	wordSave "Save"
 	wordInvalidFileName "Invalid or missing file name."
 
+	bOk "Ok"
+	bCancel "Cancel"
+
 	bContinue "Continue"
-	bConfigure "Configure"
+	bConfigV "Configure"
 	bSelectEngine "Select Engine"
-	bConfig "Configuration"
+	bConfigN "Configuration"
 	bQuit "Quit R48"
 
 	lFrameMS "MS per frame:"
@@ -29,6 +32,13 @@
 	dlgNoSysDump "The system dump was unloadable. It should be: r48.error.YOUR_SAVED_DATA.r48"
 	dlgReloadPFD "Power failure dump loaded."
 	dlgReloadED "Error dump loaded."
+
+	(img_
+		bmpX (fl1 "Save BMP-" a0 "I")
+		png32 "Save PNG-32T"
+		png8 "Save PNG-8I"
+		xyz "Save XYZ"
+	)
 )
 
 (define-group TrAppUI
@@ -36,11 +46,8 @@
 	init2 ""
 	initTab (fl1 "Initializing tab: " a0)
 	initMapScan "Looking for maps and saves (this'll take a while)..."
-	infoTitle "Information"
-	errorTitle "Error"
 	done "Done!"
 	(confirm_
-		title "Please confirm..."
 		accept "Accept"
 		cancel "Cancel"
 	)
@@ -59,6 +66,8 @@
 		modified " [modified]"
 		lost " [modifications lost, should never occur!]"
 		listeners (fl1 " [" a0 "ML]")
+		saveErr (fl1 "Error saving object: " a0)
+		loadObj (fl1 "Loading object...\n" a0)
 	)
 	(test_
 		binding "Binding"
@@ -75,8 +84,53 @@
 		r2k3 "2003 Template"
 		nothing "Do Nothing"
 	)
+	(spr_
+		num "Sprite Num."
+		msgNoImage "The image wasn't specified."
+	)
+	soundFail "Unable to load sound."
+	(cg_
+		savePNG "Save PNG..."
+		copyR48 "Copy to R48 Clipboard"
+	)
+	frameDisplay (fl2 (+ a0 1) " / " a1)
+	(set_
+		selAll "Select All"
+		deSelAll "Deselect All"
+	)
+	lAlphaChannel "Alpha"
 )
 
 (define-group TrSchema
-	enumID "ID."
+	(enum_
+		id "ID."
+		int "Integer"
+		sym "Symbol"
+		code "Code"
+	)
+	(cmdb_
+		unkParamName "UNK."
+		defCatName "Commands"
+	)
+	bFileBrowser (fl1 "Browse " a0 "...")
+	bOpenTable "Open Table..."
+	selectTileGraphic "Select Tile Graphic..."
+	(ppp_
+		constant "Constant"
+		idVar "From Id Var. (PPP/EasyRPG/2k3 1.12)"
+		idNSfx "From Id/Name Suffix Var. Pair (PPP/EasyRPG/2k3 1.12)"
+		idVarFN "idVar"
+		idFN "id "
+		typeFN "type "
+		explain "Explain this picture mode..."
+		valueVarFN "valueVar "
+		isVarFN "isVar "
+	)
+)
+
+(define-group TrTitle
+	info "Information"
+	error "Error"
+	confirm "Please confirm..."
+	charGen "Character Generator"
 )

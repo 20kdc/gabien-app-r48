@@ -51,7 +51,7 @@ public class UILauncher extends UIProxy {
         final UIScrollLayout configure = new UIScrollLayout(true, c.f.generalScrollersize) {
             @Override
             public String toString() {
-                return tr.bConfigure;
+                return tr.bConfigV;
             }
         };
         tabPane.addTab(new Tab(configure, new TabIcon[0]));
@@ -165,7 +165,7 @@ public class UILauncher extends UIProxy {
             }
         });
         if (!GaBIEn.singleWindowApp()) { // SWA means we can't create windows
-            whatever = new UISplitterLayout(whatever, new UITextButton(tr.bConfig, c.f.launcherTextHeight, new Runnable() {
+            whatever = new UISplitterLayout(whatever, new UITextButton(tr.bConfigN, c.f.launcherTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     uiTicker.accept(new UIFontSizeConfigurator(c, () -> {

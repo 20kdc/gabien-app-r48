@@ -15,9 +15,12 @@ import r48.tr.TrPage;
 public class TrGlobal extends TrPage {
     // gabien
     public String wordLoad, wordSave, wordInvalidFileName;
+    // Generic
+    public String bContinue, bConfigV;
+    public String bOk, bCancel;
+    public String bConfigN, bQuit;
     // launcher
-    public String bContinue, bConfigure, bSelectEngine, lFrameMS, lGamePath, lSecondaryPath, lChooseEngine;
-    public String bConfig, bQuit;
+    public String bSelectEngine, lFrameMS, lGamePath, lSecondaryPath, lChooseEngine;
     // help
     public String helpUnavailable;
     // app
@@ -25,4 +28,9 @@ public class TrGlobal extends TrPage {
     public String loadingDCO;
     public String msgNonEmergencyBackup;
     public String dlgReloadPFD, dlgReloadED, dlgNoSysDump;
+    // img
+    public FF1 img_bmpX;
+    public String img_png32;
+    public String img_png8;
+    public String img_xyz;
 }

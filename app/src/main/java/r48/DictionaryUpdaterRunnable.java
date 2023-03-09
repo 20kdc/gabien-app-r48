@@ -134,7 +134,7 @@ public class DictionaryUpdaterRunnable extends App.Svc implements Runnable {
 
     private void finalizeVals(LinkedList<UIEnumChoice.Option> finalMap) {
         Collections.sort(finalMap, UIEnumChoice.COMPARATOR_OPTION);
-        SchemaElement ise = new EnumSchemaElement(app, finalMap, new RubyIO().setFX(defaultVal), EntryMode.INT, T.s.enumID);
+        SchemaElement ise = new EnumSchemaElement(app, finalMap, new RubyIO().setFX(defaultVal), EntryMode.INT, T.s.enum_id);
         app.sdb.setSDBEntry(dict, ise);
     }
 

@@ -11,7 +11,6 @@ import gabien.IGrDriver;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.dbs.TXDB;
 import r48.ui.UIGrid;
 
 /**
@@ -37,7 +36,7 @@ public class UISpritesheetChoice extends UIElement.UIProxy {
             }
         };
         final UINumberBox nb = new UINumberBox(oldVal, app.f.dialogWindowTextHeight);
-        UISplitterLayout msp = new UISplitterLayout(nb, new UITextButton(TXDB.get("Sprite Num."), app.f.dialogWindowTextHeight, new Runnable() {
+        UISplitterLayout msp = new UISplitterLayout(nb, new UITextButton(app.t.u.spr_num, app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 consumer.accept(nb.number);

@@ -85,12 +85,12 @@ public class UIColourPicker extends App.Prx {
             leftCoreLayout = s2Layout;
         } else {
             // alphaBox is referred to elsewhere so it's kept around, but this isn't
-            UISplitterLayout a0Layout = new UISplitterLayout(new UILabel("Alpha", app.f.imageEditorTextHeight), alphaBox, false, 0);
+            UISplitterLayout a0Layout = new UISplitterLayout(new UILabel(T.u.lAlphaChannel, app.f.imageEditorTextHeight), alphaBox, false, 0);
             leftCoreLayout = new UISplitterLayout(s2Layout, a0Layout, true, 1d);
         }
 
         // left/right layouts are stuff above ok/cancel buttons
-        UISplitterLayout leftLayout = new UISplitterLayout(leftCoreLayout, new UITextButton(TXDB.get("Ok"), app.f.imageEditorTextHeight, new Runnable() {
+        UISplitterLayout leftLayout = new UISplitterLayout(leftCoreLayout, new UITextButton(T.g.bOk, app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 if (!shuttingDown) {
@@ -99,7 +99,7 @@ public class UIColourPicker extends App.Prx {
                 }
             }
         }), true, 1);
-        UISplitterLayout rightLayout = new UISplitterLayout(tabPane, new UITextButton(TXDB.get("Cancel"), app.f.imageEditorTextHeight, new Runnable() {
+        UISplitterLayout rightLayout = new UISplitterLayout(tabPane, new UITextButton(T.g.bCancel, app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 if (!shuttingDown) {

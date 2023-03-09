@@ -8,7 +8,6 @@ package r48.imageio;
 
 import gabien.IImage;
 import r48.app.AppCore;
-import r48.dbs.TXDB;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -45,7 +44,7 @@ public class PNG8IImageIOFormat extends ImageIOFormat {
     @Override
     public String saveName(ImageIOImage img) {
         if (supports(img))
-            return TXDB.get("Save PNG-8I");
+            return T.g.img_png8;
         return null;
     }
 

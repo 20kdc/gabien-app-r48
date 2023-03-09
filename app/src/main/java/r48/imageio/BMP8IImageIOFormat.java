@@ -7,9 +7,7 @@
 package r48.imageio;
 
 import gabien.IImage;
-import r48.RubyIO;
 import r48.app.AppCore;
-import r48.dbs.TXDB;
 import r48.io.BMPConnection;
 
 import java.io.IOException;
@@ -36,7 +34,7 @@ public class BMP8IImageIOFormat extends ImageIOFormat {
             return null;
         if (img.palette.size() > (1 << actuallyBits))
             return null;
-        return app.fmt.formatExtended(TXDB.get("Save BMP-#AI"), new RubyIO().setFX(actuallyBits));
+        return T.g.img_bmpX.r(actuallyBits);
     }
 
     @Override

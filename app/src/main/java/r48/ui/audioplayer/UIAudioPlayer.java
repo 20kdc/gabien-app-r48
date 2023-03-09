@@ -19,7 +19,6 @@ import gabien.ui.UIScrollbar;
 import gabien.ui.UISplitterLayout;
 import gabien.media.audio.*;
 import r48.App;
-import r48.dbs.TXDB;
 import r48.io.PathUtils;
 import r48.ui.Art;
 import r48.ui.UISymbolButton;
@@ -119,7 +118,7 @@ public class UIAudioPlayer extends App.Prx {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new UILabel(TXDB.get("Unable to load sound."), app.f.schemaFieldTextHeight);
+        return new UILabel(app.t.u.soundFail, app.f.schemaFieldTextHeight);
     }
 
     @Override

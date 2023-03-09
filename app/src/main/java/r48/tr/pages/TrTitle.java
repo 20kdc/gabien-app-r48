@@ -9,13 +9,10 @@ package r48.tr.pages;
 import r48.tr.TrPage;
 
 /**
- * Central hub for translation pages.
- * Elements should be single-letter.
- * Created March 8th 2023.
+ * Translation page for window titles.
+ * Created 9th March 2023.
  */
-public class TrRoot extends TrPage {
-    public final TrGlobal g = new TrGlobal();
-    public final TrTitle t = new TrTitle();
-    public final TrAppUI u = new TrAppUI();
-    public final TrSchema s = new TrSchema();
+public class TrTitle extends TrPage {
+    public String info, error, confirm;
+    public String charGen;
 }

@@ -69,7 +69,7 @@ public class ObjectDB extends App.Svc {
             if (r != null)
                 return r;
         }
-        app.loadProgress.accept(TXDB.get("Loading object... ") + "\n" + id);
+        app.loadProgress.accept(T.u.odb_loadObj.r(id));
         IObjectBackend.ILoadedObject rio = backend.loadObject(id);
         if (rio == null) {
             if (backupSchema != null) {
@@ -122,7 +122,7 @@ public class ObjectDB extends App.Svc {
             newlyCreatedObjects.remove(rio);
         } catch (Exception ioe) {
             // ERROR!
-            app.ui.launchDialog(TXDB.get("Error saving object: ") + id + "\n" + ioe);
+            app.ui.launchDialog(T.u.odb_saveErr.r(id), ioe);
             ioe.printStackTrace();
             return;
         }

@@ -23,7 +23,7 @@ import java.util.LinkedList;
  */
 public class CMDB extends App.Svc {
     public int digitCount = 3;
-    public String[] categories = new String[] {TXDB.get("Commands")};
+    public String[] categories = new String[] {T.s.cmdb_defCatName};
     public HashMap<Integer, RPGCommand> knownCommands = new HashMap<Integer, RPGCommand>();
     public LinkedList<Integer> knownCommandOrder = new LinkedList<Integer>();
     public int listLeaveCmd = -1; // -1 means "no list leave command actually exists".

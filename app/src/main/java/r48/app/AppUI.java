@@ -226,7 +226,7 @@ public class AppUI extends App.Svc {
                 UIElement uie = new UISplitterLayout(new UILabel(s, app.f.dialogWindowTextHeight),
                         new UISplitterLayout(accept, cancel, false, 0.5d), true, 1d);
                 final UIMTBase mtb = UIMTBase.wrap(null, uie);
-                mtb.titleOverride = T.u.confirm_title;
+                mtb.titleOverride = T.t.confirm;
                 accept.onClick = new Runnable() {
                     @Override
                     public void run() {
@@ -317,12 +317,17 @@ public class AppUI extends App.Svc {
     public void launchDialog(String s, Throwable e) {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
-        launchDialog(T.u.contextError.r(s, sw.toString()), T.u.errorTitle);
+        launchDialog(T.u.contextError.r(s, sw.toString()), T.t.error);
     }
 
     public void launchDialog(String s) {
-        launchDialog(s, T.u.infoTitle);
+        launchDialog(s, T.t.info);
     }
+
+    public void launchDialog(Throwable e) {
+        launchDialog(T.t.error, e);
+    }
+
     public void launchDialog(String s, String title) {
         UILabel ul = new UILabel(s, app.f.textDialogDescTextHeight);
         UIScrollLayout svl = new UIScrollLayout(true, app.f.generalScrollersize) {
