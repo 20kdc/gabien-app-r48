@@ -22,19 +22,18 @@ import org.eclipse.jdt.annotation.NonNull;
  * Maybe make a superclass for the convenient stuff?
  * Created on August 14 2017.
  */
-public class UIMTBase extends UIElement.UIPanel {
+public class UIMTBase extends App.Pan {
     private UIElement innerElem = null;
 
     public final IMapToolContext mapToolContext;
-    public final App app;
 
     public boolean selfClose = false;
     public boolean hasClosed = false;
     public String titleOverride;
 
     public UIMTBase(@NonNull IMapToolContext mtc) {
+        super(mtc.getMapView().app);
         mapToolContext = mtc;
-        app = mtc.getMapView().app;
     }
 
     protected void changeInner(UIElement inner, boolean inConstructor) {

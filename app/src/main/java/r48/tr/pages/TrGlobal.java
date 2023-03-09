@@ -17,7 +17,7 @@ public class TrGlobal extends TrPage {
     public String wordLoad, wordSave, wordInvalidFileName;
     // Generic
     public String bContinue, bConfigV;
-    public String bOk, bCancel, bConfirm, bCopy, bPaste;
+    public String bOk, bCancel, bConfirm, bCopy, bPaste, bUndo;
     public String bConfigN, bQuit;
     // launcher
     public String bSelectEngine, lFrameMS, lGamePath, lSecondaryPath, lChooseEngine;

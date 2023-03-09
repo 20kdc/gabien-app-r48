@@ -27,7 +27,7 @@ public class UIMTFtrGdt01 extends UIMTBase implements IMapViewCallbacks {
     public UIMTFtrGdt01(IMapToolContext o) {
         super(o);
 
-        changeInner(new UIAppendButton(app.ts("Confirm"), new UIAppendButton(app.ts("Raise Pen"), new UITextButton(app.ts("Undo"), app.f.schemaFieldTextHeight, new Runnable() {
+        changeInner(new UIAppendButton(T.g.bConfirm, new UIAppendButton(app.ts("Raise Pen"), new UITextButton(T.g.bUndo, app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 TOutline.Line l = workspace.removeLast();

@@ -15,6 +15,7 @@
 	bConfirm "Confirm"
 	bCopy "Copy"
 	bPaste "Paste"
+	bUndo "Undo"
 
 	bContinue "Continue"
 	bConfigV "Configure"
