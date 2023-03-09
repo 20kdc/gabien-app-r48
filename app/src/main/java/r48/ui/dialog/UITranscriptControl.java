@@ -73,7 +73,7 @@ public class UITranscriptControl extends App.Prx {
     private void refreshContents() {
         layout.panelsClear();
 
-        layout.panelsAdd(new UITextButton(app.ts("Confirm"), app.f.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(T.g.bConfirm, app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 PrintStream ps = null;
@@ -87,7 +87,7 @@ public class UITranscriptControl extends App.Prx {
                 Set<TranscriptComponent> comps = setSelector.getSet();
                 for (TranscriptComponent tc : components)
                     if (comps.contains(tc))
-                        tc.dump(dumper);;
+                        tc.dump(dumper);
 
                 // Prevent breakage
                 app.sdb.updateDictionaries(null);
@@ -95,7 +95,7 @@ public class UITranscriptControl extends App.Prx {
 
                 dumper.end();
                 ps.close();
-                app.ui.launchDialog(app.ts("transcript.html was written to the target's folder."));
+                app.ui.launchDialog(app.t.u.tsc_dumpOk);
                 done = true;
             }
         }));
@@ -112,14 +112,14 @@ public class UITranscriptControl extends App.Prx {
         @Override
         public void dump(RMTranscriptDumper dumper) {
             dumper.start();
-            dumper.startFile("CommonEvents", app.ts("Common Events"));
+            dumper.startFile("CommonEvents", T.u.tsc_cev);
             for (IRIO rio : mapSystem.getAllCommonEvents())
                 dumper.dump(rio.getIVar("@name").decString(), rio.getIVar("@list"), commandsEvent);
             dumper.endFile();
         }
         @Override
         public String toString() {
-            return app.ts("Common Events");
+            return T.u.tsc_cev;
         }
     }
 
@@ -129,7 +129,7 @@ public class UITranscriptControl extends App.Prx {
 
         public TCMap(IRMMapSystem.RMMapData rm) {
             rmd = rm;
-            whatDoWeCallThis = app.fmt.formatExtended(app.ts("Map:#A"), new RubyIO().setString(rmd.getName(), true));
+            whatDoWeCallThis = T.u.tsc_map.r(rmd.getName());
         }
 
         @Override
@@ -155,7 +155,7 @@ public class UITranscriptControl extends App.Prx {
                     IRIO page = pages.getAElem(i);
                     if (page.getType() == '0')
                         continue; // 0th page on R2k backend.
-                    dumper.dump(app.fmt.formatExtended(app.ts("Ev.#A #C, page #B"), new RubyIO().setFX(k), new RubyIO().setFX(pageId), event.getIVar("@name")), page.getIVar("@list"), commandsEvent);
+                    dumper.dump(T.u.tsc_ev.r(k, pageId, event.getIVar("@name")), page.getIVar("@list"), commandsEvent);
                     pageId++;
                 }
             }
@@ -174,7 +174,7 @@ public class UITranscriptControl extends App.Prx {
         }
         @Override
         public String toString() {
-            return app.ts("Context (variables, etc.)");
+            return T.u.tsc_ctx;
         }
     }
 }

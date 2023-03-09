@@ -30,5 +30,13 @@ public class TrAppUI extends TrPage {
     public String cg_copyR48;
     public FF2 frameDisplay;
     public String set_selAll, set_deSelAll;
-    public String lAlphaChannel;
+    public String lAlphaChannel, lHSVRecommend;
+    public String bEnumRename, enumOptions, bEnumManual;
+    public String usl_full, usl_partial, usl_from, usl_to, usl_addR, usl_confirmReplace;
+    public FF2 usl_completeReport;
+    public String tsc_dumpOk, tsc_cev, tsc_ctx;
+    public FF1 tsc_map;
+    public FF3 tsc_ev;
+    public String shcEmpty, shcIncompatible;
+    public String shNoCloneTmp;
 }

@@ -32,7 +32,7 @@ public class UIEnumChoice extends App.Prx {
 
     // entryText defaults to "Manual."
     public UIEnumChoice(App app, final IConsumer<RubyIO> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
-        this(app, result, new Category[] {new Category(app.ts("Options"), options)}, entryText, entryType);
+        this(app, result, new Category[] {new Category(app.t.u.enumOptions, options)}, entryText, entryType);
     }
 
     public UIEnumChoice(App app, final IConsumer<RubyIO> result, final Category[] order, String entryText, EntryMode entryType) {
@@ -57,7 +57,7 @@ public class UIEnumChoice extends App.Prx {
                 });
                 UIElement element = button;
                 if (o.editSuffix != null) {
-                    final UIAppendButton switcheroo = new UIAppendButton(app.ts(" Name"), element, null, app.f.enumChoiceTextHeight);
+                    final UIAppendButton switcheroo = new UIAppendButton(T.u.bEnumRename, element, null, app.f.enumChoiceTextHeight);
                     final UITextBox textbox = new UITextBox(o.textSuffix, app.f.enumChoiceTextHeight);
                     final AtomicBoolean ab = new AtomicBoolean(false);
                     switcheroo.button.onClick = new Runnable() {
@@ -88,7 +88,7 @@ public class UIEnumChoice extends App.Prx {
         }
 
         if (entryText == null)
-            entryText = app.ts("Manual.");
+            entryText = T.u.bEnumManual;
 
         UISplitterLayout finalSplit = null;
         if (entryType == EntryMode.STR) {

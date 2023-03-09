@@ -12,6 +12,9 @@
 
 	bOk "Ok"
 	bCancel "Cancel"
+	bConfirm "Confirm"
+	bCopy "Copy"
+	bPaste "Paste"
 
 	bContinue "Continue"
 	bConfigV "Configure"
@@ -99,6 +102,29 @@
 		deSelAll "Deselect All"
 	)
 	lAlphaChannel "Alpha"
+	lHSVRecommend "(NOTE: HSV may be better if precision isn't an issue.)"
+	bEnumRename " Name"
+	bEnumManual "Manual."
+	enumOptions "Options"
+	(usl_
+		full "Full"
+		partial "Partial"
+		completeReport (fl2 "Made " a0 " total string adjustments across " a1 " files.")
+		from "From: "
+		to "To: "
+		addR "Add replacement"
+		confirmReplace "Confirm & Replace"
+	)
+	(tsc_
+		dumpOk "transcript.html was written to the target's folder."
+		cev "Common Events"
+		ctx "Context (variables, etc.)"
+		map (fl1 "Map:" a0)
+		ev (fl3 "Ev." a0 " " a2 ", page " a1)
+	)
+	shcEmpty "There is nothing in the clipboard."
+	shcIncompatible "Incompatible clipboard and target."
+	shNoCloneTmp "Cannot clone, this contains a temporary dialog."
 )
 
 (define-group TrSchema

@@ -23,7 +23,7 @@ public class UITextPrompt extends App.Prx {
     public UITextPrompt(App app, final String s, final IConsumer<String> iConsumer) {
         super(app);
         uiSVL.panelsAdd(new UILabel(s, app.f.textDialogDescTextHeight));
-        uiSVL.panelsAdd(new UISplitterLayout(utb, new UITextButton(app.ts("OK"), app.f.textDialogFieldTextHeight, new Runnable() {
+        uiSVL.panelsAdd(new UISplitterLayout(utb, new UITextButton(T.g.bOk, app.f.textDialogFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 iConsumer.accept(utb.text);
