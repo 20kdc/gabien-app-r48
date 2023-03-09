@@ -134,3 +134,5 @@
 	confirm "Please confirm..."
 	charGen "Character Generator"
 )
+
+(include "terms/eng/fontsizes")

@@ -9,6 +9,7 @@ package r48.cfg;
 
 import gabien.GaBIEn;
 import gabien.uslx.append.*;
+import r48.tr.pages.TrFontSizes;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -19,7 +20,7 @@ import java.util.LinkedList;
  */
 public class FontSizes {
     // I'm unsure how these stay in order, but they do.
-    // NOTE: TXDB ANNOTATIONS REQUIRED HERE! The comments are still picked up by the translation aid.
+    // Beware that the names must correspond to TrFontSizes.
 
     @FontSizeDefault(16)
     public int schemaPathTextHeight;
@@ -140,11 +141,25 @@ public class FontSizes {
         public final String name;
         public final int defValue;
         private final Field intern;
+        private final Field trPageField;
 
         public FontSizeField(Field i) {
             name = i.getName();
             defValue = i.getAnnotation(FontSizeDefault.class).value();
             intern = i;
+            try {
+                trPageField = TrFontSizes.class.getField(name);
+            } catch (Exception ex) {
+                throw new RuntimeException("error with font size xref " + name);
+            }
+        }
+
+        public String trName(TrFontSizes fs) {
+            try {
+                return (String) trPageField.get(fs);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         @Override

@@ -66,7 +66,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         }).centred(), app.f.menuTextHeight), new UIBorderedSubpanel(new UITextButton(app.ts("Configuration"), app.f.menuTextHeight, new Runnable() {
             @Override
             public void run() {
-                app.ui.wm.createWindow(new UIFontSizeConfigurator(app.c, app.t.g, app.applyConfigChange));
+                app.ui.wm.createWindow(new UIFontSizeConfigurator(app.c, app.t, app.applyConfigChange));
             }
         }).centred(), app.f.menuTextHeight), false, 0.5), false, 0.333333);
         UIElement menu5 = new UISplitterLayout(new UIBorderedSubpanel(new UITextButton(app.ts("Image Editor"), app.f.menuTextHeight, new Runnable() {

@@ -10,7 +10,7 @@ import r48.tr.TrPage;
 
 /**
  * Central hub for translation pages.
- * Elements should be single-letter.
+ * Elements should be single-letter unless you expect a field to almost never be directly accessed (fontSizes)
  * Created March 8th 2023.
  */
 public class TrRoot extends TrPage {
@@ -18,4 +18,5 @@ public class TrRoot extends TrPage {
     public final TrTitle t = new TrTitle();
     public final TrAppUI u = new TrAppUI();
     public final TrSchema s = new TrSchema();
+    public final TrFontSizes fontSizes = new TrFontSizes();
 }

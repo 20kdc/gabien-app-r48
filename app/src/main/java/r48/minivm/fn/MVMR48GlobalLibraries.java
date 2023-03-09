@@ -7,14 +7,14 @@
 package r48.minivm.fn;
 
 import r48.app.InterlaunchGlobals;
-import r48.minivm.MVMEnv;
+import r48.minivm.MVMEnvR48;
 
 /**
  * MiniVM standard library.
  * Created 28th February 2023.
  */
 public class MVMR48GlobalLibraries {
-    public static void add(MVMEnv ctx, InterlaunchGlobals ilg) {
+    public static void add(MVMEnvR48 ctx, InterlaunchGlobals ilg) {
         MVMCoreLibraries.add(ctx);
         MVMIntegrationLibrary.add(ctx);
     }

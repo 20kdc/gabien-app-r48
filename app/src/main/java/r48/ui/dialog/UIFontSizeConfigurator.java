@@ -14,7 +14,7 @@ import gabien.uslx.append.*;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.cfg.FontSizes.FontSizeField;
-import r48.tr.pages.TrGlobal;
+import r48.tr.pages.TrRoot;
 import r48.ui.UIAppendButton;
 
 import java.util.LinkedList;
@@ -27,10 +27,10 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
     private int lastFontSizerSize = -1;
     private int lastSBSize = -1;
     public final Config c;
-    public final TrGlobal T;
+    public final TrRoot T;
     public final Runnable apply;
 
-    public UIFontSizeConfigurator(Config c, TrGlobal t, Runnable apply) {
+    public UIFontSizeConfigurator(Config c, TrRoot t, Runnable apply) {
         this.c = c;
         T = t;
         this.apply = apply;
@@ -81,12 +81,12 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 refreshLayout(false);
             }
         }), false, 1, 2));
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(T.wordSave, c.f.fontSizerTextHeight, new Runnable() {
+        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(T.g.wordSave, c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 ConfigIO.save(c);
             }
-        }), new UITextButton(T.wordLoad, c.f.fontSizerTextHeight, new Runnable() {
+        }), new UITextButton(T.g.wordLoad, c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 ConfigIO.load(false, c);
@@ -191,7 +191,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 });
                 tb.accept(Integer.toString(field.get()));
                 // NOTE: This is correct behavior due to an 'agreement' in FontSizes that this should be correct
-                outerLayout.panelsAdd(new UISplitterLayout(new UILabel(TEMP(field.name), c.f.fontSizerTextHeight), tb, false, 4, 5));
+                outerLayout.panelsAdd(new UISplitterLayout(new UILabel(field.trName(T.fontSizes), c.f.fontSizerTextHeight), tb, false, 4, 5));
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -16,32 +16,31 @@ import r48.minivm.MVMEnv;
 import r48.minivm.MVMEnv.Slot;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMU;
-import r48.minivm.compiler.MVMCompileScope;
-import r48.minivm.expr.MVMCExpr;
 
 /**
  * MiniVM standard library.
  * Created 28th February 2023.
  */
 public class MVMIntegrationLibrary {
-    public static void add(MVMEnv ctx) {
-        ctx.defineSlot(new DatumSymbol("include")).v = new Include()
-                .attachHelp("(include FILE) : Includes the given file. This occurs at compile-time and magically counts as top-level even if it shouldn't. The filename has \".scm\" appended, and a second file is checked for with \".aux.scm\" appended for user additions.");
+    public static void add(MVMEnvR48 ctx) {
+        ctx.defineSlot(new DatumSymbol("include")).v = new Include(ctx)
+                .attachHelp("(include FILE) : Includes the given file. The code within magically counts as top-level even if it shouldn't. The filename has \".scm\" appended, and a second file is checked for with \".aux.scm\" appended for user additions.");
         ctx.defineSlot(new DatumSymbol("log")).v = new Log()
                 .attachHelp("(log V...) : Logs the given values.");
         ctx.defineSlot(new DatumSymbol("help-html")).v = new HelpHTML(ctx)
                 .attachHelp("(help-html) : Creates r48-repl-help.html in the R48 launch directory.");
     }
-    public static final class Include extends MVMMacro {
-        public Include() {
+    public static final class Include extends MVMFn.VA {
+        final MVMEnvR48 r48;
+        public Include(MVMEnvR48 env) {
             super("include");
+            this.r48 = env;
         }
 
         @Override
-        public MVMCExpr compile(MVMCompileScope cs, Object[] call) {
-            MVMEnvR48 r48 = (MVMEnvR48) cs.context;
-            for (int i = 1; i < call.length; i++) {
-                String s = (String) call[i];
+        protected Object callIndirect(Object[] args) {
+            for (int i = 0; i < args.length; i++) {
+                String s = (String) args[i];
                 r48.include(s, false);
             }
             return null;
