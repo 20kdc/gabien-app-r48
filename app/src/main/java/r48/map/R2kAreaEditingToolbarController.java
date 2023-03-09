@@ -12,7 +12,6 @@ import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import r48.App;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.maptools.UIMTBase;
@@ -43,7 +42,7 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
 
     @Override
     public UIElement getBar() {
-        return new UILabel(TXDB.get("Editing Area..."), app.f.mapLayertabTextHeight);
+        return new UILabel(app.ts("Editing Area..."), app.f.mapLayertabTextHeight);
     }
 
     @Override
@@ -54,8 +53,8 @@ public class R2kAreaEditingToolbarController extends App.Svc implements IEditing
     private class UIMTAreaTool extends UIMTBase implements IMapViewCallbacks {
 
         public UILabel label;
-        public String textA = TXDB.get("Click to define first point (old area shown)");
-        public String textB = TXDB.get("Click again to define second point");
+        public String textA = app.ts("Click to define first point (old area shown)");
+        public String textB = app.ts("Click again to define second point");
 
         public UIMTAreaTool() {
             super(R2kAreaEditingToolbarController.this.mapToolContext);

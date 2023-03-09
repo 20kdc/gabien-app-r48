@@ -8,7 +8,6 @@
 package r48.maptools;
 
 import gabien.ui.UILabel;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
@@ -27,7 +26,7 @@ public class UIMTEventMover extends UIMTBase implements IMapViewCallbacks {
         super(mv);
         mapView = mv.getMapView();
         targetEventKey = evK;
-        changeInner(new UILabel(TXDB.get("Click to place event"), app.f.dialogWindowTextHeight), true);
+        changeInner(new UILabel(app.ts("Click to place event"), app.f.dialogWindowTextHeight), true);
     }
 
     // tool stuff

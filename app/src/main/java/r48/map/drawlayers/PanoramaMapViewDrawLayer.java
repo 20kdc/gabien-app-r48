@@ -10,20 +10,21 @@ package r48.map.drawlayers;
 import gabien.GaBIEn;
 import gabien.IImage;
 import gabien.ui.UIElement;
-import r48.dbs.TXDB;
+import r48.App;
 import r48.map.MapViewDrawContext;
 
 /**
  * Used for drawing panoramas.
  * Created on 08/06/17.
  */
-public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
+public class PanoramaMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
     private final IImage im;
     private boolean loopX, loopY;
     private int autoLoopX, autoLoopY, mapTilesW, mapTilesH, scrW, scrH, panoScale;
     private int parallaxRatioA, parallaxRatioB;
 
-    public PanoramaMapViewDrawLayer(IImage pano, boolean lx, boolean ly, int alx, int aly, int mtx, int mty, int scw, int sch, int pScale) {
+    public PanoramaMapViewDrawLayer(App app, IImage pano, boolean lx, boolean ly, int alx, int aly, int mtx, int mty, int scw, int sch, int pScale) {
+        super(app);
         im = pano;
         loopX = lx;
         loopY = ly;
@@ -38,7 +39,8 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
         parallaxRatioB = 1;
     }
 
-    public PanoramaMapViewDrawLayer(IImage pano, boolean lx, boolean ly, int alx, int aly, int mtx, int mty, int scw, int sch, int pScale, int pra, int prb) {
+    public PanoramaMapViewDrawLayer(App app, IImage pano, boolean lx, boolean ly, int alx, int aly, int mtx, int mty, int scw, int sch, int pScale, int pra, int prb) {
+        super(app);
         im = pano;
         loopX = lx;
         loopY = ly;
@@ -55,7 +57,7 @@ public class PanoramaMapViewDrawLayer implements IMapViewDrawLayer {
 
     @Override
     public String getName() {
-        return TXDB.get("Panorama");
+        return app.ts("Panorama");
     }
 
     public void draw(MapViewDrawContext mvdc) {

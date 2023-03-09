@@ -14,7 +14,6 @@ import gabien.ui.Rect;
 import r48.App;
 import r48.RubyIO;
 import r48.RubyTable;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.events.RMEventGraphicRenderer;
 import r48.schema.SchemaElement;
@@ -248,14 +247,14 @@ public class RGSSGenposFrame extends App.Svc implements IGenposFrame {
     @Override
     public String[] getCellProps() {
         return new String[] {
-                TXDB.get("cellID"),
-                TXDB.get("xPos"),
-                TXDB.get("yPos"),
-                TXDB.get("scale"),
-                TXDB.get("angle"),
-                TXDB.get("mirror"),
-                TXDB.get("opacity"),
-                TXDB.get("blendType")
+                app.ts("cellID"),
+                app.ts("xPos"),
+                app.ts("yPos"),
+                app.ts("scale"),
+                app.ts("angle"),
+                app.ts("mirror"),
+                app.ts("opacity"),
+                app.ts("blendType")
         };
     }
 

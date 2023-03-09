@@ -9,7 +9,7 @@ package r48.map.tiles;
 
 import gabien.IGrDriver;
 import gabien.IImage;
-import r48.dbs.TXDB;
+import r48.App;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
 
@@ -17,11 +17,12 @@ import r48.map.tileedit.TileEditingTab;
  * Useful for, say, your average Tiled output.
  * Created on May 11th 2018.
  */
-public class GenericTileRenderer implements ITileRenderer {
+public class GenericTileRenderer extends App.Svc implements ITileRenderer {
     public final int tileSize, tileStride, tileCount;
     public final IImage img;
 
-    public GenericTileRenderer(IImage image, int ts, int tw, int count) {
+    public GenericTileRenderer(App app, IImage image, int ts, int tw, int count) {
+        super(app);
         img = image;
         tileSize = ts;
         tileStride = tw;
@@ -43,7 +44,7 @@ public class GenericTileRenderer implements ITileRenderer {
     @Override
     public TileEditingTab[] getEditConfig(int layerIdx) {
         return new TileEditingTab[] {
-                new TileEditingTab(TXDB.get("Tiles"), false, TileEditingTab.range(0, tileCount))
+                new TileEditingTab(app.ts("Tiles"), false, TileEditingTab.range(0, tileCount))
         };
     }
 

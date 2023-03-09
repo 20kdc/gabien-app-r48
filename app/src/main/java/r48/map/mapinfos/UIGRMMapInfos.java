@@ -11,7 +11,6 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.IMapContext;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
@@ -136,7 +135,7 @@ public class UIGRMMapInfos extends App.Prx {
         utv.setElements(tree.toArray(new UITreeView.TreeElement[0]));
         uiSVL.panelsAdd(searchBar);
         uiSVL.panelsAdd(utv);
-        uiSVL.panelsAdd(new UITextButton(TXDB.get("<Insert New Map>"), app.f.mapInfosTextHeight, new Runnable() {
+        uiSVL.panelsAdd(new UITextButton(app.ts("<Insert New Map>"), app.f.mapInfosTextHeight, new Runnable() {
             @Override
             public void run() {
                 final UINumberBox num = new UINumberBox(0, app.f.textDialogFieldTextHeight);
@@ -151,12 +150,12 @@ public class UIGRMMapInfos extends App.Prx {
                 };
                 unusedID.run();
                 final AtomicBoolean close = new AtomicBoolean(false);
-                UIAppendButton prompt = new UIAppendButton(TXDB.get("Confirm"), num, new Runnable() {
+                UIAppendButton prompt = new UIAppendButton(app.ts("Confirm"), num, new Runnable() {
                     @Override
                     public void run() {
                         long i = num.number;
                         if (operators.getHashBID(i) != null) {
-                            app.ui.launchDialog(TXDB.get("That ID is already in use."));
+                            app.ui.launchDialog(app.ts("That ID is already in use."));
                             return;
                         }
                         selectedOrder = operators.createNewMap(i);
@@ -166,10 +165,10 @@ public class UIGRMMapInfos extends App.Prx {
                         close.set(true);
                     }
                 }, app.f.textDialogFieldTextHeight);
-                UINSVertLayout dialog = new UINSVertLayout(prompt, new UITextButton(TXDB.get("Find unused ID."), app.f.textDialogFieldTextHeight, unusedID)) {
+                UINSVertLayout dialog = new UINSVertLayout(prompt, new UITextButton(app.ts("Find unused ID."), app.f.textDialogFieldTextHeight, unusedID)) {
                     @Override
                     public String toString() {
-                        return TXDB.get("Map ID?");
+                        return app.ts("Map ID?");
                     }
 
                     @Override
@@ -195,7 +194,7 @@ public class UIGRMMapInfos extends App.Prx {
         if (selectedOrder == order) {
             if (parent != 0) {
                 // This used to be two operations, but, eh.
-                elm = new UIAppendButton(TXDB.get("Move Out "), elm, new Runnable() {
+                elm = new UIAppendButton(app.ts("Move Out "), elm, new Runnable() {
                     @Override
                     public void run() {
                         final int parentLastOrder = MapInfoReparentUtil.findChildrenLastOrder(parent, operators);
@@ -239,13 +238,13 @@ public class UIGRMMapInfos extends App.Prx {
                     }
                 }, app.f.mapInfosTextHeight);
             }
-            elm = new UIAppendButton(TXDB.get("Edit Info. "), elm, new Runnable() {
+            elm = new UIAppendButton(app.ts("Edit Info. "), elm, new Runnable() {
                 @Override
                 public void run() {
                     operators.triggerEditInfoOf(k);
                 }
             }, app.f.mapInfosTextHeight);
-            elm = new UIAppendButton(app, TXDB.get("Delete"), elm, null, new String[] {TXDB.get("Confirm")}, new Runnable[] {new Runnable() {
+            elm = new UIAppendButton(app, app.ts("Delete"), elm, null, new String[] {app.ts("Confirm")}, new Runnable[] {new Runnable() {
                 @Override
                 public void run() {
                     // Orphan/move up child nodes first

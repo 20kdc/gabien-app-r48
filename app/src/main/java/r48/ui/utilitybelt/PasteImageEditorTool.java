@@ -9,7 +9,6 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.*;
 import r48.App;
-import r48.dbs.TXDB;
 import r48.io.BMPConnection;
 
 import java.io.IOException;
@@ -17,7 +16,7 @@ import java.io.IOException;
 /**
  * Created on 14th July 2018
  */
-public class PasteImageEditorTool extends App.Svc implements IImageEditorTool {
+public class PasteImageEditorTool extends ImageEditorTool {
     public boolean flipX, flipY, swapXY;
     public boolean rawCopy = true;
 
@@ -50,7 +49,7 @@ public class PasteImageEditorTool extends App.Svc implements IImageEditorTool {
         }
 
         if (result == null) {
-            app.ui.launchDialog(TXDB.get("Object in clipboard not a valid image."));
+            app.ui.launchDialog(app.ts("Object in clipboard not a valid image."));
             return;
         }
 
@@ -159,25 +158,25 @@ public class PasteImageEditorTool extends App.Svc implements IImageEditorTool {
     @Override
     public UIElement createToolPalette(UIImageEditView uiev) {
         UIScrollLayout uie = RootImageEditorTool.createToolPalette(uiev, PasteImageEditorTool.class);
-        UITextButton a = new UITextButton(TXDB.get("FlipX"), app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton a = new UITextButton(app.ts("FlipX"), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 flipX = !flipX;
             }
         }).togglable(flipX);
-        UITextButton b = new UITextButton(TXDB.get("Y"), app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton b = new UITextButton(app.ts("Y"), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 flipY = !flipY;
             }
         }).togglable(flipY);
-        UITextButton c = new UITextButton(TXDB.get("SwapXY"), app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton c = new UITextButton(app.ts("SwapXY"), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 swapXY = !swapXY;
             }
         }).togglable(swapXY);
-        UITextButton d = new UITextButton(TXDB.get("Raw Copy"), app.f.schemaFieldTextHeight, new Runnable() {
+        UITextButton d = new UITextButton(app.ts("Raw Copy"), app.f.schemaFieldTextHeight, new Runnable() {
             @Override
             public void run() {
                 rawCopy = !rawCopy;
@@ -196,11 +195,11 @@ public class PasteImageEditorTool extends App.Svc implements IImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return TXDB.get("Tap top-left pixel of destination.");
+        return app.ts("Tap top-left pixel of destination.");
     }
 
     @Override
-    public IImageEditorTool getCamModeLT() {
+    public ImageEditorTool getCamModeLT() {
         return null;
     }
 

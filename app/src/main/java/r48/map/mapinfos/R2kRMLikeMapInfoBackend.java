@@ -10,7 +10,6 @@ package r48.map.mapinfos;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
@@ -216,12 +215,12 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     public String calculateIndentsAndGetErrors(HashMap<Long, Integer> id) {
         StringBuilder errors = new StringBuilder();
         if (getHashBID(0) == null)
-            errors.append(TXDB.get("Root map (ID 0, type 'root) required!")).append('\n');
-        RXPRMLikeMapInfoBackend.standardCalculateIndentsAndGetErrors(this, id, errors, 1);
+            errors.append(app.ts("Root map (ID 0, type 'root) required!")).append('\n');
+        RXPRMLikeMapInfoBackend.standardCalculateIndentsAndGetErrors(app, this, id, errors, 1);
         // Perform further order consistency checks
         for (Long l : getHashKeys()) {
             if (getOrderOfMap(l) == -1) {
-                errors.append(TXDB.get("No order for map: "));
+                errors.append(app.ts("No order for map: "));
                 errors.append(l);
                 errors.append('\n');
             }
@@ -232,18 +231,18 @@ public class R2kRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
         for (int i = 0; i < alen; i++) {
             long rt = mapTreeOrders.getAElem(i).getFX();
             if (orderMaps.contains(rt)) {
-                errors.append(TXDB.get("Order contains map twice: "));
+                errors.append(app.ts("Order contains map twice: "));
                 errors.append(rt);
                 errors.append('\n');
             }
             orderMaps.add(rt);
             if (getHashBID(rt) == null) {
-                errors.append(TXDB.get("Order expects mapinfos entry: "));
+                errors.append(app.ts("Order expects mapinfos entry: "));
                 errors.append(rt);
                 errors.append('\n');
             }
         }
 
-        return RXPRMLikeMapInfoBackend.errorsToStringOrNull(errors);
+        return RXPRMLikeMapInfoBackend.errorsToStringOrNull(app, errors);
     }
 }

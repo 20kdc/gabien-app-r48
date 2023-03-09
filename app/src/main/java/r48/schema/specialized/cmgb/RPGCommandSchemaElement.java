@@ -14,7 +14,6 @@ import r48.RubyIO;
 import r48.dbs.CMDB;
 import r48.dbs.PathSyntax;
 import r48.dbs.RPGCommand;
-import r48.dbs.TXDB;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
@@ -76,7 +75,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
         final SchemaPath path = path2.tagSEMonitor(target, this, false);
 
         if (showHeader) {
-            UIElement chooseCode = new UIAppendButton(TXDB.get(" ? "), new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTextHeight, new Runnable() {
+            UIElement chooseCode = new UIAppendButton(app.ts(" ? "), new UITextButton(database.buildCodename(target, true, true), app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     launcher.pushObject(path2.newWindow(navigateToCode(launcher, target, new IConsumer<int[]>() {
@@ -93,16 +92,16 @@ public class RPGCommandSchemaElement extends SchemaElement {
                     int code = (int) target.getIVar("@code").getFX();
                     RPGCommand rc = database.knownCommands.get(code);
                     String title = code + " : ";
-                    String result = TXDB.get("This command isn't known by the schema's CMDB.");
+                    String result = app.ts("This command isn't known by the schema's CMDB.");
                     if (rc != null) {
                         title += rc.formatName(null, null);
                         if (rc.description == null) {
-                            result = TXDB.get("This command is known, but no description exists.");
+                            result = app.ts("This command is known, but no description exists.");
                         } else {
                             result = rc.description;
                         }
                     } else {
-                        title += TXDB.get("Unknown Command");
+                        title += app.ts("Unknown Command");
                     }
                     app.ui.launchDialog(title + "\n" + result);
                 }
@@ -124,9 +123,9 @@ public class RPGCommandSchemaElement extends SchemaElement {
             if (target.getIVar("@indent") != null) {
                 if (showHeader) {
                     PathSyntax indent = PathSyntax.compile(app, "@indent");
-                    SchemaElement ise = new PathSchemaElement(indent, TXDB.get("@indent"), new ROIntegerSchemaElement(app, 0), false);
+                    SchemaElement ise = new PathSchemaElement(indent, app.ts("@indent"), new ROIntegerSchemaElement(app, 0), false);
                     if (!allowControlOfIndent)
-                        ise = new PathSchemaElement(indent, TXDB.get("@indent"), new IntegerSchemaElement(app, 0), false);
+                        ise = new PathSchemaElement(indent, app.ts("@indent"), new IntegerSchemaElement(app, 0), false);
                     uiSVL.panelsAdd(ise.buildHoldingEditor(target, launcher, path));
                 }
             }
@@ -205,7 +204,7 @@ public class RPGCommandSchemaElement extends SchemaElement {
                 // This isn't done automatically by UIEnumChoice.
                 launcher.popObject();
             }
-        }, categories, TXDB.get("Code"), UIEnumChoice.EntryMode.INT), null, path);
+        }, categories, app.ts("Code"), UIEnumChoice.EntryMode.INT), null, path);
     }
 
     @Override

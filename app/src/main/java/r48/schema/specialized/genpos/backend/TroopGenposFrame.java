@@ -13,7 +13,6 @@ import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.imagefx.HueShiftImageEffect;
 import r48.io.data.IRIO;
 import r48.map.imaging.IImageLoader;
@@ -142,10 +141,10 @@ public class TroopGenposFrame implements IGenposFrame {
     @Override
     public String[] getCellProps() {
         return new String[] {
-                TXDB.get("enemyId"),
-                TXDB.get("x"),
-                TXDB.get("y"),
-                TXDB.get("invisible")
+                app.ts("enemyId"),
+                app.ts("x"),
+                app.ts("y"),
+                app.ts("invisible")
         };
     }
 

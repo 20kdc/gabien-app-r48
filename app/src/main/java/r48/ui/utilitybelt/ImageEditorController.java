@@ -12,7 +12,6 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.imageio.ImageIOFormat;
 import r48.maptools.UIMTBase;
 import r48.ui.UIAppendButton;
@@ -36,7 +35,7 @@ public class ImageEditorController extends App.Svc {
     private UIScrollLayout paletteView;
 
     // This holds a bit of state, so let's just attach it/detach it as we want
-    private final UITextButton sanityButton = new UITextButton(TXDB.get("Adjust"), app.f.schemaFieldTextHeight, null).togglable(true);
+    private final UITextButton sanityButton = new UITextButton(app.ts("Adjust"), app.f.schemaFieldTextHeight, null).togglable(true);
     // The current thing holding the sanity button (needed so it can be broken apart on UI rebuild)
     private UISplitterLayout sanityButtonHolder = null;
 
@@ -49,11 +48,11 @@ public class ImageEditorController extends App.Svc {
 
     public ImageEditorController(App app) {
         super(app);
-        imageEditView = new UIImageEditView(app, new RootImageEditorTool(), new Runnable() {
+        imageEditView = new UIImageEditView(app, new RootImageEditorTool(app), new Runnable() {
             @Override
             public void run() {
                 while (true) {
-                    IImageEditorTool tool = imageEditView.currentTool;
+                    ImageEditorTool tool = imageEditView.currentTool;
                     imageEditView.currentTool.forceDifferentTool(imageEditView);
                     if (tool == imageEditView.currentTool)
                         break;
@@ -67,8 +66,8 @@ public class ImageEditorController extends App.Svc {
             @Override
             public String toString() {
                 if (imageEditView.eds.imageModified())
-                    return TXDB.get("Image Editor (modified)"); // + " " + imageEditView.eds.getSaveDepth();
-                return TXDB.get("Image Editor"); // + " " + imageEditView.eds.getSaveDepth();
+                    return app.ts("Image Editor (modified)"); // + " " + imageEditView.eds.getSaveDepth();
+                return app.ts("Image Editor"); // + " " + imageEditView.eds.getSaveDepth();
             }
 
             @Override
@@ -87,7 +86,7 @@ public class ImageEditorController extends App.Svc {
     public void save() {
         // Used by AppMain for Save All Modified (...)
         if (!imageEditView.eds.canSimplySave()) {
-            app.ui.launchDialog(TXDB.get("While the image editor contents would be saved, there's nowhere to save them."));
+            app.ui.launchDialog(app.ts("While the image editor contents would be saved, there's nowhere to save them."));
             return;
         }
         // Save to existing location
@@ -95,7 +94,7 @@ public class ImageEditorController extends App.Svc {
             imageEditView.eds.simpleSave();
         } catch (Exception e) {
             e.printStackTrace();
-            app.ui.launchDialog(TXDB.get("Failed to save.") + "\n" + e);
+            app.ui.launchDialog(app.ts("Failed to save.") + "\n" + e);
         }
         app.ui.performFullImageFlush();
     }
@@ -104,7 +103,7 @@ public class ImageEditorController extends App.Svc {
         GaBIEn.hintFlushAllTheCaches();
         ImageIOFormat.TryToLoadResult ioi = ImageIOFormat.tryToLoad(filename, app.imageIOFormats);
         if (ioi == null) {
-            app.ui.launchDialog(app.fmt.formatExtended(TXDB.get("Failed to load #A."), new RubyIO().setString(filename, true)));
+            app.ui.launchDialog(app.fmt.formatExtended(app.ts("Failed to load #A."), new RubyIO().setString(filename, true)));
         } else {
             boolean detectedCK = false;
             if (ioi.wouldKnowIfColourKey) {
@@ -143,7 +142,7 @@ public class ImageEditorController extends App.Svc {
             final Rect potentialGrid = app.system.getIdealGridForImage(filename, sz);
             if (potentialGrid != null) {
                 if (!potentialGrid.rectEquals(imageEditView.grid)) {
-                    app.ui.createLaunchConfirmation(TXDB.get("Change grid to suit this asset?"), new Runnable() {
+                    app.ui.createLaunchConfirmation(app.ts("Change grid to suit this asset?"), new Runnable() {
                         @Override
                         public void run() {
                             imageEditView.grid = potentialGrid;
@@ -163,8 +162,8 @@ public class ImageEditorController extends App.Svc {
             sanityButtonHolder.release();
             sanityButtonHolder = null;
         }
-        final String fbStrAL = TXDB.get("Open");
-        final String fbStrAS = TXDB.get("Save");
+        final String fbStrAL = app.ts("Open");
+        final String fbStrAS = app.ts("Save");
 
         LinkedList<String> menuDetails = new LinkedList<String>();
         LinkedList<Runnable> menuFuncs = new LinkedList<Runnable>();
@@ -192,12 +191,12 @@ public class ImageEditorController extends App.Svc {
                         imageEditView.eds.endSection();
                         initPalette(0);
                     }
-                }, TXDB.get("Resize...")));
+                }, app.ts("Resize...")));
             }
         });
         if (imageEditView.image.usesPalette()) {
-            menuDetails.add(TXDB.get("Indexed"));
-            menuFuncs.add(app.ui.createLaunchConfirmation(TXDB.get("Are you sure you want to switch to 32-bit ARGB? The image will no longer contain a palette, which may make editing inconvenient, and some formats will become unavailable."), new Runnable() {
+            menuDetails.add(app.ts("Indexed"));
+            menuFuncs.add(app.ui.createLaunchConfirmation(app.ts("Are you sure you want to switch to 32-bit ARGB? The image will no longer contain a palette, which may make editing inconvenient, and some formats will become unavailable."), new Runnable() {
                 @Override
                 public void run() {
                     imageEditView.eds.startSection();
@@ -208,9 +207,9 @@ public class ImageEditorController extends App.Svc {
                 }
             }));
             if (imageEditView.image.t1Lock) {
-                menuDetails.add(TXDB.get("Colourkey On"));
+                menuDetails.add(app.ts("Colourkey On"));
             } else {
-                menuDetails.add(TXDB.get("Colourkey Off"));
+                menuDetails.add(app.ts("Colourkey Off"));
             }
             menuFuncs.add(new Runnable() {
                 @Override
@@ -222,8 +221,8 @@ public class ImageEditorController extends App.Svc {
                 }
             });
         } else {
-            menuDetails.add(TXDB.get("ARGB (32-bit)"));
-            menuFuncs.add(app.ui.createLaunchConfirmation(TXDB.get("Are you sure? This will create a palette entry for every colour in the image."), new Runnable() {
+            menuDetails.add(app.ts("ARGB (32-bit)"));
+            menuFuncs.add(app.ui.createLaunchConfirmation(app.ts("Are you sure? This will create a palette entry for every colour in the image."), new Runnable() {
                 @Override
                 public void run() {
                     imageEditView.eds.startSection();
@@ -234,7 +233,7 @@ public class ImageEditorController extends App.Svc {
                 }
             }));
         }
-        menuDetails.add(TXDB.get("New"));
+        menuDetails.add(app.ts("New"));
         menuFuncs.add(new Runnable() {
             @Override
             public void run() {
@@ -244,11 +243,11 @@ public class ImageEditorController extends App.Svc {
                         imageEditView.setImage(new ImageEditorImage(imageEditView.image.width, imageEditView.image.height));
                         imageEditView.eds.newFile();
                         initPalette(3);
-                        app.ui.launchDialog(TXDB.get("New image created (same size as the previous image)"));
+                        app.ui.launchDialog(app.ts("New image created (same size as the previous image)"));
                     }
                 };
                 if (imageEditView.eds.imageModified())
-                    actualCore = app.ui.createLaunchConfirmation(TXDB.get("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), actualCore);
+                    actualCore = app.ui.createLaunchConfirmation(app.ts("Are you sure you want to create a new image? This will unload the previous image, destroying unsaved changes."), actualCore);
                 actualCore.run();
             }
         });
@@ -275,7 +274,7 @@ public class ImageEditorController extends App.Svc {
                 }
             }));
         }
-        menuDetails.add(TXDB.get("Save As"));
+        menuDetails.add(app.ts("Save As"));
         menuFuncs.add(addPresaveWarningWrapper(new Runnable() {
             @Override
             public void run() {
@@ -310,7 +309,7 @@ public class ImageEditorController extends App.Svc {
                                             imageEditView.eds.didSuccessfulSave(s, format);
                                         } catch (Exception e) {
                                             e.printStackTrace();
-                                            app.ui.launchDialog(app.fmt.formatExtended(TXDB.get("Failed to save #A."), new RubyIO().setString(s, true)) + "\n" + e);
+                                            app.ui.launchDialog(app.fmt.formatExtended(app.ts("Failed to save #A."), new RubyIO().setString(s, true)) + "\n" + e);
                                         }
                                         app.ui.performFullImageFlush();
                                         initPalette(0);
@@ -323,7 +322,7 @@ public class ImageEditorController extends App.Svc {
                 app.ui.wm.createWindow(new UIAutoclosingPopupMenu(items.toArray(new String[0]), runnables.toArray(new Runnable[0]), app.f.menuTextHeight, app.f.menuScrollersize, true));
             }
         }));
-        menuDetails.add(TXDB.get("CharacterGen..."));
+        menuDetails.add(app.ts("CharacterGen..."));
         menuFuncs.add(new Runnable() {
             @Override
             public void run() {
@@ -331,7 +330,7 @@ public class ImageEditorController extends App.Svc {
             }
         });
 
-        fileButtonMenuHook = new UIMenuButton(app, TXDB.get("File..."), app.f.imageEditorTextHeight, new ISupplier<Boolean>() {
+        fileButtonMenuHook = new UIMenuButton(app, app.ts("File..."), app.f.imageEditorTextHeight, new ISupplier<Boolean>() {
             @Override
             public Boolean get() {
                 return paletteThing == currentPaletteThing;
@@ -339,7 +338,7 @@ public class ImageEditorController extends App.Svc {
         }, menuDetails.toArray(new String[0]), menuFuncs.toArray(new Runnable[0]));
         paletteView.panelsAdd(fileButtonMenuHook);
 
-        paletteView.panelsAdd(new UIMenuButton(app, TXDB.get("Grid..."), app.f.imageEditorTextHeight, new ISupplier<UIElement>() {
+        paletteView.panelsAdd(new UIMenuButton(app, app.ts("Grid..."), app.f.imageEditorTextHeight, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
                 // The grid changer used to be using the same XY changer as resizing, then that became impractical.
@@ -360,16 +359,16 @@ public class ImageEditorController extends App.Svc {
                 gridY.onEdit = sendUpdates;
                 gridW.onEdit = sendUpdates;
                 gridH.onEdit = sendUpdates;
-                verticalLayout.panelsAdd(new UILabel(TXDB.get("Grid Size:"), app.f.imageEditorTextHeight));
+                verticalLayout.panelsAdd(new UILabel(app.ts("Grid Size:"), app.f.imageEditorTextHeight));
                 verticalLayout.panelsAdd(new UISplitterLayout(gridX, gridY, false, 0.5d));
-                verticalLayout.panelsAdd(new UILabel(TXDB.get("Grid Offset:"), app.f.imageEditorTextHeight));
+                verticalLayout.panelsAdd(new UILabel(app.ts("Grid Offset:"), app.f.imageEditorTextHeight));
                 verticalLayout.panelsAdd(new UISplitterLayout(gridW, gridH, false, 0.5d));
                 // This is the colour of the grid.
                 final UIColourSwatchButton uicsb = new UIColourSwatchButton(imageEditView.gridColour, app.f.imageEditorTextHeight, null);
                 uicsb.onClick = new Runnable() {
                     @Override
                     public void run() {
-                        app.ui.wm.createMenu(uicsb, new UIColourPicker(app, TXDB.get("Grid Colour"), imageEditView.gridColour, new IConsumer<Integer>() {
+                        app.ui.wm.createMenu(uicsb, new UIColourPicker(app, app.ts("Grid Colour"), imageEditView.gridColour, new IConsumer<Integer>() {
                             @Override
                             public void accept(Integer t) {
                                 if (t != null)
@@ -380,7 +379,7 @@ public class ImageEditorController extends App.Svc {
                 };
                 verticalLayout.panelsAdd(uicsb);
                 // Finally, grid overlay control.
-                verticalLayout.panelsAdd(new UITextButton(TXDB.get("Overlay"), app.f.imageEditorTextHeight, new Runnable() {
+                verticalLayout.panelsAdd(new UITextButton(app.ts("Overlay"), app.f.imageEditorTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         imageEditView.gridST = !imageEditView.gridST;
@@ -408,7 +407,7 @@ public class ImageEditorController extends App.Svc {
                     imageEditView.setImage(imageEditView.eds.performUndo());
                     initPalette(1);
                 } else {
-                    app.ui.launchDialog(TXDB.get("There is nothing to undo."));
+                    app.ui.launchDialog(app.ts("There is nothing to undo."));
                 }
             }
         }, app.f.imageEditorTextHeight));
@@ -420,7 +419,7 @@ public class ImageEditorController extends App.Svc {
                     imageEditView.setImage(imageEditView.eds.performRedo());
                     initPalette(2);
                 } else {
-                    app.ui.launchDialog(TXDB.get("There is nothing to redo."));
+                    app.ui.launchDialog(app.ts("There is nothing to redo."));
                 }
             }
         }, app.f.imageEditorTextHeight));
@@ -431,14 +430,14 @@ public class ImageEditorController extends App.Svc {
 
         // mode details
         if (imageEditView.image.usesPalette()) {
-            UILabel cType = new UILabel(TXDB.get("Pal. "), app.f.imageEditorTextHeight);
+            UILabel cType = new UILabel(app.ts("Pal. "), app.f.imageEditorTextHeight);
             paletteView.panelsAdd(sanityButtonHolder = new UISplitterLayout(cType, sanityButton, false, 1));
         }
 
         paletteView.panelsAdd(new UISplitterLayout(new UIMenuButton(app, "+", app.f.imageEditorTextHeight, new ISupplier<UIElement>() {
             @Override
             public UIElement get() {
-                return new UIColourPicker(app, TXDB.get("Add Palette Colour..."), imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex) | 0xFF000000, new IConsumer<Integer>() {
+                return new UIColourPicker(app, app.ts("Add Palette Colour..."), imageEditView.image.getPaletteRGB(imageEditView.selPaletteIndex) | 0xFF000000, new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         if (integer == null)
@@ -453,7 +452,7 @@ public class ImageEditorController extends App.Svc {
         }), new UISymbolButton(Symbol.Eyedropper, app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
-                imageEditView.currentTool = new AddColourFromImageEditorTool(new IConsumer<Integer>() {
+                imageEditView.currentTool = new AddColourFromImageEditorTool(app, new IConsumer<Integer>() {
                     @Override
                     public void accept(Integer integer) {
                         imageEditView.eds.startSection();
@@ -503,7 +502,7 @@ public class ImageEditorController extends App.Svc {
             cPanel = new UISplitterLayout(new UIMenuButton(app, "=", app.f.imageEditorTextHeight, new ISupplier<UIElement>() {
                 @Override
                 public UIElement get() {
-                    return new UIColourPicker(app, TXDB.get("Change Palette Colour..."), imageEditView.image.getPaletteRGB(fidx), new IConsumer<Integer>() {
+                    return new UIColourPicker(app, app.ts("Change Palette Colour..."), imageEditView.image.getPaletteRGB(fidx), new IConsumer<Integer>() {
                         @Override
                         public void accept(Integer integer) {
                             if (integer == null)
@@ -529,7 +528,7 @@ public class ImageEditorController extends App.Svc {
             public void run() {
                 if (app.system.engineUsesPal0Colourkeys() && imageEditView.image.usesPalette() && !imageEditView.image.t1Lock) {
                     if (!hasWarnedUserAboutRM) {
-                        app.ui.createLaunchConfirmation(TXDB.get("The engine you're targetting expects indexed-colour images to be colour-keyed. Your image isn't colour-keyed. Continue?"), runnable).run();
+                        app.ui.createLaunchConfirmation(app.ts("The engine you're targetting expects indexed-colour images to be colour-keyed. Your image isn't colour-keyed. Continue?"), runnable).run();
                         hasWarnedUserAboutRM = true;
                         return;
                     }
@@ -568,7 +567,7 @@ public class ImageEditorController extends App.Svc {
             }
         };
 
-        acceptButton = new UITextButton(TXDB.get("Accept"), app.f.imageEditorTextHeight, new Runnable() {
+        acceptButton = new UITextButton(app.ts("Accept"), app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 Rect r = new Rect((int) xVal.number, (int) yVal.number, Math.max((int) wVal.number, 1), Math.max((int) hVal.number, 1));
@@ -576,11 +575,11 @@ public class ImageEditorController extends App.Svc {
                 res.selfClose = true;
             }
         });
-        xyChanger.panelsAdd(new UILabel(TXDB.get("Size"), app.f.imageEditorTextHeight));
+        xyChanger.panelsAdd(new UILabel(app.ts("Size"), app.f.imageEditorTextHeight));
         xyChanger.panelsAdd(new UISplitterLayout(wVal, hVal, false, 1, 2));
-        xyChanger.panelsAdd(new UILabel(TXDB.get("Offset"), app.f.imageEditorTextHeight));
+        xyChanger.panelsAdd(new UILabel(app.ts("Offset"), app.f.imageEditorTextHeight));
         xyChanger.panelsAdd(new UISplitterLayout(xVal, yVal, false, 1, 2));
-        xyChanger.panelsAdd(new UIAppendButton(TXDB.get("Cancel"), acceptButton, new Runnable() {
+        xyChanger.panelsAdd(new UIAppendButton(app.ts("Cancel"), acceptButton, new Runnable() {
             @Override
             public void run() {
                 res.selfClose = true;

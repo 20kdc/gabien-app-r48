@@ -14,7 +14,6 @@ import gabien.uslx.append.*;
 import r48.App;
 import r48.IMapContext;
 import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.ui.UIAppendButton;
 
@@ -54,14 +53,14 @@ public class UISaveScanMapInfos extends App.Prx {
                 IObjectBackend.ILoadedObject rio = app.odb.getObject(objectMapping.apply(i), null);
                 final String gum = gumMapping.apply(i);
                 if (rio != null) {
-                    mainLayout.panelsAdd(new UITextButton(app.fmt.formatExtended(TXDB.get("#A : #B"), new RubyIO().setString(gum, true), rio.getObject()), app.f.mapInfosTextHeight, new Runnable() {
+                    mainLayout.panelsAdd(new UITextButton(app.fmt.formatExtended(app.ts("#A : #B"), new RubyIO().setString(gum, true), rio.getObject()), app.f.mapInfosTextHeight, new Runnable() {
                         @Override
                         public void run() {
                             context.loadMap(gum);
                         }
                     }));
                 } else {
-                    mainLayout.panelsAdd(new UIAppendButton(TXDB.get("New..."), new UILabel(app.fmt.formatExtended(TXDB.get("#A (Unavailable)"), new RubyIO().setString(gum, true)), app.f.mapInfosTextHeight), new Runnable() {
+                    mainLayout.panelsAdd(new UIAppendButton(app.ts("New..."), new UILabel(app.fmt.formatExtended(app.ts("#A (Unavailable)"), new RubyIO().setString(gum, true)), app.f.mapInfosTextHeight), new Runnable() {
                         @Override
                         public void run() {
                             context.loadMap(gum);
@@ -71,8 +70,8 @@ public class UISaveScanMapInfos extends App.Prx {
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                UILabel warning = new UILabel(TXDB.get("Internal error in R48 or with file."), app.f.mapInfosTextHeight);
-                mainLayout.panelsAdd(new UIAppendButton(TXDB.get("Attempt Load Anyway"), warning, new Runnable() {
+                UILabel warning = new UILabel(app.ts("Internal error in R48 or with file."), app.f.mapInfosTextHeight);
+                mainLayout.panelsAdd(new UIAppendButton(app.ts("Attempt Load Anyway"), warning, new Runnable() {
                     @Override
                     public void run() {
                         context.loadMap(gumMapping.apply(fi));

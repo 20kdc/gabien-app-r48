@@ -14,7 +14,7 @@ import gabien.uslx.append.*;
 import r48.cfg.Config;
 import r48.cfg.ConfigIO;
 import r48.cfg.FontSizes.FontSizeField;
-import r48.dbs.TXDB;
+import r48.tr.pages.TrGlobal;
 import r48.ui.UIAppendButton;
 
 import java.util.LinkedList;
@@ -27,15 +27,25 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
     private int lastFontSizerSize = -1;
     private int lastSBSize = -1;
     public final Config c;
+    public final TrGlobal T;
     public final Runnable apply;
 
-    public UIFontSizeConfigurator(Config c, Runnable apply) {
+    public UIFontSizeConfigurator(Config c, TrGlobal t, Runnable apply) {
         this.c = c;
+        T = t;
         this.apply = apply;
         outerLayout = new UIScrollLayout(true, c.f.generalScrollersize);
         refreshLayout(true);
         proxySetElement(outerLayout, false);
         setForcedBounds(null, new Rect(0, 0, c.f.scaleGuess(320), c.f.scaleGuess(240)));
+    }
+
+    /**
+     * REPLACE WITH TrGlobal FIELDS
+     */
+    @Deprecated
+    public String TEMP(String t) {
+        return t;
     }
 
     public void refreshLayout(boolean force) {
@@ -71,12 +81,12 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 refreshLayout(false);
             }
         }), false, 1, 2));
-        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(TXDB.get("Save"), c.f.fontSizerTextHeight, new Runnable() {
+        outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(T.wordSave, c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 ConfigIO.save(c);
             }
-        }), new UITextButton(TXDB.get("Load"), c.f.fontSizerTextHeight, new Runnable() {
+        }), new UITextButton(T.wordLoad, c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 ConfigIO.load(false, c);
@@ -97,16 +107,16 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
         }) {
             @Override
             public void updateContents(double deltaTime, boolean selected, IPeripherals peripherals) {
-                text = TXDB.get("Font: ");
+                text = TEMP("Font: ");
                 if (c.fontOverride != null) {
                     text += c.fontOverride;
                 } else {
-                    text += TXDB.get("Internal w/fallbacks");
+                    text += TEMP("Internal w/fallbacks");
                 }
                 super.updateContents(deltaTime, selected, peripherals);
             }
         };
-        final UITextButton fontButtonAppend = new UITextButton(TXDB.get("Even for height <= 8"), c.f.fontSizerTextHeight, new Runnable() {
+        final UITextButton fontButtonAppend = new UITextButton(TEMP("Even for height <= 8"), c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
             }
@@ -119,7 +129,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
             }
         };
         outerLayout.panelsAdd(new UISplitterLayout(fontButton, fontButtonAppend, false, 0.5));
-        String themeTxt = TXDB.get("Theme: #A").replaceAll("#A", String.valueOf(c.borderTheme));
+        String themeTxt = TEMP("Theme: #A").replaceAll("#A", String.valueOf(c.borderTheme));
         outerLayout.panelsAdd(new UISplitterLayout(new UITextButton(themeTxt, c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
@@ -128,7 +138,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 apply.run();
                 refreshLayout(true);
             }
-        }), new UIAppendButton(TXDB.get("External Windowing"), new UITextButton(TXDB.get("Enable Blending"), c.f.fontSizerTextHeight, new Runnable() {
+        }), new UIAppendButton(TEMP("External Windowing"), new UITextButton(TEMP("Enable Blending"), c.f.fontSizerTextHeight, new Runnable() {
             @Override
             public void run() {
                 c.allowBlending = !c.allowBlending;
@@ -181,7 +191,7 @@ public class UIFontSizeConfigurator extends UIElement.UIProxy {
                 });
                 tb.accept(Integer.toString(field.get()));
                 // NOTE: This is correct behavior due to an 'agreement' in FontSizes that this should be correct
-                outerLayout.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("r48", field.name), c.f.fontSizerTextHeight), tb, false, 4, 5));
+                outerLayout.panelsAdd(new UISplitterLayout(new UILabel(TEMP(field.name), c.f.fontSizerTextHeight), tb, false, 4, 5));
             }
         } catch (Exception e) {
             e.printStackTrace();

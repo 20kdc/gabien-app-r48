@@ -12,7 +12,6 @@ import gabien.ui.Rect;
 import gabien.ui.Size;
 import r48.App;
 import r48.RubyTable;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
 import r48.map.IMapToolContext;
@@ -59,7 +58,7 @@ public class RVXASystem extends RXPSystem {
             RVXAAccurateDrawLayer accurate = new RVXAAccurateDrawLayer(rt, events, tileRenderer, eventRenderer);
             layers = new IMapViewDrawLayer[] {
                     // works for green docks
-                    new PanoramaMapViewDrawLayer(panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
+                    new PanoramaMapViewDrawLayer(app, panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
                     // Signal layers (controls Z-Emulation)
                     accurate.tileSignalLayers[0],
                     accurate.tileSignalLayers[1],
@@ -69,9 +68,9 @@ public class RVXASystem extends RXPSystem {
                     // Z-Emulation
                     accurate,
                     // selection
-                    new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, ""),
-                    new GridMapViewDrawLayer(),
-                    new BorderMapViewDrawLayer(rt.width, rt.height)
+                    new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, eventRenderer, ""),
+                    new GridMapViewDrawLayer(app),
+                    new BorderMapViewDrawLayer(app, rt.width, rt.height)
             };
         }
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, layers);
@@ -87,14 +86,14 @@ public class RVXASystem extends RXPSystem {
     @Override
     protected IEditingToolbarController mapEditingToolbar(IMapToolContext iMapToolContext) {
         return new MapEditingToolbarController(iMapToolContext, false, new ToolButton[] {
-                new ToolButton(TXDB.get("Shadow/Region")) {
+                new ToolButton(app.ts("Shadow/Region")) {
                     @Override
                     public UIMTBase apply(IMapToolContext o) {
                         return new UIMTShadowLayer(o);
                     }
                 }
         }, new ToolButton[] {
-                new FindTranslatablesToolButton("RPG::Event::Page")
+                new FindTranslatablesToolButton(app, "RPG::Event::Page")
         });
     }
 

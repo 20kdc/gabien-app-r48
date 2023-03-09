@@ -14,7 +14,6 @@ import gabien.ui.UIPopupMenu.Entry;
 import gabienapp.Application;
 import r48.AdHocSaveLoad;
 import r48.App;
-import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController.ToolButton;
 import r48.map.UIMapView;
@@ -32,32 +31,32 @@ public class UIMTPopupButtons extends UIMTBase {
         final App app = view.app;
 
         ToolButton[] mainToolButtons = {
-                new ToolButton(TXDB.get("Reload Panorama/TS")) {
+                new ToolButton(app.ts("Reload Panorama/TS")) {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
                         UIMapView.performFullCacheFlush(view.app, view);
                         return null;
                     }
                 },
-                new ToolButton(TXDB.get("Properties")) {
+                new ToolButton(app.ts("Properties")) {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
                         app.ui.launchSchema(view.map.objectSchema, view.map.object, view);
                         return null;
                     }
                 },
-                new ToolButton(TXDB.get("Resize")) {
+                new ToolButton(app.ts("Resize")) {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
                         if (disableResize) {
-                            app.ui.launchDialog(TXDB.get("Tiles are apparently readonly, so resizing is not possible."));
+                            app.ui.launchDialog(app.ts("Tiles are apparently readonly, so resizing is not possible."));
                         } else {
                             return new UIMTMapResizer(mtc);
                         }
                         return null;
                     }
                 },
-                new ToolButton(TXDB.get("Export shot.png")) {
+                new ToolButton(app.ts("Export shot.png")) {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
                         IGrDriver igd = GaBIEn.makeOffscreenBuffer(view.tileSize * view.mapTable.width, view.tileSize * view.mapTable.height, true);
@@ -68,18 +67,18 @@ public class UIMTPopupButtons extends UIMTBase {
                             try {
                                 os.write(igd.createPNG());
                                 os.close();
-                                app.ui.launchDialog(TXDB.get("Wrote 'shot.png' in R48 settings directory."));
+                                app.ui.launchDialog(app.ts("Wrote 'shot.png' in R48 settings directory."));
                             } catch (Exception e) {
-                                app.ui.launchDialog(TXDB.get("Failed for... ") + e);
+                                app.ui.launchDialog(app.ts("Failed for... ") + e);
                             }
                         } else {
-                            app.ui.launchDialog(TXDB.get("Failed to open file."));
+                            app.ui.launchDialog(app.ts("Failed to open file."));
                         }
                         igd.shutdown();
                         return null;
                     }
                 },
-                new ToolButton(TXDB.get("Show/Hide Tile IDs")) {
+                new ToolButton(app.ts("Show/Hide Tile IDs")) {
                     @Override
                     public UIMTBase apply(IMapToolContext a) {
                         view.debugToggle = !view.debugToggle;

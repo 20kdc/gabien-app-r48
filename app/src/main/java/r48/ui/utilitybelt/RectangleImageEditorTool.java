@@ -9,14 +9,18 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import r48.dbs.TXDB;
+import r48.App;
 
 /**
  * Created on 16th July 2018
  */
-public class RectangleImageEditorTool implements IImageEditorTool {
+public class RectangleImageEditorTool extends ImageEditorTool {
     public boolean stage2;
     public int aX, aY;
+
+    public RectangleImageEditorTool(App app) {
+        super(app);
+    }
 
     @Override
     public void forceDifferentTool(UIImageEditView uiev) {
@@ -74,12 +78,12 @@ public class RectangleImageEditorTool implements IImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (stage2)
-            return TXDB.get("Press another bounding point to finish.");
-        return TXDB.get("Press bounding points to fill.");
+            return app.ts("Press another bounding point to finish.");
+        return app.ts("Press bounding points to fill.");
     }
 
     @Override
-    public IImageEditorTool getCamModeLT() {
+    public ImageEditorTool getCamModeLT() {
         return null;
     }
 }

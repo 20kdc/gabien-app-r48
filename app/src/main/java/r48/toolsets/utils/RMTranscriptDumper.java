@@ -7,9 +7,9 @@
 
 package r48.toolsets.utils;
 
+import r48.App;
 import r48.RubyIO;
 import r48.dbs.CMDB;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 
 import java.io.PrintStream;
@@ -20,13 +20,14 @@ import java.util.LinkedList;
  * For documentation purposes.
  * Created on 2/12/17.
  */
-public class RMTranscriptDumper {
+public class RMTranscriptDumper extends App.Svc {
     private final PrintStream output;
 
     private LinkedList<String> tableOfContents = new LinkedList<String>();
     private LinkedList<String> tableOfContentsIID = new LinkedList<String>();
 
-    public RMTranscriptDumper(PrintStream ps) {
+    public RMTranscriptDumper(App app, PrintStream ps) {
+        super(app);
         output = ps;
     }
 
@@ -34,11 +35,11 @@ public class RMTranscriptDumper {
         tableOfContents.clear();
         tableOfContentsIID.clear();
         output.println("<!DOCTYPE html>");
-        output.println("<html><head><title>" + TXDB.get("Exported Transcript") + "</title></head><body><a href=\"#toc\">" + TXDB.get("To Table Of Contents") + "</a>");
+        output.println("<html><head><title>" + app.ts("Exported Transcript") + "</title></head><body><a href=\"#toc\">" + app.ts("To Table Of Contents") + "</a>");
     }
 
     public void end() {
-        output.println("<a name=\"toc\"/><h1>" + TXDB.get("Table Of Contents") + "</h1><ol>");
+        output.println("<a name=\"toc\"/><h1>" + app.ts("Table Of Contents") + "</h1><ol>");
         int hIndex = 0;
         for (String s : tableOfContents) {
             if (s != null) {

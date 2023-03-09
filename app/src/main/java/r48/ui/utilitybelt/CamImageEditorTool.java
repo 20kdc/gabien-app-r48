@@ -7,18 +7,20 @@
 
 package r48.ui.utilitybelt;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
 import gabien.ui.UIPublicPanel;
-import r48.dbs.TXDB;
 
 /**
  * Created on 14th July 2018
  */
-public class CamImageEditorTool implements IImageEditorTool {
-    public final IImageEditorTool oldTool;
+public class CamImageEditorTool extends ImageEditorTool {
+    public final ImageEditorTool oldTool;
 
-    public CamImageEditorTool(IImageEditorTool currentTool) {
+    public CamImageEditorTool(@NonNull ImageEditorTool currentTool) {
+        super(currentTool.app);
         oldTool = currentTool;
     }
 
@@ -49,11 +51,11 @@ public class CamImageEditorTool implements IImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return TXDB.get("Drag: Move around, Camera: Return to old tool");
+        return app.ts("Drag: Move around, Camera: Return to old tool");
     }
 
     @Override
-    public IImageEditorTool getCamModeLT() {
+    public ImageEditorTool getCamModeLT() {
         return oldTool;
     }
 

@@ -7,7 +7,7 @@
 
 package r48.map.drawlayers;
 
-import r48.dbs.TXDB;
+import r48.App;
 import r48.io.data.IRIO;
 import r48.map.MapViewDrawContext;
 import r48.map.events.IEventAccess;
@@ -21,13 +21,14 @@ import java.util.LinkedList;
 /**
  * Created on 08/06/17.
  */
-public class EventMapViewDrawLayer implements IMapViewDrawLayer {
+public class EventMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
     public IEventAccess eventList;
     public int layer;
     public IEventGraphicRenderer iegr;
     public String postfix;
 
-    public EventMapViewDrawLayer(int layer2, IEventAccess eventL, IEventGraphicRenderer e, String post) {
+    public EventMapViewDrawLayer(App app, int layer2, IEventAccess eventL, IEventGraphicRenderer e, String post) {
+        super(app);
         eventList = eventL;
         layer = layer2;
         iegr = e;
@@ -37,7 +38,7 @@ public class EventMapViewDrawLayer implements IMapViewDrawLayer {
     @Override
     public String getName() {
         if (layer == 0x7FFFFFFF)
-            return TXDB.get("Event Selection");
+            return app.ts("Event Selection");
         return eventList.customEventsName() + postfix;
     }
 

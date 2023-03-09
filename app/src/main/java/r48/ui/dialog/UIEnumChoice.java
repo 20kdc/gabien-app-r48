@@ -12,7 +12,6 @@ import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
 import r48.UITest;
-import r48.dbs.TXDB;
 import r48.schema.util.SchemaPath;
 import r48.ui.UIAppendButton;
 
@@ -33,7 +32,7 @@ public class UIEnumChoice extends App.Prx {
 
     // entryText defaults to "Manual."
     public UIEnumChoice(App app, final IConsumer<RubyIO> result, final LinkedList<Option> options, String entryText, EntryMode entryType) {
-        this(app, result, new Category[] {new Category(TXDB.get("Options"), options)}, entryText, entryType);
+        this(app, result, new Category[] {new Category(app.ts("Options"), options)}, entryText, entryType);
     }
 
     public UIEnumChoice(App app, final IConsumer<RubyIO> result, final Category[] order, String entryText, EntryMode entryType) {
@@ -58,7 +57,7 @@ public class UIEnumChoice extends App.Prx {
                 });
                 UIElement element = button;
                 if (o.editSuffix != null) {
-                    final UIAppendButton switcheroo = new UIAppendButton(TXDB.get(" Name"), element, null, app.f.enumChoiceTextHeight);
+                    final UIAppendButton switcheroo = new UIAppendButton(app.ts(" Name"), element, null, app.f.enumChoiceTextHeight);
                     final UITextBox textbox = new UITextBox(o.textSuffix, app.f.enumChoiceTextHeight);
                     final AtomicBoolean ab = new AtomicBoolean(false);
                     switcheroo.button.onClick = new Runnable() {
@@ -89,7 +88,7 @@ public class UIEnumChoice extends App.Prx {
         }
 
         if (entryText == null)
-            entryText = TXDB.get("Manual.");
+            entryText = app.ts("Manual.");
 
         UISplitterLayout finalSplit = null;
         if (entryType == EntryMode.STR) {

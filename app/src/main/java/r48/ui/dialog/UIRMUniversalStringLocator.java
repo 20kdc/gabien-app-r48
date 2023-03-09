@@ -29,7 +29,6 @@ import r48.AdHocSaveLoad;
 import r48.App;
 import r48.RubyIO;
 import r48.dbs.ObjectInfo;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
@@ -45,8 +44,8 @@ import r48.ui.UISetSelector;
  */
 public class UIRMUniversalStringLocator extends App.Prx {
     private UIScrollLayout layout = new UIScrollLayout(true, app.f.generalScrollersize);
-    private RListPanel settingsFull = new RListPanel(app, TXDB.get("Full"));
-    private RListPanel settingsPartial = new RListPanel(app, TXDB.get("Partial"));
+    private RListPanel settingsFull = new RListPanel(app, app.ts("Full"));
+    private RListPanel settingsPartial = new RListPanel(app, app.ts("Partial"));
 
     private UISetSelector<ObjectInfo> setSelector;
     private boolean scheduleSetSelectorUpdate = false;
@@ -128,7 +127,7 @@ public class UIRMUniversalStringLocator extends App.Prx {
         utp.addTab(new Tab(settingsPartial, new TabIcon[0]));
         layout.panelsAdd(utp);
 
-        layout.panelsAdd(new UITextButton(TXDB.get("Save Config."), app.f.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(app.ts("Save Config."), app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 RubyIO rio = new RubyIO();
@@ -143,7 +142,7 @@ public class UIRMUniversalStringLocator extends App.Prx {
             }
         }));
 
-        layout.panelsAdd(new UITextButton(TXDB.get("Confirm & Replace"), app.f.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(app.ts("Confirm & Replace"), app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 int total = 0;
@@ -222,7 +221,7 @@ public class UIRMUniversalStringLocator extends App.Prx {
                         }
                     }
                 }
-                app.ui.launchDialog(app.fmt.formatExtended(TXDB.get("Made #A total string adjustments across #B files."), new IRIOFixnum(total), new IRIOFixnum(files)) + log);
+                app.ui.launchDialog(app.fmt.formatExtended(app.ts("Made #A total string adjustments across #B files."), new IRIOFixnum(total), new IRIOFixnum(files)) + log);
             }
         }));
     }
@@ -236,7 +235,7 @@ public class UIRMUniversalStringLocator extends App.Prx {
 
         private UIElement adderA = new UISplitterLayout(new UILabel("From: ", app.f.dialogWindowTextHeight), adderK, false, 0);
         private UIElement adderB = new UISplitterLayout(new UILabel("To: ", app.f.dialogWindowTextHeight), adderV, false, 0);
-        private UIElement adderC = new UITextButton(TXDB.get("Add replacement"), app.f.dialogWindowTextHeight, new Runnable() {
+        private UIElement adderC = new UITextButton(app.ts("Add replacement"), app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 settingsRemoveByKey(adderK.text);

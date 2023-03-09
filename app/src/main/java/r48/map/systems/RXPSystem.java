@@ -17,7 +17,6 @@ import r48.App;
 import r48.IMapContext;
 import r48.RubyTable;
 import r48.dbs.ObjectInfo;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.IObjectBackend.ILoadedObject;
 import r48.io.data.IRIO;
@@ -107,7 +106,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             RXPAccurateDrawLayer accurate = new RXPAccurateDrawLayer(rt, events, tileRenderer, eventRenderer);
             layers = new IMapViewDrawLayer[] {
                     // works for green docks
-                    new PanoramaMapViewDrawLayer(panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
+                    new PanoramaMapViewDrawLayer(app, panoImg, true, true, 0, 0, rt.width, rt.height, -1, -1, 2, 1, 0),
                     // Signal layers (controls Z-Emulation)
                     accurate.tileSignalLayers[0],
                     accurate.tileSignalLayers[1],
@@ -117,9 +116,9 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     // Z-Emulation
                     accurate,
                     // selection
-                    new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, ""),
-                    new GridMapViewDrawLayer(),
-                    new BorderMapViewDrawLayer(rt.width, rt.height)
+                    new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, eventRenderer, ""),
+                    new GridMapViewDrawLayer(app),
+                    new BorderMapViewDrawLayer(app, rt.width, rt.height)
             };
         }
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, layers);
@@ -177,7 +176,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     IRIO miLocal = app.odb.getObject("MapInfos").getObject();
                     IRIO mapInfo = miLocal.getHashVal(rio);
                     if (mapInfo == null)
-                        return TXDB.get("<map removed from RPG_RT.lmt>");
+                        return app.ts("<map removed from RPG_RT.lmt>");
                     return mapInfo.getIVar("@name").decString();
                 }
             }, id, RXPRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
@@ -207,7 +206,7 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public void dumpCustomData(RMTranscriptDumper dumper) {
-        dumper.startFile("Items", TXDB.get("The list of items in the game."));
+        dumper.startFile("Items", app.ts("The list of items in the game."));
         LinkedList<String> lls = new LinkedList<String>();
         IRIO items = app.odb.getObject("Items").getObject();
         int itemCount = items.getALen();
@@ -222,13 +221,13 @@ public class RXPSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
         dumper.dumpBasicList("Names", lls.toArray(new String[0]), 0);
         dumper.endFile();
 
-        dumper.startFile("System", TXDB.get("System data (of any importance, anyway)."));
+        dumper.startFile("System", app.ts("System data (of any importance, anyway)."));
         IObjectBackend.ILoadedObject sys = app.odb.getObject("System");
 
-        dumper.dumpHTML(TXDB.get("Notably, switch and variable lists have a 0th index, but only indexes starting from 1 are actually allowed to be used.") + "<br/>");
+        dumper.dumpHTML(app.ts("Notably, switch and variable lists have a 0th index, but only indexes starting from 1 are actually allowed to be used.") + "<br/>");
         IRIO sys2 = sys.getObject();
-        dumper.dumpHTML(TXDB.get("Magic number:") + sys2.getIVar("@magic_number").toString() + "<br/>");
-        dumper.dumpHTML(TXDB.get("Magic number II:") + sys2.getIVar("@_").toString() + "<br/>");
+        dumper.dumpHTML(app.ts("Magic number:") + sys2.getIVar("@magic_number").toString() + "<br/>");
+        dumper.dumpHTML(app.ts("Magic number II:") + sys2.getIVar("@_").toString() + "<br/>");
 
         dumper.dumpSVList("@switches", sys2.getIVar("@switches"), 0);
         dumper.dumpSVList("@variables", sys2.getIVar("@variables"), 0);

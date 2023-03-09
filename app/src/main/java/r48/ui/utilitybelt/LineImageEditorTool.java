@@ -9,15 +9,15 @@ package r48.ui.utilitybelt;
 
 import gabien.uslx.append.*;
 import gabien.ui.UIElement;
-import r48.dbs.TXDB;
+import r48.App;
 
 /**
  * Created on October 09, 2018.
  */
 public class LineImageEditorTool extends StagedImageEditorTool {
 
-    public LineImageEditorTool() {
-        super(2);
+    public LineImageEditorTool(App app) {
+        super(app, 2);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class LineImageEditorTool extends StagedImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (stage == 0)
-            return TXDB.get("Press to start line.");
-        return TXDB.get("Press to end line.");
+            return app.ts("Press to start line.");
+        return app.ts("Press to end line.");
     }
 }

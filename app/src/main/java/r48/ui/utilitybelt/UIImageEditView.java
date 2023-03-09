@@ -25,7 +25,7 @@ public class UIImageEditView extends UIPlaneView {
     private boolean shift;
     public Rect grid = new Rect(0, 0, 16, 16);
 
-    public IImageEditorTool currentTool;
+    public ImageEditorTool currentTool;
     public int selPaletteIndex;
 
     public Rect tiling;
@@ -34,7 +34,7 @@ public class UIImageEditView extends UIPlaneView {
 
     public Runnable newToolCallback;
 
-    public UIImageEditView(App app, IImageEditorTool rootTool, Runnable updatePal) {
+    public UIImageEditView(App app, ImageEditorTool rootTool, Runnable updatePal) {
         super(app);
         planeZoomMul = app.f.getSpriteScale() * 16;
         eds.currentImage = image;
@@ -99,7 +99,7 @@ public class UIImageEditView extends UIPlaneView {
 
     @Override
     public void planeToggleDragLock() {
-        IImageEditorTool lt = currentTool.getCamModeLT();
+        ImageEditorTool lt = currentTool.getCamModeLT();
         if (lt != null) {
             currentTool = lt;
         } else {
@@ -272,7 +272,7 @@ public class UIImageEditView extends UIPlaneView {
         return new IPointerReceiver() {
             int dragLastX, dragLastY;
             // Setting this to null is used for forceful deactivation.
-            IImageEditorTool lockedTool = currentTool;
+            ImageEditorTool lockedTool = currentTool;
 
             @Override
             public void handlePointerBegin(IPointer state) {
@@ -308,7 +308,7 @@ public class UIImageEditView extends UIPlaneView {
                     if (shift) {
                         FillAlgorithm.Point p = correctPoint(nx, ny);
                         if (p != null)
-                            new EDImageEditorTool().applyCore(p, UIImageEditView.this);
+                            new EDImageEditorTool(app).applyCore(p, UIImageEditView.this);
                         lockedTool = null;
                     } else {
                         lockedTool.apply(nx, ny, UIImageEditView.this, true, false);

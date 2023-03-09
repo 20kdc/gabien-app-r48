@@ -10,7 +10,6 @@ package r48.map.mapinfos;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
@@ -147,12 +146,12 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
     public String calculateIndentsAndGetErrors(HashMap<Long, Integer> id) {
         StringBuilder errors = new StringBuilder();
 
-        standardCalculateIndentsAndGetErrors(this, id, errors, 0);
+        standardCalculateIndentsAndGetErrors(app, this, id, errors, 0);
 
-        return errorsToStringOrNull(errors);
+        return errorsToStringOrNull(app, errors);
     }
 
-    public static void standardCalculateIndentsAndGetErrors(final IRMLikeMapInfoBackend backend, HashMap<Long, Integer> id, StringBuilder errors, int standardIndentOffset) {
+    public static void standardCalculateIndentsAndGetErrors(App app, final IRMLikeMapInfoBackend backend, HashMap<Long, Integer> id, StringBuilder errors, int standardIndentOffset) {
         LinkedList<Long> maps = new LinkedList<Long>();
         maps.addAll(backend.getHashKeys());
 
@@ -182,7 +181,7 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
                     parentStack.removeLast();
                 if (parentStack.size() == 0) {
                     // Not valid!
-                    errors.append(TXDB.get("Parent/order inconsistency error.")).append(" (@").append(map).append(")\n");
+                    errors.append(app.ts("Parent/order inconsistency error.")).append(" (@").append(map).append(")\n");
                 }
             }
 
@@ -192,21 +191,21 @@ public class RXPRMLikeMapInfoBackend extends App.Svc implements IRMLikeMapInfoBa
             // For R2k
             if (indent != null)
                 if (indent.getFX() != (parentStack.size() + standardIndentOffset))
-                    errors.append(TXDB.get("Indent inconsistent for map: ")).append(map).append('=').append(indent.getFX()).append(" !").append(parentStack.size() + standardIndentOffset).append('\n');
+                    errors.append(app.ts("Indent inconsistent for map: ")).append(map).append('=').append(indent.getFX()).append(" !").append(parentStack.size() + standardIndentOffset).append('\n');
 
             parentStack.add(map);
 
             int order = backend.getOrderOfMap(map);
             if (order != (lastOrder + 1))
-                errors.append(TXDB.get("Order inconsistency: ")).append(map).append('\n');
+                errors.append(app.ts("Order inconsistency: ")).append(map).append('\n');
             lastOrder = order;
         }
     }
 
-    public static String errorsToStringOrNull(StringBuilder errors) {
+    public static String errorsToStringOrNull(App app, StringBuilder errors) {
         if (errors.length() == 0)
             return null;
-        errors.append(TXDB.get("These errors must be resolved manually to use this panel."));
+        errors.append(app.ts("These errors must be resolved manually to use this panel."));
         return errors.toString();
     }
 }

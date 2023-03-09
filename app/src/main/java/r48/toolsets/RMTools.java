@@ -12,7 +12,6 @@ import gabien.ui.UIElement;
 import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.ObjectInfo;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.systems.IRMMapSystem;
@@ -54,11 +53,11 @@ public class RMTools extends App.Svc {
     }
 
     public UIElement genButton() {
-        return new UIMenuButton(app, TXDB.get("RM-Tools"), app.f.menuTextHeight, null, new String[] {
-                TXDB.get("Locate EventCommand in all Pages"),
-                TXDB.get("Find Translatables in Common Events"),
-                TXDB.get("See If Autocorrect Modifies Anything"),
-                TXDB.get("Universal String Replace"),
+        return new UIMenuButton(app, app.ts("RM-Tools"), app.f.menuTextHeight, null, new String[] {
+                app.ts("Locate EventCommand in all Pages"),
+                app.ts("Find Translatables in Common Events"),
+                app.ts("See If Autocorrect Modifies Anything"),
+                app.ts("Universal String Replace"),
                 // 3:24 PM, third day of 2017.
                 // This is now a viable option.
                 // 3:37 PM, same day.
@@ -66,19 +65,19 @@ public class RMTools extends App.Svc {
                 // Still need to see to the CommonEvents.
                 // next day, um, these tools aren't really doable post-further-modularization (stickynote)
                 // 5th January 2017. Here we go.
-                TXDB.get("MEV/CEV Transcript Dump (no Troop/Item/etc.)"),
+                app.ts("MEV/CEV Transcript Dump (no Troop/Item/etc.)"),
         }, new Runnable[] {
                 new Runnable() {
                     @Override
                     public void run() {
-                        app.ui.launchPrompt(TXDB.get("Code (or -1337 for any unknown) ?"), new IConsumer<String>() {
+                        app.ui.launchPrompt(app.ts("Code (or -1337 for any unknown) ?"), new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 int i;
                                 try {
                                     i = Integer.parseInt(s);
                                 } catch (Exception e) {
-                                    app.ui.launchDialog(TXDB.get("Not a valid number."));
+                                    app.ui.launchDialog(app.ts("Not a valid number."));
                                     return;
                                 }
                                 for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {
@@ -113,7 +112,7 @@ public class RMTools extends App.Svc {
                                         }
                                     }
                                 }
-                                app.ui.launchDialog(TXDB.get("Not found."));
+                                app.ui.launchDialog(app.ts("Not found."));
                             }
                         });
                     }

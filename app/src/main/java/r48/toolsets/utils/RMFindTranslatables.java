@@ -16,7 +16,6 @@ import gabien.ui.UITextButton;
 import r48.App;
 import r48.dbs.CMDB;
 import r48.dbs.RPGCommand;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
@@ -81,14 +80,14 @@ public class RMFindTranslatables extends App.Svc {
     public void addSitesFromCommonEvents(IRIO[] commonEvents) {
         SchemaElement sch = app.sdb.findSchemaFor(objIdName, objRoot.getObject());
         if (sch == null) {
-            app.ui.launchDialog(TXDB.get("Somehow, the common events file does not have a schema."));
+            app.ui.launchDialog(app.ts("Somehow, the common events file does not have a schema."));
         } else {
             SchemaPath rootSP = new SchemaPath(sch, objRoot);
             EventCommandArraySchemaElement ecase = RMFindTranslatables.getEventCommandArraySchemaElement(app, "EventListEditor");
             for (IRIO rio : commonEvents) {
                 SchemaElement cevElm = app.sdb.findSchemaFor(null, rio);
                 if (cevElm == null) {
-                    app.ui.launchDialog(TXDB.get("Unable to determine common event schema, looks like that refactor will have to happen now"));
+                    app.ui.launchDialog(app.ts("Unable to determine common event schema, looks like that refactor will have to happen now"));
                     return;
                 }
                 SchemaPath commonEventSP = rootSP.newWindow(cevElm, rio);

@@ -10,7 +10,6 @@ package r48.map.events;
 import r48.App;
 import r48.RubyIO;
 import r48.dbs.PathSyntax;
-import r48.dbs.TXDB;
 import r48.dbs.ValueSyntax;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
@@ -37,7 +36,7 @@ public class TraditionalEventAccess extends App.Svc implements IEventAccess {
     }
 
     public TraditionalEventAccess(App app, String baseOId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName) {
-        this(app, baseOId, baseSchema, path, b, schema, pathX, pathY, pathName, TXDB.get("Events"), TXDB.get("+ Add Event"));
+        this(app, baseOId, baseSchema, path, b, schema, pathX, pathY, pathName, app.ts("Events"), app.ts("+ Add Event"));
     }
 
     public TraditionalEventAccess(App app, String baseOId, String baseSchema, String path, int b, String schema, String pathX, String pathY, String pathName, String en, String en2) {

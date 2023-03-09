@@ -9,15 +9,18 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.*;
 import r48.App;
-import r48.dbs.TXDB;
 import r48.ui.UISymbolButton;
 import r48.ui.Art.Symbol;
 
 /**
  * Created on 13th July 2018.
  */
-public class RootImageEditorTool implements IImageEditorTool {
+public class RootImageEditorTool extends ImageEditorTool {
     private boolean activeSection = false;
+
+    public RootImageEditorTool(App app) {
+        super(app);
+    }
 
     public static UIScrollLayout createToolPalette(final UIImageEditView uiev, Class<?> oneTool) {
         App app = uiev.app;
@@ -50,7 +53,7 @@ public class RootImageEditorTool implements IImageEditorTool {
                 @Override
                 public void run() {
                     try {
-                        uiev.currentTool = (IImageEditorTool) toolClasses[ic].newInstance();
+                        uiev.currentTool = (ImageEditorTool) toolClasses[ic].newInstance();
                         uiev.newToolCallback.run();
                     } catch (InstantiationException e) {
                     } catch (IllegalAccessException e) {
@@ -82,12 +85,12 @@ public class RootImageEditorTool implements IImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (dedicatedDragControl)
-            return TXDB.get("Tap/drag: Draw, Camera button: Pan");
-        return TXDB.get("LMB: Draw, Shift-LMB: Grab Colour, Other: Pan");
+            return app.ts("Tap/drag: Draw, Camera button: Pan");
+        return app.ts("LMB: Draw, Shift-LMB: Grab Colour, Other: Pan");
     }
 
     @Override
-    public IImageEditorTool getCamModeLT() {
+    public ImageEditorTool getCamModeLT() {
         return null;
     }
 

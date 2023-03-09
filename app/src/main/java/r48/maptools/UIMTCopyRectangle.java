@@ -11,7 +11,6 @@ import gabien.GaBIEn;
 import gabien.ui.UILabel;
 import r48.RubyIO;
 import r48.RubyTable;
-import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
@@ -26,8 +25,8 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
     public int startX, startY;
     public boolean stage;
 
-    public UILabel innerLabel = new UILabel(TXDB.get("Click on a tile to start the rectangle, or:"), app.f.dialogWindowTextHeight);
-    public UIAppendButton inner = new UIAppendButton(TXDB.get("Cancel"), innerLabel, new Runnable() {
+    public UILabel innerLabel = new UILabel(app.ts("Click on a tile to start the rectangle, or:"), app.f.dialogWindowTextHeight);
+    public UIAppendButton inner = new UIAppendButton(app.ts("Cancel"), innerLabel, new Runnable() {
         @Override
         public void run() {
             mapToolContext.accept(null);
@@ -87,7 +86,7 @@ public class UIMTCopyRectangle extends UIMTBase implements IMapViewCallbacks {
         } else {
             startX = x;
             startY = y;
-            innerLabel.text = TXDB.get("Click on another tile to finish copying.");
+            innerLabel.text = app.ts("Click on another tile to finish copying.");
             stage = true;
         }
     }

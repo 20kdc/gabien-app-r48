@@ -7,6 +7,7 @@
 
 package r48.map.drawlayers;
 
+import r48.App;
 import r48.map.MapViewDrawContext;
 
 import java.util.*;
@@ -15,11 +16,12 @@ import java.util.*;
  * Z-sorts the contents after creation.
  * Created on 28th November 2019.
  */
-public class ZSortingDrawLayer implements IMapViewDrawLayer {
+public class ZSortingDrawLayer extends App.Svc implements IMapViewDrawLayer {
     protected final LinkedList<IZSortedObject> zSorting = new LinkedList<IZSortedObject>();
     public final HashSet<SignalMapViewLayer> signals = new HashSet<SignalMapViewLayer>();
 
-    public ZSortingDrawLayer() {
+    public ZSortingDrawLayer(App app) {
+        super(app);
     }
 
     protected void completeSetup() {

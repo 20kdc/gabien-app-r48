@@ -34,7 +34,7 @@ public class IkaSystem extends MapSystem {
     }
 
     public StuffRenderer rendererGeneral(IRIO map, IEventAccess iea) {
-        ITileRenderer tileRenderer = new IkaTileRenderer(imageLoader);
+        ITileRenderer tileRenderer = new IkaTileRenderer(app, imageLoader);
         IEventGraphicRenderer eventRenderer = new IkaEventGraphicRenderer(app, imageLoader);
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, StuffRenderer.prepareTraditional(app, tileRenderer, new int[] {0}, eventRenderer, imageLoader, map, iea, "Back", true, true, 0, 0, -1, -1, 1));
     }

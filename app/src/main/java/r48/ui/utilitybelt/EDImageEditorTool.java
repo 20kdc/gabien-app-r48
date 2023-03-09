@@ -9,12 +9,17 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import r48.dbs.TXDB;
+import r48.App;
 
 /**
  * Created on 16th July 2018
  */
-public class EDImageEditorTool implements IImageEditorTool {
+public class EDImageEditorTool extends ImageEditorTool {
+
+    public EDImageEditorTool(App app) {
+        super(app);
+    }
+
     @Override
     public void forceDifferentTool(UIImageEditView uiev) {
 
@@ -23,7 +28,7 @@ public class EDImageEditorTool implements IImageEditorTool {
     @Override
     public void apply(int x, int y, UIImageEditView view, boolean major, boolean dragging) {
         if (major && (!dragging)) {
-            view.currentTool = new RootImageEditorTool();
+            view.currentTool = new RootImageEditorTool(app);
             applyCore(view.correctPoint(x, y), view);
         }
     }
@@ -56,11 +61,11 @@ public class EDImageEditorTool implements IImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return TXDB.get("Tap on the point to select the colour of.");
+        return app.ts("Tap on the point to select the colour of.");
     }
 
     @Override
-    public IImageEditorTool getCamModeLT() {
+    public ImageEditorTool getCamModeLT() {
         return null;
     }
 }

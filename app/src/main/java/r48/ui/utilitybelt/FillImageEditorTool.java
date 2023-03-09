@@ -10,13 +10,16 @@ package r48.ui.utilitybelt;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.dbs.TXDB;
 
 /**
  * Created on October 09, 2018.
  */
-public class FillImageEditorTool implements IImageEditorTool {
+public class FillImageEditorTool extends ImageEditorTool {
     public boolean autoshade, autoshadeLRX, autoshadeUDX;
+
+    public FillImageEditorTool(App app) {
+        super(app);
+    }
 
     @Override
     public void forceDifferentTool(UIImageEditView uiev) {
@@ -105,19 +108,19 @@ public class FillImageEditorTool implements IImageEditorTool {
         App app = uiev.app;
         UIElement uie = RootImageEditorTool.createToolPalette(uiev, FillImageEditorTool.class);
         UIScrollLayout usl = new UIScrollLayout(false, app.f.mapToolbarScrollersize);
-        usl.panelsAdd(new UITextButton(TXDB.get("Autoshade"), app.f.imageEditorTextHeight, new Runnable() {
+        usl.panelsAdd(new UITextButton(app.ts("Autoshade"), app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 autoshade = !autoshade;
             }
         }).togglable(autoshade));
-        usl.panelsAdd(new UITextButton(TXDB.get("LR"), app.f.imageEditorTextHeight, new Runnable() {
+        usl.panelsAdd(new UITextButton(app.ts("LR"), app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 autoshadeLRX = !autoshadeLRX;
             }
         }).togglable(autoshadeLRX));
-        usl.panelsAdd(new UITextButton(TXDB.get("UD"), app.f.imageEditorTextHeight, new Runnable() {
+        usl.panelsAdd(new UITextButton(app.ts("UD"), app.f.imageEditorTextHeight, new Runnable() {
             @Override
             public void run() {
                 autoshadeUDX = !autoshadeUDX;
@@ -133,11 +136,11 @@ public class FillImageEditorTool implements IImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return TXDB.get("Press to fill area.");
+        return app.ts("Press to fill area.");
     }
 
     @Override
-    public IImageEditorTool getCamModeLT() {
+    public ImageEditorTool getCamModeLT() {
         return null;
     }
 }

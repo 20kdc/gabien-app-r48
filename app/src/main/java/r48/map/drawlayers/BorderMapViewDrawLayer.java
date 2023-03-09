@@ -7,23 +7,24 @@
 
 package r48.map.drawlayers;
 
-import r48.dbs.TXDB;
+import r48.App;
 import r48.map.MapViewDrawContext;
 import r48.ui.Art;
 
 /**
  * Created on 6/16/18.
  */
-public class BorderMapViewDrawLayer implements IMapViewDrawLayer {
+public class BorderMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
     public int width, height;
-    public BorderMapViewDrawLayer(int w, int h) {
+    public BorderMapViewDrawLayer(App app, int w, int h) {
+        super(app);
         width = w;
         height = h;
     }
 
     @Override
     public String getName() {
-        return TXDB.get("Map Border");
+        return app.ts("Map Border");
     }
 
     @Override

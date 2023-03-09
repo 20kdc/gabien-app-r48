@@ -14,7 +14,6 @@ import gabien.ui.Rect;
 import gabien.ui.Size;
 import gabien.ui.UIElement;
 import r48.App;
-import r48.dbs.TXDB;
 import r48.maptools.UIMTAutotile;
 import r48.maptools.UIMTBase;
 import r48.ui.UINSVertLayout;
@@ -54,7 +53,7 @@ public class UIMapViewContainer extends UIElement.UIPanel {
 
     @Override
     public String toString() {
-        return TXDB.get("Map");
+        return app.ts("Map");
     }
 
     @Override

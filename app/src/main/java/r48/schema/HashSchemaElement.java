@@ -12,7 +12,6 @@ import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
 import r48.UITest;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.schema.specialized.OSStrHashMapSchemaElement;
@@ -91,7 +90,7 @@ public class HashSchemaElement extends SchemaElement {
                         trigger();
                     }
                 };
-                uiSV.panelsAdd(new UISplitterLayout(new UILabel(TXDB.get("Search:"), app.f.schemaFieldTextHeight), searchBox, false, 0d));
+                uiSV.panelsAdd(new UISplitterLayout(new UILabel(app.ts("Search:"), app.f.schemaFieldTextHeight), searchBox, false, 0d));
 
                 AtomicInteger fw = new AtomicInteger(0);
 
@@ -134,7 +133,7 @@ public class HashSchemaElement extends SchemaElement {
                 }
                 // Set up a key workspace.
                 UIElement workspace = keyElem.buildHoldingEditor(keyWorkspace, launcher, rioPath);
-                UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(TXDB.get("Add Key"), app.f.schemaFieldTextHeight, new Runnable() {
+                UISplitterLayout workspaceHS = new UISplitterLayout(workspace, new UITextButton(app.ts("Add Key"), app.f.schemaFieldTextHeight, new Runnable() {
                     @Override
                     public void run() {
                         if (target.getHashVal(keyWorkspace) == null) {
@@ -162,7 +161,7 @@ public class HashSchemaElement extends SchemaElement {
             return ((EnumSchemaElement) ke).viewValue(v, true);
         if (ke instanceof OSStrHashMapSchemaElement)
             return OSStrHashMapSchemaElement.decode(app, v);
-        return TXDB.get("Key ") + v;
+        return app.ts("Key ") + v;
     }
 
     @Override

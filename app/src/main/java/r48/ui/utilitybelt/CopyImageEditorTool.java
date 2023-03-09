@@ -7,8 +7,8 @@
 
 package r48.ui.utilitybelt;
 
+import r48.App;
 import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.io.BMPConnection;
 
 import java.io.IOException;
@@ -18,6 +18,10 @@ import java.io.IOException;
  * Created on December 15, 2018.
  */
 public class CopyImageEditorTool extends RectangleImageEditorTool {
+    public CopyImageEditorTool(App app) {
+        super(app);
+    }
+
     @Override
     protected void performOperation(UIImageEditView view, int bW, int bH) {
         int palSize = view.image.paletteSize();
@@ -59,8 +63,8 @@ public class CopyImageEditorTool extends RectangleImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (stage2)
-            return TXDB.get("Press another bounding point to finish.");
-        return TXDB.get("Press bounding points to copy.");
+            return app.ts("Press another bounding point to finish.");
+        return app.ts("Press bounding points to copy.");
     }
 
 }

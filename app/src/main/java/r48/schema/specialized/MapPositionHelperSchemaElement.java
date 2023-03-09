@@ -11,7 +11,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import r48.App;
 import r48.dbs.PathSyntax;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
@@ -45,15 +44,15 @@ public class MapPositionHelperSchemaElement extends SchemaElement {
         };
         for (int i = (pathA == null ? 1 : 0); i < 3; i++)
             if (abc[i] == null)
-                return new UILabel(TXDB.get("Position editor disabled."), app.f.schemaFieldTextHeight);
+                return new UILabel(app.ts("Position editor disabled."), app.f.schemaFieldTextHeight);
         String mapGUM = launcher.getContextGUM();
         if (abc[0] != null)
             mapGUM = launcher.getApp().system.mapReferentToGUM(abc[0]);
         if (mapGUM == null)
-            return new UILabel(TXDB.get("Can't translate ID to map."), app.f.schemaFieldTextHeight);
+            return new UILabel(app.ts("Can't translate ID to map."), app.f.schemaFieldTextHeight);
         // The UIMapView constructor will automatically create missing maps. We don't want this.
         if (launcher.getApp().system.mapViewRequest(mapGUM, false) == null)
-            return new UILabel(TXDB.get("No such map exists."), app.f.schemaFieldTextHeight);
+            return new UILabel(app.ts("No such map exists."), app.f.schemaFieldTextHeight);
         final long x = abc[1].getFX();
         final long y = abc[2].getFX();
         final UIMapView umv = new UIMapView(launcher.getApp(), mapGUM, 320, app.f.scaleGuess(192));

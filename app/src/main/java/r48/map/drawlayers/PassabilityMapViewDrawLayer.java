@@ -7,7 +7,7 @@
 
 package r48.map.drawlayers;
 
-import r48.dbs.TXDB;
+import r48.App;
 import r48.map.MapViewDrawContext;
 import r48.map.pass.IPassabilitySource;
 import r48.ui.Art;
@@ -18,18 +18,19 @@ import java.util.Random;
  * Draws a passability overlay.
  * Created on 09/06/17.
  */
-public class PassabilityMapViewDrawLayer implements IMapViewDrawLayer {
+public class PassabilityMapViewDrawLayer extends App.Svc implements IMapViewDrawLayer {
     public final IPassabilitySource src;
     public final int tileSize;
 
-    public PassabilityMapViewDrawLayer(IPassabilitySource ips, int ts) {
+    public PassabilityMapViewDrawLayer(App app, IPassabilitySource ips, int ts) {
+        super(app);
         src = ips;
         tileSize = ts;
     }
 
     @Override
     public String getName() {
-        return TXDB.get("Passability Overlay");
+        return app.ts("Passability Overlay");
     }
 
     @Override

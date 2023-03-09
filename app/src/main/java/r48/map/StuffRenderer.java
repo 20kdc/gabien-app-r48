@@ -10,7 +10,6 @@ package r48.map;
 import gabien.IImage;
 import r48.App;
 import r48.RubyTable;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.drawlayers.*;
 import r48.map.events.IEventAccess;
@@ -67,15 +66,15 @@ public class StuffRenderer {
         IImage panoImg = null;
         if (!vxaPano.equals(""))
             panoImg = iil.getImage(vxaPano, true);
-        layers[0] = new PanoramaMapViewDrawLayer(panoImg, lx, ly, alx, aly, rt.width, rt.height, panoSW, panoSH, panoSC);
-        layers[1] = new EventMapViewDrawLayer(-1, events, igr, TXDB.get(" (Lowest)"));
+        layers[0] = new PanoramaMapViewDrawLayer(app, panoImg, lx, ly, alx, aly, rt.width, rt.height, panoSW, panoSH, panoSC);
+        layers[1] = new EventMapViewDrawLayer(app, -1, events, igr, app.ts(" (Lowest)"));
         for (int i = 0; i < rt.planeCount; i++) {
             layers[(i * 2) + 2] = new TileMapViewDrawLayer(app, rt, tlOrder[i], itr);
-            layers[(i * 2) + 3] = new EventMapViewDrawLayer(i, events, igr, "");
+            layers[(i * 2) + 3] = new EventMapViewDrawLayer(app, i, events, igr, "");
         }
-        layers[layers.length - 3] = new EventMapViewDrawLayer(0x7FFFFFFF, events, igr, "");
-        layers[layers.length - 2] = new GridMapViewDrawLayer();
-        layers[layers.length - 1] = new BorderMapViewDrawLayer(rt.width, rt.height);
+        layers[layers.length - 3] = new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, igr, "");
+        layers[layers.length - 2] = new GridMapViewDrawLayer(app);
+        layers[layers.length - 1] = new BorderMapViewDrawLayer(app, rt.width, rt.height);
         return layers;
     }
 }

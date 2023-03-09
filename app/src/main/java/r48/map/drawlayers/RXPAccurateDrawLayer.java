@@ -9,7 +9,6 @@ package r48.map.drawlayers;
 
 import r48.App;
 import r48.RubyTable;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.events.IEventAccess;
 import r48.map.events.RMEventGraphicRenderer;
@@ -31,8 +30,8 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
     public final XPTileRenderer tiles;
     public final RMEventGraphicRenderer events;
 
-    public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvA = new ZSortingDrawLayer.SignalMapViewLayer(TXDB.get("Event Layers (lower)"));
-    public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvB = new ZSortingDrawLayer.SignalMapViewLayer(TXDB.get("Event Layers (upper)"));
+    public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvA = new ZSortingDrawLayer.SignalMapViewLayer(app.ts("Event Layers (lower)"));
+    public final ZSortingDrawLayer.SignalMapViewLayer signalLayerEvB = new ZSortingDrawLayer.SignalMapViewLayer(app.ts("Event Layers (upper)"));
 
     private static final int[] layerPreference = new int[] {0, 1, 2};
 
@@ -97,7 +96,7 @@ public class RXPAccurateDrawLayer extends RMZAccurateDrawLayer {
 
     @Override
     public String getName() {
-        return TXDB.get("XP Tile/Event Z-Emulation Layer");
+        return app.ts("XP Tile/Event Z-Emulation Layer");
     }
 
     private class RXPPriorityPlane extends TileMapViewDrawLayer implements IZSortedObject {

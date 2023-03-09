@@ -168,7 +168,7 @@ public class UILauncher extends UIProxy {
             whatever = new UISplitterLayout(whatever, new UITextButton(tr.bConfigN, c.f.launcherTextHeight, new Runnable() {
                 @Override
                 public void run() {
-                    uiTicker.accept(new UIFontSizeConfigurator(c, () -> {
+                    uiTicker.accept(new UIFontSizeConfigurator(c, tr, () -> {
                         c.applyUIGlobals();
                     }));
                     lun.currentState = new LSInApp(lun);

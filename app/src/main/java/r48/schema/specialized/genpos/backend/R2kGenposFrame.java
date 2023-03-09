@@ -13,7 +13,6 @@ import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.BooleanSchemaElement;
 import r48.schema.SchemaElement;
@@ -161,16 +160,16 @@ public class R2kGenposFrame extends App.Svc implements IGenposFrame {
     @Override
     public String[] getCellProps() {
         return new String[] {
-                TXDB.get("visible"),
-                TXDB.get("cellId"),
-                TXDB.get("x"),
-                TXDB.get("y"),
-                TXDB.get("scale"),
-                TXDB.get("toneR"),
-                TXDB.get("toneG"),
-                TXDB.get("toneB"),
-                TXDB.get("toneGrey"),
-                TXDB.get("transparency")
+                app.ts("visible"),
+                app.ts("cellId"),
+                app.ts("x"),
+                app.ts("y"),
+                app.ts("scale"),
+                app.ts("toneR"),
+                app.ts("toneG"),
+                app.ts("toneB"),
+                app.ts("toneGrey"),
+                app.ts("transparency")
         };
     }
 

@@ -14,7 +14,6 @@ import gabien.*;
 import gabien.uslx.append.*;
 import gabien.ui.*;
 import r48.App;
-import r48.dbs.TXDB;
 import r48.map.drawlayers.IMapViewDrawLayer;
 import r48.map.systems.MapSystem;
 import r48.schema.util.SchemaPath;
@@ -153,15 +152,15 @@ public class UIMapView extends UIPlaneView {
     protected String planeGetStatus() {
         String shortcuts;
         if (camDragSwitch) {
-            shortcuts = TXDB.get("Drag to pan. Camera button: Return.");
+            shortcuts = app.ts("Drag to pan. Camera button: Return.");
         } else if (callbacks == null) {
             if ((pickTileHelper != null) && (!app.ui.isMobile)) {
-                shortcuts = TXDB.get("Drag to pan. Shift-left: Pick tile. Camera button: Scroll.");
+                shortcuts = app.ts("Drag to pan. Shift-left: Pick tile. Camera button: Scroll.");
             } else {
-                shortcuts = TXDB.get("Drag to pan.");
+                shortcuts = app.ts("Drag to pan.");
             }
         } else {
-            shortcuts = TXDB.get("Tap/Drag: Use tool. Camera button: Scroll.");
+            shortcuts = app.ts("Tap/Drag: Use tool. Camera button: Scroll.");
         }
         return mapGUM + ";" + mouseXT + ", " + mouseYT + " Z" + planeZoomDiv + ":" + planeZoomMul + "; " + shortcuts;
     }

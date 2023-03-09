@@ -10,15 +10,16 @@ package r48.ui.utilitybelt;
 import gabien.uslx.append.*;
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import r48.dbs.TXDB;
+import r48.App;
 
 /**
  * Created on 16th July 2018
  */
-public class AddColourFromImageEditorTool implements IImageEditorTool {
+public class AddColourFromImageEditorTool extends ImageEditorTool {
     public final IConsumer<Integer> result;
 
-    public AddColourFromImageEditorTool(IConsumer<Integer> finished) {
+    public AddColourFromImageEditorTool(App a, IConsumer<Integer> finished) {
+        super(a);
         result = finished;
     }
 
@@ -33,7 +34,7 @@ public class AddColourFromImageEditorTool implements IImageEditorTool {
         if (p == null)
             return;
         result.accept(view.image.getRGB(p.x, p.y));
-        view.currentTool = new RootImageEditorTool();
+        view.currentTool = new RootImageEditorTool(app);
         view.newToolCallback.run();
     }
 
@@ -54,11 +55,11 @@ public class AddColourFromImageEditorTool implements IImageEditorTool {
 
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
-        return TXDB.get("Touch a point to add a new palette entry for it.");
+        return app.ts("Touch a point to add a new palette entry for it.");
     }
 
     @Override
-    public IImageEditorTool getCamModeLT() {
+    public ImageEditorTool getCamModeLT() {
         return null;
     }
 }

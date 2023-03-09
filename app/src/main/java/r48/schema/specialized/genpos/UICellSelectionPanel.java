@@ -10,7 +10,6 @@ package r48.schema.specialized.genpos;
 import gabien.ui.*;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.ui.UIAppendButton;
 
 /**
@@ -38,7 +37,7 @@ public class UICellSelectionPanel extends App.Prx {
             final int i2 = i;
             addAdditionButton(i2);
             String prefix = cellNumber == i2 ? ">" : " ";
-            UIElement button = new UITextButton(prefix + app.fmt.formatExtended(TXDB.get("Cell #A"), new RubyIO().setFX(i)), app.f.rmaCellTextHeight, new Runnable() {
+            UIElement button = new UITextButton(prefix + app.fmt.formatExtended(app.ts("Cell #A"), new RubyIO().setFX(i)), app.f.rmaCellTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     cellNumber = i2;
@@ -68,7 +67,7 @@ public class UICellSelectionPanel extends App.Prx {
     private void addAdditionButton(final int i2) {
         if (!root.canAddRemoveCells())
             return;
-        selectionPanel.panelsAdd(new UITextButton(TXDB.get("<add cell here>"), app.f.rmaCellTextHeight, new Runnable() {
+        selectionPanel.panelsAdd(new UITextButton(app.ts("<add cell here>"), app.f.rmaCellTextHeight, new Runnable() {
             @Override
             public void run() {
                 if (i2 <= root.getCellCount()) {

@@ -11,7 +11,6 @@ import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.ui.UIAppendButton;
 import r48.ui.UIFieldLayout;
@@ -97,7 +96,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                 final int fixedStart = selectedStart;
                                 final int fixedEnd = selectedEnd;
                                 if (positions[fixedStart].execDelete != null) {
-                                    uie = new UIAppendButton(app, "Delete", uie, valid, new String[] {TXDB.get("Confirm")}, new Runnable[] {
+                                    uie = new UIAppendButton(app, "Delete", uie, valid, new String[] {app.ts("Confirm")}, new Runnable[] {
                                         new Runnable() {
                                             @Override
                                             public void run() {
@@ -119,7 +118,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                         containerRCL();
                                     }
                                 };
-                                uie = new UIAppendButton(TXDB.get("Copy"), uie, new Runnable() {
+                                uie = new UIAppendButton(app.ts("Copy"), uie, new Runnable() {
                                     @Override
                                     public void run() {
                                         copyRange(fixedStart, fixedEnd);
@@ -127,7 +126,7 @@ public class StandardArrayInterface implements IArrayInterface {
                                         containerRCL();
                                     }
                                 }, app.f.schemaFieldTextHeight);
-                                uie = new UIAppendButton(TXDB.get("Cut Array"), uie, new Runnable() {
+                                uie = new UIAppendButton(app.ts("Cut Array"), uie, new Runnable() {
                                     @Override
                                     public void run() {
                                         copyRange(fixedStart, fixedEnd);
@@ -286,14 +285,14 @@ public class StandardArrayInterface implements IArrayInterface {
                 LinkedList<String> optText = new LinkedList<String>();
                 LinkedList<Runnable> optRuns = new LinkedList<Runnable>();
                 // This keeps this string in the translation DB in case it's needed again; stuff should be tested first.
-                // app.fmt.formatExtended(TXDB.get("Add #@ #A"), new RubyIO().setString(text, true))
-                optText.add(clarifyEmpty ? TXDB.get("Insert Here...") : TXDB.get("Add Next..."));
+                // app.fmt.formatExtended(app.ts("Add #@ #A"), new RubyIO().setString(text, true))
+                optText.add(clarifyEmpty ? app.ts("Insert Here...") : app.ts("Add Next..."));
                 optRuns.add(runnable);
                 if (runnable2 != null) {
-                    optText.add(TXDB.get("Paste Array"));
+                    optText.add(app.ts("Paste Array"));
                     optRuns.add(runnable2);
                 }
-                return new UIMenuButton(uiSVL.getApp(), TXDB.get("Add..."), app.f.schemaArrayAddTextHeight, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
+                return new UIMenuButton(uiSVL.getApp(), app.ts("Add..."), app.f.schemaArrayAddTextHeight, valid, optText.toArray(new String[0]), optRuns.toArray(new Runnable[0]));
             }
 
             // This assumes it's being placed on a button 'before' the position

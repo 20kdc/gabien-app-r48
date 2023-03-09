@@ -87,14 +87,14 @@ public class AppCore {
     /**
      * Legacy static translation
      */
-    public String tr(String text) {
+    public String ts(String text) {
         return d.tr("r48", text);
     }
 
     /**
      * Legacy dynamic translation
      */
-    public String tr(String context, String text) {
+    public String td(String context, String text) {
         return d.tr(context.replace('/', '-'), text);
     }
 
@@ -104,7 +104,7 @@ public class AppCore {
     public String trExUnderscore(String context, String text) {
         if (text.equals("_"))
             return "_";
-        return tr(context, text);
+        return td(context, text);
     }
 
     public void performTranslatorDump(String fnPrefix, String ctxPrefix) {

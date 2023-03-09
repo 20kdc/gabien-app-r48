@@ -9,18 +9,22 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
-import r48.dbs.TXDB;
+import r48.App;
 
 /**
  * Created on 16th July 2018.
  */
 public class TileImageEditorTool extends RectangleImageEditorTool {
 
+    public TileImageEditorTool(App app) {
+        super(app);
+    }
+
     @Override
     public void forceDifferentTool(UIImageEditView uiev) {
         if (uiev.tiling != null) {
             uiev.tiling = null;
-            uiev.currentTool = new RootImageEditorTool();
+            uiev.currentTool = new RootImageEditorTool(app);
         }
     }
 
@@ -30,7 +34,7 @@ public class TileImageEditorTool extends RectangleImageEditorTool {
         if (p == null)
             return;
         view.tiling = new Rect(p.x, p.y, bW, bH);
-        view.currentTool = new RootImageEditorTool();
+        view.currentTool = new RootImageEditorTool(app);
         view.newToolCallback.run();
     }
 
@@ -42,7 +46,7 @@ public class TileImageEditorTool extends RectangleImageEditorTool {
     @Override
     public String getLocalizedText(boolean dedicatedDragControl) {
         if (stage2)
-            return TXDB.get("Click remaining point of area to restrict drawing to.");
-        return TXDB.get("Click points of area to restrict drawing to.");
+            return app.ts("Click remaining point of area to restrict drawing to.");
+        return app.ts("Click points of area to restrict drawing to.");
     }
 }

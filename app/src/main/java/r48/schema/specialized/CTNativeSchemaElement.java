@@ -10,7 +10,6 @@ package r48.schema.specialized;
 import gabien.ui.*;
 import r48.App;
 import r48.RubyCT;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.SchemaElement;
@@ -33,10 +32,10 @@ public class CTNativeSchemaElement extends SchemaElement {
     public UIElement buildHoldingEditor(IRIO target, ISchemaHost launcher, SchemaPath path) {
         final UIScrollLayout uiSVL = AggregateSchemaElement.createScrollSavingSVL(launcher, this, target);
         RubyCT rct = new RubyCT(target.getBuffer());
-        addField(uiSVL, TXDB.get("R"), 0, rct, path);
-        addField(uiSVL, TXDB.get("G"), 8, rct, path);
-        addField(uiSVL, TXDB.get("B"), 16, rct, path);
-        addField(uiSVL, TXDB.get("A/L"), 24, rct, path);
+        addField(uiSVL, app.ts("R"), 0, rct, path);
+        addField(uiSVL, app.ts("G"), 8, rct, path);
+        addField(uiSVL, app.ts("B"), 16, rct, path);
+        addField(uiSVL, app.ts("A/L"), 24, rct, path);
         return uiSVL;
     }
 

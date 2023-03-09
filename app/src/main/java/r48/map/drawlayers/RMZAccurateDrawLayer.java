@@ -8,7 +8,6 @@ package r48.map.drawlayers;
 
 import r48.App;
 import r48.RubyTable;
-import r48.dbs.TXDB;
 import r48.io.data.IRIOFixnum;
 
 import java.util.Collections;
@@ -21,10 +20,11 @@ public class RMZAccurateDrawLayer extends ZSortingDrawLayer {
     public SignalMapViewLayer[] tileSignalLayers;
 
     public RMZAccurateDrawLayer(App app, RubyTable tbl, int layers) {
+        super(app);
         mapTable = tbl;
         tileSignalLayers = new SignalMapViewLayer[layers];
         for (int i = 0; i < tileSignalLayers.length; i++) {
-            tileSignalLayers[i] = new SignalMapViewLayer(app.fmt.formatExtended(TXDB.get("Tile Layer #A"), new IRIOFixnum(i)));
+            tileSignalLayers[i] = new SignalMapViewLayer(app.fmt.formatExtended(app.ts("Tile Layer #A"), new IRIOFixnum(i)));
             signals.add(tileSignalLayers[i]);
         }
         Collections.addAll(signals, tileSignalLayers);

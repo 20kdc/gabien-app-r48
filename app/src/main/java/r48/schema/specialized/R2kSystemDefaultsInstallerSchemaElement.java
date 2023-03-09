@@ -13,7 +13,6 @@ import gabien.ui.UITextButton;
 import r48.App;
 import r48.RubyIO;
 import r48.RubyTable;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.events.R2kSavefileEventAccess;
@@ -39,7 +38,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
     @Override
     public UIElement buildHoldingEditor(final IRIO target, ISchemaHost launcher, final SchemaPath path) {
         if (mode == 3) {
-            UITextButton utb1 = new UITextButton(TXDB.get("Reset Events & Version (use after map change)"), app.f.schemaFieldTextHeight, new Runnable() {
+            UITextButton utb1 = new UITextButton(app.ts("Reset Events & Version (use after map change)"), app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     // Before doing anything stupid...
@@ -47,7 +46,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     String mapName = R2kRMLikeMapInfoBackend.sNameFromInt((int) mapId);
                     IObjectBackend.ILoadedObject map = app.odb.getObject(mapName, null);
                     if (map == null) {
-                        app.ui.launchDialog(TXDB.get("The map's invalid, so that's not possible."));
+                        app.ui.launchDialog(app.ts("The map's invalid, so that's not possible."));
                         return;
                     }
                     IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");
@@ -67,10 +66,10 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
 
                     path.changeOccurred(false);
-                    app.ui.launchDialog(TXDB.get("Reset events to map state and set versioning."));
+                    app.ui.launchDialog(app.ts("Reset events to map state and set versioning."));
                 }
             });
-            UITextButton utb2 = new UITextButton(TXDB.get("Try To Get RPG_RT To Reset The Map"), app.f.schemaFieldTextHeight, new Runnable() {
+            UITextButton utb2 = new UITextButton(app.ts("Try To Get RPG_RT To Reset The Map"), app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     IRIO saveEvs = target.getIVar("@map_info").getIVar("@events");
@@ -80,7 +79,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     initTable(target.getIVar("@map_info").getIVar("@upper_tile_remap"));
 
                     path.changeOccurred(false);
-                    app.ui.launchDialog(TXDB.get("Ok, cleaned up. If RPG_RT loads this save, the map will probably be reset."));
+                    app.ui.launchDialog(app.ts("Ok, cleaned up. If RPG_RT loads this save, the map will probably be reset."));
                 }
             });
             return new UISplitterLayout(utb1, utb2, true, 0.5d);
@@ -120,17 +119,17 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
                     // 4. Battle System initialization
                     sub = target.getIVar("@animations").addHashVal(new RubyIO().setFX(1));
                     SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Animation"), new RubyIO().setFX(1));
-                    sub.getIVar("@name").setString(TXDB.get("Default Fallback Animation"));
+                    sub.getIVar("@name").setString(app.ts("Default Fallback Animation"));
 
                     sub = target.getIVar("@states").addHashVal(new RubyIO().setFX(1));
                     SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::State"), new RubyIO().setFX(1));
                     // These are the minimum settings for death to work correctly.
-                    sub.getIVar("@name").setString(TXDB.get("Death"));
+                    sub.getIVar("@name").setString(app.ts("Death"));
                     sub.getIVar("@restriction").setFX(1);
 
                     sub = target.getIVar("@battle_anim_sets_2k3").addHashVal(new RubyIO().setFX(1));
                     SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::BattlerAnimationSet"), new RubyIO().setFX(1));
-                    sub.getIVar("@name").setString(TXDB.get("Default Fallback AnimSet"));
+                    sub.getIVar("@name").setString(app.ts("Default Fallback AnimSet"));
 
                     // 5. Default enemy data
                     sub = target.getIVar("@enemies").addHashVal(new RubyIO().setFX(1));
@@ -138,7 +137,7 @@ public class R2kSystemDefaultsInstallerSchemaElement extends SchemaElement {
 
                     sub = target.getIVar("@troops").addHashVal(new RubyIO().setFX(1));
                     SchemaPath.setDefaultValue(sub, app.sdb.getSDBEntry("RPG::Troop"), new RubyIO().setFX(1));
-                    sub.getIVar("@name").setString(TXDB.get("Slime x1"));
+                    sub.getIVar("@name").setString(app.ts("Slime x1"));
 
                     sub = sub.getIVar("@members");
                     sub.addAElem(0).setNull();

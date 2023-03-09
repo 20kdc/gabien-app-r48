@@ -14,7 +14,6 @@ import gabien.ui.*;
 import r48.App;
 import r48.RubyTable;
 import r48.dbs.PathSyntax;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
 import r48.schema.specialized.tbleditors.ITableCellEditor;
@@ -162,7 +161,7 @@ public class RubyTableSchemaElement<TileHelper> extends BaseRubyTableSchemaEleme
             };
             UIElement uie = new UISplitterLayout(wNB, hNB, false, 1, 2);
             uiSVL.panelsAdd(uie);
-            uiSVL.panelsAdd(new UITextButton(TXDB.get("Resize"), app.f.tableResizeTextHeight, new Runnable() {
+            uiSVL.panelsAdd(new UITextButton(app.ts("Resize"), app.f.tableResizeTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     int w = (int) wNB.number;

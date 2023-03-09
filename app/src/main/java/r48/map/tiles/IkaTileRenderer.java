@@ -10,7 +10,7 @@ package r48.map.tiles;
 import gabien.GaBIEn;
 import gabien.IGrDriver;
 import gabien.IImage;
-import r48.dbs.TXDB;
+import r48.App;
 import r48.map.imaging.IImageLoader;
 import r48.map.tileedit.AutoTileTypeField;
 import r48.map.tileedit.TileEditingTab;
@@ -18,11 +18,12 @@ import r48.map.tileedit.TileEditingTab;
 /**
  * Created on 1/27/17.
  */
-public class IkaTileRenderer implements ITileRenderer {
+public class IkaTileRenderer extends App.Svc implements ITileRenderer {
 
     private final IImageLoader imageLoader;
 
-    public IkaTileRenderer(IImageLoader il) {
+    public IkaTileRenderer(App app, IImageLoader il) {
+        super(app);
         imageLoader = il;
     }
 
@@ -73,7 +74,7 @@ public class IkaTileRenderer implements ITileRenderer {
     @Override
     public TileEditingTab[] getEditConfig(int layerIdx) {
         return new TileEditingTab[] {
-                new TileEditingTab(TXDB.get("Tiles"), false, TileEditingTab.range(0, 256))
+                new TileEditingTab(app.ts("Tiles"), false, TileEditingTab.range(0, 256))
         };
     }
 

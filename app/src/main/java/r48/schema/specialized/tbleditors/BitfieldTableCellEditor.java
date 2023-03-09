@@ -10,7 +10,6 @@ package r48.schema.specialized.tbleditors;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.dbs.TXDB;
 import r48.schema.integers.IntegerSchemaElement;
 import r48.schema.integers.TSDBChoiceIntegerSchemaElement;
 
@@ -45,7 +44,7 @@ public class BitfieldTableCellEditor extends App.Svc implements ITableCellEditor
             }
         }));
         editor1.accept(planes[0]);
-        base.panelsAdd(new UILabel(TXDB.get("Manual Edit:"), app.f.tableElementTextHeight));
+        base.panelsAdd(new UILabel(app.ts("Manual Edit:"), app.f.tableElementTextHeight));
         final Runnable editor2 = new DefaultTableCellEditor(app).createEditor(base, planes, changeOccurred);
         
         return new Runnable() {

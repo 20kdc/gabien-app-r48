@@ -11,7 +11,6 @@ import gabien.GaBIEn;
 import gabien.ui.UIElement;
 import gabien.ui.UITextBox;
 import r48.App;
-import r48.dbs.TXDB;
 import r48.io.IMIUtils;
 import r48.io.PathUtils;
 import r48.io.data.IRIO;
@@ -37,7 +36,7 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
         App app = launcher.getApp();
         tryInitOSSHESEDB(app);
         if (app.osSHESEDB == null)
-            app.ui.launchDialog(TXDB.get("This is basically useless without a locmaps.txt file. Please prepare one by going into RXP mode, System Tools, and pressing 'Retrieve all object strings', then return here."));
+            app.ui.launchDialog(app.ts("This is basically useless without a locmaps.txt file. Please prepare one by going into RXP mode, System Tools, and pressing 'Retrieve all object strings', then return here."));
         final UITextBox utb = new UITextBox("", app.f.schemaFieldTextHeight);
         utb.onEdit = new Runnable() {
             @Override
@@ -135,10 +134,10 @@ public class OSStrHashMapSchemaElement extends SchemaElement {
 
     private static String mainDecode(App app, int fixnumVal) {
         if (app.osSHESEDB == null)
-            return TXDB.get("[NO DB AVAILABLE]");
+            return app.ts("[NO DB AVAILABLE]");
         String r = app.osSHESEDB.get(fixnumVal);
         if (r == null)
-            return TXDB.get("[UNKNOWN STRING. I just don't know what went wrong...]");
+            return app.ts("[UNKNOWN STRING. I just don't know what went wrong...]");
         return r;
     }
 }

@@ -14,7 +14,6 @@ import gabien.uslx.append.IConsumer;
 import gabien.uslx.append.ISupplier;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.schema.util.SchemaPath;
 
@@ -54,7 +53,7 @@ public class UICommandSites extends App.Prx {
 
     @Override
     public String toString() {
-        return app.fmt.formatExtended(TXDB.get("Translatables in: #A"), new RubyIO().setString(objIdName, true));
+        return app.fmt.formatExtended(app.ts("Translatables in: #A"), new RubyIO().setString(objIdName, true));
     }
 
     public void doRefresh() {

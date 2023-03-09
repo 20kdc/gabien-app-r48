@@ -12,7 +12,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UIScrollLayout;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.io.IntUtils;
 import r48.io.data.IRIO;
 import r48.schema.AggregateSchemaElement;
@@ -230,15 +229,15 @@ public abstract class ArraySchemaElement extends SchemaElement {
                                 target.addAElem(i).setDeepClone(finalInsertionRv[j]);
                             }
                         } catch (Exception e) {
-                            app.ui.launchDialog(TXDB.get("Incompatible clipboard and target."), e);
+                            app.ui.launchDialog(app.ts("Incompatible clipboard and target."), e);
                         }
                         // whack the UI
                         path.changeOccurred(false);
                     } else {
-                        app.ui.launchDialog(TXDB.get("Can't copy in - copying in a range into an array requires that range be an array.") + "\n" + TXDB.get("Copying from the array interface will give you these."));
+                        app.ui.launchDialog(app.ts("Can't copy in - copying in a range into an array requires that range be an array.") + "\n" + app.ts("Copying from the array interface will give you these."));
                     }
                 } else {
-                    app.ui.launchDialog(TXDB.get("Can't copy in - the clipboard is empty."));
+                    app.ui.launchDialog(app.ts("Can't copy in - the clipboard is empty."));
                 }
             }
         };

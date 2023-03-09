@@ -13,7 +13,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
 import r48.dbs.PathSyntax;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -50,7 +49,7 @@ public class PathSchemaElement extends SchemaElement implements IFieldSchemaElem
         if (tgo == null) {
             if (!optional)
                 throw new RuntimeException("Error: Made it to PathSchemaElement.buildHoldingEditor when target wasn't there: " + pStr);
-            e2 = new UITextButton(TXDB.get("<Not present - Add>"), app.f.schemaFieldTextHeight, new Runnable() {
+            e2 = new UITextButton(app.ts("<Not present - Add>"), app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {
                     IRIO rio = pStr.add(target);

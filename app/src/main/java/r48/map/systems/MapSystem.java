@@ -15,7 +15,6 @@ import r48.IMapContext;
 import r48.RubyTable;
 import r48.dbs.ObjectInfo;
 import r48.dbs.PathSyntax;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.IEditingToolbarController;
@@ -76,7 +75,7 @@ public abstract class MapSystem extends App.Svc {
     // If null, the map explorer is not enabled.
     public UIElement createMapExplorer(final IMapContext mapBox, final String mapInfos) {
         return new UIPopupMenu(new String[] {
-                TXDB.get("Load Map")
+                app.ts("Load Map")
         }, new Runnable[] {
                 new Runnable() {
                     @Override

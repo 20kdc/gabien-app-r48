@@ -25,11 +25,6 @@ public class TXDB {
 
     // NOTE: Translation items of the form get("Blahblah") (note: comments are scanned too) cannot include backslash escapes.
 
-    // Parameters to this function should be constant.
-    public static String get(String english) {
-        return currentTranslator.tr("r48", english);
-    }
-
     // This function must be called *consistently* for a given schema.
     public static String get(String context, String english) {
         return currentTranslator.tr(context.replace('/', '-'), english);

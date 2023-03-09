@@ -8,15 +8,17 @@
 package r48.ui.utilitybelt;
 
 import gabien.ui.Rect;
+import r48.App;
 
 /**
  * Created on October 09, 2018.
  */
-public abstract class StagedImageEditorTool implements IImageEditorTool {
+public abstract class StagedImageEditorTool extends ImageEditorTool {
     protected int[] stageXs, stageYs;
     protected int stage;
 
-    public StagedImageEditorTool(int stageCount) {
+    public StagedImageEditorTool(App app, int stageCount) {
+        super(app);
         stageXs = new int[stageCount];
         stageYs = new int[stageCount];
     }
@@ -66,7 +68,7 @@ public abstract class StagedImageEditorTool implements IImageEditorTool {
     }
 
     @Override
-    public IImageEditorTool getCamModeLT() {
+    public ImageEditorTool getCamModeLT() {
         return null;
     }
 }

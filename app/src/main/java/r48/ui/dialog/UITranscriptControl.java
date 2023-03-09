@@ -20,7 +20,6 @@ import gabien.ui.UITextButton;
 import r48.App;
 import r48.RubyIO;
 import r48.dbs.CMDB;
-import r48.dbs.TXDB;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.mapinfos.RXPRMLikeMapInfoBackend;
@@ -74,7 +73,7 @@ public class UITranscriptControl extends App.Prx {
     private void refreshContents() {
         layout.panelsClear();
 
-        layout.panelsAdd(new UITextButton(TXDB.get("Confirm"), app.f.dialogWindowTextHeight, new Runnable() {
+        layout.panelsAdd(new UITextButton(app.ts("Confirm"), app.f.dialogWindowTextHeight, new Runnable() {
             @Override
             public void run() {
                 PrintStream ps = null;
@@ -83,7 +82,7 @@ public class UITranscriptControl extends App.Prx {
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }
-                RMTranscriptDumper dumper = new RMTranscriptDumper(ps);
+                RMTranscriptDumper dumper = new RMTranscriptDumper(app, ps);
 
                 Set<TranscriptComponent> comps = setSelector.getSet();
                 for (TranscriptComponent tc : components)
@@ -96,7 +95,7 @@ public class UITranscriptControl extends App.Prx {
 
                 dumper.end();
                 ps.close();
-                app.ui.launchDialog(TXDB.get("transcript.html was written to the target's folder."));
+                app.ui.launchDialog(app.ts("transcript.html was written to the target's folder."));
                 done = true;
             }
         }));
@@ -113,14 +112,14 @@ public class UITranscriptControl extends App.Prx {
         @Override
         public void dump(RMTranscriptDumper dumper) {
             dumper.start();
-            dumper.startFile("CommonEvents", TXDB.get("Common Events"));
+            dumper.startFile("CommonEvents", app.ts("Common Events"));
             for (IRIO rio : mapSystem.getAllCommonEvents())
                 dumper.dump(rio.getIVar("@name").decString(), rio.getIVar("@list"), commandsEvent);
             dumper.endFile();
         }
         @Override
         public String toString() {
-            return TXDB.get("Common Events");
+            return app.ts("Common Events");
         }
     }
 
@@ -130,7 +129,7 @@ public class UITranscriptControl extends App.Prx {
 
         public TCMap(IRMMapSystem.RMMapData rm) {
             rmd = rm;
-            whatDoWeCallThis = app.fmt.formatExtended(TXDB.get("Map:#A"), new RubyIO().setString(rmd.getName(), true));
+            whatDoWeCallThis = app.fmt.formatExtended(app.ts("Map:#A"), new RubyIO().setString(rmd.getName(), true));
         }
 
         @Override
@@ -156,7 +155,7 @@ public class UITranscriptControl extends App.Prx {
                     IRIO page = pages.getAElem(i);
                     if (page.getType() == '0')
                         continue; // 0th page on R2k backend.
-                    dumper.dump(app.fmt.formatExtended(TXDB.get("Ev.#A #C, page #B"), new RubyIO().setFX(k), new RubyIO().setFX(pageId), event.getIVar("@name")), page.getIVar("@list"), commandsEvent);
+                    dumper.dump(app.fmt.formatExtended(app.ts("Ev.#A #C, page #B"), new RubyIO().setFX(k), new RubyIO().setFX(pageId), event.getIVar("@name")), page.getIVar("@list"), commandsEvent);
                     pageId++;
                 }
             }
@@ -175,7 +174,7 @@ public class UITranscriptControl extends App.Prx {
         }
         @Override
         public String toString() {
-            return TXDB.get("Context (variables, etc.)");
+            return app.ts("Context (variables, etc.)");
         }
     }
 }

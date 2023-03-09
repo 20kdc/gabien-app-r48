@@ -12,7 +12,6 @@ import gabien.ui.UILabel;
 import gabien.ui.UITextButton;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.io.data.IRIOFixnum;
 import r48.schema.util.ISchemaHost;
@@ -50,9 +49,9 @@ public class ArrayElementSchemaElement extends SchemaElement implements IFieldSc
         if (name.equals("_"))
             return HiddenSchemaElement.makeHiddenElement();
         if (target.getALen() <= index) {
-            String tx = TXDB.get("(This index isn't valid - did you modify a group from another window?)");
+            String tx = app.ts("(This index isn't valid - did you modify a group from another window?)");
             if (optional != null)
-                tx = app.fmt.formatExtended(TXDB.get("Field #A doesn't exist (default #B)"), new RubyIO().setString(name, true), new RubyIO().setString(optional, true));
+                tx = app.fmt.formatExtended(app.ts("Field #A doesn't exist (default #B)"), new RubyIO().setString(name, true), new RubyIO().setString(optional, true));
             return new UITextButton(tx, app.f.schemaFieldTextHeight, new Runnable() {
                 @Override
                 public void run() {

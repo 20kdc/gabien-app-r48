@@ -12,7 +12,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UISplitterLayout;
 import r48.App;
 import r48.RubyIO;
-import r48.dbs.TXDB;
 import r48.schema.util.ISchemaHost;
 import r48.ui.UIAppendButton;
 import r48.ui.UITimeframeControl;
@@ -87,13 +86,13 @@ public class GenposAnimRootPanel extends App.Prx {
 
         UIElement toolbar = timeframe;
 
-        toolbar = new UIAppendButton(TXDB.get("Copy"), toolbar, new Runnable() {
+        toolbar = new UIAppendButton(app.ts("Copy"), toolbar, new Runnable() {
             @Override
             public void run() {
                 app.theClipboard = new RubyIO().setDeepClone(target.getFrame());
             }
         }, app.f.rmaTimeframeTextHeight);
-        toolbar = new UIAppendButton(TXDB.get("Paste"), toolbar, new Runnable() {
+        toolbar = new UIAppendButton(app.ts("Paste"), toolbar, new Runnable() {
             @Override
             public void run() {
                 if (target.acceptableForPaste(app.theClipboard)) {
@@ -125,7 +124,7 @@ public class GenposAnimRootPanel extends App.Prx {
 
     @Override
     public String toString() {
-        return TXDB.get("Animation Editor");
+        return app.ts("Animation Editor");
     }
 
     // This alerts everything to rebuild, but doesn't run the updateNotify.

@@ -8,7 +8,6 @@
 package r48.schema;
 
 import r48.App;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.util.SchemaPath;
 
@@ -24,7 +23,7 @@ public class AMAISchemaElement extends OpaqueSchemaElement {
 
     @Override
     public String getMessage(IRIO v) {
-        return TXDB.get("Parent Index. ") + v;
+        return app.ts("Parent Index. ") + v;
     }
 
     @Override

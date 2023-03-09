@@ -9,29 +9,34 @@ package r48.ui.utilitybelt;
 
 import gabien.ui.Rect;
 import gabien.ui.UIElement;
+import r48.App;
 
 /**
- * Created on 13th July 2018.
+ * Created on 13th July 2018. Abstract-class 9th March 2023.
  */
-public interface IImageEditorTool {
+public abstract class ImageEditorTool extends App.Svc {
+    public ImageEditorTool(App a) {
+        super(a);
+    }
+
     // Solely for forcing a switch to a different tool. Don't reset here!
-    void forceDifferentTool(UIImageEditView uiev);
+    public abstract void forceDifferentTool(UIImageEditView uiev);
 
     // major means an actual specified point (otherwise a between point)
     // dragging means NOT the first point
-    void apply(int x, int y, UIImageEditView view, boolean major, boolean dragging);
+    public abstract void apply(int x, int y, UIImageEditView view, boolean major, boolean dragging);
 
     // Must always be called after an apply sequence, and must always go to the correct tool.
-    void endApply(UIImageEditView view);
+    public abstract void endApply(UIImageEditView view);
 
-    UIElement createToolPalette(UIImageEditView uiev);
+    public abstract UIElement createToolPalette(UIImageEditView uiev);
 
     // Null: No selection
     // Zero W/H: Target
-    Rect getSelection();
+    public abstract Rect getSelection();
 
-    String getLocalizedText(boolean dedicatedDragControl);
+    public abstract String getLocalizedText(boolean dedicatedDragControl);
 
     // If not null, we're in camera mode
-    IImageEditorTool getCamModeLT();
+    public abstract ImageEditorTool getCamModeLT();
 }

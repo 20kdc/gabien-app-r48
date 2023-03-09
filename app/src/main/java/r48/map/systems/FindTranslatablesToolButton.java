@@ -7,7 +7,7 @@
 package r48.map.systems;
 
 import gabien.uslx.append.ISupplier;
-import r48.dbs.TXDB;
+import r48.App;
 import r48.io.IObjectBackend;
 import r48.map.IMapToolContext;
 import r48.map.MapEditingToolbarController.ToolButton;
@@ -23,8 +23,8 @@ import r48.toolsets.utils.UICommandSites;
  */
 public final class FindTranslatablesToolButton extends ToolButton {
     public final String ep;
-    public FindTranslatablesToolButton(String e) {
-        super(TXDB.get("Find Translatables"));
+    public FindTranslatablesToolButton(App app, String e) {
+        super(app.ts("Find Translatables"));
         ep = e;
     }
 

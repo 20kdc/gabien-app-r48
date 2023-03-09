@@ -18,7 +18,6 @@ import r48.IMapContext;
 import r48.RubyIO;
 import r48.RubyTable;
 import r48.dbs.ObjectInfo;
-import r48.dbs.TXDB;
 import r48.imageio.BMP8IImageIOFormat;
 import r48.imageio.PNG8IImageIOFormat;
 import r48.imageio.XYZImageIOFormat;
@@ -148,18 +147,18 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             // layer 1 upper
             // layer 2 upper
             layers = new IMapViewDrawLayer[] {
-                new PanoramaMapViewDrawLayer(img, loopX, loopY, autoLoopX, autoLoopY, tbl.width, tbl.height, 320, 240, 1),
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, false, tileset, TXDB.get("L0 (no Upper flag)")),
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, false, tileset, TXDB.get("L1 (no Upper flag)")),
-                    new EventMapViewDrawLayer(0, events, eventRenderer, TXDB.get(" (Below Player)")),
-                    new EventMapViewDrawLayer(1, events, eventRenderer, TXDB.get(" (Player/Same)")), // Player/Same
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, true, tileset, TXDB.get("L0 (Upper flag)")),
-                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, true, tileset, TXDB.get("L1 (Upper flag)")),
-                    new EventMapViewDrawLayer(2, events, eventRenderer, TXDB.get(" (Above Player)")),
-                new PassabilityMapViewDrawLayer(new R2kPassabilitySource(tbl, tileset, (scrollFlags & 2) != 0, (scrollFlags & 1) != 0), 16),
-                    new EventMapViewDrawLayer(0x7FFFFFFF, events, eventRenderer, ""),
-                new GridMapViewDrawLayer(),
-                new BorderMapViewDrawLayer(tbl.width, tbl.height)
+                new PanoramaMapViewDrawLayer(app, img, loopX, loopY, autoLoopX, autoLoopY, tbl.width, tbl.height, 320, 240, 1),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, false, tileset, app.ts("L0 (no Upper flag)")),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, false, tileset, app.ts("L1 (no Upper flag)")),
+                    new EventMapViewDrawLayer(app, 0, events, eventRenderer, app.ts(" (Below Player)")),
+                    new EventMapViewDrawLayer(app, 1, events, eventRenderer, app.ts(" (Player/Same)")), // Player/Same
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 0, true, tileset, app.ts("L0 (Upper flag)")),
+                new R2kTileMapViewDrawLayer(app, tbl, tileRenderer, 1, true, tileset, app.ts("L1 (Upper flag)")),
+                    new EventMapViewDrawLayer(app, 2, events, eventRenderer, app.ts(" (Above Player)")),
+                new PassabilityMapViewDrawLayer(app, new R2kPassabilitySource(tbl, tileset, (scrollFlags & 2) != 0, (scrollFlags & 1) != 0), 16),
+                    new EventMapViewDrawLayer(app, 0x7FFFFFFF, events, eventRenderer, ""),
+                new GridMapViewDrawLayer(app),
+                new BorderMapViewDrawLayer(app, tbl.width, tbl.height)
             };
         }
         return new StuffRenderer(app, imageLoader, tileRenderer, eventRenderer, layers);
@@ -186,7 +185,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
                     IRIO lmtiLocal = app.odb.getObject("RPG_RT.lmt").getObject().getIVar("@map_infos");
                     IRIO mapInfo = lmtiLocal.getHashVal(key);
                     if (mapInfo == null)
-                        return TXDB.get("<map removed from RPG_RT.lmt>");
+                        return app.ts("<map removed from RPG_RT.lmt>");
                     return mapInfo.getIVar("@name").decString();
                 }
             }, id, R2kRMLikeMapInfoBackend.sNameFromInt(id), "RPG::Map");
@@ -215,7 +214,7 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
 
     @Override
     public void dumpCustomData(RMTranscriptDumper dumper) {
-        dumper.startFile("RPG_RT.ldb", TXDB.get("System data (of any importance, anyway)."));
+        dumper.startFile("RPG_RT.ldb", app.ts("System data (of any importance, anyway)."));
         IRIO sys = app.odb.getObject("RPG_RT.ldb").getObject();
         dumper.dumpSVListHash("@switches", sys.getIVar("@switches"));
         dumper.dumpSVListHash("@variables", sys.getIVar("@variables"));
@@ -320,14 +319,14 @@ public class R2kSystem extends MapSystem implements IRMMapSystem, IDynobjMapSyst
             @Override
             public IEditingToolbarController apply(IMapToolContext iMapToolContext) {
                 return new MapEditingToolbarController(iMapToolContext, false, new ToolButton[] {
-                        new ToolButton(TXDB.get("DeepWater")) {
+                        new ToolButton(app.ts("DeepWater")) {
                             @Override
                             public UIMTBase apply(IMapToolContext a) {
                                 return new UIMTFtrGdt01(a);
                             }
                         }
                 }, new ToolButton[] {
-                        new FindTranslatablesToolButton("RPG::EventPage")
+                        new FindTranslatablesToolButton(app, "RPG::EventPage")
                 });
             }
         });

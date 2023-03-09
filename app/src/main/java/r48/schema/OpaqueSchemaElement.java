@@ -11,7 +11,6 @@ import gabien.ui.UIElement;
 import gabien.ui.UITextButton;
 import r48.App;
 import r48.UITest;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.schema.util.ISchemaHost;
 import r48.schema.util.SchemaPath;
@@ -25,7 +24,7 @@ public class OpaqueSchemaElement extends SchemaElement {
     }
 
     public String getMessage(IRIO v) {
-        return TXDB.get("Can't edit: ") + v;
+        return app.ts("Can't edit: ") + v;
     }
 
     public UIElement buildHoldingEditor(final IRIO target, final ISchemaHost launcher, final SchemaPath path) {

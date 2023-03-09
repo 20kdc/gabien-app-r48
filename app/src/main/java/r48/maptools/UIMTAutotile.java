@@ -9,7 +9,6 @@ package r48.maptools;
 
 import gabien.ui.*;
 import gabien.uslx.append.*;
-import r48.dbs.TXDB;
 import r48.map.IMapToolContext;
 import r48.map.IMapViewCallbacks;
 import r48.map.MapViewDrawContext;
@@ -87,7 +86,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         subtool = 0;
         final LinkedList<UIButton<?>> options = new LinkedList<UIButton<?>>();
 
-        UITextButton baseTool = new UITextButton(TXDB.get("Pen"), app.f.atSubtoolTextHeight, new Runnable() {
+        UITextButton baseTool = new UITextButton(app.ts("Pen"), app.f.atSubtoolTextHeight, new Runnable() {
             @Override
             public void run() {
                 for (UIButton<?> utb : options)
@@ -98,7 +97,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         }).togglable(true);
         options.add(baseTool);
 
-        UIAppendButton uab = new UIAppendButton(TXDB.get("Rectangle"), baseTool, new Runnable() {
+        UIAppendButton uab = new UIAppendButton(app.ts("Rectangle"), baseTool, new Runnable() {
             @Override
             public void run() {
                 for (UIButton<?> utb : options)
@@ -110,7 +109,7 @@ public class UIMTAutotile extends UIMTBase implements IMapViewCallbacks {
         uab.button.toggle = true;
         options.add(uab.button);
 
-        uab = new UIAppendButton(TXDB.get("Fill"), uab, new Runnable() {
+        uab = new UIAppendButton(app.ts("Fill"), uab, new Runnable() {
             @Override
             public void run() {
                 for (UIButton<?> utb : options)

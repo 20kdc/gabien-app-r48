@@ -13,7 +13,6 @@ import gabien.uslx.append.*;
 import r48.App;
 import r48.RubyIO;
 import r48.UITest;
-import r48.dbs.TXDB;
 import r48.io.data.IRIO;
 import r48.map.StuffRenderer;
 import r48.map.UIMapView;
@@ -47,33 +46,33 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
             popObject();
         }
     }, app.f.schemaPathTextHeight);
-    private UIAppendButton toolbarCp = new UIAppendButton(TXDB.get("Copy"), toolbarP, new Runnable() {
+    private UIAppendButton toolbarCp = new UIAppendButton(app.ts("Copy"), toolbarP, new Runnable() {
         @Override
         public void run() {
             app.theClipboard = new RubyIO().setDeepClone(innerElem.targetElement);
         }
     }, app.f.schemaPathTextHeight);
-    private UIAppendButton toolbarPs = new UIAppendButton(TXDB.get("Paste"), toolbarCp, new Runnable() {
+    private UIAppendButton toolbarPs = new UIAppendButton(app.ts("Paste"), toolbarCp, new Runnable() {
         @Override
         public void run() {
             if (app.theClipboard == null) {
-                app.ui.launchDialog(TXDB.get("There is nothing in the clipboard."));
+                app.ui.launchDialog(app.ts("There is nothing in the clipboard."));
             } else {
                 if (IRIO.rubyTypeEquals(innerElem.targetElement, app.theClipboard)) {
                     try {
                         innerElem.targetElement.setDeepClone(app.theClipboard);
                     } catch (Exception e) {
-                        app.ui.launchDialog(TXDB.get("Incompatible clipboard and target."), e);
+                        app.ui.launchDialog(app.ts("Incompatible clipboard and target."), e);
                     }
                     innerElem.changeOccurred(false);
                     switchObject(innerElem);
                 } else {
-                    app.ui.launchDialog(TXDB.get("Incompatible clipboard and target."));
+                    app.ui.launchDialog(app.ts("Incompatible clipboard and target."));
                 }
             }
         }
     }, app.f.schemaPathTextHeight);
-    private UIAppendButton toolbarS = new UIAppendButton(TXDB.get("Save"), toolbarPs, new Runnable() {
+    private UIAppendButton toolbarS = new UIAppendButton(app.ts("Save"), toolbarPs, new Runnable() {
         @Override
         public void run() {
             SchemaPath root = innerElem.findRoot();
@@ -92,7 +91,7 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
         @Override
         public void run() {
             if (innerElem.hasTempDialog()) {
-                app.ui.launchDialog(TXDB.get("Cannot clone, this contains a temporary dialog."));
+                app.ui.launchDialog(app.ts("Cannot clone, this contains a temporary dialog."));
                 return;
             }
             // This serves to ensure that cloning a window causes it to retain scroll and such,
@@ -277,7 +276,7 @@ public class SchemaHostImpl extends App.Pan implements ISchemaHost {
     @Override
     public String toString() {
         if (innerElem == null)
-            return TXDB.get("Loading...");
+            return app.ts("Loading...");
         String rootName = app.odb.getIdByObject(innerElem.root);
         if (rootName == null)
             rootName = "AnonObject";

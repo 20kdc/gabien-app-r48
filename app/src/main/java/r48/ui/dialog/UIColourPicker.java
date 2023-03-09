@@ -14,7 +14,6 @@ import gabien.IPeripherals;
 import gabien.ui.*;
 import gabien.uslx.append.*;
 import r48.App;
-import r48.dbs.TXDB;
 import r48.ui.Art;
 import r48.ui.UIColourSwatch;
 import r48.ui.UIThumbnail;
@@ -286,7 +285,7 @@ public class UIColourPicker extends App.Prx {
             UISplitterLayout b = new UISplitterLayout(new UIChannelLabel(app, "B"), bC, false, 0);
 
             UISplitterLayout rgSplit = new UISplitterLayout(r, g, true, 0);
-            UISplitterLayout b0Split = new UISplitterLayout(b, new UILabel(TXDB.get("(NOTE: HSV may be better if precision isn't an issue.)"), app.f.imageEditorTextHeight), true, 0);
+            UISplitterLayout b0Split = new UISplitterLayout(b, new UILabel(app.ts("(NOTE: HSV may be better if precision isn't an issue.)"), app.f.imageEditorTextHeight), true, 0);
             UISplitterLayout rbSplit = new UISplitterLayout(rgSplit, b0Split, true, 0);
             proxySetElement(rbSplit, true);
         }
