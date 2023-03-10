@@ -10,8 +10,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
 import gabien.datum.DatumSymbol;
-import r48.minivm.MVMEnv.Slot;
 import r48.minivm.MVMEnvR48;
+import r48.minivm.MVMSlot;
 import r48.minivm.fn.MVMFn;
 
 /**
@@ -40,7 +40,7 @@ public class TrPage {
 
     private final Object calculateValueFor(MVMEnvR48 env, String cName, String name, Type type) {
         name = cName + "." + name;
-        Slot s = env.getSlot(new DatumSymbol(name));
+        MVMSlot s = env.getSlot(new DatumSymbol(name));
         if (s == null)
             return missingTerm(name, type);
         Object v = s.v;

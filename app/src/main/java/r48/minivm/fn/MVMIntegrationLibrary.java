@@ -13,9 +13,9 @@ import java.util.LinkedList;
 import gabien.GaBIEn;
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
-import r48.minivm.MVMEnv.Slot;
 import r48.minivm.MVMEnvR48;
 import r48.minivm.MVMU;
+import r48.minivm.MVMSlot;
 
 /**
  * MiniVM standard library.
@@ -23,28 +23,14 @@ import r48.minivm.MVMU;
  */
 public class MVMIntegrationLibrary {
     public static void add(MVMEnvR48 ctx) {
-        ctx.defineSlot(new DatumSymbol("include")).v = new Include(ctx)
-                .attachHelp("(include FILE) : Includes the given file. The code within magically counts as top-level even if it shouldn't. The filename has \".scm\" appended, and a second file is checked for with \".aux.scm\" appended for user additions.");
+        ctx.defLib("include", (a0) -> {
+            ctx.include((String) a0, false);
+            return null;
+        }).attachHelp("(include FILE) : Includes the given file. The code within magically counts as top-level even if it shouldn't. The filename has \".scm\" appended, and a second file is checked for with \".aux.scm\" appended for user additions.");
         ctx.defineSlot(new DatumSymbol("log")).v = new Log()
                 .attachHelp("(log V...) : Logs the given values.");
         ctx.defineSlot(new DatumSymbol("help-html")).v = new HelpHTML(ctx)
                 .attachHelp("(help-html) : Creates r48-repl-help.html in the R48 launch directory.");
-    }
-    public static final class Include extends MVMFn.VA {
-        final MVMEnvR48 r48;
-        public Include(MVMEnvR48 env) {
-            super("include");
-            this.r48 = env;
-        }
-
-        @Override
-        protected Object callIndirect(Object[] args) {
-            for (int i = 0; i < args.length; i++) {
-                String s = (String) args[i];
-                r48.include(s, false);
-            }
-            return null;
-        }
     }
     public static final class Log extends MVMFn.VA {
         public Log() {
@@ -84,12 +70,12 @@ public class MVMIntegrationLibrary {
             sb.append("<li>The goal is ultimately to create a language to reduce typing without infinitely increasing Java code size for every possible shortcut required</li>");
             sb.append("<li>Things are added on an as-needed basis</li>");
             sb.append("</ul>");
-            LinkedList<Slot> slots = new LinkedList<Slot>(ctx.listSlots());
+            LinkedList<MVMSlot> slots = new LinkedList<MVMSlot>(ctx.listSlots());
             slots.sort((a, b) -> {
                 return a.s.id.compareTo(b.s.id);
             });
             sb.append("Central index: <ul>");
-            for (Slot s : slots) {
+            for (MVMSlot s : slots) {
                 Object v = s.v;
                 if (v instanceof MVMHelpable) {
                     String help = ((MVMHelpable) v).help;
@@ -103,7 +89,7 @@ public class MVMIntegrationLibrary {
                 }
             }
             sb.append("</ul>");
-            for (Slot s : slots) {
+            for (MVMSlot s : slots) {
                 Object v = s.v;
                 if (v instanceof MVMHelpable) {
                     String help = ((MVMHelpable) v).help;
@@ -124,7 +110,7 @@ public class MVMIntegrationLibrary {
             sb.append("<h2>No help available for...</h2>");
             sb.append("only worry if one of these isn't a translation routine");
             sb.append("<ul>");
-            for (Slot s : slots) {
+            for (MVMSlot s : slots) {
                 Object v = s.v;
                 if (v instanceof MVMHelpable) {
                     String help = ((MVMHelpable) v).help;

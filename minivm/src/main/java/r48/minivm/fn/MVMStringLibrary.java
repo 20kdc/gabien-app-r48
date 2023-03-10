@@ -22,31 +22,31 @@ public class MVMStringLibrary {
         // strings
         ctx.defineSlot(new DatumSymbol("string-append")).v = new Add()
                 .attachHelp("(string-append V...) : Appends items into a big string.");
-        ctx.defineSlot(new DatumSymbol("string-length")).v = new Len()
-                .attachHelp("(string-length V) : Returns the length of a string.");
+        ctx.defLib("string-length", (a0) -> ((String) a0).length())
+            .attachHelp("(string-length V) : Returns the length of a string.");
         ctx.defineSlot(new DatumSymbol("number->string")).v = new N2S()
                 .attachHelp("(number->string V [R]) : Converts a number to a string with possible conversion.");
         ctx.defineSlot(new DatumSymbol("string->number")).v = new S2N()
                 .attachHelp("(string->number V [R]) : Converts a string to a number.");
-        ctx.defineSlot(new DatumSymbol("string-ref")).v = new Ref()
-                .attachHelp("(string-ref V K) : Returns a character from a string.");
+        ctx.defLib("string-ref", (a0, a1) -> ((String) a0).charAt(MVMU.cInt(a1)))
+            .attachHelp("(string-ref V K) : Returns a character from a string.");
         ctx.defineSlot(new DatumSymbol("string->list")).v = new S2L()
                 .attachHelp("(string->list V) : String to list of characters.");
         ctx.defineSlot(new DatumSymbol("list->string")).v = new L2S()
                 .attachHelp("(list->string V) : List of characters to string.");
-        ctx.defineSlot(new DatumSymbol("string->symbol")).v = new S2Sym()
-                .attachHelp("(string->symbol V) : String to symbol.");
-        ctx.defineSlot(new DatumSymbol("symbol->string")).v = new Sym2S()
-                .attachHelp("(symbol->string V) : Symbol to string.");
+        ctx.defLib("string->symbol", (a0) -> new DatumSymbol((String) a0))
+            .attachHelp("(string->symbol V) : String to symbol.");
+        ctx.defLib("symbol->string", (a0) -> ((DatumSymbol) a0).id)
+            .attachHelp("(symbol->string V) : Symbol to string.");
         ctx.defineSlot(new DatumSymbol("substring")).v = new Sub()
                 .attachHelp("(substring S START END) : Substring.");
-        ctx.defineSlot(new DatumSymbol("value->string")).v = new V2S()
-                .attachHelp("(value->string V) : Converts any value to a string.");
+        ctx.defLib("value->string", (a0) -> String.valueOf(a0))
+            .attachHelp("(value->string V) : Converts any value to a string.");
         // chars
-        ctx.defineSlot(new DatumSymbol("char->integer")).v = new C2I()
-                .attachHelp("(char->integer V) : Character to integer.");
-        ctx.defineSlot(new DatumSymbol("integer->char")).v = new I2C()
-                .attachHelp("(integer->char V) : Integer to Character.");
+        ctx.defLib("char->integer", (a0) -> (int) (Character) a0)
+            .attachHelp("(char->integer V) : Character to integer.");
+        ctx.defLib("integer->char", (a0) -> (char) MVMU.cInt(a0))
+            .attachHelp("(integer->char V) : Integer to Character.");
     }
 
     public static final class Add extends MVMFn {
@@ -130,17 +130,6 @@ public class MVMStringLibrary {
         }
     }
 
-    public static final class Len extends MVMFn.Fixed {
-        public Len() {
-            super("string-length");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            return ((String) a0).length();
-        }
-    }
-
     public static final class N2S extends MVMFn.Fixed {
         public N2S() {
             super("number->string");
@@ -196,17 +185,6 @@ public class MVMStringLibrary {
         }
     }
 
-    public static final class Ref extends MVMFn.Fixed {
-        public Ref() {
-            super("string-ref");
-        }
-
-        @Override
-        public Object callDirect(Object a0, Object a1) {
-            return ((String) a0).charAt(MVMU.cInt(a1));
-        }
-    }
-
     public static final class L2S extends MVMFn.Fixed {
         public L2S() {
             super("list->string");
@@ -240,28 +218,6 @@ public class MVMStringLibrary {
         }
     }
 
-    public static final class S2Sym extends MVMFn.Fixed {
-        public S2Sym() {
-            super("string->symbol");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            return new DatumSymbol((String) a0);
-        }
-    }
-
-    public static final class Sym2S extends MVMFn.Fixed {
-        public Sym2S() {
-            super("symbol->string");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            return ((DatumSymbol) a0).id;
-        }
-    }
-
     public static final class Sub extends MVMFn.Fixed {
         public Sub() {
             super("substring");
@@ -270,39 +226,6 @@ public class MVMStringLibrary {
         @Override
         public Object callDirect(Object a0, Object a1, Object a2) {
             return ((String) a0).substring(MVMU.cInt(a1), MVMU.cInt(a2));
-        }
-    }
-
-    public static final class V2S extends MVMFn.Fixed {
-        public V2S() {
-            super("value->string");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            return String.valueOf(a0);
-        }
-    }
-
-    public static final class I2C extends MVMFn.Fixed {
-        public I2C() {
-            super("integer->char");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            return (char) MVMU.cInt(a0);
-        }
-    }
-
-    public static final class C2I extends MVMFn.Fixed {
-        public C2I() {
-            super("char->integer");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            return (int) (Character) a0;
         }
     }
 }

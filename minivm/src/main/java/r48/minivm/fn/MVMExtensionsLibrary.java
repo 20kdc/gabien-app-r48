@@ -11,8 +11,8 @@ import java.util.LinkedList;
 import static gabien.datum.DatumTreeUtils.*;
 import gabien.datum.DatumSymbol;
 import r48.minivm.MVMEnv;
-import r48.minivm.MVMEnv.Slot;
 import r48.minivm.MVMU;
+import r48.minivm.MVMSlot;
 import r48.minivm.compiler.MVMCompileScope;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCMacroify;
@@ -24,30 +24,22 @@ import r48.minivm.expr.MVMCMacroify;
 public class MVMExtensionsLibrary {
     public static void add(MVMEnv ctx) {
         // Custom: Clojureisms
-        ctx.defineSlot(sym("string->class")).v = new Str2Class()
-                .attachHelp("(string->class V) : Gets the given class, or null if unable.");
-        ctx.defineSlot(sym("instance?")).v = new InstanceQ()
-                .attachHelp("(instance? C V) : Class.isInstance(V)");
+        ctx.defLib("string->class", (a0) -> {
+            try {
+                return Class.forName((String) a0);
+            } catch (ClassNotFoundException e) {
+                return null;
+            }
+        }).attachHelp("(string->class V) : Gets the given class, or null if unable.");
+        ctx.defLib("instance?", (a0, a1) -> {
+            return ((Class<?>) a0).isInstance(a1);
+        }).attachHelp("(instance? C V) : Class.isInstance(V)");
         // Custom: Macro facilities
         // This should be roughly compatible with the Scheme 9 from Empty Space implementation.
         ctx.defineSlot(sym("define-syntax")).v = new Macroify()
                 .attachHelp("(define-syntax (NAME ARG... [. VA]) PROC) : Defines a macro, given tree elements and assembles the replacement tree element. Only really makes sense at top-level.");
         // Custom: Debug
-        ctx.defineSlot(sym("mvm-disasm")).v = new Disasm()
-                .attachHelp("(mvm-disasm LAMBDA) : Disassembles the given lambda.");
-        ctx.defineSlot(sym("help")).v = new Help(ctx)
-                .attachHelp("(help [TOPIC]) : Helpful information on the given value (if any), or lists symbols in the root context.");
-        ctx.defineSlot(sym("help-set!")).v = new HelpSet()
-                .attachHelp("(help-set! TOPIC VALUE) : Sets information on the given value.");
-    }
-
-    public static final class Disasm extends MVMFn.Fixed {
-        public Disasm() {
-            super("mvm-disasm");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
+        ctx.defLib("mvm-disasm", (a0) -> {
             if (a0 instanceof MVMCExpr)
                 return ((MVMCExpr) a0).disasm();
             if (a0 instanceof MVMLambdaFn) {
@@ -55,33 +47,12 @@ public class MVMExtensionsLibrary {
                 return MVMU.l(sym("λi"), l.rootFrame.isExpectedToExist(), l.content.disasm());
             }
             throw new RuntimeException("Can't disassemble " + MVMU.userStr(a0));
-        }
-    }
-
-    public static final class InstanceQ extends MVMFn.Fixed {
-        public InstanceQ() {
-            super("instance?");
-        }
-
-        @Override
-        public Object callDirect(Object a0, Object a1) {
-            return ((Class<?>) a0).isInstance(a1);
-        }
-    }
-
-    public static final class Str2Class extends MVMFn.Fixed {
-        public Str2Class() {
-            super("string->class");
-        }
-
-        @Override
-        public Object callDirect(Object a0) {
-            try {
-                return Class.forName((String) a0);
-            } catch (ClassNotFoundException e) {
-                return null;
-            }
-        }
+        }).attachHelp("(mvm-disasm LAMBDA) : Disassembles the given lambda.");
+        ctx.defineSlot(sym("help")).v = new Help(ctx)
+                .attachHelp("(help [TOPIC]) : Helpful information on the given value (if any), or lists symbols in the root context.");
+        ctx.defLib("help-set!", (a0, a1) -> {
+            return ((MVMHelpable) a0).attachHelp((String) a1);
+        }).attachHelp("(help-set! TOPIC VALUE) : Sets information on the given value.");
     }
 
     public static final class Macroify extends MVMMacro {
@@ -108,7 +79,7 @@ public class MVMExtensionsLibrary {
         @Override
         public Object callDirect() {
             LinkedList<DatumSymbol> ds = new LinkedList<>();
-            for (Slot s : ctx.listSlots())
+            for (MVMSlot s : ctx.listSlots())
                 ds.add(s.s);
             return ds;
         }
@@ -118,17 +89,6 @@ public class MVMExtensionsLibrary {
             if (a0 instanceof MVMHelpable)
                 return ((MVMHelpable) a0).help;
             return null;
-        }
-    }
-
-    public static final class HelpSet extends MVMFn.Fixed {
-        public HelpSet() {
-            super("help-set!");
-        }
-
-        @Override
-        public Object callDirect(Object a0, Object a1) {
-            return ((MVMHelpable) a0).attachHelp((String) a1);
         }
     }
 }

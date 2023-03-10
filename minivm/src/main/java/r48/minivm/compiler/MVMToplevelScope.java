@@ -9,7 +9,7 @@ package r48.minivm.compiler;
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.ISupplier;
 import r48.minivm.MVMEnv;
-import r48.minivm.MVMEnv.Slot;
+import r48.minivm.MVMSlot;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCSetSlot;
 
@@ -27,7 +27,7 @@ public class MVMToplevelScope extends MVMCompileScope {
 
     @Override
     public MVMCExpr compileDefine(DatumSymbol sym, ISupplier<MVMCExpr> value) {
-        Slot slot = context.ensureSlot(sym);
+        MVMSlot slot = context.ensureSlot(sym);
         try {
             return new MVMCSetSlot(slot, value.get());
         } catch (Exception ex) {

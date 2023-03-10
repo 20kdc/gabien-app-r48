@@ -11,7 +11,7 @@ import java.util.List;
 import gabien.datum.DatumSymbol;
 import gabien.uslx.append.ISupplier;
 import r48.minivm.MVMEnv;
-import r48.minivm.MVMEnv.Slot;
+import r48.minivm.MVMSlot;
 import r48.minivm.expr.MVMCExpr;
 import r48.minivm.expr.MVMCNewEmptyList;
 import r48.minivm.expr.MVMCSetSlot;
@@ -53,7 +53,7 @@ public abstract class MVMCompileScope {
      */
     public MVMCExpr readLookup(DatumSymbol ds) {
         // Context
-        Slot s = context.getSlot(ds);
+        MVMSlot s = context.getSlot(ds);
         if (s != null)
             return s;
         throw new RuntimeException("Undefined symbol: " + ds);
@@ -64,7 +64,7 @@ public abstract class MVMCompileScope {
      */
     public MVMCExpr writeLookup(DatumSymbol ds, MVMCExpr compile) {
         // Context
-        Slot s = context.getSlot(ds);
+        MVMSlot s = context.getSlot(ds);
         if (s != null)
             return new MVMCSetSlot(s, compile);
         throw new RuntimeException("Undefined symbol: " + ds);
@@ -98,8 +98,8 @@ public abstract class MVMCompileScope {
             // What we have to do here is compile the first value, and then retroactively work out if it's a macro.
             MVMCExpr ol1v = compile(ol1o);
             Object effectiveValueForMacroLookup = null;
-            if (ol1v instanceof Slot) {
-                effectiveValueForMacroLookup = ((Slot) ol1v).v;
+            if (ol1v instanceof MVMSlot) {
+                effectiveValueForMacroLookup = ((MVMSlot) ol1v).v;
             } else if (ol1v instanceof MVMCExpr.Const) {
                 effectiveValueForMacroLookup = ((MVMCExpr.Const) ol1v).value;
             }

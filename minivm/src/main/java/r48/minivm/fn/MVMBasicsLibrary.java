@@ -44,14 +44,21 @@ public class MVMBasicsLibrary {
                 .attachHelp("(if C T [F]) : Conditional primitive.");
         ctx.defineSlot(sym("set!")).v = new Set()
                 .attachHelp("(set! VAR V) : Sets a variable.");
-        ctx.defineSlot(sym("equal?")).v = new EqualQ()
-                .attachHelp("(equal? A B) : Checks two values for Java value equality.");
+        ctx.defLib("equal?", (a0, a1) -> {
+            // Can't rewrite to Objects.deepEquals or anything, that's API level 19
+            if (a0 == a1)
+                return true;
+            else if (a0 == null)
+                return false;
+            else
+                return a0.equals(a1);
+        }).attachHelp("(equal? A B) : Checks two values for Java value equality.");
         // this is definitely not in-spec, but what can 'ya do?
-        ctx.defineSlot(sym("eq?")).v = new EqQ()
-                .attachHelp("(eq? A B) : Checks two values for Java pointer equality.");
+        ctx.defLib("eq?", (a0, a1) -> a0 == a1)
+            .attachHelp("(eq? A B) : Checks two values for Java pointer equality.");
         // not strictly standard in Scheme, but is standard in Common Lisp, but exact details differ
-        ctx.defineSlot(sym("gensym")).v = new Gensym(ctx)
-                .attachHelp("(gensym) : Creates a new uniqueish symbol.");
+        ctx.defLib("gensym", () -> ctx.gensym())
+            .attachHelp("(gensym) : Creates a new uniqueish symbol.");
     }
 
     /**
@@ -246,46 +253,6 @@ public class MVMBasicsLibrary {
             if (call.length != 2)
                 throw new RuntimeException("Set needs variable name and value, no more or less");
             return cs.writeLookup((DatumSymbol) call[0], cs.compile(call[1]));
-        }
-    }
-
-    public static final class EqualQ extends MVMFn.Fixed {
-        public EqualQ() {
-            super("equal?");
-        }
-
-        @Override
-        public Object callDirect(Object a0, Object a1) {
-            if (a0 == a1)
-                return true;
-            else if (a0 == null)
-                return false;
-            else
-                return a0.equals(a1);
-        }
-    }
-
-    public static final class EqQ extends MVMFn.Fixed {
-        public EqQ() {
-            super("eq?");
-        }
-
-        @Override
-        public Object callDirect(Object a0, Object a1) {
-            return a0 == a1;
-        }
-    }
-
-    public static final class Gensym extends MVMFn.Fixed {
-        public final MVMEnv env;
-        public Gensym(MVMEnv env) {
-            super("gensym");
-            this.env = env;
-        }
-
-        @Override
-        public Object callDirect() {
-            return env.gensym();
         }
     }
 }

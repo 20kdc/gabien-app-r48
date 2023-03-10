@@ -21,23 +21,46 @@ public class MVMMathsLibrary {
         // Scheme library
         ctx.defineSlot(new DatumSymbol("+")).v = new Add()
                 .attachHelp("(+ V...) : Adds various values. If none given, returns 0.");
-        ctx.defineSlot(new DatumSymbol("number-compare")).v = new MVMFn.Fixed("number-compare") {
-            @Override
-            public Object callDirect(Object a0, Object a1) {
-                int res;
-                if (a0 instanceof Float || a0 instanceof Double || a1 instanceof Float || a1 instanceof Double)
-                    res = Double.compare(((Number) a0).doubleValue(), ((Number) a1).doubleValue());
-                else
-                    res = Long.compare(((Number) a0).longValue(), ((Number) a1).longValue());
-                if (res < 0)
-                    return resM1;
-                else if (res > 0)
-                    return res1;
-                else
-                    return res0;
-            }
-        }
-                .attachHelp("(number-compare A B) : Compares two numbers, returning integers -1 (A < B) to 1 (A > B).");
+        ctx.defineSlot(new DatumSymbol("-")).v = new Sub()
+                .attachHelp("(- V...) : Subtracts various values. If none given, returns 0. A special rule is that - with a single parameter negates.");
+        ctx.defLib("=", (a0, a1) -> {
+            if (a0 instanceof Float || a0 instanceof Double || a1 instanceof Float || a1 instanceof Double)
+                return ((Number) a0).doubleValue() == ((Number) a1).doubleValue();
+            return ((Number) a0).longValue() == ((Number) a1).longValue();
+        }).attachHelp("(= A B) : Checks for equality between two numbers. This is different from eq? and equal? due to numeric types.");
+        ctx.defLib(">", (a0, a1) -> {
+            if (a0 instanceof Float || a0 instanceof Double || a1 instanceof Float || a1 instanceof Double)
+                return ((Number) a0).doubleValue() > ((Number) a1).doubleValue();
+            return ((Number) a0).longValue() > ((Number) a1).longValue();
+        }).attachHelp("(> A B) : Checks for A > B.");
+        ctx.defLib("<", (a0, a1) -> {
+            if (a0 instanceof Float || a0 instanceof Double || a1 instanceof Float || a1 instanceof Double)
+                return ((Number) a0).doubleValue() < ((Number) a1).doubleValue();
+            return ((Number) a0).longValue() < ((Number) a1).longValue();
+        }).attachHelp("(< A B) : Checks for A < B.");
+        ctx.defLib(">=", (a0, a1) -> {
+            if (a0 instanceof Float || a0 instanceof Double || a1 instanceof Float || a1 instanceof Double)
+                return ((Number) a0).doubleValue() >= ((Number) a1).doubleValue();
+            return ((Number) a0).longValue() >= ((Number) a1).longValue();
+        }).attachHelp("(>= A B) : Checks for A >= B.");
+        ctx.defLib("<=", (a0, a1) -> {
+            if (a0 instanceof Float || a0 instanceof Double || a1 instanceof Float || a1 instanceof Double)
+                return ((Number) a0).doubleValue() <= ((Number) a1).doubleValue();
+            return ((Number) a0).longValue() <= ((Number) a1).longValue();
+        }).attachHelp("(<= A B) : Checks for A <= B.");
+        ctx.defLib("number-compare", (a0, a1) -> {
+            int res;
+            if (a0 instanceof Float || a0 instanceof Double || a1 instanceof Float || a1 instanceof Double)
+                res = Double.compare(((Number) a0).doubleValue(), ((Number) a1).doubleValue());
+            else
+                res = Long.compare(((Number) a0).longValue(), ((Number) a1).longValue());
+            if (res < 0)
+                return resM1;
+            else if (res > 0)
+                return res1;
+            else
+                return res0;
+        }).attachHelp("(number-compare A B) : Compares two numbers, returning integers -1 (A < B) to 1 (A > B).");
     }
 
     public static final class Add extends MVMFn.ChainOp<Number> {
@@ -60,6 +83,36 @@ public class MVMMathsLibrary {
             if (a instanceof Double || b instanceof Double || a instanceof Float || b instanceof Float)
                 return a.doubleValue() + b.doubleValue();
             return a.longValue() + b.longValue();
+        }
+
+        @Override
+        protected Object callDirect() {
+            return 0L;
+        }
+    }
+
+    public static final class Sub extends MVMFn.ChainOp<Number> {
+        public Sub() {
+            super("-");
+        }
+
+        @Override
+        public Number checkParticipant(Object v) {
+            return (Number) v;
+        }
+
+        @Override
+        public Object loneOp(Number a) {
+            if (a instanceof Double || a instanceof Float)
+                return -a.doubleValue();
+            return -a.longValue();
+        }
+
+        @Override
+        public Number twoOp(Number a, Number b) {
+            if (a instanceof Double || b instanceof Double || a instanceof Float || b instanceof Float)
+                return a.doubleValue() - b.doubleValue();
+            return a.longValue() - b.longValue();
         }
 
         @Override

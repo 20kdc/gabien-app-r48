@@ -6,7 +6,6 @@
  */
 package r48.minivm.fn;
 
-import gabien.datum.DatumSymbol;
 import r48.App;
 import r48.dbs.SDBOldParser;
 import r48.minivm.MVMEnv;
@@ -17,19 +16,9 @@ import r48.minivm.MVMEnv;
  */
 public class MVMSDBLibrary {
     public static void add(MVMEnv ctx, App app) {
-        ctx.defineSlot(new DatumSymbol("sdb-load-old")).v = new SDBLoadOld(app)
-                .attachHelp("(sdb-load-old FILE) : Read old-format SDB file.");
-    }
-    public static final class SDBLoadOld extends MVMFn.Fixed {
-        public final App app;
-        public SDBLoadOld(App a) {
-            super("sdb-load-old");
-            app = a;
-        }
-        @Override
-        public Object callDirect(Object a0) {
+        ctx.defLib("sdb-load-old", (a0) -> {
             SDBOldParser.readFile(app, (String) a0);
             return null;
-        }
+        }).attachHelp("(sdb-load-old FILE) : Read old-format SDB file.");
     }
 }

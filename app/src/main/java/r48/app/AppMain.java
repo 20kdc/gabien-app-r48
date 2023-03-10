@@ -14,7 +14,6 @@ import r48.App;
 import r48.RubyIO;
 import r48.dbs.ObjectDB;
 import r48.dbs.SDB;
-import r48.dbs.SDBOldParser;
 import r48.io.IObjectBackend;
 import r48.io.data.IRIO;
 import r48.map.systems.MapSystem;
