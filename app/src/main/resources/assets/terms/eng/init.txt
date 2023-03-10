@@ -9,5 +9,6 @@
 (include "terms/eng/appui")
 (include "terms/eng/fontsizes")
 (include "terms/eng/autogen")
+(include "terms/eng/autogennamed")
 (include "terms/eng/title")
 (include "terms/eng/schema")

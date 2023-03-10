@@ -77,7 +77,7 @@ public class RMTools extends App.Svc {
                                 try {
                                     i = Integer.parseInt(s);
                                 } catch (Exception e) {
-                                    app.ui.launchDialog(T.z.l36);
+                                    app.ui.launchDialog(T.z.dlgBadNum);
                                     return;
                                 }
                                 for (IRMMapSystem.RMMapData rmd : mapSystem.getAllMaps()) {

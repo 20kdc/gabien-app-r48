@@ -117,15 +117,15 @@ public class BasicToolset extends App.Svc implements IToolset {
 
     private UIElement createODBButton() {
         return new UIMenuButton(app, T.z.l43, app.f.menuTextHeight, null, new String[] {
-                T.z.l44,
-                T.z.l45,
-                T.z.l46,
-                T.z.l47,
-                T.z.l48,
-                T.z.l49,
+                T.z.mEditObj,
+                T.z.mCorrectObj,
+                T.z.mInspectObj,
+                T.z.mDiffObj,
+                T.z.mAllStr,
+                T.z.mLoadIMI,
         }, new Runnable[] {
                 () -> {
-                    app.ui.launchPrompt(T.z.l50, (s) -> {
+                    app.ui.launchPrompt(T.z.prObjectName, (s) -> {
                         final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
                         if (app.sdb.hasSDBEntry("File." + s)) {
                             app.ui.launchSchema("File." + s, rio, null);
@@ -139,44 +139,44 @@ public class BasicToolset extends App.Svc implements IToolset {
                                     return;
                                 }
                             }
-                            app.ui.launchPrompt(T.z.l51, new IConsumer<String>() {
+                            app.ui.launchPrompt(T.z.prSchemaID, new IConsumer<String>() {
                                 @Override
                                 public void accept(String s) {
                                     app.ui.launchSchema(s, rio, null);
                                 }
                             });
                         } else {
-                            app.ui.launchDialog(T.z.l52);
+                            app.ui.launchDialog(T.z.l62);
                         }
                     });
                 },
                 () -> {
-                    app.ui.launchPrompt(T.z.l50, (s) -> {
+                    app.ui.launchPrompt(T.z.prObjectName, (s) -> {
                         final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
-                        app.ui.launchPrompt(T.z.l51, new IConsumer<String>() {
+                        app.ui.launchPrompt(T.z.prSchemaID, new IConsumer<String>() {
                             @Override
                             public void accept(String s) {
                                 SchemaElement ise = app.sdb.getSDBEntry(s);
                                 ise.modifyVal(rio.getObject(), new SchemaPath(ise, rio), false);
-                                app.ui.launchDialog(T.z.l53);
+                                app.ui.launchDialog(T.u.done);
                             }
                         });
                     });
                 },
                 () -> {
-                    app.ui.launchPrompt(T.z.l50, (s) -> {
+                    app.ui.launchPrompt(T.z.prObjectName, (s) -> {
                         IObjectBackend.ILoadedObject obj = app.odb.getObject(s);
                         if (obj == null) {
-                            app.ui.launchDialog(T.z.l54);
+                            app.ui.launchDialog(T.z.l57);
                         } else {
                             app.ui.wm.createWindow(new UITest(app, obj.getObject()));
                         }
                     });
                 },
                 () -> {
-                    app.ui.launchPrompt(T.z.l55, (sA) -> {
+                    app.ui.launchPrompt(T.z.prObjectSrc, (sA) -> {
                         final IObjectBackend.ILoadedObject objA = app.odb.getObject(sA);
-                        app.ui.launchPrompt(T.z.l56, (sB) -> {
+                        app.ui.launchPrompt(T.z.prObjectDst, (sB) -> {
                             final IObjectBackend.ILoadedObject objB = app.odb.getObject(sB);
                             if ((objA == null) || (objB == null)) {
                                 app.ui.launchDialog(T.z.l57);
@@ -195,7 +195,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                                     app.ui.launchDialog(T.z.l58);
                                     return;
                                 } catch (Exception e) {
-                                    app.ui.launchDialog(T.z.l59);
+                                    app.ui.launchDialog(e);
                                 }
                             }
                         });
@@ -236,7 +236,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                     }
                 },
                 () -> {
-                    app.ui.launchPrompt(T.z.l50, new IConsumer<String>() {
+                    app.ui.launchPrompt(T.z.prObjectName, new IConsumer<String>() {
                         @Override
                         public void accept(String s) {
                             final IObjectBackend.ILoadedObject rio = app.odb.getObject(s);
@@ -250,14 +250,14 @@ public class BasicToolset extends App.Svc implements IToolset {
                                     IRIO irio = rio.getObject();
                                     IMIUtils.runIMISegment(is, irio);
                                     app.odb.objectRootModified(rio, new SchemaPath(new OpaqueSchemaElement(app), rio));
-                                    app.ui.launchDialog(T.z.l64);
+                                    app.ui.launchDialog(T.u.done);
                                 } catch (Exception ioe) {
                                     try {
                                         is.close();
                                     } catch (Exception ex) {
                                     }
                                     ioe.printStackTrace();
-                                    app.ui.launchDialog(T.z.l59);
+                                    app.ui.launchDialog(ioe);
                                 }
                             }
                         }
@@ -268,21 +268,21 @@ public class BasicToolset extends App.Svc implements IToolset {
 
     private UIElement createOtherButton() {
         return new UIMenuButton(app, T.z.l65, app.f.menuTextHeight, null, new String[] {
-                T.z.l66,
-                T.z.l67,
-                T.z.l68,
-                T.z.l69,
-                T.z.l70,
-                T.z.l71,
-                T.z.l72,
+                T.z.mTestFonts,
+                T.z.mTestGraphics,
+                T.z.mToggleFull,
+                T.z.mSoonToBeRemoved,
+                T.z.mTryRecover,
+                T.z.mAudPlay,
+                T.z.mREPL,
         }, new Runnable[] {
                 () -> {
-                    app.ui.launchPrompt(T.z.l73, (s) -> {
+                    app.ui.launchPrompt(T.z.dlgFontSize, (s) -> {
                         try {
                             Integer i = Integer.parseInt(s);
                             app.ui.wm.createWindow(new UITextBox("", i).setMultiLine());
                         } catch (Exception e) {
-                            app.ui.launchDialog(T.z.l36);
+                            app.ui.launchDialog(T.z.dlgBadNum);
                         }
                     });
                 },
@@ -323,6 +323,7 @@ public class BasicToolset extends App.Svc implements IToolset {
     private static UIElement createStatusBar(App app) {
         final TrRoot T = app.t;
         final UILabel uiStatusLabel = new UILabel(T.z.l81, app.f.statusBarTextHeight);
+        // second time I've tried to lambda this - you can't because of the repetition
         app.uiPendingRunnables.add(new Runnable() {
             @Override
             public void run() {
@@ -339,7 +340,7 @@ public class BasicToolset extends App.Svc implements IToolset {
         }, new Runnable[] {
                 () -> {
                     if (app.theClipboard == null) {
-                        app.ui.launchDialog(T.z.l87);
+                        app.ui.launchDialog(T.z.dlgClipEmpty);
                     } else {
                         AdHocSaveLoad.save("clip", app.theClipboard);
                         app.ui.launchDialog(T.z.l88);
@@ -356,7 +357,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                 },
                 () -> {
                     if (app.theClipboard == null) {
-                        app.ui.launchDialog(T.z.l87);
+                        app.ui.launchDialog(T.z.dlgClipEmpty);
                     } else {
                         app.ui.wm.createWindow(new UITest(app, (IRIO) app.theClipboard));
                     }
