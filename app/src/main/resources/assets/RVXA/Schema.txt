@@ -6,11 +6,6 @@
 
  VX Ace Schema.
 
-C objectDB r48
-C dataPath Data/
-C dataExt .rvdata2
-C versionId RVXA
-
 C recommendMkdir Data
 
 C recommendMkdir Graphics

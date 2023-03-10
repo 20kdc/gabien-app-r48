@@ -19,6 +19,7 @@ import gabien.uslx.append.IConsumer;
 import r48.app.AppCore;
 import r48.app.AppNewProject;
 import r48.app.AppUI;
+import r48.app.EngineDef;
 import r48.app.IAppAsSeenByLauncher;
 import r48.app.InterlaunchGlobals;
 import r48.io.data.RORIO;
@@ -55,7 +56,7 @@ public final class App extends AppCore implements IAppAsSeenByLauncher {
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public App(InterlaunchGlobals ilg, String gp, String rp, String sip, IConsumer<String> loadProgress) {
+    public App(InterlaunchGlobals ilg, EngineDef gp, String rp, String sip, IConsumer<String> loadProgress) {
         super(ilg, gp, rp, sip, loadProgress);
         vmCtx = new MVMEnvR48((str) -> {
             loadProgress.accept(t.g.loadingProgress.r(str));

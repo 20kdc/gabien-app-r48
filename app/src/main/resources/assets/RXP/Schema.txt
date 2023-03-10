@@ -6,11 +6,6 @@
 
  XP Schema.
 
-C objectDB r48
-C dataPath Data/
-C dataExt .rxdata
-C versionId RXP
-
 C recommendMkdir Data
 
 C recommendMkdir Graphics

@@ -12,6 +12,8 @@ import gabien.uslx.vfs.FSBackend;
 import gabien.ui.IPointer;
 import r48.App;
 import r48.app.AppMain;
+import r48.app.EngineDef;
+import r48.app.EnginesList;
 import r48.app.InterlaunchGlobals;
 import r48.cfg.Config;
 import r48.dbs.ObjectDB;
@@ -47,7 +49,7 @@ public class TestKickstart {
     public static boolean maintainTextEnter = false;
     public static int windowCount = 1337;
 
-    public static App kickstart(final String s2, final String encoding, final String schema) {
+    public static App kickstart(final String s2, final String encoding, final String engineDefId) {
         currentTestPhase = "Initial Phase";
         kickstartRFS();
         // In case unset.
@@ -55,7 +57,10 @@ public class TestKickstart {
         Config c = new Config(false);
         c.applyUIGlobals();
         InterlaunchGlobals ilg = new InterlaunchGlobals(c, (vm) -> {}, (str) -> {});
-        return AppMain.initializeCore(ilg, s2, "", schema, (s) -> {});
+        EngineDef engine = EnginesList.getEngines(null).get(engineDefId);
+        if (engine == null)
+            throw new RuntimeException("missing engine def: " + engineDefId);
+        return AppMain.initializeCore(ilg, s2, "", engine, (s) -> {});
     }
 
     public static void kickstartRFS() {
@@ -189,7 +194,7 @@ public class TestKickstart {
     }
 
     public static void resetODB(App app) {
-        IObjectBackend backend = IObjectBackend.Factory.create(app.odbBackend, app.rootPath, app.dataPath, app.dataExt);
+        IObjectBackend backend = IObjectBackend.Factory.create(app.engine.odbBackend, app.rootPath, app.engine.dataPath, app.engine.dataExt);
         app.odb = new ObjectDB(app, backend, (s) -> {});
     }
 

@@ -1,0 +1,51 @@
+; gabien-app-r48 - Editing program for various formats
+; Written starting in 2016 by contributors (see CREDITS.txt)
+; To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+; A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
+
+; This lists the engine init dirs and their ODB parameters, which have been purposefully kept out of MVM control.
+
+null (
+	initDir "Null/"
+	odbBackend r48
+)
+
+sticki (
+	initDir "Sticki/"
+	odbBackend r48
+)
+
+ika (
+	initDir "Ika/"
+	odbBackend ika
+	mapSystem Ika
+)
+
+osLoc (
+	initDir "OSLoc/"
+	odbBackend r48
+	dataPath "Languages/"
+	dataExt ".loc"
+)
+
+r2k (
+	initDir "R2K/"
+	odbBackend lcf2000
+	mapSystem R2k
+)
+
+rxp (
+	initDir "RXP/"
+	odbBackend r48
+	dataPath "Data/"
+	dataExt ".rxdata"
+	mapSystem RXP
+)
+
+rvxa (
+	initDir "RVXA/"
+	odbBackend r48
+	dataPath "Data/"
+	dataExt ".rvdata2"
+	mapSystem RVXA
+)

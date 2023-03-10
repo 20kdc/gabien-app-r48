@@ -12,6 +12,7 @@ import gabienapp.state.LSInApp;
 import gabienapp.state.LSMain;
 import r48.App;
 import r48.app.AppMain;
+import r48.app.EngineDef;
 import r48.cfg.Config;
 import r48.dbs.DBLoader;
 import r48.dbs.IDatabase;
@@ -120,9 +121,10 @@ public class CategoryGPMenuPanel implements IGPMenuPanel {
                     @Override
                     public void run() {
                         try {
+                            EngineDef engine = ls.lun.ilg.getEngineDef(objName);
                             // Regarding thread safety, this should be safe enough because app is kept here.
                             // It's then transferred out.
-                            App app = AppMain.initializeCore(ls.lun.ilg, rootPath, silPath, objName + "/", theKickstart);
+                            App app = AppMain.initializeCore(ls.lun.ilg, rootPath, silPath, engine, theKickstart);
                             AppMain.initializeUI(app, ls.lun.uiTicker, ls.lun.isMobile);
                             theKickstart.doneInjector.set(new Runnable() {
                                 @Override

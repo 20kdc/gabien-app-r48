@@ -225,7 +225,7 @@ public class BasicToolset extends App.Svc implements IToolset {
                         dos.write(';');
                         dos.write('\n');
                         dos.close();
-                        if (app.dataPath.equals("Languages/")) {
+                        if (app.engine.dataPath.equals("Languages/")) {
                             app.ui.launchDialog(T.z.l60);
                         } else {
                             app.ui.launchDialog(T.z.l61);

@@ -76,7 +76,7 @@ public class LocalTestExecutiveTest {
 
     @Test
     public void test() {
-        App app = TestKickstart.kickstart(name + "/", charset, schema + "/");
+        App app = TestKickstart.kickstart(name + "/", charset, schema);
         for (ObjectInfo s : dynamic ? app.getObjectInfos() : app.sdb.listFileDefs())
             testObject(app, s.idName);
     }

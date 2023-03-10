@@ -62,7 +62,7 @@ public class SchemaParseTest {
 
     @Test
     public void testParses() {
-        App app = TestKickstart.kickstart("RAM/", "UTF-8", gamepak + "/");
+        App app = TestKickstart.kickstart("RAM/", "UTF-8", gamepak);
         // ... Also does this.
         // Not really parsing, but a good safety measure none-the-less.
         for (EventCommandArraySchemaElement st : TestDBUtils.getLoadedCSLs(app)) {

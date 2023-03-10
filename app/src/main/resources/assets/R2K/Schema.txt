@@ -10,8 +10,6 @@
  _112 means '2k3 1.12'
  _EPL means 'EasyRPG Player'
 
-C objectDB lcf2000
-C versionId R2k
 C defineIndent
 
 C allowIndentControl

@@ -22,7 +22,7 @@ import java.io.IOException;
 public class R2kSerializationTest {
     @Test
     public void testFullIOStack() throws IOException {
-        App app = TestKickstart.kickstart("RAM/", "UTF-8", "R2K/");
+        App app = TestKickstart.kickstart("RAM/", "UTF-8", "r2k");
 
         String[] fileDefs = new String[] {
                 "hello.lmu",

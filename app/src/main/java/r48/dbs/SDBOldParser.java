@@ -803,15 +803,15 @@ public class SDBOldParser extends App.Svc implements IDatabase {
             if (args[0].equals("defineIndent"))
                 sdb.defineIndent();
             if (args[0].equals("objectDB"))
-                app.odbBackend = args[1];
+                throw new RuntimeException("This is now INVALID");
             if (args[0].equals("recommendMkdir"))
                 sdb.recommendedDirs.add(args[1]);
             if (args[0].equals("dataPath"))
-                app.dataPath = args[1];
+                throw new RuntimeException("This is now INVALID");
             if (args[0].equals("dataExt"))
-                app.dataExt = args[1];
+                throw new RuntimeException("This is now INVALID");
             if (args[0].equals("versionId"))
-                app.sysBackend = args[1];
+                throw new RuntimeException("This is now INVALID");
             if (args[0].equals("defaultCB")) {
                 workingObj = new AggregateSchemaElement(app, new SchemaElement[] {});
                 commandBufferSchemas.put("x default", workingObj);

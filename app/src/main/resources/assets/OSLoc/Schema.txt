@@ -6,10 +6,6 @@
 
  OneShot Localization Files
 
-C objectDB r48
-C dataPath Languages/
-C dataExt .loc
-
  Ok, these things are quite mad.
  As far as I can tell, they use hashes.
  Stored in big-nums.

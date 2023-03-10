@@ -4,5 +4,4 @@
 ; A copy of the Unlicense should have been supplied as COPYING.txt in this repository. Alternatively, you can find it at <https://unlicense.org/>.
 
 ; Null MVM init
-
-(sdb-load-old "Null/Schema.txt")
+; Fittingly, there's nothing here.

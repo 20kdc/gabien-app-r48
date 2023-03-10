@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import gabien.GaBIEn;
 import gabien.datum.DatumDecodingVisitor;
 import gabien.datum.DatumReaderTokenSource;
+import gabien.datum.DatumVisitor;
 import gabien.uslx.append.IConsumer;
 
 /**
@@ -22,6 +23,21 @@ public class DatumLoader {
      * Loads the given file into this context.
      */
     public static boolean read(String filename, IConsumer<String> loadProgress, IConsumer<Object> eval) {
+        return read(filename, loadProgress, new DatumDecodingVisitor() {
+            @Override
+            public void visitTree(Object obj) {
+                eval.accept(obj);
+            }
+            @Override
+            public void visitEnd() {
+            }
+        });
+    }
+
+    /**
+     * Loads the given file into this context.
+     */
+    public static boolean read(String filename, IConsumer<String> loadProgress, DatumVisitor ddv) {
         try (InputStreamReader ins = GaBIEn.getTextResource(filename)) {
             if (ins == null) {
                 System.out.println("X " + filename);
@@ -30,15 +46,6 @@ public class DatumLoader {
             System.out.println(">>" + filename);
             if (loadProgress != null)
                 loadProgress.accept(filename);
-            DatumDecodingVisitor ddv = new DatumDecodingVisitor() {
-                @Override
-                public void visitTree(Object obj) {
-                    eval.accept(obj);
-                }
-                @Override
-                public void visitEnd() {
-                }
-            };
             DatumReaderTokenSource drts = new DatumReaderTokenSource(ins);
             drts.visit(ddv);
         } catch (Exception ex) {

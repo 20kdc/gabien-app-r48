@@ -6,65 +6,67 @@
 
 = "RPG Maker 2000, 2003, or EasyRPG. (Android users, go here.)"
 
-0: R2K
+0: r2k
 f RPG_RT.ldb
 e Cp1252
 . R2K[3?] (English/French/CP1252)
 
-0: R2K
+0: r2k
 f RPG_RT.ldb
 e UTF-8
 . R2K[3?] (UTF-8) (Use for new games or languages not shown.)
 
-0: R2K
+0: r2k
 f RPG_RT.ldb
 e MS932
 . R2K[3?] (Japanese/MS932)
 
-0: R2K
+0: r2k
 f RPG_RT.ldb
 e cp1251
 . R2K[3?] (Russian/Cyrillic/CP1251)
 
-0: R2K
+0: r2k
 f RPG_RT.ldb
 e cp1250
 . R2K[3?] (Polish/Eastern European/CP1250)
 
-0: R2K
+0: r2k
 f RPG_RT.ldb
 e MS949
 . R2K[3?] (Korean/MS949)
 
-0: R2K
+0: r2k
 f RPG_RT.ldb
 e MS936
 . R2K[3?] (Simplified Chinese/MS936)
 
 = "RGSS Engines (RPG Maker XP, VX Ace)"
 
-0: RXP
+0: rxp
 f Data/MapInfos.rxdata
 e UTF-8
+. RXP
 
-0: RVXA
+0: rvxa
 f Data/MapInfos.rvdata2
 e UTF-8
+. RVXA
 
 = "Other..."
 
-0: Ika
+0: ika
 f Pbm/Map1.pbm
 e UTF-8
 . Ikachan
 
-0: OSLoc
+0: osLoc
 f Languages/en.loc
 e UTF-8
 . OneShot (remake) External Localization Files
 
 = "Tests"
 
-0: Sticki
+0: sticki
 e UTF-8
 . Launch testbed ("Sticky Note Editor")

@@ -28,18 +28,18 @@ import java.util.*;
  * Created on 12/27/16. Being phased out as of 26th February 2023, reduced to static methods as of the 28th.
  */
 public class AppMain {
-    public static App initializeCore(InterlaunchGlobals ilg, final String rp, final String sip, final String gamepak, final IConsumer<String> progress) {
-        final App app = new App(ilg, gamepak, rp, sip, progress);
+    public static App initializeCore(InterlaunchGlobals ilg, final String rp, final String sip, final EngineDef engine, final IConsumer<String> progress) {
+        final App app = new App(ilg, engine, rp, sip, progress);
 
         // initialize core resources
 
         app.sdb = new SDB(app);
 
-        app.vmCtx.include(gamepak + "init", false);
-        app.vmCtx.include(gamepak + "lang." + ilg.c.language, true);
+        app.vmCtx.include(engine.initDir + "init", false);
+        app.vmCtx.include(engine.initDir + "lang/" + ilg.c.language + "/init.txt", true);
 
         // initialize everything else that needs initializing, starting with ObjectDB
-        IObjectBackend backend = IObjectBackend.Factory.create(app.odbBackend, app.rootPath, app.dataPath, app.dataExt);
+        IObjectBackend backend = IObjectBackend.Factory.create(engine.odbBackend, app.rootPath, engine.dataPath, engine.dataExt);
         app.odb = new ObjectDB(app, backend, (s) -> {
             if (app.system != null)
                 app.system.saveHook(s);
@@ -48,7 +48,7 @@ public class AppMain {
         if (app.odb == null)
             throw new RuntimeException("The Object Database wasn't initialized.");
 
-        app.system = MapSystem.create(app, app.sysBackend);
+        app.system = MapSystem.create(app, engine.mapSystem);
 
         // Final internal consistency checks and reading in dictionaries from target
         //  before starting the UI, which can cause external consistency checks

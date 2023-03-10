@@ -45,6 +45,8 @@ public class AppCore {
     public final @NonNull Config c;
     public final @NonNull FontSizes f;
     public final @NonNull TrRoot t;
+    // Launch settings
+    public final EngineDef engine;
     // Main
     public final @NonNull ITranslator d; // dynamic string translation
     public ObjectDB odb;
@@ -57,13 +59,8 @@ public class AppCore {
     public WeakHashMap<IRIO, HashMap<IMagicalBinder, WeakReference<RubyIO>>> magicalBindingCache = new WeakHashMap<>();
 
     public ATDB[] autoTiles = new ATDB[0];
-    public String odbBackend = "<you forgot to select a backend>";
     public final @NonNull String rootPath;
     public final @Nullable String secondaryImagePath;
-    // Null system backend will always "work"
-    public String sysBackend = "null";
-    public String dataPath = "";
-    public String dataExt = "";
 
     public final @NonNull IConsumer<String> loadProgress;
 
@@ -71,17 +68,18 @@ public class AppCore {
      * Initialize App.
      * Warning: Occurs off main thread.
      */
-    public AppCore(@NonNull InterlaunchGlobals ilg, @NonNull String gp, @NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
+    public AppCore(@NonNull InterlaunchGlobals ilg, @NonNull EngineDef engine, @NonNull String rp, @Nullable String sip, @NonNull IConsumer<String> lp) {
         this.ilg = ilg;
         c = ilg.c;
         f = c.f;
         t = ilg.t;
+        this.engine = engine;
         rootPath = rp;
         secondaryImagePath = sip;
         loadProgress = lp;
         fmt = new FormatSyntax(this);
         imageIOFormats = ImageIOFormat.initializeFormats(this);
-        d = createGPTranslatorForLang(c.language, gp);
+        d = createGPTranslatorForLang(c.language, engine.initDir);
     }
 
     /**

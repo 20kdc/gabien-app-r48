@@ -6,6 +6,8 @@
  */
 package r48.app;
 
+import java.util.HashMap;
+
 import gabien.GaBIEn;
 import gabien.uslx.append.IConsumer;
 import r48.cfg.Config;
@@ -29,11 +31,20 @@ public class InterlaunchGlobals {
     private ITranslator translator = new NullTranslator();
     private MVMEnvR48 langVM;
     private IConsumer<MVMEnv> reportVMChanges;
+    private HashMap<String, EngineDef> engineDefs;
 
     public InterlaunchGlobals(Config c, IConsumer<MVMEnv> report, IConsumer<String> loadProgress) {
         this.c = c;
         reportVMChanges = report;
         updateLanguage(loadProgress);
+        engineDefs = EnginesList.getEngines(loadProgress);
+    }
+
+    /**
+     * Gets an engine definition (or null if it doesn't exist, but do pretend it always does)
+     */
+    public EngineDef getEngineDef(String engineId) {
+        return engineDefs.get(engineId);
     }
 
     /**
