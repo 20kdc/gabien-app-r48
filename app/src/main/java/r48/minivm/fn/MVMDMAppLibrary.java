@@ -19,8 +19,7 @@ import r48.schema.SchemaElement;
  */
 public class MVMDMAppLibrary {
     public static void add(MVMEnv ctx, App app) {
-        // ensure because this overrides some stuff because of the use in formatting
-        ctx.ensureSlot(new DatumSymbol("dm-fmt")).v = new DMFmt(app.fmt)
+        ctx.defineSlot(new DatumSymbol("dm-fmt")).v = new DMFmt(app.fmt)
                 .attachHelp("(dm-fmt TARGET) : Passes to FormatSyntax.interpretParameter. Important: Because of schemas and stuff this doesn't exist in the static translation context.");
     }
     public static final class DMFmt extends MVMFn.Fixed {

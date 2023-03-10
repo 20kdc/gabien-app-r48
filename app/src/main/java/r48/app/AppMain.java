@@ -36,8 +36,7 @@ public class AppMain {
 
         app.sdb = new SDB(app);
 
-        SDBOldParser.readFile(app, gamepak + "Schema.txt"); // This does a lot of IO, for one line.
-        app.vmCtx.include(gamepak + "init", true);
+        app.vmCtx.include(gamepak + "init", false);
         app.vmCtx.include(gamepak + "lang." + ilg.c.language, true);
 
         // initialize everything else that needs initializing, starting with ObjectDB
